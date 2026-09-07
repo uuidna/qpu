@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: "@uuidna/qpu — QPU worker: quantum processing unit as three readings"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: Rouschev
+    given-names: Tsvetan
+    orcid: "https://orcid.org/0009-0000-7312-9778"
+abstract: >-
+  QPU (quantum processing unit) worker at https://qpu.uuidna.com.
+  JSON readings of one machine: empty QPU seat, five-point BindingPoint
+  width (CPU, GPU, RAM, CACHE, STORAGE), and sealed hologram bit-widths.
+license: CC-BY-NC-ND-4.0
+version: "0.1.0"
+url: "https://qpu.uuidna.com"
+repository-code: "https://github.com/uuidna/qpu"
+keywords:
+  - QPU
+  - quantum processing unit
+  - quantum computing
+  - qubit
+  - quantum software
+  - BindingPoint
+  - uuidna
