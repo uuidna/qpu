@@ -24,8 +24,10 @@ test('GET /seat /width /hologram and well-known', async () => {
   const holo = await (await get('/hologram')).json() as { veFaces: number; foundation: number }
   assert.equal(holo.veFaces, 14)
   assert.equal(holo.foundation, 0)
-  const disc = await (await get('/.well-known/qpu.json')).json() as { readings: string[] }
+  const disc = await (await get('/.well-known/qpu.json')).json() as { readings: string[]; wallet: string; donate: string }
   assert.deepEqual(disc.readings, ['seat', 'width', 'hologram'])
+  assert.equal(disc.wallet, 'https://revolut.me/ceccec')
+  assert.equal(disc.donate, 'https://revolut.me/ceccec?note=https%3A%2F%2Fqpu.uuidna.com')
 })
 
 test('http and www 301 to https apex', async () => {

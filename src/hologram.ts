@@ -42,6 +42,16 @@ export function throughVoid(d: number): number {
 /** The worker host. Licensed as its own entry — no wildcard. */
 export const QPU_HOST = 'qpu.uuidna.com'
 
+/** Captain-coins deposit — same wallet as uuidna. */
+export const DONATE_URL = 'https://revolut.me/ceccec'
+
+/** Captain-coins deposit URL: https://revolut.me/ceccec?note=${encodeURIComponent(referrer)} */
+export function donateUrl(referrer: string): string {
+  const raw = referrer.trim()
+  if (!raw) throw new Error('donateUrl: referrer is empty')
+  return `${DONATE_URL}?note=${encodeURIComponent(raw)}`
+}
+
 /** BindingPoint pentagram — CPU, GPU, RAM, CACHE, STORAGE. */
 export const QPU_POINTS = ['CPU', 'GPU', 'RAM', 'CACHE', 'STORAGE'] as const
 

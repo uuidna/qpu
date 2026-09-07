@@ -1,7 +1,7 @@
 // edge — THE QPU WORKER. JSON readings at https://qpu.uuidna.com
 //
 // Read-only. No ASSETS. No MCP. Seat stays empty; width names five points; hologram is sealed bit widths.
-import { QPU_HOST, qpuHologramOf, qpuMachineOf, qpuSeatOf, qpuWidthOf } from './hologram.js'
+import { DONATE_URL, QPU_HOST, donateUrl, qpuHologramOf, qpuMachineOf, qpuSeatOf, qpuWidthOf } from './hologram.js'
 
 const cors = {
   'access-control-allow-origin': '*',
@@ -19,6 +19,8 @@ export const qpuDiscoveryOf = (origin: string) => ({
   worker: 'uuidna-qpu',
   host: QPU_HOST,
   origin,
+  donate: donateUrl(origin),
+  wallet: DONATE_URL,
   readings: ['seat', 'width', 'hologram'] as const,
   endpoints: {
     '/': 'three readings, one machine',

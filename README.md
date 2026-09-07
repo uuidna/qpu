@@ -20,3 +20,5 @@ npx wrangler deploy
 ```
 
 Licence: CC BY-NC-ND 4.0 · © Tsvetan Rouschev — the same licence as [`@uuidna/uuidna`](https://github.com/uuidna/uuidna).
+
+Captain coins: `https://revolut.me/ceccec?note=<referrer>` (`encodeURIComponent` of the page handle door).

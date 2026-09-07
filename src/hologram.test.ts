@@ -1,8 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import {
-  BASE, COINS, HANDLE_HEXBITS, HEXBIT_BITS, QPU_HOST, QPU_POINTS, SEAL_TEN, TRINITY, VE_FACES,
-  qpuFacesOf, qpuHologramOf, qpuMachineOf, qpuSeatOf, qpuWidthOf, throughVoid,
+  BASE, COINS, DONATE_URL, HANDLE_HEXBITS, HEXBIT_BITS, QPU_HOST, QPU_POINTS, SEAL_TEN, TRINITY, VE_FACES,
+  donateUrl, qpuFacesOf, qpuHologramOf, qpuMachineOf, qpuSeatOf, qpuWidthOf, throughVoid,
 } from './hologram.js'
 
 test('seat stays empty', () => {
@@ -46,4 +46,12 @@ test('fourteen faces pair through the void', () => {
 test('machine names the worker host', () => {
   assert.equal(QPU_HOST, 'qpu.uuidna.com')
   assert.equal(qpuMachineOf().host, QPU_HOST)
+})
+
+test('donate door is the same Revolut wallet as uuidna', () => {
+  assert.equal(DONATE_URL, 'https://revolut.me/ceccec')
+  assert.equal(
+    donateUrl('https://qpu.uuidna.com'),
+    'https://revolut.me/ceccec?note=https%3A%2F%2Fqpu.uuidna.com',
+  )
 })
