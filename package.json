@@ -1,0 +1,58 @@
+{
+  "name": "@uuidna/qpu",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "The QPU worker at https://qpu.uuidna.com — three readings, one machine: empty seat, five-point width, sealed bit-width hologram.",
+  "type": "module",
+  "license": "CC-BY-NC-ND-4.0",
+  "author": "Tsvetan Rouschev <ceccec@psg.bg>",
+  "homepage": "https://qpu.uuidna.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uuidna/qpu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/uuidna/qpu/issues"
+  },
+  "keywords": [
+    "uuidna",
+    "qpu",
+    "cloudflare-workers",
+    "hologram",
+    "pentagram"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "worker.js",
+    "wrangler.toml",
+    "README.md",
+    "LICENSE",
+    "!dist/**/*.test.js",
+    "!dist/**/*.test.d.ts"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.json && node --test dist/*.test.js",
+    "ship": "npm run build && npx wrangler deploy"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.121.0"
+  }
+}
