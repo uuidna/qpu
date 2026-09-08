@@ -1,0 +1,106 @@
+#!/usr/bin/env node
+// mcp — executable QPU MCP. JSON-RPC 2.0 over stdio. Also: --list · --call <tool> [json]
+// Cursor speaks Content-Length (LSP). Newline JSON still holds for humans.
+import { QPU_TOOLS, qpuMcpCall, qpuMcpToolNames } from './mcp-catalog.js'
+import { handleQpuMcpRpc, type McpRpc } from './mcp-rpc.js'
+import { QPU_MCP_NAME } from './version.js'
+
+export const qpuMcpFrameOf = (msg: unknown): string => {
+  const body = JSON.stringify(msg)
+  return `Content-Length: ${Buffer.byteLength(body, 'utf8')}\r\n\r\n${body}`
+}
+
+export const qpuMcpTakeOf = (buf: string): { msgs: McpRpc[]; rest: string } => {
+  const msgs: McpRpc[] = []
+  let rest = buf
+  for (;;) {
+    const headed = /^\s*Content-Length:/i.test(rest)
+    if (headed) {
+      const crlf = rest.indexOf('\r\n\r\n')
+      const lf = rest.indexOf('\n\n')
+      const useCrlf = crlf >= 0 && (lf < 0 || crlf <= lf)
+      const at = useCrlf ? crlf : lf
+      const sep = useCrlf ? 4 : 2
+      if (at < 0) return { msgs, rest }
+      const n = Number(/Content-Length:\s*(\d+)/i.exec(rest.slice(0, at))?.[1])
+      if (!Number.isFinite(n) || n < 0) return { msgs, rest: rest.slice(at + sep) }
+      const start = at + sep
+      if (rest.length < start + n) return { msgs, rest }
+      try { msgs.push(JSON.parse(rest.slice(start, start + n)) as McpRpc) } catch { /* skip */ }
+      rest = rest.slice(start + n)
+      continue
+    }
+    const i = rest.indexOf('\n')
+    if (i < 0) return { msgs, rest }
+    const line = rest.slice(0, i).trim()
+    rest = rest.slice(i + 1)
+    if (!line) continue
+    try { msgs.push(JSON.parse(line) as McpRpc) } catch { /* skip */ }
+  }
+}
+
+const cursor = typeof process !== 'undefined' && Array.isArray(process.argv) && process.argv.includes('--cursor')
+
+const send = (msg: unknown) => {
+  process.stdout.write(qpuMcpFrameOf(msg))
+}
+
+const isMain = (() => {
+  if (typeof process === 'undefined' || !Array.isArray(process.argv) || process.argv[1] === undefined) return false
+  const argv1 = String(process.argv[1])
+  try {
+    if (import.meta.url === new URL(`file://${argv1}`).href) return true
+  } catch { /* windows paths */ }
+  const tail = argv1.split(/[\\/]/).pop() ?? ''
+  return tail === QPU_MCP_NAME || tail === 'qpu' || tail === 'mcp.js' || tail === `${QPU_MCP_NAME}.js`
+})()
+
+const cli = async (): Promise<boolean> => {
+  const argv = process.argv.slice(2)
+  if (argv[0] === '--list') {
+    process.stdout.write(`${qpuMcpToolNames().join('\n')}\n`)
+    return true
+  }
+  if (argv[0] === '--call') {
+    const name = argv[1]
+    if (!name) {
+      process.stderr.write('usage: qpu --call <tool> [json]\n')
+      process.exitCode = 1
+      return true
+    }
+    let args: Record<string, unknown> = {}
+    if (argv[2]) {
+      try { args = JSON.parse(argv[2]) as Record<string, unknown> } catch {
+        process.stderr.write('qpu --call: arguments must be JSON\n')
+        process.exitCode = 1
+        return true
+      }
+    }
+    const out = await qpuMcpCall(name, args)
+    process.stdout.write(`${typeof out === 'string' ? out : JSON.stringify(out, null, 2)}\n`)
+    return true
+  }
+  return false
+}
+
+const stdio = (): void => {
+  let buf = ''
+  process.stdin.setEncoding('utf8')
+  process.stdin.on('data', (chunk) => {
+    buf += chunk
+    const taken = qpuMcpTakeOf(buf)
+    buf = taken.rest
+    for (const msg of taken.msgs) {
+      void handleQpuMcpRpc(msg, undefined, cursor ? { cursor: true } : undefined).then((out) => { if (out) send(out) }).catch((e) => {
+        if (msg.id !== undefined)
+          send({ jsonrpc: '2.0', id: msg.id, error: { code: -32603, message: String(e) } })
+      })
+    }
+  })
+}
+
+if (isMain) {
+  void cli().then((done) => { if (!done) stdio() })
+}
+
+export { QPU_TOOLS, qpuMcpCall, qpuMcpToolNames, handleQpuMcpRpc }

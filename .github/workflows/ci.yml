@@ -1,0 +1,32 @@
+name: ci
+
+# THE ONE DOOR. Pre-push, deploy, and release all run `npm run ci`.
+# A red gate never ships. Integrity, not a skip.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install exact (lockfile law; no install scripts)
+        run: npm ci
+      - name: Gate — audit, tests, paper, docs, wrangler dry-run
+        run: npm run ci

@@ -3,3 +3,8 @@ dist/
 *.tgz
 .DS_Store
 .wrangler/
+test-results.json
+docs/.vitepress/dist
+docs/.vitepress/cache
+
+.vitepress/

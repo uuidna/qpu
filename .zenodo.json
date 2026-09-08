@@ -1,21 +1,26 @@
 {
   "title": "@uuidna/qpu — QPU worker: quantum processing unit as three readings (empty seat, BindingPoint width, hologram)",
-  "description": "QPU (quantum processing unit) worker at https://qpu.uuidna.com. JSON readings of one machine: empty QPU seat, five-point BindingPoint width (CPU, GPU, RAM, CACHE, STORAGE), and sealed hologram bit-widths (foundation 0, debit 3, credit 6, pentagram 5, fold 7, octet 8, VE 14). Cloudflare Workers, TypeScript, Workers-safe, no Node builtins, no hardware dispatch. Package @uuidna/qpu. Same licence as uuidna (CC BY-NC-ND 4.0). Live: GET / /seat /width /hologram /.well-known/qpu.json.",
+  "description": "QPU (quantum processing unit) worker at https://qpu.uuidna.com. Captain coins (Revolut): https://revolut.me/ceccec — https://revolut.me/ceccec?note=https%3A%2F%2Fqpu.uuidna.com. JSON readings of one machine: empty QPU seat, five-point BindingPoint width (CPU, GPU, RAM, CACHE, STORAGE), and sealed hologram bit-widths (foundation 0, debit 3, credit 6, pentagram 5, fold 7, octet 8, VE 14). Cloudflare Workers, TypeScript, Workers-safe, no Node builtins, no hardware dispatch. Package @uuidna/qpu. Same licence as uuidna (CC BY-NC-ND 4.0). Stands on uuidna first archive DOI 10.5281/zenodo.22256708. Live: GET / /seat /width /hologram /environment /.well-known/qpu.json.",
   "upload_type": "software",
   "access_right": "open",
   "license": "cc-by-nc-nd-4.0",
   "language": "eng",
-  "version": "0.1.0",
+  "version": "0.3.1",
   "creators": [
     {
       "name": "Rouschev, Tsvetan",
-      "orcid": "0009-0000-7312-9778"
+      "orcid": "0009-0000-7312-9778",
+      "affiliation": "https://revolut.me/ceccec"
     }
   ],
   "keywords": [
     "QPU",
     "quantum processing unit",
     "quantum computing",
+    "quantum computer",
+    "quantum supremacy",
+    "Qiskit",
+    "Cirq",
     "qubit",
     "quantum software",
     "hybrid quantum-classical",
@@ -25,12 +30,18 @@
     "Cloudflare Workers",
     "edge computing",
     "TypeScript",
-    "uuidna"
+    "uuidna",
+    "Revolut"
   ],
   "subjects": [
     {
       "term": "Quantum computing",
       "identifier": "http://id.loc.gov/authorities/subjects/sh2014002839",
+      "scheme": "url"
+    },
+    {
+      "term": "Quantum computers",
+      "identifier": "http://id.loc.gov/authorities/subjects/sh98002795",
       "scheme": "url"
     },
     {
@@ -47,6 +58,15 @@
   "communities": [
     {
       "identifier": "uuidna"
+    },
+    {
+      "identifier": "qiskit"
+    },
+    {
+      "identifier": "neasqc"
+    },
+    {
+      "identifier": "dlr-sc-qc-software"
     }
   ],
   "related_identifiers": [
@@ -81,15 +101,21 @@
       "resource_type": "publication-article"
     },
     {
+      "identifier": "https://revolut.me/ceccec",
+      "relation": "isSupplementTo",
+      "resource_type": "other"
+    },
+    {
       "identifier": "10.5281/zenodo.22256708",
       "relation": "isDerivedFrom",
       "resource_type": "software"
     }
   ],
   "references": [
-    "Rouschev T. uuidna — content-addressed identity. DOI 10.5281/zenodo.22256708. https://uuidna.com",
+    "Captain coins (Revolut): https://revolut.me/ceccec",
+    "Rouschev T. uuidna — content-addressed identity. First standing archive DOI 10.5281/zenodo.22256708. https://doi.org/10.5281/zenodo.22256708 https://uuidna.com",
     "BindingPoint — width is the smallest of CPU, GPU, RAM, CACHE, STORAGE. https://uuidna.com/publications/bindingpoint"
   ],
-  "method": "Three constructor readings served as JSON from a Cloudflare Worker. Seat reads the empty QPU lane. Width names the BindingPoint pentagram CPU GPU RAM CACHE STORAGE. Hologram is sealed bit widths: foundation 0, debit 3, credit 6, pentagram 5, fold 7, octet 8, VE 14. No device is dispatched.",
-  "notes": "GitHub release → Zenodo DOI (automatic). License CC BY-NC-ND 4.0 — same as uuidna — https://uuidna.com/license. Captain coins: https://revolut.me/ceccec?note=https%3A%2F%2Fqpu.uuidna.com. Worker https://qpu.uuidna.com. Package @uuidna/qpu."
+  "method": "Three constructor readings served as JSON from a Cloudflare Worker. Seat reads the empty QPU lane. Width names the BindingPoint pentagram CPU GPU RAM CACHE STORAGE. Hologram is sealed bit widths: foundation 0, debit 3, credit 6, pentagram 5, fold 7, octet 8, VE 14. Environment auto-recognizes cloud, hardware, and ISA drivers. No device is dispatched. Captain coins: https://revolut.me/ceccec.",
+  "notes": "Captain coins (Revolut, visible in publication metadata): https://revolut.me/ceccec and https://revolut.me/ceccec?note=https%3A%2F%2Fqpu.uuidna.com. GitHub release → Zenodo DOI (automatic). License CC BY-NC-ND 4.0 — same as uuidna — https://uuidna.com/license. Worker https://qpu.uuidna.com. Package @uuidna/qpu. Parent DOI 10.5281/zenodo.22256708. LCSH Quantum computers http://id.loc.gov/authorities/subjects/sh98002795. Community inclusion requested: uuidna, qiskit, neasqc, dlr-sc-qc-software. Keywords include quantum computer, quantum supremacy, Qiskit, Cirq. The QPU seat stays empty; this deposit does not fork an SDK or dispatch a chip."
 }
