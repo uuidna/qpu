@@ -79,8 +79,27 @@
 .qpu-reflections,
 .qpu-seat,
 .qpu-donate,
-.qpu-pentagram {
+.qpu-pentagram,
+.qpu-direction {
   font-variant-numeric: tabular-nums;
+}
+
+.qpu-direction {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.35rem 1rem;
+  font-size: 0.82rem;
+  background: var(--kumo-elevated);
+  border-bottom: 1px solid var(--border);
+}
+
+.qpu-direction a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
 }
 
 .qpu-rail a,

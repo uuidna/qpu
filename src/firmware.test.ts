@@ -32,12 +32,13 @@ test('wrangler ASSETS bind the VitePress hologram', () => {
 })
 
 test('VitePress theme paints hologram firmware; VP tokens bind QPU planes', () => {
-  assert.match(layout, /data-firmware="vitepress"/)
-  assert.match(layout, /data-engine="qpu"/)
-  assert.match(layout, /data\.tokens/)
+  assert.match(layout, /serviceWorker/)
+  assert.match(layout, /\/sw\.js/)
+  assert.match(config, /manifest\.webmanifest/)
   assert.match(css, /--vp-c-brand-1:\s*hsl\(calc\(var\(--qpu-fold\)/)
   assert.match(loader, /defineLoader/)
   assert.match(loader, /qpuHologramOf/)
+  assert.match(loader, /qpuDirectionOf/)
   assert.match(loader, /payload\.find/)
   assert.match(loader, /QPU_PAYLOAD_API/)
   assert.doesNotMatch(loader, /graphql/i)
@@ -129,4 +130,5 @@ test('SEO audit stays clean beside the VitePress hologram', () => {
   const paths = new Set(qpuRoutesOf().map((r) => r.path))
   assert.ok(paths.has('/hologram'))
   assert.ok(paths.has('/gateways'))
+  assert.ok(paths.has('/pwa'))
 })

@@ -22,7 +22,7 @@ const hsl = (plane: number, sat: number, light: number): string =>
 export const qpuOgAltOf = (): string => {
   const seat = qpuSeatOf()
   const h = qpuHologramOf()
-  return `QPU — ${seat.seat} seat, BindingPoint ${QPU_POINTS.join(' ')}, ${h.veFaces}×${h.veFaces} hologram`
+  return `QPU — ${seat.seat} seat, BindingPoint ${QPU_POINTS.join(' ')}, ${h.veFaces} faces hologram`
 }
 
 export const qpuOgHrefOf = (): string => new URL(OG_PATH, `${originOf()}/`).href

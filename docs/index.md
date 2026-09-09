@@ -3,7 +3,7 @@ layout: home
 hero:
   name: QPU
   text: Three readings, one machine
-  tagline: Empty seat. BindingPoint width. Fourteen faces, fourteen reflections each.
+  tagline: Empty seat. BindingPoint width. Fourteen VE faces and one empty center.
   actions:
     - theme: brand
       text: Hologram
@@ -30,7 +30,7 @@ features:
     linkText: GET /width
   - icon: ◆
     title: Hologram
-    details: 14 superpositions × 14 reflections. VitePress is invisible firmware of the QPU.
+    details: Fourteen VE faces and one empty center. VitePress is invisible firmware of the QPU.
     link: /hologram
     linkText: GET /hologram
 ---

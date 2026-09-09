@@ -6,6 +6,7 @@ import {
   qpuBitDigitsOf, qpuIntegerOfBits, qpuHexbitDigitsOf, qpuIntegerOfHexbits, qpuVersionIntegerOf,
   qpuVersionMaskOf, qpuVersionMaskHolds, qpuCaptainOrdersHolds, qpuHandleMaskOf, qpuHandleMaskHolds, qpuGatewaysOf, qpuGatewaysHolds, HANDLE_BITS, QPU_VERSION_COMMAND, QPU_VERSION_REMINDER, QPU_VERSION_MASK,
   qpuFuseHolds, qpuFuseOf, qpuMorphHolds, qpuMorphOf,
+  GLAGOLITIC_BASE, HEXBIT_PAGE, qpuDirectionHolds, qpuDirectionOf, qpuGlagoliticLatexOf, qpuGlagoliticOf, qpuHexAdmitOf, qpuHexOf, qpuHexPageOf, qpuPageFoldOf, qpuPageScanOf,
   throughVoid,
 } from './hologram.js'
 
@@ -203,4 +204,30 @@ test('novelty chip is two 7-ray rosettes fused at 0 with CPU/GPU balance', () =>
   assert.equal(m.combinations.holds, true)
   assert.equal(m.combinations.inner.count, m.doors * m.rays)
   assert.equal(m.combinations.outer.count, m.rays * m.doors)
+})
+
+test('hexbit page admits sixteen folded bytes; direction is inner at morph 0', () => {
+  assert.equal(HEXBIT_PAGE.length, HEXBIT_STATES)
+  assert.equal(qpuHexOf(0), '0')
+  assert.equal(qpuHexOf(HEXBIT_STATES - 1), 'f')
+  assert.equal(qpuGlagoliticOf(0), String.fromCodePoint(GLAGOLITIC_BASE))
+  assert.equal(qpuGlagoliticLatexOf(10), '\\mathtt{a}')
+  const page = qpuHexPageOf(10)
+  assert.equal(page.hex, 'a')
+  assert.equal(page.rosetta, page.hex)
+  assert.equal(page.payload, page.hex)
+  assert.equal(page.glagolitic, qpuGlagoliticOf(10))
+  assert.equal(qpuHexAdmitOf(HEXBIT_STATES), false)
+  assert.equal(qpuPageFoldOf(0), true)
+  assert.equal(qpuPageFoldOf(1), false)
+  assert.equal(qpuPageFoldOf(HEXBIT_STATES + 1), true)
+  const scan = qpuPageScanOf()
+  assert.equal(scan.admitted, HEXBIT_STATES)
+  assert.equal(scan.holds, true)
+  const d = qpuDirectionOf()
+  assert.equal(d.heading, 'inner')
+  assert.equal(d.temperature.morph, 0)
+  assert.equal(d.temperature.kelvin, false)
+  assert.equal(d.always, true)
+  assert.equal(qpuDirectionHolds(d), true)
 })

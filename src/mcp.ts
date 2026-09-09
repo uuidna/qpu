@@ -39,6 +39,55 @@ export const qpuMcpTakeOf = (buf: string): { msgs: McpRpc[]; rest: string } => {
   }
 }
 
+export type QpuMcpCli =
+  | { kind: 'list' }
+  | { kind: 'call'; name: string; json?: string }
+  | { kind: 'stdio' }
+  | { kind: 'usage' }
+
+/** `npm run qpu -- *` / `npm run unreal -- *` / `npm run lean -- *` — any MCP tool on any hardware. */
+export const qpuMcpCliArgvOf = (argv: readonly string[]): QpuMcpCli => {
+  const args = argv.filter((a) => a !== '--cursor')
+  if (args.length === 0) return { kind: 'stdio' }
+  if (args[0] === '--list') return { kind: 'list' }
+  if (args[0] === '--call') {
+    if (!args[1]) return { kind: 'usage' }
+    return { kind: 'call', name: args[1], json: args[2] }
+  }
+  if (args[0]!.startsWith('-')) return { kind: 'usage' }
+  return { kind: 'call', name: args[0]!, json: args[1] }
+}
+
+export const qpuMcpCliRunOf = async (
+  argv: readonly string[],
+  call: (name: string, args: Record<string, unknown>) => unknown | Promise<unknown>,
+  names: () => string[],
+  usage: string,
+): Promise<boolean> => {
+  const cli = qpuMcpCliArgvOf(argv)
+  if (cli.kind === 'stdio') return false
+  if (cli.kind === 'list') {
+    process.stdout.write(`${names().join('\n')}\n`)
+    return true
+  }
+  if (cli.kind === 'usage') {
+    process.stderr.write(`usage: ${usage}\n`)
+    process.exitCode = 1
+    return true
+  }
+  let args: Record<string, unknown> = {}
+  if (cli.json) {
+    try { args = JSON.parse(cli.json) as Record<string, unknown> } catch {
+      process.stderr.write(`${usage.split(' ')[0]}: arguments must be JSON\n`)
+      process.exitCode = 1
+      return true
+    }
+  }
+  const out = await call(cli.name, args)
+  process.stdout.write(`${typeof out === 'string' ? out : JSON.stringify(out, null, 2)}\n`)
+  return true
+}
+
 const cursor = typeof process !== 'undefined' && Array.isArray(process.argv) && process.argv.includes('--cursor')
 
 const send = (msg: unknown) => {
@@ -55,33 +104,8 @@ const isMain = (() => {
   return tail === QPU_MCP_NAME || tail === 'qpu' || tail === 'mcp.js' || tail === `${QPU_MCP_NAME}.js`
 })()
 
-const cli = async (): Promise<boolean> => {
-  const argv = process.argv.slice(2)
-  if (argv[0] === '--list') {
-    process.stdout.write(`${qpuMcpToolNames().join('\n')}\n`)
-    return true
-  }
-  if (argv[0] === '--call') {
-    const name = argv[1]
-    if (!name) {
-      process.stderr.write('usage: qpu --call <tool> [json]\n')
-      process.exitCode = 1
-      return true
-    }
-    let args: Record<string, unknown> = {}
-    if (argv[2]) {
-      try { args = JSON.parse(argv[2]) as Record<string, unknown> } catch {
-        process.stderr.write('qpu --call: arguments must be JSON\n')
-        process.exitCode = 1
-        return true
-      }
-    }
-    const out = await qpuMcpCall(name, args)
-    process.stdout.write(`${typeof out === 'string' ? out : JSON.stringify(out, null, 2)}\n`)
-    return true
-  }
-  return false
-}
+const cli = async (): Promise<boolean> =>
+  qpuMcpCliRunOf(process.argv.slice(2), qpuMcpCall, qpuMcpToolNames, 'npm run qpu -- <tool> [json]')
 
 const stdio = (): void => {
   let buf = ''

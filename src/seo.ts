@@ -115,7 +115,7 @@ export const qpuRoutesOf = (): SeoRoute[] => {
       kind: 'home',
       jsonAlternate: true,
       title: 'QPU — three readings, one machine',
-      description: `Quantum processing unit as three JSON and HTML readings. Seat ${seat.seat}. Width ${points}. Hologram ${h.veFaces} faces × ${h.veFaces} reflections.`,
+      description: `Quantum processing unit as three JSON and HTML readings. Seat ${seat.seat}. Width ${points}. Hologram ${h.veFaces} faces and particle 1.`,
     },
     {
       path: '/seat',
@@ -178,7 +178,7 @@ export const qpuRoutesOf = (): SeoRoute[] => {
       kind: 'reading',
       jsonAlternate: true,
       title: 'QPU fractal — fused hologram at every scale',
-      description: 'Pentagram stroke, hologram planes, fourteen faces × fourteen reflections, every provider folder, every serverless lane. Chip stays empty.',
+      description: 'Pentagram stroke, hologram planes, fourteen VE faces and one empty center, every provider folder, every serverless lane. Chip stays empty.',
     },
     {
       path: '/scale',
@@ -206,7 +206,7 @@ export const qpuRoutesOf = (): SeoRoute[] => {
       kind: 'reading',
       jsonAlternate: true,
       title: 'QPU hero — Open Graph card',
-      description: 'The homepage hero is the Open Graph image: a 1200×630 SVG of the BindingPoint pentagram, the empty seat, and the 14×14 hologram.',
+      description: 'The homepage hero is the Open Graph image: a 1200×630 SVG of the BindingPoint pentagram, the empty seat, and fourteen VE faces.',
     },
     {
       path: '/bindings',
@@ -223,6 +223,13 @@ export const qpuRoutesOf = (): SeoRoute[] => {
       description: 'Sandboxed fused environment. HTTP GET of named domains only, no wildcards. Experiments unlimited. The QPU chip seat admits nothing.',
     },
     {
+      path: '/pwa',
+      kind: 'reading',
+      jsonAlternate: true,
+      title: 'QPU PWA — proof of concept and work',
+      description: 'Full-featured progressive web app of the QPU itself. One hologram plugin. Fractal named HTTPS. Empty seat. When never.',
+    },
+    {
       path: '/pqc',
       kind: 'reading',
       jsonAlternate: true,
@@ -234,7 +241,7 @@ export const qpuRoutesOf = (): SeoRoute[] => {
       kind: 'reading',
       jsonAlternate: true,
       title: 'QPU quantum — live working square',
-      description: 'The live site is the working QPU. Pure and agnostic. Fourteen faces × fourteen reflections. Target empty. When never.',
+      description: 'The live site is the working QPU. Pure and agnostic. Fourteen VE faces, sequence 2^n. Target empty. When never.',
     },
     {
       path: '/licence',
@@ -283,7 +290,7 @@ export const qpuRoutesOf = (): SeoRoute[] => {
       kind: 'paper',
       jsonAlternate: false,
       title: 'QPU worker',
-      description: `Software overview for @uuidna/qpu. Constructors here; Lean proofs on uuidna. ${h.veFaces} faces × ${h.veFaces} reflections.`,
+      description: `Software overview for @uuidna/qpu. Constructors here; Lean proofs on uuidna. ${h.veFaces} faces and particle 1.`,
     },
     {
       path: '/manual',

@@ -1,12 +1,12 @@
 ---
 title: Hologram
-description: Fourteen superpositions, fourteen reflections each.
+description: Fourteen VE faces and one empty center. Glagolitic names each face.
 outline: deep
 ---
 
-# Hologram <Badge type="tip" text="14 × 14" />
+# Hologram <Badge type="tip" text="14 faces" />
 
-{{ reading.superpositions.length * reading.veFaces }} cells. Each row is a VE face and its opposite through the void. Each column is a reflection `k = 0 … 13`: `throughVoid((face + k) mod 9)` and the paired opposite shift. Reflection `k = 0` **is** the standing opposite.
+Fourteen rim glyphs surround the empty center. Bidirectional vectors pass through the void. Sequence amplitudes are `2^n`. 14×14 is photography's rounded f/1.4, not occupancy.
 
 <Lattice />
 

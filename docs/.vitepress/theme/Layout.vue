@@ -30,9 +30,16 @@ const paint = () => {
   rootEl.dataset.theme = isDark.value ? 'dark' : 'light'
   rootEl.dataset.mode = isDark.value ? 'dark' : 'light'
   rootEl.style.colorScheme = isDark.value ? 'dark' : 'light'
+  rootEl.dataset.heading = data.direction.heading
+  rootEl.style.setProperty('--qpu-morph', String(data.direction.temperature.morph))
 }
 
-onMounted(paint)
+onMounted(() => {
+  paint()
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    void navigator.serviceWorker.register('/sw.js', { scope: '/' })
+  }
+})
 watch(() => route.path, paint)
 watch(isDark, paint)
 </script>

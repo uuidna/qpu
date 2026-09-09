@@ -1,7 +1,7 @@
 import { defineLoader } from 'vitepress'
 import {
   BASE, DONATE_URL, HANDLE_BITS, QPU_HOST, QPU_HUE_STEP, QPU_POINTS, QPU_STAR_PTS, VE_FACES,
-  donateUrl, qpuChipOf, qpuFacesOf, qpuGatewaysHolds, qpuGatewaysOf, qpuHandleMaskOf,
+  donateUrl, qpuChipOf, qpuDirectionOf, qpuFacesOf, qpuGatewaysHolds, qpuGatewaysOf, qpuHandleMaskOf,
   qpuHologramOf, qpuMachineOf, qpuSeatOf, qpuStarStrokeOf, qpuSuperpositionsOf, qpuTokensOf,
   qpuTwoNOf, qpuWidthOf,
 } from '../../src/hologram.ts'
@@ -13,6 +13,7 @@ import { qpuCompareHolds, qpuCompareOf } from '../../src/metrics.ts'
 import { qpuOgDocOf, qpuOgOf } from '../../src/og.ts'
 import { qpuRoutesOf, qpuSeoOf } from '../../src/seo.ts'
 import { QPU_PAYLOAD_API } from '../../src/config.ts'
+import { qpuPwaOf } from '../../src/pwa.ts'
 
 export type HologramData = ReturnType<typeof loadHologramOf>
 
@@ -36,6 +37,7 @@ export function loadHologramOf() {
   const compare = qpuCompareOf()
   const og = qpuOgOf()
   const origin = `https://${QPU_HOST}`
+  const direction = qpuDirectionOf()
   const readings: Record<string, unknown> = {
     '/seat': seat,
     '/width': width,
@@ -44,6 +46,7 @@ export function loadHologramOf() {
     '/merkaba': chip,
     '/gateways': { neighbours: gateways.length, gateways, holds: qpuGatewaysHolds(gateways) },
     '/metrics': { compare, holds: qpuCompareHolds(compare) },
+    '/pwa': qpuPwaOf(),
   }
   for (const g of gateways) {
     readings[`/face/${g.face}`] = { ...g, superposition: superpositions[g.face], holds: true }
@@ -83,6 +86,7 @@ export function loadHologramOf() {
     doors,
     searchIndex: qpuSearchIndexOf(),
     compare,
+    direction,
     og,
     readings,
     seo,
@@ -93,6 +97,6 @@ export const searchOf = (q: string, filter: ChromeSearchFilter = {}): ChromeSear
   qpuSearchOf(q, filter)
 
 export default defineLoader({
-  watch: ['../../src/hologram.ts', '../../src/chrome.ts', '../../src/config.ts'],
+  watch: ['../../src/hologram.ts', '../../src/chrome.ts', '../../src/config.ts', '../../src/pwa.ts'],
   load: loadHologramOf,
 })

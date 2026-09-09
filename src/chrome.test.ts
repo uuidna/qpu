@@ -37,4 +37,8 @@ test('search hits planes, faces, standing, and hologram', () => {
   assert.ok(doors.some((d) => d.link === '/face/0'))
   assert.ok(doors.every((d) => d.link.startsWith('/')))
   assert.ok(qpuChromeOf('/hologram', 'seat').nav.length > 0)
+  const chrome = qpuChromeOf('/hologram', 'seat')
+  assert.equal(chrome.direction.heading, 'inner')
+  assert.equal(chrome.direction.temperature.morph, 0)
+  assert.equal(chrome.direction.always, true)
 })

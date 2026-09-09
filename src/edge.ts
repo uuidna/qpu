@@ -12,6 +12,7 @@ import { qpuMessengerOf } from './messenger.js'
 import { qpuChatOf } from './chat.js'
 import { qpuTrainOf } from './train.js'
 import { qpuConfigOf } from './config.js'
+import { qpuPwaManifestOf, qpuPwaOf, qpuPwaSwOf } from './pwa.js'
 import { STANDING, standingByFileOf, qpuStandingFilesOf, qpuStandingOf } from './standing.js'
 import { qpuChromeOf, qpuNavOf, qpuSearchOf, qpuSidebarOf } from './chrome.js'
 import { qpuCompareHolds, qpuCompareOf } from './metrics.js'
@@ -22,6 +23,7 @@ import { qpuProvidersOf, qpuRecognizeOf, qpuSolidsOf } from './bindings/index.js
 import { handleQpuSse, handleQpuWebSocket, qpuPeersOf, qpuScaleOf } from './scale.js'
 import { qpuFractalOf } from './fractal.js'
 import { qpuOgOf, qpuOgSvgOf } from './og.js'
+import { qpuWidgetsOf } from './widgets.js'
 import type { QpuEnv } from './bindings/env.js'
 
 const cors = {
@@ -43,7 +45,7 @@ export type { QpuEnv } from './bindings/env.js'
 
 export const QPU_JSON_DOORS = ['/seat', '/width', '/hologram', '/chip', '/merkaba', '/metrics', '/bindings', '/.well-known/qpu.json'] as const
 
-const QPU_GET_HINT = '/ /seat /width /hologram /chip /merkaba /metrics /speed /fractal /scale /og /og.svg /live /experience /events /boot /standing /pqc /quantum /licence /messenger /chat /room /train /config /nav /sidebar /search /superpositions /gateways /bindings /solids /environment /mcp /sse /ws /peers /providers /paper /manual /author'
+const QPU_GET_HINT = '/ /seat /width /hologram /chip /merkaba /metrics /speed /fractal /scale /og /og.svg /live /experience /events /boot /standing /widgets /pwa /manifest.webmanifest /sw.js /pqc /quantum /licence /messenger /chat /room /train /config /nav /sidebar /search /superpositions /gateways /bindings /solids /environment /mcp /sse /ws /peers /providers /paper /manual /author'
 
 const wantsHtml = (request: Request): boolean =>
   (request.headers.get('accept') || '').includes('text/html')
@@ -123,7 +125,7 @@ export async function handleQpuFetch(request: Request, env?: QpuEnv): Promise<Re
 
   if (url.pathname === '/.well-known/qpu.json')
     return json({ ...qpuDiscoveryOf(url.origin), environment: qpuRecognizeOf(env) })
-  if (url.pathname === '/nav') return json({ nav: qpuNavOf() })
+  if (url.pathname === '/nav') return json({ nav: qpuNavOf(), direction: qpuChromeOf('/').direction })
   if (url.pathname === '/sidebar') return json({ path: url.searchParams.get('path') || '/', sidebar: qpuSidebarOf(url.searchParams.get('path') || '/') })
   if (url.pathname === '/search') {
     return json(qpuSearchOf(url.searchParams.get('q') || '', {
@@ -139,6 +141,11 @@ export async function handleQpuFetch(request: Request, env?: QpuEnv): Promise<Re
     return json({ neighbours: gateways.length, gateways, holds: qpuGatewaysHolds(gateways) })
   }
   if (url.pathname === '/sse') return handleQpuSse(env)
+  if (url.pathname === '/widgets') {
+    if (html) { const a = await assetsOf(env, request); if (a) return a }
+    const at = Number(url.searchParams.get('at'))
+    return json(qpuWidgetsOf(at === at && at >= 0 ? at : Date.now()))
+  }
   if (url.pathname === '/live') {
     if (html) { const a = await assetsOf(env, request); if (a) return a }
     const { qpuLiveOf } = await import('./live.js')
@@ -157,6 +164,20 @@ export async function handleQpuFetch(request: Request, env?: QpuEnv): Promise<Re
     if (html) { const a = await assetsOf(env, request); if (a) return a }
     return json(qpuBootOf())
   }
+  if (url.pathname === '/pwa') {
+    if (html) { const a = await assetsOf(env, request); if (a) return a }
+    return json(qpuPwaOf())
+  }
+  if (url.pathname === '/manifest.webmanifest')
+    return new Response(JSON.stringify(qpuPwaManifestOf()), {
+      status: 200,
+      headers: { 'content-type': 'application/manifest+json; charset=utf-8', 'cache-control': 'public, max-age=3600', ...cors },
+    })
+  if (url.pathname === '/sw.js')
+    return new Response(qpuPwaSwOf(), {
+      status: 200,
+      headers: { 'content-type': 'application/javascript; charset=utf-8', 'cache-control': 'public, max-age=3600', ...cors },
+    })
   if (url.pathname === '/pqc') {
     if (html) { const a = await assetsOf(env, request); if (a) return a }
     return json(qpuPqcOf())

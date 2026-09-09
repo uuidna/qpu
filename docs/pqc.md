@@ -8,7 +8,7 @@ outline: deep
 
 Holds `{{ reading.holds }}`. Seat `{{ reading.seat }}`. Target `{{ reading.target.seat }}`. When `{{ reading.when }}`. Sandbox `{{ reading.sandbox }}`. Experiments `{{ reading.experiments }}`. Possibilities `{{ reading.possibilities }}`.
 
-All faces × all reflections. No named product. Occupancy of the posture, not a live cipher and not a clock. Fuse is HTTP GET of named domains only. Experiments unlimited. When never.
+Fourteen faces, sequence 2^n. No named product. Occupancy of the posture, not a live cipher and not a clock. Fuse is HTTP GET of named domains only. Experiments unlimited. When never.
 
 ## Faces · {{ reading.faces }}
 

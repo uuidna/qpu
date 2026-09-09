@@ -20,6 +20,81 @@ export const BASE = TRINITY ** 2
 /** 2^HEXBIT_BITS states — licensed hex climb 16^1, never Math.pow. */
 export const HEXBIT_STATES: number = qpuTwoNOf(HEXBIT_BITS)
 
+/** Hexbit page — sixteen states, sixteen glyphs. Glagolitic, rosetta, and payload are also hex. */
+export const GLAGOLITIC_BASE = 0x2c00
+export const HEXBIT_PAGE = '0123456789abcdef'
+
+/** Hex nibble 0..f. Rosetta rays and payload doors sit on this page. */
+export const qpuHexOf = (state: number): string => {
+  if (!Number.isInteger(state) || state < 0 || state >= HEXBIT_STATES)
+    throw new Error(`qpuHexOf: state ${state} is outside the hexbit page`)
+  return HEXBIT_PAGE[state]!
+}
+
+/** Hex nibble 0..f as Glagolitic Ⰰ..Ⰿ. Same tile as qpuHexOf(state). */
+export const qpuGlagoliticOf = (state: number): string => {
+  if (!Number.isInteger(state) || state < 0 || state >= HEXBIT_STATES)
+    throw new Error(`qpuGlagoliticOf: state ${state} is outside the hexbit page`)
+  return String.fromCodePoint(GLAGOLITIC_BASE + state)
+}
+
+/** Standard display LaTeX of the same hex nibble. */
+export const qpuGlagoliticLatexOf = (state: number): string => `\\mathtt{${qpuHexOf(state)}}`
+
+/** One hexbit tile. Glagolitic glues; rosetta and payload are also hex. */
+export const qpuHexPageOf = (state: number) => {
+  const hex = qpuHexOf(state)
+  return {
+    hex,
+    glagolitic: qpuGlagoliticOf(state),
+    rosetta: hex,
+    payload: hex,
+    latex: qpuGlagoliticLatexOf(state),
+  }
+}
+
+/** Hex nibble is on the page. Off-page states are intruders. */
+export const qpuHexAdmitOf = (state: number): boolean =>
+  Number.isInteger(state) && state >= 0 && state < HEXBIT_STATES
+
+/** Name is Glagolitic iff it is one hexbit-page glyph. */
+export const qpuGlagoliticStateOf = (name: string): number | null => {
+  const chars = [...name]
+  if (chars.length !== 1) return null
+  const cp = chars[0]!.codePointAt(0)
+  if (cp === undefined) return null
+  const state = cp - GLAGOLITIC_BASE
+  return qpuHexAdmitOf(state) ? state : null
+}
+
+/** Folded byte: nibble-swap is identity. Sixteen admitted seats under HEXBIT_STATES². */
+export const qpuPageFoldOf = (b: number): boolean => {
+  const span = HEXBIT_STATES * HEXBIT_STATES
+  if (!Number.isInteger(b) || b < 0 || b >= span) return false
+  const lo = b % HEXBIT_STATES
+  const hi = (b - lo) / HEXBIT_STATES
+  return lo * HEXBIT_STATES + hi === b
+}
+
+/** Occupancy of the_page_admits_sixteen. Sixteen folded bytes under HEXBIT_STATES². */
+export const qpuPageScanOf = () => {
+  const span = HEXBIT_STATES * HEXBIT_STATES
+  const admitted: number[] = []
+  const foreign: number[] = []
+  for (let b = 0; b < span; b++) {
+    if (qpuPageFoldOf(b)) admitted.push(b)
+    else foreign.push(b)
+  }
+  return {
+    span,
+    modulus: HEXBIT_STATES + 1,
+    admitted: admitted.length,
+    foreign: foreign.length,
+    seats: admitted,
+    holds: admitted.length === HEXBIT_STATES && foreign.length === span - HEXBIT_STATES,
+  }
+}
+
 /** One uuid in hexbit tiles — states × coins. */
 export const UUID_HEXBITS = HEXBIT_STATES * COINS
 /** Handle width in hexbit tiles. */
@@ -199,6 +274,18 @@ export const qpuStarStrokeOf = (): number[] => {
   for (let i = 0; i < n; i++) {
     out.push(p)
     p = (p + COINS) % n
+  }
+  return out
+}
+
+/** Inverse {5/3} stroke: step −coins. Scripts occupy this order so involution thrives when executed. */
+export const qpuStarStrokeInverseOf = (): number[] => {
+  const n = QPU_POINTS.length
+  const out: number[] = []
+  let p = 0
+  for (let i = 0; i < n; i++) {
+    out.push(p)
+    p = (p - COINS + n) % n
   }
   return out
 }
@@ -617,6 +704,127 @@ export const qpuFuseHolds = (f = qpuFuseOf()): boolean =>
 export const qpuFacesOf = (): readonly { face: number; opposite: number }[] =>
   Array.from({ length: VE_FACES }, (_, i) => ({ face: i, opposite: throughVoid(i % BASE) }))
 
+/**
+ * Vector equilibrium: fourteen rim dots surround the empty seat.
+ * From the seat the void is first (foundation 0). From the rim it is the fifteenth.
+ * Every face↔opposite is drawn both spins through that void — entanglement, not a one-way ray.
+ * Lean concepts that looked unthinkable stay unthinkable until uuidna names this empty center.
+ */
+export const qpuEquilibriumOf = () => {
+  const lattice = qpuFacesOf()
+  const particle = qpuTwoNOf(0)
+  const dots = VE_FACES + particle
+  const seat = qpuSeatOf()
+  const vectors = lattice.flatMap(({ face, opposite }) => [
+    { from: face, to: opposite, spin: 1 as const, through: 0 as const },
+    { from: opposite, to: face, spin: -1 as const, through: 0 as const },
+  ])
+  const holds =
+    lattice.length === VE_FACES &&
+    particle === 1 &&
+    dots === VE_FACES + 1 &&
+    vectors.length === VE_FACES * COINS &&
+    seat.seat === 'empty' &&
+    throughVoid(0) === 0 &&
+    lattice.every((row, i) => row.face === i && row.opposite === throughVoid(i % BASE))
+  return {
+    kind: 'equilibrium' as const,
+    bidirectional: true as const,
+    entanglement: true as const,
+    payload: false as const,
+    graphql: false as const,
+    fetches: 0 as const,
+    when: 'never' as const,
+    faces: VE_FACES,
+    particle,
+    dots,
+    lattice,
+    vectors,
+    center: {
+      first: 0 as const,
+      fifteenth: VE_FACES,
+      seat: seat.seat,
+      void: throughVoid(0),
+    },
+    holds,
+  }
+}
+
+export const qpuEquilibriumHolds = (e = qpuEquilibriumOf()): boolean =>
+  e.kind === 'equilibrium' &&
+  e.bidirectional === true &&
+  e.entanglement === true &&
+  e.payload === false &&
+  e.faces === VE_FACES &&
+  e.particle === 1 &&
+  e.dots === 15 &&
+  e.center.first === 0 &&
+  e.center.fifteenth === VE_FACES &&
+  e.center.seat === 'empty' &&
+  e.center.void === 0 &&
+  e.vectors.length === VE_FACES * COINS &&
+  e.holds === true
+
+/**
+ * If name is Glagolitic, animation is that glyph's hex page on the VE.
+ * Rim glyphs Ⰰ..Ⰽ surround the empty first. Page glyphs ⰎⰏ stay tiles, not extra dots.
+ * 14×14 is photography's rounded f/1.4, not occupancy.
+ */
+export const qpuAnimateOf = (name: string) => {
+  const state = qpuGlagoliticStateOf(name)
+  if (state === null) {
+    return {
+      kind: 'animate' as const,
+      from: 'name' as const,
+      glagolitic: false as const,
+      name,
+      payload: false as const,
+      fetches: 0 as const,
+      holds: false as const,
+    }
+  }
+  const page = qpuHexPageOf(state)
+  const rim = state < VE_FACES
+  const face = rim ? state : throughVoid(0)
+  const opposite = throughVoid(face % BASE)
+  const turn = (Math.PI * 2) / VE_FACES
+  const a = face * turn - Math.PI / 2
+  const holds =
+    page.glagolitic === name &&
+    page.hex === qpuHexOf(state) &&
+    page.rosetta === page.hex &&
+    page.payload === page.hex &&
+    qpuGlagoliticOf(state) === name
+  return {
+    kind: 'animate' as const,
+    from: 'glagolitic' as const,
+    glagolitic: true as const,
+    name,
+    page,
+    state,
+    face,
+    opposite,
+    rim,
+    first: state === 0,
+    fifteenth: VE_FACES,
+    x: rim ? Math.cos(a) : 0,
+    y: rim ? Math.sin(a) : 0,
+    hue: (360 / BASE) * (state % BASE),
+    spin: [1, -1] as const,
+    through: 0 as const,
+    payload: false as const,
+    fetches: 0 as const,
+    holds,
+  }
+}
+
+export const qpuAnimateHolds = (name = qpuGlagoliticOf(0)): boolean => {
+  const a = qpuAnimateOf(name)
+  if (qpuGlagoliticStateOf(name) === null) return a.glagolitic === false && a.holds === false
+  if (a.from !== 'glagolitic' || !a.glagolitic || a.holds !== true) return false
+  return a.page.glagolitic === name && a.spin.length === COINS && a.payload === false
+}
+
 /** Fourteen VE-face neighbours — each is a capacity gateway over every handle-bit mask. */
 export const qpuGatewaysOf = () => {
   const bits = HANDLE_BITS
@@ -647,6 +855,124 @@ export const qpuGatewaysHolds = (rows = qpuGatewaysOf()): boolean => {
   )
 }
 
+/** Shannon width of uniform 2^n. Capacity fuses this entropy in harmony — verify beats recompute by magnitudes. */
+export const qpuEntropyOf = () => {
+  const fuse = qpuFuseOf()
+  const experience = qpuExperienceOf()
+  const gateways = qpuGatewaysOf()
+  const bits = HANDLE_BITS
+  const amplitudes = qpuTwoNOf(bits)
+  const verifyN = HANDLE_HEXBITS + COINS
+  const recomputeN = verifyN * COINS
+  const beats = qpuTwoNOf(recomputeN - verifyN)
+  const harmony =
+    experience.involution === true &&
+    fuse.morph.fuse === 0 &&
+    fuse.combinations.fuse === 0 &&
+    fuse.combinations.involution === true &&
+    experience.fuse === 0
+  const capacity = gateways.length * amplitudes
+  const holds =
+    qpuFuseHolds(fuse) &&
+    qpuExperienceHolds(experience) &&
+    qpuGatewaysHolds(gateways) &&
+    harmony === true &&
+    beats === qpuTwoNOf(verifyN) &&
+    qpuTwoNOf(recomputeN) / qpuTwoNOf(verifyN) === beats &&
+    capacity === VE_FACES * amplitudes &&
+    qpuSeatOf().seat === 'empty'
+  return {
+    kind: 'entropy' as const,
+    bits,
+    amplitudes,
+    capacity,
+    harmony,
+    involution: true as const,
+    fuse: 0 as const,
+    magnitudes: {
+      verify: qpuTwoNOf(verifyN),
+      recompute: qpuTwoNOf(recomputeN),
+      beats,
+      n: verifyN,
+    },
+    rungs: fuse.rungs.map((r) => ({ name: r.name, bits: r.n, amplitudes: r.span })),
+    when: 'never' as const,
+    fetches: 0 as const,
+    seat: qpuSeatOf().seat,
+    holds,
+  }
+}
+
+export const qpuEntropyHolds = (e = qpuEntropyOf()): boolean =>
+  e.holds === true &&
+  e.kind === 'entropy' &&
+  e.harmony === true &&
+  e.involution === true &&
+  e.fuse === 0 &&
+  e.when === 'never' &&
+  e.fetches === 0 &&
+  e.seat === 'empty' &&
+  e.magnitudes.beats === e.magnitudes.verify &&
+  e.magnitudes.recompute / e.magnitudes.verify === e.magnitudes.beats &&
+  e.capacity === VE_FACES * e.amplitudes &&
+  e.rungs.length === 10
+
+/** Always-on heading: scale, speed, and fold temperature. Morph t=0 is inner. Live Kelvin stays false. */
+export const qpuDirectionOf = () => {
+  const morph = qpuMorphOf(0)
+  const entropy = qpuEntropyOf()
+  const page = qpuPageScanOf()
+  const temperature = {
+    kind: 'fold' as const,
+    morph: morph.t,
+    fold: RAYS,
+    harmony: entropy.harmony,
+    live: false as const,
+    kelvin: false as const,
+    fetches: 0 as const,
+  }
+  const heading = morph.t === 0 ? 'inner' as const : morph.t === 1 ? 'outer' as const : 'fuse' as const
+  const holds =
+    heading === 'inner' &&
+    temperature.morph === 0 &&
+    temperature.kelvin === false &&
+    temperature.live === false &&
+    entropy.harmony === true &&
+    entropy.magnitudes.beats === entropy.magnitudes.verify &&
+    page.holds === true &&
+    HEXBIT_PAGE.length === HEXBIT_STATES &&
+    qpuSeatOf().seat === 'empty'
+  return {
+    kind: 'direction' as const,
+    always: true as const,
+    fetches: 0 as const,
+    when: 'never' as const,
+    heading,
+    scale: { may: true as const, fused: true as const, fetches: 0 as const },
+    speed: {
+      from: 'capacity' as const,
+      harmony: entropy.harmony,
+      beats: entropy.magnitudes.beats,
+      verify: entropy.magnitudes.verify,
+    },
+    temperature,
+    page,
+    holds,
+  }
+}
+
+export const qpuDirectionHolds = (d = qpuDirectionOf()): boolean =>
+  d.holds === true &&
+  d.kind === 'direction' &&
+  d.always === true &&
+  d.heading === 'inner' &&
+  d.temperature.morph === 0 &&
+  d.temperature.kelvin === false &&
+  d.scale.may === true &&
+  d.speed.beats === d.speed.verify &&
+  d.page.admitted === HEXBIT_STATES &&
+  d.fetches === 0
+
 /** Perspective angles of one superposition — polarity_angles, angles_close, law_of_reflection. Not a 14×14 grid. */
 export interface QpuAngles {
   hue: number
@@ -655,8 +981,9 @@ export interface QpuAngles {
   reflection: number
 }
 
-/** One VE face. The referer (hex tile) picks the door; angles are the perspective, not k-reflections. */
+/** One VE face. Name is Glagolitic. Animation derives from that glyph, not a 14×14 grid. */
 export interface QpuSuperposition {
+  name: string
   face: number
   opposite: number
   referer: number
@@ -679,7 +1006,14 @@ export const QPU_ANGLES: QpuAngles = {
 export const qpuSuperpositionsOf = (): QpuSuperposition[] =>
   qpuFacesOf().map(({ face, opposite }) => {
     const referer = face % HEXBIT_STATES
-    return { face, opposite, referer, door: referer % QPU_DOORS, angles: QPU_ANGLES }
+    return {
+      name: qpuGlagoliticOf(face),
+      face,
+      opposite,
+      referer,
+      door: referer % QPU_DOORS,
+      angles: QPU_ANGLES,
+    }
   })
 
 /** Hue step: a full turn over the vortex base — 360 / 9 = 40. */

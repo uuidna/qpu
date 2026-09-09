@@ -190,6 +190,8 @@ export const QPU_USES: readonly QpuUse[] = [
   { id: 'chat', constructor: 'qpuChatOf', keys: ['qpu_live_and_ui_are_ve_faces', 'key_floor_is_one_uuid', 've_fourteen_faces'] },
   { id: 'train', constructor: 'qpuTrainOf', keys: ['key_floor_is_one_uuid', 've_fourteen_faces', 'qpu_superpositions_are_the_ve_square', 'hardware_coverage_is_not_correctness_coverage', 'naming_the_binding_point_is_total', 'buying_the_point_that_does_not_bind_buys_nothing', 'verify_beats_recompute_by_magnitudes', 'monitoring_the_points_covers_every_crack_by_architecture'] },
   { id: 'config', constructor: 'qpuConfigOf', keys: ['qpu_serial_blueprint_matches_every_replica', 'naming_the_binding_point_is_total'] },
+  { id: 'pwa', constructor: 'qpuPwaOf', keys: ['ve_fourteen_faces', 'qpu_inner_and_outer_experience', 'naming_the_binding_point_is_total', 'qpu_serial_blueprint_matches_every_replica'] },
+  { id: 'widgets', constructor: 'qpuWidgetsOf', keys: ['ve_fourteen_faces', 'hexbit_is_four_qubits', 'key_floor_is_one_uuid', 'naming_the_binding_point_is_total'] },
 ]
 
 export const qpuUsesOf = (): readonly QpuUse[] => QPU_USES

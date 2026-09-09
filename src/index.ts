@@ -2,16 +2,18 @@ export {
   TRINITY, COINS, HEXBIT_BITS, BASE, HEXBIT_STATES, UUID_HEXBITS, HANDLE_HEXBITS, HANDLE_BITS, VE_FACES, ADDRESS_BITS,
   RAYS, TETRA, MERKABA_VERTICES, SEAL_TEN, digitalRoot, throughVoid, QPU_HOST, QPU_LICENCE, qpuLicenceHostOf,
   DONATE_URL, donateUrl, QPU_POINTS, qpuTwoNOf, QPU_DOORS, QPU_SHADCN_DOORS, QPU_SHADCN_RAYS,
-  qpuSeatOf, qpuWidthOf, qpuFastenOf, qpuFastenHolds, qpuHologramOf, qpuFacesOf, qpuGatewaysOf, qpuGatewaysHolds, qpuSuperpositionsOf, qpuTokensOf, applyHologram,
+  qpuSeatOf, qpuWidthOf, qpuFastenOf, qpuFastenHolds, qpuHologramOf, qpuFacesOf, qpuEquilibriumOf, qpuEquilibriumHolds, qpuAnimateOf, qpuAnimateHolds, qpuGlagoliticStateOf, qpuGatewaysOf, qpuGatewaysHolds, qpuSuperpositionsOf, qpuTokensOf, applyHologram,
   qpuRosetteOf, qpuMerkabaOf, qpuBalanceOf, qpuChipOf, qpuChipHolds, qpuMachineOf, QPU_HUE_STEP,
-  qpuCombinationsOf, qpuCombinationsHolds, qpuMorphOf, qpuMorphHolds, qpuFuseOf, qpuFuseHolds,
+  qpuCombinationsOf, qpuCombinationsHolds, qpuMorphOf, qpuMorphHolds, qpuFuseOf, qpuFuseHolds, qpuEntropyOf, qpuEntropyHolds,
+  GLAGOLITIC_BASE, HEXBIT_PAGE, qpuHexOf, qpuGlagoliticOf, qpuGlagoliticLatexOf, qpuHexPageOf, qpuHexAdmitOf, qpuPageFoldOf, qpuPageScanOf, qpuDirectionOf, qpuDirectionHolds,
   qpuBitDigitsOf, qpuIntegerOfBits, qpuHexbitDigitsOf, qpuIntegerOfHexbits, qpuVersionIntegerOf,
   qpuVersionMaskOf, qpuVersionMaskHolds, qpuCaptainOrdersHolds, qpuHandleMaskOf, qpuHandleMaskHolds, QPU_VERSION_COMMAND, QPU_VERSION_REMINDER, QPU_VERSION_MASK,
   qpuExperienceOf, qpuExperienceHolds, qpuTetrahedraOf, qpuRevisionOf, qpuVortexOf,
-  QPU_STAR_PTS, qpuStarStrokeOf,
+  QPU_STAR_PTS, qpuStarStrokeOf, qpuStarStrokeInverseOf,
   type QpuSpin, type QpuAngles, type QpuSuperposition, type QpuVersionInteger, type QpuCombo, type QpuMorphCell,
 } from './hologram.js'
 export { qpuNavOf, qpuViteDoorsOf, qpuSidebarOf, qpuSidebarMapOf, qpuSearchOf, qpuSearchIndexOf, qpuSearchHolds, qpuSitesOf, qpuChromeOf } from './chrome.js'
+export { QPU_WIDGETS, qpuUuidStreamOf, qpuUuidStreamHolds, qpuWidgetsOf, qpuWidgetsHolds } from './widgets.js'
 export { qpuDiscoveryOf, handleQpuFetch, type QpuEnv } from './edge.js'
 export { qpuOgOf, qpuOgSvgOf, qpuOgHolds, qpuOgHrefOf, qpuOgDocOf, OG_WIDTH, OG_HEIGHT, OG_PATH, OG_TYPE, type QpuOgDoc } from './og.js'
 export {
@@ -38,7 +40,14 @@ export {
   QPU_PAYLOAD_PLUGINS, QPU_PAYLOAD_ACCESS, QPU_PAYLOAD_HOOKS, QPU_PAYLOAD_API,
   QPU_PAYLOAD_COLLECTIONS, QPU_PAYLOAD_LEXICAL, QPU_PAYLOAD_NESTING, QPU_PAYLOAD_TELEPORT,
   qpuConfigOf, qpuConfigHolds, qpuFirmwareOf, qpuFirmwareHolds, qpuPayloadOf, qpuPayloadHolds,
+  QPU_HOLOGRAM_POINT_SCRIPTS, QPU_HOLOGRAM_SCRIPT_COMMANDS, QPU_HOLOGRAM_CONSOLE_COMMAND, QPU_HOLOGRAM_CONSOLES,
+  QPU_REPLICA_PLUGINS, QPU_CAPACITY_WAVES, QPU_CAPACITY_KERNEL,
+  qpuHologramScriptsOf, qpuHologramCiOf, qpuHologramScriptsHolds, qpuHologramConsoleOf,
+  qpuHologramPluginOf, qpuHologramPluginHolds,
+  qpuReplicaPluginOf, qpuReplicaPluginsOf, qpuReplicaPluginsHolds,
+  qpuCapacityWavesOf, qpuCapacityWavesHolds,
 } from './config.js'
+export { QPU_PWA_DOORS, qpuPwaOf, qpuPwaHolds, qpuPwaManifestOf, qpuPwaSwOf } from './pwa.js'
 export { QPU_VERSION, QPU_MCP_PROTOCOL, QPU_MCP_NAME } from './version.js'
 export { qpuLiveOf, qpuLiveHolds, qpuLiveKOf, qpuLiveMessageOf, qpuMorphTOf, QPU_LIVE_MS } from './live.js'
 export { QPU_WORKER, QPU_ENTRY, qpuBlueprintOf } from './blueprint.js'

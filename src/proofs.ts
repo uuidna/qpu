@@ -1,12 +1,13 @@
 // proofs — constructor census of the prototype (concept) and occupancy (work).
 // Numbers and addresses. Desk does not mint theorem keys.
-import { BASE, COINS, QPU_DOORS, RAYS, SEAL_TEN, qpuChipOf, qpuHologramOf, qpuSeatOf, qpuSuperpositionsOf, qpuTwoNOf, qpuWidthOf } from './hologram.js'
+import { BASE, COINS, QPU_DOORS, RAYS, SEAL_TEN, VE_FACES, qpuChipOf, qpuHologramOf, qpuSeatOf, qpuSuperpositionsOf, qpuTwoNOf, qpuWidthOf } from './hologram.js'
 import { qpuCompareHolds, qpuCompareOf } from './metrics.js'
 import { QPU_TOOLS } from './mcp-catalog.js'
 import { qpuProvidersOf, qpuRecognizeOf } from './bindings/index.js'
 import { STANDING } from './standing.js'
 import { qpuRoutesOf } from './seo.js'
 import { qpuPqcHolds, qpuPqcOf } from './pqc.js'
+import { qpuPwaHolds, qpuPwaOf } from './pwa.js'
 import { qpuQuantumHolds, qpuQuantumOf } from './quantum.js'
 
 export interface QpuReceipt {
@@ -29,6 +30,7 @@ export const qpuProofsOf = (receipt?: QpuReceipt) => {
   for (const p of providers) bindings = bindings + p.bindings.length
   const superpositions = qpuSuperpositionsOf()
   const pqc = qpuPqcOf()
+  const pwa = qpuPwaOf()
   const quantum = qpuQuantumOf()
   const concept = {
     seat: seat.seat,
@@ -62,6 +64,11 @@ export const qpuProofsOf = (receipt?: QpuReceipt) => {
     experiments: env.experiments,
     when: env.when,
     pqc: pqc.holds,
+    pwa: pwa.holds,
+    installable: pwa.installable,
+    display: pwa.display,
+    fractal: pwa.fractal,
+    replica: pwa.replica,
     quantum: quantum.holds,
     pure: quantum.pure,
     agnostic: quantum.agnostic,
@@ -83,6 +90,9 @@ export const qpuProofsOf = (receipt?: QpuReceipt) => {
     debitCredit: h.debit + h.credit,
     foldCoins: h.fold + COINS,
     base: BASE,
+    pwaCache: pwa.doors.length,
+    pwaShortcuts: pwa.manifest.shortcuts.length,
+    pwaCompare: pwa.work.compareHolds,
   }
   const conceptOk =
     concept.seat === 'empty' &&
@@ -101,6 +111,12 @@ export const qpuProofsOf = (receipt?: QpuReceipt) => {
     concept.when === 'never' &&
     concept.pqc === true &&
     qpuPqcHolds(pqc) &&
+    concept.pwa === true &&
+    concept.installable === true &&
+    concept.display === 'standalone' &&
+    concept.fractal === true &&
+    concept.replica === false &&
+    qpuPwaHolds(pwa) &&
     concept.quantum === true &&
     concept.pure === true &&
     concept.agnostic === true &&
@@ -108,6 +124,13 @@ export const qpuProofsOf = (receipt?: QpuReceipt) => {
     concept.working === true &&
     qpuQuantumHolds(quantum) &&
     concept.possibilities === concept.amplitudes
-  const workOk = holds && work.debitCredit === BASE && work.foldCoins === BASE && testsOk
+  const workOk =
+    holds &&
+    work.debitCredit === BASE &&
+    work.foldCoins === BASE &&
+    testsOk &&
+    work.pwaCache === VE_FACES &&
+    work.pwaShortcuts === VE_FACES &&
+    work.pwaCompare === true
   return { concept, work, complete: conceptOk && workOk }
 }

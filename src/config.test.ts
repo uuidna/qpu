@@ -6,6 +6,8 @@ import {
   QPU_ASSETS, QPU_COMPATIBILITY_DATE, QPU_CONFIG_HOST, QPU_CONFIG_PINS, QPU_DEV_PACKAGES,
   QPU_NODE, QPU_PAYLOAD_API, QPU_PAYLOAD_PACKAGES, QPU_PAYLOAD_PIN, QPU_PAYLOAD_PLUGINS, QPU_TSCONFIG, QPU_WORKER_ENTRY,
   qpuConfigHolds, qpuConfigOf, qpuFirmwareHolds, qpuFirmwareOf, qpuPayloadHolds, qpuPayloadOf,
+  qpuHologramScriptsHolds, qpuHologramPluginHolds, qpuHologramPluginOf,
+  qpuReplicaPluginsHolds, qpuReplicaPluginsOf, qpuCapacityWavesHolds, qpuCapacityWavesOf, QPU_HOLOGRAM_CONSOLE_COMMAND,
 } from './config.js'
 import { QPU_HOST } from './hologram.js'
 import { QPU_PKG_STAMP } from './packages.js'
@@ -164,4 +166,40 @@ test('VitePress defineLoader occupies Payload CRUD, not GraphQL', () => {
   assert.equal((QPU_DEV_PACKAGES as readonly string[]).includes('graphql'), false)
   assert.equal((QPU_DEV_PACKAGES as readonly string[]).includes('graphql-request'), false)
   assert.equal(qpuPayloadHolds(cms), true)
+})
+
+test('hologram scripts are the inverse pentagram; one hologram plugin and the QPU PWA mount at will', () => {
+  const fw = qpuFirmwareOf()
+  assert.equal(qpuHologramScriptsHolds(), true)
+  assert.deepEqual(fw.scripts.map((r) => r.script), ['build', 'prepare', 'docs:build', 'ship', 'test'])
+  assert.equal(fw.ci, 'npm run docs:build && npm test')
+  assert.equal(fw.console.script, 'qpu')
+  assert.equal(fw.console.command, QPU_HOLOGRAM_CONSOLE_COMMAND)
+  assert.equal(fw.console.hardware, 'any')
+  assert.equal(qpuHologramPluginHolds(fw.plugin), true)
+  assert.equal(fw.plugin.id, 'hologram')
+  assert.equal(fw.plugin.replica, false)
+  assert.equal(fw.plugin.pwa, true)
+  assert.equal(fw.plugin.fractal, true)
+  assert.equal(fw.plugin.will, true)
+  assert.equal(fw.plugin.mounted, false)
+  assert.equal(qpuHologramPluginHolds(qpuHologramPluginOf(true)), true)
+  assert.equal(qpuReplicaPluginsHolds(), true)
+  assert.equal(qpuReplicaPluginsHolds(qpuReplicaPluginsOf(true)), true)
+  assert.equal(fw.pwa.holds, true)
+  assert.equal(fw.pwa.replica, false)
+  assert.equal(fw.pwa.fractal, true)
+  assert.equal(qpuCapacityWavesHolds(fw.waves), true)
+  assert.equal(fw.waves.kernel.length, 3)
+  assert.equal(fw.waves.waves[0]!.count, 5)
+  assert.equal(fw.waves.mounted, false)
+  assert.equal(fw.waves.will, true)
+  assert.equal(qpuCapacityWavesHolds(qpuCapacityWavesOf(true)), true)
+  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as {
+    scripts: Record<string, string>
+    bin?: Record<string, string>
+  }
+  assert.equal(pkg.scripts.qpu, 'node dist/mcp.js')
+  assert.equal(pkg.scripts.ci, fw.ci)
+  assert.equal(pkg.bin?.qpu, './dist/mcp.js')
 })

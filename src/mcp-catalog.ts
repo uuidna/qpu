@@ -13,6 +13,7 @@ import { qpuMessengerOf } from './messenger.js'
 import { qpuChatInputOf, qpuChatOf } from './chat.js'
 import { qpuTrainOf } from './train.js'
 import { qpuConfigOf } from './config.js'
+import { qpuPwaOf } from './pwa.js'
 import {
   qpuRobotsTxtOf, qpuRoutesOf, qpuSeoAuditOf, qpuSeoOf, qpuSitemapOf, qpuSitemapXmlOf,
 } from './seo.js'
@@ -138,9 +139,19 @@ const tools: McpTool[] = [
   },
 {
     name: 'qpu_chrome',
-    description: 'Nav, sidebar, search for {path} and {q}.',
+    description: 'Nav, sidebar, search, and always-on scale/speed/temperature direction for {path} and {q}.',
     inputSchema: { type: 'object', properties: { path: { type: 'string' }, q: { type: 'string' } } },
     run: (a) => qpuChromeOf(str(a.path, '/'), str(a.q)),
+  },
+{
+    name: 'qpu_widgets',
+    description: 'Licensed-site chrome widgets. UUID streams only. Payload off. Share across named HTTPS hosts.',
+    inputSchema: { type: 'object', properties: { at: { type: 'number' } } },
+    run: async (a) => {
+      const { qpuWidgetsOf } = await import('./widgets.js')
+      const at = num(a.at)
+      return qpuWidgetsOf(at === undefined ? 0 : at)
+    },
   },
 {
     name: 'qpu_seo',
@@ -227,6 +238,12 @@ const tools: McpTool[] = [
       const { svg: _svg, ...og } = qpuOgOf()
       return og
     },
+  },
+{
+    name: 'qpu_pwa',
+    description: 'Full-featured PWA of the QPU itself. Proof of concept and proof of work. One hologram plugin. Fractal named HTTPS. Constructor doors occupy the cache. When never.',
+    inputSchema: { type: 'object', properties: {} },
+    run: () => qpuPwaOf(),
   },
 {
     name: 'qpu_pqc',

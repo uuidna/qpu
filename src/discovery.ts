@@ -8,7 +8,7 @@ export const qpuDiscoveryOf = (origin: string) => ({
   donate: donateUrl(origin),
   wallet: DONATE_URL,
   mcp: `${origin}/mcp`,
-  readings: ['seat', 'width', 'hologram', 'chip', 'merkaba', 'experience', 'live', 'metrics', 'speed', 'fractal', 'scale', 'og', 'nav', 'sidebar', 'search', 'superpositions', 'gateways', 'bindings', 'environment', 'standing', 'events', 'boot', 'pqc', 'quantum', 'licence', 'messenger', 'chat', 'train', 'config'] as const,
+  readings: ['seat', 'width', 'hologram', 'chip', 'merkaba', 'experience', 'live', 'metrics', 'speed', 'fractal', 'scale', 'og', 'nav', 'sidebar', 'search', 'superpositions', 'gateways', 'bindings', 'environment', 'standing', 'events', 'boot', 'pqc', 'quantum', 'licence', 'messenger', 'chat', 'train', 'config', 'pwa'] as const,
   endpoints: {
     '/': 'three readings, one machine, environment auto-recognized and fused',
     '/seat': 'LANES QPU — empty chip; environment still fused',
@@ -44,6 +44,7 @@ export const qpuDiscoveryOf = (origin: string) => ({
     '/room': 'same reading as /chat',
     '/train': 'occupancy corpus — fourteen lessons fused with uuidna keyless APIs, BindingPoint hardware, constructor APIs, asset skip, relations, and leads; named uuidna.com HTTPS only; never a crawl',
     '/config': 'shared configs — vitepress hologram and payload cms fuse on one node/typescript/wrangler table; vitepress defineLoader occupies payload CRUD, not graphql; replica host and title stay local',
+    '/pwa': 'full-featured PWA of the QPU itself — proof of concept and proof of work; one hologram plugin; fractal named HTTPS; when never',
     '/standing': 'uuidna Lean keys this worker cites',
     '/events': 'fourteen UI event kinds occupying VE faces',
     '/boot': 'boot matrix — eight Alpine ISAs times trinity parts',

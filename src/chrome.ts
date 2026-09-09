@@ -1,6 +1,6 @@
 // chrome — nav, sidebar, and search computed upon request from the hologram. Never hand-typed menus.
 // Search engine: deep-analyze every licensed site from constructors. Census of URL shape, never a live crawl.
-import { QPU_HOST, QPU_POINTS, VE_FACES, qpuFacesOf, qpuHologramOf, qpuSeatOf, qpuSuperpositionsOf } from './hologram.js'
+import { QPU_HOST, QPU_POINTS, VE_FACES, qpuDirectionOf, qpuFacesOf, qpuHologramOf, qpuSeatOf, qpuSuperpositionsOf } from './hologram.js'
 import { STANDING, standingByFileOf } from './standing.js'
 import { qpuRoutesOf, type SeoRoute } from './seo.js'
 export interface ChromeLink {
@@ -371,10 +371,12 @@ export const qpuChromeOf = (path: string, q = ''): {
   nav: ChromeGroup[]
   sidebar: ChromeGroup[]
   search: ChromeSearch
+  direction: ReturnType<typeof qpuDirectionOf>
 } => ({
   nav: qpuNavOf(),
   sidebar: qpuSidebarOf(path),
   search: qpuSearchOf(q),
+  direction: qpuDirectionOf(),
 })
 
 export const qpuSearchHolds = (s = qpuSearchOf('qpu.uuidna.com')): boolean =>

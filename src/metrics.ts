@@ -1,7 +1,7 @@
 // metrics — COMPARABLE READINGS. Each row is a formula and a peer; they must match.
 import {
-  ADDRESS_BITS, BASE, COINS, HANDLE_BITS, HANDLE_HEXBITS, HEXBIT_BITS, qpuLicenceHostOf, QPU_POINTS, TRINITY, UUID_HEXBITS, VE_FACES,
-  qpuFacesOf, qpuFastenOf, qpuGatewaysOf, qpuHologramOf, qpuSuperpositionsOf, qpuTwoNOf,
+  ADDRESS_BITS, BASE, COINS, HANDLE_BITS, HANDLE_HEXBITS, HEXBIT_BITS, HEXBIT_PAGE, HEXBIT_STATES, qpuLicenceHostOf, QPU_POINTS, TRINITY, UUID_HEXBITS, VE_FACES,
+  qpuEntropyOf, qpuFacesOf, qpuFastenOf, qpuGatewaysOf, qpuHologramOf, qpuMorphOf, qpuSuperpositionsOf, qpuTwoNOf,
 } from './hologram.js'
 import { handleQpuFetch } from './edge.js'
 
@@ -93,6 +93,10 @@ export const qpuCompareOf = (): CompareRow[] => {
     { name: 'handleSpan', formula: 'qpuTwoNOf(HANDLE_BITS)', value: msg.handleSpan, peer: qpuTwoNOf(UUID_HEXBITS) },
     { name: 'addressSpan', formula: 'qpuTwoNOf(ADDRESS_BITS)', value: msg.addressSpan, peer: qpuTwoNOf(UUID_HEXBITS * HEXBIT_BITS) },
     { name: 'gatewayCapacity', formula: 'VE_FACES × qpuTwoNOf(HANDLE_BITS)', value: msg.gatewayCapacity, peer: VE_FACES * qpuTwoNOf(HANDLE_BITS) },
+    { name: 'morph', formula: 'qpuMorphOf(0).t', value: qpuMorphOf(0).t, peer: 0 },
+    { name: 'hexbitPage', formula: 'HEXBIT_PAGE.length', value: HEXBIT_PAGE.length, peer: HEXBIT_STATES },
+    { name: 'fetches', formula: 'when never', value: 0, peer: 0 },
+    { name: 'verify', formula: 'magnitudes.beats', value: qpuEntropyOf().magnitudes.beats, peer: qpuEntropyOf().magnitudes.verify },
   ]
 }
 

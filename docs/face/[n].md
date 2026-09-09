@@ -1,9 +1,9 @@
 ---
 title: Face {{ $params.n }}
-description: Superposition {{ $params.n }} and its fourteen reflections.
+description: Superposition {{ $params.n }} pairs through the void. Perspective angles, not a photography lattice.
 outline: deep
 ---
 
-# Face {{ $params.n }}↔{{ $params.opposite }} <Badge type="tip" text="14 reflections" />
+# Face {{ $params.n }}↔{{ $params.opposite }} <Badge type="tip" text="14 faces" />
 
-Each column is `k`. The value row is `throughVoid((face + k) mod 9)`. The paired row is the opposite face shifted the same way. `k = 0` is the standing through-void pair.
+Referer maps onto door. Neighbour is the through-void pair. Angles are the perspective of this superposition, not a square of reflections.

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="QPU — empty seat, BindingPoint CPU GPU RAM CACHE STORAGE, 14×14 hologram">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="QPU — empty seat, BindingPoint CPU GPU RAM CACHE STORAGE, 14 faces hologram">
   <rect width="1200" height="630" fill="hsl(280 22% 9%)"/>
   <g transform="translate(90 75) scale(4)">
     <polygon points="60,8 91,108 9,45 111,45 29,108" fill="none" stroke="hsl(200 62% 54%)" stroke-width="1.5"/>
@@ -9,6 +9,6 @@
   <text x="640" y="210" font-family="ui-sans-serif, system-ui, sans-serif" font-size="72" font-weight="700" fill="hsl(280 70% 78%)">QPU</text>
   <text x="640" y="270" font-family="ui-sans-serif, system-ui, sans-serif" font-size="32" fill="hsl(200 62% 54%)">Three readings, one machine</text>
   <text x="640" y="330" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22" fill="hsl(240 18% 68%)">Seat empty. Width CPU GPU RAM CACHE STORAGE.</text>
-  <text x="640" y="372" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22" fill="hsl(240 18% 68%)">Hologram 14 faces × 14 reflections.</text>
+  <text x="640" y="372" font-family="ui-sans-serif, system-ui, sans-serif" font-size="22" fill="hsl(240 18% 68%)">Hologram 14 faces. Particle 1. Inner 6×7 ⇄ outer 7×6.</text>
   <text x="640" y="500" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" fill="hsl(200 62% 54%)">qpu.uuidna.com</text>
 </svg>

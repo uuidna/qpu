@@ -1,6 +1,6 @@
 ---
 title: QPU quantum
-description: The live site is the working QPU. Pure and agnostic. Fourteen faces × fourteen reflections. Target empty. When never.
+description: The live site is the working QPU. Pure and agnostic. Fourteen VE faces, sequence 2^n. Target empty. When never.
 outline: deep
 ---
 
@@ -8,7 +8,7 @@ outline: deep
 
 Holds `{{ reading.holds }}`. Pure `{{ reading.pure }}`. Agnostic `{{ reading.agnostic }}`. Live `{{ reading.live }}`. Working `{{ reading.working }}`. Host `{{ reading.host }}`. When `{{ reading.when }}`. Possibilities `{{ reading.possibilities }}`.
 
-The site at [qpu.uuidna.com](https://qpu.uuidna.com) is the working QPU. Hardware lane stays empty. All faces × all reflections. No named product. Occupancy of every quantum possibility, not a live device and not a clock. When never.
+The site at [qpu.uuidna.com](https://qpu.uuidna.com) is the working QPU. Hardware lane stays empty. Fourteen faces, sequence 2^n. No named product. Occupancy of every quantum possibility, not a live device and not a clock. When never.
 
 ## Faces · {{ reading.faces }}
 

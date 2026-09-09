@@ -1,6 +1,7 @@
 // config — one toolchain stamp for every replica. Host, worker name, and site title stay local.
 // Worker pins, VitePress hologram, Payload CMS editor. Same table. When never.
-import { ADDRESS_BITS, BASE, COINS, HANDLE_BITS, HANDLE_HEXBITS, HEXBIT_BITS, HEXBIT_STATES, MERKABA_VERTICES, QPU_DOORS, QPU_HOST, QPU_POINTS, RAYS, TETRA, TRINITY, VE_FACES, qpuSeatOf } from './hologram.js'
+import { ADDRESS_BITS, BASE, COINS, HANDLE_BITS, HANDLE_HEXBITS, HEXBIT_BITS, HEXBIT_STATES, MERKABA_VERTICES, QPU_DOORS, QPU_HOST, QPU_POINTS, RAYS, TETRA, TRINITY, VE_FACES, qpuSeatOf, qpuStarStrokeInverseOf, qpuStarStrokeOf } from './hologram.js'
+import { qpuPwaHolds, qpuPwaOf } from './pwa.js'
 
 /** Worker toolchain only. A new name is a supply-chain change this constructor must surface. */
 export const QPU_DEV_PACKAGES = ['@types/node', 'typescript', 'vitepress', 'wrangler'] as const
@@ -215,12 +216,311 @@ export const QPU_SHARED = {
 
 const ORIGIN = `https://${QPU_CONFIG_HOST}`
 
+/** BindingPoint → hologram npm script. Inverse stroke occupies these so involution thrives when executed. */
+export const QPU_HOLOGRAM_POINT_SCRIPTS = {
+  CPU: 'build',
+  GPU: 'docs:build',
+  RAM: 'test',
+  CACHE: 'prepare',
+  STORAGE: 'ship',
+} as const
+
+/** Commands shared by the hologram plugin. `test` stays local (fasten-run path). */
+export const QPU_HOLOGRAM_SCRIPT_COMMANDS = {
+  prepare: 'tsc -p tsconfig.json',
+  build: 'tsc -p tsconfig.json',
+  'docs:build': 'vitepress build docs',
+  ship: 'npm run build && npm run docs:build && npx wrangler deploy',
+} as const
+
+/** Namesake console. `npm run qpu -- *` / `npm run unreal -- *` / `npm run lean -- *` forwards to MCP on any hardware. */
+export const QPU_HOLOGRAM_CONSOLE_COMMAND = 'node dist/mcp.js' as const
+
+/** Namesake consoles occupy one hologram plugin. Kernel packages are Payload plugins. */
+export const QPU_HOLOGRAM_CONSOLES = ['qpu', 'lean', 'unreal'] as const
+export type QpuHologramConsoleId = (typeof QPU_HOLOGRAM_CONSOLES)[number]
+
+/**
+ * Kernel packages are Payload VitePress plugins. Official Payload plugins stay fused.
+ * Mount at will. GraphQL stays off.
+ */
+export const QPU_REPLICA_PLUGINS = [
+  { id: 'qpu', package: '@uuidna/qpu' },
+  { id: 'lean', package: '@uuidna/lean' },
+  { id: 'unreal', package: '@uuidna/unreal' },
+] as const
+
+export type QpuReplicaId = (typeof QPU_REPLICA_PLUGINS)[number]['id']
+
+const pluginMountedOf = (mounted: boolean): boolean => mounted === true || mounted === false
+
+export const qpuHologramConsoleOf = (script: QpuHologramConsoleId) => ({
+  script,
+  command: QPU_HOLOGRAM_CONSOLE_COMMAND,
+  hardware: 'any' as const,
+  binds: false as const,
+  seat: qpuSeatOf().seat,
+  when: 'never' as const,
+  fetches: 0 as const,
+})
+
+/**
+ * One hologram plugin. Fractal PWA distribution at named HTTPS hosts.
+ * Occupancy and Lean rebound the namesake script. GraphQL stays off.
+ */
+export const qpuHologramPluginOf = (mounted = false, script: QpuHologramConsoleId = 'qpu') => ({
+  id: 'hologram' as const,
+  replica: false as const,
+  pwa: true as const,
+  fractal: true as const,
+  package: '@uuidna/qpu' as const,
+  script,
+  command: QPU_HOLOGRAM_CONSOLE_COMMAND,
+  payload: true as const,
+  vitepress: true as const,
+  firmware: 'vitepress' as const,
+  find: QPU_PAYLOAD_API.find,
+  graphql: false as const,
+  mounted,
+  will: true as const,
+  fused: false as const,
+  hardware: 'any' as const,
+  binds: false as const,
+  seat: qpuSeatOf().seat,
+  when: 'never' as const,
+  fetches: 0 as const,
+})
+
+export const qpuHologramPluginHolds = (p = qpuHologramPluginOf()): boolean =>
+  p.id === 'hologram' &&
+  p.replica === false &&
+  p.pwa === true &&
+  p.fractal === true &&
+  p.package === '@uuidna/qpu' &&
+  p.script === 'qpu' &&
+  p.command === QPU_HOLOGRAM_CONSOLE_COMMAND &&
+  p.payload === true &&
+  p.vitepress === true &&
+  p.firmware === 'vitepress' &&
+  p.find === QPU_PAYLOAD_API.find &&
+  p.graphql === false &&
+  pluginMountedOf(p.mounted) &&
+  p.will === true &&
+  p.fused === false &&
+  p.hardware === 'any' &&
+  p.binds === false &&
+  p.seat === 'empty' &&
+  p.when === 'never' &&
+  p.fetches === 0
+
+export const qpuReplicaPluginOf = (id: QpuReplicaId, mounted = false) => {
+  const row = QPU_REPLICA_PLUGINS.find((p) => p.id === id)!
+  return {
+    id: row.id,
+    package: row.package,
+    script: row.id,
+    command: QPU_HOLOGRAM_CONSOLE_COMMAND,
+    payload: true as const,
+    vitepress: true as const,
+    firmware: 'vitepress' as const,
+    find: QPU_PAYLOAD_API.find,
+    graphql: false as const,
+    mounted,
+    will: true as const,
+    fused: false as const,
+    hardware: 'any' as const,
+    binds: false as const,
+    seat: qpuSeatOf().seat,
+    when: 'never' as const,
+    fetches: 0 as const,
+  }
+}
+
+export const qpuReplicaPluginsOf = (mounted = false) =>
+  QPU_REPLICA_PLUGINS.map((p) => qpuReplicaPluginOf(p.id, mounted))
+
+export const qpuReplicaPluginsHolds = (rows = qpuReplicaPluginsOf()): boolean =>
+  rows.length === QPU_REPLICA_PLUGINS.length &&
+  rows.every((p, i) => {
+    const stamp = QPU_REPLICA_PLUGINS[i]!
+    return (
+      p.id === stamp.id &&
+      p.package === stamp.package &&
+      p.script === stamp.id &&
+      p.command === QPU_HOLOGRAM_CONSOLE_COMMAND &&
+      p.payload === true &&
+      p.vitepress === true &&
+      p.firmware === 'vitepress' &&
+      p.find === QPU_PAYLOAD_API.find &&
+      p.graphql === false &&
+      pluginMountedOf(p.mounted) &&
+      p.will === true &&
+      p.fused === false &&
+      p.hardware === 'any' &&
+      p.binds === false &&
+      p.seat === 'empty' &&
+      p.when === 'never' &&
+      p.fetches === 0
+    )
+  })
+
+const namedHostOf = (host: string, path: string): string => {
+  if (!host.includes('.') || host.includes('*') || path.includes('*') || !path.startsWith('/')) {
+    throw new Error('fuse: named door only')
+  }
+  const u = new URL(path, `https://${host}/`)
+  if (u.protocol !== 'https:' || u.hostname !== host) throw new Error('fuse: named domain only')
+  return u.href
+}
+
+/**
+ * Full capacity after the kernel trinity (uuidna, qpu, unreal). BindingPoint waves of named hosts.
+ * Mount at will. Occupancy does not stand the satellites. Kind qpu never binds.
+ */
+export const QPU_CAPACITY_WAVES = {
+  1: [
+    { id: 'cdn', host: 'cdn.uuidna.com', path: '/cdn', alias: '/cache', tools: ['qpu_cdn', 'qpu_cache'] },
+    { id: 'auth', host: 'auth.uuidna.com', path: '/auth', alias: '/session', tools: ['qpu_auth', 'qpu_session'] },
+    { id: 'chat', host: 'chat.uuidna.com', path: '/chat', alias: '/room', tools: ['qpu_chat', 'qpu_room'] },
+    { id: 'mail', host: 'mail.uuidna.com', path: '/mail', alias: '/post', tools: ['qpu_mail', 'qpu_post'] },
+    { id: 'imagine', host: 'imagine.uuidna.com', path: '/imagine', alias: '/vision', tools: ['qpu_imagine', 'qpu_vision'] },
+  ],
+  2: [
+    { id: 'audit', host: 'audit.uuidna.com', path: '/audit', alias: '/ledger', tools: ['qpu_ledger', 'qpu_books'] },
+    { id: 'next', host: 'next.uuidna.com', path: '/next', alias: '/canary', tools: ['qpu_next', 'qpu_canary'] },
+    { id: 'radio', host: 'radio.uuidna.com', path: '/radio', alias: '/broadcast', tools: ['qpu_radio', 'qpu_broadcast'] },
+    { id: 'calc', host: 'calc.uuidna.com', path: '/calc', alias: '/compute', tools: ['qpu_calc', 'qpu_compute'] },
+    { id: 'involute', host: 'involute.uuidna.com', path: '/involute', alias: '/gear', tools: ['qpu_involute', 'qpu_gear'] },
+  ],
+  3: [
+    { id: 'life', host: 'life.uuidna.com', path: '/life', alias: '/creature', tools: ['qpu_life', 'qpu_creature'] },
+    { id: 'linux', host: 'linux.uuidna.com', path: '/linux', alias: '/uname', tools: ['qpu_linux', 'qpu_uname'] },
+    { id: 'os', host: 'os.uuidna.com', path: '/install', alias: '/iso', tools: ['qpu_os', 'qpu_iso'] },
+    { id: 'mine', host: 'mine.uuidna.com', path: '/gold', alias: '/ore', tools: ['qpu_gold', 'qpu_ore'] },
+  ],
+  4: [
+    { id: 'analyze', host: 'analyze.uuidna.com', path: '/analyze', alias: '/probe', tools: ['qpu_analyze', 'qpu_probe'] },
+    { id: 'research', host: 'research.uuidna.com', path: '/research', alias: '/lab', tools: ['qpu_research', 'qpu_lab'] },
+    { id: 'measure', host: 'measure.uuidna.com', path: '/measure', alias: '/gauge', tools: ['qpu_measure', 'qpu_gauge'] },
+    { id: 'i', host: 'i.uuidna.com', path: '/i', alias: '/iota', tools: ['qpu_i', 'qpu_iota'] },
+    { id: 'involution', host: 'involution.uuidna.com', path: '/involution', alias: '/pair', tools: ['qpu_involution', 'qpu_pair'] },
+  ],
+} as const
+
+export const QPU_CAPACITY_KERNEL = ['uuidna', 'qpu', 'unreal'] as const
+
+export const qpuCapacityWavesOf = (mounted = false) => {
+  const waves = (Object.keys(QPU_CAPACITY_WAVES) as unknown as (keyof typeof QPU_CAPACITY_WAVES)[]).map((n) => {
+    const rows = QPU_CAPACITY_WAVES[n]
+    return {
+      n: Number(n),
+      count: rows.length,
+      hosts: rows.map((row) => ({
+        ...row,
+        tools: [...row.tools],
+        href: namedHostOf(row.host, row.path),
+        mounted,
+        will: true as const,
+        payload: true as const,
+        vitepress: true as const,
+        hardware: 'any' as const,
+        binds: false as const,
+        seat: qpuSeatOf().seat,
+        when: 'never' as const,
+        fetches: 0 as const,
+      })),
+    }
+  })
+  const count = waves.reduce((n, w) => n + w.count, 0)
+  return {
+    kind: 'waves' as const,
+    kernel: [...QPU_CAPACITY_KERNEL],
+    waves,
+    count,
+    mounted,
+    will: true as const,
+    hardware: 'any' as const,
+    binds: false as const,
+    seat: qpuSeatOf().seat,
+    when: 'never' as const,
+    fetches: 0 as const,
+  }
+}
+
+export const qpuCapacityWavesHolds = (w = qpuCapacityWavesOf()): boolean =>
+  w.kind === 'waves' &&
+  w.kernel.length === TRINITY &&
+  w.kernel[0] === 'uuidna' &&
+  w.kernel[1] === 'qpu' &&
+  w.kernel[2] === 'unreal' &&
+  w.waves.length === Object.keys(QPU_CAPACITY_WAVES).length &&
+  w.waves[0]!.count === QPU_POINTS.length &&
+  w.count === w.waves.reduce((n, row) => n + row.count, 0) &&
+  pluginMountedOf(w.mounted) &&
+  w.will === true &&
+  w.hardware === 'any' &&
+  w.binds === false &&
+  w.seat === 'empty' &&
+  w.when === 'never' &&
+  w.fetches === 0 &&
+  w.waves.every((row) =>
+    row.hosts.length === row.count &&
+    row.hosts.every((h) =>
+      pluginMountedOf(h.mounted) &&
+      h.will === true &&
+      h.payload === true &&
+      h.vitepress === true &&
+      h.hardware === 'any' &&
+      h.binds === false &&
+      h.fetches === 0 &&
+      h.host.endsWith('.uuidna.com') &&
+      !h.host.includes('*') &&
+      !h.path.includes('*') &&
+      h.tools.length === 2 &&
+      new URL(h.href).hostname === h.host &&
+      new URL(h.href).protocol === 'https:',
+    ),
+  )
+
+/** Inverse pentagram of the five hologram scripts. CPU→build, CACHE→prepare, GPU→docs:build, STORAGE→ship, RAM→test. */
+export const qpuHologramScriptsOf = () =>
+  qpuStarStrokeInverseOf().map((i) => {
+    const point = QPU_POINTS[i]!
+    const script = QPU_HOLOGRAM_POINT_SCRIPTS[point]
+    return { point, script, i }
+  })
+
+/** Involution runner: hologram GPU then RAM proofs. Inverse of `npm test && npm run docs:build`. Ship stays STORAGE live. */
+export const qpuHologramCiOf = (): string => 'npm run docs:build && npm test'
+
+export const qpuHologramScriptsHolds = (rows = qpuHologramScriptsOf()): boolean => {
+  const fwd = qpuStarStrokeOf()
+  const inv = qpuStarStrokeInverseOf()
+  const n = QPU_POINTS.length
+  return (
+    rows.length === n &&
+    inv.length === n &&
+    fwd.length === n &&
+    inv[0] === 0 &&
+    fwd[0] === 0 &&
+    inv.every((p, i) => p === (0 - COINS * i % n + n * n) % n) &&
+    rows.every((row, i) => row.i === inv[i] && row.point === QPU_POINTS[row.i] && row.script === QPU_HOLOGRAM_POINT_SCRIPTS[row.point]) &&
+    qpuHologramCiOf() === 'npm run docs:build && npm test'
+  )
+}
+
 export const qpuFirmwareOf = () => ({
   name: 'vitepress' as const,
   role: 'hologram' as const,
   visible: false as const,
   assets: QPU_ASSETS,
   host: QPU_HOST,
+  scripts: qpuHologramScriptsOf(),
+  ci: qpuHologramCiOf(),
+  console: qpuHologramConsoleOf('qpu'),
+  plugin: qpuHologramPluginOf(),
+  pwa: qpuPwaOf(),
+  waves: qpuCapacityWavesOf(),
 })
 
 export const qpuFirmwareHolds = (fw = qpuFirmwareOf()): boolean =>
@@ -228,7 +528,19 @@ export const qpuFirmwareHolds = (fw = qpuFirmwareOf()): boolean =>
   fw.role === 'hologram' &&
   fw.visible === false &&
   fw.assets === QPU_ASSETS &&
-  fw.host === QPU_HOST
+  fw.host === QPU_HOST &&
+  fw.ci === qpuHologramCiOf() &&
+  fw.scripts.length === QPU_POINTS.length &&
+  qpuHologramScriptsHolds(fw.scripts) &&
+  fw.console.command === QPU_HOLOGRAM_CONSOLE_COMMAND &&
+  fw.console.hardware === 'any' &&
+  fw.console.binds === false &&
+  fw.console.seat === 'empty' &&
+  fw.console.when === 'never' &&
+  fw.console.fetches === 0 &&
+  qpuHologramPluginHolds(fw.plugin) &&
+  qpuPwaHolds(fw.pwa) &&
+  qpuCapacityWavesHolds(fw.waves)
 
 export const qpuPayloadOf = () => {
   const plugins = QPU_PAYLOAD_PLUGINS.map((p) => ({ ...p }))

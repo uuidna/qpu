@@ -187,8 +187,11 @@ export function handleQpuWebSocket(request: Request, env?: QpuEnv): Response {
 export async function handleQpuSse(env?: QpuEnv): Promise<Response> {
   const scale = qpuScaleOf(env)
   const { qpuLiveOf } = await import('./live.js')
-  const live = qpuLiveOf(Date.now())
-  const body = `event: scale\ndata: ${JSON.stringify(scale)}\n\nevent: live\ndata: ${JSON.stringify(live)}\n\n`
+  const { qpuUuidStreamOf } = await import('./widgets.js')
+  const at = Date.now()
+  const live = qpuLiveOf(at)
+  const stream = qpuUuidStreamOf(at)
+  const body = `event: scale\ndata: ${JSON.stringify(scale)}\n\nevent: live\ndata: ${JSON.stringify(live)}\n\nevent: stream\ndata: ${JSON.stringify(stream)}\n\n`
   return new Response(body, {
     status: 200,
     headers: {

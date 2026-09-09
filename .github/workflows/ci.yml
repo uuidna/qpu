@@ -1,17 +1,15 @@
 name: ci
 
-# THE ONE DOOR. Pre-push, deploy, and release all run `npm run ci`.
-# A red gate never ships. Integrity, not a skip.
+# THE ONE DOOR. Deploy and release call this. Push to main does not also fire it —
+# that cancelled the gate while deploy reused the same concurrency group.
 
 on:
-  push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
   workflow_call:
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
