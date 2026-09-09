@@ -2,7 +2,8 @@
 defineOptions({ chrome: { 'nav-bar-content-after': {} } })
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter, withBase } from 'vitepress'
-import { data, searchOf, type HologramData } from '../hologram.data.ts'
+import { data, type HologramData } from '../hologram.data.ts'
+import { searchOf } from '../search.ts'
 
 const q = ref('')
 const site = ref('')

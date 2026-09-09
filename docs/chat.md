@@ -8,7 +8,7 @@ outline: deep
 
 Holds `{{ reading.holds }}`. Realtime `{{ reading.realtime }}`. Capture `{{ reading.capture }}`. Prevent-default `{{ reading.preventDefault }}`. Messenger `{{ reading.messenger }}`. Billed `{{ reading.billed }}`. Occupancy `{{ reading.occupancy }}`. When `{{ reading.when }}`. Seat `{{ reading.seat }}`.
 
-Every input occupies a VE face: pointer, keyboard, wheel, input, focus, composition, clipboard, drag, touch, scroll, window, history, visibility, device. Capture imprints; the page still handles (`preventDefault` is false). Unknown types refuse. A chat frame without a uuid refuses — sequence is the messenger. Inference never runs on this worker; a uuid account is billed through [Bindings](/bindings) and [MCP](/mcp).
+Every input occupies a VE face: pointer, keyboard, wheel, input, focus, composition, clipboard, drag, touch, scroll, window, history, visibility, device. Capture imprints; the page still handles (`preventDefault` is false). Unknown types refuse. A chat frame without a uuid refuses — sequence is the messenger. Inference never runs on this worker; a uuid account is billed through [Bindings](/bindings) and [MCP](https://qpu.uuidna.com/mcp).
 
 Signalling is `{{ reading.signal }}`. Same occupancy as [Events](/events). Rooms alias [Room](/room).
 
