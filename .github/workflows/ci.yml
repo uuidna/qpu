@@ -1,7 +1,8 @@
 name: ci
 
-# THE ONE DOOR. Deploy and release call this. Push to main does not also fire it —
-# that cancelled the gate while deploy reused the same concurrency group.
+# theorem qpuCi : the one gate. Deploy and release call this workflow.
+# Proof. elan decides clay; npm ci then npm test (occupancy + VitePress source).
+# Push to main does not fire this file directly (deploy calls it).
 
 on:
   pull_request:
@@ -26,5 +27,9 @@ jobs:
           cache: npm
       - name: Install exact (lockfile law; no install scripts)
         run: npm ci
-      - name: Gate — audit, tests, paper, docs, wrangler dry-run
+      - name: Clay kernel
+        run: |
+          curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "$(cat lean-toolchain)"
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Gate — occupancy identities, named doors, clay decide
         run: npm run ci

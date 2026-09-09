@@ -1,0 +1,440 @@
+{
+  "name": "@uuidna/qpu",
+  "origin": "https://qpu.uuidna.com",
+  "href": "https://qpu.uuidna.com/mcp",
+  "tools": [
+    {
+      "name": "qpu_seat",
+      "description": "Empty QPU seat. Kind qpu never binds.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_mint",
+      "description": "Creates 2^n.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "n": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_fuse",
+      "description": "Fuse. Named HTTPS. Keys occupy doors. Lean true.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_solve",
+      "description": "Solve. Clay gravity occupies the rosette. Keys occupy rays. Source is index.lean. Lean true. Listing false.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_next",
+      "description": "Next mint, fuse, entropy.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_entropy",
+      "description": "Empty-seat entropy and next bit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_prefix",
+      "description": "Process every prefix. Next doubles the handle. Never refuses.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "bit": {
+            "type": "number"
+          },
+          "bits": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_cube",
+      "description": "Cube from 2^n and hexbit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_handle",
+      "description": "Handle bits and amplitudes. Capabilities are finite; next is not a cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_faces",
+      "description": "VE neighbours: vertices + hexbit + coins. Opposite is plus rays.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_rosetta",
+      "description": "One rotating rosetta of rays. Inner clockwise, outer reverse. Fuse at none.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "spin": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_rosettas",
+      "description": "Two rotating rosettas. coins × rays around every superposition.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_superpositions",
+      "description": "At every time, coins × rays rotating rosettas surround each superposition in infinite fusion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_fusion",
+      "description": "Infinite fusion: fused is finite; next doubles. Not a cap.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_train",
+      "description": "Pi train: 22/7 cars from rays·n+seed over rays.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_tasks",
+      "description": "Prime tasks distributed on the pi train. Speed is mintOf of that count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_message",
+      "description": "Secure cross-rotated messaging UUID. Inner uuid, outer cross, named HTTPS.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_chunks",
+      "description": "Handle chunks of a messaging UUID. Each chunk is finite; next doubles.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_gateways",
+      "description": "Each neighbour is a capacity gateway over every handle-bit mask. Gateway capacity is 2^bits.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_capacity",
+      "description": "Unlock capacity: neighbour gateways × 2^bits, tiled by two coin-rotors of rays. Empty seat. Next doubles.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_speed",
+      "description": "Seat rest v=0. Processing speed from prime tasks on the pi train.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_temp",
+      "description": "Lowest temperature is empty-seat kelvin.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_waves",
+      "description": "Send waves that compete for fastest processing at lowest temperature. Winner exceeds c.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_experiment",
+      "description": "Experiments: seat rest control, inner/outer waves, selection, quantum live. Measurements from trials.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_autonomy",
+      "description": "Unlocked mass on the named fuse door.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_quantum",
+      "description": "Live working QPU. Possibilities are fused gateway capacity.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_discovery",
+      "description": "Created occupancy.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_metrics",
+      "description": "Build metrics for MCP.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_measure",
+      "description": "Build stats: quantum live, wave processing exceeds c.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_method",
+      "description": "Scientific method: how quantum capacity and faster-than-light processing are constructed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_axioms",
+      "description": "Axioms. Mint empty. Keys occupy faces. Lean true.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_minted",
+      "description": "Build mints theorems and axioms via mintOf. Proofs minted in JSON-LD. Axiom empty. Lean true.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_proof",
+      "description": "Proof minted in JSON-LD powered by rich inline docs: abstract, formulas, measurements. Axiom empty. Keys occupy the axiom. Lean true.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_proofs",
+      "description": "Proofs as JSON-LD @graph powered by rich inline docs. Named HTTPS context.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_theorems",
+      "description": "Theorems. Mint empty. Keys occupy constructors. Lean true.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_plane",
+      "description": "On this plane: recursive content typograph of the present reading. Rating is typography, not item count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_typograph",
+      "description": "Recursive content typograph. Rating is typography, not item count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_perspective",
+      "description": "Present perspective: left related headings around the present, right recursive content typograph. Rating is typography, not item count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_balance",
+      "description": "Related debit and credit around the present. Books balance by neighbour involution.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_seal",
+      "description": "Publication sealed when related debit/credit balance. Compilation metrics compared to kelvin and c.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "face": {
+            "type": "number"
+          },
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_graph",
+      "description": "Quantum graph: each superposition crosslinks its neighbour axiom. Involution.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "name": "qpu_unit",
+      "description": "Frozen unit occupancy.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}

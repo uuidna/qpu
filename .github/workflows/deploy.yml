@@ -1,7 +1,7 @@
 name: deploy
 
-# qpu.uuidna.com ships only after the same gate pre-push already ran.
-# No credential in this file unless CLOUDFLARE_API_TOKEN is set; absent, the gap is named.
+# theorem qpuDeploy : qpu.uuidna.com ships after qpuCi.
+# Proof. Push to main → ci.yml then wrangler. Build includes VitePress source. Token gap is named.
 
 on:
   push:
@@ -30,7 +30,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npm run docs:build
       - name: Deploy to Cloudflare (only when the token exists)
         env:
           HAS_CF: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}

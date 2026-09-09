@@ -1,8 +1,13 @@
+# theorem qpuWorktree : occupancy and ship files only. Proof. dist and caches omitted.
 node_modules/
 dist/
 *.tgz
 .DS_Store
 .wrangler/
 test-results.json
-archive/docs/.vitepress/dist
-archive/docs/.vitepress/cache
+.archive/
+docs/.vitepress/dist
+docs/.vitepress/cache
+/.vitepress/
+*.olean
+*.ilean

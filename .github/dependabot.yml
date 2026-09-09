@@ -1,3 +1,5 @@
+# theorem qpuDependabot : exact npm pins and Actions hashes on this occupancy.
+# Proof. Daily npm, weekly Actions. Live compile does not import archive/.
 version: 2
 updates:
   - package-ecosystem: npm

@@ -1,0 +1,8 @@
+#!/bin/sh
+# pre-commit — HARD. Clay occupancy by decide.
+set -e
+cd "$(git rev-parse --show-toplevel)"
+src="src/quantum/processing/unit/index.lean"
+echo "pre-commit: HARD — lean $src"
+command -v lean >/dev/null || { echo "pre-commit: RED — lean missing. Commit BLOCKED."; exit 1; }
+lean "$src"

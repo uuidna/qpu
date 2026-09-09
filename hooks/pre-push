@@ -1,0 +1,12 @@
+#!/bin/sh
+# pre-push — HARD. Same door as GitHub CI.
+set -e
+cd "$(git rev-parse --show-toplevel)"
+echo "pre-push: HARD — npm run ci"
+npm run ci
+status=$?
+if [ $status -ne 0 ]; then
+  echo "pre-push: RED — push BLOCKED."
+  exit $status
+fi
+exit 0

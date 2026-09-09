@@ -1,4 +1,6 @@
 {
+  // theorem qpuCompile : dist/quantum/processing/unit is the live occupancy only.
+  // Proof. include is src/quantum/processing/unit/**/*.ts. archive/ is excluded.
   "compilerOptions": {
     "target": "ES2022",
     "module": "NodeNext",
