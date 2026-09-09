@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "QPU worker at https://qpu.uuidna.com \u2014 quantum processing unit as three readings: empty seat, BindingPoint width, hologram. Captain coins https://revolut.me/ceccec.",
+  "description": "QPU worker at https://qpu.uuidna.com — quantum processing unit.",
   "type": "module",
   "license": "CC-BY-NC-ND-4.0",
   "funding": {
@@ -27,88 +27,27 @@
   "keywords": [
     "qpu",
     "quantum-processing-unit",
-    "quantum-computing",
-    "uuidna",
-    "cloudflare-workers",
-    "hologram",
-    "binding-point",
-    "pentagram"
+    "uuidna"
   ],
-  "bin": {
-    "qpu": "./dist/mcp.js"
-  },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/quantum/processing/unit/index.js",
+  "types": "./dist/quantum/processing/unit/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./dist/quantum/processing/unit/index.d.ts",
+      "import": "./dist/quantum/processing/unit/index.js"
     },
-    "./mcp": {
-      "types": "./dist/mcp.d.ts",
-      "import": "./dist/mcp.js"
-    },
-    "./hologram": {
-      "types": "./dist/hologram.d.ts",
-      "import": "./dist/hologram.js"
-    },
-    "./metrics": {
-      "types": "./dist/metrics.d.ts",
-      "import": "./dist/metrics.js"
-    },
-    "./fractal": {
-      "types": "./dist/fractal.d.ts",
-      "import": "./dist/fractal.js"
-    },
-    "./scale": {
-      "types": "./dist/scale.d.ts",
-      "import": "./dist/scale.js"
-    },
-    "./og": {
-      "types": "./dist/og.d.ts",
-      "import": "./dist/og.js"
-    },
-    "./events": {
-      "types": "./dist/events.d.ts",
-      "import": "./dist/events.js"
-    },
-    "./boot": {
-      "types": "./dist/boot.d.ts",
-      "import": "./dist/boot.js"
-    },
-    "./live": {
-      "types": "./dist/live.d.ts",
-      "import": "./dist/live.js"
-    },
-    "./pqc": {
-      "types": "./dist/pqc.d.ts",
-      "import": "./dist/pqc.js"
-    },
-    "./quantum": {
-      "types": "./dist/quantum.d.ts",
-      "import": "./dist/quantum.js"
-    },
-    "./licence": {
-      "types": "./dist/licence.d.ts",
-      "import": "./dist/licence.js"
-    },
-    "./proofs": {
-      "types": "./dist/proofs.d.ts",
-      "import": "./dist/proofs.js"
+    "./quantum/processing/unit": {
+      "types": "./dist/quantum/processing/unit/index.d.ts",
+      "import": "./dist/quantum/processing/unit/index.js"
     }
   },
   "files": [
     "dist",
     "worker.js",
     "wrangler.toml",
-    "README.md",
-    "MANUAL.md",
     "LICENSE",
-    "CITATION.cff",
     "!dist/**/*.test.js",
-    "!dist/**/*.test.d.ts",
-    "!dist/gen-readme.js",
-    "!dist/gen-readme.d.ts"
+    "!dist/**/*.test.d.ts"
   ],
   "sideEffects": false,
   "engines": {
@@ -117,14 +56,9 @@
   "scripts": {
     "prepare": "tsc -p tsconfig.json",
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node dist/fasten-run.js dist/*.test.js dist/bindings/*.test.js",
-    "qpu": "node dist/mcp.js",
-    "ci": "npm run docs:build && npm test",
-    "readme": "npm run build && node dist/gen-readme.js",
-    "docs": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
-    "ship": "npm run build && npm run docs:build && npx wrangler deploy"
+    "test": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
+    "ci": "npm test",
+    "ship": "npm run build && npx wrangler deploy"
   },
   "devDependencies": {
     "@types/node": "26.5.0",

@@ -14,5 +14,6 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src/quantum/processing/unit/**/*.ts"],
+  "exclude": ["src/archive", "archive"]
 }

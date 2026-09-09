@@ -4,6 +4,5 @@ dist/
 .DS_Store
 .wrangler/
 test-results.json
-docs/.vitepress/dist
-docs/.vitepress/cache
-/.vitepress/
+archive/docs/.vitepress/dist
+archive/docs/.vitepress/cache

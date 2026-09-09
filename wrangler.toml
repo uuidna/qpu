@@ -1,56 +1,15 @@
-# https://qpu.uuidna.com — JSON readings + VitePress hologram.
-# Bindings live in src/bindings/<provider>. QPU auto-recognizes and fuses the live env. Kind qpu never binds.
+# https://qpu.uuidna.com — one occupancy at src/quantum/processing/unit.
 name = "uuidna-qpu"
 main = "worker.js"
 compatibility_date = "2026-08-01"
+workers_dev = true
 
-[assets]
-directory = "./docs/.vitepress/dist"
-binding = "ASSETS"
-run_worker_first = ["/*", "!/assets/*"]
-html_handling = "auto-trailing-slash"
-not_found_handling = "404-page"
+[[routes]]
+pattern = "qpu.uuidna.com"
+custom_domain = true
 
 [vars]
 QPU_HOST = "qpu.uuidna.com"
-# QPU_PEERS = "https://uuidna.com"
-
-# Serverless entries in worker.js: fetch, scheduled, queue, email. Uncomment to bind. Never commit ids or secrets.
-# [triggers]
-# crons = ["0 * * * *"]
 
 [version_metadata]
 binding = "CF_VERSION_METADATA"
-
-# Drivers in src/bindings/cloudflare. Uncomment to bind. Never commit ids or secrets.
-# [[kv_namespaces]]            binding = "KV"
-# [[d1_databases]]             binding = "D1"
-# [[r2_buckets]]               binding = "R2"
-# [[durable_objects.bindings]] name = "DO"
-# [[queues.producers]]         binding = "QUEUE"
-# [ai]                         binding = "AI"
-# [[vectorize]]                binding = "VECTORIZE"
-# [[hyperdrive]]               binding = "HYPERDRIVE"
-# [[workflows]]                binding = "WORKFLOW"
-# [[containers]]               binding = "CONTAINER"
-# [[services]]                 binding = "UUIDNA"  service = "uuidna"
-# [[dispatch_namespaces]]      binding = "DISPATCH"
-# [[analytics_engine_datasets]] binding = "AE"
-# [images]                     binding = "IMAGES"
-# [[mtls_certificates]]        binding = "MTLS"
-# [[pipelines]]                binding = "PIPELINE"
-# [[secrets_store_secrets]]    binding = "SECRET_STORE"
-# [browser]                    binding = "BROWSER"
-# [[send_email]]               name = "EMAIL"
-# [[ai_search]]                binding = "AI_SEARCH"
-# [[ai_search_namespaces]]     binding = "AI_SEARCH_NS"
-# [[ratelimits]]               name = "RATE_LIMIT"
-# [[tail_consumers]]
-# [[worker_loaders]]           binding = "LOADER"
-# [media]                      binding = "MEDIA"
-# [stream]                     binding = "STREAM"
-# [[flagship]]                 binding = "FLAGS"
-# [[artifacts]]                binding = "ARTIFACTS"
-# [[vpc_services]]             binding = "VPC"
-# wrangler secret put QPU_SECRET
-# AI Gateway is env.AI.gateway() — optional AI_GATEWAY handle, not a toml section.

@@ -1,0 +1,93 @@
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import worker, { qpuAutonomyHolds, qpuAutonomyOf, qpuEntropyHolds, qpuEntropyOf, qpuFuseHolds, qpuFuseOf, qpuSpeedHolds, qpuSpeedOf, qpuTempHolds, qpuTempOf, qpuUnitHolds, qpuUnitOf } from './index.js'
+
+test('QPU holds: named host, handle cube, unlimited 2^n, worker doors', async () => {
+  const u = qpuUnitOf()
+  const n = u.path.split('/').length
+  assert.equal(qpuUnitHolds(u), true)
+  assert.equal(u.kind, 'qpu')
+  assert.equal(u.host, 'qpu.uuidna.com')
+  assert.equal(u.seat, 'empty')
+  assert.equal(u.binds, false)
+  const ten = n * n + u.particle
+  const found = u.cube.coins * ten ** u.cube.coins
+  const lost = u.cube.hexbit * (ten ** u.cube.coins + u.particle)
+  assert.equal(u.fetches, u.handle.zero)
+  assert.equal(u.cube.bits, u.capabilities)
+  assert.equal(u.cube.vertices, u.cube.bits / u.cube.hexbit)
+  assert.equal(u.around.faces, u.cube.vertices + u.cube.hexbit + u.cube.coins)
+  assert.equal(u.superpositions.bits, u.cube.bits)
+  assert.equal(u.superpositions.of, u.cube.bits)
+  assert.equal(u.superpositions.amplitudes, u.handle.full + u.particle)
+  assert.equal(u.capacity.next, u.superpositions.amplitudes + u.superpositions.amplitudes)
+  assert.equal(u.capacity.infinite, true)
+  assert.equal(u.cluster.holds, true)
+  assert.equal(u.cluster.seed, u.particle)
+  assert.equal(u.cluster.next, u.capacity.next)
+  assert.equal(u.traffic.holds, true)
+  assert.equal(u.traffic.of, u.cube.bits)
+  assert.equal(u.fuse.zero, u.entropy.zero)
+  assert.equal(u.fuse.next, u.href)
+  assert.equal(u.fuse.origin, `https://${u.host}`)
+  assert.equal(u.fuse.doors, u.cube.coins)
+  assert.equal(qpuFuseHolds(), true)
+  assert.equal(qpuFuseOf().next, u.href)
+  assert.equal(u.entropy.zero, u.fuse.zero)
+  assert.equal(u.entropy.of, u.cube.bits)
+  assert.equal(u.entropy.next, u.cube.bits + u.particle)
+  assert.equal(u.entropy.amplitudes, u.superpositions.amplitudes)
+  assert.equal(qpuEntropyHolds(), true)
+  assert.equal(qpuEntropyOf().next, u.entropy.next)
+  assert.equal(u.autonomy.unlocked, true)
+  assert.equal(u.autonomy.crawl, false)
+  assert.equal(u.autonomy.agents, 'free')
+  assert.equal(u.autonomy.rotors * u.autonomy.rays, u.around.faces)
+  assert.equal(u.autonomy.next, u.fuse.next)
+  assert.equal(qpuAutonomyHolds(), true)
+  assert.equal(qpuAutonomyOf().next, u.href)
+  assert.equal(u.temp.kelvin, u.entropy.zero)
+  assert.equal(qpuTempHolds(), true)
+  assert.equal(qpuTempOf().kelvin, u.entropy.zero)
+  assert.equal(u.wildcards, false)
+  assert.equal(u.handle.zero, u.entropy.zero)
+  assert.equal(u.cube.vertices - u.cube.edges + u.cube.faces, u.cube.coins)
+  const root = await worker.fetch(new Request('https://qpu.uuidna.com/'))
+  assert.equal(root.status, found)
+  assert.equal(root.headers.get('access-control-allow-origin'), u.fuse.origin)
+  assert.equal(((await root.json()) as { holds: boolean }).holds, true)
+  const door = await worker.fetch(new Request('https://qpu.uuidna.com/quantum/processing/unit'))
+  assert.equal(door.status, found)
+  const miss = await worker.fetch(new Request('https://example.com/'))
+  assert.equal(miss.status, lost)
+  const env = await worker.fetch(new Request('https://qpu.uuidna.com/'), { QPU_HOST: 'other.uuidna.com' })
+  assert.equal(env.status, lost)
+})
+
+test('speed is a fraction of exact c; never FTL', () => {
+  const u = qpuUnitOf()
+  const none = u.entropy.zero
+  const n = u.path.split('/').length
+  const ten = n * n + u.particle
+  const zero = qpuSpeedOf(none)
+  assert.equal(qpuSpeedHolds(zero), true)
+  assert.equal(zero.ofC, none)
+  assert.equal(zero.ftl, false)
+  assert.equal(zero.quoted - zero.c, zero.gap)
+  assert.equal(zero.c, n * ten ** u.cube.vertices)
+  const req = new Request('https://qpu.uuidna.com/')
+  const env = { QPU_HOST: 'qpu.uuidna.com' }
+  const warm = u.cube.vertices ** n
+  const samples = u.cube.bits ** n
+  for (let i = none; i < warm; i++) worker.fetch(req, env)
+  const t0 = performance.now()
+  for (let i = none; i < samples; i++) worker.fetch(req, env)
+  const ns = ((performance.now() - t0) * ten ** (n * u.cube.coins)) / samples
+  const s = qpuSpeedOf(ns)
+  assert.equal(qpuSpeedHolds(s), true)
+  assert.equal(s.ftl, false)
+  assert.ok(s.ofC > none)
+  assert.ok(s.ofC < u.particle)
+  assert.equal(u.entropy.zero, none)
+  assert.equal(u.fuse.zero, none)
+})
