@@ -11,6 +11,8 @@
     "rootDir": "src",
     "strict": true,
     "noEmitOnError": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "types": ["node"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

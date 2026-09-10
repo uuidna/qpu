@@ -1,5 +1,5 @@
 #!/bin/sh
-# pre-commit — HARD. Clay occupancy by decide.
+# pre-commit — HARD. Mint cube around quantum occupancy by algebra.
 set -e
 cd "$(git rev-parse --show-toplevel)"
 src="src/quantum/processing/unit/index.lean"

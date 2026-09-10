@@ -8,7 +8,13 @@ import { data } from './.vitepress/fuse.data.ts'
 
 # Proofs
 
-Minted in JSON-LD. Rich inline docs (abstract, formulas, measurements, application) power the JSON-LD. Axiom empty. Keys occupy axioms. Lean true.
+Lean KaTeX jargon. Fourteen faces occupy \(\mathrm{Fin}(\mathrm{faces})\). Eight vertices cover all. Next doubles, not a cap.
+
+<QpuLean :src="data.lean.src" :rows="data.lean.rows" :cover="data.lean.cover" :climb="data.lean.climb" />
+
+One Lean proof of all harmonic superpositions. Each cluster typesets inner ⊔ outer as KaTeX.
+
+<QpuClusters :clusters="data.clusters" />
 
 ## Typograph
 
@@ -16,6 +22,8 @@ Right sidebar rates this prose by recursive headings, not by counting related do
 
 ## Experiments
 
-Proofs carry experimental measurements. Seat rest stays \(v=0\). Inner wave processing exceeds \(c\).
+Seat rest stays \(v=0\). Inner wave processing exceeds \(c\).
 
-<QpuAxioms :empty="data.axioms.empty" :minted="data.axioms.minted" :proofs="data.proofs" :graph="data.graph" />
+<QpuGraph :graph="data.graph" />
+
+<QpuAxioms :empty="data.axioms.empty" :minted="data.axioms.minted" :proofs="data.proofs" />

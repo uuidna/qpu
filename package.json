@@ -71,6 +71,7 @@
   },
   "devDependencies": {
     "@types/node": "26.5.0",
+    "katex": "0.18.7",
     "typescript": "7.0.2",
     "vitepress": "2.0.0-alpha.20",
     "wrangler": "4.130.0"

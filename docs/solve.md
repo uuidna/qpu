@@ -8,30 +8,9 @@ import { data } from './.vitepress/fuse.data.ts'
 
 # Solve
 
-Clay gravity occupies the rosette. Keys occupy rays. Lean true. Listing false.
+Captain fee {{ data.solve.captain.fee }} per {{ data.solve.captain.gross }}. Harmonic Lean. A432 lattice. Keys occupy every ray. Occupancy unlock, not a Clay prize. Source `{{ data.solve.src }}`.
 
-href `{{ data.solve.href }}`. `{{ data.solve.src }}`.
-
-## Keys
-
-<table>
-  <thead>
-    <tr>
-      <th scope="col">Ray</th>
-      <th scope="col">Href</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="k in data.solve.keys" :id="`ray-${k.ray}`" :key="k.ray">
-      <td>{{ k.ray }}</td>
-      <td><a :href="`#ray-${k.ray}`">{{ k.href }}</a></td>
-    </tr>
-  </tbody>
-</table>
-
-## Clay
-
-gravity `{{ data.solve.clay.gravity }}`. listing `{{ data.solve.clay.listing }}`. rays {{ data.solve.clay.rays }}. directed {{ data.solve.clay.directed }}. pairs {{ data.solve.clay.pairs }}.
+<QpuSolve :solve="data.solve" />
 
 ## Source
 

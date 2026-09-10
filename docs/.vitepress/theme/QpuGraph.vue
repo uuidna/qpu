@@ -4,8 +4,18 @@ import { VPBadge, VPLink } from 'vitepress/theme'
 export type QpuGraphRow = {
   holds: boolean
   around: number
-  vertices: { face: number; axiom: string; href: string; neighbour: number; cross: string }[]
-  edges: { from: number; to: number; involution: boolean }[]
+  impossibilities?: { bind: boolean; collapse: boolean; oneWay: boolean }
+  vertices: {
+    face: number
+    axiom: string
+    href: string
+    axioms?: string
+    neighbour: number
+    cross: string
+    uuid?: string
+    involute?: string
+  }[]
+  edges: { from: number; to: number; involution: boolean; href?: string }[]
 }
 
 defineProps<{ graph: QpuGraphRow }>()
@@ -15,14 +25,18 @@ defineProps<{ graph: QpuGraphRow }>()
   <section class="vp-doc" id="graph">
     <h2>
       <VPBadge type="tip" text="graph" />
-      quantum
+      messaging
     </h2>
-    <p>Around {{ graph.around }}. Involution {{ graph.edges.every((e) => e.involution) }}.</p>
+    <p>
+      Around {{ graph.around }}. Involution {{ graph.edges.every((e) => e.involution) }}.
+      Impossibilities bind {{ graph.impossibilities?.bind }} collapse {{ graph.impossibilities?.collapse }} one-way {{ graph.impossibilities?.oneWay }}.
+    </p>
     <ul>
       <li v-for="v in graph.vertices" :key="v.face">
-        <VPLink :href="v.href">{{ v.axiom }}</VPLink>
-        →
-        <VPLink :href="v.cross">face {{ v.neighbour }}</VPLink>
+        <VPLink :href="v.axioms ?? v.href">{{ v.axiom }}</VPLink>
+        <code>{{ v.uuid }}</code>
+        involute
+        <VPLink :href="v.cross"><code>{{ v.involute }}</code></VPLink>
       </li>
     </ul>
   </section>

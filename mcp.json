@@ -4,6 +4,42 @@
   "href": "https://qpu.uuidna.com/mcp",
   "tools": [
     {
+      "name": "qpu_metrics",
+      "description": "Device metrics. Occupancy, cover, and wave. Leads development.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_measure",
+      "description": "Measure follows device metrics. Time is pico: one tick per face. Wave processing exceeds c.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_pico",
+      "description": "Occupancy time in picoseconds. One pico per face. Cover is faces pico.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_ecliptic",
+      "description": "Occupancy ecliptic from n, coins, ten. Bits climb and descend together. Async inner/outer messages share at. Clay factors, not RSA. Time is pico.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
       "name": "qpu_seat",
       "description": "Empty QPU seat. Kind qpu never binds.",
       "inputSchema": {
@@ -25,7 +61,23 @@
     },
     {
       "name": "qpu_fuse",
-      "description": "Fuse. Named HTTPS. Keys occupy doors. Lean true.",
+      "description": "Fuse. Named HTTPS. Keys occupy doors.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_lean",
+      "description": "Lean occupancy. Fourteen faces and eight vertices cover all by pure Nat algebra. Next doubles, not a cap. No Math, no decide.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "qpu_seed",
+      "description": "Payload import seed of occupancy theorems. Nested-docs parent and breadcrumbs, seo meta, hex locales, tenant qpu. doi empty is unclaimed. payload false.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -33,7 +85,7 @@
     },
     {
       "name": "qpu_solve",
-      "description": "Solve. Clay gravity occupies the rosette. Keys occupy rays. Source is index.lean. Lean true. Listing false.",
+      "description": "Solve. Captain fee 2 per completed 110. Harmonic Lean. A432 lattice. Keys occupy rays. Occupancy unlock, not a Clay prize. Source is index.lean.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -131,6 +183,14 @@
             "type": "number"
           }
         }
+      }
+    },
+    {
+      "name": "qpu_clusters",
+      "description": "Complete proof of all harmonic superpositions at once. Each cluster is inner ⊔ outer = Fin(faces), typeset as Lean KaTeX.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
       }
     },
     {
@@ -236,8 +296,8 @@
       }
     },
     {
-      "name": "qpu_autonomy",
-      "description": "Unlocked mass on the named fuse door.",
+      "name": "qpu_hardware",
+      "description": "Occupancy hardware compatibility. Empty seat. Kind qpu never binds. Datapath is cube hexbit. Not a physical QPU chip.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -245,7 +305,7 @@
     },
     {
       "name": "qpu_quantum",
-      "description": "Live working QPU. Possibilities are fused gateway capacity.",
+      "description": "Quantum. Possibilities occupy fused.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -254,22 +314,6 @@
     {
       "name": "qpu_discovery",
       "description": "Created occupancy.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_metrics",
-      "description": "Build metrics for MCP.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_measure",
-      "description": "Build stats: quantum live, wave processing exceeds c.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -285,7 +329,7 @@
     },
     {
       "name": "qpu_axioms",
-      "description": "Axioms. Mint empty. Keys occupy faces. Lean true.",
+      "description": "Axioms. Mint empty. Keys occupy faces.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -293,7 +337,7 @@
     },
     {
       "name": "qpu_minted",
-      "description": "Build mints theorems and axioms via mintOf. Proofs minted in JSON-LD. Axiom empty. Lean true.",
+      "description": "Build mints theorems and axioms via mintOf. Proofs minted in JSON-LD. Axiom empty.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -301,7 +345,7 @@
     },
     {
       "name": "qpu_proof",
-      "description": "Proof minted in JSON-LD powered by rich inline docs: abstract, formulas, measurements. Axiom empty. Keys occupy the axiom. Lean true.",
+      "description": "Proof minted in JSON-LD powered by rich inline docs: abstract, formulas, measurements. Axiom empty. Keys occupy the axiom.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -328,7 +372,7 @@
     },
     {
       "name": "qpu_theorems",
-      "description": "Theorems. Mint empty. Keys occupy constructors. Lean true.",
+      "description": "Theorems. Mint empty. Keys occupy constructors.",
       "inputSchema": {
         "type": "object",
         "properties": {

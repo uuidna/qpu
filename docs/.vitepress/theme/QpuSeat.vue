@@ -2,6 +2,7 @@
 defineProps<{
   name: string
   seat: string
+  live: boolean
 }>()
 </script>
 
@@ -9,5 +10,6 @@ defineProps<{
   <p class="vp-doc">
     <strong>{{ name }}</strong>
     · {{ seat }}
+    · {{ live ? 'live' : 'dead' }}
   </p>
 </template>

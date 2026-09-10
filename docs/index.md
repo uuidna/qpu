@@ -6,20 +6,22 @@ title: Source
 import { data } from './.vitepress/fuse.data.ts'
 </script>
 
-# Clay
+Proof. Source `{{ data.lean.src }}`. Seat empty. Kind qpu never binds.
 
-Proof. Gravity occupies the rosette. Listing false. `{{ data.solve.src }}`.
-
-gravity `{{ data.solve.clay.gravity }}`. rays {{ data.solve.clay.rays }}. directed {{ data.solve.clay.directed }}. pairs {{ data.solve.clay.pairs }}.
+<QpuHome
+  :src="data.lean.src"
+  :rows="data.lean.rows"
+  :cover="data.lean.cover"
+  :climb="data.lean.climb"
+  :solve="data.solve"
+  :axioms="data.axioms.rows"
+  :theorems="data.theorems.faces"
+/>
 
 ## Proof
 
-<<< @/../src/quantum/processing/unit/index.lean
+<QpuLean :src="data.lean.src" :rows="data.lean.rows" :cover="data.lean.cover" :climb="data.lean.climb" />
 
 ## Build
 
-- quantum: {{ data.quantum.kind }} live {{ data.quantum.live }} possibilities {{ data.quantum.possibilities }}
-- kelvin: {{ data.waves.winner.kelvin }}
-- c: {{ data.speed.c }}
-- processing: {{ data.waves.winner.speed }}
-- faster than light: {{ data.waves.winner.speed }} > {{ data.speed.c }}
+<QpuMetrics :metrics="data.metrics" :hardware="data.hardware" />

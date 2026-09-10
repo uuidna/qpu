@@ -1,7 +1,7 @@
 name: ci
 
 # theorem qpuCi : the one gate. Deploy and release call this workflow.
-# Proof. elan decides clay; npm ci then npm test (occupancy + VitePress source).
+# Proof. elan algebra mint cube around quantum; npm ci then npm test (occupancy + VitePress source).
 # Push to main does not fire this file directly (deploy calls it).
 
 on:
@@ -27,9 +27,9 @@ jobs:
           cache: npm
       - name: Install exact (lockfile law; no install scripts)
         run: npm ci
-      - name: Clay kernel
+      - name: Lean kernel
         run: |
           curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "$(cat lean-toolchain)"
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Gate — occupancy identities, named doors, clay decide
+      - name: Gate — occupancy identities, named doors, mint cube around quantum algebra
         run: npm run ci

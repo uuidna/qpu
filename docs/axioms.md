@@ -8,8 +8,8 @@ import { data } from './.vitepress/fuse.data.ts'
 
 # Axioms
 
-VitePress firmware `{{ data.firmware }}`. Axiom empty. Keys occupy faces. Lean true. Minted occupancy identities. Census hrefs stay on this plane.
+VitePress firmware `{{ data.firmware }}`. Axiom empty. Keys occupy faces. Minted occupancy identities. Census hrefs stay on this plane.
 
-<QpuPlane :empty="data.axioms.empty" :minted="data.axioms.minted" :lean="data.axioms.lean" :rows="data.axioms.rows" :census="data.axioms.census" :methods="data.axioms.methods" />
+<QpuPlane :empty="data.axioms.empty" :minted="data.axioms.minted" :lean="data.axioms.lean" :rows="data.axioms.rows" />
 
 <QpuGraph :graph="data.graph" />

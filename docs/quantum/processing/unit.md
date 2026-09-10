@@ -8,7 +8,7 @@ import { data } from '../../.vitepress/fuse.data.ts'
 
 # Fuse
 
-Named HTTPS. Keys occupy doors. Lean true.
+Named HTTPS. Keys occupy doors.
 
 firmware `{{ data.fuse.firmware }}`. `{{ data.fuse.src }}`. Next {{ data.fuse.next }}.
 
