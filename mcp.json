@@ -1010,35 +1010,35 @@
       }
     },
     "tokens": "four bytes",
-    "readBytes": 38831,
+    "readBytes": 39241,
     "rows": [
       {
         "question": "what is quantum?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 38831,
-        "callBytes": 20386,
-        "readTokens": 9707,
-        "callTokens": 5096,
+        "readBytes": 39241,
+        "callBytes": 20498,
+        "readTokens": 9810,
+        "callTokens": 5124,
         "ratio": 1
       },
       {
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 38831,
-        "callBytes": 30426,
-        "readTokens": 9707,
-        "callTokens": 7606,
+        "readBytes": 39241,
+        "callBytes": 30657,
+        "readTokens": 9810,
+        "callTokens": 7664,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 38831,
+        "readBytes": 39241,
         "callBytes": 1539,
-        "readTokens": 9707,
+        "readTokens": 9810,
         "callTokens": 384,
         "ratio": 25
       }
@@ -1314,7 +1314,7 @@
           },
           "live": {
             "type": "boolean",
-            "description": "Fetch named CERN Open Data records and the ATLAS CMS ALICE LHCb tetra."
+            "description": "Fetch named CERN records, the ATLAS CMS ALICE LHCb tetra, and coins views LHC running and Open Data."
           }
         }
       },
@@ -1326,8 +1326,8 @@
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
         "href": "https://qpu.uuidna.com/mcp",
         "description": "Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.",
-        "reading": "Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
-        "documentation": "NAME\n    qpu_prove — Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "reading": "Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records, the ATLAS CMS ALICE LHCb tetra, and coins views LHC running and Open Data with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
+        "documentation": "NAME\n    qpu_prove — Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records, the ATLAS CMS ALICE LHCb tetra, and coins views LHC running and Open Data with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
         "holds": true
       }
     }
@@ -1849,7 +1849,7 @@
       "worker"
     ],
     "denied": [],
-    "tools": 50,
+    "tools": 86,
     "holds": true
   },
   "train": {
@@ -1888,7 +1888,7 @@
       "kind": "sandbox",
       "unlocked": true,
       "memory": true,
-      "tools": 50,
+      "tools": 86,
       "holds": true
     },
     "axes": [
@@ -2000,16 +2000,16 @@
             "memory": true
           }
         ],
-        "tokens": 29121,
+        "tokens": 29430,
         "quality": 3,
-        "speed": 4129634,
+        "speed": 4086275,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4129634 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4086275 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -2114,16 +2114,16 @@
             "memory": true
           }
         ],
-        "tokens": 13086,
+        "tokens": 13172,
         "quality": 14,
-        "speed": 18379808,
+        "speed": 18259806,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 18379808 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 18259806 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -2408,19 +2408,19 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 4129634,
+      "speed": 4086275,
       "security": 1,
       "throughoutput": 120259084288
     },
     "after": {
       "quality": 14,
-      "speed": 18379808,
+      "speed": 18259806,
       "security": 10,
       "throughoutput": 240518168576
     },
     "delta": {
       "quality": 11,
-      "speed": 14250174,
+      "speed": 14173531,
       "security": 9,
       "throughoutput": 120259084288
     },
@@ -2479,9 +2479,9 @@
     "imagination": {
       "kind": "imagination",
       "hz": 432,
-      "fused": 2202,
-      "naive": 4945,
-      "outspace": 2743,
+      "fused": 2127,
+      "naive": 5579,
+      "outspace": 3452,
       "reflect": true,
       "holds": true
     },
@@ -2496,7 +2496,7 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "documentation": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 4129634 security 1 throughoutput 120259084288\n    after quality 14 speed 18379808 security 10 throughoutput 240518168576\n    used eval fn fs net fetch process import require disk worker\n    css fused 2202 naive 4945 imagination split",
+    "documentation": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 4086275 security 1 throughoutput 120259084288\n    after quality 14 speed 18259806 security 10 throughoutput 240518168576\n    used eval fn fs net fetch process import require disk worker\n    css fused 2127 naive 5579 imagination split",
     "holds": true
   },
   "compete": {
@@ -2521,28 +2521,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 9707,
+            "tokens": 9810,
             "throughoutput": 120259084288,
-            "throughput": 12388903
+            "throughput": 12258826
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 9707,
+            "tokens": 9810,
             "throughoutput": 120259084288,
-            "throughput": 12388903
+            "throughput": 12258826
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 9707,
+            "tokens": 9810,
             "throughoutput": 120259084288,
-            "throughput": 12388903
+            "throughput": 12258826
           }
         ],
-        "tokens": 29121,
+        "tokens": 29430,
         "throughoutput": 120259084288,
-        "throughput": 4129634
+        "throughput": 4086275
       },
       {
         "name": "call",
@@ -2551,16 +2551,16 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 5096,
+            "tokens": 5124,
             "throughoutput": 240518168576,
-            "throughput": 47197442
+            "throughput": 46939533
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 7606,
+            "tokens": 7664,
             "throughoutput": 240518168576,
-            "throughput": 31622162
+            "throughput": 31382850
           },
           {
             "name": "qpu_cite",
@@ -2570,9 +2570,9 @@
             "throughput": 626349397
           }
         ],
-        "tokens": 13086,
+        "tokens": 13172,
         "throughoutput": 240518168576,
-        "throughput": 18379808
+        "throughput": 18259806
       }
     ],
     "winner": "call",
@@ -3007,14 +3007,14 @@
           "heading": "cern",
           "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
           "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
-          "reading": "holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+          "reading": "holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Coins views LHC running and Open Data. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
           "holds": true
         },
         {
           "heading": "tetra",
           "theorem": "theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
           "formula": "\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
-          "reading": "holds true. ATLAS CMS ALICE LHCb tetra. Four LHC experiments. Live CERN Open Data APIs via fetch Request Response. Never by decide.",
+          "reading": "holds true. ATLAS CMS ALICE LHCb tetra. Shared on both coins views. Live CERN Open Data APIs via fetch Request Response. Never by decide.",
           "holds": true
         },
         {
@@ -3061,9 +3061,9 @@
         },
         {
           "heading": "fridge",
-          "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl⟩",
-          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100",
-          "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin.",
+          "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 ∧ resistance = 0 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100\\land\\mathrm{resistance}=0",
+          "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Resistance none. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin.",
           "holds": true
         },
         {
@@ -3105,7 +3105,7 @@
           "heading": "entangle",
           "theorem": "theorem entangle : 1 * 1 ≠ 0 * 0 := by rw [Nat.mul_one, Nat.mul_zero]; exact Nat.one_ne_zero",
           "formula": "1\\cdot 1\\neq 0\\cdot 0",
-          "reading": "holds true. H then CNOT. Not a product state. Possible only in quantum.",
+          "reading": "holds true. H then CNOT. Not a product state. Cross domain scanner radar. LHC running and Open Data are coins views. CERN catalogs Bell-paired across coins domains. Possible only in quantum.",
           "holds": true
         },
         {
@@ -3501,14 +3501,14 @@
         "heading": "cern",
         "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
         "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
-        "reading": "holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+        "reading": "holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Coins views LHC running and Open Data. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
         "holds": true
       },
       {
         "heading": "tetra",
         "theorem": "theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
         "formula": "\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
-        "reading": "holds true. ATLAS CMS ALICE LHCb tetra. Four LHC experiments. Live CERN Open Data APIs via fetch Request Response. Never by decide.",
+        "reading": "holds true. ATLAS CMS ALICE LHCb tetra. Shared on both coins views. Live CERN Open Data APIs via fetch Request Response. Never by decide.",
         "holds": true
       },
       {
@@ -3555,9 +3555,9 @@
       },
       {
         "heading": "fridge",
-        "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl⟩",
-        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100",
-        "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin.",
+        "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 ∧ resistance = 0 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100\\land\\mathrm{resistance}=0",
+        "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Resistance none. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin.",
         "holds": true
       },
       {
@@ -3599,7 +3599,7 @@
         "heading": "entangle",
         "theorem": "theorem entangle : 1 * 1 ≠ 0 * 0 := by rw [Nat.mul_one, Nat.mul_zero]; exact Nat.one_ne_zero",
         "formula": "1\\cdot 1\\neq 0\\cdot 0",
-        "reading": "holds true. H then CNOT. Not a product state. Possible only in quantum.",
+        "reading": "holds true. H then CNOT. Not a product state. Cross domain scanner radar. LHC running and Open Data are coins views. CERN catalogs Bell-paired across coins domains. Possible only in quantum.",
         "holds": true
       },
       {
@@ -3772,113 +3772,253 @@
             {
               "face": 0,
               "hop": 0,
+              "pair": 7,
               "involution": true,
+              "ray": 0,
+              "team": 0,
+              "domain": "scanner",
               "name": "literature",
               "href": "https://inspirehep.net/api/literature?size=1",
+              "quantum": {
+                "face": 0,
+                "name": "split",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 1,
               "hop": 1,
+              "pair": 8,
               "involution": true,
+              "ray": 1,
+              "team": 0,
+              "domain": "scanner",
               "name": "authors",
               "href": "https://inspirehep.net/api/authors?size=1",
+              "quantum": {
+                "face": 1,
+                "name": "entangle",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 2,
               "hop": 2,
+              "pair": 9,
               "involution": true,
+              "ray": 2,
+              "team": 0,
+              "domain": "scanner",
               "name": "institutions",
               "href": "https://inspirehep.net/api/institutions?size=1",
+              "quantum": {
+                "face": 2,
+                "name": "interfere",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 3,
               "hop": 3,
+              "pair": 10,
               "involution": true,
+              "ray": 3,
+              "team": 0,
+              "domain": "scanner",
               "name": "conferences",
               "href": "https://inspirehep.net/api/conferences?size=1",
+              "quantum": {
+                "face": 3,
+                "name": "ghz",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 4,
               "hop": 4,
+              "pair": 11,
               "involution": true,
+              "ray": 4,
+              "team": 0,
+              "domain": "scanner",
               "name": "seminars",
               "href": "https://inspirehep.net/api/seminars?size=1",
+              "quantum": {
+                "face": 4,
+                "name": "noclone",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 5,
               "hop": 5,
+              "pair": 12,
               "involution": true,
+              "ray": 5,
+              "team": 0,
+              "domain": "scanner",
               "name": "journals",
               "href": "https://inspirehep.net/api/journals?size=1",
+              "quantum": {
+                "face": 5,
+                "name": "teleport",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 6,
               "hop": 6,
+              "pair": 13,
               "involution": true,
+              "ray": 6,
+              "team": 0,
+              "domain": "scanner",
               "name": "jobs",
               "href": "https://inspirehep.net/api/jobs?size=1",
+              "quantum": {
+                "face": 6,
+                "name": "kickback",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 7,
               "hop": 7,
+              "pair": 0,
               "involution": true,
+              "ray": 0,
+              "team": 1,
+              "domain": "radar",
               "name": "experiments",
               "href": "https://inspirehep.net/api/experiments?size=1",
+              "quantum": {
+                "face": 7,
+                "name": "deutsch",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 8,
               "hop": 8,
+              "pair": 1,
               "involution": true,
+              "ray": 1,
+              "team": 1,
+              "domain": "radar",
               "name": "data",
               "href": "https://inspirehep.net/api/data?size=1",
+              "quantum": {
+                "face": 8,
+                "name": "dense",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 9,
               "hop": 9,
+              "pair": 2,
               "involution": true,
+              "ray": 2,
+              "team": 1,
+              "domain": "radar",
               "name": "opendata",
               "href": "https://opendata.cern.ch/api/records?size=1",
+              "quantum": {
+                "face": 9,
+                "name": "monogamy",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 10,
               "hop": 10,
+              "pair": 3,
               "involution": true,
+              "ray": 3,
+              "team": 1,
+              "domain": "radar",
               "name": "repository",
               "href": "https://repository.cern/api/records?size=1",
+              "quantum": {
+                "face": 10,
+                "name": "qubits",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 11,
               "hop": 11,
+              "pair": 4,
               "involution": true,
+              "ray": 4,
+              "team": 1,
+              "domain": "radar",
               "name": "zenodo",
               "href": "https://zenodo.org/api/records?size=1",
+              "quantum": {
+                "face": 11,
+                "name": "gates",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 12,
               "hop": 12,
+              "pair": 5,
               "involution": true,
+              "ray": 5,
+              "team": 1,
+              "domain": "radar",
               "name": "hepdata",
               "href": "https://www.hepdata.net/search/?format=json",
+              "quantum": {
+                "face": 12,
+                "name": "measurement",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             },
             {
               "face": 13,
               "hop": 13,
+              "pair": 6,
               "involution": true,
+              "ray": 6,
+              "team": 1,
+              "domain": "radar",
               "name": "indico",
               "href": "https://indico.cern.ch/export/categ/0.json",
+              "quantum": {
+                "face": 13,
+                "name": "fridge",
+                "holds": true
+              },
+              "product": false,
               "holds": true
             }
           ],
@@ -3894,6 +4034,17 @@
           "MoEDAL",
           "FASER",
           "SND@LHC"
+        ],
+        "opendata": [
+          "ATLAS",
+          "CMS",
+          "ALICE",
+          "LHCb",
+          "TOTEM",
+          "OPERA",
+          "PHENIX",
+          "JADE",
+          "DELPHI"
         ],
         "experiments": [
           {
@@ -3914,7 +4065,23 @@
           },
           {
             "experiment": "SND@LHC",
-            "href": "https://opendata.cern.ch/api/records/?q=experiment:SND@LHC&size=1"
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:SND%40LHC&size=1"
+          },
+          {
+            "experiment": "OPERA",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:OPERA&size=1"
+          },
+          {
+            "experiment": "PHENIX",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:PHENIX&size=1"
+          },
+          {
+            "experiment": "JADE",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:JADE&size=1"
+          },
+          {
+            "experiment": "DELPHI",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:DELPHI&size=1"
           }
         ],
         "catalogs": [
@@ -3975,6 +4142,1960 @@
             "href": "https://indico.cern.ch/export/categ/0.json"
           }
         ],
+        "entangle": {
+          "pairs": [
+            {
+              "kind": "view",
+              "same": true,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "ATLAS"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "ATLAS"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": true,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "CMS"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "CMS"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": true,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "ALICE"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "ALICE"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": true,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "LHCb"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "LHCb"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": true,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "TOTEM"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "TOTEM"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": false,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "LHCf"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "OPERA"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": false,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "MoEDAL"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "PHENIX"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": false,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "FASER"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "JADE"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "kind": "view",
+              "same": false,
+              "scanner": {
+                "domain": "scanner",
+                "kind": "lhc",
+                "experiment": "SND@LHC"
+              },
+              "radar": {
+                "domain": "radar",
+                "kind": "opendata",
+                "experiment": "DELPHI"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            }
+          ],
+          "catalog": {
+            "nodes": [
+              {
+                "face": 0,
+                "hop": 7,
+                "ray": 0,
+                "team": 0,
+                "domain": "scanner",
+                "involution": true,
+                "name": "literature",
+                "href": "https://inspirehep.net/api/literature?size=1",
+                "catalog": "literature",
+                "partner": {
+                  "face": 7,
+                  "ray": 0,
+                  "team": 1,
+                  "domain": "radar",
+                  "name": "experiments",
+                  "href": "https://inspirehep.net/api/experiments?size=1"
+                },
+                "quantum": {
+                  "face": 0,
+                  "name": "split",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 1,
+                "hop": 8,
+                "ray": 1,
+                "team": 0,
+                "domain": "scanner",
+                "involution": true,
+                "name": "authors",
+                "href": "https://inspirehep.net/api/authors?size=1",
+                "catalog": "authors",
+                "partner": {
+                  "face": 8,
+                  "ray": 1,
+                  "team": 1,
+                  "domain": "radar",
+                  "name": "data",
+                  "href": "https://inspirehep.net/api/data?size=1"
+                },
+                "quantum": {
+                  "face": 1,
+                  "name": "entangle",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 2,
+                "hop": 9,
+                "ray": 2,
+                "team": 0,
+                "domain": "scanner",
+                "involution": true,
+                "name": "institutions",
+                "href": "https://inspirehep.net/api/institutions?size=1",
+                "catalog": "institutions",
+                "partner": {
+                  "face": 9,
+                  "ray": 2,
+                  "team": 1,
+                  "domain": "radar",
+                  "name": "opendata",
+                  "href": "https://opendata.cern.ch/api/records?size=1"
+                },
+                "quantum": {
+                  "face": 2,
+                  "name": "interfere",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 3,
+                "hop": 10,
+                "ray": 3,
+                "team": 0,
+                "domain": "scanner",
+                "involution": true,
+                "name": "conferences",
+                "href": "https://inspirehep.net/api/conferences?size=1",
+                "catalog": "conferences",
+                "partner": {
+                  "face": 10,
+                  "ray": 3,
+                  "team": 1,
+                  "domain": "radar",
+                  "name": "repository",
+                  "href": "https://repository.cern/api/records?size=1"
+                },
+                "quantum": {
+                  "face": 3,
+                  "name": "ghz",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 4,
+                "hop": 11,
+                "ray": 4,
+                "team": 0,
+                "domain": "scanner",
+                "involution": true,
+                "name": "seminars",
+                "href": "https://inspirehep.net/api/seminars?size=1",
+                "catalog": "seminars",
+                "partner": {
+                  "face": 11,
+                  "ray": 4,
+                  "team": 1,
+                  "domain": "radar",
+                  "name": "zenodo",
+                  "href": "https://zenodo.org/api/records?size=1"
+                },
+                "quantum": {
+                  "face": 4,
+                  "name": "noclone",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 5,
+                "hop": 12,
+                "ray": 5,
+                "team": 0,
+                "domain": "scanner",
+                "involution": true,
+                "name": "journals",
+                "href": "https://inspirehep.net/api/journals?size=1",
+                "catalog": "journals",
+                "partner": {
+                  "face": 12,
+                  "ray": 5,
+                  "team": 1,
+                  "domain": "radar",
+                  "name": "hepdata",
+                  "href": "https://www.hepdata.net/search/?format=json"
+                },
+                "quantum": {
+                  "face": 5,
+                  "name": "teleport",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 6,
+                "hop": 13,
+                "ray": 6,
+                "team": 0,
+                "domain": "scanner",
+                "involution": true,
+                "name": "jobs",
+                "href": "https://inspirehep.net/api/jobs?size=1",
+                "catalog": "jobs",
+                "partner": {
+                  "face": 13,
+                  "ray": 6,
+                  "team": 1,
+                  "domain": "radar",
+                  "name": "indico",
+                  "href": "https://indico.cern.ch/export/categ/0.json"
+                },
+                "quantum": {
+                  "face": 6,
+                  "name": "kickback",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 7,
+                "hop": 0,
+                "ray": 0,
+                "team": 1,
+                "domain": "radar",
+                "involution": true,
+                "name": "experiments",
+                "href": "https://inspirehep.net/api/experiments?size=1",
+                "catalog": "experiments",
+                "partner": {
+                  "face": 0,
+                  "ray": 0,
+                  "team": 0,
+                  "domain": "scanner",
+                  "name": "literature",
+                  "href": "https://inspirehep.net/api/literature?size=1"
+                },
+                "quantum": {
+                  "face": 7,
+                  "name": "deutsch",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 8,
+                "hop": 1,
+                "ray": 1,
+                "team": 1,
+                "domain": "radar",
+                "involution": true,
+                "name": "data",
+                "href": "https://inspirehep.net/api/data?size=1",
+                "catalog": "data",
+                "partner": {
+                  "face": 1,
+                  "ray": 1,
+                  "team": 0,
+                  "domain": "scanner",
+                  "name": "authors",
+                  "href": "https://inspirehep.net/api/authors?size=1"
+                },
+                "quantum": {
+                  "face": 8,
+                  "name": "dense",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 9,
+                "hop": 2,
+                "ray": 2,
+                "team": 1,
+                "domain": "radar",
+                "involution": true,
+                "name": "opendata",
+                "href": "https://opendata.cern.ch/api/records?size=1",
+                "catalog": "opendata",
+                "partner": {
+                  "face": 2,
+                  "ray": 2,
+                  "team": 0,
+                  "domain": "scanner",
+                  "name": "institutions",
+                  "href": "https://inspirehep.net/api/institutions?size=1"
+                },
+                "quantum": {
+                  "face": 9,
+                  "name": "monogamy",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 10,
+                "hop": 3,
+                "ray": 3,
+                "team": 1,
+                "domain": "radar",
+                "involution": true,
+                "name": "repository",
+                "href": "https://repository.cern/api/records?size=1",
+                "catalog": "repository",
+                "partner": {
+                  "face": 3,
+                  "ray": 3,
+                  "team": 0,
+                  "domain": "scanner",
+                  "name": "conferences",
+                  "href": "https://inspirehep.net/api/conferences?size=1"
+                },
+                "quantum": {
+                  "face": 10,
+                  "name": "qubits",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 11,
+                "hop": 4,
+                "ray": 4,
+                "team": 1,
+                "domain": "radar",
+                "involution": true,
+                "name": "zenodo",
+                "href": "https://zenodo.org/api/records?size=1",
+                "catalog": "zenodo",
+                "partner": {
+                  "face": 4,
+                  "ray": 4,
+                  "team": 0,
+                  "domain": "scanner",
+                  "name": "seminars",
+                  "href": "https://inspirehep.net/api/seminars?size=1"
+                },
+                "quantum": {
+                  "face": 11,
+                  "name": "gates",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 12,
+                "hop": 5,
+                "ray": 5,
+                "team": 1,
+                "domain": "radar",
+                "involution": true,
+                "name": "hepdata",
+                "href": "https://www.hepdata.net/search/?format=json",
+                "catalog": "hepdata",
+                "partner": {
+                  "face": 5,
+                  "ray": 5,
+                  "team": 0,
+                  "domain": "scanner",
+                  "name": "journals",
+                  "href": "https://inspirehep.net/api/journals?size=1"
+                },
+                "quantum": {
+                  "face": 12,
+                  "name": "measurement",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              },
+              {
+                "face": 13,
+                "hop": 6,
+                "ray": 6,
+                "team": 1,
+                "domain": "radar",
+                "involution": true,
+                "name": "indico",
+                "href": "https://indico.cern.ch/export/categ/0.json",
+                "catalog": "indico",
+                "partner": {
+                  "face": 6,
+                  "ray": 6,
+                  "team": 0,
+                  "domain": "scanner",
+                  "name": "jobs",
+                  "href": "https://inspirehep.net/api/jobs?size=1"
+                },
+                "quantum": {
+                  "face": 13,
+                  "name": "fridge",
+                  "holds": true
+                },
+                "product": false,
+                "left": 1,
+                "right": 0,
+                "holds": true
+              }
+            ],
+            "pairs": [
+              {
+                "ray": 0,
+                "scanner": {
+                  "face": 0,
+                  "domain": "scanner",
+                  "catalog": "literature",
+                  "quantum": "split"
+                },
+                "radar": {
+                  "face": 7,
+                  "domain": "radar",
+                  "catalog": "experiments",
+                  "quantum": "deutsch"
+                },
+                "product": false,
+                "theorem": "theorem entangle",
+                "holds": true
+              },
+              {
+                "ray": 1,
+                "scanner": {
+                  "face": 1,
+                  "domain": "scanner",
+                  "catalog": "authors",
+                  "quantum": "entangle"
+                },
+                "radar": {
+                  "face": 8,
+                  "domain": "radar",
+                  "catalog": "data",
+                  "quantum": "dense"
+                },
+                "product": false,
+                "theorem": "theorem entangle",
+                "holds": true
+              },
+              {
+                "ray": 2,
+                "scanner": {
+                  "face": 2,
+                  "domain": "scanner",
+                  "catalog": "institutions",
+                  "quantum": "interfere"
+                },
+                "radar": {
+                  "face": 9,
+                  "domain": "radar",
+                  "catalog": "opendata",
+                  "quantum": "monogamy"
+                },
+                "product": false,
+                "theorem": "theorem entangle",
+                "holds": true
+              },
+              {
+                "ray": 3,
+                "scanner": {
+                  "face": 3,
+                  "domain": "scanner",
+                  "catalog": "conferences",
+                  "quantum": "ghz"
+                },
+                "radar": {
+                  "face": 10,
+                  "domain": "radar",
+                  "catalog": "repository",
+                  "quantum": "qubits"
+                },
+                "product": false,
+                "theorem": "theorem entangle",
+                "holds": true
+              },
+              {
+                "ray": 4,
+                "scanner": {
+                  "face": 4,
+                  "domain": "scanner",
+                  "catalog": "seminars",
+                  "quantum": "noclone"
+                },
+                "radar": {
+                  "face": 11,
+                  "domain": "radar",
+                  "catalog": "zenodo",
+                  "quantum": "gates"
+                },
+                "product": false,
+                "theorem": "theorem entangle",
+                "holds": true
+              },
+              {
+                "ray": 5,
+                "scanner": {
+                  "face": 5,
+                  "domain": "scanner",
+                  "catalog": "journals",
+                  "quantum": "teleport"
+                },
+                "radar": {
+                  "face": 12,
+                  "domain": "radar",
+                  "catalog": "hepdata",
+                  "quantum": "measurement"
+                },
+                "product": false,
+                "theorem": "theorem entangle",
+                "holds": true
+              },
+              {
+                "ray": 6,
+                "scanner": {
+                  "face": 6,
+                  "domain": "scanner",
+                  "catalog": "jobs",
+                  "quantum": "kickback"
+                },
+                "radar": {
+                  "face": 13,
+                  "domain": "radar",
+                  "catalog": "indico",
+                  "quantum": "fridge"
+                },
+                "product": false,
+                "theorem": "theorem entangle",
+                "holds": true
+              }
+            ],
+            "occupied": 14,
+            "vacant": 0,
+            "holds": true
+          },
+          "views": [
+            {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiments": [
+                "ATLAS",
+                "CMS",
+                "ALICE",
+                "LHCb",
+                "TOTEM",
+                "LHCf",
+                "MoEDAL",
+                "FASER",
+                "SND@LHC"
+              ]
+            },
+            {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiments": [
+                "ATLAS",
+                "CMS",
+                "ALICE",
+                "LHCb",
+                "TOTEM",
+                "OPERA",
+                "PHENIX",
+                "JADE",
+                "DELPHI"
+              ]
+            }
+          ],
+          "holds": true
+        },
+        "holds": true
+      },
+      "entangle": {
+        "kind": "entangle",
+        "theorem": "theorem entangle",
+        "domains": [
+          "scanner",
+          "radar"
+        ],
+        "views": [
+          {
+            "domain": "scanner",
+            "kind": "lhc",
+            "experiments": [
+              "ATLAS",
+              "CMS",
+              "ALICE",
+              "LHCb",
+              "TOTEM",
+              "LHCf",
+              "MoEDAL",
+              "FASER",
+              "SND@LHC"
+            ]
+          },
+          {
+            "domain": "radar",
+            "kind": "opendata",
+            "experiments": [
+              "ATLAS",
+              "CMS",
+              "ALICE",
+              "LHCb",
+              "TOTEM",
+              "OPERA",
+              "PHENIX",
+              "JADE",
+              "DELPHI"
+            ]
+          }
+        ],
+        "pairs": [
+          {
+            "kind": "view",
+            "same": true,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "ATLAS"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "ATLAS"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": true,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "CMS"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "CMS"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": true,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "ALICE"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "ALICE"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": true,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "LHCb"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "LHCb"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": true,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "TOTEM"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "TOTEM"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": false,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "LHCf"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "OPERA"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": false,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "MoEDAL"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "PHENIX"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": false,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "FASER"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "JADE"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          },
+          {
+            "kind": "view",
+            "same": false,
+            "scanner": {
+              "domain": "scanner",
+              "kind": "lhc",
+              "experiment": "SND@LHC"
+            },
+            "radar": {
+              "domain": "radar",
+              "kind": "opendata",
+              "experiment": "DELPHI"
+            },
+            "product": false,
+            "theorem": "theorem entangle",
+            "holds": true
+          }
+        ],
+        "catalog": {
+          "nodes": [
+            {
+              "face": 0,
+              "hop": 7,
+              "ray": 0,
+              "team": 0,
+              "domain": "scanner",
+              "involution": true,
+              "name": "literature",
+              "href": "https://inspirehep.net/api/literature?size=1",
+              "catalog": "literature",
+              "partner": {
+                "face": 7,
+                "ray": 0,
+                "team": 1,
+                "domain": "radar",
+                "name": "experiments",
+                "href": "https://inspirehep.net/api/experiments?size=1"
+              },
+              "quantum": {
+                "face": 0,
+                "name": "split",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 1,
+              "hop": 8,
+              "ray": 1,
+              "team": 0,
+              "domain": "scanner",
+              "involution": true,
+              "name": "authors",
+              "href": "https://inspirehep.net/api/authors?size=1",
+              "catalog": "authors",
+              "partner": {
+                "face": 8,
+                "ray": 1,
+                "team": 1,
+                "domain": "radar",
+                "name": "data",
+                "href": "https://inspirehep.net/api/data?size=1"
+              },
+              "quantum": {
+                "face": 1,
+                "name": "entangle",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 2,
+              "hop": 9,
+              "ray": 2,
+              "team": 0,
+              "domain": "scanner",
+              "involution": true,
+              "name": "institutions",
+              "href": "https://inspirehep.net/api/institutions?size=1",
+              "catalog": "institutions",
+              "partner": {
+                "face": 9,
+                "ray": 2,
+                "team": 1,
+                "domain": "radar",
+                "name": "opendata",
+                "href": "https://opendata.cern.ch/api/records?size=1"
+              },
+              "quantum": {
+                "face": 2,
+                "name": "interfere",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 3,
+              "hop": 10,
+              "ray": 3,
+              "team": 0,
+              "domain": "scanner",
+              "involution": true,
+              "name": "conferences",
+              "href": "https://inspirehep.net/api/conferences?size=1",
+              "catalog": "conferences",
+              "partner": {
+                "face": 10,
+                "ray": 3,
+                "team": 1,
+                "domain": "radar",
+                "name": "repository",
+                "href": "https://repository.cern/api/records?size=1"
+              },
+              "quantum": {
+                "face": 3,
+                "name": "ghz",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 4,
+              "hop": 11,
+              "ray": 4,
+              "team": 0,
+              "domain": "scanner",
+              "involution": true,
+              "name": "seminars",
+              "href": "https://inspirehep.net/api/seminars?size=1",
+              "catalog": "seminars",
+              "partner": {
+                "face": 11,
+                "ray": 4,
+                "team": 1,
+                "domain": "radar",
+                "name": "zenodo",
+                "href": "https://zenodo.org/api/records?size=1"
+              },
+              "quantum": {
+                "face": 4,
+                "name": "noclone",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 5,
+              "hop": 12,
+              "ray": 5,
+              "team": 0,
+              "domain": "scanner",
+              "involution": true,
+              "name": "journals",
+              "href": "https://inspirehep.net/api/journals?size=1",
+              "catalog": "journals",
+              "partner": {
+                "face": 12,
+                "ray": 5,
+                "team": 1,
+                "domain": "radar",
+                "name": "hepdata",
+                "href": "https://www.hepdata.net/search/?format=json"
+              },
+              "quantum": {
+                "face": 5,
+                "name": "teleport",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 6,
+              "hop": 13,
+              "ray": 6,
+              "team": 0,
+              "domain": "scanner",
+              "involution": true,
+              "name": "jobs",
+              "href": "https://inspirehep.net/api/jobs?size=1",
+              "catalog": "jobs",
+              "partner": {
+                "face": 13,
+                "ray": 6,
+                "team": 1,
+                "domain": "radar",
+                "name": "indico",
+                "href": "https://indico.cern.ch/export/categ/0.json"
+              },
+              "quantum": {
+                "face": 6,
+                "name": "kickback",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 7,
+              "hop": 0,
+              "ray": 0,
+              "team": 1,
+              "domain": "radar",
+              "involution": true,
+              "name": "experiments",
+              "href": "https://inspirehep.net/api/experiments?size=1",
+              "catalog": "experiments",
+              "partner": {
+                "face": 0,
+                "ray": 0,
+                "team": 0,
+                "domain": "scanner",
+                "name": "literature",
+                "href": "https://inspirehep.net/api/literature?size=1"
+              },
+              "quantum": {
+                "face": 7,
+                "name": "deutsch",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 8,
+              "hop": 1,
+              "ray": 1,
+              "team": 1,
+              "domain": "radar",
+              "involution": true,
+              "name": "data",
+              "href": "https://inspirehep.net/api/data?size=1",
+              "catalog": "data",
+              "partner": {
+                "face": 1,
+                "ray": 1,
+                "team": 0,
+                "domain": "scanner",
+                "name": "authors",
+                "href": "https://inspirehep.net/api/authors?size=1"
+              },
+              "quantum": {
+                "face": 8,
+                "name": "dense",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 9,
+              "hop": 2,
+              "ray": 2,
+              "team": 1,
+              "domain": "radar",
+              "involution": true,
+              "name": "opendata",
+              "href": "https://opendata.cern.ch/api/records?size=1",
+              "catalog": "opendata",
+              "partner": {
+                "face": 2,
+                "ray": 2,
+                "team": 0,
+                "domain": "scanner",
+                "name": "institutions",
+                "href": "https://inspirehep.net/api/institutions?size=1"
+              },
+              "quantum": {
+                "face": 9,
+                "name": "monogamy",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 10,
+              "hop": 3,
+              "ray": 3,
+              "team": 1,
+              "domain": "radar",
+              "involution": true,
+              "name": "repository",
+              "href": "https://repository.cern/api/records?size=1",
+              "catalog": "repository",
+              "partner": {
+                "face": 3,
+                "ray": 3,
+                "team": 0,
+                "domain": "scanner",
+                "name": "conferences",
+                "href": "https://inspirehep.net/api/conferences?size=1"
+              },
+              "quantum": {
+                "face": 10,
+                "name": "qubits",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 11,
+              "hop": 4,
+              "ray": 4,
+              "team": 1,
+              "domain": "radar",
+              "involution": true,
+              "name": "zenodo",
+              "href": "https://zenodo.org/api/records?size=1",
+              "catalog": "zenodo",
+              "partner": {
+                "face": 4,
+                "ray": 4,
+                "team": 0,
+                "domain": "scanner",
+                "name": "seminars",
+                "href": "https://inspirehep.net/api/seminars?size=1"
+              },
+              "quantum": {
+                "face": 11,
+                "name": "gates",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 12,
+              "hop": 5,
+              "ray": 5,
+              "team": 1,
+              "domain": "radar",
+              "involution": true,
+              "name": "hepdata",
+              "href": "https://www.hepdata.net/search/?format=json",
+              "catalog": "hepdata",
+              "partner": {
+                "face": 5,
+                "ray": 5,
+                "team": 0,
+                "domain": "scanner",
+                "name": "journals",
+                "href": "https://inspirehep.net/api/journals?size=1"
+              },
+              "quantum": {
+                "face": 12,
+                "name": "measurement",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            },
+            {
+              "face": 13,
+              "hop": 6,
+              "ray": 6,
+              "team": 1,
+              "domain": "radar",
+              "involution": true,
+              "name": "indico",
+              "href": "https://indico.cern.ch/export/categ/0.json",
+              "catalog": "indico",
+              "partner": {
+                "face": 6,
+                "ray": 6,
+                "team": 0,
+                "domain": "scanner",
+                "name": "jobs",
+                "href": "https://inspirehep.net/api/jobs?size=1"
+              },
+              "quantum": {
+                "face": 13,
+                "name": "fridge",
+                "holds": true
+              },
+              "product": false,
+              "left": 1,
+              "right": 0,
+              "holds": true
+            }
+          ],
+          "pairs": [
+            {
+              "ray": 0,
+              "scanner": {
+                "face": 0,
+                "domain": "scanner",
+                "catalog": "literature",
+                "quantum": "split"
+              },
+              "radar": {
+                "face": 7,
+                "domain": "radar",
+                "catalog": "experiments",
+                "quantum": "deutsch"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "ray": 1,
+              "scanner": {
+                "face": 1,
+                "domain": "scanner",
+                "catalog": "authors",
+                "quantum": "entangle"
+              },
+              "radar": {
+                "face": 8,
+                "domain": "radar",
+                "catalog": "data",
+                "quantum": "dense"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "ray": 2,
+              "scanner": {
+                "face": 2,
+                "domain": "scanner",
+                "catalog": "institutions",
+                "quantum": "interfere"
+              },
+              "radar": {
+                "face": 9,
+                "domain": "radar",
+                "catalog": "opendata",
+                "quantum": "monogamy"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "ray": 3,
+              "scanner": {
+                "face": 3,
+                "domain": "scanner",
+                "catalog": "conferences",
+                "quantum": "ghz"
+              },
+              "radar": {
+                "face": 10,
+                "domain": "radar",
+                "catalog": "repository",
+                "quantum": "qubits"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "ray": 4,
+              "scanner": {
+                "face": 4,
+                "domain": "scanner",
+                "catalog": "seminars",
+                "quantum": "noclone"
+              },
+              "radar": {
+                "face": 11,
+                "domain": "radar",
+                "catalog": "zenodo",
+                "quantum": "gates"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "ray": 5,
+              "scanner": {
+                "face": 5,
+                "domain": "scanner",
+                "catalog": "journals",
+                "quantum": "teleport"
+              },
+              "radar": {
+                "face": 12,
+                "domain": "radar",
+                "catalog": "hepdata",
+                "quantum": "measurement"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            },
+            {
+              "ray": 6,
+              "scanner": {
+                "face": 6,
+                "domain": "scanner",
+                "catalog": "jobs",
+                "quantum": "kickback"
+              },
+              "radar": {
+                "face": 13,
+                "domain": "radar",
+                "catalog": "indico",
+                "quantum": "fridge"
+              },
+              "product": false,
+              "theorem": "theorem entangle",
+              "holds": true
+            }
+          ],
+          "occupied": 14,
+          "vacant": 0,
+          "holds": true
+        },
+        "nodes": [
+          {
+            "face": 0,
+            "hop": 7,
+            "ray": 0,
+            "team": 0,
+            "domain": "scanner",
+            "involution": true,
+            "name": "literature",
+            "href": "https://inspirehep.net/api/literature?size=1",
+            "catalog": "literature",
+            "partner": {
+              "face": 7,
+              "ray": 0,
+              "team": 1,
+              "domain": "radar",
+              "name": "experiments",
+              "href": "https://inspirehep.net/api/experiments?size=1"
+            },
+            "quantum": {
+              "face": 0,
+              "name": "split",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 1,
+            "hop": 8,
+            "ray": 1,
+            "team": 0,
+            "domain": "scanner",
+            "involution": true,
+            "name": "authors",
+            "href": "https://inspirehep.net/api/authors?size=1",
+            "catalog": "authors",
+            "partner": {
+              "face": 8,
+              "ray": 1,
+              "team": 1,
+              "domain": "radar",
+              "name": "data",
+              "href": "https://inspirehep.net/api/data?size=1"
+            },
+            "quantum": {
+              "face": 1,
+              "name": "entangle",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 2,
+            "hop": 9,
+            "ray": 2,
+            "team": 0,
+            "domain": "scanner",
+            "involution": true,
+            "name": "institutions",
+            "href": "https://inspirehep.net/api/institutions?size=1",
+            "catalog": "institutions",
+            "partner": {
+              "face": 9,
+              "ray": 2,
+              "team": 1,
+              "domain": "radar",
+              "name": "opendata",
+              "href": "https://opendata.cern.ch/api/records?size=1"
+            },
+            "quantum": {
+              "face": 2,
+              "name": "interfere",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 3,
+            "hop": 10,
+            "ray": 3,
+            "team": 0,
+            "domain": "scanner",
+            "involution": true,
+            "name": "conferences",
+            "href": "https://inspirehep.net/api/conferences?size=1",
+            "catalog": "conferences",
+            "partner": {
+              "face": 10,
+              "ray": 3,
+              "team": 1,
+              "domain": "radar",
+              "name": "repository",
+              "href": "https://repository.cern/api/records?size=1"
+            },
+            "quantum": {
+              "face": 3,
+              "name": "ghz",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 4,
+            "hop": 11,
+            "ray": 4,
+            "team": 0,
+            "domain": "scanner",
+            "involution": true,
+            "name": "seminars",
+            "href": "https://inspirehep.net/api/seminars?size=1",
+            "catalog": "seminars",
+            "partner": {
+              "face": 11,
+              "ray": 4,
+              "team": 1,
+              "domain": "radar",
+              "name": "zenodo",
+              "href": "https://zenodo.org/api/records?size=1"
+            },
+            "quantum": {
+              "face": 4,
+              "name": "noclone",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 5,
+            "hop": 12,
+            "ray": 5,
+            "team": 0,
+            "domain": "scanner",
+            "involution": true,
+            "name": "journals",
+            "href": "https://inspirehep.net/api/journals?size=1",
+            "catalog": "journals",
+            "partner": {
+              "face": 12,
+              "ray": 5,
+              "team": 1,
+              "domain": "radar",
+              "name": "hepdata",
+              "href": "https://www.hepdata.net/search/?format=json"
+            },
+            "quantum": {
+              "face": 5,
+              "name": "teleport",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 6,
+            "hop": 13,
+            "ray": 6,
+            "team": 0,
+            "domain": "scanner",
+            "involution": true,
+            "name": "jobs",
+            "href": "https://inspirehep.net/api/jobs?size=1",
+            "catalog": "jobs",
+            "partner": {
+              "face": 13,
+              "ray": 6,
+              "team": 1,
+              "domain": "radar",
+              "name": "indico",
+              "href": "https://indico.cern.ch/export/categ/0.json"
+            },
+            "quantum": {
+              "face": 6,
+              "name": "kickback",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 7,
+            "hop": 0,
+            "ray": 0,
+            "team": 1,
+            "domain": "radar",
+            "involution": true,
+            "name": "experiments",
+            "href": "https://inspirehep.net/api/experiments?size=1",
+            "catalog": "experiments",
+            "partner": {
+              "face": 0,
+              "ray": 0,
+              "team": 0,
+              "domain": "scanner",
+              "name": "literature",
+              "href": "https://inspirehep.net/api/literature?size=1"
+            },
+            "quantum": {
+              "face": 7,
+              "name": "deutsch",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 8,
+            "hop": 1,
+            "ray": 1,
+            "team": 1,
+            "domain": "radar",
+            "involution": true,
+            "name": "data",
+            "href": "https://inspirehep.net/api/data?size=1",
+            "catalog": "data",
+            "partner": {
+              "face": 1,
+              "ray": 1,
+              "team": 0,
+              "domain": "scanner",
+              "name": "authors",
+              "href": "https://inspirehep.net/api/authors?size=1"
+            },
+            "quantum": {
+              "face": 8,
+              "name": "dense",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 9,
+            "hop": 2,
+            "ray": 2,
+            "team": 1,
+            "domain": "radar",
+            "involution": true,
+            "name": "opendata",
+            "href": "https://opendata.cern.ch/api/records?size=1",
+            "catalog": "opendata",
+            "partner": {
+              "face": 2,
+              "ray": 2,
+              "team": 0,
+              "domain": "scanner",
+              "name": "institutions",
+              "href": "https://inspirehep.net/api/institutions?size=1"
+            },
+            "quantum": {
+              "face": 9,
+              "name": "monogamy",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 10,
+            "hop": 3,
+            "ray": 3,
+            "team": 1,
+            "domain": "radar",
+            "involution": true,
+            "name": "repository",
+            "href": "https://repository.cern/api/records?size=1",
+            "catalog": "repository",
+            "partner": {
+              "face": 3,
+              "ray": 3,
+              "team": 0,
+              "domain": "scanner",
+              "name": "conferences",
+              "href": "https://inspirehep.net/api/conferences?size=1"
+            },
+            "quantum": {
+              "face": 10,
+              "name": "qubits",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 11,
+            "hop": 4,
+            "ray": 4,
+            "team": 1,
+            "domain": "radar",
+            "involution": true,
+            "name": "zenodo",
+            "href": "https://zenodo.org/api/records?size=1",
+            "catalog": "zenodo",
+            "partner": {
+              "face": 4,
+              "ray": 4,
+              "team": 0,
+              "domain": "scanner",
+              "name": "seminars",
+              "href": "https://inspirehep.net/api/seminars?size=1"
+            },
+            "quantum": {
+              "face": 11,
+              "name": "gates",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 12,
+            "hop": 5,
+            "ray": 5,
+            "team": 1,
+            "domain": "radar",
+            "involution": true,
+            "name": "hepdata",
+            "href": "https://www.hepdata.net/search/?format=json",
+            "catalog": "hepdata",
+            "partner": {
+              "face": 5,
+              "ray": 5,
+              "team": 0,
+              "domain": "scanner",
+              "name": "journals",
+              "href": "https://inspirehep.net/api/journals?size=1"
+            },
+            "quantum": {
+              "face": 12,
+              "name": "measurement",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          },
+          {
+            "face": 13,
+            "hop": 6,
+            "ray": 6,
+            "team": 1,
+            "domain": "radar",
+            "involution": true,
+            "name": "indico",
+            "href": "https://indico.cern.ch/export/categ/0.json",
+            "catalog": "indico",
+            "partner": {
+              "face": 6,
+              "ray": 6,
+              "team": 0,
+              "domain": "scanner",
+              "name": "jobs",
+              "href": "https://inspirehep.net/api/jobs?size=1"
+            },
+            "quantum": {
+              "face": 13,
+              "name": "fridge",
+              "holds": true
+            },
+            "product": false,
+            "left": 1,
+            "right": 0,
+            "holds": true
+          }
+        ],
+        "occupied": 14,
+        "vacant": 0,
+        "holds": true
+      },
+      "search": {
+        "kind": "hep",
+        "views": [
+          {
+            "domain": "scanner",
+            "kind": "lhc",
+            "experiments": [
+              "TOTEM",
+              "LHCf",
+              "MoEDAL",
+              "FASER",
+              "SND@LHC"
+            ],
+            "doors": [
+              {
+                "experiment": "TOTEM",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:TOTEM&size=1"
+              },
+              {
+                "experiment": "LHCf",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:LHCf&size=1"
+              },
+              {
+                "experiment": "MoEDAL",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:MoEDAL&size=1"
+              },
+              {
+                "experiment": "FASER",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:FASER&size=1"
+              },
+              {
+                "experiment": "SND@LHC",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:SND%40LHC&size=1"
+              }
+            ]
+          },
+          {
+            "domain": "radar",
+            "kind": "opendata",
+            "experiments": [
+              "TOTEM",
+              "OPERA",
+              "PHENIX",
+              "JADE",
+              "DELPHI"
+            ],
+            "doors": [
+              {
+                "experiment": "TOTEM",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:TOTEM&size=1"
+              },
+              {
+                "experiment": "OPERA",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:OPERA&size=1"
+              },
+              {
+                "experiment": "PHENIX",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:PHENIX&size=1"
+              },
+              {
+                "experiment": "JADE",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:JADE&size=1"
+              },
+              {
+                "experiment": "DELPHI",
+                "href": "https://opendata.cern.ch/api/records/?q=experiment:DELPHI&size=1"
+              }
+            ]
+          }
+        ],
+        "experiments": [
+          "TOTEM",
+          "LHCf",
+          "MoEDAL",
+          "FASER",
+          "SND@LHC"
+        ],
+        "doors": [
+          {
+            "experiment": "TOTEM",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:TOTEM&size=1"
+          },
+          {
+            "experiment": "LHCf",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:LHCf&size=1"
+          },
+          {
+            "experiment": "MoEDAL",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:MoEDAL&size=1"
+          },
+          {
+            "experiment": "FASER",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:FASER&size=1"
+          },
+          {
+            "experiment": "SND@LHC",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:SND%40LHC&size=1"
+          },
+          {
+            "experiment": "OPERA",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:OPERA&size=1"
+          },
+          {
+            "experiment": "PHENIX",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:PHENIX&size=1"
+          },
+          {
+            "experiment": "JADE",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:JADE&size=1"
+          },
+          {
+            "experiment": "DELPHI",
+            "href": "https://opendata.cern.ch/api/records/?q=experiment:DELPHI&size=1"
+          }
+        ],
+        "quantum": false,
         "holds": true
       },
       "faces": 14,
@@ -4058,6 +6179,99 @@
           "experiment": "LHCb",
           "href": "https://opendata.cern.ch/api/records/?q=experiment:LHCb&size=1",
           "theorem": "theorem tetra",
+          "holds": true
+        }
+      ],
+      "experiments": [
+        {
+          "experiment": "ATLAS",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:ATLAS&size=1",
+          "tetra": true,
+          "theorem": "theorem tetra",
+          "holds": true
+        },
+        {
+          "experiment": "CMS",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:CMS&size=1",
+          "tetra": true,
+          "theorem": "theorem tetra",
+          "holds": true
+        },
+        {
+          "experiment": "ALICE",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:ALICE&size=1",
+          "tetra": true,
+          "theorem": "theorem tetra",
+          "holds": true
+        },
+        {
+          "experiment": "LHCb",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:LHCb&size=1",
+          "tetra": true,
+          "theorem": "theorem tetra",
+          "holds": true
+        },
+        {
+          "experiment": "TOTEM",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:TOTEM&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "LHCf",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:LHCf&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "MoEDAL",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:MoEDAL&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "FASER",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:FASER&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "SND@LHC",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:SND%40LHC&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "OPERA",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:OPERA&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "PHENIX",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:PHENIX&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "JADE",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:JADE&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
+          "holds": true
+        },
+        {
+          "experiment": "DELPHI",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:DELPHI&size=1",
+          "tetra": false,
+          "theorem": "theorem cern",
           "holds": true
         }
       ],

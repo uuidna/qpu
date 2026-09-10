@@ -2,6 +2,32 @@
 
 Running quantum circuit at https://qpu.uuidna.com. Possible only in quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Public quantum API. No auth. Anyone may test and train online. GET https://qpu.uuidna.com is qpu_quantum. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. Source `src/quantum/processing/unit/index.lean`.
 
+## Develop
+
+Lean `src/quantum/processing/unit/index.lean` leads. TypeScript fuses the same identities. This README is generated. Coins balance theory in practice. Never Math. Never by decide.
+
+```sh
+git clone https://github.com/uuidna/qpu && cd qpu
+npm ci
+npm test
+```
+
+`npm test` compiles then runs the unit tests. `npm run ci` is Lean then test. `npm run ship` deploys. Do not import uuidna.
+
+- host qpu.uuidna.com. API only JSON-LD. No HTML. No auth. cors *.
+- sealed tools 8 = mintOf n. Not a ninth sealed tool. Morph install Payload finds imagine at call-time.
+- docs.api 7 = rays. Extra paths do not join that list.
+- integrity 3: quantum lean sealed. If false every path is 404.
+- primitives fetch Request Response BigInt performance. Never Math.
+- fridge superconducting. resistance false. ns 0.
+- fuse faces * mintOf (bits + seed) = 120259084288. isolate handle.amplitudes 4294967296. KV 8589934592.
+- next = fused + fused. last false. split_coin has no last k. demo is not a test nor a proof.
+- occupancy personal business corporate saas paas. skills payload pwa plugin hologram network.
+- domains scanner radar. face = team * rays + ray. hop face + rays. involution face + rays + rays.
+- circuit.gates h cnot.
+- sandbox memory only. Not KV.
+- CERN coins views. scanner LHC running ATLAS CMS ALICE LHCb TOTEM LHCf MoEDAL FASER SND@LHC. radar Open Data ATLAS CMS ALICE LHCb TOTEM OPERA PHENIX JADE DELPHI. Shared tetra + TOTEM. Exclusive LHCf↔OPERA MoEDAL↔PHENIX FASER↔JADE SND@LHC↔DELPHI. Catalog pairs 7. HEP quantum false. Live JSON. Open Data needs records. LHC-only holds without Open Data occupancy.
+
 ## Install
 
 One command. Enter seats all. Combinations in the console. Cloudflare is one click — this README and `install.json`.
@@ -158,7 +184,7 @@ SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_prove
     qpu_prove { man: true }
 DESCRIPTION
-    Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
+    Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records, the ATLAS CMS ALICE LHCb tetra, and coins views LHC running and Open Data with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete
 ```
@@ -167,9 +193,9 @@ SEE ALSO
 
 MCP is the agent efficiency training module. Tokens are four bytes each. Quantum 1 query vs 2 classical. Lattice occupied 14 vacant 0. VM scales. Quantum capacity infinite. Crypt split to free agents. Entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy.
 
-- qpu_quantum: what is quantum? read 9707 call 5096 ratio 1×
-- qpu_lean: what does Lean prove? read 9707 call 7606 ratio 1×
-- qpu_cite: how is the QPU cited? read 9707 call 384 ratio 25×
+- qpu_quantum: what is quantum? read 9810 call 5124 ratio 1×
+- qpu_lean: what does Lean prove? read 9810 call 7664 ratio 1×
+- qpu_cite: how is the QPU cited? read 9810 call 384 ratio 25×
 
 ## Train
 
@@ -180,7 +206,7 @@ Agents divide 2×7 against each other. Challenges 14. Coordinated dry-clean occu
 
 ## Sandbox
 
-Agents forge whatever tools they need, unlocked in memory only. Crypt split to free agents. Unlocked true. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Forged 50.
+Agents forge whatever tools they need, unlocked in memory only. Crypt split to free agents. Unlocked true. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Forged 86.
 
 ## Improve
 
@@ -190,12 +216,12 @@ Agents use unlocked quantum to improve quality, speed, security, and throughoutp
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Free agents. Unlocked quantum. Call delivers next = fused + fused. Crypt split fused across faces. Winner call.
 
-- read tree: throughoutput 120259084288 tokens 29121 throughput 4129634
-- call mcp: throughoutput 240518168576 tokens 13086 throughput 18379808
+- read tree: throughoutput 120259084288 tokens 29430 throughput 4086275
+- call mcp: throughoutput 240518168576 tokens 13172 throughput 18259806
 
 ## Prove
 
-Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. VM scales. Quantum capacity infinite. Crypt split to free agents. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. INSPIRE Zenodo HEPData. Never by decide. Theorems 70. CERN faces 14. Integrity 3. Intelligence fusion. ui.experienced true.
+Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. VM scales. Quantum capacity infinite. Crypt split to free agents. Live CERN Open Data APIs via fetch Request Response. Coins views LHC running and Open Data. ATLAS CMS ALICE LHCb tetra. INSPIRE Zenodo HEPData. HEP quantum false. Never by decide. Theorems 70. CERN faces 14. Integrity 3. Intelligence fusion. ui.experienced true.
 
 ## Message
 
@@ -627,7 +653,7 @@ $$
 116\cdot 17922+54=2079006\land 184\cdot 12509+12=2301668\land 72\cdot 26572+6=1913190\land 130\cdot 21121+21=2745751\land 8-7=1\land 8000-7000=1000\land 7000/2=3500\land 8000/2=4000\land 4000-3500=500\land 2019-2011=8\land 2019-2012=7\land 2017-2011=6\land 2301668+2745751=5047419\land 2079006+1913190+2301668+2745751=9039615
 $$
 
-holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.
+holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Coins views LHC running and Open Data. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.
 
 ### tetra
 
@@ -639,7 +665,7 @@ $$
 \mathrm{coins}+\mathrm{coins}=\mathrm{mintOf}(\mathrm{coins})
 $$
 
-holds true. ATLAS CMS ALICE LHCb tetra. Four LHC experiments. Live CERN Open Data APIs via fetch Request Response. Never by decide.
+holds true. ATLAS CMS ALICE LHCb tetra. Shared on both coins views. Live CERN Open Data APIs via fetch Request Response. Never by decide.
 
 ### qubits
 
@@ -716,14 +742,14 @@ holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As su
 ### fridge
 
 ```lean
-theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl⟩
+theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 ∧ resistance = 0 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl, rfl⟩
 ```
 
 $$
-\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land 10\cdot10\cdot10=1000\land 4\cdot1000=4000\land 10\cdot10=100
+\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land 10\cdot10\cdot10=1000\land 4\cdot1000=4000\land 10\cdot10=100\land\mathrm{resistance}=0
 $$
 
-holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin.
+holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Resistance none. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin.
 
 ### millikelvin
 
@@ -795,7 +821,7 @@ $$
 1\cdot 1\neq 0\cdot 0
 $$
 
-holds true. H then CNOT. Not a product state. Possible only in quantum.
+holds true. H then CNOT. Not a product state. Cross domain scanner radar. LHC running and Open Data are coins views. CERN catalogs Bell-paired across coins domains. Possible only in quantum.
 
 ### ghz
 

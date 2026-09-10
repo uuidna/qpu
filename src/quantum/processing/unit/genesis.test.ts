@@ -49,6 +49,15 @@ test('shadcn schema combinatorial genesis covers all known frameworks', () => {
   assert.equal(css.keyframes, 1)
   assert.equal(css.css.includes('data-domain=scanner'), true)
   assert.equal(css.css.includes('data-domain=radar'), true)
+  assert.equal(css.css.includes('animation-delay'), false)
+  assert.equal(css.experiments.length, 28)
+  assert.equal(
+    css.experiments.filter((row) => row.quantum === false).every((row) => {
+      const hep = row as { domain?: string; hop?: number; product?: boolean; face: number }
+      return (hep.domain === 'scanner' || hep.domain === 'radar') && hep.hop === (hep.face + 7) % 14 && hep.product === false
+    }),
+    true,
+  )
   const train = qpuTrainOf()
   assert.equal(train.teams[1]!.agents[0]!.domain, 'scanner')
   assert.equal(train.teams[0]!.agents[0]!.domain, 'radar')

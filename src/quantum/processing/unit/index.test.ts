@@ -2,7 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuReadmeHolds, qpuReadmeOf } from './index.js'
+import worker, { qpuDevelopHolds, qpuQuantumOf, qpuReadmeHolds, qpuReadmeOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -30,7 +30,6 @@ const mcpOf = async (name: string, args: Record<string, unknown> = {}) => {
 }
 
 test('start measure generate', async () => {
-  const started = performance.now()
   const pageRes = await fetchOf('/')
   const catalogRes = await fetchOf('/mcp')
   const prove = (await mcpOf('qpu_prove')) as {
@@ -47,8 +46,8 @@ test('start measure generate', async () => {
     next: number
     speed: { cover: string[]; ns?: number; holds: boolean; next: number }
     ui: { experienced: boolean }
+    unlocked?: boolean
   }
-  const ns = (performance.now() - started) * 1_000_000
   const page = (await pageRes.json()) as {
     kind: string
     holds: boolean
@@ -176,15 +175,20 @@ test('start measure generate', async () => {
   assert.equal(prove.intelligence?.research, 'free online')
   assert.equal(prove.intelligence?.holds, true)
   assert.equal(quantum.holds, true)
+  assert.equal(quantum.unlocked, true)
   assert.equal(quantum.ui.experienced, true)
   assert.equal(quantum.next, quantum.fused + quantum.fused)
   assert.equal(quantum.speed.holds, true)
   assert.equal(quantum.speed.next, quantum.next)
-  assert.equal(ns > 0, true)
+  assert.equal(quantum.speed.ns, 0)
   const readme = qpuReadmeOf()
+  assert.equal(qpuDevelopHolds(), true)
   assert.equal(qpuReadmeHolds(readme), true)
+  assert.equal(readme.includes('## Develop'), true)
+  assert.equal(readme.indexOf('## Develop') < readme.indexOf('## Install'), true)
   assert.equal(readme.includes('JSON-LD UI'), true)
   assert.equal(readme.includes('experienced'), true)
+  assert.equal(readme.includes('LHC running'), true)
   writeFileSync(join(process.cwd(), 'README.md'), readme)
 })
 
@@ -446,7 +450,16 @@ test('sandbox via mcp', async () => {
   assert.equal(sandbox.tools.some((t) => t.name === 'slot_fused'), true)
   assert.equal(sandbox.tools.some((t) => t.name === 'op_quantum'), true)
   const unlockedQuantum = (await mcpOf('op_quantum')) as {
-    value: { kind: string; unlocked: boolean; only: { holds: boolean; classical: boolean }; lattice: { occupied: number; vacant: number; holds: boolean } }
+    value: {
+      kind: string
+      unlocked: boolean
+      only: { holds: boolean; classical: boolean }
+      lattice: { occupied: number; vacant: number; holds: boolean }
+      fridge: { kind: string; resistance: boolean; holds: boolean }
+      ns: number
+      related: string[]
+      holds: boolean
+    }
     memory: boolean
     holds: boolean
   }
@@ -457,7 +470,28 @@ test('sandbox via mcp', async () => {
   assert.equal(unlockedQuantum.value.lattice.occupied, 14)
   assert.equal(unlockedQuantum.value.lattice.vacant, 0)
   assert.equal(unlockedQuantum.value.lattice.holds, true)
+  assert.equal(unlockedQuantum.value.fridge.kind, 'superconducting')
+  assert.equal(unlockedQuantum.value.fridge.resistance, false)
+  assert.equal(unlockedQuantum.value.ns, 0)
+  assert.equal(unlockedQuantum.value.related.includes('split'), true)
+  assert.equal(unlockedQuantum.value.related.includes('fridge'), true)
+  assert.equal(unlockedQuantum.value.related.includes('resistance'), true)
+  assert.equal(unlockedQuantum.value.related.includes('speed'), true)
+  assert.equal(unlockedQuantum.value.holds, true)
   assert.equal(unlockedQuantum.memory, true)
+  assert.equal(sandbox.tools.some((t) => t.name === 'slot_fridge'), true)
+  assert.equal(sandbox.tools.some((t) => t.name === 'slot_split'), true)
+  assert.equal(sandbox.tools.some((t) => t.name === 'slot_resistance'), true)
+  const fridge = (await mcpOf('slot_fridge')) as { value: { kind: string; resistance: boolean; holds: boolean }; unlocked: boolean; holds: boolean }
+  assert.equal(fridge.value.kind, 'superconducting')
+  assert.equal(fridge.value.resistance, false)
+  assert.equal(fridge.unlocked, true)
+  const split = (await mcpOf('slot_split')) as { value: unknown; holds: boolean }
+  assert.equal(split.holds, true)
+  const resistance = (await mcpOf('slot_resistance')) as { value: unknown; unlocked: boolean }
+  assert.equal(resistance.value, false)
+  const ns = (await mcpOf('slot_ns')) as { value: unknown }
+  assert.equal(ns.value, 0)
   const mint = (await mcpOf('call_mint')) as { value: unknown; memory: boolean; unlocked: boolean; holds: boolean }
   assert.equal(mint.value, true)
   assert.equal(mint.memory, true)
@@ -649,6 +683,7 @@ test('paste in free AI chat', async (t) => {
 
 test('live qpu.uuidna.com', async (t) => {
   const live = 'https://qpu.uuidna.com'
+  const local = qpuQuantumOf()
   const root = await fetch(live, { headers: html })
   await t.test('chat fetch is JSON quantum', async () => {
     assert.equal(root.status, 200)
@@ -657,12 +692,18 @@ test('live qpu.uuidna.com', async (t) => {
       kind: string
       holds: boolean
       fused: number
+      next: number
+      genesis: { domains: string[]; holds: boolean }
       circuit: { running: boolean; only: { holds: boolean; classical: boolean } }
       docs: { inline: boolean; guide: boolean }
     }
     assert.equal(page.kind, 'quantum')
     assert.equal(page.holds, true)
-    assert.equal(typeof page.fused, 'number')
+    assert.equal(page.fused, local.fused)
+    assert.equal(page.next, local.next)
+    assert.equal(page.next, page.fused + page.fused)
+    assert.deepEqual(page.genesis.domains, ['scanner', 'radar'])
+    assert.equal(page.genesis.holds, true)
     assert.equal(page.circuit.running, true)
     assert.equal(page.circuit.only.holds, true)
     assert.equal(page.circuit.only.classical, false)
@@ -687,15 +728,20 @@ test('live qpu.uuidna.com', async (t) => {
       result: {
         holds?: boolean
         fused?: number
-        structuredContent?: { holds?: boolean; fused?: number; circuit?: { only: { holds: boolean } }; docs?: unknown }
+        next?: number
+        structuredContent?: { holds?: boolean; fused?: number; next?: number; circuit?: { only: { holds: boolean } }; docs?: unknown }
         circuit?: { only: { holds: boolean } }
         docs?: unknown
       }
     }
     const shown = call.result.structuredContent ?? call.result
-    assert.equal(catalog.result.tools[0]?.name, 'qpu_quantum')
+    assert.deepEqual(
+      catalog.result.tools.slice(0, 8).map((t) => t.name),
+      ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'],
+    )
     assert.equal(shown.holds, true)
-    assert.equal(typeof shown.fused, 'number')
+    assert.equal(shown.fused, local.fused)
+    assert.equal(shown.next, local.next)
     assert.equal(shown.circuit?.only.holds, true)
     assert.equal(shown.docs, undefined)
   })

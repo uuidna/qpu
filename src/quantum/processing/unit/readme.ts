@@ -1,12 +1,15 @@
 /**
- * Build writes MCP, then README from the Lean proof of the QPU.
+ * Develop leads. Integrity then the generated README from the Lean proof of the QPU.
  */
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { qpuIntegrityHolds, qpuMcpOf, qpuReadmeHolds, qpuReadmeOf } from './index.js'
+import { qpuDevelopHolds, qpuIntegrityHolds, qpuMcpOf, qpuReadmeHolds, qpuReadmeOf } from './index.js'
 
 if (!qpuIntegrityHolds()) {
   throw new Error('qpuIntegrityHolds')
+}
+if (!qpuDevelopHolds()) {
+  throw new Error('qpuDevelopHolds')
 }
 const mcp = qpuMcpOf()
 const readme = qpuReadmeOf(mcp)

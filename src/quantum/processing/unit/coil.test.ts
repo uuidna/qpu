@@ -7,6 +7,7 @@ import {
   qpuCoilHolds,
   qpuCoilOf,
   qpuCircuitHolds,
+  qpuCircuitOf,
   qpuDocsOf,
   qpuElectronicsHolds,
   qpuFacesOf,
@@ -18,8 +19,17 @@ import {
   qpuNextOf,
   qpuClayHolds,
   qpuClayOf,
+  qpuCssHolds,
+  qpuCssOf,
+  qpuHybridHolds,
+  qpuHybridOf,
+  qpuPresenceHolds,
+  qpuPresenceOf,
   qpuRaidHolds,
   qpuRaidOf,
+  qpuSandboxRunOf,
+  qpuSpeedHolds,
+  qpuSpeedOf,
 } from './index.js'
 
 test('two coins make a coil used in electronics — coins balance theory in practice', () => {
@@ -98,6 +108,51 @@ test('2×7 coins = 1+6 coils = clay', () => {
   assert.equal(clay.clay, coil.coil)
   assert.equal(clay.clay, faces.faces)
   assert.equal(clay.theorem, 'clay')
+})
+
+test('superconducting fridge — resistance none, computations ns none', () => {
+  const circuit = qpuCircuitOf()
+  const speed = qpuSpeedOf()
+  const hybrid = qpuHybridOf()
+  const presence = qpuPresenceOf()
+  const css = qpuCssOf()
+  const lean = qpuLeanOf()
+  const fridge = [...lean.rows, ...lean.cover].find((r) => r.heading === 'fridge')
+  assert.equal(qpuCircuitHolds(circuit), true)
+  assert.equal(circuit.fridge.kind, 'superconducting')
+  assert.equal(circuit.fridge.resistance, false)
+  assert.equal(circuit.fridge.holds, true)
+  assert.equal(qpuSpeedHolds(speed), true)
+  assert.equal(speed.ns, 0)
+  assert.equal(speed.benchmark.every((r) => r.ns === 0), true)
+  assert.equal(qpuHybridHolds(hybrid), true)
+  assert.equal(hybrid.ns, 0)
+  assert.equal(hybrid.kv.ns, 0)
+  assert.equal(hybrid.r2.ns, 0)
+  assert.equal(qpuPresenceHolds(presence), true)
+  assert.equal(presence.ns, 0)
+  assert.equal(qpuCssHolds(css), true)
+  assert.equal(css.css.includes('animation-delay'), false)
+  assert.equal(fridge?.holds, true)
+  assert.equal(fridge?.theorem.includes('resistance = 0'), true)
+  assert.equal(fridge?.theorem.includes('by decide'), false)
+  const related = qpuSandboxRunOf('op_quantum') as {
+    value: { related: string[]; fridge: { resistance: boolean }; ns: number; holds: boolean }
+  }
+  assert.equal(related.value.holds, true)
+  assert.equal(related.value.fridge.resistance, false)
+  assert.equal(related.value.ns, 0)
+  assert.equal(circuit.lattice.nodes.every((node) => related.value.related.includes(node.name)), true)
+  const split = qpuSandboxRunOf('slot_split')
+  const qubits = qpuSandboxRunOf('slot_qubits')
+  const gates = qpuSandboxRunOf('slot_gates')
+  const measurement = qpuSandboxRunOf('slot_measurement')
+  assert.equal(split.holds, true)
+  assert.equal(qubits.holds, true)
+  assert.equal(gates.holds, true)
+  assert.equal(measurement.holds, true)
+  assert.equal((qpuSandboxRunOf('slot_resistance') as { value: unknown }).value, false)
+  assert.equal((qpuSandboxRunOf('slot_ns') as { value: unknown }).value, 0)
 })
 
 test('coil theorems sit on Lean rows and the fridge — docs stay seven', () => {

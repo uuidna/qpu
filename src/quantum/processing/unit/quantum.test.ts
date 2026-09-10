@@ -80,6 +80,7 @@ type Circuit = {
     lab: boolean
     millikelvin: number
     milli: number
+    resistance: boolean
     cryostat: { kind: string; mixing: number; plate: number; pulse: number; holds: boolean }
     telemetry: { kind: string; lab: boolean; millikelvin: number; holds: boolean }
     coil: { kind: string; windings: number; coil: number; holds: boolean }
@@ -257,6 +258,7 @@ test('circuit physical via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
   assert.equal(q.circuit.physical, true)
   assert.equal(q.circuit.fridge.kind, 'superconducting')
+  assert.equal(q.circuit.fridge.resistance, false)
   assert.equal(q.circuit.fridge.isolated, true)
   assert.equal(q.circuit.fridge.lab, true)
   assert.equal(q.circuit.fridge.qubits, 3)
@@ -323,6 +325,8 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   assert.equal(circuit?.holds, true)
   assert.equal(physical?.holds, true)
   assert.equal(fridge?.holds, true)
+  assert.equal(fridge?.theorem.includes('resistance = 0'), true)
+  assert.equal(fridge?.theorem.includes('by decide'), false)
   assert.equal(millikelvin?.holds, true)
   assert.equal(telemetry?.holds, true)
   assert.equal(kv?.holds, true)
@@ -387,6 +391,8 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.docs.documentation.includes('superconducting qubits'), true)
   assert.equal(json.circuit.running, true)
   assert.equal(json.circuit.fridge.kind, 'superconducting')
+  assert.equal(json.circuit.fridge.resistance, false)
+  assert.equal(json.docs.documentation.includes('Resistance none'), true)
   assert.equal(json.circuit.drift.none, true)
   assert.equal(json.circuit.drift.between, true)
   assert.equal(json.circuit.sciences.distinct, true)
