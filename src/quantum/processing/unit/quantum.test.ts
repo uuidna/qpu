@@ -25,91 +25,185 @@ const uiOf = async (path: string) => {
   return { res, json: await res.json() }
 }
 
-test('quantum kind via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { kind: string; holds: boolean; ui: { experienced: boolean } }
+type Circuit = {
+  kind: string
+  running: boolean
+  physical: boolean
+  vm: string
+  host: boolean
+  primitives: string[]
+  qubits: { n: number; dim: number; levels: number; holds: boolean }
+  gates: { names: string[]; index: number; holds: boolean }
+  measurement: { index: number; support: number[]; holds: boolean }
+  noise: { channel: string; index: number; holds: boolean }
+  entangle: { kind: string; support: number[]; left: number; right: number; product: boolean; holds: boolean }
+  interfere: { kind: string; cancelled: number; restored: number; support: number[]; holds: boolean }
+  only: { kind: string; split: boolean; entangle: boolean; interfere: boolean; product: boolean; classical: boolean; holds: boolean }
+  fridge: {
+    kind: string
+    qubits: number
+    levels: number
+    dim: number
+    vm: string
+    host: boolean
+    isolated: boolean
+    holds: boolean
+  }
+  science: { levels: number; qubits: number; dim: number; gates: string[]; xx: boolean }
+  sciences: {
+    kind: string
+    none: boolean
+    circuit: number
+    cube: number
+    faces: number
+    bits: number
+    shared: boolean
+    distinct: boolean
+    holds: boolean
+  }
+  drift: { kind: string; none: boolean; between: boolean; holds: boolean }
+  holds: boolean
+}
+
+test('circuit running via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit; ui: { experienced: boolean } }
   const page = await uiOf('/')
-  assert.equal(q.kind, 'quantum')
-  assert.equal(q.holds, true)
+  assert.equal(q.circuit.kind, 'circuit')
+  assert.equal(q.circuit.running, true)
+  assert.equal(q.circuit.holds, true)
   assert.equal(q.ui.experienced, true)
-  assert.equal((page.json as { ui: { experienced: boolean } }).ui.experienced, true)
+  assert.equal((page.json as { circuit: Circuit }).circuit.running, true)
 })
 
-test('quantum mint via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { cube: { n: number; vertices: number } }
-  assert.equal(q.cube.vertices, 8)
+test('circuit vm browser via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.equal(q.circuit.vm, 'browser')
+  assert.equal(q.circuit.host, false)
 })
 
-test('quantum cube via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { cube: { bits: number; vertices: number; hexbit: number } }
-  assert.equal(q.cube.bits, q.cube.vertices * q.cube.hexbit)
+test('circuit primitives via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.deepEqual(q.circuit.primitives, ['fetch', 'Request', 'Response', 'BigInt', 'performance'])
 })
 
-test('quantum handle via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { handle: { amplitudes: number; bits: number }; cube: { bits: number } }
-  assert.equal(q.handle.bits, q.cube.bits)
+test('circuit qubits via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.equal(q.circuit.qubits.n, 3)
+  assert.equal(q.circuit.qubits.holds, true)
 })
 
-test('quantum around via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { faces: { faces: number; coins: number; rays: number } }
-  assert.equal(q.faces.faces, q.faces.coins * q.faces.rays)
+test('circuit dim via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit; cube: { vertices: number } }
+  assert.equal(q.circuit.qubits.dim, 8)
+  assert.equal(q.circuit.qubits.dim, q.cube.vertices)
 })
 
-test('quantum harmonic via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { faces: { faces: number; rays: number } }
-  assert.equal(q.faces.faces, q.faces.rays + q.faces.rays)
+test('circuit levels via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.equal(q.circuit.qubits.levels, 2)
+  assert.equal(q.circuit.science.levels, 2)
+  assert.equal(q.circuit.drift.none, true)
+  assert.equal(q.circuit.drift.between, true)
+  assert.equal(q.circuit.drift.holds, true)
+  assert.equal(q.circuit.sciences.shared, true)
+  assert.equal(q.circuit.sciences.distinct, true)
+  assert.equal(q.circuit.sciences.circuit, 3)
+  assert.equal(q.circuit.sciences.faces, 14)
+  assert.notEqual(q.circuit.sciences.circuit, q.circuit.sciences.faces)
+  assert.notEqual(q.circuit.sciences.cube, q.circuit.sciences.faces)
+  assert.notEqual(q.circuit.sciences.bits, q.circuit.sciences.faces)
 })
 
-test('quantum fused via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { fused: number; faces: { faces: number }; handle: { amplitudes: number } }
-  assert.equal(q.fused, q.faces.faces * q.handle.amplitudes)
+test('circuit gates via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.deepEqual(q.circuit.gates.names, ['h', 'cnot'])
+  assert.equal(q.circuit.gates.holds, true)
 })
 
-test('quantum next via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { next: number; fused: number }
-  assert.equal(q.next, q.fused + q.fused)
+test('circuit gates index via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.equal(q.circuit.gates.index, 3)
 })
 
-test('quantum capacity via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { capacity: { fused: number; holds: boolean }; fused: number }
-  assert.equal(q.capacity.holds, true)
-  assert.equal(q.capacity.fused, q.fused)
+test('circuit measurement via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.equal(q.circuit.measurement.index, 3)
+  assert.equal(q.circuit.measurement.holds, true)
 })
 
-test('quantum speed via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { speed: { cover: string[]; next: number; holds: boolean }; next: number }
-  assert.deepEqual(q.speed.cover, ['next', 'Hz', 'ns', 'benchmark'])
-  assert.equal(q.speed.next, q.next)
-  assert.equal(q.speed.holds, true)
+test('circuit measurement support via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.deepEqual(q.circuit.measurement.support, [0, 3])
+  assert.equal(q.circuit.entangle.product, false)
+  assert.equal(q.circuit.entangle.left, 1)
+  assert.equal(q.circuit.entangle.right, 0)
+  assert.equal(q.circuit.entangle.holds, true)
+  assert.equal(q.circuit.interfere.cancelled, 0)
+  assert.equal(q.circuit.interfere.restored, 2)
+  assert.equal(q.circuit.interfere.holds, true)
+  assert.equal(q.circuit.only.holds, true)
+  assert.equal(q.circuit.only.classical, false)
 })
 
-test('quantum auth via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { auth: boolean; public: boolean; cors: string }
-  assert.equal(q.auth, false)
-  assert.equal(q.public, true)
-  assert.equal(q.cors, '*')
+test('circuit noise via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.equal(q.circuit.noise.channel, 'xx')
+  assert.equal(q.circuit.noise.index, q.circuit.measurement.index)
+  assert.equal(q.circuit.noise.holds, true)
 })
 
-test('quantum involution via mcp', async () => {
-  const prove = (await mcpOf('qpu_prove')) as { theorems: { heading: string; holds: boolean }[] }
-  const involution = prove.theorems.find((r) => r.heading === 'involution')
-  assert.equal(involution?.holds, true)
+test('circuit physical via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
+  assert.equal(q.circuit.physical, true)
+  assert.equal(q.circuit.fridge.kind, 'superconducting')
+  assert.equal(q.circuit.fridge.isolated, true)
+  assert.equal(q.circuit.fridge.host, false)
+  assert.equal(q.circuit.fridge.qubits, 3)
+  assert.equal(q.circuit.fridge.levels, 2)
+  assert.equal(q.circuit.fridge.holds, true)
+  assert.equal(q.circuit.holds, true)
 })
 
-test('quantum lean via mcp', async () => {
-  const lean = (await mcpOf('qpu_lean')) as { holds: boolean; src: string; cover: { heading: string; theorem: string }[] }
-  const page = await uiOf('/quantum/processing/unit')
-  assert.equal(lean.holds, true)
-  assert.equal(lean.src, 'src/quantum/processing/unit/index.lean')
-  assert.equal(lean.cover.some((r) => r.heading === 'cern' && r.theorem.includes('by decide') === false), true)
-  assert.equal((page.json as { holds: boolean }).holds, true)
+test('circuit lean via mcp', async () => {
+  const prove = (await mcpOf('qpu_prove')) as { theorems: { heading: string; theorem: string; holds: boolean }[] }
+  const circuit = prove.theorems.find((r) => r.heading === 'circuit')
+  const physical = prove.theorems.find((r) => r.heading === 'physical')
+  const fridge = prove.theorems.find((r) => r.heading === 'fridge')
+  const drift = prove.theorems.find((r) => r.heading === 'drift')
+  const sciences = prove.theorems.find((r) => r.heading === 'sciences')
+  const interfere = prove.theorems.find((r) => r.heading === 'interfere')
+  const entangle = prove.theorems.find((r) => r.heading === 'entangle')
+  const only = prove.theorems.find((r) => r.heading === 'only')
+  assert.equal(circuit?.holds, true)
+  assert.equal(physical?.holds, true)
+  assert.equal(fridge?.holds, true)
+  assert.equal(drift?.holds, true)
+  assert.equal(sciences?.holds, true)
+  assert.equal(interfere?.holds, true)
+  assert.equal(entangle?.holds, true)
+  assert.equal(only?.holds, true)
+  assert.equal(only?.theorem.includes('by decide'), false)
+  assert.equal(entangle?.theorem.includes('by decide'), false)
 })
 
-test('quantum prove ui via mcp', async () => {
-  const prove = (await mcpOf('qpu_prove')) as { holds: boolean; ui: { experienced: boolean; door: string }; quantum: boolean }
+test('circuit ui via mcp', async () => {
+  const prove = (await mcpOf('qpu_prove')) as { holds: boolean; ui: { experienced: boolean } }
   const page = await uiOf('/')
+  const json = page.json as { docs: { inline: boolean; documentation: string }; circuit: Circuit }
   assert.equal(prove.holds, true)
-  assert.equal(prove.quantum, true)
   assert.equal(prove.ui.experienced, true)
-  assert.equal(prove.ui.door, 'qpu_prove')
-  assert.equal((page.json as { docs: { inline: boolean } }).docs.inline, true)
+  assert.equal(json.docs.inline, true)
+  assert.equal(json.docs.documentation.includes('running quantum circuit'), true)
+  assert.equal(json.docs.documentation.includes('superconducting qubits'), true)
+  assert.equal(json.circuit.running, true)
+  assert.equal(json.circuit.fridge.kind, 'superconducting')
+  assert.equal(json.circuit.drift.none, true)
+  assert.equal(json.circuit.drift.between, true)
+  assert.equal(json.circuit.sciences.distinct, true)
+  assert.equal(json.docs.documentation.includes('No drift from science'), true)
+  assert.equal(json.docs.documentation.includes('No drift between sciences'), true)
+  assert.equal(json.docs.documentation.includes('Possible only in quantum'), true)
+  assert.equal(json.circuit.only.holds, true)
+  assert.equal(json.circuit.entangle.product, false)
+  assert.equal(json.circuit.interfere.holds, true)
 })

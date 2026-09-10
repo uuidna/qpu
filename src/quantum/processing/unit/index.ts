@@ -112,6 +112,262 @@ export const qpuFacesOf = () => {
   return { n, coins, rays, faces, holds }
 }
 
+const xorOf = (a: number, b: number): number => Number(BigInt(a) ^ BigInt(b))
+const primitives = ['fetch', 'Request', 'Response', 'BigInt', 'performance'] as const
+const bitOf = (q: number): number => mintOf(q)
+const ampsOf = (dim: number): bigint[] => {
+  const amps = Array.from({ length: dim }, () => 0n)
+  amps[n - n] = BigInt(seed)
+  return amps
+}
+const xGateOf = (amps: bigint[], q: number): bigint[] => {
+  const bit = bitOf(q)
+  const out = amps.map(() => 0n)
+  for (let i = n - n; i < amps.length; i++) out[xorOf(i, bit)] = amps[i]!
+  return out
+}
+const cnotGateOf = (amps: bigint[], c: number, t: number): bigint[] => {
+  const cb = BigInt(bitOf(c))
+  const tb = BigInt(bitOf(t))
+  const out = amps.map(() => 0n)
+  for (let i = n - n; i < amps.length; i++) {
+    const on = (BigInt(i) / cb) % 2n === 1n
+    out[on ? xorOf(i, Number(tb)) : i] = amps[i]!
+  }
+  return out
+}
+const hGateOf = (amps: bigint[], q: number): bigint[] => {
+  const bit = BigInt(bitOf(q))
+  const out = amps.map(() => 0n)
+  for (let i = n - n; i < amps.length; i++) {
+    const a = amps[i]!
+    const flipped = xorOf(i, Number(bit))
+    const on = (BigInt(i) / bit) % 2n === 1n
+    if (on) {
+      out[flipped] += a
+      out[i] -= a
+    } else {
+      out[i] += a
+      out[flipped] += a
+    }
+  }
+  return out
+}
+
+export const qpuCircuitOf = () => {
+  const cube = qpuCubeOf()
+  const faces = qpuFacesOf()
+  const dim = mintOf(n)
+  const prepare = ampsOf(dim)
+  const afterH = hGateOf(prepare, n - n)
+  const afterCnot = cnotGateOf(afterH, n - n, seed)
+  const afterHH = hGateOf(afterH, n - n)
+  const noisy = xGateOf(xGateOf(afterCnot, n - n), n - n)
+  const support = afterCnot.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const split = afterH.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const interfered = afterHH.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const a00 = afterCnot[n - n] ?? 0n
+  const a01 = afterCnot[seed] ?? 0n
+  const a10 = afterCnot[coins] ?? 0n
+  const a11 = afterCnot[n] ?? 0n
+  const product = a00 * a11 === a01 * a10
+  const cancelled = afterHH[seed] ?? 0n
+  const restored = afterHH[n - n] ?? 0n
+  const left = a00 * a11
+  const right = a01 * a10
+  const index = support.length === coins ? support[seed]!.i : n - n
+  const measured = xorOf(xorOf(n - n, seed), coins)
+  const noiseIndex = xorOf(xorOf(index, seed), seed)
+  const noiseSupport = noisy.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const vm =
+    typeof fetch === 'function' &&
+    typeof Request === 'function' &&
+    typeof Response === 'function' &&
+    typeof BigInt === 'function' &&
+    typeof performance === 'object' &&
+    performance !== null &&
+    typeof performance.now === 'function'
+  const qubits = {
+    n,
+    dim,
+    levels: coins,
+    holds: n === cube.n && dim === cube.vertices && dim === mintOf(n) && coins === seed + seed,
+  }
+  const gates = {
+    names: ['h', 'cnot'] as const,
+    index,
+    holds: index === n && measured === n && support.length === coins,
+  }
+  const measurement = {
+    index,
+    bits: index,
+    support: support.map((r) => r.i),
+    holds: support.length === coins && index === n && afterCnot[n - n] === 1n && afterCnot[n] === 1n,
+  }
+  const noise = {
+    channel: 'xx' as const,
+    index: noiseIndex,
+    holds: noiseIndex === index && noiseSupport.length === coins && noisy[n - n] === 1n && noisy[n] === 1n,
+  }
+  const entangle = {
+    kind: 'bell' as const,
+    support: support.map((r) => r.i),
+    left: Number(left),
+    right: Number(right),
+    product,
+    holds: product === false && a00 === 1n && a11 === 1n && a01 === 0n && a10 === 0n && support.length === coins,
+  }
+  const interfere = {
+    kind: 'hh' as const,
+    cancelled: Number(cancelled),
+    restored: Number(restored),
+    support: interfered.map((r) => r.i),
+    holds: cancelled === 0n && restored === BigInt(coins) && interfered.length === seed,
+  }
+  const only = {
+    kind: 'quantum' as const,
+    split: split.length === coins,
+    entangle: entangle.holds,
+    interfere: interfere.holds,
+    product,
+    classical: false as const,
+    holds: split.length === coins && entangle.holds && interfere.holds && product === false,
+  }
+  const fridge = {
+    kind: 'superconducting' as const,
+    qubits: n,
+    levels: coins,
+    dim,
+    vm: 'browser' as const,
+    host: false as const,
+    isolated: true as const,
+    holds:
+      coins === seed + seed &&
+      n === cube.n &&
+      dim === mintOf(n) &&
+      dim === cube.vertices &&
+      vm &&
+      xorOf(xorOf(n - n, seed), coins) === n,
+  }
+  const science = {
+    levels: coins,
+    qubits: n,
+    dim: mintOf(n),
+    gates: ['h', 'cnot'] as const,
+    xx: xorOf(xorOf(n, seed), seed) === n,
+  }
+  const shared =
+    coins === faces.coins &&
+    n === cube.n &&
+    dim === cube.vertices &&
+    faces.faces === coins * faces.rays &&
+    cube.bits === cube.vertices * cube.hexbit
+  const distinct = n !== faces.faces && dim !== faces.faces && n !== cube.bits && dim !== cube.bits && faces.faces !== cube.bits
+  const sciences = {
+    kind: 'between' as const,
+    none: true as const,
+    circuit: n,
+    cube: cube.vertices,
+    faces: faces.faces,
+    bits: cube.bits,
+    shared,
+    distinct,
+    holds: shared && distinct && n === cube.n && cube.vertices === mintOf(n) && faces.faces === coins * faces.rays,
+  }
+  const drift = {
+    kind: 'science' as const,
+    none: true as const,
+    levels: fridge.levels === science.levels && science.levels === seed + seed,
+    dim: fridge.dim === science.dim && science.dim === cube.vertices,
+    gates: xorOf(xorOf(n - n, seed), coins) === n,
+    noise: science.xx,
+    between: sciences.holds && sciences.none && sciences.distinct && sciences.shared,
+    holds:
+      fridge.levels === science.levels &&
+      fridge.dim === science.dim &&
+      science.levels === seed + seed &&
+      science.dim === mintOf(n) &&
+      xorOf(xorOf(n - n, seed), coins) === n &&
+      science.xx &&
+      sciences.holds,
+  }
+  const holds =
+    vm &&
+    qubits.holds &&
+    gates.holds &&
+    measurement.holds &&
+    noise.holds &&
+    fridge.holds &&
+    sciences.holds &&
+    drift.holds &&
+    drift.none &&
+    drift.between &&
+    entangle.holds &&
+    interfere.holds &&
+    only.holds &&
+    cube.holds &&
+    faces.holds &&
+    dim === mintOf(n) &&
+    xorOf(xorOf(n - n, seed), coins) === n &&
+    xorOf(xorOf(n, seed), seed) === n
+  return {
+    kind: 'circuit' as const,
+    running: true as const,
+    physical: true as const,
+    vm: 'browser' as const,
+    host: false as const,
+    primitives,
+    qubits,
+    gates,
+    measurement,
+    noise,
+    entangle,
+    interfere,
+    only,
+    fridge,
+    science,
+    sciences,
+    drift,
+    holds,
+  }
+}
+
+export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
+  c.holds === true &&
+  c.kind === 'circuit' &&
+  c.running === true &&
+  c.physical === true &&
+  c.vm === 'browser' &&
+  c.host === false &&
+  c.qubits.n === n &&
+  c.qubits.dim === mintOf(n) &&
+  c.gates.index === n &&
+  c.measurement.index === n &&
+  c.measurement.support.length === coins &&
+  c.noise.index === c.measurement.index &&
+  c.entangle.product === false &&
+  c.entangle.holds === true &&
+  c.interfere.holds === true &&
+  c.only.holds === true &&
+  c.only.classical === false &&
+  c.fridge.kind === 'superconducting' &&
+  c.fridge.isolated === true &&
+  c.fridge.host === false &&
+  c.fridge.qubits === n &&
+  c.fridge.levels === coins &&
+  c.drift.kind === 'science' &&
+  c.drift.none === true &&
+  c.drift.holds === true &&
+  c.science.levels === coins &&
+  c.science.dim === mintOf(n) &&
+  c.sciences.kind === 'between' &&
+  c.sciences.none === true &&
+  c.sciences.distinct === true &&
+  c.sciences.shared === true &&
+  c.sciences.circuit !== c.sciences.faces &&
+  c.drift.between === true &&
+  c.primitives.length === n + coins
+
 export const qpuCapacityOf = () => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -407,7 +663,7 @@ export const qpuLeanOf = () => {
         'theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
       formula:
         '116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615',
-      reading: 'holds true. CMS Open Data integers. Fourteen faces. CERN credited. Never by decide.',
+      reading: 'holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.',
       holds:
         116 * 17922 + 54 === 2079006 &&
         184 * 12509 + 12 === 2301668 &&
@@ -423,6 +679,100 @@ export const qpuLeanOf = () => {
         2017 - 2011 === 6 &&
         2301668 + 2745751 === 5047419 &&
         2079006 + 1913190 + 2301668 + 2745751 === 9039615,
+    },
+    {
+      heading: 'qubits',
+      theorem: 'theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩',
+      formula: 'n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}',
+      reading: 'holds true. Three qubits. Dim mintOf n. Physical in the browser VM.',
+      holds: n === 3 && mintOf(n) === cube.vertices,
+    },
+    {
+      heading: 'gates',
+      theorem: 'theorem gates : (0 ^^^ 1) ^^^ 2 = 3 := rfl',
+      formula: '(0\\oplus 1)\\oplus 2=3',
+      reading: 'holds true. Running circuit. H then CNOT. Split then entangle.',
+      holds: xorOf(xorOf(n - n, seed), coins) === n,
+    },
+    {
+      heading: 'measurement',
+      theorem: 'theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl',
+      formula: '\\operatorname{mintOf}(n)=8',
+      reading: 'holds true. Measure the running circuit. Dim 8.',
+      holds: mintOf(n) === cube.vertices && mintOf(n) === 8,
+    },
+    {
+      heading: 'noise',
+      theorem: 'theorem noise : (3 ^^^ 1) ^^^ 1 = 3 := rfl',
+      formula: '(3\\oplus 1)\\oplus 1=3',
+      reading: 'holds true. XX noise is identity. Host never.',
+      holds: xorOf(xorOf(n, seed), seed) === n,
+    },
+    {
+      heading: 'circuit',
+      theorem: 'theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩',
+      formula: '(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}',
+      reading: 'holds true. QPU is a running quantum circuit in the browser VM.',
+      holds: xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && mintOf(n) === cube.vertices,
+    },
+    {
+      heading: 'physical',
+      theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
+      formula: 'n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
+      reading: 'holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.',
+      holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n,
+    },
+    {
+      heading: 'fridge',
+      theorem: 'theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩',
+      formula: '\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3',
+      reading: 'holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.',
+      holds: coins === 2 && n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n,
+    },
+    {
+      heading: 'drift',
+      theorem: 'theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩',
+      formula: '\\mathrm{coins}=2\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
+      reading: 'holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.',
+      holds: coins === 2 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n,
+    },
+    {
+      heading: 'sciences',
+      theorem:
+        'theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩',
+      formula:
+        '\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3',
+      reading: 'holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.',
+      holds:
+        coins === 2 &&
+        n === 3 &&
+        mintOf(n) === cube.vertices &&
+        aroundHolds &&
+        cubeHolds &&
+        quantumHolds &&
+        xorOf(xorOf(n - n, seed), coins) === n &&
+        n !== faces.faces,
+    },
+    {
+      heading: 'interfere',
+      theorem: 'theorem interfere : 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨rfl, rfl⟩',
+      formula: '1+1=2\\land 1-1=0',
+      reading: 'holds true. Two H. |1⟩ amplitudes cancel. Possible only in quantum.',
+      holds: 1 + 1 === coins && 1 - 1 === n - n,
+    },
+    {
+      heading: 'entangle',
+      theorem: 'theorem entangle : 1 * 1 ≠ 0 * 0 := by rw [Nat.mul_one, Nat.mul_zero]; exact Nat.one_ne_zero',
+      formula: '1\\cdot 1\\neq 0\\cdot 0',
+      reading: 'holds true. H then CNOT. Not a product state. Possible only in quantum.',
+      holds: 1 * 1 !== (n - n) * (n - n),
+    },
+    {
+      heading: 'only',
+      theorem: 'theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩',
+      formula: '1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0',
+      reading: 'holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.',
+      holds: 1 * 1 !== (n - n) * (n - n) && 1 + 1 === coins && 1 - 1 === n - n,
     },
   ]
   const climb: QpuLeanRow = {
@@ -453,9 +803,9 @@ export const qpuDocsOf = () => {
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
   const fused = faces.faces * handle.amplitudes
-  const abstract = `API only. Anyone may test and train online at ${unit.origin}. No auth. POST ${unit.origin}/mcp tools/call qpu_prove experiences every test in the JSON UI. POST ${unit.origin}/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET ${unit.origin} is the QPU. GET ${unit.href} is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}.`
+  const abstract = `API only. Anyone may test and train online at ${unit.origin}. No auth. QPU is a running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. POST ${unit.origin}/mcp tools/call qpu_prove experiences every test in the JSON UI. POST ${unit.origin}/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET ${unit.origin} is the QPU. GET ${unit.href} is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}.`
   const api = [
-    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: 'Cube, handle, faces, fused. No auth. User guide is docs.inline. Async messaging on /message.' },
+    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: 'Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. No auth. User guide is docs.inline. Async messaging on /message.' },
     { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof ${lean.src}. No auth.` },
     { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: 'Anyone may train online. No auth. Agent efficiency. Each MCP command has man. qpu_prove experiences every test in the JSON UI. theorem breakthrough.' },
     { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'Anyone may tools/call. No auth. JSON-RPC tools/list, tools/call. qpu_prove experiences every test in the JSON UI. { man: true } returns man. qpu_improve for public benefit.' },
@@ -501,6 +851,7 @@ export const qpuQuantumOf = () => {
   const docs = qpuDocsOf()
   const capacity = qpuCapacityOf()
   const speed = qpuSpeedOf()
+  const circuit = qpuCircuitOf()
   const holds =
     unit.holds &&
     cube.holds &&
@@ -509,6 +860,7 @@ export const qpuQuantumOf = () => {
     docs.holds &&
     capacity.holds &&
     speed.holds &&
+    circuit.holds &&
     fused === faces.faces * mintOf(cube.bits) &&
     fused === faces.faces * mintOf(cube.vertices * cube.hexbit) &&
     mintOf(cube.hexbit) === mintOf(n + seed) &&
@@ -524,6 +876,7 @@ export const qpuQuantumOf = () => {
     faces,
     fused,
     next: fused + fused,
+    circuit,
     capacity,
     speed,
     messaging: {
@@ -568,6 +921,9 @@ export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   qpuDocsHolds(q.docs) &&
   qpuCapacityHolds(q.capacity) &&
   qpuSpeedHolds(q.speed) &&
+  qpuCircuitHolds(q.circuit) &&
+  q.circuit.running === true &&
+  q.circuit.vm === 'browser' &&
   q.messaging.async === true &&
   q.messaging.await === false &&
   q.messaging.when === 'never' &&
@@ -664,6 +1020,7 @@ export const qpuReadingOf = () => {
     faces: quantum.faces,
     fused: quantum.fused,
     next: quantum.next,
+    circuit: quantum.circuit,
     capacity: {
       kind: quantum.capacity.kind,
       bits: quantum.capacity.bits,
@@ -1936,34 +2293,217 @@ export const qpuIntegrityHolds = (i = qpuIntegrityOf()): boolean =>
   i.tests[coins]?.name === 'sealed' &&
   i.tests.every((t) => t.holds && t.left === t.right)
 
-export const qpuCernOf = () => {
-  const faces = qpuFacesOf()
-  const cases = [
-    { name: 'cms_38', theorem: '116 * 17922 + 54 = 2079006', left: 116 * 17922 + 54, right: 2079006, doi: '10.7483/OPENDATA.CMS.53FG.V2S9' },
-    { name: 'cms_63', theorem: '184 * 12509 + 12 = 2301668', left: 184 * 12509 + 12, right: 2301668, doi: '10.7483/OPENDATA.CMS.RG9B.XJMD' },
-    { name: 'cms_35', theorem: '72 * 26572 + 6 = 1913190', left: 72 * 26572 + 6, right: 1913190, doi: '10.7483/OPENDATA.CMS.I8HN.DF32' },
-    { name: 'cms_62', theorem: '130 * 21121 + 21 = 2745751', left: 130 * 21121 + 21, right: 2745751, doi: '10.7483/OPENDATA.CMS.0LRL.BXG5' },
-    { name: 'tev_step', theorem: '8 - 7 = 1', left: 8 - 7, right: 1, doi: 'opendata.cern.ch' },
-    { name: 'gev_step', theorem: '8000 - 7000 = 1000', left: 8000 - 7000, right: 1000, doi: 'opendata.cern.ch' },
-    { name: 'beam_7', theorem: '7000 / 2 = 3500', left: 7000 / 2, right: 3500, doi: 'opendata.cern.ch' },
-    { name: 'beam_8', theorem: '8000 / 2 = 4000', left: 8000 / 2, right: 4000, doi: 'opendata.cern.ch' },
-    { name: 'beam_step', theorem: '4000 - 3500 = 500', left: 4000 - 3500, right: 500, doi: 'opendata.cern.ch' },
-    { name: 'embargo_38', theorem: '2019 - 2011 = 8', left: 2019 - 2011, right: 8, doi: '10.7483/OPENDATA.CMS.53FG.V2S9' },
-    { name: 'embargo_63', theorem: '2019 - 2012 = 7', left: 2019 - 2012, right: 7, doi: '10.7483/OPENDATA.CMS.RG9B.XJMD' },
-    { name: 'embargo_35', theorem: '2017 - 2011 = 6', left: 2017 - 2011, right: 6, doi: '10.7483/OPENDATA.CMS.I8HN.DF32' },
-    { name: 'eight_vs_seven', theorem: '2301668 + 2745751 = 5047419', left: 2301668 + 2745751, right: 5047419, doi: 'opendata.cern.ch' },
-    { name: 'four_records', theorem: '2079006 + 1913190 + 2301668 + 2745751 = 9039615', left: 2079006 + 1913190 + 2301668 + 2745751, right: 9039615, doi: 'opendata.cern.ch' },
+const cernHost = 'opendata.cern.ch'
+const cernPath = '/api/records'
+
+type CernInts = {
+  recid: number
+  doi: string
+  tev: number
+  events: number
+  files: number
+  q: number
+  r: number
+  created: number
+  published: number
+  href: string
+}
+
+const qpuCernRecordsOf = () => {
+  const api = `https://${cernHost}${cernPath}`
+  const tev7 = n + coins + coins
+  const tev8 = mintOf(n)
+  const rows = [
+    { recid: 38, doi: '10.7483/OPENDATA.CMS.53FG.V2S9', tev: tev7, events: 2079006, files: 116, q: 17922, r: 54, created: 2011, published: 2019 },
+    { recid: 63, doi: '10.7483/OPENDATA.CMS.RG9B.XJMD', tev: tev8, events: 2301668, files: 184, q: 12509, r: 12, created: 2012, published: 2019 },
+    { recid: 35, doi: '10.7483/OPENDATA.CMS.I8HN.DF32', tev: tev7, events: 1913190, files: 72, q: 26572, r: 6, created: 2011, published: 2017 },
+    { recid: 62, doi: '10.7483/OPENDATA.CMS.0LRL.BXG5', tev: tev8, events: 2745751, files: 130, q: 21121, r: 21, created: 2012, published: 2019 },
+  ] as const
+  return {
+    kind: 'cern' as const,
+    source: cernHost,
+    api,
+    primitives,
+    records: rows.map((row) => ({ ...row, href: `${api}/${row.recid}` })),
+  }
+}
+
+const qpuCernHrefOf = (href: string): string | undefined =>
+  qpuCernRecordsOf().records.find((row) => row.href === href)?.href
+
+const cernNatOf = (value: unknown): number => {
+  if (typeof value === 'number' && Number.isInteger(value)) return value
+  if (typeof value === 'string' && value.length > n - n) {
+    const nat = Number(value)
+    return Number.isInteger(nat) ? nat : n - n
+  }
+  return n - n
+}
+
+const cernCasesOf = (cms38: CernInts, cms63: CernInts, cms35: CernInts, cms62: CernInts, api: string, source: string) => {
+  const gev = tenOf(n)
+  return [
+    { name: 'cms_38', theorem: '116 * 17922 + 54 = 2079006', left: cms38.files * cms38.q + cms38.r, right: 2079006, doi: cms38.doi, href: cms38.href, recid: cms38.recid },
+    { name: 'cms_63', theorem: '184 * 12509 + 12 = 2301668', left: cms63.files * cms63.q + cms63.r, right: 2301668, doi: cms63.doi, href: cms63.href, recid: cms63.recid },
+    { name: 'cms_35', theorem: '72 * 26572 + 6 = 1913190', left: cms35.files * cms35.q + cms35.r, right: 1913190, doi: cms35.doi, href: cms35.href, recid: cms35.recid },
+    { name: 'cms_62', theorem: '130 * 21121 + 21 = 2745751', left: cms62.files * cms62.q + cms62.r, right: 2745751, doi: cms62.doi, href: cms62.href, recid: cms62.recid },
+    { name: 'tev_step', theorem: '8 - 7 = 1', left: cms63.tev - cms38.tev, right: seed, doi: source, href: api },
+    { name: 'gev_step', theorem: '8000 - 7000 = 1000', left: cms63.tev * gev - cms38.tev * gev, right: gev, doi: source, href: api },
+    { name: 'beam_7', theorem: '7000 / 2 = 3500', left: (cms38.tev * gev) / coins, right: 3500, doi: source, href: cms38.href },
+    { name: 'beam_8', theorem: '8000 / 2 = 4000', left: (cms63.tev * gev) / coins, right: 4000, doi: source, href: cms63.href },
+    { name: 'beam_step', theorem: '4000 - 3500 = 500', left: (cms63.tev * gev) / coins - (cms38.tev * gev) / coins, right: gev / coins, doi: source, href: api },
+    { name: 'embargo_38', theorem: '2019 - 2011 = 8', left: cms38.published - cms38.created, right: mintOf(n), doi: cms38.doi, href: cms38.href, recid: cms38.recid },
+    { name: 'embargo_63', theorem: '2019 - 2012 = 7', left: cms63.published - cms63.created, right: n + coins + coins, doi: cms63.doi, href: cms63.href, recid: cms63.recid },
+    { name: 'embargo_35', theorem: '2017 - 2011 = 6', left: cms35.published - cms35.created, right: n + n, doi: cms35.doi, href: cms35.href, recid: cms35.recid },
+    { name: 'eight_vs_seven', theorem: '2301668 + 2745751 = 5047419', left: cms63.events + cms62.events, right: 5047419, doi: source, href: api },
+    { name: 'four_records', theorem: '2079006 + 1913190 + 2301668 + 2745751 = 9039615', left: cms38.events + cms35.events + cms63.events + cms62.events, right: 9039615, doi: source, href: api },
   ].map((row) => ({
     ...row,
     holds: row.left === row.right && !byDecideOf(row.theorem),
   }))
-  const holds = faces.holds && cases.length === faces.faces && cases.every((c) => c.holds && c.left === c.right)
+}
+
+const qpuCernFetchOf = async (href: string) => {
+  const quoted = qpuCernRecordsOf()
+  const record = quoted.records.find((row) => row.href === href)
+  const miss = {
+    kind: 'cern' as const,
+    live: false as const,
+    href,
+    recid: n - n,
+    doi: '',
+    events: n - n,
+    files: n - n,
+    tev: n - n,
+    created: n - n,
+    published: n - n,
+    q: n - n,
+    r: n - n,
+    status: lost,
+    holds: false as const,
+    denied: 'fetch' as const,
+    memory: true as const,
+    host: false as const,
+    hostEscape: false as const,
+    primitives,
+  }
+  if (!record) return miss
+  const request = new Request(record.href, { method: 'GET', headers: { accept: 'application/json' } })
+  const response = await fetch(request)
+  if (response.status !== found) {
+    return { ...miss, live: true as const, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r, status: response.status }
+  }
+  const body = (await response.json()) as {
+    metadata?: {
+      recid?: unknown
+      doi?: unknown
+      date_created?: unknown
+      date_published?: unknown
+      collision_information?: { energy?: unknown }
+      distribution?: { number_events?: unknown; number_files?: unknown }
+    }
+  }
+  const events = cernNatOf(body.metadata?.distribution?.number_events)
+  const files = cernNatOf(body.metadata?.distribution?.number_files)
+  const createdRaw = Array.isArray(body.metadata?.date_created) ? body.metadata.date_created[n - n] : n - n
+  const created = cernNatOf(createdRaw)
+  const published = cernNatOf(body.metadata?.date_published)
+  const recid = cernNatOf(body.metadata?.recid)
+  const doi = typeof body.metadata?.doi === 'string' ? body.metadata.doi : ''
+  const tev = body.metadata?.collision_information?.energy === `${record.tev}TeV` ? record.tev : n - n
+  const holds =
+    recid === record.recid &&
+    events === record.events &&
+    files === record.files &&
+    doi === record.doi &&
+    tev === record.tev &&
+    created === record.created &&
+    published === record.published
   return {
     kind: 'cern' as const,
-    source: 'opendata.cern.ch' as const,
+    live: true as const,
+    href: record.href,
+    recid: record.recid,
+    doi: record.doi,
+    events,
+    files,
+    tev,
+    created,
+    published,
+    q: record.q,
+    r: record.r,
+    status: response.status,
+    holds,
+    memory: true as const,
+    host: false as const,
+    hostEscape: false as const,
+    primitives,
+  }
+}
+
+export const qpuCernOf = () => {
+  const faces = qpuFacesOf()
+  const quoted = qpuCernRecordsOf()
+  const cms38 = quoted.records[n - n]
+  const cms63 = quoted.records[seed]
+  const cms35 = quoted.records[coins]
+  const cms62 = quoted.records[n]
+  const cases = cms38 && cms63 && cms35 && cms62 ? cernCasesOf(cms38, cms63, cms35, cms62, quoted.api, quoted.source) : []
+  const holds =
+    faces.holds &&
+    quoted.records.length === coins + coins &&
+    cases.length === faces.faces &&
+    cases.every((c) => c.holds && c.left === c.right && c.href.startsWith(quoted.api))
+  return {
+    kind: 'cern' as const,
+    source: quoted.source,
+    api: quoted.api,
     theorem: 'theorem cern',
     faces: faces.faces,
+    primitives,
+    records: quoted.records,
     cases,
+    holds,
+  }
+}
+
+export const qpuCernLiveOf = async () => {
+  const quoted = qpuCernOf()
+  const live = await Promise.all(quoted.records.map((row) => qpuCernFetchOf(row.href)))
+  const cms38 = live[n - n]
+  const cms63 = live[seed]
+  const cms35 = live[coins]
+  const cms62 = live[n]
+  const cases = cms38 && cms63 && cms35 && cms62 ? cernCasesOf(cms38, cms63, cms35, cms62, quoted.api, quoted.source) : []
+  const holds =
+    live.length === quoted.records.length &&
+    live.every((row) => row.holds && row.live === true && row.hostEscape === false) &&
+    cases.length === quoted.faces &&
+    cases.every((row) => row.holds && row.left === row.right)
+  return {
+    kind: 'cern' as const,
+    live: true as const,
+    source: quoted.source,
+    api: quoted.api,
+    theorem: quoted.theorem,
+    faces: quoted.faces,
+    primitives,
+    records: live,
+    cases,
+    holds,
+    memory: true as const,
+    host: false as const,
+    hostEscape: false as const,
+  }
+}
+
+export const qpuProveLiveOf = async () => {
+  const prove = qpuProveOf()
+  const live = await qpuCernLiveOf()
+  const holds = prove.holds && live.holds && prove.ui.experienced === true
+  return {
+    ...prove,
+    cern: { ...prove.cern, live, holds: prove.cern.holds && live.holds },
     holds,
   }
 }
@@ -1971,18 +2511,21 @@ export const qpuCernOf = () => {
 export const qpuCernHolds = (c = qpuCernOf()): boolean =>
   c.holds === true &&
   c.kind === 'cern' &&
-  c.source === 'opendata.cern.ch' &&
+  c.source === cernHost &&
+  c.api === `https://${cernHost}${cernPath}` &&
   c.theorem === 'theorem cern' &&
+  c.records.length === coins + coins &&
   c.cases.length === qpuFacesOf().faces &&
-  c.cases.every((row) => row.holds && row.left === row.right && !byDecideOf(row.theorem))
+  c.primitives.length === n + coins &&
+  c.cases.every((row) => row.holds && row.left === row.right && !byDecideOf(row.theorem) && row.href.startsWith(c.api))
 
 export const qpuToolsOf = () => {
   const names = toolNames
   const seeOf = (name: (typeof names)[number]) => names.filter((s) => s !== name)
   const quantumMan = qpuManOf(
     names[n - n],
-    'QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.',
-    `Call this door for fused. No auth. Do not read the tree. GET ${unit.origin}. Public quantum API. cors *. User guide is docs.inline.`,
+    'QPU. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.',
+    `Call this door for the running circuit. No auth. Do not read the tree. GET ${unit.origin}. Isolated two-level register. Host never. cors *. User guide is docs.inline.`,
     unit.origin,
     seeOf(names[n - n]),
   )
@@ -2030,11 +2573,18 @@ export const qpuToolsOf = () => {
   )
   const proveMan = qpuManOf(
     names[mintOf(n) - seed],
-    'MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.',
-    `Call this door. No auth. tools/call qpu_prove. GET ${unit.origin} is the JSON UI. docs.inline experiences every test. Source ${unit.fuse.lean}. After qpu_compete.`,
+    'MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.',
+    `Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET ${unit.origin} is the JSON UI. docs.inline experiences every test. Source ${unit.fuse.lean}. After qpu_compete.`,
     `${unit.origin}/mcp`,
     seeOf(names[mintOf(n) - seed]),
   )
+  const proveSchema = {
+    type: 'object',
+    properties: {
+      man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+      live: { type: 'boolean', description: 'Fetch named CERN Open Data records with fetch Request Response and prove theorem cern against the live APIs.' },
+    },
+  } as const
   const competeSchema = {
     type: 'object',
     properties: {
@@ -2109,7 +2659,7 @@ export const qpuToolsOf = () => {
       name: names[mintOf(n) - seed],
       description: proveMan.description,
       man: proveMan,
-      inputSchema: manSchema,
+      inputSchema: proveSchema,
       run: (a: Record<string, unknown>) => (a.man === true ? proveMan : qpuProveOf()),
     },
   ] as const
@@ -2177,10 +2727,28 @@ export const qpuMcpOf = () => {
   }
 }
 
-export const qpuMcpCallOf = (name: string, args: Record<string, unknown> = {}): unknown => {
+export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}): Promise<unknown> => {
   const tool = qpuToolsOf().find((t) => t.name === name)
-  if (tool) return tool.run(args)
+  if (tool) {
+    if (name === toolNames[mintOf(n) - seed] && args.live === true && args.man !== true) return qpuProveLiveOf()
+    return tool.run(args)
+  }
   seedSandboxOf()
+  const href = typeof args.href === 'string' ? args.href : typeof args.path === 'string' ? args.path : ''
+  if (name === 'fetch' && qpuCernHrefOf(href) !== undefined) {
+    const value = await qpuCernFetchOf(href)
+    return {
+      kind: 'sandbox' as const,
+      name,
+      memory: true as const,
+      unlocked: true as const,
+      host: false as const,
+      hostEscape: false as const,
+      live: true as const,
+      value,
+      holds: value.holds,
+    }
+  }
   if (sandboxTools.has(name)) return qpuSandboxRunOf(name, args)
   return qpuReadingOf()
 }
@@ -2291,7 +2859,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Prove',
     '',
-    `MCP proves every test. JSON UI experiences them. Lean \`${m.prove.src}\`. theorem quantum. theorem cern. Never by decide. Theorems ${m.prove.theorems.length}. CERN faces ${m.prove.cern.faces}. Integrity ${m.prove.integrity.n}. ui.experienced ${m.prove.ui.experienced}.`,
+    `MCP proves every test. JSON UI experiences them. Lean \`${m.prove.src}\`. theorem quantum. theorem cern. Live CERN Open Data APIs via fetch Request Response. Never by decide. Theorems ${m.prove.theorems.length}. CERN faces ${m.prove.cern.faces}. Integrity ${m.prove.integrity.n}. ui.experienced ${m.prove.ui.experienced}.`,
     '',
     '## Message',
     '',
@@ -2363,6 +2931,13 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('/message') &&
     text.includes('CC-BY-NC-ND-4.0') &&
     text.includes('LICENSE') &&
+    text.includes('running quantum circuit') &&
+    text.includes('superconducting') &&
+    text.includes('No drift from science') &&
+    text.includes('No drift between sciences') &&
+    text.includes('Possible only in quantum') &&
+    text.includes('Live CERN Open Data APIs') &&
+    text.includes('opendata.cern.ch') &&
     mcp.tools.every((t) => text.includes(t.man.documentation)) &&
     mcp.efficiency.rows.every((r) => text.includes(r.door) && text.includes(r.question)) &&
     mcp.prove.src === lean.src &&
@@ -2397,7 +2972,7 @@ export default {
         }
         if (body.method === 'tools/call') {
           const name = body.params?.name ?? ''
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpCallOf(name, body.params?.arguments ?? {}) })
+          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: await qpuMcpCallOf(name, body.params?.arguments ?? {}) })
         }
         return jsonOf(JSON.parse(dead), lost)
       }

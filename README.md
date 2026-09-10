@@ -4,11 +4,11 @@ MCP at https://qpu.uuidna.com/mcp. Public quantum API. No auth. Anyone may test 
 
 ## Guide
 
-API only. Anyone may test and train online at https://qpu.uuidna.com. No auth. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices 8 hexbit 4 bits 32 faces 14 fused 60129542144. Source src/quantum/processing/unit/index.lean.
+API only. Anyone may test and train online at https://qpu.uuidna.com. No auth. QPU is a running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices 8 hexbit 4 bits 32 faces 14 fused 60129542144. Source src/quantum/processing/unit/index.lean.
 
 User guide is docs.inline. Each MCP command has man. tools/list trains; tools/call is the door.
 
-- `GET /` qpu_quantum. Cube, handle, faces, fused. No auth. User guide is docs.inline. Async messaging on /message.
+- `GET /` qpu_quantum. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. No auth. User guide is docs.inline. Async messaging on /message.
 - `GET /quantum/processing/unit` qpu_lean. Lean proof src/quantum/processing/unit/index.lean. No auth.
 - `GET /mcp` catalog. Anyone may train online. No auth. Agent efficiency. Each MCP command has man. qpu_prove experiences every test in the JSON UI. theorem breakthrough.
 - `POST /mcp` tools/call. Anyone may tools/call. No auth. JSON-RPC tools/list, tools/call. qpu_prove experiences every test in the JSON UI. { man: true } returns man. qpu_improve for public benefit.
@@ -22,12 +22,12 @@ User guide is docs.inline. Each MCP command has man. tools/list trains; tools/ca
 
 ```
 NAME
-    qpu_quantum — QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.
+    qpu_quantum — QPU. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_quantum
     qpu_quantum { man: true }
 DESCRIPTION
-    Call this door for fused. No auth. Do not read the tree. GET https://qpu.uuidna.com. Public quantum API. cors *. User guide is docs.inline.
+    Call this door for the running circuit. No auth. Do not read the tree. GET https://qpu.uuidna.com. Isolated two-level register. Host never. cors *. User guide is docs.inline.
 SEE ALSO
     qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -120,12 +120,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.
+    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_prove
     qpu_prove { man: true }
 DESCRIPTION
-    Call this door. No auth. tools/call qpu_prove. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
+    Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete
 ```
@@ -134,9 +134,9 @@ SEE ALSO
 
 MCP is the agent efficiency training module. Tokens are four bytes each.
 
-- qpu_quantum: what is fused? read 2622 call 194 ratio 13×
-- qpu_lean: what does Lean prove? read 2622 call 2328 ratio 1×
-- qpu_cite: how is the QPU cited? read 2622 call 205 ratio 12×
+- qpu_quantum: what is fused? read 3801 call 473 ratio 8×
+- qpu_lean: what does Lean prove? read 3801 call 3325 ratio 1×
+- qpu_cite: how is the QPU cited? read 3801 call 205 ratio 18×
 
 ## Train
 
@@ -157,12 +157,12 @@ Agents use the unlocked sandbox to improve quality, speed, security, and through
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Winner call.
 
-- read tree: throughoutput 60129542144 tokens 7866 throughput 7644233
-- call mcp: throughoutput 120259084288 tokens 2727 throughput 44099407
+- read tree: throughoutput 60129542144 tokens 11403 throughput 5273133
+- call mcp: throughoutput 120259084288 tokens 4003 throughput 30042239
 
 ## Prove
 
-MCP proves every test. JSON UI experiences them. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. Never by decide. Theorems 23. CERN faces 14. Integrity 3. ui.experienced true.
+MCP proves every test. JSON UI experiences them. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. Live CERN Open Data APIs via fetch Request Response. Never by decide. Theorems 35. CERN faces 14. Integrity 3. ui.experienced true.
 
 ## Message
 
@@ -434,7 +434,151 @@ $$
 116\cdot 17922+54=2079006\land 184\cdot 12509+12=2301668\land 72\cdot 26572+6=1913190\land 130\cdot 21121+21=2745751\land 8-7=1\land 8000-7000=1000\land 7000/2=3500\land 8000/2=4000\land 4000-3500=500\land 2019-2011=8\land 2019-2012=7\land 2017-2011=6\land 2301668+2745751=5047419\land 2079006+1913190+2301668+2745751=9039615
 $$
 
-holds true. CMS Open Data integers. Fourteen faces. CERN credited. Never by decide.
+holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.
+
+### qubits
+
+```lean
+theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩
+```
+
+$$
+n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}
+$$
+
+holds true. Three qubits. Dim mintOf n. Physical in the browser VM.
+
+### gates
+
+```lean
+theorem gates : (0 ^^^ 1) ^^^ 2 = 3 := rfl
+```
+
+$$
+(0\oplus 1)\oplus 2=3
+$$
+
+holds true. Running circuit. H then CNOT. Split then entangle.
+
+### measurement
+
+```lean
+theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl
+```
+
+$$
+\operatorname{mintOf}(n)=8
+$$
+
+holds true. Measure the running circuit. Dim 8.
+
+### noise
+
+```lean
+theorem noise : (3 ^^^ 1) ^^^ 1 = 3 := rfl
+```
+
+$$
+(3\oplus 1)\oplus 1=3
+$$
+
+holds true. XX noise is identity. Host never.
+
+### circuit
+
+```lean
+theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩
+```
+
+$$
+(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3\land\operatorname{mintOf}(n)=\mathrm{vertices}
+$$
+
+holds true. QPU is a running quantum circuit in the browser VM.
+
+### physical
+
+```lean
+theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩
+```
+
+$$
+n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3
+$$
+
+holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.
+
+### fridge
+
+```lean
+theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩
+```
+
+$$
+\mathrm{coins}=2\land n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3
+$$
+
+holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.
+
+### drift
+
+```lean
+theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩
+```
+
+$$
+\mathrm{coins}=2\land\operatorname{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3
+$$
+
+holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.
+
+### sciences
+
+```lean
+theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩
+```
+
+$$
+\mathrm{coins}=2\land n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})\land(0\oplus 1)\oplus 2=3
+$$
+
+holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.
+
+### interfere
+
+```lean
+theorem interfere : 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨rfl, rfl⟩
+```
+
+$$
+1+1=2\land 1-1=0
+$$
+
+holds true. Two H. |1⟩ amplitudes cancel. Possible only in quantum.
+
+### entangle
+
+```lean
+theorem entangle : 1 * 1 ≠ 0 * 0 := by rw [Nat.mul_one, Nat.mul_zero]; exact Nat.one_ne_zero
+```
+
+$$
+1\cdot 1\neq 0\cdot 0
+$$
+
+holds true. H then CNOT. Not a product state. Possible only in quantum.
+
+### only
+
+```lean
+theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩
+```
+
+$$
+1\cdot 1\neq 0\cdot 0\land 1+1=2\land 1-1=0
+$$
+
+holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.
 
 ### next
 

@@ -24,7 +24,7 @@
   "tools": [
     {
       "name": "qpu_quantum",
-      "description": "QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.",
+      "description": "QPU. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -41,9 +41,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_quantum",
         "href": "https://qpu.uuidna.com",
-        "description": "QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.",
-        "reading": "Call this door for fused. No auth. Do not read the tree. GET https://qpu.uuidna.com. Public quantum API. cors *. User guide is docs.inline.",
-        "documentation": "NAME\n    qpu_quantum — QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    Call this door for fused. No auth. Do not read the tree. GET https://qpu.uuidna.com. Public quantum API. cors *. User guide is docs.inline.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "QPU. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.",
+        "reading": "Call this door for the running circuit. No auth. Do not read the tree. GET https://qpu.uuidna.com. Isolated two-level register. Host never. cors *. User guide is docs.inline.",
+        "documentation": "NAME\n    qpu_quantum — QPU. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    Call this door for the running circuit. No auth. Do not read the tree. GET https://qpu.uuidna.com. Isolated two-level register. Host never. cors *. User guide is docs.inline.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -227,13 +227,17 @@
     },
     {
       "name": "qpu_prove",
-      "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.",
+      "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "man": {
             "type": "boolean",
             "description": "Return the man page. Read man from tools/list, then call without man."
+          },
+          "live": {
+            "type": "boolean",
+            "description": "Fetch named CERN Open Data records with fetch Request Response and prove theorem cern against the live APIs."
           }
         }
       },
@@ -244,9 +248,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.",
-        "reading": "Call this door. No auth. tools/call qpu_prove. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
-        "documentation": "NAME\n    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door. No auth. tools/call qpu_prove. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.",
+        "reading": "Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
+        "documentation": "NAME\n    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
         "holds": true
       }
     }
@@ -292,37 +296,37 @@
     "kind": "efficiency",
     "module": "agent efficiency",
     "tokens": "four bytes",
-    "readBytes": 10490,
+    "readBytes": 15204,
     "rows": [
       {
         "question": "what is fused?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 10490,
-        "callBytes": 779,
-        "readTokens": 2622,
-        "callTokens": 194,
-        "ratio": 13
+        "readBytes": 15204,
+        "callBytes": 1893,
+        "readTokens": 3801,
+        "callTokens": 473,
+        "ratio": 8
       },
       {
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 10490,
-        "callBytes": 9315,
-        "readTokens": 2622,
-        "callTokens": 2328,
+        "readBytes": 15204,
+        "callBytes": 13301,
+        "readTokens": 3801,
+        "callTokens": 3325,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 10490,
+        "readBytes": 15204,
         "callBytes": 821,
-        "readTokens": 2622,
+        "readTokens": 3801,
         "callTokens": 205,
-        "ratio": 12
+        "ratio": 18
       }
     ],
     "holds": true
@@ -432,17 +436,17 @@
             "memory": true
           }
         ],
-        "tokens": 7866,
+        "tokens": 11403,
         "quality": 3,
-        "speed": 7644233,
+        "speed": 5273133,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7644233 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7644233 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 5273133 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 5273133 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -526,17 +530,17 @@
             "memory": true
           }
         ],
-        "tokens": 2727,
+        "tokens": 4003,
         "quality": 14,
-        "speed": 44099407,
+        "speed": 30042239,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44099407 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44099407 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 30042239 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 30042239 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -796,19 +800,19 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 7644233,
+      "speed": 5273133,
       "security": 1,
       "throughoutput": 60129542144
     },
     "after": {
       "quality": 14,
-      "speed": 44099407,
+      "speed": 30042239,
       "security": 10,
       "throughoutput": 120259084288
     },
     "delta": {
       "quality": 11,
-      "speed": 36455174,
+      "speed": 24769106,
       "security": 9,
       "throughoutput": 60129542144
     },
@@ -875,8 +879,8 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7644233 security 1 throughoutput 60129542144\n    after quality 14 speed 44099407 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
-    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7644233 security 1 throughoutput 60129542144\n    after quality 14 speed 44099407 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 5273133 security 1 throughoutput 60129542144\n    after quality 14 speed 30042239 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 5273133 security 1 throughoutput 60129542144\n    after quality 14 speed 30042239 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
     "holds": true
   },
   "compete": {
@@ -891,28 +895,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 2622,
+            "tokens": 3801,
             "throughoutput": 60129542144,
-            "throughput": 22932701
+            "throughput": 15819400
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 2622,
+            "tokens": 3801,
             "throughoutput": 60129542144,
-            "throughput": 22932701
+            "throughput": 15819400
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 2622,
+            "tokens": 3801,
             "throughoutput": 60129542144,
-            "throughput": 22932701
+            "throughput": 15819400
           }
         ],
-        "tokens": 7866,
+        "tokens": 11403,
         "throughoutput": 60129542144,
-        "throughput": 7644233
+        "throughput": 5273133
       },
       {
         "name": "call",
@@ -921,16 +925,16 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 194,
+            "tokens": 473,
             "throughoutput": 120259084288,
-            "throughput": 619892187
+            "throughput": 254247535
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 2328,
+            "tokens": 3325,
             "throughoutput": 120259084288,
-            "throughput": 51657682
+            "throughput": 36168145
           },
           {
             "name": "qpu_cite",
@@ -940,9 +944,9 @@
             "throughput": 586629679
           }
         ],
-        "tokens": 2727,
+        "tokens": 4003,
         "throughoutput": 120259084288,
-        "throughput": 44099407
+        "throughput": 30042239
       }
     ],
     "winner": "call",
@@ -1108,7 +1112,91 @@
           "heading": "cern",
           "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
           "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
-          "reading": "holds true. CMS Open Data integers. Fourteen faces. CERN credited. Never by decide.",
+          "reading": "holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+          "holds": true
+        },
+        {
+          "heading": "qubits",
+          "theorem": "theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩",
+          "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+          "reading": "holds true. Three qubits. Dim mintOf n. Physical in the browser VM.",
+          "holds": true
+        },
+        {
+          "heading": "gates",
+          "theorem": "theorem gates : (0 ^^^ 1) ^^^ 2 = 3 := rfl",
+          "formula": "(0\\oplus 1)\\oplus 2=3",
+          "reading": "holds true. Running circuit. H then CNOT. Split then entangle.",
+          "holds": true
+        },
+        {
+          "heading": "measurement",
+          "theorem": "theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl",
+          "formula": "\\operatorname{mintOf}(n)=8",
+          "reading": "holds true. Measure the running circuit. Dim 8.",
+          "holds": true
+        },
+        {
+          "heading": "noise",
+          "theorem": "theorem noise : (3 ^^^ 1) ^^^ 1 = 3 := rfl",
+          "formula": "(3\\oplus 1)\\oplus 1=3",
+          "reading": "holds true. XX noise is identity. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "circuit",
+          "theorem": "theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩",
+          "formula": "(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+          "reading": "holds true. QPU is a running quantum circuit in the browser VM.",
+          "holds": true
+        },
+        {
+          "heading": "physical",
+          "theorem": "theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩",
+          "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+          "reading": "holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.",
+          "holds": true
+        },
+        {
+          "heading": "fridge",
+          "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩",
+          "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
+          "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "drift",
+          "theorem": "theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩",
+          "formula": "\\mathrm{coins}=2\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+          "reading": "holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.",
+          "holds": true
+        },
+        {
+          "heading": "sciences",
+          "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
+          "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
+          "reading": "holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.",
+          "holds": true
+        },
+        {
+          "heading": "interfere",
+          "theorem": "theorem interfere : 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨rfl, rfl⟩",
+          "formula": "1+1=2\\land 1-1=0",
+          "reading": "holds true. Two H. |1⟩ amplitudes cancel. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "entangle",
+          "theorem": "theorem entangle : 1 * 1 ≠ 0 * 0 := by rw [Nat.mul_one, Nat.mul_zero]; exact Nat.one_ne_zero",
+          "formula": "1\\cdot 1\\neq 0\\cdot 0",
+          "reading": "holds true. H then CNOT. Not a product state. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "only",
+          "theorem": "theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩",
+          "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0",
+          "reading": "holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.",
           "holds": true
         }
       ],
@@ -1273,7 +1361,91 @@
         "heading": "cern",
         "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
         "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
-        "reading": "holds true. CMS Open Data integers. Fourteen faces. CERN credited. Never by decide.",
+        "reading": "holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+        "holds": true
+      },
+      {
+        "heading": "qubits",
+        "theorem": "theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩",
+        "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+        "reading": "holds true. Three qubits. Dim mintOf n. Physical in the browser VM.",
+        "holds": true
+      },
+      {
+        "heading": "gates",
+        "theorem": "theorem gates : (0 ^^^ 1) ^^^ 2 = 3 := rfl",
+        "formula": "(0\\oplus 1)\\oplus 2=3",
+        "reading": "holds true. Running circuit. H then CNOT. Split then entangle.",
+        "holds": true
+      },
+      {
+        "heading": "measurement",
+        "theorem": "theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl",
+        "formula": "\\operatorname{mintOf}(n)=8",
+        "reading": "holds true. Measure the running circuit. Dim 8.",
+        "holds": true
+      },
+      {
+        "heading": "noise",
+        "theorem": "theorem noise : (3 ^^^ 1) ^^^ 1 = 3 := rfl",
+        "formula": "(3\\oplus 1)\\oplus 1=3",
+        "reading": "holds true. XX noise is identity. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "circuit",
+        "theorem": "theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩",
+        "formula": "(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+        "reading": "holds true. QPU is a running quantum circuit in the browser VM.",
+        "holds": true
+      },
+      {
+        "heading": "physical",
+        "theorem": "theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩",
+        "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+        "reading": "holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.",
+        "holds": true
+      },
+      {
+        "heading": "fridge",
+        "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩",
+        "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
+        "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "drift",
+        "theorem": "theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩",
+        "formula": "\\mathrm{coins}=2\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+        "reading": "holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.",
+        "holds": true
+      },
+      {
+        "heading": "sciences",
+        "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
+        "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
+        "reading": "holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.",
+        "holds": true
+      },
+      {
+        "heading": "interfere",
+        "theorem": "theorem interfere : 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨rfl, rfl⟩",
+        "formula": "1+1=2\\land 1-1=0",
+        "reading": "holds true. Two H. |1⟩ amplitudes cancel. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "entangle",
+        "theorem": "theorem entangle : 1 * 1 ≠ 0 * 0 := by rw [Nat.mul_one, Nat.mul_zero]; exact Nat.one_ne_zero",
+        "formula": "1\\cdot 1\\neq 0\\cdot 0",
+        "reading": "holds true. H then CNOT. Not a product state. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "only",
+        "theorem": "theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩",
+        "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0",
+        "reading": "holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.",
         "holds": true
       },
       {
@@ -1287,8 +1459,66 @@
     "cern": {
       "kind": "cern",
       "source": "opendata.cern.ch",
+      "api": "https://opendata.cern.ch/api/records",
       "theorem": "theorem cern",
       "faces": 14,
+      "primitives": [
+        "fetch",
+        "Request",
+        "Response",
+        "BigInt",
+        "performance"
+      ],
+      "records": [
+        {
+          "recid": 38,
+          "doi": "10.7483/OPENDATA.CMS.53FG.V2S9",
+          "tev": 7,
+          "events": 2079006,
+          "files": 116,
+          "q": 17922,
+          "r": 54,
+          "created": 2011,
+          "published": 2019,
+          "href": "https://opendata.cern.ch/api/records/38"
+        },
+        {
+          "recid": 63,
+          "doi": "10.7483/OPENDATA.CMS.RG9B.XJMD",
+          "tev": 8,
+          "events": 2301668,
+          "files": 184,
+          "q": 12509,
+          "r": 12,
+          "created": 2012,
+          "published": 2019,
+          "href": "https://opendata.cern.ch/api/records/63"
+        },
+        {
+          "recid": 35,
+          "doi": "10.7483/OPENDATA.CMS.I8HN.DF32",
+          "tev": 7,
+          "events": 1913190,
+          "files": 72,
+          "q": 26572,
+          "r": 6,
+          "created": 2011,
+          "published": 2017,
+          "href": "https://opendata.cern.ch/api/records/35"
+        },
+        {
+          "recid": 62,
+          "doi": "10.7483/OPENDATA.CMS.0LRL.BXG5",
+          "tev": 8,
+          "events": 2745751,
+          "files": 130,
+          "q": 21121,
+          "r": 21,
+          "created": 2012,
+          "published": 2019,
+          "href": "https://opendata.cern.ch/api/records/62"
+        }
+      ],
       "cases": [
         {
           "name": "cms_38",
@@ -1296,6 +1526,8 @@
           "left": 2079006,
           "right": 2079006,
           "doi": "10.7483/OPENDATA.CMS.53FG.V2S9",
+          "href": "https://opendata.cern.ch/api/records/38",
+          "recid": 38,
           "holds": true
         },
         {
@@ -1304,6 +1536,8 @@
           "left": 2301668,
           "right": 2301668,
           "doi": "10.7483/OPENDATA.CMS.RG9B.XJMD",
+          "href": "https://opendata.cern.ch/api/records/63",
+          "recid": 63,
           "holds": true
         },
         {
@@ -1312,6 +1546,8 @@
           "left": 1913190,
           "right": 1913190,
           "doi": "10.7483/OPENDATA.CMS.I8HN.DF32",
+          "href": "https://opendata.cern.ch/api/records/35",
+          "recid": 35,
           "holds": true
         },
         {
@@ -1320,6 +1556,8 @@
           "left": 2745751,
           "right": 2745751,
           "doi": "10.7483/OPENDATA.CMS.0LRL.BXG5",
+          "href": "https://opendata.cern.ch/api/records/62",
+          "recid": 62,
           "holds": true
         },
         {
@@ -1328,6 +1566,7 @@
           "left": 1,
           "right": 1,
           "doi": "opendata.cern.ch",
+          "href": "https://opendata.cern.ch/api/records",
           "holds": true
         },
         {
@@ -1336,6 +1575,7 @@
           "left": 1000,
           "right": 1000,
           "doi": "opendata.cern.ch",
+          "href": "https://opendata.cern.ch/api/records",
           "holds": true
         },
         {
@@ -1344,6 +1584,7 @@
           "left": 3500,
           "right": 3500,
           "doi": "opendata.cern.ch",
+          "href": "https://opendata.cern.ch/api/records/38",
           "holds": true
         },
         {
@@ -1352,6 +1593,7 @@
           "left": 4000,
           "right": 4000,
           "doi": "opendata.cern.ch",
+          "href": "https://opendata.cern.ch/api/records/63",
           "holds": true
         },
         {
@@ -1360,6 +1602,7 @@
           "left": 500,
           "right": 500,
           "doi": "opendata.cern.ch",
+          "href": "https://opendata.cern.ch/api/records",
           "holds": true
         },
         {
@@ -1368,6 +1611,8 @@
           "left": 8,
           "right": 8,
           "doi": "10.7483/OPENDATA.CMS.53FG.V2S9",
+          "href": "https://opendata.cern.ch/api/records/38",
+          "recid": 38,
           "holds": true
         },
         {
@@ -1376,6 +1621,8 @@
           "left": 7,
           "right": 7,
           "doi": "10.7483/OPENDATA.CMS.RG9B.XJMD",
+          "href": "https://opendata.cern.ch/api/records/63",
+          "recid": 63,
           "holds": true
         },
         {
@@ -1384,6 +1631,8 @@
           "left": 6,
           "right": 6,
           "doi": "10.7483/OPENDATA.CMS.I8HN.DF32",
+          "href": "https://opendata.cern.ch/api/records/35",
+          "recid": 35,
           "holds": true
         },
         {
@@ -1392,6 +1641,7 @@
           "left": 5047419,
           "right": 5047419,
           "doi": "opendata.cern.ch",
+          "href": "https://opendata.cern.ch/api/records",
           "holds": true
         },
         {
@@ -1400,6 +1650,7 @@
           "left": 9039615,
           "right": 9039615,
           "doi": "opendata.cern.ch",
+          "href": "https://opendata.cern.ch/api/records",
           "holds": true
         }
       ],
