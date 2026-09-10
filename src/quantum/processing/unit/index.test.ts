@@ -204,6 +204,7 @@ test('eight doors via mcp', async () => {
   const train = (await mcpOf('qpu_train')) as {
     kind: string
     divide: { teams: number; agents: number; challenges: number }
+    dry: { kind: string; coordinated: boolean; entropy: boolean; sealed: boolean; occupancy: string[]; holds: boolean }
     sandbox: { memory: boolean; unlocked: boolean; host: boolean }
     vm: { online: boolean; auth: boolean; host: boolean; replicas: number; next: number; scaled: boolean; infinite: boolean; crypt: boolean; free: boolean; agents: number; holds: boolean }
     holds: boolean
@@ -260,6 +261,12 @@ test('eight doors via mcp', async () => {
   assert.equal(train.divide.teams, 2)
   assert.equal(train.divide.agents, 7)
   assert.equal(train.divide.challenges, 14)
+  assert.equal(train.dry.kind, 'clean')
+  assert.equal(train.dry.coordinated, true)
+  assert.equal(train.dry.entropy, false)
+  assert.equal(train.dry.sealed, false)
+  assert.deepEqual(train.dry.occupancy, ['personal', 'business', 'corporate', 'saas', 'paas'])
+  assert.equal(train.dry.holds, true)
   assert.equal(train.sandbox.memory, true)
   assert.equal(train.sandbox.unlocked, true)
   assert.equal(train.sandbox.host, false)

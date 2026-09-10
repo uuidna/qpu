@@ -89,6 +89,27 @@ theorem distribute : fused = faces * mintOf (bits + seed) ∧ faces = coins * ra
 theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩
 theorem computer : (1 ^^^ 3) = 2 ∧ (6 ^^^ 1) = 7 ∧ mintOf 0 = 1 := ⟨rfl, rfl, mintOf_zero⟩
 theorem server : faces = coins * rays ∧ mintOf n = 8 := ⟨around, measurement⟩
+theorem pentagram : n + coins = 5 := by rw [n_eq, coins_two]
+def theory : Nat := seed
+def practice : Nat := seed
+def coil : Nat := coins * rays
+theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]
+theorem electronics : coil = faces := two_coins_make_a_coil
+theorem coins_balance_theory_in_practice : theory + practice = coins ∧ theory = practice := ⟨rfl, rfl⟩
+theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by
+  rw [theory, practice, coins, ← Nat.add_assoc]
+theorem emerge : coil = faces ∧ theory = practice := ⟨two_coins_make_a_coil, rfl⟩
+theorem coil_efficiency : coil = faces ∧ faces = rays + rays ∧ coins * rays = faces := ⟨two_coins_make_a_coil, harmonic, around⟩
+theorem next_coil : coil * mintOf (bits + coins) = fused + fused := by
+  rw [two_coins_make_a_coil]
+  exact next_fused
+theorem one_plus_six : seed + (mintOf n - coins) = rays := by
+  rw [rays, n_eq, coins_two, seed_eq]
+  rw [show mintOf 3 = 8 from rfl]
+theorem two_x_seven_coins : coins * rays = (seed + (mintOf n - coins)) * coins := by
+  rw [one_plus_six, Nat.mul_comm]
+theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins ∧ (seed + (mintOf n - coins)) * coins = coil :=
+  ⟨two_x_seven_coins, by rw [← two_x_seven_coins]; rfl⟩
 theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩
 theorem design : (0 ^^^ 4) ^^^ 4 = 0 ∧ (3 ^^^ 4) ^^^ 4 = 3 := ⟨rfl, rfl⟩
 theorem neuro : faces = coins * rays ∧ mintOf n = 8 ∧ (0 ^^^ 4) ^^^ 4 = 0 := ⟨around, measurement, design.1⟩

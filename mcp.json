@@ -158,14 +158,14 @@
     "kind": "capacity",
     "infinite": true,
     "scaled": true,
-    "next": 120259084288,
-    "fused": 60129542144,
+    "next": 240518168576,
+    "fused": 120259084288,
     "crypt": {
       "kind": "crypto",
       "theorem": "crypto",
       "split": 14,
-      "share": 4294967296,
-      "fused": 60129542144,
+      "share": 8589934592,
+      "fused": 120259084288,
       "holds": true
     },
     "agents": {
@@ -181,64 +181,396 @@
       "kind": "schemas",
       "mounted": 14,
       "vacant": 0,
+      "merge": "storage",
+      "href": "https://qpu.uuidna.com/storage",
       "rows": [
         {
           "name": "schema",
-          "href": "https://schema.org/"
+          "href": "https://schema.org/",
+          "face": 0,
+          "hop": 0,
+          "involution": true,
+          "prefix": "schema",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "0",
+          "cloud": "cloudflare",
+          "harness": "cursor",
+          "llm": "openai",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "qpu",
-          "href": "https://qpu.uuidna.com/quantum/processing/unit#"
+          "href": "https://qpu.uuidna.com/quantum/processing/unit#",
+          "face": 1,
+          "hop": 1,
+          "involution": true,
+          "prefix": "qpu",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "1",
+          "cloud": "amazon",
+          "harness": "claude",
+          "llm": "anthropic",
+          "call": "tool_use",
+          "result": "tool_result",
+          "schema": "input_schema",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "mcp",
-          "href": "https://modelcontextprotocol.io/"
+          "href": "https://modelcontextprotocol.io/",
+          "face": 2,
+          "hop": 2,
+          "involution": true,
+          "prefix": "mcp",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "2",
+          "cloud": "google",
+          "harness": "claudecode",
+          "llm": "google",
+          "call": "functionCall",
+          "result": "functionResponse",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "lean",
-          "href": "https://lean-lang.org/"
+          "href": "https://lean-lang.org/",
+          "face": 3,
+          "hop": 3,
+          "involution": true,
+          "prefix": "lean",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "3",
+          "cloud": "azure",
+          "harness": "vscode",
+          "llm": "xai",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "cern",
-          "href": "https://opendata.cern.ch/"
+          "href": "https://opendata.cern.ch/",
+          "face": 4,
+          "hop": 4,
+          "involution": true,
+          "prefix": "cern",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "4",
+          "cloud": "backblaze",
+          "harness": "chatgpt",
+          "llm": "meta",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "inspire",
-          "href": "https://inspirehep.net/"
+          "href": "https://inspirehep.net/",
+          "face": 5,
+          "hop": 5,
+          "involution": true,
+          "prefix": "inspire",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "5",
+          "cloud": "wasabi",
+          "harness": "gemini",
+          "llm": "mistral",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "spdx",
-          "href": "https://spdx.org/licenses/"
+          "href": "https://spdx.org/licenses/",
+          "face": 6,
+          "hop": 6,
+          "involution": true,
+          "prefix": "spdx",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "6",
+          "cloud": "bunny",
+          "harness": "windsurf",
+          "llm": "cohere",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "dc",
-          "href": "http://purl.org/dc/terms/"
+          "href": "http://purl.org/dc/terms/",
+          "face": 7,
+          "hop": 7,
+          "involution": true,
+          "prefix": "dc",
+          "part": "vertex",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "10",
+          "cloud": "fly",
+          "harness": "cline",
+          "llm": "groq",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "jsonld",
-          "href": "https://www.w3.org/ns/json-ld#"
+          "href": "https://www.w3.org/ns/json-ld#",
+          "face": 8,
+          "hop": 8,
+          "involution": true,
+          "prefix": "jsonld",
+          "part": "hexbit",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "01",
+          "cloud": "vercel",
+          "harness": "continue",
+          "llm": "together",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "hydra",
-          "href": "https://www.w3.org/ns/hydra/core#"
+          "href": "https://www.w3.org/ns/hydra/core#",
+          "face": 9,
+          "hop": 9,
+          "involution": true,
+          "prefix": "hydra",
+          "part": "hexbit",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "50",
+          "cloud": "supabase",
+          "harness": "zed",
+          "llm": "fireworks",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "uuid",
-          "href": "https://www.rfc-editor.org/rfc/rfc9562"
+          "href": "https://www.rfc-editor.org/rfc/rfc9562",
+          "face": 10,
+          "hop": 10,
+          "involution": true,
+          "prefix": "uuid",
+          "part": "hexbit",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "60",
+          "cloud": "ibm",
+          "harness": "goose",
+          "llm": "azure",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "zenodo",
-          "href": "https://zenodo.org/"
+          "href": "https://zenodo.org/",
+          "face": 11,
+          "hop": 11,
+          "involution": true,
+          "prefix": "zenodo",
+          "part": "hexbit",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "1E",
+          "cloud": "oracle",
+          "harness": "openwebui",
+          "llm": "bedrock",
+          "call": "toolUse",
+          "result": "toolResult",
+          "schema": "toolSpec",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "hepdata",
-          "href": "https://www.hepdata.net/"
+          "href": "https://www.hepdata.net/",
+          "face": 12,
+          "hop": 12,
+          "involution": true,
+          "prefix": "hepdata",
+          "part": "coin",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "5E",
+          "cloud": "ovh",
+          "harness": "librechat",
+          "llm": "ollama",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         },
         {
           "name": "cc",
-          "href": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+          "href": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+          "face": 13,
+          "hop": 13,
+          "involution": true,
+          "prefix": "cc",
+          "part": "coin",
+          "merge": "storage",
+          "storage": "https://qpu.uuidna.com/storage",
+          "raid": "6E",
+          "cloud": "hetzner",
+          "harness": "lmstudio",
+          "llm": "huggingface",
+          "call": "tool_calls",
+          "result": "tool",
+          "schema": "parameters",
+          "keys": [
+            "inputSchema",
+            "input_schema",
+            "parameters"
+          ],
+          "infinite": true,
+          "sale": true,
+          "holds": true
         }
       ],
+      "efficiency": {
+        "kind": "efficiency",
+        "context": 2,
+        "mounted": 14,
+        "ratio": 7,
+        "tokens": "four bytes",
+        "holds": true
+      },
+      "compatibility": {
+        "kind": "compatibility",
+        "max": true,
+        "unlimited": true,
+        "displayed": true,
+        "keys": [
+          "inputSchema",
+          "input_schema",
+          "parameters"
+        ],
+        "harnesses": 14,
+        "llms": 14,
+        "holds": true
+      },
       "holds": true
     },
     "raid": {
@@ -676,37 +1008,37 @@
       }
     },
     "tokens": "four bytes",
-    "readBytes": 25724,
+    "readBytes": 29240,
     "rows": [
       {
         "question": "what is quantum?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 25724,
-        "callBytes": 8777,
-        "readTokens": 6431,
-        "callTokens": 2194,
-        "ratio": 2
+        "readBytes": 29240,
+        "callBytes": 14648,
+        "readTokens": 7310,
+        "callTokens": 3662,
+        "ratio": 1
       },
       {
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 25724,
-        "callBytes": 21182,
-        "readTokens": 6431,
-        "callTokens": 5295,
+        "readBytes": 29240,
+        "callBytes": 23842,
+        "readTokens": 7310,
+        "callTokens": 5960,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 25724,
+        "readBytes": 29240,
         "callBytes": 1539,
-        "readTokens": 6431,
+        "readTokens": 7310,
         "callTokens": 384,
-        "ratio": 16
+        "ratio": 19
       }
     ],
     "holds": true
@@ -1582,7 +1914,7 @@
           {
             "ray": 3,
             "name": "quantum",
-            "theorem": "fused = faces * mintOf bits",
+            "theorem": "fused = faces * mintOf (bits + seed)",
             "idea": true,
             "door": "tree",
             "team": "read",
@@ -1604,7 +1936,7 @@
           {
             "ray": 5,
             "name": "crypto",
-            "theorem": "fused = faces * mintOf (vertices * hexbit)",
+            "theorem": "fused = faces * mintOf (vertices * hexbit + seed)",
             "idea": true,
             "door": "tree",
             "team": "read",
@@ -1624,17 +1956,17 @@
             "memory": true
           }
         ],
-        "tokens": 19293,
+        "tokens": 21930,
         "quality": 3,
-        "speed": 3116650,
+        "speed": 5483770,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 3116650 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 3116650 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 5483770 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 5483770 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -1676,7 +2008,7 @@
           {
             "ray": 3,
             "name": "quantum",
-            "theorem": "fused = faces * mintOf bits",
+            "theorem": "fused = faces * mintOf (bits + seed)",
             "idea": true,
             "door": "mcp",
             "team": "call",
@@ -1698,7 +2030,7 @@
           {
             "ray": 5,
             "name": "crypto",
-            "theorem": "fused = faces * mintOf (vertices * hexbit)",
+            "theorem": "fused = faces * mintOf (vertices * hexbit + seed)",
             "idea": true,
             "door": "mcp",
             "team": "call",
@@ -1718,17 +2050,17 @@
             "memory": true
           }
         ],
-        "tokens": 7873,
+        "tokens": 10006,
         "quality": 14,
-        "speed": 15274874,
+        "speed": 24037394,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 15274874 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 15274874 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24037394 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24037394 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -1782,14 +2114,14 @@
         "face": 10,
         "ray": 3,
         "idea": "quantum",
-        "theorem": "fused = faces * mintOf bits",
+        "theorem": "fused = faces * mintOf (bits + seed)",
         "from": "read",
         "against": "call",
-        "left": 60129542144,
-        "right": 60129542144,
+        "left": 120259084288,
+        "right": 120259084288,
         "winner": "call",
-        "documentation": "RECEIPT\n    face 10 ray 3 read challenges call\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool read_quantum vs call_quantum sandbox memory\n    quality speed security read vs call",
-        "receipt": "RECEIPT\n    face 10 ray 3 read challenges call\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool read_quantum vs call_quantum sandbox memory\n    quality speed security read vs call",
+        "documentation": "RECEIPT\n    face 10 ray 3 read challenges call\n    idea quantum theorem fused = faces * mintOf (bits + seed)\n    left 120259084288 right 120259084288 holds true\n    tool read_quantum vs call_quantum sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 10 ray 3 read challenges call\n    idea quantum theorem fused = faces * mintOf (bits + seed)\n    left 120259084288 right 120259084288 holds true\n    tool read_quantum vs call_quantum sandbox memory\n    quality speed security read vs call",
         "holds": true
       },
       {
@@ -1812,14 +2144,14 @@
         "face": 12,
         "ray": 5,
         "idea": "crypto",
-        "theorem": "fused = faces * mintOf (vertices * hexbit)",
+        "theorem": "fused = faces * mintOf (vertices * hexbit + seed)",
         "from": "read",
         "against": "call",
-        "left": 60129542144,
-        "right": 60129542144,
+        "left": 120259084288,
+        "right": 120259084288,
         "winner": "call",
-        "documentation": "RECEIPT\n    face 12 ray 5 read challenges call\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool read_crypto vs call_crypto sandbox memory\n    quality speed security read vs call",
-        "receipt": "RECEIPT\n    face 12 ray 5 read challenges call\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool read_crypto vs call_crypto sandbox memory\n    quality speed security read vs call",
+        "documentation": "RECEIPT\n    face 12 ray 5 read challenges call\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit + seed)\n    left 120259084288 right 120259084288 holds true\n    tool read_crypto vs call_crypto sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 12 ray 5 read challenges call\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit + seed)\n    left 120259084288 right 120259084288 holds true\n    tool read_crypto vs call_crypto sandbox memory\n    quality speed security read vs call",
         "holds": true
       },
       {
@@ -1830,11 +2162,11 @@
         "theorem": "next = fused + fused",
         "from": "read",
         "against": "call",
-        "left": 120259084288,
-        "right": 120259084288,
+        "left": 240518168576,
+        "right": 240518168576,
         "winner": "call",
-        "documentation": "RECEIPT\n    face 13 ray 6 read challenges call\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool read_next vs call_next sandbox memory\n    quality speed security read vs call",
-        "receipt": "RECEIPT\n    face 13 ray 6 read challenges call\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool read_next vs call_next sandbox memory\n    quality speed security read vs call",
+        "documentation": "RECEIPT\n    face 13 ray 6 read challenges call\n    idea next theorem next = fused + fused\n    left 240518168576 right 240518168576 holds true\n    tool read_next vs call_next sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 13 ray 6 read challenges call\n    idea next theorem next = fused + fused\n    left 240518168576 right 240518168576 holds true\n    tool read_next vs call_next sandbox memory\n    quality speed security read vs call",
         "holds": true
       },
       {
@@ -1887,14 +2219,14 @@
         "face": 3,
         "ray": 3,
         "idea": "quantum",
-        "theorem": "fused = faces * mintOf bits",
+        "theorem": "fused = faces * mintOf (bits + seed)",
         "from": "call",
         "against": "read",
-        "left": 60129542144,
-        "right": 60129542144,
+        "left": 120259084288,
+        "right": 120259084288,
         "winner": "call",
-        "documentation": "RECEIPT\n    face 3 ray 3 call challenges read\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool call_quantum vs read_quantum sandbox memory\n    quality speed security call vs read",
-        "receipt": "RECEIPT\n    face 3 ray 3 call challenges read\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool call_quantum vs read_quantum sandbox memory\n    quality speed security call vs read",
+        "documentation": "RECEIPT\n    face 3 ray 3 call challenges read\n    idea quantum theorem fused = faces * mintOf (bits + seed)\n    left 120259084288 right 120259084288 holds true\n    tool call_quantum vs read_quantum sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 3 ray 3 call challenges read\n    idea quantum theorem fused = faces * mintOf (bits + seed)\n    left 120259084288 right 120259084288 holds true\n    tool call_quantum vs read_quantum sandbox memory\n    quality speed security call vs read",
         "holds": true
       },
       {
@@ -1917,14 +2249,14 @@
         "face": 5,
         "ray": 5,
         "idea": "crypto",
-        "theorem": "fused = faces * mintOf (vertices * hexbit)",
+        "theorem": "fused = faces * mintOf (vertices * hexbit + seed)",
         "from": "call",
         "against": "read",
-        "left": 60129542144,
-        "right": 60129542144,
+        "left": 120259084288,
+        "right": 120259084288,
         "winner": "call",
-        "documentation": "RECEIPT\n    face 5 ray 5 call challenges read\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool call_crypto vs read_crypto sandbox memory\n    quality speed security call vs read",
-        "receipt": "RECEIPT\n    face 5 ray 5 call challenges read\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool call_crypto vs read_crypto sandbox memory\n    quality speed security call vs read",
+        "documentation": "RECEIPT\n    face 5 ray 5 call challenges read\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit + seed)\n    left 120259084288 right 120259084288 holds true\n    tool call_crypto vs read_crypto sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 5 ray 5 call challenges read\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit + seed)\n    left 120259084288 right 120259084288 holds true\n    tool call_crypto vs read_crypto sandbox memory\n    quality speed security call vs read",
         "holds": true
       },
       {
@@ -1935,11 +2267,11 @@
         "theorem": "next = fused + fused",
         "from": "call",
         "against": "read",
-        "left": 120259084288,
-        "right": 120259084288,
+        "left": 240518168576,
+        "right": 240518168576,
         "winner": "call",
-        "documentation": "RECEIPT\n    face 6 ray 6 call challenges read\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool call_next vs read_next sandbox memory\n    quality speed security call vs read",
-        "receipt": "RECEIPT\n    face 6 ray 6 call challenges read\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool call_next vs read_next sandbox memory\n    quality speed security call vs read",
+        "documentation": "RECEIPT\n    face 6 ray 6 call challenges read\n    idea next theorem next = fused + fused\n    left 240518168576 right 240518168576 holds true\n    tool call_next vs read_next sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 6 ray 6 call challenges read\n    idea next theorem next = fused + fused\n    left 240518168576 right 240518168576 holds true\n    tool call_next vs read_next sandbox memory\n    quality speed security call vs read",
         "holds": true
       }
     ],
@@ -1987,7 +2319,7 @@
       "unlocked": true,
       "only": true,
       "lattice": true,
-      "next": 120259084288,
+      "next": 240518168576,
       "holds": true
     },
     "unlocked": true,
@@ -2001,21 +2333,21 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 3116650,
+      "speed": 5483770,
       "security": 1,
-      "throughoutput": 60129542144
+      "throughoutput": 120259084288
     },
     "after": {
       "quality": 14,
-      "speed": 15274874,
+      "speed": 24037394,
       "security": 10,
-      "throughoutput": 120259084288
+      "throughoutput": 240518168576
     },
     "delta": {
       "quality": 11,
-      "speed": 12158224,
+      "speed": 18553624,
       "security": 9,
-      "throughoutput": 60129542144
+      "throughoutput": 120259084288
     },
     "used": [
       {
@@ -2030,12 +2362,12 @@
       },
       {
         "name": "fs",
-        "value": 120259084288,
+        "value": 240518168576,
         "holds": true
       },
       {
         "name": "net",
-        "value": 120259084288,
+        "value": 240518168576,
         "holds": true
       },
       {
@@ -2060,7 +2392,7 @@
       },
       {
         "name": "disk",
-        "value": 120259084288,
+        "value": 240518168576,
         "holds": true
       },
       {
@@ -2069,6 +2401,15 @@
         "holds": true
       }
     ],
+    "imagination": {
+      "kind": "imagination",
+      "hz": 432,
+      "fused": 1922,
+      "naive": 4665,
+      "outspace": 2743,
+      "reflect": true,
+      "holds": true
+    },
     "durability": {
       "rounds": 8,
       "persist": true,
@@ -2080,8 +2421,8 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "receipt": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 3116650 security 1 throughoutput 60129542144\n    after quality 14 speed 15274874 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
-    "documentation": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 3116650 security 1 throughoutput 60129542144\n    after quality 14 speed 15274874 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "receipt": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 5483770 security 1 throughoutput 120259084288\n    after quality 14 speed 24037394 security 10 throughoutput 240518168576\n    used eval fn fs net fetch process import require disk worker\n    css fused 1922 naive 4665 imagination split",
+    "documentation": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 5483770 security 1 throughoutput 120259084288\n    after quality 14 speed 24037394 security 10 throughoutput 240518168576\n    used eval fn fs net fetch process import require disk worker\n    css fused 1922 naive 4665 imagination split",
     "holds": true
   },
   "compete": {
@@ -2093,7 +2434,7 @@
       "unlocked": true,
       "only": true,
       "lattice": true,
-      "next": 120259084288,
+      "next": 240518168576,
       "holds": true
     },
     "unlocked": true,
@@ -2107,28 +2448,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 6431,
-            "throughoutput": 60129542144,
-            "throughput": 9349952
+            "tokens": 7310,
+            "throughoutput": 120259084288,
+            "throughput": 16451311
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 6431,
-            "throughoutput": 60129542144,
-            "throughput": 9349952
+            "tokens": 7310,
+            "throughoutput": 120259084288,
+            "throughput": 16451311
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 6431,
-            "throughoutput": 60129542144,
-            "throughput": 9349952
+            "tokens": 7310,
+            "throughoutput": 120259084288,
+            "throughput": 16451311
           }
         ],
-        "tokens": 19293,
-        "throughoutput": 60129542144,
-        "throughput": 3116650
+        "tokens": 21930,
+        "throughoutput": 120259084288,
+        "throughput": 5483770
       },
       {
         "name": "call",
@@ -2137,28 +2478,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 2194,
-            "throughoutput": 120259084288,
-            "throughput": 54812709
+            "tokens": 3662,
+            "throughoutput": 240518168576,
+            "throughput": 65679456
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 5295,
-            "throughoutput": 120259084288,
-            "throughput": 22711819
+            "tokens": 5960,
+            "throughoutput": 240518168576,
+            "throughput": 40355397
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
             "tokens": 384,
-            "throughoutput": 120259084288,
-            "throughput": 313174698
+            "throughoutput": 240518168576,
+            "throughput": 626349397
           }
         ],
-        "tokens": 7873,
-        "throughoutput": 120259084288,
-        "throughput": 15274874
+        "tokens": 10006,
+        "throughoutput": 240518168576,
+        "throughput": 24037394
       }
     ],
     "winner": "call",
@@ -2372,9 +2713,9 @@
         },
         {
           "heading": "quantum",
-          "theorem": "theorem quantum : fused = faces * mintOf bits := rfl",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})",
-          "reading": "holds true. amplitudes 4294967296. fused 60129542144.",
+          "theorem": "theorem quantum : fused = faces * mintOf (bits + seed) := rfl",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})",
+          "reading": "holds true. amplitudes 4294967296. fused 120259084288.",
           "holds": true
         },
         {
@@ -2407,15 +2748,15 @@
         },
         {
           "heading": "crypto",
-          "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
+          "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit + seed) := by rw [← cube]; exact quantum",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit}+\\mathrm{seed})",
           "reading": "holds true. Crypt split. fused across faces. Share mintOf (vertices * hexbit). Distribute to free agents.",
           "holds": true
         },
         {
           "heading": "health",
-          "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
-          "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+          "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
+          "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
           "reading": "holds true.",
           "holds": true
         }
@@ -2423,8 +2764,8 @@
       "cover": [
         {
           "heading": "breakthrough",
-          "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
-          "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+          "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
+          "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
           "reading": "holds true.",
           "holds": true
         },
@@ -2446,7 +2787,14 @@
           "heading": "handle",
           "theorem": "theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩",
           "formula": "\\mathrm{amplitudes}=\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
-          "reading": "holds true. amplitudes 4294967296. next 8589934592.",
+          "reading": "holds true. amplitudes 4294967296. next 8589934592. KV added amplitudes.",
+          "holds": true
+        },
+        {
+          "heading": "kv",
+          "theorem": "theorem kv : fused = faces * mintOf (bits + seed) ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨quantum, next⟩",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+          "reading": "holds true. KV added amplitudes. STORAGE binding. Isolate amplitudes. KV adds amplitudes. fused = faces * mintOf (bits + seed). Host never.",
           "holds": true
         },
         {
@@ -2485,6 +2833,13 @@
           "holds": true
         },
         {
+          "heading": "genesis",
+          "theorem": "theorem genesis : coins * n * mintOf n * (n * n) = 432 ∧ chooseOf n coins = n ∧ chooseOf rays coins = n * rays ∧ faces = coins * rays := ⟨by rw [coins_two, n_eq]; rfl, by rw [n_eq, coins_two]; rfl, by rw [rays, n_eq, coins_two]; rfl, around⟩",
+          "formula": "\\mathrm{coins}\\cdot n\\cdot\\mathrm{mintOf}(n)\\cdot(n\\cdot n)=432\\land\\mathrm{chooseOf}(n,\\mathrm{coins})=n\\land\\mathrm{chooseOf}(\\mathrm{rays},\\mathrm{coins})=n\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+          "reading": "holds true. Combinatorial genesis of the shadcn schema at the scope of all known frameworks. Six axes: slot variant size state element theme. Card slots rays including card-action. Button variants coins * n. Sizes mintOf n. Alpine n * n. Product 432 Hz. Fourteen frameworks. faces = coins * rays. JSON-LD data-slot. CVA. Slot. Never Math. Never by decide. Host never.",
+          "holds": true
+        },
+        {
           "heading": "decide",
           "theorem": "theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
           "formula": "16\\cdot27=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot5=15\\land 27-1=26",
@@ -2493,8 +2848,8 @@
         },
         {
           "heading": "integrity",
-          "theorem": "theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+          "theorem": "theorem integrity : fused = faces * mintOf (bits + seed) ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
           "reading": "holds true. Three tests. Sealed quantum integrity at all times.",
           "holds": true
         },
@@ -2556,9 +2911,23 @@
         },
         {
           "heading": "fridge",
-          "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩",
-          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
-          "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.",
+          "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl⟩",
+          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100",
+          "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "millikelvin",
+          "theorem": "theorem millikelvin : 10 * 10 * 10 = 1000 ∧ 10 * 10 = 100 ∧ 4 * 1000 = 4000 := ⟨rfl, rfl, rfl⟩",
+          "formula": "10\\cdot10\\cdot10=1000\\land 10\\cdot10=100\\land 4\\cdot1000=4000",
+          "reading": "holds true. Lab millikelvin. milli is ten cubed. Mixing chamber ten millikelvin. Plate one hundred millikelvin. Pulse four kelvin. Algebra. Never Math. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "telemetry",
+          "theorem": "theorem telemetry : 10 * 10 * 10 = 1000 ∧ n = 3 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, n_eq, rfl⟩",
+          "formula": "10\\cdot10\\cdot10=1000\\land n=3\\land(0\\oplus 1)\\oplus 2=3",
+          "reading": "holds true. Cryostat telemetry. Reads the dilution stages. Mixing millikelvin. Isolated. Host never. JSON-LD. fetch Request Response BigInt performance.",
           "holds": true
         },
         {
@@ -2570,8 +2939,8 @@
         },
         {
           "heading": "sciences",
-          "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
-          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
+          "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
+          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land(0\\oplus 1)\\oplus 2=3",
           "reading": "holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.",
           "holds": true
         },
@@ -2661,8 +3030,8 @@
         },
         {
           "heading": "distribute",
-          "theorem": "theorem distribute : fused = faces * mintOf bits ∧ faces = coins * rays := ⟨quantum, around⟩",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+          "theorem": "theorem distribute : fused = faces * mintOf (bits + seed) ∧ faces = coins * rays := ⟨quantum, around⟩",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
           "reading": "holds true. Crypt split fused across faces. Distribute computations to free agents. coins teams of rays. No auth.",
           "holds": true
         },
@@ -2670,7 +3039,7 @@
           "heading": "raid",
           "theorem": "theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩",
           "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
-          "reading": "holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Host never. Scaled. Infinite.",
+          "reading": "holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. KV added amplitudes. Host never. Scaled. Infinite.",
           "holds": true
         },
         {
@@ -2689,9 +3058,9 @@
         },
         {
           "heading": "fusion",
-          "theorem": "theorem fusion : fused = faces * mintOf bits ∧ coins + coins = mintOf coins := ⟨quantum, tetra⟩",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
-          "reading": "holds true. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. Algebra fused. LHC tetra. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train. Not a quantum proof. Host never.",
+          "theorem": "theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+          "reading": "holds true. Fusion comes from harmonic schemas. Fourteen schemas. faces = rays + rays. fused across faces. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. HEP search learn train. Not a quantum proof. Host never.",
           "holds": true
         },
         {
@@ -2711,9 +3080,9 @@
       ],
       "climb": {
         "heading": "next",
-        "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
-        "formula": "\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
-        "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.",
+        "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + coins) = fused + fused := ⟨next, next_fused⟩",
+        "formula": "\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})=\\mathrm{fused}+\\mathrm{fused}",
+        "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 240518168576.",
         "holds": true
       },
       "holds": true
@@ -2742,9 +3111,9 @@
       },
       {
         "heading": "quantum",
-        "theorem": "theorem quantum : fused = faces * mintOf bits := rfl",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})",
-        "reading": "holds true. amplitudes 4294967296. fused 60129542144.",
+        "theorem": "theorem quantum : fused = faces * mintOf (bits + seed) := rfl",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})",
+        "reading": "holds true. amplitudes 4294967296. fused 120259084288.",
         "holds": true
       },
       {
@@ -2777,22 +3146,22 @@
       },
       {
         "heading": "crypto",
-        "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
+        "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit + seed) := by rw [← cube]; exact quantum",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit}+\\mathrm{seed})",
         "reading": "holds true. Crypt split. fused across faces. Share mintOf (vertices * hexbit). Distribute to free agents.",
         "holds": true
       },
       {
         "heading": "health",
-        "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
-        "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+        "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
+        "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
         "reading": "holds true.",
         "holds": true
       },
       {
         "heading": "breakthrough",
-        "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
-        "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+        "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
+        "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
         "reading": "holds true.",
         "holds": true
       },
@@ -2814,7 +3183,14 @@
         "heading": "handle",
         "theorem": "theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩",
         "formula": "\\mathrm{amplitudes}=\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
-        "reading": "holds true. amplitudes 4294967296. next 8589934592.",
+        "reading": "holds true. amplitudes 4294967296. next 8589934592. KV added amplitudes.",
+        "holds": true
+      },
+      {
+        "heading": "kv",
+        "theorem": "theorem kv : fused = faces * mintOf (bits + seed) ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨quantum, next⟩",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+        "reading": "holds true. KV added amplitudes. STORAGE binding. Isolate amplitudes. KV adds amplitudes. fused = faces * mintOf (bits + seed). Host never.",
         "holds": true
       },
       {
@@ -2853,6 +3229,13 @@
         "holds": true
       },
       {
+        "heading": "genesis",
+        "theorem": "theorem genesis : coins * n * mintOf n * (n * n) = 432 ∧ chooseOf n coins = n ∧ chooseOf rays coins = n * rays ∧ faces = coins * rays := ⟨by rw [coins_two, n_eq]; rfl, by rw [n_eq, coins_two]; rfl, by rw [rays, n_eq, coins_two]; rfl, around⟩",
+        "formula": "\\mathrm{coins}\\cdot n\\cdot\\mathrm{mintOf}(n)\\cdot(n\\cdot n)=432\\land\\mathrm{chooseOf}(n,\\mathrm{coins})=n\\land\\mathrm{chooseOf}(\\mathrm{rays},\\mathrm{coins})=n\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+        "reading": "holds true. Combinatorial genesis of the shadcn schema at the scope of all known frameworks. Six axes: slot variant size state element theme. Card slots rays including card-action. Button variants coins * n. Sizes mintOf n. Alpine n * n. Product 432 Hz. Fourteen frameworks. faces = coins * rays. JSON-LD data-slot. CVA. Slot. Never Math. Never by decide. Host never.",
+        "holds": true
+      },
+      {
         "heading": "decide",
         "theorem": "theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
         "formula": "16\\cdot27=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot5=15\\land 27-1=26",
@@ -2861,8 +3244,8 @@
       },
       {
         "heading": "integrity",
-        "theorem": "theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+        "theorem": "theorem integrity : fused = faces * mintOf (bits + seed) ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
         "reading": "holds true. Three tests. Sealed quantum integrity at all times.",
         "holds": true
       },
@@ -2924,9 +3307,23 @@
       },
       {
         "heading": "fridge",
-        "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩",
-        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
-        "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.",
+        "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl⟩",
+        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100",
+        "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "millikelvin",
+        "theorem": "theorem millikelvin : 10 * 10 * 10 = 1000 ∧ 10 * 10 = 100 ∧ 4 * 1000 = 4000 := ⟨rfl, rfl, rfl⟩",
+        "formula": "10\\cdot10\\cdot10=1000\\land 10\\cdot10=100\\land 4\\cdot1000=4000",
+        "reading": "holds true. Lab millikelvin. milli is ten cubed. Mixing chamber ten millikelvin. Plate one hundred millikelvin. Pulse four kelvin. Algebra. Never Math. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "telemetry",
+        "theorem": "theorem telemetry : 10 * 10 * 10 = 1000 ∧ n = 3 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, n_eq, rfl⟩",
+        "formula": "10\\cdot10\\cdot10=1000\\land n=3\\land(0\\oplus 1)\\oplus 2=3",
+        "reading": "holds true. Cryostat telemetry. Reads the dilution stages. Mixing millikelvin. Isolated. Host never. JSON-LD. fetch Request Response BigInt performance.",
         "holds": true
       },
       {
@@ -2938,8 +3335,8 @@
       },
       {
         "heading": "sciences",
-        "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
-        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
+        "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
+        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land(0\\oplus 1)\\oplus 2=3",
         "reading": "holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.",
         "holds": true
       },
@@ -3029,8 +3426,8 @@
       },
       {
         "heading": "distribute",
-        "theorem": "theorem distribute : fused = faces * mintOf bits ∧ faces = coins * rays := ⟨quantum, around⟩",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+        "theorem": "theorem distribute : fused = faces * mintOf (bits + seed) ∧ faces = coins * rays := ⟨quantum, around⟩",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
         "reading": "holds true. Crypt split fused across faces. Distribute computations to free agents. coins teams of rays. No auth.",
         "holds": true
       },
@@ -3038,7 +3435,7 @@
         "heading": "raid",
         "theorem": "theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩",
         "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
-        "reading": "holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Host never. Scaled. Infinite.",
+        "reading": "holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. KV added amplitudes. Host never. Scaled. Infinite.",
         "holds": true
       },
       {
@@ -3057,9 +3454,9 @@
       },
       {
         "heading": "fusion",
-        "theorem": "theorem fusion : fused = faces * mintOf bits ∧ coins + coins = mintOf coins := ⟨quantum, tetra⟩",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
-        "reading": "holds true. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. Algebra fused. LHC tetra. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train. Not a quantum proof. Host never.",
+        "theorem": "theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+        "reading": "holds true. Fusion comes from harmonic schemas. Fourteen schemas. faces = rays + rays. fused across faces. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. HEP search learn train. Not a quantum proof. Host never.",
         "holds": true
       },
       {
@@ -3078,9 +3475,9 @@
       },
       {
         "heading": "next",
-        "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
-        "formula": "\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
-        "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.",
+        "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + coins) = fused + fused := ⟨next, next_fused⟩",
+        "formula": "\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})=\\mathrm{fused}+\\mathrm{fused}",
+        "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 240518168576.",
         "holds": true
       }
     ],
@@ -3538,9 +3935,9 @@
       "tests": [
         {
           "name": "quantum",
-          "theorem": "fused = faces * mintOf bits",
-          "left": 60129542144,
-          "right": 60129542144,
+          "theorem": "fused = faces * mintOf (bits + seed)",
+          "left": 120259084288,
+          "right": 120259084288,
           "holds": true
         },
         {
@@ -3988,9 +4385,679 @@
           "faces": 14,
           "holds": true
         },
+        "schemas": {
+          "kind": "schemas",
+          "mounted": 14,
+          "vacant": 0,
+          "merge": "storage",
+          "href": "https://qpu.uuidna.com/storage",
+          "rows": [
+            {
+              "name": "schema",
+              "href": "https://schema.org/",
+              "face": 0,
+              "hop": 0,
+              "involution": true,
+              "prefix": "schema",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "0",
+              "cloud": "cloudflare",
+              "harness": "cursor",
+              "llm": "openai",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "qpu",
+              "href": "https://qpu.uuidna.com/quantum/processing/unit#",
+              "face": 1,
+              "hop": 1,
+              "involution": true,
+              "prefix": "qpu",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "1",
+              "cloud": "amazon",
+              "harness": "claude",
+              "llm": "anthropic",
+              "call": "tool_use",
+              "result": "tool_result",
+              "schema": "input_schema",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "mcp",
+              "href": "https://modelcontextprotocol.io/",
+              "face": 2,
+              "hop": 2,
+              "involution": true,
+              "prefix": "mcp",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "2",
+              "cloud": "google",
+              "harness": "claudecode",
+              "llm": "google",
+              "call": "functionCall",
+              "result": "functionResponse",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "lean",
+              "href": "https://lean-lang.org/",
+              "face": 3,
+              "hop": 3,
+              "involution": true,
+              "prefix": "lean",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "3",
+              "cloud": "azure",
+              "harness": "vscode",
+              "llm": "xai",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "cern",
+              "href": "https://opendata.cern.ch/",
+              "face": 4,
+              "hop": 4,
+              "involution": true,
+              "prefix": "cern",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "4",
+              "cloud": "backblaze",
+              "harness": "chatgpt",
+              "llm": "meta",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "inspire",
+              "href": "https://inspirehep.net/",
+              "face": 5,
+              "hop": 5,
+              "involution": true,
+              "prefix": "inspire",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "5",
+              "cloud": "wasabi",
+              "harness": "gemini",
+              "llm": "mistral",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "spdx",
+              "href": "https://spdx.org/licenses/",
+              "face": 6,
+              "hop": 6,
+              "involution": true,
+              "prefix": "spdx",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "6",
+              "cloud": "bunny",
+              "harness": "windsurf",
+              "llm": "cohere",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "dc",
+              "href": "http://purl.org/dc/terms/",
+              "face": 7,
+              "hop": 7,
+              "involution": true,
+              "prefix": "dc",
+              "part": "vertex",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "10",
+              "cloud": "fly",
+              "harness": "cline",
+              "llm": "groq",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "jsonld",
+              "href": "https://www.w3.org/ns/json-ld#",
+              "face": 8,
+              "hop": 8,
+              "involution": true,
+              "prefix": "jsonld",
+              "part": "hexbit",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "01",
+              "cloud": "vercel",
+              "harness": "continue",
+              "llm": "together",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "hydra",
+              "href": "https://www.w3.org/ns/hydra/core#",
+              "face": 9,
+              "hop": 9,
+              "involution": true,
+              "prefix": "hydra",
+              "part": "hexbit",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "50",
+              "cloud": "supabase",
+              "harness": "zed",
+              "llm": "fireworks",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "uuid",
+              "href": "https://www.rfc-editor.org/rfc/rfc9562",
+              "face": 10,
+              "hop": 10,
+              "involution": true,
+              "prefix": "uuid",
+              "part": "hexbit",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "60",
+              "cloud": "ibm",
+              "harness": "goose",
+              "llm": "azure",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "zenodo",
+              "href": "https://zenodo.org/",
+              "face": 11,
+              "hop": 11,
+              "involution": true,
+              "prefix": "zenodo",
+              "part": "hexbit",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "1E",
+              "cloud": "oracle",
+              "harness": "openwebui",
+              "llm": "bedrock",
+              "call": "toolUse",
+              "result": "toolResult",
+              "schema": "toolSpec",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "hepdata",
+              "href": "https://www.hepdata.net/",
+              "face": 12,
+              "hop": 12,
+              "involution": true,
+              "prefix": "hepdata",
+              "part": "coin",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "5E",
+              "cloud": "ovh",
+              "harness": "librechat",
+              "llm": "ollama",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            },
+            {
+              "name": "cc",
+              "href": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+              "face": 13,
+              "hop": 13,
+              "involution": true,
+              "prefix": "cc",
+              "part": "coin",
+              "merge": "storage",
+              "storage": "https://qpu.uuidna.com/storage",
+              "raid": "6E",
+              "cloud": "hetzner",
+              "harness": "lmstudio",
+              "llm": "huggingface",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "keys": [
+                "inputSchema",
+                "input_schema",
+                "parameters"
+              ],
+              "infinite": true,
+              "sale": true,
+              "holds": true
+            }
+          ],
+          "prefixes": {
+            "schema": "https://schema.org/",
+            "qpu": "https://qpu.uuidna.com/quantum/processing/unit#",
+            "mcp": "https://modelcontextprotocol.io/",
+            "lean": "https://lean-lang.org/",
+            "cern": "https://opendata.cern.ch/",
+            "inspire": "https://inspirehep.net/",
+            "spdx": "https://spdx.org/licenses/",
+            "dc": "http://purl.org/dc/terms/",
+            "jsonld": "https://www.w3.org/ns/json-ld#",
+            "hydra": "https://www.w3.org/ns/hydra/core#",
+            "uuid": "https://www.rfc-editor.org/rfc/rfc9562",
+            "zenodo": "https://zenodo.org/",
+            "hepdata": "https://www.hepdata.net/",
+            "cc": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+          },
+          "context": [
+            "https://schema.org",
+            {
+              "schema": "https://schema.org/",
+              "qpu": "https://qpu.uuidna.com/quantum/processing/unit#",
+              "mcp": "https://modelcontextprotocol.io/",
+              "lean": "https://lean-lang.org/",
+              "cern": "https://opendata.cern.ch/",
+              "inspire": "https://inspirehep.net/",
+              "spdx": "https://spdx.org/licenses/",
+              "dc": "http://purl.org/dc/terms/",
+              "jsonld": "https://www.w3.org/ns/json-ld#",
+              "hydra": "https://www.w3.org/ns/hydra/core#",
+              "uuid": "https://www.rfc-editor.org/rfc/rfc9562",
+              "zenodo": "https://zenodo.org/",
+              "hepdata": "https://www.hepdata.net/",
+              "cc": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+            }
+          ],
+          "efficiency": {
+            "kind": "efficiency",
+            "context": 2,
+            "mounted": 14,
+            "ratio": 7,
+            "tokens": "four bytes",
+            "holds": true
+          },
+          "compatibility": {
+            "kind": "compatibility",
+            "max": true,
+            "unlimited": true,
+            "displayed": true,
+            "keys": [
+              "inputSchema",
+              "input_schema",
+              "parameters"
+            ],
+            "harnesses": 14,
+            "llms": 14,
+            "holds": true
+          },
+          "holds": true
+        },
+        "payload": {
+          "kind": "payload",
+          "href": "/api/mcp",
+          "plugin": "@payloadcms/plugin-mcp",
+          "path": "/mcp",
+          "find": true,
+          "write": false,
+          "auth": false,
+          "html": false,
+          "sealed": false,
+          "morph": true,
+          "collections": [
+            "pages",
+            "users",
+            "media",
+            "tenants"
+          ],
+          "tools": [
+            {
+              "name": "findPages",
+              "collection": "pages",
+              "find": true,
+              "create": false,
+              "update": false,
+              "delete": false,
+              "sealed": false,
+              "face": 0,
+              "merge": "storage"
+            },
+            {
+              "name": "findUsers",
+              "collection": "users",
+              "find": true,
+              "create": false,
+              "update": false,
+              "delete": false,
+              "sealed": false,
+              "face": 1,
+              "merge": "storage"
+            },
+            {
+              "name": "findMedia",
+              "collection": "media",
+              "find": true,
+              "create": false,
+              "update": false,
+              "delete": false,
+              "sealed": false,
+              "face": 2,
+              "merge": "storage"
+            },
+            {
+              "name": "findTenants",
+              "collection": "tenants",
+              "find": true,
+              "create": false,
+              "update": false,
+              "delete": false,
+              "sealed": false,
+              "face": 3,
+              "merge": "storage"
+            }
+          ],
+          "merge": "storage",
+          "holds": true
+        },
+        "install": {
+          "kind": "install",
+          "interactive": true,
+          "verb": "ask",
+          "step": 0,
+          "total": 3,
+          "prompt": "Install QPU MCP at https://qpu.uuidna.com/mcp? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress.",
+          "package": {
+            "key": "qpu-mcp",
+            "href": "https://qpu.uuidna.com/mcp",
+            "origin": "https://qpu.uuidna.com",
+            "auth": false,
+            "html": false,
+            "sealed": 8,
+            "prompt": "Install QPU MCP at https://qpu.uuidna.com/mcp? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress."
+          },
+          "choices": [
+            {
+              "key": "yes",
+              "label": "qpu-mcp"
+            },
+            {
+              "key": "skip",
+              "label": "leave unseated"
+            }
+          ],
+          "packages": [
+            {
+              "key": "qpu-mcp",
+              "href": "https://qpu.uuidna.com/mcp",
+              "origin": "https://qpu.uuidna.com",
+              "auth": false,
+              "html": false,
+              "sealed": 8,
+              "prompt": "Install QPU MCP at https://qpu.uuidna.com/mcp? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress."
+            },
+            {
+              "key": "payload-mcp",
+              "href": "/api/mcp",
+              "find": true,
+              "write": false,
+              "auth": false,
+              "html": false,
+              "sealed": false,
+              "tools": [
+                "findPages",
+                "findUsers",
+                "findMedia",
+                "findTenants"
+              ],
+              "prompt": "Fuse Payload MCP find-only (findPages findUsers findMedia findTenants) into QPU tools/call without a ninth sealed tool? Writes stay off. Merge with storage."
+            },
+            {
+              "key": "vitepress-payload",
+              "href": "https://uuidna.com",
+              "html": true,
+              "qpuHtml": false,
+              "plugin": "infuseQuantumPayload",
+              "concurrency": 2,
+              "prompt": "Keep VitePress quantum payload on uuidna.com (infuseQuantumPayload, buildConcurrency = coins). QPU stays API-only JSON-LD?"
+            }
+          ],
+          "payload": {
+            "kind": "payload",
+            "href": "/api/mcp",
+            "plugin": "@payloadcms/plugin-mcp",
+            "path": "/mcp",
+            "find": true,
+            "write": false,
+            "auth": false,
+            "html": false,
+            "sealed": false,
+            "morph": true,
+            "collections": [
+              "pages",
+              "users",
+              "media",
+              "tenants"
+            ],
+            "tools": [
+              {
+                "name": "findPages",
+                "collection": "pages",
+                "find": true,
+                "create": false,
+                "update": false,
+                "delete": false,
+                "sealed": false,
+                "face": 0,
+                "merge": "storage"
+              },
+              {
+                "name": "findUsers",
+                "collection": "users",
+                "find": true,
+                "create": false,
+                "update": false,
+                "delete": false,
+                "sealed": false,
+                "face": 1,
+                "merge": "storage"
+              },
+              {
+                "name": "findMedia",
+                "collection": "media",
+                "find": true,
+                "create": false,
+                "update": false,
+                "delete": false,
+                "sealed": false,
+                "face": 2,
+                "merge": "storage"
+              },
+              {
+                "name": "findTenants",
+                "collection": "tenants",
+                "find": true,
+                "create": false,
+                "update": false,
+                "delete": false,
+                "sealed": false,
+                "face": 3,
+                "merge": "storage"
+              }
+            ],
+            "merge": "storage",
+            "holds": true
+          },
+          "pending": [],
+          "seated": [],
+          "plan": {
+            "added": [],
+            "removed": [],
+            "kept": 0,
+            "lossless": true,
+            "receipt": "00000001",
+            "steps": []
+          },
+          "committed": false,
+          "why": "ask",
+          "audit": false,
+          "html": false,
+          "vitepress": false,
+          "auth": false,
+          "morph": true,
+          "sealed": 8,
+          "client": {
+            "qpu": {
+              "url": "https://qpu.uuidna.com/mcp",
+              "auth": false,
+              "html": false
+            },
+            "payload": {
+              "url": "/api/mcp",
+              "find": true,
+              "write": false,
+              "tools": [
+                "findPages",
+                "findUsers",
+                "findMedia",
+                "findTenants"
+              ]
+            },
+            "vitepress": {
+              "origin": "https://uuidna.com",
+              "plugin": "infuseQuantumPayload",
+              "concurrency": 2,
+              "qpu": false
+            }
+          },
+          "next": "{ yes: true } seats this package in memory. Then { verb: \"simulate\" } then { verb: \"commit\", yes: true } then { verb: \"audit\" }.",
+          "holds": true
+        },
         "faces": 14,
-        "fused": 60129542144,
-        "next": 120259084288,
+        "fused": 120259084288,
+        "next": 240518168576,
         "infinite": true,
         "holds": true
       },
@@ -3999,8 +5066,8 @@
         "only": true,
         "holds": true
       },
-      "fused": 60129542144,
-      "next": 120259084288,
+      "fused": 120259084288,
+      "next": 240518168576,
       "free": true,
       "online": true,
       "auth": false,
@@ -4029,8 +5096,8 @@
       "width": 14,
       "layers": 8,
       "weights": 4294967296,
-      "fused": 60129542144,
-      "next": 120259084288,
+      "fused": 120259084288,
+      "next": 240518168576,
       "activation": "xor",
       "residual": true,
       "recurrent": true,

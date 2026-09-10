@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { qpuInstallOf, qpuPayloadMcpOf, qpuFusionOf, qpuMcpCallOf, qpuToolsOf } from './index.js'
+import { qpuInstallOf, qpuPayloadMcpOf, qpuFusionOf, qpuMcpCallOf, qpuToolsOf, qpuPentagramOf } from './index.js'
 
 const mcpOf = async (name: string, args: Record<string, unknown> = {}) => {
   const shown = (await qpuMcpCallOf(name, args)) as { structuredContent?: Record<string, unknown> } & Record<string, unknown>
@@ -46,6 +46,23 @@ test('interactive installer seats QPU, Payload MCP, and VitePress payload withou
   assert.equal(audited.payload.tools.length, 4)
 })
 
+test('install select seats a combination in one call', async () => {
+  qpuInstallOf({ reset: true })
+  const mix = (await mcpOf('install', { line: '1 3 saas' })) as {
+    pending: string[]
+    occupancy: string
+    cloudflare: { qpu: string }
+    combinations: { key: string }[]
+  }
+  assert.deepEqual(mix.pending, ['qpu-mcp', 'vitepress-payload'])
+  assert.equal(mix.occupancy, 'saas')
+  assert.ok(mix.cloudflare.qpu.includes('github.com/uuidna/qpu'))
+  assert.equal(mix.combinations.length, 3)
+  const all = qpuInstallOf({ reset: true, all: true, verb: 'commit', yes: true })
+  assert.equal(all.committed, true)
+  assert.deepEqual(all.seated, ['qpu-mcp', 'payload-mcp', 'vitepress-payload'])
+})
+
 test('tools/list stays eight sealed tools; install and Payload finds morph at call time', async () => {
   const sealed = qpuToolsOf()
   assert.equal(sealed.length, 8)
@@ -84,4 +101,12 @@ test('fusion carries Payload MCP and the installer from harmonic schemas', () =>
   assert.equal(fusion.install.html, false)
   assert.equal(fusion.install.vitepress, false)
   assert.equal(fusion.faces, 14)
+})
+
+test('train dry-cleans occupancy — one pentagram, not a ninth tool', () => {
+  const pentagram = qpuPentagramOf()
+  const seated = qpuInstallOf({ reset: true, occupancy: 'saas' })
+  assert.deepEqual(seated.occupancies, [...pentagram.occupancies])
+  assert.equal(seated.occupancies.join(' '), 'personal business corporate saas paas')
+  assert.equal(qpuToolsOf().length, 8)
 })

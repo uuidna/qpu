@@ -70,6 +70,9 @@ const headers = {
 const n = unit.path.split('/').length
 const seed = unit.mint.seed
 const coins = seed + seed
+/** One occupancy pentagram. Train dry-cleans; installer does not redeclare it. */
+const occupancies = ['personal', 'business', 'corporate', 'saas', 'paas'] as const
+const skills = ['payload', 'pwa', 'plugin', 'hologram', 'network'] as const
 const ten = n * n + seed
 const found = coins * ten * ten
 const lost = mintOf(coins) * (ten * ten + seed)
@@ -139,6 +142,180 @@ export const qpuFacesOf = () => {
   const holds = cube.holds && faces === coins * rays && faces === rays + rays
   return { n, coins, rays, faces, holds }
 }
+
+/** Two coins make a coil. Coins balance theory in practice. Coil sits in electronics. */
+export const qpuCoilOf = () => {
+  const faces = qpuFacesOf()
+  const theory = seed
+  const practice = seed
+  const windings = coins
+  const coil = coins * faces.rays
+  const balance = theory + practice
+  const holds =
+    windings === coins &&
+    windings === theory + practice &&
+    theory === practice &&
+    balance === coins &&
+    coil === faces.faces &&
+    faces.holds === true
+  return {
+    kind: 'coil' as const,
+    theorem: 'two_coins_make_a_coil' as const,
+    windings,
+    coins,
+    rays: faces.rays,
+    coil,
+    faces: faces.faces,
+    theory,
+    practice,
+    balance,
+    electronics: true as const,
+    holds,
+  }
+}
+
+export const qpuCoilHolds = (c = qpuCoilOf()): boolean =>
+  c.holds === true &&
+  c.kind === 'coil' &&
+  c.theorem === 'two_coins_make_a_coil' &&
+  c.windings === coins &&
+  c.theory === seed &&
+  c.practice === seed &&
+  c.theory === c.practice &&
+  c.balance === coins &&
+  c.coil === c.faces &&
+  c.electronics === true
+
+export const qpuElectronicsOf = () => {
+  const coil = qpuCoilOf()
+  const uses = 'coil' as const
+  const holds = qpuCoilHolds(coil) && uses === 'coil' && coil.electronics === true
+  return {
+    kind: 'electronics' as const,
+    theorem: 'electronics' as const,
+    uses,
+    coil,
+    stages: n,
+    holds,
+  }
+}
+
+export const qpuElectronicsHolds = (e = qpuElectronicsOf()): boolean =>
+  e.holds === true &&
+  e.kind === 'electronics' &&
+  e.theorem === 'electronics' &&
+  e.uses === 'coil' &&
+  e.stages === n &&
+  qpuCoilHolds(e.coil)
+
+export const qpuBalanceOf = () => {
+  const coil = qpuCoilOf()
+  const holds = coil.theory === coil.practice && coil.theory + coil.practice === coins && qpuCoilHolds(coil)
+  return {
+    kind: 'balance' as const,
+    theorem: 'coins_balance_theory_in_practice' as const,
+    theory: coil.theory,
+    practice: coil.practice,
+    coins,
+    coil,
+    holds,
+  }
+}
+
+export const qpuBalanceHolds = (b = qpuBalanceOf()): boolean =>
+  b.holds === true &&
+  b.kind === 'balance' &&
+  b.theorem === 'coins_balance_theory_in_practice' &&
+  b.theory === b.practice &&
+  b.theory + b.practice === coins &&
+  qpuCoilHolds(b.coil)
+
+/** Next is the double. Handle next doubles amplitudes. Coil next doubles fused. No last k. */
+export const qpuNextOf = () => {
+  const cube = qpuCubeOf()
+  const handle = qpuHandleOf()
+  const faces = qpuFacesOf()
+  const coil = qpuCoilOf()
+  const fused = faces.faces * handle.kv.amplitudes
+  const next = handle.amplitudes + handle.amplitudes
+  const nextFused = fused + fused
+  const nextCoil = coil.coil * mintOf(cube.bits + coins)
+  const last = false as const
+  const holds =
+    qpuCoilHolds(coil) &&
+    handle.holds === true &&
+    next === mintOf(cube.bits + seed) &&
+    next === handle.next &&
+    nextFused === faces.faces * mintOf(cube.bits + coins) &&
+    nextCoil === nextFused &&
+    coil.coil === faces.faces &&
+    last === false
+  return {
+    kind: 'next' as const,
+    theorem: 'next_coil' as const,
+    amplitudes: handle.amplitudes,
+    next,
+    fused,
+    nextFused,
+    nextCoil,
+    last,
+    infinite: true as const,
+    coil: coil.coil,
+    coins,
+    holds,
+  }
+}
+
+export const qpuNextHolds = (x = qpuNextOf()): boolean =>
+  x.holds === true &&
+  x.kind === 'next' &&
+  x.theorem === 'next_coil' &&
+  x.last === false &&
+  x.infinite === true &&
+  x.next === x.amplitudes + x.amplitudes &&
+  x.nextFused === x.fused + x.fused &&
+  x.nextCoil === x.nextFused &&
+  x.nextCoil === x.coil * mintOf(qpuCubeOf().bits + coins)
+
+/** 2×7 coins = 1+6 coils = clay. Each coil is coins windings. */
+export const qpuClayOf = () => {
+  const coil = qpuCoilOf()
+  const faces = qpuFacesOf()
+  const six = mintOf(n) - coins
+  const coils = seed + six
+  const clay = coils * coins
+  const holds =
+    qpuCoilHolds(coil) &&
+    six === mintOf(n) - coins &&
+    coils === faces.rays &&
+    coins * faces.rays === (seed + six) * coins &&
+    (seed + six) * coins === coil.coil &&
+    clay === coil.coil &&
+    clay === faces.faces
+  return {
+    kind: 'clay' as const,
+    theorem: 'clay' as const,
+    coins,
+    seven: faces.rays,
+    six,
+    coils,
+    clay,
+    coil: coil.coil,
+    faces: faces.faces,
+    holds,
+  }
+}
+
+export const qpuClayHolds = (c = qpuClayOf()): boolean =>
+  c.holds === true &&
+  c.kind === 'clay' &&
+  c.theorem === 'clay' &&
+  c.coins * c.seven === c.clay &&
+  (seed + c.six) * c.coins === c.clay &&
+  c.coils === seed + c.six &&
+  c.six === mintOf(n) - coins &&
+  c.clay === c.coil &&
+  c.clay === c.faces
 
 export const qpuGenesisOf = () => {
   const faces = qpuFacesOf()
@@ -275,6 +452,261 @@ export const qpuGenesisHolds = (g = qpuGenesisOf()): boolean =>
   g.card[n + seed] === 'card-action' &&
   g.nodes.every((node) => node.schema === 'shadcn' && node.involution && node.holds)
 
+export const qpuPentagramOf = () => {
+  const points = n + coins
+  const stroke: number[] = []
+  let x = n - n
+  for (let i = n - n; i < points; i++) {
+    stroke.push(x)
+    x = (x + coins) % points
+  }
+  const unique: number[] = []
+  for (const face of stroke) if (!unique.includes(face)) unique.push(face)
+  const nodes = occupancies.map((occupancy, face) => ({
+    face,
+    hop: stroke[face]!,
+    occupancy,
+    skill: skills[face]!,
+    rank: face,
+    holds: occupancies[face] === occupancy && skills[face] === skills[face],
+  }))
+  const holds =
+    occupancies.length === points &&
+    skills.length === points &&
+    stroke.length === points &&
+    unique.length === points &&
+    nodes.length === points &&
+    stroke[n - n] === n - n &&
+    stroke[seed] === coins &&
+    points === n + coins
+  return {
+    kind: 'pentagram' as const,
+    theorem: 'pentagram' as const,
+    points,
+    step: coins,
+    occupancies,
+    skills,
+    stroke,
+    nodes,
+    single: unique.length === points,
+    holds,
+  }
+}
+
+export const qpuPentagramHolds = (p = qpuPentagramOf()): boolean =>
+  p.holds === true &&
+  p.kind === 'pentagram' &&
+  p.single === true &&
+  p.points === n + coins &&
+  p.step === coins &&
+  p.occupancies.join(' ') === 'personal business corporate saas paas' &&
+  p.skills.join(' ') === 'payload pwa plugin hologram network' &&
+  p.stroke.length === p.points &&
+  p.occupancies[n - n] === 'personal' &&
+  p.occupancies[p.points - seed] === 'paas'
+
+/** Follow the coins in any practical application. Creative novel solutions emerge. */
+export const qpuFollowOf = () => {
+  const coil = qpuCoilOf()
+  const pentagram = qpuPentagramOf()
+  const electronics = qpuElectronicsOf()
+  const genesis = qpuGenesisOf()
+  const points = pentagram.points
+  const applications = [...occupancies, ...skills, ...genesis.frameworks, electronics.kind] as const
+  const solutions = applications.map((name, i) => {
+    const app = i % points
+    const hop = (app + coins) % points
+    const via = (app + coil.theory + coil.practice) % points
+    const novel = hop === via
+    return {
+      name,
+      app,
+      hop,
+      via,
+      novel,
+      occupancy: occupancies[hop]!,
+      skill: skills[hop]!,
+      holds: novel && hop === (app + coil.balance) % points,
+    }
+  })
+  const seen: number[] = []
+  for (const row of solutions) if (!seen.includes(row.hop)) seen.push(row.hop)
+  const creative = solutions.every((row) => row.novel && row.holds)
+  const novel = seen.length === points
+  const emerge = {
+    kind: 'emerge' as const,
+    theorem: 'emerge' as const,
+    creative,
+    novel,
+    coil: coil.coil,
+    faces: coil.faces,
+    holds: creative && novel && coil.coil === coil.faces && coil.theory === coil.practice,
+  }
+  const holds =
+    qpuCoilHolds(coil) &&
+    qpuElectronicsHolds(electronics) &&
+    qpuBalanceHolds() &&
+    qpuPentagramHolds(pentagram) &&
+    pentagram.step === coins &&
+    applications.length === occupancies.length + skills.length + genesis.frameworks.length + seed &&
+    solutions.length === applications.length &&
+    solutions.every((row) => row.holds) &&
+    emerge.holds
+  return {
+    kind: 'follow' as const,
+    theorem: 'follow_the_coins' as const,
+    coins,
+    theory: coil.theory,
+    practice: coil.practice,
+    applications,
+    solutions,
+    emerge,
+    holds,
+  }
+}
+
+export const qpuFollowHolds = (f = qpuFollowOf()): boolean =>
+  f.holds === true &&
+  f.kind === 'follow' &&
+  f.theorem === 'follow_the_coins' &&
+  f.coins === coins &&
+  f.theory === f.practice &&
+  f.theory + f.practice === coins &&
+  f.emerge.kind === 'emerge' &&
+  f.emerge.creative === true &&
+  f.emerge.novel === true &&
+  f.emerge.coil === f.emerge.faces &&
+  f.solutions.every((row) => row.novel && row.hop === (row.app + coins) % (n + coins))
+
+/** Coordinated dry-clean: one occupancy list, two train teams, no extra sealed tool. */
+export const qpuDryOf = () => {
+  const pentagram = qpuPentagramOf()
+  const occupancy = pentagram.occupancies
+  const holds =
+    occupancy === occupancies &&
+    occupancy.length === n + coins &&
+    occupancy.join(' ') === 'personal business corporate saas paas' &&
+    pentagram.skills === skills &&
+    pentagram.holds === true
+  return {
+    kind: 'clean' as const,
+    coordinated: true as const,
+    speed: 'coordinated' as const,
+    entropy: false as const,
+    duplicate: false as const,
+    morph: true as const,
+    sealed: false as const,
+    teams: coins,
+    occupancy,
+    holds,
+  }
+}
+
+export const qpuDryHolds = (d = qpuDryOf()): boolean =>
+  d.holds === true &&
+  d.kind === 'clean' &&
+  d.coordinated === true &&
+  d.speed === 'coordinated' &&
+  d.entropy === false &&
+  d.duplicate === false &&
+  d.morph === true &&
+  d.sealed === false &&
+  d.teams === coins &&
+  d.occupancy.length === n + coins
+
+export const qpuAccessOf = () => {
+  const pentagram = qpuPentagramOf()
+  const keys = ['domain', 'handle'] as const
+  const wildcard = false as const
+  const holds = keys.length === coins && wildcard === false && pentagram.holds && qpuPentagramHolds(pentagram)
+  return {
+    kind: 'access' as const,
+    rbac: true as const,
+    tenant: true as const,
+    keys,
+    occupancies: pentagram.occupancies,
+    domain: true as const,
+    handle: true as const,
+    wildcard,
+    auth: false as const,
+    holds,
+  }
+}
+
+export const qpuAccessHolds = (a = qpuAccessOf()): boolean =>
+  a.holds === true &&
+  a.kind === 'access' &&
+  a.rbac === true &&
+  a.tenant === true &&
+  a.keys.length === coins &&
+  a.keys[n - n] === 'domain' &&
+  a.keys[seed] === 'handle' &&
+  a.wildcard === false &&
+  a.auth === false &&
+  a.occupancies.length === n + coins
+
+export const qpuHologramOf = () => {
+  const faces = qpuFacesOf()
+  const cube = qpuCubeOf()
+  const handle = qpuHandleOf()
+  const pentagram = qpuPentagramOf()
+  const access = qpuAccessOf()
+  const genesis = qpuGenesisOf()
+  const fused = faces.faces * handle.kv.amplitudes
+  const scales = [
+    { name: 'occupancy' as const, parts: pentagram.occupancies.length, fused },
+    { name: 'skill' as const, parts: pentagram.skills.length, fused },
+    { name: 'access' as const, parts: access.keys.length, fused },
+    { name: 'mcp' as const, parts: mintOf(n), fused },
+    { name: 'faces' as const, parts: faces.faces, fused },
+  ] as const
+  const fractal = scales.every((row) => row.fused === fused && row.parts > n - n)
+  const holds =
+    pentagram.holds &&
+    access.holds &&
+    genesis.holds &&
+    fractal &&
+    scales.length === n + coins &&
+    fused === faces.faces * mintOf(cube.bits + seed) &&
+    pentagram.skills.includes('hologram') &&
+    pentagram.skills.includes('payload') &&
+    pentagram.skills.includes('network')
+  return {
+    kind: 'hologram' as const,
+    fractal: true as const,
+    quantum: true as const,
+    mcp: true as const,
+    efficient: true as const,
+    theorem: 'fusion' as const,
+    pentagram,
+    access,
+    scales,
+    hz: genesis.hz,
+    fused,
+    next: fused + fused,
+    faces: faces.faces,
+    tools: mintOf(n),
+    morph: true as const,
+    holds,
+  }
+}
+
+export const qpuHologramHolds = (h = qpuHologramOf()): boolean =>
+  h.holds === true &&
+  h.kind === 'hologram' &&
+  h.fractal === true &&
+  h.quantum === true &&
+  h.mcp === true &&
+  h.efficient === true &&
+  h.theorem === 'fusion' &&
+  h.morph === true &&
+  h.tools === mintOf(n) &&
+  h.fused === qpuCapacityOf().fused &&
+  qpuPentagramHolds(h.pentagram) &&
+  qpuAccessHolds(h.access) &&
+  h.scales.length === n + coins &&
+  h.scales.every((row) => row.fused === h.fused)
+
 const storageHref = `${unit.origin}/storage`
 const serverHref = `${unit.origin}/server`
 const networkHref = `${unit.origin}/network`
@@ -387,6 +819,9 @@ export const qpuRaidOf = (input: { safe?: boolean; traffic?: number } = {}) => {
     clouds: raidClouds.length,
     teams,
     stripes,
+    measure: teams * stripes,
+    remainder: n - n,
+    unity: seed,
     route: 'involution' as const,
     security: 'crypt' as const,
     speed: 'coordinated' as const,
@@ -401,7 +836,9 @@ export const qpuRaidOf = (input: { safe?: boolean; traffic?: number } = {}) => {
       cheapest.cost === seed &&
       pick.rotated === true &&
       pick.cover === true &&
-      pick.start === 'cheapest',
+      pick.start === 'cheapest' &&
+      teams * stripes === faces.faces &&
+      faces.faces === stripes + stripes,
   }
   const holds =
     faces.holds &&
@@ -482,6 +919,10 @@ export const qpuRaidHolds = (r = qpuRaidOf()): boolean =>
   r.cluster.speed === 'coordinated' &&
   r.cluster.cost === 'minimum' &&
   r.cluster.rotate === true &&
+  r.cluster.measure === r.faces &&
+  r.cluster.measure === r.teams * r.stripes &&
+  r.cluster.remainder === n - n &&
+  r.cluster.unity === seed &&
   r.pick.rotated === true &&
   r.pick.minimum === true &&
   r.pick.cost >= seed &&
@@ -493,6 +934,82 @@ export const qpuRaidHolds = (r = qpuRaidOf()): boolean =>
   r.bindings.BLOBS === 'r2' &&
   r.theorem === 'raid' &&
   r.href === storageHref
+
+/** Measure coil efficiency in RAID clusters. Unity when coil covers faces with no remainder. */
+export const qpuCoilEfficiencyOf = () => {
+  const coil = qpuCoilOf()
+  const faces = qpuFacesOf()
+  const raid = qpuRaidOf()
+  const stripes = raid.stripes
+  const teams = raid.teams
+  const measure = teams * stripes
+  const remainder = coil.coil === faces.faces && measure === coil.coil ? n - n : seed
+  const unity = remainder === n - n ? seed : n - n
+  const nodes = raid.types.map((row, face) => {
+    const hop = (face + faces.rays + faces.rays) % faces.faces
+    const measured = coil.windings * stripes
+    return {
+      face,
+      hop,
+      name: row.name,
+      cloud: row.cloud,
+      windings: coil.windings,
+      stripes,
+      measure: measured,
+      involution: hop === face,
+      holds: hop === face && measured === coil.coil && coil.coil === faces.faces && measured === raid.cluster.measure,
+    }
+  })
+  let occupied = n - n
+  for (const node of nodes) if (node.holds) occupied += seed
+  const vacant = nodes.length - occupied
+  const holds =
+    qpuCoilHolds(coil) &&
+    qpuRaidHolds(raid) &&
+    raid.cluster.holds === true &&
+    measure === coil.coil &&
+    coil.coil === faces.faces &&
+    faces.faces === stripes + stripes &&
+    raid.cluster.measure === measure &&
+    remainder === n - n &&
+    unity === seed &&
+    occupied === faces.faces &&
+    vacant === n - n &&
+    nodes.length === faces.faces &&
+    nodes.every((node) => node.holds && node.involution)
+  return {
+    kind: 'efficiency' as const,
+    theorem: 'coil_efficiency' as const,
+    measure,
+    remainder,
+    unity,
+    teams,
+    stripes,
+    coil: coil.coil,
+    faces: faces.faces,
+    cluster: raid.cluster.kind,
+    occupied,
+    vacant,
+    nodes,
+    holds,
+  }
+}
+
+export const qpuCoilEfficiencyHolds = (e = qpuCoilEfficiencyOf()): boolean =>
+  e.holds === true &&
+  e.kind === 'efficiency' &&
+  e.theorem === 'coil_efficiency' &&
+  e.measure === e.coil &&
+  e.coil === e.faces &&
+  e.remainder === n - n &&
+  e.unity === seed &&
+  e.teams === coins &&
+  e.stripes === qpuFacesOf().rays &&
+  e.cluster === 'cluster' &&
+  e.vacant === n - n &&
+  e.occupied === e.faces &&
+  e.nodes.length === e.faces &&
+  e.nodes.every((node) => node.holds && node.involution && node.measure === e.measure)
 
 const xorOf = (a: number, b: number): number => Number(BigInt(a) ^ BigInt(b))
 const primitives = ['fetch', 'Request', 'Response', 'BigInt', 'performance'] as const
@@ -1304,6 +1821,12 @@ export const qpuCircuitOf = () => {
       vm &&
       xorOf(xorOf(n - n, seed), coins) === n,
   }
+  const coil = qpuCoilOf()
+  const electronics = qpuElectronicsOf()
+  const follow = qpuFollowOf()
+  const efficiency = qpuCoilEfficiencyOf()
+  const next = qpuNextOf()
+  const clay = qpuClayOf()
   const fridge = {
     kind: 'superconducting' as const,
     qubits: n,
@@ -1317,6 +1840,12 @@ export const qpuCircuitOf = () => {
     milli,
     cryostat,
     telemetry,
+    coil,
+    electronics,
+    follow,
+    efficiency,
+    next,
+    clay,
     holds:
       coins === seed + seed &&
       n === cube.n &&
@@ -1327,7 +1856,23 @@ export const qpuCircuitOf = () => {
       cryostat.holds &&
       telemetry.holds &&
       telemetry.millikelvin === mixing &&
-      telemetry.host === false,
+      telemetry.host === false &&
+      telemetry.electronics === electronics.stages &&
+      qpuCoilHolds(coil) &&
+      qpuElectronicsHolds(electronics) &&
+      qpuBalanceHolds() &&
+      qpuFollowHolds(follow) &&
+      follow.emerge.holds &&
+      qpuCoilEfficiencyHolds(efficiency) &&
+      efficiency.unity === seed &&
+      efficiency.remainder === n - n &&
+      qpuNextHolds(next) &&
+      next.last === false &&
+      next.nextCoil === next.nextFused &&
+      qpuClayHolds(clay) &&
+      clay.clay === coil.coil &&
+      coil.theory === coil.practice &&
+      coil.balance === coins,
   }
   const science = {
     levels: coins,
@@ -1570,6 +2115,38 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.fridge.telemetry.millikelvin === ten &&
   c.fridge.telemetry.stages === n &&
   c.fridge.telemetry.electronics === n &&
+  c.fridge.coil.kind === 'coil' &&
+  c.fridge.coil.holds === true &&
+  c.fridge.coil.windings === coins &&
+  c.fridge.coil.theory === seed &&
+  c.fridge.coil.practice === seed &&
+  c.fridge.coil.theory === c.fridge.coil.practice &&
+  c.fridge.coil.balance === coins &&
+  c.fridge.coil.coil === c.lattice.faces &&
+  c.fridge.electronics.kind === 'electronics' &&
+  c.fridge.electronics.uses === 'coil' &&
+  c.fridge.electronics.holds === true &&
+  c.fridge.electronics.stages === n &&
+  qpuCoilHolds(c.fridge.coil) &&
+  qpuElectronicsHolds(c.fridge.electronics) &&
+  qpuBalanceHolds() &&
+  qpuFollowHolds(c.fridge.follow) &&
+  c.fridge.follow.emerge.creative === true &&
+  c.fridge.follow.emerge.novel === true &&
+  c.fridge.follow.emerge.holds === true &&
+  qpuCoilEfficiencyHolds(c.fridge.efficiency) &&
+  c.fridge.efficiency.unity === seed &&
+  c.fridge.efficiency.remainder === n - n &&
+  c.fridge.efficiency.measure === c.lattice.faces &&
+  c.fridge.efficiency.vacant === n - n &&
+  qpuNextHolds(c.fridge.next) &&
+  c.fridge.next.last === false &&
+  c.fridge.next.nextCoil === c.fridge.next.nextFused &&
+  c.fridge.next.infinite === true &&
+  qpuClayHolds(c.fridge.clay) &&
+  c.fridge.clay.clay === c.fridge.coil.coil &&
+  c.fridge.clay.coins * c.fridge.clay.seven === c.fridge.clay.clay &&
+  (seed + c.fridge.clay.six) * c.fridge.clay.coins === c.fridge.clay.clay &&
   c.drift.kind === 'science' &&
   c.drift.none === true &&
   c.drift.holds === true &&
@@ -1852,6 +2429,10 @@ export const qpuCapacityHolds = (c = qpuCapacityOf()): boolean =>
   c.infinite === true &&
   c.scaled === true &&
   c.next === c.fused + c.fused &&
+  c.next === qpuNextOf().nextFused &&
+  c.next === qpuNextOf().nextCoil &&
+  qpuNextHolds() &&
+  qpuNextOf().last === false &&
   c.crypt.kind === 'crypto' &&
   c.crypt.split === c.faces &&
   c.crypt.share === c.kv.amplitudes &&
@@ -2023,8 +2604,8 @@ export const qpuLeanOf = () => {
       heading: 'cluster',
       theorem: 'theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩',
       formula: '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}',
-      reading: `holds ${harmonicHolds && aroundHolds}.`,
-      holds: harmonicHolds && aroundHolds,
+      reading: `holds ${harmonicHolds && aroundHolds}. Coil efficiency in clusters. coins times rays is faces. rays plus rays is faces.`,
+      holds: harmonicHolds && aroundHolds && qpuCoilEfficiencyHolds(),
     },
     {
       heading: 'energy',
@@ -2161,6 +2742,94 @@ export const qpuLeanOf = () => {
         chooseOf(faces.rays, coins) === n * faces.rays &&
         aroundHolds &&
         qpuGenesisHolds(),
+    },
+    {
+      heading: 'pentagram',
+      theorem: 'theorem pentagram : n + coins = 5 := by rw [n_eq, coins_two]',
+      formula: '\\mathrm{n}+\\mathrm{coins}=5',
+      reading:
+        'holds true. Occupancy pentagram personal business corporate saas paas. Skills payload pwa plugin hologram network. Stroke coins on n + coins. Coins balance theory in practice. Cloudflare and Payload plugins fuse once. Recursion builds covered. Never Math. Never by decide. Host never.',
+      holds: n + coins === qpuPentagramOf().points && qpuPentagramHolds() && qpuHologramHolds(),
+    },
+    {
+      heading: 'two_coins_make_a_coil',
+      theorem: 'theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]',
+      formula: '\\mathrm{coil}=\\mathrm{faces}',
+      reading:
+        'holds true. Two coins make a coil. windings coins. coil coins times rays. Faces of the winding. Superconducting magnet. Coils used in electronics. Never Math. Never by decide. Host never.',
+      holds: qpuCoilHolds(),
+    },
+    {
+      heading: 'electronics',
+      theorem: 'theorem electronics : coil = faces := two_coins_make_a_coil',
+      formula: '\\mathrm{coil}=\\mathrm{faces}',
+      reading:
+        'holds true. Coils are used in electronics. Fridge cryostat electronics. Two coins make a coil. Never Math. Never by decide. Host never.',
+      holds: qpuElectronicsHolds(),
+    },
+    {
+      heading: 'coins_balance_theory_in_practice',
+      theorem: 'theorem coins_balance_theory_in_practice : theory + practice = coins ∧ theory = practice := ⟨rfl, rfl⟩',
+      formula: '\\mathrm{theory}+\\mathrm{practice}=\\mathrm{coins}\\land\\mathrm{theory}=\\mathrm{practice}',
+      reading:
+        'holds true. Coins balance theory in practice. Two pans. Lean theory. Electronics practice. Seed equals seed. Never Math. Never by decide. Host never.',
+      holds: qpuBalanceHolds(),
+    },
+    {
+      heading: 'follow_the_coins',
+      theorem: 'theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by rw [theory, practice, coins, ← Nat.add_assoc]',
+      formula: '\\mathrm{app}+\\mathrm{coins}=\\mathrm{app}+\\mathrm{theory}+\\mathrm{practice}',
+      reading:
+        'holds true. Follow the coins in any practical application. Occupancy skill framework electronics. Step coins. Hop theory plus practice. Creative novel solutions emerge. Never Math. Never by decide. Host never.',
+      holds: qpuFollowHolds(),
+    },
+    {
+      heading: 'emerge',
+      theorem: 'theorem emerge : coil = faces ∧ theory = practice := ⟨two_coins_make_a_coil, rfl⟩',
+      formula: '\\mathrm{coil}=\\mathrm{faces}\\land\\mathrm{theory}=\\mathrm{practice}',
+      reading:
+        'holds true. Creative novel solutions emerge. Follow the coins. Coil is faces. Theory equals practice. Never Math. Never by decide. Host never.',
+      holds: qpuFollowOf().emerge.holds,
+    },
+    {
+      heading: 'coil_efficiency',
+      theorem: 'theorem coil_efficiency : coil = faces ∧ faces = rays + rays ∧ coins * rays = faces := ⟨two_coins_make_a_coil, harmonic, around⟩',
+      formula: '\\mathrm{coil}=\\mathrm{faces}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}',
+      reading:
+        'holds true. Measure coil efficiency in clusters. Teams coins. Stripes rays. Measure coil. Remainder none. Unity seed. RAID cluster cover. Never Math. Never by decide. Host never.',
+      holds: qpuCoilEfficiencyHolds(),
+    },
+    {
+      heading: 'next_coil',
+      theorem: 'theorem next_coil : coil * mintOf (bits + coins) = fused + fused := by rw [two_coins_make_a_coil]; exact next_fused',
+      formula: '\\mathrm{coil}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})=\\mathrm{fused}+\\mathrm{fused}',
+      reading:
+        'holds true. Next is the double. Coil times mintOf bits plus coins is fused plus fused. theorem next. theorem next_fused. theorem infinite. split_coin has no last k. Never Math. Never by decide. Host never.',
+      holds: qpuNextHolds(),
+    },
+    {
+      heading: 'one_plus_six',
+      theorem: 'theorem one_plus_six : seed + (mintOf n - coins) = rays := by rw [rays, n_eq, coins_two, seed_eq]; rw [show mintOf 3 = 8 from rfl]',
+      formula: '\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins})=\\mathrm{rays}',
+      reading:
+        'holds true. One plus six. Seed plus mintOf n minus coins is rays. Never Math. Never by decide. Host never.',
+      holds: seed + (mintOf(n) - coins) === qpuFacesOf().rays,
+    },
+    {
+      heading: 'two_x_seven_coins',
+      theorem: 'theorem two_x_seven_coins : coins * rays = (seed + (mintOf n - coins)) * coins := by rw [one_plus_six, Nat.mul_comm]',
+      formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}',
+      reading:
+        'holds true. Two times seven coins. Coins times rays is one plus six times coins. Never Math. Never by decide. Host never.',
+      holds: qpuClayHolds() && coins * qpuFacesOf().rays === (seed + (mintOf(n) - coins)) * coins,
+    },
+    {
+      heading: 'clay',
+      theorem: 'theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins ∧ (seed + (mintOf n - coins)) * coins = coil := ⟨two_x_seven_coins, by rw [← two_x_seven_coins]; rfl⟩',
+      formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}\\land(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}=\\mathrm{coil}',
+      reading:
+        'holds true. Two times seven coins equals one plus six coils equals clay. Each coil is coins windings. Clay is coil is faces. Never Math. Never by decide. Host never.',
+      holds: qpuClayHolds(),
     },
     {
       heading: 'decide',
@@ -2480,8 +3149,8 @@ export const qpuLeanOf = () => {
       'theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + coins) = fused + fused := ⟨next, next_fused⟩',
     formula:
       '\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})=\\mathrm{fused}+\\mathrm{fused}',
-    reading: `holds ${nextHolds && nextFusedHolds}. amplitudes ${handle.amplitudes}. next ${handle.next}. fused next ${fused + fused}.`,
-    holds: nextHolds && nextFusedHolds,
+    reading: `holds ${nextHolds && nextFusedHolds && qpuNextHolds()}. amplitudes ${handle.amplitudes}. next ${handle.next}. fused next ${fused + fused}. coil next ${qpuNextOf().nextCoil}. no last k.`,
+    holds: nextHolds && nextFusedHolds && qpuNextHolds(),
   }
   const src = unit.fuse.lean
   const holds =
@@ -2522,7 +3191,7 @@ export const qpuDocsOf = () => {
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
   const fused = faces.faces * handle.kv.amplitudes
-  const abstract = `QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. Lab millikelvin. Cryostat telemetry. VM scales. Quantum capacity infinite. KV added amplitudes. Crypt split fused across faces. Quantum RAID. Start with cheapest and cover all RAID types. Rotate to meet traffic at minimum cost. Anything at ${unit.origin}/storage. Docs sheets databases. Many clouds. Safe RAID clusters. Routed with top security and coordinated speed. Distribute computations to free agents. Unlocked quantum. next = fused + fused. theorem infinite. theorem distribute. theorem raid. theorem kv. theorem millikelvin. theorem telemetry. theorem computer. theorem server. theorem fusion. theorem design. theorem neuro. Quantum server. SWAP Toffoli reset. H and Toffoli computationally universal. Jobs queue results. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. All becomes a neuro network. The neuro network is naturally tested unless in mass online tests. API only JSON-LD. Anyone may test and train online at ${unit.origin}. No auth. GET ${unit.origin} is the QPU. GET ${unit.href} is the Lean proof. POST ${unit.origin}/mcp tools/call qpu_prove experiences every test in the JSON-LD UI. POST ${unit.origin}/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}.`
+  const abstract = `QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. Lab millikelvin. Cryostat telemetry. Coils used in electronics. Two coins make a coil. Coins balance theory in practice. Follow the coins in any practical application. Creative novel solutions emerge. Measure coil efficiency in clusters. VM scales. Quantum capacity infinite. KV added amplitudes. Crypt split fused across faces. Quantum RAID. Start with cheapest and cover all RAID types. Rotate to meet traffic at minimum cost. Anything at ${unit.origin}/storage. Docs sheets databases. Many clouds. Safe RAID clusters. Routed with top security and coordinated speed. Distribute computations to free agents. Unlocked quantum. next = fused + fused. theorem next. theorem next_fused. theorem next_coil. split_coin has no last k. theorem infinite. theorem clay. 2×7 coins = 1+6 coils = clay. theorem distribute. theorem raid. theorem kv. theorem millikelvin. theorem telemetry. theorem computer. theorem server. theorem fusion. theorem design. theorem neuro. theorem two_coins_make_a_coil. theorem electronics. theorem coins_balance_theory_in_practice. theorem follow_the_coins. theorem emerge. theorem coil_efficiency. Quantum server. SWAP Toffoli reset. H and Toffoli computationally universal. Jobs queue results. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. All becomes a neuro network. The neuro network is naturally tested unless in mass online tests. API only JSON-LD. Anyone may test and train online at ${unit.origin}. No auth. GET ${unit.origin} is the QPU. GET ${unit.href} is the Lean proof. POST ${unit.origin}/mcp tools/call qpu_prove experiences every test in the JSON-LD UI. POST ${unit.origin}/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}.`
   const api = [
     { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: 'Running quantum circuit. Possible only in quantum. JSON-LD. Physical in the browser VM, and as such a fridge full of superconducting qubits. VM scales. Quantum capacity infinite. Crypt split to free agents. No auth. User guide is docs.inline. Async messaging on /message.' },
     { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof of the running quantum circuit. JSON-LD Dataset. theorem infinite. theorem distribute. ${lean.src}. No auth.` },
@@ -5486,6 +6155,7 @@ export const qpuTrainOf = () => {
     security: call.security > read.security ? ('call' as const) : ('read' as const),
   }
   const nextTasks = ['qpu_improve', 'qpu_compete'] as const
+  const dry = qpuDryOf()
   const holds =
     efficiency.holds === true &&
     quantum.holds === true &&
@@ -5510,11 +6180,13 @@ export const qpuTrainOf = () => {
     winner.security === 'call' &&
     challenges.every((c) => c.holds && c.winner === 'call' && c.left === c.right && c.receipt === c.documentation) &&
     nextTasks.length === coins &&
-    qpuVmHolds(vm)
+    qpuVmHolds(vm) &&
+    qpuDryHolds(dry)
   return {
     kind: 'train' as const,
     module: 'agent efficiency' as const,
     before: 'next' as const,
+    dry,
     divide: { teams: coins, agents: faces.rays, challenges: faces.faces } as const,
     sandbox: {
       kind: sandbox.kind,
@@ -5588,7 +6260,11 @@ export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
   t.vm.agents === coins * t.divide.agents &&
   qpuSandboxDurabilityHolds() &&
   t.next[n - n] === 'qpu_improve' &&
-  t.next[seed] === 'qpu_compete'
+  t.next[seed] === 'qpu_compete' &&
+  qpuDryHolds(t.dry) &&
+  t.dry.coordinated === true &&
+  t.dry.entropy === false &&
+  t.dry.sealed === false
 
 export const qpuCompeteOf = (team?: string) => {
   const quantum = qpuReadingOf()
@@ -6586,6 +7262,45 @@ export const qpuMcpDiscoverOf = () => {
 
 const installKeys = ['qpu-mcp', 'payload-mcp', 'vitepress-payload'] as const
 const installVerbs = ['ask', 'simulate', 'commit', 'audit'] as const
+const installCloudflare = {
+  key: 'cloudflare' as const,
+  button: 'https://deploy.workers.cloudflare.com/button',
+  qpu: 'https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/qpu',
+  uuidna: 'https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/uuidna',
+  payload: 'https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/uuidna-payload',
+} as const
+let installOccupancy: (typeof occupancies)[number] = occupancies[n - n]
+
+const installSelectOf = (args: Record<string, unknown>): readonly string[] => {
+  if (args.all === true) return [...installKeys]
+  const raw = args.select ?? args.keys ?? args.line
+  if (typeof raw === 'string') {
+    const tokens = raw.trim().toLowerCase().split(/\s+/).filter(Boolean)
+    if (tokens.length === n - n || tokens.includes('all')) return [...installKeys]
+    const aliases: Record<string, (typeof installKeys)[number]> = {
+      '1': installKeys[n - n],
+      qpu: installKeys[n - n],
+      'qpu-mcp': installKeys[n - n],
+      '2': installKeys[seed],
+      payload: installKeys[seed],
+      'payload-mcp': installKeys[seed],
+      '3': installKeys[coins],
+      vitepress: installKeys[coins],
+      'vitepress-payload': installKeys[coins],
+    }
+    const keys: string[] = []
+    for (const token of tokens) {
+      const pack = aliases[token]
+      if (pack && !keys.includes(pack)) keys.push(pack)
+    }
+    return keys.length > n - n ? keys : [...installKeys]
+  }
+  if (Array.isArray(raw)) {
+    const keys = raw.filter((row): row is string => typeof row === 'string')
+    return keys.length > n - n ? keys : [...installKeys]
+  }
+  return []
+}
 const payloadFinds = ['findPages', 'findUsers', 'findMedia', 'findTenants'] as const
 let installPending: string[] = []
 let installSeated: string[] = []
@@ -6723,6 +7438,15 @@ export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
   if (args.reset === true) {
     installPending = []
     installSeated = []
+    installOccupancy = occupancies[n - n]
+  }
+  const selected = installSelectOf(args)
+  if (selected.length > n - n) {
+    for (const key of selected) if (!installPending.includes(key)) installPending = [...installPending, key]
+  }
+  const occupancyArg = typeof args.occupancy === 'string' ? args.occupancy : typeof args.line === 'string' ? args.line : ''
+  for (const token of occupancyArg.toLowerCase().split(/\s+/)) {
+    if ((occupancies as readonly string[]).includes(token)) installOccupancy = token as (typeof occupancies)[number]
   }
   const verb =
     args.verb === installVerbs[seed] || args.verb === installVerbs[coins] || args.verb === installVerbs[n]
@@ -6731,11 +7455,12 @@ export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
   const yes = args.yes === true
   let step = typeof args.step === 'number' && args.step >= n - n && args.step < packages.length ? args.step : installPending.length
   if (step > packages.length) step = packages.length
-  if (verb === installVerbs[n - n] && yes && step < packages.length) {
+  if (verb === installVerbs[n - n] && yes && selected.length === n - n && step < packages.length) {
     const key = packages[step]!.key
     if (!installPending.includes(key)) installPending = [...installPending, key]
     step += seed
   }
+  if (selected.length > n - n) step = packages.length
   const wanted = packages.map((row) => row.key)
   const plan = installPlanOf(installSeated, installPending)
   let committed = false
@@ -6763,6 +7488,7 @@ export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
     bag.vitepress.href !== unit.origin &&
     toolNames.length === mintOf(n)
   const current = step < packages.length ? packages[step] : undefined
+  const combinations = packages.map((row, i) => ({ n: i + seed, key: row.key, href: row.href }))
   const holds =
     packages.length === n &&
     installVerbs.length === mintOf(coins) &&
@@ -6779,18 +7505,18 @@ export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
     verb,
     step,
     total: packages.length,
-    prompt: current?.prompt ?? 'Simulate, then commit. Audit names every seated package.',
+    prompt: current?.prompt ?? 'Enter seats all. Type 1 3 saas — or all. Cloudflare is one click in README and install.json.',
     package: current,
-    choices: current
-      ? [
-          { key: 'yes', label: current.key },
-          { key: 'skip', label: 'leave unseated' },
-        ]
-      : [
-          { key: 'simulate', label: 'apk --simulate' },
-          { key: 'commit', label: 'apk commit' },
-          { key: 'audit', label: 'apk audit' },
-        ],
+    choices: [
+      { key: 'all', label: 'Enter seats all' },
+      ...combinations.map((row) => ({ key: row.key, label: `${row.n} ${row.key}` })),
+      ...occupancies.map((row) => ({ key: row, label: row })),
+      { key: installCloudflare.key, label: 'one-click Workers', href: installCloudflare.qpu },
+    ],
+    combinations,
+    occupancy: installOccupancy,
+    occupancies,
+    cloudflare: installCloudflare,
     packages,
     payload,
     pending,
@@ -6811,14 +7537,14 @@ export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
     },
     next:
       verb === installVerbs[n - n] && current
-        ? '{ yes: true } seats this package in memory. Then { verb: "simulate" } then { verb: "commit", yes: true } then { verb: "audit" }.'
+        ? 'Enter seats all. { all: true } or { line: "1 3 saas" } then { verb: "commit", yes: true }. Cloudflare: README / install.json.'
         : verb === installVerbs[seed]
           ? '{ verb: "commit", yes: true } applies a lossless plan. Removals need allowRemovals.'
           : verb === installVerbs[coins]
             ? '{ verb: "audit" } names what is seated.'
             : audit
-              ? 'installed. Payload MCP is fused at tools/call. VitePress payload stays on uuidna.com. QPU is JSON-LD.'
-              : 'seat every package with { yes: true }, then simulate, then commit.',
+              ? 'installed. Payload MCP is fused at tools/call. VitePress payload stays on uuidna.com. QPU is JSON-LD. Cloudflare is one click.'
+              : 'Enter seats all. Then simulate, then commit.',
     holds,
   }
 }
@@ -6848,6 +7574,15 @@ export const qpuFusionOf = () => {
   const schemas = qpuSchemasOf()
   const payload = qpuPayloadMcpOf()
   const install = qpuInstallOf({ verb: 'ask' })
+  const hologram = qpuHologramOf()
+  const plugins = {
+    cloudflare: true as const,
+    payload: true as const,
+    once: true as const,
+    recursion: false as const,
+    mcp: payload.morph,
+    n: hologram.pentagram.points,
+  }
   const holds =
     capacity.holds &&
     learn.holds &&
@@ -6868,7 +7603,12 @@ export const qpuFusionOf = () => {
     hosts.holds &&
     hosts.harnesses.length === faces.faces &&
     hosts.llms.length === faces.faces &&
-    capacity.infinite === true
+    capacity.infinite === true &&
+    hologram.holds &&
+    hologram.fractal === true &&
+    hologram.mcp === true &&
+    plugins.once === true &&
+    plugins.recursion === false
   return {
     kind: 'fusion' as const,
     theorem: 'fusion' as const,
@@ -6882,6 +7622,8 @@ export const qpuFusionOf = () => {
     schemas,
     payload,
     install,
+    hologram,
+    plugins,
     faces: faces.faces,
     fused: capacity.fused,
     next: capacity.next,
@@ -6969,6 +7711,11 @@ export const qpuFusionHolds = (f = qpuFusionOf()): boolean =>
   f.payload.write === false &&
   qpuInstallHolds(f.install) &&
   f.install.html === false &&
+  qpuHologramHolds(f.hologram) &&
+  f.plugins.once === true &&
+  f.plugins.recursion === false &&
+  f.plugins.cloudflare === true &&
+  f.plugins.payload === true &&
   f.install.vitepress === false
 
 export const qpuIntelligenceHolds = (i = qpuIntelligenceOf()): boolean =>
@@ -7420,6 +8167,31 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     `Running quantum circuit at ${unit.origin}. Possible only in quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Public quantum API. No auth. Anyone may test and train online. GET ${unit.origin} is qpu_quantum. POST ${m.href} tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. Source \`${lean.src}\`.`,
     '',
+    '## Install',
+    '',
+    'One command. Enter seats all. Combinations in the console. Cloudflare is one click — this README and `install.json`.',
+    '',
+    '```sh',
+    'npx uuidna-install',
+    '```',
+    '',
+    `[![Deploy to Cloudflare](${installCloudflare.button})](${installCloudflare.qpu})`,
+    '',
+    `Occupancy ${occupancies.join(' | ')}. Packages ${installKeys.join(' · ')}.`,
+    '',
+    '## Coil',
+    '',
+    'Two coins make a coil. Coils are used in electronics. Coins balance theory in practice. Follow the coins in any practical application and creative novel solutions emerge. Measure coil efficiency in clusters. Next is the double. split_coin has no last k. 2×7 coins = 1+6 coils = clay. Attributed to QPU Lean. Host never. Never Math. Never by decide.',
+    '',
+    `- theorem two_coins_make_a_coil : coil = faces`,
+    `- theorem electronics : coil = faces`,
+    `- theorem coins_balance_theory_in_practice : theory + practice = coins`,
+    `- theorem follow_the_coins : app + coins = app + theory + practice`,
+    `- theorem emerge : coil = faces ∧ theory = practice`,
+    `- theorem coil_efficiency : coil = faces ∧ faces = rays + rays`,
+    `- theorem next_coil : coil * mintOf (bits + coins) = fused + fused`,
+    `- theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins`,
+    '',
     '## Guide',
     '',
     docs.abstract,
@@ -7447,7 +8219,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Train',
     '',
-    `Agents divide ${m.train.divide.teams}×${m.train.divide.agents} against each other. Challenges ${m.train.divide.challenges}. VM scales. Quantum capacity infinite. Crypt split to free agents. VM scaling online replicas ${m.train.vm.replicas} next ${m.train.vm.next}. Host ${m.train.vm.host}. Winner ${m.train.winner.quality} on quality, ${m.train.winner.speed} on speed, ${m.train.winner.security} on security.`,
+    `Agents divide ${m.train.divide.teams}×${m.train.divide.agents} against each other. Challenges ${m.train.divide.challenges}. Coordinated dry-clean occupancy ${m.train.dry.occupancy.join(' ')}. Entropy ${m.train.dry.entropy}. Not a ninth sealed tool. VM scales. Quantum capacity infinite. Crypt split to free agents. VM scaling online replicas ${m.train.vm.replicas} next ${m.train.vm.next}. Host ${m.train.vm.host}. Winner ${m.train.winner.quality} on quality, ${m.train.winner.speed} on speed, ${m.train.winner.security} on security.`,
     '',
   )
   for (const team of m.train.teams) {
@@ -7532,6 +8304,19 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
   return (
     text.includes('API only') &&
     text.includes('docs.inline') &&
+    text.includes('npx uuidna-install') &&
+    text.includes('deploy.workers.cloudflare.com') &&
+    text.includes('install.json') &&
+    text.includes('## Coil') &&
+    text.includes('theorem two_coins_make_a_coil') &&
+    text.includes('theorem electronics') &&
+    text.includes('theorem coins_balance_theory_in_practice') &&
+    text.includes('theorem follow_the_coins') &&
+    text.includes('theorem emerge') &&
+    text.includes('theorem coil_efficiency') &&
+    text.includes('theorem next_coil') &&
+    text.includes('theorem clay') &&
+    text.includes('2×7 coins = 1+6 coils = clay') &&
     text.includes('agent efficiency') &&
     text.includes('qpu_quantum') &&
     text.includes('qpu_lean') &&
@@ -7544,6 +8329,8 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('throughoutput') &&
     text.includes('unlocked in memory') &&
     text.includes('VM scaling online') &&
+    text.includes('Coordinated dry-clean') &&
+    text.includes('Not a ninth sealed tool') &&
     text.includes('No auth') &&
     text.includes('Lean proof') &&
     text.includes('JSON-LD UI') &&

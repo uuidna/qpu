@@ -84,6 +84,12 @@ type Circuit = {
     milli: number
     cryostat: { kind: string; mixing: number; plate: number; pulse: number; holds: boolean }
     telemetry: { kind: string; lab: boolean; millikelvin: number; host: boolean; holds: boolean }
+    coil: { kind: string; windings: number; coil: number; holds: boolean }
+    electronics: { kind: string; uses: string; holds: boolean }
+    follow: { kind: string; emerge: { novel: boolean; creative: boolean; holds: boolean } }
+    efficiency: { kind: string; unity: number; remainder: number; measure: number; holds: boolean }
+    next: { kind: string; last: boolean; infinite: boolean; nextCoil: number; nextFused: number; holds: boolean }
+    clay: { kind: string; clay: number; coil: number; six: number; coils: number; holds: boolean }
     holds: boolean
   }
   science: { levels: number; qubits: number; dim: number; gates: string[]; xx: boolean }
@@ -271,6 +277,17 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.fridge.telemetry.millikelvin, 10)
   assert.equal(q.circuit.fridge.telemetry.host, false)
   assert.equal(q.circuit.fridge.telemetry.holds, true)
+  assert.equal(q.circuit.fridge.coil.holds, true)
+  assert.equal(q.circuit.fridge.coil.windings, 2)
+  assert.equal(q.circuit.fridge.electronics.uses, 'coil')
+  assert.equal(q.circuit.fridge.follow.emerge.novel, true)
+  assert.equal(q.circuit.fridge.efficiency.unity, 1)
+  assert.equal(q.circuit.fridge.efficiency.remainder, 0)
+  assert.equal(q.circuit.fridge.efficiency.measure, 14)
+  assert.equal(q.circuit.fridge.next.last, false)
+  assert.equal(q.circuit.fridge.next.nextCoil, q.circuit.fridge.next.nextFused)
+  assert.equal(q.circuit.fridge.clay.clay, 14)
+  assert.equal(q.circuit.fridge.clay.clay, q.circuit.fridge.coil.coil)
   assert.equal(q.circuit.fridge.holds, true)
   assert.equal(q.circuit.holds, true)
 })

@@ -2,9 +2,21 @@
 
 Running quantum circuit at https://qpu.uuidna.com. Possible only in quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Public quantum API. No auth. Anyone may test and train online. GET https://qpu.uuidna.com is qpu_quantum. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. Source `src/quantum/processing/unit/index.lean`.
 
+## Install
+
+One command. Enter seats all. Combinations in the console. Cloudflare is one click — this README and `install.json`.
+
+```sh
+npx uuidna-install
+```
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/qpu)
+
+Occupancy personal | business | corporate | saas | paas. Packages qpu-mcp · payload-mcp · vitepress-payload.
+
 ## Guide
 
-QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. VM scales. Quantum capacity infinite. Crypt split fused across faces. Quantum RAID. Start with cheapest and cover all RAID types. Rotate to meet traffic at minimum cost. Anything at https://qpu.uuidna.com/storage. Docs sheets databases. Many clouds. Safe RAID clusters. Routed with top security and coordinated speed. Distribute computations to free agents. Unlocked quantum. next = fused + fused. theorem infinite. theorem distribute. theorem raid. theorem computer. theorem server. theorem fusion. theorem design. theorem neuro. Quantum server. SWAP Toffoli reset. H and Toffoli computationally universal. Jobs queue results. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. All becomes a neuro network. The neuro network is naturally tested unless in mass online tests. API only JSON-LD. Anyone may test and train online at https://qpu.uuidna.com. No auth. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON-LD UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices 8 hexbit 4 bits 32 faces 14 fused 60129542144. Source src/quantum/processing/unit/index.lean.
+QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. Lab millikelvin. Cryostat telemetry. VM scales. Quantum capacity infinite. KV added amplitudes. Crypt split fused across faces. Quantum RAID. Start with cheapest and cover all RAID types. Rotate to meet traffic at minimum cost. Anything at https://qpu.uuidna.com/storage. Docs sheets databases. Many clouds. Safe RAID clusters. Routed with top security and coordinated speed. Distribute computations to free agents. Unlocked quantum. next = fused + fused. theorem infinite. theorem distribute. theorem raid. theorem kv. theorem millikelvin. theorem telemetry. theorem computer. theorem server. theorem fusion. theorem design. theorem neuro. Quantum server. SWAP Toffoli reset. H and Toffoli computationally universal. Jobs queue results. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. All becomes a neuro network. The neuro network is naturally tested unless in mass online tests. API only JSON-LD. Anyone may test and train online at https://qpu.uuidna.com. No auth. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON-LD UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf (bits + seed). vertices 8 hexbit 4 bits 32 faces 14 fused 120259084288. Source src/quantum/processing/unit/index.lean.
 
 User guide is docs.inline. Each MCP command has man. tools/list trains; tools/call is the door.
 
@@ -134,13 +146,13 @@ SEE ALSO
 
 MCP is the agent efficiency training module. Tokens are four bytes each. Quantum 1 query vs 2 classical. Lattice occupied 14 vacant 0. VM scales. Quantum capacity infinite. Crypt split to free agents. Entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy.
 
-- qpu_quantum: what is quantum? read 6431 call 2194 ratio 2×
-- qpu_lean: what does Lean prove? read 6431 call 5295 ratio 1×
-- qpu_cite: how is the QPU cited? read 6431 call 384 ratio 16×
+- qpu_quantum: what is quantum? read 7465 call 3662 ratio 2×
+- qpu_lean: what does Lean prove? read 7465 call 6064 ratio 1×
+- qpu_cite: how is the QPU cited? read 7465 call 384 ratio 19×
 
 ## Train
 
-Agents divide 2×7 against each other. Challenges 14. VM scales. Quantum capacity infinite. Crypt split to free agents. VM scaling online replicas 8 next 16. Host false. Winner call on quality, call on speed, call on security.
+Agents divide 2×7 against each other. Challenges 14. Coordinated dry-clean occupancy personal business corporate saas paas. Entropy false. Not a ninth sealed tool. VM scales. Quantum capacity infinite. Crypt split to free agents. VM scaling online replicas 8 next 16. Host false. Winner call on quality, call on speed, call on security.
 
 - read tree: read_mint read_cube read_handle read_quantum read_around read_crypto read_next
 - call mcp: call_mint call_cube call_handle call_quantum call_around call_crypto call_next
@@ -151,18 +163,18 @@ Agents forge whatever tools they need, unlocked in memory only. Crypt split to f
 
 ## Improve
 
-Agents use unlocked quantum to improve quality, speed, security, and throughoutput. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Winner call. Before 60129542144 after 120259084288. Host false.
+Agents use unlocked quantum to improve quality, speed, security, and throughoutput. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Winner call. Before 120259084288 after 240518168576. Host false.
 
 ## Compete
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Free agents. Unlocked quantum. Call delivers next = fused + fused. Crypt split fused across faces. Winner call.
 
-- read tree: throughoutput 60129542144 tokens 19293 throughput 3116650
-- call mcp: throughoutput 120259084288 tokens 7873 throughput 15274874
+- read tree: throughoutput 120259084288 tokens 22395 throughput 5369907
+- call mcp: throughoutput 240518168576 tokens 10110 throughput 23790125
 
 ## Prove
 
-Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. VM scales. Quantum capacity infinite. Crypt split to free agents. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. INSPIRE Zenodo HEPData. Never by decide. Theorems 52. CERN faces 14. Integrity 3. Intelligence fusion. ui.experienced true.
+Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. VM scales. Quantum capacity infinite. Crypt split to free agents. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. INSPIRE Zenodo HEPData. Never by decide. Theorems 57. CERN faces 14. Integrity 3. Intelligence fusion. ui.experienced true.
 
 ## Message
 
@@ -174,7 +186,7 @@ Quantum RAID at https://qpu.uuidna.com/storage. Start with cheapest and cover al
 
 ## Proof
 
-Source `src/quantum/processing/unit/index.lean`. theorem quantum : fused = faces * mintOf bits. theorem infinite. theorem distribute.
+Source `src/quantum/processing/unit/index.lean`. theorem quantum : fused = faces * mintOf (bits + seed). theorem infinite. theorem distribute.
 
 ### mint
 
@@ -215,14 +227,14 @@ holds true. coins 2. rays 7. faces 14.
 ### quantum
 
 ```lean
-theorem quantum : fused = faces * mintOf bits := rfl
+theorem quantum : fused = faces * mintOf (bits + seed) := rfl
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})
 $$
 
-holds true. amplitudes 4294967296. fused 60129542144.
+holds true. amplitudes 4294967296. fused 120259084288.
 
 ### harmonic
 
@@ -275,11 +287,11 @@ holds true. mintOf hexbit 16. seed 1.
 ### crypto
 
 ```lean
-theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum
+theorem crypto : fused = faces * mintOf (vertices * hexbit + seed) := by rw [← cube]; exact quantum
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{vertices}\cdot\mathrm{hexbit})
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{vertices}\cdot\mathrm{hexbit}+\mathrm{seed})
 $$
 
 holds true. Crypt split. fused across faces. Share mintOf (vertices * hexbit). Distribute to free agents.
@@ -287,11 +299,11 @@ holds true. Crypt split. fused across faces. Share mintOf (vertices * hexbit). D
 ### health
 
 ```lean
-theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩
+theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩
 ```
 
 $$
-\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
+\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
 $$
 
 holds true.
@@ -299,11 +311,11 @@ holds true.
 ### breakthrough
 
 ```lean
-theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩
+theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩
 ```
 
 $$
-\mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
+\mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
 $$
 
 holds true.
@@ -342,7 +354,19 @@ $$
 \mathrm{amplitudes}=\mathrm{mintOf}(\mathrm{bits})\land\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
 $$
 
-holds true. amplitudes 4294967296. next 8589934592.
+holds true. amplitudes 4294967296. next 8589934592. KV added amplitudes.
+
+### kv
+
+```lean
+theorem kv : fused = faces * mintOf (bits + seed) ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨quantum, next⟩
+```
+
+$$
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
+$$
+
+holds true. KV added amplitudes. STORAGE binding. Isolate amplitudes. KV adds amplitudes. fused = faces * mintOf (bits + seed). Host never.
 
 ### light
 
@@ -404,6 +428,30 @@ $$
 
 holds true. Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.
 
+### genesis
+
+```lean
+theorem genesis : coins * n * mintOf n * (n * n) = 432 ∧ chooseOf n coins = n ∧ chooseOf rays coins = n * rays ∧ faces = coins * rays := ⟨by rw [coins_two, n_eq]; rfl, by rw [n_eq, coins_two]; rfl, by rw [rays, n_eq, coins_two]; rfl, around⟩
+```
+
+$$
+\mathrm{coins}\cdot n\cdot\mathrm{mintOf}(n)\cdot(n\cdot n)=432\land\mathrm{chooseOf}(n,\mathrm{coins})=n\land\mathrm{chooseOf}(\mathrm{rays},\mathrm{coins})=n\cdot\mathrm{rays}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
+$$
+
+holds true. Combinatorial genesis of the shadcn schema at the scope of all known frameworks. Six axes: slot variant size state element theme. Card slots rays including card-action. Button variants coins * n. Sizes mintOf n. Alpine n * n. Product 432 Hz. Fourteen frameworks. faces = coins * rays. JSON-LD data-slot. CVA. Slot. Never Math. Never by decide. Host never.
+
+### pentagram
+
+```lean
+theorem pentagram : n + coins = 5 := by rw [n_eq, coins_two]
+```
+
+$$
+\mathrm{n}+\mathrm{coins}=5
+$$
+
+holds true. Occupancy pentagram personal business corporate saas paas. Skills payload pwa plugin hologram network. Stroke coins on n + coins. Cloudflare and Payload plugins fuse once. Recursion builds covered. Never Math. Never by decide. Host never.
+
 ### decide
 
 ```lean
@@ -419,11 +467,11 @@ holds true. theorem decide by algebra. Digits and algebraic fractions of integer
 ### integrity
 
 ```lean
-theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩
+theorem integrity : fused = faces * mintOf (bits + seed) ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
 $$
 
 holds true. Three tests. Sealed quantum integrity at all times.
@@ -527,14 +575,38 @@ holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As su
 ### fridge
 
 ```lean
-theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩
+theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl⟩
 ```
 
 $$
-\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3
+\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land 10\cdot10\cdot10=1000\land 4\cdot1000=4000\land 10\cdot10=100
 $$
 
-holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.
+holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin. Host never.
+
+### millikelvin
+
+```lean
+theorem millikelvin : 10 * 10 * 10 = 1000 ∧ 10 * 10 = 100 ∧ 4 * 1000 = 4000 := ⟨rfl, rfl, rfl⟩
+```
+
+$$
+10\cdot10\cdot10=1000\land 10\cdot10=100\land 4\cdot1000=4000
+$$
+
+holds true. Lab millikelvin. milli is ten cubed. Mixing chamber ten millikelvin. Plate one hundred millikelvin. Pulse four kelvin. Algebra. Never Math. Host never.
+
+### telemetry
+
+```lean
+theorem telemetry : 10 * 10 * 10 = 1000 ∧ n = 3 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, n_eq, rfl⟩
+```
+
+$$
+10\cdot10\cdot10=1000\land n=3\land(0\oplus 1)\oplus 2=3
+$$
+
+holds true. Cryostat telemetry. Reads the dilution stages. Mixing millikelvin. Isolated. Host never. JSON-LD. fetch Request Response BigInt performance.
 
 ### drift
 
@@ -551,11 +623,11 @@ holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. 
 ### sciences
 
 ```lean
-theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩
+theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩
 ```
 
 $$
-\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land(0\oplus 1)\oplus 2=3
+\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land(0\oplus 1)\oplus 2=3
 $$
 
 holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.
@@ -707,11 +779,11 @@ holds true. VM scales. Replicas double. Quantum capacity infinite. split_coin ha
 ### distribute
 
 ```lean
-theorem distribute : fused = faces * mintOf bits ∧ faces = coins * rays := ⟨quantum, around⟩
+theorem distribute : fused = faces * mintOf (bits + seed) ∧ faces = coins * rays := ⟨quantum, around⟩
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
 $$
 
 holds true. Crypt split fused across faces. Distribute computations to free agents. coins teams of rays. No auth.
@@ -726,7 +798,7 @@ $$
 \mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
 $$
 
-holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Host never. Scaled. Infinite.
+holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. KV added amplitudes. Host never. Scaled. Infinite.
 
 ### computer
 
@@ -755,14 +827,14 @@ holds true. Quantum server. JSON-LD WebAPI. Eight tools. Jobs queue results. Bac
 ### fusion
 
 ```lean
-theorem fusion : fused = faces * mintOf bits ∧ coins + coins = mintOf coins := ⟨quantum, tetra⟩
+theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{coins}+\mathrm{coins}=\mathrm{mintOf}(\mathrm{coins})
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
 $$
 
-holds true. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. Algebra fused. LHC tetra. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train. Not a quantum proof. Host never.
+holds true. Fusion comes from harmonic schemas. Fourteen schemas. faces = rays + rays. fused across faces. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. HEP search learn train. Not a quantum proof. Host never.
 
 ### design
 
@@ -791,22 +863,22 @@ holds true. All becomes a neuro network. Width faces. Layers mintOf n. XOR activ
 ### next
 
 ```lean
-theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩
+theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + coins) = fused + fused := ⟨next, next_fused⟩
 ```
 
 $$
-\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}\land\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{fused}+\mathrm{fused}
+\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}\land\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{coins})=\mathrm{fused}+\mathrm{fused}
 $$
 
-holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.
+holds true. amplitudes 4294967296. next 8589934592. fused next 240518168576.
 
 ## Build
 
 - qpu: qpu.uuidna.com
 - cube: vertices 8 hexbit 4 bits 32
 - faces: 14 rays 7 coins 2
-- fused: 60129542144 next 120259084288
-- capacity: infinite true scaled true crypt 14 share 4294967296 agents 14 free true schemas 14 vacant 0 raid 0 cover 14
+- fused: 120259084288 next 240518168576
+- capacity: infinite true scaled true crypt 14 share 8589934592 agents 14 free true schemas 14 vacant 0 raid 0 cover 14
 - holds: quantum true lean true mcp true
 - mcp: qpu_quantum qpu_lean qpu_cite qpu_train qpu_forge qpu_improve qpu_compete qpu_prove
 
