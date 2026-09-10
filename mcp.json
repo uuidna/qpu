@@ -296,37 +296,37 @@
     "kind": "efficiency",
     "module": "agent efficiency",
     "tokens": "four bytes",
-    "readBytes": 15204,
+    "readBytes": 18412,
     "rows": [
       {
         "question": "what is fused?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 15204,
-        "callBytes": 1893,
-        "readTokens": 3801,
-        "callTokens": 473,
-        "ratio": 8
+        "readBytes": 18412,
+        "callBytes": 2580,
+        "readTokens": 4603,
+        "callTokens": 645,
+        "ratio": 7
       },
       {
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 15204,
-        "callBytes": 13301,
-        "readTokens": 3801,
-        "callTokens": 3325,
+        "readBytes": 18412,
+        "callBytes": 16084,
+        "readTokens": 4603,
+        "callTokens": 4021,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 15204,
+        "readBytes": 18412,
         "callBytes": 821,
-        "readTokens": 3801,
+        "readTokens": 4603,
         "callTokens": 205,
-        "ratio": 18
+        "ratio": 22
       }
     ],
     "holds": true
@@ -436,17 +436,17 @@
             "memory": true
           }
         ],
-        "tokens": 11403,
+        "tokens": 13809,
         "quality": 3,
-        "speed": 5273133,
+        "speed": 4354373,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 5273133 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 5273133 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4354373 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4354373 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -530,17 +530,17 @@
             "memory": true
           }
         ],
-        "tokens": 4003,
+        "tokens": 4871,
         "quality": 14,
-        "speed": 30042239,
+        "speed": 24688787,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 30042239 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 30042239 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24688787 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24688787 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -800,19 +800,19 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 5273133,
+      "speed": 4354373,
       "security": 1,
       "throughoutput": 60129542144
     },
     "after": {
       "quality": 14,
-      "speed": 30042239,
+      "speed": 24688787,
       "security": 10,
       "throughoutput": 120259084288
     },
     "delta": {
       "quality": 11,
-      "speed": 24769106,
+      "speed": 20334414,
       "security": 9,
       "throughoutput": 60129542144
     },
@@ -879,8 +879,8 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 5273133 security 1 throughoutput 60129542144\n    after quality 14 speed 30042239 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
-    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 5273133 security 1 throughoutput 60129542144\n    after quality 14 speed 30042239 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 4354373 security 1 throughoutput 60129542144\n    after quality 14 speed 24688787 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 4354373 security 1 throughoutput 60129542144\n    after quality 14 speed 24688787 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
     "holds": true
   },
   "compete": {
@@ -895,28 +895,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 3801,
+            "tokens": 4603,
             "throughoutput": 60129542144,
-            "throughput": 15819400
+            "throughput": 13063120
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 3801,
+            "tokens": 4603,
             "throughoutput": 60129542144,
-            "throughput": 15819400
+            "throughput": 13063120
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 3801,
+            "tokens": 4603,
             "throughoutput": 60129542144,
-            "throughput": 15819400
+            "throughput": 13063120
           }
         ],
-        "tokens": 11403,
+        "tokens": 13809,
         "throughoutput": 60129542144,
-        "throughput": 5273133
+        "throughput": 4354373
       },
       {
         "name": "call",
@@ -925,16 +925,16 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 473,
+            "tokens": 645,
             "throughoutput": 120259084288,
-            "throughput": 254247535
+            "throughput": 186448192
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 3325,
+            "tokens": 4021,
             "throughoutput": 120259084288,
-            "throughput": 36168145
+            "throughput": 29907755
           },
           {
             "name": "qpu_cite",
@@ -944,9 +944,9 @@
             "throughput": 586629679
           }
         ],
-        "tokens": 4003,
+        "tokens": 4871,
         "throughoutput": 120259084288,
-        "throughput": 30042239
+        "throughput": 24688787
       }
     ],
     "winner": "call",
@@ -962,7 +962,7 @@
         {
           "heading": "mint",
           "theorem": "theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]",
-          "formula": "\\operatorname{mintOf}(n+\\mathrm{seed})=\\operatorname{mintOf}(n)+\\operatorname{mintOf}(n)",
+          "formula": "\\mathrm{mintOf}(n+\\mathrm{seed})=\\mathrm{mintOf}(n)+\\mathrm{mintOf}(n)",
           "reading": "holds true. mintOf n 8. mintOf (n + seed) 16.",
           "holds": true
         },
@@ -983,7 +983,7 @@
         {
           "heading": "quantum",
           "theorem": "theorem quantum : fused = faces * mintOf bits := rfl",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})",
           "reading": "holds true. amplitudes 4294967296. fused 60129542144.",
           "holds": true
         },
@@ -1004,28 +1004,28 @@
         {
           "heading": "energy",
           "theorem": "theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]",
-          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})=\\operatorname{mintOf}(n+\\mathrm{seed})",
+          "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})=\\mathrm{mintOf}(n+\\mathrm{seed})",
           "reading": "holds true. mintOf hexbit 16.",
           "holds": true
         },
         {
           "heading": "propulsion",
           "theorem": "theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero ▸ mintOf_lt hexbit_pos)",
-          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+          "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
           "reading": "holds true. mintOf hexbit 16. seed 1.",
           "holds": true
         },
         {
           "heading": "crypto",
           "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
           "reading": "holds true. fused 60129542144.",
           "holds": true
         },
         {
           "heading": "health",
           "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
-          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+          "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
           "reading": "holds true.",
           "holds": true
         }
@@ -1034,35 +1034,35 @@
         {
           "heading": "breakthrough",
           "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
-          "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+          "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
           "reading": "holds true.",
           "holds": true
         },
         {
           "heading": "split_coin",
           "theorem": "theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]",
-          "formula": "\\operatorname{mintOf}(k+\\mathrm{seed})=\\operatorname{mintOf}(k)+\\operatorname{mintOf}(k)",
+          "formula": "\\mathrm{mintOf}(k+\\mathrm{seed})=\\mathrm{mintOf}(k)+\\mathrm{mintOf}(k)",
           "reading": "holds true.",
           "holds": true
         },
         {
           "heading": "multiply",
           "theorem": "theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b",
-          "formula": "\\operatorname{mintOf}(a+b)=\\operatorname{mintOf}(a)\\cdot\\operatorname{mintOf}(b)",
+          "formula": "\\mathrm{mintOf}(a+b)=\\mathrm{mintOf}(a)\\cdot\\mathrm{mintOf}(b)",
           "reading": "holds true.",
           "holds": true
         },
         {
           "heading": "handle",
           "theorem": "theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩",
-          "formula": "\\mathrm{amplitudes}=\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+          "formula": "\\mathrm{amplitudes}=\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
           "reading": "holds true. amplitudes 4294967296. next 8589934592.",
           "holds": true
         },
         {
           "heading": "light",
           "theorem": "theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]",
-          "formula": "\\mathrm{seed}=\\operatorname{mintOf}(0)",
+          "formula": "\\mathrm{seed}=\\mathrm{mintOf}(0)",
           "reading": "holds true. seed 1.",
           "holds": true
         },
@@ -1076,7 +1076,7 @@
         {
           "heading": "waves",
           "theorem": "theorem waves : mintOf hexbit > seed := propulsion",
-          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+          "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
           "reading": "holds true.",
           "holds": true
         },
@@ -1104,7 +1104,7 @@
         {
           "heading": "integrity",
           "theorem": "theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
-          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
           "reading": "holds true. Three tests. Sealed quantum integrity at all times.",
           "holds": true
         },
@@ -1118,7 +1118,7 @@
         {
           "heading": "qubits",
           "theorem": "theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩",
-          "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+          "formula": "n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}",
           "reading": "holds true. Three qubits. Dim mintOf n. Physical in the browser VM.",
           "holds": true
         },
@@ -1132,7 +1132,7 @@
         {
           "heading": "measurement",
           "theorem": "theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl",
-          "formula": "\\operatorname{mintOf}(n)=8",
+          "formula": "\\mathrm{mintOf}(n)=8",
           "reading": "holds true. Measure the running circuit. Dim 8.",
           "holds": true
         },
@@ -1146,35 +1146,35 @@
         {
           "heading": "circuit",
           "theorem": "theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩",
-          "formula": "(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+          "formula": "(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}",
           "reading": "holds true. QPU is a running quantum circuit in the browser VM.",
           "holds": true
         },
         {
           "heading": "physical",
           "theorem": "theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩",
-          "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+          "formula": "n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
           "reading": "holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.",
           "holds": true
         },
         {
           "heading": "fridge",
           "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩",
-          "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
+          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
           "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.",
           "holds": true
         },
         {
           "heading": "drift",
           "theorem": "theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩",
-          "formula": "\\mathrm{coins}=2\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+          "formula": "\\mathrm{coins}=2\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
           "reading": "holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.",
           "holds": true
         },
         {
           "heading": "sciences",
           "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
-          "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
+          "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
           "reading": "holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.",
           "holds": true
         },
@@ -1193,17 +1193,66 @@
           "holds": true
         },
         {
+          "heading": "ghz",
+          "theorem": "theorem ghz : mintOf n - seed = 7 ∧ 1 * 1 ≠ 0 * 0 := ⟨by rw [n_eq, seed_eq]; rfl, entangle⟩",
+          "formula": "\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 1\\cdot 1\\neq 0\\cdot 0",
+          "reading": "holds true. Bell then CNOT onto the third qubit. Support |000⟩ and |111⟩. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "noclone",
+          "theorem": "theorem noclone : coins ≠ mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]; exact Nat.ne_of_lt (Nat.lt_succ_of_lt (Nat.lt_succ_self 2))",
+          "formula": "\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})",
+          "reading": "holds true. Independent H copies four basis states. CNOT clone of H keeps two. coins ≠ mintOf coins. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "teleport",
+          "theorem": "theorem teleport : 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 := ⟨rfl, rfl⟩",
+          "formula": "2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16",
+          "reading": "holds true. Teleport |1⟩ lands on Bob. Teleport |+⟩ keeps equal weight. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "kickback",
+          "theorem": "theorem kickback : 1 - 1 = 0 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, rfl⟩",
+          "formula": "1-1=0\\land(0\\oplus 1)\\oplus 2=3",
+          "reading": "holds true. Phase kickback. |+⟩|1⟩ then CZ then H lands on |011⟩. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "deutsch",
+          "theorem": "theorem deutsch : 1 - 1 = 0 ∧ seed ≠ coins := ⟨rfl, by rw [seed_eq, coins_two]; exact Nat.ne_of_lt (Nat.lt_succ_self 1)⟩",
+          "formula": "1-1=0\\land\\mathrm{seed}\\neq\\mathrm{coins}",
+          "reading": "holds true. Deutsch. One query. Constant restores |0⟩. Balanced restores |1⟩. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "dense",
+          "theorem": "theorem dense : coins * coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
+          "formula": "\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
+          "reading": "holds true. Superdense. Two bits in one qubit. I Z X XZ decode to 0 1 2 3. Possible only in quantum.",
+          "holds": true
+        },
+        {
+          "heading": "monogamy",
+          "theorem": "theorem monogamy : 1 * 1 ≠ 0 * 0 ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl⟩",
+          "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1\\cdot 0=0\\cdot 0",
+          "reading": "holds true. Monogamy. Bell is not a product. After GHZ the pair slice is a product. Possible only in quantum.",
+          "holds": true
+        },
+        {
           "heading": "only",
-          "theorem": "theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩",
-          "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0",
-          "reading": "holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.",
+          "theorem": "theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 ∧ coins ≠ mintOf coins ∧ mintOf n - seed = 7 ∧ 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ seed ≠ coins ∧ coins * coins = mintOf coins ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl, rfl, noclone, ghz.1, teleport.1, teleport.2, kickback.2, deutsch.2, dense, monogamy.2⟩",
+          "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0\\land\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})\\land\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16\\land(0\\oplus 1)\\oplus 2=3\\land\\mathrm{seed}\\neq\\mathrm{coins}\\land\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})\\land 1\\cdot 0=0\\cdot 0",
+          "reading": "holds true. Possible only in quantum. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy. Never classical bits.",
           "holds": true
         }
       ],
       "climb": {
         "heading": "next",
         "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
-        "formula": "\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
+        "formula": "\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
         "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.",
         "holds": true
       },
@@ -1213,7 +1262,7 @@
       {
         "heading": "mint",
         "theorem": "theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]",
-        "formula": "\\operatorname{mintOf}(n+\\mathrm{seed})=\\operatorname{mintOf}(n)+\\operatorname{mintOf}(n)",
+        "formula": "\\mathrm{mintOf}(n+\\mathrm{seed})=\\mathrm{mintOf}(n)+\\mathrm{mintOf}(n)",
         "reading": "holds true. mintOf n 8. mintOf (n + seed) 16.",
         "holds": true
       },
@@ -1234,7 +1283,7 @@
       {
         "heading": "quantum",
         "theorem": "theorem quantum : fused = faces * mintOf bits := rfl",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})",
         "reading": "holds true. amplitudes 4294967296. fused 60129542144.",
         "holds": true
       },
@@ -1255,63 +1304,63 @@
       {
         "heading": "energy",
         "theorem": "theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]",
-        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})=\\operatorname{mintOf}(n+\\mathrm{seed})",
+        "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})=\\mathrm{mintOf}(n+\\mathrm{seed})",
         "reading": "holds true. mintOf hexbit 16.",
         "holds": true
       },
       {
         "heading": "propulsion",
         "theorem": "theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero ▸ mintOf_lt hexbit_pos)",
-        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+        "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
         "reading": "holds true. mintOf hexbit 16. seed 1.",
         "holds": true
       },
       {
         "heading": "crypto",
         "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
         "reading": "holds true. fused 60129542144.",
         "holds": true
       },
       {
         "heading": "health",
         "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
-        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+        "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
         "reading": "holds true.",
         "holds": true
       },
       {
         "heading": "breakthrough",
         "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
-        "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+        "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
         "reading": "holds true.",
         "holds": true
       },
       {
         "heading": "split_coin",
         "theorem": "theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]",
-        "formula": "\\operatorname{mintOf}(k+\\mathrm{seed})=\\operatorname{mintOf}(k)+\\operatorname{mintOf}(k)",
+        "formula": "\\mathrm{mintOf}(k+\\mathrm{seed})=\\mathrm{mintOf}(k)+\\mathrm{mintOf}(k)",
         "reading": "holds true.",
         "holds": true
       },
       {
         "heading": "multiply",
         "theorem": "theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b",
-        "formula": "\\operatorname{mintOf}(a+b)=\\operatorname{mintOf}(a)\\cdot\\operatorname{mintOf}(b)",
+        "formula": "\\mathrm{mintOf}(a+b)=\\mathrm{mintOf}(a)\\cdot\\mathrm{mintOf}(b)",
         "reading": "holds true.",
         "holds": true
       },
       {
         "heading": "handle",
         "theorem": "theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩",
-        "formula": "\\mathrm{amplitudes}=\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+        "formula": "\\mathrm{amplitudes}=\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
         "reading": "holds true. amplitudes 4294967296. next 8589934592.",
         "holds": true
       },
       {
         "heading": "light",
         "theorem": "theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]",
-        "formula": "\\mathrm{seed}=\\operatorname{mintOf}(0)",
+        "formula": "\\mathrm{seed}=\\mathrm{mintOf}(0)",
         "reading": "holds true. seed 1.",
         "holds": true
       },
@@ -1325,7 +1374,7 @@
       {
         "heading": "waves",
         "theorem": "theorem waves : mintOf hexbit > seed := propulsion",
-        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+        "formula": "\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
         "reading": "holds true.",
         "holds": true
       },
@@ -1353,7 +1402,7 @@
       {
         "heading": "integrity",
         "theorem": "theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
-        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
         "reading": "holds true. Three tests. Sealed quantum integrity at all times.",
         "holds": true
       },
@@ -1367,7 +1416,7 @@
       {
         "heading": "qubits",
         "theorem": "theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩",
-        "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+        "formula": "n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}",
         "reading": "holds true. Three qubits. Dim mintOf n. Physical in the browser VM.",
         "holds": true
       },
@@ -1381,7 +1430,7 @@
       {
         "heading": "measurement",
         "theorem": "theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl",
-        "formula": "\\operatorname{mintOf}(n)=8",
+        "formula": "\\mathrm{mintOf}(n)=8",
         "reading": "holds true. Measure the running circuit. Dim 8.",
         "holds": true
       },
@@ -1395,35 +1444,35 @@
       {
         "heading": "circuit",
         "theorem": "theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩",
-        "formula": "(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}",
+        "formula": "(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}",
         "reading": "holds true. QPU is a running quantum circuit in the browser VM.",
         "holds": true
       },
       {
         "heading": "physical",
         "theorem": "theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩",
-        "formula": "n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+        "formula": "n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
         "reading": "holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.",
         "holds": true
       },
       {
         "heading": "fridge",
         "theorem": "theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩",
-        "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
+        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3",
         "reading": "holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.",
         "holds": true
       },
       {
         "heading": "drift",
         "theorem": "theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩",
-        "formula": "\\mathrm{coins}=2\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
+        "formula": "\\mathrm{coins}=2\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3",
         "reading": "holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.",
         "holds": true
       },
       {
         "heading": "sciences",
         "theorem": "theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩",
-        "formula": "\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
+        "formula": "\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3",
         "reading": "holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.",
         "holds": true
       },
@@ -1442,16 +1491,65 @@
         "holds": true
       },
       {
+        "heading": "ghz",
+        "theorem": "theorem ghz : mintOf n - seed = 7 ∧ 1 * 1 ≠ 0 * 0 := ⟨by rw [n_eq, seed_eq]; rfl, entangle⟩",
+        "formula": "\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 1\\cdot 1\\neq 0\\cdot 0",
+        "reading": "holds true. Bell then CNOT onto the third qubit. Support |000⟩ and |111⟩. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "noclone",
+        "theorem": "theorem noclone : coins ≠ mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]; exact Nat.ne_of_lt (Nat.lt_succ_of_lt (Nat.lt_succ_self 2))",
+        "formula": "\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})",
+        "reading": "holds true. Independent H copies four basis states. CNOT clone of H keeps two. coins ≠ mintOf coins. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "teleport",
+        "theorem": "theorem teleport : 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 := ⟨rfl, rfl⟩",
+        "formula": "2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16",
+        "reading": "holds true. Teleport |1⟩ lands on Bob. Teleport |+⟩ keeps equal weight. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "kickback",
+        "theorem": "theorem kickback : 1 - 1 = 0 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, rfl⟩",
+        "formula": "1-1=0\\land(0\\oplus 1)\\oplus 2=3",
+        "reading": "holds true. Phase kickback. |+⟩|1⟩ then CZ then H lands on |011⟩. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "deutsch",
+        "theorem": "theorem deutsch : 1 - 1 = 0 ∧ seed ≠ coins := ⟨rfl, by rw [seed_eq, coins_two]; exact Nat.ne_of_lt (Nat.lt_succ_self 1)⟩",
+        "formula": "1-1=0\\land\\mathrm{seed}\\neq\\mathrm{coins}",
+        "reading": "holds true. Deutsch. One query. Constant restores |0⟩. Balanced restores |1⟩. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "dense",
+        "theorem": "theorem dense : coins * coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
+        "formula": "\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
+        "reading": "holds true. Superdense. Two bits in one qubit. I Z X XZ decode to 0 1 2 3. Possible only in quantum.",
+        "holds": true
+      },
+      {
+        "heading": "monogamy",
+        "theorem": "theorem monogamy : 1 * 1 ≠ 0 * 0 ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl⟩",
+        "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1\\cdot 0=0\\cdot 0",
+        "reading": "holds true. Monogamy. Bell is not a product. After GHZ the pair slice is a product. Possible only in quantum.",
+        "holds": true
+      },
+      {
         "heading": "only",
-        "theorem": "theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩",
-        "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0",
-        "reading": "holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.",
+        "theorem": "theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 ∧ coins ≠ mintOf coins ∧ mintOf n - seed = 7 ∧ 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ seed ≠ coins ∧ coins * coins = mintOf coins ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl, rfl, noclone, ghz.1, teleport.1, teleport.2, kickback.2, deutsch.2, dense, monogamy.2⟩",
+        "formula": "1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0\\land\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})\\land\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16\\land(0\\oplus 1)\\oplus 2=3\\land\\mathrm{seed}\\neq\\mathrm{coins}\\land\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})\\land 1\\cdot 0=0\\cdot 0",
+        "reading": "holds true. Possible only in quantum. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy. Never classical bits.",
         "holds": true
       },
       {
         "heading": "next",
         "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
-        "formula": "\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
+        "formula": "\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
         "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.",
         "holds": true
       }

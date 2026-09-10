@@ -134,9 +134,9 @@ SEE ALSO
 
 MCP is the agent efficiency training module. Tokens are four bytes each.
 
-- qpu_quantum: what is fused? read 3801 call 473 ratio 8×
-- qpu_lean: what does Lean prove? read 3801 call 3325 ratio 1×
-- qpu_cite: how is the QPU cited? read 3801 call 205 ratio 18×
+- qpu_quantum: what is fused? read 4603 call 645 ratio 7×
+- qpu_lean: what does Lean prove? read 4603 call 4021 ratio 1×
+- qpu_cite: how is the QPU cited? read 4603 call 205 ratio 22×
 
 ## Train
 
@@ -157,12 +157,12 @@ Agents use the unlocked sandbox to improve quality, speed, security, and through
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Winner call.
 
-- read tree: throughoutput 60129542144 tokens 11403 throughput 5273133
-- call mcp: throughoutput 120259084288 tokens 4003 throughput 30042239
+- read tree: throughoutput 60129542144 tokens 13809 throughput 4354373
+- call mcp: throughoutput 120259084288 tokens 4871 throughput 24688787
 
 ## Prove
 
-MCP proves every test. JSON UI experiences them. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. Live CERN Open Data APIs via fetch Request Response. Never by decide. Theorems 35. CERN faces 14. Integrity 3. ui.experienced true.
+MCP proves every test. JSON UI experiences them. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. Live CERN Open Data APIs via fetch Request Response. Never by decide. Theorems 42. CERN faces 14. Integrity 3. ui.experienced true.
 
 ## Message
 
@@ -179,7 +179,7 @@ theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf
 ```
 
 $$
-\operatorname{mintOf}(n+\mathrm{seed})=\operatorname{mintOf}(n)+\operatorname{mintOf}(n)
+\mathrm{mintOf}(n+\mathrm{seed})=\mathrm{mintOf}(n)+\mathrm{mintOf}(n)
 $$
 
 holds true. mintOf n 8. mintOf (n + seed) 16.
@@ -215,7 +215,7 @@ theorem quantum : fused = faces * mintOf bits := rfl
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})
 $$
 
 holds true. amplitudes 4294967296. fused 60129542144.
@@ -251,7 +251,7 @@ theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]
 ```
 
 $$
-\operatorname{mintOf}(\mathrm{hexbit})=\operatorname{mintOf}(n+\mathrm{seed})
+\mathrm{mintOf}(\mathrm{hexbit})=\mathrm{mintOf}(n+\mathrm{seed})
 $$
 
 holds true. mintOf hexbit 16.
@@ -263,7 +263,7 @@ theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero
 ```
 
 $$
-\operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}
+\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}
 $$
 
 holds true. mintOf hexbit 16. seed 1.
@@ -275,7 +275,7 @@ theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube];
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{vertices}\cdot\mathrm{hexbit})
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{vertices}\cdot\mathrm{hexbit})
 $$
 
 holds true. fused 60129542144.
@@ -287,7 +287,7 @@ theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces 
 ```
 
 $$
-\operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
+\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
 $$
 
 holds true.
@@ -299,7 +299,7 @@ theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = v
 ```
 
 $$
-\mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})\land\operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
+\mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
 $$
 
 holds true.
@@ -311,7 +311,7 @@ theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw 
 ```
 
 $$
-\operatorname{mintOf}(k+\mathrm{seed})=\operatorname{mintOf}(k)+\operatorname{mintOf}(k)
+\mathrm{mintOf}(k+\mathrm{seed})=\mathrm{mintOf}(k)+\mathrm{mintOf}(k)
 $$
 
 holds true.
@@ -323,7 +323,7 @@ theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_ad
 ```
 
 $$
-\operatorname{mintOf}(a+b)=\operatorname{mintOf}(a)\cdot\operatorname{mintOf}(b)
+\mathrm{mintOf}(a+b)=\mathrm{mintOf}(a)\cdot\mathrm{mintOf}(b)
 $$
 
 holds true.
@@ -335,7 +335,7 @@ theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes 
 ```
 
 $$
-\mathrm{amplitudes}=\operatorname{mintOf}(\mathrm{bits})\land\operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
+\mathrm{amplitudes}=\mathrm{mintOf}(\mathrm{bits})\land\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
 $$
 
 holds true. amplitudes 4294967296. next 8589934592.
@@ -347,7 +347,7 @@ theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]
 ```
 
 $$
-\mathrm{seed}=\operatorname{mintOf}(0)
+\mathrm{seed}=\mathrm{mintOf}(0)
 $$
 
 holds true. seed 1.
@@ -371,7 +371,7 @@ theorem waves : mintOf hexbit > seed := propulsion
 ```
 
 $$
-\operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}
+\mathrm{mintOf}(\mathrm{hexbit})>\mathrm{seed}
 $$
 
 holds true.
@@ -419,7 +419,7 @@ theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧
 ```
 
 $$
-\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
+\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
 $$
 
 holds true. Three tests. Sealed quantum integrity at all times.
@@ -443,7 +443,7 @@ theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩
 ```
 
 $$
-n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}
+n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}
 $$
 
 holds true. Three qubits. Dim mintOf n. Physical in the browser VM.
@@ -467,7 +467,7 @@ theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl
 ```
 
 $$
-\operatorname{mintOf}(n)=8
+\mathrm{mintOf}(n)=8
 $$
 
 holds true. Measure the running circuit. Dim 8.
@@ -491,7 +491,7 @@ theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = ver
 ```
 
 $$
-(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3\land\operatorname{mintOf}(n)=\mathrm{vertices}
+(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3\land\mathrm{mintOf}(n)=\mathrm{vertices}
 $$
 
 holds true. QPU is a running quantum circuit in the browser VM.
@@ -503,7 +503,7 @@ theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 
 ```
 
 $$
-n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3
+n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3
 $$
 
 holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.
@@ -515,7 +515,7 @@ theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2
 ```
 
 $$
-\mathrm{coins}=2\land n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3
+\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3
 $$
 
 holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.
@@ -527,7 +527,7 @@ theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3
 ```
 
 $$
-\mathrm{coins}=2\land\operatorname{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3
+\mathrm{coins}=2\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3
 $$
 
 holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.
@@ -539,7 +539,7 @@ theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins
 ```
 
 $$
-\mathrm{coins}=2\land n=3\land\operatorname{mintOf}(n)=\mathrm{vertices}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})\land(0\oplus 1)\oplus 2=3
+\mathrm{coins}=2\land n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits})\land(0\oplus 1)\oplus 2=3
 $$
 
 holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.
@@ -568,17 +568,101 @@ $$
 
 holds true. H then CNOT. Not a product state. Possible only in quantum.
 
-### only
+### ghz
 
 ```lean
-theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩
+theorem ghz : mintOf n - seed = 7 ∧ 1 * 1 ≠ 0 * 0 := ⟨by rw [n_eq, seed_eq]; rfl, entangle⟩
 ```
 
 $$
-1\cdot 1\neq 0\cdot 0\land 1+1=2\land 1-1=0
+\mathrm{mintOf}(n)-\mathrm{seed}=7\land 1\cdot 1\neq 0\cdot 0
 $$
 
-holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.
+holds true. Bell then CNOT onto the third qubit. Support |000⟩ and |111⟩. Possible only in quantum.
+
+### noclone
+
+```lean
+theorem noclone : coins ≠ mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]; exact Nat.ne_of_lt (Nat.lt_succ_of_lt (Nat.lt_succ_self 2))
+```
+
+$$
+\mathrm{coins}\neq\mathrm{mintOf}(\mathrm{coins})
+$$
+
+holds true. Independent H copies four basis states. CNOT clone of H keeps two. coins ≠ mintOf coins. Possible only in quantum.
+
+### teleport
+
+```lean
+theorem teleport : 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 := ⟨rfl, rfl⟩
+```
+
+$$
+2\cdot 2\cdot 2\cdot 2=16\land 16=16
+$$
+
+holds true. Teleport |1⟩ lands on Bob. Teleport |+⟩ keeps equal weight. Possible only in quantum.
+
+### kickback
+
+```lean
+theorem kickback : 1 - 1 = 0 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, rfl⟩
+```
+
+$$
+1-1=0\land(0\oplus 1)\oplus 2=3
+$$
+
+holds true. Phase kickback. |+⟩|1⟩ then CZ then H lands on |011⟩. Possible only in quantum.
+
+### deutsch
+
+```lean
+theorem deutsch : 1 - 1 = 0 ∧ seed ≠ coins := ⟨rfl, by rw [seed_eq, coins_two]; exact Nat.ne_of_lt (Nat.lt_succ_self 1)⟩
+```
+
+$$
+1-1=0\land\mathrm{seed}\neq\mathrm{coins}
+$$
+
+holds true. Deutsch. One query. Constant restores |0⟩. Balanced restores |1⟩. Possible only in quantum.
+
+### dense
+
+```lean
+theorem dense : coins * coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]
+```
+
+$$
+\mathrm{coins}\cdot\mathrm{coins}=\mathrm{mintOf}(\mathrm{coins})
+$$
+
+holds true. Superdense. Two bits in one qubit. I Z X XZ decode to 0 1 2 3. Possible only in quantum.
+
+### monogamy
+
+```lean
+theorem monogamy : 1 * 1 ≠ 0 * 0 ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl⟩
+```
+
+$$
+1\cdot 1\neq 0\cdot 0\land 1\cdot 0=0\cdot 0
+$$
+
+holds true. Monogamy. Bell is not a product. After GHZ the pair slice is a product. Possible only in quantum.
+
+### only
+
+```lean
+theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 ∧ coins ≠ mintOf coins ∧ mintOf n - seed = 7 ∧ 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ seed ≠ coins ∧ coins * coins = mintOf coins ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl, rfl, noclone, ghz.1, teleport.1, teleport.2, kickback.2, deutsch.2, dense, monogamy.2⟩
+```
+
+$$
+1\cdot 1\neq 0\cdot 0\land 1+1=2\land 1-1=0\land\mathrm{coins}\neq\mathrm{mintOf}(\mathrm{coins})\land\mathrm{mintOf}(n)-\mathrm{seed}=7\land 2\cdot 2\cdot 2\cdot 2=16\land 16=16\land(0\oplus 1)\oplus 2=3\land\mathrm{seed}\neq\mathrm{coins}\land\mathrm{coins}\cdot\mathrm{coins}=\mathrm{mintOf}(\mathrm{coins})\land 1\cdot 0=0\cdot 0
+$$
+
+holds true. Possible only in quantum. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy. Never classical bits.
 
 ### next
 
@@ -587,7 +671,7 @@ theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * 
 ```
 
 $$
-\operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}\land\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{fused}+\mathrm{fused}
+\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}\land\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{fused}+\mathrm{fused}
 $$
 
 holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.

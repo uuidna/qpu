@@ -38,7 +38,29 @@ type Circuit = {
   noise: { channel: string; index: number; holds: boolean }
   entangle: { kind: string; support: number[]; left: number; right: number; product: boolean; holds: boolean }
   interfere: { kind: string; cancelled: number; restored: number; support: number[]; holds: boolean }
-  only: { kind: string; split: boolean; entangle: boolean; interfere: boolean; product: boolean; classical: boolean; holds: boolean }
+  ghz: { kind: string; support: number[]; left: number; right: number; product: boolean; holds: boolean }
+  noclone: { kind: string; copies: number; cloned: number; holds: boolean }
+  teleport: { kind: string; psi: number; bob: number; weight0: number; weight1: number; plus0: number; plus1: number; holds: boolean }
+  kickback: { kind: string; support: number[]; weight0: number; weight1: number; holds: boolean }
+  deutsch: { kind: string; constant0: number; constant1: number; balanced0: number; balanced1: number; holds: boolean }
+  dense: { kind: string; i: number; x: number; z: number; xz: number; holds: boolean }
+  monogamy: { kind: string; bell: boolean; pair: boolean; left: number; right: number; holds: boolean }
+  only: {
+    kind: string
+    split: boolean
+    entangle: boolean
+    interfere: boolean
+    ghz: boolean
+    noclone: boolean
+    teleport: boolean
+    kickback: boolean
+    deutsch: boolean
+    dense: boolean
+    monogamy: boolean
+    product: boolean
+    classical: boolean
+    holds: boolean
+  }
   fridge: {
     kind: string
     qubits: number
@@ -141,6 +163,40 @@ test('circuit measurement support via mcp', async () => {
   assert.equal(q.circuit.interfere.cancelled, 0)
   assert.equal(q.circuit.interfere.restored, 2)
   assert.equal(q.circuit.interfere.holds, true)
+  assert.deepEqual(q.circuit.ghz.support, [0, 7])
+  assert.equal(q.circuit.ghz.product, false)
+  assert.equal(q.circuit.ghz.left, 1)
+  assert.equal(q.circuit.ghz.right, 0)
+  assert.equal(q.circuit.ghz.holds, true)
+  assert.equal(q.circuit.noclone.copies, 4)
+  assert.equal(q.circuit.noclone.cloned, 2)
+  assert.equal(q.circuit.noclone.holds, true)
+  assert.equal(q.circuit.teleport.weight0, 0)
+  assert.equal(q.circuit.teleport.weight1, 16)
+  assert.equal(q.circuit.teleport.plus0, 16)
+  assert.equal(q.circuit.teleport.plus1, 16)
+  assert.equal(q.circuit.teleport.holds, true)
+  assert.deepEqual(q.circuit.kickback.support, [3])
+  assert.equal(q.circuit.kickback.weight0, 0)
+  assert.equal(q.circuit.kickback.holds, true)
+  assert.equal(q.circuit.deutsch.constant1, 0)
+  assert.equal(q.circuit.deutsch.balanced0, 0)
+  assert.equal(q.circuit.deutsch.holds, true)
+  assert.equal(q.circuit.dense.i, 0)
+  assert.equal(q.circuit.dense.z, 1)
+  assert.equal(q.circuit.dense.x, 2)
+  assert.equal(q.circuit.dense.xz, 3)
+  assert.equal(q.circuit.dense.holds, true)
+  assert.equal(q.circuit.monogamy.bell, true)
+  assert.equal(q.circuit.monogamy.pair, true)
+  assert.equal(q.circuit.monogamy.holds, true)
+  assert.equal(q.circuit.only.ghz, true)
+  assert.equal(q.circuit.only.noclone, true)
+  assert.equal(q.circuit.only.teleport, true)
+  assert.equal(q.circuit.only.kickback, true)
+  assert.equal(q.circuit.only.deutsch, true)
+  assert.equal(q.circuit.only.dense, true)
+  assert.equal(q.circuit.only.monogamy, true)
   assert.equal(q.circuit.only.holds, true)
   assert.equal(q.circuit.only.classical, false)
 })
@@ -164,8 +220,17 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.holds, true)
 })
 
-test('circuit lean via mcp', async () => {
-  const prove = (await mcpOf('qpu_prove')) as { theorems: { heading: string; theorem: string; holds: boolean }[] }
+test('circuit lean via mcp', { timeout: 60_000 }, async () => {
+  const prove = (await mcpOf('qpu_prove', { live: true })) as {
+    holds: boolean
+    theorems: { heading: string; theorem: string; holds: boolean }[]
+    cern: {
+      holds: boolean
+      live?: { live: boolean; holds: boolean; hostEscape: boolean; records: { href: string; holds: boolean; live: boolean }[] }
+      records: { href: string }[]
+      primitives: string[]
+    }
+  }
   const circuit = prove.theorems.find((r) => r.heading === 'circuit')
   const physical = prove.theorems.find((r) => r.heading === 'physical')
   const fridge = prove.theorems.find((r) => r.heading === 'fridge')
@@ -173,7 +238,15 @@ test('circuit lean via mcp', async () => {
   const sciences = prove.theorems.find((r) => r.heading === 'sciences')
   const interfere = prove.theorems.find((r) => r.heading === 'interfere')
   const entangle = prove.theorems.find((r) => r.heading === 'entangle')
+  const ghz = prove.theorems.find((r) => r.heading === 'ghz')
+  const noclone = prove.theorems.find((r) => r.heading === 'noclone')
+  const teleport = prove.theorems.find((r) => r.heading === 'teleport')
+  const kickback = prove.theorems.find((r) => r.heading === 'kickback')
+  const deutsch = prove.theorems.find((r) => r.heading === 'deutsch')
+  const dense = prove.theorems.find((r) => r.heading === 'dense')
+  const monogamy = prove.theorems.find((r) => r.heading === 'monogamy')
   const only = prove.theorems.find((r) => r.heading === 'only')
+  assert.equal(prove.holds, true)
   assert.equal(circuit?.holds, true)
   assert.equal(physical?.holds, true)
   assert.equal(fridge?.holds, true)
@@ -181,13 +254,43 @@ test('circuit lean via mcp', async () => {
   assert.equal(sciences?.holds, true)
   assert.equal(interfere?.holds, true)
   assert.equal(entangle?.holds, true)
+  assert.equal(ghz?.holds, true)
+  assert.equal(noclone?.holds, true)
+  assert.equal(teleport?.holds, true)
+  assert.equal(kickback?.holds, true)
+  assert.equal(deutsch?.holds, true)
+  assert.equal(dense?.holds, true)
+  assert.equal(monogamy?.holds, true)
   assert.equal(only?.holds, true)
   assert.equal(only?.theorem.includes('by decide'), false)
   assert.equal(entangle?.theorem.includes('by decide'), false)
+  assert.equal(ghz?.theorem.includes('by decide'), false)
+  assert.equal(noclone?.theorem.includes('by decide'), false)
+  assert.equal(teleport?.theorem.includes('by decide'), false)
+  assert.equal(kickback?.theorem.includes('by decide'), false)
+  assert.equal(deutsch?.theorem.includes('by decide'), false)
+  assert.equal(dense?.theorem.includes('by decide'), false)
+  assert.equal(monogamy?.theorem.includes('by decide'), false)
+  assert.equal(prove.cern.holds, true)
+  assert.equal(prove.cern.live?.live, true)
+  assert.equal(prove.cern.live?.holds, true)
+  assert.equal(prove.cern.live?.hostEscape, false)
+  assert.equal(prove.cern.live?.records.every((row) => row.holds && row.live), true)
 })
 
-test('circuit ui via mcp', async () => {
-  const prove = (await mcpOf('qpu_prove')) as { holds: boolean; ui: { experienced: boolean } }
+test('circuit ui via mcp', { timeout: 60_000 }, async () => {
+  const prove = (await mcpOf('qpu_prove')) as {
+    holds: boolean
+    ui: { experienced: boolean }
+    theorems: { heading: string; holds: boolean }[]
+    cern: { records: { href: string }[]; primitives: string[]; holds: boolean }
+  }
+  const fetched = (await mcpOf('fetch', { href: prove.cern.records[0]?.href })) as {
+    holds: boolean
+    live: boolean
+    hostEscape: boolean
+    value?: { holds: boolean; events: number }
+  }
   const page = await uiOf('/')
   const json = page.json as { docs: { inline: boolean; documentation: string }; circuit: Circuit }
   assert.equal(prove.holds, true)
@@ -203,7 +306,33 @@ test('circuit ui via mcp', async () => {
   assert.equal(json.docs.documentation.includes('No drift from science'), true)
   assert.equal(json.docs.documentation.includes('No drift between sciences'), true)
   assert.equal(json.docs.documentation.includes('Possible only in quantum'), true)
+  assert.equal(json.docs.documentation.includes('Bell then CNOT onto the third qubit'), true)
+  assert.equal(json.docs.documentation.includes('coins ≠ mintOf coins'), true)
+  assert.equal(json.docs.documentation.includes('Teleport |1⟩ lands on Bob'), true)
+  assert.equal(json.docs.documentation.includes('Phase kickback'), true)
+  assert.equal(json.docs.documentation.includes('Deutsch. One query'), true)
+  assert.equal(json.docs.documentation.includes('Superdense. Two bits in one qubit'), true)
+  assert.equal(json.docs.documentation.includes('Monogamy. Bell is not a product'), true)
   assert.equal(json.circuit.only.holds, true)
+  assert.equal(json.circuit.ghz.holds, true)
+  assert.equal(json.circuit.noclone.holds, true)
+  assert.equal(json.circuit.teleport.holds, true)
+  assert.equal(json.circuit.kickback.holds, true)
+  assert.equal(json.circuit.deutsch.holds, true)
+  assert.equal(json.circuit.dense.holds, true)
+  assert.equal(json.circuit.monogamy.holds, true)
   assert.equal(json.circuit.entangle.product, false)
   assert.equal(json.circuit.interfere.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'ghz')?.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'noclone')?.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'teleport')?.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'kickback')?.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'deutsch')?.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'dense')?.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'monogamy')?.holds, true)
+  assert.equal(prove.cern.holds, true)
+  assert.equal(fetched.holds, true)
+  assert.equal(fetched.live, true)
+  assert.equal(fetched.hostEscape, false)
+  assert.equal(fetched.value?.holds, true)
 })

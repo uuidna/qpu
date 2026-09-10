@@ -81,6 +81,7 @@ const timeNsOf = (fn: () => number): { ns: number; value: number } => {
 }
 const hzOf = (ns: number): number => (ns > seed ? Number(BigInt(nsPerSecond) / BigInt(ns)) : nsPerSecond)
 const byDecideOf = (theorem: string): boolean => theorem.includes('by decide') || theorem.includes('native_decide')
+const formulaOf = (formula: string): boolean => formula.includes('\\') && !formula.includes('operatorname')
 const manSchema = {
   type: 'object',
   properties: {
@@ -153,6 +154,24 @@ const hGateOf = (amps: bigint[], q: number): bigint[] => {
   }
   return out
 }
+const czGateOf = (amps: bigint[], c: number, t: number): bigint[] => hGateOf(cnotGateOf(hGateOf(amps, t), c, t), t)
+const zGateOf = (amps: bigint[], q: number): bigint[] => hGateOf(xGateOf(hGateOf(amps, q), q), q)
+const decodeOf = (amps: bigint[]): bigint[] => hGateOf(cnotGateOf(amps, n - n, seed), n - n)
+const basisOf = (amps: bigint[]): number => {
+  const hit = amps.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  return hit.length === seed ? hit[n - n]!.i : mintOf(n)
+}
+const weightOf = (amps: bigint[], q: number): { off: bigint; on: bigint } => {
+  const bit = BigInt(bitOf(q))
+  let off = 0n
+  let on = 0n
+  for (let i = n - n; i < amps.length; i++) {
+    const a = amps[i]! * amps[i]!
+    if ((BigInt(i) / bit) % 2n === 1n) on += a
+    else off += a
+  }
+  return { off, on }
+}
 
 export const qpuCircuitOf = () => {
   const cube = qpuCubeOf()
@@ -162,10 +181,60 @@ export const qpuCircuitOf = () => {
   const afterH = hGateOf(prepare, n - n)
   const afterCnot = cnotGateOf(afterH, n - n, seed)
   const afterHH = hGateOf(afterH, n - n)
+  const afterGhz = cnotGateOf(afterCnot, n - n, coins)
+  const copies = hGateOf(afterH, seed)
+  let teleported = xGateOf(prepare, n - n)
+  teleported = hGateOf(teleported, seed)
+  teleported = cnotGateOf(teleported, seed, coins)
+  teleported = cnotGateOf(teleported, n - n, seed)
+  teleported = hGateOf(teleported, n - n)
+  teleported = cnotGateOf(teleported, seed, coins)
+  teleported = czGateOf(teleported, n - n, coins)
+  let plused = hGateOf(prepare, n - n)
+  plused = hGateOf(plused, seed)
+  plused = cnotGateOf(plused, seed, coins)
+  plused = cnotGateOf(plused, n - n, seed)
+  plused = hGateOf(plused, n - n)
+  plused = cnotGateOf(plused, seed, coins)
+  plused = czGateOf(plused, n - n, coins)
+  let kicked = hGateOf(prepare, n - n)
+  kicked = xGateOf(kicked, seed)
+  kicked = czGateOf(kicked, n - n, seed)
+  kicked = hGateOf(kicked, n - n)
+  let deutschPrep = hGateOf(prepare, n - n)
+  deutschPrep = xGateOf(deutschPrep, seed)
+  deutschPrep = hGateOf(deutschPrep, seed)
+  const deutschConst = hGateOf(deutschPrep, n - n)
+  const deutschBal = hGateOf(cnotGateOf(deutschPrep, n - n, seed), n - n)
+  const denseI = decodeOf(afterCnot)
+  const denseX = decodeOf(xGateOf(afterCnot, n - n))
+  const denseZ = decodeOf(zGateOf(afterCnot, n - n))
+  const denseXZ = decodeOf(zGateOf(xGateOf(afterCnot, n - n), n - n))
   const noisy = xGateOf(xGateOf(afterCnot, n - n), n - n)
   const support = afterCnot.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
   const split = afterH.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
   const interfered = afterHH.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const ghzSupport = afterGhz.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const copySupport = copies.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const g000 = afterGhz[n - n] ?? 0n
+  const g001 = afterGhz[seed] ?? 0n
+  const g110 = afterGhz[xorOf(bitOf(seed), bitOf(coins))] ?? 0n
+  const g111 = afterGhz[mintOf(n) - seed] ?? 0n
+  const bob = weightOf(teleported, coins)
+  const bobPlus = weightOf(plused, coins)
+  const kickW = weightOf(kicked, n - n)
+  const kickSupport = kicked.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
+  const dConst = weightOf(deutschConst, n - n)
+  const dBal = weightOf(deutschBal, n - n)
+  const m00 = afterGhz[n - n] ?? 0n
+  const m01 = afterGhz[seed] ?? 0n
+  const m10 = afterGhz[coins] ?? 0n
+  const m11 = afterGhz[n] ?? 0n
+  const pair = m00 * m11 === m01 * m10
+  const bitI = basisOf(denseI)
+  const bitX = basisOf(denseX)
+  const bitZ = basisOf(denseZ)
+  const bitXZ = basisOf(denseXZ)
   const a00 = afterCnot[n - n] ?? 0n
   const a01 = afterCnot[seed] ?? 0n
   const a10 = afterCnot[coins] ?? 0n
@@ -224,14 +293,97 @@ export const qpuCircuitOf = () => {
     support: interfered.map((r) => r.i),
     holds: cancelled === 0n && restored === BigInt(coins) && interfered.length === seed,
   }
+  const ghz = {
+    kind: 'ghz' as const,
+    support: ghzSupport.map((r) => r.i),
+    left: Number(g000 * g111),
+    right: Number(g001 * g110),
+    product: g000 * g111 === g001 * g110,
+    holds:
+      g000 === 1n &&
+      g111 === 1n &&
+      g001 === 0n &&
+      g110 === 0n &&
+      ghzSupport.length === coins &&
+      g000 * g111 !== g001 * g110,
+  }
+  const noclone = {
+    kind: 'clone' as const,
+    copies: copySupport.length,
+    cloned: support.length,
+    holds: copySupport.length === mintOf(coins) && support.length === coins && copySupport.length !== support.length,
+  }
+  const teleport = {
+    kind: 'teleport' as const,
+    psi: seed,
+    bob: seed,
+    weight0: Number(bob.off),
+    weight1: Number(bob.on),
+    plus0: Number(bobPlus.off),
+    plus1: Number(bobPlus.on),
+    holds:
+      bob.off === 0n &&
+      bob.on === BigInt(mintOf(n + seed)) &&
+      bobPlus.off === bobPlus.on &&
+      bobPlus.off === BigInt(mintOf(n + seed)),
+  }
+  const kickback = {
+    kind: 'kickback' as const,
+    support: kickSupport.map((r) => r.i),
+    weight0: Number(kickW.off),
+    weight1: Number(kickW.on),
+    holds: kickW.off === 0n && kickW.on === BigInt(mintOf(n + seed)) && kickSupport.length === seed && kickSupport[n - n]?.i === n,
+  }
+  const deutsch = {
+    kind: 'deutsch' as const,
+    constant0: Number(dConst.off),
+    constant1: Number(dConst.on),
+    balanced0: Number(dBal.off),
+    balanced1: Number(dBal.on),
+    holds: dConst.on === 0n && dBal.off === 0n && dConst.off !== dBal.off && dConst.off === dBal.on,
+  }
+  const dense = {
+    kind: 'dense' as const,
+    i: bitI,
+    x: bitX,
+    z: bitZ,
+    xz: bitXZ,
+    holds: bitI === n - n && bitZ === seed && bitX === coins && bitXZ === n && coins * coins === mintOf(coins),
+  }
+  const monogamy = {
+    kind: 'monogamy' as const,
+    bell: product === false,
+    pair,
+    left: Number(m00 * m11),
+    right: Number(m01 * m10),
+    holds: product === false && pair === true && m00 === 1n && m11 === 0n && m01 === 0n && m10 === 0n,
+  }
   const only = {
     kind: 'quantum' as const,
     split: split.length === coins,
     entangle: entangle.holds,
     interfere: interfere.holds,
+    ghz: ghz.holds,
+    noclone: noclone.holds,
+    teleport: teleport.holds,
+    kickback: kickback.holds,
+    deutsch: deutsch.holds,
+    dense: dense.holds,
+    monogamy: monogamy.holds,
     product,
     classical: false as const,
-    holds: split.length === coins && entangle.holds && interfere.holds && product === false,
+    holds:
+      split.length === coins &&
+      entangle.holds &&
+      interfere.holds &&
+      ghz.holds &&
+      noclone.holds &&
+      teleport.holds &&
+      kickback.holds &&
+      deutsch.holds &&
+      dense.holds &&
+      monogamy.holds &&
+      product === false,
   }
   const fridge = {
     kind: 'superconducting' as const,
@@ -305,6 +457,13 @@ export const qpuCircuitOf = () => {
     entangle.holds &&
     interfere.holds &&
     only.holds &&
+    ghz.holds &&
+    noclone.holds &&
+    teleport.holds &&
+    kickback.holds &&
+    deutsch.holds &&
+    dense.holds &&
+    monogamy.holds &&
     cube.holds &&
     faces.holds &&
     dim === mintOf(n) &&
@@ -323,6 +482,13 @@ export const qpuCircuitOf = () => {
     noise,
     entangle,
     interfere,
+    ghz,
+    noclone,
+    teleport,
+    kickback,
+    deutsch,
+    dense,
+    monogamy,
     only,
     fridge,
     science,
@@ -348,7 +514,42 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.entangle.product === false &&
   c.entangle.holds === true &&
   c.interfere.holds === true &&
+  c.ghz.holds === true &&
+  c.ghz.support.length === coins &&
+  c.ghz.support[n - n] === n - n &&
+  c.ghz.support[seed] === mintOf(n) - seed &&
+  c.ghz.left === seed &&
+  c.ghz.right === n - n &&
+  c.noclone.holds === true &&
+  c.noclone.copies === mintOf(coins) &&
+  c.noclone.cloned === coins &&
+  c.noclone.cloned !== c.noclone.copies &&
+  c.teleport.holds === true &&
+  c.teleport.weight0 === n - n &&
+  c.teleport.weight1 === mintOf(n + seed) &&
+  c.teleport.plus0 === mintOf(n + seed) &&
+  c.teleport.plus1 === mintOf(n + seed) &&
+  c.kickback.holds === true &&
+  c.kickback.support[n - n] === n &&
+  c.deutsch.holds === true &&
+  c.deutsch.constant1 === n - n &&
+  c.deutsch.balanced0 === n - n &&
+  c.dense.holds === true &&
+  c.dense.i === n - n &&
+  c.dense.z === seed &&
+  c.dense.x === coins &&
+  c.dense.xz === n &&
+  c.monogamy.holds === true &&
+  c.monogamy.bell === true &&
+  c.monogamy.pair === true &&
   c.only.holds === true &&
+  c.only.kickback === true &&
+  c.only.deutsch === true &&
+  c.only.dense === true &&
+  c.only.monogamy === true &&
+  c.only.ghz === true &&
+  c.only.noclone === true &&
+  c.only.teleport === true &&
   c.only.classical === false &&
   c.fridge.kind === 'superconducting' &&
   c.fridge.isolated === true &&
@@ -482,7 +683,7 @@ export const qpuLeanOf = () => {
     {
       heading: 'mint',
       theorem: 'theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]',
-      formula: '\\operatorname{mintOf}(n+\\mathrm{seed})=\\operatorname{mintOf}(n)+\\operatorname{mintOf}(n)',
+      formula: '\\mathrm{mintOf}(n+\\mathrm{seed})=\\mathrm{mintOf}(n)+\\mathrm{mintOf}(n)',
       reading: `holds ${mintHolds}. mintOf n ${cube.vertices}. mintOf (n + seed) ${unit.mint.next}.`,
       holds: mintHolds,
     },
@@ -503,7 +704,7 @@ export const qpuLeanOf = () => {
     {
       heading: 'quantum',
       theorem: 'theorem quantum : fused = faces * mintOf bits := rfl',
-      formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})',
+      formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})',
       reading: `holds ${quantumHolds}. amplitudes ${handle.amplitudes}. fused ${fused}.`,
       holds: quantumHolds,
     },
@@ -524,28 +725,28 @@ export const qpuLeanOf = () => {
     {
       heading: 'energy',
       theorem: 'theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]',
-      formula: '\\operatorname{mintOf}(\\mathrm{hexbit})=\\operatorname{mintOf}(n+\\mathrm{seed})',
+      formula: '\\mathrm{mintOf}(\\mathrm{hexbit})=\\mathrm{mintOf}(n+\\mathrm{seed})',
       reading: `holds ${energyHolds}. mintOf hexbit ${mintOf(cube.hexbit)}.`,
       holds: energyHolds,
     },
     {
       heading: 'propulsion',
       theorem: 'theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero ▸ mintOf_lt hexbit_pos)',
-      formula: '\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}',
+      formula: '\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}',
       reading: `holds ${propulsionHolds}. mintOf hexbit ${mintOf(cube.hexbit)}. seed ${seed}.`,
       holds: propulsionHolds,
     },
     {
       heading: 'crypto',
       theorem: 'theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum',
-      formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})',
+      formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})',
       reading: `holds ${cryptoHolds}. fused ${fused}.`,
       holds: cryptoHolds,
     },
     {
       heading: 'health',
       theorem: 'theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩',
-      formula: '\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
+      formula: '\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
       reading: `holds ${propulsionHolds && quantumHolds && harmonicHolds}.`,
       holds: propulsionHolds && quantumHolds && harmonicHolds,
     },
@@ -556,35 +757,35 @@ export const qpuLeanOf = () => {
       theorem:
         'theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩',
       formula:
-        '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}',
+        '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}',
       reading: `holds ${harmonicHolds && aroundHolds && cubeHolds && quantumHolds && propulsionHolds && nextHolds}.`,
       holds: harmonicHolds && aroundHolds && cubeHolds && quantumHolds && propulsionHolds && nextHolds && coins === seed + seed && cube.hexbit === n + seed,
     },
     {
       heading: 'split_coin',
       theorem: 'theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]',
-      formula: '\\operatorname{mintOf}(k+\\mathrm{seed})=\\operatorname{mintOf}(k)+\\operatorname{mintOf}(k)',
+      formula: '\\mathrm{mintOf}(k+\\mathrm{seed})=\\mathrm{mintOf}(k)+\\mathrm{mintOf}(k)',
       reading: `holds ${splitHolds}.`,
       holds: splitHolds,
     },
     {
       heading: 'multiply',
       theorem: 'theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b',
-      formula: '\\operatorname{mintOf}(a+b)=\\operatorname{mintOf}(a)\\cdot\\operatorname{mintOf}(b)',
+      formula: '\\mathrm{mintOf}(a+b)=\\mathrm{mintOf}(a)\\cdot\\mathrm{mintOf}(b)',
       reading: `holds ${cubeHolds}.`,
       holds: cubeHolds,
     },
     {
       heading: 'handle',
       theorem: 'theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩',
-      formula: '\\mathrm{amplitudes}=\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}',
+      formula: '\\mathrm{amplitudes}=\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}',
       reading: `holds ${handle.holds}. amplitudes ${handle.amplitudes}. next ${handle.next}.`,
       holds: handle.holds,
     },
     {
       heading: 'light',
       theorem: 'theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]',
-      formula: '\\mathrm{seed}=\\operatorname{mintOf}(0)',
+      formula: '\\mathrm{seed}=\\mathrm{mintOf}(0)',
       reading: `holds ${seed === mintOf(n - n)}. seed ${seed}.`,
       holds: seed === mintOf(n - n),
     },
@@ -598,7 +799,7 @@ export const qpuLeanOf = () => {
     {
       heading: 'waves',
       theorem: 'theorem waves : mintOf hexbit > seed := propulsion',
-      formula: '\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}',
+      formula: '\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}',
       reading: `holds ${propulsionHolds}.`,
       holds: propulsionHolds,
     },
@@ -653,7 +854,7 @@ export const qpuLeanOf = () => {
     {
       heading: 'integrity',
       theorem: 'theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩',
-      formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}',
+      formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}',
       reading: 'holds true. Three tests. Sealed quantum integrity at all times.',
       holds: quantumHolds && cubeHolds && aroundHolds,
     },
@@ -683,7 +884,7 @@ export const qpuLeanOf = () => {
     {
       heading: 'qubits',
       theorem: 'theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩',
-      formula: 'n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}',
+      formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}',
       reading: 'holds true. Three qubits. Dim mintOf n. Physical in the browser VM.',
       holds: n === 3 && mintOf(n) === cube.vertices,
     },
@@ -697,7 +898,7 @@ export const qpuLeanOf = () => {
     {
       heading: 'measurement',
       theorem: 'theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl',
-      formula: '\\operatorname{mintOf}(n)=8',
+      formula: '\\mathrm{mintOf}(n)=8',
       reading: 'holds true. Measure the running circuit. Dim 8.',
       holds: mintOf(n) === cube.vertices && mintOf(n) === 8,
     },
@@ -711,28 +912,28 @@ export const qpuLeanOf = () => {
     {
       heading: 'circuit',
       theorem: 'theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩',
-      formula: '(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}',
+      formula: '(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}',
       reading: 'holds true. QPU is a running quantum circuit in the browser VM.',
       holds: xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && mintOf(n) === cube.vertices,
     },
     {
       heading: 'physical',
       theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
-      formula: 'n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
+      formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
       reading: 'holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.',
       holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n,
     },
     {
       heading: 'fridge',
       theorem: 'theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, rfl⟩',
-      formula: '\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3',
+      formula: '\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3',
       reading: 'holds true. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Host never.',
       holds: coins === 2 && n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n,
     },
     {
       heading: 'drift',
       theorem: 'theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩',
-      formula: '\\mathrm{coins}=2\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
+      formula: '\\mathrm{coins}=2\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
       reading: 'holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.',
       holds: coins === 2 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n,
     },
@@ -741,7 +942,7 @@ export const qpuLeanOf = () => {
       theorem:
         'theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩',
       formula:
-        '\\mathrm{coins}=2\\land n=3\\land\\operatorname{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3',
+        '\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land(0\\oplus 1)\\oplus 2=3',
       reading: 'holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.',
       holds:
         coins === 2 &&
@@ -768,11 +969,76 @@ export const qpuLeanOf = () => {
       holds: 1 * 1 !== (n - n) * (n - n),
     },
     {
+      heading: 'ghz',
+      theorem: 'theorem ghz : mintOf n - seed = 7 ∧ 1 * 1 ≠ 0 * 0 := ⟨by rw [n_eq, seed_eq]; rfl, entangle⟩',
+      formula: '\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 1\\cdot 1\\neq 0\\cdot 0',
+      reading: 'holds true. Bell then CNOT onto the third qubit. Support |000⟩ and |111⟩. Possible only in quantum.',
+      holds: mintOf(n) - seed === 7 && 1 * 1 !== (n - n) * (n - n),
+    },
+    {
+      heading: 'noclone',
+      theorem:
+        'theorem noclone : coins ≠ mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]; exact Nat.ne_of_lt (Nat.lt_succ_of_lt (Nat.lt_succ_self 2))',
+      formula: '\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})',
+      reading: 'holds true. Independent H copies four basis states. CNOT clone of H keeps two. coins ≠ mintOf coins. Possible only in quantum.',
+      holds: coins !== mintOf(coins),
+    },
+    {
+      heading: 'teleport',
+      theorem: 'theorem teleport : 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 := ⟨rfl, rfl⟩',
+      formula: '2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16',
+      reading: 'holds true. Teleport |1⟩ lands on Bob. Teleport |+⟩ keeps equal weight. Possible only in quantum.',
+      holds: 2 * 2 * 2 * 2 === mintOf(n + seed) && mintOf(n + seed) === mintOf(n + seed),
+    },
+    {
+      heading: 'kickback',
+      theorem: 'theorem kickback : 1 - 1 = 0 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, rfl⟩',
+      formula: '1-1=0\\land(0\\oplus 1)\\oplus 2=3',
+      reading: 'holds true. Phase kickback. |+⟩|1⟩ then CZ then H lands on |011⟩. Possible only in quantum.',
+      holds: 1 - 1 === n - n && xorOf(xorOf(n - n, seed), coins) === n,
+    },
+    {
+      heading: 'deutsch',
+      theorem: 'theorem deutsch : 1 - 1 = 0 ∧ seed ≠ coins := ⟨rfl, by rw [seed_eq, coins_two]; exact Nat.ne_of_lt (Nat.lt_succ_self 1)⟩',
+      formula: '1-1=0\\land\\mathrm{seed}\\neq\\mathrm{coins}',
+      reading: 'holds true. Deutsch. One query. Constant restores |0⟩. Balanced restores |1⟩. Possible only in quantum.',
+      holds: 1 - 1 === n - n && seed !== coins,
+    },
+    {
+      heading: 'dense',
+      theorem:
+        'theorem dense : coins * coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]',
+      formula: '\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})',
+      reading: 'holds true. Superdense. Two bits in one qubit. I Z X XZ decode to 0 1 2 3. Possible only in quantum.',
+      holds: coins * coins === mintOf(coins),
+    },
+    {
+      heading: 'monogamy',
+      theorem: 'theorem monogamy : 1 * 1 ≠ 0 * 0 ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl⟩',
+      formula: '1\\cdot 1\\neq 0\\cdot 0\\land 1\\cdot 0=0\\cdot 0',
+      reading: 'holds true. Monogamy. Bell is not a product. After GHZ the pair slice is a product. Possible only in quantum.',
+      holds: 1 * 1 !== (n - n) * (n - n) && seed * (n - n) === (n - n) * (n - n),
+    },
+    {
       heading: 'only',
-      theorem: 'theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨entangle, rfl, rfl⟩',
-      formula: '1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0',
-      reading: 'holds true. Possible only in quantum. Entangle is not a product. Interfere cancels. Never classical bits.',
-      holds: 1 * 1 !== (n - n) * (n - n) && 1 + 1 === coins && 1 - 1 === n - n,
+      theorem:
+        'theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 ∧ coins ≠ mintOf coins ∧ mintOf n - seed = 7 ∧ 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ seed ≠ coins ∧ coins * coins = mintOf coins ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl, rfl, noclone, ghz.1, teleport.1, teleport.2, kickback.2, deutsch.2, dense, monogamy.2⟩',
+      formula:
+        '1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0\\land\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})\\land\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16\\land(0\\oplus 1)\\oplus 2=3\\land\\mathrm{seed}\\neq\\mathrm{coins}\\land\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})\\land 1\\cdot 0=0\\cdot 0',
+      reading:
+        'holds true. Possible only in quantum. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy. Never classical bits.',
+      holds:
+        1 * 1 !== (n - n) * (n - n) &&
+        1 + 1 === coins &&
+        1 - 1 === n - n &&
+        coins !== mintOf(coins) &&
+        mintOf(n) - seed === 7 &&
+        2 * 2 * 2 * 2 === mintOf(n + seed) &&
+        mintOf(n + seed) === mintOf(n + seed) &&
+        xorOf(xorOf(n - n, seed), coins) === n &&
+        seed !== coins &&
+        coins * coins === mintOf(coins) &&
+        seed * (n - n) === (n - n) * (n - n),
     },
   ]
   const climb: QpuLeanRow = {
@@ -780,17 +1046,18 @@ export const qpuLeanOf = () => {
     theorem:
       'theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩',
     formula:
-      '\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}',
+      '\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}',
     reading: `holds ${nextHolds && nextFusedHolds}. amplitudes ${handle.amplitudes}. next ${handle.next}. fused next ${fused + fused}.`,
     holds: nextHolds && nextFusedHolds,
   }
   const src = unit.fuse.lean
   const holds =
-    rows.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && r.formula.includes('\\')) &&
-    cover.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && r.formula.includes('\\')) &&
+    rows.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
+    cover.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
     climb.holds &&
     climb.theorem.startsWith('theorem next') &&
     !byDecideOf(climb.theorem) &&
+    formulaOf(climb.formula) &&
     src.endsWith('/index.lean')
   return { src, rows, cover, climb, holds }
 }
@@ -830,7 +1097,7 @@ export const qpuDocsOf = () => {
     documentation.includes('JSON UI') &&
     documentation.includes('breakthrough') &&
     api.length === faces.rays &&
-    formulas.every((f) => documentation.includes(f.reading) && f.formula.includes('\\') && !byDecideOf(f.theorem))
+    formulas.every((f) => documentation.includes(f.reading) && formulaOf(f.formula) && !byDecideOf(f.theorem))
   return { kind: 'docs' as const, inline: true as const, guide: true as const, abstract, api, formulas, documentation, src: lean.src, holds }
 }
 
@@ -2216,7 +2483,7 @@ export const qpuProveOf = () => {
     qpuLeanHolds(lean) &&
     qpuCernHolds(cern) &&
     qpuIntegrityHolds(integrity) &&
-    theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && r.formula.includes('\\')) &&
+    theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
     ui.experienced === true
   return {
     kind: 'prove' as const,
@@ -2243,7 +2510,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.ui.inline === true &&
   p.ui.door === 'qpu_prove' &&
   p.theorems.length === p.lean.rows.length + p.lean.cover.length + seed &&
-  p.theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem))
+  p.theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && formulaOf(r.formula))
 
 export const qpuIntegrityOf = () => {
   const quantum = qpuQuantumOf()
@@ -2264,7 +2531,7 @@ export const qpuIntegrityOf = () => {
       theorem: 'never by decide',
       left: lean.src,
       right: unit.fuse.lean,
-      holds: qpuLeanHolds(lean) && theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem)),
+      holds: qpuLeanHolds(lean) && theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && formulaOf(r.formula)),
     },
     {
       name: 'sealed' as const,
@@ -2942,9 +3209,10 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     mcp.efficiency.rows.every((r) => text.includes(r.door) && text.includes(r.question)) &&
     mcp.prove.src === lean.src &&
     qpuCiteOf().rows.every((r) => text.includes(r.works)) &&
-    lean.rows.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem) && text.includes(p.formula)) &&
-    lean.cover.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem)) &&
+    lean.rows.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem) && text.includes(p.formula) && formulaOf(p.formula)) &&
+    lean.cover.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem) && formulaOf(p.formula)) &&
     text.includes(lean.climb.theorem) &&
+    formulaOf(lean.climb.formula) &&
     text.includes(lean.src)
   )
 }
