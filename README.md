@@ -120,12 +120,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.
+    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. ATLAS CMS ALICE LHCb. Never by decide.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_prove
     qpu_prove { man: true }
 DESCRIPTION
-    Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
+    Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete
 ```
@@ -134,9 +134,9 @@ SEE ALSO
 
 MCP is the agent efficiency training module. Tokens are four bytes each.
 
-- qpu_quantum: what is fused? read 4603 call 645 ratio 7×
-- qpu_lean: what does Lean prove? read 4603 call 4021 ratio 1×
-- qpu_cite: how is the QPU cited? read 4603 call 205 ratio 22×
+- qpu_quantum: what is fused? read 4746 call 645 ratio 7×
+- qpu_lean: what does Lean prove? read 4746 call 4136 ratio 1×
+- qpu_cite: how is the QPU cited? read 4746 call 205 ratio 23×
 
 ## Train
 
@@ -157,12 +157,12 @@ Agents use the unlocked sandbox to improve quality, speed, security, and through
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Winner call.
 
-- read tree: throughoutput 60129542144 tokens 13809 throughput 4354373
-- call mcp: throughoutput 120259084288 tokens 4871 throughput 24688787
+- read tree: throughoutput 60129542144 tokens 14238 throughput 4223173
+- call mcp: throughoutput 120259084288 tokens 4986 throughput 24119351
 
 ## Prove
 
-MCP proves every test. JSON UI experiences them. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. Live CERN Open Data APIs via fetch Request Response. Never by decide. Theorems 42. CERN faces 14. Integrity 3. ui.experienced true.
+MCP proves every test. JSON UI experiences them. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. Never by decide. Theorems 43. CERN faces 14. Integrity 3. ui.experienced true.
 
 ## Message
 
@@ -434,7 +434,19 @@ $$
 116\cdot 17922+54=2079006\land 184\cdot 12509+12=2301668\land 72\cdot 26572+6=1913190\land 130\cdot 21121+21=2745751\land 8-7=1\land 8000-7000=1000\land 7000/2=3500\land 8000/2=4000\land 4000-3500=500\land 2019-2011=8\land 2019-2012=7\land 2017-2011=6\land 2301668+2745751=5047419\land 2079006+1913190+2301668+2745751=9039615
 $$
 
-holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.
+holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.
+
+### tetra
+
+```lean
+theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]
+```
+
+$$
+\mathrm{coins}+\mathrm{coins}=\mathrm{mintOf}(\mathrm{coins})
+$$
+
+holds true. ATLAS CMS ALICE LHCb tetra. Four LHC experiments. Live CERN Open Data APIs via fetch Request Response. Never by decide.
 
 ### qubits
 

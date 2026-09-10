@@ -864,7 +864,7 @@ export const qpuLeanOf = () => {
         'theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
       formula:
         '116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615',
-      reading: 'holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.',
+      reading: 'holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.',
       holds:
         116 * 17922 + 54 === 2079006 &&
         184 * 12509 + 12 === 2301668 &&
@@ -880,6 +880,14 @@ export const qpuLeanOf = () => {
         2017 - 2011 === 6 &&
         2301668 + 2745751 === 5047419 &&
         2079006 + 1913190 + 2301668 + 2745751 === 9039615,
+    },
+    {
+      heading: 'tetra',
+      theorem:
+        'theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]',
+      formula: '\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})',
+      reading: 'holds true. ATLAS CMS ALICE LHCb tetra. Four LHC experiments. Live CERN Open Data APIs via fetch Request Response. Never by decide.',
+      holds: coins + coins === mintOf(coins),
     },
     {
       heading: 'qubits',
@@ -2595,8 +2603,26 @@ const qpuCernRecordsOf = () => {
   }
 }
 
-const qpuCernHrefOf = (href: string): string | undefined =>
-  qpuCernRecordsOf().records.find((row) => row.href === href)?.href
+const qpuCernProjectsOf = () => {
+  const api = `https://${cernHost}${cernPath}`
+  const experiments = ['ATLAS', 'CMS', 'ALICE', 'LHCb'] as const
+  return {
+    kind: 'tetra' as const,
+    theorem: 'theorem tetra' as const,
+    experiments,
+    projects: experiments.map((experiment) => ({
+      experiment,
+      href: `${api}/?q=experiment:${experiment}&size=${seed}`,
+      theorem: 'theorem tetra' as const,
+    })),
+  }
+}
+
+const qpuCernHrefOf = (href: string): string | undefined => {
+  const record = qpuCernRecordsOf().records.find((row) => row.href === href)?.href
+  if (record) return record
+  return qpuCernProjectsOf().projects.find((row) => row.href === href)?.href
+}
 
 const cernNatOf = (value: unknown): number => {
   if (typeof value === 'number' && Number.isInteger(value)) return value
@@ -2708,27 +2734,92 @@ const qpuCernFetchOf = async (href: string) => {
   }
 }
 
+const qpuCernProjectFetchOf = async (href: string) => {
+  const tetra = qpuCernProjectsOf()
+  const project = tetra.projects.find((row) => row.href === href)
+  const miss = {
+    kind: 'tetra' as const,
+    live: false as const,
+    href,
+    experiment: '',
+    total: n - n,
+    status: lost,
+    theorem: tetra.theorem,
+    holds: false as const,
+    denied: 'fetch' as const,
+    memory: true as const,
+    host: false as const,
+    hostEscape: false as const,
+    primitives,
+  }
+  if (!project) return miss
+  const request = new Request(project.href, { method: 'GET', headers: { accept: 'application/json' } })
+  const response = await fetch(request)
+  if (response.status !== found) {
+    return { ...miss, live: true as const, href: project.href, experiment: project.experiment, status: response.status }
+  }
+  const body = (await response.json()) as {
+    hits?: { total?: unknown; hits?: { metadata?: { experiment?: unknown } }[] }
+  }
+  const totalRaw = body.hits?.total
+  const total =
+    totalRaw && typeof totalRaw === 'object' && 'value' in totalRaw ? cernNatOf((totalRaw as { value: unknown }).value) : cernNatOf(totalRaw)
+  const expRaw = body.hits?.hits?.[n - n]?.metadata?.experiment
+  const experiment = Array.isArray(expRaw)
+    ? typeof expRaw[n - n] === 'string'
+      ? expRaw[n - n]
+      : ''
+    : typeof expRaw === 'string'
+      ? expRaw
+      : ''
+  const holds = experiment === project.experiment && total > n - n
+  return {
+    kind: 'tetra' as const,
+    live: true as const,
+    href: project.href,
+    experiment,
+    total,
+    status: response.status,
+    theorem: tetra.theorem,
+    holds,
+    memory: true as const,
+    host: false as const,
+    hostEscape: false as const,
+    primitives,
+  }
+}
+
 export const qpuCernOf = () => {
   const faces = qpuFacesOf()
   const quoted = qpuCernRecordsOf()
+  const tetra = qpuCernProjectsOf()
   const cms38 = quoted.records[n - n]
   const cms63 = quoted.records[seed]
   const cms35 = quoted.records[coins]
   const cms62 = quoted.records[n]
   const cases = cms38 && cms63 && cms35 && cms62 ? cernCasesOf(cms38, cms63, cms35, cms62, quoted.api, quoted.source) : []
+  const projects = tetra.projects.map((row) => ({
+    ...row,
+    holds: row.href.startsWith(quoted.api) && tetra.projects.length === mintOf(coins),
+  }))
   const holds =
     faces.holds &&
     quoted.records.length === coins + coins &&
     cases.length === faces.faces &&
-    cases.every((c) => c.holds && c.left === c.right && c.href.startsWith(quoted.api))
+    cases.every((c) => c.holds && c.left === c.right && c.href.startsWith(quoted.api)) &&
+    projects.length === mintOf(coins) &&
+    projects.every((row) => row.holds && row.href.startsWith(quoted.api)) &&
+    coins + coins === mintOf(coins)
   return {
     kind: 'cern' as const,
     source: quoted.source,
     api: quoted.api,
     theorem: 'theorem cern',
+    tetra: tetra.theorem,
     faces: faces.faces,
     primitives,
     records: quoted.records,
+    projects,
     cases,
     holds,
   }
@@ -2737,6 +2828,7 @@ export const qpuCernOf = () => {
 export const qpuCernLiveOf = async () => {
   const quoted = qpuCernOf()
   const live = await Promise.all(quoted.records.map((row) => qpuCernFetchOf(row.href)))
+  const projects = await Promise.all(quoted.projects.map((row) => qpuCernProjectFetchOf(row.href)))
   const cms38 = live[n - n]
   const cms63 = live[seed]
   const cms35 = live[coins]
@@ -2746,16 +2838,20 @@ export const qpuCernLiveOf = async () => {
     live.length === quoted.records.length &&
     live.every((row) => row.holds && row.live === true && row.hostEscape === false) &&
     cases.length === quoted.faces &&
-    cases.every((row) => row.holds && row.left === row.right)
+    cases.every((row) => row.holds && row.left === row.right) &&
+    projects.length === mintOf(coins) &&
+    projects.every((row) => row.holds && row.live === true && row.hostEscape === false && row.total > n - n)
   return {
     kind: 'cern' as const,
     live: true as const,
     source: quoted.source,
     api: quoted.api,
     theorem: quoted.theorem,
+    tetra: quoted.tetra,
     faces: quoted.faces,
     primitives,
     records: live,
+    projects,
     cases,
     holds,
     memory: true as const,
@@ -2782,8 +2878,11 @@ export const qpuCernHolds = (c = qpuCernOf()): boolean =>
   c.api === `https://${cernHost}${cernPath}` &&
   c.theorem === 'theorem cern' &&
   c.records.length === coins + coins &&
+  c.projects.length === mintOf(coins) &&
+  c.tetra === 'theorem tetra' &&
   c.cases.length === qpuFacesOf().faces &&
   c.primitives.length === n + coins &&
+  c.projects.every((row) => row.holds && row.href.startsWith(c.api) && row.theorem === 'theorem tetra') &&
   c.cases.every((row) => row.holds && row.left === row.right && !byDecideOf(row.theorem) && row.href.startsWith(c.api))
 
 export const qpuToolsOf = () => {
@@ -2840,8 +2939,8 @@ export const qpuToolsOf = () => {
   )
   const proveMan = qpuManOf(
     names[mintOf(n) - seed],
-    'MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.',
-    `Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET ${unit.origin} is the JSON UI. docs.inline experiences every test. Source ${unit.fuse.lean}. After qpu_compete.`,
+    'MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. ATLAS CMS ALICE LHCb. Never by decide.',
+    `Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET ${unit.origin} is the JSON UI. docs.inline experiences every test. Source ${unit.fuse.lean}. After qpu_compete.`,
     `${unit.origin}/mcp`,
     seeOf(names[mintOf(n) - seed]),
   )
@@ -2849,7 +2948,7 @@ export const qpuToolsOf = () => {
     type: 'object',
     properties: {
       man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
-      live: { type: 'boolean', description: 'Fetch named CERN Open Data records with fetch Request Response and prove theorem cern against the live APIs.' },
+      live: { type: 'boolean', description: 'Fetch named CERN Open Data records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response and prove theorem cern and theorem tetra against the live APIs.' },
     },
   } as const
   const competeSchema = {
@@ -3003,7 +3102,8 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
   seedSandboxOf()
   const href = typeof args.href === 'string' ? args.href : typeof args.path === 'string' ? args.path : ''
   if (name === 'fetch' && qpuCernHrefOf(href) !== undefined) {
-    const value = await qpuCernFetchOf(href)
+    const project = qpuCernProjectsOf().projects.find((row) => row.href === href)
+    const value = project ? await qpuCernProjectFetchOf(href) : await qpuCernFetchOf(href)
     return {
       kind: 'sandbox' as const,
       name,
@@ -3126,7 +3226,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Prove',
     '',
-    `MCP proves every test. JSON UI experiences them. Lean \`${m.prove.src}\`. theorem quantum. theorem cern. Live CERN Open Data APIs via fetch Request Response. Never by decide. Theorems ${m.prove.theorems.length}. CERN faces ${m.prove.cern.faces}. Integrity ${m.prove.integrity.n}. ui.experienced ${m.prove.ui.experienced}.`,
+    `MCP proves every test. JSON UI experiences them. Lean \`${m.prove.src}\`. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. Never by decide. Theorems ${m.prove.theorems.length}. CERN faces ${m.prove.cern.faces}. Integrity ${m.prove.integrity.n}. ui.experienced ${m.prove.ui.experienced}.`,
     '',
     '## Message',
     '',

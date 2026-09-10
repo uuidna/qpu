@@ -227,7 +227,7 @@
     },
     {
       "name": "qpu_prove",
-      "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.",
+      "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. ATLAS CMS ALICE LHCb. Never by decide.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -237,7 +237,7 @@
           },
           "live": {
             "type": "boolean",
-            "description": "Fetch named CERN Open Data records with fetch Request Response and prove theorem cern against the live APIs."
+            "description": "Fetch named CERN Open Data records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response and prove theorem cern and theorem tetra against the live APIs."
           }
         }
       },
@@ -248,9 +248,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.",
-        "reading": "Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
-        "documentation": "NAME\n    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Live CERN Open Data APIs. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. ATLAS CMS ALICE LHCb. Never by decide.",
+        "reading": "Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
+        "documentation": "NAME\n    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. ATLAS CMS ALICE LHCb. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
         "holds": true
       }
     }
@@ -296,15 +296,15 @@
     "kind": "efficiency",
     "module": "agent efficiency",
     "tokens": "four bytes",
-    "readBytes": 18412,
+    "readBytes": 18987,
     "rows": [
       {
         "question": "what is fused?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 18412,
+        "readBytes": 18987,
         "callBytes": 2580,
-        "readTokens": 4603,
+        "readTokens": 4746,
         "callTokens": 645,
         "ratio": 7
       },
@@ -312,21 +312,21 @@
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 18412,
-        "callBytes": 16084,
-        "readTokens": 4603,
-        "callTokens": 4021,
+        "readBytes": 18987,
+        "callBytes": 16544,
+        "readTokens": 4746,
+        "callTokens": 4136,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 18412,
+        "readBytes": 18987,
         "callBytes": 821,
-        "readTokens": 4603,
+        "readTokens": 4746,
         "callTokens": 205,
-        "ratio": 22
+        "ratio": 23
       }
     ],
     "holds": true
@@ -436,17 +436,17 @@
             "memory": true
           }
         ],
-        "tokens": 13809,
+        "tokens": 14238,
         "quality": 3,
-        "speed": 4354373,
+        "speed": 4223173,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4354373 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4354373 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4223173 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4223173 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -530,17 +530,17 @@
             "memory": true
           }
         ],
-        "tokens": 4871,
+        "tokens": 4986,
         "quality": 14,
-        "speed": 24688787,
+        "speed": 24119351,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24688787 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24688787 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24119351 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 24119351 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -800,19 +800,19 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 4354373,
+      "speed": 4223173,
       "security": 1,
       "throughoutput": 60129542144
     },
     "after": {
       "quality": 14,
-      "speed": 24688787,
+      "speed": 24119351,
       "security": 10,
       "throughoutput": 120259084288
     },
     "delta": {
       "quality": 11,
-      "speed": 20334414,
+      "speed": 19896178,
       "security": 9,
       "throughoutput": 60129542144
     },
@@ -879,8 +879,8 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 4354373 security 1 throughoutput 60129542144\n    after quality 14 speed 24688787 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
-    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 4354373 security 1 throughoutput 60129542144\n    after quality 14 speed 24688787 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 4223173 security 1 throughoutput 60129542144\n    after quality 14 speed 24119351 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 4223173 security 1 throughoutput 60129542144\n    after quality 14 speed 24119351 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
     "holds": true
   },
   "compete": {
@@ -895,28 +895,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 4603,
+            "tokens": 4746,
             "throughoutput": 60129542144,
-            "throughput": 13063120
+            "throughput": 12669520
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 4603,
+            "tokens": 4746,
             "throughoutput": 60129542144,
-            "throughput": 13063120
+            "throughput": 12669520
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 4603,
+            "tokens": 4746,
             "throughoutput": 60129542144,
-            "throughput": 13063120
+            "throughput": 12669520
           }
         ],
-        "tokens": 13809,
+        "tokens": 14238,
         "throughoutput": 60129542144,
-        "throughput": 4354373
+        "throughput": 4223173
       },
       {
         "name": "call",
@@ -932,9 +932,9 @@
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 4021,
+            "tokens": 4136,
             "throughoutput": 120259084288,
-            "throughput": 29907755
+            "throughput": 29076180
           },
           {
             "name": "qpu_cite",
@@ -944,9 +944,9 @@
             "throughput": 586629679
           }
         ],
-        "tokens": 4871,
+        "tokens": 4986,
         "throughoutput": 120259084288,
-        "throughput": 24688787
+        "throughput": 24119351
       }
     ],
     "winner": "call",
@@ -1112,7 +1112,14 @@
           "heading": "cern",
           "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
           "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
-          "reading": "holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+          "reading": "holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+          "holds": true
+        },
+        {
+          "heading": "tetra",
+          "theorem": "theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
+          "formula": "\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
+          "reading": "holds true. ATLAS CMS ALICE LHCb tetra. Four LHC experiments. Live CERN Open Data APIs via fetch Request Response. Never by decide.",
           "holds": true
         },
         {
@@ -1410,7 +1417,14 @@
         "heading": "cern",
         "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
         "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
-        "reading": "holds true. CMS Open Data integers. Fourteen faces. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+        "reading": "holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.",
+        "holds": true
+      },
+      {
+        "heading": "tetra",
+        "theorem": "theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
+        "formula": "\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
+        "reading": "holds true. ATLAS CMS ALICE LHCb tetra. Four LHC experiments. Live CERN Open Data APIs via fetch Request Response. Never by decide.",
         "holds": true
       },
       {
@@ -1559,6 +1573,7 @@
       "source": "opendata.cern.ch",
       "api": "https://opendata.cern.ch/api/records",
       "theorem": "theorem cern",
+      "tetra": "theorem tetra",
       "faces": 14,
       "primitives": [
         "fetch",
@@ -1615,6 +1630,32 @@
           "created": 2012,
           "published": 2019,
           "href": "https://opendata.cern.ch/api/records/62"
+        }
+      ],
+      "projects": [
+        {
+          "experiment": "ATLAS",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:ATLAS&size=1",
+          "theorem": "theorem tetra",
+          "holds": true
+        },
+        {
+          "experiment": "CMS",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:CMS&size=1",
+          "theorem": "theorem tetra",
+          "holds": true
+        },
+        {
+          "experiment": "ALICE",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:ALICE&size=1",
+          "theorem": "theorem tetra",
+          "holds": true
+        },
+        {
+          "experiment": "LHCb",
+          "href": "https://opendata.cern.ch/api/records/?q=experiment:LHCb&size=1",
+          "theorem": "theorem tetra",
+          "holds": true
         }
       ],
       "cases": [

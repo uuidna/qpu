@@ -7,19 +7,43 @@ const env = { QPU_HOST: host }
 const html = { accept: 'text/html' }
 
 type CernCase = { name: string; theorem: string; left: number; right: number; holds: boolean; href: string }
+type CernProject = { experiment: string; href: string; theorem: string; holds: boolean; live?: boolean; total?: number }
 type CernLive = {
   live: boolean
   holds: boolean
   source: string
   api: string
+  tetra?: string
   primitives: string[]
   host: boolean
   hostEscape: boolean
   records: { href: string; events: number; files: number; holds: boolean; live: boolean }[]
+  projects: CernProject[]
   cases: CernCase[]
 }
 
-const mcpOf = async (name: string, args: Record<string, unknown> = {}) => {
+type McpResult = {
+  holds: boolean
+  ui: { experienced: boolean; door: string }
+  cern: {
+    faces: number
+    source: string
+    api: string
+    primitives: string[]
+    tetra?: string
+    records: { href: string; recid: number }[]
+    projects: CernProject[]
+    cases: CernCase[]
+    live?: CernLive
+    holds: boolean
+  }
+  value?: { events?: number; href?: string; holds?: boolean; primitives?: string[]; experiment?: string; total?: number }
+  host?: boolean
+  hostEscape?: boolean
+  live?: boolean
+}
+
+const mcpOf = async (name: string, args: Record<string, unknown> = {}): Promise<McpResult> => {
   const res = await worker.fetch(
     new Request(`https://${host}/mcp`, {
       method: 'POST',
@@ -28,26 +52,7 @@ const mcpOf = async (name: string, args: Record<string, unknown> = {}) => {
     }),
     env,
   )
-  const body = (await res.json()) as {
-    result: {
-      holds: boolean
-      ui: { experienced: boolean; door: string }
-      cern: {
-        faces: number
-        source: string
-        api: string
-        primitives: string[]
-        records: { href: string; recid: number }[]
-        cases: CernCase[]
-        live?: CernLive
-        holds: boolean
-      }
-      value?: { events?: number; href?: string; holds?: boolean; primitives?: string[] }
-      host?: boolean
-      hostEscape?: boolean
-      live?: boolean
-    }
-  }
+  const body = (await res.json()) as { result: McpResult }
   assert.equal(res.status, 200)
   return body.result
 }
@@ -66,7 +71,7 @@ test('cern faces via mcp', { timeout: 60_000 }, async (t) => {
   const page = await uiOf('/')
   const catalog = await uiOf('/mcp')
   const prove = await mcpOf('qpu_prove', { live: true })
-  const live = prove.cern.live
+  const live: CernLive | undefined = prove.cern.live
   assert.equal(page.res.headers.get('content-type')?.includes('application/json'), true)
   assert.equal(page.json.docs?.inline, true)
   assert.equal(page.json.ui?.experienced, true)
@@ -96,6 +101,30 @@ test('cern faces via mcp', { timeout: 60_000 }, async (t) => {
   assert.equal(fetched.value?.holds, true)
   assert.equal(fetched.value?.events, prove.cern.cases[0]?.right)
   assert.deepEqual(fetched.value?.primitives, prove.cern.primitives)
+  assert.equal(prove.cern.tetra, 'theorem tetra')
+  assert.equal(prove.cern.projects.length, 4)
+  assert.deepEqual(
+    prove.cern.projects.map((row) => row.experiment),
+    ['ATLAS', 'CMS', 'ALICE', 'LHCb'],
+  )
+  assert.equal(live?.projects.length, 4)
+  for (const project of prove.cern.projects) {
+    const fetchedProject = await mcpOf('fetch', { href: project.href })
+    const liveProjects: CernProject[] = live ? live.projects : []
+    const liveProject: CernProject | undefined = liveProjects.find((row) => row.experiment === project.experiment)
+    assert.equal(project.theorem, 'theorem tetra')
+    assert.equal(project.href.startsWith(prove.cern.api), true)
+    assert.equal(fetchedProject.holds, true)
+    assert.equal(fetchedProject.live, true)
+    assert.equal(fetchedProject.hostEscape, false)
+    assert.equal(fetchedProject.value?.holds, true)
+    assert.equal(fetchedProject.value?.experiment, project.experiment)
+    assert.equal((fetchedProject.value?.total ?? 0) > 0, true)
+    assert.equal(liveProject?.holds, true)
+    assert.equal(liveProject?.live, true)
+    assert.equal(liveProject?.experiment, project.experiment)
+    assert.equal((liveProject?.total ?? 0) > 0, true)
+  }
   for (const face of prove.cern.cases) {
     await t.test(face.name, () => {
       const liveFace = live?.cases.find((row) => row.name === face.name)
