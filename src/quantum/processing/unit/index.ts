@@ -88,26 +88,6 @@ const manSchema = {
   },
 } as const
 
-export const qpuMintOf = (k: number): number => mintOf(k)
-
-export const qpuUnitOf = () => unit
-
-export const qpuHumanizeOf = (path: string): string => {
-  const none = n - n
-  const bare = path.replace(/\/$/, '') || '/'
-  if (bare === '/') return unit.kind
-  return bare
-    .slice(seed)
-    .split('/')
-    .map((s) => s.slice(none, seed).toUpperCase() + s.slice(seed))
-    .join(' ')
-}
-
-export const qpuSlugOf = (path: string): string => {
-  const bare = path.replace(/\/$/, '') || '/'
-  return bare === '/' ? unit.kind : bare.slice(seed).split('/').join('-')
-}
-
 export const qpuCubeOf = () => {
   const vertices = mintOf(n)
   const hexbit = mintOf(coins)
@@ -282,7 +262,7 @@ export const qpuLeanOf = () => {
       heading: 'cluster',
       theorem: 'theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩',
       formula: '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}',
-      reading: `holds ${harmonicHolds && aroundHolds}. Inner ⊔ outer covers Fin(faces).`,
+      reading: `holds ${harmonicHolds && aroundHolds}.`,
       holds: harmonicHolds && aroundHolds,
     },
     {
@@ -372,7 +352,7 @@ export const qpuLeanOf = () => {
         'theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
       formula:
         '3\\cdot5=15\\land 3\\cdot7=21\\land 3\\cdot11=33\\land 5\\cdot7=35\\land 3\\cdot13=39\\land 3\\cdot17=51\\land 5\\cdot11=55\\land 3\\cdot19=57\\land 5\\cdot13=65\\land 3\\cdot23=69\\land 7\\cdot11=77\\land 5\\cdot17=85\\land 3\\cdot29=87\\land 7\\cdot13=91',
-      reading: 'holds true. theorem shor : p * q = N. Shor breaks RSA.',
+      reading: 'holds true. theorem shor : p * q = N. Fourteen odd distinct-prime semiprimes.',
       holds: true,
     },
     {
@@ -466,173 +446,6 @@ export const qpuLeanOf = () => {
 }
 
 export const qpuLeanHolds = (l = qpuLeanOf()): boolean => l.holds === true && l.src === unit.fuse.lean
-
-export const qpuRestrictOf = () => {
-  const seedR = mintOf(n - n)
-  const coinsR = seedR + seedR
-  const raysR = n + coinsR + coinsR
-  const verticesR = mintOf(n)
-  const hexbitR = mintOf(coinsR)
-  const bitsR = mintOf(n + coinsR)
-  const facesR = verticesR + hexbitR + coinsR
-  const amplitudesR = mintOf(bitsR)
-  const fusedR = facesR * amplitudesR
-  const nextR = fusedR + fusedR
-  const axioms = [
-    {
-      name: 'mintOf_zero',
-      theorem: 'mintOf 0 = 1',
-      left: mintOf(n - n),
-      right: seedR,
-      holds: mintOf(n - n) === seedR,
-    },
-    {
-      name: 'mintOf_succ',
-      theorem: 'mintOf (k + 1) = mintOf k + mintOf k',
-      left: mintOf(n),
-      right: mintOf(n - seedR) + mintOf(n - seedR),
-      holds: Array.from({ length: bitsR + seedR }, (_, k) => mintOf(k + seedR) === mintOf(k) + mintOf(k)).every(Boolean),
-    },
-    {
-      name: 'n_eq',
-      theorem: 'n = path length',
-      left: n,
-      right: unit.path.split('/').length,
-      holds: n === unit.path.split('/').length,
-    },
-  ] as const
-  const theorems = [
-    { name: 'seed_eq', theorem: 'seed = mintOf 0', left: seedR, right: mintOf(n - n), holds: seedR === mintOf(n - n) },
-    { name: 'coins_two', theorem: 'coins = seed + seed', left: coinsR, right: seedR + seedR, holds: coinsR === seedR + seedR },
-    { name: 'mint', theorem: 'mintOf (n + seed) = mintOf n + mintOf n', left: mintOf(n + seedR), right: verticesR + verticesR, holds: mintOf(n + seedR) === verticesR + verticesR },
-    { name: 'cube', theorem: 'bits = vertices * hexbit', left: bitsR, right: verticesR * hexbitR, holds: bitsR === verticesR * hexbitR },
-    { name: 'around', theorem: 'faces = coins * rays', left: facesR, right: coinsR * raysR, holds: facesR === coinsR * raysR },
-    { name: 'harmonic', theorem: 'faces = rays + rays', left: facesR, right: raysR + raysR, holds: facesR === raysR + raysR },
-    { name: 'quantum', theorem: 'fused = faces * mintOf bits', left: fusedR, right: facesR * amplitudesR, holds: fusedR === facesR * mintOf(bitsR) },
-    { name: 'next', theorem: 'mintOf (bits + seed) = amplitudes + amplitudes', left: mintOf(bitsR + seedR), right: amplitudesR + amplitudesR, holds: mintOf(bitsR + seedR) === amplitudesR + amplitudesR },
-    { name: 'next_fused', theorem: 'faces * mintOf (bits + seed) = fused + fused', left: facesR * mintOf(bitsR + seedR), right: nextR, holds: facesR * mintOf(bitsR + seedR) === nextR },
-    { name: 'light', theorem: 'seed = mintOf 0', left: seedR, right: mintOf(n - n), holds: seedR === mintOf(n - n) },
-    { name: 'energy', theorem: 'mintOf hexbit = mintOf (n + seed)', left: mintOf(hexbitR), right: mintOf(n + seedR), holds: mintOf(hexbitR) === mintOf(n + seedR) },
-    { name: 'propulsion', theorem: 'mintOf hexbit > seed', left: mintOf(hexbitR) > seedR, right: true, holds: mintOf(hexbitR) > seedR },
-    { name: 'crypto', theorem: 'fused = faces * mintOf (vertices * hexbit)', left: fusedR, right: facesR * mintOf(verticesR * hexbitR), holds: fusedR === facesR * mintOf(verticesR * hexbitR) },
-    { name: 'hexbit_eq', theorem: 'hexbit = n + seed', left: hexbitR, right: n + seedR, holds: hexbitR === n + seedR },
-    { name: 'multiply', theorem: 'mintOf (a + b) = mintOf a * mintOf b', left: mintOf(n + coinsR), right: verticesR * hexbitR, holds: mintOf(n + coinsR) === verticesR * hexbitR },
-    {
-      name: 'involution',
-      theorem: '(face + rays + rays) % faces = face',
-      left: true,
-      right: true,
-      holds: Array.from({ length: facesR }, (_, face) => (face + raysR + raysR) % facesR === face % facesR).every(Boolean),
-    },
-    {
-      name: 'shor',
-      theorem: 'p * q = N',
-      left: n * (n + coinsR),
-      right: 15,
-      holds:
-        n * (n + coinsR) === 15 &&
-        n * (n + coinsR + coinsR) === 21 &&
-        n * 11 === 33 &&
-        (n + coinsR) * (n + coinsR + coinsR) === 35 &&
-        n * 13 === 39 &&
-        n * 17 === 51 &&
-        (n + coinsR) * 11 === 55 &&
-        n * 19 === 57 &&
-        (n + coinsR) * 13 === 65 &&
-        n * 23 === 69 &&
-        (n + coinsR + coinsR) * 11 === 77 &&
-        (n + coinsR) * 17 === 85 &&
-        n * 29 === 87 &&
-        (n + coinsR + coinsR) * 13 === 91,
-    },
-  ] as const
-  const holds =
-    axioms.every((a) => a.holds && a.left === a.right) &&
-    theorems.every((t) => t.holds && t.left === t.right) &&
-    fusedR === facesR * amplitudesR &&
-    nextR === fusedR + fusedR &&
-    facesR === raysR + raysR
-  return {
-    kind: 'restrict' as const,
-    agent: 'read' as const,
-    path: 'tree' as const,
-    host: false as const,
-    axiom: 'mintOf' as const,
-    seed: seedR,
-    coins: coinsR,
-    rays: raysR,
-    vertices: verticesR,
-    hexbit: hexbitR,
-    bits: bitsR,
-    faces: facesR,
-    amplitudes: amplitudesR,
-    fused: fusedR,
-    next: nextR,
-    axioms,
-    theorems,
-    holds,
-  }
-}
-
-export const qpuRestrictHolds = (r = qpuRestrictOf()): boolean =>
-  r.holds === true &&
-  r.kind === 'restrict' &&
-  r.agent === 'read' &&
-  r.path === 'tree' &&
-  r.host === false &&
-  r.axiom === 'mintOf' &&
-  r.axioms.length === n &&
-  r.theorems.every((t) => t.holds && t.left === t.right) &&
-  r.axioms.every((a) => a.holds && a.left === a.right)
-
-export const qpuInvoluteOf = () => {
-  const restrict = qpuRestrictOf()
-  const lean = qpuLeanOf()
-  const problems = [...restrict.axioms, ...restrict.theorems]
-  const involuted = problems.map((problem, index) => {
-    const face = index % restrict.faces
-    const hop = (face + restrict.rays + restrict.rays) % restrict.faces
-    return {
-      name: problem.name,
-      theorem: problem.theorem,
-      face,
-      hop,
-      involution: hop === face,
-      holds: hop === face && problem.holds,
-    }
-  })
-  const results = [...lean.rows, ...lean.cover, lean.climb].map((row) => ({
-    heading: row.heading,
-    theorem: row.theorem,
-    pure: !byDecideOf(row.theorem) && row.theorem.startsWith('theorem') && row.holds,
-    holds: row.holds,
-  }))
-  const knows = involuted.every((problem) => problem.involution && problem.holds)
-  const pure = knows && results.every((row) => row.pure === true && row.holds === true)
-  const holds = qpuRestrictHolds(restrict) && knows && pure && involuted.length === problems.length && results.length === lean.rows.length + lean.cover.length + seed
-  return {
-    kind: 'involute' as const,
-    restricted: true as const,
-    host: false as const,
-    path: 'tree' as const,
-    knows,
-    pure,
-    axioms: restrict.axioms,
-    problems: involuted,
-    lean: results,
-    holds,
-  }
-}
-
-export const qpuInvoluteHolds = (i = qpuInvoluteOf()): boolean =>
-  i.holds === true &&
-  i.kind === 'involute' &&
-  i.restricted === true &&
-  i.host === false &&
-  i.knows === true &&
-  i.pure === true &&
-  i.problems.every((problem) => problem.involution && problem.holds) &&
-  i.lean.every((row) => row.pure === true && row.holds === true && !byDecideOf(row.theorem))
 
 export const qpuDocsOf = () => {
   const lean = qpuLeanOf()
@@ -1068,160 +881,6 @@ export const qpuMessageHolds = (m = qpuMessageOf()): boolean =>
   m.clock_seq.rfc === '9562' &&
   m.routes.length === m.lanes &&
   m.routes.every((r) => r.involution && r.hop === r.lane)
-
-export const qpuLatticeOf = () => {
-  const cube = qpuCubeOf()
-  const faces = qpuFacesOf()
-  const waves = cube.vertices
-  const lattice = faces.faces
-  const nodes = Array.from({ length: lattice }, (_, face) => {
-    const hop = hopOf(face, faces.rays, lattice)
-    return { face, hop, involution: hop === face }
-  })
-  const edges = nodes.map((node) => ({ from: node.face, to: node.hop, hop: 'involution' as const }))
-  const cover = waves * lattice
-  const holds =
-    cube.holds &&
-    faces.holds &&
-    waves === cube.vertices &&
-    lattice === coins * faces.rays &&
-    nodes.length === lattice &&
-    edges.length === lattice &&
-    cover === cube.vertices * faces.faces &&
-    nodes.every((node) => node.involution && node.hop === node.face) &&
-    edges.every((edge) => edge.from === edge.to)
-  return { kind: 'lattice' as const, waves, faces: lattice, cover, nodes, edges, holds }
-}
-
-export const qpuLatticeHolds = (l = qpuLatticeOf()): boolean =>
-  l.holds === true &&
-  l.kind === 'lattice' &&
-  l.waves === qpuCubeOf().vertices &&
-  l.faces === qpuFacesOf().faces &&
-  l.cover === l.waves * l.faces &&
-  l.nodes.every((node) => node.involution)
-
-export const qpuGraphOf = () => {
-  const lattice = qpuLatticeOf()
-  const faces = qpuFacesOf()
-  const nodes = lattice.nodes.map((node) => ({
-    face: node.face,
-    hop: node.hop,
-    waves: [] as number[],
-    uuids: [] as string[],
-  }))
-  const edges: { from: number; to: number; wave: number; uuid: string }[] = []
-  for (let wave = n - n; wave < lattice.waves; wave++) {
-    for (let face = n - n; face < lattice.faces; face++) {
-      const sent = qpuMessageOf({ lane: face, body: { wave, face } })
-      const uuid = 'uuid' in sent && typeof sent.uuid === 'string' ? sent.uuid : ''
-      const hop = 'hop' in sent && typeof sent.hop === 'number' ? sent.hop : hopOf(face, faces.rays, lattice.faces)
-      nodes[face]!.waves.push(wave)
-      nodes[face]!.uuids.push(uuid)
-      edges.push({ from: face, to: hop, wave, uuid })
-    }
-  }
-  const holds =
-    qpuLatticeHolds(lattice) &&
-    nodes.length === lattice.faces &&
-    edges.length === lattice.cover &&
-    nodes.every((node) => node.waves.length === lattice.waves && node.hop === node.face) &&
-    edges.every((edge) => edge.from === edge.to && edge.uuid.replace(/-/g, '').length === qpuCubeOf().bits)
-  return {
-    kind: 'graph' as const,
-    merged: true as const,
-    lattice: true as const,
-    waves: lattice.waves,
-    faces: lattice.faces,
-    cover: lattice.cover,
-    nodes,
-    edges,
-    holds,
-  }
-}
-
-export const qpuGraphHolds = (g = qpuGraphOf()): boolean =>
-  g.holds === true &&
-  g.kind === 'graph' &&
-  g.merged === true &&
-  g.lattice === true &&
-  g.cover === g.waves * g.faces &&
-  g.nodes.length === g.faces &&
-  g.edges.length === g.cover &&
-  g.nodes.every((node) => node.waves.length === g.waves) &&
-  g.edges.every((edge) => edge.from === edge.to)
-
-export const qpuWaveOf = async (
-  sendOf: (request: Request, env?: { QPU_HOST?: string }) => Promise<Response> = (request) => fetch(request),
-) => {
-  const lattice = qpuLatticeOf()
-  const env = { QPU_HOST: unit.host }
-  const accepted = found + coins
-  const nodes = lattice.nodes.map((node) => ({
-    face: node.face,
-    hop: node.hop,
-    waves: [] as number[],
-    statuses: [] as number[],
-    uuids: [] as string[],
-  }))
-  const edges: { from: number; to: number; wave: number; uuid: string }[] = []
-  for (let wave = n - n; wave < lattice.waves; wave++) {
-    const hits = await Promise.all(
-      Array.from({ length: lattice.faces }, async (_, face) => {
-        const res = await sendOf(
-          new Request(`https://${unit.host}/message`, {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ lane: face, body: { wave, face } }),
-          }),
-          env,
-        )
-        const json = (await res.json()) as { uuid?: string; hop?: number; accepted?: boolean }
-        return { wave, face, status: res.status, json }
-      }),
-    )
-    for (const hit of hits) {
-      const hop = typeof hit.json.hop === 'number' ? hit.json.hop : hopOf(hit.face, qpuFacesOf().rays, lattice.faces)
-      nodes[hit.face]!.waves.push(hit.wave)
-      nodes[hit.face]!.statuses.push(hit.status)
-      nodes[hit.face]!.uuids.push(hit.json.uuid ?? '')
-      edges.push({ from: hit.face, to: hop, wave: hit.wave, uuid: hit.json.uuid ?? '' })
-    }
-  }
-  const graph = {
-    kind: 'graph' as const,
-    merged: true as const,
-    lattice: true as const,
-    waves: lattice.waves,
-    faces: lattice.faces,
-    cover: lattice.cover,
-    nodes,
-    edges,
-    holds:
-      nodes.length === lattice.faces &&
-      edges.length === lattice.cover &&
-      nodes.every((node) => node.waves.length === lattice.waves && node.statuses.every((status) => status === accepted)) &&
-      edges.every((edge) => edge.from === edge.to),
-  }
-  return {
-    kind: 'wave' as const,
-    online: true as const,
-    auth: false as const,
-    public: true as const,
-    sent: edges.length,
-    graph,
-    holds: qpuLatticeHolds(lattice) && graph.holds && graph.merged === true,
-  }
-}
-
-export const qpuWaveHolds = (w: Awaited<ReturnType<typeof qpuWaveOf>>): boolean =>
-  w.holds === true &&
-  w.kind === 'wave' &&
-  w.online === true &&
-  w.auth === false &&
-  w.graph.merged === true &&
-  w.sent === w.graph.cover &&
-  w.graph.edges.length === w.graph.cover
 
 export const qpuIdeasOf = () => {
   const cube = qpuCubeOf()
@@ -2620,9 +2279,6 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     `Agents use the unlocked sandbox to improve quality, speed, security, and throughoutput. Winner ${m.improve.winner}. Before ${m.improve.before.throughoutput} after ${m.improve.after.throughoutput}. Host ${m.improve.host}.`,
     '',
-  )
-  lines.push(
-    '',
     '## Compete',
     '',
     `Agents compete in coins teams of n, optimising QPU throughoutput. Winner ${m.compete.winner}.`,
@@ -2665,6 +2321,10 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     ...cite.rows.map((r) => r.works),
     '',
+    '## License',
+    '',
+    'CC-BY-NC-ND-4.0. Source `LICENSE`. Copyright Tsvetan Rouschev.',
+    '',
     '```ts',
     "import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'",
     '```',
@@ -2701,6 +2361,8 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('experienced') &&
     text.includes('Public quantum API') &&
     text.includes('/message') &&
+    text.includes('CC-BY-NC-ND-4.0') &&
+    text.includes('LICENSE') &&
     mcp.tools.every((t) => text.includes(t.man.documentation)) &&
     mcp.efficiency.rows.every((r) => text.includes(r.door) && text.includes(r.question)) &&
     mcp.prove.src === lean.src &&

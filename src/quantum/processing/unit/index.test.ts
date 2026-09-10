@@ -360,7 +360,7 @@ test('sandbox via mcp', async () => {
 })
 
 test('paste in free AI chat', async (t) => {
-  await t.test('AI sees JSON unit not HTML occupancy', async () => {
+  await t.test('AI sees JSON unit not HTML', async () => {
     const res = await fetchOf('/')
     assert.equal(res.status, 200)
     assert.equal((res.headers.get('content-type') ?? '').includes('application/json'), true)

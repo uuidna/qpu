@@ -292,15 +292,15 @@
     "kind": "efficiency",
     "module": "agent efficiency",
     "tokens": "four bytes",
-    "readBytes": 10510,
+    "readBytes": 10490,
     "rows": [
       {
         "question": "what is fused?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 10510,
+        "readBytes": 10490,
         "callBytes": 779,
-        "readTokens": 2627,
+        "readTokens": 2622,
         "callTokens": 194,
         "ratio": 13
       },
@@ -308,19 +308,19 @@
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 10510,
-        "callBytes": 9325,
-        "readTokens": 2627,
-        "callTokens": 2331,
+        "readBytes": 10490,
+        "callBytes": 9315,
+        "readTokens": 2622,
+        "callTokens": 2328,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 10510,
+        "readBytes": 10490,
         "callBytes": 821,
-        "readTokens": 2627,
+        "readTokens": 2622,
         "callTokens": 205,
         "ratio": 12
       }
@@ -432,17 +432,17 @@
             "memory": true
           }
         ],
-        "tokens": 7881,
+        "tokens": 7866,
         "quality": 3,
-        "speed": 7629684,
+        "speed": 7644233,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7629684 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7629684 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7644233 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7644233 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -526,17 +526,17 @@
             "memory": true
           }
         ],
-        "tokens": 2730,
+        "tokens": 2727,
         "quality": 14,
-        "speed": 44050946,
+        "speed": 44099407,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44050946 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44050946 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44099407 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44099407 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -796,19 +796,19 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 7629684,
+      "speed": 7644233,
       "security": 1,
       "throughoutput": 60129542144
     },
     "after": {
       "quality": 14,
-      "speed": 44050946,
+      "speed": 44099407,
       "security": 10,
       "throughoutput": 120259084288
     },
     "delta": {
       "quality": 11,
-      "speed": 36421262,
+      "speed": 36455174,
       "security": 9,
       "throughoutput": 60129542144
     },
@@ -875,8 +875,8 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7629684 security 1 throughoutput 60129542144\n    after quality 14 speed 44050946 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
-    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7629684 security 1 throughoutput 60129542144\n    after quality 14 speed 44050946 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7644233 security 1 throughoutput 60129542144\n    after quality 14 speed 44099407 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7644233 security 1 throughoutput 60129542144\n    after quality 14 speed 44099407 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
     "holds": true
   },
   "compete": {
@@ -891,28 +891,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 2627,
+            "tokens": 2622,
             "throughoutput": 60129542144,
-            "throughput": 22889052
+            "throughput": 22932701
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 2627,
+            "tokens": 2622,
             "throughoutput": 60129542144,
-            "throughput": 22889052
+            "throughput": 22932701
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 2627,
+            "tokens": 2622,
             "throughoutput": 60129542144,
-            "throughput": 22889052
+            "throughput": 22932701
           }
         ],
-        "tokens": 7881,
+        "tokens": 7866,
         "throughoutput": 60129542144,
-        "throughput": 7629684
+        "throughput": 7644233
       },
       {
         "name": "call",
@@ -928,9 +928,9 @@
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 2331,
+            "tokens": 2328,
             "throughoutput": 120259084288,
-            "throughput": 51591198
+            "throughput": 51657682
           },
           {
             "name": "qpu_cite",
@@ -940,9 +940,9 @@
             "throughput": 586629679
           }
         ],
-        "tokens": 2730,
+        "tokens": 2727,
         "throughoutput": 120259084288,
-        "throughput": 44050946
+        "throughput": 44099407
       }
     ],
     "winner": "call",
@@ -994,7 +994,7 @@
           "heading": "cluster",
           "theorem": "theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩",
           "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}",
-          "reading": "holds true. Inner ⊔ outer covers Fin(faces).",
+          "reading": "holds true.",
           "holds": true
         },
         {
@@ -1080,7 +1080,7 @@
           "heading": "shor",
           "theorem": "theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
           "formula": "3\\cdot5=15\\land 3\\cdot7=21\\land 3\\cdot11=33\\land 5\\cdot7=35\\land 3\\cdot13=39\\land 3\\cdot17=51\\land 5\\cdot11=55\\land 3\\cdot19=57\\land 5\\cdot13=65\\land 3\\cdot23=69\\land 7\\cdot11=77\\land 5\\cdot17=85\\land 3\\cdot29=87\\land 7\\cdot13=91",
-          "reading": "holds true. theorem shor : p * q = N. Shor breaks RSA.",
+          "reading": "holds true. theorem shor : p * q = N. Fourteen odd distinct-prime semiprimes.",
           "holds": true
         },
         {
@@ -1161,7 +1161,7 @@
         "heading": "cluster",
         "theorem": "theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩",
         "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}",
-        "reading": "holds true. Inner ⊔ outer covers Fin(faces).",
+        "reading": "holds true.",
         "holds": true
       },
       {
@@ -1245,7 +1245,7 @@
         "heading": "shor",
         "theorem": "theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
         "formula": "3\\cdot5=15\\land 3\\cdot7=21\\land 3\\cdot11=33\\land 5\\cdot7=35\\land 3\\cdot13=39\\land 3\\cdot17=51\\land 5\\cdot11=55\\land 3\\cdot19=57\\land 5\\cdot13=65\\land 3\\cdot23=69\\land 7\\cdot11=77\\land 5\\cdot17=85\\land 3\\cdot29=87\\land 7\\cdot13=91",
-        "reading": "holds true. theorem shor : p * q = N. Shor breaks RSA.",
+        "reading": "holds true. theorem shor : p * q = N. Fourteen odd distinct-prime semiprimes.",
         "holds": true
       },
       {

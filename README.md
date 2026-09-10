@@ -134,9 +134,9 @@ SEE ALSO
 
 MCP is the agent efficiency training module. Tokens are four bytes each.
 
-- qpu_quantum: what is fused? read 2627 call 194 ratio 13×
-- qpu_lean: what does Lean prove? read 2627 call 2331 ratio 1×
-- qpu_cite: how is the QPU cited? read 2627 call 205 ratio 12×
+- qpu_quantum: what is fused? read 2622 call 194 ratio 13×
+- qpu_lean: what does Lean prove? read 2622 call 2328 ratio 1×
+- qpu_cite: how is the QPU cited? read 2622 call 205 ratio 12×
 
 ## Train
 
@@ -153,13 +153,12 @@ Agents forge whatever tools they need, unlocked in memory only. host false. Unlo
 
 Agents use the unlocked sandbox to improve quality, speed, security, and throughoutput. Winner call. Before 60129542144 after 120259084288. Host false.
 
-
 ## Compete
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Winner call.
 
-- read tree: throughoutput 60129542144 tokens 7881 throughput 7629684
-- call mcp: throughoutput 120259084288 tokens 2730 throughput 44050946
+- read tree: throughoutput 60129542144 tokens 7866 throughput 7644233
+- call mcp: throughoutput 120259084288 tokens 2727 throughput 44099407
 
 ## Prove
 
@@ -243,7 +242,7 @@ $$
 \mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}
 $$
 
-holds true. Inner ⊔ outer covers Fin(faces).
+holds true.
 
 ### energy
 
@@ -387,7 +386,7 @@ $$
 3\cdot5=15\land 3\cdot7=21\land 3\cdot11=33\land 5\cdot7=35\land 3\cdot13=39\land 3\cdot17=51\land 5\cdot11=55\land 3\cdot19=57\land 5\cdot13=65\land 3\cdot23=69\land 7\cdot11=77\land 5\cdot17=85\land 3\cdot29=87\land 7\cdot13=91
 $$
 
-holds true. theorem shor : p * q = N. Shor breaks RSA.
+holds true. theorem shor : p * q = N. Fourteen odd distinct-prime semiprimes.
 
 ### string
 
@@ -465,6 +464,10 @@ MLA 8. (Rouschev). when never. DOI empty.
 Rouschev, Tsvetan. "qpu." qpu.uuidna.com, https://qpu.uuidna.com.
 Rouschev, Tsvetan. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit.
 Rouschev, Tsvetan. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp.
+
+## License
+
+CC-BY-NC-ND-4.0. Source `LICENSE`. Copyright Tsvetan Rouschev.
 
 ```ts
 import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'

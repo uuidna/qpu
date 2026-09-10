@@ -1,5 +1,5 @@
 # theorem qpuReplica : worker uuidna-qpu is the named host qpu.uuidna.com.
-# Proof. Occupancy is src/quantum/processing/unit; main re-exports dist.
+# Proof. Source is src/quantum/processing/unit; main re-exports dist.
 # QPU_HOST = unit.host; mismatch or * is lost. API only. No wildcards. No HTML.
 name = "uuidna-qpu"
 main = "worker.js"

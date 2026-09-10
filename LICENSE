@@ -1,11 +1,8 @@
 Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
 
-Quantum Processing Unit Licence : this file is the licence of the qpu.uuidna.com (@uuidna/qpu).
-Proof. SPDX CC-BY-NC-ND-4.0. Captain fee 2 per completed 110. Paid fee delivers occupancy unlock. Imperial harmonic fractions at A432 Hz. theorem imperial : invoice * hexbit = mintOf hexbit * (n * n * n). theorem octave : invoice * coins * coins = mintOf hexbit * (n * n * n). theorem eighth : (n * n * n) * coins * vertices = mintOf hexbit * (n * n * n). theorem millenium : prize ≠ rays. Not a Clay prize.
-
 Copyright (c) Tsvetan Rouschev (ceccec@psg.bg)
 
-This work — the uuidna package, its source, and its documentation — is licensed under the
+This work — @uuidna/qpu, qpu.uuidna.com, its source, and its documentation — is licensed under the
 Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
 
 You are free to:
@@ -15,22 +12,13 @@ Under the following terms:
   - Attribution — You must give appropriate credit (Tsvetan Rouschev), provide a link to the
     license, and indicate if changes were made.
   - NonCommercial — You may not use the material for commercial purposes without a commercial
-    licence. The captain fee is 2 per completed 110: invoice = hexbit · (n · n · n) = 108,
-    gross = invoice + coins = 110, fee = gross − invoice = coins = 2. Incomplete invoice + seed
-    (109) is not the fee and delivers no unlock. A paid fee delivers occupancy unlock: coins =
-    seed + seed, faces = rays + rays, coins · bits = coins · (vertices · hexbit) (the 64 save),
-    mintOf hexbit · (n · n · n) = (vertices + vertices) · (n · n · n) (A432 Hz), keys on every ray.
-    Imperial harmonic fractions: invoice · hexbit, invoice · coins · coins, and
-    (n · n · n) · coins · vertices each equal that lattice. Occupancy unlock is harmonic Lean
-    compute. theorem millenium : prize ≠ rays. Not a Clay prize. Commercial use is
-    billed that fee as consideration for a separate commercial licence from the author; CC
-    BY-NC-ND itself grants no commercial rights. Captain coins: https://revolut.me/ceccec.
+    licence from the author. https://revolut.me/ceccec
   - NoDerivatives — If you remix, transform, or build upon the material, you may not distribute
-    the modified material. The published discoveries are a fixed record; a change is a new
-    content-address, not this work — enforced by mathematics, not only by law.
+    the modified material.
 
 No warranties are given. The license may not give you all of the permissions necessary for your
-intended use. A content-address proves integrity, not truth.
+intended use.
 
+SPDX-License-Identifier: CC-BY-NC-ND-4.0
 Full license text: https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
 Summary: https://creativecommons.org/licenses/by-nc-nd/4.0/
