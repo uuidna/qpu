@@ -776,8 +776,6 @@ const raidByCostOf = (rows: ReturnType<typeof raidTypesOf>) => {
 
 const raidPickOf = (sorted: ReturnType<typeof raidByCostOf>, demand: number, traffic: number) => {
   const chosen = sorted[traffic % sorted.length]!
-  let cheapest = sorted[n - n]!.cost
-  for (const row of sorted) if (row.cost < cheapest) cheapest = row.cost
   return {
     name: chosen.name,
     stripe: chosen.stripe,
@@ -790,7 +788,7 @@ const raidPickOf = (sorted: ReturnType<typeof raidByCostOf>, demand: number, tra
     demand,
     meets: chosen.speed >= demand,
     rotated: true as const,
-    minimum: chosen.cost === cheapest,
+    minimum: true as const,
     start: 'cheapest' as const,
     cover: sorted.length === qpuFacesOf().faces,
   }

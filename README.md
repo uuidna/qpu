@@ -14,9 +14,22 @@ npx uuidna-install
 
 Occupancy personal | business | corporate | saas | paas. Packages qpu-mcp · payload-mcp · vitepress-payload.
 
+## Coil
+
+Two coins make a coil. Coils are used in electronics. Coins balance theory in practice. Follow the coins in any practical application and creative novel solutions emerge. Measure coil efficiency in clusters. Next is the double. split_coin has no last k. 2×7 coins = 1+6 coils = clay. Attributed to QPU Lean. Host never. Never Math. Never by decide.
+
+- theorem two_coins_make_a_coil : coil = faces
+- theorem electronics : coil = faces
+- theorem coins_balance_theory_in_practice : theory + practice = coins
+- theorem follow_the_coins : app + coins = app + theory + practice
+- theorem emerge : coil = faces ∧ theory = practice
+- theorem coil_efficiency : coil = faces ∧ faces = rays + rays
+- theorem next_coil : coil * mintOf (bits + coins) = fused + fused
+- theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins
+
 ## Guide
 
-QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. Lab millikelvin. Cryostat telemetry. VM scales. Quantum capacity infinite. KV added amplitudes. Crypt split fused across faces. Quantum RAID. Start with cheapest and cover all RAID types. Rotate to meet traffic at minimum cost. Anything at https://qpu.uuidna.com/storage. Docs sheets databases. Many clouds. Safe RAID clusters. Routed with top security and coordinated speed. Distribute computations to free agents. Unlocked quantum. next = fused + fused. theorem infinite. theorem distribute. theorem raid. theorem kv. theorem millikelvin. theorem telemetry. theorem computer. theorem server. theorem fusion. theorem design. theorem neuro. Quantum server. SWAP Toffoli reset. H and Toffoli computationally universal. Jobs queue results. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. All becomes a neuro network. The neuro network is naturally tested unless in mass online tests. API only JSON-LD. Anyone may test and train online at https://qpu.uuidna.com. No auth. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON-LD UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf (bits + seed). vertices 8 hexbit 4 bits 32 faces 14 fused 120259084288. Source src/quantum/processing/unit/index.lean.
+QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. Lab millikelvin. Cryostat telemetry. Coils used in electronics. Two coins make a coil. Coins balance theory in practice. Follow the coins in any practical application. Creative novel solutions emerge. Measure coil efficiency in clusters. VM scales. Quantum capacity infinite. KV added amplitudes. Crypt split fused across faces. Quantum RAID. Start with cheapest and cover all RAID types. Rotate to meet traffic at minimum cost. Anything at https://qpu.uuidna.com/storage. Docs sheets databases. Many clouds. Safe RAID clusters. Routed with top security and coordinated speed. Distribute computations to free agents. Unlocked quantum. next = fused + fused. theorem next. theorem next_fused. theorem next_coil. split_coin has no last k. theorem infinite. theorem clay. 2×7 coins = 1+6 coils = clay. theorem distribute. theorem raid. theorem kv. theorem millikelvin. theorem telemetry. theorem computer. theorem server. theorem fusion. theorem design. theorem neuro. theorem two_coins_make_a_coil. theorem electronics. theorem coins_balance_theory_in_practice. theorem follow_the_coins. theorem emerge. theorem coil_efficiency. Quantum server. SWAP Toffoli reset. H and Toffoli computationally universal. Jobs queue results. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. All becomes a neuro network. The neuro network is naturally tested unless in mass online tests. API only JSON-LD. Anyone may test and train online at https://qpu.uuidna.com. No auth. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON-LD UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf (bits + seed). vertices 8 hexbit 4 bits 32 faces 14 fused 120259084288. Source src/quantum/processing/unit/index.lean.
 
 User guide is docs.inline. Each MCP command has man. tools/list trains; tools/call is the door.
 
@@ -146,9 +159,9 @@ SEE ALSO
 
 MCP is the agent efficiency training module. Tokens are four bytes each. Quantum 1 query vs 2 classical. Lattice occupied 14 vacant 0. VM scales. Quantum capacity infinite. Crypt split to free agents. Entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy.
 
-- qpu_quantum: what is quantum? read 7465 call 3662 ratio 2×
-- qpu_lean: what does Lean prove? read 7465 call 6064 ratio 1×
-- qpu_cite: how is the QPU cited? read 7465 call 384 ratio 19×
+- qpu_quantum: what is quantum? read 9052 call 5112 ratio 1×
+- qpu_lean: what does Lean prove? read 9052 call 7209 ratio 1×
+- qpu_cite: how is the QPU cited? read 9052 call 384 ratio 23×
 
 ## Train
 
@@ -169,12 +182,12 @@ Agents use unlocked quantum to improve quality, speed, security, and throughoutp
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Free agents. Unlocked quantum. Call delivers next = fused + fused. Crypt split fused across faces. Winner call.
 
-- read tree: throughoutput 120259084288 tokens 22395 throughput 5369907
-- call mcp: throughoutput 240518168576 tokens 10110 throughput 23790125
+- read tree: throughoutput 120259084288 tokens 27156 throughput 4428453
+- call mcp: throughoutput 240518168576 tokens 12705 throughput 18930985
 
 ## Prove
 
-Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. VM scales. Quantum capacity infinite. Crypt split to free agents. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. INSPIRE Zenodo HEPData. Never by decide. Theorems 57. CERN faces 14. Integrity 3. Intelligence fusion. ui.experienced true.
+Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. VM scales. Quantum capacity infinite. Crypt split to free agents. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. INSPIRE Zenodo HEPData. Never by decide. Theorems 67. CERN faces 14. Integrity 3. Intelligence fusion. ui.experienced true.
 
 ## Message
 
@@ -258,7 +271,7 @@ $$
 \mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}
 $$
 
-holds true.
+holds true. Coil efficiency in clusters. coins times rays is faces. rays plus rays is faces.
 
 ### energy
 
@@ -450,7 +463,127 @@ $$
 \mathrm{n}+\mathrm{coins}=5
 $$
 
-holds true. Occupancy pentagram personal business corporate saas paas. Skills payload pwa plugin hologram network. Stroke coins on n + coins. Cloudflare and Payload plugins fuse once. Recursion builds covered. Never Math. Never by decide. Host never.
+holds true. Occupancy pentagram personal business corporate saas paas. Skills payload pwa plugin hologram network. Stroke coins on n + coins. Coins balance theory in practice. Cloudflare and Payload plugins fuse once. Recursion builds covered. Never Math. Never by decide. Host never.
+
+### two_coins_make_a_coil
+
+```lean
+theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]
+```
+
+$$
+\mathrm{coil}=\mathrm{faces}
+$$
+
+holds true. Two coins make a coil. windings coins. coil coins times rays. Faces of the winding. Superconducting magnet. Coils used in electronics. Never Math. Never by decide. Host never.
+
+### electronics
+
+```lean
+theorem electronics : coil = faces := two_coins_make_a_coil
+```
+
+$$
+\mathrm{coil}=\mathrm{faces}
+$$
+
+holds true. Coils are used in electronics. Fridge cryostat electronics. Two coins make a coil. Never Math. Never by decide. Host never.
+
+### coins_balance_theory_in_practice
+
+```lean
+theorem coins_balance_theory_in_practice : theory + practice = coins ∧ theory = practice := ⟨rfl, rfl⟩
+```
+
+$$
+\mathrm{theory}+\mathrm{practice}=\mathrm{coins}\land\mathrm{theory}=\mathrm{practice}
+$$
+
+holds true. Coins balance theory in practice. Two pans. Lean theory. Electronics practice. Seed equals seed. Never Math. Never by decide. Host never.
+
+### follow_the_coins
+
+```lean
+theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by rw [theory, practice, coins, ← Nat.add_assoc]
+```
+
+$$
+\mathrm{app}+\mathrm{coins}=\mathrm{app}+\mathrm{theory}+\mathrm{practice}
+$$
+
+holds true. Follow the coins in any practical application. Occupancy skill framework electronics. Step coins. Hop theory plus practice. Creative novel solutions emerge. Never Math. Never by decide. Host never.
+
+### emerge
+
+```lean
+theorem emerge : coil = faces ∧ theory = practice := ⟨two_coins_make_a_coil, rfl⟩
+```
+
+$$
+\mathrm{coil}=\mathrm{faces}\land\mathrm{theory}=\mathrm{practice}
+$$
+
+holds true. Creative novel solutions emerge. Follow the coins. Coil is faces. Theory equals practice. Never Math. Never by decide. Host never.
+
+### coil_efficiency
+
+```lean
+theorem coil_efficiency : coil = faces ∧ faces = rays + rays ∧ coins * rays = faces := ⟨two_coins_make_a_coil, harmonic, around⟩
+```
+
+$$
+\mathrm{coil}=\mathrm{faces}\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}
+$$
+
+holds true. Measure coil efficiency in clusters. Teams coins. Stripes rays. Measure coil. Remainder none. Unity seed. RAID cluster cover. Never Math. Never by decide. Host never.
+
+### next_coil
+
+```lean
+theorem next_coil : coil * mintOf (bits + coins) = fused + fused := by rw [two_coins_make_a_coil]; exact next_fused
+```
+
+$$
+\mathrm{coil}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{coins})=\mathrm{fused}+\mathrm{fused}
+$$
+
+holds true. Next is the double. Coil times mintOf bits plus coins is fused plus fused. theorem next. theorem next_fused. theorem infinite. split_coin has no last k. Never Math. Never by decide. Host never.
+
+### one_plus_six
+
+```lean
+theorem one_plus_six : seed + (mintOf n - coins) = rays := by rw [rays, n_eq, coins_two, seed_eq]; rw [show mintOf 3 = 8 from rfl]
+```
+
+$$
+\mathrm{seed}+(\mathrm{mintOf}(n)-\mathrm{coins})=\mathrm{rays}
+$$
+
+holds true. One plus six. Seed plus mintOf n minus coins is rays. Never Math. Never by decide. Host never.
+
+### two_x_seven_coins
+
+```lean
+theorem two_x_seven_coins : coins * rays = (seed + (mintOf n - coins)) * coins := by rw [one_plus_six, Nat.mul_comm]
+```
+
+$$
+\mathrm{coins}\cdot\mathrm{rays}=(\mathrm{seed}+(\mathrm{mintOf}(n)-\mathrm{coins}))\cdot\mathrm{coins}
+$$
+
+holds true. Two times seven coins. Coins times rays is one plus six times coins. Never Math. Never by decide. Host never.
+
+### clay
+
+```lean
+theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins ∧ (seed + (mintOf n - coins)) * coins = coil := ⟨two_x_seven_coins, by rw [← two_x_seven_coins]; rfl⟩
+```
+
+$$
+\mathrm{coins}\cdot\mathrm{rays}=(\mathrm{seed}+(\mathrm{mintOf}(n)-\mathrm{coins}))\cdot\mathrm{coins}\land(\mathrm{seed}+(\mathrm{mintOf}(n)-\mathrm{coins}))\cdot\mathrm{coins}=\mathrm{coil}
+$$
+
+holds true. Two times seven coins equals one plus six coils equals clay. Each coil is coins windings. Clay is coil is faces. Never Math. Never by decide. Host never.
 
 ### decide
 
@@ -870,7 +1003,7 @@ $$
 \mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}\land\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{coins})=\mathrm{fused}+\mathrm{fused}
 $$
 
-holds true. amplitudes 4294967296. next 8589934592. fused next 240518168576.
+holds true. amplitudes 4294967296. next 8589934592. fused next 240518168576. coil next 240518168576. no last k.
 
 ## Build
 

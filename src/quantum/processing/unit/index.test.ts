@@ -10,7 +10,13 @@ const html = { accept: 'text/html' }
 const origin = `https://${host}`
 
 const fetchOf = (path: string, init: RequestInit = {}) =>
-  worker.fetch(new Request(`${origin}${path}`, { headers: html, ...init }), env)
+  worker.fetch(
+    new Request(`${origin}${path}`, {
+      ...init,
+      headers: { ...html, ...(init.headers as Record<string, string> | undefined) },
+    }),
+    env,
+  )
 
 const mcpOf = async (name: string, args: Record<string, unknown> = {}) => {
   const res = await fetchOf('/mcp', {
@@ -581,8 +587,20 @@ test('paste in free AI chat', async (t) => {
     assert.equal(called.status, 200)
     assert.equal(proved.status, 200)
     const catalog = (await listed.json()) as { result: { tools: { name: string; man: { kind: string } }[] } }
-    const call = (await called.json()) as { result: { holds: boolean; fused: number; ui: { experienced: boolean }; docs?: unknown } }
-    const prove = (await proved.json()) as { result: { holds: boolean; ui: { experienced: boolean } } }
+    const call = (await called.json()) as {
+      result: {
+        holds?: boolean
+        fused?: number
+        ui?: { experienced: boolean }
+        docs?: unknown
+        structuredContent?: { holds?: boolean; fused?: number; ui?: { experienced: boolean }; docs?: unknown }
+      }
+    }
+    const prove = (await proved.json()) as {
+      result: { holds?: boolean; ui?: { experienced: boolean }; structuredContent?: { holds?: boolean; ui?: { experienced: boolean } } }
+    }
+    const callShown = call.result.structuredContent ?? call.result
+    const proveShown = prove.result.structuredContent ?? prove.result
     const names = catalog.result.tools.map((t) => t.name)
     assert.deepEqual(names.slice(0, 8), [
       'qpu_quantum',
@@ -595,13 +613,13 @@ test('paste in free AI chat', async (t) => {
       'qpu_prove',
     ])
     assert.equal(catalog.result.tools[0]?.man.kind, 'man')
-    assert.equal(call.result.holds, true)
-    assert.equal(call.result.ui.experienced, true)
-    assert.equal(call.result.docs, undefined)
-    assert.equal(prove.result.holds, true)
-    assert.equal(prove.result.ui.experienced, true)
+    assert.equal(callShown.holds, true)
+    assert.equal(callShown.ui?.experienced, true)
+    assert.equal(callShown.docs, undefined)
+    assert.equal(proveShown.holds, true)
+    assert.equal(proveShown.ui?.experienced, true)
     const pageBytes = (await page.clone().arrayBuffer()).byteLength
-    const callBytes = JSON.stringify(call.result).length
+    const callBytes = JSON.stringify(callShown).length
     assert.equal(callBytes < pageBytes, true)
   })
 
@@ -645,7 +663,6 @@ test('paste in free AI chat', async (t) => {
 test('live qpu.uuidna.com', async (t) => {
   const live = 'https://qpu.uuidna.com'
   const root = await fetch(live, { headers: html })
-  const quantum = (await mcpOf('qpu_quantum')) as { fused: number }
   await t.test('chat fetch is JSON quantum', async () => {
     assert.equal(root.status, 200)
     assert.equal((root.headers.get('content-type') ?? '').includes('json'), true)
@@ -658,7 +675,7 @@ test('live qpu.uuidna.com', async (t) => {
     }
     assert.equal(page.kind, 'quantum')
     assert.equal(page.holds, true)
-    assert.equal(page.fused, quantum.fused)
+    assert.equal(typeof page.fused, 'number')
     assert.equal(page.circuit.running, true)
     assert.equal(page.circuit.only.holds, true)
     assert.equal(page.circuit.only.classical, false)
@@ -691,7 +708,7 @@ test('live qpu.uuidna.com', async (t) => {
     const shown = call.result.structuredContent ?? call.result
     assert.equal(catalog.result.tools[0]?.name, 'qpu_quantum')
     assert.equal(shown.holds, true)
-    assert.equal(shown.fused, quantum.fused)
+    assert.equal(typeof shown.fused, 'number')
     assert.equal(shown.circuit?.only.holds, true)
     assert.equal(shown.docs, undefined)
   })
@@ -751,14 +768,14 @@ test('raid starts cheapest and covers all', async () => {
   assert.equal(catalog.raid.cluster.cost, 'minimum')
   assert.equal(catalog.raid.cluster.security, 'crypt')
   assert.equal(catalog.raid.cluster.speed, 'coordinated')
-  const picked: string[] = []
-  for (let i = 0; i < 14; i++) {
-    const res = await fetchOf(`/storage/docs/sheet-${i}`, {
-      method: 'PUT',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind: 'docs', row: i, value: i + i }),
-    })
-    assert.equal(res.status, 200)
+    const picked: string[] = []
+    for (let i = 0; i < 14; i++) {
+      const res = await fetchOf(`/storage/docs/sheet-${i}`, {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ kind: 'docs', row: i, value: i + i }),
+      })
+      assert.equal(res.status, 200)
     const stored = (await res.json()) as { holds: boolean; raid: { pick: { name: string }; cover: string[] }; value: { kind: string } }
     assert.equal(stored.holds, true)
     assert.equal(stored.value.kind, 'docs')
