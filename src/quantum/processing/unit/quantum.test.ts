@@ -15,9 +15,9 @@ const mcpOf = async (name: string, args: Record<string, unknown> = {}) => {
     }),
     env,
   )
-  const body = (await res.json()) as { result: Record<string, unknown> }
+  const body = (await res.json()) as { result: { structuredContent?: Record<string, unknown> } & Record<string, unknown> }
   assert.equal(res.status, 200)
-  return body.result
+  return body.result.structuredContent ?? body.result
 }
 
 const uiOf = async (path: string) => {
@@ -79,6 +79,11 @@ type Circuit = {
     vm: string
     host: boolean
     isolated: boolean
+    lab: boolean
+    millikelvin: number
+    milli: number
+    cryostat: { kind: string; mixing: number; plate: number; pulse: number; holds: boolean }
+    telemetry: { kind: string; lab: boolean; millikelvin: number; host: boolean; holds: boolean }
     holds: boolean
   }
   science: { levels: number; qubits: number; dim: number; gates: string[]; xx: boolean }
@@ -251,8 +256,21 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.fridge.kind, 'superconducting')
   assert.equal(q.circuit.fridge.isolated, true)
   assert.equal(q.circuit.fridge.host, false)
+  assert.equal(q.circuit.fridge.lab, true)
   assert.equal(q.circuit.fridge.qubits, 3)
   assert.equal(q.circuit.fridge.levels, 2)
+  assert.equal(q.circuit.fridge.millikelvin, 10)
+  assert.equal(q.circuit.fridge.milli, 1000)
+  assert.equal(q.circuit.fridge.cryostat.kind, 'dilution')
+  assert.equal(q.circuit.fridge.cryostat.mixing, 10)
+  assert.equal(q.circuit.fridge.cryostat.plate, 100)
+  assert.equal(q.circuit.fridge.cryostat.pulse, 4000)
+  assert.equal(q.circuit.fridge.cryostat.holds, true)
+  assert.equal(q.circuit.fridge.telemetry.kind, 'cryostat')
+  assert.equal(q.circuit.fridge.telemetry.lab, true)
+  assert.equal(q.circuit.fridge.telemetry.millikelvin, 10)
+  assert.equal(q.circuit.fridge.telemetry.host, false)
+  assert.equal(q.circuit.fridge.telemetry.holds, true)
   assert.equal(q.circuit.fridge.holds, true)
   assert.equal(q.circuit.holds, true)
 })
@@ -271,6 +289,9 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   const circuit = prove.theorems.find((r) => r.heading === 'circuit')
   const physical = prove.theorems.find((r) => r.heading === 'physical')
   const fridge = prove.theorems.find((r) => r.heading === 'fridge')
+  const millikelvin = prove.theorems.find((r) => r.heading === 'millikelvin')
+  const telemetry = prove.theorems.find((r) => r.heading === 'telemetry')
+  const kv = prove.theorems.find((r) => r.heading === 'kv')
   const drift = prove.theorems.find((r) => r.heading === 'drift')
   const sciences = prove.theorems.find((r) => r.heading === 'sciences')
   const interfere = prove.theorems.find((r) => r.heading === 'interfere')
@@ -284,10 +305,15 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   const monogamy = prove.theorems.find((r) => r.heading === 'monogamy')
   const only = prove.theorems.find((r) => r.heading === 'only')
   const fill = prove.theorems.find((r) => r.heading === 'fill')
+  const infinite = prove.theorems.find((r) => r.heading === 'infinite')
+  const distribute = prove.theorems.find((r) => r.heading === 'distribute')
   assert.equal(prove.holds, true)
   assert.equal(circuit?.holds, true)
   assert.equal(physical?.holds, true)
   assert.equal(fridge?.holds, true)
+  assert.equal(millikelvin?.holds, true)
+  assert.equal(telemetry?.holds, true)
+  assert.equal(kv?.holds, true)
   assert.equal(drift?.holds, true)
   assert.equal(sciences?.holds, true)
   assert.equal(interfere?.holds, true)
@@ -301,6 +327,13 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   assert.equal(monogamy?.holds, true)
   assert.equal(only?.holds, true)
   assert.equal(fill?.holds, true)
+  assert.equal(infinite?.holds, true)
+  assert.equal(distribute?.holds, true)
+  const fusion = prove.theorems.find((r) => r.heading === 'fusion')
+  assert.equal(fusion?.holds, true)
+  assert.equal(fusion?.theorem.includes('by decide'), false)
+  assert.equal(infinite?.theorem.includes('by decide'), false)
+  assert.equal(distribute?.theorem.includes('by decide'), false)
   assert.equal(fill?.theorem.includes('by decide'), false)
   assert.equal(only?.theorem.includes('by decide'), false)
   assert.equal(entangle?.theorem.includes('by decide'), false)

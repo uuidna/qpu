@@ -37,6 +37,14 @@ type McpResult = {
     live?: CernLive
     holds: boolean
   }
+  intelligence?: {
+    kind: string
+    test: string
+    research: string
+    holds: boolean
+    live?: boolean
+    fusion: { quantum: boolean; holds: boolean; catalogs: { href?: string; holds?: boolean; live?: boolean; quantum?: boolean }[]; faces?: number }
+  }
   value?: { events?: number; href?: string; holds?: boolean; primitives?: string[]; experiment?: string; total?: number }
   host?: boolean
   hostEscape?: boolean
@@ -52,9 +60,9 @@ const mcpOf = async (name: string, args: Record<string, unknown> = {}): Promise<
     }),
     env,
   )
-  const body = (await res.json()) as { result: McpResult }
+  const body = (await res.json()) as { result: McpResult & { structuredContent?: McpResult } }
   assert.equal(res.status, 200)
-  return body.result
+  return body.result.structuredContent ?? body.result
 }
 
 const uiOf = async (path: string) => {
@@ -72,7 +80,7 @@ test('cern faces via mcp', { timeout: 60_000 }, async (t) => {
   const catalog = await uiOf('/mcp')
   const prove = await mcpOf('qpu_prove', { live: true })
   const live: CernLive | undefined = prove.cern.live
-  assert.equal(page.res.headers.get('content-type')?.includes('application/json'), true)
+  assert.equal(page.res.headers.get('content-type')?.includes('ld+json'), true)
   assert.equal(page.json.docs?.inline, true)
   assert.equal(page.json.ui?.experienced, true)
   assert.equal(page.json.ui?.prove, 'qpu_prove')
@@ -102,6 +110,13 @@ test('cern faces via mcp', { timeout: 60_000 }, async (t) => {
   assert.equal(fetched.value?.events, prove.cern.cases[0]?.right)
   assert.deepEqual(fetched.value?.primitives, prove.cern.primitives)
   assert.equal(prove.cern.tetra, 'theorem tetra')
+  assert.equal(prove.intelligence?.kind, 'intelligence')
+  assert.equal(prove.intelligence?.test, 'fusion')
+  assert.equal(prove.intelligence?.research, 'free online')
+  assert.equal(prove.intelligence?.holds, true)
+  assert.equal(prove.intelligence?.fusion.quantum, false)
+  assert.equal(prove.intelligence?.fusion.holds, true)
+  assert.equal(prove.intelligence?.fusion.catalogs.length, 14)
   assert.equal(prove.cern.projects.length, 4)
   assert.deepEqual(
     prove.cern.projects.map((row) => row.experiment),

@@ -13,5 +13,14 @@ custom_domain = true
 [vars]
 QPU_HOST = "qpu.uuidna.com"
 
+[[kv_namespaces]]
+binding = "STORAGE"
+id = "local-storage"
+preview_id = "local-storage"
+
+[[r2_buckets]]
+binding = "BLOBS"
+bucket_name = "uuidna-qpu-blobs"
+
 [version_metadata]
 binding = "CF_VERSION_METADATA"

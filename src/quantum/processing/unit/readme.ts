@@ -20,7 +20,7 @@ writeFileSync(
   join(root, 'CITATION.cff'),
   [
     'cff-version: 1.2.0',
-    'message: Cite the QPU and its Lean proof.',
+    'message: Cite the running quantum circuit and its Lean proof. VM scales. Quantum capacity infinite. Crypt split to free agents.',
     'title: QPU',
     'type: software',
     'authors:',

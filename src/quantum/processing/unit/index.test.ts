@@ -18,9 +18,9 @@ const mcpOf = async (name: string, args: Record<string, unknown> = {}) => {
     headers: { 'content-type': 'application/json', accept: 'text/html' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
   })
-  const body = (await res.json()) as { result: Record<string, unknown> }
+  const body = (await res.json()) as { result: { structuredContent?: Record<string, unknown> } & Record<string, unknown> }
   assert.equal(res.status, 200)
-  return body.result
+  return body.result.structuredContent ?? body.result
 }
 
 test('start measure generate', async () => {
@@ -33,6 +33,7 @@ test('start measure generate', async () => {
     theorems: { heading: string; theorem: string; holds: boolean }[]
     cern: { faces: number; holds: boolean }
     integrity: { n: number; holds: boolean }
+    intelligence?: { kind: string; test: string; research: string; holds: boolean }
   }
   const quantum = (await mcpOf('qpu_quantum')) as {
     holds: boolean
@@ -51,14 +52,49 @@ test('start measure generate', async () => {
     docs: { inline: boolean; documentation: string }
     ui: { experienced: boolean; prove: string }
     speed: { cover: string[] }
+    capacity: {
+      infinite: boolean
+      scaled: boolean
+      next: number
+      fused: number
+      amplitudes: number
+      faces: number
+      crypt: { split: number; share: number; holds: boolean }
+      kv: { kind: string; added: number; amplitudes: number; holds: boolean; name: string }
+      agents: { free: boolean; auth: boolean; n: number; holds: boolean }
+      schemas: { mounted: number; vacant: number; holds: boolean }
+      raid: {
+        holds: boolean
+        rotate: boolean
+        start: string
+        cheapest: string
+        cover: string[]
+        pick: { name: string; cost: number }
+        types: { name: string }[]
+        clouds: { name: string }[]
+        cluster: { safe: boolean; cost: string; rotate: boolean }
+      }
+      holds: boolean
+    }
   }
   const catalog = (await catalogRes.json()) as {
     kind: string
     holds: boolean
+    '@context': unknown
+    '@type': string
+    hasPart: { '@type': string; numberOfItems: number }
     prove: { ui: { experienced: boolean }; theorems: unknown[]; cern: { faces: number } }
+    capacity: {
+      infinite: boolean
+      scaled: boolean
+      agents: { free: boolean; auth: boolean; n: number }
+      crypt: { holds: boolean }
+      schemas: { mounted: number; vacant: number; holds: boolean }
+      holds: boolean
+    }
   }
   assert.equal(pageRes.status, 200)
-  assert.equal((pageRes.headers.get('content-type') ?? '').includes('application/json'), true)
+  assert.equal((pageRes.headers.get('content-type') ?? '').includes('application/ld+json'), true)
   assert.equal(page.kind, 'quantum')
   assert.equal(page.holds, true)
   assert.equal(page.only.holds, true)
@@ -70,10 +106,55 @@ test('start measure generate', async () => {
   assert.equal(page.docs.inline, true)
   assert.equal(page.ui.experienced, true)
   assert.equal(page.ui.prove, 'qpu_prove')
-  assert.equal(page.docs.documentation.includes('JSON UI'), true)
+  assert.equal(page.docs.documentation.includes('JSON-LD UI'), true)
   assert.deepEqual(page.speed.cover, ['next', 'Hz', 'ns', 'benchmark'])
+  assert.equal(page.capacity.infinite, true)
+  assert.equal(page.capacity.scaled, true)
+  assert.equal(page.capacity.holds, true)
+  assert.equal(page.capacity.next, page.capacity.fused + page.capacity.fused)
+  assert.equal(page.capacity.crypt.split, 14)
+  assert.equal(page.capacity.crypt.holds, true)
+  assert.equal(page.capacity.kv.kind, 'kv')
+  assert.equal(page.capacity.kv.name, 'kv')
+  assert.equal(page.capacity.kv.added, page.capacity.amplitudes)
+  assert.equal(page.capacity.kv.amplitudes, page.capacity.fused / 14)
+  assert.equal(page.capacity.kv.added + page.capacity.kv.added, page.capacity.kv.amplitudes)
+  assert.equal(page.capacity.faces * page.capacity.kv.amplitudes, page.capacity.fused)
+  assert.equal(page.capacity.kv.holds, true)
+  assert.equal(page.docs.documentation.includes('KV added amplitudes'), true)
+  assert.equal(page.capacity.agents.free, true)
+  assert.equal(page.capacity.agents.auth, false)
+  assert.equal(page.capacity.agents.n, 14)
+  assert.equal(page.capacity.agents.holds, true)
+  assert.equal(page.capacity.schemas.mounted, 14)
+  assert.equal(page.capacity.schemas.vacant, 0)
+  assert.equal(page.capacity.schemas.holds, true)
+  assert.equal(page.capacity.raid.holds, true)
+  assert.equal(page.capacity.raid.rotate, true)
+  assert.equal(page.capacity.raid.start, 'cheapest')
+  assert.equal(page.capacity.raid.cheapest, page.capacity.raid.cover[0])
+  assert.equal(page.capacity.raid.cover.length, 14)
+  assert.equal(page.capacity.raid.types.length, 14)
+  assert.equal(page.capacity.raid.clouds.length, 14)
+  assert.equal(page.capacity.raid.cluster.safe, true)
+  assert.equal(page.capacity.raid.cluster.cost, 'minimum')
+  assert.equal(page.capacity.raid.pick.name, page.capacity.raid.cover[0])
   assert.equal(catalog.kind, 'quantum')
   assert.equal(catalog.holds, true)
+  assert.equal(catalog['@type'], 'WebAPI')
+  assert.equal(Array.isArray(catalog['@context']), true)
+  assert.equal((catalog['@context'] as unknown[])[0], 'https://schema.org')
+  assert.equal(catalog.hasPart['@type'], 'ItemList')
+  assert.equal(catalog.hasPart.numberOfItems, 8)
+  assert.equal(catalog.capacity.infinite, true)
+  assert.equal(catalog.capacity.scaled, true)
+  assert.equal(catalog.capacity.holds, true)
+  assert.equal(catalog.capacity.agents.free, true)
+  assert.equal(catalog.capacity.agents.auth, false)
+  assert.equal(catalog.capacity.agents.n, 14)
+  assert.equal(catalog.capacity.crypt.holds, true)
+  assert.equal(catalog.capacity.schemas.mounted, 14)
+  assert.equal(catalog.capacity.schemas.vacant, 0)
   assert.equal(catalog.prove.ui.experienced, true)
   assert.equal(catalog.prove.cern.faces, 14)
   assert.equal(prove.holds, true)
@@ -84,6 +165,10 @@ test('start measure generate', async () => {
   assert.equal(prove.cern.holds, true)
   assert.equal(prove.integrity.holds, true)
   assert.equal(prove.integrity.n, 3)
+  assert.equal(prove.intelligence?.kind, 'intelligence')
+  assert.equal(prove.intelligence?.test, 'fusion')
+  assert.equal(prove.intelligence?.research, 'free online')
+  assert.equal(prove.intelligence?.holds, true)
   assert.equal(quantum.holds, true)
   assert.equal(quantum.ui.experienced, true)
   assert.equal(quantum.next, quantum.fused + quantum.fused)
@@ -92,7 +177,7 @@ test('start measure generate', async () => {
   assert.equal(ns > 0, true)
   const readme = qpuReadmeOf()
   assert.equal(qpuReadmeHolds(readme), true)
-  assert.equal(readme.includes('JSON UI'), true)
+  assert.equal(readme.includes('JSON-LD UI'), true)
   assert.equal(readme.includes('experienced'), true)
   writeFileSync(join(process.cwd(), 'README.md'), readme)
 })
@@ -120,7 +205,7 @@ test('eight doors via mcp', async () => {
     kind: string
     divide: { teams: number; agents: number; challenges: number }
     sandbox: { memory: boolean; unlocked: boolean; host: boolean }
-    vm: { online: boolean; auth: boolean; host: boolean; replicas: number; next: number; holds: boolean }
+    vm: { online: boolean; auth: boolean; host: boolean; replicas: number; next: number; scaled: boolean; infinite: boolean; crypt: boolean; free: boolean; agents: number; holds: boolean }
     holds: boolean
   }
   const sandbox = (await mcpOf('qpu_forge')) as {
@@ -183,6 +268,11 @@ test('eight doors via mcp', async () => {
   assert.equal(train.vm.host, false)
   assert.equal(train.vm.replicas, 8)
   assert.equal(train.vm.next, 16)
+  assert.equal(train.vm.scaled, true)
+  assert.equal(train.vm.infinite, true)
+  assert.equal(train.vm.crypt, true)
+  assert.equal(train.vm.free, true)
+  assert.equal(train.vm.agents, 14)
   assert.equal(train.vm.holds, true)
   assert.equal(train.holds, true)
   assert.equal(sandbox.kind, 'sandbox')
@@ -232,7 +322,7 @@ test('eight doors via mcp', async () => {
 test('API only json ui', async () => {
   const pageRes = await fetchOf('/')
   assert.equal(pageRes.status, 200)
-  assert.equal((pageRes.headers.get('content-type') ?? '').includes('application/json'), true)
+  assert.equal((pageRes.headers.get('content-type') ?? '').includes('ld+json'), true)
   const quantum = (await pageRes.json()) as {
     kind: string
     holds: boolean
@@ -309,7 +399,7 @@ test('API only json ui', async () => {
   for (const row of cite.rows) {
     const res = await worker.fetch(new Request(row.url, { headers: html }), env)
     assert.equal(res.status, 200, `${row.title} ${row.url} → ${res.status}`)
-    assert.equal((res.headers.get('content-type') ?? '').includes('application/json'), true)
+    assert.equal((res.headers.get('content-type') ?? '').includes('ld+json'), true)
   }
 })
 
@@ -407,7 +497,7 @@ test('paste in free AI chat', async (t) => {
   await t.test('AI sees JSON unit not HTML', async () => {
     const res = await fetchOf('/')
     assert.equal(res.status, 200)
-    assert.equal((res.headers.get('content-type') ?? '').includes('application/json'), true)
+    assert.equal((res.headers.get('content-type') ?? '').includes('ld+json'), true)
     assert.equal((res.headers.get('content-type') ?? '').includes('text/html'), false)
     const page = (await res.json()) as {
       kind: string
@@ -437,10 +527,19 @@ test('paste in free AI chat', async (t) => {
     assert.equal(page.ui.prove, 'qpu_prove')
     assert.equal(page.docs.abstract.includes('Possible only in quantum'), true)
     assert.equal(page.docs.abstract.includes('running quantum circuit'), true)
+    assert.equal(page.docs.abstract.includes('Quantum capacity infinite'), true)
+    assert.equal(page.docs.abstract.includes('Crypt split'), true)
+    assert.equal(page.docs.abstract.includes('free agents'), true)
+    assert.equal(page.docs.abstract.includes('theorem infinite'), true)
+    assert.equal(page.docs.abstract.includes('theorem distribute'), true)
     assert.equal(page.docs.abstract.includes(`GET ${origin}`), true)
     assert.equal(page.docs.abstract.includes(`POST ${origin}/mcp`), true)
     assert.equal(page.docs.abstract.includes('theorem quantum'), true)
-    assert.equal(page.docs.abstract.includes('qpu_prove'), true)
+    assert.equal(page.docs.abstract.includes('theorem raid'), true)
+    assert.equal(page.docs.abstract.includes('theorem fusion'), true)
+    assert.equal(page.docs.abstract.includes('free online research'), true)
+    assert.equal(page.docs.abstract.includes('Start with cheapest and cover all'), true)
+    assert.equal(page.docs.abstract.includes('minimum cost'), true)
     assert.equal(page.docs.api.length, 7)
     assert.deepEqual(
       page.docs.api.map((a) => `${a.method} ${a.path}`),
@@ -522,7 +621,7 @@ test('paste in free AI chat', async (t) => {
       const path = new URL(row.url).pathname
       const res = await fetchOf(path === '/' ? '/' : path)
       assert.equal(res.status, 200, row.url)
-      assert.equal((res.headers.get('content-type') ?? '').includes('application/json'), true)
+      assert.equal((res.headers.get('content-type') ?? '').includes('ld+json'), true)
     }
   })
 
@@ -542,7 +641,7 @@ test('live qpu.uuidna.com', async (t) => {
   const quantum = (await mcpOf('qpu_quantum')) as { fused: number }
   await t.test('chat fetch is JSON quantum', async () => {
     assert.equal(root.status, 200)
-    assert.equal((root.headers.get('content-type') ?? '').includes('application/json'), true)
+    assert.equal((root.headers.get('content-type') ?? '').includes('json'), true)
     const page = (await root.json()) as {
       kind: string
       holds: boolean
@@ -574,13 +673,20 @@ test('live qpu.uuidna.com', async (t) => {
     assert.equal(called.status, 200)
     const catalog = (await listed.json()) as { result: { tools: { name: string }[] } }
     const call = (await called.json()) as {
-      result: { holds: boolean; fused: number; only?: { holds: boolean }; circuit?: { only: { holds: boolean } }; docs?: unknown }
+      result: {
+        holds?: boolean
+        fused?: number
+        structuredContent?: { holds?: boolean; fused?: number; circuit?: { only: { holds: boolean } }; docs?: unknown }
+        circuit?: { only: { holds: boolean } }
+        docs?: unknown
+      }
     }
+    const shown = call.result.structuredContent ?? call.result
     assert.equal(catalog.result.tools[0]?.name, 'qpu_quantum')
-    assert.equal(call.result.holds, true)
-    assert.equal(call.result.fused, quantum.fused)
-    assert.equal(call.result.circuit?.only.holds, true)
-    assert.equal(call.result.docs, undefined)
+    assert.equal(shown.holds, true)
+    assert.equal(shown.fused, quantum.fused)
+    assert.equal(shown.circuit?.only.holds, true)
+    assert.equal(shown.docs, undefined)
   })
   await t.test('no auth message proxy', async () => {
     const inbox = await fetch(`${live}/message`, { headers: html })
@@ -602,4 +708,59 @@ test('live qpu.uuidna.com', async (t) => {
     assert.equal(hop.await, false)
     assert.equal(hop.hop, hop.lane)
   })
+})
+
+test('raid starts cheapest and covers all', async () => {
+  const catalog = (await (await fetchOf('/storage')).json()) as {
+    kind: string
+    anything: boolean
+    host: boolean
+    raid: {
+      holds: boolean
+      start: string
+      cheapest: string
+      cover: string[]
+      pick: { name: string; cost: number }
+      types: { name: string; cost: number; face: number }[]
+      clouds: { name: string }[]
+      cluster: { rotate: boolean; cost: string; security: string; speed: string }
+    }
+    holds: boolean
+  }
+  assert.equal(catalog.kind, 'storage')
+  assert.equal(catalog.anything, true)
+  assert.equal(catalog.host, false)
+  assert.equal(catalog.holds, true)
+  assert.equal(catalog.raid.holds, true)
+  assert.equal(catalog.raid.start, 'cheapest')
+  assert.equal(catalog.raid.cheapest, '0')
+  assert.equal(catalog.raid.cover[0], '0')
+  assert.equal(catalog.raid.cover.length, 14)
+  assert.equal(catalog.raid.types[0]?.name, '0')
+  assert.equal(catalog.raid.types[0]?.cost, 1)
+  assert.equal(catalog.raid.pick.name, catalog.raid.cover[0])
+  assert.equal(catalog.raid.clouds.length, 14)
+  assert.equal(catalog.raid.cluster.rotate, true)
+  assert.equal(catalog.raid.cluster.cost, 'minimum')
+  assert.equal(catalog.raid.cluster.security, 'crypt')
+  assert.equal(catalog.raid.cluster.speed, 'coordinated')
+  const picked: string[] = []
+  for (let i = 0; i < 14; i++) {
+    const res = await fetchOf(`/storage/docs/sheet-${i}`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ kind: 'docs', row: i, value: i + i }),
+    })
+    assert.equal(res.status, 200)
+    const stored = (await res.json()) as { holds: boolean; raid: { pick: { name: string }; cover: string[] }; value: { kind: string } }
+    assert.equal(stored.holds, true)
+    assert.equal(stored.value.kind, 'docs')
+    picked.push(stored.raid.pick.name)
+  }
+  assert.deepEqual([...picked].sort(), [...catalog.raid.cover].sort())
+  const got = (await (await fetchOf('/storage/docs/sheet-0')).json()) as { key: string; value: { kind: string; row: number }; holds: boolean }
+  assert.equal(got.holds, true)
+  assert.equal(got.key, 'docs/sheet-0')
+  assert.equal(got.value.kind, 'docs')
+  assert.equal(got.value.row, 0)
 })

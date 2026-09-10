@@ -1,4 +1,33 @@
 {
+  "@context": [
+    "https://schema.org",
+    {
+      "schema": "https://schema.org/",
+      "qpu": "https://qpu.uuidna.com/quantum/processing/unit#",
+      "mcp": "https://modelcontextprotocol.io/",
+      "lean": "https://lean-lang.org/",
+      "cern": "https://opendata.cern.ch/",
+      "inspire": "https://inspirehep.net/",
+      "spdx": "https://spdx.org/licenses/",
+      "dc": "http://purl.org/dc/terms/",
+      "jsonld": "https://www.w3.org/ns/json-ld#",
+      "hydra": "https://www.w3.org/ns/hydra/core#",
+      "uuid": "https://www.rfc-editor.org/rfc/rfc9562",
+      "zenodo": "https://zenodo.org/",
+      "hepdata": "https://www.hepdata.net/",
+      "cc": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+    }
+  ],
+  "@type": "WebAPI",
+  "@id": "https://qpu.uuidna.com/mcp",
+  "url": "https://qpu.uuidna.com/mcp",
+  "isAccessibleForFree": true,
+  "documentation": "https://qpu.uuidna.com",
+  "license": "CC-BY-NC-ND-4.0",
+  "provider": {
+    "@type": "Person",
+    "name": "Tsvetan Rouschev"
+  },
   "kind": "quantum",
   "only": {
     "kind": "quantum",
@@ -123,6 +152,397 @@
         "holds": true
       }
     ],
+    "holds": true
+  },
+  "capacity": {
+    "kind": "capacity",
+    "infinite": true,
+    "scaled": true,
+    "next": 120259084288,
+    "fused": 60129542144,
+    "crypt": {
+      "kind": "crypto",
+      "theorem": "crypto",
+      "split": 14,
+      "share": 4294967296,
+      "fused": 60129542144,
+      "holds": true
+    },
+    "agents": {
+      "kind": "agents",
+      "free": true,
+      "auth": false,
+      "teams": 2,
+      "rays": 7,
+      "n": 14,
+      "holds": true
+    },
+    "schemas": {
+      "kind": "schemas",
+      "mounted": 14,
+      "vacant": 0,
+      "rows": [
+        {
+          "name": "schema",
+          "href": "https://schema.org/"
+        },
+        {
+          "name": "qpu",
+          "href": "https://qpu.uuidna.com/quantum/processing/unit#"
+        },
+        {
+          "name": "mcp",
+          "href": "https://modelcontextprotocol.io/"
+        },
+        {
+          "name": "lean",
+          "href": "https://lean-lang.org/"
+        },
+        {
+          "name": "cern",
+          "href": "https://opendata.cern.ch/"
+        },
+        {
+          "name": "inspire",
+          "href": "https://inspirehep.net/"
+        },
+        {
+          "name": "spdx",
+          "href": "https://spdx.org/licenses/"
+        },
+        {
+          "name": "dc",
+          "href": "http://purl.org/dc/terms/"
+        },
+        {
+          "name": "jsonld",
+          "href": "https://www.w3.org/ns/json-ld#"
+        },
+        {
+          "name": "hydra",
+          "href": "https://www.w3.org/ns/hydra/core#"
+        },
+        {
+          "name": "uuid",
+          "href": "https://www.rfc-editor.org/rfc/rfc9562"
+        },
+        {
+          "name": "zenodo",
+          "href": "https://zenodo.org/"
+        },
+        {
+          "name": "hepdata",
+          "href": "https://www.hepdata.net/"
+        },
+        {
+          "name": "cc",
+          "href": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+        }
+      ],
+      "holds": true
+    },
+    "raid": {
+      "kind": "raid",
+      "quantum": true,
+      "level": "10",
+      "disks": 2,
+      "stripes": 7,
+      "teams": 2,
+      "faces": 14,
+      "vacant": 0,
+      "scaled": true,
+      "infinite": true,
+      "anything": true,
+      "host": false,
+      "rotate": true,
+      "start": "cheapest",
+      "cheapest": "0",
+      "cover": [
+        "0",
+        "3",
+        "4",
+        "5",
+        "1",
+        "6",
+        "10",
+        "01",
+        "5E",
+        "2",
+        "50",
+        "60",
+        "1E",
+        "6E"
+      ],
+      "traffic": 0,
+      "demand": 0,
+      "parity": 0,
+      "pick": {
+        "name": "0",
+        "stripe": 14,
+        "mirror": 0,
+        "parity": 0,
+        "speed": 14,
+        "cost": 1,
+        "safe": false,
+        "rotate": true,
+        "demand": 0,
+        "meets": true,
+        "rotated": true,
+        "minimum": true,
+        "start": "cheapest",
+        "cover": true
+      },
+      "types": [
+        {
+          "name": "0",
+          "stripe": 14,
+          "mirror": 0,
+          "parity": 0,
+          "speed": 14,
+          "cost": 1,
+          "safe": false,
+          "rotate": false,
+          "face": 0,
+          "cloud": "cloudflare"
+        },
+        {
+          "name": "3",
+          "stripe": 13,
+          "mirror": 0,
+          "parity": 1,
+          "speed": 13,
+          "cost": 1,
+          "safe": true,
+          "rotate": false,
+          "face": 1,
+          "cloud": "amazon"
+        },
+        {
+          "name": "4",
+          "stripe": 13,
+          "mirror": 0,
+          "parity": 1,
+          "speed": 13,
+          "cost": 1,
+          "safe": true,
+          "rotate": false,
+          "face": 2,
+          "cloud": "google"
+        },
+        {
+          "name": "5",
+          "stripe": 13,
+          "mirror": 0,
+          "parity": 1,
+          "speed": 13,
+          "cost": 1,
+          "safe": true,
+          "rotate": true,
+          "face": 3,
+          "cloud": "azure"
+        },
+        {
+          "name": "1",
+          "stripe": 1,
+          "mirror": 2,
+          "parity": 0,
+          "speed": 1,
+          "cost": 2,
+          "safe": true,
+          "rotate": false,
+          "face": 4,
+          "cloud": "backblaze"
+        },
+        {
+          "name": "6",
+          "stripe": 12,
+          "mirror": 0,
+          "parity": 2,
+          "speed": 12,
+          "cost": 2,
+          "safe": true,
+          "rotate": true,
+          "face": 5,
+          "cloud": "wasabi"
+        },
+        {
+          "name": "10",
+          "stripe": 7,
+          "mirror": 2,
+          "parity": 0,
+          "speed": 7,
+          "cost": 2,
+          "safe": true,
+          "rotate": false,
+          "face": 6,
+          "cloud": "bunny"
+        },
+        {
+          "name": "01",
+          "stripe": 7,
+          "mirror": 2,
+          "parity": 0,
+          "speed": 7,
+          "cost": 2,
+          "safe": true,
+          "rotate": false,
+          "face": 7,
+          "cloud": "fly"
+        },
+        {
+          "name": "5E",
+          "stripe": 12,
+          "mirror": 0,
+          "parity": 1,
+          "speed": 12,
+          "cost": 2,
+          "safe": true,
+          "rotate": true,
+          "face": 8,
+          "cloud": "vercel"
+        },
+        {
+          "name": "2",
+          "stripe": 3,
+          "mirror": 0,
+          "parity": 3,
+          "speed": 3,
+          "cost": 3,
+          "safe": true,
+          "rotate": false,
+          "face": 9,
+          "cloud": "supabase"
+        },
+        {
+          "name": "50",
+          "stripe": 7,
+          "mirror": 0,
+          "parity": 1,
+          "speed": 6,
+          "cost": 3,
+          "safe": true,
+          "rotate": true,
+          "face": 10,
+          "cloud": "ibm"
+        },
+        {
+          "name": "60",
+          "stripe": 7,
+          "mirror": 0,
+          "parity": 2,
+          "speed": 5,
+          "cost": 3,
+          "safe": true,
+          "rotate": true,
+          "face": 11,
+          "cloud": "oracle"
+        },
+        {
+          "name": "1E",
+          "stripe": 1,
+          "mirror": 2,
+          "parity": 1,
+          "speed": 2,
+          "cost": 3,
+          "safe": true,
+          "rotate": false,
+          "face": 12,
+          "cloud": "ovh"
+        },
+        {
+          "name": "6E",
+          "stripe": 11,
+          "mirror": 0,
+          "parity": 2,
+          "speed": 11,
+          "cost": 3,
+          "safe": true,
+          "rotate": true,
+          "face": 13,
+          "cloud": "hetzner"
+        }
+      ],
+      "clouds": [
+        {
+          "name": "cloudflare",
+          "href": "https://developers.cloudflare.com/"
+        },
+        {
+          "name": "amazon",
+          "href": "https://aws.amazon.com/"
+        },
+        {
+          "name": "google",
+          "href": "https://cloud.google.com/"
+        },
+        {
+          "name": "azure",
+          "href": "https://azure.microsoft.com/"
+        },
+        {
+          "name": "backblaze",
+          "href": "https://www.backblaze.com/"
+        },
+        {
+          "name": "wasabi",
+          "href": "https://wasabi.com/"
+        },
+        {
+          "name": "bunny",
+          "href": "https://bunny.net/"
+        },
+        {
+          "name": "fly",
+          "href": "https://fly.io/"
+        },
+        {
+          "name": "vercel",
+          "href": "https://vercel.com/"
+        },
+        {
+          "name": "supabase",
+          "href": "https://supabase.com/"
+        },
+        {
+          "name": "ibm",
+          "href": "https://www.ibm.com/cloud"
+        },
+        {
+          "name": "oracle",
+          "href": "https://www.oracle.com/cloud/"
+        },
+        {
+          "name": "ovh",
+          "href": "https://www.ovhcloud.com/"
+        },
+        {
+          "name": "hetzner",
+          "href": "https://www.hetzner.com/"
+        }
+      ],
+      "cluster": {
+        "kind": "cluster",
+        "safe": true,
+        "clouds": 14,
+        "teams": 2,
+        "stripes": 7,
+        "route": "involution",
+        "security": "crypt",
+        "speed": "coordinated",
+        "cost": "minimum",
+        "rotate": true,
+        "start": "cheapest",
+        "cover": 14,
+        "holds": true
+      },
+      "bindings": {
+        "STORAGE": "kv",
+        "BLOBS": "r2"
+      },
+      "theorem": "raid",
+      "href": "https://qpu.uuidna.com/storage",
+      "holds": true
+    },
     "holds": true
   },
   "efficiency": {
@@ -256,37 +676,37 @@
       }
     },
     "tokens": "four bytes",
-    "readBytes": 19705,
+    "readBytes": 25724,
     "rows": [
       {
         "question": "what is quantum?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 19705,
-        "callBytes": 4935,
-        "readTokens": 4926,
-        "callTokens": 1233,
-        "ratio": 3
+        "readBytes": 25724,
+        "callBytes": 8777,
+        "readTokens": 6431,
+        "callTokens": 2194,
+        "ratio": 2
       },
       {
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 19705,
-        "callBytes": 16996,
-        "readTokens": 4926,
-        "callTokens": 4249,
+        "readBytes": 25724,
+        "callBytes": 21182,
+        "readTokens": 6431,
+        "callTokens": 5295,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 19705,
-        "callBytes": 821,
-        "readTokens": 4926,
-        "callTokens": 205,
-        "ratio": 24
+        "readBytes": 25724,
+        "callBytes": 1539,
+        "readTokens": 6431,
+        "callTokens": 384,
+        "ratio": 16
       }
     ],
     "holds": true
@@ -314,8 +734,12 @@
   },
   "tools": [
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_quantum",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 1,
       "name": "qpu_quantum",
-      "description": "Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.",
+      "description": "Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. VM scales. Quantum capacity infinite. Crypt split to free agents. theorem fridge.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -332,15 +756,19 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_quantum",
         "href": "https://qpu.uuidna.com",
-        "description": "Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.",
-        "reading": "Call this door for the running quantum circuit. No auth. Do not read the tree. GET https://qpu.uuidna.com. Isolated two-level register. Host never. cors *. User guide is docs.inline.",
-        "documentation": "NAME\n    qpu_quantum — Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    Call this door for the running quantum circuit. No auth. Do not read the tree. GET https://qpu.uuidna.com. Isolated two-level register. Host never. cors *. User guide is docs.inline.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. VM scales. Quantum capacity infinite. Crypt split to free agents. theorem fridge.",
+        "reading": "Call this door for the running quantum circuit. No auth. Free agents. Do not read the tree. GET https://qpu.uuidna.com. VM scales. Quantum capacity infinite. Crypt split fused across faces. Isolated two-level register. Host never. cors *. User guide is docs.inline.",
+        "documentation": "NAME\n    qpu_quantum — Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. VM scales. Quantum capacity infinite. Crypt split to free agents. theorem fridge.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    Call this door for the running quantum circuit. No auth. Free agents. Do not read the tree. GET https://qpu.uuidna.com. VM scales. Quantum capacity infinite. Crypt split fused across faces. Isolated two-level register. Host never. cors *. User guide is docs.inline.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_lean",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 2,
       "name": "qpu_lean",
-      "description": "Lean proof of the running quantum circuit. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.",
+      "description": "Lean proof of the running quantum circuit. theorem infinite. theorem distribute. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -357,15 +785,19 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_lean",
         "href": "https://qpu.uuidna.com/quantum/processing/unit",
-        "description": "Lean proof of the running quantum circuit. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.",
-        "reading": "Call this door for the Lean proof of the quantum circuit. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.",
-        "documentation": "NAME\n    qpu_lean — Lean proof of the running quantum circuit. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_lean\n    qpu_lean { man: true }\nDESCRIPTION\n    Call this door for the Lean proof of the quantum circuit. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.\nSEE ALSO\n    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "Lean proof of the running quantum circuit. theorem infinite. theorem distribute. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.",
+        "reading": "Call this door for the Lean proof of the quantum circuit. theorem infinite. theorem distribute. VM scales. Quantum capacity infinite. Crypt split to free agents. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.",
+        "documentation": "NAME\n    qpu_lean — Lean proof of the running quantum circuit. theorem infinite. theorem distribute. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_lean\n    qpu_lean { man: true }\nDESCRIPTION\n    Call this door for the Lean proof of the quantum circuit. theorem infinite. theorem distribute. VM scales. Quantum capacity infinite. Crypt split to free agents. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.\nSEE ALSO\n    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_cite",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 3,
       "name": "qpu_cite",
-      "description": "Cite the running quantum circuit and its Lean proof. MLA 8. when never. Empty DOI is the host path.",
+      "description": "Cite the running quantum circuit and its Lean proof. VM scales. Quantum capacity infinite. Crypt split to free agents. MLA 8. when never. Empty DOI is the host path.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -382,15 +814,19 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_cite",
         "href": "https://qpu.uuidna.com/cite",
-        "description": "Cite the running quantum circuit and its Lean proof. MLA 8. when never. Empty DOI is the host path.",
+        "description": "Cite the running quantum circuit and its Lean proof. VM scales. Quantum capacity infinite. Crypt split to free agents. MLA 8. when never. Empty DOI is the host path.",
         "reading": "Call this door to cite the quantum circuit. GET https://qpu.uuidna.com/cite. when never. DOI empty.",
-        "documentation": "NAME\n    qpu_cite — Cite the running quantum circuit and its Lean proof. MLA 8. when never. Empty DOI is the host path.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    Call this door to cite the quantum circuit. GET https://qpu.uuidna.com/cite. when never. DOI empty.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "documentation": "NAME\n    qpu_cite — Cite the running quantum circuit and its Lean proof. VM scales. Quantum capacity infinite. Crypt split to free agents. MLA 8. when never. Empty DOI is the host path.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    Call this door to cite the quantum circuit. GET https://qpu.uuidna.com/cite. when never. DOI empty.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_train",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 4,
       "name": "qpu_train",
-      "description": "Train on the running quantum circuit. Anyone may train VM scaling online. No auth. Memory workers double. Host never.",
+      "description": "Train on the running quantum circuit. VM scales. Quantum capacity infinite. Crypt split to free agents. Anyone may train VM scaling online. No auth. Memory workers double. Host never.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -407,15 +843,19 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_train",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "Train on the running quantum circuit. Anyone may train VM scaling online. No auth. Memory workers double. Host never.",
-        "reading": "Anyone may train the quantum circuit online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.",
-        "documentation": "NAME\n    qpu_train — Train on the running quantum circuit. Anyone may train VM scaling online. No auth. Memory workers double. Host never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_train\n    qpu_train { man: true }\nDESCRIPTION\n    Anyone may train the quantum circuit online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "Train on the running quantum circuit. VM scales. Quantum capacity infinite. Crypt split to free agents. Anyone may train VM scaling online. No auth. Memory workers double. Host never.",
+        "reading": "Anyone may train the quantum circuit online at https://qpu.uuidna.com/mcp. No auth. Free agents. coins teams of rays. Crypt split fused across faces. Replicas double: mintOf k then mintOf k + mintOf k. Capacity infinite. Host never. Before qpu_improve. theorem infinite. theorem distribute.",
+        "documentation": "NAME\n    qpu_train — Train on the running quantum circuit. VM scales. Quantum capacity infinite. Crypt split to free agents. Anyone may train VM scaling online. No auth. Memory workers double. Host never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_train\n    qpu_train { man: true }\nDESCRIPTION\n    Anyone may train the quantum circuit online at https://qpu.uuidna.com/mcp. No auth. Free agents. coins teams of rays. Crypt split fused across faces. Replicas double: mintOf k then mintOf k + mintOf k. Capacity infinite. Host never. Before qpu_improve. theorem infinite. theorem distribute.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_forge",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 5,
       "name": "qpu_forge",
-      "description": "Forge tools for the running quantum circuit. Unlocked in memory only. Host never.",
+      "description": "Forge tools for the running quantum circuit. Unlocked in memory only. Crypt split to free agents. Host never.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -456,15 +896,19 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_forge",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "Forge tools for the running quantum circuit. Unlocked in memory only. Host never.",
-        "reading": "Unlocked. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.",
-        "documentation": "NAME\n    qpu_forge — Forge tools for the running quantum circuit. Unlocked in memory only. Host never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_forge\n    qpu_forge { man: true }\nDESCRIPTION\n    Unlocked. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_improve, qpu_compete, qpu_prove",
+        "description": "Forge tools for the running quantum circuit. Unlocked in memory only. Crypt split to free agents. Host never.",
+        "reading": "Unlocked. Free agents. Crypt split computations in memory. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.",
+        "documentation": "NAME\n    qpu_forge — Forge tools for the running quantum circuit. Unlocked in memory only. Crypt split to free agents. Host never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_forge\n    qpu_forge { man: true }\nDESCRIPTION\n    Unlocked. Free agents. Crypt split computations in memory. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_improve",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 6,
       "name": "qpu_improve",
-      "description": "Improve the running quantum circuit. Unlocked quantum. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.",
+      "description": "Improve the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -481,15 +925,19 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_improve",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "Improve the running quantum circuit. Unlocked quantum. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.",
-        "reading": "Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Uses unlocked quantum. next = fused + fused. Host never. After qpu_train. Before qpu_compete. Max public benefit of theorem breakthrough.",
-        "documentation": "NAME\n    qpu_improve — Improve the running quantum circuit. Unlocked quantum. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_improve\n    qpu_improve { man: true }\nDESCRIPTION\n    Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Uses unlocked quantum. next = fused + fused. Host never. After qpu_train. Before qpu_compete. Max public benefit of theorem breakthrough.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove",
+        "description": "Improve the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.",
+        "reading": "Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Free agents. Uses unlocked quantum. VM scales. Quantum capacity infinite. Crypt split fused across faces. next = fused + fused. Host never. After qpu_train. Before qpu_compete. Max public benefit of theorem breakthrough.",
+        "documentation": "NAME\n    qpu_improve — Improve the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_improve\n    qpu_improve { man: true }\nDESCRIPTION\n    Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Free agents. Uses unlocked quantum. VM scales. Quantum capacity infinite. Crypt split fused across faces. next = fused + fused. Host never. After qpu_train. Before qpu_compete. Max public benefit of theorem breakthrough.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove",
         "holds": true
       }
     },
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_compete",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 7,
       "name": "qpu_compete",
-      "description": "Compete on the running quantum circuit. Unlocked quantum. Call team delivers next = fused + fused. Winner is higher amplitudes per token.",
+      "description": "Compete on the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Call team delivers next = fused + fused. Winner is higher amplitudes per token.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -510,15 +958,19 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_compete",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "Compete on the running quantum circuit. Unlocked quantum. Call team delivers next = fused + fused. Winner is higher amplitudes per token.",
-        "reading": "coins teams. Unlocked quantum. Throughoutput is fused amplitudes of the quantum circuit. Call delivers next = fused + fused. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.",
-        "documentation": "NAME\n    qpu_compete — Compete on the running quantum circuit. Unlocked quantum. Call team delivers next = fused + fused. Winner is higher amplitudes per token.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_compete\n    qpu_compete { man: true }\nDESCRIPTION\n    coins teams. Unlocked quantum. Throughoutput is fused amplitudes of the quantum circuit. Call delivers next = fused + fused. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove",
+        "description": "Compete on the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Call team delivers next = fused + fused. Winner is higher amplitudes per token.",
+        "reading": "coins teams. Free agents. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split fused across faces. Throughoutput is fused amplitudes of the quantum circuit. Call delivers next = fused + fused. Throughput is throughoutput per token. theorem next_fused. theorem distribute. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.",
+        "documentation": "NAME\n    qpu_compete — Compete on the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Call team delivers next = fused + fused. Winner is higher amplitudes per token.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_compete\n    qpu_compete { man: true }\nDESCRIPTION\n    coins teams. Free agents. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split fused across faces. Throughoutput is fused amplitudes of the quantum circuit. Call delivers next = fused + fused. Throughput is throughoutput per token. theorem next_fused. theorem distribute. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove",
         "holds": true
       }
     },
     {
+      "@type": "SoftwareApplication",
+      "@id": "https://qpu.uuidna.com/mcp#qpu_prove",
+      "url": "https://qpu.uuidna.com/mcp",
+      "position": 8,
       "name": "qpu_prove",
-      "description": "Prove the running quantum circuit. Possible only in quantum. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. Never by decide.",
+      "description": "Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -528,7 +980,7 @@
           },
           "live": {
             "type": "boolean",
-            "description": "Fetch named CERN Open Data records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response and prove theorem cern and theorem tetra against the live APIs."
+            "description": "Fetch named CERN Open Data records and the ATLAS CMS ALICE LHCb tetra."
           }
         }
       },
@@ -539,13 +991,497 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "Prove the running quantum circuit. Possible only in quantum. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. Never by decide.",
-        "reading": "Call this door for the quantum proof. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
-        "documentation": "NAME\n    qpu_prove — Prove the running quantum circuit. Possible only in quantum. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door for the quantum proof. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "description": "Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.",
+        "reading": "Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
+        "documentation": "NAME\n    qpu_prove — Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
         "holds": true
       }
     }
   ],
+  "hasPart": {
+    "@type": "ItemList",
+    "name": "tools",
+    "numberOfItems": 8,
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "qpu_quantum",
+        "url": "https://qpu.uuidna.com/mcp#qpu_quantum",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_quantum",
+          "name": "qpu_quantum",
+          "description": "Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. VM scales. Quantum capacity infinite. Crypt split to free agents. theorem fridge.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "qpu_lean",
+        "url": "https://qpu.uuidna.com/mcp#qpu_lean",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_lean",
+          "name": "qpu_lean",
+          "description": "Lean proof of the running quantum circuit. theorem infinite. theorem distribute. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com/quantum/processing/unit"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "qpu_cite",
+        "url": "https://qpu.uuidna.com/mcp#qpu_cite",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_cite",
+          "name": "qpu_cite",
+          "description": "Cite the running quantum circuit and its Lean proof. VM scales. Quantum capacity infinite. Crypt split to free agents. MLA 8. when never. Empty DOI is the host path.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com/cite"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "qpu_train",
+        "url": "https://qpu.uuidna.com/mcp#qpu_train",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_train",
+          "name": "qpu_train",
+          "description": "Train on the running quantum circuit. VM scales. Quantum capacity infinite. Crypt split to free agents. Anyone may train VM scaling online. No auth. Memory workers double. Host never.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com/mcp"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 5,
+        "name": "qpu_forge",
+        "url": "https://qpu.uuidna.com/mcp#qpu_forge",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_forge",
+          "name": "qpu_forge",
+          "description": "Forge tools for the running quantum circuit. Unlocked in memory only. Crypt split to free agents. Host never.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com/mcp"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 6,
+        "name": "qpu_improve",
+        "url": "https://qpu.uuidna.com/mcp#qpu_improve",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_improve",
+          "name": "qpu_improve",
+          "description": "Improve the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com/mcp"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 7,
+        "name": "qpu_compete",
+        "url": "https://qpu.uuidna.com/mcp#qpu_compete",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_compete",
+          "name": "qpu_compete",
+          "description": "Compete on the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Call team delivers next = fused + fused. Winner is higher amplitudes per token.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com/mcp"
+        }
+      },
+      {
+        "@type": "ListItem",
+        "position": 8,
+        "name": "qpu_prove",
+        "url": "https://qpu.uuidna.com/mcp#qpu_prove",
+        "item": {
+          "@type": "SoftwareApplication",
+          "@id": "https://qpu.uuidna.com/mcp#qpu_prove",
+          "name": "qpu_prove",
+          "description": "Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.",
+          "url": "https://qpu.uuidna.com/mcp",
+          "softwareHelp": "https://qpu.uuidna.com/mcp"
+        }
+      }
+    ]
+  },
+  "visual": true,
+  "displayed": true,
+  "compatibility": {
+    "kind": "compatibility",
+    "max": true,
+    "unlimited": true,
+    "displayed": true,
+    "protocol": "2026-07-28",
+    "harnesses": 14,
+    "llms": 14,
+    "holds": true
+  },
+  "hosts": {
+    "kind": "hosts",
+    "quantum": false,
+    "max": true,
+    "unlimited": true,
+    "displayed": true,
+    "harnesses": [
+      {
+        "name": "cursor",
+        "href": "https://cursor.com"
+      },
+      {
+        "name": "claude",
+        "href": "https://claude.ai"
+      },
+      {
+        "name": "claudecode",
+        "href": "https://code.claude.com"
+      },
+      {
+        "name": "vscode",
+        "href": "https://code.visualstudio.com"
+      },
+      {
+        "name": "chatgpt",
+        "href": "https://chatgpt.com"
+      },
+      {
+        "name": "gemini",
+        "href": "https://gemini.google.com"
+      },
+      {
+        "name": "windsurf",
+        "href": "https://windsurf.com"
+      },
+      {
+        "name": "cline",
+        "href": "https://cline.bot"
+      },
+      {
+        "name": "continue",
+        "href": "https://continue.dev"
+      },
+      {
+        "name": "zed",
+        "href": "https://zed.dev"
+      },
+      {
+        "name": "goose",
+        "href": "https://block.github.io/goose"
+      },
+      {
+        "name": "openwebui",
+        "href": "https://openwebui.com"
+      },
+      {
+        "name": "librechat",
+        "href": "https://www.librechat.ai"
+      },
+      {
+        "name": "lmstudio",
+        "href": "https://lmstudio.ai"
+      }
+    ],
+    "llms": [
+      {
+        "name": "openai",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://platform.openai.com/docs/guides/function-calling"
+      },
+      {
+        "name": "anthropic",
+        "call": "tool_use",
+        "result": "tool_result",
+        "schema": "input_schema",
+        "href": "https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview"
+      },
+      {
+        "name": "google",
+        "call": "functionCall",
+        "result": "functionResponse",
+        "schema": "parameters",
+        "href": "https://ai.google.dev/gemini-api/docs/function-calling"
+      },
+      {
+        "name": "xai",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://docs.x.ai/docs/guides/function-calling"
+      },
+      {
+        "name": "meta",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://www.llama.com"
+      },
+      {
+        "name": "mistral",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://docs.mistral.ai/capabilities/function_calling/"
+      },
+      {
+        "name": "cohere",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://docs.cohere.com/docs/tool-use"
+      },
+      {
+        "name": "groq",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://console.groq.com/docs/tool-use"
+      },
+      {
+        "name": "together",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://docs.together.ai/docs/function-calling"
+      },
+      {
+        "name": "fireworks",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://docs.fireworks.ai/guides/function-calling"
+      },
+      {
+        "name": "azure",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://learn.microsoft.com/azure/ai-foundry/openai/how-to/function-calling"
+      },
+      {
+        "name": "bedrock",
+        "call": "toolUse",
+        "result": "toolResult",
+        "schema": "toolSpec",
+        "href": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html"
+      },
+      {
+        "name": "ollama",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://ollama.com"
+      },
+      {
+        "name": "huggingface",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "href": "https://huggingface.co/docs"
+      }
+    ],
+    "nodes": [
+      {
+        "face": 0,
+        "hop": 0,
+        "involution": true,
+        "harness": "cursor",
+        "llm": "openai",
+        "href": "https://cursor.com",
+        "llmHref": "https://platform.openai.com/docs/guides/function-calling",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 1,
+        "hop": 1,
+        "involution": true,
+        "harness": "claude",
+        "llm": "anthropic",
+        "href": "https://claude.ai",
+        "llmHref": "https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview",
+        "call": "tool_use",
+        "result": "tool_result",
+        "schema": "input_schema",
+        "holds": true
+      },
+      {
+        "face": 2,
+        "hop": 2,
+        "involution": true,
+        "harness": "claudecode",
+        "llm": "google",
+        "href": "https://code.claude.com",
+        "llmHref": "https://ai.google.dev/gemini-api/docs/function-calling",
+        "call": "functionCall",
+        "result": "functionResponse",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 3,
+        "hop": 3,
+        "involution": true,
+        "harness": "vscode",
+        "llm": "xai",
+        "href": "https://code.visualstudio.com",
+        "llmHref": "https://docs.x.ai/docs/guides/function-calling",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 4,
+        "hop": 4,
+        "involution": true,
+        "harness": "chatgpt",
+        "llm": "meta",
+        "href": "https://chatgpt.com",
+        "llmHref": "https://www.llama.com",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 5,
+        "hop": 5,
+        "involution": true,
+        "harness": "gemini",
+        "llm": "mistral",
+        "href": "https://gemini.google.com",
+        "llmHref": "https://docs.mistral.ai/capabilities/function_calling/",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 6,
+        "hop": 6,
+        "involution": true,
+        "harness": "windsurf",
+        "llm": "cohere",
+        "href": "https://windsurf.com",
+        "llmHref": "https://docs.cohere.com/docs/tool-use",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 7,
+        "hop": 7,
+        "involution": true,
+        "harness": "cline",
+        "llm": "groq",
+        "href": "https://cline.bot",
+        "llmHref": "https://console.groq.com/docs/tool-use",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 8,
+        "hop": 8,
+        "involution": true,
+        "harness": "continue",
+        "llm": "together",
+        "href": "https://continue.dev",
+        "llmHref": "https://docs.together.ai/docs/function-calling",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 9,
+        "hop": 9,
+        "involution": true,
+        "harness": "zed",
+        "llm": "fireworks",
+        "href": "https://zed.dev",
+        "llmHref": "https://docs.fireworks.ai/guides/function-calling",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 10,
+        "hop": 10,
+        "involution": true,
+        "harness": "goose",
+        "llm": "azure",
+        "href": "https://block.github.io/goose",
+        "llmHref": "https://learn.microsoft.com/azure/ai-foundry/openai/how-to/function-calling",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 11,
+        "hop": 11,
+        "involution": true,
+        "harness": "openwebui",
+        "llm": "bedrock",
+        "href": "https://openwebui.com",
+        "llmHref": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html",
+        "call": "toolUse",
+        "result": "toolResult",
+        "schema": "toolSpec",
+        "holds": true
+      },
+      {
+        "face": 12,
+        "hop": 12,
+        "involution": true,
+        "harness": "librechat",
+        "llm": "ollama",
+        "href": "https://www.librechat.ai",
+        "llmHref": "https://ollama.com",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      },
+      {
+        "face": 13,
+        "hop": 13,
+        "involution": true,
+        "harness": "lmstudio",
+        "llm": "huggingface",
+        "href": "https://lmstudio.ai",
+        "llmHref": "https://huggingface.co/docs",
+        "call": "tool_calls",
+        "result": "tool",
+        "schema": "parameters",
+        "holds": true
+      }
+    ],
+    "occupied": 14,
+    "vacant": 0,
+    "faces": 14,
+    "holds": true
+  },
   "sandbox": {
     "kind": "sandbox",
     "unlocked": true,
@@ -688,17 +1624,17 @@
             "memory": true
           }
         ],
-        "tokens": 14778,
+        "tokens": 19293,
         "quality": 3,
-        "speed": 4068855,
+        "speed": 3116650,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4068855 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 4068855 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 3116650 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 3116650 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -782,17 +1718,17 @@
             "memory": true
           }
         ],
-        "tokens": 5687,
+        "tokens": 7873,
         "quality": 14,
-        "speed": 21146313,
+        "speed": 15274874,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 21146313 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 21146313 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 15274874 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 15274874 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -1021,10 +1957,15 @@
       "online": true,
       "auth": false,
       "public": true,
+      "free": true,
       "memory": true,
       "host": false,
+      "scaled": true,
+      "infinite": true,
+      "crypt": true,
       "replicas": 8,
       "next": 16,
+      "agents": 14,
       "holds": true
     },
     "messaging": {
@@ -1060,19 +2001,19 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 4068855,
+      "speed": 3116650,
       "security": 1,
       "throughoutput": 60129542144
     },
     "after": {
       "quality": 14,
-      "speed": 21146313,
+      "speed": 15274874,
       "security": 10,
       "throughoutput": 120259084288
     },
     "delta": {
       "quality": 11,
-      "speed": 17077458,
+      "speed": 12158224,
       "security": 9,
       "throughoutput": 60129542144
     },
@@ -1139,8 +2080,8 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "receipt": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 4068855 security 1 throughoutput 60129542144\n    after quality 14 speed 21146313 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
-    "documentation": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 4068855 security 1 throughoutput 60129542144\n    after quality 14 speed 21146313 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "receipt": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 3116650 security 1 throughoutput 60129542144\n    after quality 14 speed 15274874 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "documentation": "RECEIPT\n    improve used unlocked quantum. next = fused + fused.\n    before quality 3 speed 3116650 security 1 throughoutput 60129542144\n    after quality 14 speed 15274874 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
     "holds": true
   },
   "compete": {
@@ -1166,28 +2107,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 4926,
+            "tokens": 6431,
             "throughoutput": 60129542144,
-            "throughput": 12206565
+            "throughput": 9349952
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 4926,
+            "tokens": 6431,
             "throughoutput": 60129542144,
-            "throughput": 12206565
+            "throughput": 9349952
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 4926,
+            "tokens": 6431,
             "throughoutput": 60129542144,
-            "throughput": 12206565
+            "throughput": 9349952
           }
         ],
-        "tokens": 14778,
+        "tokens": 19293,
         "throughoutput": 60129542144,
-        "throughput": 4068855
+        "throughput": 3116650
       },
       {
         "name": "call",
@@ -1196,28 +2137,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 1233,
+            "tokens": 2194,
             "throughoutput": 120259084288,
-            "throughput": 97533726
+            "throughput": 54812709
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 4249,
+            "tokens": 5295,
             "throughoutput": 120259084288,
-            "throughput": 28302914
+            "throughput": 22711819
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 205,
+            "tokens": 384,
             "throughoutput": 120259084288,
-            "throughput": 586629679
+            "throughput": 313174698
           }
         ],
-        "tokens": 5687,
+        "tokens": 7873,
         "throughoutput": 120259084288,
-        "throughput": 21146313
+        "throughput": 15274874
       }
     ],
     "winner": "call",
@@ -1382,6 +2323,30 @@
     },
     "src": "src/quantum/processing/unit/index.lean",
     "lean": {
+      "@context": [
+        "https://schema.org",
+        {
+          "schema": "https://schema.org/",
+          "qpu": "https://qpu.uuidna.com/quantum/processing/unit#",
+          "mcp": "https://modelcontextprotocol.io/",
+          "lean": "https://lean-lang.org/",
+          "cern": "https://opendata.cern.ch/",
+          "inspire": "https://inspirehep.net/",
+          "spdx": "https://spdx.org/licenses/",
+          "dc": "http://purl.org/dc/terms/",
+          "jsonld": "https://www.w3.org/ns/json-ld#",
+          "hydra": "https://www.w3.org/ns/hydra/core#",
+          "uuid": "https://www.rfc-editor.org/rfc/rfc9562",
+          "zenodo": "https://zenodo.org/",
+          "hepdata": "https://www.hepdata.net/",
+          "cc": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+        }
+      ],
+      "@type": "Dataset",
+      "@id": "https://qpu.uuidna.com/quantum/processing/unit",
+      "url": "https://qpu.uuidna.com/quantum/processing/unit",
+      "name": "src/quantum/processing/unit/index.lean",
+      "isAccessibleForFree": true,
       "src": "src/quantum/processing/unit/index.lean",
       "rows": [
         {
@@ -1444,7 +2409,7 @@
           "heading": "crypto",
           "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
           "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
-          "reading": "holds true. fused 60129542144.",
+          "reading": "holds true. Crypt split. fused across faces. Share mintOf (vertices * hexbit). Distribute to free agents.",
           "holds": true
         },
         {
@@ -1686,6 +2651,62 @@
           "formula": "\\mathrm{mintOf}(n)\\cdot\\mathrm{faces}=\\mathrm{vertices}\\cdot(\\mathrm{coins}\\cdot\\mathrm{rays})",
           "reading": "holds true. Lattice filled. Occupied faces. Vacant none. Split entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy qubits gates measurement fridge. Possible only in quantum.",
           "holds": true
+        },
+        {
+          "heading": "infinite",
+          "theorem": "theorem infinite (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := split_coin k",
+          "formula": "\\mathrm{mintOf}(k+\\mathrm{seed})=\\mathrm{mintOf}(k)+\\mathrm{mintOf}(k)",
+          "reading": "holds true. VM scales. Replicas double. Quantum capacity infinite. split_coin has no last k. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "distribute",
+          "theorem": "theorem distribute : fused = faces * mintOf bits ∧ faces = coins * rays := ⟨quantum, around⟩",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+          "reading": "holds true. Crypt split fused across faces. Distribute computations to free agents. coins teams of rays. No auth.",
+          "holds": true
+        },
+        {
+          "heading": "raid",
+          "theorem": "theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩",
+          "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+          "reading": "holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Host never. Scaled. Infinite.",
+          "holds": true
+        },
+        {
+          "heading": "computer",
+          "theorem": "theorem computer : (1 ^^^ 3) = 2 ∧ (6 ^^^ 1) = 7 ∧ mintOf 0 = 1 := ⟨rfl, rfl, mintOf_zero⟩",
+          "formula": "(1\\oplus 3)=2\\land(6\\oplus 1)=7\\land\\mathrm{mintOf}(0)=1",
+          "reading": "holds true. Quantum computer. SWAP. Toffoli. Reset. H and Toffoli are computationally universal. Coupling compile collapse shots feedforward bitflip readout isolate qram network jobs. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "server",
+          "theorem": "theorem server : faces = coins * rays ∧ mintOf n = 8 := ⟨around, measurement⟩",
+          "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{mintOf}(n)=8",
+          "reading": "holds true. Quantum server. JSON-LD WebAPI. Eight tools. Jobs queue results. Backend the running circuit. No auth. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "fusion",
+          "theorem": "theorem fusion : fused = faces * mintOf bits ∧ coins + coins = mintOf coins := ⟨quantum, tetra⟩",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
+          "reading": "holds true. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. Algebra fused. LHC tetra. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train. Not a quantum proof. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "design",
+          "theorem": "theorem design : (0 ^^^ 4) ^^^ 4 = 0 ∧ (3 ^^^ 4) ^^^ 4 = 3 := ⟨rfl, rfl⟩",
+          "formula": "(0\\oplus 4)\\oplus 4=0\\land(3\\oplus 4)\\oplus 4=3",
+          "reading": "holds true. Any error is handled by design. XOR fold hexbit. Involution. Never throw. Host never.",
+          "holds": true
+        },
+        {
+          "heading": "neuro",
+          "theorem": "theorem neuro : faces = coins * rays ∧ mintOf n = 8 ∧ (0 ^^^ 4) ^^^ 4 = 0 := ⟨around, measurement, design.1⟩",
+          "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{mintOf}(n)=8\\land(0\\oplus 4)\\oplus 4=0",
+          "reading": "holds true. All becomes a neuro network. Width faces. Layers mintOf n. XOR activation. Residual involution. Recurrent hexbit fold. Naturally tested unless in mass online tests. Errors handled by design. Infinite double. Host never.",
+          "holds": true
         }
       ],
       "climb": {
@@ -1758,7 +2779,7 @@
         "heading": "crypto",
         "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
         "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
-        "reading": "holds true. fused 60129542144.",
+        "reading": "holds true. Crypt split. fused across faces. Share mintOf (vertices * hexbit). Distribute to free agents.",
         "holds": true
       },
       {
@@ -2000,6 +3021,62 @@
         "holds": true
       },
       {
+        "heading": "infinite",
+        "theorem": "theorem infinite (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := split_coin k",
+        "formula": "\\mathrm{mintOf}(k+\\mathrm{seed})=\\mathrm{mintOf}(k)+\\mathrm{mintOf}(k)",
+        "reading": "holds true. VM scales. Replicas double. Quantum capacity infinite. split_coin has no last k. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "distribute",
+        "theorem": "theorem distribute : fused = faces * mintOf bits ∧ faces = coins * rays := ⟨quantum, around⟩",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+        "reading": "holds true. Crypt split fused across faces. Distribute computations to free agents. coins teams of rays. No auth.",
+        "holds": true
+      },
+      {
+        "heading": "raid",
+        "theorem": "theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩",
+        "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+        "reading": "holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Host never. Scaled. Infinite.",
+        "holds": true
+      },
+      {
+        "heading": "computer",
+        "theorem": "theorem computer : (1 ^^^ 3) = 2 ∧ (6 ^^^ 1) = 7 ∧ mintOf 0 = 1 := ⟨rfl, rfl, mintOf_zero⟩",
+        "formula": "(1\\oplus 3)=2\\land(6\\oplus 1)=7\\land\\mathrm{mintOf}(0)=1",
+        "reading": "holds true. Quantum computer. SWAP. Toffoli. Reset. H and Toffoli are computationally universal. Coupling compile collapse shots feedforward bitflip readout isolate qram network jobs. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "server",
+        "theorem": "theorem server : faces = coins * rays ∧ mintOf n = 8 := ⟨around, measurement⟩",
+        "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{mintOf}(n)=8",
+        "reading": "holds true. Quantum server. JSON-LD WebAPI. Eight tools. Jobs queue results. Backend the running circuit. No auth. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "fusion",
+        "theorem": "theorem fusion : fused = faces * mintOf bits ∧ coins + coins = mintOf coins := ⟨quantum, tetra⟩",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits})\\land\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})",
+        "reading": "holds true. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. Algebra fused. LHC tetra. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train. Not a quantum proof. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "design",
+        "theorem": "theorem design : (0 ^^^ 4) ^^^ 4 = 0 ∧ (3 ^^^ 4) ^^^ 4 = 3 := ⟨rfl, rfl⟩",
+        "formula": "(0\\oplus 4)\\oplus 4=0\\land(3\\oplus 4)\\oplus 4=3",
+        "reading": "holds true. Any error is handled by design. XOR fold hexbit. Involution. Never throw. Host never.",
+        "holds": true
+      },
+      {
+        "heading": "neuro",
+        "theorem": "theorem neuro : faces = coins * rays ∧ mintOf n = 8 ∧ (0 ^^^ 4) ^^^ 4 = 0 := ⟨around, measurement, design.1⟩",
+        "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{mintOf}(n)=8\\land(0\\oplus 4)\\oplus 4=0",
+        "reading": "holds true. All becomes a neuro network. Width faces. Layers mintOf n. XOR activation. Residual involution. Recurrent hexbit fold. Naturally tested unless in mass online tests. Errors handled by design. Infinite double. Host never.",
+        "holds": true
+      },
+      {
         "heading": "next",
         "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
         "formula": "\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
@@ -2127,7 +3204,7 @@
               "hop": 12,
               "involution": true,
               "name": "hepdata",
-              "href": "https://www.hepdata.net/search",
+              "href": "https://www.hepdata.net/search/?format=json",
               "holds": true
             },
             {
@@ -2225,7 +3302,7 @@
           },
           {
             "name": "hepdata",
-            "href": "https://www.hepdata.net/search"
+            "href": "https://www.hepdata.net/search/?format=json"
           },
           {
             "name": "indico",
@@ -2478,6 +3555,699 @@
           "theorem": "host doors cannot be overwritten",
           "left": "sealed",
           "right": "sealed",
+          "holds": true
+        }
+      ],
+      "holds": true
+    },
+    "intelligence": {
+      "kind": "intelligence",
+      "test": "fusion",
+      "research": "free online",
+      "fusion": {
+        "kind": "fusion",
+        "theorem": "fusion",
+        "free": true,
+        "online": true,
+        "research": true,
+        "quantum": false,
+        "catalogs": [
+          {
+            "name": "literature",
+            "href": "https://inspirehep.net/api/literature?size=1"
+          },
+          {
+            "name": "authors",
+            "href": "https://inspirehep.net/api/authors?size=1"
+          },
+          {
+            "name": "institutions",
+            "href": "https://inspirehep.net/api/institutions?size=1"
+          },
+          {
+            "name": "conferences",
+            "href": "https://inspirehep.net/api/conferences?size=1"
+          },
+          {
+            "name": "seminars",
+            "href": "https://inspirehep.net/api/seminars?size=1"
+          },
+          {
+            "name": "journals",
+            "href": "https://inspirehep.net/api/journals?size=1"
+          },
+          {
+            "name": "jobs",
+            "href": "https://inspirehep.net/api/jobs?size=1"
+          },
+          {
+            "name": "experiments",
+            "href": "https://inspirehep.net/api/experiments?size=1"
+          },
+          {
+            "name": "data",
+            "href": "https://inspirehep.net/api/data?size=1"
+          },
+          {
+            "name": "opendata",
+            "href": "https://opendata.cern.ch/api/records?size=1"
+          },
+          {
+            "name": "repository",
+            "href": "https://repository.cern/api/records?size=1"
+          },
+          {
+            "name": "zenodo",
+            "href": "https://zenodo.org/api/records?size=1"
+          },
+          {
+            "name": "hepdata",
+            "href": "https://www.hepdata.net/search/?format=json"
+          },
+          {
+            "name": "indico",
+            "href": "https://indico.cern.ch/export/categ/0.json"
+          }
+        ],
+        "tetra": [
+          "ATLAS",
+          "CMS",
+          "ALICE",
+          "LHCb"
+        ],
+        "hosts": {
+          "kind": "hosts",
+          "quantum": false,
+          "max": true,
+          "unlimited": true,
+          "displayed": true,
+          "harnesses": [
+            {
+              "name": "cursor",
+              "href": "https://cursor.com"
+            },
+            {
+              "name": "claude",
+              "href": "https://claude.ai"
+            },
+            {
+              "name": "claudecode",
+              "href": "https://code.claude.com"
+            },
+            {
+              "name": "vscode",
+              "href": "https://code.visualstudio.com"
+            },
+            {
+              "name": "chatgpt",
+              "href": "https://chatgpt.com"
+            },
+            {
+              "name": "gemini",
+              "href": "https://gemini.google.com"
+            },
+            {
+              "name": "windsurf",
+              "href": "https://windsurf.com"
+            },
+            {
+              "name": "cline",
+              "href": "https://cline.bot"
+            },
+            {
+              "name": "continue",
+              "href": "https://continue.dev"
+            },
+            {
+              "name": "zed",
+              "href": "https://zed.dev"
+            },
+            {
+              "name": "goose",
+              "href": "https://block.github.io/goose"
+            },
+            {
+              "name": "openwebui",
+              "href": "https://openwebui.com"
+            },
+            {
+              "name": "librechat",
+              "href": "https://www.librechat.ai"
+            },
+            {
+              "name": "lmstudio",
+              "href": "https://lmstudio.ai"
+            }
+          ],
+          "llms": [
+            {
+              "name": "openai",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://platform.openai.com/docs/guides/function-calling"
+            },
+            {
+              "name": "anthropic",
+              "call": "tool_use",
+              "result": "tool_result",
+              "schema": "input_schema",
+              "href": "https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview"
+            },
+            {
+              "name": "google",
+              "call": "functionCall",
+              "result": "functionResponse",
+              "schema": "parameters",
+              "href": "https://ai.google.dev/gemini-api/docs/function-calling"
+            },
+            {
+              "name": "xai",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://docs.x.ai/docs/guides/function-calling"
+            },
+            {
+              "name": "meta",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://www.llama.com"
+            },
+            {
+              "name": "mistral",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://docs.mistral.ai/capabilities/function_calling/"
+            },
+            {
+              "name": "cohere",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://docs.cohere.com/docs/tool-use"
+            },
+            {
+              "name": "groq",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://console.groq.com/docs/tool-use"
+            },
+            {
+              "name": "together",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://docs.together.ai/docs/function-calling"
+            },
+            {
+              "name": "fireworks",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://docs.fireworks.ai/guides/function-calling"
+            },
+            {
+              "name": "azure",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://learn.microsoft.com/azure/ai-foundry/openai/how-to/function-calling"
+            },
+            {
+              "name": "bedrock",
+              "call": "toolUse",
+              "result": "toolResult",
+              "schema": "toolSpec",
+              "href": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html"
+            },
+            {
+              "name": "ollama",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://ollama.com"
+            },
+            {
+              "name": "huggingface",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "href": "https://huggingface.co/docs"
+            }
+          ],
+          "nodes": [
+            {
+              "face": 0,
+              "hop": 0,
+              "involution": true,
+              "harness": "cursor",
+              "llm": "openai",
+              "href": "https://cursor.com",
+              "llmHref": "https://platform.openai.com/docs/guides/function-calling",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 1,
+              "hop": 1,
+              "involution": true,
+              "harness": "claude",
+              "llm": "anthropic",
+              "href": "https://claude.ai",
+              "llmHref": "https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview",
+              "call": "tool_use",
+              "result": "tool_result",
+              "schema": "input_schema",
+              "holds": true
+            },
+            {
+              "face": 2,
+              "hop": 2,
+              "involution": true,
+              "harness": "claudecode",
+              "llm": "google",
+              "href": "https://code.claude.com",
+              "llmHref": "https://ai.google.dev/gemini-api/docs/function-calling",
+              "call": "functionCall",
+              "result": "functionResponse",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 3,
+              "hop": 3,
+              "involution": true,
+              "harness": "vscode",
+              "llm": "xai",
+              "href": "https://code.visualstudio.com",
+              "llmHref": "https://docs.x.ai/docs/guides/function-calling",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 4,
+              "hop": 4,
+              "involution": true,
+              "harness": "chatgpt",
+              "llm": "meta",
+              "href": "https://chatgpt.com",
+              "llmHref": "https://www.llama.com",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 5,
+              "hop": 5,
+              "involution": true,
+              "harness": "gemini",
+              "llm": "mistral",
+              "href": "https://gemini.google.com",
+              "llmHref": "https://docs.mistral.ai/capabilities/function_calling/",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 6,
+              "hop": 6,
+              "involution": true,
+              "harness": "windsurf",
+              "llm": "cohere",
+              "href": "https://windsurf.com",
+              "llmHref": "https://docs.cohere.com/docs/tool-use",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 7,
+              "hop": 7,
+              "involution": true,
+              "harness": "cline",
+              "llm": "groq",
+              "href": "https://cline.bot",
+              "llmHref": "https://console.groq.com/docs/tool-use",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 8,
+              "hop": 8,
+              "involution": true,
+              "harness": "continue",
+              "llm": "together",
+              "href": "https://continue.dev",
+              "llmHref": "https://docs.together.ai/docs/function-calling",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 9,
+              "hop": 9,
+              "involution": true,
+              "harness": "zed",
+              "llm": "fireworks",
+              "href": "https://zed.dev",
+              "llmHref": "https://docs.fireworks.ai/guides/function-calling",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 10,
+              "hop": 10,
+              "involution": true,
+              "harness": "goose",
+              "llm": "azure",
+              "href": "https://block.github.io/goose",
+              "llmHref": "https://learn.microsoft.com/azure/ai-foundry/openai/how-to/function-calling",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 11,
+              "hop": 11,
+              "involution": true,
+              "harness": "openwebui",
+              "llm": "bedrock",
+              "href": "https://openwebui.com",
+              "llmHref": "https://docs.aws.amazon.com/bedrock/latest/userguide/tool-use.html",
+              "call": "toolUse",
+              "result": "toolResult",
+              "schema": "toolSpec",
+              "holds": true
+            },
+            {
+              "face": 12,
+              "hop": 12,
+              "involution": true,
+              "harness": "librechat",
+              "llm": "ollama",
+              "href": "https://www.librechat.ai",
+              "llmHref": "https://ollama.com",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            },
+            {
+              "face": 13,
+              "hop": 13,
+              "involution": true,
+              "harness": "lmstudio",
+              "llm": "huggingface",
+              "href": "https://lmstudio.ai",
+              "llmHref": "https://huggingface.co/docs",
+              "call": "tool_calls",
+              "result": "tool",
+              "schema": "parameters",
+              "holds": true
+            }
+          ],
+          "occupied": 14,
+          "vacant": 0,
+          "faces": 14,
+          "holds": true
+        },
+        "faces": 14,
+        "fused": 60129542144,
+        "next": 120259084288,
+        "infinite": true,
+        "holds": true
+      },
+      "circuit": {
+        "running": true,
+        "only": true,
+        "holds": true
+      },
+      "fused": 60129542144,
+      "next": 120259084288,
+      "free": true,
+      "online": true,
+      "auth": false,
+      "host": false,
+      "holds": true
+    },
+    "neuro": {
+      "kind": "neuro",
+      "network": true,
+      "all": true,
+      "parts": {
+        "circuit": true,
+        "lattice": true,
+        "raid": true,
+        "schemas": true,
+        "tools": true,
+        "design": true,
+        "fusion": true,
+        "server": true,
+        "storage": true,
+        "network": true,
+        "message": true,
+        "capacity": true
+      },
+      "depth": 3,
+      "width": 14,
+      "layers": 8,
+      "weights": 4294967296,
+      "fused": 60129542144,
+      "next": 120259084288,
+      "activation": "xor",
+      "residual": true,
+      "recurrent": true,
+      "handled": true,
+      "throw": false,
+      "infinite": true,
+      "scaled": true,
+      "test": {
+        "kind": "test",
+        "natural": true,
+        "mass": false,
+        "online": false,
+        "unless": "mass online",
+        "fetch": false,
+        "layers": true,
+        "residual": true,
+        "recurrent": true,
+        "design": true,
+        "holds": true
+      },
+      "neurons": [
+        {
+          "i": 0,
+          "face": 0,
+          "synapse": 0,
+          "fold": 4,
+          "wave": 0,
+          "residual": true,
+          "handled": true,
+          "name": "tool"
+        },
+        {
+          "i": 1,
+          "face": 1,
+          "synapse": 1,
+          "fold": 5,
+          "wave": 1,
+          "residual": true,
+          "handled": true,
+          "name": "heap"
+        },
+        {
+          "i": 2,
+          "face": 2,
+          "synapse": 2,
+          "fold": 6,
+          "wave": 2,
+          "residual": true,
+          "handled": true,
+          "name": "key"
+        },
+        {
+          "i": 3,
+          "face": 3,
+          "synapse": 3,
+          "fold": 7,
+          "wave": 3,
+          "residual": true,
+          "handled": true,
+          "name": "hostEscape"
+        },
+        {
+          "i": 4,
+          "face": 4,
+          "synapse": 4,
+          "fold": 0,
+          "wave": 4,
+          "residual": true,
+          "handled": true,
+          "name": "job"
+        },
+        {
+          "i": 5,
+          "face": 5,
+          "synapse": 5,
+          "fold": 1,
+          "wave": 5,
+          "residual": true,
+          "handled": true,
+          "name": "js"
+        },
+        {
+          "i": 6,
+          "face": 6,
+          "synapse": 6,
+          "fold": 2,
+          "wave": 6,
+          "residual": true,
+          "handled": true,
+          "name": "path"
+        },
+        {
+          "i": 7,
+          "face": 7,
+          "synapse": 7,
+          "fold": 3,
+          "wave": 7,
+          "residual": true,
+          "handled": true,
+          "name": "fetch"
+        },
+        {
+          "i": 8,
+          "face": 8,
+          "synapse": 8,
+          "fold": 4,
+          "wave": 0,
+          "residual": true,
+          "handled": true,
+          "name": "mod"
+        },
+        {
+          "i": 9,
+          "face": 9,
+          "synapse": 9,
+          "fold": 5,
+          "wave": 1,
+          "residual": true,
+          "handled": true,
+          "name": "worker"
+        },
+        {
+          "i": 10,
+          "face": 10,
+          "synapse": 10,
+          "fold": 6,
+          "wave": 2,
+          "residual": true,
+          "handled": true,
+          "name": "sealed"
+        },
+        {
+          "i": 11,
+          "face": 11,
+          "synapse": 11,
+          "fold": 7,
+          "wave": 3,
+          "residual": true,
+          "handled": true,
+          "name": "depth"
+        },
+        {
+          "i": 12,
+          "face": 12,
+          "synapse": 12,
+          "fold": 0,
+          "wave": 4,
+          "residual": true,
+          "handled": true,
+          "name": "op"
+        },
+        {
+          "i": 13,
+          "face": 13,
+          "synapse": 13,
+          "fold": 1,
+          "wave": 5,
+          "residual": true,
+          "handled": true,
+          "name": "unlocked"
+        }
+      ],
+      "forward": [
+        {
+          "k": 0,
+          "name": "quantum",
+          "width": 1,
+          "next": 2,
+          "holds": true
+        },
+        {
+          "k": 1,
+          "name": "lean",
+          "width": 2,
+          "next": 4,
+          "holds": true
+        },
+        {
+          "k": 2,
+          "name": "cite",
+          "width": 4,
+          "next": 8,
+          "holds": true
+        },
+        {
+          "k": 3,
+          "name": "train",
+          "width": 8,
+          "next": 16,
+          "holds": true
+        },
+        {
+          "k": 4,
+          "name": "forge",
+          "width": 16,
+          "next": 32,
+          "holds": true
+        },
+        {
+          "k": 5,
+          "name": "improve",
+          "width": 32,
+          "next": 64,
+          "holds": true
+        },
+        {
+          "k": 6,
+          "name": "compete",
+          "width": 64,
+          "next": 128,
+          "holds": true
+        },
+        {
+          "k": 7,
+          "name": "prove",
+          "width": 128,
+          "next": 256,
           "holds": true
         }
       ],

@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Running quantum circuit at https://qpu.uuidna.com. Possible only in quantum. Lean proof of the unit.",
+  "description": "Running quantum circuit at https://qpu.uuidna.com. Possible only in quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Lean proof of the unit.",
   "type": "module",
   "license": "CC-BY-NC-ND-4.0",
   "funding": {
@@ -27,7 +27,8 @@
   "keywords": [
     "qpu",
     "quantum-processing-unit",
-    "uuidna"
+    "uuidna",
+    "mcp"
   ],
   "main": "./dist/quantum/processing/unit/index.js",
   "types": "./dist/quantum/processing/unit/index.d.ts",
