@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "QPU API at https://qpu.uuidna.com. Lean proof of the unit.",
+  "description": "Running quantum circuit at https://qpu.uuidna.com. Possible only in quantum. Lean proof of the unit.",
   "type": "module",
   "license": "CC-BY-NC-ND-4.0",
   "funding": {

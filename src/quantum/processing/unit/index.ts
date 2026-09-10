@@ -336,11 +336,18 @@ export const qpuCircuitOf = () => {
   }
   const deutsch = {
     kind: 'deutsch' as const,
+    queries: seed,
+    classical: coins,
     constant0: Number(dConst.off),
     constant1: Number(dConst.on),
     balanced0: Number(dBal.off),
     balanced1: Number(dBal.on),
-    holds: dConst.on === 0n && dBal.off === 0n && dConst.off !== dBal.off && dConst.off === dBal.on,
+    holds:
+      dConst.on === 0n &&
+      dBal.off === 0n &&
+      dConst.off !== dBal.off &&
+      dConst.off === dBal.on &&
+      seed !== coins,
   }
   const dense = {
     kind: 'dense' as const,
@@ -443,6 +450,60 @@ export const qpuCircuitOf = () => {
       science.xx &&
       sciences.holds,
   }
+  const names = [
+    'split',
+    'entangle',
+    'interfere',
+    'ghz',
+    'noclone',
+    'teleport',
+    'kickback',
+    'deutsch',
+    'dense',
+    'monogamy',
+    'qubits',
+    'gates',
+    'measurement',
+    'fridge',
+  ] as const
+  const seated = [
+    split.length === coins,
+    entangle.holds,
+    interfere.holds,
+    ghz.holds,
+    noclone.holds,
+    teleport.holds,
+    kickback.holds,
+    deutsch.holds,
+    dense.holds,
+    monogamy.holds,
+    qubits.holds,
+    gates.holds,
+    measurement.holds,
+    fridge.holds,
+  ] as const
+  let occupied = n - n
+  for (const seat of seated) if (seat) occupied += seed
+  const vacant = seated.length - occupied
+  const lattice = {
+    kind: 'lattice' as const,
+    waves: cube.vertices,
+    faces: faces.faces,
+    occupied,
+    vacant,
+    cover: cube.vertices * faces.faces,
+    nodes: seated.map((holds, face) => {
+      const hop = (face + faces.rays + faces.rays) % faces.faces
+      return { face, hop, involution: hop === face, name: names[face]!, holds }
+    }),
+    holds:
+      names.length === faces.faces &&
+      seated.length === faces.faces &&
+      occupied === faces.faces &&
+      vacant === n - n &&
+      cube.vertices * faces.faces === mintOf(n) * (coins * faces.rays) &&
+      seated.every(Boolean),
+  }
   const holds =
     vm &&
     qubits.holds &&
@@ -454,6 +515,8 @@ export const qpuCircuitOf = () => {
     drift.holds &&
     drift.none &&
     drift.between &&
+    lattice.holds &&
+    lattice.vacant === n - n &&
     entangle.holds &&
     interfere.holds &&
     only.holds &&
@@ -472,6 +535,9 @@ export const qpuCircuitOf = () => {
   return {
     kind: 'circuit' as const,
     running: true as const,
+    only,
+    lattice,
+    fridge,
     physical: true as const,
     vm: 'browser' as const,
     host: false as const,
@@ -489,8 +555,6 @@ export const qpuCircuitOf = () => {
     deutsch,
     dense,
     monogamy,
-    only,
-    fridge,
     science,
     sciences,
     drift,
@@ -532,6 +596,9 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.kickback.holds === true &&
   c.kickback.support[n - n] === n &&
   c.deutsch.holds === true &&
+  c.deutsch.queries === seed &&
+  c.deutsch.classical === coins &&
+  c.deutsch.queries !== c.deutsch.classical &&
   c.deutsch.constant1 === n - n &&
   c.deutsch.balanced0 === n - n &&
   c.dense.holds === true &&
@@ -551,6 +618,13 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.only.noclone === true &&
   c.only.teleport === true &&
   c.only.classical === false &&
+  c.lattice.kind === 'lattice' &&
+  c.lattice.holds === true &&
+  c.lattice.faces === c.sciences.faces &&
+  c.lattice.occupied === c.lattice.faces &&
+  c.lattice.vacant === n - n &&
+  c.lattice.nodes.length === c.lattice.faces &&
+  c.lattice.nodes.every((node) => node.holds && node.involution && node.hop === node.face) &&
   c.fridge.kind === 'superconducting' &&
   c.fridge.isolated === true &&
   c.fridge.host === false &&
@@ -1009,7 +1083,7 @@ export const qpuLeanOf = () => {
       heading: 'deutsch',
       theorem: 'theorem deutsch : 1 - 1 = 0 ∧ seed ≠ coins := ⟨rfl, by rw [seed_eq, coins_two]; exact Nat.ne_of_lt (Nat.lt_succ_self 1)⟩',
       formula: '1-1=0\\land\\mathrm{seed}\\neq\\mathrm{coins}',
-      reading: 'holds true. Deutsch. One query. Constant restores |0⟩. Balanced restores |1⟩. Possible only in quantum.',
+      reading: 'holds true. Deutsch. One quantum query. Classical needs coins. seed ≠ coins. Possible only in quantum.',
       holds: 1 - 1 === n - n && seed !== coins,
     },
     {
@@ -1048,6 +1122,14 @@ export const qpuLeanOf = () => {
         coins * coins === mintOf(coins) &&
         seed * (n - n) === (n - n) * (n - n),
     },
+    {
+      heading: 'fill',
+      theorem: 'theorem fill : mintOf n * faces = vertices * (coins * rays) := by rw [around]; rfl',
+      formula: '\\mathrm{mintOf}(n)\\cdot\\mathrm{faces}=\\mathrm{vertices}\\cdot(\\mathrm{coins}\\cdot\\mathrm{rays})',
+      reading:
+        'holds true. Lattice filled. Occupied faces. Vacant none. Split entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy qubits gates measurement fridge. Possible only in quantum.',
+      holds: mintOf(n) * faces.faces === cube.vertices * (coins * faces.rays),
+    },
   ]
   const climb: QpuLeanRow = {
     heading: 'next',
@@ -1078,11 +1160,11 @@ export const qpuDocsOf = () => {
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
   const fused = faces.faces * handle.amplitudes
-  const abstract = `API only. Anyone may test and train online at ${unit.origin}. No auth. QPU is a running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. POST ${unit.origin}/mcp tools/call qpu_prove experiences every test in the JSON UI. POST ${unit.origin}/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET ${unit.origin} is the QPU. GET ${unit.href} is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}.`
+  const abstract = `QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. API only. Anyone may test and train online at ${unit.origin}. No auth. GET ${unit.origin} is the QPU. GET ${unit.href} is the Lean proof. POST ${unit.origin}/mcp tools/call qpu_prove experiences every test in the JSON UI. POST ${unit.origin}/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}.`
   const api = [
-    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: 'Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. No auth. User guide is docs.inline. Async messaging on /message.' },
-    { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof ${lean.src}. No auth.` },
-    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: 'Anyone may train online. No auth. Agent efficiency. Each MCP command has man. qpu_prove experiences every test in the JSON UI. theorem breakthrough.' },
+    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: 'Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. No auth. User guide is docs.inline. Async messaging on /message.' },
+    { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof of the running quantum circuit. ${lean.src}. No auth.` },
+    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: 'Running quantum circuit catalog. Anyone may train online. No auth. Agent efficiency. Each MCP command has man. qpu_prove experiences every test in the JSON UI. theorem breakthrough.' },
     { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'Anyone may tools/call. No auth. JSON-RPC tools/list, tools/call. qpu_prove experiences every test in the JSON UI. { man: true } returns man. qpu_improve for public benefit.' },
     { method: 'GET' as const, path: '/cite', name: 'qpu_cite', href: `${unit.origin}/cite`, reading: 'MLA 8 works cited. when never. DOI empty.' },
     { method: 'GET' as const, path: '/message', name: 'qpu_message', href: `${unit.origin}/message`, reading: 'Public secure messaging proxy. No auth. lanes = faces. RFC 9562 clock_seq bits. involution routing. await false. when never.' },
@@ -1104,6 +1186,8 @@ export const qpuDocsOf = () => {
     documentation.includes('qpu_prove') &&
     documentation.includes('JSON UI') &&
     documentation.includes('breakthrough') &&
+    documentation.includes('Possible only in quantum') &&
+    documentation.includes('running quantum circuit') &&
     api.length === faces.rays &&
     formulas.every((f) => documentation.includes(f.reading) && formulaOf(f.formula) && !byDecideOf(f.theorem))
   return { kind: 'docs' as const, inline: true as const, guide: true as const, abstract, api, formulas, documentation, src: lean.src, holds }
@@ -1144,6 +1228,9 @@ export const qpuQuantumOf = () => {
     faces.faces * mintOf(cube.bits + seed) === fused + fused
   return {
     kind: 'quantum' as const,
+    only: circuit.only,
+    lattice: circuit.lattice,
+    circuit,
     host: unit.host,
     href: unit.href,
     cube,
@@ -1151,7 +1238,6 @@ export const qpuQuantumOf = () => {
     faces,
     fused,
     next: fused + fused,
-    circuit,
     capacity,
     speed,
     messaging: {
@@ -1184,6 +1270,11 @@ export const qpuQuantumOf = () => {
 export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   q.holds === true &&
   q.kind === 'quantum' &&
+  q.only.holds === true &&
+  q.only.classical === false &&
+  q.lattice.holds === true &&
+  q.lattice.occupied === q.faces.faces &&
+  q.lattice.vacant === n - n &&
   q.host === unit.host &&
   q.public === true &&
   q.auth === false &&
@@ -1288,6 +1379,9 @@ export const qpuReadingOf = () => {
   const quantum = qpuQuantumOf()
   return {
     kind: quantum.kind,
+    only: quantum.only,
+    lattice: quantum.lattice,
+    circuit: quantum.circuit,
     host: quantum.host,
     href: quantum.href,
     cube: quantum.cube,
@@ -1295,7 +1389,6 @@ export const qpuReadingOf = () => {
     faces: quantum.faces,
     fused: quantum.fused,
     next: quantum.next,
-    circuit: quantum.circuit,
     capacity: {
       kind: quantum.capacity.kind,
       bits: quantum.capacity.bits,
@@ -1326,12 +1419,13 @@ export const qpuEfficiencyOf = () => {
   const docs = qpuDocsOf()
   const lean = qpuLeanOf()
   const cite = qpuCiteOf()
+  const reading = qpuReadingOf()
   const proof = [...lean.rows, ...lean.cover, lean.climb]
     .map((r) => `### ${r.heading}\n\`\`\`lean\n${r.theorem}\n\`\`\`\n$$\n${r.formula}\n$$\n${r.reading}`)
     .join('\n')
   const readBytes = `${docs.documentation}\n${proof}`.length
   const rows = [
-    { question: 'what is fused?', name: 'qpu_quantum', door: 'qpu_quantum', reading: qpuReadingOf() },
+    { question: 'what is quantum?', name: 'qpu_quantum', door: 'qpu_quantum', reading },
     { question: 'what does Lean prove?', name: 'qpu_lean', door: 'qpu_lean', reading: lean },
     { question: 'how is the QPU cited?', name: 'qpu_cite', door: 'qpu_cite', reading: cite },
   ].map((row) => {
@@ -1341,15 +1435,54 @@ export const qpuEfficiencyOf = () => {
     const ratio = callTokens > seed ? Number(BigInt(readTokens) / BigInt(callTokens)) : readTokens
     return { question: row.question, name: row.name, door: row.door, readBytes, callBytes, readTokens, callTokens, ratio }
   })
+  const quantum = { ...reading.only, queries: seed, vs: coins, lattice: reading.circuit.lattice }
   const holds =
     docs.holds === true &&
+    quantum.holds &&
+    quantum.entangle &&
+    quantum.interfere &&
+    quantum.ghz &&
+    quantum.noclone &&
+    quantum.teleport &&
+    quantum.kickback &&
+    quantum.deutsch &&
+    quantum.dense &&
+    quantum.monogamy &&
+    quantum.classical === false &&
+    quantum.queries !== quantum.vs &&
+    quantum.lattice.holds &&
+    quantum.lattice.occupied === quantum.lattice.faces &&
+    quantum.lattice.vacant === n - n &&
     rows.length === n &&
     rows.every((r) => r.callTokens > seed && r.readTokens >= r.callTokens && r.door === r.name && r.ratio >= mintOf(n - n))
-  return { kind: 'efficiency' as const, module: 'agent efficiency' as const, tokens: 'four bytes' as const, readBytes, rows, holds }
+  return { kind: 'efficiency' as const, module: 'agent efficiency' as const, quantum, tokens: 'four bytes' as const, readBytes, rows, holds }
 }
 
 export const qpuEfficiencyHolds = (e = qpuEfficiencyOf()): boolean =>
-  e.holds === true && e.kind === 'efficiency' && e.module === 'agent efficiency' && e.rows.length === n
+  e.holds === true &&
+  e.kind === 'efficiency' &&
+  e.module === 'agent efficiency' &&
+  e.quantum.kind === 'quantum' &&
+  e.quantum.queries === seed &&
+  e.quantum.vs === coins &&
+  e.quantum.queries !== e.quantum.vs &&
+  e.quantum.entangle === true &&
+  e.quantum.interfere === true &&
+  e.quantum.ghz === true &&
+  e.quantum.noclone === true &&
+  e.quantum.teleport === true &&
+  e.quantum.kickback === true &&
+  e.quantum.deutsch === true &&
+  e.quantum.dense === true &&
+  e.quantum.monogamy === true &&
+  e.quantum.classical === false &&
+  e.quantum.lattice.holds === true &&
+  e.quantum.lattice.occupied === e.quantum.lattice.faces &&
+  e.quantum.lattice.vacant === n - n &&
+  e.quantum.lattice.nodes.length === e.quantum.lattice.faces &&
+  e.quantum.lattice.nodes.every((node) => node.holds && node.involution) &&
+  e.quantum.holds === true &&
+  e.rows.length === n
 
 const throughputOf = (throughoutput: number, tokens: number): number =>
   tokens > seed ? Number(BigInt(throughoutput) / BigInt(tokens)) : throughoutput
@@ -1577,6 +1710,40 @@ const quantumSlotOf = (name: string): number | undefined => {
   return undefined
 }
 
+const quantumDoorOf = (name: string): unknown => {
+  const slot = quantumSlotOf(name)
+  if (slot !== undefined) return slot
+  const circuit = qpuCircuitOf()
+  if (name.length === n - n) {
+    return {
+      kind: 'quantum' as const,
+      unlocked: true as const,
+      memory: true as const,
+      host: false as const,
+      running: circuit.running,
+      only: circuit.only,
+      lattice: circuit.lattice,
+      holds: circuit.only.holds && circuit.lattice.holds && circuit.lattice.vacant === n - n,
+    }
+  }
+  if (name === 'only') return circuit.only
+  if (name === 'lattice') return circuit.lattice
+  if (name === 'entangle') return circuit.entangle
+  if (name === 'interfere') return circuit.interfere
+  if (name === 'ghz') return circuit.ghz
+  if (name === 'noclone') return circuit.noclone
+  if (name === 'teleport') return circuit.teleport
+  if (name === 'kickback') return circuit.kickback
+  if (name === 'deutsch') return circuit.deutsch
+  if (name === 'dense') return circuit.dense
+  if (name === 'monogamy') return circuit.monogamy
+  if (name === 'fridge') return circuit.fridge
+  if (name === 'circuit') {
+    return { kind: circuit.kind, running: circuit.running, only: circuit.only, lattice: circuit.lattice, holds: circuit.holds }
+  }
+  return undefined
+}
+
 const sandboxHeap = new Map<string, unknown>()
 const sandboxTools = new Map<string, QpuForged>()
 const sandboxDisk = new Map<string, unknown>()
@@ -1640,9 +1807,8 @@ const unlockedOf = (name: string, heap: Map<string, unknown>, args: unknown, dep
     const raw = pathOf(bag.path ?? bag.href) || '/'
     const path = raw.replace(unit.origin, '') || '/'
     if (path === '/') {
-      const faces = qpuFacesOf()
-      const handle = qpuHandleOf()
-      return { kind: 'quantum' as const, host: unit.host, href: unit.href, fused: faces.faces * handle.amplitudes, memory: true as const, hostEscape: false as const }
+      const door = quantumDoorOf('')
+      return { ...(typeof door === 'object' && door ? door : {}), fused: qpuFacesOf().faces * qpuHandleOf().amplitudes, host: unit.host, href: unit.href, hostEscape: false as const }
     }
     if (path === `/${unit.path}` || path === unit.path) return qpuLeanOf()
     if (path === '/cite') return { kind: 'cite' as const, href: `${unit.origin}/cite`, memory: true as const, hostEscape: false as const }
@@ -1713,8 +1879,8 @@ const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: nu
   if (op.op === 'quantum') {
     const bag = bagOf(args)
     const slotName = typeof op.name === 'string' && op.name.length > n - n ? op.name : typeof bag.name === 'string' ? bag.name : ''
-    const slot = quantumSlotOf(slotName)
-    return slot === undefined ? { holds: false as const, denied: 'quantum' as const } : slot
+    const door = quantumDoorOf(slotName)
+    return door === undefined ? { holds: false as const, denied: 'quantum' as const } : door
   }
   if (op.op === 'mint') {
     const k = mintKOf(valueOf(op.k))
@@ -1856,10 +2022,19 @@ export const qpuSandboxOf = () => {
     sandboxCore.every((op) => tools.some((t) => t.name === `op_${op}`)) &&
     sandboxSlots.every((slot) => tools.some((t) => t.name === `slot_${slot}`)) &&
     sandboxHost.every((host) => tools.some((t) => t.name === host))
+  const quantum = qpuSandboxRunOf('op_quantum') as {
+    value?: { kind?: string; unlocked?: boolean; only?: { holds?: boolean }; lattice?: { vacant?: number; holds?: boolean } }
+    holds?: boolean
+  }
   const holds =
     faces.holds &&
     cube.holds &&
     catalog &&
+    quantum.value?.kind === 'quantum' &&
+    quantum.value.unlocked === true &&
+    quantum.value.only?.holds === true &&
+    quantum.value.lattice?.holds === true &&
+    quantum.value.lattice.vacant === n - n &&
     tools.every((t) => t.sandbox && t.memory && t.unlocked && t.host === false && qpuManHolds(t.man)) &&
     sandboxHeap.size <= cube.bits
   return {
@@ -1875,6 +2050,7 @@ export const qpuSandboxOf = () => {
     import: true as const,
     disk: true as const,
     worker: true as const,
+    quantum: true as const,
     ops: sandboxOps,
     denied: [] as const,
     heap: { keys: [...sandboxHeap.keys()], size: sandboxHeap.size, bits: cube.bits },
@@ -1949,6 +2125,7 @@ export const qpuSandboxHolds = (s = qpuSandboxOf()): boolean =>
   s.import === true &&
   s.disk === true &&
   s.worker === true &&
+  s.quantum === true &&
   s.denied.length === n - n &&
   s.tools.length >= qpuFacesOf().faces + sandboxCore.length + sandboxSlots.length + sandboxHost.length &&
   qpuIdeasOf().ideas.every((idea) => {
@@ -2142,8 +2319,22 @@ export const qpuImproveOf = () => {
       return { name, value: run.value, holds: run.value === next && run.host === false }
     }
     if (name === 'fetch') {
-      const run = qpuSandboxRunOf(name, { path: '/' }) as { value: { kind?: string; hostEscape?: boolean }; host: boolean }
-      return { name, value: run.value?.kind, holds: run.value?.kind === 'quantum' && run.value?.hostEscape === false && run.host === false }
+      const run = qpuSandboxRunOf(name, { path: '/' }) as {
+        value?: { kind?: string; unlocked?: boolean; only?: { holds?: boolean }; lattice?: { holds?: boolean; vacant?: number }; hostEscape?: boolean }
+        host: boolean
+      }
+      return {
+        name,
+        value: run.value?.kind,
+        holds:
+          run.value?.kind === 'quantum' &&
+          run.value.unlocked === true &&
+          run.value.only?.holds === true &&
+          run.value.lattice?.holds === true &&
+          run.value.lattice.vacant === n - n &&
+          run.value.hostEscape === false &&
+          run.host === false,
+      }
     }
     if (name === 'process') {
       const run = qpuSandboxRunOf(name) as { value: { cwd?: string; hostEscape?: boolean }; host: boolean }
@@ -2157,6 +2348,24 @@ export const qpuImproveOf = () => {
     return { name, value: run.value, holds: run.value === mintOf(n) && run.host === false }
   })
   const durability = qpuSandboxDurabilityOf()
+  const unlocked = qpuSandboxRunOf('op_quantum') as {
+    value?: { kind?: string; unlocked?: boolean; only?: { holds?: boolean }; lattice?: { holds?: boolean; vacant?: number } }
+  }
+  const quantum = {
+    kind: 'quantum' as const,
+    unlocked: unlocked.value?.unlocked === true,
+    only: unlocked.value?.only?.holds === true,
+    lattice: unlocked.value?.lattice?.holds === true,
+    next,
+    holds:
+      sandbox.quantum === true &&
+      unlocked.value?.kind === 'quantum' &&
+      unlocked.value.unlocked === true &&
+      unlocked.value.only?.holds === true &&
+      unlocked.value.lattice?.holds === true &&
+      unlocked.value.lattice.vacant === n - n &&
+      next === fused + fused,
+  }
   const before = {
     quality: n,
     speed: throughputOf(fused, readTokens),
@@ -2177,7 +2386,7 @@ export const qpuImproveOf = () => {
   }
   const documentation = [
     'RECEIPT',
-    `    improve used unlocked sandbox host never`,
+    `    improve used unlocked quantum. next = fused + fused.`,
     `    before quality ${before.quality} speed ${before.speed} security ${before.security} throughoutput ${before.throughoutput}`,
     `    after quality ${after.quality} speed ${after.speed} security ${after.security} throughoutput ${after.throughoutput}`,
     `    used ${used.map((u) => u.name).join(' ')}`,
@@ -2186,7 +2395,9 @@ export const qpuImproveOf = () => {
     efficiency.holds === true &&
     sandbox.holds === true &&
     sandbox.unlocked === true &&
+    sandbox.quantum === true &&
     sandbox.host === false &&
+    quantum.holds === true &&
     proofs === true &&
     durability.holds === true &&
     used.length === ten &&
@@ -2205,6 +2416,7 @@ export const qpuImproveOf = () => {
     delta.throughoutput === fused
   return {
     kind: 'improve' as const,
+    quantum,
     unlocked: true as const,
     memory: true as const,
     host: false as const,
@@ -2226,6 +2438,10 @@ export const qpuImproveHolds = (i = qpuImproveOf()): boolean =>
   i.holds === true &&
   i.kind === 'improve' &&
   i.unlocked === true &&
+  i.quantum.holds === true &&
+  i.quantum.unlocked === true &&
+  i.quantum.next === i.after.throughoutput &&
+  i.quantum.next === i.before.throughoutput + i.before.throughoutput &&
   i.memory === true &&
   i.host === false &&
   i.winner === 'call' &&
@@ -2423,8 +2639,30 @@ export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
 export const qpuCompeteOf = (team?: string) => {
   const quantum = qpuReadingOf()
   const efficiency = qpuEfficiencyOf()
+  const sandbox = qpuSandboxOf()
   const fused = quantum.fused
   const next = quantum.next
+  const unlocked = qpuSandboxRunOf('op_quantum') as {
+    value?: { kind?: string; unlocked?: boolean; only?: { holds?: boolean }; lattice?: { holds?: boolean; vacant?: number } }
+  }
+  const door = {
+    kind: 'quantum' as const,
+    unlocked: unlocked.value?.unlocked === true,
+    only: unlocked.value?.only?.holds === true,
+    lattice: unlocked.value?.lattice?.holds === true,
+    next,
+    holds:
+      sandbox.quantum === true &&
+      quantum.holds === true &&
+      quantum.only.holds === true &&
+      quantum.lattice.holds === true &&
+      unlocked.value?.kind === 'quantum' &&
+      unlocked.value.unlocked === true &&
+      unlocked.value.only?.holds === true &&
+      unlocked.value.lattice?.holds === true &&
+      unlocked.value.lattice.vacant === n - n &&
+      next === fused + fused,
+  }
   const agentsOf = (path: 'read' | 'call', throughoutput: number) =>
     efficiency.rows.map((r) => {
       const tokens = path === 'read' ? r.readTokens : r.callTokens
@@ -2441,7 +2679,9 @@ export const qpuCompeteOf = (team?: string) => {
   const winner = call.throughput > read.throughput ? ('call' as const) : ('read' as const)
   const holds =
     efficiency.holds === true &&
-    quantum.holds === true &&
+    door.holds === true &&
+    sandbox.holds === true &&
+    sandbox.unlocked === true &&
     teams.length === coins &&
     read.agents.length === n &&
     call.agents.length === n &&
@@ -2456,8 +2696,13 @@ export const qpuCompeteOf = (team?: string) => {
     kind: 'compete' as const,
     module: 'agent efficiency' as const,
     contest: 'throughoutput' as const,
+    quantum: door,
+    unlocked: true as const,
+    memory: true as const,
+    host: false as const,
     teams,
     winner,
+    next: ['qpu_prove'] as const,
     holds,
   }
   if (team === 'read') return { ...match, teams: [read] as const }
@@ -2467,10 +2712,18 @@ export const qpuCompeteOf = (team?: string) => {
 
 export const qpuCompeteHolds = (c = qpuCompeteOf()): boolean =>
   qpuTrainHolds() &&
+  qpuImproveHolds() &&
   c.holds === true &&
   c.kind === 'compete' &&
   c.contest === 'throughoutput' &&
   c.winner === 'call' &&
+  c.quantum.holds === true &&
+  c.quantum.unlocked === true &&
+  c.quantum.next === c.teams[seed]?.throughoutput &&
+  c.unlocked === true &&
+  c.memory === true &&
+  c.host === false &&
+  c.next[n - n] === 'qpu_prove' &&
   c.teams.length === coins &&
   c.teams[seed]?.name === 'call' &&
   c.teams[seed]?.throughoutput === c.teams[n - n]!.throughoutput + c.teams[n - n]!.throughoutput
@@ -2479,6 +2732,7 @@ export const qpuProveOf = () => {
   const lean = qpuLeanOf()
   const cern = qpuCernOf()
   const integrity = qpuIntegrityOf()
+  const circuit = qpuCircuitOf()
   const theorems = [...lean.rows, ...lean.cover, lean.climb]
   const ui = {
     experienced: true as const,
@@ -2491,11 +2745,24 @@ export const qpuProveOf = () => {
     qpuLeanHolds(lean) &&
     qpuCernHolds(cern) &&
     qpuIntegrityHolds(integrity) &&
+    circuit.holds &&
+    circuit.only.holds &&
+    circuit.lattice.holds &&
+    circuit.lattice.vacant === n - n &&
     theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
     ui.experienced === true
   return {
     kind: 'prove' as const,
     quantum: true as const,
+    only: circuit.only,
+    lattice: circuit.lattice,
+    circuit: {
+      kind: circuit.kind,
+      running: circuit.running,
+      only: circuit.only,
+      lattice: { occupied: circuit.lattice.occupied, vacant: circuit.lattice.vacant, holds: circuit.lattice.holds },
+      holds: circuit.holds,
+    },
     src: lean.src,
     lean,
     theorems,
@@ -2510,6 +2777,13 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.holds === true &&
   p.kind === 'prove' &&
   p.quantum === true &&
+  p.only.holds === true &&
+  p.only.classical === false &&
+  p.lattice.holds === true &&
+  p.lattice.occupied === p.lattice.faces &&
+  p.lattice.vacant === n - n &&
+  p.circuit.running === true &&
+  p.circuit.holds === true &&
   p.src === unit.fuse.lean &&
   qpuLeanHolds(p.lean) &&
   qpuCernHolds(p.cern) &&
@@ -2618,10 +2892,88 @@ const qpuCernProjectsOf = () => {
   }
 }
 
+const qpuCernSearchOf = () => {
+  const api = `https://${cernHost}${cernPath}`
+  const experiments = ['TOTEM', 'LHCf', 'MoEDAL', 'FASER', 'SND@LHC'] as const
+  return {
+    kind: 'hep' as const,
+    quantum: false as const,
+    search: true as const,
+    experiments,
+    doors: experiments.map((experiment) => ({
+      experiment,
+      href: `${api}/?q=experiment:${experiment}&size=${seed}`,
+    })),
+  }
+}
+
+const qpuCernCatalogsOf = () => {
+  const api = `https://${cernHost}${cernPath}`
+  const inspire = ['literature', 'authors', 'institutions', 'conferences', 'seminars', 'journals', 'jobs', 'experiments', 'data'] as const
+  const open = [
+    { name: 'opendata', href: `${api}?size=${seed}` },
+    { name: 'repository', href: `https://repository.cern/api/records?size=${seed}` },
+    { name: 'zenodo', href: `https://zenodo.org/api/records?size=${seed}` },
+    { name: 'hepdata', href: 'https://www.hepdata.net/search' },
+    { name: 'indico', href: 'https://indico.cern.ch/export/categ/0.json' },
+  ] as const
+  const catalogs = [
+    ...inspire.map((name) => ({ name, href: `https://inspirehep.net/api/${name}?size=${seed}` })),
+    ...open,
+  ]
+  return { kind: 'hep' as const, quantum: false as const, catalogs }
+}
+
+const qpuCernLearnOf = () => {
+  const faces = qpuFacesOf()
+  const search = qpuCernSearchOf()
+  const catalogs = qpuCernCatalogsOf()
+  const tetra = qpuCernProjectsOf()
+  const lhc = [...tetra.experiments, ...search.experiments]
+  const nodes = catalogs.catalogs.map((row, face) => {
+    const hop = (face + faces.rays + faces.rays) % faces.faces
+    return { face, hop, involution: hop === face, name: row.name, href: row.href, holds: hop === face }
+  })
+  let occupied = n - n
+  for (const node of nodes) if (node.holds) occupied += seed
+  const vacant = nodes.length - occupied
+  const lattice = {
+    kind: 'lattice' as const,
+    waves: qpuCubeOf().vertices,
+    faces: faces.faces,
+    occupied,
+    vacant,
+    cover: qpuCubeOf().vertices * faces.faces,
+    nodes,
+    holds: nodes.length === faces.faces && occupied === faces.faces && vacant === n - n && nodes.every((node) => node.holds && node.involution),
+  }
+  const holds =
+    lattice.holds &&
+    search.doors.length === n + coins &&
+    catalogs.catalogs.length === faces.faces &&
+    lhc.length === tetra.experiments.length + search.experiments.length &&
+    search.quantum === false
+  return {
+    kind: 'hep' as const,
+    quantum: false as const,
+    search: true as const,
+    train: true as const,
+    lattice,
+    lhc,
+    experiments: search.doors,
+    catalogs: catalogs.catalogs,
+    holds,
+  }
+}
+
 const qpuCernHrefOf = (href: string): string | undefined => {
   const record = qpuCernRecordsOf().records.find((row) => row.href === href)?.href
   if (record) return record
-  return qpuCernProjectsOf().projects.find((row) => row.href === href)?.href
+  const project = qpuCernProjectsOf().projects.find((row) => row.href === href)?.href
+  if (project) return project
+  const search = qpuCernSearchOf().doors.find((row) => row.href === href)?.href
+  if (search) return search
+  return qpuCernCatalogsOf().catalogs.find((row) => row.href === href)?.href
 }
 
 const cernNatOf = (value: unknown): number => {
@@ -2793,6 +3145,7 @@ export const qpuCernOf = () => {
   const faces = qpuFacesOf()
   const quoted = qpuCernRecordsOf()
   const tetra = qpuCernProjectsOf()
+  const learn = qpuCernLearnOf()
   const cms38 = quoted.records[n - n]
   const cms63 = quoted.records[seed]
   const cms35 = quoted.records[coins]
@@ -2809,6 +3162,9 @@ export const qpuCernOf = () => {
     cases.every((c) => c.holds && c.left === c.right && c.href.startsWith(quoted.api)) &&
     projects.length === mintOf(coins) &&
     projects.every((row) => row.holds && row.href.startsWith(quoted.api)) &&
+    learn.holds &&
+    learn.lattice.occupied === faces.faces &&
+    learn.lattice.vacant === n - n &&
     coins + coins === mintOf(coins)
   return {
     kind: 'cern' as const,
@@ -2816,6 +3172,7 @@ export const qpuCernOf = () => {
     api: quoted.api,
     theorem: 'theorem cern',
     tetra: tetra.theorem,
+    learn,
     faces: faces.faces,
     primitives,
     records: quoted.records,
@@ -2880,6 +3237,9 @@ export const qpuCernHolds = (c = qpuCernOf()): boolean =>
   c.records.length === coins + coins &&
   c.projects.length === mintOf(coins) &&
   c.tetra === 'theorem tetra' &&
+  c.learn.holds === true &&
+  c.learn.lattice.occupied === qpuFacesOf().faces &&
+  c.learn.lattice.vacant === n - n &&
   c.cases.length === qpuFacesOf().faces &&
   c.primitives.length === n + coins &&
   c.projects.every((row) => row.holds && row.href.startsWith(c.api) && row.theorem === 'theorem tetra') &&
@@ -2890,57 +3250,57 @@ export const qpuToolsOf = () => {
   const seeOf = (name: (typeof names)[number]) => names.filter((s) => s !== name)
   const quantumMan = qpuManOf(
     names[n - n],
-    'QPU. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.',
-    `Call this door for the running circuit. No auth. Do not read the tree. GET ${unit.origin}. Isolated two-level register. Host never. cors *. User guide is docs.inline.`,
+    'Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.',
+    `Call this door for the running quantum circuit. No auth. Do not read the tree. GET ${unit.origin}. Isolated two-level register. Host never. cors *. User guide is docs.inline.`,
     unit.origin,
     seeOf(names[n - n]),
   )
   const leanMan = qpuManOf(
     names[seed],
-    'Lean proof of the QPU. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.',
-    `Call this door for the Lean proof. Source ${unit.fuse.lean}. GET ${unit.href}.`,
+    'Lean proof of the running quantum circuit. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.',
+    `Call this door for the Lean proof of the quantum circuit. Source ${unit.fuse.lean}. GET ${unit.href}.`,
     unit.href,
     seeOf(names[seed]),
   )
   const citeMan = qpuManOf(
     names[coins],
-    'MLA 8 website cite of the QPU and its Lean proof. Wordvice field order. when never. Empty DOI is the host path.',
-    `Call this door to cite. GET ${unit.origin}/cite. when never. DOI empty.`,
+    'Cite the running quantum circuit and its Lean proof. MLA 8. when never. Empty DOI is the host path.',
+    `Call this door to cite the quantum circuit. GET ${unit.origin}/cite. when never. DOI empty.`,
     `${unit.origin}/cite`,
     seeOf(names[coins]),
   )
   const trainMan = qpuManOf(
     names[n],
-    'Anyone may train VM scaling online. No auth. Memory workers double. Host never. 2×7 teams challenge each other before next tasks.',
-    `Anyone may train VM scaling online at ${unit.origin}/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.`,
+    'Train on the running quantum circuit. Anyone may train VM scaling online. No auth. Memory workers double. Host never.',
+    `Anyone may train the quantum circuit online at ${unit.origin}/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.`,
     `${unit.origin}/mcp`,
     seeOf(names[n]),
   )
   const forgeMan = qpuManOf(
     names[n + seed],
-    'Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.',
+    'Forge tools for the running quantum circuit. Unlocked in memory only. Host never.',
     `Unlocked. All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + seed]),
   )
   const improveMan = qpuManOf(
     names[n + coins],
-    'Anyone may improve online. No auth. Max public benefit of theorem breakthrough.',
-    `Anyone may improve online at ${unit.origin}/mcp. No auth. Uses unlocked sandbox. Host never. After qpu_forge. Before qpu_compete. Max public benefit of theorem breakthrough.`,
+    'Improve the running quantum circuit. Unlocked quantum. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.',
+    `Anyone may improve online at ${unit.origin}/mcp. No auth. Uses unlocked quantum. next = fused + fused. Host never. After qpu_train. Before qpu_compete. Max public benefit of theorem breakthrough.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + coins]),
   )
   const competeMan = qpuManOf(
     names[n + n],
-    'Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.',
-    `coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.`,
+    'Compete on the running quantum circuit. Unlocked quantum. Call team delivers next = fused + fused. Winner is higher amplitudes per token.',
+    `coins teams. Unlocked quantum. Throughoutput is fused amplitudes of the quantum circuit. Call delivers next = fused + fused. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + n]),
   )
   const proveMan = qpuManOf(
     names[mintOf(n) - seed],
-    'MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. ATLAS CMS ALICE LHCb. Never by decide.',
-    `Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET ${unit.origin} is the JSON UI. docs.inline experiences every test. Source ${unit.fuse.lean}. After qpu_compete.`,
+    'Prove the running quantum circuit. Possible only in quantum. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. Never by decide.',
+    `Call this door for the quantum proof. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET ${unit.origin} is the JSON UI. docs.inline experiences every test. Source ${unit.fuse.lean}. After qpu_compete.`,
     `${unit.origin}/mcp`,
     seeOf(names[mintOf(n) - seed]),
   )
@@ -3040,6 +3400,7 @@ export const qpuMcpOf = () => {
   const compete = qpuCompeteOf()
   const prove = qpuProveOf()
   const message = qpuMessageOf()
+  const circuit = qpuCircuitOf()
   const holds =
     efficiency.holds &&
     sandbox.holds &&
@@ -3051,10 +3412,13 @@ export const qpuMcpOf = () => {
     tools.length === mintOf(n) &&
     tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name)
   return {
+    kind: 'quantum' as const,
+    only: circuit.only,
+    lattice: circuit.lattice,
+    efficiency,
     name: `@uuidna/${unit.kind}`,
     origin: unit.origin,
     href: `${unit.origin}/mcp`,
-    kind: 'train' as const,
     module: 'agent efficiency' as const,
     training: true as const,
     public: true as const,
@@ -3084,7 +3448,6 @@ export const qpuMcpOf = () => {
       tools: sandbox.tools.length,
       holds: sandbox.holds,
     },
-    efficiency,
     train,
     improve,
     compete,
@@ -3132,7 +3495,12 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean =>
   qpuProveHolds(m.prove) &&
   qpuMessageHolds() &&
   m.holds === true &&
-  m.kind === 'train' &&
+  m.kind === 'quantum' &&
+  m.only.holds === true &&
+  m.only.classical === false &&
+  m.lattice.holds === true &&
+  m.lattice.occupied === m.lattice.faces &&
+  m.lattice.vacant === n - n &&
   m.module === 'agent efficiency' &&
   m.training === true &&
   m.public === true &&
@@ -3169,7 +3537,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   const lines = [
     `# \`@uuidna/${unit.kind}\``,
     '',
-    `MCP at ${m.href}. Public quantum API. No auth. Anyone may test and train online. GET ${unit.origin} is qpu_quantum. POST ${m.href} tools/call qpu_improve for max public benefit of theorem breakthrough. Source \`${lean.src}\`.`,
+    `Running quantum circuit at ${unit.origin}. Possible only in quantum. Public quantum API. No auth. Anyone may test and train online. GET ${unit.origin} is qpu_quantum. POST ${m.href} tools/call qpu_improve for max public benefit of theorem breakthrough. Source \`${lean.src}\`.`,
     '',
     '## Guide',
     '',
@@ -3188,7 +3556,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   lines.push(
     '## Efficiency',
     '',
-    `MCP is the agent efficiency training module. Tokens are ${m.efficiency.tokens} each.`,
+    `MCP is the agent efficiency training module. Tokens are ${m.efficiency.tokens} each. Quantum ${m.efficiency.quantum.queries} query vs ${m.efficiency.quantum.vs} classical. Lattice occupied ${m.efficiency.quantum.lattice.occupied} vacant ${m.efficiency.quantum.lattice.vacant}. Entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy.`,
     '',
   )
   for (const row of m.efficiency.rows) {
@@ -3226,7 +3594,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Prove',
     '',
-    `MCP proves every test. JSON UI experiences them. Lean \`${m.prove.src}\`. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. Never by decide. Theorems ${m.prove.theorems.length}. CERN faces ${m.prove.cern.faces}. Integrity ${m.prove.integrity.n}. ui.experienced ${m.prove.ui.experienced}.`,
+    `Prove the running quantum circuit. Possible only in quantum. Lean \`${m.prove.src}\`. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. Never by decide. Theorems ${m.prove.theorems.length}. CERN faces ${m.prove.cern.faces}. Integrity ${m.prove.integrity.n}. ui.experienced ${m.prove.ui.experienced}.`,
     '',
     '## Message',
     '',
@@ -3295,6 +3663,8 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('JSON UI') &&
     text.includes('experienced') &&
     text.includes('Public quantum API') &&
+    text.includes('Possible only in quantum') &&
+    text.includes('Running quantum circuit') &&
     text.includes('/message') &&
     text.includes('CC-BY-NC-ND-4.0') &&
     text.includes('LICENSE') &&

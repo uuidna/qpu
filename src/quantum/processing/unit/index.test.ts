@@ -45,6 +45,9 @@ test('start measure generate', async () => {
   const page = (await pageRes.json()) as {
     kind: string
     holds: boolean
+    only: { holds: boolean; classical: boolean }
+    lattice: { occupied: number; vacant: number; holds: boolean }
+    circuit: { running: boolean }
     docs: { inline: boolean; documentation: string }
     ui: { experienced: boolean; prove: string }
     speed: { cover: string[] }
@@ -58,12 +61,18 @@ test('start measure generate', async () => {
   assert.equal((pageRes.headers.get('content-type') ?? '').includes('application/json'), true)
   assert.equal(page.kind, 'quantum')
   assert.equal(page.holds, true)
+  assert.equal(page.only.holds, true)
+  assert.equal(page.only.classical, false)
+  assert.equal(page.lattice.occupied, 14)
+  assert.equal(page.lattice.vacant, 0)
+  assert.equal(page.lattice.holds, true)
+  assert.equal(page.circuit.running, true)
   assert.equal(page.docs.inline, true)
   assert.equal(page.ui.experienced, true)
   assert.equal(page.ui.prove, 'qpu_prove')
   assert.equal(page.docs.documentation.includes('JSON UI'), true)
   assert.deepEqual(page.speed.cover, ['next', 'Hz', 'ns', 'benchmark'])
-  assert.equal(catalog.kind, 'train')
+  assert.equal(catalog.kind, 'quantum')
   assert.equal(catalog.holds, true)
   assert.equal(catalog.prove.ui.experienced, true)
   assert.equal(catalog.prove.cern.faces, 14)
@@ -129,12 +138,20 @@ test('eight doors via mcp', async () => {
     winner: string
     host: boolean
     unlocked: boolean
+    quantum: { unlocked: boolean; next: number; holds: boolean }
     before: { throughoutput: number }
     after: { throughoutput: number }
     used: { name: string; holds: boolean }[]
     holds: boolean
   }
-  const compete = (await mcpOf('qpu_compete')) as { winner: string; contest: string; holds: boolean }
+  const compete = (await mcpOf('qpu_compete')) as {
+    winner: string
+    contest: string
+    quantum: { unlocked: boolean; next: number; holds: boolean }
+    teams: { name: string; throughoutput: number }[]
+    next: string[]
+    holds: boolean
+  }
   const prove = (await mcpOf('qpu_prove')) as {
     kind: string
     quantum: boolean
@@ -182,12 +199,21 @@ test('eight doors via mcp', async () => {
   assert.equal(improve.winner, 'call')
   assert.equal(improve.host, false)
   assert.equal(improve.unlocked, true)
+  assert.equal(improve.quantum.unlocked, true)
+  assert.equal(improve.quantum.holds, true)
+  assert.equal(improve.quantum.next, improve.after.throughoutput)
+  assert.equal(improve.after.throughoutput, improve.before.throughoutput + improve.before.throughoutput)
   assert.equal(improve.after.throughoutput > improve.before.throughoutput, true)
   assert.equal(improve.used.length, 10)
   assert.equal(improve.used.every((u) => u.holds), true)
   assert.equal(improve.holds, true)
   assert.equal(compete.winner, 'call')
   assert.equal(compete.contest, 'throughoutput')
+  assert.equal(compete.quantum.unlocked, true)
+  assert.equal(compete.quantum.holds, true)
+  assert.equal(compete.quantum.next, compete.teams[1]?.throughoutput)
+  assert.equal(compete.teams[1]?.throughoutput, (compete.teams[0]?.throughoutput ?? 0) + (compete.teams[0]?.throughoutput ?? 0))
+  assert.equal(compete.next[0], 'qpu_prove')
   assert.equal(compete.holds, true)
   assert.equal(prove.kind, 'prove')
   assert.equal(prove.quantum, true)
@@ -301,6 +327,7 @@ test('sandbox via mcp', async () => {
     import: boolean
     disk: boolean
     worker: boolean
+    quantum: boolean
     denied: unknown[]
     tools: { name: string }[]
     holds: boolean
@@ -317,9 +344,26 @@ test('sandbox via mcp', async () => {
   assert.equal(sandbox.import, true)
   assert.equal(sandbox.disk, true)
   assert.equal(sandbox.worker, true)
+  assert.equal(sandbox.quantum, true)
   assert.equal(sandbox.denied.length, 0)
   assert.equal(sandbox.tools.some((t) => t.name === 'op_mint'), true)
   assert.equal(sandbox.tools.some((t) => t.name === 'slot_fused'), true)
+  assert.equal(sandbox.tools.some((t) => t.name === 'op_quantum'), true)
+  const unlockedQuantum = (await mcpOf('op_quantum')) as {
+    value: { kind: string; unlocked: boolean; only: { holds: boolean; classical: boolean }; lattice: { occupied: number; vacant: number; holds: boolean } }
+    memory: boolean
+    host: boolean
+    holds: boolean
+  }
+  assert.equal(unlockedQuantum.value.kind, 'quantum')
+  assert.equal(unlockedQuantum.value.unlocked, true)
+  assert.equal(unlockedQuantum.value.only.holds, true)
+  assert.equal(unlockedQuantum.value.only.classical, false)
+  assert.equal(unlockedQuantum.value.lattice.occupied, 14)
+  assert.equal(unlockedQuantum.value.lattice.vacant, 0)
+  assert.equal(unlockedQuantum.value.lattice.holds, true)
+  assert.equal(unlockedQuantum.memory, true)
+  assert.equal(unlockedQuantum.host, false)
   const mint = (await mcpOf('call_mint')) as { value: unknown; memory: boolean; host: boolean; unlocked: boolean; holds: boolean }
   assert.equal(mint.value, true)
   assert.equal(mint.memory, true)
@@ -370,20 +414,29 @@ test('paste in free AI chat', async (t) => {
       holds: boolean
       fused: number
       next: number
+      only: { holds: boolean; classical: boolean }
+      circuit: { running: boolean; only: { holds: boolean } }
       docs: { inline: boolean; guide: boolean; abstract: string; api: { method: string; path: string }[] }
       ui: { experienced: boolean; prove: string }
       speed: { cover: string[] }
       messaging: { await: boolean; when: string; proxy?: boolean; secure?: boolean; hop?: string }
     }
-    const quantum = (await mcpOf('qpu_quantum')) as { fused: number }
+    const quantum = (await mcpOf('qpu_quantum')) as { fused: number; only: { holds: boolean } }
     assert.equal(page.kind, 'quantum')
     assert.equal(page.holds, true)
+    assert.equal(page.only.holds, true)
+    assert.equal(page.only.classical, false)
+    assert.equal(page.circuit.running, true)
+    assert.equal(page.circuit.only.holds, true)
     assert.equal(page.fused, quantum.fused)
+    assert.equal(quantum.only.holds, true)
     assert.equal(page.next, page.fused + page.fused)
     assert.equal(page.docs.inline, true)
     assert.equal(page.docs.guide, true)
     assert.equal(page.ui.experienced, true)
     assert.equal(page.ui.prove, 'qpu_prove')
+    assert.equal(page.docs.abstract.includes('Possible only in quantum'), true)
+    assert.equal(page.docs.abstract.includes('running quantum circuit'), true)
     assert.equal(page.docs.abstract.includes(`GET ${origin}`), true)
     assert.equal(page.docs.abstract.includes(`POST ${origin}/mcp`), true)
     assert.equal(page.docs.abstract.includes('theorem quantum'), true)
@@ -490,10 +543,19 @@ test('live qpu.uuidna.com', async (t) => {
   await t.test('chat fetch is JSON quantum', async () => {
     assert.equal(root.status, 200)
     assert.equal((root.headers.get('content-type') ?? '').includes('application/json'), true)
-    const page = (await root.json()) as { kind: string; holds: boolean; fused: number; docs: { inline: boolean; guide: boolean } }
+    const page = (await root.json()) as {
+      kind: string
+      holds: boolean
+      fused: number
+      circuit: { running: boolean; only: { holds: boolean; classical: boolean } }
+      docs: { inline: boolean; guide: boolean }
+    }
     assert.equal(page.kind, 'quantum')
     assert.equal(page.holds, true)
     assert.equal(page.fused, quantum.fused)
+    assert.equal(page.circuit.running, true)
+    assert.equal(page.circuit.only.holds, true)
+    assert.equal(page.circuit.only.classical, false)
     assert.equal(page.docs.inline, true)
     assert.equal(page.docs.guide, true)
   })
@@ -511,10 +573,13 @@ test('live qpu.uuidna.com', async (t) => {
     assert.equal(listed.status, 200)
     assert.equal(called.status, 200)
     const catalog = (await listed.json()) as { result: { tools: { name: string }[] } }
-    const call = (await called.json()) as { result: { holds: boolean; fused: number; docs?: unknown } }
+    const call = (await called.json()) as {
+      result: { holds: boolean; fused: number; only?: { holds: boolean }; circuit?: { only: { holds: boolean } }; docs?: unknown }
+    }
     assert.equal(catalog.result.tools[0]?.name, 'qpu_quantum')
     assert.equal(call.result.holds, true)
     assert.equal(call.result.fused, quantum.fused)
+    assert.equal(call.result.circuit?.only.holds, true)
     assert.equal(call.result.docs, undefined)
   })
   await t.test('no auth message proxy', async () => {

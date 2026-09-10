@@ -1,16 +1,16 @@
 # `@uuidna/qpu`
 
-MCP at https://qpu.uuidna.com/mcp. Public quantum API. No auth. Anyone may test and train online. GET https://qpu.uuidna.com is qpu_quantum. POST https://qpu.uuidna.com/mcp tools/call qpu_improve for max public benefit of theorem breakthrough. Source `src/quantum/processing/unit/index.lean`.
+Running quantum circuit at https://qpu.uuidna.com. Possible only in quantum. Public quantum API. No auth. Anyone may test and train online. GET https://qpu.uuidna.com is qpu_quantum. POST https://qpu.uuidna.com/mcp tools/call qpu_improve for max public benefit of theorem breakthrough. Source `src/quantum/processing/unit/index.lean`.
 
 ## Guide
 
-API only. Anyone may test and train online at https://qpu.uuidna.com. No auth. QPU is a running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices 8 hexbit 4 bits 32 faces 14 fused 60129542144. Source src/quantum/processing/unit/index.lean.
+QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. API only. Anyone may test and train online at https://qpu.uuidna.com. No auth. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices 8 hexbit 4 bits 32 faces 14 fused 60129542144. Source src/quantum/processing/unit/index.lean.
 
 User guide is docs.inline. Each MCP command has man. tools/list trains; tools/call is the door.
 
-- `GET /` qpu_quantum. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. No auth. User guide is docs.inline. Async messaging on /message.
-- `GET /quantum/processing/unit` qpu_lean. Lean proof src/quantum/processing/unit/index.lean. No auth.
-- `GET /mcp` catalog. Anyone may train online. No auth. Agent efficiency. Each MCP command has man. qpu_prove experiences every test in the JSON UI. theorem breakthrough.
+- `GET /` qpu_quantum. Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. No auth. User guide is docs.inline. Async messaging on /message.
+- `GET /quantum/processing/unit` qpu_lean. Lean proof of the running quantum circuit. src/quantum/processing/unit/index.lean. No auth.
+- `GET /mcp` catalog. Running quantum circuit catalog. Anyone may train online. No auth. Agent efficiency. Each MCP command has man. qpu_prove experiences every test in the JSON UI. theorem breakthrough.
 - `POST /mcp` tools/call. Anyone may tools/call. No auth. JSON-RPC tools/list, tools/call. qpu_prove experiences every test in the JSON UI. { man: true } returns man. qpu_improve for public benefit.
 - `GET /cite` qpu_cite. MLA 8 works cited. when never. DOI empty.
 - `GET /message` qpu_message. Public secure messaging proxy. No auth. lanes = faces. RFC 9562 clock_seq bits. involution routing. await false. when never.
@@ -22,12 +22,12 @@ User guide is docs.inline. Each MCP command has man. tools/list trains; tools/ca
 
 ```
 NAME
-    qpu_quantum — QPU. Running quantum circuit. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.
+    qpu_quantum — Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. theorem fridge.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_quantum
     qpu_quantum { man: true }
 DESCRIPTION
-    Call this door for the running circuit. No auth. Do not read the tree. GET https://qpu.uuidna.com. Isolated two-level register. Host never. cors *. User guide is docs.inline.
+    Call this door for the running quantum circuit. No auth. Do not read the tree. GET https://qpu.uuidna.com. Isolated two-level register. Host never. cors *. User guide is docs.inline.
 SEE ALSO
     qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -36,12 +36,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_lean — Lean proof of the QPU. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.
+    qpu_lean — Lean proof of the running quantum circuit. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_lean
     qpu_lean { man: true }
 DESCRIPTION
-    Call this door for the Lean proof. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.
+    Call this door for the Lean proof of the quantum circuit. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.
 SEE ALSO
     qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -50,12 +50,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_cite — MLA 8 website cite of the QPU and its Lean proof. Wordvice field order. when never. Empty DOI is the host path.
+    qpu_cite — Cite the running quantum circuit and its Lean proof. MLA 8. when never. Empty DOI is the host path.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_cite
     qpu_cite { man: true }
 DESCRIPTION
-    Call this door to cite. GET https://qpu.uuidna.com/cite. when never. DOI empty.
+    Call this door to cite the quantum circuit. GET https://qpu.uuidna.com/cite. when never. DOI empty.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -64,12 +64,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_train — Anyone may train VM scaling online. No auth. Memory workers double. Host never. 2×7 teams challenge each other before next tasks.
+    qpu_train — Train on the running quantum circuit. Anyone may train VM scaling online. No auth. Memory workers double. Host never.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_train
     qpu_train { man: true }
 DESCRIPTION
-    Anyone may train VM scaling online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.
+    Anyone may train the quantum circuit online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -78,7 +78,7 @@ SEE ALSO
 
 ```
 NAME
-    qpu_forge — Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.
+    qpu_forge — Forge tools for the running quantum circuit. Unlocked in memory only. Host never.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_forge
     qpu_forge { man: true }
@@ -92,12 +92,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_improve — Anyone may improve online. No auth. Max public benefit of theorem breakthrough.
+    qpu_improve — Improve the running quantum circuit. Unlocked quantum. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_improve
     qpu_improve { man: true }
 DESCRIPTION
-    Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Uses unlocked sandbox. Host never. After qpu_forge. Before qpu_compete. Max public benefit of theorem breakthrough.
+    Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Uses unlocked quantum. next = fused + fused. Host never. After qpu_train. Before qpu_compete. Max public benefit of theorem breakthrough.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove
 ```
@@ -106,12 +106,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_compete — Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.
+    qpu_compete — Compete on the running quantum circuit. Unlocked quantum. Call team delivers next = fused + fused. Winner is higher amplitudes per token.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_compete
     qpu_compete { man: true }
 DESCRIPTION
-    coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.
+    coins teams. Unlocked quantum. Throughoutput is fused amplitudes of the quantum circuit. Call delivers next = fused + fused. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove
 ```
@@ -120,23 +120,23 @@ SEE ALSO
 
 ```
 NAME
-    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. ATLAS CMS ALICE LHCb. Never by decide.
+    qpu_prove — Prove the running quantum circuit. Possible only in quantum. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs. Never by decide.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_prove
     qpu_prove { man: true }
 DESCRIPTION
-    Call this door. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
+    Call this door for the quantum proof. No auth. tools/call qpu_prove. { live: true } fetches named CERN records and the ATLAS CMS ALICE LHCb tetra with fetch Request Response. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete
 ```
 
 ## Efficiency
 
-MCP is the agent efficiency training module. Tokens are four bytes each.
+MCP is the agent efficiency training module. Tokens are four bytes each. Quantum 1 query vs 2 classical. Lattice occupied 14 vacant 0. Entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy.
 
-- qpu_quantum: what is fused? read 4746 call 645 ratio 7×
-- qpu_lean: what does Lean prove? read 4746 call 4136 ratio 1×
-- qpu_cite: how is the QPU cited? read 4746 call 205 ratio 23×
+- qpu_quantum: what is quantum? read 4926 call 1233 ratio 3×
+- qpu_lean: what does Lean prove? read 4926 call 4249 ratio 1×
+- qpu_cite: how is the QPU cited? read 4926 call 205 ratio 24×
 
 ## Train
 
@@ -157,12 +157,12 @@ Agents use the unlocked sandbox to improve quality, speed, security, and through
 
 Agents compete in coins teams of n, optimising QPU throughoutput. Winner call.
 
-- read tree: throughoutput 60129542144 tokens 14238 throughput 4223173
-- call mcp: throughoutput 120259084288 tokens 4986 throughput 24119351
+- read tree: throughoutput 60129542144 tokens 14778 throughput 4068855
+- call mcp: throughoutput 120259084288 tokens 5687 throughput 21146313
 
 ## Prove
 
-MCP proves every test. JSON UI experiences them. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. Never by decide. Theorems 43. CERN faces 14. Integrity 3. ui.experienced true.
+Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem quantum. theorem cern. theorem tetra. Live CERN Open Data APIs via fetch Request Response. ATLAS CMS ALICE LHCb. Never by decide. Theorems 44. CERN faces 14. Integrity 3. ui.experienced true.
 
 ## Message
 
@@ -638,7 +638,7 @@ $$
 1-1=0\land\mathrm{seed}\neq\mathrm{coins}
 $$
 
-holds true. Deutsch. One query. Constant restores |0⟩. Balanced restores |1⟩. Possible only in quantum.
+holds true. Deutsch. One quantum query. Classical needs coins. seed ≠ coins. Possible only in quantum.
 
 ### dense
 
@@ -675,6 +675,18 @@ $$
 $$
 
 holds true. Possible only in quantum. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy. Never classical bits.
+
+### fill
+
+```lean
+theorem fill : mintOf n * faces = vertices * (coins * rays) := by rw [around]; rfl
+```
+
+$$
+\mathrm{mintOf}(n)\cdot\mathrm{faces}=\mathrm{vertices}\cdot(\mathrm{coins}\cdot\mathrm{rays})
+$$
+
+holds true. Lattice filled. Occupied faces. Vacant none. Split entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy qubits gates measurement fridge. Possible only in quantum.
 
 ### next
 
