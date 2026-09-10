@@ -15,8 +15,8 @@ QPU_HOST = "qpu.uuidna.com"
 
 [[kv_namespaces]]
 binding = "STORAGE"
-id = "local-storage"
-preview_id = "local-storage"
+id = "b341b266250444198e54508ca3aee53a"
+preview_id = "b341b266250444198e54508ca3aee53a"
 
 [[r2_buckets]]
 binding = "BLOBS"
