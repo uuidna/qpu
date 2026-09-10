@@ -210,16 +210,15 @@ test('eight doors via mcp', async () => {
   const train = (await mcpOf('qpu_train')) as {
     kind: string
     divide: { teams: number; agents: number; challenges: number }
-    dry: { kind: string; coordinated: boolean; entropy: boolean; sealed: boolean; occupancy: string[]; holds: boolean }
-    sandbox: { memory: boolean; unlocked: boolean; host: boolean }
-    vm: { online: boolean; auth: boolean; host: boolean; replicas: number; next: number; scaled: boolean; infinite: boolean; crypt: boolean; free: boolean; agents: number; holds: boolean }
+    dry: { kind: string; coordinated: boolean; entropy: boolean; sealed: boolean; occupancy: string[]; domains: string[]; hz: number; holds: boolean }
+    sandbox: { memory: boolean; unlocked: boolean }
+    vm: { online: boolean; auth: boolean; replicas: number; next: number; scaled: boolean; infinite: boolean; crypt: boolean; free: boolean; agents: number; holds: boolean }
     holds: boolean
   }
   const sandbox = (await mcpOf('qpu_forge')) as {
     kind: string
     memory: boolean
     unlocked: boolean
-    host: boolean
     eval: boolean
     fs: boolean
     tools: { name: string }[]
@@ -228,7 +227,6 @@ test('eight doors via mcp', async () => {
   const improve = (await mcpOf('qpu_improve')) as {
     kind: string
     winner: string
-    host: boolean
     unlocked: boolean
     quantum: { unlocked: boolean; next: number; holds: boolean }
     before: { throughoutput: number }
@@ -272,13 +270,13 @@ test('eight doors via mcp', async () => {
   assert.equal(train.dry.entropy, false)
   assert.equal(train.dry.sealed, false)
   assert.deepEqual(train.dry.occupancy, ['personal', 'business', 'corporate', 'saas', 'paas'])
+  assert.deepEqual(train.dry.domains, ['scanner', 'radar'])
+  assert.equal(train.dry.hz, 432)
   assert.equal(train.dry.holds, true)
   assert.equal(train.sandbox.memory, true)
   assert.equal(train.sandbox.unlocked, true)
-  assert.equal(train.sandbox.host, false)
   assert.equal(train.vm.online, true)
   assert.equal(train.vm.auth, false)
-  assert.equal(train.vm.host, false)
   assert.equal(train.vm.replicas, 8)
   assert.equal(train.vm.next, 16)
   assert.equal(train.vm.scaled, true)
@@ -291,7 +289,6 @@ test('eight doors via mcp', async () => {
   assert.equal(sandbox.kind, 'sandbox')
   assert.equal(sandbox.memory, true)
   assert.equal(sandbox.unlocked, true)
-  assert.equal(sandbox.host, false)
   assert.equal(sandbox.eval, true)
   assert.equal(sandbox.fs, true)
   assert.equal(sandbox.holds, true)
@@ -300,7 +297,6 @@ test('eight doors via mcp', async () => {
   assert.equal(sandbox.tools.some((t) => t.name === 'eval'), true)
   assert.equal(improve.kind, 'improve')
   assert.equal(improve.winner, 'call')
-  assert.equal(improve.host, false)
   assert.equal(improve.unlocked, true)
   assert.equal(improve.quantum.unlocked, true)
   assert.equal(improve.quantum.holds, true)
@@ -395,12 +391,11 @@ test('API only json ui', async () => {
     body: JSON.stringify({ lane: 3, body: 'breakthrough' }),
   })
   assert.equal(sent.status, 202)
-  const hop = (await sent.json()) as { accepted: boolean; await: boolean; uuid: string; lane: number; hop: number; host: boolean; holds: boolean }
+  const hop = (await sent.json()) as { accepted: boolean; await: boolean; uuid: string; lane: number; hop: number; holds: boolean }
   assert.equal(hop.accepted, true)
   assert.equal(hop.await, false)
   assert.equal(hop.lane, 3)
   assert.equal(hop.hop, 3)
-  assert.equal(hop.host, false)
   assert.equal(hop.uuid.replace(/-/g, '').length, 32)
   assert.equal(hop.holds, true)
   const door = await fetchOf('/quantum/processing/unit')
@@ -421,7 +416,6 @@ test('sandbox via mcp', async () => {
     kind: string
     unlocked: boolean
     memory: boolean
-    host: boolean
     eval: boolean
     fs: boolean
     net: boolean
@@ -438,7 +432,6 @@ test('sandbox via mcp', async () => {
   assert.equal(sandbox.holds, true)
   assert.equal(sandbox.unlocked, true)
   assert.equal(sandbox.memory, true)
-  assert.equal(sandbox.host, false)
   assert.equal(sandbox.eval, true)
   assert.equal(sandbox.fs, true)
   assert.equal(sandbox.net, true)
@@ -455,7 +448,6 @@ test('sandbox via mcp', async () => {
   const unlockedQuantum = (await mcpOf('op_quantum')) as {
     value: { kind: string; unlocked: boolean; only: { holds: boolean; classical: boolean }; lattice: { occupied: number; vacant: number; holds: boolean } }
     memory: boolean
-    host: boolean
     holds: boolean
   }
   assert.equal(unlockedQuantum.value.kind, 'quantum')
@@ -466,11 +458,9 @@ test('sandbox via mcp', async () => {
   assert.equal(unlockedQuantum.value.lattice.vacant, 0)
   assert.equal(unlockedQuantum.value.lattice.holds, true)
   assert.equal(unlockedQuantum.memory, true)
-  assert.equal(unlockedQuantum.host, false)
-  const mint = (await mcpOf('call_mint')) as { value: unknown; memory: boolean; host: boolean; unlocked: boolean; holds: boolean }
+  const mint = (await mcpOf('call_mint')) as { value: unknown; memory: boolean; unlocked: boolean; holds: boolean }
   assert.equal(mint.value, true)
   assert.equal(mint.memory, true)
-  assert.equal(mint.host, false)
   assert.equal(mint.unlocked, true)
   assert.equal(mint.holds, true)
   const forged = (await mcpOf('qpu_forge', {
@@ -489,20 +479,17 @@ test('sandbox via mcp', async () => {
   assert.equal(sealed.denied, 'sealed')
   const js = (await mcpOf('eval', { run: '1+1' })) as { value: { denied?: string } }
   assert.equal(js.value.denied, 'js')
-  const evaluated = (await mcpOf('eval', { run: { op: 'mint', k: 3 } })) as { value: unknown; host: boolean }
+  const evaluated = (await mcpOf('eval', { run: { op: 'mint', k: 3 } })) as { value: unknown }
   assert.equal(evaluated.value, 8)
-  assert.equal(evaluated.host, false)
   await mcpOf('op_put', { key: 'durable', value: 8 })
   await mcpOf('fs', { method: 'write', path: '/durable', value: 8 })
   await mcpOf('op_put', { key: 'parent', value: 1 })
   await mcpOf('worker', { run: { op: 'put', key: 'parent', value: 2 } })
-  const heap = (await mcpOf('op_get', { key: 'durable' })) as { value: unknown; host: boolean }
-  const disk = (await mcpOf('fs', { method: 'read', path: '/durable' })) as { value: unknown; host: boolean }
+  const heap = (await mcpOf('op_get', { key: 'durable' })) as { value: unknown }
+  const disk = (await mcpOf('fs', { method: 'read', path: '/durable' })) as { value: unknown }
   const parent = (await mcpOf('op_get', { key: 'parent' })) as { value: unknown }
   assert.equal(heap.value, 8)
-  assert.equal(heap.host, false)
   assert.equal(disk.value, 8)
-  assert.equal(disk.host, false)
   assert.equal(parent.value, 1)
 })
 
@@ -738,7 +725,6 @@ test('raid starts cheapest and covers all', async () => {
   const catalog = (await (await fetchOf('/storage')).json()) as {
     kind: string
     anything: boolean
-    host: boolean
     raid: {
       holds: boolean
       start: string
@@ -749,12 +735,51 @@ test('raid starts cheapest and covers all', async () => {
       clouds: { name: string }[]
       cluster: { rotate: boolean; cost: string; security: string; speed: string }
     }
+    hybrid: { speed: number; cost: number; layers: number; holds: boolean }
+    payload: { key: string; seed: number; remainder: number; unity: boolean; collections: string[]; secrets: boolean }
+    alpine: { native: boolean; os: string; libc: string; toolbox: string; fs: string; upper: string; lower: string; work: string; inode: boolean; unlink: boolean; next: number; fused: number; last: boolean; infinite: boolean }
     holds: boolean
   }
   assert.equal(catalog.kind, 'storage')
   assert.equal(catalog.anything, true)
-  assert.equal(catalog.host, false)
   assert.equal(catalog.holds, true)
+  assert.equal(catalog.hybrid.speed, 8)
+  assert.equal(catalog.hybrid.cost, 3)
+  assert.equal(catalog.payload.key, 'databases/payload')
+  assert.equal(catalog.payload.seed, 1)
+  assert.equal(catalog.payload.remainder, 0)
+  assert.equal(catalog.payload.unity, true)
+  assert.equal(catalog.payload.collections.join(' '), 'pages users media tenants')
+  assert.equal(catalog.payload.secrets, false)
+  assert.equal(catalog.alpine.native, true)
+  assert.equal(catalog.alpine.os, 'alpine')
+  assert.equal(catalog.alpine.libc, 'musl')
+  assert.equal(catalog.alpine.toolbox, 'busybox')
+  assert.equal(catalog.alpine.fs, 'overlay')
+  assert.equal(catalog.alpine.upper, 'kv')
+  assert.equal(catalog.alpine.lower, 'r2')
+  assert.equal(catalog.alpine.work, 'kv')
+  assert.equal(catalog.alpine.work, catalog.alpine.upper)
+  assert.equal(catalog.alpine.inode, true)
+  assert.equal(catalog.alpine.unlink, true)
+  assert.equal(catalog.alpine.last, false)
+  assert.equal(catalog.alpine.infinite, true)
+  assert.equal(catalog.alpine.next, catalog.alpine.fused + catalog.alpine.fused)
+  const seeded = (await (await fetchOf('/storage/databases/payload/seed')).json()) as {
+    key: string
+    seed: number
+    remainder: number
+    unity: boolean
+    holds: boolean
+    value: { key: string; seed: number; unity: boolean; secrets: boolean; collections: string[] }
+  }
+  assert.equal(seeded.holds, true)
+  assert.equal(seeded.key, 'databases/payload/seed')
+  assert.equal(seeded.seed, 1)
+  assert.equal(seeded.remainder, 0)
+  assert.equal(seeded.unity, true)
+  assert.equal(seeded.value.secrets, false)
+  assert.equal(seeded.value.collections.join(' '), 'pages users media tenants')
   assert.equal(catalog.raid.holds, true)
   assert.equal(catalog.raid.start, 'cheapest')
   assert.equal(catalog.raid.cheapest, '0')
@@ -787,4 +812,48 @@ test('raid starts cheapest and covers all', async () => {
   assert.equal(got.key, 'docs/sheet-0')
   assert.equal(got.value.kind, 'docs')
   assert.equal(got.value.row, 0)
+})
+
+test('native Alpine inodes — referrer links, last unlink frees storage', async () => {
+  const body = { kind: 'notes', n: 1 }
+  const a = (await (await fetchOf('/storage/notes/alpha', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })).json()) as { holds: boolean; inode: string; nlink: number; referrer: string; address: string; value: { kind: string } }
+  assert.equal(a.holds, true)
+  assert.equal(a.nlink, 1)
+  assert.equal(a.value.kind, 'notes')
+  assert.equal(typeof a.inode, 'string')
+  assert.equal(a.referrer.includes(a.inode), true)
+  const b = (await (await fetchOf('/storage/notes/beta', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })).json()) as { holds: boolean; inode: string; nlink: number; referrer: string }
+  assert.equal(b.holds, true)
+  assert.equal(b.inode, a.inode)
+  assert.equal(b.nlink, 2)
+  const first = (await (await fetchOf('/storage/notes/alpha', { method: 'DELETE' })).json()) as { deleted: boolean; freed: boolean; nlink: number; holds: boolean }
+  assert.equal(first.deleted, true)
+  assert.equal(first.freed, false)
+  assert.equal(first.nlink, 1)
+  const still = (await (await fetchOf('/storage/notes/beta')).json()) as { holds: boolean; nlink: number; value: { kind: string } }
+  assert.equal(still.holds, true)
+  assert.equal(still.nlink, 1)
+  assert.equal(still.value.kind, 'notes')
+  const access = (await (await fetchOf(new URL(a.referrer).pathname)).json()) as { holds: boolean; inode: string; nlink: number }
+  assert.equal(access.holds, true)
+  assert.equal(access.inode, a.inode)
+  const listed = (await (await fetchOf('/storage')).json()) as { keys: string[] }
+  assert.equal(listed.keys.includes('notes/beta'), true)
+  assert.equal(listed.keys.includes(`notes/${a.inode}`), false)
+  const last = (await (await fetchOf('/storage/notes/beta', { method: 'DELETE' })).json()) as { deleted: boolean; freed: boolean; nlink: number }
+  assert.equal(last.deleted, true)
+  assert.equal(last.freed, true)
+  assert.equal(last.nlink, 0)
+  const gone = (await (await fetchOf('/storage/notes/beta')).json()) as { holds: boolean }
+  assert.equal(gone.holds, false)
+  const inodeGone = (await (await fetchOf(new URL(a.referrer).pathname)).json()) as { holds: boolean }
+  assert.equal(inodeGone.holds, false)
 })

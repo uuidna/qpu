@@ -15,7 +15,6 @@ type CernLive = {
   api: string
   tetra?: string
   primitives: string[]
-  host: boolean
   hostEscape: boolean
   records: { href: string; events: number; files: number; holds: boolean; live: boolean }[]
   projects: CernProject[]
@@ -46,7 +45,6 @@ type McpResult = {
     fusion: { quantum: boolean; holds: boolean; catalogs: { href?: string; holds?: boolean; live?: boolean; quantum?: boolean }[]; faces?: number }
   }
   value?: { events?: number; href?: string; holds?: boolean; primitives?: string[]; experiment?: string; total?: number }
-  host?: boolean
   hostEscape?: boolean
   live?: boolean
 }
@@ -97,13 +95,11 @@ test('cern faces via mcp', { timeout: 60_000 }, async (t) => {
   assert.deepEqual(prove.cern.primitives, ['fetch', 'Request', 'Response', 'BigInt', 'performance'])
   assert.equal(live?.live, true)
   assert.equal(live?.holds, true)
-  assert.equal(live?.host, false)
   assert.equal(live?.hostEscape, false)
   assert.equal(live?.records.length, 4)
   assert.equal(live?.cases.length, 14)
   const fetched = await mcpOf('fetch', { href: prove.cern.records[0]?.href })
   assert.equal(fetched.holds, true)
-  assert.equal(fetched.host, false)
   assert.equal(fetched.hostEscape, false)
   assert.equal(fetched.live, true)
   assert.equal(fetched.value?.holds, true)

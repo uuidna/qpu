@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { qpuCssHolds, qpuCssOf, qpuGenesisHolds, qpuGenesisOf } from './index.js'
+import { qpuCssHolds, qpuCssOf, qpuGenesisHolds, qpuGenesisOf, qpuTrainOf } from './index.js'
 
 test('shadcn schema combinatorial genesis covers all known frameworks', () => {
   const genesis = qpuGenesisOf()
@@ -30,6 +30,15 @@ test('shadcn schema combinatorial genesis covers all known frameworks', () => {
     genesis.nodes.every((node) => node.schema === 'shadcn' && node.involution && node.holds && node.hop === node.face),
     true,
   )
+  assert.equal(genesis.domains.join(' '), 'scanner radar')
+  assert.equal(genesis.domains.length, 2)
+  assert.equal(
+    genesis.nodes.every((node) => node.face === node.team * 7 + node.ray && node.domain === genesis.domains[node.team]),
+    true,
+  )
+  assert.equal(genesis.nodes[0]?.domain, 'scanner')
+  assert.equal(genesis.nodes[7]?.domain, 'radar')
+  assert.equal(genesis.nodes[4]?.slot, 'card-action')
   assert.equal(genesis.choose.n, 3)
   assert.equal(genesis.choose.rays, 21)
   assert.equal(
@@ -38,4 +47,13 @@ test('shadcn schema combinatorial genesis covers all known frameworks', () => {
   )
   assert.equal(css.hz, 432)
   assert.equal(css.keyframes, 1)
+  assert.equal(css.css.includes('data-domain=scanner'), true)
+  assert.equal(css.css.includes('data-domain=radar'), true)
+  const train = qpuTrainOf()
+  assert.equal(train.teams[1]!.agents[0]!.domain, 'scanner')
+  assert.equal(train.teams[0]!.agents[0]!.domain, 'radar')
+  assert.equal(
+    train.challenges.every((c) => c.domain === (c.face < genesis.card.length ? 'scanner' : 'radar')),
+    true,
+  )
 })

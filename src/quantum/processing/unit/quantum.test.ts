@@ -30,7 +30,6 @@ type Circuit = {
   running: boolean
   physical: boolean
   vm: string
-  host: boolean
   primitives: string[]
   qubits: { n: number; dim: number; levels: number; holds: boolean }
   gates: { names: string[]; index: number; holds: boolean }
@@ -77,13 +76,12 @@ type Circuit = {
     levels: number
     dim: number
     vm: string
-    host: boolean
     isolated: boolean
     lab: boolean
     millikelvin: number
     milli: number
     cryostat: { kind: string; mixing: number; plate: number; pulse: number; holds: boolean }
-    telemetry: { kind: string; lab: boolean; millikelvin: number; host: boolean; holds: boolean }
+    telemetry: { kind: string; lab: boolean; millikelvin: number; holds: boolean }
     coil: { kind: string; windings: number; coil: number; holds: boolean }
     electronics: { kind: string; uses: string; holds: boolean }
     follow: { kind: string; emerge: { novel: boolean; creative: boolean; holds: boolean } }
@@ -121,7 +119,6 @@ test('circuit running via mcp', async () => {
 test('circuit vm browser via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
   assert.equal(q.circuit.vm, 'browser')
-  assert.equal(q.circuit.host, false)
 })
 
 test('circuit primitives via mcp', async () => {
@@ -261,7 +258,6 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.physical, true)
   assert.equal(q.circuit.fridge.kind, 'superconducting')
   assert.equal(q.circuit.fridge.isolated, true)
-  assert.equal(q.circuit.fridge.host, false)
   assert.equal(q.circuit.fridge.lab, true)
   assert.equal(q.circuit.fridge.qubits, 3)
   assert.equal(q.circuit.fridge.levels, 2)
@@ -275,7 +271,6 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.fridge.telemetry.kind, 'cryostat')
   assert.equal(q.circuit.fridge.telemetry.lab, true)
   assert.equal(q.circuit.fridge.telemetry.millikelvin, 10)
-  assert.equal(q.circuit.fridge.telemetry.host, false)
   assert.equal(q.circuit.fridge.telemetry.holds, true)
   assert.equal(q.circuit.fridge.coil.holds, true)
   assert.equal(q.circuit.fridge.coil.windings, 2)
