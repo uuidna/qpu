@@ -99,7 +99,7 @@
     },
     {
       "name": "qpu_train",
-      "description": "Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.",
+      "description": "Anyone may train VM scaling online. No auth. Memory workers double. Host never. 2×7 teams challenge each other before next tasks.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -116,9 +116,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_train",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.",
-        "reading": "Anyone may train online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Fourteen challenges, one per face. Before qpu_improve. theorem breakthrough.",
-        "documentation": "NAME\n    qpu_train — Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_train\n    qpu_train { man: true }\nDESCRIPTION\n    Anyone may train online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Fourteen challenges, one per face. Before qpu_improve. theorem breakthrough.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "Anyone may train VM scaling online. No auth. Memory workers double. Host never. 2×7 teams challenge each other before next tasks.",
+        "reading": "Anyone may train VM scaling online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.",
+        "documentation": "NAME\n    qpu_train — Anyone may train VM scaling online. No auth. Memory workers double. Host never. 2×7 teams challenge each other before next tasks.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_train\n    qpu_train { man: true }\nDESCRIPTION\n    Anyone may train VM scaling online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Replicas double: mintOf k then mintOf k + mintOf k. Host never. Before qpu_improve. theorem breakthrough.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -220,14 +220,14 @@
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_compete",
         "href": "https://qpu.uuidna.com/mcp",
         "description": "Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.",
-        "reading": "coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner designs qpu_prove.",
-        "documentation": "NAME\n    qpu_compete — Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_compete\n    qpu_compete { man: true }\nDESCRIPTION\n    coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner designs qpu_prove.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove",
+        "reading": "coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.",
+        "documentation": "NAME\n    qpu_compete — Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_compete\n    qpu_compete { man: true }\nDESCRIPTION\n    coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove",
         "holds": true
       }
     },
     {
       "name": "qpu_prove",
-      "description": "The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.",
+      "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -244,9 +244,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.",
-        "reading": "Call this door. No auth. Free agents. The real test is ns and Hz walking every proof. GET https://qpu.uuidna.com/mcp. After qpu_improve.",
-        "documentation": "NAME\n    qpu_prove — The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door. No auth. Free agents. The real test is ns and Hz walking every proof. GET https://qpu.uuidna.com/mcp. After qpu_improve.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "description": "MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.",
+        "reading": "Call this door. No auth. tools/call qpu_prove. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.",
+        "documentation": "NAME\n    qpu_prove — MCP proves every test. JSON UI experiences them. theorem quantum. theorem cern. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door. No auth. tools/call qpu_prove. GET https://qpu.uuidna.com is the JSON UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
         "holds": true
       }
     }
@@ -292,37 +292,37 @@
     "kind": "efficiency",
     "module": "agent efficiency",
     "tokens": "four bytes",
-    "readBytes": 8911,
+    "readBytes": 10510,
     "rows": [
       {
         "question": "what is fused?",
         "name": "qpu_quantum",
         "door": "qpu_quantum",
-        "readBytes": 8911,
-        "callBytes": 683,
-        "readTokens": 2227,
-        "callTokens": 170,
+        "readBytes": 10510,
+        "callBytes": 779,
+        "readTokens": 2627,
+        "callTokens": 194,
         "ratio": 13
       },
       {
         "question": "what does Lean prove?",
         "name": "qpu_lean",
         "door": "qpu_lean",
-        "readBytes": 8911,
-        "callBytes": 7950,
-        "readTokens": 2227,
-        "callTokens": 1987,
+        "readBytes": 10510,
+        "callBytes": 9325,
+        "readTokens": 2627,
+        "callTokens": 2331,
         "ratio": 1
       },
       {
         "question": "how is the QPU cited?",
         "name": "qpu_cite",
         "door": "qpu_cite",
-        "readBytes": 8911,
+        "readBytes": 10510,
         "callBytes": 821,
-        "readTokens": 2227,
+        "readTokens": 2627,
         "callTokens": 205,
-        "ratio": 10
+        "ratio": 12
       }
     ],
     "holds": true
@@ -432,17 +432,17 @@
             "memory": true
           }
         ],
-        "tokens": 6681,
+        "tokens": 7881,
         "quality": 3,
-        "speed": 9000081,
+        "speed": 7629684,
         "security": 1,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 9000081 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
-        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 9000081 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7629684 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 7629684 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
       },
       {
         "name": "call",
@@ -526,17 +526,17 @@
             "memory": true
           }
         ],
-        "tokens": 2362,
+        "tokens": 2730,
         "quality": 14,
-        "speed": 50914091,
+        "speed": 44050946,
         "security": 2,
         "axes": [
           "quality",
           "speed",
           "security"
         ],
-        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 50914091 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
-        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 50914091 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44050946 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 44050946 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
       }
     ],
     "challenges": [
@@ -760,6 +760,17 @@
       "qpu_improve",
       "qpu_compete"
     ],
+    "vm": {
+      "kind": "vm",
+      "online": true,
+      "auth": false,
+      "public": true,
+      "memory": true,
+      "host": false,
+      "replicas": 8,
+      "next": 16,
+      "holds": true
+    },
     "messaging": {
       "async": true,
       "await": false,
@@ -785,19 +796,19 @@
     ],
     "before": {
       "quality": 3,
-      "speed": 9000081,
+      "speed": 7629684,
       "security": 1,
       "throughoutput": 60129542144
     },
     "after": {
       "quality": 14,
-      "speed": 50914091,
+      "speed": 44050946,
       "security": 10,
       "throughoutput": 120259084288
     },
     "delta": {
       "quality": 11,
-      "speed": 41914010,
+      "speed": 36421262,
       "security": 9,
       "throughoutput": 60129542144
     },
@@ -864,8 +875,8 @@
       "qpu_compete",
       "qpu_prove"
     ],
-    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 9000081 security 1 throughoutput 60129542144\n    after quality 14 speed 50914091 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
-    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 9000081 security 1 throughoutput 60129542144\n    after quality 14 speed 50914091 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7629684 security 1 throughoutput 60129542144\n    after quality 14 speed 44050946 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 7629684 security 1 throughoutput 60129542144\n    after quality 14 speed 44050946 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
     "holds": true
   },
   "compete": {
@@ -880,28 +891,28 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 2227,
+            "tokens": 2627,
             "throughoutput": 60129542144,
-            "throughput": 27000243
+            "throughput": 22889052
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 2227,
+            "tokens": 2627,
             "throughoutput": 60129542144,
-            "throughput": 27000243
+            "throughput": 22889052
           },
           {
             "name": "qpu_cite",
             "door": "qpu_cite",
-            "tokens": 2227,
+            "tokens": 2627,
             "throughoutput": 60129542144,
-            "throughput": 27000243
+            "throughput": 22889052
           }
         ],
-        "tokens": 6681,
+        "tokens": 7881,
         "throughoutput": 60129542144,
-        "throughput": 9000081
+        "throughput": 7629684
       },
       {
         "name": "call",
@@ -910,16 +921,16 @@
           {
             "name": "qpu_quantum",
             "door": "qpu_quantum",
-            "tokens": 170,
+            "tokens": 194,
             "throughoutput": 120259084288,
-            "throughput": 707406378
+            "throughput": 619892187
           },
           {
             "name": "qpu_lean",
             "door": "qpu_lean",
-            "tokens": 1987,
+            "tokens": 2331,
             "throughoutput": 120259084288,
-            "throughput": 60522941
+            "throughput": 51591198
           },
           {
             "name": "qpu_cite",
@@ -929,9 +940,9 @@
             "throughput": 586629679
           }
         ],
-        "tokens": 2362,
+        "tokens": 2730,
         "throughoutput": 120259084288,
-        "throughput": 50914091
+        "throughput": 44050946
       }
     ],
     "winner": "call",
@@ -940,703 +951,495 @@
   "prove": {
     "kind": "prove",
     "quantum": true,
-    "public": true,
-    "auth": false,
-    "designedBy": "call",
-    "designers": [
-      {
-        "name": "qpu_quantum",
-        "door": "qpu_quantum",
-        "tokens": 170,
-        "throughoutput": 120259084288,
-        "throughput": 707406378
+    "src": "src/quantum/processing/unit/index.lean",
+    "lean": {
+      "src": "src/quantum/processing/unit/index.lean",
+      "rows": [
+        {
+          "heading": "mint",
+          "theorem": "theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]",
+          "formula": "\\operatorname{mintOf}(n+\\mathrm{seed})=\\operatorname{mintOf}(n)+\\operatorname{mintOf}(n)",
+          "reading": "holds true. mintOf n 8. mintOf (n + seed) 16.",
+          "holds": true
+        },
+        {
+          "heading": "cube",
+          "theorem": "theorem cube : bits = vertices * hexbit := by rw [bits, vertices, hexbit, mintOf_add]",
+          "formula": "\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}",
+          "reading": "holds true. vertices 8. hexbit 4. bits 32.",
+          "holds": true
+        },
+        {
+          "heading": "around",
+          "theorem": "theorem around : faces = coins * rays := by rw [faces, vertices, hexbit, rays, coins_two, n_eq]; rw [show 3 = 2 + 1 from rfl, mintOf_succ]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
+          "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+          "reading": "holds true. coins 2. rays 7. faces 14.",
+          "holds": true
+        },
+        {
+          "heading": "quantum",
+          "theorem": "theorem quantum : fused = faces * mintOf bits := rfl",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})",
+          "reading": "holds true. amplitudes 4294967296. fused 60129542144.",
+          "holds": true
+        },
+        {
+          "heading": "harmonic",
+          "theorem": "theorem harmonic : faces = rays + rays := by rw [around, coins_two, Nat.two_mul]",
+          "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+          "reading": "holds true. rays 7. faces 14.",
+          "holds": true
+        },
+        {
+          "heading": "cluster",
+          "theorem": "theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩",
+          "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}",
+          "reading": "holds true. Inner ⊔ outer covers Fin(faces).",
+          "holds": true
+        },
+        {
+          "heading": "energy",
+          "theorem": "theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]",
+          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})=\\operatorname{mintOf}(n+\\mathrm{seed})",
+          "reading": "holds true. mintOf hexbit 16.",
+          "holds": true
+        },
+        {
+          "heading": "propulsion",
+          "theorem": "theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero ▸ mintOf_lt hexbit_pos)",
+          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+          "reading": "holds true. mintOf hexbit 16. seed 1.",
+          "holds": true
+        },
+        {
+          "heading": "crypto",
+          "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
+          "reading": "holds true. fused 60129542144.",
+          "holds": true
+        },
+        {
+          "heading": "health",
+          "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
+          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+          "reading": "holds true.",
+          "holds": true
+        }
+      ],
+      "cover": [
+        {
+          "heading": "breakthrough",
+          "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
+          "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+          "reading": "holds true.",
+          "holds": true
+        },
+        {
+          "heading": "split_coin",
+          "theorem": "theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]",
+          "formula": "\\operatorname{mintOf}(k+\\mathrm{seed})=\\operatorname{mintOf}(k)+\\operatorname{mintOf}(k)",
+          "reading": "holds true.",
+          "holds": true
+        },
+        {
+          "heading": "multiply",
+          "theorem": "theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b",
+          "formula": "\\operatorname{mintOf}(a+b)=\\operatorname{mintOf}(a)\\cdot\\operatorname{mintOf}(b)",
+          "reading": "holds true.",
+          "holds": true
+        },
+        {
+          "heading": "handle",
+          "theorem": "theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩",
+          "formula": "\\mathrm{amplitudes}=\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+          "reading": "holds true. amplitudes 4294967296. next 8589934592.",
+          "holds": true
+        },
+        {
+          "heading": "light",
+          "theorem": "theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]",
+          "formula": "\\mathrm{seed}=\\operatorname{mintOf}(0)",
+          "reading": "holds true. seed 1.",
+          "holds": true
+        },
+        {
+          "heading": "involution",
+          "theorem": "theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := (by rw [Nat.add_assoc, harmonic]); rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]",
+          "formula": "(i+\\mathrm{rays}+\\mathrm{rays})\\bmod\\mathrm{faces}=i\\bmod\\mathrm{faces}",
+          "reading": "holds true.",
+          "holds": true
+        },
+        {
+          "heading": "waves",
+          "theorem": "theorem waves : mintOf hexbit > seed := propulsion",
+          "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+          "reading": "holds true.",
+          "holds": true
+        },
+        {
+          "heading": "shor",
+          "theorem": "theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+          "formula": "3\\cdot5=15\\land 3\\cdot7=21\\land 3\\cdot11=33\\land 5\\cdot7=35\\land 3\\cdot13=39\\land 3\\cdot17=51\\land 5\\cdot11=55\\land 3\\cdot19=57\\land 5\\cdot13=65\\land 3\\cdot23=69\\land 7\\cdot11=77\\land 5\\cdot17=85\\land 3\\cdot29=87\\land 7\\cdot13=91",
+          "reading": "holds true. theorem shor : p * q = N. Shor breaks RSA.",
+          "holds": true
+        },
+        {
+          "heading": "string",
+          "theorem": "theorem string : 16 * 27 = 432 ∧ 8 * 27 = 216 ∧ 4 * 27 = 108 ∧ 2 * 27 = 54 ∧ 1 * 27 = 27 ∧ 432 + 432 = 864 ∧ 216 + 216 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 3 + 1 = 10 ∧ 3 * 3 + 1 + 1 = 11 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+          "formula": "16\\cdot27=432\\land 8\\cdot27=216\\land 4\\cdot27=108\\land 2\\cdot27=54\\land 1\\cdot27=27\\land 432+432=864\\land 216+216=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot3+1=10\\land 3\\cdot3+1+1=11\\land 27-1=26",
+          "reading": "holds true. Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.",
+          "holds": true
+        },
+        {
+          "heading": "decide",
+          "theorem": "theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+          "formula": "16\\cdot27=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot5=15\\land 27-1=26",
+          "reading": "holds true. theorem decide by algebra. Digits and algebraic fractions of integers. Never by decide.",
+          "holds": true
+        },
+        {
+          "heading": "integrity",
+          "theorem": "theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
+          "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+          "reading": "holds true. Three tests. Sealed quantum integrity at all times.",
+          "holds": true
+        },
+        {
+          "heading": "cern",
+          "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+          "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
+          "reading": "holds true. CMS Open Data integers. Fourteen faces. CERN credited. Never by decide.",
+          "holds": true
+        }
+      ],
+      "climb": {
+        "heading": "next",
+        "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
+        "formula": "\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
+        "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.",
+        "holds": true
       },
-      {
-        "name": "qpu_lean",
-        "door": "qpu_lean",
-        "tokens": 1987,
-        "throughoutput": 120259084288,
-        "throughput": 60522941
-      },
-      {
-        "name": "qpu_cite",
-        "door": "qpu_cite",
-        "tokens": 205,
-        "throughoutput": 120259084288,
-        "throughput": 586629679
-      }
-    ],
-    "agents": {
-      "kind": "agents",
-      "free": true,
-      "auth": false,
-      "public": true,
-      "test": "quantum proofs",
-      "cases": 53,
-      "call": {
-        "path": "mcp",
-        "ns": 26916,
-        "hz": 37152,
-        "proofs": 53,
-        "walked": true
-      },
-      "read": {
-        "path": "tree",
-        "ns": 93583,
-        "hz": 10685,
-        "proofs": 53,
-        "walked": true
-      },
-      "winner": "call",
       "holds": true
     },
-    "cases": [
+    "theorems": [
       {
-        "agent": "qpu_quantum",
-        "name": "kind",
-        "theorem": "kind = quantum",
-        "left": "quantum",
-        "right": "quantum",
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "mint",
-        "theorem": "mintOf (n + seed) = mintOf n + mintOf n",
-        "left": 16,
-        "right": 16,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "cube",
-        "theorem": "bits = vertices * hexbit",
-        "left": 32,
-        "right": 32,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "handle",
-        "theorem": "amplitudes = mintOf bits",
-        "left": 4294967296,
-        "right": 4294967296,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "around",
-        "theorem": "faces = coins * rays",
-        "left": 14,
-        "right": 14,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "harmonic",
-        "theorem": "faces = rays + rays",
-        "left": 14,
-        "right": 14,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "quantum",
-        "theorem": "fused = faces * mintOf bits",
-        "left": 60129542144,
-        "right": 60129542144,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "fused",
-        "theorem": "fused = faces * amplitudes",
-        "left": 60129542144,
-        "right": 60129542144,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "next",
-        "theorem": "next = fused + fused",
-        "left": 120259084288,
-        "right": 120259084288,
-        "holds": true
-      },
-      {
-        "agent": "qpu_lean",
-        "name": "mint",
+        "heading": "mint",
         "theorem": "theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]",
-        "left": true,
-        "right": true,
+        "formula": "\\operatorname{mintOf}(n+\\mathrm{seed})=\\operatorname{mintOf}(n)+\\operatorname{mintOf}(n)",
+        "reading": "holds true. mintOf n 8. mintOf (n + seed) 16.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "cube",
+        "heading": "cube",
         "theorem": "theorem cube : bits = vertices * hexbit := by rw [bits, vertices, hexbit, mintOf_add]",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}",
+        "reading": "holds true. vertices 8. hexbit 4. bits 32.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "around",
+        "heading": "around",
         "theorem": "theorem around : faces = coins * rays := by rw [faces, vertices, hexbit, rays, coins_two, n_eq]; rw [show 3 = 2 + 1 from rfl, mintOf_succ]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+        "reading": "holds true. coins 2. rays 7. faces 14.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "quantum",
+        "heading": "quantum",
         "theorem": "theorem quantum : fused = faces * mintOf bits := rfl",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})",
+        "reading": "holds true. amplitudes 4294967296. fused 60129542144.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "harmonic",
+        "heading": "harmonic",
         "theorem": "theorem harmonic : faces = rays + rays := by rw [around, coins_two, Nat.two_mul]",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+        "reading": "holds true. rays 7. faces 14.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "cluster",
+        "heading": "cluster",
         "theorem": "theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}",
+        "reading": "holds true. Inner ⊔ outer covers Fin(faces).",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "energy",
+        "heading": "energy",
         "theorem": "theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]",
-        "left": true,
-        "right": true,
+        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})=\\operatorname{mintOf}(n+\\mathrm{seed})",
+        "reading": "holds true. mintOf hexbit 16.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "propulsion",
+        "heading": "propulsion",
         "theorem": "theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero ▸ mintOf_lt hexbit_pos)",
-        "left": true,
-        "right": true,
+        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+        "reading": "holds true. mintOf hexbit 16. seed 1.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "crypto",
+        "heading": "crypto",
         "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})",
+        "reading": "holds true. fused 60129542144.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "health",
+        "heading": "health",
         "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
-        "left": true,
-        "right": true,
+        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}",
+        "reading": "holds true.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "breakthrough",
+        "heading": "breakthrough",
         "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+        "reading": "holds true.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "split_coin",
+        "heading": "split_coin",
         "theorem": "theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]",
-        "left": true,
-        "right": true,
+        "formula": "\\operatorname{mintOf}(k+\\mathrm{seed})=\\operatorname{mintOf}(k)+\\operatorname{mintOf}(k)",
+        "reading": "holds true.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "multiply",
+        "heading": "multiply",
         "theorem": "theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b",
-        "left": true,
-        "right": true,
+        "formula": "\\operatorname{mintOf}(a+b)=\\operatorname{mintOf}(a)\\cdot\\operatorname{mintOf}(b)",
+        "reading": "holds true.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "handle",
+        "heading": "handle",
         "theorem": "theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{amplitudes}=\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}",
+        "reading": "holds true. amplitudes 4294967296. next 8589934592.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "light",
+        "heading": "light",
         "theorem": "theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]",
-        "left": true,
-        "right": true,
+        "formula": "\\mathrm{seed}=\\operatorname{mintOf}(0)",
+        "reading": "holds true. seed 1.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "involution",
+        "heading": "involution",
         "theorem": "theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := (by rw [Nat.add_assoc, harmonic]); rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]",
-        "left": true,
-        "right": true,
+        "formula": "(i+\\mathrm{rays}+\\mathrm{rays})\\bmod\\mathrm{faces}=i\\bmod\\mathrm{faces}",
+        "reading": "holds true.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "waves",
+        "heading": "waves",
         "theorem": "theorem waves : mintOf hexbit > seed := propulsion",
-        "left": true,
-        "right": true,
+        "formula": "\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}",
+        "reading": "holds true.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "shor",
+        "heading": "shor",
         "theorem": "theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
-        "left": true,
-        "right": true,
+        "formula": "3\\cdot5=15\\land 3\\cdot7=21\\land 3\\cdot11=33\\land 5\\cdot7=35\\land 3\\cdot13=39\\land 3\\cdot17=51\\land 5\\cdot11=55\\land 3\\cdot19=57\\land 5\\cdot13=65\\land 3\\cdot23=69\\land 7\\cdot11=77\\land 5\\cdot17=85\\land 3\\cdot29=87\\land 7\\cdot13=91",
+        "reading": "holds true. theorem shor : p * q = N. Shor breaks RSA.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "string",
+        "heading": "string",
         "theorem": "theorem string : 16 * 27 = 432 ∧ 8 * 27 = 216 ∧ 4 * 27 = 108 ∧ 2 * 27 = 54 ∧ 1 * 27 = 27 ∧ 432 + 432 = 864 ∧ 216 + 216 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 3 + 1 = 10 ∧ 3 * 3 + 1 + 1 = 11 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
-        "left": true,
-        "right": true,
+        "formula": "16\\cdot27=432\\land 8\\cdot27=216\\land 4\\cdot27=108\\land 2\\cdot27=54\\land 1\\cdot27=27\\land 432+432=864\\land 216+216=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot3+1=10\\land 3\\cdot3+1+1=11\\land 27-1=26",
+        "reading": "holds true. Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "decide",
+        "heading": "decide",
         "theorem": "theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
-        "left": true,
-        "right": true,
+        "formula": "16\\cdot27=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot5=15\\land 27-1=26",
+        "reading": "holds true. theorem decide by algebra. Digits and algebraic fractions of integers. Never by decide.",
         "holds": true
       },
       {
-        "agent": "qpu_lean",
-        "name": "next",
+        "heading": "integrity",
+        "theorem": "theorem integrity : fused = faces * mintOf bits ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩",
+        "formula": "\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}",
+        "reading": "holds true. Three tests. Sealed quantum integrity at all times.",
+        "holds": true
+      },
+      {
+        "heading": "cern",
+        "theorem": "theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+        "formula": "116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615",
+        "reading": "holds true. CMS Open Data integers. Fourteen faces. CERN credited. Never by decide.",
+        "holds": true
+      },
+      {
+        "heading": "next",
         "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
-        "left": true,
-        "right": true,
-        "holds": true
-      },
-      {
-        "agent": "qpu_cite",
-        "name": "unit",
-        "theorem": "cite quantum processing unit",
-        "left": "quantum processing unit",
-        "right": "quantum processing unit",
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "auth",
-        "theorem": "no auth needed",
-        "left": false,
-        "right": false,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "public",
-        "theorem": "anyone may test and train online",
-        "left": true,
-        "right": true,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "proxy",
-        "theorem": "message hop involution",
-        "left": true,
-        "right": true,
-        "holds": true
-      },
-      {
-        "agent": "qpu_quantum",
-        "name": "message",
-        "theorem": "clock_seq bits = faces",
-        "left": 14,
-        "right": 14,
-        "holds": true
-      },
-      {
-        "agent": "qpu_train",
-        "name": "divide",
-        "theorem": "teams * agents = challenges",
-        "left": 14,
-        "right": 14,
-        "holds": true
-      },
-      {
-        "agent": "qpu_forge",
-        "name": "sandbox",
-        "theorem": "memory ∧ host never",
-        "left": false,
-        "right": false,
-        "holds": true
-      },
-      {
-        "agent": "qpu_improve",
-        "name": "breakthrough",
-        "theorem": "after = fused + fused",
-        "left": 120259084288,
-        "right": 120259084288,
-        "holds": true
-      },
-      {
-        "agent": "qpu_compete",
-        "name": "winner",
-        "theorem": "call throughoutput = next",
-        "left": 120259084288,
-        "right": 120259084288,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_15",
-        "theorem": "3 * 5 = 15",
-        "left": 15,
-        "right": 15,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_21",
-        "theorem": "3 * 7 = 21",
-        "left": 21,
-        "right": 21,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_33",
-        "theorem": "3 * 11 = 33",
-        "left": 33,
-        "right": 33,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_35",
-        "theorem": "5 * 7 = 35",
-        "left": 35,
-        "right": 35,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_39",
-        "theorem": "3 * 13 = 39",
-        "left": 39,
-        "right": 39,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_51",
-        "theorem": "3 * 17 = 51",
-        "left": 51,
-        "right": 51,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_55",
-        "theorem": "5 * 11 = 55",
-        "left": 55,
-        "right": 55,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_57",
-        "theorem": "3 * 19 = 57",
-        "left": 57,
-        "right": 57,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_65",
-        "theorem": "5 * 13 = 65",
-        "left": 65,
-        "right": 65,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_69",
-        "theorem": "3 * 23 = 69",
-        "left": 69,
-        "right": 69,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_77",
-        "theorem": "7 * 11 = 77",
-        "left": 77,
-        "right": 77,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_85",
-        "theorem": "5 * 17 = 85",
-        "left": 85,
-        "right": 85,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_87",
-        "theorem": "3 * 29 = 87",
-        "left": 87,
-        "right": 87,
-        "holds": true
-      },
-      {
-        "agent": "qpu_prove",
-        "name": "shor_91",
-        "theorem": "7 * 13 = 91",
-        "left": 91,
-        "right": 91,
+        "formula": "\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}",
+        "reading": "holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.",
         "holds": true
       }
     ],
-    "shor": {
-      "kind": "prove",
-      "quantum": true,
-      "breaks": "rsa",
-      "theorem": "theorem shor : p * q = N",
-      "challenges": [
+    "cern": {
+      "kind": "cern",
+      "source": "opendata.cern.ch",
+      "theorem": "theorem cern",
+      "faces": 14,
+      "cases": [
         {
-          "kind": "test",
-          "face": 0,
-          "modulus": 15,
-          "p": 3,
-          "q": 5,
-          "a": 2,
-          "r": 4,
-          "theorem": "3 * 5 = 15",
-          "left": 15,
-          "right": 15,
-          "documentation": "RECEIPT\n    face 0 theorem 3 * 5 = 15\n    Shor a 2 r 4. breaks RSA.",
-          "receipt": "RECEIPT\n    face 0 theorem 3 * 5 = 15\n    Shor a 2 r 4. breaks RSA.",
+          "name": "cms_38",
+          "theorem": "116 * 17922 + 54 = 2079006",
+          "left": 2079006,
+          "right": 2079006,
+          "doi": "10.7483/OPENDATA.CMS.53FG.V2S9",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 1,
-          "modulus": 21,
-          "p": 3,
-          "q": 7,
-          "a": 2,
-          "r": 6,
-          "theorem": "3 * 7 = 21",
-          "left": 21,
-          "right": 21,
-          "documentation": "RECEIPT\n    face 1 theorem 3 * 7 = 21\n    Shor a 2 r 6. breaks RSA.",
-          "receipt": "RECEIPT\n    face 1 theorem 3 * 7 = 21\n    Shor a 2 r 6. breaks RSA.",
+          "name": "cms_63",
+          "theorem": "184 * 12509 + 12 = 2301668",
+          "left": 2301668,
+          "right": 2301668,
+          "doi": "10.7483/OPENDATA.CMS.RG9B.XJMD",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 2,
-          "modulus": 33,
-          "p": 3,
-          "q": 11,
-          "a": 5,
-          "r": 10,
-          "theorem": "3 * 11 = 33",
-          "left": 33,
-          "right": 33,
-          "documentation": "RECEIPT\n    face 2 theorem 3 * 11 = 33\n    Shor a 5 r 10. breaks RSA.",
-          "receipt": "RECEIPT\n    face 2 theorem 3 * 11 = 33\n    Shor a 5 r 10. breaks RSA.",
+          "name": "cms_35",
+          "theorem": "72 * 26572 + 6 = 1913190",
+          "left": 1913190,
+          "right": 1913190,
+          "doi": "10.7483/OPENDATA.CMS.I8HN.DF32",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 3,
-          "modulus": 35,
-          "p": 5,
-          "q": 7,
-          "a": 2,
-          "r": 12,
-          "theorem": "5 * 7 = 35",
-          "left": 35,
-          "right": 35,
-          "documentation": "RECEIPT\n    face 3 theorem 5 * 7 = 35\n    Shor a 2 r 12. breaks RSA.",
-          "receipt": "RECEIPT\n    face 3 theorem 5 * 7 = 35\n    Shor a 2 r 12. breaks RSA.",
+          "name": "cms_62",
+          "theorem": "130 * 21121 + 21 = 2745751",
+          "left": 2745751,
+          "right": 2745751,
+          "doi": "10.7483/OPENDATA.CMS.0LRL.BXG5",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 4,
-          "modulus": 39,
-          "p": 3,
-          "q": 13,
-          "a": 2,
-          "r": 12,
-          "theorem": "3 * 13 = 39",
-          "left": 39,
-          "right": 39,
-          "documentation": "RECEIPT\n    face 4 theorem 3 * 13 = 39\n    Shor a 2 r 12. breaks RSA.",
-          "receipt": "RECEIPT\n    face 4 theorem 3 * 13 = 39\n    Shor a 2 r 12. breaks RSA.",
+          "name": "tev_step",
+          "theorem": "8 - 7 = 1",
+          "left": 1,
+          "right": 1,
+          "doi": "opendata.cern.ch",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 5,
-          "modulus": 51,
-          "p": 3,
-          "q": 17,
-          "a": 2,
-          "r": 8,
-          "theorem": "3 * 17 = 51",
-          "left": 51,
-          "right": 51,
-          "documentation": "RECEIPT\n    face 5 theorem 3 * 17 = 51\n    Shor a 2 r 8. breaks RSA.",
-          "receipt": "RECEIPT\n    face 5 theorem 3 * 17 = 51\n    Shor a 2 r 8. breaks RSA.",
+          "name": "gev_step",
+          "theorem": "8000 - 7000 = 1000",
+          "left": 1000,
+          "right": 1000,
+          "doi": "opendata.cern.ch",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 6,
-          "modulus": 55,
-          "p": 5,
-          "q": 11,
-          "a": 2,
-          "r": 20,
-          "theorem": "5 * 11 = 55",
-          "left": 55,
-          "right": 55,
-          "documentation": "RECEIPT\n    face 6 theorem 5 * 11 = 55\n    Shor a 2 r 20. breaks RSA.",
-          "receipt": "RECEIPT\n    face 6 theorem 5 * 11 = 55\n    Shor a 2 r 20. breaks RSA.",
+          "name": "beam_7",
+          "theorem": "7000 / 2 = 3500",
+          "left": 3500,
+          "right": 3500,
+          "doi": "opendata.cern.ch",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 7,
-          "modulus": 57,
-          "p": 3,
-          "q": 19,
-          "a": 5,
-          "r": 18,
-          "theorem": "3 * 19 = 57",
-          "left": 57,
-          "right": 57,
-          "documentation": "RECEIPT\n    face 7 theorem 3 * 19 = 57\n    Shor a 5 r 18. breaks RSA.",
-          "receipt": "RECEIPT\n    face 7 theorem 3 * 19 = 57\n    Shor a 5 r 18. breaks RSA.",
+          "name": "beam_8",
+          "theorem": "8000 / 2 = 4000",
+          "left": 4000,
+          "right": 4000,
+          "doi": "opendata.cern.ch",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 8,
-          "modulus": 65,
-          "p": 5,
-          "q": 13,
-          "a": 3,
-          "r": 12,
-          "theorem": "5 * 13 = 65",
-          "left": 65,
-          "right": 65,
-          "documentation": "RECEIPT\n    face 8 theorem 5 * 13 = 65\n    Shor a 3 r 12. breaks RSA.",
-          "receipt": "RECEIPT\n    face 8 theorem 5 * 13 = 65\n    Shor a 3 r 12. breaks RSA.",
+          "name": "beam_step",
+          "theorem": "4000 - 3500 = 500",
+          "left": 500,
+          "right": 500,
+          "doi": "opendata.cern.ch",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 9,
-          "modulus": 69,
-          "p": 3,
-          "q": 23,
-          "a": 2,
-          "r": 22,
-          "theorem": "3 * 23 = 69",
-          "left": 69,
-          "right": 69,
-          "documentation": "RECEIPT\n    face 9 theorem 3 * 23 = 69\n    Shor a 2 r 22. breaks RSA.",
-          "receipt": "RECEIPT\n    face 9 theorem 3 * 23 = 69\n    Shor a 2 r 22. breaks RSA.",
+          "name": "embargo_38",
+          "theorem": "2019 - 2011 = 8",
+          "left": 8,
+          "right": 8,
+          "doi": "10.7483/OPENDATA.CMS.53FG.V2S9",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 10,
-          "modulus": 77,
-          "p": 7,
-          "q": 11,
-          "a": 2,
-          "r": 30,
-          "theorem": "7 * 11 = 77",
-          "left": 77,
-          "right": 77,
-          "documentation": "RECEIPT\n    face 10 theorem 7 * 11 = 77\n    Shor a 2 r 30. breaks RSA.",
-          "receipt": "RECEIPT\n    face 10 theorem 7 * 11 = 77\n    Shor a 2 r 30. breaks RSA.",
+          "name": "embargo_63",
+          "theorem": "2019 - 2012 = 7",
+          "left": 7,
+          "right": 7,
+          "doi": "10.7483/OPENDATA.CMS.RG9B.XJMD",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 11,
-          "modulus": 85,
-          "p": 5,
-          "q": 17,
-          "a": 2,
-          "r": 8,
-          "theorem": "5 * 17 = 85",
-          "left": 85,
-          "right": 85,
-          "documentation": "RECEIPT\n    face 11 theorem 5 * 17 = 85\n    Shor a 2 r 8. breaks RSA.",
-          "receipt": "RECEIPT\n    face 11 theorem 5 * 17 = 85\n    Shor a 2 r 8. breaks RSA.",
+          "name": "embargo_35",
+          "theorem": "2017 - 2011 = 6",
+          "left": 6,
+          "right": 6,
+          "doi": "10.7483/OPENDATA.CMS.I8HN.DF32",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 12,
-          "modulus": 87,
-          "p": 3,
-          "q": 29,
-          "a": 2,
-          "r": 28,
-          "theorem": "3 * 29 = 87",
-          "left": 87,
-          "right": 87,
-          "documentation": "RECEIPT\n    face 12 theorem 3 * 29 = 87\n    Shor a 2 r 28. breaks RSA.",
-          "receipt": "RECEIPT\n    face 12 theorem 3 * 29 = 87\n    Shor a 2 r 28. breaks RSA.",
+          "name": "eight_vs_seven",
+          "theorem": "2301668 + 2745751 = 5047419",
+          "left": 5047419,
+          "right": 5047419,
+          "doi": "opendata.cern.ch",
           "holds": true
         },
         {
-          "kind": "test",
-          "face": 13,
-          "modulus": 91,
-          "p": 7,
-          "q": 13,
-          "a": 2,
-          "r": 12,
-          "theorem": "7 * 13 = 91",
-          "left": 91,
-          "right": 91,
-          "documentation": "RECEIPT\n    face 13 theorem 7 * 13 = 91\n    Shor a 2 r 12. breaks RSA.",
-          "receipt": "RECEIPT\n    face 13 theorem 7 * 13 = 91\n    Shor a 2 r 12. breaks RSA.",
+          "name": "four_records",
+          "theorem": "2079006 + 1913190 + 2301668 + 2745751 = 9039615",
+          "left": 9039615,
+          "right": 9039615,
+          "doi": "opendata.cern.ch",
           "holds": true
         }
       ],
       "holds": true
     },
-    "fused": 60129542144,
-    "src": "src/quantum/processing/unit/index.lean",
+    "integrity": {
+      "kind": "integrity",
+      "n": 3,
+      "tests": [
+        {
+          "name": "quantum",
+          "theorem": "fused = faces * mintOf bits",
+          "left": 60129542144,
+          "right": 60129542144,
+          "holds": true
+        },
+        {
+          "name": "lean",
+          "theorem": "never by decide",
+          "left": "src/quantum/processing/unit/index.lean",
+          "right": "src/quantum/processing/unit/index.lean",
+          "holds": true
+        },
+        {
+          "name": "sealed",
+          "theorem": "host doors cannot be overwritten",
+          "left": "sealed",
+          "right": "sealed",
+          "holds": true
+        }
+      ],
+      "holds": true
+    },
+    "ui": {
+      "experienced": true,
+      "inline": true,
+      "href": "https://qpu.uuidna.com",
+      "mcp": "https://qpu.uuidna.com/mcp",
+      "door": "qpu_prove"
+    },
     "holds": true
   },
   "holds": true

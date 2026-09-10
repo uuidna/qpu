@@ -3,10 +3,10 @@
  */
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { qpuLeanHolds, qpuMcpOf, qpuQuantumHolds, qpuReadmeHolds, qpuReadmeOf } from './index.js'
+import { qpuIntegrityHolds, qpuMcpOf, qpuReadmeHolds, qpuReadmeOf } from './index.js'
 
-if (!qpuQuantumHolds() || !qpuLeanHolds()) {
-  throw new Error('qpuLeanHolds')
+if (!qpuIntegrityHolds()) {
+  throw new Error('qpuIntegrityHolds')
 }
 const mcp = qpuMcpOf()
 const readme = qpuReadmeOf(mcp)
