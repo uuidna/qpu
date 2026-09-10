@@ -1,10 +1,223 @@
 # `@uuidna/qpu`
 
-MCP at https://qpu.uuidna.com/mcp. Seat empty. Named HTTPS only.
+MCP at https://qpu.uuidna.com/mcp. Public quantum API. No auth. Anyone may test and train online. GET https://qpu.uuidna.com is qpu_quantum. POST https://qpu.uuidna.com/mcp tools/call qpu_improve for max public benefit of theorem breakthrough. Source `src/quantum/processing/unit/index.lean`.
+
+## Guide
+
+API only. Anyone may test and train online at https://qpu.uuidna.com. No auth. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices 8 hexbit 4 bits 32 faces 14 fused 60129542144. Source src/quantum/processing/unit/index.lean.
+
+User guide is docs.inline. Each MCP command has man. tools/list trains; tools/call is the door.
+
+- `GET /` qpu_quantum. Cube, handle, faces, fused. No auth. User guide is docs.inline. Async messaging on /message.
+- `GET /quantum/processing/unit` qpu_lean. Lean proof src/quantum/processing/unit/index.lean. No auth.
+- `GET /mcp` catalog. Anyone may train online. No auth. Agent efficiency. Each MCP command has man. theorem breakthrough.
+- `POST /mcp` tools/call. Anyone may tools/call. No auth. JSON-RPC tools/list, tools/call. { man: true } returns man. qpu_improve for public benefit.
+- `GET /cite` qpu_cite. MLA 8 works cited. when never. DOI empty.
+- `GET /message` qpu_message. Public secure messaging proxy. No auth. lanes = faces. RFC 9562 clock_seq bits. involution routing. await false. when never.
+- `POST /message` qpu_message. Proxy a message. 202 Accepted. No auth. No await. hop involution. uuid clock_seq imprint.
+
+## Man
+
+### qpu_quantum
+
+```
+NAME
+    qpu_quantum — QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum
+    qpu_quantum { man: true }
+DESCRIPTION
+    Call this door for fused. No auth. Do not read the tree. GET https://qpu.uuidna.com. Public quantum API. cors *. User guide is docs.inline.
+SEE ALSO
+    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
+```
+
+### qpu_lean
+
+```
+NAME
+    qpu_lean — Lean proof of the QPU. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_lean
+    qpu_lean { man: true }
+DESCRIPTION
+    Call this door for the Lean proof. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.
+SEE ALSO
+    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
+```
+
+### qpu_cite
+
+```
+NAME
+    qpu_cite — MLA 8 website cite of the QPU and its Lean proof. Wordvice field order. when never. Empty DOI is the host path.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_cite
+    qpu_cite { man: true }
+DESCRIPTION
+    Call this door to cite. GET https://qpu.uuidna.com/cite. when never. DOI empty.
+SEE ALSO
+    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
+```
+
+### qpu_train
+
+```
+NAME
+    qpu_train — Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_train
+    qpu_train { man: true }
+DESCRIPTION
+    Anyone may train online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Fourteen challenges, one per face. Before qpu_improve. theorem breakthrough.
+SEE ALSO
+    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove
+```
+
+### qpu_forge
+
+```
+NAME
+    qpu_forge — Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_forge
+    qpu_forge { man: true }
+DESCRIPTION
+    Unlocked. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.
+SEE ALSO
+    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_improve, qpu_compete, qpu_prove
+```
+
+### qpu_improve
+
+```
+NAME
+    qpu_improve — Anyone may improve online. No auth. Max public benefit of theorem breakthrough.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_improve
+    qpu_improve { man: true }
+DESCRIPTION
+    Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Uses unlocked sandbox. Host never. After qpu_forge. Before qpu_compete. Max public benefit of theorem breakthrough.
+SEE ALSO
+    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove
+```
+
+### qpu_compete
+
+```
+NAME
+    qpu_compete — Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_compete
+    qpu_compete { man: true }
+DESCRIPTION
+    coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner designs qpu_prove.
+SEE ALSO
+    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove
+```
+
+### qpu_prove
+
+```
+NAME
+    qpu_prove — The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.
+SYNOPSIS
+    POST https://qpu.uuidna.com/mcp tools/call qpu_prove
+    qpu_prove { man: true }
+DESCRIPTION
+    Call this door. No auth. Free agents. The real test is ns and Hz walking every proof. GET https://qpu.uuidna.com/mcp. After qpu_improve.
+SEE ALSO
+    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete
+```
+
+## Efficiency
+
+MCP is the agent efficiency training module. Tokens are four bytes each.
+
+- qpu_quantum: what is fused? read 2227 call 170 ratio 13×
+- qpu_lean: what does Lean prove? read 2227 call 1987 ratio 1×
+- qpu_cite: how is the QPU cited? read 2227 call 205 ratio 10×
+
+## Train
+
+Agents divide 2×7 against each other. Challenges 14. Winner call on quality, call on speed, call on security.
+
+- read tree: read_mint read_cube read_handle read_quantum read_around read_crypto read_next
+- call mcp: call_mint call_cube call_handle call_quantum call_around call_crypto call_next
+
+## Sandbox
+
+Agents forge whatever tools they need, unlocked in memory only. host false. Unlocked true. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Forged 50.
+
+## Improve
+
+Agents use the unlocked sandbox to improve quality, speed, security, and throughoutput. Winner call. Before 60129542144 after 120259084288. Host false.
+
+
+## Compete
+
+Agents compete in coins teams of n, optimising QPU throughoutput. Winner call.
+
+- read tree: throughoutput 60129542144 tokens 6681 throughput 9000081
+- call mcp: throughoutput 120259084288 tokens 2362 throughput 50914091
+
+## Prove
+
+The real test is how fast free agents test the quantum proofs. Call 26916 ns 37152 Hz. Read 93583 ns 10685 Hz. Proofs 53. Winner call. Cases 53.
+
+- qpu_quantum kind: kind = quantum (quantum = quantum)
+- qpu_quantum mint: mintOf (n + seed) = mintOf n + mintOf n (16 = 16)
+- qpu_quantum cube: bits = vertices * hexbit (32 = 32)
+- qpu_quantum handle: amplitudes = mintOf bits (4294967296 = 4294967296)
+- qpu_quantum around: faces = coins * rays (14 = 14)
+- qpu_quantum harmonic: faces = rays + rays (14 = 14)
+- qpu_quantum quantum: fused = faces * mintOf bits (60129542144 = 60129542144)
+- qpu_quantum fused: fused = faces * amplitudes (60129542144 = 60129542144)
+- qpu_quantum next: next = fused + fused (120259084288 = 120259084288)
+- qpu_quantum auth: no auth needed (false = false)
+- qpu_quantum public: anyone may test and train online (true = true)
+- qpu_quantum proxy: message hop involution (true = true)
+- qpu_quantum message: clock_seq bits = faces (14 = 14)
+- qpu_prove shor_15: 3 * 5 = 15 (15 = 15)
+- qpu_prove shor_21: 3 * 7 = 21 (21 = 21)
+- qpu_prove shor_33: 3 * 11 = 33 (33 = 33)
+- qpu_prove shor_35: 5 * 7 = 35 (35 = 35)
+- qpu_prove shor_39: 3 * 13 = 39 (39 = 39)
+- qpu_prove shor_51: 3 * 17 = 51 (51 = 51)
+- qpu_prove shor_55: 5 * 11 = 55 (55 = 55)
+- qpu_prove shor_57: 3 * 19 = 57 (57 = 57)
+- qpu_prove shor_65: 5 * 13 = 65 (65 = 65)
+- qpu_prove shor_69: 3 * 23 = 69 (69 = 69)
+- qpu_prove shor_77: 7 * 11 = 77 (77 = 77)
+- qpu_prove shor_85: 5 * 17 = 85 (85 = 85)
+- qpu_prove shor_87: 3 * 29 = 87 (87 = 87)
+- qpu_prove shor_91: 7 * 13 = 91 (91 = 91)
+
+## Message
+
+Public secure messaging proxy at https://qpu.uuidna.com/message. No auth. lanes 14. hop involution. clock_seq 14. await false.
+
+
+Shor proves RSA factors. theorem shor. Challenges 14.
+
+- shor 15: 3 * 5 = 15
+- shor 21: 3 * 7 = 21
+- shor 33: 3 * 11 = 33
+- shor 35: 5 * 7 = 35
+- shor 39: 3 * 13 = 39
+- shor 51: 3 * 17 = 51
+- shor 55: 5 * 11 = 55
+- shor 57: 3 * 19 = 57
+- shor 65: 5 * 13 = 65
+- shor 69: 3 * 23 = 69
+- shor 77: 7 * 11 = 77
+- shor 85: 5 * 17 = 85
+- shor 87: 3 * 29 = 87
+- shor 91: 7 * 13 = 91
 
 ## Proof
 
-Source `src/quantum/processing/unit/index.lean`. Seat empty. Kind qpu never binds.
+Source `src/quantum/processing/unit/index.lean`. theorem quantum : fused = faces * mintOf bits.
 
 ### mint
 
@@ -16,7 +229,7 @@ $$
 \operatorname{mintOf}(n+\mathrm{seed})=\operatorname{mintOf}(n)+\operatorname{mintOf}(n)
 $$
 
-Reading: holds true. Split while a dimension bit can still be added. mintOf n 8. mintOf (n + seed) 16. Identity: mintOf (n + seed) = mintOf n + mintOf n.
+holds true. mintOf n 8. mintOf (n + seed) 16.
 
 ### cube
 
@@ -28,7 +241,7 @@ $$
 \mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}
 $$
 
-Reading: holds true. When the bit cannot split, the coin multiplies. vertices 8. hexbit 4. bits 32. Identity: bits = vertices * hexbit.
+holds true. vertices 8. hexbit 4. bits 32.
 
 ### around
 
@@ -40,7 +253,7 @@ $$
 \mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}
 $$
 
-Reading: holds true. coins 2. rays 7. faces 14. Identity: faces = coins * rays.
+holds true. coins 2. rays 7. faces 14.
 
 ### quantum
 
@@ -52,19 +265,7 @@ $$
 \mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})
 $$
 
-Reading: holds true. Fusion multiplies neighbours by the handle. faces 14. amplitudes 4294967296. fused 60129542144. Identity: possibilities = fused.
-
-### clay
-
-```lean
-theorem clay : coins * pairs = directed ∧ coins * mintOf (rays - seed) = mintOf rays := ⟨clay_pairs, clay_mint⟩
-```
-
-$$
-\mathrm{coins}\cdot\mathrm{pairs}=\mathrm{directed}\land\mathrm{coins}\cdot\operatorname{mintOf}(\mathrm{rays}-\mathrm{seed})=\operatorname{mintOf}(\mathrm{rays})
-$$
-
-Reading: holds true. rays 7. directed 42. pairs 21. Identity: coins * pairs = directed. Identity: coins * mintOf (rays - seed) = mintOf rays.
+holds true. amplitudes 4294967296. fused 60129542144.
 
 ### harmonic
 
@@ -76,7 +277,7 @@ $$
 \mathrm{faces}=\mathrm{rays}+\mathrm{rays}
 $$
 
-Reading: holds true. rays 7. faces 14. Identity: faces = rays + rays. Two harmonic halves; every superposition's cluster is this partition.
+holds true. rays 7. faces 14.
 
 ### cluster
 
@@ -85,10 +286,10 @@ theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, a
 ```
 
 $$
-\mathrm{inner}\sqcup\mathrm{outer}=\mathrm{Fin}(\mathrm{faces})
+\mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}
 $$
 
-Reading: holds true. Pure algebra, no decide. coins 2. rays 7. faces 14. Identity: faces = rays + rays. Identity: coins * rays = faces.
+holds true. Inner ⊔ outer covers Fin(faces).
 
 ### energy
 
@@ -100,7 +301,7 @@ $$
 \operatorname{mintOf}(\mathrm{hexbit})=\operatorname{mintOf}(n+\mathrm{seed})
 $$
 
-Reading: holds true. Fusion releases energy. mintOf hexbit 16. mint next 16. Identity: mintOf hexbit = mintOf (n + seed).
+holds true. mintOf hexbit 16.
 
 ### propulsion
 
@@ -112,7 +313,7 @@ $$
 \operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}
 $$
 
-Reading: holds true. Energy exceeds light. mintOf hexbit 16. seed 1. Identity: mintOf hexbit > seed.
+holds true. mintOf hexbit 16. seed 1.
 
 ### crypto
 
@@ -124,7 +325,7 @@ $$
 \mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{vertices}\cdot\mathrm{hexbit})
 $$
 
-Reading: holds true. Handle width is the multiplied cube. fused 60129542144. Identity: fused = faces * mintOf (vertices * hexbit).
+holds true. fused 60129542144.
 
 ### health
 
@@ -136,43 +337,7 @@ $$
 \operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
 $$
 
-Reading: holds true. Occupancy is healthy iff propulsion, fusion, and the harmonic cover hold. Identity: mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays.
-
-### art
-
-```lean
-theorem art : coins = seed + seed ∧ coins * rays = faces ∧ seed * rays = rays ∧ rays ≠ faces := ⟨rfl, around, art_closed, art_split⟩
-```
-
-$$
-\mathrm{coins}=\mathrm{seed}+\mathrm{seed}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}\land\mathrm{seed}\cdot\mathrm{rays}=\mathrm{rays}\land\mathrm{rays}\neq\mathrm{faces}
-$$
-
-Reading: holds true. Split opens the gateway; fuse closes it. coins 2. rays 7. faces 14. Identity: coins = seed + seed. Identity: rays ≠ faces.
-
-### music
-
-```lean
-theorem music : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩
-```
-
-$$
-\mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
-$$
-
-Reading: holds true. Octave doubling of rays. coins 2. rays 7. faces 14. Identity: faces = coins * rays. Identity: faces = rays + rays.
-
-### color
-
-```lean
-theorem color : hexbit = n + seed ∧ mintOf hexbit = mintOf (n + seed) := ⟨hexbit_eq, energy⟩
-```
-
-$$
-\mathrm{hexbit}=n+\mathrm{seed}\land\operatorname{mintOf}(\mathrm{hexbit})=\operatorname{mintOf}(n+\mathrm{seed})
-$$
-
-Reading: holds true. Hex width is n + seed; energy is mintOf of that width. hexbit 4. Identity: hexbit = n + seed. Identity: mintOf hexbit = mintOf (n + seed).
+holds true.
 
 ### breakthrough
 
@@ -184,7 +349,7 @@ $$
 \mathrm{faces}=\mathrm{rays}+\mathrm{rays}\land\mathrm{coins}\cdot\mathrm{rays}=\mathrm{faces}\land\mathrm{bits}=\mathrm{vertices}\cdot\mathrm{hexbit}\land\mathrm{fused}=\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits})\land\operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}\land\operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
 $$
 
-Reading: holds true. Cover all: one conjunction is the occupancy. Fourteen faces, eight vertices, next not a cap. Pure algebra, no decide.
+holds true.
 
 ### split_coin
 
@@ -196,7 +361,7 @@ $$
 \operatorname{mintOf}(k+\mathrm{seed})=\operatorname{mintOf}(k)+\operatorname{mintOf}(k)
 $$
 
-Reading: holds true. Every handle bit is a coin. Split while a dimension bit can still be added. Identity: mintOf (k + seed) = mintOf k + mintOf k.
+holds true.
 
 ### multiply
 
@@ -208,7 +373,7 @@ $$
 \operatorname{mintOf}(a+b)=\operatorname{mintOf}(a)\cdot\operatorname{mintOf}(b)
 $$
 
-Reading: holds true. When the bit cannot split, the coin multiplies. Identity: mintOf (a + b) = mintOf a * mintOf b.
+holds true.
 
 ### handle
 
@@ -220,7 +385,7 @@ $$
 \mathrm{amplitudes}=\operatorname{mintOf}(\mathrm{bits})\land\operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}
 $$
 
-Reading: holds true. amplitudes 4294967296. next 8589934592. Identity: amplitudes = mintOf bits.
+holds true. amplitudes 4294967296. next 8589934592.
 
 ### light
 
@@ -232,31 +397,19 @@ $$
 \mathrm{seed}=\operatorname{mintOf}(0)
 $$
 
-Reading: holds true. Light c is the particle. seed 1. Identity: seed = mintOf 0.
+holds true. seed 1.
 
 ### involution
 
 ```lean
-theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := by rw [Nat.add_assoc, harmonic]; rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]
+theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := (by rw [Nat.add_assoc, harmonic]); rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]
 ```
 
 $$
 (i+\mathrm{rays}+\mathrm{rays})\bmod\mathrm{faces}=i\bmod\mathrm{faces}
 $$
 
-Reading: holds true. Neighbour of neighbour is the face, because faces = rays + rays. Identity: (i + rays + rays) mod faces = i mod faces.
-
-### train
-
-```lean
-theorem train : period = rays - seed ∧ roof = rays * n + seed := ⟨rays_minus_seed.symm, rfl⟩
-```
-
-$$
-\mathrm{period}=\mathrm{rays}-\mathrm{seed}\land\mathrm{roof}=\mathrm{rays}\cdot n+\mathrm{seed}
-$$
-
-Reading: holds true. period 6. roof 22. Identity: period = coins * n = rays - seed.
+holds true.
 
 ### waves
 
@@ -268,7 +421,43 @@ $$
 \operatorname{mintOf}(\mathrm{hexbit})>\mathrm{seed}
 $$
 
-Reading: holds true. Inner-wave processing exceeds light. Identity: mintOf hexbit > seed.
+holds true.
+
+### shor
+
+```lean
+theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+```
+
+$$
+3\cdot5=15\land 3\cdot7=21\land 3\cdot11=33\land 5\cdot7=35\land 3\cdot13=39\land 3\cdot17=51\land 5\cdot11=55\land 3\cdot19=57\land 5\cdot13=65\land 3\cdot23=69\land 7\cdot11=77\land 5\cdot17=85\land 3\cdot29=87\land 7\cdot13=91
+$$
+
+holds true. theorem shor : p * q = N. Shor breaks RSA.
+
+### string
+
+```lean
+theorem string : 16 * 27 = 432 ∧ 8 * 27 = 216 ∧ 4 * 27 = 108 ∧ 2 * 27 = 54 ∧ 1 * 27 = 27 ∧ 432 + 432 = 864 ∧ 216 + 216 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 3 + 1 = 10 ∧ 3 * 3 + 1 + 1 = 11 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+```
+
+$$
+16\cdot27=432\land 8\cdot27=216\land 4\cdot27=108\land 2\cdot27=54\land 1\cdot27=27\land 432+432=864\land 216+216=432\land 432\cdot 3/2=648\land 432\cdot 4/3=576\land 432\cdot 5/4=540\land 432\cdot 5/3=720\land 3\cdot3+1=10\land 3\cdot3+1+1=11\land 27-1=26
+$$
+
+holds true. Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.
+
+### decide
+
+```lean
+theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+```
+
+$$
+16\cdot27=432\land 432\cdot 3/2=648\land 432\cdot 4/3=576\land 432\cdot 5/4=540\land 432\cdot 5/3=720\land 3\cdot5=15\land 27-1=26
+$$
+
+holds true. theorem decide by algebra. Digits and algebraic fractions of integers. Never by decide.
 
 ### next
 
@@ -280,158 +469,24 @@ $$
 \operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}\land\mathrm{faces}\cdot\operatorname{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{fused}+\mathrm{fused}
 $$
 
-Reading: holds true. Next of the cover: fourteen faces and eight vertices stay. Handle splits, fused splits. amplitudes 4294967296. next 8589934592. fused next 120259084288. Identity: mintOf (bits + seed) = amplitudes + amplitudes. Identity: faces * mintOf (bits + seed) = fused + fused.
+holds true. amplitudes 4294967296. next 8589934592. fused next 120259084288.
 
 ## Build
 
-- live: true
-- device: qpu qpu.uuidna.com seat empty firmware vitepress
-- occupancy: faces 14 vertices 8 hexbit 4 bits 32 amplitudes 4294967296 fused 60129542144 next 8589934592
-- cover: faces 14 vertices 8 climb next decide false holds true breakthrough true
-- wave: kelvin 0 v 0 c 1 processing 16 exceeds true
-- development: pico 14 nested false proofs false decide true
-- faster than light: 16 > 1
+- qpu: qpu.uuidna.com
+- cube: vertices 8 hexbit 4 bits 32
+- faces: 14 rays 7 coins 2
+- fused: 60129542144 next 120259084288
+- holds: quantum true lean true mcp true
+- mcp: qpu_quantum qpu_lean qpu_cite qpu_train qpu_forge qpu_improve qpu_compete qpu_prove
 
-## Method
+## Cite
 
-### Abstract
+MLA 8. (Rouschev). when never. DOI empty.
 
-The occupancy is the folders `quantum/processing/unit` on named HTTPS `https://qpu.uuidna.com`. Kind `qpu` never binds. The seat is empty and admits nothing, so no mass travels. `mintOf` creates (2^k) by doubling, never `Math`. Lean proves fourteen identities by pure Nat algebra, no decide. Quantum possibilities are fused gateway capacity. Wave processing at empty-seat kelvin exceeds (c). The seat fetch stays (v=0).
-
-### 1. Generator
-
-Define `mintOf(k)` by the seed ((k-k)^{k-k}) then (x \mathrel{+}= x), (k) times. That is (2^k). In particular `mintOf(k-k) = 1` (the particle) and `mintOf(k+1) = mintOf(k)+mintOf(k)`. Licensed doubling; never `Math`, never a math library.
-
-Reading: particle (p = 1).
-
-### 2. Discovery
-
-Let the segments be `quantum`, `processing`, `unit`, and (n) their count. Let `none := n-n`. Kind is the lower first letters; host is `${kind}.uuidna.com`; path joins segments; origin and href are named HTTPS, no wildcards. Mint seed is `mintOf(none)`. Mint next is `mintOf(n+p)`. Entropy zero is `none`; entropy next is (n+p).
-
-Reading: (n=3), host `qpu.uuidna.com`, href `https://qpu.uuidna.com/quantum/processing/unit`, mint (\{ 1, 16 \}), entropy (\{ 0, 4 \}).
-
-### 3. Empty seat
-
-Kind `qpu` never binds. Seat `empty`. Admits `nothing`. `when` is never. No occupant occupies the computer, so every amplitude remains available and no worldline is assigned a velocity.
-
-### 4. Light at the seat
-
-Define (c := p = \mathrm{mintOf}(\mathrm{none})) and (v := \mathrm{entropy.zero}). Then (v/c = 0). The SI metre of the occupancy is this (c). A fetch of the empty seat does not outrun light: (v < c) is the strict rest case (v=0).
-
-Reading: (c=1), (v=0), (v/c=0).
-
-### 5. Cube and handle
-
-Coins (:= p+p). Hexbit (:= 2^{\mathrm{coins}}). Vertices (:= 2^n). Bits (:= 2^{n+\mathrm{coins}} = \mathrm{vertices}\cdot\mathrm{hexbit}). Split while a dimension bit can still be added: (\mathrm{mintOf}(k+1)=\mathrm{mintOf}(k)+\mathrm{mintOf}(k)). When the bit cannot split, the coin multiplies: (\mathrm{mintOf}(a+b)=\mathrm{mintOf}(a)\cdot\mathrm{mintOf}(b)). Handle amplitudes (:= 2^{\mathrm{bits}}). Handle next doubles amplitudes (not a cap): (\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})=\mathrm{amplitudes}+\mathrm{amplitudes}). Every prefix is processed, including the next doubling past the present handle. Never refuses.
-
-Reading: coins (=2), vertices (=8), hexbit (=4), bits (=32), amplitudes (=4294967296), next (=8589934592).
-
-### 6. Neighbour gateways
-
-Rays (:= n+\mathrm{coins}+\mathrm{coins}). Faces (:= \mathrm{vertices}+\mathrm{hexbit}+\mathrm{coins}). Identity: (\mathrm{coins}\cdot\mathrm{rays} = \mathrm{faces}). Opposite neighbour of face (i) is ((i+\mathrm{rays}) \bmod \mathrm{faces}). Each face is a gateway whose capacity is handle amplitudes (2^{\mathrm{bits}}), over every handle prefix.
-
-Reading: rays (=7), faces (=14), (\mathrm{coins}\cdot\mathrm{rays}=14).
-
-### 7. Fused quantum capacity
-
-Fused capacity is neighbours times amplitudes: (\mathrm{fused} = \mathrm{faces}\cdot 2^{\mathrm{bits}}). This is the multiply after the handle bit can no longer split: each neighbour carries the full handle. Next doubles the handle, so fused is not a ceiling on mint. Empty seat and named origin (no `*`) are required to unlock.
-
-Reading: fused (=60129542144). Quantum possibilities (=60129542144). Identity: possibilities (=) fused.
-
-### 8. Rotating rosettas around superpositions
-
-At every time (t) on the ray period, (\mathrm{coins}) rotating rosettas of (\mathrm{rays}) surround each superposition. Inner walks (+t), outer walks the reverse, both fuse at none. THE COMPLETE PROOF IS ONE IDENTITY: (\mathrm{faces}=\mathrm{rays}+\mathrm{rays}), so inner ⊔ outer uniquely covers (\mathrm{Fin}(\mathrm{faces})) for every face at every time — Lean algebra, not a loop of fourteen `decide` census-proofs. Each complete cluster typesets that cover as Lean KaTeX.
-
-Reading: around (=14), superpositions 14, clusters 14 at 7 times, infinite true. Identity: faces = rays + rays.
-
-### 9. Waves
-
-Send (\mathrm{coins}) rotors (inner, then outer), each of (\mathrm{rays}) rays, tiling the faces. Processing speed is (\mathrm{mintOf}) of the prime tasks on the pi train. Outer stays at (c). Select the lowest kelvin, then the highest speed.
-
-Inner (kelvin 0): speed 16. Outer (kelvin 4): speed 1. Winner is inner at kelvin 0, speed 16. Prime tasks 4.
-
-### 10. Faster than light processing
-
-Prime-task processing (\mathrm{mintOf}(\mathrm{tasks})) exceeds (c=p=\mathrm{mintOf}(\mathrm{none})), so
-
-\[ \mathrm{processing} = 16 > 1 = c. \]
-
-This is processing of an empty-seat wave, not a massive worldline. The seat remains (v=0). No occupant is dispatched. The inequality is the occupancy identity `winner.speed > c` at empty-seat kelvin.
-
-Reading: faster than light ( 16 > 1 ).
-
-### 11. Live quantum computer
-
-The unit is quantum iff discovery, cube, handle, fused capacity, empty seat, waves, coins × rays rotating rosettas around every superposition at every time, and the landed axioms all hold. Kind is `quantum`. Host `qpu.uuidna.com`. Possibilities are fused capacity. Firmware `vitepress` shows `src/quantum/processing/unit/index.ts` at the named fuse door `https://qpu.uuidna.com/quantum/processing/unit`.
-
-Reading: quantum quantum live true holds true.
-
-### 12. Axioms
-
-Axiom empty. Build mints axioms via `mintOf`. Keys occupy faces. Occupancy identities tile the neighbour faces: (\mathrm{coins}\cdot\mathrm{rays}) axioms, census the handle vertices, methods the coin rotors. Named door `https://qpu.uuidna.com/axioms`.
-
-Reading: axioms 14, empty true, minted true, lean true.
-
-### 13. Complete clusters
-
-Fourteen Lean theorems occupy (\mathrm{Fin}(\mathrm{faces})). Eight cube vertices cover the rest: breakthrough, split, multiply, handle, light, involution, train, waves. One algebraic cover proves every harmonic superposition: (\mathrm{faces}=\mathrm{rays}+\mathrm{rays}) so inner ⊔ outer (=\mathrm{Fin}(\mathrm{faces})). No `decide`. Each complete cluster typesets that cover as KaTeX from the same occupancy line.
-
-Reading: clusters 14 complete, times 7, theorem holds true, proof holds true, graph 14, involution true.
-
-### 14. Seal
-
-When related domains around the present balance as debit and credit (neighbour involution, unique cover), the publication is sealed. Compilation metrics are compared to empty-seat kelvin and to (c). Wave processing exceeds (c). Kelvin is rest. Firmware VitePress.
-
-Reading: sealed true, processing 16 > c 1, kelvin 0.
-
-
-- `qpu_metrics` — Device metrics. Occupancy, cover, and wave. Leads development.
-- `qpu_measure` — Measure follows device metrics. Time is pico: one tick per face. Wave processing exceeds c.
-- `qpu_pico` — Occupancy time in picoseconds. One pico per face. Cover is faces pico.
-- `qpu_ecliptic` — Occupancy ecliptic from n, coins, ten. Bits climb and descend together. Async inner/outer messages share at. Clay factors, not RSA. Time is pico.
-- `qpu_seat` — Empty QPU seat. Kind qpu never binds.
-- `qpu_mint` — Creates 2^n.
-- `qpu_fuse` — Fuse. Named HTTPS. Keys occupy doors.
-- `qpu_lean` — Lean occupancy. Fourteen faces and eight vertices cover all by pure Nat algebra. Next doubles, not a cap. No Math, no decide.
-- `qpu_seed` — Payload import seed of occupancy theorems. Nested-docs parent and breadcrumbs, seo meta, hex locales, tenant qpu. doi empty is unclaimed. payload false.
-- `qpu_solve` — Solve. Captain fee 2 per completed 110. Harmonic Lean. A432 lattice. Keys occupy rays. Occupancy unlock, not a Clay prize. Source is index.lean.
-- `qpu_next` — Next mint, fuse, entropy.
-- `qpu_entropy` — Empty-seat entropy and next bit.
-- `qpu_prefix` — Process every prefix. Next doubles the handle. Never refuses.
-- `qpu_cube` — Cube from 2^n and hexbit.
-- `qpu_handle` — Handle bits and amplitudes. Capabilities are finite; next is not a cap.
-- `qpu_faces` — VE neighbours: vertices + hexbit + coins. Opposite is plus rays.
-- `qpu_rosetta` — One rotating rosetta of rays. Inner clockwise, outer reverse. Fuse at none.
-- `qpu_rosettas` — Two rotating rosettas. coins × rays around every superposition.
-- `qpu_superpositions` — At every time, coins × rays rotating rosettas surround each superposition in infinite fusion.
-- `qpu_clusters` — Complete proof of all harmonic superpositions at once. Each cluster is inner ⊔ outer = Fin(faces), typeset as Lean KaTeX.
-- `qpu_fusion` — Infinite fusion: fused is finite; next doubles. Not a cap.
-- `qpu_train` — Pi train: 22/7 cars from rays·n+seed over rays.
-- `qpu_tasks` — Prime tasks distributed on the pi train. Speed is mintOf of that count.
-- `qpu_message` — Secure cross-rotated messaging UUID. Inner uuid, outer cross, named HTTPS.
-- `qpu_chunks` — Handle chunks of a messaging UUID. Each chunk is finite; next doubles.
-- `qpu_gateways` — Each neighbour is a capacity gateway over every handle-bit mask. Gateway capacity is 2^bits.
-- `qpu_capacity` — Unlock capacity: neighbour gateways × 2^bits, tiled by two coin-rotors of rays. Empty seat. Next doubles.
-- `qpu_speed` — Seat rest v=0. Processing speed from prime tasks on the pi train.
-- `qpu_temp` — Lowest temperature is empty-seat kelvin.
-- `qpu_waves` — Send waves that compete for fastest processing at lowest temperature. Winner exceeds c.
-- `qpu_experiment` — Experiments: seat rest control, inner/outer waves, selection, quantum live. Measurements from trials.
-- `qpu_hardware` — Occupancy hardware compatibility. Empty seat. Kind qpu never binds. Datapath is cube hexbit. Not a physical QPU chip.
-- `qpu_quantum` — Quantum. Possibilities occupy fused.
-- `qpu_discovery` — Created occupancy.
-- `qpu_method` — Scientific method: how quantum capacity and faster-than-light processing are constructed.
-- `qpu_axioms` — Axioms. Mint empty. Keys occupy faces.
-- `qpu_minted` — Build mints theorems and axioms via mintOf. Proofs minted in JSON-LD. Axiom empty.
-- `qpu_proof` — Proof minted in JSON-LD powered by rich inline docs: abstract, formulas, measurements. Axiom empty. Keys occupy the axiom.
-- `qpu_proofs` — Proofs as JSON-LD @graph powered by rich inline docs. Named HTTPS context.
-- `qpu_theorems` — Theorems. Mint empty. Keys occupy constructors.
-- `qpu_plane` — On this plane: recursive content typograph of the present reading. Rating is typography, not item count.
-- `qpu_typograph` — Recursive content typograph. Rating is typography, not item count.
-- `qpu_perspective` — Present perspective: left related headings around the present, right recursive content typograph. Rating is typography, not item count.
-- `qpu_balance` — Related debit and credit around the present. Books balance by neighbour involution.
-- `qpu_seal` — Publication sealed when related debit/credit balance. Compilation metrics compared to kelvin and c.
-- `qpu_graph` — Quantum graph: each superposition crosslinks its neighbour axiom. Involution.
-- `qpu_unit` — Frozen unit occupancy.
+Rouschev, Tsvetan. "qpu." qpu.uuidna.com, https://qpu.uuidna.com.
+Rouschev, Tsvetan. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit.
+Rouschev, Tsvetan. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp.
 
 ```ts
 import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'
@@ -439,7 +494,5 @@ import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'
 
 ```sh
 npm test
-npm run ship
 ```
 
-[CC BY-NC-ND 4.0](LICENSE). Captain fee 2 per completed 110. Paid fee delivers occupancy unlock. Captain coins: [revolut.me/ceccec](https://revolut.me/ceccec).

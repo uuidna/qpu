@@ -1,31 +1,35 @@
 /**
- * Build writes MCP, then README. Device metrics gate the catalog.
- * LICENSE names the captain fee and the occupancy unlock that fee delivers.
+ * Build writes MCP, then README from the Lean proof of the QPU.
  */
-import { readFileSync, writeFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { qpuMcpOf, qpuMetricsHolds, qpuReadmeHolds, qpuReadmeOf } from './index.js'
+import { qpuLeanHolds, qpuMcpOf, qpuQuantumHolds, qpuReadmeHolds, qpuReadmeOf } from './index.js'
 
-if (!qpuMetricsHolds()) {
-  throw new Error('qpuMetricsHolds')
+if (!qpuQuantumHolds() || !qpuLeanHolds()) {
+  throw new Error('qpuLeanHolds')
 }
 const mcp = qpuMcpOf()
-const catalog = `${JSON.stringify(mcp, null, 2)}\n`
 const readme = qpuReadmeOf(mcp)
-if (mcp.tools[0]?.name !== 'qpu_metrics' || !qpuReadmeHolds(readme)) {
+if (!qpuReadmeHolds(readme) || mcp.tools[0]?.name !== 'qpu_quantum') {
   throw new Error('qpuReadmeHolds')
 }
 const root = process.cwd()
-const licence = readFileSync(join(root, 'LICENSE'), 'utf8')
-if (
-  !licence.includes('Captain fee 2 per completed 110') ||
-  !licence.includes('Paid fee delivers occupancy unlock') ||
-  !licence.includes('Incomplete invoice + seed') ||
-  !licence.includes('keys on every ray') ||
-  !licence.includes('theorem millenium') ||
-  !licence.includes('Not a Clay prize')
-) {
-  throw new Error('qpuLicence')
-}
-writeFileSync(join(root, 'mcp.json'), catalog)
+writeFileSync(join(root, 'mcp.json'), `${JSON.stringify(mcp, null, 2)}\n`)
 writeFileSync(join(root, 'README.md'), readme)
+writeFileSync(
+  join(root, 'CITATION.cff'),
+  [
+    'cff-version: 1.2.0',
+    'message: Cite the QPU and its Lean proof.',
+    'title: QPU',
+    'type: software',
+    'authors:',
+    '  - family-names: Rouschev',
+    '    given-names: Tsvetan',
+    '    email: ceccec@psg.bg',
+    `url: ${mcp.origin}`,
+    'repository-code: https://github.com/uuidna/qpu',
+    'license: CC-BY-NC-ND-4.0',
+    '',
+  ].join('\n'),
+)

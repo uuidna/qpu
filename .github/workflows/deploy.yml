@@ -1,7 +1,6 @@
 name: deploy
 
-# theorem qpuDeploy : qpu.uuidna.com ships after qpuCi.
-# Proof. Push to main → ci.yml then wrangler. Build includes VitePress source. Token gap is named.
+# qpu.uuidna.com ships after ci. API only. Token gap is named.
 
 on:
   push:

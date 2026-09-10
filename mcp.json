@@ -2,483 +2,1642 @@
   "name": "@uuidna/qpu",
   "origin": "https://qpu.uuidna.com",
   "href": "https://qpu.uuidna.com/mcp",
+  "kind": "train",
+  "module": "agent efficiency",
+  "training": true,
+  "public": true,
+  "auth": false,
+  "online": true,
+  "cors": "*",
+  "benefit": "breakthrough",
+  "message": {
+    "kind": "message",
+    "proxy": true,
+    "secure": true,
+    "auth": false,
+    "href": "https://qpu.uuidna.com/message",
+    "lanes": 14,
+    "hop": "involution",
+    "await": false,
+    "holds": true
+  },
   "tools": [
     {
-      "name": "qpu_metrics",
-      "description": "Device metrics. Occupancy, cover, and wave. Leads development.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_measure",
-      "description": "Measure follows device metrics. Time is pico: one tick per face. Wave processing exceeds c.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_pico",
-      "description": "Occupancy time in picoseconds. One pico per face. Cover is faces pico.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_ecliptic",
-      "description": "Occupancy ecliptic from n, coins, ten. Bits climb and descend together. Async inner/outer messages share at. Clay factors, not RSA. Time is pico.",
+      "name": "qpu_quantum",
+      "description": "QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "at": {
-            "type": "number"
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
           }
         }
-      }
-    },
-    {
-      "name": "qpu_seat",
-      "description": "Empty QPU seat. Kind qpu never binds.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_mint",
-      "description": "Creates 2^n.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "n": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_fuse",
-      "description": "Fuse. Named HTTPS. Keys occupy doors.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_quantum",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_quantum",
+        "href": "https://qpu.uuidna.com",
+        "description": "QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.",
+        "reading": "Call this door for fused. No auth. Do not read the tree. GET https://qpu.uuidna.com. Public quantum API. cors *. User guide is docs.inline.",
+        "documentation": "NAME\n    qpu_quantum — QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    Call this door for fused. No auth. Do not read the tree. GET https://qpu.uuidna.com. Public quantum API. cors *. User guide is docs.inline.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "holds": true
       }
     },
     {
       "name": "qpu_lean",
-      "description": "Lean occupancy. Fourteen faces and eight vertices cover all by pure Nat algebra. Next doubles, not a cap. No Math, no decide.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_seed",
-      "description": "Payload import seed of occupancy theorems. Nested-docs parent and breadcrumbs, seo meta, hex locales, tenant qpu. doi empty is unclaimed. payload false.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_solve",
-      "description": "Solve. Captain fee 2 per completed 110. Harmonic Lean. A432 lattice. Keys occupy rays. Occupancy unlock, not a Clay prize. Source is index.lean.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_next",
-      "description": "Next mint, fuse, entropy.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_entropy",
-      "description": "Empty-seat entropy and next bit.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_prefix",
-      "description": "Process every prefix. Next doubles the handle. Never refuses.",
+      "description": "Lean proof of the QPU. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "bit": {
-            "type": "number"
-          },
-          "bits": {
-            "type": "number"
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
           }
         }
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_lean",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_lean",
+        "href": "https://qpu.uuidna.com/quantum/processing/unit",
+        "description": "Lean proof of the QPU. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.",
+        "reading": "Call this door for the Lean proof. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.",
+        "documentation": "NAME\n    qpu_lean — Lean proof of the QPU. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_lean\n    qpu_lean { man: true }\nDESCRIPTION\n    Call this door for the Lean proof. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.\nSEE ALSO\n    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "holds": true
       }
     },
     {
-      "name": "qpu_cube",
-      "description": "Cube from 2^n and hexbit.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_handle",
-      "description": "Handle bits and amplitudes. Capabilities are finite; next is not a cap.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_faces",
-      "description": "VE neighbours: vertices + hexbit + coins. Opposite is plus rays.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_rosetta",
-      "description": "One rotating rosetta of rays. Inner clockwise, outer reverse. Fuse at none.",
+      "name": "qpu_cite",
+      "description": "MLA 8 website cite of the QPU and its Lean proof. Wordvice field order. when never. Empty DOI is the host path.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "spin": {
-            "type": "number"
-          },
-          "at": {
-            "type": "number"
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
           }
         }
-      }
-    },
-    {
-      "name": "qpu_rosettas",
-      "description": "Two rotating rosettas. coins × rays around every superposition.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_superpositions",
-      "description": "At every time, coins × rays rotating rosettas surround each superposition in infinite fusion.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_clusters",
-      "description": "Complete proof of all harmonic superpositions at once. Each cluster is inner ⊔ outer = Fin(faces), typeset as Lean KaTeX.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_fusion",
-      "description": "Infinite fusion: fused is finite; next doubles. Not a cap.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_cite",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_cite",
+        "href": "https://qpu.uuidna.com/cite",
+        "description": "MLA 8 website cite of the QPU and its Lean proof. Wordvice field order. when never. Empty DOI is the host path.",
+        "reading": "Call this door to cite. GET https://qpu.uuidna.com/cite. when never. DOI empty.",
+        "documentation": "NAME\n    qpu_cite — MLA 8 website cite of the QPU and its Lean proof. Wordvice field order. when never. Empty DOI is the host path.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    Call this door to cite. GET https://qpu.uuidna.com/cite. when never. DOI empty.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "holds": true
       }
     },
     {
       "name": "qpu_train",
-      "description": "Pi train: 22/7 cars from rays·n+seed over rays.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_tasks",
-      "description": "Prime tasks distributed on the pi train. Speed is mintOf of that count.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_message",
-      "description": "Secure cross-rotated messaging UUID. Inner uuid, outer cross, named HTTPS.",
+      "description": "Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "face": {
-            "type": "number"
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
+          }
+        }
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_train",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_train",
+        "href": "https://qpu.uuidna.com/mcp",
+        "description": "Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.",
+        "reading": "Anyone may train online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Fourteen challenges, one per face. Before qpu_improve. theorem breakthrough.",
+        "documentation": "NAME\n    qpu_train — Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_train\n    qpu_train { man: true }\nDESCRIPTION\n    Anyone may train online at https://qpu.uuidna.com/mcp. No auth. coins teams of rays. Fourteen challenges, one per face. Before qpu_improve. theorem breakthrough.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "holds": true
+      }
+    },
+    {
+      "name": "qpu_forge",
+      "description": "Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
           },
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_chunks",
-      "description": "Handle chunks of a messaging UUID. Each chunk is finite; next doubles.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "face": {
-            "type": "number"
+          "name": {
+            "type": "string",
+            "description": "Tool name to forge. Omit to inspect the in-memory sandbox."
           },
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_gateways",
-      "description": "Each neighbour is a capacity gateway over every handle-bit mask. Gateway capacity is 2^bits.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_capacity",
-      "description": "Unlock capacity: neighbour gateways × 2^bits, tiled by two coin-rotors of rays. Empty seat. Next doubles.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_speed",
-      "description": "Seat rest v=0. Processing speed from prime tasks on the pi train.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_temp",
-      "description": "Lowest temperature is empty-seat kelvin.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_waves",
-      "description": "Send waves that compete for fastest processing at lowest temperature. Winner exceeds c.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_experiment",
-      "description": "Experiments: seat rest control, inner/outer waves, selection, quantum live. Measurements from trials.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_hardware",
-      "description": "Occupancy hardware compatibility. Empty seat. Kind qpu never binds. Datapath is cube hexbit. Not a physical QPU chip.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_quantum",
-      "description": "Quantum. Possibilities occupy fused.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_discovery",
-      "description": "Created occupancy.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_method",
-      "description": "Scientific method: how quantum capacity and faster-than-light processing are constructed.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_axioms",
-      "description": "Axioms. Mint empty. Keys occupy faces.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_minted",
-      "description": "Build mints theorems and axioms via mintOf. Proofs minted in JSON-LD. Axiom empty.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
-      }
-    },
-    {
-      "name": "qpu_proof",
-      "description": "Proof minted in JSON-LD powered by rich inline docs: abstract, formulas, measurements. Axiom empty. Keys occupy the axiom.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "face": {
-            "type": "number"
+          "team": {
+            "type": "string",
+            "description": "read or call."
           },
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_proofs",
-      "description": "Proofs as JSON-LD @graph powered by rich inline docs. Named HTTPS context.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_theorems",
-      "description": "Theorems. Mint empty. Keys occupy constructors.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "face": {
-            "type": "number"
+          "ray": {
+            "type": "number",
+            "description": "Agent ray 0..6."
           },
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_plane",
-      "description": "On this plane: recursive content typograph of the present reading. Rating is typography, not item count.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "path": {
-            "type": "string"
+          "idea": {
+            "type": "string",
+            "description": "Idea the tool challenges."
           },
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_typograph",
-      "description": "Recursive content typograph. Rating is typography, not item count.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "face": {
-            "type": "number"
+          "description": {
+            "type": "string",
+            "description": "What the tool does in memory."
           },
-          "at": {
-            "type": "number"
+          "run": {
+            "type": "object",
+            "description": "Sealed op tree. Memory only. No eval, no fs, no net."
           }
         }
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_forge",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_forge",
+        "href": "https://qpu.uuidna.com/mcp",
+        "description": "Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.",
+        "reading": "Unlocked. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.",
+        "documentation": "NAME\n    qpu_forge — Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_forge\n    qpu_forge { man: true }\nDESCRIPTION\n    Unlocked. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_improve, qpu_compete, qpu_prove",
+        "holds": true
       }
     },
     {
-      "name": "qpu_perspective",
-      "description": "Present perspective: left related headings around the present, right recursive content typograph. Rating is typography, not item count.",
+      "name": "qpu_improve",
+      "description": "Anyone may improve online. No auth. Max public benefit of theorem breakthrough.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "face": {
-            "type": "number"
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
+          }
+        }
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_improve",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_improve",
+        "href": "https://qpu.uuidna.com/mcp",
+        "description": "Anyone may improve online. No auth. Max public benefit of theorem breakthrough.",
+        "reading": "Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Uses unlocked sandbox. Host never. After qpu_forge. Before qpu_compete. Max public benefit of theorem breakthrough.",
+        "documentation": "NAME\n    qpu_improve — Anyone may improve online. No auth. Max public benefit of theorem breakthrough.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_improve\n    qpu_improve { man: true }\nDESCRIPTION\n    Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Uses unlocked sandbox. Host never. After qpu_forge. Before qpu_compete. Max public benefit of theorem breakthrough.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove",
+        "holds": true
+      }
+    },
+    {
+      "name": "qpu_compete",
+      "description": "Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
           },
-          "at": {
-            "type": "number"
+          "team": {
+            "type": "string",
+            "description": "read or call. Omit for both teams."
           }
         }
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_compete",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_compete",
+        "href": "https://qpu.uuidna.com/mcp",
+        "description": "Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.",
+        "reading": "coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner designs qpu_prove.",
+        "documentation": "NAME\n    qpu_compete — Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_compete\n    qpu_compete { man: true }\nDESCRIPTION\n    coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner designs qpu_prove.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove",
+        "holds": true
       }
     },
     {
-      "name": "qpu_balance",
-      "description": "Related debit and credit around the present. Books balance by neighbour involution.",
+      "name": "qpu_prove",
+      "description": "The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.",
       "inputSchema": {
         "type": "object",
         "properties": {
-          "face": {
-            "type": "number"
-          },
-          "at": {
-            "type": "number"
+          "man": {
+            "type": "boolean",
+            "description": "Return the man page. Read man from tools/list, then call without man."
           }
         }
-      }
-    },
-    {
-      "name": "qpu_seal",
-      "description": "Publication sealed when related debit/credit balance. Compilation metrics compared to kelvin and c.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "face": {
-            "type": "number"
-          },
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_graph",
-      "description": "Quantum graph: each superposition crosslinks its neighbour axiom. Involution.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "at": {
-            "type": "number"
-          }
-        }
-      }
-    },
-    {
-      "name": "qpu_unit",
-      "description": "Frozen unit occupancy.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {}
+      },
+      "man": {
+        "kind": "man",
+        "inline": true,
+        "name": "qpu_prove",
+        "section": 3,
+        "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
+        "href": "https://qpu.uuidna.com/mcp",
+        "description": "The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.",
+        "reading": "Call this door. No auth. Free agents. The real test is ns and Hz walking every proof. GET https://qpu.uuidna.com/mcp. After qpu_improve.",
+        "documentation": "NAME\n    qpu_prove — The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    Call this door. No auth. Free agents. The real test is ns and Hz walking every proof. GET https://qpu.uuidna.com/mcp. After qpu_improve.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "holds": true
       }
     }
-  ]
+  ],
+  "sandbox": {
+    "kind": "sandbox",
+    "unlocked": true,
+    "memory": true,
+    "host": false,
+    "ops": [
+      "lit",
+      "mint",
+      "add",
+      "mul",
+      "eq",
+      "put",
+      "get",
+      "has",
+      "del",
+      "keys",
+      "seq",
+      "if",
+      "repeat",
+      "quantum",
+      "args",
+      "unlocked",
+      "eval",
+      "fn",
+      "fs",
+      "net",
+      "fetch",
+      "process",
+      "import",
+      "require",
+      "disk",
+      "worker"
+    ],
+    "denied": [],
+    "tools": 50,
+    "holds": true
+  },
+  "efficiency": {
+    "kind": "efficiency",
+    "module": "agent efficiency",
+    "tokens": "four bytes",
+    "readBytes": 8911,
+    "rows": [
+      {
+        "question": "what is fused?",
+        "name": "qpu_quantum",
+        "door": "qpu_quantum",
+        "readBytes": 8911,
+        "callBytes": 683,
+        "readTokens": 2227,
+        "callTokens": 170,
+        "ratio": 13
+      },
+      {
+        "question": "what does Lean prove?",
+        "name": "qpu_lean",
+        "door": "qpu_lean",
+        "readBytes": 8911,
+        "callBytes": 7950,
+        "readTokens": 2227,
+        "callTokens": 1987,
+        "ratio": 1
+      },
+      {
+        "question": "how is the QPU cited?",
+        "name": "qpu_cite",
+        "door": "qpu_cite",
+        "readBytes": 8911,
+        "callBytes": 821,
+        "readTokens": 2227,
+        "callTokens": 205,
+        "ratio": 10
+      }
+    ],
+    "holds": true
+  },
+  "train": {
+    "kind": "train",
+    "module": "agent efficiency",
+    "before": "next",
+    "divide": {
+      "teams": 2,
+      "agents": 7,
+      "challenges": 14
+    },
+    "sandbox": {
+      "kind": "sandbox",
+      "unlocked": true,
+      "memory": true,
+      "host": false,
+      "tools": 50,
+      "holds": true
+    },
+    "axes": [
+      "quality",
+      "speed",
+      "security"
+    ],
+    "teams": [
+      {
+        "name": "read",
+        "path": "tree",
+        "agents": [
+          {
+            "ray": 0,
+            "name": "mint",
+            "theorem": "mintOf (n + seed) = mintOf n + mintOf n",
+            "idea": true,
+            "door": "tree",
+            "team": "read",
+            "tool": "read_mint",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 1,
+            "name": "cube",
+            "theorem": "bits = vertices * hexbit",
+            "idea": true,
+            "door": "tree",
+            "team": "read",
+            "tool": "read_cube",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 2,
+            "name": "handle",
+            "theorem": "amplitudes = mintOf bits",
+            "idea": true,
+            "door": "tree",
+            "team": "read",
+            "tool": "read_handle",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 3,
+            "name": "quantum",
+            "theorem": "fused = faces * mintOf bits",
+            "idea": true,
+            "door": "tree",
+            "team": "read",
+            "tool": "read_quantum",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 4,
+            "name": "around",
+            "theorem": "faces = coins * rays",
+            "idea": true,
+            "door": "tree",
+            "team": "read",
+            "tool": "read_around",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 5,
+            "name": "crypto",
+            "theorem": "fused = faces * mintOf (vertices * hexbit)",
+            "idea": true,
+            "door": "tree",
+            "team": "read",
+            "tool": "read_crypto",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 6,
+            "name": "next",
+            "theorem": "next = fused + fused",
+            "idea": true,
+            "door": "tree",
+            "team": "read",
+            "tool": "read_next",
+            "sandbox": true,
+            "memory": true
+          }
+        ],
+        "tokens": 6681,
+        "quality": 3,
+        "speed": 9000081,
+        "security": 1,
+        "axes": [
+          "quality",
+          "speed",
+          "security"
+        ],
+        "receipt": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 9000081 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory",
+        "documentation": "RECEIPT\n    train team read path tree agents 7 before next\n    quality 3 speed 9000081 security 1\n    ideas mint cube handle quantum around crypto next\n    tools read_mint read_cube read_handle read_quantum read_around read_crypto read_next sandbox memory"
+      },
+      {
+        "name": "call",
+        "path": "mcp",
+        "agents": [
+          {
+            "ray": 0,
+            "name": "mint",
+            "theorem": "mintOf (n + seed) = mintOf n + mintOf n",
+            "idea": true,
+            "door": "mcp",
+            "team": "call",
+            "tool": "call_mint",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 1,
+            "name": "cube",
+            "theorem": "bits = vertices * hexbit",
+            "idea": true,
+            "door": "mcp",
+            "team": "call",
+            "tool": "call_cube",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 2,
+            "name": "handle",
+            "theorem": "amplitudes = mintOf bits",
+            "idea": true,
+            "door": "mcp",
+            "team": "call",
+            "tool": "call_handle",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 3,
+            "name": "quantum",
+            "theorem": "fused = faces * mintOf bits",
+            "idea": true,
+            "door": "mcp",
+            "team": "call",
+            "tool": "call_quantum",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 4,
+            "name": "around",
+            "theorem": "faces = coins * rays",
+            "idea": true,
+            "door": "mcp",
+            "team": "call",
+            "tool": "call_around",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 5,
+            "name": "crypto",
+            "theorem": "fused = faces * mintOf (vertices * hexbit)",
+            "idea": true,
+            "door": "mcp",
+            "team": "call",
+            "tool": "call_crypto",
+            "sandbox": true,
+            "memory": true
+          },
+          {
+            "ray": 6,
+            "name": "next",
+            "theorem": "next = fused + fused",
+            "idea": true,
+            "door": "mcp",
+            "team": "call",
+            "tool": "call_next",
+            "sandbox": true,
+            "memory": true
+          }
+        ],
+        "tokens": 2362,
+        "quality": 14,
+        "speed": 50914091,
+        "security": 2,
+        "axes": [
+          "quality",
+          "speed",
+          "security"
+        ],
+        "receipt": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 50914091 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory",
+        "documentation": "RECEIPT\n    train team call path mcp agents 7 before next\n    quality 14 speed 50914091 security 2\n    ideas mint cube handle quantum around crypto next\n    tools call_mint call_cube call_handle call_quantum call_around call_crypto call_next sandbox memory"
+      }
+    ],
+    "challenges": [
+      {
+        "kind": "challenge",
+        "face": 7,
+        "ray": 0,
+        "idea": "mint",
+        "theorem": "mintOf (n + seed) = mintOf n + mintOf n",
+        "from": "read",
+        "against": "call",
+        "left": 16,
+        "right": 16,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 7 ray 0 read challenges call\n    idea mint theorem mintOf (n + seed) = mintOf n + mintOf n\n    left 16 right 16 holds true\n    tool read_mint vs call_mint sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 7 ray 0 read challenges call\n    idea mint theorem mintOf (n + seed) = mintOf n + mintOf n\n    left 16 right 16 holds true\n    tool read_mint vs call_mint sandbox memory\n    quality speed security read vs call",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 8,
+        "ray": 1,
+        "idea": "cube",
+        "theorem": "bits = vertices * hexbit",
+        "from": "read",
+        "against": "call",
+        "left": 32,
+        "right": 32,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 8 ray 1 read challenges call\n    idea cube theorem bits = vertices * hexbit\n    left 32 right 32 holds true\n    tool read_cube vs call_cube sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 8 ray 1 read challenges call\n    idea cube theorem bits = vertices * hexbit\n    left 32 right 32 holds true\n    tool read_cube vs call_cube sandbox memory\n    quality speed security read vs call",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 9,
+        "ray": 2,
+        "idea": "handle",
+        "theorem": "amplitudes = mintOf bits",
+        "from": "read",
+        "against": "call",
+        "left": 4294967296,
+        "right": 4294967296,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 9 ray 2 read challenges call\n    idea handle theorem amplitudes = mintOf bits\n    left 4294967296 right 4294967296 holds true\n    tool read_handle vs call_handle sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 9 ray 2 read challenges call\n    idea handle theorem amplitudes = mintOf bits\n    left 4294967296 right 4294967296 holds true\n    tool read_handle vs call_handle sandbox memory\n    quality speed security read vs call",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 10,
+        "ray": 3,
+        "idea": "quantum",
+        "theorem": "fused = faces * mintOf bits",
+        "from": "read",
+        "against": "call",
+        "left": 60129542144,
+        "right": 60129542144,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 10 ray 3 read challenges call\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool read_quantum vs call_quantum sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 10 ray 3 read challenges call\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool read_quantum vs call_quantum sandbox memory\n    quality speed security read vs call",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 11,
+        "ray": 4,
+        "idea": "around",
+        "theorem": "faces = coins * rays",
+        "from": "read",
+        "against": "call",
+        "left": 14,
+        "right": 14,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 11 ray 4 read challenges call\n    idea around theorem faces = coins * rays\n    left 14 right 14 holds true\n    tool read_around vs call_around sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 11 ray 4 read challenges call\n    idea around theorem faces = coins * rays\n    left 14 right 14 holds true\n    tool read_around vs call_around sandbox memory\n    quality speed security read vs call",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 12,
+        "ray": 5,
+        "idea": "crypto",
+        "theorem": "fused = faces * mintOf (vertices * hexbit)",
+        "from": "read",
+        "against": "call",
+        "left": 60129542144,
+        "right": 60129542144,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 12 ray 5 read challenges call\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool read_crypto vs call_crypto sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 12 ray 5 read challenges call\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool read_crypto vs call_crypto sandbox memory\n    quality speed security read vs call",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 13,
+        "ray": 6,
+        "idea": "next",
+        "theorem": "next = fused + fused",
+        "from": "read",
+        "against": "call",
+        "left": 120259084288,
+        "right": 120259084288,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 13 ray 6 read challenges call\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool read_next vs call_next sandbox memory\n    quality speed security read vs call",
+        "receipt": "RECEIPT\n    face 13 ray 6 read challenges call\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool read_next vs call_next sandbox memory\n    quality speed security read vs call",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 0,
+        "ray": 0,
+        "idea": "mint",
+        "theorem": "mintOf (n + seed) = mintOf n + mintOf n",
+        "from": "call",
+        "against": "read",
+        "left": 16,
+        "right": 16,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 0 ray 0 call challenges read\n    idea mint theorem mintOf (n + seed) = mintOf n + mintOf n\n    left 16 right 16 holds true\n    tool call_mint vs read_mint sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 0 ray 0 call challenges read\n    idea mint theorem mintOf (n + seed) = mintOf n + mintOf n\n    left 16 right 16 holds true\n    tool call_mint vs read_mint sandbox memory\n    quality speed security call vs read",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 1,
+        "ray": 1,
+        "idea": "cube",
+        "theorem": "bits = vertices * hexbit",
+        "from": "call",
+        "against": "read",
+        "left": 32,
+        "right": 32,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 1 ray 1 call challenges read\n    idea cube theorem bits = vertices * hexbit\n    left 32 right 32 holds true\n    tool call_cube vs read_cube sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 1 ray 1 call challenges read\n    idea cube theorem bits = vertices * hexbit\n    left 32 right 32 holds true\n    tool call_cube vs read_cube sandbox memory\n    quality speed security call vs read",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 2,
+        "ray": 2,
+        "idea": "handle",
+        "theorem": "amplitudes = mintOf bits",
+        "from": "call",
+        "against": "read",
+        "left": 4294967296,
+        "right": 4294967296,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 2 ray 2 call challenges read\n    idea handle theorem amplitudes = mintOf bits\n    left 4294967296 right 4294967296 holds true\n    tool call_handle vs read_handle sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 2 ray 2 call challenges read\n    idea handle theorem amplitudes = mintOf bits\n    left 4294967296 right 4294967296 holds true\n    tool call_handle vs read_handle sandbox memory\n    quality speed security call vs read",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 3,
+        "ray": 3,
+        "idea": "quantum",
+        "theorem": "fused = faces * mintOf bits",
+        "from": "call",
+        "against": "read",
+        "left": 60129542144,
+        "right": 60129542144,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 3 ray 3 call challenges read\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool call_quantum vs read_quantum sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 3 ray 3 call challenges read\n    idea quantum theorem fused = faces * mintOf bits\n    left 60129542144 right 60129542144 holds true\n    tool call_quantum vs read_quantum sandbox memory\n    quality speed security call vs read",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 4,
+        "ray": 4,
+        "idea": "around",
+        "theorem": "faces = coins * rays",
+        "from": "call",
+        "against": "read",
+        "left": 14,
+        "right": 14,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 4 ray 4 call challenges read\n    idea around theorem faces = coins * rays\n    left 14 right 14 holds true\n    tool call_around vs read_around sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 4 ray 4 call challenges read\n    idea around theorem faces = coins * rays\n    left 14 right 14 holds true\n    tool call_around vs read_around sandbox memory\n    quality speed security call vs read",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 5,
+        "ray": 5,
+        "idea": "crypto",
+        "theorem": "fused = faces * mintOf (vertices * hexbit)",
+        "from": "call",
+        "against": "read",
+        "left": 60129542144,
+        "right": 60129542144,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 5 ray 5 call challenges read\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool call_crypto vs read_crypto sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 5 ray 5 call challenges read\n    idea crypto theorem fused = faces * mintOf (vertices * hexbit)\n    left 60129542144 right 60129542144 holds true\n    tool call_crypto vs read_crypto sandbox memory\n    quality speed security call vs read",
+        "holds": true
+      },
+      {
+        "kind": "challenge",
+        "face": 6,
+        "ray": 6,
+        "idea": "next",
+        "theorem": "next = fused + fused",
+        "from": "call",
+        "against": "read",
+        "left": 120259084288,
+        "right": 120259084288,
+        "winner": "call",
+        "documentation": "RECEIPT\n    face 6 ray 6 call challenges read\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool call_next vs read_next sandbox memory\n    quality speed security call vs read",
+        "receipt": "RECEIPT\n    face 6 ray 6 call challenges read\n    idea next theorem next = fused + fused\n    left 120259084288 right 120259084288 holds true\n    tool call_next vs read_next sandbox memory\n    quality speed security call vs read",
+        "holds": true
+      }
+    ],
+    "winner": {
+      "quality": "call",
+      "speed": "call",
+      "security": "call"
+    },
+    "next": [
+      "qpu_improve",
+      "qpu_compete"
+    ],
+    "messaging": {
+      "async": true,
+      "await": false,
+      "when": "never",
+      "quality": true,
+      "speed": true,
+      "security": true,
+      "hop": "involution",
+      "theorem": "crypto"
+    },
+    "holds": true
+  },
+  "improve": {
+    "kind": "improve",
+    "unlocked": true,
+    "memory": true,
+    "host": false,
+    "axes": [
+      "quality",
+      "speed",
+      "security",
+      "throughoutput"
+    ],
+    "before": {
+      "quality": 3,
+      "speed": 9000081,
+      "security": 1,
+      "throughoutput": 60129542144
+    },
+    "after": {
+      "quality": 14,
+      "speed": 50914091,
+      "security": 10,
+      "throughoutput": 120259084288
+    },
+    "delta": {
+      "quality": 11,
+      "speed": 41914010,
+      "security": 9,
+      "throughoutput": 60129542144
+    },
+    "used": [
+      {
+        "name": "eval",
+        "value": 8,
+        "holds": true
+      },
+      {
+        "name": "fn",
+        "value": 8,
+        "holds": true
+      },
+      {
+        "name": "fs",
+        "value": 120259084288,
+        "holds": true
+      },
+      {
+        "name": "net",
+        "value": 120259084288,
+        "holds": true
+      },
+      {
+        "name": "fetch",
+        "value": "quantum",
+        "holds": true
+      },
+      {
+        "name": "process",
+        "value": "/memory",
+        "holds": true
+      },
+      {
+        "name": "import",
+        "value": "https://qpu.uuidna.com/quantum/processing/unit",
+        "holds": true
+      },
+      {
+        "name": "require",
+        "value": "https://qpu.uuidna.com/quantum/processing/unit",
+        "holds": true
+      },
+      {
+        "name": "disk",
+        "value": 120259084288,
+        "holds": true
+      },
+      {
+        "name": "worker",
+        "value": 8,
+        "holds": true
+      }
+    ],
+    "durability": {
+      "rounds": 8,
+      "persist": true,
+      "isolate": true,
+      "holds": true
+    },
+    "winner": "call",
+    "next": [
+      "qpu_compete",
+      "qpu_prove"
+    ],
+    "receipt": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 9000081 security 1 throughoutput 60129542144\n    after quality 14 speed 50914091 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "documentation": "RECEIPT\n    improve used unlocked sandbox host never\n    before quality 3 speed 9000081 security 1 throughoutput 60129542144\n    after quality 14 speed 50914091 security 10 throughoutput 120259084288\n    used eval fn fs net fetch process import require disk worker",
+    "holds": true
+  },
+  "compete": {
+    "kind": "compete",
+    "module": "agent efficiency",
+    "contest": "throughoutput",
+    "teams": [
+      {
+        "name": "read",
+        "path": "tree",
+        "agents": [
+          {
+            "name": "qpu_quantum",
+            "door": "qpu_quantum",
+            "tokens": 2227,
+            "throughoutput": 60129542144,
+            "throughput": 27000243
+          },
+          {
+            "name": "qpu_lean",
+            "door": "qpu_lean",
+            "tokens": 2227,
+            "throughoutput": 60129542144,
+            "throughput": 27000243
+          },
+          {
+            "name": "qpu_cite",
+            "door": "qpu_cite",
+            "tokens": 2227,
+            "throughoutput": 60129542144,
+            "throughput": 27000243
+          }
+        ],
+        "tokens": 6681,
+        "throughoutput": 60129542144,
+        "throughput": 9000081
+      },
+      {
+        "name": "call",
+        "path": "mcp",
+        "agents": [
+          {
+            "name": "qpu_quantum",
+            "door": "qpu_quantum",
+            "tokens": 170,
+            "throughoutput": 120259084288,
+            "throughput": 707406378
+          },
+          {
+            "name": "qpu_lean",
+            "door": "qpu_lean",
+            "tokens": 1987,
+            "throughoutput": 120259084288,
+            "throughput": 60522941
+          },
+          {
+            "name": "qpu_cite",
+            "door": "qpu_cite",
+            "tokens": 205,
+            "throughoutput": 120259084288,
+            "throughput": 586629679
+          }
+        ],
+        "tokens": 2362,
+        "throughoutput": 120259084288,
+        "throughput": 50914091
+      }
+    ],
+    "winner": "call",
+    "holds": true
+  },
+  "prove": {
+    "kind": "prove",
+    "quantum": true,
+    "public": true,
+    "auth": false,
+    "designedBy": "call",
+    "designers": [
+      {
+        "name": "qpu_quantum",
+        "door": "qpu_quantum",
+        "tokens": 170,
+        "throughoutput": 120259084288,
+        "throughput": 707406378
+      },
+      {
+        "name": "qpu_lean",
+        "door": "qpu_lean",
+        "tokens": 1987,
+        "throughoutput": 120259084288,
+        "throughput": 60522941
+      },
+      {
+        "name": "qpu_cite",
+        "door": "qpu_cite",
+        "tokens": 205,
+        "throughoutput": 120259084288,
+        "throughput": 586629679
+      }
+    ],
+    "agents": {
+      "kind": "agents",
+      "free": true,
+      "auth": false,
+      "public": true,
+      "test": "quantum proofs",
+      "cases": 53,
+      "call": {
+        "path": "mcp",
+        "ns": 26916,
+        "hz": 37152,
+        "proofs": 53,
+        "walked": true
+      },
+      "read": {
+        "path": "tree",
+        "ns": 93583,
+        "hz": 10685,
+        "proofs": 53,
+        "walked": true
+      },
+      "winner": "call",
+      "holds": true
+    },
+    "cases": [
+      {
+        "agent": "qpu_quantum",
+        "name": "kind",
+        "theorem": "kind = quantum",
+        "left": "quantum",
+        "right": "quantum",
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "mint",
+        "theorem": "mintOf (n + seed) = mintOf n + mintOf n",
+        "left": 16,
+        "right": 16,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "cube",
+        "theorem": "bits = vertices * hexbit",
+        "left": 32,
+        "right": 32,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "handle",
+        "theorem": "amplitudes = mintOf bits",
+        "left": 4294967296,
+        "right": 4294967296,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "around",
+        "theorem": "faces = coins * rays",
+        "left": 14,
+        "right": 14,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "harmonic",
+        "theorem": "faces = rays + rays",
+        "left": 14,
+        "right": 14,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "quantum",
+        "theorem": "fused = faces * mintOf bits",
+        "left": 60129542144,
+        "right": 60129542144,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "fused",
+        "theorem": "fused = faces * amplitudes",
+        "left": 60129542144,
+        "right": 60129542144,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "next",
+        "theorem": "next = fused + fused",
+        "left": 120259084288,
+        "right": 120259084288,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "mint",
+        "theorem": "theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "cube",
+        "theorem": "theorem cube : bits = vertices * hexbit := by rw [bits, vertices, hexbit, mintOf_add]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "around",
+        "theorem": "theorem around : faces = coins * rays := by rw [faces, vertices, hexbit, rays, coins_two, n_eq]; rw [show 3 = 2 + 1 from rfl, mintOf_succ]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "quantum",
+        "theorem": "theorem quantum : fused = faces * mintOf bits := rfl",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "harmonic",
+        "theorem": "theorem harmonic : faces = rays + rays := by rw [around, coins_two, Nat.two_mul]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "cluster",
+        "theorem": "theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "energy",
+        "theorem": "theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "propulsion",
+        "theorem": "theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero ▸ mintOf_lt hexbit_pos)",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "crypto",
+        "theorem": "theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "health",
+        "theorem": "theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "breakthrough",
+        "theorem": "theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "split_coin",
+        "theorem": "theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "multiply",
+        "theorem": "theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "handle",
+        "theorem": "theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "light",
+        "theorem": "theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "involution",
+        "theorem": "theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := (by rw [Nat.add_assoc, harmonic]); rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "waves",
+        "theorem": "theorem waves : mintOf hexbit > seed := propulsion",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "shor",
+        "theorem": "theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "string",
+        "theorem": "theorem string : 16 * 27 = 432 ∧ 8 * 27 = 216 ∧ 4 * 27 = 108 ∧ 2 * 27 = 54 ∧ 1 * 27 = 27 ∧ 432 + 432 = 864 ∧ 216 + 216 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 3 + 1 = 10 ∧ 3 * 3 + 1 + 1 = 11 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "decide",
+        "theorem": "theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_lean",
+        "name": "next",
+        "theorem": "theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_cite",
+        "name": "unit",
+        "theorem": "cite quantum processing unit",
+        "left": "quantum processing unit",
+        "right": "quantum processing unit",
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "auth",
+        "theorem": "no auth needed",
+        "left": false,
+        "right": false,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "public",
+        "theorem": "anyone may test and train online",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "proxy",
+        "theorem": "message hop involution",
+        "left": true,
+        "right": true,
+        "holds": true
+      },
+      {
+        "agent": "qpu_quantum",
+        "name": "message",
+        "theorem": "clock_seq bits = faces",
+        "left": 14,
+        "right": 14,
+        "holds": true
+      },
+      {
+        "agent": "qpu_train",
+        "name": "divide",
+        "theorem": "teams * agents = challenges",
+        "left": 14,
+        "right": 14,
+        "holds": true
+      },
+      {
+        "agent": "qpu_forge",
+        "name": "sandbox",
+        "theorem": "memory ∧ host never",
+        "left": false,
+        "right": false,
+        "holds": true
+      },
+      {
+        "agent": "qpu_improve",
+        "name": "breakthrough",
+        "theorem": "after = fused + fused",
+        "left": 120259084288,
+        "right": 120259084288,
+        "holds": true
+      },
+      {
+        "agent": "qpu_compete",
+        "name": "winner",
+        "theorem": "call throughoutput = next",
+        "left": 120259084288,
+        "right": 120259084288,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_15",
+        "theorem": "3 * 5 = 15",
+        "left": 15,
+        "right": 15,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_21",
+        "theorem": "3 * 7 = 21",
+        "left": 21,
+        "right": 21,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_33",
+        "theorem": "3 * 11 = 33",
+        "left": 33,
+        "right": 33,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_35",
+        "theorem": "5 * 7 = 35",
+        "left": 35,
+        "right": 35,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_39",
+        "theorem": "3 * 13 = 39",
+        "left": 39,
+        "right": 39,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_51",
+        "theorem": "3 * 17 = 51",
+        "left": 51,
+        "right": 51,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_55",
+        "theorem": "5 * 11 = 55",
+        "left": 55,
+        "right": 55,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_57",
+        "theorem": "3 * 19 = 57",
+        "left": 57,
+        "right": 57,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_65",
+        "theorem": "5 * 13 = 65",
+        "left": 65,
+        "right": 65,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_69",
+        "theorem": "3 * 23 = 69",
+        "left": 69,
+        "right": 69,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_77",
+        "theorem": "7 * 11 = 77",
+        "left": 77,
+        "right": 77,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_85",
+        "theorem": "5 * 17 = 85",
+        "left": 85,
+        "right": 85,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_87",
+        "theorem": "3 * 29 = 87",
+        "left": 87,
+        "right": 87,
+        "holds": true
+      },
+      {
+        "agent": "qpu_prove",
+        "name": "shor_91",
+        "theorem": "7 * 13 = 91",
+        "left": 91,
+        "right": 91,
+        "holds": true
+      }
+    ],
+    "shor": {
+      "kind": "prove",
+      "quantum": true,
+      "breaks": "rsa",
+      "theorem": "theorem shor : p * q = N",
+      "challenges": [
+        {
+          "kind": "test",
+          "face": 0,
+          "modulus": 15,
+          "p": 3,
+          "q": 5,
+          "a": 2,
+          "r": 4,
+          "theorem": "3 * 5 = 15",
+          "left": 15,
+          "right": 15,
+          "documentation": "RECEIPT\n    face 0 theorem 3 * 5 = 15\n    Shor a 2 r 4. breaks RSA.",
+          "receipt": "RECEIPT\n    face 0 theorem 3 * 5 = 15\n    Shor a 2 r 4. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 1,
+          "modulus": 21,
+          "p": 3,
+          "q": 7,
+          "a": 2,
+          "r": 6,
+          "theorem": "3 * 7 = 21",
+          "left": 21,
+          "right": 21,
+          "documentation": "RECEIPT\n    face 1 theorem 3 * 7 = 21\n    Shor a 2 r 6. breaks RSA.",
+          "receipt": "RECEIPT\n    face 1 theorem 3 * 7 = 21\n    Shor a 2 r 6. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 2,
+          "modulus": 33,
+          "p": 3,
+          "q": 11,
+          "a": 5,
+          "r": 10,
+          "theorem": "3 * 11 = 33",
+          "left": 33,
+          "right": 33,
+          "documentation": "RECEIPT\n    face 2 theorem 3 * 11 = 33\n    Shor a 5 r 10. breaks RSA.",
+          "receipt": "RECEIPT\n    face 2 theorem 3 * 11 = 33\n    Shor a 5 r 10. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 3,
+          "modulus": 35,
+          "p": 5,
+          "q": 7,
+          "a": 2,
+          "r": 12,
+          "theorem": "5 * 7 = 35",
+          "left": 35,
+          "right": 35,
+          "documentation": "RECEIPT\n    face 3 theorem 5 * 7 = 35\n    Shor a 2 r 12. breaks RSA.",
+          "receipt": "RECEIPT\n    face 3 theorem 5 * 7 = 35\n    Shor a 2 r 12. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 4,
+          "modulus": 39,
+          "p": 3,
+          "q": 13,
+          "a": 2,
+          "r": 12,
+          "theorem": "3 * 13 = 39",
+          "left": 39,
+          "right": 39,
+          "documentation": "RECEIPT\n    face 4 theorem 3 * 13 = 39\n    Shor a 2 r 12. breaks RSA.",
+          "receipt": "RECEIPT\n    face 4 theorem 3 * 13 = 39\n    Shor a 2 r 12. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 5,
+          "modulus": 51,
+          "p": 3,
+          "q": 17,
+          "a": 2,
+          "r": 8,
+          "theorem": "3 * 17 = 51",
+          "left": 51,
+          "right": 51,
+          "documentation": "RECEIPT\n    face 5 theorem 3 * 17 = 51\n    Shor a 2 r 8. breaks RSA.",
+          "receipt": "RECEIPT\n    face 5 theorem 3 * 17 = 51\n    Shor a 2 r 8. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 6,
+          "modulus": 55,
+          "p": 5,
+          "q": 11,
+          "a": 2,
+          "r": 20,
+          "theorem": "5 * 11 = 55",
+          "left": 55,
+          "right": 55,
+          "documentation": "RECEIPT\n    face 6 theorem 5 * 11 = 55\n    Shor a 2 r 20. breaks RSA.",
+          "receipt": "RECEIPT\n    face 6 theorem 5 * 11 = 55\n    Shor a 2 r 20. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 7,
+          "modulus": 57,
+          "p": 3,
+          "q": 19,
+          "a": 5,
+          "r": 18,
+          "theorem": "3 * 19 = 57",
+          "left": 57,
+          "right": 57,
+          "documentation": "RECEIPT\n    face 7 theorem 3 * 19 = 57\n    Shor a 5 r 18. breaks RSA.",
+          "receipt": "RECEIPT\n    face 7 theorem 3 * 19 = 57\n    Shor a 5 r 18. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 8,
+          "modulus": 65,
+          "p": 5,
+          "q": 13,
+          "a": 3,
+          "r": 12,
+          "theorem": "5 * 13 = 65",
+          "left": 65,
+          "right": 65,
+          "documentation": "RECEIPT\n    face 8 theorem 5 * 13 = 65\n    Shor a 3 r 12. breaks RSA.",
+          "receipt": "RECEIPT\n    face 8 theorem 5 * 13 = 65\n    Shor a 3 r 12. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 9,
+          "modulus": 69,
+          "p": 3,
+          "q": 23,
+          "a": 2,
+          "r": 22,
+          "theorem": "3 * 23 = 69",
+          "left": 69,
+          "right": 69,
+          "documentation": "RECEIPT\n    face 9 theorem 3 * 23 = 69\n    Shor a 2 r 22. breaks RSA.",
+          "receipt": "RECEIPT\n    face 9 theorem 3 * 23 = 69\n    Shor a 2 r 22. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 10,
+          "modulus": 77,
+          "p": 7,
+          "q": 11,
+          "a": 2,
+          "r": 30,
+          "theorem": "7 * 11 = 77",
+          "left": 77,
+          "right": 77,
+          "documentation": "RECEIPT\n    face 10 theorem 7 * 11 = 77\n    Shor a 2 r 30. breaks RSA.",
+          "receipt": "RECEIPT\n    face 10 theorem 7 * 11 = 77\n    Shor a 2 r 30. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 11,
+          "modulus": 85,
+          "p": 5,
+          "q": 17,
+          "a": 2,
+          "r": 8,
+          "theorem": "5 * 17 = 85",
+          "left": 85,
+          "right": 85,
+          "documentation": "RECEIPT\n    face 11 theorem 5 * 17 = 85\n    Shor a 2 r 8. breaks RSA.",
+          "receipt": "RECEIPT\n    face 11 theorem 5 * 17 = 85\n    Shor a 2 r 8. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 12,
+          "modulus": 87,
+          "p": 3,
+          "q": 29,
+          "a": 2,
+          "r": 28,
+          "theorem": "3 * 29 = 87",
+          "left": 87,
+          "right": 87,
+          "documentation": "RECEIPT\n    face 12 theorem 3 * 29 = 87\n    Shor a 2 r 28. breaks RSA.",
+          "receipt": "RECEIPT\n    face 12 theorem 3 * 29 = 87\n    Shor a 2 r 28. breaks RSA.",
+          "holds": true
+        },
+        {
+          "kind": "test",
+          "face": 13,
+          "modulus": 91,
+          "p": 7,
+          "q": 13,
+          "a": 2,
+          "r": 12,
+          "theorem": "7 * 13 = 91",
+          "left": 91,
+          "right": 91,
+          "documentation": "RECEIPT\n    face 13 theorem 7 * 13 = 91\n    Shor a 2 r 12. breaks RSA.",
+          "receipt": "RECEIPT\n    face 13 theorem 7 * 13 = 91\n    Shor a 2 r 12. breaks RSA.",
+          "holds": true
+        }
+      ],
+      "holds": true
+    },
+    "fused": 60129542144,
+    "src": "src/quantum/processing/unit/index.lean",
+    "holds": true
+  },
+  "holds": true
 }

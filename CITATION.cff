@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: Cite the QPU and its Lean proof.
+title: QPU
+type: software
+authors:
+  - family-names: Rouschev
+    given-names: Tsvetan
+    email: ceccec@psg.bg
+url: https://qpu.uuidna.com
+repository-code: https://github.com/uuidna/qpu
+license: CC-BY-NC-ND-4.0

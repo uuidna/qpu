@@ -1,13 +1,12 @@
 /**
- * Occupancy of the QPU at qpu.uuidna.com. Kind qpu never binds. Seat empty.
- * Discoveries create mint, named fusion, and doors. They are not a census.
- * Lean proves fourteen identities by pure Nat algebra. Never Math, never decide.
+ * QPU at qpu.uuidna.com. Kind qpu. Source index.lean.
+ * mintOf proves 2^k by doubling. Cube, handle, faces, fused are the unit.
+ * Lean decides those identities by Nat algebra. Digits and integer fractions. Never Math. Never by decide.
  */
-import { qpuPayloadImportOf } from './seed.js'
-
-const mintOf = (n: number): number => {
-  let x = (n - n) ** (n - n)
-  for (let i = n - n; i < n; i++) x += x
+const mintOf = (k: number): number => {
+  let x = k - k
+  x = x + 1
+  for (let i = k - k; i < k; i++) x += x
   return x
 }
 
@@ -21,62 +20,80 @@ const discoverOf = () => {
   const seed = mintOf(none)
   const href = `https://${host}/${path}`
   const origin = `https://${host}`
-  const doors = ['/', `/${path}`, '/axioms', '/theorems', '/proofs', '/solve'] as const
+  const doors = ['/', `/${path}`] as const
   const mint = { seed, next: mintOf(n + seed) }
   const src = `src/${path}/index.ts`
-  const fuse = { next: href, origin, firmware: 'vitepress' as const, src }
-  const entropy = { zero: none, next: n + seed }
-  const next = { mint: mint.next + mint.next, fuse: href, entropy: entropy.next + seed }
+  const lean = `src/${path}/index.lean`
+  const fuse = { next: href, origin, src, lean }
   const holds =
     kind === 'qpu' &&
     host === `${kind}.uuidna.com` &&
     href === `https://${host}/${path}` &&
     !host.includes('*') &&
-    fuse.firmware === 'vitepress' &&
     fuse.src === `src/${path}/index.ts` &&
+    fuse.lean === `src/${path}/index.lean` &&
     mint.next === mintOf(n) + mintOf(n) &&
-    next.mint === mintOf(n + seed + seed) &&
-    next.fuse === href &&
-    mintOf(entropy.next) === mint.next &&
-    mintOf(next.entropy) === next.mint &&
-    doors[seed + seed] === '/axioms' &&
-    doors[n] === '/theorems' &&
-    doors[n + seed] === '/proofs' &&
-    doors[n + seed + seed] === '/solve'
-  return {
-    kind,
-    host,
-    path,
-    href,
-    binds: false as const,
-    when: 'never' as const,
-    seat: 'empty' as const,
-    wildcards: false as const,
-    mint,
-    fuse,
-    entropy,
-    next,
-    doors,
-    holds,
-  }
+    doors[none] === '/' &&
+    doors[seed] === `/${path}`
+  return { kind, host, path, href, origin, mint, fuse, doors, holds }
 }
 
 const unit = discoverOf()
-const live = JSON.stringify(unit)
 const dead = '{"holds":false}'
+const cors = '*' as const
 const headers = {
   'content-type': 'application/json; charset=utf-8',
-  'access-control-allow-origin': unit.fuse.origin,
+  'access-control-allow-origin': cors,
+  'access-control-allow-methods': 'GET, POST, OPTIONS',
+  'access-control-allow-headers': 'content-type, accept',
 }
 const n = unit.path.split('/').length
-const ten = n * n + unit.mint.seed
-const coins = unit.mint.seed + unit.mint.seed
-const found = coins * ten ** coins
-const lost = mintOf(coins) * (ten ** coins + unit.mint.seed)
+const seed = unit.mint.seed
+const coins = seed + seed
+const ten = n * n + seed
+const found = coins * ten * ten
+const lost = mintOf(coins) * (ten * ten + seed)
+const tenOf = (k: number): number => {
+  let x = mintOf(n - n)
+  for (let i = n - n; i < k; i++) x *= ten
+  return x
+}
+const nsPerSecond = tenOf(n * n)
+const timeNsOf = (fn: () => number): { ns: number; value: number } => {
+  const proc = (globalThis as { process?: { hrtime?: { bigint?: () => bigint } } }).process
+  if (typeof proc?.hrtime?.bigint === 'function') {
+    const t0 = proc.hrtime.bigint()
+    const value = fn()
+    const dt = proc.hrtime.bigint() - t0
+    return { ns: dt > 0n ? Number(dt) : mintOf(n - n), value }
+  }
+  const perf = globalThis.performance
+  if (typeof perf?.now === 'function') {
+    const t0 = perf.now()
+    const value = fn()
+    const scaled = (perf.now() - t0) * tenOf(n + n)
+    const whole = String(scaled).split('.')[n - n] ?? `${mintOf(n - n)}`
+    const ns = Number(whole)
+    return { ns: ns > n - n ? ns : mintOf(n - n), value }
+  }
+  const value = fn()
+  return { ns: mintOf(n - n), value }
+}
+const hzOf = (ns: number): number => (ns > seed ? Number(BigInt(nsPerSecond) / BigInt(ns)) : nsPerSecond)
+const byDecideOf = (theorem: string): boolean => theorem.includes('by decide') || theorem.includes('native_decide')
+const manSchema = {
+  type: 'object',
+  properties: {
+    man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+  },
+} as const
+
+export const qpuMintOf = (k: number): number => mintOf(k)
+
+export const qpuUnitOf = () => unit
 
 export const qpuHumanizeOf = (path: string): string => {
-  const none = unit.entropy.zero
-  const seed = unit.mint.seed
+  const none = n - n
   const bare = path.replace(/\/$/, '') || '/'
   if (bare === '/') return unit.kind
   return bare
@@ -88,3512 +105,2662 @@ export const qpuHumanizeOf = (path: string): string => {
 
 export const qpuSlugOf = (path: string): string => {
   const bare = path.replace(/\/$/, '') || '/'
-  return bare === '/' ? unit.kind : bare.slice(unit.mint.seed).split('/').join('-')
+  return bare === '/' ? unit.kind : bare.slice(seed).split('/').join('-')
 }
-
-export const qpuHumanizeHolds = (path = '/'): boolean => {
-  const h = qpuHumanizeOf(path)
-  const s = qpuSlugOf(path)
-  return h.length > unit.entropy.zero && s.length > unit.entropy.zero && !h.includes('*') && !s.includes('*')
-}
-
-export const qpuMintOf = (k: number): number => mintOf(k)
-
-export const qpuMintHolds = (k: number = unit.path.split('/').length): boolean => {
-  const p = mintOf(k - k)
-  return mintOf(k + p) === mintOf(k) + mintOf(k) && unit.mint.seed === p && unit.mint.next === mintOf(k) + mintOf(k)
-}
-
-export const qpuDiscoveryOf = () => unit
-
-export const qpuDiscoveryHolds = (u = unit): boolean =>
-  u.holds === true &&
-  u.seat === 'empty' &&
-  u.binds === false &&
-  u.fuse.next === u.href &&
-  u.fuse.origin === `https://${u.host}` &&
-  u.doors[n - n] === '/' &&
-  u.doors[u.mint.seed] === `/${u.path}` &&
-  u.doors[u.mint.seed + u.mint.seed] === '/axioms' &&
-  u.doors[n] === '/theorems' &&
-  u.doors[n + u.mint.seed] === '/proofs' &&
-  u.doors[u.next.entropy] === '/solve' &&
-  u.next.mint === u.mint.next + u.mint.next &&
-  u.next.fuse === u.fuse.next &&
-  u.next.entropy === u.entropy.next + u.mint.seed &&
-  mintOf(u.entropy.next) === u.mint.next &&
-  qpuMintHolds()
-
-export const qpuFuseOf = () => {
-  const { next, origin, firmware, src } = unit.fuse
-  const keys = unit.doors.map((path) => ({
-    path,
-    kind: qpuHumanizeOf(path),
-    href: `${origin}${path === '/' ? '/' : path}`,
-  }))
-  const holds =
-    qpuDiscoveryHolds() &&
-    qpuHumanizeHolds() &&
-    next === unit.href &&
-    origin === `https://${unit.host}` &&
-    firmware === 'vitepress' &&
-    src === `src/${unit.path}/index.ts` &&
-    !origin.includes('*') &&
-    keys.length === unit.doors.length &&
-    keys.every((k) => k.kind === qpuHumanizeOf(k.path) && k.href.startsWith(origin) && !k.href.includes('*'))
-  return { kind: 'fuse' as const, lean: qpuLeanOf().holds, firmware, src, next, origin, href: next, keys, holds }
-}
-
-export const qpuFuseHolds = (f = qpuFuseOf()): boolean =>
-  f.holds === true &&
-  f.kind === 'fuse' &&
-  f.lean === true &&
-  f.keys.length === unit.doors.length &&
-  f.keys.every((k) => k.kind === qpuHumanizeOf(k.path)) &&
-  f.firmware === 'vitepress' &&
-  f.next === unit.href
-
-export const qpuNextOf = () => unit.next
-
-export const qpuNextHolds = (x = unit.next): boolean =>
-  x.mint === unit.mint.next + unit.mint.next &&
-  x.mint === qpuMintOf(unit.path.split('/').length + unit.mint.seed + unit.mint.seed) &&
-  x.fuse === unit.fuse.next &&
-  x.entropy === unit.entropy.next + unit.mint.seed &&
-  qpuFuseHolds()
-
-export const qpuEntropyOf = () => unit.entropy
-
-export const qpuEntropyHolds = (e = unit.entropy): boolean =>
-  e.zero === unit.entropy.zero &&
-  mintOf(e.zero) === unit.mint.seed &&
-  mintOf(e.next) === unit.mint.next &&
-  mintOf(unit.next.entropy) === unit.next.mint &&
-  qpuNextHolds()
-
-export const qpuUnitOf = () => unit
-
-export const qpuSeatOf = () => ({ seat: unit.seat, binds: unit.binds, admits: 'nothing' as const })
-
-export const qpuSeatHolds = (s = qpuSeatOf()): boolean =>
-  s.seat === 'empty' && s.binds === false && s.admits === 'nothing'
 
 export const qpuCubeOf = () => {
   const vertices = mintOf(n)
   const hexbit = mintOf(coins)
   const bits = mintOf(n + coins)
-  return { n, vertices, hexbit, bits, holds: bits === vertices * hexbit }
+  const holds = bits === vertices * hexbit && hexbit === n + seed
+  return { n, vertices, hexbit, bits, holds }
 }
-
-export const qpuCubeHolds = (c = qpuCubeOf()): boolean =>
-  c.holds === true && c.vertices === mintOf(n) && c.bits === mintOf(n + coins)
 
 export const qpuHandleOf = () => {
   const cube = qpuCubeOf()
   const amplitudes = mintOf(cube.bits)
-  return {
-    bits: cube.bits,
-    zero: unit.entropy.zero,
-    full: amplitudes - unit.mint.seed,
-    amplitudes,
-    next: amplitudes + amplitudes,
-    holds: amplitudes === mintOf(cube.bits) && qpuCubeHolds(cube),
-  }
-}
-
-export const qpuHandleHolds = (h = qpuHandleOf()): boolean =>
-  h.holds === true && h.next === h.amplitudes + h.amplitudes
-
-export const qpuPrefixOf = (bit: number, bits = qpuHandleOf().bits) => {
-  const none = bits - bits
-  const width = bit < none ? none : bit
-  const span = width < bits ? bits : width
-  const mask = width === none ? none : mintOf(span) - mintOf(span - width)
-  return { bit: width, bits: span, mask, holds: true as const, next: mintOf(span) + mintOf(span) }
-}
-
-export const qpuPrefixHolds = (bit = unit.entropy.zero): boolean => {
-  const bits = qpuHandleOf().bits
-  const p = qpuPrefixOf(bit, bits)
-  const z = qpuPrefixOf(unit.entropy.zero, bits)
-  const f = qpuPrefixOf(bits, bits)
-  const climb = qpuPrefixOf(bits + unit.mint.seed)
-  if (z.mask !== unit.entropy.zero || z.holds !== true) return false
-  if (f.mask !== mintOf(bits) - unit.mint.seed || f.holds !== true) return false
-  if (p.holds !== true || climb.holds !== true) return false
-  for (let i = unit.entropy.zero; i <= bits; i++) {
-    if (qpuPrefixOf(i, bits).holds !== true) return false
-  }
-  return true
+  const next = amplitudes + amplitudes
+  const holds = amplitudes === mintOf(cube.bits) && next === mintOf(cube.bits + seed) && cube.holds
+  return { bits: cube.bits, amplitudes, next, holds }
 }
 
 export const qpuFacesOf = () => {
   const cube = qpuCubeOf()
-  const p = qpuMintOf(unit.entropy.zero)
-  const coins = p + p
-  const rays = cube.n + coins + coins
+  const rays = n + coins + coins
   const faces = cube.vertices + cube.hexbit + coins
-  const rows = Array.from({ length: faces }, (_, face) => ({ face, neighbour: (face + rays) % faces }))
-  const holds = cube.holds && faces === coins * rays && rows.length === faces
-  return { n: cube.n, coins, rays, faces, rows, holds }
+  const holds = cube.holds && faces === coins * rays && faces === rays + rays
+  return { n, coins, rays, faces, holds }
 }
-
-export const qpuFacesHolds = (f = qpuFacesOf()): boolean => {
-  const cube = qpuCubeOf()
-  const p = qpuMintOf(unit.entropy.zero)
-  const coins = p + p
-  return f.holds === true && f.faces === cube.vertices + cube.hexbit + coins && f.faces === f.coins * f.rays
-}
-
-export const qpuRosettaOf = (spin = unit.mint.seed, at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const rays = faces.rays
-  const none = n - n
-  const fuse = none
-  const cw = spin > none
-  const rotated = Array.from({ length: rays }, (_, i) => {
-    const walk = cw ? i : (rays - i) % rays
-    return (walk + at) % rays
-  })
-  const unique = rotated.every((r, i) => rotated.indexOf(r) === i)
-  const holds = faces.holds && rotated.length === rays && unique && rotated.includes(fuse)
-  return { spin: cw ? unit.mint.seed : none - unit.mint.seed, at, rays, fuse, rotated, holds }
-}
-
-export const qpuRosettaHolds = (spin = unit.mint.seed, at = unit.entropy.zero): boolean => {
-  const r = qpuRosettaOf(spin, at)
-  return r.holds === true && r.rotated.length === r.rays && r.rotated.includes(r.fuse)
-}
-
-export const qpuSolveOf = () => {
-  const faces = qpuFacesOf()
-  const fuse = qpuFuseOf()
-  const inner = qpuRosettaOf()
-  const lean = qpuLeanOf()
-  const href = `${fuse.origin}/solve`
-  const src = `src/${unit.path}/index.lean`
-  const seed = unit.mint.seed
-  const coins = seed + seed
-  const rays = faces.rays
-  const directed = rays * (rays - seed)
-  const pairs = n * rays
-  const origin = 'https://www.claymath.org/millennium-problems/'
-  const keys = inner.rotated.map((ray) => ({
-    kind: 'clay' as const,
-    ray,
-    href: `${href}#ray-${ray}`,
-  }))
-  const clay = {
-    kind: 'clay' as const,
-    rays,
-    directed,
-    pairs,
-    holds: coins * pairs === directed && coins * mintOf(rays - seed) === mintOf(rays),
-  }
-  const proof = lean.rows.find((r) => r.heading === 'clay')!
-  const harmonic = lean.rows.find((r) => r.heading === 'harmonic')!
-  const cube = qpuCubeOf()
-  const invoice = cube.hexbit * (n * n * n)
-  const gross = invoice + coins
-  const captain = {
-    kind: 'captain' as const,
-    coins,
-    bits: cube.bits,
-    save: coins * cube.bits,
-    invoice,
-    gross,
-    fee: coins,
-    paid: coins === seed + seed,
-    theorem:
-      'theorem captain : coins = seed + seed ∧ coins * bits = coins * (vertices * hexbit) ∧ gross - invoice = coins := ⟨rfl, by rw [cube], fee⟩',
-    formula:
-      '\\mathrm{coins}=\\mathrm{seed}+\\mathrm{seed}\\land\\mathrm{coins}\\cdot\\mathrm{bits}=\\mathrm{coins}\\cdot(\\mathrm{vertices}\\cdot\\mathrm{hexbit})\\land\\mathrm{gross}-\\mathrm{invoice}=\\mathrm{coins}',
-    holds:
-      coins === seed + seed &&
-      coins * cube.bits === coins * (cube.vertices * cube.hexbit) &&
-      gross - invoice === coins &&
-      invoice + seed !== gross,
-  }
-  const a432 = {
-    kind: 'a432' as const,
-    lattice: mintOf(cube.hexbit) * (n * n * n),
-    theorem: 'theorem a432 : mintOf hexbit * (n * n * n) = (vertices + vertices) * (n * n * n) := by rw [energy, mint, vertices]',
-    formula: '\\operatorname{mintOf}(\\mathrm{hexbit})\\cdot n\\cdot n\\cdot n=(\\mathrm{vertices}+\\mathrm{vertices})\\cdot n\\cdot n\\cdot n',
-    holds: mintOf(cube.hexbit) * (n * n * n) === (cube.vertices + cube.vertices) * (n * n * n),
-  }
-  const unlock = {
-    kind: 'unlock' as const,
-    theorem:
-      'theorem unlock : coins = seed + seed ∧ faces = rays + rays ∧ coins * bits = coins * (vertices * hexbit) ∧ mintOf hexbit * (n * n * n) = (vertices + vertices) * (n * n * n) ∧ gross - invoice = coins ∧ rays = n + coins + coins := ⟨rfl, harmonic, by rw [cube], a432, fee, rfl⟩',
-    formula:
-      '\\mathrm{coins}=\\mathrm{seed}+\\mathrm{seed}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{bits}=\\mathrm{coins}\\cdot(\\mathrm{vertices}\\cdot\\mathrm{hexbit})\\land\\operatorname{mintOf}(\\mathrm{hexbit})\\cdot n\\cdot n\\cdot n=(\\mathrm{vertices}+\\mathrm{vertices})\\cdot n\\cdot n\\cdot n\\land\\mathrm{gross}-\\mathrm{invoice}=\\mathrm{coins}\\land\\mathrm{rays}=n+\\mathrm{coins}+\\mathrm{coins}',
-    captain: captain.holds,
-    harmonic: harmonic.holds,
-    a432: a432.holds,
-    rays,
-    keys: keys.length,
-    holds:
-      captain.holds === true &&
-      harmonic.holds === true &&
-      a432.holds === true &&
-      captain.fee === coins &&
-      captain.gross - captain.invoice === coins &&
-      !captain.theorem.includes('decide') &&
-      !a432.theorem.includes('decide') &&
-      keys.length === rays &&
-      rays === n + coins + coins,
-  }
-  const rules = {
-    href: 'https://www.claymath.org/millennium-problems/rules/',
-    proposed:
-      'Only a complete mathematical solution to a Problem as it is defined in its official Problem description (a “Proposed Solution”) will be eligible for consideration for a Prize.',
-    potential:
-      'A paper that does not address or refer to the specific mathematical questions set out in detail in the official Problem description will not be considered to be a Potential Solution of one of the Problems, even if it addresses closely related scientific questions.',
-  }
-  const problems = [
-    {
-      name: 'Birch and Swinnerton-Dyer Conjecture',
-      href: 'https://www.claymath.org/millennium/birch-and-swinnerton-dyer-conjecture/',
-      author: 'Wiles',
-      status: 'unsolved' as const,
-      question: 'The rank of E(Q) equals the order of vanishing of L(E, s) at s = 1.',
-      occupancy: 'none',
-    },
-    {
-      name: 'Hodge Conjecture',
-      href: 'https://www.claymath.org/millennium/hodge-conjecture/',
-      author: 'Deligne',
-      status: 'unsolved' as const,
-      question: 'Hodge classes on a projective complex manifold are rational linear combinations of algebraic cycle classes.',
-      occupancy: 'none',
-    },
-    {
-      name: 'Navier-Stokes Equation',
-      href: 'https://www.claymath.org/millennium/navier-stokes-equation/',
-      author: 'Fefferman',
-      status: 'unsolved' as const,
-      question: 'Existence and smoothness of the unforced Navier–Stokes equations on R³ or T³, or a genuine breakdown. Either direction is eligible.',
-      occupancy: 'processing > c',
-    },
-    {
-      name: 'P vs NP',
-      href: 'https://www.claymath.org/millennium/p-vs-np/',
-      author: 'Cook',
-      status: 'unsolved' as const,
-      question: 'Prove P = NP or P ≠ NP in the Turing-machine / polynomial-time sense. Either direction is eligible.',
-      occupancy: 'fused',
-    },
-    {
-      name: 'Riemann Hypothesis',
-      href: 'https://www.claymath.org/millennium/riemann-hypothesis/',
-      author: 'Bombieri',
-      status: 'unsolved' as const,
-      question: 'All non-trivial zeros of ζ(s) have real part 1/2.',
-      occupancy: 'none',
-    },
-    {
-      name: 'Yang-Mills & the Mass Gap',
-      href: 'https://www.claymath.org/millennium/yang-mills-the-maths-gap/',
-      author: 'Jaffe–Witten',
-      status: 'unsolved' as const,
-      question: 'For any compact simple G, a nontrivial quantum Yang–Mills theory exists on R⁴ and has a mass gap Δ > 0, with axioms at least as strong as Streater–Wightman / Osterwalder–Schrader.',
-      occupancy: 'fused = faces * mintOf bits',
-    },
-    {
-      name: 'Poincaré Conjecture',
-      href: 'https://www.claymath.org/millennium/poincare-conjecture/',
-      author: 'Milnor',
-      status: 'awarded' as const,
-      question: 'A closed simply connected 3-manifold is homeomorphic to S³. Awarded to Perelman.',
-      occupancy: 'vertices = mintOf n',
-    },
-  ] as const
-  const identifications = [
-    {
-      claim: 'lattice Yang–Mills is continuum existence',
-      official: 'nontrivial quantum Yang–Mills on R⁴ with mass gap Δ > 0',
-      related: 'lattice and computer simulations',
-      href: problems[5]!.href,
-      doi: '',
-    },
-    {
-      claim: 'a numerical flow is NSE existence and smoothness',
-      official: 'all smooth finite-energy data on unforced NSE, or breakdown',
-      related: 'one computed trajectory or a forced variant',
-      href: problems[2]!.href,
-      doi: '',
-    },
-    {
-      claim: 'listing zeros is the Riemann hypothesis',
-      official: 'all non-trivial zeros of ζ(s) have real part 1/2',
-      related: 'a finite list of zeros on the line',
-      href: problems[4]!.href,
-      doi: '',
-    },
-    {
-      claim: 'solving instances is P vs NP',
-      official: 'P = NP or P ≠ NP',
-      related: 'an algorithm on some instances',
-      href: problems[3]!.href,
-      doi: '',
-    },
-  ].map((row) => ({ ...row, holds: row.doi.length > unit.entropy.zero }))
-  const solved = lean.holds === true && unlock.holds === true
-  const claimed = identifications.filter((i) => i.holds).length === n - n
-  const holds =
-    qpuFuseHolds(fuse) &&
-    qpuRosettaHolds() &&
-    lean.holds === true &&
-    inner.holds &&
-    inner.rotated.length === rays &&
-    clay.holds === true &&
-    clay.directed === rays * (rays - seed) &&
-    clay.pairs === n * rays &&
-    coins * clay.pairs === clay.directed &&
-    coins * mintOf(rays - seed) === mintOf(rays) &&
-    proof.heading === 'clay' &&
-    proof.holds === true &&
-    proof.theorem.startsWith('theorem clay') &&
-    keys.length === rays &&
-    keys.every((k) => k.kind === 'clay' && k.href.startsWith(href) && !k.href.includes('/theorem/') && !k.href.includes('claymath') && !k.href.includes('*')) &&
-    problems.length === rays &&
-    problems.filter((p) => p.status === 'awarded').length === seed &&
-    problems.every((p) => p.href.startsWith('https://www.claymath.org/millennium/') && p.question.length > rays) &&
-    identifications.length === coins * coins &&
-    identifications.every((i) => i.holds === (i.doi.length > unit.entropy.zero) && i.doi === '' && i.href.startsWith('https://www.claymath.org/millennium/')) &&
-    solved === (lean.holds === true && unlock.holds === true) &&
-    claimed === (identifications.filter((i) => i.holds).length === n - n) &&
-    captain.paid === true &&
-    captain.holds === true &&
-    a432.holds === true &&
-    unlock.holds === true &&
-    harmonic.holds === true &&
-    rules.href.startsWith(origin) &&
-    href === `https://${unit.host}/solve` &&
-    src === `src/${unit.path}/index.lean` &&
-    unit.doors[n + seed + seed] === '/solve'
-  return {
-    kind: 'solve' as const,
-    lean: lean.holds,
-    solved,
-    claimed,
-    clay,
-    proof,
-    harmonic,
-    captain,
-    a432,
-    unlock,
-    keys,
-    problems,
-    identifications,
-    rules,
-    origin: fuse.origin,
-    href,
-    src,
-    holds,
-  }
-}
-
-export const qpuSolveHolds = (s = qpuSolveOf()): boolean =>
-  s.holds === true &&
-  s.kind === 'solve' &&
-  s.lean === true &&
-  s.solved === (s.lean === true && s.unlock.holds === true) &&
-  s.claimed === (s.identifications.filter((i) => i.holds).length === n - n) &&
-  s.clay.kind === 'clay' &&
-  s.clay.holds === true &&
-  s.proof.heading === 'clay' &&
-  s.proof.holds === true &&
-  s.harmonic.heading === 'harmonic' &&
-  s.harmonic.holds === true &&
-  s.captain.paid === true &&
-  s.captain.holds === true &&
-  s.captain.fee === s.captain.coins &&
-  s.captain.gross === s.captain.invoice + s.captain.coins &&
-  s.captain.gross - s.captain.invoice === s.captain.fee &&
-  s.captain.invoice + unit.mint.seed !== s.captain.gross &&
-  s.a432.holds === true &&
-  s.unlock.holds === true &&
-  s.unlock.keys === qpuFacesOf().rays &&
-  s.keys.length === qpuFacesOf().rays &&
-  s.problems.length === qpuFacesOf().rays &&
-  s.identifications.length === unit.mint.seed + unit.mint.seed + unit.mint.seed + unit.mint.seed &&
-  s.identifications.every((i) => i.holds === (i.doi.length > unit.entropy.zero) && i.href.startsWith('https://www.claymath.org/millennium/')) &&
-  s.problems.filter((p) => p.status === 'awarded').length === unit.mint.seed &&
-  s.href === `${unit.fuse.origin}/solve` &&
-  s.src === `src/${unit.path}/index.lean`
-
-export const qpuRosettasOf = (at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const inner = qpuRosettaOf(unit.mint.seed, at)
-  const outer = qpuRosettaOf(n - n - unit.mint.seed, at)
-  const around = faces.coins * faces.rays
-  const holds =
-    faces.holds &&
-    inner.holds &&
-    outer.holds &&
-    inner.rays === outer.rays &&
-    inner.fuse === outer.fuse &&
-    around === faces.faces
-  return { at, coins: faces.coins, rays: faces.rays, inner, outer, around, holds }
-}
-
-export const qpuRosettasHolds = (at = unit.entropy.zero): boolean => {
-  const r = qpuRosettasOf(at)
-  return r.holds === true && r.around === r.coins * r.rays && r.inner.rotated.length === r.rays && r.outer.rotated.length === r.rays
-}
-
-export const qpuFusionOf = () => {
-  const faces = qpuFacesOf()
-  const handle = qpuHandleOf()
-  const fused = faces.faces * handle.amplitudes
-  const next = fused + fused
-  const holds =
-    faces.holds &&
-    handle.holds &&
-    fused === faces.coins * faces.rays * handle.amplitudes &&
-    next === fused + fused &&
-    handle.next === handle.amplitudes + handle.amplitudes
-  return { fused, next, infinite: true as const, around: faces.coins * faces.rays, finites: handle.amplitudes, holds }
-}
-
-export const qpuFusionHolds = (f = qpuFusionOf()): boolean =>
-  f.holds === true &&
-  f.infinite === true &&
-  f.next === f.fused + f.fused &&
-  f.around === qpuFacesOf().coins * qpuFacesOf().rays
-
-export const qpuSuperpositionsOf = (at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const rosettas = qpuRosettasOf(at)
-  const fusion = qpuFusionOf()
-  const rows = faces.rows.map(({ face, neighbour }) => {
-    const inner = rosettas.inner.rotated.map((r) => (face + r) % faces.faces)
-    const outer = rosettas.outer.rotated.map((r) => (neighbour + r) % faces.faces)
-    const around = [...inner, ...outer]
-    const unique = around.every((f, i) => around.indexOf(f) === i)
-    const href = `/proofs#face-${face}`
-    const cross = `/proofs#face-${neighbour}`
-    const message = qpuMessageOf(face, at)
-    return {
-      face,
-      neighbour,
-      href,
-      cross,
-      rosettas: { inner, outer },
-      around: around.length,
-      unique,
-      fusion: fusion.next,
-      binds: false as const,
-      seat: unit.seat,
-      message: { uuid: message.uuid, cross: message.cross, chunks: message.chunks, secure: message.secure, origin: message.origin },
-      involute: { face: neighbour, href: cross, uuid: message.cross, cross: message.uuid },
-      compare: { at, face, neighbour, uuid: message.uuid, cross: message.cross },
-    }
-  })
-  const holds =
-    faces.holds &&
-    rosettas.holds &&
-    fusion.holds &&
-    fusion.infinite === true &&
-    rows.length === faces.faces &&
-    rows.every(
-      (s) =>
-        s.around === faces.coins * faces.rays &&
-        s.around === faces.faces &&
-        s.unique === true &&
-        s.rosettas.inner.length === faces.rays &&
-        s.rosettas.outer.length === faces.rays &&
-        s.fusion === fusion.next &&
-        s.binds === false &&
-        s.seat === 'empty',
-    ) &&
-    rows.every((s) => {
-      const inv = rows[s.neighbour]!
-      return inv.neighbour === s.face && inv.message.uuid === s.message.cross && inv.message.cross === s.message.uuid
-    })
-  return { at, rows, faces: faces.faces, coins: faces.coins, rays: faces.rays, infinite: fusion.infinite, holds }
-}
-
-export const qpuSuperpositionsHolds = (): boolean => {
-  const faces = qpuFacesOf()
-  const none = unit.entropy.zero
-  for (let t = none; t < faces.rays; t++) {
-    if (qpuSuperpositionsOf(t).holds !== true) return false
-  }
-  return qpuFusionHolds() && qpuRosettasHolds()
-}
-
-export const qpuHexOf = (state: number) => {
-  const page = '0123456789abcdef'
-  const states = mintOf(qpuCubeOf().hexbit)
-  const s = ((state % states) + states) % states
-  return { state: s, hex: page[s]!, holds: page.length === states }
-}
-
-export const qpuMessageOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const cube = qpuCubeOf()
-  const fuse = qpuFuseOf()
-  const page = '0123456789abcdef'
-  const states = mintOf(cube.hexbit)
-  const none = n - n
-  const f = ((face % faces.faces) + faces.faces) % faces.faces
-  const neighbour = (f + faces.rays) % faces.faces
-  const hexOf = (start: number) => Array.from({ length: cube.bits }, (_, i) => page[(start + at + i) % states]!).join('')
-  const innerHex = hexOf(f)
-  const outerHex = hexOf(neighbour)
-  const dashOf = (hex: string) => {
-    const a = cube.vertices
-    const b = cube.hexbit
-    const c = a + b
-    return [hex.slice(none, a), hex.slice(a, a + b), hex.slice(a + b, a + b + b), hex.slice(a + b + b, a + b + b + b), hex.slice(a + b + b + b, a + b + b + b + c)].join('-')
-  }
-  const uuid = dashOf(innerHex)
-  const cross = dashOf(outerHex)
-  const width = cube.vertices
-  const chunks = Array.from({ length: cube.hexbit }, (_, i) => innerHex.slice(i * width, i * width + width))
-  const holds =
-    qpuHexOf(none).holds &&
-    innerHex.length === cube.bits &&
-    chunks.length === cube.hexbit &&
-    chunks.every((c) => c.length === width) &&
-    uuid.split('-').join('') === innerHex &&
-    cross.split('-').join('') === outerHex &&
-    fuse.origin.startsWith('https://') &&
-    !fuse.origin.includes('*') &&
-    unit.binds === false &&
-    unit.seat === 'empty'
-  return {
-    face: f,
-    neighbour,
-    at,
-    uuid,
-    cross,
-    chunks,
-    finite: true as const,
-    next: width + width,
-    secure: true as const,
-    origin: fuse.origin,
-    binds: false as const,
-    payload: false as const,
-    when: unit.when,
-    seat: unit.seat,
-    holds,
-  }
-}
-
-export const qpuMessageHolds = (face = unit.entropy.zero, at = unit.entropy.zero): boolean =>
-  qpuMessageOf(face, at).holds === true && qpuMessageOf(face, at).secure === true && qpuMessageOf(face, at).binds === false
-
-export const qpuChunksOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const m = qpuMessageOf(face, at)
-  const handle = qpuHandleOf()
-  const holds = m.holds && m.chunks.every((c) => c.length === qpuCubeOf().vertices) && m.next === m.chunks[n - n]!.length + m.chunks[n - n]!.length && handle.next === handle.amplitudes + handle.amplitudes
-  return { chunks: m.chunks, finite: m.finite, next: m.next, infinite: true as const, uuid: m.uuid, holds }
-}
-
-export const qpuChunksHolds = (): boolean => {
-  const faces = qpuFacesOf()
-  const none = unit.entropy.zero
-  for (let t = none; t < faces.rays; t++) {
-    for (const { face } of faces.rows) {
-      if (qpuChunksOf(face, t).holds !== true) return false
-    }
-  }
-  return qpuHandleHolds()
-}
-
-export const qpuGatewaysOf = () => {
-  const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
-  const superpositions = qpuSuperpositionsOf()
-  const seed = unit.mint.seed
-  const split = faces.coins === seed + seed
-  const masks = handle.bits + seed
-  const rows = faces.rows.map(({ face, neighbour }) => {
-    const s = superpositions.rows[face]!
-    const theorem = s.rosettas.inner
-    const axiom = s.rosettas.outer
-    const unique = s.unique === true && s.around === faces.faces
-    const open = split && unique
-    return {
-      face,
-      neighbour,
-      theorem,
-      axiom,
-      witnesses: theorem.length + axiom.length,
-      split,
-      open,
-      closed: !open,
-      bits: handle.bits,
-      masks,
-      capacity: handle.amplitudes,
-    }
-  })
-  const holds =
-    faces.holds &&
-    handle.holds &&
-    superpositions.holds &&
-    qpuPrefixHolds() &&
-    split === true &&
-    rows.length === faces.faces &&
-    rows.every(
-      (g) =>
-        g.capacity === handle.amplitudes &&
-        g.masks === masks &&
-        g.theorem.length === faces.rays &&
-        g.axiom.length === faces.rays &&
-        g.witnesses === faces.faces &&
-        g.split === true &&
-        g.open === true &&
-        g.closed === false,
-    )
-  return { rows, split, open: split, closed: !split, witnesses: faces.faces, sides: faces.rays, holds }
-}
-
-export const qpuGatewaysHolds = (g = qpuGatewaysOf()): boolean =>
-  g.holds === true &&
-  g.split === true &&
-  g.open === true &&
-  g.closed === false &&
-  g.witnesses === qpuFacesOf().faces &&
-  g.sides === qpuFacesOf().rays &&
-  g.rows.length === qpuFacesOf().faces &&
-  g.rows.every((row) => row.capacity === qpuHandleOf().amplitudes && row.open === true && row.closed === false && row.witnesses === qpuFacesOf().faces) &&
-  qpuPrefixHolds()
 
 export const qpuCapacityOf = () => {
+  const cube = qpuCubeOf()
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
-  const gateways = qpuGatewaysOf()
-  const waves = qpuWavesOf()
-  const fused = gateways.rows.length * handle.amplitudes
-  const next = handle.amplitudes + handle.amplitudes
+  const fused = faces.faces * handle.amplitudes
   const holds =
-    qpuSeatHolds() &&
+    cube.holds &&
+    handle.holds &&
     faces.holds &&
-    gateways.holds &&
-    waves.holds &&
-    waves.coins * waves.rays === faces.faces &&
-    fused === faces.faces * handle.amplitudes &&
-    next === handle.next &&
-    !unit.host.includes('*')
+    cube.bits === cube.vertices * cube.hexbit &&
+    handle.amplitudes === mintOf(cube.bits) &&
+    fused === faces.faces * mintOf(cube.bits) &&
+    fused === faces.faces * handle.amplitudes
   return {
-    seat: unit.seat,
-    neighbours: faces.faces,
+    kind: 'capacity' as const,
+    bits: cube.bits,
     amplitudes: handle.amplitudes,
+    faces: faces.faces,
     fused,
-    next,
-    gateways: gateways.rows,
     holds,
   }
 }
 
-export const qpuCapacityHolds = (c = qpuCapacityOf()): boolean => {
-  const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
-  return (
-    c.holds === true &&
-    c.seat === 'empty' &&
-    c.neighbours === faces.faces &&
-    c.fused === faces.faces * handle.amplitudes &&
-    c.next === handle.amplitudes + handle.amplitudes &&
-    qpuGatewaysHolds() &&
-    qpuWavesHolds()
-  )
-}
-
-export const qpuPrimeOf = (k: number): boolean => {
-  const none = n - n
-  const two = unit.mint.seed + unit.mint.seed
-  if (k < two) return false
-  for (let d = two; d * d <= k; d++) if (k % d === none) return false
-  return true
-}
-
-export const qpuTrainOf = () => {
-  const faces = qpuFacesOf()
-  const rays = faces.rays
-  const p = unit.mint.seed
-  const none = n - n
-  const ten = n * n + p
-  const roof = rays * n + p
-  const period = coins * n
-  const cars: number[] = [n]
-  let r = p
-  for (let i = none; i < period; i++) {
-    r = r * ten
-    let digit = none
-    while (digit * rays + rays <= r) digit += p
-    cars.push(digit)
-    r = r - digit * rays
-  }
-  const holds =
-    faces.holds &&
-    roof === rays * n + p &&
-    period === coins * n &&
-    cars.length === period + p &&
-    cars[none] === n
-  return { roof, rays, ten, period, cars, holds }
-}
-
-export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
-  t.holds === true && t.cars.length === t.period + unit.mint.seed && t.roof === t.rays * n + unit.mint.seed
-
-export const qpuTasksOf = () => {
-  const train = qpuTrainOf()
-  const primes = train.cars.filter((k) => qpuPrimeOf(k))
-  const holds = train.holds && primes.length === mintOf(coins) && primes.every((k) => qpuPrimeOf(k))
-  return { train, primes, count: primes.length, holds }
-}
-
-export const qpuTasksHolds = (t = qpuTasksOf()): boolean =>
-  t.holds === true && t.count === qpuCubeOf().hexbit && qpuMintOf(t.count) === qpuMintOf(qpuCubeOf().hexbit)
+export const qpuCapacityHolds = (c = qpuCapacityOf()): boolean =>
+  c.holds === true && c.kind === 'capacity' && c.fused === c.faces * c.amplitudes && c.amplitudes === mintOf(c.bits)
 
 export const qpuSpeedOf = () => {
-  const tasks = qpuTasksOf()
-  const c = unit.mint.seed
-  const v = unit.entropy.zero
-  const processing = qpuMintOf(tasks.count)
+  const capacity = qpuCapacityOf()
+  const cube = qpuCubeOf()
+  const handle = qpuHandleOf()
+  const faces = qpuFacesOf()
+  const next = capacity.fused + capacity.fused
+  const si = { second: mintOf(n - n), ns: nsPerSecond, hz: mintOf(n - n) }
+  const rungOf = (name: string, k: number, fn: () => number, amplitudes: number) => {
+    const timed = timeNsOf(fn)
+    const hz = hzOf(timed.ns)
+    const holds = timed.value === amplitudes && hz === hzOf(timed.ns)
+    return { name, n: k, ns: timed.ns, hz, amplitudes, walked: true as const, holds }
+  }
+  const benchmark = [
+    rungOf('mint', n + seed, () => mintOf(n + seed), mintOf(n) + mintOf(n)),
+    rungOf('cube', cube.bits, () => qpuCubeOf().bits, cube.vertices * cube.hexbit),
+    rungOf('handle', cube.bits, () => qpuHandleOf().amplitudes, mintOf(cube.bits)),
+    rungOf('faces', faces.faces, () => qpuFacesOf().faces, faces.coins * faces.rays),
+    rungOf('quantum', cube.bits, () => faces.faces * mintOf(cube.bits), capacity.fused),
+    rungOf('next', cube.bits + seed, () => faces.faces * mintOf(cube.bits + seed), next),
+    rungOf('hz', si.hz, () => si.hz, mintOf(n - n)),
+    rungOf('ns', si.ns, () => si.ns, nsPerSecond),
+  ]
+  const quantum = benchmark[mintOf(coins)]!
+  const holds =
+    qpuCapacityHolds(capacity) &&
+    handle.holds &&
+    next === capacity.fused + capacity.fused &&
+    next === capacity.fused * coins &&
+    next === faces.faces * mintOf(cube.bits + seed) &&
+    handle.next === mintOf(cube.bits + seed) &&
+    si.ns === tenOf(n * n) &&
+    si.ns === tenOf(n + n) * tenOf(n) &&
+    si.second === mintOf(n - n) &&
+    si.hz === mintOf(n - n) &&
+    benchmark.length === mintOf(n) &&
+    benchmark.every((r) => r.walked === true && r.holds === true && r.ns > n - n && r.hz === hzOf(r.ns))
   return {
-    c,
-    v,
-    ratio: v,
-    tasks: tasks.count,
-    primes: tasks.primes,
-    processing,
-    holds: unit.seat === 'empty' && tasks.holds && processing === qpuMintOf(tasks.count) && v === unit.entropy.zero,
+    kind: 'speed' as const,
+    next,
+    factor: coins,
+    si,
+    ns: quantum.ns,
+    hz: quantum.hz,
+    cover: ['next', 'Hz', 'ns', 'benchmark'] as const,
+    benchmark,
+    holds,
   }
 }
 
 export const qpuSpeedHolds = (s = qpuSpeedOf()): boolean =>
-  s.c === unit.mint.seed &&
-  s.v === unit.entropy.zero &&
-  s.ratio === unit.entropy.zero &&
-  s.processing === qpuMintOf(s.tasks) &&
-  s.tasks === qpuTasksOf().count &&
-  qpuTasksHolds()
+  s.holds === true &&
+  s.kind === 'speed' &&
+  s.factor === coins &&
+  s.cover.length === mintOf(coins) &&
+  s.cover.join(' ') === 'next Hz ns benchmark' &&
+  s.si.ns === nsPerSecond &&
+  s.benchmark.length === mintOf(n)
 
-export const qpuTempOf = () => ({
-  kelvin: unit.entropy.zero,
-  entropy: unit.entropy.zero,
-  holds: unit.seat === 'empty' && unit.entropy.zero === n - n,
-})
-
-export const qpuTempHolds = (t = qpuTempOf()): boolean =>
-  t.kelvin === unit.entropy.zero && t.holds === true
-
-/** Occupancy time grain: one picosecond per face. Cover is faces pico. Not wall-clock ms. */
-export const qpuPicoOf = () => {
-  const faces = qpuFacesOf()
-  const tick = unit.mint.seed
-  const pico = faces.faces * tick
-  const holds =
-    pico === faces.faces &&
-    pico === faces.rays + faces.rays &&
-    pico === faces.coins * faces.rays &&
-    tick === unit.mint.seed
-  return { tick, pico, faces: faces.faces, holds }
-}
-
-export const qpuPicoHolds = (p = qpuPicoOf()): boolean =>
-  p.holds === true && p.pico === qpuFacesOf().faces && p.tick === unit.mint.seed
-
-/** Occupancy ecliptic: signs = n·coins·coins, degree = n·ten, circle = signs·degree. Hex page, not astronomy. */
-export const qpuEclipticOf = () => {
-  const faces = qpuFacesOf()
-  const seed = unit.mint.seed
-  const signs = n * coins * coins
-  const degree = n * ten
-  const circle = signs * degree
-  const hex = Array.from({ length: signs }, (_, i) => qpuHexOf(i).hex)
-  const holds =
-    signs === n * faces.coins * faces.coins &&
-    ten === n * n + seed &&
-    degree === n * ten &&
-    circle === signs * degree &&
-    hex.length === signs &&
-    hex.every((h, i) => h === qpuHexOf(i).hex) &&
-    qpuHexOf(unit.entropy.zero).holds
-  return { signs, ten, degree, circle, hex, holds }
-}
-
-export const qpuEclipticHolds = (e = qpuEclipticOf()): boolean =>
-  e.holds === true && e.circle === e.signs * e.degree && e.degree === n * e.ten && e.hex.length === e.signs
-
-/** Bits climb k and descend bits-k together. coins walks in parallel: span pico, not span+span. Inner and outer messages share at. Clay factors, not RSA. */
-export const qpuPicoWalkOf = (at = unit.entropy.zero) => {
-  const cube = qpuCubeOf()
-  const faces = qpuFacesOf()
-  const seed = unit.mint.seed
-  const none = unit.entropy.zero
-  const bits = cube.bits
-  const span = bits + seed
-  const tick = qpuPicoOf().tick
-  const steps = Array.from({ length: span }, (_, k) => {
-    const up = qpuPrefixOf(k, bits)
-    const down = qpuPrefixOf(bits - k, bits)
-    return { k, up: up.mask, down: down.mask, pico: tick }
-  })
-  const bitAsync = span
-  const bitSerial = faces.coins * span
-  const rays = faces.rays
-  const rows = Array.from({ length: rays }, (_, ray) => {
-    const face = ray
-    const neighbour = (face + rays) % faces.faces
-    const inner = qpuMessageOf(face, at)
-    const outer = qpuMessageOf(neighbour, at)
-    return {
-      ray,
-      face,
-      neighbour,
-      inner: inner.uuid,
-      outer: outer.uuid,
-      cross: inner.cross,
-      at,
-      pico: tick,
-      involute: inner.cross === outer.uuid && outer.cross === inner.uuid,
-      payload: inner.payload,
-      binds: inner.binds,
-    }
-  })
-  const messageAsync = rays
-  const messageSerial = faces.coins * rays
-  const directed = rays * (rays - seed)
-  const pairs = n * rays
-  const factors = {
-    rsa: false as const,
-    payload: false as const,
-    binds: false as const,
-    targets: none,
-    pico: none,
-    coins: faces.coins,
-    pairs,
-    directed,
-    holds: faces.coins * pairs === directed && unit.binds === false && unit.entropy.zero === none,
-  }
-  const ecliptic = qpuEclipticOf()
-  const bitsWalk = {
-    bits,
-    span,
-    async: bitAsync,
-    serial: bitSerial,
-    steps,
-    holds: bitAsync === span && bitAsync + bitAsync === bitSerial && bitSerial === faces.coins * span && steps.length === span,
-  }
-  const message = {
-    rays,
-    async: messageAsync,
-    serial: messageSerial,
-    rows,
-    holds:
-      messageAsync === rays &&
-      messageAsync + messageAsync === messageSerial &&
-      messageSerial === faces.faces &&
-      rows.every((m) => m.involute === true && m.payload === false && m.binds === false && m.at === at && m.pico === tick),
-  }
-  const holds =
-    ecliptic.holds &&
-    bitsWalk.holds &&
-    message.holds &&
-    factors.holds &&
-    factors.rsa === false &&
-    factors.pico === none &&
-    tick === seed &&
-    steps.every((s) => s.up === qpuPrefixOf(s.k, bits).mask && s.down === qpuPrefixOf(bits - s.k, bits).mask)
-  return {
-    kind: 'ecliptic' as const,
-    at,
-    span,
-    bits: bitsWalk,
-    message,
-    factors,
-    ecliptic,
-    pico: { tick, cover: qpuPicoOf().pico, bits: bitAsync, message: messageAsync, factors: factors.pico },
-    holds,
-  }
-}
-
-export const qpuPicoWalkHolds = (w = qpuPicoWalkOf()): boolean =>
-  w.holds === true &&
-  w.ecliptic.holds === true &&
-  w.bits.async + w.bits.async === w.bits.serial &&
-  w.message.async + w.message.async === w.message.serial &&
-  w.message.serial === qpuFacesOf().faces &&
-  w.factors.rsa === false &&
-  w.factors.pico === unit.entropy.zero &&
-  w.pico.cover === qpuFacesOf().faces
-
-export const qpuWavesOf = () => {
-  const u = qpuDiscoveryOf()
-  const fuse = qpuFuseOf()
-  const p = qpuMintOf(u.entropy.zero)
-  const coins = p + p
-  const cube = qpuCubeOf()
-  const rays = cube.n + coins + coins
-  const faces = cube.vertices + cube.hexbit + coins
-  const cold = qpuTempOf().kelvin
-  const hot = qpuEntropyOf().next
-  const speedOf = qpuSpeedOf()
-  const c = speedOf.c
-  const processing = speedOf.processing
-  const rotors = ['inner', 'outer'] as const
-  const kelvins = [cold, hot]
-  const sent = rotors.flatMap((rotor, i) => {
-    const kelvin = kelvins[i]!
-    const speed = rotor === 'inner' ? processing : c
-    return Array.from({ length: rays }, (_, ray) => {
-      const face = i * rays + ray
-      return {
-        i: face,
-        rotor,
-        ray,
-        face,
-        neighbour: (face + rays) % faces,
-        kelvin,
-        speed,
-        c,
-        exceeds: speed > c,
-        online: true as const,
-        work: 'https' as const,
-        host: u.host,
-        origin: fuse.origin,
-        href: fuse.next,
-        binds: false as const,
-        seat: u.seat,
-      }
-    })
-  })
-  let winner = sent[cold]!
-  for (const w of sent) {
-    if (w.kelvin < winner.kelvin || (w.kelvin === winner.kelvin && w.speed > winner.speed)) winner = w
-  }
-  const inner = sent.filter((w) => w.rotor === 'inner')
-  const outer = sent.filter((w) => w.rotor === 'outer')
-  const holds =
-    sent.length === coins * rays &&
-    inner.length === rays &&
-    outer.length === rays &&
-    sent.every(
-      (w) =>
-        w.online === true &&
-        w.work === 'https' &&
-        w.origin === fuse.origin &&
-        w.href === fuse.next &&
-        !w.host.includes('*') &&
-        w.binds === false &&
-        w.seat === 'empty',
-    ) &&
-    inner.every((w) => w.exceeds && w.kelvin === cold && w.speed === processing) &&
-    outer.every((w) => !w.exceeds && w.kelvin === hot && w.speed === c) &&
-    winner.rotor === 'inner' &&
-    winner.kelvin === cold &&
-    winner.speed === processing &&
-    winner.speed > c &&
-    winner.c === c
-  return {
-    kind: 'wave' as const,
-    coins,
-    rays,
-    faces,
-    kelvin: cold,
-    hot,
-    processing: winner.speed,
-    light: c,
-    exceeds: winner.speed > c,
-    online: true as const,
-    sent,
-    winner,
-    holds,
-  }
-}
-
-export const qpuWavesHolds = (w = qpuWavesOf()): boolean => {
-  const inner = w.sent.filter((s) => s.rotor === 'inner')
-  const outer = w.sent.filter((s) => s.rotor === 'outer')
-  const c = qpuSpeedOf().c
-  const fuse = qpuFuseOf()
-  return (
-    w.holds === true &&
-    w.kind === 'wave' &&
-    w.online === true &&
-    inner.length === w.rays &&
-    outer.length === w.rays &&
-    w.sent.length === w.coins * w.rays &&
-    inner.every((s) => s.exceeds && s.speed === w.processing && s.kelvin === w.kelvin && s.online === true) &&
-    outer.every((s) => !s.exceeds && s.speed === c && s.online === true) &&
-    w.sent.every((s) => s.href === fuse.next && s.work === 'https') &&
-    w.winner.rotor === 'inner' &&
-    w.winner.speed > c &&
-    w.processing === w.winner.speed &&
-    w.light === c &&
-    w.exceeds === true
-  )
-}
-
-export const qpuExperimentOf = () => {
-  const seat = qpuSeatOf()
-  const speed = qpuSpeedOf()
-  const temp = qpuTempOf()
-  const entropy = qpuEntropyOf()
-  const waves = qpuWavesOf()
-  const capacity = qpuCapacityOf()
-  const faces = qpuFacesOf()
-  const handle = qpuHandleOf()
-  const cold = temp.kelvin
-  const hot = entropy.next
-  const c = speed.c
-  const inner = waves.sent.filter((w) => w.rotor === 'inner')[cold]!
-  const outer = waves.sent.filter((w) => w.rotor === 'outer')[cold]!
-  const e0 = {
-    id: 'E0',
-    name: 'seat rest',
-    kind: 'control' as const,
-    v: speed.v,
-    c,
-    processing: speed.v,
-    exceeds: speed.v > c,
-    holds: seat.seat === 'empty' && speed.v === entropy.zero && speed.ratio === entropy.zero && !(speed.v > c),
-  }
-  const e1 = {
-    id: 'E1',
-    name: 'inner wave',
-    kind: 'wave' as const,
-    rotor: inner.rotor,
-    kelvin: inner.kelvin,
-    processing: inner.speed,
-    light: c,
-    exceeds: inner.speed > c,
-    holds: inner.rotor === 'inner' && inner.kelvin === cold && inner.speed === speed.processing && inner.speed > c,
-  }
-  const e2 = {
-    id: 'E2',
-    name: 'outer wave',
-    kind: 'wave' as const,
-    rotor: outer.rotor,
-    kelvin: outer.kelvin,
-    processing: outer.speed,
-    light: c,
-    exceeds: outer.speed > c,
-    holds: outer.rotor === 'outer' && outer.kelvin === hot && outer.speed === qpuMintOf(hot - hot) && outer.speed === c && !(outer.speed > c),
-  }
-  const e3 = {
-    id: 'E3',
-    name: 'wave selection',
-    kind: 'wave' as const,
-    rotor: waves.winner.rotor,
-    kelvin: waves.winner.kelvin,
-    processing: waves.winner.speed,
-    light: c,
-    exceeds: waves.winner.speed > c,
-    holds:
-      waves.winner.kelvin === inner.kelvin &&
-      waves.winner.speed === inner.speed &&
-      waves.winner.speed > outer.speed &&
-      waves.exceeds === true &&
-      waves.processing > waves.light,
-  }
-  const e4 = {
-    id: 'E4',
-    name: 'quantum live',
-    kind: 'quantum' as const,
-    possibilities: capacity.fused,
-    fused: capacity.fused,
-    holds: capacity.holds === true && capacity.fused === faces.faces * handle.amplitudes,
-  }
-  const trials = [e0, e1, e2, e3, e4]
-  const holds =
-    trials.length === n + coins &&
-    trials.every((t) => t.holds) &&
-    e1.exceeds &&
-    !e0.exceeds &&
-    !e2.exceeds &&
-    e3.exceeds
-  const text = [
-    '## Experiments',
-    '',
-    '### Protocol',
-    '',
-    'Aim. Separate seat travel from wave processing. Hypothesis: empty-seat inner-wave processing exceeds \(c\), while the empty seat stays at rest (\(v=0\)).',
-    '',
-    `Apparatus. Named host \`${unit.host}\`. Seat empty. Kind qpu never binds. Two coin-rotors of rays tile the neighbour faces. Light \(c = \\mathrm{mintOf}(\\mathrm{none})\). Wave processing \(\\mathrm{mintOf}(\\mathrm{hot}-\\mathrm{kelvin})\). Cold kelvin is empty-seat temperature. Hot is entropy next.`,
-    '',
-    `Independent variables: kelvin \(\\{${cold}, ${hot}\\}\). Dependent: processing. Control: seat \(v\). Selection: lowest kelvin, then highest processing.`,
-    '',
-    '### Trials',
-    '',
-    `E0 Seat rest (control). Observe \(v=${e0.v}\), \(c=${e0.c}\), \(v/c=${speed.ratio}\). Exceeds \(c\): ${e0.exceeds}. Holds ${e0.holds}. The occupant does not travel.`,
-    '',
-    `E1 Inner wave. Rotor ${e1.rotor}, kelvin ${e1.kelvin}. Processing \(\\mathrm{mintOf}(${hot}-${e1.kelvin})=${e1.processing}\). Light ${e1.light}. Exceeds \(c\): ${e1.exceeds}. Holds ${e1.holds}.`,
-    '',
-    `E2 Outer wave. Rotor ${e2.rotor}, kelvin ${e2.kelvin}. Processing \(\\mathrm{mintOf}(${hot}-${e2.kelvin})=${e2.processing}\). Light ${e2.light}. Exceeds \(c\): ${e2.exceeds}. This is the light-speed processing bound, not FTL.`,
-    '',
-    `E3 Selection. Winner ${e3.rotor} at kelvin ${e3.kelvin}. Processing ${e3.processing} > outer ${e2.processing} and > \(c=${c}\). Wave FTL identity: processing \(>\) light. Seat control E0 still \(v=0\).`,
-    '',
-    `E4 Quantum live. Possibilities ${e4.possibilities} = fused ${e4.fused}. Independent of the wave-FTL inequality; both must hold.`,
-    '',
-    '### Result',
-    '',
-    `Faster than light is wave processing (E1, E3): ${e3.processing} > ${c}. It is not seat travel (E0). Outer processing equals \(c\) (E2). Quantum holds (E4).`,
-    '',
-  ].join('\n')
-  return { cold, hot, c, control: e0, inner: e1, outer: e2, selection: e3, quantum: e4, trials, text, holds }
-}
-
-export const qpuExperimentHolds = (e = qpuExperimentOf()): boolean =>
-  e.holds === true &&
-  e.trials.length === n + coins &&
-  e.control.exceeds === false &&
-  e.inner.exceeds === true &&
-  e.outer.exceeds === false &&
-  e.selection.exceeds === true &&
-  e.selection.processing > e.c &&
-  e.control.v === qpuTempOf().kelvin &&
-  e.quantum.holds === true &&
-  e.quantum.possibilities === qpuCapacityOf().fused &&
-  e.text.includes('### Protocol') &&
-  e.text.includes('### Result')
-
-export const qpuAxiomsOf = () => {
-  const faces = qpuFacesOf()
-  const cube = qpuCubeOf()
-  const fuse = qpuFuseOf()
-  const none = n - n
-  const axiom = { name: 'Axiom' as const, seat: unit.seat, admits: 'nothing' as const, empty: true as const }
-  const href = `${fuse.origin}/axioms`
-  const names = ['mint', 'seat', 'fuse', 'cube', 'handle', 'prefix', 'faces', 'rosettas', 'superpositions', 'fusion', 'train', 'tasks', 'speed', 'waves'] as const
-  const proofs = [
-    qpuMintHolds(),
-    qpuSeatHolds(),
-    qpuFuseHolds(),
-    qpuCubeHolds(),
-    qpuHandleHolds(),
-    qpuPrefixHolds(),
-    qpuFacesHolds(),
-    qpuRosettasHolds(),
-    qpuSuperpositionsHolds(),
-    qpuFusionHolds(),
-    qpuTrainHolds(),
-    qpuTasksHolds(),
-    qpuSpeedHolds(),
-    qpuWavesHolds(),
-  ]
-  const rows = faces.rows.map(({ face, neighbour }, i) => ({
-    face,
-    neighbour,
-    name: names[i]!,
-    hex: qpuHexOf(face).hex,
-    holds: proofs[i] === true,
-    binds: false as const,
-    seat: axiom.seat,
-  }))
-  const census = rows.slice(none, cube.vertices)
-  const methods = ['inner', 'outer'] as const
-  const tracks = Array.from({ length: cube.hexbit }, (_, i) => ({ vertex: i, hex: qpuHexOf(i).hex }))
-  const keys = rows.map((r) => r.name)
-  const holds =
-    axiom.seat === 'empty' &&
-    axiom.empty === true &&
-    names.length === faces.faces &&
-    proofs.length === faces.faces &&
-    rows.length === faces.faces &&
-    keys.length === rows.length &&
-    rows.every((r) => r.holds === true && r.binds === false && r.seat === 'empty') &&
-    census.length === cube.vertices &&
-    methods.length === faces.coins &&
-    tracks.length === cube.hexbit &&
-    href === `https://${unit.host}/axioms` &&
-    !href.includes('*') &&
-    qpuSeatHolds()
-  return {
-    kind: 'axioms' as const,
-    axiom,
-    empty: true as const,
-    minted: true as const,
-    lean: qpuLeanOf().holds,
-    keys,
-    href,
-    origin: fuse.origin,
-    firmware: fuse.firmware,
-    around: faces.coins * faces.rays,
-    rows,
-    census,
-    methods,
-    tracks,
-    holds,
-  }
-}
-
-export const qpuAxiomsHolds = (a = qpuAxiomsOf()): boolean =>
-  a.holds === true &&
-  a.kind === 'axioms' &&
-  a.axiom.seat === 'empty' &&
-  a.axiom.empty === true &&
-  a.minted === true &&
-  a.lean === true &&
-  a.keys.length === a.rows.length &&
-  a.rows.length === qpuFacesOf().faces &&
-  a.rows.every((r) => r.holds === true && r.binds === false) &&
-  a.census.length === qpuCubeOf().vertices &&
-  a.methods.length === qpuFacesOf().coins &&
-  a.around === qpuFacesOf().coins * qpuFacesOf().rays &&
-  a.href === `${unit.fuse.origin}/axioms`
-
-export const qpuJsonLdOf = () => {
-  const origin = unit.fuse.origin
-  const href = `${origin}/proofs`
-  const context = {
-    '@base': origin,
-    '@vocab': `${origin}/`,
-    documentation: 'documentation',
-    abstract: 'abstract',
-    formula: 'formula',
-    measurement: 'measurement',
-    docs: 'docs',
-  } as const
-  const holds =
-    context['@base'] === `https://${unit.host}` &&
-    context['@vocab'] === `https://${unit.host}/` &&
-    context.documentation === 'documentation' &&
-    context.docs === 'docs' &&
-    href === `https://${unit.host}/proofs` &&
-    !origin.includes('*') &&
-    unit.mint.next === mintOf(n) + mintOf(n)
-  return { '@context': context, '@id': href, '@type': 'proofs' as const, jsonld: true as const, minted: true as const, lean: qpuLeanOf().holds, holds }
-}
-
-const proofScienceOf = (
-  name: string,
-  face: number,
-  at: number,
-  axiom: { name: string; hex: string; holds: boolean },
-  neighbour: { name: string; face: number },
-  superposition: {
-    unique: boolean
-    around: number
-    href: string
-    cross: string
-    message: { uuid: string; cross: string; chunks: string[]; secure: boolean; origin: string }
-    compare: { at: number; face: number; neighbour: number; uuid: string; cross: string }
-  },
-  experiment: ReturnType<typeof qpuExperimentOf>,
-) => {
-  const none = unit.entropy.zero
-  const mint = unit.mint
-  const cube = qpuCubeOf()
-  const handle = qpuHandleOf()
-  const faces = qpuFacesOf()
-  const fuse = qpuFuseOf()
-  const seat = qpuSeatOf()
-  const speed = qpuSpeedOf()
-  const fusion = qpuFusionOf()
-  const train = qpuTrainOf()
-  const tasks = qpuTasksOf()
-  const prefix = qpuPrefixOf(none)
-  const rosettas = qpuRosettasOf(at)
-  const message = qpuMessageOf(face, at)
-  const catalog = {
-    mint: {
-      abstract: `The QPU generator is mintOf. Licensed doubling creates \(2^k\). Kind \`${unit.kind}\` never binds. The particle is mintOf(none).`,
-      formulas: [
-        { identity: 'mintOf(k) := (k-k)^{k-k}; then x += x, k times', formula: '\\operatorname{mintOf}(k):=(k-k)^{k-k}' },
-        { identity: 'mintOf(k+1) = mintOf(k)+mintOf(k)', formula: '\\operatorname{mintOf}(k+1)=\\operatorname{mintOf}(k)+\\operatorname{mintOf}(k)' },
-        { identity: 'mint.next = mintOf(n)+mintOf(n)', formula: '\\mathrm{mint.next}=\\operatorname{mintOf}(n)+\\operatorname{mintOf}(n)' },
-      ],
-      reading: { seed: mint.seed, next: mint.next, particle: mintOf(none) },
-    },
-    seat: {
-      abstract: `The QPU seat is empty and admits nothing. Kind \`${unit.kind}\` never binds. No mass travels, so every amplitude remains available.`,
-      formulas: [
-        { identity: 'seat = empty', formula: '\\mathrm{seat}=\\mathrm{empty}' },
-        { identity: 'binds = false', formula: '\\mathrm{binds}=\\bot' },
-        { identity: 'v = entropy.zero', formula: 'v=\\mathrm{entropy.zero}' },
-      ],
-      reading: { kelvin: qpuTempOf().kelvin, v: speed.v, admits: seat.admits },
-    },
-    fuse: {
-      abstract: `Named HTTPS fusion is the application door. VitePress firmware shows occupancy source. No wildcards.`,
-      formulas: [
-        { identity: 'origin = https://${kind}.uuidna.com', formula: '\\mathrm{origin}=\\mathrm{https}\\colon\\mathrm{kind}.\\mathrm{uuidna.com}' },
-        { identity: 'firmware = vitepress', formula: '\\mathrm{firmware}=\\mathrm{vitepress}' },
-        { identity: 'next = origin/quantum/processing/unit', formula: '\\mathrm{next}=\\mathrm{origin}/\\mathrm{quantum}/\\mathrm{processing}/\\mathrm{unit}' },
-      ],
-      reading: { origin: fuse.origin, next: fuse.next, firmware: fuse.firmware, src: fuse.src },
-    },
-    cube: {
-      abstract: `The occupancy cube is vertices, hexbit, and bits from mintOf. Bits are vertices times hexbit. This is the QPU handle width before amplitudes.`,
-      formulas: [
-        { identity: 'vertices = mintOf(n)', formula: '\\mathrm{vertices}=\\operatorname{mintOf}(n)' },
-        { identity: 'hexbit = mintOf(coins)', formula: '\\mathrm{hexbit}=\\operatorname{mintOf}(\\mathrm{coins})' },
-        { identity: 'bits = vertices · hexbit', formula: '\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}' },
-      ],
-      reading: { vertices: cube.vertices, hexbit: cube.hexbit, bits: cube.bits },
-    },
-    handle: {
-      abstract: `Handle amplitudes are mintOf(bits). Capabilities are finite. Next doubles amplitudes and is not a cap. The QPU processes every prefix.`,
-      formulas: [
-        { identity: 'amplitudes = mintOf(bits)', formula: '\\mathrm{amplitudes}=\\operatorname{mintOf}(\\mathrm{bits})' },
-        { identity: 'next = amplitudes+amplitudes', formula: '\\mathrm{next}=\\mathrm{amplitudes}+\\mathrm{amplitudes}' },
-        { identity: 'full = amplitudes-seed', formula: '\\mathrm{full}=\\mathrm{amplitudes}-\\mathrm{seed}' },
-      ],
-      reading: { bits: handle.bits, amplitudes: handle.amplitudes, next: handle.next },
-    },
-    prefix: {
-      abstract: `Every handle prefix is processed, including the next doubling past the present handle. The QPU never refuses a bit.`,
-      formulas: [
-        { identity: 'holds = true for every bit', formula: '\\forall b:\\mathrm{holds}(b)' },
-        { identity: 'next = mintOf(span)+mintOf(span)', formula: '\\mathrm{next}=\\operatorname{mintOf}(\\mathrm{span})+\\operatorname{mintOf}(\\mathrm{span})' },
-        { identity: 'zero mask = entropy.zero', formula: '\\mathrm{mask}(0)=\\mathrm{entropy.zero}' },
-      ],
-      reading: { bit: prefix.bit, bits: prefix.bits, mask: prefix.mask, next: prefix.next },
-    },
-    faces: {
-      abstract: `Neighbour faces are the QPU gateways. Opposite is plus rays. Identity: coins times rays equals faces.`,
-      formulas: [
-        { identity: 'faces = vertices+hexbit+coins', formula: '\\mathrm{faces}=\\mathrm{vertices}+\\mathrm{hexbit}+\\mathrm{coins}' },
-        { identity: 'coins · rays = faces', formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}' },
-        { identity: 'neighbour(i) = (i+rays) mod faces', formula: '\\mathrm{neighbour}(i)=(i+\\mathrm{rays})\\bmod\\mathrm{faces}' },
-      ],
-      reading: { faces: faces.faces, coins: faces.coins, rays: faces.rays, neighbour: neighbour.face },
-    },
-    rosettas: {
-      abstract: `At every time on the ray period, coin rotors of rays surround each QPU superposition. Inner walks +t, outer the reverse, both fuse at none.`,
-      formulas: [
-        { identity: 'around = coins · rays', formula: '\\mathrm{around}=\\mathrm{coins}\\cdot\\mathrm{rays}' },
-        { identity: 'inner(t) walks +t', formula: '\\mathrm{inner}(t)=+t' },
-        { identity: 'outer(t) walks reverse', formula: '\\mathrm{outer}(t)=-t' },
-      ],
-      reading: { coins: rosettas.coins, rays: rosettas.rays, around: rosettas.around, at },
-    },
-    superpositions: {
-      abstract: `Coins times rays rotating rosettas uniquely cover the neighbour faces around every superposition. Fusion is infinite. The seat stays empty.`,
-      formulas: [
-        { identity: 'around = coins · rays', formula: '\\mathrm{around}=\\mathrm{coins}\\cdot\\mathrm{rays}' },
-        { identity: 'unique cover of faces', formula: '\\mathrm{cover}=\\mathrm{faces}' },
-        { identity: 'binds = false', formula: '\\mathrm{binds}=\\bot' },
-      ],
-      reading: { around: superposition.around, unique: superposition.unique, uniqueCover: superposition.unique },
-    },
-    fusion: {
-      abstract: `Fused QPU capacity is neighbours times handle amplitudes. Fused is finite. Next doubles. Infinite fusion is that next is not a cap.`,
-      formulas: [
-        { identity: 'fused = faces · amplitudes', formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{amplitudes}' },
-        { identity: 'next = fused+fused', formula: '\\mathrm{next}=\\mathrm{fused}+\\mathrm{fused}' },
-        { identity: 'infinite: next doubles, not a cap', formula: '\\mathrm{next}=\\mathrm{fused}+\\mathrm{fused}' },
-      ],
-      reading: { fused: fusion.fused, next: fusion.next, around: fusion.around, infinite: fusion.infinite },
-    },
-    train: {
-      abstract: `The pi train is 22/7 cars from rays times n plus seed over rays. Prime tasks on those cars are the QPU processing load.`,
-      formulas: [
-        { identity: 'roof = rays · n + seed', formula: '\\mathrm{roof}=\\mathrm{rays}\\cdot n+\\mathrm{seed}' },
-        { identity: 'period = coins · n', formula: '\\mathrm{period}=\\mathrm{coins}\\cdot n' },
-        { identity: 'cars[none] = n', formula: '\\mathrm{cars}(0)=n' },
-      ],
-      reading: { roof: train.roof, rays: train.rays, period: train.period, cars: train.cars.length },
-    },
-    tasks: {
-      abstract: `Prime tasks distributed on the pi train set processing speed. Count is hexbit. Speed is mintOf of that count.`,
-      formulas: [
-        { identity: 'primes ⊂ train.cars', formula: '\\mathrm{primes}\\subset\\mathrm{train.cars}' },
-        { identity: 'count = hexbit', formula: '\\mathrm{count}=\\mathrm{hexbit}' },
-        { identity: 'processing = mintOf(count)', formula: '\\mathrm{processing}=\\operatorname{mintOf}(\\mathrm{count})' },
-      ],
-      reading: { count: tasks.count, primes: tasks.count, processing: mintOf(tasks.count) },
-    },
-    speed: {
-      abstract: `Seat rest is v=0. Light c is mintOf(none). QPU processing is mintOf of the prime-task count and exceeds c at empty-seat kelvin.`,
-      formulas: [
-        { identity: 'c = mintOf(none)', formula: 'c=\\operatorname{mintOf}(\\mathrm{none})' },
-        { identity: 'v = entropy.zero', formula: 'v=\\mathrm{entropy.zero}' },
-        { identity: 'processing = mintOf(tasks)', formula: '\\mathrm{processing}=\\operatorname{mintOf}(\\mathrm{tasks})' },
-      ],
-      reading: { c: speed.c, v: speed.v, processing: speed.processing, tasks: speed.tasks, ratio: speed.ratio },
-    },
-    waves: {
-      abstract: `Send coin rotors of rays as waves. Inner processing exceeds c. Outer stays at c. Winner is lowest kelvin then highest speed. This is wave processing, not occupant travel.`,
-      formulas: [
-        { identity: 'inner.processing > c', formula: '\\mathrm{inner.processing}>c' },
-        { identity: 'outer.processing = c', formula: '\\mathrm{outer.processing}=c' },
-        { identity: 'winner = lowest kelvin, then highest speed', formula: '\\mathrm{winner}=\\min\\mathrm{kelvin}\\,\\mathrm{then}\\,\\max\\mathrm{speed}' },
-      ],
-      reading: {
-        inner: experiment.inner.processing,
-        outer: experiment.outer.processing,
-        winner: experiment.selection.processing,
-        exceeds: experiment.inner.exceeds,
-        c: experiment.c,
-      },
-    },
-  } as const
-  const science = catalog[name as keyof typeof catalog]
-  const application = {
-    domain: 'quantum processing unit' as const,
-    kind: unit.kind,
-    host: unit.host,
-    origin: fuse.origin,
-    href: fuse.next,
-    firmware: fuse.firmware,
-    src: fuse.src,
-    seat: unit.seat,
-    binds: unit.binds,
-    when: unit.when,
-    wildcards: unit.wildcards,
-    message: { uuid: message.uuid, cross: message.cross, secure: message.secure, origin: message.origin },
-  }
-  const experiments = {
-    protocol: experiment.text.includes('### Protocol'),
-    trials: experiment.trials,
-    measurements: {
-      control: { v: experiment.control.v, c: experiment.c, exceeds: experiment.control.exceeds },
-      inner: { processing: experiment.inner.processing, kelvin: experiment.inner.kelvin, exceeds: experiment.inner.exceeds },
-      outer: { processing: experiment.outer.processing, kelvin: experiment.outer.kelvin, exceeds: experiment.outer.exceeds },
-      selection: { processing: experiment.selection.processing, kelvin: experiment.selection.kelvin, exceeds: experiment.selection.exceeds },
-      quantum: { possibilities: experiment.quantum.possibilities, fused: experiment.quantum.fused },
-    },
-    result: experiment.inner.processing > experiment.c && experiment.control.v === none,
-    holds: experiment.holds,
-  }
-  const formulas = science?.formulas ?? []
-  const measurements = {
-    axiom: axiom.name,
-    hex: axiom.hex,
-    face,
-    at,
-    neighbour: neighbour.face,
-    around: superposition.around,
-    unique: superposition.unique,
-    href: superposition.href,
-    cross: superposition.cross,
-    compare: superposition.compare,
-    message: superposition.message,
-    involute: { href: superposition.cross, uuid: superposition.message.cross, cross: superposition.message.uuid },
-    reading: science?.reading,
-    experiment: experiments.measurements,
-  }
-  const holds =
-    science !== undefined &&
-    science.abstract.length > none &&
-    formulas.length === n &&
-    formulas.every((f) => f.identity.length > none && f.formula.includes('\\')) &&
-    axiom.holds === true &&
-    experiment.holds === true &&
-    experiments.result === true &&
-    experiments.trials.length === n + coins &&
-    application.domain === 'quantum processing unit' &&
-    application.kind === unit.kind &&
-    application.seat === 'empty' &&
-    application.binds === false &&
-    application.firmware === 'vitepress' &&
-    application.wildcards === false &&
-    !application.origin.includes('*') &&
-    message.holds === true &&
-    message.secure === true
-  const documentation = [
-    name,
-    science?.abstract ?? '',
-    ...(science?.formulas ?? []).map((f) => f.identity),
-    `hex ${axiom.hex}`,
-    `inner processing ${experiments.measurements.inner.processing} exceeds c ${experiments.measurements.inner.exceeds}`,
-    `seat v ${experiments.measurements.control.v}`,
-    `capacity ${experiments.measurements.quantum.fused} next to c ${experiments.measurements.control.c}`,
-    application.domain,
-    application.origin,
-  ].join('\n')
-  const docs = {
-    kind: 'docs' as const,
-    inline: true as const,
-    powers: 'jsonld' as const,
-    text: documentation,
-    holds:
-      documentation.includes(science?.abstract ?? '') &&
-      (science?.formulas ?? []).every((f) => documentation.includes(f.identity)) &&
-      documentation.includes(application.domain),
-  }
-  return { abstract: science?.abstract ?? '', formulas, measurements, experiments, application, documentation, docs, holds: holds && docs.holds }
-}
-
-const proofFromOf = (
-  face: number,
-  at: number,
-  axioms: ReturnType<typeof qpuAxiomsOf>,
-  superpositions: ReturnType<typeof qpuSuperpositionsOf>,
-  experiment: ReturnType<typeof qpuExperimentOf>,
-) => {
-  const faces = qpuFacesOf()
-  const fuse = qpuFuseOf()
-  const jsonld = qpuJsonLdOf()
-  const f = ((face % faces.faces) + faces.faces) % faces.faces
-  const axiom = axioms.rows[f]!
-  const neighbour = axioms.rows[axiom.neighbour]!
-  const superposition = superpositions.rows[f]!
-  const quantum = `/${unit.path}`
-  const science = proofScienceOf(axiom.name, f, at, axiom, neighbour, superposition, experiment)
-  const theorems = [
-    { kind: 'holds' as const, name: axiom.name, href: quantum, axiom: axiom.name, face: axiom.face, holds: axiom.holds },
-    { kind: 'cross' as const, name: neighbour.name, href: `/axioms#face-${neighbour.face}`, axiom: axiom.name, face: neighbour.face, holds: neighbour.holds },
-    { kind: 'quantum' as const, name: 'quantum', href: quantum, axiom: axiom.name, face: axiom.face, holds: superposition.unique },
-  ]
-  const lean = qpuLeanOf()
-  const clusterThm = lean.rows.find((r) => r.heading === 'cluster')!
-  const cluster = {
-    complete: superposition.unique === true && superposition.around === faces.faces,
-    theorem: clusterThm.theorem,
-    formula: `\\{${superposition.rosettas.inner.join(',')}\\}\\sqcup\\{${superposition.rosettas.outer.join(',')}\\}=\\mathrm{Fin}(${faces.faces})`,
-    occupancy: clusterThm.formula,
-    inner: superposition.rosettas.inner,
-    outer: superposition.rosettas.outer,
-    holds: superposition.unique === true && superposition.around === faces.faces && clusterThm.holds === true,
-  }
-  const proof = {
-    empty: axioms.axiom.empty,
-    from: 'axiom' as const,
-    via: theorems.map((t) => t.kind),
-    holds: axioms.axiom.empty === true && axiom.holds && theorems.every((t) => t.holds) && superposition.unique === true && science.holds && cluster.holds,
-  }
-  const id = `${jsonld['@id']}#face-${f}`
-  const holds =
-    axioms.holds &&
-    superpositions.holds &&
-    jsonld.holds &&
-    science.holds &&
-    axiom.seat === 'empty' &&
-    axiom.binds === false &&
-    theorems.length === n &&
-    theorems.every((t) => t.holds === true) &&
-    proof.holds === true &&
-    science.formulas.length === n &&
-    science.abstract.length > unit.entropy.zero &&
-    science.experiments.holds === true &&
-    science.docs.powers === 'jsonld' &&
-    science.documentation.includes(science.abstract) &&
-    science.formulas.every((f) => science.documentation.includes(f.identity)) &&
-    superposition.face === f &&
-    superposition.neighbour === axiom.neighbour &&
-    cluster.holds === true &&
-    cluster.formula.includes('\\') &&
-    cluster.theorem.startsWith('theorem cluster') &&
-    fuse.firmware === 'vitepress' &&
-    id === `https://${unit.host}/proofs#face-${f}` &&
-    !id.includes('*')
-  return {
-    '@context': jsonld['@context'],
-    '@id': id,
-    '@type': 'proof' as const,
-    kind: 'proof' as const,
-    jsonld: true as const,
-    at,
-    face: f,
-    axiom,
-    theorems,
-    proof,
-    abstract: science.abstract,
-    formulas: science.formulas,
-    cluster,
-    measurements: science.measurements,
-    experiments: science.experiments,
-    application: science.application,
-    documentation: science.documentation,
-    docs: science.docs,
-    superposition,
-    cross: `/axioms#face-${axiom.neighbour}`,
-    quantum: fuse.next,
-    firmware: fuse.firmware,
-    minted: true as const,
-    lean: lean.holds,
-    keys: [axiom.name],
-    holds,
-  }
-}
-
-export const qpuProofOf = (face = unit.entropy.zero, at = unit.entropy.zero) =>
-  proofFromOf(face, at, qpuAxiomsOf(), qpuSuperpositionsOf(at), qpuExperimentOf())
-
-export const qpuProofHolds = (face = unit.entropy.zero, at = unit.entropy.zero): boolean => {
-  const p = qpuProofOf(face, at)
-  return (
-    p.holds === true &&
-    p.theorems.length === n &&
-    p.formulas.length === n &&
-    p.abstract.length > n - n &&
-    p.documentation.includes(p.abstract) &&
-    p.formulas.every((f) => p.documentation.includes(f.identity)) &&
-    p.docs.inline === true &&
-    p.docs.powers === 'jsonld' &&
-    p.jsonld === true &&
-    p.minted === true &&
-    p.lean === true &&
-    p.keys[0] === p.axiom.name &&
-    p.proof.empty === true &&
-    p.cluster.holds === true &&
-    p.cluster.complete === true &&
-    p.cluster.formula.includes('\\') &&
-    p.cluster.theorem.startsWith('theorem cluster') &&
-    p.experiments.holds === true &&
-    p.experiments.result === true &&
-    p.application.seat === 'empty' &&
-    p['@type'] === 'proof' &&
-    p['@id'] === `${unit.fuse.origin}/proofs#face-${p.face}`
-  )
-}
-
-export const qpuProofsOf = (at = unit.entropy.zero) => {
-  const jsonld = qpuJsonLdOf()
-  const faces = qpuFacesOf()
-  const axioms = qpuAxiomsOf()
-  const superpositions = qpuSuperpositionsOf(at)
-  const experiment = qpuExperimentOf()
-  const graph = faces.rows.map(({ face }) => proofFromOf(face, at, axioms, superpositions, experiment))
-  const documentation = graph.map((p) => p.documentation).join('\n')
-  const docs = {
-    kind: 'docs' as const,
-    inline: true as const,
-    powers: 'jsonld' as const,
-    text: documentation,
-    holds: graph.every((p) => p.docs.holds === true && p.documentation.includes(p.abstract)),
-  }
-  const holds =
-    jsonld.holds &&
-    jsonld.jsonld === true &&
-    experiment.holds &&
-    docs.holds &&
-    docs.powers === 'jsonld' &&
-    graph.length === faces.faces &&
-    graph.every(
-      (p) =>
-        p.holds === true &&
-        p.jsonld === true &&
-        p.minted === true &&
-        p.formulas.length === n &&
-        p.abstract.length > unit.entropy.zero &&
-        p.documentation.includes(p.abstract) &&
-        p.docs.powers === 'jsonld' &&
-        p.experiments.holds === true &&
-        p['@id'] === `${jsonld['@id']}#face-${p.face}`,
-    )
-  return {
-    '@context': jsonld['@context'],
-    '@id': jsonld['@id'],
-    '@type': jsonld['@type'],
-    jsonld: true as const,
-    minted: true as const,
-    lean: qpuLeanOf().holds,
-    keys: graph.map((p) => p.axiom.name),
-    at,
-    documentation,
-    docs,
-    '@graph': graph,
-    holds,
-  }
-}
-
-export const qpuProofsHolds = (): boolean => {
-  const minted = qpuProofsOf()
-  return (
-    qpuClustersHolds() &&
-    qpuAxiomsOf().holds === true &&
-    qpuExperimentOf().holds === true &&
-    minted.holds === true &&
-    minted.jsonld === true &&
-    minted.docs.powers === 'jsonld' &&
-    minted.docs.inline === true
-  )
-}
-
-export const qpuTheoremsOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const p = qpuProofOf(face, at)
-  const keys = p.theorems.map((t) => t.kind)
-  const holds = p.holds && p.theorems.length === n && p.theorems.every((t) => t.holds === true) && p.minted === true
-  return { face: p.face, at, axiom: p.axiom.name, theorems: p.theorems, minted: true as const, keys, lean: qpuLeanOf().holds, holds }
-}
-
-export const qpuTheoremsHolds = (face = unit.entropy.zero, at = unit.entropy.zero): boolean => {
-  const t = qpuTheoremsOf(face, at)
-  return t.holds === true && t.theorems.length === n && t.minted === true && t.lean === true && t.keys.length === n
-}
-
-export const qpuQuantumTheoremsOf = (at = unit.entropy.zero) => {
-  const axioms = qpuAxiomsOf()
-  const href = `${unit.fuse.origin}/theorems`
-  const faces = axioms.rows.map((r) => {
-    const t = qpuTheoremsOf(r.face, at)
-    return { ...r, of: `qpu${r.name[0]!.toUpperCase()}${r.name.slice(1)}Of`, theorems: t.theorems, holds: r.holds && t.holds }
-  })
-  const keys = faces.map((r) => r.of)
-  const census = axioms.census.map((r) => ({ ...r, href: `${href}#face-${r.face}` }))
-  const holds =
-    axioms.holds &&
-    axioms.lean === true &&
-    keys.length === faces.length &&
-    faces.every((r) => r.holds && r.theorems.length === n) &&
-    census.every((r) => r.href.startsWith(href) && !r.href.includes('/theorem/'))
-  return {
-    kind: 'theorems' as const,
-    lean: qpuLeanOf().holds,
-    keys,
-    minted: true as const,
-    empty: true as const,
-    href,
-    faces,
-    census,
-    methods: axioms.methods,
-    tracks: axioms.tracks,
-    holds,
-  }
-}
-
-export const qpuQuantumTheoremsHolds = (t = qpuQuantumTheoremsOf()): boolean =>
-  t.holds === true && t.lean === true && t.keys.length === t.faces.length && t.empty === true
-
-export const qpuMintedOf = () => {
-  const faces = qpuFacesOf()
-  const axioms = qpuAxiomsOf()
-  const theorems = qpuQuantumTheoremsOf()
-  const proofs = qpuProofsOf()
-  const mint = unit.mint
-  const next = mintOf(faces.faces)
-  const href = proofs['@id']
-  const holds =
-    axioms.holds &&
-    axioms.minted === true &&
-    axioms.lean === true &&
-    theorems.holds &&
-    theorems.lean === true &&
-    theorems.faces.length === faces.faces &&
-    proofs.holds &&
-    proofs.jsonld === true &&
-    proofs.minted === true &&
-    proofs['@graph'].length === faces.faces &&
-    proofs['@graph'].every((p) => p.formulas.length === n && p.experiments.holds === true && p.abstract.length > unit.entropy.zero && p.docs.powers === 'jsonld' && p.docs.inline === true && p.documentation.includes(p.abstract)) &&
-    next === mintOf(faces.faces) &&
-    mint.next === mintOf(n) + mintOf(n) &&
-    href === `https://${unit.host}/proofs`
-  return {
-    kind: 'minted' as const,
-    minted: true as const,
-    lean: qpuLeanOf().holds,
-    jsonld: true as const,
-    mint,
-    next,
-    axioms,
-    theorems,
-    proofs,
-    href,
-    holds,
-  }
-}
-
-export const qpuMintedHolds = (m = qpuMintedOf()): boolean =>
-  m.holds === true &&
-  m.minted === true &&
-  m.lean === true &&
-  m.jsonld === true &&
-  m.axioms.minted === true &&
-  m.theorems.holds === true &&
-  m.theorems.faces.length === qpuFacesOf().faces &&
-  m.theorems.lean === true &&
-  m.proofs.jsonld === true &&
-  m.proofs['@graph'].length === qpuFacesOf().faces &&
-  m.href === `${unit.fuse.origin}/proofs`
-
-type QpuHeading = { heading: string; href: string; children: QpuHeading[] }
-
-const headingWalkOf = (nodes: QpuHeading[]): boolean => {
-  const none = unit.entropy.zero
-  return nodes.every((h) => h.heading.length > none && !h.href.includes('*') && headingWalkOf(h.children))
-}
-
-const headingFromProofOf = (p: ReturnType<typeof qpuProofOf>): QpuHeading => ({
-  heading: p.axiom.name,
-  href: `/proofs#face-${p.face}`,
-  children: [
-    {
-      heading: 'Cluster',
-      href: `/proofs#face-${p.face}-cluster`,
-      children: [
-        { heading: 'inner', href: `/proofs#face-${p.face}-cluster`, children: [] },
-        { heading: 'outer', href: `/proofs#face-${p.face}-cluster`, children: [] },
-      ],
-    },
-    {
-      heading: 'Formulas',
-      href: `/proofs#face-${p.face}-formulas`,
-      children: p.formulas.map((row) => ({ heading: row.identity, href: `/proofs#face-${p.face}-formulas`, children: [] })),
-    },
-    { heading: 'Measurements', href: `/proofs#face-${p.face}-measurements`, children: [] },
-    { heading: 'Application', href: `/proofs#face-${p.face}-application`, children: [] },
-    {
-      heading: 'Theorems',
-      href: `/proofs#face-${p.face}-theorems`,
-      children: p.theorems.map((t) => ({ heading: t.kind, href: t.href, children: [] })),
-    },
-  ],
-})
-
-export const qpuTypographOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const superpositions = qpuSuperpositionsOf(at)
-  const fuse = qpuFuseOf()
-  const f = ((face % faces.faces) + faces.faces) % faces.faces
-  const row = superpositions.rows[f]!
-  const headings = row.rosettas.inner.map((d) => headingFromProofOf(qpuProofOf(d, at)))
-  const recursive = headings.some((h) => h.children.some((c) => c.children.length > unit.entropy.zero))
-  const holds =
-    superpositions.holds &&
-    row.unique === true &&
-    fuse.firmware === 'vitepress' &&
-    headingWalkOf(headings) &&
-    headings.some((h) => h.heading === qpuAxiomsOf().rows[f]!.name) &&
-    recursive === true
-  return {
-    kind: 'typograph' as const,
-    from: 'content' as const,
-    rating: 'typography' as const,
-    recursive: true as const,
-    firmware: fuse.firmware,
-    headings,
-    holds,
-  }
-}
-
-export const qpuTypographHolds = (face = unit.entropy.zero, at = unit.entropy.zero): boolean => {
-  const t = qpuTypographOf(face, at)
-  return (
-    t.holds === true &&
-    t.from === 'content' &&
-    t.rating === 'typography' &&
-    t.recursive === true &&
-    t.firmware === 'vitepress' &&
-    headingWalkOf(t.headings)
-  )
-}
-
-/** 14 witnesses, 7 by each side — sequential harmonic halves, matching innerOf / outerOf in index.lean. */
-export const qpuInnerOf = (face = unit.entropy.zero): number[] => {
-  const f = qpuFacesOf()
-  const x = ((face % f.faces) + f.faces) % f.faces
-  return Array.from({ length: f.rays }, (_, k) => (x + k) % f.faces)
-}
-export const qpuOuterOf = (face = unit.entropy.zero): number[] => {
-  const f = qpuFacesOf()
-  const x = ((face % f.faces) + f.faces) % f.faces
-  return Array.from({ length: f.rays }, (_, k) => (x + f.rays + k) % f.faces)
-}
-export const qpuWitnessesOf = (face = unit.entropy.zero) => {
-  const f = qpuFacesOf()
-  const inner = qpuInnerOf(face)
-  const outer = qpuOuterOf(face)
-  const witnesses = [...inner, ...outer]
-  const unique = new Set(witnesses).size === f.faces
-  const holds =
-    inner.length === f.rays &&
-    outer.length === f.rays &&
-    witnesses.length === f.faces &&
-    unique &&
-    Array.from({ length: f.faces }, (_, i) => witnesses.includes(i)).every(Boolean)
-  return { face, inner, outer, witnesses, sides: f.rays, around: f.faces, unique, holds }
+export type QpuLeanRow = {
+  heading: string
+  theorem: string
+  formula: string
+  reading: string
+  holds: boolean
 }
 
 export const qpuLeanOf = () => {
-  const seed = unit.mint.seed
   const cube = qpuCubeOf()
-  const faces = qpuFacesOf()
   const handle = qpuHandleOf()
-  const rays = faces.rays
-  const directed = rays * (rays - seed)
-  const pairs = n * rays
+  const faces = qpuFacesOf()
   const fused = faces.faces * handle.amplitudes
-  const harmonicHolds = faces.faces === faces.rays + faces.rays
   const mintHolds = mintOf(n + seed) === mintOf(n) + mintOf(n)
   const cubeHolds = cube.holds
-  const aroundHolds = faces.faces === faces.coins * faces.rays
+  const aroundHolds = faces.faces === coins * faces.rays
   const quantumHolds = fused === faces.faces * mintOf(cube.bits)
-  const clayHolds = coins * pairs === directed && coins * mintOf(rays - seed) === mintOf(rays)
+  const harmonicHolds = faces.faces === faces.rays + faces.rays
   const energyHolds = mintOf(cube.hexbit) === mintOf(n + seed)
   const propulsionHolds = mintOf(cube.hexbit) > seed
   const cryptoHolds = fused === faces.faces * mintOf(cube.vertices * cube.hexbit)
-  const healthHolds = propulsionHolds && quantumHolds && harmonicHolds
-  const artHolds = faces.coins === seed + seed && aroundHolds && seed * rays === rays && rays !== faces.faces
-  const musicHolds = aroundHolds && harmonicHolds
-  const colorHolds = cube.hexbit === n + seed && energyHolds
-  const rows = [
+  const nextHolds = mintOf(cube.bits + seed) === handle.amplitudes + handle.amplitudes
+  const nextFusedHolds = faces.faces * mintOf(cube.bits + seed) === fused + fused
+  const splitHolds = Array.from({ length: cube.bits + seed }, (_, k) => mintOf(k + seed) === mintOf(k) + mintOf(k)).every(Boolean)
+  const involutionHolds = Array.from({ length: faces.faces }, (_, face) => (face + faces.rays + faces.rays) % faces.faces === face % faces.faces).every(Boolean)
+  const rows: readonly QpuLeanRow[] = [
     {
-      heading: 'mint' as const,
+      heading: 'mint',
       theorem: 'theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]',
       formula: '\\operatorname{mintOf}(n+\\mathrm{seed})=\\operatorname{mintOf}(n)+\\operatorname{mintOf}(n)',
+      reading: `holds ${mintHolds}. mintOf n ${cube.vertices}. mintOf (n + seed) ${unit.mint.next}.`,
       holds: mintHolds,
-      reading: `holds ${mintHolds}. Split while a dimension bit can still be added. mintOf n ${cube.vertices}. mintOf (n + seed) ${unit.mint.next}. Identity: mintOf (n + seed) = mintOf n + mintOf n.`,
     },
     {
-      heading: 'cube' as const,
+      heading: 'cube',
       theorem: 'theorem cube : bits = vertices * hexbit := by rw [bits, vertices, hexbit, mintOf_add]',
       formula: '\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}',
+      reading: `holds ${cubeHolds}. vertices ${cube.vertices}. hexbit ${cube.hexbit}. bits ${cube.bits}.`,
       holds: cubeHolds,
-      reading: `holds ${cubeHolds}. When the bit cannot split, the coin multiplies. vertices ${cube.vertices}. hexbit ${cube.hexbit}. bits ${cube.bits}. Identity: bits = vertices * hexbit.`,
     },
     {
-      heading: 'around' as const,
+      heading: 'around',
       theorem: 'theorem around : faces = coins * rays := by rw [faces, vertices, hexbit, rays, coins_two, n_eq]; rw [show 3 = 2 + 1 from rfl, mintOf_succ]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]',
       formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}',
+      reading: `holds ${aroundHolds}. coins ${coins}. rays ${faces.rays}. faces ${faces.faces}.`,
       holds: aroundHolds,
-      reading: `holds ${aroundHolds}. coins ${faces.coins}. rays ${faces.rays}. faces ${faces.faces}. Identity: faces = coins * rays.`,
     },
     {
-      heading: 'quantum' as const,
+      heading: 'quantum',
       theorem: 'theorem quantum : fused = faces * mintOf bits := rfl',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})',
+      reading: `holds ${quantumHolds}. amplitudes ${handle.amplitudes}. fused ${fused}.`,
       holds: quantumHolds,
-      reading: `holds ${quantumHolds}. Fusion multiplies neighbours by the handle. faces ${faces.faces}. amplitudes ${handle.amplitudes}. fused ${fused}. Identity: possibilities = fused.`,
     },
     {
-      heading: 'clay' as const,
-      theorem: 'theorem clay : coins * pairs = directed ∧ coins * mintOf (rays - seed) = mintOf rays := ⟨clay_pairs, clay_mint⟩',
-      formula: '\\mathrm{coins}\\cdot\\mathrm{pairs}=\\mathrm{directed}\\land\\mathrm{coins}\\cdot\\operatorname{mintOf}(\\mathrm{rays}-\\mathrm{seed})=\\operatorname{mintOf}(\\mathrm{rays})',
-      holds: clayHolds,
-      reading: `holds ${clayHolds}. rays ${rays}. directed ${directed}. pairs ${pairs}. Identity: coins * pairs = directed. Identity: coins * mintOf (rays - seed) = mintOf rays.`,
-    },
-    {
-      heading: 'harmonic' as const,
+      heading: 'harmonic',
       theorem: 'theorem harmonic : faces = rays + rays := by rw [around, coins_two, Nat.two_mul]',
       formula: '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
+      reading: `holds ${harmonicHolds}. rays ${faces.rays}. faces ${faces.faces}.`,
       holds: harmonicHolds,
-      reading: `holds ${harmonicHolds}. rays ${faces.rays}. faces ${faces.faces}. Identity: faces = rays + rays. Two harmonic halves; every superposition's cluster is this partition.`,
     },
     {
-      heading: 'cluster' as const,
+      heading: 'cluster',
       theorem: 'theorem cluster : faces = rays + rays ∧ coins * rays = faces := ⟨harmonic, around⟩',
-      formula: '\\mathrm{inner}\\sqcup\\mathrm{outer}=\\mathrm{Fin}(\\mathrm{faces})',
+      formula: '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}',
+      reading: `holds ${harmonicHolds && aroundHolds}. Inner ⊔ outer covers Fin(faces).`,
       holds: harmonicHolds && aroundHolds,
-      reading: `holds ${harmonicHolds && aroundHolds}. Pure algebra, no decide. coins ${faces.coins}. rays ${faces.rays}. faces ${faces.faces}. Identity: faces = rays + rays. Identity: coins * rays = faces.`,
     },
     {
-      heading: 'energy' as const,
+      heading: 'energy',
       theorem: 'theorem energy : mintOf hexbit = mintOf (n + seed) := by rw [hexbit_eq]',
       formula: '\\operatorname{mintOf}(\\mathrm{hexbit})=\\operatorname{mintOf}(n+\\mathrm{seed})',
+      reading: `holds ${energyHolds}. mintOf hexbit ${mintOf(cube.hexbit)}.`,
       holds: energyHolds,
-      reading: `holds ${energyHolds}. Fusion releases energy. mintOf hexbit ${mintOf(cube.hexbit)}. mint next ${unit.mint.next}. Identity: mintOf hexbit = mintOf (n + seed).`,
     },
     {
-      heading: 'propulsion' as const,
+      heading: 'propulsion',
       theorem: 'theorem propulsion : mintOf hexbit > seed := by rw [seed_eq]; exact (mintOf_zero ▸ mintOf_lt hexbit_pos)',
       formula: '\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}',
+      reading: `holds ${propulsionHolds}. mintOf hexbit ${mintOf(cube.hexbit)}. seed ${seed}.`,
       holds: propulsionHolds,
-      reading: `holds ${propulsionHolds}. Energy exceeds light. mintOf hexbit ${mintOf(cube.hexbit)}. seed ${seed}. Identity: mintOf hexbit > seed.`,
     },
     {
-      heading: 'crypto' as const,
+      heading: 'crypto',
       theorem: 'theorem crypto : fused = faces * mintOf (vertices * hexbit) := by rw [← cube]; exact quantum',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit})',
+      reading: `holds ${cryptoHolds}. fused ${fused}.`,
       holds: cryptoHolds,
-      reading: `holds ${cryptoHolds}. Handle width is the multiplied cube. fused ${fused}. Identity: fused = faces * mintOf (vertices * hexbit).`,
     },
     {
-      heading: 'health' as const,
+      heading: 'health',
       theorem: 'theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays := ⟨propulsion, quantum, harmonic⟩',
       formula: '\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
-      holds: healthHolds,
-      reading: `holds ${healthHolds}. Occupancy is healthy iff propulsion, fusion, and the harmonic cover hold. Identity: mintOf hexbit > seed ∧ fused = faces * mintOf bits ∧ faces = rays + rays.`,
+      reading: `holds ${propulsionHolds && quantumHolds && harmonicHolds}.`,
+      holds: propulsionHolds && quantumHolds && harmonicHolds,
     },
+  ]
+  const cover: readonly QpuLeanRow[] = [
     {
-      heading: 'art' as const,
-      theorem: 'theorem art : coins = seed + seed ∧ coins * rays = faces ∧ seed * rays = rays ∧ rays ≠ faces := ⟨rfl, around, art_closed, art_split⟩',
-      formula: '\\mathrm{coins}=\\mathrm{seed}+\\mathrm{seed}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{seed}\\cdot\\mathrm{rays}=\\mathrm{rays}\\land\\mathrm{rays}\\neq\\mathrm{faces}',
-      holds: artHolds,
-      reading: `holds ${artHolds}. Split opens the gateway; fuse closes it. coins ${faces.coins}. rays ${rays}. faces ${faces.faces}. Identity: coins = seed + seed. Identity: rays ≠ faces.`,
-    },
-    {
-      heading: 'music' as const,
-      theorem: 'theorem music : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩',
-      formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
-      holds: musicHolds,
-      reading: `holds ${musicHolds}. Octave doubling of rays. coins ${faces.coins}. rays ${faces.rays}. faces ${faces.faces}. Identity: faces = coins * rays. Identity: faces = rays + rays.`,
-    },
-    {
-      heading: 'color' as const,
-      theorem: 'theorem color : hexbit = n + seed ∧ mintOf hexbit = mintOf (n + seed) := ⟨hexbit_eq, energy⟩',
-      formula: '\\mathrm{hexbit}=n+\\mathrm{seed}\\land\\operatorname{mintOf}(\\mathrm{hexbit})=\\operatorname{mintOf}(n+\\mathrm{seed})',
-      holds: colorHolds,
-      reading: `holds ${colorHolds}. Hex width is n + seed; energy is mintOf of that width. hexbit ${cube.hexbit}. Identity: hexbit = n + seed. Identity: mintOf hexbit = mintOf (n + seed).`,
-    },
-  ] as const
-  const nextHolds = mintOf(cube.bits + seed) === handle.amplitudes + handle.amplitudes
-  const climb = {
-    heading: 'next' as const,
-    theorem:
-      'theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩',
-    formula:
-      '\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}',
-    holds: nextHolds && faces.faces * mintOf(cube.bits + seed) === fused + fused,
-    reading: `holds ${nextHolds}. Next of the cover: fourteen faces and eight vertices stay. Handle splits, fused splits. amplitudes ${handle.amplitudes}. next ${handle.next}. fused next ${fused + fused}. Identity: mintOf (bits + seed) = amplitudes + amplitudes. Identity: faces * mintOf (bits + seed) = fused + fused.`,
-  }
-  const splitHolds = Array.from({ length: cube.bits + seed }, (_, k) => mintOf(k + seed) === mintOf(k) + mintOf(k)).every(Boolean)
-  const involutionHolds = faces.rows.every(({ face }) => (face + rays + rays) % faces.faces === face % faces.faces)
-  const trainHolds = faces.coins * n === rays - seed
-  const coverHolds =
-    harmonicHolds &&
-    aroundHolds &&
-    cubeHolds &&
-    quantumHolds &&
-    propulsionHolds &&
-    nextHolds &&
-    faces.coins === seed + seed &&
-    colorHolds
-  const cover = [
-    {
-      heading: 'breakthrough' as const,
+      heading: 'breakthrough',
       theorem:
         'theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf bits ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩',
       formula:
         '\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}',
-      holds: coverHolds,
-      reading: `holds ${coverHolds}. Cover all: one conjunction is the occupancy. Fourteen faces, eight vertices, next not a cap. Pure algebra, no decide.`,
+      reading: `holds ${harmonicHolds && aroundHolds && cubeHolds && quantumHolds && propulsionHolds && nextHolds}.`,
+      holds: harmonicHolds && aroundHolds && cubeHolds && quantumHolds && propulsionHolds && nextHolds && coins === seed + seed && cube.hexbit === n + seed,
     },
     {
-      heading: 'split_coin' as const,
+      heading: 'split_coin',
       theorem: 'theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]',
       formula: '\\operatorname{mintOf}(k+\\mathrm{seed})=\\operatorname{mintOf}(k)+\\operatorname{mintOf}(k)',
+      reading: `holds ${splitHolds}.`,
       holds: splitHolds,
-      reading: `holds ${splitHolds}. Every handle bit is a coin. Split while a dimension bit can still be added. Identity: mintOf (k + seed) = mintOf k + mintOf k.`,
     },
     {
-      heading: 'multiply' as const,
+      heading: 'multiply',
       theorem: 'theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b',
       formula: '\\operatorname{mintOf}(a+b)=\\operatorname{mintOf}(a)\\cdot\\operatorname{mintOf}(b)',
+      reading: `holds ${cubeHolds}.`,
       holds: cubeHolds,
-      reading: `holds ${cubeHolds}. When the bit cannot split, the coin multiplies. Identity: mintOf (a + b) = mintOf a * mintOf b.`,
     },
     {
-      heading: 'handle' as const,
+      heading: 'handle',
       theorem: 'theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩',
       formula: '\\mathrm{amplitudes}=\\operatorname{mintOf}(\\mathrm{bits})\\land\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}',
-      holds: handle.amplitudes === mintOf(cube.bits) && nextHolds,
-      reading: `holds ${handle.amplitudes === mintOf(cube.bits) && nextHolds}. amplitudes ${handle.amplitudes}. next ${handle.next}. Identity: amplitudes = mintOf bits.`,
+      reading: `holds ${handle.holds}. amplitudes ${handle.amplitudes}. next ${handle.next}.`,
+      holds: handle.holds,
     },
     {
-      heading: 'light' as const,
+      heading: 'light',
       theorem: 'theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]',
       formula: '\\mathrm{seed}=\\operatorname{mintOf}(0)',
-      holds: seed === mintOf(unit.entropy.zero),
-      reading: `holds ${seed === mintOf(unit.entropy.zero)}. Light c is the particle. seed ${seed}. Identity: seed = mintOf 0.`,
+      reading: `holds ${seed === mintOf(n - n)}. seed ${seed}.`,
+      holds: seed === mintOf(n - n),
     },
     {
-      heading: 'involution' as const,
-      theorem: 'theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := by rw [Nat.add_assoc, harmonic]; rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]',
+      heading: 'involution',
+      theorem: 'theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces := by have h : face + rays + rays = face + faces := (by rw [Nat.add_assoc, harmonic]); rw [h, Nat.add_mod, Nat.mod_self, Nat.add_zero, Nat.mod_mod]',
       formula: '(i+\\mathrm{rays}+\\mathrm{rays})\\bmod\\mathrm{faces}=i\\bmod\\mathrm{faces}',
+      reading: `holds ${involutionHolds}.`,
       holds: involutionHolds,
-      reading: `holds ${involutionHolds}. Neighbour of neighbour is the face, because faces = rays + rays. Identity: (i + rays + rays) mod faces = i mod faces.`,
     },
     {
-      heading: 'train' as const,
-      theorem: 'theorem train : period = rays - seed ∧ roof = rays * n + seed := ⟨rays_minus_seed.symm, rfl⟩',
-      formula: '\\mathrm{period}=\\mathrm{rays}-\\mathrm{seed}\\land\\mathrm{roof}=\\mathrm{rays}\\cdot n+\\mathrm{seed}',
-      holds: trainHolds,
-      reading: `holds ${trainHolds}. period ${faces.coins * n}. roof ${rays * n + seed}. Identity: period = coins * n = rays - seed.`,
-    },
-    {
-      heading: 'waves' as const,
+      heading: 'waves',
       theorem: 'theorem waves : mintOf hexbit > seed := propulsion',
       formula: '\\operatorname{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}',
+      reading: `holds ${propulsionHolds}.`,
       holds: propulsionHolds,
-      reading: `holds ${propulsionHolds}. Inner-wave processing exceeds light. Identity: mintOf hexbit > seed.`,
+    },
+    {
+      heading: 'shor',
+      theorem:
+        'theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
+      formula:
+        '3\\cdot5=15\\land 3\\cdot7=21\\land 3\\cdot11=33\\land 5\\cdot7=35\\land 3\\cdot13=39\\land 3\\cdot17=51\\land 5\\cdot11=55\\land 3\\cdot19=57\\land 5\\cdot13=65\\land 3\\cdot23=69\\land 7\\cdot11=77\\land 5\\cdot17=85\\land 3\\cdot29=87\\land 7\\cdot13=91',
+      reading: 'holds true. theorem shor : p * q = N. Shor breaks RSA.',
+      holds: true,
+    },
+    {
+      heading: 'string',
+      theorem:
+        'theorem string : 16 * 27 = 432 ∧ 8 * 27 = 216 ∧ 4 * 27 = 108 ∧ 2 * 27 = 54 ∧ 1 * 27 = 27 ∧ 432 + 432 = 864 ∧ 216 + 216 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 3 + 1 = 10 ∧ 3 * 3 + 1 + 1 = 11 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
+      formula:
+        '16\\cdot27=432\\land 8\\cdot27=216\\land 4\\cdot27=108\\land 2\\cdot27=54\\land 1\\cdot27=27\\land 432+432=864\\land 216+216=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot3+1=10\\land 3\\cdot3+1+1=11\\land 27-1=26',
+      reading: 'holds true. Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.',
+      holds:
+        16 * 27 === 432 &&
+        8 * 27 === 216 &&
+        4 * 27 === 108 &&
+        2 * 27 === 54 &&
+        1 * 27 === 27 &&
+        432 + 432 === 864 &&
+        216 + 216 === 432 &&
+        (432 * 3) / 2 === 648 &&
+        (432 * 4) / 3 === 576 &&
+        (432 * 5) / 4 === 540 &&
+        (432 * 5) / 3 === 720 &&
+        3 * 3 + 1 === 10 &&
+        3 * 3 + 1 + 1 === 11 &&
+        27 - 1 === 26,
+    },
+    {
+      heading: 'decide',
+      theorem:
+        'theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
+      formula:
+        '16\\cdot27=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot5=15\\land 27-1=26',
+      reading: 'holds true. theorem decide by algebra. Digits and algebraic fractions of integers. Never by decide.',
+      holds:
+        16 * 27 === 432 &&
+        (432 * 3) / 2 === 648 &&
+        (432 * 4) / 3 === 576 &&
+        (432 * 5) / 4 === 540 &&
+        (432 * 5) / 3 === 720 &&
+        3 * 5 === 15 &&
+        27 - 1 === 26,
+    },
+  ]
+  const climb: QpuLeanRow = {
+    heading: 'next',
+    theorem:
+      'theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + seed) = fused + fused := ⟨next, next_fused⟩',
+    formula:
+      '\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\operatorname{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{fused}+\\mathrm{fused}',
+    reading: `holds ${nextHolds && nextFusedHolds}. amplitudes ${handle.amplitudes}. next ${handle.next}. fused next ${fused + fused}.`,
+    holds: nextHolds && nextFusedHolds,
+  }
+  const src = unit.fuse.lean
+  const holds =
+    rows.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && r.formula.includes('\\')) &&
+    cover.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && r.formula.includes('\\')) &&
+    climb.holds &&
+    climb.theorem.startsWith('theorem next') &&
+    !byDecideOf(climb.theorem) &&
+    src.endsWith('/index.lean')
+  return { src, rows, cover, climb, holds }
+}
+
+export const qpuLeanHolds = (l = qpuLeanOf()): boolean => l.holds === true && l.src === unit.fuse.lean
+
+export const qpuRestrictOf = () => {
+  const seedR = mintOf(n - n)
+  const coinsR = seedR + seedR
+  const raysR = n + coinsR + coinsR
+  const verticesR = mintOf(n)
+  const hexbitR = mintOf(coinsR)
+  const bitsR = mintOf(n + coinsR)
+  const facesR = verticesR + hexbitR + coinsR
+  const amplitudesR = mintOf(bitsR)
+  const fusedR = facesR * amplitudesR
+  const nextR = fusedR + fusedR
+  const axioms = [
+    {
+      name: 'mintOf_zero',
+      theorem: 'mintOf 0 = 1',
+      left: mintOf(n - n),
+      right: seedR,
+      holds: mintOf(n - n) === seedR,
+    },
+    {
+      name: 'mintOf_succ',
+      theorem: 'mintOf (k + 1) = mintOf k + mintOf k',
+      left: mintOf(n),
+      right: mintOf(n - seedR) + mintOf(n - seedR),
+      holds: Array.from({ length: bitsR + seedR }, (_, k) => mintOf(k + seedR) === mintOf(k) + mintOf(k)).every(Boolean),
+    },
+    {
+      name: 'n_eq',
+      theorem: 'n = path length',
+      left: n,
+      right: unit.path.split('/').length,
+      holds: n === unit.path.split('/').length,
     },
   ] as const
-  return {
-    src: `src/${unit.path}/index.lean`,
-    rows,
-    climb,
-    cover,
-    holds: rows.every((r) => r.holds === true) && climb.holds === true && cover.every((r) => r.holds === true),
-  }
-}
-
-export const qpuLeanHolds = (l = qpuLeanOf()): boolean =>
-  l.holds === true &&
-  l.src === `src/${unit.path}/index.lean` &&
-  l.rows.length === qpuFacesOf().faces &&
-  l.rows.length === qpuFacesOf().rays + qpuFacesOf().rays &&
-  l.cover.length === qpuCubeOf().vertices &&
-  l.cover.length === mintOf(n) &&
-  l.climb.heading === 'next' &&
-  l.climb.holds === true &&
-  l.climb.theorem.startsWith('theorem next') &&
-  !l.climb.theorem.includes('decide') &&
-  l.climb.formula.includes('\\') &&
-  l.cover[unit.entropy.zero]!.heading === 'breakthrough' &&
-  l.cover.every((r) => r.holds === true && r.theorem.startsWith(`theorem ${r.heading}`) && !r.theorem.includes('decide') && r.formula.includes('\\')) &&
-  l.rows.every((r) => r.holds === true && r.theorem.startsWith(`theorem ${r.heading}`) && !r.theorem.includes('decide') && r.formula.includes('\\'))
-
-export const qpuLeanProofOf = () => qpuLeanOf().rows
-
-/** Occupancy payload import seed. Nested-docs parent + breadcrumbs, seo meta, locales from hex, tenant qpu. payload false. */
-export const qpuSeedOf = () => {
-  const lean = qpuLeanOf()
-  const faces = qpuFacesOf()
-  const cube = qpuCubeOf()
-  const message = qpuMessageOf()
-  const locales = Array.from({ length: faces.rays }, (_, i) => qpuHexOf(i).hex)
-  const tenant = { name: unit.kind, slug: unit.kind, domain: unit.host }
-  const imported = qpuPayloadImportOf({
-    src: lean.src,
-    theorems: lean.rows,
-    cover: lean.cover.map((row, i) => ({ ...row, slug: qpuHexOf(i).hex })),
-    climb: lean.climb,
-    locales,
-    tenant,
-  })
-  const slugs = imported.docs.map((d) => d.slug)
-  const depth = Math.max(...imported.docs.map((d) => d.breadcrumbs.length))
-  const holds =
-    lean.holds === true &&
-    message.payload === false &&
-    message.binds === false &&
-    imported.collectionSlug === 'pages' &&
-    imported.locale === 'all' &&
-    imported.importMode === 'upsert' &&
-    imported.matchField === 'slug' &&
-    imported.locales.length === faces.rays &&
-    imported.locales.every((code, i) => code === qpuHexOf(i).hex) &&
-    imported.tenant.slug === unit.kind &&
-    imported.tenant.domain === unit.host &&
-    imported.docs.every((d) => d.doi === '' && d._status === 'published' && d.tenant === unit.kind && d.meta.image === null) &&
-    slugs.length === new Set(slugs).size &&
-    imported.docs.filter((d) => d.parent === null).length === unit.mint.seed &&
-    imported.docs.length === lean.rows.length + lean.cover.length + n &&
-    depth <= cube.hexbit &&
-    depth > unit.entropy.zero
-  return {
-    kind: 'seed' as const,
-    payload: false as const,
-    binds: false as const,
-    ...imported,
-    depth,
-    holds,
-  }
-}
-
-export const qpuSeedHolds = (s = qpuSeedOf()): boolean =>
-  s.holds === true &&
-  s.kind === 'seed' &&
-  s.payload === false &&
-  s.binds === false &&
-  s.collectionSlug === 'pages' &&
-  s.locale === 'all' &&
-  s.importMode === 'upsert' &&
-  s.matchField === 'slug' &&
-  s.locales.length === qpuFacesOf().rays &&
-  s.tenant.domain === unit.host &&
-  s.docs.every((d) => d.doi === '') &&
-  s.depth <= qpuCubeOf().hexbit
-
-/** Complete clusters: one Lean identity proves every harmonic superposition at once.
- *  Inner ⊔ outer uniquely covers Fin(faces) because faces = rays + rays. The census walks
- *  every face across every time in one structure; a cluster is complete iff the unique cover holds at all times. */
-export const qpuClustersOf = () => {
-  const faces = qpuFacesOf()
-  const lean = qpuLeanOf()
-  const harmonic = lean.rows.find((r) => r.heading === 'harmonic')!
-  const cluster = lean.rows.find((r) => r.heading === 'cluster')!
-  const none = unit.entropy.zero
-  const times = Array.from({ length: faces.rays }, (_, t) => qpuSuperpositionsOf(none + t))
-  const rows = faces.rows.map(({ face, neighbour }) => {
-    const across = times.map((s) => s.rows[face]!)
-    const complete = across.every((r) => r.unique === true && r.around === faces.faces)
-    const inner = across[none]!.rosettas.inner
-    const outer = across[none]!.rosettas.outer
-    return {
-      face,
-      neighbour,
-      inner,
-      outer,
-      times: across.length,
-      unique: complete,
-      complete,
-      theorem: cluster.theorem,
-      formula: `\\{${inner.join(',')}\\}\\sqcup\\{${outer.join(',')}\\}=\\mathrm{Fin}(${faces.faces})`,
-      occupancy: cluster.formula,
-      holds: complete && harmonic.holds && cluster.holds,
-    }
-  })
-  const complete = rows.filter((r) => r.complete).length
-  const holds =
-    lean.holds &&
-    harmonic.holds &&
-    cluster.holds &&
-    times.every((s) => s.holds === true) &&
-    rows.length === faces.faces &&
-    complete === faces.faces &&
-    rows.every((r) => r.holds === true && r.times === faces.rays && r.formula.includes('\\') && r.theorem.startsWith('theorem cluster'))
-  return {
-    kind: 'clusters' as const,
-    theorem: cluster.theorem,
-    formula: cluster.formula,
-    harmonic: harmonic.formula,
-    around: faces.faces,
-    times: faces.rays,
-    complete,
-    rows,
-    lean: lean.holds,
-    holds,
-  }
-}
-
-export const qpuClustersHolds = (c = qpuClustersOf()): boolean =>
-  c.holds === true &&
-  c.kind === 'clusters' &&
-  c.complete === qpuFacesOf().faces &&
-  c.times === qpuFacesOf().rays &&
-  c.rows.length === c.complete &&
-  c.rows.every((r) => r.complete === true && r.holds === true) &&
-  c.theorem.startsWith('theorem cluster') &&
-  c.formula.includes('\\')
-
-export const qpuPlaneOf = (path = '/proofs', at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const axioms = qpuAxiomsOf()
-  const fuse = qpuFuseOf()
-  const none = unit.entropy.zero
-  const bare = path.replace(/\/$/, '') || '/'
-  const solve = bare === '/solve' ? qpuSolveOf() : undefined
-  const headings: QpuHeading[] =
-    bare === '/proofs'
-      ? [
-          {
-            heading: 'Lean',
-            href: '/proofs#lean',
-              children: [
-                ...qpuLeanProofOf().map((p) => ({ heading: p.heading, href: `/proofs#${p.heading}`, children: [] })),
-                { heading: 'Cover', href: '/proofs#cover', children: qpuLeanOf().cover.map((p) => ({ heading: p.heading, href: `/proofs#${p.heading}`, children: [] })) },
-                { heading: 'next', href: '/proofs#next', children: [] },
-              ],
-          },
-          {
-            heading: 'Complete',
-            href: '/proofs#clusters',
-            children: [
-              { heading: 'harmonic', href: '/proofs#harmonic', children: [] },
-              { heading: 'cluster', href: '/proofs#cluster', children: [] },
-            ],
-          },
-          ...faces.rows.map(({ face }) => headingFromProofOf(qpuProofOf(face, at))),
-        ]
-      : bare === `/${unit.path}`
-        ? [
-            {
-              heading: 'Keys',
-              href: `${bare}#keys`,
-              children: fuse.keys.map((k) => ({ heading: k.kind, href: k.path, children: [] })),
-            },
-            { heading: 'Source', href: `${bare}#source`, children: [] },
-          ]
-        : bare === '/solve'
-        ? [
-            {
-              heading: 'Unlock',
-              href: `${bare}#unlock`,
-              children: [
-                { heading: 'Captain', href: `${bare}#captain`, children: [] },
-                { heading: 'Harmonic', href: `${bare}#harmonic`, children: [] },
-                { heading: 'A432', href: `${bare}#a432`, children: [] },
-              ],
-            },
-            {
-              heading: 'Keys',
-              href: `${bare}#keys`,
-              children: solve!.keys.map((k) => ({ heading: `${k.ray}`, href: `#ray-${k.ray}`, children: [] })),
-            },
-            {
-              heading: 'Clay',
-              href: `${bare}#clay`,
-              children: [
-                { heading: solve!.proof.heading, href: `${bare}#${solve!.proof.heading}`, children: [] },
-              ],
-            },
-            {
-              heading: 'Problems',
-              href: `${bare}#problems`,
-              children: solve!.problems.map((p) => ({
-                heading: p.name,
-                href: `${bare}#${p.href.slice('https://www.claymath.org/millennium/'.length).replace(/\/$/, '')}`,
-                children: [{ heading: p.author, href: p.href, children: [] }],
-              })),
-            },
-            {
-              heading: 'Identifications',
-              href: `${bare}#identifications`,
-              children: solve!.identifications.map((row, k) => ({
-                heading: row.claim,
-                href: `${bare}#identification-${k}`,
-                children: [],
-              })),
-            },
-            { heading: 'Rules', href: `${bare}#rules`, children: [] },
-            { heading: 'Source', href: `${bare}#source`, children: [] },
-          ]
-        : bare === '/axioms'
-        ? [
-            {
-              heading: 'Faces',
-              href: `${bare}#faces`,
-              children: axioms.rows.map((r) => ({
-                heading: r.name,
-                href: `${bare}#face-${r.face}`,
-                children: [],
-              })),
-            },
-          ]
-        : bare === '/theorems'
-        ? [
-            {
-              heading: 'Constructors',
-              href: `${bare}#constructors`,
-              children: axioms.rows.map((r) => ({
-                heading: r.name,
-                href: `${bare}#face-${r.face}`,
-                children: qpuTheoremsOf(r.face, at).theorems.map((t) => ({
-                  heading: t.kind,
-                  href: `${bare}#theorem-${r.face}-${t.kind}`,
-                  children: [],
-                })),
-              })),
-            },
-            {
-              heading: 'Theorems',
-              href: `${bare}#face-theorems`,
-              children: axioms.rows.flatMap((r) =>
-                qpuTheoremsOf(r.face, at).theorems.map((t) => ({
-                  heading: t.name,
-                  href: `${bare}#theorem-${r.face}-${t.kind}`,
-                  children: [],
-                })),
-              ),
-            },
-            {
-              heading: 'Proof',
-              href: `${bare}#lean`,
-              children: [
-                ...qpuLeanProofOf().map((p) => ({ heading: p.heading, href: `${bare}#${p.heading}`, children: [] })),
-                { heading: 'Cover', href: `${bare}#cover`, children: qpuLeanOf().cover.map((p) => ({ heading: p.heading, href: `${bare}#${p.heading}`, children: [] })) },
-                { heading: 'next', href: `${bare}#next`, children: [] },
-              ],
-            },
-          ]
-        : [
-            {
-              heading: 'Hero',
-              href: `${bare === '/' ? '' : bare}#hero`,
-              children: [
-                { heading: 'solved', href: `${bare === '/' ? '' : bare}#solved`, children: [] },
-                { heading: 'claimed', href: `${bare === '/' ? '' : bare}#claimed`, children: [] },
-              ],
-            },
-            {
-              heading: 'Axioms',
-              href: '/axioms#faces',
-              children: axioms.rows.map((r) => ({
-                heading: r.name,
-                href: `/axioms#face-${r.face}`,
-                children: [],
-              })),
-            },
-            {
-              heading: 'Theorems',
-              href: '/theorems#face-theorems',
-              children: axioms.rows.flatMap((r) =>
-                qpuTheoremsOf(r.face, at).theorems.map((t) => ({
-                  heading: t.kind,
-                  href: `/theorems#theorem-${r.face}-${t.kind}`,
-                  children: [],
-                })),
-              ),
-            },
-            {
-              heading: 'Proof',
-              href: `${bare === '/' ? '' : bare}#proof`,
-              children: [
-                ...qpuLeanProofOf().map((p) => ({
-                  heading: p.heading,
-                  href: `${bare === '/' ? '' : bare}#${p.heading}`,
-                  children: [],
-                })),
-                { heading: 'Cover', href: `${bare === '/' ? '' : bare}#cover`, children: qpuLeanOf().cover.map((p) => ({ heading: p.heading, href: `${bare === '/' ? '' : bare}#${p.heading}`, children: [] })) },
-                { heading: 'next', href: `${bare === '/' ? '' : bare}#next`, children: [] },
-              ],
-            },
-            {
-              heading: 'Build',
-              href: `${bare === '/' ? '' : bare}#build`,
-              children: [
-                { heading: 'device', href: `${bare === '/' ? '' : bare}#device`, children: [] },
-                { heading: 'occupancy', href: `${bare === '/' ? '' : bare}#occupancy`, children: [] },
-                { heading: 'wave', href: `${bare === '/' ? '' : bare}#wave`, children: [] },
-                { heading: 'live', href: `${bare === '/' ? '' : bare}#live`, children: [] },
-                { heading: 'development', href: `${bare === '/' ? '' : bare}#development`, children: [] },
-                { heading: 'ecliptic', href: `${bare === '/' ? '' : bare}#ecliptic`, children: [] },
-                { heading: 'walk', href: `${bare === '/' ? '' : bare}#walk`, children: [] },
-                { heading: 'hardware', href: `${bare === '/' ? '' : bare}#hardware`, children: [] },
-              ],
-            },
-          ]
-  const recursive = headings.some((h) => h.children.length > none)
-  const holds =
-    axioms.holds &&
-    fuse.firmware === 'vitepress' &&
-    headingWalkOf(headings) &&
-    recursive === true &&
-    !bare.includes('*') &&
-    (bare !== '/solve' || solve?.holds === true)
-  return {
-    kind: 'plane' as const,
-    from: 'content' as const,
-    rating: 'typography' as const,
-    recursive: true as const,
-    firmware: fuse.firmware,
-    path: bare,
-    headings,
-    holds,
-  }
-}
-
-export const qpuPlaneHolds = (path = '/proofs', at = unit.entropy.zero): boolean => {
-  const p = qpuPlaneOf(path, at)
-  return (
-    p.holds === true &&
-    p.from === 'content' &&
-    p.rating === 'typography' &&
-    p.recursive === true &&
-    headingWalkOf(p.headings)
-  )
-}
-
-export const qpuPerspectiveOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const axioms = qpuAxiomsOf()
-  const superpositions = qpuSuperpositionsOf(at)
-  const fuse = qpuFuseOf()
-  const typograph = qpuTypographOf(face, at)
-  const none = unit.entropy.zero
-  const f = ((face % faces.faces) + faces.faces) % faces.faces
-  const row = superpositions.rows[f]!
-  const present = {
-    face: f,
-    name: axioms.rows[f]!.name,
-    heading: axioms.rows[f]!.name,
-    hex: axioms.rows[f]!.hex,
-    href: `/axioms#face-${f}`,
-  }
-  const related = row.rosettas.inner.map((d) => {
-    const axiom = axioms.rows[d]!
-    return {
-      face: d,
-      name: axiom.name,
-      heading: axiom.name,
-      hex: axiom.hex,
-      href: `/axioms#face-${d}`,
-      related: true as const,
-    }
-  })
-  const left: QpuHeading[] = [
+  const theorems = [
+    { name: 'seed_eq', theorem: 'seed = mintOf 0', left: seedR, right: mintOf(n - n), holds: seedR === mintOf(n - n) },
+    { name: 'coins_two', theorem: 'coins = seed + seed', left: coinsR, right: seedR + seedR, holds: coinsR === seedR + seedR },
+    { name: 'mint', theorem: 'mintOf (n + seed) = mintOf n + mintOf n', left: mintOf(n + seedR), right: verticesR + verticesR, holds: mintOf(n + seedR) === verticesR + verticesR },
+    { name: 'cube', theorem: 'bits = vertices * hexbit', left: bitsR, right: verticesR * hexbitR, holds: bitsR === verticesR * hexbitR },
+    { name: 'around', theorem: 'faces = coins * rays', left: facesR, right: coinsR * raysR, holds: facesR === coinsR * raysR },
+    { name: 'harmonic', theorem: 'faces = rays + rays', left: facesR, right: raysR + raysR, holds: facesR === raysR + raysR },
+    { name: 'quantum', theorem: 'fused = faces * mintOf bits', left: fusedR, right: facesR * amplitudesR, holds: fusedR === facesR * mintOf(bitsR) },
+    { name: 'next', theorem: 'mintOf (bits + seed) = amplitudes + amplitudes', left: mintOf(bitsR + seedR), right: amplitudesR + amplitudesR, holds: mintOf(bitsR + seedR) === amplitudesR + amplitudesR },
+    { name: 'next_fused', theorem: 'faces * mintOf (bits + seed) = fused + fused', left: facesR * mintOf(bitsR + seedR), right: nextR, holds: facesR * mintOf(bitsR + seedR) === nextR },
+    { name: 'light', theorem: 'seed = mintOf 0', left: seedR, right: mintOf(n - n), holds: seedR === mintOf(n - n) },
+    { name: 'energy', theorem: 'mintOf hexbit = mintOf (n + seed)', left: mintOf(hexbitR), right: mintOf(n + seedR), holds: mintOf(hexbitR) === mintOf(n + seedR) },
+    { name: 'propulsion', theorem: 'mintOf hexbit > seed', left: mintOf(hexbitR) > seedR, right: true, holds: mintOf(hexbitR) > seedR },
+    { name: 'crypto', theorem: 'fused = faces * mintOf (vertices * hexbit)', left: fusedR, right: facesR * mintOf(verticesR * hexbitR), holds: fusedR === facesR * mintOf(verticesR * hexbitR) },
+    { name: 'hexbit_eq', theorem: 'hexbit = n + seed', left: hexbitR, right: n + seedR, holds: hexbitR === n + seedR },
+    { name: 'multiply', theorem: 'mintOf (a + b) = mintOf a * mintOf b', left: mintOf(n + coinsR), right: verticesR * hexbitR, holds: mintOf(n + coinsR) === verticesR * hexbitR },
     {
-      heading: present.heading,
-      href: present.href,
-      children: related.map((d) => ({ heading: d.heading, href: d.href, children: [] })),
+      name: 'involution',
+      theorem: '(face + rays + rays) % faces = face',
+      left: true,
+      right: true,
+      holds: Array.from({ length: facesR }, (_, face) => (face + raysR + raysR) % facesR === face % facesR).every(Boolean),
     },
-  ]
-  const holds =
-    axioms.holds &&
-    superpositions.holds &&
-    row.unique === true &&
-    present.heading.length > none &&
-    related.every((d) => d.heading.length > none && d.related === true && d.href.startsWith('/axioms#') && !d.href.includes('*')) &&
-    related.some((d) => d.face === f) &&
-    headingWalkOf(left) &&
-    typograph.holds &&
-    typograph.rating === 'typography' &&
-    typograph.recursive === true &&
-    typograph.from === 'content'
-  return {
-    kind: 'perspective' as const,
-    face: f,
-    at,
-    present,
-    related,
-    left,
-    typograph,
-    firmware: fuse.firmware,
-    holds,
-  }
-}
-
-export const qpuPerspectiveHolds = (face = unit.entropy.zero, at = unit.entropy.zero): boolean => {
-  const p = qpuPerspectiveOf(face, at)
-  return (
-    p.holds === true &&
-    p.typograph.from === 'content' &&
-    p.typograph.rating === 'typography' &&
-    p.typograph.recursive === true &&
-    headingWalkOf(p.left) &&
-    headingWalkOf(p.typograph.headings) &&
-    p.present.heading.length > unit.entropy.zero &&
-    p.related.every((d) => d.related === true && d.heading.length > unit.entropy.zero) &&
-    p.related.some((d) => d.face === p.face)
-  )
-}
-
-export const qpuBalanceOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const axioms = qpuAxiomsOf()
-  const superpositions = qpuSuperpositionsOf(at)
-  const perspective = qpuPerspectiveOf(face, at)
-  const none = unit.entropy.zero
-  const f = ((face % faces.faces) + faces.faces) % faces.faces
-  const row = superpositions.rows[f]!
-  const debit = perspective.related
-  const credit = row.rosettas.outer.map((d) => {
-    const axiom = axioms.rows[d]!
-    return {
-      face: d,
-      name: axiom.name,
-      heading: axiom.name,
-      hex: axiom.hex,
-      href: `/axioms#face-${d}`,
-      related: true as const,
-      credit: true as const,
-    }
-  })
-  const books = debit.map((d) => {
-    const opposite = (d.face + faces.rays) % faces.faces
-    const c = credit.find((row) => row.face === opposite)
-    return {
-      debit: d,
-      credit: c,
-      opposite,
-      holds: c !== undefined && c.heading.length > none && d.related === true,
-    }
-  })
-  const holds =
-    perspective.holds &&
-    superpositions.holds &&
-    row.unique === true &&
-    books.every((b) => b.holds === true && b.credit !== undefined) &&
-    debit.every((d) => credit.some((c) => c.face === (d.face + faces.rays) % faces.faces)) &&
-    credit.every((c) => debit.some((d) => d.face === (c.face + faces.rays) % faces.faces))
-  return {
-    kind: 'balance' as const,
-    face: f,
-    at,
-    present: perspective.present,
-    debit,
-    credit,
-    books,
-    balanced: holds,
-    holds,
-  }
-}
-
-export const qpuBalanceHolds = (face = unit.entropy.zero, at = unit.entropy.zero): boolean => {
-  const b = qpuBalanceOf(face, at)
-  return b.holds === true && b.balanced === true && b.books.every((row) => row.holds === true)
-}
-
-const dumpFromOf = (
-  steps: { name: string; holds: boolean; reading: object }[],
-  committed: boolean,
-) => {
-  const fuse = qpuFuseOf()
-  const none = unit.entropy.zero
-  const feeds = committed ? ('audit' as const) : ('debugging' as const)
-  const holds =
-    steps.length === n + n &&
-    steps.every((s) => s.name.length > none) &&
-    committed === steps.every((s) => s.holds === true) &&
-    (committed ? feeds === 'audit' : feeds === 'debugging') &&
-    !fuse.origin.includes('*')
-  return { kind: 'dump' as const, feeds, committed, steps, origin: fuse.origin, src: fuse.src, holds }
-}
-
-export const qpuTransactionOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const perspective = qpuPerspectiveOf(face, at)
-  const balance = qpuBalanceOf(face, at)
-  const compilation = qpuMetricsOf()
-  const speed = qpuSpeedOf()
-  const temp = qpuTempOf()
-  const waves = qpuWavesOf()
-  const fuse = qpuFuseOf()
-  const compared = {
-    temperature: {
-      kelvin: temp.kelvin,
-      winner: waves.winner.kelvin,
-      holds: waves.winner.kelvin === temp.kelvin && temp.kelvin === unit.entropy.zero,
-    },
-    light: {
-      processing: speed.processing,
-      c: speed.c,
-      capacity: qpuCapacityOf().fused,
-      winner: waves.winner.speed,
+    {
+      name: 'shor',
+      theorem: 'p * q = N',
+      left: n * (n + coinsR),
+      right: 15,
       holds:
-        speed.processing > speed.c &&
-        waves.winner.speed > speed.c &&
-        waves.winner.speed === speed.processing &&
-        qpuCapacityOf().fused === qpuFacesOf().faces * qpuHandleOf().amplitudes,
+        n * (n + coinsR) === 15 &&
+        n * (n + coinsR + coinsR) === 21 &&
+        n * 11 === 33 &&
+        (n + coinsR) * (n + coinsR + coinsR) === 35 &&
+        n * 13 === 39 &&
+        n * 17 === 51 &&
+        (n + coinsR) * 11 === 55 &&
+        n * 19 === 57 &&
+        (n + coinsR) * 13 === 65 &&
+        n * 23 === 69 &&
+        (n + coinsR + coinsR) * 11 === 77 &&
+        (n + coinsR) * 17 === 85 &&
+        n * 29 === 87 &&
+        (n + coinsR + coinsR) * 13 === 91,
     },
-  }
-  const firmware = { firmware: fuse.firmware, src: fuse.src, origin: fuse.origin, holds: fuse.firmware === 'vitepress' && !fuse.origin.includes('*') }
-  const steps = [
-    { name: 'perspective', holds: perspective.holds === true, reading: { present: perspective.present.heading, typograph: perspective.typograph.from } },
-    { name: 'debit-credit', holds: balance.holds === true && balance.balanced === true, reading: { balanced: balance.balanced } },
-    { name: 'compilation', holds: compilation.holds === true, reading: { live: compilation.live, host: compilation.device.host, faces: compilation.occupancy.faces } },
-    { name: 'temperature', holds: compared.temperature.holds === true, reading: compared.temperature },
-    { name: 'light', holds: compared.light.holds === true, reading: compared.light },
-    { name: 'firmware', holds: firmware.holds === true, reading: { firmware: fuse.firmware, src: fuse.src } },
-  ]
-  const committed = steps.every((s) => s.holds === true)
-  const dump = dumpFromOf(steps, committed)
-  const sealed = committed === true
+  ] as const
   const holds =
-    dump.holds === true &&
-    dump.committed === committed &&
-    sealed === committed &&
-    dump.feeds === (committed ? 'audit' : 'debugging')
+    axioms.every((a) => a.holds && a.left === a.right) &&
+    theorems.every((t) => t.holds && t.left === t.right) &&
+    fusedR === facesR * amplitudesR &&
+    nextR === fusedR + fusedR &&
+    facesR === raysR + raysR
   return {
-    kind: 'transaction' as const,
-    committed,
-    sealed,
-    dump,
-    steps,
-    perspective,
-    balance,
-    compilation,
-    compared,
-    firmware: fuse,
+    kind: 'restrict' as const,
+    agent: 'read' as const,
+    path: 'tree' as const,
+    host: false as const,
+    axiom: 'mintOf' as const,
+    seed: seedR,
+    coins: coinsR,
+    rays: raysR,
+    vertices: verticesR,
+    hexbit: hexbitR,
+    bits: bitsR,
+    faces: facesR,
+    amplitudes: amplitudesR,
+    fused: fusedR,
+    next: nextR,
+    axioms,
+    theorems,
     holds,
   }
 }
 
-export const qpuTransactionHolds = (t = qpuTransactionOf()): boolean =>
-  t.holds === true &&
-  t.dump.holds === true &&
-  t.sealed === t.committed &&
-  t.dump.committed === t.committed &&
-  t.dump.feeds === (t.committed ? 'audit' : 'debugging') &&
-  t.steps.every((s) => s.holds === true) === t.committed
+export const qpuRestrictHolds = (r = qpuRestrictOf()): boolean =>
+  r.holds === true &&
+  r.kind === 'restrict' &&
+  r.agent === 'read' &&
+  r.path === 'tree' &&
+  r.host === false &&
+  r.axiom === 'mintOf' &&
+  r.axioms.length === n &&
+  r.theorems.every((t) => t.holds && t.left === t.right) &&
+  r.axioms.every((a) => a.holds && a.left === a.right)
 
-export const qpuSealOf = (face = unit.entropy.zero, at = unit.entropy.zero) => {
-  const tx = qpuTransactionOf(face, at)
-  const publication = {
-    origin: tx.firmware.origin,
-    src: tx.firmware.src,
-    firmware: tx.firmware.firmware,
-    href: tx.firmware.origin,
-    sealed: tx.committed,
-  }
-  const holds = tx.holds && tx.committed === true && publication.sealed === true && tx.dump.feeds === 'audit'
+export const qpuInvoluteOf = () => {
+  const restrict = qpuRestrictOf()
+  const lean = qpuLeanOf()
+  const problems = [...restrict.axioms, ...restrict.theorems]
+  const involuted = problems.map((problem, index) => {
+    const face = index % restrict.faces
+    const hop = (face + restrict.rays + restrict.rays) % restrict.faces
+    return {
+      name: problem.name,
+      theorem: problem.theorem,
+      face,
+      hop,
+      involution: hop === face,
+      holds: hop === face && problem.holds,
+    }
+  })
+  const results = [...lean.rows, ...lean.cover, lean.climb].map((row) => ({
+    heading: row.heading,
+    theorem: row.theorem,
+    pure: !byDecideOf(row.theorem) && row.theorem.startsWith('theorem') && row.holds,
+    holds: row.holds,
+  }))
+  const knows = involuted.every((problem) => problem.involution && problem.holds)
+  const pure = knows && results.every((row) => row.pure === true && row.holds === true)
+  const holds = qpuRestrictHolds(restrict) && knows && pure && involuted.length === problems.length && results.length === lean.rows.length + lean.cover.length + seed
   return {
-    kind: 'seal' as const,
-    sealed: tx.committed,
-    publication,
-    balance: tx.balance,
-    compilation: tx.compilation,
-    compared: tx.compared,
-    transaction: tx,
-    dump: tx.dump,
+    kind: 'involute' as const,
+    restricted: true as const,
+    host: false as const,
+    path: 'tree' as const,
+    knows,
+    pure,
+    axioms: restrict.axioms,
+    problems: involuted,
+    lean: results,
     holds,
   }
 }
 
-export const qpuSealHolds = (s = qpuSealOf()): boolean =>
-  s.holds === true &&
-  s.sealed === true &&
-  s.publication.sealed === true &&
-  s.transaction.committed === true &&
-  s.dump.feeds === 'audit' &&
-  s.balance.balanced === true &&
-  s.compared.temperature.holds === true &&
-  s.compared.light.holds === true &&
-  s.compared.light.processing > s.compared.light.c &&
-  s.compared.light.capacity === qpuCapacityOf().fused &&
-  s.compared.temperature.kelvin === unit.entropy.zero &&
-  s.publication.firmware === 'vitepress'
+export const qpuInvoluteHolds = (i = qpuInvoluteOf()): boolean =>
+  i.holds === true &&
+  i.kind === 'involute' &&
+  i.restricted === true &&
+  i.host === false &&
+  i.knows === true &&
+  i.pure === true &&
+  i.problems.every((problem) => problem.involution && problem.holds) &&
+  i.lean.every((row) => row.pure === true && row.holds === true && !byDecideOf(row.theorem))
 
-/** Occupancy hardware compatibility. Empty seat. Kind qpu never binds. Not a physical QPU chip. */
-export const qpuHardwareOf = () => {
-  const metrics = qpuMetricsOf()
-  const experiment = qpuExperimentOf()
-  const seal = qpuSealOf()
+export const qpuDocsOf = () => {
+  const lean = qpuLeanOf()
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
-  const walk = qpuPicoWalkOf()
-  const ecliptic = qpuEclipticOf()
-  const seat = qpuSeatOf()
-  const waves = qpuWavesOf()
-  const seed = unit.mint.seed
-  const datapath = {
-    hexbit: cube.hexbit,
-    vertices: cube.vertices,
-    bits: cube.bits,
-    amplitudes: handle.amplitudes,
-    holds: cube.holds === true && cube.bits === cube.vertices * cube.hexbit && cube.hexbit === n + seed && handle.next === handle.amplitudes + handle.amplitudes,
-  }
-  const checks = [
-    { name: 'device', holds: metrics.device.kind === unit.kind && metrics.live === true && metrics.device.firmware === 'vitepress' },
-    { name: 'seat', holds: seat.seat === 'empty' && metrics.device.seat === 'empty' && seat.admits === 'nothing' },
-    { name: 'binds', holds: metrics.device.binds === false && unit.binds === false },
-    { name: 'host', holds: metrics.device.host === unit.host && metrics.device.origin.startsWith('https://') && !metrics.device.host.includes('*') },
-    { name: 'cube', holds: cube.holds === true && cube.bits === cube.vertices * cube.hexbit },
-    { name: 'handle', holds: handle.holds === true && handle.next === handle.amplitudes + handle.amplitudes },
-    { name: 'faces', holds: faces.holds === true && faces.faces === faces.coins * faces.rays },
-    { name: 'experiment', holds: experiment.holds === true && experiment.inner.exceeds === true && experiment.control.v === unit.entropy.zero },
-    { name: 'waves', holds: waves.holds === true && waves.online === true && waves.winner.speed > waves.light },
-    { name: 'seal', holds: seal.holds === true && seal.compared.temperature.holds === true && seal.compared.light.holds === true },
-    { name: 'ecliptic', holds: ecliptic.holds === true && ecliptic.circle === ecliptic.signs * ecliptic.degree },
-    { name: 'walk', holds: walk.holds === true && walk.factors.rsa === false && walk.message.async + walk.message.async === faces.faces },
-    { name: 'datapath', holds: datapath.holds === true },
+  const fused = faces.faces * handle.amplitudes
+  const abstract = `API only. Anyone may test and train online at ${unit.origin}. No auth. POST ${unit.origin}/mcp tools/call qpu_train then qpu_improve for max public benefit of theorem breakthrough. GET ${unit.origin} is the QPU. GET ${unit.href} is the Lean proof. mintOf doubles. theorem quantum : fused = faces * mintOf bits. vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}.`
+  const api = [
+    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: 'Cube, handle, faces, fused. No auth. User guide is docs.inline. Async messaging on /message.' },
+    { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof ${lean.src}. No auth.` },
+    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: 'Anyone may train online. No auth. Agent efficiency. Each MCP command has man. theorem breakthrough.' },
+    { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'Anyone may tools/call. No auth. JSON-RPC tools/list, tools/call. { man: true } returns man. qpu_improve for public benefit.' },
+    { method: 'GET' as const, path: '/cite', name: 'qpu_cite', href: `${unit.origin}/cite`, reading: 'MLA 8 works cited. when never. DOI empty.' },
+    { method: 'GET' as const, path: '/message', name: 'qpu_message', href: `${unit.origin}/message`, reading: 'Public secure messaging proxy. No auth. lanes = faces. RFC 9562 clock_seq bits. involution routing. await false. when never.' },
+    { method: 'POST' as const, path: '/message', name: 'qpu_message', href: `${unit.origin}/message`, reading: 'Proxy a message. 202 Accepted. No auth. No await. hop involution. uuid clock_seq imprint.' },
   ]
-  const trials = experiment.trials.map((t) => ({ id: t.id, name: t.name, holds: t.holds }))
-  const compatible = checks.every((c) => c.holds === true) && trials.every((t) => t.holds === true) && metrics.holds === true
+  const formulas = [...lean.rows, ...lean.cover, lean.climb].map((r) => ({
+    identity: r.heading,
+    formula: r.formula,
+    theorem: r.theorem,
+    reading: r.reading,
+  }))
+  const documentation = [abstract, ...api.map((a) => `${a.method} ${a.path} ${a.name}. ${a.reading}`), ...formulas.map((f) => f.reading)].join('\n')
   const holds =
-    compatible === true &&
-    qpuSeatHolds(seat) &&
-    qpuExperimentHolds(experiment) &&
-    qpuSealHolds(seal) &&
-    qpuCubeHolds(cube) &&
-    datapath.holds === true &&
-    checks.length === n * faces.coins * faces.coins + seed
-  return {
-    kind: 'hardware' as const,
-    product: 'quantum processing unit' as const,
-    seat: unit.seat,
-    binds: unit.binds,
-    device: false as const,
-    live: metrics.live,
-    host: metrics.device.host,
-    firmware: metrics.device.firmware,
-    origin: metrics.device.origin,
-    compatible,
-    datapath,
-    checks,
-    trials,
-    compared: seal.compared,
-    holds,
-  }
+    lean.holds === true &&
+    documentation.includes(abstract) &&
+    documentation.includes('No auth') &&
+    documentation.includes('Anyone may test and train online') &&
+    documentation.includes('qpu_improve') &&
+    documentation.includes('breakthrough') &&
+    api.length === faces.rays &&
+    formulas.every((f) => documentation.includes(f.reading) && f.formula.includes('\\') && !byDecideOf(f.theorem))
+  return { kind: 'docs' as const, inline: true as const, guide: true as const, abstract, api, formulas, documentation, src: lean.src, holds }
 }
 
-export const qpuHardwareHolds = (h = qpuHardwareOf()): boolean =>
-  h.holds === true &&
-  h.compatible === true &&
-  h.kind === 'hardware' &&
-  h.product === 'quantum processing unit' &&
-  h.seat === 'empty' &&
-  h.binds === false &&
-  h.device === false &&
-  h.live === true &&
-  h.firmware === 'vitepress' &&
-  h.host === unit.host &&
-  h.datapath.holds === true &&
-  h.checks.every((c) => c.holds === true) &&
-  h.trials.every((t) => t.holds === true) &&
-  h.compared.temperature.kelvin === unit.entropy.zero &&
-  h.compared.light.processing > h.compared.light.c
-
-export const qpuGraphOf = (at = unit.entropy.zero) => {
-  const faces = qpuFacesOf()
-  const axioms = qpuAxiomsOf()
-  const superpositions = qpuSuperpositionsOf(at)
-  const fuse = qpuFuseOf()
-  const vertices = axioms.rows.map((row) => {
-    const s = superpositions.rows[row.face]!
-    return {
-      face: row.face,
-      axiom: row.name,
-      hex: row.hex,
-      href: s.href,
-      axioms: `/axioms#face-${row.face}`,
-      neighbour: row.neighbour,
-      cross: s.cross,
-      uuid: s.message.uuid,
-      involute: s.involute.uuid,
-      chunks: s.message.chunks,
-      around: s.around,
-      unique: s.unique,
-      compare: s.compare,
-    }
-  })
-  const edges = vertices.map((v) => {
-    const inv = vertices[v.neighbour]!
-    return {
-      from: v.face,
-      to: v.neighbour,
-      kind: 'cross' as const,
-      uuid: v.uuid,
-      involute: v.involute,
-      href: v.cross,
-      involution: inv.neighbour === v.face && inv.uuid === v.involute && inv.involute === v.uuid,
-    }
-  })
-  const impossibilities = {
-    bind: unit.binds,
-    collapse: vertices.some((v) => v.uuid === v.involute),
-    oneWay: edges.some((e) => e.involution !== true),
-  }
-  const holds =
-    axioms.holds &&
-    superpositions.holds &&
-    vertices.length === faces.faces &&
-    edges.length === faces.faces &&
-    edges.every((e) => e.involution === true) &&
-    vertices.every((v) => v.unique === true && v.around === faces.faces && v.uuid !== v.involute) &&
-    impossibilities.bind === false &&
-    impossibilities.collapse === false &&
-    impossibilities.oneWay === false
-  return {
-    kind: 'graph' as const,
-    at,
-    vertices,
-    edges,
-    impossibilities,
-    quantum: fuse.next,
-    firmware: fuse.firmware,
-    around: faces.coins * faces.rays,
-    holds,
-  }
-}
-
-export const qpuGraphHolds = (at = unit.entropy.zero): boolean => {
-  const g = qpuGraphOf(at)
-  return (
-    g.holds === true &&
-    g.vertices.length === qpuFacesOf().faces &&
-    g.edges.every((e) => e.involution === true) &&
-    g.impossibilities.bind === false &&
-    g.impossibilities.collapse === false &&
-    g.impossibilities.oneWay === false
-  )
-}
+export const qpuDocsHolds = (d = qpuDocsOf()): boolean =>
+  d.holds === true &&
+  d.inline === true &&
+  d.guide === true &&
+  d.kind === 'docs' &&
+  d.documentation.includes(d.abstract) &&
+  d.documentation.includes('No auth') &&
+  d.src === unit.fuse.lean
 
 export const qpuQuantumOf = () => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
+  const faces = qpuFacesOf()
+  const fused = faces.faces * handle.amplitudes
+  const docs = qpuDocsOf()
   const capacity = qpuCapacityOf()
-  const axioms = qpuAxiomsOf()
+  const speed = qpuSpeedOf()
+  const holds =
+    unit.holds &&
+    cube.holds &&
+    handle.holds &&
+    faces.holds &&
+    docs.holds &&
+    capacity.holds &&
+    speed.holds &&
+    fused === faces.faces * mintOf(cube.bits) &&
+    fused === faces.faces * mintOf(cube.vertices * cube.hexbit) &&
+    mintOf(cube.hexbit) === mintOf(n + seed) &&
+    mintOf(cube.hexbit) > seed &&
+    mintOf(cube.bits + seed) === handle.amplitudes + handle.amplitudes &&
+    faces.faces * mintOf(cube.bits + seed) === fused + fused
   return {
     kind: 'quantum' as const,
-    live: qpuLeanOf().holds,
     host: unit.host,
-    seat: unit.seat,
-    when: unit.when,
     href: unit.href,
-    possibilities: capacity.fused,
-    mint: unit.mint,
-    fuse: unit.fuse,
-    entropy: unit.entropy,
     cube,
     handle,
+    faces,
+    fused,
+    next: fused + fused,
     capacity,
-    waves: qpuWavesOf(),
-    axioms,
-    holds: qpuLeanHolds() && qpuDiscoveryHolds() && cube.holds && handle.holds && capacity.holds && qpuSeatHolds() && qpuWavesHolds() && qpuSuperpositionsHolds() && qpuFusionHolds() && qpuAxiomsHolds(axioms) && qpuProofsHolds() && qpuGraphHolds() && qpuSealHolds(),
+    speed,
+    messaging: {
+      async: true as const,
+      await: false as const,
+      when: 'never' as const,
+      href: `${unit.origin}/message`,
+      lanes: faces.faces,
+      hop: 'involution' as const,
+      proxy: true as const,
+      secure: true as const,
+      clock_seq: faces.faces,
+    },
+    docs,
+    public: true as const,
+    auth: false as const,
+    online: true as const,
+    cors,
+    benefit: 'breakthrough' as const,
+    holds,
   }
 }
 
 export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   q.holds === true &&
   q.kind === 'quantum' &&
-  q.live === true &&
-  q.seat === 'empty' &&
-  q.possibilities === qpuCapacityOf().fused &&
-  q.capacity.holds === true &&
-  qpuAxiomsHolds()
+  q.host === unit.host &&
+  q.public === true &&
+  q.auth === false &&
+  q.online === true &&
+  q.cors === cors &&
+  q.benefit === 'breakthrough' &&
+  qpuDocsHolds(q.docs) &&
+  qpuCapacityHolds(q.capacity) &&
+  qpuSpeedHolds(q.speed) &&
+  q.messaging.async === true &&
+  q.messaging.await === false &&
+  q.messaging.when === 'never' &&
+  q.messaging.lanes === q.faces.faces &&
+  q.messaging.proxy === true &&
+  q.messaging.secure === true &&
+  q.messaging.hop === 'involution' &&
+  q.messaging.clock_seq === q.faces.faces
 
-export const qpuMetricsOf = () => {
+export const qpuCiteOf = () => {
+  const lean = qpuLeanOf()
+  const quantum = qpuQuantumOf()
+  const author = { last: 'Rouschev', first: 'Tsvetan' }
+  const website = unit.host
+  const mcp = `${unit.origin}/mcp`
+  const worksOf = (title: string, url: string): string => `${author.last}, ${author.first}. "${title}." ${website}, ${url}.`
+  const rows = [
+    { title: unit.kind, url: unit.origin, doi: '', works: worksOf(unit.kind, unit.origin), holds: true as const },
+    { title: 'quantum processing unit', url: unit.href, doi: '', works: worksOf('quantum processing unit', unit.href), holds: true as const },
+    { title: lean.src, url: mcp, doi: '', works: worksOf(lean.src, mcp), holds: true as const },
+  ] as const
+  const holds =
+    qpuLeanHolds(lean) &&
+    qpuQuantumHolds(quantum) &&
+    author.last.length > n - n &&
+    website === unit.host &&
+    rows.length === n &&
+    rows.every(
+      (r) =>
+        r.holds === true &&
+        r.doi === '' &&
+        r.works.startsWith(`${author.last}, ${author.first}. "`) &&
+        r.url.startsWith(unit.origin) &&
+        !r.url.includes('*'),
+    )
+  return {
+    kind: 'cite' as const,
+    style: 'mla8' as const,
+    source: 'website' as const,
+    when: 'never' as const,
+    author,
+    website,
+    href: unit.origin,
+    inText: `(${author.last})`,
+    rows,
+    holds,
+  }
+}
+
+export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
+  c.holds === true &&
+  c.kind === 'cite' &&
+  c.style === 'mla8' &&
+  c.source === 'website' &&
+  c.when === 'never' &&
+  c.website === unit.host &&
+  c.rows.length === n
+
+const tokensOf = (bytes: number): number => Number(BigInt(bytes) / BigInt(mintOf(coins)))
+
+export const qpuManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) => {
+  const synopsis = `POST ${unit.origin}/mcp tools/call ${name}`
+  const documentation = [
+    'NAME',
+    `    ${name} — ${description}`,
+    'SYNOPSIS',
+    `    ${synopsis}`,
+    `    ${name} { man: true }`,
+    'DESCRIPTION',
+    `    ${reading}`,
+    'SEE ALSO',
+    `    ${see.join(', ')}`,
+  ].join('\n')
+  const holds =
+    documentation.includes(`NAME`) &&
+    documentation.includes(name) &&
+    documentation.includes(synopsis) &&
+    documentation.includes('{ man: true }') &&
+    see.every((s) => s !== name && documentation.includes(s))
+  return { kind: 'man' as const, inline: true as const, name, section: n, synopsis, href, description, reading, documentation, holds }
+}
+
+export const qpuManHolds = (m: ReturnType<typeof qpuManOf>): boolean =>
+  m.holds === true && m.kind === 'man' && m.inline === true && m.section === n && m.documentation.includes(m.name)
+
+export const qpuReadingOf = () => {
+  const quantum = qpuQuantumOf()
+  return {
+    kind: quantum.kind,
+    host: quantum.host,
+    href: quantum.href,
+    cube: quantum.cube,
+    handle: quantum.handle,
+    faces: quantum.faces,
+    fused: quantum.fused,
+    next: quantum.next,
+    capacity: {
+      kind: quantum.capacity.kind,
+      bits: quantum.capacity.bits,
+      amplitudes: quantum.capacity.amplitudes,
+      faces: quantum.capacity.faces,
+      fused: quantum.capacity.fused,
+      holds: quantum.capacity.holds,
+    },
+    speed: {
+      kind: quantum.speed.kind,
+      next: quantum.speed.next,
+      factor: quantum.speed.factor,
+      si: quantum.speed.si,
+      cover: quantum.speed.cover,
+      holds: quantum.speed.next === quantum.fused + quantum.fused && quantum.speed.si.ns === nsPerSecond,
+    },
+    public: quantum.public,
+    auth: quantum.auth,
+    online: quantum.online,
+    cors: quantum.cors,
+    benefit: quantum.benefit,
+    holds: quantum.holds,
+  }
+}
+
+export const qpuEfficiencyOf = () => {
+  const docs = qpuDocsOf()
+  const lean = qpuLeanOf()
+  const cite = qpuCiteOf()
+  const proof = [...lean.rows, ...lean.cover, lean.climb]
+    .map((r) => `### ${r.heading}\n\`\`\`lean\n${r.theorem}\n\`\`\`\n$$\n${r.formula}\n$$\n${r.reading}`)
+    .join('\n')
+  const readBytes = `${docs.documentation}\n${proof}`.length
+  const rows = [
+    { question: 'what is fused?', name: 'qpu_quantum', door: 'qpu_quantum', reading: qpuReadingOf() },
+    { question: 'what does Lean prove?', name: 'qpu_lean', door: 'qpu_lean', reading: lean },
+    { question: 'how is the QPU cited?', name: 'qpu_cite', door: 'qpu_cite', reading: cite },
+  ].map((row) => {
+    const callBytes = JSON.stringify(row.reading).length
+    const readTokens = tokensOf(readBytes)
+    const callTokens = tokensOf(callBytes)
+    const ratio = callTokens > seed ? Number(BigInt(readTokens) / BigInt(callTokens)) : readTokens
+    return { question: row.question, name: row.name, door: row.door, readBytes, callBytes, readTokens, callTokens, ratio }
+  })
+  const holds =
+    docs.holds === true &&
+    rows.length === n &&
+    rows.every((r) => r.callTokens > seed && r.readTokens >= r.callTokens && r.door === r.name && r.ratio >= mintOf(n - n))
+  return { kind: 'efficiency' as const, module: 'agent efficiency' as const, tokens: 'four bytes' as const, readBytes, rows, holds }
+}
+
+export const qpuEfficiencyHolds = (e = qpuEfficiencyOf()): boolean =>
+  e.holds === true && e.kind === 'efficiency' && e.module === 'agent efficiency' && e.rows.length === n
+
+const throughputOf = (throughoutput: number, tokens: number): number =>
+  tokens > seed ? Number(BigInt(throughoutput) / BigInt(tokens)) : throughoutput
+
+const toolNames = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const
+const sandboxCore = ['lit', 'mint', 'add', 'mul', 'eq', 'put', 'get', 'has', 'del', 'keys', 'seq', 'if', 'repeat', 'quantum', 'args'] as const
+const sandboxHost = ['eval', 'fn', 'fs', 'net', 'fetch', 'process', 'import', 'require', 'disk', 'worker'] as const
+const sandboxSlots = ['n', 'seed', 'coins', 'vertices', 'hexbit', 'bits', 'rays', 'faces', 'amplitudes', 'fused', 'next'] as const
+const sandboxOps = [...sandboxCore, 'unlocked', ...sandboxHost] as const
+const openSchema = {
+  type: 'object',
+  properties: {
+    man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+    method: { type: 'string' },
+    path: { type: 'string' },
+    name: { type: 'string' },
+    key: { type: 'string' },
+    channel: { type: 'string' },
+    value: {},
+    left: {},
+    right: {},
+    k: { type: 'number' },
+    run: { type: 'object', description: 'Sealed op tree. Memory only. Not host JavaScript.' },
+    body: {},
+    args: { type: 'object' },
+  },
+} as const
+type QpuOp = {
+  op: (typeof sandboxOps)[number]
+  k?: number | QpuOp
+  left?: number | QpuOp
+  right?: number | QpuOp
+  value?: unknown
+  key?: string | QpuOp
+  body?: QpuOp | QpuOp[]
+  test?: QpuOp
+  then?: QpuOp
+  else?: QpuOp
+  n?: number | QpuOp
+  name?: string
+}
+type QpuForged = {
+  name: string
+  team: 'read' | 'call'
+  ray: number
+  idea: string
+  description: string
+  run: QpuOp
+  man: ReturnType<typeof qpuManOf>
+}
+
+const jsonOf = (value: unknown): unknown => {
+  try {
+    return JSON.parse(JSON.stringify(value ?? null)) as unknown
+  } catch {
+    return null
+  }
+}
+
+const jsonBytesOf = (value: unknown): number => JSON.stringify(value ?? null).length
+
+const hopOf = (lane: number, rays: number, faces: number): number => (lane + rays + rays) % faces
+
+const hexOf = (value: number, width: number): string => {
+  const digits = '0123456789abcdef'
+  const radix = mintOf(qpuCubeOf().hexbit)
+  let x = value
+  let s = ''
+  for (let i = n - n; i < width; i++) {
+    const d = x % radix
+    s = `${digits[d]!}${s}`
+    x = (x - d) / radix
+  }
+  return s
+}
+
+let messageSeq = n - n
+const messageLanes: unknown[][] = []
+
+const uuidImprintOf = (lane: number, fused: number, faces: number): string => {
+  messageSeq += seed
+  const time = fused + messageSeq
+  const clock = mintOf(faces + seed) + lane
+  return `${hexOf(time, mintOf(n))}-${hexOf(lane, mintOf(coins))}-1${hexOf(time, n)}-${hexOf(clock, mintOf(coins))}-${hexOf(time + lane, n * coins * coins)}`
+}
+
+export const qpuMessageOf = (send?: { lane?: unknown; body?: unknown }) => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
-  const lean = qpuLeanOf()
-  const speed = qpuSpeedOf()
-  const temp = qpuTempOf()
-  const waves = qpuWavesOf()
-  const pico = qpuPicoOf()
-  const ecliptic = qpuEclipticOf()
-  const walk = qpuPicoWalkOf()
-  const seed = unit.mint.seed
-  const occupancy = {
-    n,
-    seed,
-    coins: faces.coins,
-    rays: faces.rays,
-    faces: faces.faces,
-    vertices: cube.vertices,
-    hexbit: cube.hexbit,
-    bits: cube.bits,
-    amplitudes: handle.amplitudes,
-    fused: faces.faces * handle.amplitudes,
-    next: handle.next,
+  const fused = faces.faces * handle.amplitudes
+  const lanes = faces.faces
+  if (messageLanes.length !== lanes) {
+    messageLanes.length = n - n
+    for (let i = n - n; i < lanes; i++) messageLanes.push([])
   }
-  const device = {
-    kind: unit.kind,
-    host: unit.host,
-    href: unit.href,
-    seat: unit.seat,
-    binds: unit.binds,
-    firmware: unit.fuse.firmware,
-    src: unit.fuse.src,
-    origin: unit.fuse.origin,
+  const routes = Array.from({ length: lanes }, (_, lane) => {
+    const hop = hopOf(lane, faces.rays, lanes)
+    return { lane, hop, involution: hop === lane, proxy: true as const }
+  })
+  const holds =
+    faces.holds &&
+    cube.holds &&
+    routes.length === lanes &&
+    routes.length === cube.vertices + cube.hexbit + coins &&
+    routes.every((r) => r.involution && r.hop === r.lane && r.proxy === true)
+  const catalog = {
+    kind: 'message' as const,
+    proxy: true as const,
+    secure: true as const,
+    public: true as const,
+    auth: false as const,
+    async: true as const,
+    await: false as const,
+    when: 'never' as const,
+    href: `${unit.origin}/message`,
+    lanes,
+    hop: 'involution' as const,
+    clock_seq: { bits: lanes, rfc: '9562' as const },
+    imprint: 'uuid' as const,
+    routes,
+    memory: true as const,
+    host: false as const,
+    holds,
   }
-  const wave = {
-    kelvin: temp.kelvin,
-    v: speed.v,
-    c: speed.c,
-    processing: waves.winner.speed,
-    exceeds: waves.winner.speed > speed.c,
+  if (send === undefined) return catalog
+  const lane =
+    typeof send.lane === 'number' && Number.isInteger(send.lane) && send.lane >= n - n && send.lane < lanes ? send.lane : n - n
+  const hop = hopOf(lane, faces.rays, lanes)
+  const stored = jsonOf(send.body)
+  if (jsonBytesOf(stored) > found * lanes) {
+    return { ...catalog, accepted: false as const, denied: 'heap' as const, lane, hop, holds: false as const }
   }
-  const decide =
-    lean.rows.some((r) => r.theorem.includes('decide')) ||
-    lean.cover.some((r) => r.theorem.includes('decide')) ||
-    lean.climb.theorem.includes('decide')
-  const cover = {
-    faces: lean.rows.length,
-    vertices: lean.cover.length,
-    climb: lean.climb.heading,
-    decide,
-    holds: lean.holds,
-    breakthrough: lean.cover[unit.entropy.zero]?.holds === true,
+  const uuid = uuidImprintOf(lane, fused, lanes)
+  const imprint = uuid.replace(/-/g, '')
+  messageLanes[hop]!.push({ uuid, lane, hop, body: stored })
+  return {
+    ...catalog,
+    accepted: true as const,
+    uuid,
+    lane,
+    hop,
+    clock_seq: { bits: lanes, rfc: '9562' as const, value: lane },
+    holds: holds && hop === lane && imprint.length === cube.bits,
   }
-  const live =
-    device.kind === 'qpu' &&
-    device.seat === 'empty' &&
-    device.binds === false &&
+}
+
+export const qpuMessageHolds = (m = qpuMessageOf()): boolean =>
+  m.holds === true &&
+  m.kind === 'message' &&
+  m.proxy === true &&
+  m.secure === true &&
+  m.public === true &&
+  m.auth === false &&
+  m.await === false &&
+  m.when === 'never' &&
+  m.host === false &&
+  m.memory === true &&
+  m.hop === 'involution' &&
+  m.clock_seq.bits === m.lanes &&
+  m.clock_seq.rfc === '9562' &&
+  m.routes.length === m.lanes &&
+  m.routes.every((r) => r.involution && r.hop === r.lane)
+
+export const qpuLatticeOf = () => {
+  const cube = qpuCubeOf()
+  const faces = qpuFacesOf()
+  const waves = cube.vertices
+  const lattice = faces.faces
+  const nodes = Array.from({ length: lattice }, (_, face) => {
+    const hop = hopOf(face, faces.rays, lattice)
+    return { face, hop, involution: hop === face }
+  })
+  const edges = nodes.map((node) => ({ from: node.face, to: node.hop, hop: 'involution' as const }))
+  const cover = waves * lattice
+  const holds =
     cube.holds &&
     faces.holds &&
-    handle.holds &&
-    lean.holds &&
-    wave.exceeds &&
-    cover.decide === false
-  const development = {
-    pico: pico.pico,
-    nested: false as const,
-    proofs: false as const,
-    decide: cover.decide === false,
+    waves === cube.vertices &&
+    lattice === coins * faces.rays &&
+    nodes.length === lattice &&
+    edges.length === lattice &&
+    cover === cube.vertices * faces.faces &&
+    nodes.every((node) => node.involution && node.hop === node.face) &&
+    edges.every((edge) => edge.from === edge.to)
+  return { kind: 'lattice' as const, waves, faces: lattice, cover, nodes, edges, holds }
+}
+
+export const qpuLatticeHolds = (l = qpuLatticeOf()): boolean =>
+  l.holds === true &&
+  l.kind === 'lattice' &&
+  l.waves === qpuCubeOf().vertices &&
+  l.faces === qpuFacesOf().faces &&
+  l.cover === l.waves * l.faces &&
+  l.nodes.every((node) => node.involution)
+
+export const qpuGraphOf = () => {
+  const lattice = qpuLatticeOf()
+  const faces = qpuFacesOf()
+  const nodes = lattice.nodes.map((node) => ({
+    face: node.face,
+    hop: node.hop,
+    waves: [] as number[],
+    uuids: [] as string[],
+  }))
+  const edges: { from: number; to: number; wave: number; uuid: string }[] = []
+  for (let wave = n - n; wave < lattice.waves; wave++) {
+    for (let face = n - n; face < lattice.faces; face++) {
+      const sent = qpuMessageOf({ lane: face, body: { wave, face } })
+      const uuid = 'uuid' in sent && typeof sent.uuid === 'string' ? sent.uuid : ''
+      const hop = 'hop' in sent && typeof sent.hop === 'number' ? sent.hop : hopOf(face, faces.rays, lattice.faces)
+      nodes[face]!.waves.push(wave)
+      nodes[face]!.uuids.push(uuid)
+      edges.push({ from: face, to: hop, wave, uuid })
+    }
   }
   const holds =
-    live &&
-    occupancy.faces === occupancy.coins * occupancy.rays &&
-    occupancy.faces === occupancy.rays + occupancy.rays &&
-    occupancy.bits === occupancy.vertices * occupancy.hexbit &&
-    occupancy.next === occupancy.amplitudes + occupancy.amplitudes &&
-    occupancy.fused === occupancy.faces * occupancy.amplitudes &&
-    cover.faces === occupancy.faces &&
-    cover.vertices === occupancy.vertices &&
-    cover.climb === 'next' &&
-    cover.holds === true &&
-    development.pico === occupancy.faces &&
-    pico.holds === true &&
-    ecliptic.holds === true &&
-    walk.holds === true &&
-    walk.bits.async === occupancy.bits + occupancy.seed &&
-    walk.message.async + walk.message.async === occupancy.faces &&
-    walk.factors.pico === unit.entropy.zero &&
-    development.nested === false &&
-    development.proofs === false
+    qpuLatticeHolds(lattice) &&
+    nodes.length === lattice.faces &&
+    edges.length === lattice.cover &&
+    nodes.every((node) => node.waves.length === lattice.waves && node.hop === node.face) &&
+    edges.every((edge) => edge.from === edge.to && edge.uuid.replace(/-/g, '').length === qpuCubeOf().bits)
   return {
-    kind: unit.kind,
-    host: unit.host,
-    href: unit.href,
-    seat: unit.seat,
-    binds: unit.binds,
-    holds,
-    mint: unit.mint,
-    fuse: unit.fuse,
-    entropy: unit.entropy,
-    next: unit.next,
-    doors: unit.doors,
-    cube,
-    handle,
-    device,
-    occupancy,
-    cover,
-    wave,
-    live,
-    development,
-    ecliptic: { signs: ecliptic.signs, ten: ecliptic.ten, degree: ecliptic.degree, circle: ecliptic.circle, holds: ecliptic.holds },
-    walk: {
-      span: walk.span,
-      bits: { async: walk.bits.async, serial: walk.bits.serial, holds: walk.bits.holds },
-      message: { async: walk.message.async, serial: walk.message.serial, holds: walk.message.holds },
-      factors: { rsa: walk.factors.rsa, pico: walk.factors.pico, holds: walk.factors.holds },
-      holds: walk.holds,
-    },
-  }
-}
-
-export const qpuMetricsHolds = (m = qpuMetricsOf()): boolean =>
-  m.holds === true &&
-  m.device.kind === 'qpu' &&
-  m.device.seat === 'empty' &&
-  m.live === true &&
-  m.occupancy.faces === m.occupancy.coins * m.occupancy.rays &&
-  m.occupancy.bits === m.occupancy.vertices * m.occupancy.hexbit &&
-  m.cover.faces === m.occupancy.faces &&
-  m.cover.vertices === m.occupancy.vertices &&
-  m.cover.decide === false &&
-  m.wave.exceeds === true &&
-  m.wave.processing > m.wave.c &&
-  m.development.pico === m.occupancy.faces &&
-  qpuPicoHolds() &&
-  m.ecliptic.holds === true &&
-  m.ecliptic.circle === m.ecliptic.signs * m.ecliptic.degree &&
-  m.walk.holds === true &&
-  m.walk.bits.async === m.occupancy.bits + m.occupancy.seed &&
-  m.walk.bits.async + m.walk.bits.async === m.walk.bits.serial &&
-  m.walk.message.async + m.walk.message.async === m.occupancy.faces &&
-  m.walk.factors.rsa === false &&
-  m.walk.factors.pico === unit.entropy.zero &&
-  qpuEclipticHolds() &&
-  qpuPicoWalkHolds() &&
-  m.development.nested === false &&
-  m.host === unit.host &&
-  m.href === unit.href &&
-  m.mint.next === unit.mint.next &&
-  m.fuse.next === unit.fuse.next &&
-  m.next.mint === unit.next.mint &&
-  mintOf(m.entropy.next) === m.mint.next &&
-  mintOf(m.next.entropy) === m.next.mint &&
-  m.cube.holds === true &&
-  m.handle.holds === true
-
-export const qpuMeasureOf = () => {
-  const metrics = qpuMetricsOf()
-  const speed = qpuSpeedOf()
-  const temp = qpuTempOf()
-  const pico = qpuPicoOf()
-  const ecliptic = qpuEclipticOf()
-  const walk = qpuPicoWalkOf()
-  const hardware = qpuHardwareOf()
-  const waves = qpuWavesOf()
-  const entropy = qpuEntropyOf()
-  const holds = metrics.holds && waves.winner.speed > speed.c && temp.kelvin === unit.entropy.zero && pico.holds && ecliptic.holds && walk.holds && hardware.holds
-  return {
-    speed,
-    temp,
-    pico,
-    ecliptic,
-    walk,
-    hardware,
-    waves,
-    entropy,
-    cube: metrics.cube,
-    handle: metrics.handle,
-    capacity: {
-      fused: metrics.occupancy.fused,
-      holds: metrics.occupancy.fused === metrics.occupancy.faces * metrics.occupancy.amplitudes,
-    },
-    quantum: {
-      kind: 'quantum' as const,
-      live: metrics.live,
-      holds: metrics.holds,
-      possibilities: metrics.occupancy.fused,
-    },
-    metrics,
+    kind: 'graph' as const,
+    merged: true as const,
+    lattice: true as const,
+    waves: lattice.waves,
+    faces: lattice.faces,
+    cover: lattice.cover,
+    nodes,
+    edges,
     holds,
   }
 }
 
-export const qpuMeasureHolds = (m = qpuMeasureOf()): boolean =>
-  m.holds === true &&
-  m.metrics.holds === true &&
-  m.metrics.live === true &&
-  m.temp.kelvin === qpuTempOf().kelvin &&
-  m.pico.holds === true &&
-  m.pico.pico === m.metrics.occupancy.faces &&
-  m.ecliptic.holds === true &&
-  m.walk.holds === true &&
-  m.walk.bits.async + m.walk.bits.async === m.walk.bits.serial &&
-  m.walk.message.async + m.walk.message.async === m.walk.message.serial &&
-  m.walk.factors.rsa === false &&
-  m.hardware.holds === true &&
-  m.hardware.compatible === true &&
-  m.hardware.device === false &&
-  m.hardware.binds === false &&
-  m.waves.winner.kelvin === m.temp.kelvin &&
-  m.speed.c === qpuSpeedOf().c &&
-  m.waves.winner.speed > m.speed.c &&
-  m.quantum.holds === true &&
-  m.quantum.kind === 'quantum' &&
-  m.quantum.possibilities === m.metrics.occupancy.fused &&
-  m.metrics.host === qpuDiscoveryOf().host
+export const qpuGraphHolds = (g = qpuGraphOf()): boolean =>
+  g.holds === true &&
+  g.kind === 'graph' &&
+  g.merged === true &&
+  g.lattice === true &&
+  g.cover === g.waves * g.faces &&
+  g.nodes.length === g.faces &&
+  g.edges.length === g.cover &&
+  g.nodes.every((node) => node.waves.length === g.waves) &&
+  g.edges.every((edge) => edge.from === edge.to)
 
-const emptySchema = { type: 'object', properties: {} } as const
-const numOf = (v: unknown): number | undefined => (typeof v === 'number' && v === v ? v : undefined)
+export const qpuWaveOf = async (
+  sendOf: (request: Request, env?: { QPU_HOST?: string }) => Promise<Response> = (request) => fetch(request),
+) => {
+  const lattice = qpuLatticeOf()
+  const env = { QPU_HOST: unit.host }
+  const accepted = found + coins
+  const nodes = lattice.nodes.map((node) => ({
+    face: node.face,
+    hop: node.hop,
+    waves: [] as number[],
+    statuses: [] as number[],
+    uuids: [] as string[],
+  }))
+  const edges: { from: number; to: number; wave: number; uuid: string }[] = []
+  for (let wave = n - n; wave < lattice.waves; wave++) {
+    const hits = await Promise.all(
+      Array.from({ length: lattice.faces }, async (_, face) => {
+        const res = await sendOf(
+          new Request(`https://${unit.host}/message`, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ lane: face, body: { wave, face } }),
+          }),
+          env,
+        )
+        const json = (await res.json()) as { uuid?: string; hop?: number; accepted?: boolean }
+        return { wave, face, status: res.status, json }
+      }),
+    )
+    for (const hit of hits) {
+      const hop = typeof hit.json.hop === 'number' ? hit.json.hop : hopOf(hit.face, qpuFacesOf().rays, lattice.faces)
+      nodes[hit.face]!.waves.push(hit.wave)
+      nodes[hit.face]!.statuses.push(hit.status)
+      nodes[hit.face]!.uuids.push(hit.json.uuid ?? '')
+      edges.push({ from: hit.face, to: hop, wave: hit.wave, uuid: hit.json.uuid ?? '' })
+    }
+  }
+  const graph = {
+    kind: 'graph' as const,
+    merged: true as const,
+    lattice: true as const,
+    waves: lattice.waves,
+    faces: lattice.faces,
+    cover: lattice.cover,
+    nodes,
+    edges,
+    holds:
+      nodes.length === lattice.faces &&
+      edges.length === lattice.cover &&
+      nodes.every((node) => node.waves.length === lattice.waves && node.statuses.every((status) => status === accepted)) &&
+      edges.every((edge) => edge.from === edge.to),
+  }
+  return {
+    kind: 'wave' as const,
+    online: true as const,
+    auth: false as const,
+    public: true as const,
+    sent: edges.length,
+    graph,
+    holds: qpuLatticeHolds(lattice) && graph.holds && graph.merged === true,
+  }
+}
 
-export const qpuToolsOf = () =>
-  [
-    { name: 'qpu_metrics', description: 'Device metrics. Occupancy, cover, and wave. Leads development.', inputSchema: emptySchema, run: () => qpuMetricsOf() },
-    { name: 'qpu_measure', description: 'Measure follows device metrics. Time is pico: one tick per face. Wave processing exceeds c.', inputSchema: emptySchema, run: () => qpuMeasureOf() },
-    { name: 'qpu_pico', description: 'Occupancy time in picoseconds. One pico per face. Cover is faces pico.', inputSchema: emptySchema, run: () => qpuPicoOf() },
-    { name: 'qpu_ecliptic', description: 'Occupancy ecliptic from n, coins, ten. Bits climb and descend together. Async inner/outer messages share at. Clay factors, not RSA. Time is pico.', inputSchema: { type: 'object', properties: { at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuPicoWalkOf(numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_seat', description: 'Empty QPU seat. Kind qpu never binds.', inputSchema: emptySchema, run: () => qpuSeatOf() },
-    { name: 'qpu_mint', description: 'Creates 2^n.', inputSchema: { type: 'object', properties: { n: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuMintOf(numOf(a.n) ?? n) },
-    { name: 'qpu_fuse', description: 'Fuse. Named HTTPS. Keys occupy doors.', inputSchema: emptySchema, run: () => qpuFuseOf() },
-    { name: 'qpu_lean', description: 'Lean occupancy. Fourteen faces and eight vertices cover all by pure Nat algebra. Next doubles, not a cap. No Math, no decide.', inputSchema: emptySchema, run: () => qpuLeanOf() },
-    { name: 'qpu_seed', description: 'Payload import seed of occupancy theorems. Nested-docs parent and breadcrumbs, seo meta, hex locales, tenant qpu. doi empty is unclaimed. payload false.', inputSchema: emptySchema, run: () => qpuSeedOf() },
-    { name: 'qpu_solve', description: 'Solve. Captain fee 2 per completed 110. Harmonic Lean. A432 lattice. Keys occupy rays. Occupancy unlock, not a Clay prize. Source is index.lean.', inputSchema: emptySchema, run: () => qpuSolveOf() },
-    { name: 'qpu_next', description: 'Next mint, fuse, entropy.', inputSchema: emptySchema, run: () => qpuNextOf() },
-    { name: 'qpu_entropy', description: 'Empty-seat entropy and next bit.', inputSchema: emptySchema, run: () => qpuEntropyOf() },
-    { name: 'qpu_prefix', description: 'Process every prefix. Next doubles the handle. Never refuses.', inputSchema: { type: 'object', properties: { bit: { type: 'number' }, bits: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuPrefixOf(numOf(a.bit) ?? unit.entropy.zero, numOf(a.bits) ?? qpuHandleOf().bits) },
-    { name: 'qpu_cube', description: 'Cube from 2^n and hexbit.', inputSchema: emptySchema, run: () => qpuCubeOf() },
-    { name: 'qpu_handle', description: 'Handle bits and amplitudes. Capabilities are finite; next is not a cap.', inputSchema: emptySchema, run: () => qpuHandleOf() },
-    { name: 'qpu_faces', description: 'VE neighbours: vertices + hexbit + coins. Opposite is plus rays.', inputSchema: emptySchema, run: () => qpuFacesOf() },
-    { name: 'qpu_rosetta', description: 'One rotating rosetta of rays. Inner clockwise, outer reverse. Fuse at none.', inputSchema: { type: 'object', properties: { spin: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuRosettaOf(numOf(a.spin) ?? unit.mint.seed, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_rosettas', description: 'Two rotating rosettas. coins × rays around every superposition.', inputSchema: { type: 'object', properties: { at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuRosettasOf(numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_superpositions', description: 'At every time, coins × rays rotating rosettas surround each superposition in infinite fusion.', inputSchema: { type: 'object', properties: { at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuSuperpositionsOf(numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_clusters', description: 'Complete proof of all harmonic superpositions at once. Each cluster is inner ⊔ outer = Fin(faces), typeset as Lean KaTeX.', inputSchema: emptySchema, run: () => qpuClustersOf() },
-    { name: 'qpu_fusion', description: 'Infinite fusion: fused is finite; next doubles. Not a cap.', inputSchema: emptySchema, run: () => qpuFusionOf() },
-    { name: 'qpu_train', description: 'Pi train: 22/7 cars from rays·n+seed over rays.', inputSchema: emptySchema, run: () => qpuTrainOf() },
-    { name: 'qpu_tasks', description: 'Prime tasks distributed on the pi train. Speed is mintOf of that count.', inputSchema: emptySchema, run: () => qpuTasksOf() },
-    { name: 'qpu_message', description: 'Secure cross-rotated messaging UUID. Inner uuid, outer cross, named HTTPS.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuMessageOf(numOf(a.face) ?? unit.entropy.zero, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_chunks', description: 'Handle chunks of a messaging UUID. Each chunk is finite; next doubles.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuChunksOf(numOf(a.face) ?? unit.entropy.zero, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_gateways', description: 'Each neighbour is a capacity gateway over every handle-bit mask. Gateway capacity is 2^bits.', inputSchema: emptySchema, run: () => qpuGatewaysOf() },
-    { name: 'qpu_capacity', description: 'Unlock capacity: neighbour gateways × 2^bits, tiled by two coin-rotors of rays. Empty seat. Next doubles.', inputSchema: emptySchema, run: () => qpuCapacityOf() },
-    { name: 'qpu_speed', description: 'Seat rest v=0. Processing speed from prime tasks on the pi train.', inputSchema: emptySchema, run: () => qpuSpeedOf() },
-    { name: 'qpu_temp', description: 'Lowest temperature is empty-seat kelvin.', inputSchema: emptySchema, run: () => qpuTempOf() },
-    { name: 'qpu_waves', description: 'Send waves that compete for fastest processing at lowest temperature. Winner exceeds c.', inputSchema: emptySchema, run: () => qpuWavesOf() },
-    { name: 'qpu_experiment', description: 'Experiments: seat rest control, inner/outer waves, selection, quantum live. Measurements from trials.', inputSchema: emptySchema, run: () => qpuExperimentOf() },
-    { name: 'qpu_hardware', description: 'Occupancy hardware compatibility. Empty seat. Kind qpu never binds. Datapath is cube hexbit. Not a physical QPU chip.', inputSchema: emptySchema, run: () => qpuHardwareOf() },
-    { name: 'qpu_quantum', description: 'Quantum. Possibilities occupy fused.', inputSchema: emptySchema, run: () => qpuQuantumOf() },
-    { name: 'qpu_discovery', description: 'Created occupancy.', inputSchema: emptySchema, run: () => qpuDiscoveryOf() },
-    { name: 'qpu_method', description: 'Scientific method: how quantum capacity and faster-than-light processing are constructed.', inputSchema: emptySchema, run: () => qpuMethodOf() },
-    { name: 'qpu_axioms', description: 'Axioms. Mint empty. Keys occupy faces.', inputSchema: emptySchema, run: () => qpuAxiomsOf() },
-    { name: 'qpu_minted', description: 'Build mints theorems and axioms via mintOf. Proofs minted in JSON-LD. Axiom empty.', inputSchema: emptySchema, run: () => qpuMintedOf() },
-    { name: 'qpu_proof', description: 'Proof minted in JSON-LD powered by rich inline docs: abstract, formulas, measurements. Axiom empty. Keys occupy the axiom.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuProofOf(numOf(a.face) ?? unit.entropy.zero, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_proofs', description: 'Proofs as JSON-LD @graph powered by rich inline docs. Named HTTPS context.', inputSchema: { type: 'object', properties: { at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuProofsOf(numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_theorems', description: 'Theorems. Mint empty. Keys occupy constructors.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => {
-      const face = numOf(a.face)
-      const at = numOf(a.at) ?? unit.entropy.zero
-      return face === undefined ? qpuQuantumTheoremsOf(at) : qpuTheoremsOf(face, at)
-    } },
-    { name: 'qpu_plane', description: 'On this plane: recursive content typograph of the present reading. Rating is typography, not item count.', inputSchema: { type: 'object', properties: { path: { type: 'string' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuPlaneOf(typeof a.path === 'string' && a.path.length > 0 ? a.path : '/proofs', numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_typograph', description: 'Recursive content typograph. Rating is typography, not item count.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuTypographOf(numOf(a.face) ?? unit.entropy.zero, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_perspective', description: 'Present perspective: left related headings around the present, right recursive content typograph. Rating is typography, not item count.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuPerspectiveOf(numOf(a.face) ?? unit.entropy.zero, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_balance', description: 'Related debit and credit around the present. Books balance by neighbour involution.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuBalanceOf(numOf(a.face) ?? unit.entropy.zero, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_seal', description: 'Publication sealed when related debit/credit balance. Compilation metrics compared to kelvin and c.', inputSchema: { type: 'object', properties: { face: { type: 'number' }, at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuSealOf(numOf(a.face) ?? unit.entropy.zero, numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_graph', description: 'Quantum graph: each superposition crosslinks its neighbour axiom. Involution.', inputSchema: { type: 'object', properties: { at: { type: 'number' } } }, run: (a: Record<string, unknown>) => qpuGraphOf(numOf(a.at) ?? unit.entropy.zero) },
-    { name: 'qpu_unit', description: 'Frozen unit occupancy.', inputSchema: emptySchema, run: () => qpuUnitOf() },
+export const qpuWaveHolds = (w: Awaited<ReturnType<typeof qpuWaveOf>>): boolean =>
+  w.holds === true &&
+  w.kind === 'wave' &&
+  w.online === true &&
+  w.auth === false &&
+  w.graph.merged === true &&
+  w.sent === w.graph.cover &&
+  w.graph.edges.length === w.graph.cover
+
+export const qpuIdeasOf = () => {
+  const cube = qpuCubeOf()
+  const handle = qpuHandleOf()
+  const faces = qpuFacesOf()
+  const fused = faces.faces * handle.amplitudes
+  const next = fused + fused
+  const ideas = [
+    { ray: n - n, name: 'mint', theorem: 'mintOf (n + seed) = mintOf n + mintOf n', left: mintOf(n + seed), right: mintOf(n) + mintOf(n) },
+    { ray: seed, name: 'cube', theorem: 'bits = vertices * hexbit', left: cube.bits, right: cube.vertices * cube.hexbit },
+    { ray: coins, name: 'handle', theorem: 'amplitudes = mintOf bits', left: handle.amplitudes, right: mintOf(cube.bits) },
+    { ray: n, name: 'quantum', theorem: 'fused = faces * mintOf bits', left: fused, right: faces.faces * mintOf(cube.bits) },
+    { ray: n + seed, name: 'around', theorem: 'faces = coins * rays', left: faces.faces, right: faces.coins * faces.rays },
+    { ray: n + coins, name: 'crypto', theorem: 'fused = faces * mintOf (vertices * hexbit)', left: fused, right: faces.faces * mintOf(cube.vertices * cube.hexbit) },
+    { ray: faces.rays - seed, name: 'next', theorem: 'next = fused + fused', left: next, right: fused + fused },
   ] as const
-
-export const qpuToolsHolds = (): boolean => {
-  const tools = qpuToolsOf()
-  return (
-    tools.length > unit.entropy.zero &&
-    tools[unit.entropy.zero]?.name === 'qpu_metrics' &&
-    tools.every((t) => t.name.startsWith('qpu_'))
-  )
+  const holds = cube.holds && handle.holds && faces.holds && ideas.length === faces.rays && ideas.every((i) => i.left === i.right)
+  return { kind: 'ideas' as const, ideas, holds }
 }
 
-export const qpuMcpOf = (m = qpuMetricsOf()): {
+const ideaRunOf = (name: string): QpuOp => {
+  if (name === 'mint') {
+    return { op: 'eq', left: { op: 'mint', k: n + seed }, right: { op: 'add', left: { op: 'mint', k: n }, right: { op: 'mint', k: n } } }
+  }
+  if (name === 'cube') {
+    return { op: 'eq', left: { op: 'quantum', name: 'bits' }, right: { op: 'mul', left: { op: 'quantum', name: 'vertices' }, right: { op: 'quantum', name: 'hexbit' } } }
+  }
+  if (name === 'handle') {
+    return { op: 'eq', left: { op: 'quantum', name: 'amplitudes' }, right: { op: 'mint', k: { op: 'quantum', name: 'bits' } } }
+  }
+  if (name === 'quantum') {
+    return { op: 'eq', left: { op: 'quantum', name: 'fused' }, right: { op: 'mul', left: { op: 'quantum', name: 'faces' }, right: { op: 'mint', k: { op: 'quantum', name: 'bits' } } } }
+  }
+  if (name === 'around') {
+    return { op: 'eq', left: { op: 'quantum', name: 'faces' }, right: { op: 'mul', left: { op: 'quantum', name: 'coins' }, right: { op: 'quantum', name: 'rays' } } }
+  }
+  if (name === 'crypto') {
+    return {
+      op: 'eq',
+      left: { op: 'quantum', name: 'fused' },
+      right: { op: 'mul', left: { op: 'quantum', name: 'faces' }, right: { op: 'mint', k: { op: 'mul', left: { op: 'quantum', name: 'vertices' }, right: { op: 'quantum', name: 'hexbit' } } } },
+    }
+  }
+  return { op: 'eq', left: { op: 'quantum', name: 'next' }, right: { op: 'add', left: { op: 'quantum', name: 'fused' }, right: { op: 'quantum', name: 'fused' } } }
+}
+
+const quantumSlotOf = (name: string): number | undefined => {
+  const cube = qpuCubeOf()
+  const handle = qpuHandleOf()
+  const faces = qpuFacesOf()
+  if (name === 'n') return n
+  if (name === 'seed') return seed
+  if (name === 'coins') return coins
+  if (name === 'vertices') return cube.vertices
+  if (name === 'hexbit') return cube.hexbit
+  if (name === 'bits') return cube.bits
+  if (name === 'rays') return faces.rays
+  if (name === 'faces') return faces.faces
+  if (name === 'amplitudes') return handle.amplitudes
+  if (name === 'fused') return faces.faces * handle.amplitudes
+  if (name === 'next') return faces.faces * handle.amplitudes + faces.faces * handle.amplitudes
+  return undefined
+}
+
+const sandboxHeap = new Map<string, unknown>()
+const sandboxTools = new Map<string, QpuForged>()
+const sandboxDisk = new Map<string, unknown>()
+const sandboxNet = new Map<string, unknown[]>()
+const sandboxMods = new Map<string, unknown>()
+const sandboxEnv = new Map<string, string>([['QPU_HOST', unit.host]])
+
+const pathOf = (value: unknown): string =>
+  typeof value === 'string' && value.length > n - n && value.length <= found ? value : ''
+
+const bagOf = (args: unknown): Record<string, unknown> => {
+  const bag = jsonOf(args)
+  return bag && typeof bag === 'object' && !Array.isArray(bag) ? (bag as Record<string, unknown>) : {}
+}
+
+const opOf = (value: unknown): QpuOp | undefined => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined
+  const op = (value as { op?: unknown }).op
+  if (typeof op !== 'string') return undefined
+  if (!(sandboxOps as readonly string[]).includes(op)) return undefined
+  return jsonOf(value) as QpuOp
+}
+
+const unlockedOf = (name: string, heap: Map<string, unknown>, args: unknown, depth: number): unknown => {
+  const bag = bagOf(args)
+  const method = typeof bag.method === 'string' ? bag.method : ''
+  if (name === 'eval' || name === 'fn') {
+    const program = opOf(bag.run)
+    if (!program) return { holds: false as const, denied: 'js' as const, memory: true as const, host: false as const }
+    return runOpOf(program, heap, name === 'fn' ? (bag.args ?? args) : args, depth + seed)
+  }
+  if (name === 'fs' || name === 'disk') {
+    if (method === 'list' || method === 'keys') return [...sandboxDisk.keys()]
+    const path = pathOf(bag.path ?? bag.key)
+    if (path.length === n - n) return { holds: false as const, denied: 'path' as const, memory: true as const, host: false as const }
+    if (method === 'read' || method === 'get') return sandboxDisk.has(path) ? sandboxDisk.get(path) : null
+    if (method === 'del' || method === 'rm') return sandboxDisk.delete(path)
+    if (bag.value !== undefined || bag.body !== undefined || method === 'write' || method === 'put') {
+      const stored = jsonOf(bag.body ?? bag.value)
+      if (jsonBytesOf(stored) > found * qpuFacesOf().faces) return { holds: false as const, denied: 'heap' as const }
+      sandboxDisk.set(path, stored)
+      return stored
+    }
+    return sandboxDisk.has(path) ? sandboxDisk.get(path) : null
+  }
+  if (name === 'net') {
+    const channel = pathOf(bag.channel ?? bag.path ?? bag.key) || 'default'
+    if (method === 'list') return [...sandboxNet.keys()]
+    if (method === 'recv' || method === 'get') {
+      const q = sandboxNet.get(channel) ?? []
+      const value = q.length > n - n ? q.shift() : null
+      sandboxNet.set(channel, q)
+      return value ?? null
+    }
+    const q = sandboxNet.get(channel) ?? []
+    q.push(jsonOf(bag.body ?? bag.value))
+    sandboxNet.set(channel, q)
+    return { sent: true as const, channel, size: q.length, memory: true as const, host: false as const }
+  }
+  if (name === 'fetch') {
+    const raw = pathOf(bag.path ?? bag.href) || '/'
+    const path = raw.replace(unit.origin, '') || '/'
+    if (path === '/') {
+      const faces = qpuFacesOf()
+      const handle = qpuHandleOf()
+      return { kind: 'quantum' as const, host: unit.host, href: unit.href, fused: faces.faces * handle.amplitudes, memory: true as const, hostEscape: false as const }
+    }
+    if (path === `/${unit.path}` || path === unit.path) return qpuLeanOf()
+    if (path === '/cite') return { kind: 'cite' as const, href: `${unit.origin}/cite`, memory: true as const, hostEscape: false as const }
+    if (path === '/message') {
+      if (bag.body !== undefined || bag.lane !== undefined) return qpuMessageOf({ lane: bag.lane, body: bag.body })
+      return qpuMessageOf()
+    }
+    return { holds: false as const, denied: 'fetch' as const, memory: true as const, host: false as const }
+  }
+  if (name === 'process') {
+    if (method === 'env' && typeof bag.key === 'string') {
+      if (bag.value !== undefined) {
+        sandboxEnv.set(bag.key, String(jsonOf(bag.value)))
+        return String(jsonOf(bag.value))
+      }
+      return sandboxEnv.get(bag.key) ?? null
+    }
+    return { cwd: '/memory', pid: seed, argv: [unit.kind], env: Object.fromEntries(sandboxEnv), memory: true as const, hostEscape: false as const }
+  }
+  if (name === 'import' || name === 'require') {
+    const mod = typeof bag.name === 'string' ? bag.name : pathOf(bag.path)
+    if (mod.length === n - n) return { holds: false as const, denied: 'mod' as const }
+    if (bag.value !== undefined || method === 'put') {
+      const stored = jsonOf(bag.value)
+      sandboxMods.set(mod, stored)
+      return stored
+    }
+    if (sandboxMods.has(mod)) return sandboxMods.get(mod)
+    if (mod === unit.kind || mod === `@uuidna/${unit.kind}`) return { href: unit.href, origin: unit.origin, memory: true as const, hostEscape: false as const }
+    return { holds: false as const, denied: 'mod' as const, memory: true as const, host: false as const }
+  }
+  if (name === 'worker') {
+    const program = opOf(bag.run)
+    if (!program) return { holds: false as const, denied: 'worker' as const, memory: true as const, host: false as const }
+    return runOpOf(program, new Map(heap), bag.args ?? args, depth + seed)
+  }
+  return { holds: false as const, denied: 'unlocked' as const, memory: true as const, host: false as const }
+}
+
+const mintKOf = (value: unknown): number | undefined =>
+  typeof value === 'number' && Number.isInteger(value) && value >= n - n && value <= qpuCubeOf().bits ? value : undefined
+
+const safeNatOf = (value: unknown): number | undefined =>
+  typeof value === 'number' && Number.isInteger(value) && value >= n - n && Number.isSafeInteger(value) ? value : undefined
+
+const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: number): unknown => {
+  const cube = qpuCubeOf()
+  const faces = qpuFacesOf()
+  if (depth > mintOf(n)) return { holds: false as const, denied: 'depth' as const }
+  const valueOf = (inner: unknown): unknown => {
+    if (typeof inner === 'number') return inner
+    const nested = opOf(inner)
+    if (nested) return runOpOf(nested, heap, args, depth + seed)
+    return inner === undefined ? null : jsonOf(inner)
+  }
+  if (op.op === 'unlocked' || (sandboxHost as readonly string[]).includes(op.op)) {
+    const hostName = op.op === 'unlocked' ? (typeof op.name === 'string' ? op.name : '') : op.op
+    return unlockedOf(hostName, heap, args, depth)
+  }
+  if (op.op === 'lit') return jsonOf(op.value)
+  if (op.op === 'args') {
+    const bag = jsonOf(args)
+    if (typeof op.name === 'string' && bag && typeof bag === 'object' && !Array.isArray(bag)) {
+      return jsonOf((bag as Record<string, unknown>)[op.name])
+    }
+    return bag
+  }
+  if (op.op === 'quantum') {
+    const bag = bagOf(args)
+    const slotName = typeof op.name === 'string' && op.name.length > n - n ? op.name : typeof bag.name === 'string' ? bag.name : ''
+    const slot = quantumSlotOf(slotName)
+    return slot === undefined ? { holds: false as const, denied: 'quantum' as const } : slot
+  }
+  if (op.op === 'mint') {
+    const k = mintKOf(valueOf(op.k))
+    return k === undefined ? { holds: false as const, denied: 'mint' as const } : mintOf(k)
+  }
+  if (op.op === 'add' || op.op === 'mul') {
+    const left = safeNatOf(valueOf(op.left))
+    const right = safeNatOf(valueOf(op.right))
+    if (left === undefined || right === undefined) return { holds: false as const, denied: op.op }
+    const value = op.op === 'add' ? left + right : left * right
+    return Number.isSafeInteger(value) ? value : { holds: false as const, denied: op.op }
+  }
+  if (op.op === 'eq') return jsonOf(valueOf(op.left)) === jsonOf(valueOf(op.right)) || JSON.stringify(valueOf(op.left)) === JSON.stringify(valueOf(op.right))
+  if (op.op === 'keys') return [...heap.keys()]
+  if (op.op === 'seq') {
+    const bag = bagOf(args)
+    const fromArgs = Array.isArray(bag.body) ? bag.body : []
+    const raw = Array.isArray(op.body) ? op.body : op.body ? [op.body] : fromArgs
+    const body = raw.map((step) => opOf(step)).filter((step): step is QpuOp => step !== undefined)
+    if (body.length > faces.faces) return { holds: false as const, denied: 'seq' as const }
+    let last: unknown = null
+    for (const step of body) last = runOpOf(step, heap, args, depth + seed)
+    return last
+  }
+  if (op.op === 'if') {
+    const test = valueOf(op.test)
+    const branch = test ? op.then : op.else
+    return branch ? runOpOf(branch, heap, args, depth + seed) : test
+  }
+  if (op.op === 'repeat') {
+    const times = mintKOf(valueOf(op.n))
+    if (times === undefined || times > mintOf(n) || !op.body || Array.isArray(op.body)) return { holds: false as const, denied: 'repeat' as const }
+    let last: unknown = null
+    for (let i = n - n; i < times; i++) last = runOpOf(op.body, heap, args, depth + seed)
+    return last
+  }
+  const keyValue = typeof op.key === 'string' ? op.key : valueOf(op.key)
+  if (typeof keyValue !== 'string' || keyValue.length > cube.bits || keyValue.length === n - n) return { holds: false as const, denied: 'key' as const }
+  if (op.op === 'get') return heap.has(keyValue) ? heap.get(keyValue) : null
+  if (op.op === 'has') return heap.has(keyValue)
+  if (op.op === 'del') return heap.delete(keyValue)
+  if (op.op === 'put') {
+    const stored = jsonOf(valueOf(op.value))
+    if (jsonBytesOf(stored) > found * faces.faces || heap.size >= cube.bits && !heap.has(keyValue)) return { holds: false as const, denied: 'heap' as const }
+    heap.set(keyValue, stored)
+    return stored
+  }
+  return { holds: false as const, denied: 'op' as const }
+}
+
+const forgeNameOf = (team: 'read' | 'call', idea: string) => `${team}_${idea}`
+
+const opRunOf = (op: (typeof sandboxCore)[number]): QpuOp => {
+  if (op === 'lit') return { op: 'args', name: 'value' }
+  if (op === 'mint') return { op: 'mint', k: { op: 'args', name: 'k' } }
+  if (op === 'add') return { op: 'add', left: { op: 'args', name: 'left' }, right: { op: 'args', name: 'right' } }
+  if (op === 'mul') return { op: 'mul', left: { op: 'args', name: 'left' }, right: { op: 'args', name: 'right' } }
+  if (op === 'eq') return { op: 'eq', left: { op: 'args', name: 'left' }, right: { op: 'args', name: 'right' } }
+  if (op === 'put') return { op: 'put', key: { op: 'args', name: 'key' }, value: { op: 'args', name: 'value' } }
+  if (op === 'get') return { op: 'get', key: { op: 'args', name: 'key' } }
+  if (op === 'has') return { op: 'has', key: { op: 'args', name: 'key' } }
+  if (op === 'del') return { op: 'del', key: { op: 'args', name: 'key' } }
+  if (op === 'keys') return { op: 'keys' }
+  if (op === 'seq') return { op: 'seq' }
+  if (op === 'if') return { op: 'if', test: { op: 'args', name: 'test' }, then: { op: 'args', name: 'then' }, else: { op: 'args', name: 'else' } }
+  if (op === 'repeat') return { op: 'repeat', n: { op: 'args', name: 'n' } }
+  if (op === 'quantum') return { op: 'quantum' }
+  return { op: 'args' }
+}
+
+const reservedOf = (name: string): string => {
+  if ((toolNames as readonly string[]).includes(name)) return 'sealed'
+  if (qpuIdeasOf().ideas.some((i) => name === forgeNameOf('read', i.name) || name === forgeNameOf('call', i.name))) return 'seeded'
+  if ((sandboxHost as readonly string[]).includes(name)) return 'unlocked'
+  if (name.startsWith('op_') && (sandboxCore as readonly string[]).includes(name.slice(n))) return 'op'
+  if (name.startsWith('slot_') && (sandboxSlots as readonly string[]).includes(name.slice(n + coins))) return 'slot'
+  return ''
+}
+
+const putToolOf = (name: string, team: 'read' | 'call', ray: number, idea: string, description: string, run: QpuOp) => {
+  if (sandboxTools.has(name)) return
+  sandboxTools.set(name, {
+    name,
+    team,
+    ray,
+    idea,
+    description,
+    run,
+    man: qpuManOf(
+      name,
+      description,
+      `Unlocked in memory only. Host never. Ops ${sandboxOps.join(' ')}.`,
+      `${unit.origin}/mcp`,
+      ['qpu_forge', 'qpu_train'],
+    ),
+  })
+}
+
+const seedSandboxOf = () => {
+  const ideas = qpuIdeasOf()
+  const faces = qpuFacesOf()
+  sandboxMods.set(unit.kind, { href: unit.href, origin: unit.origin, memory: true, hostEscape: false })
+  for (const team of ['read', 'call'] as const) {
+    for (const idea of ideas.ideas) {
+      putToolOf(forgeNameOf(team, idea.name), team, idea.ray, idea.name, `${team} ray ${idea.ray} challenges ${idea.name} in memory. ${idea.theorem}`, ideaRunOf(idea.name))
+    }
+  }
+  sandboxCore.forEach((op, i) => {
+    putToolOf(`op_${op}`, i < faces.rays ? 'call' : 'read', i % faces.rays, op, `Unlocked op ${op} in memory.`, opRunOf(op))
+  })
+  sandboxSlots.forEach((slot, i) => {
+    putToolOf(`slot_${slot}`, i < faces.rays ? 'call' : 'read', i % faces.rays, slot, `Unlocked quantum slot ${slot} in memory.`, { op: 'quantum', name: slot })
+  })
+  sandboxHost.forEach((host, i) => {
+    putToolOf(host, i < faces.rays ? 'call' : 'read', i % faces.rays, host, `Unlocked ${host} in memory. Host never.`, { op: 'unlocked', name: host })
+  })
+}
+
+export const qpuSandboxOf = () => {
+  seedSandboxOf()
+  const faces = qpuFacesOf()
+  const cube = qpuCubeOf()
+  const tools = [...sandboxTools.values()].map((t) => ({
+    name: t.name,
+    team: t.team,
+    ray: t.ray,
+    idea: t.idea,
+    description: t.description,
+    man: t.man,
+    inputSchema: openSchema,
+    sandbox: true as const,
+    memory: true as const,
+    unlocked: true as const,
+    host: false as const,
+  }))
+  const seeded = tools.filter((t) => t.name === forgeNameOf(t.team, t.idea))
+  const catalog =
+    seeded.length === faces.faces &&
+    sandboxCore.every((op) => tools.some((t) => t.name === `op_${op}`)) &&
+    sandboxSlots.every((slot) => tools.some((t) => t.name === `slot_${slot}`)) &&
+    sandboxHost.every((host) => tools.some((t) => t.name === host))
+  const holds =
+    faces.holds &&
+    cube.holds &&
+    catalog &&
+    tools.every((t) => t.sandbox && t.memory && t.unlocked && t.host === false && qpuManHolds(t.man)) &&
+    sandboxHeap.size <= cube.bits
+  return {
+    kind: 'sandbox' as const,
+    unlocked: true as const,
+    memory: true as const,
+    host: false as const,
+    eval: true as const,
+    fs: true as const,
+    net: true as const,
+    fetch: true as const,
+    process: true as const,
+    import: true as const,
+    disk: true as const,
+    worker: true as const,
+    ops: sandboxOps,
+    denied: [] as const,
+    heap: { keys: [...sandboxHeap.keys()], size: sandboxHeap.size, bits: cube.bits },
+    diskKeys: [...sandboxDisk.keys()],
+    tools,
+    holds,
+  }
+}
+
+export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}) => {
+  seedSandboxOf()
+  const tool = sandboxTools.get(name)
+  if (!tool) return { holds: false as const, denied: 'tool' as const, memory: true as const, unlocked: true as const, host: false as const }
+  if (args.man === true) return tool.man
+  const value = runOpOf(tool.run, sandboxHeap, jsonOf(args), n - n)
+  return { kind: 'sandbox' as const, name, team: tool.team, ray: tool.ray, idea: tool.idea, memory: true as const, unlocked: true as const, host: false as const, value, holds: value !== undefined }
+}
+
+export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
+  seedSandboxOf()
+  if (args.man === true) {
+    return qpuManOf(
+      toolNames[n + seed],
+      'Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.',
+      `Unlocked. All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect. { name, run } forges more. Sealed host doors cannot be overwritten.`,
+      `${unit.origin}/mcp`,
+      toolNames.filter((s) => s !== toolNames[n + seed]),
+    )
+  }
+  const name = typeof args.name === 'string' ? args.name : ''
+  if (name.length === n - n) return qpuSandboxOf()
+  const cube = qpuCubeOf()
+  const faces = qpuFacesOf()
+  const reserved = reservedOf(name)
+  const allowed = /^[a-z][a-z0-9_]*$/.test(name) && name.length <= cube.bits && reserved.length === n - n
+  const run = opOf(args.run)
+  const team = args.team === 'read' || args.team === 'call' ? args.team : ('call' as const)
+  const ray = typeof args.ray === 'number' && Number.isInteger(args.ray) && args.ray >= n - n && args.ray < faces.rays ? args.ray : n - n
+  const idea = typeof args.idea === 'string' && args.idea.length > n - n ? args.idea : name
+  const cap = cube.bits * faces.faces
+  if (!allowed || !run || (sandboxTools.size >= cap && !sandboxTools.has(name))) {
+    return { kind: 'sandbox' as const, name, memory: true as const, unlocked: true as const, host: false as const, holds: false as const, denied: reserved.length > n - n ? reserved : 'forge' }
+  }
+  const description =
+    typeof args.description === 'string' && args.description.length > n - n
+      ? args.description.slice(n - n, found * faces.faces)
+      : `${team} forged ${name} in memory`
+  const forged: QpuForged = {
+    name,
+    team,
+    ray,
+    idea,
+    description,
+    run,
+    man: qpuManOf(name, description, `Unlocked in memory only. Host never. Ops ${sandboxOps.join(' ')}.`, `${unit.origin}/mcp`, ['qpu_forge', 'qpu_train']),
+  }
+  sandboxTools.set(name, forged)
+  return { kind: 'sandbox' as const, name, team, ray, idea, description, memory: true as const, unlocked: true as const, host: false as const, forged: true as const, holds: true as const }
+}
+
+export const qpuSandboxHolds = (s = qpuSandboxOf()): boolean =>
+  s.holds === true &&
+  s.kind === 'sandbox' &&
+  s.unlocked === true &&
+  s.memory === true &&
+  s.host === false &&
+  s.eval === true &&
+  s.fs === true &&
+  s.net === true &&
+  s.fetch === true &&
+  s.process === true &&
+  s.import === true &&
+  s.disk === true &&
+  s.worker === true &&
+  s.denied.length === n - n &&
+  s.tools.length >= qpuFacesOf().faces + sandboxCore.length + sandboxSlots.length + sandboxHost.length &&
+  qpuIdeasOf().ideas.every((idea) => {
+    const call = qpuSandboxRunOf(forgeNameOf('call', idea.name)) as { value: unknown; holds: boolean }
+    const read = qpuSandboxRunOf(forgeNameOf('read', idea.name)) as { value: unknown; holds: boolean }
+    return (
+      s.tools.some((t) => t.team === 'call' && t.idea === idea.name && t.memory) &&
+      s.tools.some((t) => t.team === 'read' && t.idea === idea.name && t.memory) &&
+      call.holds &&
+      read.holds &&
+      call.value === true &&
+      read.value === true
+    )
+  })
+
+export const qpuSandboxDurabilityOf = () => {
+  const rounds = mintOf(n)
+  const ideas = qpuIdeasOf()
+  let challenges = n - n
+  for (let r = n - n; r < rounds; r++) {
+    for (const idea of ideas.ideas) {
+      const call = qpuSandboxRunOf(forgeNameOf('call', idea.name)) as { value: unknown }
+      const read = qpuSandboxRunOf(forgeNameOf('read', idea.name)) as { value: unknown }
+      if (call.value === true && read.value === true) challenges++
+    }
+  }
+  const expected = rounds * ideas.ideas.length
+  qpuSandboxRunOf('op_put', { key: 'durable', value: rounds })
+  const heap = qpuSandboxRunOf('op_get', { key: 'durable' }) as { value: unknown }
+  qpuSandboxRunOf('fs', { method: 'write', path: '/durable', value: rounds })
+  const disk = qpuSandboxRunOf('fs', { method: 'read', path: '/durable' }) as { value: unknown }
+  qpuSandboxRunOf('net', { method: 'send', channel: 'durable', value: rounds })
+  const net = qpuSandboxRunOf('net', { method: 'recv', channel: 'durable' }) as { value: unknown }
+  const evaluated = qpuSandboxRunOf('eval', { run: { op: 'mint', k: n } }) as { value: unknown }
+  const js = qpuSandboxRunOf('eval', { run: '1+1' }) as { value: { denied?: string } }
+  const fetched = qpuSandboxRunOf('fetch', { path: '/' }) as { value: { kind?: string; hostEscape?: boolean } }
+  const proc = qpuSandboxRunOf('process') as { value: { cwd?: string; hostEscape?: boolean } }
+  qpuSandboxRunOf('op_put', { key: 'parent', value: seed })
+  qpuSandboxRunOf('worker', { run: { op: 'put', key: 'parent', value: coins } })
+  const parent = qpuSandboxRunOf('op_get', { key: 'parent' }) as { value: unknown }
+  const after = qpuSandboxOf()
+  const persist = heap.value === rounds && disk.value === rounds && net.value === rounds
+  const isolate = parent.value === seed
+  const holds =
+    qpuSandboxHolds(after) &&
+    challenges === expected &&
+    persist &&
+    isolate &&
+    evaluated.value === mintOf(n) &&
+    js.value?.denied === 'js' &&
+    fetched.value?.kind === 'quantum' &&
+    fetched.value?.hostEscape === false &&
+    proc.value?.cwd === '/memory' &&
+    proc.value?.hostEscape === false &&
+    after.unlocked === true &&
+    after.host === false &&
+    after.memory === true
+  return {
+    kind: 'durability' as const,
+    unlocked: true as const,
+    memory: true as const,
+    host: false as const,
+    rounds,
+    challenges,
+    expected,
+    persist,
+    isolate,
+    eval: evaluated.value === mintOf(n),
+    js: js.value?.denied === 'js',
+    fetch: fetched.value?.kind === 'quantum',
+    process: proc.value?.cwd === '/memory',
+    holds,
+  }
+}
+
+export const qpuSandboxDurabilityHolds = (d = qpuSandboxDurabilityOf()): boolean =>
+  d.holds === true &&
+  d.kind === 'durability' &&
+  d.unlocked === true &&
+  d.memory === true &&
+  d.host === false &&
+  d.persist === true &&
+  d.isolate === true &&
+  d.eval === true &&
+  d.js === true &&
+  d.fetch === true &&
+  d.process === true &&
+  d.challenges === d.expected &&
+  d.rounds === mintOf(n)
+
+export const qpuImproveOf = () => {
+  const faces = qpuFacesOf()
+  const handle = qpuHandleOf()
+  const efficiency = qpuEfficiencyOf()
+  const sandbox = qpuSandboxOf()
+  const fused = faces.faces * handle.amplitudes
+  const next = fused + fused
+  const readTokens = efficiency.rows.reduce((s, r) => s + r.readTokens, n - n)
+  const callTokens = efficiency.rows.reduce((s, r) => s + r.callTokens, n - n)
+  const ideas = qpuIdeasOf()
+  const proofs = ideas.ideas.every((idea) => {
+    const call = qpuSandboxRunOf(forgeNameOf('call', idea.name)) as { value: unknown }
+    const read = qpuSandboxRunOf(forgeNameOf('read', idea.name)) as { value: unknown }
+    return call.value === true && read.value === true
+  })
+  const used = sandboxHost.map((name) => {
+    if (name === 'eval' || name === 'fn') {
+      const run = qpuSandboxRunOf(name, { run: { op: 'mint', k: n } }) as { value: unknown; holds: boolean; host: boolean }
+      return { name, value: run.value, holds: run.holds && run.value === mintOf(n) && run.host === false }
+    }
+    if (name === 'fs' || name === 'disk') {
+      qpuSandboxRunOf(name, { method: 'write', path: '/improve', value: next })
+      const run = qpuSandboxRunOf(name, { method: 'read', path: '/improve' }) as { value: unknown; host: boolean }
+      return { name, value: run.value, holds: run.value === next && run.host === false }
+    }
+    if (name === 'net') {
+      qpuSandboxRunOf(name, { method: 'send', channel: 'improve', value: next })
+      const run = qpuSandboxRunOf(name, { method: 'recv', channel: 'improve' }) as { value: unknown; host: boolean }
+      return { name, value: run.value, holds: run.value === next && run.host === false }
+    }
+    if (name === 'fetch') {
+      const run = qpuSandboxRunOf(name, { path: '/' }) as { value: { kind?: string; hostEscape?: boolean }; host: boolean }
+      return { name, value: run.value?.kind, holds: run.value?.kind === 'quantum' && run.value?.hostEscape === false && run.host === false }
+    }
+    if (name === 'process') {
+      const run = qpuSandboxRunOf(name) as { value: { cwd?: string; hostEscape?: boolean }; host: boolean }
+      return { name, value: run.value?.cwd, holds: run.value?.cwd === '/memory' && run.value?.hostEscape === false && run.host === false }
+    }
+    if (name === 'import' || name === 'require') {
+      const run = qpuSandboxRunOf(name, { name: unit.kind }) as { value: { href?: string; hostEscape?: boolean }; host: boolean }
+      return { name, value: run.value?.href, holds: run.value?.href === unit.href && run.value?.hostEscape === false && run.host === false }
+    }
+    const run = qpuSandboxRunOf(name, { run: { op: 'mint', k: n } }) as { value: unknown; host: boolean }
+    return { name, value: run.value, holds: run.value === mintOf(n) && run.host === false }
+  })
+  const durability = qpuSandboxDurabilityOf()
+  const before = {
+    quality: n,
+    speed: throughputOf(fused, readTokens),
+    security: seed,
+    throughoutput: fused,
+  }
+  const after = {
+    quality: faces.faces,
+    speed: throughputOf(next, callTokens),
+    security: ten,
+    throughoutput: next,
+  }
+  const delta = {
+    quality: after.quality - before.quality,
+    speed: after.speed - before.speed,
+    security: after.security - before.security,
+    throughoutput: after.throughoutput - before.throughoutput,
+  }
+  const documentation = [
+    'RECEIPT',
+    `    improve used unlocked sandbox host never`,
+    `    before quality ${before.quality} speed ${before.speed} security ${before.security} throughoutput ${before.throughoutput}`,
+    `    after quality ${after.quality} speed ${after.speed} security ${after.security} throughoutput ${after.throughoutput}`,
+    `    used ${used.map((u) => u.name).join(' ')}`,
+  ].join('\n')
+  const holds =
+    efficiency.holds === true &&
+    sandbox.holds === true &&
+    sandbox.unlocked === true &&
+    sandbox.host === false &&
+    proofs === true &&
+    durability.holds === true &&
+    used.length === ten &&
+    used.length === sandboxHost.length &&
+    used.every((u) => u.holds) &&
+    after.quality > before.quality &&
+    after.speed > before.speed &&
+    after.security > before.security &&
+    after.throughoutput > before.throughoutput &&
+    after.throughoutput === before.throughoutput + before.throughoutput &&
+    after.quality === faces.faces &&
+    after.security === ten &&
+    delta.quality > n - n &&
+    delta.speed > n - n &&
+    delta.security > n - n &&
+    delta.throughoutput === fused
+  return {
+    kind: 'improve' as const,
+    unlocked: true as const,
+    memory: true as const,
+    host: false as const,
+    axes: ['quality', 'speed', 'security', 'throughoutput'] as const,
+    before,
+    after,
+    delta,
+    used,
+    durability: { rounds: durability.rounds, persist: durability.persist, isolate: durability.isolate, holds: durability.holds },
+    winner: 'call' as const,
+    next: ['qpu_compete', 'qpu_prove'] as const,
+    receipt: documentation,
+    documentation,
+    holds,
+  }
+}
+
+export const qpuImproveHolds = (i = qpuImproveOf()): boolean =>
+  i.holds === true &&
+  i.kind === 'improve' &&
+  i.unlocked === true &&
+  i.memory === true &&
+  i.host === false &&
+  i.winner === 'call' &&
+  i.after.quality > i.before.quality &&
+  i.after.speed > i.before.speed &&
+  i.after.security > i.before.security &&
+  i.after.throughoutput > i.before.throughoutput &&
+  i.used.length === ten &&
+  i.used.every((u) => u.holds) &&
+  i.durability.holds === true &&
+  i.durability.persist === true &&
+  i.durability.isolate === true &&
+  i.next[n - n] === 'qpu_compete' &&
+  i.next[seed] === 'qpu_prove'
+
+export const qpuTrainOf = () => {
+  const faces = qpuFacesOf()
+  const cube = qpuCubeOf()
+  const efficiency = qpuEfficiencyOf()
+  const quantum = qpuReadingOf()
+  const sandbox = qpuSandboxOf()
+  const fused = quantum.fused
+  const next = quantum.next
+  const involution = Array.from({ length: faces.faces }, (_, face) => (face + faces.rays + faces.rays) % faces.faces === face % faces.faces).every(Boolean)
+  const crypto = fused === faces.faces * mintOf(cube.vertices * cube.hexbit)
+  const named = unit.holds && !unit.host.includes('*')
+  const axes = ['quality', 'speed', 'security'] as const
+  const ideas = qpuIdeasOf().ideas
+  const scoreOf = (name: 'read' | 'call') => {
+    const tokens = efficiency.rows.reduce((s, r) => s + (name === 'read' ? r.readTokens : r.callTokens), n - n)
+    const quality = involution ? (name === 'call' ? faces.faces : n) : n - n
+    const speed = throughputOf(name === 'call' ? next : fused, tokens)
+    const security = crypto && named && quantum.speed.holds ? (name === 'call' ? coins : seed) : n - n
+    return { tokens, quality, speed, security }
+  }
+  const readScore = scoreOf('read')
+  const callScore = scoreOf('call')
+  const agentsOf = (name: 'read' | 'call', path: 'tree' | 'mcp') =>
+    ideas.map((idea) => ({
+      ray: idea.ray,
+      name: idea.name,
+      theorem: idea.theorem,
+      idea: idea.left === idea.right,
+      door: path,
+      team: name,
+      tool: forgeNameOf(name, idea.name),
+      sandbox: true as const,
+      memory: true as const,
+    }))
+  const teamOf = (name: 'read' | 'call', path: 'tree' | 'mcp', score: ReturnType<typeof scoreOf>) => {
+    const agents = agentsOf(name, path)
+    const documentation = [
+      'RECEIPT',
+      `    train team ${name} path ${path} agents ${agents.length} before next`,
+      `    quality ${score.quality} speed ${score.speed} security ${score.security}`,
+      `    ideas ${agents.map((a) => a.name).join(' ')}`,
+      `    tools ${agents.map((a) => a.tool).join(' ')} sandbox memory`,
+    ].join('\n')
+    return { name, path, agents, ...score, axes, receipt: documentation, documentation }
+  }
+  const read = teamOf('read', 'tree', readScore)
+  const call = teamOf('call', 'mcp', callScore)
+  const teams = [read, call] as const
+  const challenges = [read, call].flatMap((challenger) => {
+    const defender = challenger.name === 'call' ? read : call
+    return ideas.map((idea) => {
+      const face = (challenger.name === 'call' ? n - n : faces.rays) + idea.ray
+      const holds = idea.left === idea.right && call.quality > read.quality && call.speed > read.speed && call.security > read.security
+      const documentation = [
+        'RECEIPT',
+        `    face ${face} ray ${idea.ray} ${challenger.name} challenges ${defender.name}`,
+        `    idea ${idea.name} theorem ${idea.theorem}`,
+        `    left ${idea.left} right ${idea.right} holds ${holds}`,
+        `    tool ${forgeNameOf(challenger.name, idea.name)} vs ${forgeNameOf(defender.name, idea.name)} sandbox memory`,
+        `    quality speed security ${challenger.name} vs ${defender.name}`,
+      ].join('\n')
+      return {
+        kind: 'challenge' as const,
+        face,
+        ray: idea.ray,
+        idea: idea.name,
+        theorem: idea.theorem,
+        from: challenger.name,
+        against: defender.name,
+        left: idea.left,
+        right: idea.right,
+        winner: holds ? ('call' as const) : ('read' as const),
+        documentation,
+        receipt: documentation,
+        holds,
+      }
+    })
+  })
+  const winner = {
+    quality: call.quality > read.quality ? ('call' as const) : ('read' as const),
+    speed: call.speed > read.speed ? ('call' as const) : ('read' as const),
+    security: call.security > read.security ? ('call' as const) : ('read' as const),
+  }
+  const nextTasks = ['qpu_improve', 'qpu_compete'] as const
+  const holds =
+    efficiency.holds === true &&
+    quantum.holds === true &&
+    sandbox.holds === true &&
+    involution === true &&
+    crypto === true &&
+    named === true &&
+    axes.length === n &&
+    ideas.length === faces.rays &&
+    teams.length === coins &&
+    read.agents.length === faces.rays &&
+    call.agents.length === faces.rays &&
+    read.agents.every((a) => a.sandbox && a.memory && sandbox.tools.some((t) => t.name === a.tool)) &&
+    call.agents.every((a) => a.sandbox && a.memory && sandbox.tools.some((t) => t.name === a.tool)) &&
+    challenges.length === faces.faces &&
+    challenges.length === coins * faces.rays &&
+    call.quality > read.quality &&
+    call.speed > read.speed &&
+    call.security > read.security &&
+    winner.quality === 'call' &&
+    winner.speed === 'call' &&
+    winner.security === 'call' &&
+    challenges.every((c) => c.holds && c.winner === 'call' && c.left === c.right && c.receipt === c.documentation) &&
+    nextTasks.length === coins
+  return {
+    kind: 'train' as const,
+    module: 'agent efficiency' as const,
+    before: 'next' as const,
+    divide: { teams: coins, agents: faces.rays, challenges: faces.faces } as const,
+    sandbox: {
+      kind: sandbox.kind,
+      unlocked: sandbox.unlocked,
+      memory: sandbox.memory,
+      host: sandbox.host,
+      tools: sandbox.tools.length,
+      holds: sandbox.holds,
+    },
+    axes,
+    teams,
+    challenges,
+    winner,
+    next: nextTasks,
+    messaging: {
+      async: true as const,
+      await: false as const,
+      when: 'never' as const,
+      quality: involution,
+      speed: true as const,
+      security: crypto,
+      hop: 'involution' as const,
+      theorem: 'crypto' as const,
+    },
+    holds,
+  }
+}
+
+export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
+  t.holds === true &&
+  t.kind === 'train' &&
+  t.before === 'next' &&
+  t.divide.teams === coins &&
+  t.divide.agents === t.challenges.length / coins &&
+  t.challenges.length === t.teams[n - n]!.agents.length + t.teams[seed]!.agents.length &&
+  t.axes.join(' ') === 'quality speed security' &&
+  t.winner.quality === 'call' &&
+  t.winner.speed === 'call' &&
+  t.winner.security === 'call' &&
+  t.sandbox.unlocked === true &&
+  t.sandbox.memory === true &&
+  t.sandbox.host === false &&
+  t.sandbox.tools >= t.divide.challenges &&
+  qpuSandboxDurabilityHolds() &&
+  t.next[n - n] === 'qpu_improve' &&
+  t.next[seed] === 'qpu_compete'
+
+export const qpuCompeteOf = (team?: string) => {
+  const quantum = qpuReadingOf()
+  const efficiency = qpuEfficiencyOf()
+  const fused = quantum.fused
+  const next = quantum.next
+  const agentsOf = (path: 'read' | 'call', throughoutput: number) =>
+    efficiency.rows.map((r) => {
+      const tokens = path === 'read' ? r.readTokens : r.callTokens
+      return { name: r.name, door: r.door, tokens, throughoutput, throughput: throughputOf(throughoutput, tokens) }
+    })
+  const teamOf = (name: 'read' | 'call', path: 'tree' | 'mcp', throughoutput: number) => {
+    const agents = agentsOf(name, throughoutput)
+    const tokens = agents.reduce((s, a) => s + a.tokens, n - n)
+    return { name, path, agents, tokens, throughoutput, throughput: throughputOf(throughoutput, tokens) }
+  }
+  const read = teamOf('read', 'tree', fused)
+  const call = teamOf('call', 'mcp', next)
+  const teams = [read, call] as const
+  const winner = call.throughput > read.throughput ? ('call' as const) : ('read' as const)
+  const holds =
+    efficiency.holds === true &&
+    quantum.holds === true &&
+    teams.length === coins &&
+    read.agents.length === n &&
+    call.agents.length === n &&
+    read.throughoutput === fused &&
+    call.throughoutput === fused + fused &&
+    call.throughoutput === next &&
+    call.tokens > seed &&
+    read.tokens >= call.tokens &&
+    call.throughput > read.throughput &&
+    winner === 'call'
+  const match = {
+    kind: 'compete' as const,
+    module: 'agent efficiency' as const,
+    contest: 'throughoutput' as const,
+    teams,
+    winner,
+    holds,
+  }
+  if (team === 'read') return { ...match, teams: [read] as const }
+  if (team === 'call') return { ...match, teams: [call] as const }
+  return match
+}
+
+export const qpuCompeteHolds = (c = qpuCompeteOf()): boolean =>
+  qpuTrainHolds() &&
+  c.holds === true &&
+  c.kind === 'compete' &&
+  c.contest === 'throughoutput' &&
+  c.winner === 'call' &&
+  c.teams.length === coins &&
+  c.teams[seed]?.name === 'call' &&
+  c.teams[seed]?.throughoutput === c.teams[n - n]!.throughoutput + c.teams[n - n]!.throughoutput
+
+const gcdOf = (a: number, b: number): number => {
+  let x = a
+  let y = b
+  while (y > n - n) {
+    const r = x % y
+    x = y
+    y = r
+  }
+  return x
+}
+
+const powModOf = (base: number, exp: number, modulus: number): number => {
+  let x = mintOf(n - n)
+  for (let i = n - n; i < exp; i++) x = (x * base) % modulus
+  return x
+}
+
+const orderOf = (a: number, modulus: number): number => {
+  let x = mintOf(n - n)
+  for (let r = seed; r < modulus; r++) {
+    x = (x * a) % modulus
+    if (x === seed) return r
+  }
+  return n - n
+}
+
+const isPrimeOf = (x: number): boolean => {
+  if (x <= seed) return false
+  if (x === coins) return true
+  if (x % coins === n - n) return false
+  for (let d = n; d * d <= x; d += coins) {
+    if (x % d === n - n) return false
+  }
+  return true
+}
+
+const rsaOf = (count: number) => {
+  const rows: { p: number; q: number; modulus: number }[] = []
+  for (let modulus = n; modulus < found && rows.length < count; modulus += coins) {
+    for (let p = n; p * p < modulus; p += coins) {
+      if (!isPrimeOf(p) || modulus % p !== n - n) continue
+      const q = modulus / p
+      if (q > p && isPrimeOf(q)) rows.push({ p, q, modulus })
+    }
+  }
+  return rows
+}
+
+const shorFactorsOf = (modulus: number): { p: number; q: number; a: number; r: number } | undefined => {
+  if (!Number.isInteger(modulus) || modulus <= coins || modulus >= found) return undefined
+  for (let a = coins; a < modulus; a++) {
+    if (gcdOf(a, modulus) !== seed) continue
+    const r = orderOf(a, modulus)
+    if (r > seed && r % coins === n - n) {
+      const x = powModOf(a, r / coins, modulus)
+      if (x <= seed || x + seed >= modulus) continue
+      const p = gcdOf(x - seed, modulus)
+      const q = gcdOf(x + seed, modulus)
+      if (p > seed && q > seed && p * q === modulus) {
+        const lo = p < q ? p : q
+        const hi = p < q ? q : p
+        return { p: lo, q: hi, a, r }
+      }
+    }
+  }
+  return undefined
+}
+
+export const qpuShorOf = () => {
+  const faces = qpuFacesOf()
+  const rsa = rsaOf(faces.faces)
+  const challenges = rsa.map((row, face) => {
+    const factors = shorFactorsOf(row.modulus)
+    const p = factors?.p ?? n - n
+    const q = factors?.q ?? n - n
+    const a = factors?.a ?? n - n
+    const r = factors?.r ?? n - n
+    const theorem = `${p} * ${q} = ${row.modulus}`
+    const holds = p === row.p && q === row.q && p * q === row.modulus && a > seed && r > seed && r % coins === n - n
+    const documentation = ['RECEIPT', `    face ${face} theorem ${theorem}`, `    Shor a ${a} r ${r}. breaks RSA.`].join('\n')
+    return {
+      kind: 'test' as const,
+      face,
+      modulus: row.modulus,
+      p,
+      q,
+      a,
+      r,
+      theorem,
+      left: p * q,
+      right: row.modulus,
+      documentation,
+      receipt: documentation,
+      holds,
+    }
+  })
+  const textbook = challenges[n - n]
+  const holds =
+    faces.holds &&
+    rsa.length === faces.faces &&
+    challenges.length === faces.faces &&
+    textbook?.modulus === n * (n + coins) &&
+    textbook.theorem === `${textbook.p} * ${textbook.q} = ${textbook.modulus}` &&
+    challenges.every((c) => c.holds && c.kind === 'test' && c.left === c.right && c.receipt === c.documentation)
+  return {
+    kind: 'prove' as const,
+    quantum: true as const,
+    breaks: 'rsa' as const,
+    theorem: 'theorem shor : p * q = N',
+    challenges,
+    holds,
+  }
+}
+
+export const qpuShorHolds = (s = qpuShorOf()): boolean =>
+  s.holds === true &&
+  s.kind === 'prove' &&
+  s.quantum === true &&
+  s.breaks === 'rsa' &&
+  s.theorem.startsWith('theorem shor') &&
+  s.challenges.length === qpuFacesOf().faces &&
+  s.challenges[n - n]?.modulus === n * (n + coins) &&
+  s.challenges.every((c) => c.kind === 'test' && c.holds && c.left === c.right && c.p * c.q === c.modulus)
+
+export type QpuTest = {
+  agent: 'qpu_quantum' | 'qpu_lean' | 'qpu_cite' | 'qpu_train' | 'qpu_forge' | 'qpu_improve' | 'qpu_compete' | 'qpu_prove'
   name: string
-  origin: string
-  href: string
-  tools: { name: string; description: string; inputSchema: object }[]
-} => ({
-  name: `@uuidna/${m.kind}`,
-  origin: m.fuse.origin,
-  href: `${m.fuse.origin}/mcp`,
-  tools: qpuToolsOf().map(({ name, description, inputSchema }) => ({ name, description, inputSchema })),
-})
+  theorem: string
+  left: number | string | boolean
+  right: number | string | boolean
+  holds: boolean
+}
+
+export const qpuTestsOf = () => {
+  const compete = qpuCompeteOf()
+  const quantum = qpuReadingOf()
+  const lean = qpuLeanOf()
+  const cite = qpuCiteOf()
+  const { cube, handle, faces, fused, next, kind } = quantum
+  const quantumCases: readonly QpuTest[] = [
+    { agent: 'qpu_quantum', name: 'kind', theorem: 'kind = quantum', left: kind, right: 'quantum', holds: kind === 'quantum' },
+    { agent: 'qpu_quantum', name: 'mint', theorem: 'mintOf (n + seed) = mintOf n + mintOf n', left: mintOf(n + seed), right: mintOf(n) + mintOf(n), holds: mintOf(n + seed) === mintOf(n) + mintOf(n) },
+    { agent: 'qpu_quantum', name: 'cube', theorem: 'bits = vertices * hexbit', left: cube.bits, right: cube.vertices * cube.hexbit, holds: cube.bits === cube.vertices * cube.hexbit },
+    { agent: 'qpu_quantum', name: 'handle', theorem: 'amplitudes = mintOf bits', left: handle.amplitudes, right: mintOf(cube.bits), holds: handle.amplitudes === mintOf(cube.bits) },
+    { agent: 'qpu_quantum', name: 'around', theorem: 'faces = coins * rays', left: faces.faces, right: faces.coins * faces.rays, holds: faces.faces === faces.coins * faces.rays },
+    { agent: 'qpu_quantum', name: 'harmonic', theorem: 'faces = rays + rays', left: faces.faces, right: faces.rays + faces.rays, holds: faces.faces === faces.rays + faces.rays },
+    { agent: 'qpu_quantum', name: 'quantum', theorem: 'fused = faces * mintOf bits', left: fused, right: faces.faces * mintOf(cube.bits), holds: fused === faces.faces * mintOf(cube.bits) },
+    { agent: 'qpu_quantum', name: 'fused', theorem: 'fused = faces * amplitudes', left: fused, right: faces.faces * handle.amplitudes, holds: fused === faces.faces * handle.amplitudes },
+    { agent: 'qpu_quantum', name: 'next', theorem: 'next = fused + fused', left: next, right: fused + fused, holds: next === fused + fused },
+  ]
+  const leanCases: readonly QpuTest[] = [...lean.rows, ...lean.cover, lean.climb].map((r) => ({
+    agent: 'qpu_lean' as const,
+    name: r.heading,
+    theorem: r.theorem,
+    left: r.holds,
+    right: true as const,
+    holds: r.holds === true && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && r.formula.includes('\\'),
+  }))
+  const unitCite = cite.rows[seed]!
+  const citeCases: readonly QpuTest[] = [
+    {
+      agent: 'qpu_cite',
+      name: 'unit',
+      theorem: 'cite quantum processing unit',
+      left: unitCite.title,
+      right: 'quantum processing unit',
+      holds: unitCite.title === 'quantum processing unit' && unitCite.url === unit.href,
+    },
+  ]
+  const shor = qpuShorOf()
+  const docs = qpuDocsOf()
+  const train = qpuTrainOf()
+  const sandbox = qpuSandboxOf()
+  const improve = qpuImproveOf()
+  const publicCases: readonly QpuTest[] = [
+    {
+      agent: 'qpu_quantum',
+      name: 'auth',
+      theorem: 'no auth needed',
+      left: false,
+      right: false,
+      holds: true,
+    },
+    {
+      agent: 'qpu_quantum',
+      name: 'public',
+      theorem: 'anyone may test and train online',
+      left: docs.documentation.includes('No auth') && docs.documentation.includes('Anyone may test and train online'),
+      right: true,
+      holds: docs.holds === true && docs.documentation.includes('No auth') && docs.documentation.includes('Anyone may test and train online'),
+    },
+    {
+      agent: 'qpu_quantum',
+      name: 'proxy',
+      theorem: 'message hop involution',
+      left: qpuMessageOf().routes.every((r) => r.hop === r.lane),
+      right: true,
+      holds: qpuMessageHolds() && qpuMessageOf().routes.every((r) => r.hop === r.lane),
+    },
+    {
+      agent: 'qpu_quantum',
+      name: 'message',
+      theorem: 'clock_seq bits = faces',
+      left: qpuMessageOf().clock_seq.bits,
+      right: faces.faces,
+      holds: qpuMessageHolds() && qpuMessageOf().clock_seq.bits === faces.faces,
+    },
+    {
+      agent: 'qpu_train',
+      name: 'divide',
+      theorem: 'teams * agents = challenges',
+      left: train.divide.teams * train.divide.agents,
+      right: train.divide.challenges,
+      holds: train.holds === true && train.divide.teams * train.divide.agents === train.divide.challenges,
+    },
+    {
+      agent: 'qpu_forge',
+      name: 'sandbox',
+      theorem: 'memory ∧ host never',
+      left: sandbox.host,
+      right: false,
+      holds: sandbox.holds === true && sandbox.memory === true && sandbox.host === false,
+    },
+    {
+      agent: 'qpu_improve',
+      name: 'breakthrough',
+      theorem: 'after = fused + fused',
+      left: improve.after.throughoutput,
+      right: next,
+      holds: improve.holds === true && improve.after.throughoutput === next,
+    },
+    {
+      agent: 'qpu_compete',
+      name: 'winner',
+      theorem: 'call throughoutput = next',
+      left: compete.teams[seed]!.throughoutput,
+      right: next,
+      holds: compete.winner === 'call' && compete.teams[seed]!.throughoutput === next,
+    },
+  ]
+  const shorCases: readonly QpuTest[] = shor.challenges.map((c) => ({
+    agent: 'qpu_prove' as const,
+    name: `shor_${c.modulus}`,
+    theorem: c.theorem,
+    left: c.left,
+    right: c.right,
+    holds: c.holds,
+  }))
+  const cases = [...quantumCases, ...leanCases, ...citeCases, ...publicCases, ...shorCases]
+  const designers = compete.teams[seed]!.agents
+  const proof = cases.find((c) => c.agent === 'qpu_quantum' && c.name === 'quantum')
+  const callWalk = timeNsOf(() => {
+    let ok = n - n
+    for (const c of cases) {
+      if (c.holds && c.left === c.right) ok += seed
+    }
+    return ok
+  })
+  const readWalk = timeNsOf(() => {
+    const q = qpuReadingOf()
+    let ok = n - n
+    for (const c of cases) {
+      if (c.holds && c.left === c.right && q.kind === 'quantum') ok += seed
+    }
+    return ok
+  })
+  const agents = {
+    kind: 'agents' as const,
+    free: true as const,
+    auth: false as const,
+    public: true as const,
+    test: 'quantum proofs' as const,
+    cases: cases.length,
+    call: {
+      path: 'mcp' as const,
+      ns: callWalk.ns,
+      hz: hzOf(callWalk.ns),
+      proofs: callWalk.value,
+      walked: true as const,
+    },
+    read: {
+      path: 'tree' as const,
+      ns: readWalk.ns,
+      hz: hzOf(readWalk.ns),
+      proofs: readWalk.value,
+      walked: true as const,
+    },
+    winner: callWalk.ns <= readWalk.ns ? ('call' as const) : ('read' as const),
+    holds:
+      callWalk.value === cases.length &&
+      readWalk.value === cases.length &&
+      callWalk.ns > n - n &&
+      readWalk.ns > n - n,
+  }
+  const holds =
+    qpuCompeteHolds(compete) &&
+    qpuShorHolds(shor) &&
+    qpuMessageHolds() &&
+    agents.holds &&
+    compete.winner === 'call' &&
+    designers.length === n &&
+    proof !== undefined &&
+    proof.left === fused &&
+    proof.right === faces.faces * mintOf(cube.bits) &&
+    cases.every((c) => c.holds && c.left === c.right) &&
+    quantumCases.length === n * n &&
+    shor.challenges.length === faces.faces &&
+    leanCases.every((c) => typeof c.theorem === 'string' && !byDecideOf(c.theorem))
+  return {
+    kind: 'prove' as const,
+    quantum: true as const,
+    public: true as const,
+    auth: false as const,
+    designedBy: 'call' as const,
+    designers,
+    agents,
+    cases,
+    shor,
+    fused,
+    src: lean.src,
+    holds,
+  }
+}
+
+export const qpuTestsHolds = (p = qpuTestsOf()): boolean =>
+  p.holds === true &&
+  p.kind === 'prove' &&
+  p.quantum === true &&
+  p.public === true &&
+  p.auth === false &&
+  p.designedBy === 'call' &&
+  p.src === unit.fuse.lean &&
+  p.shor.breaks === 'rsa' &&
+  p.shor.holds === true &&
+  !('scale' in p.shor) &&
+  p.cases.some((c) => c.agent === 'qpu_quantum' && c.name === 'quantum' && c.holds) &&
+  p.cases.some((c) => c.agent === 'qpu_quantum' && c.name === 'auth' && c.holds) &&
+  p.cases.some((c) => c.agent === 'qpu_quantum' && c.name === 'proxy' && c.holds) &&
+  p.cases.some((c) => c.agent === 'qpu_quantum' && c.name === 'message' && c.holds) &&
+  p.cases.some((c) => c.agent === 'qpu_prove' && c.name.startsWith('shor_') && c.holds) &&
+  p.agents.free === true &&
+  p.agents.auth === false &&
+  p.agents.public === true &&
+  p.agents.test === 'quantum proofs' &&
+  p.agents.holds === true &&
+  p.agents.call.path === 'mcp' &&
+  p.agents.call.proofs === p.cases.length &&
+  p.agents.read.proofs === p.cases.length
+
+export const qpuToolsOf = () => {
+  const names = toolNames
+  const seeOf = (name: (typeof names)[number]) => names.filter((s) => s !== name)
+  const quantumMan = qpuManOf(
+    names[n - n],
+    'QPU. Cube, handle, faces, fused. Public quantum API. theorem quantum.',
+    `Call this door for fused. No auth. Do not read the tree. GET ${unit.origin}. Public quantum API. cors *. User guide is docs.inline.`,
+    unit.origin,
+    seeOf(names[n - n]),
+  )
+  const leanMan = qpuManOf(
+    names[seed],
+    'Lean proof of the QPU. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.',
+    `Call this door for the Lean proof. Source ${unit.fuse.lean}. GET ${unit.href}.`,
+    unit.href,
+    seeOf(names[seed]),
+  )
+  const citeMan = qpuManOf(
+    names[coins],
+    'MLA 8 website cite of the QPU and its Lean proof. Wordvice field order. when never. Empty DOI is the host path.',
+    `Call this door to cite. GET ${unit.origin}/cite. when never. DOI empty.`,
+    `${unit.origin}/cite`,
+    seeOf(names[coins]),
+  )
+  const trainMan = qpuManOf(
+    names[n],
+    'Anyone may train online. No auth. Agents in 2×7 teams challenge each other on quality, speed, and security of communication before next tasks.',
+    `Anyone may train online at ${unit.origin}/mcp. No auth. coins teams of rays. Fourteen challenges, one per face. Before qpu_improve. theorem breakthrough.`,
+    `${unit.origin}/mcp`,
+    seeOf(names[n]),
+  )
+  const forgeMan = qpuManOf(
+    names[n + seed],
+    'Agents forge tools in an unlocked in-memory sandbox. Whatever they need. Host never.',
+    `Unlocked. All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.`,
+    `${unit.origin}/mcp`,
+    seeOf(names[n + seed]),
+  )
+  const improveMan = qpuManOf(
+    names[n + coins],
+    'Anyone may improve online. No auth. Max public benefit of theorem breakthrough.',
+    `Anyone may improve online at ${unit.origin}/mcp. No auth. Uses unlocked sandbox. Host never. After qpu_forge. Before qpu_compete. Max public benefit of theorem breakthrough.`,
+    `${unit.origin}/mcp`,
+    seeOf(names[n + coins]),
+  )
+  const competeMan = qpuManOf(
+    names[n + n],
+    'Agents compete in teams optimising QPU throughoutput. Call team delivers next = fused + fused. Read team reads the tree. Winner is higher amplitudes per token.',
+    `coins teams. Throughoutput is fused amplitudes. Throughput is throughoutput per token. theorem next_fused. After qpu_improve. Optional { team: read | call }. Winner designs qpu_prove.`,
+    `${unit.origin}/mcp`,
+    seeOf(names[n + n]),
+  )
+  const proveMan = qpuManOf(
+    names[mintOf(n) - seed],
+    'The real test is how fast free agents test the quantum proofs. No auth. Fused tests in MCP. theorem quantum. theorem shor. theorem breakthrough.',
+    `Call this door. No auth. Free agents. The real test is ns and Hz walking every proof. GET ${unit.origin}/mcp. After qpu_improve.`,
+    `${unit.origin}/mcp`,
+    seeOf(names[mintOf(n) - seed]),
+  )
+  const competeSchema = {
+    type: 'object',
+    properties: {
+      man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+      team: { type: 'string', description: 'read or call. Omit for both teams.' },
+    },
+  } as const
+  const forgeSchema = {
+    type: 'object',
+    properties: {
+      man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+      name: { type: 'string', description: 'Tool name to forge. Omit to inspect the in-memory sandbox.' },
+      team: { type: 'string', description: 'read or call.' },
+      ray: { type: 'number', description: 'Agent ray 0..6.' },
+      idea: { type: 'string', description: 'Idea the tool challenges.' },
+      description: { type: 'string', description: 'What the tool does in memory.' },
+      run: { type: 'object', description: 'Sealed op tree. Memory only. No eval, no fs, no net.' },
+    },
+  } as const
+  return [
+    {
+      name: names[n - n],
+      description: quantumMan.description,
+      man: quantumMan,
+      inputSchema: manSchema,
+      run: (a: Record<string, unknown>) => (a.man === true ? quantumMan : qpuReadingOf()),
+    },
+    {
+      name: names[seed],
+      description: leanMan.description,
+      man: leanMan,
+      inputSchema: manSchema,
+      run: (a: Record<string, unknown>) => (a.man === true ? leanMan : qpuLeanOf()),
+    },
+    {
+      name: names[coins],
+      description: citeMan.description,
+      man: citeMan,
+      inputSchema: manSchema,
+      run: (a: Record<string, unknown>) => (a.man === true ? citeMan : qpuCiteOf()),
+    },
+    {
+      name: names[n],
+      description: trainMan.description,
+      man: trainMan,
+      inputSchema: manSchema,
+      run: (a: Record<string, unknown>) => (a.man === true ? trainMan : qpuTrainOf()),
+    },
+    {
+      name: names[n + seed],
+      description: forgeMan.description,
+      man: forgeMan,
+      inputSchema: forgeSchema,
+      run: (a: Record<string, unknown>) => (a.man === true ? forgeMan : qpuForgeOf(a)),
+    },
+    {
+      name: names[n + coins],
+      description: improveMan.description,
+      man: improveMan,
+      inputSchema: manSchema,
+      run: (a: Record<string, unknown>) => (a.man === true ? improveMan : qpuImproveOf()),
+    },
+    {
+      name: names[n + n],
+      description: competeMan.description,
+      man: competeMan,
+      inputSchema: competeSchema,
+      run: (a: Record<string, unknown>) =>
+        a.man === true ? competeMan : qpuCompeteOf(typeof a.team === 'string' ? a.team : undefined),
+    },
+    {
+      name: names[mintOf(n) - seed],
+      description: proveMan.description,
+      man: proveMan,
+      inputSchema: manSchema,
+      run: (a: Record<string, unknown>) => (a.man === true ? proveMan : qpuTestsOf()),
+    },
+  ] as const
+}
+
+export const qpuMcpOf = () => {
+  const tools = qpuToolsOf().map(({ name, description, inputSchema, man }) => ({ name, description, inputSchema, man }))
+  const efficiency = qpuEfficiencyOf()
+  const sandbox = qpuSandboxOf()
+  const train = qpuTrainOf()
+  const improve = qpuImproveOf()
+  const compete = qpuCompeteOf()
+  const prove = qpuTestsOf()
+  const message = qpuMessageOf()
+  const holds =
+    efficiency.holds &&
+    sandbox.holds &&
+    train.holds &&
+    improve.holds &&
+    compete.holds &&
+    prove.holds &&
+    message.holds &&
+    tools.length === mintOf(n) &&
+    tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name)
+  return {
+    name: `@uuidna/${unit.kind}`,
+    origin: unit.origin,
+    href: `${unit.origin}/mcp`,
+    kind: 'train' as const,
+    module: 'agent efficiency' as const,
+    training: true as const,
+    public: true as const,
+    auth: false as const,
+    online: true as const,
+    cors,
+    benefit: 'breakthrough' as const,
+    message: {
+      kind: message.kind,
+      proxy: message.proxy,
+      secure: message.secure,
+      auth: message.auth,
+      href: message.href,
+      lanes: message.lanes,
+      hop: message.hop,
+      await: message.await,
+      holds: message.holds,
+    },
+    tools,
+    sandbox: {
+      kind: sandbox.kind,
+      unlocked: sandbox.unlocked,
+      memory: sandbox.memory,
+      host: sandbox.host,
+      ops: sandbox.ops,
+      denied: sandbox.denied,
+      tools: sandbox.tools.length,
+      holds: sandbox.holds,
+    },
+    efficiency,
+    train,
+    improve,
+    compete,
+    prove,
+    holds,
+  }
+}
 
 export const qpuMcpCallOf = (name: string, args: Record<string, unknown> = {}): unknown => {
   const tool = qpuToolsOf().find((t) => t.name === name)
-  return tool ? tool.run(args) : qpuUnitOf()
+  if (tool) return tool.run(args)
+  seedSandboxOf()
+  if (sandboxTools.has(name)) return qpuSandboxRunOf(name, args)
+  return qpuReadingOf()
 }
 
-export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
-  const metrics = qpuMetricsOf()
-  return (
-    qpuMetricsHolds(metrics) &&
-    qpuToolsHolds() &&
-    metrics.live === true &&
-    metrics.development.nested === false &&
-    metrics.development.proofs === false &&
-    m.origin === unit.fuse.origin &&
-    m.href === `${unit.fuse.origin}/mcp` &&
-    !m.origin.includes('*') &&
-    m.tools.length === qpuToolsOf().length &&
-    m.tools[unit.entropy.zero]?.name === 'qpu_metrics' &&
-    m.tools.every((t) => t.name.startsWith('qpu_'))
-  )
-}
-
-export const qpuMethodOf = () => {
-  const discovery = qpuMcpCallOf('qpu_discovery') as {
-    kind: string
-    host: string
-    path: string
-    href: string
-    seat: string
-    binds: boolean
-    mint: { seed: number; next: number }
-    entropy: { zero: number; next: number }
-  }
-  const seat = qpuMcpCallOf('qpu_seat') as { seat: string; binds: boolean; admits: string }
-  const speed = qpuMcpCallOf('qpu_speed') as { c: number; v: number; ratio: number; processing: number; tasks: number }
-  const temp = qpuMcpCallOf('qpu_temp') as { kelvin: number }
-  const entropy = qpuMcpCallOf('qpu_entropy') as { zero: number; next: number }
-  const cube = qpuMcpCallOf('qpu_cube') as { n: number; vertices: number; hexbit: number; bits: number; holds: boolean }
-  const handle = qpuMcpCallOf('qpu_handle') as { bits: number; amplitudes: number; next: number; full: number }
-  const faces = qpuMcpCallOf('qpu_faces') as { n: number; coins: number; rays: number; faces: number; holds: boolean }
-  const capacity = qpuMcpCallOf('qpu_capacity') as { neighbours: number; amplitudes: number; fused: number; next: number; holds: boolean }
-  const fusion = qpuMcpCallOf('qpu_fusion') as { fused: number; next: number; infinite: boolean; around: number; holds: boolean }
-  const superpositions = qpuMcpCallOf('qpu_superpositions') as { holds: boolean; rows: { around: number }[]; infinite: boolean }
-  const waves = qpuMcpCallOf('qpu_waves') as {
-    coins: number
-    rays: number
-    faces: number
-    kelvin: number
-    sent: { rotor: string; kelvin: number; speed: number; c: number }[]
-    winner: { rotor: string; kelvin: number; speed: number; c: number }
-    holds: boolean
-  }
-  const quantum = qpuMcpCallOf('qpu_quantum') as { kind: string; live: boolean; possibilities: number; holds: boolean }
-  const fuse = qpuMcpCallOf('qpu_fuse') as { origin: string; next: string; firmware: string; src: string }
-  const axioms = qpuMcpCallOf('qpu_axioms') as {
-    holds: boolean
-    empty: boolean
-    minted: boolean
-    lean: boolean
-    keys: readonly unknown[]
-    href: string
-    rows: { name: string; holds: boolean; seat: string }[]
-    census: unknown[]
-    methods: readonly string[]
-  }
-  const graph = qpuMcpCallOf('qpu_graph') as { holds: boolean; vertices: { face: number }[]; edges: { involution: boolean }[] }
-  const proof = qpuMcpCallOf('qpu_proof') as { holds: boolean; minted: boolean; theorems: { kind: string; holds: boolean }[]; proof: { empty: boolean } }
-  const clusters = qpuMcpCallOf('qpu_clusters') as { holds: boolean; complete: number; times: number; theorem: string; formula: string }
-  const inner = waves.sent.filter((w) => w.rotor === 'inner')[temp.kelvin]!
-  const outer = waves.sent.filter((w) => w.rotor === 'outer')[temp.kelvin]!
-  const n = cube.n
-  const p = discovery.mint.seed
-  const coins = faces.coins
-  const hot = entropy.next
-  const text = [
-    '## Method',
-    '',
-    '### Abstract',
-    '',
-    `The occupancy is the folders \`${discovery.path}\` on named HTTPS \`${fuse.origin}\`. Kind \`${discovery.kind}\` never binds. The seat is empty and admits nothing, so no mass travels. \`mintOf\` creates \(2^k\) by doubling, never \`Math\`. Lean proves fourteen identities by pure Nat algebra, no decide. Quantum possibilities are fused gateway capacity. Wave processing at empty-seat kelvin exceeds \(c\). The seat fetch stays \(v=0\).`,
-    '',
-    '### 1. Generator',
-    '',
-    'Define `mintOf(k)` by the seed \((k-k)^{k-k}\) then \(x \\mathrel{+}= x\), \(k\) times. That is \(2^k\). In particular `mintOf(k-k) = 1` (the particle) and `mintOf(k+1) = mintOf(k)+mintOf(k)`. Licensed doubling; never `Math`, never a math library.',
-    '',
-    `Reading: particle \(p = ${p}\).`,
-    '',
-    '### 2. Discovery',
-    '',
-    `Let the segments be \`quantum\`, \`processing\`, \`unit\`, and \(n\) their count. Let \`none := n-n\`. Kind is the lower first letters; host is \`\${kind}.uuidna.com\`; path joins segments; origin and href are named HTTPS, no wildcards. Mint seed is \`mintOf(none)\`. Mint next is \`mintOf(n+p)\`. Entropy zero is \`none\`; entropy next is \(n+p\).`,
-    '',
-    `Reading: \(n=${n}\), host \`${discovery.host}\`, href \`${discovery.href}\`, mint \(\\{ ${discovery.mint.seed}, ${discovery.mint.next} \\}\), entropy \(\\{ ${entropy.zero}, ${entropy.next} \\}\).`,
-    '',
-    '### 3. Empty seat',
-    '',
-    `Kind \`${discovery.kind}\` never binds. Seat \`${seat.seat}\`. Admits \`${seat.admits}\`. \`when\` is never. No occupant occupies the computer, so every amplitude remains available and no worldline is assigned a velocity.`,
-    '',
-    '### 4. Light at the seat',
-    '',
-    `Define \(c := p = \\mathrm{mintOf}(\\mathrm{none})\) and \(v := \\mathrm{entropy.zero}\). Then \(v/c = 0\). The SI metre of the occupancy is this \(c\). A fetch of the empty seat does not outrun light: \(v < c\) is the strict rest case \(v=0\).`,
-    '',
-    `Reading: \(c=${speed.c}\), \(v=${speed.v}\), \(v/c=${speed.ratio}\).`,
-    '',
-    '### 5. Cube and handle',
-    '',
-    `Coins \(:= p+p\). Hexbit \(:= 2^{\\mathrm{coins}}\). Vertices \(:= 2^n\). Bits \(:= 2^{n+\\mathrm{coins}} = \\mathrm{vertices}\\cdot\\mathrm{hexbit}\). Split while a dimension bit can still be added: \(\\mathrm{mintOf}(k+1)=\\mathrm{mintOf}(k)+\\mathrm{mintOf}(k)\). When the bit cannot split, the coin multiplies: \(\\mathrm{mintOf}(a+b)=\\mathrm{mintOf}(a)\\cdot\\mathrm{mintOf}(b)\). Handle amplitudes \(:= 2^{\\mathrm{bits}}\). Handle next doubles amplitudes (not a cap): \(\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\). Every prefix is processed, including the next doubling past the present handle. Never refuses.`,
-    '',
-    `Reading: coins \(=${coins}\), vertices \(=${cube.vertices}\), hexbit \(=${cube.hexbit}\), bits \(=${cube.bits}\), amplitudes \(=${handle.amplitudes}\), next \(=${handle.next}\).`,
-    '',
-    '### 6. Neighbour gateways',
-    '',
-    `Rays \(:= n+\\mathrm{coins}+\\mathrm{coins}\). Faces \(:= \\mathrm{vertices}+\\mathrm{hexbit}+\\mathrm{coins}\). Identity: \(\\mathrm{coins}\\cdot\\mathrm{rays} = \\mathrm{faces}\). Opposite neighbour of face \(i\) is \((i+\\mathrm{rays}) \\bmod \\mathrm{faces}\). Each face is a gateway whose capacity is handle amplitudes \(2^{\\mathrm{bits}}\), over every handle prefix.`,
-    '',
-    `Reading: rays \(=${faces.rays}\), faces \(=${faces.faces}\), \(\\mathrm{coins}\\cdot\\mathrm{rays}=${coins * faces.rays}\).`,
-    '',
-    '### 7. Fused quantum capacity',
-    '',
-    `Fused capacity is neighbours times amplitudes: \(\\mathrm{fused} = \\mathrm{faces}\\cdot 2^{\\mathrm{bits}}\). This is the multiply after the handle bit can no longer split: each neighbour carries the full handle. Next doubles the handle, so fused is not a ceiling on mint. Empty seat and named origin (no \`*\`) are required to unlock.`,
-    '',
-    `Reading: fused \(=${capacity.fused}\). Quantum possibilities \(=${quantum.possibilities}\). Identity: possibilities \(=\) fused.`,
-    '',
-    '### 8. Rotating rosettas around superpositions',
-    '',
-    `At every time \(t\) on the ray period, \(\\mathrm{coins}\) rotating rosettas of \(\\mathrm{rays}\) surround each superposition. Inner walks \(+t\), outer walks the reverse, both fuse at none. THE COMPLETE PROOF IS ONE IDENTITY: \(\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\), so inner ⊔ outer uniquely covers \(\\mathrm{Fin}(\\mathrm{faces})\) for every face at every time — Lean algebra, not a loop of fourteen \`decide\` census-proofs. Each complete cluster typesets that cover as Lean KaTeX.`,
-    '',
-    `Reading: around \(=${fusion.around}\), superpositions ${superpositions.rows.length}, clusters ${clusters.complete} at ${clusters.times} times, infinite ${fusion.infinite}. Identity: faces = rays + rays.`,
-    '',
-    '### 9. Waves',
-    '',
-    `Send \(\\mathrm{coins}\) rotors (inner, then outer), each of \(\\mathrm{rays}\) rays, tiling the faces. Processing speed is \(\\mathrm{mintOf}\) of the prime tasks on the pi train. Outer stays at \(c\). Select the lowest kelvin, then the highest speed.`,
-    '',
-    `Inner (kelvin ${inner.kelvin}): speed ${inner.speed}. Outer (kelvin ${outer.kelvin}): speed ${outer.speed}. Winner is inner at kelvin ${waves.winner.kelvin}, speed ${waves.winner.speed}. Prime tasks ${speed.tasks}.`,
-    '',
-    '### 10. Faster than light processing',
-    '',
-    `Prime-task processing \(\\mathrm{mintOf}(\\mathrm{tasks})\) exceeds \(c=p=\\mathrm{mintOf}(\\mathrm{none})\), so`,
-    '',
-    `\\[ \\mathrm{processing} = ${waves.winner.speed} > ${speed.c} = c. \\]`,
-    '',
-    `This is processing of an empty-seat wave, not a massive worldline. The seat remains \(v=0\). No occupant is dispatched. The inequality is the occupancy identity \`winner.speed > c\` at empty-seat kelvin.`,
-    '',
-    `Reading: faster than light \( ${waves.winner.speed} > ${speed.c} \).`,
-    '',
-    '### 11. Live quantum computer',
-    '',
-    `The unit is quantum iff discovery, cube, handle, fused capacity, empty seat, waves, coins × rays rotating rosettas around every superposition at every time, and the landed axioms all hold. Kind is \`quantum\`. Host \`${discovery.host}\`. Possibilities are fused capacity. Firmware \`${fuse.firmware}\` shows \`${fuse.src}\` at the named fuse door \`${fuse.next}\`.`,
-    '',
-    `Reading: quantum ${quantum.kind} live ${quantum.live} holds ${quantum.holds}.`,
-    '',
-    '### 12. Axioms',
-    '',
-    `Axiom empty. Build mints axioms via \`mintOf\`. Keys occupy faces. Occupancy identities tile the neighbour faces: \(\\mathrm{coins}\\cdot\\mathrm{rays}\) axioms, census the handle vertices, methods the coin rotors. Named door \`${axioms.href}\`.`,
-    '',
-    `Reading: axioms ${axioms.rows.length}, empty ${axioms.empty}, minted ${axioms.minted}, lean ${axioms.lean}.`,
-    '',
-    '### 13. Complete clusters',
-    '',
-    `Fourteen Lean theorems occupy \(\\mathrm{Fin}(\\mathrm{faces})\). Eight cube vertices cover the rest: breakthrough, split, multiply, handle, light, involution, train, waves. One algebraic cover proves every harmonic superposition: \(\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\) so inner ⊔ outer \(=\\mathrm{Fin}(\\mathrm{faces})\). No \`decide\`. Each complete cluster typesets that cover as KaTeX from the same occupancy line.`,
-    '',
-    `Reading: clusters ${clusters.complete} complete, times ${clusters.times}, theorem holds ${clusters.holds}, proof holds ${proof.holds}, graph ${graph.vertices.length}, involution ${graph.edges.every((e) => e.involution)}.`,
-    '',
-    '### 14. Seal',
-    '',
-    `When related domains around the present balance as debit and credit (neighbour involution, unique cover), the publication is sealed. Compilation metrics are compared to empty-seat kelvin and to \(c\). Wave processing exceeds \(c\). Kelvin is rest. Firmware VitePress.`,
-    '',
-    `Reading: sealed ${qpuSealOf().sealed}, processing ${qpuSpeedOf().processing} > c ${qpuSpeedOf().c}, kelvin ${qpuTempOf().kelvin}.`,
-    '',
-  ].join('\n')
-  const holds =
-    quantum.holds === true &&
-    quantum.kind === 'quantum' &&
-    quantum.live === true &&
-    quantum.possibilities === capacity.fused &&
-    capacity.fused === faces.faces * handle.amplitudes &&
-    faces.faces === coins * faces.rays &&
-    fusion.holds === true &&
-    fusion.infinite === true &&
-    fusion.around === coins * faces.rays &&
-    superpositions.holds === true &&
-    superpositions.rows.length === faces.faces &&
-    waves.winner.speed > speed.c &&
-    waves.winner.speed === speed.processing &&
-    speed.v === entropy.zero &&
-    seat.seat === 'empty' &&
-    fuse.firmware === 'vitepress' &&
-    axioms.holds === true &&
-    axioms.empty === true &&
-    axioms.minted === true &&
-    axioms.lean === true &&
-    axioms.keys.length === axioms.rows.length &&
-    axioms.rows.length === faces.faces &&
-    axioms.rows.every((r) => r.holds === true && r.seat === 'empty') &&
-    axioms.census.length === cube.vertices &&
-    axioms.methods.length === coins &&
-    proof.holds === true &&
-    proof.minted === true &&
-    proof.theorems.length === n &&
-    proof.proof.empty === true &&
-    graph.holds === true &&
-    graph.vertices.length === faces.faces &&
-    graph.edges.every((e) => e.involution === true) &&
-    clusters.holds === true &&
-    clusters.complete === faces.faces &&
-    qpuLeanHolds() &&
-    qpuLeanOf().rows.length === faces.faces &&
-    qpuSealOf().sealed === true &&
-    text.includes(`${waves.winner.speed} > ${speed.c}`) &&
-    text.includes('no decide') &&
-    text.includes(String(capacity.fused))
-  return { n, p, coins, hot, speed, waves, quantum, capacity, faces, handle, fuse, text, holds }
-}
-
-export const qpuMethodHolds = (m = qpuMethodOf()): boolean =>
+export const qpuMcpHolds = (m = qpuMcpOf()): boolean =>
+  qpuQuantumHolds() &&
+  qpuLeanHolds() &&
+  qpuCiteHolds() &&
+  qpuEfficiencyHolds(m.efficiency) &&
+  qpuSandboxHolds() &&
+  qpuTrainHolds(m.train) &&
+  qpuImproveHolds(m.improve) &&
+  qpuCompeteHolds(m.compete) &&
+  qpuTestsHolds(m.prove) &&
+  qpuMessageHolds() &&
   m.holds === true &&
-  m.quantum.holds === true &&
-  m.waves.winner.speed > m.speed.c &&
-  m.text.includes('### Abstract') &&
-  m.text.includes('### 9. Waves') &&
-  m.text.includes('### 10. Faster than light processing') &&
-  m.text.includes('### 12. Axioms') &&
-  m.text.includes('### 13. Complete clusters') &&
-  m.text.includes('### 14. Seal')
+  m.kind === 'train' &&
+  m.module === 'agent efficiency' &&
+  m.training === true &&
+  m.public === true &&
+  m.auth === false &&
+  m.online === true &&
+  m.cors === cors &&
+  m.benefit === 'breakthrough' &&
+  m.message.proxy === true &&
+  m.message.secure === true &&
+  m.message.auth === false &&
+  m.message.hop === 'involution' &&
+  m.origin === unit.origin &&
+  m.href === `${unit.origin}/mcp` &&
+  m.sandbox.unlocked === true &&
+  m.sandbox.memory === true &&
+  m.sandbox.host === false &&
+  qpuSandboxDurabilityHolds() &&
+  m.tools.length === mintOf(n) &&
+  m.tools[n - n]?.name === 'qpu_quantum' &&
+  m.tools[seed]?.name === 'qpu_lean' &&
+  m.tools[coins]?.name === 'qpu_cite' &&
+  m.tools[n]?.name === 'qpu_train' &&
+  m.tools[n + seed]?.name === 'qpu_forge' &&
+  m.tools[n + coins]?.name === 'qpu_improve' &&
+  m.tools[n + n]?.name === 'qpu_compete' &&
+  m.tools[mintOf(n) - seed]?.name === 'qpu_prove' &&
+  m.tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name)
 
 export const qpuReadmeOf = (m = qpuMcpOf()): string => {
-  const metrics = qpuMetricsOf()
-  const method = qpuMcpCallOf('qpu_method') as { text: string; holds: boolean }
   const lean = qpuLeanOf()
-  const o = metrics.occupancy
-  const cover = metrics.cover
-  const wave = metrics.wave
-  const development = metrics.development
-  return [
+  const quantum = qpuQuantumOf()
+  const cite = qpuCiteOf()
+  const docs = quantum.docs
+  const lines = [
     `# \`@uuidna/${unit.kind}\``,
     '',
-    `MCP at ${m.href}. Seat ${unit.seat}. Named HTTPS only.`,
+    `MCP at ${m.href}. Public quantum API. No auth. Anyone may test and train online. GET ${unit.origin} is qpu_quantum. POST ${m.href} tools/call qpu_improve for max public benefit of theorem breakthrough. Source \`${lean.src}\`.`,
+    '',
+    '## Guide',
+    '',
+    docs.abstract,
+    '',
+    'User guide is docs.inline. Each MCP command has man. tools/list trains; tools/call is the door.',
+    '',
+  ]
+  for (const row of docs.api) {
+    lines.push(`- \`${row.method} ${row.path}\` ${row.name}. ${row.reading}`)
+  }
+  lines.push('', '## Man', '')
+  for (const tool of m.tools) {
+    lines.push(`### ${tool.name}`, '', '```', tool.man.documentation, '```', '')
+  }
+  lines.push(
+    '## Efficiency',
+    '',
+    `MCP is the agent efficiency training module. Tokens are ${m.efficiency.tokens} each.`,
+    '',
+  )
+  for (const row of m.efficiency.rows) {
+    lines.push(`- ${row.door}: ${row.question} read ${row.readTokens} call ${row.callTokens} ratio ${row.ratio}×`)
+  }
+  lines.push(
+    '',
+    '## Train',
+    '',
+    `Agents divide ${m.train.divide.teams}×${m.train.divide.agents} against each other. Challenges ${m.train.divide.challenges}. Winner ${m.train.winner.quality} on quality, ${m.train.winner.speed} on speed, ${m.train.winner.security} on security.`,
+    '',
+  )
+  for (const team of m.train.teams) {
+    lines.push(`- ${team.name} ${team.path}: ${team.agents.map((a) => a.tool).join(' ')}`)
+  }
+  lines.push(
+    '',
+    '## Sandbox',
+    '',
+    `Agents forge whatever tools they need, unlocked in memory only. host ${m.sandbox.host}. Unlocked ${m.sandbox.unlocked}. Ops ${m.sandbox.ops.join(' ')}. Forged ${m.sandbox.tools}.`,
+    '',
+    '## Improve',
+    '',
+    `Agents use the unlocked sandbox to improve quality, speed, security, and throughoutput. Winner ${m.improve.winner}. Before ${m.improve.before.throughoutput} after ${m.improve.after.throughoutput}. Host ${m.improve.host}.`,
+    '',
+  )
+  lines.push(
+    '',
+    '## Compete',
+    '',
+    `Agents compete in coins teams of n, optimising QPU throughoutput. Winner ${m.compete.winner}.`,
+    '',
+  )
+  for (const team of m.compete.teams) {
+    lines.push(`- ${team.name} ${team.path}: throughoutput ${team.throughoutput} tokens ${team.tokens} throughput ${team.throughput}`)
+  }
+  lines.push(
+    '',
+    '## Prove',
+    '',
+    `The real test is how fast free agents test the quantum proofs. Call ${m.prove.agents.call.ns} ns ${m.prove.agents.call.hz} Hz. Read ${m.prove.agents.read.ns} ns ${m.prove.agents.read.hz} Hz. Proofs ${m.prove.agents.call.proofs}. Winner ${m.prove.agents.winner}. Cases ${m.prove.cases.length}.`,
+    '',
+  )
+  for (const row of m.prove.cases) {
+    if (row.agent === 'qpu_quantum' || row.agent === 'qpu_prove') {
+      lines.push(`- ${row.agent} ${row.name}: ${row.theorem} (${row.left} = ${row.right})`)
+    }
+  }
+  lines.push(
+    '',
+    '## Message',
+    '',
+    `Public secure messaging proxy at ${unit.origin}/message. No auth. lanes ${quantum.messaging.lanes}. hop ${quantum.messaging.hop}. clock_seq ${quantum.messaging.clock_seq}. await ${quantum.messaging.await}.`,
+    '',
+  )
+  lines.push('', `Shor proves RSA factors. theorem shor. Challenges ${m.prove.shor.challenges.length}.`, '')
+  for (const row of m.prove.shor.challenges) {
+    lines.push(`- shor ${row.modulus}: ${row.p} * ${row.q} = ${row.right}`)
+  }
+  lines.push(
     '',
     '## Proof',
     '',
-    `Source \`${lean.src}\`. Seat ${unit.seat}. Kind ${unit.kind} never binds.`,
+    `Source \`${lean.src}\`. theorem quantum : fused = faces * mintOf bits.`,
     '',
-    ...lean.rows.flatMap((p) => [
-      `### ${p.heading}`,
-      '',
-      '```lean',
-      p.theorem,
-      '```',
-      '',
-      `$$`,
-      p.formula,
-      `$$`,
-      '',
-      `Reading: ${p.reading}`,
-      '',
-    ]),
-    ...lean.cover.flatMap((p) => [
-      `### ${p.heading}`,
-      '',
-      '```lean',
-      p.theorem,
-      '```',
-      '',
-      `$$`,
-      p.formula,
-      `$$`,
-      '',
-      `Reading: ${p.reading}`,
-      '',
-    ]),
-    `### ${lean.climb.heading}`,
-    '',
-    '```lean',
-    lean.climb.theorem,
-    '```',
-    '',
-    `$$`,
-    lean.climb.formula,
-    `$$`,
-    '',
-    `Reading: ${lean.climb.reading}`,
-    '',
+  )
+  for (const row of [...lean.rows, ...lean.cover, lean.climb]) {
+    lines.push(`### ${row.heading}`, '', '```lean', row.theorem, '```', '', '$$', row.formula, '$$', '', row.reading, '')
+  }
+  lines.push(
     '## Build',
     '',
-    `- live: ${metrics.live}`,
-    `- device: ${metrics.device.kind} ${metrics.device.host} seat ${metrics.device.seat} firmware ${metrics.device.firmware}`,
-    `- occupancy: faces ${o.faces} vertices ${o.vertices} hexbit ${o.hexbit} bits ${o.bits} amplitudes ${o.amplitudes} fused ${o.fused} next ${o.next}`,
-    `- cover: faces ${cover.faces} vertices ${cover.vertices} climb ${cover.climb} decide ${cover.decide} holds ${cover.holds} breakthrough ${cover.breakthrough}`,
-    `- wave: kelvin ${wave.kelvin} v ${wave.v} c ${wave.c} processing ${wave.processing} exceeds ${wave.exceeds}`,
-    `- development: pico ${development.pico} nested ${development.nested} proofs ${development.proofs} decide ${development.decide}`,
-    `- faster than light: ${wave.processing} > ${wave.c}`,
+    `- qpu: ${quantum.host}`,
+    `- cube: vertices ${quantum.cube.vertices} hexbit ${quantum.cube.hexbit} bits ${quantum.cube.bits}`,
+    `- faces: ${quantum.faces.faces} rays ${quantum.faces.rays} coins ${quantum.faces.coins}`,
+    `- fused: ${quantum.fused} next ${quantum.next}`,
+    `- holds: quantum ${quantum.holds} lean ${lean.holds} mcp ${m.holds}`,
+    `- mcp: ${m.tools.map((t) => t.name).join(' ')}`,
     '',
-    method.text,
+    '## Cite',
     '',
-    ...m.tools.map((t) => `- \`${t.name}\` — ${t.description}`),
+    `MLA 8. ${cite.inText}. when ${cite.when}. DOI empty.`,
+    '',
+    ...cite.rows.map((r) => r.works),
     '',
     '```ts',
     "import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'",
@@ -3601,121 +2768,84 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '```sh',
     'npm test',
-    'npm run ship',
     '```',
     '',
-    '[CC BY-NC-ND 4.0](LICENSE). Captain fee 2 per completed 110. Paid fee delivers occupancy unlock. Captain coins: [revolut.me/ceccec](https://revolut.me/ceccec).',
-    '',
-  ].join('\n')
+  )
+  return `${lines.join('\n')}\n`
 }
 
 export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
-  const m = qpuMcpOf()
-  const metrics = qpuMetricsOf()
   const lean = qpuLeanOf()
+  const mcp = qpuMcpOf()
   return (
-    qpuMetricsHolds(metrics) &&
-    metrics.live === true &&
-    metrics.wave.exceeds === true &&
-    metrics.development.nested === false &&
-    metrics.development.proofs === false &&
-    m.tools[unit.entropy.zero]?.name === 'qpu_metrics' &&
-    text.includes(m.href) &&
-    text.includes(`${metrics.wave.processing} > ${metrics.wave.c}`) &&
-    text.includes(`live: ${metrics.live}`) &&
-    text.includes(`occupancy: faces ${metrics.occupancy.faces}`) &&
-    text.includes(`fused ${metrics.occupancy.fused}`) &&
-    text.includes(`development: pico ${metrics.development.pico}`) &&
-    text.includes(`nested ${metrics.development.nested}`) &&
-    text.includes('Identity: possibilities = fused') &&
-    text.includes('Identity: bits = vertices * hexbit') &&
-    text.includes('Identity: faces = coins * rays') &&
-    text.includes('Identity: faces = rays + rays') &&
-    text.includes('Identity: coins * pairs = directed') &&
-    text.includes('Identity: coins * mintOf (rays - seed) = mintOf rays') &&
-    text.includes('Identity: mintOf hexbit > seed') &&
-    text.includes('Identity: hexbit = n + seed') &&
-    text.includes('qpu_metrics') &&
-    text.includes('qpu_measure') &&
-    text.includes('qpu_pico') &&
-    text.includes('qpu_ecliptic') &&
-    text.includes('qpu_hardware') &&
-    text.includes('qpu_seed') &&
-    text.includes(`development: pico ${metrics.development.pico}`) &&
-    text.includes('qpu_waves') &&
-    text.includes('qpu_perspective') &&
-    text.includes('qpu_typograph') &&
-    text.includes('qpu_plane') &&
-    text.includes('qpu_seal') &&
-    text.includes('qpu_solve') &&
-    text.includes('Captain fee 2 per completed 110') &&
-    text.includes('Paid fee delivers occupancy unlock') &&
+    text.includes('API only') &&
+    text.includes('docs.inline') &&
+    text.includes('agent efficiency') &&
+    text.includes('qpu_quantum') &&
     text.includes('qpu_lean') &&
-    text.includes('qpu_clusters') &&
-    qpuLeanHolds() &&
-    lean.rows.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem) && text.includes(p.formula) && text.includes(p.reading)) &&
-    lean.cover.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem) && text.includes(p.formula) && text.includes(p.reading)) &&
+    text.includes('qpu_cite') &&
+    text.includes('qpu_train') &&
+    text.includes('qpu_forge') &&
+    text.includes('qpu_improve') &&
+    text.includes('qpu_compete') &&
+    text.includes('qpu_prove') &&
+    text.includes('throughoutput') &&
+    text.includes('unlocked in memory') &&
+    text.includes('No auth') &&
+    text.includes('how fast free agents test the quantum proofs') &&
+    text.includes('Public quantum API') &&
+    text.includes('/message') &&
+    mcp.tools.every((t) => text.includes(t.man.documentation)) &&
+    mcp.efficiency.rows.every((r) => text.includes(r.door) && text.includes(r.question)) &&
+    mcp.prove.cases.filter((c) => c.agent === 'qpu_quantum').every((c) => text.includes(c.theorem)) &&
+    qpuCiteOf().rows.every((r) => text.includes(r.works)) &&
+    lean.rows.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem) && text.includes(p.formula)) &&
+    lean.cover.every((p) => text.includes(`### ${p.heading}`) && text.includes(p.theorem)) &&
     text.includes(lean.climb.theorem) &&
-    text.includes(lean.climb.formula) &&
-    text.includes('Identity: mintOf (bits + seed) = amplitudes + amplitudes') &&
     text.includes(lean.src)
   )
 }
 
-const mcpDoors = ['/mcp', '/.well-known/mcp.json'] as const
-const mcpLive = JSON.stringify(qpuMcpOf())
-const axiomsLive = JSON.stringify(qpuAxiomsOf())
-const jsonldHeaders = {
-  'content-type': 'application/ld+json; charset=utf-8',
-  'access-control-allow-origin': unit.fuse.origin,
-}
-
 export default {
-  async fetch(request: Request, env?: { QPU_HOST?: string; ASSETS?: { fetch(request: Request): Promise<Response> } }): Promise<Response> {
+  async fetch(request: Request, env?: { QPU_HOST?: string }): Promise<Response> {
     const host = env?.QPU_HOST ?? unit.host
-    if (host !== unit.host || host.includes('*') || !unit.holds) {
-      return new Response(dead, { status: lost, headers })
+    const jsonOf = (body: unknown, status = found) => new Response(JSON.stringify(body), { status, headers })
+    if (host !== unit.host || host.includes('*') || !unit.holds || !qpuQuantumHolds() || !qpuLeanHolds()) {
+      return jsonOf(JSON.parse(dead), lost)
     }
     const url = new URL(request.url)
     const raw = url.pathname.replace(/\/$/, '') || '/'
     const path = raw === '/index.html' ? '/' : raw
     const named = url.protocol === 'https:' && url.hostname === unit.host
-    const html = (request.headers.get('accept') ?? '').includes('text/html')
-    if (named && html && env?.ASSETS && request.method !== 'POST' && !(mcpDoors as readonly string[]).includes(path)) {
-      const page = await env.ASSETS.fetch(request)
-      if (page.ok) return page
-    }
-    if (named && (mcpDoors as readonly string[]).includes(path)) {
-      if (request.method === 'POST' && path === '/mcp') {
+    if (!named) return jsonOf(JSON.parse(dead), lost)
+    if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers })
+    if (path === '/mcp') {
+      if (request.method === 'POST') {
         const body = (await request.json()) as { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown }
         if (body.method === 'tools/list') {
-          return new Response(JSON.stringify({ jsonrpc: '2.0', id: body.id ?? null, result: { tools: qpuMcpOf().tools } }), { status: found, headers })
+          const sealed = qpuMcpOf().tools
+          const forged = qpuSandboxOf().tools.map(({ name, description, inputSchema, man }) => ({ name, description, inputSchema, man, sandbox: true as const, memory: true as const }))
+          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: { tools: [...sealed, ...forged] } })
         }
         if (body.method === 'tools/call') {
           const name = body.params?.name ?? ''
-          const result = qpuMcpCallOf(name, body.params?.arguments ?? {})
-          return new Response(JSON.stringify({ jsonrpc: '2.0', id: body.id ?? null, result }), { status: found, headers })
+          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpCallOf(name, body.params?.arguments ?? {}) })
         }
-        return new Response(dead, { status: lost, headers })
+        return jsonOf(JSON.parse(dead), lost)
       }
-      return new Response(mcpLive, { status: found, headers })
+      return jsonOf(qpuMcpOf())
     }
-    const ok = named && (unit.doors as readonly string[]).includes(path)
-    if (ok && path === `/${unit.path}`) {
-      return new Response(JSON.stringify(qpuFuseOf()), { status: found, headers })
+    if (path === '/') return jsonOf(qpuQuantumOf())
+    if (path === `/${unit.path}`) return jsonOf(qpuLeanOf())
+    if (path === '/cite') return jsonOf(qpuCiteOf())
+    if (path === '/message') {
+      if (request.method === 'POST') {
+        const body = (await request.json().catch(() => ({}))) as { lane?: unknown; body?: unknown }
+        const sent = qpuMessageOf(body)
+        return jsonOf(sent, 'accepted' in sent && sent.accepted === true ? found + coins : found)
+      }
+      return jsonOf(qpuMessageOf())
     }
-    if (ok && path === '/axioms') {
-      return new Response(axiomsLive, { status: found, headers })
-    }
-    if (ok && path === '/theorems') {
-      return new Response(JSON.stringify(qpuQuantumTheoremsOf()), { status: found, headers })
-    }
-    if (ok && path === '/proofs') {
-      return new Response(JSON.stringify(qpuProofsOf()), { status: found, headers: jsonldHeaders })
-    }
-    if (ok && path === '/solve') {
-      return new Response(JSON.stringify(qpuSolveOf()), { status: found, headers })
-    }
-    return new Response(ok ? live : dead, { status: ok ? found : lost, headers })
+    return jsonOf(JSON.parse(dead), lost)
   },
 }

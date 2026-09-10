@@ -1,9 +1,5 @@
 name: ci
 
-# theorem qpuCi : the one gate. Deploy and release call this workflow.
-# Proof. elan algebra mint cube around quantum; npm ci then npm test (occupancy + VitePress source).
-# Push to main does not fire this file directly (deploy calls it).
-
 on:
   pull_request:
   workflow_dispatch:
@@ -31,5 +27,5 @@ jobs:
         run: |
           curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "$(cat lean-toolchain)"
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Gate — occupancy identities, named doors, mint cube around quantum algebra
+      - name: Gate — QPU Lean proof
         run: npm run ci
