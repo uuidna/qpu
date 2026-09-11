@@ -66,13 +66,14 @@
     "lean": "lean src/quantum/processing/unit/index.lean",
     "build": "rm -rf dist && tsc -p tsconfig.json && node dist/quantum/processing/unit/readme.js",
     "test": "npm run build && node --test --test-reporter=./dist/quantum/processing/unit/receipt.js --test-reporter-destination=stdout dist/quantum/processing/unit/*.test.js",
-    "ci": "npm run lean && npm test",
+    "ci": "npm run lean && npm test && npm run proof",
     "prepublishOnly": "npm run build",
     "ship": "npm run build && npx wrangler deploy",
     "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
     "lean:embed": "node scripts/embed-lean.mjs",
     "verify:live": "node scripts/verify-live.mjs https://qpu.uuidna.com",
-    "test:live": "QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js"
+    "test:live": "QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js",
+    "proof": "git diff --exit-code -- test-receipt.json"
   },
   "devDependencies": {
     "@types/node": "26.5.1",

@@ -1,21 +1,20 @@
-// reach — the widest run this host holds inside a time budget, CLIMBED to, never typed. The Shor state is sparse and
-// exact, so no dimension is out of reach and the cost is the width of the modulus: each step doubles the work register,
-// the growth between the last two steps is measured, and the climb stops when that growth predicts the next step past
-// the budget. There is no loop bound; the budget and the host decide. The last run that fit is the reach, and the suite
-// has then exercised the widest modulus this host runs, not a small case standing in for it. The receipt carries the
-// dimension of every run on the way up.
+// reach — the widest run in the suite, CLIMBED to a fixed width ceiling, the same on every host. The Shor state is
+// sparse and exact, so no dimension is out of reach and the cost is the width of the modulus; each step doubles the
+// work register from 4 bits to 2^16 bits, fifteen steps, and the run at each holds. The ceiling, not a clock, bounds
+// the climb: a climb that stopped on a time budget carried a different receipt on every machine, so the committed
+// proof was one host's snapshot and CI could never match it. Now the receipt of this climb is the same in CI, on a
+// laptop, and on the host, and test-receipt.json is a gate. The wall time of each step is a reading, in the
+// diagnostics, never in the fold.
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { qpuShorOf } from './index.js'
 
-/** Twenty seconds by default; CI sets QPU_REACH_BUDGET_MS lower, since a GitHub runner's reach is not a reading anyone keeps. */
-const timeBudgetMs = Number(process.env.QPU_REACH_BUDGET_MS ?? 20000) || 20000
+const widthCeiling = 65536
 
-test('reach: the widest run this host holds in budget is climbed to, and the run at the reach holds', (t) => {
-  const floor = qpuShorOf() // the unit's own default run, 91 and 8 — the reach must be past it
+test('reach: the climb to the width ceiling holds at every step, and its receipt is the same on every host', (t) => {
+  const floor = qpuShorOf() // the unit's own default run, 91 and 8 — the ceiling is far past it
   const steps: { qubits: number; work: number; ms: number }[] = []
-  let stoppedBy = 'nothing'
-  for (let work = 4; ; work *= 2) {
+  for (let work = 4; work <= widthCeiling; work *= 2) {
     const modulus = (1n << BigInt(work)) - 1n
     const t0 = process.hrtime.bigint()
     const run = qpuShorOf(modulus, 3)
@@ -28,21 +27,14 @@ test('reach: the widest run this host holds in budget is climbed to, and the run
     assert.equal(run.circuitry.holds, true)
     assert.equal(run.measure.holds, true)
     assert.equal(run.factors.by, 'gcd') // 2^work - 1 with even work is divisible by 3: the climb measures the state's width, never period-finding
-    const prev = steps[steps.length - 1]
     steps.push({ qubits: run.circuitry.qubits, work, ms })
-    if (ms > timeBudgetMs) {
-      stoppedBy = 'this step passed the budget'
-      break
-    }
-    const growth = prev && prev.ms > 0 ? Math.max(ms / prev.ms, 1) : 1
-    if (prev && ms * growth > timeBudgetMs) {
-      stoppedBy = `measured growth ×${growth.toFixed(2)} predicts the next step past the budget`
-      break
-    }
   }
   const reach = steps[steps.length - 1]!
   for (let i = 1; i < steps.length; i++) assert.equal(steps[i]!.work, steps[i - 1]!.work * 2) // the climb was by width, not by luck
+  assert.equal(steps.length, 15)
+  assert.equal(reach.work, widthCeiling)
+  assert.equal(reach.qubits, widthCeiling + 2)
   assert.equal(reach.qubits > floor.circuitry.qubits, true)
-  assert.equal(stoppedBy !== 'nothing', true)
-  t.diagnostic(`reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${reach.ms.toFixed(0)} ms · ${steps.length} steps from ${steps[0]!.qubits} · stopped: ${stoppedBy} · every step factored by gcd, none by period`)
+  const slowest = steps.reduce((top, s) => (s.ms > top.ms ? s : top), steps[0]!)
+  t.diagnostic(`reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${steps.length} steps from ${steps[0]!.qubits} · ceiling ${widthCeiling} bits · slowest step ${slowest.ms.toFixed(0)} ms at ${slowest.qubits} qubits (a reading) · every step factored by gcd, none by period`)
 })

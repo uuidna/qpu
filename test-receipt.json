@@ -7,9 +7,9 @@
   "dry": 0,
   "circuit": 70,
   "mintOnly": 11,
-  "dim": "2^1048578",
-  "qubits": 1048578,
-  "receipt": "45d3344a7f4e4036",
+  "dim": "2^99660",
+  "qubits": 99660,
+  "receipt": "f4d283e1ca7332a4",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -3630,22 +3630,22 @@
       }
     },
     {
-      "name": "reach: the widest run this host holds in budget is climbed to, and the run at the reach holds",
+      "name": "reach: the climb to the width ceiling holds at every step, and its receipt is the same on every host",
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 620,
+      "computations": 496,
       "kinds": {
-        "x": 160,
-        "cnot": 320,
-        "toffoli": 40,
-        "h": 40,
-        "measure": 20,
-        "cmodexp": 20,
-        "xx": 20
+        "x": 128,
+        "cnot": 256,
+        "toffoli": 32,
+        "h": 32,
+        "measure": 16,
+        "cmodexp": 16,
+        "xx": 16
       },
       "dims": {
-        "8": 580,
+        "8": 464,
         "64": 2,
         "512": 2,
         "1024": 2,
@@ -3661,15 +3661,11 @@
         "2^8194": 2,
         "2^16386": 2,
         "2^32770": 2,
-        "2^65538": 2,
-        "2^131074": 2,
-        "2^262146": 2,
-        "2^524290": 2,
-        "2^1048578": 2
+        "2^65538": 2
       },
-      "dim": "2^1048578",
-      "qubits": 1048578,
-      "receipt": "ef5e530a1e733a3b",
+      "dim": "2^65538",
+      "qubits": 65538,
+      "receipt": "435c4136ae249a1b",
       "states": [
         {
           "name": "measure",
@@ -3684,12 +3680,12 @@
             "0",
             "0"
           ],
-          "measured": 20
+          "measured": 16
         }
       ],
       "mint": {
-        "calls": 12721,
-        "chain": "d7e8dc4485bb473b"
+        "calls": 10177,
+        "chain": "209ed3ff8e7e07c3"
       }
     },
     {

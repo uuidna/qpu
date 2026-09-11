@@ -69,10 +69,13 @@ jobs:
       - name: Kernel receipt hit
         if: steps.kernel.outputs.cache-hit == 'true'
         run: echo "::notice::kernel receipt hit — index.lean and lean-toolchain are byte-identical to a build the kernel already checked ($(cat .lean-ok | tr '\n' ' '))"
-      - name: Gate — the receipted suite (live tests in process; the reach budget short, a runner's reach is no reading)
-        env:
-          QPU_REACH_BUDGET_MS: '3000'
+      - name: Gate — the receipted suite (live tests in process)
         run: npm test
+      # THE PROOF IS A GATE. The suite writes test-receipt.json; the unit, the climb and the receipts are deterministic,
+      # so the committed file must equal this run's byte for byte. A stale commit of the proof fails here, and the
+      # diff says which row moved.
+      - name: Proof — the committed test-receipt.json is this run's
+        run: git diff --exit-code -- test-receipt.json || { echo "::error::test-receipt.json differs from this run; commit the regenerated proof with the change that moved it"; git --no-pager diff -- test-receipt.json | head -80; exit 1; }
       - name: Deploy to Cloudflare (only when called with deploy and the token exists)
         id: deploy
         if: ${{ inputs.deploy }}
