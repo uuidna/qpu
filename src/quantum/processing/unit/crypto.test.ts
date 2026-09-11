@@ -514,24 +514,36 @@ test('Shor is on the sequence — quantum then lean then prove', () => {
   assert.equal(shor.factors.p * shor.factors.q, shor.n)
 })
 
-test('crypto_shor runs on the n and a it is given, and says why when it cannot', async () => {
+test('crypto_shor runs on the n and a it is given, whatever they are; no denial, no cap', async () => {
   const listed = (await (await worker.fetch(
     new Request(`${origin}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) }),
     env,
-  )).json()) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { type: string }> } }[] } }
+  )).json()) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { type: string; minimum?: number }> } }[] } }
   for (const name of ['crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa']) {
     const schema = listed.result.tools.find((t) => t.name === name)?.inputSchema
     assert.equal(schema?.properties.n?.type, 'integer', name)
     assert.equal(schema?.properties.a?.type, 'integer', name)
+    assert.equal(schema?.properties.n?.minimum, undefined, name)
+    assert.equal(schema?.properties.a?.minimum, undefined, name)
   }
-  type Run = { n: number; a: number; post: { period: number }; classical: { period: number; resolvable: boolean; holds: boolean }; factors: { p: number; q: number }; rsa: { factored: boolean }; holds: boolean }
-  type Denied = { n: number; a: number; denied: string; why: string; qubits: number; limit: number; holds: false }
+  type Run = {
+    n: number
+    a: number
+    coprime: boolean
+    circuitry: { qubits: number; work: number; dim: number; holds: boolean }
+    post: { period: number }
+    classical: { gcd: number; period: number; resolvable: boolean; holds: boolean }
+    factors: { p: number; q: number; by: 'period' | 'gcd' | 'none' }
+    rsa: { factored: boolean }
+    holds: boolean
+  }
   // the impostor this catches: a tool that answers 91 = 7 * 13 whatever it is asked
   const fifteen = (await mcpOf('crypto_shor', { n: 15, a: 7 })) as Run
   assert.equal(fifteen.n, 15)
   assert.equal(fifteen.a, 7)
   assert.equal(fifteen.post.period, 4)
   assert.deepEqual([fifteen.factors.p, fifteen.factors.q].sort((x, y) => x - y), [3, 5])
+  assert.equal(fifteen.factors.by, 'period')
   assert.equal(fifteen.rsa.factored, true)
   assert.equal(fifteen.holds, true)
   const ninetyOne = (await mcpOf('crypto_shor', { n: 91, a: 8 })) as Run
@@ -545,6 +557,7 @@ test('crypto_shor runs on the n and a it is given, and says why when it cannot',
   assert.equal(twentyOne.classical.period, 6)
   assert.equal(twentyOne.classical.resolvable, false)
   assert.equal(twentyOne.post.period, 0)
+  assert.equal(twentyOne.factors.by, 'none')
   assert.equal(twentyOne.rsa.factored, false)
   assert.equal(twentyOne.holds, false)
   assert.equal(twentyOne.classical.holds, true)
@@ -552,24 +565,56 @@ test('crypto_shor runs on the n and a it is given, and says why when it cannot',
   assert.equal(twentyOneEight.classical.period, 2)
   assert.equal(twentyOneEight.rsa.factored, true)
   assert.equal(twentyOneEight.factors.p * twentyOneEight.factors.q, 21)
-  // denials name their reason and run nothing
-  const coprime = (await mcpOf('crypto_shor', { n: 91, a: 7 })) as Denied
-  assert.equal(coprime.denied, 'coprime')
-  assert.equal(coprime.holds, false)
-  assert.equal(coprime.why.includes('gcd(a, n) = 7'), true)
-  const qubits = (await mcpOf('crypto_shor', { n: 4096, a: 3 })) as Denied
-  assert.equal(qubits.denied, 'qubits')
-  assert.equal(qubits.qubits, 15)
-  assert.equal(qubits.limit, 14)
-  const input = (await mcpOf('crypto_shor', { n: '91' })) as Denied
-  assert.equal(input.denied, 'input')
-  const range = (await mcpOf('crypto_shor', { n: 15, a: 15 })) as Denied
-  assert.equal(range.denied, 'range')
+  // no denial: a base sharing a factor with n runs, and the run hands that factor over as Shor's first step
+  const shared = (await mcpOf('crypto_shor', { n: 91, a: 7 })) as Run
+  assert.equal(shared.coprime, false)
+  assert.equal(shared.classical.gcd, 7)
+  assert.equal(shared.post.period, 0)
+  assert.equal(shared.factors.by, 'gcd')
+  assert.deepEqual([shared.factors.p, shared.factors.q].sort((x, y) => x - y), [7, 13])
+  assert.equal(shared.rsa.factored, true)
+  assert.equal(shared.holds, true)
+  // no cap: fifteen qubits run
+  const big = (await mcpOf('crypto_shor', { n: 4096, a: 3 })) as Run
+  assert.equal(big.n, 4096)
+  assert.equal(big.circuitry.qubits, 15)
+  assert.equal(big.circuitry.work, 13)
+  assert.equal(big.circuitry.dim, 32768)
+  assert.equal(big.circuitry.holds, true)
+  assert.equal(big.classical.period, 0)
+  assert.equal(big.rsa.factored, false)
+  // input is read, never refused: a numeric string and a fraction become the integers they hold
+  const text = (await mcpOf('crypto_shor', { n: '15', a: '7' })) as Run
+  assert.equal(text.n, 15)
+  assert.equal(text.a, 7)
+  assert.equal(text.rsa.factored, true)
+  const fraction = (await mcpOf('crypto_shor', { n: 15.9, a: 7.2 })) as Run
+  assert.equal(fraction.n, 15)
+  assert.equal(fraction.a, 7)
+  const nonsense = (await mcpOf('crypto_shor', { n: 'ninety-one', a: null })) as Run
+  assert.equal(nonsense.n, 91)
+  assert.equal(nonsense.a, 8)
+  // out of the textbook range still runs and reports what fell out
+  const aboveN = (await mcpOf('crypto_shor', { n: 15, a: 15 })) as Run
+  assert.equal(aboveN.n, 15)
+  assert.equal(aboveN.a, 15)
+  assert.equal(aboveN.rsa.factored, false)
+  assert.equal(aboveN.holds, false)
+  const one = (await mcpOf('crypto_shor', { n: 1, a: 1 })) as Run
+  assert.equal(one.n, 1)
+  assert.equal(one.rsa.factored, false)
+  assert.equal(one.holds, false)
+  const zero = (await mcpOf('crypto_shor', { n: 0, a: 0 })) as Run
+  assert.equal(zero.n, 0)
+  assert.equal(zero.rsa.factored, false)
+  assert.equal(zero.holds, false)
+  assert.equal(JSON.stringify(zero).includes('null'), false)
   // the sibling views run on the same arguments
-  const rsa = (await mcpOf('crypto_rsa', { n: 15, a: 7 })) as { modulus: number; p: number; q: number; factored: boolean; period: number }
+  const rsa = (await mcpOf('crypto_rsa', { n: 15, a: 7 })) as { modulus: number; p: number; q: number; factored: boolean; period: number; by: string }
   assert.equal(rsa.modulus, 15)
   assert.equal(rsa.p * rsa.q, 15)
   assert.equal(rsa.period, 4)
+  assert.equal(rsa.by, 'period')
   const iqft = (await mcpOf('crypto_iqft', { n: 21, a: 2 })) as { post: { period: number }; holds: boolean }
   assert.equal(iqft.post.period, 0)
   assert.equal(iqft.holds, false)
@@ -579,4 +624,7 @@ test('crypto_shor runs on the n and a it is given, and says why when it cannot',
   assert.equal(cmodexp.circuitry.dim, 16384)
   assert.equal(cmodexp.circuitry.holds, true)
   assert.equal(cmodexp.rsa.modulus, 3233)
+  const shots = (await mcpOf('crypto_shots', { n: 91, a: 7 })) as { measure: { shots: number }; rsa: { factored: boolean } }
+  assert.equal(shots.measure.shots, 8)
+  assert.equal(shots.rsa.factored, true)
 })

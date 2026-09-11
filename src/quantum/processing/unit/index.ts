@@ -1774,8 +1774,6 @@ const bitsOf = (value: number): number => {
  * wider register would need eighth roots, which are not integers. So the register resolves periods dividing four;
  * `classical` below says whether the period it was asked for is one of those. */
 const shorCountBits = coins
-/** The largest circuit this host simulates per call, counting plus work qubits: 8 + 4 + 2. */
-export const shorQubitLimit = mintOf(n) + mintOf(coins) + coins
 /** The period of base mod modulus by classical iteration, 0 when base is not a unit. A check beside the run, never the run. */
 const classicalPeriodOf = (base: number, modulus: number): number => {
   let x = base % modulus
@@ -1785,28 +1783,20 @@ const classicalPeriodOf = (base: number, modulus: number): number => {
   }
   return n - n
 }
-/** Modulus and base as the caller typed them: undefined when not named, NaN when not an integer. */
+/** Modulus and base as the caller gave them, read as integers: a number is truncated, a numeric string is read, anything
+ * else is undefined and the unit's own value stands. No denial, no cap: the run is on whatever integer arrives. */
 export const shorArgsOf = (a: Record<string, unknown>): { modulus?: number; base?: number } => {
-  const intOf = (v: unknown): number | undefined => (v === undefined ? undefined : typeof v === 'number' && v === v && v % seed === n - n ? v : Number.NaN)
+  const intOf = (v: unknown): number | undefined => {
+    const x = typeof v === 'number' ? v : typeof v === 'string' && v.trim().length > n - n ? Number(v) : Number.NaN
+    return x === x && x !== Number.POSITIVE_INFINITY && x !== Number.NEGATIVE_INFINITY ? x - (x % seed) : undefined
+  }
   return { modulus: intOf(a.n), base: intOf(a.a) }
 }
-export type QpuShorDenied = { kind: 'shor'; n: number; a: number; denied: 'input' | 'range' | 'qubits' | 'coprime'; why: string; qubits: number; limit: number; holds: false }
-/** Shor as a caller asked for it: the run on their n and a, or a denial that says why nothing ran. Never the unit's 91 in place of theirs. */
+/** Shor as a caller asked for it: the run on their n and a, whatever they are. Never a denial; the run itself says what it found
+ * (a period, a gcd factor, or nothing). A modulus the host cannot hold in memory ends in the host's own error, not in a refusal here. */
 export const qpuShorTryOf = (a: Record<string, unknown>) => {
   const args = shorArgsOf(a)
-  if (args.modulus === undefined && args.base === undefined) return qpuShorOf()
-  const defaults = shorDefaultsOf()
-  const modulus = args.modulus ?? defaults.modulus
-  const base = args.base ?? defaults.base
-  const limit = shorQubitLimit
-  const qubits = modulus === modulus && modulus >= n - n ? shorCountBits + bitsOf(modulus) : n - n
-  const deny = (denied: QpuShorDenied['denied'], why: string): QpuShorDenied => ({ kind: 'shor', n: modulus, a: base, denied, why, qubits, limit, holds: false })
-  if (modulus !== modulus || base !== base) return deny('input', 'n and a must be integers')
-  if (modulus < n + seed || base < coins || base >= modulus) return deny('range', 'need n >= 4 and 1 < a < n')
-  if (qubits > limit) return deny('qubits', `${qubits} qubits exceed the ${limit} this host simulates per call`)
-  const g = gcdOf(base, modulus)
-  if (g !== seed) return deny('coprime', `gcd(a, n) = ${g} is a factor already; Shor wants a base coprime to n`)
-  return qpuShorOf(modulus, base)
+  return qpuShorOf(args.modulus, args.base)
 }
 
 /** Shor on the state-vector simulator. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation circuitry. Inverse QFT. Noisy shots. Factors. */
@@ -1825,7 +1815,7 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
   const coprime = gcdOf(base, modulus) === seed
   const mul = [
     { power: mintOf(n - n), a: base, control: n - n },
-    { power: coins, a: powModOf(base, coins, modulus), control: seed }] as const
+    { power: coins, a: modulus > seed ? powModOf(base, coins, modulus) : base * base, control: seed }] as const
   const gates = [
     { name: 'x' as const, q: workOff },
     { name: 'h' as const, q: n - n },
@@ -1881,6 +1871,7 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
   }
   let p = n - n
   let q = n - n
+  let by: 'period' | 'gcd' | 'none' = 'none'
   if (period > n - n && period % coins === n - n) {
     const half = powModOf(base, period / coins, modulus)
     if (half !== modulus - seed) {
@@ -1889,11 +1880,20 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
       if (g1 > seed && g1 < modulus) {
         p = g1
         q = modulus / g1
+        by = 'period'
       } else if (g2 > seed && g2 < modulus) {
         p = g2
         q = modulus / g2
+        by = 'period'
       }
     }
+  }
+  /** Shor's first step, read from the run: a base sharing a factor with the modulus hands that factor over before any period. */
+  const shared = modulus > seed && base > n - n ? gcdOf(base % modulus, modulus) : n - n
+  if (by === 'none' && shared > seed && shared < modulus) {
+    p = shared
+    q = modulus / shared
+    by = 'gcd'
   }
   const product = p * q
   const circuitry = {
@@ -1906,7 +1906,7 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     dim,
     work: workBits,
     counting: countBits,
-    holds: expOk && coprime && gates[n - n]!.name === 'x' && mul.length === coins && mintOf(workBits) > modulus && qubits === countBits + workBits && qubits <= shorQubitLimit,
+    holds: expOk && gates[n - n]!.name === 'x' && mul.length === coins && mintOf(workBits) > modulus && qubits === countBits + workBits,
   }
   const qft = {
     kind: 'iqft' as const,
@@ -1935,6 +1935,7 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     p,
     q,
     product,
+    by,
     holds: p > seed && q > seed && p * q === modulus && product === modulus,
   }
   const rsa = {
@@ -1944,8 +1945,8 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     p,
     q,
     product,
-    factored: p * q === modulus,
-    holds: factors.holds && p * q === modulus,
+    factored: p > seed && q > seed && p * q === modulus,
+    holds: factors.holds && p > seed && q > seed && p * q === modulus,
   }
   /** Beside the run, never in it: what classical iteration says the period is, whether a two-qubit counting register
    * can resolve it (period divides mintOf countBits), and both arms — resolvable means the run recovered a multiple
@@ -1962,12 +1963,11 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     holds: resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n,
   }
   const holds =
-    coprime === true &&
     mintOf(workBits) > modulus &&
     circuitry.holds &&
     qft.holds &&
     measure.holds &&
-    post.holds &&
+    (post.holds || factors.by === 'gcd') &&
     factors.holds &&
     rsa.holds &&
     computer.holds &&
@@ -5000,9 +5000,9 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     type: 'object',
     properties: {
       man: { type: 'boolean' },
-      n: { type: 'integer', minimum: n + seed, description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; at most ${shorQubitLimit} qubits per call.` },
-      a: { type: 'integer', minimum: coins, description: `Base, 1 < a < n, coprime to n. Default ${defaults.base}.` }}}
-  const named = `{ n, a } name the modulus and base; the run is theirs, or a denial says why not. Default ${defaults.modulus} and ${defaults.base}.`
+      n: { type: 'integer', description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; no cap, the host's memory is the only limit.` },
+      a: { type: 'integer', description: `Base. Default ${defaults.base}. A base sharing a factor with n hands it over as Shor's first step.` }}}
+  const named = `{ n, a } name the modulus and base; the run is theirs, whatever they are. Default ${defaults.modulus} and ${defaults.base}.`
   const morph = 'In tools/list. Morph. Not a ninth sealed tool. No auth.'
   const factoring = `${morph} theorem shor. ${shorFactorOf()}. p * q = N.`
   const encrypt = `${morph} theorem crypto. ${cryptoClaimOf()}. fused = split * share.`
@@ -5021,7 +5021,6 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
-        if ('denied' in shor) return shor
         return {
           kind: 'shor' as const,
           n: shor.n,
@@ -5045,7 +5044,6 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
-        if ('denied' in shor) return shor
         return { kind: 'cmodexp' as const, circuitry: shor.circuitry, rsa: { kind: 'rsa' as const, modulus: shor.n, a: shor.a, factored: shor.rsa.factored }, holds: shor.circuitry.holds }
       }},
     {
@@ -5055,7 +5053,6 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
-        if ('denied' in shor) return shor
         return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, classical: shor.classical, rsa: { kind: 'rsa' as const, modulus: shor.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds }
       }},
     {
@@ -5065,7 +5062,6 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
-        if ('denied' in shor) return shor
         return { kind: 'shots' as const, device: shor.device, measure: shor.measure, rsa: { kind: 'rsa' as const, modulus: shor.n, factored: shor.rsa.factored }, holds: shor.measure.holds }
       }},
     {
@@ -5077,8 +5073,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
         const args = shorArgsOf(a)
         if (args.modulus === undefined && args.base === undefined) return qpuCybersecurityOf().rsa
         const shor = qpuShorTryOf(a)
-        if ('denied' in shor) return shor
-        return { ...shor.rsa, a: shor.a, period: shor.post.period, classical: shor.classical }
+        return { ...shor.rsa, a: shor.a, period: shor.post.period, by: shor.factors.by, classical: shor.classical }
       }},
     {
       name: see[n + n],

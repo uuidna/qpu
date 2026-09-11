@@ -1,13 +1,13 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 97,
+  "tests": 98,
   "pass": 97,
-  "fail": 0,
-  "dry": 0,
-  "circuit": 56,
-  "mintOnly": 11,
-  "receipt": "b093535897a388d3",
+  "fail": 1,
+  "dry": 65,
+  "circuit": 3,
+  "mintOnly": 0,
+  "receipt": "3f3a788283f8f40b",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -15,37 +15,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 24238,
-      "kinds": {
-        "x": 5244,
-        "cnot": 10080,
-        "toffoli": 852,
-        "h": 7380,
-        "measure": 426,
-        "cmodexp": 128,
-        "xx": 128
-      },
-      "receipt": "e7221fc4300e0e11",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 426
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 752910,
-        "chain": "d6e55333deb8ffc8"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -53,37 +29,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 10811,
-      "kinds": {
-        "x": 2339,
-        "cnot": 4496,
-        "toffoli": 380,
-        "h": 3292,
-        "measure": 190,
-        "cmodexp": 57,
-        "xx": 57
-      },
-      "receipt": "2baa287d793bdc16",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 190
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 337058,
-        "chain": "27059d1a12e7260d"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -91,37 +43,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 5261,
-      "kinds": {
-        "x": 1140,
-        "cnot": 2192,
-        "toffoli": 186,
-        "h": 1594,
-        "measure": 93,
-        "cmodexp": 28,
-        "xx": 28
-      },
-      "receipt": "5cb264f4390a2103",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 93
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 165128,
-        "chain": "c8757b03f39658ae"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -355,7 +283,7 @@
       ],
       "mint": {
         "calls": 3689505,
-        "chain": "880904db62575f11"
+        "chain": "f6df501d7d7e0518"
       }
     },
     {
@@ -363,37 +291,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 19587,
-      "kinds": {
-        "h": 5968,
-        "cnot": 8144,
-        "x": 4237,
-        "toffoli": 688,
-        "measure": 344,
-        "cmodexp": 103,
-        "xx": 103
-      },
-      "receipt": "851f2badcd973c54",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 344
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 601419,
-        "chain": "5e3eb61035d5da23"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -457,37 +361,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 33095,
-      "kinds": {
-        "x": 7152,
-        "cnot": 13744,
-        "toffoli": 1158,
-        "h": 10118,
-        "measure": 579,
-        "cmodexp": 172,
-        "xx": 172
-      },
-      "receipt": "88fbcba904dfa9e7",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 579
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 1025026,
-        "chain": "22c206b4e5254d5b"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -500,8 +380,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 15,
-        "chain": "b7286e576cb81961"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -509,37 +389,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2616,
-      "kinds": {
-        "x": 566,
-        "cnot": 1088,
-        "toffoli": 92,
-        "h": 796,
-        "measure": 46,
-        "cmodexp": 14,
-        "xx": 14
-      },
-      "receipt": "8ba430e58e519619",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 46
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 82591,
-        "chain": "fe179745451fa841"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -552,8 +408,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 12,
-        "chain": "4c7d59fe3d7635d0"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -566,8 +422,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 14,
-        "chain": "69c63e8172dd99da"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -580,8 +436,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 30,
-        "chain": "f02469cd855fcbf2"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -594,8 +450,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 33,
-        "chain": "cfc1b0d3b5a351cf"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -603,37 +459,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2757,
-      "kinds": {
-        "h": 1060,
-        "cnot": 1040,
-        "x": 551,
-        "toffoli": 68,
-        "measure": 34,
-        "cmodexp": 2,
-        "xx": 2
-      },
-      "receipt": "0ed0be29550267ce",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 34
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 52442,
-        "chain": "4cdaa6bb695d7967"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -641,37 +473,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2671,
-      "kinds": {
-        "x": 575,
-        "cnot": 1104,
-        "toffoli": 92,
-        "h": 828,
-        "measure": 46,
-        "cmodexp": 13,
-        "xx": 13
-      },
-      "receipt": "c53f25e5e6a34eca",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 46
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 81522,
-        "chain": "07acbfa027c23897"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -679,37 +487,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 9288,
-      "kinds": {
-        "x": 2027,
-        "cnot": 3904,
-        "toffoli": 338,
-        "h": 2738,
-        "measure": 169,
-        "cmodexp": 56,
-        "xx": 56
-      },
-      "receipt": "484b8c831dc3bdca",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 169
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 301742,
-        "chain": "bd4eaca8356ce2dd"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -717,37 +501,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3601,
-      "kinds": {
-        "x": 775,
-        "cnot": 1488,
-        "toffoli": 124,
-        "h": 1116,
-        "measure": 62,
-        "cmodexp": 18,
-        "xx": 18
-      },
-      "receipt": "a479cb1f57d76b44",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 62
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 110998,
-        "chain": "36243386be86559f"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -755,37 +515,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 56607,
-      "kinds": {
-        "x": 12299,
-        "cnot": 23664,
-        "toffoli": 2024,
-        "h": 16968,
-        "measure": 1012,
-        "cmodexp": 320,
-        "xx": 320
-      },
-      "receipt": "3d150a616065e0f2",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1012
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 1798292,
-        "chain": "71ba9f24c8905cb3"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -798,8 +534,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 407,
-        "chain": "50181d04982bbb74"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -812,8 +548,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 9,
-        "chain": "1bb8792898b202eb"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -821,37 +557,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 17661,
-      "kinds": {
-        "x": 3534,
-        "cnot": 6672,
-        "toffoli": 438,
-        "h": 6774,
-        "measure": 219,
-        "cmodexp": 12,
-        "xx": 12
-      },
-      "receipt": "9a01b7d2afca55c3",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 219
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 330375,
-        "chain": "0b3cc274a4f8c699"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -864,8 +576,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 246,
-        "chain": "713bb6f69ed2dda7"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -873,37 +585,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2585,
-      "kinds": {
-        "x": 558,
-        "cnot": 1072,
-        "toffoli": 90,
-        "h": 794,
-        "measure": 45,
-        "cmodexp": 13,
-        "xx": 13
-      },
-      "receipt": "8153a58072d9af71",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 45
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 80154,
-        "chain": "f304fc0bc48debc7"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -911,37 +599,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 31,
-      "kinds": {
-        "x": 8,
-        "cnot": 16,
-        "toffoli": 2,
-        "h": 2,
-        "measure": 1,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "receipt": "8a2e219fc08da1f3",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 2216,
-        "chain": "e4fabb21a8b1937e"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -949,37 +613,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 31,
-      "kinds": {
-        "x": 8,
-        "cnot": 16,
-        "toffoli": 2,
-        "h": 2,
-        "measure": 1,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "receipt": "8a2e219fc08da1f3",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 2207,
-        "chain": "6b439a8d6c424292"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -987,37 +627,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 31,
-      "kinds": {
-        "x": 8,
-        "cnot": 16,
-        "toffoli": 2,
-        "h": 2,
-        "measure": 1,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "receipt": "8a2e219fc08da1f3",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 2207,
-        "chain": "a02b91e863703e76"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1025,37 +641,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 31,
-      "kinds": {
-        "x": 8,
-        "cnot": 16,
-        "toffoli": 2,
-        "h": 2,
-        "measure": 1,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "receipt": "8a2e219fc08da1f3",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 2207,
-        "chain": "5338103cc2c665fa"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1063,37 +655,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 31,
-      "kinds": {
-        "x": 8,
-        "cnot": 16,
-        "toffoli": 2,
-        "h": 2,
-        "measure": 1,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "receipt": "8a2e219fc08da1f3",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 2207,
-        "chain": "16e35e4c3b24410e"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1101,37 +669,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 177,
-      "kinds": {
-        "x": 41,
-        "cnot": 80,
-        "toffoli": 8,
-        "h": 40,
-        "measure": 4,
-        "cmodexp": 2,
-        "xx": 2
-      },
-      "receipt": "bb95bbe1d63a5856",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 4
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 6834,
-        "chain": "cb18f37ea4ee5180"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1139,37 +683,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2874,
-      "kinds": {
-        "x": 617,
-        "cnot": 1184,
-        "toffoli": 98,
-        "h": 898,
-        "measure": 49,
-        "cmodexp": 14,
-        "xx": 14
-      },
-      "receipt": "8ec9fc16e4b3be20",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 49
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 88098,
-        "chain": "b23d599186535e69"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1177,37 +697,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2874,
-      "kinds": {
-        "x": 617,
-        "cnot": 1184,
-        "toffoli": 98,
-        "h": 898,
-        "measure": 49,
-        "cmodexp": 14,
-        "xx": 14
-      },
-      "receipt": "8ec9fc16e4b3be20",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 49
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 87871,
-        "chain": "c2275c65baea32c5"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1215,75 +711,27 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 5203,
-      "kinds": {
-        "x": 1124,
-        "cnot": 2160,
-        "toffoli": 182,
-        "h": 1590,
-        "measure": 91,
-        "cmodexp": 28,
-        "xx": 28
-      },
-      "receipt": "bb336fd45f5c78f1",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 91
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 162976,
-        "chain": "9db12b20be4a6553"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
-      "name": "crypto_shor runs on the n and a it is given, and says why when it cannot",
+      "name": "crypto_shor runs on the n and a it is given, whatever they are; no denial, no cap",
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": true,
-      "computations": 29719,
-      "kinds": {
-        "x": 6447,
-        "cnot": 12400,
-        "toffoli": 1056,
-        "h": 8960,
-        "measure": 528,
-        "cmodexp": 164,
-        "xx": 164
-      },
-      "receipt": "ea2b561a1a986312",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 528
-        }
-      ],
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 975362,
-        "chain": "4bbc3359c703db73"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1291,37 +739,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 4792,
-      "kinds": {
-        "h": 1676,
-        "cnot": 1888,
-        "x": 992,
-        "toffoli": 140,
-        "measure": 70,
-        "cmodexp": 13,
-        "xx": 13
-      },
-      "receipt": "3a1a391b1e187a93",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 70
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 116785,
-        "chain": "dcae9f73dbfdb07b"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1334,8 +758,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 14,
-        "chain": "f1bff7818de38adc"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1348,8 +772,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 374,
-        "chain": "3458131dfb269c29"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1362,8 +786,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 494,
-        "chain": "790ee123808e8095"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1371,37 +795,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 323,
-      "kinds": {
-        "x": 74,
-        "cnot": 144,
-        "toffoli": 14,
-        "h": 78,
-        "measure": 7,
-        "cmodexp": 3,
-        "xx": 3
-      },
-      "receipt": "1f8b5b9501e903a5",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 7
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 11705,
-        "chain": "ead66d90201628fd"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1409,37 +809,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 13860,
-      "kinds": {
-        "x": 2997,
-        "cnot": 5760,
-        "toffoli": 486,
-        "h": 4230,
-        "measure": 243,
-        "cmodexp": 72,
-        "xx": 72
-      },
-      "receipt": "4ed25e4b38166a36",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 243
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 430332,
-        "chain": "181d0f03fa800d09"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1447,37 +823,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 5120,
-      "kinds": {
-        "x": 1114,
-        "cnot": 2144,
-        "toffoli": 184,
-        "h": 1528,
-        "measure": 92,
-        "cmodexp": 29,
-        "xx": 29
-      },
-      "receipt": "3a57dca927a9a791",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 92
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 165639,
-        "chain": "5a85d16635c81aad"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1485,37 +837,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 727,
-      "kinds": {
-        "x": 158,
-        "cnot": 304,
-        "toffoli": 26,
-        "h": 218,
-        "measure": 13,
-        "cmodexp": 4,
-        "xx": 4
-      },
-      "receipt": "bcccb2255bab50b5",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 13
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 23914,
-        "chain": "6d8ed9f3dc9c550d"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1523,37 +851,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2181,
-      "kinds": {
-        "x": 474,
-        "cnot": 912,
-        "toffoli": 78,
-        "h": 654,
-        "measure": 39,
-        "cmodexp": 12,
-        "xx": 12
-      },
-      "receipt": "ba80b74791129431",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 39
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 69458,
-        "chain": "dce1439f7e9d2e7d"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1561,35 +865,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 86,
-      "kinds": {
-        "h": 34,
-        "cnot": 32,
-        "x": 17,
-        "toffoli": 2,
-        "measure": 1
-      },
-      "receipt": "6edd91c839b5ffd8",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 2546,
-        "chain": "1b7a84b7161fa67d"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1597,37 +879,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 727,
-      "kinds": {
-        "x": 158,
-        "cnot": 304,
-        "toffoli": 26,
-        "h": 218,
-        "measure": 13,
-        "cmodexp": 4,
-        "xx": 4
-      },
-      "receipt": "bcccb2255bab50b5",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 13
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 23268,
-        "chain": "392d4878a5491012"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1635,37 +893,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3111,
-      "kinds": {
-        "x": 674,
-        "cnot": 1296,
-        "toffoli": 110,
-        "h": 942,
-        "measure": 55,
-        "cmodexp": 17,
-        "xx": 17
-      },
-      "receipt": "a0e50984c8b353cb",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 55
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 97509,
-        "chain": "af5c43d7e6663920"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1673,37 +907,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
-      "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "receipt": "5b087fd4e322968e",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 3
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 4629,
-        "chain": "3b7de6e1cd09efe7"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1711,37 +921,27 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 4586,
-      "kinds": {
-        "x": 984,
-        "cnot": 1888,
-        "toffoli": 156,
-        "h": 1436,
-        "measure": 78,
-        "cmodexp": 22,
-        "xx": 22
-      },
-      "receipt": "f66eda2726269b3b",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 78
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 140757,
-        "chain": "6c4666592b1da69e"
+        "calls": 0,
+        "chain": ""
+      }
+    },
+    {
+      "name": "index.lean is sorry-free, axiom-free, decide-free, and theorem shor carries no answer",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1849,7 +1049,7 @@
       ],
       "mint": {
         "calls": 20437,
-        "chain": "eee1a175fd9e2f6b"
+        "chain": "4b41cb9e5b7ec6f8"
       }
     },
     {
@@ -1857,37 +1057,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 89807,
-      "kinds": {
-        "x": 19012,
-        "cnot": 36368,
-        "toffoli": 2890,
-        "h": 29386,
-        "measure": 1445,
-        "cmodexp": 353,
-        "xx": 353
-      },
-      "receipt": "268f489b526d1f5f",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 1445
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 2467166,
-        "chain": "d53830818d4d1754"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -1895,37 +1071,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 130997,
-      "kinds": {
-        "x": 28377,
-        "cnot": 54561,
-        "toffoli": 4626,
-        "h": 39731,
-        "measure": 2314,
-        "cmodexp": 694,
-        "xx": 694
-      },
-      "receipt": "a62765c9cb59c72a",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 2314
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 4076936,
-        "chain": "a7051f79c2c479d5"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2061,7 +1213,7 @@
       ],
       "mint": {
         "calls": 8388053,
-        "chain": "e657913a6f2c4480"
+        "chain": "a5a5ad2b0328eea7"
       }
     },
     {
@@ -2069,37 +1221,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3051,
-      "kinds": {
-        "x": 658,
-        "cnot": 1264,
-        "toffoli": 106,
-        "h": 938,
-        "measure": 53,
-        "cmodexp": 16,
-        "xx": 16
-      },
-      "receipt": "652934b9fb3a96b9",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 53
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 95435,
-        "chain": "5d84968c7e79e5dd"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2107,37 +1235,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "61b2128ee89963aa"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2145,37 +1249,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "70b6b80b3b5f2993"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2183,37 +1263,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "6082701636cd40b4"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2221,37 +1277,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "28f720b131c2b9d1"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2259,37 +1291,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "bf0f3b7126c9c09e"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2297,37 +1305,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "7a21cc5bfeb35a17"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2335,37 +1319,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "be24bea2ba1294e8"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2373,37 +1333,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "bd82b4535ef68455"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2411,37 +1347,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "77ae443524a04712"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2449,37 +1361,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "f5661a2f877961eb"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2487,37 +1375,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3020,
-      "kinds": {
-        "x": 650,
-        "cnot": 1248,
-        "toffoli": 104,
-        "h": 936,
-        "measure": 52,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "receipt": "622b1f9047e24841",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 52
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 92998,
-        "chain": "1436e1386f0dd49c"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2525,37 +1389,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 33226,
-      "kinds": {
-        "x": 6768,
-        "cnot": 12832,
-        "toffoli": 900,
-        "h": 12164,
-        "measure": 450,
-        "cmodexp": 56,
-        "xx": 56
-      },
-      "receipt": "47250de79f7688ab",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 450
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 713813,
-        "chain": "f6d30c409ab1b019"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2563,37 +1403,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 9034,
-      "kinds": {
-        "x": 1949,
-        "cnot": 3744,
-        "toffoli": 314,
-        "h": 2778,
-        "measure": 157,
-        "cmodexp": 46,
-        "xx": 46
-      },
-      "receipt": "f37088249d189e34",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 157
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 277782,
-        "chain": "464eb8317c625b61"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2601,37 +1417,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 13539,
-      "kinds": {
-        "x": 2923,
-        "cnot": 5616,
-        "toffoli": 472,
-        "h": 4152,
-        "measure": 236,
-        "cmodexp": 70,
-        "xx": 70
-      },
-      "receipt": "bd827c8601b66bf4",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 236
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 419322,
-        "chain": "2b72f96fe193f8ab"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2639,37 +1431,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 26211,
-      "kinds": {
-        "x": 5669,
-        "cnot": 10896,
-        "toffoli": 920,
-        "h": 7992,
-        "measure": 460,
-        "cmodexp": 137,
-        "xx": 137
-      },
-      "receipt": "00036e79f925b7be",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 460
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 815626,
-        "chain": "53baa044e08bb23a"
+        "calls": 0,
+        "chain": ""
       }
     },
     {
@@ -2677,37 +1445,13 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 48329,
-      "kinds": {
-        "x": 10380,
-        "cnot": 19920,
-        "toffoli": 1650,
-        "h": 15090,
-        "measure": 825,
-        "cmodexp": 232,
-        "xx": 232
-      },
-      "receipt": "fbf621b592550205",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "measured": 825
-        }
-      ],
+      "computations": 0,
+      "kinds": {},
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 1438919,
-        "chain": "08ebaebe3aca5c89"
+        "calls": 0,
+        "chain": ""
       }
     }
   ]
