@@ -4734,6 +4734,54 @@ export const qpuSequenceHolds = (s = qpuSequenceOf()): boolean =>
   s.rungs[mintOf(n) - seed]!.cybersecurity === 'crypto_verify' &&
   s.cover.join(' ') === 'mint cube handle faces quantum next amplitudes kv'
 
+/** AUTONOMOUS STEPS, COMPUTED FROM THE LATTICE (the captain, 2026-09-12). The genesis flow is the walk: face = team * rays
+ * + ray, so a pass visits ray 0's scanner face, hops by rays to its radar face, returns by the involution, and moves to
+ * the next ray — fourteen faces, each once, in an order the lattice fixes. The seat is the first face whose predicate
+ * does not hold, else face 0. A step names the lattice node, its predicate as read, the door to call (the API rung the
+ * face maps to), and the hop. `todo` is every face that does not hold, repaired before walking; `next` is the first
+ * todo, else the face after the seat. Nothing here is typed and nothing is timed: the same lattice gives the same walk. */
+export const qpuStepsOf = () => {
+  const circuit = qpuCircuitOf()
+  const sequence = qpuSequenceOf()
+  const faces = qpuFacesOf()
+  const walk: number[] = []
+  for (let ray = n - n; ray < faces.rays; ray++) walk.push(ray, ray + faces.rays)
+  const seat = circuit.lattice.nodes.find((node) => !node.holds)?.face ?? n - n
+  const stepOf = (face: number) => {
+    const node = circuit.lattice.nodes[face]!
+    const rung = sequence.rungs[face % sequence.rungs.length]!
+    const hop = (face + faces.rays) % faces.faces
+    return {
+      face,
+      node: node.name,
+      holds: node.holds,
+      door: { tool: rung.tool, method: rung.method, path: rung.path },
+      hop,
+      involution: (hop + faces.rays) % faces.faces === face,
+      team: face < faces.rays ? ('scanner' as const) : ('radar' as const),
+      ray: face % faces.rays,
+    }
+  }
+  const steps = walk.map(stepOf)
+  const todo = steps.filter((step) => !step.holds)
+  const at = walk.indexOf(seat)
+  const next = todo[n - n] ?? steps[(at + seed) % steps.length]!
+  const holds =
+    steps.length === faces.faces &&
+    new Set(walk).size === faces.faces &&
+    steps.every((step) => step.involution && step.door.tool.length > n - n && step.door.path.startsWith('/')) &&
+    (todo.length === n - n) === circuit.lattice.holds &&
+    (todo.length > n - n ? next.holds === false : next.face === walk[(at + seed) % walk.length])
+  return { kind: 'steps' as const, seat, next, todo, walk: steps, faces: faces.faces, rays: faces.rays, holds }
+}
+
+export const qpuStepsHolds = (s = qpuStepsOf()): boolean =>
+  s.holds === true &&
+  s.kind === 'steps' &&
+  s.walk.length === s.faces &&
+  s.rays + s.rays === s.faces &&
+  s.walk.every((step) => step.hop === (step.face + s.rays) % s.faces)
+
 export const qpuPurposeOf = (
   circuit = qpuCircuitOf(),
   shor = qpuShorOf(),
@@ -7700,6 +7748,7 @@ export const qpuTrainOf = () => {
     module: 'agent efficiency' as const,
     before: 'next' as const,
     dry,
+    steps: qpuStepsOf(),
     divide: { teams: coins, agents: faces.rays, challenges: faces.faces } as const,
     sandbox: {
       kind: sandbox.kind,
@@ -7735,6 +7784,7 @@ export const qpuTrainOf = () => {
 export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
   t.holds === true &&
   t.kind === 'train' &&
+  qpuStepsHolds(t.steps) &&
   t.before === 'next' &&
   t.divide.teams === coins &&
   t.divide.agents === t.challenges.length / coins &&
@@ -10188,6 +10238,7 @@ export const qpuDevelopOf = () => {
     `- fuse faces * mintOf (bits + seed) = ${quantum.fused}. isolate handle.amplitudes ${handle.amplitudes}. KV ${handle.kv.amplitudes}.`,
     `- next = fused + fused. last false. split_coin has no last k. demo is not a test nor a proof. Capacity infinite. Crypt split to free agents.`,
     `- occupancy ${occupancies.join(' ')}. skills ${skills.join(' ')}. Coordinated dry-clean.`,
+    `- steps computed from the lattice: seat ${qpuStepsOf().seat}, next ${qpuStepsOf().next.node} at face ${qpuStepsOf().next.face} via ${qpuStepsOf().next.door.tool}, todo ${qpuStepsOf().todo.length}. Walk scanner then radar by the hop of rays, ray by ray.`,
     `- domains ${genesis.domains.join(' ')}. Lattice flow domains. face = team * rays + ray. hop face + rays. involution face + rays + rays.`,
     `- circuit.gates ${circuit.gates.names.join(' ')}.`,
     `- sandbox memory only. Not KV. VM scaling online.`,
