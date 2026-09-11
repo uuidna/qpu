@@ -51,7 +51,11 @@
     "!dist/**/*.test.d.ts",
     "!dist/**/*.d.ts",
     "!dist/**/readme.js",
-    "!dist/**/readme.d.ts"
+    "!dist/**/readme.d.ts",
+    "!dist/**/receipt.js",
+    "!dist/**/receipt.d.ts",
+    "!dist/**/receipted.js",
+    "!dist/**/receipted.d.ts"
   ],
   "sideEffects": false,
   "engines": {
@@ -61,10 +65,11 @@
     "prepare": "tsc -p tsconfig.json",
     "lean": "lean src/quantum/processing/unit/index.lean",
     "build": "rm -rf dist && tsc -p tsconfig.json && node dist/quantum/processing/unit/readme.js",
-    "test": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
+    "test": "npm run build && node --test --test-reporter=./dist/quantum/processing/unit/receipt.js --test-reporter-destination=stdout dist/quantum/processing/unit/*.test.js",
     "ci": "npm run lean && npm test",
     "prepublishOnly": "npm run build",
-    "ship": "npm run build && npx wrangler deploy"
+    "ship": "npm run build && npx wrangler deploy",
+    "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js"
   },
   "devDependencies": {
     "@types/node": "26.5.1",

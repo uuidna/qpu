@@ -1,4 +1,4 @@
-import { test } from 'node:test'
+import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { qpuCssHolds, qpuCssOf, qpuGenesisHolds, qpuGenesisOf, qpuTrainOf } from './index.js'
 

@@ -1,4 +1,4 @@
-import { test } from 'node:test'
+import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import worker, {
   qpuCapacityHolds,
@@ -23,6 +23,8 @@ import worker, {
   qpuToolsOf,
   qpuTrainHolds,
   qpuTrainOf,
+  shorFactorOf,
+
 } from './index.js'
 
 const host = 'qpu.uuidna.com'
@@ -188,7 +190,7 @@ test('cybersecurity tools morph at call time — each door holds', async () => {
   assert.equal(iqft.rsa.factored, true)
   const shots = (await mcpOf('crypto_shots')) as { kind: string; device: string; measure: { noise: string; shots: number }; rsa: { kind: string; modulus: number; factored: boolean }; holds: boolean }
   assert.equal(shots.kind, 'shots')
-  assert.equal(shots.device, 'superconducting')
+  assert.equal(shots.device, 'simulator')
   assert.equal(shots.measure.noise, 'xx')
   assert.equal(shots.measure.shots, 8)
   assert.equal(shots.rsa.kind, 'rsa')
@@ -215,13 +217,13 @@ test('cybersecurity tools morph at call time — each door holds', async () => {
   assert.equal(qpuEncryptHolds(encrypt), true)
   assert.equal(encrypt.kind, 'encrypt')
   assert.equal(encrypt.theorem, 'crypto')
-  assert.equal(encrypt.postquantum, true)
+  assert.equal(encrypt.identity, true)
   assert.equal(encrypt.ciphertext, encrypt.public)
   assert.equal(encrypt.ciphertext !== encrypt.modulus, true)
   const split = (await mcpOf('crypto_split')) as {
     kind: string
     theorem: string
-    postquantum: boolean
+    identity: boolean
     ciphertext: number
     public: number
     fused: number
@@ -230,14 +232,14 @@ test('cybersecurity tools morph at call time — each door holds', async () => {
   }
   assert.equal(split.kind, 'encrypt')
   assert.equal(split.theorem, 'crypto')
-  assert.equal(split.postquantum, true)
+  assert.equal(split.identity, true)
   assert.equal(split.ciphertext, split.public)
   assert.equal(split.ciphertext, split.fused)
   assert.equal(split.ciphertext !== split.modulus, true)
   const verify = (await mcpOf('crypto_verify')) as {
     kind: string
     factoring: { theorem: string; factored: boolean; n: number; p: number; q: number }
-    encrypt: { theorem: string; postquantum: boolean; holds: boolean }
+    encrypt: { theorem: string; identity: boolean; holds: boolean }
     verify: { crypt: boolean; rsa: boolean; encrypt: boolean; cors: string }
     rsa: { factored: boolean }
     holds: boolean
@@ -247,7 +249,7 @@ test('cybersecurity tools morph at call time — each door holds', async () => {
   assert.equal(verify.factoring.factored, true)
   assert.equal(verify.factoring.p * verify.factoring.q, verify.factoring.n)
   assert.equal(verify.encrypt.theorem, 'crypto')
-  assert.equal(verify.encrypt.postquantum, true)
+  assert.equal(verify.encrypt.identity, true)
   assert.equal(verify.verify.crypt, true)
   assert.equal(verify.verify.rsa, true)
   assert.equal(verify.verify.encrypt, true)
@@ -304,8 +306,8 @@ test('crypto theorems sit on Lean rows — docs stay seven', () => {
     assert.equal(row?.theorem.includes('by decide'), false)
   }
   const shorRow = [...lean.rows, ...lean.cover].find((r) => r.heading === 'shor')
-  assert.equal(shorRow?.reading.includes('RSA'), true)
-  assert.equal(docs.documentation.includes('Factor RSA'), true)
+  assert.equal(shorRow?.reading.includes(shorFactorOf()), true)
+  assert.equal(docs.documentation.includes(shorFactorOf()), true)
   assert.equal(lean.holds, true)
   assert.equal(docs.api.length, 7)
   assert.equal(docs.documentation.includes('Crypt split'), true)
@@ -346,7 +348,7 @@ test('Shor period-finding is inverse QFT', () => {
 
 test('Shor repeats physical xx-noisy shots', () => {
   const shor = qpuShorOf()
-  assert.equal(shor.device, 'superconducting')
+  assert.equal(shor.device, 'simulator')
   assert.equal(shor.measure.noise, 'xx')
   assert.equal(shor.measure.identity, true)
   assert.equal(shor.measure.shots, 8)
@@ -376,26 +378,19 @@ test('Shor post-processing factors multiply back to N', () => {
   assert.equal(shor.payload, 'https://qpu.uuidna.com/storage/databases/payload')
 })
 
-test('theorem shor factor table', () => {
-  assert.deepEqual(
-    [
-      3 * 5,
-      3 * 7,
-      3 * 11,
-      5 * 7,
-      3 * 13,
-      3 * 17,
-      5 * 11,
-      3 * 19,
-      5 * 13,
-      3 * 23,
-      7 * 11,
-      5 * 17,
-      3 * 29,
-      7 * 13,
-    ],
-    [15, 21, 33, 35, 39, 51, 55, 57, 65, 69, 77, 85, 87, 91],
-  )
+test('theorem shor — the kernel does not know the answer: period and factors are absent from the statement', () => {
+  const shor = qpuShorOf()
+  const lean = qpuLeanOf()
+  const row = [...lean.rows, ...lean.cover].find((r) => r.heading === 'shor')
+  assert.ok(row)
+  const statement = row.theorem.slice(0, row.theorem.indexOf(':='))
+  const numerals = new Set(statement.match(/\d+/g) ?? [])
+  assert.deepEqual([...numerals].sort(), ['0', '1', '2', '8', '91'])
+  assert.equal(shor.factors.p * shor.factors.q, shor.n)
+  assert.equal(numerals.has(String(shor.factors.p)), false)
+  assert.equal(numerals.has(String(shor.factors.q)), false)
+  assert.equal(numerals.has(String(shor.post.period)), false)
+  assert.equal(row.theorem.includes('by decide'), false)
 })
 
 test('purpose cybersecurity is fridge, Shor, crypt split, extras, and next', () => {
@@ -427,7 +422,7 @@ test('purpose cybersecurity is fridge, Shor, crypt split, extras, and next', () 
   assert.equal(purpose.cybersecurity.rsa.p * purpose.cybersecurity.rsa.q, 91)
   assert.equal(purpose.cybersecurity.encrypt.kind, 'encrypt')
   assert.equal(purpose.cybersecurity.encrypt.theorem, 'crypto')
-  assert.equal(purpose.cybersecurity.encrypt.postquantum, true)
+  assert.equal(purpose.cybersecurity.encrypt.identity, true)
   assert.equal(purpose.cybersecurity.encrypt.holds, true)
   assert.equal(purpose.cybersecurity.tools.length, 8)
   assert.equal(purpose.cybersecurity.tools.includes('crypto_rsa'), true)

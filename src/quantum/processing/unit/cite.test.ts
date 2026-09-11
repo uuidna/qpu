@@ -1,8 +1,8 @@
-import { test } from 'node:test'
+import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuDevelopHolds, qpuReadmeHolds, qpuReadmeOf } from './index.js'
+import worker, { qpuDevelopHolds, qpuReadmeHolds, qpuReadmeOf, shorFactorOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -54,7 +54,7 @@ test('paper and zenodo cite', () => {
   assert.equal(readme.includes('theorem fridge'), true)
   assert.equal(readme.includes('theorem qubits'), true)
   assert.equal(readme.includes('Theorems are qpu_lean'), true)
-  assert.equal(readme.includes('Factor RSA'), true)
+  assert.equal(readme.includes(shorFactorOf()), true)
   assert.equal(readme.includes('demo is not a test nor a proof'), true)
   assert.equal(readme.includes('Unlocked'), true)
   assert.equal(readme.includes('crypto_rsa'), true)

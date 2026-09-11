@@ -1,4 +1,4 @@
-import { test } from 'node:test'
+import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import {
   qpuBalanceHolds,
@@ -93,7 +93,7 @@ test('next is the double — coil times mintOf bits plus coins is fused plus fus
   assert.equal(next.theorem, 'next_coil')
 })
 
-test('superconducting fridge — resistance none, computations ns none', () => {
+test('simulator fridge — resistance declared none, computations ns none', () => {
   const circuit = qpuCircuitOf()
   const speed = qpuSpeedOf()
   const hybrid = qpuHybridOf()
@@ -102,7 +102,7 @@ test('superconducting fridge — resistance none, computations ns none', () => {
   const lean = qpuLeanOf()
   const fridge = [...lean.rows, ...lean.cover].find((r) => r.heading === 'fridge')
   assert.equal(qpuCircuitHolds(circuit), true)
-  assert.equal(circuit.fridge.kind, 'superconducting')
+  assert.equal(circuit.fridge.kind, 'simulator')
   assert.equal(circuit.fridge.resistance, 0)
   assert.equal(circuit.fridge.holds, true)
   assert.equal(qpuSpeedHolds(speed), true)

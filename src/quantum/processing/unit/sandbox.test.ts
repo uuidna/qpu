@@ -1,4 +1,4 @@
-import { test } from 'node:test'
+import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import worker from './index.js'
 
@@ -83,7 +83,7 @@ test('sandbox via mcp', async () => {
   assert.equal(unlockedQuantum.value.lattice.occupied, 14)
   assert.equal(unlockedQuantum.value.lattice.vacant, 0)
   assert.equal(unlockedQuantum.value.lattice.holds, true)
-  assert.equal(unlockedQuantum.value.fridge.kind, 'superconducting')
+  assert.equal(unlockedQuantum.value.fridge.kind, 'simulator')
   assert.equal(unlockedQuantum.value.fridge.resistance, 0)
   assert.equal(unlockedQuantum.value.ns, 0)
   assert.equal(unlockedQuantum.value.related.includes('split'), true)
@@ -96,7 +96,7 @@ test('sandbox via mcp', async () => {
   assert.equal(sandbox.tools.some((t) => t.name === 'slot_split'), true)
   assert.equal(sandbox.tools.some((t) => t.name === 'slot_resistance'), true)
   const fridge = (await mcpOf('slot_fridge')) as { value: { kind: string; resistance: boolean; holds: boolean }; unlocked: boolean; holds: boolean }
-  assert.equal(fridge.value.kind, 'superconducting')
+  assert.equal(fridge.value.kind, 'simulator')
   assert.equal(fridge.value.resistance, 0)
   assert.equal(fridge.unlocked, true)
   const split = (await mcpOf('slot_split')) as { value: unknown; holds: boolean }

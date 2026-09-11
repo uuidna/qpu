@@ -3,10 +3,46 @@
  * mintOf proves 2^k by doubling. Cube, handle, faces, fused are the unit.
  * Lean decides those identities by Nat algebra. Digits and integer fractions. Never Math. Never by decide.
  */
+/** COMPUTATIONAL RECEIPTS. Every gate primitive and measurement appends the fold of the amplitude vector it produced, so a
+ * test that computed quantum state carries a receipt and a test that computed none carries none. FNV-1a 64 over the
+ * decimal amplitudes; BigInt only. Never Math. The reporter reads this ledger per test (isolation none). */
+export type QpuReceipt = { name: string; dim: number; fold: string }
+const RECEIPTS: QpuReceipt[] = []
+const FNV_OFFSET = 0xcbf29ce484222325n
+const FNV_PRIME = 0x100000001b3n
+const FNV_MASK = 0xffffffffffffffffn
+export const qpuFoldOf = (text: string): string => {
+  let h = FNV_OFFSET
+  for (let i = text.length - text.length; i < text.length; i++) {
+    h ^= BigInt(text.charCodeAt(i))
+    h = (h * FNV_PRIME) & FNV_MASK
+  }
+  return h.toString(16).padStart(16, '0')
+}
+const receiptOf = (name: string, amps: readonly bigint[]): void => {
+  RECEIPTS.push({ name, dim: amps.length, fold: qpuFoldOf(amps.map((a) => a.toString()).join(',')) })
+}
+/** mint receipts: every amplitude-count doubling this process computed — a counter and a running chain, never a list. */
+const MINT = { calls: 0, chain: FNV_OFFSET }
+export const qpuMintReceiptOf = () => ({ calls: MINT.calls, chain: MINT.chain.toString(16).padStart(16, '0') })
+const mintReceiptOf = (k: number, x: number): void => {
+  MINT.calls = MINT.calls + 1
+  const text = `${k}:${x}`
+  let h = MINT.chain
+  for (let i = text.length - text.length; i < text.length; i++) {
+    h ^= BigInt(text.charCodeAt(i))
+    h = (h * FNV_PRIME) & FNV_MASK
+  }
+  MINT.chain = h
+}
+/** The ledger of every quantum computation this process ran, in order. */
+export const qpuReceiptLedgerOf = (): readonly QpuReceipt[] => RECEIPTS
+export const qpuReceiptFoldOf = (rows: readonly QpuReceipt[] = RECEIPTS): string => qpuFoldOf(rows.map((r) => `${r.name}:${r.dim}:${r.fold}`).join('|'))
 const mintOf = (k: number): number => {
   let x = k - k
   x = x + 1
   for (let i = k - k; i < k; i++) x += x
+  mintReceiptOf(k, x)
   return x
 }
 
@@ -1269,6 +1305,7 @@ const xGateOf = (amps: bigint[], q: number): bigint[] => {
   const bit = bitOf(q)
   const out = amps.map(() => 0n)
   for (let i = n - n; i < amps.length; i++) out[xorOf(i, bit)] = amps[i]!
+  receiptOf('x', out)
   return out
 }
 const cnotGateOf = (amps: bigint[], c: number, t: number): bigint[] => {
@@ -1279,6 +1316,7 @@ const cnotGateOf = (amps: bigint[], c: number, t: number): bigint[] => {
     const on = (BigInt(i) / cb) % 2n === 1n
     out[on ? xorOf(i, Number(tb)) : i] = amps[i]!
   }
+  receiptOf('cnot', out)
   return out
 }
 const hGateOf = (amps: bigint[], q: number): bigint[] => {
@@ -1296,6 +1334,7 @@ const hGateOf = (amps: bigint[], q: number): bigint[] => {
       out[flipped] += a
     }
   }
+  receiptOf('h', out)
   return out
 }
 const czGateOf = (amps: bigint[], c: number, t: number): bigint[] => hGateOf(cnotGateOf(hGateOf(amps, t), c, t), t)
@@ -1310,6 +1349,7 @@ const toffoliGateOf = (amps: bigint[], c: number, k: number, t: number): bigint[
     const on = (BigInt(i) / cb) % 2n === 1n && (BigInt(i) / kb) % 2n === 1n
     out[on ? xorOf(i, Number(tb)) : i] = amps[i]!
   }
+  receiptOf('toffoli', out)
   return out
 }
 const qubitOf = (value: unknown, fallback: number): number => {
@@ -1332,6 +1372,7 @@ const runGatesOf = (ops: readonly Record<string, unknown>[]): bigint[] => {
   return amps
 }
 const measureOf = (amps: bigint[]) => {
+  receiptOf('measure', amps)
   const support = amps.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
   const index = support.length === seed ? support[n - n]!.i : support.length === coins ? support[seed]!.i : mintOf(n)
   const counts = support.map((r) => ({ i: r.i, w: Number(r.a * r.a) }))
@@ -1640,6 +1681,11 @@ const convergentsOf = (num: number, den: number): { h: number; k: number }[] => 
 }
 
 type CAmp = { re: bigint; im: bigint }
+/** Device label READ from the run: a vector of exact integer amplitudes is a simulator; anything else is unmeasured. Never typed. */
+const bigintDeviceOf = (amps: readonly bigint[]) =>
+  amps.length > n - n && amps.every((a) => typeof a === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
+const deviceOf = (amps: readonly CAmp[]) =>
+  amps.length > n - n && amps.every((a) => typeof a.re === 'bigint' && typeof a.im === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
 
 const cAmpOf = (re: bigint, im: bigint): CAmp => ({ re, im })
 const cWOf = (a: CAmp): bigint => a.re * a.re + a.im * a.im
@@ -1722,7 +1768,7 @@ const cModMulOf = (amps: CAmp[], a: number, modulus: number, control: number, wo
 
 const cXxOf = (amps: CAmp[], q: number): CAmp[] => cXOf(cXOf(amps, q), q)
 
-/** Shor on the superconducting device. N and coprime a. Modular-exponentiation circuitry. Inverse QFT. Noisy shots. Factors. */
+/** Shor on the state-vector simulator. N and coprime a. Modular-exponentiation circuitry. Inverse QFT. Noisy shots. Factors. */
 export const qpuShorOf = () => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
@@ -1769,6 +1815,8 @@ export const qpuShorOf = () => {
   amps = cSdgOf(amps, seed, n - n)
   amps = cHOf(amps, n - n)
   const noisy = cXxOf(amps, workOff)
+  receiptOf('cmodexp', amps.map(cWOf))
+  receiptOf('xx', noisy.map(cWOf))
   const xxId = noisy.every((row, i) => row.re === amps[i]!.re && row.im === amps[i]!.im)
   const weights: number[] = []
   for (let y = n - n; y < qftSize; y++) weights.push(n - n)
@@ -1878,7 +1926,7 @@ export const qpuShorOf = () => {
   return {
     kind: 'shor' as const,
     theorem: 'shor' as const,
-    device: 'superconducting' as const,
+    device: deviceOf(noisy),
     n: modulus,
     a: base,
     coprime,
@@ -1899,7 +1947,7 @@ export const qpuShorHolds = (s = qpuShorOf()): boolean =>
   s.holds === true &&
   s.kind === 'shor' &&
   s.theorem === 'shor' &&
-  s.device === 'superconducting' &&
+  s.device === 'simulator' &&
   s.n === qpuFacesOf().rays * (n * n + n + seed) &&
   s.n > n * (n + coins) &&
   s.a === mintOf(n) &&
@@ -2240,6 +2288,7 @@ export const qpuCircuitOf = () => {
     { name: 'mixing' as const, millikelvin: mixing }] as const
   const cryostat = {
     kind: 'dilution' as const,
+    measured: false as const,
     milli,
     millikelvin: mixing,
     mixing,
@@ -2255,6 +2304,7 @@ export const qpuCircuitOf = () => {
       pulseK === mintOf(coins)}
   const telemetry = {
     kind: 'cryostat' as const,
+    measured: false as const,
     millikelvin: mixing,
     milli,
     stages: stages.length,
@@ -2274,7 +2324,7 @@ export const qpuCircuitOf = () => {
   const clay = qpuClayOf()
   const resistance = n - n
   const fridge = {
-    kind: 'superconducting' as const,
+    kind: bigintDeviceOf(ampsOf(dim)),
     qubits: n,
     levels: coins,
     dim,
@@ -2443,7 +2493,7 @@ export const qpuCircuitOf = () => {
       computer.correct.holds &&
       fridge.telemetry.holds &&
       fridge.resistance === n - n &&
-      fridge.kind === 'superconducting' &&
+      fridge.kind === 'simulator' &&
       qpuPayloadPluginHolds(plugin) &&
       payloadMcp.holds &&
       plugin.copies === seed &&
@@ -2583,7 +2633,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.lattice.vacant === n - n &&
   c.lattice.nodes.length === c.lattice.faces &&
   c.lattice.nodes.every((node) => node.holds && node.involution && node.hop === node.face) &&
-  c.fridge.kind === 'superconducting' &&
+  c.fridge.kind === 'simulator' &&
   c.fridge.qubits === n &&
   c.fridge.levels === coins &&
   c.fridge.millikelvin === ten &&
@@ -2643,7 +2693,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   qpuComputerHolds(c.computer) &&
   c.computer.lattice.vacant === n - n &&
   c.hardware.kind === 'hardware' &&
-  c.hardware.device === 'superconducting' &&
+  c.hardware.device === 'simulator' &&
   c.hardware.initialize === true &&
   c.hardware.gates === true &&
   c.hardware.interfere === true &&
@@ -2944,21 +2994,24 @@ export const qpuEncryptOf = () => {
   const modulus = qpuFacesOf().rays * (n * n + n + seed)
   const publicKey = crypt.fused
   const ciphertext = crypt.split * crypt.share
-  const decrypt = ciphertext === publicKey
-  const postquantum = decrypt && crypt.holds && crypt.theorem === 'crypto' && ciphertext !== modulus
+  /** identity READ from the run: split * share lands on the independently computed fused. theorem crypto. */
+  const identity = ciphertext === crypt.fused && crypt.holds && crypt.theorem === 'crypto'
+  /** secrecy READ from the run: a ciphertext equal to the public key hides nothing. This is not encryption. */
+  const secrecy = ciphertext !== publicKey
   const holds =
-    postquantum &&
-    ciphertext === crypt.fused &&
+    identity &&
+    secrecy === false &&
     crypt.split === capacity.faces &&
     crypt.share === capacity.kv.amplitudes &&
-    crypt.fused === capacity.fused
+    crypt.fused === capacity.fused &&
+    ciphertext !== modulus
   return {
     kind: 'encrypt' as const,
     theorem: 'crypto' as const,
-    postquantum,
+    identity,
+    secrecy,
     public: publicKey,
     ciphertext,
-    decrypt,
     split: crypt.split,
     share: crypt.share,
     fused: crypt.fused,
@@ -2971,12 +3024,25 @@ export const qpuEncryptHolds = (e = qpuEncryptOf()): boolean =>
   e.holds === true &&
   e.kind === 'encrypt' &&
   e.theorem === 'crypto' &&
-  e.postquantum === true &&
-  e.decrypt === true &&
+  e.identity === true &&
+  e.secrecy === false &&
   e.ciphertext === e.public &&
   e.ciphertext === e.split * e.share &&
   e.ciphertext === e.fused &&
   e.ciphertext !== e.modulus
+
+let shorFactorMemo: string | undefined
+/** The factoring claim READ from the run: the modulus Shor factored on this simulator. Never RSA-2048. Never typed. */
+export const shorFactorOf = (): string => (shorFactorMemo ??= `Factor ${qpuShorOf().n}`)
+let cryptoClaimMemo: string | undefined
+/** The crypto claim READ from the run: the split identity holds and secrecy does not. Not encryption. Never typed. */
+export const cryptoClaimOf = (): string => {
+  if (cryptoClaimMemo === undefined) {
+    const e = qpuEncryptOf()
+    cryptoClaimMemo = `Split identity ${e.identity}. Secrecy ${e.secrecy}`
+  }
+  return cryptoClaimMemo
+}
 
 export const qpuSpeedOf = () => {
   const capacity = qpuCapacityOf()
@@ -3125,7 +3191,7 @@ export const qpuLeanOf = () => {
       heading: 'crypto',
       theorem: 'theorem crypto : fused = faces * mintOf (vertices * hexbit + seed) := by rw [← cube]; exact quantum',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{vertices}\\cdot\\mathrm{hexbit}+\\mathrm{seed})',
-      reading: `holds ${cryptoHolds}. theorem crypto. Post-quantum encrypt. Crypt split. fused = split * share. mintOf. Not p * q. JSON Nat. Never Math. Never by decide.`,
+      reading: `holds ${cryptoHolds}. theorem crypto. ${cryptoClaimOf()}. Crypt split. fused = split * share. mintOf. Not p * q. JSON Nat. Never Math. Never by decide.`,
       holds: cryptoHolds,
   },
     {
@@ -3198,10 +3264,10 @@ export const qpuLeanOf = () => {
     {
       heading: 'shor',
       theorem:
-        'theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
+        'theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩',
       formula:
-        '3\\cdot5=15\\land 3\\cdot7=21\\land 3\\cdot11=33\\land 5\\cdot7=35\\land 3\\cdot13=39\\land 3\\cdot17=51\\land 5\\cdot11=55\\land 3\\cdot19=57\\land 5\\cdot13=65\\land 3\\cdot23=69\\land 7\\cdot11=77\\land 5\\cdot17=85\\land 3\\cdot29=87\\land 7\\cdot13=91',
-      reading: 'holds true. theorem shor. Specified composite N. Coprime base a. Modular-exponentiation circuitry a^x mod N. Inverse QFT period-finding. Continued-fraction factors. p * q = N. JSON Nat. Never Math. Never by decide. Factor RSA. demo is not a test nor a proof.',
+        '\\mathrm{periodOf}(8,91)\\bmod 2=0\\land\\mathrm{half}(8,91)<91-1\\land 1<\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)\\land\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)<91\\land\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)\\cdot\\mathrm{gcdOf}(\\mathrm{half}(8,91)+1,91)=91',
+      reading: `holds true. theorem shor. periodOf 8 91 is decided by fuel recursion inside the kernel. half is powMod a (r / 2) N. gcdOf (half - 1) N * gcdOf (half + 1) N = N. Period and factors are absent from the statement. rfl and Nat.le_of_ble_eq_true. ${shorFactorOf()}. Never Math. Never by decide. demo is not a test nor a proof.`,
       holds: qpuShorHolds(),
   },
     {
@@ -3430,7 +3496,7 @@ export const qpuLeanOf = () => {
       formula:
         '\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100\\land\\mathrm{resistance}=0',
       reading:
-        'holds true. theorem fridge. Isolated two-level register. Physical in the browser VM. As such a fridge full of superconducting qubits. Resistance none. Lab millikelvin. Dilution cryostat. Mixing ten millikelvin. JSON Nat. Never Math. Never by decide.',
+        'holds true. theorem fridge. Isolated two-level register. Physical in the browser VM. A state-vector simulator on exact integers. No superconducting qubits. Resistance none, declared not measured. Millikelvin and cryostat are declared constants, measured false. JSON Nat. Never Math. Never by decide.',
       holds:
         coins === 2 &&
         n === 3 &&
@@ -3445,7 +3511,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem millikelvin : 10 * 10 * 10 = 1000 ∧ 10 * 10 = 100 ∧ 4 * 1000 = 4000 := ⟨rfl, rfl, rfl⟩',
       formula: '10\\cdot10\\cdot10=1000\\land 10\\cdot10=100\\land 4\\cdot1000=4000',
       reading:
-        'holds true. Lab millikelvin. milli is ten cubed. Mixing chamber ten millikelvin. Plate one hundred millikelvin. Pulse four kelvin. Algebra. Never Math.',
+        'holds true. Declared millikelvin, measured false. milli is ten cubed. Mixing chamber ten millikelvin. Plate one hundred millikelvin. Pulse four kelvin. Algebra. Never Math.',
       holds: ten * ten * ten === 1000 && ten * ten === 100 && mintOf(coins) * (ten * ten * ten) === 4000,
   },
     {
@@ -3453,7 +3519,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem telemetry : 10 * 10 * 10 = 1000 ∧ n = 3 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, n_eq, rfl⟩',
       formula: '10\\cdot10\\cdot10=1000\\land n=3\\land(0\\oplus 1)\\oplus 2=3',
       reading:
-        'holds true. Cryostat telemetry. Reads the dilution stages. Mixing millikelvin. Isolated. JSON-LD. fetch Request Response BigInt performance.',
+        'holds true. Cryostat constants declared, measured false. No dilution stages exist here. JSON-LD. fetch Request Response BigInt performance.',
       holds: ten * ten * ten === 1000 && n === 3 && xorOf(xorOf(n - n, seed), coins) === n,
   },
     {
@@ -3709,9 +3775,9 @@ export const qpuDocsOf = () => {
   const fused = faces.faces * handle.kv.amplitudes
   const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} qpu_quantum. GET ${unit.href} qpu_lean. POST ${unit.origin}/mcp tools/list. tools/call qpu_prove. No auth. JSON-LD.`
   const api = [
-    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: 'theorem quantum. theorem shor. theorem crypto. Factor RSA. JSON-LD. No auth.' },
+    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.` },
     { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.` },
-    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: `tools ${mintOf(n)}. cybersecurity theorem shor Factor RSA. theorem crypto encrypt. fourteen schemas. schema.org ItemList. JSON-LD. No auth.` },
+    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: `tools ${mintOf(n)}. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.` },
     { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'JSON-RPC tools/list tools/call qpu_prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.' },
     { method: 'GET' as const, path: '/cite', name: 'qpu_cite', href: `${unit.origin}/cite`, reading: 'MLA 8. when never. JSON-LD. No auth.' },
     { method: 'GET' as const, path: '/message', name: 'qpu_message', href: `${unit.origin}/message`, reading: 'lanes = faces. hop involution. JSON-LD. No auth.' },
@@ -3764,7 +3830,7 @@ export const qpuDocsHolds = (d = qpuDocsOf()): boolean =>
   d.documentation.includes('tools/list') &&
   d.documentation.includes('theorem shor') &&
   d.documentation.includes('theorem crypto') &&
-  d.documentation.includes('Factor RSA') &&
+  d.documentation.includes(`${shorFactorOf()}`) &&
   d.api.length === qpuFacesOf().rays &&
   d.src === unit.fuse.lean
 
@@ -4493,7 +4559,7 @@ export const qpuPurposeOf = (
     ghz: circuit.ghz.holds,
     holds:
       circuit.fridge.holds &&
-      circuit.fridge.kind === 'superconducting' &&
+      circuit.fridge.kind === 'simulator' &&
       circuit.fridge.qubits === n &&
       circuit.fridge.resistance === n - n &&
       circuit.entangle.holds &&
@@ -4526,7 +4592,7 @@ export const qpuPurposeOf = (
     encrypt: {
       kind: 'encrypt' as const,
       theorem: 'crypto' as const,
-      postquantum: qpuEncryptOf().postquantum,
+      identity: qpuEncryptOf().identity,
       holds: qpuEncryptHolds(),
     },
     tools: cryptoToolNames,
@@ -4585,7 +4651,7 @@ export const qpuPurposeOf = (
 export const qpuPurposeHolds = (p = qpuPurposeOf()): boolean =>
   p.holds === true &&
   p.kind === 'purpose' &&
-  p.nature.platform === 'superconducting' &&
+  p.nature.platform === 'simulator' &&
   p.nature.qubits === n &&
   p.cybersecurity.n === qpuFacesOf().rays * (n * n + n + seed) &&
   p.cybersecurity.product === p.cybersecurity.n &&
@@ -4603,7 +4669,7 @@ export const qpuPurposeHolds = (p = qpuPurposeOf()): boolean =>
   p.cybersecurity.rsa.p * p.cybersecurity.rsa.q === p.cybersecurity.rsa.modulus &&
   p.cybersecurity.encrypt.kind === 'encrypt' &&
   p.cybersecurity.encrypt.theorem === 'crypto' &&
-  p.cybersecurity.encrypt.postquantum === true &&
+  p.cybersecurity.encrypt.identity === true &&
   p.cybersecurity.encrypt.holds === true &&
   p.optimization.next === p.optimization.fused + p.optimization.fused &&
   p.science.climb[mintOf(coins) - seed] === 'qpu_prove' &&
@@ -4813,7 +4879,7 @@ export const qpuEvidenceHolds = (e = qpuEvidenceOf()): boolean =>
   e.holds === true &&
   e.kind === 'evidence' &&
   e.provenance.provider === unit.host &&
-  e.provenance.device === 'superconducting' &&
+  e.provenance.device === 'simulator' &&
   e.provenance.shots === mintOf(n) &&
   e.provenance.outcomes.length === e.provenance.shots &&
   e.provenance.counts.length === coins &&
@@ -4933,9 +4999,9 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
   const see = cryptoToolNames
   const schema = { type: 'object', properties: { man: { type: 'boolean' } } }
   const morph = 'In tools/list. Morph. Not a ninth sealed tool. No auth.'
-  const factoring = `${morph} theorem shor. Factor RSA. p * q = N.`
-  const encrypt = `${morph} theorem crypto. Post-quantum encrypt. fused = split * share.`
-  const both = `${morph} theorem shor. Factor RSA. theorem crypto. Post-quantum encrypt.`
+  const factoring = `${morph} theorem shor. ${shorFactorOf()}. p * q = N.`
+  const encrypt = `${morph} theorem crypto. ${cryptoClaimOf()}. fused = split * share.`
+  const both = `${morph} theorem shor. ${shorFactorOf()}. theorem crypto. ${cryptoClaimOf()}.`
   return [
     {
       name: see[n - n],
@@ -4945,8 +5011,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       run: () => qpuCybersecurityOf()},
     {
       name: see[seed],
-      description: 'theorem shor. Factor RSA.',
-      man: qpuSubManOf(see[seed], 'theorem shor. Factor RSA.', `${factoring} Coprime base.`, href, see.filter((s) => s !== see[seed])),
+      description: `theorem shor. ${shorFactorOf()}.`,
+      man: qpuSubManOf(see[seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Coprime base.`, href, see.filter((s) => s !== see[seed])),
       inputSchema: schema,
       run: () => {
         const shor = qpuShorOf()
@@ -4954,8 +5020,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       }},
     {
       name: see[coins],
-      description: 'theorem shor. Factor RSA.',
-      man: qpuSubManOf(see[coins], 'theorem shor. Factor RSA.', `${factoring} Native h cnot. Compiled x swap csdg cmodexp.`, href, see.filter((s) => s !== see[coins])),
+      description: `theorem shor. ${shorFactorOf()}.`,
+      man: qpuSubManOf(see[coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} Native h cnot. Compiled x swap csdg cmodexp.`, href, see.filter((s) => s !== see[coins])),
       inputSchema: schema,
       run: () => {
         const shor = qpuShorOf()
@@ -4963,8 +5029,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       }},
     {
       name: see[n],
-      description: 'theorem shor. Factor RSA.',
-      man: qpuSubManOf(see[n], 'theorem shor. Factor RSA.', `${factoring} Inverse QFT. Period continued-fraction.`, href, see.filter((s) => s !== see[n])),
+      description: `theorem shor. ${shorFactorOf()}.`,
+      man: qpuSubManOf(see[n], `theorem shor. ${shorFactorOf()}.`, `${factoring} Inverse QFT. Period continued-fraction.`, href, see.filter((s) => s !== see[n])),
       inputSchema: schema,
       run: () => {
         const shor = qpuShorOf()
@@ -4972,8 +5038,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       }},
     {
       name: see[n + seed],
-      description: 'theorem shor. Factor RSA.',
-      man: qpuSubManOf(see[n + seed], 'theorem shor. Factor RSA.', `${factoring} Superconducting. xx identity.`, href, see.filter((s) => s !== see[n + seed])),
+      description: `theorem shor. ${shorFactorOf()}.`,
+      man: qpuSubManOf(see[n + seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Simulator. xx identity.`, href, see.filter((s) => s !== see[n + seed])),
       inputSchema: schema,
       run: () => {
         const shor = qpuShorOf()
@@ -4981,8 +5047,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       }},
     {
       name: see[n + coins],
-      description: 'theorem shor. Factor RSA.',
-      man: qpuSubManOf(see[n + coins], 'theorem shor. Factor RSA.', `${factoring} JSON Nat.`, href, see.filter((s) => s !== see[n + coins])),
+      description: `theorem shor. ${shorFactorOf()}.`,
+      man: qpuSubManOf(see[n + coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} JSON Nat.`, href, see.filter((s) => s !== see[n + coins])),
       inputSchema: schema,
       run: () => {
         const cyber = qpuCybersecurityOf()
@@ -4990,8 +5056,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       }},
     {
       name: see[n + n],
-      description: 'theorem crypto. Post-quantum encrypt.',
-      man: qpuSubManOf(see[n + n], 'theorem crypto. Post-quantum encrypt.', encrypt, href, see.filter((s) => s !== see[n + n])),
+      description: `theorem crypto. ${cryptoClaimOf()}.`,
+      man: qpuSubManOf(see[n + n], `theorem crypto. ${cryptoClaimOf()}.`, encrypt, href, see.filter((s) => s !== see[n + n])),
       inputSchema: schema,
       run: () => qpuEncryptOf()},
     {
@@ -5041,7 +5107,7 @@ export const qpuCybersecurityHolds = (c = qpuCybersecurityOf()): boolean => {
     c.rsa.factors.p * c.rsa.factors.q === c.rsa.modulus &&
     qpuEncryptHolds(c.encrypt) &&
     c.encrypt.theorem === 'crypto' &&
-    c.encrypt.postquantum === true &&
+    c.encrypt.identity === true &&
     c.encrypt.ciphertext !== c.rsa.modulus &&
     c.table.length === qpuFacesOf().faces &&
     c.table[qpuFacesOf().faces - seed]!.product === c.shor.n &&
@@ -7690,7 +7756,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.lattice.occupied === p.lattice.faces &&
   p.lattice.vacant === n - n &&
   p.circuit.hardware.holds === true &&
-  p.circuit.hardware.device === 'superconducting' &&
+  p.circuit.hardware.device === 'simulator' &&
   p.circuit.hardware.initialize === true &&
   p.circuit.hardware.gates === true &&
   p.circuit.hardware.interfere === true &&
@@ -7715,7 +7781,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.shor.rsa.factored === true &&
   qpuEncryptHolds(p.encrypt) &&
   p.encrypt.theorem === 'crypto' &&
-  p.encrypt.postquantum === true &&
+  p.encrypt.identity === true &&
   qpuPurposeHolds(p.purpose) &&
   p.purpose.cybersecurity.product === p.shor.n &&
   p.purpose.nature.platform === p.circuit.hardware.device &&
@@ -8891,8 +8957,8 @@ export const qpuHostsHolds = (h = qpuHostsOf()): boolean =>
 export const qpuMcpDiscoverOf = () => {
   const hosts = qpuHostsOf()
   const versions = ['2024-11-05', '2025-03-26', '2025-06-18', '2026-07-28'] as const
-  const instructions = 'tools/list then tools/call. Eight doors. Eight cybersecurity. crypto_rsa Factor RSA. crypto_split theorem crypto. No auth.'
-  const holds = qpuHostsHolds(hosts) && versions.length === mintOf(coins) && instructions.includes('crypto_rsa') && instructions.includes('Factor RSA') && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
+  const instructions = `tools/list then tools/call. Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. No auth.`
+  const holds = qpuHostsHolds(hosts) && versions.length === mintOf(coins) && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
   return {
     protocolVersion: versions[mintOf(coins) - seed],
     capabilities: { tools: { listChanged: false as const } },
@@ -9403,14 +9469,14 @@ export const qpuToolsOf = () => {
   const seeOf = (name: (typeof names)[number]) => names.filter((s) => s !== name)
   const quantumMan = qpuManOf(
     names[n - n],
-    'theorem quantum. theorem shor. theorem crypto. Factor RSA.',
-    `GET ${unit.origin}. tools/call ${names[n - n]}. theorem quantum. theorem shor. theorem crypto. Factor RSA. No auth.`,
+    `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
+    `GET ${unit.origin}. tools/call ${names[n - n]}. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. No auth.`,
     unit.origin,
     seeOf(names[n - n]))
   const leanMan = qpuManOf(
     names[seed],
-    'theorem infinite. theorem distribute. theorem shor. Factor RSA.',
-    `GET ${unit.href}. Source ${unit.fuse.lean}. theorem shor. Factor RSA. No auth.`,
+    `theorem infinite. theorem distribute. theorem shor. ${shorFactorOf()}.`,
+    `GET ${unit.href}. Source ${unit.fuse.lean}. theorem shor. ${shorFactorOf()}. No auth.`,
     unit.href,
     seeOf(names[seed]))
   const citeMan = qpuManOf(
@@ -9445,8 +9511,8 @@ export const qpuToolsOf = () => {
     seeOf(names[n + n]))
   const proveMan = qpuManOf(
     names[mintOf(n) - seed],
-    'theorem quantum. theorem shor. theorem crypto. Factor RSA.',
-    `tools/call ${names[mintOf(n) - seed]}. theorem shor. theorem crypto. Factor RSA. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source ${unit.fuse.lean}. After qpu_compete. No auth.`,
+    `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
+    `tools/call ${names[mintOf(n) - seed]}. theorem shor. theorem crypto. ${shorFactorOf()}. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source ${unit.fuse.lean}. After qpu_compete. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[mintOf(n) - seed]))
   const proveSchema = {
@@ -9631,7 +9697,7 @@ export const qpuMcpOf = () => {
       morph: true as const,
       sealed: false as const,
       rsa: { kind: 'rsa' as const, cryptosystem: 'rsa' as const, modulus: shor.n, p: shor.factors.p, q: shor.factors.q, factored: shor.rsa.factored, unlocked: shor.unlocked },
-      encrypt: { kind: encrypt.kind, theorem: encrypt.theorem, postquantum: encrypt.postquantum, holds: encrypt.holds },
+      encrypt: { kind: encrypt.kind, theorem: encrypt.theorem, identity: encrypt.identity, holds: encrypt.holds },
       tools: cybersecurity},
     prove: {
       ui: { href: unit.origin, mcp: href, door: 'qpu_prove' as const },
@@ -9772,7 +9838,7 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
     m.cybersecurity.rsa.p * m.cybersecurity.rsa.q === m.cybersecurity.rsa.modulus &&
     m.cybersecurity.encrypt.kind === 'encrypt' &&
     m.cybersecurity.encrypt.theorem === 'crypto' &&
-    m.cybersecurity.encrypt.postquantum === true &&
+    m.cybersecurity.encrypt.identity === true &&
     m.cybersecurity.encrypt.holds === true &&
     qpuMcpToolsListOf().length === mintOf(n) + mintOf(n) &&
     qpuMcpToolsListOf().slice(n - n, mintOf(n)).every((t, i) => t.name === toolNames[i]) &&
@@ -9835,11 +9901,11 @@ export const qpuDevelopOf = () => {
     '`npm test` compiles then runs the unit tests. `npm run ci` is Lean then test. `npm run ship` deploys. Do not import uuidna.',
     '',
     `- host ${unit.host}. API only JSON-LD. No HTML. No auth. cors *.`,
-    `- sealed tools ${tools.length} = mintOf n. tools/list lists those eight plus eight cybersecurity morph. crypto_rsa theorem shor Factor RSA. crypto_split theorem crypto encrypt. Unlocked. Not a ninth sealed tool. Morph install Payload finds imagine at call-time.`,
+    `- sealed tools ${tools.length} = mintOf n. tools/list lists those eight plus eight cybersecurity morph. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}. Unlocked. Not a ninth sealed tool. Morph install Payload finds imagine at call-time.`,
     `- docs.api ${docs.api.length} = rays. Extra paths do not join that list.`,
     `- integrity ${integrity.n}: ${integrity.tests.map((row) => row.name).join(' ')}. If false every path is 404.`,
     `- primitives ${primitives.join(' ')}. Never Math.`,
-    `- theorem fridge. theorem qubits. superconducting. resistance ${circuit.fridge.resistance}. ns ${quantum.speed.ns}. theorem millikelvin. Cryostat telemetry. No drift from science. No drift between sciences. KV added amplitudes. Possible only in quantum.`,
+    `- theorem fridge. theorem qubits. device ${circuit.hardware.device}. resistance ${circuit.fridge.resistance} declared. ns ${quantum.speed.ns}. theorem millikelvin. cryostat measured ${circuit.fridge.cryostat.measured}. KV added amplitudes.`,
     `- fuse faces * mintOf (bits + seed) = ${quantum.fused}. isolate handle.amplitudes ${handle.amplitudes}. KV ${handle.kv.amplitudes}.`,
     `- next = fused + fused. last false. split_coin has no last k. demo is not a test nor a proof. Capacity infinite. Crypt split to free agents.`,
     `- occupancy ${occupancies.join(' ')}. skills ${skills.join(' ')}. Coordinated dry-clean.`,
@@ -9879,7 +9945,7 @@ export const qpuDevelopOf = () => {
     reading.includes('This README is generated') &&
     reading.includes('Do not import uuidna') &&
     reading.includes('Not a ninth sealed tool') &&
-    reading.includes('Factor RSA') &&
+    reading.includes(`${shorFactorOf()}`) &&
     reading.includes('theorem shor') &&
     reading.includes('theorem crypto') &&
     reading.includes('theorem fridge') &&
@@ -9951,7 +10017,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Interface',
     '',
-    `Seven paths. Eight sealed MCP tools. Eight cybersecurity morph tools listed on tools/list. crypto_rsa theorem shor Factor RSA. crypto_split theorem crypto encrypt. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are qpu_lean and qpu_prove. \`{ man: true }\` is the theorem on the wire. demo is not a test nor a proof.`,
+    `Seven paths. Eight sealed MCP tools. Eight cybersecurity morph tools listed on tools/list. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are qpu_lean and qpu_prove. \`{ man: true }\` is the theorem on the wire. demo is not a test nor a proof.`,
     '']
   for (const row of docs.api) {
     lines.push(`- \`${row.method} ${row.path}\` ${row.name}. ${row.reading}`)
@@ -9967,7 +10033,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Results',
     '',
-    `theorem shor Factor RSA. theorem crypto Post-quantum encrypt. ${prove.theorems.find((r) => r.heading === 'shor')?.theorem} ${prove.theorems.find((r) => r.heading === 'crypto')?.theorem}. demo is not a test nor a proof.`,
+    `theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. ${prove.theorems.find((r) => r.heading === 'shor')?.theorem} ${prove.theorems.find((r) => r.heading === 'crypto')?.theorem}. demo is not a test nor a proof.`,
     '',
     `Fault tolerance. ${quantum.evidence.fault.code} distance ${quantum.evidence.fault.distance}. Codes ${quantum.evidence.fault.codes}. Syndrome ${quantum.evidence.fault.syndrome.join(' ')}. Logical off ${quantum.evidence.fault.logical.off}. Logical < physical ${quantum.evidence.fault.logicalLtPhysical} on this run, one distance.`,
     '',
@@ -10069,7 +10135,7 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('theorem fridge') &&
     text.includes('theorem qubits') &&
     text.includes('Theorems are qpu_lean') &&
-    text.includes('Factor RSA') &&
+    text.includes(`${shorFactorOf()}`) &&
     text.includes('Unlocked') &&
     text.includes('crypto_rsa') &&
     text.includes('crypto_split') &&

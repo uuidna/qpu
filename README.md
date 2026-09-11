@@ -16,36 +16,36 @@ Climb qpu_train then qpu_improve then qpu_compete then qpu_prove. Extras /storag
 
 ## Interface
 
-Seven paths. Eight sealed MCP tools. Eight cybersecurity morph tools listed on tools/list. crypto_rsa theorem shor Factor RSA. crypto_split theorem crypto encrypt. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are qpu_lean and qpu_prove. `{ man: true }` is the theorem on the wire. demo is not a test nor a proof.
+Seven paths. Eight sealed MCP tools. Eight cybersecurity morph tools listed on tools/list. crypto_rsa theorem shor Factor 91. crypto_split theorem crypto Split identity true. Secrecy false. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are qpu_lean and qpu_prove. `{ man: true }` is the theorem on the wire. demo is not a test nor a proof.
 
-- `GET /` qpu_quantum. theorem quantum. theorem shor. theorem crypto. Factor RSA. JSON-LD. No auth.
+- `GET /` qpu_quantum. theorem quantum. theorem shor. theorem crypto. Factor 91. JSON-LD. No auth.
 - `GET /quantum/processing/unit` qpu_lean. Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. src/quantum/processing/unit/index.lean. JSON-LD. No auth.
-- `GET /mcp` catalog. tools 8. cybersecurity theorem shor Factor RSA. theorem crypto encrypt. fourteen schemas. schema.org ItemList. JSON-LD. No auth.
+- `GET /mcp` catalog. tools 8. cybersecurity theorem shor Factor 91. theorem crypto Split identity true. Secrecy false. fourteen schemas. schema.org ItemList. JSON-LD. No auth.
 - `POST /mcp` tools/call. JSON-RPC tools/list tools/call qpu_prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.
 - `GET /cite` qpu_cite. MLA 8. when never. JSON-LD. No auth.
 - `GET /message` qpu_message. lanes = faces. hop involution. JSON-LD. No auth.
 - `POST /message` qpu_message. 202. hop involution. JSON-LD. No auth.
 
-- `qpu_quantum` theorem quantum. theorem shor. theorem crypto. Factor RSA.
-- `qpu_lean` theorem infinite. theorem distribute. theorem shor. Factor RSA.
+- `qpu_quantum` theorem quantum. theorem shor. theorem crypto. Factor 91.
+- `qpu_lean` theorem infinite. theorem distribute. theorem shor. Factor 91.
 - `qpu_cite` MLA 8. when never.
 - `qpu_train` theorem infinite. coins teams of rays.
 - `qpu_forge` Unlocked in memory. No lock.
 - `qpu_improve` next = fused + fused.
 - `qpu_compete` theorem next_fused. throughoutput per token.
-- `qpu_prove` theorem quantum. theorem shor. theorem crypto. Factor RSA.
+- `qpu_prove` theorem quantum. theorem shor. theorem crypto. Factor 91.
 - `crypto_catalog` theorem shor. theorem crypto.
-- `crypto_shor` theorem shor. Factor RSA.
-- `crypto_cmodexp` theorem shor. Factor RSA.
-- `crypto_iqft` theorem shor. Factor RSA.
-- `crypto_shots` theorem shor. Factor RSA.
-- `crypto_rsa` theorem shor. Factor RSA.
-- `crypto_split` theorem crypto. Post-quantum encrypt.
+- `crypto_shor` theorem shor. Factor 91.
+- `crypto_cmodexp` theorem shor. Factor 91.
+- `crypto_iqft` theorem shor. Factor 91.
+- `crypto_shots` theorem shor. Factor 91.
+- `crypto_rsa` theorem shor. Factor 91.
+- `crypto_split` theorem crypto. Split identity true. Secrecy false.
 - `crypto_verify` theorem shor. theorem crypto.
 
 ## Results
 
-theorem shor Factor RSA. theorem crypto Post-quantum encrypt. theorem shor : 3 * 5 = 15 ∧ 3 * 7 = 21 ∧ 3 * 11 = 33 ∧ 5 * 7 = 35 ∧ 3 * 13 = 39 ∧ 3 * 17 = 51 ∧ 5 * 11 = 55 ∧ 3 * 19 = 57 ∧ 5 * 13 = 65 ∧ 3 * 23 = 69 ∧ 7 * 11 = 77 ∧ 5 * 17 = 85 ∧ 3 * 29 = 87 ∧ 7 * 13 = 91 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩ theorem crypto : fused = faces * mintOf (vertices * hexbit + seed) := by rw [← cube]; exact quantum. demo is not a test nor a proof.
+theorem shor Factor 91. theorem crypto Split identity true. Secrecy false. theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩ theorem crypto : fused = faces * mintOf (vertices * hexbit + seed) := by rw [← cube]; exact quantum. demo is not a test nor a proof.
 
 Fault tolerance. bitflip distance 3. Codes 1. Syndrome cnot cnot toffoli. Logical off 0. Logical < physical true on this run, one distance.
 
@@ -53,7 +53,7 @@ CERN Open Data opendata.cern.ch. LHC running. Four CMS records. Coil, electronic
 
 ## Evidence
 
-Execution provenance. Provider qpu.uuidna.com. Device superconducting. Job qpu.uuidna.com/cmodexp/91/8. ns 0. Shots 8. Compiler native h cnot compiled x swap csdg cmodexp.
+Execution provenance. Provider qpu.uuidna.com. Device simulator. Job qpu.uuidna.com/cmodexp/91/8. ns 0. Shots 8. Compiler native h cnot compiled x swap csdg cmodexp.
 
 Device-specific noise. Channel xx. Resistance 0. Drift true.
 

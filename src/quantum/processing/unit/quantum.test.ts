@@ -1,6 +1,6 @@
-import { test } from 'node:test'
+import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker from './index.js'
+import worker, { shorFactorOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -304,7 +304,7 @@ test('circuit noise via mcp', async () => {
 test('circuit physical via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
   assert.equal(q.circuit.hardware.holds, true)
-  assert.equal(q.circuit.hardware.device, 'superconducting')
+  assert.equal(q.circuit.hardware.device, 'simulator')
   assert.equal(q.circuit.hardware.initialize, true)
   assert.equal(q.circuit.hardware.gates, true)
   assert.equal(q.circuit.hardware.interfere, true)
@@ -315,7 +315,7 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
   assert.equal(q.circuit.hardware.path.src, 'src/quantum/processing/unit/index.lean')
   assert.equal(q.circuit.hardware.path.holds, true)
-  assert.equal(q.circuit.fridge.kind, 'superconducting')
+  assert.equal(q.circuit.fridge.kind, 'simulator')
   assert.equal(q.circuit.fridge.qubits, 3)
   assert.equal(q.circuit.fridge.levels, 2)
   assert.equal(q.circuit.fridge.millikelvin, 10)
@@ -449,7 +449,7 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.docs.inline, true)
   assert.equal(json.only.holds, true)
   assert.equal(json.docs.documentation.includes('running quantum circuit'), true)
-  assert.equal(json.docs.documentation.includes('superconducting qubits'), true)
+  assert.equal(json.docs.documentation.includes('state-vector simulator'), true)
   assert.equal(json.docs.documentation.includes('Physical qubit initialize'), true)
   assert.equal(json.docs.documentation.includes('This host is a quantum computer'), true)
   assert.equal(json.docs.documentation.includes('theorem shor'), true)
@@ -458,7 +458,7 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.docs.documentation.includes('demo is not a test nor a proof'), true)
   assert.equal(json.circuit.hardware.holds, true)
   assert.equal(json.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
-  assert.equal(json.circuit.fridge.kind, 'superconducting')
+  assert.equal(json.circuit.fridge.kind, 'simulator')
   assert.equal(json.docs.documentation.includes('Resistance none'), true)
   assert.equal(json.circuit.drift.between, true)
   assert.equal(json.circuit.sciences.distinct, true)
@@ -561,7 +561,7 @@ test('start measure generate', async () => {
     '@type': string
     hasPart: { '@type': string; numberOfItems: number }
     prove: { ui: { experienced: boolean }; theorems: unknown[]; cern: { faces: number }; shor: { rsa: boolean; p: number; q: number; n: number; unlocked: boolean } }
-    cybersecurity: { listed: boolean; rsa: { kind: string; factored: boolean; p: number; q: number; modulus: number; unlocked: boolean }; encrypt: { kind: string; theorem: string; postquantum: boolean; holds: boolean }; tools: { name: string }[] }
+    cybersecurity: { listed: boolean; rsa: { kind: string; factored: boolean; p: number; q: number; modulus: number; unlocked: boolean }; encrypt: { kind: string; theorem: string; identity: boolean; holds: boolean }; tools: { name: string }[] }
     capacity: {
       infinite: boolean
       scaled: boolean
@@ -582,7 +582,7 @@ test('start measure generate', async () => {
   assert.equal(page.docs.inline, true)
   assert.equal(page.ui.prove, 'qpu_prove')
   assert.equal(page.docs.documentation.includes('JSON-LD'), true)
-  assert.equal(page.docs.documentation.includes('Factor RSA'), true)
+  assert.equal(page.docs.documentation.includes(shorFactorOf()), true)
   assert.equal(page.shor.rsa.kind, 'rsa')
   assert.equal(page.shor.rsa.factored, true)
   assert.equal(page.shor.rsa.p * page.shor.rsa.q, page.shor.n)
@@ -641,7 +641,7 @@ test('start measure generate', async () => {
   assert.equal(catalog.cybersecurity.rsa.unlocked, true)
   assert.equal(catalog.cybersecurity.encrypt.kind, 'encrypt')
   assert.equal(catalog.cybersecurity.encrypt.theorem, 'crypto')
-  assert.equal(catalog.cybersecurity.encrypt.postquantum, true)
+  assert.equal(catalog.cybersecurity.encrypt.identity, true)
   assert.equal(catalog.cybersecurity.encrypt.holds, true)
   assert.equal(catalog.cybersecurity.rsa.modulus, 91)
   assert.equal(catalog.cybersecurity.tools.some((row) => row.name === 'crypto_rsa'), true)

@@ -1,6 +1,6 @@
-import { test } from 'node:test'
+import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker from './index.js'
+import worker, { shorFactorOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -185,7 +185,7 @@ test('eight doors via mcp', async () => {
     assert.equal(man.holds, true)
     assert.equal(man.documentation.includes('NAME'), true)
     if (name === 'qpu_quantum' || name === 'qpu_lean' || name === 'qpu_prove') {
-      assert.equal(man.documentation.includes('Factor RSA'), true, name)
+      assert.equal(man.documentation.includes(shorFactorOf()), true, name)
     }
   }
 })
@@ -208,7 +208,7 @@ test('web mcp initialize, extras catalogs, and morph tools are callable', async 
   assert.equal(typeof discovered.instructions === 'string' && discovered.instructions.includes('Eight doors'), true)
   assert.equal(typeof discovered.instructions === 'string' && discovered.instructions.includes('Eight cybersecurity'), true)
   assert.equal(typeof discovered.instructions === 'string' && discovered.instructions.includes('crypto_rsa'), true)
-  assert.equal(typeof discovered.instructions === 'string' && discovered.instructions.includes('Factor RSA'), true)
+  assert.equal(typeof discovered.instructions === 'string' && discovered.instructions.includes(shorFactorOf()), true)
   const ping = await rpcOf('/mcp', 'ping')
   assert.deepEqual(ping, {})
 
@@ -382,7 +382,7 @@ test('production grade MCP — every tool listed, called, and usable', async (t)
     const catalog = (await page.json()) as {
       holds: boolean
       tools: { name: string }[]
-      cybersecurity: { listed: boolean; sealed: boolean; morph: boolean; rsa: { kind: string; factored: boolean; unlocked: boolean; modulus: number }; encrypt: { kind: string; theorem: string; postquantum: boolean; holds: boolean }; tools: { name: string }[] }
+      cybersecurity: { listed: boolean; sealed: boolean; morph: boolean; rsa: { kind: string; factored: boolean; unlocked: boolean; modulus: number }; encrypt: { kind: string; theorem: string; identity: boolean; holds: boolean }; tools: { name: string }[] }
       prove: { shor: { rsa: boolean; p: number; q: number; n: number; unlocked: boolean } }
     }
     assert.equal(catalog.holds, true)
@@ -395,7 +395,7 @@ test('production grade MCP — every tool listed, called, and usable', async (t)
     assert.equal(catalog.cybersecurity.rsa.unlocked, true)
     assert.equal(catalog.cybersecurity.encrypt.kind, 'encrypt')
     assert.equal(catalog.cybersecurity.encrypt.theorem, 'crypto')
-    assert.equal(catalog.cybersecurity.encrypt.postquantum, true)
+    assert.equal(catalog.cybersecurity.encrypt.identity, true)
     assert.equal(catalog.cybersecurity.encrypt.holds, true)
     assert.equal(catalog.cybersecurity.rsa.modulus, 91)
     assert.deepEqual(catalog.cybersecurity.tools.map((row) => row.name), [...crypto])
