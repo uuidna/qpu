@@ -907,7 +907,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -951,7 +951,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -995,7 +995,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -1039,7 +1039,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -1083,7 +1083,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
