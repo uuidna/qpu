@@ -131,7 +131,7 @@ test('paste in free AI chat', async (t) => {
       page.docs.api.map((a) => `${a.method} ${a.path}`),
       ['GET /', 'GET /quantum/processing/unit', 'GET /mcp', 'POST /mcp', 'GET /cite', 'GET /message', 'POST /message'],
     )
-    assert.deepEqual(page.speed.cover, ['next', 'Hz', 'ns', 'benchmark'])
+    assert.deepEqual(page.speed.cover, ['next', 'benchmark'])
     assert.equal(page.messaging.await, false)
     assert.equal(page.messaging.when, 'never')
     assert.equal(page.messaging.proxy, true)

@@ -1,47 +1,20 @@
 {
   "kind": "test-receipt",
-  "standard": "every test carries a computational receipt proving quantum computation; amplitude receipts and mint receipts are named apart",
-  "tests": 94,
-  "pass": 94,
+  "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
+  "tests": 93,
+  "pass": 93,
   "fail": 0,
   "dry": 0,
-  "circuit": 53,
+  "circuit": 52,
   "mintOnly": 11,
-  "receipt": "ec40a4eb62a2de7b",
-  "cracks": {
-    "readings": 12,
-    "measured": 12,
-    "named": 4,
-    "list": [
-      {
-        "kind": "temperature",
-        "name": "fridge.millikelvin",
-        "value": 10,
-        "why": "declared constant; this host has no thermometer"
-      },
-      {
-        "kind": "temperature",
-        "name": "cryostat.pulse",
-        "value": 4000,
-        "why": "declared constant; this host has no thermometer"
-      },
-      {
-        "kind": "temperature",
-        "name": "cryostat.plate",
-        "value": 100,
-        "why": "declared constant; this host has no thermometer"
-      },
-      {
-        "kind": "temperature",
-        "name": "cryostat.mixing",
-        "value": 10,
-        "why": "declared constant; this host has no thermometer"
-      }
-    ]
-  },
+  "receipt": "1990f73e177fb6fe",
+  "readings": "test-readings.json",
   "rows": [
     {
       "name": "API only json ui",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 32322,
       "kinds": {
         "x": 6842,
@@ -53,16 +26,33 @@
         "xx": 128
       },
       "receipt": "02eb7e97e1f5d843",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 520
+        }
+      ],
       "mint": {
-        "calls": 894497,
-        "chain": "db800634e4f6307c"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 879513,
+        "chain": "8e7b9b3c7509182d"
+      }
     },
     {
       "name": "storage writes are refused without the bearer, with a wrong bearer, and when no token is bound",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 14423,
       "kinds": {
         "x": 3053,
@@ -74,16 +64,33 @@
         "xx": 57
       },
       "receipt": "8caaab782b1399f0",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 232
+        }
+      ],
       "mint": {
-        "calls": 409427,
-        "chain": "1de5241744f933dc"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 393633,
+        "chain": "2b8b673ecce6f317"
+      }
     },
     {
       "name": "MCP storage_put and storage_del carry the request bearer; the in-process call without one is refused",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 7067,
       "kinds": {
         "x": 1497,
@@ -95,198 +102,229 @@
         "xx": 28
       },
       "receipt": "9a5d0704f7807ad6",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 114
+        }
+      ],
       "mint": {
-        "calls": 193086,
-        "chain": "0a45c9a153f96d77"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 193399,
+        "chain": "8fd0bcadfedc502c"
+      }
     },
     {
       "name": "cms_38",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "cms_63",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "cms_35",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "cms_62",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "tev_step",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "gev_step",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "beam_7",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "beam_8",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "beam_step",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "embargo_38",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "embargo_63",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "embargo_35",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "eight_vs_seven",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "four_records",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cern.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "cern faces via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 177525,
       "kinds": {
         "x": 36625,
@@ -298,16 +336,33 @@
         "xx": 430
       },
       "receipt": "3ad2b93ba75e5c5a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 2552
+        }
+      ],
       "mint": {
-        "calls": 4136925,
-        "chain": "2c513baaa971f0b9"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 4124947,
+        "chain": "19accead34285928"
+      }
     },
     {
       "name": "paper and zenodo cite",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 26123,
       "kinds": {
         "h": 8552,
@@ -319,68 +374,89 @@
         "xx": 103
       },
       "receipt": "1cff262f12d79338",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 420
+        }
+      ],
       "mint": {
-        "calls": 719558,
-        "chain": "501738250576efe7"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 703764,
+        "chain": "a55a46b1e31590c9"
+      }
     },
     {
       "name": "AI sees JSON unit not HTML",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "AI calls MCP instead of reading the tree",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "user gets cite holds and named doors",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "unnamed host is lost",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/cite.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "paste in free AI chat",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 44017,
       "kinds": {
         "x": 9311,
@@ -392,29 +468,47 @@
         "xx": 172
       },
       "receipt": "0cabe98247bbf838",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 706
+        }
+      ],
       "mint": {
-        "calls": 1194582,
-        "chain": "6f5631ee006890b0"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 1196096,
+        "chain": "3abfeb5879c9ed4f"
+      }
     },
     {
       "name": "2×7 coins = 1+6 coils = clay",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 15,
-        "chain": "50b74bd55f5052a7"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "e2c19804780bdffa"
+      }
     },
     {
       "name": "clay theorems sit on Lean rows — docs stay seven",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3476,
       "kinds": {
         "x": 736,
@@ -426,68 +520,89 @@
         "xx": 14
       },
       "receipt": "f975d7b88e8aa5bb",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 56
+        }
+      ],
       "mint": {
-        "calls": 112798,
-        "chain": "5b6ccc7cd9062c4e"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 96058,
+        "chain": "ec2f926e5412e5bc"
+      }
     },
     {
       "name": "two coins make a coil used in electronics — coins balance theory in practice",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 12,
-        "chain": "d0e63489119b7dda"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "8a252aa9f9d4b345"
+      }
     },
     {
       "name": "follow the coins in any practical application — theory plus practice balances the coins, every point reached",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 14,
-        "chain": "aaab6565cff039f4"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "bf3f6ba7894578bb"
+      }
     },
     {
       "name": "measure coil efficiency in clusters — unity when coil covers faces",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 30,
-        "chain": "51f35b8430a8a874"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "8ab719e657cec5bb"
+      }
     },
     {
       "name": "next is the double — coil times mintOf bits plus coins is fused plus fused, no last k",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 33,
-        "chain": "4de773ca0e331209"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "2c8bc69a36f71110"
+      }
     },
     {
       "name": "simulator fridge — resistance declared none, computations ns none",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3273,
       "kinds": {
         "h": 1264,
@@ -499,16 +614,33 @@
         "xx": 2
       },
       "receipt": "34b83b1ef1449cf0",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 40
+        }
+      ],
       "mint": {
-        "calls": 77737,
-        "chain": "30f7f0903edf07bd"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 61477,
+        "chain": "a535ca905bb84405"
+      }
     },
     {
       "name": "coil theorems sit on Lean rows and the fridge — docs stay seven",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3531,
       "kinds": {
         "x": 745,
@@ -520,35 +652,33 @@
         "xx": 13
       },
       "receipt": "e1e6529f936c49e4",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 56
+        }
+      ],
       "mint": {
-        "calls": 95323,
-        "chain": "791628f821fb3d89"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
-    },
-    {
-      "name": "cracks: every temperature figure is declared and named; unresolved speed readings are named, resolved ones are not",
-      "computations": 172,
-      "kinds": {
-        "h": 68,
-        "cnot": 64,
-        "x": 34,
-        "toffoli": 4,
-        "measure": 2
-      },
-      "receipt": "00f3a4a44cedf2c3",
-      "mint": {
-        "calls": 20298,
-        "chain": "7b1fd2e2b9e85d74"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 95000,
+        "chain": "24580c65f4bffdba"
+      }
     },
     {
       "name": "cybersecurity catalog holds — eight morph tools, not a ninth sealed tool",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 12556,
       "kinds": {
         "x": 2673,
@@ -560,16 +690,33 @@
         "xx": 56
       },
       "receipt": "cf46a8ef4d437780",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 207
+        }
+      ],
       "mint": {
-        "calls": 369566,
-        "chain": "af9cfeed26d149fd"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 352842,
+        "chain": "f0ba80ec6cd8bf81"
+      }
     },
     {
       "name": "quantum reading and GET expose factored RSA",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 4719,
       "kinds": {
         "x": 996,
@@ -581,16 +728,33 @@
         "xx": 18
       },
       "receipt": "834857dbadf63c3d",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 75
+        }
+      ],
       "mint": {
-        "calls": 128290,
-        "chain": "85b0251f3779e76a"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 128516,
+        "chain": "d5bb425fc0e9bd1e"
+      }
     },
     {
       "name": "cybersecurity tools morph at call time — each door holds",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 75957,
       "kinds": {
         "x": 16124,
@@ -602,42 +766,61 @@
         "xx": 320
       },
       "receipt": "4ed95cd8714bab57",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1237
+        }
+      ],
       "mint": {
-        "calls": 2100360,
-        "chain": "fb5b418f191d1fdb"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 2101108,
+        "chain": "fcd031becfd0b813"
+      }
     },
     {
       "name": "theorem crypto — crypt split fused across faces",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 407,
-        "chain": "32aef81b921b712c"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "e4a572e61ba38354"
+      }
     },
     {
       "name": "RAID cluster security is crypt",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 9,
-        "chain": "709747ba06af6983"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "c6c6013aff257bcb"
+      }
     },
     {
       "name": "train vm crypt and messaging theorem crypto",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 18435,
       "kinds": {
         "x": 3687,
@@ -649,29 +832,47 @@
         "xx": 12
       },
       "receipt": "7cb5e7a42af30c7e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 228
+        }
+      ],
       "mint": {
-        "calls": 343007,
-        "chain": "dbef01ced2622922"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 343210,
+        "chain": "13132b3aad7d53b7"
+      }
     },
     {
       "name": "ideas crypto ray equals fused split",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 246,
-        "chain": "d9c35b5272d04970"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "87cbecc8bb24fffd"
+      }
     },
     {
       "name": "crypto theorems sit on Lean rows — docs stay seven",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3445,
       "kinds": {
         "x": 728,
@@ -683,16 +884,33 @@
         "xx": 13
       },
       "receipt": "f6b83f3801389693",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 55
+        }
+      ],
       "mint": {
-        "calls": 93950,
-        "chain": "b3e013da47884963"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 93627,
+        "chain": "0781fb3d2ab85faf"
+      }
     },
     {
       "name": "Shor specifies N and a coprime base",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 31,
       "kinds": {
         "x": 8,
@@ -704,16 +922,33 @@
         "xx": 1
       },
       "receipt": "8a2e219fc08da1f3",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
       "mint": {
         "calls": 2210,
-        "chain": "7441110d7dd8dd3e"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "b0ce3cc50055ca42"
+      }
     },
     {
       "name": "Shor modular-exponentiation circuitry maps counting to a^x mod N",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 31,
       "kinds": {
         "x": 8,
@@ -725,16 +960,33 @@
         "xx": 1
       },
       "receipt": "8a2e219fc08da1f3",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
       "mint": {
         "calls": 2201,
-        "chain": "e5419bfb1e60fd3e"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "fd56aebf14608a42"
+      }
     },
     {
       "name": "Shor period-finding is inverse QFT",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 31,
       "kinds": {
         "x": 8,
@@ -746,16 +998,33 @@
         "xx": 1
       },
       "receipt": "8a2e219fc08da1f3",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
       "mint": {
         "calls": 2201,
-        "chain": "00c5af66075b1d3e"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "e9306d28bbb74a42"
+      }
     },
     {
       "name": "Shor repeats physical xx-noisy shots",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 31,
       "kinds": {
         "x": 8,
@@ -767,16 +1036,33 @@
         "xx": 1
       },
       "receipt": "8a2e219fc08da1f3",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
       "mint": {
         "calls": 2201,
-        "chain": "f16b2274c6e73d3e"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "a659a38b051a0a42"
+      }
     },
     {
       "name": "Shor post-processing factors multiply back to N",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 31,
       "kinds": {
         "x": 8,
@@ -788,16 +1074,33 @@
         "xx": 1
       },
       "receipt": "8a2e219fc08da1f3",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
       "mint": {
         "calls": 2201,
-        "chain": "6b0f57b3bd255d3e"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "a8523a508b48ca42"
+      }
     },
     {
       "name": "theorem shor — the kernel does not know the answer: period and factors are absent from the statement",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 263,
       "kinds": {
         "x": 58,
@@ -809,16 +1112,33 @@
         "xx": 2
       },
       "receipt": "2ff73468f269b87b",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 5
+        }
+      ],
       "mint": {
         "calls": 8172,
-        "chain": "1cbcbf2198d65bf7"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "3ae29cb2cde8ba33"
+      }
     },
     {
       "name": "purpose cybersecurity is fridge, Shor, crypt split, extras, and next",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3734,
       "kinds": {
         "x": 787,
@@ -830,16 +1150,33 @@
         "xx": 14
       },
       "receipt": "4d6444e70e81f286",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 59
+        }
+      ],
       "mint": {
-        "calls": 101854,
-        "chain": "f528740d7a03b24a"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 101577,
+        "chain": "5c9ca712df9bec6f"
+      }
     },
     {
       "name": "evidence is this-run provenance, calibration, QV-style heavy output, and cross-validation",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3734,
       "kinds": {
         "x": 787,
@@ -851,16 +1188,33 @@
         "xx": 14
       },
       "receipt": "4d6444e70e81f286",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 59
+        }
+      ],
       "mint": {
-        "calls": 101627,
-        "chain": "49a78cd4edd40274"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 101350,
+        "chain": "984db2225fa88b28"
+      }
     },
     {
       "name": "Shor is on the sequence — quantum then lean then prove",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 6837,
       "kinds": {
         "x": 1447,
@@ -872,16 +1226,33 @@
         "xx": 28
       },
       "receipt": "a05ca3251d5128ce",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 110
+        }
+      ],
       "mint": {
-        "calls": 188698,
-        "chain": "50e4ca4881c193c7"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 188556,
+        "chain": "6aff89a00bd0d82c"
+      }
     },
     {
       "name": "shadcn schema combinatorial genesis covers all known frameworks",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 5566,
       "kinds": {
         "h": 1982,
@@ -893,55 +1264,75 @@
         "xx": 13
       },
       "receipt": "d6303ef036f1c90e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 79
+        }
+      ],
       "mint": {
-        "calls": 145274,
-        "chain": "ba8b7f17316d397c"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 129014,
+        "chain": "7ff1ff5134234eac"
+      }
     },
     {
       "name": "measure hybrid storage speed and cost — kv faster costlier, r2 cheaper slower",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 23,
-        "chain": "402f320b88e19636"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 14,
+        "chain": "79a27596b636c87d"
+      }
     },
     {
       "name": "QPU hybrid storage hosts the Payload database — four collections, secrets never",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 374,
-        "chain": "3d871b99dcd72993"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "2714d204ecdf29d2"
+      }
     },
     {
       "name": "storage is native Alpine Linux — musl busybox overlayfs inodes, last link frees",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 494,
-        "chain": "7d9c46f3f90ad1e7"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "0be8a8e493f4e1a8"
+      }
     },
     {
       "name": "hybrid theorems sit on Lean cover — docs stay seven",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 495,
       "kinds": {
         "x": 108,
@@ -953,16 +1344,33 @@
         "xx": 3
       },
       "receipt": "d55fb90ab9b94563",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 9
+        }
+      ],
       "mint": {
         "calls": 14387,
-        "chain": "05c86ac2d91f9d4d"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "41289fcf5c0eace2"
+      }
     },
     {
       "name": "native Alpine inodes — referrer links, last unlink frees storage",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 18504,
       "kinds": {
         "x": 3915,
@@ -974,16 +1382,33 @@
         "xx": 72
       },
       "receipt": "82d88abf05a99710",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 297
+        }
+      ],
       "mint": {
-        "calls": 518686,
-        "chain": "523aee0ca4a01702"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 503079,
+        "chain": "c3e04eb7ce3e4cb3"
+      }
     },
     {
       "name": "interactive installer seats QPU, Payload MCP, and VitePress payload without a ninth sealed tool",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 6926,
       "kinds": {
         "x": 1471,
@@ -995,16 +1420,33 @@
         "xx": 29
       },
       "receipt": "edbd969b6d302838",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 113
+        }
+      ],
       "mint": {
-        "calls": 210008,
-        "chain": "43c56fd7f08266e7"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 193906,
+        "chain": "79d2cbb37a355b40"
+      }
     },
     {
       "name": "install select seats a combination in one call",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 985,
       "kinds": {
         "x": 209,
@@ -1016,16 +1458,33 @@
         "xx": 4
       },
       "receipt": "1914e3a3489194f6",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 16
+        }
+      ],
       "mint": {
-        "calls": 27908,
-        "chain": "00d848f2ed6372bd"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 27953,
+        "chain": "5ff57cf8e14a38e4"
+      }
     },
     {
       "name": "tools/list stays eight sealed tools; install and Payload finds morph at call time",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 2955,
       "kinds": {
         "x": 627,
@@ -1037,16 +1496,33 @@
         "xx": 12
       },
       "receipt": "008d8a1bda1b03cc",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 48
+        }
+      ],
       "mint": {
-        "calls": 81440,
-        "chain": "aab27d582d1ab3dd"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 81575,
+        "chain": "3d42978de22ce9ca"
+      }
     },
     {
       "name": "fusion carries Payload MCP and the installer from harmonic schemas",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 86,
       "kinds": {
         "h": 34,
@@ -1056,16 +1532,33 @@
         "measure": 1
       },
       "receipt": "6edd91c839b5ffd8",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
       "mint": {
         "calls": 2550,
-        "chain": "94aedfd0db444af8"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "chain": "6e7da1de3048863d"
+      }
     },
     {
       "name": "train dry-cleans occupancy — one pentagram, not a ninth tool",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 985,
       "kinds": {
         "x": 209,
@@ -1077,81 +1570,103 @@
         "xx": 4
       },
       "receipt": "1914e3a3489194f6",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 16
+        }
+      ],
       "mint": {
-        "calls": 27262,
-        "chain": "49ef947e2dc547c9"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 27307,
+        "chain": "023dd10bc0eb84b4"
+      }
     },
     {
       "name": "chat fetch is JSON quantum",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "chat calls tools/call",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "chat uses every sealed door",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "extras catalogs speak MCP JSON-RPC",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "no auth message proxy",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "live qpu.uuidna.com",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 784,
       "kinds": {
         "x": 167,
@@ -1163,16 +1678,33 @@
         "xx": 4
       },
       "receipt": "e7081a3ee62b9566",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 13
+        }
+      ],
       "mint": {
-        "calls": 39496,
-        "chain": "8554ac0a9616c04c"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 23125,
+        "chain": "89a8139e4168c801"
+      }
     },
     {
       "name": "eight doors via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 112511,
       "kinds": {
         "x": 23500,
@@ -1184,16 +1716,33 @@
         "xx": 353
       },
       "receipt": "b450ca94df68d7c7",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1709
+        }
+      ],
       "mint": {
-        "calls": 2836505,
-        "chain": "d2de2fd039243648"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 2823775,
+        "chain": "8b875a4ae9e82e61"
+      }
     },
     {
       "name": "web mcp initialize, extras catalogs, and morph tools are callable",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 175631,
       "kinds": {
         "x": 37200,
@@ -1205,107 +1754,131 @@
         "xx": 694
       },
       "receipt": "7659671e1fde828f",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 2833
+        }
+      ],
       "mint": {
-        "calls": 4768485,
-        "chain": "2df824d21afa210a"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 4775777,
+        "chain": "d9672d636b35da5b"
+      }
     },
     {
       "name": "CORS initialize ping and GET catalog",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "listed tools expose schema man and envelope",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "extras catalogs list eight and run every tool",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "storage RAID lifecycle via MCP",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "network lanes via MCP",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "server jobs via MCP",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "payload finds and installer via MCP",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 1,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
         "calls": 0,
         "chain": ""
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/mcp.test.js",
-      "nesting": 1,
-      "pass": true
+      }
     },
     {
       "name": "production grade MCP — every tool listed, called, and usable",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 367217,
       "kinds": {
         "x": 77451,
@@ -1317,16 +1890,33 @@
         "xx": 1363
       },
       "receipt": "938db1537777cf6e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 5818
+        }
+      ],
       "mint": {
-        "calls": 9741068,
-        "chain": "7108ce770500e40b"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 9754612,
+        "chain": "cd2c7e8c2f2db644"
+      }
     },
     {
       "name": "circuit holds via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3997,
       "kinds": {
         "x": 845,
@@ -1338,16 +1928,33 @@
         "xx": 16
       },
       "receipt": "42490e5c17dacd16",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 64
+        }
+      ],
       "mint": {
-        "calls": 126490,
-        "chain": "bc1d808dcd81f6a7"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 110253,
+        "chain": "3f2fcd012f69dbb6"
+      }
     },
     {
       "name": "circuit vm browser via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1359,16 +1966,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "877cbc58f709b090"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "398ee8b3bbd7410b"
+      }
     },
     {
       "name": "circuit primitives via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1380,16 +2004,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "634ddaaf8ea50b3f"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "450bc403981edd46"
+      }
     },
     {
       "name": "circuit qubits via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1401,16 +2042,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "41d00b5f01d78f28"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "476adecf469a0b1b"
+      }
     },
     {
       "name": "circuit dim via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1422,16 +2080,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "d21e984879f53817"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "9628ee9ce2091456"
+      }
     },
     {
       "name": "circuit levels via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1443,16 +2118,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "6e99e40160684780"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "7a8ac27437db1dab"
+      }
     },
     {
       "name": "circuit gates via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1464,16 +2156,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "beb2984394b318af"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "f5bfbc424513e466"
+      }
     },
     {
       "name": "circuit gates index via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1485,16 +2194,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "427cf158cfaece98"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "0f5db54b77aa7dbb"
+      }
     },
     {
       "name": "circuit measurement via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1506,16 +2232,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "7fe066c1c02db007"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "0faf61b209005b76"
+      }
     },
     {
       "name": "circuit measurement support via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1527,16 +2270,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "ffa65cee5b59b270"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "a5acbbc55df21acb"
+      }
     },
     {
       "name": "circuit noise via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1548,16 +2308,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "b51e370b95e2c31f"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "e2d92bdf305f8106"
+      }
     },
     {
       "name": "circuit physical via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 3966,
       "kinds": {
         "x": 837,
@@ -1569,16 +2346,33 @@
         "xx": 15
       },
       "receipt": "97e4c21fc4f4a70e",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 63
+        }
+      ],
       "mint": {
-        "calls": 107642,
-        "chain": "aaa187f9485e7788"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 107822,
+        "chain": "246da0adf19c68db"
+      }
     },
     {
       "name": "circuit lean via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 36838,
       "kinds": {
         "x": 7482,
@@ -1590,16 +2384,33 @@
         "xx": 56
       },
       "receipt": "703c190cc3ece271",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 492
+        }
+      ],
       "mint": {
-        "calls": 771070,
-        "chain": "bbac246be8ff4302"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 771427,
+        "chain": "216dec7fa440fc38"
+      }
     },
     {
       "name": "circuit ui via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 11958,
       "kinds": {
         "x": 2527,
@@ -1611,16 +2422,33 @@
         "xx": 46
       },
       "receipt": "4c52b5af33e57b26",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 191
+        }
+      ],
       "mint": {
-        "calls": 323508,
-        "chain": "fa78d7b2094eb20c"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 323588,
+        "chain": "620268f408f01693"
+      }
     },
     {
       "name": "start measure generate",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 17925,
       "kinds": {
         "x": 3790,
@@ -1632,16 +2460,33 @@
         "xx": 70
       },
       "receipt": "501bf7ba1c8d310b",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 287
+        }
+      ],
       "mint": {
-        "calls": 487670,
-        "chain": "ac20916ff6e3fa2e"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 488020,
+        "chain": "8afaa1c2ddd3de26"
+      }
     },
     {
       "name": "raid starts cheapest and covers all",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 34983,
       "kinds": {
         "x": 7403,
@@ -1653,16 +2498,33 @@
         "xx": 137
       },
       "receipt": "e6905c154962e138",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 562
+        }
+      ],
       "mint": {
-        "calls": 967935,
-        "chain": "c3a85db2dd8906cf"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 953031,
+        "chain": "29bd1486b5f112a6"
+      }
     },
     {
       "name": "sandbox via mcp",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
       "computations": 66764,
       "kinds": {
         "x": 14067,
@@ -1674,13 +2536,27 @@
         "xx": 244
       },
       "receipt": "5b979226c3526910",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1053
+        }
+      ],
       "mint": {
-        "calls": 1777247,
-        "chain": "feedb5ce5448315f"
-      },
-      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true
+        "calls": 1763668,
+        "chain": "98de677eb6701e5f"
+      }
     }
   ]
 }

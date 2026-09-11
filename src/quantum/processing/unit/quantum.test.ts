@@ -511,7 +511,7 @@ test('start measure generate', async () => {
     holds: boolean
     fused: number
     next: number
-    speed: { cover: string[]; ns?: number; holds: boolean; next: number }
+    speed: { cover: string[]; holds: boolean; next: number }
     ui: { experienced: boolean }
     unlocked?: boolean
     lock?: boolean
@@ -588,7 +588,7 @@ test('start measure generate', async () => {
   assert.equal(page.shor.rsa.p * page.shor.rsa.q, page.shor.n)
   assert.equal(page.shor.n, 91)
   assert.equal(page.shor.unlocked, true)
-  assert.deepEqual(page.speed.cover, ['next', 'Hz', 'ns', 'benchmark'])
+  assert.deepEqual(page.speed.cover, ['next', 'benchmark'])
   assert.equal(page.capacity.holds, true)
   assert.equal(page.capacity.next, page.capacity.fused + page.capacity.fused)
   assert.equal(page.capacity.crypt.split, 14)
@@ -666,5 +666,4 @@ test('start measure generate', async () => {
   assert.equal(quantum.next, quantum.fused + quantum.fused)
   assert.equal(quantum.speed.holds, true)
   assert.equal(quantum.speed.next, quantum.next)
-  assert.equal((quantum.speed.ns ?? 0) >= 0, true)
 })

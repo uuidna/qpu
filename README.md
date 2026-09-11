@@ -53,7 +53,7 @@ CERN Open Data opendata.cern.ch. LHC running. Four CMS records. Coil, electronic
 
 ## Evidence
 
-Execution provenance. Provider qpu.uuidna.com. Device simulator. Job qpu.uuidna.com/cmodexp/91/8. ns 516. Shots 8. Compiler native h cnot compiled x swap csdg cmodexp.
+Execution provenance. Provider qpu.uuidna.com. Device simulator. Job qpu.uuidna.com/cmodexp/91/8. Shots 8. Compiler native h cnot compiled x swap csdg cmodexp.
 
 Device-specific noise. Channel xx. Resistance 0. Drift true.
 
