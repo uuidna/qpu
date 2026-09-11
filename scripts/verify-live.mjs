@@ -3,6 +3,7 @@
 // The unit is deterministic (no clock, no random), so GET /, /quantum/processing/unit and /mcp must equal
 // JSON.stringify of the same constructors in dist. Polls while Cloudflare propagates; exits 1 with the first
 // differing path if the host never matches. Usage: node scripts/verify-live.mjs https://qpu.uuidna.com
+// VERIFY_ATTEMPTS sets the poll count (5 s apart); CI uses 60 to cover Cloudflare's own build after a push.
 import { qpuLeanOf, qpuMcpOf, qpuQuantumOf } from '../dist/quantum/processing/unit/index.js'
 
 const origin = (process.argv[2] ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
@@ -11,7 +12,7 @@ const pages = [
   ['/quantum/processing/unit', () => qpuLeanOf()],
   ['/mcp', () => qpuMcpOf()],
 ]
-const attempts = 24
+const attempts = Number(process.env.VERIFY_ATTEMPTS ?? 24) || 24
 const waitMs = 5000
 
 const firstDifference = (a, b, path = '$') => {

@@ -1,7 +1,8 @@
 name: ci
 
 # One job, one checkout, one install: the gate (Lean kernel + receipted suite), and — when called with deploy — the
-# deploy and its verification in the same job, so main never spins a second runner to redo what this one just did.
+# verification of the deploy in the same job, so main never spins a second runner to redo what this one just did.
+# (Cloudflare's Git integration is what deploys; this job proves the host serves the bytes it built.)
 # The Lean toolchain is cached on the pin in lean-toolchain; elan runs only on a miss.
 
 on:
@@ -62,8 +63,13 @@ jobs:
             echo "::notice::gate PASSED but the worker was not deployed — CLOUDFLARE_API_TOKEN is not set"
             echo "deployed=false" >> "$GITHUB_OUTPUT"
           fi
-      - name: Verify the deploy — the host serves the bytes this build makes, then the live suite against it
-        if: ${{ inputs.deploy && steps.deploy.outputs.deployed == 'true' }}
+      # Cloudflare's Git integration deploys qpu.uuidna.com on its own within about a minute of a push to main; the
+      # wrangler step above is a no-op until a token is set. So the verification does not wait on that step: it polls
+      # until the host serves, byte for byte, the documents this build makes, then runs the live suite against it.
+      - name: Verify the host serves this build — bytes equal, then the live suite against it
+        if: ${{ inputs.deploy }}
+        env:
+          VERIFY_ATTEMPTS: '60'
         run: |
           node scripts/verify-live.mjs https://qpu.uuidna.com
           QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js
