@@ -150,12 +150,12 @@ const formulaOf = (formula: string): boolean => formula.includes('\\') && !formu
 const manSchema = {
   type: 'object',
   properties: {
-    man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' }}} as const
+    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' }}} as const
 
 const liveSchema = {
   type: 'object',
   properties: {
-    man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
     live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
     sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' }}} as const
 
@@ -4422,7 +4422,7 @@ const qpuSubRpcOf = async (
       id: body.id ?? null,
       result: {
         resultType: 'complete' as const,
-        tools: tools.map(({ name, description, inputSchema, man }) => qpuMcpToolShapeOf(name, description, inputSchema, { man }))}}
+        tools: tools.map(({ name, description, inputSchema }) => qpuMcpToolShapeOf(name, description, inputSchema))}}
   }
   if (body.method === 'tools/call') {
     const name = body.params?.name ?? ''
@@ -5406,7 +5406,7 @@ const sandboxOps = [...sandboxCore, 'unlocked', ...sandboxHost] as const
 const openSchema = {
   type: 'object',
   properties: {
-    man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
     method: { type: 'string' },
     path: { type: 'string' },
     name: { type: 'string' },
@@ -9838,20 +9838,20 @@ export const qpuToolsOf = () => {
   const proveSchema = {
     type: 'object',
     properties: {
-      man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+      man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
       live: { type: 'boolean', description: '{ live: true } sequence then prove. fetch Request Response.' },
       sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' }}} as const
   const competeSchema = {
     type: 'object',
     properties: {
-      man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+      man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
       live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
       sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' },
       team: { type: 'string', description: 'read or call. Omit for both teams.' }}} as const
   const forgeSchema = {
     type: 'object',
     properties: {
-      man: { type: 'boolean', description: 'Return the man page. Read man from tools/list, then call without man.' },
+      man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
       name: { type: 'string', description: 'Tool name to forge. Omit to inspect the in-memory sandbox.' },
       team: { type: 'string', description: 'read or call.' },
       ray: { type: 'number', description: 'Agent ray 0..6.' },
@@ -9942,10 +9942,10 @@ export const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
 export const qpuMcpToolsListOf = () => {
   const schemas = qpuOutputSchemasOf()
   const schemaOf = (name: string) => schemas[name] ?? minimalOutputSchema
-  const sealed = qpuToolsOf().map(({ name, description, inputSchema, man }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { man, sealed: true as const, morph: false as const, outputSchema: schemaOf(name) }))
-  const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema, man }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { man, sealed: false as const, morph: true as const, outputSchema: schemaOf(name) }))
+  const sealed = qpuToolsOf().map(({ name, description, inputSchema }) =>
+    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: true as const, morph: false as const, outputSchema: schemaOf(name) }))
+  const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema }) =>
+    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: false as const, morph: true as const, outputSchema: schemaOf(name) }))
   return [...sealed, ...cybersecurity]
 }
 

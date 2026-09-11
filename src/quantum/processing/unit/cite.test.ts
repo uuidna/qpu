@@ -189,7 +189,7 @@ test('paste in free AI chat', async (t) => {
     ])
     assert.equal(names.includes('crypto_catalog'), true)
     assert.equal(names.includes('crypto_rsa'), true)
-    assert.equal(catalog.result.tools[0]?.man.kind, 'man')
+    assert.equal(catalog.result.tools[0]?.man, undefined)
     assert.equal(callShown.holds, true)
     assert.equal(callShown.docs, undefined)
     assert.equal(proveShown.holds, true)

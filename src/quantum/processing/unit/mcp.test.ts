@@ -43,7 +43,7 @@ test('eight doors via mcp', async () => {
   assert.equal(names.length, 16)
   assert.deepEqual(names.slice(0, 8), ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'])
   assert.deepEqual(names.slice(8), ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'])
-  assert.equal(catalog.result.tools.every((t) => t.man.kind === 'man' && t.man.name === t.name), true)
+  assert.equal(catalog.result.tools.every((t) => t.man === undefined), true) // tools/list stays lean; man is one call away
   const crypto = catalog.result.tools.slice(8)
   assert.equal(crypto.length, 8)
   assert.deepEqual(crypto.map((t) => t.name), ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'])
@@ -227,7 +227,7 @@ test('web mcp initialize, extras catalogs, and morph tools are callable', async 
   const listed = await rpcOf('/mcp', 'tools/list')
   assert.deepEqual(listed.tools?.map((t) => t.name), [...sealed, ...crypto])
   assert.equal(listed.tools?.length, 16)
-  assert.equal(listed.tools?.every((t) => t.man?.holds === true), true)
+  assert.equal(listed.tools?.every((t) => t.man === undefined), true)
 
   for (const [path, names] of [
     ['/storage', storage],
@@ -414,7 +414,7 @@ test('production grade MCP — every tool listed, called, and usable', async (t)
     const listed = await rpcOf('/mcp', 'tools/list')
     const names = listed.tools?.map((row) => row.name) ?? []
     assert.deepEqual(names, [...sealed, ...crypto])
-    assert.equal(listed.tools?.every((row) => row.man?.holds === true), true)
+    assert.equal(listed.tools?.every((row) => row.man === undefined), true)
     for (const row of listed.tools ?? []) {
       const shape = row as { name: string; inputSchema?: { type?: string }; input_schema?: unknown; parameters?: unknown; function?: unknown }
       assert.equal(shape.inputSchema?.type, 'object', row.name)
