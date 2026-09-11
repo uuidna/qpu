@@ -10,7 +10,11 @@ import { join } from 'node:path'
 import { test as nodeTest, type TestContext, type TestOptions } from 'node:test'
 import { qpuMintReceiptOf, qpuReceiptFoldOf, qpuReceiptLedgerOf } from './index.js'
 
-export const RECEIPTS_FILE = 'test-receipts.jsonl'
+/** One receipts file PER RUN, named by the run: a test worker's parent is the `node --test` process the reporter runs in,
+ * so workers append to the reporter's pid and the reporter reads its own. Two suites in one tree no longer share a file,
+ * which is how a concurrent run once erased another's rows and failed honest tests as "computed nothing". */
+export const receiptsFileOf = (run: number): string => `test-receipts.${run}.jsonl`
+export const RECEIPTS_FILE = receiptsFileOf(process.ppid)
 export type Temperature = { measured: true; millikelvin: number; source: 'QPU_TEMPERATURE_MILLIKELVIN' } | { measured: false; why: string }
 export type TestReceipt = {
   name: string

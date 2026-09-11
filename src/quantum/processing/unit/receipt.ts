@@ -12,13 +12,16 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { qpuFoldOf } from './index.js'
-import { RECEIPTS_FILE, type TestReceipt } from './receipted.js'
+import { receiptsFileOf, type TestReceipt } from './receipted.js'
 
 interface TestEvent { type: string; data: { name?: string; file?: string; nesting?: number; details?: { error?: { message?: string } } } }
 interface Row { name: string; file: string; nesting: number; pass: boolean; computations: number; kinds: Record<string, number>; dims: Record<string, number>; dim: string; qubits: number; receipt: string; states: TestReceipt['states']; mint: { calls: number; chain: string } }
 
+/** This run's receipts: the file workers wrote under this process's pid, or, when tests ran in this very process
+ * (--test-isolation=none), the one written under its parent. Never another run's. */
 const receiptsOf = (): Map<string, TestReceipt> => {
-  const path = join(process.cwd(), RECEIPTS_FILE)
+  const own = join(process.cwd(), receiptsFileOf(process.pid))
+  const path = existsSync(own) ? own : join(process.cwd(), receiptsFileOf(process.ppid))
   const map = new Map<string, TestReceipt>()
   if (!existsSync(path)) return map
   for (const line of readFileSync(path, 'utf8').split('\n')) {

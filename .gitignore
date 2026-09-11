@@ -6,5 +6,5 @@ dist/
 .vitepress/
 *.olean
 *.ilean
-test-receipts.jsonl
+test-receipts.*.jsonl
 test-readings.json
