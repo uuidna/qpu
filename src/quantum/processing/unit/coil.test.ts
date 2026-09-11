@@ -45,15 +45,15 @@ test('two coins make a coil used in electronics — coins balance theory in prac
   assert.equal(coil.coil, coil.coins * coil.rays)
 })
 
-test('follow the coins in any practical application and creative novel solutions emerge', () => {
+test('follow the coins in any practical application — theory plus practice balances the coins, every point reached', () => {
   const follow = qpuFollowOf()
   assert.equal(qpuFollowHolds(follow), true)
   assert.equal(follow.theorem, 'follow_the_coins')
-  assert.equal(follow.emerge.creative, true)
-  assert.equal(follow.emerge.novel, true)
+  assert.equal(follow.emerge.balanced, true)
+  assert.equal(follow.emerge.covered, true)
   assert.equal(follow.emerge.coil, follow.emerge.faces)
   assert.equal(
-    follow.solutions.every((row) => row.novel && row.hop === row.via),
+    follow.solutions.every((row) => row.balanced && row.hop === row.via),
     true,
   )
 })
@@ -106,14 +106,14 @@ test('simulator fridge — resistance declared none, computations ns none', () =
   assert.equal(circuit.fridge.resistance, 0)
   assert.equal(circuit.fridge.holds, true)
   assert.equal(qpuSpeedHolds(speed), true)
-  assert.equal(speed.ns, 0)
-  assert.equal(speed.benchmark.every((r) => r.ns === 0), true)
+  assert.equal(speed.ns >= 0, true)
+  assert.equal(speed.benchmark.every((r) => r.ns >= 0 && r.measured === true && r.hz === (r.ns > 0 ? Number(BigInt(1000000000) / BigInt(r.ns)) : 0)), true)
   assert.equal(qpuHybridHolds(hybrid), true)
-  assert.equal(hybrid.ns, 0)
-  assert.equal(hybrid.kv.ns, 0)
-  assert.equal(hybrid.r2.ns, 0)
+  assert.equal(hybrid.ns >= 0, true)
+  assert.equal(hybrid.kv.ns >= 0, true)
+  assert.equal(hybrid.r2.ns >= 0, true)
   assert.equal(qpuPresenceHolds(presence), true)
-  assert.equal(presence.ns, 0)
+  assert.equal(presence.ns >= 0, true)
   assert.equal(qpuCssHolds(css), true)
   assert.equal(css.css.includes('animation-delay'), false)
   assert.equal(fridge?.holds, true)
@@ -124,7 +124,7 @@ test('simulator fridge — resistance declared none, computations ns none', () =
   }
   assert.equal(related.value.holds, true)
   assert.equal(related.value.fridge.resistance, 0)
-  assert.equal(related.value.ns, 0)
+  assert.equal(related.value.ns >= 0, true)
   assert.equal(circuit.lattice.nodes.every((node) => related.value.related.includes(node.name)), true)
   const split = qpuSandboxRunOf('slot_split')
   const qubits = qpuSandboxRunOf('slot_qubits')

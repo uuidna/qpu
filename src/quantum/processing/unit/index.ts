@@ -118,10 +118,36 @@ const tenOf = (k: number): number => {
   return x
 }
 const nsPerSecond = tenOf(n * n)
-const timeNsOf = (fn: () => number): { ns: number; value: number } => ({
-  ns: n - n,
-  value: fn()})
-const hzOf = (ns: number): number => (ns > seed ? Number(BigInt(nsPerSecond) / BigInt(ns)) : nsPerSecond)
+/** MEASURED, NEVER TYPED (a peer measured 2026-09-11 that every benchmark row claimed ns 0 at 1 GHz). The platform
+ * clock in integer nanoseconds: performance.now() is a float of milliseconds, folded to ns through its decimal text,
+ * so no Math. Absent clock reads 0. */
+const nowNsOf = (): bigint => {
+  if (typeof performance !== 'object' || performance === null || typeof performance.now !== 'function') return BigInt(n - n)
+  return BigInt(performance.now().toFixed(mintOf(coins) + coins).replace('.', ''))
+}
+/** One reading: fn batched mintOf(ten) times, ns per call. `resolved` false means the clock did not advance across the
+ * batch — on Workers the clock is frozen during CPU work, so a live 0 is the clock's word, not a speed claim. */
+type QpuReading = { ns: number; value: number; measured: true; resolved: boolean }
+/** ONE READING PER PROCESS. Two live measurements never agree to the nanosecond, and the unit compares its own
+ * figures across constructors; so each named reading is taken once, at first use, and returned unchanged after —
+ * measured, and recomputable within this boot. qpuReadingsOf() lists them. */
+const READINGS = new Map<string, QpuReading>()
+const timeNsOf = (key: string, fn: () => number): QpuReading => {
+  const prior = READINGS.get(key)
+  if (prior !== undefined) return prior
+  const runs = mintOf(ten)
+  const before = nowNsOf()
+  let value = fn()
+  for (let i = seed; i < runs; i++) value = fn()
+  const after = nowNsOf()
+  const ns = Number((after - before) / BigInt(runs))
+  const reading: QpuReading = { ns, value, measured: true as const, resolved: ns > n - n }
+  READINGS.set(key, reading)
+  return reading
+}
+export const qpuReadingsOf = (): readonly (QpuReading & { key: string })[] => [...READINGS].map(([key, r]) => ({ key, ...r }))
+/** Hz from a reading: an unresolved reading claims no rate. */
+const hzOf = (ns: number): number => (ns > n - n ? Number(BigInt(nsPerSecond) / BigInt(ns)) : n - n)
 const byDecideOf = (theorem: string): boolean => theorem.includes('by decide') || theorem.includes('native_decide')
 const formulaOf = (formula: string): boolean => formula.includes('\\') && !formula.includes('operatorname')
 const manSchema = {
@@ -520,30 +546,31 @@ export const qpuFollowOf = () => {
     const app = i % points
     const hop = (app + coins) % points
     const via = (app + coil.theory + coil.practice) % points
-    const novel = hop === via
+    // hop ≡ via restates theory + practice = coins on this application; it is a balance, never a novelty claim
+    const balanced = hop === via
     return {
       name,
       app,
       hop,
       via,
-      novel,
+      balanced,
       occupancy: occupancies[hop]!,
       skill: skills[hop]!,
-      holds: novel && hop === (app + coil.balance) % points,
+      holds: balanced && hop === (app + coil.balance) % points,
   }
   })
   const seen: number[] = []
   for (const row of solutions) if (!seen.includes(row.hop)) seen.push(row.hop)
-  const creative = solutions.every((row) => row.novel && row.holds)
-  const novel = seen.length === points
+  const balanced = solutions.every((row) => row.balanced && row.holds)
+  const covered = seen.length === points
   const emerge = {
     kind: 'emerge' as const,
     theorem: 'emerge' as const,
-    creative,
-    novel,
+    balanced,
+    covered,
     coil: coil.coil,
     faces: coil.faces,
-    holds: creative && novel && coil.coil === coil.faces && coil.theory === coil.practice,
+    holds: balanced && covered && coil.coil === coil.faces && coil.theory === coil.practice,
   }
   const holds =
     qpuCoilHolds(coil) &&
@@ -576,10 +603,10 @@ export const qpuFollowHolds = (f = qpuFollowOf()): boolean =>
   f.theory === f.practice &&
   f.theory + f.practice === coins &&
   f.emerge.kind === 'emerge' &&
-  f.emerge.creative === true &&
-  f.emerge.novel === true &&
+  f.emerge.balanced === true &&
+  f.emerge.covered === true &&
   f.emerge.coil === f.emerge.faces &&
-  f.solutions.every((row) => row.novel && row.hop === (row.app + coins) % (n + coins))
+  f.solutions.every((row) => row.balanced && row.hop === (row.app + coins) % (n + coins))
 
 /** Coordinated dry-clean: two teams, occupancy pentagram, genesis coins. No extra sealed tool. */
 export const qpuDryOf = (genesis = qpuGenesisOf()) => {
@@ -896,9 +923,9 @@ export const qpuHybridOf = () => {
     cost: seed}
   const speed = kv.speed + r2.speed
   const cost = kv.cost + r2.cost
-  const kvTimed = timeNsOf(() => kv.speed)
-  const r2Timed = timeNsOf(() => r2.speed)
-  const timed = timeNsOf(() => kv.speed + r2.speed)
+  const kvTimed = timeNsOf('hybrid:kv', () => kv.speed)
+  const r2Timed = timeNsOf('hybrid:r2', () => r2.speed)
+  const timed = timeNsOf('hybrid', () => kv.speed + r2.speed)
   const holds =
     storageBindings.STORAGE === 'kv' &&
     storageBindings.BLOBS === 'r2' &&
@@ -953,9 +980,9 @@ export const qpuHybridHolds = (h = qpuHybridOf()): boolean =>
   h.measure.cost === h.cost &&
   h.kv.speed > h.r2.speed &&
   h.kv.cost > h.r2.cost &&
-  h.ns === n - n &&
-  h.kv.ns === n - n &&
-  h.r2.ns === n - n &&
+  h.ns >= n - n &&
+  h.kv.ns >= n - n &&
+  h.r2.ns >= n - n &&
   h.hz === hzOf(h.ns)
 
 /** QPU hybrid storage hosts the Payload database. Four collections. Secrets never. */
@@ -2667,8 +2694,8 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   qpuElectronicsHolds(c.fridge.electronics) &&
   qpuBalanceHolds() &&
   qpuFollowHolds(c.fridge.follow) &&
-  c.fridge.follow.emerge.creative === true &&
-  c.fridge.follow.emerge.novel === true &&
+  c.fridge.follow.emerge.balanced === true &&
+  c.fridge.follow.emerge.covered === true &&
   c.fridge.follow.emerge.holds === true &&
   qpuCoilEfficiencyHolds(c.fridge.efficiency) &&
   c.fridge.efficiency.unity === seed &&
@@ -3053,10 +3080,10 @@ export const qpuSpeedOf = () => {
   const next = capacity.fused + capacity.fused
   const si = { second: mintOf(n - n), ns: nsPerSecond, hz: mintOf(n - n) }
   const rungOf = (name: string, k: number, fn: () => number, amplitudes: number) => {
-    const timed = timeNsOf(fn)
+    const timed = timeNsOf(`speed:${name}`, fn)
     const hz = hzOf(timed.ns)
-    const holds = timed.value === amplitudes && hz === hzOf(timed.ns)
-    return { name, n: k, ns: timed.ns, hz, amplitudes,holds }
+    const holds = timed.value === amplitudes && hz === hzOf(timed.ns) && timed.ns >= n - n
+    return { name, n: k, ns: timed.ns, hz, measured: timed.measured, resolved: timed.resolved, amplitudes, holds }
   }
   const benchmark = [
     rungOf('mint', n + seed, () => mintOf(n + seed), mintOf(n) + mintOf(n)),
@@ -3080,7 +3107,7 @@ export const qpuSpeedOf = () => {
     si.second === mintOf(n - n) &&
     si.hz === mintOf(n - n) &&
     benchmark.length === mintOf(n) &&
-    benchmark.every((r) => r.holds === true && r.ns === n - n && r.hz === hzOf(r.ns))
+    benchmark.every((r) => r.holds === true && r.ns >= n - n && r.measured === true && r.hz === hzOf(r.ns))
   return {
     kind: 'speed' as const,
     next,
@@ -3101,10 +3128,36 @@ export const qpuSpeedHolds = (s = qpuSpeedOf()): boolean =>
   s.cover.length === mintOf(coins) &&
   s.cover.join(' ') === 'next Hz ns benchmark' &&
   s.si.ns === nsPerSecond &&
-  s.ns === n - n &&
+  s.ns >= n - n &&
   s.hz === hzOf(s.ns) &&
   s.benchmark.length === mintOf(n) &&
-  s.benchmark.every((r) => r.ns === n - n && r.hz === hzOf(r.ns))
+  s.benchmark.every((r) => r.ns >= n - n && r.measured === true && r.hz === hzOf(r.ns))
+
+/** MONITOR SPEED AND TEMPERATURE TO FIND CRACKS (the captain, 2026-09-11). A crack is a figure the unit publishes
+ * that nothing here measured: a speed reading the clock did not resolve (on Workers the clock is frozen during CPU
+ * work, so every live reading is a crack until measured elsewhere), and every temperature figure, because this
+ * host has no thermometer — the fridge's millikelvin are declared constants. The list is computed, never typed. */
+export type QpuCrack = { kind: 'speed' | 'temperature'; name: string; value: number; why: string }
+export const qpuCracksOf = (): { kind: 'cracks'; cracks: QpuCrack[]; readings: number; measured: number; holds: boolean } => {
+  qpuSpeedOf()
+  qpuHybridOf()
+  qpuPresenceOf()
+  const readings = qpuReadingsOf()
+  const cracks: QpuCrack[] = []
+  for (const r of readings) {
+    if (!r.resolved) cracks.push({ kind: 'speed', name: r.key, value: r.ns, why: 'clock did not advance across the batch; no rate is claimed' })
+  }
+  const fridge = qpuCircuitOf().fridge
+  if (fridge.cryostat.measured === false) {
+    cracks.push({ kind: 'temperature', name: 'fridge.millikelvin', value: fridge.millikelvin, why: 'declared constant; this host has no thermometer' })
+    for (const stage of fridge.cryostat.stages) {
+      cracks.push({ kind: 'temperature', name: `cryostat.${stage.name}`, value: stage.millikelvin, why: 'declared constant; this host has no thermometer' })
+    }
+  }
+  const measured = readings.filter((r) => r.resolved).length
+  const holds = cracks.every((c) => (c.kind === 'temperature') === (c.why.includes('thermometer'))) && readings.length > n - n
+  return { kind: 'cracks' as const, cracks, readings: readings.length, measured, holds }
+}
 
 export type QpuLeanRow = {
   heading: string
@@ -3353,7 +3406,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem emerge : coil = faces ∧ theory = practice := ⟨two_coins_make_a_coil, rfl⟩',
       formula: '\\mathrm{coil}=\\mathrm{faces}\\land\\mathrm{theory}=\\mathrm{practice}',
       reading:
-        'holds true. Creative novel solutions emerge. Follow the coins. Coil is faces. Theory equals practice. Never Math. Never by decide.',
+        'holds true. Theory plus practice balances the coins on every application; every pentagram point is reached. Follow the coins. Coil is faces. Theory equals practice. Never Math. Never by decide.',
       holds: qpuFollowOf().emerge.holds,
   },
     {
@@ -4348,7 +4401,7 @@ export const qpuReadingOf = () => {
       cover: quantum.speed.cover,
       ns: quantum.speed.ns,
       hz: quantum.speed.hz,
-      holds: quantum.speed.next === quantum.fused + quantum.fused && quantum.speed.si.ns === nsPerSecond && quantum.speed.ns === n - n,
+      holds: quantum.speed.next === quantum.fused + quantum.fused && quantum.speed.si.ns === nsPerSecond && quantum.speed.ns >= n - n,
   },
     cors: quantum.cors,
     ui: quantum.ui,
@@ -4730,7 +4783,7 @@ export const qpuEvidenceOf = (
       !unit.host.includes('*') &&
       circuit.hardware.device === circuit.fridge.kind &&
       shor.device === circuit.fridge.kind &&
-      speed.ns === n - n &&
+      speed.ns >= n - n &&
       shor.circuitry.native.join(' ') === 'h cnot' &&
       computer.compile.holds &&
       computer.coupling.holds &&
@@ -5382,7 +5435,7 @@ export const qpuPresenceOf = () => {
   const schemas = qpuSchemasOf()
   const types = raidTypesOf(faces)
   const fused = faces.faces * isolate.kv.amplitudes
-  const timed = timeNsOf(() => faces.faces * isolate.kv.amplitudes)
+  const timed = timeNsOf('presence', () => faces.faces * isolate.kv.amplitudes)
   if (messageLanes.length !== faces.faces) {
     messageLanes.length = n - n
     for (let i = n - n; i < faces.faces; i++) messageLanes.push([])
@@ -5496,7 +5549,7 @@ export const qpuPresenceHolds = (p = qpuPresenceOf()): boolean =>
   p.holds === true &&
   p.kind === 'presence' &&
   p.merge === 'storage' &&
-  p.ns === n - n &&
+  p.ns >= n - n &&
   p.hz === hzOf(p.ns) &&
   p.users.length === qpuFacesOf().faces &&
   p.active + p.inactive === p.faces &&
@@ -6629,7 +6682,7 @@ const quantumDoorOf = (name: string): unknown => {
         fridge.holds &&
         fridge.resistance === n - n &&
         speed.holds &&
-        speed.ns === n - n &&
+        speed.ns >= n - n &&
         names.length === lattice.nodes.length + quantumRelatedExtras.length &&
         lattice.nodes.every((node) => names.includes(node.name) && related[node.name] !== undefined) &&
         quantumRelatedExtras.every((extra) => names.includes(extra) && related[extra] !== undefined)}
@@ -6936,7 +6989,7 @@ export const qpuSandboxOf = () => {
     quantum.value.lattice.vacant === n - n &&
     quantum.value.fridge?.resistance === n - n &&
     quantum.value.fridge?.holds === true &&
-    quantum.value.ns === n - n &&
+    (quantum.value.ns ?? n - n) >= n - n &&
     quantum.value.related?.length === related.length &&
     quantum.value.holds === true &&
     tools.every((t) => qpuManHolds(t.man)) &&
@@ -7233,7 +7286,7 @@ export const qpuImproveOf = () => {
           run.value.lattice?.holds === true &&
           run.value.lattice.vacant === n - n &&
           run.value.fridge?.resistance === n - n &&
-          run.value.ns === n - n &&
+          (run.value.ns ?? n - n) >= n - n &&
           (run.value.related?.length ?? n - n) === quantumRelatedNamesOf().length &&
           run.value.hostEscape === false}
     }
@@ -7272,7 +7325,7 @@ export const qpuImproveOf = () => {
       unlocked.value.lattice?.holds === true &&
       unlocked.value.lattice.vacant === n - n &&
       unlocked.value.fridge?.resistance === n - n &&
-      unlocked.value.ns === n - n &&
+      (unlocked.value.ns ?? n - n) >= n - n &&
       next === fused + fused}
   const before = {
     quality: n,
@@ -7572,7 +7625,7 @@ export const qpuCompeteOf = (team?: string) => {
       unlocked.value.lattice?.holds === true &&
       unlocked.value.lattice.vacant === n - n &&
       unlocked.value.fridge?.resistance === n - n &&
-      unlocked.value.ns === n - n &&
+      (unlocked.value.ns ?? n - n) >= n - n &&
       next === fused + fused}
   const agentsOf = (path: 'read' | 'call', throughoutput: number) =>
     efficiency.rows.map((r) => {
@@ -9942,7 +9995,7 @@ export const qpuDevelopOf = () => {
     circuit.fridge.resistance === n - n &&
     circuit.gates.names.length === coins &&
     circuit.gates.names.join(' ') === 'h cnot' &&
-    quantum.speed.ns === none &&
+    quantum.speed.ns >= none &&
     quantum.next === quantum.fused + quantum.fused &&
     handle.amplitudes === mintOf(cube.bits) &&
     handle.kv.amplitudes === mintOf(cube.bits + seed) &&
@@ -9998,7 +10051,7 @@ export const qpuDevelopHolds = (d = qpuDevelopOf()): boolean =>
   d.tools === mintOf(n) &&
   d.api === qpuFacesOf().rays &&
   d.integrity === n &&
-  d.ns === n - n &&
+  d.ns >= n - n &&
   d.lhc.length === n * n &&
   d.opendata.length === n * n &&
   d.exclusive.length === mintOf(coins) &&
