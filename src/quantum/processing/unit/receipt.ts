@@ -10,7 +10,7 @@
 //
 //   node --test --test-reporter=./dist/quantum/processing/unit/receipt.js dist/quantum/processing/unit/*.test.js
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, relative } from 'node:path'
 import { qpuFoldOf } from './index.js'
 import { receiptsFileOf, type TestReceipt } from './receipted.js'
 
@@ -40,7 +40,9 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     const err = event.data?.details?.error
     events.push({
       name: event.data?.name ?? '',
-      file: event.data?.file ?? '',
+      // relative to the repo, never absolute: an absolute path carries the machine's home directory into the proof,
+      // and the proof must fold the same on a laptop, a runner, and the host
+      file: relative(process.cwd(), event.data?.file ?? '') || '',
       nesting: event.data?.nesting ?? 0,
       pass: event.type === 'test:pass',
       message: event.type === 'test:fail' ? (err?.message ?? String(err ?? 'no error reported')) : '',
