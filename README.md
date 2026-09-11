@@ -6,7 +6,7 @@ GET https://qpu.uuidna.com. POST https://qpu.uuidna.com/mcp tools/list then tool
 
 ## Abstract
 
-A named host qpu.uuidna.com exposes one quantum processing unit as JSON-LD. fused is 120259084288. next is fused + fused = 240518168576. Native gates are h and cnot. theorem fridge. theorem qubits. theorem millikelvin. theorem shor. theorem crypto. GHZ true. Entangle product false. Possible only in quantum. demo is not a test nor a proof.
+A named host qpu.uuidna.com exposes one quantum processing unit as JSON-LD. fused is 120259084288. next is fused + fused = 240518168576. Native gates are h and cnot. theorem temperature. theorem superconductivity. theorem qubits. theorem shor. theorem crypto. GHZ true. Entangle product false. Possible only in quantum. demo is not a test nor a proof.
 
 ## Unit
 
@@ -55,13 +55,13 @@ CERN Open Data opendata.cern.ch. LHC running. Four CMS records. Coil, electronic
 
 Execution provenance. Provider qpu.uuidna.com. Device simulator. Job qpu.uuidna.com/cmodexp/91/8. Shots 8. Compiler native h cnot compiled x swap csdg cmodexp.
 
-Device-specific noise. Channel xx. Resistance 0. Drift true.
+Device-specific noise. Channel xx. Drift true.
 
 Randomized benchmarks. Volume dim 8. Heavy 0 / 16. Mirror hh.
 
 Cross-validation. Ideal true. Noisy xx. Agree ideal true. Agree noise true.
 
-theorem qubits. theorem fridge. Dim 8. Depth 9. Exact true. Beyond false. Advantage false. demo is not a test nor a proof.
+theorem qubits. theorem register. Dim 8. Depth 9. Exact true. Beyond false. Advantage false. demo is not a test nor a proof.
 
 Independent verification. CORS *. Origin https://qpu.uuidna.com. Lean `src/quantum/processing/unit/index.lean`. Hardware true. Algorithm true. RSA true. Crypt true. Encrypt true.
 

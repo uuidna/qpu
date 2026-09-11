@@ -51,7 +51,7 @@ test('paper and zenodo cite', () => {
   assert.equal(readme.includes('JSON-LD'), true)
   assert.equal(readme.includes('theorem shor'), true)
   assert.equal(readme.includes('theorem crypto'), true)
-  assert.equal(readme.includes('theorem fridge'), true)
+  assert.equal(readme.includes('theorem temperature'), true)
   assert.equal(readme.includes('theorem qubits'), true)
   assert.equal(readme.includes('Theorems are qpu_lean'), true)
   assert.equal(readme.includes(shorFactorOf()), true)

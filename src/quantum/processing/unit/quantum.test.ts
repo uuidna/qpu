@@ -111,7 +111,7 @@ type Circuit = {
     nodes: { face: number; hop: number; involution: boolean; name: string; holds: boolean }[]
     holds: boolean
   }
-  fridge: {
+  register: {
     kind: string
     qubits: number
     levels: number
@@ -119,11 +119,6 @@ type Circuit = {
     vm: string
     isolated: boolean
     lab: boolean
-    millikelvin: number
-    milli: number
-    resistance: boolean
-    cryostat: { kind: string; mixing: number; plate: number; pulse: number; holds: boolean }
-    telemetry: { kind: string; lab: boolean; millikelvin: number; holds: boolean }
     coil: { kind: string; windings: number; coil: number; holds: boolean }
     electronics: { kind: string; uses: string; holds: boolean }
     follow: { kind: string; emerge: { covered: boolean; balanced: boolean; holds: boolean } }
@@ -288,7 +283,7 @@ test('circuit measurement support via mcp', async () => {
       'qubits',
       'gates',
       'measurement',
-      'fridge',
+      'register',
     ],
   )
   assert.equal(q.circuit.lattice.nodes.every((node) => node.holds && node.involution), true)
@@ -315,32 +310,22 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
   assert.equal(q.circuit.hardware.path.src, 'src/quantum/processing/unit/index.lean')
   assert.equal(q.circuit.hardware.path.holds, true)
-  assert.equal(q.circuit.fridge.kind, 'simulator')
-  assert.equal(q.circuit.fridge.qubits, 3)
-  assert.equal(q.circuit.fridge.levels, 2)
-  assert.equal(q.circuit.fridge.millikelvin, 10)
-  assert.equal(q.circuit.fridge.milli, 1000)
-  assert.equal(q.circuit.fridge.cryostat.kind, 'dilution')
-  assert.equal(q.circuit.fridge.cryostat.mixing, 10)
-  assert.equal(q.circuit.fridge.cryostat.plate, 100)
-  assert.equal(q.circuit.fridge.cryostat.pulse, 4000)
-  assert.equal(q.circuit.fridge.cryostat.holds, true)
-  assert.equal(q.circuit.fridge.telemetry.kind, 'cryostat')
-  assert.equal(q.circuit.fridge.telemetry.millikelvin, 10)
-  assert.equal(q.circuit.fridge.telemetry.holds, true)
-  assert.equal(q.circuit.fridge.coil.holds, true)
-  assert.equal(q.circuit.fridge.coil.windings, 2)
-  assert.equal(q.circuit.fridge.electronics.uses, 'coil')
-  assert.equal(q.circuit.fridge.follow.emerge.covered, true)
-  assert.equal(q.circuit.fridge.efficiency.unity, 1)
-  assert.equal(q.circuit.fridge.efficiency.remainder, 0)
-  assert.equal(q.circuit.fridge.efficiency.measure, 14)
-  assert.equal(q.circuit.fridge.next.nextCoil, q.circuit.fridge.next.nextFused)
-  assert.equal(q.circuit.fridge.next.nextFused, q.circuit.fridge.next.fused + q.circuit.fridge.next.fused)
-  assert.equal(q.circuit.fridge.next.next, q.circuit.fridge.next.amplitudes + q.circuit.fridge.next.amplitudes)
-  assert.equal(q.circuit.fridge.clay.clay, 14)
-  assert.equal(q.circuit.fridge.clay.clay, q.circuit.fridge.coil.coil)
-  assert.equal(q.circuit.fridge.holds, true)
+  assert.equal(q.circuit.register.kind, 'simulator')
+  assert.equal(q.circuit.register.qubits, 3)
+  assert.equal(q.circuit.register.levels, 2)
+  assert.equal(q.circuit.register.coil.holds, true)
+  assert.equal(q.circuit.register.coil.windings, 2)
+  assert.equal(q.circuit.register.electronics.uses, 'coil')
+  assert.equal(q.circuit.register.follow.emerge.covered, true)
+  assert.equal(q.circuit.register.efficiency.unity, 1)
+  assert.equal(q.circuit.register.efficiency.remainder, 0)
+  assert.equal(q.circuit.register.efficiency.measure, 14)
+  assert.equal(q.circuit.register.next.nextCoil, q.circuit.register.next.nextFused)
+  assert.equal(q.circuit.register.next.nextFused, q.circuit.register.next.fused + q.circuit.register.next.fused)
+  assert.equal(q.circuit.register.next.next, q.circuit.register.next.amplitudes + q.circuit.register.next.amplitudes)
+  assert.equal(q.circuit.register.clay.clay, 14)
+  assert.equal(q.circuit.register.clay.clay, q.circuit.register.coil.coil)
+  assert.equal(q.circuit.register.holds, true)
   assert.equal(q.circuit.holds, true)
 })
 
@@ -359,9 +344,9 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   }
   const circuit = prove.theorems.find((r) => r.heading === 'circuit')
   const physical = prove.theorems.find((r) => r.heading === 'physical')
-  const fridge = prove.theorems.find((r) => r.heading === 'fridge')
-  const millikelvin = prove.theorems.find((r) => r.heading === 'millikelvin')
-  const telemetry = prove.theorems.find((r) => r.heading === 'telemetry')
+  const register = prove.theorems.find((r) => r.heading === 'temperature')
+  const temperature = prove.theorems.find((r) => r.heading === 'temperature')
+  const superconductivity = prove.theorems.find((r) => r.heading === 'superconductivity')
   const kv = prove.theorems.find((r) => r.heading === 'kv')
   const drift = prove.theorems.find((r) => r.heading === 'drift')
   const sciences = prove.theorems.find((r) => r.heading === 'sciences')
@@ -387,11 +372,11 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   assert.equal(prove.theorems.find((r) => r.heading === 'next_coil')?.holds, true)
   assert.equal(circuit?.holds, true)
   assert.equal(physical?.holds, true)
-  assert.equal(fridge?.holds, true)
-  assert.equal(fridge?.theorem.includes('resistance = 0'), true)
-  assert.equal(fridge?.theorem.includes('by decide'), false)
-  assert.equal(millikelvin?.holds, true)
-  assert.equal(telemetry?.holds, true)
+  assert.equal(register?.holds, true)
+  assert.equal(register?.theorem.includes('photon / thermal 10 = 23'), true)
+  assert.equal(register?.theorem.includes('by decide'), false)
+  assert.equal(temperature?.holds, true)
+  assert.equal(superconductivity?.holds, true)
   assert.equal(kv?.holds, true)
   assert.equal(drift?.holds, true)
   assert.equal(sciences?.holds, true)
@@ -454,13 +439,12 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.docs.documentation.includes('This host is a simulator, not a quantum computer'), true)
   assert.equal(json.docs.documentation.includes('This host is a quantum computer'), false)
   assert.equal(json.docs.documentation.includes('theorem shor'), true)
-  assert.equal(json.docs.documentation.includes('theorem fridge'), true)
+  assert.equal(json.docs.documentation.includes('theorem temperature'), true)
   assert.equal(json.docs.documentation.includes('theorem qubits'), true)
   assert.equal(json.docs.documentation.includes('demo is not a test nor a proof'), true)
   assert.equal(json.circuit.hardware.holds, true)
   assert.equal(json.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
-  assert.equal(json.circuit.fridge.kind, 'simulator')
-  assert.equal(json.docs.documentation.includes('Resistance none'), true)
+  assert.equal(json.circuit.register.kind, 'simulator')
   assert.equal(json.circuit.drift.between, true)
   assert.equal(json.circuit.sciences.distinct, true)
   assert.equal(json.docs.documentation.includes('No drift from science'), true)

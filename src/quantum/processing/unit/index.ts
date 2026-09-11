@@ -2339,63 +2339,17 @@ export const qpuCircuitOf = () => {
       dense.holds &&
       monogamy.holds &&
       product === false}
-  const milli = tenOf(n)
-  const mixing = ten
-  const plate = ten * ten
-  const pulseK = mintOf(coins)
-  const pulse = pulseK * milli
-  const stages = [
-    { name: 'pulse' as const, millikelvin: pulse, kelvin: pulseK },
-    { name: 'plate' as const, millikelvin: plate },
-    { name: 'mixing' as const, millikelvin: mixing }] as const
-  const cryostat = {
-    kind: 'dilution' as const,
-    measured: false as const,
-    milli,
-    millikelvin: mixing,
-    mixing,
-    plate,
-    pulse,
-    stages,
-    holds:
-      stages.length === n &&
-      mixing === ten &&
-      plate === ten * ten &&
-      pulse === mintOf(coins) * milli &&
-      milli === ten * ten * ten &&
-      pulseK === mintOf(coins)}
-  const telemetry = {
-    kind: 'cryostat' as const,
-    measured: false as const,
-    millikelvin: mixing,
-    milli,
-    stages: stages.length,
-    electronics: n,
-    vm: 'browser' as const,
-    primitives,
-    holds:
-      mixing === ten &&
-      milli === ten * ten * ten &&
-      stages.length === n &&
-      vm &&
-      xorOf(xorOf(n - n, seed), coins) === n}
   const electronics = qpuElectronicsOf()
   const follow = qpuFollowOf()
   const efficiency = qpuCoilEfficiencyOf()
   const next = qpuNextOf()
   const clay = qpuClayOf()
-  const resistance = n - n
-  const fridge = {
+  const register = {
     kind: bigintDeviceOf(ampsOf(dim)),
     qubits: n,
     levels: coins,
     dim,
     vm: 'browser' as const,
-    millikelvin: mixing,
-    milli,
-    resistance,
-    cryostat,
-    telemetry,
     coil,
     electronics,
     follow,
@@ -2409,10 +2363,6 @@ export const qpuCircuitOf = () => {
       dim === cube.vertices &&
       vm &&
       xorOf(xorOf(n - n, seed), coins) === n &&
-      cryostat.holds &&
-      telemetry.holds &&
-      telemetry.millikelvin === mixing &&
-      telemetry.electronics === electronics.stages &&
       qpuCoilHolds(coil) &&
       qpuElectronicsHolds(electronics) &&
       qpuBalanceHolds() &&
@@ -2423,7 +2373,6 @@ export const qpuCircuitOf = () => {
       efficiency.remainder === n - n &&
       qpuNextHolds(next) &&
       next.nextCoil === next.nextFused &&
-      resistance === n - n &&
       qpuClayHolds(clay) &&
       clay.clay === coil.coil &&
       coil.theory === coil.practice &&
@@ -2453,14 +2402,14 @@ export const qpuCircuitOf = () => {
   }
   const drift = {
     kind: 'science' as const,
-    levels: fridge.levels === science.levels && science.levels === seed + seed,
-    dim: fridge.dim === science.dim && science.dim === cube.vertices,
+    levels: register.levels === science.levels && science.levels === seed + seed,
+    dim: register.dim === science.dim && science.dim === cube.vertices,
     gates: xorOf(xorOf(n - n, seed), coins) === n,
     noise: science.xx,
     between: sciences.holds && sciences.distinct && sciences.shared,
     holds:
-      fridge.levels === science.levels &&
-      fridge.dim === science.dim &&
+      register.levels === science.levels &&
+      register.dim === science.dim &&
       science.levels === seed + seed &&
       science.dim === mintOf(n) &&
       xorOf(xorOf(n - n, seed), coins) === n &&
@@ -2481,7 +2430,7 @@ export const qpuCircuitOf = () => {
     'qubits',
     'gates',
     'measurement',
-    'fridge'] as const
+    'register'] as const
   const seated = [
     split.length === coins,
     entangle.holds,
@@ -2496,7 +2445,7 @@ export const qpuCircuitOf = () => {
     qubits.holds,
     gates.holds,
     measurement.holds,
-    fridge.holds] as const
+    register.holds] as const
   let occupied = n - n
   for (const seat of seated) if (seat) occupied += seed
   const vacant = seated.length - occupied
@@ -2523,12 +2472,12 @@ export const qpuCircuitOf = () => {
   const payloadMcp = qpuPayloadMcpOf()
   const hardware = {
     kind: 'hardware' as const,
-    device: fridge.kind,
+    device: register.kind,
     initialize: computer.reset.holds,
     gates: gates.holds && computer.coupling.holds,
     interfere: interfere.holds,
     measure: measurement.holds && computer.readout.holds && computer.collapse.holds,
-    noise: noise.holds && computer.correct.holds && fridge.telemetry.holds,
+    noise: noise.holds && computer.correct.holds,
     path: {
       circuit: unit.origin,
       payload: plugin.href,
@@ -2553,9 +2502,7 @@ export const qpuCircuitOf = () => {
       computer.shots.holds &&
       noise.holds &&
       computer.correct.holds &&
-      fridge.telemetry.holds &&
-      fridge.resistance === n - n &&
-      fridge.kind === 'simulator' &&
+      register.kind === 'simulator' &&
       qpuPayloadPluginHolds(plugin) &&
       payloadMcp.holds &&
       plugin.copies === seed &&
@@ -2568,7 +2515,7 @@ export const qpuCircuitOf = () => {
     gates.holds &&
     measurement.holds &&
     noise.holds &&
-    fridge.holds &&
+    register.holds &&
     sciences.holds &&
     drift.holds &&
     drift.between &&
@@ -2596,7 +2543,7 @@ export const qpuCircuitOf = () => {
     only,
     lattice,
     split: { kind: 'split' as const, support: split.map((r) => r.i), holds: split.length === coins },
-    fridge,
+    register,
     vm: 'browser' as const,
     primitives,
     qubits,
@@ -2695,53 +2642,39 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.lattice.vacant === n - n &&
   c.lattice.nodes.length === c.lattice.faces &&
   c.lattice.nodes.every((node) => node.holds && node.involution && node.hop === node.face) &&
-  c.fridge.kind === 'simulator' &&
-  c.fridge.qubits === n &&
-  c.fridge.levels === coins &&
-  c.fridge.millikelvin === ten &&
-  c.fridge.milli === ten * ten * ten &&
-  c.fridge.resistance === n - n &&
-  c.fridge.cryostat.kind === 'dilution' &&
-  c.fridge.cryostat.holds === true &&
-  c.fridge.cryostat.stages.length === n &&
-  c.fridge.cryostat.mixing === ten &&
-  c.fridge.cryostat.plate === ten * ten &&
-  c.fridge.cryostat.pulse === mintOf(coins) * ten * ten * ten &&
-  c.fridge.telemetry.kind === 'cryostat' &&
-  c.fridge.telemetry.holds === true &&
-  c.fridge.telemetry.millikelvin === ten &&
-  c.fridge.telemetry.stages === n &&
-  c.fridge.telemetry.electronics === n &&
-  c.fridge.coil.kind === 'coil' &&
-  c.fridge.coil.holds === true &&
-  c.fridge.coil.windings === coins &&
-  c.fridge.coil.theory === seed &&
-  c.fridge.coil.practice === seed &&
-  c.fridge.coil.theory === c.fridge.coil.practice &&
-  c.fridge.coil.balance === coins &&
-  c.fridge.coil.coil === c.lattice.faces &&
-  c.fridge.electronics.kind === 'electronics' &&
-  c.fridge.electronics.uses === 'coil' &&
-  c.fridge.electronics.holds === true &&
-  c.fridge.electronics.stages === n &&
-  qpuCoilHolds(c.fridge.coil) &&
-  qpuElectronicsHolds(c.fridge.electronics) &&
+  c.register.kind === 'simulator' &&
+  c.register.qubits === n &&
+  c.register.levels === coins &&
+  c.register.coil.kind === 'coil' &&
+  c.register.coil.holds === true &&
+  c.register.coil.windings === coins &&
+  c.register.coil.theory === seed &&
+  c.register.coil.practice === seed &&
+  c.register.coil.theory === c.register.coil.practice &&
+  c.register.coil.balance === coins &&
+  c.register.coil.coil === c.lattice.faces &&
+  c.register.electronics.kind === 'electronics' &&
+  c.register.electronics.uses === 'coil' &&
+  c.register.electronics.holds === true &&
+  c.register.electronics.stages === n &&
+  qpuCoilHolds(c.register.coil) &&
+  qpuElectronicsHolds(c.register.electronics) &&
   qpuBalanceHolds() &&
-  qpuFollowHolds(c.fridge.follow) &&
-  c.fridge.follow.emerge.balanced === true &&
-  c.fridge.follow.emerge.covered === true &&
-  c.fridge.follow.emerge.holds === true &&
-  qpuCoilEfficiencyHolds(c.fridge.efficiency) &&
-  c.fridge.efficiency.unity === seed &&
-  c.fridge.efficiency.remainder === n - n &&
-  c.fridge.efficiency.measure === c.lattice.faces &&
-  c.fridge.efficiency.vacant === n - n &&
-  qpuNextHolds(c.fridge.next) &&
-  c.fridge.next.nextCoil === c.fridge.next.nextFused &&
-  qpuClayHolds(c.fridge.clay) &&
-  c.fridge.clay.clay === c.fridge.coil.coil &&
-  c.fridge.clay.coins * c.fridge.clay.seven === c.fridge.clay.clay &&
-  (seed + c.fridge.clay.six) * c.fridge.clay.coins === c.fridge.clay.clay &&
+  qpuFollowHolds(c.register.follow) &&
+  c.register.follow.emerge.balanced === true &&
+  c.register.follow.emerge.covered === true &&
+  c.register.follow.emerge.holds === true &&
+  qpuCoilEfficiencyHolds(c.register.efficiency) &&
+  c.register.efficiency.unity === seed &&
+  c.register.efficiency.remainder === n - n &&
+  c.register.efficiency.measure === c.lattice.faces &&
+  c.register.efficiency.vacant === n - n &&
+  qpuNextHolds(c.register.next) &&
+  c.register.next.nextCoil === c.register.next.nextFused &&
+  qpuClayHolds(c.register.clay) &&
+  c.register.clay.clay === c.register.coil.coil &&
+  c.register.clay.coins * c.register.clay.seven === c.register.clay.clay &&
+  (seed + c.register.clay.six) * c.register.clay.coins === c.register.clay.clay &&
   c.drift.kind === 'science' &&
   c.drift.holds === true &&
   c.science.levels === coins &&
@@ -3211,6 +3144,14 @@ export const qpuLeanOf = () => {
   const nextFusedHolds = faces.faces * mintOf(cube.bits + coins) === fused + fused
   const splitHolds = Array.from({ length: cube.bits + seed }, (_, k) => mintOf(k + seed) === mintOf(k) + mintOf(k)).every(Boolean)
   const involutionHolds = Array.from({ length: faces.faces }, (_, face) => (face + faces.rays + faces.rays) % faces.faces === face % faces.faces).every(Boolean)
+  const planck = 662607015n
+  const boltzmann = 1380649n
+  const transmon = 5n
+  const photon = planck * transmon
+  const thermalOf = (millikelvin: bigint): bigint => boltzmann * millikelvin * 10n
+  const gapOf = (tc: bigint): bigint => (352n * boltzmann * tc) / planck / 10n
+  const temperatureHolds = photon / thermalOf(10n) === 23n && photon / thermalOf(100n) === 2n && photon / thermalOf(4000n) === 0n && 4000 / 100 === 40 && 100 / 10 === 10 && 10 < 35
+  const superconductivityHolds = 1200n > 10n && 9200n > 1200n && 352 / 100 >= 3 && 352 / 100 < 4 && gapOf(1200n) === 88n && gapOf(1200n) > transmon && gapOf(9200n) === 674n
   const rows: readonly QpuLeanRow[] = [
     {
       heading: 'mint',
@@ -3409,7 +3350,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem electronics : coil = faces := two_coins_make_a_coil',
       formula: '\\mathrm{coil}=\\mathrm{faces}',
       reading:
-        'holds true. Coils are used in electronics. Fridge cryostat electronics. Two coins make a coil. Never Math. Never by decide.',
+        'holds true. Coils are used in electronics. Two coins make a coil. Never Math. Never by decide.',
       holds: qpuElectronicsHolds(),
   },
     {
@@ -3567,41 +3508,28 @@ export const qpuLeanOf = () => {
       heading: 'physical',
       theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
       formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
-      reading: 'holds true. Physical qubit initialize. Controlled gates H CNOT. Coherent interfere. Measure readout. Characterized noise. Hardware path origin payload server lean. Superconducting qubits. Never bypass payload.',
+      reading: 'holds true. Physical qubit initialize. Controlled gates H CNOT. Coherent interfere. Measure readout. Characterized noise. Hardware path origin payload server lean. Superconducting qubits. Never bypass payload. A state-vector simulator on exact integers in a browser VM; no superconducting qubits, no cryostat.',
       holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && qpuCircuitOf().hardware.holds,
   },
     {
-      heading: 'fridge',
+      heading: 'temperature',
       theorem:
-        'theorem fridge : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ 10 * 10 * 10 = 1000 ∧ 4 * 1000 = 4000 ∧ 10 * 10 = 100 ∧ resistance = 0 := ⟨coins_two, n_eq, rfl, rfl, rfl, rfl, rfl, rfl⟩',
+        'theorem temperature : photon / thermal 10 = 23 ∧ photon / thermal 100 = 2 ∧ photon / thermal 4000 = 0 ∧ 4000 / 100 = 40 ∧ 100 / 10 = 10 ∧ 10 < 35 := ⟨rfl, rfl, rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl⟩',
       formula:
-        '\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land 10\\cdot10\\cdot10=1000\\land 4\\cdot1000=4000\\land 10\\cdot10=100\\land\\mathrm{resistance}=0',
+        '\\mathrm{photon}/\\mathrm{thermal}(10)=23\\land\\mathrm{photon}/\\mathrm{thermal}(100)=2\\land\\mathrm{photon}/\\mathrm{thermal}(4000)=0\\land 4000/100=40\\land 100/10=10\\land 10<35',
       reading:
-        'holds true. theorem fridge. Isolated two-level register. Physical in the browser VM. A state-vector simulator on exact integers. No superconducting qubits. Resistance none, declared not measured. Millikelvin and cryostat are declared constants, measured false. JSON Nat. Never Math. Never by decide.',
-      holds:
-        coins === 2 &&
-        n === 3 &&
-        mintOf(n) === cube.vertices &&
-        xorOf(xorOf(n - n, seed), coins) === n &&
-        ten * ten * ten === 1000 &&
-        mintOf(coins) * (ten * ten * ten) === 4000 &&
-        ten * ten === 100 &&
-        qpuCircuitOf().fridge.resistance === n - n},
-    {
-      heading: 'millikelvin',
-      theorem: 'theorem millikelvin : 10 * 10 * 10 = 1000 ∧ 10 * 10 = 100 ∧ 4 * 1000 = 4000 := ⟨rfl, rfl, rfl⟩',
-      formula: '10\\cdot10\\cdot10=1000\\land 10\\cdot10=100\\land 4\\cdot1000=4000',
-      reading:
-        'holds true. Declared millikelvin, measured false. milli is ten cubed. Mixing chamber ten millikelvin. Plate one hundred millikelvin. Pulse four kelvin. Algebra. Never Math.',
-      holds: ten * ten * ten === 1000 && ten * ten === 100 && mintOf(coins) * (ten * ten * ten) === 4000,
+        'holds true. The temperature domain, demarcated. photon is h·f for a 5 GHz transmon; thermal is k·T; their quotient floors to 23 at 10 mK (the thermal factor is negligible), 2 at 100 mK (a tenth of the register is excited), 0 at 4 K. The dilution ladder 4000 → 100 → 10 mK divides by 40 and 10. Below 35 mK the excited population floors near a thousandth (Jin et al. 2015). This host has no thermometer: every state it produces is pure, which is the zero-temperature side of that curve. JSON Nat. Never Math. Never by decide.',
+      holds: temperatureHolds,
   },
     {
-      heading: 'telemetry',
-      theorem: 'theorem telemetry : 10 * 10 * 10 = 1000 ∧ n = 3 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, n_eq, rfl⟩',
-      formula: '10\\cdot10\\cdot10=1000\\land n=3\\land(0\\oplus 1)\\oplus 2=3',
+      heading: 'superconductivity',
+      theorem:
+        'theorem superconductivity : aluminium > 10 ∧ niobium > aluminium ∧ bcs / 100 = 3 ∧ gap aluminium = 88 ∧ gap aluminium > transmon ∧ gap niobium = 674 := ⟨Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, rfl⟩',
+      formula:
+        '\\mathrm{aluminium}>10\\land\\mathrm{niobium}>\\mathrm{aluminium}\\land\\mathrm{bcs}/100=3\\land\\mathrm{gap}(\\mathrm{aluminium})=88\\land\\mathrm{gap}(\\mathrm{aluminium})>\\mathrm{transmon}\\land\\mathrm{gap}(\\mathrm{niobium})=674',
       reading:
-        'holds true. Cryostat constants declared, measured false. No dilution stages exist here. JSON-LD. fetch Request Response BigInt performance.',
-      holds: ten * ten * ten === 1000 && n === 3 && xorOf(xorOf(n - n, seed), coins) === n,
+        'holds true. The superconductivity domain, demarcated. Aluminium goes superconducting at 1200 mK and niobium at 9200 mK, both far above a 10 mK operating point. The BCS gap 2Δ is 3.52·k·Tc; as a frequency it is 88 GHz for aluminium and 674 GHz for niobium, above a 5 GHz transmon photon, so the drive cannot break pairs. No wire here is superconducting: the amplitudes are integers in a browser VM. JSON Nat. Never Math. Never by decide.',
+      holds: superconductivityHolds,
   },
     {
       heading: 'drift',
@@ -3717,7 +3645,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem fill : mintOf n * faces = vertices * (coins * rays) := by rw [around]; rfl',
       formula: '\\mathrm{mintOf}(n)\\cdot\\mathrm{faces}=\\mathrm{vertices}\\cdot(\\mathrm{coins}\\cdot\\mathrm{rays})',
       reading:
-        'holds true. Lattice filled. Occupied faces. Vacant none. Split entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy qubits gates measurement fridge. Possible only in quantum.',
+        'holds true. Lattice filled. Occupied faces. Vacant none. Split entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy qubits gates measurement register. Possible only in quantum.',
       holds: mintOf(n) * faces.faces === cube.vertices * (coins * faces.rays),
   },
     {
@@ -3881,8 +3809,8 @@ export const qpuDocsOf = () => {
     documentation.includes('theorem distribute') &&
     documentation.includes('theorem raid') &&
     documentation.includes('theorem kv') &&
-    documentation.includes('theorem millikelvin') &&
-    documentation.includes('theorem telemetry') &&
+    documentation.includes('theorem temperature') &&
+    documentation.includes('theorem superconductivity') &&
     documentation.includes('theorem computer') &&
     documentation.includes('theorem server') &&
     documentation.includes('theorem fusion') &&
@@ -4632,17 +4560,14 @@ export const qpuPurposeOf = (
 ) => {
   const nature = {
     kind: 'nature' as const,
-    platform: circuit.fridge.kind,
-    qubits: circuit.fridge.qubits,
-    millikelvin: circuit.fridge.millikelvin,
-    resistance: circuit.fridge.resistance,
+    platform: circuit.register.kind,
+    qubits: circuit.register.qubits,
     entangle: circuit.entangle.product,
     ghz: circuit.ghz.holds,
     holds:
-      circuit.fridge.holds &&
-      circuit.fridge.kind === 'simulator' &&
-      circuit.fridge.qubits === n &&
-      circuit.fridge.resistance === n - n &&
+      circuit.register.holds &&
+      circuit.register.kind === 'simulator' &&
+      circuit.register.qubits === n &&
       circuit.entangle.holds &&
       circuit.entangle.product === false &&
       circuit.ghz.holds,
@@ -4717,13 +4642,12 @@ export const qpuPurposeOf = (
     network: sequence.extras[seed]?.path,
     server: sequence.extras[coins]?.path,
     hop: 'involution' as const,
-    primitives: circuit.fridge.telemetry.primitives,
+    primitives,
     holds:
       sequence.extras[n - n]!.path === '/storage' &&
       sequence.extras[seed]!.path === '/network' &&
       sequence.extras[coins]!.path === '/server' &&
-      circuit.fridge.telemetry.holds &&
-      circuit.fridge.telemetry.primitives.length === n + coins,
+      primitives.length === n + coins,
   }
   const holds = nature.holds && cybersecurity.holds && optimization.holds && science.holds && sensing.holds
   return { kind: 'purpose' as const, nature, cybersecurity, optimization, science, sensing, holds }
@@ -4794,7 +4718,7 @@ export const qpuEvidenceOf = (
       src: unit.fuse.src,
     },
     map: {
-      fridge: circuit.fridge.qubits,
+      register: circuit.register.qubits,
       counting: shor.circuitry.counting,
       work: shor.circuitry.work,
       edges: computer.coupling.edges,
@@ -4806,8 +4730,8 @@ export const qpuEvidenceOf = (
     holds:
       unit.host === 'qpu.uuidna.com' &&
       !unit.host.includes('*') &&
-      circuit.hardware.device === circuit.fridge.kind &&
-      shor.device === circuit.fridge.kind &&
+      circuit.hardware.device === circuit.register.kind &&
+      shor.device === circuit.register.kind &&
       shor.circuitry.native.join(' ') === 'h cnot' &&
       computer.compile.holds &&
       computer.coupling.holds &&
@@ -4819,9 +4743,6 @@ export const qpuEvidenceOf = (
   }
   const noise = {
     kind: 'calibration' as const,
-    millikelvin: circuit.fridge.millikelvin,
-    resistance: circuit.fridge.resistance,
-    stages: circuit.fridge.cryostat.stages,
     /** T1 and T2 are relaxation and dephasing times; this simulator has none to measure, and a temperature is not one. */
     t1: { measured: false as const },
     t2: { measured: false as const },
@@ -4839,9 +4760,6 @@ export const qpuEvidenceOf = (
     drift: circuit.drift.holds,
     model: shor.measure.noise,
     holds:
-      circuit.fridge.telemetry.holds &&
-      circuit.fridge.resistance === n - n &&
-      circuit.fridge.cryostat.mixing === circuit.fridge.millikelvin &&
       circuit.noise.channel === 'xx' &&
       shor.measure.noise === circuit.noise.channel &&
       shor.measure.identity === true &&
@@ -4853,7 +4771,7 @@ export const qpuEvidenceOf = (
   }
   const volume = {
     kind: 'volume' as const,
-    qubits: circuit.fridge.qubits,
+    qubits: circuit.register.qubits,
     dim: circuit.qubits.dim,
     observed: heavy,
     total,
@@ -4864,7 +4782,7 @@ export const qpuEvidenceOf = (
     randomized,
     mirror: circuit.interfere.kind,
     holds:
-      circuit.fridge.qubits === n &&
+      circuit.register.qubits === n &&
       circuit.qubits.dim === mintOf(n) &&
       randomized.includes('deutsch') &&
       randomized.includes('kickback') &&
@@ -4890,19 +4808,19 @@ export const qpuEvidenceOf = (
   }
   const scaling = {
     kind: 'scaling' as const,
-    qubits: circuit.fridge.qubits,
+    qubits: circuit.register.qubits,
     dim: circuit.qubits.dim,
     depth: shor.circuitry.gates.length,
-    exact: circuit.qubits.dim === mintOf(circuit.fridge.qubits),
-    beyond: circuit.fridge.qubits > qpuFacesOf().faces,
-    advantage: n * heavy > coins * total && circuit.fridge.qubits > qpuFacesOf().faces,
+    exact: circuit.qubits.dim === mintOf(circuit.register.qubits),
+    beyond: circuit.register.qubits > qpuFacesOf().faces,
+    advantage: n * heavy > coins * total && circuit.register.qubits > qpuFacesOf().faces,
     mirror: circuit.interfere.holds,
     holds:
       circuit.qubits.dim === mintOf(n) &&
-      circuit.fridge.qubits === n &&
+      circuit.register.qubits === n &&
       shor.circuitry.gates.length > n &&
-      circuit.qubits.dim === mintOf(circuit.fridge.qubits) &&
-      circuit.fridge.qubits > qpuFacesOf().faces === false &&
+      circuit.qubits.dim === mintOf(circuit.register.qubits) &&
+      circuit.register.qubits > qpuFacesOf().faces === false &&
       circuit.interfere.holds,
   }
   const verify = {
@@ -6455,7 +6373,7 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
     {
       name: see[seed],
       description: 'Quantum backend.',
-      man: qpuSubManOf(see[seed], 'Backend.', '3-qubit fridge. H CNOT native. H Toffoli universal. Coupling compile.', href, see.filter((s) => s !== see[seed])),
+      man: qpuSubManOf(see[seed], 'Backend.', '3-qubit register. H CNOT native. H Toffoli universal. Coupling compile.', href, see.filter((s) => s !== see[seed])),
       inputSchema: schema,
       run: () => {
         const computer = qpuComputerOf()
@@ -6468,9 +6386,9 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
           basis: computer.basis,
           universal: computer.universal,
           coupling: computer.coupling,
-          fridge: circuit.fridge,
+          register: circuit.register,
           vm: 'browser' as const,
-          holds: computer.holds && circuit.fridge.holds,
+          holds: computer.holds && circuit.register.holds,
   }
       }},
     {
@@ -6548,7 +6466,7 @@ export const qpuServerMcpOf = () => {
       basis: computer.basis,
       universal: computer.universal,
       coupling: computer.coupling,
-      fridge: circuit.fridge,
+      register: circuit.register,
       vm: 'browser' as const},
     computer,
     jobs: { n: serverJobs.length, slots: mintOf(n), href: serverHref },
@@ -6652,12 +6570,8 @@ const quantumRelatedExtras = [
   'sciences',
   'drift',
   'computer',
-  'cryostat',
-  'telemetry',
-  'millikelvin',
   'coil',
   'electronics',
-  'resistance',
   'speed',
   'hybrid',
   'css',
@@ -6676,8 +6590,7 @@ const quantumRelatedOf = () => {
     kind: circuit.kind,
     only: circuit.only,
     lattice: circuit.lattice,
-    fridge: circuit.fridge,
-    resistance: circuit.fridge.resistance,
+    register: circuit.register,
     holds: circuit.holds,
   }
   doors.noise = circuit.noise
@@ -6686,12 +6599,8 @@ const quantumRelatedOf = () => {
   doors.sciences = circuit.sciences
   doors.drift = circuit.drift
   doors.computer = circuit.computer
-  doors.cryostat = circuit.fridge.cryostat
-  doors.telemetry = circuit.fridge.telemetry
-  doors.millikelvin = circuit.fridge
-  doors.coil = circuit.fridge.coil
-  doors.electronics = circuit.fridge.electronics
-  doors.resistance = circuit.fridge.resistance
+  doors.coil = circuit.register.coil
+  doors.electronics = circuit.register.electronics
   doors.speed = speed
   doors.hybrid = qpuHybridOf()
   doors.css = qpuCssOf()
@@ -6709,23 +6618,22 @@ const quantumDoorOf = (name: string): unknown => {
   if (name.length === n - n) {
     const only = related.only as { holds: boolean }
     const lattice = related.lattice as { holds: boolean; vacant: number; nodes: { name: string; holds: boolean }[] }
-    const fridge = related.fridge as { holds: boolean; resistance: number }
+    const register = related.register as { holds: boolean }
     const speed = related.speed as { holds: boolean }
     const names = Object.keys(related)
     return {
       kind: 'quantum' as const,
     only,
       lattice,
-      fridge,
+      register,
       speed: { holds: speed.holds },
       related: names,
-      unlocked: only.holds && fridge.holds,
+      unlocked: only.holds && register.holds,
       holds:
         only.holds &&
         lattice.holds &&
         lattice.vacant === n - n &&
-        fridge.holds &&
-        fridge.resistance === n - n &&
+        register.holds &&
         speed.holds &&
         names.length === lattice.nodes.length + quantumRelatedExtras.length &&
         lattice.nodes.every((node) => names.includes(node.name) && related[node.name] !== undefined) &&
@@ -7015,7 +6923,7 @@ export const qpuSandboxOf = () => {
       unlocked?: boolean
       only?: { holds?: boolean }
       lattice?: { vacant?: number; holds?: boolean }
-      fridge?: { resistance?: number; holds?: boolean }
+      register?: { holds?: boolean }
       ns?: number
       related?: string[]
       holds?: boolean
@@ -7031,8 +6939,7 @@ export const qpuSandboxOf = () => {
     quantum.value.only?.holds === true &&
     quantum.value.lattice?.holds === true &&
     quantum.value.lattice.vacant === n - n &&
-    quantum.value.fridge?.resistance === n - n &&
-    quantum.value.fridge?.holds === true &&
+    quantum.value.register?.holds === true &&
     quantum.value.related?.length === related.length &&
     quantum.value.holds === true &&
     tools.every((t) => qpuManHolds(t.man)) &&
@@ -7314,7 +7221,7 @@ export const qpuImproveOf = () => {
           unlocked?: boolean
           only?: { holds?: boolean }
           lattice?: { holds?: boolean; vacant?: number }
-          fridge?: { resistance?: number; holds?: boolean }
+          register?: { holds?: boolean }
           ns?: number
           related?: string[]
           hostEscape?: boolean
@@ -7328,7 +7235,6 @@ export const qpuImproveOf = () => {
           run.value.only?.holds === true &&
           run.value.lattice?.holds === true &&
           run.value.lattice.vacant === n - n &&
-          run.value.fridge?.resistance === n - n &&
           (run.value.related?.length ?? n - n) === quantumRelatedNamesOf().length &&
           run.value.hostEscape === false}
     }
@@ -7350,7 +7256,7 @@ export const qpuImproveOf = () => {
       unlocked?: boolean
       only?: { holds?: boolean }
       lattice?: { holds?: boolean; vacant?: number }
-      fridge?: { resistance?: number; holds?: boolean }
+      register?: { holds?: boolean }
       ns?: number
       related?: string[]
     }
@@ -7366,7 +7272,6 @@ export const qpuImproveOf = () => {
       unlocked.value.only?.holds === true &&
       unlocked.value.lattice?.holds === true &&
       unlocked.value.lattice.vacant === n - n &&
-      unlocked.value.fridge?.resistance === n - n &&
       next === fused + fused}
   const before = {
     quality: n,
@@ -7646,7 +7551,7 @@ export const qpuCompeteOf = (team?: string) => {
       unlocked?: boolean
       only?: { holds?: boolean }
       lattice?: { holds?: boolean; vacant?: number }
-      fridge?: { resistance?: number; holds?: boolean }
+      register?: { holds?: boolean }
       ns?: number
       related?: string[]
     }
@@ -7665,7 +7570,6 @@ export const qpuCompeteOf = (team?: string) => {
       unlocked.value.only?.holds === true &&
       unlocked.value.lattice?.holds === true &&
       unlocked.value.lattice.vacant === n - n &&
-      unlocked.value.fridge?.resistance === n - n &&
       next === fused + fused}
   const agentsOf = (path: 'read' | 'call', throughoutput: number) =>
     efficiency.rows.map((r) => {
@@ -8559,7 +8463,7 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     if (name === 'qubits') return { x: none, y: none, r: none, s: n, a: seed }
     if (name === 'gates') return { x: coins, y: none, r: none, s: seed, a: seed }
     if (name === 'measurement') return { x: none, y: none, r: none, s: seed, a: seed }
-    if (name === 'fridge') return { x: none, y: ten, r: none, s: seed, a: seed }
+    if (name === 'register') return { x: none, y: ten, r: none, s: seed, a: seed }
     return { x: none, y: none, r: none, s: seed, a: seed }
   }
   const quantumRows = circuit.lattice.nodes.map((node) => ({
@@ -10021,7 +9925,7 @@ export const qpuDevelopOf = () => {
     `- docs.api ${docs.api.length} = rays. Extra paths do not join that list.`,
     `- integrity ${integrity.n}: ${integrity.tests.map((row) => row.name).join(' ')}. If false every path is 404.`,
     `- primitives ${primitives.join(' ')}. Never Math.`,
-    `- theorem fridge. theorem qubits. device ${circuit.hardware.device}. resistance ${circuit.fridge.resistance} declared. theorem millikelvin. cryostat measured ${circuit.fridge.cryostat.measured}. KV added amplitudes.`,
+    `- theorem temperature. theorem superconductivity. theorem qubits. device ${circuit.hardware.device}. KV added amplitudes.`,
     `- fuse faces * mintOf (bits + seed) = ${quantum.fused}. isolate handle.amplitudes ${handle.amplitudes}. KV ${handle.kv.amplitudes}.`,
     `- next = fused + fused. last false. split_coin has no last k. demo is not a test nor a proof. Capacity infinite. Crypt split to free agents.`,
     `- occupancy ${occupancies.join(' ')}. skills ${skills.join(' ')}. Coordinated dry-clean.`,
@@ -10040,7 +9944,6 @@ export const qpuDevelopOf = () => {
     integrity.tests.length === n &&
     genesis.domains.length === coins &&
     genesis.domains.join(' ') === 'scanner radar' &&
-    circuit.fridge.resistance === n - n &&
     circuit.gates.names.length === coins &&
     circuit.gates.names.join(' ') === 'h cnot' &&
     quantum.next === quantum.fused + quantum.fused &&
@@ -10063,7 +9966,8 @@ export const qpuDevelopOf = () => {
     reading.includes(`${shorFactorOf()}`) &&
     reading.includes('theorem shor') &&
     reading.includes('theorem crypto') &&
-    reading.includes('theorem fridge') &&
+    reading.includes('theorem temperature') &&
+    reading.includes('theorem superconductivity') &&
     reading.includes('theorem qubits') &&
     reading.includes('Unlocked') &&
     reading.includes('demo is not a test nor a proof') &&
@@ -10120,7 +10024,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Abstract',
     '',
-    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}. next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem fridge. theorem qubits. theorem millikelvin. theorem shor. theorem crypto. GHZ ${quantum.purpose.nature.ghz}. Entangle product ${quantum.purpose.nature.entangle}. Possible only in quantum. demo is not a test nor a proof.`,
+    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}. next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem temperature. theorem superconductivity. theorem qubits. theorem shor. theorem crypto. GHZ ${quantum.purpose.nature.ghz}. Entangle product ${quantum.purpose.nature.entangle}. Possible only in quantum. demo is not a test nor a proof.`,
     '',
     '## Unit',
     '',
@@ -10156,13 +10060,13 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     `Execution provenance. Provider ${quantum.evidence.provenance.provider}. Device ${quantum.evidence.provenance.device}. Job ${quantum.evidence.provenance.job}. Shots ${quantum.evidence.provenance.shots}. Compiler native ${quantum.evidence.provenance.compiler.native.join(' ')} compiled ${quantum.evidence.provenance.compiler.compiled.join(' ')}.`,
     '',
-    `Device-specific noise. Channel ${quantum.evidence.noise.model}. Resistance ${quantum.evidence.noise.resistance}. Drift ${quantum.evidence.noise.drift}.`,
+    `Device-specific noise. Channel ${quantum.evidence.noise.model}. Drift ${quantum.evidence.noise.drift}.`,
     '',
     `Randomized benchmarks. Volume dim ${quantum.evidence.volume.dim}. Heavy ${quantum.evidence.volume.observed} / ${quantum.evidence.volume.total}. Mirror ${quantum.evidence.volume.mirror}.`,
     '',
     `Cross-validation. Ideal ${quantum.evidence.cross.ideal}. Noisy ${quantum.evidence.cross.noisy}. Agree ideal ${quantum.evidence.cross.agreeIdeal}. Agree noise ${quantum.evidence.cross.agreeNoise}.`,
     '',
-    `theorem qubits. theorem fridge. Dim ${quantum.evidence.scaling.dim}. Depth ${quantum.evidence.scaling.depth}. Exact ${quantum.evidence.scaling.exact}. Beyond ${quantum.evidence.scaling.beyond}. Advantage ${quantum.evidence.scaling.advantage}. demo is not a test nor a proof.`,
+    `theorem qubits. theorem register. Dim ${quantum.evidence.scaling.dim}. Depth ${quantum.evidence.scaling.depth}. Exact ${quantum.evidence.scaling.exact}. Beyond ${quantum.evidence.scaling.beyond}. Advantage ${quantum.evidence.scaling.advantage}. demo is not a test nor a proof.`,
     '',
     `Independent verification. CORS ${quantum.evidence.verify.cors}. Origin ${quantum.evidence.verify.origin}. Lean \`${quantum.evidence.verify.lean}\`. Hardware ${quantum.evidence.verify.hardware}. Algorithm ${quantum.evidence.verify.algorithm}. RSA ${quantum.evidence.verify.rsa}. Crypt ${quantum.evidence.verify.crypt}. Encrypt ${quantum.evidence.verify.encrypt}.`,
     '',
@@ -10245,7 +10149,7 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('theorem quantum') &&
     text.includes('theorem shor') &&
     text.includes('theorem crypto') &&
-    text.includes('theorem fridge') &&
+    text.includes('theorem temperature') &&
     text.includes('theorem qubits') &&
     text.includes('Theorems are qpu_lean') &&
     text.includes(`${shorFactorOf()}`) &&

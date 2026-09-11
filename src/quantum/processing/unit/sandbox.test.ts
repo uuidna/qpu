@@ -69,7 +69,7 @@ test('sandbox via mcp', async () => {
       unlocked: boolean
       only: { holds: boolean; classical: boolean }
       lattice: { occupied: number; vacant: number; holds: boolean }
-      fridge: { kind: string; resistance: boolean; holds: boolean }
+      register: { kind: string; holds: boolean }
       related: string[]
       holds: boolean
     }
@@ -82,25 +82,19 @@ test('sandbox via mcp', async () => {
   assert.equal(unlockedQuantum.value.lattice.occupied, 14)
   assert.equal(unlockedQuantum.value.lattice.vacant, 0)
   assert.equal(unlockedQuantum.value.lattice.holds, true)
-  assert.equal(unlockedQuantum.value.fridge.kind, 'simulator')
-  assert.equal(unlockedQuantum.value.fridge.resistance, 0)
+  assert.equal(unlockedQuantum.value.register.kind, 'simulator')
   assert.equal(unlockedQuantum.value.related.includes('split'), true)
-  assert.equal(unlockedQuantum.value.related.includes('fridge'), true)
-  assert.equal(unlockedQuantum.value.related.includes('resistance'), true)
+  assert.equal(unlockedQuantum.value.related.includes('register'), true)
   assert.equal(unlockedQuantum.value.related.includes('speed'), true)
   assert.equal(unlockedQuantum.value.holds, true)
   assert.equal(unlockedQuantum.memory, true)
-  assert.equal(sandbox.tools.some((t) => t.name === 'slot_fridge'), true)
+  assert.equal(sandbox.tools.some((t) => t.name === 'slot_register'), true)
   assert.equal(sandbox.tools.some((t) => t.name === 'slot_split'), true)
-  assert.equal(sandbox.tools.some((t) => t.name === 'slot_resistance'), true)
-  const fridge = (await mcpOf('slot_fridge')) as { value: { kind: string; resistance: boolean; holds: boolean }; unlocked: boolean; holds: boolean }
-  assert.equal(fridge.value.kind, 'simulator')
-  assert.equal(fridge.value.resistance, 0)
-  assert.equal(fridge.unlocked, true)
+  const register = (await mcpOf('slot_register')) as { value: { kind: string; holds: boolean }; unlocked: boolean; holds: boolean }
+  assert.equal(register.value.kind, 'simulator')
+  assert.equal(register.unlocked, true)
   const split = (await mcpOf('slot_split')) as { value: unknown; holds: boolean }
   assert.equal(split.holds, true)
-  const resistance = (await mcpOf('slot_resistance')) as { value: unknown; unlocked: boolean }
-  assert.equal(resistance.value, 0)
   const ns = (await mcpOf('slot_ns')) as { value: unknown }
   assert.equal(ns.value, 0)
   const mint = (await mcpOf('call_mint')) as { value: unknown; memory: boolean; unlocked: boolean; holds: boolean }

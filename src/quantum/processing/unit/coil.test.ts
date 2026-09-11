@@ -93,18 +93,17 @@ test('next is the double — coil times mintOf bits plus coins is fused plus fus
   assert.equal(next.theorem, 'next_coil')
 })
 
-test('simulator fridge — resistance declared none, computations ns none', () => {
+test('simulator register — integer amplitudes in a browser VM', () => {
   const circuit = qpuCircuitOf()
   const speed = qpuSpeedOf()
   const hybrid = qpuHybridOf()
   const presence = qpuPresenceOf()
   const css = qpuCssOf()
   const lean = qpuLeanOf()
-  const fridge = [...lean.rows, ...lean.cover].find((r) => r.heading === 'fridge')
+  const register = [...lean.rows, ...lean.cover].find((r) => r.heading === 'temperature')
   assert.equal(qpuCircuitHolds(circuit), true)
-  assert.equal(circuit.fridge.kind, 'simulator')
-  assert.equal(circuit.fridge.resistance, 0)
-  assert.equal(circuit.fridge.holds, true)
+  assert.equal(circuit.register.kind, 'simulator')
+  assert.equal(circuit.register.holds, true)
   assert.equal(qpuSpeedHolds(speed), true)
   assert.equal(speed.benchmark.every((r) => r.holds && r.value === r.amplitudes), true)
   assert.equal(qpuHybridHolds(hybrid), true)
@@ -112,14 +111,13 @@ test('simulator fridge — resistance declared none, computations ns none', () =
   assert.equal(qpuPresenceHolds(presence), true)
   assert.equal(qpuCssHolds(css), true)
   assert.equal(css.css.includes('animation-delay'), false)
-  assert.equal(fridge?.holds, true)
-  assert.equal(fridge?.theorem.includes('resistance = 0'), true)
-  assert.equal(fridge?.theorem.includes('by decide'), false)
+  assert.equal(register?.holds, true)
+  assert.equal(register?.theorem.includes('photon / thermal 10 = 23'), true)
+  assert.equal(register?.theorem.includes('by decide'), false)
   const related = qpuSandboxRunOf('op_quantum') as {
-    value: { related: string[]; fridge: { resistance: number }; ns: number; holds: boolean }
+    value: { related: string[]; register: { holds: boolean }; ns: number; holds: boolean }
   }
   assert.equal(related.value.holds, true)
-  assert.equal(related.value.fridge.resistance, 0)
   assert.equal(circuit.lattice.nodes.every((node) => related.value.related.includes(node.name)), true)
   const split = qpuSandboxRunOf('slot_split')
   const qubits = qpuSandboxRunOf('slot_qubits')
@@ -129,11 +127,10 @@ test('simulator fridge — resistance declared none, computations ns none', () =
   assert.equal(qubits.holds, true)
   assert.equal(gates.holds, true)
   assert.equal(measurement.holds, true)
-  assert.equal((qpuSandboxRunOf('slot_resistance') as { value: unknown }).value, 0)
   assert.equal((qpuSandboxRunOf('slot_ns') as { value: unknown }).value, 0)
 })
 
-test('coil theorems sit on Lean rows and the fridge — docs stay seven', () => {
+test('coil theorems sit on Lean rows and the register — docs stay seven', () => {
   const lean = qpuLeanOf()
   const docs = qpuDocsOf()
   const names = [
