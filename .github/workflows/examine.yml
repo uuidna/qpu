@@ -1,0 +1,50 @@
+name: examine
+
+# THE EXAMINATION, AUTOMATED. Every six hours, and on demand, an outsider's black-box examination of qpu.uuidna.com
+# runs from a clean runner with HTTP only (scripts/examine.mjs). A finding fails the run and is filed as an issue
+# labelled `examine` — one open issue, updated with each run's findings, closed by hand when the fix is live.
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: examine
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  examine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Examine the host (HTTP only; no install, no build)
+        id: examine
+        run: |
+          set +e
+          node scripts/examine.mjs https://qpu.uuidna.com | tee examine.log
+          echo "status=$?" >> "$GITHUB_OUTPUT"
+      - name: File the findings as the open examine issue (created once, then updated)
+        if: steps.examine.outputs.status != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          body="$(printf 'Automated examination of https://qpu.uuidna.com failed on %s (run %s).\n\n```\n%s\n```\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$GITHUB_RUN_ID" "$(grep -E 'FIND|note|examine:' examine.log)")"
+          number="$(gh issue list --label examine --state open --json number --jq '.[0].number')"
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "$body"
+          else
+            gh label create examine --description 'findings of the automated black-box examination' --color D93F0B 2>/dev/null || true
+            gh issue create --title "examine: qpu.uuidna.com has findings" --label examine --body "$body"
+          fi
+      - name: Fail when the host has findings
+        if: steps.examine.outputs.status != '0'
+        run: exit 1

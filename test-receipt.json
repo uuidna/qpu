@@ -1,15 +1,15 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 111,
-  "pass": 111,
+  "tests": 112,
+  "pass": 112,
   "fail": 0,
   "dry": 0,
-  "circuit": 70,
+  "circuit": 71,
   "mintOnly": 11,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "f4d283e1ca7332a4",
+  "receipt": "21441be189fe35e3",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -2921,6 +2921,50 @@
       "mint": {
         "calls": 810396,
         "chain": "510678324eef769d"
+      }
+    },
+    {
+      "name": "a reply carries its payload twice, as text and as structure, and links only to a page that returns the same document",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 101424,
+      "kinds": {
+        "x": 21465,
+        "cnot": 41056,
+        "toffoli": 3258,
+        "h": 33242,
+        "measure": 1629,
+        "cmodexp": 387,
+        "xx": 387
+      },
+      "dims": {
+        "8": 100650,
+        "512": 774
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "e0be650942c007ca",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1629
+        }
+      ],
+      "mint": {
+        "calls": 2132882,
+        "chain": "3d4df6c22e51a1aa"
       }
     },
     {

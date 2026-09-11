@@ -101,3 +101,4 @@ jobs:
         run: |
           node scripts/verify-live.mjs https://qpu.uuidna.com
           QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js
+          node scripts/examine.mjs https://qpu.uuidna.com

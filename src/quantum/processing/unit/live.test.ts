@@ -131,7 +131,7 @@ test('live qpu.uuidna.com', async (t) => {
       const shown = body.result.structuredContent ?? body.result
       assert.equal(body.jsonrpc, '2.0', name)
       assert.equal(body.result._meta?.resultType, 'complete', name)
-      assert.equal(body.result.content?.length, 3, name)
+      assert.equal((body.result.content?.length ?? 0) >= 1 && (body.result.content?.length ?? 0) <= 2, true, name) // text, plus a link only where a GET returns the reply
       assert.equal(shown.holds, true, name)
       assert.equal(body.result.isError, false, name)
     }

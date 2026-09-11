@@ -348,7 +348,7 @@ const callRpcOf = async (path: string, name: string, args: Record<string, unknow
   assert.equal(body.id, id, name)
   assert.equal(body.result._meta?.resultType, 'complete', name)
   assert.equal(body.result._meta?.role, 'tool', name)
-  assert.equal(body.result.content?.length, 3, name)
+  assert.equal((body.result.content?.length ?? 0) >= 1 && (body.result.content?.length ?? 0) <= 2, true, name) // text, plus a link only where a GET returns the reply
   const shown = body.result.structuredContent
   assert.equal(shown !== undefined, true, name)
   const payload = shown as ShownPayload
@@ -705,4 +705,36 @@ test('every listed tool carries an output schema read from its own replies, and 
   const { holds: _dropped, ...noHolds } = good
   assert.equal(validate(shor, noHolds).includes('holds required'), true)
   assert.equal(validate(shor, { ...good, n: { bent: true } }).length > 0, true)
+})
+
+test('a reply carries its payload twice, as text and as structure, and links only to a page that returns the same document', async () => {
+  const listed = await rpcOf('/mcp', 'tools/list')
+  const names = (listed.tools ?? []).map((t) => t.name)
+  assert.equal(names.length, 16)
+  let linked = 0
+  for (const name of names) {
+    const res = await fetchOf('/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name } }) })
+    const body = (await res.json()) as { result: { content: { type: string; text?: string; uri?: string }[]; structuredContent: unknown; isError: boolean; _meta: Record<string, unknown> } }
+    const r = body.result
+    assert.deepEqual(Object.keys(r).sort(), ['_meta', 'content', 'isError', 'structuredContent'], name)
+    const payload = JSON.stringify(r.structuredContent)
+    assert.equal(r.content[0]?.type, 'text', name)
+    assert.equal(r.content[0]?.text, payload, name)
+    assert.equal(r.content.length <= 2, true, name)
+    assert.equal('output' in r._meta, false, name)
+    assert.equal('functionResponse' in r._meta, false, name)
+    // two copies and a small envelope: never more than 2.2 times the payload plus a kilobyte
+    assert.equal(JSON.stringify(r).length < payload.length * 2.2 + 1024, true, `${name}: ${JSON.stringify(r).length} B for a ${payload.length} B payload`)
+    const link = r.content.find((c) => c.type === 'resource_link')
+    if (link) {
+      linked += 1
+      assert.equal(link.uri, r._meta.resource, name)
+      const page = await fetchOf(new URL(link.uri!).pathname)
+      assert.equal(page.status, 200, name)
+      assert.deepEqual(await page.json(), r.structuredContent, `${name}: GET ${link.uri} must return the reply it links`)
+    } else {
+      assert.equal('resource' in r._meta, false, name)
+    }
+  }
+  assert.equal(linked, 2)
 })

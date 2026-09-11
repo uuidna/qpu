@@ -4253,12 +4253,6 @@ export const qpuManOf = (name: string, description: string, reading: string, hre
 export const qpuManHolds = (m: ReturnType<typeof qpuManOf>): boolean =>
   m.holds === true && m.kind === 'man' && m.inline === true && m.section === n && m.documentation.includes(m.name)
 
-const qpuShownHrefOf = (name: string, href = `${unit.origin}/mcp`) => {
-  if (name === 'qpu_quantum') return unit.origin
-  if (name === 'qpu_lean') return unit.href
-  if (name === 'qpu_cite') return `${unit.origin}/cite`
-  return href
-}
 
 /** OUTPUT SCHEMAS READ FROM THE RUN. A schema of `{ type: object }` constrains nothing and so can fail nothing; every
  * tool's schema is instead derived from its own replies: the properties every sample carried with their JSON types,
@@ -4308,71 +4302,74 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
     openWorldHint: true as const},
   ...extra})
 
+/** Where a GET returns the very document a tool replies with — only there is a link to it honest. Two tools have
+ * such a page; the rest reply with what no GET serves, and carry no link rather than one to a different document. */
+const qpuShownResourceOf = (name: string): string | undefined => {
+  if (name === 'qpu_lean') return unit.href
+  if (name === 'qpu_cite') return `${unit.origin}/cite`
+  return undefined
+}
+
+/** THE REPLY ON THE WIRE, ONCE AS TEXT AND ONCE AS STRUCTURE. The protocol asks for `content` and `structuredContent`,
+ * and those are the two copies a client pays for. An embedded resource copy, a string copy under `_meta.output` and an
+ * object copy under `_meta.functionResponse` made a 131 KB proof a 729 KB reply (external audit, 2026-09-12); they are
+ * gone. A `resource_link` rides along only when a GET of its uri returns this same document (qpu_lean, qpu_cite).
+ * `_meta.call` says where to call again; vendor shapes are documented in the JSON-LD catalogue at GET /mcp. */
 export const qpuMcpShownOf = (name: string, payload: unknown, href = `${unit.origin}/mcp`) => {
   const bag = payload && typeof payload === 'object' ? (payload as { holds?: unknown }) : {}
   const holds = bag.holds === true
-  const shownHref = qpuShownHrefOf(name, href)
+  const resource = qpuShownResourceOf(name)
   const unlimited = JSON.stringify(payload)
   const content: {
-    type: 'text' | 'resource' | 'resource_link'
+    type: 'text' | 'resource_link'
     text?: string
     uri?: string
     name?: string
     mimeType?: string
     description?: string
-    resource?: { uri: string; mimeType: string; text: string }
     annotations: { audience: readonly ['user'] | readonly ['user', 'assistant']; priority: number }
   }[] = [
     {
       type: 'text' as const,
       text: unlimited,
-      annotations: { audience: ['user', 'assistant'] as const, priority: seed }},
-    {
-      type: 'resource' as const,
-      resource: {
-        uri: shownHref,
-        mimeType: 'application/ld+json',
-        text: unlimited},
-      annotations: { audience: ['user'] as const, priority: seed }},
-    {
+      annotations: { audience: ['user', 'assistant'] as const, priority: seed }}]
+  if (resource !== undefined) {
+    content.push({
       type: 'resource_link' as const,
-      uri: shownHref,
+      uri: resource,
       name,
       mimeType: 'application/ld+json',
-      description: name,
-      annotations: { audience: ['user'] as const, priority: seed }}]
-  // PLAIN MCP ON THE WIRE (external audit, 2026-09-12): content, structuredContent, isError are the result; the
-  // compatibility extras — resultType, output, role, functionResponse — ride under _meta where the protocol keeps them.
+      description: `GET ${resource} returns this document`,
+      annotations: { audience: ['user'] as const, priority: seed }})
+  }
   return {
     content,
     structuredContent: payload,
     isError: holds === false,
     _meta: {
       resultType: 'complete' as const,
-      output: unlimited,
       role: 'tool' as const,
-      functionResponse: { name, response: payload },
       compatibility: 'max' as const,
       mimeType: 'application/ld+json',
-      href: shownHref}}
+      call: href,
+      ...(resource !== undefined ? { resource } : {})}}
 }
 
 export const qpuMcpShownHolds = (shown: ReturnType<typeof qpuMcpShownOf>): boolean => {
   const unlimited = JSON.stringify(shown.structuredContent)
+  const link = shown.content.find((c) => c.type === 'resource_link')
   return (
     shown._meta.resultType === 'complete' &&
-    shown.content.length === n &&
+    shown.content.length >= seed &&
+    shown.content.length <= coins &&
     shown.content[n - n]?.type === 'text' &&
     shown.content[n - n]?.text === unlimited &&
-    shown.content[seed]?.type === 'resource' &&
-    shown.content[seed]?.resource?.mimeType === 'application/ld+json' &&
-    shown.content[seed]?.resource?.text === unlimited &&
-    shown.content[coins]?.type === 'resource_link' &&
-    shown.content[coins]?.mimeType === 'application/ld+json' &&
-    shown._meta.output === unlimited &&
+    (link === undefined || (link.mimeType === 'application/ld+json' && link.uri === shown._meta.resource)) &&
     shown._meta.role === 'tool' &&
-    shown._meta.functionResponse.response === shown.structuredContent &&
     shown._meta.compatibility === 'max' &&
+    shown._meta.call.startsWith(unit.origin) &&
+    !('output' in shown._meta) &&
+    !('functionResponse' in shown._meta) &&
     shown.isError === ((shown.structuredContent as { holds?: boolean })?.holds !== true)
   )
 }
