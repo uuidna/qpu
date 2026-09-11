@@ -1,13 +1,13 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 98,
-  "pass": 98,
+  "tests": 100,
+  "pass": 100,
   "fail": 0,
   "dry": 0,
-  "circuit": 57,
+  "circuit": 59,
   "mintOnly": 11,
-  "receipt": "5b607f3c2728f9ee",
+  "receipt": "469624e9588e9478",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -1891,6 +1891,44 @@
       }
     },
     {
+      "name": "live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 31,
+      "kinds": {
+        "x": 8,
+        "cnot": 16,
+        "toffoli": 2,
+        "h": 2,
+        "measure": 1,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "receipt": "8a2e219fc08da1f3",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
+      "mint": {
+        "calls": 2209,
+        "chain": "99f91ffe9f9f4d17"
+      }
+    },
+    {
       "name": "eight doors via mcp",
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -2708,6 +2746,44 @@
       "mint": {
         "calls": 815900,
         "chain": "1ee047b105825b60"
+      }
+    },
+    {
+      "name": "reach: the largest run this host holds is climbed to, and the run at the reach holds",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 310,
+      "kinds": {
+        "x": 80,
+        "cnot": 160,
+        "toffoli": 20,
+        "h": 20,
+        "measure": 10,
+        "cmodexp": 10,
+        "xx": 10
+      },
+      "receipt": "3f821cd833d1b8ff",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 10
+        }
+      ],
+      "mint": {
+        "calls": 16785463,
+        "chain": "8917c37dfa713599"
       }
     },
     {

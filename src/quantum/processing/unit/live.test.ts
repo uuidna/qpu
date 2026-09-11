@@ -1,6 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import { qpuQuantumOf } from './index.js'
+import { qpuQuantumOf, qpuShorOf } from './index.js'
 
 const html = { accept: 'text/html' }
 
@@ -199,4 +199,36 @@ test('live qpu.uuidna.com', async (t) => {
     assert.equal(hop.await, false)
     assert.equal(hop.hop, hop.lane)
   })
+})
+
+/** The deployed host climbed the same way, under a wall-time budget so the climb stops before the host does. Where it
+ * stops is a reading of qpu.uuidna.com's reach, never a cap: nothing in the unit refuses a larger request. */
+test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds', async (t) => {
+  const live = 'https://qpu.uuidna.com'
+  const floor = qpuShorOf()
+  const budgetMs = 20000
+  type Run = { circuitry: { qubits: number; dim: number; holds: boolean }; prepare: { prepared: boolean; amplitudes: number }; measure: { holds: boolean } }
+  let reach: { qubits: number; dim: number; ms: number } | undefined
+  for (let work = 8; work <= 50; work += 2) {
+    const t0 = process.hrtime.bigint()
+    const res = await fetch(`${live}/mcp`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'crypto_shor', arguments: { n: 2 ** work - 1, a: 3 } } }),
+    })
+    const ms = Number(process.hrtime.bigint() - t0) / 1e6
+    assert.equal(res.status, 200, `qubits ${work + 2}`)
+    const body = (await res.json()) as { result: { content: { text: string }[] } }
+    const run = JSON.parse(body.result.content[0]!.text) as Run
+    assert.equal(run.circuitry.qubits, work + 2)
+    assert.equal(run.prepare.prepared, true)
+    assert.equal(run.prepare.amplitudes, run.circuitry.dim)
+    assert.equal(run.circuitry.holds, true)
+    assert.equal(run.measure.holds, true)
+    reach = { qubits: run.circuitry.qubits, dim: run.circuitry.dim, ms }
+    if (ms * 4 > budgetMs) break
+  }
+  assert.notEqual(reach, undefined)
+  assert.equal(reach!.qubits > floor.circuitry.qubits, true)
+  t.diagnostic(`live reach ${reach!.qubits} qubits · dim ${reach!.dim} · ${reach!.ms.toFixed(0)} ms round trip`)
 })
