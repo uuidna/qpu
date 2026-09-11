@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import {
+import worker, {
   qpuAlpineHolds,
   qpuAlpineOf,
   qpuDocsOf,
@@ -13,6 +13,20 @@ import {
   qpuStorageHolds,
   qpuStorageMetaOf,
 } from './index.js'
+
+const host = 'qpu.uuidna.com'
+const env = { QPU_HOST: host }
+const html = { accept: 'text/html' }
+const origin = `https://${host}`
+
+const fetchOf = (path: string, init: RequestInit = {}) =>
+  worker.fetch(
+    new Request(`${origin}${path}`, {
+      ...init,
+      headers: { ...html, ...(init.headers as Record<string, string> | undefined) },
+    }),
+    env,
+  )
 
 test('measure hybrid storage speed and cost — kv faster costlier, r2 cheaper slower', () => {
   const hybrid = qpuHybridOf()
@@ -85,4 +99,48 @@ test('hybrid theorems sit on Lean cover — docs stay seven', () => {
   assert.equal(docs.documentation.includes('Native Alpine Linux'), true)
   assert.equal(docs.documentation.includes('Last link deleted frees the inode'), true)
   assert.equal(docs.documentation.includes('Next is the double'), true)
+})
+
+test('native Alpine inodes — referrer links, last unlink frees storage', async () => {
+  const body = { kind: 'notes', n: 1 }
+  const a = (await (await fetchOf('/storage/notes/alpha', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })).json()) as { holds: boolean; inode: string; nlink: number; referrer: string; address: string; value: { kind: string } }
+  assert.equal(a.holds, true)
+  assert.equal(a.nlink, 1)
+  assert.equal(a.value.kind, 'notes')
+  assert.equal(typeof a.inode, 'string')
+  assert.equal(a.referrer.includes(a.inode), true)
+  const b = (await (await fetchOf('/storage/notes/beta', {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  })).json()) as { holds: boolean; inode: string; nlink: number; referrer: string }
+  assert.equal(b.holds, true)
+  assert.equal(b.inode, a.inode)
+  assert.equal(b.nlink, 2)
+  const first = (await (await fetchOf('/storage/notes/alpha', { method: 'DELETE' })).json()) as { deleted: boolean; freed: boolean; nlink: number; holds: boolean }
+  assert.equal(first.deleted, true)
+  assert.equal(first.freed, false)
+  assert.equal(first.nlink, 1)
+  const still = (await (await fetchOf('/storage/notes/beta')).json()) as { holds: boolean; nlink: number; value: { kind: string } }
+  assert.equal(still.holds, true)
+  assert.equal(still.nlink, 1)
+  assert.equal(still.value.kind, 'notes')
+  const access = (await (await fetchOf(new URL(a.referrer).pathname)).json()) as { holds: boolean; inode: string; nlink: number }
+  assert.equal(access.holds, true)
+  assert.equal(access.inode, a.inode)
+  const listed = (await (await fetchOf('/storage')).json()) as { keys: string[] }
+  assert.equal(listed.keys.includes('notes/beta'), true)
+  assert.equal(listed.keys.includes(`notes/${a.inode}`), false)
+  const last = (await (await fetchOf('/storage/notes/beta', { method: 'DELETE' })).json()) as { deleted: boolean; freed: boolean; nlink: number }
+  assert.equal(last.deleted, true)
+  assert.equal(last.freed, true)
+  assert.equal(last.nlink, 0)
+  const gone = (await (await fetchOf('/storage/notes/beta')).json()) as { holds: boolean }
+  assert.equal(gone.holds, false)
+  const inodeGone = (await (await fetchOf(new URL(a.referrer).pathname)).json()) as { holds: boolean }
+  assert.equal(inodeGone.holds, false)
 })

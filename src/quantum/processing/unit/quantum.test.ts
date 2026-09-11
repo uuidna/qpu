@@ -25,6 +25,15 @@ const uiOf = async (path: string) => {
   return { res, json: await res.json() }
 }
 
+const fetchOf = (path: string, init: RequestInit = {}) =>
+  worker.fetch(
+    new Request(`https://${host}${path}`, {
+      ...init,
+      headers: { ...html, ...(init.headers as Record<string, string> | undefined) },
+    }),
+    env,
+  )
+
 type Circuit = {
   kind: string
   running: boolean
@@ -443,7 +452,10 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.docs.documentation.includes('superconducting qubits'), true)
   assert.equal(json.docs.documentation.includes('Physical qubit initialize'), true)
   assert.equal(json.docs.documentation.includes('This host is a quantum computer'), true)
-  assert.equal(json.docs.documentation.includes('This report executes Shor'), true)
+  assert.equal(json.docs.documentation.includes('theorem shor'), true)
+  assert.equal(json.docs.documentation.includes('theorem fridge'), true)
+  assert.equal(json.docs.documentation.includes('theorem qubits'), true)
+  assert.equal(json.docs.documentation.includes('demo is not a test nor a proof'), true)
   assert.equal(json.circuit.hardware.holds, true)
   assert.equal(json.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
   assert.equal(json.circuit.fridge.kind, 'superconducting')
@@ -482,4 +494,177 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(fetched.live, true)
   assert.equal(fetched.hostEscape, false)
   assert.equal(fetched.value?.holds, true)
+})
+
+test('start measure generate', async () => {
+  const pageRes = await fetchOf('/')
+  const catalogRes = await fetchOf('/mcp')
+  const prove = (await mcpOf('qpu_prove')) as {
+    holds: boolean
+    ui: { experienced: boolean; inline: boolean; door: string }
+    theorems: { heading: string; theorem: string; holds: boolean }[]
+    cern: { faces: number; holds: boolean }
+    integrity: { n: number; holds: boolean }
+    intelligence?: { kind: string; test: string; research: string; holds: boolean }
+  }
+  const quantum = (await mcpOf('qpu_quantum')) as {
+    holds: boolean
+    fused: number
+    next: number
+    speed: { cover: string[]; ns?: number; holds: boolean; next: number }
+    ui: { experienced: boolean }
+    unlocked?: boolean
+    lock?: boolean
+    shor: { rsa: { kind: string; factored: boolean; modulus: number; p: number; q: number }; n: number; unlocked: boolean }
+    purpose: { cybersecurity: { rsa: { kind: string; factored: boolean } } }
+    evidence: { verify: { rsa: boolean } }
+  }
+  const page = (await pageRes.json()) as {
+    kind: string
+    holds: boolean
+    only: { holds: boolean; classical: boolean }
+    lattice: { occupied: number; vacant: number; holds: boolean }
+    circuit: { running: boolean }
+    shor: { rsa: { kind: string; factored: boolean; modulus: number; p: number; q: number }; n: number; unlocked: boolean }
+    docs: { inline: boolean; documentation: string }
+    ui: { experienced: boolean; prove: string }
+    speed: { cover: string[] }
+    capacity: {
+      infinite: boolean
+      scaled: boolean
+      next: number
+      fused: number
+      amplitudes: number
+      faces: number
+      crypt: { split: number; share: number; holds: boolean }
+      kv: { kind: string; added: number; amplitudes: number; holds: boolean; name: string }
+      agents: { free: boolean; auth: boolean; n: number; holds: boolean }
+      schemas: { mounted: number; vacant: number; holds: boolean }
+      raid: {
+        holds: boolean
+        rotate: boolean
+        start: string
+        cheapest: string
+        cover: string[]
+        pick: { name: string; cost: number }
+        types: { name: string }[]
+        clouds: { name: string }[]
+        cluster: { safe: boolean; cost: string; rotate: boolean }
+      }
+      holds: boolean
+    }
+  }
+  const catalog = (await catalogRes.json()) as {
+    kind: string
+    holds: boolean
+    '@context': unknown
+    '@type': string
+    hasPart: { '@type': string; numberOfItems: number }
+    prove: { ui: { experienced: boolean }; theorems: unknown[]; cern: { faces: number }; shor: { rsa: boolean; p: number; q: number; n: number; unlocked: boolean } }
+    cybersecurity: { listed: boolean; rsa: { kind: string; factored: boolean; p: number; q: number; modulus: number; unlocked: boolean }; encrypt: { kind: string; theorem: string; postquantum: boolean; holds: boolean }; tools: { name: string }[] }
+    capacity: {
+      infinite: boolean
+      scaled: boolean
+      agents: { free: boolean; auth: boolean; n: number }
+      crypt: { holds: boolean }
+      schemas: { mounted: number; vacant: number; holds: boolean }
+      holds: boolean
+    }
+  }
+  assert.equal(pageRes.status, 200)
+  assert.equal((pageRes.headers.get('content-type') ?? '').includes('application/ld+json'), true)
+  assert.equal(page.kind, 'quantum')
+  assert.equal(page.holds, true)
+  assert.equal(page.only.holds, true)
+  assert.equal(page.lattice.occupied, 14)
+  assert.equal(page.lattice.vacant, 0)
+  assert.equal(page.lattice.holds, true)
+  assert.equal(page.docs.inline, true)
+  assert.equal(page.ui.prove, 'qpu_prove')
+  assert.equal(page.docs.documentation.includes('JSON-LD'), true)
+  assert.equal(page.docs.documentation.includes('Factor RSA'), true)
+  assert.equal(page.shor.rsa.kind, 'rsa')
+  assert.equal(page.shor.rsa.factored, true)
+  assert.equal(page.shor.rsa.p * page.shor.rsa.q, page.shor.n)
+  assert.equal(page.shor.n, 91)
+  assert.equal(page.shor.unlocked, true)
+  assert.deepEqual(page.speed.cover, ['next', 'Hz', 'ns', 'benchmark'])
+  assert.equal(page.capacity.holds, true)
+  assert.equal(page.capacity.next, page.capacity.fused + page.capacity.fused)
+  assert.equal(page.capacity.crypt.split, 14)
+  assert.equal(page.capacity.crypt.holds, true)
+  assert.equal(page.capacity.kv.kind, 'kv')
+  assert.equal(page.capacity.kv.name, 'kv')
+  assert.equal(page.capacity.kv.added, page.capacity.amplitudes)
+  assert.equal(page.capacity.kv.amplitudes, page.capacity.fused / 14)
+  assert.equal(page.capacity.kv.added + page.capacity.kv.added, page.capacity.kv.amplitudes)
+  assert.equal(page.capacity.faces * page.capacity.kv.amplitudes, page.capacity.fused)
+  assert.equal(page.capacity.kv.holds, true)
+  assert.equal(page.docs.documentation.includes('KV added amplitudes'), true)
+  assert.equal(page.capacity.agents.free, true)
+  assert.equal(page.capacity.agents.n, 14)
+  assert.equal(page.capacity.agents.holds, true)
+  assert.equal(page.capacity.schemas.mounted, 14)
+  assert.equal(page.capacity.schemas.vacant, 0)
+  assert.equal(page.capacity.schemas.holds, true)
+  assert.equal(page.capacity.raid.holds, true)
+  assert.equal(page.capacity.raid.rotate, true)
+  assert.equal(page.capacity.raid.start, 'cheapest')
+  assert.equal(page.capacity.raid.cheapest, page.capacity.raid.cover[0])
+  assert.equal(page.capacity.raid.cover.length, 14)
+  assert.equal(page.capacity.raid.types.length, 14)
+  assert.equal(page.capacity.raid.clouds.length, 14)
+  assert.equal(page.capacity.raid.cluster.safe, true)
+  assert.equal(page.capacity.raid.cluster.cost, 'minimum')
+  assert.equal(page.capacity.raid.pick.name, page.capacity.raid.cover[0])
+  assert.equal(catalog.kind, 'quantum')
+  assert.equal(catalog.holds, true)
+  assert.equal(catalog['@type'], 'WebAPI')
+  assert.equal(Array.isArray(catalog['@context']), true)
+  assert.equal((catalog['@context'] as unknown[])[0], 'https://schema.org')
+  assert.equal(catalog.hasPart['@type'], 'ItemList')
+  assert.equal(catalog.hasPart.numberOfItems, 8)
+  assert.equal(catalog.capacity.holds, true)
+  assert.equal(catalog.capacity.agents.free, true)
+  assert.equal(catalog.capacity.agents.n, 14)
+  assert.equal(catalog.capacity.crypt.holds, true)
+  assert.equal(catalog.capacity.schemas.mounted, 14)
+  assert.equal(catalog.capacity.schemas.vacant, 0)
+  assert.equal(catalog.prove.cern.faces, 14)
+  assert.equal(catalog.prove.shor.rsa, true)
+  assert.equal(catalog.prove.shor.n, 91)
+  assert.equal(catalog.prove.shor.unlocked, true)
+  assert.equal(catalog.prove.shor.p * catalog.prove.shor.q, catalog.prove.shor.n)
+  assert.equal(catalog.cybersecurity.listed, true)
+  assert.equal(catalog.cybersecurity.rsa.kind, 'rsa')
+  assert.equal(catalog.cybersecurity.rsa.factored, true)
+  assert.equal(catalog.cybersecurity.rsa.unlocked, true)
+  assert.equal(catalog.cybersecurity.encrypt.kind, 'encrypt')
+  assert.equal(catalog.cybersecurity.encrypt.theorem, 'crypto')
+  assert.equal(catalog.cybersecurity.encrypt.postquantum, true)
+  assert.equal(catalog.cybersecurity.encrypt.holds, true)
+  assert.equal(catalog.cybersecurity.rsa.modulus, 91)
+  assert.equal(catalog.cybersecurity.tools.some((row) => row.name === 'crypto_rsa'), true)
+  assert.equal(prove.holds, true)
+  assert.equal(prove.ui.inline, true)
+  assert.equal(prove.ui.door, 'qpu_prove')
+  assert.equal(prove.theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && r.theorem.includes('by decide') === false), true)
+  assert.equal(prove.cern.holds, true)
+  assert.equal(prove.integrity.holds, true)
+  assert.equal(prove.integrity.n, 3)
+  assert.equal(prove.intelligence?.kind, 'intelligence')
+  assert.equal(prove.intelligence?.test, 'fusion')
+  assert.equal(prove.intelligence?.research, 'free online')
+  assert.equal(prove.intelligence?.holds, true)
+  assert.equal(quantum.holds, true)
+  assert.equal(quantum.shor.rsa.kind, 'rsa')
+  assert.equal(quantum.shor.rsa.factored, true)
+  assert.equal(quantum.shor.rsa.p * quantum.shor.rsa.q, quantum.shor.n)
+  assert.equal(quantum.purpose.cybersecurity.rsa.kind, 'rsa')
+  assert.equal(quantum.purpose.cybersecurity.rsa.factored, true)
+  assert.equal(quantum.evidence.verify.rsa, true)
+  assert.equal(quantum.next, quantum.fused + quantum.fused)
+  assert.equal(quantum.speed.holds, true)
+  assert.equal(quantum.speed.next, quantum.next)
+  assert.equal(quantum.speed.ns, 0)
 })

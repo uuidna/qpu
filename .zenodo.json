@@ -1,0 +1,82 @@
+{
+  "title": "QPU",
+  "description": "Running quantum circuit at https://qpu.uuidna.com. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. No auth. JSON-LD. The TypeScript and Lean sources are the blueprint. ORCID https://orcid.org/0009-0000-7312-9778.",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "cc-by-nc-nd-4.0",
+  "creators": [
+    {
+      "name": "Rouschev, Tsvetan",
+      "orcid": "0009-0000-7312-9778"
+    }
+  ],
+  "keywords": [
+    "qpu",
+    "quantum-processing-unit",
+    "uuidna",
+    "mcp",
+    "Lean 4"
+  ],
+  "communities": [
+    {
+      "identifier": "uuidna"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.21781603",
+      "relation": "references",
+      "scheme": "doi",
+      "resource_type": "publication"
+    },
+    {
+      "identifier": "https://qpu.uuidna.com",
+      "relation": "isDocumentedBy",
+      "scheme": "url",
+      "resource_type": "publication-softwaredocumentation"
+    },
+    {
+      "identifier": "https://qpu.uuidna.com/quantum/processing/unit",
+      "relation": "isDocumentedBy",
+      "scheme": "url",
+      "resource_type": "publication-softwaredocumentation"
+    },
+    {
+      "identifier": "https://github.com/uuidna/qpu",
+      "relation": "isSupplementTo",
+      "scheme": "url",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.5281/zenodo.22700098",
+      "relation": "isVersionOf",
+      "scheme": "doi",
+      "resource_type": "software"
+    },
+    {
+      "identifier": "10.7483/OPENDATA.CMS.53FG.V2S9",
+      "relation": "references",
+      "scheme": "doi",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "10.7483/OPENDATA.CMS.RG9B.XJMD",
+      "relation": "references",
+      "scheme": "doi",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "10.7483/OPENDATA.CMS.I8HN.DF32",
+      "relation": "references",
+      "scheme": "doi",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "10.7483/OPENDATA.CMS.0LRL.BXG5",
+      "relation": "references",
+      "scheme": "doi",
+      "resource_type": "dataset"
+    }
+  ],
+  "notes": "Cite the running quantum circuit and its Lean proof."
+}

@@ -17,8 +17,6 @@ import {
   qpuLeanOf,
   qpuNextHolds,
   qpuNextOf,
-  qpuClayHolds,
-  qpuClayOf,
   qpuCssHolds,
   qpuCssOf,
   qpuHybridHolds,
@@ -95,20 +93,6 @@ test('next is the double — coil times mintOf bits plus coins is fused plus fus
   assert.equal(next.theorem, 'next_coil')
 })
 
-test('2×7 coins = 1+6 coils = clay', () => {
-  const clay = qpuClayOf()
-  const coil = qpuCoilOf()
-  const faces = qpuFacesOf()
-  assert.equal(qpuClayHolds(clay), true)
-  assert.equal(clay.coins * clay.seven, 14)
-  assert.equal((1 + clay.six) * clay.coins, 14)
-  assert.equal(clay.six, 6)
-  assert.equal(clay.coils, 7)
-  assert.equal(clay.clay, coil.coil)
-  assert.equal(clay.clay, faces.faces)
-  assert.equal(clay.theorem, 'clay')
-})
-
 test('superconducting fridge — resistance none, computations ns none', () => {
   const circuit = qpuCircuitOf()
   const speed = qpuSpeedOf()
@@ -165,9 +149,6 @@ test('coil theorems sit on Lean rows and the fridge — docs stay seven', () => 
     'emerge',
     'coil_efficiency',
     'next_coil',
-    'one_plus_six',
-    'two_x_seven_coins',
-    'clay',
   ]
   for (const heading of names) {
     const row = [...lean.rows, ...lean.cover].find((r) => r.heading === heading)

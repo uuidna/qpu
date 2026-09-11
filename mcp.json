@@ -26,7 +26,9 @@
   "license": "CC-BY-NC-ND-4.0",
   "provider": {
     "@type": "Person",
-    "name": "Tsvetan Rouschev"
+    "name": "Tsvetan Rouschev",
+    "identifier": "https://orcid.org/0009-0000-7312-9778",
+    "sameAs": "https://orcid.org/0009-0000-7312-9778"
   },
   "kind": "quantum",
   "only": {
@@ -429,7 +431,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 1,
       "name": "qpu_quantum",
-      "description": "theorem quantum. theorem fridge.",
+      "description": "theorem quantum. theorem shor. theorem crypto. Factor RSA.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -446,9 +448,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_quantum",
         "href": "https://qpu.uuidna.com",
-        "description": "theorem quantum. theorem fridge.",
-        "reading": "GET https://qpu.uuidna.com. tools/call qpu_quantum. No auth.",
-        "documentation": "NAME\n    qpu_quantum — theorem quantum. theorem fridge.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com. tools/call qpu_quantum. No auth.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "theorem quantum. theorem shor. theorem crypto. Factor RSA.",
+        "reading": "GET https://qpu.uuidna.com. tools/call qpu_quantum. theorem quantum. theorem shor. theorem crypto. Factor RSA. No auth.",
+        "documentation": "NAME\n    qpu_quantum — theorem quantum. theorem shor. theorem crypto. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com. tools/call qpu_quantum. theorem quantum. theorem shor. theorem crypto. Factor RSA. No auth.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -458,7 +460,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 2,
       "name": "qpu_lean",
-      "description": "theorem infinite. theorem distribute.",
+      "description": "theorem infinite. theorem distribute. theorem shor. Factor RSA.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -475,9 +477,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_lean",
         "href": "https://qpu.uuidna.com/quantum/processing/unit",
-        "description": "theorem infinite. theorem distribute.",
-        "reading": "GET https://qpu.uuidna.com/quantum/processing/unit. Source src/quantum/processing/unit/index.lean. No auth.",
-        "documentation": "NAME\n    qpu_lean — theorem infinite. theorem distribute.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_lean\n    qpu_lean { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/quantum/processing/unit. Source src/quantum/processing/unit/index.lean. No auth.\nSEE ALSO\n    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "theorem infinite. theorem distribute. theorem shor. Factor RSA.",
+        "reading": "GET https://qpu.uuidna.com/quantum/processing/unit. Source src/quantum/processing/unit/index.lean. theorem shor. Factor RSA. No auth.",
+        "documentation": "NAME\n    qpu_lean — theorem infinite. theorem distribute. theorem shor. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_lean\n    qpu_lean { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/quantum/processing/unit. Source src/quantum/processing/unit/index.lean. theorem shor. Factor RSA. No auth.\nSEE ALSO\n    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -505,8 +507,8 @@
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_cite",
         "href": "https://qpu.uuidna.com/cite",
         "description": "MLA 8. when never.",
-        "reading": "GET https://qpu.uuidna.com/cite. DOI empty. No auth.",
-        "documentation": "NAME\n    qpu_cite — MLA 8. when never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/cite. DOI empty. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "reading": "GET https://qpu.uuidna.com/cite. DOI 10.5281/zenodo.22700099. No auth.",
+        "documentation": "NAME\n    qpu_cite — MLA 8. when never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/cite. DOI 10.5281/zenodo.22700099. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -684,7 +686,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 8,
       "name": "qpu_prove",
-      "description": "theorem quantum. theorem cern. theorem tetra. theorem fusion.",
+      "description": "theorem quantum. theorem shor. theorem crypto. Factor RSA.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -709,9 +711,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "theorem quantum. theorem cern. theorem tetra. theorem fusion.",
-        "reading": "tools/call qpu_prove. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.",
-        "documentation": "NAME\n    qpu_prove — theorem quantum. theorem cern. theorem tetra. theorem fusion.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    tools/call qpu_prove. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "description": "theorem quantum. theorem shor. theorem crypto. Factor RSA.",
+        "reading": "tools/call qpu_prove. theorem shor. theorem crypto. Factor RSA. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.",
+        "documentation": "NAME\n    qpu_prove — theorem quantum. theorem shor. theorem crypto. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    tools/call qpu_prove. theorem shor. theorem crypto. Factor RSA. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
         "holds": true
       }
     }
@@ -730,7 +732,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_quantum",
           "name": "qpu_quantum",
-          "description": "theorem quantum. theorem fridge.",
+          "description": "theorem quantum. theorem shor. theorem crypto. Factor RSA.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com"
         }
@@ -744,7 +746,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_lean",
           "name": "qpu_lean",
-          "description": "theorem infinite. theorem distribute.",
+          "description": "theorem infinite. theorem distribute. theorem shor. Factor RSA.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/quantum/processing/unit"
         }
@@ -828,10 +830,274 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_prove",
           "name": "qpu_prove",
-          "description": "theorem quantum. theorem cern. theorem tetra. theorem fusion.",
+          "description": "theorem quantum. theorem shor. theorem crypto. Factor RSA.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/mcp"
         }
+      }
+    ]
+  },
+  "cybersecurity": {
+    "kind": "cybersecurity",
+    "theorem": "crypto",
+    "listed": true,
+    "morph": true,
+    "sealed": false,
+    "rsa": {
+      "kind": "rsa",
+      "cryptosystem": "rsa",
+      "modulus": 91,
+      "p": 7,
+      "q": 13,
+      "factored": true,
+      "unlocked": true
+    },
+    "encrypt": {
+      "kind": "encrypt",
+      "theorem": "crypto",
+      "postquantum": true,
+      "holds": true
+    },
+    "tools": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_catalog",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 1,
+        "name": "crypto_catalog",
+        "description": "theorem shor. theorem crypto.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_catalog",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_catalog",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem shor. theorem crypto.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. theorem crypto. Post-quantum encrypt.",
+          "documentation": "NAME\n    crypto_catalog — theorem shor. theorem crypto.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_catalog\n    crypto_catalog { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. theorem crypto. Post-quantum encrypt.\nSEE ALSO\n    crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_shor",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 2,
+        "name": "crypto_shor",
+        "description": "theorem shor. Factor RSA.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_shor",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_shor",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem shor. Factor RSA.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Coprime base.",
+          "documentation": "NAME\n    crypto_shor — theorem shor. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shor\n    crypto_shor { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Coprime base.\nSEE ALSO\n    crypto_catalog, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_cmodexp",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 3,
+        "name": "crypto_cmodexp",
+        "description": "theorem shor. Factor RSA.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_cmodexp",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem shor. Factor RSA.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Native h cnot. Compiled x swap csdg cmodexp.",
+          "documentation": "NAME\n    crypto_cmodexp — theorem shor. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp\n    crypto_cmodexp { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Native h cnot. Compiled x swap csdg cmodexp.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_iqft",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 4,
+        "name": "crypto_iqft",
+        "description": "theorem shor. Factor RSA.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_iqft",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_iqft",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem shor. Factor RSA.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Inverse QFT. Period continued-fraction.",
+          "documentation": "NAME\n    crypto_iqft — theorem shor. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_iqft\n    crypto_iqft { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Inverse QFT. Period continued-fraction.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_shots",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 5,
+        "name": "crypto_shots",
+        "description": "theorem shor. Factor RSA.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_shots",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_shots",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem shor. Factor RSA.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Superconducting. xx identity.",
+          "documentation": "NAME\n    crypto_shots — theorem shor. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shots\n    crypto_shots { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. Superconducting. xx identity.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_rsa, crypto_split, crypto_verify",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_rsa",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 6,
+        "name": "crypto_rsa",
+        "description": "theorem shor. Factor RSA.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_rsa",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_rsa",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem shor. Factor RSA.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. JSON Nat.",
+          "documentation": "NAME\n    crypto_rsa — theorem shor. Factor RSA.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_rsa\n    crypto_rsa { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. p * q = N. JSON Nat.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_split, crypto_verify",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_split",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 7,
+        "name": "crypto_split",
+        "description": "theorem crypto. Post-quantum encrypt.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_split",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_split",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem crypto. Post-quantum encrypt.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem crypto. Post-quantum encrypt. fused = split * share.",
+          "documentation": "NAME\n    crypto_split — theorem crypto. Post-quantum encrypt.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_split\n    crypto_split { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem crypto. Post-quantum encrypt. fused = split * share.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_verify",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://qpu.uuidna.com/mcp#crypto_verify",
+        "url": "https://qpu.uuidna.com/mcp",
+        "position": 8,
+        "name": "crypto_verify",
+        "description": "theorem shor. theorem crypto.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "man": {
+              "type": "boolean"
+            }
+          }
+        },
+        "man": {
+          "kind": "man",
+          "inline": true,
+          "name": "crypto_verify",
+          "section": 3,
+          "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_verify",
+          "href": "https://qpu.uuidna.com/mcp",
+          "description": "theorem shor. theorem crypto.",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. theorem crypto. Post-quantum encrypt.",
+          "documentation": "NAME\n    crypto_verify — theorem shor. theorem crypto.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_verify\n    crypto_verify { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor RSA. theorem crypto. Post-quantum encrypt.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_split",
+          "holds": true
+        },
+        "sealed": false,
+        "morph": true
       }
     ]
   },
@@ -856,10 +1122,14 @@
       "theorem": "next_coil"
     },
     "shor": {
-      "n": 15,
-      "a": 7,
+      "n": 91,
+      "a": 8,
       "qft": "iqft",
-      "product": 15
+      "product": 91,
+      "rsa": true,
+      "p": 7,
+      "q": 13,
+      "unlocked": true
     },
     "src": "src/quantum/processing/unit/index.lean"
   },

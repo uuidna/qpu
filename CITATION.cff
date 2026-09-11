@@ -6,6 +6,14 @@ authors:
   - family-names: Rouschev
     given-names: Tsvetan
     email: ceccec@psg.bg
+    orcid: https://orcid.org/0009-0000-7312-9778
 url: https://qpu.uuidna.com
 repository-code: https://github.com/uuidna/qpu
 license: CC-BY-NC-ND-4.0
+identifiers:
+  - description: This version
+    type: doi
+    value: 10.5281/zenodo.22700099
+  - description: All versions
+    type: doi
+    value: 10.5281/zenodo.22700098

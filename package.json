@@ -4,7 +4,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "description": "Running quantum circuit at https://qpu.uuidna.com. theorem quantum. Lean proof. JSON-LD. No auth.",
+  "description": "Running quantum circuit at https://qpu.uuidna.com. theorem quantum. Public quantum API. No auth. JSON-LD. The TypeScript and Lean sources are the blueprint.",
   "type": "module",
   "license": "CC-BY-NC-ND-4.0",
   "funding": {
@@ -14,7 +14,7 @@
   "author": {
     "name": "Tsvetan Rouschev",
     "email": "ceccec@psg.bg",
-    "url": "https://revolut.me/ceccec"
+    "url": "https://orcid.org/0009-0000-7312-9778"
   },
   "homepage": "https://qpu.uuidna.com",
   "repository": {
@@ -31,25 +31,25 @@
     "mcp"
   ],
   "main": "./dist/quantum/processing/unit/index.js",
-  "types": "./dist/quantum/processing/unit/index.d.ts",
+  "types": "./qpu.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/quantum/processing/unit/index.d.ts",
+      "types": "./qpu.d.ts",
       "import": "./dist/quantum/processing/unit/index.js"
     }
   },
   "files": [
     "dist",
+    "qpu.d.ts",
     "src/quantum/processing/unit/index.lean",
     "LICENSE",
     "README.md",
     "CITATION.cff",
     "mcp.json",
     "install.json",
-    "worker.js",
-    "wrangler.toml",
     "!dist/**/*.test.js",
     "!dist/**/*.test.d.ts",
+    "!dist/**/*.d.ts",
     "!dist/**/readme.js",
     "!dist/**/readme.d.ts"
   ],
@@ -60,9 +60,10 @@
   "scripts": {
     "prepare": "tsc -p tsconfig.json",
     "lean": "lean src/quantum/processing/unit/index.lean",
-    "build": "tsc -p tsconfig.json && node dist/quantum/processing/unit/readme.js",
+    "build": "rm -rf dist && tsc -p tsconfig.json && node dist/quantum/processing/unit/readme.js",
     "test": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
     "ci": "npm run lean && npm test",
+    "prepublishOnly": "npm run build",
     "ship": "npm run build && npx wrangler deploy"
   },
   "devDependencies": {
