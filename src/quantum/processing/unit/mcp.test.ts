@@ -529,3 +529,69 @@ test('production grade MCP — every tool listed, called, and usable', async (t)
     assert.equal(ask.shown.sealed, 8)
   })
 })
+
+test('protocol errors are JSON-RPC errors, an unknown tool is an error, and a job says its result is inline', async () => {
+  type RpcError = { jsonrpc: string; id: unknown; error: { code: number; message: string; data?: { tools?: string[]; methods?: string[] } }; result?: unknown }
+  const post = async (path: string, body: string) => {
+    const res = await fetchOf(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body })
+    return { status: res.status, json: (await res.json()) as RpcError & Record<string, unknown> }
+  }
+  // a body that is not JSON: parse error on 400, id null
+  const parse = await post('/mcp', 'not json')
+  assert.equal(parse.status, 400)
+  assert.deepEqual({ jsonrpc: parse.json.jsonrpc, id: parse.json.id, code: parse.json.error.code }, { jsonrpc: '2.0', id: null, code: -32700 })
+  // a JSON body that is not a request object, or has no method: invalid request on 400
+  for (const body of ['[]', '{"jsonrpc":"2.0","id":9}', '"text"', 'null']) {
+    const invalid = await post('/mcp', body)
+    assert.equal(invalid.status, 400, body)
+    assert.equal(invalid.json.error.code, -32600, body)
+  }
+  assert.equal((await post('/mcp', '{"jsonrpc":"2.0","id":9}')).json.id, 9)
+  // a method this server does not have: method not found on 200, with the methods it does have
+  const method = await post('/mcp', '{"jsonrpc":"2.0","id":3,"method":"resources/list"}')
+  assert.equal(method.status, 200)
+  assert.equal(method.json.id, 3)
+  assert.equal(method.json.error.code, -32601)
+  assert.equal(method.json.error.data?.methods?.includes('tools/call'), true)
+  assert.equal('holds' in method.json, false)
+  // a tool this server does not have, or a call that names none: invalid params on 200, with the tools it lists; never the root document
+  for (const body of ['{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"nope"}}', '{"jsonrpc":"2.0","id":4,"method":"tools/call"}']) {
+    const unknown = await post('/mcp', body)
+    assert.equal(unknown.status, 200, body)
+    assert.equal(unknown.json.id, 4, body)
+    assert.equal(unknown.json.error.code, -32602, body)
+    assert.equal(unknown.json.error.data?.tools?.length, 16, body)
+    assert.equal(unknown.json.result, undefined, body)
+  }
+  // the sub-servers decline the same way instead of turning the body into a job
+  const subUnknown = await post('/server', '{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"nope"}}')
+  assert.equal(subUnknown.json.error.code, -32602)
+  const subMethod = await post('/server', '{"jsonrpc":"2.0","id":6,"method":"nope"}')
+  assert.equal(subMethod.json.error.code, -32601)
+  assert.equal(subMethod.json.result, undefined)
+  // a known call still answers with a result and no error
+  const known = await post('/mcp', '{"jsonrpc":"2.0","id":8,"method":"tools/call","params":{"name":"qpu_cite"}}')
+  assert.equal(known.status, 200)
+  assert.equal(known.json.error, undefined)
+  assert.notEqual(known.json.result, undefined)
+  // a job's result is in the submit reply; the reply says nothing is stored and links the server, not an id that will not resolve
+  const job = await post('/server', '{"gates":[{"name":"h","q":0},{"name":"cnot","c":0,"t":1}]}')
+  const j = job.json as unknown as { kind: string; id: number; href: string; stored: boolean; result: string; index: number; counts: unknown; holds: boolean }
+  assert.equal(job.status, 200)
+  assert.equal(j.kind, 'job')
+  assert.equal(j.stored, false)
+  assert.equal(j.result, 'inline')
+  assert.equal(j.href, `${origin}/server`)
+  assert.equal(typeof j.index, 'number')
+  assert.notEqual(j.counts, undefined)
+  // the id resolves only inside the isolate that ran it (here, this process); an id nobody ran is a 404 that says why
+  const same = await fetchOf(`/server/${j.id}`)
+  assert.equal(same.status, 200)
+  assert.equal(((await same.json()) as { stored: boolean }).stored, false)
+  const gone = await fetchOf('/server/999999')
+  assert.equal(gone.status, 404)
+  const g = (await gone.json()) as { denied: string; why: string; holds: boolean }
+  assert.equal(g.denied, 'job')
+  assert.equal(g.holds, false)
+  assert.equal(g.why.includes('not stored'), true)
+})

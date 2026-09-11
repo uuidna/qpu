@@ -125,6 +125,20 @@ const ten = n * n + seed
 const found = coins * ten * ten
 const lost = mintOf(coins) * (ten * ten + seed)
 const unauthorized = mintOf(coins) * ten * ten + seed
+const badRequest = unauthorized - seed
+/** JSON-RPC 2.0 reserved error codes, as the specification numbers them. */
+const rpcCodes = { parse: -32700, invalid: -32600, method: -32601, params: -32602 } as const
+/** A JSON-RPC 2.0 error, as the protocol spells it: `jsonrpc`, the request's `id` (null when none was understood), and an
+ * `error` with code and message. A parse error or an invalid request travels on HTTP 400, because no request was understood;
+ * an unknown method or unknown tool travels on HTTP 200, because the request was understood and declined. Never
+ * `{"holds":false}` on a 404: that is the shape of a missing page, not of a declined call. */
+export const rpcErrorOf = (id: unknown, code: number, message: string, data?: unknown) => ({
+  jsonrpc: '2.0' as const,
+  id: id === undefined ? null : id,
+  error: data === undefined ? { code, message } : { code, message, data },
+})
+/** The methods this server answers on /mcp. */
+const rpcMethods = ['initialize', 'server/discover', 'ping', 'notifications/initialized', 'tools/list', 'tools/call'] as const
 const tenOf = (k: number): number => {
   let x = mintOf(n - n)
   for (let i = n - n; i < k; i++) x *= ten
@@ -4343,10 +4357,12 @@ const qpuSubRpcOf = async (
     const name = body.params?.name ?? ''
     const args = body.params?.arguments ?? {}
     const tool = tools.find((t) => t.name === name)
-    if (!tool) return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, qpuHandledOf('tool'), href) }
+    if (!tool) return rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name}`, { tools: tools.map((t) => t.name), href })
     if (args.man === true) return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, tool.man, href) }
     return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, await tool.run(args), href) }
   }
+  /** A body that names a method this server does not have is a declined call, not a job or a message. */
+  if (typeof body.method === 'string') return rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods], href })
   return undefined
 }
 
@@ -6458,9 +6474,13 @@ export const qpuServerSubmitOf = (input: Record<string, unknown> = {}) => {
     holds,
   }
   serverJobs.push(job)
+  /** The run is synchronous and its result is here, in this reply. Nothing is stored: `id` counts jobs in this isolate
+   * only, and a later GET of the job is answered only while this isolate lives. `href` is the server, not the job. */
   return {
     kind: 'job' as const,
-    href: `${serverHref}/${job.id}`,
+    href: serverHref,
+    stored: false as const,
+    result: 'inline' as const,
     backend: unit.host,
     vm: 'browser' as const,
     payload: plugin.href,
@@ -9915,8 +9935,14 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
   })
   }
   if (sandboxTools.has(name)) return shown(qpuSandboxRunOf(name, args))
-  return shown(qpuReadingOf())
+  return qpuUnknownToolOf(name)
 }
+/** A tool name this server does not have. Read by the router into a JSON-RPC -32602 error; never answered with the
+ * root document, which is a confident answer to a question nobody asked. */
+export type QpuUnknownTool = { kind: 'unknown'; tool: string; tools: string[]; holds: false }
+export const qpuUnknownToolOf = (tool: string): QpuUnknownTool => ({ kind: 'unknown', tool, tools: qpuMcpToolsListOf().map((t) => t.name), holds: false })
+export const isUnknownTool = (x: unknown): x is QpuUnknownTool =>
+  typeof x === 'object' && x !== null && (x as { kind?: unknown }).kind === 'unknown' && typeof (x as { tool?: unknown }).tool === 'string' && (x as { holds?: unknown }).holds === false
 
 export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
   const capacity = qpuCapacityOf()
@@ -10309,7 +10335,19 @@ export default {
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers })
     if (path === '/mcp') {
       if (request.method === 'POST') {
-        const body = (await request.json().catch(() => ({}))) as { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown }
+        let parsed: unknown
+        try {
+          parsed = JSON.parse(await request.text())
+        } catch {
+          return jsonOf(rpcErrorOf(null, rpcCodes.parse, 'Parse error: the body is not JSON'), badRequest)
+        }
+        if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+          return jsonOf(rpcErrorOf(null, rpcCodes.invalid, 'Invalid Request: expected one JSON-RPC 2.0 request object'), badRequest)
+        }
+        const body = parsed as { method?: unknown; params?: { name?: unknown; arguments?: unknown }; id?: unknown }
+        if (typeof body.method !== 'string') {
+          return jsonOf(rpcErrorOf(body.id, rpcCodes.invalid, 'Invalid Request: method must be a string'), badRequest)
+        }
         if (body.method === 'initialize' || body.method === 'server/discover') {
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf() })
         }
@@ -10320,10 +10358,13 @@ export default {
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: { resultType: 'complete' as const, tools: qpuMcpToolsListOf() } })
         }
         if (body.method === 'tools/call') {
-          const name = body.params?.name ?? ''
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: await qpuMcpCallOf(name, body.params?.arguments ?? {}, env, request.headers.get('authorization')) })
+          const name = typeof body.params?.name === 'string' ? body.params.name : ''
+          const args = body.params?.arguments && typeof body.params.arguments === 'object' && !Array.isArray(body.params.arguments) ? (body.params.arguments as Record<string, unknown>) : {}
+          const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
+          if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
+          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: called })
         }
-        return jsonOf(JSON.parse(dead), lost)
+        return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods] }))
       }
       return jsonOf(qpuMcpOf())
     }
@@ -10348,7 +10389,8 @@ export default {
       if (path.startsWith('/server/') && path.length > '/server/'.length) {
         const id = Number(path.slice('/server/'.length))
         const job = serverJobs.find((row) => row.id === id)
-        return jsonOf(job ?? { kind: 'result' as const, holds: false as const, denied: 'job' as const })
+        if (job) return jsonOf({ ...job, stored: false as const })
+        return jsonOf({ kind: 'result' as const, id, holds: false as const, denied: 'job' as const, why: 'jobs are not stored; the result is returned inline with the submit, and an id lives only as long as the isolate that ran it' }, lost)
       }
       return jsonOf(qpuServerMcpOf())
     }

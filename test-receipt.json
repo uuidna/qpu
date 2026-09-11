@@ -1,15 +1,15 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 103,
-  "pass": 103,
+  "tests": 104,
+  "pass": 104,
   "fail": 0,
   "dry": 0,
-  "circuit": 62,
+  "circuit": 63,
   "mintOnly": 11,
   "dim": "2^1048578",
   "qubits": 1048578,
-  "receipt": "1a57ca11ad6537cf",
+  "receipt": "335ca1b2aa769e36",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -2652,6 +2652,50 @@
       "mint": {
         "calls": 6248267,
         "chain": "1835528b2bdedc61"
+      }
+    },
+    {
+      "name": "protocol errors are JSON-RPC errors, an unknown tool is an error, and a job says its result is inline",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 27666,
+      "kinds": {
+        "x": 5985,
+        "cnot": 11505,
+        "toffoli": 972,
+        "h": 8429,
+        "measure": 487,
+        "cmodexp": 144,
+        "xx": 144
+      },
+      "dims": {
+        "8": 27378,
+        "512": 288
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "abfa293e4767fad8",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 487
+        }
+      ],
+      "mint": {
+        "calls": 628443,
+        "chain": "1eef2bbf652301d0"
       }
     },
     {
