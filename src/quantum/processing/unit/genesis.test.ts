@@ -52,9 +52,12 @@ test('shadcn schema combinatorial genesis covers all known frameworks', () => {
   assert.equal(css.css.includes('animation-delay'), false)
   assert.equal(css.experiments.length, 28)
   assert.equal(
-    css.experiments.filter((row) => row.quantum === false).every((row) => {
-      const hep = row as { domain?: string; hop?: number; product?: boolean; face: number }
-      return (hep.domain === 'scanner' || hep.domain === 'radar') && hep.hop === (hep.face + 7) % 14 && hep.product === false
+    css.experiments.filter((row) => {
+      const hep = row as { domain?: string }
+      return hep.domain === 'scanner' || hep.domain === 'radar'
+    }).every((row) => {
+      const hep = row as { domain?: string; hop?: number; product?: boolean; face: number; quantum?: boolean }
+      return hep.quantum === true && (hep.domain === 'scanner' || hep.domain === 'radar') && hep.hop === (hep.face + 7) % 14 && hep.product === false
     }),
     true,
   )

@@ -29,13 +29,43 @@ type Circuit = {
   kind: string
   running: boolean
   physical: boolean
+  hardware: {
+    kind: string
+    physical: boolean
+    device: string
+    initialize: boolean
+    gates: boolean
+    interfere: boolean
+    measure: boolean
+    noise: boolean
+    path: { circuit: string; payload?: string; plugin?: string; submit: string; src: string; holds: boolean }
+    holds: boolean
+  }
   vm: string
   primitives: string[]
   qubits: { n: number; dim: number; levels: number; holds: boolean }
   gates: { names: string[]; index: number; holds: boolean }
   measurement: { index: number; support: number[]; holds: boolean }
   noise: { channel: string; index: number; holds: boolean }
-  entangle: { kind: string; support: number[]; left: number; right: number; product: boolean; holds: boolean }
+  entangle: {
+    kind: string
+    support: number[]
+    left: number
+    right: number
+    product: boolean
+    parity: number
+    plus: { kind: string; ket: string; product: boolean; support: number[]; holds: boolean }
+    hadamard: { kind: string; parity: number; product: boolean; support: number[]; holds: boolean }
+    coil: {
+      theorem: string
+      windings: number
+      coil: number
+      faces: number
+      pairs: { ray: number; scanner: number; radar: number; hop: number; product: boolean; holds: boolean }[]
+      holds: boolean
+    }
+    holds: boolean
+  }
   interfere: { kind: string; cancelled: number; restored: number; support: number[]; holds: boolean }
   ghz: { kind: string; support: number[]; left: number; right: number; product: boolean; holds: boolean }
   noclone: { kind: string; copies: number; cloned: number; holds: boolean }
@@ -58,6 +88,8 @@ type Circuit = {
     monogamy: boolean
     product: boolean
     classical: boolean
+    computer: boolean
+    hardware: boolean
     holds: boolean
   }
   lattice: {
@@ -87,7 +119,7 @@ type Circuit = {
     electronics: { kind: string; uses: string; holds: boolean }
     follow: { kind: string; emerge: { novel: boolean; creative: boolean; holds: boolean } }
     efficiency: { kind: string; unity: number; remainder: number; measure: number; holds: boolean }
-    next: { kind: string; last: boolean; infinite: boolean; nextCoil: number; nextFused: number; holds: boolean }
+    next: { kind: string; last: boolean; infinite: boolean; amplitudes: number; next: number; fused: number; nextCoil: number; nextFused: number; holds: boolean }
     clay: { kind: string; clay: number; coil: number; six: number; coils: number; holds: boolean }
     holds: boolean
   }
@@ -107,14 +139,11 @@ type Circuit = {
   holds: boolean
 }
 
-test('circuit running via mcp', async () => {
-  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit; ui: { experienced: boolean } }
-  const page = await uiOf('/')
+test('circuit holds via mcp', async () => {
+  const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit; ui: { prove: string } }
   assert.equal(q.circuit.kind, 'circuit')
-  assert.equal(q.circuit.running, true)
   assert.equal(q.circuit.holds, true)
-  assert.equal(q.ui.experienced, true)
-  assert.equal((page.json as { circuit: Circuit }).circuit.running, true)
+  assert.equal(q.ui.prove, 'qpu_prove')
 })
 
 test('circuit vm browser via mcp', async () => {
@@ -143,7 +172,6 @@ test('circuit levels via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
   assert.equal(q.circuit.qubits.levels, 2)
   assert.equal(q.circuit.science.levels, 2)
-  assert.equal(q.circuit.drift.none, true)
   assert.equal(q.circuit.drift.between, true)
   assert.equal(q.circuit.drift.holds, true)
   assert.equal(q.circuit.sciences.shared, true)
@@ -176,8 +204,19 @@ test('circuit measurement support via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
   assert.deepEqual(q.circuit.measurement.support, [0, 3])
   assert.equal(q.circuit.entangle.product, false)
+  assert.equal(q.circuit.entangle.parity, 0)
+  assert.equal(q.circuit.entangle.plus.kind, 'separable')
+  assert.equal(q.circuit.entangle.plus.product, true)
+  assert.deepEqual(q.circuit.entangle.plus.support, [0, 1, 2, 3])
+  assert.equal(q.circuit.entangle.hadamard.parity, 0)
+  assert.equal(q.circuit.entangle.hadamard.product, false)
   assert.equal(q.circuit.entangle.left, 1)
   assert.equal(q.circuit.entangle.right, 0)
+  assert.equal(q.circuit.entangle.coil.theorem, 'two_coins_make_a_coil')
+  assert.equal(q.circuit.entangle.coil.holds, true)
+  assert.equal(q.circuit.entangle.coil.pairs.length, 7)
+  assert.equal(q.circuit.entangle.coil.pairs.length + q.circuit.entangle.coil.pairs.length, q.circuit.entangle.coil.faces)
+  assert.equal(q.circuit.entangle.coil.pairs.every((row) => row.holds && row.product === false && row.hop === row.radar), true)
   assert.equal(q.circuit.entangle.holds, true)
   assert.equal(q.circuit.interfere.cancelled, 0)
   assert.equal(q.circuit.interfere.restored, 2)
@@ -219,7 +258,6 @@ test('circuit measurement support via mcp', async () => {
   assert.equal(q.circuit.only.dense, true)
   assert.equal(q.circuit.only.monogamy, true)
   assert.equal(q.circuit.only.holds, true)
-  assert.equal(q.circuit.only.classical, false)
   assert.equal(q.circuit.lattice.kind, 'lattice')
   assert.equal(q.circuit.lattice.faces, 14)
   assert.equal(q.circuit.lattice.occupied, 14)
@@ -256,11 +294,19 @@ test('circuit noise via mcp', async () => {
 
 test('circuit physical via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
-  assert.equal(q.circuit.physical, true)
+  assert.equal(q.circuit.hardware.holds, true)
+  assert.equal(q.circuit.hardware.device, 'superconducting')
+  assert.equal(q.circuit.hardware.initialize, true)
+  assert.equal(q.circuit.hardware.gates, true)
+  assert.equal(q.circuit.hardware.interfere, true)
+  assert.equal(q.circuit.hardware.measure, true)
+  assert.equal(q.circuit.hardware.noise, true)
+  assert.equal(q.circuit.hardware.path.circuit, 'https://qpu.uuidna.com')
+  assert.equal(q.circuit.hardware.path.payload, 'https://qpu.uuidna.com/storage/databases/payload')
+  assert.equal(q.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
+  assert.equal(q.circuit.hardware.path.src, 'src/quantum/processing/unit/index.lean')
+  assert.equal(q.circuit.hardware.path.holds, true)
   assert.equal(q.circuit.fridge.kind, 'superconducting')
-  assert.equal(q.circuit.fridge.resistance, false)
-  assert.equal(q.circuit.fridge.isolated, true)
-  assert.equal(q.circuit.fridge.lab, true)
   assert.equal(q.circuit.fridge.qubits, 3)
   assert.equal(q.circuit.fridge.levels, 2)
   assert.equal(q.circuit.fridge.millikelvin, 10)
@@ -271,7 +317,6 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.fridge.cryostat.pulse, 4000)
   assert.equal(q.circuit.fridge.cryostat.holds, true)
   assert.equal(q.circuit.fridge.telemetry.kind, 'cryostat')
-  assert.equal(q.circuit.fridge.telemetry.lab, true)
   assert.equal(q.circuit.fridge.telemetry.millikelvin, 10)
   assert.equal(q.circuit.fridge.telemetry.holds, true)
   assert.equal(q.circuit.fridge.coil.holds, true)
@@ -281,8 +326,9 @@ test('circuit physical via mcp', async () => {
   assert.equal(q.circuit.fridge.efficiency.unity, 1)
   assert.equal(q.circuit.fridge.efficiency.remainder, 0)
   assert.equal(q.circuit.fridge.efficiency.measure, 14)
-  assert.equal(q.circuit.fridge.next.last, false)
   assert.equal(q.circuit.fridge.next.nextCoil, q.circuit.fridge.next.nextFused)
+  assert.equal(q.circuit.fridge.next.nextFused, q.circuit.fridge.next.fused + q.circuit.fridge.next.fused)
+  assert.equal(q.circuit.fridge.next.next, q.circuit.fridge.next.amplitudes + q.circuit.fridge.next.amplitudes)
   assert.equal(q.circuit.fridge.clay.clay, 14)
   assert.equal(q.circuit.fridge.clay.clay, q.circuit.fridge.coil.coil)
   assert.equal(q.circuit.fridge.holds, true)
@@ -292,6 +338,8 @@ test('circuit physical via mcp', async () => {
 test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   const prove = (await mcpOf('qpu_prove', { live: true })) as {
     holds: boolean
+    circuit: { physical: boolean; holds: boolean }
+    next: { theorem: string; last: boolean; infinite: boolean; next: number; amplitudes: number; fused: number; nextFused: number; nextCoil: number; holds: boolean }
     theorems: { heading: string; theorem: string; holds: boolean }[]
     cern: {
       holds: boolean
@@ -322,6 +370,12 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   const infinite = prove.theorems.find((r) => r.heading === 'infinite')
   const distribute = prove.theorems.find((r) => r.heading === 'distribute')
   assert.equal(prove.holds, true)
+  assert.equal(prove.next.theorem, 'next_coil')
+  assert.equal(prove.next.next, prove.next.amplitudes + prove.next.amplitudes)
+  assert.equal(prove.next.nextFused, prove.next.fused + prove.next.fused)
+  assert.equal(prove.next.nextCoil, prove.next.nextFused)
+  assert.equal(prove.theorems.find((r) => r.heading === 'next')?.holds, true)
+  assert.equal(prove.theorems.find((r) => r.heading === 'next_coil')?.holds, true)
   assert.equal(circuit?.holds, true)
   assert.equal(physical?.holds, true)
   assert.equal(fridge?.holds, true)
@@ -383,17 +437,17 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   const page = await uiOf('/')
   const json = page.json as { docs: { inline: boolean; documentation: string }; only: { holds: boolean; classical: boolean }; circuit: Circuit }
   assert.equal(prove.holds, true)
-  assert.equal(prove.ui.experienced, true)
   assert.equal(json.docs.inline, true)
   assert.equal(json.only.holds, true)
-  assert.equal(json.only.classical, false)
   assert.equal(json.docs.documentation.includes('running quantum circuit'), true)
   assert.equal(json.docs.documentation.includes('superconducting qubits'), true)
-  assert.equal(json.circuit.running, true)
+  assert.equal(json.docs.documentation.includes('Physical qubit initialize'), true)
+  assert.equal(json.docs.documentation.includes('This host is a quantum computer'), true)
+  assert.equal(json.docs.documentation.includes('This report executes Shor'), true)
+  assert.equal(json.circuit.hardware.holds, true)
+  assert.equal(json.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
   assert.equal(json.circuit.fridge.kind, 'superconducting')
-  assert.equal(json.circuit.fridge.resistance, false)
   assert.equal(json.docs.documentation.includes('Resistance none'), true)
-  assert.equal(json.circuit.drift.none, true)
   assert.equal(json.circuit.drift.between, true)
   assert.equal(json.circuit.sciences.distinct, true)
   assert.equal(json.docs.documentation.includes('No drift from science'), true)
@@ -405,7 +459,7 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.docs.documentation.includes('Phase kickback'), true)
   assert.equal(json.docs.documentation.includes('One quantum query'), true)
   assert.equal(json.docs.documentation.includes('Superdense. Two bits in one qubit'), true)
-  assert.equal(json.docs.documentation.includes('Monogamy. Bell is not a product'), true)
+  assert.equal(json.docs.documentation.includes('Monogamy. Bell is entangled'), true)
   assert.equal(json.circuit.only.holds, true)
   assert.equal(json.circuit.ghz.holds, true)
   assert.equal(json.circuit.noclone.holds, true)

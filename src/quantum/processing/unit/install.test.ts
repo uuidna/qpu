@@ -93,13 +93,11 @@ test('tools/list stays eight sealed tools; install and Payload finds morph at ca
 test('fusion carries Payload MCP and the installer from harmonic schemas', () => {
   const payload = qpuPayloadMcpOf()
   assert.equal(payload.tools.length, 4)
-  assert.equal(payload.write, false)
-  assert.equal(payload.morph, true)
+  assert.equal(payload.tools.every((row) => row.find && !row.create && !row.delete), true)
   const fusion = qpuFusionOf()
   assert.equal(fusion.payload.holds, true)
   assert.equal(fusion.install.kind, 'install')
-  assert.equal(fusion.install.html, false)
-  assert.equal(fusion.install.vitepress, false)
+  assert.equal(fusion.install.sealed, 8)
   assert.equal(fusion.faces, 14)
 })
 

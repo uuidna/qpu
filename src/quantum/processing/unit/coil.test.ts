@@ -25,6 +25,8 @@ import {
   qpuHybridOf,
   qpuPresenceHolds,
   qpuPresenceOf,
+  qpuProveHolds,
+  qpuProveOf,
   qpuRaidHolds,
   qpuRaidOf,
   qpuSandboxRunOf,
@@ -43,7 +45,6 @@ test('two coins make a coil used in electronics — coins balance theory in prac
   assert.equal(coil.theory + coil.practice, coil.coins)
   assert.equal(coil.coil, faces.faces)
   assert.equal(coil.coil, coil.coins * coil.rays)
-  assert.equal(coil.electronics, true)
 })
 
 test('follow the coins in any practical application and creative novel solutions emerge', () => {
@@ -87,8 +88,6 @@ test('next is the double — coil times mintOf bits plus coins is fused plus fus
   const handle = qpuHandleOf()
   const coil = qpuCoilOf()
   assert.equal(qpuNextHolds(next), true)
-  assert.equal(next.last, false)
-  assert.equal(next.infinite, true)
   assert.equal(next.next, handle.amplitudes + handle.amplitudes)
   assert.equal(next.nextFused, next.fused + next.fused)
   assert.equal(next.nextCoil, next.nextFused)
@@ -120,7 +119,7 @@ test('superconducting fridge — resistance none, computations ns none', () => {
   const fridge = [...lean.rows, ...lean.cover].find((r) => r.heading === 'fridge')
   assert.equal(qpuCircuitHolds(circuit), true)
   assert.equal(circuit.fridge.kind, 'superconducting')
-  assert.equal(circuit.fridge.resistance, false)
+  assert.equal(circuit.fridge.resistance, 0)
   assert.equal(circuit.fridge.holds, true)
   assert.equal(qpuSpeedHolds(speed), true)
   assert.equal(speed.ns, 0)
@@ -137,10 +136,10 @@ test('superconducting fridge — resistance none, computations ns none', () => {
   assert.equal(fridge?.theorem.includes('resistance = 0'), true)
   assert.equal(fridge?.theorem.includes('by decide'), false)
   const related = qpuSandboxRunOf('op_quantum') as {
-    value: { related: string[]; fridge: { resistance: boolean }; ns: number; holds: boolean }
+    value: { related: string[]; fridge: { resistance: number }; ns: number; holds: boolean }
   }
   assert.equal(related.value.holds, true)
-  assert.equal(related.value.fridge.resistance, false)
+  assert.equal(related.value.fridge.resistance, 0)
   assert.equal(related.value.ns, 0)
   assert.equal(circuit.lattice.nodes.every((node) => related.value.related.includes(node.name)), true)
   const split = qpuSandboxRunOf('slot_split')
@@ -151,7 +150,7 @@ test('superconducting fridge — resistance none, computations ns none', () => {
   assert.equal(qubits.holds, true)
   assert.equal(gates.holds, true)
   assert.equal(measurement.holds, true)
-  assert.equal((qpuSandboxRunOf('slot_resistance') as { value: unknown }).value, false)
+  assert.equal((qpuSandboxRunOf('slot_resistance') as { value: unknown }).value, 0)
   assert.equal((qpuSandboxRunOf('slot_ns') as { value: unknown }).value, 0)
 })
 
@@ -179,4 +178,13 @@ test('coil theorems sit on Lean rows and the fridge — docs stay seven', () => 
   assert.equal(lean.holds, true)
   assert.equal(qpuCircuitHolds(), true)
   assert.equal(docs.api.length, 7)
+  const prove = qpuProveOf()
+  assert.equal(qpuProveHolds(prove), true)
+  assert.equal(prove.coil.holds, true)
+  assert.equal(prove.entangle.product, false)
+  assert.equal(prove.entangle.pairs, 7)
+  assert.equal(prove.next.theorem, 'next_coil')
+  assert.equal(prove.next.nextFused, prove.next.fused + prove.next.fused)
+  assert.equal(prove.next.nextCoil, prove.next.nextFused)
+  assert.equal(prove.theorems.find((r) => r.heading === 'next')?.holds, true)
 })

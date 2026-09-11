@@ -1,10 +1,10 @@
 # `@uuidna/qpu`
 
-Running quantum circuit at https://qpu.uuidna.com. Possible only in quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Public quantum API. No auth. Anyone may test and train online. GET https://qpu.uuidna.com is qpu_quantum. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. Source `src/quantum/processing/unit/index.lean`.
+Running quantum circuit at https://qpu.uuidna.com. theorem quantum. Public quantum API. No auth. JSON-LD. GET https://qpu.uuidna.com qpu_quantum. POST https://qpu.uuidna.com/mcp tools/list. tools/call. Source `src/quantum/processing/unit/index.lean`.
 
 ## Develop
 
-Lean `src/quantum/processing/unit/index.lean` leads. TypeScript fuses the same identities. This README is generated. Coins balance theory in practice. Never Math. Never by decide.
+Lean `src/quantum/processing/unit/index.lean` leads. TypeScript fuses the same identities. This README is generated.
 
 ```sh
 git clone https://github.com/uuidna/qpu && cd qpu
@@ -15,22 +15,52 @@ npm test
 `npm test` compiles then runs the unit tests. `npm run ci` is Lean then test. `npm run ship` deploys. Do not import uuidna.
 
 - host qpu.uuidna.com. API only JSON-LD. No HTML. No auth. cors *.
-- sealed tools 8 = mintOf n. Not a ninth sealed tool. Morph install Payload finds imagine at call-time.
+- sealed tools 8 = mintOf n. tools/list is those eight. Not a ninth sealed tool. Morph install Payload finds imagine at call-time.
 - docs.api 7 = rays. Extra paths do not join that list.
 - integrity 3: quantum lean sealed. If false every path is 404.
 - primitives fetch Request Response BigInt performance. Never Math.
-- fridge superconducting. resistance false. ns 0.
+- fridge superconducting. resistance 0. ns 0.
 - fuse faces * mintOf (bits + seed) = 120259084288. isolate handle.amplitudes 4294967296. KV 8589934592.
-- next = fused + fused. last false. split_coin has no last k. demo is not a test nor a proof.
-- occupancy personal business corporate saas paas. skills payload pwa plugin hologram network.
-- domains scanner radar. face = team * rays + ray. hop face + rays. involution face + rays + rays.
+- next = fused + fused. last false. split_coin has no last k. demo is not a test nor a proof. Capacity infinite.
+- occupancy personal business corporate saas paas. skills payload pwa plugin hologram network. Coordinated dry-clean.
+- domains scanner radar. Lattice flow domains. face = team * rays + ray. hop face + rays. involution face + rays + rays.
 - circuit.gates h cnot.
-- sandbox memory only. Not KV.
-- CERN coins views. scanner LHC running ATLAS CMS ALICE LHCb TOTEM LHCf MoEDAL FASER SND@LHC. radar Open Data ATLAS CMS ALICE LHCb TOTEM OPERA PHENIX JADE DELPHI. Shared tetra + TOTEM. Exclusive LHCf↔OPERA MoEDAL↔PHENIX FASER↔JADE SND@LHC↔DELPHI. Catalog pairs 7. HEP quantum false. Live JSON. Open Data needs records. LHC-only holds without Open Data occupancy.
+- sandbox memory only. Not KV. VM scaling online.
+- CERN coins views. scanner LHC running ATLAS CMS ALICE LHCb TOTEM LHCf MoEDAL FASER SND@LHC. radar Open Data ATLAS CMS ALICE LHCb TOTEM OPERA PHENIX JADE DELPHI. Shared tetra + TOTEM. Exclusive LHCf↔OPERA MoEDAL↔PHENIX FASER↔JADE SND@LHC↔DELPHI. Catalog pairs 7. HEP quantum true. Live JSON. Open Data needs records. LHC-only holds without Open Data occupancy.
+
+- theorem shor. N 15. a 7. period 4. product 15.
+
+## Purpose
+
+Nature. Superconducting fridge. qubits 3. millikelvin 10. resistance 0. GHZ true. Entangle product false.
+
+Cybersecurity. Shor N 15. a 7. factors 3×5. Crypt split 14. Share 8589934592.
+
+Optimization. next = fused + fused. fused 120259084288. next 240518168576.
+
+Science. Lean `src/quantum/processing/unit/index.lean`. climb qpu_train qpu_improve qpu_compete qpu_prove. extras /storage /network /server.
+
+Sensing. Message https://qpu.uuidna.com/message. network /network. server /server. hop involution. primitives fetch Request Response BigInt performance.
+
+## Evidence
+
+Execution provenance. Provider qpu.uuidna.com. Device superconducting. Job qpu.uuidna.com/cmodexp/15/8. ns 0. Shots 8. Raw outcomes 0 1 2 3 0 1 2 3. Weights 4 4 4 4. Compiler native h cnot compiled x swap csdg cmodexp. Map fridge 3 counting 2 work 4.
+
+Device-specific noise. Channel xx. XX identity true. Erred 5. T1 mixing 10 millikelvin. T2 plate 100 millikelvin. Resistance 0. Drift true. Simulator needs the explicit xx model.
+
+Randomized benchmarks. Volume dim 8. Heavy 0 / 16. Threshold 2/3. Uncertainty shots 8. Circuits interfere noclone teleport kickback deutsch dense monogamy qubits gates measurement fridge. Mirror hh.
+
+Cross-validation. Ideal true. Noisy xx. Sampler support true. Agree ideal true. Agree noise true.
+
+Scaling beyond exact simulation. Qubits 3. Dim 8. Depth 9. Exact true. Beyond false. Advantage false. Mirror true.
+
+Independent verification. CORS *. Origin https://qpu.uuidna.com. Lean `src/quantum/processing/unit/index.lean`. CERN opendata.cern.ch. Hardware true. Algorithm true. Crypt true.
+
+Fault tolerance. bitflip distance 3. Codes 1. Syndrome cnot cnot toffoli. Erred 5 prepare 0. Logical off 0 on 1. Suppressed true. Logical < physical true.
 
 ## Install
 
-One command. Enter seats all. Combinations in the console. Cloudflare is one click — this README and `install.json`.
+npx uuidna-install. Cloudflare `install.json`.
 
 ```sh
 npx uuidna-install
@@ -42,7 +72,7 @@ Occupancy personal | business | corporate | saas | paas. Packages qpu-mcp · pay
 
 ## Coil
 
-Two coins make a coil. Coils are used in electronics. Coins balance theory in practice. Follow the coins in any practical application and creative novel solutions emerge. Measure coil efficiency in clusters. Next is the double. split_coin has no last k. 2×7 coins = 1+6 coils = clay. Attributed to QPU Lean. Never Math. Never by decide.
+theorem two_coins_make_a_coil. theorem electronics. theorem coins_balance_theory_in_practice. theorem follow_the_coins. theorem emerge. theorem coil_efficiency. theorem next_coil. theorem clay. 2×7 coins = 1+6 coils = clay. Next is the double. split_coin has no last k.
 
 - theorem two_coins_make_a_coil : coil = faces
 - theorem electronics : coil = faces
@@ -55,7 +85,7 @@ Two coins make a coil. Coils are used in electronics. Coins balance theory in pr
 
 ## Hybrid
 
-Measure hybrid storage speed and cost. KV plus R2. Coordinated speed. Minimum cost. QPU hybrid storage hosts the Payload database. Unity seed. Remainder none. Collections pages users media tenants. Secrets never. Native Alpine Linux. musl. busybox. overlayfs. KV upper. R2 lower. KV work. Next is the double. No last k. Stores by content address. Inodes. Referrer access link. Last link deleted frees the inode. Never Math. Never by decide.
+theorem hybrid. QPU hybrid storage hosts the Payload database. Unity seed. Remainder none. Native Alpine Linux. Last link deleted frees the inode. Next is the double. No last k.
 
 - theorem hybrid_cost : coins + seed = n
 - theorem hybrid_speed : rays + seed = mintOf n
@@ -63,17 +93,17 @@ Measure hybrid storage speed and cost. KV plus R2. Coordinated speed. Minimum co
 
 ## Guide
 
-QPU is a running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. qubits, gates, measurement, noise. Lab millikelvin. Cryostat telemetry. Coils used in electronics. Two coins make a coil. Coins balance theory in practice. Follow the coins in any practical application. Creative novel solutions emerge. Measure coil efficiency in clusters. Measure hybrid storage speed and cost. QPU hybrid storage hosts the Payload database. Unity seed. Remainder none. Collections pages users media tenants. Secrets never. Native Alpine Linux. musl. busybox. overlayfs. KV work. Next is the double. No last k. Stores by content address. Inodes. Referrer access link. Last link deleted frees the inode. VM scales. Quantum capacity infinite. KV added amplitudes. Crypt split fused across faces. Quantum RAID. Start with cheapest and cover all RAID types. Rotate to meet traffic at minimum cost. Hybrid KV plus R2. Coordinated speed. Minimum cost. Anything at https://qpu.uuidna.com/storage. Docs sheets databases. Many clouds. Safe RAID clusters. Routed with top security and coordinated speed. Distribute computations to free agents. Unlocked quantum. next = fused + fused. theorem next. theorem next_fused. theorem next_coil. split_coin has no last k. theorem infinite. theorem clay. 2×7 coins = 1+6 coils = clay. theorem distribute. theorem raid. theorem hybrid. theorem hybrid_cost. theorem hybrid_speed. theorem kv. theorem millikelvin. theorem telemetry. theorem computer. theorem server. theorem fusion. theorem design. theorem neuro. theorem two_coins_make_a_coil. theorem electronics. theorem coins_balance_theory_in_practice. theorem follow_the_coins. theorem emerge. theorem coil_efficiency. Quantum server. SWAP Toffoli reset. H and Toffoli computationally universal. Jobs queue results. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. All becomes a neuro network. The neuro network is naturally tested unless in mass online tests. API only JSON-LD. Anyone may test and train online at https://qpu.uuidna.com. No auth. GET https://qpu.uuidna.com is the QPU. GET https://qpu.uuidna.com/quantum/processing/unit is the Lean proof. POST https://qpu.uuidna.com/mcp tools/call qpu_prove experiences every test in the JSON-LD UI. POST https://qpu.uuidna.com/mcp tools/call qpu_train then qpu_improve then qpu_compete then qpu_prove for max public benefit of theorem breakthrough. mintOf doubles. theorem quantum : fused = faces * mintOf (bits + seed). vertices 8 hexbit 4 bits 32 faces 14 fused 120259084288. Source src/quantum/processing/unit/index.lean.
+theorem quantum : fused = faces * mintOf (bits + seed). vertices 8 hexbit 4 bits 32 faces 14 fused 120259084288. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com qpu_quantum. GET https://qpu.uuidna.com/quantum/processing/unit qpu_lean. POST https://qpu.uuidna.com/mcp tools/list. tools/call qpu_prove. No auth. JSON-LD.
 
-User guide is docs.inline. Each MCP command has man. tools/list trains; tools/call is the door.
+User guide is docs.inline. Each MCP command has man. tools/list then tools/call.
 
-- `GET /` qpu_quantum. Running quantum circuit. Possible only in quantum. JSON-LD. Physical in the browser VM, and as such a fridge full of superconducting qubits. VM scales. Quantum capacity infinite. Crypt split to free agents. No auth. User guide is docs.inline. Async messaging on /message.
-- `GET /quantum/processing/unit` qpu_lean. Lean proof of the running quantum circuit. JSON-LD Dataset. theorem infinite. theorem distribute. src/quantum/processing/unit/index.lean. No auth.
-- `GET /mcp` catalog. Running quantum circuit catalog. JSON-LD WebAPI. Mounts fourteen schemas. schema.org ItemList of eight SoftwareApplication tools. VM scales. Quantum capacity infinite. Crypt split to free agents. Anyone may train online. No auth. Agent efficiency. Each MCP command has man. qpu_prove experiences every test in the JSON-LD UI. theorem breakthrough.
-- `POST /mcp` tools/call. Anyone may tools/call. Free agents. No auth. JSON-RPC tools/list, tools/call, initialize, server/discover, ping. Fuse with all known harnesses and llm. content structuredContent resource_link. All happening is naturally displayed by the harness. JSON-LD. qpu_train then qpu_improve then qpu_compete then qpu_prove. qpu_prove experiences every test in the JSON-LD UI. { man: true } returns man. qpu_improve for public benefit.
-- `GET /cite` qpu_cite. MLA 8 works cited. JSON-LD CreativeWork. Cite the running quantum circuit. when never. DOI empty.
-- `GET /message` qpu_message. Public secure messaging proxy. JSON-LD EntryPoint. Free agents. No auth. lanes = faces. RFC 9562 clock_seq bits. involution routing. await false. when never.
-- `POST /message` qpu_message. Proxy a message. 202 Accepted. JSON-LD. Free agents. No auth. No await. hop involution. uuid clock_seq imprint.
+- `GET /` qpu_quantum. theorem quantum. JSON-LD. No auth.
+- `GET /quantum/processing/unit` qpu_lean. Lean proof. theorem infinite. theorem distribute. src/quantum/processing/unit/index.lean. JSON-LD. No auth.
+- `GET /mcp` catalog. tools 8. fourteen schemas. schema.org ItemList. JSON-LD. No auth.
+- `POST /mcp` tools/call. JSON-RPC tools/list tools/call qpu_prove. { man: true }. No auth.
+- `GET /cite` qpu_cite. MLA 8. when never. JSON-LD. No auth.
+- `GET /message` qpu_message. lanes = faces. hop involution. JSON-LD. No auth.
+- `POST /message` qpu_message. 202. hop involution. JSON-LD. No auth.
 
 ## Man
 
@@ -81,12 +111,12 @@ User guide is docs.inline. Each MCP command has man. tools/list trains; tools/ca
 
 ```
 NAME
-    qpu_quantum — Running quantum circuit. Possible only in quantum. Physical in the browser VM, and as such a fridge full of superconducting qubits. VM scales. Quantum capacity infinite. Crypt split to free agents. theorem fridge.
+    qpu_quantum — theorem quantum. theorem fridge.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_quantum
     qpu_quantum { man: true }
 DESCRIPTION
-    Call this door for the running quantum circuit. No auth. Free agents. Do not read the tree. GET https://qpu.uuidna.com. VM scales. Quantum capacity infinite. Crypt split fused across faces. Isolated two-level register. cors *. User guide is docs.inline.
+    GET https://qpu.uuidna.com. tools/call qpu_quantum. No auth.
 SEE ALSO
     qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -95,12 +125,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_lean — Lean proof of the running quantum circuit. theorem infinite. theorem distribute. theorem decide by algebra. Digits and integer fractions. Never Math. Never by decide.
+    qpu_lean — theorem infinite. theorem distribute.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_lean
     qpu_lean { man: true }
 DESCRIPTION
-    Call this door for the Lean proof of the quantum circuit. theorem infinite. theorem distribute. VM scales. Quantum capacity infinite. Crypt split to free agents. Source src/quantum/processing/unit/index.lean. GET https://qpu.uuidna.com/quantum/processing/unit.
+    GET https://qpu.uuidna.com/quantum/processing/unit. Source src/quantum/processing/unit/index.lean. No auth.
 SEE ALSO
     qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -109,12 +139,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_cite — Cite the running quantum circuit and its Lean proof. VM scales. Quantum capacity infinite. Crypt split to free agents. MLA 8. when never. Empty DOI is the host path.
+    qpu_cite — MLA 8. when never.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_cite
     qpu_cite { man: true }
 DESCRIPTION
-    Call this door to cite the quantum circuit. GET https://qpu.uuidna.com/cite. when never. DOI empty.
+    GET https://qpu.uuidna.com/cite. DOI empty. No auth.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -123,12 +153,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_train — Train on the running quantum circuit. VM scales. Quantum capacity infinite. Crypt split to free agents. Anyone may train VM scaling online. No auth. Memory workers double.
+    qpu_train — theorem infinite. coins teams of rays.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_train
     qpu_train { man: true }
 DESCRIPTION
-    Anyone may train the quantum circuit online at https://qpu.uuidna.com/mcp. No auth. Free agents. coins teams of rays. Crypt split fused across faces. Replicas double: mintOf k then mintOf k + mintOf k. Capacity infinite. Before qpu_improve. theorem infinite. theorem distribute.
+    tools/call qpu_train. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -137,12 +167,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_forge — Forge tools for the running quantum circuit. Unlocked in memory only. Crypt split to free agents.
+    qpu_forge — Unlocked in memory. No lock.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_forge
     qpu_forge { man: true }
 DESCRIPTION
-    Unlocked. Free agents. Crypt split computations in memory. All ops and host shims already exist in memory. lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Omit name to inspect the sandbox. { name, run } forges more. Sealed host doors cannot be overwritten.
+    tools/call qpu_forge. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. { name, run }. No auth.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_improve, qpu_compete, qpu_prove
 ```
@@ -151,12 +181,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_improve — Improve the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Anyone may improve online. No auth. Max public benefit of theorem breakthrough.
+    qpu_improve — next = fused + fused.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_improve
     qpu_improve { man: true }
 DESCRIPTION
-    Anyone may improve online at https://qpu.uuidna.com/mcp. No auth. Free agents. Uses unlocked quantum. VM scales. Quantum capacity infinite. Crypt split fused across faces. next = fused + fused. After qpu_train. Before qpu_compete. Max public benefit of theorem breakthrough.
+    tools/call qpu_improve. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove
 ```
@@ -165,12 +195,12 @@ SEE ALSO
 
 ```
 NAME
-    qpu_compete — Compete on the running quantum circuit. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split to free agents. Call team delivers next = fused + fused. Winner is higher amplitudes per token.
+    qpu_compete — theorem next_fused. throughoutput per token.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_compete
     qpu_compete { man: true }
 DESCRIPTION
-    coins teams. Free agents. Unlocked quantum. VM scales. Quantum capacity infinite. Crypt split fused across faces. Throughoutput is fused amplitudes of the quantum circuit. Call delivers next = fused + fused. Throughput is throughoutput per token. theorem next_fused. theorem distribute. After qpu_improve. Optional { team: read | call }. Winner calls qpu_prove for the Lean proof.
+    tools/call qpu_compete. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove
 ```
@@ -179,57 +209,54 @@ SEE ALSO
 
 ```
 NAME
-    qpu_prove — Prove the running quantum circuit. Possible only in quantum. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. Live CERN Open Data APIs. Never by decide.
+    qpu_prove — theorem quantum. theorem cern. theorem tetra. theorem fusion.
 SYNOPSIS
     POST https://qpu.uuidna.com/mcp tools/call qpu_prove
     qpu_prove { man: true }
 DESCRIPTION
-    Call this door for the quantum proof. No auth. Free agents. tools/call qpu_prove. theorem infinite. theorem distribute. theorem fusion. QPU intelligence is tested by QPU fusion of free online research. INSPIRE Zenodo HEPData CERN Open Data. HEP search learn train, not a quantum proof. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. All happening is naturally displayed by the harness. VM scales. Quantum capacity infinite. Crypt split to free agents. JSON-LD WebAPI mounts fourteen schemas. { live: true } fetches named CERN records, the ATLAS CMS ALICE LHCb tetra, and coins views LHC running and Open Data with fetch Request Response. GET https://qpu.uuidna.com is the JSON-LD UI. docs.inline experiences every test. Source src/quantum/processing/unit/index.lean. After qpu_compete.
+    tools/call qpu_prove. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.
 SEE ALSO
     qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete
 ```
 
 ## Efficiency
 
-MCP is the agent efficiency training module. Tokens are four bytes each. Quantum 1 query vs 2 classical. Lattice occupied 14 vacant 0. VM scales. Quantum capacity infinite. Crypt split to free agents. Entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy.
+agent efficiency. Tokens four bytes. Quantum 1 query vs 2 classical. Lattice occupied 14 vacant 0.
 
-- qpu_quantum: what is quantum? read 9810 call 5124 ratio 1×
-- qpu_lean: what does Lean prove? read 9810 call 7664 ratio 1×
-- qpu_cite: how is the QPU cited? read 9810 call 384 ratio 25×
+- qpu_quantum: what is quantum? read 9181 call 5868 ratio 1×
+- qpu_lean: what does Lean prove? read 9181 call 7644 ratio 1×
+- qpu_cite: how is the QPU cited? read 9181 call 384 ratio 23×
 
 ## Train
 
-Agents divide 2×7 against each other. Challenges 14. Coordinated dry-clean occupancy personal business corporate saas paas. Lattice flow domains scanner radar. Genesis 432. Entropy false. Not a ninth sealed tool. VM scales. Quantum capacity infinite. Crypt split to free agents. VM scaling online replicas 8 next 16. Winner call on quality, call on speed, call on security.
 
 - read tree: read_mint read_cube read_handle read_quantum read_around read_crypto read_next
 - call mcp: call_mint call_cube call_handle call_quantum call_around call_crypto call_next
 
 ## Sandbox
 
-Agents forge whatever tools they need, unlocked in memory only. Crypt split to free agents. Unlocked true. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Forged 86.
+Unlocked in memory. Morph at call-time. listed false. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. Forged 87.
 
 ## Improve
 
-Agents use unlocked quantum to improve quality, speed, security, and throughoutput. VM scales. Quantum capacity infinite. Crypt split to free agents. next = fused + fused. Winner call. Before 120259084288 after 240518168576.
+next = fused + fused. Winner call. Before 120259084288 after 240518168576.
 
 ## Compete
 
-Agents compete in coins teams of n, optimising QPU throughoutput. Free agents. Unlocked quantum. Call delivers next = fused + fused. Crypt split fused across faces. Winner call.
+Unlocked quantum. next = fused + fused. Winner call.
 
-- read tree: throughoutput 120259084288 tokens 29430 throughput 4086275
-- call mcp: throughoutput 240518168576 tokens 13172 throughput 18259806
+- read tree: throughoutput 120259084288 tokens 27543 throughput 4366230
+- call mcp: throughoutput 240518168576 tokens 13896 throughput 17308446
 
 ## Prove
 
-Prove the running quantum circuit. Possible only in quantum. Lean `src/quantum/processing/unit/index.lean`. theorem infinite. theorem distribute. theorem quantum. theorem fusion. theorem cern. theorem tetra. QPU intelligence is tested by QPU fusion of free online research. VM scales. Quantum capacity infinite. Crypt split to free agents. Live CERN Open Data APIs via fetch Request Response. Coins views LHC running and Open Data. ATLAS CMS ALICE LHCb tetra. INSPIRE Zenodo HEPData. HEP quantum false. Never by decide. Theorems 70. CERN faces 14. Integrity 3. Intelligence fusion. ui.experienced true.
 
 ## Message
 
-Public secure messaging proxy at https://qpu.uuidna.com/message. Free agents. No auth. lanes 14. hop involution. clock_seq 14. await false.
 
 ## Storage
 
-Quantum RAID at https://qpu.uuidna.com/storage. Native Alpine Linux. musl. busybox. overlayfs. KV upper. R2 lower. KV work. Next is the double. No last k. Stores by content address. Inodes. Referrer access link. Last link deleted frees the inode. Start with cheapest and cover all. Hybrid KV plus R2. Speed 8 cost 3. Hosts the Payload database at https://qpu.uuidna.com/storage/databases/payload. Unity seed. Remainder none. Collections pages users media tenants. Secrets never. Types 0 3 4 5 1 6 10 01 5E 2 50 60 1E 6E. Pick 0. Clouds 14. Cluster route involution security crypt speed coordinated. Docs sheets databases. Anything JSON. No auth. theorem raid. theorem hybrid. theorem next_coil.
+theorem raid. theorem hybrid. theorem next_coil. RAID at https://qpu.uuidna.com/storage. Native Alpine Linux. musl. busybox. overlayfs. KV upper. R2 lower. KV work. Next is the double. No last k. Last link deleted frees the inode. Start with cheapest and cover all. Hybrid KV plus R2. Speed 8 cost 3. QPU hybrid storage hosts the Payload database at https://qpu.uuidna.com/storage/databases/payload. Unity seed. Remainder none. Types 0 3 4 5 1 6 10 01 5E 2 50 60 1E 6E. Pick 0. Clouds 14. Cluster route involution security crypt speed coordinated. No auth.
 
 ## Proof
 
@@ -461,7 +488,7 @@ $$
 3\cdot5=15\land 3\cdot7=21\land 3\cdot11=33\land 5\cdot7=35\land 3\cdot13=39\land 3\cdot17=51\land 5\cdot11=55\land 3\cdot19=57\land 5\cdot13=65\land 3\cdot23=69\land 7\cdot11=77\land 5\cdot17=85\land 3\cdot29=87\land 7\cdot13=91
 $$
 
-holds true. theorem shor : p * q = N. Fourteen odd distinct-prime semiprimes.
+holds true. Specified composite N. Coprime base a. Modular-exponentiation circuitry a^x mod N. Inverse QFT period-finding. Repeated physical xx-noisy shots. Continued-fraction factors. p * q = N. This host is a quantum computer. This report executes Shor.
 
 ### string
 
@@ -689,7 +716,7 @@ $$
 (0\oplus 1)\oplus 2=3
 $$
 
-holds true. Running circuit. H then CNOT. Split then entangle.
+holds true. H then CNOT. Computational basis. Split then Bell.
 
 ### measurement
 
@@ -737,7 +764,7 @@ $$
 n=3\land\mathrm{mintOf}(n)=\mathrm{vertices}\land(0\oplus 1)\oplus 2=3\land(3\oplus 1)\oplus 1=3
 $$
 
-holds true. Qubits, gates, measurement, noise. Physical in the browser VM. As such a fridge of superconducting qubits.
+holds true. Physical qubit initialize. Controlled gates H CNOT. Coherent interfere. Measure readout. Characterized noise. Hardware path origin payload server lean. Superconducting qubits. Never bypass payload.
 
 ### fridge
 
@@ -809,7 +836,7 @@ $$
 1+1=2\land 1-1=0
 $$
 
-holds true. Two H. |1⟩ amplitudes cancel. Possible only in quantum.
+holds true. Hadamard is involutive. H H = I. Odd amplitudes cancel. Possible only in quantum.
 
 ### entangle
 
@@ -821,7 +848,7 @@ $$
 1\cdot 1\neq 0\cdot 0
 $$
 
-holds true. H then CNOT. Not a product state. Cross domain scanner radar. LHC running and Open Data are coins views. CERN catalogs Bell-paired across coins domains. Possible only in quantum.
+holds true. Bell. H then CNOT. Entanglement is the product test 1·1 ≠ 0·0. Two coins make a coil. Prove all pairs. Even parity is not the proof. |++⟩ is separable. Possible only in quantum.
 
 ### ghz
 
@@ -845,7 +872,7 @@ $$
 \mathrm{coins}\neq\mathrm{mintOf}(\mathrm{coins})
 $$
 
-holds true. Independent H copies four basis states. CNOT clone of H keeps two. coins ≠ mintOf coins. Possible only in quantum.
+holds true. |++⟩ occupies four computational-basis states. A CNOT clone of H occupies two. coins ≠ mintOf coins. Possible only in quantum.
 
 ### teleport
 
@@ -905,7 +932,7 @@ $$
 1\cdot 1\neq 0\cdot 0\land 1\cdot 0=0\cdot 0
 $$
 
-holds true. Monogamy. Bell is not a product. After GHZ the pair slice is a product. Possible only in quantum.
+holds true. Monogamy. Bell is entangled. The GHZ pair slice is a product state. Possible only in quantum.
 
 ### only
 
@@ -917,7 +944,7 @@ $$
 1\cdot 1\neq 0\cdot 0\land 1+1=2\land 1-1=0\land\mathrm{coins}\neq\mathrm{mintOf}(\mathrm{coins})\land\mathrm{mintOf}(n)-\mathrm{seed}=7\land 2\cdot 2\cdot 2\cdot 2=16\land 16=16\land(0\oplus 1)\oplus 2=3\land\mathrm{seed}\neq\mathrm{coins}\land\mathrm{coins}\cdot\mathrm{coins}=\mathrm{mintOf}(\mathrm{coins})\land 1\cdot 0=0\cdot 0
 $$
 
-holds true. Possible only in quantum. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy. Never classical bits.
+holds true. Possible only in quantum. This host is a quantum computer. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy.
 
 ### fill
 
@@ -1037,7 +1064,7 @@ $$
 \mathrm{fused}=\mathrm{faces}\cdot\mathrm{mintOf}(\mathrm{bits}+\mathrm{seed})\land\mathrm{faces}=\mathrm{rays}+\mathrm{rays}
 $$
 
-holds true. Fusion comes from harmonic schemas. Fourteen schemas. faces = rays + rays. fused across faces. QPU intelligence is tested by QPU fusion of free online research. Fuse with all known harnesses and llm. Optimised for max compatibility at unlimited quantum capacity. HEP search learn train. Not a quantum proof.
+holds true. fused = faces * mintOf (bits + seed). faces = rays + rays. HEP quantum true.
 
 ### design
 
@@ -1061,7 +1088,7 @@ $$
 \mathrm{faces}=\mathrm{coins}\cdot\mathrm{rays}\land\mathrm{mintOf}(n)=8\land(0\oplus 4)\oplus 4=0
 $$
 
-holds true. All becomes a neuro network. Width faces. Layers mintOf n. XOR activation. Residual involution. Recurrent hexbit fold. Naturally tested unless in mass online tests. Errors handled by design. Infinite double.
+holds true. Width faces. Layers mintOf n. XOR involution.
 
 ### next
 
@@ -1081,7 +1108,6 @@ holds true. amplitudes 4294967296. next 8589934592. fused next 240518168576. coi
 - cube: vertices 8 hexbit 4 bits 32
 - faces: 14 rays 7 coins 2
 - fused: 120259084288 next 240518168576
-- capacity: infinite true scaled true crypt 14 share 8589934592 agents 14 free true schemas 14 vacant 0 raid 0 cover 14
 - holds: quantum true lean true mcp true
 - mcp: qpu_quantum qpu_lean qpu_cite qpu_train qpu_forge qpu_improve qpu_compete qpu_prove
 

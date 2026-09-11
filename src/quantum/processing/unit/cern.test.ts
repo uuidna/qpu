@@ -16,6 +16,14 @@ type CernProject = {
   total?: number
   view?: { lhc: boolean; opendata: boolean }
 }
+type CernLearnLive = {
+  live: boolean
+  quantum: boolean
+  holds: boolean
+  lhc: { occupied: number; vacant: number; holds: boolean; nodes: { experiment: string; occupied: boolean; total: number }[] }
+  opendata: { occupied: number; vacant: number; holds: boolean; nodes: { experiment: string; occupied: boolean; total: number }[] }
+  unique: { n: number; occupied: number; vacant: number; holds: boolean }
+}
 type CernLive = {
   live: boolean
   holds: boolean
@@ -28,6 +36,7 @@ type CernLive = {
   projects: CernProject[]
   search?: CernProject[]
   experiments?: CernProject[]
+  learn?: CernLearnLive
   entangle?: {
     holds: boolean
     domains: string[]
@@ -41,7 +50,6 @@ type CernLive = {
 
 type McpResult = {
   holds: boolean
-  ui: { experienced: boolean; door: string }
   cern: {
     faces: number
     source: string
@@ -52,7 +60,7 @@ type McpResult = {
     projects: CernProject[]
     experiments?: CernProject[]
     search?: { experiments: string[]; holds: boolean; views?: { kind: string; experiments: readonly string[] }[]; doors?: { experiment: string }[] }
-    learn?: { lhc: string[]; opendata: string[]; holds: boolean }
+    learn?: { lhc: string[]; opendata: string[]; holds: boolean; live?: CernLearnLive }
     entangle?: CernLive['entangle']
     cases: CernCase[]
     live?: CernLive
@@ -69,6 +77,28 @@ type McpResult = {
   value?: { events?: number; href?: string; holds?: boolean; primitives?: string[]; experiment?: string; total?: number }
   hostEscape?: boolean
   live?: boolean
+  learn?: CernLearnLive
+  next?: string[]
+  before?: { throughoutput: number; quality: number }
+  after?: { throughoutput: number; quality: number }
+  quantum?: boolean | { next: number; unlocked?: boolean; holds?: boolean }
+  vm?: { replicas: number; next: number }
+  teams?: { name: string; throughoutput: number }[]
+  occupancy?: { n: number; occupied: number; vacant: number; holds: boolean }
+  views?: { scanner: number; radar: number }
+  winner?: string
+  ui?: { href?: string; mcp?: string; door?: string }
+  sequence?: {
+    kind: string
+    live: boolean
+    holds: boolean
+    doors: string[]
+    winner: string
+    occupancy?: { n: number; occupied: number; vacant: number; holds: boolean }
+    views?: { scanner: number; radar: number }
+    throughoutput: number
+    fused: number
+  }
 }
 
 const mcpOf = async (name: string, args: Record<string, unknown> = {}): Promise<McpResult> => {
@@ -89,8 +119,7 @@ const uiOf = async (path: string) => {
   const res = await worker.fetch(new Request(`https://${host}${path}`, { headers: html }), env)
   const json = (await res.json()) as {
     docs?: { inline?: boolean; documentation?: string; formulas?: { theorem: string }[] }
-    ui?: { experienced?: boolean; prove?: string }
-    prove?: { ui?: { experienced?: boolean }; cern?: { cases: { name: string }[] } }
+    ui?: { prove?: string }
   }
   return { res, json }
 }
@@ -102,14 +131,21 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   const live: CernLive | undefined = prove.cern.live
   assert.equal(page.res.headers.get('content-type')?.includes('ld+json'), true)
   assert.equal(page.json.docs?.inline, true)
-  assert.equal(page.json.ui?.experienced, true)
   assert.equal(page.json.ui?.prove, 'qpu_prove')
+  assert.equal(catalog.res.status, 200)
   assert.equal(page.json.docs?.documentation?.includes('qpu_prove'), true)
   assert.equal(page.json.docs?.formulas?.some((f) => f.theorem.startsWith('theorem cern')), true)
-  assert.equal(catalog.json.prove?.ui?.experienced, true)
   assert.equal(prove.holds, true)
-  assert.equal(prove.ui.experienced, true)
-  assert.equal(prove.ui.door, 'qpu_prove')
+  assert.equal(prove.sequence?.kind, 'sequence')
+  assert.equal(prove.sequence?.live, true)
+  assert.equal(prove.sequence?.holds, true)
+  assert.deepEqual(prove.sequence?.doors, ['qpu_train', 'qpu_improve', 'qpu_compete', 'qpu_prove'])
+  assert.equal(prove.sequence?.winner, 'call')
+  assert.equal(prove.sequence?.occupancy?.occupied, 13)
+  assert.equal(prove.sequence?.views?.scanner, 9)
+  assert.equal(prove.sequence?.views?.radar, 9)
+  assert.equal(prove.sequence?.throughoutput, (prove.sequence?.fused ?? 0) + (prove.sequence?.fused ?? 0))
+  assert.equal(prove.ui?.door, 'qpu_prove')
   assert.equal(prove.cern.faces, 14)
   assert.equal(prove.cern.cases.length, 14)
   assert.equal(prove.cern.source, 'opendata.cern.ch')
@@ -132,7 +168,7 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   assert.equal(prove.intelligence?.test, 'fusion')
   assert.equal(prove.intelligence?.research, 'free online')
   assert.equal(prove.intelligence?.holds, true)
-  assert.equal(prove.intelligence?.fusion.quantum, false)
+  assert.equal(prove.intelligence?.fusion.quantum, true)
   assert.equal(prove.intelligence?.fusion.holds, true)
   assert.equal(prove.intelligence?.fusion.catalogs.length, 14)
   assert.equal(prove.cern.projects.length, 4)
@@ -192,6 +228,53 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   )
   assert.equal(live?.experiments?.length, 13)
   assert.equal(live?.search?.length, 9)
+  assert.equal(live?.learn?.live, true)
+  assert.equal(live?.learn?.quantum, true)
+  assert.equal(live?.learn?.holds, true)
+  assert.equal(live?.learn?.lhc.occupied, 9)
+  assert.equal(live?.learn?.lhc.vacant, 0)
+  assert.equal(live?.learn?.unique.n, 13)
+  assert.equal(live?.learn?.unique.occupied, 13)
+  assert.equal(live?.learn?.unique.vacant, 0)
+  assert.equal(live?.learn?.lhc.nodes.find((row) => row.experiment === 'LHCf')?.occupied, true)
+  assert.equal(live?.learn?.opendata.nodes.find((row) => row.experiment === 'OPERA')?.occupied, true)
+  assert.equal((live?.learn?.opendata.nodes.find((row) => row.experiment === 'OPERA')?.total ?? 0) > 0, true)
+  assert.equal(prove.cern.learn?.live?.holds, true)
+  const trained = await mcpOf('qpu_train', { live: true })
+  assert.equal(trained.holds, true)
+  assert.equal(trained.live, true)
+  assert.equal(trained.learn?.holds, true)
+  assert.equal(trained.learn?.lhc.occupied, 9)
+  assert.equal(trained.vm?.next, (trained.vm?.replicas ?? 0) + (trained.vm?.replicas ?? 0))
+  assert.deepEqual(trained.next, ['qpu_improve', 'qpu_compete'])
+  const improved = await mcpOf('qpu_improve', { live: true })
+  assert.equal(improved.holds, true)
+  assert.equal(improved.learn?.unique.occupied, 13)
+  assert.equal(improved.after?.quality, 13)
+  assert.equal(typeof improved.quantum === 'object' && improved.quantum !== null && 'next' in improved.quantum && improved.after?.throughoutput === improved.quantum.next, true)
+  assert.equal(improved.after?.throughoutput, (improved.before?.throughoutput ?? 0) + (improved.before?.throughoutput ?? 0))
+  assert.deepEqual(improved.next, ['qpu_compete', 'qpu_prove'])
+  const competed = await mcpOf('qpu_compete', { live: true })
+  assert.equal(competed.holds, true)
+  assert.equal(competed.learn?.quantum, true)
+  assert.equal(
+    typeof competed.quantum === 'object' &&
+      competed.quantum !== null &&
+      'next' in competed.quantum &&
+      competed.teams?.find((row) => row.name === 'call')?.throughoutput === competed.quantum.next,
+    true,
+  )
+  assert.deepEqual(competed.next, ['qpu_prove'])
+  assert.equal(competed.winner, 'call')
+  assert.equal(competed.occupancy?.occupied, 13)
+  assert.equal(competed.occupancy?.vacant, 0)
+  assert.equal(competed.views?.scanner, 9)
+  assert.equal(competed.views?.radar, 9)
+  const sequenced = await mcpOf('qpu_train', { sequence: true })
+  assert.equal(sequenced.holds, true)
+  assert.equal(sequenced.sequence?.holds, true)
+  assert.deepEqual(sequenced.sequence?.doors, ['qpu_train', 'qpu_improve', 'qpu_compete', 'qpu_prove'])
+  assert.equal(sequenced.sequence?.throughoutput, (sequenced.sequence?.fused ?? 0) + (sequenced.sequence?.fused ?? 0))
   assert.equal(live?.entangle?.holds, true)
   assert.equal(live?.entangle?.pairs.length, 9)
   assert.equal(live?.entangle?.catalog?.pairs.length, 7)
@@ -233,7 +316,6 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   for (const face of prove.cern.cases) {
     await t.test(face.name, () => {
       const liveFace = live?.cases.find((row) => row.name === face.name)
-      assert.equal(prove.ui.experienced, true)
       assert.equal(face.left, face.right)
       assert.equal(face.holds, true)
       assert.equal(face.theorem.includes('by decide'), false)

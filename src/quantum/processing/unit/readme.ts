@@ -1,5 +1,5 @@
 /**
- * Develop leads. Integrity then the generated README from the Lean proof of the QPU.
+ * Develop leads. Integrity then the generated README from the Lean proof.
  */
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -23,7 +23,7 @@ writeFileSync(
   join(root, 'CITATION.cff'),
   [
     'cff-version: 1.2.0',
-    'message: Cite the running quantum circuit and its Lean proof. VM scales. Quantum capacity infinite. Crypt split to free agents.',
+    'message: Cite the running quantum circuit and its Lean proof.',
     'title: QPU',
     'type: software',
     'authors:',
