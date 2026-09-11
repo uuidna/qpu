@@ -6,7 +6,7 @@ GET https://qpu.uuidna.com. POST https://qpu.uuidna.com/mcp tools/list then tool
 
 ## Abstract
 
-A named host qpu.uuidna.com exposes one quantum processing unit as JSON-LD. fused is 120259084288. next is fused + fused = 240518168576. Native gates are h and cnot. theorem temperature. theorem superconductivity. theorem qubits. theorem shor. theorem crypto. GHZ true. Entangle product false. Possible only in quantum. demo is not a test nor a proof.
+A named host qpu.uuidna.com exposes one quantum processing unit as JSON-LD. fused is 120259084288. next is fused + fused = 240518168576. Native gates are h and cnot. theorem temperature. theorem superconductivity. theorem qubits. theorem shor. theorem crypto. GHZ true. Entangled true, product false. Possible only in quantum. demo is not a test nor a proof.
 
 ## Unit
 
@@ -20,7 +20,7 @@ Seven paths. Eight sealed MCP tools. Eight cybersecurity morph tools listed on t
 
 - `GET /` qpu_quantum. theorem quantum. theorem shor. theorem crypto. Factor 91. JSON-LD. No auth.
 - `GET /quantum/processing/unit` qpu_lean. Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. src/quantum/processing/unit/index.lean. JSON-LD. No auth.
-- `GET /mcp` catalog. tools 8. cybersecurity theorem shor Factor 91. theorem crypto Split identity true. Secrecy false. fourteen schemas. schema.org ItemList. JSON-LD. No auth.
+- `GET /mcp` catalog. tools 16 in tools/list: 8 doors and 8 cybersecurity. cybersecurity theorem shor Factor 91. theorem crypto Split identity true. Secrecy false. fourteen schemas. schema.org ItemList. JSON-LD. No auth.
 - `POST /mcp` tools/call. JSON-RPC tools/list tools/call qpu_prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.
 - `GET /cite` qpu_cite. MLA 8. when never. JSON-LD. No auth.
 - `GET /message` qpu_message. lanes = faces. hop involution. JSON-LD. No auth.

@@ -2020,6 +2020,10 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     noise: 'xx' as const,
     identity: xxId,
     measured,
+    /** No entropy in the unit: the outcomes list the support in order, once per shot, so they are the exact
+     * distribution enumerated, never a sample. The Born weights are `weights`. */
+    sampled: false as const,
+    enumerated: true as const,
     shots: shots.length,
     outcomes: shots,
     support,
@@ -3897,7 +3901,7 @@ export const qpuDocsOf = () => {
   const api = [
     { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.` },
     { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.` },
-    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: `tools ${mintOf(n)}. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.` },
+    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: `tools ${mintOf(n) + mintOf(n)} in tools/list: ${mintOf(n)} doors and ${mintOf(n)} cybersecurity. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.` },
     { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'JSON-RPC tools/list tools/call qpu_prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.' },
     { method: 'GET' as const, path: '/cite', name: 'qpu_cite', href: `${unit.origin}/cite`, reading: 'MLA 8. when never. JSON-LD. No auth.' },
     { method: 'GET' as const, path: '/message', name: 'qpu_message', href: `${unit.origin}/message`, reading: 'lanes = faces. hop involution. JSON-LD. No auth.' },
@@ -3954,6 +3958,20 @@ export const qpuDocsHolds = (d = qpuDocsOf()): boolean =>
   d.api.length === qpuFacesOf().rays &&
   d.src === unit.fuse.lean
 
+/** WHAT THE WORDS MEAN, SERVED BESIDE THEM. `holds` is said of every record and means that the record is self-consistent
+ * and recomputes to itself; it is not a claim that the test the record describes passed. That claim, where a record
+ * makes one, has its own word: `pass`, `factored`, `measured`, `entangled`, `resolvable`. */
+export const qpuGlossaryOf = () => ({
+  kind: 'glossary' as const,
+  holds: 'this record is self-consistent and recomputes to itself; not a claim that the test it describes passed',
+  pass: 'the test the record describes passed (quantum volume); can be false beside holds true',
+  factored: 'the run found p and q with p * q = n; `by` says whether by period or by gcd',
+  measured: 'a held state was read for these shots; shots from nothing are never listed',
+  sampled: 'false everywhere: outcomes enumerate the support, they are not drawn; the unit holds no entropy',
+  read: 'how each argument was taken (digits, number, numeric, absent, default) and whether exactly',
+  beyond: 'the order of the base exists and does not divide four, so a two-qubit register cannot resolve it',
+  device: 'simulator when a vector of exact integer amplitudes was held; unmeasured otherwise',
+})
 export const qpuQuantumOf = () => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -4029,6 +4047,7 @@ export const qpuQuantumOf = () => {
       proxy: cors === '*',
       secure: unit.origin.startsWith('https')},
     docs,
+    glossary: qpuGlossaryOf(),
     ui: {
       prove: 'qpu_prove' as const,
       href: `${unit.origin}/mcp`},
@@ -4672,7 +4691,9 @@ export const qpuPurposeOf = (
     kind: 'nature' as const,
     platform: circuit.register.kind,
     qubits: circuit.register.qubits,
-    entangle: circuit.entangle.product,
+    /** The Bell state is not a product state: `product` false is what `entangled` true means, and both are said. */
+    product: circuit.entangle.product,
+    entangled: circuit.entangle.holds && circuit.entangle.product === false,
     ghz: circuit.ghz.holds,
     holds:
       circuit.register.holds &&
@@ -6428,6 +6449,8 @@ type QpuServerJob = {
   id: number
   status: 'done'
   gates: string[]
+  read: QpuGatesRead
+  dropped: number
   index: number
   shots: number
   counts: { i: number; w: number }[]
@@ -6439,33 +6462,42 @@ type QpuServerJob = {
 const serverJobs: QpuServerJob[] = []
 let serverSeq = n - n
 
-const parseGatesOf = (value: unknown): Record<string, unknown>[] => {
+/** How a job's gates were read: `read` from the caller's list, `absent` when none was sent (the Bell pair stands in),
+ * or `default` when something was sent that held no gate at all — the Bell pair runs, and the job says so and does
+ * not hold, so a body of nonsense never comes back as a confident result. `dropped` counts rows that were not gates. */
+export type QpuGatesRead = 'read' | 'absent' | 'default'
+const parseGatesOf = (value: unknown): { ops: Record<string, unknown>[]; read: QpuGatesRead; dropped: number } => {
   const fallback = [
     { name: 'h', q: n - n },
     { name: 'cnot', c: n - n, t: seed }]
-  if (!Array.isArray(value) || value.length === n - n) return fallback
+  if (value === undefined) return { ops: fallback, read: 'absent', dropped: n - n }
+  if (!Array.isArray(value)) return { ops: fallback, read: 'default', dropped: seed }
   const ops: Record<string, unknown>[] = []
   const names = ['h', 'x', 'z', 'cnot', 'cz', 'swap', 'toffoli', 'reset'] as const
+  let dropped = n - n
   for (const row of value) {
-    if (!row || typeof row !== 'object' || Array.isArray(row)) continue
-    const name = typeof (row as { name?: unknown }).name === 'string' ? (row as { name: string }).name : ''
+    const name = row && typeof row === 'object' && !Array.isArray(row) && typeof (row as { name?: unknown }).name === 'string' ? (row as { name: string }).name : ''
     if ((names as readonly string[]).includes(name)) ops.push(jsonOf(row) as Record<string, unknown>)
+    else dropped += seed
   }
-  return ops.length > n - n ? ops : fallback
+  return ops.length > n - n ? { ops, read: 'read', dropped } : { ops: fallback, read: 'default', dropped }
 }
 
 export const qpuServerSubmitOf = (input: Record<string, unknown> = {}) => {
   const computer = qpuComputerOf()
   const plugin = qpuPayloadPluginOf()
   const payload = qpuPayloadMcpOf()
-  const ops = parseGatesOf(input.gates)
+  const parsed = parseGatesOf(input.gates)
+  const ops = parsed.ops
   const measured = measureOf(runGatesOf(ops))
   serverSeq += seed
-  const holds = measured.holds && computer.holds && qpuPayloadPluginHolds(plugin) && payload.holds
+  const holds = measured.holds && computer.holds && qpuPayloadPluginHolds(plugin) && payload.holds && parsed.read !== 'default'
   const job: QpuServerJob = {
     id: serverSeq,
     status: 'done',
     gates: ops.map((op) => `${op.name ?? ''}`),
+    read: parsed.read,
+    dropped: parsed.dropped,
     index: measured.index,
     shots: measured.shots,
     counts: measured.counts,
@@ -7880,6 +7912,7 @@ export const qpuProveOf = () => {
     src: lean.src,
     source: lean.source,
     receipts,
+    glossary: qpuGlossaryOf(),
     lean,
     theorems,
     cern,
@@ -9107,7 +9140,7 @@ export const qpuHostsHolds = (h = qpuHostsOf()): boolean =>
 export const qpuMcpDiscoverOf = () => {
   const hosts = qpuHostsOf()
   const versions = ['2024-11-05', '2025-03-26', '2025-06-18', '2026-07-28'] as const
-  const instructions = `tools/list then tools/call. Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. No auth.`
+  const instructions = `tools/list then tools/call. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. No auth.`
   const holds = qpuHostsHolds(hosts) && versions.length === mintOf(coins) && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
   return {
     protocolVersion: versions[mintOf(coins) - seed],
@@ -10159,7 +10192,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Abstract',
     '',
-    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}. next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem temperature. theorem superconductivity. theorem qubits. theorem shor. theorem crypto. GHZ ${quantum.purpose.nature.ghz}. Entangle product ${quantum.purpose.nature.entangle}. Possible only in quantum. demo is not a test nor a proof.`,
+    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}. next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem temperature. theorem superconductivity. theorem qubits. theorem shor. theorem crypto. GHZ ${quantum.purpose.nature.ghz}. Entangled ${quantum.purpose.nature.entangled}, product ${quantum.purpose.nature.product}. Possible only in quantum. demo is not a test nor a proof.`,
     '',
     '## Unit',
     '',

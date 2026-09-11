@@ -595,3 +595,45 @@ test('protocol errors are JSON-RPC errors, an unknown tool is an error, and a jo
   assert.equal(g.holds, false)
   assert.equal(g.why.includes('not stored'), true)
 })
+
+test('the catalog says sixteen, a job says how its gates were read, shots say they are enumerated, and the words are served', async () => {
+  const page = (await (await fetchOf('/')).json()) as { docs: { api: { path: string; method: string; reading: string }[] }; shor: { measure: { sampled: boolean; enumerated: boolean; shots: number; outcomes: number[] } }; purpose: { nature: { product: boolean; entangled: boolean; entangle?: unknown } }; glossary: Record<string, string> }
+  const catalog = page.docs.api.find((r) => r.path === '/mcp' && r.method === 'GET')!
+  assert.equal(catalog.reading.startsWith('tools 16 in tools/list: 8 doors and 8 cybersecurity.'), true)
+  const discovered = await rpcOf('/mcp', 'initialize', {})
+  assert.equal(typeof discovered.instructions === 'string' && discovered.instructions.includes('Sixteen tools'), true)
+  const listed = await rpcOf('/mcp', 'tools/list')
+  assert.equal(listed.tools?.length, 16)
+  // the Bell measurement's shots are the support enumerated, and say so
+  assert.equal(page.shor.measure.sampled, false)
+  assert.equal(page.shor.measure.enumerated, true)
+  assert.equal(page.shor.measure.outcomes.length, page.shor.measure.shots)
+  // nature says entangled and product, never a field named entangle holding the product flag
+  assert.equal(page.purpose.nature.product, false)
+  assert.equal(page.purpose.nature.entangled, true)
+  assert.equal('entangle' in page.purpose.nature, false)
+  // the glossary is served on the root and says what holds is not
+  assert.equal(page.glossary.holds.includes('not a claim'), true)
+  assert.equal(page.glossary.sampled.includes('false'), true)
+  const proved = await callRpcOf('/mcp', 'qpu_prove')
+  assert.equal(typeof (proved.shown as { glossary?: { holds?: string } }).glossary?.holds, 'string')
+  // a job reads its gates: read, absent, or default — and a defaulted circuit does not hold
+  const post = async (body: unknown) => (await (await fetchOf('/server', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })).json()) as { read: string; dropped: number; gates: string[]; holds: boolean }
+  const read = await post({ gates: [{ name: 'h', q: 0 }, { name: 'x', q: 1 }, { nope: true }] })
+  assert.equal(read.read, 'read')
+  assert.equal(read.dropped, 1)
+  assert.deepEqual(read.gates, ['h', 'x'])
+  assert.equal(read.holds, true)
+  const absent = await post({})
+  assert.equal(absent.read, 'absent')
+  assert.deepEqual(absent.gates, ['h', 'cnot'])
+  assert.equal(absent.holds, true)
+  const nonsense = await post({ gates: 'nope' })
+  assert.equal(nonsense.read, 'default')
+  assert.deepEqual(nonsense.gates, ['h', 'cnot'])
+  assert.equal(nonsense.holds, false)
+  const empty = await post({ gates: [{ name: 'teleport' }, 5] })
+  assert.equal(empty.read, 'default')
+  assert.equal(empty.dropped, 2)
+  assert.equal(empty.holds, false)
+})

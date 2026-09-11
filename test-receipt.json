@@ -1,15 +1,15 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 104,
-  "pass": 104,
+  "tests": 105,
+  "pass": 105,
   "fail": 0,
   "dry": 0,
-  "circuit": 63,
+  "circuit": 64,
   "mintOnly": 11,
   "dim": "2^1048578",
   "qubits": 1048578,
-  "receipt": "335ca1b2aa769e36",
+  "receipt": "d2d2033202b786b3",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -52,8 +52,8 @@
         }
       ],
       "mint": {
-        "calls": 551954,
-        "chain": "8bd8cf97974aa345"
+        "calls": 552146,
+        "chain": "e633829270affc35"
       }
     },
     {
@@ -96,8 +96,8 @@
         }
       ],
       "mint": {
-        "calls": 247568,
-        "chain": "4751cc6fa8dfbec5"
+        "calls": 247652,
+        "chain": "ebb39f664930e031"
       }
     },
     {
@@ -140,8 +140,8 @@
         }
       ],
       "mint": {
-        "calls": 121174,
-        "chain": "f53565e9cf8e266c"
+        "calls": 121216,
+        "chain": "ef0a1816f69dc41a"
       }
     },
     {
@@ -422,8 +422,8 @@
         }
       ],
       "mint": {
-        "calls": 3014445,
-        "chain": "c39ef021c46206b6"
+        "calls": 3015108,
+        "chain": "469459c1d8b49759"
       }
     },
     {
@@ -466,8 +466,8 @@
         }
       ],
       "mint": {
-        "calls": 439717,
-        "chain": "938f6bca3ddc772f"
+        "calls": 439870,
+        "chain": "0f6d07128b574576"
       }
     },
     {
@@ -578,8 +578,8 @@
         }
       ],
       "mint": {
-        "calls": 754992,
-        "chain": "3b57249604a1ac6b"
+        "calls": 755253,
+        "chain": "d5a10a8b0f171085"
       }
     },
     {
@@ -639,8 +639,8 @@
         }
       ],
       "mint": {
-        "calls": 60611,
-        "chain": "61303268fa0fc7c2"
+        "calls": 60629,
+        "chain": "7b7f577fc3197d4e"
       }
     },
     {
@@ -795,8 +795,8 @@
         }
       ],
       "mint": {
-        "calls": 61112,
-        "chain": "d6200e2bd08154c3"
+        "calls": 61130,
+        "chain": "be5af4b0dfb32ebd"
       }
     },
     {
@@ -839,8 +839,8 @@
         }
       ],
       "mint": {
-        "calls": 213834,
-        "chain": "683d9cd19e125e2e"
+        "calls": 213912,
+        "chain": "43dabcc9740a7ca6"
       }
     },
     {
@@ -883,8 +883,8 @@
         }
       ],
       "mint": {
-        "calls": 82738,
-        "chain": "3e7148945b8987a2"
+        "calls": 82768,
+        "chain": "afb2ba26fb9738b8"
       }
     },
     {
@@ -927,8 +927,8 @@
         }
       ],
       "mint": {
-        "calls": 1295938,
-        "chain": "70e2a842c303b2ba"
+        "calls": 1296388,
+        "chain": "999023de8c087c06"
       }
     },
     {
@@ -945,7 +945,7 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "e22d7d8d5a00bae9"
+        "chain": "547366695405a58d"
       }
     },
     {
@@ -962,7 +962,7 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "053a3ecbcbc3340e"
+        "chain": "0534d9e2e2991612"
       }
     },
     {
@@ -1005,8 +1005,8 @@
         }
       ],
       "mint": {
-        "calls": 311535,
-        "chain": "8d88fb38bfaf799a"
+        "calls": 311556,
+        "chain": "c2054fc012ad2fd7"
       }
     },
     {
@@ -1023,7 +1023,7 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "c874c41a9e36d3c8"
+        "chain": "c5bc34fcf8c62f1d"
       }
     },
     {
@@ -1066,8 +1066,8 @@
         }
       ],
       "mint": {
-        "calls": 59744,
-        "chain": "3dae5b6677857a29"
+        "calls": 59762,
+        "chain": "60073d4040cf0222"
       }
     },
     {
@@ -1111,7 +1111,7 @@
       ],
       "mint": {
         "calls": 646,
-        "chain": "e908e32012a0b6f9"
+        "chain": "6eceabc4c7c9f13e"
       }
     },
     {
@@ -1155,7 +1155,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "28893ecfbfc65f5e"
+        "chain": "8df891f82f6f92bb"
       }
     },
     {
@@ -1199,7 +1199,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "ab936c49a653ccdb"
+        "chain": "6aaa61b97cb4242c"
       }
     },
     {
@@ -1243,7 +1243,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "bf785e9aa802d84c"
+        "chain": "eb93d83da0ec70dd"
       }
     },
     {
@@ -1287,7 +1287,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "7e2f37aafdda677d"
+        "chain": "a98497c9d5ec15da"
       }
     },
     {
@@ -1331,7 +1331,7 @@
       ],
       "mint": {
         "calls": 3694,
-        "chain": "e7d2df8bfcf28c81"
+        "chain": "f41ddd3533412aee"
       }
     },
     {
@@ -1374,8 +1374,8 @@
         }
       ],
       "mint": {
-        "calls": 66118,
-        "chain": "303a3b3f8122a39c"
+        "calls": 66139,
+        "chain": "85dae479fc03f67c"
       }
     },
     {
@@ -1418,8 +1418,8 @@
         }
       ],
       "mint": {
-        "calls": 65891,
-        "chain": "b176cb30bd8cba9e"
+        "calls": 65912,
+        "chain": "95144c8bd1dc5e57"
       }
     },
     {
@@ -1462,8 +1462,8 @@
         }
       ],
       "mint": {
-        "calls": 119020,
-        "chain": "b69d9149d7bbb070"
+        "calls": 119059,
+        "chain": "3a2ff5ffddbed74a"
       }
     },
     {
@@ -1518,8 +1518,8 @@
         }
       ],
       "mint": {
-        "calls": 2087758,
-        "chain": "9b359b1d3d79487b"
+        "calls": 2088478,
+        "chain": "f95af47f51853559"
       }
     },
     {
@@ -1562,8 +1562,8 @@
         }
       ],
       "mint": {
-        "calls": 14157,
-        "chain": "299b4c2763bb9464"
+        "calls": 14163,
+        "chain": "4b14aaa0bf3c5512"
       }
     },
     {
@@ -1606,8 +1606,8 @@
         }
       ],
       "mint": {
-        "calls": 419032,
-        "chain": "b1cd27a2d7f2396b"
+        "calls": 419173,
+        "chain": "b786037e4125fd3c"
       }
     },
     {
@@ -1650,8 +1650,8 @@
         }
       ],
       "mint": {
-        "calls": 13290,
-        "chain": "9e451fd0bae9eec3"
+        "calls": 13296,
+        "chain": "3356f8b3aba5cca0"
       }
     },
     {
@@ -1694,8 +1694,8 @@
         }
       ],
       "mint": {
-        "calls": 96375,
-        "chain": "8af6a8ec61b45399"
+        "calls": 96396,
+        "chain": "574c7ae7a20b8272"
       }
     },
     {
@@ -1789,8 +1789,8 @@
         }
       ],
       "mint": {
-        "calls": 6995,
-        "chain": "7ef4b05fd1df3865"
+        "calls": 6998,
+        "chain": "dfbfac3736c57c22"
       }
     },
     {
@@ -1833,8 +1833,8 @@
         }
       ],
       "mint": {
-        "calls": 317292,
-        "chain": "f81fdbe7c734dd33"
+        "calls": 317400,
+        "chain": "7d8a0da3f12d1cb8"
       }
     },
     {
@@ -1877,8 +1877,8 @@
         }
       ],
       "mint": {
-        "calls": 120109,
-        "chain": "f54a668e272e135b"
+        "calls": 120151,
+        "chain": "9bdeb06917549ca9"
       }
     },
     {
@@ -1921,8 +1921,8 @@
         }
       ],
       "mint": {
-        "calls": 17634,
-        "chain": "6b21dfafab94161d"
+        "calls": 17640,
+        "chain": "a428d21b4bd30341"
       }
     },
     {
@@ -1965,8 +1965,8 @@
         }
       ],
       "mint": {
-        "calls": 50618,
-        "chain": "62ecfe580e0da11f"
+        "calls": 50636,
+        "chain": "7e7fd6b7236395ed"
       }
     },
     {
@@ -2007,7 +2007,7 @@
       ],
       "mint": {
         "calls": 2546,
-        "chain": "7c0eb7b3dde992cf"
+        "chain": "795d8a436a361aad"
       }
     },
     {
@@ -2050,8 +2050,8 @@
         }
       ],
       "mint": {
-        "calls": 16988,
-        "chain": "9e69497092742d2e"
+        "calls": 16994,
+        "chain": "a3ef03782f4d3bca"
       }
     },
     {
@@ -2094,8 +2094,8 @@
         }
       ],
       "mint": {
-        "calls": 70819,
-        "chain": "3e7cd49ee201a7f2"
+        "calls": 70843,
+        "chain": "557e9f8d614fa562"
       }
     },
     {
@@ -2139,7 +2139,7 @@
       ],
       "mint": {
         "calls": 3059,
-        "chain": "87c873f50e3b0542"
+        "chain": "1abe2fd82c9de1b2"
       }
     },
     {
@@ -2182,8 +2182,8 @@
         }
       ],
       "mint": {
-        "calls": 106217,
-        "chain": "21e63b267d04a8bb"
+        "calls": 106247,
+        "chain": "534a8b242f434783"
       }
     },
     {
@@ -2227,7 +2227,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "04b0a811ae4eb62c"
+        "chain": "d3a07c3989d3edb4"
       }
     },
     {
@@ -2355,8 +2355,8 @@
         }
       ],
       "mint": {
-        "calls": 14157,
-        "chain": "299b4c2763bb9464"
+        "calls": 14163,
+        "chain": "4b14aaa0bf3c5512"
       }
     },
     {
@@ -2400,7 +2400,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "6d7851ae3620f435"
+        "chain": "ce26f0b6507eab07"
       }
     },
     {
@@ -2443,8 +2443,8 @@
         }
       ],
       "mint": {
-        "calls": 1912974,
-        "chain": "fe37fdbf220b1efe"
+        "calls": 1913508,
+        "chain": "3130c2c6541b0bc6"
       }
     },
     {
@@ -2487,8 +2487,8 @@
         }
       ],
       "mint": {
-        "calls": 2987450,
-        "chain": "4be4f3eaeed1f187"
+        "calls": 2988488,
+        "chain": "bea2bf778fd054cd"
       }
     },
     {
@@ -2650,8 +2650,8 @@
         }
       ],
       "mint": {
-        "calls": 6248267,
-        "chain": "1835528b2bdedc61"
+        "calls": 6250301,
+        "chain": "3208a3b02d7f750b"
       }
     },
     {
@@ -2694,8 +2694,67 @@
         }
       ],
       "mint": {
-        "calls": 628443,
-        "chain": "1eef2bbf652301d0"
+        "calls": 628659,
+        "chain": "627e254b38b2e4a2"
+      }
+    },
+    {
+      "name": "the catalog says sixteen, a job says how its gates were read, shots say they are enumerated, and the words are served",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 16776,
+      "kinds": {
+        "x": 3630,
+        "cnot": 6979,
+        "toffoli": 590,
+        "h": 5106,
+        "measure": 299,
+        "cmodexp": 86,
+        "xx": 86
+      },
+      "dims": {
+        "8": 16604,
+        "512": 172
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "468a9f11321ff8c4",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 298
+        },
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "0",
+            "0",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 1
+        }
+      ],
+      "mint": {
+        "calls": 382947,
+        "chain": "c36ff32985c72db2"
       }
     },
     {
@@ -2738,8 +2797,8 @@
         }
       ],
       "mint": {
-        "calls": 70315,
-        "chain": "251b4807d02ac75c"
+        "calls": 70339,
+        "chain": "0d07b854d4e2c8f4"
       }
     },
     {
@@ -2782,8 +2841,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "2158488bc345781a"
+        "calls": 69472,
+        "chain": "6cb35f117551e2b2"
       }
     },
     {
@@ -2826,8 +2885,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "7cd677216edccce0"
+        "calls": 69472,
+        "chain": "18ebf3ac9380f3e0"
       }
     },
     {
@@ -2870,8 +2929,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "cb3aca888cd1cd06"
+        "calls": 69472,
+        "chain": "c639c7c0641d8216"
       }
     },
     {
@@ -2914,8 +2973,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "58d3b0d2d055d8b4"
+        "calls": 69472,
+        "chain": "ac88537ebcba479c"
       }
     },
     {
@@ -2958,8 +3017,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "55e592d6e571a552"
+        "calls": 69472,
+        "chain": "daef2604246a213a"
       }
     },
     {
@@ -3002,8 +3061,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "5db8a838c1f07bf8"
+        "calls": 69472,
+        "chain": "66faf4c70f21eca8"
       }
     },
     {
@@ -3046,8 +3105,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "a0f29b78f16a1e7e"
+        "calls": 69472,
+        "chain": "e1d280b72e025ffe"
       }
     },
     {
@@ -3090,8 +3149,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "a7f8d1e71f486acc"
+        "calls": 69472,
+        "chain": "35925bd2b7069c64"
       }
     },
     {
@@ -3134,8 +3193,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "365463d5abe0760a"
+        "calls": 69472,
+        "chain": "81f43181176641a2"
       }
     },
     {
@@ -3178,8 +3237,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "dd585db302867c50"
+        "calls": 69472,
+        "chain": "16125f8ac49e74d0"
       }
     },
     {
@@ -3222,8 +3281,8 @@
         }
       ],
       "mint": {
-        "calls": 69448,
-        "chain": "a1c02345f540c576"
+        "calls": 69472,
+        "chain": "796d8519aa3a8e86"
       }
     },
     {
@@ -3266,8 +3325,8 @@
         }
       ],
       "mint": {
-        "calls": 625893,
-        "chain": "f85836c5718ec855"
+        "calls": 625983,
+        "chain": "c9edeff6f2372abb"
       }
     },
     {
@@ -3310,8 +3369,8 @@
         }
       ],
       "mint": {
-        "calls": 205564,
-        "chain": "5afcc7c91659dfeb"
+        "calls": 205633,
+        "chain": "28dc682bf00f014a"
       }
     },
     {
@@ -3354,8 +3413,8 @@
         }
       ],
       "mint": {
-        "calls": 309426,
-        "chain": "b13dcacb804c38f5"
+        "calls": 309531,
+        "chain": "852f059fa1bb76ad"
       }
     },
     {
@@ -3398,8 +3457,8 @@
         }
       ],
       "mint": {
-        "calls": 600536,
-        "chain": "f4c05315261e2e86"
+        "calls": 600740,
+        "chain": "1a2cf293038bb98a"
       }
     },
     {
@@ -3505,8 +3564,8 @@
         }
       ],
       "mint": {
-        "calls": 1074709,
-        "chain": "a792208391186dd4"
+        "calls": 1075057,
+        "chain": "d7995e41c55a4ea0"
       }
     }
   ]
