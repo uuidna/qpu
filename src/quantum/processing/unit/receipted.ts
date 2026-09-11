@@ -16,6 +16,13 @@ export type TestReceipt = {
   name: string
   computations: number
   kinds: Record<string, number>
+  /** how many computations ran at each vector dimension — the size of every run, so the largest vector a test held is in its
+   * receipt. Keyed by the exact decimal when it is a safe integer, otherwise by `2^qubits`, exact either way. */
+  dims: Record<string, number>
+  /** the largest vector dimension this test computed on, in the same exact text; '0' when it computed nothing */
+  dim: string
+  /** log2 of that largest dimension */
+  qubits: number
   receipt: string
   /** exact integer amplitudes of every distinct measured state this test produced — the Born weights themselves — with how often each was measured */
   states: { name: string; dim: number; amplitudes: readonly string[]; measured: number }[]
@@ -58,10 +65,25 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
     const mintTo = qpuMintReceiptOf()
     const kinds: Record<string, number> = {}
     for (const r of slice) kinds[r.name] = (kinds[r.name] ?? 0) + 1
+    const dims: Record<string, number> = {}
+    let qubits = 0
+    let dim = '0'
+    for (const r of slice) {
+      const q = r.qubits ?? Math.log2(r.dim)
+      const key = Number.isSafeInteger(r.dim) ? String(r.dim) : `2^${q}`
+      dims[key] = (dims[key] ?? 0) + 1
+      if (q > qubits) {
+        qubits = q
+        dim = key
+      }
+    }
     const row: TestReceipt = {
       name,
       computations: slice.length,
       kinds,
+      dims,
+      dim,
+      qubits,
       receipt: qpuReceiptFoldOf(slice),
       states: statesOf(slice),
       mint: { calls: mintTo.calls - mintFrom.calls, chain: mintTo.chain },

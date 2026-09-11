@@ -15,7 +15,7 @@ import { qpuFoldOf } from './index.js'
 import { RECEIPTS_FILE, type TestReceipt } from './receipted.js'
 
 interface TestEvent { type: string; data: { name?: string; file?: string; nesting?: number; details?: { error?: { message?: string } } } }
-interface Row { name: string; file: string; nesting: number; pass: boolean; computations: number; kinds: Record<string, number>; receipt: string; states: TestReceipt['states']; mint: { calls: number; chain: string } }
+interface Row { name: string; file: string; nesting: number; pass: boolean; computations: number; kinds: Record<string, number>; dims: Record<string, number>; dim: string; qubits: number; receipt: string; states: TestReceipt['states']; mint: { calls: number; chain: string } }
 
 const receiptsOf = (): Map<string, TestReceipt> => {
   const path = join(process.cwd(), RECEIPTS_FILE)
@@ -44,10 +44,10 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     })
   }
   const receipts = receiptsOf()
-  const none: TestReceipt = { name: '', computations: 0, kinds: {}, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' } } }
+  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' } } }
   const rows: Row[] = events.map((e) => {
     const got = receipts.get(e.name) ?? none
-    return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, receipt: got.receipt, states: got.states, mint: got.mint }
+    return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, dims: got.dims, dim: got.dim, qubits: got.qubits, receipt: got.receipt, states: got.states, mint: got.mint }
   })
   const failed = events.filter((e) => !e.pass)
   for (const f of failed) {
@@ -61,6 +61,7 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
   const pass = rows.filter((r) => r.pass).length
   const circuit = rows.filter((r) => r.nesting === 0 && r.computations > 0).length
   const mintOnly = rows.filter((r) => r.nesting === 0 && r.computations === 0 && r.mint.calls > 0).length
+  const largest = rows.reduce((top, r) => (r.qubits > top.qubits ? r : top), { dim: '0', qubits: 0, name: '' } as Pick<Row, 'dim' | 'qubits' | 'name'>)
   const sorted = [...rows].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
   const fold = qpuFoldOf(sorted.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}`).join('\u0000'))
   const proof = {
@@ -72,6 +73,8 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     dry: dry.length,
     circuit,
     mintOnly,
+    dim: largest.dim,
+    qubits: largest.qubits,
     receipt: fold,
     readings: 'test-readings.json',
     rows,
@@ -88,6 +91,6 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
   writeFileSync(join(process.cwd(), 'test-readings.json'), `${JSON.stringify(readings, null, 2)}\n`)
   if (dry.length > 0 || failed.length > 0) process.exitCode = 1
   yield failed.length === 0 && dry.length === 0
-    ? `✓ tests — ${pass}/${rows.length} pass; ${circuit} ran the circuit, ${mintOnly} mint-only; receipt ${fold}; readings ${totalNs} ns, temperature ${readings.temperature.measured ? `${(readings.temperature as { millikelvin: number }).millikelvin} mK` : 'unmeasured'}, cracks ${cracks.length}\n`
+    ? `✓ tests — ${pass}/${rows.length} pass; ${circuit} ran the circuit, ${mintOnly} mint-only, largest dim 2^${largest.qubits} (${largest.name.split(':')[0]}); receipt ${fold}; readings ${totalNs} ns, temperature ${readings.temperature.measured ? `${(readings.temperature as { millikelvin: number }).millikelvin} mK` : 'unmeasured'}, cracks ${cracks.length}\n`
     : `✗ tests — ${failed.length} failed, ${dry.length} without computational receipt, ${pass}/${rows.length} pass, receipt ${fold}\n`
 }

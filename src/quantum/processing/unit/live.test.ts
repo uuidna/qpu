@@ -201,35 +201,48 @@ test('live qpu.uuidna.com', async (t) => {
   })
 })
 
-/** The deployed host climbed the same way, under a wall-time budget so the climb stops before the host does. Where it
- * stops is a reading of qpu.uuidna.com's reach, never a cap: nothing in the unit refuses a larger request. */
+/** The deployed host climbed the same way: the work register doubles each step, the modulus travels as exact decimal
+ * text, and the measured growth between steps stops the climb before the budget, so the climb stops before the host does.
+ * Where it stops is a reading of qpu.uuidna.com's reach, never a cap: nothing in the unit refuses a wider request. */
 test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds', async (t) => {
   const live = 'https://qpu.uuidna.com'
   const floor = qpuShorOf()
   const budgetMs = 20000
-  type Run = { circuitry: { qubits: number; dim: number; holds: boolean }; prepare: { prepared: boolean; amplitudes: number; sparse: boolean }; measure: { holds: boolean } }
-  let reach: { qubits: number; dim: number; ms: number } | undefined
-  for (let work = 8; work <= 50; work += 2) {
+  type Run = { circuitry: { qubits: number; holds: boolean }; exact: { n: string }; prepare: { prepared: boolean; amplitudes: number; sparse: boolean }; measure: { holds: boolean } }
+  const steps: { qubits: number; work: number; ms: number }[] = []
+  let stoppedBy = 'nothing'
+  for (let work = 8; ; work *= 2) {
+    const modulus = (1n << BigInt(work)) - 1n
     const t0 = process.hrtime.bigint()
     const res = await fetch(`${live}/mcp`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'crypto_shor', arguments: { n: 2 ** work - 1, a: 3 } } }),
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'crypto_shor', arguments: { n: modulus.toString(), a: 3 } } }),
     })
     const ms = Number(process.hrtime.bigint() - t0) / 1e6
     assert.equal(res.status, 200, `qubits ${work + 2}`)
     const body = (await res.json()) as { result: { content: { text: string }[] } }
     const run = JSON.parse(body.result.content[0]!.text) as Run
     assert.equal(run.circuitry.qubits, work + 2)
+    assert.equal(run.exact.n, modulus.toString())
     assert.equal(run.prepare.prepared, true)
-    // the live host may still hold the vector densely until this build ships; either way it holds amplitudes
-    assert.equal(run.prepare.amplitudes > 0, true)
+    assert.equal(run.prepare.sparse, true)
+    assert.equal(run.prepare.amplitudes > 0 && run.prepare.amplitudes <= 16, true)
     assert.equal(run.circuitry.holds, true)
     assert.equal(run.measure.holds, true)
-    reach = { qubits: run.circuitry.qubits, dim: run.circuitry.dim, ms }
-    if (ms * 4 > budgetMs) break
+    const prev = steps[steps.length - 1]
+    steps.push({ qubits: run.circuitry.qubits, work, ms })
+    if (ms > budgetMs) {
+      stoppedBy = 'this step passed the budget'
+      break
+    }
+    const growth = prev && prev.ms > 0 ? Math.max(ms / prev.ms, 1) : 1
+    if (prev && ms * growth > budgetMs) {
+      stoppedBy = `measured growth ×${growth.toFixed(2)} predicts the next step past the budget`
+      break
+    }
   }
-  assert.notEqual(reach, undefined)
-  assert.equal(reach!.qubits > floor.circuitry.qubits, true)
-  t.diagnostic(`live reach ${reach!.qubits} qubits · dim ${reach!.dim} · ${reach!.ms.toFixed(0)} ms round trip`)
+  const reach = steps[steps.length - 1]!
+  assert.equal(reach.qubits > floor.circuitry.qubits, true)
+  t.diagnostic(`live reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${reach.ms.toFixed(0)} ms round trip · ${steps.length} steps · stopped: ${stoppedBy}`)
 })

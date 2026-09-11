@@ -7,7 +7,7 @@
  * test that computed quantum state carries a receipt and a test that computed none carries none. FNV-1a 64 over the
  * decimal amplitudes; BigInt only. Never Math. The reporter reads this ledger per test (isolation none). */
 import { leanSource, leanToolchain } from './lean.js'
-export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[]; nonzero?: number }
+export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[]; nonzero?: number; qubits?: number }
 /** The exact state worth carrying in the receipt: what was measured — eight amplitudes, the Born weights themselves.
  * Every other state folds only; it is recomputable from the gate list, and a proof that carried every 512-amplitude
  * modexp state weighed megabytes per run. */
@@ -33,7 +33,7 @@ const receiptOf = (name: string, amps: readonly bigint[]): void => {
 /** A sparse state's receipt: the fold of its nonzero amplitudes as index:weight pairs in index order, and their count.
  * `dim` is the full dimension, a float past 2^53; the fold is exact because the pairs are decimal text of bigints. */
 const receiptSparseOf = (name: string, dim: bigint, pairs: readonly (readonly [bigint, bigint])[]): void => {
-  RECEIPTS.push({ name, dim: Number(dim), fold: qpuFoldOf(pairs.map(([i, w]) => `${i}:${w}`).join(',')), nonzero: pairs.length })
+  RECEIPTS.push({ name, dim: Number(dim), fold: qpuFoldOf(pairs.map(([i, w]) => `${i}:${w}`).join(',')), nonzero: pairs.length, qubits: dim.toString(2).length - 1 })
 }
 /** mint receipts: every amplitude-count doubling this process computed — a counter and a running chain, never a list. */
 const MINT = { calls: 0, chain: FNV_OFFSET }
@@ -1803,42 +1803,66 @@ export const shorDefaultsOf = () => ({ modulus: qpuFacesOf().rays * (n * n + n +
  * wider register would need eighth roots, which are not integers. So the register resolves periods dividing four;
  * `classical` below says whether the period it was asked for is one of those. */
 const shorCountBits = coins
-/** How many multiplications the classical period check will do before saying it did not finish: 2^16. */
-const classicalBound = mintOf(mintOf(coins) * mintOf(coins))
-/** The period of base mod modulus by classical iteration, beside the run. `iterated` false means the bound was hit
- * before the period showed, so the 0 is not an answer; a base sharing a factor has no period, and that is an answer. */
-const classicalPeriodOf = (base: bigint, modulus: bigint): { period: number; iterated: boolean } => {
-  if (modulus <= b1 || bigGcdOf(base, modulus) !== b1) return { period: n - n, iterated: true }
+/** The classical period check is bounded by WORK, not by count: at most 2^16 multiplications, and at most 2^30
+ * bit-multiplications in all, since each step costs about the width of the modulus. So a 7-bit modulus gets the full
+ * 2^16 steps and a 100000-bit one gets 2^30 / 100000, and the check's wall time stays flat as the modulus grows
+ * instead of growing with it (a 30000-digit coprime run spent 38 s here and died by CPU before this bound). */
+const classicalSteps = mintOf(mintOf(coins) * mintOf(coins))
+const classicalWork = mintOf(n * ten)
+const classicalBoundOf = (bits: number): number => {
+  const byWork = bits > n - n ? (classicalWork - (classicalWork % bits)) / bits : classicalSteps
+  return byWork < classicalSteps ? byWork : classicalSteps
+}
+/** The period of base mod modulus by classical iteration, beside the run. `ring` false means there is no ring to ask
+ * (modulus <= 1), so nothing here is an answer. `iterated` false means the work bound was hit before the period
+ * showed, so the 0 is not an answer either; a base sharing a factor has no period, and that is an answer. */
+const classicalPeriodOf = (base: bigint, modulus: bigint, bits: number): { period: number; iterated: boolean; ring: boolean; bound: number } => {
+  const bound = classicalBoundOf(bits)
+  if (modulus <= b1) return { period: n - n, iterated: false, ring: false, bound }
+  if (bigGcdOf(base, modulus) !== b1) return { period: n - n, iterated: true, ring: true, bound }
   let x = modOf(base, modulus)
-  for (let r = seed; r <= classicalBound; r++) {
-    if (x === b1) return { period: r, iterated: true }
+  for (let r = seed; r <= bound; r++) {
+    if (x === b1) return { period: r, iterated: true, ring: true, bound }
     x = (x * base) % modulus
     x = modOf(x, modulus)
   }
-  return { period: n - n, iterated: false }
+  return { period: n - n, iterated: false, ring: true, bound }
 }
-/** Modulus and base as the caller gave them, read as integers: a number is truncated, a string of digits is read exactly
- * (so a modulus past 2^53 arrives whole), a numeric string otherwise as its number, anything else is undefined and the
- * unit's own value stands. No denial, no cap: the run is on whatever integer arrives. */
-export const shorArgsOf = (a: Record<string, unknown>): { modulus?: bigint; base?: bigint } => {
-  const intOf = (v: unknown): bigint | undefined => {
-    if (typeof v === 'bigint') return v
-    if (typeof v === 'string') {
-      const t = v.trim()
-      if (/^[+-]?\d+$/.test(t)) return BigInt(t)
-      const x = t.length > n - n ? Number(t) : Number.NaN
-      return x === x && x !== Number.POSITIVE_INFINITY && x !== Number.NEGATIVE_INFINITY ? BigInt(x - (x % seed)) : undefined
-    }
-    if (typeof v === 'number') return v === v && v !== Number.POSITIVE_INFINITY && v !== Number.NEGATIVE_INFINITY ? BigInt(v - (v % seed)) : undefined
-    return undefined
+/** How one argument was read. `digits` is a string of digits, exact at any size. `number` is a JSON number, exact only up
+ * to 2^53 (past that the caller's own parser rounded it before it arrived). `numeric` is any other numeric string, read
+ * through a double, exact only when the double is an integer under 2^53. `absent` means the caller named nothing and the
+ * unit's own value stands. `default` means the caller sent something that holds no number, and the unit's own value
+ * stands in its place — said here so a garbage argument never comes back as a confident answer. */
+export type QpuArgRead = { how: 'digits' | 'number' | 'numeric' | 'absent' | 'default'; exact: boolean; given: boolean }
+const argReadOf = (v: unknown): { value?: bigint; read: QpuArgRead } => {
+  const finite = (x: number): boolean => x === x && x !== Number.POSITIVE_INFINITY && x !== Number.NEGATIVE_INFINITY
+  const exactDouble = (x: number): boolean => finite(x) && x % seed === n - n && x <= Number.MAX_SAFE_INTEGER && x >= -Number.MAX_SAFE_INTEGER
+  if (v === undefined) return { read: { how: 'absent', exact: true, given: false } }
+  if (typeof v === 'bigint') return { value: v, read: { how: 'digits', exact: true, given: true } }
+  if (typeof v === 'string') {
+    const t = v.trim()
+    if (/^[+-]?\d+$/.test(t)) return { value: BigInt(t), read: { how: 'digits', exact: true, given: true } }
+    const x = t.length > n - n ? Number(t) : Number.NaN
+    if (finite(x)) return { value: BigInt(x - (x % seed)), read: { how: 'numeric', exact: exactDouble(x), given: true } }
+    return { read: { how: 'default', exact: false, given: true } }
   }
-  return { modulus: intOf(a.n), base: intOf(a.a) }
+  if (typeof v === 'number' && finite(v)) return { value: BigInt(v - (v % seed)), read: { how: 'number', exact: exactDouble(v), given: true } }
+  return { read: { how: 'default', exact: false, given: true } }
+}
+/** Modulus and base as the caller gave them, read as integers, with how each was read. No denial, no cap: the run is on
+ * whatever integer arrives, and `read` says whether that integer is the one the caller meant. */
+export const shorArgsOf = (a: Record<string, unknown>): { modulus?: bigint; base?: bigint; read: { n: QpuArgRead; a: QpuArgRead; holds: boolean } } => {
+  const nn = argReadOf(a.n)
+  const aa = argReadOf(a.a)
+  return { modulus: nn.value, base: aa.value, read: { n: nn.read, a: aa.read, holds: nn.read.exact && aa.read.exact } }
 }
 /** Shor as a caller asked for it: the run on their n and a, whatever they are. Never a denial; the run itself says what it
- * found (a period, a gcd factor, or nothing), and the sparse state means no modulus is past the host's reach. */
+ * found (a period, a gcd factor, or nothing), the sparse state means no modulus is past the host's reach, and `read`
+ * says how each argument was taken. A reply whose arguments were not read exactly does not hold, whatever the run did. */
 export const qpuShorTryOf = (a: Record<string, unknown>) => {
   const args = shorArgsOf(a)
-  return qpuShorOf(args.modulus, args.base)
+  const shor = qpuShorOf(args.modulus, args.base)
+  return { ...shor, read: args.read, holds: shor.holds && args.read.holds }
 }
 
 /** Shor on the sparse exact simulator. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation
@@ -2025,19 +2049,22 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   /** Beside the run, never in it: what classical iteration says the period is, whether a two-qubit counting register
    * can resolve it (period divides mintOf countBits), and both arms — resolvable means the run recovered a multiple
    * of it, unresolvable means the run recovered nothing. A check that did not finish holds nothing. */
-  const classicalRun = classicalPeriodOf(base, modulus)
+  const classicalRun = classicalPeriodOf(base, modulus, workBits)
   const classicalPeriod = classicalRun.period
   const resolvable = classicalRun.iterated && classicalPeriod > n - n && qftSize % classicalPeriod === n - n
   const classical = {
     kind: 'classical' as const,
+    ring: classicalRun.ring,
     gcd: jsonIntOf(ring ? bigGcdOf(base, modulus) : b0),
     period: classicalPeriod,
     iterated: classicalRun.iterated,
-    bound: classicalBound,
+    bound: classicalRun.bound,
+    steps: classicalSteps,
+    work: classicalWork,
     counting: countBits,
     resolvable,
-    agrees: classicalRun.iterated && period === classicalPeriod,
-    holds: classicalRun.iterated ? (resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n) : false,
+    agrees: classicalRun.ring && classicalRun.iterated && period === classicalPeriod,
+    holds: classicalRun.ring && classicalRun.iterated ? (resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n) : false,
   }
   const holds =
     span > modulus &&
@@ -5080,7 +5107,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     type: 'object',
     properties: {
       man: { type: 'boolean' },
-      n: { type: ['integer', 'string'], description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read \`exact\`.` },
+      n: { type: ['integer', 'string'], description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; \`read\` says how each argument was taken and \`exact\` carries every value as decimal text.` },
       a: { type: ['integer', 'string'], description: `Base. Default ${defaults.base}. A base sharing a factor with n hands it over as Shor's first step.` }}}
   const named = `{ n, a } name the modulus and base; the run is theirs, whatever they are. Default ${defaults.modulus} and ${defaults.base}.`
   /** What a caller is shown: the run's numbers while they are exact as numbers, the decimal strings from `exact` once
@@ -5118,6 +5145,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
           kind: 'shor' as const,
           n: shown.n,
           a: shown.a,
+          read: shor.read,
           coprime: shor.coprime,
           exact: shor.exact,
           device: shor.device,
@@ -5140,7 +5168,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
         const shown = shownOf(shor)
-        return { kind: 'cmodexp' as const, circuitry: shor.circuitry, exact: shor.exact, rsa: { kind: 'rsa' as const, modulus: shown.n, a: shown.a, factored: shor.rsa.factored }, holds: shor.circuitry.holds }
+        return { kind: 'cmodexp' as const, circuitry: shor.circuitry, exact: shor.exact, read: shor.read, rsa: { kind: 'rsa' as const, modulus: shown.n, a: shown.a, factored: shor.rsa.factored }, holds: shor.circuitry.holds && shor.read.holds }
       }},
     {
       name: see[n],
@@ -5150,7 +5178,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
         const shown = shownOf(shor)
-        return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, classical: shor.classical, exact: shor.exact, rsa: { kind: 'rsa' as const, modulus: shown.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds }
+        return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, classical: shor.classical, exact: shor.exact, read: shor.read, rsa: { kind: 'rsa' as const, modulus: shown.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds && shor.read.holds }
       }},
     {
       name: see[n + seed],
@@ -5160,7 +5188,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
         const shown = shownOf(shor)
-        return { kind: 'shots' as const, device: shor.device, measure: shor.measure, exact: shor.exact, rsa: { kind: 'rsa' as const, modulus: shown.n, factored: shor.rsa.factored }, holds: shor.measure.holds }
+        return { kind: 'shots' as const, device: shor.device, measure: shor.measure, exact: shor.exact, read: shor.read, rsa: { kind: 'rsa' as const, modulus: shown.n, factored: shor.rsa.factored }, holds: shor.measure.holds && shor.read.holds }
       }},
     {
       name: see[n + coins],
@@ -5172,7 +5200,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
         if (args.modulus === undefined && args.base === undefined) return qpuCybersecurityOf().rsa
         const shor = qpuShorTryOf(a)
         const shown = shownOf(shor)
-        return { ...shown.rsa, a: shown.a, period: shor.post.period, by: shor.factors.by, exact: shor.exact, classical: shor.classical }
+        return { ...shown.rsa, a: shown.a, period: shor.post.period, by: shor.factors.by, exact: shor.exact, read: shor.read, classical: shor.classical, holds: shor.rsa.holds && shor.read.holds }
       }},
     {
       name: see[n + n],
