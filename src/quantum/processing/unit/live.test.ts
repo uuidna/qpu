@@ -208,7 +208,7 @@ test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at 
   const live = 'https://qpu.uuidna.com'
   const floor = qpuShorOf()
   const budgetMs = 20000
-  type Run = { circuitry: { qubits: number; holds: boolean }; exact: { n: string }; prepare: { prepared: boolean; amplitudes: number; sparse: boolean }; measure: { holds: boolean } }
+  type Run = { circuitry: { qubits: number; holds: boolean }; exact: { n: string }; prepare: { prepared: boolean; amplitudes: number; sparse: boolean }; measure: { holds: boolean }; factors: { by: string } }
   const steps: { qubits: number; work: number; ms: number }[] = []
   let stoppedBy = 'nothing'
   for (let work = 8; ; work *= 2) {
@@ -230,6 +230,7 @@ test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at 
     assert.equal(run.prepare.amplitudes > 0 && run.prepare.amplitudes <= 16, true)
     assert.equal(run.circuitry.holds, true)
     assert.equal(run.measure.holds, true)
+    assert.equal(run.factors.by, 'gcd') // even work: 3 divides 2^work - 1, so the live climb measures width, never period-finding
     const prev = steps[steps.length - 1]
     steps.push({ qubits: run.circuitry.qubits, work, ms })
     if (ms > budgetMs) {
@@ -244,5 +245,5 @@ test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at 
   }
   const reach = steps[steps.length - 1]!
   assert.equal(reach.qubits > floor.circuitry.qubits, true)
-  t.diagnostic(`live reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${reach.ms.toFixed(0)} ms round trip · ${steps.length} steps · stopped: ${stoppedBy}`)
+  t.diagnostic(`live reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${reach.ms.toFixed(0)} ms round trip · ${steps.length} steps · stopped: ${stoppedBy} · every step factored by gcd, none by period`)
 })

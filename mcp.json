@@ -907,7 +907,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. The counting register of 2 qubits recovers a period only when it divides 4; every other coprime run recovers nothing and says so in classical.resolvable, and a base sharing a factor with n is factored by gcd, not by period. The reach is of the state, not of period-finding. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -926,8 +926,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_shor",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.",
-          "documentation": "NAME\n    crypto_shor — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shor\n    crypto_shor { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.",
+          "documentation": "NAME\n    crypto_shor — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shor\n    crypto_shor { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.\nSEE ALSO\n    crypto_catalog, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -951,7 +951,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. The counting register of 2 qubits recovers a period only when it divides 4; every other coprime run recovers nothing and says so in classical.resolvable, and a base sharing a factor with n is factored by gcd, not by period. The reach is of the state, not of period-finding. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -970,8 +970,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.",
-          "documentation": "NAME\n    crypto_cmodexp — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp\n    crypto_cmodexp { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.",
+          "documentation": "NAME\n    crypto_cmodexp — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp\n    crypto_cmodexp { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -995,7 +995,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. The counting register of 2 qubits recovers a period only when it divides 4; every other coprime run recovers nothing and says so in classical.resolvable, and a base sharing a factor with n is factored by gcd, not by period. The reach is of the state, not of period-finding. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -1014,8 +1014,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_iqft",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.",
-          "documentation": "NAME\n    crypto_iqft — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_iqft\n    crypto_iqft { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.",
+          "documentation": "NAME\n    crypto_iqft — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_iqft\n    crypto_iqft { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -1039,7 +1039,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. The counting register of 2 qubits recovers a period only when it divides 4; every other coprime run recovers nothing and says so in classical.resolvable, and a base sharing a factor with n is factored by gcd, not by period. The reach is of the state, not of period-finding. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -1058,8 +1058,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_shots",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.",
-          "documentation": "NAME\n    crypto_shots — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shots\n    crypto_shots { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.",
+          "documentation": "NAME\n    crypto_shots — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shots\n    crypto_shots { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -1083,7 +1083,7 @@
                 "integer",
                 "string"
               ],
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. The counting register of 2 qubits recovers a period only when it divides 4; every other coprime run recovers nothing and says so in classical.resolvable, and a base sharing a factor with n is factored by gcd, not by period. The reach is of the state, not of period-finding. Past 2^53 send n as a string of digits; `read` says how each argument was taken and `exact` carries every value as decimal text."
             },
             "a": {
               "type": [
@@ -1102,8 +1102,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_rsa",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.",
-          "documentation": "NAME\n    crypto_rsa — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_rsa\n    crypto_rsa { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.",
+          "documentation": "NAME\n    crypto_rsa — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_rsa\n    crypto_rsa { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat. { n, a } name the modulus and base; the run is theirs, whatever they are. Default 91 and 8. Counting register 2: a period is recovered only when it divides 4, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,

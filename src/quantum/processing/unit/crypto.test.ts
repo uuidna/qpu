@@ -558,6 +558,22 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(fifteen.measure.shots, 8)
   assert.equal(fifteen.classical.iterated, true)
   assert.equal(fifteen.holds, true)
+  // the tool text says what the reach is not, and the runs say the same: coprime periods off 4 recover nothing,
+  // a shared factor is gcd, and a wide modulus is no exception either way
+  const catalog = (await (await worker.fetch(new Request(`${origin}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) }), env)).json()) as { result: { tools: { name: string; description: string; inputSchema: { properties: Record<string, { description?: string }> } }[] } }
+  const shorTool = catalog.result.tools.find((x) => x.name === 'crypto_shor')!
+  assert.equal(shorTool.inputSchema.properties.n?.description?.includes('recovers a period only when it divides 4'), true)
+  assert.equal(shorTool.inputSchema.properties.n?.description?.includes('The reach is of the state, not of period-finding'), true)
+  const wideShared = (await mcpOf('crypto_shor', { n: ((1n << 4096n) - 1n).toString(), a: 3 })) as Run
+  assert.equal(wideShared.coprime, false)
+  assert.equal(wideShared.factors.by, 'gcd')
+  assert.equal(wideShared.post.period, 0)
+  const wideCoprime = (await mcpOf('crypto_shor', { n: ((1n << 4096n) - 1n).toString(), a: 7 })) as Run
+  assert.equal(wideCoprime.coprime, true)
+  assert.equal(wideCoprime.classical.resolvable, false)
+  assert.equal(wideCoprime.post.period, 0)
+  assert.equal(wideCoprime.factors.by, 'none')
+  assert.equal(wideCoprime.rsa.factored, false)
   const ninetyOne = (await mcpOf('crypto_shor', { n: 91, a: 8 })) as Run
   assert.equal(Number(ninetyOne.factors.p) * Number(ninetyOne.factors.q), 91)
   assert.notEqual(JSON.stringify(fifteen), JSON.stringify(ninetyOne))

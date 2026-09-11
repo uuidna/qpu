@@ -26,6 +26,7 @@ test('reach: the widest run this host holds in budget is climbed to, and the run
     assert.equal(run.prepare.amplitudes > 0 && run.prepare.amplitudes <= 16, true)
     assert.equal(run.circuitry.holds, true)
     assert.equal(run.measure.holds, true)
+    assert.equal(run.factors.by, 'gcd') // 2^work - 1 with even work is divisible by 3: the climb measures the state's width, never period-finding
     const prev = steps[steps.length - 1]
     steps.push({ qubits: run.circuitry.qubits, work, ms })
     if (ms > timeBudgetMs) {
@@ -42,5 +43,5 @@ test('reach: the widest run this host holds in budget is climbed to, and the run
   for (let i = 1; i < steps.length; i++) assert.equal(steps[i]!.work, steps[i - 1]!.work * 2) // the climb was by width, not by luck
   assert.equal(reach.qubits > floor.circuitry.qubits, true)
   assert.equal(stoppedBy !== 'nothing', true)
-  t.diagnostic(`reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${reach.ms.toFixed(0)} ms · ${steps.length} steps from ${steps[0]!.qubits} · stopped: ${stoppedBy}`)
+  t.diagnostic(`reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${reach.ms.toFixed(0)} ms · ${steps.length} steps from ${steps[0]!.qubits} · stopped: ${stoppedBy} · every step factored by gcd, none by period`)
 })

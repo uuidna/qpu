@@ -5107,9 +5107,9 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     type: 'object',
     properties: {
       man: { type: 'boolean' },
-      n: { type: ['integer', 'string'], description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits; \`read\` says how each argument was taken and \`exact\` carries every value as decimal text.` },
+      n: { type: ['integer', 'string'], description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; no cap — the state is sparse and exact for any n. The counting register of ${shorCountBits} qubits recovers a period only when it divides ${mintOf(shorCountBits)}; every other coprime run recovers nothing and says so in classical.resolvable, and a base sharing a factor with n is factored by gcd, not by period. The reach is of the state, not of period-finding. Past 2^53 send n as a string of digits; \`read\` says how each argument was taken and \`exact\` carries every value as decimal text.` },
       a: { type: ['integer', 'string'], description: `Base. Default ${defaults.base}. A base sharing a factor with n hands it over as Shor's first step.` }}}
-  const named = `{ n, a } name the modulus and base; the run is theirs, whatever they are. Default ${defaults.modulus} and ${defaults.base}.`
+  const named = `{ n, a } name the modulus and base; the run is theirs, whatever they are. Default ${defaults.modulus} and ${defaults.base}. Counting register ${shorCountBits}: a period is recovered only when it divides ${mintOf(shorCountBits)}, every other coprime run recovers nothing (classical.resolvable), and a shared factor is found by gcd, not by period. The reach is of the state, not of period-finding.`
   /** What a caller is shown: the run's numbers while they are exact as numbers, the decimal strings from `exact` once
    * they would round (past 2^53) or overflow (past 2^1024). Never a null where a number was asked for. */
   const shownOf = (shor: ReturnType<typeof qpuShorOf>) => {

@@ -1,15 +1,15 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 100,
-  "pass": 100,
+  "tests": 103,
+  "pass": 103,
   "fail": 0,
   "dry": 0,
-  "circuit": 59,
+  "circuit": 62,
   "mintOnly": 11,
   "dim": "2^1048578",
   "qubits": 1048578,
-  "receipt": "d3694e92043c9ab1",
+  "receipt": "6b756cf02d5e451d",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -52,8 +52,8 @@
         }
       ],
       "mint": {
-        "calls": 551822,
-        "chain": "864c7ff33f582d4f"
+        "calls": 551826,
+        "chain": "a7a018bd1528c587"
       }
     },
     {
@@ -140,8 +140,8 @@
         }
       ],
       "mint": {
-        "calls": 121140,
-        "chain": "61149203673097aa"
+        "calls": 121146,
+        "chain": "87bc8d6ce202c172"
       }
     },
     {
@@ -422,8 +422,8 @@
         }
       ],
       "mint": {
-        "calls": 3013975,
-        "chain": "88db92ca08ac4b8a"
+        "calls": 3014015,
+        "chain": "9218f14b11338a92"
       }
     },
     {
@@ -466,8 +466,8 @@
         }
       ],
       "mint": {
-        "calls": 439606,
-        "chain": "f5a20e7449188c4b"
+        "calls": 439614,
+        "chain": "955f72c94579bf83"
       }
     },
     {
@@ -578,8 +578,8 @@
         }
       ],
       "mint": {
-        "calls": 754814,
-        "chain": "601ea2ce665c048d"
+        "calls": 754820,
+        "chain": "f409f118c8dcfa95"
       }
     },
     {
@@ -839,8 +839,8 @@
         }
       ],
       "mint": {
-        "calls": 213766,
-        "chain": "f6fea077d1cce41a"
+        "calls": 213778,
+        "chain": "e5a5e5a51d7db1ea"
       }
     },
     {
@@ -884,7 +884,7 @@
       ],
       "mint": {
         "calls": 82720,
-        "chain": "9be570fa07aca1f8"
+        "chain": "c062f0b6957df488"
       }
     },
     {
@@ -927,8 +927,8 @@
         }
       ],
       "mint": {
-        "calls": 1295572,
-        "chain": "9059c300f89fc590"
+        "calls": 1295618,
+        "chain": "887bc0b43e36bb40"
       }
     },
     {
@@ -945,7 +945,7 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "01ba0f490fb05b03"
+        "chain": "8a913834cebd63b3"
       }
     },
     {
@@ -962,7 +962,7 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "0b802d59e0f478ec"
+        "chain": "6a34465f8f24521c"
       }
     },
     {
@@ -1006,7 +1006,7 @@
       ],
       "mint": {
         "calls": 311523,
-        "chain": "029a98ddcb3948e0"
+        "chain": "7c4dcd2030400c50"
       }
     },
     {
@@ -1023,7 +1023,7 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "268ae3551eee54ce"
+        "chain": "0f986b8ff70e893e"
       }
     },
     {
@@ -1067,7 +1067,7 @@
       ],
       "mint": {
         "calls": 59731,
-        "chain": "abb7124d3994427d"
+        "chain": "0e79ca4ef84d656d"
       }
     },
     {
@@ -1111,7 +1111,7 @@
       ],
       "mint": {
         "calls": 645,
-        "chain": "eb8acc1000111c5b"
+        "chain": "88ca13b6a738570b"
       }
     },
     {
@@ -1155,7 +1155,7 @@
       ],
       "mint": {
         "calls": 636,
-        "chain": "7eccb366d236efaa"
+        "chain": "9d964fe4422668da"
       }
     },
     {
@@ -1199,7 +1199,7 @@
       ],
       "mint": {
         "calls": 636,
-        "chain": "dac5c04381800eef"
+        "chain": "b3fe68d8dc746c9f"
       }
     },
     {
@@ -1243,7 +1243,7 @@
       ],
       "mint": {
         "calls": 636,
-        "chain": "0bfd81a52c70d906"
+        "chain": "752d8820f4e00436"
       }
     },
     {
@@ -1287,7 +1287,7 @@
       ],
       "mint": {
         "calls": 636,
-        "chain": "179332b6346018f3"
+        "chain": "5c884209b6888123"
       }
     },
     {
@@ -1331,7 +1331,7 @@
       ],
       "mint": {
         "calls": 3692,
-        "chain": "9bbfd08fb42d3159"
+        "chain": "80e664662e8ba309"
       }
     },
     {
@@ -1375,7 +1375,7 @@
       ],
       "mint": {
         "calls": 66104,
-        "chain": "119e7fa21e459fa8"
+        "chain": "65915ba8d69f6158"
       }
     },
     {
@@ -1419,7 +1419,7 @@
       ],
       "mint": {
         "calls": 65877,
-        "chain": "e098efcf336bb80a"
+        "chain": "09bde852ad9ade7a"
       }
     },
     {
@@ -1462,8 +1462,8 @@
         }
       ],
       "mint": {
-        "calls": 118988,
-        "chain": "d1d3015de1f100ea"
+        "calls": 118992,
+        "chain": "d70fbf35ab8bab3a"
       }
     },
     {
@@ -1471,25 +1471,26 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 84995,
+      "computations": 91858,
       "kinds": {
-        "x": 18455,
-        "cnot": 35504,
-        "toffoli": 3032,
-        "h": 25528,
-        "measure": 1516,
-        "cmodexp": 480,
-        "xx": 480
+        "x": 19944,
+        "cnot": 38368,
+        "toffoli": 3276,
+        "h": 27596,
+        "measure": 1638,
+        "cmodexp": 518,
+        "xx": 518
       },
       "dims": {
         "4": 6,
-        "8": 84039,
+        "8": 90826,
         "64": 12,
         "128": 6,
-        "512": 912,
+        "512": 984,
         "4096": 2,
         "16384": 2,
         "32768": 2,
+        "2^4098": 4,
         "2^64": 6,
         "2^73": 2,
         "2^2051": 2,
@@ -1498,7 +1499,7 @@
       },
       "dim": "2^99660",
       "qubits": 99660,
-      "receipt": "c46bc2cffec7896e",
+      "receipt": "cbc32acbba5a4099",
       "states": [
         {
           "name": "measure",
@@ -1513,12 +1514,144 @@
             "0",
             "0"
           ],
-          "measured": 1516
+          "measured": 1638
         }
       ],
       "mint": {
-        "calls": 1931140,
-        "chain": "61c13f1418be8fd8"
+        "calls": 2087255,
+        "chain": "506141139f4ff68f"
+      }
+    },
+    {
+      "name": "gate: the instrument drains the known overclaims and passes the bounded refusals before it judges anything",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 612,
+      "kinds": {
+        "x": 133,
+        "cnot": 256,
+        "toffoli": 22,
+        "h": 182,
+        "measure": 11,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 604,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "869e2e2a9ef6a23c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 11
+        }
+      ],
+      "mint": {
+        "calls": 14153,
+        "chain": "a8490f2f2645d88a"
+      }
+    },
+    {
+      "name": "gate: every string the unit serves passes the prose gate — root, lean, mcp catalog, tools/list, prove, server",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 18425,
+      "kinds": {
+        "x": 3987,
+        "cnot": 7664,
+        "toffoli": 648,
+        "h": 5608,
+        "measure": 324,
+        "cmodexp": 97,
+        "xx": 97
+      },
+      "dims": {
+        "8": 18231,
+        "512": 194
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "e3a6b1ab8e446d2c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 324
+        }
+      ],
+      "mint": {
+        "calls": 418935,
+        "chain": "3f3bd4adebec9a7f"
+      }
+    },
+    {
+      "name": "gate: the vendored copy matches upstream when the sibling checkout is present",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 581,
+      "kinds": {
+        "x": 125,
+        "cnot": 240,
+        "toffoli": 20,
+        "h": 180,
+        "measure": 10,
+        "cmodexp": 3,
+        "xx": 3
+      },
+      "dims": {
+        "8": 575,
+        "512": 6
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "cb44eef45881cba0",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 10
+        }
+      ],
+      "mint": {
+        "calls": 13287,
+        "chain": "be472b639390d995"
       }
     },
     {
@@ -2310,8 +2443,8 @@
         }
       ],
       "mint": {
-        "calls": 1912603,
-        "chain": "fd4277644ef7b21c"
+        "calls": 1912621,
+        "chain": "be8e93bbc0de103c"
       }
     },
     {
@@ -2354,8 +2487,8 @@
         }
       ],
       "mint": {
-        "calls": 2986662,
-        "chain": "5d76c05331159e5f"
+        "calls": 2986756,
+        "chain": "04bc4dc24fdcb72f"
       }
     },
     {
@@ -2517,8 +2650,8 @@
         }
       ],
       "mint": {
-        "calls": 6246780,
-        "chain": "4abf23620df3981b"
+        "calls": 6246904,
+        "chain": "dc65e7c79dad8663"
       }
     },
     {
@@ -3133,8 +3266,8 @@
         }
       ],
       "mint": {
-        "calls": 205516,
-        "chain": "af22c5304b0bc057"
+        "calls": 205518,
+        "chain": "6063eec0fe1cbbaf"
       }
     },
     {
@@ -3177,8 +3310,8 @@
         }
       ],
       "mint": {
-        "calls": 309352,
-        "chain": "9ce8d66390f189e9"
+        "calls": 309356,
+        "chain": "74c829068cd41619"
       }
     },
     {
@@ -3328,8 +3461,8 @@
         }
       ],
       "mint": {
-        "calls": 1074447,
-        "chain": "75bf07867823f48a"
+        "calls": 1074477,
+        "chain": "16016cfa5552325a"
       }
     }
   ]
