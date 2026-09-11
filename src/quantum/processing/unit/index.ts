@@ -4355,11 +4355,11 @@ type QpuSubTool = {
 }
 
 const qpuSubRpcOf = async (
-  body: { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown },
+  body: { method?: string; params?: { name?: string; arguments?: Record<string, unknown>; protocolVersion?: unknown }; id?: unknown },
   tools: readonly QpuSubTool[],
   href: string) => {
   if (body.method === 'initialize' || body.method === 'server/discover') {
-    return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf() }
+    return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf(body.params?.protocolVersion) }
   }
   if (body.method === 'ping' || body.method === 'notifications/initialized') {
     return { jsonrpc: '2.0', id: body.id ?? null, result: {} }
@@ -9137,13 +9137,20 @@ export const qpuHostsHolds = (h = qpuHostsOf()): boolean =>
   h.vacant === n - n &&
   h.nodes.every((node) => node.holds && node.involution)
 
-export const qpuMcpDiscoverOf = () => {
+/** initialize NEGOTIATES (MCP lifecycle): the reply carries the client's requested protocol version when this server
+ * supports it, else the latest it supports. An external audit (2026-09-12) found the old reply always said 2026-07-28,
+ * a version no client has ever sent — a typed number where a read one belongs. The three versions are the three
+ * published MCP revisions; the list is theirs, not ours. */
+export const MCP_VERSIONS = ['2024-11-05', '2025-03-26', '2025-06-18'] as const
+export const qpuMcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
+  (MCP_VERSIONS as readonly string[]).includes(String(requested)) ? (requested as (typeof MCP_VERSIONS)[number]) : MCP_VERSIONS[n - seed]!
+export const qpuMcpDiscoverOf = (requested?: unknown) => {
   const hosts = qpuHostsOf()
-  const versions = ['2024-11-05', '2025-03-26', '2025-06-18', '2026-07-28'] as const
+  const versions = MCP_VERSIONS
   const instructions = `tools/list then tools/call. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. No auth.`
-  const holds = qpuHostsHolds(hosts) && versions.length === mintOf(coins) && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
+  const holds = qpuHostsHolds(hosts) && versions.length === n && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
   return {
-    protocolVersion: versions[mintOf(coins) - seed],
+    protocolVersion: qpuMcpVersionOf(requested),
     capabilities: { tools: { listChanged: false as const } },
     serverInfo: { name: `@uuidna/${unit.kind}`, title: 'QPU', version: 'quantum' },
     instructions,
@@ -10377,12 +10384,12 @@ export default {
         if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
           return jsonOf(rpcErrorOf(null, rpcCodes.invalid, 'Invalid Request: expected one JSON-RPC 2.0 request object'), badRequest)
         }
-        const body = parsed as { method?: unknown; params?: { name?: unknown; arguments?: unknown }; id?: unknown }
+        const body = parsed as { method?: unknown; params?: { name?: unknown; arguments?: unknown; protocolVersion?: unknown }; id?: unknown }
         if (typeof body.method !== 'string') {
           return jsonOf(rpcErrorOf(body.id, rpcCodes.invalid, 'Invalid Request: method must be a string'), badRequest)
         }
         if (body.method === 'initialize' || body.method === 'server/discover') {
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf() })
+          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf(body.params?.protocolVersion) })
         }
         if (body.method === 'ping' || body.method === 'notifications/initialized') {
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: {} })

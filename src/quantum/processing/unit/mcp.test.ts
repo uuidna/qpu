@@ -637,3 +637,21 @@ test('the catalog says sixteen, a job says how its gates were read, shots say th
   assert.equal(empty.dropped, 2)
   assert.equal(empty.holds, false)
 })
+
+// initialize NEGOTIATES: a supported version is echoed, an unknown one gets the latest supported. An external audit
+// (2026-09-12) found the reply always said 2026-07-28, a version no client had ever sent.
+test('initialize echoes a supported protocol version and never invents one', async () => {
+  const ask = async (protocolVersion: unknown) => {
+    const res = await fetchOf('/mcp', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', accept: 'text/html' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion, capabilities: {}, clientInfo: { name: 'audit', version: '1' } } }),
+    })
+    return ((await res.json()) as { result: { protocolVersion: string; versions: string[] } }).result
+  }
+  assert.equal((await ask('2024-11-05')).protocolVersion, '2024-11-05')
+  assert.equal((await ask('2025-06-18')).protocolVersion, '2025-06-18')
+  assert.equal((await ask('2026-07-28')).protocolVersion, '2025-06-18')
+  assert.equal((await ask(undefined)).protocolVersion, '2025-06-18')
+  assert.deepEqual((await ask(undefined)).versions, ['2024-11-05', '2025-03-26', '2025-06-18'])
+})

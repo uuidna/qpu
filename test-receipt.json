@@ -1,15 +1,15 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 105,
-  "pass": 105,
+  "tests": 106,
+  "pass": 106,
   "fail": 0,
   "dry": 0,
-  "circuit": 64,
+  "circuit": 65,
   "mintOnly": 11,
   "dim": "2^1048578",
   "qubits": 1048578,
-  "receipt": "d2d2033202b786b3",
+  "receipt": "b18b952bf2d4af8d",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -2487,8 +2487,8 @@
         }
       ],
       "mint": {
-        "calls": 2988488,
-        "chain": "bea2bf778fd054cd"
+        "calls": 2988486,
+        "chain": "473d053e5274406d"
       }
     },
     {
@@ -2650,8 +2650,8 @@
         }
       ],
       "mint": {
-        "calls": 6250301,
-        "chain": "3208a3b02d7f750b"
+        "calls": 6250293,
+        "chain": "19754fc82cbd28bb"
       }
     },
     {
@@ -2695,7 +2695,7 @@
       ],
       "mint": {
         "calls": 628659,
-        "chain": "627e254b38b2e4a2"
+        "chain": "44461f26d1b01592"
       }
     },
     {
@@ -2753,8 +2753,52 @@
         }
       ],
       "mint": {
-        "calls": 382947,
-        "chain": "c36ff32985c72db2"
+        "calls": 382945,
+        "chain": "208cc635b16166a2"
+      }
+    },
+    {
+      "name": "initialize echoes a supported protocol version and never invents one",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 7700,
+      "kinds": {
+        "x": 1665,
+        "cnot": 3200,
+        "toffoli": 270,
+        "h": 2350,
+        "measure": 135,
+        "cmodexp": 40,
+        "xx": 40
+      },
+      "dims": {
+        "8": 7620,
+        "512": 80
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "c7c642789b71c6ce",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 135
+        }
+      ],
+      "mint": {
+        "calls": 174985,
+        "chain": "54bd37673cffbe30"
       }
     },
     {
