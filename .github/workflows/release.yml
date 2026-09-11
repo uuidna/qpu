@@ -26,9 +26,17 @@ jobs:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: '22'
-          cache: npm
+          node-version: '26'
           registry-url: 'https://registry.npmjs.org'
+          cache: npm
+          package-manager-cache: false
+      # OIDC trusted publishing needs npm >= 11.5.1. Node 22 ships npm 10.9 and 404s the PUT.
+      - name: npm meets the OIDC floor (>= 11.5.1)
+        run: |
+          set -euo pipefail
+          NPM=$(npm --version)
+          node -e 'const [a,b,c]=process.argv[1].split(".").map(Number);const ok=a>11||(a===11&&(b>5||(b===5&&c>=1)));if(!ok){console.error(`::error::npm ${process.argv[1]} is below the OIDC trusted-publishing floor 11.5.1`);process.exit(1)}' "$NPM"
+          echo "npm $NPM meets the OIDC floor 11.5.1"
       - run: npm ci
       - name: Tag matches package.json
         if: startsWith(github.ref, 'refs/tags/')
