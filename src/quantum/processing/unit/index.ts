@@ -7,6 +7,7 @@
  * test that computed quantum state carries a receipt and a test that computed none carries none. FNV-1a 64 over the
  * decimal amplitudes; BigInt only. Never Math. The reporter reads this ledger per test (isolation none). */
 import { leanSource, leanToolchain } from './lean.js'
+import { packageVersion } from './version.js'
 export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[]; nonzero?: number; qubits?: number }
 /** The exact state worth carrying in the receipt: what was measured — eight amplitudes, the Born weights themselves.
  * Every other state folds only; it is recomputable from the gate list, and a proof that carried every 512-amplitude
@@ -4124,6 +4125,15 @@ export const qpuCiteOf = () => {
     archive: 'https://zenodo.org/records/21781603',
   } as const
   const sameAs = [archive, author.orcid, identifier] as const
+  /** WHAT THE ARCHIVE HOLDS, BESIDE WHAT THE HOST SERVES. The versioned DOI is one archived commit; the host moves on
+   * without it until a new version is archived. Both are said, and `current` says whether they are the same version,
+   * so a reader who downloads "this version" knows whether it is the code that answered them. */
+  const archived = { doi, archive, version: '0.1.0' as string, commit: 'aed5802', holds: archive.endsWith(doi.split('.').pop() ?? '') }
+  const served = { version: packageVersion, origin: unit.origin, holds: packageVersion.split('.').length === n }
+  const current = archived.version === served.version
+  const currency = current
+    ? `the archive is this version: v${served.version} at ${archived.commit}.`
+    : `the archive is behind the host: it holds v${archived.version} at ${archived.commit}; the host serves v${served.version}. Cite the archive for what it holds; the concept DOI ${conceptdoi} resolves to the latest archived version.`
   const website = unit.host
   const mcp = `${unit.origin}/mcp`
   const worksOf = (title: string, url: string, workDoi = doi, container = website): string =>
@@ -4179,6 +4189,10 @@ export const qpuCiteOf = () => {
     identifier,
     sameAs,
     prior: { ...prior, works: priorWorks },
+    archived,
+    served,
+    current,
+    currency,
     inText: `(${author.last})`,
     rows,
     holds,
@@ -4200,6 +4214,11 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.sameAs.includes(c.archive) &&
   c.sameAs.includes(c.author.orcid) &&
   c.sameAs.includes(c.identifier) &&
+  c.archived.commit === 'aed5802' &&
+  c.archived.version === '0.1.0' &&
+  c.served.version === packageVersion &&
+  c.current === (c.archived.version === c.served.version) &&
+  c.currency.includes(`v${c.served.version}`) &&
   jsonldHoldsOf(c) &&
   c.prior.doi === '10.5281/zenodo.21781603' &&
   c.prior.archive === 'https://zenodo.org/records/21781603' &&
@@ -4241,6 +4260,40 @@ const qpuShownHrefOf = (name: string, href = `${unit.origin}/mcp`) => {
   return href
 }
 
+/** OUTPUT SCHEMAS READ FROM THE RUN. A schema of `{ type: object }` constrains nothing and so can fail nothing; every
+ * tool's schema is instead derived from its own replies: the properties every sample carried with their JSON types,
+ * `required` being the keys present in every sample, and `holds` a required boolean throughout. One level of nesting
+ * is typed; deeper values are objects or arrays. Derived once per isolate; a reader validates any later reply against
+ * it, which is a check the empty schema could never make. */
+const jsonTypeOf = (v: unknown): string =>
+  v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (v % seed === n - n ? 'integer' : 'number') : typeof v === 'object' ? 'object' : typeof v
+const typeUnionOf = (types: readonly string[]): string | string[] => {
+  const distinct = [...new Set(types)]
+  return distinct.length === seed ? distinct[n - n]! : distinct
+}
+export const qpuOutputSchemaOf = (samples: readonly unknown[]) => {
+  const objects = samples.filter((x): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x))
+  const properties: Record<string, Record<string, unknown>> = {}
+  const keys = new Set<string>()
+  for (const o of objects) for (const k of Object.keys(o)) keys.add(k)
+  for (const k of keys) {
+    const values = objects.filter((o) => k in o).map((o) => o[k])
+    const type = typeUnionOf(values.map(jsonTypeOf))
+    if (type === 'object') {
+      const inner: Record<string, Record<string, unknown>> = {}
+      const innerKeys = new Set<string>()
+      for (const v of values as Record<string, unknown>[]) for (const ik of Object.keys(v)) innerKeys.add(ik)
+      for (const ik of innerKeys) inner[ik] = { type: typeUnionOf((values as Record<string, unknown>[]).filter((v) => ik in v).map((v) => jsonTypeOf(v[ik]))) }
+      properties[k] = { type, properties: inner }
+    } else properties[k] = { type }
+  }
+  properties.holds = { type: 'boolean' }
+  const required = [...keys].filter((k) => objects.every((o) => k in o))
+  if (!required.includes('holds')) required.push('holds')
+  return { type: 'object' as const, description: `derived from ${objects.length} repl${objects.length === seed ? 'y' : 'ies'} of the tool itself; holds is always required`, properties, required, additionalProperties: true as const }
+}
+export type QpuOutputSchema = ReturnType<typeof qpuOutputSchemaOf>
+const minimalOutputSchema = { type: 'object' as const, properties: { holds: { type: 'boolean' } }, required: ['holds'], additionalProperties: true as const }
 const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Record<string, unknown>, extra: Record<string, unknown> = {}) => ({
   name,
   title: name,
@@ -4248,7 +4301,7 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
   inputSchema,
   input_schema: inputSchema,
   parameters: inputSchema,
-  outputSchema: { type: 'object' as const },
+  outputSchema: minimalOutputSchema,
   annotations: {
     audience: ['user', 'assistant'] as const,
     priority: seed,
@@ -9780,11 +9833,42 @@ export const qpuToolsOf = () => {
       run: (a: Record<string, unknown>) => (a.man === true ? proveMan : qpuProveOf())}] as const
 }
 
+/** The schemas, derived once per isolate from each tool's replies: the default call, and for the five tools that take
+ * n and a, a second call on 15 and 7 so that `required` is what every reply carries. While they are being derived,
+ * tools/list answers with the minimal schema, so a tool whose reply lists the tools does not recurse. */
+let outputSchemasMemo: Record<string, QpuOutputSchema> | undefined
+let outputSchemasBuilding = false
+export const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
+  if (outputSchemasMemo) return outputSchemasMemo
+  if (outputSchemasBuilding) return {}
+  outputSchemasBuilding = true
+  const out: Record<string, QpuOutputSchema> = {}
+  const sample = (run: (a: Record<string, unknown>) => unknown, args: Record<string, unknown>): unknown => {
+    const r = run(args)
+    return r && typeof r === 'object' && typeof (r as { then?: unknown }).then === 'function' ? undefined : r
+  }
+  for (const t of qpuToolsOf()) out[t.name] = qpuOutputSchemaOf([sample(t.run, {})].filter((x) => x !== undefined))
+  const withArgs = new Set(['crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa'])
+  for (const t of qpuCybersecurityToolsOf()) {
+    /** Three samples for the five tools that take n and a: the unit's own 91, a small 15, and 2^61 sent as digits, so the
+     * derived types of n, a, p, q and product are integer-or-string, as the replies past 2^53 are. */
+    const past = (b1 << BigInt(mintOf(n) * mintOf(n) - n)).toString()
+    const samples = withArgs.has(t.name)
+      ? [sample(t.run, {}), sample(t.run, { n: n * (n + coins), a: n + coins + coins }), sample(t.run, { n: past, a: `${n}` })]
+      : [sample(t.run, {})]
+    out[t.name] = qpuOutputSchemaOf(samples.filter((x) => x !== undefined))
+  }
+  outputSchemasBuilding = false
+  outputSchemasMemo = out
+  return out
+}
 export const qpuMcpToolsListOf = () => {
+  const schemas = qpuOutputSchemasOf()
+  const schemaOf = (name: string) => schemas[name] ?? minimalOutputSchema
   const sealed = qpuToolsOf().map(({ name, description, inputSchema, man }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { man, sealed: true as const, morph: false as const }))
+    qpuMcpToolShapeOf(name, description, inputSchema, { man, sealed: true as const, morph: false as const, outputSchema: schemaOf(name) }))
   const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema, man }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { man, sealed: false as const, morph: true as const }))
+    qpuMcpToolShapeOf(name, description, inputSchema, { man, sealed: false as const, morph: true as const, outputSchema: schemaOf(name) }))
   return [...sealed, ...cybersecurity]
 }
 

@@ -7,6 +7,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import worker, { qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuShorOf } from './index.js'
 import { leanPath, leanSource, leanToolchain } from './lean.js'
+import { packageVersion } from './version.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -17,6 +18,8 @@ test('the embedded Lean source is the file on disk, byte for byte, and GET serve
   assert.equal(leanPath, 'src/quantum/processing/unit/index.lean')
   assert.equal(leanSource, onDisk())
   assert.equal(leanToolchain, readFileSync(join(process.cwd(), 'lean-toolchain'), 'utf8').trim())
+  // the served version is package.json's, embedded by hand like the proof; a stale embed fails here, never repairs itself
+  assert.equal(packageVersion, (JSON.parse(readFileSync(join(process.cwd(), 'package.json'), 'utf8')) as { version: string }).version)
   const res = await worker.fetch(new Request(`${origin}/src/quantum/processing/unit/index.lean`), env)
   assert.equal(res.status, 200)
   assert.equal(res.headers.get('content-type'), 'text/plain; charset=utf-8')

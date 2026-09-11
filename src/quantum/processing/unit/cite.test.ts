@@ -1,5 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
+import { packageVersion } from './version.js'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import worker, { qpuDevelopHolds, qpuReadmeHolds, qpuReadmeOf, shorFactorOf } from './index.js'
@@ -222,6 +223,15 @@ test('paste in free AI chat', async (t) => {
     assert.equal(cite.sameAs.includes(cite.archive), true)
     assert.equal(cite.when, 'never')
     assert.equal(cite.style, 'mla8')
+    // the archive and the host are named apart: the versioned DOI holds one commit, the host serves package.json's version
+    const c2 = cite as unknown as { archived: { doi: string; version: string; commit: string }; served: { version: string }; current: boolean; currency: string }
+    assert.equal(c2.archived.commit, 'aed5802')
+    assert.equal(c2.archived.version, '0.1.0')
+    assert.equal(c2.archived.doi, cite.doi)
+    assert.equal(c2.served.version, packageVersion)
+    assert.equal(c2.current, c2.archived.version === c2.served.version)
+    assert.equal(c2.currency.includes(`v${c2.served.version}`), true)
+    if (!c2.current) assert.equal(c2.currency.includes('behind the host'), true)
     assert.equal(cite.rows.length, 3)
     assert.equal(cite.rows.every((r) => r.doi === '10.5281/zenodo.22700099'), true)
     assert.equal(cite.rows.every((r) => r.url.startsWith(origin)), true)

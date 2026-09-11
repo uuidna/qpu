@@ -655,3 +655,52 @@ test('initialize echoes a supported protocol version and never invents one', asy
   assert.equal((await ask(undefined)).protocolVersion, '2025-06-18')
   assert.deepEqual((await ask(undefined)).versions, ['2024-11-05', '2025-03-26', '2025-06-18'])
 })
+
+test('every listed tool carries an output schema read from its own replies, and a held-out reply validates against it', async () => {
+  type Schema = { type: string; properties: Record<string, { type: string | string[]; properties?: Record<string, { type: string | string[] }> }>; required: string[]; description: string }
+  const listed = await rpcOf('/mcp', 'tools/list')
+  const tools = (listed.tools ?? []) as { name: string; outputSchema: Schema }[]
+  assert.equal(tools.length, 16)
+  const typeOf = (v: unknown): string => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
+  const fits = (t: string | string[], v: unknown): boolean => (Array.isArray(t) ? t : [t]).includes(typeOf(v)) || (typeOf(v) === 'integer' && (Array.isArray(t) ? t : [t]).includes('number'))
+  const validate = (schema: Schema, reply: Record<string, unknown>): string[] => {
+    const errs: string[] = []
+    for (const k of schema.required) if (!(k in reply)) errs.push(`${k} required`)
+    for (const [k, v] of Object.entries(reply)) {
+      const prop = schema.properties[k]
+      if (!prop) continue
+      if (!fits(prop.type, v)) errs.push(`${k}: ${typeOf(v)} not ${JSON.stringify(prop.type)}`)
+      if (prop.properties && v && typeof v === 'object' && !Array.isArray(v)) {
+        for (const [ik, iv] of Object.entries(v as Record<string, unknown>)) {
+          const ip = prop.properties[ik]
+          if (ip && !fits(ip.type, iv)) errs.push(`${k}.${ik}: ${typeOf(iv)} not ${JSON.stringify(ip.type)}`)
+        }
+      }
+    }
+    return errs
+  }
+  for (const t of tools) {
+    assert.equal(t.outputSchema.type, 'object', t.name)
+    assert.equal(t.outputSchema.required.includes('holds'), true, t.name)
+    assert.deepEqual(t.outputSchema.properties.holds, { type: 'boolean' }, t.name)
+    assert.equal(Object.keys(t.outputSchema.properties).length > 3, true, t.name)
+    assert.equal(t.outputSchema.description.startsWith('derived from'), true, t.name)
+  }
+  // held-out replies: arguments the schema was not derived from
+  const shor = tools.find((t) => t.name === 'crypto_shor')!.outputSchema
+  for (const args of [{ n: 21, a: 2 }, { n: 91, a: 7 }, { n: '2305843009213693952', a: 3 }, { n: [15] }]) {
+    const reply = (await callRpcOf('/mcp', 'crypto_shor', args)).shown as Record<string, unknown>
+    assert.deepEqual(validate(shor, reply), [], JSON.stringify(args))
+  }
+  const rsa = tools.find((t) => t.name === 'crypto_rsa')!.outputSchema
+  assert.deepEqual(validate(rsa, (await callRpcOf('/mcp', 'crypto_rsa', { n: 35, a: 6 })).shown as Record<string, unknown>), [])
+  for (const name of ['qpu_cite', 'qpu_lean', 'crypto_verify', 'crypto_split']) {
+    const schema = tools.find((t) => t.name === name)!.outputSchema
+    assert.deepEqual(validate(schema, (await callRpcOf('/mcp', name)).shown as Record<string, unknown>), [], name)
+  }
+  // the mutation arm: a reply without holds, and a reply whose n is an object, fail
+  const good = (await callRpcOf('/mcp', 'crypto_shor', { n: 15, a: 7 })).shown as Record<string, unknown>
+  const { holds: _dropped, ...noHolds } = good
+  assert.equal(validate(shor, noHolds).includes('holds required'), true)
+  assert.equal(validate(shor, { ...good, n: { bent: true } }).length > 0, true)
+})
