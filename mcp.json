@@ -431,7 +431,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 1,
       "name": "qpu_quantum",
-      "description": "theorem quantum. theorem shor. theorem crypto. Factor 91.",
+      "description": "The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -448,9 +448,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_quantum",
         "href": "https://qpu.uuidna.com",
-        "description": "theorem quantum. theorem shor. theorem crypto. Factor 91.",
-        "reading": "GET https://qpu.uuidna.com. tools/call qpu_quantum. theorem quantum. theorem shor. theorem crypto. Factor 91. No auth.",
-        "documentation": "NAME\n    qpu_quantum — theorem quantum. theorem shor. theorem crypto. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com. tools/call qpu_quantum. theorem quantum. theorem shor. theorem crypto. Factor 91. No auth.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.",
+        "reading": "GET https://qpu.uuidna.com returns the same document as tools/call qpu_quantum. Read circuit.register for the simulator, circuit.ghz.support (0,7) for the entangled corners, shor.factors for the factoring, capacity.fused for 120259084288; every holds must be true or the unit serves 404. theorem quantum. theorem shor. theorem crypto. Factor 91. No auth.",
+        "documentation": "NAME\n    qpu_quantum — The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_quantum\n    qpu_quantum { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com returns the same document as tools/call qpu_quantum. Read circuit.register for the simulator, circuit.ghz.support (0,7) for the entangled corners, shor.factors for the factoring, capacity.fused for 120259084288; every holds must be true or the unit serves 404. theorem quantum. theorem shor. theorem crypto. Factor 91. No auth.\nSEE ALSO\n    qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -460,7 +460,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 2,
       "name": "qpu_lean",
-      "description": "theorem infinite. theorem distribute. theorem shor. Factor 91.",
+      "description": "The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -477,9 +477,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_lean",
         "href": "https://qpu.uuidna.com/quantum/processing/unit",
-        "description": "theorem infinite. theorem distribute. theorem shor. Factor 91.",
-        "reading": "GET https://qpu.uuidna.com/quantum/processing/unit. Source src/quantum/processing/unit/index.lean. theorem shor. Factor 91. No auth.",
-        "documentation": "NAME\n    qpu_lean — theorem infinite. theorem distribute. theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_lean\n    qpu_lean { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/quantum/processing/unit. Source src/quantum/processing/unit/index.lean. theorem shor. Factor 91. No auth.\nSEE ALSO\n    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.",
+        "reading": "GET https://qpu.uuidna.com/quantum/processing/unit returns the rows; read rows[] and cover[] for the theorems, source.href to fetch src/quantum/processing/unit/index.lean itself, source.fold to check the served text is the file, source.toolchain for the pinned Lean. theorem shor. Factor 91. No auth.",
+        "documentation": "NAME\n    qpu_lean — The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_lean\n    qpu_lean { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/quantum/processing/unit returns the rows; read rows[] and cover[] for the theorems, source.href to fetch src/quantum/processing/unit/index.lean itself, source.fold to check the served text is the file, source.toolchain for the pinned Lean. theorem shor. Factor 91. No auth.\nSEE ALSO\n    qpu_quantum, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -489,7 +489,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 3,
       "name": "qpu_cite",
-      "description": "MLA 8. when never.",
+      "description": "How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -506,9 +506,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_cite",
         "href": "https://qpu.uuidna.com/cite",
-        "description": "MLA 8. when never.",
-        "reading": "GET https://qpu.uuidna.com/cite. DOI 10.5281/zenodo.22700099. No auth.",
-        "documentation": "NAME\n    qpu_cite — MLA 8. when never.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/cite. DOI 10.5281/zenodo.22700099. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.",
+        "reading": "GET https://qpu.uuidna.com/cite returns citations[] (MLA 8 strings to paste), doi 10.5281/zenodo.22700099, the Zenodo archive, and the version with its commit. No auth.",
+        "documentation": "NAME\n    qpu_cite — How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/cite returns citations[] (MLA 8 strings to paste), doi 10.5281/zenodo.22700099, the Zenodo archive, and the version with its commit. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -518,7 +518,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 4,
       "name": "qpu_train",
-      "description": "theorem infinite. coins teams of rays.",
+      "description": "Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -543,9 +543,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_train",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "theorem infinite. coins teams of rays.",
-        "reading": "tools/call qpu_train. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.",
-        "documentation": "NAME\n    qpu_train — theorem infinite. coins teams of rays.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_train\n    qpu_train { man: true }\nDESCRIPTION\n    tools/call qpu_train. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "description": "Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.",
+        "reading": "tools/call qpu_train returns steps.next.door (the tool an autonomous agent calls next), steps.todo (faces to repair first), steps.walk (all fourteen faces, scanner then radar), teams[] and winner. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.",
+        "documentation": "NAME\n    qpu_train — Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_train\n    qpu_train { man: true }\nDESCRIPTION\n    tools/call qpu_train returns steps.next.door (the tool an autonomous agent calls next), steps.todo (faces to repair first), steps.walk (all fourteen faces, scanner then radar), teams[] and winner. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -555,7 +555,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 5,
       "name": "qpu_forge",
-      "description": "Unlocked in memory. No lock.",
+      "description": "Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -596,9 +596,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_forge",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "Unlocked in memory. No lock.",
-        "reading": "tools/call qpu_forge. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. { name, run }. No auth.",
-        "documentation": "NAME\n    qpu_forge — Unlocked in memory. No lock.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_forge\n    qpu_forge { man: true }\nDESCRIPTION\n    tools/call qpu_forge. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. { name, run }. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_improve, qpu_compete, qpu_prove",
+        "description": "Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.",
+        "reading": "tools/call qpu_forge with { name, run } returns the forged tool and the sandbox census (tools[], memory, unlocked); without name it returns the census. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. No auth.",
+        "documentation": "NAME\n    qpu_forge — Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_forge\n    qpu_forge { man: true }\nDESCRIPTION\n    tools/call qpu_forge with { name, run } returns the forged tool and the sandbox census (tools[], memory, unlocked); without name it returns the census. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -608,7 +608,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 6,
       "name": "qpu_improve",
-      "description": "next = fused + fused.",
+      "description": "Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -633,9 +633,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_improve",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "next = fused + fused.",
-        "reading": "tools/call qpu_improve. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.",
-        "documentation": "NAME\n    qpu_improve — next = fused + fused.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_improve\n    qpu_improve { man: true }\nDESCRIPTION\n    tools/call qpu_improve. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove",
+        "description": "Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.",
+        "reading": "tools/call qpu_improve returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.",
+        "documentation": "NAME\n    qpu_improve — Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_improve\n    qpu_improve { man: true }\nDESCRIPTION\n    tools/call qpu_improve returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_compete, qpu_prove",
         "holds": true
       }
     },
@@ -645,7 +645,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 7,
       "name": "qpu_compete",
-      "description": "theorem next_fused. throughoutput per token.",
+      "description": "Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -674,9 +674,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_compete",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "theorem next_fused. throughoutput per token.",
-        "reading": "tools/call qpu_compete. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.",
-        "documentation": "NAME\n    qpu_compete — theorem next_fused. throughoutput per token.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_compete\n    qpu_compete { man: true }\nDESCRIPTION\n    tools/call qpu_compete. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove",
+        "description": "Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.",
+        "reading": "tools/call qpu_compete returns winner.{quality,speed,security}, teams[] with scores, and the axes. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.",
+        "documentation": "NAME\n    qpu_compete — Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_compete\n    qpu_compete { man: true }\nDESCRIPTION\n    tools/call qpu_compete returns winner.{quality,speed,security}, teams[] with scores, and the axes. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_prove",
         "holds": true
       }
     },
@@ -686,7 +686,7 @@
       "url": "https://qpu.uuidna.com/mcp",
       "position": 8,
       "name": "qpu_prove",
-      "description": "theorem quantum. theorem shor. theorem crypto. Factor 91.",
+      "description": "Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -711,9 +711,9 @@
         "section": 3,
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_prove",
         "href": "https://qpu.uuidna.com/mcp",
-        "description": "theorem quantum. theorem shor. theorem crypto. Factor 91.",
-        "reading": "tools/call qpu_prove. theorem shor. theorem crypto. Factor 91. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.",
-        "documentation": "NAME\n    qpu_prove — theorem quantum. theorem shor. theorem crypto. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    tools/call qpu_prove. theorem shor. theorem crypto. Factor 91. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
+        "description": "Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.",
+        "reading": "tools/call qpu_prove returns theorems[] (each with holds), shor.factors, receipts, source.fold, evidence. theorem shor. theorem crypto. Factor 91. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.",
+        "documentation": "NAME\n    qpu_prove — Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_prove\n    qpu_prove { man: true }\nDESCRIPTION\n    tools/call qpu_prove returns theorems[] (each with holds), shor.factors, receipts, source.fold, evidence. theorem shor. theorem crypto. Factor 91. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source src/quantum/processing/unit/index.lean. After qpu_compete. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_cite, qpu_train, qpu_forge, qpu_improve, qpu_compete",
         "holds": true
       }
     }
@@ -732,7 +732,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_quantum",
           "name": "qpu_quantum",
-          "description": "theorem quantum. theorem shor. theorem crypto. Factor 91.",
+          "description": "The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com"
         }
@@ -746,7 +746,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_lean",
           "name": "qpu_lean",
-          "description": "theorem infinite. theorem distribute. theorem shor. Factor 91.",
+          "description": "The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/quantum/processing/unit"
         }
@@ -760,7 +760,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_cite",
           "name": "qpu_cite",
-          "description": "MLA 8. when never.",
+          "description": "How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/cite"
         }
@@ -774,7 +774,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_train",
           "name": "qpu_train",
-          "description": "theorem infinite. coins teams of rays.",
+          "description": "Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/mcp"
         }
@@ -788,7 +788,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_forge",
           "name": "qpu_forge",
-          "description": "Unlocked in memory. No lock.",
+          "description": "Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/mcp"
         }
@@ -802,7 +802,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_improve",
           "name": "qpu_improve",
-          "description": "next = fused + fused.",
+          "description": "Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/mcp"
         }
@@ -816,7 +816,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_compete",
           "name": "qpu_compete",
-          "description": "theorem next_fused. throughoutput per token.",
+          "description": "Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/mcp"
         }
@@ -830,7 +830,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://qpu.uuidna.com/mcp#qpu_prove",
           "name": "qpu_prove",
-          "description": "theorem quantum. theorem shor. theorem crypto. Factor 91.",
+          "description": "Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.",
           "url": "https://qpu.uuidna.com/mcp",
           "softwareHelp": "https://qpu.uuidna.com/mcp"
         }

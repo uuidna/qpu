@@ -9760,52 +9760,54 @@ export const qpuCernHolds = (c = qpuCernOf()): boolean =>
 export const qpuToolsOf = () => {
   const names = toolNames
   const seeOf = (name: (typeof names)[number]) => names.filter((s) => s !== name)
+  const capacity = qpuCapacityOf()
+  const circuit = qpuCircuitOf()
   const quantumMan = qpuManOf(
     names[n - n],
-    `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
-    `GET ${unit.origin}. tools/call ${names[n - n]}. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. No auth.`,
+    `The running circuit as one JSON-LD document: a ${circuit.register.qubits}-qubit state-vector simulator (dim ${circuit.register.dim}, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = ${capacity.fused} (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
+    `GET ${unit.origin} returns the same document as tools/call ${names[n - n]}. Read circuit.register for the simulator, circuit.ghz.support (${circuit.ghz.support.join(',')}) for the entangled corners, shor.factors for the factoring, capacity.fused for ${capacity.fused}; every holds must be true or the unit serves 404. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. No auth.`,
     unit.origin,
     seeOf(names[n - n]))
   const leanMan = qpuManOf(
     names[seed],
-    `theorem infinite. theorem distribute. theorem shor. ${shorFactorOf()}.`,
-    `GET ${unit.href}. Source ${unit.fuse.lean}. theorem shor. ${shorFactorOf()}. No auth.`,
+    `The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. ${shorFactorOf()}.`,
+    `GET ${unit.href} returns the rows; read rows[] and cover[] for the theorems, source.href to fetch ${unit.fuse.lean} itself, source.fold to check the served text is the file, source.toolchain for the pinned Lean. theorem shor. ${shorFactorOf()}. No auth.`,
     unit.href,
     seeOf(names[seed]))
   const citeMan = qpuManOf(
     names[coins],
-    'MLA 8. when never.',
-    `GET ${unit.origin}/cite. DOI ${qpuCiteOf().doi}. No auth.`,
+    'How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.',
+    `GET ${unit.origin}/cite returns citations[] (MLA 8 strings to paste), doi ${qpuCiteOf().doi}, the Zenodo archive, and the version with its commit. No auth.`,
     `${unit.origin}/cite`,
     seeOf(names[coins]))
   const trainMan = qpuManOf(
     names[n],
-    'theorem infinite. coins teams of rays.',
-    `tools/call ${names[n]}. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.`,
+    'Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.',
+    `tools/call ${names[n]} returns steps.next.door (the tool an autonomous agent calls next), steps.todo (faces to repair first), steps.walk (all fourteen faces, scanner then radar), teams[] and winner. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n]))
   const forgeMan = qpuManOf(
     names[n + seed],
-    'Unlocked in memory. No lock.',
-    `tools/call ${names[n + seed]}. Ops ${sandboxOps.join(' ')}. { name, run }. No auth.`,
+    'Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.',
+    `tools/call ${names[n + seed]} with { name, run } returns the forged tool and the sandbox census (tools[], memory, unlocked); without name it returns the census. Ops ${sandboxOps.join(' ')}. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + seed]))
   const improveMan = qpuManOf(
     names[n + coins],
-    'next = fused + fused.',
-    `tools/call ${names[n + coins]}. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.`,
+    `Improve by doubling: next = fused + fused = ${capacity.fused + capacity.fused}, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.`,
+    `tools/call ${names[n + coins]} returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + coins]))
   const competeMan = qpuManOf(
     names[n + n],
-    'theorem next_fused. throughoutput per token.',
-    `tools/call ${names[n + n]}. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.`,
+    'Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.',
+    `tools/call ${names[n + n]} returns winner.{quality,speed,security}, teams[] with scores, and the axes. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + n]))
   const proveMan = qpuManOf(
     names[mintOf(n) - seed],
-    `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
-    `tools/call ${names[mintOf(n) - seed]}. theorem shor. theorem crypto. ${shorFactorOf()}. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source ${unit.fuse.lean}. After qpu_compete. No auth.`,
+    `Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
+    `tools/call ${names[mintOf(n) - seed]} returns theorems[] (each with holds), shor.factors, receipts, source.fold, evidence. theorem shor. theorem crypto. ${shorFactorOf()}. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source ${unit.fuse.lean}. After qpu_compete. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[mintOf(n) - seed]))
   const proveSchema = {

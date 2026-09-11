@@ -26,14 +26,14 @@ Seven paths. Eight sealed MCP tools. Eight cybersecurity morph tools listed on t
 - `GET /message` qpu_message. lanes = faces. hop involution. JSON-LD. No auth.
 - `POST /message` qpu_message. 202. hop involution. JSON-LD. No auth.
 
-- `qpu_quantum` theorem quantum. theorem shor. theorem crypto. Factor 91.
-- `qpu_lean` theorem infinite. theorem distribute. theorem shor. Factor 91.
-- `qpu_cite` MLA 8. when never.
-- `qpu_train` theorem infinite. coins teams of rays.
-- `qpu_forge` Unlocked in memory. No lock.
-- `qpu_improve` next = fused + fused.
-- `qpu_compete` theorem next_fused. throughoutput per token.
-- `qpu_prove` theorem quantum. theorem shor. theorem crypto. Factor 91.
+- `qpu_quantum` The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.
+- `qpu_lean` The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.
+- `qpu_cite` How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.
+- `qpu_train` Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.
+- `qpu_forge` Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.
+- `qpu_improve` Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.
+- `qpu_compete` Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.
+- `qpu_prove` Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.
 - `crypto_catalog` theorem shor. theorem crypto.
 - `crypto_shor` theorem shor. Factor 91.
 - `crypto_cmodexp` theorem shor. Factor 91.
