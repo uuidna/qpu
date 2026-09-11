@@ -23,6 +23,12 @@ jobs:
           cache: npm
       - name: Install exact (lockfile law; no install scripts)
         run: npm ci
+      # The pinned toolchain is 2.7 GB unpacked; cached by the pin, so a run downloads it once per pin, not once per push.
+      - name: Cache the Lean toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
       - name: Lean kernel
         run: |
           curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "$(cat lean-toolchain)"
