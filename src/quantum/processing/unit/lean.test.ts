@@ -5,7 +5,7 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds } from './index.js'
+import worker, { qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuShorOf } from './index.js'
 import { leanPath, leanSource, leanToolchain } from './lean.js'
 
 const host = 'qpu.uuidna.com'
@@ -54,4 +54,28 @@ test('qpu_prove carries the source fold and the receipts of its own Shor run', (
   assert.equal(prove.receipts.rows.some((r) => r.name === 'xx' && r.dim === 512), true)
   const again = qpuProveOf()
   assert.equal(again.receipts.fold, prove.receipts.fold)
+})
+
+// THE KERNEL MUST NOT ALREADY KNOW THE ANSWER. theorem shor computes its own period and factors; the statement may
+// carry only the instance (8, 91) and the small constants of the arithmetic, never 7, 13, or 4. And the file stays
+// sorry-free, axiom-free, and decide-free, so every proof is a term the kernel reduced.
+test('index.lean is sorry-free, axiom-free, decide-free, and theorem shor carries no answer', () => {
+  assert.equal(/\bsorry\b/.test(leanSource), false)
+  assert.equal(/^axiom\b/m.test(leanSource), false)
+  assert.equal(leanSource.includes('by decide'), false)
+  assert.equal(leanSource.includes('native_decide'), false)
+  const line = leanSource.split('\n').find((l) => l.startsWith('theorem shor :'))
+  assert.ok(line)
+  const statement = line.slice(0, line.indexOf(':='))
+  for (const fn of ['periodOf', 'half', 'gcdOf']) {
+    assert.ok(statement.includes(fn), fn)
+    assert.ok(leanSource.split('\n').some((l) => l.startsWith(`def ${fn} `)), `def ${fn}`)
+  }
+  const numerals = [...new Set(statement.match(/\d+/g) ?? [])].sort()
+  assert.deepEqual(numerals, ['0', '1', '2', '8', '91'])
+  const shor = qpuShorOf()
+  assert.equal(shor.factors.p * shor.factors.q, shor.n)
+  assert.equal(numerals.includes(String(shor.factors.p)), false)
+  assert.equal(numerals.includes(String(shor.factors.q)), false)
+  assert.equal(numerals.includes(String(shor.post.period)), false)
 })
