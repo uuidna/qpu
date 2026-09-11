@@ -581,7 +581,9 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(big.circuitry.work, 13)
   assert.equal(big.circuitry.dim, 32768)
   assert.equal(big.circuitry.holds, true)
-  assert.equal(big.classical.period, 0)
+  assert.equal(big.classical.period, 1024)
+  assert.equal(big.classical.resolvable, false)
+  assert.equal(big.post.period, 0)
   assert.equal(big.rsa.factored, false)
   // input is read, never refused: a numeric string and a fraction become the integers they hold
   const text = (await mcpOf('crypto_shor', { n: '15', a: '7' })) as Run
