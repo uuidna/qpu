@@ -1687,10 +1687,18 @@ const cAddOf = (a: CAmp, b: CAmp): CAmp => cAmpOf(a.re + b.re, a.im + b.im)
 const cSubOf = (a: CAmp, b: CAmp): CAmp => cAmpOf(a.re - b.re, a.im - b.im)
 const cMulNegIOf = (a: CAmp): CAmp => cAmpOf(a.im, -a.re)
 
+/** The state vector, or an empty one when the host cannot hold it. A JavaScript array holds at most amplitudes - seed
+ * elements, so past that the allocation throws RangeError; it is caught here and READ by the run as an unprepared
+ * vector, never rethrown as a bare 500. Memory below that line is the host's and is not caught. */
 const cPrepareOf = (dim: number): CAmp[] => {
-  const amps = Array.from({ length: dim }, () => cAmpOf(0n, 0n))
-  amps[n - n] = cAmpOf(1n, 0n)
-  return amps
+  try {
+    const amps = Array.from({ length: dim }, () => cAmpOf(0n, 0n))
+    amps[n - n] = cAmpOf(1n, 0n)
+    return amps
+  } catch (e) {
+    if (e instanceof RangeError) return []
+    throw e
+  }
 }
 
 const cHOf = (amps: CAmp[], q: number): CAmp[] => {
@@ -1827,22 +1835,37 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     { name: 'csdg' as const, c: seed, t: n - n },
     { name: 'h' as const, q: n - n }]
   let amps = cPrepareOf(dim)
-  amps = cXOf(amps, workOff)
-  amps = cHOf(amps, n - n)
-  amps = cHOf(amps, seed)
-  amps = cModMulOf(amps, mul[n - n]!.a, modulus, mul[n - n]!.control, workOff, workBits)
-  amps = cModMulOf(amps, mul[seed]!.a, modulus, mul[seed]!.control, workOff, workBits)
-  let expOk = seed === seed
-  for (let i = n - n; i < amps.length; i++) {
-    if (cWOf(amps[i]!) === 0n) continue
-    const counting = i % qftSize
-    const work = quotOf(i, mintOf(workOff)) % mintOf(workBits)
-    if (work !== powModOf(base, counting, modulus)) expOk = false
+  /** Read from the vector, never from the request: prepared means the host holds dim amplitudes; an empty vector means
+   * the allocation threw and the gates below are not applied to it. */
+  const prepared = amps.length === dim
+  const prepare = {
+    kind: 'prepare' as const,
+    qubits,
+    dim,
+    amplitudes: amps.length,
+    limit: mintOf(mintOf(n + coins)) - seed,
+    prepared,
+    reason: prepared ? ('held' as const) : ('array length' as const),
+    holds: prepared,
   }
-  amps = cSwapOf(amps, n - n, seed)
-  amps = cHOf(amps, seed)
-  amps = cSdgOf(amps, seed, n - n)
-  amps = cHOf(amps, n - n)
+  let expOk = prepared
+  if (prepared) {
+    amps = cXOf(amps, workOff)
+    amps = cHOf(amps, n - n)
+    amps = cHOf(amps, seed)
+    amps = cModMulOf(amps, mul[n - n]!.a, modulus, mul[n - n]!.control, workOff, workBits)
+    amps = cModMulOf(amps, mul[seed]!.a, modulus, mul[seed]!.control, workOff, workBits)
+    for (let i = n - n; i < amps.length; i++) {
+      if (cWOf(amps[i]!) === 0n) continue
+      const counting = i % qftSize
+      const work = quotOf(i, mintOf(workOff)) % mintOf(workBits)
+      if (work !== powModOf(base, counting, modulus)) expOk = false
+    }
+    amps = cSwapOf(amps, n - n, seed)
+    amps = cHOf(amps, seed)
+    amps = cSdgOf(amps, seed, n - n)
+    amps = cHOf(amps, n - n)
+  }
   const noisy = cXxOf(amps, workOff)
   receiptOf('cmodexp', amps.map(cWOf))
   receiptOf('xx', noisy.map(cWOf))
@@ -1951,12 +1974,13 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
   /** Beside the run, never in it: what classical iteration says the period is, whether a two-qubit counting register
    * can resolve it (period divides mintOf countBits), and both arms — resolvable means the run recovered a multiple
    * of it, unresolvable means the run recovered nothing. */
-  const classicalPeriod = classicalPeriodOf(base, modulus)
+  const classicalPeriod = prepared ? classicalPeriodOf(base, modulus) : n - n
   const resolvable = classicalPeriod > n - n && qftSize % classicalPeriod === n - n
   const classical = {
     kind: 'classical' as const,
     gcd: gcdOf(base, modulus),
     period: classicalPeriod,
+    iterated: prepared,
     counting: countBits,
     resolvable,
     agrees: period === classicalPeriod,
@@ -1964,6 +1988,7 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
   }
   const holds =
     mintOf(workBits) > modulus &&
+    prepare.holds &&
     circuitry.holds &&
     qft.holds &&
     measure.holds &&
@@ -1980,6 +2005,7 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     a: base,
     coprime,
     circuitry,
+    prepare,
     qft,
     measure,
     post,
@@ -5028,6 +5054,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
           coprime: shor.coprime,
           device: shor.device,
           circuitry: { kind: shor.circuitry.kind, qubits: shor.circuitry.qubits, work: shor.circuitry.work, counting: shor.circuitry.counting, dim: shor.circuitry.dim, holds: shor.circuitry.holds },
+          prepare: shor.prepare,
           qft: shor.qft,
           measure: shor.measure,
           post: shor.post,

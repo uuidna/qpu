@@ -531,8 +531,9 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
     a: number
     coprime: boolean
     circuitry: { qubits: number; work: number; dim: number; holds: boolean }
+    prepare: { qubits: number; dim: number; amplitudes: number; limit: number; prepared: boolean; reason: 'held' | 'array length'; holds: boolean }
     post: { period: number }
-    classical: { gcd: number; period: number; resolvable: boolean; holds: boolean }
+    classical: { gcd: number; period: number; iterated: boolean; resolvable: boolean; holds: boolean }
     factors: { p: number; q: number; by: 'period' | 'gcd' | 'none' }
     rsa: { factored: boolean }
     holds: boolean
@@ -545,6 +546,9 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.deepEqual([fifteen.factors.p, fifteen.factors.q].sort((x, y) => x - y), [3, 5])
   assert.equal(fifteen.factors.by, 'period')
   assert.equal(fifteen.rsa.factored, true)
+  assert.equal(fifteen.prepare.prepared, true)
+  assert.equal(fifteen.prepare.amplitudes, fifteen.circuitry.dim)
+  assert.equal(fifteen.classical.iterated, true)
   assert.equal(fifteen.holds, true)
   const ninetyOne = (await mcpOf('crypto_shor', { n: 91, a: 8 })) as Run
   assert.equal(ninetyOne.factors.p * ninetyOne.factors.q, 91)
@@ -610,6 +614,20 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(zero.n, 0)
   assert.equal(zero.rsa.factored, false)
   assert.equal(zero.holds, false)
+  // past the host's reach: 64 qubits is 2^64 amplitudes, more than a JavaScript array holds; the vector comes back
+  // empty and the run says so in its own voice instead of throwing a bare 500
+  const sixtyFour = (await mcpOf('crypto_shor', { n: 2 ** 61, a: 3 })) as Run
+  assert.equal(sixtyFour.circuitry.qubits, 64)
+  assert.equal(sixtyFour.prepare.prepared, false)
+  assert.equal(sixtyFour.prepare.amplitudes, 0)
+  assert.equal(sixtyFour.prepare.reason, 'array length')
+  assert.equal(sixtyFour.prepare.dim > sixtyFour.prepare.limit, true)
+  assert.equal(sixtyFour.classical.iterated, false)
+  assert.equal(sixtyFour.classical.period, 0)
+  assert.equal(sixtyFour.post.period, 0)
+  assert.equal(sixtyFour.factors.by, 'none')
+  assert.equal(sixtyFour.rsa.factored, false)
+  assert.equal(sixtyFour.holds, false)
   assert.equal(JSON.stringify(zero).includes('null'), false)
   // the sibling views run on the same arguments
   const rsa = (await mcpOf('crypto_rsa', { n: 15, a: 7 })) as { modulus: number; p: number; q: number; factored: boolean; period: number; by: string }
