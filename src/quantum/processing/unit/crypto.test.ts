@@ -536,7 +536,7 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
     device: string
     measure: { measured: boolean; shots: number; outcomes: number[]; holds: boolean }
     post: { period: number }
-    classical: { gcd: number; period: number; iterated: boolean; resolvable: boolean; agrees: boolean; holds: boolean }
+    classical: { gcd: number; period: number; unit: boolean; beyond: boolean; resolvable: boolean; agrees: boolean; holds: boolean }
     factors: { p: number | string; q: number | string; product: number | string; by: 'period' | 'gcd' | 'none' }
     rsa: { factored: boolean }
     holds: boolean
@@ -556,7 +556,8 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(fifteen.exact.n, '15')
   assert.equal(fifteen.measure.measured, true)
   assert.equal(fifteen.measure.shots, 8)
-  assert.equal(fifteen.classical.iterated, true)
+  assert.equal(fifteen.classical.unit, true)
+  assert.equal(fifteen.classical.beyond, false)
   assert.equal(fifteen.holds, true)
   // the tool text says what the reach is not, and the runs say the same: coprime periods off 4 recover nothing,
   // a shared factor is gcd, and a wide modulus is no exception either way
@@ -582,7 +583,8 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(byDefault.a, 8)
   // a period the two-qubit counting register cannot resolve: the run recovers nothing and says so, never a typed answer
   const twentyOne = (await mcpOf('crypto_shor', { n: 21, a: 2 })) as Run
-  assert.equal(twentyOne.classical.period, 6)
+  assert.equal(twentyOne.classical.period, 0)
+  assert.equal(twentyOne.classical.beyond, true)
   assert.equal(twentyOne.classical.resolvable, false)
   assert.equal(twentyOne.post.period, 0)
   assert.equal(twentyOne.factors.by, 'none')
@@ -609,7 +611,8 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(big.circuitry.work, 13)
   assert.equal(big.circuitry.dim, 32768)
   assert.equal(big.circuitry.holds, true)
-  assert.equal(big.classical.period, 1024)
+  assert.equal(big.classical.period, 0)
+  assert.equal(big.classical.beyond, true)
   assert.equal(big.classical.resolvable, false)
   assert.equal(big.post.period, 0)
   assert.equal(big.rsa.factored, false)
@@ -653,9 +656,11 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(sixtyFour.measure.measured, true)
   assert.equal(sixtyFour.measure.holds, true)
   assert.equal(sixtyFour.circuitry.holds, true)
-  assert.equal(sixtyFour.classical.iterated, false)
-  assert.equal(sixtyFour.classical.holds, false)
-  assert.equal(sixtyFour.classical.agrees, false)
+  assert.equal(sixtyFour.classical.beyond, true)
+  assert.equal(sixtyFour.classical.resolvable, false)
+  // the register cannot resolve an order past four, the run recovered nothing, and the two agree: that is the check holding
+  assert.equal(sixtyFour.classical.holds, true)
+  assert.equal(sixtyFour.classical.agrees, true)
   assert.equal(sixtyFour.post.period, 0)
   assert.equal(sixtyFour.factors.by, 'none')
   assert.equal(sixtyFour.rsa.factored, false)
@@ -680,12 +685,13 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(rsa2048.factors.product, '3'.repeat(617))
   assert.equal(rsa2048.factors.by, 'gcd')
   assert.equal(rsa2048.exact.p, '3')
-  assert.equal(rsa2048.classical.iterated, true)
+  assert.equal(rsa2048.classical.unit, false)
+  assert.equal(rsa2048.classical.beyond, false)
   assert.equal(JSON.stringify(rsa2048).includes('null'), false)
   assert.equal(JSON.stringify(zero).includes('null'), false)
   // READ: every reply says how each argument was taken; a garbage argument runs the default and says so, and does not hold
   type Read = { how: string; exact: boolean; given: boolean }
-  type WithRead = Run & { read: { n: Read; a: Read; holds: boolean }; classical: Run['classical'] & { ring: boolean; bound: number; steps: number; work: number } }
+  type WithRead = Run & { read: { n: Read; a: Read; holds: boolean }; classical: Run['classical'] & { ring: boolean } }
   const plain = (await mcpOf('crypto_shor', { n: 15, a: 7 })) as WithRead
   assert.deepEqual(plain.read, { n: { how: 'number', exact: true, given: true }, a: { how: 'number', exact: true, given: true }, holds: true })
   const absent = (await mcpOf('crypto_shor')) as WithRead
@@ -722,24 +728,26 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   for (const bad of [1, 0, -91]) {
     const run = (await mcpOf('crypto_shor', { n: bad, a: 8 })) as WithRead
     assert.equal(run.classical.ring, false, `n ${bad}`)
-    assert.equal(run.classical.iterated, false, `n ${bad}`)
+    assert.equal(run.classical.unit, false, `n ${bad}`)
     assert.equal(run.classical.holds, false, `n ${bad}`)
     assert.equal(run.classical.agrees, false, `n ${bad}`)
     assert.equal(run.holds, false, `n ${bad}`)
   }
   const ninetyOneRing = (await mcpOf('crypto_shor', { n: 91, a: 8 })) as WithRead
   assert.equal(ninetyOneRing.classical.ring, true)
-  assert.equal(ninetyOneRing.classical.bound, 65536)
-  // WORK: the classical bound shrinks with the width of the modulus, so the check's wall time stays flat
-  assert.equal(ninetyOneRing.classical.steps, 65536)
-  assert.equal(ninetyOneRing.classical.work, 2 ** 30)
+  assert.equal(ninetyOneRing.classical.unit, true)
+  // EXACT FOR ANY WIDTH: the check is three modular powers, so a 30000-digit modulus answers at once, with no bound
+  // hit and nothing left unfinished — `beyond` true is the answer that the order does not divide four
   const wide = (await mcpOf('crypto_shor', { n: '7'.repeat(30000), a: 2 })) as WithRead
   assert.equal(wide.classical.ring, true)
-  assert.equal(wide.classical.bound, Math.floor(2 ** 30 / wide.circuitry.work))
-  assert.equal(wide.classical.bound < 65536, true)
-  assert.equal(wide.classical.iterated, false)
-  assert.equal(wide.classical.holds, false)
+  assert.equal(wide.classical.unit, true)
+  assert.equal(wide.classical.beyond, true)
+  assert.equal(wide.classical.period, 0)
+  assert.equal(wide.classical.resolvable, false)
+  assert.equal(wide.classical.holds, true)
+  assert.equal(wide.post.period, 0)
   assert.equal(wide.rsa.factored, false)
+  assert.equal(JSON.stringify(wide).includes('iterated'), false)
   // the sibling views run on the same arguments
   const rsa = (await mcpOf('crypto_rsa', { n: 15, a: 7 })) as { modulus: number; p: number; q: number; factored: boolean; period: number; by: string }
   assert.equal(rsa.modulus, 15)

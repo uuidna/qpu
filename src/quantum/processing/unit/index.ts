@@ -1803,30 +1803,19 @@ export const shorDefaultsOf = () => ({ modulus: qpuFacesOf().rays * (n * n + n +
  * wider register would need eighth roots, which are not integers. So the register resolves periods dividing four;
  * `classical` below says whether the period it was asked for is one of those. */
 const shorCountBits = coins
-/** The classical period check is bounded by WORK, not by count: at most 2^16 multiplications, and at most 2^30
- * bit-multiplications in all, since each step costs about the width of the modulus. So a 7-bit modulus gets the full
- * 2^16 steps and a 100000-bit one gets 2^30 / 100000, and the check's wall time stays flat as the modulus grows
- * instead of growing with it (a 30000-digit coprime run spent 38 s here and died by CPU before this bound). */
-const classicalSteps = mintOf(mintOf(coins) * mintOf(coins))
-const classicalWork = mintOf(n * ten)
-const classicalBoundOf = (bits: number): number => {
-  const byWork = bits > n - n ? (classicalWork - (classicalWork % bits)) / bits : classicalSteps
-  return byWork < classicalSteps ? byWork : classicalSteps
-}
-/** The period of base mod modulus by classical iteration, beside the run. `ring` false means there is no ring to ask
- * (modulus <= 1), so nothing here is an answer. `iterated` false means the work bound was hit before the period
- * showed, so the 0 is not an answer either; a base sharing a factor has no period, and that is an answer. */
-const classicalPeriodOf = (base: bigint, modulus: bigint, bits: number): { period: number; iterated: boolean; ring: boolean; bound: number } => {
-  const bound = classicalBoundOf(bits)
-  if (modulus <= b1) return { period: n - n, iterated: false, ring: false, bound }
-  if (bigGcdOf(base, modulus) !== b1) return { period: n - n, iterated: true, ring: true, bound }
-  let x = modOf(base, modulus)
-  for (let r = seed; r <= bound; r++) {
-    if (x === b1) return { period: r, iterated: true, ring: true, bound }
-    x = (x * base) % modulus
-    x = modOf(x, modulus)
+/** THE CLASSICAL CHECK BESIDE THE RUN, EXACT FOR ANY MODULUS AND NEVER UNFINISHED. The two-qubit counting register
+ * resolves a period only when it divides four, and whether the order of the base divides four is three modular
+ * powers: a, a^2, a^4 mod n. That answers every question the run poses — is there a ring, is the base a unit, can the
+ * register resolve its order, and what must the run then recover — without iterating toward an order it could not
+ * reach. So there is no bound to hit, no work budget, and no "did not finish" to report: `beyond` true is an answer
+ * (the order exists and does not divide four), not a crack. */
+const classicalOrderOf = (base: bigint, modulus: bigint): { ring: boolean; unit: boolean; order: number; beyond: boolean } => {
+  if (modulus <= b1) return { ring: false, unit: false, order: n - n, beyond: false }
+  if (bigGcdOf(base, modulus) !== b1) return { ring: true, unit: false, order: n - n, beyond: false }
+  for (const r of [seed, coins, mintOf(coins)]) {
+    if (bigPowModOf(base, BigInt(r), modulus) === b1) return { ring: true, unit: true, order: r, beyond: false }
   }
-  return { period: n - n, iterated: false, ring: true, bound }
+  return { ring: true, unit: true, order: n - n, beyond: true }
 }
 /** How one argument was read. `digits` is a string of digits, exact at any size. `number` is a JSON number, exact only up
  * to 2^53 (past that the caller's own parser rounded it before it arrived). `numeric` is any other numeric string, read
@@ -2046,25 +2035,23 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     factored: factoredBig,
     holds: factors.holds && factoredBig,
   }
-  /** Beside the run, never in it: what classical iteration says the period is, whether a two-qubit counting register
-   * can resolve it (period divides mintOf countBits), and both arms — resolvable means the run recovered a multiple
-   * of it, unresolvable means the run recovered nothing. A check that did not finish holds nothing. */
-  const classicalRun = classicalPeriodOf(base, modulus, workBits)
-  const classicalPeriod = classicalRun.period
-  const resolvable = classicalRun.iterated && classicalPeriod > n - n && qftSize % classicalPeriod === n - n
+  /** Beside the run, never in it, and exact for any modulus: whether there is a ring, whether the base is a unit in it,
+   * whether the order of the base divides four (the only periods a two-qubit register resolves), and both arms —
+   * resolvable means the run recovered a multiple of that order, unresolvable means the run recovered nothing. */
+  const classicalRun = classicalOrderOf(base, modulus)
+  const classicalPeriod = classicalRun.order
+  const resolvable = classicalRun.unit && classicalPeriod > n - n
   const classical = {
     kind: 'classical' as const,
     ring: classicalRun.ring,
+    unit: classicalRun.unit,
     gcd: jsonIntOf(ring ? bigGcdOf(base, modulus) : b0),
     period: classicalPeriod,
-    iterated: classicalRun.iterated,
-    bound: classicalRun.bound,
-    steps: classicalSteps,
-    work: classicalWork,
+    beyond: classicalRun.beyond,
     counting: countBits,
     resolvable,
-    agrees: classicalRun.ring && classicalRun.iterated && period === classicalPeriod,
-    holds: classicalRun.ring && classicalRun.iterated ? (resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n) : false,
+    agrees: classicalRun.ring && period === classicalPeriod,
+    holds: classicalRun.ring ? (resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n) : false,
   }
   const holds =
     span > modulus &&
