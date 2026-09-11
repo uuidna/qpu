@@ -8713,6 +8713,12 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
   const none = n - n
   const seated = imagine.length > none ? faceOf(imagine, faces.faces) : none
   const hop = (seated + faces.rays + faces.rays) % faces.faces
+  /** LATTICE PHASE (the captain, 2026-09-12: "re-fuse all animations to follow the quantum lattice"). Every face keeps
+   * the one fused keyframe, but its phase is its position on the genesis walk (0, 7, 1, 8, … 6, 13): ray 0's scanner
+   * face, its radar face by the hop, the next ray. One negative animation-delay rule reads `--walk`, and the timing
+   * function steps once per face, so the grid is the walk itself, not fourteen faces pulsing in line. */
+  const walkOf = (face: number) => (face % faces.rays) * coins + (face < faces.rays ? none : seed)
+  const walk = qpuStepsOf().walk.map((step) => step.face)
   const physicsOf = (name: string) => {
     if (name === 'split') return { x: none, y: none, r: none, s: coins, a: seed }
     if (name === 'entangle') return { x: coins, y: none, r: none, s: seed, a: seed }
@@ -8762,11 +8768,11 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     `@property --qpu-a{syntax:"<number>";inherits:false;initial-value:${seed}}` +
     `:root{--qpu-hz:${hz};--qpu-n:${n};--qpu-coins:${coins};--qpu-rays:${faces.rays};--qpu-faces:${faces.faces};--qpu-milli:${milli};--qpu-period:calc(1s * var(--qpu-milli) / var(--qpu-hz))}` +
     `.qpu{display:grid;grid-template-columns:repeat(var(--qpu-rays),minmax(0,1fr))}` +
-    `.qpu>*{aspect-ratio:${seed};color:hsl(calc(var(--qpu-hz) * var(--face,${none}) / var(--qpu-faces)) ${sat}% ${light}%);animation:qpu var(--qpu-period) linear infinite;will-change:transform,opacity}` +
+    `.qpu>*{aspect-ratio:${seed};color:hsl(calc(var(--qpu-hz) * var(--face,${none}) / var(--qpu-faces)) ${sat}% ${light}%);animation:qpu var(--qpu-period) steps(var(--qpu-faces),jump-none) infinite;animation-delay:calc(${none - seed} * var(--qpu-period) * var(--walk,${none}) / var(--qpu-faces));will-change:transform,opacity}` +
     `.qpu>*::after{content:attr(data-qpu)}` +
     `.qpu>[data-imagine]{--qpu-s:${coins}}` +
     genesis.card.map((slot) => `[data-slot=${slot}]{display:grid}`).join('') +
-    genesis.nodes.map((node) => `[data-framework=${node.name}][data-domain=${node.domain}]{--face:${node.face}}`).join('') +
+    genesis.nodes.map((node) => `[data-framework=${node.name}][data-domain=${node.domain}]{--face:${node.face};--walk:${walkOf(node.face)}}`).join('') +
     `[data-slot=card-header]:has([data-slot=card-action]){grid-template-columns:minmax(0,1fr) auto}` +
     `@keyframes qpu{${mid}%{transform:translate3d(var(--qpu-x),var(--qpu-y),0) rotate(var(--qpu-r)) scale(var(--qpu-s));opacity:var(--qpu-a)}}` +
     `@media (prefers-reduced-motion:reduce){.qpu>*{animation:none;will-change:auto}}` +
@@ -8801,7 +8807,13 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     engine.includes('data-domain=radar') &&
     genesis.frameworks.every((name) => engine.includes(`data-framework=${name}`)) &&
     engine.includes(`--qpu-hz:${hz}`) &&
-    engine.includes('animation-delay') === false &&
+    engine.split('animation-delay').length === coins &&
+    engine.includes('--walk') &&
+    engine.includes('linear') === false &&
+    walk.length === faces.faces &&
+    new Set(walk).size === faces.faces &&
+    walk.every((face, at) => walkOf(face) === at) &&
+    genesis.nodes.every((node) => walkOf(node.face) < faces.faces) &&
     hz === 432 &&
     hop === seated &&
     experiments.every((row) => row.holds)
@@ -8817,6 +8829,7 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     fused: { bytes: fusedBytes, keyframes, cover },
     naive: { bytes: naiveBytes, keyframes: cover, cover },
     winner: 'fused' as const,
+    lattice: { walk, phase: '--walk' as const, ticks: faces.faces },
     imagine: {
       kind: 'imagination' as const,
       text: imagine,
@@ -8839,7 +8852,10 @@ export const qpuCssHolds = (c = qpuCssOf()): boolean =>
   c.slots[n + seed] === 'card-action' &&
   c.css.includes('data-domain=scanner') &&
   c.css.includes('data-domain=radar') &&
-  c.css.includes('animation-delay') === false &&
+  c.css.split('animation-delay').length === coins &&
+  c.css.includes('--walk') &&
+  c.css.includes('linear') === false &&
+  c.lattice.walk.length === c.lattice.ticks &&
   c.imagine.involution === true
 
 export const qpuReflectOf = (imagine = '') => {

@@ -49,7 +49,10 @@ test('shadcn schema combinatorial genesis covers all known frameworks', () => {
   assert.equal(css.keyframes, 1)
   assert.equal(css.css.includes('data-domain=scanner'), true)
   assert.equal(css.css.includes('data-domain=radar'), true)
-  assert.equal(css.css.includes('animation-delay'), false)
+  assert.equal(css.css.split('animation-delay').length, 2)
+  assert.deepEqual(css.lattice.walk, [0, 7, 1, 8, 2, 9, 3, 10, 4, 11, 5, 12, 6, 13])
+  assert.equal(css.css.includes('--walk:7}'), true)
+  assert.equal(css.css.includes('linear'), false)
   assert.equal(css.experiments.length, 28)
   assert.equal(
     css.experiments.filter((row) => {

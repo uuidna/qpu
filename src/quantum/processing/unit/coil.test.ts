@@ -110,7 +110,7 @@ test('simulator register — integer amplitudes in a browser VM', () => {
   assert.equal(hybrid.kv.speed > hybrid.r2.speed, true)
   assert.equal(qpuPresenceHolds(presence), true)
   assert.equal(qpuCssHolds(css), true)
-  assert.equal(css.css.includes('animation-delay'), false)
+  assert.equal(css.css.split('animation-delay').length, 2)
   assert.equal(register?.holds, true)
   assert.equal(register?.theorem.includes('photon / thermal 10 = 23'), true)
   assert.equal(register?.theorem.includes('by decide'), false)
