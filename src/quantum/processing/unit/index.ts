@@ -9244,6 +9244,31 @@ export const qpuHostsHolds = (h = qpuHostsOf()): boolean =>
  * supports it, else the latest it supports. An external audit (2026-09-12) found the old reply always said 2026-07-28,
  * a version no client has ever sent — a typed number where a read one belongs. The three versions are the three
  * published MCP revisions; the list is theirs, not ours. */
+/** INTEGRATE IN ANY HARNESS (the captain, 2026-09-12). One computed block, from the origin alone, served on initialize
+ * and printed in the README from the same function, so the wire and the paper cannot disagree. Shapes verified against
+ * each harness's own documentation on 2026-09-12: Claude Code (`claude mcp add --transport http`, or .mcp.json for a
+ * project), Cursor (.cursor/mcp.json mcpServers.url), VS Code (.vscode/mcp.json servers type http), OpenAI Codex CLI
+ * (config.toml [mcp_servers.<name>] url), Gemini CLI (settings.json mcpServers.httpUrl), the Anthropic Messages API
+ * (mcp_servers with the beta header), the OpenAI Responses API (a tools entry of type mcp), and bare JSON-RPC over
+ * HTTP for everything else. No auth: reads need no header; storage writes carry Authorization: Bearer. */
+export const qpuHarnessesOf = () => {
+  const url = `${unit.origin}/mcp`
+  const name = `uuidna-${unit.kind}`
+  const rows = [
+    { harness: 'Claude Code', kind: 'cli', how: `claude mcp add --transport http ${name} ${url}`, file: '.mcp.json', config: { mcpServers: { [name]: { type: 'http', url } } } },
+    { harness: 'Cursor', kind: 'file', how: 'add to .cursor/mcp.json (project) or ~/.cursor/mcp.json (global)', file: '.cursor/mcp.json', config: { mcpServers: { [name]: { url } } } },
+    { harness: 'VS Code', kind: 'file', how: 'add to .vscode/mcp.json and commit it', file: '.vscode/mcp.json', config: { servers: { [name]: { type: 'http', url } } } },
+    { harness: 'OpenAI Codex CLI', kind: 'cli', how: `codex mcp add ${name} --url ${url}`, file: '~/.codex/config.toml', config: `[mcp_servers.${name}]\nurl = "${url}"` },
+    { harness: 'Gemini CLI', kind: 'file', how: 'add to ~/.gemini/settings.json', file: '~/.gemini/settings.json', config: { mcpServers: { [name]: { httpUrl: url } } } },
+    { harness: 'Anthropic Messages API', kind: 'api', how: 'header anthropic-beta: mcp-client-2025-04-04', file: 'request body', config: { mcp_servers: [{ type: 'url', url, name }] } },
+    { harness: 'OpenAI Responses API', kind: 'api', how: 'a tools entry of type mcp', file: 'request body', config: { tools: [{ type: 'mcp', server_label: name, server_url: url, require_approval: 'never' }] } },
+    { harness: 'Any HTTP client', kind: 'raw', how: `POST ${url} with content-type: application/json; methods initialize, tools/list, tools/call`, file: 'none', config: { jsonrpc: '2.0', id: 1, method: 'tools/list' } },
+  ] as const
+  const holds = rows.length === mintOf(n) && rows.every((r) => JSON.stringify(r.config).includes(url) || r.how.includes(url)) && rows.every((r) => JSON.stringify(r).includes(name) || r.kind === 'raw')
+  return { kind: 'harnesses' as const, url, name, auth: 'none for reads; Authorization: Bearer QPU_WRITE_TOKEN for storage writes' as const, rows, holds }
+}
+export const qpuHarnessesHolds = (h = qpuHarnessesOf()): boolean => h.holds === true && h.rows.length === mintOf(n) && h.url === `${unit.origin}/mcp`
+
 export const MCP_VERSIONS = ['2024-11-05', '2025-03-26', '2025-06-18'] as const
 export const qpuMcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
   (MCP_VERSIONS as readonly string[]).includes(String(requested)) ? (requested as (typeof MCP_VERSIONS)[number]) : MCP_VERSIONS[n - seed]!
@@ -9254,6 +9279,7 @@ export const qpuMcpDiscoverOf = (requested?: unknown) => {
   const holds = qpuHostsHolds(hosts) && versions.length === n && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
   return {
     protocolVersion: qpuMcpVersionOf(requested),
+    install: qpuHarnessesOf(),
     capabilities: { tools: { listChanged: false as const } },
     serverInfo: { name: `@uuidna/${unit.kind}`, title: 'QPU', version: 'quantum' },
     instructions,
@@ -10399,6 +10425,10 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '```',
     '',
     `[![Deploy to Cloudflare](${installCloudflare.button})](${installCloudflare.qpu})`,
+    '',
+    `Integrate in any harness. One computed block, served on initialize as \`install\` and printed here from the same function. URL ${qpuHarnessesOf().url}. ${qpuHarnessesOf().auth}.`,
+    '',
+    ...qpuHarnessesOf().rows.map((r) => `- **${r.harness}** (${r.kind}): ${r.how}. File ${r.file}. \`${typeof r.config === 'string' ? r.config.replace(/\n/g, ' ') : JSON.stringify(r.config)}\``),
     '',
     '## Cite',
     '',

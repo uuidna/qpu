@@ -1,15 +1,15 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 110,
-  "pass": 110,
+  "tests": 111,
+  "pass": 111,
   "fail": 0,
   "dry": 0,
-  "circuit": 69,
+  "circuit": 70,
   "mintOnly": 11,
   "dim": "2^1048578",
   "qubits": 1048578,
-  "receipt": "1e5be57cc5364807",
+  "receipt": "ec5f760787050d12",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -472,8 +472,8 @@
         }
       ],
       "mint": {
-        "calls": 1235000,
-        "chain": "a5d0e17dd858b569"
+        "calls": 1235003,
+        "chain": "38a8f454d22b1fbe"
       }
     },
     {
@@ -585,7 +585,7 @@
       ],
       "mint": {
         "calls": 788181,
-        "chain": "112972f86eabe250"
+        "chain": "ddde9f4eb352e0b7"
       }
     },
     {
@@ -1709,6 +1709,52 @@
       }
     },
     {
+      "name": "the harness recipes carry the URL and the name, and initialize serves them",
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 44735,
+      "kinds": {
+        "x": 9270,
+        "cnot": 17648,
+        "toffoli": 1314,
+        "h": 15586,
+        "measure": 657,
+        "cmodexp": 130,
+        "xx": 130
+      },
+      "dims": {
+        "8": 44475,
+        "64": 10,
+        "512": 240,
+        "2^64": 10
+      },
+      "dim": "2^64",
+      "qubits": 64,
+      "receipt": "a26a7f31e3ce387f",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 657
+        }
+      ],
+      "mint": {
+        "calls": 884477,
+        "chain": "2b4376e41266fbde"
+      }
+    },
+    {
       "name": "measure hybrid storage speed and cost — kv faster costlier, r2 cheaper slower",
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -2367,8 +2413,8 @@
         }
       ],
       "mint": {
-        "calls": 5072900,
-        "chain": "a8077d50ffe68ad9"
+        "calls": 5072901,
+        "chain": "4abef53bf28fd4dc"
       }
     },
     {
@@ -2428,7 +2474,7 @@
       ],
       "mint": {
         "calls": 888285,
-        "chain": "f3e5814f17f7b9ae"
+        "chain": "3a0f0ce6c120fffd"
       }
     },
     {
@@ -2517,8 +2563,8 @@
         }
       ],
       "mint": {
-        "calls": 3165670,
-        "chain": "4ed271dcd2a164fc"
+        "calls": 3165671,
+        "chain": "6c8ce0499d093759"
       }
     },
     {
@@ -2680,8 +2726,8 @@
         }
       ],
       "mint": {
-        "calls": 6573510,
-        "chain": "54476ad8e6383ea2"
+        "calls": 6573514,
+        "chain": "3b8f2c904e749055"
       }
     },
     {
@@ -2725,7 +2771,7 @@
       ],
       "mint": {
         "calls": 660019,
-        "chain": "0e0ad19cc70a21a1"
+        "chain": "c5840afb8c8a7b8c"
       }
     },
     {
@@ -2783,8 +2829,8 @@
         }
       ],
       "mint": {
-        "calls": 400193,
-        "chain": "3dd514c097b1171d"
+        "calls": 400194,
+        "chain": "4bf4de8bd243cf5b"
       }
     },
     {
@@ -2827,8 +2873,8 @@
         }
       ],
       "mint": {
-        "calls": 182825,
-        "chain": "5ac35be414aa1ba5"
+        "calls": 182830,
+        "chain": "e28b2de5a37cc2b2"
       }
     },
     {
@@ -2876,7 +2922,7 @@
       ],
       "mint": {
         "calls": 643354,
-        "chain": "0808f36b20a5571a"
+        "chain": "0802b480201bad0f"
       }
     },
     {

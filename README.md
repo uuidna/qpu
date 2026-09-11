@@ -83,6 +83,17 @@ npx uuidna-install
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/qpu)
 
+Integrate in any harness. One computed block, served on initialize as `install` and printed here from the same function. URL https://qpu.uuidna.com/mcp. none for reads; Authorization: Bearer QPU_WRITE_TOKEN for storage writes.
+
+- **Claude Code** (cli): claude mcp add --transport http uuidna-qpu https://qpu.uuidna.com/mcp. File .mcp.json. `{"mcpServers":{"uuidna-qpu":{"type":"http","url":"https://qpu.uuidna.com/mcp"}}}`
+- **Cursor** (file): add to .cursor/mcp.json (project) or ~/.cursor/mcp.json (global). File .cursor/mcp.json. `{"mcpServers":{"uuidna-qpu":{"url":"https://qpu.uuidna.com/mcp"}}}`
+- **VS Code** (file): add to .vscode/mcp.json and commit it. File .vscode/mcp.json. `{"servers":{"uuidna-qpu":{"type":"http","url":"https://qpu.uuidna.com/mcp"}}}`
+- **OpenAI Codex CLI** (cli): codex mcp add uuidna-qpu --url https://qpu.uuidna.com/mcp. File ~/.codex/config.toml. `[mcp_servers.uuidna-qpu] url = "https://qpu.uuidna.com/mcp"`
+- **Gemini CLI** (file): add to ~/.gemini/settings.json. File ~/.gemini/settings.json. `{"mcpServers":{"uuidna-qpu":{"httpUrl":"https://qpu.uuidna.com/mcp"}}}`
+- **Anthropic Messages API** (api): header anthropic-beta: mcp-client-2025-04-04. File request body. `{"mcp_servers":[{"type":"url","url":"https://qpu.uuidna.com/mcp","name":"uuidna-qpu"}]}`
+- **OpenAI Responses API** (api): a tools entry of type mcp. File request body. `{"tools":[{"type":"mcp","server_label":"uuidna-qpu","server_url":"https://qpu.uuidna.com/mcp","require_approval":"never"}]}`
+- **Any HTTP client** (raw): POST https://qpu.uuidna.com/mcp with content-type: application/json; methods initialize, tools/list, tools/call. File none. `{"jsonrpc":"2.0","id":1,"method":"tools/list"}`
+
 ## Cite
 
 MLA 8. (Rouschev). ORCID https://orcid.org/0009-0000-7312-9778. DOI 10.5281/zenodo.22700099. Archive https://zenodo.org/records/22700099. Identifier https://doi.org/10.5281/zenodo.22700099. when never. Cite the running quantum circuit and its Lean proof.
