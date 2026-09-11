@@ -2,12 +2,12 @@
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
   "tests": 98,
-  "pass": 97,
-  "fail": 1,
+  "pass": 98,
+  "fail": 0,
   "dry": 0,
   "circuit": 57,
   "mintOnly": 11,
-  "receipt": "8a2cd9f5b8e898c6",
+  "receipt": "baca8465f1165f3f",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -1252,18 +1252,18 @@
       "name": "crypto_shor runs on the n and a it is given, whatever they are; no denial, no cap",
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": false,
-      "computations": 18353,
+      "pass": true,
+      "computations": 41333,
       "kinds": {
-        "x": 3984,
-        "cnot": 7664,
-        "toffoli": 654,
-        "h": 5518,
-        "measure": 327,
-        "cmodexp": 103,
-        "xx": 103
+        "x": 8974,
+        "cnot": 17264,
+        "toffoli": 1474,
+        "h": 12418,
+        "measure": 737,
+        "cmodexp": 233,
+        "xx": 233
       },
-      "receipt": "0b1f7ebaf2d13887",
+      "receipt": "96694a03d190797b",
       "states": [
         {
           "name": "measure",
@@ -1278,12 +1278,12 @@
             "0",
             "0"
           ],
-          "measured": 327
+          "measured": 737
         }
       ],
       "mint": {
-        "calls": 672288,
-        "chain": "095934c87dd3026d"
+        "calls": 1436513,
+        "chain": "3b113065aecf9091"
       }
     },
     {
