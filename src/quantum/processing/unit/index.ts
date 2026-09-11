@@ -7,7 +7,7 @@
  * test that computed quantum state carries a receipt and a test that computed none carries none. FNV-1a 64 over the
  * decimal amplitudes; BigInt only. Never Math. The reporter reads this ledger per test (isolation none). */
 import { leanSource, leanToolchain } from './lean.js'
-export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[] }
+export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[]; nonzero?: number }
 /** The exact state worth carrying in the receipt: what was measured — eight amplitudes, the Born weights themselves.
  * Every other state folds only; it is recomputable from the gate list, and a proof that carried every 512-amplitude
  * modexp state weighed megabytes per run. */
@@ -29,6 +29,11 @@ const receiptOf = (name: string, amps: readonly bigint[]): void => {
   const row: QpuReceipt = { name, dim: amps.length, fold: qpuFoldOf(decimal.join(',')) }
   if ((RECEIPT_STATES as readonly string[]).includes(name)) row.amplitudes = decimal
   RECEIPTS.push(row)
+}
+/** A sparse state's receipt: the fold of its nonzero amplitudes as index:weight pairs in index order, and their count.
+ * `dim` is the full dimension, a float past 2^53; the fold is exact because the pairs are decimal text of bigints. */
+const receiptSparseOf = (name: string, dim: bigint, pairs: readonly (readonly [bigint, bigint])[]): void => {
+  RECEIPTS.push({ name, dim: Number(dim), fold: qpuFoldOf(pairs.map(([i, w]) => `${i}:${w}`).join(',')), nonzero: pairs.length })
 }
 /** mint receipts: every amplitude-count doubling this process computed — a counter and a running chain, never a list. */
 const MINT = { calls: 0, chain: FNV_OFFSET }
@@ -1638,17 +1643,6 @@ const gcdOf = (left: number, right: number): number => {
   return x
 }
 
-const powModOf = (base: number, exp: number, modulus: number): number => {
-  let x = seed
-  let b = base % modulus
-  let e = exp
-  while (e > n - n) {
-    if (e % coins === seed) x = (x * b) % modulus
-    b = (b * b) % modulus
-    e = (e - (e % coins)) / coins
-  }
-  return x
-}
 
 const convergentsOf = (num: number, den: number): { h: number; k: number }[] => {
   const out: { h: number; k: number }[] = []
@@ -1678,8 +1672,6 @@ type CAmp = { re: bigint; im: bigint }
 /** Device label READ from the run: a vector of exact integer amplitudes is a simulator; anything else is unmeasured. Never typed. */
 const bigintDeviceOf = (amps: readonly bigint[]) =>
   amps.length > n - n && amps.every((a) => typeof a === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
-const deviceOf = (amps: readonly CAmp[]) =>
-  amps.length > n - n && amps.every((a) => typeof a.re === 'bigint' && typeof a.im === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
 
 const cAmpOf = (re: bigint, im: bigint): CAmp => ({ re, im })
 const cWOf = (a: CAmp): bigint => a.re * a.re + a.im * a.im
@@ -1687,224 +1679,272 @@ const cAddOf = (a: CAmp, b: CAmp): CAmp => cAmpOf(a.re + b.re, a.im + b.im)
 const cSubOf = (a: CAmp, b: CAmp): CAmp => cAmpOf(a.re - b.re, a.im - b.im)
 const cMulNegIOf = (a: CAmp): CAmp => cAmpOf(a.im, -a.re)
 
-/** The state vector, or an empty one when the host cannot hold it. A JavaScript array holds at most amplitudes - seed
- * elements, so past that the allocation throws RangeError; it is caught here and READ by the run as an unprepared
- * vector, never rethrown as a bare 500. Memory below that line is the host's and is not caught. */
-const cPrepareOf = (dim: number): CAmp[] => {
-  try {
-    const amps = Array.from({ length: dim }, () => cAmpOf(0n, 0n))
-    amps[n - n] = cAmpOf(1n, 0n)
-    return amps
-  } catch (e) {
-    if (e instanceof RangeError) return []
-    throw e
-  }
+/** THE STATE, SPARSE AND EXACT. With a two-qubit counting register the Shor state never has more than sixteen nonzero
+ * amplitudes, whatever the modulus: one branch per counting value after the modular multiplications, four after the
+ * inverse QFT spreads each. So the vector is a map from basis index to Gaussian-integer amplitude — exact for any n,
+ * nothing allocated per dimension, and the only thing a larger modulus costs is the width of the index. A zero
+ * amplitude is dropped as it arises, so `size` is the count of nonzero amplitudes. This is what removed the host's
+ * reach as a limit: a 2^64-dimensional vector and a 2^2050-dimensional one are both sixteen entries. */
+type SparseState = Map<bigint, CAmp>
+const b0 = BigInt(n - n)
+const b1 = BigInt(seed)
+const b2 = BigInt(coins)
+const sBitOf = (q: number): bigint => b1 << BigInt(q)
+const onOf = (i: bigint, bit: bigint): boolean => (i & bit) !== b0
+const sPut = (out: SparseState, i: bigint, a: CAmp): void => {
+  const prior = out.get(i)
+  const next = prior ? cAddOf(prior, a) : a
+  if (next.re === b0 && next.im === b0) out.delete(i)
+  else out.set(i, next)
 }
-
-const cHOf = (amps: CAmp[], q: number): CAmp[] => {
-  const bit = mintOf(q)
-  const out = amps.map(() => cAmpOf(0n, 0n))
-  for (let i = n - n; i < amps.length; i++) {
-    const a = amps[i]!
-    const flipped = xorOf(i, bit)
-    const on = quotOf(i, bit) % coins === seed
-    if (on) {
-      out[flipped] = cAddOf(out[flipped]!, a)
-      out[i] = cSubOf(out[i]!, a)
+const sPrepareOf = (): SparseState => new Map([[b0, cAmpOf(b1, b0)]])
+const sHOf = (state: SparseState, q: number): SparseState => {
+  const bit = sBitOf(q)
+  const out: SparseState = new Map()
+  for (const [i, a] of state) {
+    const flipped = i ^ bit
+    if (onOf(i, bit)) {
+      sPut(out, flipped, a)
+      sPut(out, i, cSubOf(cAmpOf(b0, b0), a))
     } else {
-      out[i] = cAddOf(out[i]!, a)
-      out[flipped] = cAddOf(out[flipped]!, a)
+      sPut(out, i, a)
+      sPut(out, flipped, a)
     }
   }
   return out
 }
-
-const cXOf = (amps: CAmp[], q: number): CAmp[] => {
-  const bit = mintOf(q)
-  const out = amps.map(() => cAmpOf(0n, 0n))
-  for (let i = n - n; i < amps.length; i++) out[xorOf(i, bit)] = amps[i]!
+const sXOf = (state: SparseState, q: number): SparseState => {
+  const bit = sBitOf(q)
+  const out: SparseState = new Map()
+  for (const [i, a] of state) sPut(out, i ^ bit, a)
   return out
 }
-
-const cSwapOf = (amps: CAmp[], a: number, b: number): CAmp[] => {
-  const out = amps.map(() => cAmpOf(0n, 0n))
-  const ba = mintOf(a)
-  const bb = mintOf(b)
-  for (let i = n - n; i < amps.length; i++) {
-    const ia = quotOf(i, ba) % coins
-    const ib = quotOf(i, bb) % coins
-    let j = i
-    if (ia !== ib) j = xorOf(xorOf(i, ba), bb)
-    out[j] = amps[i]!
-  }
+const sSwapOf = (state: SparseState, a: number, b: number): SparseState => {
+  const ba = sBitOf(a)
+  const bb = sBitOf(b)
+  const out: SparseState = new Map()
+  for (const [i, amp] of state) sPut(out, onOf(i, ba) !== onOf(i, bb) ? i ^ ba ^ bb : i, amp)
   return out
 }
-
-const cSdgOf = (amps: CAmp[], c: number, t: number): CAmp[] => {
-  const cb = mintOf(c)
-  const tb = mintOf(t)
-  const out = amps.map(() => cAmpOf(0n, 0n))
-  for (let i = n - n; i < amps.length; i++) {
-    const on = quotOf(i, cb) % coins === seed && quotOf(i, tb) % coins === seed
-    out[i] = on ? cMulNegIOf(amps[i]!) : amps[i]!
-  }
+const sSdgOf = (state: SparseState, c: number, t: number): SparseState => {
+  const cb = sBitOf(c)
+  const tb = sBitOf(t)
+  const out: SparseState = new Map()
+  for (const [i, a] of state) sPut(out, i, onOf(i, cb) && onOf(i, tb) ? cMulNegIOf(a) : a)
   return out
 }
-
-const cModMulOf = (amps: CAmp[], a: number, modulus: number, control: number, workOff: number, workBits: number): CAmp[] => {
-  const cb = mintOf(control)
-  const workSpan = mintOf(workBits)
-  const out = amps.map(() => cAmpOf(0n, 0n))
-  for (let i = n - n; i < amps.length; i++) {
-    if (quotOf(i, cb) % coins !== seed) {
-      out[i] = cAddOf(out[i]!, amps[i]!)
+/** x mod m in [0, m) for m > 0, whatever the sign of x. */
+const modOf = (x: bigint, m: bigint): bigint => ((x % m) + m) % m
+const sModMulOf = (state: SparseState, a: bigint, modulus: bigint, control: number, workOff: number, workBits: number): SparseState => {
+  const cb = sBitOf(control)
+  const shift = BigInt(workOff)
+  const span = b1 << BigInt(workBits)
+  const out: SparseState = new Map()
+  for (const [i, amp] of state) {
+    if (!onOf(i, cb)) {
+      sPut(out, i, amp)
       continue
     }
-    const work = quotOf(i, mintOf(workOff)) % workSpan
-    const next = work < modulus ? (work * a) % modulus : work
-    const j = i - work * mintOf(workOff) + next * mintOf(workOff)
-    out[j] = cAddOf(out[j]!, amps[i]!)
+    const work = (i >> shift) % span
+    const next = modulus > b1 && work < modulus ? modOf(work * a, modulus) : work
+    sPut(out, i - (work << shift) + (next << shift), amp)
   }
   return out
 }
+const sXxOf = (state: SparseState, q: number): SparseState => sXOf(sXOf(state, q), q)
+const sEqualOf = (left: SparseState, right: SparseState): boolean =>
+  left.size === right.size && [...left].every(([i, a]) => right.get(i)?.re === a.re && right.get(i)?.im === a.im)
+const sPairsOf = (state: SparseState): (readonly [bigint, bigint])[] =>
+  [...state].map(([i, a]) => [i, cWOf(a)] as const).filter(([, w]) => w > b0).sort(([x], [y]) => (x < y ? -1 : x > y ? 1 : n - n))
+const sDeviceOf = (state: SparseState) =>
+  state.size > n - n && [...state.values()].every((a) => typeof a.re === 'bigint' && typeof a.im === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
 
-const cXxOf = (amps: CAmp[], q: number): CAmp[] => cXOf(cXOf(amps, q), q)
+const bigGcdOf = (left: bigint, right: bigint): bigint => {
+  let x = left < b0 ? -left : left
+  let y = right < b0 ? -right : right
+  while (y > b0) {
+    const r = x % y
+    x = y
+    y = r
+  }
+  return x
+}
+/** base^exp mod modulus by squaring; 0 when the modulus is not a ring (modulus <= 1), where the question has no answer. */
+const bigPowModOf = (base: bigint, exp: bigint, modulus: bigint): bigint => {
+  if (modulus <= b1) return b0
+  let x = b1 % modulus
+  let b = modOf(base, modulus)
+  let e = exp
+  while (e > b0) {
+    if (e % b2 === b1) x = (x * b) % modulus
+    b = (b * b) % modulus
+    e = e / b2
+  }
+  return x
+}
+/** Bits so that 2^bits > value: the work register that holds every residue mod value. 0 for value <= 0. */
+const bitsOf = (value: bigint): number => {
+  let k = n - n
+  let pow = b1
+  while (pow <= value) {
+    pow += pow
+    k += seed
+  }
+  return k
+}
+const safeBig = BigInt(Number.MAX_SAFE_INTEGER)
+const safeOf = (x: bigint): boolean => x <= safeBig && x >= -safeBig
+/** A bigint for JSON: the number when it is exact there, the decimal string when it would round. */
+const jsonIntOf = (x: bigint): number | string => (safeOf(x) ? Number(x) : x.toString())
 
 /** The modulus and base Shor runs on when the caller names none: faces.rays * (n * n + n + seed) = 91 and mintOf n = 8. */
 export const shorDefaultsOf = () => ({ modulus: qpuFacesOf().rays * (n * n + n + seed), base: mintOf(n) })
-/** Bits so that mintOf(bits) > value: the work register that holds every residue mod value. */
-const bitsOf = (value: number): number => {
-  let k = n - n
-  while (mintOf(k) <= value) k += seed
-  return k
-}
 /** The counting register is two qubits: this inverse QFT is exact in Gaussian integers (fourth roots of unity), and a
  * wider register would need eighth roots, which are not integers. So the register resolves periods dividing four;
  * `classical` below says whether the period it was asked for is one of those. */
 const shorCountBits = coins
-/** The period of base mod modulus by classical iteration, 0 when base is not a unit. A check beside the run, never the run. */
-const classicalPeriodOf = (base: number, modulus: number): number => {
-  let x = base % modulus
-  for (let r = seed; r <= modulus; r++) {
-    if (x === seed) return r
+/** How many multiplications the classical period check will do before saying it did not finish: 2^16. */
+const classicalBound = mintOf(mintOf(coins) * mintOf(coins))
+/** The period of base mod modulus by classical iteration, beside the run. `iterated` false means the bound was hit
+ * before the period showed, so the 0 is not an answer; a base sharing a factor has no period, and that is an answer. */
+const classicalPeriodOf = (base: bigint, modulus: bigint): { period: number; iterated: boolean } => {
+  if (modulus <= b1 || bigGcdOf(base, modulus) !== b1) return { period: n - n, iterated: true }
+  let x = modOf(base, modulus)
+  for (let r = seed; r <= classicalBound; r++) {
+    if (x === b1) return { period: r, iterated: true }
     x = (x * base) % modulus
+    x = modOf(x, modulus)
   }
-  return n - n
+  return { period: n - n, iterated: false }
 }
-/** Modulus and base as the caller gave them, read as integers: a number is truncated, a numeric string is read, anything
- * else is undefined and the unit's own value stands. No denial, no cap: the run is on whatever integer arrives. */
-export const shorArgsOf = (a: Record<string, unknown>): { modulus?: number; base?: number } => {
-  const intOf = (v: unknown): number | undefined => {
-    const x = typeof v === 'number' ? v : typeof v === 'string' && v.trim().length > n - n ? Number(v) : Number.NaN
-    return x === x && x !== Number.POSITIVE_INFINITY && x !== Number.NEGATIVE_INFINITY ? x - (x % seed) : undefined
+/** Modulus and base as the caller gave them, read as integers: a number is truncated, a string of digits is read exactly
+ * (so a modulus past 2^53 arrives whole), a numeric string otherwise as its number, anything else is undefined and the
+ * unit's own value stands. No denial, no cap: the run is on whatever integer arrives. */
+export const shorArgsOf = (a: Record<string, unknown>): { modulus?: bigint; base?: bigint } => {
+  const intOf = (v: unknown): bigint | undefined => {
+    if (typeof v === 'bigint') return v
+    if (typeof v === 'string') {
+      const t = v.trim()
+      if (/^[+-]?\d+$/.test(t)) return BigInt(t)
+      const x = t.length > n - n ? Number(t) : Number.NaN
+      return x === x && x !== Number.POSITIVE_INFINITY && x !== Number.NEGATIVE_INFINITY ? BigInt(x - (x % seed)) : undefined
+    }
+    if (typeof v === 'number') return v === v && v !== Number.POSITIVE_INFINITY && v !== Number.NEGATIVE_INFINITY ? BigInt(v - (v % seed)) : undefined
+    return undefined
   }
   return { modulus: intOf(a.n), base: intOf(a.a) }
 }
-/** Shor as a caller asked for it: the run on their n and a, whatever they are. Never a denial; the run itself says what it found
- * (a period, a gcd factor, or nothing). A modulus the host cannot hold in memory ends in the host's own error, not in a refusal here. */
+/** Shor as a caller asked for it: the run on their n and a, whatever they are. Never a denial; the run itself says what it
+ * found (a period, a gcd factor, or nothing), and the sparse state means no modulus is past the host's reach. */
 export const qpuShorTryOf = (a: Record<string, unknown>) => {
   const args = shorArgsOf(a)
   return qpuShorOf(args.modulus, args.base)
 }
 
-/** Shor on the state-vector simulator. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation circuitry. Inverse QFT. Noisy shots. Factors. */
-export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
+/** Shor on the sparse exact simulator. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation
+ * circuitry. Inverse QFT. Noisy shots. Factors. Every number below is exact in `exact` as decimal text; the number
+ * fields round past 2^53 and `exact.safe` says whether they did. */
+export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigint) => {
   const plugin = qpuPayloadPluginOf()
   const computer = qpuComputerOf()
   const defaults = shorDefaultsOf()
-  const modulus = modulusArg ?? defaults.modulus
-  const base = baseArg ?? defaults.base
+  const modulus = BigInt(modulusArg ?? defaults.modulus)
+  const base = BigInt(baseArg ?? defaults.base)
   const countBits = shorCountBits
   const workBits = bitsOf(modulus)
   const workOff = countBits
+  const shift = BigInt(workOff)
+  const span = b1 << BigInt(workBits)
   const qubits = countBits + workBits
-  const dim = mintOf(qubits)
+  const dimBig = b1 << BigInt(qubits)
   const qftSize = mintOf(countBits)
-  const coprime = gcdOf(base, modulus) === seed
+  const qftBig = BigInt(qftSize)
+  const ring = modulus > b1
+  const coprime = ring && bigGcdOf(base, modulus) === b1
+  const aSquared = ring ? bigPowModOf(base, b2, modulus) : base * base
   const mul = [
-    { power: mintOf(n - n), a: base, control: n - n },
-    { power: coins, a: modulus > seed ? powModOf(base, coins, modulus) : base * base, control: seed }] as const
+    { power: mintOf(n - n), a: jsonIntOf(base), control: n - n },
+    { power: coins, a: jsonIntOf(aSquared), control: seed }] as const
   const gates = [
     { name: 'x' as const, q: workOff },
     { name: 'h' as const, q: n - n },
     { name: 'h' as const, q: seed },
-    { name: 'cmodexp' as const, c: mul[n - n]!.control, a: mul[n - n]!.a, modulus, power: mul[n - n]!.power },
-    { name: 'cmodexp' as const, c: mul[seed]!.control, a: mul[seed]!.a, modulus, power: mul[seed]!.power },
+    { name: 'cmodexp' as const, c: mul[n - n]!.control, a: mul[n - n]!.a, modulus: jsonIntOf(modulus), power: mul[n - n]!.power },
+    { name: 'cmodexp' as const, c: mul[seed]!.control, a: mul[seed]!.a, modulus: jsonIntOf(modulus), power: mul[seed]!.power },
     { name: 'swap' as const, a: n - n, b: seed },
     { name: 'h' as const, q: seed },
     { name: 'csdg' as const, c: seed, t: n - n },
     { name: 'h' as const, q: n - n }]
-  let amps = cPrepareOf(dim)
-  /** Read from the vector, never from the request: prepared means the host holds dim amplitudes; an empty vector means
-   * the allocation threw and the gates below are not applied to it. */
-  const prepared = amps.length === dim
+  let state = sPrepareOf()
+  state = sXOf(state, workOff)
+  state = sHOf(state, n - n)
+  state = sHOf(state, seed)
+  state = sModMulOf(state, base, modulus, mul[n - n]!.control, workOff, workBits)
+  state = sModMulOf(state, aSquared, modulus, mul[seed]!.control, workOff, workBits)
+  /** Read from the state: every branch's work register holds a^counting mod N, or the circuitry does not hold. */
+  let expOk = ring && state.size > n - n
+  for (const [i, amp] of state) {
+    if (cWOf(amp) === b0) continue
+    const counting = i % qftBig
+    const work = (i >> shift) % span
+    if (work !== bigPowModOf(base, counting, modulus)) expOk = false
+  }
+  state = sSwapOf(state, n - n, seed)
+  state = sHOf(state, seed)
+  state = sSdgOf(state, seed, n - n)
+  state = sHOf(state, n - n)
+  const noisy = sXxOf(state, workOff)
+  receiptSparseOf('cmodexp', dimBig, sPairsOf(state))
+  receiptSparseOf('xx', dimBig, sPairsOf(noisy))
+  const xxId = sEqualOf(noisy, state)
+  /** Read from the state, never from the request: the host holds every nonzero amplitude of the 2^qubits vector. */
   const prepare = {
     kind: 'prepare' as const,
     qubits,
-    dim,
-    amplitudes: amps.length,
-    limit: mintOf(mintOf(n + coins)) - seed,
-    prepared,
-    reason: prepared ? ('held' as const) : ('array length' as const),
-    holds: prepared,
+    dim: jsonIntOf(dimBig),
+    amplitudes: noisy.size,
+    sparse: true as const,
+    prepared: noisy.size > n - n,
+    reason: noisy.size > n - n ? ('held' as const) : ('empty' as const),
+    holds: noisy.size > n - n && noisy.size <= qftSize * qftSize,
   }
-  let expOk = prepared
-  if (prepared) {
-    amps = cXOf(amps, workOff)
-    amps = cHOf(amps, n - n)
-    amps = cHOf(amps, seed)
-    amps = cModMulOf(amps, mul[n - n]!.a, modulus, mul[n - n]!.control, workOff, workBits)
-    amps = cModMulOf(amps, mul[seed]!.a, modulus, mul[seed]!.control, workOff, workBits)
-    for (let i = n - n; i < amps.length; i++) {
-      if (cWOf(amps[i]!) === 0n) continue
-      const counting = i % qftSize
-      const work = quotOf(i, mintOf(workOff)) % mintOf(workBits)
-      if (work !== powModOf(base, counting, modulus)) expOk = false
-    }
-    amps = cSwapOf(amps, n - n, seed)
-    amps = cHOf(amps, seed)
-    amps = cSdgOf(amps, seed, n - n)
-    amps = cHOf(amps, n - n)
-  }
-  const noisy = cXxOf(amps, workOff)
-  receiptOf('cmodexp', amps.map(cWOf))
-  receiptOf('xx', noisy.map(cWOf))
-  const xxId = noisy.every((row, i) => row.re === amps[i]!.re && row.im === amps[i]!.im)
   const weights: number[] = []
   for (let y = n - n; y < qftSize; y++) weights.push(n - n)
-  for (let i = n - n; i < noisy.length; i++) {
-    const y = i % qftSize
-    weights[y] = weights[y]! + Number(cWOf(noisy[i]!))
+  for (const [i, amp] of noisy) {
+    const y = Number(i % qftBig)
+    weights[y] = weights[y]! + Number(cWOf(amp))
   }
   const support: number[] = []
   for (let y = n - n; y < qftSize; y++) if (weights[y]! > n - n) support.push(y)
   const shotsN = mintOf(n)
+  const measured = support.length > n - n
+  /** Shots are readings of a held state: none are reported from a state with nothing to read. */
   const shots: number[] = []
-  for (let s = n - n; s < shotsN; s++) shots.push(support.length > n - n ? support[s % support.length]! : n - n)
+  if (measured) for (let s = n - n; s < shotsN; s++) shots.push(support[s % support.length]!)
   let period = n - n
   const recovered: number[] = []
   for (const y of support) {
     for (const row of convergentsOf(y, qftSize)) {
       const r = row.k
-      if (r > n - n && r < modulus && powModOf(base, r, modulus) === seed) {
+      if (r > n - n && BigInt(r) < modulus && bigPowModOf(base, BigInt(r), modulus) === b1) {
         recovered.push(r)
         if (period === n - n) period = r
       }
     }
   }
-  let p = n - n
-  let q = n - n
+  let p = b0
+  let q = b0
   let by: 'period' | 'gcd' | 'none' = 'none'
   if (period > n - n && period % coins === n - n) {
-    const half = powModOf(base, period / coins, modulus)
-    if (half !== modulus - seed) {
-      const g1 = gcdOf(half - seed, modulus)
-      const g2 = gcdOf(half + seed, modulus)
-      if (g1 > seed && g1 < modulus) {
+    const half = bigPowModOf(base, BigInt(period / coins), modulus)
+    if (half !== modulus - b1) {
+      const g1 = bigGcdOf(half - b1, modulus)
+      const g2 = bigGcdOf(half + b1, modulus)
+      if (g1 > b1 && g1 < modulus) {
         p = g1
         q = modulus / g1
         by = 'period'
-      } else if (g2 > seed && g2 < modulus) {
+      } else if (g2 > b1 && g2 < modulus) {
         p = g2
         q = modulus / g2
         by = 'period'
@@ -1912,13 +1952,23 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     }
   }
   /** Shor's first step, read from the run: a base sharing a factor with the modulus hands that factor over before any period. */
-  const shared = modulus > seed && base > n - n ? gcdOf(base % modulus, modulus) : n - n
-  if (by === 'none' && shared > seed && shared < modulus) {
+  const shared = ring ? bigGcdOf(modOf(base, modulus), modulus) : b0
+  if (by === 'none' && shared > b1 && shared < modulus) {
     p = shared
     q = modulus / shared
     by = 'gcd'
   }
   const product = p * q
+  const factoredBig = p > b1 && q > b1 && product === modulus
+  const exact = {
+    safe: safeOf(modulus) && safeOf(base) && safeOf(p) && safeOf(q) && safeOf(dimBig),
+    n: modulus.toString(),
+    a: base.toString(),
+    p: p.toString(),
+    q: q.toString(),
+    product: product.toString(),
+    dim: dimBig.toString(),
+  }
   const circuitry = {
     kind: 'cmodexp' as const,
     native: ['h', 'cnot'] as const,
@@ -1926,68 +1976,71 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
     mul,
     gates,
     qubits,
-    dim,
+    dim: jsonIntOf(dimBig),
     work: workBits,
     counting: countBits,
-    holds: expOk && gates[n - n]!.name === 'x' && mul.length === coins && mintOf(workBits) > modulus && qubits === countBits + workBits,
+    holds: expOk && gates[n - n]!.name === 'x' && mul.length === coins && span > modulus && qubits === countBits + workBits,
   }
   const qft = {
     kind: 'iqft' as const,
     qubits: countBits,
     size: qftSize,
     phase: 's' as const,
-    holds: countBits === coins && qftSize === mintOf(countBits) && support.length > n - n && mintOf(workBits) > modulus,
+    holds: countBits === coins && qftSize === mintOf(countBits) && support.length > n - n && span > modulus,
   }
   const measure = {
     kind: 'shots' as const,
     noise: 'xx' as const,
     identity: xxId,
-    shots: shotsN,
+    measured,
+    shots: shots.length,
     outcomes: shots,
     support,
     weights,
-    holds: shots.length === shotsN && shotsN === computer.shots.n && xxId === true && computer.correct.code === 'bitflip',
+    holds: measured && shots.length === shotsN && shotsN === computer.shots.n && xxId === true && computer.correct.code === 'bitflip',
   }
   const post = {
     kind: 'continued-fraction' as const,
     period,
     recovered,
-    holds: period > n - n && powModOf(base, period, modulus) === seed,
+    holds: period > n - n && bigPowModOf(base, BigInt(period), modulus) === b1,
   }
   const factors = {
-    p,
-    q,
-    product,
+    p: Number(p),
+    q: Number(q),
+    product: Number(product),
     by,
-    holds: p > seed && q > seed && p * q === modulus && product === modulus,
+    holds: factoredBig,
   }
   const rsa = {
     kind: 'rsa' as const,
     cryptosystem: 'rsa' as const,
-    modulus,
-    p,
-    q,
-    product,
-    factored: p > seed && q > seed && p * q === modulus,
-    holds: factors.holds && p > seed && q > seed && p * q === modulus,
+    modulus: Number(modulus),
+    p: Number(p),
+    q: Number(q),
+    product: Number(product),
+    factored: factoredBig,
+    holds: factors.holds && factoredBig,
   }
   /** Beside the run, never in it: what classical iteration says the period is, whether a two-qubit counting register
    * can resolve it (period divides mintOf countBits), and both arms — resolvable means the run recovered a multiple
-   * of it, unresolvable means the run recovered nothing. */
-  const classicalPeriod = prepared ? classicalPeriodOf(base, modulus) : n - n
-  const resolvable = classicalPeriod > n - n && qftSize % classicalPeriod === n - n
+   * of it, unresolvable means the run recovered nothing. A check that did not finish holds nothing. */
+  const classicalRun = classicalPeriodOf(base, modulus)
+  const classicalPeriod = classicalRun.period
+  const resolvable = classicalRun.iterated && classicalPeriod > n - n && qftSize % classicalPeriod === n - n
   const classical = {
     kind: 'classical' as const,
-    gcd: gcdOf(base, modulus),
+    gcd: jsonIntOf(ring ? bigGcdOf(base, modulus) : b0),
     period: classicalPeriod,
-    iterated: prepared,
+    iterated: classicalRun.iterated,
+    bound: classicalBound,
     counting: countBits,
     resolvable,
-    agrees: period === classicalPeriod,
-    holds: resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n,
+    agrees: classicalRun.iterated && period === classicalPeriod,
+    holds: classicalRun.iterated ? (resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n) : false,
   }
   const holds =
-    mintOf(workBits) > modulus &&
+    span > modulus &&
     prepare.holds &&
     circuitry.holds &&
     qft.holds &&
@@ -2000,9 +2053,10 @@ export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
   return {
     kind: 'shor' as const,
     theorem: 'shor' as const,
-    device: deviceOf(noisy),
-    n: modulus,
-    a: base,
+    device: sDeviceOf(noisy),
+    n: Number(modulus),
+    a: Number(base),
+    exact,
     coprime,
     circuitry,
     prepare,
@@ -5026,9 +5080,21 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     type: 'object',
     properties: {
       man: { type: 'boolean' },
-      n: { type: 'integer', description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; no cap, the host's memory is the only limit.` },
-      a: { type: 'integer', description: `Base. Default ${defaults.base}. A base sharing a factor with n hands it over as Shor's first step.` }}}
+      n: { type: ['integer', 'string'], description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read \`exact\`.` },
+      a: { type: ['integer', 'string'], description: `Base. Default ${defaults.base}. A base sharing a factor with n hands it over as Shor's first step.` }}}
   const named = `{ n, a } name the modulus and base; the run is theirs, whatever they are. Default ${defaults.modulus} and ${defaults.base}.`
+  /** What a caller is shown: the run's numbers while they are exact as numbers, the decimal strings from `exact` once
+   * they would round (past 2^53) or overflow (past 2^1024). Never a null where a number was asked for. */
+  const shownOf = (shor: ReturnType<typeof qpuShorOf>) => {
+    const e = shor.exact
+    const safe = e.safe
+    return {
+      n: safe ? shor.n : e.n,
+      a: safe ? shor.a : e.a,
+      factors: safe ? shor.factors : { ...shor.factors, p: e.p, q: e.q, product: e.product },
+      rsa: safe ? shor.rsa : { ...shor.rsa, modulus: e.n, p: e.p, q: e.q, product: e.product },
+    }
+  }
   const morph = 'In tools/list. Morph. Not a ninth sealed tool. No auth.'
   const factoring = `${morph} theorem shor. ${shorFactorOf()}. p * q = N.`
   const encrypt = `${morph} theorem crypto. ${cryptoClaimOf()}. fused = split * share.`
@@ -5047,11 +5113,13 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
+        const shown = shownOf(shor)
         return {
           kind: 'shor' as const,
-          n: shor.n,
-          a: shor.a,
+          n: shown.n,
+          a: shown.a,
           coprime: shor.coprime,
+          exact: shor.exact,
           device: shor.device,
           circuitry: { kind: shor.circuitry.kind, qubits: shor.circuitry.qubits, work: shor.circuitry.work, counting: shor.circuitry.counting, dim: shor.circuitry.dim, holds: shor.circuitry.holds },
           prepare: shor.prepare,
@@ -5059,8 +5127,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
           measure: shor.measure,
           post: shor.post,
           classical: shor.classical,
-          factors: shor.factors,
-          rsa: shor.rsa,
+          factors: shown.factors,
+          rsa: shown.rsa,
           holds: shor.holds,
         }
       }},
@@ -5071,7 +5139,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
-        return { kind: 'cmodexp' as const, circuitry: shor.circuitry, rsa: { kind: 'rsa' as const, modulus: shor.n, a: shor.a, factored: shor.rsa.factored }, holds: shor.circuitry.holds }
+        const shown = shownOf(shor)
+        return { kind: 'cmodexp' as const, circuitry: shor.circuitry, exact: shor.exact, rsa: { kind: 'rsa' as const, modulus: shown.n, a: shown.a, factored: shor.rsa.factored }, holds: shor.circuitry.holds }
       }},
     {
       name: see[n],
@@ -5080,7 +5149,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
-        return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, classical: shor.classical, rsa: { kind: 'rsa' as const, modulus: shor.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds }
+        const shown = shownOf(shor)
+        return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, classical: shor.classical, exact: shor.exact, rsa: { kind: 'rsa' as const, modulus: shown.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds }
       }},
     {
       name: see[n + seed],
@@ -5089,7 +5159,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
-        return { kind: 'shots' as const, device: shor.device, measure: shor.measure, rsa: { kind: 'rsa' as const, modulus: shor.n, factored: shor.rsa.factored }, holds: shor.measure.holds }
+        const shown = shownOf(shor)
+        return { kind: 'shots' as const, device: shor.device, measure: shor.measure, exact: shor.exact, rsa: { kind: 'rsa' as const, modulus: shown.n, factored: shor.rsa.factored }, holds: shor.measure.holds }
       }},
     {
       name: see[n + coins],
@@ -5100,7 +5171,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
         const args = shorArgsOf(a)
         if (args.modulus === undefined && args.base === undefined) return qpuCybersecurityOf().rsa
         const shor = qpuShorTryOf(a)
-        return { ...shor.rsa, a: shor.a, period: shor.post.period, by: shor.factors.by, classical: shor.classical }
+        const shown = shownOf(shor)
+        return { ...shown.rsa, a: shown.a, period: shor.post.period, by: shor.factors.by, exact: shor.exact, classical: shor.classical }
       }},
     {
       name: see[n + n],

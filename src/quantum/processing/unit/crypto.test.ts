@@ -520,21 +520,24 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
     env,
   )).json()) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { type: string; minimum?: number }> } }[] } }
   for (const name of ['crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa']) {
-    const schema = listed.result.tools.find((t) => t.name === name)?.inputSchema
-    assert.equal(schema?.properties.n?.type, 'integer', name)
-    assert.equal(schema?.properties.a?.type, 'integer', name)
+    const schema = listed.result.tools.find((t) => t.name === name)?.inputSchema as { properties: Record<string, { type: string | string[]; minimum?: number }> } | undefined
+    assert.deepEqual(schema?.properties.n?.type, ['integer', 'string'], name)
+    assert.deepEqual(schema?.properties.a?.type, ['integer', 'string'], name)
     assert.equal(schema?.properties.n?.minimum, undefined, name)
     assert.equal(schema?.properties.a?.minimum, undefined, name)
   }
   type Run = {
-    n: number
-    a: number
+    n: number | string
+    a: number | string
     coprime: boolean
     circuitry: { qubits: number; work: number; dim: number; holds: boolean }
-    prepare: { qubits: number; dim: number; amplitudes: number; limit: number; prepared: boolean; reason: 'held' | 'array length'; holds: boolean }
+    prepare: { qubits: number; dim: number | string; amplitudes: number; sparse: boolean; prepared: boolean; reason: 'held' | 'empty'; holds: boolean }
+    exact: { safe: boolean; n: string; a: string; p: string; q: string; product: string; dim: string }
+    device: string
+    measure: { measured: boolean; shots: number; outcomes: number[]; holds: boolean }
     post: { period: number }
-    classical: { gcd: number; period: number; iterated: boolean; resolvable: boolean; holds: boolean }
-    factors: { p: number; q: number; by: 'period' | 'gcd' | 'none' }
+    classical: { gcd: number; period: number; iterated: boolean; resolvable: boolean; agrees: boolean; holds: boolean }
+    factors: { p: number | string; q: number | string; product: number | string; by: 'period' | 'gcd' | 'none' }
     rsa: { factored: boolean }
     holds: boolean
   }
@@ -543,15 +546,20 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(fifteen.n, 15)
   assert.equal(fifteen.a, 7)
   assert.equal(fifteen.post.period, 4)
-  assert.deepEqual([fifteen.factors.p, fifteen.factors.q].sort((x, y) => x - y), [3, 5])
+  assert.deepEqual([Number(fifteen.factors.p), Number(fifteen.factors.q)].sort((x, y) => x - y), [3, 5])
   assert.equal(fifteen.factors.by, 'period')
   assert.equal(fifteen.rsa.factored, true)
   assert.equal(fifteen.prepare.prepared, true)
-  assert.equal(fifteen.prepare.amplitudes, fifteen.circuitry.dim)
+  assert.equal(fifteen.prepare.sparse, true)
+  assert.equal(fifteen.prepare.amplitudes > 0 && fifteen.prepare.amplitudes <= 16, true)
+  assert.equal(fifteen.exact.safe, true)
+  assert.equal(fifteen.exact.n, '15')
+  assert.equal(fifteen.measure.measured, true)
+  assert.equal(fifteen.measure.shots, 8)
   assert.equal(fifteen.classical.iterated, true)
   assert.equal(fifteen.holds, true)
   const ninetyOne = (await mcpOf('crypto_shor', { n: 91, a: 8 })) as Run
-  assert.equal(ninetyOne.factors.p * ninetyOne.factors.q, 91)
+  assert.equal(Number(ninetyOne.factors.p) * Number(ninetyOne.factors.q), 91)
   assert.notEqual(JSON.stringify(fifteen), JSON.stringify(ninetyOne))
   const byDefault = (await mcpOf('crypto_shor')) as Run
   assert.equal(byDefault.n, 91)
@@ -568,14 +576,14 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   const twentyOneEight = (await mcpOf('crypto_shor', { n: 21, a: 8 })) as Run
   assert.equal(twentyOneEight.classical.period, 2)
   assert.equal(twentyOneEight.rsa.factored, true)
-  assert.equal(twentyOneEight.factors.p * twentyOneEight.factors.q, 21)
+  assert.equal(Number(twentyOneEight.factors.p) * Number(twentyOneEight.factors.q), 21)
   // no denial: a base sharing a factor with n runs, and the run hands that factor over as Shor's first step
   const shared = (await mcpOf('crypto_shor', { n: 91, a: 7 })) as Run
   assert.equal(shared.coprime, false)
   assert.equal(shared.classical.gcd, 7)
   assert.equal(shared.post.period, 0)
   assert.equal(shared.factors.by, 'gcd')
-  assert.deepEqual([shared.factors.p, shared.factors.q].sort((x, y) => x - y), [7, 13])
+  assert.deepEqual([Number(shared.factors.p), Number(shared.factors.q)].sort((x, y) => x - y), [7, 13])
   assert.equal(shared.rsa.factored, true)
   assert.equal(shared.holds, true)
   // no cap: fifteen qubits run
@@ -614,20 +622,50 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(zero.n, 0)
   assert.equal(zero.rsa.factored, false)
   assert.equal(zero.holds, false)
-  // past the host's reach: 64 qubits is 2^64 amplitudes, more than a JavaScript array holds; the vector comes back
-  // empty and the run says so in its own voice instead of throwing a bare 500
-  const sixtyFour = (await mcpOf('crypto_shor', { n: 2 ** 61, a: 3 })) as Run
+  // no host reach: 64 qubits is 2^64 dimensions, but the state is sparse — sixteen amplitudes at most — so it is held,
+  // run, and measured like any other; a number past 2^53 is sent as digits and echoed exactly in `exact`
+  const sixtyFour = (await mcpOf('crypto_shor', { n: '2305843009213693952', a: 3 })) as Run
   assert.equal(sixtyFour.circuitry.qubits, 64)
-  assert.equal(sixtyFour.prepare.prepared, false)
-  assert.equal(sixtyFour.prepare.amplitudes, 0)
-  assert.equal(sixtyFour.prepare.reason, 'array length')
-  assert.equal(sixtyFour.prepare.dim > sixtyFour.prepare.limit, true)
+  assert.equal(sixtyFour.prepare.prepared, true)
+  assert.equal(sixtyFour.prepare.sparse, true)
+  assert.equal(sixtyFour.prepare.amplitudes > 0 && sixtyFour.prepare.amplitudes <= 16, true)
+  assert.equal(sixtyFour.prepare.dim, '18446744073709551616')
+  assert.equal(sixtyFour.device, 'simulator')
+  assert.equal(sixtyFour.exact.safe, false)
+  assert.equal(sixtyFour.exact.n, '2305843009213693952')
+  assert.equal(sixtyFour.n, '2305843009213693952')
+  assert.equal(sixtyFour.measure.measured, true)
+  assert.equal(sixtyFour.measure.holds, true)
+  assert.equal(sixtyFour.circuitry.holds, true)
   assert.equal(sixtyFour.classical.iterated, false)
-  assert.equal(sixtyFour.classical.period, 0)
+  assert.equal(sixtyFour.classical.holds, false)
+  assert.equal(sixtyFour.classical.agrees, false)
   assert.equal(sixtyFour.post.period, 0)
   assert.equal(sixtyFour.factors.by, 'none')
   assert.equal(sixtyFour.rsa.factored, false)
   assert.equal(sixtyFour.holds, false)
+  // a shared factor past 2^53 is handed over exactly: 2^70 with base 6 has gcd 2
+  const huge = (await mcpOf('crypto_shor', { n: '1180591620717411303424', a: 6 })) as Run
+  assert.equal(huge.circuitry.qubits, 73)
+  assert.equal(huge.factors.by, 'gcd')
+  assert.equal(huge.exact.p, '2')
+  assert.equal(huge.exact.q, '590295810358705651712')
+  assert.equal(huge.exact.product, huge.exact.n)
+  assert.equal(huge.rsa.factored, true)
+  assert.equal(huge.holds, true)
+  // a 2048-bit modulus runs too: the unit has no reach to fall short of, and it reports honestly that it found nothing
+  const rsa2048 = (await mcpOf('crypto_shor', { n: '3'.repeat(617), a: 3 })) as Run
+  assert.equal(rsa2048.circuitry.qubits > 2048, true)
+  assert.equal(rsa2048.prepare.prepared, true)
+  assert.equal(rsa2048.measure.measured, true)
+  assert.equal(rsa2048.exact.n, '3'.repeat(617))
+  assert.equal(rsa2048.n, '3'.repeat(617))
+  assert.equal(rsa2048.factors.p, '3')
+  assert.equal(rsa2048.factors.product, '3'.repeat(617))
+  assert.equal(rsa2048.factors.by, 'gcd')
+  assert.equal(rsa2048.exact.p, '3')
+  assert.equal(rsa2048.classical.iterated, true)
+  assert.equal(JSON.stringify(rsa2048).includes('null'), false)
   assert.equal(JSON.stringify(zero).includes('null'), false)
   // the sibling views run on the same arguments
   const rsa = (await mcpOf('crypto_rsa', { n: 15, a: 7 })) as { modulus: number; p: number; q: number; factored: boolean; period: number; by: string }

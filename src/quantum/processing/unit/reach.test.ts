@@ -24,10 +24,11 @@ test('reach: the largest run this host holds is climbed to, and the run at the r
     const heap = Math.max(process.memoryUsage().heapUsed - heap0, 0)
     assert.equal(run.circuitry.qubits, work + 2)
     assert.equal(run.prepare.prepared, true)
-    assert.equal(run.prepare.amplitudes, run.circuitry.dim)
+    // the state is sparse: at most sixteen nonzero amplitudes whatever the dimension, so the climb no longer meets memory
+    assert.equal(run.prepare.amplitudes > 0 && run.prepare.amplitudes <= 16, true)
     assert.equal(run.circuitry.holds, true)
     assert.equal(run.measure.holds, true)
-    steps.push({ qubits: run.circuitry.qubits, dim: run.circuitry.dim, ms, heap })
+    steps.push({ qubits: run.circuitry.qubits, dim: Number(run.circuitry.dim), ms, heap })
     const heapLeft = heapLimit - process.memoryUsage().heapUsed
     if (ms * 4 > timeBudgetMs || heap * 4 > heapLeft / 2) break
   }
@@ -35,7 +36,7 @@ test('reach: the largest run this host holds is climbed to, and the run at the r
   // each step really was four times the last: the climb was by qubits, not by luck
   for (let i = 1; i < steps.length; i++) assert.equal(steps[i]!.dim, steps[i - 1]!.dim * 4)
   assert.equal(reach.qubits > floor.circuitry.qubits, true)
-  assert.equal(reach.dim > floor.circuitry.dim, true)
+  assert.equal(reach.dim > Number(floor.circuitry.dim), true)
   t.diagnostic(
     `reach ${reach.qubits} qubits · dim ${reach.dim} · ${reach.ms.toFixed(0)} ms · heap Δ ${(reach.heap / MB).toFixed(0)} MB of a ${(heapLimit / MB).toFixed(0)} MB limit · ${steps.length} steps from ${steps[0]!.qubits}`,
   )

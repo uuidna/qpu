@@ -7,7 +7,7 @@
   "dry": 0,
   "circuit": 59,
   "mintOnly": 11,
-  "receipt": "469624e9588e9478",
+  "receipt": "226eab3d71c9cfd4",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -25,7 +25,7 @@
         "cmodexp": 128,
         "xx": 128
       },
-      "receipt": "e7221fc4300e0e11",
+      "receipt": "0e22c2b14440c8b9",
       "states": [
         {
           "name": "measure",
@@ -44,8 +44,8 @@
         }
       ],
       "mint": {
-        "calls": 753166,
-        "chain": "a0a9a02d6350a94d"
+        "calls": 551822,
+        "chain": "ec504e4ed0e06405"
       }
     },
     {
@@ -63,7 +63,7 @@
         "cmodexp": 57,
         "xx": 57
       },
-      "receipt": "2baa287d793bdc16",
+      "receipt": "2f1e8fe01690b2d2",
       "states": [
         {
           "name": "measure",
@@ -82,8 +82,8 @@
         }
       ],
       "mint": {
-        "calls": 337172,
-        "chain": "3e8f9ac18f09892f"
+        "calls": 247511,
+        "chain": "d1e8947ca3a3766f"
       }
     },
     {
@@ -101,7 +101,7 @@
         "cmodexp": 28,
         "xx": 28
       },
-      "receipt": "5cb264f4390a2103",
+      "receipt": "27977e337efeee63",
       "states": [
         {
           "name": "measure",
@@ -120,8 +120,8 @@
         }
       ],
       "mint": {
-        "calls": 165184,
-        "chain": "40195b44ebe590fa"
+        "calls": 121140,
+        "chain": "a78f390a36cdb97c"
       }
     },
     {
@@ -335,7 +335,7 @@
         "cmodexp": 430,
         "xx": 430
       },
-      "receipt": "63980d473ab1814f",
+      "receipt": "d995b1f0d851da07",
       "states": [
         {
           "name": "measure",
@@ -354,8 +354,8 @@
         }
       ],
       "mint": {
-        "calls": 3690365,
-        "chain": "a25d77d683860bd6"
+        "calls": 3013975,
+        "chain": "14c40f2dd537948c"
       }
     },
     {
@@ -373,7 +373,7 @@
         "cmodexp": 103,
         "xx": 103
       },
-      "receipt": "851f2badcd973c54",
+      "receipt": "b8ea5a18691e88e0",
       "states": [
         {
           "name": "measure",
@@ -392,8 +392,8 @@
         }
       ],
       "mint": {
-        "calls": 601625,
-        "chain": "ca3cb296a60c92c1"
+        "calls": 439606,
+        "chain": "4189f01daf277c29"
       }
     },
     {
@@ -467,7 +467,7 @@
         "cmodexp": 172,
         "xx": 172
       },
-      "receipt": "88fbcba904dfa9e7",
+      "receipt": "b7bf74ee6502f54f",
       "states": [
         {
           "name": "measure",
@@ -486,8 +486,8 @@
         }
       ],
       "mint": {
-        "calls": 1025370,
-        "chain": "adda8eac3d4441c1"
+        "calls": 754814,
+        "chain": "25988c64e38b3fb3"
       }
     },
     {
@@ -501,7 +501,7 @@
       "states": [],
       "mint": {
         "calls": 15,
-        "chain": "e2c19804780bdffa"
+        "chain": "f7f866f338845d0e"
       }
     },
     {
@@ -519,7 +519,7 @@
         "cmodexp": 14,
         "xx": 14
       },
-      "receipt": "8ba430e58e519619",
+      "receipt": "edc0ed7b9bc00e11",
       "states": [
         {
           "name": "measure",
@@ -538,8 +538,8 @@
         }
       ],
       "mint": {
-        "calls": 82619,
-        "chain": "96527213f06c6f7a"
+        "calls": 60597,
+        "chain": "ca31c63388b248aa"
       }
     },
     {
@@ -553,7 +553,7 @@
       "states": [],
       "mint": {
         "calls": 12,
-        "chain": "8a252aa9f9d4b345"
+        "chain": "41532f31b05b4271"
       }
     },
     {
@@ -567,7 +567,7 @@
       "states": [],
       "mint": {
         "calls": 14,
-        "chain": "bf3f6ba7894578bb"
+        "chain": "afff035f7eb6d2b7"
       }
     },
     {
@@ -581,7 +581,7 @@
       "states": [],
       "mint": {
         "calls": 30,
-        "chain": "8ab719e657cec5bb"
+        "chain": "99afa440cb4ad097"
       }
     },
     {
@@ -595,7 +595,7 @@
       "states": [],
       "mint": {
         "calls": 33,
-        "chain": "2c8bc69a36f71110"
+        "chain": "2d6e428fd5d7c744"
       }
     },
     {
@@ -613,7 +613,7 @@
         "cmodexp": 2,
         "xx": 2
       },
-      "receipt": "0ed0be29550267ce",
+      "receipt": "577809f9118eef1e",
       "states": [
         {
           "name": "measure",
@@ -632,8 +632,8 @@
         }
       ],
       "mint": {
-        "calls": 52446,
-        "chain": "59903eff4bf2bc68"
+        "calls": 49300,
+        "chain": "5e7c30b94ceaff92"
       }
     },
     {
@@ -651,7 +651,7 @@
         "cmodexp": 13,
         "xx": 13
       },
-      "receipt": "c53f25e5e6a34eca",
+      "receipt": "8fe888dd89f6085e",
       "states": [
         {
           "name": "measure",
@@ -670,8 +670,8 @@
         }
       ],
       "mint": {
-        "calls": 81548,
-        "chain": "407c696095f4950d"
+        "calls": 61099,
+        "chain": "f60c1bff317527a3"
       }
     },
     {
@@ -689,7 +689,7 @@
         "cmodexp": 56,
         "xx": 56
       },
-      "receipt": "484b8c831dc3bdca",
+      "receipt": "90882f268739fc22",
       "states": [
         {
           "name": "measure",
@@ -708,8 +708,8 @@
         }
       ],
       "mint": {
-        "calls": 301854,
-        "chain": "244e7e59fa7fc332"
+        "calls": 213766,
+        "chain": "8dbae7f0d47a47fc"
       }
     },
     {
@@ -727,7 +727,7 @@
         "cmodexp": 18,
         "xx": 18
       },
-      "receipt": "a479cb1f57d76b44",
+      "receipt": "55f75ba056d5a784",
       "states": [
         {
           "name": "measure",
@@ -746,8 +746,8 @@
         }
       ],
       "mint": {
-        "calls": 111034,
-        "chain": "77f3b2a44eabfce2"
+        "calls": 82720,
+        "chain": "a40bda52a1bde75a"
       }
     },
     {
@@ -765,7 +765,7 @@
         "cmodexp": 320,
         "xx": 320
       },
-      "receipt": "3d150a616065e0f2",
+      "receipt": "3444f40427743052",
       "states": [
         {
           "name": "measure",
@@ -784,8 +784,8 @@
         }
       ],
       "mint": {
-        "calls": 1798932,
-        "chain": "f1ec5d193f9a7baa"
+        "calls": 1295572,
+        "chain": "f11cc64699e5165e"
       }
     },
     {
@@ -799,7 +799,7 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "6eb90025165098d9"
+        "chain": "f4e9f1168b48f215"
       }
     },
     {
@@ -813,7 +813,7 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "570ee3dbcdc969fe"
+        "chain": "4b0cc73c3744cc7a"
       }
     },
     {
@@ -831,7 +831,7 @@
         "cmodexp": 12,
         "xx": 12
       },
-      "receipt": "9a01b7d2afca55c3",
+      "receipt": "7863e6dc51ea9ceb",
       "states": [
         {
           "name": "measure",
@@ -850,8 +850,8 @@
         }
       ],
       "mint": {
-        "calls": 330399,
-        "chain": "d0bc6d3cc13cc326"
+        "calls": 311523,
+        "chain": "cfb5a8ddc425d816"
       }
     },
     {
@@ -865,7 +865,7 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "fdd06572a87510c4"
+        "chain": "5f92dcee95e8cdb4"
       }
     },
     {
@@ -883,7 +883,7 @@
         "cmodexp": 13,
         "xx": 13
       },
-      "receipt": "8153a58072d9af71",
+      "receipt": "4cba9ceee83f0f55",
       "states": [
         {
           "name": "measure",
@@ -902,8 +902,8 @@
         }
       ],
       "mint": {
-        "calls": 80180,
-        "chain": "7bfc505bcca105d7"
+        "calls": 59731,
+        "chain": "57d5cba389d3df9f"
       }
     },
     {
@@ -921,7 +921,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "8a2e219fc08da1f3",
+      "receipt": "3a28eb693353724f",
       "states": [
         {
           "name": "measure",
@@ -940,8 +940,8 @@
         }
       ],
       "mint": {
-        "calls": 2218,
-        "chain": "55be30944d2f67e1"
+        "calls": 645,
+        "chain": "01f452e9e99aa311"
       }
     },
     {
@@ -959,7 +959,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "8a2e219fc08da1f3",
+      "receipt": "3a28eb693353724f",
       "states": [
         {
           "name": "measure",
@@ -978,8 +978,8 @@
         }
       ],
       "mint": {
-        "calls": 2209,
-        "chain": "25c27e5ed16704a8"
+        "calls": 636,
+        "chain": "4e414cd3d5330868"
       }
     },
     {
@@ -997,7 +997,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "8a2e219fc08da1f3",
+      "receipt": "3a28eb693353724f",
       "states": [
         {
           "name": "measure",
@@ -1016,8 +1016,8 @@
         }
       ],
       "mint": {
-        "calls": 2209,
-        "chain": "685b20639ec98623"
+        "calls": 636,
+        "chain": "3ce0175ed3a10095"
       }
     },
     {
@@ -1035,7 +1035,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "8a2e219fc08da1f3",
+      "receipt": "3a28eb693353724f",
       "states": [
         {
           "name": "measure",
@@ -1054,8 +1054,8 @@
         }
       ],
       "mint": {
-        "calls": 2209,
-        "chain": "fe47807005c2f0fa"
+        "calls": 636,
+        "chain": "020c7af073c3fcb4"
       }
     },
     {
@@ -1073,7 +1073,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "8a2e219fc08da1f3",
+      "receipt": "3a28eb693353724f",
       "states": [
         {
           "name": "measure",
@@ -1092,8 +1092,8 @@
         }
       ],
       "mint": {
-        "calls": 2209,
-        "chain": "97fca411099a6465"
+        "calls": 636,
+        "chain": "283efb5f16f2cd19"
       }
     },
     {
@@ -1111,7 +1111,7 @@
         "cmodexp": 2,
         "xx": 2
       },
-      "receipt": "bb95bbe1d63a5856",
+      "receipt": "adec3af7d6becd26",
       "states": [
         {
           "name": "measure",
@@ -1130,8 +1130,8 @@
         }
       ],
       "mint": {
-        "calls": 6838,
-        "chain": "eda0264993be24ad"
+        "calls": 3692,
+        "chain": "cdbab854811f6f0f"
       }
     },
     {
@@ -1149,7 +1149,7 @@
         "cmodexp": 14,
         "xx": 14
       },
-      "receipt": "8ec9fc16e4b3be20",
+      "receipt": "e1600d76e0a4d870",
       "states": [
         {
           "name": "measure",
@@ -1168,8 +1168,8 @@
         }
       ],
       "mint": {
-        "calls": 88126,
-        "chain": "6edbcf6f6d3acdfc"
+        "calls": 66104,
+        "chain": "a96310d015c37b86"
       }
     },
     {
@@ -1187,7 +1187,7 @@
         "cmodexp": 14,
         "xx": 14
       },
-      "receipt": "8ec9fc16e4b3be20",
+      "receipt": "e1600d76e0a4d870",
       "states": [
         {
           "name": "measure",
@@ -1206,8 +1206,8 @@
         }
       ],
       "mint": {
-        "calls": 87899,
-        "chain": "72ebc61c516bdfb6"
+        "calls": 65877,
+        "chain": "14f60049e082f0b8"
       }
     },
     {
@@ -1225,7 +1225,7 @@
         "cmodexp": 28,
         "xx": 28
       },
-      "receipt": "bb336fd45f5c78f1",
+      "receipt": "1847f508c17e8a71",
       "states": [
         {
           "name": "measure",
@@ -1244,8 +1244,8 @@
         }
       ],
       "mint": {
-        "calls": 163032,
-        "chain": "88f1322ec1146b5c"
+        "calls": 118988,
+        "chain": "d1f6d86dcfb39970"
       }
     },
     {
@@ -1253,17 +1253,17 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 43631,
+      "computations": 48227,
       "kinds": {
-        "x": 9473,
-        "cnot": 18224,
-        "toffoli": 1556,
-        "h": 13108,
-        "measure": 778,
-        "cmodexp": 246,
-        "xx": 246
+        "x": 10471,
+        "cnot": 20144,
+        "toffoli": 1720,
+        "h": 14488,
+        "measure": 860,
+        "cmodexp": 272,
+        "xx": 272
       },
-      "receipt": "e28468e190167bd6",
+      "receipt": "9c38f08aa0d78100",
       "states": [
         {
           "name": "measure",
@@ -1278,12 +1278,12 @@
             "0",
             "0"
           ],
-          "measured": 778
+          "measured": 860
         }
       ],
       "mint": {
-        "calls": 1508005,
-        "chain": "3391fba27f96dd30"
+        "calls": 1096012,
+        "chain": "fe041735319c168a"
       }
     },
     {
@@ -1301,7 +1301,7 @@
         "cmodexp": 13,
         "xx": 13
       },
-      "receipt": "3a1a391b1e187a93",
+      "receipt": "215f2224ac9cbdf7",
       "states": [
         {
           "name": "measure",
@@ -1320,8 +1320,8 @@
         }
       ],
       "mint": {
-        "calls": 116811,
-        "chain": "46941fce37c4ce43"
+        "calls": 96362,
+        "chain": "b88286bae847d3bd"
       }
     },
     {
@@ -1335,7 +1335,7 @@
       "states": [],
       "mint": {
         "calls": 14,
-        "chain": "79a27596b636c87d"
+        "chain": "d08576b65983e939"
       }
     },
     {
@@ -1349,7 +1349,7 @@
       "states": [],
       "mint": {
         "calls": 374,
-        "chain": "2714d204ecdf29d2"
+        "chain": "80c4d6bdd8074c7e"
       }
     },
     {
@@ -1363,7 +1363,7 @@
       "states": [],
       "mint": {
         "calls": 494,
-        "chain": "0be8a8e493f4e1a8"
+        "chain": "1c58f24b2093969c"
       }
     },
     {
@@ -1381,7 +1381,7 @@
         "cmodexp": 3,
         "xx": 3
       },
-      "receipt": "1f8b5b9501e903a5",
+      "receipt": "420bf964f480aee1",
       "states": [
         {
           "name": "measure",
@@ -1400,8 +1400,8 @@
         }
       ],
       "mint": {
-        "calls": 11711,
-        "chain": "dd21092b859c1b3b"
+        "calls": 6992,
+        "chain": "5aacf8aea5ec8413"
       }
     },
     {
@@ -1419,7 +1419,7 @@
         "cmodexp": 72,
         "xx": 72
       },
-      "receipt": "4ed25e4b38166a36",
+      "receipt": "f2ca14858ba89e4e",
       "states": [
         {
           "name": "measure",
@@ -1438,8 +1438,8 @@
         }
       ],
       "mint": {
-        "calls": 430476,
-        "chain": "6053b1610d18a491"
+        "calls": 317220,
+        "chain": "8251345622fa050b"
       }
     },
     {
@@ -1457,7 +1457,7 @@
         "cmodexp": 29,
         "xx": 29
       },
-      "receipt": "3a57dca927a9a791",
+      "receipt": "9cd3ef26b9b092cd",
       "states": [
         {
           "name": "measure",
@@ -1476,8 +1476,8 @@
         }
       ],
       "mint": {
-        "calls": 165697,
-        "chain": "118a052131895bc1"
+        "calls": 120080,
+        "chain": "371c866c36148ff7"
       }
     },
     {
@@ -1495,7 +1495,7 @@
         "cmodexp": 4,
         "xx": 4
       },
-      "receipt": "bcccb2255bab50b5",
+      "receipt": "73a12be5d26c0d55",
       "states": [
         {
           "name": "measure",
@@ -1514,8 +1514,8 @@
         }
       ],
       "mint": {
-        "calls": 23922,
-        "chain": "e4f8fec91ed653a7"
+        "calls": 17630,
+        "chain": "c93352ba252e8733"
       }
     },
     {
@@ -1533,7 +1533,7 @@
         "cmodexp": 12,
         "xx": 12
       },
-      "receipt": "ba80b74791129431",
+      "receipt": "30da650ddbc74551",
       "states": [
         {
           "name": "measure",
@@ -1552,8 +1552,8 @@
         }
       ],
       "mint": {
-        "calls": 69482,
-        "chain": "be2de4caa28e02d1"
+        "calls": 50606,
+        "chain": "39aa48c4ed16f06b"
       }
     },
     {
@@ -1589,7 +1589,7 @@
       ],
       "mint": {
         "calls": 2546,
-        "chain": "92937765300a1d49"
+        "chain": "74b166c0739977b3"
       }
     },
     {
@@ -1607,7 +1607,7 @@
         "cmodexp": 4,
         "xx": 4
       },
-      "receipt": "bcccb2255bab50b5",
+      "receipt": "73a12be5d26c0d55",
       "states": [
         {
           "name": "measure",
@@ -1626,8 +1626,8 @@
         }
       ],
       "mint": {
-        "calls": 23276,
-        "chain": "4e76afe1514b0d7c"
+        "calls": 16984,
+        "chain": "5613e8373a55c7fc"
       }
     },
     {
@@ -1645,7 +1645,7 @@
         "cmodexp": 17,
         "xx": 17
       },
-      "receipt": "a0e50984c8b353cb",
+      "receipt": "9272b297e7f1fb3f",
       "states": [
         {
           "name": "measure",
@@ -1664,8 +1664,8 @@
         }
       ],
       "mint": {
-        "calls": 97543,
-        "chain": "858873e794490a7c"
+        "calls": 70802,
+        "chain": "60d3ff800c74c43e"
       }
     },
     {
@@ -1683,7 +1683,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "5b087fd4e322968e",
+      "receipt": "bddfc462469adf0a",
       "states": [
         {
           "name": "measure",
@@ -1702,8 +1702,8 @@
         }
       ],
       "mint": {
-        "calls": 4631,
-        "chain": "a28a79c808d565ee"
+        "calls": 3058,
+        "chain": "d213bed45e50138e"
       }
     },
     {
@@ -1721,7 +1721,7 @@
         "cmodexp": 22,
         "xx": 22
       },
-      "receipt": "f66eda2726269b3b",
+      "receipt": "b088591a26ff443b",
       "states": [
         {
           "name": "measure",
@@ -1740,8 +1740,8 @@
         }
       ],
       "mint": {
-        "calls": 140801,
-        "chain": "652cd3afacf1ec8b"
+        "calls": 106195,
+        "chain": "e426ef9ba761fd3d"
       }
     },
     {
@@ -1759,7 +1759,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "8a2e219fc08da1f3",
+      "receipt": "3a28eb693353724f",
       "states": [
         {
           "name": "measure",
@@ -1778,8 +1778,8 @@
         }
       ],
       "mint": {
-        "calls": 2209,
-        "chain": "9fd833a7c7289012"
+        "calls": 636,
+        "chain": "69bb8975864af45c"
       }
     },
     {
@@ -1867,7 +1867,7 @@
         "cmodexp": 4,
         "xx": 4
       },
-      "receipt": "4b866aa23b7b29fc",
+      "receipt": "869e2e2a9ef6a23c",
       "states": [
         {
           "name": "measure",
@@ -1886,8 +1886,8 @@
         }
       ],
       "mint": {
-        "calls": 20445,
-        "chain": "8e81dda1f26f9c04"
+        "calls": 14153,
+        "chain": "319b8a1faac6c63c"
       }
     },
     {
@@ -1905,7 +1905,7 @@
         "cmodexp": 1,
         "xx": 1
       },
-      "receipt": "8a2e219fc08da1f3",
+      "receipt": "3a28eb693353724f",
       "states": [
         {
           "name": "measure",
@@ -1924,8 +1924,8 @@
         }
       ],
       "mint": {
-        "calls": 2209,
-        "chain": "99f91ffe9f9f4d17"
+        "calls": 636,
+        "chain": "68f6cc7bdfa30a61"
       }
     },
     {
@@ -1943,7 +1943,7 @@
         "cmodexp": 353,
         "xx": 353
       },
-      "receipt": "268f489b526d1f5f",
+      "receipt": "baa872cc86684a8b",
       "states": [
         {
           "name": "measure",
@@ -1962,8 +1962,8 @@
         }
       ],
       "mint": {
-        "calls": 2467872,
-        "chain": "d95db593c1af4388"
+        "calls": 1912603,
+        "chain": "cdf1897a454e865a"
       }
     },
     {
@@ -1981,7 +1981,7 @@
         "cmodexp": 694,
         "xx": 694
       },
-      "receipt": "a62765c9cb59c72a",
+      "receipt": "8d0575a57f7491da",
       "states": [
         {
           "name": "measure",
@@ -2000,8 +2000,8 @@
         }
       ],
       "mint": {
-        "calls": 4078324,
-        "chain": "0c440ce475187f01"
+        "calls": 2986662,
+        "chain": "414404935d424285"
       }
     },
     {
@@ -2117,7 +2117,7 @@
         "cmodexp": 1363,
         "xx": 1363
       },
-      "receipt": "d2081d33d374282e",
+      "receipt": "d49509b09957e3a2",
       "states": [
         {
           "name": "measure",
@@ -2136,8 +2136,8 @@
         }
       ],
       "mint": {
-        "calls": 8390779,
-        "chain": "dd09e76a3d2a4241"
+        "calls": 6246780,
+        "chain": "8b36db0b73b7192d"
       }
     },
     {
@@ -2155,7 +2155,7 @@
         "cmodexp": 16,
         "xx": 16
       },
-      "receipt": "652934b9fb3a96b9",
+      "receipt": "ec05ce7aab7c2569",
       "states": [
         {
           "name": "measure",
@@ -2174,8 +2174,8 @@
         }
       ],
       "mint": {
-        "calls": 95467,
-        "chain": "26bb696dec64c12c"
+        "calls": 70299,
+        "chain": "f67b1946ab15f1d2"
       }
     },
     {
@@ -2193,7 +2193,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2212,8 +2212,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "5b895f6665488dd0"
+        "calls": 69433,
+        "chain": "48c1df6f48b0c6c6"
       }
     },
     {
@@ -2231,7 +2231,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2250,8 +2250,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "7d9c412a40be428c"
+        "calls": 69433,
+        "chain": "6030253c4f135172"
       }
     },
     {
@@ -2269,7 +2269,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2288,8 +2288,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "ee773b87e2fcf330"
+        "calls": 69433,
+        "chain": "9c1d8bca9d7fe566"
       }
     },
     {
@@ -2307,7 +2307,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2326,8 +2326,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "12fc53363b3557ec"
+        "calls": 69433,
+        "chain": "a77df1162924ba12"
       }
     },
     {
@@ -2345,7 +2345,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2364,8 +2364,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "de928dff9e68dc90"
+        "calls": 69433,
+        "chain": "56cca2e2818e6186"
       }
     },
     {
@@ -2383,7 +2383,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2402,8 +2402,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "85072689f7f1494c"
+        "calls": 69433,
+        "chain": "5d1980ce8121f7b2"
       }
     },
     {
@@ -2421,7 +2421,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2440,8 +2440,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "213f87d61be5b1f0"
+        "calls": 69433,
+        "chain": "0aae193dd6040a26"
       }
     },
     {
@@ -2459,7 +2459,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2478,8 +2478,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "8cf5ea6d1556ceac"
+        "calls": 69433,
+        "chain": "0d510ec41f934e52"
       }
     },
     {
@@ -2497,7 +2497,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2516,8 +2516,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "2e9c58ee81260b50"
+        "calls": 69433,
+        "chain": "d35babb86499c046"
       }
     },
     {
@@ -2535,7 +2535,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2554,8 +2554,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "99064c6c3e8d300c"
+        "calls": 69433,
+        "chain": "67aabe532dd809f2"
       }
     },
     {
@@ -2573,7 +2573,7 @@
         "cmodexp": 15,
         "xx": 15
       },
-      "receipt": "622b1f9047e24841",
+      "receipt": "3c1d82ba83b6242d",
       "states": [
         {
           "name": "measure",
@@ -2592,8 +2592,8 @@
         }
       ],
       "mint": {
-        "calls": 93028,
-        "chain": "4f5a3bad418350b0"
+        "calls": 69433,
+        "chain": "a9fde0b76949d2e6"
       }
     },
     {
@@ -2611,7 +2611,7 @@
         "cmodexp": 56,
         "xx": 56
       },
-      "receipt": "47250de79f7688ab",
+      "receipt": "2431632af4e64ab3",
       "states": [
         {
           "name": "measure",
@@ -2630,8 +2630,8 @@
         }
       ],
       "mint": {
-        "calls": 713925,
-        "chain": "3ff27f7c89eed573"
+        "calls": 625837,
+        "chain": "93dc0a76b64eb27f"
       }
     },
     {
@@ -2649,7 +2649,7 @@
         "cmodexp": 46,
         "xx": 46
       },
-      "receipt": "f37088249d189e34",
+      "receipt": "8d3cd4afb758bb3c",
       "states": [
         {
           "name": "measure",
@@ -2668,8 +2668,8 @@
         }
       ],
       "mint": {
-        "calls": 277874,
-        "chain": "4e3e0de4633f2c6d"
+        "calls": 205516,
+        "chain": "2c606c0e4c479ac5"
       }
     },
     {
@@ -2687,7 +2687,7 @@
         "cmodexp": 70,
         "xx": 70
       },
-      "receipt": "bd827c8601b66bf4",
+      "receipt": "39e1e0499f62f664",
       "states": [
         {
           "name": "measure",
@@ -2706,8 +2706,8 @@
         }
       ],
       "mint": {
-        "calls": 419462,
-        "chain": "8e76f2ec857c5e77"
+        "calls": 309352,
+        "chain": "ebf3ae623bf8e827"
       }
     },
     {
@@ -2725,7 +2725,7 @@
         "cmodexp": 137,
         "xx": 137
       },
-      "receipt": "00036e79f925b7be",
+      "receipt": "4a629aba562eacc2",
       "states": [
         {
           "name": "measure",
@@ -2744,8 +2744,8 @@
         }
       ],
       "mint": {
-        "calls": 815900,
-        "chain": "1ee047b105825b60"
+        "calls": 600399,
+        "chain": "2c5d68540fcff0fc"
       }
     },
     {
@@ -2753,17 +2753,17 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 310,
+      "computations": 775,
       "kinds": {
-        "x": 80,
-        "cnot": 160,
-        "toffoli": 20,
-        "h": 20,
-        "measure": 10,
-        "cmodexp": 10,
-        "xx": 10
+        "x": 200,
+        "cnot": 400,
+        "toffoli": 50,
+        "h": 50,
+        "measure": 25,
+        "cmodexp": 25,
+        "xx": 25
       },
-      "receipt": "3f821cd833d1b8ff",
+      "receipt": "c3f779a585dafe53",
       "states": [
         {
           "name": "measure",
@@ -2778,12 +2778,12 @@
             "0",
             "0"
           ],
-          "measured": 10
+          "measured": 25
         }
       ],
       "mint": {
-        "calls": 16785463,
-        "chain": "8917c37dfa713599"
+        "calls": 15900,
+        "chain": "e87770ed22b9a948"
       }
     },
     {
@@ -2801,7 +2801,7 @@
         "cmodexp": 232,
         "xx": 232
       },
-      "receipt": "fbf621b592550205",
+      "receipt": "d373009d3f6a012d",
       "states": [
         {
           "name": "measure",
@@ -2820,8 +2820,8 @@
         }
       ],
       "mint": {
-        "calls": 1439383,
-        "chain": "c8f714f941eb83a0"
+        "calls": 1074447,
+        "chain": "bb4f2b066112bf7c"
       }
     }
   ]

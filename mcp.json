@@ -903,11 +903,17 @@
               "type": "boolean"
             },
             "n": {
-              "type": "integer",
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap, the host's memory is the only limit."
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
             },
             "a": {
-              "type": "integer",
+              "type": [
+                "integer",
+                "string"
+              ],
               "description": "Base. Default 8. A base sharing a factor with n hands it over as Shor's first step."
             }
           }
@@ -941,11 +947,17 @@
               "type": "boolean"
             },
             "n": {
-              "type": "integer",
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap, the host's memory is the only limit."
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
             },
             "a": {
-              "type": "integer",
+              "type": [
+                "integer",
+                "string"
+              ],
               "description": "Base. Default 8. A base sharing a factor with n hands it over as Shor's first step."
             }
           }
@@ -979,11 +991,17 @@
               "type": "boolean"
             },
             "n": {
-              "type": "integer",
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap, the host's memory is the only limit."
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
             },
             "a": {
-              "type": "integer",
+              "type": [
+                "integer",
+                "string"
+              ],
               "description": "Base. Default 8. A base sharing a factor with n hands it over as Shor's first step."
             }
           }
@@ -1017,11 +1035,17 @@
               "type": "boolean"
             },
             "n": {
-              "type": "integer",
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap, the host's memory is the only limit."
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
             },
             "a": {
-              "type": "integer",
+              "type": [
+                "integer",
+                "string"
+              ],
               "description": "Base. Default 8. A base sharing a factor with n hands it over as Shor's first step."
             }
           }
@@ -1055,11 +1079,17 @@
               "type": "boolean"
             },
             "n": {
-              "type": "integer",
-              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap, the host's memory is the only limit."
+              "type": [
+                "integer",
+                "string"
+              ],
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; no cap — the state is sparse and exact for any n. Past 2^53 send n as a string of digits and read `exact`."
             },
             "a": {
-              "type": "integer",
+              "type": [
+                "integer",
+                "string"
+              ],
               "description": "Base. Default 8. A base sharing a factor with n hands it over as Shor's first step."
             }
           }
