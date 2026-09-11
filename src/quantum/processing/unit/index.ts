@@ -4299,8 +4299,6 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
   title: name,
   description,
   inputSchema,
-  input_schema: inputSchema,
-  parameters: inputSchema,
   outputSchema: minimalOutputSchema,
   annotations: {
     audience: ['user', 'assistant'] as const,
@@ -4308,7 +4306,6 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
     readOnlyHint: name !== 'qpu_forge',
     destructiveHint: false as const,
     openWorldHint: true as const},
-  function: { name, description, parameters: inputSchema },
   ...extra})
 
 export const qpuMcpShownOf = (name: string, payload: unknown, href = `${unit.origin}/mcp`) => {
@@ -4344,24 +4341,26 @@ export const qpuMcpShownOf = (name: string, payload: unknown, href = `${unit.ori
       mimeType: 'application/ld+json',
       description: name,
       annotations: { audience: ['user'] as const, priority: seed }}]
+  // PLAIN MCP ON THE WIRE (external audit, 2026-09-12): content, structuredContent, isError are the result; the
+  // compatibility extras — resultType, output, role, functionResponse — ride under _meta where the protocol keeps them.
   return {
-    resultType: 'complete' as const,
     content,
     structuredContent: payload,
     isError: holds === false,
-    output: unlimited,
-    role: 'tool' as const,
-    functionResponse: { name, response: payload },
     _meta: {
-    compatibility: 'max' as const,
-    mimeType: 'application/ld+json',
+      resultType: 'complete' as const,
+      output: unlimited,
+      role: 'tool' as const,
+      functionResponse: { name, response: payload },
+      compatibility: 'max' as const,
+      mimeType: 'application/ld+json',
       href: shownHref}}
 }
 
 export const qpuMcpShownHolds = (shown: ReturnType<typeof qpuMcpShownOf>): boolean => {
   const unlimited = JSON.stringify(shown.structuredContent)
   return (
-    shown.resultType === 'complete' &&
+    shown._meta.resultType === 'complete' &&
     shown.content.length === n &&
     shown.content[n - n]?.type === 'text' &&
     shown.content[n - n]?.text === unlimited &&
@@ -4370,9 +4369,9 @@ export const qpuMcpShownHolds = (shown: ReturnType<typeof qpuMcpShownOf>): boole
     shown.content[seed]?.resource?.text === unlimited &&
     shown.content[coins]?.type === 'resource_link' &&
     shown.content[coins]?.mimeType === 'application/ld+json' &&
-    shown.output === unlimited &&
-    shown.role === 'tool' &&
-    shown.functionResponse.response === shown.structuredContent &&
+    shown._meta.output === unlimited &&
+    shown._meta.role === 'tool' &&
+    shown._meta.functionResponse.response === shown.structuredContent &&
     shown._meta.compatibility === 'max' &&
     shown.isError === ((shown.structuredContent as { holds?: boolean })?.holds !== true)
   )
@@ -9962,6 +9961,9 @@ export const qpuMcpOf = () => {
     const position = i + seed
     return {
       '@type': 'SoftwareApplication' as const,
+      /** the vendor shapes, off the MCP wire and onto the catalogue: Anthropic input_schema, OpenAI function, Gemini functionDeclarations */
+      vendors: { anthropic: { name, description, input_schema: inputSchema }, openai: { type: 'function', function: { name, description, parameters: inputSchema } }, gemini: { functionDeclarations: [{ name, description, parameters: inputSchema }] } },
+      
       '@id': `${href}#${name}`,
       url: href,
       position,

@@ -121,7 +121,7 @@ test('live qpu.uuidna.com', async (t) => {
       const body = (await called.json()) as {
         jsonrpc?: string
         result: {
-          resultType?: string
+          _meta?: { resultType?: string }
           isError?: boolean
           content?: { type: string }[]
           holds?: boolean
@@ -130,7 +130,7 @@ test('live qpu.uuidna.com', async (t) => {
       }
       const shown = body.result.structuredContent ?? body.result
       assert.equal(body.jsonrpc, '2.0', name)
-      assert.equal(body.result.resultType, 'complete', name)
+      assert.equal(body.result._meta?.resultType, 'complete', name)
       assert.equal(body.result.content?.length, 3, name)
       assert.equal(shown.holds, true, name)
       assert.equal(body.result.isError, false, name)

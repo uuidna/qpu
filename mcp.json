@@ -427,6 +427,54 @@
   "tools": [
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_quantum",
+          "description": "The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_quantum",
+            "description": "The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_quantum",
+              "description": "The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_quantum",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 1,
@@ -456,6 +504,54 @@
     },
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_lean",
+          "description": "The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_lean",
+            "description": "The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_lean",
+              "description": "The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_lean",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 2,
@@ -485,6 +581,54 @@
     },
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_cite",
+          "description": "How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_cite",
+            "description": "How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_cite",
+              "description": "How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_cite",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 3,
@@ -514,6 +658,78 @@
     },
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_train",
+          "description": "Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              },
+              "live": {
+                "type": "boolean",
+                "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+              },
+              "sequence": {
+                "type": "boolean",
+                "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_train",
+            "description": "Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                },
+                "live": {
+                  "type": "boolean",
+                  "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+                },
+                "sequence": {
+                  "type": "boolean",
+                  "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_train",
+              "description": "Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  },
+                  "live": {
+                    "type": "boolean",
+                    "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+                  },
+                  "sequence": {
+                    "type": "boolean",
+                    "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_train",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 4,
@@ -551,6 +767,126 @@
     },
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_forge",
+          "description": "Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              },
+              "name": {
+                "type": "string",
+                "description": "Tool name to forge. Omit to inspect the in-memory sandbox."
+              },
+              "team": {
+                "type": "string",
+                "description": "read or call."
+              },
+              "ray": {
+                "type": "number",
+                "description": "Agent ray 0..6."
+              },
+              "idea": {
+                "type": "string",
+                "description": "Idea the tool challenges."
+              },
+              "description": {
+                "type": "string",
+                "description": "What the tool does in memory."
+              },
+              "run": {
+                "type": "object",
+                "description": "Sealed op tree. Memory only. No eval, no fs, no net."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_forge",
+            "description": "Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Tool name to forge. Omit to inspect the in-memory sandbox."
+                },
+                "team": {
+                  "type": "string",
+                  "description": "read or call."
+                },
+                "ray": {
+                  "type": "number",
+                  "description": "Agent ray 0..6."
+                },
+                "idea": {
+                  "type": "string",
+                  "description": "Idea the tool challenges."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "What the tool does in memory."
+                },
+                "run": {
+                  "type": "object",
+                  "description": "Sealed op tree. Memory only. No eval, no fs, no net."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_forge",
+              "description": "Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Tool name to forge. Omit to inspect the in-memory sandbox."
+                  },
+                  "team": {
+                    "type": "string",
+                    "description": "read or call."
+                  },
+                  "ray": {
+                    "type": "number",
+                    "description": "Agent ray 0..6."
+                  },
+                  "idea": {
+                    "type": "string",
+                    "description": "Idea the tool challenges."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "What the tool does in memory."
+                  },
+                  "run": {
+                    "type": "object",
+                    "description": "Sealed op tree. Memory only. No eval, no fs, no net."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_forge",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 5,
@@ -604,6 +940,78 @@
     },
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_improve",
+          "description": "Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              },
+              "live": {
+                "type": "boolean",
+                "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+              },
+              "sequence": {
+                "type": "boolean",
+                "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_improve",
+            "description": "Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                },
+                "live": {
+                  "type": "boolean",
+                  "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+                },
+                "sequence": {
+                  "type": "boolean",
+                  "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_improve",
+              "description": "Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  },
+                  "live": {
+                    "type": "boolean",
+                    "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+                  },
+                  "sequence": {
+                    "type": "boolean",
+                    "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_improve",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 6,
@@ -641,6 +1049,90 @@
     },
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_compete",
+          "description": "Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              },
+              "live": {
+                "type": "boolean",
+                "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+              },
+              "sequence": {
+                "type": "boolean",
+                "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+              },
+              "team": {
+                "type": "string",
+                "description": "read or call. Omit for both teams."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_compete",
+            "description": "Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                },
+                "live": {
+                  "type": "boolean",
+                  "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+                },
+                "sequence": {
+                  "type": "boolean",
+                  "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                },
+                "team": {
+                  "type": "string",
+                  "description": "read or call. Omit for both teams."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_compete",
+              "description": "Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  },
+                  "live": {
+                    "type": "boolean",
+                    "description": "{ live: true } learn CERN occupancy. fetch Request Response. Memory."
+                  },
+                  "sequence": {
+                    "type": "boolean",
+                    "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                  },
+                  "team": {
+                    "type": "string",
+                    "description": "read or call. Omit for both teams."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_compete",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 7,
@@ -682,6 +1174,78 @@
     },
     {
       "@type": "SoftwareApplication",
+      "vendors": {
+        "anthropic": {
+          "name": "qpu_prove",
+          "description": "Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "man": {
+                "type": "boolean",
+                "description": "Return the man page. Read man from tools/list, then call without man."
+              },
+              "live": {
+                "type": "boolean",
+                "description": "{ live: true } sequence then prove. fetch Request Response."
+              },
+              "sequence": {
+                "type": "boolean",
+                "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+              }
+            }
+          }
+        },
+        "openai": {
+          "type": "function",
+          "function": {
+            "name": "qpu_prove",
+            "description": "Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "man": {
+                  "type": "boolean",
+                  "description": "Return the man page. Read man from tools/list, then call without man."
+                },
+                "live": {
+                  "type": "boolean",
+                  "description": "{ live: true } sequence then prove. fetch Request Response."
+                },
+                "sequence": {
+                  "type": "boolean",
+                  "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                }
+              }
+            }
+          }
+        },
+        "gemini": {
+          "functionDeclarations": [
+            {
+              "name": "qpu_prove",
+              "description": "Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91.",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "man": {
+                    "type": "boolean",
+                    "description": "Return the man page. Read man from tools/list, then call without man."
+                  },
+                  "live": {
+                    "type": "boolean",
+                    "description": "{ live: true } sequence then prove. fetch Request Response."
+                  },
+                  "sequence": {
+                    "type": "boolean",
+                    "description": "{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory."
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
       "@id": "https://qpu.uuidna.com/mcp#qpu_prove",
       "url": "https://qpu.uuidna.com/mcp",
       "position": 8,

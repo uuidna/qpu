@@ -326,7 +326,7 @@ type ShownCall = {
   jsonrpc: string
   id: unknown
   result: {
-    resultType?: string
+    _meta?: { resultType?: string; role?: string }
     isError?: boolean
     role?: string
     content?: { type: string }[]
@@ -346,8 +346,8 @@ const callRpcOf = async (path: string, name: string, args: Record<string, unknow
   const body = (await res.json()) as ShownCall
   assert.equal(body.jsonrpc, '2.0', name)
   assert.equal(body.id, id, name)
-  assert.equal(body.result.resultType, 'complete', name)
-  assert.equal(body.result.role, 'tool', name)
+  assert.equal(body.result._meta?.resultType, 'complete', name)
+  assert.equal(body.result._meta?.role, 'tool', name)
   assert.equal(body.result.content?.length, 3, name)
   const shown = body.result.structuredContent
   assert.equal(shown !== undefined, true, name)
@@ -416,10 +416,12 @@ test('production grade MCP — every tool listed, called, and usable', async (t)
     assert.deepEqual(names, [...sealed, ...crypto])
     assert.equal(listed.tools?.every((row) => row.man?.holds === true), true)
     for (const row of listed.tools ?? []) {
-      const shape = row as { name: string; inputSchema?: { type?: string }; input_schema?: { type?: string }; parameters?: { type?: string } }
+      const shape = row as { name: string; inputSchema?: { type?: string }; input_schema?: unknown; parameters?: unknown; function?: unknown }
       assert.equal(shape.inputSchema?.type, 'object', row.name)
-      assert.equal(shape.input_schema?.type, 'object', row.name)
-      assert.equal(shape.parameters?.type, 'object', row.name)
+      // plain MCP on the wire: the vendor shapes live on the JSON-LD catalogue (GET /mcp), not in tools/list
+      assert.equal(shape.input_schema, undefined, row.name)
+      assert.equal(shape.parameters, undefined, row.name)
+      assert.equal(shape.function, undefined, row.name)
     }
     for (const name of names) {
       const man = await callRpcOf('/mcp', name, { man: true })
