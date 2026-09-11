@@ -34,20 +34,45 @@ jobs:
           cache: npm
       - name: Install exact (lockfile law; no install scripts)
         run: npm ci
-      - name: Lean toolchain cache (keyed on lean-toolchain)
+      # KERNEL RECEIPT. The proof is one file and the kernel is deterministic: the same bytes under the same toolchain
+      # pin check the same way every time. So the kernel's pass is cached as a receipt keyed on both hashes, and the
+      # toolchain (a large restore) is fetched and run only when the proof or the pin changed. The receipt is saved
+      # only after the kernel passed in this run; a failing run saves nothing.
+      - name: Kernel receipt (index.lean bytes and the toolchain pin already checked in an earlier run)
+        id: kernel
+        uses: actions/cache/restore@v4
+        with:
+          path: .lean-ok
+          key: lean-ok-${{ hashFiles('lean-toolchain', 'src/quantum/processing/unit/index.lean') }}
+      - name: Lean toolchain cache (keyed on lean-toolchain; only when the receipt is missing)
+        if: steps.kernel.outputs.cache-hit != 'true'
         id: elan
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
-      - name: Lean toolchain (only on a cache miss)
+      - name: Lean kernel (only when the receipt is missing)
+        if: steps.kernel.outputs.cache-hit != 'true'
         run: |
           if [ "${{ steps.elan.outputs.cache-hit }}" != "true" ]; then
             curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "$(cat lean-toolchain)"
           fi
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Gate — Lean kernel, then the receipted suite (live tests run in process here)
-        run: npm run ci
+          export PATH="$HOME/.elan/bin:$PATH"
+          npm run lean
+          sha256sum lean-toolchain src/quantum/processing/unit/index.lean > .lean-ok
+      - name: Save the kernel receipt (only after the kernel passed here)
+        if: steps.kernel.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .lean-ok
+          key: lean-ok-${{ hashFiles('lean-toolchain', 'src/quantum/processing/unit/index.lean') }}
+      - name: Kernel receipt hit
+        if: steps.kernel.outputs.cache-hit == 'true'
+        run: echo "::notice::kernel receipt hit — index.lean and lean-toolchain are byte-identical to a build the kernel already checked ($(cat .lean-ok | tr '\n' ' '))"
+      - name: Gate — the receipted suite (live tests in process; the reach budget short, a runner's reach is no reading)
+        env:
+          QPU_REACH_BUDGET_MS: '3000'
+        run: npm test
       - name: Deploy to Cloudflare (only when called with deploy and the token exists)
         id: deploy
         if: ${{ inputs.deploy }}

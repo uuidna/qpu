@@ -218,12 +218,16 @@ test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at 
   const live = target ?? 'https://qpu.uuidna.com'
   t.diagnostic(`against ${where}`)
   const floor = qpuShorOf()
-  /** Twenty seconds against a host; two in process, where reach.test already climbs this machine. */
+  /** Twenty seconds against a host; two in process, where reach.test already climbs this machine. The budget is a
+   * guard: the climb is bounded by WIDTH, read from the host's own reply — once it says the state is sparse, a wider
+   * modulus costs only its digits on the wire, so the climb doubles the width to a ceiling of 2^16 bits and stops
+   * there, in a dozen requests, instead of spending the budget on round trips that measure nothing but the network. */
   const budgetMs = target ? 20000 : 2000
+  const widthCeiling = 65536
   type Run = { circuitry: { qubits: number; holds: boolean }; exact: { n: string }; prepare: { prepared: boolean; amplitudes: number; sparse: boolean }; measure: { holds: boolean }; factors: { by: string } }
   const steps: { qubits: number; work: number; ms: number }[] = []
   let stoppedBy = 'nothing'
-  for (let work = 8; ; work *= 2) {
+  for (let work = 8; work <= widthCeiling; work *= 2) {
     const modulus = (1n << BigInt(work)) - 1n
     const t0 = process.hrtime.bigint()
     const res = await liveFetch(`${live}/mcp`, {
@@ -254,8 +258,10 @@ test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at 
       stoppedBy = `measured growth ×${growth.toFixed(2)} predicts the next step past the budget`
       break
     }
+    if (work === widthCeiling) stoppedBy = `the width ceiling of ${widthCeiling} bits, the state being sparse by the host's own reply`
   }
   const reach = steps[steps.length - 1]!
   assert.equal(reach.qubits > floor.circuitry.qubits, true)
+  assert.equal(stoppedBy !== 'nothing', true)
   t.diagnostic(`live reach ${reach.qubits} qubits · dim 2^${reach.qubits} · ${reach.ms.toFixed(0)} ms round trip · ${steps.length} steps · stopped: ${stoppedBy} · every step factored by gcd, none by period`)
 })

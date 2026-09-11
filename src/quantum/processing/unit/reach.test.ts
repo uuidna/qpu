@@ -8,7 +8,8 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { qpuShorOf } from './index.js'
 
-const timeBudgetMs = 20000
+/** Twenty seconds by default; CI sets QPU_REACH_BUDGET_MS lower, since a GitHub runner's reach is not a reading anyone keeps. */
+const timeBudgetMs = Number(process.env.QPU_REACH_BUDGET_MS ?? 20000) || 20000
 
 test('reach: the widest run this host holds in budget is climbed to, and the run at the reach holds', (t) => {
   const floor = qpuShorOf() // the unit's own default run, 91 and 8 — the reach must be past it
