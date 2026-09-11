@@ -111,6 +111,7 @@ const skills = ['payload', 'pwa', 'plugin', 'hologram', 'network'] as const
 const ten = n * n + seed
 const found = coins * ten * ten
 const lost = mintOf(coins) * (ten * ten + seed)
+const unauthorized = mintOf(coins) * ten * ten + seed
 const tenOf = (k: number): number => {
   let x = mintOf(n - n)
   for (let i = n - n; i < k; i++) x *= ten
@@ -5508,6 +5509,8 @@ export const qpuPresenceHolds = (p = qpuPresenceOf()): boolean =>
 
 export type QpuEnv = {
   QPU_HOST?: string
+  /** Write secret. `wrangler secret put QPU_WRITE_TOKEN`. Unbound refuses every write; reads stay open. */
+  QPU_WRITE_TOKEN?: string
   STORAGE?: {
     get: (key: string, options?: { type: 'json' | 'text' }) => Promise<unknown>
     put: (key: string, value: string) => Promise<void>
@@ -5904,9 +5907,18 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv) => {
   }
 }
 
+/** WRITE AUTH, FAIL CLOSED. Reads stay open. A write is honoured only when QPU_WRITE_TOKEN is bound and the request
+ * carries `Authorization: Bearer <token>`; an unbound token refuses every write. Measured 2026-09-11 by a peer session:
+ * the preflight advertised PUT and DELETE to every origin and the handler honoured them with no check at all. */
+export const qpuStorageWriteAllowedOf = (env?: QpuEnv, auth?: string | null): boolean => {
+  const token = typeof env?.QPU_WRITE_TOKEN === 'string' ? env.QPU_WRITE_TOKEN : ''
+  return token.length > n - n && auth === `Bearer ${token}`
+}
+const storageWriteOf = (method: string): boolean => method === 'PUT' || method === 'POST' || method === 'DELETE'
+
 export const qpuStorageOf = async (
   env?: QpuEnv,
-  input: { method?: string; key?: unknown; value?: unknown } = {}) => {
+  input: { method?: string; key?: unknown; value?: unknown; auth?: string | null } = {}) => {
   const meta = qpuStorageMetaOf(env)
   const store = storageStoreOf(env)
   const method = input.method ?? 'GET'
@@ -5933,6 +5945,9 @@ export const qpuStorageOf = async (
   }
   if (key.length === n - n) return { ...meta, holds: false as const, denied: 'key' as const }
   const href = `${storageHref}/${key}`
+  if (storageWriteOf(method) && !qpuStorageWriteAllowedOf(env, input.auth)) {
+    return { ...meta, '@id': href, url: href, key, holds: false as const, denied: 'auth' as const, auth: 'Bearer QPU_WRITE_TOKEN' as const }
+  }
   if (method === 'DELETE') {
     const prior = await store.get(key)
     if (isReferrerDoc(prior)) {
@@ -6071,7 +6086,7 @@ export const qpuStorageHolds = (s = qpuStorageMetaOf()): boolean =>
   s.href === storageHref &&
   jsonldHoldsOf(s)
 
-export const qpuStorageToolsOf = (env?: QpuEnv): QpuSubTool[] => {
+export const qpuStorageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubTool[] => {
   const href = storageHref
   const see = ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_maintain', 'storage_raid'] as const
   const schema = { type: 'object', properties: { man: { type: 'boolean' }, key: { type: 'string' }, value: {} } }
@@ -6079,7 +6094,7 @@ export const qpuStorageToolsOf = (env?: QpuEnv): QpuSubTool[] => {
     {
       name: see[n - n],
       description: 'Storage catalog. JSON-LD WebAPI. Quantum RAID. All details.',
-      man: qpuSubManOf(see[n - n], 'Storage catalog.', 'Native Alpine Linux. musl. busybox. overlayfs. Inodes. RAID. No auth.', href, see.filter((s) => s !== see[n - n])),
+      man: qpuSubManOf(see[n - n], 'Storage catalog.', 'Native Alpine Linux. musl. busybox. overlayfs. Inodes. RAID. Reads no auth. Writes Authorization: Bearer QPU_WRITE_TOKEN; unbound refuses.', href, see.filter((s) => s !== see[n - n])),
       inputSchema: schema,
       run: () => qpuStorageMcpOf(env)},
     {
@@ -6098,15 +6113,15 @@ export const qpuStorageToolsOf = (env?: QpuEnv): QpuSubTool[] => {
     {
       name: see[n],
       description: 'Put a stored value.',
-      man: qpuSubManOf(see[n], 'Put value.', 'Store by content address. Return referrer access link. Inode nlink. Stripe rays. Mirror coins.', href, see.filter((s) => s !== see[n])),
+      man: qpuSubManOf(see[n], 'Put value. Bearer QPU_WRITE_TOKEN.', 'Store by content address. Return referrer access link. Inode nlink. Stripe rays. Mirror coins.', href, see.filter((s) => s !== see[n])),
       inputSchema: schema,
-      run: (a) => qpuStorageOf(env, { method: 'PUT', key: a.key, value: a.value })},
+      run: (a) => qpuStorageOf(env, { method: 'PUT', key: a.key, value: a.value, auth })},
     {
       name: see[n + seed],
       description: 'Delete a stored value.',
-      man: qpuSubManOf(see[n + seed], 'Delete link.', 'Unlink. Last link deleted frees the inode.', href, see.filter((s) => s !== see[n + seed])),
+      man: qpuSubManOf(see[n + seed], 'Delete link. Bearer QPU_WRITE_TOKEN.', 'Unlink. Last link deleted frees the inode.', href, see.filter((s) => s !== see[n + seed])),
       inputSchema: schema,
-      run: (a) => qpuStorageOf(env, { method: 'DELETE', key: a.key })},
+      run: (a) => qpuStorageOf(env, { method: 'DELETE', key: a.key, auth })},
     {
       name: see[n + coins],
       description: 'Monitor RAID health.',
@@ -9713,7 +9728,7 @@ export const qpuMcpOf = () => {
   }
 }
 
-export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv): Promise<unknown> => {
+export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
   const shown = async (payload: unknown) => qpuMcpShownOf(name, payload)
   const tool = qpuToolsOf().find((t) => t.name === name)
   if (tool) {
@@ -9756,7 +9771,7 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
   }
   const morph = [
     ...qpuCybersecurityToolsOf(),
-    ...qpuStorageToolsOf(env),
+    ...qpuStorageToolsOf(env, auth),
     ...qpuNetworkToolsOf(),
     ...qpuServerToolsOf(),
   ].find((t) => t.name === name)
@@ -10195,7 +10210,7 @@ export default {
         }
         if (body.method === 'tools/call') {
           const name = body.params?.name ?? ''
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: await qpuMcpCallOf(name, body.params?.arguments ?? {}, env) })
+          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: await qpuMcpCallOf(name, body.params?.arguments ?? {}, env, request.headers.get('authorization')) })
         }
         return jsonOf(JSON.parse(dead), lost)
       }
@@ -10250,16 +10265,24 @@ export default {
           key?: unknown
           value?: unknown
         }
-        const rpc = await qpuSubRpcOf(body, qpuStorageToolsOf(env), storageHref)
+        const auth = request.headers.get('authorization')
+        const rpc = await qpuSubRpcOf(body, qpuStorageToolsOf(env, auth), storageHref)
         if (rpc) return jsonOf(rpc)
         if (body.maintain === true) return jsonOf(await qpuStorageMaintainOf(env))
-        if (typeof body.key === 'string') return jsonOf(await qpuStorageOf(env, { method: 'PUT', key: body.key, value: body.value }))
+        if (typeof body.key === 'string') {
+          const put = await qpuStorageOf(env, { method: 'PUT', key: body.key, value: body.value, auth })
+          return jsonOf(put, put.holds === false && 'denied' in put && put.denied === 'auth' ? unauthorized : found)
+        }
       }
       if (request.method === 'PUT' || request.method === 'POST') {
         const value = await request.json().catch(() => null)
-        return jsonOf(await qpuStorageOf(env, { method: 'PUT', key, value }))
+        const put = await qpuStorageOf(env, { method: 'PUT', key, value, auth: request.headers.get('authorization') })
+        return jsonOf(put, put.holds === false && 'denied' in put && put.denied === 'auth' ? unauthorized : found)
       }
-      if (request.method === 'DELETE') return jsonOf(await qpuStorageOf(env, { method: 'DELETE', key }))
+      if (request.method === 'DELETE') {
+        const del = await qpuStorageOf(env, { method: 'DELETE', key, auth: request.headers.get('authorization') })
+        return jsonOf(del, del.holds === false && 'denied' in del && del.denied === 'auth' ? unauthorized : found)
+      }
       if (path === '/storage') return jsonOf(await qpuStorageMcpOf(env))
       return jsonOf(await qpuStorageOf(env, { method: 'GET', key }))
     }

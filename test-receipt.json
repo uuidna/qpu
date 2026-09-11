@@ -1,13 +1,13 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; amplitude receipts and mint receipts are named apart",
-  "tests": 91,
-  "pass": 91,
+  "tests": 93,
+  "pass": 93,
   "fail": 0,
   "dry": 0,
-  "circuit": 50,
+  "circuit": 52,
   "mintOnly": 11,
-  "receipt": "a871842f95405c77",
+  "receipt": "bfc89d952a28c2c1",
   "rows": [
     {
       "name": "API only json ui",
@@ -24,7 +24,49 @@
       "receipt": "02eb7e97e1f5d843",
       "mint": {
         "calls": 879104,
-        "chain": "532009f944d88f64"
+        "chain": "005839bb106cb02a"
+      },
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true
+    },
+    {
+      "name": "storage writes are refused without the bearer, with a wrong bearer, and when no token is bound",
+      "computations": 14423,
+      "kinds": {
+        "x": 3053,
+        "cnot": 5840,
+        "toffoli": 464,
+        "h": 4720,
+        "measure": 232,
+        "cmodexp": 57,
+        "xx": 57
+      },
+      "receipt": "8caaab782b1399f0",
+      "mint": {
+        "calls": 393458,
+        "chain": "5c8f604bdd7b99d6"
+      },
+      "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true
+    },
+    {
+      "name": "MCP storage_put and storage_del carry the request bearer; the in-process call without one is refused",
+      "computations": 7067,
+      "kinds": {
+        "x": 1497,
+        "cnot": 2864,
+        "toffoli": 228,
+        "h": 2308,
+        "measure": 114,
+        "cmodexp": 28,
+        "xx": 28
+      },
+      "receipt": "9a5d0704f7807ad6",
+      "mint": {
+        "calls": 193310,
+        "chain": "62671bf9c7aedecb"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -227,7 +269,7 @@
       "receipt": "3ad2b93ba75e5c5a",
       "mint": {
         "calls": 4124313,
-        "chain": "41de204fce1e16ef"
+        "chain": "36b50ac1b2c9c1bd"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -248,7 +290,7 @@
       "receipt": "1cff262f12d79338",
       "mint": {
         "calls": 703909,
-        "chain": "aa80752eb0699fc7"
+        "chain": "6de27081ed8e31ed"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -321,7 +363,7 @@
       "receipt": "0cabe98247bbf838",
       "mint": {
         "calls": 1195990,
-        "chain": "0483a1f9e865cd88"
+        "chain": "cb5e9513cd638e02"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -334,7 +376,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 15,
-        "chain": "a866d53c228cc9d1"
+        "chain": "50b74bd55f5052a7"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -355,7 +397,7 @@
       "receipt": "f975d7b88e8aa5bb",
       "mint": {
         "calls": 96477,
-        "chain": "52988525e9bcdc84"
+        "chain": "afd23620255cbfd2"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -368,7 +410,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 12,
-        "chain": "b27ef5e848e8d080"
+        "chain": "d0e63489119b7dda"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -381,7 +423,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 14,
-        "chain": "9785c0798e4b1d0a"
+        "chain": "aaab6565cff039f4"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -394,7 +436,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 30,
-        "chain": "de3422adae1b5722"
+        "chain": "51f35b8430a8a874"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -407,7 +449,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 33,
-        "chain": "1325f3fb62b12a3f"
+        "chain": "4de773ca0e331209"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -428,7 +470,7 @@
       "receipt": "34b83b1ef1449cf0",
       "mint": {
         "calls": 61429,
-        "chain": "11dea53387787577"
+        "chain": "ecea2b25b18e37bd"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -449,7 +491,7 @@
       "receipt": "e1e6529f936c49e4",
       "mint": {
         "calls": 95419,
-        "chain": "bb59f71f514c69e9"
+        "chain": "c8979bc8e89e0b17"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -470,7 +512,7 @@
       "receipt": "cf46a8ef4d437780",
       "mint": {
         "calls": 353581,
-        "chain": "1df77d75193d1ce9"
+        "chain": "f71b6d1d47389827"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -491,7 +533,7 @@
       "receipt": "834857dbadf63c3d",
       "mint": {
         "calls": 128450,
-        "chain": "141081c566512ed0"
+        "chain": "10c6ff121fd7622e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -512,7 +554,7 @@
       "receipt": "4ed95cd8714bab57",
       "mint": {
         "calls": 2102856,
-        "chain": "b1fde74a90dabfe7"
+        "chain": "2d15a5376b5f9e41"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -525,7 +567,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 407,
-        "chain": "a9739a404f6d9a40"
+        "chain": "659b591d7a06ff9e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -538,7 +580,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 9,
-        "chain": "ffd8f55e3dbda327"
+        "chain": "aa837675fd91bc51"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -559,7 +601,7 @@
       "receipt": "7cb5e7a42af30c7e",
       "mint": {
         "calls": 343148,
-        "chain": "0bdad3dcfba0a5cc"
+        "chain": "a4efee8288c22672"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -572,7 +614,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 246,
-        "chain": "5ce6cc7288daf65a"
+        "chain": "4bf791e2f105c6c0"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -593,7 +635,7 @@
       "receipt": "f6b83f3801389693",
       "mint": {
         "calls": 94046,
-        "chain": "6d5b84b06ae8eedb"
+        "chain": "a50ebfa2ec40d249"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -614,7 +656,7 @@
       "receipt": "8a2e219fc08da1f3",
       "mint": {
         "calls": 2210,
-        "chain": "daf271aefbb9b7d6"
+        "chain": "4223d984ebdf51ec"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -635,7 +677,7 @@
       "receipt": "8a2e219fc08da1f3",
       "mint": {
         "calls": 2201,
-        "chain": "d1f0a91941bf05a6"
+        "chain": "379cbf24f0995ec8"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -656,7 +698,7 @@
       "receipt": "8a2e219fc08da1f3",
       "mint": {
         "calls": 2201,
-        "chain": "fba75dd83f28fff6"
+        "chain": "16ba0b0355c56f04"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -677,7 +719,7 @@
       "receipt": "8a2e219fc08da1f3",
       "mint": {
         "calls": 2201,
-        "chain": "7f062f043bbf2146"
+        "chain": "5fab7273bf0ca0d0"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -698,7 +740,7 @@
       "receipt": "8a2e219fc08da1f3",
       "mint": {
         "calls": 2201,
-        "chain": "73584aa59308b716"
+        "chain": "c25fcd4943983ebc"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -719,7 +761,7 @@
       "receipt": "2ff73468f269b87b",
       "mint": {
         "calls": 8172,
-        "chain": "2999601760c2503f"
+        "chain": "63baa1f283e945ed"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -740,7 +782,7 @@
       "receipt": "4d6444e70e81f286",
       "mint": {
         "calls": 101982,
-        "chain": "e591ddafb0d7d702"
+        "chain": "1596e63d45f6e6cc"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -761,7 +803,7 @@
       "receipt": "4d6444e70e81f286",
       "mint": {
         "calls": 101755,
-        "chain": "7b5f92dff14889e8"
+        "chain": "8dfbb198a4b0ab9e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -782,7 +824,7 @@
       "receipt": "a05ca3251d5128ce",
       "mint": {
         "calls": 188922,
-        "chain": "d01a35cde367b379"
+        "chain": "9016a4287e71404b"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -803,7 +845,7 @@
       "receipt": "d6303ef036f1c90e",
       "mint": {
         "calls": 128966,
-        "chain": "d6f0073d1579e744"
+        "chain": "487b7a12c266499a"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -816,7 +858,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 14,
-        "chain": "9b0fcfcc85f7a90c"
+        "chain": "093b69499a03e476"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -829,7 +871,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 374,
-        "chain": "272f2382b6043119"
+        "chain": "1e3f8ec06b918a53"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -842,7 +884,7 @@
       "receipt": "cbf29ce484222325",
       "mint": {
         "calls": 494,
-        "chain": "1d40caa2bbb0f445"
+        "chain": "f2467aa80def4a27"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -863,7 +905,7 @@
       "receipt": "d55fb90ab9b94563",
       "mint": {
         "calls": 14387,
-        "chain": "f58f9966e6748f4b"
+        "chain": "1f0544e9e778b58d"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -884,7 +926,7 @@
       "receipt": "82d88abf05a99710",
       "mint": {
         "calls": 502854,
-        "chain": "c7741a30d1b3ae3c"
+        "chain": "fcf9c5d14ef6d902"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -905,7 +947,7 @@
       "receipt": "edbd969b6d302838",
       "mint": {
         "calls": 193815,
-        "chain": "fd4aa68486e47f4f"
+        "chain": "4a822d19eaac6735"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -926,7 +968,7 @@
       "receipt": "1914e3a3489194f6",
       "mint": {
         "calls": 27940,
-        "chain": "0e9a95cb5a6a095f"
+        "chain": "82322257f3a9e705"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -947,7 +989,7 @@
       "receipt": "008d8a1bda1b03cc",
       "mint": {
         "calls": 81536,
-        "chain": "d53d422aecc78c95"
+        "chain": "f831c2fb98c2e057"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -966,7 +1008,7 @@
       "receipt": "6edd91c839b5ffd8",
       "mint": {
         "calls": 2550,
-        "chain": "509ed7f0b85cabd0"
+        "chain": "07a78d0a27de8c96"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -987,7 +1029,7 @@
       "receipt": "1914e3a3489194f6",
       "mint": {
         "calls": 27294,
-        "chain": "05ed4f2c0509aed7"
+        "chain": "26be02999b9ec5bd"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1073,7 +1115,7 @@
       "receipt": "e7081a3ee62b9566",
       "mint": {
         "calls": 23111,
-        "chain": "afcb0380007f9a76"
+        "chain": "7f054fccdb6cd4dc"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1094,7 +1136,7 @@
       "receipt": "b450ca94df68d7c7",
       "mint": {
         "calls": 2823045,
-        "chain": "262675b6fc75f8e8"
+        "chain": "45ad3b9255ada65a"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1115,7 +1157,7 @@
       "receipt": "7659671e1fde828f",
       "mint": {
         "calls": 4774037,
-        "chain": "3afba697a2eec4ec"
+        "chain": "9679f73eba126406"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1227,7 +1269,7 @@
       "receipt": "938db1537777cf6e",
       "mint": {
         "calls": 9752076,
-        "chain": "8acf5e6d42eac45d"
+        "chain": "463f0731a33ac9f7"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1248,7 +1290,7 @@
       "receipt": "42490e5c17dacd16",
       "mint": {
         "calls": 110201,
-        "chain": "9b3fd178b0ed8bcf"
+        "chain": "a9be0a3e3bac69b5"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1269,7 +1311,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "ab83e7bee140160c"
+        "chain": "2ecf892107ff721e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1290,7 +1332,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "91a8d44cda007297"
+        "chain": "d97a3cdfa01ef1d5"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1311,7 +1353,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "edd9557521dab514"
+        "chain": "355571d66e64f43e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1332,7 +1374,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "819d1a67afce371f"
+        "chain": "63417b87b6b668f5"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1353,7 +1395,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "167fc5aaf02916dc"
+        "chain": "4ccb5efbcb87e35e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1374,7 +1416,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "7d3b99a82b3d2967"
+        "chain": "d15619db9fc22515"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1395,7 +1437,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "8a243a6231633f64"
+        "chain": "50a2f104406fb97e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1416,7 +1458,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "d13ee515f1e575ef"
+        "chain": "afe9b5c9875a1035"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1437,7 +1479,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "d13c4f5900a514ac"
+        "chain": "1e3803fac92e3c9e"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1458,7 +1500,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "a791412926776737"
+        "chain": "bf75b494f5818055"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1479,7 +1521,7 @@
       "receipt": "97e4c21fc4f4a70e",
       "mint": {
         "calls": 107770,
-        "chain": "40d1e14f74d5d5b4"
+        "chain": "46134b843b9ee6be"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1500,7 +1542,7 @@
       "receipt": "703c190cc3ece271",
       "mint": {
         "calls": 771643,
-        "chain": "e2335bac607dfefc"
+        "chain": "e8e87f990cab569a"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1521,7 +1563,7 @@
       "receipt": "4c52b5af33e57b26",
       "mint": {
         "calls": 323892,
-        "chain": "6f85c9541b0c76ce"
+        "chain": "6ff6659c19ebb69c"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1542,7 +1584,7 @@
       "receipt": "501bf7ba1c8d310b",
       "mint": {
         "calls": 488246,
-        "chain": "6dbf3e568971dee0"
+        "chain": "5231113cc2c38546"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1563,7 +1605,7 @@
       "receipt": "e6905c154962e138",
       "mint": {
         "calls": 952606,
-        "chain": "129b17bd61920f03"
+        "chain": "b5ee50b75213dc29"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1584,7 +1626,7 @@
       "receipt": "5b979226c3526910",
       "mint": {
         "calls": 1762859,
-        "chain": "440e02a77d5ffde7"
+        "chain": "fe8975354d90f751"
       },
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,

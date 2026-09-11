@@ -12,6 +12,8 @@ custom_domain = true
 
 [vars]
 QPU_HOST = "qpu.uuidna.com"
+# Writes to /storage need Authorization: Bearer QPU_WRITE_TOKEN; unbound refuses every write (reads stay open).
+# wrangler secret put QPU_WRITE_TOKEN
 
 [[kv_namespaces]]
 binding = "STORAGE"

@@ -15,7 +15,8 @@ import worker, {
 } from './index.js'
 
 const host = 'qpu.uuidna.com'
-const env = { QPU_HOST: host }
+const env = { QPU_HOST: host, QPU_WRITE_TOKEN: 'qpu-test-write-token' }
+const bearer = { authorization: `Bearer ${env.QPU_WRITE_TOKEN}` }
 const html = { accept: 'text/html' }
 const origin = `https://${host}`
 
@@ -23,7 +24,11 @@ const fetchOf = (path: string, init: RequestInit = {}) =>
   worker.fetch(
     new Request(`${origin}${path}`, {
       ...init,
-      headers: { ...html, ...(init.headers as Record<string, string> | undefined) },
+      headers: {
+        ...html,
+        ...(init.method === 'PUT' || init.method === 'POST' || init.method === 'DELETE' ? bearer : {}),
+        ...(init.headers as Record<string, string> | undefined),
+      },
     }),
     env,
   )
