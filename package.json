@@ -69,7 +69,8 @@
     "ci": "npm run lean && npm test",
     "prepublishOnly": "npm run build",
     "ship": "npm run build && npx wrangler deploy",
-    "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js"
+    "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
+    "lean:embed": "node scripts/embed-lean.mjs"
   },
   "devDependencies": {
     "@types/node": "26.5.1",

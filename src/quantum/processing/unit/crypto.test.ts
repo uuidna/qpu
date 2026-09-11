@@ -515,3 +515,70 @@ test('Shor is on the sequence — quantum then lean then prove', () => {
   assert.equal(shor.a, 8)
   assert.equal(shor.factors.p * shor.factors.q, shor.n)
 })
+
+test('crypto_shor runs on the n and a it is given, and says why when it cannot', async () => {
+  const listed = (await (await worker.fetch(
+    new Request(`${origin}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) }),
+    env,
+  )).json()) as { result: { tools: { name: string; inputSchema: { properties: Record<string, { type: string }> } }[] } }
+  for (const name of ['crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa']) {
+    const schema = listed.result.tools.find((t) => t.name === name)?.inputSchema
+    assert.equal(schema?.properties.n?.type, 'integer', name)
+    assert.equal(schema?.properties.a?.type, 'integer', name)
+  }
+  type Run = { n: number; a: number; post: { period: number }; classical: { period: number; resolvable: boolean; holds: boolean }; factors: { p: number; q: number }; rsa: { factored: boolean }; holds: boolean }
+  type Denied = { n: number; a: number; denied: string; why: string; qubits: number; limit: number; holds: false }
+  // the impostor this catches: a tool that answers 91 = 7 * 13 whatever it is asked
+  const fifteen = (await mcpOf('crypto_shor', { n: 15, a: 7 })) as Run
+  assert.equal(fifteen.n, 15)
+  assert.equal(fifteen.a, 7)
+  assert.equal(fifteen.post.period, 4)
+  assert.deepEqual([fifteen.factors.p, fifteen.factors.q].sort((x, y) => x - y), [3, 5])
+  assert.equal(fifteen.rsa.factored, true)
+  assert.equal(fifteen.holds, true)
+  const ninetyOne = (await mcpOf('crypto_shor', { n: 91, a: 8 })) as Run
+  assert.equal(ninetyOne.factors.p * ninetyOne.factors.q, 91)
+  assert.notEqual(JSON.stringify(fifteen), JSON.stringify(ninetyOne))
+  const byDefault = (await mcpOf('crypto_shor')) as Run
+  assert.equal(byDefault.n, 91)
+  assert.equal(byDefault.a, 8)
+  // a period the two-qubit counting register cannot resolve: the run recovers nothing and says so, never a typed answer
+  const twentyOne = (await mcpOf('crypto_shor', { n: 21, a: 2 })) as Run
+  assert.equal(twentyOne.classical.period, 6)
+  assert.equal(twentyOne.classical.resolvable, false)
+  assert.equal(twentyOne.post.period, 0)
+  assert.equal(twentyOne.rsa.factored, false)
+  assert.equal(twentyOne.holds, false)
+  assert.equal(twentyOne.classical.holds, true)
+  const twentyOneEight = (await mcpOf('crypto_shor', { n: 21, a: 8 })) as Run
+  assert.equal(twentyOneEight.classical.period, 2)
+  assert.equal(twentyOneEight.rsa.factored, true)
+  assert.equal(twentyOneEight.factors.p * twentyOneEight.factors.q, 21)
+  // denials name their reason and run nothing
+  const coprime = (await mcpOf('crypto_shor', { n: 91, a: 7 })) as Denied
+  assert.equal(coprime.denied, 'coprime')
+  assert.equal(coprime.holds, false)
+  assert.equal(coprime.why.includes('gcd(a, n) = 7'), true)
+  const qubits = (await mcpOf('crypto_shor', { n: 4096, a: 3 })) as Denied
+  assert.equal(qubits.denied, 'qubits')
+  assert.equal(qubits.qubits, 15)
+  assert.equal(qubits.limit, 14)
+  const input = (await mcpOf('crypto_shor', { n: '91' })) as Denied
+  assert.equal(input.denied, 'input')
+  const range = (await mcpOf('crypto_shor', { n: 15, a: 15 })) as Denied
+  assert.equal(range.denied, 'range')
+  // the sibling views run on the same arguments
+  const rsa = (await mcpOf('crypto_rsa', { n: 15, a: 7 })) as { modulus: number; p: number; q: number; factored: boolean; period: number }
+  assert.equal(rsa.modulus, 15)
+  assert.equal(rsa.p * rsa.q, 15)
+  assert.equal(rsa.period, 4)
+  const iqft = (await mcpOf('crypto_iqft', { n: 21, a: 2 })) as { post: { period: number }; holds: boolean }
+  assert.equal(iqft.post.period, 0)
+  assert.equal(iqft.holds, false)
+  const cmodexp = (await mcpOf('crypto_cmodexp', { n: 3233, a: 7 })) as { circuitry: { qubits: number; work: number; dim: number; holds: boolean }; rsa: { modulus: number } }
+  assert.equal(cmodexp.circuitry.qubits, 14)
+  assert.equal(cmodexp.circuitry.work, 12)
+  assert.equal(cmodexp.circuitry.dim, 16384)
+  assert.equal(cmodexp.circuitry.holds, true)
+  assert.equal(cmodexp.rsa.modulus, 3233)
+})

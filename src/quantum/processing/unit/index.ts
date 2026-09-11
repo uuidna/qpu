@@ -6,6 +6,7 @@
 /** COMPUTATIONAL RECEIPTS. Every gate primitive and measurement appends the fold of the amplitude vector it produced, so a
  * test that computed quantum state carries a receipt and a test that computed none carries none. FNV-1a 64 over the
  * decimal amplitudes; BigInt only. Never Math. The reporter reads this ledger per test (isolation none). */
+import { leanSource, leanToolchain } from './lean.js'
 export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[] }
 /** The exact state worth carrying in the receipt: what was measured — eight amplitudes, the Born weights themselves.
  * Every other state folds only; it is recomputable from the gate list, and a proof that carried every 512-amplitude
@@ -1761,17 +1762,62 @@ const cModMulOf = (amps: CAmp[], a: number, modulus: number, control: number, wo
 
 const cXxOf = (amps: CAmp[], q: number): CAmp[] => cXOf(cXOf(amps, q), q)
 
-/** Shor on the state-vector simulator. N and coprime a. Modular-exponentiation circuitry. Inverse QFT. Noisy shots. Factors. */
-export const qpuShorOf = () => {
-  const cube = qpuCubeOf()
-  const faces = qpuFacesOf()
+/** The modulus and base Shor runs on when the caller names none: faces.rays * (n * n + n + seed) = 91 and mintOf n = 8. */
+export const shorDefaultsOf = () => ({ modulus: qpuFacesOf().rays * (n * n + n + seed), base: mintOf(n) })
+/** Bits so that mintOf(bits) > value: the work register that holds every residue mod value. */
+const bitsOf = (value: number): number => {
+  let k = n - n
+  while (mintOf(k) <= value) k += seed
+  return k
+}
+/** The counting register is two qubits: this inverse QFT is exact in Gaussian integers (fourth roots of unity), and a
+ * wider register would need eighth roots, which are not integers. So the register resolves periods dividing four;
+ * `classical` below says whether the period it was asked for is one of those. */
+const shorCountBits = coins
+/** The largest circuit this host simulates per call, counting plus work qubits: 8 + 4 + 2. */
+export const shorQubitLimit = mintOf(n) + mintOf(coins) + coins
+/** The period of base mod modulus by classical iteration, 0 when base is not a unit. A check beside the run, never the run. */
+const classicalPeriodOf = (base: number, modulus: number): number => {
+  let x = base % modulus
+  for (let r = seed; r <= modulus; r++) {
+    if (x === seed) return r
+    x = (x * base) % modulus
+  }
+  return n - n
+}
+/** Modulus and base as the caller typed them: undefined when not named, NaN when not an integer. */
+export const shorArgsOf = (a: Record<string, unknown>): { modulus?: number; base?: number } => {
+  const intOf = (v: unknown): number | undefined => (v === undefined ? undefined : typeof v === 'number' && v === v && v % seed === n - n ? v : Number.NaN)
+  return { modulus: intOf(a.n), base: intOf(a.a) }
+}
+export type QpuShorDenied = { kind: 'shor'; n: number; a: number; denied: 'input' | 'range' | 'qubits' | 'coprime'; why: string; qubits: number; limit: number; holds: false }
+/** Shor as a caller asked for it: the run on their n and a, or a denial that says why nothing ran. Never the unit's 91 in place of theirs. */
+export const qpuShorTryOf = (a: Record<string, unknown>) => {
+  const args = shorArgsOf(a)
+  if (args.modulus === undefined && args.base === undefined) return qpuShorOf()
+  const defaults = shorDefaultsOf()
+  const modulus = args.modulus ?? defaults.modulus
+  const base = args.base ?? defaults.base
+  const limit = shorQubitLimit
+  const qubits = modulus === modulus && modulus >= n - n ? shorCountBits + bitsOf(modulus) : n - n
+  const deny = (denied: QpuShorDenied['denied'], why: string): QpuShorDenied => ({ kind: 'shor', n: modulus, a: base, denied, why, qubits, limit, holds: false })
+  if (modulus !== modulus || base !== base) return deny('input', 'n and a must be integers')
+  if (modulus < n + seed || base < coins || base >= modulus) return deny('range', 'need n >= 4 and 1 < a < n')
+  if (qubits > limit) return deny('qubits', `${qubits} qubits exceed the ${limit} this host simulates per call`)
+  const g = gcdOf(base, modulus)
+  if (g !== seed) return deny('coprime', `gcd(a, n) = ${g} is a factor already; Shor wants a base coprime to n`)
+  return qpuShorOf(modulus, base)
+}
+
+/** Shor on the state-vector simulator. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation circuitry. Inverse QFT. Noisy shots. Factors. */
+export const qpuShorOf = (modulusArg?: number, baseArg?: number) => {
   const plugin = qpuPayloadPluginOf()
   const computer = qpuComputerOf()
-  const locked = n * (n + coins)
-  const base = mintOf(n)
-  const countBits = coins
-  const workBits = faces.rays
-  const modulus = faces.rays * (n * n + n + seed)
+  const defaults = shorDefaultsOf()
+  const modulus = modulusArg ?? defaults.modulus
+  const base = baseArg ?? defaults.base
+  const countBits = shorCountBits
+  const workBits = bitsOf(modulus)
   const workOff = countBits
   const qubits = countBits + workBits
   const dim = mintOf(qubits)
@@ -1860,7 +1906,7 @@ export const qpuShorOf = () => {
     dim,
     work: workBits,
     counting: countBits,
-    holds: expOk && coprime && gates[n - n]!.name === 'x' && mul.length === coins && workBits > cube.hexbit && qubits === n * n && modulus > locked,
+    holds: expOk && coprime && gates[n - n]!.name === 'x' && mul.length === coins && mintOf(workBits) > modulus && qubits === countBits + workBits && qubits <= shorQubitLimit,
   }
   const qft = {
     kind: 'iqft' as const,
@@ -1901,13 +1947,23 @@ export const qpuShorOf = () => {
     factored: p * q === modulus,
     holds: factors.holds && p * q === modulus,
   }
+  /** Beside the run, never in it: what classical iteration says the period is, whether a two-qubit counting register
+   * can resolve it (period divides mintOf countBits), and both arms — resolvable means the run recovered a multiple
+   * of it, unresolvable means the run recovered nothing. */
+  const classicalPeriod = classicalPeriodOf(base, modulus)
+  const resolvable = classicalPeriod > n - n && qftSize % classicalPeriod === n - n
+  const classical = {
+    kind: 'classical' as const,
+    gcd: gcdOf(base, modulus),
+    period: classicalPeriod,
+    counting: countBits,
+    resolvable,
+    agrees: period === classicalPeriod,
+    holds: resolvable ? period > n - n && period % classicalPeriod === n - n : period === n - n,
+  }
   const holds =
     coprime === true &&
-    modulus === faces.rays * (n * n + n + seed) &&
-    modulus > locked &&
-    base === mintOf(n) &&
-    workBits > cube.hexbit &&
-    qubits === n * n &&
+    mintOf(workBits) > modulus &&
     circuitry.holds &&
     qft.holds &&
     measure.holds &&
@@ -1927,12 +1983,25 @@ export const qpuShorOf = () => {
     qft,
     measure,
     post,
+    classical,
     factors,
     rsa,
     unlocked: true as const,
     lock: false as const,
     payload: plugin.href,
     holds,
+  }
+}
+
+/** The receipts of one Shor run: the folds, and the exact amplitudes of the modexp and noise states, the ledger gained
+ * after `from`. Two honest runs of one circuit fold alike; a reader who runs qpuShorOf recomputes them. */
+export const qpuShorReceiptsOf = (from: number) => {
+  const rows = qpuReceiptLedgerOf().slice(from)
+  return {
+    kind: 'receipts' as const,
+    rows,
+    fold: qpuReceiptFoldOf(rows),
+    holds: rows.length >= coins && rows.some((r) => r.name === 'cmodexp') && rows.some((r) => r.name === 'xx'),
   }
 }
 
@@ -3092,6 +3161,39 @@ export type QpuLeanRow = {
   holds: boolean
 }
 
+/** THE PROOF ITSELF, SERVED. The Lean file the theorems come from, embedded at build from src/…/index.lean by
+ * scripts/embed-lean.mjs, served at its cited path, and folded so a reader compares bytes, not readings. `verbatim`
+ * counts the served theorem strings found in the source after whitespace folding; `holds` wants all of them. */
+const spaceOf = (text: string): string => text.replace(/\s+/g, ' ').trim()
+export const qpuLeanSourceOf = (rows: readonly QpuLeanRow[] = [], cover: readonly QpuLeanRow[] = [], climb?: QpuLeanRow) => {
+  const href = `${unit.origin}/${unit.fuse.lean}`
+  const bytes = new TextEncoder().encode(leanSource).length
+  const fold = qpuFoldOf(leanSource)
+  const theorems = leanSource.split('\n').filter((line) => line.startsWith('theorem ')).length
+  const flat = spaceOf(leanSource)
+  const served = climb ? [...rows, ...cover, climb] : [...rows, ...cover]
+  const verbatim = served.filter((r) => flat.includes(spaceOf(r.theorem))).length
+  const holds =
+    bytes > n - n &&
+    fold.length === mintOf(mintOf(coins)) &&
+    theorems >= served.length &&
+    verbatim === served.length &&
+    href.endsWith('/index.lean')
+  return {
+    kind: 'source' as const,
+    href,
+    path: unit.fuse.lean,
+    bytes,
+    fold,
+    theorems,
+    served: served.length,
+    verbatim,
+    toolchain: leanToolchain,
+    check: `lean ${unit.fuse.lean}`,
+    holds,
+  }
+}
+
 export const qpuLeanOf = () => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -3714,7 +3816,9 @@ export const qpuLeanOf = () => {
     holds: nextHolds && nextFusedHolds && qpuNextHolds(),
   }
   const src = unit.fuse.lean
+  const source = qpuLeanSourceOf(rows, cover, climb)
   const holds =
+    source.holds &&
     rows.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
     cover.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
     climb.holds &&
@@ -3730,6 +3834,7 @@ export const qpuLeanOf = () => {
     name: unit.fuse.lean,
     isAccessibleForFree: cors === '*',
     src,
+    source,
     rows,
     cover,
     climb,
@@ -4972,6 +5077,14 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
   const href = `${unit.origin}/mcp`
   const see = cryptoToolNames
   const schema = { type: 'object', properties: { man: { type: 'boolean' } } }
+  const defaults = shorDefaultsOf()
+  const shorSchema = {
+    type: 'object',
+    properties: {
+      man: { type: 'boolean' },
+      n: { type: 'integer', minimum: n + seed, description: `Modulus to factor. Default ${defaults.modulus}. Work register bits(n) qubits, counting register ${shorCountBits}; at most ${shorQubitLimit} qubits per call.` },
+      a: { type: 'integer', minimum: coins, description: `Base, 1 < a < n, coprime to n. Default ${defaults.base}.` }}}
+  const named = `{ n, a } name the modulus and base; the run is theirs, or a denial says why not. Default ${defaults.modulus} and ${defaults.base}.`
   const morph = 'In tools/list. Morph. Not a ninth sealed tool. No auth.'
   const factoring = `${morph} theorem shor. ${shorFactorOf()}. p * q = N.`
   const encrypt = `${morph} theorem crypto. ${cryptoClaimOf()}. fused = split * share.`
@@ -4986,47 +5099,68 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[seed],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Coprime base.`, href, see.filter((s) => s !== see[seed])),
-      inputSchema: schema,
-      run: () => {
-        const shor = qpuShorOf()
-        return { kind: 'shor' as const, n: shor.n, a: shor.a, coprime: shor.coprime, rsa: shor.rsa, holds: qpuShorHolds(shor) }
+      man: qpuSubManOf(see[seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Coprime base. ${named}`, href, see.filter((s) => s !== see[seed])),
+      inputSchema: shorSchema,
+      run: (a: Record<string, unknown>) => {
+        const shor = qpuShorTryOf(a)
+        if ('denied' in shor) return shor
+        return {
+          kind: 'shor' as const,
+          n: shor.n,
+          a: shor.a,
+          coprime: shor.coprime,
+          device: shor.device,
+          circuitry: { kind: shor.circuitry.kind, qubits: shor.circuitry.qubits, work: shor.circuitry.work, counting: shor.circuitry.counting, dim: shor.circuitry.dim, holds: shor.circuitry.holds },
+          qft: shor.qft,
+          measure: shor.measure,
+          post: shor.post,
+          classical: shor.classical,
+          factors: shor.factors,
+          rsa: shor.rsa,
+          holds: shor.holds,
+        }
       }},
     {
       name: see[coins],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} Native h cnot. Compiled x swap csdg cmodexp.`, href, see.filter((s) => s !== see[coins])),
-      inputSchema: schema,
-      run: () => {
-        const shor = qpuShorOf()
+      man: qpuSubManOf(see[coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} Native h cnot. Compiled x swap csdg cmodexp. ${named}`, href, see.filter((s) => s !== see[coins])),
+      inputSchema: shorSchema,
+      run: (a: Record<string, unknown>) => {
+        const shor = qpuShorTryOf(a)
+        if ('denied' in shor) return shor
         return { kind: 'cmodexp' as const, circuitry: shor.circuitry, rsa: { kind: 'rsa' as const, modulus: shor.n, a: shor.a, factored: shor.rsa.factored }, holds: shor.circuitry.holds }
       }},
     {
       name: see[n],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n], `theorem shor. ${shorFactorOf()}.`, `${factoring} Inverse QFT. Period continued-fraction.`, href, see.filter((s) => s !== see[n])),
-      inputSchema: schema,
-      run: () => {
-        const shor = qpuShorOf()
-        return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, rsa: { kind: 'rsa' as const, modulus: shor.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds }
+      man: qpuSubManOf(see[n], `theorem shor. ${shorFactorOf()}.`, `${factoring} Inverse QFT. Period continued-fraction. ${named}`, href, see.filter((s) => s !== see[n])),
+      inputSchema: shorSchema,
+      run: (a: Record<string, unknown>) => {
+        const shor = qpuShorTryOf(a)
+        if ('denied' in shor) return shor
+        return { kind: 'iqft' as const, qft: shor.qft, post: shor.post, classical: shor.classical, rsa: { kind: 'rsa' as const, modulus: shor.n, period: shor.post.period, factored: shor.rsa.factored }, holds: shor.qft.holds && shor.post.holds }
       }},
     {
       name: see[n + seed],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n + seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Simulator. xx identity.`, href, see.filter((s) => s !== see[n + seed])),
-      inputSchema: schema,
-      run: () => {
-        const shor = qpuShorOf()
+      man: qpuSubManOf(see[n + seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Simulator. xx identity. ${named}`, href, see.filter((s) => s !== see[n + seed])),
+      inputSchema: shorSchema,
+      run: (a: Record<string, unknown>) => {
+        const shor = qpuShorTryOf(a)
+        if ('denied' in shor) return shor
         return { kind: 'shots' as const, device: shor.device, measure: shor.measure, rsa: { kind: 'rsa' as const, modulus: shor.n, factored: shor.rsa.factored }, holds: shor.measure.holds }
       }},
     {
       name: see[n + coins],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n + coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} JSON Nat.`, href, see.filter((s) => s !== see[n + coins])),
-      inputSchema: schema,
-      run: () => {
-        const cyber = qpuCybersecurityOf()
-        return cyber.rsa
+      man: qpuSubManOf(see[n + coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} JSON Nat. ${named}`, href, see.filter((s) => s !== see[n + coins])),
+      inputSchema: shorSchema,
+      run: (a: Record<string, unknown>) => {
+        const args = shorArgsOf(a)
+        if (args.modulus === undefined && args.base === undefined) return qpuCybersecurityOf().rsa
+        const shor = qpuShorTryOf(a)
+        if ('denied' in shor) return shor
+        return { ...shor.rsa, a: shor.a, period: shor.post.period, classical: shor.classical }
       }},
     {
       name: see[n + n],
@@ -7595,7 +7729,9 @@ export const qpuProveOf = () => {
   const cern = qpuCernOf()
   const integrity = qpuIntegrityOf()
   const circuit = qpuCircuitOf()
+  const ledgerFrom = qpuReceiptLedgerOf().length
   const shor = qpuShorOf()
+  const receipts = qpuShorReceiptsOf(ledgerFrom)
   const encrypt = qpuEncryptOf()
   const intelligence = qpuIntelligenceOf()
   const neuro = qpuNeuroOf()
@@ -7709,6 +7845,8 @@ export const qpuProveOf = () => {
       holds: next.holds,
   },
     src: lean.src,
+    source: lean.source,
+    receipts,
     lean,
     theorems,
     cern,
@@ -7781,6 +7919,11 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.next.nextCoil === p.next.nextFused &&
   qpuNextHolds() &&
   p.src === unit.fuse.lean &&
+  p.source.holds === true &&
+  p.source.fold === qpuFoldOf(leanSource) &&
+  p.source.verbatim === p.source.served &&
+  p.receipts.holds === true &&
+  p.receipts.fold === qpuReceiptFoldOf(p.receipts.rows) &&
   qpuLeanHolds(p.lean) &&
   qpuCernHolds(p.cern) &&
   qpuIntegrityHolds(p.integrity) &&
@@ -10170,6 +10313,9 @@ export default {
         return jsonOf(JSON.parse(dead), lost)
       }
       return jsonOf(qpuMcpOf())
+    }
+    if (path === `/${unit.fuse.lean}`) {
+      return new Response(leanSource, { status: found, headers: { ...headers, 'content-type': 'text/plain; charset=utf-8' } })
     }
     if (path === '/') return jsonOf(qpuQuantumOf())
     if (path === `/${unit.path}`) return jsonOf(qpuLeanOf())

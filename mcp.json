@@ -901,6 +901,16 @@
           "properties": {
             "man": {
               "type": "boolean"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 4,
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; at most 14 qubits per call."
+            },
+            "a": {
+              "type": "integer",
+              "minimum": 2,
+              "description": "Base, 1 < a < n, coprime to n. Default 8."
             }
           }
         },
@@ -912,8 +922,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_shor",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base.",
-          "documentation": "NAME\n    crypto_shor — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shor\n    crypto_shor { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base.\nSEE ALSO\n    crypto_catalog, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.",
+          "documentation": "NAME\n    crypto_shor — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shor\n    crypto_shor { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Coprime base. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -931,6 +941,16 @@
           "properties": {
             "man": {
               "type": "boolean"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 4,
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; at most 14 qubits per call."
+            },
+            "a": {
+              "type": "integer",
+              "minimum": 2,
+              "description": "Base, 1 < a < n, coprime to n. Default 8."
             }
           }
         },
@@ -942,8 +962,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp.",
-          "documentation": "NAME\n    crypto_cmodexp — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp\n    crypto_cmodexp { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.",
+          "documentation": "NAME\n    crypto_cmodexp — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_cmodexp\n    crypto_cmodexp { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Native h cnot. Compiled x swap csdg cmodexp. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_iqft, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -961,6 +981,16 @@
           "properties": {
             "man": {
               "type": "boolean"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 4,
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; at most 14 qubits per call."
+            },
+            "a": {
+              "type": "integer",
+              "minimum": 2,
+              "description": "Base, 1 < a < n, coprime to n. Default 8."
             }
           }
         },
@@ -972,8 +1002,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_iqft",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction.",
-          "documentation": "NAME\n    crypto_iqft — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_iqft\n    crypto_iqft { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.",
+          "documentation": "NAME\n    crypto_iqft — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_iqft\n    crypto_iqft { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Inverse QFT. Period continued-fraction. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_shots, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -991,6 +1021,16 @@
           "properties": {
             "man": {
               "type": "boolean"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 4,
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; at most 14 qubits per call."
+            },
+            "a": {
+              "type": "integer",
+              "minimum": 2,
+              "description": "Base, 1 < a < n, coprime to n. Default 8."
             }
           }
         },
@@ -1002,8 +1042,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_shots",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity.",
-          "documentation": "NAME\n    crypto_shots — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shots\n    crypto_shots { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_rsa, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.",
+          "documentation": "NAME\n    crypto_shots — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_shots\n    crypto_shots { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. Simulator. xx identity. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_rsa, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
@@ -1021,6 +1061,16 @@
           "properties": {
             "man": {
               "type": "boolean"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 4,
+              "description": "Modulus to factor. Default 91. Work register bits(n) qubits, counting register 2; at most 14 qubits per call."
+            },
+            "a": {
+              "type": "integer",
+              "minimum": 2,
+              "description": "Base, 1 < a < n, coprime to n. Default 8."
             }
           }
         },
@@ -1032,8 +1082,8 @@
           "synopsis": "POST https://qpu.uuidna.com/mcp tools/call crypto_rsa",
           "href": "https://qpu.uuidna.com/mcp",
           "description": "theorem shor. Factor 91.",
-          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat.",
-          "documentation": "NAME\n    crypto_rsa — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_rsa\n    crypto_rsa { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_split, crypto_verify",
+          "reading": "In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.",
+          "documentation": "NAME\n    crypto_rsa — theorem shor. Factor 91.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call crypto_rsa\n    crypto_rsa { man: true }\nDESCRIPTION\n    In tools/list. Morph. Not a ninth sealed tool. No auth. theorem shor. Factor 91. p * q = N. JSON Nat. { n, a } name the modulus and base; the run is theirs, or a denial says why not. Default 91 and 8.\nSEE ALSO\n    crypto_catalog, crypto_shor, crypto_cmodexp, crypto_iqft, crypto_shots, crypto_split, crypto_verify",
           "holds": true
         },
         "sealed": false,
