@@ -9,7 +9,7 @@
   "mintOnly": 11,
   "dim": "2^1048578",
   "qubits": 1048578,
-  "receipt": "250973066526d6a5",
+  "receipt": "f7e0af121fe67575",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -2330,23 +2330,25 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 612,
+      "computations": 226157,
       "kinds": {
-        "x": 133,
-        "cnot": 256,
-        "toffoli": 22,
-        "h": 182,
-        "measure": 11,
-        "cmodexp": 4,
-        "xx": 4
+        "x": 48129,
+        "cnot": 92176,
+        "toffoli": 7440,
+        "h": 72752,
+        "measure": 3720,
+        "cmodexp": 970,
+        "xx": 970
       },
       "dims": {
-        "8": 604,
-        "512": 8
+        "8": 224217,
+        "64": 10,
+        "512": 1920,
+        "2^64": 10
       },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "869e2e2a9ef6a23c",
+      "dim": "2^64",
+      "qubits": 64,
+      "receipt": "6f3a2272fc239f2c",
       "states": [
         {
           "name": "measure",
@@ -2361,12 +2363,12 @@
             "0",
             "0"
           ],
-          "measured": 11
+          "measured": 3720
         }
       ],
       "mint": {
-        "calls": 14163,
-        "chain": "4b14aaa0bf3c5512"
+        "calls": 4884740,
+        "chain": "a0e91cb373297e95"
       }
     },
     {
@@ -2374,23 +2376,39 @@
       "file": "/Users/ceci/github/uuidna/qpu/dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 31,
+      "computations": 36799,
       "kinds": {
-        "x": 8,
-        "cnot": 16,
-        "toffoli": 2,
-        "h": 2,
-        "measure": 1,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 7992,
+        "cnot": 15376,
+        "toffoli": 1314,
+        "h": 11042,
+        "measure": 657,
+        "cmodexp": 209,
+        "xx": 209
       },
       "dims": {
-        "8": 29,
-        "512": 2
+        "8": 36381,
+        "512": 386,
+        "1024": 2,
+        "262144": 2,
+        "17179869184": 2,
+        "2^66": 2,
+        "2^130": 2,
+        "2^258": 2,
+        "2^514": 2,
+        "2^1026": 2,
+        "2^2050": 2,
+        "2^4098": 2,
+        "2^8194": 2,
+        "2^16386": 2,
+        "2^32770": 2,
+        "2^65538": 2,
+        "2^131074": 2,
+        "2^262146": 2
       },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "3a28eb693353724f",
+      "dim": "2^262146",
+      "qubits": 262146,
+      "receipt": "2949cf94b5f325fd",
       "states": [
         {
           "name": "measure",
@@ -2405,12 +2423,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "measured": 657
         }
       ],
       "mint": {
-        "calls": 637,
-        "chain": "ce26f0b6507eab07"
+        "calls": 838109,
+        "chain": "1a18b73563ff29c2"
       }
     },
     {

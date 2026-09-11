@@ -1,9 +1,19 @@
 name: ci
 
+# One job, one checkout, one install: the gate (Lean kernel + receipted suite), and — when called with deploy — the
+# deploy and its verification in the same job, so main never spins a second runner to redo what this one just did.
+# The Lean toolchain is cached on the pin in lean-toolchain; elan runs only on a miss.
+
 on:
   pull_request:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      deploy:
+        description: deploy to Cloudflare after the gate, then verify the host serves the bytes this build makes
+        type: boolean
+        default: false
+        required: false
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -23,15 +33,37 @@ jobs:
           cache: npm
       - name: Install exact (lockfile law; no install scripts)
         run: npm ci
-      # The pinned toolchain is 2.7 GB unpacked; cached by the pin, so a run downloads it once per pin, not once per push.
-      - name: Cache the Lean toolchain
+      - name: Lean toolchain cache (keyed on lean-toolchain)
+        id: elan
         uses: actions/cache@v4
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
-      - name: Lean kernel
+      - name: Lean toolchain (only on a cache miss)
         run: |
-          curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "$(cat lean-toolchain)"
+          if [ "${{ steps.elan.outputs.cache-hit }}" != "true" ]; then
+            curl -sSfL https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain "$(cat lean-toolchain)"
+          fi
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Gate — QPU Lean proof
+      - name: Gate — Lean kernel, then the receipted suite (live tests run in process here)
         run: npm run ci
+      - name: Deploy to Cloudflare (only when called with deploy and the token exists)
+        id: deploy
+        if: ${{ inputs.deploy }}
+        env:
+          HAS_CF: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ "$HAS_CF" = "true" ]; then
+            npm exec -- wrangler deploy
+            echo "deployed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::gate PASSED but the worker was not deployed — CLOUDFLARE_API_TOKEN is not set"
+            echo "deployed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify the deploy — the host serves the bytes this build makes, then the live suite against it
+        if: ${{ inputs.deploy && steps.deploy.outputs.deployed == 'true' }}
+        run: |
+          node scripts/verify-live.mjs https://qpu.uuidna.com
+          QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js

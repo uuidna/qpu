@@ -1,13 +1,23 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import { qpuQuantumOf, qpuShorOf } from './index.js'
+import worker, { qpuQuantumOf, qpuShorOf } from './index.js'
+
+/** LIVE WHEN ASKED. QPU_LIVE names the host to test (https://qpu.uuidna.com). Unset, the same requests go to the worker
+ * in this process: the gate that runs before a deploy must not measure the host it is about to replace, or a change
+ * to any shape these tests assert could never ship — the old host fails the new assertion and blocks the push that
+ * would fix it. CI sets QPU_LIVE after the deploy, on the host it just made. */
+const target = process.env.QPU_LIVE?.replace(/\/$/, '')
+const liveEnv = { QPU_HOST: 'qpu.uuidna.com' }
+const liveFetch = (url: string, init?: RequestInit): Promise<Response> => (target ? fetch(url, init) : worker.fetch(new Request(url, init), liveEnv))
+const where = target ? `live host ${target}` : 'the worker in this process (set QPU_LIVE=https://qpu.uuidna.com to test the host)'
 
 const html = { accept: 'text/html' }
 
 test('live qpu.uuidna.com', async (t) => {
-  const live = 'https://qpu.uuidna.com'
+  const live = target ?? 'https://qpu.uuidna.com'
+  t.diagnostic(`against ${where}`)
   const local = qpuQuantumOf()
-  const root = await fetch(live, { headers: html })
+  const root = await liveFetch(live, { headers: html })
   await t.test('chat fetch is JSON quantum', async () => {
     assert.equal(root.status, 200)
     assert.equal((root.headers.get('content-type') ?? '').includes('json'), true)
@@ -32,12 +42,12 @@ test('live qpu.uuidna.com', async (t) => {
     assert.equal(page.docs.guide, true)
   })
   await t.test('chat calls tools/call', async () => {
-    const listed = await fetch(`${live}/mcp`, {
+    const listed = await liveFetch(`${live}/mcp`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
     })
-    const called = await fetch(`${live}/mcp`, {
+    const called = await liveFetch(`${live}/mcp`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'qpu_quantum', arguments: {} } }),
@@ -69,7 +79,7 @@ test('live qpu.uuidna.com', async (t) => {
   await t.test('chat uses every sealed door', async () => {
     const names = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const
     const crypto = ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'] as const
-    const discovered = await fetch(`${live}/mcp`, {
+    const discovered = await liveFetch(`${live}/mcp`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' }),
@@ -79,7 +89,7 @@ test('live qpu.uuidna.com', async (t) => {
     const hello = (await discovered.json()) as { result: { holds?: boolean; instructions?: string; serverInfo?: { name: string } } }
     assert.equal(hello.result.holds, true)
     assert.equal(hello.result.serverInfo?.name, '@uuidna/qpu')
-    const listed = await fetch(`${live}/mcp`, {
+    const listed = await liveFetch(`${live}/mcp`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
@@ -92,7 +102,7 @@ test('live qpu.uuidna.com', async (t) => {
       assert.deepEqual(listedNames.slice(8), [...crypto])
     }
     for (const name of listedNames) {
-      const man = await fetch(`${live}/mcp`, {
+      const man = await liveFetch(`${live}/mcp`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: { man: true } } }),
@@ -102,7 +112,7 @@ test('live qpu.uuidna.com', async (t) => {
       const manShown = manBody.result.structuredContent ?? manBody.result
       assert.equal(manShown.kind, 'man', name)
       assert.equal(manShown.holds, true, name)
-      const called = await fetch(`${live}/mcp`, {
+      const called = await liveFetch(`${live}/mcp`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: {} } }),
@@ -145,7 +155,7 @@ test('live qpu.uuidna.com', async (t) => {
       },
     ] as const
     for (const extra of extras) {
-      const listed = await fetch(`${live}${extra.path}`, {
+      const listed = await liveFetch(`${live}${extra.path}`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
@@ -155,7 +165,7 @@ test('live qpu.uuidna.com', async (t) => {
       const catalog = (await listed.json()) as { result: { tools: { name: string }[] } }
       assert.deepEqual(catalog.result.tools.map((row) => row.name), [...extra.names], extra.path)
       for (const name of extra.names) {
-        const man = await fetch(`${live}${extra.path}`, {
+        const man = await liveFetch(`${live}${extra.path}`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name, arguments: { man: true } } }),
@@ -168,7 +178,7 @@ test('live qpu.uuidna.com', async (t) => {
       }
       for (const name of extra.read) {
         const args = name === 'net_fetch' ? { path: '/' } : {}
-        const called = await fetch(`${live}${extra.path}`, {
+        const called = await liveFetch(`${live}${extra.path}`, {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name, arguments: args } }),
@@ -181,14 +191,14 @@ test('live qpu.uuidna.com', async (t) => {
     }
   })
   await t.test('no auth message proxy', async () => {
-    const inbox = await fetch(`${live}/message`, { headers: html })
+    const inbox = await liveFetch(`${live}/message`, { headers: html })
     assert.equal(inbox.status, 200)
     assert.equal(inbox.headers.get('access-control-allow-origin'), '*')
     const proxy = (await inbox.json()) as { kind: string; proxy: boolean; auth: boolean; holds: boolean }
     assert.equal(proxy.kind, 'message')
     assert.equal(proxy.proxy, true)
     assert.equal(proxy.holds, true)
-    const sent = await fetch(`${live}/message`, {
+    const sent = await liveFetch(`${live}/message`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ lane: 0, body: 'public' }),
@@ -205,16 +215,18 @@ test('live qpu.uuidna.com', async (t) => {
  * text, and the measured growth between steps stops the climb before the budget, so the climb stops before the host does.
  * Where it stops is a reading of qpu.uuidna.com's reach, never a cap: nothing in the unit refuses a wider request. */
 test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds', async (t) => {
-  const live = 'https://qpu.uuidna.com'
+  const live = target ?? 'https://qpu.uuidna.com'
+  t.diagnostic(`against ${where}`)
   const floor = qpuShorOf()
-  const budgetMs = 20000
+  /** Twenty seconds against a host; two in process, where reach.test already climbs this machine. */
+  const budgetMs = target ? 20000 : 2000
   type Run = { circuitry: { qubits: number; holds: boolean }; exact: { n: string }; prepare: { prepared: boolean; amplitudes: number; sparse: boolean }; measure: { holds: boolean }; factors: { by: string } }
   const steps: { qubits: number; work: number; ms: number }[] = []
   let stoppedBy = 'nothing'
   for (let work = 8; ; work *= 2) {
     const modulus = (1n << BigInt(work)) - 1n
     const t0 = process.hrtime.bigint()
-    const res = await fetch(`${live}/mcp`, {
+    const res = await liveFetch(`${live}/mcp`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'crypto_shor', arguments: { n: modulus.toString(), a: 3 } } }),

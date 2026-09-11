@@ -70,7 +70,9 @@
     "prepublishOnly": "npm run build",
     "ship": "npm run build && npx wrangler deploy",
     "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
-    "lean:embed": "node scripts/embed-lean.mjs"
+    "lean:embed": "node scripts/embed-lean.mjs",
+    "verify:live": "node scripts/verify-live.mjs https://qpu.uuidna.com",
+    "test:live": "QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js"
   },
   "devDependencies": {
     "@types/node": "26.5.1",
