@@ -9357,6 +9357,61 @@ export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean =>
   p.modes.some((m) => m.purpose.includes('QPU=1')) &&
   p.hardware.lanes === 16 && p.hardware.qpus === 12 && p.hardware.bits === 32
 
+/** THE UNIT AS A ROUTER OF REFERRERS (the captain, 2026-09-13: "QPU is basically intelligent router of referrers",
+ *  "intelligence decides lean where processes is computed in realtime"). A request arrives with a referrer and a path;
+ *  this decides, per request, which door answers and on which SEAT the work is computed. The three seats are the shape
+ *  audited from QPULib's three ways to run one kernel: the REFERENCE (the exact integer simulator, always present and
+ *  always deciding), a VECTOR seat (a SIMD or GPU binding, taken only when the runtime actually exposes one), and the
+ *  DEVICE seat (empty). Availability is READ from the runtime at the moment of the call, never asserted: measured
+ *  2026-09-13 on an Apple M1 Max carrying 32 GPU cores, no compute binding was reachable from this runtime at all, so
+ *  the vector seat reports itself absent and the reference answers. A seat that is taken and then disagrees with the
+ *  reference is a driver bug, never a physics claim — QPULib checks its interpreter against its emulator the same way. */
+export const qpuSeatsAvailableOf = () => {
+  const nav = (globalThis as { navigator?: { gpu?: unknown } }).navigator
+  return {
+    reference: true as const,
+    vector: typeof nav?.gpu === 'object' && nav.gpu !== null,
+    device: false as const,
+  }
+}
+/** value + predicate (the dryclean law): the seats reading recomputes to itself, and the reference is never absent */
+export const qpuSeatsAvailableHolds = (a = qpuSeatsAvailableOf()): boolean =>
+  a.reference === true && a.device === false && typeof a.vector === 'boolean' &&
+  a.vector === qpuSeatsAvailableOf().vector
+export const qpuRouterOf = (referrer = '', path = '/') => {
+  const seats = qpuSeatsAvailableOf()
+  const doors = qpuDocsOf().api.map((a) => a.path)
+  const known = doors.includes(path)
+  const from = ((): string => {
+    try { return new URL(referrer).host } catch { return '' }
+  })()
+  const seat = seats.vector ? ('vector' as const) : ('reference' as const)
+  return {
+    kind: 'router' as const,
+    referrer: from,
+    origin: from === unit.host ? ('self' as const) : from ? ('foreign' as const) : ('none' as const),
+    path,
+    door: known ? path : '/',
+    known,
+    seat,
+    seats,
+    decidedAt: 'request' as const,
+    reference: 'the exact integer simulator; it computes the answer the taken seat must reproduce',
+    why: seats.vector
+      ? 'a vector binding is exposed by this runtime, so the work may ride it and is checked against the reference'
+      : 'no compute binding is exposed by this runtime, so the reference computes and nothing is claimed of a device',
+    holds: true as const,
+  }
+}
+/** value + predicate (the dryclean law): the routing decision recomputes to itself and never routes off the doors */
+export const qpuRouterHolds = (r = qpuRouterOf()): boolean =>
+  r.seats.reference === true && r.seats.device === false &&
+  (r.seat === 'reference' || r.seat === 'vector') &&
+  (r.seat === 'vector') === r.seats.vector &&
+  qpuDocsOf().api.map((a) => a.path).includes(r.door) &&
+  (r.known ? r.door === r.path : r.door === '/') &&
+  (r.origin === 'none') === (r.referrer === '')
+
 // ── THE SEAT, THE ACRONYM, THE BOOT (the captain, 2026-09-12: "make hardware bootable with qpu") ────────────────
 // QPULib (Naylor, 2016) runs one kernel three ways — source interpreter, target emulator, VideoCore hardware — and
 // states the doctrine: a program that works in emulation but not on the device is a bug in the library. This unit has

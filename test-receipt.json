@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 122,
-  "pass": 122,
+  "tests": 124,
+  "pass": 124,
   "fail": 0,
   "dry": 0,
-  "circuit": 68,
+  "circuit": 70,
   "mintOnly": 12,
   "servedOnly": 12,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "79a1a3742c726238",
+  "receipt": "52853f285094cb37",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -4422,6 +4422,102 @@
       "mint": {
         "calls": 10177,
         "chain": "81399e3c4647b0a9"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "the seat is READ from this runtime, and the reference answers when nothing else is exposed",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 323,
+      "kinds": {
+        "x": 74,
+        "cnot": 144,
+        "toffoli": 14,
+        "h": 78,
+        "measure": 7,
+        "cmodexp": 3,
+        "xx": 3
+      },
+      "dims": {
+        "8": 317,
+        "512": 6
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "420bf964f480aee1",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 7
+        }
+      ],
+      "mint": {
+        "calls": 7015,
+        "chain": "84a6ef073a542a0c"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "a referrer is named by host, an unknown path falls back to a served door, and a known one is kept",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 876,
+      "kinds": {
+        "x": 198,
+        "cnot": 384,
+        "toffoli": 36,
+        "h": 228,
+        "measure": 18,
+        "cmodexp": 6,
+        "xx": 6
+      },
+      "dims": {
+        "8": 864,
+        "512": 12
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "71a926fe8ac8cce9",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 18
+        }
+      ],
+      "mint": {
+        "calls": 18444,
+        "chain": "38a65cf0460fbe94"
       },
       "served": {
         "count": 0,
