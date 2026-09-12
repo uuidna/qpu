@@ -661,8 +661,14 @@ test('initialize echoes a supported protocol version and never invents one', asy
 test('every listed tool carries an output schema read from its own replies, and a held-out reply validates against it', async () => {
   type Schema = { type: string; properties: Record<string, { type: string | string[]; properties?: Record<string, { type: string | string[] }> }>; required: string[]; description: string }
   const listed = await rpcOf('/mcp', 'tools/list')
-  const tools = (listed.tools ?? []) as { name: string; outputSchema: Schema }[]
-  assert.equal(tools.length, 16)
+  const rows = (listed.tools ?? []) as { name: string; outputSchema?: Schema }[]
+  assert.equal(rows.length, 16)
+  // THE CONNECT BILL: the list carries no output schema (they were three quarters of its bytes); one KiB per door.
+  assert.equal(rows.every((t) => t.outputSchema === undefined), true)
+  assert.equal(JSON.stringify(rows).length < rows.length * 1024, true, `tools/list ${JSON.stringify(rows).length} bytes`)
+  // the schema travels with the man page, one call away
+  const tools: { name: string; outputSchema: Schema }[] = []
+  for (const t of rows) tools.push({ name: t.name, outputSchema: (await callRpcOf('/mcp', t.name, { man: true })).shown.outputSchema as Schema })
   const typeOf = (v: unknown): string => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
   const fits = (t: string | string[], v: unknown): boolean => (Array.isArray(t) ? t : [t]).includes(typeOf(v)) || (typeOf(v) === 'integer' && (Array.isArray(t) ? t : [t]).includes('number'))
   const validate = (schema: Schema, reply: Record<string, unknown>): string[] => {

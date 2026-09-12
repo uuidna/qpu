@@ -4277,7 +4277,6 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
   title: name,
   description,
   inputSchema,
-  outputSchema: minimalOutputSchema,
   annotations: {
     audience: ['user', 'assistant'] as const,
     priority: seed,
@@ -4299,7 +4298,10 @@ const qpuShownResourceOf = (name: string): string | undefined => {
  * object copy under `_meta.functionResponse` made a 131 KB proof a 729 KB reply (external audit, 2026-09-12); they are
  * gone. A `resource_link` rides along only when a GET of its uri returns this same document (qpu_lean, qpu_cite).
  * `_meta.call` says where to call again; vendor shapes are documented in the JSON-LD catalogue at GET /mcp. */
-export const qpuMcpShownOf = (name: string, payload: unknown, href = `${unit.origin}/mcp`) => {
+export const qpuMcpShownOf = (name: string, shownPayload: unknown, href = `${unit.origin}/mcp`) => {
+  // A man page on the wire carries the tool's output schema (off tools/list since 2026-09-12), whichever door built it.
+  const isMan = !!shownPayload && typeof shownPayload === 'object' && (shownPayload as { kind?: unknown }).kind === 'man' && !('outputSchema' in shownPayload)
+  const payload: unknown = isMan ? qpuManPageOf(name, shownPayload as object) : shownPayload
   const bag = payload && typeof payload === 'object' ? (payload as { holds?: unknown }) : {}
   const holds = bag.holds === true
   const resource = qpuShownResourceOf(name)
@@ -4410,7 +4412,7 @@ const qpuSubRpcOf = async (
     const args = body.params?.arguments ?? {}
     const tool = tools.find((t) => t.name === name)
     if (!tool) return rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name}`, { tools: tools.map((t) => t.name), href })
-    if (args.man === true) return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, tool.man, href) }
+    if (args.man === true) return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, qpuManPageOf(name, tool.man), href) }
     return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, await tool.run(args), href) }
   }
   /** A body that names a method this server does not have is a declined call, not a job or a message. */
@@ -7202,7 +7204,7 @@ export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}
   const tool = sandboxTools.get(name)
   if (!tool) return { holds: false as const, denied: 'tool' as const,
     unlocked: true as const }
-  if (args.man === true) return tool.man
+  if (args.man === true) return qpuManPageOf(name, tool.man)
   const value = runOpOf(tool.run, sandboxHeap, jsonOf(args), n - n)
   return {
     kind: 'sandbox' as const,
@@ -7220,12 +7222,12 @@ export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}
 export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
   seedSandboxOf()
   if (args.man === true) {
-    return qpuManOf(
+    return qpuManPageOf(toolNames[n + seed]!, qpuManOf(
       toolNames[n + seed],
       'Agents forge tools in an unlocked in-memory sandbox. Whatever they need.',
       `Unlocked. All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect. { name, run } forges more. No lock.`,
       `${unit.origin}/mcp`,
-      toolNames.filter((s) => s !== toolNames[n + seed]))
+      toolNames.filter((s) => s !== toolNames[n + seed])))
   }
   const name = typeof args.name === 'string' ? args.name : ''
   if (name.length === n - n) return qpuSandboxOf()
@@ -9891,15 +9893,24 @@ const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
   outputSchemasMemo = out
   return out
 }
+/** THE CONNECT BILL (the captain, 2026-09-12: "minimise bills of any kind"). tools/list is paid by every client on every
+ * connect, in context tokens: the sixteen output schemas were 34,232 of its 44,197 bytes — three quarters of the bill
+ * for a document a client validates a reply against at most once. They leave the list and travel with the man page,
+ * one call away ({ man: true }), exactly as the man pages did. The list is names, descriptions, input schemas and
+ * annotations: one KiB per door, guarded by the suite. */
 export const qpuMcpToolsListOf = () => {
-  const schemas = qpuOutputSchemasOf()
-  const schemaOf = (name: string) => schemas[name] ?? minimalOutputSchema
   const sealed = qpuToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: true as const, morph: false as const, outputSchema: schemaOf(name) }))
+    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: true as const, morph: false as const }))
   const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: false as const, morph: true as const, outputSchema: schemaOf(name) }))
+    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: false as const, morph: true as const }))
   return [...sealed, ...cybersecurity]
 }
+
+/** The man page as served: the tool's man plus its output schema read from the run, off the list and one call away. */
+const qpuManPageOf = <T extends object>(name: string, man: T) => ({
+  ...man,
+  outputSchema: qpuOutputSchemasOf()[name] ?? minimalOutputSchema,
+})
 
 export const qpuMcpOf = () => {
   const href = `${unit.origin}/mcp`
@@ -10038,25 +10049,25 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
   }
   if (name === 'install' || name === 'apk') {
     if (args.man === true) {
-      return shown(
+      return shown(qpuManPageOf('install',
         qpuManOf(
           'install',
           'Interactive installer. Simulate, then commit. Fuse Payload MCP to QPU without a ninth sealed tool. VitePress payload stays on uuidna.com.',
           `tools/call install. Not in tools/list. { yes: true } seats the current package. { verb: "simulate" } then { verb: "commit", yes: true } then { verb: "audit" }. QPU JSON-LD. No auth.`,
           `${unit.origin}/mcp`,
-          [...toolNames]))
+          [...toolNames])))
     }
     return shown(qpuInstallOf(args))
   }
   if ((payloadFinds as readonly string[]).includes(name)) {
     if (args.man === true) {
-      return shown(
+      return shown(qpuManPageOf(name,
         qpuSubManOf(
           name,
           'Payload find. Read only.',
           'Not in tools/list. Morph at call time. Not a ninth sealed tool. No auth. Write never.',
           `${unit.origin}/mcp`,
-          payloadFinds.filter((row) => row !== name)))
+          payloadFinds.filter((row) => row !== name))))
     }
     return shown(qpuPayloadFindOf(name))
   }
@@ -10067,7 +10078,7 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
     ...qpuServerToolsOf(),
   ].find((t) => t.name === name)
   if (morph) {
-    if (args.man === true) return shown(morph.man)
+    if (args.man === true) return shown(qpuManPageOf(name, morph.man))
     return shown(await morph.run(args))
   }
   seedSandboxOf()

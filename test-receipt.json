@@ -10,7 +10,7 @@
   "servedOnly": 11,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "a421d8be2e9e0b1c",
+  "receipt": "433a53b51719ce9f",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -18,27 +18,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 55325,
+      "computations": 10280,
       "kinds": {
-        "x": 11523,
-        "cnot": 22022,
-        "toffoli": 1668,
-        "h": 18925,
-        "measure": 834,
-        "cmodexp": 172,
-        "xx": 172,
-        "planes": 9
+        "x": 2216,
+        "cnot": 4256,
+        "toffoli": 356,
+        "h": 3172,
+        "measure": 178,
+        "cmodexp": 51,
+        "xx": 51
       },
       "dims": {
-        "8": 54909,
-        "64": 10,
-        "128": 72,
-        "512": 324,
-        "2^64": 10
+        "8": 10178,
+        "512": 102
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "d4505fa6fb484c4f",
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "5b3fdbfb64aec6d7",
       "states": [
         {
           "name": "measure",
@@ -53,12 +49,12 @@
             "0",
             "0"
           ],
-          "measured": 834
+          "measured": 178
         }
       ],
       "mint": {
-        "calls": 1103230,
-        "chain": "ae3993e6d53fd5d4"
+        "calls": 229587,
+        "chain": "d201bffc7edbadde"
       },
       "served": {
         "count": 3,
@@ -463,27 +459,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 189116,
+      "computations": 144071,
       "kinds": {
-        "x": 39067,
-        "cnot": 74534,
-        "toffoli": 5494,
-        "h": 66295,
-        "measure": 2747,
-        "cmodexp": 473,
-        "xx": 473,
-        "planes": 33
+        "x": 29760,
+        "cnot": 56768,
+        "toffoli": 4182,
+        "h": 50542,
+        "measure": 2091,
+        "cmodexp": 352,
+        "xx": 352,
+        "planes": 24
       },
       "dims": {
-        "8": 187906,
-        "64": 10,
-        "128": 264,
-        "512": 926,
-        "2^64": 10
+        "8": 143175,
+        "128": 192,
+        "512": 704
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "aad24c955ef1ce07",
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "e1e076a57d02c2bf",
       "states": [
         {
           "name": "measure",
@@ -498,12 +492,12 @@
             "0",
             "0"
           ],
-          "measured": 2747
+          "measured": 2091
         }
       ],
       "mint": {
-        "calls": 3685665,
-        "chain": "d22b53d245d7d921"
+        "calls": 2812022,
+        "chain": "73b3189f3a9701cb"
       },
       "served": {
         "count": 0,
@@ -515,27 +509,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 74394,
+      "computations": 29349,
       "kinds": {
-        "h": 24831,
-        "cnot": 29910,
-        "x": 15631,
-        "toffoli": 2326,
-        "measure": 1163,
-        "cmodexp": 262,
-        "xx": 262,
-        "planes": 9
+        "h": 9078,
+        "cnot": 12144,
+        "x": 6324,
+        "toffoli": 1014,
+        "measure": 507,
+        "cmodexp": 141,
+        "xx": 141
       },
       "dims": {
-        "8": 73798,
-        "64": 10,
-        "128": 72,
-        "512": 504,
-        "2^64": 10
+        "8": 29067,
+        "512": 282
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "d03b74b93dc2572b",
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "a922241127198f41",
       "states": [
         {
           "name": "measure",
@@ -550,12 +540,12 @@
             "0",
             "0"
           ],
-          "measured": 1163
+          "measured": 507
         }
       ],
       "mint": {
-        "calls": 1517458,
-        "chain": "b6c266780684ac51"
+        "calls": 643815,
+        "chain": "ccc5e4732a6ee659"
       },
       "served": {
         "count": 0,
@@ -687,7 +677,7 @@
       ],
       "mint": {
         "calls": 360560,
-        "chain": "2604fa0d2f3fae01"
+        "chain": "965c66c5c03bf739"
       },
       "served": {
         "count": 3,
@@ -953,27 +943,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 55165,
+      "computations": 10120,
       "kinds": {
-        "x": 11503,
-        "cnot": 21990,
-        "toffoli": 1672,
-        "h": 18801,
-        "measure": 836,
-        "cmodexp": 177,
-        "xx": 177,
-        "planes": 9
+        "x": 2196,
+        "cnot": 4224,
+        "toffoli": 360,
+        "h": 3048,
+        "measure": 180,
+        "cmodexp": 56,
+        "xx": 56
       },
       "dims": {
-        "8": 54739,
-        "64": 10,
-        "128": 72,
-        "512": 334,
-        "2^64": 10
+        "8": 10008,
+        "512": 112
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "9e9d87935b4b2cd9",
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "30e958389da8a59f",
       "states": [
         {
           "name": "measure",
@@ -988,12 +974,12 @@
             "0",
             "0"
           ],
-          "measured": 836
+          "measured": 180
         }
       ],
       "mint": {
-        "calls": 1101279,
-        "chain": "3a7ddfd3ef96fe6f"
+        "calls": 227636,
+        "chain": "a7d59b88993964c7"
       },
       "served": {
         "count": 0,
@@ -1041,7 +1027,7 @@
       ],
       "mint": {
         "calls": 64087,
-        "chain": "622474b7080f0544"
+        "chain": "34be98a2c76633dc"
       },
       "served": {
         "count": 0,
@@ -1053,23 +1039,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 17908,
+      "computations": 62953,
       "kinds": {
-        "x": 3878,
-        "cnot": 7456,
-        "toffoli": 632,
-        "h": 5432,
-        "measure": 316,
-        "cmodexp": 97,
-        "xx": 97
+        "x": 13185,
+        "cnot": 25222,
+        "toffoli": 1944,
+        "h": 21185,
+        "measure": 972,
+        "cmodexp": 218,
+        "xx": 218,
+        "planes": 9
       },
       "dims": {
-        "8": 17714,
-        "512": 194
+        "8": 62445,
+        "64": 10,
+        "128": 72,
+        "512": 416,
+        "2^64": 10
       },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "170b73a33884443f",
+      "dim": "2^64",
+      "qubits": 64,
+      "receipt": "0cacf079fdac63f5",
       "states": [
         {
           "name": "measure",
@@ -1084,12 +1074,12 @@
             "0",
             "0"
           ],
-          "measured": 316
+          "measured": 972
         }
       ],
       "mint": {
-        "calls": 401675,
-        "chain": "ea7e578067e985c0"
+        "calls": 1275318,
+        "chain": "c88198c9792af920"
       },
       "served": {
         "count": 8,
@@ -1119,7 +1109,7 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "f12c6539f5bf0a33"
+        "chain": "16432681e558ec13"
       },
       "served": {
         "count": 0,
@@ -1140,7 +1130,7 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "6e69d6927b19549c"
+        "chain": "6945e5216bb7b6fc"
       },
       "served": {
         "count": 0,
@@ -1190,7 +1180,7 @@
       ],
       "mint": {
         "calls": 350027,
-        "chain": "703bd1c3999c1f44"
+        "chain": "05d034d6e086fc24"
       },
       "served": {
         "count": 0,
@@ -1211,7 +1201,7 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "6cac74a602da23b2"
+        "chain": "f81c43eb9caea912"
       },
       "served": {
         "count": 0,
@@ -1259,7 +1249,7 @@
       ],
       "mint": {
         "calls": 71156,
-        "chain": "b17f657926b0cbb9"
+        "chain": "2d802be5ca735319"
       },
       "served": {
         "count": 0,
@@ -1307,7 +1297,7 @@
       ],
       "mint": {
         "calls": 646,
-        "chain": "d2f3c5afe71bd109"
+        "chain": "a0985fd4cf65b4e9"
       },
       "served": {
         "count": 0,
@@ -1355,7 +1345,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "82bbcb178a6d8d2e"
+        "chain": "5de16a005495378e"
       },
       "served": {
         "count": 0,
@@ -1403,7 +1393,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "9122e50db22a44eb"
+        "chain": "f113ccae1730afcb"
       },
       "served": {
         "count": 0,
@@ -1451,7 +1441,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "4769bd3af3ca3b9c"
+        "chain": "220cd4eda2c2c1fc"
       },
       "served": {
         "count": 0,
@@ -1499,7 +1489,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "73cc2e5ee7b9fe8d"
+        "chain": "ad912777142474ed"
       },
       "served": {
         "count": 0,
@@ -1547,7 +1537,7 @@
       ],
       "mint": {
         "calls": 3694,
-        "chain": "9b70badfcc4d4411"
+        "chain": "370ffdd3689930f1"
       },
       "served": {
         "count": 0,
@@ -1595,7 +1585,7 @@
       ],
       "mint": {
         "calls": 82446,
-        "chain": "7ecc43a87f4e3695"
+        "chain": "35e109f59dd61775"
       },
       "served": {
         "count": 0,
@@ -1643,7 +1633,7 @@
       ],
       "mint": {
         "calls": 82219,
-        "chain": "1b3a6eb75e990936"
+        "chain": "c5eb320204b89a96"
       },
       "served": {
         "count": 0,
@@ -1691,7 +1681,7 @@
       ],
       "mint": {
         "calls": 153241,
-        "chain": "2289b144d8f81ead"
+        "chain": "d83d37db36058f8d"
       },
       "served": {
         "count": 0,
@@ -1751,12 +1741,12 @@
       ],
       "mint": {
         "calls": 806516,
-        "chain": "771175044cc6fe72"
+        "chain": "c61b333c07ee0752"
       },
       "served": {
         "count": 6,
         "folds": [
-          "\"002f404ac18ee529\"",
+          "\"81e74bd7ff12633c\"",
           "\"bf29eeaed102abf6\"",
           "\"6f34c162122452f2\"",
           "\"111320a9a610771e\""
@@ -1864,27 +1854,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 57384,
+      "computations": 12339,
       "kinds": {
-        "x": 11965,
-        "cnot": 22870,
-        "toffoli": 1738,
-        "h": 19571,
-        "measure": 869,
-        "cmodexp": 181,
-        "xx": 181,
-        "planes": 9
+        "x": 2658,
+        "cnot": 5104,
+        "toffoli": 426,
+        "h": 3818,
+        "measure": 213,
+        "cmodexp": 60,
+        "xx": 60
       },
       "dims": {
-        "8": 56950,
-        "64": 10,
-        "128": 72,
-        "512": 342,
-        "2^64": 10
+        "8": 12219,
+        "512": 120
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "9d3fc16b9c1c808f",
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "df0803d580575a81",
       "states": [
         {
           "name": "measure",
@@ -1899,12 +1885,12 @@
             "0",
             "0"
           ],
-          "measured": 869
+          "measured": 213
         }
       ],
       "mint": {
-        "calls": 1147907,
-        "chain": "11fd4090b1ba7dfa"
+        "calls": 274264,
+        "chain": "916d085bd7383c72"
       },
       "served": {
         "count": 0,
@@ -1952,7 +1938,7 @@
       ],
       "mint": {
         "calls": 18209,
-        "chain": "36cdcea3f2c7eb0a"
+        "chain": "c58696db5ca740e2"
       },
       "served": {
         "count": 0,
@@ -2014,27 +2000,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 55093,
+      "computations": 10048,
       "kinds": {
-        "x": 11473,
-        "cnot": 21926,
-        "toffoli": 1660,
-        "h": 18853,
-        "measure": 830,
-        "cmodexp": 171,
-        "xx": 171,
-        "planes": 9
+        "x": 2166,
+        "cnot": 4160,
+        "toffoli": 348,
+        "h": 3100,
+        "measure": 174,
+        "cmodexp": 50,
+        "xx": 50
       },
       "dims": {
-        "8": 54679,
-        "64": 10,
-        "128": 72,
-        "512": 322,
-        "2^64": 10
+        "8": 9948,
+        "512": 100
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "03e8dfcd710aab75",
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "9e6df469a698fe57",
       "states": [
         {
           "name": "measure",
@@ -2049,12 +2031,12 @@
             "0",
             "0"
           ],
-          "measured": 830
+          "measured": 174
         }
       ],
       "mint": {
-        "calls": 1098150,
-        "chain": "b2e323fd03a4f317"
+        "calls": 224507,
+        "chain": "33407cbe41a5841f"
       },
       "served": {
         "count": 0,
@@ -2779,7 +2761,7 @@
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "41c093f1b3ff99af",
+      "receipt": "a90361632f692f8b",
       "states": [
         {
           "name": "measure",
@@ -2799,12 +2781,12 @@
       ],
       "mint": {
         "calls": 2573337,
-        "chain": "bf82844cb76d5c0b"
+        "chain": "654f9af09d049609"
       },
       "served": {
         "count": 2,
         "folds": [
-          "\"002f404ac18ee529\"",
+          "\"81e74bd7ff12633c\"",
           "\"f7fc6d5b00d0e112\""
         ]
       }
@@ -2864,7 +2846,7 @@
       ],
       "mint": {
         "calls": 334327,
-        "chain": "3e1764ed8920202c"
+        "chain": "af9354d3320f739e"
       },
       "served": {
         "count": 0,
@@ -2896,7 +2878,7 @@
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "73db1299199a2062",
+      "receipt": "992fbc77e3a2f06e",
       "states": [
         {
           "name": "measure",
@@ -2916,7 +2898,7 @@
       ],
       "mint": {
         "calls": 2291882,
-        "chain": "34ef27bfafdfbf1f"
+        "chain": "32e6bc7e5c222351"
       },
       "served": {
         "count": 0,
@@ -2964,20 +2946,20 @@
       ],
       "mint": {
         "calls": 1042239,
-        "chain": "1dab1dfb2177b65c"
+        "chain": "419dccf4e3633dfa"
       },
       "served": {
         "count": 10,
         "folds": [
-          "\"002f404ac18ee529\"",
-          "\"0d5de7aec9c5be96\"",
-          "\"6c03c8a0e18db412\"",
-          "\"d00ee0b77863d14e\"",
-          "\"f442dc6791a33112\"",
-          "\"ede8ec5f4924222e\"",
-          "\"6ab90c0251a7281e\"",
-          "\"c6fdcecf388edce4\"",
-          "\"543c5b2f5c0ef87a\""
+          "\"81e74bd7ff12633c\"",
+          "\"63c4902bf72aceae\"",
+          "\"23363009eadc48a8\"",
+          "\"cf594d9d088efcda\"",
+          "\"56be655680b85e84\"",
+          "\"716d38e19f3fb452\"",
+          "\"6a8994615cb91722\"",
+          "\"172430e2e81e7962\"",
+          "\"1fc61523a31c6d42\""
         ]
       }
     },
@@ -3171,29 +3153,29 @@
       ],
       "mint": {
         "calls": 2255131,
-        "chain": "18652aee40c0580b"
+        "chain": "74656a4950af1fa1"
       },
       "served": {
         "count": 18,
         "folds": [
-          "\"002f404ac18ee529\"",
-          "\"fa47c234a4055b22\"",
+          "\"81e74bd7ff12633c\"",
+          "\"30e8b53f57208544\"",
           "\"f7fc6d5b00d0e112\"",
-          "\"1d7a4fadfd4a9bd4\"",
+          "\"b3ff0b285f324124\"",
           "\"24d301e31130f0a6\"",
-          "\"a6be9fc96321b908\"",
+          "\"a1602a642ccfa332\"",
           "\"b76408024e4a9eac\"",
-          "\"1018d8880b0576ea\"",
+          "\"3db38f565a8fb026\"",
           "\"721ea65e4039d77a\"",
-          "\"0d5de7aec9c5be96\"",
+          "\"63c4902bf72aceae\"",
           "\"c8681406bd2615de\"",
-          "\"6c03c8a0e18db412\"",
-          "\"d00ee0b77863d14e\"",
-          "\"f442dc6791a33112\"",
-          "\"ede8ec5f4924222e\"",
-          "\"6ab90c0251a7281e\"",
-          "\"c6fdcecf388edce4\"",
-          "\"543c5b2f5c0ef87a\""
+          "\"23363009eadc48a8\"",
+          "\"cf594d9d088efcda\"",
+          "\"56be655680b85e84\"",
+          "\"716d38e19f3fb452\"",
+          "\"6a8994615cb91722\"",
+          "\"172430e2e81e7962\"",
+          "\"1fc61523a31c6d42\""
         ]
       }
     },
@@ -3238,7 +3220,7 @@
       ],
       "mint": {
         "calls": 96422,
-        "chain": "52517746dbc1f654"
+        "chain": "b0d3261f21140742"
       },
       "served": {
         "count": 1,
@@ -3303,12 +3285,12 @@
       ],
       "mint": {
         "calls": 21978,
-        "chain": "92a7dbb0d743fc33"
+        "chain": "be032bb6329d1561"
       },
       "served": {
         "count": 2,
         "folds": [
-          "\"002f404ac18ee529\"",
+          "\"81e74bd7ff12633c\"",
           "\"721ea65e4039d77a\""
         ]
       }
@@ -3327,7 +3309,7 @@
       "states": [],
       "mint": {
         "calls": 50,
-        "chain": "534cc0992212ca07"
+        "chain": "a82dfcc8d5cf5ff5"
       },
       "served": {
         "count": 0,
@@ -3339,27 +3321,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 6456,
+      "computations": 10636,
       "kinds": {
-        "h": 1956,
-        "cnot": 2688,
-        "x": 1398,
-        "toffoli": 228,
-        "measure": 114,
-        "cmodexp": 36,
-        "xx": 36
+        "h": 3252,
+        "cnot": 4416,
+        "x": 2298,
+        "toffoli": 372,
+        "measure": 186,
+        "cmodexp": 56,
+        "xx": 56
       },
       "dims": {
-        "8": 6384,
+        "8": 10524,
         "64": 2,
         "128": 2,
         "256": 2,
-        "512": 64,
+        "512": 104,
         "2^64": 2
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "513a77fc0e514021",
+      "receipt": "57bdec04a3852eb1",
       "states": [
         {
           "name": "measure",
@@ -3374,17 +3356,29 @@
             "0",
             "0"
           ],
-          "measured": 114
+          "measured": 186
         }
       ],
       "mint": {
-        "calls": 142557,
-        "chain": "d775c84320add61b"
+        "calls": 235169,
+        "chain": "9f488b5041b869f9"
       },
       "served": {
-        "count": 5,
+        "count": 17,
         "folds": [
-          "\"002f404ac18ee529\"",
+          "\"81e74bd7ff12633c\"",
+          "\"30e8b53f57208544\"",
+          "\"b3ff0b285f324124\"",
+          "\"a1602a642ccfa332\"",
+          "\"3db38f565a8fb026\"",
+          "\"63c4902bf72aceae\"",
+          "\"23363009eadc48a8\"",
+          "\"cf594d9d088efcda\"",
+          "\"56be655680b85e84\"",
+          "\"716d38e19f3fb452\"",
+          "\"6a8994615cb91722\"",
+          "\"172430e2e81e7962\"",
+          "\"1fc61523a31c6d42\"",
           "\"b76408024e4a9eac\"",
           "\"24d301e31130f0a6\"",
           "\"bdefa81a2d0e54e8\"",
@@ -3435,12 +3429,12 @@
       ],
       "mint": {
         "calls": 797655,
-        "chain": "e12c0b4e124d1110"
+        "chain": "b83fcabfe8d1cda6"
       },
       "served": {
         "count": 13,
         "folds": [
-          "\"002f404ac18ee529\"",
+          "\"81e74bd7ff12633c\"",
           "\"f7fc6d5b00d0e112\"",
           "\"24d301e31130f0a6\"",
           "\"b76408024e4a9eac\"",
@@ -3497,7 +3491,7 @@
       ],
       "mint": {
         "calls": 136402,
-        "chain": "554877d3b97088dc"
+        "chain": "c25fb303fe02b63e"
       },
       "served": {
         "count": 10,
@@ -3506,7 +3500,7 @@
           "\"c0bcf8ad22ef7836\"",
           "\"f94af07d28b24ba7\"",
           "\"db7aaa51bdad3dd7\"",
-          "\"002f404ac18ee529\"",
+          "\"81e74bd7ff12633c\"",
           "\"6f34c162122452f2\""
         ]
       }
@@ -4009,27 +4003,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 48211,
+      "computations": 3166,
       "kinds": {
-        "h": 16727,
-        "cnot": 19078,
-        "x": 9990,
-        "toffoli": 1422,
-        "measure": 711,
-        "cmodexp": 137,
-        "xx": 137,
-        "planes": 9
+        "h": 974,
+        "cnot": 1312,
+        "x": 683,
+        "toffoli": 110,
+        "measure": 55,
+        "cmodexp": 16,
+        "xx": 16
       },
       "dims": {
-        "8": 47865,
-        "64": 10,
-        "128": 72,
-        "512": 254,
-        "2^64": 10
+        "8": 3134,
+        "512": 32
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "d853699419857f96",
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "57de3d8d9f743624",
       "states": [
         {
           "name": "measure",
@@ -4044,12 +4034,12 @@
             "0",
             "0"
           ],
-          "measured": 711
+          "measured": 55
         }
       ],
       "mint": {
-        "calls": 944028,
-        "chain": "85d0359000f5617d"
+        "calls": 70385,
+        "chain": "f9df60957e851af5"
       },
       "served": {
         "count": 3,
