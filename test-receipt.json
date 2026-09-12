@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 126,
-  "pass": 126,
+  "tests": 127,
+  "pass": 127,
   "fail": 0,
   "dry": 0,
-  "circuit": 85,
+  "circuit": 86,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "d830ef20dab804fb",
+  "receipt": "337c31cfdcc58805",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -4967,6 +4967,54 @@
       "mint": {
         "calls": 85756,
         "chain": "1b61a043e2c88292"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "the vector occupant agreed with the reference exactly, and its refusal is recorded as a refusal",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 813,
+      "kinds": {
+        "x": 175,
+        "cnot": 336,
+        "toffoli": 28,
+        "h": 252,
+        "measure": 14,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 805,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "d3751420dd34b49c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 14
+        }
+      ],
+      "mint": {
+        "calls": 18209,
+        "chain": "df49ee4c8a92bf82"
       },
       "served": {
         "count": 0,

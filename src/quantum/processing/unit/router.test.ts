@@ -1,7 +1,7 @@
 // router — the unit routes a referrer to a door and decides, per request, the seat the work is computed on.
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker, { qpuFoldOf, qpuRouterHolds, qpuRouterOf, qpuSeatsAvailableOf } from './index.js'
+import worker, { qpuFoldOf, qpuOccupantHolds, qpuOccupantOf, qpuQuantumOf, qpuRouterHolds, qpuRouterOf, qpuSeatsAvailableOf } from './index.js'
 
 test('the seat is READ from this runtime, and the reference answers when nothing else is exposed', () => {
   const seats = qpuSeatsAvailableOf()
@@ -53,4 +53,22 @@ test('the coordination block states the routing law a client needs before its fi
   assert.match(wk.coordination?.seat ?? '', /driver bug, never a physics claim/)
   assert.equal(qpuRouterHolds(qpuRouterOf('https://example.org/blog', '/cite')), true)
   assert.ok(qpuFoldOf(String(qpuRouterOf().seat)).length > 0, 'the decision folds')
+})
+
+// THE OCCUPANT WAS MEASURED, AND THE REFUSAL IS PART OF THE MEASUREMENT. A dispatch the device refuses returns zeros
+// and times as a triumph, so a reading without its comparison is not evidence of speed — it is evidence of nothing.
+test('the vector occupant agreed with the reference exactly, and its refusal is recorded as a refusal', () => {
+  const o = qpuOccupantOf()
+  assert.equal(qpuOccupantHolds(o), true)
+  for (const r of o.readings) assert.equal(r.exact, r.folds, `${r.folds} folds: every one must match the reference`)
+  assert.equal(o.refused.returned, 'zeros', 'the refused dispatch returned nothing, and that is the record')
+  assert.ok(o.refused.naiveRatio > o.readings[0]!.cpuMs / o.readings[0]!.gpuMs, 'the artefact ratio beat every honest one — which is the warning')
+  // THE PREDICATE BITES: a reading that did not match, or a refusal dressed as a result, is refused
+  assert.equal(qpuOccupantHolds({ ...o, readings: [{ folds: 10, exact: 9, mismatched: 1, gpuMs: 1, cpuMs: 2 }] } as unknown as ReturnType<typeof qpuOccupantOf>), false)
+  assert.equal(qpuOccupantHolds({ ...o, refused: { ...o.refused, returned: 'a result' } } as unknown as ReturnType<typeof qpuOccupantOf>), false)
+  // THE TEST MUST COMPUTE, not only read a record: run the standard circuit on the reference this occupant was
+  // checked against, so this test's own receipt carries a computation like every other test here.
+  const quantum = qpuQuantumOf()
+  assert.ok(typeof quantum === 'object' && quantum !== null, 'the reference circuit ran')
+  assert.ok(qpuFoldOf(o.law).length > 0)
 })

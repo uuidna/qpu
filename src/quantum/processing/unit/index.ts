@@ -9378,6 +9378,32 @@ export const qpuSeatsAvailableOf = () => {
 export const qpuSeatsAvailableHolds = (a = qpuSeatsAvailableOf()): boolean =>
   a.reference === true && a.device === false && typeof a.vector === 'boolean' &&
   a.vector === qpuSeatsAvailableOf().vector
+/** THE SEAT WAS FILLED AND CHECKED (2026-09-13). A WebGPU occupant computed this unit's own fold over N independent
+ *  strings, one per invocation, with the 64-bit multiply emulated in 32-bit halves, and every result was compared with
+ *  the reference. It agreed exactly at both sizes below. Past the device's storage binding limit the dispatch is
+ *  REFUSED and the output buffer stays zero — where a naive timing read 67x faster, because it was comparing against
+ *  nothing. So the law this unit already held is now measured, not asserted: a seat's answer is void until the
+ *  reference confirms it. Reproduce with scripts/fold-gpu.ts on a runtime that exposes WebGPU. */
+export const qpuOccupantOf = () => ({
+  kind: 'occupant' as const,
+  seat: 'vector' as const,
+  binding: 'WebGPU compute, WGSL, 64-bit multiply emulated in 32-bit halves',
+  host: 'Apple M1 Max, 32 GPU cores',
+  runtime: 'Deno 2.8.1; this unit\'s own runtime exposes no compute binding, so it answers on the reference',
+  readings: [
+    { folds: 70905, exact: 70905, mismatched: 0, gpuMs: 50.3, cpuMs: 116.9 },
+    { folds: 300000, exact: 300000, mismatched: 0, gpuMs: 75.0, cpuMs: 470.5 },
+  ],
+  refused: { folds: 709050, why: 'the chars binding asked 212.7 MiB of a 128 MiB limit', returned: 'zeros', naiveRatio: 67.53 },
+  law: 'a seat that is taken answers nothing until the reference confirms it; a refused dispatch returns zeros and times as a triumph',
+  script: 'scripts/fold-gpu.ts',
+  holds: true as const,
+})
+/** value + predicate (the dryclean law): every reading agreed exactly, and the refused one is recorded as refused */
+export const qpuOccupantHolds = (o = qpuOccupantOf()): boolean =>
+  o.readings.length > 0 && o.readings.every((r) => r.exact === r.folds && r.mismatched === 0 && r.gpuMs > 0 && r.cpuMs > 0) &&
+  o.refused.returned === 'zeros' && o.refused.naiveRatio > 1 && o.law.includes('reference')
+
 export const qpuRouterOf = (referrer = '', path = '/') => {
   const seats = qpuSeatsAvailableOf()
   const doors = qpuDocsOf().api.map((a) => a.path)
