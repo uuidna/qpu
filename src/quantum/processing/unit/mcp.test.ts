@@ -1,6 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker, { shorFactorOf } from './index.js'
+import worker, { qpuCiteOf, qpuLeanOf, qpuMcpOf, qpuMcpToolsListOf, qpuQuantumOf, qpuServedMemoOf, shorFactorOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host, QPU_WRITE_TOKEN: 'qpu-test-write-token' }
@@ -737,4 +737,35 @@ test('a reply carries its payload twice, as text and as structure, and links onl
     }
   }
   assert.equal(linked, 2)
+})
+
+test('documents are served once per isolate: memoized bytes equal a fresh construction, and an ETag answers with 304', async () => {
+  const first = await fetchOf('/')
+  const etag = first.headers.get('etag') ?? ''
+  assert.equal(/^"[0-9a-f]{16}"$/.test(etag), true, etag)
+  const bytes = await first.text()
+  assert.equal(bytes, JSON.stringify(qpuQuantumOf())) // the memo is the document, not a stale copy of it
+  const again = await fetchOf('/')
+  assert.equal(await again.text(), bytes)
+  assert.equal(again.headers.get('etag'), etag)
+  const cached = await fetchOf('/', { headers: { 'if-none-match': etag } })
+  assert.equal(cached.status, 304)
+  assert.equal(await cached.text(), '')
+  assert.equal(cached.headers.get('etag'), etag)
+  const wrong = await fetchOf('/', { headers: { 'if-none-match': '"0000000000000000"' } })
+  assert.equal(wrong.status, 200)
+  for (const [path, build] of [['/cite', () => qpuCiteOf()], ['/mcp', () => qpuMcpOf()], ['/quantum/processing/unit', () => qpuLeanOf()]] as const) {
+    assert.equal(await (await fetchOf(path)).text(), JSON.stringify(build()), path)
+  }
+  // tools/list and a pure call: the spliced envelope is byte-for-byte what JSON.stringify of the whole object gives
+  const post = (body: unknown) => fetchOf('/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+  const listed = await (await post({ jsonrpc: '2.0', id: 7, method: 'tools/list' })).text()
+  assert.equal(listed, JSON.stringify({ jsonrpc: '2.0', id: 7, result: { resultType: 'complete', tools: qpuMcpToolsListOf() } }))
+  const one = await (await post({ jsonrpc: '2.0', id: 'x', method: 'tools/call', params: { name: 'crypto_shor', arguments: { n: 15, a: 7 } } })).text()
+  const two = await (await post({ jsonrpc: '2.0', id: 'x', method: 'tools/call', params: { name: 'crypto_shor', arguments: { n: 15, a: 7 } } })).text()
+  assert.equal(one, two)
+  assert.equal(JSON.parse(one).result.structuredContent.n, 15)
+  const memo = qpuServedMemoOf()
+  assert.equal(memo.integrity.checked, true)
+  assert.equal(memo.entries > 4 && memo.entries <= memo.cap, true, JSON.stringify(memo))
 })

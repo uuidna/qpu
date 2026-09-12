@@ -8,7 +8,7 @@
 import { appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { test as nodeTest, type TestContext, type TestOptions } from 'node:test'
-import { qpuMintReceiptOf, qpuReceiptFoldOf, qpuReceiptLedgerOf } from './index.js'
+import { qpuMintReceiptOf, qpuReceiptFoldOf, qpuReceiptLedgerOf, qpuServedLedgerOf } from './index.js'
 
 /** One receipts file PER RUN, named by the run: a test worker's parent is the `node --test` process the reporter runs in,
  * so workers append to the reporter's pid and the reporter reads its own. Two suites in one tree no longer share a file,
@@ -31,6 +31,9 @@ export type TestReceipt = {
   /** exact integer amplitudes of every distinct measured state this test produced — the Born weights themselves — with how often each was measured */
   states: { name: string; dim: number; amplitudes: readonly string[]; measured: number }[]
   mint: { calls: number; chain: string }
+  /** documents served from the isolate's memo during this test, with the fold of each — computed once, earlier; a third
+   * state beside computed and nothing, and part of the proof */
+  served: { count: number; folds: string[] }
   readings: { time: { ns: number; resolved: boolean }; temperature: Temperature }
 }
 
@@ -59,6 +62,7 @@ const statesOf = (slice: ReturnType<typeof qpuReceiptLedgerOf>): TestReceipt['st
 
 const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void> => {
   const from = qpuReceiptLedgerOf().length
+  const servedFrom = qpuServedLedgerOf().length
   const mintFrom = qpuMintReceiptOf()
   const started = process.hrtime.bigint()
   try {
@@ -91,6 +95,7 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
       receipt: qpuReceiptFoldOf(slice),
       states: statesOf(slice),
       mint: { calls: mintTo.calls - mintFrom.calls, chain: mintTo.chain },
+      served: { count: qpuServedLedgerOf().length - servedFrom, folds: [...new Set(qpuServedLedgerOf().slice(servedFrom).map((r) => r.fold))] },
       readings: { time: { ns, resolved: ns > 0 }, temperature: temperatureOf() },
     }
     appendFileSync(join(process.cwd(), RECEIPTS_FILE), `${JSON.stringify(row)}\n`)

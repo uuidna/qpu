@@ -10481,11 +10481,63 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
   )
 }
 
+/** SERVED ONCE PER ISOLATE. The unit is deterministic — no clock, no random, no request-dependent state in these
+ * documents — so a document computed once is the document for the life of the isolate. Before this, every request
+ * paid the whole integrity check (about 34 ms) and rebuilt its document (up to 60 ms); on a metered host that is
+ * CPU billed for nothing new. The memo holds the serialized bytes and their fold, and the fold is the ETag, so a
+ * client that already has the document gets a 304 and no body. The tool-call memo holds pure tools only — the
+ * eight cybersecurity tools and the sealed readers — never the sandbox, storage, network, server or a live call,
+ * and never more than the cap, evicting the oldest. Correctness is proved by the suite: the memoized bytes equal a
+ * fresh construction, and by CI: the host serves this build's bytes. */
+const integrityMemo = { checked: false, holds: false }
+const integrityOnceOf = (): boolean => {
+  if (!integrityMemo.checked) {
+    integrityMemo.holds = qpuIntegrityHolds()
+    integrityMemo.checked = true
+  }
+  return integrityMemo.holds
+}
+type Served = { body: string; etag: string }
+const servedMemo = new Map<string, Served>()
+const servedCap = mintOf(mintOf(n))
+/** THE SERVED LEDGER. Every time a memoized document is served instead of computed, a row records what was served and
+ * the fold of its bytes — so a test that read a served document carries that fold in its receipt as `served`, a third
+ * state beside computed and nothing: the computation happened once, earlier, and this is its fold, not a new one. */
+export type QpuServed = { key: string; fold: string }
+const SERVED: QpuServed[] = []
+export const qpuServedLedgerOf = (): readonly QpuServed[] => SERVED
+const servedOf = (key: string, build: () => unknown): Served => {
+  const hit = servedMemo.get(key)
+  if (hit) {
+    SERVED.push({ key, fold: hit.etag })
+    return hit
+  }
+  const body = JSON.stringify(build())
+  const row = { body, etag: `"${qpuFoldOf(body)}"` }
+  if (servedMemo.size >= servedCap) servedMemo.delete(servedMemo.keys().next().value as string)
+  servedMemo.set(key, row)
+  return row
+}
+/** Pure tools: the four readers and the eight cybersecurity tools reply the same to the same arguments for the life of
+ * the isolate. train, improve and compete climb an occupancy that moves with each call, and forge seats a sandbox;
+ * those are never served from the memo. */
+const pureTools = new Set<string>(['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_prove', ...cryptoToolNames])
+const pureArgs = (args: Record<string, unknown>): boolean => Object.keys(args).every((k) => k === 'man' || k === 'n' || k === 'a')
+export const qpuServedMemoOf = () => ({ entries: servedMemo.size, cap: servedCap, served: SERVED.length, integrity: { ...integrityMemo } })
+export const qpuServedMemoHolds = (m = qpuServedMemoOf()): boolean => m.entries <= m.cap && m.served >= n - n && (m.integrity.checked ? m.integrity.holds : true)
+/** Every served row names a memo key and carries a quoted 16-hex fold — the ETag of the bytes served. */
+export const qpuServedLedgerHolds = (rows = qpuServedLedgerOf()): boolean => rows.every((r) => r.key.length > n - n && /^"[0-9a-f]{16}"$/.test(r.fold))
+
 export default {
   async fetch(request: Request, env?: QpuEnv): Promise<Response> {
     const host = env?.QPU_HOST ?? unit.host
     const jsonOf = (body: unknown, status = found) => new Response(JSON.stringify(body), { status, headers })
-    if (host !== unit.host || host.includes('*') || !unit.holds || !qpuIntegrityHolds()) {
+    /** A memoized document: 304 with no body when the client's If-None-Match is its ETag, else the bytes with the ETag. */
+    const servedResponse = (row: Served) => {
+      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: { ...headers, etag: row.etag } })
+      return new Response(row.body, { status: found, headers: { ...headers, etag: row.etag } })
+    }
+    if (host !== unit.host || host.includes('*') || !unit.holds || !integrityOnceOf()) {
       return jsonOf(JSON.parse(dead), lost)
     }
     const url = new URL(request.url)
@@ -10515,26 +10567,40 @@ export default {
         if (body.method === 'ping' || body.method === 'notifications/initialized') {
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: {} })
         }
+        /** The envelope carries the request's id, so the memo holds the result's bytes and the envelope is spliced around
+         * them — the same bytes JSON.stringify would produce for the whole object. */
+        const envelope = (id: unknown, resultBody: string) => new Response(`{"jsonrpc":"2.0","id":${JSON.stringify(id ?? null)},"result":${resultBody}}`, { status: found, headers })
         if (body.method === 'tools/list') {
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: { resultType: 'complete' as const, tools: qpuMcpToolsListOf() } })
+          return envelope(body.id, servedOf('tools/list', () => ({ resultType: 'complete' as const, tools: qpuMcpToolsListOf() })).body)
         }
         if (body.method === 'tools/call') {
           const name = typeof body.params?.name === 'string' ? body.params.name : ''
           const args = body.params?.arguments && typeof body.params.arguments === 'object' && !Array.isArray(body.params.arguments) ? (body.params.arguments as Record<string, unknown>) : {}
+          if (pureTools.has(name) && pureArgs(args)) {
+            const key = `call:${name}:${JSON.stringify(args)}`
+            const hit = servedMemo.get(key)
+            if (hit) {
+              SERVED.push({ key, fold: hit.etag })
+              return envelope(body.id, hit.body)
+            }
+            const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
+            if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
+            return envelope(body.id, servedOf(key, () => called).body)
+          }
           const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
           if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: called })
         }
         return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods] }))
       }
-      return jsonOf(qpuMcpOf())
+      return servedResponse(servedOf('/mcp', () => qpuMcpOf()))
     }
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, 'content-type': 'text/plain; charset=utf-8' } })
     }
-    if (path === '/') return jsonOf(qpuQuantumOf())
-    if (path === `/${unit.path}`) return jsonOf(qpuLeanOf())
-    if (path === '/cite') return jsonOf(qpuCiteOf())
+    if (path === '/') return servedResponse(servedOf('/', () => qpuQuantumOf()))
+    if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
+    if (path === '/cite') return servedResponse(servedOf('/cite', () => qpuCiteOf()))
     if (path === '/server' || path.startsWith('/server/')) {
       if (request.method === 'POST') {
         const body = (await request.json().catch(() => ({}))) as {

@@ -15,7 +15,7 @@ import { qpuFoldOf } from './index.js'
 import { receiptsFileOf, type TestReceipt } from './receipted.js'
 
 interface TestEvent { type: string; data: { name?: string; file?: string; nesting?: number; details?: { error?: { message?: string } } } }
-interface Row { name: string; file: string; nesting: number; pass: boolean; computations: number; kinds: Record<string, number>; dims: Record<string, number>; dim: string; qubits: number; receipt: string; states: TestReceipt['states']; mint: { calls: number; chain: string } }
+interface Row { name: string; file: string; nesting: number; pass: boolean; computations: number; kinds: Record<string, number>; dims: Record<string, number>; dim: string; qubits: number; receipt: string; states: TestReceipt['states']; mint: { calls: number; chain: string }; served: { count: number; folds: string[] } }
 
 /** This run's receipts: the file workers wrote under this process's pid, or, when tests ran in this very process
  * (--test-isolation=none), the one written under its parent. Never another run's. */
@@ -49,10 +49,10 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     })
   }
   const receipts = receiptsOf()
-  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' } } }
+  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, served: { count: 0, folds: [] }, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' } } }
   const rows: Row[] = events.map((e) => {
     const got = receipts.get(e.name) ?? none
-    return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, dims: got.dims, dim: got.dim, qubits: got.qubits, receipt: got.receipt, states: got.states, mint: got.mint }
+    return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, dims: got.dims, dim: got.dim, qubits: got.qubits, receipt: got.receipt, states: got.states, mint: got.mint, served: got.served ?? { count: 0, folds: [] } }
   })
   const failed = events.filter((e) => !e.pass)
   for (const f of failed) {
@@ -61,14 +61,16 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     for (const line of f.message.split('\n').slice(0, 6)) yield `    ${line}\n`
   }
   // subtests ride their parent's receipt; the standard judges the top-level tests
-  const dry = rows.filter((r) => r.nesting === 0 && r.computations === 0 && r.mint.calls === 0)
+  // three states: computed, served from the isolate's memo (its fold recorded), or nothing — only nothing is dry
+  const dry = rows.filter((r) => r.nesting === 0 && r.computations === 0 && r.mint.calls === 0 && r.served.count === 0)
+  const servedOnly = rows.filter((r) => r.nesting === 0 && r.computations === 0 && r.mint.calls === 0 && r.served.count > 0).length
   for (const r of dry) yield `✗ no computational receipt — ${r.name} (${r.file}) computed nothing\n`
   const pass = rows.filter((r) => r.pass).length
   const circuit = rows.filter((r) => r.nesting === 0 && r.computations > 0).length
   const mintOnly = rows.filter((r) => r.nesting === 0 && r.computations === 0 && r.mint.calls > 0).length
   const largest = rows.reduce((top, r) => (r.qubits > top.qubits ? r : top), { dim: '0', qubits: 0, name: '' } as Pick<Row, 'dim' | 'qubits' | 'name'>)
   const sorted = [...rows].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-  const fold = qpuFoldOf(sorted.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}`).join('\u0000'))
+  const fold = qpuFoldOf(sorted.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}:${r.served.folds.join(',')}`).join('\u0000'))
   const proof = {
     kind: 'test-receipt',
     standard: 'every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json',
@@ -78,6 +80,7 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     dry: dry.length,
     circuit,
     mintOnly,
+    servedOnly,
     dim: largest.dim,
     qubits: largest.qubits,
     receipt: fold,
@@ -96,6 +99,6 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
   writeFileSync(join(process.cwd(), 'test-readings.json'), `${JSON.stringify(readings, null, 2)}\n`)
   if (dry.length > 0 || failed.length > 0) process.exitCode = 1
   yield failed.length === 0 && dry.length === 0
-    ? `✓ tests — ${pass}/${rows.length} pass; ${circuit} ran the circuit, ${mintOnly} mint-only, largest dim 2^${largest.qubits} (${largest.name.split(':')[0]}); receipt ${fold}; readings ${totalNs} ns, temperature ${readings.temperature.measured ? `${(readings.temperature as { millikelvin: number }).millikelvin} mK` : 'unmeasured'}, cracks ${cracks.length}\n`
+    ? `✓ tests — ${pass}/${rows.length} pass; ${circuit} ran the circuit, ${mintOnly} mint-only, ${servedOnly} served-only, largest dim 2^${largest.qubits} (${largest.name.split(':')[0]}); receipt ${fold}; readings ${totalNs} ns, temperature ${readings.temperature.measured ? `${(readings.temperature as { millikelvin: number }).millikelvin} mK` : 'unmeasured'}, cracks ${cracks.length}\n`
     : `✗ tests — ${failed.length} failed, ${dry.length} without computational receipt, ${pass}/${rows.length} pass, receipt ${fold}\n`
 }

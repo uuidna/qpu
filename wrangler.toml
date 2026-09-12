@@ -4,7 +4,8 @@
 name = "uuidna-qpu"
 main = "worker.js"
 compatibility_date = "2026-08-01"
-workers_dev = true
+# No workers.dev route: every request there was a scanner hitting a host that answers nothing, billed as an invocation.
+workers_dev = false
 
 [[routes]]
 pattern = "qpu.uuidna.com"
