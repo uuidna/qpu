@@ -1195,22 +1195,6 @@ export const qpuDesignOf = () => {
   }
 }
 
-export const qpuHandledOf = (denied: string) => {
-  const design = qpuDesignOf()
-  const hit = design.nodes.find((node) => node.name === denied)
-  const face = hit ? hit.face : Number(BigInt(denied.length) % BigInt(design.nodes.length))
-  const node = hit ?? design.nodes[face]!
-  return {
-    kind: 'design' as const,
-    denied,
-    face: node.face,
-    name: node.name,
-    hop: node.hop,
-    wave: node.wave,
-    fold: node.fold,
-    holds: false as const,
-  }
-}
 
 export const qpuDesignHolds = (d = qpuDesignOf()): boolean =>
   d.holds === true &&
@@ -2108,7 +2092,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
 
 /** The receipts of one Shor run: the folds, and the exact amplitudes of the modexp and noise states, the ledger gained
  * after `from`. Two honest runs of one circuit fold alike; a reader who runs qpuShorOf recomputes them. */
-export const qpuShorReceiptsOf = (from: number) => {
+const qpuShorReceiptsOf = (from: number) => {
   const rows = qpuReceiptLedgerOf().slice(from)
   return {
     kind: 'receipts' as const,
@@ -5514,53 +5498,9 @@ const hexOf = (value: number, width: number): string => {
   return s
 }
 
-const cloudflarePrimary = [
-  'agent-commerce-analytics-template',
-  'agent-visibility-template',
-  'ai-brand-visibility-template',
-  'astro-blog-starter-template',
-  'chanfana-openapi-template',
-  'commerce-llms-txt-template',
-  'containers-template',
-  'd1-starter-sessions-api-template',
-  'd1-template',
-  'durable-chat-template',
-  'hello-world-do-template',
-  'internal-sites-template',
-  'llm-chat-app-template',
-  'microfrontend-template',
-  'multiplayer-globe-template',
-  'mysql-hyperdrive-template',
-  'next-starter-template',
-  'nlweb-template',
-  'nodejs-http-server-template',
-  'openauth-template',
-  'postgres-hyperdrive-template',
-  'r2-explorer-template',
-  'react-postgres-fullstack-template',
-  'react-router-hono-fullstack-template',
-  'react-router-postgres-ssr-template',
-  'react-router-starter-template',
-  'react-starter-template',
-  'remix-starter-template',
-  'saas-admin-template',
-  'text-to-image-template',
-  'to-do-list-kv-template',
-  'vite-react-template',
-  'worker-publisher-template',
-  'workers-builds-notifications-template',
-  'workers-for-platforms-template',
-  'workflows-starter-template'] as const
 
-const cloudflareE2e = [
-  'llm-chat-app-template',
-  'microfrontend-template',
-  'nlweb-template',
-  'text-to-image-template',
-  'worker-publisher-template',
-  'workers-for-platforms-template'] as const
 
-export const qpuSeatHandleOf = (face: number) => {
+const qpuSeatHandleOf = (face: number) => {
   const cube = qpuCubeOf()
   const isolate = qpuHandleOf()
   const faces = qpuFacesOf()
@@ -5587,26 +5527,6 @@ export const qpuSeatHandleOf = (face: number) => {
   }
 }
 
-export const qpuCatalogHandleOf = (index: number) => {
-  const isolate = qpuHandleOf()
-  const faces = qpuFacesOf()
-  const face = index % faces.faces
-  const hop = hopOf(face, faces.rays, faces.faces)
-  const id = hexOf(faces.faces + index, mintOf(n))
-  const holds = isolate.holds && id.length === mintOf(n) && hop === face && index >= n - n
-  return {
-    kind: 'handle' as const,
-    id,
-    '@id': `${unit.origin}/storage#${id}`,
-    href: `https://github.com/cloudflare/templates/tree/main/${cloudflarePrimary[index] ?? cloudflareE2e[index - cloudflarePrimary.length] ?? id}`,
-    face,
-    hop,
-    bits: isolate.bits,
-    amplitudes: isolate.amplitudes,
-    kv: isolate.kv.amplitudes,
-    holds,
-  }
-}
 
 let messageSeq = n - n
 const messageLanes: unknown[][] = []
@@ -9120,7 +9040,7 @@ export const qpuCompeteLiveOf = async (team?: string) => {
   }
 }
 
-export const qpuProveLiveOf = async () => {
+const qpuProveLiveOf = async () => {
   const prove = qpuProveOf()
   const live = await qpuCernExperienceOf()
   const holds =
@@ -9140,7 +9060,7 @@ export const qpuProveLiveOf = async () => {
   }
 }
 
-export const qpuSequenceLiveOf = async () => {
+const qpuSequenceLiveOf = async () => {
   const train = await qpuTrainLiveOf()
   const improve = await qpuImproveLiveOf()
   const compete = await qpuCompeteLiveOf()
@@ -9332,7 +9252,7 @@ export const qpuHarnessesOf = () => {
 export const qpuHarnessesHolds = (h = qpuHarnessesOf()): boolean => h.holds === true && h.rows.length === mintOf(n) && h.url === `${unit.origin}/mcp`
 
 export const MCP_VERSIONS = ['2024-11-05', '2025-03-26', '2025-06-18'] as const
-export const qpuMcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
+const qpuMcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
   (MCP_VERSIONS as readonly string[]).includes(String(requested)) ? (requested as (typeof MCP_VERSIONS)[number]) : MCP_VERSIONS[n - seed]!
 export const qpuMcpDiscoverOf = (requested?: unknown) => {
   const hosts = qpuHostsOf()
@@ -9492,7 +9412,7 @@ export const qpuPayloadMcpOf = () => {
   }
 }
 
-export const qpuPayloadFindOf = (name: string) => {
+const qpuPayloadFindOf = (name: string) => {
   const payload = qpuPayloadMcpOf()
   const plugin = payload.plugin
   const tool = payload.tools.find((row) => row.name === name)
@@ -9525,7 +9445,7 @@ export const qpuPayloadFindOf = (name: string) => {
     docs: payload}
 }
 
-export const qpuInstallPackagesOf = () => {
+const qpuInstallPackagesOf = () => {
   const qpu = {
     key: installKeys[n - n],
     href: `${unit.origin}/mcp`,
@@ -9737,27 +9657,6 @@ export const qpuFusionOf = () => {
   }
 }
 
-export const qpuFusionLiveOf = async () => {
-  const fusion = qpuFusionOf()
-  const catalogs = await Promise.all(fusion.catalogs.map((row) => qpuResearchFetchOf(row.href)))
-  let occupied = n - n
-  for (const row of catalogs) if (row.holds) occupied += seed
-  const vacant = catalogs.length - occupied
-  const holds =
-    fusion.holds &&
-    catalogs.length === fusion.faces &&
-    catalogs.every((row) => row.holds && row.live === true && row.hostEscape === false) &&
-    occupied === fusion.faces &&
-    vacant === n - n
-  return {
-    ...fusion,
-    live: true as const,
-    catalogs,
-    occupied,
-    vacant,hostEscape: false as const,
-    holds,
-  }
-}
 
 export const qpuIntelligenceOf = () => {
   const circuit = qpuCircuitOf()
@@ -9775,17 +9674,6 @@ export const qpuIntelligenceOf = () => {
   }
 }
 
-export const qpuIntelligenceLiveOf = async () => {
-  const intelligence = qpuIntelligenceOf()
-  const fusion = await qpuFusionLiveOf()
-  const holds = intelligence.holds && fusion.holds
-  return {
-    ...intelligence,
-    fusion,
-    live: true as const,
-    holds,
-  }
-}
 
 export const qpuFusionHolds = (f = qpuFusionOf()): boolean =>
   f.holds === true &&
@@ -9978,7 +9866,7 @@ export const qpuToolsOf = () => {
  * tools/list answers with the minimal schema, so a tool whose reply lists the tools does not recurse. */
 let outputSchemasMemo: Record<string, QpuOutputSchema> | undefined
 let outputSchemasBuilding = false
-export const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
+const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
   if (outputSchemasMemo) return outputSchemasMemo
   if (outputSchemasBuilding) return {}
   outputSchemasBuilding = true
@@ -10207,7 +10095,7 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
 /** A tool name this server does not have. Read by the router into a JSON-RPC -32602 error; never answered with the
  * root document, which is a confident answer to a question nobody asked. */
 export type QpuUnknownTool = { kind: 'unknown'; tool: string; tools: string[]; holds: false }
-export const qpuUnknownToolOf = (tool: string): QpuUnknownTool => ({ kind: 'unknown', tool, tools: qpuMcpToolsListOf().map((t) => t.name), holds: false })
+const qpuUnknownToolOf = (tool: string): QpuUnknownTool => ({ kind: 'unknown', tool, tools: qpuMcpToolsListOf().map((t) => t.name), holds: false })
 export const isUnknownTool = (x: unknown): x is QpuUnknownTool =>
   typeof x === 'object' && x !== null && (x as { kind?: unknown }).kind === 'unknown' && typeof (x as { tool?: unknown }).tool === 'string' && (x as { holds?: unknown }).holds === false
 
