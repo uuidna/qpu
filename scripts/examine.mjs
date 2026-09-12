@@ -72,8 +72,14 @@ let tools = []
   tools = l.json?.result?.tools ?? []
   check('tools/list has sixteen tools', tools.length === 16, `${tools.length}`)
   check('tool rows carry one input schema', tools.every((t) => t.inputSchema && !('input_schema' in t) && !('parameters' in t) && !('function' in t)), 'duplicated schema keys')
+  // THE CONNECT BILL (2026-09-12): the output schema left tools/list and travels with the man page, one call away.
+  for (const t of tools) {
+    const m = await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: t.name, arguments: { man: true } } })
+    t.outputSchema = m.sc?.outputSchema
+  }
+  check('tools/list carries no output schema (the man page does)', l.json.result.tools.every((t) => t.outputSchema === undefined))
   check('output schemas are derived and require holds', tools.every((t) => t.outputSchema?.required?.includes('holds') && Object.keys(t.outputSchema.properties ?? {}).length > 3 && String(t.outputSchema.description ?? '').startsWith('derived from')), 'an empty or undescribed output schema')
-  check('tools/list under 64 KB', l.text.length < 65536, `${l.text.length} B`)
+  check('tools/list under one KiB per door', l.text.length < tools.length * 1024, `${l.text.length} B`)
 }
 // 4. every reply: two copies, honest links, validates against its own schema
 {
