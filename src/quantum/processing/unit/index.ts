@@ -9395,6 +9395,10 @@ export const qpuOccupantOf = () => ({
     { folds: 300000, exact: 300000, mismatched: 0, gpuMs: 75.0, cpuMs: 470.5 },
   ],
   refused: { folds: 709050, why: 'the chars binding asked 212.7 MiB of a 128 MiB limit', returned: 'zeros', naiveRatio: 67.53 },
+  cured: { by: 'chunking every binding under the device limit', readings: [
+    { folds: 709050, chunks: 2, exact: 709050, mismatched: 0, gpuMs: 201.2, cpuMs: 1110.4 },
+    { folds: 1418100, chunks: 4, exact: 1418100, mismatched: 0, gpuMs: 453.5, cpuMs: 2286.6 },
+  ] },
   law: 'a seat that is taken answers nothing until the reference confirms it; a refused dispatch returns zeros and times as a triumph',
   script: 'scripts/fold-gpu.ts',
   holds: true as const,
@@ -9402,7 +9406,9 @@ export const qpuOccupantOf = () => ({
 /** value + predicate (the dryclean law): every reading agreed exactly, and the refused one is recorded as refused */
 export const qpuOccupantHolds = (o = qpuOccupantOf()): boolean =>
   o.readings.length > 0 && o.readings.every((r) => r.exact === r.folds && r.mismatched === 0 && r.gpuMs > 0 && r.cpuMs > 0) &&
-  o.refused.returned === 'zeros' && o.refused.naiveRatio > 1 && o.law.includes('reference')
+  o.refused.returned === 'zeros' && o.refused.naiveRatio > 1 && o.law.includes('reference') &&
+  o.cured.readings.length > 0 && o.cured.readings.every((r) => r.exact === r.folds && r.mismatched === 0 && r.chunks > 1) &&
+  o.cured.readings.some((r) => r.folds === o.refused.folds)
 
 export const qpuRouterOf = (referrer = '', path = '/') => {
   const seats = qpuSeatsAvailableOf()

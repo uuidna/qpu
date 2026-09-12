@@ -62,6 +62,10 @@ test('the vector occupant agreed with the reference exactly, and its refusal is 
   assert.equal(qpuOccupantHolds(o), true)
   for (const r of o.readings) assert.equal(r.exact, r.folds, `${r.folds} folds: every one must match the reference`)
   assert.equal(o.refused.returned, 'zeros', 'the refused dispatch returned nothing, and that is the record')
+  const cure = o.cured.readings.find((r) => r.folds === o.refused.folds)
+  assert.ok(cure, 'the size that was refused must be the size the cure proves')
+  assert.equal(cure!.exact, cure!.folds, 'chunked, every fold matched the reference')
+  assert.ok(cure!.chunks > 1 && cure!.cpuMs > cure!.gpuMs, 'more than one binding, and honestly faster than the reference')
   assert.ok(o.refused.naiveRatio > o.readings[0]!.cpuMs / o.readings[0]!.gpuMs, 'the artefact ratio beat every honest one — which is the warning')
   // THE PREDICATE BITES: a reading that did not match, or a refusal dressed as a result, is refused
   assert.equal(qpuOccupantHolds({ ...o, readings: [{ folds: 10, exact: 9, mismatched: 1, gpuMs: 1, cpuMs: 2 }] } as unknown as ReturnType<typeof qpuOccupantOf>), false)
