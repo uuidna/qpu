@@ -80,7 +80,9 @@
     "verify:live": "node scripts/verify-live.mjs https://qpu.uuidna.com",
     "test:live": "QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js",
     "proof": "git diff --exit-code -- test-receipt.json",
-    "examine": "node scripts/examine.mjs https://qpu.uuidna.com"
+    "examine": "node scripts/examine.mjs https://qpu.uuidna.com",
+    "post-push": "node scripts/post-push.mjs",
+    "land": "npm test && git push && node scripts/post-push.mjs --wait && npm run verify:live"
   },
   "devDependencies": {
     "@types/node": "26.5.1",
