@@ -9381,6 +9381,16 @@ const qpuWellKnownOf = () => {
     catalog: `${unit.origin}/mcp.json`,
     cite: `${unit.origin}/cite`,
     sitemap: `${unit.origin}/sitemap.xml`,
+    // THE COORDINATION CONTRACT (wave experience online, 2026-09-12): what an agent coordinating across gateways by
+    // receipt needs to know before its first call — how receipts are minted, where readings live and that they
+    // never enter a fold, how a thermometer is supplied and named, and that the seat is empty by doctrine.
+    coordination: {
+      receipts: { perTest: 'every test carries a computational receipt: dim, qubits, states, fold', aggregate: 'test-receipt.json', readings: 'test-readings.json — time ns, temperature mK, cracks, slowest; readings never enter a fold' },
+      temperature: { millikelvin: 'QPU_TEMPERATURE_MILLIKELVIN', source: 'QPU_TEMPERATURE_SOURCE — name the instrument; a battery probe is not a lab', unmeasured: 'is a named crack, never a number' },
+      seat: qpuSeatOf().doctrine,
+      batch: 'a JSON-RPC batch on POST /mcp is exactly its members; notifications get no entry',
+      law: 'a result that a receipt already holds is verified, not recomputed; a receipt minted at one gateway is read at every gateway',
+    },
     holds: true as const,
   }
 }

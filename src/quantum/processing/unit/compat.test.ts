@@ -31,6 +31,8 @@ test('the five discovery doors answer, and install.json is the same reading the 
   for (const p of ['/.well-known/mcp.json', '/mcp.json', '/install.json', '/openapi.json']) assert.equal((await get(p)).status, 200, p)
   const wk = (await (await get('/.well-known/mcp.json')).json()) as { url: string; tools: number; protocolVersions: string[]; batch: boolean }
   assert.equal(wk.url, `${O}/mcp`); assert.equal(wk.tools, 16); assert.equal(wk.batch, true); assert.equal(wk.protocolVersions.length, 3)
+  const co = (wk as unknown as { coordination: { temperature: { millikelvin: string; source: string }; seat: string; receipts: { readings: string } } }).coordination
+  assert.equal(co.temperature.millikelvin, 'QPU_TEMPERATURE_MILLIKELVIN'); assert.match(co.seat, /driver bug, never a physics claim/); assert.match(co.receipts.readings, /never enter a fold/)
   const api = (await (await get('/openapi.json')).json()) as { openapi: string; paths: Record<string, unknown>; 'x-mcp': { tools: unknown[] } }
   assert.equal(api.openapi, '3.1.0'); assert.equal(Object.keys(api.paths).length, 5, 'seven routes on five distinct paths'); assert.equal(api['x-mcp'].tools.length, 16)
   const inst = (await (await get('/install.json')).json()) as { hardware: { prove: string; seat: { seat: string } }; packages: string[] }

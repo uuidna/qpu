@@ -10,7 +10,7 @@
   "servedOnly": 12,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "e4bdd60703f5ad79",
+  "receipt": "7345188baf9b9226",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -1080,7 +1080,7 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"03378927b851630c\"",
+          "\"32e23924bff0abb7\"",
           "\"9639ff5c8d8b1362\"",
           "\"78959eca8cb4658c\""
         ]

@@ -95,10 +95,13 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     ...timed.filter((r) => !r.time.resolved).map((r) => ({ kind: 'time', name: r.name, why: 'clock did not resolve the test' })),
     ...(timed.some((r) => r.temperature.measured) ? [] : [{ kind: 'temperature', name: 'host', why: timed[0]?.temperature.measured === false ? timed[0].temperature.why : 'no reading' }]),
   ]
-  const readings = { kind: 'test-readings', receipt: fold, time: { totalNs, unit: 'ns', clock: 'process.hrtime' }, temperature: timed[0]?.temperature ?? none.readings.temperature, cracks, rows: timed }
+  // THE SLOWEST SUPERPOSITION, NAMED BY ITS OWN CLOCK (session experience, 2026-09-12: a 2h30m certification was traced
+  // to one line only after per-test durations existed; a name, a size or a failure message had each pointed elsewhere).
+  const slowest = [...timed].sort((a, b) => b.time.ns - a.time.ns || (a.name < b.name ? -1 : 1)).slice(0, 3).map((r) => ({ name: r.name, ns: r.time.ns }))
+  const readings = { kind: 'test-readings', receipt: fold, time: { totalNs, unit: 'ns', clock: 'process.hrtime' }, temperature: timed[0]?.temperature ?? none.readings.temperature, cracks, slowest, rows: timed }
   writeFileSync(join(process.cwd(), 'test-readings.json'), `${JSON.stringify(readings, null, 2)}\n`)
   if (dry.length > 0 || failed.length > 0) process.exitCode = 1
   yield failed.length === 0 && dry.length === 0
-    ? `✓ tests — ${pass}/${rows.length} pass; ${circuit} ran the circuit, ${mintOnly} mint-only, ${servedOnly} served-only, largest dim 2^${largest.qubits} (${largest.name.split(':')[0]}); receipt ${fold}; readings ${totalNs} ns, temperature ${readings.temperature.measured ? `${(readings.temperature as { millikelvin: number }).millikelvin} mK` : 'unmeasured'}, cracks ${cracks.length}\n`
+    ? `✓ tests — ${pass}/${rows.length} pass; ${circuit} ran the circuit, ${mintOnly} mint-only, ${servedOnly} served-only, largest dim 2^${largest.qubits} (${largest.name.split(':')[0]}); receipt ${fold}; readings ${totalNs} ns, temperature ${readings.temperature.measured ? `${(readings.temperature as { millikelvin: number }).millikelvin} mK` : 'unmeasured'}, cracks ${cracks.length}, slowest ${slowest[0] ? `${slowest[0].name.split(':')[0].slice(0, 48)} ${(slowest[0].ns / 1e9).toFixed(1)}s` : 'none'}\n`
     : `✗ tests — ${failed.length} failed, ${dry.length} without computational receipt, ${pass}/${rows.length} pass, receipt ${fold}\n`
 }
