@@ -227,7 +227,12 @@ test('paste in free AI chat', async (t) => {
     const c2 = cite as unknown as { archived: { doi: string; version: string; commit: string }; served: { version: string }; current: boolean; currency: string }
     assert.equal(c2.archived.commit, '4a45563')
     assert.equal(c2.archived.version, '0.1.1')
-    assert.equal(c2.current, true)
+    // CURRENCY IS A READING, NOT AN INVARIANT (2026-09-13). This demanded that the archive BE the served version,
+    // so the suite was green only while no unreleased bump existed — and since that suite is prepublishOnly and the
+    // workflow requires the tag to match package.json, no version could ever be cut through it. Five lines below,
+    // this same test already handles !current by checking the "behind the host" sentence, unreachable while this
+    // line stood. The relation is still asserted: served === packageVersion, and current === (archived === served).
+    // What is dropped is the demand that the honest lagging state never occur.
     assert.equal(c2.archived.doi, cite.doi)
     assert.equal(c2.served.version, packageVersion)
     assert.equal(c2.current, c2.archived.version === c2.served.version)

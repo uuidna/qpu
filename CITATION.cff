@@ -10,9 +10,9 @@ authors:
 url: https://qpu.uuidna.com
 repository-code: https://github.com/uuidna/qpu
 license: CC-BY-NC-ND-4.0
-version: 0.1.1
+version: 0.1.2
 identifiers:
-  - description: Archived version 0.1.1 at 4a45563
+  - description: Archived version 0.1.1 at 4a45563 (the host serves v0.1.2)
     type: doi
     value: 10.5281/zenodo.22717782
   - description: All versions
