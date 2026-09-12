@@ -9483,6 +9483,7 @@ const qpuWellKnownOf = () => {
       receipts: { perTest: 'every test carries a computational receipt: dim, qubits, states, fold', aggregate: 'test-receipt.json', readings: 'test-readings.json — time ns, temperature mK, cracks, slowest; readings never enter a fold' },
       temperature: { millikelvin: 'QPU_TEMPERATURE_MILLIKELVIN', source: 'QPU_TEMPERATURE_SOURCE — name the instrument; a battery probe is not a lab', unmeasured: 'is a named crack, never a number' },
       seat: qpuSeatOf().doctrine,
+      routing: 'every response names the seat it was computed on (x-qpu-seat) and the door that answered (x-qpu-door); the seat is decided per request from the referrer and the path, and the reference decides any disagreement',
       batch: 'a JSON-RPC batch on POST /mcp is exactly its members; notifications get no entry',
       law: 'a result that a receipt already holds is verified, not recomputed; a receipt minted at one gateway is read at every gateway',
     },
@@ -10797,11 +10798,15 @@ export const qpuServedLedgerHolds = (rows = qpuServedLedgerOf()): boolean => row
 const worker = {
   async fetch(request: Request, env?: QpuEnv): Promise<Response> {
     const host = env?.QPU_HOST ?? unit.host
-    const jsonOf = (body: unknown, status = found) => new Response(JSON.stringify(body), { status, headers })
+    // THE SEAT RIDES ON THE ANSWER (the captain, 2026-09-13: the unit is a router of referrers). Set once the path
+    // is known, below; every response then carries where it was computed and which door answered, so a caller can
+    // see the decision instead of taking it on trust. Empty until then, which is the honest reading before a path.
+    let routeHeaders: Record<string, string> = {}
+    const jsonOf = (body: unknown, status = found) => new Response(JSON.stringify(body), { status, headers: { ...headers, ...routeHeaders } })
     /** A memoized document: 304 with no body when the client's If-None-Match is its ETag, else the bytes with the ETag. */
     const servedResponse = (row: Served) => {
-      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: { ...headers, etag: row.etag } })
-      return new Response(row.body, { status: found, headers: { ...headers, etag: row.etag } })
+      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: { ...headers, ...routeHeaders, etag: row.etag } })
+      return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag } })
     }
     if (host !== unit.host || host.includes('*') || !unit.holds || !integrityOnceOf()) {
       return jsonOf(JSON.parse(dead), lost)
@@ -10809,6 +10814,8 @@ const worker = {
     const url = new URL(request.url)
     const raw = url.pathname.replace(/\/$/, '') || '/'
     const path = raw === '/index.html' ? '/' : raw
+    const route = qpuRouterOf(request.headers.get('referer') ?? '', path)
+    routeHeaders = { 'x-qpu-seat': route.seat, 'x-qpu-door': route.door }
     const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers })
