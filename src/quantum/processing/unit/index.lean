@@ -120,3 +120,6 @@ def aluminium : Nat := 1200
 def niobium : Nat := 9200
 def gap (tc : Nat) : Nat := bcs * boltzmann * tc / planck / 10
 theorem superconductivity : aluminium > 10 ∧ niobium > aluminium ∧ bcs / 100 = 3 ∧ gap aluminium = 88 ∧ gap aluminium > transmon ∧ gap niobium = 674 := ⟨Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
+/-- PLANES FOLD: one plane holds n qubits as 4n numbers, a product state by construction; at n = rays that is fewer than the mintOf (rays + seed) an entangled register needs, so entanglement is held by the fold of the coins' planes, never by one. -/
+def plane : Nat := coins * coins * rays
+theorem planes : plane < mintOf (rays + seed) ∧ coins * rays = faces := ⟨Nat.le_of_ble_eq_true rfl, around⟩

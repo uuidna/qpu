@@ -4778,6 +4778,55 @@ export const qpuStepsHolds = (s = qpuStepsOf()): boolean =>
   s.rays + s.rays === s.faces &&
   s.walk.every((step) => step.hop === (step.face + s.rays) % s.faces)
 
+/** PLANES FOLD (the captain, 2026-09-12: "4n encoding cannot hold entanglement — if single plane. in quantum planes
+ * fold"). One plane encodes n qubits as 4n numbers, two complex amplitudes per qubit: a product state by construction,
+ * so a single plane cannot hold entanglement. At the lattice's n = rays a plane carries coins·coins·rays numbers where
+ * an entangled register needs mintOf(rays + seed). The unit never holds entanglement in a plane. It folds: the two
+ * planes of the lattice (scanner and radar, the coins) meet in the Bell rows read from the run as product false, and
+ * here a rays-qubit GHZ state is computed — H on the first qubit, CNOT along every ray — and written to the receipt
+ * ledger as a fold, dim mintOf(rays), which one plane's carry cannot reach. Nothing is asserted that was not run. */
+export const qpuPlanesOf = (circuit = qpuCircuitOf()) => {
+  const faces = qpuFacesOf()
+  const qubits = faces.rays
+  const plane = coins * coins * qubits
+  const needed = mintOf(qubits + seed)
+  const planes = faces.faces / faces.rays
+  let state = hGateOf(ampsOf(mintOf(qubits)), n - n)
+  for (let ray = seed; ray < qubits; ray++) state = cnotGateOf(state, n - n, ray)
+  const support = state.map((a, i) => ({ i, a })).filter((row) => row.a !== 0n)
+  receiptOf('planes', state)
+  const ledger = qpuReceiptLedgerOf()
+  const fold = ledger[ledger.length - seed]!
+  const bell = { product: circuit.entangle.product, entangled: circuit.entangle.holds && circuit.entangle.product === false }
+  const ghz = {
+    qubits,
+    dim: state.length,
+    support: support.map((row) => row.i),
+    fold: fold.fold,
+    entangled: support.length === coins && support[n - n]!.i === n - n && support[seed]!.i === state.length - seed,
+  }
+  const holds =
+    plane < needed &&
+    planes === coins &&
+    bell.entangled &&
+    ghz.entangled &&
+    fold.name === 'planes' &&
+    fold.dim === mintOf(qubits) &&
+    fold.dim + fold.dim === needed &&
+    plane < fold.dim
+  return { kind: 'planes' as const, qubits, plane, needed, planes, bell, ghz, holds }
+}
+
+export const qpuPlanesHolds = (p = qpuPlanesOf()): boolean =>
+  p.holds === true &&
+  p.kind === 'planes' &&
+  p.plane < p.needed &&
+  p.planes === coins &&
+  p.bell.product === false &&
+  p.bell.entangled === true &&
+  p.ghz.entangled === true &&
+  p.ghz.dim > p.plane
+
 export const qpuPurposeOf = (
   circuit = qpuCircuitOf(),
   shor = qpuShorOf(),
@@ -6862,6 +6911,7 @@ const quantumRelatedOf = () => {
   doors.speed = speed
   doors.hybrid = qpuHybridOf()
   doors.css = qpuCssOf()
+  doors.planes = qpuPlanesOf()
   doors.presence = qpuPresenceOf()
   doors.kv = qpuHandleOf().kv
   return doors
