@@ -46,8 +46,10 @@ jobs:
           PKG="$(node -p "require('./package.json').version")"
           echo "tag=$TAG package.json=$PKG"
           test "$TAG" = "$PKG" || { echo "::error::tag v$TAG != package.json $PKG"; exit 1; }
-      - run: npm publish --provenance --access public
-      - name: GitHub Release
+      # THE ARCHIVE FIRST. The GitHub Release is what Zenodo's integration archives (uuidna/qpu-<tag>.zip under the
+      # concept DOI), and it depends on nothing but the tag; npm publish depends on a trusted publisher being set on
+      # npmjs.com for this workflow, which failed twice before with E404 on PUT and took the release down with it.
+      - name: GitHub Release (Zenodo archives it)
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ github.token }}
@@ -57,3 +59,12 @@ jobs:
           else
             gh release create "$GITHUB_REF_NAME" --generate-notes
           fi
+      - name: npm publish (OIDC trusted publishing; E404 on PUT means npmjs.com has no trusted publisher for this workflow)
+        run: |
+          set +e
+          npm publish --provenance --access public 2>&1 | tee publish.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ] && grep -q "E404" publish.log; then
+            echo "::error::npm refused the PUT with 404: npmjs.com has no trusted publisher for uuidna/qpu + release.yml. Set one under the package's Settings → Trusted publishers (GitHub Actions, repository uuidna/qpu, workflow release.yml), then rerun this job. The GitHub Release and the Zenodo archive are already made."
+          fi
+          exit $status
