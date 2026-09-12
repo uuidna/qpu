@@ -15,7 +15,10 @@ import { qpuMintReceiptOf, qpuReceiptFoldOf, qpuReceiptLedgerOf, qpuServedLedger
  * which is how a concurrent run once erased another's rows and failed honest tests as "computed nothing". */
 export const receiptsFileOf = (run: number): string => `test-receipts.${run}.jsonl`
 export const RECEIPTS_FILE = receiptsFileOf(process.ppid)
-export type Temperature = { measured: true; millikelvin: number; source: 'QPU_TEMPERATURE_MILLIKELVIN' } | { measured: false; why: string }
+/** THE THERMOMETER IS NAMED (2026-09-12: "measure hardware temperature"). A number without its instrument cannot be
+ *  doubted, and "a lab reading" was asserted for whatever the variable held. QPU_TEMPERATURE_SOURCE names the sensor —
+ *  a battery pack's SMC probe on a laptop, a fridge stage in a lab — and is carried beside the millikelvin as a reading. */
+export type Temperature = { measured: true; millikelvin: number; source: string } | { measured: false; why: string }
 export type TestReceipt = {
   name: string
   computations: number
@@ -41,7 +44,7 @@ export const temperatureOf = (env = process.env): Temperature => {
   const raw = env.QPU_TEMPERATURE_MILLIKELVIN
   const millikelvin = raw === undefined ? NaN : Number(raw)
   return millikelvin === millikelvin && raw !== undefined && raw !== ''
-    ? { measured: true, millikelvin, source: 'QPU_TEMPERATURE_MILLIKELVIN' }
+    ? { measured: true, millikelvin, source: env.QPU_TEMPERATURE_SOURCE?.trim() || 'QPU_TEMPERATURE_MILLIKELVIN (instrument unnamed)' }
     : { measured: false, why: 'no thermometer on this host; supply QPU_TEMPERATURE_MILLIKELVIN from a lab reading' }
 }
 
