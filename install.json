@@ -34,8 +34,47 @@
       "seat": "empty",
       "reference": "the exact integer state-vector simulator; every reading above is computed there",
       "doctrine": "a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim",
-      "acronym": "QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib, Naylor 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.",
+      "acronym": "QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.",
       "occupant": "a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum",
+      "priorArt": {
+        "kind": "prior-art",
+        "name": "QPULib",
+        "author": "Matthew Naylor",
+        "year": 2016,
+        "licence": "MIT",
+        "copyright": "Copyright (c) 2016 Matthew Naylor",
+        "repository": "https://github.com/mn416/QPULib",
+        "version": "0.1.0",
+        "status": "experimental, no longer under development — stated by its own README",
+        "acronym": "QPU there is Broadcom VideoCore Quad Processing Unit, a classical SIMD vector core, unrelated to this unit",
+        "hardware": {
+          "qpus": 12,
+          "megahertz": 250,
+          "lanes": 16,
+          "bits": 32,
+          "cyclesPerVector": 4
+        },
+        "modes": [
+          {
+            "name": "source language interpreter",
+            "runs": "any machine",
+            "purpose": "the kernel read at source level"
+          },
+          {
+            "name": "target language emulator",
+            "runs": "any machine",
+            "purpose": "the generated target program, for debugging"
+          },
+          {
+            "name": "physical QPUs",
+            "runs": "Raspberry Pi",
+            "purpose": "the device itself, chosen by passing QPU=1 to make"
+          }
+        ],
+        "equivalence": "AutoTest runs each test on both the interpreter and the emulator and checks they agree",
+        "inherited": "one kernel, several ways to run it, and a reference that decides which one is wrong",
+        "holds": true
+      },
       "holds": true
     }
   },

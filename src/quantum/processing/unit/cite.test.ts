@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { packageVersion } from './version.js'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuDevelopHolds, qpuReadmeHolds, qpuReadmeOf, shorFactorOf } from './index.js'
+import worker, { qpuDevelopHolds, qpuPriorArtHolds, qpuPriorArtOf, qpuReadmeHolds, qpuReadmeOf, shorFactorOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -253,4 +253,25 @@ test('paste in free AI chat', async (t) => {
     assert.deepEqual(await http.json(), { holds: false })
     assert.deepEqual(await other.json(), { holds: false })
   })
+})
+
+// THE CREDIT IS SOURCED, NOT REMEMBERED. This file carried "Naylor 2016" with no licence, no first name and no
+// repository, and a summary of the project's README even denied the three modes — the getting-started guide carries
+// them. Every field here was read from the repository on 2026-09-12, and these assertions are what a later edit must
+// keep true: a credit that loses its source is an uncited claim on a public README and a served door.
+test('the prior art is credited from its own source, and the seat inherits its equivalence check', () => {
+  const p = qpuPriorArtOf()
+  assert.equal(qpuPriorArtHolds(p), true)
+  assert.equal(p.copyright, 'Copyright (c) 2016 Matthew Naylor')
+  assert.equal(p.repository, 'https://github.com/mn416/QPULib')
+  assert.deepEqual(p.modes.map((m) => m.name), ['source language interpreter', 'target language emulator', 'physical QPUs'])
+  assert.match(p.status, /no longer under development/)
+  assert.match(p.equivalence, /interpreter and the emulator/)
+  // the credit is SERVED and PRINTED, not only declared: the generated README carries the sourced acronym line
+  const readme = qpuReadmeOf()
+  assert.ok(readme.includes('Matthew Naylor'), 'the README must name the author it credits')
+  assert.ok(readme.includes('MIT'), 'the README must name the licence of the work it credits')
+  // THE PREDICATE BITES: a credit stripped of its licence is refused
+  assert.equal(qpuPriorArtHolds({ ...p, licence: '' } as unknown as ReturnType<typeof qpuPriorArtOf>), false)
+  assert.equal(qpuPriorArtHolds({ ...p, modes: p.modes.slice(0, 2) } as unknown as ReturnType<typeof qpuPriorArtOf>), false)
 })

@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 121,
-  "pass": 121,
+  "tests": 122,
+  "pass": 122,
   "fail": 0,
   "dry": 0,
-  "circuit": 67,
+  "circuit": 68,
   "mintOnly": 12,
   "servedOnly": 12,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "7345188baf9b9226",
+  "receipt": "79a1a3742c726238",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -59,7 +59,7 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"80c71618e8ec9150\"",
+          "\"a22edcf2e249fc09\"",
           "\"db7aaa51bdad3dd7\""
         ]
       }
@@ -682,9 +682,57 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"80c71618e8ec9150\"",
+          "\"a22edcf2e249fc09\"",
           "\"f7fc6d5b00d0e112\""
         ]
+      }
+    },
+    {
+      "name": "the prior art is credited from its own source, and the seat inherits its equivalence check",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 7927,
+      "kinds": {
+        "h": 2450,
+        "cnot": 3280,
+        "x": 1708,
+        "toffoli": 274,
+        "measure": 137,
+        "cmodexp": 39,
+        "xx": 39
+      },
+      "dims": {
+        "8": 7849,
+        "512": 78
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "dd0e0dca1e893dbb",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 137
+        }
+      ],
+      "mint": {
+        "calls": 177243,
+        "chain": "14aabb901354b932"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
       }
     },
     {
@@ -1082,7 +1130,7 @@
         "folds": [
           "\"32e23924bff0abb7\"",
           "\"9639ff5c8d8b1362\"",
-          "\"78959eca8cb4658c\""
+          "\"79a319777f80afc2\""
         ]
       }
     },
@@ -1153,7 +1201,7 @@
       "served": {
         "count": 1,
         "folds": [
-          "\"80c71618e8ec9150\""
+          "\"a22edcf2e249fc09\""
         ]
       }
     },
@@ -3385,7 +3433,7 @@
           "\"29dda7aba526719e\"",
           "\"b05fbd7991e9a4ac\"",
           "\"bc0421e56f044b2c\"",
-          "\"4f396a380afc5f1e\"",
+          "\"c132c63ab5d78f9e\"",
           "\"63c4902bf72aceae\"",
           "\"c8681406bd2615de\"",
           "\"23363009eadc48a8\"",
@@ -3510,7 +3558,7 @@
         "count": 2,
         "folds": [
           "\"81e74bd7ff12633c\"",
-          "\"4f396a380afc5f1e\""
+          "\"c132c63ab5d78f9e\""
         ]
       }
     },
@@ -3657,7 +3705,7 @@
           "\"f7fc6d5b00d0e112\"",
           "\"24d301e31130f0a6\"",
           "\"b05fbd7991e9a4ac\"",
-          "\"4f396a380afc5f1e\"",
+          "\"c132c63ab5d78f9e\"",
           "\"c8681406bd2615de\"",
           "\"bf29eeaed102abf6\"",
           "\"b2299c520420511a\"",
@@ -3715,7 +3763,7 @@
       "served": {
         "count": 10,
         "folds": [
-          "\"e81a41219e7712aa\"",
+          "\"a3377f233410b3e3\"",
           "\"f539c8355ac195e7\"",
           "\"1ac17954f6aa65c7\"",
           "\"db7aaa51bdad3dd7\"",
@@ -4263,8 +4311,8 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"80c71618e8ec9150\"",
-          "\"4f396a380afc5f1e\"",
+          "\"a22edcf2e249fc09\"",
+          "\"c132c63ab5d78f9e\"",
           "\"f7fc6d5b00d0e112\""
         ]
       }

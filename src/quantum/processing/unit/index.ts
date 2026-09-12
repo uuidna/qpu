@@ -3957,7 +3957,7 @@ export const qpuGlossaryOf = () => ({
   read: 'how each argument was taken (digits, number, numeric, absent, default) and whether exactly',
   beyond: 'the order of the base exists and does not divide four, so a two-qubit register cannot resolve it',
   device: 'simulator when a vector of exact integer amplitudes was held; unmeasured otherwise',
-  QPU: 'quantum processing unit — this unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib) is prior use of the acronym, a classical SIMD vector core, unrelated and credited',
+  QPU: 'quantum processing unit — this unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym, a classical SIMD vector core, unrelated and credited',
   seat: 'empty: no device is dispatched. The simulator is the reference; a device that disagrees with it is a driver bug, never a physics claim',
 })
 export const qpuQuantumOf = () => {
@@ -9318,6 +9318,45 @@ const installSelectOf = (args: Record<string, unknown>): readonly string[] => {
   return []
 }
 
+/** THE PRIOR ART, SOURCED (audited 2026-09-12 against the repository itself, not from memory). QPULib is Matthew
+ *  Naylor's C++ language and compiler for the VideoCore QPUs, MIT-licensed, and its own README calls it experimental
+ *  and no longer under development. Its getting-started guide names the three ways one kernel runs — the source
+ *  language interpreter, the target language emulator, and the Pi's physical QPUs, chosen by passing QPU=1 to make —
+ *  and its AutoTest runs each test on the interpreter AND the emulator and checks the two agree. That equivalence
+ *  check is this unit's own law with the seat empty: the exact integer simulator is the reference, and an occupant
+ *  that disagrees with it is a driver bug. Credited here because the acronym was theirs first. The earlier credit in
+ *  this file carried a surname and a year with no source; every field below was read from the repository. */
+export const qpuPriorArtOf = () => ({
+  kind: 'prior-art' as const,
+  name: 'QPULib',
+  author: 'Matthew Naylor',
+  year: 2016,
+  licence: 'MIT',
+  copyright: 'Copyright (c) 2016 Matthew Naylor',
+  repository: 'https://github.com/mn416/QPULib',
+  version: '0.1.0',
+  status: 'experimental, no longer under development — stated by its own README',
+  acronym: 'QPU there is Broadcom VideoCore Quad Processing Unit, a classical SIMD vector core, unrelated to this unit',
+  hardware: { qpus: 12, megahertz: 250, lanes: 16, bits: 32, cyclesPerVector: 4 },
+  modes: [
+    { name: 'source language interpreter', runs: 'any machine', purpose: 'the kernel read at source level' },
+    { name: 'target language emulator', runs: 'any machine', purpose: 'the generated target program, for debugging' },
+    { name: 'physical QPUs', runs: 'Raspberry Pi', purpose: 'the device itself, chosen by passing QPU=1 to make' },
+  ],
+  equivalence: 'AutoTest runs each test on both the interpreter and the emulator and checks they agree',
+  inherited: 'one kernel, several ways to run it, and a reference that decides which one is wrong',
+  holds: true as const,
+})
+/** value + predicate (the dryclean law): the sourced credit recomputes to itself and can never lose its source */
+export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean =>
+  p.author === 'Matthew Naylor' && p.year === 2016 && p.licence === 'MIT' &&
+  p.copyright.includes(String(p.year)) && p.copyright.includes(p.author) &&
+  p.repository.startsWith('https://github.com/') && p.modes.length === 3 &&
+  p.modes.some((m) => m.name === 'source language interpreter') &&
+  p.modes.some((m) => m.name === 'target language emulator') &&
+  p.modes.some((m) => m.purpose.includes('QPU=1')) &&
+  p.hardware.lanes === 16 && p.hardware.qpus === 12 && p.hardware.bits === 32
+
 // ── THE SEAT, THE ACRONYM, THE BOOT (the captain, 2026-09-12: "make hardware bootable with qpu") ────────────────
 // QPULib (Naylor, 2016) runs one kernel three ways — source interpreter, target emulator, VideoCore hardware — and
 // states the doctrine: a program that works in emulation but not on the device is a bug in the library. This unit has
@@ -9331,8 +9370,9 @@ const qpuSeatOf = () => ({
   seat: 'empty' as const,
   reference: 'the exact integer state-vector simulator; every reading above is computed there',
   doctrine: 'a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim',
-  acronym: 'QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib, Naylor 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.',
+  acronym: 'QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.',
   occupant: 'a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum',
+  priorArt: qpuPriorArtOf(),
   holds: true as const,
 })
 
