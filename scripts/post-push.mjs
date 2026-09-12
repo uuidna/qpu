@@ -8,9 +8,18 @@
 //
 //   node scripts/post-push.mjs [sha] [--wait]     default sha: HEAD
 import { execSync } from 'node:child_process'
-import { pushVerdictOf } from '../dist/quantum/processing/unit/publish.js'
+import { pushVerdictOf, isUnknownCommit } from '../dist/quantum/processing/unit/publish.js'
 
 const sh = (cmd) => execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
+
+const askForge = (cmd) => {
+  try { return sh(cmd) } catch (e) {
+    // an empty stderr is a Buffer, not null, so joining is the only way to keep both streams honest
+    const msg = [e?.stderr, e?.message].map((x) => String(x ?? '')).join(' ').trim() || String(e)
+    if (isUnknownCommit(msg)) return null
+    throw new Error(`post-push: the forge could not be asked — ${msg.slice(0, 200)}`)
+  }
+}
 
 /** owner/repo from the tree's own remote — a law that names one repository cannot serve another. */
 export const repoSlugOf = (remote) => {
@@ -26,7 +35,9 @@ const sha = args.find((a) => !a.startsWith('--')) ?? sh('git rev-parse HEAD')
 const slug = repoSlugOf(sh('git remote get-url origin'))
 
 const rows = () => {
-  const raw = JSON.parse(sh(`gh api repos/${slug}/actions/runs?head_sha=${encodeURIComponent(sha)} --paginate`))
+  const answer = askForge(`gh api repos/${slug}/actions/runs?head_sha=${encodeURIComponent(sha)} --paginate`)
+  if (answer === null) return []   // the forge has not seen this commit — UNMEASURED, never a pass
+  const raw = JSON.parse(answer)
   const list = raw.workflow_runs
   if (!Array.isArray(list)) throw new Error('post-push: actions/runs did not return a list — refusing to read a malformed answer as "no runs"')
   return list.map((r) => ({

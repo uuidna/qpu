@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 134,
-  "pass": 134,
+  "tests": 135,
+  "pass": 135,
   "fail": 0,
   "dry": 0,
-  "circuit": 93,
+  "circuit": 94,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "3c7b58c87224ae34",
+  "receipt": "e23e2970ef2c3f72",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -4250,6 +4250,54 @@
       "mint": {
         "calls": 18209,
         "chain": "f10e4c4c68c3af98"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "an unindexed commit is told apart from a forge that cannot be asked at all",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 813,
+      "kinds": {
+        "x": 175,
+        "cnot": 336,
+        "toffoli": 28,
+        "h": 252,
+        "measure": 14,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 805,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "d3751420dd34b49c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 14
+        }
+      ],
+      "mint": {
+        "calls": 18209,
+        "chain": "7fc70a5bcdf9b080"
       },
       "served": {
         "count": 0,

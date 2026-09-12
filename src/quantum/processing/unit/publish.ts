@@ -64,3 +64,11 @@ export const pushVerdictOf = (sha: string, runs: readonly PushRun[]): PushVerdic
 export const pushVerdictHolds = (v: PushVerdict): boolean =>
   (!v.ok || (v.settled && v.passed.length > 0 && v.failing.length === 0)) &&
   (!v.ok || v.measured) && v.reason.length > 0
+
+/** THE FORGE CANNOT ANSWER, versus THE FORGE ANSWERED "NOTHING". Asking for the runs of a commit the forge has not
+ *  indexed returns 422 and the tool exits non-zero, so an arm that does not catch it DIES where the honest answer is
+ *  UNMEASURED — and the seconds after a push are exactly when that happens. Only a refusal that names the commit may
+ *  become an empty row set; a missing credential or an absent tool must stay loud, because reading those as "no runs"
+ *  is the conflation this whole law refuses. A bare "Not Found" is NOT the pattern: `command not found` contains it. */
+export const isUnknownCommit = (message: string): boolean =>
+  /No commit found for SHA|\(HTTP (?:404|422)\)/i.test(String(message))

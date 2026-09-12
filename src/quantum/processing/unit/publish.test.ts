@@ -3,7 +3,7 @@
 // reported as verified. The law refuses each of them by name.
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import { pushVerdictOf, pushVerdictHolds, type PushRun } from './publish.js'
+import { pushVerdictOf, pushVerdictHolds, isUnknownCommit, type PushRun } from './publish.js'
 import { qpuFoldOf, qpuQuantumOf } from './index.js'
 
 const SHA = 'abc1234def5678'
@@ -65,4 +65,15 @@ test('a sha too short to name a commit is refused rather than guessed at', () =>
   const quantum = qpuQuantumOf()
   assert.ok(typeof quantum === 'object' && quantum !== null)
   assert.ok(qpuFoldOf(pushVerdictOf(SHA, [run({})]).reason).length > 0)
+})
+
+test('an unindexed commit is told apart from a forge that cannot be asked at all', () => {
+  assert.equal(isUnknownCommit('gh: No commit found for SHA: 9524f67 (HTTP 422)'), true)
+  assert.equal(isUnknownCommit('gh: Not Found (HTTP 404)'), true)
+  // THE ONE THAT WAS WRONG: a bare "Not Found" pattern matches `command not found`, so an ABSENT TOOL would have
+  // read as an unindexed commit — silence dressed as an answer, which is what this whole law refuses.
+  assert.equal(isUnknownCommit('gh: command not found'), false)
+  assert.equal(isUnknownCommit('gh: authentication required (HTTP 401)'), false)
+  assert.equal(isUnknownCommit(''), false)
+  computed()
 })
