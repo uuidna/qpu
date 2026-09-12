@@ -10311,6 +10311,11 @@ export const qpuDevelopHolds = (d = qpuDevelopOf()): boolean =>
   d.reading.includes('Lean') &&
   d.src === unit.fuse.lean
 
+/** THE README IS THE npm PAGE. Read as the package's front door on npmjs.com (2026-09-12): the first screen had no
+ * install line, no usage, and the same tag sentences repeated down the page — "demo is not a test nor a proof" five
+ * times, "theorem shor. Factor 91." fifteen. Every claim is kept (qpuReadmeHolds pins each one, verbatim), but a
+ * reader now meets install → use → routes → tools as tables, and each pinned sentence is said once. Nothing here is
+ * typed twice: descriptions, readings, citations and harness recipes are the served objects printed. */
 export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   const lean = qpuLeanOf()
   const quantum = qpuQuantumOf()
@@ -10318,61 +10323,90 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   const prove = qpuProveOf()
   const docs = quantum.docs
   const blueprint = unit.fuse.src
-  const abstract = `Running quantum circuit at ${unit.origin}. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. No auth. JSON-LD. CORS ${cors}. API only. No HTML. The TypeScript and Lean sources are the blueprint. This README is the paper generated from that blueprint.`
+  const harness = qpuHarnessesOf()
+  const row = (...cells: string[]): string => `| ${cells.join(' | ')} |`
   const lines = [
     `# QPU`,
     '',
-    abstract,
+    `\`@uuidna/qpu\` — Running quantum circuit at ${unit.origin}: a 3-qubit exact state-vector simulator, its Lean 4 proofs, and an MCP server in one Cloudflare Worker. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. No auth. JSON-LD. CORS ${cors}. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.`,
     '',
-    `GET ${unit.origin}. POST ${m.href} tools/list then tools/call. Source \`${lean.src}\`. Do not import uuidna. demo is not a test nor a proof.`,
+    '```sh',
+    'npm install @uuidna/qpu',
+    '```',
+    '',
+    '```ts',
+    "import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'",
+    '',
+    'const catalog = qpuMcpOf()                       // the MCP catalog: tools, schemas, install recipes',
+    "const circuit = await qpuMcpCallOf('qpu_quantum') // the running circuit as one JSON-LD document",
+    '```',
+    '',
+    `Or without installing: \`GET ${unit.origin}\`, or \`POST ${m.href}\` with JSON-RPC \`tools/list\` then \`tools/call\`. Do not import uuidna; this package stands alone. Source \`${lean.src}\`.`,
     '',
     '## Abstract',
     '',
-    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}. next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem temperature. theorem superconductivity. theorem qubits. theorem shor. theorem crypto. GHZ ${quantum.purpose.nature.ghz}. Entangled ${quantum.purpose.nature.entangled}, product ${quantum.purpose.nature.product}. Possible only in quantum. demo is not a test nor a proof.`,
+    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}; next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem temperature, theorem superconductivity, theorem qubits, theorem shor and theorem crypto are decided in Lean. GHZ ${quantum.purpose.nature.ghz}; entangled ${quantum.purpose.nature.entangled}, product ${quantum.purpose.nature.product}. Possible only in quantum. demo is not a test nor a proof.`,
     '',
     '## Unit',
     '',
-    `The blueprint is \`${blueprint}\` fused with \`${lean.src}\`. mintOf(k) is 2^k by doubling. n is 3. seed is 1. coins are 2. rays are 7. faces are 14. bits are 32. cube vertices ${quantum.cube.vertices} hexbit ${quantum.cube.hexbit}. theorem quantum, theorem infinite, and theorem distribute are decided in Lean, not restated as chapters here.`,
+    `The blueprint is \`${blueprint}\` fused with \`${lean.src}\`. theorem quantum, theorem infinite, and theorem distribute are decided in Lean, not restated as chapters here.`,
+    '',
+    row('Constant', 'Value'),
+    row('---', '---'),
+    row('mintOf(k)', '2^k by doubling'),
+    row('n', '3'),
+    row('seed', '1'),
+    row('coins', '2'),
+    row('rays', '7'),
+    row('faces', '14'),
+    row('bits', '32'),
+    row('cube vertices', String(quantum.cube.vertices)),
+    row('hexbit', String(quantum.cube.hexbit)),
     '',
     `Climb ${quantum.purpose.science.climb.join(' then ')}. Extras ${quantum.purpose.science.extras.join(' ')} stay off the seven-path guide. Integrity is three tests: quantum, lean, sealed. If they fail every path is 404.`,
     '',
     '## Interface',
     '',
-    `Seven paths. Eight sealed MCP tools. Eight cybersecurity morph tools listed on tools/list. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are qpu_lean and qpu_prove. \`{ man: true }\` is the theorem on the wire. demo is not a test nor a proof.`,
-    '']
-  for (const row of docs.api) {
-    lines.push(`- \`${row.method} ${row.path}\` ${row.name}. ${row.reading}`)
-  }
-  lines.push('')
-  for (const tool of m.tools) {
-    lines.push(`- \`${tool.name}\` ${tool.man.description}`)
-  }
-  for (const tool of m.cybersecurity.tools) {
-    lines.push(`- \`${tool.name}\` ${tool.man.description}`)
-  }
-  lines.push(
+    `Seven paths. Eight sealed MCP tools, plus eight cybersecurity morph tools listed on tools/list. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are qpu_lean and qpu_prove. \`{ man: true }\` is the theorem on the wire.`,
+    '',
+    row('Route', 'Tool', 'Reading'),
+    row('---', '---', '---'),
+    ...docs.api.map((r) => row(`\`${r.method} ${r.path}\``, r.name, r.reading)),
+    '',
+    row('Tool', 'What it returns'),
+    row('---', '---'),
+    ...m.tools.map((t) => row(`\`${t.name}\``, t.man.description)),
+    '',
+    `Cybersecurity morph tools. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}.`,
+    '',
+    row('Tool', 'Claim'),
+    row('---', '---'),
+    ...m.cybersecurity.tools.map((t) => row(`\`${t.name}\``, t.man.description)),
     '',
     '## Results',
     '',
-    `theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. ${prove.theorems.find((r) => r.heading === 'shor')?.theorem} ${prove.theorems.find((r) => r.heading === 'crypto')?.theorem}. demo is not a test nor a proof.`,
+    `theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}.`,
     '',
-    `Fault tolerance. ${quantum.evidence.fault.code} distance ${quantum.evidence.fault.distance}. Codes ${quantum.evidence.fault.codes}. Syndrome ${quantum.evidence.fault.syndrome.join(' ')}. Logical off ${quantum.evidence.fault.logical.off}. Logical < physical ${quantum.evidence.fault.logicalLtPhysical} on this run, one distance.`,
+    '```lean',
+    prove.theorems.find((r) => r.heading === 'shor')?.theorem ?? '',
+    prove.theorems.find((r) => r.heading === 'crypto')?.theorem ?? '',
+    '```',
     '',
-    `CERN Open Data ${quantum.evidence.verify.cern}. LHC running. Four CMS records. Coil, electronics, hybrid, raid, and clay identities are in \`${lean.src}\`. theorem clay is coins * rays = faces.`,
+    `Fault tolerance: ${quantum.evidence.fault.code}, distance ${quantum.evidence.fault.distance}, codes ${quantum.evidence.fault.codes}, syndrome ${quantum.evidence.fault.syndrome.join(' ')}, logical off ${quantum.evidence.fault.logical.off}; logical < physical ${quantum.evidence.fault.logicalLtPhysical} on this run, one distance.`,
+    '',
+    `CERN Open Data ${quantum.evidence.verify.cern}. LHC running. Four CMS records. Coil, electronics, hybrid, raid, and clay identities are in \`${lean.src}\`; theorem clay is coins * rays = faces.`,
     '',
     '## Evidence',
     '',
-    `Execution provenance. Provider ${quantum.evidence.provenance.provider}. Device ${quantum.evidence.provenance.device}. Job ${quantum.evidence.provenance.job}. Shots ${quantum.evidence.provenance.shots}. Compiler native ${quantum.evidence.provenance.compiler.native.join(' ')} compiled ${quantum.evidence.provenance.compiler.compiled.join(' ')}.`,
-    '',
-    `Device-specific noise. Channel ${quantum.evidence.noise.model}. Drift ${quantum.evidence.noise.drift}.`,
-    '',
-    `Randomized benchmarks. Volume dim ${quantum.evidence.volume.dim}. Heavy ${quantum.evidence.volume.observed} / ${quantum.evidence.volume.total}. Mirror ${quantum.evidence.volume.mirror}.`,
-    '',
-    `Cross-validation. Ideal ${quantum.evidence.cross.ideal}. Noisy ${quantum.evidence.cross.noisy}. Agree ideal ${quantum.evidence.cross.agreeIdeal}. Agree noise ${quantum.evidence.cross.agreeNoise}.`,
-    '',
-    `theorem qubits. theorem register. Dim ${quantum.evidence.scaling.dim}. Depth ${quantum.evidence.scaling.depth}. Exact ${quantum.evidence.scaling.exact}. Beyond ${quantum.evidence.scaling.beyond}. Advantage ${quantum.evidence.scaling.advantage}. demo is not a test nor a proof.`,
-    '',
-    `Independent verification. CORS ${quantum.evidence.verify.cors}. Origin ${quantum.evidence.verify.origin}. Lean \`${quantum.evidence.verify.lean}\`. Hardware ${quantum.evidence.verify.hardware}. Algorithm ${quantum.evidence.verify.algorithm}. RSA ${quantum.evidence.verify.rsa}. Crypt ${quantum.evidence.verify.crypt}. Encrypt ${quantum.evidence.verify.encrypt}.`,
+    row('Measurement', 'Value'),
+    row('---', '---'),
+    row('Execution provenance', `provider ${quantum.evidence.provenance.provider}, device ${quantum.evidence.provenance.device}, job ${quantum.evidence.provenance.job}, shots ${quantum.evidence.provenance.shots}`),
+    row('Compiler', `native ${quantum.evidence.provenance.compiler.native.join(' ')}; compiled ${quantum.evidence.provenance.compiler.compiled.join(' ')}`),
+    row('Device-specific noise', `channel ${quantum.evidence.noise.model}, drift ${quantum.evidence.noise.drift}`),
+    row('Randomized benchmarks', `volume dim ${quantum.evidence.volume.dim}, heavy ${quantum.evidence.volume.observed} / ${quantum.evidence.volume.total}, mirror ${quantum.evidence.volume.mirror}`),
+    row('Cross-validation', `ideal ${quantum.evidence.cross.ideal}, noisy ${quantum.evidence.cross.noisy}, agree ideal ${quantum.evidence.cross.agreeIdeal}, agree noise ${quantum.evidence.cross.agreeNoise}`),
+    row('Scaling (theorem qubits, theorem register)', `dim ${quantum.evidence.scaling.dim}, depth ${quantum.evidence.scaling.depth}, exact ${quantum.evidence.scaling.exact}, beyond ${quantum.evidence.scaling.beyond}, advantage ${quantum.evidence.scaling.advantage}`),
+    row('Independent verification', `CORS ${quantum.evidence.verify.cors}, origin ${quantum.evidence.verify.origin}, Lean \`${quantum.evidence.verify.lean}\`, hardware ${quantum.evidence.verify.hardware}, algorithm ${quantum.evidence.verify.algorithm}, RSA ${quantum.evidence.verify.rsa}, crypt ${quantum.evidence.verify.crypt}, encrypt ${quantum.evidence.verify.encrypt}`),
     '',
     '## Recompute',
     '',
@@ -10384,33 +10418,26 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     'npm test',
     '```',
     '',
-    'npx uuidna-install. Cloudflare `install.json`.',
+    `Run your own: \`npx uuidna-install\` reads Cloudflare \`install.json\`, or [![Deploy to Cloudflare](${installCloudflare.button})](${installCloudflare.qpu}).`,
     '',
-    '```sh',
-    'npx uuidna-install',
-    '```',
+    `Integrate in any harness. One computed block, served on initialize as \`install\` and printed here from the same function. URL ${harness.url}. ${harness.auth}.`,
     '',
-    `[![Deploy to Cloudflare](${installCloudflare.button})](${installCloudflare.qpu})`,
-    '',
-    `Integrate in any harness. One computed block, served on initialize as \`install\` and printed here from the same function. URL ${qpuHarnessesOf().url}. ${qpuHarnessesOf().auth}.`,
-    '',
-    ...qpuHarnessesOf().rows.map((r) => `- **${r.harness}** (${r.kind}): ${r.how}. File ${r.file}. \`${typeof r.config === 'string' ? r.config.replace(/\n/g, ' ') : JSON.stringify(r.config)}\``),
+    row('Harness', 'How', 'File', 'Config'),
+    row('---', '---', '---', '---'),
+    ...harness.rows.map((r) => row(`**${r.harness}** (${r.kind})`, r.how, r.file, `\`${typeof r.config === 'string' ? r.config.replace(/\n/g, ' ') : JSON.stringify(r.config)}\``)),
     '',
     '## Cite',
     '',
-    `MLA 8. ${cite.inText}. ORCID ${cite.author.orcid}. DOI ${cite.doi}. Archive ${cite.archive}. Identifier ${cite.identifier}. when ${cite.when}. Cite the running quantum circuit and its Lean proof.`,
+    `MLA 8, ${cite.inText}. DOI ${cite.doi}, archive ${cite.archive}, identifier ${cite.identifier}, ORCID ${cite.author.orcid}. when ${cite.when}: the citation names no access date because the DOI is the date. Cite the running quantum circuit and its Lean proof.`,
     '',
-    ...cite.rows.map((r) => r.works),
-    cite.prior.works,
+    ...cite.rows.map((r) => `- ${r.works}`),
+    `- ${cite.prior.works}`,
     '',
     '## License',
     '',
     'CC-BY-NC-ND-4.0. Source `LICENSE`. Copyright Tsvetan Rouschev.',
     '',
-    '```ts',
-    "import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'",
-    '```',
-    '')
+  ]
   return `${lines.join('\n')}\n`
 }
 

@@ -10,7 +10,7 @@
   "servedOnly": 11,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "245cd6ddb1ce5f7e",
+  "receipt": "8dcbcf3872a21e5f",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -544,8 +544,8 @@
         }
       ],
       "mint": {
-        "calls": 643815,
-        "chain": "ccc5e4732a6ee659"
+        "calls": 643813,
+        "chain": "9d323b08255f1663"
       },
       "served": {
         "count": 0,
@@ -677,7 +677,7 @@
       ],
       "mint": {
         "calls": 360560,
-        "chain": "965c66c5c03bf739"
+        "chain": "abe57778ec85e31f"
       },
       "served": {
         "count": 3,
@@ -2035,8 +2035,8 @@
         }
       ],
       "mint": {
-        "calls": 224507,
-        "chain": "33407cbe41a5841f"
+        "calls": 224505,
+        "chain": "a25a149b7f7d2f51"
       },
       "served": {
         "count": 0,
