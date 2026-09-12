@@ -102,3 +102,15 @@ jobs:
           node scripts/verify-live.mjs https://qpu.uuidna.com
           QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js
           node scripts/examine.mjs https://qpu.uuidna.com
+
+  # THE BOOT'S RECEIPT: the image builds, and inside it the unit proves itself (qpu_prove holds) — the same proof the
+  # container's HEALTHCHECK runs. This is what "bootable on hardware" means here; no device is dispatched.
+  boot:
+    runs-on: ubuntu-latest
+    needs: [ci]
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the hardware image
+        run: docker build -t qpu .
+      - name: The boot proves itself (qpu_prove holds inside the image)
+        run: docker run --rm qpu node dist/quantum/processing/unit/boot.js --prove

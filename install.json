@@ -2,12 +2,42 @@
   "command": "npx uuidna-install",
   "yes": "npx uuidna-install --yes",
   "prompt": "Enter seats all. Type 1 3 saas — or all.",
-  "packages": ["qpu-mcp", "payload-mcp", "vitepress-payload"],
-  "occupancies": ["personal", "business", "corporate", "saas", "paas"],
+  "packages": [
+    "qpu-mcp",
+    "payload-mcp",
+    "vitepress-payload"
+  ],
+  "occupancies": [
+    "personal",
+    "business",
+    "corporate",
+    "saas",
+    "paas"
+  ],
   "cloudflare": {
     "button": "https://deploy.workers.cloudflare.com/button",
     "qpu": "https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/qpu",
     "uuidna": "https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/uuidna",
     "payload": "https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/uuidna-payload"
-  }
+  },
+  "hardware": {
+    "kind": "boot",
+    "port": 8787,
+    "docker": "docker build -t qpu . && docker run --rm -p 8787:8787 qpu",
+    "multiarch": "docker buildx build --platform linux/arm64,linux/amd64 -t qpu .",
+    "pi": "Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot",
+    "prove": "node dist/quantum/processing/unit/boot.js --prove",
+    "receipt": "the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve",
+    "seat": {
+      "kind": "seat",
+      "device": "simulator",
+      "seat": "empty",
+      "reference": "the exact integer state-vector simulator; every reading above is computed there",
+      "doctrine": "a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim",
+      "acronym": "QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib, Naylor 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.",
+      "occupant": "a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum",
+      "holds": true
+    }
+  },
+  "holds": true
 }

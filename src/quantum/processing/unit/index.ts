@@ -3896,7 +3896,8 @@ export const qpuDocsOf = () => {
     formula: r.formula,
     theorem: r.theorem,
     reading: r.reading}))
-  const documentation = [abstract, ...api.map((a) => `${a.method} ${a.path} ${a.name}. ${a.reading}`), ...formulas.map((f) => `theorem ${f.identity}. ${f.reading}`)].join('\n')
+  const ladder = qpuLadderOf()
+  const documentation = [abstract, ...api.map((a) => `${a.method} ${a.path} ${a.name}. ${a.reading}`), ...formulas.map((f) => `theorem ${f.identity}. ${f.reading}`), ...ladder.map((l) => `learn ${l.step}. ${l.concept}: ${l.request.tool}. ${l.expect}. invariant ${l.invariant}. theorem ${l.theorem}.`)].join('\n')
   const holds =
     lean.holds === true &&
     documentation.includes(abstract) &&
@@ -3921,7 +3922,7 @@ export const qpuDocsOf = () => {
     formulas.every((f) => documentation.includes(f.reading) && formulaOf(f.formula) && !byDecideOf(f.theorem))
   return { kind: 'docs' as const, inline: true as const,
     guide: api.length === faces.rays,
-    abstract, api, formulas, documentation, src: lean.src, holds }
+    abstract, api, formulas, ladder, documentation, src: lean.src, holds }
 }
 
 export const qpuDocsHolds = (d = qpuDocsOf()): boolean =>
@@ -3956,6 +3957,8 @@ export const qpuGlossaryOf = () => ({
   read: 'how each argument was taken (digits, number, numeric, absent, default) and whether exactly',
   beyond: 'the order of the base exists and does not divide four, so a two-qubit register cannot resolve it',
   device: 'simulator when a vector of exact integer amplitudes was held; unmeasured otherwise',
+  QPU: 'quantum processing unit — this unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib) is prior use of the acronym, a classical SIMD vector core, unrelated and credited',
+  seat: 'empty: no device is dispatched. The simulator is the reference; a device that disagrees with it is a driver bug, never a physics claim',
 })
 export const qpuQuantumOf = () => {
   const cube = qpuCubeOf()
@@ -9314,6 +9317,113 @@ const installSelectOf = (args: Record<string, unknown>): readonly string[] => {
   }
   return []
 }
+
+// ── THE SEAT, THE ACRONYM, THE BOOT (the captain, 2026-09-12: "make hardware bootable with qpu") ────────────────
+// QPULib (Naylor, 2016) runs one kernel three ways — source interpreter, target emulator, VideoCore hardware — and
+// states the doctrine: a program that works in emulation but not on the device is a bug in the library. This unit has
+// the same shape with the seat empty: the exact integer simulator is the reference; a device that fills the seat and
+// disagrees is a driver bug, never a physics claim. "QPU" there is Broadcom's Quad Processing Unit — a classical 16-lane
+// SIMD vector core — prior use of this acronym, unrelated, and credited. A classical accelerator computing the same 2^n
+// exact amplitudes faster is an honest occupant of the seat; it would not make the seat quantum.
+const qpuSeatOf = () => ({
+  kind: 'seat' as const,
+  device: 'simulator' as const,
+  seat: 'empty' as const,
+  reference: 'the exact integer state-vector simulator; every reading above is computed there',
+  doctrine: 'a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim',
+  acronym: 'QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib, Naylor 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.',
+  occupant: 'a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum',
+  holds: true as const,
+})
+
+/** install.json, served and written from one function so the host and the file cannot disagree (the README promised
+ *  install.json and the host answered 404 until 2026-09-12). `hardware` is the boot on a real machine: any aarch64 or x86
+ *  box, a Raspberry Pi on Alpine, or the container — and the boot's receipt is the unit proving itself inside it. */
+export const qpuInstallJsonOf = () => qpuInstallManifestOf()
+/** value + predicate (the dryclean law): the served install reading recomputes to itself */
+export const qpuInstallJsonHolds = (): boolean => qpuInstallManifestOf().holds === true && qpuInstallManifestOf().hardware.seat.holds === true
+const qpuInstallManifestOf = () => ({
+  command: 'npx uuidna-install',
+  yes: 'npx uuidna-install --yes',
+  prompt: 'Enter seats all. Type 1 3 saas — or all.',
+  packages: [...installKeys],
+  occupancies: [...occupancies],
+  cloudflare: { button: installCloudflare.button, qpu: installCloudflare.qpu, uuidna: installCloudflare.uuidna, payload: installCloudflare.payload },
+  hardware: {
+    kind: 'boot' as const,
+    port: 8787,
+    docker: 'docker build -t qpu . && docker run --rm -p 8787:8787 qpu',
+    multiarch: 'docker buildx build --platform linux/arm64,linux/amd64 -t qpu .',
+    pi: 'Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot',
+    prove: 'node dist/quantum/processing/unit/boot.js --prove',
+    receipt: 'the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve',
+    seat: qpuSeatOf(),
+  },
+  holds: true as const,
+})
+
+/** .well-known/mcp.json — what a client or registry can learn without an initialize round-trip. */
+const qpuWellKnownOf = () => {
+  const mcp = qpuMcpOf()
+  return {
+    kind: 'well-known' as const,
+    name: `@uuidna/${unit.kind}`,
+    title: 'QPU',
+    description: qpuDocsOf().abstract,
+    url: `${unit.origin}/mcp`,
+    transport: 'streamable-http' as const,
+    methods: ['POST'] as const,
+    batch: true as const,
+    protocolVersions: MCP_VERSIONS,
+    tools: mcp.tools.length + mcp.cybersecurity.tools.length,
+    install: qpuHarnessesOf().rows.map((r) => ({ harness: r.harness, how: r.how })),
+    openapi: `${unit.origin}/openapi.json`,
+    catalog: `${unit.origin}/mcp.json`,
+    cite: `${unit.origin}/cite`,
+    sitemap: `${unit.origin}/sitemap.xml`,
+    holds: true as const,
+  }
+}
+
+/** OpenAPI 3.1 over the seven paths, derived from docs.api, with the MCP tools as an extension — for the consumers
+ *  that speak OpenAPI and not MCP (gateways, Postman, OpenAI actions). */
+const qpuOpenApiOf = () => {
+  const docs = qpuDocsOf()
+  const mcp = qpuMcpOf()
+  const paths: Record<string, Record<string, unknown>> = {}
+  for (const a of docs.api) {
+    const op = {
+      operationId: `${a.method.toLowerCase()}_${a.name.replace(/[^a-z0-9]+/gi, '_')}`,
+      summary: a.reading,
+      ...(a.method === 'POST' ? { requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', description: a.path === '/mcp' ? 'a JSON-RPC 2.0 request or a batch array of them' : 'the message body' } } } } } : {}),
+      responses: { '200': { description: 'JSON-LD', content: { 'application/ld+json': { schema: { type: 'object' } } } } },
+    }
+    paths[a.path] = { ...(paths[a.path] ?? {}), [a.method.toLowerCase()]: op }
+  }
+  return {
+    openapi: '3.1.0',
+    info: { title: 'QPU', version: packageVersion, description: docs.abstract, license: { name: 'CC-BY-NC-ND-4.0' } },
+    servers: [{ url: unit.origin }],
+    paths,
+    'x-mcp': { endpoint: `${unit.origin}/mcp`, protocolVersions: MCP_VERSIONS, tools: [...mcp.tools, ...mcp.cybersecurity.tools].map((t) => ({ name: t.name, description: t.man.description })) },
+    holds: true as const,
+  }
+}
+
+const qpuSitemapOf = (): string => {
+  const urls = [...new Set([...qpuDocsOf().api.filter((a) => a.method === 'GET').map((a) => a.href), `${unit.origin}/.well-known/mcp.json`, `${unit.origin}/mcp.json`, `${unit.origin}/install.json`, `${unit.origin}/openapi.json`])]
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`
+}
+
+/** THE LEARNING LADDER, STANDARDISED (QPULib's shape: one construct per worked example, in order, each with the reference
+ *  to compare against). Four steps, each with the same five fields — concept, request, expect, invariant, next — so a
+ *  reader climbs the same way every time and nothing is taught twice. Served in docs.inline and printed in the README. */
+const qpuLadderOf = () => [
+  { step: 1, concept: 'one gate, exact amplitudes', request: { method: 'GET' as const, path: '/', tool: 'qpu_quantum' }, expect: 'Bell outcomes 00 and 11 at exactly 1/2 — Gaussian-integer amplitudes, no floats', invariant: 'H·H = I on |0⟩', theorem: 'qubits', next: 2 },
+  { step: 2, concept: 'entanglement is not correlation', request: { method: 'POST' as const, path: '/mcp', tool: 'qpu_prove' }, expect: 'GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing', invariant: 'no-cloning and monogamy hold on the served states', theorem: 'entangle', next: 3 },
+  { step: 3, concept: 'Shor: a period, then a gcd', request: { method: 'POST' as const, path: '/mcp', tool: 'crypto_shor' }, expect: `theorem shor ${shorFactorOf()} — a = 8, period 4, 7 · 13`, invariant: 'p · q = n, recomputed from the period', theorem: 'shor', next: 4 },
+  { step: 4, concept: 'a code corrects one flip', request: { method: 'POST' as const, path: '/mcp', tool: 'qpu_prove' }, expect: 'bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run', invariant: 'distance 3 corrects exactly one error', theorem: 'noise', next: 'climb: qpu_train → qpu_improve → qpu_compete → qpu_prove' },
+]
 const payloadFinds = ['findPages', 'findUsers', 'findMedia', 'findTenants'] as const
 let installPending: string[] = []
 let installSeated: string[] = []
@@ -10379,6 +10489,8 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     `Cybersecurity morph tools. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}.`,
     '',
+    `Discovery, off the seven-path guide: \`/.well-known/mcp.json\` \`/mcp.json\` \`/install.json\` \`/openapi.json\` \`/sitemap.xml\`. JSON-RPC batches accepted on \`POST /mcp\`; a \`GET /mcp\` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.`,
+    '',
     row('Tool', 'Claim'),
     row('---', '---'),
     ...m.cybersecurity.tools.map((t) => row(`\`${t.name}\``, t.man.description)),
@@ -10420,6 +10532,14 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     `Run your own: \`npx uuidna-install\` reads Cloudflare \`install.json\`, or [![Deploy to Cloudflare](${installCloudflare.button})](${installCloudflare.qpu}).`,
     '',
+    'Learn, in order. Each step teaches one thing and names the invariant to check it against.',
+    '',
+    row('Step', 'Concept', 'Request', 'Expect', 'Invariant', 'Theorem'),
+    row('---', '---', '---', '---', '---', '---'),
+    ...qpuLadderOf().map((l) => row(String(l.step), l.concept, `${l.request.method} ${l.request.path} · ${l.request.tool}`, l.expect, l.invariant, `theorem ${l.theorem}`)),
+    '',
+    `Boot on hardware. ${qpuInstallManifestOf().hardware.docker}. Raspberry Pi: ${qpuInstallManifestOf().hardware.pi}. The boot's receipt is ${qpuInstallManifestOf().hardware.prove} — ${qpuInstallManifestOf().hardware.receipt}. The seat stays ${qpuSeatOf().seat}: ${qpuSeatOf().doctrine}.`,
+    '',
     `Integrate in any harness. One computed block, served on initialize as \`install\` and printed here from the same function. URL ${harness.url}. ${harness.auth}.`,
     '',
     row('Harness', 'How', 'File', 'Config'),
@@ -10432,6 +10552,8 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     ...cite.rows.map((r) => `- ${r.works}`),
     `- ${cite.prior.works}`,
+    '',
+    qpuSeatOf().acronym,
     '',
     '## License',
     '',
@@ -10567,7 +10689,7 @@ export const qpuServedMemoHolds = (m = qpuServedMemoOf()): boolean => m.entries 
 /** Every served row names a memo key and carries a quoted 16-hex fold — the ETag of the bytes served. */
 export const qpuServedLedgerHolds = (rows = qpuServedLedgerOf()): boolean => rows.every((r) => r.key.length > n - n && /^"[0-9a-f]{16}"$/.test(r.fold))
 
-export default {
+const worker = {
   async fetch(request: Request, env?: QpuEnv): Promise<Response> {
     const host = env?.QPU_HOST ?? unit.host
     const jsonOf = (body: unknown, status = found) => new Response(JSON.stringify(body), { status, headers })
@@ -10586,6 +10708,12 @@ export default {
     if (!named) return jsonOf(JSON.parse(dead), lost)
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers })
     if (path === '/mcp') {
+      // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no
+      // server-initiated stream, so a GET asking for text/event-stream gets the spec's other allowed answer — 405 with
+      // Allow — and the client falls back to POST instead of parsing a JSON-LD catalog as an event stream.
+      if (request.method === 'GET' && (request.headers.get('accept') ?? '').includes('text/event-stream')) {
+        return new Response(null, { status: lost + seed, headers: { ...headers, allow: 'POST, OPTIONS' } })
+      }
       if (request.method === 'POST') {
         let parsed: unknown
         try {
@@ -10593,7 +10721,22 @@ export default {
         } catch {
           return jsonOf(rpcErrorOf(null, rpcCodes.parse, 'Parse error: the body is not JSON'), badRequest)
         }
-        if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        if (Array.isArray(parsed)) {
+          // JSON-RPC BATCH. MCP 2025-03-26 allowed batches and 2025-06-18 removed them; a server advertising both accepts
+          // them. Every member is re-dispatched through this same door, so a batch is exactly its members; a notification
+          // (no id) gets no entry, per JSON-RPC 2.0; an empty array is the spec's Invalid Request.
+          const members = parsed as unknown[]
+          if (members.length === n - n || !members.every((m) => m !== null && typeof m === 'object' && !Array.isArray(m)))
+            return jsonOf(rpcErrorOf(null, rpcCodes.invalid, 'Invalid Request: a batch must be a non-empty array of request objects'), badRequest)
+          const auth = request.headers.get('authorization')
+          const replies = await Promise.all(members.map(async (m) => {
+            const one = new Request(request.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', ...(auth ? { authorization: auth } : {}) }, body: JSON.stringify(m) })
+            const r = await worker.fetch(one, env)
+            return (m as { id?: unknown }).id === undefined ? null : ((await r.json()) as unknown)
+          }))
+          return jsonOf(replies.filter((r) => r !== null))
+        }
+        if (parsed === null || typeof parsed !== 'object') {
           return jsonOf(rpcErrorOf(null, rpcCodes.invalid, 'Invalid Request: expected one JSON-RPC 2.0 request object'), badRequest)
         }
         const body = parsed as { method?: unknown; params?: { name?: unknown; arguments?: unknown; protocolVersion?: unknown }; id?: unknown }
@@ -10640,6 +10783,14 @@ export default {
     if (path === '/') return servedResponse(servedOf('/', () => qpuQuantumOf()))
     if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
     if (path === '/cite') return servedResponse(servedOf('/cite', () => qpuCiteOf()))
+    // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed). What an MCP client, a
+    // registry, an OpenAPI consumer or a crawler asks for by convention, each derived from the readings above. Measured
+    // 2026-09-12: all five answered 404 while the README promised install.json.
+    if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
+    if (path === '/mcp.json') return servedResponse(servedOf(path, () => qpuMcpOf()))
+    if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
+    if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
+    if (path === '/sitemap.xml') return new Response(qpuSitemapOf(), { status: found, headers: { ...headers, 'content-type': 'application/xml; charset=utf-8' } })
     if (path === '/server' || path.startsWith('/server/')) {
       if (request.method === 'POST') {
         const body = (await request.json().catch(() => ({}))) as {
@@ -10718,3 +10869,4 @@ export default {
     }
     return jsonOf(JSON.parse(dead), lost)
   }}
+export default worker

@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 116,
-  "pass": 116,
+  "tests": 121,
+  "pass": 121,
   "fail": 0,
   "dry": 0,
-  "circuit": 63,
+  "circuit": 67,
   "mintOnly": 12,
-  "servedOnly": 11,
+  "servedOnly": 12,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "8dcbcf3872a21e5f",
+  "receipt": "e4bdd60703f5ad79",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -59,7 +59,7 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"0c2d1ecd5e3a74a7\"",
+          "\"80c71618e8ec9150\"",
           "\"db7aaa51bdad3dd7\""
         ]
       }
@@ -682,7 +682,7 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"0c2d1ecd5e3a74a7\"",
+          "\"80c71618e8ec9150\"",
           "\"f7fc6d5b00d0e112\""
         ]
       }
@@ -936,6 +936,225 @@
       "served": {
         "count": 0,
         "folds": []
+      }
+    },
+    {
+      "name": "a GET /mcp asking for an event stream gets 405 with Allow, not a catalog",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 5287,
+      "kinds": {
+        "x": 1141,
+        "cnot": 2192,
+        "toffoli": 184,
+        "h": 1624,
+        "measure": 92,
+        "cmodexp": 27,
+        "xx": 27
+      },
+      "dims": {
+        "8": 5233,
+        "512": 54
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "7b89667f0685d358",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 92
+        }
+      ],
+      "mint": {
+        "calls": 117634,
+        "chain": "5290e8c2d80b5e7c"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "a JSON-RPC batch is exactly its members; notifications get no entry; an empty batch is refused",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 1045,
+      "kinds": {
+        "h": 324,
+        "cnot": 432,
+        "x": 225,
+        "toffoli": 36,
+        "measure": 18,
+        "cmodexp": 5,
+        "xx": 5
+      },
+      "dims": {
+        "8": 1035,
+        "512": 10
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "a6e4423e0d17b458",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 18
+        }
+      ],
+      "mint": {
+        "calls": 23169,
+        "chain": "d7ca791967656503"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "the five discovery doors answer, and install.json is the same reading the file is written from",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 9936,
+      "kinds": {
+        "h": 3036,
+        "cnot": 4128,
+        "x": 2148,
+        "toffoli": 348,
+        "measure": 174,
+        "cmodexp": 51,
+        "xx": 51
+      },
+      "dims": {
+        "8": 9834,
+        "512": 102
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "e894251b7e58a2fb",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 174
+        }
+      ],
+      "mint": {
+        "calls": 220378,
+        "chain": "24a7ad4f8e14850f"
+      },
+      "served": {
+        "count": 3,
+        "folds": [
+          "\"03378927b851630c\"",
+          "\"9639ff5c8d8b1362\"",
+          "\"78959eca8cb4658c\""
+        ]
+      }
+    },
+    {
+      "name": "the learning ladder is four standard steps in the inline guide, each with the same five fields",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 813,
+      "kinds": {
+        "x": 175,
+        "cnot": 336,
+        "toffoli": 28,
+        "h": 252,
+        "measure": 14,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 805,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "d3751420dd34b49c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 14
+        }
+      ],
+      "mint": {
+        "calls": 18209,
+        "chain": "b5f415ca0263f0bf"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "the seat doctrine and the acronym credit are served in the glossary",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "b5f415ca0263f0bf"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"80c71618e8ec9150\""
+        ]
       }
     },
     {
@@ -3165,8 +3384,8 @@
           "\"24d301e31130f0a6\"",
           "\"29dda7aba526719e\"",
           "\"b05fbd7991e9a4ac\"",
-          "\"3db38f565a8fb026\"",
-          "\"721ea65e4039d77a\"",
+          "\"bc0421e56f044b2c\"",
+          "\"4f396a380afc5f1e\"",
           "\"63c4902bf72aceae\"",
           "\"c8681406bd2615de\"",
           "\"23363009eadc48a8\"",
@@ -3291,7 +3510,7 @@
         "count": 2,
         "folds": [
           "\"81e74bd7ff12633c\"",
-          "\"721ea65e4039d77a\""
+          "\"4f396a380afc5f1e\""
         ]
       }
     },
@@ -3370,7 +3589,7 @@
           "\"30e8b53f57208544\"",
           "\"b3ff0b285f324124\"",
           "\"29dda7aba526719e\"",
-          "\"3db38f565a8fb026\"",
+          "\"bc0421e56f044b2c\"",
           "\"63c4902bf72aceae\"",
           "\"23363009eadc48a8\"",
           "\"cf594d9d088efcda\"",
@@ -3438,7 +3657,7 @@
           "\"f7fc6d5b00d0e112\"",
           "\"24d301e31130f0a6\"",
           "\"b05fbd7991e9a4ac\"",
-          "\"721ea65e4039d77a\"",
+          "\"4f396a380afc5f1e\"",
           "\"c8681406bd2615de\"",
           "\"bf29eeaed102abf6\"",
           "\"b2299c520420511a\"",
@@ -3496,7 +3715,7 @@
       "served": {
         "count": 10,
         "folds": [
-          "\"f0aa0a28630adb55\"",
+          "\"e81a41219e7712aa\"",
           "\"f539c8355ac195e7\"",
           "\"1ac17954f6aa65c7\"",
           "\"db7aaa51bdad3dd7\"",
@@ -4044,8 +4263,8 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"0c2d1ecd5e3a74a7\"",
-          "\"721ea65e4039d77a\"",
+          "\"80c71618e8ec9150\"",
+          "\"4f396a380afc5f1e\"",
           "\"f7fc6d5b00d0e112\""
         ]
       }

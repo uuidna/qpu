@@ -64,6 +64,8 @@ Seven paths. Eight sealed MCP tools, plus eight cybersecurity morph tools listed
 
 Cybersecurity morph tools. crypto_rsa theorem shor Factor 91. crypto_split theorem crypto Split identity true. Secrecy false.
 
+Discovery, off the seven-path guide: `/.well-known/mcp.json` `/mcp.json` `/install.json` `/openapi.json` `/sitemap.xml`. JSON-RPC batches accepted on `POST /mcp`; a `GET /mcp` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.
+
 | Tool | Claim |
 | --- | --- |
 | `crypto_catalog` | theorem shor. theorem crypto. |
@@ -112,6 +114,17 @@ npm test
 
 Run your own: `npx uuidna-install` reads Cloudflare `install.json`, or [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/qpu).
 
+Learn, in order. Each step teaches one thing and names the invariant to check it against.
+
+| Step | Concept | Request | Expect | Invariant | Theorem |
+| --- | --- | --- | --- | --- | --- |
+| 1 | one gate, exact amplitudes | GET / · qpu_quantum | Bell outcomes 00 and 11 at exactly 1/2 — Gaussian-integer amplitudes, no floats | H·H = I on |0⟩ | theorem qubits |
+| 2 | entanglement is not correlation | POST /mcp · qpu_prove | GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing | no-cloning and monogamy hold on the served states | theorem entangle |
+| 3 | Shor: a period, then a gcd | POST /mcp · crypto_shor | theorem shor Factor 91 — a = 8, period 4, 7 · 13 | p · q = n, recomputed from the period | theorem shor |
+| 4 | a code corrects one flip | POST /mcp · qpu_prove | bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run | distance 3 corrects exactly one error | theorem noise |
+
+Boot on hardware. docker build -t qpu . && docker run --rm -p 8787:8787 qpu. Raspberry Pi: Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot. The boot's receipt is node dist/quantum/processing/unit/boot.js --prove — the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve. The seat stays empty: a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim.
+
 Integrate in any harness. One computed block, served on initialize as `install` and printed here from the same function. URL https://qpu.uuidna.com/mcp. none for reads; Authorization: Bearer QPU_WRITE_TOKEN for storage writes.
 
 | Harness | How | File | Config |
@@ -133,6 +146,8 @@ MLA 8, (Rouschev). DOI 10.5281/zenodo.22717782, archive https://zenodo.org/recor
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit. doi:10.5281/zenodo.22717782.
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp. doi:10.5281/zenodo.22717782.
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "All Seven Clay Millennium Problems Sealed via Universal σ-Involution." Zenodo, https://zenodo.org/records/21781603. doi:10.5281/zenodo.21781603.
+
+QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib, Naylor 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.
 
 ## License
 

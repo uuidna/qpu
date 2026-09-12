@@ -3,7 +3,7 @@
  */
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { qpuCernOf, qpuCiteOf, qpuDevelopHolds, qpuIntegrityHolds, qpuMcpOf, qpuReadmeHolds, qpuReadmeOf } from './index.js'
+import { qpuCernOf, qpuCiteOf, qpuDevelopHolds, qpuIntegrityHolds, qpuMcpOf, qpuReadmeHolds, qpuReadmeOf, qpuInstallJsonOf } from './index.js'
 
 if (!qpuIntegrityHolds()) {
   throw new Error('qpuIntegrityHolds')
@@ -19,6 +19,7 @@ if (!qpuReadmeHolds(readme) || mcp.tools[0]?.name !== 'qpu_quantum') {
   throw new Error('qpuReadmeHolds')
 }
 const root = process.cwd()
+writeFileSync(join(root, 'install.json'), `${JSON.stringify(qpuInstallJsonOf(), null, 2)}\n`)
 writeFileSync(join(root, 'mcp.json'), `${JSON.stringify(mcp, null, 2)}\n`)
 writeFileSync(join(root, 'README.md'), readme)
 writeFileSync(
