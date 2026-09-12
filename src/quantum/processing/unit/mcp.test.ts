@@ -123,7 +123,7 @@ test('eight doors via mcp', async () => {
   assert.equal(cite.when, 'never')
   assert.equal(cite.inText, '(Rouschev)')
   assert.equal(cite.author.orcid, 'https://orcid.org/0009-0000-7312-9778')
-  assert.equal(cite.doi, '10.5281/zenodo.22700099')
+  assert.equal(cite.doi, '10.5281/zenodo.22717782')
   assert.equal(cite.identifier, `https://doi.org/${cite.doi}`)
   assert.equal(cite.sameAs.includes(cite.archive), true)
   assert.equal(cite.sameAs.includes(cite.author.orcid), true)

@@ -4098,9 +4098,10 @@ export const qpuCiteOf = () => {
     first: 'Tsvetan',
     orcid: 'https://orcid.org/0009-0000-7312-9778',
   }
-  const doi = '10.5281/zenodo.22700099'
+  /** The versioned DOI: the Zenodo record the GitHub Release v0.1.1 was archived as (uuidna/qpu-v0.1.1.zip, tag 04ec6be at 4a45563). */
+  const doi = '10.5281/zenodo.22717782'
   const conceptdoi = '10.5281/zenodo.22700098'
-  const archive = `https://zenodo.org/records/22700099`
+  const archive = `https://zenodo.org/records/22717782`
   const identifier = `https://doi.org/${doi}`
   const prior = {
     title: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution',
@@ -4112,7 +4113,7 @@ export const qpuCiteOf = () => {
   /** WHAT THE ARCHIVE HOLDS, BESIDE WHAT THE HOST SERVES. The versioned DOI is one archived commit; the host moves on
    * without it until a new version is archived. Both are said, and `current` says whether they are the same version,
    * so a reader who downloads "this version" knows whether it is the code that answered them. */
-  const archived = { doi, archive, version: '0.1.0' as string, commit: 'aed5802', holds: archive.endsWith(doi.split('.').pop() ?? '') }
+  const archived = { doi, archive, version: '0.1.1' as string, commit: '4a45563', holds: archive.endsWith(doi.split('.').pop() ?? '') }
   const served = { version: packageVersion, origin: unit.origin, holds: packageVersion.split('.').length === n }
   const current = archived.version === served.version
   const currency = current
@@ -4134,7 +4135,7 @@ export const qpuCiteOf = () => {
     author.orcid.startsWith('https://orcid.org/') &&
     author.orcid.endsWith('0009-0000-7312-9778') &&
     doi.startsWith('10.5281/zenodo.') &&
-    doi.endsWith('22700099') &&
+    doi.endsWith('22717782') &&
     conceptdoi.endsWith('22700098') &&
     prior.doi.endsWith('21781603') &&
     prior.archive.startsWith('https://zenodo.org/records/') &&
@@ -4191,15 +4192,15 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.when === 'never' &&
   c.website === unit.host &&
   c.author.orcid === 'https://orcid.org/0009-0000-7312-9778' &&
-  c.doi === '10.5281/zenodo.22700099' &&
+  c.doi === '10.5281/zenodo.22717782' &&
   c.conceptdoi === '10.5281/zenodo.22700098' &&
-  c.archive === 'https://zenodo.org/records/22700099' &&
+  c.archive === 'https://zenodo.org/records/22717782' &&
   c.identifier === `https://doi.org/${c.doi}` &&
   c.sameAs.includes(c.archive) &&
   c.sameAs.includes(c.author.orcid) &&
   c.sameAs.includes(c.identifier) &&
-  c.archived.commit === 'aed5802' &&
-  c.archived.version === '0.1.0' &&
+  c.archived.commit === '4a45563' &&
+  c.archived.version === '0.1.1' &&
   c.served.version === packageVersion &&
   c.current === (c.archived.version === c.served.version) &&
   c.currency.includes(`v${c.served.version}`) &&

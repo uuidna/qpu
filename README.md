@@ -96,11 +96,11 @@ Integrate in any harness. One computed block, served on initialize as `install` 
 
 ## Cite
 
-MLA 8. (Rouschev). ORCID https://orcid.org/0009-0000-7312-9778. DOI 10.5281/zenodo.22700099. Archive https://zenodo.org/records/22700099. Identifier https://doi.org/10.5281/zenodo.22700099. when never. Cite the running quantum circuit and its Lean proof.
+MLA 8. (Rouschev). ORCID https://orcid.org/0009-0000-7312-9778. DOI 10.5281/zenodo.22717782. Archive https://zenodo.org/records/22717782. Identifier https://doi.org/10.5281/zenodo.22717782. when never. Cite the running quantum circuit and its Lean proof.
 
-Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "qpu." qpu.uuidna.com, https://qpu.uuidna.com. doi:10.5281/zenodo.22700099.
-Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit. doi:10.5281/zenodo.22700099.
-Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp. doi:10.5281/zenodo.22700099.
+Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "qpu." qpu.uuidna.com, https://qpu.uuidna.com. doi:10.5281/zenodo.22717782.
+Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit. doi:10.5281/zenodo.22717782.
+Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp. doi:10.5281/zenodo.22717782.
 Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "All Seven Clay Millennium Problems Sealed via Universal σ-Involution." Zenodo, https://zenodo.org/records/21781603. doi:10.5281/zenodo.21781603.
 
 ## License

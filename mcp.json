@@ -651,8 +651,8 @@
         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call qpu_cite",
         "href": "https://qpu.uuidna.com/cite",
         "description": "How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.",
-        "reading": "GET https://qpu.uuidna.com/cite returns citations[] (MLA 8 strings to paste), doi 10.5281/zenodo.22700099, the Zenodo archive, and the version with its commit. No auth.",
-        "documentation": "NAME\n    qpu_cite — How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/cite returns citations[] (MLA 8 strings to paste), doi 10.5281/zenodo.22700099, the Zenodo archive, and the version with its commit. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
+        "reading": "GET https://qpu.uuidna.com/cite returns citations[] (MLA 8 strings to paste), doi 10.5281/zenodo.22717782, the Zenodo archive, and the version with its commit. No auth.",
+        "documentation": "NAME\n    qpu_cite — How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call qpu_cite\n    qpu_cite { man: true }\nDESCRIPTION\n    GET https://qpu.uuidna.com/cite returns citations[] (MLA 8 strings to paste), doi 10.5281/zenodo.22717782, the Zenodo archive, and the version with its commit. No auth.\nSEE ALSO\n    qpu_quantum, qpu_lean, qpu_train, qpu_forge, qpu_improve, qpu_compete, qpu_prove",
         "holds": true
       }
     },
