@@ -6789,6 +6789,7 @@ const quantumSlotOf = (name: string): number | undefined => {
 
 const quantumRelatedExtras = [
   'only',
+  'planes',
   'lattice',
   'circuit',
   'noise',
