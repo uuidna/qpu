@@ -72,3 +72,18 @@ export const pushVerdictHolds = (v: PushVerdict): boolean =>
  *  is the conflation this whole law refuses. A bare "Not Found" is NOT the pattern: `command not found` contains it. */
 export const isUnknownCommit = (message: string): boolean =>
   /No commit found for SHA|\(HTTP (?:404|422)\)/i.test(String(message))
+
+/** THE PUSH THAT REPORTED SUCCESS AND LANDED NOTHING. git can exit 0 while the remote branch sits elsewhere — a
+ *  concurrent push, a protected ref, a retry that went to another branch. The forge is then asked about a commit
+ *  the remote does not carry, and "no run yet" reads as patience when the truth is that nothing landed. The sibling
+ *  tree compares the remote's head against the sha it pushed and refuses; the same guard belongs here. */
+export const landedVerdictOf = (pushed: string, remoteHead: string): { landed: boolean; reason: string } => {
+  if (pushed.length < 7) throw new Error(`post-push: "${pushed}" is too short to name a commit — seven hex characters is git's own floor`)
+  const landed = remoteHead.trim() === pushed.trim()
+  return {
+    landed,
+    reason: landed
+      ? `origin carries ${pushed.slice(0, 9)}`
+      : `NOTHING LANDED: origin is ${remoteHead.trim().slice(0, 9) || 'unreadable'}, not ${pushed.slice(0, 9)} — the push reported success and the remote is elsewhere`,
+  }
+}

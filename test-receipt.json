@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 135,
-  "pass": 135,
+  "tests": 136,
+  "pass": 136,
   "fail": 0,
   "dry": 0,
-  "circuit": 94,
+  "circuit": 95,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "e23e2970ef2c3f72",
+  "receipt": "a8eac0dd3372c956",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -4298,6 +4298,54 @@
       "mint": {
         "calls": 18209,
         "chain": "7fc70a5bcdf9b080"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "a push that reported success while the remote sits elsewhere is NOTHING LANDED, not patience",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 813,
+      "kinds": {
+        "x": 175,
+        "cnot": 336,
+        "toffoli": 28,
+        "h": 252,
+        "measure": 14,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 805,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "d3751420dd34b49c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 14
+        }
+      ],
+      "mint": {
+        "calls": 18209,
+        "chain": "111bb5d6bed5e628"
       },
       "served": {
         "count": 0,

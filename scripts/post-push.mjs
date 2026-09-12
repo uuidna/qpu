@@ -8,7 +8,7 @@
 //
 //   node scripts/post-push.mjs [sha] [--wait]     default sha: HEAD
 import { execSync } from 'node:child_process'
-import { pushVerdictOf, isUnknownCommit } from '../dist/quantum/processing/unit/publish.js'
+import { pushVerdictOf, isUnknownCommit, landedVerdictOf } from '../dist/quantum/processing/unit/publish.js'
 
 const sh = (cmd) => execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
 
@@ -31,7 +31,8 @@ export const repoSlugOf = (remote) => {
 const ROUNDS = 30, PAUSE = 20
 const args = process.argv.slice(2)
 const wait = args.includes('--wait')
-const sha = args.find((a) => !a.startsWith('--')) ?? sh('git rev-parse HEAD')
+const explicit = args.find((a) => !a.startsWith('--'))
+const sha = explicit ?? sh('git rev-parse HEAD')
 const slug = repoSlugOf(sh('git remote get-url origin'))
 
 const rows = () => {
@@ -50,6 +51,13 @@ const rows = () => {
 }
 
 console.log(`· post-push — ${slug} @ ${sha.slice(0, 9)}`)
+// ASKED ABOUT OUR OWN HEAD? Then the remote must carry it. An arbitrary sha is the caller's business, not ours.
+if (!explicit) {
+  sh('git fetch -q origin')
+  const landed = landedVerdictOf(sha, sh('git rev-parse origin/HEAD 2>/dev/null || git rev-parse @{u}'))
+  if (!landed.landed) { console.error(`✗ post-push — ${landed.reason}`); process.exit(1) }
+  console.log(`· post-push — ${landed.reason}`)
+}
 let verdict = pushVerdictOf(sha, rows())
 for (let i = 0; wait && !verdict.settled && i < ROUNDS; i++) {
   console.log(`· post-push — ${verdict.reason}`)

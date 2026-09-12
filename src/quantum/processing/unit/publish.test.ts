@@ -3,7 +3,7 @@
 // reported as verified. The law refuses each of them by name.
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import { pushVerdictOf, pushVerdictHolds, isUnknownCommit, type PushRun } from './publish.js'
+import { pushVerdictOf, pushVerdictHolds, isUnknownCommit, landedVerdictOf, type PushRun } from './publish.js'
 import { qpuFoldOf, qpuQuantumOf } from './index.js'
 
 const SHA = 'abc1234def5678'
@@ -75,5 +75,17 @@ test('an unindexed commit is told apart from a forge that cannot be asked at all
   assert.equal(isUnknownCommit('gh: command not found'), false)
   assert.equal(isUnknownCommit('gh: authentication required (HTTP 401)'), false)
   assert.equal(isUnknownCommit(''), false)
+  computed()
+})
+
+test('a push that reported success while the remote sits elsewhere is NOTHING LANDED, not patience', () => {
+  const mine = 'aaaaaaabbbbbbbcccccccddddddd'
+  assert.equal(landedVerdictOf(mine, mine).landed, true)
+  assert.match(landedVerdictOf(mine, mine).reason, /origin carries/)
+  const stale = landedVerdictOf(mine, 'ffffffffffffffffffffffffffff')
+  assert.equal(stale.landed, false)
+  assert.match(stale.reason, /NOTHING LANDED/)
+  assert.match(landedVerdictOf(mine, '').reason, /unreadable/)
+  assert.throws(() => landedVerdictOf('abc12', 'abc12'), /seven hex/)
   computed()
 })
