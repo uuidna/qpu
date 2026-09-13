@@ -3644,6 +3644,20 @@ export const qpuLeanOf = () => {
       holds: superconductivityHolds,
   },
     {
+      heading: 'cooling',
+      theorem:
+        'theorem cooling_strictly_decreases (t a b n : Nat) (ht : 0 < t) (ha : 0 < a) (hab : a < b) : t * a ^ n * a < t * a ^ n * b :=',
+      formula:
+        '\\forall t,a,b,n:\\ 0<t,\\ 0<a<b\\Rightarrow 0<t\\,a^{n}\\land t\\,a^{n}\\,a<t\\,a^{n}\\,b',
+      reading:
+        'holds true. Cooling, for every start and every step: a step that keeps the fraction a/b < 1 of what remains takes t·aⁿ to t·aⁿ·a against the t·aⁿ·b it would keep at b/b — so over the common denominator bⁿ⁺¹ the temperature is positive after every step (cooling_stays_positive) and strictly lower after each (cooling_strictly_decreases). Near absolute zero, never at it: the third law\'s arithmetic, with no number typed in and no axiom. Checked here exactly on the lattice itself — t = vertices, a = rays, b = faces — at every face. JSON Nat. Never Math.',
+      holds: Array.from({ length: faces.faces }, (_, k) => {
+        const zero = BigInt(n - n)
+        const t = BigInt(cube.vertices), a = BigInt(faces.rays), b = BigInt(faces.faces), e = BigInt(k)
+        return t * a ** e > zero && t * a ** e * a < t * a ** e * b
+      }).every(Boolean),
+  },
+    {
       heading: 'drift',
       theorem: 'theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩',
       formula: '\\mathrm{coins}=2\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
