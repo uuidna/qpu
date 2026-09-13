@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 136,
-  "pass": 136,
+  "tests": 141,
+  "pass": 141,
   "fail": 0,
   "dry": 0,
-  "circuit": 95,
+  "circuit": 100,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "f6931f11d4cf106b",
+  "receipt": "bc77dbdce48870a9",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -2731,6 +2731,256 @@
       "served": {
         "count": 0,
         "folds": []
+      }
+    },
+    {
+      "name": "ladder 1 — one gate, exact amplitudes",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "34f46c2ca62064e7"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"a22edcf2e249fc09\""
+        ]
+      }
+    },
+    {
+      "name": "ladder 2 — entanglement is not correlation",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "500b608ff86ef1a1"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"a22edcf2e249fc09\""
+        ]
+      }
+    },
+    {
+      "name": "ladder 3 — Shor: a period, then a gcd",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "fe815806c7afd16b"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"a22edcf2e249fc09\""
+        ]
+      }
+    },
+    {
+      "name": "ladder 4 — a code corrects one flip",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "12d2f2d8ba3eabd5"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"a22edcf2e249fc09\""
+        ]
+      }
+    },
+    {
+      "name": "every ladder test belongs to a served step",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "22810adb3d52c14f"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"a22edcf2e249fc09\""
+        ]
       }
     },
     {

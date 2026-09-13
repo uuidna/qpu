@@ -99,7 +99,7 @@ CERN Open Data opendata.cern.ch. LHC running. Four CMS records. Coil, electronic
 | Device-specific noise | channel xx, drift true |
 | Randomized benchmarks | volume dim 8, heavy 0 / 16, mirror hh |
 | Cross-validation | ideal true, noisy xx, agree ideal true, agree noise true |
-| Scaling (theorem qubits, theorem register) | dim 8, depth 9, exact true, beyond false, advantage false |
+| Scaling (theorem qubits, theorem register) | qubits 3, dim 8, depth 9, exact true, beyond false, advantage false |
 | Independent verification | CORS *, origin https://qpu.uuidna.com, Lean `src/quantum/processing/unit/index.lean`, hardware true, algorithm true, RSA true, crypt true, encrypt true |
 
 ## Recompute
@@ -114,14 +114,14 @@ npm test
 
 Run your own: `npx uuidna-install` reads Cloudflare `install.json`, or [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/qpu).
 
-Learn, in order. Each step teaches one thing and names the invariant to check it against.
+Learn, in order. Each step teaches one thing, names the invariant to check it against, and is its own test: Reproduce runs the test that asserts exactly what Expect says.
 
-| Step | Concept | Request | Expect | Invariant | Theorem |
-| --- | --- | --- | --- | --- | --- |
-| 1 | one gate, exact amplitudes | GET / · qpu_quantum | Bell outcomes 00 and 11 at exactly 1/2 — Gaussian-integer amplitudes, no floats | H·H = I on |0⟩ | theorem qubits |
-| 2 | entanglement is not correlation | POST /mcp · qpu_prove | GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing | no-cloning and monogamy hold on the served states | theorem entangle |
-| 3 | Shor: a period, then a gcd | POST /mcp · crypto_shor | theorem shor Factor 91 — a = 8, period 4, 7 · 13 | p · q = n, recomputed from the period | theorem shor |
-| 4 | a code corrects one flip | POST /mcp · qpu_prove | bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run | distance 3 corrects exactly one error | theorem noise |
+| Step | Concept | Request | Expect | Invariant | Theorem | Reproduce |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | one gate, exact amplitudes | GET / · qpu_quantum | Bell outcomes 00 and 11 at exactly 1/2 — Gaussian-integer amplitudes, no floats | H·H = I on |0⟩ | theorem qubits | `node --test --test-name-pattern="ladder 1 " dist/quantum/processing/unit/ladder.test.js` |
+| 2 | entanglement is not correlation | POST /mcp · qpu_prove | GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing | no-cloning and monogamy hold on the served states | theorem entangle | `node --test --test-name-pattern="ladder 2 " dist/quantum/processing/unit/ladder.test.js` |
+| 3 | Shor: a period, then a gcd | POST /mcp · crypto_shor | theorem shor Factor 91 — a = 8, period 4, 7 · 13 | p · q = n, recomputed from the period | theorem shor | `node --test --test-name-pattern="ladder 3 " dist/quantum/processing/unit/ladder.test.js` |
+| 4 | a code corrects one flip | POST /mcp · qpu_prove | bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run | distance 3 corrects exactly one error | theorem noise | `node --test --test-name-pattern="ladder 4 " dist/quantum/processing/unit/ladder.test.js` |
 
 Boot on hardware. docker build -t qpu . && docker run --rm -p 8787:8787 qpu. Raspberry Pi: Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot. The boot's receipt is node dist/quantum/processing/unit/boot.js --prove — the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve. The seat stays empty: a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim.
 
