@@ -10850,6 +10850,20 @@ const worker = {
     const path = raw === '/index.html' ? '/' : raw
     const route = qpuRouterOf(request.headers.get('referer') ?? '', path)
     routeHeaders = { 'x-qpu-seat': route.seat, 'x-qpu-door': route.door }
+    // QPU SERVES ALL LICENSED SITES (the captain, 2026-09-13). A tenant site lives one level under the zone —
+    // <slug>.uuidna.com, the level Cloudflare's free certificate covers — and reaches this unit through a *.<zone> route.
+    // It is forwarded whole to Payload over the binding, Host preserved, so Payload's tenancy rules decide what it is. The
+    // zone is this unit's host minus its first label; that label and www are reserved and never a tenant, and www keeps
+    // redirecting to the apex. Payload derives the same zone and labels (payload src/access.ts, tenantSlugOf).
+    const zone = unit.host.split('.').slice(seed).join('.')
+    const label = url.hostname.endsWith(`.${zone}`) ? url.hostname.slice(0, url.hostname.length - zone.length - seed) : ''
+    if (url.protocol === 'https:' && label === 'www') {
+      return new Response(null, { status: found + ten * ten + seed, headers: { location: `https://${zone}${url.pathname}${url.search}` } })
+    }
+    if (url.protocol === 'https:' && label && !label.includes('.') && !label.includes('*') && label !== unit.host.split('.')[n - n]) {
+      if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
+      return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
+    }
     const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
     // /api IS PAYLOAD, OVER THE BINDING. Registration, REST and the find-only MCP answer at this one host; the hop is not

@@ -11,6 +11,12 @@ workers_dev = false
 pattern = "qpu.uuidna.com"
 custom_domain = true
 
+# QPU serves all licensed sites: tenants live one level under the zone (<slug>.uuidna.com, covered by the free certificate)
+# and reach this unit through this route. Custom domains take precedence, so uuidna.com and qpu.uuidna.com keep their Workers.
+[[routes]]
+pattern = "*.uuidna.com/*"
+zone_name = "uuidna.com"
+
 [vars]
 QPU_HOST = "qpu.uuidna.com"
 # Writes to /storage need Authorization: Bearer QPU_WRITE_TOKEN; unbound refuses every write (reads stay open).

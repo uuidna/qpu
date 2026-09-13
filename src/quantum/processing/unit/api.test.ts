@@ -106,3 +106,20 @@ test('API only json ui', async () => {
     assert.equal((res.headers.get('content-type') ?? '').includes('ld+json'), true)
   }
 })
+
+// QPU SERVES ALL LICENSED SITES: a tenant is one label under the zone and is forwarded whole to Payload, Host preserved.
+const payloadEcho = { fetch: async (r: Request) => new Response(new URL(r.url).hostname, { status: 200 }) }
+test('a tenant host is forwarded to Payload with its host intact', async () => {
+  const res = await worker.fetch(new Request('https://acme.uuidna.com/', { headers: html }), { ...env, PAYLOAD: payloadEcho } as never)
+  assert.equal(res.status, 200)
+  assert.equal(await res.text(), 'acme.uuidna.com')
+})
+test('www redirects to the apex and is never a tenant', async () => {
+  const res = await worker.fetch(new Request('https://www.uuidna.com/license?x=1', { headers: html }), { ...env, PAYLOAD: payloadEcho } as never)
+  assert.equal(res.status, 301)
+  assert.equal(res.headers.get('location'), 'https://uuidna.com/license?x=1')
+})
+test('a host two labels deep is not a tenant and is not forwarded', async () => {
+  const res = await worker.fetch(new Request('https://a.b.uuidna.com/', { headers: html }), { ...env, PAYLOAD: payloadEcho } as never)
+  assert.notEqual(await res.text(), 'a.b.uuidna.com')
+})
