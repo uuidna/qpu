@@ -6418,7 +6418,9 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
     if (value.startsWith('/') && !value.startsWith('//')) return value
     return ''
   }
-  const allowed = ['/', `/${unit.path}`, '/cite', '/message', '/mcp', '/storage', '/server', '/network'] as const
+  // the named doors are the router's table (docs.api, one row per ray) and the ladder's extras — never a second list
+  // of them; read when a fetch asks, so a ladder that lists these tools cannot recurse into them
+  const allowed = (): readonly string[] => [...new Set([...qpuDocsOf().api.map((a) => a.path), ...qpuSequenceOf().extras.map((row) => row.path)])]
   return [
     {
       name: see[n - n],
@@ -6481,7 +6483,7 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
       run: (a) => {
         const path = namedPathOf(a.path ?? a.href)
         const door = path.split('?')[n - n] ?? ''
-        if ((allowed as readonly string[]).includes(door) === false) {
+        if (allowed().includes(door) === false) {
           return { kind: 'fetch' as const, holds: false as const, denied: 'hostEscape' as const, hostEscape: true as const }
         }
         return { kind: 'fetch' as const, path: door, href: `${unit.origin}${door === '/' ? '' : door}`, named: true as const, hostEscape: false as const, holds: true as const }
