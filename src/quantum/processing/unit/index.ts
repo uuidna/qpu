@@ -9287,7 +9287,7 @@ const installCloudflare = {
   button: 'https://deploy.workers.cloudflare.com/button',
   qpu: 'https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/qpu',
   uuidna: 'https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/uuidna',
-  payload: 'https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/uuidna-payload'} as const
+  payload: 'https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/payload'} as const
 let installOccupancy: (typeof occupancies)[number] = occupancies[n - n]
 
 const installSelectOf = (args: Record<string, unknown>): readonly string[] => {
