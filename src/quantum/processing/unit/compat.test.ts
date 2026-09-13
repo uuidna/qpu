@@ -10,6 +10,22 @@ const env = { QPU_HOST: 'qpu.uuidna.com' }
 const get = (path: string, accept = 'application/json') => worker.fetch(new Request(O + path, { headers: { accept } }), env)
 const post = (body: unknown) => worker.fetch(new Request(`${O}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env)
 
+test('/api is Payload over the service binding; without the binding it is refused by name', async () => {
+  const seen: string[] = []
+  const PAYLOAD = {
+    fetch: async (r: Request) => {
+      seen.push(new URL(r.url).pathname)
+      return new Response(JSON.stringify({ user: null }), { headers: { 'content-type': 'application/json' } })
+    },
+  }
+  const bound = await worker.fetch(new Request(`${O}/api/users/me`), { ...env, PAYLOAD })
+  assert.deepEqual(await bound.json(), { user: null }, 'the request reaches Payload and its answer comes back unchanged')
+  assert.deepEqual(seen, ['/api/users/me'])
+  const unbound = (await (await get('/api/mcp')).json()) as { holds: boolean; denied?: string }
+  assert.equal(unbound.denied, 'payload')
+  assert.equal((await get('/')).status, 200, 'and the unit still answers its own doors')
+})
+
 test('a GET /mcp asking for an event stream gets 405 with Allow, not a catalog', async () => {
   const r = await get('/mcp', 'text/event-stream')
   assert.equal(r.status, 405)

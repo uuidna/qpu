@@ -5748,6 +5748,8 @@ export type QpuEnv = {
   QPU_HOST?: string
   /** Write secret. `wrangler secret put QPU_WRITE_TOKEN`. Unbound refuses every write; reads stay open. */
   QPU_WRITE_TOKEN?: string
+  /** Payload, the admin backend (repo uuidna/payload), bound as a service: /api here is its REST and MCP. */
+  PAYLOAD?: { fetch: (request: Request) => Promise<Response> }
   STORAGE?: {
     get: (key: string, options?: { type: 'json' | 'text' }) => Promise<unknown>
     put: (key: string, value: string) => Promise<void>
@@ -10850,6 +10852,12 @@ const worker = {
     routeHeaders = { 'x-qpu-seat': route.seat, 'x-qpu-door': route.door }
     const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
+    // /api IS PAYLOAD, OVER THE BINDING. Registration, REST and the find-only MCP answer at this one host; the hop is not
+    // billed as a second request and Payload keeps no public route. It answers its own preflight, so this precedes OPTIONS.
+    if (path === '/api' || path.startsWith('/api/')) {
+      if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
+      return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
+    }
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers })
     if (path === '/mcp') {
       // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no
