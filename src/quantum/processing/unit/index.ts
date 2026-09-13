@@ -975,6 +975,21 @@ export const qpuHybridHolds = (h = qpuHybridOf()): boolean =>
 const payloadDbCollections = ['pages', 'users', 'media', 'tenants'] as const
 const payloadDbKey = 'databases/payload'
 
+/** The tenant zone QPU serves and the labels in it that are never a tenant — one declaration, read by the router and
+ *  by Payload (src/access.ts), never restated there. The zone is this unit's host minus its first label; that label is
+ *  this unit, and www is reserved because the router redirects it to the zone's apex. */
+export const qpuTenantZoneOf = () => {
+  const labels = unit.host.split('.')
+  const own = labels[n - n]!
+  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [own, 'www'] as readonly string[] }
+}
+/** value + predicate: the zone and this unit's own label recompose its host, and every reserved label is one label */
+export const qpuTenantZoneHolds = (z = qpuTenantZoneOf()): boolean =>
+  `${z.own}.${z.zone}` === unit.host &&
+  z.own !== z.www &&
+  z.reserved.includes(z.own) && z.reserved.includes(z.www) &&
+  z.reserved.every((label) => label.length > n - n && !label.includes('.') && !label.includes('*'))
+
 export const qpuPayloadDbOf = () => {
   const hybrid = qpuHybridOf()
   const href = `${storageHref}/${payloadDbKey}`
@@ -10855,14 +10870,14 @@ const worker = {
     // QPU SERVES ALL LICENSED SITES (the captain, 2026-09-13). A tenant site lives one level under the zone —
     // <slug>.uuidna.com, the level Cloudflare's free certificate covers — and reaches this unit through a *.<zone> route.
     // It is forwarded whole to Payload over the binding, Host preserved, so Payload's tenancy rules decide what it is. The
-    // zone is this unit's host minus its first label; that label and www are reserved and never a tenant, and www keeps
-    // redirecting to the apex. Payload derives the same zone and labels (payload src/access.ts, tenantSlugOf).
-    const zone = unit.host.split('.').slice(seed).join('.')
+    // zone and its reserved labels are qpuTenantZoneOf, the one declaration Payload reads too (payload src/access.ts,
+    // tenantSlugOf); www keeps redirecting to the apex.
+    const { zone, www, reserved } = qpuTenantZoneOf()
     const label = url.hostname.endsWith(`.${zone}`) ? url.hostname.slice(0, url.hostname.length - zone.length - seed) : ''
-    if (url.protocol === 'https:' && label === 'www') {
+    if (url.protocol === 'https:' && label === www) {
       return new Response(null, { status: found + ten * ten + seed, headers: { location: `https://${zone}${url.pathname}${url.search}` } })
     }
-    if (url.protocol === 'https:' && label && !label.includes('.') && !label.includes('*') && label !== unit.host.split('.')[n - n]) {
+    if (url.protocol === 'https:' && label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)) {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
