@@ -10,3 +10,17 @@ export declare function qpuQuantumOf(): { holds: boolean; fused: number; next: n
 export declare function qpuLeanOf(): { holds: boolean; src: string }
 export declare function qpuProveOf(): { holds: boolean }
 export declare function qpuReadmeOf(): string
+/** The Payload database QPU declares — one source, read by the Payload side, never restated there. */
+export declare function qpuPayloadDbOf(): {
+  key: string
+  href: string
+  collections: readonly string[]
+  seed: number
+  remainder: number
+  unity: boolean
+  holds: boolean
+}
+export declare function qpuPayloadDbHolds(p?: ReturnType<typeof qpuPayloadDbOf>): boolean
+export declare function qpuHybridOf(): { speed: number; cost: number; layers: number; holds: boolean }
+export declare function qpuCoilOf(): { coins: number; rays: number; coil: number; faces: number; holds: boolean }
+export declare function qpuCapacityOf(): { fused: number; next: number; amplitudes: number; bits: number; holds: boolean }

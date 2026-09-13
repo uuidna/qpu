@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 142,
-  "pass": 142,
+  "tests": 143,
+  "pass": 143,
   "fail": 0,
   "dry": 0,
-  "circuit": 101,
+  "circuit": 102,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "b6ed2575eea0ca57",
+  "receipt": "3949f2497968df2f",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -987,27 +987,27 @@
       }
     },
     {
-      "name": "/api is Payload over the service binding; without the binding it is refused by name",
+      "name": "a receipt's temperature is the device sensor, named, or unmeasured; never guessed",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3372,
+      "computations": 3080,
       "kinds": {
-        "x": 732,
-        "cnot": 1408,
-        "toffoli": 120,
-        "h": 1016,
-        "measure": 60,
-        "cmodexp": 18,
-        "xx": 18
+        "x": 666,
+        "cnot": 1280,
+        "toffoli": 108,
+        "h": 940,
+        "measure": 54,
+        "cmodexp": 16,
+        "xx": 16
       },
       "dims": {
-        "8": 3336,
-        "512": 36
+        "8": 3048,
+        "512": 32
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "239761062640dc55",
+      "receipt": "0955986ef43bb2f7",
       "states": [
         {
           "name": "measure",
@@ -1022,16 +1022,66 @@
             "0",
             "0"
           ],
-          "measured": 60
+          "measured": 54
         }
       ],
       "mint": {
-        "calls": 74680,
-        "chain": "3ad8d37f13bfd131"
+        "calls": 68532,
+        "chain": "3877579c0560282d"
       },
       "served": {
         "count": 0,
         "folds": []
+      }
+    },
+    {
+      "name": "/api is Payload over the service binding; without the binding it is refused by name",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 438,
+      "kinds": {
+        "x": 99,
+        "cnot": 192,
+        "toffoli": 18,
+        "h": 114,
+        "measure": 9,
+        "cmodexp": 3,
+        "xx": 3
+      },
+      "dims": {
+        "8": 432,
+        "512": 6
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "ce6625dec1a61878",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 9
+        }
+      ],
+      "mint": {
+        "calls": 9222,
+        "chain": "fe815806c7afd16b"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"a22edcf2e249fc09\""
+        ]
       }
     },
     {
@@ -1075,7 +1125,7 @@
       ],
       "mint": {
         "calls": 76533,
-        "chain": "bd09b2f7ae05675a"
+        "chain": "94732021c9ea1288"
       },
       "served": {
         "count": 0,
@@ -1123,7 +1173,7 @@
       ],
       "mint": {
         "calls": 38539,
-        "chain": "241a1895e28f3bc3"
+        "chain": "30a53fd6335cd261"
       },
       "served": {
         "count": 0,
@@ -1171,7 +1221,7 @@
       ],
       "mint": {
         "calls": 244970,
-        "chain": "ab6fff600037109b"
+        "chain": "fb3a76a86ed97441"
       },
       "served": {
         "count": 3,
@@ -1223,7 +1273,7 @@
       ],
       "mint": {
         "calls": 3074,
-        "chain": "7f10d2e526704845"
+        "chain": "6ea9259a219c298b"
       },
       "served": {
         "count": 1,
@@ -1273,7 +1323,7 @@
       ],
       "mint": {
         "calls": 3074,
-        "chain": "047beacf5c6b8f7f"
+        "chain": "f307bf2222ad2ef5"
       },
       "served": {
         "count": 1,

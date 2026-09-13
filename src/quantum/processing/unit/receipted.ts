@@ -6,6 +6,7 @@
 // it as QPU_TEMPERATURE_MILLIKELVIN, otherwise unmeasured and said so. Readings never enter the fold and never enter
 // src, so the served unit and the committed receipt carry no entropy; the reporter writes them to a sidecar.
 import { appendFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { test as nodeTest, type TestContext, type TestOptions } from 'node:test'
 import { qpuMintReceiptOf, qpuReceiptFoldOf, qpuReceiptLedgerOf, qpuServedLedgerOf } from './index.js'
@@ -40,12 +41,30 @@ export type TestReceipt = {
   readings: { time: { ns: number; resolved: boolean }; temperature: Temperature }
 }
 
+const unmeasured: Temperature = { measured: false, why: 'no thermometer on this host; supply QPU_TEMPERATURE_MILLIKELVIN from a lab reading' }
+
+/** THE DEVICE'S OWN SENSOR, WHEN NO LAB READING IS GIVEN (the captain, 2026-09-13: "fuse device sensors to provide
+ *  hardware evidence"). On macOS the battery gauge reports its temperature in hundredths of a degree Celsius; the raw
+ *  value and that conversion ride in the source so the number can be doubted. It is the pack's temperature, not the
+ *  chip die's, and the source says so. No serial or other device identifier is recorded: receipts are published. */
+export const sensorTemperatureOf = (read: () => string): Temperature => {
+  try {
+    const raw = /"Temperature" = (\d+)/.exec(read())?.[1]
+    if (raw === undefined) return { measured: false, why: 'the battery gauge reported no Temperature on this host' }
+    return { measured: true, millikelvin: Number(raw) * 10 + 273150, source: `battery gauge, ioreg AppleSmartBattery Temperature ${raw} (hundredths of °C), not the chip die` }
+  } catch {
+    return unmeasured
+  }
+}
+
+const batteryGauge = (): string => execFileSync('ioreg', ['-r', '-n', 'AppleSmartBattery'], { encoding: 'utf8', timeout: 2000 })
+
 export const temperatureOf = (env = process.env): Temperature => {
   const raw = env.QPU_TEMPERATURE_MILLIKELVIN
   const millikelvin = raw === undefined ? NaN : Number(raw)
-  return millikelvin === millikelvin && raw !== undefined && raw !== ''
-    ? { measured: true, millikelvin, source: env.QPU_TEMPERATURE_SOURCE?.trim() || 'QPU_TEMPERATURE_MILLIKELVIN (instrument unnamed)' }
-    : { measured: false, why: 'no thermometer on this host; supply QPU_TEMPERATURE_MILLIKELVIN from a lab reading' }
+  if (millikelvin === millikelvin && raw !== undefined && raw !== '')
+    return { measured: true, millikelvin, source: env.QPU_TEMPERATURE_SOURCE?.trim() || 'QPU_TEMPERATURE_MILLIKELVIN (instrument unnamed)' }
+  return process.platform === 'darwin' ? sensorTemperatureOf(batteryGauge) : unmeasured
 }
 
 type Fn = (t: TestContext) => void | Promise<void>

@@ -1,7 +1,7 @@
 // compat — the doors a client, a registry, a crawler or a batching MCP client knocks on, each measured 2026-09-12
 // against the live host before it was built here: five discovery doors answered 404, a batch was refused with -32600,
 // and a GET asking for an event stream got a JSON-LD catalog with 200. Each assertion is one of those measurements.
-import { test } from './receipted.js'   // every test walks the one door: its receipt is the fold of what it computed
+import { test, sensorTemperatureOf, temperatureOf } from './receipted.js'   // every test walks the one door: its receipt is the fold of what it computed
 import assert from 'node:assert/strict'
 import worker from './index.js'
 
@@ -9,6 +9,20 @@ const O = 'https://qpu.uuidna.com'
 const env = { QPU_HOST: 'qpu.uuidna.com' }
 const get = (path: string, accept = 'application/json') => worker.fetch(new Request(O + path, { headers: { accept } }), env)
 const post = (body: unknown) => worker.fetch(new Request(`${O}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env)
+
+test('a receipt\'s temperature is the device sensor, named, or unmeasured; never guessed', async () => {
+  assert.equal((await get('/')).status, 200, 'the unit runs, so this receipt holds a computation beside its reading')
+  const read = sensorTemperatureOf(() => '    "Temperature" = 3046\n    "VirtualTemperature" = 3139')
+  assert.deepEqual(read, { measured: true, millikelvin: 303610, source: 'battery gauge, ioreg AppleSmartBattery Temperature 3046 (hundredths of °C), not the chip die' })
+  assert.equal(sensorTemperatureOf(() => '"Voltage" = 12791').measured, false, 'no Temperature line is unmeasured, not zero')
+  assert.equal(sensorTemperatureOf(() => { throw new Error('no ioreg') }).measured, false, 'a missing sensor is unmeasured, not zero')
+  const lab = temperatureOf({ QPU_TEMPERATURE_MILLIKELVIN: '12', QPU_TEMPERATURE_SOURCE: 'dilution fridge MXC stage' })
+  assert.deepEqual(lab, { measured: true, millikelvin: 12, source: 'dilution fridge MXC stage' }, 'a lab reading always wins')
+  if (process.platform === 'darwin') {
+    const here = temperatureOf({})
+    assert.ok(!here.measured || here.source.startsWith('battery gauge'), 'on this host the reading names its sensor')
+  }
+})
 
 test('/api is Payload over the service binding; without the binding it is refused by name', async () => {
   const seen: string[] = []
