@@ -123,3 +123,12 @@ test('a host two labels deep is not a tenant and is not forwarded', async () => 
   const res = await worker.fetch(new Request('https://a.b.uuidna.com/', { headers: html }), { ...env, PAYLOAD: payloadEcho } as never)
   assert.notEqual(await res.text(), 'a.b.uuidna.com')
 })
+
+test('an own tenant domain, registered as a custom hostname, is forwarded to Payload', async () => {
+  const res = await worker.fetch(new Request('https://studio.example.com/', { headers: html }), { ...env, PAYLOAD: payloadEcho } as never)
+  assert.equal(await res.text(), 'studio.example.com')
+})
+test('the SaaS fallback origin is reserved and never forwarded as a tenant', async () => {
+  const res = await worker.fetch(new Request('https://saas-fallback.uuidna.com/', { headers: html }), { ...env, PAYLOAD: payloadEcho } as never)
+  assert.notEqual(await res.text(), 'saas-fallback.uuidna.com')
+})

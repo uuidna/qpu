@@ -11,10 +11,11 @@ workers_dev = false
 pattern = "qpu.uuidna.com"
 custom_domain = true
 
-# QPU serves all licensed sites: tenants live one level under the zone (<slug>.uuidna.com, covered by the free certificate)
-# and reach this unit through this route. Custom domains take precedence, so uuidna.com and qpu.uuidna.com keep their Workers.
+# QPU serves all licensed sites. */* is Cloudflare's documented route for a SaaS zone: it captures every host in the zone —
+# tenants one level under it (<slug>.uuidna.com) and tenants' own domains registered as custom hostnames. Custom domains take
+# precedence, so uuidna.com and qpu.uuidna.com keep their Workers.
 [[routes]]
-pattern = "*.uuidna.com/*"
+pattern = "*/*"
 zone_name = "uuidna.com"
 
 [vars]

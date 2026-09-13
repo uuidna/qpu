@@ -10860,7 +10860,11 @@ const worker = {
     if (url.protocol === 'https:' && label === 'www') {
       return new Response(null, { status: found + ten * ten + seed, headers: { location: `https://${zone}${url.pathname}${url.search}` } })
     }
-    if (url.protocol === 'https:' && label && !label.includes('.') && !label.includes('*') && label !== unit.host.split('.')[n - n]) {
+    // a tenant under the zone, or a tenant's own domain registered as a Cloudflare for SaaS custom hostname (it reaches
+    // this unit only through the */* route once Cloudflare has it active); both go whole to Payload, which decides
+    const underZone = label && !label.includes('.') && !label.includes('*') && label !== unit.host.split('.')[n - n] && label !== 'saas-fallback'
+    const ownDomain = url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
+    if (url.protocol === 'https:' && (underZone || ownDomain)) {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
