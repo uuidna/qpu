@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 143,
-  "pass": 143,
+  "tests": 146,
+  "pass": 146,
   "fail": 0,
   "dry": 0,
-  "circuit": 102,
+  "circuit": 105,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "3949f2497968df2f",
+  "receipt": "1639e9eb24f4eb22",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -62,6 +62,150 @@
           "\"a22edcf2e249fc09\"",
           "\"db7aaa51bdad3dd7\""
         ]
+      }
+    },
+    {
+      "name": "a tenant host is forwarded to Payload with its host intact",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "bbbd7a6b39fc64d4"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "www redirects to the apex and is never a tenant",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "d4e71fff385bc390"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "a host two labels deep is not a tenant and is not forwarded",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "measured": 3
+        }
+      ],
+      "mint": {
+        "calls": 3074,
+        "chain": "8faf3f905200f86c"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
       }
     },
     {
@@ -3385,27 +3529,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 139256,
+      "computations": 139548,
       "kinds": {
-        "x": 29322,
-        "cnot": 56140,
-        "toffoli": 4392,
-        "h": 46202,
-        "measure": 2196,
-        "cmodexp": 493,
-        "xx": 493,
+        "x": 29388,
+        "cnot": 56268,
+        "toffoli": 4404,
+        "h": 46278,
+        "measure": 2202,
+        "cmodexp": 495,
+        "xx": 495,
         "planes": 18
       },
       "dims": {
-        "8": 138126,
+        "8": 138414,
         "64": 10,
         "128": 144,
-        "512": 966,
+        "512": 970,
         "2^64": 10
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "8b209916afd3df37",
+      "receipt": "f35cbd3cae88a9b9",
       "states": [
         {
           "name": "measure",
@@ -3420,12 +3564,12 @@
             "0",
             "0"
           ],
-          "measured": 2196
+          "measured": 2202
         }
       ],
       "mint": {
-        "calls": 2825405,
-        "chain": "9e73f7417860531d"
+        "calls": 2832048,
+        "chain": "4088eb936ba0af27"
       },
       "served": {
         "count": 2,
@@ -3490,7 +3634,7 @@
       ],
       "mint": {
         "calls": 377363,
-        "chain": "42f235a8b963ceb2"
+        "chain": "f216a120706162c8"
       },
       "served": {
         "count": 0,
@@ -3554,23 +3698,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 55473,
+      "computations": 55765,
       "kinds": {
-        "x": 12045,
-        "cnot": 23169,
-        "toffoli": 1974,
-        "h": 16727,
-        "measure": 988,
-        "cmodexp": 285,
-        "xx": 285
+        "x": 12111,
+        "cnot": 23297,
+        "toffoli": 1986,
+        "h": 16803,
+        "measure": 994,
+        "cmodexp": 287,
+        "xx": 287
       },
       "dims": {
-        "8": 54903,
-        "512": 570
+        "8": 55191,
+        "512": 574
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "6513ac00de8138d6",
+      "receipt": "6f8d2b40bbbdb194",
       "states": [
         {
           "name": "measure",
@@ -3585,12 +3729,12 @@
             "0",
             "0"
           ],
-          "measured": 988
+          "measured": 994
         }
       ],
       "mint": {
-        "calls": 1223605,
-        "chain": "9e6b375097334cc4"
+        "calls": 1230248,
+        "chain": "a0672a3cc371d42a"
       },
       "served": {
         "count": 10,
@@ -3759,25 +3903,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 124663,
+      "computations": 124955,
       "kinds": {
-        "x": 26628,
-        "cnot": 51095,
-        "toffoli": 4164,
-        "h": 39630,
-        "measure": 2083,
-        "cmodexp": 527,
-        "xx": 527,
+        "x": 26694,
+        "cnot": 51223,
+        "toffoli": 4176,
+        "h": 39706,
+        "measure": 2089,
+        "cmodexp": 529,
+        "xx": 529,
         "planes": 9
       },
       "dims": {
-        "8": 123537,
+        "8": 123825,
         "128": 72,
-        "512": 1054
+        "512": 1058
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "8ce0ed5a6e1209f8",
+      "receipt": "07da3880a369eee2",
       "states": [
         {
           "name": "measure",
@@ -3792,12 +3936,12 @@
             "0",
             "0"
           ],
-          "measured": 2083
+          "measured": 2089
         }
       ],
       "mint": {
-        "calls": 2620937,
-        "chain": "32a5d0ee8585f24d"
+        "calls": 2627580,
+        "chain": "ee13bfbdd6190e0b"
       },
       "served": {
         "count": 18,
@@ -3864,7 +4008,7 @@
       ],
       "mint": {
         "calls": 142532,
-        "chain": "009181444f80faea"
+        "chain": "a3812d20aaade668"
       },
       "served": {
         "count": 1,
@@ -3929,7 +4073,7 @@
       ],
       "mint": {
         "calls": 46570,
-        "chain": "24b780107c6d31bf"
+        "chain": "0c7b944091696af5"
       },
       "served": {
         "count": 2,
@@ -3980,7 +4124,7 @@
       ],
       "mint": {
         "calls": 15420,
-        "chain": "649afc68130029c5"
+        "chain": "0845ab6e5d5f5633"
       },
       "served": {
         "count": 0,
@@ -4032,7 +4176,7 @@
       ],
       "mint": {
         "calls": 318167,
-        "chain": "d8075a7d97485c47"
+        "chain": "356ff7271b41c731"
       },
       "served": {
         "count": 17,
@@ -4100,7 +4244,7 @@
       ],
       "mint": {
         "calls": 856061,
-        "chain": "a0de797b434856ea"
+        "chain": "70a3ef76628a33ec"
       },
       "served": {
         "count": 13,
@@ -4162,7 +4306,7 @@
       ],
       "mint": {
         "calls": 167142,
-        "chain": "2ff9d8573dfb7fce"
+        "chain": "c51272568e54dbfc"
       },
       "served": {
         "count": 10,
