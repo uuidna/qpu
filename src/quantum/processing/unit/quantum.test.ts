@@ -37,10 +37,8 @@ const fetchOf = (path: string, init: RequestInit = {}) =>
 type Circuit = {
   kind: string
   running: boolean
-  physical: boolean
-  hardware: {
+  steps: {
     kind: string
-    physical: boolean
     device: string
     initialize: boolean
     gates: boolean
@@ -97,7 +95,6 @@ type Circuit = {
     product: boolean
     classical: boolean
     computer: boolean
-    hardware: boolean
     holds: boolean
   }
   lattice: {
@@ -296,19 +293,19 @@ test('circuit noise via mcp', async () => {
 
 test('circuit device steps via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
-  assert.equal(q.circuit.hardware.holds, true)
-  assert.equal(q.circuit.hardware.kind, 'circuit-steps')
-  assert.equal(q.circuit.hardware.device, 'simulator')
-  assert.equal(q.circuit.hardware.initialize, true)
-  assert.equal(q.circuit.hardware.gates, true)
-  assert.equal(q.circuit.hardware.interfere, true)
-  assert.equal(q.circuit.hardware.measure, true)
-  assert.equal(q.circuit.hardware.noise, true)
-  assert.equal(q.circuit.hardware.path.circuit, 'https://qpu.uuidna.com')
-  assert.equal(q.circuit.hardware.path.payload, 'https://qpu.uuidna.com/storage/databases/payload')
-  assert.equal(q.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
-  assert.equal(q.circuit.hardware.path.src, 'src/quantum/processing/unit/index.lean')
-  assert.equal(q.circuit.hardware.path.holds, true)
+  assert.equal(q.circuit.steps.holds, true)
+  assert.equal(q.circuit.steps.kind, 'circuit-steps')
+  assert.equal(q.circuit.steps.device, 'simulator')
+  assert.equal(q.circuit.steps.initialize, true)
+  assert.equal(q.circuit.steps.gates, true)
+  assert.equal(q.circuit.steps.interfere, true)
+  assert.equal(q.circuit.steps.measure, true)
+  assert.equal(q.circuit.steps.noise, true)
+  assert.equal(q.circuit.steps.path.circuit, 'https://qpu.uuidna.com')
+  assert.equal(q.circuit.steps.path.payload, 'https://qpu.uuidna.com/storage/databases/payload')
+  assert.equal(q.circuit.steps.path.submit, 'https://qpu.uuidna.com/server')
+  assert.equal(q.circuit.steps.path.src, 'src/quantum/processing/unit/index.lean')
+  assert.equal(q.circuit.steps.path.holds, true)
   assert.equal(q.circuit.register.kind, 'simulator')
   assert.equal(q.circuit.register.qubits, 3)
   assert.equal(q.circuit.register.levels, 2)
@@ -331,7 +328,7 @@ test('circuit device steps via mcp', async () => {
 test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   const prove = (await mcpOf('qpu_prove', { live: true })) as {
     holds: boolean
-    circuit: { physical: boolean; holds: boolean }
+    circuit: { holds: boolean }
     next: { theorem: string; last: boolean; infinite: boolean; next: number; amplitudes: number; fused: number; nextFused: number; nextCoil: number; holds: boolean }
     theorems: { heading: string; theorem: string; holds: boolean }[]
     cern: {
@@ -441,8 +438,8 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.docs.documentation.includes('theorem temperature'), true)
   assert.equal(json.docs.documentation.includes('theorem qubits'), true)
   assert.equal(json.docs.documentation.includes('demo is not a test nor a proof'), true)
-  assert.equal(json.circuit.hardware.holds, true)
-  assert.equal(json.circuit.hardware.path.submit, 'https://qpu.uuidna.com/server')
+  assert.equal(json.circuit.steps.holds, true)
+  assert.equal(json.circuit.steps.path.submit, 'https://qpu.uuidna.com/server')
   assert.equal(json.circuit.register.kind, 'simulator')
   assert.equal(json.circuit.drift.between, true)
   assert.equal(json.circuit.sciences.distinct, true)

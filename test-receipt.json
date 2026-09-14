@@ -10,7 +10,7 @@
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "abca3e47812e09b0",
+  "receipt": "ac865537f6d14874",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -18,23 +18,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 11886,
+      "computations": 13492,
       "kinds": {
-        "x": 2579,
-        "cnot": 4960,
-        "toffoli": 422,
-        "h": 3590,
-        "measure": 211,
-        "cmodexp": 62,
-        "xx": 62
+        "x": 2942,
+        "cnot": 5664,
+        "toffoli": 488,
+        "h": 4008,
+        "measure": 244,
+        "cmodexp": 73,
+        "xx": 73
       },
       "dims": {
-        "8": 11762,
-        "512": 124
+        "8": 13346,
+        "512": 146
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "8a6b242c255f479e",
+      "receipt": "8a3a6e5c1b9ab225",
       "states": [
         {
           "name": "measure",
@@ -49,17 +49,17 @@
             "0",
             "0"
           ],
-          "rows": 211
+          "rows": 244
         }
       ],
       "mint": {
-        "calls": 263431,
-        "chain": "bbce2cc80539cfa0"
+        "calls": 297245,
+        "chain": "95402c177ef456c2"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"274a6e056b95ad4b\"",
+          "\"669e02f08b75596e\"",
           "\"e647c755220083f7\""
         ]
       }
@@ -69,23 +69,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -100,12 +100,12 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "6c95abf8c73d3e3c"
+        "calls": 6148,
+        "chain": "efc163c12cc48e2a"
       },
       "served": {
         "count": 0,
@@ -117,23 +117,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -148,12 +148,12 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "7758b4d80b9687f8"
+        "calls": 6148,
+        "chain": "b3dedb63b80568b2"
       },
       "served": {
         "count": 0,
@@ -165,23 +165,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -196,12 +196,12 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "56d7e942c8b6b074"
+        "calls": 6148,
+        "chain": "534cadb128520f9a"
       },
       "served": {
         "count": 0,
@@ -213,23 +213,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3143,
+      "computations": 4165,
       "kinds": {
-        "x": 689,
-        "cnot": 1328,
-        "toffoli": 116,
-        "h": 916,
-        "measure": 58,
-        "cmodexp": 18,
-        "xx": 18
+        "x": 920,
+        "cnot": 1776,
+        "toffoli": 158,
+        "h": 1182,
+        "measure": 79,
+        "cmodexp": 25,
+        "xx": 25
       },
       "dims": {
-        "8": 3107,
-        "512": 36
+        "8": 4115,
+        "512": 50
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "5a5b8be39ff171b8",
+      "receipt": "b0ea7adeb97aab75",
       "states": [
         {
           "name": "measure",
@@ -244,12 +244,12 @@
             "0",
             "0"
           ],
-          "rows": 58
+          "rows": 79
         }
       ],
       "mint": {
-        "calls": 70642,
-        "chain": "e27396cc7f84b2bd"
+        "calls": 92160,
+        "chain": "944d1da55970e3e7"
       },
       "served": {
         "count": 0,
@@ -261,23 +261,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3427,
+      "computations": 3719,
       "kinds": {
-        "x": 741,
-        "cnot": 1424,
-        "toffoli": 120,
-        "h": 1048,
-        "measure": 60,
-        "cmodexp": 17,
-        "xx": 17
+        "x": 807,
+        "cnot": 1552,
+        "toffoli": 132,
+        "h": 1124,
+        "measure": 66,
+        "cmodexp": 19,
+        "xx": 19
       },
       "dims": {
-        "8": 3393,
-        "512": 34
+        "8": 3681,
+        "512": 38
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "f37d365516ebcd04",
+      "receipt": "fdf6053734ad7fd4",
       "states": [
         {
           "name": "measure",
@@ -292,12 +292,12 @@
             "0",
             "0"
           ],
-          "rows": 60
+          "rows": 66
         }
       ],
       "mint": {
-        "calls": 76849,
-        "chain": "e5ffaad58c271ae8"
+        "calls": 82997,
+        "chain": "d40805a2e9d59af0"
       },
       "served": {
         "count": 0,
@@ -309,23 +309,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -340,12 +340,12 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3899,
-        "chain": "5ac0d1bee39e445c"
+        "calls": 6973,
+        "chain": "f0147959f7f37428"
       },
       "served": {
         "count": 0,
@@ -357,23 +357,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -388,12 +388,12 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 6077,
-        "chain": "dbbc1e242c5bcfdc"
+        "calls": 9151,
+        "chain": "26988ee2442585aa"
       },
       "served": {
         "count": 0,
@@ -699,25 +699,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 147721,
+      "computations": 151371,
       "kinds": {
-        "x": 30585,
-        "cnot": 58368,
-        "toffoli": 4332,
-        "h": 51492,
-        "measure": 2166,
-        "cmodexp": 377,
-        "xx": 377,
+        "x": 31410,
+        "cnot": 59968,
+        "toffoli": 4482,
+        "h": 52442,
+        "measure": 2241,
+        "cmodexp": 402,
+        "xx": 402,
         "planes": 24
       },
       "dims": {
-        "8": 146775,
+        "8": 150375,
         "128": 192,
-        "512": 754
+        "512": 804
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "6786fc1585fb7566",
+      "receipt": "817e798ccabe2571",
       "states": [
         {
           "name": "measure",
@@ -732,12 +732,12 @@
             "0",
             "0"
           ],
-          "rows": 2166
+          "rows": 2241
         }
       ],
       "mint": {
-        "calls": 2889040,
-        "chain": "a039b0fb45957a7d"
+        "calls": 2965890,
+        "chain": "49c2679177879187"
       },
       "served": {
         "count": 0,
@@ -881,23 +881,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 18039,
+      "computations": 19937,
       "kinds": {
-        "x": 3904,
-        "cnot": 7504,
-        "toffoli": 634,
-        "h": 5498,
-        "measure": 317,
-        "cmodexp": 91,
-        "xx": 91
+        "x": 4333,
+        "cnot": 8336,
+        "toffoli": 712,
+        "h": 5992,
+        "measure": 356,
+        "cmodexp": 104,
+        "xx": 104
       },
       "dims": {
-        "8": 17857,
-        "512": 182
+        "8": 19729,
+        "512": 208
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "6c9da03cc9ca6585",
+      "receipt": "5c60860d57cb9126",
       "states": [
         {
           "name": "measure",
@@ -912,18 +912,18 @@
             "0",
             "0"
           ],
-          "rows": 317
+          "rows": 356
         }
       ],
       "mint": {
-        "calls": 400570,
-        "chain": "441a4ab6ebb81699"
+        "calls": 440532,
+        "chain": "c07e72f34ba9ad9b"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"274a6e056b95ad4b\"",
-          "\"8ebcac07542a076c\""
+          "\"669e02f08b75596e\"",
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -968,7 +968,7 @@
       ],
       "mint": {
         "calls": 177261,
-        "chain": "5b016eaa009ac82c"
+        "chain": "4419ef9c97bc246e"
       },
       "served": {
         "count": 0,
@@ -1231,23 +1231,417 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3080,
+      "computations": 3226,
       "kinds": {
-        "x": 666,
-        "cnot": 1280,
-        "toffoli": 108,
-        "h": 940,
-        "measure": 54,
-        "cmodexp": 16,
-        "xx": 16
+        "x": 699,
+        "cnot": 1344,
+        "toffoli": 114,
+        "h": 978,
+        "measure": 57,
+        "cmodexp": 17,
+        "xx": 17
       },
       "dims": {
-        "8": 3048,
-        "512": 32
+        "8": 3192,
+        "512": 34
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "0955986ef43bb2f7",
+      "receipt": "1862b3b087e5e76a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 57
+        }
+      ],
+      "mint": {
+        "calls": 71612,
+        "chain": "4b34a8b24aa938bf"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "/api is Payload over the service binding; without the binding it is refused by name",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 876,
+      "kinds": {
+        "x": 198,
+        "cnot": 384,
+        "toffoli": 36,
+        "h": 228,
+        "measure": 18,
+        "cmodexp": 6,
+        "xx": 6
+      },
+      "dims": {
+        "8": 864,
+        "512": 12
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "71a926fe8ac8cce9",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 18
+        }
+      ],
+      "mint": {
+        "calls": 18444,
+        "chain": "b07a42606d86a3ab"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"669e02f08b75596e\""
+        ]
+      }
+    },
+    {
+      "name": "a GET /mcp asking for an event stream gets 405 with Allow, not a catalog",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 3750,
+      "kinds": {
+        "x": 815,
+        "cnot": 1568,
+        "toffoli": 134,
+        "h": 1126,
+        "measure": 67,
+        "cmodexp": 20,
+        "xx": 20
+      },
+      "dims": {
+        "8": 3710,
+        "512": 40
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "f7231fcabc72f8b0",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 67
+        }
+      ],
+      "mint": {
+        "calls": 82693,
+        "chain": "222119fdc7588ccc"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "a JSON-RPC batch is exactly its members; notifications get no entry; an empty batch is refused",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 2505,
+      "kinds": {
+        "x": 555,
+        "cnot": 1072,
+        "toffoli": 96,
+        "h": 704,
+        "measure": 48,
+        "cmodexp": 15,
+        "xx": 15
+      },
+      "dims": {
+        "8": 2475,
+        "512": 30
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "32313bd58f0b1fa6",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 48
+        }
+      ],
+      "mint": {
+        "calls": 53915,
+        "chain": "924f0c3cdb115bbf"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "the five discovery doors answer, and install.json is the same reading the file is written from",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 12272,
+      "kinds": {
+        "x": 2676,
+        "cnot": 5152,
+        "toffoli": 444,
+        "h": 3644,
+        "measure": 222,
+        "cmodexp": 67,
+        "xx": 67
+      },
+      "dims": {
+        "8": 12138,
+        "512": 134
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "5a32bddd115864ff",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 222
+        }
+      ],
+      "mint": {
+        "calls": 269598,
+        "chain": "df8d60c73995720b"
+      },
+      "served": {
+        "count": 3,
+        "folds": [
+          "\"fd081cec0f459ac0\"",
+          "\"fd3b0780d4feebfd\"",
+          "\"a220df60e081cb4a\""
+        ]
+      }
+    },
+    {
+      "name": "the learning ladder is four standard steps in the inline guide, each with the same five fields",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 292,
+      "kinds": {
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
+      },
+      "dims": {
+        "8": 288,
+        "512": 4
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "4506dd38a049566d",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 6
+        }
+      ],
+      "mint": {
+        "calls": 6148,
+        "chain": "cc5f249b756285ef"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"669e02f08b75596e\""
+        ]
+      }
+    },
+    {
+      "name": "the seat doctrine and the acronym credit are served in the glossary",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 292,
+      "kinds": {
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
+      },
+      "dims": {
+        "8": 288,
+        "512": 4
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "4506dd38a049566d",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 6
+        }
+      ],
+      "mint": {
+        "calls": 6148,
+        "chain": "6dc87f48bbb23473"
+      },
+      "served": {
+        "count": 1,
+        "folds": [
+          "\"669e02f08b75596e\""
+        ]
+      }
+    },
+    {
+      "name": "cybersecurity catalog holds — eight morph tools, not a ninth sealed tool",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 10704,
+      "kinds": {
+        "x": 2328,
+        "cnot": 4480,
+        "toffoli": 384,
+        "h": 3200,
+        "measure": 192,
+        "cmodexp": 60,
+        "xx": 60
+      },
+      "dims": {
+        "8": 10584,
+        "512": 120
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "7bc2163aae0f6523",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 192
+        }
+      ],
+      "mint": {
+        "calls": 239968,
+        "chain": "46ce3d987b425d4b"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "quantum reading and GET expose factored RSA",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 3135,
+      "kinds": {
+        "x": 675,
+        "cnot": 1296,
+        "toffoli": 108,
+        "h": 972,
+        "measure": 54,
+        "cmodexp": 15,
+        "xx": 15
+      },
+      "dims": {
+        "8": 3105,
+        "512": 30
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "f68d7f7ca5e58962",
       "states": [
         {
           "name": "measure",
@@ -1266,402 +1660,8 @@
         }
       ],
       "mint": {
-        "calls": 68538,
-        "chain": "582993b2b8a2a80d"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
-    },
-    {
-      "name": "/api is Payload over the service binding; without the binding it is refused by name",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 438,
-      "kinds": {
-        "x": 99,
-        "cnot": 192,
-        "toffoli": 18,
-        "h": 114,
-        "measure": 9,
-        "cmodexp": 3,
-        "xx": 3
-      },
-      "dims": {
-        "8": 432,
-        "512": 6
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "ce6625dec1a61878",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 9
-        }
-      ],
-      "mint": {
-        "calls": 9222,
-        "chain": "6ecd039e1369054b"
-      },
-      "served": {
-        "count": 1,
-        "folds": [
-          "\"274a6e056b95ad4b\""
-        ]
-      }
-    },
-    {
-      "name": "a GET /mcp asking for an event stream gets 405 with Allow, not a catalog",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 3458,
-      "kinds": {
-        "x": 749,
-        "cnot": 1440,
-        "toffoli": 122,
-        "h": 1050,
-        "measure": 61,
-        "cmodexp": 18,
-        "xx": 18
-      },
-      "dims": {
-        "8": 3422,
-        "512": 36
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "30ac53b8b4745c4e",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 61
-        }
-      ],
-      "mint": {
-        "calls": 76545,
-        "chain": "d44cf593b6e8dff0"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
-    },
-    {
-      "name": "a JSON-RPC batch is exactly its members; notifications get no entry; an empty batch is refused",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 1775,
-      "kinds": {
-        "x": 390,
-        "cnot": 752,
-        "toffoli": 66,
-        "h": 514,
-        "measure": 33,
-        "cmodexp": 10,
-        "xx": 10
-      },
-      "dims": {
-        "8": 1755,
-        "512": 20
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "f13838bb418a19d3",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 33
-        }
-      ],
-      "mint": {
-        "calls": 38545,
-        "chain": "7a9b180024395481"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
-    },
-    {
-      "name": "the five discovery doors answer, and install.json is the same reading the file is written from",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 11104,
-      "kinds": {
-        "x": 2412,
-        "cnot": 4640,
-        "toffoli": 396,
-        "h": 3340,
-        "measure": 198,
-        "cmodexp": 59,
-        "xx": 59
-      },
-      "dims": {
-        "8": 10986,
-        "512": 118
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "706696f4d243c215",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 198
-        }
-      ],
-      "mint": {
-        "calls": 245006,
-        "chain": "5ef4f0d3de9667d9"
-      },
-      "served": {
-        "count": 3,
-        "folds": [
-          "\"fd081cec0f459ac0\"",
-          "\"fd3b0780d4feebfd\"",
-          "\"a220df60e081cb4a\""
-        ]
-      }
-    },
-    {
-      "name": "the learning ladder is four standard steps in the inline guide, each with the same five fields",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 146,
-      "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "dims": {
-        "8": 144,
-        "512": 2
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "bddfc462469adf0a",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 3
-        }
-      ],
-      "mint": {
-        "calls": 3074,
-        "chain": "9962a4335c881723"
-      },
-      "served": {
-        "count": 1,
-        "folds": [
-          "\"274a6e056b95ad4b\""
-        ]
-      }
-    },
-    {
-      "name": "the seat doctrine and the acronym credit are served in the glossary",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 146,
-      "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "dims": {
-        "8": 144,
-        "512": 2
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "bddfc462469adf0a",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 3
-        }
-      ],
-      "mint": {
-        "calls": 3074,
-        "chain": "50414dd718ae73cd"
-      },
-      "served": {
-        "count": 1,
-        "folds": [
-          "\"274a6e056b95ad4b\""
-        ]
-      }
-    },
-    {
-      "name": "cybersecurity catalog holds — eight morph tools, not a ninth sealed tool",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 10412,
-      "kinds": {
-        "x": 2262,
-        "cnot": 4352,
-        "toffoli": 372,
-        "h": 3124,
-        "measure": 186,
-        "cmodexp": 58,
-        "xx": 58
-      },
-      "dims": {
-        "8": 10296,
-        "512": 116
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "db2ca495d78bde2f",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 186
-        }
-      ],
-      "mint": {
-        "calls": 233820,
-        "chain": "0c417d4803f6ff79"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
-    },
-    {
-      "name": "quantum reading and GET expose factored RSA",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 2989,
-      "kinds": {
-        "x": 642,
-        "cnot": 1232,
-        "toffoli": 102,
-        "h": 934,
-        "measure": 51,
-        "cmodexp": 14,
-        "xx": 14
-      },
-      "dims": {
-        "8": 2961,
-        "512": 28
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "f4e20127059c0749",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 51
-        }
-      ],
-      "mint": {
-        "calls": 67167,
-        "chain": "4d1fa8286661d010"
+        "calls": 70241,
+        "chain": "6d151a1ad71e2574"
       },
       "served": {
         "count": 0,
@@ -1673,27 +1673,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 66311,
+      "computations": 69669,
       "kinds": {
-        "x": 13944,
-        "cnot": 26694,
-        "toffoli": 2082,
-        "h": 22059,
-        "measure": 1041,
-        "cmodexp": 241,
-        "xx": 241,
+        "x": 14703,
+        "cnot": 28166,
+        "toffoli": 2220,
+        "h": 22933,
+        "measure": 1110,
+        "cmodexp": 264,
+        "xx": 264,
         "planes": 9
       },
       "dims": {
-        "8": 65757,
+        "8": 69069,
         "64": 10,
         "128": 72,
-        "512": 462,
+        "512": 508,
         "2^64": 10
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "e39f513f571ad2d4",
+      "receipt": "693877dcf4b30313",
       "states": [
         {
           "name": "measure",
@@ -1708,12 +1708,12 @@
             "0",
             "0"
           ],
-          "rows": 1041
+          "rows": 1110
         }
       ],
       "mint": {
-        "calls": 1346122,
-        "chain": "b59d5bf4e9f277e4"
+        "calls": 1416824,
+        "chain": "908eb239856e8d40"
       },
       "served": {
         "count": 8,
@@ -1743,7 +1743,7 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "2c3b4e9b92759dcf"
+        "chain": "81452d9c4e1e65b3"
       },
       "served": {
         "count": 0,
@@ -1764,7 +1764,7 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "f423aac96db4e808"
+        "chain": "fbb4edbb1f88841c"
       },
       "served": {
         "count": 0,
@@ -1814,7 +1814,7 @@
       ],
       "mint": {
         "calls": 350027,
-        "chain": "5c23e72aab27e660"
+        "chain": "dc214eea4f671dc4"
       },
       "served": {
         "count": 0,
@@ -1835,7 +1835,7 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "af9d28fe6b3c4e4e"
+        "chain": "30613bd7f5542632"
       },
       "served": {
         "count": 0,
@@ -1883,7 +1883,7 @@
       ],
       "mint": {
         "calls": 71162,
-        "chain": "5b2e1495743864f5"
+        "chain": "6d31777243658c79"
       },
       "served": {
         "count": 0,
@@ -1931,7 +1931,7 @@
       ],
       "mint": {
         "calls": 646,
-        "chain": "0321ea3cd74a8c15"
+        "chain": "1da2bb4510cf65c9"
       },
       "served": {
         "count": 0,
@@ -1979,7 +1979,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "7906d1ccf80a3492"
+        "chain": "4dfb7b709348256e"
       },
       "served": {
         "count": 0,
@@ -2027,7 +2027,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "c81615e196764d87"
+        "chain": "a5be1ca1b216cbab"
       },
       "served": {
         "count": 0,
@@ -2075,7 +2075,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "c6215f7c00010310"
+        "chain": "d405efa6003419dc"
       },
       "served": {
         "count": 0,
@@ -2123,7 +2123,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "f4998ae119361919"
+        "chain": "89d0ba39e07e274d"
       },
       "served": {
         "count": 0,
@@ -2171,7 +2171,7 @@
       ],
       "mint": {
         "calls": 3694,
-        "chain": "7e34a9ff06f8c675"
+        "chain": "f2b8aa7bc361d4d1"
       },
       "served": {
         "count": 0,
@@ -2219,7 +2219,7 @@
       ],
       "mint": {
         "calls": 82452,
-        "chain": "fe30bbe3514e9331"
+        "chain": "66d2f1e3c9a3f49d"
       },
       "served": {
         "count": 0,
@@ -2267,7 +2267,7 @@
       ],
       "mint": {
         "calls": 82225,
-        "chain": "35f3f9fccd5b7a9a"
+        "chain": "fb989336e31b2516"
       },
       "served": {
         "count": 0,
@@ -2315,7 +2315,7 @@
       ],
       "mint": {
         "calls": 153259,
-        "chain": "9c70fe710e839809"
+        "chain": "8fda635e99426755"
       },
       "served": {
         "count": 0,
@@ -2327,22 +2327,22 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 42424,
+      "computations": 48264,
       "kinds": {
-        "x": 9242,
-        "cnot": 17792,
-        "toffoli": 1532,
-        "h": 12604,
-        "measure": 766,
-        "cmodexp": 244,
-        "xx": 244
+        "x": 10562,
+        "cnot": 20352,
+        "toffoli": 1772,
+        "h": 14124,
+        "measure": 886,
+        "cmodexp": 284,
+        "xx": 284
       },
       "dims": {
         "4": 6,
-        "8": 41940,
+        "8": 47700,
         "64": 10,
         "128": 6,
-        "512": 438,
+        "512": 518,
         "4096": 2,
         "16384": 2,
         "32768": 2,
@@ -2355,7 +2355,7 @@
       },
       "dim": "2^99660",
       "qubits": 99660,
-      "receipt": "383a59eb79364ea5",
+      "receipt": "e2c02827de059537",
       "states": [
         {
           "name": "measure",
@@ -2370,12 +2370,12 @@
             "0",
             "0"
           ],
-          "rows": 766
+          "rows": 886
         }
       ],
       "mint": {
-        "calls": 929680,
-        "chain": "428bcfd585e9b3be"
+        "calls": 1052640,
+        "chain": "8fd0eceede6d919a"
       },
       "served": {
         "count": 6,
@@ -2488,23 +2488,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 13361,
+      "computations": 14383,
       "kinds": {
-        "x": 2889,
-        "cnot": 5552,
-        "toffoli": 468,
-        "h": 4084,
-        "measure": 234,
-        "cmodexp": 67,
-        "xx": 67
+        "x": 3120,
+        "cnot": 6000,
+        "toffoli": 510,
+        "h": 4350,
+        "measure": 255,
+        "cmodexp": 74,
+        "xx": 74
       },
       "dims": {
-        "8": 13227,
-        "512": 134
+        "8": 14235,
+        "512": 148
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "b744165850831e84",
+      "receipt": "ea68866f020de01b",
       "states": [
         {
           "name": "measure",
@@ -2519,12 +2519,12 @@
             "0",
             "0"
           ],
-          "rows": 234
+          "rows": 255
         }
       ],
       "mint": {
-        "calls": 295824,
-        "chain": "40338798b0a2cfbe"
+        "calls": 317342,
+        "chain": "e49d094b582afbfa"
       },
       "served": {
         "count": 0,
@@ -2572,7 +2572,7 @@
       ],
       "mint": {
         "calls": 18209,
-        "chain": "ca3fdbddc6fc6f0e"
+        "chain": "085a28164fc3790a"
       },
       "served": {
         "count": 0,
@@ -2634,23 +2634,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 10194,
+      "computations": 10340,
       "kinds": {
-        "x": 2199,
-        "cnot": 4224,
-        "toffoli": 354,
-        "h": 3138,
-        "measure": 177,
-        "cmodexp": 51,
-        "xx": 51
+        "x": 2232,
+        "cnot": 4288,
+        "toffoli": 360,
+        "h": 3176,
+        "measure": 180,
+        "cmodexp": 52,
+        "xx": 52
       },
       "dims": {
-        "8": 10092,
-        "512": 102
+        "8": 10236,
+        "512": 104
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "75a9c73215a868a2",
+      "receipt": "740702cbf29186c5",
       "states": [
         {
           "name": "measure",
@@ -2665,12 +2665,12 @@
             "0",
             "0"
           ],
-          "rows": 177
+          "rows": 180
         }
       ],
       "mint": {
-        "calls": 227603,
-        "chain": "89d7ad193b64cc1d"
+        "calls": 230677,
+        "chain": "0cf464a1f9b8b939"
       },
       "served": {
         "count": 0,
@@ -2793,23 +2793,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3404,
+      "computations": 4718,
       "kinds": {
-        "x": 747,
-        "cnot": 1440,
-        "toffoli": 126,
-        "h": 990,
-        "measure": 63,
-        "cmodexp": 19,
-        "xx": 19
+        "x": 1044,
+        "cnot": 2016,
+        "toffoli": 180,
+        "h": 1332,
+        "measure": 90,
+        "cmodexp": 28,
+        "xx": 28
       },
       "dims": {
-        "8": 3366,
-        "512": 38
+        "8": 4662,
+        "512": 56
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "aa7d1deffe2ba682",
+      "receipt": "8ff333b29c39a6dd",
       "states": [
         {
           "name": "measure",
@@ -2824,12 +2824,12 @@
             "0",
             "0"
           ],
-          "rows": 63
+          "rows": 90
         }
       ],
       "mint": {
-        "calls": 76562,
-        "chain": "1ed09ec4e12b6b12"
+        "calls": 104228,
+        "chain": "f437be05fb998a7c"
       },
       "served": {
         "count": 0,
@@ -3078,23 +3078,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -3109,17 +3109,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "1243ba5f251e5cc7"
+        "calls": 6148,
+        "chain": "2e2d06c37359cb43"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"274a6e056b95ad4b\""
+          "\"669e02f08b75596e\""
         ]
       }
     },
@@ -3128,23 +3128,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -3159,17 +3159,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "11400664bc544381"
+        "calls": 6148,
+        "chain": "3ee7b0ad238fe127"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"274a6e056b95ad4b\""
+          "\"669e02f08b75596e\""
         ]
       }
     },
@@ -3178,23 +3178,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -3209,17 +3209,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "6ecd039e1369054b"
+        "calls": 6148,
+        "chain": "b07a42606d86a3ab"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"274a6e056b95ad4b\""
+          "\"669e02f08b75596e\""
         ]
       }
     },
@@ -3228,23 +3228,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -3259,17 +3259,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "6a8d8931952b5c35"
+        "calls": 6148,
+        "chain": "21f56aec14bd798f"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"274a6e056b95ad4b\""
+          "\"669e02f08b75596e\""
         ]
       }
     },
@@ -3278,23 +3278,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -3309,17 +3309,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "662eef4dbe86d72f"
+        "calls": 6148,
+        "chain": "5c4d3f0440235b13"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"274a6e056b95ad4b\""
+          "\"669e02f08b75596e\""
         ]
       }
     },
@@ -3328,23 +3328,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2413,
+      "computations": 2705,
       "kinds": {
-        "x": 524,
-        "cnot": 1008,
-        "toffoli": 86,
-        "h": 726,
-        "measure": 43,
-        "cmodexp": 13,
-        "xx": 13
+        "x": 590,
+        "cnot": 1136,
+        "toffoli": 98,
+        "h": 802,
+        "measure": 49,
+        "cmodexp": 15,
+        "xx": 15
       },
       "dims": {
-        "8": 2387,
-        "512": 26
+        "8": 2675,
+        "512": 30
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "5b29ca4e90221ea1",
+      "receipt": "d8e9a59c5dd4a2fb",
       "states": [
         {
           "name": "measure",
@@ -3359,12 +3359,12 @@
             "0",
             "0"
           ],
-          "rows": 43
+          "rows": 49
         }
       ],
       "mint": {
-        "calls": 53403,
-        "chain": "b92f08b944420d0f"
+        "calls": 59551,
+        "chain": "4647ea00a98f6293"
       },
       "served": {
         "count": 0,
@@ -3412,7 +3412,7 @@
       ],
       "mint": {
         "calls": 3059,
-        "chain": "21360410df6e2d7f"
+        "chain": "cbeb497999d6a433"
       },
       "served": {
         "count": 0,
@@ -3460,7 +3460,7 @@
       ],
       "mint": {
         "calls": 129047,
-        "chain": "73b7cf2855d80f76"
+        "chain": "418be7283aa509ca"
       },
       "served": {
         "count": 0,
@@ -3508,7 +3508,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "5e1afe4950670a93"
+        "chain": "0200ec59b49640df"
       },
       "served": {
         "count": 0,
@@ -3625,27 +3625,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 139548,
+      "computations": 151520,
       "kinds": {
-        "x": 29388,
-        "cnot": 56268,
-        "toffoli": 4404,
-        "h": 46278,
-        "measure": 2202,
-        "cmodexp": 495,
-        "xx": 495,
+        "x": 32094,
+        "cnot": 61516,
+        "toffoli": 4896,
+        "h": 49394,
+        "measure": 2448,
+        "cmodexp": 577,
+        "xx": 577,
         "planes": 18
       },
       "dims": {
-        "8": 138414,
+        "8": 150222,
         "64": 10,
         "128": 144,
-        "512": 970,
+        "512": 1134,
         "2^64": 10
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "f35cbd3cae88a9b9",
+      "receipt": "0a8200742bfda641",
       "states": [
         {
           "name": "measure",
@@ -3660,18 +3660,18 @@
             "0",
             "0"
           ],
-          "rows": 2202
+          "rows": 2448
         }
       ],
       "mint": {
-        "calls": 2832270,
-        "chain": "f9ce289cb4163517"
+        "calls": 3084338,
+        "chain": "0ee88977670af9f7"
       },
       "served": {
         "count": 2,
         "folds": [
           "\"8f80b08c7a01c689\"",
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -3680,19 +3680,19 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 17139,
+      "computations": 19183,
       "kinds": {
-        "x": 3732,
-        "cnot": 7184,
-        "toffoli": 618,
-        "h": 5098,
-        "measure": 309,
-        "cmodexp": 99,
-        "xx": 99
+        "x": 4194,
+        "cnot": 8080,
+        "toffoli": 702,
+        "h": 5630,
+        "measure": 351,
+        "cmodexp": 113,
+        "xx": 113
       },
       "dims": {
-        "8": 16941,
-        "512": 170,
+        "8": 18957,
+        "512": 198,
         "1024": 2,
         "262144": 2,
         "17179869184": 2,
@@ -3710,7 +3710,7 @@
       },
       "dim": "2^65538",
       "qubits": 65538,
-      "receipt": "f01d62fa84dc3ffd",
+      "receipt": "b0e49b24c62ac0ad",
       "states": [
         {
           "name": "measure",
@@ -3725,12 +3725,12 @@
             "0",
             "0"
           ],
-          "rows": 309
+          "rows": 351
         }
       ],
       "mint": {
-        "calls": 377447,
-        "chain": "cc7f96dea68ff2b8"
+        "calls": 420483,
+        "chain": "a53295e551087e70"
       },
       "served": {
         "count": 0,
@@ -3742,27 +3742,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 118398,
+      "computations": 122048,
       "kinds": {
-        "x": 24714,
-        "cnot": 47244,
-        "toffoli": 3600,
-        "h": 40290,
-        "measure": 1800,
-        "cmodexp": 366,
-        "xx": 366,
+        "x": 25539,
+        "cnot": 48844,
+        "toffoli": 3750,
+        "h": 41240,
+        "measure": 1875,
+        "cmodexp": 391,
+        "xx": 391,
         "planes": 18
       },
       "dims": {
-        "8": 117522,
+        "8": 121122,
         "64": 10,
         "128": 144,
-        "512": 712,
+        "512": 762,
         "2^64": 10
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "f941d37f019cce67",
+      "receipt": "f67d75205c62a134",
       "states": [
         {
           "name": "measure",
@@ -3777,12 +3777,12 @@
             "0",
             "0"
           ],
-          "rows": 1800
+          "rows": 1875
         }
       ],
       "mint": {
-        "calls": 2368906,
-        "chain": "122b532385bf7b4b"
+        "calls": 2445756,
+        "chain": "82b060c6547420bd"
       },
       "served": {
         "count": 0,
@@ -3794,23 +3794,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 55765,
+      "computations": 64379,
       "kinds": {
-        "x": 12111,
-        "cnot": 23297,
-        "toffoli": 1986,
-        "h": 16803,
-        "measure": 994,
-        "cmodexp": 287,
-        "xx": 287
+        "x": 14058,
+        "cnot": 27073,
+        "toffoli": 2340,
+        "h": 19045,
+        "measure": 1171,
+        "cmodexp": 346,
+        "xx": 346
       },
       "dims": {
-        "8": 55191,
-        "512": 574
+        "8": 63687,
+        "512": 692
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "6f8d2b40bbbdb194",
+      "receipt": "738766852d613d3d",
       "states": [
         {
           "name": "measure",
@@ -3825,12 +3825,12 @@
             "0",
             "0"
           ],
-          "rows": 994
+          "rows": 1171
         }
       ],
       "mint": {
-        "calls": 1230512,
-        "chain": "c403d50b72f7ee62"
+        "calls": 1411878,
+        "chain": "5d93e5de26ed6fe0"
       },
       "served": {
         "count": 10,
@@ -3999,25 +3999,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 124955,
+      "computations": 142329,
       "kinds": {
-        "x": 26694,
-        "cnot": 51223,
-        "toffoli": 4176,
-        "h": 39706,
-        "measure": 2089,
-        "cmodexp": 529,
-        "xx": 529,
+        "x": 30621,
+        "cnot": 58839,
+        "toffoli": 4890,
+        "h": 44228,
+        "measure": 2446,
+        "cmodexp": 648,
+        "xx": 648,
         "planes": 9
       },
       "dims": {
-        "8": 123825,
+        "8": 140961,
         "128": 72,
-        "512": 1058
+        "512": 1296
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "07da3880a369eee2",
+      "receipt": "7a817fa28155009b",
       "states": [
         {
           "name": "measure",
@@ -4032,25 +4032,25 @@
             "0",
             "0"
           ],
-          "rows": 2089
+          "rows": 2446
         }
       ],
       "mint": {
-        "calls": 2627970,
-        "chain": "8b087bd879634963"
+        "calls": 2993776,
+        "chain": "1607318b3aced49b"
       },
       "served": {
         "count": 18,
         "folds": [
           "\"8f80b08c7a01c689\"",
-          "\"6532f036aea514d4\"",
-          "\"8ebcac07542a076c\"",
+          "\"a0082ac7341895dc\"",
+          "\"5246358a58c8655a\"",
           "\"b3ff0b285f324124\"",
           "\"b4ffc38956a422c6\"",
           "\"0dce8f031798f1be\"",
           "\"070d20c318c8c926\"",
-          "\"bc0421e56f044b2c\"",
-          "\"f3bf1d294c6cfebe\"",
+          "\"3d28c2187fd31a2e\"",
+          "\"614cc10250b73c02\"",
           "\"e5c0e3ece3d46bfa\"",
           "\"308de8df17903d66\"",
           "\"23363009eadc48a8\"",
@@ -4068,23 +4068,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 6574,
+      "computations": 8764,
       "kinds": {
-        "x": 1437,
-        "cnot": 2769,
-        "toffoli": 240,
-        "h": 1937,
-        "measure": 121,
-        "cmodexp": 35,
-        "xx": 35
+        "x": 1932,
+        "cnot": 3729,
+        "toffoli": 330,
+        "h": 2507,
+        "measure": 166,
+        "cmodexp": 50,
+        "xx": 50
       },
       "dims": {
-        "8": 6504,
-        "512": 70
+        "8": 8664,
+        "512": 100
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "fc294b844d586ea4",
+      "receipt": "7a54b993c2d282dd",
       "states": [
         {
           "name": "measure",
@@ -4099,12 +4099,12 @@
             "0",
             "0"
           ],
-          "rows": 121
+          "rows": 166
         }
       ],
       "mint": {
-        "calls": 142556,
-        "chain": "e81ddb71191450e0"
+        "calls": 188666,
+        "chain": "53b100ae93a7d4cc"
       },
       "served": {
         "count": 1,
@@ -4118,23 +4118,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2109,
+      "computations": 3277,
       "kinds": {
-        "x": 472,
-        "cnot": 915,
-        "toffoli": 84,
-        "h": 568,
-        "measure": 46,
-        "cmodexp": 12,
-        "xx": 12
+        "x": 736,
+        "cnot": 1427,
+        "toffoli": 132,
+        "h": 872,
+        "measure": 70,
+        "cmodexp": 20,
+        "xx": 20
       },
       "dims": {
-        "8": 2085,
-        "512": 24
+        "8": 3237,
+        "512": 40
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "027f5581a3885016",
+      "receipt": "8cfc45990baa6fec",
       "states": [
         {
           "name": "measure",
@@ -4149,7 +4149,7 @@
             "0",
             "0"
           ],
-          "rows": 45
+          "rows": 69
         },
         {
           "name": "measure",
@@ -4168,14 +4168,14 @@
         }
       ],
       "mint": {
-        "calls": 46570,
-        "chain": "a9c408849bcdd63d"
+        "calls": 71162,
+        "chain": "8fc648d98457d137"
       },
       "served": {
         "count": 2,
         "folds": [
           "\"8f80b08c7a01c689\"",
-          "\"f3bf1d294c6cfebe\""
+          "\"614cc10250b73c02\""
         ]
       }
     },
@@ -4184,23 +4184,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 730,
+      "computations": 1460,
       "kinds": {
-        "x": 165,
-        "cnot": 320,
-        "toffoli": 30,
-        "h": 190,
-        "measure": 15,
-        "cmodexp": 5,
-        "xx": 5
+        "x": 330,
+        "cnot": 640,
+        "toffoli": 60,
+        "h": 380,
+        "measure": 30,
+        "cmodexp": 10,
+        "xx": 10
       },
       "dims": {
-        "8": 720,
-        "512": 10
+        "8": 1440,
+        "512": 20
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "157291d7e6e64dfe",
+      "receipt": "4c8ca45b0ee7f935",
       "states": [
         {
           "name": "measure",
@@ -4215,12 +4215,12 @@
             "0",
             "0"
           ],
-          "rows": 15
+          "rows": 30
         }
       ],
       "mint": {
-        "calls": 15420,
-        "chain": "a078e5f369be82eb"
+        "calls": 30790,
+        "chain": "03edb12e51533d3f"
       },
       "served": {
         "count": 0,
@@ -4232,27 +4232,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 14578,
+      "computations": 18520,
       "kinds": {
-        "x": 3189,
-        "cnot": 6144,
-        "toffoli": 534,
-        "h": 4278,
-        "measure": 267,
-        "cmodexp": 83,
-        "xx": 83
+        "x": 4080,
+        "cnot": 7872,
+        "toffoli": 696,
+        "h": 5304,
+        "measure": 348,
+        "cmodexp": 110,
+        "xx": 110
       },
       "dims": {
-        "8": 14412,
+        "8": 18300,
         "64": 2,
         "128": 2,
         "256": 2,
-        "512": 158,
+        "512": 212,
         "2^64": 2
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "7829bb55b124a264",
+      "receipt": "55963210a3f4c17b",
       "states": [
         {
           "name": "measure",
@@ -4267,21 +4267,21 @@
             "0",
             "0"
           ],
-          "rows": 267
+          "rows": 348
         }
       ],
       "mint": {
-        "calls": 318227,
-        "chain": "315b67e30d691e59"
+        "calls": 401225,
+        "chain": "ccb4f5eaa03eda3b"
       },
       "served": {
         "count": 17,
         "folds": [
           "\"8f80b08c7a01c689\"",
-          "\"6532f036aea514d4\"",
+          "\"a0082ac7341895dc\"",
           "\"b3ff0b285f324124\"",
           "\"0dce8f031798f1be\"",
-          "\"bc0421e56f044b2c\"",
+          "\"3d28c2187fd31a2e\"",
           "\"e5c0e3ece3d46bfa\"",
           "\"23363009eadc48a8\"",
           "\"cf594d9d088efcda\"",
@@ -4302,25 +4302,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 44583,
+      "computations": 47357,
       "kinds": {
-        "x": 9208,
-        "cnot": 17574,
-        "toffoli": 1294,
-        "h": 15639,
-        "measure": 647,
-        "cmodexp": 106,
-        "xx": 106,
+        "x": 9835,
+        "cnot": 18790,
+        "toffoli": 1408,
+        "h": 16361,
+        "measure": 704,
+        "cmodexp": 125,
+        "xx": 125,
         "planes": 9
       },
       "dims": {
-        "8": 44299,
+        "8": 47035,
         "128": 72,
-        "512": 212
+        "512": 250
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "045963f8d57164fe",
+      "receipt": "bf1f14ff12d79aa1",
       "states": [
         {
           "name": "measure",
@@ -4335,21 +4335,21 @@
             "0",
             "0"
           ],
-          "rows": 647
+          "rows": 704
         }
       ],
       "mint": {
-        "calls": 856085,
-        "chain": "d215c17bcfd89c3c"
+        "calls": 914491,
+        "chain": "0bd350837a19b2a4"
       },
       "served": {
         "count": 13,
         "folds": [
           "\"8f80b08c7a01c689\"",
-          "\"8ebcac07542a076c\"",
+          "\"5246358a58c8655a\"",
           "\"b4ffc38956a422c6\"",
           "\"070d20c318c8c926\"",
-          "\"f3bf1d294c6cfebe\"",
+          "\"614cc10250b73c02\"",
           "\"308de8df17903d66\"",
           "\"bf29eeaed102abf6\"",
           "\"b2299c520420511a\"",
@@ -4366,23 +4366,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 7589,
+      "computations": 9049,
       "kinds": {
-        "x": 1654,
-        "cnot": 3184,
-        "toffoli": 274,
-        "h": 2258,
-        "measure": 137,
-        "cmodexp": 41,
-        "xx": 41
+        "x": 1984,
+        "cnot": 3824,
+        "toffoli": 334,
+        "h": 2638,
+        "measure": 167,
+        "cmodexp": 51,
+        "xx": 51
       },
       "dims": {
-        "8": 7507,
-        "512": 82
+        "8": 8947,
+        "512": 102
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "3e95c807ee023aaf",
+      "receipt": "1994226b93ca1c35",
       "states": [
         {
           "name": "measure",
@@ -4397,17 +4397,17 @@
             "0",
             "0"
           ],
-          "rows": 137
+          "rows": 167
         }
       ],
       "mint": {
-        "calls": 167160,
-        "chain": "daa2e5ee94591af4"
+        "calls": 197900,
+        "chain": "65b5855d26cc5600"
       },
       "served": {
         "count": 10,
         "folds": [
-          "\"2b37f528338c4eb5\"",
+          "\"a21102d9cfd7eb90\"",
           "\"95578d3027fc2afd\"",
           "\"a47c8c1e0dc78718\"",
           "\"e647c755220083f7\"",
@@ -4947,23 +4947,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 4297,
+      "computations": 4443,
       "kinds": {
-        "x": 925,
-        "cnot": 1776,
-        "toffoli": 148,
-        "h": 1332,
-        "measure": 74,
-        "cmodexp": 21,
-        "xx": 21
+        "x": 958,
+        "cnot": 1840,
+        "toffoli": 154,
+        "h": 1370,
+        "measure": 77,
+        "cmodexp": 22,
+        "xx": 22
       },
       "dims": {
-        "8": 4255,
-        "512": 42
+        "8": 4399,
+        "512": 44
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "08b1f74ab1bb726e",
+      "receipt": "3584ebb6e666c993",
       "states": [
         {
           "name": "measure",
@@ -4978,12 +4978,12 @@
             "0",
             "0"
           ],
-          "rows": 74
+          "rows": 77
         }
       ],
       "mint": {
-        "calls": 96213,
-        "chain": "dc0203cd43508032"
+        "calls": 99287,
+        "chain": "c49d587c18710df4"
       },
       "served": {
         "count": 0,
@@ -4995,23 +4995,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5026,17 +5026,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "0083bc5652459656"
+        "calls": 6148,
+        "chain": "14b80d18bf4fac8c"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5045,23 +5045,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5076,17 +5076,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "e3cfb66f69ebfb1a"
+        "calls": 6148,
+        "chain": "3fdaa03a3bcd2b44"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5095,23 +5095,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5126,17 +5126,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "cf8ab4d5d11d7ffe"
+        "calls": 6148,
+        "chain": "0bdd6d332e0fc9dc"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5145,23 +5145,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5176,17 +5176,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "50e336e44f891da2"
+        "calls": 6148,
+        "chain": "c0bc6bb169367514"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5195,23 +5195,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5226,17 +5226,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "95890ee9803d7586"
+        "calls": 6148,
+        "chain": "cfc8ad0e71173eac"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5245,23 +5245,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5276,17 +5276,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "81fb21013e48078a"
+        "calls": 6148,
+        "chain": "e0ee0ee045d95f64"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5295,23 +5295,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5326,17 +5326,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "cff81e2bb80fc5ae"
+        "calls": 6148,
+        "chain": "35963a0629d213fc"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5345,23 +5345,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5376,17 +5376,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "24759f1b83afc292"
+        "calls": 6148,
+        "chain": "287108f1169d6034"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5395,23 +5395,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5426,17 +5426,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "9dbf19454f9ef9b6"
+        "calls": 6148,
+        "chain": "e9f4085cf633e4cc"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5445,23 +5445,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5476,17 +5476,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "e2760f9becb523fa"
+        "calls": 6148,
+        "chain": "2cfd7ee6e52f5984"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5495,23 +5495,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 146,
+      "computations": 292,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 288,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "4506dd38a049566d",
       "states": [
         {
           "name": "measure",
@@ -5526,17 +5526,17 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 6
         }
       ],
       "mint": {
-        "calls": 3074,
-        "chain": "a18319c7f6a06ede"
+        "calls": 6148,
+        "chain": "3f3910066e737e1c"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"8ebcac07542a076c\""
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5545,25 +5545,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 39716,
+      "computations": 39862,
       "kinds": {
-        "x": 8138,
-        "cnot": 15504,
-        "toffoli": 1112,
-        "h": 14240,
-        "measure": 556,
-        "cmodexp": 79,
-        "xx": 79,
+        "x": 8171,
+        "cnot": 15568,
+        "toffoli": 1118,
+        "h": 14278,
+        "measure": 559,
+        "cmodexp": 80,
+        "xx": 80,
         "planes": 8
       },
       "dims": {
-        "8": 39494,
+        "8": 39638,
         "128": 64,
-        "512": 158
+        "512": 160
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "32f522b2f244de9b",
+      "receipt": "3f34f42eaa382d74",
       "states": [
         {
           "name": "measure",
@@ -5578,12 +5578,12 @@
             "0",
             "0"
           ],
-          "rows": 556
+          "rows": 559
         }
       ],
       "mint": {
-        "calls": 755487,
-        "chain": "ee15847ccaae86b2"
+        "calls": 758561,
+        "chain": "c5c30b4f2b7aeec0"
       },
       "served": {
         "count": 0,
@@ -5595,23 +5595,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 6270,
+      "computations": 6708,
       "kinds": {
-        "x": 1350,
-        "cnot": 2592,
-        "toffoli": 216,
-        "h": 1944,
-        "measure": 108,
-        "cmodexp": 30,
-        "xx": 30
+        "x": 1449,
+        "cnot": 2784,
+        "toffoli": 234,
+        "h": 2058,
+        "measure": 117,
+        "cmodexp": 33,
+        "xx": 33
       },
       "dims": {
-        "8": 6210,
-        "512": 60
+        "8": 6642,
+        "512": 66
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "955f4653747f2459",
+      "receipt": "4ce56de14932b386",
       "states": [
         {
           "name": "measure",
@@ -5626,12 +5626,12 @@
             "0",
             "0"
           ],
-          "rows": 108
+          "rows": 117
         }
       ],
       "mint": {
-        "calls": 139178,
-        "chain": "d006c5f9f0723e58"
+        "calls": 148400,
+        "chain": "4e38ff223fc3c390"
       },
       "served": {
         "count": 0,
@@ -5643,23 +5643,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3750,
+      "computations": 4334,
       "kinds": {
-        "x": 815,
-        "cnot": 1568,
-        "toffoli": 134,
-        "h": 1126,
-        "measure": 67,
-        "cmodexp": 20,
-        "xx": 20
+        "x": 947,
+        "cnot": 1824,
+        "toffoli": 158,
+        "h": 1278,
+        "measure": 79,
+        "cmodexp": 24,
+        "xx": 24
       },
       "dims": {
-        "8": 3710,
-        "512": 40
+        "8": 4286,
+        "512": 48
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "b10d0b4ca79de40c",
+      "receipt": "3e3fbf736d3de9d4",
       "states": [
         {
           "name": "measure",
@@ -5674,19 +5674,19 @@
             "0",
             "0"
           ],
-          "rows": 67
+          "rows": 79
         }
       ],
       "mint": {
-        "calls": 82693,
-        "chain": "2f3397929c4518a1"
+        "calls": 94989,
+        "chain": "d3dc84cf7c76b825"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"274a6e056b95ad4b\"",
-          "\"f3bf1d294c6cfebe\"",
-          "\"8ebcac07542a076c\""
+          "\"669e02f08b75596e\"",
+          "\"614cc10250b73c02\"",
+          "\"5246358a58c8655a\""
         ]
       }
     },
@@ -5695,23 +5695,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 4603,
+      "computations": 7085,
       "kinds": {
-        "x": 1019,
-        "cnot": 1968,
-        "toffoli": 176,
-        "h": 1296,
-        "measure": 88,
-        "cmodexp": 28,
-        "xx": 28
+        "x": 1580,
+        "cnot": 3056,
+        "toffoli": 278,
+        "h": 1942,
+        "measure": 139,
+        "cmodexp": 45,
+        "xx": 45
       },
       "dims": {
-        "8": 4547,
-        "512": 56
+        "8": 6995,
+        "512": 90
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "d6ebbc8ca702bdf6",
+      "receipt": "2eb50bbb3f263441",
       "states": [
         {
           "name": "measure",
@@ -5726,12 +5726,12 @@
             "0",
             "0"
           ],
-          "rows": 88
+          "rows": 139
         }
       ],
       "mint": {
-        "calls": 104590,
-        "chain": "4c06f0ebd4cd80e0"
+        "calls": 156848,
+        "chain": "7413ccff1356485a"
       },
       "served": {
         "count": 0,
@@ -5806,23 +5806,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 323,
+      "computations": 469,
       "kinds": {
-        "x": 74,
-        "cnot": 144,
-        "toffoli": 14,
-        "h": 78,
-        "measure": 7,
-        "cmodexp": 3,
-        "xx": 3
+        "x": 107,
+        "cnot": 208,
+        "toffoli": 20,
+        "h": 116,
+        "measure": 10,
+        "cmodexp": 4,
+        "xx": 4
       },
       "dims": {
-        "8": 317,
-        "512": 6
+        "8": 461,
+        "512": 8
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "420bf964f480aee1",
+      "receipt": "ebfb50935ed8bee4",
       "states": [
         {
           "name": "measure",
@@ -5837,12 +5837,12 @@
             "0",
             "0"
           ],
-          "rows": 7
+          "rows": 10
         }
       ],
       "mint": {
-        "calls": 7015,
-        "chain": "84a6ef073a542a0c"
+        "calls": 10089,
+        "chain": "581ec9162a323b88"
       },
       "served": {
         "count": 0,
@@ -5854,23 +5854,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 876,
+      "computations": 1606,
       "kinds": {
-        "x": 198,
-        "cnot": 384,
-        "toffoli": 36,
-        "h": 228,
-        "measure": 18,
-        "cmodexp": 6,
-        "xx": 6
+        "x": 363,
+        "cnot": 704,
+        "toffoli": 66,
+        "h": 418,
+        "measure": 33,
+        "cmodexp": 11,
+        "xx": 11
       },
       "dims": {
-        "8": 864,
-        "512": 12
+        "8": 1584,
+        "512": 22
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "71a926fe8ac8cce9",
+      "receipt": "6c3a129a2e4f6910",
       "states": [
         {
           "name": "measure",
@@ -5885,12 +5885,12 @@
             "0",
             "0"
           ],
-          "rows": 18
+          "rows": 33
         }
       ],
       "mint": {
-        "calls": 18444,
-        "chain": "38a65cf0460fbe94"
+        "calls": 33814,
+        "chain": "18f94dbd5ac5897c"
       },
       "served": {
         "count": 0,
@@ -5902,23 +5902,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 4300,
+      "computations": 4738,
       "kinds": {
-        "x": 932,
-        "cnot": 1792,
-        "toffoli": 152,
-        "h": 1304,
-        "measure": 76,
-        "cmodexp": 22,
-        "xx": 22
+        "x": 1031,
+        "cnot": 1984,
+        "toffoli": 170,
+        "h": 1418,
+        "measure": 85,
+        "cmodexp": 25,
+        "xx": 25
       },
       "dims": {
-        "8": 4256,
-        "512": 44
+        "8": 4688,
+        "512": 50
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "33e378701f463bdd",
+      "receipt": "173b13a4d19eb34a",
       "states": [
         {
           "name": "measure",
@@ -5933,12 +5933,12 @@
             "0",
             "0"
           ],
-          "rows": 76
+          "rows": 85
         }
       ],
       "mint": {
-        "calls": 95400,
-        "chain": "07befdb4bdc10e94"
+        "calls": 104622,
+        "chain": "e9cdb6356c93710e"
       },
       "served": {
         "count": 1,
@@ -5952,23 +5952,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3896,
+      "computations": 4334,
       "kinds": {
-        "x": 848,
-        "cnot": 1632,
-        "toffoli": 140,
-        "h": 1164,
-        "measure": 70,
-        "cmodexp": 21,
-        "xx": 21
+        "x": 947,
+        "cnot": 1824,
+        "toffoli": 158,
+        "h": 1278,
+        "measure": 79,
+        "cmodexp": 24,
+        "xx": 24
       },
       "dims": {
-        "8": 3854,
-        "512": 42
+        "8": 4286,
+        "512": 48
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "96a5b433e052345d",
+      "receipt": "791f7860314844e0",
       "states": [
         {
           "name": "measure",
@@ -5983,12 +5983,12 @@
             "0",
             "0"
           ],
-          "rows": 70
+          "rows": 79
         }
       ],
       "mint": {
-        "calls": 85768,
-        "chain": "6978f7d1be559eca"
+        "calls": 94990,
+        "chain": "c10246a8ee5212a0"
       },
       "served": {
         "count": 0,
@@ -6036,7 +6036,7 @@
       ],
       "mint": {
         "calls": 18209,
-        "chain": "3182136eb033a05a"
+        "chain": "df41b88aef889a48"
       },
       "served": {
         "count": 0,
@@ -6048,25 +6048,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 31511,
+      "computations": 34285,
       "kinds": {
-        "x": 6721,
-        "cnot": 12904,
-        "toffoli": 1048,
-        "h": 10044,
-        "measure": 524,
-        "cmodexp": 133,
-        "xx": 133,
+        "x": 7348,
+        "cnot": 14120,
+        "toffoli": 1162,
+        "h": 10766,
+        "measure": 581,
+        "cmodexp": 152,
+        "xx": 152,
         "planes": 4
       },
       "dims": {
-        "8": 31213,
+        "8": 33949,
         "128": 32,
-        "512": 266
+        "512": 304
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "a25a17ffc083ac44",
+      "receipt": "132be4951ec1b499",
       "states": [
         {
           "name": "measure",
@@ -6081,12 +6081,12 @@
             "0",
             "0"
           ],
-          "rows": 524
+          "rows": 581
         }
       ],
       "mint": {
-        "calls": 668337,
-        "chain": "cd14d954a9328428"
+        "calls": 726743,
+        "chain": "671e0b7a9c3ffc34"
       },
       "served": {
         "count": 0,
@@ -6194,25 +6194,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 14967,
+      "computations": 15113,
       "kinds": {
-        "x": 3142,
-        "cnot": 6012,
-        "toffoli": 466,
-        "h": 5012,
-        "measure": 233,
-        "cmodexp": 50,
-        "xx": 50,
+        "x": 3175,
+        "cnot": 6076,
+        "toffoli": 472,
+        "h": 5050,
+        "measure": 236,
+        "cmodexp": 51,
+        "xx": 51,
         "planes": 2
       },
       "dims": {
-        "8": 14851,
+        "8": 14995,
         "128": 16,
-        "512": 100
+        "512": 102
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "9f18ca9ca31301e1",
+      "receipt": "7bd896ff83909bb8",
       "states": [
         {
           "name": "measure",
@@ -6227,12 +6227,12 @@
             "0",
             "0"
           ],
-          "rows": 233
+          "rows": 236
         }
       ],
       "mint": {
-        "calls": 310110,
-        "chain": "c46a7eab27a2688f"
+        "calls": 313184,
+        "chain": "49cc93e6e1f4a403"
       },
       "served": {
         "count": 0,

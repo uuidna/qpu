@@ -433,7 +433,7 @@ test('purpose cybersecurity is register, Shor, crypt split, extras, and next', (
   assert.equal(purpose.sensing.server, '/server')
   assert.equal(purpose.sensing.hop, 'involution')
   assert.equal(prove.purpose.holds, true)
-  assert.equal(prove.purpose.nature.platform, prove.circuit.hardware.device)
+  assert.equal(prove.purpose.nature.platform, prove.circuit.steps.device)
   assert.equal(prove.purpose.cybersecurity.product, prove.shor.n)
 })
 
@@ -480,7 +480,7 @@ test('evidence is this-run provenance, calibration, QV-style heavy output, and c
   assert.equal(evidence.fault.logical.off, 0)
   assert.equal(evidence.fault.logicalLtPhysical, true)
   assert.equal(prove.evidence.holds, true)
-  assert.equal(prove.evidence.provenance.device, prove.circuit.hardware.device)
+  assert.equal(prove.evidence.provenance.device, prove.circuit.steps.device)
   assert.equal(prove.evidence.provenance.shots, prove.shor.shots)
 })
 

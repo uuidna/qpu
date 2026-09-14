@@ -2583,7 +2583,7 @@ export const qpuCircuitOf = () => {
   const computer = qpuComputerOf()
   const plugin = qpuPayloadPluginOf()
   const payloadMcp = qpuPayloadMcpOf()
-  const hardware = {
+  const steps = {
     kind: 'circuit-steps' as const,
     device: register.kind,
     initialize: computer.reset.holds,
@@ -2647,7 +2647,7 @@ export const qpuCircuitOf = () => {
     cube.holds &&
     faces.holds &&
     computer.holds &&
-    hardware.holds &&
+    steps.holds &&
     dim === mintOf(n) &&
     xorOf(xorOf(n - n, seed), coins) === n &&
     xorOf(xorOf(n, seed), seed) === n
@@ -2675,7 +2675,7 @@ export const qpuCircuitOf = () => {
     sciences,
     drift,
     computer,
-    hardware,
+    steps,
     holds,
   }
 }
@@ -2798,17 +2798,17 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.primitives.length === n + coins &&
   qpuComputerHolds(c.computer) &&
   c.computer.lattice.vacant === n - n &&
-  c.hardware.kind === 'circuit-steps' &&
-  c.hardware.device === 'simulator' &&
-  c.hardware.initialize === true &&
-  c.hardware.gates === true &&
-  c.hardware.interfere === true &&
-  c.hardware.measure === true &&
-  c.hardware.noise === true &&
-  c.hardware.path.payload === `${storageHref}/${payloadDbKey}` &&
-  c.hardware.path.submit === `${unit.origin}/server` &&
-  c.hardware.path.src === unit.fuse.lean &&
-  c.hardware.holds === true
+  c.steps.kind === 'circuit-steps' &&
+  c.steps.device === 'simulator' &&
+  c.steps.initialize === true &&
+  c.steps.gates === true &&
+  c.steps.interfere === true &&
+  c.steps.measure === true &&
+  c.steps.noise === true &&
+  c.steps.path.payload === `${storageHref}/${payloadDbKey}` &&
+  c.steps.path.submit === `${unit.origin}/server` &&
+  c.steps.path.src === unit.fuse.lean &&
+  c.steps.holds === true
 
 export const qpuSchemasOf = () => {
   const cube = qpuCubeOf()
@@ -3621,7 +3621,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
       formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
       reading: 'n = 3. mintOf n = vertices. (0 ^^^ 1) ^^^ 2 = 3. (3 ^^^ 1) ^^^ 1 = 3. Reset, H CNOT, interfere, readout and bitflip correction computed on exact integer amplitudes: a state-vector simulator. Path origin payload server lean.',
-      holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && qpuCircuitOf().hardware.holds,
+      holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && qpuCircuitOf().steps.holds,
   },
     {
       heading: 'temperature',
@@ -4999,7 +4999,7 @@ export const qpuEvidenceOf = (
   const provenance = {
     kind: 'provenance' as const,
     provider: unit.host,
-    device: circuit.hardware.device,
+    device: circuit.steps.device,
     job: `${unit.host}/${shor.circuitry.kind}/${shor.n}/${shor.measure.shots}`,
     circuit: shor.circuitry.gates.map((row) => row.name),
     compiler: {
@@ -5021,7 +5021,7 @@ export const qpuEvidenceOf = (
     holds:
       unit.host === 'qpu.uuidna.com' &&
       !unit.host.includes('*') &&
-      circuit.hardware.device === circuit.register.kind &&
+      circuit.steps.device === circuit.register.kind &&
       shor.device === circuit.register.kind &&
       shor.circuitry.native.join(' ') === 'h cnot' &&
       computer.compile.holds &&
@@ -6237,7 +6237,12 @@ export const qpuStorageListOf = async (env: QpuEnv | undefined, prefix: string, 
   const keys = storageLinksOf(await storageStoreOf(env).keysUnder(prefix, want))
   const rows: { key: string; doc: unknown }[] = []
   for (const key of keys) rows.push({ key, doc: await qpuStorageOf(env, { method: 'GET', key }) })
-  return { ...qpuStorageMetaOf(env), prefix, limit: want, keys: rows, holds: true as const }
+  const names = rows.map((r) => r.key)
+  const holds = names.length <= want &&
+    names.join('\n') === [...names].sort().join('\n') &&
+    names.every((key) => key.startsWith(prefix) && !key.includes(raidMark)) &&
+    qpuStorageListHolds()
+  return { ...qpuStorageMetaOf(env), prefix, limit: want, keys: rows, holds }
 }
 
 /** qpuStorageListHolds → the listing's two laws, pure: a name led by an inverted arrival time sorts NEWEST FIRST in the
@@ -6929,7 +6934,7 @@ const quantumRelatedOf = () => {
     holds: circuit.holds,
   }
   doors.noise = circuit.noise
-  doors.physical = circuit.hardware
+  doors.physical = circuit.steps
   doors.science = circuit.science
   doors.sciences = circuit.sciences
   doors.drift = circuit.drift
@@ -8011,7 +8016,7 @@ export const qpuProveOf = () => {
     qpuCoilHolds(coil) &&
     qpuNextHolds(next) &&
     circuit.holds &&
-    circuit.hardware.holds &&
+    circuit.steps.holds &&
     qpuShorHolds(shor) &&
     qpuEncryptHolds(encrypt) &&
     purpose.holds &&
@@ -8039,15 +8044,15 @@ export const qpuProveOf = () => {
     lattice: circuit.lattice,
     circuit: {
       kind: circuit.kind,
-      hardware: {
-        holds: circuit.hardware.holds,
-        device: circuit.hardware.device,
-        initialize: circuit.hardware.initialize,
-        gates: circuit.hardware.gates,
-        interfere: circuit.hardware.interfere,
-        measure: circuit.hardware.measure,
-        noise: circuit.hardware.noise,
-        path: circuit.hardware.path},
+      steps: {
+        holds: circuit.steps.holds,
+        device: circuit.steps.device,
+        initialize: circuit.steps.initialize,
+        gates: circuit.steps.gates,
+        interfere: circuit.steps.interfere,
+        measure: circuit.steps.measure,
+        noise: circuit.steps.noise,
+        path: circuit.steps.path},
       only: circuit.only,
       lattice: { occupied: circuit.lattice.occupied, vacant: circuit.lattice.vacant, holds: circuit.lattice.holds },
       holds: circuit.holds,
@@ -8110,15 +8115,15 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.lattice.holds === true &&
   p.lattice.occupied === p.lattice.faces &&
   p.lattice.vacant === n - n &&
-  p.circuit.hardware.holds === true &&
-  p.circuit.hardware.device === 'simulator' &&
-  p.circuit.hardware.initialize === true &&
-  p.circuit.hardware.gates === true &&
-  p.circuit.hardware.interfere === true &&
-  p.circuit.hardware.measure === true &&
-  p.circuit.hardware.noise === true &&
-  p.circuit.hardware.path.payload === `${storageHref}/${payloadDbKey}` &&
-  p.circuit.hardware.path.submit === `${unit.origin}/server` &&
+  p.circuit.steps.holds === true &&
+  p.circuit.steps.device === 'simulator' &&
+  p.circuit.steps.initialize === true &&
+  p.circuit.steps.gates === true &&
+  p.circuit.steps.interfere === true &&
+  p.circuit.steps.measure === true &&
+  p.circuit.steps.noise === true &&
+  p.circuit.steps.path.payload === `${storageHref}/${payloadDbKey}` &&
+  p.circuit.steps.path.submit === `${unit.origin}/server` &&
   p.circuit.holds === true &&
   p.shor.holds === true &&
   p.shor.n === qpuFacesOf().rays * (n * n + n + seed) &&
@@ -8139,9 +8144,9 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.encrypt.identity === true &&
   qpuPurposeHolds(p.purpose) &&
   p.purpose.cybersecurity.product === p.shor.n &&
-  p.purpose.nature.platform === p.circuit.hardware.device &&
+  p.purpose.nature.platform === p.circuit.steps.device &&
   qpuEvidenceHolds(p.evidence) &&
-  p.evidence.provenance.device === p.circuit.hardware.device &&
+  p.evidence.provenance.device === p.circuit.steps.device &&
   p.evidence.provenance.shots === p.shor.shots &&
   p.evidence.scaling.exact === true &&
   p.evidence.verify.algorithm === true &&
@@ -9427,7 +9432,7 @@ const installSelectOf = (args: Record<string, unknown>): readonly string[] => {
  *  check is this unit's own law with the seat empty: the exact integer simulator is the reference, and an occupant
  *  that disagrees with it is a driver bug. Credited here because the acronym was theirs first. The earlier credit in
  *  this file carried a surname and a year with no source; every field below was read from the repository. */
-export const qpuPriorArtOf = () => ({
+const priorArtFieldsOf = () => ({
   kind: 'prior-art' as const,
   name: 'QPULib',
   author: 'Matthew Naylor',
@@ -9446,10 +9451,8 @@ export const qpuPriorArtOf = () => ({
   ],
   equivalence: 'AutoTest runs each test on both the interpreter and the emulator and checks they agree',
   inherited: 'one kernel, several ways to run it, and a reference that decides which one is wrong',
-  holds: true as const,
 })
-/** value + predicate (the dryclean law): the sourced credit recomputes to itself and can never lose its source */
-export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean =>
+const priorArtChecksOf = (p: ReturnType<typeof priorArtFieldsOf>): boolean =>
   p.author === 'Matthew Naylor' && p.year === 2016 && p.licence === 'MIT' &&
   p.copyright.includes(String(p.year)) && p.copyright.includes(p.author) &&
   p.repository.startsWith('https://github.com/') && p.modes.length === 3 &&
@@ -9457,6 +9460,12 @@ export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean =>
   p.modes.some((m) => m.name === 'target language emulator') &&
   p.modes.some((m) => m.purpose.includes('QPU=1')) &&
   p.hardware.lanes === 16 && p.hardware.qpus === 12 && p.hardware.bits === 32
+export const qpuPriorArtOf = () => {
+  const p = priorArtFieldsOf()
+  return { ...p, holds: priorArtChecksOf(p) }
+}
+/** value + predicate (the dryclean law): the sourced credit recomputes to itself and can never lose its source */
+export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean => p.holds === true && priorArtChecksOf(p)
 
 /** THE UNIT AS A ROUTER OF REFERRERS (the captain, 2026-09-13: "QPU is basically intelligent router of referrers",
  *  "intelligence decides lean where processes is computed in realtime"). A request arrives with a referrer and a path;
@@ -9485,7 +9494,7 @@ export const qpuSeatsAvailableHolds = (a = qpuSeatsAvailableOf()): boolean =>
  *  REFUSED and the output buffer stays zero — where a naive timing read 67x faster, because it was comparing against
  *  nothing. The readings below are typed from those runs of scripts/fold-gpu.ts; this unit does not recompute them.
  *  Reproduce with scripts/fold-gpu.ts on a runtime that exposes WebGPU. */
-export const qpuOccupantOf = () => ({
+const occupantFieldsOf = () => ({
   kind: 'occupant' as const,
   seat: 'vector' as const,
   binding: 'WebGPU compute, WGSL, 64-bit multiply emulated in 32-bit halves',
@@ -9502,15 +9511,29 @@ export const qpuOccupantOf = () => ({
   ] },
   law: 'a seat that is taken answers nothing until the reference confirms it; a refused dispatch returns zeros and times as a triumph',
   script: 'scripts/fold-gpu.ts',
-  holds: true as const,
 })
-/** value + predicate (the dryclean law): every reading agreed exactly, and the refused one is recorded as refused */
-export const qpuOccupantHolds = (o = qpuOccupantOf()): boolean =>
+const occupantChecksOf = (o: ReturnType<typeof occupantFieldsOf>): boolean =>
   o.readings.length > 0 && o.readings.every((r) => r.exact === r.folds && r.mismatched === 0 && r.gpuMs > 0 && r.cpuMs > 0) &&
   o.refused.returned === 'zeros' && o.refused.naiveRatio > 1 && o.law.includes('reference') &&
   o.cured.readings.length > 0 && o.cured.readings.every((r) => r.exact === r.folds && r.mismatched === 0 && r.chunks > 1) &&
   o.cured.readings.some((r) => r.folds === o.refused.folds)
+export const qpuOccupantOf = () => {
+  const o = occupantFieldsOf()
+  return { ...o, holds: occupantChecksOf(o) }
+}
+/** value + predicate (the dryclean law): every reading agreed exactly, and the refused one is recorded as refused */
+export const qpuOccupantHolds = (o = qpuOccupantOf()): boolean => o.holds === true && occupantChecksOf(o)
 
+const routerChecksOf = (r: {
+  seats: { reference: boolean; vector: boolean; device: boolean }
+  seat: string; door: string; path: string; known: boolean; origin: string; referrer: string
+}): boolean =>
+  r.seats.reference === true && r.seats.device === false &&
+  (r.seat === 'reference' || r.seat === 'vector') &&
+  (r.seat === 'vector') === r.seats.vector &&
+  qpuDocsOf().api.map((a) => a.path).includes(r.door) &&
+  (r.known ? r.door === r.path : r.door === '/') &&
+  (r.origin === 'none') === (r.referrer === '')
 export const qpuRouterOf = (referrer = '', path = '/') => {
   const seats = qpuSeatsAvailableOf()
   const doors = qpuDocsOf().api.map((a) => a.path)
@@ -9519,7 +9542,7 @@ export const qpuRouterOf = (referrer = '', path = '/') => {
     try { return new URL(referrer).host } catch { return '' }
   })()
   const seat = seats.vector ? ('vector' as const) : ('reference' as const)
-  return {
+  const r = {
     kind: 'router' as const,
     referrer: from,
     origin: from === unit.host ? ('self' as const) : from ? ('foreign' as const) : ('none' as const),
@@ -9533,17 +9556,11 @@ export const qpuRouterOf = (referrer = '', path = '/') => {
     why: seats.vector
       ? 'a vector binding is exposed by this runtime, so the work may ride it and is checked against the reference'
       : 'no compute binding is exposed by this runtime, so the reference computes and nothing is claimed of a device',
-    holds: true as const,
   }
+  return { ...r, holds: routerChecksOf(r) }
 }
 /** value + predicate (the dryclean law): the routing decision recomputes to itself and never routes off the doors */
-export const qpuRouterHolds = (r = qpuRouterOf()): boolean =>
-  r.seats.reference === true && r.seats.device === false &&
-  (r.seat === 'reference' || r.seat === 'vector') &&
-  (r.seat === 'vector') === r.seats.vector &&
-  qpuDocsOf().api.map((a) => a.path).includes(r.door) &&
-  (r.known ? r.door === r.path : r.door === '/') &&
-  (r.origin === 'none') === (r.referrer === '')
+export const qpuRouterHolds = (r = qpuRouterOf()): boolean => r.holds === true && routerChecksOf(r)
 
 // ── THE SEAT, THE ACRONYM, THE BOOT (the captain, 2026-09-12: "make hardware bootable with qpu") ────────────────
 // QPULib (Naylor, 2016) runs one kernel three ways — source interpreter, target emulator, VideoCore hardware — and
@@ -9552,7 +9569,8 @@ export const qpuRouterHolds = (r = qpuRouterOf()): boolean =>
 // disagrees is a driver bug, never a physics claim. "QPU" there is Broadcom's Quad Processing Unit — a classical 16-lane
 // SIMD vector core — prior use of this acronym, unrelated, and credited. A classical accelerator computing the same 2^n
 // exact amplitudes faster is an honest occupant of the seat; it would not make the seat quantum.
-const qpuSeatOf = () => ({
+const qpuSeatOf = () => {
+  const s = {
   kind: 'seat' as const,
   device: 'empty' as const,
   reference: 'the exact integer state-vector simulator; every reading above is computed there',
@@ -9560,8 +9578,10 @@ const qpuSeatOf = () => ({
   acronym: 'QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.',
   occupant: 'a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum',
   priorArt: qpuPriorArtOf(),
-  holds: true as const,
-})
+  }
+  // the seat is empty exactly when the runtime's seat reading has no device, and its credit holds
+  return { ...s, holds: (s.device === 'empty') === !qpuSeatsAvailableOf().device && qpuPriorArtHolds(s.priorArt) }
+}
 
 /** install.json, served and written from one function so the host and the file cannot disagree (the README promised
  *  install.json and the host answered 404 until 2026-09-12). `hardware` is the boot recipe: Node serving the unit on an
@@ -9569,8 +9589,8 @@ const qpuSeatOf = () => ({
  *  holds: true there. */
 export const qpuInstallJsonOf = () => qpuInstallManifestOf()
 /** value + predicate (the dryclean law): the served install reading recomputes to itself */
-export const qpuInstallJsonHolds = (): boolean => qpuInstallManifestOf().holds === true && qpuInstallManifestOf().hardware.seat.holds === true
-const qpuInstallManifestOf = () => ({
+export const qpuInstallJsonHolds = (m = qpuInstallJsonOf()): boolean => m.holds === true && installChecksOf(m)
+const installFieldsOf = () => ({
   command: 'npx uuidna-install',
   yes: 'npx uuidna-install --yes',
   prompt: 'Enter seats all. Type 1 3 saas — or all.',
@@ -9587,8 +9607,16 @@ const qpuInstallManifestOf = () => ({
     receipt: 'the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve',
     seat: qpuSeatOf(),
   },
-  holds: true as const,
 })
+const installChecksOf = (m: ReturnType<typeof installFieldsOf>): boolean =>
+  m.packages.join(' ') === [...installKeys].join(' ') &&
+  m.occupancies.join(' ') === [...occupancies].join(' ') &&
+  m.hardware.docker.includes(`-p ${m.hardware.port}:${m.hardware.port}`) &&
+  m.hardware.seat.holds
+const qpuInstallManifestOf = () => {
+  const m = installFieldsOf()
+  return { ...m, holds: installChecksOf(m) }
+}
 
 /** .well-known/mcp.json — what a client or registry can learn without an initialize round-trip. */
 const qpuWellKnownOf = () => {
@@ -10576,7 +10604,7 @@ export const qpuDevelopOf = () => {
     `- docs.api ${docs.api.length} = rays. Extra paths do not join that list.`,
     `- integrity ${integrity.n}: ${integrity.tests.map((row) => row.name).join(' ')}. If false every path is 404.`,
     `- primitives ${primitives.join(' ')}. Never Math.`,
-    `- theorem temperature. theorem superconductivity. theorem qubits. device ${circuit.hardware.device}. KV added amplitudes.`,
+    `- theorem temperature. theorem superconductivity. theorem qubits. device ${circuit.steps.device}. KV added amplitudes.`,
     `- fuse faces * mintOf (bits + seed) = ${quantum.fused}. isolate handle.amplitudes ${handle.amplitudes}. KV ${handle.kv.amplitudes}.`,
     `- next = fused + fused. last false. split_coin has no last k. demo is not a test nor a proof. Capacity infinite. Crypt split to free agents.`,
     `- occupancy ${occupancies.join(' ')}. skills ${skills.join(' ')}. Coordinated dry-clean.`,
