@@ -707,6 +707,9 @@ const serverHref = `${unit.origin}/server`
 const networkHref = `${unit.origin}/network`
 const storageBindings = { STORAGE: 'kv' as const, BLOBS: 'r2' as const }
 const raidMark = '/@'
+/** Cloudflare KV and R2 each return at most 1000 names per list call — their documented page. A PAGE SIZE per call,
+ *  never a cap on results: every listing continues by cursor until it has what it needs or the store is exhausted. */
+const STORE_LIST_PAGE = 1000
 let raidTraffic = n - n
 
 const raidClouds = [
@@ -5783,13 +5786,13 @@ export type QpuEnv = {
     get: (key: string, options?: { type: 'json' | 'text' }) => Promise<unknown>
     put: (key: string, value: string) => Promise<void>
     delete: (key: string) => Promise<void>
-    list: () => Promise<{ keys: { name: string }[] }>
+    list: (options?: { prefix?: string; limit?: number; cursor?: string }) => Promise<{ keys: { name: string }[]; list_complete?: boolean; cursor?: string }>
   }
   BLOBS?: {
     get: (key: string) => Promise<{ json: () => Promise<unknown>; text: () => Promise<string> } | null>
     put: (key: string, value: string) => Promise<unknown>
     delete: (key: string) => Promise<void>
-    list: () => Promise<{ objects: { key: string }[] }>
+    list: (options?: { prefix?: string; limit?: number; cursor?: string }) => Promise<{ objects: { key: string }[]; truncated?: boolean; cursor?: string }>
   }
 }
 
@@ -5999,18 +6002,57 @@ const storageStoreOf = (env?: QpuEnv) => {
       for (let face = n - n; face < faces.faces; face++) await dropSlot(raidShareKeyOf(key, face))
       return true
     },
+    // THE LINKS UNDER A PREFIX, ASCENDING — what a live view reads (2026-09-14: uuidna.com/live). The store's own prefix
+    // listing, never a full scan. It lists in ascending order and follows the cursor until it holds `limit` links, so the
+    // first links taken are exactly the smallest names; the RAID shares every write adds under the same name are skipped,
+    // and no count of them is assumed.
+    async keysUnder(prefix: string, limit: number): Promise<string[]> {
+      const names = new Set<string>()
+      const take = (name: string) => {
+        if (name.startsWith(prefix) && !name.includes(raidMark)) names.add(name)
+      }
+      if (kv) {
+        let cursor: string | undefined
+        do {
+          const listed = await kv.list({ prefix, limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
+          for (const row of listed.keys) take(row.name)
+          cursor = listed.list_complete === false ? listed.cursor : undefined
+        } while (cursor && names.size < limit)
+      }
+      if (r2) {
+        let cursor: string | undefined
+        do {
+          const listed = await r2.list({ prefix, limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
+          for (const row of listed.objects) take(row.key)
+          cursor = listed.truncated === true ? listed.cursor : undefined
+        } while (cursor && names.size < limit)
+      }
+      if (kv === undefined) for (const name of storageHeap.keys()) take(name)
+      if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
+      return [...names].sort().slice(n - n, limit)
+    },
     async keys(): Promise<string[]> {
       const names = new Set<string>()
       const take = (name: string) => {
         if (!name.includes(raidMark)) names.add(name)
       }
+      // EVERY PAGE, by cursor: a single list call returned only the first STORE_LIST_PAGE names, so past that the store
+      // silently saw only part of itself — a cap nobody chose, found 2026-09-14 while building the live listing
       if (kv) {
-        const listed = await kv.list()
-        for (const row of listed.keys) take(row.name)
+        let cursor: string | undefined
+        do {
+          const listed = await kv.list(cursor ? { cursor } : {})
+          for (const row of listed.keys) take(row.name)
+          cursor = listed.list_complete === false ? listed.cursor : undefined
+        } while (cursor)
       }
       if (r2) {
-        const listed = await r2.list()
-        for (const row of listed.objects) take(row.key)
+        let cursor: string | undefined
+        do {
+          const listed = await r2.list(cursor ? { cursor } : {})
+          for (const row of listed.objects) take(row.key)
+          cursor = listed.truncated === true ? listed.cursor : undefined
+        } while (cursor)
       }
       if (kv === undefined) for (const name of storageHeap.keys()) take(name)
       if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
@@ -6021,13 +6063,23 @@ const storageStoreOf = (env?: QpuEnv) => {
       const take = (name: string) => {
         names.add(name)
       }
+      // EVERY PAGE, by cursor: a single list call returned only the first STORE_LIST_PAGE names, so past that the store
+      // silently saw only part of itself — a cap nobody chose, found 2026-09-14 while building the live listing
       if (kv) {
-        const listed = await kv.list()
-        for (const row of listed.keys) take(row.name)
+        let cursor: string | undefined
+        do {
+          const listed = await kv.list(cursor ? { cursor } : {})
+          for (const row of listed.keys) take(row.name)
+          cursor = listed.list_complete === false ? listed.cursor : undefined
+        } while (cursor)
       }
       if (r2) {
-        const listed = await r2.list()
-        for (const row of listed.objects) take(row.key)
+        let cursor: string | undefined
+        do {
+          const listed = await r2.list(cursor ? { cursor } : {})
+          for (const row of listed.objects) take(row.key)
+          cursor = listed.truncated === true ? listed.cursor : undefined
+        } while (cursor)
       }
       if (kv === undefined) for (const name of storageHeap.keys()) take(name)
       if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
@@ -6183,6 +6235,29 @@ export const qpuStorageWriteAllowedOf = (env?: QpuEnv, auth?: string | null): bo
   return token.length > n - n && auth === `Bearer ${token}`
 }
 const storageWriteOf = (method: string): boolean => method === 'PUT' || method === 'POST' || method === 'DELETE'
+
+/** qpuStorageListOf(env, prefix, limit) → the link names under a prefix in ascending order (so a name that begins with an
+ *  inverted arrival time lists the newest first), each with the document a GET of it returns; RAID shares and inode
+ *  keys never list. Reads stay open. */
+export const qpuStorageListOf = async (env: QpuEnv | undefined, prefix: string, limit: number) => {
+  const want = Number.isInteger(limit) && limit > n - n ? limit : qpuFacesOf().faces
+  const keys = storageLinksOf(await storageStoreOf(env).keysUnder(prefix, want))
+  const rows: { key: string; doc: unknown }[] = []
+  for (const key of keys) rows.push({ key, doc: await qpuStorageOf(env, { method: 'GET', key }) })
+  return { ...qpuStorageMetaOf(env), prefix, limit: want, keys: rows, holds: true as const }
+}
+
+/** qpuStorageListHolds → the listing's two laws, pure: a name led by an inverted arrival time sorts NEWEST FIRST in the
+ *  ascending order the store lists, and a RAID share name (key + raidMark + face) is never taken for a link while a link
+ *  name never carries the mark. The inversion is against the platform's own largest safe integer, padded to its length. */
+export const qpuStorageListHolds = (): boolean => {
+  const width = String(Number.MAX_SAFE_INTEGER).length
+  const arrived = (at: number): string => `live/probe/${String(Number.MAX_SAFE_INTEGER - at).padStart(width, '0')}-a`
+  const earlier = arrived(n), later = arrived(n + n)
+  return [earlier, later].sort()[n - n] === later &&
+    raidShareKeyOf(later, n - n).includes(raidMark) &&
+    !later.includes(raidMark) && !earlier.includes(raidMark)
+}
 
 export const qpuStorageOf = async (
   env?: QpuEnv,
@@ -11057,6 +11132,9 @@ const worker = {
         const del = await qpuStorageOf(env, { method: 'DELETE', key, auth: request.headers.get('authorization') })
         return jsonOf(del, del.holds === false && 'denied' in del && del.denied === 'auth' ? unauthorized : found)
       }
+      // GET /storage?prefix=…&limit=… — the links under a prefix, ascending, with their documents (uuidna.com/live reads it)
+      const listPrefix = new URL(request.url).searchParams.get('prefix')
+      if (path === '/storage' && listPrefix !== null) return jsonOf(await qpuStorageListOf(env, listPrefix, Number(new URL(request.url).searchParams.get('limit') ?? '')))
       if (path === '/storage') return jsonOf(await qpuStorageMcpOf(env))
       return jsonOf(await qpuStorageOf(env, { method: 'GET', key }))
     }

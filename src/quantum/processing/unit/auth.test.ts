@@ -1,6 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker, { qpuMcpCallOf, qpuStorageOf, qpuStorageWriteAllowedOf } from './index.js'
+import worker, { qpuMcpCallOf, qpuStorageOf, qpuStorageWriteAllowedOf, qpuStorageListOf } from './index.js'
 
 // WRITE AUTH, FAIL CLOSED. Measured 2026-09-11 by a peer session: OPTIONS /storage advertised PUT and DELETE to every
 // origin and the handler honoured them unauthenticated. Reads stay open. Writes need Authorization: Bearer
@@ -76,4 +76,20 @@ test('a write through the service binding needs no token; every public write sti
   const json = { 'content-type': 'application/json' }
   const pub = await fetchOf(unbound, '/storage/receipts/uuidna/probe/binding', { method: 'PUT', headers: { ...json, via: 'binding' }, body: JSON.stringify({ via: 'binding', value: 1 }) })
   assert.equal(pub.status, 401)
+})
+
+// THE LIVE LISTING (uuidna.com/live): the links under a prefix, ascending, with their documents — so a name led by an
+// inverted arrival time lists the newest first. Only links list: the RAID shares every write adds never appear.
+test('a prefix lists its links ascending with their documents; other prefixes and shares never list', async () => {
+  for (const [key, value] of [['live/probe/0002-b', { n: 2 }], ['live/probe/0001-a', { n: 1 }], ['live/other/0001-z', { n: 9 }]] as const)
+    await qpuStorageOf(unbound, { method: 'PUT', key, value, via: 'binding' })
+  const all = (await qpuStorageListOf(unbound, 'live/probe/', 10)) as { keys: { key: string; doc: unknown }[] }
+  assert.deepEqual(all.keys.map((r) => r.key), ['live/probe/0001-a', 'live/probe/0002-b'], 'ascending, this prefix only, no shares')
+  assert.ok(all.keys.every((r) => r.doc !== null), 'each link carries its document')
+  // CONTROL: the limit bounds the links, never the shares that pad the store's page
+  const one = (await qpuStorageListOf(unbound, 'live/probe/', 1)) as { keys: { key: string }[] }
+  assert.deepEqual(one.keys.map((r) => r.key), ['live/probe/0001-a'])
+  const http = await fetchOf(unbound, '/storage?prefix=live%2Fprobe%2F&limit=10')
+  assert.equal(http.status, 200)
+  assert.deepEqual(((await http.json()) as { keys: { key: string }[] }).keys.map((r) => r.key), ['live/probe/0001-a', 'live/probe/0002-b'])
 })
