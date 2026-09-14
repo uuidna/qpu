@@ -60,3 +60,20 @@ test('MCP storage_put and storage_del carry the request bearer; the in-process c
   const lib = (await qpuStorageOf(bound, { method: 'DELETE', key: 'mcp/auth', auth: `Bearer ${token}` })) as { holds: boolean }
   assert.equal(lib.holds, true)
 })
+
+// THE SERVICE BINDING IS ITS OWN CREDENTIAL (2026-09-14: deposits through uuidna's MCP door, no token on any host). The
+// QpuDeposit entrypoint in worker.js writes with via: 'binding'; no public path can set it, so a write through the
+// binding holds even where no token is bound, and every public write stays refused.
+test('a write through the service binding needs no token; every public write still does', async () => {
+  const through = (await qpuStorageOf(unbound, { method: 'PUT', key: 'receipts/uuidna/probe/binding', value: { kind: 'probe', n: 1 }, via: 'binding' })) as { holds: boolean; denied?: string }
+  assert.equal(through.holds, true, 'the binding write must hold with no token bound')
+  assert.equal(through.denied, undefined)
+  // CONTROL: the same write without the binding marker is refused, token or no token
+  const naked = (await qpuStorageOf(unbound, { method: 'PUT', key: 'receipts/uuidna/probe/binding', value: { kind: 'probe', n: 1 } })) as { holds: boolean; denied?: string }
+  assert.equal(naked.holds, false)
+  assert.equal(naked.denied, 'auth')
+  // CONTROL: the public HTTP path cannot reach it — no header or body field turns a public PUT into a binding write
+  const json = { 'content-type': 'application/json' }
+  const pub = await fetchOf(unbound, '/storage/receipts/uuidna/probe/binding', { method: 'PUT', headers: { ...json, via: 'binding' }, body: JSON.stringify({ via: 'binding', value: 1 }) })
+  assert.equal(pub.status, 401)
+})

@@ -6186,7 +6186,7 @@ const storageWriteOf = (method: string): boolean => method === 'PUT' || method =
 
 export const qpuStorageOf = async (
   env?: QpuEnv,
-  input: { method?: string; key?: unknown; value?: unknown; auth?: string | null } = {}) => {
+  input: { method?: string; key?: unknown; value?: unknown; auth?: string | null; via?: 'binding' } = {}) => {
   const meta = qpuStorageMetaOf(env)
   const store = storageStoreOf(env)
   const method = input.method ?? 'GET'
@@ -6213,7 +6213,11 @@ export const qpuStorageOf = async (
   }
   if (key.length === n - n) return { ...meta, holds: false as const, denied: 'key' as const }
   const href = `${storageHref}/${key}`
-  if (storageWriteOf(method) && !qpuStorageWriteAllowedOf(env, input.auth)) {
+  // A SERVICE BINDING IS ITS OWN CREDENTIAL (the captain, 2026-09-14: deposits through the MCP door, "no token on host").
+  // via: 'binding' is set only by the QpuDeposit RPC entrypoint in worker.js, which Cloudflare lets no public request
+  // reach — every HTTP call site above builds this input field by field and never passes it. So a write through the
+  // binding needs no bearer token, and every public write still does.
+  if (storageWriteOf(method) && input.via !== 'binding' && !qpuStorageWriteAllowedOf(env, input.auth)) {
     return { ...meta, '@id': href, url: href, key, holds: false as const, denied: 'auth' as const, auth: 'Bearer QPU_WRITE_TOKEN' as const }
   }
   if (method === 'DELETE') {
