@@ -16,8 +16,8 @@ test('a receipt\'s temperature is the device sensor, named, or unmeasured; never
   assert.deepEqual(read, { measured: true, millikelvin: 303610, source: 'battery gauge, ioreg AppleSmartBattery Temperature 3046 (hundredths of °C), not the chip die' })
   assert.equal(sensorTemperatureOf(() => '"Voltage" = 12791').measured, false, 'no Temperature line is unmeasured, not zero')
   assert.equal(sensorTemperatureOf(() => { throw new Error('no ioreg') }).measured, false, 'a missing sensor is unmeasured, not zero')
-  const lab = temperatureOf({ QPU_TEMPERATURE_MILLIKELVIN: '12', QPU_TEMPERATURE_SOURCE: 'dilution fridge MXC stage' })
-  assert.deepEqual(lab, { measured: true, millikelvin: 12, source: 'dilution fridge MXC stage' }, 'a lab reading always wins')
+  const lab = temperatureOf({ QPU_TEMPERATURE_MILLIKELVIN: '12', QPU_TEMPERATURE_SOURCE: 'lab instrument named by the caller' })
+  assert.deepEqual(lab, { measured: true, millikelvin: 12, source: 'lab instrument named by the caller' }, 'a lab reading always wins')
   if (process.platform === 'darwin') {
     const here = temperatureOf({})
     assert.ok(!here.measured || here.source.startsWith('battery gauge'), 'on this host the reading names its sensor')
@@ -65,8 +65,8 @@ test('the five discovery doors answer, and install.json is the same reading the 
   assert.equal(co.temperature.millikelvin, 'QPU_TEMPERATURE_MILLIKELVIN'); assert.match(co.seat, /driver bug, never a physics claim/); assert.match(co.receipts.readings, /never enter a fold/)
   const api = (await (await get('/openapi.json')).json()) as { openapi: string; paths: Record<string, unknown>; 'x-mcp': { tools: unknown[] } }
   assert.equal(api.openapi, '3.1.0'); assert.equal(Object.keys(api.paths).length, 5, 'seven routes on five distinct paths'); assert.equal(api['x-mcp'].tools.length, 16)
-  const inst = (await (await get('/install.json')).json()) as { hardware: { prove: string; seat: { seat: string } }; packages: string[] }
-  assert.deepEqual(inst.packages, ['qpu-mcp', 'payload-mcp', 'vitepress-payload']); assert.equal(inst.hardware.seat.seat, 'empty'); assert.match(inst.hardware.prove, /boot\.js --prove/)
+  const inst = (await (await get('/install.json')).json()) as { hardware: { prove: string; seat: { device: string } }; packages: string[] }
+  assert.deepEqual(inst.packages, ['qpu-mcp', 'payload-mcp', 'vitepress-payload']); assert.equal(inst.hardware.seat.device, 'empty'); assert.match(inst.hardware.prove, /boot\.js --prove/)
   const sm = await get('/sitemap.xml')
   assert.equal(sm.status, 200); assert.match(sm.headers.get('content-type') ?? '', /xml/); assert.match(await sm.text(), /<loc>https:\/\/qpu\.uuidna\.com\/openapi\.json<\/loc>/)
 })

@@ -346,7 +346,7 @@ test('Shor period-finding is inverse QFT', () => {
   assert.equal(shor.post.holds, true)
 })
 
-test('Shor repeats physical xx-noisy shots', () => {
+test('Shor repeats xx-noise shots, enumerated from the support', () => {
   const shor = qpuShorOf()
   assert.equal(shor.device, 'simulator')
   assert.equal(shor.measure.noise, 'xx')
@@ -469,7 +469,7 @@ test('evidence is this-run provenance, calibration, QV-style heavy output, and c
   assert.equal(evidence.verify.cors, '*')
   assert.equal(evidence.verify.origin, 'https://qpu.uuidna.com')
   assert.equal(evidence.verify.cern, 'opendata.cern.ch')
-  assert.equal(evidence.verify.hardware, true)
+  assert.equal(evidence.verify.provenanceAndNoise, true)
   assert.equal(evidence.verify.algorithm, true)
   assert.equal(evidence.verify.rsa, true)
   assert.equal(evidence.verify.crypt, true)

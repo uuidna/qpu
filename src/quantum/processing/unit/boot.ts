@@ -1,10 +1,10 @@
 #!/usr/bin/env node
-// boot — THE UNIT ON REAL HARDWARE (the captain, 2026-09-12: "make hardware bootable with qpu").
+// boot — THE UNIT SERVED BY NODE ON THIS MACHINE (the captain, 2026-09-12: "make hardware bootable with qpu").
 //
 // The unit is a fetch handler that answers only when named: https scheme, host qpu.uuidna.com. On a machine it has no
 // Cloudflare in front of it, so this adapter presents every local request AS the named origin — same bytes, same unit,
-// no fork — and a Node http server carries the replies. The seat doctrine applies here first: the simulator inside is
-// the reference, and this boot does not serve until the unit has proven itself on this machine (`qpu_prove` holds).
+// no fork — and a Node http server carries the replies. The simulator inside is the reference, and this boot does not
+// serve until tools/call qpu_prove returns holds: true on this machine.
 //
 //   node dist/quantum/processing/unit/boot.js            → prove, then serve on $PORT (8787)
 //   node dist/quantum/processing/unit/boot.js --prove    → prove and exit 0/1 (the boot's receipt; the container's HEALTHCHECK)

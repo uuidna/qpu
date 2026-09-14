@@ -30,8 +30,7 @@
     "receipt": "the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve",
     "seat": {
       "kind": "seat",
-      "device": "simulator",
-      "seat": "empty",
+      "device": "empty",
       "reference": "the exact integer state-vector simulator; every reading above is computed there",
       "doctrine": "a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim",
       "acronym": "QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.",

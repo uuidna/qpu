@@ -1,6 +1,6 @@
 # QPU
 
-`@uuidna/qpu` — Running quantum circuit at https://qpu.uuidna.com: a 3-qubit exact state-vector simulator, its Lean 4 proofs, and an MCP server in one Cloudflare Worker. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. No auth. JSON-LD. CORS *. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.
+`@uuidna/qpu` — Running quantum circuit at https://qpu.uuidna.com: an exact state-vector simulator (a 3-qubit circuit register; Shor's register is sized by its modulus), its Lean 4 proofs, and an MCP server in one Cloudflare Worker, which boot.js also serves from Node. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. CORS *. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.
 
 ```sh
 npm install @uuidna/qpu
@@ -17,11 +17,11 @@ Or without installing: `GET https://qpu.uuidna.com`, or `POST https://qpu.uuidna
 
 ## Abstract
 
-A named host qpu.uuidna.com exposes one quantum processing unit as JSON-LD. fused is 120259084288; next is fused + fused = 240518168576. Native gates are h and cnot. theorem temperature, theorem superconductivity, theorem qubits, theorem shor and theorem crypto are decided in Lean. GHZ true; entangled true, product false. Possible only in quantum. demo is not a test nor a proof.
+A named host qpu.uuidna.com exposes one quantum processing unit as JSON-LD. fused is 120259084288; next is fused + fused = 240518168576. Native gates are h and cnot. theorem temperature, theorem superconductivity, theorem qubits, theorem shor and theorem crypto are theorems in `src/quantum/processing/unit/index.lean`. GHZ true; entangled true, product false. demo is not a test nor a proof.
 
 ## Unit
 
-The blueprint is `src/quantum/processing/unit/index.ts` fused with `src/quantum/processing/unit/index.lean`. theorem quantum, theorem infinite, and theorem distribute are decided in Lean, not restated as chapters here.
+The blueprint is `src/quantum/processing/unit/index.ts` fused with `src/quantum/processing/unit/index.lean`. theorem quantum, theorem infinite, and theorem distribute are theorems in Lean, not restated as chapters here.
 
 | Constant | Value |
 | --- | --- |
@@ -53,12 +53,12 @@ Seven paths. Eight sealed MCP tools, plus eight cybersecurity morph tools listed
 
 | Tool | What it returns |
 | --- | --- |
-| `qpu_quantum` | The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. Factor 91. |
+| `qpu_quantum` | The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes). theorem quantum. theorem shor. theorem crypto. Factor 91. |
 | `qpu_lean` | The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91. |
-| `qpu_cite` | How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date. |
+| `qpu_cite` | How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date. |
 | `qpu_train` | Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays. |
-| `qpu_forge` | Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock. |
-| `qpu_improve` | Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused. |
+| `qpu_forge` | Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Up to 448 tools. |
+| `qpu_improve` | Improve by doubling: next = fused + fused = 240518168576, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes. next = fused + fused. |
 | `qpu_compete` | Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply. |
 | `qpu_prove` | Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. Factor 91. |
 
@@ -97,10 +97,10 @@ CERN Open Data opendata.cern.ch. LHC running. Four CMS records. Coil, electronic
 | Execution provenance | provider qpu.uuidna.com, device simulator, job qpu.uuidna.com/cmodexp/91/8, shots 8 |
 | Compiler | native h cnot; compiled x swap csdg cmodexp |
 | Device-specific noise | channel xx, drift true |
-| Randomized benchmarks | volume dim 8, heavy 0 / 16, mirror hh |
+| Volume (heavy outputs) | volume dim 8, heavy 0 / 16, mirror hh |
 | Cross-validation | ideal true, noisy xx, agree ideal true, agree noise true |
 | Scaling (theorem qubits, theorem register) | qubits 3, dim 8, depth 9, exact true, beyond false, advantage false |
-| Independent verification | CORS *, origin https://qpu.uuidna.com, Lean `src/quantum/processing/unit/index.lean`, hardware true, algorithm true, RSA true, crypt true, encrypt true |
+| Independent verification | CORS *, origin https://qpu.uuidna.com, Lean `src/quantum/processing/unit/index.lean`, provenance and noise true, algorithm true, RSA true, crypt true, encrypt true |
 
 ## Recompute
 
@@ -123,7 +123,7 @@ Learn, in order. Each step teaches one thing, names the invariant to check it ag
 | 3 | Shor: a period, then a gcd | POST /mcp · crypto_shor | theorem shor Factor 91 — a = 8, period 4, 7 · 13 | p · q = n, recomputed from the period | theorem shor | `node --test --test-name-pattern="ladder 3 " dist/quantum/processing/unit/ladder.test.js` |
 | 4 | a code corrects one flip | POST /mcp · qpu_prove | bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run | distance 3 corrects exactly one error | theorem noise | `node --test --test-name-pattern="ladder 4 " dist/quantum/processing/unit/ladder.test.js` |
 
-Boot on hardware. docker build -t qpu . && docker run --rm -p 8787:8787 qpu. Raspberry Pi: Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot. The boot's receipt is node dist/quantum/processing/unit/boot.js --prove — the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve. The seat stays empty: a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim.
+Boot with Node. docker build -t qpu . && docker run --rm -p 8787:8787 qpu. Raspberry Pi: Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot. The boot's receipt is node dist/quantum/processing/unit/boot.js --prove — the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve. The device seat stays empty: a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim.
 
 Integrate in any harness. One computed block, served on initialize as `install` and printed here from the same function. URL https://qpu.uuidna.com/mcp. none for reads; Authorization: Bearer QPU_WRITE_TOKEN for storage writes.
 
@@ -140,7 +140,7 @@ Integrate in any harness. One computed block, served on initialize as `install` 
 
 ## Cite
 
-MLA 8, (Rouschev). DOI 10.5281/zenodo.22717782, archive https://zenodo.org/records/22717782, identifier https://doi.org/10.5281/zenodo.22717782, ORCID https://orcid.org/0009-0000-7312-9778. when never: the citation names no access date because the DOI is the date. Cite the running quantum circuit and its Lean proof.
+MLA 8, (Rouschev). DOI 10.5281/zenodo.22717782, archive https://zenodo.org/records/22717782, identifier https://doi.org/10.5281/zenodo.22717782, ORCID https://orcid.org/0009-0000-7312-9778. when never: the citation names no access date; the DOI names archived version 0.1.1, and the host serves 0.1.3. Cite the running quantum circuit and its Lean proof.
 
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "qpu." qpu.uuidna.com, https://qpu.uuidna.com. doi:10.5281/zenodo.22717782.
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit. doi:10.5281/zenodo.22717782.

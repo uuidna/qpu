@@ -53,7 +53,7 @@ writeFileSync(
   `${JSON.stringify(
     {
       title: 'QPU',
-      description: `Running quantum circuit at ${mcp.origin}. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. No auth. JSON-LD. The TypeScript and Lean sources are the blueprint. ORCID ${cite.author.orcid}.`,
+      description: `Running quantum circuit at ${mcp.origin}. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. The TypeScript and Lean sources are the blueprint. ORCID ${cite.author.orcid}.`,
       upload_type: 'software',
       access_right: 'open',
       license: 'cc-by-nc-nd-4.0',

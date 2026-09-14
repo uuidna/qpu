@@ -1,6 +1,6 @@
 {
   "kind": "test-receipt",
-  "standard": "every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json",
+  "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
   "tests": 148,
   "pass": 148,
   "fail": 0,
@@ -10,7 +10,7 @@
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "e3be71eb70170d14",
+  "receipt": "abca3e47812e09b0",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -49,18 +49,18 @@
             "0",
             "0"
           ],
-          "measured": 211
+          "rows": 211
         }
       ],
       "mint": {
-        "calls": 263401,
-        "chain": "e85bc6339033ae58"
+        "calls": 263431,
+        "chain": "bbce2cc80539cfa0"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"5c05b02dbdd17f8f\"",
-          "\"25f951ee80fcd9f7\""
+          "\"274a6e056b95ad4b\"",
+          "\"e647c755220083f7\""
         ]
       }
     },
@@ -100,12 +100,12 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "bbbd7a6b39fc64d4"
+        "chain": "6c95abf8c73d3e3c"
       },
       "served": {
         "count": 0,
@@ -148,12 +148,12 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "d4e71fff385bc390"
+        "chain": "7758b4d80b9687f8"
       },
       "served": {
         "count": 0,
@@ -196,12 +196,12 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "8faf3f905200f86c"
+        "chain": "56d7e942c8b6b074"
       },
       "served": {
         "count": 0,
@@ -244,12 +244,12 @@
             "0",
             "0"
           ],
-          "measured": 58
+          "rows": 58
         }
       ],
       "mint": {
-        "calls": 70636,
-        "chain": "d0fefd50abcdb65d"
+        "calls": 70642,
+        "chain": "e27396cc7f84b2bd"
       },
       "served": {
         "count": 0,
@@ -292,12 +292,12 @@
             "0",
             "0"
           ],
-          "measured": 60
+          "rows": 60
         }
       ],
       "mint": {
-        "calls": 76831,
-        "chain": "a765b0e58c1e0fb8"
+        "calls": 76849,
+        "chain": "e5ffaad58c271ae8"
       },
       "served": {
         "count": 0,
@@ -340,12 +340,12 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3899,
-        "chain": "2b1d2c02b65529ec"
+        "chain": "5ac0d1bee39e445c"
       },
       "served": {
         "count": 0,
@@ -388,12 +388,12 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 6077,
-        "chain": "91b67ccc8361ac2c"
+        "chain": "dbbc1e242c5bcfdc"
       },
       "served": {
         "count": 0,
@@ -732,12 +732,12 @@
             "0",
             "0"
           ],
-          "measured": 2166
+          "rows": 2166
         }
       ],
       "mint": {
-        "calls": 2888872,
-        "chain": "d47cf94df9faa80d"
+        "calls": 2889040,
+        "chain": "a039b0fb45957a7d"
       },
       "served": {
         "count": 0,
@@ -780,12 +780,12 @@
             "0",
             "0"
           ],
-          "measured": 507
+          "rows": 507
         }
       ],
       "mint": {
-        "calls": 643813,
-        "chain": "9d323b08255f1663"
+        "calls": 643885,
+        "chain": "623213da641822ab"
       },
       "served": {
         "count": 0,
@@ -912,18 +912,18 @@
             "0",
             "0"
           ],
-          "measured": 317
+          "rows": 317
         }
       ],
       "mint": {
-        "calls": 400522,
-        "chain": "9c9d6a32305f2931"
+        "calls": 400570,
+        "chain": "441a4ab6ebb81699"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"5c05b02dbdd17f8f\"",
-          "\"f7fc6d5b00d0e112\""
+          "\"274a6e056b95ad4b\"",
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -963,12 +963,12 @@
             "0",
             "0"
           ],
-          "measured": 137
+          "rows": 137
         }
       ],
       "mint": {
-        "calls": 177243,
-        "chain": "5175db79dccc8a84"
+        "calls": 177261,
+        "chain": "5b016eaa009ac82c"
       },
       "served": {
         "count": 0,
@@ -1032,12 +1032,12 @@
             "0",
             "0"
           ],
-          "measured": 55
+          "rows": 55
         }
       ],
       "mint": {
-        "calls": 72023,
-        "chain": "1b95bd3ded52404e"
+        "calls": 72029,
+        "chain": "3ade456a1f16578e"
       },
       "served": {
         "count": 0,
@@ -1129,7 +1129,7 @@
       }
     },
     {
-      "name": "simulator register — integer amplitudes in a browser VM",
+      "name": "simulator register — integer amplitudes",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
@@ -1166,7 +1166,7 @@
             "0",
             "0"
           ],
-          "measured": 63
+          "rows": 63
         }
       ],
       "mint": {
@@ -1214,12 +1214,12 @@
             "0",
             "0"
           ],
-          "measured": 55
+          "rows": 55
         }
       ],
       "mint": {
-        "calls": 72524,
-        "chain": "68ac5a4bab170ac4"
+        "calls": 72530,
+        "chain": "c30dde67b3483f5c"
       },
       "served": {
         "count": 0,
@@ -1262,12 +1262,12 @@
             "0",
             "0"
           ],
-          "measured": 54
+          "rows": 54
         }
       ],
       "mint": {
-        "calls": 68532,
-        "chain": "3877579c0560282d"
+        "calls": 68538,
+        "chain": "582993b2b8a2a80d"
       },
       "served": {
         "count": 0,
@@ -1310,17 +1310,17 @@
             "0",
             "0"
           ],
-          "measured": 9
+          "rows": 9
         }
       ],
       "mint": {
         "calls": 9222,
-        "chain": "fe815806c7afd16b"
+        "chain": "6ecd039e1369054b"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -1360,12 +1360,12 @@
             "0",
             "0"
           ],
-          "measured": 61
+          "rows": 61
         }
       ],
       "mint": {
-        "calls": 76533,
-        "chain": "94732021c9ea1288"
+        "calls": 76545,
+        "chain": "d44cf593b6e8dff0"
       },
       "served": {
         "count": 0,
@@ -1408,12 +1408,12 @@
             "0",
             "0"
           ],
-          "measured": 33
+          "rows": 33
         }
       ],
       "mint": {
-        "calls": 38539,
-        "chain": "30a53fd6335cd261"
+        "calls": 38545,
+        "chain": "7a9b180024395481"
       },
       "served": {
         "count": 0,
@@ -1456,19 +1456,19 @@
             "0",
             "0"
           ],
-          "measured": 198
+          "rows": 198
         }
       ],
       "mint": {
-        "calls": 244970,
-        "chain": "fb3a76a86ed97441"
+        "calls": 245006,
+        "chain": "5ef4f0d3de9667d9"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"18319ce1b4f0c0f4\"",
-          "\"3f709ce733f3f29c\"",
-          "\"82552d79abeb9a37\""
+          "\"fd081cec0f459ac0\"",
+          "\"fd3b0780d4feebfd\"",
+          "\"a220df60e081cb4a\""
         ]
       }
     },
@@ -1508,17 +1508,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "6ea9259a219c298b"
+        "chain": "9962a4335c881723"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -1558,17 +1558,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "f307bf2222ad2ef5"
+        "chain": "50414dd718ae73cd"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -1608,12 +1608,12 @@
             "0",
             "0"
           ],
-          "measured": 186
+          "rows": 186
         }
       ],
       "mint": {
-        "calls": 233784,
-        "chain": "1036472a62ff9d79"
+        "calls": 233820,
+        "chain": "0c417d4803f6ff79"
       },
       "served": {
         "count": 0,
@@ -1656,12 +1656,12 @@
             "0",
             "0"
           ],
-          "measured": 51
+          "rows": 51
         }
       ],
       "mint": {
-        "calls": 67161,
-        "chain": "b9f282d75425e230"
+        "calls": 67167,
+        "chain": "4d1fa8286661d010"
       },
       "served": {
         "count": 0,
@@ -1708,24 +1708,24 @@
             "0",
             "0"
           ],
-          "measured": 1041
+          "rows": 1041
         }
       ],
       "mint": {
-        "calls": 1346020,
-        "chain": "310e4d86f7c819e4"
+        "calls": 1346122,
+        "chain": "b59d5bf4e9f277e4"
       },
       "served": {
         "count": 8,
         "folds": [
-          "\"c8681406bd2615de\"",
+          "\"308de8df17903d66\"",
           "\"bf29eeaed102abf6\"",
           "\"b2299c520420511a\"",
           "\"631c39bfac49800c\"",
           "\"a41d4c888a43d6f0\"",
           "\"8849907bfb807fb4\"",
           "\"d31c0458e913d7ee\"",
-          "\"bdefa81a2d0e54e8\""
+          "\"833c65e115042b04\""
         ]
       }
     },
@@ -1743,7 +1743,7 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "a015af70001befcf"
+        "chain": "2c3b4e9b92759dcf"
       },
       "served": {
         "count": 0,
@@ -1764,7 +1764,7 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "448252e2cf15ea08"
+        "chain": "f423aac96db4e808"
       },
       "served": {
         "count": 0,
@@ -1809,12 +1809,12 @@
             "0",
             "0"
           ],
-          "measured": 250
+          "rows": 250
         }
       ],
       "mint": {
         "calls": 350027,
-        "chain": "834ce52602cd2c60"
+        "chain": "5c23e72aab27e660"
       },
       "served": {
         "count": 0,
@@ -1835,7 +1835,7 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "fedcf775a577844e"
+        "chain": "af9d28fe6b3c4e4e"
       },
       "served": {
         "count": 0,
@@ -1878,12 +1878,12 @@
             "0",
             "0"
           ],
-          "measured": 54
+          "rows": 54
         }
       ],
       "mint": {
-        "calls": 71156,
-        "chain": "10aa76a40055d415"
+        "calls": 71162,
+        "chain": "5b2e1495743864f5"
       },
       "served": {
         "count": 0,
@@ -1926,12 +1926,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 646,
-        "chain": "25be89569ba77bb5"
+        "chain": "0321ea3cd74a8c15"
       },
       "served": {
         "count": 0,
@@ -1974,12 +1974,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 637,
-        "chain": "34a9cf56d82678b2"
+        "chain": "7906d1ccf80a3492"
       },
       "served": {
         "count": 0,
@@ -2022,12 +2022,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 637,
-        "chain": "81139cf5b7c880a7"
+        "chain": "c81615e196764d87"
       },
       "served": {
         "count": 0,
@@ -2035,7 +2035,7 @@
       }
     },
     {
-      "name": "Shor repeats physical xx-noisy shots",
+      "name": "Shor repeats xx-noise shots, enumerated from the support",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
@@ -2070,12 +2070,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 637,
-        "chain": "61aee25c40c529b0"
+        "chain": "c6215f7c00010310"
       },
       "served": {
         "count": 0,
@@ -2118,12 +2118,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 637,
-        "chain": "fb41256e08a77eb9"
+        "chain": "f4998ae119361919"
       },
       "served": {
         "count": 0,
@@ -2166,12 +2166,12 @@
             "0",
             "0"
           ],
-          "measured": 4
+          "rows": 4
         }
       ],
       "mint": {
         "calls": 3694,
-        "chain": "8f6cbaba87547415"
+        "chain": "7e34a9ff06f8c675"
       },
       "served": {
         "count": 0,
@@ -2214,12 +2214,12 @@
             "0",
             "0"
           ],
-          "measured": 62
+          "rows": 62
         }
       ],
       "mint": {
-        "calls": 82446,
-        "chain": "1f2e4cb7bcbb9699"
+        "calls": 82452,
+        "chain": "fe30bbe3514e9331"
       },
       "served": {
         "count": 0,
@@ -2262,12 +2262,12 @@
             "0",
             "0"
           ],
-          "measured": 62
+          "rows": 62
         }
       ],
       "mint": {
-        "calls": 82219,
-        "chain": "9555931d6a15b63a"
+        "calls": 82225,
+        "chain": "35f3f9fccd5b7a9a"
       },
       "served": {
         "count": 0,
@@ -2310,12 +2310,12 @@
             "0",
             "0"
           ],
-          "measured": 118
+          "rows": 118
         }
       ],
       "mint": {
-        "calls": 153241,
-        "chain": "396824854cab8271"
+        "calls": 153259,
+        "chain": "9c70fe710e839809"
       },
       "served": {
         "count": 0,
@@ -2370,17 +2370,17 @@
             "0",
             "0"
           ],
-          "measured": 766
+          "rows": 766
         }
       ],
       "mint": {
-        "calls": 929476,
-        "chain": "5bea3ee64d36b91e"
+        "calls": 929680,
+        "chain": "428bcfd585e9b3be"
       },
       "served": {
         "count": 6,
         "folds": [
-          "\"81e74bd7ff12633c\"",
+          "\"8f80b08c7a01c689\"",
           "\"bf29eeaed102abf6\"",
           "\"6f34c162122452f2\"",
           "\"111320a9a610771e\""
@@ -2423,7 +2423,7 @@
             "0",
             "0"
           ],
-          "measured": 15
+          "rows": 15
         }
       ],
       "mint": {
@@ -2471,7 +2471,7 @@
             "0",
             "0"
           ],
-          "measured": 15
+          "rows": 15
         }
       ],
       "mint": {
@@ -2484,7 +2484,7 @@
       }
     },
     {
-      "name": "gate: every string the unit serves passes the prose gate — root, lean, mcp catalog, tools/list, prove, server",
+      "name": "gate: every string on root, lean, mcp catalog, server, tools/list, qpu_prove and crypto_shor passes the prose gate",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
@@ -2519,12 +2519,12 @@
             "0",
             "0"
           ],
-          "measured": 234
+          "rows": 234
         }
       ],
       "mint": {
-        "calls": 295782,
-        "chain": "4ea33f422bddd2ae"
+        "calls": 295824,
+        "chain": "40338798b0a2cfbe"
       },
       "served": {
         "count": 0,
@@ -2567,12 +2567,12 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
         "calls": 18209,
-        "chain": "e1c4b5464ae1c5fe"
+        "chain": "ca3fdbddc6fc6f0e"
       },
       "served": {
         "count": 0,
@@ -2617,7 +2617,7 @@
             "0",
             "0"
           ],
-          "measured": 95
+          "rows": 95
         }
       ],
       "mint": {
@@ -2665,12 +2665,12 @@
             "0",
             "0"
           ],
-          "measured": 177
+          "rows": 177
         }
       ],
       "mint": {
-        "calls": 227579,
-        "chain": "0df292563bf2d09d"
+        "calls": 227603,
+        "chain": "89d7ad193b64cc1d"
       },
       "served": {
         "count": 0,
@@ -2776,7 +2776,7 @@
             "0",
             "0"
           ],
-          "measured": 7
+          "rows": 7
         }
       ],
       "mint": {
@@ -2824,12 +2824,12 @@
             "0",
             "0"
           ],
-          "measured": 63
+          "rows": 63
         }
       ],
       "mint": {
-        "calls": 76556,
-        "chain": "c78c0c246ac7a2b2"
+        "calls": 76562,
+        "chain": "1ed09ec4e12b6b12"
       },
       "served": {
         "count": 0,
@@ -2872,12 +2872,12 @@
             "0",
             "0"
           ],
-          "measured": 127
+          "rows": 127
         }
       ],
       "mint": {
-        "calls": 165518,
-        "chain": "28b9ed79b5f3f907"
+        "calls": 165560,
+        "chain": "54773f921484618f"
       },
       "served": {
         "count": 0,
@@ -2920,12 +2920,12 @@
             "0",
             "0"
           ],
-          "measured": 18
+          "rows": 18
         }
       ],
       "mint": {
-        "calls": 24121,
-        "chain": "c545658076408531"
+        "calls": 24127,
+        "chain": "5984f667ca014b61"
       },
       "served": {
         "count": 0,
@@ -2933,7 +2933,7 @@
       }
     },
     {
-      "name": "tools/list stays eight sealed tools; install and Payload finds morph at call time",
+      "name": "qpuToolsOf stays eight sealed tools; install and Payload finds morph at call time",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
@@ -2968,12 +2968,12 @@
             "0",
             "0"
           ],
-          "measured": 54
+          "rows": 54
         }
       ],
       "mint": {
-        "calls": 70079,
-        "chain": "81acc3f44643977d"
+        "calls": 70097,
+        "chain": "1a507c84b76e18dd"
       },
       "served": {
         "count": 0,
@@ -3013,12 +3013,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 2546,
-        "chain": "89b6dadad3b5b97d"
+        "chain": "033eeae15d4d16dd"
       },
       "served": {
         "count": 0,
@@ -3061,12 +3061,12 @@
             "0",
             "0"
           ],
-          "measured": 18
+          "rows": 18
         }
       ],
       "mint": {
-        "calls": 23475,
-        "chain": "22c8b31d7f3b6348"
+        "calls": 23481,
+        "chain": "cf4f5e22fbaf0b68"
       },
       "served": {
         "count": 0,
@@ -3109,17 +3109,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "34f46c2ca62064e7"
+        "chain": "1243ba5f251e5cc7"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -3159,17 +3159,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "500b608ff86ef1a1"
+        "chain": "11400664bc544381"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -3209,17 +3209,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "fe815806c7afd16b"
+        "chain": "6ecd039e1369054b"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -3259,17 +3259,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "12d2f2d8ba3eabd5"
+        "chain": "6a8d8931952b5c35"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -3309,17 +3309,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "22810adb3d52c14f"
+        "chain": "662eef4dbe86d72f"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"5c05b02dbdd17f8f\""
+          "\"274a6e056b95ad4b\""
         ]
       }
     },
@@ -3359,12 +3359,12 @@
             "0",
             "0"
           ],
-          "measured": 43
+          "rows": 43
         }
       ],
       "mint": {
-        "calls": 53397,
-        "chain": "119069263b2392af"
+        "calls": 53403,
+        "chain": "b92f08b944420d0f"
       },
       "served": {
         "count": 0,
@@ -3407,12 +3407,12 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3059,
-        "chain": "fb11a1c10cbf6c9f"
+        "chain": "21360410df6e2d7f"
       },
       "served": {
         "count": 0,
@@ -3455,12 +3455,12 @@
             "0",
             "0"
           ],
-          "measured": 96
+          "rows": 96
         }
       ],
       "mint": {
-        "calls": 129035,
-        "chain": "9afea64499b6933e"
+        "calls": 129047,
+        "chain": "73b7cf2855d80f76"
       },
       "served": {
         "count": 0,
@@ -3503,12 +3503,12 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 637,
-        "chain": "b8243538b69c68bb"
+        "chain": "5e1afe4950670a93"
       },
       "served": {
         "count": 0,
@@ -3660,18 +3660,18 @@
             "0",
             "0"
           ],
-          "measured": 2202
+          "rows": 2202
         }
       ],
       "mint": {
-        "calls": 2832048,
-        "chain": "4088eb936ba0af27"
+        "calls": 2832270,
+        "chain": "f9ce289cb4163517"
       },
       "served": {
         "count": 2,
         "folds": [
-          "\"81e74bd7ff12633c\"",
-          "\"f7fc6d5b00d0e112\""
+          "\"8f80b08c7a01c689\"",
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -3725,12 +3725,12 @@
             "0",
             "0"
           ],
-          "measured": 309
+          "rows": 309
         }
       ],
       "mint": {
-        "calls": 377363,
-        "chain": "f216a120706162c8"
+        "calls": 377447,
+        "chain": "cc7f96dea68ff2b8"
       },
       "served": {
         "count": 0,
@@ -3777,12 +3777,12 @@
             "0",
             "0"
           ],
-          "measured": 1800
+          "rows": 1800
         }
       ],
       "mint": {
-        "calls": 2368732,
-        "chain": "ba3f45dc5d46ad33"
+        "calls": 2368906,
+        "chain": "122b532385bf7b4b"
       },
       "served": {
         "count": 0,
@@ -3825,25 +3825,25 @@
             "0",
             "0"
           ],
-          "measured": 994
+          "rows": 994
         }
       ],
       "mint": {
-        "calls": 1230248,
-        "chain": "a0672a3cc371d42a"
+        "calls": 1230512,
+        "chain": "c403d50b72f7ee62"
       },
       "served": {
         "count": 10,
         "folds": [
-          "\"81e74bd7ff12633c\"",
-          "\"63c4902bf72aceae\"",
+          "\"8f80b08c7a01c689\"",
+          "\"e5c0e3ece3d46bfa\"",
           "\"23363009eadc48a8\"",
           "\"cf594d9d088efcda\"",
           "\"56be655680b85e84\"",
           "\"716d38e19f3fb452\"",
           "\"6a8994615cb91722\"",
           "\"172430e2e81e7962\"",
-          "\"1fc61523a31c6d42\""
+          "\"c35637eeb46de456\""
         ]
       }
     },
@@ -4032,34 +4032,34 @@
             "0",
             "0"
           ],
-          "measured": 2089
+          "rows": 2089
         }
       ],
       "mint": {
-        "calls": 2627580,
-        "chain": "ee13bfbdd6190e0b"
+        "calls": 2627970,
+        "chain": "8b087bd879634963"
       },
       "served": {
         "count": 18,
         "folds": [
-          "\"81e74bd7ff12633c\"",
-          "\"30e8b53f57208544\"",
-          "\"f7fc6d5b00d0e112\"",
+          "\"8f80b08c7a01c689\"",
+          "\"6532f036aea514d4\"",
+          "\"8ebcac07542a076c\"",
           "\"b3ff0b285f324124\"",
-          "\"2316b132e9ad299c\"",
-          "\"29dda7aba526719e\"",
+          "\"b4ffc38956a422c6\"",
+          "\"0dce8f031798f1be\"",
           "\"070d20c318c8c926\"",
           "\"bc0421e56f044b2c\"",
-          "\"5d5933808174d3ee\"",
-          "\"63c4902bf72aceae\"",
-          "\"c8681406bd2615de\"",
+          "\"f3bf1d294c6cfebe\"",
+          "\"e5c0e3ece3d46bfa\"",
+          "\"308de8df17903d66\"",
           "\"23363009eadc48a8\"",
           "\"cf594d9d088efcda\"",
           "\"56be655680b85e84\"",
           "\"716d38e19f3fb452\"",
           "\"6a8994615cb91722\"",
           "\"172430e2e81e7962\"",
-          "\"1fc61523a31c6d42\""
+          "\"c35637eeb46de456\""
         ]
       }
     },
@@ -4099,12 +4099,12 @@
             "0",
             "0"
           ],
-          "measured": 121
+          "rows": 121
         }
       ],
       "mint": {
-        "calls": 142532,
-        "chain": "a3812d20aaade668"
+        "calls": 142556,
+        "chain": "e81ddb71191450e0"
       },
       "served": {
         "count": 1,
@@ -4149,7 +4149,7 @@
             "0",
             "0"
           ],
-          "measured": 45
+          "rows": 45
         },
         {
           "name": "measure",
@@ -4164,18 +4164,18 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
         "calls": 46570,
-        "chain": "0c7b944091696af5"
+        "chain": "a9c408849bcdd63d"
       },
       "served": {
         "count": 2,
         "folds": [
-          "\"81e74bd7ff12633c\"",
-          "\"5d5933808174d3ee\""
+          "\"8f80b08c7a01c689\"",
+          "\"f3bf1d294c6cfebe\""
         ]
       }
     },
@@ -4215,12 +4215,12 @@
             "0",
             "0"
           ],
-          "measured": 15
+          "rows": 15
         }
       ],
       "mint": {
         "calls": 15420,
-        "chain": "0845ab6e5d5f5633"
+        "chain": "a078e5f369be82eb"
       },
       "served": {
         "count": 0,
@@ -4267,32 +4267,32 @@
             "0",
             "0"
           ],
-          "measured": 267
+          "rows": 267
         }
       ],
       "mint": {
-        "calls": 318167,
-        "chain": "356ff7271b41c731"
+        "calls": 318227,
+        "chain": "315b67e30d691e59"
       },
       "served": {
         "count": 17,
         "folds": [
-          "\"81e74bd7ff12633c\"",
-          "\"30e8b53f57208544\"",
+          "\"8f80b08c7a01c689\"",
+          "\"6532f036aea514d4\"",
           "\"b3ff0b285f324124\"",
-          "\"29dda7aba526719e\"",
+          "\"0dce8f031798f1be\"",
           "\"bc0421e56f044b2c\"",
-          "\"63c4902bf72aceae\"",
+          "\"e5c0e3ece3d46bfa\"",
           "\"23363009eadc48a8\"",
           "\"cf594d9d088efcda\"",
           "\"56be655680b85e84\"",
           "\"716d38e19f3fb452\"",
           "\"6a8994615cb91722\"",
           "\"172430e2e81e7962\"",
-          "\"1fc61523a31c6d42\"",
+          "\"c35637eeb46de456\"",
           "\"070d20c318c8c926\"",
-          "\"2316b132e9ad299c\"",
-          "\"bdefa81a2d0e54e8\"",
+          "\"b4ffc38956a422c6\"",
+          "\"833c65e115042b04\"",
           "\"d31c0458e913d7ee\""
         ]
       }
@@ -4335,29 +4335,29 @@
             "0",
             "0"
           ],
-          "measured": 647
+          "rows": 647
         }
       ],
       "mint": {
-        "calls": 856061,
-        "chain": "70a3ef76628a33ec"
+        "calls": 856085,
+        "chain": "d215c17bcfd89c3c"
       },
       "served": {
         "count": 13,
         "folds": [
-          "\"81e74bd7ff12633c\"",
-          "\"f7fc6d5b00d0e112\"",
-          "\"2316b132e9ad299c\"",
+          "\"8f80b08c7a01c689\"",
+          "\"8ebcac07542a076c\"",
+          "\"b4ffc38956a422c6\"",
           "\"070d20c318c8c926\"",
-          "\"5d5933808174d3ee\"",
-          "\"c8681406bd2615de\"",
+          "\"f3bf1d294c6cfebe\"",
+          "\"308de8df17903d66\"",
           "\"bf29eeaed102abf6\"",
           "\"b2299c520420511a\"",
           "\"631c39bfac49800c\"",
           "\"a41d4c888a43d6f0\"",
           "\"8849907bfb807fb4\"",
           "\"d31c0458e913d7ee\"",
-          "\"bdefa81a2d0e54e8\""
+          "\"833c65e115042b04\""
         ]
       }
     },
@@ -4397,21 +4397,21 @@
             "0",
             "0"
           ],
-          "measured": 137
+          "rows": 137
         }
       ],
       "mint": {
-        "calls": 167142,
-        "chain": "c51272568e54dbfc"
+        "calls": 167160,
+        "chain": "daa2e5ee94591af4"
       },
       "served": {
         "count": 10,
         "folds": [
-          "\"bac75a881d32e7a9\"",
+          "\"2b37f528338c4eb5\"",
           "\"95578d3027fc2afd\"",
-          "\"1ac17954f6aa65c7\"",
-          "\"25f951ee80fcd9f7\"",
-          "\"81e74bd7ff12633c\"",
+          "\"a47c8c1e0dc78718\"",
+          "\"e647c755220083f7\"",
+          "\"8f80b08c7a01c689\"",
           "\"6f34c162122452f2\""
         ]
       }
@@ -4451,7 +4451,7 @@
             "0",
             "0"
           ],
-          "measured": 1
+          "rows": 1
         }
       ],
       "mint": {
@@ -4498,7 +4498,7 @@
             "0",
             "0"
           ],
-          "measured": 2
+          "rows": 2
         }
       ],
       "mint": {
@@ -4546,7 +4546,7 @@
             "0",
             "0"
           ],
-          "measured": 15
+          "rows": 15
         }
       ],
       "mint": {
@@ -4594,7 +4594,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4642,7 +4642,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4690,7 +4690,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4738,7 +4738,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4786,7 +4786,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4834,7 +4834,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4882,7 +4882,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4930,7 +4930,7 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
@@ -4978,12 +4978,12 @@
             "0",
             "0"
           ],
-          "measured": 74
+          "rows": 74
         }
       ],
       "mint": {
-        "calls": 96201,
-        "chain": "48e9cf8eb6bcbb6a"
+        "calls": 96213,
+        "chain": "dc0203cd43508032"
       },
       "served": {
         "count": 0,
@@ -4991,7 +4991,7 @@
       }
     },
     {
-      "name": "circuit vm browser via mcp",
+      "name": "circuit carries no typed vm label via mcp",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
@@ -5026,17 +5026,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "427ddfae2254938e"
+        "chain": "0083bc5652459656"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5076,17 +5076,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "d69bdc6d469443f2"
+        "chain": "e3cfb66f69ebfb1a"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5126,17 +5126,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "26f1feb13b6e3b96"
+        "chain": "cf8ab4d5d11d7ffe"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5176,17 +5176,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "085902d8e88668da"
+        "chain": "50e336e44f891da2"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5226,17 +5226,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "19b2321c04f2133e"
+        "chain": "95890ee9803d7586"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5276,17 +5276,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "cc3da442f49da562"
+        "chain": "81fb21013e48078a"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5326,17 +5326,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "7e26fa700e3ac6c6"
+        "chain": "cff81e2bb80fc5ae"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5376,17 +5376,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "a1733cbaf640994a"
+        "chain": "24759f1b83afc292"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5426,17 +5426,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "f25c3e0e642224ee"
+        "chain": "9dbf19454f9ef9b6"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5476,22 +5476,22 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "f31d2b4468b8ce52"
+        "chain": "e2760f9becb523fa"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
     {
-      "name": "circuit physical via mcp",
+      "name": "circuit device steps via mcp",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
@@ -5526,17 +5526,17 @@
             "0",
             "0"
           ],
-          "measured": 3
+          "rows": 3
         }
       ],
       "mint": {
         "calls": 3074,
-        "chain": "8a73363db33636f6"
+        "chain": "a18319c7f6a06ede"
       },
       "served": {
         "count": 1,
         "folds": [
-          "\"f7fc6d5b00d0e112\""
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5578,12 +5578,12 @@
             "0",
             "0"
           ],
-          "measured": 556
+          "rows": 556
         }
       ],
       "mint": {
-        "calls": 755475,
-        "chain": "47d64d9646c1dec2"
+        "calls": 755487,
+        "chain": "ee15847ccaae86b2"
       },
       "served": {
         "count": 0,
@@ -5626,12 +5626,12 @@
             "0",
             "0"
           ],
-          "measured": 108
+          "rows": 108
         }
       ],
       "mint": {
-        "calls": 139160,
-        "chain": "35a873859b720210"
+        "calls": 139178,
+        "chain": "d006c5f9f0723e58"
       },
       "served": {
         "count": 0,
@@ -5674,19 +5674,19 @@
             "0",
             "0"
           ],
-          "measured": 67
+          "rows": 67
         }
       ],
       "mint": {
-        "calls": 82681,
-        "chain": "352fe2efb68470e1"
+        "calls": 82693,
+        "chain": "2f3397929c4518a1"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"5c05b02dbdd17f8f\"",
-          "\"5d5933808174d3ee\"",
-          "\"f7fc6d5b00d0e112\""
+          "\"274a6e056b95ad4b\"",
+          "\"f3bf1d294c6cfebe\"",
+          "\"8ebcac07542a076c\""
         ]
       }
     },
@@ -5726,12 +5726,12 @@
             "0",
             "0"
           ],
-          "measured": 88
+          "rows": 88
         }
       ],
       "mint": {
-        "calls": 104584,
-        "chain": "b062bd9b2b3b3680"
+        "calls": 104590,
+        "chain": "4c06f0ebd4cd80e0"
       },
       "served": {
         "count": 0,
@@ -5789,7 +5789,7 @@
             "0",
             "0"
           ],
-          "measured": 16
+          "rows": 16
         }
       ],
       "mint": {
@@ -5837,7 +5837,7 @@
             "0",
             "0"
           ],
-          "measured": 7
+          "rows": 7
         }
       ],
       "mint": {
@@ -5885,7 +5885,7 @@
             "0",
             "0"
           ],
-          "measured": 18
+          "rows": 18
         }
       ],
       "mint": {
@@ -5933,12 +5933,12 @@
             "0",
             "0"
           ],
-          "measured": 76
+          "rows": 76
         }
       ],
       "mint": {
-        "calls": 95394,
-        "chain": "303c7d9ed879bdd4"
+        "calls": 95400,
+        "chain": "07befdb4bdc10e94"
       },
       "served": {
         "count": 1,
@@ -5983,12 +5983,12 @@
             "0",
             "0"
           ],
-          "measured": 70
+          "rows": 70
         }
       ],
       "mint": {
-        "calls": 85756,
-        "chain": "1b61a043e2c88292"
+        "calls": 85768,
+        "chain": "6978f7d1be559eca"
       },
       "served": {
         "count": 0,
@@ -6031,12 +6031,12 @@
             "0",
             "0"
           ],
-          "measured": 14
+          "rows": 14
         }
       ],
       "mint": {
         "calls": 18209,
-        "chain": "df49ee4c8a92bf82"
+        "chain": "3182136eb033a05a"
       },
       "served": {
         "count": 0,
@@ -6081,12 +6081,12 @@
             "0",
             "0"
           ],
-          "measured": 524
+          "rows": 524
         }
       ],
       "mint": {
-        "calls": 668217,
-        "chain": "bdd2ef555e42e880"
+        "calls": 668337,
+        "chain": "cd14d954a9328428"
       },
       "served": {
         "count": 0,
@@ -6129,7 +6129,7 @@
             "0",
             "0"
           ],
-          "measured": 5
+          "rows": 5
         }
       ],
       "mint": {
@@ -6177,7 +6177,7 @@
             "0",
             "0"
           ],
-          "measured": 8
+          "rows": 8
         }
       ],
       "mint": {
@@ -6227,12 +6227,12 @@
             "0",
             "0"
           ],
-          "measured": 233
+          "rows": 233
         }
       ],
       "mint": {
-        "calls": 310098,
-        "chain": "d2bd789ed14e0cd7"
+        "calls": 310110,
+        "chain": "c46a7eab27a2688f"
       },
       "served": {
         "count": 0,

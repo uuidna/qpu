@@ -1,10 +1,10 @@
 // receipted — THE ONE DOOR EVERY TEST WALKS THROUGH. Standard (the captain, 2026-09-11): every test carries a
-// computational receipt proving quantum computation, and time and temperature measurements are part of that proof —
-// as READINGS. The proof is the deterministic part: the fold of every amplitude vector the test produced and the count
-// of every mintOf doubling; two honest runs fold to the same receipt. The readings are the measured part: the wall
-// time of the test body in nanoseconds from the process clock, and the temperature — measured only when a lab supplies
-// it as QPU_TEMPERATURE_MILLIKELVIN, otherwise unmeasured and said so. Readings never enter the fold and never enter
-// src, so the served unit and the committed receipt carry no entropy; the reporter writes them to a sidecar.
+// computational receipt, and time and temperature are recorded beside it as READINGS. The receipt is the deterministic
+// part: the fold of every amplitude vector the test produced and the count of every mintOf doubling; two honest runs
+// fold to the same receipt. The readings are the measured part: the wall time of the test body in nanoseconds from the
+// process clock, and a temperature — QPU_TEMPERATURE_MILLIKELVIN with its QPU_TEMPERATURE_SOURCE when supplied, else on
+// macOS the battery gauge, named as such in its source, else unmeasured and said so. Readings never enter the fold and
+// never enter src, so the served unit and the committed receipt carry no entropy; the reporter writes them to a sidecar.
 import { appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
@@ -16,24 +16,23 @@ import { qpuMintReceiptOf, qpuReceiptFoldOf, qpuReceiptLedgerOf, qpuServedLedger
  * which is how a concurrent run once erased another's rows and failed honest tests as "computed nothing". */
 export const receiptsFileOf = (run: number): string => `test-receipts.${run}.jsonl`
 export const RECEIPTS_FILE = receiptsFileOf(process.ppid)
-/** THE THERMOMETER IS NAMED (2026-09-12: "measure hardware temperature"). A number without its instrument cannot be
- *  doubted, and "a lab reading" was asserted for whatever the variable held. QPU_TEMPERATURE_SOURCE names the sensor —
- *  a battery pack's SMC probe on a laptop, a fridge stage in a lab — and is carried beside the millikelvin as a reading. */
+/** THE INSTRUMENT IS NAMED (2026-09-12). A number without its instrument cannot be doubted. QPU_TEMPERATURE_SOURCE
+ *  names the sensor and is carried beside the millikelvin as a reading; when it is absent the source says so. */
 export type Temperature = { measured: true; millikelvin: number; source: string } | { measured: false; why: string }
 export type TestReceipt = {
   name: string
   computations: number
   kinds: Record<string, number>
-  /** how many computations ran at each vector dimension — the size of every run, so the largest vector a test held is in its
-   * receipt. Keyed by the exact decimal when it is a safe integer, otherwise by `2^qubits`, exact either way. */
+  /** how many computations ran at each register dimension. A sparse run holds only its nonzero entries, far fewer than its
+   * dimension. Keyed by the exact decimal when it is a safe integer, otherwise by `2^qubits`, exact either way. */
   dims: Record<string, number>
-  /** the largest vector dimension this test computed on, in the same exact text; '0' when it computed nothing */
+  /** the largest register dimension this test computed on, in the same exact text; '0' when it computed nothing */
   dim: string
   /** log2 of that largest dimension */
   qubits: number
   receipt: string
-  /** exact integer amplitudes of every distinct measured state this test produced — the Born weights themselves — with how often each was measured */
-  states: { name: string; dim: number; amplitudes: readonly string[]; measured: number }[]
+  /** exact integer amplitudes of every distinct recorded state this test produced, with how many ledger rows carried each */
+  states: { name: string; dim: number; amplitudes: readonly string[]; rows: number }[]
   mint: { calls: number; chain: string }
   /** documents served from the isolate's memo during this test, with the fold of each — computed once, earlier; a third
    * state beside computed and nothing, and part of the proof */
@@ -41,7 +40,7 @@ export type TestReceipt = {
   readings: { time: { ns: number; resolved: boolean }; temperature: Temperature }
 }
 
-const unmeasured: Temperature = { measured: false, why: 'no thermometer on this host; supply QPU_TEMPERATURE_MILLIKELVIN from a lab reading' }
+const unmeasured: Temperature = { measured: false, why: 'no QPU_TEMPERATURE_MILLIKELVIN supplied and no battery gauge read on this host' }
 
 /** THE DEVICE'S OWN SENSOR, WHEN NO LAB READING IS GIVEN (the captain, 2026-09-13: "fuse device sensors to provide
  *  hardware evidence"). On macOS the battery gauge reports its temperature in hundredths of a degree Celsius; the raw
@@ -69,15 +68,15 @@ export const temperatureOf = (env = process.env): Temperature => {
 
 type Fn = (t: TestContext) => void | Promise<void>
 
-/** Distinct states, each counted: the same Bell measurement a thousand times is one state measured a thousand times. */
+/** Distinct states, each counted: the same Bell state recorded a thousand times is one state carried by a thousand rows. */
 const statesOf = (slice: ReturnType<typeof qpuReceiptLedgerOf>): TestReceipt['states'] => {
   const seen = new Map<string, TestReceipt['states'][number]>()
   for (const r of slice) {
     if (r.amplitudes === undefined) continue
     const key = `${r.name}:${r.dim}:${r.amplitudes.join(',')}`
     const prior = seen.get(key)
-    if (prior) prior.measured += 1
-    else seen.set(key, { name: r.name, dim: r.dim, amplitudes: r.amplitudes, measured: 1 })
+    if (prior) prior.rows += 1
+    else seen.set(key, { name: r.name, dim: r.dim, amplitudes: r.amplitudes, rows: 1 })
   }
   return [...seen.values()]
 }

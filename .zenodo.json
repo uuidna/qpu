@@ -1,6 +1,6 @@
 {
   "title": "QPU",
-  "description": "Running quantum circuit at https://qpu.uuidna.com. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. No auth. JSON-LD. The TypeScript and Lean sources are the blueprint. ORCID https://orcid.org/0009-0000-7312-9778.",
+  "description": "Running quantum circuit at https://qpu.uuidna.com. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. The TypeScript and Lean sources are the blueprint. ORCID https://orcid.org/0009-0000-7312-9778.",
   "upload_type": "software",
   "access_right": "open",
   "license": "cc-by-nc-nd-4.0",

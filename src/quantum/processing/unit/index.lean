@@ -120,11 +120,11 @@ def aluminium : Nat := 1200
 def niobium : Nat := 9200
 def gap (tc : Nat) : Nat := bcs * boltzmann * tc / planck / 10
 theorem superconductivity : aluminium > 10 ∧ niobium > aluminium ∧ bcs / 100 = 3 ∧ gap aluminium = 88 ∧ gap aluminium > transmon ∧ gap niobium = 674 := ⟨Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
-/-- COOLING, FOR EVERY START AND EVERY STEP: a step that keeps the fraction a/b < 1 of what remains leaves t·aⁿ/bⁿ — positive after every step, strictly lower after each. Near absolute zero, never at it: the third law's arithmetic, with no number typed in. -/
+/-- COOLING: for every t, a, n with 0 < t and 0 < a, 0 < t * a ^ n; with a < b as well, t * a ^ n * a < t * a ^ n * b. -/
 theorem cooling_stays_positive (t a n : Nat) (ht : 0 < t) (ha : 0 < a) : 0 < t * a ^ n :=
   Nat.mul_pos ht (Nat.pow_pos ha)
 theorem cooling_strictly_decreases (t a b n : Nat) (ht : 0 < t) (ha : 0 < a) (hab : a < b) : t * a ^ n * a < t * a ^ n * b :=
   Nat.mul_lt_mul_of_pos_left hab (Nat.mul_pos ht (Nat.pow_pos ha))
-/-- PLANES FOLD: one plane holds n qubits as 4n numbers, a product state by construction; at n = rays that is fewer than the mintOf (rays + seed) an entangled register needs, so entanglement is held by the fold of the coins' planes, never by one. -/
+/-- PLANES: plane = coins * coins * rays is less than mintOf (rays + seed), and coins * rays = faces. -/
 def plane : Nat := coins * coins * rays
 theorem planes : plane < mintOf (rays + seed) ∧ coins * rays = faces := ⟨Nat.le_of_ble_eq_true rfl, around⟩

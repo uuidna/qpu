@@ -63,7 +63,7 @@ test('install select seats a combination in one call', async () => {
   assert.deepEqual(all.seated, ['qpu-mcp', 'payload-mcp', 'vitepress-payload'])
 })
 
-test('tools/list stays eight sealed tools; install and Payload finds morph at call time', async () => {
+test('qpuToolsOf stays eight sealed tools; install and Payload finds morph at call time', async () => {
   const sealed = qpuToolsOf()
   assert.equal(sealed.length, 8)
   assert.deepEqual(sealed.map((t) => t.name), [

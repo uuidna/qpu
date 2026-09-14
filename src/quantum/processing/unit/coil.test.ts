@@ -93,7 +93,7 @@ test('next is the double — coil times mintOf bits plus coins is fused plus fus
   assert.equal(next.theorem, 'next_coil')
 })
 
-test('simulator register — integer amplitudes in a browser VM', () => {
+test('simulator register — integer amplitudes', () => {
   const circuit = qpuCircuitOf()
   const speed = qpuSpeedOf()
   const hybrid = qpuHybridOf()

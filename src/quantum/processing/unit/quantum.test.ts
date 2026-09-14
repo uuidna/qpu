@@ -50,7 +50,6 @@ type Circuit = {
     path: { circuit: string; payload?: string; plugin?: string; submit: string; src: string; holds: boolean }
     holds: boolean
   }
-  vm: string
   primitives: string[]
   qubits: { n: number; dim: number; levels: number; holds: boolean }
   gates: { names: string[]; index: number; holds: boolean }
@@ -116,7 +115,6 @@ type Circuit = {
     qubits: number
     levels: number
     dim: number
-    vm: string
     isolated: boolean
     lab: boolean
     coil: { kind: string; windings: number; coil: number; holds: boolean }
@@ -150,9 +148,9 @@ test('circuit holds via mcp', async () => {
   assert.equal(q.ui.prove, 'qpu_prove')
 })
 
-test('circuit vm browser via mcp', async () => {
+test('circuit carries no typed vm label via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
-  assert.equal(q.circuit.vm, 'browser')
+  assert.equal('vm' in q.circuit, false)
 })
 
 test('circuit primitives via mcp', async () => {
@@ -296,9 +294,10 @@ test('circuit noise via mcp', async () => {
   assert.equal(q.circuit.noise.holds, true)
 })
 
-test('circuit physical via mcp', async () => {
+test('circuit device steps via mcp', async () => {
   const q = (await mcpOf('qpu_quantum')) as { circuit: Circuit }
   assert.equal(q.circuit.hardware.holds, true)
+  assert.equal(q.circuit.hardware.kind, 'circuit-steps')
   assert.equal(q.circuit.hardware.device, 'simulator')
   assert.equal(q.circuit.hardware.initialize, true)
   assert.equal(q.circuit.hardware.gates, true)
@@ -433,10 +432,10 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(prove.holds, true)
   assert.equal(json.docs.inline, true)
   assert.equal(json.only.holds, true)
-  assert.equal(json.docs.documentation.includes('running quantum circuit'), true)
+  assert.equal(json.docs.documentation.includes('on exact integer amplitudes'), true)
   assert.equal(json.docs.documentation.includes('state-vector simulator'), true)
-  assert.equal(json.docs.documentation.includes('Physical qubit initialize'), true)
-  assert.equal(json.docs.documentation.includes('This host is a simulator, not a quantum computer'), true)
+  assert.equal(json.docs.documentation.includes('Physical qubit initialize'), false)
+  assert.equal(json.docs.documentation.includes('not a quantum computer'), false)
   assert.equal(json.docs.documentation.includes('This host is a quantum computer'), false)
   assert.equal(json.docs.documentation.includes('theorem shor'), true)
   assert.equal(json.docs.documentation.includes('theorem temperature'), true)
@@ -449,7 +448,7 @@ test('circuit ui via mcp', { timeout: 60_000 }, async () => {
   assert.equal(json.circuit.sciences.distinct, true)
   assert.equal(json.docs.documentation.includes('No drift from science'), true)
   assert.equal(json.docs.documentation.includes('No drift between sciences'), true)
-  assert.equal(json.docs.documentation.includes('Possible only in quantum'), true)
+  assert.equal(json.docs.documentation.includes('Possible only in quantum'), false)
   assert.equal(json.docs.documentation.includes('Bell then CNOT onto the third qubit'), true)
   assert.equal(json.docs.documentation.includes('coins ≠ mintOf coins'), true)
   assert.equal(json.docs.documentation.includes('Teleport |1⟩ lands on Bob'), true)

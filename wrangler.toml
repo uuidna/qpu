@@ -1,6 +1,7 @@
 # theorem qpuReplica : worker uuidna-qpu is the named host qpu.uuidna.com.
 # Proof. Source is src/quantum/processing/unit; main re-exports dist.
-# QPU_HOST = unit.host; mismatch or * is lost. API only. No wildcards. No HTML.
+# QPU_HOST = unit.host; a mismatch or * is lost. The unit answers JSON at qpu.uuidna.com; the *.uuidna.com/* route
+# below forwards tenant sites whole to Payload over the PAYLOAD binding.
 name = "uuidna-qpu"
 main = "worker.js"
 compatibility_date = "2026-08-01"
@@ -19,7 +20,8 @@ zone_name = "uuidna.com"
 
 [vars]
 QPU_HOST = "qpu.uuidna.com"
-# Writes to /storage need Authorization: Bearer QPU_WRITE_TOKEN; unbound refuses every write (reads stay open).
+# Public writes to /storage need Authorization: Bearer QPU_WRITE_TOKEN; unbound, every public write is refused (reads stay
+# open). The QpuDeposit service binding in worker.js writes without the token.
 # wrangler secret put QPU_WRITE_TOKEN
 
 [[kv_namespaces]]

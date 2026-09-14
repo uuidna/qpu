@@ -1,12 +1,13 @@
 // receipt — THE SUITE'S RESULT AS COMPUTATIONAL RECEIPTS, PROOF APART FROM READINGS. Standard (the captain,
-// 2026-09-11): every test carries a receipt proving quantum computation; time and temperature are part of it as
+// 2026-09-11): every test carries a computational receipt; time and temperature are recorded beside it as
 // readings; the receipt itself carries no entropy. Every test file imports `test` from ./receipted.js — the door that
 // appends each test's ledger slice and readings to test-receipts.jsonl from inside the test process. This reporter
 // folds that file into two artifacts:
 //   test-receipt.json  — the PROOF: names, pass/fail, amplitude folds, mint chains, kinds. Deterministic; committed.
 //   test-readings.json — the READINGS: wall time per test, temperature (measured or unmeasured, said which), and the
 //                        cracks those readings name — an unresolved clock, an unmeasured thermometer. Gitignored.
-// A top-level test that computed nothing FAILS the standard. Recomputable: re-run and the proof returns byte for byte.
+// A top-level test with no computation, no mintOf call and no memo-served document is dry, and a dry test FAILS the
+// run. Recomputable: re-run and the proof returns byte for byte.
 //
 //   node --test --test-reporter=./dist/quantum/processing/unit/receipt.js dist/quantum/processing/unit/*.test.js
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
@@ -73,7 +74,7 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
   const fold = qpuFoldOf(sorted.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}:${r.served.folds.join(',')}`).join('\u0000'))
   const proof = {
     kind: 'test-receipt',
-    standard: 'every test carries a computational receipt proving quantum computation; the proof is deterministic; time and temperature are readings in test-readings.json',
+    standard: 'every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json',
     tests: rows.length,
     pass,
     fail: rows.length - pass,

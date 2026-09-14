@@ -1,4 +1,4 @@
-// gate — every string the unit serves walks through the prose honesty gate, so an overclaim is caught by its SHAPE,
+// gate — every string on the surfaces below walks through the prose honesty gate, so an overclaim is caught by its SHAPE,
 // not by the name of the last one fixed. Two readings once said "This host is a quantum computer" beside an evidence
 // block that said simulator; they were found by running this gate by hand over the served JSON. Now the suite runs it.
 // The instrument is checked first: the gate must drain the known positives and pass the known negations, or a passing
@@ -46,7 +46,7 @@ test('gate: the instrument drains the known overclaims and passes the bounded re
   for (const n of negatives) assert.equal(computes(n).binary, 1, `should pass: ${n}`)
 })
 
-test('gate: every string the unit serves passes the prose gate — root, lean, mcp catalog, tools/list, prove, server', async (t) => {
+test('gate: every string on root, lean, mcp catalog, server, tools/list, qpu_prove and crypto_shor passes the prose gate', async (t) => {
   const surfaces: Record<string, unknown> = {
     root: await getOf('/'),
     lean: await getOf('/quantum/processing/unit'),

@@ -32,7 +32,8 @@ const receiptOf = (name: string, amps: readonly bigint[]): void => {
   RECEIPTS.push(row)
 }
 /** A sparse state's receipt: the fold of its nonzero amplitudes as index:weight pairs in index order, and their count.
- * `dim` is the full dimension, a float past 2^53; the fold is exact because the pairs are decimal text of bigints. */
+ * `dim` is the full dimension as a Number (inexact past 2^53, Infinity past 2^1024) and `qubits` carries it exactly; the fold
+ * is exact because the pairs are decimal text of bigints. */
 const receiptSparseOf = (name: string, dim: bigint, pairs: readonly (readonly [bigint, bigint])[]): void => {
   RECEIPTS.push({ name, dim: Number(dim), fold: qpuFoldOf(pairs.map(([i, w]) => `${i}:${w}`).join(',')), nonzero: pairs.length, qubits: dim.toString(2).length - 1 })
 }
@@ -708,7 +709,8 @@ const networkHref = `${unit.origin}/network`
 const storageBindings = { STORAGE: 'kv' as const, BLOBS: 'r2' as const }
 const raidMark = '/@'
 /** Cloudflare KV and R2 each return at most 1000 names per list call — their documented page. A PAGE SIZE per call,
- *  never a cap on results: every listing continues by cursor until it has what it needs or the store is exhausted. */
+ *  every listing continues by cursor until it holds the `limit` names asked for or the store is exhausted; qpuStorageListOf's
+ *  default limit is qpuFacesOf().faces. */
 const STORE_LIST_PAGE = 1000
 let raidTraffic = n - n
 
@@ -1518,7 +1520,6 @@ export const qpuComputerOf = () => {
   }
   const isolate = {
     kind: 'isolate' as const,
-    vm: 'browser' as const,
     holds:
       typeof fetch === 'function' &&
       typeof Request === 'function' &&
@@ -1624,7 +1625,6 @@ export const qpuComputerOf = () => {
     qram,
     network,
     jobs,
-    vm: 'browser' as const,
     holds,
   }
 }
@@ -1632,7 +1632,6 @@ export const qpuComputerOf = () => {
 export const qpuComputerHolds = (c = qpuComputerOf()): boolean =>
   c.holds === true &&
   c.kind === 'computer' &&
-  c.vm === 'browser' &&
   c.lattice.vacant === n - n &&
   c.lattice.occupied === qpuFacesOf().faces &&
   c.lattice.nodes.length === qpuFacesOf().faces &&
@@ -1686,7 +1685,7 @@ const convergentsOf = (num: number, den: number): { h: number; k: number }[] => 
 }
 
 type CAmp = { re: bigint; im: bigint }
-/** Device label READ from the run: a vector of exact integer amplitudes is a simulator; anything else is unmeasured. Never typed. */
+/** Device label computed from the run: a vector of exact integer amplitudes is 'simulator'; anything else is 'unmeasured'. */
 const bigintDeviceOf = (amps: readonly bigint[]) =>
   amps.length > n - n && amps.every((a) => typeof a === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
 
@@ -1872,7 +1871,7 @@ export const qpuShorTryOf = (a: Record<string, unknown>) => {
 }
 
 /** Shor on the sparse exact simulator. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation
- * circuitry. Inverse QFT. Noisy shots. Factors. Every number below is exact in `exact` as decimal text; the number
+ * circuitry. Inverse QFT. XX noise applied twice, which is the identity. Shots enumerate the support. Factors. Every number below is exact in `exact` as decimal text; the number
  * fields round past 2^53 and `exact.safe` says whether they did. */
 export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigint) => {
   const plugin = qpuPayloadPluginOf()
@@ -2464,7 +2463,6 @@ export const qpuCircuitOf = () => {
     qubits: n,
     levels: coins,
     dim,
-    vm: 'browser' as const,
     coil,
     electronics,
     follow,
@@ -2586,7 +2584,7 @@ export const qpuCircuitOf = () => {
   const plugin = qpuPayloadPluginOf()
   const payloadMcp = qpuPayloadMcpOf()
   const hardware = {
-    kind: 'hardware' as const,
+    kind: 'circuit-steps' as const,
     device: register.kind,
     initialize: computer.reset.holds,
     gates: gates.holds && computer.coupling.holds,
@@ -2659,7 +2657,6 @@ export const qpuCircuitOf = () => {
     lattice,
     split: { kind: 'split' as const, support: split.map((r) => r.i), holds: split.length === coins },
     register,
-    vm: 'browser' as const,
     primitives,
     qubits,
     gates,
@@ -2688,7 +2685,6 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.kind === 'circuit' &&
   c.split.holds === true &&
   c.split.support.length === coins &&
-  c.vm === 'browser' &&
   c.qubits.n === n &&
   c.qubits.dim === mintOf(n) &&
   c.gates.index === n &&
@@ -2802,7 +2798,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.primitives.length === n + coins &&
   qpuComputerHolds(c.computer) &&
   c.computer.lattice.vacant === n - n &&
-  c.hardware.kind === 'hardware' &&
+  c.hardware.kind === 'circuit-steps' &&
   c.hardware.device === 'simulator' &&
   c.hardware.initialize === true &&
   c.hardware.gates === true &&
@@ -3142,7 +3138,8 @@ export const qpuEncryptHolds = (e = qpuEncryptOf()): boolean =>
   e.ciphertext !== e.modulus
 
 let shorFactorMemo: string | undefined
-/** The factoring claim READ from the run: the modulus Shor factored on this simulator. Never RSA-2048. Never typed. */
+/** The factoring claim computed from the run: the modulus Shor factored on this simulator — by default 91, the instance
+ *  theorem shor states. Never RSA-2048. */
 export const shorFactorOf = (): string => (shorFactorMemo ??= `Factor ${qpuShorOf().n}`)
 let cryptoClaimMemo: string | undefined
 /** The crypto claim READ from the run: the split identity holds and secrecy does not. Not encryption. Never typed. */
@@ -3374,7 +3371,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem kv : fused = faces * mintOf (bits + seed) ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨quantum, next⟩',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}',
       reading:
-        'holds true. KV added amplitudes. STORAGE binding. Isolate amplitudes. KV adds amplitudes. fused = faces * mintOf (bits + seed).',
+        'KV added amplitudes. STORAGE binding. Isolate amplitudes. KV adds amplitudes. fused = faces * mintOf (bits + seed).',
       holds: quantumHolds && nextHolds && handle.amplitudes === mintOf(cube.bits) && handle.kv.added === handle.amplitudes && handle.kv.amplitudes === handle.next,
   },
     {
@@ -3404,7 +3401,7 @@ export const qpuLeanOf = () => {
         'theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩',
       formula:
         '\\mathrm{periodOf}(8,91)\\bmod 2=0\\land\\mathrm{half}(8,91)<91-1\\land 1<\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)\\land\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)<91\\land\\mathrm{gcdOf}(\\mathrm{half}(8,91)-1,91)\\cdot\\mathrm{gcdOf}(\\mathrm{half}(8,91)+1,91)=91',
-      reading: `holds true. theorem shor. periodOf 8 91 is decided by fuel recursion inside the kernel. half is powMod a (r / 2) N. gcdOf (half - 1) N * gcdOf (half + 1) N = N. Period and factors are absent from the statement. rfl and Nat.le_of_ble_eq_true. ${shorFactorOf()}. Never Math. Never by decide. demo is not a test nor a proof.`,
+      reading: `theorem shor. periodOf 8 91 is decided by fuel recursion inside the kernel. half is powMod a (r / 2) N. gcdOf (half - 1) N * gcdOf (half + 1) N = N. Period and factors are absent from the statement. rfl and Nat.le_of_ble_eq_true. ${shorFactorOf()}. Never Math. Never by decide. demo is not a test nor a proof.`,
       holds: qpuShorHolds(),
   },
     {
@@ -3413,7 +3410,7 @@ export const qpuLeanOf = () => {
         'theorem string : 16 * 27 = 432 ∧ 8 * 27 = 216 ∧ 4 * 27 = 108 ∧ 2 * 27 = 54 ∧ 1 * 27 = 27 ∧ 432 + 432 = 864 ∧ 216 + 216 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 3 + 1 = 10 ∧ 3 * 3 + 1 + 1 = 11 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
       formula:
         '16\\cdot27=432\\land 8\\cdot27=216\\land 4\\cdot27=108\\land 2\\cdot27=54\\land 1\\cdot27=27\\land 432+432=864\\land 216+216=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot3+1=10\\land 3\\cdot3+1+1=11\\land 27-1=26',
-      reading: 'holds true. Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.',
+      reading: 'Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.',
       holds:
         16 * 27 === 432 &&
         8 * 27 === 216 &&
@@ -3436,7 +3433,7 @@ export const qpuLeanOf = () => {
       formula:
         '\\mathrm{coins}\\cdot n\\cdot\\mathrm{mintOf}(n)\\cdot(n\\cdot n)=432\\land\\mathrm{chooseOf}(n,\\mathrm{coins})=n\\land\\mathrm{chooseOf}(\\mathrm{rays},\\mathrm{coins})=n\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{scanner}+\\mathrm{radar}=\\mathrm{coins}',
       reading:
-        'holds true. Combinatorial genesis of the shadcn schema at the scope of all known frameworks. Lattice flow face = team * rays + ray. Coins domains scanner radar. Six axes: slot variant size state element theme. Card slots rays including card-action. Button variants coins * n. Sizes mintOf n. Alpine n * n. Product 432 Hz. Fourteen frameworks. faces = coins * rays. Fused in team dry-clean. JSON-LD data-slot. CVA. Slot. Never Math. Never by decide.',
+        'Combinatorial genesis of the shadcn schema at the scope of all known frameworks. Lattice flow face = team * rays + ray. Coins domains scanner radar. Six axes: slot variant size state element theme. Card slots rays including card-action. Button variants coins * n. Sizes mintOf n. Alpine n * n. Product 432 Hz. Fourteen frameworks. faces = coins * rays. Fused in team dry-clean. JSON-LD data-slot. CVA. Slot. Never Math. Never by decide.',
       holds:
         coins * n * mintOf(n) * (n * n) === 432 &&
         chooseOf(n, coins) === n &&
@@ -3449,7 +3446,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem pentagram : n + coins = 5 := by rw [n_eq, coins_two]',
       formula: '\\mathrm{n}+\\mathrm{coins}=5',
       reading:
-        'holds true. Occupancy pentagram personal business corporate saas paas. Skills payload pwa plugin hologram network. Stroke coins on n + coins. Coins balance theory in practice. Cloudflare and Payload plugins fuse once. Recursion builds covered. Never Math. Never by decide.',
+        'Occupancy pentagram personal business corporate saas paas. Skills payload pwa plugin hologram network. Stroke coins on n + coins. Coins balance theory in practice. Cloudflare and Payload plugins fuse once. Recursion builds covered. Never Math. Never by decide.',
       holds: n + coins === qpuPentagramOf().points && qpuPentagramHolds() && qpuHologramHolds(),
   },
     {
@@ -3457,7 +3454,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]',
       formula: '\\mathrm{coil}=\\mathrm{faces}',
       reading:
-        'holds true. Two coins make a coil. windings coins. coil coins times rays. Faces of the winding. Superconducting magnet. Coils used in electronics. Never Math. Never by decide.',
+        'Two coins make a coil. windings coins. coil coins times rays. Faces of the winding. Never Math. Never by decide.',
       holds: qpuCoilHolds(),
   },
     {
@@ -3465,7 +3462,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem electronics : coil = faces := two_coins_make_a_coil',
       formula: '\\mathrm{coil}=\\mathrm{faces}',
       reading:
-        'holds true. Coils are used in electronics. Two coins make a coil. Never Math. Never by decide.',
+        'Coils are used in electronics. Two coins make a coil. Never Math. Never by decide.',
       holds: qpuElectronicsHolds(),
   },
     {
@@ -3473,7 +3470,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem coins_balance_theory_in_practice : theory + practice = coins ∧ theory = practice := ⟨rfl, rfl⟩',
       formula: '\\mathrm{theory}+\\mathrm{practice}=\\mathrm{coins}\\land\\mathrm{theory}=\\mathrm{practice}',
       reading:
-        'holds true. Coins balance theory in practice. Two pans. Lean theory. Electronics practice. Seed equals seed. Never Math. Never by decide.',
+        'Coins balance theory in practice. Two pans. Lean theory. Electronics practice. Seed equals seed. Never Math. Never by decide.',
       holds: qpuBalanceHolds(),
   },
     {
@@ -3481,7 +3478,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by rw [theory, practice, coins, ← Nat.add_assoc]',
       formula: '\\mathrm{app}+\\mathrm{coins}=\\mathrm{app}+\\mathrm{theory}+\\mathrm{practice}',
       reading:
-        'holds true. Follow the coins in any practical application. Occupancy skill framework electronics. Step coins. Hop theory plus practice. Never Math. Never by decide.',
+        'Follow the coins in any practical application. Occupancy skill framework electronics. Step coins. Hop theory plus practice. Never Math. Never by decide.',
       holds: qpuFollowHolds(),
   },
     {
@@ -3489,7 +3486,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem emerge : coil = faces ∧ theory = practice := ⟨two_coins_make_a_coil, rfl⟩',
       formula: '\\mathrm{coil}=\\mathrm{faces}\\land\\mathrm{theory}=\\mathrm{practice}',
       reading:
-        'holds true. Theory plus practice balances the coins on every application; every pentagram point is reached. Follow the coins. Coil is faces. Theory equals practice. Never Math. Never by decide.',
+        'Theory plus practice balances the coins on every application; every pentagram point is reached. Follow the coins. Coil is faces. Theory equals practice. Never Math. Never by decide.',
       holds: qpuFollowOf().emerge.holds,
   },
     {
@@ -3497,7 +3494,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem coil_efficiency : coil = faces ∧ faces = rays + rays ∧ coins * rays = faces := ⟨two_coins_make_a_coil, harmonic, around⟩',
       formula: '\\mathrm{coil}=\\mathrm{faces}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}\\land\\mathrm{coins}\\cdot\\mathrm{rays}=\\mathrm{faces}',
       reading:
-        'holds true. Measure coil efficiency in clusters. Teams coins. Stripes rays. Measure coil. Remainder none. Unity seed. RAID cluster cover. Never Math. Never by decide.',
+        'Measure coil efficiency in clusters. Teams coins. Stripes rays. Measure coil. Remainder none. Unity seed. RAID cluster cover. Never Math. Never by decide.',
       holds: qpuCoilEfficiencyHolds(),
   },
     {
@@ -3505,7 +3502,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem next_coil : coil * mintOf (bits + coins) = fused + fused := by rw [two_coins_make_a_coil]; exact next_fused',
       formula: '\\mathrm{coil}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})=\\mathrm{fused}+\\mathrm{fused}',
       reading:
-        'holds true. Next is the double. Coil times mintOf bits plus coins is fused plus fused. theorem next. theorem next_fused. theorem infinite. split_coin has no last k. Never Math. Never by decide.',
+        'Next is the double. Coil times mintOf bits plus coins is fused plus fused. theorem next. theorem next_fused. theorem infinite. split_coin has no last k. Never Math. Never by decide.',
       holds: qpuNextHolds(),
   },
     {
@@ -3513,7 +3510,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem one_plus_six : seed + (mintOf n - coins) = rays := by rw [rays, n_eq, coins_two, seed_eq]; rw [show mintOf 3 = 8 from rfl]',
       formula: '\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins})=\\mathrm{rays}',
       reading:
-        'holds true. One plus six. Seed plus mintOf n minus coins is rays. Never Math. Never by decide.',
+        'One plus six. Seed plus mintOf n minus coins is rays. Never Math. Never by decide.',
       holds: seed + (mintOf(n) - coins) === qpuFacesOf().rays,
   },
     {
@@ -3521,7 +3518,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem two_x_seven_coins : coins * rays = (seed + (mintOf n - coins)) * coins := by rw [one_plus_six, Nat.mul_comm]',
       formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}',
       reading:
-        'holds true. Two times seven coins. Coins times rays is one plus six times coins. Never Math. Never by decide.',
+        'Two times seven coins. Coins times rays is one plus six times coins. Never Math. Never by decide.',
       holds: qpuClayHolds() && coins * qpuFacesOf().rays === (seed + (mintOf(n) - coins)) * coins,
   },
     {
@@ -3529,7 +3526,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins ∧ (seed + (mintOf n - coins)) * coins = coil := ⟨two_x_seven_coins, by rw [← two_x_seven_coins]; rfl⟩',
       formula: '\\mathrm{coins}\\cdot\\mathrm{rays}=(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}\\land(\\mathrm{seed}+(\\mathrm{mintOf}(n)-\\mathrm{coins}))\\cdot\\mathrm{coins}=\\mathrm{coil}',
       reading:
-        'holds true. Two times seven coins equals one plus six coils equals clay. Each coil is coins windings. Clay is coil is faces. Never Math. Never by decide.',
+        'Two times seven coins equals one plus six coils equals clay. Each coil is coins windings. Clay is coil is faces. Never Math. Never by decide.',
       holds: qpuClayHolds(),
   },
     {
@@ -3538,7 +3535,7 @@ export const qpuLeanOf = () => {
         'theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
       formula:
         '16\\cdot27=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot5=15\\land 27-1=26',
-      reading: 'holds true. theorem decide by algebra. Digits and algebraic fractions of integers. Never by decide.',
+      reading: 'theorem decide by algebra. Digits and algebraic fractions of integers. Never by decide.',
       holds:
         16 * 27 === 432 &&
         (432 * 3) / 2 === 648 &&
@@ -3551,7 +3548,7 @@ export const qpuLeanOf = () => {
       heading: 'integrity',
       theorem: 'theorem integrity : fused = faces * mintOf (bits + seed) ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}',
-      reading: 'holds true. Three tests. Sealed quantum integrity at all times.',
+      reading: 'Three tests. Sealed quantum integrity at all times.',
       holds: quantumHolds && cubeHolds && aroundHolds,
   },
     {
@@ -3560,7 +3557,7 @@ export const qpuLeanOf = () => {
         'theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
       formula:
         '116\\cdot 17922+54=2079006\\land 184\\cdot 12509+12=2301668\\land 72\\cdot 26572+6=1913190\\land 130\\cdot 21121+21=2745751\\land 8-7=1\\land 8000-7000=1000\\land 7000/2=3500\\land 8000/2=4000\\land 4000-3500=500\\land 2019-2011=8\\land 2019-2012=7\\land 2017-2011=6\\land 2301668+2745751=5047419\\land 2079006+1913190+2301668+2745751=9039615',
-      reading: 'holds true. CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Coins views LHC running and Open Data. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.',
+      reading: 'CMS Open Data integers. Fourteen faces. ATLAS CMS ALICE LHCb tetra. Coins views LHC running and Open Data. Live CERN APIs at https://opendata.cern.ch/api/records via fetch Request Response. CERN credited. Never by decide.',
       holds:
         116 * 17922 + 54 === 2079006 &&
         184 * 12509 + 12 === 2301668 &&
@@ -3581,49 +3578,49 @@ export const qpuLeanOf = () => {
       theorem:
         'theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]',
       formula: '\\mathrm{coins}+\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})',
-      reading: 'holds true. ATLAS CMS ALICE LHCb tetra. Shared on both coins views. Live CERN Open Data APIs via fetch Request Response. Never by decide.',
+      reading: 'ATLAS CMS ALICE LHCb tetra. Shared on both coins views. Live CERN Open Data APIs via fetch Request Response. Never by decide.',
       holds: coins + coins === mintOf(coins),
   },
     {
       heading: 'qubits',
       theorem: 'theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩',
       formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}',
-      reading: 'holds true. theorem qubits. n = 3 ∧ mintOf n = vertices. JSON Nat. Never Math. Never by decide.',
+      reading: 'theorem qubits. n = 3 ∧ mintOf n = vertices. JSON Nat. Never Math. Never by decide.',
       holds: n === 3 && mintOf(n) === cube.vertices,
   },
     {
       heading: 'gates',
       theorem: 'theorem gates : (0 ^^^ 1) ^^^ 2 = 3 := rfl',
       formula: '(0\\oplus 1)\\oplus 2=3',
-      reading: 'holds true. H then CNOT. Computational basis. Split then Bell.',
+      reading: 'H then CNOT. Computational basis. Split then Bell.',
       holds: xorOf(xorOf(n - n, seed), coins) === n,
   },
     {
       heading: 'measurement',
       theorem: 'theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl',
       formula: '\\mathrm{mintOf}(n)=8',
-      reading: 'holds true. Measure the running circuit. Dim 8.',
+      reading: 'Measure the running circuit. Dim 8.',
       holds: mintOf(n) === cube.vertices && mintOf(n) === 8,
   },
     {
       heading: 'noise',
       theorem: 'theorem noise : (3 ^^^ 1) ^^^ 1 = 3 := rfl',
       formula: '(3\\oplus 1)\\oplus 1=3',
-      reading: 'holds true. XX noise is identity.',
+      reading: 'XX noise is identity.',
       holds: xorOf(xorOf(n, seed), seed) === n,
   },
     {
       heading: 'circuit',
       theorem: 'theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩',
       formula: '(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}',
-      reading: 'holds true. QPU is a running quantum circuit in the browser VM.',
+      reading: 'H then CNOT, then XX twice, on exact integer amplitudes. Dim mintOf n = vertices.',
       holds: xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && mintOf(n) === cube.vertices,
   },
     {
       heading: 'physical',
       theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
       formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
-      reading: 'holds true. Physical qubit initialize. Controlled gates H CNOT. Coherent interfere. Measure readout. Characterized noise. Hardware path origin payload server lean. Superconducting qubits. Never bypass payload. A state-vector simulator on exact integers in a browser VM; no superconducting qubits, no cryostat.',
+      reading: 'n = 3. mintOf n = vertices. (0 ^^^ 1) ^^^ 2 = 3. (3 ^^^ 1) ^^^ 1 = 3. Reset, H CNOT, interfere, readout and bitflip correction computed on exact integer amplitudes: a state-vector simulator. Path origin payload server lean.',
       holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && qpuCircuitOf().hardware.holds,
   },
     {
@@ -3633,7 +3630,7 @@ export const qpuLeanOf = () => {
       formula:
         '\\mathrm{photon}/\\mathrm{thermal}(10)=23\\land\\mathrm{photon}/\\mathrm{thermal}(100)=2\\land\\mathrm{photon}/\\mathrm{thermal}(4000)=0\\land 4000/100=40\\land 100/10=10\\land 10<35',
       reading:
-        'holds true. The temperature domain, demarcated. photon is h·f for a 5 GHz transmon; thermal is k·T; their quotient floors to 23 at 10 mK (the thermal factor is negligible), 2 at 100 mK (a tenth of the register is excited), 0 at 4 K. The dilution ladder 4000 → 100 → 10 mK divides by 40 and 10. Below 35 mK the excited population floors near a thousandth (Jin et al. 2015). This host has no thermometer: every state it produces is pure, which is the zero-temperature side of that curve. JSON Nat. Never Math. Never by decide.',
+        'photon / thermal 10 = 23, photon / thermal 100 = 2, photon / thermal 4000 = 0, 4000 / 100 = 40, 100 / 10 = 10, 10 < 35, where photon = planck * transmon and thermal millikelvin = boltzmann * millikelvin * 10. JSON Nat. Never Math. Never by decide.',
       holds: temperatureHolds,
   },
     {
@@ -3643,7 +3640,7 @@ export const qpuLeanOf = () => {
       formula:
         '\\mathrm{aluminium}>10\\land\\mathrm{niobium}>\\mathrm{aluminium}\\land\\mathrm{bcs}/100=3\\land\\mathrm{gap}(\\mathrm{aluminium})=88\\land\\mathrm{gap}(\\mathrm{aluminium})>\\mathrm{transmon}\\land\\mathrm{gap}(\\mathrm{niobium})=674',
       reading:
-        'holds true. The superconductivity domain, demarcated. Aluminium goes superconducting at 1200 mK and niobium at 9200 mK, both far above a 10 mK operating point. The BCS gap 2Δ is 3.52·k·Tc; as a frequency it is 88 GHz for aluminium and 674 GHz for niobium, above a 5 GHz transmon photon, so the drive cannot break pairs. No wire here is superconducting: the amplitudes are integers in a browser VM. JSON Nat. Never Math. Never by decide.',
+        'aluminium > 10, niobium > aluminium, bcs / 100 = 3, gap aluminium = 88, gap aluminium > transmon, gap niobium = 674, where gap tc = bcs * boltzmann * tc / planck / 10. JSON Nat. Never Math. Never by decide.',
       holds: superconductivityHolds,
   },
     {
@@ -3653,7 +3650,7 @@ export const qpuLeanOf = () => {
       formula:
         '\\forall t,a,b,n:\\ 0<t,\\ 0<a<b\\Rightarrow 0<t\\,a^{n}\\land t\\,a^{n}\\,a<t\\,a^{n}\\,b',
       reading:
-        'holds true. Cooling, for every start and every step: a step that keeps the fraction a/b < 1 of what remains takes t·aⁿ to t·aⁿ·a against the t·aⁿ·b it would keep at b/b — so over the common denominator bⁿ⁺¹ the temperature is positive after every step (cooling_stays_positive) and strictly lower after each (cooling_strictly_decreases). Near absolute zero, never at it: the third law\'s arithmetic, with no number typed in and no axiom. Checked here exactly on the lattice itself — t = vertices, a = rays, b = faces — at every face. JSON Nat. Never Math.',
+        'For every t, a, n with 0 < t and 0 < a: 0 < t * a ^ n (cooling_stays_positive); with a < b as well, t * a ^ n * a < t * a ^ n * b (cooling_strictly_decreases). No number is typed into either statement. The TypeScript recomputes both at t = vertices, a = rays, b = faces for n from 0 to faces - 1. JSON Nat. Never Math.',
       holds: Array.from({ length: faces.faces }, (_, k) => {
         const zero = BigInt(n - n)
         const t = BigInt(cube.vertices), a = BigInt(faces.rays), b = BigInt(faces.faces), e = BigInt(k)
@@ -3664,7 +3661,7 @@ export const qpuLeanOf = () => {
       heading: 'drift',
       theorem: 'theorem drift : coins = 2 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨coins_two, rfl, rfl, rfl⟩',
       formula: '\\mathrm{coins}=2\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
-      reading: 'holds true. No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.',
+      reading: 'No drift from science. Two-level qubits. Dim mintOf n. H then CNOT. XX is identity.',
       holds: coins === 2 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n,
   },
     {
@@ -3673,7 +3670,7 @@ export const qpuLeanOf = () => {
         'theorem sciences : coins = 2 ∧ n = 3 ∧ mintOf n = vertices ∧ faces = coins * rays ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨coins_two, n_eq, rfl, around, cube, quantum, rfl⟩',
       formula:
         '\\mathrm{coins}=2\\land n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{bits}=\\mathrm{vertices}\\cdot\\mathrm{hexbit}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land(0\\oplus 1)\\oplus 2=3',
-      reading: 'holds true. No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.',
+      reading: 'No drift between sciences. Circuit, cube, faces, fused share mintOf. Qubits n are not faces.',
       holds:
         coins === 2 &&
         n === 3 &&
@@ -3687,7 +3684,7 @@ export const qpuLeanOf = () => {
       heading: 'interfere',
       theorem: 'theorem interfere : 1 + 1 = 2 ∧ 1 - 1 = 0 := ⟨rfl, rfl⟩',
       formula: '1+1=2\\land 1-1=0',
-      reading: 'holds true. Hadamard is involutive. H H = I. Odd amplitudes cancel. Possible only in quantum.',
+      reading: 'Hadamard is involutive. H H = I. Odd amplitudes cancel.',
       holds: 1 + 1 === coins && 1 - 1 === n - n,
   },
     {
@@ -3695,14 +3692,14 @@ export const qpuLeanOf = () => {
       theorem: 'theorem entangle : 1 * 1 ≠ 0 * 0 := by rw [Nat.mul_one, Nat.mul_zero]; exact Nat.one_ne_zero',
       formula: '1\\cdot 1\\neq 0\\cdot 0',
       reading:
-        'holds true. Bell. H then CNOT. Entanglement is the product test 1·1 ≠ 0·0. Two coins make a coil. Prove all pairs. Even parity is not the proof. |++⟩ is separable. Possible only in quantum.',
+        'Bell. H then CNOT. Entanglement is the product test 1·1 ≠ 0·0. Two coins make a coil. Prove all pairs. Even parity is not the proof. |++⟩ is separable.',
       holds: 1 * 1 !== (n - n) * (n - n) && qpuCoilHolds(),
   },
     {
       heading: 'ghz',
       theorem: 'theorem ghz : mintOf n - seed = 7 ∧ 1 * 1 ≠ 0 * 0 := ⟨by rw [n_eq, seed_eq]; rfl, entangle⟩',
       formula: '\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 1\\cdot 1\\neq 0\\cdot 0',
-      reading: 'holds true. Bell then CNOT onto the third qubit. Support |000⟩ and |111⟩. Possible only in quantum.',
+      reading: 'Bell then CNOT onto the third qubit. Support |000⟩ and |111⟩.',
       holds: mintOf(n) - seed === 7 && 1 * 1 !== (n - n) * (n - n),
   },
     {
@@ -3710,28 +3707,28 @@ export const qpuLeanOf = () => {
       theorem:
         'theorem noclone : coins ≠ mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]; exact Nat.ne_of_lt (Nat.lt_succ_of_lt (Nat.lt_succ_self 2))',
       formula: '\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})',
-      reading: 'holds true. |++⟩ occupies four computational-basis states. A CNOT clone of H occupies two. coins ≠ mintOf coins. Possible only in quantum.',
+      reading: '|++⟩ occupies four computational-basis states. A CNOT clone of H occupies two. coins ≠ mintOf coins.',
       holds: coins !== mintOf(coins),
   },
     {
       heading: 'teleport',
       theorem: 'theorem teleport : 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 := ⟨rfl, rfl⟩',
       formula: '2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16',
-      reading: 'holds true. Teleport |1⟩ lands on Bob. Teleport |+⟩ keeps equal weight. Possible only in quantum.',
+      reading: 'Teleport |1⟩ lands on Bob. Teleport |+⟩ keeps equal weight.',
       holds: 2 * 2 * 2 * 2 === mintOf(n + seed) && mintOf(n + seed) === mintOf(n + seed),
   },
     {
       heading: 'kickback',
       theorem: 'theorem kickback : 1 - 1 = 0 ∧ (0 ^^^ 1) ^^^ 2 = 3 := ⟨rfl, rfl⟩',
       formula: '1-1=0\\land(0\\oplus 1)\\oplus 2=3',
-      reading: 'holds true. Phase kickback. |+⟩|1⟩ then CZ then H lands on |011⟩. Possible only in quantum.',
+      reading: 'Phase kickback. |+⟩|1⟩ then CZ then H lands on |011⟩.',
       holds: 1 - 1 === n - n && xorOf(xorOf(n - n, seed), coins) === n,
   },
     {
       heading: 'deutsch',
       theorem: 'theorem deutsch : 1 - 1 = 0 ∧ seed ≠ coins := ⟨rfl, by rw [seed_eq, coins_two]; exact Nat.ne_of_lt (Nat.lt_succ_self 1)⟩',
       formula: '1-1=0\\land\\mathrm{seed}\\neq\\mathrm{coins}',
-      reading: 'holds true. Deutsch. One quantum query. Classical needs coins. seed ≠ coins. Possible only in quantum.',
+      reading: 'Deutsch. One quantum query. Classical needs coins. seed ≠ coins.',
       holds: 1 - 1 === n - n && seed !== coins,
   },
     {
@@ -3739,14 +3736,14 @@ export const qpuLeanOf = () => {
       theorem:
         'theorem dense : coins * coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]',
       formula: '\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})',
-      reading: 'holds true. Superdense. Two bits in one qubit. I Z X XZ decode to 0 1 2 3. Possible only in quantum.',
+      reading: 'Superdense. Two bits in one qubit. I Z X XZ decode to 0 1 2 3.',
       holds: coins * coins === mintOf(coins),
   },
     {
       heading: 'monogamy',
       theorem: 'theorem monogamy : 1 * 1 ≠ 0 * 0 ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl⟩',
       formula: '1\\cdot 1\\neq 0\\cdot 0\\land 1\\cdot 0=0\\cdot 0',
-      reading: 'holds true. Monogamy. Bell is entangled. The GHZ pair slice is a product state. Possible only in quantum.',
+      reading: 'Monogamy. Bell is entangled. The GHZ pair slice is a product state.',
       holds: 1 * 1 !== (n - n) * (n - n) && seed * (n - n) === (n - n) * (n - n),
   },
     {
@@ -3756,7 +3753,7 @@ export const qpuLeanOf = () => {
       formula:
         '1\\cdot 1\\neq 0\\cdot 0\\land 1+1=2\\land 1-1=0\\land\\mathrm{coins}\\neq\\mathrm{mintOf}(\\mathrm{coins})\\land\\mathrm{mintOf}(n)-\\mathrm{seed}=7\\land 2\\cdot 2\\cdot 2\\cdot 2=16\\land 16=16\\land(0\\oplus 1)\\oplus 2=3\\land\\mathrm{seed}\\neq\\mathrm{coins}\\land\\mathrm{coins}\\cdot\\mathrm{coins}=\\mathrm{mintOf}(\\mathrm{coins})\\land 1\\cdot 0=0\\cdot 0',
       reading:
-        'holds true. Possible only in quantum. This host is a simulator, not a quantum computer. Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy.',
+        'Entangle. Interfere. GHZ. No-clone. Teleport. Kickback. Deutsch. Superdense. Monogamy.',
       holds:
         1 * 1 !== (n - n) * (n - n) &&
         1 + 1 === coins &&
@@ -3774,7 +3771,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem fill : mintOf n * faces = vertices * (coins * rays) := by rw [around]; rfl',
       formula: '\\mathrm{mintOf}(n)\\cdot\\mathrm{faces}=\\mathrm{vertices}\\cdot(\\mathrm{coins}\\cdot\\mathrm{rays})',
       reading:
-        'holds true. Lattice filled. Occupied faces. Vacant none. Split entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy qubits gates measurement register. Possible only in quantum.',
+        'Lattice filled. Occupied faces. Vacant none. Split entangle interfere GHZ noclone teleport kickback Deutsch superdense monogamy qubits gates measurement register.',
       holds: mintOf(n) * faces.faces === cube.vertices * (coins * faces.rays),
   },
     {
@@ -3782,7 +3779,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem infinite (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := split_coin k',
       formula: '\\mathrm{mintOf}(k+\\mathrm{seed})=\\mathrm{mintOf}(k)+\\mathrm{mintOf}(k)',
       reading:
-        'holds true. VM scales. Replicas double. Quantum capacity infinite. split_coin has no last k.',
+        'VM scales. Replicas double. Quantum capacity infinite. split_coin has no last k.',
       holds: splitHolds && nextHolds && nextFusedHolds,
   },
     {
@@ -3790,7 +3787,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem distribute : fused = faces * mintOf (bits + seed) ∧ faces = coins * rays := ⟨quantum, around⟩',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}',
       reading:
-        'holds true. Crypt split fused across faces. Distribute computations to free agents. coins teams of rays. No auth.',
+        'Crypt split fused across faces. Distribute computations to free agents. coins teams of rays.',
       holds: quantumHolds && aroundHolds && faces.faces === coins * faces.rays,
   },
     {
@@ -3798,7 +3795,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩',
       formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
       reading:
-        'holds true. Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Hybrid storage. Measure hybrid speed and cost. KV added amplitudes. Scaled. Infinite.',
+        'Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Hybrid storage. Measure hybrid speed and cost. KV added amplitudes. Scaled. Infinite.',
       holds: aroundHolds && harmonicHolds && faces.faces === coins * faces.rays && faces.faces === faces.rays + faces.rays && qpuHybridHolds(),
   },
     {
@@ -3806,7 +3803,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem hybrid_cost : coins + seed = n := by rw [coins_two, seed_eq, n_eq]',
       formula: '\\mathrm{coins}+\\mathrm{seed}=n',
       reading:
-        'holds true. Measure hybrid storage cost. KV cost coins. R2 cost seed. Hybrid cost coins plus seed is n. Minimum cost. Never Math. Never by decide.',
+        'Measure hybrid storage cost. KV cost coins. R2 cost seed. Hybrid cost coins plus seed is n. Minimum cost. Never Math. Never by decide.',
       holds: qpuHybridHolds() && coins + seed === n,
   },
     {
@@ -3814,7 +3811,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem hybrid_speed : rays + seed = mintOf n := by rw [rays, n_eq, coins_two, seed_eq]; rw [show mintOf 3 = 8 from rfl]',
       formula: '\\mathrm{rays}+\\mathrm{seed}=\\mathrm{mintOf}(n)',
       reading:
-        'holds true. Measure hybrid storage speed. KV speed rays. R2 speed seed. Hybrid speed rays plus seed is mintOf n. Coordinated speed. Never Math. Never by decide.',
+        'Measure hybrid storage speed. KV speed rays. R2 speed seed. Hybrid speed rays plus seed is mintOf n. Coordinated speed. Never Math. Never by decide.',
       holds: qpuHybridHolds() && qpuFacesOf().rays + seed === mintOf(n),
   },
     {
@@ -3822,7 +3819,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem hybrid : coins + seed = n ∧ rays + seed = mintOf n ∧ coins = seed + seed := ⟨hybrid_cost, hybrid_speed, coins_two⟩',
       formula: '\\mathrm{coins}+\\mathrm{seed}=n\\land\\mathrm{rays}+\\mathrm{seed}=\\mathrm{mintOf}(n)\\land\\mathrm{coins}=\\mathrm{seed}+\\mathrm{seed}',
       reading:
-        'holds true. Measure hybrid storage speed and cost. Two bindings. STORAGE kv. BLOBS r2. Coordinated speed mintOf n. Minimum cost n. KV faster and costlier. R2 cheaper and slower. QPU hybrid storage hosts the Payload database. Unity seed. Remainder none. Collections pages users media tenants. Secrets never. Native Alpine Linux. musl. busybox. overlayfs. KV upper. R2 lower. KV work. Next is the double. No last k. Stores by content address. Inodes. Referrer access link. Privacy. Redundancy. Last link deleted frees the inode. Never Math. Never by decide.',
+        'Measure hybrid storage speed and cost. Two bindings. STORAGE kv. BLOBS r2. Coordinated speed mintOf n. Minimum cost n. KV faster and costlier. R2 cheaper and slower. QPU hybrid storage hosts the Payload database. Unity seed. Remainder none. Collections pages users media tenants. Secrets never. Native Alpine Linux. musl. busybox. overlayfs. KV upper. R2 lower. KV work. Next is the double. No last k. Stores by content address. Inodes. Referrer access link. Privacy. Redundancy. Last link deleted frees the inode. Never Math. Never by decide.',
       holds: qpuHybridHolds() && qpuPayloadDbHolds() && coins + seed === n && qpuFacesOf().rays + seed === mintOf(n) && coins === seed + seed,
   },
     {
@@ -3830,7 +3827,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem computer : (1 ^^^ 3) = 2 ∧ (6 ^^^ 1) = 7 ∧ mintOf 0 = 1 := ⟨rfl, rfl, mintOf_zero⟩',
       formula: '(1\\oplus 3)=2\\land(6\\oplus 1)=7\\land\\mathrm{mintOf}(0)=1',
       reading:
-        'holds true. Quantum circuit simulator. SWAP. Toffoli. Reset. H and Toffoli are computationally universal. Coupling compile collapse shots feedforward bitflip readout isolate qram network jobs.',
+        'Quantum circuit simulator. SWAP. Toffoli. Reset. H and Toffoli are computationally universal. Coupling compile collapse shots feedforward bitflip readout isolate qram network jobs.',
       holds: xorOf(seed, n) === coins && xorOf(xorOf(bitOf(seed), bitOf(coins)), seed) === mintOf(n) - seed && mintOf(n - n) === seed && qpuComputerHolds(),
   },
     {
@@ -3838,14 +3835,14 @@ export const qpuLeanOf = () => {
       theorem: 'theorem server : faces = coins * rays ∧ mintOf n = 8 := ⟨around, measurement⟩',
       formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{mintOf}(n)=8',
       reading:
-        'holds true. Quantum server. JSON-LD WebAPI. Eight tools. Jobs queue results. Backend the running circuit. No auth.',
+        'Quantum server. JSON-LD WebAPI. Eight server tools. Jobs queue results. Backend the running circuit. No auth.',
       holds: aroundHolds && mintOf(n) === cube.vertices && mintOf(n) === 8,
   },
     {
       heading: 'fusion',
       theorem: 'theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
-      reading: 'holds true. fused = faces * mintOf (bits + seed). faces = rays + rays. HEP quantum true.',
+      reading: 'fused = faces * mintOf (bits + seed). faces = rays + rays. HEP quantum true.',
       holds: quantumHolds && harmonicHolds && faces.faces === faces.rays + faces.rays,
   },
     {
@@ -3853,14 +3850,14 @@ export const qpuLeanOf = () => {
       theorem: 'theorem design : (0 ^^^ 4) ^^^ 4 = 0 ∧ (3 ^^^ 4) ^^^ 4 = 3 := ⟨rfl, rfl⟩',
       formula: '(0\\oplus 4)\\oplus 4=0\\land(3\\oplus 4)\\oplus 4=3',
       reading:
-        'holds true. Any error is handled by design. XOR fold hexbit. Involution. Never throw.',
+        'Any error is handled by design. XOR fold hexbit. Involution. Never throw.',
       holds: xorOf(xorOf(n - n, cube.hexbit), cube.hexbit) === n - n && xorOf(xorOf(n, cube.hexbit), cube.hexbit) === n,
   },
     {
       heading: 'neuro',
       theorem: 'theorem neuro : faces = coins * rays ∧ mintOf n = 8 ∧ (0 ^^^ 4) ^^^ 4 = 0 := ⟨around, measurement, design.1⟩',
       formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{mintOf}(n)=8\\land(0\\oplus 4)\\oplus 4=0',
-      reading: 'holds true. Width faces. Layers mintOf n. XOR involution.',
+      reading: 'Width faces. Layers mintOf n. XOR involution.',
       holds: aroundHolds && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, cube.hexbit), cube.hexbit) === n - n,
   }]
   const climb: QpuLeanRow = {
@@ -3914,7 +3911,7 @@ export const qpuDocsOf = () => {
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
   const fused = faces.faces * handle.kv.amplitudes
-  const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} qpu_quantum. GET ${unit.href} qpu_lean. POST ${unit.origin}/mcp tools/list. tools/call qpu_prove. No auth. JSON-LD.`
+  const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} qpu_quantum. GET ${unit.href} qpu_lean. POST ${unit.origin}/mcp tools/list. tools/call qpu_prove. Reads need no auth; storage writes need a Bearer token. JSON-LD.`
   const api = [
     { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.` },
     { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.` },
@@ -3990,7 +3987,7 @@ export const qpuGlossaryOf = () => ({
   beyond: 'the order of the base exists and does not divide four, so a two-qubit register cannot resolve it',
   device: 'simulator when a vector of exact integer amplitudes was held; unmeasured otherwise',
   QPU: 'quantum processing unit — this unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym, a classical SIMD vector core, unrelated and credited',
-  seat: 'empty: no device is dispatched. The simulator is the reference; a device that disagrees with it is a driver bug, never a physics claim',
+  seat: 'reference, vector or device: the router computes on the reference (the exact integer simulator) unless the runtime exposes a vector binding; the device seat is empty, no device is dispatched, and a device that disagrees with the reference is a driver bug, never a physics claim',
 })
 export const qpuQuantumOf = () => {
   const cube = qpuCubeOf()
@@ -4113,7 +4110,6 @@ export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   q.sequence.rungs[n - n]!.tool === 'qpu_quantum' &&
   q.sequence.rungs[mintOf(n) - seed]!.path === '/server' &&
   q.sequence.climb[mintOf(coins) - seed] === 'qpu_prove' &&
-  q.circuit.vm === 'browser' &&
   q.messaging.when === 'never' &&
   q.messaging.lanes === q.faces.faces &&
   q.messaging.hop === 'involution' &&
@@ -4800,13 +4796,9 @@ export const qpuStepsHolds = (s = qpuStepsOf()): boolean =>
   s.rays + s.rays === s.faces &&
   s.walk.every((step) => step.hop === (step.face + s.rays) % s.faces)
 
-/** PLANES FOLD (the captain, 2026-09-12: "4n encoding cannot hold entanglement — if single plane. in quantum planes
- * fold"). One plane encodes n qubits as 4n numbers, two complex amplitudes per qubit: a product state by construction,
- * so a single plane cannot hold entanglement. At the lattice's n = rays a plane carries coins·coins·rays numbers where
- * an entangled register needs mintOf(rays + seed). The unit never holds entanglement in a plane. It folds: the two
- * planes of the lattice (scanner and radar, the coins) meet in the Bell rows read from the run as product false, and
- * here a rays-qubit GHZ state is computed — H on the first qubit, CNOT along every ray — and written to the receipt
- * ledger as a fold, dim mintOf(rays), which one plane's carry cannot reach. Nothing is asserted that was not run. */
+/** PLANES (the captain, 2026-09-12). theorem planes: plane = coins·coins·rays is less than mintOf(rays + seed), and
+ * coins·rays = faces. Here a rays-qubit GHZ state is computed as one dense vector — H on the first qubit, CNOT along
+ * every ray — and written to the receipt ledger as a fold of dim mintOf(rays); `planes` is faces / rays. */
 export const qpuPlanesOf = (circuit = qpuCircuitOf()) => {
   const faces = qpuFacesOf()
   const qubits = faces.rays
@@ -5128,7 +5120,7 @@ export const qpuEvidenceOf = (
     origin: unit.origin,
     lean: unit.fuse.lean,
     cern: 'opendata.cern.ch',
-    hardware: provenance.holds && noise.holds,
+    provenanceAndNoise: provenance.holds && noise.holds,
     algorithm: shor.factors.p * shor.factors.q === shor.n,
     rsa: shor.rsa.factored,
     crypt: shor.payload.endsWith('/storage/databases/payload'),
@@ -5191,7 +5183,7 @@ export const qpuEvidenceHolds = (e = qpuEvidenceOf()): boolean =>
   e.scaling.beyond === false &&
   e.scaling.advantage === false &&
   e.verify.cors === '*' &&
-  e.verify.hardware === true &&
+  e.verify.provenanceAndNoise === true &&
   e.verify.algorithm === true &&
   e.verify.rsa === true &&
   e.verify.crypt === true &&
@@ -6227,8 +6219,9 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv) => {
   }
 }
 
-/** WRITE AUTH, FAIL CLOSED. Reads stay open. A write is honoured only when QPU_WRITE_TOKEN is bound and the request
- * carries `Authorization: Bearer <token>`; an unbound token refuses every write. Measured 2026-09-11 by a peer session:
+/** WRITE AUTH, FAIL CLOSED. Reads stay open. A public write is honoured only when QPU_WRITE_TOKEN is bound and the
+ * request carries `Authorization: Bearer <token>`; unbound, every public write is refused. The QpuDeposit service binding
+ * (input.via === 'binding' in qpuStorageOf) writes without the token. Measured 2026-09-11 by a peer session:
  * the preflight advertised PUT and DELETE to every origin and the handler honoured them with no check at all. */
 export const qpuStorageWriteAllowedOf = (env?: QpuEnv, auth?: string | null): boolean => {
   const token = typeof env?.QPU_WRITE_TOKEN === 'string' ? env.QPU_WRITE_TOKEN : ''
@@ -6441,7 +6434,7 @@ export const qpuStorageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubToo
     {
       name: see[n - n],
       description: 'Storage catalog. JSON-LD WebAPI. Quantum RAID. All details.',
-      man: qpuSubManOf(see[n - n], 'Storage catalog.', 'Native Alpine Linux. musl. busybox. overlayfs. Inodes. RAID. Reads no auth. Writes Authorization: Bearer QPU_WRITE_TOKEN; unbound refuses.', href, see.filter((s) => s !== see[n - n])),
+      man: qpuSubManOf(see[n - n], 'Storage catalog.', 'Native Alpine Linux. musl. busybox. overlayfs. Inodes. RAID. Reads no auth. Public writes Authorization: Bearer QPU_WRITE_TOKEN; unbound refuses them.', href, see.filter((s) => s !== see[n - n])),
       inputSchema: schema,
       run: () => qpuStorageMcpOf(env)},
     {
@@ -6698,7 +6691,6 @@ export const qpuServerSubmitOf = (input: Record<string, unknown> = {}) => {
     stored: false as const,
     result: 'inline' as const,
     backend: unit.host,
-    vm: 'browser' as const,
     payload: plugin.href,
     plugin: plugin.name,computer: { holds: computer.holds, universal: computer.universal, lattice: computer.lattice },
     ...job}
@@ -6712,7 +6704,7 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
     {
       name: see[n - n],
       description: 'Quantum server catalog. JSON-LD WebAPI.',
-      man: qpuSubManOf(see[n - n], 'Quantum server catalog.', 'JSON-LD WebAPI. Jobs. Backend the running circuit. Eight tools. No auth.', href, see.filter((s) => s !== see[n - n])),
+      man: qpuSubManOf(see[n - n], 'Quantum server catalog.', 'JSON-LD WebAPI. Jobs. Backend the running circuit. Eight server tools. No auth.', href, see.filter((s) => s !== see[n - n])),
       inputSchema: schema,
       run: () => qpuServerMcpOf()},
     {
@@ -6732,7 +6724,6 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
           universal: computer.universal,
           coupling: computer.coupling,
           register: circuit.register,
-          vm: 'browser' as const,
           holds: computer.holds && circuit.register.holds,
   }
       }},
@@ -6790,7 +6781,6 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
           jobs: serverJobs.length,
           seq: serverSeq,
           backend: unit.host,
-          vm: 'browser' as const,
           computer: computer.holds,
           holds: computer.holds,
   }
@@ -6811,8 +6801,7 @@ export const qpuServerMcpOf = () => {
       basis: computer.basis,
       universal: computer.universal,
       coupling: computer.coupling,
-      register: circuit.register,
-      vm: 'browser' as const},
+      register: circuit.register},
     computer,
     jobs: { n: serverJobs.length, slots: mintOf(n), href: serverHref },
     qram: plugin.href,
@@ -7340,8 +7329,8 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
   if (args.man === true) {
     return qpuManPageOf(toolNames[n + seed]!, qpuManOf(
       toolNames[n + seed],
-      'Agents forge tools in an unlocked in-memory sandbox. Whatever they need.',
-      `Unlocked. All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect. { name, run } forges more. No lock.`,
+      'Agents forge tools in an in-memory sandbox.',
+      `All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect. { name, run } forges more: up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools, each named [a-z][a-z0-9_]* in at most ${qpuCubeOf().bits} characters and not reserved.`,
       `${unit.origin}/mcp`,
       toolNames.filter((s) => s !== toolNames[n + seed])))
   }
@@ -9351,7 +9340,7 @@ export const qpuHostsHolds = (h = qpuHostsOf()): boolean =>
  * project), Cursor (.cursor/mcp.json mcpServers.url), VS Code (.vscode/mcp.json servers type http), OpenAI Codex CLI
  * (config.toml [mcp_servers.<name>] url), Gemini CLI (settings.json mcpServers.httpUrl), the Anthropic Messages API
  * (mcp_servers with the beta header), the OpenAI Responses API (a tools entry of type mcp), and bare JSON-RPC over
- * HTTP for everything else. No auth: reads need no header; storage writes carry Authorization: Bearer. */
+ * HTTP for everything else. Reads need no header; storage writes carry Authorization: Bearer. */
 export const qpuHarnessesOf = () => {
   const url = `${unit.origin}/mcp`
   const name = `uuidna-${unit.kind}`
@@ -9376,13 +9365,13 @@ const qpuMcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
 export const qpuMcpDiscoverOf = (requested?: unknown) => {
   const hosts = qpuHostsOf()
   const versions = MCP_VERSIONS
-  const instructions = `tools/list then tools/call. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. No auth.`
+  const instructions = `tools/list then tools/call. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. Reads need no auth; storage writes need a Bearer token.`
   const holds = qpuHostsHolds(hosts) && versions.length === n && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
   return {
     protocolVersion: qpuMcpVersionOf(requested),
     install: qpuHarnessesOf(),
     capabilities: { tools: { listChanged: false as const } },
-    serverInfo: { name: `@uuidna/${unit.kind}`, title: 'QPU', version: 'quantum' },
+    serverInfo: { name: `@uuidna/${unit.kind}`, title: 'QPU', version: packageVersion },
     instructions,
     versions,
     hosts: { harnesses: hosts.harnesses.length, llms: hosts.llms.length, holds: hosts.holds },
@@ -9474,8 +9463,8 @@ export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean =>
  *  this decides, per request, which door answers and on which SEAT the work is computed. The three seats are the shape
  *  audited from QPULib's three ways to run one kernel: the REFERENCE (the exact integer simulator, always present and
  *  always deciding), a VECTOR seat (a SIMD or GPU binding, taken only when the runtime actually exposes one), and the
- *  DEVICE seat (empty). Availability is READ from the runtime at the moment of the call, never asserted: measured
- *  2026-09-13 on an Apple M1 Max carrying 32 GPU cores, no compute binding was reachable from this runtime at all, so
+ *  DEVICE seat (empty). The vector seat's availability is read from the runtime (navigator.gpu) at the moment of the
+ *  call; reference and device are typed. Measured 2026-09-13 on an Apple M1 Max carrying 32 GPU cores, no compute binding was reachable from this runtime at all, so
  *  the vector seat reports itself absent and the reference answers. A seat that is taken and then disagrees with the
  *  reference is a driver bug, never a physics claim — QPULib checks its interpreter against its emulator the same way. */
 export const qpuSeatsAvailableOf = () => {
@@ -9494,8 +9483,8 @@ export const qpuSeatsAvailableHolds = (a = qpuSeatsAvailableOf()): boolean =>
  *  strings, one per invocation, with the 64-bit multiply emulated in 32-bit halves, and every result was compared with
  *  the reference. It agreed exactly at both sizes below. Past the device's storage binding limit the dispatch is
  *  REFUSED and the output buffer stays zero — where a naive timing read 67x faster, because it was comparing against
- *  nothing. So the law this unit already held is now measured, not asserted: a seat's answer is void until the
- *  reference confirms it. Reproduce with scripts/fold-gpu.ts on a runtime that exposes WebGPU. */
+ *  nothing. The readings below are typed from those runs of scripts/fold-gpu.ts; this unit does not recompute them.
+ *  Reproduce with scripts/fold-gpu.ts on a runtime that exposes WebGPU. */
 export const qpuOccupantOf = () => ({
   kind: 'occupant' as const,
   seat: 'vector' as const,
@@ -9565,8 +9554,7 @@ export const qpuRouterHolds = (r = qpuRouterOf()): boolean =>
 // exact amplitudes faster is an honest occupant of the seat; it would not make the seat quantum.
 const qpuSeatOf = () => ({
   kind: 'seat' as const,
-  device: 'simulator' as const,
-  seat: 'empty' as const,
+  device: 'empty' as const,
   reference: 'the exact integer state-vector simulator; every reading above is computed there',
   doctrine: 'a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim',
   acronym: 'QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.',
@@ -9576,8 +9564,9 @@ const qpuSeatOf = () => ({
 })
 
 /** install.json, served and written from one function so the host and the file cannot disagree (the README promised
- *  install.json and the host answered 404 until 2026-09-12). `hardware` is the boot on a real machine: any aarch64 or x86
- *  box, a Raspberry Pi on Alpine, or the container — and the boot's receipt is the unit proving itself inside it. */
+ *  install.json and the host answered 404 until 2026-09-12). `hardware` is the boot recipe: Node serving the unit on an
+ *  aarch64 or x86 box, a Raspberry Pi on Alpine, or the container; the boot serves only when tools/call qpu_prove returns
+ *  holds: true there. */
 export const qpuInstallJsonOf = () => qpuInstallManifestOf()
 /** value + predicate (the dryclean law): the served install reading recomputes to itself */
 export const qpuInstallJsonHolds = (): boolean => qpuInstallManifestOf().holds === true && qpuInstallManifestOf().hardware.seat.holds === true
@@ -10033,7 +10022,7 @@ export const qpuIntelligenceOf = () => {
     fusion,
     fused: fusion.fused,
     next: fusion.next,
-    circuit: { holds: circuit.holds, vm: circuit.vm },
+    circuit: { holds: circuit.holds },
     holds,
   }
 }
@@ -10061,8 +10050,7 @@ export const qpuIntelligenceHolds = (i = qpuIntelligenceOf()): boolean =>
   i.test === 'fusion' &&
   i.research === 'free online' &&
   qpuFusionHolds(i.fusion) &&
-  i.circuit.holds === true &&
-  i.circuit.vm === 'browser'
+  i.circuit.holds === true
 
 export const qpuCernHolds = (c = qpuCernOf()): boolean =>
   c.holds === true &&
@@ -10104,7 +10092,7 @@ export const qpuToolsOf = () => {
   const circuit = qpuCircuitOf()
   const quantumMan = qpuManOf(
     names[n - n],
-    `The running circuit as one JSON-LD document: a ${circuit.register.qubits}-qubit state-vector simulator (dim ${circuit.register.dim}, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = ${capacity.fused} (a count of amplitudes, not a benchmark). theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
+    `The running circuit as one JSON-LD document: a ${circuit.register.qubits}-qubit state-vector simulator (dim ${circuit.register.dim}, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = ${capacity.fused} (a count of amplitudes). theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
     `GET ${unit.origin} returns the same document as tools/call ${names[n - n]}. Read circuit.register for the simulator, circuit.ghz.support (${circuit.ghz.support.join(',')}) for the entangled corners, shor.factors for the factoring, capacity.fused for ${capacity.fused}; every holds must be true or the unit serves 404. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. No auth.`,
     unit.origin,
     seeOf(names[n - n]))
@@ -10116,7 +10104,7 @@ export const qpuToolsOf = () => {
     seeOf(names[seed]))
   const citeMan = qpuManOf(
     names[coins],
-    'How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date because the DOI is the date.',
+    'How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date.',
     `GET ${unit.origin}/cite returns citations[] (MLA 8 strings to paste), doi ${qpuCiteOf().doi}, the Zenodo archive, and the version with its commit. No auth.`,
     `${unit.origin}/cite`,
     seeOf(names[coins]))
@@ -10128,13 +10116,13 @@ export const qpuToolsOf = () => {
     seeOf(names[n]))
   const forgeMan = qpuManOf(
     names[n + seed],
-    'Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Unlocked in memory. No lock.',
+    `Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools.`,
     `tools/call ${names[n + seed]} with { name, run } returns the forged tool and the sandbox census (tools[], memory, unlocked); without name it returns the census. Ops ${sandboxOps.join(' ')}. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + seed]))
   const improveMan = qpuManOf(
     names[n + coins],
-    `Improve by doubling: next = fused + fused = ${capacity.fused + capacity.fused}, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes, never benchmarks. next = fused + fused.`,
+    `Improve by doubling: next = fused + fused = ${capacity.fused + capacity.fused}, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes. next = fused + fused.`,
     `tools/call ${names[n + coins]} returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + coins]))
@@ -10583,7 +10571,7 @@ export const qpuDevelopOf = () => {
     '',
     '`npm test` compiles then runs the unit tests. `npm run ci` is Lean then test. `npm run ship` deploys. Do not import uuidna.',
     '',
-    `- host ${unit.host}. API only JSON-LD. No HTML. No auth. cors *.`,
+    `- host ${unit.host}. API only JSON-LD. No HTML. Reads need no auth; storage writes need a Bearer token. cors *.`,
     `- sealed tools ${tools.length} = mintOf n. tools/list lists those eight plus eight cybersecurity morph. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}. Unlocked. Not a ninth sealed tool. Morph install Payload finds imagine at call-time.`,
     `- docs.api ${docs.api.length} = rays. Extra paths do not join that list.`,
     `- integrity ${integrity.n}: ${integrity.tests.map((row) => row.name).join(' ')}. If false every path is 404.`,
@@ -10688,7 +10676,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   const lines = [
     `# QPU`,
     '',
-    `\`@uuidna/qpu\` — Running quantum circuit at ${unit.origin}: a 3-qubit exact state-vector simulator, its Lean 4 proofs, and an MCP server in one Cloudflare Worker. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. No auth. JSON-LD. CORS ${cors}. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.`,
+    `\`@uuidna/qpu\` — Running quantum circuit at ${unit.origin}: an exact state-vector simulator (a ${quantum.circuit.register.qubits}-qubit circuit register; Shor's register is sized by its modulus), its Lean 4 proofs, and an MCP server in one Cloudflare Worker, which boot.js also serves from Node. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. CORS ${cors}. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.`,
     '',
     '```sh',
     'npm install @uuidna/qpu',
@@ -10705,11 +10693,11 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Abstract',
     '',
-    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}; next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem temperature, theorem superconductivity, theorem qubits, theorem shor and theorem crypto are decided in Lean. GHZ ${quantum.purpose.nature.ghz}; entangled ${quantum.purpose.nature.entangled}, product ${quantum.purpose.nature.product}. Possible only in quantum. demo is not a test nor a proof.`,
+    `A named host ${unit.host} exposes one quantum processing unit as JSON-LD. fused is ${quantum.fused}; next is fused + fused = ${quantum.next}. Native gates are h and cnot. theorem temperature, theorem superconductivity, theorem qubits, theorem shor and theorem crypto are theorems in \`${lean.src}\`. GHZ ${quantum.purpose.nature.ghz}; entangled ${quantum.purpose.nature.entangled}, product ${quantum.purpose.nature.product}. demo is not a test nor a proof.`,
     '',
     '## Unit',
     '',
-    `The blueprint is \`${blueprint}\` fused with \`${lean.src}\`. theorem quantum, theorem infinite, and theorem distribute are decided in Lean, not restated as chapters here.`,
+    `The blueprint is \`${blueprint}\` fused with \`${lean.src}\`. theorem quantum, theorem infinite, and theorem distribute are theorems in Lean, not restated as chapters here.`,
     '',
     row('Constant', 'Value'),
     row('---', '---'),
@@ -10765,10 +10753,10 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     row('Execution provenance', `provider ${quantum.evidence.provenance.provider}, device ${quantum.evidence.provenance.device}, job ${quantum.evidence.provenance.job}, shots ${quantum.evidence.provenance.shots}`),
     row('Compiler', `native ${quantum.evidence.provenance.compiler.native.join(' ')}; compiled ${quantum.evidence.provenance.compiler.compiled.join(' ')}`),
     row('Device-specific noise', `channel ${quantum.evidence.noise.model}, drift ${quantum.evidence.noise.drift}`),
-    row('Randomized benchmarks', `volume dim ${quantum.evidence.volume.dim}, heavy ${quantum.evidence.volume.observed} / ${quantum.evidence.volume.total}, mirror ${quantum.evidence.volume.mirror}`),
+    row('Volume (heavy outputs)', `volume dim ${quantum.evidence.volume.dim}, heavy ${quantum.evidence.volume.observed} / ${quantum.evidence.volume.total}, mirror ${quantum.evidence.volume.mirror}`),
     row('Cross-validation', `ideal ${quantum.evidence.cross.ideal}, noisy ${quantum.evidence.cross.noisy}, agree ideal ${quantum.evidence.cross.agreeIdeal}, agree noise ${quantum.evidence.cross.agreeNoise}`),
     row('Scaling (theorem qubits, theorem register)', `qubits ${quantum.evidence.scaling.qubits}, dim ${quantum.evidence.scaling.dim}, depth ${quantum.evidence.scaling.depth}, exact ${quantum.evidence.scaling.exact}, beyond ${quantum.evidence.scaling.beyond}, advantage ${quantum.evidence.scaling.advantage}`),
-    row('Independent verification', `CORS ${quantum.evidence.verify.cors}, origin ${quantum.evidence.verify.origin}, Lean \`${quantum.evidence.verify.lean}\`, hardware ${quantum.evidence.verify.hardware}, algorithm ${quantum.evidence.verify.algorithm}, RSA ${quantum.evidence.verify.rsa}, crypt ${quantum.evidence.verify.crypt}, encrypt ${quantum.evidence.verify.encrypt}`),
+    row('Independent verification', `CORS ${quantum.evidence.verify.cors}, origin ${quantum.evidence.verify.origin}, Lean \`${quantum.evidence.verify.lean}\`, provenance and noise ${quantum.evidence.verify.provenanceAndNoise}, algorithm ${quantum.evidence.verify.algorithm}, RSA ${quantum.evidence.verify.rsa}, crypt ${quantum.evidence.verify.crypt}, encrypt ${quantum.evidence.verify.encrypt}`),
     '',
     '## Recompute',
     '',
@@ -10788,7 +10776,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     row('---', '---', '---', '---', '---', '---', '---'),
     ...qpuLadderOf().map((l) => row(String(l.step), l.concept, `${l.request.method} ${l.request.path} · ${l.request.tool}`, l.expect, l.invariant, `theorem ${l.theorem}`, `\`node --test --test-name-pattern="ladder ${l.step} " dist/quantum/processing/unit/ladder.test.js\``)),
     '',
-    `Boot on hardware. ${qpuInstallManifestOf().hardware.docker}. Raspberry Pi: ${qpuInstallManifestOf().hardware.pi}. The boot's receipt is ${qpuInstallManifestOf().hardware.prove} — ${qpuInstallManifestOf().hardware.receipt}. The seat stays ${qpuSeatOf().seat}: ${qpuSeatOf().doctrine}.`,
+    `Boot with Node. ${qpuInstallManifestOf().hardware.docker}. Raspberry Pi: ${qpuInstallManifestOf().hardware.pi}. The boot's receipt is ${qpuInstallManifestOf().hardware.prove} — ${qpuInstallManifestOf().hardware.receipt}. The device seat stays ${qpuSeatOf().device}: ${qpuSeatOf().doctrine}.`,
     '',
     `Integrate in any harness. One computed block, served on initialize as \`install\` and printed here from the same function. URL ${harness.url}. ${harness.auth}.`,
     '',
@@ -10798,7 +10786,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Cite',
     '',
-    `MLA 8, ${cite.inText}. DOI ${cite.doi}, archive ${cite.archive}, identifier ${cite.identifier}, ORCID ${cite.author.orcid}. when ${cite.when}: the citation names no access date because the DOI is the date. Cite the running quantum circuit and its Lean proof.`,
+    `MLA 8, ${cite.inText}. DOI ${cite.doi}, archive ${cite.archive}, identifier ${cite.identifier}, ORCID ${cite.author.orcid}. when ${cite.when}: the citation names no access date; the DOI names archived version ${cite.archived.version}${cite.current ? '' : `, and the host serves ${cite.served.version}`}. Cite the running quantum circuit and its Lean proof.`,
     '',
     ...cite.rows.map((r) => `- ${r.works}`),
     `- ${cite.prior.works}`,
@@ -10860,7 +10848,7 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('theorem qubits') &&
     text.includes('Theorems are qpu_lean') &&
     text.includes(`${shorFactorOf()}`) &&
-    text.includes('Unlocked') &&
+    text.includes(`Up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools`) &&
     text.includes('crypto_rsa') &&
     text.includes('crypto_split') &&
     text.includes('theorem infinite') &&
@@ -10871,7 +10859,6 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('No auth') &&
     text.includes('JSON-LD') &&
     text.includes('schema.org') &&
-    text.includes('Possible only in quantum') &&
     text.includes('Running quantum circuit') &&
     text.includes('next is fused + fused') &&
     text.includes('/message') &&
