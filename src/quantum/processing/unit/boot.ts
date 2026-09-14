@@ -3,7 +3,7 @@
 //
 // The unit is a fetch handler that answers only when named: https scheme, host qpu.uuidna.com. On a machine it has no
 // Cloudflare in front of it, so this adapter presents every local request AS the named origin — same bytes, same unit,
-// no fork — and a Node http server carries the replies. The simulator inside is the reference, and this boot does not
+// no fork — and a Node http server carries the replies. The exact state-vector computation inside is the reference, and this boot does not
 // serve until tools/call qpu_prove returns holds: true on this machine.
 //
 //   node dist/quantum/processing/unit/boot.js            → prove, then serve on $PORT, else the unit's bootPort

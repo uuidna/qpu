@@ -1,6 +1,6 @@
 // gate — every string on the surfaces below walks through the prose honesty gate, so an overclaim is caught by its SHAPE,
 // not by the name of the last one fixed. Two readings once said "This host is a quantum computer" beside an evidence
-// block that said simulator; they were found by running this gate by hand over the served JSON. Now the suite runs it.
+// block that said the amplitudes were computed exactly; they were found by running this gate by hand over the served JSON. Now the suite runs it.
 // The instrument is checked first: the gate must drain the known positives and pass the known negations, or a passing
 // walk proves nothing. Then the vendored copy is compared with the upstream file when the sibling checkout is present.
 import { test } from './receipted.js'
@@ -37,8 +37,8 @@ test('gate: the instrument drains the known overclaims and passes the bounded re
     'this encryption is unbreakable',
   ]
   const negatives = [
-    'holds true. Possible only in quantum. This host is a simulator, not a quantum computer. Entangle.',
-    'holds true. Quantum circuit simulator. SWAP. Toffoli. Reset.',
+    'holds true. Possible only in quantum. This host computes exact integer amplitudes; it is not a quantum computer. Entangle.',
+    'holds true. Exact state-vector computation of the circuit. SWAP. Toffoli. Reset.',
     'measured, 0 of 7',
     'a counting register of two qubits resolves only a period that divides 4; every other run recovers nothing',
   ]

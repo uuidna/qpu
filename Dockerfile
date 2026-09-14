@@ -1,7 +1,7 @@
 # QPU on hardware — Alpine + Node 22 + this unit. Builds on arm64 (Raspberry Pi 4/5) and amd64 alike:
 #   docker buildx build --platform linux/arm64,linux/amd64 -t qpu .
 # The image serves only after the unit has proven itself on this machine (boot.js runs qpu_prove first), and the
-# HEALTHCHECK is that same proof. The seat stays empty: the simulator inside is the reference.
+# HEALTHCHECK is that same proof. The seat stays empty: the exact state-vector computation inside is the reference.
 FROM node:22-alpine AS build
 WORKDIR /qpu
 COPY package.json package-lock.json ./

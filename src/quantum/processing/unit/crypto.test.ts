@@ -190,7 +190,7 @@ test('cybersecurity tools morph at call time — each door holds', async () => {
   assert.equal(iqft.rsa.factored, true)
   const shots = (await mcpOf('crypto_shots')) as { kind: string; device: string; measure: { noise: string; shots: number }; rsa: { kind: string; modulus: number; factored: boolean }; holds: boolean }
   assert.equal(shots.kind, 'shots')
-  assert.equal(shots.device, 'simulator')
+  assert.equal(shots.device, 'exact-amplitudes')
   assert.equal(shots.measure.noise, 'xx')
   assert.equal(shots.measure.shots, 8)
   assert.equal(shots.rsa.kind, 'rsa')
@@ -348,7 +348,7 @@ test('Shor period-finding is inverse QFT', () => {
 
 test('Shor repeats xx-noise shots, enumerated from the support', () => {
   const shor = qpuShorOf()
-  assert.equal(shor.device, 'simulator')
+  assert.equal(shor.device, 'exact-amplitudes')
   assert.equal(shor.measure.noise, 'xx')
   assert.equal(shor.measure.identity, true)
   assert.equal(shor.measure.shots, 8)
@@ -650,7 +650,7 @@ test('crypto_shor runs on the n and a it is given, whatever they are; no denial,
   assert.equal(sixtyFour.prepare.sparse, true)
   assert.equal(sixtyFour.prepare.amplitudes > 0 && sixtyFour.prepare.amplitudes <= 16, true)
   assert.equal(sixtyFour.prepare.dim, '18446744073709551616')
-  assert.equal(sixtyFour.device, 'simulator')
+  assert.equal(sixtyFour.device, 'exact-amplitudes')
   assert.equal(sixtyFour.exact.safe, false)
   assert.equal(sixtyFour.exact.n, '2305843009213693952')
   assert.equal(sixtyFour.n, '2305843009213693952')

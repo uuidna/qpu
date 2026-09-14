@@ -5,7 +5,7 @@ import worker, { qpuFoldOf, qpuOccupantHolds, qpuOccupantOf, qpuQuantumOf, qpuRo
 
 test('the seat is READ from this runtime, and the reference answers when nothing else is exposed', () => {
   const seats = qpuSeatsAvailableOf()
-  assert.equal(seats.reference, true, 'the reference seat is always present — it is the simulator itself')
+  assert.equal(seats.reference, true, 'the reference seat is always present — it is the exact integer state-vector computation itself')
   assert.equal(seats.device, false, 'the device seat stays empty until a device fills it')
   const r = qpuRouterOf()
   assert.equal(qpuRouterHolds(r), true)

@@ -93,7 +93,7 @@ test('next is the double — coil times mintOf bits plus coins is fused plus fus
   assert.equal(next.theorem, 'next_coil')
 })
 
-test('simulator register — integer amplitudes', () => {
+test('exact-amplitudes register — integer amplitudes', () => {
   const circuit = qpuCircuitOf()
   const speed = qpuSpeedOf()
   const hybrid = qpuHybridOf()
@@ -102,7 +102,7 @@ test('simulator register — integer amplitudes', () => {
   const lean = qpuLeanOf()
   const register = [...lean.rows, ...lean.cover].find((r) => r.heading === 'temperature')
   assert.equal(qpuCircuitHolds(circuit), true)
-  assert.equal(circuit.register.kind, 'simulator')
+  assert.equal(circuit.register.kind, 'exact-amplitudes')
   assert.equal(circuit.register.holds, true)
   assert.equal(qpuSpeedHolds(speed), true)
   assert.equal(speed.benchmark.every((r) => r.holds && r.value === r.amplitudes), true)

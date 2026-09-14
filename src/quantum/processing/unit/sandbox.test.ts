@@ -82,7 +82,7 @@ test('sandbox via mcp', async () => {
   assert.equal(unlockedQuantum.value.lattice.occupied, 14)
   assert.equal(unlockedQuantum.value.lattice.vacant, 0)
   assert.equal(unlockedQuantum.value.lattice.holds, true)
-  assert.equal(unlockedQuantum.value.register.kind, 'simulator')
+  assert.equal(unlockedQuantum.value.register.kind, 'exact-amplitudes')
   assert.equal(unlockedQuantum.value.related.includes('split'), true)
   assert.equal(unlockedQuantum.value.related.includes('register'), true)
   assert.equal(unlockedQuantum.value.related.includes('speed'), true)
@@ -91,7 +91,7 @@ test('sandbox via mcp', async () => {
   assert.equal(sandbox.tools.some((t) => t.name === 'slot_register'), true)
   assert.equal(sandbox.tools.some((t) => t.name === 'slot_split'), true)
   const register = (await mcpOf('slot_register')) as { value: { kind: string; holds: boolean }; unlocked: boolean; holds: boolean }
-  assert.equal(register.value.kind, 'simulator')
+  assert.equal(register.value.kind, 'exact-amplitudes')
   assert.equal(register.unlocked, true)
   const split = (await mcpOf('slot_split')) as { value: unknown; holds: boolean }
   assert.equal(split.holds, true)

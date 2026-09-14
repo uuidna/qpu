@@ -1685,9 +1685,9 @@ const convergentsOf = (num: number, den: number): { h: number; k: number }[] => 
 }
 
 type CAmp = { re: bigint; im: bigint }
-/** Device label computed from the run: a vector of exact integer amplitudes is 'simulator'; anything else is 'unmeasured'. */
+/** Device label computed from the run: a vector of exact integer amplitudes is 'exact-amplitudes'; anything else is 'unmeasured'. */
 const bigintDeviceOf = (amps: readonly bigint[]) =>
-  amps.length > n - n && amps.every((a) => typeof a === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
+  amps.length > n - n && amps.every((a) => typeof a === 'bigint') ? ('exact-amplitudes' as const) : ('unmeasured' as const)
 
 const cAmpOf = (re: bigint, im: bigint): CAmp => ({ re, im })
 const cWOf = (a: CAmp): bigint => a.re * a.re + a.im * a.im
@@ -1773,7 +1773,7 @@ const sEqualOf = (left: SparseState, right: SparseState): boolean =>
 const sPairsOf = (state: SparseState): (readonly [bigint, bigint])[] =>
   [...state].map(([i, a]) => [i, cWOf(a)] as const).filter(([, w]) => w > b0).sort(([x], [y]) => (x < y ? -1 : x > y ? 1 : n - n))
 const sDeviceOf = (state: SparseState) =>
-  state.size > n - n && [...state.values()].every((a) => typeof a.re === 'bigint' && typeof a.im === 'bigint') ? ('simulator' as const) : ('unmeasured' as const)
+  state.size > n - n && [...state.values()].every((a) => typeof a.re === 'bigint' && typeof a.im === 'bigint') ? ('exact-amplitudes' as const) : ('unmeasured' as const)
 
 const bigGcdOf = (left: bigint, right: bigint): bigint => {
   let x = left < b0 ? -left : left
@@ -1870,7 +1870,7 @@ export const qpuShorTryOf = (a: Record<string, unknown>) => {
   return { ...shor, read: args.read, holds: shor.holds && args.read.holds }
 }
 
-/** Shor on the sparse exact simulator. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation
+/** Shor on the sparse exact state vector. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation
  * circuitry. Inverse QFT. XX noise applied twice, which is the identity. Shots enumerate the support. Factors. Every number below is exact in `exact` as decimal text; the number
  * fields round past 2^53 and `exact.safe` says whether they did. */
 export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigint) => {
@@ -2123,7 +2123,7 @@ export const qpuShorHolds = (s = qpuShorOf()): boolean =>
   s.holds === true &&
   s.kind === 'shor' &&
   s.theorem === 'shor' &&
-  s.device === 'simulator' &&
+  s.device === 'exact-amplitudes' &&
   s.n === qpuFacesOf().rays * (n * n + n + seed) &&
   s.n > n * (n + coins) &&
   s.a === mintOf(n) &&
@@ -2615,7 +2615,7 @@ export const qpuCircuitOf = () => {
       computer.shots.holds &&
       noise.holds &&
       computer.correct.holds &&
-      register.kind === 'simulator' &&
+      register.kind === 'exact-amplitudes' &&
       qpuPayloadPluginHolds(plugin) &&
       payloadMcp.holds &&
       plugin.copies === seed &&
@@ -2753,7 +2753,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.lattice.vacant === n - n &&
   c.lattice.nodes.length === c.lattice.faces &&
   c.lattice.nodes.every((node) => node.holds && node.involution && node.hop === node.face) &&
-  c.register.kind === 'simulator' &&
+  c.register.kind === 'exact-amplitudes' &&
   c.register.qubits === n &&
   c.register.levels === coins &&
   c.register.coil.kind === 'coil' &&
@@ -2799,7 +2799,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   qpuComputerHolds(c.computer) &&
   c.computer.lattice.vacant === n - n &&
   c.steps.kind === 'circuit-steps' &&
-  c.steps.device === 'simulator' &&
+  c.steps.device === 'exact-amplitudes' &&
   c.steps.initialize === true &&
   c.steps.gates === true &&
   c.steps.interfere === true &&
@@ -3138,7 +3138,7 @@ export const qpuEncryptHolds = (e = qpuEncryptOf()): boolean =>
   e.ciphertext !== e.modulus
 
 let shorFactorMemo: string | undefined
-/** The factoring claim computed from the run: the modulus Shor factored on this simulator — by default 91, the instance
+/** The factoring claim computed from the run: the modulus Shor factored in this unit's exact state-vector computation — by default 91, the instance
  *  theorem shor states. Never RSA-2048. */
 export const shorFactorOf = (): string => (shorFactorMemo ??= `Factor ${qpuShorOf().n}`)
 let cryptoClaimMemo: string | undefined
@@ -3620,7 +3620,7 @@ export const qpuLeanOf = () => {
       heading: 'physical',
       theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
       formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
-      reading: 'n = 3. mintOf n = vertices. (0 ^^^ 1) ^^^ 2 = 3. (3 ^^^ 1) ^^^ 1 = 3. The row holds only when the circuit\'s step checks (circuit.steps) hold as well: initialize, gates, interfere, measure and noise, with the device computed as the exact state-vector simulator.',
+      reading: 'n = 3. mintOf n = vertices. (0 ^^^ 1) ^^^ 2 = 3. (3 ^^^ 1) ^^^ 1 = 3. The row holds only when the circuit\'s step checks (circuit.steps) hold as well: initialize, gates, interfere, measure and noise, with the device computed as exact-amplitudes: the exact state-vector computation holds every amplitude as an exact integer.',
       holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && qpuCircuitOf().steps.holds,
   },
     {
@@ -3827,7 +3827,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem computer : (1 ^^^ 3) = 2 ∧ (6 ^^^ 1) = 7 ∧ mintOf 0 = 1 := ⟨rfl, rfl, mintOf_zero⟩',
       formula: '(1\\oplus 3)=2\\land(6\\oplus 1)=7\\land\\mathrm{mintOf}(0)=1',
       reading:
-        'Quantum circuit simulator. SWAP. Toffoli. Reset. H and Toffoli are computationally universal. Coupling compile collapse shots feedforward bitflip readout isolate qram network jobs.',
+        'Exact state-vector computation of the circuit. SWAP. Toffoli. Reset. H and Toffoli are computationally universal. Coupling compile collapse shots feedforward bitflip readout isolate qram network jobs.',
       holds: xorOf(seed, n) === coins && xorOf(xorOf(bitOf(seed), bitOf(coins)), seed) === mintOf(n) - seed && mintOf(n - n) === seed && qpuComputerHolds(),
   },
     {
@@ -3985,9 +3985,9 @@ export const qpuGlossaryOf = () => ({
   sampled: 'false everywhere: outcomes enumerate the support, they are not drawn; the unit holds no entropy',
   read: 'how each argument was taken (digits, number, numeric, absent, default) and whether exactly',
   beyond: 'the order of the base exists and does not divide four, so a two-qubit register cannot resolve it',
-  device: 'simulator when a vector of exact integer amplitudes was held; unmeasured otherwise',
+  device: 'exact-amplitudes when every amplitude held is an exact integer; unmeasured otherwise',
   QPU: 'quantum processing unit — this unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym, a classical SIMD vector core, unrelated and credited',
-  seat: 'reference, vector or device: the router computes on the reference (the exact integer simulator) unless the runtime exposes a vector binding; the device seat is empty, no device is dispatched, and a device that disagrees with the reference is a driver bug, never a physics claim',
+  seat: 'reference, vector or device: the router computes on the reference (the exact integer state-vector computation) unless the runtime exposes a vector binding; the device seat is empty, no device is dispatched, and a device that disagrees with the reference is a driver bug, never a physics claim',
 })
 export const qpuQuantumOf = () => {
   const cube = qpuCubeOf()
@@ -4857,7 +4857,7 @@ export const qpuPurposeOf = (
     ghz: circuit.ghz.holds,
     holds:
       circuit.register.holds &&
-      circuit.register.kind === 'simulator' &&
+      circuit.register.kind === 'exact-amplitudes' &&
       circuit.register.qubits === n &&
       circuit.entangle.holds &&
       circuit.entangle.product === false &&
@@ -4947,7 +4947,7 @@ export const qpuPurposeOf = (
 export const qpuPurposeHolds = (p = qpuPurposeOf()): boolean =>
   p.holds === true &&
   p.kind === 'purpose' &&
-  p.nature.platform === 'simulator' &&
+  p.nature.platform === 'exact-amplitudes' &&
   p.nature.qubits === n &&
   p.cybersecurity.n === qpuFacesOf().rays * (n * n + n + seed) &&
   p.cybersecurity.product === p.cybersecurity.n &&
@@ -5034,7 +5034,7 @@ export const qpuEvidenceOf = (
   }
   const noise = {
     kind: 'calibration' as const,
-    /** T1 and T2 are relaxation and dephasing times; this simulator has none to measure, and a temperature is not one. */
+    /** T1 and T2 are relaxation and dephasing times; this exact state-vector computation has none to measure, and a temperature is not one. */
     t1: { measured: false as const },
     t2: { measured: false as const },
     gate: {
@@ -5167,7 +5167,7 @@ export const qpuEvidenceHolds = (e = qpuEvidenceOf()): boolean =>
   e.holds === true &&
   e.kind === 'evidence' &&
   e.provenance.provider === unit.host &&
-  e.provenance.device === 'simulator' &&
+  e.provenance.device === 'exact-amplitudes' &&
   e.provenance.shots === mintOf(n) &&
   e.provenance.outcomes.length === e.provenance.shots &&
   e.provenance.counts.length === coins &&
@@ -5367,7 +5367,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[n + seed],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n + seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Simulator. xx identity. ${named}`, href, see.filter((s) => s !== see[n + seed])),
+      man: qpuSubManOf(see[n + seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Exact amplitudes. xx identity. ${named}`, href, see.filter((s) => s !== see[n + seed])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
@@ -8152,7 +8152,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.lattice.occupied === p.lattice.faces &&
   p.lattice.vacant === n - n &&
   p.circuit.steps.holds === true &&
-  p.circuit.steps.device === 'simulator' &&
+  p.circuit.steps.device === 'exact-amplitudes' &&
   p.circuit.steps.initialize === true &&
   p.circuit.steps.gates === true &&
   p.circuit.steps.interfere === true &&
@@ -9421,7 +9421,7 @@ export const qpuMcpDiscoverOf = (requested?: unknown) => {
 }
 
 const installKeys = ['qpu-mcp', 'payload-mcp', 'vitepress-payload'] as const
-const installVerbs = ['ask', 'simulate', 'commit', 'audit'] as const
+const installVerbs = ['ask', 'plan', 'commit', 'audit'] as const
 const installCloudflare = {
   key: 'cloudflare' as const,
   button: 'https://deploy.workers.cloudflare.com/button',
@@ -9465,7 +9465,7 @@ const installSelectOf = (args: Record<string, unknown>): readonly string[] => {
  *  and no longer under development. Its getting-started guide names the three ways one kernel runs — the source
  *  language interpreter, the target language emulator, and the Pi's physical QPUs, chosen by passing QPU=1 to make —
  *  and its AutoTest runs each test on the interpreter AND the emulator and checks the two agree. That equivalence
- *  check is this unit's own law with the seat empty: the exact integer simulator is the reference, and an occupant
+ *  check is this unit's own law with the seat empty: the exact integer state-vector computation is the reference, and an occupant
  *  that disagrees with it is a driver bug. Credited here because the acronym was theirs first. The earlier credit in
  *  this file carried a surname and a year with no source; every field below was read from the repository. */
 const priorArtFieldsOf = () => ({
@@ -9506,7 +9506,7 @@ export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean => p.holds === tr
 /** THE UNIT AS A ROUTER OF REFERRERS (the captain, 2026-09-13: "QPU is basically intelligent router of referrers",
  *  "intelligence decides lean where processes is computed in realtime"). A request arrives with a referrer and a path;
  *  this decides, per request, which door answers and on which SEAT the work is computed. The three seats are the shape
- *  audited from QPULib's three ways to run one kernel: the REFERENCE (the exact integer simulator, always present and
+ *  audited from QPULib's three ways to run one kernel: the REFERENCE (the exact integer state-vector computation, always present and
  *  always deciding), a VECTOR seat (a SIMD or GPU binding, taken only when the runtime actually exposes one), and the
  *  DEVICE seat (empty). The vector seat's availability is read from the runtime (navigator.gpu) at the moment of the
  *  call; reference and device are typed. Measured 2026-09-13 on an Apple M1 Max carrying 32 GPU cores, no compute binding was reachable from this runtime at all, so
@@ -9588,7 +9588,7 @@ export const qpuRouterOf = (referrer = '', path = '/') => {
     seat,
     seats,
     decidedAt: 'request' as const,
-    reference: 'the exact integer simulator; it computes the answer the taken seat must reproduce',
+    reference: 'the exact integer state-vector computation; it computes the answer the taken seat must reproduce',
     why: seats.vector
       ? 'a vector binding is exposed by this runtime, so the work may ride it and is checked against the reference'
       : 'no compute binding is exposed by this runtime, so the reference computes and nothing is claimed of a device',
@@ -9601,7 +9601,7 @@ export const qpuRouterHolds = (r = qpuRouterOf()): boolean => r.holds === true &
 // ── THE SEAT, THE ACRONYM, THE BOOT (the captain, 2026-09-12: "make hardware bootable with qpu") ────────────────
 // QPULib (Naylor, 2016) runs one kernel three ways — source interpreter, target emulator, VideoCore hardware — and
 // states the doctrine: a program that works in emulation but not on the device is a bug in the library. This unit has
-// the same shape with the seat empty: the exact integer simulator is the reference; a device that fills the seat and
+// the same shape with the seat empty: the exact integer state-vector computation is the reference; a device that fills the seat and
 // disagrees is a driver bug, never a physics claim. "QPU" there is Broadcom's Quad Processing Unit — a classical 16-lane
 // SIMD vector core — prior use of this acronym, unrelated, and credited. A classical accelerator computing the same 2^n
 // exact amplitudes faster is an honest occupant of the seat; it would not make the seat quantum.
@@ -9609,8 +9609,8 @@ const qpuSeatOf = () => {
   const s = {
   kind: 'seat' as const,
   device: 'empty' as const,
-  reference: 'the exact integer state-vector simulator; every reading above is computed there',
-  doctrine: 'a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim',
+  reference: 'the exact integer state-vector computation; every reading above is computed there',
+  doctrine: 'a device that fills this seat and disagrees with the reference is a driver bug, never a physics claim',
   acronym: 'QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.',
   occupant: 'a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum',
   priorArt: qpuPriorArtOf(),
@@ -10044,7 +10044,7 @@ export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
             ? '{ verb: "audit" } names what is seated.'
             : audit
               ? 'installed. Payload MCP is fused at tools/call. VitePress payload stays on uuidna.com. QPU is JSON-LD. Cloudflare is one click.'
-              : 'Enter seats all. Then simulate, then commit.',
+              : 'Enter seats all. Then plan, then commit.',
     holds,
   }
 }
@@ -10191,8 +10191,8 @@ export const qpuToolsOf = () => {
   const circuit = qpuCircuitOf()
   const quantumMan = qpuManOf(
     names[n - n],
-    `The running circuit as one JSON-LD document: a ${circuit.register.qubits}-qubit state-vector simulator (dim ${circuit.register.dim}, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = ${capacity.fused} (a count of amplitudes). theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
-    `GET ${unit.origin} returns the same document as tools/call ${names[n - n]}. Read circuit.register for the simulator, circuit.ghz.support (${circuit.ghz.support.join(',')}) for the entangled corners, shor.factors for the factoring, capacity.fused for ${capacity.fused}; every holds must be true or the unit serves 404. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. No auth.`,
+    `The running circuit as one JSON-LD document: the exact state-vector computation of a ${circuit.register.qubits}-qubit register (dim ${circuit.register.dim}, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = ${capacity.fused} (a count of amplitudes). theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
+    `GET ${unit.origin} returns the same document as tools/call ${names[n - n]}. Read circuit.register for the exact-amplitudes register, circuit.ghz.support (${circuit.ghz.support.join(',')}) for the entangled corners, shor.factors for the factoring, capacity.fused for ${capacity.fused}; every holds must be true or the unit serves 404. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. No auth.`,
     unit.origin,
     seeOf(names[n - n]))
   const leanMan = qpuManOf(
@@ -10500,8 +10500,8 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
       return shown(qpuManPageOf('install',
         qpuManOf(
           'install',
-          'Interactive installer. Simulate, then commit. Fuse Payload MCP to QPU without a ninth sealed tool. VitePress payload stays on uuidna.com.',
-          `tools/call install. Not in tools/list. { yes: true } seats the current package. { verb: "simulate" } then { verb: "commit", yes: true } then { verb: "audit" }. QPU JSON-LD. No auth.`,
+          'Interactive installer. Plan, then commit. Fuse Payload MCP to QPU without a ninth sealed tool. VitePress payload stays on uuidna.com.',
+          `tools/call install. Not in tools/list. { yes: true } seats the current package. { verb: "plan" } then { verb: "commit", yes: true } then { verb: "audit" }. QPU JSON-LD. No auth.`,
           `${unit.origin}/mcp`,
           [...toolNames])))
     }
@@ -10775,7 +10775,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   const lines = [
     `# QPU`,
     '',
-    `\`@uuidna/qpu\` — Running quantum circuit at ${unit.origin}: an exact state-vector simulator (a ${quantum.circuit.register.qubits}-qubit circuit register; Shor's register is sized by its modulus), its Lean 4 proofs, and an MCP server in one Cloudflare Worker, which boot.js also serves from Node. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. CORS ${cors}. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.`,
+    `\`@uuidna/qpu\` — Running quantum circuit at ${unit.origin}: an exact state-vector computation (a ${quantum.circuit.register.qubits}-qubit circuit register; Shor's register is sized by its modulus), its Lean 4 proofs, and an MCP server in one Cloudflare Worker, which boot.js also serves from Node. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. CORS ${cors}. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.`,
     '',
     '```sh',
     'npm install @uuidna/qpu',

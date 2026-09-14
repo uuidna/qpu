@@ -20,13 +20,13 @@ test('interactive installer seats QPU, Payload MCP, and VitePress payload withou
   await mcpOf('install', { yes: true, step: 0 })
   await mcpOf('install', { yes: true, step: 1 })
   await mcpOf('install', { yes: true, step: 2 })
-  const simulated = (await mcpOf('install', { verb: 'simulate' })) as {
+  const planned = (await mcpOf('install', { verb: 'plan' })) as {
     plan: { added: string[]; removed: string[]; lossless: boolean }
     pending: string[]
   }
-  assert.deepEqual(simulated.pending, ['qpu-mcp', 'payload-mcp', 'vitepress-payload'])
-  assert.equal(simulated.plan.lossless, true)
-  assert.equal(simulated.plan.removed.length, 0)
+  assert.deepEqual(planned.pending, ['qpu-mcp', 'payload-mcp', 'vitepress-payload'])
+  assert.equal(planned.plan.lossless, true)
+  assert.equal(planned.plan.removed.length, 0)
 
   const committed = (await mcpOf('install', { verb: 'commit', yes: true })) as { committed: boolean }
   assert.equal(committed.committed, true)

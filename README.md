@@ -1,6 +1,6 @@
 # QPU
 
-`@uuidna/qpu` — Running quantum circuit at https://qpu.uuidna.com: an exact state-vector simulator (a 3-qubit circuit register; Shor's register is sized by its modulus), its Lean 4 proofs, and an MCP server in one Cloudflare Worker, which boot.js also serves from Node. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. CORS *. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.
+`@uuidna/qpu` — Running quantum circuit at https://qpu.uuidna.com: an exact state-vector computation (a 3-qubit circuit register; Shor's register is sized by its modulus), its Lean 4 proofs, and an MCP server in one Cloudflare Worker, which boot.js also serves from Node. theorem quantum : fused = faces * mintOf (bits + seed). Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. CORS *. API only. No HTML. The TypeScript and Lean sources are the blueprint; this README is the paper generated from that blueprint.
 
 ```sh
 npm install @uuidna/qpu
@@ -53,7 +53,7 @@ Seven paths. Eight sealed MCP tools, plus eight cybersecurity morph tools listed
 
 | Tool | What it returns |
 | --- | --- |
-| `qpu_quantum` | The running circuit as one JSON-LD document: a 3-qubit state-vector simulator (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes). theorem quantum. theorem shor. theorem crypto. Factor 91. |
+| `qpu_quantum` | The running circuit as one JSON-LD document: the exact state-vector computation of a 3-qubit register (dim 8, exact integer amplitudes), the Bell and GHZ states with their Born weights, the Shor run, and the capacity count fused = faces · 2^(bits+1) = 120259084288 (a count of amplitudes). theorem quantum. theorem shor. theorem crypto. Factor 91. |
 | `qpu_lean` | The Lean proof, served two ways: the file index.lean as text at source.href, and every theorem as a row (statement verbatim, LaTeX formula, a plain reading, holds recomputed in TypeScript). theorem infinite. theorem distribute. theorem shor. Factor 91. |
 | `qpu_cite` | How to cite this unit: MLA 8 entries carrying the DOI and ORCID, the served version, and the archived commit. MLA 8. when never — the citation names no access date. |
 | `qpu_train` | Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays. |
@@ -94,7 +94,7 @@ CERN Open Data opendata.cern.ch. LHC running. Four CMS records. Coil, electronic
 
 | Measurement | Value |
 | --- | --- |
-| Execution provenance | provider qpu.uuidna.com, device simulator, job qpu.uuidna.com/cmodexp/91/8, shots 8 |
+| Execution provenance | provider qpu.uuidna.com, device exact-amplitudes, job qpu.uuidna.com/cmodexp/91/8, shots 8 |
 | Compiler | native h cnot; compiled x swap csdg cmodexp |
 | Device-specific noise | channel xx, drift true |
 | Volume (heavy outputs) | volume dim 8, heavy 0 / 16, mirror hh |
@@ -123,7 +123,7 @@ Learn, in order. Each step teaches one thing, names the invariant to check it ag
 | 3 | Shor: a period, then a gcd | POST /mcp · crypto_shor | theorem shor Factor 91 — a = 8, period 4, 7 · 13 | p · q = n, recomputed from the period | theorem shor | `node --test --test-name-pattern="ladder 3 " dist/quantum/processing/unit/ladder.test.js` |
 | 4 | a code corrects one flip | POST /mcp · qpu_prove | bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run | distance 3 corrects exactly one error | theorem noise | `node --test --test-name-pattern="ladder 4 " dist/quantum/processing/unit/ladder.test.js` |
 
-Boot with Node. docker build -t qpu . && docker run --rm -p 8787:8787 qpu. Raspberry Pi: Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot. The boot's receipt is node dist/quantum/processing/unit/boot.js --prove — the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve. The device seat stays empty: a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim.
+Boot with Node. docker build -t qpu . && docker run --rm -p 8787:8787 qpu. Raspberry Pi: Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot. The boot's receipt is node dist/quantum/processing/unit/boot.js --prove — the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve. The device seat stays empty: a device that fills this seat and disagrees with the reference is a driver bug, never a physics claim.
 
 Integrate in any harness. One computed block, served on initialize as `install` and printed here from the same function. URL https://qpu.uuidna.com/mcp. none for reads; Authorization: Bearer QPU_WRITE_TOKEN for storage writes.
 

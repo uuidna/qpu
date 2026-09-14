@@ -31,8 +31,8 @@
     "seat": {
       "kind": "seat",
       "device": "empty",
-      "reference": "the exact integer state-vector simulator; every reading above is computed there",
-      "doctrine": "a device that fills this seat and disagrees with the simulator is a driver bug, never a physics claim",
+      "reference": "the exact integer state-vector computation; every reading above is computed there",
+      "doctrine": "a device that fills this seat and disagrees with the reference is a driver bug, never a physics claim",
       "acronym": "QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.",
       "occupant": "a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum",
       "priorArt": {
