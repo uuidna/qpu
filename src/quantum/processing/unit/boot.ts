@@ -6,10 +6,10 @@
 // no fork — and a Node http server carries the replies. The simulator inside is the reference, and this boot does not
 // serve until tools/call qpu_prove returns holds: true on this machine.
 //
-//   node dist/quantum/processing/unit/boot.js            → prove, then serve on $PORT (8787)
+//   node dist/quantum/processing/unit/boot.js            → prove, then serve on $PORT, else the unit's bootPort
 //   node dist/quantum/processing/unit/boot.js --prove    → prove and exit 0/1 (the boot's receipt; the container's HEALTHCHECK)
 import { createServer, type IncomingMessage } from 'node:http'
-import worker from './index.js'
+import worker, { bootPort } from './index.js'
 
 const ORIGIN = 'https://qpu.uuidna.com'
 const env = { QPU_HOST: 'qpu.uuidna.com' }
@@ -37,7 +37,7 @@ const proven = await prove()
 if (process.argv.includes('--prove')) process.exit(proven ? 0 : 1)
 if (!proven) process.exit(1)
 
-const port = Number(process.env.PORT ?? '8787')
+const port = Number(process.env.PORT ?? bootPort)
 createServer(async (req, res) => {
   const r = await worker.fetch(await toRequest(req), env)
   res.writeHead(r.status, Object.fromEntries(r.headers.entries()))

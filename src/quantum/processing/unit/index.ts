@@ -3620,7 +3620,7 @@ export const qpuLeanOf = () => {
       heading: 'physical',
       theorem: 'theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩',
       formula: 'n=3\\land\\mathrm{mintOf}(n)=\\mathrm{vertices}\\land(0\\oplus 1)\\oplus 2=3\\land(3\\oplus 1)\\oplus 1=3',
-      reading: 'n = 3. mintOf n = vertices. (0 ^^^ 1) ^^^ 2 = 3. (3 ^^^ 1) ^^^ 1 = 3. Reset, H CNOT, interfere, readout and bitflip correction computed on exact integer amplitudes: a state-vector simulator. Path origin payload server lean.',
+      reading: 'n = 3. mintOf n = vertices. (0 ^^^ 1) ^^^ 2 = 3. (3 ^^^ 1) ^^^ 1 = 3. The row holds only when the circuit\'s step checks (circuit.steps) hold as well: initialize, gates, interfere, measure and noise, with the device computed as the exact state-vector simulator.',
       holds: n === 3 && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, seed), coins) === n && xorOf(xorOf(n, seed), seed) === n && qpuCircuitOf().steps.holds,
   },
     {
@@ -6447,7 +6447,12 @@ export const qpuStorageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubToo
       description: 'List storage keys.',
       man: qpuSubManOf(see[seed], 'List keys.', 'Referrer links. Inodes private. RAID shares hidden.', href, see.filter((s) => s !== see[seed])),
       inputSchema: schema,
-      run: async () => ({ kind: 'list' as const, keys: storageLinksOf(await storageStoreOf(env).keys()), holds: true as const }),
+      // every listed name is a link: no RAID share mark, no inode address. keys() drops shares and storageLinksOf drops
+      // inodes, so this holds by construction; it is computed over the returned names so a change to either fails here
+      run: async () => {
+        const keys = storageLinksOf(await storageStoreOf(env).keys())
+        return { kind: 'list' as const, keys, holds: keys.every((key) => !key.includes(raidMark) && !isStorageAddressKey(key)) }
+      },
   },
     {
       name: see[coins],
@@ -6509,6 +6514,14 @@ export const qpuStorageMcpOf = async (env?: QpuEnv) => {
 
 const networkChannels = new Map<string, unknown[]>()
 
+/** qpuNetworkFetchHolds → a named fetch stays on the named host: its door is one of the named doors, and its href parses
+ *  to https on unit.host with exactly that door as its path. An href on any other host or path does not hold. */
+export const qpuNetworkFetchHolds = (f: { path: string; href: string }, doors: readonly string[]): boolean => {
+  if (!doors.includes(f.path)) return false
+  const url = URL.canParse(f.href) ? new URL(f.href) : null
+  return url !== null && url.protocol === 'https:' && url.host === unit.host && url.pathname === f.path && url.search === '' && url.hash === ''
+}
+
 export const qpuNetworkToolsOf = (): QpuSubTool[] => {
   const href = networkHref
   const see = ['net_catalog', 'net_list', 'net_send', 'net_recv', 'net_message', 'net_routes', 'net_fetch', 'net_monitor'] as const
@@ -6539,7 +6552,11 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
       description: 'List network channels.',
       man: qpuSubManOf(see[seed], 'List channels.', 'In-memory lanes.', href, see.filter((s) => s !== see[seed])),
       inputSchema: schema,
-      run: () => ({ kind: 'list' as const, channels: [...networkChannels.keys()], holds: true as const }),
+      // every listed channel is a name channelOf accepts, and the list is the whole table
+      run: () => {
+        const channels = [...networkChannels.keys()]
+        return { kind: 'list' as const, channels, holds: channels.length === networkChannels.size && channels.every((c) => channelOf(c) === c) }
+      },
   },
     {
       name: see[coins],
@@ -6550,9 +6567,13 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
         const channel = channelOf(a.channel ?? a.path ?? a.key) || 'default'
         const q = networkChannels.get(channel) ?? []
         const body = jsonOf(a.body ?? a.value)
+        const before = q.length
         q.push(body)
         networkChannels.set(channel, q)
-        return { kind: 'send' as const, channel,when: 'never' as const, holds: true as const }
+        // the channel is a name channelOf accepts, the lane grew by exactly one, and its tail is the body sent
+        const lane = networkChannels.get(channel) ?? []
+        const holds = channelOf(channel) === channel && lane.length === before + seed && lane[lane.length - seed] === body
+        return { kind: 'send' as const, channel, when: 'never' as const, holds }
       }},
     {
       name: see[n],
@@ -6562,9 +6583,13 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
       run: (a) => {
         const channel = channelOf(a.channel ?? a.path ?? a.key) || 'default'
         const q = networkChannels.get(channel) ?? []
+        const before = q.length
         const value = q.length > n - n ? q.shift() : null
         networkChannels.set(channel, q)
-        return { kind: 'recv' as const, channel, value: value ?? null, holds: true as const }
+        // the channel is a name channelOf accepts, and the lane shrank by one when it held a value, else stayed empty
+        const after = (networkChannels.get(channel) ?? []).length
+        const holds = channelOf(channel) === channel && (before > n - n ? after === before - seed : after === n - n && value === null)
+        return { kind: 'recv' as const, channel, value: value ?? null, holds }
       }},
     {
       name: see[n + seed],
@@ -6592,7 +6617,9 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
         if (allowed().includes(door) === false) {
           return { kind: 'fetch' as const, holds: false as const, denied: 'hostEscape' as const, hostEscape: true as const }
         }
-        return { kind: 'fetch' as const, path: door, href: `${unit.origin}${door === '/' ? '' : door}`, named: true as const, hostEscape: false as const, holds: true as const }
+        const fields = { kind: 'fetch' as const, path: door, href: `${unit.origin}${door === '/' ? '' : door}`, named: true as const }
+        const hostEscape = !qpuNetworkFetchHolds(fields, allowed())
+        return { ...fields, hostEscape, holds: !hostEscape }
       }},
     {
       name: see[mintOf(n) - seed],
@@ -6701,6 +6728,12 @@ export const qpuServerSubmitOf = (input: Record<string, unknown> = {}) => {
     ...job}
 }
 
+/** qpuServerQueueHolds → the queue is the jobs in submission order: its count is its length, every id is a positive
+ *  integer larger than the one before it (ids count submissions), and every job is done. */
+export const qpuServerQueueHolds = (q: { jobs: { id: number; status: string }[]; n: number }): boolean =>
+  q.n === q.jobs.length &&
+  q.jobs.every((j, i) => Number.isInteger(j.id) && j.id >= seed && j.status === 'done' && (i === n - n || q.jobs[i - seed]!.id < j.id))
+
 export const qpuServerToolsOf = (): QpuSubTool[] => {
   const href = serverHref
   const see = ['server_catalog', 'server_backend', 'server_submit', 'server_queue', 'server_result', 'server_shots', 'server_correct', 'server_monitor'] as const
@@ -6743,7 +6776,10 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
       description: 'Job queue.',
       man: qpuSubManOf(see[n], 'Queue.', 'In-memory jobs.', href, see.filter((s) => s !== see[n])),
       inputSchema: schema,
-      run: () => ({ kind: 'queue' as const, jobs: serverJobs.map((j) => ({ id: j.id, status: j.status, holds: j.holds })), n: serverJobs.length, holds: true as const }),
+      run: () => {
+        const fields = { kind: 'queue' as const, jobs: serverJobs.map((j) => ({ id: j.id, status: j.status, holds: j.holds })), n: serverJobs.length }
+        return { ...fields, holds: qpuServerQueueHolds(fields) }
+      },
   },
     {
       name: see[n + seed],
@@ -6905,7 +6941,7 @@ const quantumRelatedExtras = [
   'lattice',
   'circuit',
   'noise',
-  'physical',
+  'steps',
   'science',
   'sciences',
   'drift',
@@ -6934,7 +6970,7 @@ const quantumRelatedOf = () => {
     holds: circuit.holds,
   }
   doors.noise = circuit.noise
-  doors.physical = circuit.steps
+  doors.steps = circuit.steps
   doors.science = circuit.science
   doors.sciences = circuit.sciences
   doors.drift = circuit.drift
@@ -9590,6 +9626,9 @@ const qpuSeatOf = () => {
 export const qpuInstallJsonOf = () => qpuInstallManifestOf()
 /** value + predicate (the dryclean law): the served install reading recomputes to itself */
 export const qpuInstallJsonHolds = (m = qpuInstallJsonOf()): boolean => m.holds === true && installChecksOf(m)
+/** The one declaration of the port a booted unit serves on: boot.ts listens on $PORT, else this; the install manifest's
+ *  docker command publishes it. It is wrangler dev's default port, so a local worker and a booted image answer alike. */
+export const bootPort = 8787
 const installFieldsOf = () => ({
   command: 'npx uuidna-install',
   yes: 'npx uuidna-install --yes',
@@ -9599,8 +9638,8 @@ const installFieldsOf = () => ({
   cloudflare: { button: installCloudflare.button, qpu: installCloudflare.qpu, uuidna: installCloudflare.uuidna, payload: installCloudflare.payload },
   hardware: {
     kind: 'boot' as const,
-    port: 8787,
-    docker: 'docker build -t qpu . && docker run --rm -p 8787:8787 qpu',
+    port: bootPort,
+    docker: `docker build -t qpu . && docker run --rm -p ${bootPort}:${bootPort} qpu`,
     multiarch: 'docker buildx build --platform linux/arm64,linux/amd64 -t qpu .',
     pi: 'Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot',
     prove: 'node dist/quantum/processing/unit/boot.js --prove',
@@ -9618,8 +9657,24 @@ const qpuInstallManifestOf = () => {
   return { ...m, holds: installChecksOf(m) }
 }
 
+/** qpuWellKnownHolds → the discovery record points only at this unit: every URL it names is https on unit.host at the
+ *  path its field names, the tool count is the MCP's own count, every protocol version is one this unit speaks, and every
+ *  install row names a harness and how. */
+export const qpuWellKnownHolds = (w: ReturnType<typeof wellKnownFieldsOf>): boolean => {
+  const mcp = qpuMcpOf()
+  const at = (href: string, path: string): boolean => URL.canParse(href) && new URL(href).protocol === 'https:' && new URL(href).host === unit.host && new URL(href).pathname === path
+  return at(w.url, '/mcp') && at(w.openapi, '/openapi.json') && at(w.catalog, '/mcp.json') && at(w.cite, '/cite') && at(w.sitemap, '/sitemap.xml') &&
+    w.tools === mcp.tools.length + mcp.cybersecurity.tools.length &&
+    w.protocolVersions.length > n - n && w.protocolVersions.every((v) => (MCP_VERSIONS as readonly string[]).includes(v)) &&
+    w.install.length > n - n && w.install.every((r) => r.harness.length > n - n && r.how.length > n - n)
+}
+
 /** .well-known/mcp.json — what a client or registry can learn without an initialize round-trip. */
 const qpuWellKnownOf = () => {
+  const w = wellKnownFieldsOf()
+  return { ...w, holds: qpuWellKnownHolds(w) }
+}
+const wellKnownFieldsOf = () => {
   const mcp = qpuMcpOf()
   return {
     kind: 'well-known' as const,
@@ -9648,13 +9703,30 @@ const qpuWellKnownOf = () => {
       batch: 'a JSON-RPC batch on POST /mcp is exactly its members; notifications get no entry',
       law: 'a result that a receipt already holds is verified, not recomputed; a receipt minted at one gateway is read at every gateway',
     },
-    holds: true as const,
   }
 }
 
 /** OpenAPI 3.1 over the seven paths, derived from docs.api, with the MCP tools as an extension — for the consumers
  *  that speak OpenAPI and not MCP (gateways, Postman, OpenAI actions). */
 const qpuOpenApiOf = () => {
+  const o = openApiFieldsOf()
+  return { ...o, holds: qpuOpenApiHolds(o) }
+}
+/** qpuOpenApiHolds → the document is docs.api, whole and only: every route of docs.api is an operation at its path and
+ *  method, no path is served that docs.api lacks, operationIds are unique, and x-mcp lists exactly the MCP's tools by
+ *  name, each with a description. A dropped route, an extra path or a missing tool does not hold. */
+export const qpuOpenApiHolds = (o: { paths: Record<string, Record<string, unknown>>; 'x-mcp': { tools: { name: string; description: string }[] } }): boolean => {
+  const docs = qpuDocsOf()
+  const mcp = qpuMcpOf()
+  const ids = Object.values(o.paths).flatMap((ops) => Object.values(ops).map((op) => (op as { operationId?: unknown }).operationId))
+  const names = [...mcp.tools, ...mcp.cybersecurity.tools].map((t) => t.name)
+  return docs.api.every((a) => o.paths[a.path]?.[a.method.toLowerCase()] !== undefined) &&
+    Object.keys(o.paths).every((p) => docs.api.some((a) => a.path === p)) &&
+    ids.length === docs.api.length && new Set(ids).size === ids.length &&
+    o['x-mcp'].tools.map((t) => t.name).join(' ') === names.join(' ') &&
+    o['x-mcp'].tools.every((t) => typeof t.description === 'string' && t.description.length > n - n)
+}
+const openApiFieldsOf = () => {
   const docs = qpuDocsOf()
   const mcp = qpuMcpOf()
   const paths: Record<string, Record<string, unknown>> = {}
@@ -9673,7 +9745,6 @@ const qpuOpenApiOf = () => {
     servers: [{ url: unit.origin }],
     paths,
     'x-mcp': { endpoint: `${unit.origin}/mcp`, protocolVersions: MCP_VERSIONS, tools: [...mcp.tools, ...mcp.cybersecurity.tools].map((t) => ({ name: t.name, description: t.man.description })) },
-    holds: true as const,
   }
 }
 

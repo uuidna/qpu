@@ -3,7 +3,7 @@
 // and a GET asking for an event stream got a JSON-LD catalog with 200. Each assertion is one of those measurements.
 import { test, sensorTemperatureOf, temperatureOf } from './receipted.js'   // every test walks the one door: its receipt is the fold of what it computed
 import assert from 'node:assert/strict'
-import worker from './index.js'
+import worker, { bootPort, qpuNetworkFetchHolds, qpuOpenApiHolds, qpuServerQueueHolds, qpuWellKnownHolds } from './index.js'
 
 const O = 'https://qpu.uuidna.com'
 const env = { QPU_HOST: 'qpu.uuidna.com' }
@@ -69,6 +69,40 @@ test('the five discovery doors answer, and install.json is the same reading the 
   assert.deepEqual(inst.packages, ['qpu-mcp', 'payload-mcp', 'vitepress-payload']); assert.equal(inst.hardware.seat.device, 'empty'); assert.match(inst.hardware.prove, /boot\.js --prove/)
   const sm = await get('/sitemap.xml')
   assert.equal(sm.status, 200); assert.match(sm.headers.get('content-type') ?? '', /xml/); assert.match(await sm.text(), /<loc>https:\/\/qpu\.uuidna\.com\/openapi\.json<\/loc>/)
+})
+
+test('the discovery doors and the tool results compute their holds, and a broken input does not hold', async () => {
+  type Api = Parameters<typeof qpuOpenApiHolds>[0] & { holds: boolean }
+  const api = (await (await get('/openapi.json')).json()) as Api
+  assert.equal(api.holds, true); assert.equal(qpuOpenApiHolds(api), true, 'the served document holds when checked again')
+  const [first, ...rest] = Object.keys(api.paths)
+  assert.equal(qpuOpenApiHolds({ ...api, paths: Object.fromEntries(rest.map((p) => [p, api.paths[p]!])) }), false, `route ${first} dropped`)
+  assert.equal(qpuOpenApiHolds({ ...api, paths: { ...api.paths, '/extra': { get: { operationId: 'get_extra' } } } }), false, 'a path docs.api lacks')
+  assert.equal(qpuOpenApiHolds({ ...api, 'x-mcp': { tools: api['x-mcp'].tools.slice(1) } }), false, 'a missing tool')
+
+  type Wk = Parameters<typeof qpuWellKnownHolds>[0] & { holds: boolean }
+  const wk = (await (await get('/.well-known/mcp.json')).json()) as Wk
+  assert.equal(wk.holds, true); assert.equal(qpuWellKnownHolds(wk), true)
+  assert.equal(qpuWellKnownHolds({ ...wk, url: 'https://elsewhere.example/mcp' }), false, 'an endpoint on another host')
+  assert.equal(qpuWellKnownHolds({ ...wk, tools: wk.tools + 1 }), false, 'a tool count the MCP does not have')
+  assert.equal(qpuWellKnownHolds({ ...wk, protocolVersions: ['1999-01-01'] as unknown as Wk['protocolVersions'] }), false, 'a version this unit does not speak')
+
+  type Fetched = { path: string; href: string; hostEscape: boolean; holds: boolean }
+  const fetched = (await (await post({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'net_fetch', arguments: { path: '/mcp' } } })).json()) as { result: Fetched & { structuredContent?: Fetched } }
+  const f = fetched.result.structuredContent ?? fetched.result
+  assert.equal(f.holds, true); assert.equal(f.hostEscape, false)
+  assert.equal(qpuNetworkFetchHolds(f, [f.path]), true)
+  assert.equal(qpuNetworkFetchHolds({ ...f, href: `https://elsewhere.example${f.path}` }, [f.path]), false, 'an href on another host')
+  assert.equal(qpuNetworkFetchHolds(f, []), false, 'a door that is not named')
+
+  const queue = { jobs: [{ id: 1, status: 'done' }, { id: 2, status: 'done' }], n: 2 }
+  assert.equal(qpuServerQueueHolds(queue), true)
+  assert.equal(qpuServerQueueHolds({ ...queue, jobs: [...queue.jobs].reverse() }), false, 'ids out of submission order')
+  assert.equal(qpuServerQueueHolds({ ...queue, n: 3 }), false, 'a count that is not the length')
+
+  const inst = (await (await get('/install.json')).json()) as { hardware: { port: number; docker: string } }
+  assert.equal(inst.hardware.port, bootPort, 'the manifest\'s port is the one boot.js serves on')
+  assert.ok(inst.hardware.docker.includes(`-p ${bootPort}:${bootPort}`))
 })
 
 test('the learning ladder is four standard steps in the inline guide, each with the same five fields', async () => {

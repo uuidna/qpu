@@ -11,12 +11,12 @@ RUN npm run build
 
 FROM node:22-alpine
 WORKDIR /qpu
-ENV NODE_ENV=production PORT=8787
+# boot.js serves on $PORT, else the unit's bootPort — the port install.json's docker command publishes (-p port:port)
+ENV NODE_ENV=production
 COPY --from=build /qpu/package.json /qpu/package-lock.json ./
 COPY --from=build /qpu/dist ./dist
 COPY --from=build /qpu/src/quantum/processing/unit/index.lean ./src/quantum/processing/unit/index.lean
 COPY --from=build /qpu/qpu.d.ts /qpu/LICENSE /qpu/README.md /qpu/CITATION.cff /qpu/mcp.json /qpu/install.json ./
 RUN npm ci --omit=dev --ignore-scripts
-EXPOSE 8787
 HEALTHCHECK --interval=60s --timeout=30s --start-period=20s CMD node dist/quantum/processing/unit/boot.js --prove || exit 1
 CMD ["node", "dist/quantum/processing/unit/boot.js"]
