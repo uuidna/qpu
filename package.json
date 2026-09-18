@@ -85,9 +85,9 @@
     "land": "npm test && git push && node scripts/post-push.mjs --wait && npm run verify:live"
   },
   "devDependencies": {
-    "@types/node": "26.5.1",
+    "@types/node": "26.6.0",
     "typescript": "7.0.2",
-    "wrangler": "4.131.0"
+    "wrangler": "4.132.0"
   },
   "bin": {
     "qpu-boot": "./dist/quantum/processing/unit/boot.js"
