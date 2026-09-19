@@ -17,6 +17,10 @@ const RECEIPTS: QpuReceipt[] = []
 const FNV_OFFSET = 0xcbf29ce484222325n
 const FNV_PRIME = 0x100000001b3n
 const FNV_MASK = 0xffffffffffffffffn
+// the same FNV-1a construction qpuFoldOf uses, at the width the cube declares for an address: the published
+// 128-bit offset basis and prime, masked to vertices x hexbit hex digits.
+const FNV128_OFFSET = 0x6c62272e07bb014262b821756295c58dn
+const FNV128_PRIME = 0x1000000000000000000013bn
 export const qpuFoldOf = (text: string): string => {
   let h = FNV_OFFSET
   for (let i = text.length - text.length; i < text.length; i++) {
@@ -5804,21 +5808,33 @@ const storageOccupancyOf = (key: string): string => {
   return raidSafeOf(head) ? head : 'notes'
 }
 
+/** THE KEY IS THE CONTENT, SO THE ADDRESS MUST SEPARATE CONTENT. This is the address every stored value is seated at
+ *  (storageAddressKeyOf), so two values sharing one address share one inode and the second overwrites the first.
+ *  What stood here could not carry that weight, in three compounding ways, none of which any test or Lean statement
+ *  pinned. Its per-character step was `x = xorOf(x + x, ...)`: xor and doubling only, an AFFINE map over GF(2) with
+ *  no carry between bit positions, so distinct inputs cancel wholesale — 500 distinct short receipts addressed to 70
+ *  distinct addresses, a 430-way loss. The doubling was also unbounded: past 2^53 `Number(bigint)` rounds the low
+ *  bits away (an 8-character value addressed with 22 of its 32 digits zero, a 40-character one with 29), and past
+ *  2^1024 the float reaches Infinity and BigInt(Infinity) THROWS — which is why every deposit over about a kilobyte
+ *  failed outright, the whole uuidna ledger among them.
+ *
+ *  So the address is now the FNV-1a fold this file already trusts for its receipts (qpuFoldOf), at the width the cube
+ *  declares: multiplication by the prime carries between bit positions, which is exactly what the old step lacked,
+ *  and the arithmetic stays in BigInt, so it is exact at every length and never leaves the range. FNV-1a is a
+ *  non-cryptographic fold: it separates content and is tamper-EVIDENT, and it is not collision-RESISTANT against an
+ *  adversary who searches for one. That bound is stated, not implied. */
 export const qpuStorageAddressOf = (value: unknown): string => {
   const text = JSON.stringify(jsonOf(value))
   const cube = qpuCubeOf()
-  let acc = seed
-  let out = ''
-  for (let lane = n - n; lane < cube.vertices; lane++) {
-    let x = xorOf(acc, lane + seed)
-    for (let i = n - n; i < text.length; i++) {
-      x = xorOf(x, text.charCodeAt(i) ?? n - n)
-      x = xorOf(x + x, lane + i + seed)
-    }
-    out += hexOf(x, cube.hexbit)
-    acc = xorOf(acc, x)
+  // the address is vertices lanes of hexbit digits; a hex digit carries hexbit bits, the radix being mintOf(hexbit)
+  const digits = cube.vertices * cube.hexbit
+  const mask = (BigInt(seed) << BigInt(digits * cube.hexbit)) - BigInt(seed)
+  let h = FNV128_OFFSET
+  for (let i = n - n; i < text.length; i++) {
+    h ^= BigInt(text.charCodeAt(i))
+    h = (h * FNV128_PRIME) & mask
   }
-  return out
+  return h.toString(16).padStart(digits, '0')
 }
 
 const storageAddressKeyOf = (occupancy: string, address: string): string => `${occupancy}/${address}`
@@ -11077,6 +11093,12 @@ const worker = {
         return new Response(null, { status: lost + seed, headers: { ...headers, allow: 'POST, OPTIONS' } })
       }
       if (request.method === 'POST') {
+        // JSON-RPC IS ANSWERED AS JSON, NOT AS A CATALOG. Every response on this unit carries the one ld+json header,
+        // which is right for the documents it serves and wrong for this door: an MCP client reads the content type
+        // before the body and refuses application/ld+json outright (measured: CLIENT_HTTP_UNEXPECTED_CONTENT, which
+        // is why uuidna's own uuidna-qpu server could not connect). The GET on this path still serves the discovery
+        // catalog as ld+json, because that is what it is. Set on routeHeaders so every builder below carries it.
+        routeHeaders = { ...routeHeaders, 'content-type': 'application/json; charset=utf-8' }
         let parsed: unknown
         try {
           parsed = JSON.parse(await request.text())
@@ -11113,7 +11135,7 @@ const worker = {
         }
         /** The envelope carries the request's id, so the memo holds the result's bytes and the envelope is spliced around
          * them — the same bytes JSON.stringify would produce for the whole object. */
-        const envelope = (id: unknown, resultBody: string) => new Response(`{"jsonrpc":"2.0","id":${JSON.stringify(id ?? null)},"result":${resultBody}}`, { status: found, headers })
+        const envelope = (id: unknown, resultBody: string) => new Response(`{"jsonrpc":"2.0","id":${JSON.stringify(id ?? null)},"result":${resultBody}}`, { status: found, headers: { ...headers, ...routeHeaders } })
         if (body.method === 'tools/list') {
           return envelope(body.id, servedOf('tools/list', () => ({ resultType: 'complete' as const, tools: qpuMcpToolsListOf() })).body)
         }

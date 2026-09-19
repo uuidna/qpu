@@ -342,7 +342,13 @@ const callRpcOf = async (path: string, name: string, args: Record<string, unknow
   })
   assert.equal(res.status, 200, `${path} ${name}`)
   assert.equal(res.headers.get('access-control-allow-origin'), '*', name)
-  assert.equal((res.headers.get('content-type') ?? '').includes('ld+json'), true, name)
+  // A JSON-RPC ANSWER IS application/json, WHICH IS NOT A PREFERENCE. An MCP client reads the content type before the
+  // body: served as ld+json, /mcp was refused outright (CLIENT_HTTP_UNEXPECTED_CONTENT), so uuidna's own uuidna-qpu
+  // server could not connect to this unit at all. This assertion used to require ld+json on every door — it pinned the
+  // defect. The extras (/storage, /network, /server) still answer JSON-RPC as ld+json and a client will refuse them
+  // the same way; that is the same fault at three more doors, left here as a fact rather than quietly changed.
+  const ctype = res.headers.get('content-type') ?? ''
+  assert.equal(ctype.includes(path === '/mcp' ? 'application/json' : 'ld+json'), true, `${name}: ${path} served ${ctype}`)
   const body = (await res.json()) as ShownCall
   assert.equal(body.jsonrpc, '2.0', name)
   assert.equal(body.id, id, name)
