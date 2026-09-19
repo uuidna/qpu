@@ -5957,12 +5957,16 @@ const storageStoreOf = (env?: QpuEnv) => {
     const mem = kv === undefined ? storageHeap.get(share) : r2 === undefined ? storageBlobs.get(share) : undefined
     return typeof mem === 'string' ? mem : ''
   }
+  // THE TWO LAYERS ARE INDEPENDENT, SO THEY ARE WRITTEN TOGETHER. kv and r2 hold the same bytes and neither reads the
+  // other; awaiting them in turn doubled the round-trips of every slot for nothing.
   const writeSlot = async (key: string, value: unknown, json: boolean) => {
     const body = json ? JSON.stringify(value) : String(value)
-    if (kv) await kv.put(key, body)
+    const waves: Promise<unknown>[] = []
+    if (kv) waves.push(kv.put(key, body))
     else storageHeap.set(key, json ? value : String(value))
-    if (r2) await r2.put(key, body)
+    if (r2) waves.push(r2.put(key, body))
     else storageBlobs.set(key, json ? value : String(value))
+    if (waves.length) await Promise.all(waves)
   }
   const dropSlot = async (key: string) => {
     if (kv) await kv.delete(key)
@@ -5996,12 +6000,17 @@ const storageStoreOf = (env?: QpuEnv) => {
       const stored = jsonOf(value)
       const text = JSON.stringify(stored)
       const stripes = raidStripeOf(text, faces.rays)
-      await writeSlot(key, stored, true)
+      // ONE WAVE, NOT THIRTY ROUND-TRIPS. The slot and its 2x7 RAID shares are written across two layers, and each
+      // was awaited in turn: thirty in a row for one put, sixty for the inode-and-referrer pair a deposit makes.
+      // Measured at the door, that is about seventeen seconds of wall for tens of milliseconds of CPU. No share
+      // reads another and none reads the slot, so nothing ordered them.
+      const waves: Promise<unknown>[] = [writeSlot(key, stored, true)]
       for (let team = n - n; team < coins; team++) {
         for (let ray = n - n; ray < faces.rays; ray++) {
-          await writeSlot(raidShareKeyOf(key, ray + team * faces.rays), stripes[ray]!, true)
+          waves.push(writeSlot(raidShareKeyOf(key, ray + team * faces.rays), stripes[ray]!, true))
         }
       }
+      await Promise.all(waves)
       return stored
     },
     async del(key: string): Promise<boolean> {
