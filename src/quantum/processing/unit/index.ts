@@ -11059,10 +11059,30 @@ const worker = {
     // is known, below; every response then carries where it was computed and which door answered, so a caller can
     // see the decision instead of taking it on trust. Empty until then, which is the honest reading before a path.
     let routeHeaders: Record<string, string> = {}
-    const jsonOf = (body: unknown, status = found) => new Response(JSON.stringify(body), { status, headers: { ...headers, ...routeHeaders } })
+    // THE ENVELOPE DECIDES THE MEDIA TYPE, ONCE, FOR EVERY DOOR. An MCP client reads the content type before the body
+    // and refuses application/ld+json outright — measured as CLIENT_HTTP_UNEXPECTED_CONTENT, which is why this unit's
+    // own door could not be connected to at all. That cure was written by hand inside the POST /mcp branch and nowhere
+    // else, so the other doors answering JSON-RPC (/network, /server, and /storage, whose POST takes an envelope
+    // although it is declared rest) kept serving the one media type that refuses them. A JSON-RPC answer names itself
+    // in its own envelope, so nothing has to be listed: the answer is asked what it is.
+    const rpcMedia = { 'content-type': 'application/json; charset=utf-8' } as const
+    const isRpc = (body: unknown): boolean => {
+      const one = (x: unknown) => x !== null && typeof x === 'object' && (x as { jsonrpc?: unknown }).jsonrpc === '2.0'
+      return Array.isArray(body) ? body.length > n - n && body.every(one) : one(body)
+    }
+    // A RESPONSE WITH NO BODY DECLARES NO MEDIA TYPE. The redirect below already did this and the other three drifted
+    // from it, each promising bytes in a content type it then sent none of. On the 405 that promise is what broke the
+    // handshake: the client read a media type it refuses and never reached the status telling it to fall back to POST.
+    const emptyHeaders = (extra: Record<string, string> = {}) => {
+      const out: Record<string, string> = { ...headers, ...routeHeaders, ...extra }
+      delete out['content-type']
+      return out
+    }
+    const jsonOf = (body: unknown, status = found) =>
+      new Response(JSON.stringify(body), { status, headers: { ...headers, ...routeHeaders, ...(isRpc(body) ? rpcMedia : {}) } })
     /** A memoized document: 304 with no body when the client's If-None-Match is its ETag, else the bytes with the ETag. */
     const servedResponse = (row: Served) => {
-      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: { ...headers, ...routeHeaders, etag: row.etag } })
+      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: emptyHeaders({ etag: row.etag }) })
       return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag } })
     }
     if (host !== unit.host || host.includes('*') || !unit.holds || !integrityOnceOf()) {
@@ -11095,21 +11115,15 @@ const worker = {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
-    if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers })
+    if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
     if (path === '/mcp') {
       // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no
       // server-initiated stream, so a GET asking for text/event-stream gets the spec's other allowed answer — 405 with
       // Allow — and the client falls back to POST instead of parsing a JSON-LD catalog as an event stream.
       if (request.method === 'GET' && (request.headers.get('accept') ?? '').includes('text/event-stream')) {
-        return new Response(null, { status: lost + seed, headers: { ...headers, allow: 'POST, OPTIONS' } })
+        return new Response(null, { status: lost + seed, headers: emptyHeaders({ allow: 'POST, OPTIONS' }) })
       }
       if (request.method === 'POST') {
-        // JSON-RPC IS ANSWERED AS JSON, NOT AS A CATALOG. Every response on this unit carries the one ld+json header,
-        // which is right for the documents it serves and wrong for this door: an MCP client reads the content type
-        // before the body and refuses application/ld+json outright (measured: CLIENT_HTTP_UNEXPECTED_CONTENT, which
-        // is why uuidna's own uuidna-qpu server could not connect). The GET on this path still serves the discovery
-        // catalog as ld+json, because that is what it is. Set on routeHeaders so every builder below carries it.
-        routeHeaders = { ...routeHeaders, 'content-type': 'application/json; charset=utf-8' }
         let parsed: unknown
         try {
           parsed = JSON.parse(await request.text())
@@ -11146,7 +11160,7 @@ const worker = {
         }
         /** The envelope carries the request's id, so the memo holds the result's bytes and the envelope is spliced around
          * them — the same bytes JSON.stringify would produce for the whole object. */
-        const envelope = (id: unknown, resultBody: string) => new Response(`{"jsonrpc":"2.0","id":${JSON.stringify(id ?? null)},"result":${resultBody}}`, { status: found, headers: { ...headers, ...routeHeaders } })
+        const envelope = (id: unknown, resultBody: string) => new Response(`{"jsonrpc":"2.0","id":${JSON.stringify(id ?? null)},"result":${resultBody}}`, { status: found, headers: { ...headers, ...routeHeaders, ...rpcMedia } })
         if (body.method === 'tools/list') {
           return envelope(body.id, servedOf('tools/list', () => ({ resultType: 'complete' as const, tools: qpuMcpToolsListOf() })).body)
         }

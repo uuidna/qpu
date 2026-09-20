@@ -342,13 +342,16 @@ const callRpcOf = async (path: string, name: string, args: Record<string, unknow
   })
   assert.equal(res.status, 200, `${path} ${name}`)
   assert.equal(res.headers.get('access-control-allow-origin'), '*', name)
-  // A JSON-RPC ANSWER IS application/json, WHICH IS NOT A PREFERENCE. An MCP client reads the content type before the
-  // body: served as ld+json, /mcp was refused outright (CLIENT_HTTP_UNEXPECTED_CONTENT), so uuidna's own uuidna-qpu
-  // server could not connect to this unit at all. This assertion used to require ld+json on every door — it pinned the
-  // defect. The extras (/storage, /network, /server) still answer JSON-RPC as ld+json and a client will refuse them
-  // the same way; that is the same fault at three more doors, left here as a fact rather than quietly changed.
+  // A JSON-RPC ANSWER IS application/json AT EVERY DOOR, WHICH IS NOT A PREFERENCE. An MCP client reads the content
+  // type before the body: served as ld+json, /mcp was refused outright (CLIENT_HTTP_UNEXPECTED_CONTENT), so uuidna's
+  // own uuidna-qpu server could not connect to this unit at all. This assertion twice recorded the defect instead of
+  // forbidding it — first requiring ld+json everywhere, then exempting the three extras (/storage, /network, /server)
+  // that still carried the fault. Both readings let a live door stay unreachable while the suite read green, which is
+  // the worst thing a test can do. The rule now has no exception to drift into: the unit asks the answer what it is
+  // (an envelope naming jsonrpc 2.0) and serves that one media type, so no door can be added outside the rule.
   const ctype = res.headers.get('content-type') ?? ''
-  assert.equal(ctype.includes(path === '/mcp' ? 'application/json' : 'ld+json'), true, `${name}: ${path} served ${ctype}`)
+  assert.equal(ctype.includes('application/json'), true, `${name}: ${path} served ${ctype}`)
+  assert.equal(ctype.includes('ld+json'), false, `${name}: ${path} served a media type MCP clients refuse: ${ctype}`)
   const body = (await res.json()) as ShownCall
   assert.equal(body.jsonrpc, '2.0', name)
   assert.equal(body.id, id, name)
