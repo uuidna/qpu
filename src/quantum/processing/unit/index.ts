@@ -57,7 +57,9 @@ const mintReceiptOf = (k: number, x: number): void => {
 /** The ledger of every quantum computation this process ran, in order. */
 export const qpuReceiptLedgerOf = (): readonly QpuReceipt[] => RECEIPTS
 export const qpuReceiptFoldOf = (rows: readonly QpuReceipt[] = RECEIPTS): string => qpuFoldOf(rows.map((r) => `${r.name}:${r.dim}:${r.fold}`).join('|'))
-const mintOf = (k: number): number => {
+/** The lattice's doubling, exported so nothing has to re-implement it. A second mintOf would be the duplication
+ *  this file just finished removing, one level down. */
+export const mintOf = (k: number): number => {
   let x = k - k
   x = x + 1
   for (let i = k - k; i < k; i++) x += x
@@ -159,6 +161,33 @@ const theorem = {
   cube: (bits: number, vertices: number, hexbit: number): boolean => bits === vertices * hexbit,
   /** theorem handle : amplitudes = mintOf bits, read as fused = faces * amplitudes */
   handle: (fused: number, faces: number, amplitudes: number): boolean => fused === faces * amplitudes,
+
+  /**
+   * SYMMETRIC AND ASYMMETRIC, AND THE BRIDGE THAT CARRIES EACH TO THE OTHER.
+   *
+   * Every quantity in this lattice is stated twice: once as a SUM of like terms, which is symmetric under
+   * exchanging them, and once as a PRODUCT of unlike terms, which is not. index.lean does not treat these as two
+   * facts — it derives one from the other, and the derivation is the interesting part:
+   *
+   *   theorem harmonic : faces = rays + rays := by rw [around, coins_two, Nat.two_mul]
+   *
+   * faces = rays + rays is proved FROM faces = coins * rays, and what carries it across is coins = seed + seed.
+   * The bridge is doubling: a product by two and a sum with itself are the same operation seen from either side.
+   *
+   * mintOf_add is the general form of that bridge — mintOf (a + b) = mintOf a * mintOf b — and it is why the cube
+   * can be read either way: bits = n + coins additively, bits = vertices * hexbit multiplicatively, the same 32.
+   *
+   * And the two forms COINCIDE at exactly one value. x + x = x * x only at x = 0 and x = 2, and x + x = mintOf x
+   * only at x = 2 — so coins is the one place where the symmetric and asymmetric readings of a quantity are the
+   * same number. That is not decoration: it is why a lattice built on coins can be read both ways at all, and it
+   * is the reason theorem tetra and theorem dense both hold while neither generalises.
+   */
+  /** theorem tetra : coins + coins = mintOf coins — the symmetric reading */
+  tetra: (x: number): boolean => x + x === mintOf(x),
+  /** theorem dense : coins * coins = mintOf coins — the asymmetric reading of the same quantity */
+  dense: (x: number): boolean => x * x === mintOf(x),
+  /** theorem multiply / mintOf_add : mintOf (a + b) = mintOf a * mintOf b — the bridge itself, sum to product */
+  multiply: (a: number, b: number): boolean => mintOf(a + b) === mintOf(a) * mintOf(b),
 } as const
 
 const found = coins * ten * ten

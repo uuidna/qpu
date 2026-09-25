@@ -5,7 +5,7 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuQuantumOf, qpuShorOf } from './index.js'
+import worker, { mintOf, qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuQuantumOf, qpuShorOf } from './index.js'
 import { leanPath, leanSource, leanToolchain } from './lean.js'
 import { packageVersion } from './version.js'
 
@@ -110,7 +110,7 @@ test('each Lean identity has exactly one mirror here, and the crossing says whic
   const declared = new Set([...lean.matchAll(/^theorem (\w+)/gm)].map(([, name]) => name))
   const mirrors = [...source.matchAll(/^  (\w+): \(/gm)].map(([, name]) => name)
   const mirrored = mirrors.filter((name) => declared.has(name))
-  assert.equal(mirrored.length, coins * quantum.circuit.register.qubits, `${mirrored.length} mirrors carry a Lean theorem's name`)
+  assert.equal(mirrored.length, quantum.circuit.register.qubits * quantum.circuit.register.qubits, `${mirrored.length} mirrors carry a Lean theorem's name`)
   for (const name of mirrored) assert.ok(declared.has(name), `${name} is not a theorem index.lean declares`)
 
   // THE GUARD THAT STOPS THE RESTATEMENTS COMING BACK. Each identity is written out here exactly once — inside
@@ -151,4 +151,48 @@ test('each Lean identity has exactly one mirror here, and the crossing says whic
   assert.ok(crossing.size >= coins + coins, `only ${crossing.size} identities are shared across domains`)
   const spread = [...crossing.values()].reduce((all, d) => all + d.size, 0)
   assert.ok(spread >= faces + faces, `the identities cross only ${spread} domains in total`)
+})
+
+test('the symmetric and asymmetric readings of each quantity prove one another, and coincide only at coins', () => {
+  // index.lean does not state these as two facts. It derives one from the other:
+  //
+  //   theorem harmonic : faces = rays + rays := by rw [around, coins_two, Nat.two_mul]
+  //
+  // A symmetric form — a sum of like terms, unchanged by exchanging them — proved FROM an asymmetric one, a
+  // product of unlike terms. What carries it across is coins = seed + seed. Asserted over a RANGE below rather
+  // than at the lattice's own values, because an identity that holds at 14 and nowhere else is a coincidence,
+  // and it is the implication that is being claimed, not the arithmetic of one number.
+  const quantum = qpuQuantumOf()
+  const { faces, rays, coins } = quantum.faces
+  const { bits, vertices, hexbit } = quantum.cube
+
+  // AROUND ⟺ HARMONIC, for every ray count, given coins is a doubling.
+  for (let r = 0; r <= faces * faces; r++) {
+    const f = coins * r
+    assert.equal(f === coins * r, f === r + r, `around and harmonic disagree at rays ${r}`)
+  }
+  // The bridge is the only reason: at any other coin count the two readings come apart.
+  for (const c of [1, 3, 4, 5]) {
+    const r = rays
+    assert.notEqual(c * r === r + r, true, `a lattice on ${c} coins would not read both ways`)
+  }
+
+  // MULTIPLY IS THE GENERAL BRIDGE — a sum inside mintOf is a product outside it — and it is what lets the cube
+  // be read additively and multiplicatively as the same 32.
+  for (let a = 0; a <= hexbit; a++) {
+    for (let b = 0; b <= hexbit; b++) {
+      assert.equal(mintOf(a + b), mintOf(a) * mintOf(b), `multiply fails at ${a} + ${b}`)
+    }
+  }
+  assert.equal(bits, vertices * hexbit, 'cube, read as a product')
+  assert.equal(bits, mintOf(quantum.circuit.register.qubits + coins), 'cube, read as a sum inside mintOf')
+
+  // AND THEY COINCIDE AT EXACTLY ONE VALUE. x + x, x * x and mintOf x agree only at coins — which is why a
+  // lattice built on coins can be read either way, and why tetra and dense both hold while neither generalises.
+  const agree: number[] = []
+  for (let x = 0; x <= faces; x++) if (x + x === x * x && x + x === mintOf(x)) agree.push(x)
+  assert.deepEqual(agree, [coins], `the symmetric and asymmetric readings coincide at ${agree.join(', ')}`)
+  // Zero satisfies the sum-product pair but not the mintOf one, so it is excluded above rather than by luck.
+  assert.equal(0 + 0 === 0 * 0, true)
+  assert.notEqual(0 + 0, mintOf(0))
 })

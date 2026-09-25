@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 158,
-  "pass": 158,
+  "tests": 159,
+  "pass": 159,
   "fail": 0,
   "dry": 0,
-  "circuit": 116,
+  "circuit": 117,
   "mintOnly": 12,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "13de3627d05011ef",
+  "receipt": "2d3918be6cc48511",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -3753,6 +3753,54 @@
       "mint": {
         "calls": 18209,
         "chain": "6fcba848dae69724"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "the symmetric and asymmetric readings of each quantity prove one another, and coincide only at coins",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 813,
+      "kinds": {
+        "x": 175,
+        "cnot": 336,
+        "toffoli": 28,
+        "h": 252,
+        "measure": 14,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 805,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "d3751420dd34b49c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 14
+        }
+      ],
+      "mint": {
+        "calls": 18288,
+        "chain": "9cb6fb919d5d3cd1"
       },
       "served": {
         "count": 0,
