@@ -6,7 +6,14 @@ export declare function qpuMcpOf(): {
   href: string
 }
 export declare function qpuMcpCallOf(name: string, args?: Record<string, unknown>): Promise<unknown>
-export declare function qpuQuantumOf(): { holds: boolean; fused: number; next: number }
+export declare function qpuQuantumOf(): {
+  holds: boolean
+  fused: number
+  next: number
+  faces: ReturnType<typeof qpuFacesOf>
+  cube: ReturnType<typeof qpuCubeOf>
+  circuit: { register: { qubits: number } }
+}
 export declare function qpuLeanOf(): { holds: boolean; src: string }
 export declare function qpuProveOf(): { holds: boolean }
 export declare function qpuReadmeOf(): string
@@ -27,3 +34,13 @@ export declare function qpuTenantZoneHolds(z?: ReturnType<typeof qpuTenantZoneOf
 export declare function qpuHybridOf(): { speed: number; cost: number; layers: number; holds: boolean }
 export declare function qpuCoilOf(): { coins: number; rays: number; coil: number; faces: number; holds: boolean }
 export declare function qpuCapacityOf(): { fused: number; next: number; amplitudes: number; bits: number; holds: boolean }
+
+/** THE LATTICE ITSELF, so a consumer derives from it rather than restating it.
+ *
+ * The Payload site carried ninety-six lengths and colours typed into a stylesheet, and every one was already a
+ * quantity named here — 18 is mintOf(hexbit) + coins, 64 is mintOf(n + n), 1024 is mintOf(ten), white is
+ * mintOf(vertices) - seed. It could not read them: this file declared thirteen of the unit's exports, and none of
+ * the three that carry the geometry. A consumer that cannot see the lattice has no choice but to copy it. */
+export declare const mintOf: (k: number) => number
+export declare function qpuFacesOf(): { coins: number; rays: number; faces: number }
+export declare function qpuCubeOf(): { vertices: number; hexbit: number; bits: number; amplitudes: number }
