@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 155,
-  "pass": 155,
+  "tests": 156,
+  "pass": 156,
   "fail": 0,
   "dry": 0,
   "circuit": 114,
-  "mintOnly": 11,
+  "mintOnly": 12,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "4cfbbbfbcfb41810",
+  "receipt": "f5b15995ebb921f3",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -6072,6 +6072,27 @@
       "mint": {
         "calls": 12740,
         "chain": "66c7814726734262"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "raid: striping inverts across every residue of length against rays, up to faces",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 6,
+        "chain": "0758e8ea81131dfa"
       },
       "served": {
         "count": 0,

@@ -1,6 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker, { qpuCubeOf, qpuFacesOf } from './index.js'
+import worker, { qpuCubeOf, qpuFacesOf, raidJoinOf, raidStripeOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host, QPU_WRITE_TOKEN: 'qpu-test-write-token' }
@@ -278,4 +278,42 @@ test('storage: maintain repairs what is broken and does not read what is not', a
   assert.equal(after.monitor.verified, after.monitor.keys)
   assert.deepEqual(after.monitor.incomplete, [])
   assert.equal(after.holds, true)
+})
+
+test('raid: striping inverts across every residue of length against rays, up to faces', () => {
+  // WHAT THE WRITE PATH USED TO ASK, ASKED PROPERLY. Every storage write stringified its value, dealt it into
+  // rays, joined it back and compared — then fed that into the write's holds. It never consulted the store, so a
+  // write that landed nowhere said exactly what a write that landed said: the answer was already in the input,
+  // which is the one thing a holds here may not be. It was O(value) on the write path as well.
+  //
+  // And one sample per write proves one case. Dealing text into rays can only behave differently by LENGTH
+  // MODULO RAYS, so the real claim is a cross product — every residue against every ray count the lattice admits.
+  // Walked once here instead of sampled forever at runtime.
+  const { coins, rays, faces } = qpuFacesOf()
+  const { hexbit, bits } = qpuCubeOf()
+  const roundTrip = (text: string, stripes: number) => raidJoinOf(raidStripeOf(text, stripes))
+  const alphabet = (length: number) =>
+    Array.from({ length }, (_, i) => String.fromCharCode(97 + (i % 26))).join('')
+
+  let checked = 0
+  for (let stripes = coins; stripes <= faces; stripes++) {
+    for (let residue = 0; residue < stripes; residue++) {
+      // One length per residue class, long enough to wrap the deal several times over.
+      const text = alphabet(stripes * hexbit + residue)
+      assert.equal(text.length % stripes, residue)
+      assert.equal(roundTrip(text, stripes), text, `length ${text.length} dealt into ${stripes}`)
+      checked += 1
+    }
+  }
+  // Every pair from coins stripes up to faces: the triangular number of faces, less the single-stripe row.
+  assert.equal(checked, (faces * (faces + 1)) / 2 - 1)
+
+  // The three cases the residue walk cannot reach: one stripe, no text, and less text than there are rays.
+  assert.equal(roundTrip(alphabet(faces), 1), alphabet(faces))
+  assert.equal(roundTrip('', rays), '')
+  assert.equal(roundTrip('x', rays), 'x')
+
+  // And a value the width of the register's word squared — the largest single write the unit describes.
+  const wide = alphabet(bits * bits)
+  assert.equal(roundTrip(wide, rays), wide)
 })

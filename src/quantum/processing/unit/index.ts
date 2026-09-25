@@ -5927,7 +5927,10 @@ const raidShareKeyOf = (key: string, face: number): string => `${key}${raidMark}
 /** The value's characters dealt round-robin across the rays. Built through per-ray arrays and one join each: the
  *  same stripes the character-by-character concatenation produced, without re-growing a string once per character —
  *  which cost 97.7 ms on a 500 KB value and put every real deposit over the Worker's CPU budget. */
-const raidStripeOf = (text: string, rays: number): string[] => {
+/** Exported for the property that used to be sampled on every write: raidJoinOf is the inverse of raidStripeOf,
+ *  and dealing into rays can only differ by length modulo rays, so the claim is a cross product of residue against
+ *  ray count. The write path cannot walk that; the suite can. */
+export const raidStripeOf = (text: string, rays: number): string[] => {
   const parts: string[][] = []
   for (let i = n - n; i < rays; i++) parts.push([])
   for (let i = n - n; i < text.length; i++) parts[i % rays]!.push(text[i]!)
@@ -5935,7 +5938,7 @@ const raidStripeOf = (text: string, rays: number): string[] => {
 }
 
 /** The stripes read back in the order they were dealt — the inverse of raidStripeOf, collected and joined once. */
-const raidJoinOf = (stripes: string[]): string => {
+export const raidJoinOf = (stripes: string[]): string => {
   const out: string[] = []
   const rays = stripes.length
   for (let i = n - n; ; i += seed) {
@@ -6503,10 +6506,24 @@ export const qpuStorageOf = async (
     await store.put(key, { kind: 'referrer' as const, address, occupancy, href: access })
     raidTraffic += seed
     const raid = qpuRaidOf({ safe: raidSafeOf(key) })
-    // stringified once and rejoined once: this ran three times and twice on every write, over the whole value
-    const text = JSON.stringify(stored)
-    const stripes = raidStripeOf(text, faces.rays)
-    const reconstructed = raidJoinOf(stripes) === text
+    /**
+     * THE ROUND TRIP IS GONE FROM THE WRITE PATH, AND PROVED PROPERLY INSTEAD.
+     *
+     * Every write used to stringify the whole value, deal it into rays and join it back, and compare — then feed
+     * that comparison into the write's `holds`. It reads like an integrity check and is not one: raidJoinOf is
+     * the inverse of raidStripeOf or it is not, and which one is decided by the two functions and the text alone.
+     * The store is never consulted. A write could land nowhere, or land corrupted, and this still said true; a
+     * write of the same bytes to a broken store says exactly what a write to a healthy one says. The answer was
+     * already in the input, which is the one thing a holds here is not allowed to be.
+     *
+     * It was not free either. It was O(value) on the write path — an earlier pass cut it from three times to
+     * once per write without asking whether once was the right number.
+     *
+     * One sample per write also proves less than it looks. What matters about the striping is that it inverts for
+     * EVERY length, and dealing into rays only behaves differently by length modulo rays — so the property is a
+     * cross product of residue class against ray count, and the suite walks it (raid.test.ts). A write that
+     * happens to be a multiple of rays exercises one residue and reports on all of them.
+     */
     return {
       ...meta,
       '@type': 'Thing' as const,
@@ -6521,9 +6538,10 @@ export const qpuStorageOf = async (
       raid: {
         ...raid,
         stripes: faces.rays,
-        shares: faces.faces,
-        reconstructed},
-      holds: meta.holds && raid.holds && inode.nlink === inode.links.length && reconstructed,
+        shares: faces.faces},
+      // What is left is about THIS write: the store's own meta, the raid geometry it picked, and the inode's link
+      // count agreeing with the links it holds. Each of those can be false for a write that went wrong.
+      holds: meta.holds && raid.holds && inode.nlink === inode.links.length,
   }
   }
   const foundValue = await store.get(key)
