@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 151,
-  "pass": 151,
+  "tests": 152,
+  "pass": 152,
   "fail": 0,
   "dry": 0,
-  "circuit": 110,
+  "circuit": 111,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "08955a96461323f5",
+  "receipt": "e59748fc79e4757e",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -5880,6 +5880,54 @@
       "mint": {
         "calls": 155312,
         "chain": "2ff1cc95544d96da"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "storage: the catalog walk is bounded by pages, and says when it stopped short",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 292,
+      "kinds": {
+        "x": 66,
+        "cnot": 128,
+        "toffoli": 12,
+        "h": 76,
+        "measure": 6,
+        "cmodexp": 2,
+        "xx": 2
+      },
+      "dims": {
+        "8": 288,
+        "512": 4
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "4506dd38a049566d",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 6
+        }
+      ],
+      "mint": {
+        "calls": 6402,
+        "chain": "9872b84d9ff15615"
       },
       "served": {
         "count": 0,

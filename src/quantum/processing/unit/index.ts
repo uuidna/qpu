@@ -716,6 +716,18 @@ const raidMark = '/@'
  *  every listing continues by cursor until it holds the `limit` names asked for or the store is exhausted; qpuStorageListOf's
  *  default limit is qpuFacesOf().faces. */
 const STORE_LIST_PAGE = 1000
+/** HOW MANY LIST CALLS ONE REQUEST MAY MAKE, PER LAYER. Not a cap on what the store holds — a cap on what a single
+ *  Worker invocation will spend finding out.
+ *
+ *  Removing the page cap on 2026-09-14 fixed a real fault (a single list call saw only the first page, so the store
+ *  silently saw part of itself) and introduced a worse one: `keys()` and `raw()` then walked EVERY page of KV and
+ *  every page of R2, and `GET /storage` calls both. A Worker has a subrequest budget per request, so past a few
+ *  thousand keys the catalog stopped returning at all — measured on the live host, GET /storage hung until the
+ *  client's headers timeout while /network and /server answered in a second.
+ *
+ *  A census is a census. The page budget bounds the subrequests; `complete` says whether the walk reached the end,
+ *  so a partial answer is reported as partial instead of being read as the whole store. */
+const STORE_SCAN_PAGES = 4
 let raidTraffic = n - n
 
 const raidClouds = [
@@ -5928,6 +5940,9 @@ const storageStoreOf = (env?: QpuEnv) => {
   const kv = env?.STORAGE
   const r2 = env?.BLOBS
   const faces = qpuFacesOf()
+  /** Set when a page-budgeted walk stopped with a cursor still in hand — the store is larger than this request
+   *  looked. Per store instance, so it describes this request's walks and not some earlier one's. */
+  let scanTruncated = false
   const readFull = async (key: string): Promise<unknown> => {
     if (kv) {
       const value = await kv.get(key, { type: 'json' })
@@ -6027,21 +6042,28 @@ const storageStoreOf = (env?: QpuEnv) => {
       const take = (name: string) => {
         if (name.startsWith(prefix) && !name.includes(raidMark)) names.add(name)
       }
+      // THE NAMES BOUND IS NOT A SUBREQUEST BOUND. `names.size < limit` stops once enough names are FOUND, and a
+      // prefix that matches nothing finds none — so the loop walked every page of the namespace looking for a
+      // match it would never make. The page budget is what the Worker's subrequest limit is actually counted in.
       if (kv) {
         let cursor: string | undefined
+        let pages = n - n
         do {
           const listed = await kv.list({ prefix, limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
           for (const row of listed.keys) take(row.name)
           cursor = listed.list_complete === false ? listed.cursor : undefined
-        } while (cursor && names.size < limit)
+          pages += seed
+        } while (cursor && names.size < limit && pages < STORE_SCAN_PAGES)
       }
       if (r2) {
         let cursor: string | undefined
+        let pages = n - n
         do {
           const listed = await r2.list({ prefix, limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
           for (const row of listed.objects) take(row.key)
           cursor = listed.truncated === true ? listed.cursor : undefined
-        } while (cursor && names.size < limit)
+          pages += seed
+        } while (cursor && names.size < limit && pages < STORE_SCAN_PAGES)
       }
       if (kv === undefined) for (const name of storageHeap.keys()) take(name)
       if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
@@ -6052,50 +6074,71 @@ const storageStoreOf = (env?: QpuEnv) => {
       const take = (name: string) => {
         if (!name.includes(raidMark)) names.add(name)
       }
-      // EVERY PAGE, by cursor: a single list call returned only the first STORE_LIST_PAGE names, so past that the store
-      // silently saw only part of itself — a cap nobody chose, found 2026-09-14 while building the live listing
+      // EVERY PAGE, by cursor, UP TO A BUDGET: a single list call returned only the first STORE_LIST_PAGE names, so
+      // past that the store silently saw only part of itself — a cap nobody chose, found 2026-09-14 while building
+      // the live listing. Walking every page instead put an unbounded number of subrequests inside one Worker
+      // invocation, and GET /storage — which calls this AND raw(), across KV AND R2 — stopped answering at all.
+      // Bounded by pages, which is the unit the subrequest limit is counted in, and the shortfall is reported
+      // rather than hidden: keysComplete() says whether the walk reached the end.
       if (kv) {
         let cursor: string | undefined
+        let pages = n - n
         do {
-          const listed = await kv.list(cursor ? { cursor } : {})
+          const listed = await kv.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
           for (const row of listed.keys) take(row.name)
           cursor = listed.list_complete === false ? listed.cursor : undefined
-        } while (cursor)
+          pages += seed
+        } while (cursor && pages < STORE_SCAN_PAGES)
+        if (cursor) scanTruncated = true
       }
       if (r2) {
         let cursor: string | undefined
+        let pages = n - n
         do {
-          const listed = await r2.list(cursor ? { cursor } : {})
+          const listed = await r2.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
           for (const row of listed.objects) take(row.key)
           cursor = listed.truncated === true ? listed.cursor : undefined
-        } while (cursor)
+          pages += seed
+        } while (cursor && pages < STORE_SCAN_PAGES)
+        if (cursor) scanTruncated = true
       }
       if (kv === undefined) for (const name of storageHeap.keys()) take(name)
       if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
       return [...names]
+    },
+    /** Did the last keys()/raw() walk reach the end of the store, or stop at the page budget? A census that stopped
+     *  early is still useful; a census that stopped early and says it is complete is a wrong number. */
+    keysComplete(): boolean {
+      return scanTruncated === false
     },
     async raw(): Promise<string[]> {
       const names = new Set<string>()
       const take = (name: string) => {
         names.add(name)
       }
-      // EVERY PAGE, by cursor: a single list call returned only the first STORE_LIST_PAGE names, so past that the store
-      // silently saw only part of itself — a cap nobody chose, found 2026-09-14 while building the live listing
+      // Same budget as keys(), for the same reason: GET /storage calls both, so an unbounded walk here costs the
+      // request its subrequest budget just as surely.
       if (kv) {
         let cursor: string | undefined
+        let pages = n - n
         do {
-          const listed = await kv.list(cursor ? { cursor } : {})
+          const listed = await kv.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
           for (const row of listed.keys) take(row.name)
           cursor = listed.list_complete === false ? listed.cursor : undefined
-        } while (cursor)
+          pages += seed
+        } while (cursor && pages < STORE_SCAN_PAGES)
+        if (cursor) scanTruncated = true
       }
       if (r2) {
         let cursor: string | undefined
+        let pages = n - n
         do {
-          const listed = await r2.list(cursor ? { cursor } : {})
+          const listed = await r2.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
           for (const row of listed.objects) take(row.key)
           cursor = listed.truncated === true ? listed.cursor : undefined
-        } while (cursor)
+          pages += seed
+        } while (cursor && pages < STORE_SCAN_PAGES)
+        if (cursor) scanTruncated = true
       }
       if (kv === undefined) for (const name of storageHeap.keys()) take(name)
       if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)

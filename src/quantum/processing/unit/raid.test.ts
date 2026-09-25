@@ -111,3 +111,53 @@ test('raid starts cheapest and covers all', async () => {
   assert.equal(got.value.kind, 'docs')
   assert.equal(got.value.row, 0)
 })
+
+test('storage: the catalog walk is bounded by pages, and says when it stopped short', async () => {
+  // THE FAULT THIS IS FOR TOOK THE LIVE HOST DOWN. `keys()` and `raw()` walked EVERY page of KV and every page of
+  // R2 by cursor, and GET /storage calls both — so one request made an unbounded number of subrequests. A Worker
+  // has a budget for those. Measured on qpu.uuidna.com: GET /storage never returned headers and the client timed
+  // out at 20s, while /network and /server answered in about a second. The suite could not see it because no test
+  // binds a store, so the cursor loops never ran at all and the local heap path returned instantly.
+  //
+  // This store never stops paging. Against the unbounded walk the request cannot complete; against the budget it
+  // completes, having spent a countable number of list calls.
+  let kvLists = 0
+  let r2Lists = 0
+  const endless = {
+    QPU_HOST: host,
+    STORAGE: {
+      get: async () => null,
+      put: async () => {},
+      delete: async () => {},
+      list: async (options?: { prefix?: string; limit?: number; cursor?: string }) => {
+        kvLists += 1
+        return {
+          keys: [{ name: `kv-${options?.cursor ?? '0'}-${kvLists}` }],
+          list_complete: false,
+          cursor: `c${kvLists}`,
+        }
+      },
+    },
+    BLOBS: {
+      get: async () => null,
+      put: async () => ({}),
+      delete: async () => {},
+      list: async (options?: { prefix?: string; limit?: number; cursor?: string }) => {
+        r2Lists += 1
+        return { objects: [{ key: `r2-${options?.cursor ?? '0'}-${r2Lists}` }], truncated: true, cursor: `c${r2Lists}` }
+      },
+    },
+  }
+
+  const response = await worker.fetch(new Request(`${origin}/storage`, { headers: html }), endless)
+  assert.equal(response.status, 200)
+  const body = (await response.json()) as { keys?: unknown[] }
+
+  // Bounded, and bounded per layer. The exact budget is an implementation choice; that it EXISTS is the property,
+  // so this asserts a ceiling rather than an equality that would break the moment the budget is retuned.
+  assert.ok(kvLists > 0, 'the KV layer was never listed, so this store was not exercised')
+  assert.ok(r2Lists > 0, 'the R2 layer was never listed, so this store was not exercised')
+  assert.ok(kvLists <= 16, `KV was listed ${kvLists} times for one request`)
+  assert.ok(r2Lists <= 16, `R2 was listed ${r2Lists} times for one request`)
+  assert.ok(Array.isArray(body.keys), 'the catalog still answers with the census it did manage to take')
+})
