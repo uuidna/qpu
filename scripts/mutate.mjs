@@ -79,9 +79,23 @@ if (rows.length === 0) {
  */
 const SUITE_TIMEOUT_MS = 180_000
 
+/**
+ * THE ROLLCALL, NOT `npm test`, AND THE REASON IS THE PROOF.
+ *
+ * `npm test` runs the receipted reporter, which writes test-receipt.json on every invocation. `npm run proof` is
+ * `git diff --exit-code -- test-receipt.json`, so a receipt that moved is a failed gate. This runner invokes the
+ * suite once per mutant and ends with `npm run build` — which regenerates the README and never re-runs the
+ * suite — so the LAST MUTANT'S receipt was what stayed on disk. Measured: a clean tree before one mutant,
+ * `M test-receipt.json` after it.
+ *
+ * That made the runner unwireable into CI, where it would have to run before the proof step and would fail it,
+ * and it quietly broke the proof for anyone who ran a mutation locally and then committed. `test:rollcall` is the
+ * same suite over the same built output with no reporter attached, so nothing is written and the proof is a
+ * question about the build rather than about who last ran a mutation.
+ */
 const suitePasses = () => {
   try {
-    execSync('npm test', { cwd: ROOT, encoding: 'utf8', stdio: 'pipe', timeout: SUITE_TIMEOUT_MS })
+    execSync('npm run test:rollcall', { cwd: ROOT, encoding: 'utf8', stdio: 'pipe', timeout: SUITE_TIMEOUT_MS })
     return true
   } catch (error) {
     if (error?.code === 'ETIMEDOUT') console.log('     (the mutant hung the suite — killed by timeout)')

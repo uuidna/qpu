@@ -76,6 +76,15 @@ jobs:
       # diff says which row moved.
       - name: Proof — the committed test-receipt.json is this run's
         run: git diff --exit-code -- test-receipt.json || { echo "::error::test-receipt.json differs from this run; commit the regenerated proof with the change that moved it"; git --no-pager diff -- test-receipt.json | head -80; exit 1; }
+      # THE GUARDS, PROVED ABLE TO FAIL. The gate above says the suite agrees with the build; it cannot say the suite
+      # would notice a broken one. Each mutant is an edit that should break a named guard, and a SURVIVOR is the
+      # finding — a property nothing actually checks. Runs here rather than nightly because six mutants cost about a
+      # minute and a guard that stops guarding does so on the commit that breaks it, not overnight.
+      # It uses test:rollcall, which attaches no reporter: with `npm test` each mutant rewrote test-receipt.json and
+      # the last mutant's receipt was left on disk, which failed the proof step above.
+      - name: Mutation — every guard proved able to fail
+        run: npm run mutate
+
       - name: Deploy to Cloudflare (only when called with deploy and the token exists)
         id: deploy
         if: ${{ inputs.deploy }}

@@ -68,3 +68,20 @@ jobs:
             echo "::error::npm refused the PUT with 404: npmjs.com has no trusted publisher for uuidna/qpu + publish.yml. Set one under the package's Settings → Trusted publishers (GitHub Actions, repository uuidna/qpu, workflow publish.yml), then rerun this job. The GitHub Release and the Zenodo archive are already made."
           fi
           exit $status
+      # THE RELEASE IS WHAT IS REACHABLE, NOT WHAT THE COMMANDS RETURNED. Every step above can exit zero while the
+      # version is not yet served: npm's PUT succeeds before the registry serves it, a provenance attestation is a
+      # separate object, and Zenodo archives through a webhook that fires minutes later — or not at all. This polls
+      # npm, the attestation, the Release and the Zenodo concept record until all four answer for this exact version.
+      #
+      # It found the gap it was written for on its first run: package.json and CITATION.cff both said 0.1.3 while
+      # npm served 0.1.2, no v0.1.3 tag existed, and the archive held v0.1.2. Nothing had reported that.
+      #
+      # A host that REFUSES is reported as unverifiable and does not fail the job — Zenodo 403s some callers, and
+      # calling that a missing archive is how a pipeline starts lying in the other direction.
+      - name: Verify the release is complete and live — npm, provenance, Release, Zenodo
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERIFY_ATTEMPTS: '30'
+          VERIFY_EVERY_MS: '10000'
+        run: node scripts/verify-release.mjs "${GITHUB_REF_NAME#v}"
