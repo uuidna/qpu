@@ -6217,13 +6217,22 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
   const present = new Set(raw)
   let verified = n - n
   let missing = n - n
+  /** WHICH KEY, AND WHICH FACE. `missing: 1` is a true sentence that nobody can act on — the same dead end this
+   *  unit refuses when it refuses a forge without naming the free seat. A repair needs the key and the face, so
+   *  the first few are named; the count stays authoritative for however many there are. */
+  const incomplete: { key: string; faces: number[] }[] = []
   for (const key of names) {
     let held = n - n
+    const absent: number[] = []
     for (let face = n - n; face < faces.faces; face++) {
       if (present.has(raidShareKeyOf(key, face))) held += seed
+      else absent.push(face)
     }
     if (held === faces.faces) verified += seed
-    else missing += seed
+    else {
+      missing += seed
+      if (incomplete.length < faces.faces) incomplete.push({ key, faces: absent })
+    }
   }
 
   /**
@@ -6255,6 +6264,7 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
     shares,
     expected,
     missing,
+    incomplete,
     verified,
     bytes,
     sampled,
