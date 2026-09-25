@@ -64,7 +64,7 @@ Seven paths. Eight sealed MCP tools, plus eight cybersecurity morph tools listed
 
 Cybersecurity morph tools. crypto_rsa theorem shor Factor 91. crypto_split theorem crypto Split identity true. Secrecy false.
 
-Discovery, off the seven-path guide: `/.well-known/mcp.json` `/mcp.json` `/install.json` `/openapi.json` `/sitemap.xml`. JSON-RPC batches accepted on `POST /mcp`; a `GET /mcp` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.
+Discovery, off the seven-path guide: `/.well-known/mcp.json` `/mcp.json` `/install.json` `/openapi.json` `/sitemap.xml` `/qpu.css`. The sheet is 7 card slots on rays, 14 frameworks on faces, and variant size state element theme seated by index — no HTML, no request, 2961 bytes. JSON-RPC batches accepted on `POST /mcp`; a `GET /mcp` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.
 
 | Tool | Claim |
 | --- | --- |

