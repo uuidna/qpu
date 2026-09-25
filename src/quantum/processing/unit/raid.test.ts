@@ -1,6 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker from './index.js'
+import worker, { qpuCubeOf, qpuFacesOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host, QPU_WRITE_TOKEN: 'qpu-test-write-token' }
@@ -153,12 +153,12 @@ test('storage: the catalog walk is bounded by pages, and says when it stopped sh
   assert.equal(response.status, 200)
   const body = (await response.json()) as { keys?: unknown[] }
 
-  // Bounded, and bounded per layer. The exact budget is an implementation choice; that it EXISTS is the property,
-  // so this asserts a ceiling rather than an equality that would break the moment the budget is retuned.
+  // Bounded, and bounded per layer: the catalog makes three page-budgeted walks, so no layer is listed more times
+  // than there are faces. A ceiling rather than an equality, so retuning the budget does not break the property.
   assert.ok(kvLists > 0, 'the KV layer was never listed, so this store was not exercised')
   assert.ok(r2Lists > 0, 'the R2 layer was never listed, so this store was not exercised')
-  assert.ok(kvLists <= 16, `KV was listed ${kvLists} times for one request`)
-  assert.ok(r2Lists <= 16, `R2 was listed ${r2Lists} times for one request`)
+  assert.ok(kvLists <= qpuFacesOf().faces, `KV was listed ${kvLists} times for one request`)
+  assert.ok(r2Lists <= qpuFacesOf().faces, `R2 was listed ${r2Lists} times for one request`)
   assert.ok(Array.isArray(body.keys), 'the catalog still answers with the census it did manage to take')
 })
 
@@ -171,8 +171,13 @@ test('storage: the catalog costs the same whether the store holds ten keys or a 
   //
   // Share presence is a question about NAMES, and the listing already carries them. This store is the live one's
   // shape — 253 links, fourteen shares each — and the assertion is that the reads do not scale with it.
-  const links = Array.from({ length: 253 }, (_, i) => `probe-${i}`)
-  const names = [...links, ...links.flatMap((k) => Array.from({ length: 14 }, (_, f) => `${k}/@${f}`))]
+  // The live store's shape, in the lattice's own numbers: links enough to outrun any per-key budget, and one
+  // share per face. `faces` is what RAID actually stripes across, so a change to the geometry moves this fixture
+  // with it instead of leaving a 14 here that quietly means something else.
+  const { faces } = qpuFacesOf()
+  const { bits } = qpuCubeOf()
+  const links = Array.from({ length: bits * qpuCubeOf().vertices }, (_, i) => `probe-${i}`)
+  const names = [...links, ...links.flatMap((k) => Array.from({ length: faces }, (_, f) => `${k}/@${f}`))]
   let reads = 0
   const populated = {
     QPU_HOST: host,
@@ -211,7 +216,66 @@ test('storage: the catalog costs the same whether the store holds ten keys or a 
   // AND THE COST DID NOT FOLLOW THE STORE. This is the property; the exact sample size is an implementation
   // choice, so the bound is generous and the point is that it is a bound at all rather than 253.
   assert.ok(reads < links.length, `the monitor read ${reads} values for ${links.length} keys — the reads scale with the store`)
-  assert.ok(reads <= 32, `${reads} value reads in one catalog request`)
+  assert.ok(reads <= qpuCubeOf().bits, `${reads} value reads in one catalog request`)
   // The byte total is a sample and says so, rather than being a confident figure measured over part of the store.
   assert.equal(body.monitor.sampled, reads)
+})
+
+test('storage: maintain repairs what is broken and does not read what is not', async () => {
+  // MAINTAIN HAD THE SAME FAULT AS THE MONITOR AND IT MATTERED MORE. It read every value, sequentially, to find the
+  // few needing a rewrite — so at 253 links it was past a Worker's subrequest budget before attempting a single
+  // repair, and the repair path failed on exactly the stores that needed it. A missing share is a missing NAME and
+  // the listing carries the names, so the broken set is decided without reading anything.
+  //
+  // This store persists, so the fault is asserted to CLEAR rather than merely to be attempted.
+  const { faces } = qpuFacesOf()
+  const links = Array.from({ length: faces * qpuFacesOf().coins }, (_, i) => `mend-${i}`)
+  const kv = new Map<string, string>()
+  for (const key of links) {
+    kv.set(key, JSON.stringify({ v: key }))
+    for (let f = 0; f < faces; f++) kv.set(`${key}/@${f}`, JSON.stringify('share'))
+  }
+  kv.delete('mend-7/@9') // exactly the shape of the live fault: one link, one face
+
+  let reads = 0
+  const bound = {
+    QPU_HOST: host,
+    QPU_WRITE_TOKEN: 'qpu-test-write-token',
+    STORAGE: {
+      get: async (key: string) => { reads += 1; const v = kv.get(key); return v === undefined ? null : JSON.parse(v) },
+      put: async (key: string, value: string) => { kv.set(key, value) },
+      delete: async (key: string) => { kv.delete(key) },
+      list: async (options?: { prefix?: string }) => ({
+        keys: [...kv.keys()].filter((k) => k.startsWith(options?.prefix ?? '')).map((name) => ({ name })),
+        list_complete: true,
+      }),
+    },
+  }
+  const call = (body: unknown) =>
+    worker.fetch(
+      new Request(`${origin}/storage`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'text/html', authorization: `Bearer ${bound.QPU_WRITE_TOKEN}` },
+        body: JSON.stringify(body),
+      }),
+      bound,
+    )
+
+  const mended = (await (await call({ maintain: true })).json()) as { repaired: number; remaining: number }
+  assert.equal(mended.repaired, 1, 'one link was broken, so one link is repaired')
+  assert.equal(mended.remaining, 0, 'and nothing is left for a second call')
+
+  // THE COST DID NOT FOLLOW THE STORE. Forty links, one broken: the reads are the repair plus the monitor's byte
+  // sample, not one per link.
+  assert.ok(reads < links.length, `maintain read ${reads} values for ${links.length} links`)
+
+  // AND THE FAULT IS GONE — asked of the catalog, which is what reported it.
+  const after = (await (await worker.fetch(new Request(`${origin}/storage`, { headers: html }), bound)).json()) as {
+    holds: boolean
+    monitor: { missing: number; verified: number; keys: number; incomplete: unknown[] }
+  }
+  assert.equal(after.monitor.missing, 0)
+  assert.equal(after.monitor.verified, after.monitor.keys)
+  assert.deepEqual(after.monitor.incomplete, [])
+  assert.equal(after.holds, true)
 })

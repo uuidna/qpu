@@ -727,10 +727,18 @@ const STORE_LIST_PAGE = 1000
  *
  *  A census is a census. The page budget bounds the subrequests; `complete` says whether the walk reached the end,
  *  so a partial answer is reported as partial instead of being read as the whole store. */
-const STORE_SCAN_PAGES = 4
+const STORE_SCAN_PAGES = mintOf(coins)
 /** How many values one catalog request will read to estimate the store's size. Reads are subrequests; the byte
  *  total is a reading and not a gate, so it is sampled and labelled rather than paid for per key. */
-const STORE_BYTES_SAMPLE = 16
+const STORE_BYTES_SAMPLE = mintOf(mintOf(coins))
+/** How many links one maintain call will repair, and how many orphans it will drop. A repair is a read and two
+ *  writes; unbounded, the call runs out of subrequests mid-store and cannot say what it did.
+ *
+ *  LOW, because one repair is not one write. A RAID rewrite puts the value and all fourteen shares, across KV and
+ *  R2 — measured at 30 subrequests for a single link. Cloudflare allows 50 per request on the free plan, so a
+ *  bound of eight would have been 240 and the repair would have failed the way the thing it repairs failed.
+ *  `remaining` is how a caller knows to call again. */
+const STORE_REPAIR_MAX = coins
 let raidTraffic = n - n
 
 const raidClouds = [
@@ -6311,29 +6319,52 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) =
   const raw = await store.raw()
   let repaired = n - n
   let orphans = n - n
-  for (const key of names) {
+
+  /**
+   * REPAIR WHAT IS BROKEN, NOT EVERYTHING, and decide which from the listing.
+   *
+   * This read every value — `await store.get(key)` per key, sequentially, KV then R2 — to find the few that needed
+   * rewriting. At 253 links that is past a Worker's subrequest budget before a single repair is attempted, so the
+   * repair path failed on exactly the stores that needed it most. The monitor had the same fault and the same cure:
+   * a missing share is a missing NAME, and the listing already carries the names.
+   *
+   * THE SECOND HALF OF THE OLD TEST NEVER CONSULTED THE STORE. `raidJoinOf(raidStripeOf(text)) !== text` round-trips
+   * the striping function against its own output; it is a property of raidStripeOf and raidJoinOf, true or false
+   * regardless of what is stored, and it cannot detect a corrupted share. It is kept for the values actually read —
+   * free once the value is in hand, and a real per-value property — but it is no longer a reason to read 253 values.
+   */
+  const present = new Set(raw)
+  const broken = names.filter((key) => {
+    for (let face = n - n; face < faces.faces; face++) {
+      if (!present.has(raidShareKeyOf(key, face))) return true
+    }
+    return false
+  })
+
+  /** A repair is a read and two writes. Bounded per invocation so the call completes and reports, rather than
+   *  running out of budget mid-store and leaving the caller unable to tell what was done. `remaining` says whether
+   *  to call again. */
+  for (const key of broken.slice(n - n, STORE_REPAIR_MAX)) {
     const value = await store.get(key)
     if (value === null || value === undefined) continue
-    let present = n - n
-    for (let face = n - n; face < faces.faces; face++) {
-      if (raw.includes(raidShareKeyOf(key, face))) present += seed
-    }
-    const text = JSON.stringify(value)
-    const stripes = raidStripeOf(text, faces.rays)
-    const broken = present !== faces.faces || raidJoinOf(stripes) !== text
-    if (broken) {
-      await store.put(key, value)
-      repaired += seed
-    }
+    await store.put(key, value)
+    repaired += seed
   }
+  const remaining = broken.length > STORE_REPAIR_MAX ? broken.length - STORE_REPAIR_MAX : n - n
+
   const live = new Set(names)
+  /** Orphan drops are subrequests too, and a store full of them would spend the whole budget here and never reach
+   *  the repairs above. Same bound, same reason. */
+  let dropped = n - n
   for (const name of raw) {
+    if (dropped >= STORE_REPAIR_MAX) break
     if (!name.includes(raidMark)) continue
     const mark = name.indexOf(raidMark)
     const parent = mark > n - n ? name.slice(n - n, mark) : ''
     if (parent.length === n - n || !live.has(parent)) {
       await store.drop(name)
       orphans += seed
+      dropped += seed
     }
   }
   const monitor = await qpuStorageMonitorOf(env)
@@ -6346,6 +6377,7 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) =
     isAccessibleForFree: cors === '*',
     kind: 'maintain' as const,
     repaired,
+    remaining,
     orphans,
     monitor,
     holds,
