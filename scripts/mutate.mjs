@@ -89,7 +89,25 @@ const suitePasses = () => {
   }
 }
 
-console.log(`\nMUTATION TESTING — ${rows.length} mutant(s)\n`)
+/**
+ * THE BASELINE MUST BE GREEN OR EVERY MUTANT IS A FALSE KILL.
+ *
+ * A mutant is "killed" when the suite fails with it applied. If the suite ALREADY fails — a broken build, a
+ * peer's half-finished edit, a genuinely failing test — then it fails for every mutant too, and the runner
+ * reports a perfect score while testing nothing. That is the apparatus failing toward green, which is the exact
+ * fault mutation testing exists to catch, and this runner shipped without a guard against it in itself.
+ *
+ * Checked once, before anything is touched, and refused rather than reported.
+ */
+if (!suitePasses()) {
+  console.error(
+    '\nMUTATION TESTING REFUSED — the suite does not pass before any mutation is applied.\n'
+    + 'Every mutant would be recorded as killed and the score would be meaningless. Fix the suite first.\n',
+  )
+  process.exit(1)
+}
+
+console.log(`\nMUTATION TESTING — ${rows.length} mutant(s), baseline green\n`)
 
 const survived = []
 const noop = []
