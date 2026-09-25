@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 156,
-  "pass": 156,
+  "tests": 157,
+  "pass": 157,
   "fail": 0,
   "dry": 0,
-  "circuit": 114,
+  "circuit": 115,
   "mintOnly": 12,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "f5b15995ebb921f3",
+  "receipt": "8c0ce0ccf8066586",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -3705,6 +3705,54 @@
       "mint": {
         "calls": 637,
         "chain": "26deac8c279f911c"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "each Lean identity has exactly one mirror here, and the crossing says which domains rest on it",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 813,
+      "kinds": {
+        "x": 175,
+        "cnot": 336,
+        "toffoli": 28,
+        "h": 252,
+        "measure": 14,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 805,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "d3751420dd34b49c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 14
+        }
+      ],
+      "mint": {
+        "calls": 18209,
+        "chain": "6fcba848dae69724"
       },
       "served": {
         "count": 0,

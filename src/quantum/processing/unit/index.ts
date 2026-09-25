@@ -128,6 +128,39 @@ const coins = seed + seed
 const occupancies = ['personal', 'business', 'corporate', 'saas', 'paas'] as const
 const skills = ['payload', 'pwa', 'plugin', 'hologram', 'network'] as const
 const ten = n * n + seed
+
+/**
+ * THE LEAN THEOREMS, MIRRORED ONCE EACH, NAMED AS index.lean NAMES THEM.
+ *
+ * Seven identities were restated inline about sixty-six times across this file — `faces.faces === coins *
+ * faces.rays` nine times, `next === fused + fused` eighteen, `coil === faces` fifteen, each with a different
+ * receiver and none of them saying which theorem it was. Every restatement is a place the identity can be typed
+ * wrong and go on passing, and a place a reader has to re-derive what they are looking at. The Lean file is the
+ * authority for the statement AND for the name, so each identity has exactly one mirror here.
+ *
+ * This is the rule the build already applies across the language boundary — emit() requires a js: mirror beside
+ * every lean: statement and hard-fails when the two disagree — turned inward on the file's own arithmetic. A
+ * mirror that exists once can disagree with Lean once; sixty-six copies can disagree sixty-six ways.
+ *
+ * Operands are passed rather than closed over, because the sites hold these quantities under a dozen different
+ * receivers (faces.faces, c.lattice.faces, p.coil.faces) and a mirror that reached for module state would be
+ * checking something other than what the caller has in hand.
+ */
+const theorem = {
+  /** theorem around : faces = coins * rays */
+  around: (faces: number, coins: number, rays: number): boolean => faces === coins * rays,
+  /** theorem harmonic : faces = rays + rays */
+  harmonic: (faces: number, rays: number): boolean => faces === rays + rays,
+  /** theorem next_fused : faces * mintOf (bits + coins) = fused + fused */
+  next_fused: (next: number, fused: number): boolean => next === fused + fused,
+  /** theorem electronics : coil = faces (by two_coins_make_a_coil) */
+  electronics: (coil: number, faces: number): boolean => coil === faces,
+  /** theorem cube : bits = vertices * hexbit */
+  cube: (bits: number, vertices: number, hexbit: number): boolean => bits === vertices * hexbit,
+  /** theorem handle : amplitudes = mintOf bits, read as fused = faces * amplitudes */
+  handle: (fused: number, faces: number, amplitudes: number): boolean => fused === faces * amplitudes,
+} as const
+
 const found = coins * ten * ten
 const lost = mintOf(coins) * (ten * ten + seed)
 const unauthorized = mintOf(coins) * ten * ten + seed
@@ -168,7 +201,7 @@ export const qpuCubeOf = () => {
   const vertices = mintOf(n)
   const hexbit = mintOf(coins)
   const bits = mintOf(n + coins)
-  const holds = bits === vertices * hexbit && hexbit === n + seed
+  const holds = theorem.cube(bits, vertices, hexbit) && hexbit === n + seed
   return { n, vertices, hexbit, bits, holds }
 }
 
@@ -191,7 +224,7 @@ export const qpuFacesOf = () => {
   const cube = qpuCubeOf()
   const rays = n + coins + coins
   const faces = cube.vertices + cube.hexbit + coins
-  const holds = cube.holds && faces === coins * rays && faces === rays + rays
+  const holds = cube.holds && theorem.around(faces, coins, rays) && theorem.harmonic(faces, rays)
   return { n, coins, rays, faces, holds }
 }
 
@@ -208,7 +241,7 @@ export const qpuCoilOf = () => {
     windings === theory + practice &&
     theory === practice &&
     balance === coins &&
-    coil === faces.faces &&
+    theorem.electronics(coil, faces.faces) &&
     faces.holds === true
   return {
     kind: 'coil' as const,
@@ -234,7 +267,7 @@ export const qpuCoilHolds = (c = qpuCoilOf()): boolean =>
   c.practice === seed &&
   c.theory === c.practice &&
   c.balance === coins &&
-  c.coil === c.faces
+  theorem.electronics(c.coil, c.faces)
 
 export const qpuElectronicsOf = () => {
   const coil = qpuCoilOf()
@@ -297,7 +330,7 @@ export const qpuNextOf = () => {
     next === handle.next &&
     nextFused === faces.faces * mintOf(cube.bits + coins) &&
     nextCoil === nextFused &&
-    coil.coil === faces.faces
+    theorem.electronics(coil.coil, faces.faces)
   return {
     kind: 'next' as const,
     theorem: 'next_coil' as const,
@@ -445,7 +478,7 @@ export const qpuGenesisOf = () => {
     nodes.length === faces.faces &&
     occupied === faces.faces &&
     vacant === n - n &&
-    faces.faces === coins * faces.rays &&
+    theorem.around(faces.faces, coins, faces.rays) &&
     nodes.every((node) => node.holds && node.schema === 'shadcn')
   return {
     kind: 'genesis' as const,
@@ -572,7 +605,7 @@ export const qpuFollowOf = () => {
     covered,
     coil: coil.coil,
     faces: coil.faces,
-    holds: balanced && covered && coil.coil === coil.faces && coil.theory === coil.practice,
+    holds: balanced && covered && theorem.electronics(coil.coil, coil.faces) && coil.theory === coil.practice,
   }
   const holds =
     qpuCoilHolds(coil) &&
@@ -607,7 +640,7 @@ export const qpuFollowHolds = (f = qpuFollowOf()): boolean =>
   f.emerge.kind === 'emerge' &&
   f.emerge.balanced === true &&
   f.emerge.covered === true &&
-  f.emerge.coil === f.emerge.faces &&
+  theorem.electronics(f.emerge.coil, f.emerge.faces) &&
   f.solutions.every((row) => row.balanced && row.hop === (row.app + coins) % (n + coins))
 
 /** Coordinated dry-clean: two teams, occupancy pentagram, genesis coins. No extra sealed tool. */
@@ -1122,7 +1155,7 @@ export const qpuAlpineHolds = (a = qpuAlpineOf()): boolean =>
   a.lower === 'r2' &&
   a.work === a.upper &&
   a.work === 'kv' &&
-  a.next === a.fused + a.fused &&
+  theorem.next_fused(a.next, a.fused) &&
   a.next === qpuNextOf().nextFused &&
   a.theorem === 'next_coil' &&
   a.applets.length === n &&
@@ -1136,7 +1169,7 @@ export const qpuCoilEfficiencyOf = () => {
   const stripes = raid.stripes
   const teams = raid.teams
   const measure = teams * stripes
-  const remainder = coil.coil === faces.faces && measure === coil.coil ? n - n : seed
+  const remainder = theorem.electronics(coil.coil, faces.faces) && measure === coil.coil ? n - n : seed
   const unity = remainder === n - n ? seed : n - n
   const nodes = raid.types.map((row, face) => {
     const hop = (face + faces.rays + faces.rays) % faces.faces
@@ -1150,7 +1183,7 @@ export const qpuCoilEfficiencyOf = () => {
       stripes,
       measure: measured,
       involution: hop === face,
-      holds: hop === face && measured === coil.coil && coil.coil === faces.faces && measured === raid.cluster.measure,
+      holds: hop === face && measured === coil.coil && theorem.electronics(coil.coil, faces.faces) && measured === raid.cluster.measure,
   }
   })
   let occupied = n - n
@@ -1161,7 +1194,7 @@ export const qpuCoilEfficiencyOf = () => {
     qpuRaidHolds(raid) &&
     raid.cluster.holds === true &&
     measure === coil.coil &&
-    coil.coil === faces.faces &&
+    theorem.electronics(coil.coil, faces.faces) &&
     faces.faces === stripes + stripes &&
     raid.cluster.measure === measure &&
     remainder === n - n &&
@@ -1193,7 +1226,7 @@ export const qpuCoilEfficiencyHolds = (e = qpuCoilEfficiencyOf()): boolean =>
   e.kind === 'efficiency' &&
   e.theorem === 'coil_efficiency' &&
   e.measure === e.coil &&
-  e.coil === e.faces &&
+  theorem.electronics(e.coil, e.faces) &&
   e.remainder === n - n &&
   e.unity === seed &&
   e.teams === coins &&
@@ -1298,7 +1331,7 @@ export const qpuNeuroOf = () => {
     layersHold &&
     test.holds &&
     weights === mintOf(cube.bits) &&
-    fused === faces.faces * handle.kv.amplitudes &&
+    theorem.handle(fused, faces.faces, handle.kv.amplitudes) &&
     fused + fused === faces.faces * mintOf(cube.bits + coins)
   return {
     kind: 'neuro' as const,
@@ -1326,7 +1359,7 @@ export const qpuNeuroHolds = (net = qpuNeuroOf()): boolean =>
   net.neurons.length === net.width &&
   net.forward.length === net.layers &&
   net.forward.every((row) => row.holds && row.next === row.width + row.width) &&
-  net.next === net.fused + net.fused &&
+  theorem.next_fused(net.next, net.fused) &&
   net.test.kind === 'test' &&
   net.test.layers === true &&
   net.test.residual === true &&
@@ -2350,8 +2383,8 @@ export const qpuCircuitOf = () => {
     vacant: n - n,
     holds:
       qpuCoilHolds(coil) &&
-      coil.coil === faces.faces &&
-      coil.coil === coins * faces.rays &&
+      theorem.electronics(coil.coil, faces.faces) &&
+      theorem.around(coil.coil, coins, faces.rays) &&
       pairs.length === faces.rays &&
       pairs.length + pairs.length === faces.faces &&
       pairs.every((row) => row.holds && row.product === false && row.hop === row.radar) &&
@@ -2527,8 +2560,8 @@ export const qpuCircuitOf = () => {
     coins === faces.coins &&
     n === cube.n &&
     dim === cube.vertices &&
-    faces.faces === coins * faces.rays &&
-    cube.bits === cube.vertices * cube.hexbit
+    theorem.around(faces.faces, coins, faces.rays) &&
+    theorem.cube(cube.bits, cube.vertices, cube.hexbit)
   const distinct = n !== faces.faces && dim !== faces.faces && n !== cube.bits && dim !== cube.bits && faces.faces !== cube.bits
   const sciences = {
     kind: 'between' as const,
@@ -2538,7 +2571,7 @@ export const qpuCircuitOf = () => {
     bits: cube.bits,
     shared,
     distinct,
-    holds: shared && distinct && n === cube.n && cube.vertices === mintOf(n) && faces.faces === coins * faces.rays,
+    holds: shared && distinct && n === cube.n && cube.vertices === mintOf(n) && theorem.around(faces.faces, coins, faces.rays),
   }
   const drift = {
     kind: 'science' as const,
@@ -2628,7 +2661,7 @@ export const qpuCircuitOf = () => {
         qpuPayloadPluginHolds(plugin) &&
         payloadMcp.holds &&
         plugin.copies === seed &&
-        plugin.next === plugin.fused + plugin.fused &&
+        theorem.next_fused(plugin.next, plugin.fused) &&
         serverHref === `${unit.origin}/server` &&
         unit.fuse.lean.endsWith('/index.lean')},
     holds:
@@ -2728,7 +2761,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.entangle.hadamard.product === false &&
   c.entangle.coil.theorem === 'two_coins_make_a_coil' &&
   c.entangle.coil.holds === true &&
-  c.entangle.coil.coil === c.lattice.faces &&
+  theorem.electronics(c.entangle.coil.coil, c.lattice.faces) &&
   c.entangle.coil.pairs.length === c.entangle.coil.rays &&
   c.entangle.coil.pairs.length + c.entangle.coil.pairs.length === c.lattice.faces &&
   c.entangle.coil.pairs.every((row) => row.holds && row.product === false && row.hop === row.radar) &&
@@ -2790,7 +2823,7 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   c.register.coil.practice === seed &&
   c.register.coil.theory === c.register.coil.practice &&
   c.register.coil.balance === coins &&
-  c.register.coil.coil === c.lattice.faces &&
+  theorem.electronics(c.register.coil.coil, c.lattice.faces) &&
   c.register.electronics.kind === 'electronics' &&
   c.register.electronics.uses === 'coil' &&
   c.register.electronics.holds === true &&
@@ -2983,7 +3016,7 @@ export const qpuCapacityOf = () => {
     split: faces.faces,
     share: handle.kv.amplitudes,
     fused,
-    holds: fused === faces.faces * handle.kv.amplitudes && fused === faces.faces * mintOf(cube.vertices * cube.hexbit + seed),
+    holds: theorem.handle(fused, faces.faces, handle.kv.amplitudes) && fused === faces.faces * mintOf(cube.vertices * cube.hexbit + seed),
   }
   const agents = {
     kind: 'agents' as const,
@@ -2992,7 +3025,7 @@ export const qpuCapacityOf = () => {
     n: faces.faces,
     free: cors === '*',
     auth: cors !== '*',
-    holds: faces.faces === coins * faces.rays && faces.faces === faces.rays + faces.rays && cors === '*',
+    holds: theorem.around(faces.faces, coins, faces.rays) && theorem.harmonic(faces.faces, faces.rays) && cors === '*',
   }
   const schemas = qpuSchemasOf()
   const raid = qpuRaidOf()
@@ -3000,11 +3033,11 @@ export const qpuCapacityOf = () => {
     cube.holds &&
     handle.holds &&
     faces.holds &&
-    cube.bits === cube.vertices * cube.hexbit &&
+    theorem.cube(cube.bits, cube.vertices, cube.hexbit) &&
     handle.amplitudes === mintOf(cube.bits) &&
     fused === faces.faces * mintOf(cube.bits + seed) &&
-    fused === faces.faces * handle.kv.amplitudes &&
-    next === fused + fused &&
+    theorem.handle(fused, faces.faces, handle.kv.amplitudes) &&
+    theorem.next_fused(next, fused) &&
     next === mintOf(cube.bits + coins) * faces.faces &&
     crypt.holds &&
     agents.holds &&
@@ -3076,9 +3109,9 @@ export const qpuCapacityOf = () => {
 export const qpuCapacityHolds = (c = qpuCapacityOf()): boolean =>
   c.holds === true &&
   c.kind === 'capacity' &&
-  c.fused === c.faces * c.kv.amplitudes &&
+  theorem.handle(c.fused, c.faces, c.kv.amplitudes) &&
   c.amplitudes === mintOf(c.bits) &&
-  c.next === c.fused + c.fused &&
+  theorem.next_fused(c.next, c.fused) &&
   c.next === qpuNextOf().nextFused &&
   c.next === qpuNextOf().nextCoil &&
   qpuNextHolds() &&
@@ -3200,7 +3233,7 @@ export const qpuSpeedOf = () => {
   const holds =
     qpuCapacityHolds(capacity) &&
     handle.holds &&
-    next === capacity.fused + capacity.fused &&
+    theorem.next_fused(next, capacity.fused) &&
     next === capacity.fused * coins &&
     next === faces.faces * mintOf(cube.bits + coins) &&
     handle.next === mintOf(cube.bits + seed) &&
@@ -3273,9 +3306,9 @@ export const qpuLeanOf = () => {
   const fused = faces.faces * handle.kv.amplitudes
   const mintHolds = mintOf(n + seed) === mintOf(n) + mintOf(n)
   const cubeHolds = cube.holds
-  const aroundHolds = faces.faces === coins * faces.rays
+  const aroundHolds = theorem.around(faces.faces, coins, faces.rays)
   const quantumHolds = fused === faces.faces * mintOf(cube.bits + seed)
-  const harmonicHolds = faces.faces === faces.rays + faces.rays
+  const harmonicHolds = theorem.harmonic(faces.faces, faces.rays)
   const energyHolds = mintOf(cube.hexbit) === mintOf(n + seed)
   const propulsionHolds = mintOf(cube.hexbit) > seed
   const cryptoHolds = fused === faces.faces * mintOf(cube.vertices * cube.hexbit + seed)
@@ -3815,7 +3848,7 @@ export const qpuLeanOf = () => {
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}',
       reading:
         'Crypt split fused across faces. Distribute computations to free agents. coins teams of rays.',
-      holds: quantumHolds && aroundHolds && faces.faces === coins * faces.rays,
+      holds: quantumHolds && aroundHolds && theorem.around(faces.faces, coins, faces.rays),
   },
     {
       heading: 'raid',
@@ -3823,7 +3856,7 @@ export const qpuLeanOf = () => {
       formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
       reading:
         'Quantum RAID 10. Stripe rays. Mirror coins. Anything on Cloudflare KV and R2. Hybrid storage. Measure hybrid speed and cost. KV added amplitudes. Scaled. Infinite.',
-      holds: aroundHolds && harmonicHolds && faces.faces === coins * faces.rays && faces.faces === faces.rays + faces.rays && qpuHybridHolds(),
+      holds: aroundHolds && harmonicHolds && theorem.around(faces.faces, coins, faces.rays) && theorem.harmonic(faces.faces, faces.rays) && qpuHybridHolds(),
   },
     {
       heading: 'hybrid_cost',
@@ -3870,7 +3903,7 @@ export const qpuLeanOf = () => {
       theorem: 'theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩',
       formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
       reading: 'fused = faces * mintOf (bits + seed). faces = rays + rays. HEP quantum true.',
-      holds: quantumHolds && harmonicHolds && faces.faces === faces.rays + faces.rays,
+      holds: quantumHolds && harmonicHolds && theorem.harmonic(faces.faces, faces.rays),
   },
     {
       heading: 'design',
@@ -4579,7 +4612,7 @@ export const qpuReadingOf = () => {
       next: quantum.speed.next,
       factor: quantum.speed.factor,
       cover: quantum.speed.cover,
-      holds: quantum.speed.next === quantum.fused + quantum.fused && quantum.speed.holds,
+      holds: theorem.next_fused(quantum.speed.next, quantum.fused) && quantum.speed.holds,
   },
     cors: quantum.cors,
     ui: quantum.ui,
@@ -4941,7 +4974,7 @@ export const qpuPurposeOf = (
     kind: 'optimization' as const,
     fused: capacity.fused,
     next: capacity.next,
-    holds: capacity.next === capacity.fused + capacity.fused,
+    holds: theorem.next_fused(capacity.next, capacity.fused),
   }
   const science = {
     kind: 'science' as const,
@@ -4994,7 +5027,7 @@ export const qpuPurposeHolds = (p = qpuPurposeOf()): boolean =>
   p.cybersecurity.encrypt.theorem === 'crypto' &&
   p.cybersecurity.encrypt.identity === true &&
   p.cybersecurity.encrypt.holds === true &&
-  p.optimization.next === p.optimization.fused + p.optimization.fused &&
+  theorem.next_fused(p.optimization.next, p.optimization.fused) &&
   p.science.climb[mintOf(coins) - seed] === 'qpu_prove' &&
   p.sensing.network === '/network' &&
   p.sensing.server === '/server'
@@ -6610,7 +6643,7 @@ export const qpuStorageHolds = (s = qpuStorageMetaOf()): boolean =>
   s.alpine.lower === 'r2' &&
   s.alpine.work === 'kv' &&
   s.alpine.work === s.alpine.upper &&
-  s.alpine.next === s.alpine.fused + s.alpine.fused &&
+  theorem.next_fused(s.alpine.next, s.alpine.fused) &&
   s.alpine.theorem === 'next_coil' &&
   s.bindings.STORAGE === 'kv' &&
   s.bindings.BLOBS === 'r2' &&
@@ -7769,7 +7802,7 @@ export const qpuVmOf = () => {
     last.replicas === mintOf(n) &&
     last.next === mintOf(n + seed) &&
     isolate === true &&
-    faces.faces === coins * faces.rays
+    theorem.around(faces.faces, coins, faces.rays)
   return {
     kind: 'vm' as const,
     isolate,
@@ -7881,7 +7914,7 @@ export const qpuImproveOf = () => {
       unlocked.value.only?.holds === true &&
       unlocked.value.lattice?.holds === true &&
       unlocked.value.lattice.vacant === n - n &&
-      next === fused + fused}
+      theorem.next_fused(next, fused)}
   const before = {
     quality: n,
     speed: throughputOf(fused, readTokens),
@@ -8185,7 +8218,7 @@ export const qpuCompeteOf = (team?: string) => {
       unlocked.value.only?.holds === true &&
       unlocked.value.lattice?.holds === true &&
       unlocked.value.lattice.vacant === n - n &&
-      next === fused + fused}
+      theorem.next_fused(next, fused)}
   const agentsOf = (path: 'read' | 'call', throughoutput: number) =>
     efficiency.rows.map((r) => {
       const tokens = path === 'read' ? r.readTokens : r.callTokens
@@ -8218,7 +8251,7 @@ export const qpuCompeteOf = (team?: string) => {
     kind: 'compete' as const,
     module: 'agent efficiency' as const,
     contest: 'throughoutput' as const,
-    quantum: { holds: next === fused + fused, next },
+    quantum: { holds: theorem.next_fused(next, fused), next },
     teams,
     winner,
     next: ['qpu_prove'] as const,
@@ -8277,7 +8310,7 @@ export const qpuProveOf = () => {
       circuit.entangle.product === false &&
       circuit.entangle.coil.holds &&
       qpuCoilHolds(coil) &&
-      coil.coil === coil.faces &&
+      theorem.electronics(coil.coil, coil.faces) &&
       circuit.entangle.coil.pairs.length === coil.rays}
   const holds =
     qpuLeanHolds(lean) &&
@@ -8425,7 +8458,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.evidence.fault.logicalLtPhysical === true &&
   p.coil.theorem === 'two_coins_make_a_coil' &&
   p.coil.holds === true &&
-  p.coil.coil === p.coil.faces &&
+  theorem.electronics(p.coil.coil, p.coil.faces) &&
   p.coil.windings === coins &&
   p.entangle.theorem === 'entangle' &&
   p.entangle.product === false &&
@@ -9461,7 +9494,7 @@ export const qpuCompeteLiveOf = async (team?: string) => {
     call !== undefined &&
     call.throughoutput === next &&
     fused !== undefined &&
-    next === fused + fused &&
+    theorem.next_fused(next, fused) &&
     occupancy.occupied === n * n + mintOf(coins) &&
     occupancy.vacant === n - n &&
     views.scanner === n * n &&
@@ -9522,7 +9555,7 @@ const qpuSequenceLiveOf = async () => {
       compete.winner === 'call' &&
       compete.next[n - n] === 'qpu_prove' &&
       improve.after.throughoutput === next &&
-      next === fused + fused &&
+      theorem.next_fused(next, fused) &&
       train.next[n - n] === 'qpu_improve' &&
       train.next[seed] === 'qpu_compete' &&
       improve.next[n - n] === 'qpu_compete' &&
@@ -10075,7 +10108,7 @@ export const qpuPayloadPluginOf = () => {
     qpuPayloadDbHolds(db) &&
     copies === seed &&
     fused === faces.faces * mintOf(cube.bits + seed) &&
-    fused === faces.faces * handle.kv.amplitudes &&
+    theorem.handle(fused, faces.faces, handle.kv.amplitudes) &&
     pentagram.skills.join(' ') === 'payload pwa plugin hologram network' &&
     pentagram.skills.length === n + coins &&
     pentagram.skills[n - n] === 'payload' &&
@@ -10108,7 +10141,7 @@ export const qpuPayloadPluginHolds = (p = qpuPayloadPluginOf()): boolean =>
   p.theorem === 'fusion' &&
   p.copies === seed &&
   p.fused === qpuCapacityOf().fused &&
-  p.next === p.fused + p.fused &&
+  theorem.next_fused(p.next, p.fused) &&
   p.extends.join(' ') === 'payload pwa plugin hologram network' &&
   p.href === `${storageHref}/${payloadDbKey}` &&
   p.mcp === '/api/mcp' &&
@@ -10134,7 +10167,7 @@ export const qpuPayloadMcpOf = () => {
     tools.length === mintOf(coins) &&
     tools.every((row) => row.find && !row.create && !row.update && !row.delete && row.sealed === false && row.merge === 'storage') &&
     schemas.merge === 'storage' &&
-    faces.faces === faces.rays + faces.rays
+    theorem.harmonic(faces.faces, faces.rays)
   return {
     kind: 'payload' as const,
     href: plugin.mcp,
@@ -10287,7 +10320,7 @@ export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
     packages.length === n &&
     installVerbs.length === mintOf(coins) &&
     payload.holds &&
-    faces.faces === faces.rays + faces.rays &&
+    theorem.harmonic(faces.faces, faces.rays) &&
     schemas.merge === 'storage' &&
     bag.qpu.sealed === mintOf(n) &&
     bag.payload.tools.length === mintOf(coins) &&
@@ -10368,8 +10401,8 @@ export const qpuFusionOf = () => {
     learn.catalogs.length === faces.faces &&
     tetra.projects.length === mintOf(coins) &&
     coins + coins === mintOf(coins) &&
-    capacity.fused === capacity.faces * capacity.kv.amplitudes &&
-    faces.faces === faces.rays + faces.rays &&
+    theorem.handle(capacity.fused, capacity.faces, capacity.kv.amplitudes) &&
+    theorem.harmonic(faces.faces, faces.rays) &&
     schemas.holds &&
     schemas.merge === 'storage' &&
     payload.holds &&
@@ -10423,7 +10456,7 @@ export const qpuFusionHolds = (f = qpuFusionOf()): boolean =>
   f.catalogs.length === qpuFacesOf().faces &&
   f.tetra.length === mintOf(coins) &&
   f.fused === qpuCapacityOf().fused &&
-  f.fused === qpuCapacityOf().faces * qpuCapacityOf().kv.amplitudes &&
+  theorem.handle(f.fused, qpuCapacityOf().faces, qpuCapacityOf().kv.amplitudes) &&
   qpuHostsHolds(f.hosts) &&
   f.hosts.harnesses.length === f.faces &&
   f.hosts.llms.length === f.faces &&
@@ -10868,7 +10901,7 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
     m.only.holds === true &&
     circuit.lattice.holds === true &&
     m.capacity.holds === true &&
-    m.capacity.next === m.capacity.fused + m.capacity.fused &&
+    theorem.next_fused(m.capacity.next, m.capacity.fused) &&
     m.capacity.crypt.holds === true &&
     m.cors === cors &&
     m.origin === unit.origin &&
@@ -10986,7 +11019,7 @@ export const qpuDevelopOf = () => {
     genesis.domains.join(' ') === 'scanner radar' &&
     circuit.gates.names.length === coins &&
     circuit.gates.names.join(' ') === 'h cnot' &&
-    quantum.next === quantum.fused + quantum.fused &&
+    theorem.next_fused(quantum.next, quantum.fused) &&
     handle.amplitudes === mintOf(cube.bits) &&
     handle.kv.amplitudes === mintOf(cube.bits + seed) &&
     occupancies.length === n + coins &&

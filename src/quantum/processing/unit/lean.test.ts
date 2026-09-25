@@ -5,7 +5,7 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuShorOf } from './index.js'
+import worker, { qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuQuantumOf, qpuShorOf } from './index.js'
 import { leanPath, leanSource, leanToolchain } from './lean.js'
 import { packageVersion } from './version.js'
 
@@ -81,4 +81,74 @@ test('index.lean is sorry-free, axiom-free, decide-free, and theorem shor carrie
   assert.equal(numerals.includes(String(shor.factors.p)), false)
   assert.equal(numerals.includes(String(shor.factors.q)), false)
   assert.equal(numerals.includes(String(shor.post.period)), false)
+})
+
+test('each Lean identity has exactly one mirror here, and the crossing says which domains rest on it', () => {
+  // A CROSS FORMULA EXPLAINS A CROSS-DOMAIN PROBLEM, and it can only do that if there is one of it.
+  //
+  // Six identities from index.lean were restated inline about sixty-six times across the unit — `faces = coins *
+  // rays` nine times, `next = fused + fused` eighteen, `coil = faces` fifteen — each under a different receiver
+  // and none of them naming the theorem. That is not merely repetition. It hides the crossing: when the same
+  // identity is load-bearing in Alpine and in Capacity and in Circuit, a fault in one predicts a fault in the
+  // others, and sixty-six anonymous copies make that impossible to see or to act on.
+  //
+  // So the mirrors are checked against the live lattice, and the crossing is computed from the source.
+  const lean = readFileSync(join(process.cwd(), 'src', 'quantum', 'processing', 'unit', 'index.lean'), 'utf8')
+  const source = readFileSync(join(process.cwd(), 'src', 'quantum', 'processing', 'unit', 'index.ts'), 'utf8')
+
+  // THE MIRRORS AGREE WITH THE LATTICE THE UNIT ACTUALLY COMPUTES. A mirror is only worth having one of if it is
+  // the right one, so each is evaluated against the served quantum rather than against its own definition.
+  const quantum = qpuQuantumOf()
+  const { faces, rays, coins } = quantum.faces
+  const { bits, vertices, hexbit } = quantum.cube
+  assert.equal(faces, coins * rays, 'theorem around')
+  assert.equal(faces, rays + rays, 'theorem harmonic')
+  assert.equal(bits, vertices * hexbit, 'theorem cube')
+  assert.equal(quantum.next, quantum.fused + quantum.fused, 'theorem next_fused')
+
+  // …and each is a theorem index.lean actually declares, so the names are Lean's and not ours.
+  const declared = new Set([...lean.matchAll(/^theorem (\w+)/gm)].map(([, name]) => name))
+  const mirrors = [...source.matchAll(/^  (\w+): \(/gm)].map(([, name]) => name)
+  const mirrored = mirrors.filter((name) => declared.has(name))
+  assert.equal(mirrored.length, coins * quantum.circuit.register.qubits, `${mirrored.length} mirrors carry a Lean theorem's name`)
+  for (const name of mirrored) assert.ok(declared.has(name), `${name} is not a theorem index.lean declares`)
+
+  // THE GUARD THAT STOPS THE RESTATEMENTS COMING BACK. Each identity is written out here exactly once — inside
+  // its own mirror — and every other site calls it. A second spelling anywhere is the duplication returning.
+  const body = source.slice(source.indexOf('const theorem = {'))
+  const restatements: Record<string, RegExp> = {
+    around: /[\w.]*faces === [\w.]*coins \* [\w.]*rays/g,
+    harmonic: /[\w.]*faces === [\w.]*rays \+ [\w.]*rays/g,
+    next_fused: /[\w.]*next === [\w.]*fused \+ [\w.]*fused/g,
+    cube: /[\w.]*bits === [\w.]*vertices \* [\w.]*hexbit/g,
+  }
+  for (const [name, shape] of Object.entries(restatements)) {
+    const spelled = (body.match(shape) ?? []).length
+    assert.equal(spelled, 1, `theorem ${name} is written out ${spelled} times; it belongs in its mirror and nowhere else`)
+  }
+
+  // THE CROSSING ITSELF. Every call is attributed to the binding that encloses it — that binding is the domain —
+  // so the table says which domains a single identity holds together.
+  const lines = source.split('\n')
+  const crossing = new Map<string, Set<string>>()
+  let domain = '(top level)'
+  for (const line of lines) {
+    const bound = line.match(/^(?:export )?const (\w+) = /)
+    if (bound) domain = bound[1]!
+    if (line.trimStart().startsWith('*')) continue
+    for (const [, name] of line.matchAll(/\btheorem\.(\w+)\(/g)) {
+      if (!declared.has(name)) continue
+      if (!crossing.has(name)) crossing.set(name, new Set())
+      crossing.get(name)!.add(domain)
+    }
+  }
+
+  // An identity used in one place is not a cross formula, it is a local check. Each of these crosses at least
+  // coins domains, and the count is reported so a reader learns the blast radius rather than only the rule.
+  for (const [name, domains] of crossing) {
+    assert.ok(domains.size >= coins, `theorem ${name} is load-bearing in only ${domains.size} domain(s)`)
+  }
+  assert.ok(crossing.size >= coins + coins, `only ${crossing.size} identities are shared across domains`)
+  const spread = [...crossing.values()].reduce((all, d) => all + d.size, 0)
+  assert.ok(spread >= faces + faces, `the identities cross only ${spread} domains in total`)
 })
