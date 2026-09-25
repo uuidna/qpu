@@ -7259,7 +7259,41 @@ const opRunOf = (op: (typeof sandboxCore)[number]): QpuOp => {
   return { op: 'args' }
 }
 
-const reservedOf = (_name: string): string => ''
+/** THE NAMES THE UNIT SEEDED FOR ITSELF, captured on the first seeding — before any caller can reach the forge — so
+ * the set is the unit's own furniture and nothing a caller made. Computed by snapshot rather than retyped, so an op,
+ * a slot or a host shim added to seedSandboxOf is reserved on the day it is added. */
+const seededNames = new Set<string>()
+
+/** RESERVED NAMES, READ FROM THE ONE MAP A FORGE CAN ACTUALLY OVERWRITE. Returns why a name is refused, or the empty
+ * string when it is free; the caller reports it as `denied`.
+ *
+ * NOT THE SEALED DOORS. A door is dispatched before the sandbox is consulted, so forging `qpu_quantum` adds a shadow
+ * that can never be reached and the door keeps answering — which is `theorem 'no one may lock'`, one of the three
+ * integrity tests, and it is proved by forging a door's name and watching the door survive. Reserving doors here
+ * turned that theorem false and took every path to 404 with it.
+ *
+ * The seeded sandbox tools are the opposite case, and the asymmetry is the whole point: they are dispatched from
+ * `sandboxTools`, the same map the forge writes to, and the forge's `set` overwrites unconditionally while
+ * `putToolOf` refuses to re-seed a name it already holds. So a forged `eval` does not shadow the host shim — it
+ * replaces it, permanently, for the life of the isolate. That is a lock, and this is where one is possible.
+ *
+ * This returned '' for every name until 2026-09-25, so the clause `reserved.length === n - n` in the forge was
+ * constant-true and `denied: reserved.length > n - n ? reserved : 'forge'` was constant-'forge'. The README has
+ * always promised a forged name must be "not reserved"; nothing computed the set. */
+const reservedOf = (name: string): string => (seededNames.has(name) ? 'seeded' : '')
+
+/** THE INVOLUTION, APPLIED TO A REFUSED NAME — the impossible carried to the possible rather than left as a no.
+ *
+ * `theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces`. A face is `team * rays + ray` on
+ * the double torus of `faces = coins * rays`, so a single hop of `rays` lands on the other team at the same ray and
+ * a second hop returns — the map is its own inverse. With `coins = 2` the involution restricted to seats IS the swap
+ * of the two teams, which is why this is a swap and not arithmetic dressed up as one.
+ *
+ * A seeded name cannot be forged. A refusal that stops there hands the caller a true sentence and no next move, so
+ * it returns the seat the hop lands on: the same idea, on the other team, which is free because the unit seeds its
+ * own furniture under its own names and a hopped name is not one of them. */
+const hopNameOf = (name: string): string =>
+  forgeNameOf(sandboxTools.get(name)?.team === 'call' ? 'read' : 'call', name)
 
 const putToolOf = (name: string, team: 'read' | 'call', ray: number, idea: string, description: string, run: QpuOp) => {
   if (sandboxTools.has(name)) return
@@ -7299,6 +7333,9 @@ const seedSandboxOf = () => {
   sandboxHost.forEach((host, i) => {
     putToolOf(host, i < faces.rays ? 'call' : 'read', i % faces.rays, host, `Unlocked ${host} in memory.`, { op: 'unlocked', name: host })
   })
+  // The snapshot reservedOf reads. Taken here, at the end of the first seeding, because that is the only moment the
+  // map holds the unit's furniture and nothing else; every later entry is a caller's.
+  if (seededNames.size === n - n) for (const seeded of sandboxTools.keys()) seededNames.add(seeded)
 }
 
 export const qpuSandboxOf = () => {
@@ -7398,7 +7435,7 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
     return qpuManPageOf(toolNames[n + seed]!, qpuManOf(
       toolNames[n + seed],
       'Agents forge tools in an in-memory sandbox.',
-      `All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect. { name, run } forges more: up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools, each named [a-z][a-z0-9_]* in at most ${qpuCubeOf().bits} characters and not reserved.`,
+      `All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect. { name, run } forges more: up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools, each named [a-z][a-z0-9_]* in at most ${qpuCubeOf().bits} characters. A name the unit seeded is reserved and the reply carries hop, the free seat across the involution.`,
       `${unit.origin}/mcp`,
       toolNames.filter((s) => s !== toolNames[n + seed])))
   }
@@ -7414,7 +7451,16 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
   const idea = typeof args.idea === 'string' && args.idea.length > n - n ? args.idea : name
   const cap = cube.bits * faces.faces
   if (!allowed || !run || (sandboxTools.size >= cap && !sandboxTools.has(name))) {
-    return { kind: 'sandbox' as const, name,holds: false as const, denied: reserved.length > n - n ? reserved : 'forge' }
+    return {
+      kind: 'sandbox' as const,
+      name,
+      holds: false as const,
+      denied: reserved.length > n - n ? reserved : 'forge',
+      // The hop is offered only where there is one: a reserved name has a free seat across the involution, an
+      // unparseable name or a full sandbox does not, and inventing a next move for those would be the same dead end
+      // wearing a helpful face.
+      ...(reserved.length > n - n ? { hop: hopNameOf(name) } : {}),
+    }
   }
   const description =
     typeof args.description === 'string' && args.description.length > n - n
@@ -7700,13 +7746,17 @@ export const qpuImproveOf = () => {
     `    before quality ${before.quality} speed ${before.speed} security ${before.security} throughoutput ${before.throughoutput}`,
     `    after quality ${after.quality} speed ${after.speed} security ${after.security} throughoutput ${after.throughoutput}`,
     `    used ${used.map((u) => u.name).join(' ')}`,
-    `    css fused ${css.fused.bytes} naive ${css.naive.bytes} imagination ${css.imagine.experiment}`].join('\n')
-  const imagination = {
-    kind: 'imagination' as const,
+    `    css fused ${css.fused.bytes} naive ${css.naive.bytes} experiment ${css.imagine.experiment}`].join('\n')
+  /** WHAT THIS MEASURES IS COMPRESSION, so it is named for that. It was `imagination`, carrying `outspace`, and it
+   * reports one thing: the fused stylesheet is smaller than the naive one, by this many bytes. `kind: 'imagination'`
+   * also named the seated caller text further down, so one word stood for two unrelated objects on the wire. The
+   * caller's text keeps the name — it really is theirs, and it is seated and involuted under it. This is bytes. */
+  const compression = {
+    kind: 'compression' as const,
     hz: css.hz,
     fused: css.fused.bytes,
     naive: css.naive.bytes,
-    outspace: css.naive.bytes - css.fused.bytes,
+    saved: css.naive.bytes - css.fused.bytes,
     reflect,
     holds: css.holds && css.fused.bytes < css.naive.bytes && reflect,
   }
@@ -7716,7 +7766,7 @@ export const qpuImproveOf = () => {
     quantum.holds === true &&
     proofs === true &&
     durability.holds === true &&
-    imagination.holds === true &&
+    compression.holds === true &&
     used.length === ten &&
     used.length === sandboxHost.length &&
     used.every((u) => u.holds) &&
@@ -7739,7 +7789,7 @@ export const qpuImproveOf = () => {
     after,
     delta,
     used,
-    imagination,
+    compression,
     durability: { rounds: durability.rounds, persist: durability.persist, isolate: durability.isolate, holds: durability.holds },
     winner: 'call' as const,
     unlocked: quantum.holds,
@@ -7765,7 +7815,7 @@ export const qpuImproveHolds = (i = qpuImproveOf()): boolean =>
   i.durability.holds === true &&
   i.durability.persist === true &&
   i.durability.isolate === true &&
-  i.imagination.holds === true &&
+  i.compression.holds === true &&
   i.next[n - n] === 'qpu_compete' &&
   i.next[seed] === 'qpu_prove'
 
@@ -10242,19 +10292,19 @@ export const qpuToolsOf = () => {
     seeOf(names[n]))
   const forgeMan = qpuManOf(
     names[n + seed],
-    `Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools.`,
+    `Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools. A door's name forges and the door still answers — theorem involution carries a seeded name to hop, the free seat on the other team.`,
     `tools/call ${names[n + seed]} with { name, run } returns the forged tool and the sandbox census (tools[], memory, unlocked); without name it returns the census. Ops ${sandboxOps.join(' ')}. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + seed]))
   const improveMan = qpuManOf(
     names[n + coins],
-    `Improve by doubling: next = fused + fused = ${capacity.fused + capacity.fused}, the next capacity rung, with before and after readings of quality, speed, and throughoutput (fused amplitudes per token of reply). The numbers are counts of amplitudes. next = fused + fused.`,
+    `Improve by doubling: next = fused + fused = ${capacity.fused + capacity.fused}, the next capacity rung, with before and after readings of quality, speed, and throughoutput (the total count of fused amplitudes; throughput is that divided by the tokens of the reply). The numbers are counts of amplitudes. next = fused + fused.`,
     `tools/call ${names[n + coins]} returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + coins]))
   const competeMan = qpuManOf(
     names[n + n],
-    'Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput per token — fused amplitudes served per token of reply.',
+    'Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput is the total of fused amplitudes served; throughput is that per token of reply.',
     `tools/call ${names[n + n]} returns winner.{quality,speed,security}, teams[] with scores, and the axes. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + n]))

@@ -113,9 +113,34 @@ test('sandbox via mcp', async () => {
   const probe = (await mcpOf('probe_next')) as { value: unknown; memory: boolean; holds: boolean }
   assert.equal(probe.value, true)
   assert.equal(probe.memory, true)
-  const sealed = (await mcpOf('qpu_forge', { name: 'qpu_quantum', run: { op: 'lit', value: true } })) as { holds: boolean; forged?: boolean; denied?: string }
-  assert.equal(sealed.holds, true)
-  assert.equal(sealed.forged, true)
+  // theorem 'no one may lock' — A DOOR'S NAME IS FORGEABLE AND THE DOOR SURVIVES. The forge succeeds, and the shadow
+  // it adds is never reached because a door is dispatched before the sandbox is consulted. The fixture was called
+  // `sealed`, which reads as "this was refused"; it is named for the theorem now, because the assertion below is the
+  // opposite of a refusal and the old name argued with it.
+  const noLock = (await mcpOf('qpu_forge', { name: 'qpu_quantum', run: { op: 'lit', value: true } })) as { holds: boolean; forged?: boolean; denied?: string }
+  assert.equal(noLock.holds, true)
+  assert.equal(noLock.forged, true)
+  // A SEEDED TOOL'S NAME IS RESERVED, and this is the asymmetry: a host shim is dispatched from the very map the
+  // forge writes to, so forging one would replace it rather than shadow it. Refused, and said so.
+  const shim = (await mcpOf('qpu_forge', { name: 'eval', run: { op: 'lit', value: true } })) as { holds: boolean; forged?: boolean; denied?: string; hop?: string }
+  assert.equal(shim.holds, false)
+  assert.equal(shim.denied, 'seeded')
+  const op = (await mcpOf('qpu_forge', { name: 'op_mint', run: { op: 'lit', value: true } })) as { denied?: string }
+  assert.equal(op.denied, 'seeded')
+  // And the shim still does its own job afterwards, which is what reserving the name is for.
+  const intact = (await mcpOf('eval', { run: { op: 'mint', k: 3 } })) as { value: unknown }
+  assert.equal(intact.value, 8)
+  // theorem involution — THE REFUSAL CARRIES THE MOVE. eval is seeded on team call, so the hop is the same idea on
+  // team read; the seat is free, and forging it succeeds where the reserved name could not.
+  assert.equal(shim.hop, 'read_eval')
+  const hopped = (await mcpOf('qpu_forge', { name: shim.hop!, run: { op: 'mint', k: { op: 'args', name: 'k' } } })) as { holds: boolean; forged?: boolean }
+  assert.equal(hopped.holds, true)
+  assert.equal(hopped.forged, true)
+  // A hop twice is the identity: read_eval is now a caller's tool, not seeded, so it is forgeable in place and the
+  // involution has nowhere further to carry it.
+  const again = (await mcpOf('qpu_forge', { name: 'read_eval', run: { op: 'lit', value: true } })) as { holds: boolean; denied?: string }
+  assert.equal(again.holds, true)
+  assert.equal(again.denied, undefined)
   const still = (await mcpOf('qpu_quantum')) as { kind: string; lock: boolean; unlocked: boolean; holds: boolean }
   assert.equal(still.kind, 'quantum')
   assert.equal(still.lock, false)
