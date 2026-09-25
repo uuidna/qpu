@@ -317,3 +317,54 @@ test('raid: striping inverts across every residue of length against rays, up to 
   const wide = alphabet(bits * bits)
   assert.equal(roundTrip(wide, rays), wide)
 })
+
+test('storage: a write that could not place every slot says which ones, and does not claim to hold', async () => {
+  // THE LIVE FAULT, REPRODUCED. A deposit makes two puts — the inode and the referrer — and each places the value
+  // and fourteen RAID shares across KV and R2. Thirty slots each, sixty for the deposit, against a budget of
+  // fifty. The tail of the second put is refused, and qpu.uuidna.com has been carrying feed records with faces 7,
+  // 8 and 9 absent: stable across a minute of polling, so not read-after-write lag, and a different record each
+  // time the store grows.
+  //
+  // Promise.all rejected on the first failure and discarded the rest, so the error named none of the slots. This
+  // store refuses exactly the faces the live host loses.
+  const { faces } = qpuFacesOf()
+  const refused = [faces / 2, faces / 2 + 1, faces / 2 + 2]
+  const partial = {
+    QPU_HOST: host,
+    QPU_WRITE_TOKEN: 'qpu-test-write-token',
+    STORAGE: {
+      get: async () => null,
+      put: async (key: string) => {
+        const face = key.includes('/@') ? Number(key.slice(key.lastIndexOf('/@') + 2)) : -1
+        if (refused.includes(face)) throw new Error('Too many subrequests')
+      },
+      delete: async () => {},
+      list: async () => ({ keys: [], list_complete: true }),
+    },
+    BLOBS: {
+      get: async () => null,
+      put: async () => ({}),
+      delete: async () => {},
+      list: async () => ({ objects: [], truncated: false }),
+    },
+  }
+
+  const response = await worker.fetch(
+    new Request(`${origin}/storage/feed/partial-probe`, {
+      method: 'PUT',
+      headers: { 'content-type': 'application/json', accept: 'text/html', authorization: `Bearer ${partial.QPU_WRITE_TOKEN}` },
+      body: JSON.stringify({ probe: true }),
+    }),
+    partial,
+  )
+  const body = (await response.json()) as { holds: boolean; denied?: string; placement?: string }
+
+  // IT DOES NOT CLAIM TO HOLD. A write that placed eleven of fifteen slots is not a write.
+  assert.equal(body.holds, false)
+  assert.equal(body.denied, 'slots')
+  // AND IT NAMES THEM. "something failed" leaves nobody able to repair anything.
+  for (const face of refused) assert.match(body.placement ?? '', new RegExp(`face ${face}\\b`), `face ${face} is not named`)
+  assert.match(body.placement ?? '', /slots placed/)
+  // A refusal, not a crash: the door answers in the same shape it answers every other refusal in.
+  assert.equal(response.status, 200)
+})

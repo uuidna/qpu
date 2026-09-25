@@ -6066,13 +6066,35 @@ const storageStoreOf = (env?: QpuEnv) => {
       // was awaited in turn: thirty in a row for one put, sixty for the inode-and-referrer pair a deposit makes.
       // Measured at the door, that is about seventeen seconds of wall for tens of milliseconds of CPU. No share
       // reads another and none reads the slot, so nothing ordered them.
-      const waves: Promise<unknown>[] = [writeSlot(key, stored, true)]
+      const slots: { face: number; wave: Promise<unknown> }[] = [{ face: -seed, wave: writeSlot(key, stored, true) }]
       for (let team = n - n; team < coins; team++) {
         for (let ray = n - n; ray < faces.rays; ray++) {
-          waves.push(writeSlot(raidShareKeyOf(key, ray + team * faces.rays), stripes[ray]!, true))
+          const face = ray + team * faces.rays
+          slots.push({ face, wave: writeSlot(raidShareKeyOf(key, face), stripes[ray]!, true) })
         }
       }
-      await Promise.all(waves)
+      /**
+       * WHICH SLOTS DID NOT LAND, NOT JUST THAT ONE DID NOT.
+       *
+       * Promise.all rejects on the first failure and discards the rest, so a write that placed eleven of fifteen
+       * slots threw an error naming none of them. The live host has been carrying exactly that: a feed record with
+       * faces 7, 8 and 9 absent, stable across a minute of polling — not read-after-write lag — and a different
+       * record incomplete each time the store grows. Whatever is dropping those shares, the write path could not
+       * say so, because it never looked at the outcome of the individual slots it issued.
+       *
+       * allSettled costs nothing extra — the same fifteen slots, across the same two layers, already in flight —
+       * and it turns a bare rejection into the faces that failed. It still throws, so no caller silently receives
+       * a partial write; it throws with the information needed to act on one.
+       */
+      const settled = await Promise.allSettled(slots.map((slot) => slot.wave))
+      const lost = slots.filter((_, at) => settled[at]!.status === 'rejected')
+      if (lost.length > n - n) {
+        const faced = lost.map((slot) => (slot.face < n - n ? 'the value' : `face ${slot.face}`)).join(', ')
+        const why = (settled.find((row) => row.status === 'rejected') as PromiseRejectedResult | undefined)?.reason
+        throw new Error(
+          `storage put ${key}: ${slots.length - lost.length} of ${slots.length} slots placed; ${faced} did not (${String(why)})`,
+        )
+      }
       return stored
     },
     async del(key: string): Promise<boolean> {
@@ -6535,8 +6557,39 @@ export const qpuStorageOf = async (
     if (!seated) links.push(key)
     const nlink = links.length
     const inode = { kind: 'inode' as const, address, occupancy, nlink, links, value: stored }
-    await store.put(inodeKey, inode)
-    await store.put(key, { kind: 'referrer' as const, address, occupancy, href: access })
+    /**
+     * A DEPOSIT IS SIXTY SUBREQUESTS AND THE BUDGET IS FIFTY.
+     *
+     * Each put places the value and fourteen RAID shares across KV and R2 — thirty slots — and a deposit makes
+     * two of them, the inode and the referrer. The file already said so ("sixty for the inode-and-referrer pair a
+     * deposit makes") and treated it as a latency note. It is not: Cloudflare allows fifty subrequests per request
+     * on the free plan, so the tail of the second put is refused, and the live host has been carrying feed records
+     * with faces 7, 8 and 9 absent — stable across a minute of polling, a different record each time the store
+     * grows. Reproduced here by refusing exactly those faces: "12 of 15 slots placed; face 7, face 8, face 9 did
+     * not (Too many subrequests)".
+     *
+     * REPORTED, NOT SWALLOWED, AND NOT A CRASH EITHER. put now names the slots that did not land, and a refusal
+     * belongs in the same shape as every other refusal this door makes — holds false with a reason — rather than
+     * escaping as an unhandled rejection the caller reads as a 500.
+     *
+     * This does not make the write fit. Reducing sixty slots to something under the budget is a question about
+     * whether a referrer — a pointer of four fields — needs its own fourteen RAID shares, and that is a change to
+     * what RAID means here, not a bug fix. Named rather than guessed at.
+     */
+    try {
+      await store.put(inodeKey, inode)
+      await store.put(key, { kind: 'referrer' as const, address, occupancy, href: access })
+    } catch (error) {
+      return {
+        ...meta,
+        '@id': href,
+        url: href,
+        key,
+        holds: false as const,
+        denied: 'slots' as const,
+        placement: String((error as Error)?.message ?? error),
+      }
+    }
     raidTraffic += seed
     const raid = qpuRaidOf({ safe: raidSafeOf(key) })
     /**
