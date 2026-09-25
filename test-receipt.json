@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 150,
-  "pass": 150,
+  "tests": 151,
+  "pass": 151,
   "fail": 0,
   "dry": 0,
-  "circuit": 109,
+  "circuit": 110,
   "mintOnly": 11,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "633f4f3b242ffbc6",
+  "receipt": "08955a96461323f5",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -2625,6 +2625,54 @@
       "mint": {
         "calls": 18209,
         "chain": "085a28164fc3790a"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "gate: the context window reaches past the match on both sides",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 813,
+      "kinds": {
+        "x": 175,
+        "cnot": 336,
+        "toffoli": 28,
+        "h": 252,
+        "measure": 14,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 805,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "d3751420dd34b49c",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 14
+        }
+      ],
+      "mint": {
+        "calls": 18209,
+        "chain": "97500fe0f6d5c89a"
       },
       "served": {
         "count": 0,

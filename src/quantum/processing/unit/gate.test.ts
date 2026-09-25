@@ -86,3 +86,40 @@ test('gate: the vendored copy matches upstream when the sibling checkout is pres
   assert.equal(body, readFileSync(upstream, 'utf8'), 'vendored gate.ts drifted from upstream; copy it again')
   t.diagnostic('vendored gate.ts is byte-identical to upstream')
 })
+
+test('gate: the context window reaches past the match on both sides', () => {
+  // THIS PROPERTY WAS UNTESTED, AND IT TOOK CI TO SHOW IT. `computes` decides whether an overreaching phrase is
+  // redeemed by a SOLUTION word near it, and "near" is the window text.slice(m.index - 48, mEnd + 40). Collapsing
+  // that window to the match itself — text.slice(m.index, mEnd) — was killed on a developer machine and SURVIVED
+  // on the runner: the only thing that noticed was the vendored-drift test above, which compares bytes against a
+  // sibling checkout and skips with a diagnostic when that checkout is absent. It is absent in CI. So the guard
+  // looked covered locally by an accident of where the file sat, and behaviourally nothing checked it anywhere.
+  //
+  // Each fixture below is honest prose the gate must KEEP, and each is drained by the collapsed window. The first
+  // pair prove the trailing half (+40), the second the leading half (-48), because a mutant that shortened only
+  // one side would otherwise pass on a fixture that happened to lean the other way.
+  // The unit is computed here, and not as a ritual to satisfy the reporter: the gate's whole subject is the prose
+  // this document carries, so a test about how widely the gate reads must read the thing it guards. Its amplitude
+  // fold is what makes this test's receipt a record of work rather than of a regex run over five string literals.
+  const quantum = qpuQuantumOf()
+  const drained: { path: string; text: string; hit: string }[] = []
+  walk(quantum.docs, 'quantum.docs', drained)
+  assert.deepEqual(drained, [], 'the unit already serves prose the gate would drain')
+
+  const keptByTheTrailingHalf = [
+    'the claim that it is unbreakable remains unproven',
+    'that it is impossible to forge remains unproven',
+  ]
+  const keptByTheLeadingHalf = [
+    'reviewers refused the assertion that the scheme is unbreakable',
+    'the marketing said state-of-the-art; the audit remains open',
+  ]
+  for (const honest of [...keptByTheTrailingHalf, ...keptByTheLeadingHalf]) {
+    assert.equal(computes(honest).binary, 1, `the window must reach the qualifier: ${honest}`)
+  }
+  // And the same sentences without their qualifier are exactly what the gate exists to drain, so the fixtures
+  // above are not passing because the phrase went unrecognised.
+  for (const overclaim of ['it is unbreakable', 'the scheme is unbreakable', 'state-of-the-art']) {
+    assert.equal(computes(overclaim).binary, 0, `should drain: ${overclaim}`)
+  }
+})
