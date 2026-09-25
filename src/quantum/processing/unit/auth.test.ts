@@ -93,3 +93,53 @@ test('a prefix lists its links ascending with their documents; other prefixes an
   assert.equal(http.status, 200)
   assert.deepEqual(((await http.json()) as { keys: { key: string }[] }).keys.map((r) => r.key), ['live/probe/0001-a', 'live/probe/0002-b'])
 })
+
+test('storage: maintain is a write, so it needs what writes need', async () => {
+  // MAINTAIN REWRITES SHARES AND DELETES ORPHANS — store.put and store.drop — but it called the store directly
+  // instead of going through qpuStorageOf, which is the one place the bearer check lived. So
+  // `POST /storage {"maintain":true}` and the store_maintain tool wrote and deleted for ANY caller, on a host
+  // that answers CORS *, while the README said storage writes need a Bearer token.
+  //
+  // The same shape was measured here on 2026-09-11: the preflight advertised PUT and DELETE to every origin and
+  // the handler honoured them unchecked. That was fixed at qpuStorageOf, and this path never went through it — a
+  // guard on one door says nothing about the door beside it, which is why this asserts the door and not the guard.
+  const bound = {
+    QPU_HOST: host,
+    QPU_WRITE_TOKEN: 'qpu-test-write-token',
+    STORAGE: {
+      get: async () => ({ v: 1 }),
+      put: async () => {},
+      delete: async () => {},
+      list: async () => ({ keys: [], list_complete: true }),
+    },
+    BLOBS: {
+      get: async () => null,
+      put: async () => ({}),
+      delete: async () => {},
+      list: async () => ({ objects: [], truncated: false }),
+    },
+  }
+  const maintain = (headers: Record<string, string>) =>
+    worker.fetch(
+      new Request(`https://${host}/storage`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'text/html', ...headers },
+        body: JSON.stringify({ maintain: true }),
+      }),
+      bound,
+    )
+
+  const anonymous = await maintain({})
+  assert.equal(anonymous.status, 401)
+  assert.equal(((await anonymous.json()) as { denied?: string }).denied, 'auth')
+
+  const wrong = await maintain({ authorization: 'Bearer not-the-token' })
+  assert.equal(wrong.status, 401)
+  assert.equal(((await wrong.json()) as { denied?: string }).denied, 'auth')
+
+  const held = await maintain({ authorization: `Bearer ${bound.QPU_WRITE_TOKEN}` })
+  assert.equal(held.status, 200)
+  const body = (await held.json()) as { holds: boolean; denied?: string }
+  assert.equal(body.denied, undefined)
+  assert.equal(body.holds, true)
+})

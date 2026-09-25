@@ -6280,7 +6280,31 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
   }
 }
 
-export const qpuStorageMaintainOf = async (env?: QpuEnv) => {
+/** MAINTAIN WRITES, SO IT NEEDS WHAT WRITES NEED.
+ *
+ * It rewrites broken shares with store.put and deletes orphans with store.drop. Both go straight to the store,
+ * not through qpuStorageOf — which is where the bearer check lives — so `POST /storage {"maintain":true}` and the
+ * store_maintain tool performed writes and deletions for any caller at all, on a host that answers CORS *. The
+ * README has always said storage writes need a Bearer token; this one did not.
+ *
+ * The same shape of fault was measured here on 2026-09-11, when the preflight advertised PUT and DELETE to every
+ * origin and the handler honoured them with no check. That one was fixed at qpuStorageOf. This path never went
+ * through it, so the fix did not reach it — a guard at one door says nothing about a second door beside it.
+ *
+ * Refused with the same `denied: 'auth'` shape the PUT path returns, so a caller learns the same thing either way.
+ */
+export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) => {
+  if (!qpuStorageWriteAllowedOf(env, auth)) {
+    return {
+      kind: 'maintain' as const,
+      repaired: n - n,
+      orphans: n - n,
+      keys: n - n,
+      denied: 'auth' as const,
+      auth: 'Bearer QPU_WRITE_TOKEN' as const,
+      holds: false as const,
+    }
+  }
   const faces = qpuFacesOf()
   const store = storageStoreOf(env)
   const names = await store.keys()
@@ -6595,7 +6619,7 @@ export const qpuStorageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubToo
       description: 'Maintain RAID.',
       man: qpuSubManOf(see[n + n], 'Maintain RAID.', 'Rewrite broken shares. Drop orphans.', href, see.filter((s) => s !== see[n + n])),
       inputSchema: schema,
-      run: () => qpuStorageMaintainOf(env)},
+      run: () => qpuStorageMaintainOf(env, auth)},
     {
       name: see[mintOf(n) - seed],
       description: 'RAID geometry.',
@@ -11448,7 +11472,10 @@ const worker = {
         const auth = request.headers.get('authorization')
         const rpc = await qpuSubRpcOf(body, qpuStorageToolsOf(env, auth), storageHref)
         if (rpc) return jsonOf(rpc)
-        if (body.maintain === true) return jsonOf(await qpuStorageMaintainOf(env))
+        if (body.maintain === true) {
+          const kept = await qpuStorageMaintainOf(env, auth)
+          return jsonOf(kept, kept.holds === false && 'denied' in kept && kept.denied === 'auth' ? unauthorized : found)
+        }
         if (typeof body.key === 'string') {
           const put = await qpuStorageOf(env, { method: 'PUT', key: body.key, value: body.value, auth })
           return jsonOf(put, put.holds === false && 'denied' in put && put.denied === 'auth' ? unauthorized : found)
