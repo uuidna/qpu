@@ -728,6 +728,9 @@ const STORE_LIST_PAGE = 1000
  *  A census is a census. The page budget bounds the subrequests; `complete` says whether the walk reached the end,
  *  so a partial answer is reported as partial instead of being read as the whole store. */
 const STORE_SCAN_PAGES = 4
+/** How many values one catalog request will read to estimate the store's size. Reads are subrequests; the byte
+ *  total is a reading and not a gate, so it is sampled and labelled rather than paid for per key. */
+const STORE_BYTES_SAMPLE = 16
 let raidTraffic = n - n
 
 const raidClouds = [
@@ -6195,19 +6198,47 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
   const store = storageStoreOf(env)
   const names = await store.keys()
   const raw = await store.raw()
-  let bytes = n - n
+
+  /**
+   * VERIFIED FROM THE LISTING, NOT FROM A READ PER KEY. This loop used to `await store.get(key)` for every name,
+   * sequentially, and store.get reads KV and then R2 — so a catalog request cost one or two subrequests PER KEY.
+   * At 253 keys that is 27 seconds on the live host and past Cloudflare's per-request subrequest budget, which is
+   * why monitor.holds went false: reads started coming back empty, every empty read skipped its key, and
+   * `verified === names.length` could no longer be true. The door reported the STORE as unhealthy when what was
+   * unhealthy was the question being asked of it.
+   *
+   * Nothing was gained by reading. Share presence is decided by whether a share NAME exists, which the listing
+   * already carries, and `bytes` — the only figure the read produced — is not part of holds. So presence is
+   * answered from the names, and the walk is O(pages) instead of O(keys).
+   *
+   * A Set, because `raw.includes(...)` inside the per-face loop was names × faces × raw string comparisons —
+   * 253 × 14 × ~3500 here. That is CPU rather than subrequests, and a Worker is metered on both.
+   */
+  const present = new Set(raw)
   let verified = n - n
   let missing = n - n
   for (const key of names) {
+    let held = n - n
+    for (let face = n - n; face < faces.faces; face++) {
+      if (present.has(raidShareKeyOf(key, face))) held += seed
+    }
+    if (held === faces.faces) verified += seed
+    else missing += seed
+  }
+
+  /**
+   * BYTES OVER A BOUNDED SAMPLE, AND SAID TO BE ONE. The total is worth reporting and is not worth a subrequest
+   * per key to obtain. A figure measured over part of the store and printed as the whole is the kind of confident
+   * wrong number this package refuses everywhere else, so `sampled` and `keys` travel beside it and a reader can
+   * see which it is.
+   */
+  let bytes = n - n
+  let sampled = n - n
+  for (const key of names.slice(n - n, STORE_BYTES_SAMPLE)) {
     const value = await store.get(key)
     if (value === null || value === undefined) continue
     bytes += jsonBytesOf(value)
-    let present = n - n
-    for (let face = n - n; face < faces.faces; face++) {
-      if (raw.includes(raidShareKeyOf(key, face))) present += seed
-    }
-    if (present === faces.faces) verified += seed
-    else missing += seed
+    sampled += seed
   }
   let shares = n - n
   for (const name of raw) if (name.includes(raidMark)) shares += seed
@@ -6226,6 +6257,7 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
     missing,
     verified,
     bytes,
+    sampled,
     traffic: raid.traffic,
     demand: raid.demand,
     pick: raid.pick.name,

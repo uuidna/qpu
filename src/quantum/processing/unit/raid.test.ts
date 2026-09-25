@@ -161,3 +161,57 @@ test('storage: the catalog walk is bounded by pages, and says when it stopped sh
   assert.ok(r2Lists <= 16, `R2 was listed ${r2Lists} times for one request`)
   assert.ok(Array.isArray(body.keys), 'the catalog still answers with the census it did manage to take')
 })
+
+test('storage: the catalog costs the same whether the store holds ten keys or a thousand', async () => {
+  // WHAT ACTUALLY TOOK THE DOOR DOWN. The monitor read every value, sequentially, to decide `verified` — and
+  // store.get reads KV and then R2, so a catalog request cost one or two subrequests PER KEY. Measured live at
+  // 253 keys: 27 seconds, and monitor.holds false, because reads past Cloudflare's per-request budget came back
+  // empty, every empty read skipped its key, and `verified === keys` stopped being true. The door was reporting
+  // the store as unhealthy when what was unhealthy was the question being asked of it.
+  //
+  // Share presence is a question about NAMES, and the listing already carries them. This store is the live one's
+  // shape — 253 links, fourteen shares each — and the assertion is that the reads do not scale with it.
+  const links = Array.from({ length: 253 }, (_, i) => `probe-${i}`)
+  const names = [...links, ...links.flatMap((k) => Array.from({ length: 14 }, (_, f) => `${k}/@${f}`))]
+  let reads = 0
+  const populated = {
+    QPU_HOST: host,
+    STORAGE: {
+      get: async () => { reads += 1; return { v: 1 } },
+      put: async () => {},
+      delete: async () => {},
+      list: async (options?: { prefix?: string }) => ({
+        keys: names.filter((nm) => nm.startsWith(options?.prefix ?? '')).map((nm) => ({ name: nm })),
+        list_complete: true,
+      }),
+    },
+    BLOBS: {
+      get: async () => null,
+      put: async () => ({}),
+      delete: async () => {},
+      list: async () => ({ objects: [], truncated: false }),
+    },
+  }
+
+  const response = await worker.fetch(new Request(`${origin}/storage`, { headers: html }), populated)
+  assert.equal(response.status, 200)
+  const body = (await response.json()) as {
+    holds: boolean
+    monitor: { holds: boolean; keys: number; verified: number; missing: number; shares: number; expected: number; sampled: number }
+  }
+
+  // Every link verified, from the listing alone.
+  assert.equal(body.monitor.keys, links.length)
+  assert.equal(body.monitor.verified, links.length)
+  assert.equal(body.monitor.missing, 0)
+  assert.equal(body.monitor.shares, body.monitor.expected)
+  assert.equal(body.monitor.holds, true)
+  assert.equal(body.holds, true)
+
+  // AND THE COST DID NOT FOLLOW THE STORE. This is the property; the exact sample size is an implementation
+  // choice, so the bound is generous and the point is that it is a bound at all rather than 253.
+  assert.ok(reads < links.length, `the monitor read ${reads} values for ${links.length} keys — the reads scale with the store`)
+  assert.ok(reads <= 32, `${reads} value reads in one catalog request`)
+  // The byte total is a sample and says so, rather than being a confident figure measured over part of the store.
+  assert.equal(body.monitor.sampled, reads)
+})
