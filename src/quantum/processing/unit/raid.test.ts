@@ -1,5 +1,7 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import worker, { qpuCubeOf, qpuFacesOf, raidJoinOf, raidStripeOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
@@ -367,4 +369,98 @@ test('storage: a write that could not place every slot says which ones, and does
   assert.match(body.placement ?? '', /slots placed/)
   // A refusal, not a crash: the door answers in the same shape it answers every other refusal in.
   assert.equal(response.status, 200)
+})
+
+test('storage: every door costs what the baseline says, on an empty store and a full one', async () => {
+  // AUTONOMY, NOT ADVICE. Three faults this session were one fault — a cost that scales with the store, or exceeds
+  // what a single request may spend: the catalog's unbounded cursor walk, the monitor's read per key, the
+  // deposit's slots. Each was found by somebody reading the code, and each got a test for its own instance. None
+  // of them would catch the next one. This counts every subrequest every door makes and holds it to a recorded
+  // figure, so the next one fails the suite instead of reaching production.
+  //
+  // TWO PROFILES, BECAUSE ONE OF THEM CANNOT SEE THE CLASS. On an empty store a byte sample reads nothing and a
+  // per-key loop runs zero times, so the very cost that broke the live host does not appear. The populated
+  // profile is the shape of the live store. Written after an empty-only baseline failed to notice a byte sample
+  // deliberately made larger — the guard was measuring the apparatus, which is the fault it exists to catch.
+  const baseline = JSON.parse(readFileSync(join(process.cwd(), 'storage-subrequests.json'), 'utf8')) as {
+    budget: number
+    doors: Record<string, { empty: number; populated: number }>
+    over: Record<string, string>
+  }
+  const { faces } = qpuFacesOf()
+  const { bits, vertices } = qpuCubeOf()
+
+  const storeOf = (populated: boolean) => {
+    const kv = new Map<string, string>()
+    if (populated) {
+      for (let i = 0; i < bits * vertices; i++) {
+        kv.set(`p-${i}`, JSON.stringify({ v: i }))
+        for (let f = 0; f < faces; f++) kv.set(`p-${i}/@${f}`, JSON.stringify('s'))
+      }
+    }
+    let spent = 0
+    const count =
+      <T extends unknown[], R>(fn: (...args: T) => Promise<R>) =>
+      async (...args: T) => { spent += 1; return fn(...args) }
+    const env = {
+      QPU_HOST: host,
+      QPU_WRITE_TOKEN: 'qpu-test-write-token',
+      STORAGE: {
+        get: count(async (key: string) => { const v = kv.get(key); return v === undefined ? null : JSON.parse(v) }),
+        put: count(async (key: string, value: string) => { kv.set(key, value) }),
+        delete: count(async (key: string) => { kv.delete(key) }),
+        list: count(async (options?: { prefix?: string }) => ({
+          keys: [...kv.keys()].filter((k) => k.startsWith(options?.prefix ?? '')).map((name) => ({ name })),
+          list_complete: true,
+        })),
+      },
+      BLOBS: {
+        get: count(async () => null),
+        put: count(async () => ({})),
+        delete: count(async () => {}),
+        list: count(async () => ({ objects: [] as { key: string }[], truncated: false })),
+      },
+    }
+    return { env, spent: () => spent }
+  }
+
+  const doors = [
+    { name: 'GET /storage', path: '/storage', method: 'GET' as const },
+    { name: 'GET /storage/:key', path: '/storage/p-0', method: 'GET' as const },
+    { name: 'PUT /storage/:key', path: '/storage/p-0', method: 'PUT' as const, body: { probe: true } },
+    { name: 'POST /storage {maintain:true}', path: '/storage', method: 'POST' as const, body: { maintain: true } },
+  ]
+
+  const spentBy: Record<string, { empty: number; populated: number }> = {}
+  for (const door of doors) {
+    spentBy[door.name] = { empty: 0, populated: 0 }
+    for (const profile of ['empty', 'populated'] as const) {
+      const { env: metered, spent } = storeOf(profile === 'populated')
+      const init: RequestInit = {
+        method: door.method,
+        headers: { 'content-type': 'application/json', accept: 'text/html', authorization: 'Bearer qpu-test-write-token' },
+        ...('body' in door ? { body: JSON.stringify(door.body) } : {}),
+      }
+      await worker.fetch(new Request(`${origin}${door.path}`, init), metered)
+      spentBy[door.name]![profile] = spent()
+    }
+  }
+
+  if (process.env.QPU_BASELINE === 'print') console.log(JSON.stringify(spentBy, null, 2))
+  for (const [name, recorded] of Object.entries(baseline.doors)) {
+    for (const profile of ['empty', 'populated'] as const) {
+      assert.equal(
+        spentBy[name]?.[profile],
+        recorded[profile],
+        `${name} (${profile}) spends ${spentBy[name]?.[profile]} subrequests, baseline says ${recorded[profile]} — it may only shrink, so lower the number`,
+      )
+    }
+  }
+
+  // THE DEBT IS NAMED WITH A NUMBER ON IT. A door over the platform budget must be listed with the reason it has
+  // not been brought under. Fixing one means deleting its entry; the list cannot quietly grow, and it cannot
+  // quietly keep an entry that has stopped being true.
+  const over = Object.entries(spentBy).filter(([, s]) => s.populated > baseline.budget).map(([name]) => name).sort()
+  assert.deepEqual(over, Object.keys(baseline.over).sort(), 'the doors over the subrequest budget are not the ones the baseline admits to')
+  for (const name of over) assert.ok((baseline.over[name] ?? '').length > 0, `${name} is over budget with no reason recorded`)
 })

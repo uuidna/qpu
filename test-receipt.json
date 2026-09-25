@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 159,
-  "pass": 159,
+  "tests": 160,
+  "pass": 160,
   "fail": 0,
   "dry": 0,
-  "circuit": 117,
+  "circuit": 118,
   "mintOnly": 12,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "2d3918be6cc48511",
+  "receipt": "0e458521459aae7f",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -6237,6 +6237,54 @@
       "mint": {
         "calls": 6352,
         "chain": "d2e1a6bd1dde34f1"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "storage: every door costs what the baseline says, on an empty store and a full one",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 2336,
+      "kinds": {
+        "x": 528,
+        "cnot": 1024,
+        "toffoli": 96,
+        "h": 608,
+        "measure": 48,
+        "cmodexp": 16,
+        "xx": 16
+      },
+      "dims": {
+        "8": 2304,
+        "512": 32
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "81e278361277812b",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 48
+        }
+      ],
+      "mint": {
+        "calls": 51342,
+        "chain": "98a351b8dbf7c037"
       },
       "served": {
         "count": 0,

@@ -1,0 +1,31 @@
+{
+  "budget": 50,
+  "why": "Cloudflare Workers allow 50 subrequests per request on the free plan (1000 on paid). Every kv.get, kv.put, kv.delete, kv.list and each matching r2 call is one. A request that exceeds it does not slow down \u2014 its later calls are refused, and a RAID write loses the tail of its shares. That is how qpu.uuidna.com came to hold feed records with faces 7, 8 and 9 absent.",
+  "rule": "MAY ONLY SHRINK. Each recorded figure is exact: a door that costs more fails the suite, and a door that costs less fails too, asking for the number to be lowered. A ceiling nobody lowers stops being a measurement. Same discipline as the sibling package's lean-fakes-baseline.json.",
+  "profiles": {
+    "empty": "no keys at all. Reads miss, so the store falls back to rebuilding a value from its fourteen shares \u2014 which is why an empty store can cost MORE than a full one. The floor a door pays before it pays for any content.",
+    "populated": "256 links with all their shares present, the shape of the live store. THIS is the profile that catches a cost scaling with the store, and an empty-store baseline alone does not: a byte sample over zero keys reads nothing, so it cannot regress."
+  },
+  "doors": {
+    "GET /storage": {
+      "empty": 6,
+      "populated": 22
+    },
+    "GET /storage/:key": {
+      "empty": 30,
+      "populated": 1
+    },
+    "POST /storage {maintain:true}": {
+      "empty": 8,
+      "populated": 24
+    },
+    "PUT /storage/:key": {
+      "empty": 120,
+      "populated": 91
+    }
+  },
+  "over": {
+    "PUT /storage/:key": "91 against a budget of 50, on the populated profile. A deposit writes the inode and the referrer, and each places the value plus fourteen RAID shares across KV and R2. Getting under the budget means deciding whether a referrer \u2014 a pointer of four fields \u2014 needs fourteen RAID shares of its own. That is a change to what RAID means here rather than a bug fix, so it is a known debt with a number on it instead of a surprise in production."
+  },
+  "rerecord": "QPU_BASELINE=print node --test dist/quantum/processing/unit/raid.test.js \u2014 prints the measured table, so lowering a figure is a copy rather than a guess."
+}
