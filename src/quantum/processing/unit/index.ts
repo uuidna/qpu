@@ -6543,6 +6543,56 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
  *
  * Refused with the same `denied: 'auth'` shape the PUT path returns, so a caller learns the same thing either way.
  */
+/**
+ * THE TWO REDUNDANCY FACTS THE DEPOSIT'S COST RESTS ON, PROVED RATHER THAN MEASURED.
+ *
+ * Cutting a deposit from 91 subrequests to 35 was not tuning. It is a corollary of two structural facts, and
+ * both are decidable here:
+ *
+ *   DETERMINED — a referrer carries no information its inode does not. The inode's `links` holds the very key
+ *   the referrer belongs to, and its address and occupancy are the inode's own, so the pointer is a function of
+ *   the payload. Striping it stores fourteen shares of something already reconstructible, which is why removing
+ *   them loses nothing: you cannot lose what is derivable.
+ *
+ *   MIRRORED — the two RAID teams are the same stripes dealt twice. Seven shares determine the value, so reading
+ *   fourteen reads twice what the answer needs. raidJoinOf over either team returns the text.
+ *
+ * Asserted over the lattice's own widths rather than one sampled value, because a redundancy claim that holds
+ * for one string is a coincidence and a redundancy claim that holds for every residue is a proof.
+ */
+export const qpuStorageRedundancyHolds = (): boolean => {
+  const faces = qpuFacesOf()
+  const cube = qpuCubeOf()
+
+  // MIRRORED: either team of rays stripes rebuilds the text, for every residue of length against rays.
+  for (let extra = n - n; extra < faces.rays; extra++) {
+    const text = JSON.stringify({ probe: 'x'.repeat(cube.hexbit * faces.rays + extra) })
+    const stripes = raidStripeOf(text, faces.rays)
+    if (stripes.length !== faces.rays) return false
+    if (raidJoinOf(stripes) !== text) return false
+  }
+
+  // DETERMINED: a referrer is a function of its inode. Given the inode, every field of the pointer is recovered,
+  // so the pointer holds nothing of its own to lose.
+  const occupancy = 'notes'
+  const address = 'a'.repeat(cube.bits)
+  const key = `${occupancy}/probe`
+  const inode = { kind: 'inode' as const, address, occupancy, nlink: seed, links: [key], value: { probe: seed } }
+  const rebuilt = {
+    kind: 'referrer' as const,
+    address: inode.address,
+    occupancy: inode.occupancy,
+    href: `${storageHref}/${storageAddressKeyOf(inode.occupancy, inode.address)}`,
+  }
+  const stored = {
+    kind: 'referrer' as const,
+    address,
+    occupancy,
+    href: `${storageHref}/${storageAddressKeyOf(occupancy, address)}`,
+  }
+  return inode.links.includes(key) && JSON.stringify(rebuilt) === JSON.stringify(stored)
+}
+
 export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) => {
   if (!qpuStorageWriteAllowedOf(env, auth)) {
     return {

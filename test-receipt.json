@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 160,
-  "pass": 160,
+  "tests": 161,
+  "pass": 161,
   "fail": 0,
   "dry": 0,
   "circuit": 118,
-  "mintOnly": 12,
+  "mintOnly": 13,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "45c0c4259d9099a7",
+  "receipt": "4e9eece4296438c5",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -6285,6 +6285,27 @@
       "mint": {
         "calls": 53646,
         "chain": "c7bed5a8f92bfbb7"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "raid: the deposit cost rests on two redundancy facts, and both are proved here",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 12,
+        "chain": "7e764c870c400cf7"
       },
       "served": {
         "count": 0,

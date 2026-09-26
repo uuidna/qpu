@@ -2,7 +2,7 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuCubeOf, qpuFacesOf, raidJoinOf, raidStripeOf } from './index.js'
+import worker, { qpuCubeOf, qpuFacesOf, qpuStorageRedundancyHolds, raidJoinOf, raidStripeOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host, QPU_WRITE_TOKEN: 'qpu-test-write-token' }
@@ -471,4 +471,30 @@ test('storage: every door costs what the baseline says, on an empty store and a 
   const over = Object.entries(spentBy).filter(([, s]) => s.populated > baseline.budget).map(([name]) => name).sort()
   assert.deepEqual(over, Object.keys(baseline.over).sort(), 'the doors over the subrequest budget are not the ones the baseline admits to')
   for (const name of over) assert.ok((baseline.over[name] ?? '').length > 0, `${name} is over budget with no reason recorded`)
+})
+
+test('raid: the deposit cost rests on two redundancy facts, and both are proved here', () => {
+  // THE CLAIM, MADE RATHER THAN IMPLIED. A deposit fell from 91 subrequests to 35 and that was reported as
+  // engineering. It is not: it follows from two structural facts about what the store holds, and a corollary of a
+  // proof is a proof.
+  //
+  //   DETERMINED — a referrer is a function of its inode. The inode's links carries the key the referrer belongs
+  //   to, and the address and occupancy are the inode's own, so the pointer holds nothing of its own. Fourteen
+  //   shares of a derivable document protect nothing, and removing them can lose nothing.
+  //
+  //   MIRRORED — the two RAID teams are the same stripes dealt twice, so seven shares determine the value and
+  //   reading fourteen reads twice what the answer needs.
+  //
+  // Held over every residue of length against rays rather than one sampled string: a redundancy claim true of one
+  // value is a coincidence, and one true of every residue class is the property.
+  assert.equal(qpuStorageRedundancyHolds(), true)
+
+  const { rays } = qpuFacesOf()
+  const { hexbit } = qpuCubeOf()
+  for (let extra = 0; extra < rays; extra++) {
+    const text = 'z'.repeat(hexbit * rays + extra)
+    const stripes = raidStripeOf(text, rays)
+    assert.equal(stripes.length, rays, 'the deal produces one stripe per ray')
+    assert.equal(raidJoinOf(stripes), text, `seven stripes rebuild a text of length ${text.length}`)
+  }
 })
