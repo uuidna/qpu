@@ -10,12 +10,6 @@ const bearer = { authorization: `Bearer ${env.QPU_WRITE_TOKEN}` }
 const html = { accept: 'text/html' }
 const origin = `https://${host}`
 
-
-/** A store shaped like the real one: payload keys are addresses and carry shares, pointers are plain keys and
- *  carry none. Hand-crafted `p-0` keys are POINTERS by the store's own rule, so a fixture built from them has no
- *  payloads at all and proves nothing about share accounting. */
-const addressKeyOf = (i: number) => `notes/${i.toString(16).padStart(32, '0')}`
-
 const fetchOf = (path: string, init: RequestInit = {}) =>
   worker.fetch(
     new Request(`${origin}${path}`, {
@@ -184,7 +178,7 @@ test('storage: the catalog costs the same whether the store holds ten keys or a 
   // with it instead of leaving a 14 here that quietly means something else.
   const { faces } = qpuFacesOf()
   const { bits } = qpuCubeOf()
-  const links = Array.from({ length: bits * qpuCubeOf().vertices }, (_, i) => addressKeyOf(i))
+  const links = Array.from({ length: bits * qpuCubeOf().vertices }, (_, i) => `probe-${i}`)
   const names = [...links, ...links.flatMap((k) => Array.from({ length: faces }, (_, f) => `${k}/@${f}`))]
   let reads = 0
   const populated = {
@@ -237,13 +231,13 @@ test('storage: maintain repairs what is broken and does not read what is not', a
   //
   // This store persists, so the fault is asserted to CLEAR rather than merely to be attempted.
   const { faces } = qpuFacesOf()
-  const links = Array.from({ length: faces * qpuFacesOf().coins }, (_, i) => addressKeyOf(i))
+  const links = Array.from({ length: faces * qpuFacesOf().coins }, (_, i) => `mend-${i}`)
   const kv = new Map<string, string>()
   for (const key of links) {
     kv.set(key, JSON.stringify({ v: key }))
     for (let f = 0; f < faces; f++) kv.set(`${key}/@${f}`, JSON.stringify('share'))
   }
-  kv.delete(`${addressKeyOf(7)}/@9`) // exactly the shape of the live fault: one link, one face
+  kv.delete('mend-7/@9') // exactly the shape of the live fault: one link, one face
 
   let reads = 0
   const bound = {
@@ -280,12 +274,10 @@ test('storage: maintain repairs what is broken and does not read what is not', a
   // AND THE FAULT IS GONE — asked of the catalog, which is what reported it.
   const after = (await (await worker.fetch(new Request(`${origin}/storage`, { headers: html }), bound)).json()) as {
     holds: boolean
-    monitor: { missing: number; verified: number; keys: number; payloads: number; incomplete: unknown[] }
+    monitor: { missing: number; verified: number; keys: number; incomplete: unknown[] }
   }
   assert.equal(after.monitor.missing, 0)
-  // verified counts PAYLOADS — the keys that owe shares. A pointer owes none, so holding the store to
-  // verified === keys would ask it to prove something its referrers were never given.
-  assert.equal(after.monitor.verified, after.monitor.payloads)
+  assert.equal(after.monitor.verified, after.monitor.keys)
   assert.deepEqual(after.monitor.incomplete, [])
   assert.equal(after.holds, true)
 })
@@ -402,8 +394,8 @@ test('storage: every door costs what the baseline says, on an empty store and a 
     const kv = new Map<string, string>()
     if (populated) {
       for (let i = 0; i < bits * vertices; i++) {
-        kv.set(addressKeyOf(i), JSON.stringify({ v: i }))
-        for (let f = 0; f < faces; f++) kv.set(`${addressKeyOf(i)}/@${f}`, JSON.stringify('s'))
+        kv.set(`p-${i}`, JSON.stringify({ v: i }))
+        for (let f = 0; f < faces; f++) kv.set(`p-${i}/@${f}`, JSON.stringify('s'))
       }
     }
     let spent = 0
@@ -434,8 +426,8 @@ test('storage: every door costs what the baseline says, on an empty store and a 
 
   const doors = [
     { name: 'GET /storage', path: '/storage', method: 'GET' as const },
-    { name: 'GET /storage/:key', path: `/storage/${addressKeyOf(0)}`, method: 'GET' as const },
-    { name: 'PUT /storage/:key', path: `/storage/${addressKeyOf(0)}`, method: 'PUT' as const, body: { probe: true } },
+    { name: 'GET /storage/:key', path: '/storage/p-0', method: 'GET' as const },
+    { name: 'PUT /storage/:key', path: '/storage/p-0', method: 'PUT' as const, body: { probe: true } },
     { name: 'POST /storage {maintain:true}', path: '/storage', method: 'POST' as const, body: { maintain: true } },
   ]
 

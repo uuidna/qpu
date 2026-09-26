@@ -6165,39 +6165,16 @@ const storageStoreOf = (env?: QpuEnv) => {
     kv: kv !== undefined,
     r2: r2 !== undefined,
     memory: kv === undefined,
-    /**
-     * `rebuild: false` READS THE SLOT AND STOPS THERE.
-     *
-     * A miss otherwise costs the fourteen shares — twenty-eight subrequests — because the store tries to rebuild
-     * what is not there. On a READ that is exactly right: a caller asking for a value wants it recovered. On the
-     * WRITE path it is not: a deposit misses by design the first time a key is stored, so every deposit paid
-     * twenty-eight subrequests to reconstruct a document that has never existed, out of the fifty a request is
-     * allowed. That is the budget the tail of its own shares needed.
-     *
-     * Recovery belongs to maintain, which exists to do it, reports what it repaired and is bounded. A write that
-     * silently recovers is doing repair work inside a deposit, at the deposit's expense, on every single call.
-     */
-    async get(key: string, rebuild = true): Promise<unknown> {
+    async get(key: string): Promise<unknown> {
       const full = await readFull(key)
       if (full !== null && full !== undefined) return full
-      if (!rebuild) return null
-      /**
-       * ONE TEAM, AND ONE WAVE. Reconstruction needs SEVEN shares, not fourteen — the two teams are mirrors of
-       * each other and the line below already preferred team0 whenever it held anything. Reading both cost twice
-       * what the answer needs, and reading them one await at a time cost fourteen round-trips for a question
-       * that is one.
-       *
-       * It is paid on every MISS, and a deposit misses by design: the inode does not exist yet the first time a
-       * value is stored. That put twenty-eight subrequests into a request that is allowed fifty, which is how a
-       * deposit came to lose the tail of its own shares.
-       *
-       * team1 is read only when team0 is entirely absent — the case RAID exists for — so a healthy store pays
-       * seven and a damaged one pays fourteen, both in one wave.
-       */
-      const teamOf = async (from: number): Promise<string[]> =>
-        Promise.all(Array.from({ length: faces.rays }, (_, ray) => readShare(key, ray + from)))
-      const team0 = await teamOf(n - n)
-      const stripes = team0.some((row) => row.length > n - n) ? team0 : await teamOf(faces.rays)
+      const team0: string[] = []
+      const team1: string[] = []
+      for (let ray = n - n; ray < faces.rays; ray++) {
+        team0.push(await readShare(key, ray))
+        team1.push(await readShare(key, ray + faces.rays))
+      }
+      const stripes = team0.some((row) => row.length > n - n) ? team0 : team1
       if (stripes.every((row) => row.length === n - n)) return null
       const text = raidJoinOf(stripes)
       try {
@@ -6206,28 +6183,8 @@ const storageStoreOf = (env?: QpuEnv) => {
         return text
       }
     },
-    /**
-     * A POINTER IS NOT A PAYLOAD, AND DOES NOT NEED ITS OWN FOURTEEN SHARES.
-     *
-     * RAID exists so a value can be rebuilt when its slot is gone. A referrer is four fields — kind, address,
-     * occupancy, href — and every one of them is already recoverable from the inode it points at, whose `links`
-     * carries the very key the referrer belongs to. Striping it stores fourteen shares to protect something a
-     * second document already reconstructs, and that second document has fourteen shares of its own.
-     *
-     * It was not free redundancy. Each put places the value and fourteen shares across KV and R2 — thirty slots —
-     * and a deposit makes two of them, which is how a deposit came to cost more subrequests than a Cloudflare
-     * request is allowed, and why the live host has been losing the tail of its shares. Redundancy that costs a
-     * request its budget protects nothing; it is the reason data is lost.
-     *
-     * `raid: false` writes the slot alone. Used for the referrer and nothing else — the inode, which carries the
-     * value, keeps every share.
-     */
-    async put(key: string, value: unknown, raid = true): Promise<unknown> {
+    async put(key: string, value: unknown): Promise<unknown> {
       const stored = jsonOf(value)
-      if (!raid) {
-        await writeSlot(key, stored, true)
-        return stored
-      }
       const text = JSON.stringify(stored)
       const stripes = raidStripeOf(text, faces.rays)
       // ONE WAVE, NOT THIRTY ROUND-TRIPS. The slot and its 2x7 RAID shares are written across two layers, and each
@@ -6449,27 +6406,13 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
    * 253 × 14 × ~3500 here. That is CPU rather than subrequests, and a Worker is metered on both.
    */
   const present = new Set(raw)
-  /**
-   * SHARES BELONG TO PAYLOADS, NOT TO POINTERS.
-   *
-   * Every name used to be expected to carry fourteen shares, because every name used to be written with them.
-   * A referrer is not a payload — it is four fields pointing at an inode, and the inode's own `links` already
-   * carries the key it belongs to, so it is rebuilt from there and not from shares of its own. Striping it cost
-   * a deposit thirty subrequests to protect what a second document already reconstructs.
-   *
-   * So the census asks the question that is now true: an address key holds a value and owes fourteen shares; a
-   * pointer owes none, and its integrity is that the address it names exists. Counting a pointer as incomplete
-   * for lacking shares it is not supposed to have would report a healthy store as broken — which is the same
-   * fault, in the other direction, as the monitor that failed by accusing the store it monitors.
-   */
-  const payloads = names.filter((key) => isStorageAddressKey(key))
   let verified = n - n
   let missing = n - n
   /** WHICH KEY, AND WHICH FACE. `missing: 1` is a true sentence that nobody can act on — the same dead end this
    *  unit refuses when it refuses a forge without naming the free seat. A repair needs the key and the face, so
    *  the first few are named; the count stays authoritative for however many there are. */
   const incomplete: { key: string; faces: number[] }[] = []
-  for (const key of payloads) {
+  for (const key of names) {
     let held = n - n
     const absent: number[] = []
     for (let face = n - n; face < faces.faces; face++) {
@@ -6499,18 +6442,16 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
   }
   let shares = n - n
   for (const name of raw) if (name.includes(raidMark)) shares += seed
-  const expected = payloads.length * faces.faces
+  const expected = names.length * faces.faces
   const kv = env?.STORAGE !== undefined
   const holds =
     raid.holds &&
-    verified === payloads.length &&
+    verified === names.length &&
     missing === n - n &&
     shares === expected
   return {
     kind: 'monitor' as const,
     keys: names.length,
-    payloads: payloads.length,
-    pointers: names.length - payloads.length,
     shares,
     expected,
     missing,
@@ -6626,11 +6567,7 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) =
    * free once the value is in hand, and a real per-value property — but it is no longer a reason to read 253 values.
    */
   const present = new Set(raw)
-  /** Only a payload owes shares. A pointer is rebuilt from the inode it names, so counting it broken for lacking
-   *  shares it was never given would have maintain re-stripe every referrer on every run — restoring the very
-   *  cost that was removed, and reporting repairs for a store that is whole. */
   const broken = names.filter((key) => {
-    if (!isStorageAddressKey(key)) return false
     for (let face = n - n; face < faces.faces; face++) {
       if (!present.has(raidShareKeyOf(key, face))) return true
     }
@@ -6664,10 +6601,7 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) =
     }
   }
   const monitor = await qpuStorageMonitorOf(env)
-  // verified counts PAYLOADS — the keys that owe shares — so it is compared against those and not against every
-  // name. A pointer carries no shares by design, and holding maintain to verified === keys asked a whole store to
-  // prove something two of its four documents were never supposed to have.
-  const holds = monitor.holds && monitor.missing === n - n && monitor.verified === monitor.payloads
+  const holds = monitor.holds && monitor.missing === n - n && monitor.verified === monitor.keys
   return {
     '@context': qpuContextOf(),
     '@type': 'Action' as const,
@@ -6812,7 +6746,7 @@ export const qpuStorageOf = async (
     const access = `${storageHref}/${inodeKey}`
     const prior = await store.get(key)
     if (isReferrerDoc(prior) && (prior.address !== address || prior.occupancy !== occupancy)) await unlinkOf(key, prior)
-    const existing = await store.get(inodeKey, false)
+    const existing = await store.get(inodeKey)
     const links: string[] = []
     if (isInodeDoc(existing)) for (const name of existing.links) links.push(name)
     let seated = false
@@ -6841,7 +6775,7 @@ export const qpuStorageOf = async (
      */
     try {
       await store.put(inodeKey, inode)
-      await store.put(key, { kind: 'referrer' as const, address, occupancy, href: access }, false)
+      await store.put(key, { kind: 'referrer' as const, address, occupancy, href: access })
     } catch (error) {
       return {
         ...meta,
