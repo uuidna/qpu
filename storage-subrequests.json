@@ -20,12 +20,11 @@
       "populated": 24
     },
     "PUT /storage/:key": {
-      "empty": 120,
-      "populated": 91
+      "empty": 64,
+      "populated": 35
     }
   },
-  "over": {
-    "PUT /storage/:key": "91 against a budget of 50, on the populated profile. A deposit writes the inode and the referrer, and each places the value plus fourteen RAID shares across KV and R2. Getting under the budget means deciding whether a referrer \u2014 a pointer of four fields \u2014 needs fourteen RAID shares of its own. That is a change to what RAID means here rather than a bug fix, so it is a known debt with a number on it instead of a surprise in production."
-  },
-  "rerecord": "QPU_BASELINE=print node --test dist/quantum/processing/unit/raid.test.js \u2014 prints the measured table, so lowering a figure is a copy rather than a guess."
+  "rerecord": "QPU_BASELINE=print node --test dist/quantum/processing/unit/raid.test.js \u2014 prints the measured table, so lowering a figure is a copy rather than a guess.",
+  "over": {},
+  "settled": "PUT was 120/91 and over the budget. A referrer is a pointer, not a payload: the inode it names carries the key in its links, so it is rebuilt from there and owes no shares of its own. And a write no longer performs RAID recovery \u2014 a deposit misses by design the first time a key is stored, and was paying 28 subrequests to rebuild a document that never existed. Recovery belongs to maintain, which is bounded and reports what it repaired. 35 on a populated store, under the budget of 50."
 }
