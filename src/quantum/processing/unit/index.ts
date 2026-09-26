@@ -4311,10 +4311,13 @@ export const qpuCiteOf = () => {
     first: 'Tsvetan',
     orcid: 'https://orcid.org/0009-0000-7312-9778',
   }
-  /** The versioned DOI: the Zenodo record the GitHub Release v0.1.1 was archived as (uuidna/qpu-v0.1.1.zip, tag 04ec6be at 4a45563). */
-  const doi = '10.5281/zenodo.22717782'
+  /** THE VERSIONED DOI, AND IT MUST NAME THIS VERSION. Zenodo mints one per GitHub Release from the concept
+   *  record below; this is the one it minted for v0.1.3. It said v0.1.1 while the package shipped 0.1.3 — a
+   *  citation that sends a reader to an artefact two releases behind what it claims to describe. verify-release
+   *  checks the archive holds the version being released, which is what caught it. */
+  const doi = '10.5281/zenodo.22973935'
   const conceptdoi = '10.5281/zenodo.22700098'
-  const archive = `https://zenodo.org/records/22717782`
+  const archive = `https://zenodo.org/records/22973935`
   const identifier = `https://doi.org/${doi}`
   const prior = {
     title: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution',
@@ -4326,7 +4329,7 @@ export const qpuCiteOf = () => {
   /** WHAT THE ARCHIVE HOLDS, BESIDE WHAT THE HOST SERVES. The versioned DOI is one archived commit; the host moves on
    * without it until a new version is archived. Both are said, and `current` says whether they are the same version,
    * so a reader who downloads "this version" knows whether it is the code that answered them. */
-  const archived = { doi, archive, version: '0.1.1' as string, commit: '4a45563', holds: archive.endsWith(doi.split('.').pop() ?? '') }
+  const archived = { doi, archive, version: '0.1.3' as string, commit: '4f73c13', holds: archive.endsWith(doi.split('.').pop() ?? '') }
   const served = { version: packageVersion, origin: unit.origin, holds: packageVersion.split('.').length === n }
   const current = archived.version === served.version
   const currency = current
@@ -4348,7 +4351,7 @@ export const qpuCiteOf = () => {
     author.orcid.startsWith('https://orcid.org/') &&
     author.orcid.endsWith('0009-0000-7312-9778') &&
     doi.startsWith('10.5281/zenodo.') &&
-    doi.endsWith('22717782') &&
+    doi.endsWith('22973935') &&
     conceptdoi.endsWith('22700098') &&
     prior.doi.endsWith('21781603') &&
     prior.archive.startsWith('https://zenodo.org/records/') &&

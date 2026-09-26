@@ -140,11 +140,11 @@ Integrate in any harness. One computed block, served on initialize as `install` 
 
 ## Cite
 
-MLA 8, (Rouschev). DOI 10.5281/zenodo.22717782, archive https://zenodo.org/records/22717782, identifier https://doi.org/10.5281/zenodo.22717782, ORCID https://orcid.org/0009-0000-7312-9778. when never: the citation names no access date; the DOI names archived version 0.1.1, and the host serves 0.1.3. Cite the running quantum circuit and its Lean proof.
+MLA 8, (Rouschev). DOI 10.5281/zenodo.22973935, archive https://zenodo.org/records/22973935, identifier https://doi.org/10.5281/zenodo.22973935, ORCID https://orcid.org/0009-0000-7312-9778. when never: the citation names no access date; the DOI names archived version 0.1.3. Cite the running quantum circuit and its Lean proof.
 
-- Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "qpu." qpu.uuidna.com, https://qpu.uuidna.com. doi:10.5281/zenodo.22717782.
-- Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit. doi:10.5281/zenodo.22717782.
-- Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp. doi:10.5281/zenodo.22717782.
+- Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "qpu." qpu.uuidna.com, https://qpu.uuidna.com. doi:10.5281/zenodo.22973935.
+- Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit. doi:10.5281/zenodo.22973935.
+- Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp. doi:10.5281/zenodo.22973935.
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "All Seven Clay Millennium Problems Sealed via Universal σ-Involution." Zenodo, https://zenodo.org/records/21781603. doi:10.5281/zenodo.21781603.
 
 QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.

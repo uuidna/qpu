@@ -217,16 +217,21 @@ test('paste in free AI chat', async (t) => {
     assert.equal(cite.holds, true)
     assert.equal(cite.inText, '(Rouschev)')
     assert.equal(cite.author.orcid, 'https://orcid.org/0009-0000-7312-9778')
-    assert.equal(cite.doi, '10.5281/zenodo.22717782')
-    assert.equal(cite.identifier, 'https://doi.org/10.5281/zenodo.22717782')
-    assert.equal(cite.archive, 'https://zenodo.org/records/22717782')
+    assert.equal(cite.doi, '10.5281/zenodo.22973935')
+    assert.equal(cite.identifier, 'https://doi.org/10.5281/zenodo.22973935')
+    assert.equal(cite.archive, 'https://zenodo.org/records/22973935')
     assert.equal(cite.sameAs.includes(cite.archive), true)
     assert.equal(cite.when, 'never')
     assert.equal(cite.style, 'mla8')
     // the archive and the host are named apart: the versioned DOI holds one commit, the host serves package.json's version
     const c2 = cite as unknown as { archived: { doi: string; version: string; commit: string }; served: { version: string }; current: boolean; currency: string }
-    assert.equal(c2.archived.commit, '4a45563')
-    assert.equal(c2.archived.version, '0.1.1')
+    // SHAPE AND RELATION, NOT THE LITERALS. These pinned '4a45563' and '0.1.1', so every release broke this test
+    // for no property reason — the archived record MOVES by design, each time Zenodo mints a DOI from a new
+    // GitHub Release. A literal that has to be hand-edited on every release is the same fault as hand-editing the
+    // generated CITATION.cff: the value has one source, and this is not it. What must hold is that the record
+    // names a real commit and a real version, and that `current` tells the truth about the two — asserted below.
+    assert.match(c2.archived.commit, /^[0-9a-f]{7,40}$/)
+    assert.match(c2.archived.version, /^\d+\.\d+\.\d+$/)
     // CURRENCY IS A READING, NOT AN INVARIANT (2026-09-13). This demanded that the archive BE the served version,
     // so the suite was green only while no unreleased bump existed — and since that suite is prepublishOnly and the
     // workflow requires the tag to match package.json, no version could ever be cut through it. Five lines below,
@@ -239,7 +244,7 @@ test('paste in free AI chat', async (t) => {
     assert.equal(c2.currency.includes(`v${c2.served.version}`), true)
     if (!c2.current) assert.equal(c2.currency.includes('behind the host'), true)
     assert.equal(cite.rows.length, 3)
-    assert.equal(cite.rows.every((r) => r.doi === '10.5281/zenodo.22717782'), true)
+    assert.equal(cite.rows.every((r) => r.doi === '10.5281/zenodo.22973935'), true)
     assert.equal(cite.rows.every((r) => r.url.startsWith(origin)), true)
     assert.equal(cite.rows[0]?.works, expected.rows[0]?.works)
     for (const row of expected.rows) {
