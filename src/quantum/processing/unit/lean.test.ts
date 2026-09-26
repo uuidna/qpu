@@ -5,7 +5,7 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { mintOf, qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuQuantumOf, qpuShorOf } from './index.js'
+import worker, { mintOf, qpuCrossReadingOf, qpuFoldOf, qpuLeanOf, qpuLeanSourceOf, qpuProveOf, qpuProveHolds, qpuQuantumOf, qpuShorOf } from './index.js'
 import { leanPath, leanSource, leanToolchain } from './lean.js'
 import { packageVersion } from './version.js'
 
@@ -42,7 +42,7 @@ test('the lean dataset folds its source and every served theorem is in it verbat
   assert.equal(lean.source.check, 'lean src/quantum/processing/unit/index.lean')
   assert.equal(lean.source.holds, true)
   // mutation arm: a theorem string the file does not contain is counted as missing, and holds falls
-  const forged = { heading: 'forged', theorem: 'theorem forged : 1 = 2 := rfl', formula: '\\mathrm{one}=2', reading: 'never', holds: true }
+  const forged = { heading: 'forged', theorem: 'theorem forged : 1 = 2 := rfl', formula: '\\mathrm{one}=2', reading: 'never', cross: qpuCrossReadingOf('theorem forged : 1 = 2 := rfl'), holds: true }
   const bent = qpuLeanSourceOf([...lean.rows, forged], lean.cover, lean.climb)
   assert.equal(bent.verbatim, bent.served - 1)
   assert.equal(bent.holds, false)

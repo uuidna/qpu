@@ -3292,6 +3292,8 @@ export type QpuLeanRow = {
   theorem: string
   formula: string
   reading: string
+  /** Which reading of a quantity this statement is, taken from the statement itself — see qpuCrossReadingOf. */
+  cross: QpuCross
   holds: boolean
 }
 
@@ -3299,6 +3301,34 @@ export type QpuLeanRow = {
  * scripts/embed-lean.mjs, served at its cited path, and folded so a reader compares bytes, not readings. `verbatim`
  * counts the served theorem strings found in the source after whitespace folding; `holds` wants all of them. */
 const spaceOf = (text: string): string => text.replace(/\s+/g, ' ').trim()
+/**
+ * THE CLASSIFICATION RECOMPUTES, AND THE LATTICE HAS EXACTLY ONE BRIDGE.
+ *
+ * Every served row carries a cross reading, and every one of them must be what its own statement says it is —
+ * a label that has drifted from the statement beside it is worse than no label. Asked by recomputing, so the
+ * check cannot agree with a stale value.
+ *
+ * And the shape of the set is itself a claim: both readings are populated, and there is exactly ONE bridge.
+ * mintOf (a + b) = mintOf a * mintOf b is the only law here that turns a sum into a product, which is why it is
+ * the only reason any quantity can be read both ways. A second bridge would mean a second such law, and there
+ * is not one.
+ */
+export const qpuCrossReadingHolds = (rows: readonly QpuLeanRow[] = qpuLeanAllRowsOf()): boolean => {
+  if (rows.length === n - n) return false
+  if (!rows.every((row) => row.cross === qpuCrossReadingOf(row.theorem))) return false
+  const count = (which: QpuCross) => rows.filter((row) => row.cross === which).length
+  return count('bridge') === seed && count('symmetric') > n - n && count('asymmetric') > n - n
+}
+
+/** Every theorem row the unit serves: the headline rows, the cover, and the climb. Internal — it is a
+ *  concatenation with no invariant of its own, and the dry-clean law is that an exported qpuXOf carries a
+ *  qpuXHolds. A predicate invented to satisfy that law would be the furniture the law exists to prevent. */
+const qpuLeanAllRowsOf = (lean = qpuLeanOf()): readonly QpuLeanRow[] => [...lean.rows, ...lean.cover, lean.climb]
+
+/** Attach the cross reading to a stated row. Computed from the statement, so no literal below carries a label
+ *  that could disagree with what it states. */
+const crossed = (row: Omit<QpuLeanRow, 'cross'>): QpuLeanRow => ({ ...row, cross: qpuCrossReadingOf(row.theorem) })
+
 export const qpuLeanSourceOf = (rows: readonly QpuLeanRow[] = [], cover: readonly QpuLeanRow[] = [], climb?: QpuLeanRow) => {
   const href = `${unit.origin}/${unit.fuse.lean}`
   const bytes = new TextEncoder().encode(leanSource).length
@@ -3328,6 +3358,42 @@ export const qpuLeanSourceOf = (rows: readonly QpuLeanRow[] = [], cover: readonl
   }
 }
 
+/**
+ * SYMMETRIC OR ASYMMETRIC, READ OFF THE STATEMENT AND NOT DECLARED BESIDE IT.
+ *
+ * Every quantity in this lattice is stated twice — once as a SUM of like terms, which is unchanged when they are
+ * exchanged, and once as a PRODUCT of unlike terms, which is not. index.lean does not treat those as two facts:
+ * `theorem harmonic : faces = rays + rays := by rw [around, coins_two, Nat.two_mul]` derives the symmetric form
+ * FROM the asymmetric one, and what carries it across is coins = seed + seed.
+ *
+ * So the classification is a property of the statement, and it is taken from the statement. A table mapping
+ * theorem names to 'symmetric' would be a second place to be wrong, and would go stale the day a statement
+ * changed without its label.
+ *
+ * bridge is the rarest and the most load-bearing: mintOf (a + b) = mintOf a * mintOf b is the general reason a
+ * quantity can be read either way at all. A sum inside the doubling is a product outside it.
+ */
+export type QpuCross = 'asymmetric' | 'bridge' | 'neither' | 'symmetric'
+export const qpuCrossReadingOf = (statement: string): QpuCross => {
+  // THE LAST COLON, NOT THE FIRST. A theorem with binders — `theorem multiply (a b : Nat) : mintOf (a + b) = …`
+  // — carries a colon inside the binder, and slicing at the first one hands back `Nat) : mintOf …`, which parses
+  // as neither reading. multiply is the bridge and was classified asymmetric until this took the last colon.
+  const stated = statement.split(':=')[n - n] ?? ''
+  const colon = stated.lastIndexOf(' : ')
+  const body = colon < n - n ? stated : stated.slice(colon + n)
+  const claim = (body.split('∧')[n - n] ?? '').trim()
+  const side = claim.split('=')
+  if (side.length < coins) return 'neither'
+  const right = side[side.length - seed]!.trim()
+  // mintOf of a sum equals a product of mintOf — the bridge between the two readings.
+  if (/^mintOf\s*\(.*\+.*\)$/.test(side[n - n]!.trim()) && /mintOf.*\*.*mintOf/.test(right)) return 'bridge'
+  const sum = right.split('+')
+  if (sum.length === coins && sum[n - n]!.trim() === sum[seed]!.trim()) return 'symmetric'
+  const product = right.split('*')
+  if (product.length === coins && product[n - n]!.trim() !== product[seed]!.trim()) return 'asymmetric'
+  return 'neither'
+}
+
 export const qpuLeanOf = () => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -3353,7 +3419,7 @@ export const qpuLeanOf = () => {
   const gapOf = (tc: bigint): bigint => (352n * boltzmann * tc) / planck / 10n
   const temperatureHolds = photon / thermalOf(10n) === 23n && photon / thermalOf(100n) === 2n && photon / thermalOf(4000n) === 0n && 4000 / 100 === 40 && 100 / 10 === 10 && 10 < 35
   const superconductivityHolds = 1200n > 10n && 9200n > 1200n && 352 / 100 >= 3 && 352 / 100 < 4 && gapOf(1200n) === 88n && gapOf(1200n) > transmon && gapOf(9200n) === 674n
-  const rows: readonly QpuLeanRow[] = [
+  const rows: readonly QpuLeanRow[] = ([
     {
       heading: 'mint',
       theorem: 'theorem mint : mintOf (n + seed) = mintOf n + mintOf n := by rw [seed_eq, mintOf_succ]',
@@ -3423,8 +3489,8 @@ export const qpuLeanOf = () => {
       formula: '\\mathrm{mintOf}(\\mathrm{hexbit})>\\mathrm{seed}\\land\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{faces}=\\mathrm{rays}+\\mathrm{rays}',
       reading: `holds ${propulsionHolds && quantumHolds && harmonicHolds}.`,
       holds: propulsionHolds && quantumHolds && harmonicHolds,
-  }]
-  const cover: readonly QpuLeanRow[] = [
+  }] as const).map(crossed)
+  const cover: readonly QpuLeanRow[] = ([
     {
       heading: 'breakthrough',
       theorem:
@@ -3948,8 +4014,8 @@ export const qpuLeanOf = () => {
       formula: '\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{mintOf}(n)=8\\land(0\\oplus 4)\\oplus 4=0',
       reading: 'Width faces. Layers mintOf n. XOR involution.',
       holds: aroundHolds && mintOf(n) === cube.vertices && xorOf(xorOf(n - n, cube.hexbit), cube.hexbit) === n - n,
-  }]
-  const climb: QpuLeanRow = {
+  }] as const).map(crossed)
+  const climb: QpuLeanRow = crossed({
     heading: 'next',
     theorem:
       'theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + coins) = fused + fused := ⟨next, next_fused⟩',
@@ -3957,7 +4023,7 @@ export const qpuLeanOf = () => {
       '\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})=\\mathrm{amplitudes}+\\mathrm{amplitudes}\\land\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})=\\mathrm{fused}+\\mathrm{fused}',
     reading: `holds ${nextHolds && nextFusedHolds && qpuNextHolds()}. amplitudes ${handle.amplitudes}. next ${handle.next}. fused next ${fused + fused}. coil next ${qpuNextOf().nextCoil}. no last k.`,
     holds: nextHolds && nextFusedHolds && qpuNextHolds(),
-  }
+  })
   const src = unit.fuse.lean
   const source = qpuLeanSourceOf(rows, cover, climb)
   const holds =
