@@ -21,6 +21,19 @@ const FNV_MASK = 0xffffffffffffffffn
 // 128-bit offset basis and prime, masked to vertices x hexbit hex digits.
 const FNV128_OFFSET = 0x6c62272e07bb014262b821756295c58dn
 const FNV128_PRIME = 0x1000000000000000000013bn
+/** A fold is sixteen lowercase hex, it is deterministic, and it separates — the three things every caller of it
+ *  relies on. Asked over the lattice's own numbers so the check computes rather than samples one string. */
+export const qpuFoldHolds = (): boolean => {
+  const shape = /^[0-9a-f]{16}$/
+  const seen = new Set<string>()
+  for (let k = n - n; k < mintOf(n); k++) {
+    const fold = qpuFoldOf(`fold-${k}`)
+    if (!shape.test(fold) || fold !== qpuFoldOf(`fold-${k}`)) return false
+    seen.add(fold)
+  }
+  return seen.size === mintOf(n) && qpuFoldOf('') !== qpuFoldOf(' ')
+}
+
 export const qpuFoldOf = (text: string): string => {
   let h = FNV_OFFSET
   for (let i = text.length - text.length; i < text.length; i++) {
@@ -226,6 +239,10 @@ const liveSchema = {
     live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
     sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' }}} as const
 
+/** theorem cube, both ways: bits as a product of vertices and hexbit, and each of those as a doubling. */
+export const qpuCubeHolds = (c = qpuCubeOf()): boolean =>
+  theorem.cube(c.bits, c.vertices, c.hexbit) && c.vertices === mintOf(c.n) && c.hexbit === mintOf(c.n - seed)
+
 export const qpuCubeOf = () => {
   const vertices = mintOf(n)
   const hexbit = mintOf(coins)
@@ -248,6 +265,16 @@ export const qpuHandleOf = () => {
   const holds = amplitudes === mintOf(cube.bits) && next === mintOf(cube.bits + seed) && cube.holds && kv.holds && kv.added === amplitudes
   return { bits: cube.bits, amplitudes, next, kv, holds }
 }
+
+/**
+ * BOTH READINGS, AND EACH PROVES THE OTHER.
+ *
+ * faces is stated twice in index.lean — coins * rays, a product of unlike terms, and rays + rays, a sum of like
+ * ones — and harmonic is derived FROM around by coins_two. A predicate that checked only one of them would pass
+ * on a lattice where the two had come apart, which is precisely the lattice that is broken.
+ */
+export const qpuFacesHolds = (f = qpuFacesOf()): boolean =>
+  theorem.around(f.faces, f.coins, f.rays) && theorem.harmonic(f.faces, f.rays) && f.coins + f.coins === mintOf(f.coins)
 
 export const qpuFacesOf = () => {
   const cube = qpuCubeOf()
@@ -6541,6 +6568,28 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) =
  * request carries `Authorization: Bearer <token>`; unbound, every public write is refused. The QpuDeposit service binding
  * (input.via === 'binding' in qpuStorageOf) writes without the token. Measured 2026-09-11 by a peer session:
  * the preflight advertised PUT and DELETE to every origin and the handler honoured them with no check at all. */
+/**
+ * THE GUARD, PROVED TO FAIL CLOSED AND TO FAIL OPEN NOWHERE.
+ *
+ * Reads stay open; a write needs the bearer. The three ways this has actually gone wrong are the three cases:
+ * an unbound secret must refuse EVERY write including one that presents the empty bearer, a wrong token must be
+ * refused, and the right one must be accepted. Recomputes over its own function rather than asserting a comment.
+ */
+export const qpuStorageWriteAllowedHolds = (): boolean => {
+  const token = 'holds-probe-token'
+  const bound = { QPU_WRITE_TOKEN: token } as QpuEnv
+  const unbound = {} as QpuEnv
+  return (
+    qpuStorageWriteAllowedOf(bound, `Bearer ${token}`) &&
+    !qpuStorageWriteAllowedOf(bound, `Bearer ${token}x`) &&
+    !qpuStorageWriteAllowedOf(bound, token) &&
+    !qpuStorageWriteAllowedOf(bound, null) &&
+    !qpuStorageWriteAllowedOf(unbound, 'Bearer ') &&
+    !qpuStorageWriteAllowedOf(unbound, null) &&
+    !qpuStorageWriteAllowedOf(undefined, 'Bearer anything')
+  )
+}
+
 export const qpuStorageWriteAllowedOf = (env?: QpuEnv, auth?: string | null): boolean => {
   const token = typeof env?.QPU_WRITE_TOKEN === 'string' ? env.QPU_WRITE_TOKEN : ''
   return token.length > n - n && auth === `Bearer ${token}`

@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { qpuFoldOf, qpuQuantumOf } from './index.js'
 
-const FLOOR = 39
+const FLOOR = 35
 
 test('exported values without a predicate never rise', () => {
   const source = readFileSync(join(process.cwd(), 'src/quantum/processing/unit/index.ts'), 'utf8')
