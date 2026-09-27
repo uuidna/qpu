@@ -482,12 +482,14 @@ test('cern: a host that does not answer is a miss, not an exception', async () =
    * the deadline has exactly one definition. A new reader that forgets either is caught by the same line. */
   const source = readFileSync(join(process.cwd(), 'src', 'quantum', 'processing', 'unit', 'index.ts'), 'utf8')
   const sites = source.split('\n').map((line, i) => ({ line, at: i + 1 })).filter((row) => row.line.includes('await fetch('))
-  assert.ok(sites.length > 0, 'the unit reaches at least one host, or this guard is guarding nothing')
-  for (const site of sites) {
-    assert.ok(site.line.includes('{ signal }'), `index.ts:${site.at} fetches with a deadline it did not take from its caller`)
-    assert.ok(site.line.includes('.catch(() => undefined)'), `index.ts:${site.at} lets a refusal throw instead of returning the miss`)
-  }
+  assert.equal(sites.length, 1, 'exactly one place in the unit reaches a host it does not own — three spellings of a rule are three rules')
+  assert.ok(sites[0]?.line.includes('{ signal }'), 'and it fetches with a deadline it took from its caller')
   const deadlines = source.split('AbortSignal.timeout(').length - 1
   assert.equal(deadlines, 1, 'one definition of the deadline, so a reading cannot be bounded per door by accident')
   assert.ok(source.includes('const foreignDeadlineOf = ()'), 'and it is named, so the bound can be read without reading every call')
+  /* AND EVERY READER GOES THROUGH THAT ONE DOOR. Counting, bounding, catching and not asking a silent host twice
+   * are four rules; the readers each carried their own copy of the first three and none of the fourth. */
+  const asks = source.split('await foreignFetchOf(request, signal)').length - 1
+  assert.ok(asks >= 3, `every reader asks through the counted door, found ${asks}`)
+  assert.ok(source.includes('foreignSilentHolds'), 'a host that ran out the clock is not asked again this window')
 })

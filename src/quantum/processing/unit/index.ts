@@ -73,6 +73,50 @@ const receiptSparseOf = (name: string, dim: bigint, pairs: readonly (readonly [b
 /** The bound on one reading of a host this tree does not own: ten seconds, shared by every door in that reading. */
 const foreignDeadlineOf = (): AbortSignal => AbortSignal.timeout(tenOf(qpuCubeOf().hexbit))
 
+/**
+ * A HOST THAT HAS ALREADY RUN OUT THE CLOCK IS NOT ASKED AGAIN THIS WINDOW.
+ *
+ * A refusal is cheap: the connection fails and the reader says so. A HANG is not — the host accepts the socket,
+ * says nothing, and costs the entire deadline. Every subsequent ask costs it again, so the price of a silent
+ * upstream is one deadline times however many doors the call graph happens to walk, which is a number no caller
+ * chose and no reader can predict. On a CI runner five tests passed their budgets and were CANCELLED, writing no
+ * receipts at all; the same suite on a laptop twice as fast finished in eleven seconds. A bound whose verdict
+ * depends on how fast the machine is is not a bound.
+ *
+ * So the first timeout is paid and the rest are not: while a host is marked silent, its doors return the miss
+ * they were going to return anyway, immediately. The cost of a hang becomes one deadline per process instead of
+ * one per ask, which is a number a caller can reason about, and on Cloudflare it stops a dead upstream from
+ * spending a request's fifty subrequests on silence.
+ *
+ * ONLY A TIMEOUT OPENS IT, NEVER A REFUSAL. A refused connection is already cheap and is often transient — a
+ * blip must not make this tree stop asking. And the mark expires with the same window the reading memo uses, so
+ * a host that recovers is tried again rather than written off for the life of the isolate.
+ *
+ * THE MISS IS THE SAME MISS. Nothing here changes what a reader reports, only how long it takes to report it:
+ * the doors answer unreached either way, which is why the proof does not move and only the reading count does.
+ */
+const foreignWindowOf = (): number => tenOf(qpuCubeOf().hexbit) * coins
+const SILENT = new Map<string, number>()
+const foreignSilentHolds = (host: string, now = Date.now()): boolean => {
+  const since = SILENT.get(host)
+  return since !== undefined && now - since < foreignWindowOf()
+}
+
+/** Every ask of a host this tree does not own goes through here: counted, bounded, caught, and never twice into
+ *  a silence. The three readers each spelled the same three lines, and a rule in three places is three rules. */
+const foreignFetchOf = async (request: Request, signal: AbortSignal): Promise<Response | undefined> => {
+  const host = new URL(request.url).host
+  foreignReadOf()
+  if (foreignSilentHolds(host)) return undefined
+  const response = await fetch(request, { signal }).catch((reason: unknown) => {
+    // the deadline fired, rather than the connection being refused: this host is silent, not merely unreachable
+    if ((reason as { name?: string })?.name === 'TimeoutError' || (reason as { name?: string })?.name === 'AbortError') SILENT.set(host, Date.now())
+    return undefined
+  })
+  if (response) SILENT.delete(host)
+  return response
+}
+
 const FOREIGN = { reads: 0 }
 export const qpuForeignReadsOf = (): number => FOREIGN.reads
 /** A count of asks is a count: never negative, and never fractional. It rises and does not fall within a process. */
@@ -9187,8 +9231,7 @@ const qpuCernFetchOf = async (href: string, signal: AbortSignal = foreignDeadlin
    * rows that asked nobody, and a miss changes the reading rather than the proof. Under the old arrangement a
    * tighter deadline would have traded a hang for a red build; now it trades it for an honest unverified.
    */
-  foreignReadOf()
-  const response = await fetch(request, { signal }).catch(() => undefined)
+  const response = await foreignFetchOf(request, signal)
   if (!response) return { ...miss, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r }
   if (response.status !== found) {
     return { ...miss, live: true as const, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r, status: response.status }
@@ -9270,8 +9313,7 @@ const qpuCernProjectFetchOf = async (href: string, signal: AbortSignal = foreign
   if (!project) return miss
   const request = new Request(project.href, { method: 'GET', headers: { accept: 'application/json' } })
   // Bounded and caught, for the reason qpuCernFetchOf is: a third party that refuses must be reported as a miss.
-  foreignReadOf()
-  const response = await fetch(request, { signal }).catch(() => undefined)
+  const response = await foreignFetchOf(request, signal)
   if (!response) return { ...miss, href: project.href, experiment: project.experiment }
   if (response.status !== found) {
     return { ...miss, live: true as const, href: project.href, experiment: project.experiment, status: response.status }
@@ -9770,7 +9812,7 @@ const qpuCernExperienceOf = async () => {
    * served or re-read came down to scheduling. Locally the cern test took 11s under a hang; on a runner the
    * coin landed the other way often enough to pass the 120s budget and be cancelled, which is how a bound that
    * is equal to what it bounds behaves. Two deadlines is strictly greater than one, which is the whole rule. */
-  const fresh = cernExperience !== undefined && Date.now() - cernExperience.at < tenOf(qpuCubeOf().hexbit) * coins
+  const fresh = cernExperience !== undefined && Date.now() - cernExperience.at < foreignWindowOf()
   if (cernExperience && (held || fresh)) return cernExperience.value
   cernExperience = { value: await qpuCernLiveOf(), at: Date.now() }
   return cernExperience.value
@@ -9928,8 +9970,7 @@ export const qpuResearchFetchOf = async (href: string, signal: AbortSignal = for
   if (allowed === undefined) return miss
   const request = new Request(allowed, { method: 'GET', headers: { accept: 'application/json' } })
   // Bounded and caught: an allowed host is still a host, and a host may decline.
-  foreignReadOf()
-  const response = await fetch(request, { signal }).catch(() => undefined)
+  const response = await foreignFetchOf(request, signal)
   if (!response) return { ...miss, live: false as const, href: allowed }
   const type = response.headers.get('content-type') ?? ''
   let json = type.includes('json')
