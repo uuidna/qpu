@@ -82,6 +82,7 @@
     "proof": "git diff --exit-code -- test-receipt.json",
     "examine": "node scripts/examine.mjs https://qpu.uuidna.com",
     "verify:release": "node scripts/verify-release.mjs",
+    "leads": "node scripts/leads.mjs",
     "post-push": "node scripts/post-push.mjs",
     "land": "npm test && git push && node scripts/post-push.mjs --wait && npm run verify:live",
     "mutate": "node scripts/mutate.mjs"

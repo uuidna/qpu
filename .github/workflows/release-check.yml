@@ -55,6 +55,16 @@ jobs:
           fi
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "checking $V"
+      # WHAT IS OPEN, GATHERED RATHER THAN ASKED. Every question this work put to a person — commit or stash the
+      # dirty tree, public or private for the missing remote, how to supply the write token — was decidable from
+      # the tree and the registries, and nobody had written the gathering down. It runs here so the answer arrives
+      # without anyone asking for it. Non-blocking: it reports across sibling repos this runner does not check out,
+      # so its unreached sources are expected here and must not fail the release check below.
+      - name: Leads — every source asked, and what each one owes
+        if: steps.pick.outputs.skip != 'true'
+        continue-on-error: true
+        run: node scripts/leads.mjs
+
       # A refusal is not a finding: verify-release reports a host that would not answer as unverifiable and exits
       # zero on it. Only a definite "not there" fails this job.
       - name: npm, provenance, Release and Zenodo all answer for that version
