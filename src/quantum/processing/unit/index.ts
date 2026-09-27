@@ -8647,6 +8647,200 @@ export const qpuTeachingPairsHolds = (read = qpuTeachingPairsOf()): boolean =>
   read.pairs.filter((row) => row.swap === 'entangled').every((row) => row.fromPractice.length > n - n && row.fromTheory.length > n - n)
 
 /**
+ * THE SWAP, ONCE, OVER ANY TWO VOCABULARIES.
+ *
+ * The teaching classifier asked one question — did each side teach the other — and the same question is owed of
+ * domains against each other, where a MIXED EXPERIMENT is one sitting in two fields at once. Writing it twice
+ * would make it two rules and then a bug in whichever copy nobody updated, which is the fault this tree has
+ * already paid for in `row.live === false` written five ways.
+ *
+ * Two shapes, because the two questions are shaped differently. Subjects against domains is a GRID: nine by
+ * nine, ordered, every combination a cell. Domains against each other is UNORDERED: acoustics and wave physics
+ * is one pair and not two, and acoustics against itself is not a pair at all. `within` says which.
+ */
+export type QpuCrossRow = { left: string; right: string; forward: boolean; year: number; what: string; source: string }
+
+export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false) => {
+  const none = n - n
+  const lefts = [...new Set(rows.flatMap((row) => (within ? [row.left, row.right] : [row.left])))].sort()
+  const rights = [...new Set(rows.flatMap((row) => (within ? [row.left, row.right] : [row.right])))].sort()
+  /* Unordered pairs are canonicalised by name, so a corpus that happens to write a pair both ways round
+   * classifies it once rather than reporting two half-evidenced pairs that are the same pair. */
+  const combinations = within
+    ? lefts.flatMap((left, i) => lefts.slice(i + seed).map((right) => ({ left, right })))
+    : lefts.flatMap((left) => rights.map((right) => ({ left, right })))
+  const pairs = combinations.map(({ left, right }) => {
+    const held = rows.filter((row) => (within ? (row.left === left && row.right === right) || (row.left === right && row.right === left) : row.left === left && row.right === right))
+    const forward = held.filter((row) => (row.left === left ? row.forward : !row.forward))
+    const backward = held.filter((row) => (row.left === left ? !row.forward : row.forward))
+    const swap: QpuSwap = forward.length > none && backward.length > none ? 'entangled' : held.length > none ? 'application' : 'undecided'
+    const years = held.map((row) => row.year)
+    return {
+      left,
+      right,
+      swap,
+      owes: swap === 'application' ? (forward.length > none ? 'backward' : 'forward') : undefined,
+      earliest: years.length > none ? Math.min(...years) : undefined,
+      forward,
+      backward,
+      cited: held.length,
+    }
+  })
+  return { kind: 'cross' as const, lefts, rights, within, pairs, holds: pairs.every((row) => (row.swap === 'undecided') === (row.cited === none)) }
+}
+
+/** The classification must be the evidence restated and nothing else, in either shape. */
+export const qpuCrossHolds = (read: ReturnType<typeof qpuCrossOf>): boolean =>
+  read.holds &&
+  read.pairs.every((row) => (row.swap === 'entangled') === (row.forward.length > n - n && row.backward.length > n - n)) &&
+  read.pairs.every((row) => (row.owes === undefined) === (row.swap !== 'application')) &&
+  (read.within ? read.pairs.every((row) => row.left < row.right) : true)
+
+/**
+ * MIXED EXPERIMENTS: one experiment standing in two domains, and which of them taught the other.
+ *
+ * The subject corpus asks whether a practice and a science teach each other. This asks whether two SCIENCES do,
+ * which is the same question one level up and is answered by the experiments that sit in both — Gosset deriving
+ * the t-distribution because brewing gave him small samples, Griffith getting fracture mechanics out of glass
+ * fibres that broke too early, Thomson's vortex atoms sending Tait to tabulate knots.
+ *
+ * `forward` means the left name taught the right one. The pair is unordered and the names are canonical, so the
+ * direction is carried on the row rather than implied by which way round somebody typed it.
+ *
+ * ONE-WAY ROWS ARE HERE TOO, and they matter more in this corpus than in the other: it is tempting to say that
+ * all sciences teach all sciences, and the rows below say that X-ray physics determined protein structures
+ * without protein chemistry having produced X-ray physics.
+ */
+export const QPU_EXPERIMENTS: readonly QpuCrossRow[] = [
+  { left: 'acoustics', right: 'wave physics', forward: true, year: 1900,
+    what: 'Sabine measured a lecture room that could not be heard in and got the reverberation formula out of the room, not out of the theory',
+    source: 'Sabine, Reverberation, The American Architect (1900)' },
+  { left: 'acoustics', right: 'wave physics', forward: false, year: 1877,
+    what: 'Rayleigh derived the behaviour of air and enclosures from wave theory and handed acoustics its equations',
+    source: 'Rayleigh, The Theory of Sound (1877)' },
+  { left: 'materials science', right: 'mechanics', forward: true, year: 1921,
+    what: 'Griffith found glass fibres breaking far below their theoretical strength and built fracture mechanics out of the specimens',
+    source: 'Griffith, The phenomena of rupture and flow in solids, Phil. Trans. R. Soc. A 221 (1921)' },
+  { left: 'materials science', right: 'mechanics', forward: false, year: 1957,
+    what: 'the stress-intensity factor is how components are now designed, inspected and retired',
+    source: 'Irwin, Analysis of stresses and strains near the end of a crack, J. Appl. Mech. 24 (1957)' },
+  { left: 'biomechanics', right: 'mechanics', forward: true, year: 1680,
+    what: 'Borelli treated limbs as levers and produced the first quantitative animal mechanics from bodies rather than from machines',
+    source: 'Borelli, De Motu Animalium (1680)' },
+  { left: 'biomechanics', right: 'mechanics', forward: false, year: 1983,
+    what: 'finite element analysis is how bone and implant loading is now predicted before anything is built',
+    source: 'Huiskes and Chao, A survey of finite element analysis in orthopedic biomechanics, J. Biomech. 16 (1983)' },
+  { left: 'biochemistry', right: 'statistics', forward: true, year: 1908,
+    what: 'Gosset derived the t-distribution because brewing gave him samples too small for the normal approximation; the chemistry set the problem',
+    source: 'Student, The probable error of a mean, Biometrika 6 (1908)' },
+  { left: 'biochemistry', right: 'statistics', forward: false, year: 1935,
+    what: 'probit analysis gave bioassay a way to estimate a dose response and is how potency is still assigned',
+    source: 'Bliss, The calculation of the dosage-mortality curve, Ann. Appl. Biol. 22 (1935)' },
+  { left: 'radiocarbon dating', right: 'statistics', forward: true, year: 1995,
+    what: 'the calibration curve is not monotonic, so dating posed an inference problem that drove Bayesian chronological modelling',
+    source: 'Bronk Ramsey, Radiocarbon calibration and analysis of stratigraphy, Radiocarbon 37 (1995)' },
+  { left: 'radiocarbon dating', right: 'statistics', forward: false, year: 2009,
+    what: 'those models are now how a date is reported at all, with the prior stated rather than assumed',
+    source: 'Bronk Ramsey, Bayesian analysis of radiocarbon dates, Radiocarbon 51 (2009)' },
+  { left: 'mechanics', right: 'topology', forward: true, year: 1867,
+    what: 'Thomson proposed that atoms were knotted vortices, which is why Tait began tabulating knots and knot theory has a table at its root',
+    source: 'Thomson, On vortex atoms, Phil. Mag. 34 (1867)' },
+  { left: 'mechanics', right: 'topology', forward: false, year: 1986,
+    what: 'knot and tangle theory is used to read what topoisomerases do to DNA and how polymers entangle',
+    source: 'Wasserman and Cozzarelli, Biochemical topology, Science 232 (1986)' },
+  { left: 'statistics', right: 'wave physics', forward: true, year: 1958,
+    what: 'power spectrum estimation was built to measure real noisy signals, and the statistics came out of the measurement problem',
+    source: 'Blackman and Tukey, The Measurement of Power Spectra (1958)' },
+  { left: 'statistics', right: 'wave physics', forward: false, year: 1965,
+    what: 'the fast Fourier transform changed what spectra it is possible to compute at all',
+    source: 'Cooley and Tukey, An algorithm for the machine calculation of complex Fourier series, Math. Comput. 19 (1965)' },
+  { left: 'acoustics', right: 'mechanics', forward: true, year: 1787,
+    what: 'the nodal figures of a bowed plate are a mechanics result obtained acoustically, read off sand rather than derived',
+    source: 'Chladni, Entdeckungen \u00fcber die Theorie des Klanges (1787)' },
+  { left: 'acoustics', right: 'mechanics', forward: false, year: 1984,
+    what: 'modal testing turned that into a general method for finding how any structure vibrates',
+    source: 'Ewins, Modal Testing: Theory and Practice (1984)' },
+  { left: 'biochemistry', right: 'biomechanics', forward: true, year: 1938,
+    what: 'Hill measured heat and shortening in live muscle and produced the force-velocity relation, which constrained what the chemistry was allowed to be',
+    source: 'Hill, The heat of shortening and the dynamic constants of muscle, Proc. R. Soc. B 126 (1938)' },
+  { left: 'biochemistry', right: 'biomechanics', forward: false, year: 1954,
+    what: 'the sliding filament account explained the mechanics it had been measured against',
+    source: 'Huxley and Niedergerke, Structural changes in muscle during contraction, Nature 173 (1954)' },
+  { left: 'materials science', right: 'radiocarbon dating', forward: true, year: 1977,
+    what: 'sample preparation chemistry is what made accelerator dating of milligram samples possible; dating did not produce the chemistry',
+    source: 'Bennett et al., Radiocarbon dating using electrostatic accelerators, Science 198 (1977)' },
+  { left: 'biochemistry', right: 'wave physics', forward: false, year: 1958,
+    what: 'X-ray diffraction determined the first protein structure; protein chemistry did not produce diffraction physics',
+    source: 'Kendrew et al., A three-dimensional model of the myoglobin molecule, Nature 181 (1958)' },
+  { left: 'materials science', right: 'topology', forward: false, year: 1979,
+    what: 'the topological classification of defects in ordered media told materials science which defects can exist',
+    source: 'Mermin, The topological theory of defects in ordered media, Rev. Mod. Phys. 51 (1979)' },
+  { left: 'biomechanics', right: 'statistics', forward: false, year: 2001,
+    what: 'inference on gait data is what separates a real difference in walking from noise',
+    source: 'Chau, A review of analytical techniques for gait data, Gait Posture 13 (2001)' },
+  { left: 'acoustics', right: 'statistics', forward: false, year: 1966,
+    what: 'signal detection theory gave psychoacoustics a way to separate sensitivity from willingness to say yes',
+    source: 'Green and Swets, Signal Detection Theory and Psychophysics (1966)' },
+]
+
+/** The domains crossed against each other, as unordered pairs of the vocabulary the experiments name. */
+export const qpuMixedOf = (rows: readonly QpuCrossRow[] = QPU_EXPERIMENTS) => qpuCrossOf(rows, true)
+
+/** Unordered, canonical, and every row citing a pair of two different domains — a field is not mixed with itself. */
+export const qpuMixedHolds = (read = qpuMixedOf(), rows: readonly QpuCrossRow[] = QPU_EXPERIMENTS): boolean =>
+  qpuCrossHolds(read) &&
+  read.within &&
+  rows.every((row) => row.left !== row.right && row.source.length > n - n) &&
+  read.pairs.length === (read.lefts.length * (read.lefts.length - seed)) / coins
+
+/**
+ * IS EVERYTHING ENTANGLED BY NATURE? — the claim, stated precisely enough to be wrong.
+ *
+ * It is an attractive thesis and this apparatus was built to be capable of refusing it. A classifier that
+ * answered "entangled" for every pair would confirm it and would be worth nothing, and the same is true of a
+ * corpus assembled so that every pair comes out two-way. So the claim is written down as a universal over the
+ * pairs both crosses admit, and the evidence answers it.
+ *
+ * WHAT THE COUNTS DISTINGUISH. `supported` is the universal: every pair entangled. `openToIt` is the weaker and
+ * more interesting reading — that nothing yet contradicts it — which is false as soon as a single pair is
+ * evidenced in one direction only, and it is. `whereEvidenced` is the honest headline: of the pairs anybody has
+ * cited at all, what fraction teach both ways.
+ *
+ * The undecided are not counted against the claim and not for it. They are the measurement of how little has
+ * been looked at, which is the third state doing its job.
+ */
+export const qpuNatureOf = (teaching = qpuTeachingPairsOf(), mixed = qpuMixedOf()) => {
+  const none = n - n
+  const all = [
+    ...teaching.pairs.map((row) => ({ kind: 'subject and domain' as const, left: row.subject, right: row.domain, swap: row.swap })),
+    ...mixed.pairs.map((row) => ({ kind: 'domain and domain' as const, left: row.left, right: row.right, swap: row.swap })),
+  ]
+  const entangled = all.filter((row) => row.swap === 'entangled').length
+  const oneWay = all.filter((row) => row.swap === 'application').length
+  const undecided = all.filter((row) => row.swap === 'undecided').length
+  const evidenced = entangled + oneWay
+  return {
+    kind: 'nature' as const,
+    claim: 'every pair of a school subject and a scientific domain, and every pair of domains, teaches in both directions',
+    pairs: all.length,
+    entangled,
+    oneWay,
+    undecided,
+    evidenced,
+    supported: undecided === none && oneWay === none && entangled === all.length,
+    openToIt: oneWay === none,
+    /** Of the pairs anyone has cited at all, the share that teach both ways — thousandths, so it is an integer. */
+    whereEvidenced: evidenced > none ? Math.round((entangled * ten * ten * ten) / evidenced) : none,
+    counters: all.filter((row) => row.swap === 'application').map((row) => `${row.left} and ${row.right}`),
+    holds: entangled + oneWay + undecided === all.length && all.length === teaching.pairs.length + mixed.pairs.length,
+  }
+}
+
+/** The reading is sound whatever the claim turns out to be — `holds` is about the arithmetic, never the thesis. */
+export const qpuNatureHolds = (read = qpuNatureOf()): boolean =>
+  read.holds && read.supported === (read.oneWay === n - n && read.undecided === n - n) && read.openToIt === (read.oneWay === n - n)
+
+/**
  * SEATED BY THE EVIDENCE, NOT BY THE AUTHOR'S ORDERING.
  *
  * Seven rays carry two seats each — a subject and a domain — so seven pairs fit and no more. Which seven is
