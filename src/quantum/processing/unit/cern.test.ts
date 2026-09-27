@@ -151,7 +151,10 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   assert.equal(prove.cern.faces, 14)
   assert.equal(prove.cern.cases.length, 14)
   assert.equal(prove.cern.source, 'opendata.cern.ch')
-  assert.equal(prove.cern.api, 'https://opendata.cern.ch/api/records')
+  // THE TRAILING SLASH IS CERN'S, not a style choice. Measured 2026-09-27: /api/records answers 308 PERMANENT REDIRECT
+  // to /api/records/, and this fetch does not follow redirects — so the records came back empty and the faces failed
+  // while nothing in this repository had changed. A frozen third-party URL is a dead link the day that party moves it.
+  assert.equal(prove.cern.api, 'https://opendata.cern.ch/api/records/')
   assert.deepEqual(prove.cern.primitives, ['fetch', 'Request', 'Response', 'BigInt', 'performance'])
   /**
    * A TEST MAY NOT FAIL FOR A THIRD PARTY'S SILENCE, AND MAY NOT PASS IN SILENCE EITHER.

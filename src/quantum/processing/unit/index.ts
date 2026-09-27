@@ -8749,7 +8749,12 @@ export const qpuIntegrityHolds = (i = qpuIntegrityOf()): boolean =>
   i.tests.every((t) => t.holds && t.left === t.right)
 
 const cernHost = 'opendata.cern.ch'
-const cernPath = '/api/records'
+// CERN MOVED THE ENDPOINT AND THE MOVE WAS SILENT. Measured 2026-09-27: GET /api/records answers
+// 308 PERMANENT REDIRECT to /api/records/ — the trailing slash — and this fetch does not follow redirects, so the
+// records came back empty and `cern faces via mcp` failed while the code was unchanged. It looked like flakiness because
+// a warm cache let it pass twice; across five runs the suite answered 162/162, 146/148, 161/162, 162/162 and 147/148 on
+// one tree. A third party's URL is a dead link the day it moves, whatever the cache still holds.
+const cernPath = '/api/records/'
 
 type CernInts = {
   recid: number

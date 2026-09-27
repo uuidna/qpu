@@ -14,7 +14,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { archiveLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf } from './leads.mjs'
+import { archiveLeadsOf, copyLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf } from './leads.mjs'
 
 test('a package the registry never served is a lead, and one it serves is not', () => {
   const never = packageLeadsOf({ name: '@uuidna/school', version: '0.1.0', status: 404 })
@@ -82,4 +82,27 @@ test('unreached blocks — the third state is not silence', () => {
   assert.equal(settledOf([...answered, { source: 'b', reached: true, open: [{ what: 'x' }] }]), false)
   // and an empty run is not settled either — nothing asked is not nothing wrong
   assert.equal(settledOf([]), false)
+})
+
+test('a file: copy that has drifted from its source is a lead, in both ways it drifts', () => {
+  const same = { consumer: 'payload', name: '@uuidna/qpu', sourceVersion: '0.1.3', copyVersion: '0.1.3', sourceFiles: ['a.js'], copyFiles: ['a.js'] }
+  assert.deepEqual(copyLeadsOf(same), [], 'a copy that matches its source owes nothing')
+
+  // THE FIRST FACE: the version moved and the copy did not. This is how `mintOf is not a function` happened —
+  // the site called an export qpu had just added, against a snapshot that predated it.
+  const behind = copyLeadsOf({ ...same, copyVersion: '0.1.2' })
+  assert.equal(behind.length, 1)
+  assert.match(behind[0].what, /copy of @uuidna\/qpu at 0\.1\.2 while the source is 0\.1\.3/)
+  assert.match(behind[0].owes, /pnpm copies a file: dependency rather than linking it/)
+
+  // THE SECOND FACE, AND THE MEANER ONE: the version matches and the FILES do not. That is
+  // ERR_MODULE_NOT_FOUND on dist/build-graph.js — a symptom that names a missing module rather than a stale copy,
+  // which is why it cost an hour to trace.
+  const gappy = copyLeadsOf({ ...same, sourceFiles: ['a.js', 'build-graph.js'], copyFiles: ['a.js'] })
+  assert.equal(gappy.length, 1)
+  assert.match(gappy[0].what, /same version but missing 1 shipped file/)
+  assert.match(gappy[0].what, /build-graph\.js/)
+
+  // and not installed at all
+  assert.match(copyLeadsOf({ ...same, copyVersion: null })[0].what, /is not installed/)
 })

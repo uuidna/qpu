@@ -19,7 +19,7 @@
  *   node scripts/leads.mjs --json     the gate's input, verbatim
  */
 import { execFileSync } from 'node:child_process'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 
 const ROOT = resolve(import.meta.dirname, '..')
@@ -78,6 +78,27 @@ export const settledOf = (sources) =>
 /* THE GATHERING RUNS ONLY WHEN THIS FILE IS THE COMMAND. Importing a module must not perform network IO and must
  * not call process.exit — the first version did both, so its own test could not load it, which is how the test
  * discovered the fault before any of the detectors did. */
+
+/**
+ * What a `file:` dependency owes when its installed copy has drifted from its source.
+ *
+ * pnpm COPIES a file: dependency rather than linking it, so a consumer silently runs a frozen snapshot of its
+ * sibling. That fault surfaced three times in one day and never as itself: as `mintOf is not a function` when the
+ * site called an export qpu had just added, as ERR_MODULE_NOT_FOUND on dist/build-graph.js, and as a CI failure
+ * that has stood since 13 September. A copy that has fallen behind should say so, not appear as a missing symbol.
+ */
+export const copyLeadsOf = ({ consumer, name, sourceVersion, copyVersion, sourceFiles, copyFiles }) => {
+  if (copyVersion === null) return [{ source: `copy:${consumer}/${name}`, what: `${name} is declared file: and is not installed`, owes: 'an install' }]
+  if (sourceVersion !== copyVersion) {
+    return [{ source: `copy:${consumer}/${name}`, what: `${consumer} runs a copy of ${name} at ${copyVersion} while the source is ${sourceVersion}`, owes: 'a reinstall; pnpm copies a file: dependency rather than linking it, so the copy froze' }]
+  }
+  const missing = sourceFiles.filter((f) => !copyFiles.includes(f))
+  if (missing.length > 0) {
+    return [{ source: `copy:${consumer}/${name}`, what: `${consumer}'s copy of ${name} is the same version but missing ${missing.length} shipped file(s), first ${missing[0]}`, owes: 'a reinstall; the copy predates files the source now ships, and the symptom will be a missing module rather than a stale one' }]
+  }
+  return []
+}
+
 const invoked = process.argv[1]?.endsWith('leads.mjs') === true
 
 if (invoked) {
@@ -116,6 +137,44 @@ if (invoked) {
     const remote = git(local.dir, 'remote', 'get-url', 'origin')
     const ahead = git(local.dir, 'rev-list', '--count', 'origin/main..HEAD')
     add(`git:${folder}`, dirty !== null, remote ? `remote ${remote}` : 'local only', repoLeadsOf({ folder, dirty, remote, ahead }))
+  }
+
+
+  /* ── a file: dependency is COPIED, not linked, so the copy can be behind its source ─────────────────────────── */
+  const consumers = ['payload', 'school', 'qpu']
+  for (const consumer of consumers) {
+    const manifestPath = join(SIBLINGS, consumer, 'package.json')
+    if (!existsSync(manifestPath)) continue
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
+    const deps = { ...manifest.dependencies, ...manifest.devDependencies }
+    for (const [dep, spec] of Object.entries(deps)) {
+      if (typeof spec !== 'string' || !spec.startsWith('file:')) continue
+      const sourceDir = resolve(join(SIBLINGS, consumer), spec.slice('file:'.length))
+      const sourceManifest = join(sourceDir, 'package.json')
+      if (!existsSync(sourceManifest)) continue
+      const sourceVersion = JSON.parse(readFileSync(sourceManifest, 'utf8')).version
+      const copyDir = join(SIBLINGS, consumer, 'node_modules', ...dep.split('/'))
+      const copyManifest = join(copyDir, 'package.json')
+      const copyVersion = existsSync(copyManifest) ? JSON.parse(readFileSync(copyManifest, 'utf8')).version : null
+      /* A sample of the source's shipped dist, checked for presence in the copy. Cheap, and it is exactly the
+       * shape that failed: a file the source ships and the copy has never seen. */
+      const n0 = 0
+      const tenOfTwo = 20
+      const sample = (() => {
+        try {
+          const dir = join(sourceDir, 'dist')
+          return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.js')).slice(n0, tenOfTwo) : []
+        } catch { return [] }
+      })()
+      const copySample = (() => {
+        try {
+          const dir = join(copyDir, 'dist')
+          return existsSync(dir) ? readdirSync(dir) : []
+        } catch { return [] }
+      })()
+      add(`copy:${consumer}/${dep}`, copyVersion !== null, copyVersion === null ? 'not installed' : `copy ${copyVersion}, source ${sourceVersion}`,
+        copyLeadsOf({ consumer, name: dep, sourceVersion, copyVersion, sourceFiles: sample, copyFiles: copySample }))
+    }
   }
 
   /* ── the archive, which mints a DOI from a GitHub Release ───────────────────────────────────────────────────── */
