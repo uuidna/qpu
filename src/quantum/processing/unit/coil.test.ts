@@ -144,6 +144,7 @@ test('coil theorems sit on Lean rows and the register — docs stay seven', () =
   const names = [
     'two_coins_make_a_coil',
     'electronics',
+    'follow_the_coins',
     'coil_efficiency',
     'next_coil',
   ]

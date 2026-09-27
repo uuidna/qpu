@@ -3587,6 +3587,14 @@ export const qpuLeanOf = () => {
       holds: qpuShorHolds(),
   },
     {
+      heading: 'follow_the_coins',
+      theorem: 'theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by rw [theory, practice, coins, ← Nat.add_assoc]',
+      formula: '\\mathrm{app}+\\mathrm{coins}=\\mathrm{app}+\\mathrm{theory}+\\mathrm{practice}',
+      reading:
+        'Follow the coins in any practical application. Occupancy skill framework electronics. Step coins. Hop theory plus practice. Never Math. Never by decide.',
+      holds: qpuFollowHolds(),
+  },
+    {
       heading: 'two_coins_make_a_coil',
       theorem: 'theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]',
       formula: '\\mathrm{coil}=\\mathrm{faces}',

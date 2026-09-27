@@ -92,6 +92,8 @@ theorem server : faces = coins * rays ∧ mintOf n = 8 := ⟨around, measurement
 def theory : Nat := seed
 def practice : Nat := seed
 def coil : Nat := coins * rays
+theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by rw [theory, practice, coins, ← Nat.add_assoc]
+
 theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]
 theorem electronics : coil = faces := two_coins_make_a_coil
 theorem coil_efficiency : coil = faces ∧ faces = rays + rays ∧ coins * rays = faces := ⟨two_coins_make_a_coil, harmonic, around⟩
