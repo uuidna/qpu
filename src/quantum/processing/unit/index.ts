@@ -3587,51 +3587,6 @@ export const qpuLeanOf = () => {
       holds: qpuShorHolds(),
   },
     {
-      heading: 'string',
-      theorem:
-        'theorem string : 16 * 27 = 432 ∧ 8 * 27 = 216 ∧ 4 * 27 = 108 ∧ 2 * 27 = 54 ∧ 1 * 27 = 27 ∧ 432 + 432 = 864 ∧ 216 + 216 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 3 + 1 = 10 ∧ 3 * 3 + 1 + 1 = 11 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
-      formula:
-        '16\\cdot27=432\\land 8\\cdot27=216\\land 4\\cdot27=108\\land 2\\cdot27=54\\land 1\\cdot27=27\\land 432+432=864\\land 216+216=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot3+1=10\\land 3\\cdot3+1+1=11\\land 27-1=26',
-      reading: 'Digits and algebraic fractions of integers. 16 * 27 = 432. 432 * 3 / 2 = 648.',
-      holds:
-        16 * 27 === 432 &&
-        8 * 27 === 216 &&
-        4 * 27 === 108 &&
-        2 * 27 === 54 &&
-        1 * 27 === 27 &&
-        432 + 432 === 864 &&
-        216 + 216 === 432 &&
-        (432 * 3) / 2 === 648 &&
-        (432 * 4) / 3 === 576 &&
-        (432 * 5) / 4 === 540 &&
-        (432 * 5) / 3 === 720 &&
-        3 * 3 + 1 === 10 &&
-        3 * 3 + 1 + 1 === 11 &&
-        27 - 1 === 26},
-    {
-      heading: 'genesis',
-      theorem:
-        'theorem genesis : coins * n * mintOf n * (n * n) = 432 ∧ chooseOf n coins = n ∧ chooseOf rays coins = n * rays ∧ faces = coins * rays ∧ scanner + radar = coins := ⟨by rw [coins_two, n_eq]; rfl, by rw [n_eq, coins_two]; rfl, by rw [rays, n_eq, coins_two]; rfl, around, by rw [scanner, radar, coins]⟩',
-      formula:
-        '\\mathrm{coins}\\cdot n\\cdot\\mathrm{mintOf}(n)\\cdot(n\\cdot n)=432\\land\\mathrm{chooseOf}(n,\\mathrm{coins})=n\\land\\mathrm{chooseOf}(\\mathrm{rays},\\mathrm{coins})=n\\cdot\\mathrm{rays}\\land\\mathrm{faces}=\\mathrm{coins}\\cdot\\mathrm{rays}\\land\\mathrm{scanner}+\\mathrm{radar}=\\mathrm{coins}',
-      reading:
-        'Combinatorial genesis of the shadcn schema at the scope of all known frameworks. Lattice flow face = team * rays + ray. Coins domains scanner radar. Six axes: slot variant size state element theme. Card slots rays including card-action. Button variants coins * n. Sizes mintOf n. Alpine n * n. Product 432 Hz. Fourteen frameworks. faces = coins * rays. Fused in team dry-clean. JSON-LD data-slot. CVA. Slot. Never Math. Never by decide.',
-      holds:
-        coins * n * mintOf(n) * (n * n) === 432 &&
-        chooseOf(n, coins) === n &&
-        chooseOf(faces.rays, coins) === n * faces.rays &&
-        aroundHolds &&
-        seed + seed === coins &&
-        qpuGenesisHolds()},
-    {
-      heading: 'pentagram',
-      theorem: 'theorem pentagram : n + coins = 5 := by rw [n_eq, coins_two]',
-      formula: '\\mathrm{n}+\\mathrm{coins}=5',
-      reading:
-        'Occupancy pentagram personal business corporate saas paas. Skills payload pwa plugin hologram network. Stroke coins on n + coins. Coins balance theory in practice. Cloudflare and Payload plugins fuse once. Recursion builds covered. Never Math. Never by decide.',
-      holds: n + coins === qpuPentagramOf().points && qpuPentagramHolds() && qpuHologramHolds(),
-  },
-    {
       heading: 'two_coins_make_a_coil',
       theorem: 'theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]',
       formula: '\\mathrm{coil}=\\mathrm{faces}',
@@ -3646,30 +3601,6 @@ export const qpuLeanOf = () => {
       reading:
         'Coils are used in electronics. Two coins make a coil. Never Math. Never by decide.',
       holds: qpuElectronicsHolds(),
-  },
-    {
-      heading: 'coins_balance_theory_in_practice',
-      theorem: 'theorem coins_balance_theory_in_practice : theory + practice = coins ∧ theory = practice := ⟨rfl, rfl⟩',
-      formula: '\\mathrm{theory}+\\mathrm{practice}=\\mathrm{coins}\\land\\mathrm{theory}=\\mathrm{practice}',
-      reading:
-        'Coins balance theory in practice. Two pans. Lean theory. Electronics practice. Seed equals seed. Never Math. Never by decide.',
-      holds: qpuBalanceHolds(),
-  },
-    {
-      heading: 'follow_the_coins',
-      theorem: 'theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by rw [theory, practice, coins, ← Nat.add_assoc]',
-      formula: '\\mathrm{app}+\\mathrm{coins}=\\mathrm{app}+\\mathrm{theory}+\\mathrm{practice}',
-      reading:
-        'Follow the coins in any practical application. Occupancy skill framework electronics. Step coins. Hop theory plus practice. Never Math. Never by decide.',
-      holds: qpuFollowHolds(),
-  },
-    {
-      heading: 'emerge',
-      theorem: 'theorem emerge : coil = faces ∧ theory = practice := ⟨two_coins_make_a_coil, rfl⟩',
-      formula: '\\mathrm{coil}=\\mathrm{faces}\\land\\mathrm{theory}=\\mathrm{practice}',
-      reading:
-        'Theory plus practice balances the coins on every application; every pentagram point is reached. Follow the coins. Coil is faces. Theory equals practice. Never Math. Never by decide.',
-      holds: qpuFollowOf().emerge.holds,
   },
     {
       heading: 'coil_efficiency',
@@ -3711,21 +3642,6 @@ export const qpuLeanOf = () => {
         'Two times seven coins equals one plus six coils equals clay. Each coil is coins windings. Clay is coil is faces. Never Math. Never by decide.',
       holds: qpuClayHolds(),
   },
-    {
-      heading: 'decide',
-      theorem:
-        'theorem decide : 16 * 27 = 432 ∧ 432 * 3 / 2 = 648 ∧ 432 * 4 / 3 = 576 ∧ 432 * 5 / 4 = 540 ∧ 432 * 5 / 3 = 720 ∧ 3 * 5 = 15 ∧ 27 - 1 = 26 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩',
-      formula:
-        '16\\cdot27=432\\land 432\\cdot 3/2=648\\land 432\\cdot 4/3=576\\land 432\\cdot 5/4=540\\land 432\\cdot 5/3=720\\land 3\\cdot5=15\\land 27-1=26',
-      reading: 'theorem decide by algebra. Digits and algebraic fractions of integers. Never by decide.',
-      holds:
-        16 * 27 === 432 &&
-        (432 * 3) / 2 === 648 &&
-        (432 * 4) / 3 === 576 &&
-        (432 * 5) / 4 === 540 &&
-        (432 * 5) / 3 === 720 &&
-        3 * 5 === 15 &&
-        27 - 1 === 26},
     {
       heading: 'integrity',
       theorem: 'theorem integrity : fused = faces * mintOf (bits + seed) ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩',

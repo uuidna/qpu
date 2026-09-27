@@ -133,12 +133,17 @@ test('exact-amplitudes register — integer amplitudes', () => {
 test('coil theorems sit on Lean rows and the register — docs stay seven', () => {
   const lean = qpuLeanOf()
   const docs = qpuDocsOf()
+  // THREE OF THIS FAMILY MOVED TO uuidna ON 2026-09-27 and are not withdrawn: coins_balance_theory_in_practice,
+  // follow_the_coins and emerge measured the identity of theory with practice rather than anything about a processing
+  // unit's efficiency, so the captain ruled them moved rather than deleted — they are re-proven in uuidna's
+  // lean/CoinsBalance.lean with qpu's own defs carried verbatim, so the same claims still stand somewhere.
+  //
+  // WHAT STAYED AND WHY IT HAD TO: two_coins_make_a_coil is cited by coil_efficiency, which IS efficiency by name and by
+  // content, so cutting it would have taken an efficiency theorem with it. electronics and next_coil stay as the coil's
+  // own arithmetic. The four below are what qpu still proves about coils.
   const names = [
     'two_coins_make_a_coil',
     'electronics',
-    'coins_balance_theory_in_practice',
-    'follow_the_coins',
-    'emerge',
     'coil_efficiency',
     'next_coil',
   ]
