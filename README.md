@@ -68,14 +68,14 @@ Discovery, off the seven-path guide: `/.well-known/mcp.json` `/mcp.json` `/insta
 
 | Tool | Claim |
 | --- | --- |
-| `crypto_catalog` | theorem shor. theorem crypto. |
-| `crypto_shor` | theorem shor. Factor 91. |
-| `crypto_cmodexp` | theorem shor. Factor 91. |
-| `crypto_iqft` | theorem shor. Factor 91. |
-| `crypto_shots` | theorem shor. Factor 91. |
-| `crypto_rsa` | theorem shor. Factor 91. |
-| `crypto_split` | theorem crypto. Split identity true. Secrecy false. |
-| `crypto_verify` | theorem shor. theorem crypto. |
+| `crypto_catalog` | Eight doors over one run: 7 * 13 = 91 by period. Split identity true. Secrecy false. |
+| `crypto_shor` | 91 = 7 * 13, reached by period. |
+| `crypto_cmodexp` | Controlled modular exponentiation, base 8 mod 91; native h cnot, compiled x swap csdg cmodexp. |
+| `crypto_iqft` | Inverse QFT and continued fractions over base 8 mod 91. |
+| `crypto_shots` | Exact amplitudes over the 91 run, enumerated rather than sampled, xx identity. |
+| `crypto_rsa` | The 91 split as JSON Nat: 7 and 13. |
+| `crypto_split` | Split identity true. Secrecy false. Not encryption. |
+| `crypto_verify` | Recomputed: 7 * 13 = 91, and the split identity. |
 
 ## Results
 

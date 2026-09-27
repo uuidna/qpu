@@ -5467,6 +5467,42 @@ export const qpuCybersecurityOf = () => {
   }
 }
 
+let cryptoReadingMemo: Record<string, string> | undefined
+/**
+ * WHAT EACH CYBERSECURITY DOOR COMPUTED, READ FROM THE RUN.
+ *
+ * Five of the eight carried the identical description — "theorem shor. Factor 91." — so tools/list could not tell
+ * crypto_iqft from crypto_shots, and the README's Claim column was a tag repeated seven times rather than a
+ * reading. A claim that is the same for every door claims nothing about any of them.
+ *
+ * The distinguishing words already existed one field over, in each tool's long man text. What was missing was the
+ * RUN: the factors, the base, the way the factoring was reached. These are read from qpuShorOf and folded once,
+ * so the table the README prints is a receipt of this build and not a label anybody typed.
+ *
+ * EACH IS A READING, NOT A VERB, AND THE GATE INSISTED ON IT. The first attempt opened with "Factors 91 into 7
+ * and 13", and the prose gate drained it: a man page renders `crypto_shor — Factors ...`, which reads as a claim
+ * that the door factors cryptographic moduli rather than as the number this run reached. "91 = 7 * 13, reached by
+ * period" says the same arithmetic and claims nothing about what could be broken with it.
+ */
+const cryptoReadingOf = (): Record<string, string> => {
+  if (cryptoReadingMemo === undefined) {
+    const shor = qpuShorOf()
+    const f = shor.factors
+    const split = cryptoClaimOf()
+    cryptoReadingMemo = {
+      catalog: `Eight doors over one run: ${f.p} * ${f.q} = ${f.product} by ${f.by}. ${split}.`,
+      shor: `${f.product} = ${f.p} * ${f.q}, reached by ${f.by}.`,
+      cmodexp: `Controlled modular exponentiation, base ${shor.a} mod ${shor.n}; native h cnot, compiled x swap csdg cmodexp.`,
+      iqft: `Inverse QFT and continued fractions over base ${shor.a} mod ${shor.n}.`,
+      shots: `Exact amplitudes over the ${shor.n} run, enumerated rather than sampled, xx identity.`,
+      rsa: `The ${shor.n} split as JSON Nat: ${f.p} and ${f.q}.`,
+      split: `${split}. Not encryption.`,
+      verify: `Recomputed: ${f.p} * ${f.q} = ${f.product}, and the split identity.`,
+    }
+  }
+  return cryptoReadingMemo
+}
+
 export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
   const href = `${unit.origin}/mcp`
   const see = cryptoToolNames
@@ -5499,13 +5535,13 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[n - n],
       description: 'theorem shor. theorem crypto.',
-      man: qpuSubManOf(see[n - n], 'theorem shor. theorem crypto.', both, href, see.filter((s) => s !== see[n - n])),
+      man: qpuSubManOf(see[n - n], cryptoReadingOf().catalog, both, href, see.filter((s) => s !== see[n - n])),
       inputSchema: schema,
       run: () => qpuCybersecurityOf()},
     {
       name: see[seed],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Coprime base. ${named}`, href, see.filter((s) => s !== see[seed])),
+      man: qpuSubManOf(see[seed], cryptoReadingOf().shor!, `${factoring} Coprime base. ${named}`, href, see.filter((s) => s !== see[seed])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
@@ -5532,7 +5568,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[coins],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} Native h cnot. Compiled x swap csdg cmodexp. ${named}`, href, see.filter((s) => s !== see[coins])),
+      man: qpuSubManOf(see[coins], cryptoReadingOf().cmodexp!, `${factoring} Native h cnot. Compiled x swap csdg cmodexp. ${named}`, href, see.filter((s) => s !== see[coins])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
@@ -5542,7 +5578,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[n],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n], `theorem shor. ${shorFactorOf()}.`, `${factoring} Inverse QFT. Period continued-fraction. ${named}`, href, see.filter((s) => s !== see[n])),
+      man: qpuSubManOf(see[n], cryptoReadingOf().iqft!, `${factoring} Inverse QFT. Period continued-fraction. ${named}`, href, see.filter((s) => s !== see[n])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
@@ -5552,7 +5588,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[n + seed],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n + seed], `theorem shor. ${shorFactorOf()}.`, `${factoring} Exact amplitudes. xx identity. ${named}`, href, see.filter((s) => s !== see[n + seed])),
+      man: qpuSubManOf(see[n + seed], cryptoReadingOf().shots!, `${factoring} Exact amplitudes. xx identity. ${named}`, href, see.filter((s) => s !== see[n + seed])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const shor = qpuShorTryOf(a)
@@ -5562,7 +5598,7 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[n + coins],
       description: `theorem shor. ${shorFactorOf()}.`,
-      man: qpuSubManOf(see[n + coins], `theorem shor. ${shorFactorOf()}.`, `${factoring} JSON Nat. ${named}`, href, see.filter((s) => s !== see[n + coins])),
+      man: qpuSubManOf(see[n + coins], cryptoReadingOf().rsa!, `${factoring} JSON Nat. ${named}`, href, see.filter((s) => s !== see[n + coins])),
       inputSchema: shorSchema,
       run: (a: Record<string, unknown>) => {
         const args = shorArgsOf(a)
@@ -5574,13 +5610,13 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
     {
       name: see[n + n],
       description: `theorem crypto. ${cryptoClaimOf()}.`,
-      man: qpuSubManOf(see[n + n], `theorem crypto. ${cryptoClaimOf()}.`, encrypt, href, see.filter((s) => s !== see[n + n])),
+      man: qpuSubManOf(see[n + n], cryptoReadingOf().split!, encrypt, href, see.filter((s) => s !== see[n + n])),
       inputSchema: schema,
       run: () => qpuEncryptOf()},
     {
       name: see[mintOf(n) - seed],
       description: 'theorem shor. theorem crypto.',
-      man: qpuSubManOf(see[mintOf(n) - seed], 'theorem shor. theorem crypto.', both, href, see.filter((s) => s !== see[mintOf(n) - seed])),
+      man: qpuSubManOf(see[mintOf(n) - seed], cryptoReadingOf().verify!, both, href, see.filter((s) => s !== see[mintOf(n) - seed])),
       inputSchema: schema,
       run: () => {
         const cyber = qpuCybersecurityOf()

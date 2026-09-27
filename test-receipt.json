@@ -10,7 +10,7 @@
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "f7f7b9242a675299",
+  "receipt": "b464858ac0ad0732",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -18,23 +18,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 13492,
+      "computations": 13523,
       "kinds": {
-        "x": 2942,
-        "cnot": 5664,
-        "toffoli": 488,
-        "h": 4008,
-        "measure": 244,
-        "cmodexp": 73,
-        "xx": 73
+        "x": 2950,
+        "cnot": 5680,
+        "toffoli": 490,
+        "h": 4010,
+        "measure": 245,
+        "cmodexp": 74,
+        "xx": 74
       },
       "dims": {
-        "8": 13346,
-        "512": 146
+        "8": 13375,
+        "512": 148
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "8a3a6e5c1b9ab225",
+      "receipt": "2c0911a4cb4c21d5",
       "states": [
         {
           "name": "measure",
@@ -49,12 +49,12 @@
             "0",
             "0"
           ],
-          "rows": 244
+          "rows": 245
         }
       ],
       "mint": {
-        "calls": 297245,
-        "chain": "dbf434e522461767"
+        "calls": 297882,
+        "chain": "da7b4ad5ef884d5e"
       },
       "served": {
         "count": 3,
@@ -105,7 +105,7 @@
       ],
       "mint": {
         "calls": 6148,
-        "chain": "2fe57ba771f51feb"
+        "chain": "c3a3094f4e00a166"
       },
       "served": {
         "count": 0,
@@ -153,7 +153,7 @@
       ],
       "mint": {
         "calls": 6148,
-        "chain": "afea82d72ebb4bcf"
+        "chain": "9113e576b6918b0e"
       },
       "served": {
         "count": 0,
@@ -201,7 +201,7 @@
       ],
       "mint": {
         "calls": 6148,
-        "chain": "847c1e22a29d1353"
+        "chain": "68d8c3c0c6cf0716"
       },
       "served": {
         "count": 0,
@@ -261,23 +261,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3719,
+      "computations": 3750,
       "kinds": {
-        "x": 807,
-        "cnot": 1552,
-        "toffoli": 132,
-        "h": 1124,
-        "measure": 66,
-        "cmodexp": 19,
-        "xx": 19
+        "x": 815,
+        "cnot": 1568,
+        "toffoli": 134,
+        "h": 1126,
+        "measure": 67,
+        "cmodexp": 20,
+        "xx": 20
       },
       "dims": {
-        "8": 3681,
-        "512": 38
+        "8": 3710,
+        "512": 40
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "fdf6053734ad7fd4",
+      "receipt": "702e8d8cb035aa44",
       "states": [
         {
           "name": "measure",
@@ -292,12 +292,12 @@
             "0",
             "0"
           ],
-          "rows": 66
+          "rows": 67
         }
       ],
       "mint": {
-        "calls": 82709,
-        "chain": "2897f0c02916a643"
+        "calls": 83346,
+        "chain": "3cb7ddb8bbc8043e"
       },
       "served": {
         "count": 0,
@@ -345,7 +345,7 @@
       ],
       "mint": {
         "calls": 6749,
-        "chain": "db1f07211204a87f"
+        "chain": "72cbc29aa4aa8376"
       },
       "served": {
         "count": 0,
@@ -393,7 +393,7 @@
       ],
       "mint": {
         "calls": 8351,
-        "chain": "92cf4c469aaff425"
+        "chain": "131dd2e686eea950"
       },
       "served": {
         "count": 0,
@@ -441,7 +441,7 @@
       ],
       "mint": {
         "calls": 18504,
-        "chain": "d500b44d7314edb5"
+        "chain": "c84ea88673cdb5fe"
       },
       "served": {
         "count": 0,
@@ -747,25 +747,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 151371,
+      "computations": 151402,
       "kinds": {
-        "x": 31410,
-        "cnot": 59968,
-        "toffoli": 4482,
-        "h": 52442,
-        "measure": 2241,
-        "cmodexp": 402,
-        "xx": 402,
+        "x": 31418,
+        "cnot": 59984,
+        "toffoli": 4484,
+        "h": 52444,
+        "measure": 2242,
+        "cmodexp": 403,
+        "xx": 403,
         "planes": 24
       },
       "dims": {
-        "8": 150375,
+        "8": 150404,
         "128": 192,
-        "512": 804
+        "512": 806
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "817e798ccabe2571",
+      "receipt": "1e358f09792ae7a5",
       "states": [
         {
           "name": "measure",
@@ -780,12 +780,12 @@
             "0",
             "0"
           ],
-          "rows": 2241
+          "rows": 2242
         }
       ],
       "mint": {
-        "calls": 2965890,
-        "chain": "c92c81bce55b8564"
+        "calls": 2966527,
+        "chain": "bc0b3f323d42e3bd"
       },
       "served": {
         "count": 0,
@@ -797,23 +797,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 29753,
+      "computations": 29784,
       "kinds": {
-        "h": 9218,
-        "cnot": 12304,
-        "x": 6408,
-        "toffoli": 1026,
-        "measure": 513,
-        "cmodexp": 142,
-        "xx": 142
+        "h": 9220,
+        "cnot": 12320,
+        "x": 6416,
+        "toffoli": 1028,
+        "measure": 514,
+        "cmodexp": 143,
+        "xx": 143
       },
       "dims": {
-        "8": 29469,
-        "512": 284
+        "8": 29498,
+        "512": 286
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "d2c9676e9777bf57",
+      "receipt": "a91e963e098ed04b",
       "states": [
         {
           "name": "measure",
@@ -828,12 +828,12 @@
             "0",
             "0"
           ],
-          "rows": 513
+          "rows": 514
         }
       ],
       "mint": {
-        "calls": 651513,
-        "chain": "f7e28bef01004671"
+        "calls": 652150,
+        "chain": "017e97f151240290"
       },
       "served": {
         "count": 0,
@@ -965,7 +965,7 @@
       ],
       "mint": {
         "calls": 440532,
-        "chain": "6a7f8d5dc17af9e5"
+        "chain": "7348c70062c12c32"
       },
       "served": {
         "count": 3,
@@ -1016,7 +1016,7 @@
       ],
       "mint": {
         "calls": 184889,
-        "chain": "20e27660da51b091"
+        "chain": "b2e25b66659074e6"
       },
       "served": {
         "count": 0,
@@ -1377,23 +1377,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3750,
+      "computations": 3781,
       "kinds": {
-        "x": 815,
-        "cnot": 1568,
-        "toffoli": 134,
-        "h": 1126,
-        "measure": 67,
-        "cmodexp": 20,
-        "xx": 20
+        "x": 823,
+        "cnot": 1584,
+        "toffoli": 136,
+        "h": 1128,
+        "measure": 68,
+        "cmodexp": 21,
+        "xx": 21
       },
       "dims": {
-        "8": 3710,
-        "512": 40
+        "8": 3739,
+        "512": 42
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "f7231fcabc72f8b0",
+      "receipt": "d78cd9433de3028c",
       "states": [
         {
           "name": "measure",
@@ -1408,12 +1408,12 @@
             "0",
             "0"
           ],
-          "rows": 67
+          "rows": 68
         }
       ],
       "mint": {
-        "calls": 82693,
-        "chain": "7837ecddf768d003"
+        "calls": 83330,
+        "chain": "969a3dde39d454c2"
       },
       "served": {
         "count": 0,
@@ -1461,7 +1461,7 @@
       ],
       "mint": {
         "calls": 53915,
-        "chain": "794d852f350db984"
+        "chain": "f8281f1fa2fd5a05"
       },
       "served": {
         "count": 0,
@@ -1509,13 +1509,13 @@
       ],
       "mint": {
         "calls": 413466,
-        "chain": "db0105c365d81958"
+        "chain": "abe152949a317a65"
       },
       "served": {
         "count": 3,
         "folds": [
           "\"db4e1a708ec181fb\"",
-          "\"287766c5da90763d\"",
+          "\"c1c330b4bde09d83\"",
           "\"8b8cb8b9f1f7b3d2\""
         ]
       }
@@ -1561,12 +1561,12 @@
       ],
       "mint": {
         "calls": 636555,
-        "chain": "a23dea109f96bb29"
+        "chain": "bb9afdc538c51e44"
       },
       "served": {
         "count": 3,
         "folds": [
-          "\"287766c5da90763d\"",
+          "\"c1c330b4bde09d83\"",
           "\"db4e1a708ec181fb\"",
           "\"8b8cb8b9f1f7b3d2\""
         ]
@@ -1613,7 +1613,7 @@
       ],
       "mint": {
         "calls": 6148,
-        "chain": "b04131bec533471d"
+        "chain": "0a290e8ca38ac4dc"
       },
       "served": {
         "count": 1,
@@ -1663,7 +1663,7 @@
       ],
       "mint": {
         "calls": 6148,
-        "chain": "cbdbfdbcb3ca0c91"
+        "chain": "0985f6775b933814"
       },
       "served": {
         "count": 1,
@@ -1677,23 +1677,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 10704,
+      "computations": 10735,
       "kinds": {
-        "x": 2328,
-        "cnot": 4480,
-        "toffoli": 384,
-        "h": 3200,
-        "measure": 192,
-        "cmodexp": 60,
-        "xx": 60
+        "x": 2336,
+        "cnot": 4496,
+        "toffoli": 386,
+        "h": 3202,
+        "measure": 193,
+        "cmodexp": 61,
+        "xx": 61
       },
       "dims": {
-        "8": 10584,
-        "512": 120
+        "8": 10613,
+        "512": 122
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "7bc2163aae0f6523",
+      "receipt": "ec7ecb6fe393dc9b",
       "states": [
         {
           "name": "measure",
@@ -1708,12 +1708,12 @@
             "0",
             "0"
           ],
-          "rows": 192
+          "rows": 193
         }
       ],
       "mint": {
-        "calls": 239968,
-        "chain": "23f3f694c177a5fa"
+        "calls": 240605,
+        "chain": "7d5aba52907a3c73"
       },
       "served": {
         "count": 0,
@@ -1761,7 +1761,7 @@
       ],
       "mint": {
         "calls": 70241,
-        "chain": "be74b2ddde234021"
+        "chain": "140254ff8a0803dc"
       },
       "served": {
         "count": 0,
@@ -1813,7 +1813,7 @@
       ],
       "mint": {
         "calls": 1416824,
-        "chain": "29a7e8dad8cd15dd"
+        "chain": "3e2dd3c2621c1288"
       },
       "served": {
         "count": 8,
@@ -1843,7 +1843,7 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "1a241fe3e840e072"
+        "chain": "3a2e1088afe8778b"
       },
       "served": {
         "count": 0,
@@ -1864,7 +1864,7 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "5749ad8efde69835"
+        "chain": "2733bce694e7ec94"
       },
       "served": {
         "count": 0,
@@ -1914,7 +1914,7 @@
       ],
       "mint": {
         "calls": 350027,
-        "chain": "d13c650cbb46a5bf"
+        "chain": "4639fc428bb338ac"
       },
       "served": {
         "count": 0,
@@ -1935,7 +1935,7 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "38320d6163e4c605"
+        "chain": "819bd5135b3525ba"
       },
       "served": {
         "count": 0,
@@ -1983,7 +1983,7 @@
       ],
       "mint": {
         "calls": 71162,
-        "chain": "dc0c5d7d75ff37e4"
+        "chain": "cb6b5a6b9a3aba91"
       },
       "served": {
         "count": 0,
@@ -2031,7 +2031,7 @@
       ],
       "mint": {
         "calls": 646,
-        "chain": "761e4887c0d85570"
+        "chain": "3a29440c6f714b31"
       },
       "served": {
         "count": 0,
@@ -2079,7 +2079,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "988b4af458ae23f9"
+        "chain": "5f614c4f38b16f76"
       },
       "served": {
         "count": 0,
@@ -2127,7 +2127,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "8e2bc7c182913e5e"
+        "chain": "9cdf468f6a682a93"
       },
       "served": {
         "count": 0,
@@ -2175,7 +2175,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "a49f5406871771db"
+        "chain": "55e84fb86f65d884"
       },
       "served": {
         "count": 0,
@@ -2223,7 +2223,7 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "900cc307368e9f4c"
+        "chain": "dc8f0085d1be97d5"
       },
       "served": {
         "count": 0,
@@ -2271,7 +2271,7 @@
       ],
       "mint": {
         "calls": 3694,
-        "chain": "ab87c0313e29c530"
+        "chain": "268bba9e9b4a7459"
       },
       "served": {
         "count": 0,
@@ -2319,7 +2319,7 @@
       ],
       "mint": {
         "calls": 82452,
-        "chain": "5f2feeaa5062b580"
+        "chain": "3c3217ba2b207965"
       },
       "served": {
         "count": 0,
@@ -2367,7 +2367,7 @@
       ],
       "mint": {
         "calls": 82225,
-        "chain": "efe9675b00c84ef9"
+        "chain": "21af37386f4cb75e"
       },
       "served": {
         "count": 0,
@@ -2415,7 +2415,7 @@
       ],
       "mint": {
         "calls": 153259,
-        "chain": "1da2791d56d451c4"
+        "chain": "7b9ad34adbe1f9ed"
       },
       "served": {
         "count": 0,
@@ -2475,7 +2475,7 @@
       ],
       "mint": {
         "calls": 1052640,
-        "chain": "b4cd48a7b2cf39b7"
+        "chain": "fecc78cc368f1bb2"
       },
       "served": {
         "count": 6,
@@ -2588,23 +2588,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 14383,
+      "computations": 14414,
       "kinds": {
-        "x": 3120,
-        "cnot": 6000,
-        "toffoli": 510,
-        "h": 4350,
-        "measure": 255,
-        "cmodexp": 74,
-        "xx": 74
+        "x": 3128,
+        "cnot": 6016,
+        "toffoli": 512,
+        "h": 4352,
+        "measure": 256,
+        "cmodexp": 75,
+        "xx": 75
       },
       "dims": {
-        "8": 14235,
-        "512": 148
+        "8": 14264,
+        "512": 150
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "ea68866f020de01b",
+      "receipt": "af775115f850e1fb",
       "states": [
         {
           "name": "measure",
@@ -2619,12 +2619,12 @@
             "0",
             "0"
           ],
-          "rows": 255
+          "rows": 256
         }
       ],
       "mint": {
-        "calls": 317342,
-        "chain": "5019fade573c83a9"
+        "calls": 317979,
+        "chain": "bb466e9a259f7464"
       },
       "served": {
         "count": 0,
@@ -2672,7 +2672,7 @@
       ],
       "mint": {
         "calls": 18209,
-        "chain": "005cbf24a6995931"
+        "chain": "71d78ce90890bc2c"
       },
       "served": {
         "count": 0,
@@ -2720,7 +2720,7 @@
       ],
       "mint": {
         "calls": 18209,
-        "chain": "bd65d73e13d3ba79"
+        "chain": "fa826a52969578b4"
       },
       "served": {
         "count": 0,
@@ -2830,23 +2830,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 10744,
+      "computations": 10775,
       "kinds": {
-        "x": 2316,
-        "cnot": 4448,
-        "toffoli": 372,
-        "h": 3316,
-        "measure": 186,
-        "cmodexp": 53,
-        "xx": 53
+        "x": 2324,
+        "cnot": 4464,
+        "toffoli": 374,
+        "h": 3318,
+        "measure": 187,
+        "cmodexp": 54,
+        "xx": 54
       },
       "dims": {
-        "8": 10638,
-        "512": 106
+        "8": 10667,
+        "512": 108
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "2cc4113f76e13f93",
+      "receipt": "2fe73d01ae05740b",
       "states": [
         {
           "name": "measure",
@@ -2861,12 +2861,12 @@
             "0",
             "0"
           ],
-          "rows": 186
+          "rows": 187
         }
       ],
       "mint": {
-        "calls": 238305,
-        "chain": "d1becf313e477307"
+        "calls": 238942,
+        "chain": "cfd26de09a7af97e"
       },
       "served": {
         "count": 0,
@@ -3917,27 +3917,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 151812,
+      "computations": 151843,
       "kinds": {
-        "x": 32160,
-        "cnot": 61644,
-        "toffoli": 4908,
-        "h": 49470,
-        "measure": 2454,
-        "cmodexp": 579,
-        "xx": 579,
+        "x": 32168,
+        "cnot": 61660,
+        "toffoli": 4910,
+        "h": 49472,
+        "measure": 2455,
+        "cmodexp": 580,
+        "xx": 580,
         "planes": 18
       },
       "dims": {
-        "8": 150510,
+        "8": 150539,
         "64": 10,
         "128": 144,
-        "512": 1138,
+        "512": 1140,
         "2^64": 10
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "e3cdb82baf40f3bb",
+      "receipt": "539753c42ada8a6b",
       "states": [
         {
           "name": "measure",
@@ -3952,12 +3952,12 @@
             "0",
             "0"
           ],
-          "rows": 2454
+          "rows": 2455
         }
       ],
       "mint": {
-        "calls": 3090853,
-        "chain": "fbc22f93de7e04a6"
+        "calls": 3091490,
+        "chain": "0ef42f8a0ecb1c57"
       },
       "served": {
         "count": 2,
@@ -4022,7 +4022,7 @@
       ],
       "mint": {
         "calls": 420483,
-        "chain": "351292e332bdd253"
+        "chain": "59462a7452a11ad0"
       },
       "served": {
         "count": 0,
@@ -4034,27 +4034,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 122048,
+      "computations": 122079,
       "kinds": {
-        "x": 25539,
-        "cnot": 48844,
-        "toffoli": 3750,
-        "h": 41240,
-        "measure": 1875,
-        "cmodexp": 391,
-        "xx": 391,
+        "x": 25547,
+        "cnot": 48860,
+        "toffoli": 3752,
+        "h": 41242,
+        "measure": 1876,
+        "cmodexp": 392,
+        "xx": 392,
         "planes": 18
       },
       "dims": {
-        "8": 121122,
+        "8": 121151,
         "64": 10,
         "128": 144,
-        "512": 762,
+        "512": 764,
         "2^64": 10
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "f67d75205c62a134",
+      "receipt": "83ea0947c24c7b7c",
       "states": [
         {
           "name": "measure",
@@ -4069,12 +4069,12 @@
             "0",
             "0"
           ],
-          "rows": 1875
+          "rows": 1876
         }
       ],
       "mint": {
-        "calls": 2445756,
-        "chain": "86a3d803a71fc0b2"
+        "calls": 2446393,
+        "chain": "0b492f2639c21c1b"
       },
       "served": {
         "count": 0,
@@ -4122,20 +4122,20 @@
       ],
       "mint": {
         "calls": 1418297,
-        "chain": "357367c61de1fde7"
+        "chain": "dbdeadce09be9b30"
       },
       "served": {
         "count": 10,
         "folds": [
           "\"53c1ecacc3318cc7\"",
-          "\"e5c0e3ece3d46bfa\"",
-          "\"23363009eadc48a8\"",
-          "\"cf594d9d088efcda\"",
-          "\"56be655680b85e84\"",
-          "\"ce584d273e65fd62\"",
-          "\"6a8994615cb91722\"",
-          "\"172430e2e81e7962\"",
-          "\"c35637eeb46de456\""
+          "\"8419372439ce31b4\"",
+          "\"e4b07b780376f382\"",
+          "\"ba1957e74fd8b316\"",
+          "\"8973a2c0333bc79c\"",
+          "\"6c25f72fe9498b58\"",
+          "\"e1d4e373c681cb0c\"",
+          "\"9757f65c4dea3a50\"",
+          "\"58b38d7e20f48a74\""
         ]
       }
     },
@@ -4329,7 +4329,7 @@
       ],
       "mint": {
         "calls": 3000108,
-        "chain": "9299247eb1135e27"
+        "chain": "e7be9e28c3e4beac"
       },
       "served": {
         "count": 18,
@@ -4343,15 +4343,15 @@
           "\"2b5bc0c3d71540b0\"",
           "\"3d28c2187fd31a2e\"",
           "\"2e5ddb9c5c5fd428\"",
-          "\"e5c0e3ece3d46bfa\"",
+          "\"8419372439ce31b4\"",
           "\"d1f09aee65966614\"",
-          "\"23363009eadc48a8\"",
-          "\"cf594d9d088efcda\"",
-          "\"56be655680b85e84\"",
-          "\"ce584d273e65fd62\"",
-          "\"6a8994615cb91722\"",
-          "\"172430e2e81e7962\"",
-          "\"c35637eeb46de456\""
+          "\"e4b07b780376f382\"",
+          "\"ba1957e74fd8b316\"",
+          "\"8973a2c0333bc79c\"",
+          "\"6c25f72fe9498b58\"",
+          "\"e1d4e373c681cb0c\"",
+          "\"9757f65c4dea3a50\"",
+          "\"58b38d7e20f48a74\""
         ]
       }
     },
@@ -4396,7 +4396,7 @@
       ],
       "mint": {
         "calls": 188666,
-        "chain": "aec708d7117d2498"
+        "chain": "a93fd90204a1d567"
       },
       "served": {
         "count": 1,
@@ -4461,7 +4461,7 @@
       ],
       "mint": {
         "calls": 71162,
-        "chain": "2fbf7a730b5aafa3"
+        "chain": "f0ee467655c7aeb8"
       },
       "served": {
         "count": 2,
@@ -4512,7 +4512,7 @@
       ],
       "mint": {
         "calls": 30790,
-        "chain": "29b9706baf0faec3"
+        "chain": "66c9d8c53993a0b6"
       },
       "served": {
         "count": 0,
@@ -4564,7 +4564,7 @@
       ],
       "mint": {
         "calls": 401225,
-        "chain": "db297a57b66bdfcf"
+        "chain": "64f2c0adb8fa3200"
       },
       "served": {
         "count": 17,
@@ -4574,14 +4574,14 @@
           "\"5040d89f9db56ef8\"",
           "\"41ed004077b05c5a\"",
           "\"3d28c2187fd31a2e\"",
-          "\"e5c0e3ece3d46bfa\"",
-          "\"23363009eadc48a8\"",
-          "\"cf594d9d088efcda\"",
-          "\"56be655680b85e84\"",
-          "\"ce584d273e65fd62\"",
-          "\"6a8994615cb91722\"",
-          "\"172430e2e81e7962\"",
-          "\"c35637eeb46de456\"",
+          "\"8419372439ce31b4\"",
+          "\"e4b07b780376f382\"",
+          "\"ba1957e74fd8b316\"",
+          "\"8973a2c0333bc79c\"",
+          "\"6c25f72fe9498b58\"",
+          "\"e1d4e373c681cb0c\"",
+          "\"9757f65c4dea3a50\"",
+          "\"58b38d7e20f48a74\"",
           "\"2b5bc0c3d71540b0\"",
           "\"533ce1f69f44d26a\"",
           "\"833c65e115042b04\"",
@@ -4632,7 +4632,7 @@
       ],
       "mint": {
         "calls": 914491,
-        "chain": "54eb1bd33c55c6b0"
+        "chain": "b69f977b13609f89"
       },
       "served": {
         "count": 13,
@@ -4694,14 +4694,14 @@
       ],
       "mint": {
         "calls": 197900,
-        "chain": "082c179d3bcf8fa4"
+        "chain": "53581695eb6ca931"
       },
       "served": {
         "count": 10,
         "folds": [
           "\"aabf20e772338535\"",
           "\"a556d2580af73a0b\"",
-          "\"ee1a45fa80f1843e\"",
+          "\"7603e2cfade1b0c6\"",
           "\"08ed303905fdd27d\"",
           "\"53c1ecacc3318cc7\"",
           "\"f44022c32d1c6af8\""
@@ -5887,23 +5887,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 6708,
+      "computations": 6739,
       "kinds": {
-        "x": 1449,
-        "cnot": 2784,
-        "toffoli": 234,
-        "h": 2058,
-        "measure": 117,
-        "cmodexp": 33,
-        "xx": 33
+        "x": 1457,
+        "cnot": 2800,
+        "toffoli": 236,
+        "h": 2060,
+        "measure": 118,
+        "cmodexp": 34,
+        "xx": 34
       },
       "dims": {
-        "8": 6642,
-        "512": 66
+        "8": 6671,
+        "512": 68
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "4ce56de14932b386",
+      "receipt": "5ccf8fd5df39eba2",
       "states": [
         {
           "name": "measure",
@@ -5918,12 +5918,12 @@
             "0",
             "0"
           ],
-          "rows": 117
+          "rows": 118
         }
       ],
       "mint": {
-        "calls": 148400,
-        "chain": "cc7961d21dbfb42b"
+        "calls": 149037,
+        "chain": "afdc0de18e56b7a2"
       },
       "served": {
         "count": 0,
@@ -5971,7 +5971,7 @@
       ],
       "mint": {
         "calls": 94989,
-        "chain": "52850dd9f70cdb9c"
+        "chain": "5d2b25f944529763"
       },
       "served": {
         "count": 3,
@@ -6526,23 +6526,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 7500,
+      "computations": 7531,
       "kinds": {
-        "x": 1630,
-        "cnot": 3136,
-        "toffoli": 268,
-        "h": 2252,
-        "measure": 134,
-        "cmodexp": 40,
-        "xx": 40
+        "x": 1638,
+        "cnot": 3152,
+        "toffoli": 270,
+        "h": 2254,
+        "measure": 135,
+        "cmodexp": 41,
+        "xx": 41
       },
       "dims": {
-        "8": 7420,
-        "512": 80
+        "8": 7449,
+        "512": 82
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "19d27fbcaf915929",
+      "receipt": "ed37eb4b7497d729",
       "states": [
         {
           "name": "measure",
@@ -6557,12 +6557,12 @@
             "0",
             "0"
           ],
-          "rows": 134
+          "rows": 135
         }
       ],
       "mint": {
-        "calls": 165387,
-        "chain": "33e22b44eead85ee"
+        "calls": 166024,
+        "chain": "388eea17ea9462fd"
       },
       "served": {
         "count": 0,
@@ -6610,7 +6610,7 @@
       ],
       "mint": {
         "calls": 18209,
-        "chain": "2ed20759ba1b7f3e"
+        "chain": "ea6306f0a209d935"
       },
       "served": {
         "count": 0,
@@ -6622,25 +6622,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 41486,
+      "computations": 41517,
       "kinds": {
-        "x": 8905,
-        "cnot": 17112,
-        "toffoli": 1414,
-        "h": 12970,
-        "measure": 707,
-        "cmodexp": 187,
-        "xx": 187,
+        "x": 8913,
+        "cnot": 17128,
+        "toffoli": 1416,
+        "h": 12972,
+        "measure": 708,
+        "cmodexp": 188,
+        "xx": 188,
         "planes": 4
       },
       "dims": {
-        "8": 41080,
+        "8": 41109,
         "128": 32,
-        "512": 374
+        "512": 376
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "5ae4e9cc545809ba",
+      "receipt": "b7ec4ac0127c0996",
       "states": [
         {
           "name": "measure",
@@ -6655,12 +6655,12 @@
             "0",
             "0"
           ],
-          "rows": 707
+          "rows": 708
         }
       ],
       "mint": {
-        "calls": 881557,
-        "chain": "ae320104b5fbb56d"
+        "calls": 882194,
+        "chain": "9c9f1bb96a7f23e4"
       },
       "served": {
         "count": 0,
