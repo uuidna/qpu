@@ -27,3 +27,4 @@ test('the harness recipes carry the URL and the name, and initialize serves them
   assert.equal(readme.includes('.vscode/mcp.json'), true)
   assert.equal(readme.includes('[mcp_servers.uuidna-qpu]'), true)
 })
+

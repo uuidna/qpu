@@ -10,7 +10,7 @@
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "79e4def03822f384",
+  "receipt": "3255e634d60d60ee",
   "computed": 158,
   "readRows": 4,
   "readingsOf": "test-readings.json",
@@ -6114,8 +6114,8 @@
         }
       ],
       "mint": {
-        "calls": 6614,
-        "chain": "090dc97e6931e154"
+        "calls": 6623,
+        "chain": "5a94cb0258b1a9cb"
       },
       "served": {
         "count": 0,

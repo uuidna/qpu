@@ -35,6 +35,52 @@ export const rowUnread = (row: { live?: boolean; holds?: boolean }): boolean => 
 export const liveReached = (live?: { records?: { live: boolean; holds: boolean }[] }): boolean =>
   live?.records !== undefined && live.records.length > 0 && live.records.every(rowRead)
 
+/**
+ * A STORE READING, JUDGED AS A READING RATHER THAN AS THE STORE.
+ *
+ * storage_monitor reports how many keys carry all fourteen of their shares; storage_catalog folds it in. When a
+ * key loses redundancy both report holds false, and the deploy gate asserted holds true on every read tool — so
+ * ONE un-mirrored link turned every deploy red, including the deploy that would carry the repair. Three pushes
+ * were blocked by it while the code that found it worked perfectly. A monitor that finds something and says so
+ * is not a broken monitor, and the store's contents are not the build.
+ *
+ * The store fault belongs to `hostLeadsOf`, which already names it, its count and what it owes. What stays a
+ * gate is whether the INSTRUMENT is sound, and that is this function: an instrument that stops noticing — a gap
+ * in the shares with nothing reported missing — is a fault here, and so is one that notices and claims to hold
+ * anyway. Both are properties of the code.
+ *
+ * It returns the faults it found rather than a boolean, because "the monitor is wrong" is not something a caller
+ * can act on and "verified + missing is 248, keys is 249" is.
+ */
+export type QpuMonitorReading = {
+  keys: number
+  shares: number
+  expected: number
+  missing: number
+  verified: number
+  incomplete: { key: string; faces: number[] }[]
+}
+
+export const monitorFaultsOf = (monitor: QpuMonitorReading, holds: boolean | undefined, faces = 14): string[] => {
+  const faults: string[] = []
+  if (monitor.verified + monitor.missing !== monitor.keys)
+    faults.push(`verified ${monitor.verified} + missing ${monitor.missing} is not keys ${monitor.keys}`)
+  if (monitor.expected !== monitor.keys * faces) faults.push(`expected ${monitor.expected} is not ${monitor.keys} keys times ${faces} faces`)
+  if (monitor.missing === 0 && monitor.shares !== monitor.expected)
+    faults.push(`nothing reported missing, yet ${monitor.expected - monitor.shares} share(s) are absent`)
+  if (monitor.missing > 0 && holds === true) faults.push(`${monitor.missing} key(s) reported missing, and the reading still claims to hold`)
+  /* The named entries cap at one per face; when the whole gap fits under that cap the arithmetic must close
+   * exactly, which is what catches an instrument that has stopped counting what it is still reporting. */
+  if (monitor.missing > 0 && monitor.missing <= faces) {
+    if (monitor.incomplete.length !== monitor.missing)
+      faults.push(`${monitor.missing} key(s) missing and ${monitor.incomplete.length} named — under the cap every one is named, not just counted`)
+    const absent = monitor.incomplete.reduce((sum, row) => sum + row.faces.length, 0)
+    if (monitor.shares !== monitor.expected - absent)
+      faults.push(`shares ${monitor.shares} does not agree with ${monitor.expected} expected less ${absent} named as absent`)
+  }
+  return faults
+}
+
 export const receiptsFileOf = (run: number): string => `test-receipts.${run}.jsonl`
 export const RECEIPTS_FILE = receiptsFileOf(process.ppid)
 /** THE INSTRUMENT IS NAMED (2026-09-12). A number without its instrument cannot be doubted. QPU_TEMPERATURE_SOURCE

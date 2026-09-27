@@ -1,4 +1,4 @@
-import { test } from './receipted.js'
+import { monitorFaultsOf, test, type QpuMonitorReading } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -204,7 +204,7 @@ test('storage: the catalog costs the same whether the store holds ten keys or a 
   assert.equal(response.status, 200)
   const body = (await response.json()) as {
     holds: boolean
-    monitor: { holds: boolean; keys: number; verified: number; missing: number; shares: number; expected: number; sampled: number }
+    monitor: QpuMonitorReading & { holds: boolean; sampled: number }
   }
 
   // Every link verified, from the listing alone.
@@ -221,6 +221,49 @@ test('storage: the catalog costs the same whether the store holds ten keys or a 
   assert.ok(reads <= qpuCubeOf().bits, `${reads} value reads in one catalog request`)
   // The byte total is a sample and says so, rather than being a confident figure measured over part of the store.
   assert.equal(body.monitor.sampled, reads)
+
+  /**
+   * AND THE INSTRUMENT IS JUDGED APART FROM THE STORE, PROVED ABLE TO FAIL.
+   *
+   * The deploy gate asserted holds true on every read tool, so one link without redundancy turned every deploy
+   * red — including the deploy that would carry the repair. Three pushes were blocked by a single key while the
+   * monitor that found it worked perfectly. That fault is the store's and belongs to `hostLeadsOf`, which
+   * already names it, its count and what it owes; what stays a gate is whether the INSTRUMENT is sound.
+   *
+   * A check that replaces a gate has to be able to fail, or the gate was removed and something was written in
+   * its place. The reading above is real — computed by the worker over a populated store — and every fault is
+   * then driven twice: once against that reading perturbed into the condition, and once against it untouched.
+   */
+  const whole: QpuMonitorReading = { ...body.monitor, incomplete: body.monitor.incomplete ?? [] }
+  assert.deepEqual(monitorFaultsOf(whole, true), [], 'a whole store, honestly reported, is not a fault')
+
+  const gap = qpuCubeOf().hexbit
+  const gapped: QpuMonitorReading = {
+    ...whole,
+    shares: whole.expected - gap,
+    missing: 1,
+    verified: whole.keys - 1,
+    incomplete: [{ key: links[0]!, faces: Array.from({ length: gap }, (_, face) => face) }],
+  }
+  // THE CASE THAT USED TO FAIL THE BUILD, and the live store's shape today: a gap reported, holds false.
+  assert.deepEqual(monitorFaultsOf(gapped, false), [], 'a gap honestly reported, not claiming to hold, is a working instrument')
+
+  // AN INSTRUMENT THAT STOPS NOTICING — the failure mode that moving this out of the gate could have hidden.
+  assert.match(monitorFaultsOf({ ...whole, shares: whole.expected - gap }, true).join(' '), new RegExp(`nothing reported missing, yet ${gap} share\\(s\\) are absent`))
+  // AND ONE THAT NOTICES AND REPORTS SUCCESS ANYWAY.
+  assert.match(monitorFaultsOf(gapped, true).join(' '), /still claims to hold/)
+  // THE COUNTS MUST CLOSE.
+  assert.match(monitorFaultsOf({ ...whole, verified: whole.keys - 1 }, true).join(' '), new RegExp(`is not keys ${whole.keys}`))
+  assert.match(monitorFaultsOf({ ...whole, expected: whole.expected - 1 }, true).join(' '), /faces/)
+  // COUNTED BUT NOT NAMED is the dead end this tree refuses everywhere else.
+  assert.match(monitorFaultsOf({ ...gapped, incomplete: [] }, false).join(' '), /1 key\(s\) missing and 0 named/)
+  assert.match(monitorFaultsOf({ ...gapped, shares: whole.expected - 1 }, false).join(' '), /does not agree with/)
+  // ABOVE THE CAP the naming is a sample, so neither its length nor the arithmetic is asserted.
+  assert.deepEqual(
+    monitorFaultsOf({ keys: 100, shares: 1120, expected: 1400, missing: 20, verified: 80, incomplete: [{ key: 'a', faces: [qpuFacesOf().faces - qpuFacesOf().faces] }] }, false),
+    [],
+    'twenty missing and one named is a sample, not a fault',
+  )
 })
 
 test('storage: maintain repairs what is broken and does not read what is not', async () => {

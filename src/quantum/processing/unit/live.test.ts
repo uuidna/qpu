@@ -1,4 +1,4 @@
-import { test } from './receipted.js'
+import { monitorFaultsOf, test, type QpuMonitorReading } from './receipted.js'
 import assert from 'node:assert/strict'
 import worker, { qpuQuantumOf, qpuShorOf } from './index.js'
 
@@ -136,6 +136,15 @@ test('live qpu.uuidna.com', async (t) => {
       assert.equal(body.result.isError, false, name)
     }
   })
+  /** A store reading names how many keys it verified, how many it could not, and which ones — whether it is the
+   *  monitor itself or a catalog that folds one in. */
+  type Monitor = QpuMonitorReading
+  type Reading = { holds?: boolean; kind?: string; monitor?: Monitor } & Partial<Monitor>
+  const monitorOf = (shown: Reading): Monitor | undefined => {
+    const row = shown.kind === 'monitor' ? (shown as Monitor) : shown.monitor
+    return row !== undefined && typeof row.missing === 'number' && Array.isArray(row.incomplete) ? row : undefined
+  }
+
   await t.test('extras catalogs speak MCP JSON-RPC', async () => {
     const extras = [
       {
@@ -184,9 +193,40 @@ test('live qpu.uuidna.com', async (t) => {
           body: JSON.stringify({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name, arguments: args } }),
         })
         assert.equal(called.status, 200, name)
-        const body = (await called.json()) as { result: { holds?: boolean; structuredContent?: { holds?: boolean } } }
+        const body = (await called.json()) as { result: Reading & { structuredContent?: Reading } }
         const shown = body.result.structuredContent ?? body.result
-        assert.equal(shown.holds, true, name)
+        /**
+         * THIS GATE JUDGES THE BUILD. THE STORE'S CONTENTS ARE NOT THE BUILD.
+         *
+         * A monitor that reports missing shares makes its own holds false, and storage_catalog folds the monitor
+         * in, so ONE key with no redundancy turned every deploy red — including the deploy that would carry the
+         * repair. Three pushes were blocked by a single link while the code that found it was working perfectly.
+         * A monitor that finds something and says so is not a broken monitor; failing the build on it conflates
+         * "the instrument is faulty" with "the instrument took a reading".
+         *
+         * So the reading is judged and the STORE is not. `hostLeadsOf` already carries the fault by name, with
+         * its count and what it owes — "monitor holds false — 1 link(s) missing shares of 248; owes: maintain,
+         * bounded, until remaining is 0" — which is an operational queue that a person works, not a gate that
+         * stops a ship. Nothing is dropped by this; it moves to the stream that exists for it.
+         *
+         * WHAT STILL FAILS HERE, so this is a move and not a hole: the monitor must be SELF-CONSISTENT and must
+         * not claim to hold while reporting a gap. An instrument that stops noticing — missing zero while the
+         * shares do not add up — fails, and so does one that notices and reports success anyway. Those are
+         * properties of the code, and the code is what this gate is for.
+         */
+        const monitor = monitorOf(shown)
+        if (monitor === undefined) {
+          assert.equal(shown.holds, true, name)
+          continue
+        }
+        assert.deepEqual(monitorFaultsOf(monitor, shown.holds), [], `${name}: the instrument itself must be sound`)
+        if (monitor.missing === 0) {
+          assert.equal(shown.holds, true, name)
+          continue
+        }
+        t.diagnostic(
+          `${name}: ${monitor.missing} of ${monitor.keys} key(s) missing shares (${monitor.shares}/${monitor.expected}) — a store fault, carried by leads, not by this gate`,
+        )
       }
     }
   })
