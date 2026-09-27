@@ -1,6 +1,8 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker from './index.js'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import worker, { qpuCernLiveOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -151,18 +153,44 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   assert.equal(prove.cern.source, 'opendata.cern.ch')
   assert.equal(prove.cern.api, 'https://opendata.cern.ch/api/records')
   assert.deepEqual(prove.cern.primitives, ['fetch', 'Request', 'Response', 'BigInt', 'performance'])
-  assert.equal(live?.live, true)
-  assert.equal(live?.holds, true)
+  /**
+   * A TEST MAY NOT FAIL FOR A THIRD PARTY'S SILENCE, AND MAY NOT PASS IN SILENCE EITHER.
+   *
+   * opendata.cern.ch is not ours. It is sometimes slow, and under the parallel load of a full run it sometimes
+   * does not answer inside the deadline. That cost five pushes and two CI runs in one day, none of them about
+   * anything in this repository, and a gate that red-lights for someone else's weather is a gate people learn to
+   * rerun rather than read.
+   *
+   * So the shape is always asserted — four records, fourteen cases, no host escape — because the unit owes that
+   * whether or not the host answered. The READINGS are asserted only when it did.
+   *
+   * NOT A SILENT SKIP. That is the fault found earlier today in the vendored-gate test, which skipped with a
+   * diagnostic when its sibling checkout was absent and so covered nothing on CI while looking green. Here the
+   * unreached branch asserts the opposite claim — that every record REPORTS itself unreached — so one of the two
+   * branches always checks something, and the diagnostic names what went unverified.
+   */
   assert.equal(live?.hostEscape, false)
   assert.equal(live?.records.length, 4)
   assert.equal(live?.cases.length, 14)
-  const fetched = await mcpOf('fetch', { href: prove.cern.records[0]?.href })
-  assert.equal(fetched.holds, true)
-  assert.equal(fetched.hostEscape, false)
-  assert.equal(fetched.live, true)
-  assert.equal(fetched.value?.holds, true)
-  assert.equal(fetched.value?.events, prove.cern.cases[0]?.right)
-  assert.deepEqual(fetched.value?.primitives, prove.cern.primitives)
+  const reached = live?.records.every((row) => row.live === true) === true
+
+  if (!reached) {
+    assert.equal(live?.holds, false, 'a run that did not reach the host must not claim to hold')
+    assert.equal(live?.records.some((row) => row.live === false), true, 'and the records that missed must say so')
+    t.diagnostic(`opendata.cern.ch did not answer — live readings unverified this run (${live?.records.filter((r) => !r.live).length} of 4 records missed)`)
+  } else {
+    assert.equal(live?.live, true)
+    assert.equal(live?.holds, true)
+    const fetched = await mcpOf('fetch', { href: prove.cern.records[0]?.href })
+    assert.equal(fetched.hostEscape, false)
+    if (fetched.live === true && fetched.holds === true) {
+      assert.equal(fetched.value?.holds, true)
+      assert.equal(fetched.value?.events, prove.cern.cases[0]?.right)
+      assert.deepEqual(fetched.value?.primitives, prove.cern.primitives)
+    } else {
+      t.diagnostic('the single-record fetch did not reach the host — its reading is unverified this run')
+    }
+  }
   assert.equal(prove.cern.tetra, 'theorem tetra')
   assert.equal(prove.intelligence?.kind, 'intelligence')
   assert.equal(prove.intelligence?.test, 'fusion')
@@ -325,4 +353,48 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
       assert.equal(liveFace?.theorem, face.theorem)
     })
   }
+})
+
+test('cern: a host that does not answer is a miss, not an exception', async () => {
+  // FIVE PUSHES AND TWO CI RUNS WERE LOST TO THIS IN ONE DAY, none of them about anything in this repository.
+  // qpuCernFetchOf awaited a bare fetch against opendata.cern.ch — a third party on the public internet — so when
+  // it was slow or refused, the error left the function as a throw and took the suite with it. The miss shape was
+  // already defined three lines above the call: the function knew how to SAY unreachable and never got the chance.
+  //
+  // The reader is exercised against a host that cannot resolve, which is the condition, and it must report rather
+  // than throw. A refusal is the third state — not a wrong answer, and not silence.
+  // Through the live reader: whatever the network does, it returns a shape and does not reject.
+  const live = await qpuCernLiveOf()
+  assert.equal(typeof live.holds, 'boolean', 'the reader answered with a shape rather than throwing')
+  assert.equal(Array.isArray(live.records), true)
+  assert.equal(live.records.length, 4, 'four records are always reported, reached or missed')
+  for (const row of live.records) {
+    assert.equal(typeof row.live, 'boolean', 'each record says whether it was reached')
+    assert.equal(row.hostEscape, false, 'and none of them left the named host')
+  }
+  // THE CONDITION ITSELF, not merely the shape. With the host hard-failing, the reader must still answer — four
+  // records, every one reporting that it was not reached, and holds false. This is what five lost pushes looked
+  // like from the other side: the error escaped as a throw and took the suite with it.
+  const real = globalThis.fetch
+  try {
+    globalThis.fetch = (async (req: Request | string, init?: RequestInit) => {
+      const url = typeof req === 'string' ? req : req.url
+      if (url.includes('opendata.cern.ch')) throw new TypeError('fetch failed')
+      return real(req as Request, init)
+    }) as typeof globalThis.fetch
+    const refused = await qpuCernLiveOf()
+    assert.equal(refused.records.length, 4, 'the reader answers with every record even when none is reached')
+    assert.equal(refused.records.every((row) => row.live === false), true, 'and each says it was not reached')
+    assert.equal(refused.holds, false, 'holds is false, which is an answer — not an exception')
+  } finally {
+    globalThis.fetch = real
+  }
+
+  // AND THE BOUND EXISTS. A fetch with no deadline is a hang rather than a miss, which is the shape that actually
+  // cost the pushes: the client timed out, not the unit.
+  const source = readFileSync(join(process.cwd(), 'src', 'quantum', 'processing', 'unit', 'index.ts'), 'utf8')
+  // The two properties, asserted apart rather than as one brittle expression: the first version of this pinned
+  // the whole call including its argument, and the argument is itself a lattice expression with parentheses in it.
+  assert.ok(source.includes('signal: AbortSignal.timeout('), 'the CERN fetch carries an explicit deadline')
+  assert.ok(source.includes('.catch(() => undefined)'), 'and a refusal returns the miss instead of throwing')
 })

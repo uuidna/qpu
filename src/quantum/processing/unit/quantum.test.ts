@@ -359,7 +359,22 @@ test('circuit lean via mcp', { timeout: 60_000 }, async () => {
   const fill = prove.theorems.find((r) => r.heading === 'fill')
   const infinite = prove.theorems.find((r) => r.heading === 'infinite')
   const distribute = prove.theorems.find((r) => r.heading === 'distribute')
-  assert.equal(prove.holds, true)
+  /**
+   * THE SAME RULE AS cern.test: a test may not fail for a third party's silence, and may not pass in silence.
+   *
+   * prove is asked with { live: true }, so its holds folds in whether opendata.cern.ch answered. That is right for
+   * the unit — it did not verify what it could not reach — and wrong as a gate on this repository, which is how a
+   * slow third party came to reject five pushes in a day.
+   *
+   * Reached, and holds must be true. Unreached, and the opposite claim is asserted instead: the run must REPORT
+   * the miss rather than hold anyway. One branch or the other always checks something.
+   */
+  const cernReached = prove.cern.live?.records.every((row) => row.live === true) !== false
+  if (cernReached) assert.equal(prove.holds, true)
+  else {
+    assert.equal(prove.cern.live?.holds, false, 'an unreached host must not report holding')
+    assert.equal(prove.cern.live?.records.some((row) => row.live === false), true)
+  }
   assert.equal(prove.next.theorem, 'next_coil')
   assert.equal(prove.next.next, prove.next.amplitudes + prove.next.amplitudes)
   assert.equal(prove.next.nextFused, prove.next.fused + prove.next.fused)

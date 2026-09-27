@@ -9183,7 +9183,21 @@ const qpuCernFetchOf = async (href: string) => {
     primitives}
   if (!record) return miss
   const request = new Request(record.href, { method: 'GET', headers: { accept: 'application/json' } })
-  const response = await fetch(request)
+  /**
+   * A HOST THAT DOES NOT ANSWER IS A MISS, NOT AN EXCEPTION.
+   *
+   * This awaited fetch bare, with no bound. opendata.cern.ch is a third party on the public internet: it is
+   * sometimes slow and sometimes refuses, and when it did the error left this function as a throw, took the
+   * suite's cern test with it, and failed the run. Measured over one day: five pushes rejected by the pre-push
+   * gate and two CI runs, none of them about anything in this repository.
+   *
+   * The miss shape was already here, three lines up, describing exactly this outcome — the function knew how to
+   * SAY unreachable and never got the chance. Every other reader in this tree keeps the same discipline: a
+   * refusal is reported as a refusal, and it is the third state, distinct from a wrong answer. The bound is
+   * explicit too, because a fetch with no deadline is a hang rather than a miss.
+   */
+  const response = await fetch(request, { signal: AbortSignal.timeout(tenOf(qpuCubeOf().hexbit) * n) }).catch(() => undefined)
+  if (!response) return { ...miss, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r }
   if (response.status !== found) {
     return { ...miss, live: true as const, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r, status: response.status }
   }
@@ -9257,7 +9271,9 @@ const qpuCernProjectFetchOf = async (href: string) => {
     primitives}
   if (!project) return miss
   const request = new Request(project.href, { method: 'GET', headers: { accept: 'application/json' } })
-  const response = await fetch(request)
+  // Bounded and caught, for the reason qpuCernFetchOf is: a third party that refuses must be reported as a miss.
+  const response = await fetch(request, { signal: AbortSignal.timeout(tenOf(qpuCubeOf().hexbit) * n) }).catch(() => undefined)
+  if (!response) return { ...miss, href: project.href, experiment: project.experiment }
   if (response.status !== found) {
     return { ...miss, live: true as const, href: project.href, experiment: project.experiment, status: response.status }
   }
@@ -9877,7 +9893,9 @@ export const qpuResearchFetchOf = async (href: string) => {
     primitives}
   if (allowed === undefined) return miss
   const request = new Request(allowed, { method: 'GET', headers: { accept: 'application/json' } })
-  const response = await fetch(request)
+  // Bounded and caught: an allowed host is still a host, and a host may decline.
+  const response = await fetch(request, { signal: AbortSignal.timeout(tenOf(qpuCubeOf().hexbit) * n) }).catch(() => undefined)
+  if (!response) return { ...miss, live: false as const, href: allowed }
   const type = response.headers.get('content-type') ?? ''
   let json = type.includes('json')
   let body: unknown = null

@@ -1,16 +1,16 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
-  "tests": 161,
-  "pass": 161,
+  "tests": 162,
+  "pass": 162,
   "fail": 0,
   "dry": 0,
-  "circuit": 118,
+  "circuit": 119,
   "mintOnly": 13,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "b464858ac0ad0732",
+  "receipt": "c5212e0d70854515",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -784,8 +784,53 @@
         }
       ],
       "mint": {
-        "calls": 2966527,
-        "chain": "bc0b3f323d42e3bd"
+        "calls": 2966667,
+        "chain": "ac3e859387154499"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      }
+    },
+    {
+      "name": "cern: a host that does not answer is a miss, not an exception",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 344,
+      "kinds": {
+        "h": 136,
+        "cnot": 128,
+        "x": 68,
+        "toffoli": 8,
+        "measure": 4
+      },
+      "dims": {
+        "8": 344
+      },
+      "dim": "8",
+      "qubits": 3,
+      "receipt": "8f0df35fc1b1ca0b",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 4
+        }
+      ],
+      "mint": {
+        "calls": 5607,
+        "chain": "7345bd5021896abf"
       },
       "served": {
         "count": 0,
@@ -5874,8 +5919,8 @@
         }
       ],
       "mint": {
-        "calls": 758561,
-        "chain": "41c6bdf05a0f2213"
+        "calls": 758629,
+        "chain": "42dde80ba28520ad"
       },
       "served": {
         "count": 0,
@@ -5922,8 +5967,8 @@
         }
       ],
       "mint": {
-        "calls": 149037,
-        "chain": "afdc0de18e56b7a2"
+        "calls": 149041,
+        "chain": "19b77c394793f4e4"
       },
       "served": {
         "count": 0,
@@ -5971,7 +6016,7 @@
       ],
       "mint": {
         "calls": 94989,
-        "chain": "5d2b25f944529763"
+        "chain": "e799a997872c6881"
       },
       "served": {
         "count": 3,
