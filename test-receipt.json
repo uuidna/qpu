@@ -2,15 +2,15 @@
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
   "tests": 162,
-  "pass": 161,
-  "fail": 1,
+  "pass": 162,
+  "fail": 0,
   "dry": 0,
   "circuit": 119,
   "mintOnly": 13,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "42d083f3572a7730",
+  "receipt": "bc4e1d98e73492b0",
   "readings": "test-readings.json",
   "rows": [
     {
@@ -5881,26 +5881,26 @@
       "name": "circuit lean via mcp",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": false,
-      "computations": 40034,
+      "pass": true,
+      "computations": 39862,
       "kinds": {
-        "x": 8205,
-        "cnot": 15632,
-        "toffoli": 1122,
-        "h": 14346,
-        "measure": 561,
+        "x": 8171,
+        "cnot": 15568,
+        "toffoli": 1118,
+        "h": 14278,
+        "measure": 559,
         "cmodexp": 80,
         "xx": 80,
         "planes": 8
       },
       "dims": {
-        "8": 39810,
+        "8": 39638,
         "128": 64,
         "512": 160
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "a759ad514cc0071c",
+      "receipt": "3f34f42eaa382d74",
       "states": [
         {
           "name": "measure",
@@ -5915,12 +5915,12 @@
             "0",
             "0"
           ],
-          "rows": 561
+          "rows": 559
         }
       ],
       "mint": {
-        "calls": 742936,
-        "chain": "67fbd5df725f2787"
+        "calls": 740133,
+        "chain": "11d07be4f746096c"
       },
       "served": {
         "count": 0,
@@ -5968,7 +5968,7 @@
       ],
       "mint": {
         "calls": 141697,
-        "chain": "98edad791bbe2cf5"
+        "chain": "cebdedbd879e964a"
       },
       "served": {
         "count": 0,
@@ -6016,7 +6016,7 @@
       ],
       "mint": {
         "calls": 89549,
-        "chain": "99aed7135b6a501e"
+        "chain": "89c91aea1b1ce2ef"
       },
       "served": {
         "count": 3,
