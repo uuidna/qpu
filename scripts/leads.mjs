@@ -80,52 +80,70 @@ export const hostLeadsOf = ({ origin, holds, monitor = {} }) =>
   holds ? [] : [{ source: `${origin}/storage`, what: `monitor holds false — ${monitor.missing ?? '?'} link(s) missing shares of ${monitor.keys ?? '?'}`, owes: 'maintain, bounded, until remaining is 0 — it needs the write token the worker already holds' }]
 
 /**
- * WHAT THE TEACHING CORPUS OWES, TAKEN FROM THE MCP RATHER THAN FROM THE TREE.
+ * WHERE THE TEACHING CLASSIFICATION CONTRADICTS ITSELF — AND ONLY THERE.
  *
  * qpu_train classifies each school subject against each scientific domain by the swap: entangled when both
- * directions are cited, an application when one is, undecided when neither is. Every one of those verdicts
- * that is not "entangled" is an open item with a name and an owed direction already attached — "topology
- * serves arts and crafts; owes theory to practice" is exactly the shape of a lead, and it was being computed
- * and then left sitting inside a tool result nobody polls.
+ * directions are cited, an application when one is, undecided when neither is. The first version of this
+ * detector turned every verdict that was not "entangled" into an open item, because "topology serves arts and
+ * crafts; owes theory to practice" has exactly the shape of a lead.
  *
- * SO THE GAPS BECOME WORK INSTEAD OF BECOMING INVENTED CITATIONS. Asked to shrink the undecided count, the
- * wrong answer is to write a plausible source for every empty cell: the corpus would look complete and every
- * verdict downstream would be worthless, because the whole apparatus is only as good as the evidence being
- * real. A gap that is named, counted and owed is a thing somebody can close with a genuine citation. A gap
- * that has been filled in cannot be found again.
+ * IT HAS THE SHAPE AND NOT THE SUBSTANCE. Crossing the corpus took that to forty-three open items, and none of
+ * them can be closed: "radiocarbon dating serves history" is a correct and final answer, not a defect awaiting
+ * a citation, and fifteen entangled pairs sit unseated because the lattice holds seven rays and the evidence
+ * offered twenty-two — a fact about fourteen faces that nobody can fix. A queue that can never empty makes
+ * `settledOf` permanently false and teaches a reader to stop opening it, which is the same fault as a gate
+ * that always fails.
  *
- * It reads the MCP's own answer, not qpu's exports, because a gatherer that imports the tree can only report
- * on a checkout. This one reports on what the world is actually being served.
+ * So the line drawn at the deploy gate and at the storage monitor is drawn here too, for the third time: an
+ * instrument that CONTRADICTS ITSELF is a lead, and what the instrument FOUND is a reading. The counts go to
+ * teachingNoteOf. What is left here is small and is all genuinely wrong: a reading that does not hold, a name
+ * holding two seats, or a pair turned away while a ray stands empty — which is the exact fault greedy seating
+ * had and nothing noticed.
  */
 export const teachingLeadsOf = ({ origin, school }) => {
   if (!school) return [{ source: `${origin}/mcp`, what: 'qpu_train served no school reading', owes: 'a train door that carries the teaching classification, or a gatherer that stops asking for it' }]
   const leads = []
-  for (const row of school.reading ?? []) {
-    if (row.swap !== 'application') continue
+  /* THE CLASSIFICATION MUST AGREE WITH ITSELF. Everything else here is a count. */
+  if (school.holds !== true)
+    leads.push({ source: `${origin}/mcp qpu_train`, what: 'the teaching reading does not hold — the classifier, the seating, the census or the prose disagree', owes: 'the disagreement found; the counts below are not decidable while it stands' })
+  const seated = school.seating?.seated ?? []
+  const crowded = school.seating?.crowded ?? []
+  const names = seated.flatMap((row) => [row.subject, row.domain])
+  if (new Set(names).size !== names.length)
+    leads.push({ source: `${origin}/mcp qpu_train`, what: 'a name holds two seats, so the board is a list rather than a seating', owes: 'one seat per name, which is what fourteen faces means' })
+  /* MAXIMAL: nothing may be turned away while both of its seats are free. Greedy failed exactly this. */
+  const unseatable = crowded.filter((row) => !seated.some((held) => held.subject === row.subject || held.domain === row.domain))
+  if (unseatable.length > 0 && seated.length < (school.seating?.rays ?? 7))
     leads.push({
       source: `${origin}/mcp qpu_train`,
-      what: `${row.domain} serves ${row.subject} and is not entangled with it — the swap does not close`,
-      owes: `one cited instance of ${row.owes ?? 'the missing direction'} for ${row.subject}/${row.domain}, or the pair stays an application`,
-    })
-  }
-  /* The undecided are a coverage measurement, not a defect, so they are ONE lead with a count rather than
-   * fifty-nine — a queue nobody can finish is a queue nobody reads. */
-  const undecided = school.undecided ?? 0
-  if (undecided > 0)
-    leads.push({
-      source: `${origin}/mcp qpu_train`,
-      what: `${undecided} subject/domain combination(s) are not decidable from the corpus as served`,
-      owes: 'cited instances, in either direction, for the crossings that have real ones — and no entry at all for the crossings that do not',
-    })
-  /* A pair that earned a seat and did not get one is a different fact: the evidence is in, the lattice is out
-   * of room. That is a question about how many rays there should be, which is not a citation. */
-  for (const row of school.seating?.crowded ?? [])
-    leads.push({
-      source: `${origin}/mcp qpu_train`,
-      what: `${row.subject} and ${row.domain} are entangled and unseated — ${row.why}`,
-      owes: 'a decision about which pair the ray should hold, or more rays; not more evidence, which is already in',
+      what: `${unseatable.length} entangled pair(s) turned away with both seats free while ${(school.seating?.rays ?? 7) - seated.length} ray(s) stand empty`,
+      owes: 'a maximal seating — a rule that refuses a pair AND leaves a ray free has chosen badly, not run out of room',
     })
   return leads
+}
+
+/**
+ * WHAT THE TEACHING CORPUS IS, as a sentence rather than as a queue.
+ *
+ * The first version emitted a lead for every pair that teaches in one direction and every pair that earned a
+ * seat without getting one. With the corpus crossed that is forty-three open items, and NONE OF THEM CAN BE
+ * CLOSED. "Radiocarbon dating serves history" is not a defect awaiting a citation, it is a correct and final
+ * answer: history will not be teaching radiocarbon dating. Fifteen entangled pairs are unseated because the
+ * lattice holds seven rays and the world offered twenty-two, which is a fact about fourteen faces and not a
+ * thing anybody can fix. A queue that can never empty makes `settledOf` permanently false and teaches a reader
+ * to stop looking at it, which is the same fault as a gate that always fails.
+ *
+ * So the same line is drawn here as at the deploy gate and the storage monitor, for the third time: an
+ * instrument that CONTRADICTS ITSELF is a lead, and what the instrument FOUND is a reading. Incompleteness is
+ * not a fault. It is the measurement.
+ */
+export const teachingNoteOf = ({ school }) => {
+  if (!school) return 'qpu_train carried no school reading'
+  const seated = school.seating?.seated ?? []
+  const reading = school.reading ?? []
+  const applied = reading.filter((row) => row.swap === 'application').length
+  const entangled = reading.length - applied
+  return `${seated.length} ray(s) seated; ${entangled} entangled, ${applied} one-way, ${school.undecided ?? 0} not decidable from the corpus; ${(school.seating?.crowded ?? []).length} entangled pair(s) have no ray`
 }
 
 /**
@@ -306,8 +324,7 @@ if (invoked) {
     for (const name of names) doors.push(await callOf(name))
     add(`mcp:${origin}`, true, `${doors.filter((d) => d.holds === true).length}/${doors.length} sealed door(s) hold when asked plainly`, doorLeadsOf({ origin, doors }))
     const school = doors.find((door) => door.name === 'qpu_train')?.shown?.school
-    add(`teaching:${origin}`, true, school ? `${school.seating?.seated?.length ?? 0} ray(s) seated, ${school.undecided ?? 0} undecided` : 'qpu_train carried no school reading',
-      teachingLeadsOf({ origin, school }))
+    add(`teaching:${origin}`, true, teachingNoteOf({ school }), teachingLeadsOf({ origin, school }))
   }
 
   /* ── the host, which is the only source that can say the deployment is well ─────────────────────────────────── */

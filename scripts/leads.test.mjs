@@ -14,7 +14,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { archiveLeadsOf, copyLeadsOf, doorLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf } from './leads.mjs'
+import { archiveLeadsOf, copyLeadsOf, doorLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf, teachingNoteOf } from './leads.mjs'
 
 test('a package the registry never served is a lead, and one it serves is not', () => {
   const never = packageLeadsOf({ name: '@uuidna/school', version: '0.1.0', status: 404 })
@@ -107,40 +107,53 @@ test('a file: copy that has drifted from its source is a lead, in both ways it d
   assert.match(copyLeadsOf({ ...same, copyVersion: null })[0].what, /is not installed/)
 })
 
-test('a pair that teaches in one direction is a lead that names the direction it owes', () => {
-  const entangled = { subject: 'music', domain: 'wave physics', swap: 'entangled' }
-  const applied = { subject: 'sports', domain: 'statistics', swap: 'application', owes: 'practice to theory' }
+test('a one-way pair is a reading, not a lead — a queue that cannot empty is not a queue', () => {
+  const school = {
+    holds: true,
+    undecided: 31,
+    reading: [
+      { subject: 'music', domain: 'wave physics', swap: 'entangled' },
+      { subject: 'history', domain: 'radiocarbon dating', swap: 'application', owes: 'practice to theory' },
+    ],
+    seating: { rays: 7, seated: [{ subject: 'music', domain: 'wave physics' }], crowded: [] },
+  }
+  /* HISTORY WILL NOT BE TEACHING RADIOCARBON DATING. That verdict is correct and final; filing it as an open
+   * item makes a list nobody can finish, which is how a leads stream stops being read. */
+  assert.deepEqual(teachingLeadsOf({ origin: 'o', school }), [])
+  const note = teachingNoteOf({ school })
+  assert.match(note, /1 entangled, 1 one-way, 31 not decidable/, 'it is counted instead, where a count belongs')
 
-  // AN ENTANGLED PAIR OWES NOTHING. If it did, the detector would be reporting the corpus rather than its gaps.
-  assert.deepEqual(teachingLeadsOf({ origin: 'o', school: { reading: [entangled], undecided: 0, seating: { crowded: [] } } }), [])
+  // A READING THAT DOES NOT HOLD IS a lead: the instrument disagrees with itself.
+  const broken = teachingLeadsOf({ origin: 'o', school: { ...school, holds: false } })
+  assert.equal(broken.length, 1)
+  assert.match(broken[0].what, /does not hold/)
 
-  const open = teachingLeadsOf({ origin: 'o', school: { reading: [entangled, applied], undecided: 0, seating: { crowded: [] } } })
-  assert.equal(open.length, 1)
-  assert.match(open[0].what, /statistics serves sports/)
-  // THE OWED DIRECTION TRAVELS WITH IT. "not entangled" is a verdict; "owes practice to theory" is work.
-  assert.match(open[0].owes, /practice to theory/)
-  assert.match(open[0].owes, /sports\/statistics/)
+  // and a reading that never arrived is the lead, rather than an empty list read as "nothing wrong"
+  assert.match(teachingLeadsOf({ origin: 'o', school: undefined })[0].what, /served no school reading/)
+  assert.match(teachingNoteOf({ school: undefined }), /carried no school reading/)
 })
 
-test('the undecided are one counted lead, and the unseated are a different question entirely', () => {
-  const quiet = { reading: [], undecided: 0, seating: { crowded: [] } }
-  assert.deepEqual(teachingLeadsOf({ origin: 'o', school: quiet }), [])
+test('a name holding two seats, and a ray left empty, are the faults worth reporting', () => {
+  const sound = { holds: true, undecided: 0, reading: [], seating: { rays: 7, seated: [{ subject: 'a', domain: 'x' }, { subject: 'b', domain: 'y' }], crowded: [] } }
+  assert.deepEqual(teachingLeadsOf({ origin: 'o', school: sound }), [])
 
-  /* FIFTY-NINE GAPS ARE ONE LEAD WITH A COUNT, not fifty-nine leads. A queue nobody can finish is a queue
-   * nobody reads, and the honest ask is "cite the crossings that have real instances", not "fill the grid". */
-  const gaps = teachingLeadsOf({ origin: 'o', school: { ...quiet, undecided: 59 } })
-  assert.equal(gaps.length, 1)
-  assert.match(gaps[0].what, /59 subject\/domain combination\(s\)/)
-  assert.match(gaps[0].owes, /no entry at all for the crossings that do not/, 'the lead must not ask for citations that do not exist')
+  // ONE SEAT PER NAME is what fourteen faces means; two seats for one name is a list wearing a seating's name.
+  const twice = teachingLeadsOf({ origin: 'o', school: { ...sound, seating: { ...sound.seating, seated: [{ subject: 'a', domain: 'x' }, { subject: 'a', domain: 'y' }] } } })
+  assert.equal(twice.length, 1)
+  assert.match(twice[0].what, /a name holds two seats/)
 
-  // AND AN UNSEATED PAIR IS NOT A MISSING CITATION — its evidence is already in; the lattice is out of room.
-  const crowded = teachingLeadsOf({ origin: 'o', school: { ...quiet, seating: { crowded: [{ subject: 'sports', domain: 'mechanics', why: 'sports is seated with biomechanics' }] } } })
-  assert.equal(crowded.length, 1)
-  assert.match(crowded[0].what, /entangled and unseated/)
-  assert.match(crowded[0].owes, /not more evidence, which is already in/)
+  /* THE FAULT GREEDY HAD. A pair turned away with BOTH of its seats free, while rays stand empty, means the
+   * seating chose badly rather than ran out of room — and nothing noticed until the corpus was crossed. */
+  const badly = teachingLeadsOf({ origin: 'o', school: { ...sound, seating: { ...sound.seating, crowded: [{ subject: 'c', domain: 'z', why: 'no larger matching holds it' }] } } })
+  assert.equal(badly.length, 1)
+  assert.match(badly[0].what, /turned away with both seats free while 5 ray\(s\) stand empty/)
 
-  // a reading that never arrived is itself the lead, rather than an empty list read as "nothing wrong"
-  assert.match(teachingLeadsOf({ origin: 'o', school: undefined })[0].what, /served no school reading/)
+  // AND THE ABSENCE: turned away because its partner is seated is not a fault, it is the matching working.
+  const fine = teachingLeadsOf({ origin: 'o', school: { ...sound, seating: { ...sound.seating, crowded: [{ subject: 'a', domain: 'z', why: 'a is seated with x' }] } } })
+  assert.deepEqual(fine, [], 'a pair whose name is already seated has not been mistreated')
+  // nor is a full lattice with pairs left over
+  const full = { holds: true, undecided: 0, reading: [], seating: { rays: 2, seated: [{ subject: 'a', domain: 'x' }, { subject: 'b', domain: 'y' }], crowded: [{ subject: 'c', domain: 'z', why: 'all 2 rays are taken' }] } }
+  assert.deepEqual(teachingLeadsOf({ origin: 'o', school: full }), [], 'a full lattice owes nothing to the pairs it cannot hold')
 })
 
 test('a door that needs a third party to hold is not self-sufficient, and says which failure it is', () => {

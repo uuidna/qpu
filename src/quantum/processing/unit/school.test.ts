@@ -187,10 +187,16 @@ test('the corpus as it stands agrees with itself, and the prose has no opinion o
    * been quietly lost and the classifier would be confirming whatever it was handed. */
   const applied = read.pairs.filter((row) => row.swap === 'application')
   assert.ok(applied.length > 0, 'the evidence includes pairs that teach in one direction only')
-  assert.ok(
-    applied.some((row) => row.owes === 'practice to theory') && applied.some((row) => row.owes === 'theory to practice'),
-    'and in each direction, so the classifier is not merely missing one field',
-  )
+  assert.ok(applied.every((row) => row.owes !== undefined), 'and each names the direction it lacks rather than only its verdict')
+  /* THIS ONCE DEMANDED BOTH OWED DIRECTIONS APPEAR IN THE CORPUS, and closing two arts-and-crafts pairs with
+   * real citations broke it: all twenty-eight that remain owe `practice to theory`. The assertion was asking
+   * the WORLD to contain both shapes in order to prove something about the CLASSIFIER, which is proved by
+   * construction in the fixture test above where both come out on demand. A test that fails because the
+   * evidence improved is testing the evidence.
+   *
+   * And what it was accidentally measuring is worth saying plainly: every remaining one-way pair is a science
+   * serving a subject, not a subject that has taught one back. */
+  t.diagnostic(`all ${applied.length} one-way pair(s) owe ${[...new Set(applied.map((row) => row.owes))].join(' and ')}`)
 
   // Every generated sentence is backed by an instance; none of them is prose written beside the computation.
   for (const row of qpuTeachingReadingOf()) {
