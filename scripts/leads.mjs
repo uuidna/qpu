@@ -30,9 +30,17 @@ const cff = (() => { try { return readFileSync(join(ROOT, 'CITATION.cff'), 'utf8
 const git = (cwd, ...args) => {
   try { return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() } catch { return null }
 }
-const get = async (url, headers = {}) => {
+/* Headers by default, and `method`/`body` lifted out of them when a caller needs to POST — passing those
+ * through as headers is silently accepted by fetch and produces a GET, which is the kind of wrong that looks
+ * like an empty answer from the server rather than a mistake here. */
+const get = async (url, { method, body, ...headers } = {}) => {
   try {
-    const res = await fetch(url, { headers: { 'user-agent': 'uuidna-leads', ...headers } })
+    const res = await fetch(url, {
+      method: method ?? 'GET',
+      ...(body === undefined ? {} : { body }),
+      headers: { 'user-agent': 'uuidna-leads', ...(body === undefined ? {} : { 'content-type': 'application/json' }), ...headers },
+      signal: AbortSignal.timeout(30_000),
+    })
     return { ok: res.ok, status: res.status, body: res.ok ? await res.json() : undefined }
   } catch (error) { return { ok: false, status: 0, error: String(error) } }
 }
@@ -70,6 +78,86 @@ export const archiveLeadsOf = ({ version, held = [] }) =>
 /** What the host owes when its own monitor says it is unwell. */
 export const hostLeadsOf = ({ origin, holds, monitor = {} }) =>
   holds ? [] : [{ source: `${origin}/storage`, what: `monitor holds false — ${monitor.missing ?? '?'} link(s) missing shares of ${monitor.keys ?? '?'}`, owes: 'maintain, bounded, until remaining is 0 — it needs the write token the worker already holds' }]
+
+/**
+ * WHAT THE TEACHING CORPUS OWES, TAKEN FROM THE MCP RATHER THAN FROM THE TREE.
+ *
+ * qpu_train classifies each school subject against each scientific domain by the swap: entangled when both
+ * directions are cited, an application when one is, undecided when neither is. Every one of those verdicts
+ * that is not "entangled" is an open item with a name and an owed direction already attached — "topology
+ * serves arts and crafts; owes theory to practice" is exactly the shape of a lead, and it was being computed
+ * and then left sitting inside a tool result nobody polls.
+ *
+ * SO THE GAPS BECOME WORK INSTEAD OF BECOMING INVENTED CITATIONS. Asked to shrink the undecided count, the
+ * wrong answer is to write a plausible source for every empty cell: the corpus would look complete and every
+ * verdict downstream would be worthless, because the whole apparatus is only as good as the evidence being
+ * real. A gap that is named, counted and owed is a thing somebody can close with a genuine citation. A gap
+ * that has been filled in cannot be found again.
+ *
+ * It reads the MCP's own answer, not qpu's exports, because a gatherer that imports the tree can only report
+ * on a checkout. This one reports on what the world is actually being served.
+ */
+export const teachingLeadsOf = ({ origin, school }) => {
+  if (!school) return [{ source: `${origin}/mcp`, what: 'qpu_train served no school reading', owes: 'a train door that carries the teaching classification, or a gatherer that stops asking for it' }]
+  const leads = []
+  for (const row of school.reading ?? []) {
+    if (row.swap !== 'application') continue
+    leads.push({
+      source: `${origin}/mcp qpu_train`,
+      what: `${row.domain} serves ${row.subject} and is not entangled with it — the swap does not close`,
+      owes: `one cited instance of ${row.owes ?? 'the missing direction'} for ${row.subject}/${row.domain}, or the pair stays an application`,
+    })
+  }
+  /* The undecided are a coverage measurement, not a defect, so they are ONE lead with a count rather than
+   * fifty-nine — a queue nobody can finish is a queue nobody reads. */
+  const undecided = school.undecided ?? 0
+  if (undecided > 0)
+    leads.push({
+      source: `${origin}/mcp qpu_train`,
+      what: `${undecided} subject/domain combination(s) are not decidable from the corpus as served`,
+      owes: 'cited instances, in either direction, for the crossings that have real ones — and no entry at all for the crossings that do not',
+    })
+  /* A pair that earned a seat and did not get one is a different fact: the evidence is in, the lattice is out
+   * of room. That is a question about how many rays there should be, which is not a citation. */
+  for (const row of school.seating?.crowded ?? [])
+    leads.push({
+      source: `${origin}/mcp qpu_train`,
+      what: `${row.subject} and ${row.domain} are entangled and unseated — ${row.why}`,
+      owes: 'a decision about which pair the ray should hold, or more rays; not more evidence, which is already in',
+    })
+  return leads
+}
+
+/**
+ * CAN THE MCP ANSWER ON ITS OWN?
+ *
+ * The point of this unit is that a caller gets a computed answer, not a proxy for somebody else's host. A
+ * sealed door that only holds when a third party answered is not self-sufficient, and the failure is quiet:
+ * it passes every day the network is good and fails on the day it is not, which this repository has already
+ * paid for twice — once in the receipt that moved when CERN was down, once in a deploy blocked by a store
+ * fault. A door is asked plainly here, with nothing live requested, and it must hold on its own.
+ *
+ * A door that does not answer at all is a different lead from one that answers and does not hold, and they
+ * are kept apart because the first is an outage and the second is a defect.
+ */
+export const doorLeadsOf = ({ origin, doors }) => {
+  if (!Array.isArray(doors) || doors.length === 0)
+    return [{ source: `${origin}/mcp`, what: 'the MCP listed no sealed doors', owes: 'a tools/list that answers, or a gatherer that stops asking' }]
+  const leads = []
+  for (const door of doors) {
+    if (door.ok !== true) {
+      leads.push({ source: `${origin}/mcp ${door.name}`, what: `${door.name} did not answer (${door.why ?? 'no reason given'})`, owes: 'the door served, or the catalogue that lists it corrected' })
+      continue
+    }
+    if (door.holds !== true)
+      leads.push({
+        source: `${origin}/mcp ${door.name}`,
+        what: `${door.name} answers but does not hold when asked plainly, with nothing live requested`,
+        owes: 'a door that computes its own answer — one that holds only when a third party replies is a proxy, not a unit',
+      })
+  }
+  return leads
+}
 
 /** A run is settled only when every source answered AND none holds a lead. Unreached blocks; it is not silence. */
 export const settledOf = (sources) =>
@@ -189,8 +277,40 @@ if (invoked) {
     }
   }
 
-  /* ── the host, which is the only source that can say the deployment is well ─────────────────────────────────── */
+  /* ── the MCP, asked about itself ────────────────────────────────────────────────────────────────────────────
+   * Every sealed door is called PLAINLY, with nothing live requested, because that is what self-sufficiency
+   * means: the unit computes its own answer rather than proxying somebody else's host. A door that holds only
+   * when a third party replies passes every day the network is good, which is the failure this repository has
+   * already paid for twice. And qpu_train's teaching classification is read back as work: every pair that
+   * teaches in one direction owes the other, and the door has been computing that owed direction all along
+   * with nobody collecting it. */
   const origin = 'https://qpu.uuidna.com'
+  const callOf = async (name, args = {}) => {
+    const res = await get(`${origin}/mcp`, {
+      accept: 'application/json',
+      method: 'POST',
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
+    })
+    const shown = res.body?.result?.structuredContent ?? res.body?.result
+    return { name, ok: res.ok === true && shown !== undefined, holds: shown?.holds, why: res.ok ? 'no structured result' : `${res.status || res.error}`, shown }
+  }
+  const listed = await get(`${origin}/mcp`, {
+    accept: 'application/json',
+    method: 'POST',
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
+  })
+  if (!listed.ok) add(`mcp:${origin}`, false, `tools/list answered ${listed.status || listed.error}`)
+  else {
+    const names = (listed.body?.result?.tools ?? []).map((row) => row.name)
+    const doors = []
+    for (const name of names) doors.push(await callOf(name))
+    add(`mcp:${origin}`, true, `${doors.filter((d) => d.holds === true).length}/${doors.length} sealed door(s) hold when asked plainly`, doorLeadsOf({ origin, doors }))
+    const school = doors.find((door) => door.name === 'qpu_train')?.shown?.school
+    add(`teaching:${origin}`, true, school ? `${school.seating?.seated?.length ?? 0} ray(s) seated, ${school.undecided ?? 0} undecided` : 'qpu_train carried no school reading',
+      teachingLeadsOf({ origin, school }))
+  }
+
+  /* ── the host, which is the only source that can say the deployment is well ─────────────────────────────────── */
   const storage = await get(`${origin}/storage`)
   if (!storage.ok) add(`live:${origin}`, false, `the host answered ${storage.status || storage.error}`)
   else {
