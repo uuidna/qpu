@@ -85,6 +85,20 @@ jobs:
       - name: Mutation — every guard proved able to fail
         run: npm run mutate
 
+      # THE PROOF GATE ABOVE IS ONLY HONEST IF THE PROOF IS A PROPERTY OF THIS TREE. It was not: the readers reach
+      # opendata.cern.ch, and a run that reached it folded differently from one that did not, so the gate reported a
+      # moved receipt and named this repository for someone else's maintenance window. It rejected two pushes that
+      # way before the cause was clear.
+      # The verdict is pure and costs nothing, so it runs always. The full comparison re-runs the suite under each
+      # of the four shapes a third party fails in — refused, 503, a captive portal's 200, and a silent socket — and
+      # requires test-receipt.json to come back byte-identical from all of them plus the network as it is. Three of
+      # those four shapes were live defects the first time they were run.
+      # It runs AFTER the proof step, for the reason the mutation step does: it rewrites test-receipt.json.
+      - name: Outage — the verdict itself, proved able to fail
+        run: npm run outage:test
+      - name: Outage — the committed proof does not move for a third party's weather
+        run: npm run outage
+
       - name: Deploy to Cloudflare (only when called with deploy and the token exists)
         id: deploy
         if: ${{ inputs.deploy }}

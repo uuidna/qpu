@@ -84,6 +84,8 @@
     "verify:release": "node scripts/verify-release.mjs",
     "leads": "node scripts/leads.mjs",
     "leads:test": "node --test scripts/leads.test.mjs",
+    "outage": "node scripts/outage.mjs",
+    "outage:test": "node --test scripts/outage.test.mjs",
     "post-push": "node scripts/post-push.mjs",
     "land": "npm test && git push && node scripts/post-push.mjs --wait && npm run verify:live",
     "mutate": "node scripts/mutate.mjs"

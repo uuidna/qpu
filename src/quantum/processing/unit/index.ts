@@ -54,18 +54,70 @@ const receiptOf = (name: string, amps: readonly bigint[]): void => {
 const receiptSparseOf = (name: string, dim: bigint, pairs: readonly (readonly [bigint, bigint])[]): void => {
   RECEIPTS.push({ name, dim: Number(dim), fold: qpuFoldOf(pairs.map(([i, w]) => `${i}:${w}`).join(',')), nonzero: pairs.length, qubits: dim.toString(2).length - 1 })
 }
-/** mint receipts: every amplitude-count doubling this process computed — a counter and a running chain, never a list. */
-const MINT = { calls: 0, chain: FNV_OFFSET }
-export const qpuMintReceiptOf = () => ({ calls: MINT.calls, chain: MINT.chain.toString(16).padStart(16, '0') })
-const mintReceiptOf = (k: number, x: number): void => {
-  MINT.calls = MINT.calls + 1
-  const text = `${k}:${x}`
-  let h = MINT.chain
+/**
+ * FOREIGN READS: every time this process asked a host it does not own.
+ *
+ * The receipt folds the computation a run performed, and it is deterministic — three identical runs fold byte for
+ * byte. It is NOT invariant under a third party's silence, and it cannot be: when opendata.cern.ch answers, the
+ * readers build documents and mint amplitudes that a refused run never builds. Measured across five outage shapes,
+ * five of a hundred and sixty-two rows moved, and every one of them had called a foreign door.
+ *
+ * `npm run proof` asks git whether the receipt moved, and a receipt that moves for someone else's weather points
+ * at this repository for something that did not happen here. So a row records whether it consulted anyone, the
+ * proof folds the rows that did not, and the rows that did fold separately and are reported rather than gated.
+ * That is the three-state law applied to the receipt itself: computed, read, or not decidable here.
+ *
+ * A counter, not a list of URLs — the host is already named in the row's own miss shape, and a list would put the
+ * network's ordering into the ledger.
+ */
+/** The bound on one reading of a host this tree does not own: ten seconds, shared by every door in that reading. */
+const foreignDeadlineOf = (): AbortSignal => AbortSignal.timeout(tenOf(qpuCubeOf().hexbit))
+
+const FOREIGN = { reads: 0 }
+export const qpuForeignReadsOf = (): number => FOREIGN.reads
+/** A count of asks is a count: never negative, and never fractional. It rises and does not fall within a process. */
+export const qpuForeignReadsHolds = (reads = qpuForeignReadsOf()): boolean => Number.isSafeInteger(reads) && reads >= 0
+const foreignReadOf = (): void => {
+  FOREIGN.reads = FOREIGN.reads + 1
+}
+
+/**
+ * mint receipts: every amplitude-count doubling this process computed — a counter and a running chain, never a list.
+ *
+ * TWO CHAINS, BECAUSE A ROW MAY NOT INHERIT ITS NEIGHBOURS' HISTORY. `chain` is the process's, folded over every
+ * doubling since start; `scope` is folded over the doublings since it was last opened, and the test wrapper opens
+ * one per test. A row used to carry the process chain, so its value depended on every test that had run before it
+ * — and a test that computed identical amplitudes, identical kinds, identical dims and an identical receipt still
+ * folded differently because an EARLIER test had reached CERN and minted more. That is an order dependency wearing
+ * a proof's clothes: it would also have moved if a test were renamed, reordered, or added.
+ *
+ * Measured: `start measure generate` differed between a reached run and a blocked one in its mint chain alone,
+ * with every other field on the row byte-identical.
+ */
+const MINT = { calls: 0, chain: FNV_OFFSET, scope: FNV_OFFSET }
+export const qpuMintReceiptOf = () => ({ calls: MINT.calls, chain: MINT.chain.toString(16).padStart(16, '0'), scope: MINT.scope.toString(16).padStart(16, '0') })
+/** Both chains are sixteen hex digits, and an unopened scope is the offset basis — the fold of nothing. */
+export const qpuMintScopeOpenHolds = (closed = MINT.scope.toString(16).padStart(16, '0')): boolean => /^[0-9a-f]{16}$/.test(closed)
+
+/** Start a fresh scope chain and answer the one just closed, so a caller can bracket a region and fold only it. */
+export const qpuMintScopeOpenOf = (): string => {
+  const closed = MINT.scope.toString(16).padStart(16, '0')
+  MINT.scope = FNV_OFFSET
+  return closed
+}
+const foldTextInto = (seed: bigint, text: string): bigint => {
+  let h = seed
   for (let i = text.length - text.length; i < text.length; i++) {
     h ^= BigInt(text.charCodeAt(i))
     h = (h * FNV_PRIME) & FNV_MASK
   }
-  MINT.chain = h
+  return h
+}
+const mintReceiptOf = (k: number, x: number): void => {
+  MINT.calls = MINT.calls + 1
+  const text = `${k}:${x}`
+  MINT.chain = foldTextInto(MINT.chain, text)
+  MINT.scope = foldTextInto(MINT.scope, text)
 }
 /** The ledger of every quantum computation this process ran, in order. */
 export const qpuReceiptLedgerOf = (): readonly QpuReceipt[] => RECEIPTS
@@ -9089,7 +9141,7 @@ const cernCasesOf = (cms38: CernInts, cms63: CernInts, cms35: CernInts, cms62: C
   }))
 }
 
-const qpuCernFetchOf = async (href: string) => {
+const qpuCernFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const quoted = qpuCernRecordsOf()
   const record = quoted.records.find((row) => row.href === href)
   const miss = {
@@ -9124,13 +9176,29 @@ const qpuCernFetchOf = async (href: string) => {
    * SAY unreachable and never got the chance. Every other reader in this tree keeps the same discipline: a
    * refusal is reported as a refusal, and it is the third state, distinct from a wrong answer. The bound is
    * explicit too, because a fetch with no deadline is a hang rather than a miss.
+   *
+   * THE DEADLINE IS tenOf(hexbit) — ten seconds — AND WAS THIRTY. A run asks this host five times over (prove,
+   * then qpu_train, qpu_improve, qpu_compete and the sequence, each live), and a host that accepts the connection
+   * and then says nothing costs the full deadline every time. At thirty that is a hundred and fifty seconds
+   * against a hundred-and-twenty-second test budget: measured, the suite did not fail, it was CANCELLED, which
+   * writes no receipt at all. Ten holds the worst case to fifty.
+   *
+   * Shortening it is only safe because the proof no longer moves when this host is missed — the fold covers the
+   * rows that asked nobody, and a miss changes the reading rather than the proof. Under the old arrangement a
+   * tighter deadline would have traded a hang for a red build; now it trades it for an honest unverified.
    */
-  const response = await fetch(request, { signal: AbortSignal.timeout(tenOf(qpuCubeOf().hexbit) * n) }).catch(() => undefined)
+  foreignReadOf()
+  const response = await fetch(request, { signal }).catch(() => undefined)
   if (!response) return { ...miss, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r }
   if (response.status !== found) {
     return { ...miss, live: true as const, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r, status: response.status }
   }
-  const body = (await response.json()) as {
+  /* AND THE BODY IS PARSED THE SAME WAY THE FETCH IS CALLED — caught. A 200 is not a promise of JSON. A hotel
+   * or corporate captive portal answers 200 with an HTML interstitial, and `<html>…` through response.json() is
+   * a SyntaxError that leaves this function as a throw, which is precisely the fault the paragraph above
+   * describes and the bound above fixed for the connection but not for the payload. Measured: with the host
+   * answering 200 text/html, four tests died of an exception rather than reporting a miss. */
+  const body = (await response.json().catch(() => undefined)) as undefined | {
     metadata?: {
       recid?: unknown
       doi?: unknown
@@ -9140,6 +9208,7 @@ const qpuCernFetchOf = async (href: string) => {
       distribution?: { number_events?: unknown; number_files?: unknown }
     }
   }
+  if (!body) return { ...miss, live: true as const, href: record.href, recid: record.recid, doi: record.doi, q: record.q, r: record.r, status: response.status }
   const events = cernNatOf(body.metadata?.distribution?.number_events)
   const files = cernNatOf(body.metadata?.distribution?.number_files)
   const createdRaw = Array.isArray(body.metadata?.date_created) ? body.metadata.date_created[n - n] : n - n
@@ -9174,7 +9243,7 @@ const qpuCernFetchOf = async (href: string) => {
     primitives}
 }
 
-const qpuCernProjectFetchOf = async (href: string) => {
+const qpuCernProjectFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const tetra = qpuCernProjectsOf()
   const search = qpuCernSearchOf()
   const tetraRow = tetra.projects.find((row) => row.href === href)
@@ -9201,14 +9270,17 @@ const qpuCernProjectFetchOf = async (href: string) => {
   if (!project) return miss
   const request = new Request(project.href, { method: 'GET', headers: { accept: 'application/json' } })
   // Bounded and caught, for the reason qpuCernFetchOf is: a third party that refuses must be reported as a miss.
-  const response = await fetch(request, { signal: AbortSignal.timeout(tenOf(qpuCubeOf().hexbit) * n) }).catch(() => undefined)
+  foreignReadOf()
+  const response = await fetch(request, { signal }).catch(() => undefined)
   if (!response) return { ...miss, href: project.href, experiment: project.experiment }
   if (response.status !== found) {
     return { ...miss, live: true as const, href: project.href, experiment: project.experiment, status: response.status }
   }
-  const body = (await response.json()) as {
+  // Caught for the reason above: a 200 is not a promise of JSON, and a captive portal's HTML must read as a miss.
+  const body = (await response.json().catch(() => undefined)) as undefined | {
     hits?: { total?: unknown; hits?: { metadata?: { experiment?: unknown } }[] }
   }
+  if (!body) return { ...miss, live: true as const, href: project.href, experiment: project.experiment, status: response.status }
   const totalRaw = body.hits?.total
   const total =
     totalRaw && typeof totalRaw === 'object' && 'value' in totalRaw ? cernNatOf((totalRaw as { value: unknown }).value) : cernNatOf(totalRaw)
@@ -9619,9 +9691,16 @@ const qpuCernLearnLiveOf = (
 
 export const qpuCernLiveOf = async () => {
   const quoted = qpuCernOf()
-  const live = await Promise.all(quoted.records.map((row) => qpuCernFetchOf(row.href)))
-  const projects = await Promise.all(quoted.projects.map((row) => qpuCernProjectFetchOf(row.href)))
-  const search = await Promise.all(quoted.search.doors.map((row) => qpuCernProjectFetchOf(row.href)))
+  /* ONE DEADLINE FOR THE WHOLE READING, not one per door. Each door had its own, and this reader asks in three
+   * sequential rounds — four records, then four projects, then nine search doors — so a host that accepts the
+   * connection and then says nothing cost three deadlines here and five readings' worth across a suite run.
+   * Measured at thirty seconds a door the suite was CANCELLED rather than failed, which writes no receipt; at ten
+   * it still was. A shared signal bounds the reading at ten seconds however many doors it has, which is the
+   * number a caller can reason about. */
+  const deadline = foreignDeadlineOf()
+  const live = await Promise.all(quoted.records.map((row) => qpuCernFetchOf(row.href, deadline)))
+  const projects = await Promise.all(quoted.projects.map((row) => qpuCernProjectFetchOf(row.href, deadline)))
+  const search = await Promise.all(quoted.search.doors.map((row) => qpuCernProjectFetchOf(row.href, deadline)))
   const experiments = [...projects, ...search]
   const cms38 = live[n - n]
   const cms63 = live[seed]
@@ -9807,7 +9886,7 @@ const researchHitsOf = (body: unknown): number => {
   return cernNatOf(bag.total)
 }
 
-export const qpuResearchFetchOf = async (href: string) => {
+export const qpuResearchFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const allowed = qpuCernHrefOf(href)
   const miss = {
     kind: 'research' as const,
@@ -9823,7 +9902,8 @@ export const qpuResearchFetchOf = async (href: string) => {
   if (allowed === undefined) return miss
   const request = new Request(allowed, { method: 'GET', headers: { accept: 'application/json' } })
   // Bounded and caught: an allowed host is still a host, and a host may decline.
-  const response = await fetch(request, { signal: AbortSignal.timeout(tenOf(qpuCubeOf().hexbit) * n) }).catch(() => undefined)
+  foreignReadOf()
+  const response = await fetch(request, { signal }).catch(() => undefined)
   if (!response) return { ...miss, live: false as const, href: allowed }
   const type = response.headers.get('content-type') ?? ''
   let json = type.includes('json')

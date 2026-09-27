@@ -9,11 +9,32 @@ import { appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { join } from 'node:path'
 import { test as nodeTest, type TestContext, type TestOptions } from 'node:test'
-import { qpuMintReceiptOf, qpuReceiptFoldOf, qpuReceiptLedgerOf, qpuServedLedgerOf } from './index.js'
+import { qpuForeignReadsOf, qpuMintReceiptOf, qpuMintScopeOpenOf, qpuReceiptFoldOf, qpuReceiptLedgerOf, qpuServedLedgerOf } from './index.js'
 
 /** One receipts file PER RUN, named by the run: a test worker's parent is the `node --test` process the reporter runs in,
  * so workers append to the reporter's pid and the reporter reads its own. Two suites in one tree no longer share a file,
  * which is how a concurrent run once erased another's rows and failed honest tests as "computed nothing". */
+
+/**
+ * WAS THE HOST READ? — which is not the same question as whether it answered.
+ *
+ * `live` says a response came back. `holds` says the response was usable. The first version of this predicate
+ * checked only `live`, and a host answering 503 sets `live: true` on every record — so a run against a host in
+ * maintenance took the REACHED branch, asserted the readings, and failed on numbers the host never supplied.
+ * Measured with the host forced to 503: two tests red, neither of them about anything in this repository.
+ *
+ * A reading is owed only when every record both answered and held. Anything else — refused, 503, a captive
+ * portal's HTML, a partial answer — is the third state, and the caller's unreached branch handles it.
+ */
+/** One door's own verdict: it was READ when it answered and the answer held. Its negation is the third state. */
+export const rowRead = (row: { live?: boolean; holds?: boolean }): boolean => row.live === true && row.holds === true
+
+/** The negation, named, because `row.live === false` was written five times and is wrong for a 503 every time. */
+export const rowUnread = (row: { live?: boolean; holds?: boolean }): boolean => !rowRead(row)
+
+export const liveReached = (live?: { records?: { live: boolean; holds: boolean }[] }): boolean =>
+  live?.records !== undefined && live.records.length > 0 && live.records.every(rowRead)
+
 export const receiptsFileOf = (run: number): string => `test-receipts.${run}.jsonl`
 export const RECEIPTS_FILE = receiptsFileOf(process.ppid)
 /** THE INSTRUMENT IS NAMED (2026-09-12). A number without its instrument cannot be doubted. QPU_TEMPERATURE_SOURCE
@@ -37,6 +58,10 @@ export type TestReceipt = {
   /** documents served from the isolate's memo during this test, with the fold of each — computed once, earlier; a third
    * state beside computed and nothing, and part of the proof */
   served: { count: number; folds: string[] }
+  /** how many hosts this test asked that this tree does not own. Zero means every number in this row was computed
+   *  here, so the row belongs in the proof; above zero means the row records what somebody else's host did or did
+   *  not say, which is a reading. */
+  foreign: number
   readings: { time: { ns: number; resolved: boolean }; temperature: Temperature }
 }
 
@@ -85,6 +110,9 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
   const from = qpuReceiptLedgerOf().length
   const servedFrom = qpuServedLedgerOf().length
   const mintFrom = qpuMintReceiptOf()
+  const foreignFrom = qpuForeignReadsOf()
+  // open a fresh mint scope, so this row's chain folds THIS test's doublings and not the whole process's history
+  qpuMintScopeOpenOf()
   const started = process.hrtime.bigint()
   try {
     await fn(t)
@@ -115,8 +143,9 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
       qubits,
       receipt: qpuReceiptFoldOf(slice),
       states: statesOf(slice),
-      mint: { calls: mintTo.calls - mintFrom.calls, chain: mintTo.chain },
+      mint: { calls: mintTo.calls - mintFrom.calls, chain: qpuMintScopeOpenOf() },
       served: { count: qpuServedLedgerOf().length - servedFrom, folds: [...new Set(qpuServedLedgerOf().slice(servedFrom).map((r) => r.fold))] },
+      foreign: qpuForeignReadsOf() - foreignFrom,
       readings: { time: { ns, resolved: ns > 0 }, temperature: temperatureOf() },
     }
     appendFileSync(join(process.cwd(), RECEIPTS_FILE), `${JSON.stringify(row)}\n`)

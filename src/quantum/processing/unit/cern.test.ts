@@ -1,4 +1,4 @@
-import { test } from './receipted.js'
+import { liveReached, rowUnread, test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -131,21 +131,50 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   const catalog = await uiOf('/mcp')
   const prove = await mcpOf('qpu_prove', { live: true })
   const live: CernLive | undefined = prove.cern.live
+
+  /**
+   * ONE GUARD PER TEST, NOT ONE PER ASSERTION.
+   *
+   * prove is asked with live: true, and reachability folds into many of its fields — cern.holds, sequence.holds,
+   * the per-record rows, the single-record fetch. Gating them one at a time took five rounds and would have taken
+   * a sixth the next time a field was added. The question is asked once, here, and the test returns.
+   *
+   * AND IT DOES NOT RETURN, WHICH WAS THE FIRST ATTEMPT AND THE WRONG ONE. Returning early skipped the fourteen
+   * face sub-tests below, which are computed from prove.cern.cases and owe nothing to the network — so a miss
+   * changed WHICH tests ran, the fold covers test names, and the receipt moved for the second time for exactly
+   * the reason it was being made not to move. A guard may change what is ASSERTED; it may not change what is RUN.
+   *
+   * NOT A SILENT SKIP: the unreached branch below asserts the opposite claim — that every record reports itself
+   * unreached and nothing claims to hold — so whichever way the network went, something was checked.
+   */
+  const reached = liveReached(live)
+
   assert.equal(page.res.headers.get('content-type')?.includes('ld+json'), true)
   assert.equal(page.json.docs?.inline, true)
   assert.equal(page.json.ui?.prove, 'qpu_prove')
   assert.equal(catalog.res.status, 200)
   assert.equal(page.json.docs?.documentation?.includes('qpu_prove'), true)
   assert.equal(page.json.docs?.formulas?.some((f) => f.theorem.startsWith('theorem cern')), true)
-  assert.equal(prove.holds, true)
+  if (reached) assert.equal(prove.holds, true)
   assert.equal(prove.sequence?.kind, 'sequence')
   assert.equal(prove.sequence?.live, true)
-  assert.equal(prove.sequence?.holds, true)
+  if (reached) assert.equal(prove.sequence?.holds, true)
   assert.deepEqual(prove.sequence?.doors, ['qpu_train', 'qpu_improve', 'qpu_compete', 'qpu_prove'])
   assert.equal(prove.sequence?.winner, 'call')
-  assert.equal(prove.sequence?.occupancy?.occupied, 13)
-  assert.equal(prove.sequence?.views?.scanner, 9)
-  assert.equal(prove.sequence?.views?.radar, 9)
+  /* THE ROSTER IS COMPUTED; THE OCCUPANCY IS READ. unique.n is how many experiment doors the lattice seats —
+   * 9 + mintOf(coins) = 13, arithmetic over two fixed nine-name views, owed whether or not anyone answers.
+   * unique.occupied is how many of those doors ANSWERED, and views.scanner/radar the same per view. Asserting
+   * the second as though it were the first is what made a CERN outage look like a broken lattice: 0 !== 13,
+   * reported against a number the network has no say in. */
+  assert.equal(prove.sequence?.occupancy?.n, 13)
+  if (reached) {
+    assert.equal(prove.sequence?.occupancy?.occupied, 13)
+    assert.equal(prove.sequence?.views?.scanner, 9)
+    assert.equal(prove.sequence?.views?.radar, 9)
+  } else {
+    assert.equal(prove.sequence?.occupancy?.occupied, 0, 'no door answered, so no door is occupied')
+    assert.equal(prove.sequence?.occupancy?.vacant, 13, 'and all thirteen are vacant, which is a reading too')
+  }
   assert.equal(prove.sequence?.throughoutput, (prove.sequence?.fused ?? 0) + (prove.sequence?.fused ?? 0))
   assert.equal(prove.ui?.door, 'qpu_prove')
   assert.equal(prove.cern.faces, 14)
@@ -175,12 +204,14 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   assert.equal(live?.hostEscape, false)
   assert.equal(live?.records.length, 4)
   assert.equal(live?.cases.length, 14)
-  const reached = live?.records.every((row) => row.live === true) === true
 
   if (!reached) {
     assert.equal(live?.holds, false, 'a run that did not reach the host must not claim to hold')
-    assert.equal(live?.records.some((row) => row.live === false), true, 'and the records that missed must say so')
-    t.diagnostic(`opendata.cern.ch did not answer — live readings unverified this run (${live?.records.filter((r) => !r.live).length} of 4 records missed)`)
+    /* NOT `live === false`. That was true of a refused connection and false of a 503, where the host answers
+     * and the answer is useless — so a host in maintenance took this branch and then failed its own assertion.
+     * A record is UNREAD when it did not answer or did not hold, and at least one must say so. */
+    assert.equal(live?.records.some(rowUnread), true, 'and the records that went unread must say so')
+    t.diagnostic(`opendata.cern.ch was not read — live readings unverified this run (${live?.records.filter(rowUnread).length} of 4 records unread)`)
   } else {
     assert.equal(live?.live, true)
     assert.equal(live?.holds, true)
@@ -257,92 +288,134 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
     prove.cern.entangle?.nodes.every((node) => node.holds && node.hop === (node.face + 7) % 14),
     true,
   )
+  /* SHAPE ALWAYS, READINGS WHEN REACHED — the same split one level down. The door COUNTS (13 experiments, 9
+   * search views, 13 seats in unique) are the lattice's own arithmetic; the OCCUPANCIES and totals are what the
+   * doors said when asked. quantum is `entangle.holds && learn.holds`, both pure, so it is owed either way. */
   assert.equal(live?.experiments?.length, 13)
   assert.equal(live?.search?.length, 9)
   assert.equal(live?.learn?.live, true)
   assert.equal(live?.learn?.quantum, true)
-  assert.equal(live?.learn?.holds, true)
-  assert.equal(live?.learn?.lhc.occupied, 9)
-  assert.equal(live?.learn?.lhc.vacant, 0)
   assert.equal(live?.learn?.unique.n, 13)
-  assert.equal(live?.learn?.unique.occupied, 13)
-  assert.equal(live?.learn?.unique.vacant, 0)
-  assert.equal(live?.learn?.lhc.nodes.find((row) => row.experiment === 'LHCf')?.occupied, true)
-  assert.equal(live?.learn?.opendata.nodes.find((row) => row.experiment === 'OPERA')?.occupied, true)
-  assert.equal((live?.learn?.opendata.nodes.find((row) => row.experiment === 'OPERA')?.total ?? 0) > 0, true)
-  assert.equal(prove.cern.learn?.live?.holds, true)
-  const trained = await mcpOf('qpu_train', { live: true })
-  assert.equal(trained.holds, true)
-  assert.equal(trained.live, true)
-  assert.equal(trained.learn?.holds, true)
-  assert.equal(trained.learn?.lhc.occupied, 9)
-  assert.equal(trained.vm?.next, (trained.vm?.replicas ?? 0) + (trained.vm?.replicas ?? 0))
-  assert.deepEqual(trained.next, ['qpu_improve', 'qpu_compete'])
-  const improved = await mcpOf('qpu_improve', { live: true })
-  assert.equal(improved.holds, true)
-  assert.equal(improved.learn?.unique.occupied, 13)
-  assert.equal(improved.after?.quality, 13)
-  assert.equal(typeof improved.quantum === 'object' && improved.quantum !== null && 'next' in improved.quantum && improved.after?.throughoutput === improved.quantum.next, true)
-  assert.equal(improved.after?.throughoutput, (improved.before?.throughoutput ?? 0) + (improved.before?.throughoutput ?? 0))
-  assert.deepEqual(improved.next, ['qpu_compete', 'qpu_prove'])
-  const competed = await mcpOf('qpu_compete', { live: true })
-  assert.equal(competed.holds, true)
-  assert.equal(competed.learn?.quantum, true)
-  assert.equal(
-    typeof competed.quantum === 'object' &&
-      competed.quantum !== null &&
-      'next' in competed.quantum &&
-      competed.teams?.find((row) => row.name === 'call')?.throughoutput === competed.quantum.next,
-    true,
-  )
-  assert.deepEqual(competed.next, ['qpu_prove'])
-  assert.equal(competed.winner, 'call')
-  assert.equal(competed.occupancy?.occupied, 13)
-  assert.equal(competed.occupancy?.vacant, 0)
-  assert.equal(competed.views?.scanner, 9)
-  assert.equal(competed.views?.radar, 9)
-  const sequenced = await mcpOf('qpu_train', { sequence: true })
-  assert.equal(sequenced.holds, true)
-  assert.equal(sequenced.sequence?.holds, true)
-  assert.deepEqual(sequenced.sequence?.doors, ['qpu_train', 'qpu_improve', 'qpu_compete', 'qpu_prove'])
-  assert.equal(sequenced.sequence?.throughoutput, (sequenced.sequence?.fused ?? 0) + (sequenced.sequence?.fused ?? 0))
-  assert.equal(live?.entangle?.holds, true)
-  assert.equal(live?.entangle?.pairs.length, 9)
-  assert.equal(live?.entangle?.catalog?.pairs.length, 7)
-  for (const project of prove.cern.projects) {
-    const fetchedProject = await mcpOf('fetch', { href: project.href })
-    const liveProjects: CernProject[] = live ? live.projects : []
-    const liveProject: CernProject | undefined = liveProjects.find((row) => row.experiment === project.experiment)
-    assert.equal(project.theorem, 'theorem tetra')
-    assert.equal(project.href.startsWith(prove.cern.api), true)
-    assert.equal(fetchedProject.holds, true)
-    assert.equal(fetchedProject.live, true)
-    assert.equal(fetchedProject.hostEscape, false)
-    assert.equal(fetchedProject.value?.holds, true)
-    assert.equal(fetchedProject.value?.experiment, project.experiment)
-    assert.equal((fetchedProject.value?.total ?? 0) > 0, true)
-    assert.equal(liveProject?.holds, true)
-    assert.equal(liveProject?.live, true)
-    assert.equal(liveProject?.experiment, project.experiment)
-    assert.equal((liveProject?.total ?? 0) > 0, true)
+  if (reached) {
+    assert.equal(live?.learn?.holds, true)
+    assert.equal(live?.learn?.lhc.occupied, 9)
+    assert.equal(live?.learn?.lhc.vacant, 0)
+    assert.equal(live?.learn?.unique.occupied, 13)
+    assert.equal(live?.learn?.unique.vacant, 0)
+    assert.equal(live?.learn?.lhc.nodes.find((row) => row.experiment === 'LHCf')?.occupied, true)
+    assert.equal(live?.learn?.opendata.nodes.find((row) => row.experiment === 'OPERA')?.occupied, true)
+    assert.equal((live?.learn?.opendata.nodes.find((row) => row.experiment === 'OPERA')?.total ?? 0) > 0, true)
+  } else {
+    assert.notEqual(live?.learn?.holds, true, 'an unreached learn must not claim to hold')
+    assert.equal(live?.learn?.lhc.occupied, 0)
+    assert.equal(live?.learn?.lhc.vacant, 9, 'every LHC seat vacant, and named as vacant rather than absent')
+    assert.equal(live?.learn?.unique.occupied, 0)
+    assert.equal(live?.learn?.unique.vacant, 13)
+    assert.equal(live?.learn?.lhc.nodes.length, 9, 'the nodes are still reported, each one unoccupied')
+    assert.equal(live?.learn?.lhc.nodes.every((row) => row.occupied === false), true)
   }
-  const lhcOnly = ['LHCf', 'MoEDAL', 'FASER', 'SND@LHC']
-  for (const experiment of prove.cern.experiments ?? []) {
-    const fetchedExperiment = await mcpOf('fetch', { href: experiment.href })
-    const liveExperiments: CernProject[] = live?.experiments ?? []
-    const liveExperiment: CernProject | undefined = liveExperiments.find((row) => row.experiment === experiment.experiment)
-    const openRecords = lhcOnly.includes(experiment.experiment) === false
-    assert.equal(experiment.href.startsWith(prove.cern.api), true)
-    assert.equal(fetchedExperiment.holds, true)
-    assert.equal(fetchedExperiment.live, true)
-    assert.equal(fetchedExperiment.hostEscape, false)
-    assert.equal(fetchedExperiment.value?.holds, true)
-    assert.equal(fetchedExperiment.value?.experiment, experiment.experiment)
-    assert.equal(openRecords ? (fetchedExperiment.value?.total ?? 0) > 0 : true, true)
-    assert.equal(liveExperiment?.holds, true)
-    assert.equal(liveExperiment?.live, true)
-    assert.equal(liveExperiment?.experiment, experiment.experiment)
-    assert.equal(openRecords ? (liveExperiment?.total ?? 0) > 0 : true, true)
+  /* EVERYTHING BELOW THIS POINT UNTIL THE FACE SUB-TESTS IS A READING, and readings are owed only when the host
+   * answered. qpu_train, qpu_improve, qpu_compete and the sequence are all asked with live: true; the project and
+   * experiment loops fetch each door. None of it is the unit's own arithmetic, and all of it was asserted flat.
+   *
+   * THE FACE SUB-TESTS ARE DELIBERATELY OUTSIDE THIS BLOCK. They iterate prove.cern.cases, which is computed, so
+   * they must run either way — a guard that changes WHICH tests run changes the fold, and the fold is the whole
+   * point of the exercise. Inside each one the live half is gated on the same flag. */
+  if (reached) {
+    assert.equal(prove.cern.learn?.live?.holds, true)
+    const trained = await mcpOf('qpu_train', { live: true })
+    assert.equal(trained.holds, true)
+    assert.equal(trained.live, true)
+    assert.equal(trained.learn?.holds, true)
+    assert.equal(trained.learn?.lhc.occupied, 9)
+    assert.equal(trained.vm?.next, (trained.vm?.replicas ?? 0) + (trained.vm?.replicas ?? 0))
+    assert.deepEqual(trained.next, ['qpu_improve', 'qpu_compete'])
+    const improved = await mcpOf('qpu_improve', { live: true })
+    assert.equal(improved.holds, true)
+    assert.equal(improved.learn?.unique.occupied, 13)
+    assert.equal(improved.after?.quality, 13)
+    assert.equal(typeof improved.quantum === 'object' && improved.quantum !== null && 'next' in improved.quantum && improved.after?.throughoutput === improved.quantum.next, true)
+    assert.equal(improved.after?.throughoutput, (improved.before?.throughoutput ?? 0) + (improved.before?.throughoutput ?? 0))
+    assert.deepEqual(improved.next, ['qpu_compete', 'qpu_prove'])
+    const competed = await mcpOf('qpu_compete', { live: true })
+    assert.equal(competed.holds, true)
+    assert.equal(competed.learn?.quantum, true)
+    assert.equal(
+      typeof competed.quantum === 'object' &&
+        competed.quantum !== null &&
+        'next' in competed.quantum &&
+        competed.teams?.find((row) => row.name === 'call')?.throughoutput === competed.quantum.next,
+      true,
+    )
+    assert.deepEqual(competed.next, ['qpu_prove'])
+    assert.equal(competed.winner, 'call')
+    assert.equal(competed.occupancy?.occupied, 13)
+    assert.equal(competed.occupancy?.vacant, 0)
+    assert.equal(competed.views?.scanner, 9)
+    assert.equal(competed.views?.radar, 9)
+    const sequenced = await mcpOf('qpu_train', { sequence: true })
+    assert.equal(sequenced.holds, true)
+    assert.equal(sequenced.sequence?.holds, true)
+    assert.deepEqual(sequenced.sequence?.doors, ['qpu_train', 'qpu_improve', 'qpu_compete', 'qpu_prove'])
+    assert.equal(sequenced.sequence?.throughoutput, (sequenced.sequence?.fused ?? 0) + (sequenced.sequence?.fused ?? 0))
+    assert.equal(live?.entangle?.holds, true)
+    assert.equal(live?.entangle?.pairs.length, 9)
+    assert.equal(live?.entangle?.catalog?.pairs.length, 7)
+    for (const project of prove.cern.projects) {
+      const fetchedProject = await mcpOf('fetch', { href: project.href })
+      const liveProjects: CernProject[] = live ? live.projects : []
+      const liveProject: CernProject | undefined = liveProjects.find((row) => row.experiment === project.experiment)
+      assert.equal(project.theorem, 'theorem tetra')
+      assert.equal(project.href.startsWith(prove.cern.api), true)
+      assert.equal(fetchedProject.holds, true)
+      assert.equal(fetchedProject.live, true)
+      assert.equal(fetchedProject.hostEscape, false)
+      assert.equal(fetchedProject.value?.holds, true)
+      assert.equal(fetchedProject.value?.experiment, project.experiment)
+      assert.equal((fetchedProject.value?.total ?? 0) > 0, true)
+      assert.equal(liveProject?.holds, true)
+      assert.equal(liveProject?.live, true)
+      assert.equal(liveProject?.experiment, project.experiment)
+      assert.equal((liveProject?.total ?? 0) > 0, true)
+    }
+    const lhcOnly = ['LHCf', 'MoEDAL', 'FASER', 'SND@LHC']
+    for (const experiment of prove.cern.experiments ?? []) {
+      const fetchedExperiment = await mcpOf('fetch', { href: experiment.href })
+      const liveExperiments: CernProject[] = live?.experiments ?? []
+      const liveExperiment: CernProject | undefined = liveExperiments.find((row) => row.experiment === experiment.experiment)
+      const openRecords = lhcOnly.includes(experiment.experiment) === false
+      assert.equal(experiment.href.startsWith(prove.cern.api), true)
+      assert.equal(fetchedExperiment.holds, true)
+      assert.equal(fetchedExperiment.live, true)
+      assert.equal(fetchedExperiment.hostEscape, false)
+      assert.equal(fetchedExperiment.value?.holds, true)
+      assert.equal(fetchedExperiment.value?.experiment, experiment.experiment)
+      assert.equal(openRecords ? (fetchedExperiment.value?.total ?? 0) > 0 : true, true)
+      assert.equal(liveExperiment?.holds, true)
+      assert.equal(liveExperiment?.live, true)
+      assert.equal(liveExperiment?.experiment, experiment.experiment)
+      assert.equal(openRecords ? (liveExperiment?.total ?? 0) > 0 : true, true)
+    }
+  } else {
+    /* THE OPPOSITE CLAIM, so the unreached branch is not a skip. Every door reports a miss by name, nothing
+     * downstream claims to hold, and the shapes are still the shapes the lattice owes. */
+    assert.notEqual(prove.cern.learn?.live?.holds, true)
+    const trainedMiss = await mcpOf('qpu_train', { live: true })
+    assert.equal(trainedMiss.live, true, 'it still answers, and still says it was asked live')
+    assert.notEqual(trainedMiss.holds, true)
+    assert.equal(trainedMiss.learn?.lhc.occupied, 0)
+    assert.deepEqual(trainedMiss.next, ['qpu_improve', 'qpu_compete'], 'the ladder is computed and unmoved')
+    const competedMiss = await mcpOf('qpu_compete', { live: true })
+    assert.notEqual(competedMiss.holds, true)
+    assert.equal(competedMiss.winner, 'call', 'the winner is decided by throughoutput, not by the network')
+    assert.equal(competedMiss.occupancy?.occupied, 0)
+    assert.equal(competedMiss.occupancy?.vacant, 13)
+    assert.equal(live?.entangle?.holds, true, 'entanglement is pure and holds regardless')
+    assert.equal(live?.entangle?.pairs.length, 9)
+    assert.equal(live?.entangle?.catalog?.pairs.length, 7)
+    assert.equal(live?.projects.every(rowUnread), true, 'and every project door reports itself unread')
+    assert.equal(live?.experiments?.every(rowUnread), true)
+    t.diagnostic('opendata.cern.ch did not answer — the readings above are unverified, the shapes below still hold')
   }
   for (const face of prove.cern.cases) {
     await t.test(face.name, () => {
@@ -351,9 +424,14 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
       assert.equal(face.holds, true)
       assert.equal(face.theorem.includes('by decide'), false)
       assert.equal(face.href.startsWith(prove.cern.api), true)
-      assert.equal(liveFace?.holds, true)
-      assert.equal(liveFace?.left, liveFace?.right)
-      assert.equal(liveFace?.theorem, face.theorem)
+      // the case is computed above; only its live twin depends on the host
+      assert.equal(liveFace?.theorem, face.theorem, 'the live twin is present and names the same theorem either way')
+      if (reached) {
+        assert.equal(liveFace?.holds, true)
+        assert.equal(liveFace?.left, liveFace?.right)
+      } else {
+        assert.notEqual(liveFace?.holds, true, 'an unread face must not claim to hold')
+      }
     })
   }
 })
@@ -393,11 +471,23 @@ test('cern: a host that does not answer is a miss, not an exception', async () =
     globalThis.fetch = real
   }
 
-  // AND THE BOUND EXISTS. A fetch with no deadline is a hang rather than a miss, which is the shape that actually
-  // cost the pushes: the client timed out, not the unit.
+  /* AND THE BOUND EXISTS — CHECKED OVER EVERY FOREIGN FETCH, NOT ONE SPELLING OF ONE.
+   *
+   * A fetch with no deadline is a hang rather than a miss, which is the shape that cost the pushes: the client
+   * timed out, not the unit. The first guard pinned the literal text `signal: AbortSignal.timeout(` at the call
+   * site, so it passed for the sites that had it and said nothing about a fourth site added later — and it went
+   * red the moment the deadline moved into a named function, reporting a regression where there was a repair.
+   *
+   * So the property is asserted over the class: every `await fetch(` in the unit passes a signal and catches, and
+   * the deadline has exactly one definition. A new reader that forgets either is caught by the same line. */
   const source = readFileSync(join(process.cwd(), 'src', 'quantum', 'processing', 'unit', 'index.ts'), 'utf8')
-  // The two properties, asserted apart rather than as one brittle expression: the first version of this pinned
-  // the whole call including its argument, and the argument is itself a lattice expression with parentheses in it.
-  assert.ok(source.includes('signal: AbortSignal.timeout('), 'the CERN fetch carries an explicit deadline')
-  assert.ok(source.includes('.catch(() => undefined)'), 'and a refusal returns the miss instead of throwing')
+  const sites = source.split('\n').map((line, i) => ({ line, at: i + 1 })).filter((row) => row.line.includes('await fetch('))
+  assert.ok(sites.length > 0, 'the unit reaches at least one host, or this guard is guarding nothing')
+  for (const site of sites) {
+    assert.ok(site.line.includes('{ signal }'), `index.ts:${site.at} fetches with a deadline it did not take from its caller`)
+    assert.ok(site.line.includes('.catch(() => undefined)'), `index.ts:${site.at} lets a refusal throw instead of returning the miss`)
+  }
+  const deadlines = source.split('AbortSignal.timeout(').length - 1
+  assert.equal(deadlines, 1, 'one definition of the deadline, so a reading cannot be bounded per door by accident')
+  assert.ok(source.includes('const foreignDeadlineOf = ()'), 'and it is named, so the bound can be read without reading every call')
 })

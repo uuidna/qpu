@@ -1,6 +1,6 @@
 {
   "kind": "test-receipt",
-  "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json",
+  "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
   "tests": 162,
   "pass": 162,
   "fail": 0,
@@ -10,8 +10,10 @@
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "bc4e1d98e73492b0",
-  "readings": "test-readings.json",
+  "receipt": "79e4def03822f384",
+  "computed": 158,
+  "readRows": 4,
+  "readingsOf": "test-readings.json",
   "rows": [
     {
       "name": "API only json ui",
@@ -54,7 +56,7 @@
       ],
       "mint": {
         "calls": 281290,
-        "chain": "19688ff26327fb0d"
+        "chain": "2a890e79ac6b8834"
       },
       "served": {
         "count": 3,
@@ -62,7 +64,8 @@
           "\"cae925dbd7a96875\"",
           "\"542b9d1b7b81d7cd\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a tenant host is forwarded to Payload with its host intact",
@@ -105,12 +108,13 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "0427f8dea9f2af6b"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "www redirects to the apex and is never a tenant",
@@ -153,12 +157,13 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "0b9c21f04d8d17f1"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a host two labels deep is not a tenant and is not forwarded",
@@ -201,12 +206,13 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "3f536b3d80f5c7ff"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage writes are refused without the bearer, with a wrong bearer, and when no token is bound",
@@ -249,12 +255,13 @@
       ],
       "mint": {
         "calls": 85696,
-        "chain": "8c53cb9ea215cc8a"
+        "chain": "fe2cdc2129677d55"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "MCP storage_put and storage_del carry the request bearer; the in-process call without one is refused",
@@ -297,12 +304,13 @@
       ],
       "mint": {
         "calls": 78994,
-        "chain": "e37e4b1fab4171e6"
+        "chain": "64081af9d27dc21d"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a write through the service binding needs no token; every public write still does",
@@ -345,12 +353,13 @@
       ],
       "mint": {
         "calls": 6205,
-        "chain": "2aa0ce852c2a6150"
+        "chain": "a07a40f4cf34b0e7"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a prefix lists its links ascending with their documents; other prefixes and shares never list",
@@ -393,12 +402,13 @@
       ],
       "mint": {
         "calls": 7807,
-        "chain": "35c4a1c233534794"
+        "chain": "0ec9952968da2021"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage: maintain is a write, so it needs what writes need",
@@ -441,12 +451,13 @@
       ],
       "mint": {
         "calls": 16872,
-        "chain": "016b6203fc27fa94"
+        "chain": "a899aa7a6a4b6b13"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "cms_38",
@@ -467,7 +478,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "cms_63",
@@ -488,7 +500,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "cms_35",
@@ -509,7 +522,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "cms_62",
@@ -530,7 +544,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "tev_step",
@@ -551,7 +566,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "gev_step",
@@ -572,7 +588,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "beam_7",
@@ -593,7 +610,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "beam_8",
@@ -614,7 +632,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "beam_step",
@@ -635,7 +654,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "embargo_38",
@@ -656,7 +676,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "embargo_63",
@@ -677,7 +698,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "embargo_35",
@@ -698,7 +720,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "eight_vs_seven",
@@ -719,7 +742,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "four_records",
@@ -740,102 +764,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
-    },
-    {
-      "name": "cern faces via mcp",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 151402,
-      "kinds": {
-        "x": 31418,
-        "cnot": 59984,
-        "toffoli": 4484,
-        "h": 52444,
-        "measure": 2242,
-        "cmodexp": 403,
-        "xx": 403,
-        "planes": 24
       },
-      "dims": {
-        "8": 150404,
-        "128": 192,
-        "512": 806
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "1e358f09792ae7a5",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 2242
-        }
-      ],
-      "mint": {
-        "calls": 2873915,
-        "chain": "eeab1b09c1922386"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
-    },
-    {
-      "name": "cern: a host that does not answer is a miss, not an exception",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 344,
-      "kinds": {
-        "h": 136,
-        "cnot": 128,
-        "x": 68,
-        "toffoli": 8,
-        "measure": 4
-      },
-      "dims": {
-        "8": 344
-      },
-      "dim": "8",
-      "qubits": 3,
-      "receipt": "8f0df35fc1b1ca0b",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 4
-        }
-      ],
-      "mint": {
-        "calls": 5607,
-        "chain": "d1d35c82013f935a"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
+      "foreign": 0
     },
     {
       "name": "paper and zenodo cite",
@@ -878,12 +808,13 @@
       ],
       "mint": {
         "calls": 620870,
-        "chain": "78bc7dc660131bed"
+        "chain": "2a6096985678996c"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "AI sees JSON unit not HTML",
@@ -904,7 +835,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "AI calls MCP instead of reading the tree",
@@ -925,7 +857,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "user gets cite holds and named doors",
@@ -946,7 +879,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "unnamed host is lost",
@@ -967,7 +901,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "paste in free AI chat",
@@ -1010,7 +945,7 @@
       ],
       "mint": {
         "calls": 416868,
-        "chain": "a9cba8bd572db986"
+        "chain": "5df4e8f07c5385be"
       },
       "served": {
         "count": 3,
@@ -1018,7 +953,8 @@
           "\"cae925dbd7a96875\"",
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the prior art is credited from its own source, and the seat inherits its equivalence check",
@@ -1061,12 +997,13 @@
       ],
       "mint": {
         "calls": 176457,
-        "chain": "17108a6f508144a7"
+        "chain": "35b485af28db5fac"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "2×7 coins = 1+6 coils = clay",
@@ -1082,12 +1019,13 @@
       "states": [],
       "mint": {
         "calls": 15,
-        "chain": "dabfaa0786125953"
+        "chain": "7ccd3e0b3a529c2a"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "clay theorems sit on Lean rows — docs stay seven",
@@ -1130,12 +1068,13 @@
       ],
       "mint": {
         "calls": 68765,
-        "chain": "a48d8a45cf465ce9"
+        "chain": "eb97f032a78314eb"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "two coins make a coil used in electronics — coins balance theory in practice",
@@ -1151,12 +1090,13 @@
       "states": [],
       "mint": {
         "calls": 12,
-        "chain": "40158dfcdc957cde"
+        "chain": "13da5f506f077c35"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "follow the coins in any practical application — theory plus practice balances the coins, every point reached",
@@ -1172,12 +1112,13 @@
       "states": [],
       "mint": {
         "calls": 14,
-        "chain": "7ca7fdd0eaae00b8"
+        "chain": "83320b39bf2c0e1b"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "measure coil efficiency in clusters — unity when coil covers faces",
@@ -1193,12 +1134,13 @@
       "states": [],
       "mint": {
         "calls": 30,
-        "chain": "986266d2c8c75418"
+        "chain": "36d66297fa884f9d"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "next is the double — coil times mintOf bits plus coins is fused plus fused, no last k",
@@ -1214,12 +1156,13 @@
       "states": [],
       "mint": {
         "calls": 33,
-        "chain": "1885535211424ea5"
+        "chain": "c50f9252bfe38ef2"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "exact-amplitudes register — integer amplitudes",
@@ -1264,12 +1207,13 @@
       ],
       "mint": {
         "calls": 83676,
-        "chain": "3bb38ae60848ad0b"
+        "chain": "26f1462484c7468b"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "coil theorems sit on Lean rows and the register — docs stay seven",
@@ -1312,12 +1256,13 @@
       ],
       "mint": {
         "calls": 69266,
-        "chain": "855cd778f2608412"
+        "chain": "dc685a317f9d56bc"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a receipt's temperature is the device sensor, named, or unmeasured; never guessed",
@@ -1360,12 +1305,13 @@
       ],
       "mint": {
         "calls": 68076,
-        "chain": "c86680f238a86707"
+        "chain": "9dc265eb90d7f348"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "/api is Payload over the service binding; without the binding it is refused by name",
@@ -1408,14 +1354,15 @@
       ],
       "mint": {
         "calls": 16812,
-        "chain": "8f5631f05f86f621"
+        "chain": "883eb79d7f5e6e57"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a GET /mcp asking for an event stream gets 405 with Allow, not a catalog",
@@ -1458,12 +1405,13 @@
       ],
       "mint": {
         "calls": 78978,
-        "chain": "1c45f4875bc072fd"
+        "chain": "c518ebbaae6c1c51"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a JSON-RPC batch is exactly its members; notifications get no entry; an empty batch is refused",
@@ -1506,12 +1454,13 @@
       ],
       "mint": {
         "calls": 50107,
-        "chain": "34194ff8143d2b08"
+        "chain": "e4974891e12bed10"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the five discovery doors answer, and install.json is the same reading the file is written from",
@@ -1554,7 +1503,7 @@
       ],
       "mint": {
         "calls": 391706,
-        "chain": "28117e437980d2e4"
+        "chain": "97b6922806609215"
       },
       "served": {
         "count": 3,
@@ -1563,7 +1512,8 @@
           "\"c1c330b4bde09d83\"",
           "\"8b8cb8b9f1f7b3d2\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the discovery doors and the tool results compute their holds, and a broken input does not hold",
@@ -1606,7 +1556,7 @@
       ],
       "mint": {
         "calls": 605003,
-        "chain": "4fb3771ca4fc7eed"
+        "chain": "a772cfec38eaea94"
       },
       "served": {
         "count": 3,
@@ -1615,7 +1565,8 @@
           "\"db4e1a708ec181fb\"",
           "\"8b8cb8b9f1f7b3d2\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the learning ladder is four standard steps in the inline guide, each with the same five fields",
@@ -1658,14 +1609,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "9500fc8ce0699f4b"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the seat doctrine and the acronym credit are served in the glossary",
@@ -1708,14 +1660,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "150b2d347e787651"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "cybersecurity catalog holds — eight morph tools, not a ninth sealed tool",
@@ -1758,12 +1711,13 @@
       ],
       "mint": {
         "calls": 228637,
-        "chain": "b0d4502b173f4793"
+        "chain": "8b1f6c94da18388a"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "quantum reading and GET expose factored RSA",
@@ -1806,12 +1760,13 @@
       ],
       "mint": {
         "calls": 66977,
-        "chain": "e0cc166efdba60f2"
+        "chain": "f42e16bd5ee1f9f4"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "cybersecurity tools morph at call time — each door holds",
@@ -1858,7 +1813,7 @@
       ],
       "mint": {
         "calls": 1362696,
-        "chain": "91049452742a6089"
+        "chain": "53c8b8cb122834aa"
       },
       "served": {
         "count": 8,
@@ -1872,7 +1827,8 @@
           "\"d31c0458e913d7ee\"",
           "\"833c65e115042b04\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "theorem crypto — crypt split fused across faces",
@@ -1888,12 +1844,13 @@
       "states": [],
       "mint": {
         "calls": 407,
-        "chain": "4a4da132c1dc40d6"
+        "chain": "be38fd845e6e146a"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "RAID cluster security is crypt",
@@ -1909,12 +1866,13 @@
       "states": [],
       "mint": {
         "calls": 9,
-        "chain": "5d0ed09325298089"
+        "chain": "10db40dd16d9c30a"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "train vm crypt and messaging theorem crypto",
@@ -1959,12 +1917,13 @@
       ],
       "mint": {
         "calls": 345675,
-        "chain": "8fa312cfbbfadb6d"
+        "chain": "48c33fbdc8ec5499"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "ideas crypto ray equals fused split",
@@ -1980,12 +1939,13 @@
       "states": [],
       "mint": {
         "calls": 246,
-        "chain": "dd3c1c63af47803b"
+        "chain": "23f70aa8d4170733"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "crypto theorems sit on Lean rows — docs stay seven",
@@ -2028,12 +1988,13 @@
       ],
       "mint": {
         "calls": 67898,
-        "chain": "6369bedf9860e1a8"
+        "chain": "7325e45d80b6d00a"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "Shor specifies N and a coprime base",
@@ -2076,12 +2037,13 @@
       ],
       "mint": {
         "calls": 646,
-        "chain": "bafa61f5bf9d2974"
+        "chain": "429c05fbad9ac345"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "Shor modular-exponentiation circuitry maps counting to a^x mod N",
@@ -2124,12 +2086,13 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "0036d1c64e18c405"
+        "chain": "8dbacd74bac0e862"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "Shor period-finding is inverse QFT",
@@ -2172,12 +2135,13 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "482f44936c4349c2"
+        "chain": "8dbacd74bac0e862"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "Shor repeats xx-noise shots, enumerated from the support",
@@ -2220,12 +2184,13 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "fd784327d25816f7"
+        "chain": "8dbacd74bac0e862"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "Shor post-processing factors multiply back to N",
@@ -2268,12 +2233,13 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "f0ecc4ef6488d740"
+        "chain": "8dbacd74bac0e862"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "theorem shor — the kernel does not know the answer: period and factors are absent from the statement",
@@ -2316,12 +2282,13 @@
       ],
       "mint": {
         "calls": 3422,
-        "chain": "84f0b2608111cfcd"
+        "chain": "92b8e804602b1e08"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "purpose cybersecurity is register, Shor, crypt split, extras, and next",
@@ -2364,12 +2331,13 @@
       ],
       "mint": {
         "calls": 78916,
-        "chain": "df598510c551c114"
+        "chain": "54f9a1209a577f5c"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "evidence is this-run provenance, calibration, QV-style heavy output, and cross-validation",
@@ -2412,12 +2380,13 @@
       ],
       "mint": {
         "calls": 78689,
-        "chain": "73b0c88c0c6ed9c6"
+        "chain": "cdc922a691157a75"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "Shor is on the sequence — quantum then lean then prove",
@@ -2460,12 +2429,13 @@
       ],
       "mint": {
         "calls": 146459,
-        "chain": "799da94010b75fbc"
+        "chain": "5780715a2e6b5b91"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "crypto_shor runs on the n and a it is given, whatever they are; no denial, no cap",
@@ -2520,7 +2490,7 @@
       ],
       "mint": {
         "calls": 993888,
-        "chain": "76482119de6ddee3"
+        "chain": "d9f8fb0ac3020db6"
       },
       "served": {
         "count": 6,
@@ -2530,7 +2500,8 @@
           "\"f44022c32d1c6af8\"",
           "\"54547d75baf469d0\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "exported values without a predicate never rise",
@@ -2573,12 +2544,13 @@
       ],
       "mint": {
         "calls": 18260,
-        "chain": "9d96ffb7d04587c4"
+        "chain": "f74a9f5a3de23623"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "gate: the instrument drains the known overclaims and passes the bounded refusals before it judges anything",
@@ -2621,12 +2593,13 @@
       ],
       "mint": {
         "calls": 18260,
-        "chain": "9d96ffb7d04587c4"
+        "chain": "f74a9f5a3de23623"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "gate: every string on root, lean, mcp catalog, server, tools/list, qpu_prove and crypto_shor passes the prose gate",
@@ -2669,12 +2642,13 @@
       ],
       "mint": {
         "calls": 301659,
-        "chain": "587aa9ede2e1e8f3"
+        "chain": "0ba2b1cc2b761352"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "gate: the vendored copy matches upstream when the sibling checkout is present",
@@ -2717,12 +2691,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "444134b9356c0a56"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "gate: the context window reaches past the match on both sides",
@@ -2765,12 +2740,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "e2224f13fd4368cb"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "shadcn schema combinatorial genesis covers all known frameworks",
@@ -2815,12 +2791,13 @@
       ],
       "mint": {
         "calls": 123154,
-        "chain": "ce38cd39683523c3"
+        "chain": "d66d0ee4f9a87066"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the sheet expresses every key genesis declares, and a browser can link to it",
@@ -2863,12 +2840,13 @@
       ],
       "mint": {
         "calls": 64513,
-        "chain": "4f6d3034a8a28f9f"
+        "chain": "b5178c471039e495"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the harness recipes carry the URL and the name, and initialize serves them",
@@ -2911,12 +2889,13 @@
       ],
       "mint": {
         "calls": 227790,
-        "chain": "0b7aaebd05ac322b"
+        "chain": "f8b2d5b9b0980286"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "measure hybrid storage speed and cost — kv faster costlier, r2 cheaper slower",
@@ -2932,12 +2911,13 @@
       "states": [],
       "mint": {
         "calls": 14,
-        "chain": "dc6514441df2cd2a"
+        "chain": "8cbd68f8d35929ed"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "QPU hybrid storage hosts the Payload database — four collections, secrets never",
@@ -2953,12 +2933,13 @@
       "states": [],
       "mint": {
         "calls": 310,
-        "chain": "c58e980085495b37"
+        "chain": "0ce4da53c013df5a"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage is native Alpine Linux — musl busybox overlayfs inodes, last link frees",
@@ -2974,12 +2955,13 @@
       "states": [],
       "mint": {
         "calls": 366,
-        "chain": "75b3793144d05713"
+        "chain": "72cd7ee6dce9aac9"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "hybrid theorems sit on Lean cover — docs stay seven",
@@ -3022,12 +3004,13 @@
       ],
       "mint": {
         "calls": 6454,
-        "chain": "039feecff9f181d7"
+        "chain": "dde0f7a72478342d"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "native Alpine inodes — referrer links, last unlink frees storage",
@@ -3070,12 +3053,13 @@
       ],
       "mint": {
         "calls": 96516,
-        "chain": "fda6076cad8dd33f"
+        "chain": "0cab435a396e655d"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "interactive installer seats QPU, Payload MCP, and VitePress payload without a ninth sealed tool",
@@ -3118,12 +3102,13 @@
       ],
       "mint": {
         "calls": 157944,
-        "chain": "36fbb63cfb57ea3c"
+        "chain": "cd4a23803272dde9"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "install select seats a combination in one call",
@@ -3166,12 +3151,13 @@
       ],
       "mint": {
         "calls": 23039,
-        "chain": "adcbb89bd55a39ce"
+        "chain": "741419b6452cb69f"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "qpuToolsOf stays eight sealed tools; install and Payload finds morph at call time",
@@ -3214,12 +3200,13 @@
       ],
       "mint": {
         "calls": 66833,
-        "chain": "44e1845575a9f904"
+        "chain": "d3d601e05dbcf125"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "fusion carries Payload MCP and the installer from harmonic schemas",
@@ -3259,12 +3246,13 @@
       ],
       "mint": {
         "calls": 2546,
-        "chain": "55b2bed10313643a"
+        "chain": "5278b17717989645"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "train dry-cleans occupancy — one pentagram, not a ninth tool",
@@ -3307,12 +3295,13 @@
       ],
       "mint": {
         "calls": 22393,
-        "chain": "10541698ecc2a9b3"
+        "chain": "d684dc7f244bcedc"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "ladder 1 — one gate, exact amplitudes",
@@ -3355,14 +3344,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "9fbcf9df330b79bd"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "ladder 2 — entanglement is not correlation",
@@ -3405,14 +3395,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "f23dc64ceb660e1b"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "ladder 3 — Shor: a period, then a gcd",
@@ -3455,14 +3446,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "8f5631f05f86f621"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "ladder 4 — a code corrects one flip",
@@ -3505,14 +3497,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "1a1f03ab6230f22f"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "every ladder test belongs to a served step",
@@ -3555,14 +3548,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "99668e33698fd6c5"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"cae925dbd7a96875\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the embedded Lean source is the file on disk, byte for byte, and GET serves it as text",
@@ -3605,12 +3599,13 @@
       ],
       "mint": {
         "calls": 56287,
-        "chain": "b98031421f8447b8"
+        "chain": "0fdad66361a17adb"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the lean dataset folds its source and every served theorem is in it verbatim",
@@ -3653,12 +3648,13 @@
       ],
       "mint": {
         "calls": 2787,
-        "chain": "2a6a753a1cd0ad6b"
+        "chain": "a85e598bf6c12382"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "qpu_prove carries the source fold and the receipts of its own Shor run",
@@ -3701,12 +3697,13 @@
       ],
       "mint": {
         "calls": 123607,
-        "chain": "1346bd6a28f24c52"
+        "chain": "d8ac87d1dcdd6474"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "index.lean is sorry-free, axiom-free, decide-free, and theorem shor carries no answer",
@@ -3749,12 +3746,13 @@
       ],
       "mint": {
         "calls": 637,
-        "chain": "6704be8bbddc56c7"
+        "chain": "8dbacd74bac0e862"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "each Lean identity has exactly one mirror here, and the crossing says which domains rest on it",
@@ -3797,12 +3795,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "90364b6adedfa25a"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the symmetric and asymmetric readings of each quantity prove one another, and coincide only at coins",
@@ -3845,12 +3844,13 @@
       ],
       "mint": {
         "calls": 17472,
-        "chain": "d2726e341a6467ae"
+        "chain": "897dba87cb0fe135"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "chat fetch is JSON quantum",
@@ -3871,7 +3871,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "chat calls tools/call",
@@ -3892,7 +3893,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "chat uses every sealed door",
@@ -3913,7 +3915,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "extras catalogs speak MCP JSON-RPC",
@@ -3934,7 +3937,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "no auth message proxy",
@@ -3955,7 +3959,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "live qpu.uuidna.com",
@@ -4002,7 +4007,7 @@
       ],
       "mint": {
         "calls": 2961474,
-        "chain": "a6b5549ebf6f871b"
+        "chain": "e2620a4940a3be04"
       },
       "served": {
         "count": 2,
@@ -4010,7 +4015,8 @@
           "\"53c1ecacc3318cc7\"",
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds",
@@ -4067,12 +4073,13 @@
       ],
       "mint": {
         "calls": 397635,
-        "chain": "481d0f1c693c7cf8"
+        "chain": "8ee4a0d4df750bae"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "eight doors via mcp",
@@ -4119,12 +4126,13 @@
       ],
       "mint": {
         "calls": 2361257,
-        "chain": "f78e700500baddd0"
+        "chain": "fb7da0f433655777"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "web mcp initialize, extras catalogs, and morph tools are callable",
@@ -4167,7 +4175,7 @@
       ],
       "mint": {
         "calls": 1336425,
-        "chain": "0d0140853c196790"
+        "chain": "010d7698b362faf7"
       },
       "served": {
         "count": 10,
@@ -4182,7 +4190,8 @@
           "\"9757f65c4dea3a50\"",
           "\"58b38d7e20f48a74\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "CORS initialize ping and GET catalog",
@@ -4203,7 +4212,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "listed tools expose schema man and envelope",
@@ -4224,7 +4234,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "extras catalogs list eight and run every tool",
@@ -4245,7 +4256,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage RAID lifecycle via MCP",
@@ -4266,7 +4278,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "network lanes via MCP",
@@ -4287,7 +4300,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "server jobs via MCP",
@@ -4308,7 +4322,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "payload finds and installer via MCP",
@@ -4329,7 +4344,8 @@
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "production grade MCP — every tool listed, called, and usable",
@@ -4374,7 +4390,7 @@
       ],
       "mint": {
         "calls": 2846428,
-        "chain": "d2f10b18fb78a6ed"
+        "chain": "0ece12bef9cda9a8"
       },
       "served": {
         "count": 18,
@@ -4398,7 +4414,8 @@
           "\"9757f65c4dea3a50\"",
           "\"58b38d7e20f48a74\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "protocol errors are JSON-RPC errors, an unknown tool is an error, and a job says its result is inline",
@@ -4441,14 +4458,15 @@
       ],
       "mint": {
         "calls": 176154,
-        "chain": "25c8822f17c2517c"
+        "chain": "5dc759c54bd2bb64"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"2b5bc0c3d71540b0\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the catalog says sixteen, a job says how its gates were read, shots say they are enumerated, and the words are served",
@@ -4506,7 +4524,7 @@
       ],
       "mint": {
         "calls": 65994,
-        "chain": "08ac6de42e4b4a7e"
+        "chain": "7df8df8750f2ae77"
       },
       "served": {
         "count": 2,
@@ -4514,7 +4532,8 @@
           "\"53c1ecacc3318cc7\"",
           "\"528420be3c6a9286\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "initialize echoes a supported protocol version and never invents one",
@@ -4557,12 +4576,13 @@
       ],
       "mint": {
         "calls": 28070,
-        "chain": "9d515c4ce0b0888a"
+        "chain": "b3dc5187b083d2ff"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "every listed tool carries an output schema read from its own replies, and a held-out reply validates against it",
@@ -4609,7 +4629,7 @@
       ],
       "mint": {
         "calls": 375657,
-        "chain": "37c66d3f8d614876"
+        "chain": "3bacca367280c923"
       },
       "served": {
         "count": 17,
@@ -4632,7 +4652,8 @@
           "\"833c65e115042b04\"",
           "\"d31c0458e913d7ee\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a reply carries its payload twice, as text and as structure, and links only to a page that returns the same document",
@@ -4677,7 +4698,7 @@
       ],
       "mint": {
         "calls": 884027,
-        "chain": "bba39dc5b43904c9"
+        "chain": "9a803a87928dac8c"
       },
       "served": {
         "count": 13,
@@ -4696,7 +4717,8 @@
           "\"d31c0458e913d7ee\"",
           "\"833c65e115042b04\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "documents are served once per isolate: memoized bytes equal a fresh construction, and an ETag answers with 304",
@@ -4739,7 +4761,7 @@
       ],
       "mint": {
         "calls": 185932,
-        "chain": "9d0c3031c59c83e5"
+        "chain": "0f70e94e5c993bd9"
       },
       "served": {
         "count": 10,
@@ -4751,7 +4773,8 @@
           "\"53c1ecacc3318cc7\"",
           "\"f44022c32d1c6af8\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a single plane of 4n numbers is fewer than an entangled register needs at n = rays",
@@ -4793,12 +4816,13 @@
       ],
       "mint": {
         "calls": 1360,
-        "chain": "90a0755af06d9761"
+        "chain": "00d3033965fae8d6"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the fold holds what the plane cannot: a 7-qubit GHZ state, support |0000000> and |1111111>, receipted",
@@ -4840,12 +4864,13 @@
       ],
       "mint": {
         "calls": 2720,
-        "chain": "940773650f792b95"
+        "chain": "313f18172af58e29"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "an ABSENT run is UNMEASURED and never a pass — the shape that reported a deploy that had not happened",
@@ -4888,12 +4913,13 @@
       ],
       "mint": {
         "calls": 18260,
-        "chain": "9d96ffb7d04587c4"
+        "chain": "f74a9f5a3de23623"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a run on ANOTHER commit answers for that commit, not this one",
@@ -4936,12 +4962,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "a7bb3cedd21b4f91"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "only a push judges a push — a schedule on the same commit is reported and never counted",
@@ -4984,12 +5011,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "1874299f09933e3c"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a still-running workflow is pending — patience is not a verdict",
@@ -5032,12 +5060,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "4023546d125132d9"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "every run declining to judge is UNMEASURED, not clean",
@@ -5080,12 +5109,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "953223c8edcf9874"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a failing workflow is named with its conclusion, and green is green",
@@ -5128,12 +5158,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "50f1a06eb97217c1"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a sha too short to name a commit is refused rather than guessed at",
@@ -5176,12 +5207,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "599cba1e68f6856c"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "an unindexed commit is told apart from a forge that cannot be asked at all",
@@ -5224,12 +5256,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "1dadcbd5ce450009"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a push that reported success while the remote sits elsewhere is NOTHING LANDED, not patience",
@@ -5272,12 +5305,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "ea7347f62abadea4"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit holds via mcp",
@@ -5320,12 +5354,13 @@
       ],
       "mint": {
         "calls": 94663,
-        "chain": "0fdeaab9ff0a7158"
+        "chain": "978940617e6e18b3"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit carries no typed vm label via mcp",
@@ -5368,14 +5403,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "e6d466a9c6e601b6"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit primitives via mcp",
@@ -5418,14 +5454,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "9350594bb5070eac"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit qubits via mcp",
@@ -5468,14 +5505,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "eb8f4619672d991a"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit dim via mcp",
@@ -5518,14 +5556,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "c0e68f8563f3f670"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit levels via mcp",
@@ -5568,14 +5607,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "7b7830c74437d5ce"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit gates via mcp",
@@ -5618,14 +5658,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "f86da8d27f4ebf84"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit gates index via mcp",
@@ -5668,14 +5709,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "ead44bd753e5ba32"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit measurement via mcp",
@@ -5718,14 +5760,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "b505bea32fb5a788"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit measurement support via mcp",
@@ -5768,14 +5811,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "3f336fd939f826e6"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit noise via mcp",
@@ -5818,14 +5862,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "1584f35da48ddf5c"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "circuit device steps via mcp",
@@ -5868,112 +5913,15 @@
       ],
       "mint": {
         "calls": 5604,
-        "chain": "7305fdeb71fcfcca"
+        "chain": "d11fc9fd83f13c03"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"ed73e177fb63ad32\""
         ]
-      }
-    },
-    {
-      "name": "circuit lean via mcp",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 39862,
-      "kinds": {
-        "x": 8171,
-        "cnot": 15568,
-        "toffoli": 1118,
-        "h": 14278,
-        "measure": 559,
-        "cmodexp": 80,
-        "xx": 80,
-        "planes": 8
       },
-      "dims": {
-        "8": 39638,
-        "128": 64,
-        "512": 160
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "3f34f42eaa382d74",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 559
-        }
-      ],
-      "mint": {
-        "calls": 740133,
-        "chain": "11d07be4f746096c"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
-    },
-    {
-      "name": "circuit ui via mcp",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 6739,
-      "kinds": {
-        "x": 1457,
-        "cnot": 2800,
-        "toffoli": 236,
-        "h": 2060,
-        "measure": 118,
-        "cmodexp": 34,
-        "xx": 34
-      },
-      "dims": {
-        "8": 6671,
-        "512": 68
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "5ccf8fd5df39eba2",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 118
-        }
-      ],
-      "mint": {
-        "calls": 141697,
-        "chain": "cebdedbd879e964a"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      }
+      "foreign": 0
     },
     {
       "name": "start measure generate",
@@ -6016,7 +5964,7 @@
       ],
       "mint": {
         "calls": 89549,
-        "chain": "89c91aea1b1ce2ef"
+        "chain": "be87577a9832918e"
       },
       "served": {
         "count": 3,
@@ -6025,7 +5973,8 @@
           "\"528420be3c6a9286\"",
           "\"ed73e177fb63ad32\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "raid starts cheapest and covers all",
@@ -6068,12 +6017,13 @@
       ],
       "mint": {
         "calls": 143888,
-        "chain": "39998bf956472add"
+        "chain": "58e950f69ddb2e8c"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage: the catalog walk is bounded by pages, and says when it stopped short",
@@ -6116,12 +6066,13 @@
       ],
       "mint": {
         "calls": 5864,
-        "chain": "ad4cda76712089a4"
+        "chain": "2ba1b742842681fc"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage: the catalog costs the same whether the store holds ten keys or a thousand",
@@ -6164,12 +6115,13 @@
       ],
       "mint": {
         "calls": 6614,
-        "chain": "e5e874074bff7385"
+        "chain": "090dc97e6931e154"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage: maintain repairs what is broken and does not read what is not",
@@ -6212,12 +6164,13 @@
       ],
       "mint": {
         "calls": 11652,
-        "chain": "e0bdc1d8e79fce22"
+        "chain": "04db368697cc3e42"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "raid: striping inverts across every residue of length against rays, up to faces",
@@ -6233,12 +6186,13 @@
       "states": [],
       "mint": {
         "calls": 6,
-        "chain": "4590085e1e3335ba"
+        "chain": "ab03e735fee7b2fd"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage: a write that could not place every slot says which ones, and does not claim to hold",
@@ -6281,12 +6235,13 @@
       ],
       "mint": {
         "calls": 5808,
-        "chain": "fc8fec9cf081ede3"
+        "chain": "8836b035aadef658"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "storage: every door costs what the baseline says, on an empty store and a full one",
@@ -6329,12 +6284,13 @@
       ],
       "mint": {
         "calls": 46990,
-        "chain": "05c2dac6c82347c5"
+        "chain": "5b6f96731c19652f"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "raid: the deposit cost rests on two redundancy facts, and both are proved here",
@@ -6350,12 +6306,13 @@
       "states": [],
       "mint": {
         "calls": 12,
-        "chain": "e4a186b7d297aed5"
+        "chain": "13da5f506f077c35"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "reach: the climb to the width ceiling holds at every step, and its receipt is the same on every host",
@@ -6413,12 +6370,13 @@
       ],
       "mint": {
         "calls": 10177,
-        "chain": "d7b33dd707bf1c9e"
+        "chain": "a2bc1ca8e355fcf3"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the seat is READ from this runtime, and the reference answers when nothing else is exposed",
@@ -6461,12 +6419,13 @@
       ],
       "mint": {
         "calls": 9273,
-        "chain": "488b9eaac12c4ac4"
+        "chain": "0efeae122e5e77ad"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "a referrer is named by host, an unknown path falls back to a served door, and a known one is kept",
@@ -6509,12 +6468,13 @@
       ],
       "mint": {
         "calls": 30822,
-        "chain": "166fd804b109c3e7"
+        "chain": "87d3004d80373ea4"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "every answer names the seat it was computed on and the door that answered",
@@ -6557,14 +6517,15 @@
       ],
       "mint": {
         "calls": 98910,
-        "chain": "cb86f8e3a3fa9bb2"
+        "chain": "b8cc177d08b052e8"
       },
       "served": {
         "count": 1,
         "folds": [
           "\"a556d2580af73a0b\""
         ]
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the coordination block states the routing law a client needs before its first call",
@@ -6607,12 +6568,13 @@
       ],
       "mint": {
         "calls": 157320,
-        "chain": "d615c504efdd75e2"
+        "chain": "cdfb643305d508bd"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the vector occupant agreed with the reference exactly, and its refusal is recorded as a refusal",
@@ -6655,12 +6617,13 @@
       ],
       "mint": {
         "calls": 17393,
-        "chain": "1e625156ddd29507"
+        "chain": "cae849b1d2138380"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "sandbox via mcp",
@@ -6705,12 +6668,13 @@
       ],
       "mint": {
         "calls": 838946,
-        "chain": "5d9c8b386db1df3d"
+        "chain": "dcb9f020125478e2"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "the walk visits every face once, scanner then radar, and returns by the involution",
@@ -6753,12 +6717,13 @@
       ],
       "mint": {
         "calls": 5508,
-        "chain": "fe906ccae6a3c09c"
+        "chain": "557b9458ccd7b335"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "with every face holding, the seat is 0, todo is empty, and next is the radar of ray 0",
@@ -6801,12 +6766,13 @@
       ],
       "mint": {
         "calls": 9282,
-        "chain": "29f663c7540e454e"
+        "chain": "b0a6a1cb7d80015f"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     },
     {
       "name": "qpu_train serves the steps, and the MCP reply carries them",
@@ -6851,12 +6817,13 @@
       ],
       "mint": {
         "calls": 301760,
-        "chain": "579dba81ac16354d"
+        "chain": "fc72d3c34368fb8a"
       },
       "served": {
         "count": 0,
         "folds": []
-      }
+      },
+      "foreign": 0
     }
   ]
 }

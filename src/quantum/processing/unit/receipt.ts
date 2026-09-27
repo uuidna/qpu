@@ -4,7 +4,8 @@
 // appends each test's ledger slice and readings to test-receipts.jsonl from inside the test process. This reporter
 // folds that file into two artifacts:
 //   test-receipt.json  — the PROOF: names, pass/fail, amplitude folds, mint chains, kinds. Deterministic; committed.
-//   test-readings.json — the READINGS: wall time per test, temperature (measured or unmeasured, said which), and the
+//   test-readings.json — the READINGS: wall time per test, temperature (measured or unmeasured, said which), every
+//                        row that asked a host this tree does not own, and the
 //                        cracks those readings name — an unresolved clock, an unmeasured thermometer. Gitignored.
 // A top-level test with no computation, no mintOf call and no memo-served document is dry, and a dry test FAILS the
 // run. Recomputable: re-run and the proof returns byte for byte.
@@ -16,7 +17,7 @@ import { qpuFoldOf } from './index.js'
 import { receiptsFileOf, type TestReceipt } from './receipted.js'
 
 interface TestEvent { type: string; data: { name?: string; file?: string; nesting?: number; details?: { error?: { message?: string } } } }
-interface Row { name: string; file: string; nesting: number; pass: boolean; computations: number; kinds: Record<string, number>; dims: Record<string, number>; dim: string; qubits: number; receipt: string; states: TestReceipt['states']; mint: { calls: number; chain: string }; served: { count: number; folds: string[] } }
+interface Row { name: string; file: string; nesting: number; pass: boolean; computations: number; kinds: Record<string, number>; dims: Record<string, number>; dim: string; qubits: number; receipt: string; states: TestReceipt['states']; mint: { calls: number; chain: string }; served: { count: number; folds: string[] }; foreign: number }
 
 /** This run's receipts: the file workers wrote under this process's pid, or, when tests ran in this very process
  * (--test-isolation=none), the one written under its parent. Never another run's. */
@@ -50,10 +51,10 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     })
   }
   const receipts = receiptsOf()
-  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, served: { count: 0, folds: [] }, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' } } }
+  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, served: { count: 0, folds: [] }, foreign: 0, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' } } }
   const rows: Row[] = events.map((e) => {
     const got = receipts.get(e.name) ?? none
-    return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, dims: got.dims, dim: got.dim, qubits: got.qubits, receipt: got.receipt, states: got.states, mint: got.mint, served: got.served ?? { count: 0, folds: [] } }
+    return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, dims: got.dims, dim: got.dim, qubits: got.qubits, receipt: got.receipt, states: got.states, mint: got.mint, served: got.served ?? { count: 0, folds: [] }, foreign: got.foreign ?? 0 }
   })
   const failed = events.filter((e) => !e.pass)
   for (const f of failed) {
@@ -71,10 +72,41 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
   const mintOnly = rows.filter((r) => r.nesting === 0 && r.computations === 0 && r.mint.calls > 0).length
   const largest = rows.reduce((top, r) => (r.qubits > top.qubits ? r : top), { dim: '0', qubits: 0, name: '' } as Pick<Row, 'dim' | 'qubits' | 'name'>)
   const sorted = [...rows].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
-  const fold = qpuFoldOf(sorted.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}:${r.served.folds.join(',')}`).join('\u0000'))
+  /**
+   * THE PROOF FOLDS WHAT THIS TREE COMPUTED. WHAT A THIRD PARTY SAID IS A READING.
+   *
+   * The standard here is that two honest runs fold to the same receipt, and `npm run proof` enforces it by asking
+   * git whether the file moved. That held for time and temperature, which were moved to readings on day one, and
+   * it did not hold for the network.
+   *
+   * MEASURED, not argued. The suite was run with opendata.cern.ch forced into each of the four shapes a third
+   * party actually fails in — connection refused, 503, a 200 carrying a captive portal's HTML, and a socket that
+   * hangs to the deadline — and then three times in one fixed condition. Within a condition the fold is stable to
+   * the byte. Across conditions exactly five of a hundred and sixty-two rows moved, and every one of them had
+   * called a foreign door: when CERN answers, the readers build documents and mint doublings that a refused run
+   * never builds. The receipt was not wrong; it was faithfully recording that less computation happened.
+   *
+   * So it cannot be both a fold of the computation performed and invariant under someone else's weather, and
+   * `npm run proof` was asking for the second while the file delivered the first. It rejected two pushes that way,
+   * naming this repository for something that had not happened here.
+   *
+   * The split is the three-state law applied to the receipt itself. A row that asked nobody is computed, and it is
+   * the proof. A row that asked somebody records what that host did or did not say, which is not decidable here,
+   * and it folds separately into `reading` — reported in full, gated by nothing. Both folds are written, so a run
+   * that quietly stops reaching CERN is still visible; it simply is not a build failure.
+   *
+   * Served folds are on the reading side for the same reason, and dryness is judged before the split so a test
+   * cannot escape the dry-clean by talking to a host instead of computing.
+   */
+  const computed = sorted.filter((r) => r.foreign === 0)
+  const read = sorted.filter((r) => r.foreign > 0)
+  const fold = qpuFoldOf(computed.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}`).join('\u0000'))
+  const reading = qpuFoldOf(read.map((r) => `${r.name}:${r.pass}:${r.receipt}:${r.mint.chain}:${r.served.folds.join(',')}`).join('\u0000'))
+  const foreignReads = rows.reduce((acc, r) => acc + r.foreign, 0)
   const proof = {
     kind: 'test-receipt',
-    standard: 'every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds; the proof is deterministic; time and temperature are readings in test-readings.json',
+    standard:
+      'every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings',
     tests: rows.length,
     pass,
     fail: rows.length - pass,
@@ -85,8 +117,18 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     dim: largest.dim,
     qubits: largest.qubits,
     receipt: fold,
-    readings: 'test-readings.json',
-    rows,
+    /* HOW MANY ROWS THE PROOF COVERS AND HOW MANY IT SET ASIDE. Both counts are properties of the suite — which
+     * tests call a foreign door — and not of the network, so they belong here. How MANY TIMES those doors were
+     * asked is not: a refused reading retries where a read one does not, and the count moved 87 to 205 between a
+     * reached run and a blocked one. It lives in the readings with everything else that the weather decides. */
+    computed: computed.length,
+    readRows: read.length,
+    readingsOf: 'test-readings.json',
+    /* AND ONLY THE COMPUTED ROWS. The fold was split and the FILE was not, so `npm run proof` — which diffs the
+     * whole artifact, not the fold — still went red under an outage: three foreign rows carried the computations
+     * and mint chains a reached run performed, right there in the committed file beside a fold that no longer
+     * depended on them. A gate reads the file. The split has to reach the file. */
+    rows: rows.filter((r) => r.foreign === 0),
   }
   writeFileSync(join(process.cwd(), 'test-receipt.json'), `${JSON.stringify(proof, null, 2)}\n`)
   // readings: measured, per test, never folded, never committed
@@ -99,7 +141,17 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
   // THE SLOWEST SUPERPOSITION, NAMED BY ITS OWN CLOCK (session experience, 2026-09-12: a 2h30m certification was traced
   // to one line only after per-test durations existed; a name, a size or a failure message had each pointed elsewhere).
   const slowest = [...timed].sort((a, b) => b.time.ns - a.time.ns || (a.name < b.name ? -1 : 1)).slice(0, 3).map((r) => ({ name: r.name, ns: r.time.ns }))
-  const readings = { kind: 'test-readings', receipt: fold, time: { totalNs, unit: 'ns', clock: 'process.hrtime' }, temperature: timed[0]?.temperature ?? none.readings.temperature, cracks, slowest, rows: timed }
+  const readings = {
+    kind: 'test-readings',
+    receipt: fold,
+    time: { totalNs, unit: 'ns', clock: 'process.hrtime' },
+    temperature: timed[0]?.temperature ?? none.readings.temperature,
+    cracks,
+    slowest,
+    /** what the hosts this tree does not own said this run, folded apart and reported in full, gated by nothing */
+    foreign: { fold: reading, reads: foreignReads, rows: rows.filter((r) => r.foreign > 0) },
+    rows: timed,
+  }
   writeFileSync(join(process.cwd(), 'test-readings.json'), `${JSON.stringify(readings, null, 2)}\n`)
   if (dry.length > 0 || failed.length > 0) process.exitCode = 1
   yield failed.length === 0 && dry.length === 0
