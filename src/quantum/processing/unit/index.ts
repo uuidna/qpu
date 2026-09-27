@@ -9765,7 +9765,12 @@ let cernExperience: { value: Awaited<ReturnType<typeof qpuCernLiveOf>>; at: numb
 
 const qpuCernExperienceOf = async () => {
   const held = cernExperience?.value.holds === true && cernExperience.value.learn.holds === true
-  const fresh = cernExperience !== undefined && Date.now() - cernExperience.at < tenOf(qpuCubeOf().hexbit)
+  /* THE WINDOW MUST OUTLIVE THE COST OF A MISS, or the cache amortises nothing. It was one deadline, exactly
+   * the time a hung host takes to miss — so consecutive callers arrived at the boundary and whether each was
+   * served or re-read came down to scheduling. Locally the cern test took 11s under a hang; on a runner the
+   * coin landed the other way often enough to pass the 120s budget and be cancelled, which is how a bound that
+   * is equal to what it bounds behaves. Two deadlines is strictly greater than one, which is the whole rule. */
+  const fresh = cernExperience !== undefined && Date.now() - cernExperience.at < tenOf(qpuCubeOf().hexbit) * coins
   if (cernExperience && (held || fresh)) return cernExperience.value
   cernExperience = { value: await qpuCernLiveOf(), at: Date.now() }
   return cernExperience.value

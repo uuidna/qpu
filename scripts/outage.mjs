@@ -100,10 +100,13 @@ const runOf = (dir, name, env) => {
      * broke sends the reader back to reproduce it, which is the job the guard was supposed to have done. */
     const log = String(error?.stdout ?? '') + String(error?.stderr ?? '')
     writeFileSync(out, log)
-    const said = log
-      .split('\n')
-      .filter((line) => /✖|not ok|timed out|cancelled|Error|AssertionError|^ℹ (fail|cancelled)/.test(line))
-      .slice(0, 12)
+    /* ✗ AND ✖ ARE DIFFERENT CHARACTERS. The filter carried only the heavy one; the receipt reporter emits the
+     * ballot one, so the first failure this printed for came out as a blank line under a ✗ — the reporting gap
+     * this block was written to close, reopened one codepoint down. And a filter that matches nothing falls back
+     * to the tail: an unrecognised failure is the one most worth reading, not the one worth hiding. */
+    const lines = log.split('\n').filter((line) => line.trim() !== '')
+    const picked = lines.filter((line) => /[✗✖]|not ok|timed out|cancelled|Error|AssertionError|^ℹ (fail|cancelled)/.test(line))
+    const said = (picked.length > 0 ? picked : lines).slice(-12)
     return { name, ok: false, why: `the suite did not complete`, said }
   }
   const text = readFileSync('test-receipt.json', 'utf8')
