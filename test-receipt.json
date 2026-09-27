@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 166,
-  "pass": 166,
+  "tests": 167,
+  "pass": 167,
   "fail": 0,
   "dry": 0,
   "circuit": 119,
-  "mintOnly": 17,
+  "mintOnly": 18,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "8b15067a7b471e4c",
-  "computed": 162,
+  "receipt": "1c44f338a7ca33a0",
+  "computed": 163,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -6713,6 +6713,28 @@
       "mint": {
         "calls": 18,
         "chain": "88f69289e9c7b90d"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the seating is maximal: a ray may not stand empty while a pair is turned away",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 6,
+        "chain": "ab03e735fee7b2fd"
       },
       "served": {
         "count": 0,

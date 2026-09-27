@@ -84,7 +84,8 @@ test('the seating is ordered by the evidence, and a crowded lattice is a finding
     cite(name, `${name}-domain`, 'theory to practice', year + 1),
   ]
 
-  // THE ORDER IS NOT THE AUTHOR'S. Declared late, cited early: it takes the first ray.
+  // THE ORDER IS NOT THE AUTHOR'S. Declared late, cited early: with no contest between them, evidence decides
+  // the ray, which is the tie-break doing its job rather than the rule doing it.
   const ordered = qpuTeachingSeatingOf(qpuTeachingPairsOf([...pairOf('late', 1990), ...pairOf('early', 1600)]))
   assert.equal(ordered.seated[0]?.subject, 'early')
   assert.equal(ordered.seated[1]?.subject, 'late')
@@ -113,6 +114,45 @@ test('the seating is ordered by the evidence, and a crowded lattice is a finding
 })
 
 const coinsOf = () => qpuFacesOf().coins
+
+test('the seating is maximal: a ray may not stand empty while a pair is turned away', () => {
+  const faces = qpuFacesOf()
+  const both = (subject: string, domain: string, year: number) => [
+    cite(subject, domain, 'practice to theory', year),
+    cite(subject, domain, 'theory to practice', year + 1),
+  ]
+
+  /**
+   * THE FAULT THE CROSSED CORPUS EXPOSED, as a fixture.
+   *
+   * `wide` is entangled with two domains and `narrow` with only `shared`. Taking pairs in order of evidence
+   * and seating whatever still fits gives `shared` to `wide`, because its citation is older — and then
+   * `narrow` has nowhere to go and a ray stands empty. Seating `wide` with `only` instead holds both.
+   *
+   * Measured on the real corpus before this was fixed: sports took mechanics on a 1672 citation, circus was
+   * left with no seat at all, and ray 6 was vacant. A rule that turns a pair away AND leaves a ray free has
+   * not run out of room, it has chosen badly, and nothing in the seating noticed because nothing asked.
+   */
+  const contested = qpuTeachingSeatingOf(qpuTeachingPairsOf([...both('wide', 'shared', 1600), ...both('wide', 'only', 1700), ...both('narrow', 'shared', 1800)]))
+  assert.equal(contested.seated.length, 2, 'both pairs are held, which greedy could not do')
+  assert.equal(contested.vacant.length, faces.rays - 2)
+  assert.deepEqual(
+    contested.seated.map((row) => `${row.subject}/${row.domain}`).sort(),
+    ['narrow/shared', 'wide/only'],
+    'the older citation yields its domain, because keeping it would seat one pair instead of two',
+  )
+
+  /* THE PROPERTY, not the instance: no turned-away pair has both of its names still free, unless the lattice
+   * is genuinely full. That is what maximal means, and it is what greedy silently failed. */
+  for (const row of contested.crowded) {
+    assert.ok(
+      contested.seated.some((held) => held.subject === row.subject || held.domain === row.domain),
+      `${row.subject}/${row.domain} was turned away with both seats free`,
+    )
+    assert.ok(row.why.length > 0, 'and it is told why, which "no room" would not have been')
+  }
+  assert.equal(qpuTeachingSeatingHolds(contested), true)
+})
 
 test('the census accounts for every pair the seats admit, and loses none', (t) => {
   const census = qpuTeachingCensusOf()

@@ -8417,6 +8417,64 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
   { subject: 'literature', domain: 'statistics', direction: 'theory to practice', year: 1964,
     what: 'stylometry settled disputed authorship of the Federalist papers; the study of literature did not contribute the inference',
     source: 'Mosteller and Wallace, Inference in an authorship problem, JASA 58 (1963)' },
+  /* CROSSINGS. The first corpus evidenced one domain per subject, so seventy-one of eighty-one combinations
+   * read UNDECIDED and the grid was a diagonal wearing a matrix's clothes. These cross the vocabulary it
+   * already has — no new subject and no new domain, because adding either GROWS the grid faster than a
+   * citation shrinks it. Mixed on purpose: several close the swap and several do not, and a corpus in which
+   * every crossing came out entangled would be confirming whatever it was handed. */
+  { subject: 'music', domain: 'acoustics', direction: 'practice to theory', year: 1787,
+    what: 'Chladni set plates ringing and drew the nodal figures, working from the instrument-making practice of tuning plates by ear and eye',
+    source: 'Chladni, Entdeckungen \u00fcber die Theorie des Klanges (1787)' },
+  { subject: 'music', domain: 'acoustics', direction: 'theory to practice', year: 1962,
+    what: 'modal analysis of free violin plates is taught back to makers as a way to tune a top and back before assembly',
+    source: 'Hutchins, The physics of violins, Scientific American 207(5) 1962' },
+  { subject: 'sports', domain: 'mechanics', direction: 'practice to theory', year: 1672,
+    what: 'Newton remarked on the curved flight of a struck tennis ball, taking the phenomenon from players who had been using it',
+    source: 'Newton, letter to Oldenburg, Phil. Trans. 7 (1672)' },
+  { subject: 'sports', domain: 'mechanics', direction: 'theory to practice', year: 1985,
+    what: 'ball aerodynamics — seam, dimple and surface roughness — is now how balls are designed and how swing is coached',
+    source: 'Mehta, Aerodynamics of sports balls, Annu. Rev. Fluid Mech. 17 (1985)' },
+  { subject: 'arts and crafts', domain: 'mechanics', direction: 'practice to theory', year: 1966,
+    what: 'masons built arches and vaults to proportional rules for centuries, and limit analysis explained afterwards why those rules stand up',
+    source: 'Heyman, The stone skeleton, Int. J. Solids Struct. 2(2) 1966' },
+  { subject: 'arts and crafts', domain: 'mechanics', direction: 'theory to practice', year: 1995,
+    what: 'the same limit analysis is taught to conservation engineers as how to judge and repair a masonry structure',
+    source: 'Heyman, The Stone Skeleton: Structural Engineering of Masonry Architecture (1995)' },
+  { subject: 'cooking', domain: 'statistics', direction: 'practice to theory', year: 1946,
+    what: 'the triangle test was devised at a brewery to decide whether two batches differ, a design problem that came out of tasting rather than out of statistics',
+    source: 'Helm and Trolle, Selection of a taste panel, Wallerstein Lab. Commun. 9 (1946)' },
+  { subject: 'cooking', domain: 'statistics', direction: 'theory to practice', year: 1983,
+    what: 'sensory difference testing is now standardised and taught to food producers as method',
+    source: 'ISO 4120, Sensory analysis \u2014 triangle test' },
+  { subject: 'gardening', domain: 'biochemistry', direction: 'practice to theory', year: 1840,
+    what: 'Liebig built the mineral theory of plant nutrition out of what farmers were already doing to soil, and named what the practice was consuming',
+    source: 'Liebig, Die organische Chemie in ihrer Anwendung auf Agricultur und Physiologie (1840)' },
+  { subject: 'gardening', domain: 'biochemistry', direction: 'theory to practice', year: 1843,
+    what: 'the same chemistry came back as fertiliser regimes and the long-term nutrient trials that test them',
+    source: 'Lawes and Gilbert, Rothamsted Broadbalk experiment, begun 1843' },
+  { subject: 'arts and crafts', domain: 'biochemistry', direction: 'practice to theory', year: 1999,
+    what: 'the woad vat is a bacterial reduction of indigo that dyers ran and maintained for centuries before the organism responsible was isolated and named',
+    source: 'Padden et al., Clostridium used in mediaeval dyeing, FEMS Microbiol. Lett. 131 (1998)' },
+
+  { subject: 'sports', domain: 'statistics', direction: 'theory to practice', year: 1977,
+    what: 'record-keeping was turned into inference and changed how players are valued and teams assembled; the inference did not come from sport',
+    source: 'James, Baseball Abstract (1977)' },
+  { subject: 'sports', domain: 'materials science', direction: 'theory to practice', year: 1979,
+    what: 'a running track was designed from a model of leg compliance to return energy to the runner, and it worked as predicted',
+    source: 'McMahon and Greene, The influence of track compliance on running, J. Biomech. 12 (1979)' },
+  { subject: 'music', domain: 'statistics', direction: 'theory to practice', year: 2006,
+    what: 'statistical description of large score corpora gave musicology a way to state stylistic claims that can be checked',
+    source: 'Huron, Sweet Anticipation: Music and the Psychology of Expectation (2006)' },
+  { subject: 'circus', domain: 'biomechanics', direction: 'theory to practice', year: 2013,
+    what: 'load and joint-force measurement is used to set aerial and acrobatic training limits and to shorten returns from injury',
+    source: 'Shrier et al., Injury patterns and rates in Cirque du Soleil, Clin. J. Sport Med. 19 (2009)' },
+  { subject: 'history', domain: 'statistics', direction: 'theory to practice', year: 1974,
+    what: 'cliometrics brought econometric inference to historical records and settled questions narrative could not',
+    source: 'Fogel and Engerman, Time on the Cross (1974)' },
+  { subject: 'gardening', domain: 'radiocarbon dating', direction: 'theory to practice', year: 1971,
+    what: 'dating charred seed and grain gave agriculture a chronology of its own origins that cultivation practice could not supply',
+    source: 'Renfrew, Palaeoethnobotany (1973)' },
+
   { subject: 'arts and crafts', domain: 'topology', direction: 'practice to theory', year: 1877,
     what: 'Tait tabulated knots by working from knots people tied, and the tables long preceded any account that could be taught back to a maker',
     source: 'Tait, On knots, Trans. Roy. Soc. Edinburgh 28 (1877)' },
@@ -8485,7 +8543,48 @@ export const qpuTeachingSeatingOf = (read = qpuTeachingPairsOf()) => {
   const earned = read.pairs
     .filter((row) => row.swap === 'entangled')
     .sort((a, b) => (a.earliest ?? n - n) - (b.earliest ?? n - n) || (a.subject < b.subject ? -seed : seed))
-  const seated = earned.slice(n - n, faces.rays).map((row, ray) => ({
+  /* A NAME HOLDS ONE SEAT. The first version seated pairs and nothing else, so a subject entangled with two
+   * domains took two of the seven subject seats and the same name appeared on two faces — which is not a
+   * seating, it is a list. Fourteen faces hold fourteen names, so this is a matching: a ray takes a subject and
+   * a domain that are both still free, and a pair whose subject or whose domain is already seated is turned
+   * away WITH THE REASON. "No room" and "its partner is spoken for" are different facts and a reader can act on
+   * only the second, by asking which of the two pairs the ray should hold. */
+  /**
+   * A MAXIMUM MATCHING, BECAUSE GREEDY LEAVES RAYS EMPTY WHILE PAIRS WAIT.
+   *
+   * A name holds one seat: fourteen faces carry fourteen names, so this is a matching between subjects and
+   * domains and not a list. Taking pairs in order of evidence and seating whatever still fits is the obvious
+   * rule and it is wrong, which only became visible once the corpus crossed its own vocabulary. Measured on
+   * it: sports took mechanics on a 1672 citation, which left circus — entangled with mechanics and nothing
+   * else — with no seat at all, while ray 6 stood empty. Seating sports with biomechanics instead holds both.
+   * A rule that turns a pair away AND leaves a ray vacant has not run out of room; it has chosen badly.
+   *
+   * So the seating is the largest set of pairs that can be held at once, by augmenting paths, with the order
+   * of evidence as the tie-break rather than as the rule — it decides between equally large matchings and
+   * nothing else. Oldest first, so the tie-break is a fact about the evidence and not a preference.
+   */
+  const bySubject = new Map<string, typeof earned>()
+  for (const row of earned) bySubject.set(row.subject, [...(bySubject.get(row.subject) ?? []), row])
+  const heldBy = new Map<string, string>()
+  const augment = (subject: string, seen: Set<string>): boolean => {
+    for (const row of bySubject.get(subject) ?? []) {
+      if (seen.has(row.domain)) continue
+      seen.add(row.domain)
+      const holder = heldBy.get(row.domain)
+      if (holder === undefined || augment(holder, seen)) {
+        heldBy.set(row.domain, subject)
+        return true
+      }
+    }
+    return false
+  }
+  const order = [...new Set(earned.map((row) => row.subject))]
+  for (const subject of order) augment(subject, new Set<string>())
+  const matched = earned.filter((row) => heldBy.get(row.domain) === row.subject)
+  /* One pair per subject even inside the matching, and then the lattice's own limit: seven rays. */
+  const once = matched.filter((row, i) => matched.findIndex((other) => other.subject === row.subject) === i)
+  const taken = once.slice(n - n, faces.rays)
+  const seated = taken.map((row, ray) => ({
     ray,
     subject: row.subject,
     domain: row.domain,
@@ -8496,7 +8595,22 @@ export const qpuTeachingSeatingOf = (read = qpuTeachingPairsOf()) => {
       { face: ray + faces.rays, team: seed, name: row.domain },
     ],
   }))
-  const crowded = earned.slice(faces.rays).map((row) => ({ subject: row.subject, domain: row.domain, earliest: row.earliest }))
+  /* TURNED AWAY, WITH THE REASON. "No room" and "seating you would unseat a pair with a longer claim" are
+   * different facts, and only the second is something a reader can argue with. */
+  const crowded = earned
+    .filter((row) => !seated.some((held) => held.subject === row.subject && held.domain === row.domain))
+    .map((row) => ({
+      subject: row.subject,
+      domain: row.domain,
+      earliest: row.earliest,
+      why: seated.some((held) => held.subject === row.subject)
+        ? `${row.subject} is seated with ${seated.find((held) => held.subject === row.subject)?.domain}`
+        : seated.some((held) => held.domain === row.domain)
+          ? `${row.domain} is seated with ${seated.find((held) => held.domain === row.domain)?.subject}`
+          : once.length > faces.rays
+            ? `all ${faces.rays} rays are taken`
+            : `no larger matching holds it`,
+    }))
   const vacant = Array.from({ length: faces.rays }, (_, ray) => ray).filter((ray) => !seated.some((row) => row.ray === ray))
   return {
     kind: 'seating' as const,
@@ -8514,7 +8628,14 @@ export const qpuTeachingSeatingOf = (read = qpuTeachingPairsOf()) => {
       seated.every((row) => (row.seats[n - n]!.face + faces.rays) % faces.faces === row.seats[seed]!.face) &&
       seated.every((row) => (row.seats[seed]!.face + faces.rays) % faces.faces === row.seats[n - n]!.face) &&
       seated.length + vacant.length === faces.rays &&
-      seated.length === Math.min(earned.length, faces.rays),
+      seated.length + crowded.length === earned.length &&
+      seated.length <= faces.rays &&
+      /* every name on the board is distinct, which is what makes it a seating rather than a list */
+      new Set(seated.flatMap((row) => row.seats.map((seat) => seat.name))).size === seated.length * faces.coins &&
+      /* AND IT IS MAXIMAL: no turned-away pair has both of its names free, or a larger matching existed and
+       * this is not it. That is the property greedy silently failed and nothing here noticed. */
+      crowded.every((row) => seated.some((held) => held.subject === row.subject || held.domain === row.domain) || seated.length === faces.rays) &&
+      crowded.every((row) => row.why.length > n - n),
   }
 }
 
@@ -8544,13 +8665,19 @@ export const qpuTeachingCensusOf = (seating = qpuTeachingSeatingOf()) => {
     applied: crossRay.length,
     craft: subjects.length,
     mathematics: domains.length,
+    /* COUNTED OVER THE RAYS ACTUALLY HELD, not over the seven the lattice offers. This asserted a full board
+     * and so failed the moment the evidence filled six rays instead of seven — reporting the corpus as broken
+     * when what had happened was that a ray stood empty, which the seating already says in `vacant`. For k
+     * rays held the identity is k(2k - 1), and at k = 7 that is the ninety-one the full lattice admits. */
+    rays: seating.seated.length,
     holds:
-      names.length === faces.faces &&
-      pairs === chooseOf(faces.faces, coins) &&
+      names.length === seating.seated.length * faces.coins &&
+      pairs === chooseOf(names.length, coins) &&
+      pairs === seating.seated.length * (coins * seating.seated.length - seed) &&
       sameRay.length + crossRay.length + subjects.length + domains.length === pairs &&
-      sameRay.length === faces.rays &&
-      subjects.length === chooseOf(faces.rays, coins) &&
-      domains.length === chooseOf(faces.rays, coins),
+      sameRay.length === seating.seated.length &&
+      subjects.length === chooseOf(seating.seated.length, coins) &&
+      domains.length === chooseOf(seating.seated.length, coins),
   }
 }
 
