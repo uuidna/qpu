@@ -94,8 +94,17 @@ const runOf = (dir, name, env) => {
       { env: { ...process.env, ...env }, encoding: 'utf8', timeout: 600_000, stdio: ['ignore', 'pipe', 'pipe'] },
     )
   } catch (error) {
-    writeFileSync(out, String(error?.stdout ?? '') + String(error?.stderr ?? ''))
-    return { name, ok: false, why: `the suite did not complete — see ${out}` }
+    /* THE REASON TRAVELS WITH THE VERDICT. This wrote the output to a temporary directory and printed its path,
+     * which is readable on a laptop and gone on a runner — the first real failure this guard caught was a CI-only
+     * cancellation whose cause could not be read from the log it failed in. A guard that says only THAT something
+     * broke sends the reader back to reproduce it, which is the job the guard was supposed to have done. */
+    const log = String(error?.stdout ?? '') + String(error?.stderr ?? '')
+    writeFileSync(out, log)
+    const said = log
+      .split('\n')
+      .filter((line) => /✖|not ok|timed out|cancelled|Error|AssertionError|^ℹ (fail|cancelled)/.test(line))
+      .slice(0, 12)
+    return { name, ok: false, why: `the suite did not complete`, said }
   }
   const text = readFileSync('test-receipt.json', 'utf8')
   const proof = JSON.parse(text)
@@ -131,7 +140,7 @@ if (invoked) {
     console.log(
       row.ok
         ? `  ✓  ${shape.padEnd(7)} ${row.tests} tests, fold ${row.fold} over ${row.rows} rows, file ${row.receipt}, reading ${row.reading} from ${row.reads} reads`
-        : `  ✗  ${shape.padEnd(7)} ${row.why}`,
+        : `  ✗  ${shape.padEnd(7)} ${row.why}\n${(row.said ?? []).map((line) => `         ${line.trim()}`).join('\n')}`,
     )
   }
   /* The network as it is, reported apart. It is a reading: if the host is down while this runs it simply equals a
@@ -140,7 +149,7 @@ if (invoked) {
   console.log(
     reached.ok
       ? `  ·  ${'reached'.padEnd(7)} ${reached.tests} tests, fold ${reached.fold} over ${reached.rows} rows, file ${reached.receipt}, reading ${reached.reading} from ${reached.reads} reads`
-      : `  ✗  ${'reached'.padEnd(7)} ${reached.why}`,
+      : `  ✗  ${'reached'.padEnd(7)} ${reached.why}\n${(reached.said ?? []).map((line) => `         ${line.trim()}`).join('\n')}`,
   )
 
   const verdict = verdictOf([...runs, reached])

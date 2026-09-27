@@ -9742,12 +9742,33 @@ export const qpuCernLiveOf = async () => {
     holds,hostEscape: false as const}
 }
 
-let cernExperience: Awaited<ReturnType<typeof qpuCernLiveOf>> | undefined
+/**
+ * ONE READING SHARED, AND A MISS IS A READING.
+ *
+ * This memo kept the answer only when it HELD, so every caller that followed a miss read the host again from
+ * scratch. Four callers sit behind one qpu_prove — train, improve, compete, prove — each asking seventeen doors,
+ * and the sequence adds more. Measured: 87 foreign reads when CERN answered, 205 when it did not. The failure
+ * case cost two and a half times the network work of the success case, which is precisely backwards.
+ *
+ * Two consequences, one in each direction. On Cloudflare a request is capped at fifty subrequests, so an outage
+ * multiplied the very thing the cap counts, and an unreachable host could deny a door that host has nothing to
+ * do with. And under a host that accepts a connection and then says nothing, each re-reading costs the whole
+ * deadline: on a CI runner the cern test passed its budget and was CANCELLED, which writes no receipt — caught
+ * by `npm run outage` on the runner, having passed twice on a laptop that is twice as fast.
+ *
+ * A HELD READING IS KEPT; A MISS IS KEPT BRIEFLY. Caching a miss forever would let one blip poison a Worker
+ * isolate for the rest of its life, which is why only successes were kept. Keeping it for the length of one
+ * deadline bounds the re-reading to once per window while making the failure path no more expensive than the
+ * happy one, and the next request tries the host again.
+ */
+let cernExperience: { value: Awaited<ReturnType<typeof qpuCernLiveOf>>; at: number } | undefined
 
 const qpuCernExperienceOf = async () => {
-  if (cernExperience?.holds && cernExperience.learn.holds) return cernExperience
-  cernExperience = await qpuCernLiveOf()
-  return cernExperience
+  const held = cernExperience?.value.holds === true && cernExperience.value.learn.holds === true
+  const fresh = cernExperience !== undefined && Date.now() - cernExperience.at < tenOf(qpuCubeOf().hexbit)
+  if (cernExperience && (held || fresh)) return cernExperience.value
+  cernExperience = { value: await qpuCernLiveOf(), at: Date.now() }
+  return cernExperience.value
 }
 
 export const qpuTrainLiveOf = async () => {
