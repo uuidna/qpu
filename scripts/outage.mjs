@@ -46,11 +46,21 @@ globalThis.fetch = async (req, init) => {
   if (mode === 'body') return new Response('<html>captive portal</html>', { headers: { 'content-type': 'text/html' }, status: 200 })
   if (mode === 'hang') return await new Promise((_, reject) => {
     const signal = init?.signal ?? (typeof req === 'object' ? req.signal : undefined)
-    // AN ALREADY-ABORTED SIGNAL NEVER FIRES 'abort' AGAIN. Missing this made the shim itself hang forever once the
-    // unit started sharing one deadline across a reading — the harness's bug, reported as the unit's.
-    if (!signal) return setTimeout(() => reject(new TypeError('fetch failed')), 30_000)
-    if (signal.aborted) return reject(signal.reason ?? new DOMException('aborted', 'AbortError'))
-    signal.addEventListener('abort', () => reject(signal.reason ?? new DOMException('aborted', 'AbortError')), { once: true })
+    // A REAL HANGING SOCKET HOLDS THE EVENT LOOP OPEN. AbortSignal.timeout's timer is UNREF'D and does not, so a
+    // promise waiting only on it never settles once the loop drains — 'Promise resolution is still pending but
+    // the event loop has already resolved'. This machine had enough other work in flight to hide it and a
+    // two-core runner did not, which is the entire difference between green here and red there. Three commits
+    // were spent looking for it in the unit.
+    const openLoop = setInterval(() => {}, 1000)
+    const stop = (reason) => {
+      clearInterval(openLoop)
+      reject(reason)
+    }
+    // AN ALREADY-ABORTED SIGNAL NEVER FIRES 'abort' AGAIN. Missing this made the shim hang forever once the unit
+    // started sharing one deadline across a reading — the harness's bug, reported as the unit's.
+    if (!signal) return setTimeout(() => stop(new TypeError('fetch failed')), 30_000)
+    if (signal.aborted) return stop(signal.reason ?? new DOMException('aborted', 'AbortError'))
+    signal.addEventListener('abort', () => stop(signal.reason ?? new DOMException('aborted', 'AbortError')), { once: true })
   })
   throw new Error('unknown CERN_FAIL: ' + mode)
 }
