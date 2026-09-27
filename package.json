@@ -72,7 +72,7 @@
     "lean": "lean src/quantum/processing/unit/index.lean",
     "build": "rm -rf dist && tsc -p tsconfig.json && node dist/quantum/processing/unit/readme.js",
     "test": "npm run build && node --test --test-reporter=./dist/quantum/processing/unit/receipt.js --test-reporter-destination=stdout dist/quantum/processing/unit/*.test.js",
-    "ci": "npm run lean && npm test && npm run proof && npm run mutate",
+    "ci": "npm run lean && npm test && npm run proof && npm run mutate && npm run leads:test",
     "prepublishOnly": "npm run build",
     "ship": "npm run build && npx wrangler deploy",
     "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
@@ -83,6 +83,7 @@
     "examine": "node scripts/examine.mjs https://qpu.uuidna.com",
     "verify:release": "node scripts/verify-release.mjs",
     "leads": "node scripts/leads.mjs",
+    "leads:test": "node --test scripts/leads.test.mjs",
     "post-push": "node scripts/post-push.mjs",
     "land": "npm test && git push && node scripts/post-push.mjs --wait && npm run verify:live",
     "mutate": "node scripts/mutate.mjs"

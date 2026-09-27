@@ -60,6 +60,12 @@ jobs:
       # the tree and the registries, and nobody had written the gathering down. It runs here so the answer arrives
       # without anyone asking for it. Non-blocking: it reports across sibling repos this runner does not check out,
       # so its unreached sources are expected here and must not fail the release check below.
+      # The detectors first. A gatherer whose checks never fire always says fine, so the run that reports what is
+      # open is preceded by the run that proves it can report anything at all. Blocking, unlike the gathering below.
+      - name: Leads — the detectors are proved able to fire
+        if: steps.pick.outputs.skip != 'true'
+        run: npm run leads:test
+
       - name: Leads — every source asked, and what each one owes
         if: steps.pick.outputs.skip != 'true'
         continue-on-error: true

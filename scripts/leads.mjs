@@ -37,97 +37,129 @@ const get = async (url, headers = {}) => {
   } catch (error) { return { ok: false, status: 0, error: String(error) } }
 }
 
-const sources = []
-const add = (source, reached, why, open = []) =>
-  sources.push({ source, reached, why, settled: reached && open.length === 0 ? 1 : 0, open })
 
-/* ── the packages this deployment installs, and whether a registry can serve them ───────────────────────────── */
-const localOf = (name) => {
-  const dir = join(SIBLINGS, name)
-  const manifest = join(dir, 'package.json')
-  return existsSync(manifest) ? { dir, ...JSON.parse(readFileSync(manifest, 'utf8')) } : null
+/* ── THE DECISIONS, SEPARATED FROM THE GATHERING ────────────────────────────────────────────────────────────────
+ *
+ * The fetching and the git calls are IO and cannot be driven from a test without a network and a repository. The
+ * DECISIONS can, and they are the part that is worth doubting: a detector that never fires is a gatherer that
+ * always says fine. Each takes a reading and returns the leads it implies, so a test can hand it the condition
+ * and check that it notices — and hand it the absence and check that it stays quiet.
+ */
+
+/** What a package owes, given what the registry serves against what the tree holds. */
+export const packageLeadsOf = ({ name, version, status, served = [], latest }) => {
+  if (status === 404) return [{ source: `npm:${name}`, what: `${name} is not published`, owes: 'a first publish; anything depending on it by file: path cannot install anywhere else' }]
+  if (served.includes(version)) return []
+  return [{ source: `npm:${name}`, what: `the working tree is ${version}; the registry serves ${latest}`, owes: `publish ${version}` }]
 }
 
-for (const folder of ['qpu', 'school', 'uuidna']) {
-  const local = localOf(folder)
-  if (!local) { add(`local:${folder}`, false, 'no checkout beside this one', []); continue }
-  const registry = await get(`https://registry.npmjs.org/${local.name}`)
+/** What a checkout owes. Each condition is independent, so a tree can owe all three at once. */
+export const repoLeadsOf = ({ folder, dirty, remote, ahead }) => {
+  const leads = []
+  if (dirty === null) leads.push({ source: `git:${folder}`, what: 'not a git checkout', owes: 'a repository' })
+  else if (dirty) leads.push({ source: `git:${folder}`, what: `${dirty.split('\n').length} uncommitted file(s) — release-cut refuses a dirty tree`, owes: 'commit or restore them; they are somebody\u2019s in-flight work until they say otherwise' })
+  if (!remote) leads.push({ source: `git:${folder}`, what: 'no git remote', owes: 'a remote; without one there is no CI, no Release, and no npm provenance, and any sibling depending on it by file: path cannot build off this machine' })
+  if (ahead && ahead !== '0') leads.push({ source: `git:${folder}`, what: `${ahead} commit(s) not pushed`, owes: 'a push; a deploy that triggers on push has not seen them' })
+  return leads
+}
 
-  if (registry.status === 0) {
-    add(`npm:${local.name}`, false, `registry unreachable (${registry.error})`)
-  } else if (registry.status === 404) {
-    add(`npm:${local.name}`, true, 'the registry has never served this package', [
-      { source: `npm:${local.name}`, what: `${local.name} is not published`, owes: 'a first publish; anything depending on it by file: path cannot install anywhere else' },
-    ])
-  } else if (!registry.ok) {
-    add(`npm:${local.name}`, false, `registry answered ${registry.status}`)
-  } else {
-    const served = Object.keys(registry.body.versions ?? {})
-    const open = served.includes(local.version)
-      ? []
-      : [{ source: `npm:${local.name}`, what: `the working tree is ${local.version}; the registry serves ${registry.body['dist-tags']?.latest}`, owes: `publish ${local.version}` }]
-    add(`npm:${local.name}`, true, `registry serves ${served.length} version(s), latest ${registry.body['dist-tags']?.latest}`, open)
+/** What the archive owes for a version. */
+export const archiveLeadsOf = ({ version, held = [] }) =>
+  held.includes(version) ? [] : [{ source: 'zenodo', what: `${version} is not archived`, owes: 'a published GitHub Release for the tag; Zenodo mints the DOI from it' }]
+
+/** What the host owes when its own monitor says it is unwell. */
+export const hostLeadsOf = ({ origin, holds, monitor = {} }) =>
+  holds ? [] : [{ source: `${origin}/storage`, what: `monitor holds false — ${monitor.missing ?? '?'} link(s) missing shares of ${monitor.keys ?? '?'}`, owes: 'maintain, bounded, until remaining is 0 — it needs the write token the worker already holds' }]
+
+/** A run is settled only when every source answered AND none holds a lead. Unreached blocks; it is not silence. */
+export const settledOf = (sources) =>
+  sources.length > 0 && sources.every((s) => s.reached) && sources.every((s) => s.open.length === 0)
+
+/* THE GATHERING RUNS ONLY WHEN THIS FILE IS THE COMMAND. Importing a module must not perform network IO and must
+ * not call process.exit — the first version did both, so its own test could not load it, which is how the test
+ * discovered the fault before any of the detectors did. */
+const invoked = process.argv[1]?.endsWith('leads.mjs') === true
+
+if (invoked) {
+  const sources = []
+  const add = (source, reached, why, open = []) =>
+    sources.push({ source, reached, why, settled: reached && open.length === 0 ? 1 : 0, open })
+
+  /* ── the packages this deployment installs, and whether a registry can serve them ───────────────────────────── */
+  const localOf = (name) => {
+    const dir = join(SIBLINGS, name)
+    const manifest = join(dir, 'package.json')
+    return existsSync(manifest) ? { dir, ...JSON.parse(readFileSync(manifest, 'utf8')) } : null
   }
 
-  /* A RELEASE CANNOT BE CUT FROM A DIRTY TREE, and release-cut says so and exits 1 — but the feed recorded only
-   * "FAIL cut v0.3.1" with no reason, so the reason had to be looked up by a person. It is a lead now. */
-  const dirty = git(local.dir, 'status', '--porcelain')
-  const remote = git(local.dir, 'remote', 'get-url', 'origin')
-  const ahead = git(local.dir, 'rev-list', '--count', 'origin/main..HEAD')
-  const open = []
-  if (dirty === null) open.push({ source: `git:${folder}`, what: 'not a git checkout', owes: 'a repository' })
-  else if (dirty) open.push({ source: `git:${folder}`, what: `${dirty.split('\n').length} uncommitted file(s) — release-cut refuses a dirty tree`, owes: 'commit or restore them; they are somebody’s in-flight work until they say otherwise' })
-  if (!remote) open.push({ source: `git:${folder}`, what: 'no git remote', owes: 'a remote; without one there is no CI, no Release, and no npm provenance, and any sibling depending on it by file: path cannot build off this machine' })
-  if (ahead && ahead !== '0') open.push({ source: `git:${folder}`, what: `${ahead} commit(s) not pushed`, owes: 'a push; a deploy that triggers on push has not seen them' })
-  add(`git:${folder}`, dirty !== null, remote ? `remote ${remote}` : 'local only', open)
-}
+  for (const folder of ['qpu', 'school', 'uuidna']) {
+    const local = localOf(folder)
+    if (!local) { add(`local:${folder}`, false, 'no checkout beside this one', []); continue }
+    const registry = await get(`https://registry.npmjs.org/${local.name}`)
 
-/* ── the archive, which mints a DOI from a GitHub Release ───────────────────────────────────────────────────── */
-const conceptRecid = (cff.match(/description:\s*All versions[\s\S]*?value:\s*10\.\d+\/zenodo\.(\d+)/) ?? [])[1]
-if (!conceptRecid) add('zenodo', true, 'CITATION.cff names no concept DOI', [])
-else {
-  const hits = (await get(`https://zenodo.org/api/records?q=conceptdoi:%2210.5281/zenodo.${conceptRecid}%22&size=100`, { accept: 'application/json' })).body?.hits?.hits
-  if (!hits) add('zenodo', false, 'zenodo would not answer — a refusal is not an answer about the archive')
+    if (registry.status === 0) {
+      add(`npm:${local.name}`, false, `registry unreachable (${registry.error})`)
+    } else if (registry.status === 404) {
+      add(`npm:${local.name}`, true, 'the registry has never served this package', packageLeadsOf({ name: local.name, version: local.version, status: 404 }))
+    } else if (!registry.ok) {
+      add(`npm:${local.name}`, false, `registry answered ${registry.status}`)
+    } else {
+      const served = Object.keys(registry.body.versions ?? {})
+      const latest = registry.body['dist-tags']?.latest
+      add(`npm:${local.name}`, true, `registry serves ${served.length} version(s), latest ${latest}`,
+        packageLeadsOf({ name: local.name, version: local.version, status: 200, served, latest }))
+    }
+
+    /* A RELEASE CANNOT BE CUT FROM A DIRTY TREE, and release-cut says so and exits 1 — but the feed recorded only
+     * "FAIL cut v0.3.1" with no reason, so the reason had to be looked up by a person. It is a lead now. */
+    const dirty = git(local.dir, 'status', '--porcelain')
+    const remote = git(local.dir, 'remote', 'get-url', 'origin')
+    const ahead = git(local.dir, 'rev-list', '--count', 'origin/main..HEAD')
+    add(`git:${folder}`, dirty !== null, remote ? `remote ${remote}` : 'local only', repoLeadsOf({ folder, dirty, remote, ahead }))
+  }
+
+  /* ── the archive, which mints a DOI from a GitHub Release ───────────────────────────────────────────────────── */
+  const conceptRecid = (cff.match(/description:\s*All versions[\s\S]*?value:\s*10\.\d+\/zenodo\.(\d+)/) ?? [])[1]
+  if (!conceptRecid) add('zenodo', true, 'CITATION.cff names no concept DOI', [])
   else {
-    const held = hits.map((h) => String(h.metadata?.version ?? '').replace(/^v/, ''))
-    add('zenodo', true, `the archive holds ${held.join(', ') || 'no versioned record'}`,
-      held.includes(pkg.version) ? [] : [{ source: 'zenodo', what: `${pkg.version} is not archived`, owes: 'a published GitHub Release for the tag; Zenodo mints the DOI from it' }])
+    const hits = (await get(`https://zenodo.org/api/records?q=conceptdoi:%2210.5281/zenodo.${conceptRecid}%22&size=100`, { accept: 'application/json' })).body?.hits?.hits
+    if (!hits) add('zenodo', false, 'zenodo would not answer — a refusal is not an answer about the archive')
+    else {
+      const held = hits.map((h) => String(h.metadata?.version ?? '').replace(/^v/, ''))
+      add('zenodo', true, `the archive holds ${held.join(', ') || 'no versioned record'}`, archiveLeadsOf({ version: pkg.version, held }))
+    }
   }
+
+  /* ── the host, which is the only source that can say the deployment is well ─────────────────────────────────── */
+  const origin = 'https://qpu.uuidna.com'
+  const storage = await get(`${origin}/storage`)
+  if (!storage.ok) add(`live:${origin}`, false, `the host answered ${storage.status || storage.error}`)
+  else {
+    const monitor = storage.body.monitor ?? {}
+    add(`live:${origin}`, true, `storage answers; holds ${storage.body.holds}`, hostLeadsOf({ origin, holds: storage.body.holds, monitor }))
+  }
+
+  /* ── report ─────────────────────────────────────────────────────────────────────────────────────────────────── */
+  if (process.argv.includes('--json')) {
+    console.log(JSON.stringify({ sources }, null, 2))
+    process.exit(0)
+  }
+
+  const open = sources.flatMap((s) => s.open)
+  const unreached = sources.filter((s) => !s.reached).map((s) => s.source)
+
+  console.log(`\nLEADS — ${sources.length} source(s) asked\n`)
+  for (const s of sources) {
+    const mark = !s.reached ? '?' : s.open.length === 0 ? '✓' : '✗'
+    console.log(`  ${mark}  ${s.source.padEnd(26)} ${s.why}`)
+    for (const lead of s.open) console.log(`       ⤷ ${lead.what}\n         owes: ${lead.owes}`)
+  }
+
+  console.log(
+    open.length === 0 && unreached.length === 0
+      ? `\n✓ nothing open across ${sources.length} source(s)\n`
+      : `\n✗ ${open.length} lead(s) open, ${unreached.length} source(s) unreached\n`,
+  )
+  process.exit(open.length === 0 && unreached.length === 0 ? 0 : 1)
+
 }
-
-/* ── the host, which is the only source that can say the deployment is well ─────────────────────────────────── */
-const origin = 'https://qpu.uuidna.com'
-const storage = await get(`${origin}/storage`)
-if (!storage.ok) add(`live:${origin}`, false, `the host answered ${storage.status || storage.error}`)
-else {
-  const monitor = storage.body.monitor ?? {}
-  add(`live:${origin}`, true, `storage answers; holds ${storage.body.holds}`,
-    storage.body.holds ? [] : [{
-      source: `${origin}/storage`,
-      what: `monitor holds false — ${monitor.missing ?? '?'} link(s) missing shares of ${monitor.keys ?? '?'}`,
-      owes: 'maintain, bounded, until remaining is 0 — it needs the write token the worker already holds',
-    }])
-}
-
-/* ── report ─────────────────────────────────────────────────────────────────────────────────────────────────── */
-if (process.argv.includes('--json')) {
-  console.log(JSON.stringify({ sources }, null, 2))
-  process.exit(0)
-}
-
-const open = sources.flatMap((s) => s.open)
-const unreached = sources.filter((s) => !s.reached).map((s) => s.source)
-
-console.log(`\nLEADS — ${sources.length} source(s) asked\n`)
-for (const s of sources) {
-  const mark = !s.reached ? '?' : s.open.length === 0 ? '✓' : '✗'
-  console.log(`  ${mark}  ${s.source.padEnd(26)} ${s.why}`)
-  for (const lead of s.open) console.log(`       ⤷ ${lead.what}\n         owes: ${lead.owes}`)
-}
-
-console.log(
-  open.length === 0 && unreached.length === 0
-    ? `\n✓ nothing open across ${sources.length} source(s)\n`
-    : `\n✗ ${open.length} lead(s) open, ${unreached.length} source(s) unreached\n`,
-)
-process.exit(open.length === 0 && unreached.length === 0 ? 0 : 1)
