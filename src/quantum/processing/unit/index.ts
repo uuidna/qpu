@@ -8317,8 +8317,291 @@ export const qpuImproveHolds = (i = qpuImproveOf()): boolean =>
   i.next[n - n] === 'qpu_compete' &&
   i.next[seed] === 'qpu_prove'
 
+/**
+ * SCHOOL SUBJECTS AND SCIENTIFIC DOMAINS: WHICH ARE ENTANGLED, DECIDED BY EVIDENCE RATHER THAN BY A TABLE.
+ *
+ * Sports, circus, theatre, music, arts and crafts are carried on a timetable as the practical subjects and are
+ * the first line cut from a budget for being non-academic. The claim examined here is the opposite one: that
+ * each is entangled with a scientific domain, and that the direction of discovery usually ran from the practice
+ * to the theory rather than the other way.
+ *
+ * THE LATTICE ALREADY HOLDS THE RIGHT SHAPE. Fourteen faces are two teams of seven rays, and at coins = 2 the
+ * involution restricted to seats IS the team swap. Seat subjects on one team and domains on the other and the
+ * swap is a test rather than a decoration:
+ *
+ *   A subject and a domain are ENTANGLED when the swap is an identity on the pair — the domain can be taught
+ *   through the subject AND the subject through the domain. When only one direction teaches it is not
+ *   entanglement, it is APPLICATION.
+ *
+ * Radiocarbon dating serves history; history does not teach radiocarbon dating. One way, so: application.
+ *
+ * WHAT THIS FILE IS NOT ALLOWED TO KNOW. Writing the pairs down as a table and seating them would make the
+ * kernel already hold the answer, which is the fault this package refuses everywhere else — a measured-then-
+ * sealed fact is furniture. So the input is INSTANCES: a cited, dated occasion on which one side taught the
+ * other, in a named direction. Which pairs are entangled, which are merely applied, which are not decidable
+ * here, and which seven end up seated are all computed from those instances and appear nowhere in them.
+ *
+ * Add an instance in a missing direction and an application becomes an entanglement. Add an earlier instance
+ * and the seating moves. Remove the corpus and every pair reads UNDECIDED, which is the third state and means
+ * NOT DECIDABLE HERE — never false, and never absent.
+ */
+export type QpuTeaching = {
+  /** The school subject, as a timetable names it. */
+  subject: string
+  /** The scientific domain, as the field names itself. */
+  domain: string
+  /** Which way the teaching ran on this occasion. The whole verdict turns on this field. */
+  direction: 'practice to theory' | 'theory to practice'
+  /** The year it can be fixed to — the seating is ordered by the earliest one, so this is load-bearing. */
+  year: number
+  /** What happened, in one sentence. */
+  what: string
+  /** Where a reader checks it. */
+  source: string
+}
+
+/**
+ * THE EVIDENCE. Each row is an occasion, not a conclusion; no row names a pair as entangled, because no row is
+ * entitled to. Rows in only one direction are deliberately present — a detector that cannot come out negative
+ * is furniture, and the one-way pairs below are what prove this one can.
+ */
+export const QPU_TEACHINGS: readonly QpuTeaching[] = [
+  { subject: 'sports', domain: 'biomechanics', direction: 'practice to theory', year: 1973,
+    what: 'throwers had converged on a release angle near 37 degrees, below the vacuum optimum of 45, before the correction for release height and the arm speed penalty at steep angles was modelled',
+    source: 'Lichtenberg and Wills, Maximizing the range of the shot put, Am. J. Phys. 46(6) 1978' },
+  { subject: 'sports', domain: 'biomechanics', direction: 'theory to practice', year: 1968,
+    what: 'the Fosbury flop passes the centre of mass under the bar, and the mass-distribution account of why it clears more height is now how the technique is coached',
+    source: 'Brancazio, Sport Science (1984), ch. on jumping' },
+  { subject: 'circus', domain: 'mechanics', direction: 'practice to theory', year: 1985,
+    what: 'jugglers produced siteswap, a notation whose valid patterns are permutations and whose average equals the number of objects, before it was studied as combinatorics',
+    source: 'Buhler, Eisenbud, Graham and Wright, Juggling drops and descents, Amer. Math. Monthly 101 1994' },
+  { subject: 'circus', domain: 'mechanics', direction: 'theory to practice', year: 1981,
+    what: 'Shannon stated a theorem relating hand, ball and time counts and built machines that juggle by it, teaching the practice from the model',
+    source: 'Shannon, Scientific aspects of juggling, in Collected Papers (1993)' },
+  { subject: 'theatre', domain: 'acoustics', direction: 'practice to theory', year: -350,
+    what: 'the seating at Epidaurus filters low-frequency noise and returns high frequencies to the audience, a diffraction result built by people with no diffraction theory',
+    source: 'Declercq and Dekeyser, Acoustic diffraction effects at the Hellenistic amphitheater of Epidaurus, JASA 121(4) 2007' },
+  { subject: 'theatre', domain: 'acoustics', direction: 'theory to practice', year: 1934,
+    what: 'the singer and actor formant near 3 kHz, where the ear is most sensitive and an orchestra quietest, is taught as a trainable resonance rather than volume',
+    source: 'Sundberg, The acoustics of the singing voice, Scientific American 236(3) 1977' },
+  { subject: 'music', domain: 'wave physics', direction: 'practice to theory', year: -500,
+    what: 'twelve fifths do not close seven octaves, and players met that incommensurability by ear and answered it with temperament long before it was written as a ratio',
+    source: 'Barbour, Tuning and Temperament: A Historical Survey (1951)' },
+  { subject: 'music', domain: 'wave physics', direction: 'theory to practice', year: 1863,
+    what: 'Helmholtz taught timbre as a spectrum of partials and the spectrum through instruments, running the explanation in both directions in one book',
+    source: 'Helmholtz, Die Lehre von den Tonempfindungen (1863)' },
+  { subject: 'arts and crafts', domain: 'materials science', direction: 'practice to theory', year: 800,
+    what: 'Maya blue is indigo held in palygorskite clay, a hybrid pigment of exceptional stability found by artisans and identified only in the twentieth century',
+    source: 'Van Olphen, Maya blue: a clay-organic pigment?, Science 154 (1966)' },
+  { subject: 'arts and crafts', domain: 'materials science', direction: 'theory to practice', year: 1950,
+    what: 'crazing is thermal expansion mismatch between glaze and body, and potters now fit glazes by expansion coefficient rather than by trial',
+    source: 'Hamer and Hamer, The Potter’s Dictionary of Materials and Techniques, entry: crazing' },
+  { subject: 'cooking', domain: 'biochemistry', direction: 'practice to theory', year: 1912,
+    what: 'browning had been cooked for millennia before Maillard described the reaction between amino acids and reducing sugars that produces it',
+    source: 'Maillard, Action des acides aminés sur les sucres, C. R. Acad. Sci. 154 (1912)' },
+  { subject: 'cooking', domain: 'biochemistry', direction: 'theory to practice', year: 1984,
+    what: 'emulsion and protein-denaturation accounts are now taught as kitchen method, which is what the whole food-science literature for cooks consists of',
+    source: 'McGee, On Food and Cooking (1984)' },
+  { subject: 'gardening', domain: 'statistics', direction: 'practice to theory', year: 1926,
+    what: 'randomised blocks and the analysis of variance were invented at an agricultural station because crop plots are noisy, spatially correlated and expensive to repeat',
+    source: 'Fisher, The arrangement of field experiments, J. Ministry of Agriculture 33 (1926)' },
+  { subject: 'gardening', domain: 'statistics', direction: 'theory to practice', year: 1935,
+    what: 'the same design is taught back to growers as how to lay out a trial and read its result',
+    source: 'Fisher, The Design of Experiments (1935)' },
+
+  /* ONE-WAY ROWS. These are what make the classifier able to come out negative, and they are not weaker
+   * evidence — they are evidence of a different shape. */
+  { subject: 'history', domain: 'radiocarbon dating', direction: 'theory to practice', year: 1949,
+    what: 'radiocarbon dating gave history a chronology it could not otherwise fix, and nothing in the practice of history produced the method',
+    source: 'Arnold and Libby, Age determinations by radiocarbon content, Science 110 (1949)' },
+  { subject: 'literature', domain: 'statistics', direction: 'theory to practice', year: 1964,
+    what: 'stylometry settled disputed authorship of the Federalist papers; the study of literature did not contribute the inference',
+    source: 'Mosteller and Wallace, Inference in an authorship problem, JASA 58 (1963)' },
+  { subject: 'arts and crafts', domain: 'topology', direction: 'practice to theory', year: 1877,
+    what: 'Tait tabulated knots by working from knots people tied, and the tables long preceded any account that could be taught back to a maker',
+    source: 'Tait, On knots, Trans. Roy. Soc. Edinburgh 28 (1877)' },
+]
+
+/** Three states, and the third is not silence: not decidable from the evidence held here. */
+export type QpuSwap = 'entangled' | 'application' | 'undecided'
+
+/**
+ * THE SWAP, APPLIED. A pair is entangled when both directions are cited, applied when one is, and undecided
+ * when neither is — and `undecided` is returned for a pair nobody has evidenced rather than omitting it, so a
+ * gap in the corpus reads as a gap rather than as a negative result.
+ */
+export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS) => {
+  const subjects = [...new Set(teachings.map((row) => row.subject))].sort()
+  const domains = [...new Set(teachings.map((row) => row.domain))].sort()
+  const pairs = subjects.flatMap((subject) =>
+    domains.map((domain) => {
+      const rows = teachings.filter((row) => row.subject === subject && row.domain === domain)
+      const fromPractice = rows.filter((row) => row.direction === 'practice to theory')
+      const fromTheory = rows.filter((row) => row.direction === 'theory to practice')
+      const swap: QpuSwap =
+        fromPractice.length > n - n && fromTheory.length > n - n
+          ? 'entangled'
+          : rows.length > n - n
+            ? 'application'
+            : 'undecided'
+      const years = rows.map((row) => row.year)
+      return {
+        subject,
+        domain,
+        swap,
+        /** Which direction is missing, named, because "not entangled" is not something a reader can act on. */
+        owes: swap === 'application' ? (fromPractice.length > n - n ? 'theory to practice' : 'practice to theory') : undefined,
+        earliest: years.length > n - n ? Math.min(...years) : undefined,
+        fromPractice,
+        fromTheory,
+        cited: rows.length,
+      }
+    }),
+  )
+  return { kind: 'teaching' as const, subjects, domains, pairs, holds: pairs.length === subjects.length * domains.length }
+}
+
+/** Every pair is one of the three, every subject and domain in the corpus appears, and the grid is complete. */
+export const qpuTeachingPairsHolds = (read = qpuTeachingPairsOf()): boolean =>
+  read.holds &&
+  read.pairs.every((row) => (row.swap === 'undecided') === (row.cited === n - n)) &&
+  read.pairs.every((row) => (row.owes === undefined) === (row.swap !== 'application')) &&
+  read.pairs.filter((row) => row.swap === 'entangled').every((row) => row.fromPractice.length > n - n && row.fromTheory.length > n - n)
+
+/**
+ * SEATED BY THE EVIDENCE, NOT BY THE AUTHOR'S ORDERING.
+ *
+ * Seven rays carry two seats each — a subject and a domain — so seven pairs fit and no more. Which seven is
+ * decided by the year of the earliest instance that established the pair, oldest first, because a lattice that
+ * holds fewer seats than the world offers has to choose on something, and "who has been teaching the other
+ * longest" is a rule rather than a preference. Ties fall to the names, so the seating is total.
+ *
+ * AN OVER-SUBSCRIBED LATTICE IS A FINDING, NOT A CRASH. Pairs that earn a seat and find none are named in
+ * `crowded`; rays nobody earned are named in `vacant`. Either one is a true sentence about the evidence, and
+ * both are the kind of thing a person can act on — add a ray, or find the missing direction.
+ */
+export const qpuTeachingSeatingOf = (read = qpuTeachingPairsOf()) => {
+  const faces = qpuFacesOf()
+  const earned = read.pairs
+    .filter((row) => row.swap === 'entangled')
+    .sort((a, b) => (a.earliest ?? n - n) - (b.earliest ?? n - n) || (a.subject < b.subject ? -seed : seed))
+  const seated = earned.slice(n - n, faces.rays).map((row, ray) => ({
+    ray,
+    subject: row.subject,
+    domain: row.domain,
+    earliest: row.earliest,
+    /* The two seats of one ray, and the teams they sit on: the swap carries each to the other and back. */
+    seats: [
+      { face: ray, team: n - n, name: row.subject },
+      { face: ray + faces.rays, team: seed, name: row.domain },
+    ],
+  }))
+  const crowded = earned.slice(faces.rays).map((row) => ({ subject: row.subject, domain: row.domain, earliest: row.earliest }))
+  const vacant = Array.from({ length: faces.rays }, (_, ray) => ray).filter((ray) => !seated.some((row) => row.ray === ray))
+  return {
+    kind: 'seating' as const,
+    rays: faces.rays,
+    faces: faces.faces,
+    earned: earned.length,
+    seated,
+    crowded,
+    vacant,
+    /* Each seated pair occupies both of its ray's seats, and the swap of a seat is the other seat: face + rays
+     * modulo faces carries a subject to its domain, and applied twice returns it, which is theorem involution
+     * read on this seating rather than restated. */
+    holds:
+      seated.every((row) => row.seats.length === faces.coins) &&
+      seated.every((row) => (row.seats[n - n]!.face + faces.rays) % faces.faces === row.seats[seed]!.face) &&
+      seated.every((row) => (row.seats[seed]!.face + faces.rays) % faces.faces === row.seats[n - n]!.face) &&
+      seated.length + vacant.length === faces.rays &&
+      seated.length === Math.min(earned.length, faces.rays),
+  }
+}
+
+export const qpuTeachingSeatingHolds = (seating = qpuTeachingSeatingOf()): boolean => seating.holds
+
+/**
+ * THE WHOLE CENSUS, so "all entanglements" is a number and not a gesture.
+ *
+ * Fourteen seats admit chooseOf(14, 2) = 91 pairs, and they decompose exactly: the seven that share a ray, the
+ * subject-to-domain pairs that do not, and the two same-team families. The four counts are computed and their
+ * sum is asserted against the choose, so a decomposition that quietly loses a pair fails here.
+ */
+export const qpuTeachingCensusOf = (seating = qpuTeachingSeatingOf()) => {
+  const faces = qpuFacesOf()
+  const names = seating.seated.flatMap((row) => row.seats.map((seat) => ({ ...seat, ray: row.ray })))
+  const all = names.flatMap((a, i) => names.slice(i + seed).map((b) => ({ a, b })))
+  const sameRay = all.filter(({ a, b }) => a.ray === b.ray && a.team !== b.team)
+  const crossRay = all.filter(({ a, b }) => a.ray !== b.ray && a.team !== b.team)
+  const subjects = all.filter(({ a, b }) => a.team === n - n && b.team === n - n)
+  const domains = all.filter(({ a, b }) => a.team === seed && b.team === seed)
+  const pairs = chooseOf(names.length, coins)
+  return {
+    kind: 'census' as const,
+    seats: names.length,
+    pairs,
+    entangled: sameRay.length,
+    applied: crossRay.length,
+    craft: subjects.length,
+    mathematics: domains.length,
+    holds:
+      names.length === faces.faces &&
+      pairs === chooseOf(faces.faces, coins) &&
+      sameRay.length + crossRay.length + subjects.length + domains.length === pairs &&
+      sameRay.length === faces.rays &&
+      subjects.length === chooseOf(faces.rays, coins) &&
+      domains.length === chooseOf(faces.rays, coins),
+  }
+}
+
+export const qpuTeachingCensusHolds = (census = qpuTeachingCensusOf()): boolean => census.holds
+
+/**
+ * THE EXPLANATION, GENERATED FROM THE EVIDENCE RATHER THAN WRITTEN BESIDE IT.
+ *
+ * Every sentence below is assembled from instances the corpus holds, so a pair cannot be described as
+ * entangled by prose while the classifier calls it an application — the prose has no independent opinion. The
+ * symmetric reading states one relationship from both ends; the asymmetric reading names which side supplied
+ * the phenomenon and which supplied the account, which is the direction field and nothing else; the swap line
+ * says whether the identity closes, and when it does not it names the missing direction rather than the verdict.
+ */
+export const qpuTeachingReadingOf = (read = qpuTeachingPairsOf()) =>
+  read.pairs
+    .filter((row) => row.swap !== 'undecided')
+    .map((row) => {
+      const practice = row.fromPractice[n - n]
+      const theory = row.fromTheory[n - n]
+      return {
+        subject: row.subject,
+        domain: row.domain,
+        swap: row.swap,
+        symmetric:
+          row.swap === 'entangled'
+            ? `${row.subject} and ${row.domain} are one relationship stated from two ends: ${practice?.what ?? ''}; and ${theory?.what ?? ''}`
+            : `${row.subject} and ${row.domain} have been stated from one end only`,
+        asymmetric:
+          practice !== undefined && theory !== undefined
+            ? `the practice supplied the phenomenon (${practice.year}) and the domain supplied the account (${theory.year}); neither side yields the other alone`
+            : practice !== undefined
+              ? `the practice supplied the phenomenon (${practice.year}) and no account has been cited that teaches it back`
+              : `the domain supplied the account (${theory?.year}) and the practice is not cited as having produced it`,
+        involution:
+          row.swap === 'entangled'
+            ? 'the swap closes: each side teaches the other, which is what distinguishes an entanglement from an application'
+            : `the swap does not close: ${row.owes} is uncited, so this is an application of ${row.domain} to ${row.subject}`,
+        sources: [...row.fromPractice, ...row.fromTheory].map((instance) => instance.source),
+      }
+    })
+
+/** Every reading names its sources, and no reading disagrees with the classifier that produced it. */
+export const qpuTeachingReadingHolds = (rows = qpuTeachingReadingOf()): boolean =>
+  rows.every((row) => row.sources.length > n - n) &&
+  rows.every((row) => (row.swap === 'entangled') === row.involution.startsWith('the swap closes')) &&
+  rows.every((row) => (row.swap === 'application') === row.involution.startsWith('the swap does not close'))
+
 export const qpuTrainOf = () => {
   const faces = qpuFacesOf()
+  const teaching = qpuTeachingPairsOf()
   const cube = qpuCubeOf()
   const genesis = qpuGenesisOf()
   const efficiency = qpuEfficiencyOf()
@@ -8467,6 +8750,20 @@ export const qpuTrainOf = () => {
       quality: involution,security: crypto,
       hop: 'involution' as const,
       theorem: 'crypto' as const},
+    /* WHAT THE TRAINING DOOR IS FOR, said about school subjects rather than about itself. The seating, the
+     * census and the per-pair reading are computed from cited instances and carried here so a caller gets the
+     * explanation from the same call that gets the verdict — a reading that has to be looked up somewhere else
+     * is a reading most callers will not have. */
+    school: {
+      kind: 'teaching' as const,
+      theorem: 'involution' as const,
+      swap: 'both directions must teach, or it is an application rather than an entanglement' as const,
+      seating: qpuTeachingSeatingOf(teaching),
+      census: qpuTeachingCensusOf(),
+      reading: qpuTeachingReadingOf(teaching),
+      undecided: teaching.pairs.filter((row) => row.swap === 'undecided').length,
+      holds: qpuTeachingPairsHolds(teaching) && qpuTeachingSeatingHolds() && qpuTeachingCensusHolds() && qpuTeachingReadingHolds(),
+  },
     holds,
   }
 }

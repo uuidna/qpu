@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 162,
-  "pass": 162,
+  "tests": 166,
+  "pass": 166,
   "fail": 0,
   "dry": 0,
   "circuit": 119,
-  "mintOnly": 13,
+  "mintOnly": 17,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "3255e634d60d60ee",
-  "computed": 158,
+  "receipt": "8b15067a7b471e4c",
+  "computed": 162,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -1812,8 +1812,8 @@
         }
       ],
       "mint": {
-        "calls": 1362696,
-        "chain": "53c8b8cb122834aa"
+        "calls": 1362714,
+        "chain": "227f254a462e614a"
       },
       "served": {
         "count": 8,
@@ -1916,8 +1916,8 @@
         }
       ],
       "mint": {
-        "calls": 345675,
-        "chain": "48c33fbdc8ec5499"
+        "calls": 345693,
+        "chain": "98e44eed2cf059f1"
       },
       "served": {
         "count": 0,
@@ -2790,8 +2790,8 @@
         }
       ],
       "mint": {
-        "calls": 123154,
-        "chain": "d66d0ee4f9a87066"
+        "calls": 123172,
+        "chain": "ced3dad7eabf573e"
       },
       "served": {
         "count": 0,
@@ -4006,8 +4006,8 @@
         }
       ],
       "mint": {
-        "calls": 2961474,
-        "chain": "e2620a4940a3be04"
+        "calls": 2961510,
+        "chain": "d2423000cee1c3ac"
       },
       "served": {
         "count": 2,
@@ -4125,8 +4125,8 @@
         }
       ],
       "mint": {
-        "calls": 2361257,
-        "chain": "fb7da0f433655777"
+        "calls": 2361293,
+        "chain": "8ca23705c8a56db7"
       },
       "served": {
         "count": 0,
@@ -4389,8 +4389,8 @@
         }
       ],
       "mint": {
-        "calls": 2846428,
-        "chain": "0ece12bef9cda9a8"
+        "calls": 2846446,
+        "chain": "d7521d6c2b21f8c8"
       },
       "served": {
         "count": 18,
@@ -4697,8 +4697,8 @@
         }
       ],
       "mint": {
-        "calls": 884027,
-        "chain": "9a803a87928dac8c"
+        "calls": 884045,
+        "chain": "73f2f7a6b58e1f74"
       },
       "served": {
         "count": 13,
@@ -6677,6 +6677,94 @@
       "foreign": 0
     },
     {
+      "name": "the swap decides: both directions entangle, one applies, none is undecided",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 9,
+        "chain": "10db40dd16d9c30a"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the seating is ordered by the evidence, and a crowded lattice is a finding rather than a crash",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 18,
+        "chain": "88f69289e9c7b90d"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the census accounts for every pair the seats admit, and loses none",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 9,
+        "chain": "10db40dd16d9c30a"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the corpus as it stands agrees with itself, and the prose has no opinion of its own",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 6,
+        "chain": "ab03e735fee7b2fd"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
       "name": "the walk visits every face once, scanner then radar, and returns by the involution",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -6816,8 +6904,8 @@
         }
       ],
       "mint": {
-        "calls": 301760,
-        "chain": "fc72d3c34368fb8a"
+        "calls": 301796,
+        "chain": "23fee930a9a73e7a"
       },
       "served": {
         "count": 0,
