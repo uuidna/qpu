@@ -263,6 +263,22 @@ const ten = n * n + seed
  * fold is only ever called after this module has finished initialising.
  */
 const HEX_RADIX = mintOf(mintOf(coins))
+/**
+ * THE SEALED GROUP WIDTHS, DECLARED ONCE, and the layout that uses them.
+ *
+ * 8-4-4-4-12 is one layout and it was re-derived in three places — qpuShapeUuidOf and both halves of the
+ * combinatorial codec — each spelling mintOf(n), mintOf(coins) and mintOf(mintOf(coins)) again and each
+ * re-joining the groups by hand. The note beside qpuShapeUuidOf's own triple says a second derivation that
+ * happens to agree is the drift this tree keeps catching. There were three, and two of them were added the
+ * same day the codec was.
+ */
+const UUID_EIGHT = mintOf(n)
+const UUID_FOUR = mintOf(coins)
+const UUID_SIXTEEN = mintOf(mintOf(coins))
+
+/** The five groups of one 32-hex address — the one place a UUID's dashes are placed. */
+const uuidGroupsOf = (a: string, b: string, c: string, d: string, e: string): string => [a, b, c, d, e].join('-')
+
 const FOLD_DIGITS = (coins * mintOf(n + coins)) / mintOf(coins)
 
 /**
@@ -949,6 +965,21 @@ const STORE_BYTES_SAMPLE = mintOf(mintOf(coins))
  *  bound of eight would have been 240 and the repair would have failed the way the thing it repairs failed.
  *  `remaining` is how a caller knows to call again. */
 const STORE_REPAIR_MAX = coins
+/**
+ * PLACEMENT IS STATE; A PUBLISHED DOCUMENT IS NOT. This counter is the RAID write cursor — each write lands on
+ * the next disk, which is what spreads a cluster instead of stacking every object on disk zero, and raid.test
+ * holds exactly that by writing a full rotation and checking the picks cover every disk.
+ *
+ * WHAT IT MUST NOT DO IS LEAK INTO A SERVED DOCUMENT. qpuRaidOf used to read it whenever a caller passed no
+ * traffic, and that reading rides in GET / through circuit.register.efficiency, memoised at first serve — so
+ * each isolate froze whichever count it happened to hold. Measured 2026-09-28: the live host served `fly`, then
+ * `wasabi` from another isolate, while the build computed `cloudflare`, and verify-live — whose whole premise
+ * is "no clock, no random" — could only pass by luck.
+ *
+ * So the cursor is passed EXPLICITLY by the write path that owns it, and every other caller gets the reference
+ * placement, which a build can recompute. The first attempt at this deleted the counter outright on the
+ * evidence that no caller passed one; raid.test refused that immediately, and it was right to.
+ */
 let raidTraffic = n - n
 
 const raidClouds = [
@@ -1031,7 +1062,8 @@ export const qpuRaidOf = (input: { safe?: boolean; traffic?: number } = {}) => {
   const disks = coins
   const stripes = faces.rays
   const teams = coins
-  const traffic = input.traffic ?? raidTraffic
+  /* the reference placement unless a caller owns a cursor and says so — see the note on raidTraffic */
+  const traffic = input.traffic ?? n - n
   const demand = traffic % (faces.faces + seed)
   const types = raidTypesOf(faces)
   const sorted = raidByCostOf(types)
@@ -1216,6 +1248,79 @@ export const qpuHybridHolds = (h = qpuHybridOf()): boolean =>
 /** QPU hybrid storage hosts the Payload database. Four collections. Secrets never. */
 const payloadDbCollections = ['pages', 'users', 'media', 'tenants'] as const
 const payloadDbKey = 'databases/payload'
+
+/**
+ * THE ZONE, HOST BY HOST — and every one of these names reaches this unit.
+ *
+ * Until this table existed the router knew two labels: its own and `www`. Every other first-party name under the
+ * zone was therefore indistinguishable from a customer's rented page, so the wildcard route would have handed
+ * lean, unreal, hardware or school to Payload as somebody's tenant the moment its custom domain lapsed. Measured
+ * 2026-09-28: four such names answer on this zone and not one of them was declared anywhere this unit could read.
+ *
+ * IT IS ALSO THE SEO SURFACE, and that is the harder half. Google reads robots.txt and sitemap.xml PER HOST — a
+ * directive served at uuidna.com says nothing whatever about qpu.uuidna.com — and measured the same day, five of
+ * the six hosts answered 404 for both, so Cloudflare's managed default was served in their place: a file that
+ * names no sitemap at all. A sitemap nothing points at is a sitemap nothing crawls. qpuSeoOf computes the pair
+ * for each host from this table, and every pair names the ONE canonical MCP endpoint rather than a copy of it,
+ * because six hosts each claiming their own MCP is six duplicates competing, not one door found six ways.
+ */
+export const QPU_ZONE_HOSTS = [
+  { label: '', worker: 'uuidna', qpu: false, serves: 'the sealed ledger — theorems, decide, verify, receipts' },
+  { label: 'qpu', worker: 'uuidna-qpu', qpu: true, serves: 'this unit — the running circuit, the MCP, the receipts' },
+  { label: 'lean', worker: 'uuidna-lean', qpu: true, serves: 'the Lean publishing worker — standing, theorems, axioms, the census' },
+  { label: 'unreal', worker: 'uuidna-unreal', qpu: true, serves: 'the Unreal publishing worker — the hologram views' },
+  { label: 'hardware', worker: 'uuidna-unreal', qpu: true, serves: 'the hardware views, answered by the Unreal worker' },
+  { label: 'school', worker: 'uuidna-payload', qpu: true, serves: 'the school — lessons, progress, and the kernel verdicts on them' },
+] as const
+
+/** The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone. */
+export const qpuZoneOf = () => {
+  const zone = unit.host.split('.').slice(seed).join('.')
+  const hosts = QPU_ZONE_HOSTS.map((h) => {
+    const host = h.label === '' ? zone : `${h.label}.${zone}`
+    return { ...h, host, origin: `https://${host}`, apex: h.label === '', own: host === unit.host }
+  })
+  return { zone, hosts, labels: hosts.filter((h) => !h.apex).map((h) => h.label) }
+}
+
+/** qpuZoneHolds → one apex, this unit among them, every host inside the zone, every label distinct and workered. */
+export const qpuZoneHolds = (z = qpuZoneOf()): boolean =>
+  z.hosts.length === QPU_ZONE_HOSTS.length &&
+  z.hosts.filter((h) => h.apex).length === seed &&
+  z.hosts.filter((h) => h.own).length === seed &&
+  z.hosts.filter((h) => !h.qpu).length === seed &&
+  z.hosts.every((h) => h.apex === !h.qpu) &&
+  z.hosts.some((h) => h.host === unit.host) &&
+  z.hosts.every((h) => (h.apex ? h.host === z.zone : h.host.endsWith(`.${z.zone}`))) &&
+  z.hosts.every((h) => h.origin === `https://${h.host}` && h.serves.length > n - n && h.worker.startsWith('uuidna')) &&
+  new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
+  z.labels.every((label) => label.length > n - n && !label.includes('.') && !label.includes('*'))
+
+/**
+ * The first-party host this request landed on, or undefined — and `qpu: false` is as good as absent here.
+ *
+ * THE APEX IS IN THE TABLE AND OUT OF THIS UNIT'S REACH, which is not a contradiction: the table states what the
+ * zone IS, and this lookup answers what this unit is ROUTED to. uuidna.com holds its own custom domain and this
+ * worker has no route there — it answers on qpu.uuidna.com and on the *.uuidna.com wildcard, which the apex is
+ * not under. Computing a crawlable pair for it produced a sitemap listing a root this unit answers 404 for, and
+ * the apex already serves its own robots.txt and its own 11,438-URL sitemap from the worker that does hold it.
+ */
+export const qpuZoneHostOf = (host: unknown) =>
+  qpuZoneOf().hosts.find((h) => h.qpu && h.host === String(host ?? '').toLowerCase())
+
+/** qpuZoneHostHolds → the lookup is total over the zone and closed outside it: every declared host resolves to
+ *  itself whatever its case, and a name that merely CONTAINS the zone resolves to nothing. The second half is the
+ *  one worth a test — `evil.uuidna.com.attacker.test` ends with neither the zone nor a label of it, and a lookup
+ *  written with endsWith instead of equality would hand it this unit's policy. */
+export const qpuZoneHostHolds = (): boolean => {
+  const z = qpuZoneOf()
+  return z.hosts.filter((h) => h.qpu).every((h) => qpuZoneHostOf(h.host)?.host === h.host && qpuZoneHostOf(h.host.toUpperCase())?.host === h.host) &&
+    z.hosts.filter((h) => !h.qpu).every((h) => qpuZoneHostOf(h.host) === undefined) &&
+    qpuZoneHostOf(`${z.zone}.attacker.test`) === undefined &&
+    qpuZoneHostOf(`x.${z.zone}`) === undefined &&
+    qpuZoneHostOf('') === undefined &&
+    qpuZoneHostOf(undefined) === undefined
+}
 
 /** The tenant zone QPU serves and the labels in it that are never a tenant — one declaration, read by the router and
  *  by Payload (src/access.ts), never restated there. The zone is this unit's host minus its first label; that label is
@@ -4453,15 +4558,23 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.when === 'never' &&
   c.website === unit.host &&
   c.author.orcid === 'https://orcid.org/0009-0000-7312-9778' &&
-  c.doi === '10.5281/zenodo.22717782' &&
+  /* THE VERSION DOI IS NOT A CONSTANT, and pinning it here made this predicate false on the next archive and
+   * every archive after it — unnoticed, because nothing called it. Measured 2026-09-28: it still asserted
+   * 22717782 while the reading carried 22973935. What is actually fixed is the CONCEPT doi, which is the
+   * all-versions record and never moves; what is true of a version doi is a relation to the record it names. */
+  /^10\.5281\/zenodo\.\d+$/.test(c.doi) &&
+  c.archive === `https://zenodo.org/records/${c.doi.split('.').pop()}` &&
+  c.doi === c.archived.doi &&
+  c.archive === c.archived.archive &&
+  c.doi !== c.conceptdoi &&
   c.conceptdoi === '10.5281/zenodo.22700098' &&
-  c.archive === 'https://zenodo.org/records/22717782' &&
   c.identifier === `https://doi.org/${c.doi}` &&
   c.sameAs.includes(c.archive) &&
   c.sameAs.includes(c.author.orcid) &&
   c.sameAs.includes(c.identifier) &&
-  c.archived.commit === '4a45563' &&
-  c.archived.version === '0.1.1' &&
+  /* Likewise the commit and the version of whatever is archived: both move, and both have a shape. */
+  /^[0-9a-f]{7,40}$/.test(c.archived.commit) &&
+  /^\d+\.\d+\.\d+$/.test(c.archived.version) &&
   c.served.version === packageVersion &&
   c.current === (c.archived.version === c.served.version) &&
   c.currency.includes(`v${c.served.version}`) &&
@@ -6877,7 +6990,7 @@ export const qpuStorageOf = async (
       }
     }
     raidTraffic += seed
-    const raid = qpuRaidOf({ safe: raidSafeOf(key) })
+    const raid = qpuRaidOf({ safe: raidSafeOf(key), traffic: raidTraffic })
     /**
      * THE ROUND TRIP IS GONE FROM THE WRITE PATH, AND PROVED PROPERLY INSTEAD.
      *
@@ -8820,9 +8933,20 @@ export const qpuStandardsHolds = (read = qpuStandardsOf()): boolean =>
   [read.walls, read.lattice, read.dry, read.refusals.total, read.refusals.crossed, read.refusals.notCrossed].every((x) => Number.isSafeInteger(x) && x >= n - n) &&
   read.refusals.crossed + read.refusals.notCrossed === read.refusals.total
 
+/** The corpus's own axes, named once: the combinatorial surface is built on these and the reading checks them. */
+export const QPU_TEACHING_SUBJECTS = [...new Set(QPU_TEACHINGS.map((row) => row.subject))].sort()
+export const QPU_TEACHING_DOMAINS = [...new Set(QPU_TEACHINGS.map((row) => row.domain))].sort()
+
 export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS) => {
   const subjects = [...new Set(teachings.map((row) => row.subject))].sort()
   const domains = [...new Set(teachings.map((row) => row.domain))].sort()
+  /* ADDRESSED ONLY WHEN THIS IS THE CORPUS THE SURFACE WAS DERIVED FROM. The suites call this with small
+   * invented tables to test the swap rule, and an address is a position on the `teaching` surface's axes —
+   * asking for one off those axes throws, which would turn "your corpus is not the corpus" into a crash in a
+   * reading. A row with no address says so by absence; it does not pretend to a position it does not have. */
+  const addressable =
+    subjects.every((subject) => QPU_TEACHING_SUBJECTS.includes(subject)) &&
+    domains.every((domain) => QPU_TEACHING_DOMAINS.includes(domain))
   const pairs = subjects.flatMap((subject) =>
     domains.map((domain) => {
       const rows = teachings.filter((row) => row.subject === subject && row.domain === domain)
@@ -8838,6 +8962,8 @@ export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACH
       return {
         subject,
         domain,
+        /** The combination's own address: this pair, on this surface, decodable back to exactly these two names. */
+        uuid: addressable ? qpuCallUuidOf('teaching', subject, domain) : undefined,
         swap,
         /** Which direction is missing, named, because "not entangled" is not something a reader can act on. */
         owes: swap === 'application' ? (fromPractice.length > n - n ? 'theory to practice' : 'practice to theory') : undefined,
@@ -8881,24 +9007,203 @@ export const qpuShapeUuidOf = (canonical: string): string => {
    * cannot be equal by construction and the whole is a function of the whole. */
   const high = qpuFoldOf(canonical)
   const low = qpuFoldOf(`${canonical}\u0000shape`)
-  /* TWO COINS SEAL INTO A COIL, which is what the two folds above are doing: coins halves of sixteen sealed
+  /* TWO COINS SEAL INTO A COIL, which is what the two folds above are doing: coins halves of UUID_SIXTEEN sealed
    * into one identity of mintOf(coins + n) digits. The lattice names every width here and the first attempt
-   * wrote them as arithmetic anyway, getting `coins * mintOf(n)` where mintOf(n) was meant — sixteen for
-   * eight — and producing a UUID-shaped thing that was not one, which the predicate correctly refused.
+   * wrote them as arithmetic anyway, getting `coins * mintOf(n)` where mintOf(n) was meant — UUID_SIXTEEN for
+   * UUID_EIGHT — and producing a UUID-shaped thing that was not one, which the predicate correctly refused.
    *
    * 8-4-4-4-12: mintOf(n), mintOf(coins), mintOf(coins), mintOf(coins), faces - coins. */
-  const four = mintOf(coins)
-  const eight = mintOf(n)
-  const sixteen = mintOf(mintOf(coins))
-  const variant = (Number(BigInt(`0x${low.slice(n - n, seed)}`) % BigInt(four)) + mintOf(n)).toString(sixteen)
+  const variant = (Number(BigInt(`0x${low.slice(n - n, seed)}`) % BigInt(UUID_FOUR)) + mintOf(n)).toString(UUID_SIXTEEN)
+  return uuidGroupsOf(
+    high.slice(n - n, UUID_EIGHT),
+    high.slice(UUID_EIGHT, UUID_EIGHT + UUID_FOUR),
+    `8${high.slice(UUID_EIGHT + UUID_FOUR, UUID_SIXTEEN - seed)}`,
+    `${variant}${low.slice(seed, UUID_FOUR)}`,
+    low.slice(UUID_FOUR, UUID_SIXTEEN),
+  )
+  // the last group is faces - coins = twelve digits, which is what low.slice(UUID_FOUR, UUID_SIXTEEN) yields
+}
+
+
+/**
+ * A COMBINATION IS AN ADDRESS, AND THE ADDRESS IS A CALL.
+ *
+ * The captain, 2026-09-28: "a UUID is a program call — 32 bits name the door, 16 carry params, inside the 48-bit
+ * middle", and "compute all combinatorial using uuid programming".
+ *
+ * WHAT WAS MISSING. This unit computes 342 teaching combinations and 36 mixed ones and addresses none of them:
+ * a row is identified by the two strings it is made of, so nothing can cite one, cache one, or hand one to
+ * another host without shipping the strings and hoping both sides spell them the same. qpuShapeUuidOf gives a
+ * content address, which answers "are these the same thing" and cannot answer "which thing is this" — it is a
+ * fold, and a fold does not come back.
+ *
+ * SO THE MIDDLE CARRIES THE CALL, AND THE ENDS CARRY THE CONTENT. The layout is RFC 9562 v8, the same one
+ * qpuShapeUuidOf seals, and the two halves do different work:
+ *
+ *   group 1 (8)   the content's high fold — the subject address
+ *   group 2 (4)   THE DOOR: which combinatorial surface, derived from that surface's own contract
+ *   group 3 (4)   version 8, then a check over the canonical pair text
+ *   group 4 (4)   the variant nibble, then THE PARAMS: the combination's index on that surface
+ *   group 5 (12)  the content's low fold — the envelope
+ *
+ * FORTY BITS, NOT FORTY-EIGHT, and the eight missing ones are not an oversight: RFC 9562 spends one nibble on
+ * the version and one on the variant, both inside the middle. A layout using the whole 48 would mint something
+ * UUID-shaped that is not a UUID, which is the failure qpuShapeUuidHolds already refuses. So the door takes 16
+ * bits and the params 12, and the cap that follows is checked rather than assumed, because 342 fits and a
+ * surface grown past it would silently wrap.
+ *
+ * TWO-WAY, WHICH IS THE WHOLE POINT. qpuCallOfUuid recovers the surface and the exact pair from the address
+ * alone; qpuCallUuidOf mints the same address from that surface and pair. The content halves are not decoded —
+ * they are RECOMPUTED and compared, so an address also says whether it was minted from the pair it names.
+ */
+const COMBINATORIAL_CAP = HEX_RADIX ** n
+const COMBINATORIAL_SEP = String.fromCharCode(n - n)
+
+/**
+ * The rectangular surfaces this unit computes, each with the two axes whose product it addresses.
+ *
+ * READ FROM THE SOURCE TABLES, NOT FROM THE READINGS, and that is forced rather than preferred: the readings
+ * now carry an address per row, so a surface derived from qpuTeachingPairsOf() would ask the reading for the
+ * axes while the reading asks for the address — a cycle. The axes were never the readings' to own; they are
+ * the distinct names in the corpus, which is where both sides get them.
+ */
+const combinatorialSurfacesOf = () => {
+  const fields = [...new Set(QPU_EXPERIMENTS.flatMap((row) => [row.left, row.right]))].sort()
+  const hosts = qpuZoneOf().hosts.filter((h) => h.qpu).map((h) => h.host)
   return [
-    high.slice(n - n, eight),
-    high.slice(eight, eight + four),
-    `8${high.slice(eight + four, sixteen - seed)}`,
-    `${variant}${low.slice(seed, four)}`,
-    low.slice(four, sixteen),
-  ].join('-')
-  // the last group is faces - coins = twelve digits, which is what low.slice(four, sixteen) yields
+    { door: 'teaching', lefts: QPU_TEACHING_SUBJECTS, rights: QPU_TEACHING_DOMAINS },
+    { door: 'mixed', lefts: fields, rights: fields },
+    { door: 'zone', lefts: hosts, rights: ['/robots.txt', '/sitemap.xml', '/.well-known/mcp.json'] },
+  ]
+}
+
+/** A door's hex is derived from its own contract — its name and its two axes — never invented. */
+const combinatorialDoorHexOf = (surface: { door: string; lefts: readonly string[]; rights: readonly string[] }): string =>
+  qpuFoldOf(`${surface.door}:${surface.lefts.length}x${surface.rights.length}`).slice(n - n, mintOf(coins))
+
+/** The door table, with collisions RECOMPUTED rather than assumed — two names can fold to one hex. */
+export const qpuCombinatorialDoorsOf = () => {
+  const rows = combinatorialSurfacesOf().map((s) => ({
+    door: s.door,
+    hex: combinatorialDoorHexOf(s),
+    lefts: s.lefts.length,
+    rights: s.rights.length,
+    combinations: s.lefts.length * s.rights.length,
+  }))
+  const hexes = rows.map((r) => r.hex)
+  return {
+    kind: 'combinatorial-doors' as const,
+    rows,
+    doors: rows.length,
+    combinations: rows.reduce((sum, r) => sum + r.combinations, n - n),
+    collisions: hexes.filter((h, i) => hexes.indexOf(h) !== i),
+    cap: COMBINATORIAL_CAP,
+  }
+}
+
+/** qpuCombinatorialDoorsHolds → every door folds to its own hex, none collide, none outgrew the params cap. */
+export const qpuCombinatorialDoorsHolds = (d = qpuCombinatorialDoorsOf()): boolean =>
+  d.rows.length > n - n &&
+  d.collisions.length === n - n &&
+  d.rows.every((r) => /^[0-9a-f]{4}$/.test(r.hex)) &&
+  d.rows.every((r) => r.combinations === r.lefts * r.rights && r.combinations > n - n) &&
+  d.rows.every((r) => r.combinations <= d.cap) &&
+  d.combinations === d.rows.reduce((sum, r) => sum + r.combinations, n - n)
+
+/** The canonical text of one combination — what both the content address and the check are taken over. */
+const combinationTextOf = (door: string, left: string, right: string): string =>
+  [door, left, right].join(COMBINATORIAL_SEP)
+
+/**
+ * qpuCallUuidOf(door, left, right) → the address of that combination, as an RFC 9562 v8 UUID.
+ *
+ * Refused HERE when the surface does not exist or either name is not on its axis, because minting an address
+ * for a combination this unit does not compute hands a caller sixteen bytes that decode to nothing.
+ */
+export const qpuCallUuidOf = (door: string, left: string, right: string): string => {
+  const surface = combinatorialSurfacesOf().find((s) => s.door === door)
+  if (surface === undefined) throw new Error(`unknown combinatorial door: ${door} — a door hex is derived from a surface this unit computes, never invented`)
+  const leftIndex = surface.lefts.indexOf(left)
+  const rightIndex = surface.rights.indexOf(right)
+  if (leftIndex < n - n || rightIndex < n - n) throw new Error(`${door} does not carry the combination ${left} / ${right}`)
+  const index = leftIndex * surface.rights.length + rightIndex
+  if (index >= COMBINATORIAL_CAP) throw new Error(`${door} has outgrown the params cap: index ${index} of ${COMBINATORIAL_CAP}`)
+
+  const text = combinationTextOf(door, left, right)
+  const content = qpuShapeUuidOf(text).replace(/-/g, '')
+  const check = qpuFoldOf(`${text}${COMBINATORIAL_SEP}check`).slice(n - n, n)
+  return uuidGroupsOf(
+    content.slice(n - n, UUID_EIGHT),
+    combinatorialDoorHexOf(surface),
+    `8${check}`,
+    `${content[UUID_SIXTEEN]}${index.toString(HEX_RADIX).padStart(n, '0')}`,
+    content.slice(UUID_SIXTEEN + UUID_FOUR, UUID_SIXTEEN + UUID_SIXTEEN),
+  )
+}
+
+/**
+ * qpuCallUuidHolds → minting is a function of the combination and of nothing else: the same pair gives the same
+ * address twice, a different pair on the same surface gives a different one, the same pair on two surfaces
+ * gives two, and the result is an RFC 9562 v8 UUID carrying that surface's door hex where the door belongs.
+ *
+ * Asked of the first combination of every surface rather than of a fixed example, so a surface added later is
+ * covered on the day it is added and an axis that reorders is caught by qpuCombinatorialHolds beside it.
+ */
+export const qpuCallUuidHolds = (): boolean =>
+  combinatorialSurfacesOf().every((surface) => {
+    const left = surface.lefts[n - n]
+    const right = surface.rights[n - n]
+    if (left === undefined || right === undefined) return false
+    const uuid = qpuCallUuidOf(surface.door, left, right)
+    const other = surface.rights[seed]
+    return (
+      /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid) &&
+      uuid === qpuCallUuidOf(surface.door, left, right) &&
+      uuid.split('-')[seed] === combinatorialDoorHexOf(surface) &&
+      (other === undefined || uuid !== qpuCallUuidOf(surface.door, left, other)) &&
+      combinatorialSurfacesOf()
+        .filter((s) => s.door !== surface.door && s.lefts.includes(left) && s.rights.includes(right))
+        .every((s) => qpuCallUuidOf(s.door, left, right) !== uuid)
+    )
+  })
+
+/**
+ * qpuCallOfUuid(uuid) → the combination that address names: the door, the pair, and whether it verifies.
+ *
+ * An address whose door hex is on no surface comes back with `door: null` rather than refused — a well-formed
+ * address of a surface this unit does not compute is a fact about this unit, and refusing it would report that
+ * absence as a malformed UUID. `verified` is the recomputation: mint the address again from the pair it claims
+ * and compare, so a hand-edited middle is caught rather than believed.
+ */
+export const qpuCallOfUuid = (uuid: string) => {
+  const bare = String(uuid).replace(/-/g, '').toLowerCase()
+  if (!/^[0-9a-f]{32}$/.test(bare)) throw new Error(`not a uuid: ${uuid} — a combinatorial address is ${mintOf(coins + n)} hex characters`)
+  const hex = bare.slice(UUID_EIGHT, UUID_EIGHT + UUID_FOUR)
+  const index = parseInt(bare.slice(UUID_SIXTEEN + seed, UUID_SIXTEEN + UUID_FOUR), HEX_RADIX)
+  const surface = combinatorialSurfacesOf().find((s) => combinatorialDoorHexOf(s) === hex)
+  if (surface === undefined) {
+    return { kind: 'combinatorial-call' as const, uuid: String(uuid), hex, door: null, index, left: null, right: null, verified: false }
+  }
+  const left = surface.lefts[Math.floor(index / surface.rights.length)] ?? null
+  const right = surface.rights[index % surface.rights.length] ?? null
+  const verified = left !== null && right !== null && qpuCallUuidOf(surface.door, left, right) === String(uuid).toLowerCase()
+  return { kind: 'combinatorial-call' as const, uuid: String(uuid), hex, door: surface.door, index, left, right, verified }
+}
+
+/** qpuCombinatorialHolds → every combination on every surface addresses, decodes back to itself, and verifies. */
+export const qpuCombinatorialHolds = (): boolean => {
+  if (!qpuCombinatorialDoorsHolds()) return false
+  for (const surface of combinatorialSurfacesOf()) {
+    for (const left of surface.lefts) {
+      for (const right of surface.rights) {
+        const uuid = qpuCallUuidOf(surface.door, left, right)
+        const back = qpuCallOfUuid(uuid)
+        if (back.door !== surface.door || back.left !== left || back.right !== right || !back.verified) return false
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid)) return false
+      }
+    }
+  }
+  return true
 }
 
 /** The sealed identity is mintOf(coins + n) digits — coins folds of sixteen, made one coil. */
@@ -9392,6 +9697,11 @@ export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false, vocabul
   const combinations = within
     ? lefts.flatMap((left, i) => lefts.slice(i + seed).map((right) => ({ left, right })))
     : lefts.flatMap((left) => rights.map((right) => ({ left, right })))
+  /* qpuCrossOf serves any rows it is handed, including a caller's own vocabulary, so only the cross whose axes
+   * ARE the mixed surface can be addressed on it. Asking for an address off the axis would throw, and a reading
+   * that throws because somebody passed their own rows is worse than a reading with no address on those rows. */
+  const mixedAxis = [...new Set(QPU_EXPERIMENTS.flatMap((row) => [row.left, row.right]))]
+  const addressable = within && lefts.every((name) => mixedAxis.includes(name))
   const pairs = combinations.map(({ left, right }) => {
     const held = rows.filter((row) => (within ? (row.left === left && row.right === right) || (row.left === right && row.right === left) : row.left === left && row.right === right))
     const forward = held.filter((row) => (row.left === left ? row.forward : !row.forward))
@@ -9401,6 +9711,8 @@ export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false, vocabul
     return {
       left,
       right,
+      /** Addressed on the `mixed` surface when both names are on its axis; a caller-supplied vocabulary is not. */
+      uuid: addressable ? qpuCallUuidOf('mixed', left, right) : undefined,
       swap,
       owes: swap === 'application' ? (forward.length > none ? 'backward' : 'forward') : undefined,
       earliest: years.length > none ? Math.min(...years) : undefined,
@@ -11896,6 +12208,44 @@ export const qpuWellKnownHolds = (w: ReturnType<typeof wellKnownFieldsOf>): bool
     w.install.length > n - n && w.install.every((r) => r.harness.length > n - n && r.how.length > n - n)
 }
 
+
+/**
+ * THE MOUNTED APPS OF THIS ZONE — what a client reaching any first-party name can call, and how.
+ *
+ * Declared, not probed: this rides in a served, memoised document, so it states which endpoints exist and by
+ * what route, and leaves whether one answered today to the gatherer. Measured 2026-09-28 while writing it:
+ * /api/mcp answers 401 rather than 404, so Payload's MCP is genuinely mounted here over the service binding,
+ * and the hologram lattice next door claims four MCP hosts when lean and unreal serve none.
+ */
+const QPU_MOUNTS = [
+  { app: 'qpu', path: '/mcp', reach: 'unit' as const, serves: 'this unit — the circuit, the receipts, the sealed tools' },
+  { app: 'payload', path: '/api/mcp', reach: 'binding' as const, serves: 'the Payload admin MCP, find-only, over the PAYLOAD service binding' },
+]
+
+/** Every mount this unit offers on the host that asked, plus the zone's other MCP, named and not claimed. */
+export const qpuMountsOf = (host: string = unit.host) => {
+  const zoneHost = qpuZoneHostOf(host)
+  const origin = zoneHost?.origin ?? unit.origin
+  const rows = QPU_MOUNTS.map((m) => ({ ...m, url: `${origin}${m.path}`, canonical: `${unit.origin}${m.path}` }))
+  return {
+    kind: 'mounts' as const,
+    host: zoneHost?.host ?? unit.host,
+    rows,
+    /* The apex runs its own worker and its own MCP; this unit has no route there, so it is named as a peer
+     * rather than mounted. Naming it is the difference between a client finding it and a client guessing. */
+    peers: [{ app: 'uuidna', url: `https://${qpuZoneOf().zone}/mcp`, reach: 'worker' as const, serves: 'the sealed ledger — theorems, decide, verify' }],
+    holds: qpuMountsHolds(rows),
+  }
+}
+
+/** qpuMountsHolds → every mount is https on one origin, each path distinct, and each canonical on this unit. */
+export const qpuMountsHolds = (rows: { path: string; url: string; canonical: string; reach: string }[]): boolean =>
+  rows.length > n - n &&
+  new Set(rows.map((r) => r.path)).size === rows.length &&
+  rows.every((r) => r.path.startsWith('/') && URL.canParse(r.url) && new URL(r.url).protocol === 'https:') &&
+  rows.every((r) => new URL(r.canonical).host === unit.host && new URL(r.canonical).pathname === r.path) &&
+  rows.every((r) => r.reach === 'unit' || r.reach === 'binding')
+
 /** .well-known/mcp.json — what a client or registry can learn without an initialize round-trip. */
 const qpuWellKnownOf = () => {
   const w = wellKnownFieldsOf()
@@ -11919,6 +12269,8 @@ const wellKnownFieldsOf = () => {
     catalog: `${unit.origin}/mcp.json`,
     cite: `${unit.origin}/cite`,
     sitemap: `${unit.origin}/sitemap.xml`,
+    mounts: qpuMountsOf().rows.map((m) => ({ app: m.app, url: m.canonical, reach: m.reach })),
+    peers: qpuMountsOf().peers,
     // THE COORDINATION CONTRACT (wave experience online, 2026-09-12): what an agent coordinating across gateways by
     // receipt needs to know before its first call — how receipts are minted, where readings live and that they
     // never enter a fold, how a thermometer is supplied and named, and that the seat is empty by doctrine.
@@ -11975,10 +12327,186 @@ const openApiFieldsOf = () => {
   }
 }
 
-const qpuSitemapOf = (): string => {
-  const urls = [...new Set([...qpuDocsOf().api.filter((a) => a.method === 'GET').map((a) => a.href), `${unit.origin}/.well-known/mcp.json`, `${unit.origin}/mcp.json`, `${unit.origin}/install.json`, `${unit.origin}/openapi.json`])]
+/**
+ * THE SITE IS THE MCP, ONE HOST AT A TIME.
+ *
+ * Every page this zone serves is a door the MCP already describes, so the discoverability surface is not written
+ * beside the tool table — it is COMPUTED FROM IT. qpuDocsOf().api is the seven-path guide; the discovery doors sit
+ * off it; and the sitemap of any host is exactly the GET doors that host answers. Add a door and it is crawlable
+ * the same deploy; remove one and it leaves the sitemap without anybody editing a list. That is the whole point of
+ * building the site around the MCP rather than the other way around: there is no second list to forget.
+ *
+ * WHAT GOOGLE ACTUALLY REQUIRES, and what was measured missing on 2026-09-28:
+ *
+ *   PER HOST. robots.txt and sitemap.xml are read from the host that serves them; uuidna.com's pair says nothing
+ *   about qpu.uuidna.com. Five of six first-party hosts answered 404 for both, so Cloudflare's managed default
+ *   was served in their place — and that default names no sitemap, which leaves each one uncrawled as a site.
+ *
+ *   THE SITEMAP MUST BE POINTED AT. A sitemap with no `Sitemap:` line in robots.txt and no inbound link is
+ *   discovered by nothing. qpu.uuidna.com HAS served a real sitemap at /sitemap.xml the whole time and nothing
+ *   named it.
+ *
+ *   ONE CANONICAL ENDPOINT. Six hosts each advertising an MCP of their own are six duplicates competing for the
+ *   same query. Every host here names the unit's single endpoint instead, so the crawl consolidates rather than
+ *   splits, and a client that lands on any name is told where the door really is.
+ *
+ * NO lastmod IS EMITTED, and the cause is that this unit has no honest one to emit: the doors are recomputed per
+ * request from the source, not stored with a modification time, and Google's own guidance is to omit the field
+ * rather than supply a value the server cannot stand behind: a fold is not a date, and a timestamp invented to
+ * fill the field would be the one figure on this surface that nobody could recompute.
+ */
+const qpuSeoDoorsOf = (host: string): readonly string[] => {
+  const h = qpuZoneHostOf(host)
+  if (!h) return []
+  // THIS UNIT KNOWS ITS OWN DOORS EXACTLY, and knows of the other first-party hosts only what it serves for them:
+  // their root and the discovery record that points at the canonical MCP. A URL this unit cannot answer for is
+  // an entry it must leave out: the crawler reads an unanswerable <loc> as a soft 404 and a reader reads it as a
+  // claim that a page exists on somebody else's worker, and both readings are correct.
+  if (h.own) {
+    return [...new Set([
+      ...qpuDocsOf().api.filter((a) => a.method === 'GET').map((a) => a.href),
+      `${unit.origin}/.well-known/mcp.json`,
+      `${unit.origin}/mcp.json`,
+      `${unit.origin}/install.json`,
+      `${unit.origin}/openapi.json`,
+      `${unit.origin}/sitemap.xml`,
+    ])]
+  }
+  return [h.origin, `${h.origin}/.well-known/mcp.json`]
+}
+
+/** robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves. */
+export const qpuRobotsOf = (host: string = unit.host): string => {
+  const h = qpuZoneHostOf(host)
+  if (!h) return `User-agent: *\nDisallow: /\n`
+  return [
+    `# ${h.host} — ${h.serves}`,
+    `#`,
+    `# AI AGENTS ARE WELCOME. The MCP endpoint for this whole zone is ${unit.origin}/mcp, described without a`,
+    `# round-trip at ${unit.origin}/.well-known/mcp.json and as OpenAPI at ${unit.origin}/openapi.json.`,
+    `# Every answer carries its own content address, so a reader can recompute it rather than trust it.`,
+    `#`,
+    `# Content signals: search and ai-input are granted. ai-train is not — the content is CC BY-NC-ND 4.0`,
+    `# (https://${qpuZoneOf().zone}/license), and training a model on it makes a derivative.`,
+    ``,
+    `User-agent: *`,
+    `Content-Signal: search=yes,ai-input=yes,ai-train=no`,
+    `Allow: /`,
+    ``,
+    `Sitemap: ${h.origin}/sitemap.xml`,
+    ``,
+  ].join('\n')
+}
+
+/** qpuRobotsHolds → every first-party host is served a policy that names ITS OWN sitemap and no sibling's, grants
+ *  search and grounding, refuses training, and tells a reader where the one MCP door is; a host this unit does not
+ *  serve is refused outright rather than handed the zone's policy. */
+export const qpuRobotsHolds = (): boolean => {
+  const z = { hosts: qpuZoneOf().hosts.filter((x) => x.qpu) }
+  return z.hosts.every((h) => {
+    const robots = qpuRobotsOf(h.host)
+    return robots.includes(`Sitemap: ${h.origin}/sitemap.xml`) &&
+      z.hosts.filter((o) => o.host !== h.host).every((o) => !robots.includes(`Sitemap: ${o.origin}/sitemap.xml`)) &&
+      robots.includes('Content-Signal: search=yes,ai-input=yes,ai-train=no') &&
+      robots.includes('Allow: /') &&
+      robots.includes(`${unit.origin}/mcp`)
+  }) && qpuRobotsOf('example.org') === 'User-agent: *\nDisallow: /\n'
+}
+
+/** sitemap.xml for one first-party host — only URLs on that host, because a crawler ignores the rest. */
+export const qpuSitemapOf = (host: string = unit.host): string => {
+  const urls = qpuSeoDoorsOf(host)
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`
 }
+
+/**
+ * qpuSitemapHolds → the document is well formed, carries only URLs on the host it was asked for, and carries
+ * every URL that host's reading claims. Exported because verify-live compares the SERVED bytes against these,
+ * and a document nothing outside this file can build is a document no deploy can check.
+ */
+export const qpuSitemapHolds = (host: string = unit.host): boolean => {
+  const xml = qpuSitemapOf(host)
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[seed])
+  const reading = qpuSeoOf(host)
+  return (
+    xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>') &&
+    xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">') &&
+    xml.trimEnd().endsWith('</urlset>') &&
+    locs.length === reading.urls.length &&
+    locs.every((loc) => reading.urls.includes(loc)) &&
+    locs.every((loc) => URL.canParse(loc) && new URL(loc).host === reading.host)
+  )
+}
+
+/** The fields, apart from the predicate over them — the shape this package uses wherever a value carries its own
+ *  verdict, so neither the reading nor the check is typed in terms of the other. */
+const seoFieldsOf = (host: string = unit.host) => {
+  const h = qpuZoneHostOf(host)
+  return {
+    kind: 'seo' as const,
+    host: h?.host ?? String(host),
+    origin: h?.origin ?? '',
+    served: h !== undefined,
+    canonical: `${unit.origin}/mcp`,
+    robots: `${h?.origin ?? ''}/robots.txt`,
+    sitemap: `${h?.origin ?? ''}/sitemap.xml`,
+    urls: qpuSeoDoorsOf(host),
+  }
+}
+
+/** The reading a caller can check: what this unit serves for one host, and the canonical door it points every host at. */
+export const qpuSeoOf = (host: string = unit.host) => {
+  const fields = seoFieldsOf(host)
+  return { ...fields, holds: qpuSeoHolds(fields) }
+}
+
+/** qpuSeoHolds → every URL is https on the host it is claimed for, the pair this host serves is named on this host,
+ *  the canonical MCP is the unit's single endpoint whichever host asked, and a host this unit does not serve gets
+ *  nothing rather than a guess. */
+export const qpuSeoHolds = (s: ReturnType<typeof seoFieldsOf>): boolean => {
+  if (!s.served) return s.urls.length === n - n && s.origin === ''
+  const on = (href: string): boolean => URL.canParse(href) && new URL(href).protocol === 'https:' && new URL(href).host === s.host
+  return s.urls.length > n - n &&
+    s.urls.every(on) &&
+    new Set(s.urls).size === s.urls.length &&
+    on(s.robots) && on(s.sitemap) &&
+    new URL(s.robots).pathname === '/robots.txt' &&
+    new URL(s.sitemap).pathname === '/sitemap.xml' &&
+    s.canonical === `${unit.origin}/mcp` &&
+    qpuRobotsOf(s.host).includes(`Sitemap: ${s.sitemap}`) &&
+    qpuSitemapOf(s.host).includes(`<loc>${s.urls[n - n]}</loc>`)
+}
+
+/** Every first-party host's reading at once — the zone's whole crawlable surface, recomputed, never listed. */
+const seoZoneFieldsOf = () => {
+  const hosts = qpuZoneOf().hosts.filter((h) => h.qpu).map((h) => qpuSeoOf(h.host))
+  return {
+    kind: 'seo-zone' as const,
+    zone: qpuZoneOf().zone,
+    hosts,
+    canonical: `${unit.origin}/mcp`,
+    urls: hosts.reduce((sum, h) => sum + h.urls.length, n - n),
+  }
+}
+
+export const qpuSeoZoneOf = () => {
+  const fields = seoZoneFieldsOf()
+  return { ...fields, holds: qpuSeoZoneHolds(fields) }
+}
+
+/** qpuSeoZoneHolds → the zone's hosts each hold their own pair, every host is distinct, and — the law this whole
+ *  surface exists for — all of them name ONE canonical MCP endpoint. Six hosts each advertising an MCP of their own
+ *  would be six duplicates competing for the same query; one endpoint named six ways is one door found six ways. */
+export const qpuSeoZoneHolds = (z: ReturnType<typeof seoZoneFieldsOf>): boolean =>
+  qpuZoneHolds() &&
+  qpuZoneHostHolds() &&
+  qpuRobotsHolds() &&
+  z.hosts.length === QPU_ZONE_HOSTS.filter((h) => h.qpu).length &&
+  z.hosts.every((h) => h.holds) &&
+  new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
+  new Set(z.hosts.map((h) => h.canonical)).size === seed &&
+  z.canonical === `${unit.origin}/mcp` &&
+  z.urls === z.hosts.reduce((sum, h) => sum + h.urls.length, n - n)
 
 /** THE LEARNING LADDER, STANDARDISED (QPULib's shape: one construct per worked example, in order, each with the reference
  *  to compare against). Four steps, each with the same five fields — concept, request, expect, invariant, next — so a
@@ -13322,6 +13850,29 @@ const worker = {
     // It is forwarded whole to Payload over the binding, Host preserved, so Payload's tenancy rules decide what it is. The
     // zone and its reserved labels are qpuTenantZoneOf, the one declaration Payload reads too (payload src/access.ts,
     // tenantSlugOf); www keeps redirecting to the apex.
+    // THE CRAWLABLE PAIR IS ANSWERED HERE FOR EVERY FIRST-PARTY HOST, ahead of both the tenant forward and the
+    // named gate, and it is the ONLY thing this widening takes over. Everything else on a sibling host continues
+    // exactly where it went before — which, measured 2026-09-28, is Payload over the binding: all four of lean,
+    // unreal, hardware and school answer with x-powered-by: Next.js, Payload today, while their own workers
+    // declare custom domains that are plainly not in effect. That disagreement is a lead for whoever owns those
+    // routes; it is not something to settle from here by moving where a live page is served from.
+    //
+    // Taking the pair costs nothing that was being served: each of those hosts 404ed /robots.txt and
+    // /sitemap.xml, so Cloudflare's managed default stood in — a file that names no sitemap at all. Off the
+    // seven-path guide like the other discovery doors, so no sealed count moves.
+    const zoneHost = qpuZoneHostOf(url.hostname)
+    if (url.protocol === 'https:' && zoneHost !== undefined) {
+      if (path === '/robots.txt')
+        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/plain; charset=utf-8' } })
+      if (path === '/sitemap.xml')
+        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'application/xml; charset=utf-8' } })
+      // THE DISCOVERY RECORD IS THE SAME DOCUMENT ON EVERY NAME, because it describes ONE endpoint and that
+      // endpoint is this unit's. A sibling serving a copy that named itself would be the duplicate this whole
+      // surface exists to avoid; a sibling serving nothing would leave the <loc> its own sitemap carries
+      // unanswerable, which is the soft 404 the sitemap law here forbids — and did forbid while this shipped
+      // one, measured live at faf8e51 before it was caught.
+      if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
+    }
     const { zone, www, reserved } = qpuTenantZoneOf()
     const label = url.hostname.endsWith(`.${zone}`) ? url.hostname.slice(0, url.hostname.length - zone.length - seed) : ''
     if (url.protocol === 'https:' && label === www) {
@@ -13426,7 +13977,6 @@ const worker = {
     if (path === '/mcp.json') return servedResponse(servedOf(path, () => qpuMcpOf()))
     if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
     if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
-    if (path === '/sitemap.xml') return new Response(qpuSitemapOf(), { status: found, headers: { ...headers, 'content-type': 'application/xml; charset=utf-8' } })
     /** THE SHEET, WITH THE MEDIA TYPE A BROWSER NEEDS. It was already computed and already served — as a JSON
      * string inside GET /, where nothing can link to it. A stylesheet reachable only by parsing a document that
      * quotes it is a stylesheet no page can use, which is what made the UI incomplete rather than absent.

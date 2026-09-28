@@ -4,7 +4,14 @@
 // JSON.stringify of the same constructors in dist. Polls while Cloudflare propagates; exits 1 with the first
 // differing path if the host never matches. Usage: node scripts/verify-live.mjs https://qpu.uuidna.com
 // VERIFY_ATTEMPTS sets the poll count (5 s apart); CI uses 60 to cover Cloudflare's own build after a push.
-import { qpuLeanOf, qpuMcpOf, qpuQuantumOf } from '../dist/quantum/processing/unit/index.js'
+//
+// AND THE ZONE'S CRAWLABLE PAIR, on every host this unit is routed to, by the same rule: robots.txt and
+// sitemap.xml must equal the documents this build computes for that host, and every <loc> a sitemap carries
+// must answer 200. That last clause is here because it was FOUND BY HAND and would not have been found again:
+// 0.1.9 shipped four sitemaps listing /.well-known/mcp.json on hosts that answered 404 for it, a soft 404
+// published by the law against soft 404s, and the suite was green throughout — an in-suite test can only ask
+// what this unit answers, and a sibling host is answered by Cloudflare's routing, not by this process.
+import { qpuLeanOf, qpuMcpOf, qpuQuantumOf, qpuRobotsOf, qpuSeoZoneOf, qpuSitemapOf } from '../dist/quantum/processing/unit/index.js'
 
 const origin = (process.argv[2] ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
 const pages = [
@@ -29,6 +36,32 @@ const firstDifference = (a, b, path = '$') => {
   return a === b ? undefined : `${path}: ${JSON.stringify(a)?.slice(0, 60)} vs ${JSON.stringify(b)?.slice(0, 60)}`
 }
 
+/**
+ * Every host this unit is routed to, asked for the pair it should serve and for every URL that pair claims.
+ *
+ * A REFUSAL IS NOT A FAULT AND A 404 IS. The distinction this tree keeps relearning: a host that would not
+ * answer at all is unreachable and reported as such by the caller, while a host that answers 404 for a URL its
+ * own sitemap lists has told us something definite. Only the definite answer is a fault here.
+ */
+const zoneFaultsOf = async () => {
+  const faults = []
+  for (const host of qpuSeoZoneOf().hosts) {
+    for (const [path, built] of [['/robots.txt', qpuRobotsOf(host.host)], ['/sitemap.xml', qpuSitemapOf(host.host)]]) {
+      const res = await fetch(`${host.origin}${path}`).catch((e) => ({ status: 0, text: async () => String(e) }))
+      const served = await res.text()
+      if (res.status === 0) { faults.push(`${host.origin}${path}: unreachable — ${served.slice(0, 60)}`); continue }
+      if (res.status !== 200) { faults.push(`${host.origin}${path}: HTTP ${res.status} — Cloudflare's managed default stands in wherever this answers 404`); continue }
+      if (served !== built) faults.push(`${host.origin}${path}: serves ${served.length} bytes, this build computes ${built.length}`)
+    }
+    for (const loc of [...qpuSitemapOf(host.host).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])) {
+      const res = await fetch(loc, { redirect: 'manual' }).catch(() => ({ status: 0 }))
+      if (res.status === 0) faults.push(`${loc}: listed in ${host.host}'s sitemap and unreachable`)
+      else if (res.status !== 200) faults.push(`${loc}: listed in ${host.host}'s sitemap and answers ${res.status} — a soft 404 the crawler drops and a reader believes`)
+    }
+  }
+  return faults
+}
+
 let last = ''
 for (let attempt = 1; attempt <= attempts; attempt++) {
   const results = []
@@ -40,6 +73,13 @@ for (let attempt = 1; attempt <= attempts; attempt++) {
   }
   if (results.every((r) => r.equal)) {
     for (const r of results) console.log(`verify-live: ${origin}${r.path} equals the built document (${r.built.length} bytes)`)
+    const faults = await zoneFaultsOf()
+    for (const line of faults) console.error(`verify-live: ${line}`)
+    if (faults.length > 0) {
+      console.error(`verify-live: the pages match and the zone's crawlable surface does not — ${faults.length} fault(s)`)
+      process.exit(1)
+    }
+    console.log(`verify-live: ${qpuSeoZoneOf().hosts.length} host(s) serve the pair this build computes, every <loc> answering`)
     process.exit(0)
   }
   const bad = results.find((r) => !r.equal)

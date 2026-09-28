@@ -68,6 +68,25 @@ test('A CAUSE GIVEN AS A CLAUSE CLEARS, and a shrug does not', () => {
     `a stated cause clears and a shrug does not — flagged ${JSON.stringify(flagged)}`)
 })
 
+test('THE WIDENED FORMS CLEAR, AND EACH HAS ITS BARE TWIN FLAGGED', () => {
+  // Added with the widening itself: three plain-English cause forms were admitted after reading what the first run
+  // flagged, and a widening without a control is a finder loosened on trust. Each row below pairs the form that must
+  // clear with the bare sentence that must still be caught.
+  const fixtures = {
+    'without.mjs': '// cannot be driven from a test without a network and a repository\n',
+    'without-bare.mjs': '// cannot be driven from a test\n',
+    'qualified.mjs': '// a seeded name cannot be forged\n',
+    'qualified-bare.mjs': '// a name cannot be forged\n',
+    'general.mjs': '// a test that cannot fail is furniture\n',
+    'general-bare.mjs': '// this cannot fail\n',
+  }
+  const t = inTree(fixtures)
+  const flagged = wallsOf(Object.keys(fixtures), t.dir).walls.map((w) => w.file).sort()
+  t.done()
+  assert.deepEqual(flagged, ['general-bare.mjs', 'qualified-bare.mjs', 'without-bare.mjs'],
+    `each widened form must clear and each bare twin must be caught — flagged ${JSON.stringify(flagged)}`)
+})
+
 test('THE WINDOW IS THREE LINES, because a comment sentence wraps', () => {
   const t = inTree({ 'wrap.mjs': '// cannot be computed here\n// because the host owns the clock\n' })
   const r = wallsOf(['wrap.mjs'], t.dir)
