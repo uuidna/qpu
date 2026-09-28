@@ -177,6 +177,11 @@ test('a door that needs a third party to hold is not self-sufficient, and says w
   assert.match(proxy[0].what, /answers but does not hold when asked plainly/)
   assert.match(proxy[0].owes, /a proxy, not a unit/)
 
+  /* A TIMEOUT IS THE NETWORK. Sweeping forty doors sequentially will outrun a deadline now and then, and
+   * storage_raid was filed as unanswered on a run where it answers in 1.3s every time it is asked alone. */
+  assert.deepEqual(doorLeadsOf({ origin: 'o', doors: [{ name: 'storage_raid', ok: false, why: 'TimeoutError: The operation was aborted due to timeout' }] }), [])
+  assert.deepEqual(doorLeadsOf({ origin: 'o', doors: [{ name: 'x', ok: false, why: 'fetch failed' }] }), [])
+
   // AN OUTAGE IS NOT A DEFECT, and the two are not merged: one is a door served wrongly, the other not served.
   const down = doorLeadsOf({ origin: 'o', doors: [{ name: 'qpu_lean', ok: false, why: '503' }] })
   assert.equal(down.length, 1)

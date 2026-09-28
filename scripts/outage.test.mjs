@@ -53,5 +53,9 @@ test('one condition is not a comparison, and none is not either', () => {
 test('all four shapes a third party fails in are covered, not just the refusal', () => {
   // The original guard tested a refused connection alone. 503, a captive portal's HTML and a silent socket were
   // each a live defect the first time they were run, so dropping one from this list is dropping a known bug.
-  assert.deepEqual([...SHAPES].sort(), ['body', 'hang', 'status', 'throw'])
+  assert.deepEqual([...SHAPES].sort(), ['body', 'hang', 'partial', 'status', 'throw'])
+  /* PARTIAL IS THE ONE THE OTHER FOUR CANNOT REACH. They fail every door at once, so a reader that treats
+   * reachability as a single fact passes all four and still breaks when a real host answers some doors and
+   * not others — which is what a loaded machine does, and what took this suite from 175 tests to 161. */
+  assert.ok(SHAPES.includes('partial'), 'some answer and some do not, which no all-or-nothing shape produces')
 })

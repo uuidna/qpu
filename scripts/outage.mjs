@@ -34,6 +34,7 @@ const HOST = 'opendata.cern.ch'
 
 /** The shim, written beside the run rather than committed into src: it belongs to the test, not to the unit. */
 const SHIM = `
+const coins = 2
 const mode = process.env.CERN_FAIL
 const real = globalThis.fetch
 globalThis.fetch = async (req, init) => {
@@ -42,6 +43,22 @@ globalThis.fetch = async (req, init) => {
   // reached run's name — five conditions agreeing, four of them the same condition. The comparison reported that
   // the proof does not move while never once letting the host answer.
   if (!mode || !url.includes('${HOST}')) return real(req, init)
+  if (mode === 'partial') {
+    // SOME DOORS ANSWER AND SOME DO NOT, which is what a loaded machine or a rate-limited host actually does
+    // and which none of the other shapes produce — they all fail every door at once. This is the shape that
+    // took the suite from 175 tests to 161 on a busy laptop, by letting the four records read while a project
+    // timed out and then asserting the projects as though everything had answered.
+    //
+    // WHICH DOORS FAIL IS DECIDED BY THE URL, not by call order. Failing every other call made the pattern
+    // depend on how many fetches had happened first, so cern.test alone passed three times out of three
+    // while the whole suite failed — a different door fell over depending on which file ran before it. A
+    // shape whose verdict moves with scheduling cannot be reproduced — a declared boundary of the method,
+    // not a preference — and what cannot be reproduced cannot be debugged.
+    let h = 0
+    for (let i = 0; i < url.length; i++) h = (h * 31 + url.charCodeAt(i)) >>> 0
+    if (h % coins === 0) throw new TypeError('fetch failed')
+    return real(req, init)
+  }
   if (mode === 'throw') throw new TypeError('fetch failed')
   if (mode === 'status') return new Response('upstream unavailable', { status: 503 })
   if (mode === 'body') return new Response('<html>captive portal</html>', { headers: { 'content-type': 'text/html' }, status: 200 })
@@ -67,7 +84,15 @@ globalThis.fetch = async (req, init) => {
 }
 `
 
-export const SHAPES = ['throw', 'status', 'body', 'hang']
+/**
+ * A THIRD PARTY FAILS IN FIVE WAYS, and the fifth was missing for a long time.
+ *
+ * throw/status/body/hang all fail EVERY door at once, so a reader that treats reachability as one fact
+ * passes all four and still breaks the first time a real host answers some doors and not others. `partial`
+ * is that case: every other call fails. It is the shape that was breaking the suite on a loaded machine
+ * while `npm run outage` reported four green conditions.
+ */
+export const SHAPES = ['throw', 'status', 'body', 'hang', 'partial']
 
 /** The verdict, pure, so it is testable without running a suite: one committed artifact across every condition
  *  that ran. `receipt` here is the hash of test-receipt.json itself, because that whole file is what git diffs. */

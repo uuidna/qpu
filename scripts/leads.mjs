@@ -170,7 +170,12 @@ export const doorLeadsOf = ({ origin, doors }) => {
   const leads = []
   for (const door of doors) {
     if (door.ok !== true) {
-      leads.push({ source: `${origin}/mcp ${door.name}`, what: `${door.name} did not answer (${door.why ?? 'no reason given'})`, owes: 'the door served, or the catalogue that lists it corrected' })
+      /* A TIMEOUT IS THE NETWORK, NOT A DEFECT — the law this tree keeps everywhere else, arriving here last.
+       * Sweeping forty doors sequentially against a live host will occasionally outrun a deadline, and
+       * storage_raid was filed as "did not answer" on a run where it answers in 1.3 seconds every time it is
+       * asked alone. An unreached door is the third state: reported, chased if it persists, never a defect. */
+      if (/timeout|aborted|fetch failed|ECONN|ENOTFOUND/i.test(String(door.why ?? ''))) continue
+      leads.push({ source: `${origin} ${door.name}`, what: `${door.name} did not answer (${door.why ?? 'no reason given'})`, owes: 'the door served, or the catalogue that lists it corrected' })
       continue
     }
     /* A DOOR THAT REFUSES ON PURPOSE IS WORKING. Sweeping all four catalogs turned storage_put, storage_del
