@@ -27,31 +27,32 @@ import worker, {
 } from './index.js'
 
 const env = { QPU_HOST: 'qpu.uuidna.com' }
+const reservedOf = () => qpuTenantZoneOf().reserved
 const getOf = (host: string, path: string) =>
   worker.fetch(new Request(`https://${host}${path}`, { headers: { accept: 'text/plain' } }), env)
 
-test('the zone names every first-party host, and no first-party name can be let out as a tenant', async () => {
+test('the pair is answered for a first-party host, and nothing else about that host moves', async () => {
   const z = qpuZoneOf()
   assert.equal(qpuZoneHolds(z), true)
   assert.equal(z.hosts.filter((h) => h.apex).length, 1, 'one apex — the zone itself')
   assert.ok(z.hosts.some((h) => h.own), 'this unit is one of the hosts it serves; it is not outside its own zone')
 
-  // THE REGRESSION THIS TABLE EXISTS FOR, READ OFF THE WIRE. reserved was a two-name hand list — this unit and
-  // www — so every other first-party label matched the tenant branch above the named gate: had its custom domain
-  // lapsed, lean.uuidna.com would have been forwarded to Payload as somebody's rented page. The distinction is
-  // visible in the answer, so it is asserted there rather than in the table that produces it.
-  const { reserved } = qpuTenantZoneOf()
-  for (const h of z.hosts.filter((x) => !x.apex)) {
-    assert.ok(reserved.includes(h.label), `${h.label} is first-party and must never be read as a tenant slug`)
-    const first = await getOf(h.host, '/robots.txt')
-    assert.equal(first.status, 200, `${h.host} is first-party and must be answered here, not handed on as a tenant`)
+  // THE WIDENING TAKES THE PAIR AND NOTHING ELSE, and that is asserted rather than intended. Measured on the live
+  // zone: lean, unreal, hardware and school all answer x-powered-by: Next.js, Payload, so this unit is already
+  // forwarding them to the tenant branch. Serving their robots.txt takes nothing away — each of them 404ed it —
+  // but serving their ROOT would move a live page, so the same host must still reach the tenant forward here.
+  for (const h of z.hosts.filter((x) => !x.apex && !x.own)) {
+    assert.equal((await getOf(h.host, '/robots.txt')).status, 200, `${h.host}/robots.txt is answered by this unit`)
+    const root = await getOf(h.host, '/')
+    assert.equal(root.status, 404)
+    assert.equal(((await root.json()) as { denied?: string }).denied, 'payload', `${h.host}/ still takes the tenant path it takes today`)
   }
-  assert.ok(reserved.includes('www'), 'www is reserved because the router redirects it to the apex')
 
-  // A REAL TENANT STILL TAKES THE TENANT PATH, and says so by name — the widening did not swallow the branch.
+  // a name outside the zone keeps the pair it had: the tenant forward, not this unit's policy
   const tenant = await getOf('somebody-elses-shop.uuidna.com', '/robots.txt')
   assert.equal(tenant.status, 404)
-  assert.equal(((await tenant.json()) as { denied?: string }).denied, 'payload', 'a tenant is refused by name when no Payload binding is bound here')
+  assert.equal(((await tenant.json()) as { denied?: string }).denied, 'payload')
+  assert.ok(reservedOf().includes('www'), 'www is reserved because the router redirects it to the apex')
 
   // and the table is not a wish: a name this unit does not serve resolves to nothing rather than to a guess
   assert.equal(qpuZoneHostOf('example.org'), undefined)

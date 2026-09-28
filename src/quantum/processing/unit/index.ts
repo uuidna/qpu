@@ -1285,7 +1285,7 @@ export const qpuZoneHostHolds = (): boolean => {
 export const qpuTenantZoneOf = () => {
   const labels = unit.host.split('.')
   const own = labels[n - n]!
-  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [...qpuZoneOf().labels, 'www'] as readonly string[] }
+  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [own, 'www'] as readonly string[] }
 }
 /** value + predicate: the zone and this unit's own label recompose its host, and every reserved label is one label */
 export const qpuTenantZoneHolds = (z = qpuTenantZoneOf()): boolean =>
@@ -13503,6 +13503,23 @@ const worker = {
     // It is forwarded whole to Payload over the binding, Host preserved, so Payload's tenancy rules decide what it is. The
     // zone and its reserved labels are qpuTenantZoneOf, the one declaration Payload reads too (payload src/access.ts,
     // tenantSlugOf); www keeps redirecting to the apex.
+    // THE CRAWLABLE PAIR IS ANSWERED HERE FOR EVERY FIRST-PARTY HOST, ahead of both the tenant forward and the
+    // named gate, and it is the ONLY thing this widening takes over. Everything else on a sibling host continues
+    // exactly where it went before — which, measured 2026-09-28, is Payload over the binding: all four of lean,
+    // unreal, hardware and school answer with x-powered-by: Next.js, Payload today, while their own workers
+    // declare custom domains that are plainly not in effect. That disagreement is a lead for whoever owns those
+    // routes; it is not something to settle from here by moving where a live page is served from.
+    //
+    // Taking the pair costs nothing that was being served: each of those hosts 404ed /robots.txt and
+    // /sitemap.xml, so Cloudflare's managed default stood in — a file that names no sitemap at all. Off the
+    // seven-path guide like the other discovery doors, so no sealed count moves.
+    const zoneHost = qpuZoneHostOf(url.hostname)
+    if (url.protocol === 'https:' && zoneHost !== undefined) {
+      if (path === '/robots.txt')
+        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/plain; charset=utf-8' } })
+      if (path === '/sitemap.xml')
+        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'application/xml; charset=utf-8' } })
+    }
     const { zone, www, reserved } = qpuTenantZoneOf()
     const label = url.hostname.endsWith(`.${zone}`) ? url.hostname.slice(0, url.hostname.length - zone.length - seed) : ''
     if (url.protocol === 'https:' && label === www) {
@@ -13512,18 +13529,6 @@ const worker = {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
-    }
-    // THE CRAWLABLE PAIR ANSWERS FOR EVERY FIRST-PARTY HOST, not only for this one, and it answers BEFORE the
-    // named gate below — that gate exists to refuse a stranger, and a sibling name in this zone is not a stranger.
-    // Measured 2026-09-28: each of these hosts 404ed here, so Cloudflare served its managed robots.txt in place of
-    // an answer, and the sitemap this unit had been computing all along was named by nothing. Off the seven-path
-    // guide like the other discovery doors, so no sealed count moves.
-    const zoneHost = qpuZoneHostOf(url.hostname)
-    if (url.protocol === 'https:' && zoneHost !== undefined) {
-      if (path === '/robots.txt')
-        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/plain; charset=utf-8' } })
-      if (path === '/sitemap.xml')
-        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'application/xml; charset=utf-8' } })
     }
     const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
