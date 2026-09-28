@@ -44,6 +44,24 @@ export const IMPOSSIBLE = new RegExp(String.raw`\b${CLAIM}\b`, 'i')
 export const JUSTIFIED =
   /\b(theorem [a-z0-9_]+|by construction|declared boundary|host|browser|no filesystem|secure context|determinism|hard-reject|kernel|physical device|edge|isolate|tab|upstream|vendored|this project|the captain|decision|convention|rule of this|chosen|deliberate)\b/i
 
+/**
+ * THE PLAIN-ENGLISH FORMS, ADDED AFTER READING WHAT THE FIRST RUN FLAGGED.
+ *
+ * Twenty walls, and inspection said most of them DID name their cause — in words no keyword list contains:
+ * "cannot be driven from a test WITHOUT a network and a repository", "a law that names one repository cannot serve
+ * another", "you cannot lose WHAT IS DERIVABLE", "a SEEDED name cannot be forged". The honest reading is that the
+ * instrument was too narrow, not that twenty good sentences need rewording to satisfy it — a finder that makes a tree
+ * worse to go green is the fault it was built to catch, one level up.
+ *
+ * So three more cause forms are read, each with the same twelve-character floor that keeps a shrug from clearing a wall:
+ * an absence ("cannot X without Y"), a qualifier that carries the reason ("a seeded name cannot"), and a general
+ * statement about a KIND of thing rather than this code ("a test that cannot fail is furniture") — the last is mention
+ * rather than use, and flagging it asks an author to justify a definition.
+ */
+const WITHOUT = new RegExp(String.raw`\b${CLAIM}\b[^\n]{0,60}\bwithout\s+\S[^\n]{11,}`, 'i')
+const QUALIFIED = new RegExp(String.raw`\b(?:a|an|the)\s+\w+(?:ed|able|ible|ic|al)\s+\w+[^\n]{0,20}\b${CLAIM}\b`, 'i')
+const GENERAL = new RegExp(String.raw`\b(?:a|an|any|every)\s+\w+(?:\s+\w+)?\s+that\s+${CLAIM}\b`, 'i')
+
 /** or the cause given as a clause, in either order, with a floor so a shrug does not clear a wall */
 export const REASON_CLAUSE = new RegExp(
   [
@@ -104,7 +122,7 @@ export function wallsOf(files, root = ROOT) {
       const line = lines[i]
       if (!COMMENT.test(line) || !IMPOSSIBLE.test(line)) continue
       const window = [lines[i - 1] ?? '', line, lines[i + 1] ?? ''].join(' ')
-      if (JUSTIFIED.test(window) || REASON_CLAUSE.test(window)) continue
+      if (JUSTIFIED.test(window) || REASON_CLAUSE.test(window) || WITHOUT.test(window) || QUALIFIED.test(window) || GENERAL.test(window)) continue
       walls.push({ file: rel, line: i + 1, claim: line.trim().slice(0, 140) })
     }
   }
