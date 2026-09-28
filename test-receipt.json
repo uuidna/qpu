@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 185,
-  "pass": 185,
+  "tests": 186,
+  "pass": 186,
   "fail": 0,
   "dry": 0,
-  "circuit": 127,
+  "circuit": 128,
   "mintOnly": 28,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "5909efbde4289511",
-  "computed": 181,
+  "receipt": "15184b7a6fabdd43",
+  "computed": 182,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -4861,7 +4861,7 @@
       "served": {
         "count": 10,
         "folds": [
-          "\"de3a9217e6aabb97\"",
+          "\"cae925dbd7a96875\"",
           "\"a2ab19b3473d26e9\"",
           "\"7603e2cfade1b0c6\"",
           "\"542b9d1b7b81d7cd\"",
@@ -4972,25 +4972,25 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 286391,
+      "computations": 286829,
       "kinds": {
-        "h": 103483,
-        "cnot": 111378,
-        "x": 58545,
-        "toffoli": 7920,
-        "measure": 3960,
-        "cmodexp": 531,
-        "xx": 531,
+        "h": 103597,
+        "cnot": 111570,
+        "x": 58644,
+        "toffoli": 7938,
+        "measure": 3969,
+        "cmodexp": 534,
+        "xx": 534,
         "planes": 43
       },
       "dims": {
-        "8": 284985,
+        "8": 285417,
         "128": 344,
-        "512": 1062
+        "512": 1068
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "583811f0fe8f3007",
+      "receipt": "70f7be5b4c89808e",
       "states": [
         {
           "name": "measure",
@@ -5005,12 +5005,12 @@
             "0",
             "0"
           ],
-          "rows": 3960
+          "rows": 3969
         }
       ],
       "mint": {
-        "calls": 5355168,
-        "chain": "745e7766593bceb5"
+        "calls": 5363574,
+        "chain": "3420042d8e907b0a"
       },
       "served": {
         "count": 0,
@@ -7411,6 +7411,55 @@
         "folds": [
           "\"db4e1a708ec181fb\""
         ]
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the root document is what this build computes, whatever the unit has been asked to do first",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 2210,
+      "kinds": {
+        "x": 482,
+        "cnot": 928,
+        "toffoli": 80,
+        "h": 656,
+        "measure": 40,
+        "cmodexp": 12,
+        "xx": 12
+      },
+      "dims": {
+        "8": 2186,
+        "512": 24
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "3d3053583515fa01",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 40
+        }
+      ],
+      "mint": {
+        "calls": 46400,
+        "chain": "5603c4ad9fb8b8d5"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
       },
       "foreign": 0
     },

@@ -949,6 +949,21 @@ const STORE_BYTES_SAMPLE = mintOf(mintOf(coins))
  *  bound of eight would have been 240 and the repair would have failed the way the thing it repairs failed.
  *  `remaining` is how a caller knows to call again. */
 const STORE_REPAIR_MAX = coins
+/**
+ * PLACEMENT IS STATE; A PUBLISHED DOCUMENT IS NOT. This counter is the RAID write cursor — each write lands on
+ * the next disk, which is what spreads a cluster instead of stacking every object on disk zero, and raid.test
+ * holds exactly that by writing a full rotation and checking the picks cover every disk.
+ *
+ * WHAT IT MUST NOT DO IS LEAK INTO A SERVED DOCUMENT. qpuRaidOf used to read it whenever a caller passed no
+ * traffic, and that reading rides in GET / through circuit.register.efficiency, memoised at first serve — so
+ * each isolate froze whichever count it happened to hold. Measured 2026-09-28: the live host served `fly`, then
+ * `wasabi` from another isolate, while the build computed `cloudflare`, and verify-live — whose whole premise
+ * is "no clock, no random" — could only pass by luck.
+ *
+ * So the cursor is passed EXPLICITLY by the write path that owns it, and every other caller gets the reference
+ * placement, which a build can recompute. The first attempt at this deleted the counter outright on the
+ * evidence that no caller passed one; raid.test refused that immediately, and it was right to.
+ */
 let raidTraffic = n - n
 
 const raidClouds = [
@@ -1031,7 +1046,8 @@ export const qpuRaidOf = (input: { safe?: boolean; traffic?: number } = {}) => {
   const disks = coins
   const stripes = faces.rays
   const teams = coins
-  const traffic = input.traffic ?? raidTraffic
+  /* the reference placement unless a caller owns a cursor and says so — see the note on raidTraffic */
+  const traffic = input.traffic ?? n - n
   const demand = traffic % (faces.faces + seed)
   const types = raidTypesOf(faces)
   const sorted = raidByCostOf(types)
@@ -6958,7 +6974,7 @@ export const qpuStorageOf = async (
       }
     }
     raidTraffic += seed
-    const raid = qpuRaidOf({ safe: raidSafeOf(key) })
+    const raid = qpuRaidOf({ safe: raidSafeOf(key), traffic: raidTraffic })
     /**
      * THE ROUND TRIP IS GONE FROM THE WRITE PATH, AND PROVED PROPERLY INSTEAD.
      *
@@ -12313,9 +12329,28 @@ export const qpuRobotsHolds = (): boolean => {
 }
 
 /** sitemap.xml for one first-party host — only URLs on that host, because a crawler ignores the rest. */
-const qpuSitemapOf = (host: string = unit.host): string => {
+export const qpuSitemapOf = (host: string = unit.host): string => {
   const urls = qpuSeoDoorsOf(host)
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`
+}
+
+/**
+ * qpuSitemapHolds → the document is well formed, carries only URLs on the host it was asked for, and carries
+ * every URL that host's reading claims. Exported because verify-live compares the SERVED bytes against these,
+ * and a document nothing outside this file can build is a document no deploy can check.
+ */
+export const qpuSitemapHolds = (host: string = unit.host): boolean => {
+  const xml = qpuSitemapOf(host)
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[seed])
+  const reading = qpuSeoOf(host)
+  return (
+    xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>') &&
+    xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">') &&
+    xml.trimEnd().endsWith('</urlset>') &&
+    locs.length === reading.urls.length &&
+    locs.every((loc) => reading.urls.includes(loc)) &&
+    locs.every((loc) => URL.canParse(loc) && new URL(loc).host === reading.host)
+  )
 }
 
 /** The fields, apart from the predicate over them — the shape this package uses wherever a value carries its own

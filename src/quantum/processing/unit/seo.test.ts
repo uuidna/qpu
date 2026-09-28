@@ -13,6 +13,8 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import worker, {
+  qpuQuantumOf,
+  qpuRaidOf,
   QPU_ZONE_HOSTS,
   qpuRobotsOf,
   qpuRobotsHolds,
@@ -159,4 +161,34 @@ test('the pair is served on the wire, for a sibling host as well as for this one
   // is the one thing here that could have opened the unit to any hostname at all.
   const stranger = await getOf('example.org', '/robots.txt')
   assert.equal(stranger.status, 404, 'the crawlable pair is for this zone, not for whatever name resolved here')
+})
+
+/**
+ * A SERVED DOCUMENT IS A FUNCTION OF THE BUILD, AND A WRITE DOES NOT CHANGE IT.
+ *
+ * verify-live's premise, asserted here so it cannot quietly stop being true. A module-level counter used to be
+ * incremented on every storage write and read by qpuRaidOf whenever no caller passed one — which no caller ever
+ * did — so the cloud each RAID node reported rotated with write volume, and that rotation rides in GET /
+ * through circuit.register.efficiency. Memoised at first serve, each isolate froze a different answer: the live
+ * host served `fly`, then `wasabi` from another isolate, while the build computed `cloudflare`.
+ *
+ * The rotation itself was never the defect and is still here — it just has to be ASKED for now.
+ */
+test('the root document is what this build computes, whatever the unit has been asked to do first', async () => {
+  const before = JSON.stringify(qpuQuantumOf())
+
+  // exercise the door that used to move it: a storage write, refused here for want of a binding, which is
+  // exactly the path that carried the increment
+  await worker.fetch(new Request('https://qpu.uuidna.com/storage/probe', { method: 'PUT', body: '{"x":1}' }), env)
+  await worker.fetch(new Request('https://qpu.uuidna.com/storage/probe', { method: 'PUT', body: '{"x":2}' }), env)
+
+  assert.equal(JSON.stringify(qpuQuantumOf()), before, 'a write must not change what the root serves')
+
+  // THE ROTATION IS STILL THERE, and is now a question rather than a mood: ask for traffic and the placement
+  // moves, which is what made it worth having in the first place.
+  const rest = qpuRaidOf()
+  const moved = qpuRaidOf({ traffic: 1 })
+  assert.equal(rest.traffic, 0, 'the reference placement is the one a build can recompute')
+  assert.notDeepEqual(moved.types.map((row) => row.cloud), rest.types.map((row) => row.cloud))
+  assert.notEqual(moved.parity, rest.parity)
 })
