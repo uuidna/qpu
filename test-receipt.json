@@ -10,7 +10,7 @@
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "83a03a2bb39bbb18",
+  "receipt": "5452f43d3cc71ffe",
   "computed": 176,
   "readRows": 4,
   "readingsOf": "test-readings.json",
@@ -7131,23 +7131,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 2044,
+      "computations": 1752,
       "kinds": {
-        "x": 462,
-        "cnot": 896,
-        "toffoli": 84,
-        "h": 532,
-        "measure": 42,
-        "cmodexp": 14,
-        "xx": 14
+        "x": 396,
+        "cnot": 768,
+        "toffoli": 72,
+        "h": 456,
+        "measure": 36,
+        "cmodexp": 12,
+        "xx": 12
       },
       "dims": {
-        "8": 2016,
-        "512": 28
+        "8": 1728,
+        "512": 24
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "a53729aa50342a51",
+      "receipt": "37bcb5b0819518bf",
       "states": [
         {
           "name": "measure",
@@ -7162,12 +7162,12 @@
             "0",
             "0"
           ],
-          "rows": 42
+          "rows": 36
         }
       ],
       "mint": {
-        "calls": 39228,
-        "chain": "6f85db7cb23b0a7f"
+        "calls": 33624,
+        "chain": "714ee208a0400671"
       },
       "served": {
         "count": 0,
@@ -7229,23 +7229,23 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 3942,
+      "computations": 30435,
       "kinds": {
-        "x": 891,
-        "cnot": 1728,
-        "toffoli": 162,
-        "h": 1026,
-        "measure": 81,
-        "cmodexp": 27,
-        "xx": 27
+        "x": 6667,
+        "cnot": 12848,
+        "toffoli": 1120,
+        "h": 8896,
+        "measure": 560,
+        "cmodexp": 172,
+        "xx": 172
       },
       "dims": {
-        "8": 3888,
-        "512": 54
+        "8": 30091,
+        "512": 344
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "96b0028e2504db20",
+      "receipt": "1dfd1635290ba710",
       "states": [
         {
           "name": "measure",
@@ -7260,16 +7260,18 @@
             "0",
             "0"
           ],
-          "rows": 81
+          "rows": 560
         }
       ],
       "mint": {
-        "calls": 75654,
-        "chain": "aa8188da8a23bcd4"
+        "calls": 626262,
+        "chain": "0c21c060d595a7ab"
       },
       "served": {
-        "count": 0,
-        "folds": []
+        "count": 4,
+        "folds": [
+          "\"db4e1a708ec181fb\""
+        ]
       },
       "foreign": 0
     },

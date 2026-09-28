@@ -27,6 +27,8 @@ import worker, {
 } from './index.js'
 
 const env = { QPU_HOST: 'qpu.uuidna.com' }
+/** The hosts this unit is routed to — the apex holds its own custom domain and is answered by its own worker. */
+const served = () => qpuZoneOf().hosts.filter((h) => h.qpu)
 const reservedOf = () => qpuTenantZoneOf().reserved
 const getOf = (host: string, path: string) =>
   worker.fetch(new Request(`https://${host}${path}`, { headers: { accept: 'text/plain' } }), env)
@@ -62,15 +64,14 @@ test('the pair is answered for a first-party host, and nothing else about that h
 })
 
 test("each host's robots.txt names that host's sitemap and no other host's", async () => {
-  const z = qpuZoneOf()
-  for (const h of z.hosts) {
+  for (const h of served()) {
     // READ FROM THE DOOR, not from the function behind it: a policy is only a policy on the host that served it.
     const robots = await (await getOf(h.host, '/robots.txt')).text()
     assert.equal(robots, qpuRobotsOf(h.host), 'the door serves what the reading computes, with nothing added on the way out')
     assert.ok(robots.includes(`Sitemap: ${h.origin}/sitemap.xml`), `${h.host} must point at its own sitemap`)
     // THE PER-HOST LAW, STATED AS A REFUSAL. A directive is read from the host that served it, so a sitemap line
     // naming a sibling is a line the crawler ignores and a reader believes.
-    for (const other of z.hosts.filter((x) => x.host !== h.host)) {
+    for (const other of served().filter((x) => x.host !== h.host)) {
       assert.ok(!robots.includes(`Sitemap: ${other.origin}/sitemap.xml`), `${h.host} must not name ${other.host}'s sitemap`)
     }
     assert.ok(robots.includes('Content-Signal: search=yes,ai-input=yes,ai-train=no'), 'the zone grants search and grounding, and refuses training')
@@ -86,7 +87,7 @@ test('every host points at ONE MCP endpoint, and lists only URLs it can answer f
   const zone = qpuSeoZoneOf()
   assert.equal(zone.holds, true)
   assert.equal(qpuSeoZoneHolds(zone), true)
-  assert.equal(zone.hosts.length, QPU_ZONE_HOSTS.length)
+  assert.equal(zone.hosts.length, QPU_ZONE_HOSTS.filter((h) => h.qpu).length, "the reading covers the hosts this unit is routed to, not every name in the zone")
 
   // CONSOLIDATION, NOT DUPLICATION. Six hosts each advertising an MCP of their own are six duplicates competing
   // for one query; six hosts naming one endpoint are one door found six ways.
@@ -113,7 +114,7 @@ test('every host points at ONE MCP endpoint, and lists only URLs it can answer f
 })
 
 test('the pair is served on the wire, for a sibling host as well as for this one', async () => {
-  for (const h of qpuZoneOf().hosts) {
+  for (const h of served()) {
     const robots = await getOf(h.host, '/robots.txt')
     assert.equal(robots.status, 200, `${h.host}/robots.txt must be answered, not left to a managed default`)
     assert.equal(robots.headers.get('content-type'), 'text/plain; charset=utf-8')
@@ -126,7 +127,33 @@ test('the pair is served on the wire, for a sibling host as well as for this one
     assert.ok(xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>'))
     assert.ok(xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'))
     assert.ok(xml.includes(`<loc>${h.origin}`), `${h.host}'s sitemap must carry its own URLs`)
+
+    // EVERY <loc> IS FETCHED, because the earlier check was weaker than the sentence above it: it asserted each
+    // URL was ON this host and never that this host ANSWERS it. faf8e51 shipped four sitemaps listing
+    // /.well-known/mcp.json on hosts where it 404ed — a soft 404 published by the very law that forbids one, and
+    // the predicate passed. A sitemap entry is a claim that a page is there; the only check worth having asks.
+    for (const loc of [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])) {
+      const at = new URL(loc)
+      const res = await worker.fetch(new Request(loc, { headers: { accept: 'application/json' } }), env)
+      if (res.status === 200) continue
+      // THE SECOND ARM IS THE TENANT FORWARD, and it is only honest because those roots were measured answering
+      // 200 live: this unit hands a sibling's root to Payload, which has no binding in this isolate and so says
+      // `denied: payload` rather than serving the page. That is somebody answering. A plain 404 is not, and that
+      // is the case this whole check exists to catch.
+      const body = (await res.json()) as { denied?: string }
+      assert.equal(body.denied, 'payload', `${h.host} lists ${at.pathname} and nothing answers it — ${res.status}`)
+      assert.equal(at.pathname, '/', 'only a sibling root is answered by the forward; every other <loc> is this unit\'s own')
+    }
   }
+
+  // THE APEX IS NOT THIS UNIT'S TO ANSWER FOR, and the strengthened check above is what found that out: qpu holds
+  // qpu.uuidna.com and the *.uuidna.com wildcard, and the apex is under neither. It already serves its own
+  // robots.txt and its own 11,438-URL sitemap from the worker that does hold it, so a pair computed here would be
+  // a second answer nobody can reach — and the sitemap it produced listed a root this unit answers 404 for.
+  const apexHost = qpuZoneOf().hosts.find((h) => h.apex)!
+  assert.equal(apexHost.qpu, false)
+  assert.equal(qpuZoneHostOf(apexHost.host), undefined, 'the apex is named in the zone and is not routed here')
+  assert.equal((await getOf(apexHost.host, '/robots.txt')).status, 404)
 
   // A HOST THIS UNIT DOES NOT SERVE STILL GETS NOTHING. The pair answers before the named gate, and that widening
   // is the one thing here that could have opened the unit to any hostname at all.

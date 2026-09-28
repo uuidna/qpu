@@ -1233,12 +1233,12 @@ const payloadDbKey = 'databases/payload'
  * because six hosts each claiming their own MCP is six duplicates competing, not one door found six ways.
  */
 export const QPU_ZONE_HOSTS = [
-  { label: '', worker: 'uuidna', serves: 'the sealed ledger — theorems, decide, verify, receipts' },
-  { label: 'qpu', worker: 'uuidna-qpu', serves: 'this unit — the running circuit, the MCP, the receipts' },
-  { label: 'lean', worker: 'uuidna-lean', serves: 'the Lean publishing worker — standing, theorems, axioms, the census' },
-  { label: 'unreal', worker: 'uuidna-unreal', serves: 'the Unreal publishing worker — the hologram views' },
-  { label: 'hardware', worker: 'uuidna-unreal', serves: 'the hardware views, answered by the Unreal worker' },
-  { label: 'school', worker: 'uuidna-payload', serves: 'the school — lessons, progress, and the kernel verdicts on them' },
+  { label: '', worker: 'uuidna', qpu: false, serves: 'the sealed ledger — theorems, decide, verify, receipts' },
+  { label: 'qpu', worker: 'uuidna-qpu', qpu: true, serves: 'this unit — the running circuit, the MCP, the receipts' },
+  { label: 'lean', worker: 'uuidna-lean', qpu: true, serves: 'the Lean publishing worker — standing, theorems, axioms, the census' },
+  { label: 'unreal', worker: 'uuidna-unreal', qpu: true, serves: 'the Unreal publishing worker — the hologram views' },
+  { label: 'hardware', worker: 'uuidna-unreal', qpu: true, serves: 'the hardware views, answered by the Unreal worker' },
+  { label: 'school', worker: 'uuidna-payload', qpu: true, serves: 'the school — lessons, progress, and the kernel verdicts on them' },
 ] as const
 
 /** The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone. */
@@ -1256,15 +1256,25 @@ export const qpuZoneHolds = (z = qpuZoneOf()): boolean =>
   z.hosts.length === QPU_ZONE_HOSTS.length &&
   z.hosts.filter((h) => h.apex).length === seed &&
   z.hosts.filter((h) => h.own).length === seed &&
+  z.hosts.filter((h) => !h.qpu).length === seed &&
+  z.hosts.every((h) => h.apex === !h.qpu) &&
   z.hosts.some((h) => h.host === unit.host) &&
   z.hosts.every((h) => (h.apex ? h.host === z.zone : h.host.endsWith(`.${z.zone}`))) &&
   z.hosts.every((h) => h.origin === `https://${h.host}` && h.serves.length > n - n && h.worker.startsWith('uuidna')) &&
   new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
   z.labels.every((label) => label.length > n - n && !label.includes('.') && !label.includes('*'))
 
-/** The first-party host this request landed on, or undefined — a name this unit does not serve is never guessed at. */
+/**
+ * The first-party host this request landed on, or undefined — and `qpu: false` is as good as absent here.
+ *
+ * THE APEX IS IN THE TABLE AND OUT OF THIS UNIT'S REACH, which is not a contradiction: the table states what the
+ * zone IS, and this lookup answers what this unit is ROUTED to. uuidna.com holds its own custom domain and this
+ * worker has no route there — it answers on qpu.uuidna.com and on the *.uuidna.com wildcard, which the apex is
+ * not under. Computing a crawlable pair for it produced a sitemap listing a root this unit answers 404 for, and
+ * the apex already serves its own robots.txt and its own 11,438-URL sitemap from the worker that does hold it.
+ */
 export const qpuZoneHostOf = (host: unknown) =>
-  qpuZoneOf().hosts.find((h) => h.host === String(host ?? '').toLowerCase())
+  qpuZoneOf().hosts.find((h) => h.qpu && h.host === String(host ?? '').toLowerCase())
 
 /** qpuZoneHostHolds → the lookup is total over the zone and closed outside it: every declared host resolves to
  *  itself whatever its case, and a name that merely CONTAINS the zone resolves to nothing. The second half is the
@@ -1272,7 +1282,8 @@ export const qpuZoneHostOf = (host: unknown) =>
  *  written with endsWith instead of equality would hand it this unit's policy. */
 export const qpuZoneHostHolds = (): boolean => {
   const z = qpuZoneOf()
-  return z.hosts.every((h) => qpuZoneHostOf(h.host)?.host === h.host && qpuZoneHostOf(h.host.toUpperCase())?.host === h.host) &&
+  return z.hosts.filter((h) => h.qpu).every((h) => qpuZoneHostOf(h.host)?.host === h.host && qpuZoneHostOf(h.host.toUpperCase())?.host === h.host) &&
+    z.hosts.filter((h) => !h.qpu).every((h) => qpuZoneHostOf(h.host) === undefined) &&
     qpuZoneHostOf(`${z.zone}.attacker.test`) === undefined &&
     qpuZoneHostOf(`x.${z.zone}`) === undefined &&
     qpuZoneHostOf('') === undefined &&
@@ -12074,7 +12085,7 @@ export const qpuRobotsOf = (host: string = unit.host): string => {
  *  search and grounding, refuses training, and tells a reader where the one MCP door is; a host this unit does not
  *  serve is refused outright rather than handed the zone's policy. */
 export const qpuRobotsHolds = (): boolean => {
-  const z = qpuZoneOf()
+  const z = { hosts: qpuZoneOf().hosts.filter((x) => x.qpu) }
   return z.hosts.every((h) => {
     const robots = qpuRobotsOf(h.host)
     return robots.includes(`Sitemap: ${h.origin}/sitemap.xml`) &&
@@ -12132,7 +12143,7 @@ export const qpuSeoHolds = (s: ReturnType<typeof seoFieldsOf>): boolean => {
 
 /** Every first-party host's reading at once — the zone's whole crawlable surface, recomputed, never listed. */
 const seoZoneFieldsOf = () => {
-  const hosts = qpuZoneOf().hosts.map((h) => qpuSeoOf(h.host))
+  const hosts = qpuZoneOf().hosts.filter((h) => h.qpu).map((h) => qpuSeoOf(h.host))
   return {
     kind: 'seo-zone' as const,
     zone: qpuZoneOf().zone,
@@ -12154,7 +12165,7 @@ export const qpuSeoZoneHolds = (z: ReturnType<typeof seoZoneFieldsOf>): boolean 
   qpuZoneHolds() &&
   qpuZoneHostHolds() &&
   qpuRobotsHolds() &&
-  z.hosts.length === QPU_ZONE_HOSTS.length &&
+  z.hosts.length === QPU_ZONE_HOSTS.filter((h) => h.qpu).length &&
   z.hosts.every((h) => h.holds) &&
   new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
   new Set(z.hosts.map((h) => h.canonical)).size === seed &&
@@ -13519,6 +13530,12 @@ const worker = {
         return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/plain; charset=utf-8' } })
       if (path === '/sitemap.xml')
         return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'application/xml; charset=utf-8' } })
+      // THE DISCOVERY RECORD IS THE SAME DOCUMENT ON EVERY NAME, because it describes ONE endpoint and that
+      // endpoint is this unit's. A sibling serving a copy that named itself would be the duplicate this whole
+      // surface exists to avoid; a sibling serving nothing would leave the <loc> its own sitemap carries
+      // unanswerable, which is the soft 404 the sitemap law here forbids — and did forbid while this shipped
+      // one, measured live at faf8e51 before it was caught.
+      if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
     }
     const { zone, www, reserved } = qpuTenantZoneOf()
     const label = url.hostname.endsWith(`.${zone}`) ? url.hostname.slice(0, url.hostname.length - zone.length - seed) : ''
