@@ -1217,13 +1217,75 @@ export const qpuHybridHolds = (h = qpuHybridOf()): boolean =>
 const payloadDbCollections = ['pages', 'users', 'media', 'tenants'] as const
 const payloadDbKey = 'databases/payload'
 
+/**
+ * THE ZONE, HOST BY HOST — and every one of these names reaches this unit.
+ *
+ * Until this table existed the router knew two labels: its own and `www`. Every other first-party name under the
+ * zone was therefore indistinguishable from a customer's rented page, so the wildcard route would have handed
+ * lean, unreal, hardware or school to Payload as somebody's tenant the moment its custom domain lapsed. Measured
+ * 2026-09-28: four such names answer on this zone and not one of them was declared anywhere this unit could read.
+ *
+ * IT IS ALSO THE SEO SURFACE, and that is the harder half. Google reads robots.txt and sitemap.xml PER HOST — a
+ * directive served at uuidna.com says nothing whatever about qpu.uuidna.com — and measured the same day, five of
+ * the six hosts answered 404 for both, so Cloudflare's managed default was served in their place: a file that
+ * names no sitemap at all. A sitemap nothing points at is a sitemap nothing crawls. qpuSeoOf computes the pair
+ * for each host from this table, and every pair names the ONE canonical MCP endpoint rather than a copy of it,
+ * because six hosts each claiming their own MCP is six duplicates competing, not one door found six ways.
+ */
+export const QPU_ZONE_HOSTS = [
+  { label: '', worker: 'uuidna', serves: 'the sealed ledger — theorems, decide, verify, receipts' },
+  { label: 'qpu', worker: 'uuidna-qpu', serves: 'this unit — the running circuit, the MCP, the receipts' },
+  { label: 'lean', worker: 'uuidna-lean', serves: 'the Lean publishing worker — standing, theorems, axioms, the census' },
+  { label: 'unreal', worker: 'uuidna-unreal', serves: 'the Unreal publishing worker — the hologram views' },
+  { label: 'hardware', worker: 'uuidna-unreal', serves: 'the hardware views, answered by the Unreal worker' },
+  { label: 'school', worker: 'uuidna-payload', serves: 'the school — lessons, progress, and the kernel verdicts on them' },
+] as const
+
+/** The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone. */
+export const qpuZoneOf = () => {
+  const zone = unit.host.split('.').slice(seed).join('.')
+  const hosts = QPU_ZONE_HOSTS.map((h) => {
+    const host = h.label === '' ? zone : `${h.label}.${zone}`
+    return { ...h, host, origin: `https://${host}`, apex: h.label === '', own: host === unit.host }
+  })
+  return { zone, hosts, labels: hosts.filter((h) => !h.apex).map((h) => h.label) }
+}
+
+/** qpuZoneHolds → one apex, this unit among them, every host inside the zone, every label distinct and workered. */
+export const qpuZoneHolds = (z = qpuZoneOf()): boolean =>
+  z.hosts.length === QPU_ZONE_HOSTS.length &&
+  z.hosts.filter((h) => h.apex).length === seed &&
+  z.hosts.filter((h) => h.own).length === seed &&
+  z.hosts.some((h) => h.host === unit.host) &&
+  z.hosts.every((h) => (h.apex ? h.host === z.zone : h.host.endsWith(`.${z.zone}`))) &&
+  z.hosts.every((h) => h.origin === `https://${h.host}` && h.serves.length > n - n && h.worker.startsWith('uuidna')) &&
+  new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
+  z.labels.every((label) => label.length > n - n && !label.includes('.') && !label.includes('*'))
+
+/** The first-party host this request landed on, or undefined — a name this unit does not serve is never guessed at. */
+export const qpuZoneHostOf = (host: unknown) =>
+  qpuZoneOf().hosts.find((h) => h.host === String(host ?? '').toLowerCase())
+
+/** qpuZoneHostHolds → the lookup is total over the zone and closed outside it: every declared host resolves to
+ *  itself whatever its case, and a name that merely CONTAINS the zone resolves to nothing. The second half is the
+ *  one worth a test — `evil.uuidna.com.attacker.test` ends with neither the zone nor a label of it, and a lookup
+ *  written with endsWith instead of equality would hand it this unit's policy. */
+export const qpuZoneHostHolds = (): boolean => {
+  const z = qpuZoneOf()
+  return z.hosts.every((h) => qpuZoneHostOf(h.host)?.host === h.host && qpuZoneHostOf(h.host.toUpperCase())?.host === h.host) &&
+    qpuZoneHostOf(`${z.zone}.attacker.test`) === undefined &&
+    qpuZoneHostOf(`x.${z.zone}`) === undefined &&
+    qpuZoneHostOf('') === undefined &&
+    qpuZoneHostOf(undefined) === undefined
+}
+
 /** The tenant zone QPU serves and the labels in it that are never a tenant — one declaration, read by the router and
  *  by Payload (src/access.ts), never restated there. The zone is this unit's host minus its first label; that label is
  *  this unit, and www is reserved because the router redirects it to the zone's apex. */
 export const qpuTenantZoneOf = () => {
   const labels = unit.host.split('.')
   const own = labels[n - n]!
-  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [own, 'www'] as readonly string[] }
+  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [...qpuZoneOf().labels, 'www'] as readonly string[] }
 }
 /** value + predicate: the zone and this unit's own label recompose its host, and every reserved label is one label */
 export const qpuTenantZoneHolds = (z = qpuTenantZoneOf()): boolean =>
@@ -11937,10 +11999,167 @@ const openApiFieldsOf = () => {
   }
 }
 
-const qpuSitemapOf = (): string => {
-  const urls = [...new Set([...qpuDocsOf().api.filter((a) => a.method === 'GET').map((a) => a.href), `${unit.origin}/.well-known/mcp.json`, `${unit.origin}/mcp.json`, `${unit.origin}/install.json`, `${unit.origin}/openapi.json`])]
+/**
+ * THE SITE IS THE MCP, ONE HOST AT A TIME.
+ *
+ * Every page this zone serves is a door the MCP already describes, so the discoverability surface is not written
+ * beside the tool table — it is COMPUTED FROM IT. qpuDocsOf().api is the seven-path guide; the discovery doors sit
+ * off it; and the sitemap of any host is exactly the GET doors that host answers. Add a door and it is crawlable
+ * the same deploy; remove one and it leaves the sitemap without anybody editing a list. That is the whole point of
+ * building the site around the MCP rather than the other way around: there is no second list to forget.
+ *
+ * WHAT GOOGLE ACTUALLY REQUIRES, and what was measured missing on 2026-09-28:
+ *
+ *   PER HOST. robots.txt and sitemap.xml are read from the host that serves them; uuidna.com's pair says nothing
+ *   about qpu.uuidna.com. Five of six first-party hosts answered 404 for both, so Cloudflare's managed default
+ *   was served in their place — and that default names no sitemap, which leaves each one uncrawled as a site.
+ *
+ *   THE SITEMAP MUST BE POINTED AT. A sitemap with no `Sitemap:` line in robots.txt and no inbound link is
+ *   discovered by nothing. qpu.uuidna.com HAS served a real sitemap at /sitemap.xml the whole time and nothing
+ *   named it.
+ *
+ *   ONE CANONICAL ENDPOINT. Six hosts each advertising an MCP of their own are six duplicates competing for the
+ *   same query. Every host here names the unit's single endpoint instead, so the crawl consolidates rather than
+ *   splits, and a client that lands on any name is told where the door really is.
+ *
+ * NO lastmod IS EMITTED, and the cause is that this unit has no honest one to emit: the doors are recomputed per
+ * request from the source, not stored with a modification time, and Google's own guidance is to omit the field
+ * rather than supply a value the server cannot stand behind: a fold is not a date, and a timestamp invented to
+ * fill the field would be the one figure on this surface that nobody could recompute.
+ */
+const qpuSeoDoorsOf = (host: string): readonly string[] => {
+  const h = qpuZoneHostOf(host)
+  if (!h) return []
+  // THIS UNIT KNOWS ITS OWN DOORS EXACTLY, and knows of the other first-party hosts only what it serves for them:
+  // their root and the discovery record that points at the canonical MCP. A URL this unit cannot answer for is
+  // an entry it must leave out: the crawler reads an unanswerable <loc> as a soft 404 and a reader reads it as a
+  // claim that a page exists on somebody else's worker, and both readings are correct.
+  if (h.own) {
+    return [...new Set([
+      ...qpuDocsOf().api.filter((a) => a.method === 'GET').map((a) => a.href),
+      `${unit.origin}/.well-known/mcp.json`,
+      `${unit.origin}/mcp.json`,
+      `${unit.origin}/install.json`,
+      `${unit.origin}/openapi.json`,
+      `${unit.origin}/sitemap.xml`,
+    ])]
+  }
+  return [h.origin, `${h.origin}/.well-known/mcp.json`]
+}
+
+/** robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves. */
+export const qpuRobotsOf = (host: string = unit.host): string => {
+  const h = qpuZoneHostOf(host)
+  if (!h) return `User-agent: *\nDisallow: /\n`
+  return [
+    `# ${h.host} — ${h.serves}`,
+    `#`,
+    `# AI AGENTS ARE WELCOME. The MCP endpoint for this whole zone is ${unit.origin}/mcp, described without a`,
+    `# round-trip at ${unit.origin}/.well-known/mcp.json and as OpenAPI at ${unit.origin}/openapi.json.`,
+    `# Every answer carries its own content address, so a reader can recompute it rather than trust it.`,
+    `#`,
+    `# Content signals: search and ai-input are granted. ai-train is not — the content is CC BY-NC-ND 4.0`,
+    `# (https://${qpuZoneOf().zone}/license), and training a model on it makes a derivative.`,
+    ``,
+    `User-agent: *`,
+    `Content-Signal: search=yes,ai-input=yes,ai-train=no`,
+    `Allow: /`,
+    ``,
+    `Sitemap: ${h.origin}/sitemap.xml`,
+    ``,
+  ].join('\n')
+}
+
+/** qpuRobotsHolds → every first-party host is served a policy that names ITS OWN sitemap and no sibling's, grants
+ *  search and grounding, refuses training, and tells a reader where the one MCP door is; a host this unit does not
+ *  serve is refused outright rather than handed the zone's policy. */
+export const qpuRobotsHolds = (): boolean => {
+  const z = qpuZoneOf()
+  return z.hosts.every((h) => {
+    const robots = qpuRobotsOf(h.host)
+    return robots.includes(`Sitemap: ${h.origin}/sitemap.xml`) &&
+      z.hosts.filter((o) => o.host !== h.host).every((o) => !robots.includes(`Sitemap: ${o.origin}/sitemap.xml`)) &&
+      robots.includes('Content-Signal: search=yes,ai-input=yes,ai-train=no') &&
+      robots.includes('Allow: /') &&
+      robots.includes(`${unit.origin}/mcp`)
+  }) && qpuRobotsOf('example.org') === 'User-agent: *\nDisallow: /\n'
+}
+
+/** sitemap.xml for one first-party host — only URLs on that host, because a crawler ignores the rest. */
+const qpuSitemapOf = (host: string = unit.host): string => {
+  const urls = qpuSeoDoorsOf(host)
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`
 }
+
+/** The fields, apart from the predicate over them — the shape this package uses wherever a value carries its own
+ *  verdict, so neither the reading nor the check is typed in terms of the other. */
+const seoFieldsOf = (host: string = unit.host) => {
+  const h = qpuZoneHostOf(host)
+  return {
+    kind: 'seo' as const,
+    host: h?.host ?? String(host),
+    origin: h?.origin ?? '',
+    served: h !== undefined,
+    canonical: `${unit.origin}/mcp`,
+    robots: `${h?.origin ?? ''}/robots.txt`,
+    sitemap: `${h?.origin ?? ''}/sitemap.xml`,
+    urls: qpuSeoDoorsOf(host),
+  }
+}
+
+/** The reading a caller can check: what this unit serves for one host, and the canonical door it points every host at. */
+export const qpuSeoOf = (host: string = unit.host) => {
+  const fields = seoFieldsOf(host)
+  return { ...fields, holds: qpuSeoHolds(fields) }
+}
+
+/** qpuSeoHolds → every URL is https on the host it is claimed for, the pair this host serves is named on this host,
+ *  the canonical MCP is the unit's single endpoint whichever host asked, and a host this unit does not serve gets
+ *  nothing rather than a guess. */
+export const qpuSeoHolds = (s: ReturnType<typeof seoFieldsOf>): boolean => {
+  if (!s.served) return s.urls.length === n - n && s.origin === ''
+  const on = (href: string): boolean => URL.canParse(href) && new URL(href).protocol === 'https:' && new URL(href).host === s.host
+  return s.urls.length > n - n &&
+    s.urls.every(on) &&
+    new Set(s.urls).size === s.urls.length &&
+    on(s.robots) && on(s.sitemap) &&
+    new URL(s.robots).pathname === '/robots.txt' &&
+    new URL(s.sitemap).pathname === '/sitemap.xml' &&
+    s.canonical === `${unit.origin}/mcp` &&
+    qpuRobotsOf(s.host).includes(`Sitemap: ${s.sitemap}`) &&
+    qpuSitemapOf(s.host).includes(`<loc>${s.urls[n - n]}</loc>`)
+}
+
+/** Every first-party host's reading at once — the zone's whole crawlable surface, recomputed, never listed. */
+const seoZoneFieldsOf = () => {
+  const hosts = qpuZoneOf().hosts.map((h) => qpuSeoOf(h.host))
+  return {
+    kind: 'seo-zone' as const,
+    zone: qpuZoneOf().zone,
+    hosts,
+    canonical: `${unit.origin}/mcp`,
+    urls: hosts.reduce((sum, h) => sum + h.urls.length, n - n),
+  }
+}
+
+export const qpuSeoZoneOf = () => {
+  const fields = seoZoneFieldsOf()
+  return { ...fields, holds: qpuSeoZoneHolds(fields) }
+}
+
+/** qpuSeoZoneHolds → the zone's hosts each hold their own pair, every host is distinct, and — the law this whole
+ *  surface exists for — all of them name ONE canonical MCP endpoint. Six hosts each advertising an MCP of their own
+ *  would be six duplicates competing for the same query; one endpoint named six ways is one door found six ways. */
+export const qpuSeoZoneHolds = (z: ReturnType<typeof seoZoneFieldsOf>): boolean =>
+  qpuZoneHolds() &&
+  qpuZoneHostHolds() &&
+  qpuRobotsHolds() &&
+  z.hosts.length === QPU_ZONE_HOSTS.length &&
+  z.hosts.every((h) => h.holds) &&
+  new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
+  new Set(z.hosts.map((h) => h.canonical)).size === seed &&
+  z.canonical === `${unit.origin}/mcp` &&
+  z.urls === z.hosts.reduce((sum, h) => sum + h.urls.length, n - n)
 
 /** THE LEARNING LADDER, STANDARDISED (QPULib's shape: one construct per worked example, in order, each with the reference
  *  to compare against). Four steps, each with the same five fields — concept, request, expect, invariant, next — so a
@@ -13294,6 +13513,18 @@ const worker = {
       // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
+    // THE CRAWLABLE PAIR ANSWERS FOR EVERY FIRST-PARTY HOST, not only for this one, and it answers BEFORE the
+    // named gate below — that gate exists to refuse a stranger, and a sibling name in this zone is not a stranger.
+    // Measured 2026-09-28: each of these hosts 404ed here, so Cloudflare served its managed robots.txt in place of
+    // an answer, and the sitemap this unit had been computing all along was named by nothing. Off the seven-path
+    // guide like the other discovery doors, so no sealed count moves.
+    const zoneHost = qpuZoneHostOf(url.hostname)
+    if (url.protocol === 'https:' && zoneHost !== undefined) {
+      if (path === '/robots.txt')
+        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/plain; charset=utf-8' } })
+      if (path === '/sitemap.xml')
+        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'application/xml; charset=utf-8' } })
+    }
     const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
     // /api IS PAYLOAD, OVER THE BINDING. Registration, REST and the find-only MCP answer at this one host; the hop is not
@@ -13388,7 +13619,6 @@ const worker = {
     if (path === '/mcp.json') return servedResponse(servedOf(path, () => qpuMcpOf()))
     if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
     if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
-    if (path === '/sitemap.xml') return new Response(qpuSitemapOf(), { status: found, headers: { ...headers, 'content-type': 'application/xml; charset=utf-8' } })
     /** THE SHEET, WITH THE MEDIA TYPE A BROWSER NEEDS. It was already computed and already served — as a JSON
      * string inside GET /, where nothing can link to it. A stylesheet reachable only by parsing a document that
      * quotes it is a stylesheet no page can use, which is what made the UI incomplete rather than absent.

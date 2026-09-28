@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 176,
-  "pass": 176,
+  "tests": 180,
+  "pass": 180,
   "fail": 0,
   "dry": 0,
-  "circuit": 122,
+  "circuit": 126,
   "mintOnly": 24,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "3092a7329e62f80e",
-  "computed": 172,
+  "receipt": "1a9010f3fc866082",
+  "computed": 176,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -7070,6 +7070,202 @@
       "mint": {
         "calls": 115821,
         "chain": "6b056b1bf13d9e85"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the zone names every first-party host, and no first-party name can be let out as a tenant",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 3873,
+      "kinds": {
+        "x": 854,
+        "cnot": 1648,
+        "toffoli": 146,
+        "h": 1106,
+        "measure": 73,
+        "cmodexp": 23,
+        "xx": 23
+      },
+      "dims": {
+        "8": 3827,
+        "512": 46
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "72d01331c56b91a3",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 73
+        }
+      ],
+      "mint": {
+        "calls": 78703,
+        "chain": "76c9d837cfa7a963"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "each host's robots.txt names that host's sitemap and no other host's",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 2044,
+      "kinds": {
+        "x": 462,
+        "cnot": 896,
+        "toffoli": 84,
+        "h": 532,
+        "measure": 42,
+        "cmodexp": 14,
+        "xx": 14
+      },
+      "dims": {
+        "8": 2016,
+        "512": 28
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "a53729aa50342a51",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 42
+        }
+      ],
+      "mint": {
+        "calls": 39228,
+        "chain": "6f85db7cb23b0a7f"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "every host points at ONE MCP endpoint, and lists only URLs it can answer for",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 584,
+      "kinds": {
+        "x": 132,
+        "cnot": 256,
+        "toffoli": 24,
+        "h": 152,
+        "measure": 12,
+        "cmodexp": 4,
+        "xx": 4
+      },
+      "dims": {
+        "8": 576,
+        "512": 8
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "ef0edcff43bd87b7",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 12
+        }
+      ],
+      "mint": {
+        "calls": 11208,
+        "chain": "3a0bf0955e6b17c9"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the pair is served on the wire, for a sibling host as well as for this one",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 3942,
+      "kinds": {
+        "x": 891,
+        "cnot": 1728,
+        "toffoli": 162,
+        "h": 1026,
+        "measure": 81,
+        "cmodexp": 27,
+        "xx": 27
+      },
+      "dims": {
+        "8": 3888,
+        "512": 54
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "96b0028e2504db20",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 81
+        }
+      ],
+      "mint": {
+        "calls": 75654,
+        "chain": "aa8188da8a23bcd4"
       },
       "served": {
         "count": 0,
