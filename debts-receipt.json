@@ -1,0 +1,10 @@
+{
+  "kind": "debts-receipt",
+  "total": 46,
+  "debts": {
+    "walls": 23,
+    "lattice": 0,
+    "refusals": 23,
+    "dry": 0
+  }
+}

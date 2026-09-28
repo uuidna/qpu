@@ -85,6 +85,13 @@ jobs:
       - name: Mutation — every guard proved able to fail
         run: npm run mutate
 
+      # THE DEBTS THIS TREE CARRIES, in one step rather than four. Walls with no cause named, bare numbers
+      # the lattice already names, refusals with no theorem behind them, and tests that computed nothing —
+      # the same machine four times, each with its own floor that may only shrink. A gate nobody runs is not
+      # a gate, and four commands is how you get one nobody runs.
+      - name: Debts — every floor may only shrink
+        run: npm run debts
+
       # THE PROOF GATE ABOVE IS ONLY HONEST IF THE PROOF IS A PROPERTY OF THIS TREE. It was not: the readers reach
       # opendata.cern.ch, and a run that reached it folded differently from one that did not, so the gate reported a
       # moved receipt and named this repository for someone else's maintenance window. It rejected two pushes that

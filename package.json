@@ -82,6 +82,7 @@
     "proof": "git diff --exit-code -- test-receipt.json",
     "examine": "node scripts/examine.mjs https://qpu.uuidna.com",
     "verify:release": "node scripts/verify-release.mjs",
+    "debts": "node scripts/debts.mjs",
     "lattice": "node scripts/lattice.mjs",
     "lattice:fix": "node scripts/lattice.mjs --fix",
     "leads": "node scripts/leads.mjs",
