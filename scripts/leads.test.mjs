@@ -14,7 +14,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { archiveLeadsOf, copyLeadsOf, doorLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf, teachingNoteOf } from './leads.mjs'
+import { archiveLeadsOf, deployLeadsOf, copyLeadsOf, doorLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf, teachingNoteOf } from './leads.mjs'
 
 test('a package the registry never served is a lead, and one it serves is not', () => {
   const never = packageLeadsOf({ name: '@uuidna/school', version: '0.1.0', status: 404 })
@@ -202,4 +202,30 @@ test('a door that needs a third party to hold is not self-sufficient, and says w
 
   // and no doors at all is a lead, not a clean sheet
   assert.match(doorLeadsOf({ origin: 'o', doors: [] })[0].what, /listed no sealed doors/)
+})
+
+test('a failing CI run is a lead that names the step; an in-flight one is not', () => {
+  const run = (o) => ({ workflow: 'deploy', status: 'completed', sha: 'abc1234def', ...o })
+
+  assert.deepEqual(deployLeadsOf({ repo: 'r', runs: [run({ conclusion: 'success' })] }), [], 'a green run owes nothing')
+
+  /* THE STEP IS NAMED, because "deploy failed" sends somebody to the run list to find out what this
+   * already knows — the same dead end as `missing: 1` without the key. */
+  const failed = deployLeadsOf({ repo: 'r', runs: [run({ conclusion: 'failure', step: 'Outage — the committed proof does not move' })] })
+  assert.equal(failed.length, 1)
+  assert.match(failed[0].what, /failure at "Outage/)
+  assert.match(failed[0].what, /abc1234/)
+
+  /* AN IN-FLIGHT RUN HAS NOT FAILED. Reporting it would fire this on every push and teach a reader to skip
+   * it, which is the fault already removed from the teaching queue and the deploy gate. */
+  assert.deepEqual(deployLeadsOf({ repo: 'r', runs: [run({ status: 'in_progress', conclusion: null })] }), [])
+  assert.deepEqual(deployLeadsOf({ repo: 'r', runs: [run({ conclusion: 'cancelled' })] }), [], 'nor has a cancelled one')
+
+  /* ONLY THE LATEST PER WORKFLOW. A failure three pushes ago that has since gone green is history, and a
+   * gatherer that reports history is a gatherer nobody finishes reading. */
+  const healed = deployLeadsOf({ repo: 'r', runs: [run({ conclusion: 'success', sha: 'new' }), run({ conclusion: 'failure', sha: 'old' })] })
+  assert.deepEqual(healed, [], 'the newest run for a workflow is the one that counts')
+
+  // and CI being unreadable is itself the lead, rather than an empty list read as "nothing wrong"
+  assert.match(deployLeadsOf({ repo: 'r', runs: undefined })[0].what, /could not be read/)
 })

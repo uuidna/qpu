@@ -198,6 +198,36 @@ export const doorLeadsOf = ({ origin, doors }) => {
   return leads
 }
 
+/**
+ * A DEPLOY THAT FAILED, WHICH NOBODY WAS ASKING ABOUT.
+ *
+ * I checked `gh run list` by hand perhaps fifteen times today, and each time because I happened to wonder.
+ * Between wondering, three consecutive releases reported FAILURE while shipping, a tag sat on an orphaned
+ * commit building the wrong tree, and a deploy went red for a fortnight over one un-mirrored key. Every one
+ * of those was visible in the run list the whole time and none of them reached anyone.
+ *
+ * A FAILING RUN IS A LEAD; AN IN-FLIGHT ONE IS NOT. A run still going has not failed, and reporting it as
+ * open would make this fire on every push and teach a reader to ignore it — the fault already removed from
+ * the teaching queue and the deploy gate. And the failing STEP is named, because "deploy failed" sends
+ * somebody to the run list to find out what this already knows.
+ */
+export const deployLeadsOf = ({ repo, runs }) => {
+  if (!Array.isArray(runs)) return [{ source: `runs:${repo}`, what: 'the workflow runs could not be read', owes: 'a gatherer that can see CI, or one that stops claiming to' }]
+  const latest = new Map()
+  for (const run of runs) if (!latest.has(run.workflow)) latest.set(run.workflow, run)
+  const leads = []
+  for (const [workflow, run] of latest) {
+    if (run.status !== 'completed') continue
+    if (run.conclusion === 'success' || run.conclusion === 'cancelled' || run.conclusion === 'skipped') continue
+    leads.push({
+      source: `runs:${repo} ${workflow}`,
+      what: `the latest ${workflow} run ${run.conclusion}${run.step ? ` at "${run.step}"` : ''} on ${String(run.sha ?? '').slice(0, 7)}`,
+      owes: run.step ? `that step green, or the gate behind it corrected` : 'the failing step named, then fixed',
+    })
+  }
+  return leads
+}
+
 /** A run is settled only when every source answered AND none holds a lead. Unreached blocks; it is not silence. */
 export const settledOf = (sources) =>
   sources.length > 0 && sources.every((s) => s.reached) && sources.every((s) => s.open.length === 0)
@@ -376,6 +406,34 @@ if (invoked) {
     school = school ?? doors.find((door) => door.name === 'qpu_train')?.shown?.school
   }
   add(`teaching:${origin}`, true, teachingNoteOf({ school }), teachingLeadsOf({ origin, school }))
+
+  /* ── CI, which is the only source that can say a push arrived ──────────────────────────────────────────────── */
+  const runsOf = () => {
+    try {
+      const raw = execFileSync('gh', ['run', 'list', '--limit', '20', '--json', 'workflowName,status,conclusion,headSha,databaseId'], { cwd: ROOT, encoding: 'utf8' })
+      return JSON.parse(raw).map((row) => ({ workflow: row.workflowName, status: row.status, conclusion: row.conclusion, sha: row.headSha, id: row.databaseId }))
+    } catch {
+      return undefined
+    }
+  }
+  const runs = runsOf()
+  if (runs === undefined) add('runs', false, 'gh could not list the workflow runs — CI is unreached, which is not CI being well')
+  else {
+    /* The failing step is fetched only for a run that failed, because asking for every run's steps is
+     * twenty requests to answer a question about none of them. */
+    for (const run of runs) {
+      if (run.status !== 'completed' || run.conclusion === 'success' || run.conclusion === 'cancelled') continue
+      try {
+        const jobs = JSON.parse(execFileSync('gh', ['run', 'view', String(run.id), '--json', 'jobs'], { cwd: ROOT, encoding: 'utf8' }))
+        run.step = jobs.jobs?.flatMap((j) => j.steps ?? []).find((st) => st.conclusion === 'failure')?.name
+      } catch {
+        run.step = undefined
+      }
+      break
+    }
+    const failing = deployLeadsOf({ repo: 'uuidna/qpu', runs })
+    add('runs', true, `${runs.length} recent run(s); ${failing.length} workflow(s) failing at their latest`, failing)
+  }
 
   /* ── the host, which is the only source that can say the deployment is well ─────────────────────────────────── */
   const storage = await get(`${origin}/storage`)
