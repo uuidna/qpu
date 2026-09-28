@@ -8915,13 +8915,45 @@ export const qpuComposeOf = (methods: readonly QpuMethod[]) => {
 
 export const qpuComposeHolds = (read: ReturnType<typeof qpuComposeOf>): boolean => read.holds
 
+/**
+ * DISCOVERED AND CROSSED IN ONE CALL, so a door can carry the finding rather than the ingredients.
+ *
+ * A caller that had to fetch the registry, then the schemas, then run the cross itself would be doing the
+ * unit's job with the unit's data, which is the shape of an API that has not decided what it is for.
+ */
+export const qpuComposeLiveOf = async (from = n - n, howMany = qpuFacesOf().rays) => {
+  const discovered = await qpuApisLiveOf(from, howMany)
+  const compose = qpuComposeOf(discovered.methods)
+  const of = (swap: QpuSwap) => compose.cross.pairs.filter((row) => row.swap === swap).length
+  return {
+    kind: 'compose' as const,
+    live: true as const,
+    registry: discovered.registry,
+    apis: discovered.apis,
+    sampled: discovered.sampled,
+    reached: discovered.reached,
+    methods: discovered.methods.length,
+    joinedOn: compose.joinedOn,
+    swap: 'a gives what b takes, both ways or one or neither — the same criterion the subjects are judged by' as const,
+    pairs: compose.cross.pairs.length,
+    entangled: of('entangled'),
+    oneWay: of('application'),
+    undecided: of('undecided'),
+    cross: compose.cross,
+    holds: discovered.holds && compose.holds,
+  }
+}
+
+export const qpuComposeLiveHolds = (read: Awaited<ReturnType<typeof qpuComposeLiveOf>>): boolean =>
+  read.holds === true && read.entangled + read.oneWay + read.undecided === read.pairs
+
 /** A discovery is sound when every sampled name is accounted for and every method is well formed — NOT when
  *  every schema was reached. A registry entry whose spec has gone is a fact about that entry. */
 export const qpuApisLiveHolds = (read: Awaited<ReturnType<typeof qpuApisLiveOf>>): boolean =>
   read.holds === true && read.sampled === read.rows.length && read.rows.every((row) => row.api.length > n - n)
 
 /** The registry, the schemas and the methods, discovered live and bounded to `faces` schemas from an offset. */
-export const qpuApisLiveOf = async (from = n - n) => {
+export const qpuApisLiveOf = async (from = n - n, howMany = qpuFacesOf().faces) => {
   const faces = qpuFacesOf()
   const none = n - n
   const deadline = foreignDeadlineOf()
@@ -8932,7 +8964,9 @@ export const qpuApisLiveOf = async (from = n - n) => {
   const catalogue = (await listed.json().catch(() => undefined)) as undefined | Record<string, { preferred?: string; versions?: Record<string, { swaggerUrl?: string }> }>
   if (!catalogue) return { ...miss, live: true as const, why: 'the registry answered with something that is not a catalogue' as const }
   const names = Object.keys(catalogue).sort()
-  const window = names.slice(from, from + faces.faces)
+  /* A CALLER MAY ASK FOR FEWER. A door that also reads CERN has already spent seventeen of its fifty
+   * subrequests before it gets here, so the door asks for `rays` and a direct caller may ask for `faces`. */
+  const window = names.slice(from, from + Math.min(howMany, faces.faces))
   const rows: { api: string; spec: string; live: boolean; methods: number }[] = []
   const methods: QpuMethod[] = []
   for (const api of window) {
@@ -8960,7 +8994,7 @@ export const qpuApisLiveOf = async (from = n - n) => {
     reached: rows.filter((row) => row.live).length,
     /* Sound when every sampled name was accounted for — NOT when every schema was reached. A registry entry
      * whose spec is gone is a fact about that entry. */
-    holds: rows.length === Math.min(faces.faces, Math.max(none, names.length - from)) && qpuSchemaMethodsHolds(methods),
+    holds: rows.length === Math.min(Math.min(howMany, faces.faces), Math.max(none, names.length - from)) && qpuSchemaMethodsHolds(methods),
   }
 }
 
@@ -9660,6 +9694,18 @@ export const qpuTrainOf = () => {
       seating: qpuTeachingSeatingOf(teaching),
       census: qpuTeachingCensusOf(),
       reading: qpuTeachingReadingOf(teaching),
+      /* THE CARTESIAN PRODUCT IS NOT A DENOMINATOR, and `undecided` alone reads as though it were. Widening
+       * the vocabulary from nine subjects and nine domains to nineteen and eighteen took the grid from 81
+       * cells to 342, so a corpus that got RICHER reported 282 undecided where it had reported 31 — the same
+       * evidence, a bigger emptiness, and a number that measures the vocabulary rather than the work.
+       *
+       * So the shape travels with the count: how many names, how many combinations they admit, how many
+       * anybody has cited, and of those how many teach both ways. The last of those is the only one that
+       * does not move when a name is added. */
+      subjects: teaching.subjects.length,
+      domains: teaching.domains.length,
+      combinations: teaching.pairs.length,
+      evidenced: teaching.pairs.filter((row) => row.swap !== 'undecided').length,
       undecided: teaching.pairs.filter((row) => row.swap === 'undecided').length,
       holds: qpuTeachingPairsHolds(teaching) && qpuTeachingSeatingHolds() && qpuTeachingCensusHolds() && qpuTeachingReadingHolds(),
   },
@@ -11019,8 +11065,13 @@ export const qpuTrainLiveOf = async () => {
   const live = await qpuCernExperienceOf()
   const fused = train.vm.replicas
   const next = fused + fused
+  /* THE DISCOVERY RIDES THE TRAINING DOOR, because it is the same question this door already answers about
+   * school subjects, asked of machines: what teaches what, and in which direction. Its holds is NOT folded
+   * into the door's — a registry that declined to answer is a reading, and a door that stopped holding
+   * because somebody else's host was down is the fault this package spent a day removing. */
+  const compose = await qpuComposeLiveOf()
   const holds = train.holds && live.holds && live.learn.holds && next === train.vm.next && live.learn.unique.occupied > n
-  return { ...train, live: true as const, learn: live.learn, holds }
+  return { ...train, live: true as const, learn: live.learn, compose, holds }
 }
 
 export const qpuImproveLiveOf = async () => {

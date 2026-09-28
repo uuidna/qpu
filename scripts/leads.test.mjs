@@ -115,13 +115,23 @@ test('a one-way pair is a reading, not a lead — a queue that cannot empty is n
       { subject: 'music', domain: 'wave physics', swap: 'entangled' },
       { subject: 'history', domain: 'radiocarbon dating', swap: 'application', owes: 'practice to theory' },
     ],
+    subjects: 2,
+    domains: 2,
+    combinations: 4,
+    evidenced: 2,
     seating: { rays: 7, seated: [{ subject: 'music', domain: 'wave physics' }], crowded: [] },
   }
   /* HISTORY WILL NOT BE TEACHING RADIOCARBON DATING. That verdict is correct and final; filing it as an open
    * item makes a list nobody can finish, which is how a leads stream stops being read. */
   assert.deepEqual(teachingLeadsOf({ origin: 'o', school }), [])
   const note = teachingNoteOf({ school })
-  assert.match(note, /1 entangled, 1 one-way, 31 not decidable/, 'it is counted instead, where a count belongs')
+  assert.match(note, /1 entangled, 1 one-way/, 'it is counted instead, where a count belongs')
+  /* AND THE SHAPE TRAVELS WITH THE COUNT. Widening the vocabulary took the grid from 81 cells to 342, so a
+   * corpus that got richer reported 282 undecided where it had reported 31 — the same evidence, a bigger
+   * emptiness. The share that teach both ways is the only figure here that does not move when a name is
+   * added, so it is the one a reader should see beside the hole. */
+  assert.match(note, /50% both ways/, 'the share is reported, because the undecided count measures the vocabulary')
+  assert.match(note, /nobody has looked at/, 'and the hole is named as unlooked-at rather than as a gap in the work')
 
   // A READING THAT DOES NOT HOLD IS a lead: the instrument disagrees with itself.
   const broken = teachingLeadsOf({ origin: 'o', school: { ...school, holds: false } })

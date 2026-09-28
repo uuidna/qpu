@@ -143,7 +143,11 @@ export const teachingNoteOf = ({ school }) => {
   const reading = school.reading ?? []
   const applied = reading.filter((row) => row.swap === 'application').length
   const entangled = reading.length - applied
-  return `${seated.length} ray(s) seated; ${entangled} entangled, ${applied} one-way, ${school.undecided ?? 0} not decidable from the corpus; ${(school.seating?.crowded ?? []).length} entangled pair(s) have no ray`
+  /* The share that teach both ways is the only figure here that does not move when a name is added to the
+   * vocabulary — the undecided count measures how wide the grid is, which is not the same as how much is
+   * unknown, and reporting it alone made a richer corpus look like a bigger hole. */
+  const share = entangled + applied > 0 ? Math.round((entangled * 100) / (entangled + applied)) : 0
+  return `${seated.length} ray(s) seated; ${school.subjects ?? '?'} subjects x ${school.domains ?? '?'} domains = ${school.combinations ?? '?'} combinations, ${school.evidenced ?? entangled + applied} cited (${entangled} entangled, ${applied} one-way, ${share}% both ways), ${school.undecided ?? 0} nobody has looked at; ${(school.seating?.crowded ?? []).length} entangled pair(s) have no ray`
 }
 
 /**
