@@ -4526,15 +4526,23 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.when === 'never' &&
   c.website === unit.host &&
   c.author.orcid === 'https://orcid.org/0009-0000-7312-9778' &&
-  c.doi === '10.5281/zenodo.22717782' &&
+  /* THE VERSION DOI IS NOT A CONSTANT, and pinning it here made this predicate false on the next archive and
+   * every archive after it — unnoticed, because nothing called it. Measured 2026-09-28: it still asserted
+   * 22717782 while the reading carried 22973935. What is actually fixed is the CONCEPT doi, which is the
+   * all-versions record and never moves; what is true of a version doi is a relation to the record it names. */
+  /^10\.5281\/zenodo\.\d+$/.test(c.doi) &&
+  c.archive === `https://zenodo.org/records/${c.doi.split('.').pop()}` &&
+  c.doi === c.archived.doi &&
+  c.archive === c.archived.archive &&
+  c.doi !== c.conceptdoi &&
   c.conceptdoi === '10.5281/zenodo.22700098' &&
-  c.archive === 'https://zenodo.org/records/22717782' &&
   c.identifier === `https://doi.org/${c.doi}` &&
   c.sameAs.includes(c.archive) &&
   c.sameAs.includes(c.author.orcid) &&
   c.sameAs.includes(c.identifier) &&
-  c.archived.commit === '4a45563' &&
-  c.archived.version === '0.1.1' &&
+  /* Likewise the commit and the version of whatever is archived: both move, and both have a shape. */
+  /^[0-9a-f]{7,40}$/.test(c.archived.commit) &&
+  /^\d+\.\d+\.\d+$/.test(c.archived.version) &&
   c.served.version === packageVersion &&
   c.current === (c.archived.version === c.served.version) &&
   c.currency.includes(`v${c.served.version}`) &&

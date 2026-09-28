@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 180,
-  "pass": 180,
+  "tests": 181,
+  "pass": 181,
   "fail": 0,
   "dry": 0,
-  "circuit": 126,
+  "circuit": 127,
   "mintOnly": 24,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "5452f43d3cc71ffe",
-  "computed": 176,
+  "receipt": "46591b6c0d52ee7b",
+  "computed": 177,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -4872,6 +4872,57 @@
       "mint": {
         "calls": 2720,
         "chain": "313f18172af58e29"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "every exported predicate is evaluated: asked with nothing, supplied a reading, or named here",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 286391,
+      "kinds": {
+        "h": 103483,
+        "cnot": 111378,
+        "x": 58545,
+        "toffoli": 7920,
+        "measure": 3960,
+        "cmodexp": 531,
+        "xx": 531,
+        "planes": 43
+      },
+      "dims": {
+        "8": 284985,
+        "128": 344,
+        "512": 1062
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "583811f0fe8f3007",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 3960
+        }
+      ],
+      "mint": {
+        "calls": 5257788,
+        "chain": "f5f629e3a6790b30"
       },
       "served": {
         "count": 0,
