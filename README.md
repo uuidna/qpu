@@ -140,7 +140,7 @@ Integrate in any harness. One computed block, served on initialize as `install` 
 
 ## Cite
 
-MLA 8, (Rouschev). DOI 10.5281/zenodo.22973935, archive https://zenodo.org/records/22973935, identifier https://doi.org/10.5281/zenodo.22973935, ORCID https://orcid.org/0009-0000-7312-9778. when never: the citation names no access date; the DOI names archived version 0.1.3, and the host serves 0.1.7. Cite the running quantum circuit and its Lean proof.
+MLA 8, (Rouschev). DOI 10.5281/zenodo.22973935, archive https://zenodo.org/records/22973935, identifier https://doi.org/10.5281/zenodo.22973935, ORCID https://orcid.org/0009-0000-7312-9778. when never: the citation names no access date; the DOI names archived version 0.1.3, and the host serves 0.1.8. Cite the running quantum circuit and its Lean proof.
 
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "qpu." qpu.uuidna.com, https://qpu.uuidna.com. doi:10.5281/zenodo.22973935.
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "quantum processing unit." qpu.uuidna.com, https://qpu.uuidna.com/quantum/processing/unit. doi:10.5281/zenodo.22973935.

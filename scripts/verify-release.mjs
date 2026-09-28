@@ -109,8 +109,8 @@ const zenodoArchived = async () => {
     // The concept record redirects to the newest version — cheapest, and enough when the release is the latest.
     { url: `https://zenodo.org/api/records/${conceptRecid}`, pick: (b) => (b.metadata?.version ? [b] : undefined) },
     // The full list. No all_versions: InvenioRDM 400s on it.
-    { url: `https://zenodo.org/api/records?q=conceptdoi:%22${conceptDoi}%22&size=100`, pick: (b) => b.hits?.hits },
-    { url: `https://zenodo.org/api/records?q=%22${repo}%22&size=100`, pick: (b) => b.hits?.hits },
+    { url: `https://zenodo.org/api/records?q=conceptdoi:%22${conceptDoi}%22&size=25`, pick: (b) => b.hits?.hits },
+    { url: `https://zenodo.org/api/records?q=%22${repo}%22&size=25`, pick: (b) => b.hits?.hits },
   ]
 
   const refusals = []
@@ -146,12 +146,30 @@ const citationAgrees = async () => {
     : { state: WAITING, why: `CITATION.cff says version: ${stated}, this release is ${version}` }
 }
 
+/**
+ * WHAT THIS RELEASE OWES, AND WHO OWES IT.
+ *
+ * Four of these are this pipeline's own work and are live within its run: npm serves the tarball, the
+ * attestation is attached, the Release exists, CITATION.cff agrees. The fifth is not ours at all — Zenodo
+ * archives when its webhook fires, on its own schedule, and 0.1.4 took minutes while 0.1.5 has not landed
+ * after hours.
+ *
+ * FAILING THE PUBLISH ON A THIRD PARTY'S SCHEDULE IS WHY THIS GATE STOPPED MEANING ANYTHING. 0.1.5, 0.1.6
+ * and the run that reported them all said FAILURE while npm served the version as latest and the Release
+ * existed — three good releases reported as broken, which teaches a reader to stop opening the badge. It is
+ * the same fault removed from the deploy gate and the teaching queue: what the instrument FOUND is a
+ * reading; only what this pipeline failed to do is a failure.
+ *
+ * So Zenodo is reported and never gates. A missing archive is still visible — in this output, in the weekly
+ * release-check, and as a lead in the gatherer — and is now a thing somebody chases rather than a red badge
+ * on a release that shipped.
+ */
 const CHECKS = [
-  ['npm serves the version', npmLive],
-  ['npm provenance attestation', npmProvenance],
-  ['github release for the tag', githubRelease],
-  ['zenodo archived this version', zenodoArchived],
-  ['CITATION.cff names this version', citationAgrees],
+  ['npm serves the version', npmLive, true],
+  ['npm provenance attestation', npmProvenance, true],
+  ['github release for the tag', githubRelease, true],
+  ['zenodo archived this version', zenodoArchived, false],
+  ['CITATION.cff names this version', citationAgrees, true],
 ]
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
@@ -164,7 +182,8 @@ for (let round = 1; round <= ATTEMPTS; round++) {
     if (settled.get(label)?.state === LIVE) continue
     settled.set(label, await check())
   }
-  const pending = CHECKS.filter(([label]) => settled.get(label).state === WAITING)
+  /* Only the channels this pipeline owns are worth waiting on; a third party's queue is not a round. */
+  const pending = CHECKS.filter(([label, , gates]) => gates && settled.get(label).state === WAITING)
   if (pending.length === 0) break
   if (round < ATTEMPTS) {
     console.log(`  round ${round}: waiting on ${pending.map(([l]) => l).join(', ')}`)
@@ -173,18 +192,21 @@ for (let round = 1; round <= ATTEMPTS; round++) {
 }
 
 let waiting = 0
-for (const [label] of CHECKS) {
+let pendingElsewhere = 0
+for (const [label, , gates] of CHECKS) {
   const { state, why } = settled.get(label)
-  const mark = state === LIVE ? '✓' : state === UNVERIFIABLE ? '?' : '✗'
+  const mark = state === LIVE ? '✓' : state === UNVERIFIABLE ? '?' : gates ? '✗' : '·'
   console.log(`  ${mark}  ${label.padEnd(34)} ${why}`)
-  if (state === WAITING) waiting++
+  if (state !== LIVE && state !== UNVERIFIABLE) gates ? (waiting += 1) : (pendingElsewhere += 1)
 }
 
 // UNVERIFIABLE DOES NOT FAIL THE RUN. A host that would not answer has told us nothing, and reporting nothing as
 // a missing release is how a green pipeline starts lying in the other direction.
 console.log(
-  waiting === 0
-    ? `\n✓ release ${version} is complete and live\n`
-    : `\n✗ release ${version} is INCOMPLETE — ${waiting} check(s) never went live after ${ATTEMPTS} round(s)\n`,
+  waiting > 0
+    ? `\n✗ release ${version} is INCOMPLETE — ${waiting} check(s) this pipeline owns never went live after ${ATTEMPTS} round(s)\n`
+    : pendingElsewhere > 0
+      ? `\n✓ release ${version} shipped — ${pendingElsewhere} channel(s) not ours have not landed yet, which is reported and does not fail it\n`
+      : `\n✓ release ${version} is complete and live\n`,
 )
 process.exit(waiting === 0 ? 0 : 1)
