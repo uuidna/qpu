@@ -3,12 +3,20 @@ import assert from 'node:assert/strict'
 import {
   QPU_EXPERIMENTS,
   QPU_TEACHINGS,
+  qpuFieldUuidOf,
+  qpuShapeUuidHolds,
+  qpuShapeUuidSealHolds,
+  qpuShapeUuidOf,
+  qpuComposeHolds,
+  qpuComposeOf,
   qpuCrossHolds,
   qpuCrossOf,
   qpuMixedHolds,
   qpuMixedOf,
   qpuNatureHolds,
   qpuNatureOf,
+  qpuSchemaMethodsHolds,
+  qpuSchemaMethodsOf,
   qpuFacesOf,
   qpuTeachingCensusHolds,
   qpuTeachingCensusOf,
@@ -322,4 +330,102 @@ test('the universal claim can come out TRUE, or asking it proves nothing', (t) =
   t.diagnostic(`${real.pairs} pairs: ${real.entangled} entangled, ${real.oneWay} one-way, ${real.undecided} not decidable`)
   t.diagnostic(`the claim is ${real.supported ? 'supported' : 'NOT supported'}; where evidenced, ${(real.whereEvidenced / 10).toFixed(1)}% teach both ways`)
   t.diagnostic(`domains with domains ${(share(mixed.pairs) / 10).toFixed(1)}%, subjects with domains ${(share(teaching.pairs) / 10).toFixed(1)}% of evidenced pairs entangled`)
+})
+
+const spec = {
+  paths: {
+    '/pet': {
+      get: { operationId: 'find', parameters: [{ name: 'status' }], responses: { '200': { content: { 'application/json': { schema: { $ref: '#/components/schemas/Pet' } } } } } },
+      post: { operationId: 'add', requestBody: { content: { 'application/json': { schema: { $ref: '#/components/schemas/Pet' } } } }, responses: { '200': { content: { 'application/json': { schema: { type: 'string' } } } } } },
+    },
+    '/tag': { get: { operationId: 'tags', parameters: [{ name: 'petId' }], responses: { '200': { content: { 'application/json': { schema: { properties: { label: {}, colour: {} } } } } } } } },
+  },
+  components: { schemas: { Pet: { properties: { petId: {}, name: {}, status: {} } } } },
+}
+
+test('a schema is read as methods, and a $ref is followed or the method appears to give nothing', () => {
+  const methods = qpuSchemaMethodsOf('petstore', spec)
+  assert.equal(methods.length, 3, 'three operations across two paths')
+  assert.equal(qpuSchemaMethodsHolds(methods), true)
+
+  /* THE $REF MUST BE FOLLOWED. A response declared as `$ref: Pet` names its fields somewhere else, and a
+   * parser that stops at the reference reports a method that returns nothing — which would make every
+   * well-factored schema look like it composes with nothing. */
+  const find = methods.find((row) => row.operationId === 'find')
+  assert.deepEqual(find?.gives.map((f) => f.name), ['petId', 'name', 'status'])
+  assert.deepEqual(find?.takes.map((f) => f.name), ['status'])
+  const add = methods.find((row) => row.operationId === 'add')
+  assert.deepEqual(add?.takes.map((f) => f.name), ['petId', 'name', 'status'], 'a request body names what a method takes')
+  // and every discovered field carries its identity, not only its spelling
+  assert.ok([...(find?.gives ?? []), ...(find?.takes ?? [])].every((f) => /^[0-9a-f]{8}-/.test(f.uuid)))
+
+  // AND RUBBISH IS NOT A SCHEMA. A discovered document that is not one must read as no methods, never throw.
+  assert.deepEqual(qpuSchemaMethodsOf('x', undefined), [])
+  assert.deepEqual(qpuSchemaMethodsOf('x', 'not a document'), [])
+  assert.deepEqual(qpuSchemaMethodsOf('x', { paths: { '/a': { get: {} } } }).length, 1, 'an operation with nothing declared is still an operation')
+})
+
+test('two APIs compose by the same swap: both ways entangled, one way a pipeline stage, neither undecided', (t) => {
+  /* FIELDS ARE ADDRESSED, so the fixtures address them the same way the parser does — the join is on the
+   * shape UUID and a fixture that joined on the name would be testing something the code no longer does. */
+  const field = (name: string, type = 'string') => ({ name, uuid: qpuFieldUuidOf(name, { type }) })
+  const gives = (api: string, name: string, type = 'string') => ({ api, verb: 'get', path: '/a', takes: [], gives: [field(name, type)] })
+  const takes = (api: string, name: string, type = 'string') => ({ api, verb: 'get', path: '/b', takes: [field(name, type)], gives: [] })
+
+  // BOTH WAYS: a returns something b takes, and b returns something a takes.
+  const both = qpuComposeOf([gives('a', 'petId'), takes('b', 'petId'), gives('b', 'tag'), takes('a', 'tag')])
+  assert.equal(both.cross.pairs[0]?.swap, 'entangled')
+  assert.equal(qpuComposeHolds(both), true)
+
+  // ONE WAY is a pipeline stage, which is what an application is when the two things are machines.
+  const oneWay = qpuComposeOf([gives('a', 'petId'), takes('b', 'petId')])
+  assert.equal(oneWay.cross.pairs[0]?.swap, 'application')
+
+  /* NEITHER IS UNDECIDED, NOT UNCONNECTED — two schemas that share no shape may still compose through
+   * something this cannot see. */
+  const neither = qpuComposeOf([gives('a', 'petId'), takes('b', 'somethingElse')])
+  assert.equal(neither.cross.pairs[0]?.swap, 'undecided')
+  assert.match(neither.joinedOn, /RFC 9562/)
+
+  /* THE SAME NAME IS NOT THE SAME THING. This is what addressing bought: two APIs both speaking of `id` do
+   * not compose unless the shapes agree, which the name join could not tell and reported as a connection. */
+  const sameName = qpuComposeOf([gives('a', 'id', 'string'), takes('b', 'id', 'integer')])
+  assert.equal(sameName.cross.pairs[0]?.swap, 'undecided', 'id:string does not feed id:integer')
+  const sameShape = qpuComposeOf([gives('a', 'id', 'string'), takes('b', 'id', 'string')])
+  assert.equal(sameShape.cross.pairs[0]?.swap, 'application', 'and the same shape does feed it')
+
+  /* THE TRIANGLE IS THE LATTICE'S TRIANGLE. v names make v(v-1)/2 unordered pairs, the same identity the
+   * census counts over seated domains — one shape computed twice, so a disagreement means one has miscounted. */
+  const three = qpuComposeOf([gives('a', 'k'), takes('b', 'k'), gives('b', 'j'), takes('c', 'j')])
+  const seating = qpuTeachingSeatingOf()
+  const census = qpuTeachingCensusOf(seating)
+  assert.equal(three.cross.pairs.length, (three.apis.length * (three.apis.length - 1)) / 2)
+  assert.equal(census.mathematics, (seating.seated.length * (seating.seated.length - 1)) / 2)
+  t.diagnostic(`${three.apis.length} APIs make ${three.cross.pairs.length} pairs; the lattice's seated domains make ${census.mathematics}`)
+})
+
+test('a shape UUID is computed from content, is RFC 9562 v8, and the same content always gives it', () => {
+  assert.equal(qpuShapeUuidHolds(), true)
+  const one = qpuShapeUuidOf('{id:string}')
+  assert.match(one, /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/)
+  /* DETERMINISTIC, WHICH IS THE WHOLE POINT. uuidImprintOf mints and two calls differ; that is right for a
+   * message and wrong for an identity. Two things being the same thing has to be decidable by comparing
+   * sixteen bytes here, in another repository, and next year. */
+  assert.equal(one, qpuShapeUuidOf('{id:string}'))
+  assert.notEqual(one, qpuShapeUuidOf('{id:integer}'), 'a different shape is a different identity')
+  assert.notEqual(one, qpuShapeUuidOf('{id:string} '), 'and so is a different spelling of the content')
+
+  // VERSION 8 IS USED AS THE RFC WRITES IT: the version reserved for implementation-defined layouts. A v4
+  // with the randomness removed would be a lie about where the bits came from.
+  assert.equal(one.split('-')[2]?.[0], '8')
+  assert.ok(['8', '9', 'a', 'b'].includes(one.split('-')[3]?.[0] ?? ''), 'and the variant nibble as required')
+
+  /* TWO COINS SEAL INTO A COIL. The identity is two folds of sixteen made one of thirty-two, and every group
+   * width is a quantity the lattice already names rather than a number typed into a slice. */
+  assert.equal(qpuShapeUuidSealHolds(), true)
+
+  // the field address is name AND shape, so neither alone decides it
+  assert.notEqual(qpuFieldUuidOf('id', { type: 'string' }), qpuFieldUuidOf('petId', { type: 'string' }))
+  assert.notEqual(qpuFieldUuidOf('id', { type: 'string' }), qpuFieldUuidOf('id', { type: 'integer' }))
+  assert.equal(qpuFieldUuidOf('id', { type: 'string' }), qpuFieldUuidOf('id', { type: 'string' }))
 })

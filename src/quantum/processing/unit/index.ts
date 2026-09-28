@@ -8358,6 +8358,9 @@ export type QpuTeaching = {
   what: string
   /** Where a reader checks it. */
   source: string
+  /** A DOI, when the work has one, so a MACHINE can check it and not only a reader. Absent is the third state:
+   *  Mersenne 1636 and Chladni 1787 have no DOI and that is a fact about 1636, not a doubt about the citation. */
+  doi?: string
 }
 
 /**
@@ -8380,7 +8383,7 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Shannon, Scientific aspects of juggling, in Collected Papers (1993)' },
   { subject: 'theatre', domain: 'acoustics', direction: 'practice to theory', year: -350,
     what: 'the seating at Epidaurus filters low-frequency noise and returns high frequencies to the audience, a diffraction result built by people with no diffraction theory',
-    source: 'Declercq and Dekeyser, Acoustic diffraction effects at the Hellenistic amphitheater of Epidaurus, JASA 121(4) 2007' },
+    source: 'Declercq and Dekeyser, Acoustic diffraction effects at the Hellenistic amphitheater of Epidaurus, JASA 121(4) 2007', doi: '10.1121/1.2709842' },
   { subject: 'theatre', domain: 'acoustics', direction: 'theory to practice', year: 1934,
     what: 'the singer and actor formant near 3 kHz, where the ear is most sensitive and an orchestra quietest, is taught as a trainable resonance rather than volume',
     source: 'Sundberg, The acoustics of the singing voice, Scientific American 236(3) 1977' },
@@ -8418,6 +8421,72 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     what: 'stylometry settled disputed authorship of the Federalist papers; the study of literature did not contribute the inference',
     source: 'Mosteller and Wallace, Inference in an authorship problem, JASA 58 (1963)' },
 
+
+  /* ── WIDENED, AND EVERY ROW STILL A CITATION. These reach past the timetable to practices nobody calls a
+   * school subject — ringing, crochet, pigeon breeding, gambling — because the question was never about
+   * timetables. Most are pre-DOI and carry no identifier, which the citation reader reports as unverifiable
+   * here rather than as doubtful: Stedman 1677 and Pascal 1654 will not be getting one. */
+  { subject: 'bell ringing', domain: 'group theory', direction: 'practice to theory', year: 1677,
+    what: 'Stedman set out the systematic permutation of bells and described factorials in a ringing manual, and the ringers had the enumeration long before anyone had groups',
+    source: 'Stedman, Campanalogia (1677); White, Fabian Stedman: The First Group Theorist?, Amer. Math. Monthly 103 (1996)', doi: '10.1080/00029890.1996.12004816' },
+  { subject: 'bell ringing', domain: 'group theory', direction: 'theory to practice', year: 2021,
+    what: 'group theory is taught back to ringers as why a method closes, which extents exist and which cannot',
+    source: 'Hart, The Mathematics of Bell Ringing, Gresham College (2021)' },
+  { subject: 'crochet', domain: 'hyperbolic geometry', direction: 'practice to theory', year: 1997,
+    what: 'Taimina crocheted the first usable physical model of the hyperbolic plane, an object mathematicians had taken to be impossible to make',
+    source: 'Henderson and Taimina, Crocheting the hyperbolic plane, Math. Intelligencer 23 (2001)', doi: '10.1007/BF03026623' },
+  { subject: 'crochet', domain: 'hyperbolic geometry', direction: 'theory to practice', year: 2009,
+    what: 'the geometry is now taught through the craft, with the increase ratio standing in for curvature',
+    source: 'Taimina, Crocheting Adventures with Hyperbolic Planes (2009)' },
+  { subject: 'pigeon breeding', domain: 'evolutionary biology', direction: 'practice to theory', year: 1859,
+    what: 'Darwin opened the Origin with fancy pigeon breeders because artificial selection was the observable case that made natural selection arguable at all',
+    source: 'Darwin, On the Origin of Species (1859), chapter 1' },
+  { subject: 'pigeon breeding', domain: 'evolutionary biology', direction: 'theory to practice', year: 1937,
+    what: 'quantitative genetics handed breeders the selection index and the heritability estimate',
+    source: 'Lush, Animal Breeding Plans (1937)' },
+  { subject: 'games of chance', domain: 'probability', direction: 'practice to theory', year: 1654,
+    what: 'a gambler asked Pascal how to divide the stake of an interrupted game, and the correspondence with Fermat that answered it founded probability',
+    source: 'Pascal and Fermat, correspondence of 1654, in Todhunter, A History of the Mathematical Theory of Probability (1865)' },
+  { subject: 'games of chance', domain: 'probability', direction: 'theory to practice', year: 1962,
+    what: 'the theory came back as counted play, and the game was changed to defend against it',
+    source: 'Thorp, Beat the Dealer (1962)' },
+  { subject: 'weaving', domain: 'computation', direction: 'practice to theory', year: 1836,
+    what: 'Babbage took punched-card control for the Analytical Engine directly from the Jacquard loom, and Lovelace described the engine as weaving algebraical patterns as the loom weaves leaves',
+    source: 'Menabrea and Lovelace, Sketch of the Analytical Engine (1843)' },
+  { subject: 'weaving', domain: 'computation', direction: 'theory to practice', year: 2004,
+    what: 'computer-controlled jacquard is how figured cloth is now designed, the cards having become a file',
+    source: 'Essinger, Jacquard s Web (2004)' },
+  { subject: 'dyeing', domain: 'organic chemistry', direction: 'practice to theory', year: 1856,
+    what: 'Perkin s mauveine turned a failed synthesis into an industry, and the dye works are where organic chemistry became a discipline with laboratories attached',
+    source: 'Travis, The Rainbow Makers: The Origins of the Synthetic Dyestuffs Industry (1993)' },
+  { subject: 'dyeing', domain: 'organic chemistry', direction: 'theory to practice', year: 1869,
+    what: 'synthetic alizarin displaced madder, and the dyer s palette became something chemistry decided',
+    source: 'Graebe and Liebermann, Ueber kuenstliches Alizarin, Ber. Dtsch. Chem. Ges. 2 (1869)', doi: '10.1002/cber.186900201141' },
+  { subject: 'brewing', domain: 'microbiology', direction: 'practice to theory', year: 1876,
+    what: 'Pasteur wrote the Etudes sur la biere to answer brewers losing batches, and the germ account of fermentation came out of the spoilage',
+    source: 'Pasteur, Etudes sur la biere (1876)' },
+  { subject: 'brewing', domain: 'microbiology', direction: 'theory to practice', year: 1883,
+    what: 'Hansen s pure yeast culture at Carlsberg made a strain a thing a brewery could keep, and brewing has been done that way since',
+    source: 'Hansen, Recherches sur la physiologie et la morphologie des ferments alcooliques (1883)' },
+  { subject: 'navigation', domain: 'astronomy', direction: 'practice to theory', year: 1714,
+    what: 'the longitude problem was a sailing problem that set astronomy an agenda and paid for it, producing lunar distance tables and the marine chronometer',
+    source: 'Howse, Greenwich Time and the Longitude (1997)' },
+  { subject: 'navigation', domain: 'astronomy', direction: 'theory to practice', year: 1767,
+    what: 'the Nautical Almanac turned that astronomy into a procedure a navigator could run at sea',
+    source: 'Maskelyne, The Nautical Almanac and Astronomical Ephemeris (1767)' },
+  { subject: 'pottery', domain: 'statistics', direction: 'practice to theory', year: 1899,
+    what: 'Petrie ordered graves by the shapes of their pots and invented sequence dating, which is seriation and an ordering method born of ceramics',
+    source: 'Petrie, Sequences in prehistoric remains, J. Anthropol. Inst. 29 (1899)', doi: '10.2307/2843012' },
+  { subject: 'pottery', domain: 'statistics', direction: 'theory to practice', year: 1999,
+    what: 'seriation came back as a general method for ordering assemblages with its assumptions stated',
+    source: 'O Brien and Lyman, Seriation, Stratigraphy, and Index Fossils (1999)' },
+  { subject: 'origami', domain: 'geometry', direction: 'practice to theory', year: 1936,
+    what: 'folding solves cubics that straightedge and compass cannot, which Beloch showed by folding before anyone axiomatised the operations',
+    source: 'Beloch, Sul metodo del ripiegamento della carta, Periodico di Matematiche 16 (1936)' },
+  { subject: 'origami', domain: 'geometry', direction: 'theory to practice', year: 2003,
+    what: 'computational design turns a crease pattern into a problem with a solver, and the folds reached engineering from there',
+    source: 'Lang, Origami Design Secrets (2003)' },
+
   /* ── SOLVING THE LEADS. Every row below closes one the gatherer had named: four supply the direction an
    * application was owed, and the rest cross combinations that read UNDECIDED. What is NOT here is a row for
    * every empty cell. Theatre and topology, circus and radiocarbon dating and thirty others have no instance
@@ -8437,7 +8506,7 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Belcastro and Yackel (eds), Making Mathematics with Needlework (2008)' },
   { subject: 'music', domain: 'topology', direction: 'practice to theory', year: 1722,
     what: 'composers moved between chords by the smallest available motion for centuries, and the orbifold geometry that explains why those routes are short came afterwards',
-    source: 'Tymoczko, The geometry of musical chords, Science 313 (2006)' },
+    source: 'Tymoczko, The geometry of musical chords, Science 313 (2006)', doi: '10.1126/science.1126287' },
   { subject: 'music', domain: 'topology', direction: 'theory to practice', year: 2011,
     what: 'that geometry is taught to composers and theorists as a way to see voice leading rather than tabulate it',
     source: 'Tymoczko, A Geometry of Music (2011)' },
@@ -8455,7 +8524,7 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Bloksma, Rheology of the breadmaking process, Cereal Foods World 35 (1990)' },
   { subject: 'cooking', domain: 'acoustics', direction: 'practice to theory', year: 1976,
     what: 'crispness had always been judged by the sound of the bite, and the psychoacoustic account was built by taking that judgement seriously enough to measure it',
-    source: 'Vickers and Bourne, A psychoacoustical theory of crispness, J. Food Sci. 41 (1976)' },
+    source: 'Vickers and Bourne, A psychoacoustical theory of crispness, J. Food Sci. 41 (1976)', doi: '10.1111/j.1365-2621.1976.tb14407.x' },
   { subject: 'cooking', domain: 'acoustics', direction: 'theory to practice', year: 2001,
     what: 'acoustic measurement of crispness is now used to design and hold the texture of a product',
     source: 'Duizer, A review of acoustic research for studying the sensory perception of crisp, crunchy and crackly textures, Trends Food Sci. Technol. 12 (2001)' },
@@ -8467,19 +8536,19 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Signac, D Eugene Delacroix au neo-impressionnisme (1899)' },
   { subject: 'sports', domain: 'biochemistry', direction: 'practice to theory', year: 1966,
     what: 'the needle biopsy work on muscle glycogen was begun to answer a question about why athletes tire, and the phenomenon came from training rather than from chemistry',
-    source: 'Bergstrom and Hultman, Muscle glycogen synthesis after exercise, Nature 210 (1966)' },
+    source: 'Bergstrom and Hultman, Muscle glycogen synthesis after exercise, Nature 210 (1966)', doi: '10.1038/210309a0' },
   { subject: 'sports', domain: 'biochemistry', direction: 'theory to practice', year: 2011,
     what: 'carbohydrate periodisation is now standard preparation, taught from that physiology',
-    source: 'Burke, Hawley, Wong and Jeukendrup, Carbohydrates for training and competition, J. Sports Sci. 29 (2011)' },
-  { subject: 'music', domain: 'materials science', direction: 'theory to practice', year: 2006,
+    source: 'Burke, Hawley, Wong and Jeukendrup, Carbohydrates for training and competition, J. Sports Sci. 29 (2011)', doi: '10.1080/02640414.2011.585473' },
+  { subject: 'music', domain: 'materials science', direction: 'theory to practice', year: 2009,
     what: 'analysis of the wood and its treatment in old Italian instruments is used by makers to choose and prepare material',
-    source: 'Nagyvary, Guillemette and Spiegelman, Mineral preservatives in the wood of Stradivari, Nature 444 (2006)' },
+    source: 'Nagyvary, Guillemette and Spiegelman, Mineral Preservatives in the Wood of Stradivari and Guarneri, PLoS ONE 4 (2009)', doi: '10.1371/journal.pone.0004245' },
   { subject: 'music', domain: 'biomechanics', direction: 'theory to practice', year: 1986,
     what: 'load and posture studies set practice limits and reshape technique after performance injury',
     source: 'Fry, Overuse syndrome in musicians, Med. J. Aust. 144 (1986)' },
   { subject: 'music', domain: 'radiocarbon dating', direction: 'theory to practice', year: 2012,
     what: 'dating the Geissenklosterle bone flutes put the origin of music-making at about forty thousand years before present',
-    source: 'Higham et al., Testing models for the beginnings of the Aurignacian, J. Hum. Evol. 62 (2012)' },
+    source: 'Higham et al., Testing models for the beginnings of the Aurignacian and the advent of figurative art and music: the radiocarbon chronology of Geissenklosterle, J. Hum. Evol. 62 (2012)', doi: '10.1016/j.jhevol.2012.03.003' },
   { subject: 'cooking', domain: 'materials science', direction: 'theory to practice', year: 1982,
     what: 'food texture is measured as a material property and used to specify a product',
     source: 'Bourne, Food Texture and Viscosity (1982)' },
@@ -8488,7 +8557,7 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Spencer, Method of treating foodstuffs, US Patent 2,495,429 (1950)' },
   { subject: 'cooking', domain: 'radiocarbon dating', direction: 'theory to practice', year: 2013,
     what: 'dating charred residues on potsherds established when and where pots were first used to cook',
-    source: 'Craig et al., Earliest evidence for the use of pottery, Nature 496 (2013)' },
+    source: 'Craig et al., Earliest evidence for the use of pottery, Nature 496 (2013)', doi: '10.1038/nature12109' },
   { subject: 'cooking', domain: 'biomechanics', direction: 'theory to practice', year: 2003,
     what: 'the mechanics of chewing explains what texture is perceived as, and is used to design for it',
     source: 'Hiiemae and Palmer, Tongue movements in feeding and speech, Crit. Rev. Oral Biol. Med. 14 (2003)' },
@@ -8497,16 +8566,16 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Soehne, Fundamentals of pressure distribution and soil compaction under tractor tires, Agric. Eng. 39 (1958)' },
   { subject: 'gardening', domain: 'wave physics', direction: 'theory to practice', year: 1972,
     what: 'the action spectrum of photosynthesis is what horticultural lighting is now specified against',
-    source: 'McCree, The action spectrum, absorptance and quantum yield of photosynthesis in crop plants, Agric. Meteorol. 9 (1972)' },
+    source: 'McCree, The action spectrum, absorptance and quantum yield of photosynthesis in crop plants, Agric. Meteorol. 9 (1972)', doi: '10.1016/0002-1571(71)90022-7' },
   { subject: 'gardening', domain: 'biomechanics', direction: 'theory to practice', year: 1992,
     what: 'how stems and trunks resist wind and their own weight explains staking, pruning and spacing',
     source: 'Niklas, Plant Biomechanics (1992)' },
   { subject: 'arts and crafts', domain: 'radiocarbon dating', direction: 'theory to practice', year: 1992,
     what: 'direct dating of pigment gave painted caves a chronology that style could not settle',
-    source: 'Valladas et al., Direct radiocarbon dates for prehistoric paintings, Nature 357 (1992)' },
+    source: 'Valladas et al., Direct radiocarbon dates for prehistoric paintings, Nature 357 (1992)', doi: '10.1038/357068a0' },
   { subject: 'arts and crafts', domain: 'statistics', direction: 'theory to practice', year: 2008,
     what: 'statistical description of brushstroke gives authentication a claim that can be checked rather than asserted',
-    source: 'Johnson et al., Image processing for artist identification, IEEE Signal Process. Mag. 25 (2008)' },
+    source: 'Johnson et al., Image processing for artist identification, IEEE Signal Process. Mag. 25 (2008)', doi: '10.1109/MSP.2008.923513' },
   { subject: 'theatre', domain: 'biomechanics', direction: 'theory to practice', year: 1922,
     what: 'Meyerhold built an actor training on the study of efficient movement and named it after the science he took it from',
     source: 'Meyerhold on Theatre, ed. Braun (1969), the 1922 lectures' },
@@ -8515,13 +8584,13 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Glerum, Stage Rigging Handbook (1987)' },
   { subject: 'history', domain: 'materials science', direction: 'theory to practice', year: 1991,
     what: 'composition and provenance analysis dates, sources and connects objects that documents do not mention',
-    source: 'Tite, Archaeological science: past achievements and future prospects, Archaeometry 33 (1991)' },
+    source: 'Tite, Archaeological science: past achievements and future prospects, Archaeometry 33 (1991)', doi: '10.1111/j.1475-4754.1991.tb00695.x' },
   { subject: 'history', domain: 'biochemistry', direction: 'theory to practice', year: 1985,
     what: 'ancient DNA and residue analysis read populations, diet and disease out of material that carries no text',
-    source: 'Paabo, Molecular cloning of ancient Egyptian mummy DNA, Nature 314 (1985)' },
+    source: 'Paabo, Molecular cloning of ancient Egyptian mummy DNA, Nature 314 (1985)', doi: '10.1038/314644a0' },
   { subject: 'history', domain: 'biomechanics', direction: 'theory to practice', year: 2006,
     what: 'bone cross-sections record habitual loading, so skeletons report what people did and not only who they were',
-    source: 'Ruff, Holt and Trinkaus, Who is afraid of the big bad Wolff, Am. J. Phys. Anthropol. 129 (2006)' },
+    source: 'Ruff, Holt and Trinkaus, Who is afraid of the big bad Wolff, Am. J. Phys. Anthropol. 129 (2006)', doi: '10.1002/ajpa.20371' },
   { subject: 'history', domain: 'acoustics', direction: 'theory to practice', year: 2006,
     what: 'measuring how ancient spaces sound puts a testable claim under accounts of what was done in them',
     source: 'Scarre and Lawson (eds), Archaeoacoustics (2006)' },
@@ -8530,7 +8599,7 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Clemens and Graham, Introduction to Manuscript Studies (2007)' },
   { subject: 'literature', domain: 'radiocarbon dating', direction: 'theory to practice', year: 1992,
     what: 'dating the scroll material settled a chronology that palaeography alone had left open',
-    source: 'Bonani et al., Radiocarbon dating of the Dead Sea Scrolls, Radiocarbon 34 (1992)' },
+    source: 'Bonani et al., Radiocarbon Dating of Fourteen Dead Sea Scrolls, Radiocarbon 34 (1992)', doi: '10.1017/s0033822200064158' },
   { subject: 'circus', domain: 'statistics', direction: 'theory to practice', year: 2012,
     what: 'injury surveillance turned anecdote about what is dangerous into rates that training can be set against',
     source: 'Wanke et al., Acute injuries in student circus artists, J. Sports Med. Phys. Fitness 52 (2012)' },
@@ -8553,10 +8622,10 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Newton, letter to Oldenburg, Phil. Trans. 7 (1672)' },
   { subject: 'sports', domain: 'mechanics', direction: 'theory to practice', year: 1985,
     what: 'ball aerodynamics — seam, dimple and surface roughness — is now how balls are designed and how swing is coached',
-    source: 'Mehta, Aerodynamics of sports balls, Annu. Rev. Fluid Mech. 17 (1985)' },
+    source: 'Mehta, Aerodynamics of sports balls, Annu. Rev. Fluid Mech. 17 (1985)', doi: '10.1146/annurev.fl.17.010185.001055' },
   { subject: 'arts and crafts', domain: 'mechanics', direction: 'practice to theory', year: 1966,
     what: 'masons built arches and vaults to proportional rules for centuries, and limit analysis explained afterwards why those rules stand up',
-    source: 'Heyman, The stone skeleton, Int. J. Solids Struct. 2(2) 1966' },
+    source: 'Heyman, The stone skeleton, Int. J. Solids Struct. 2(2) 1966', doi: '10.1016/0020-7683(66)90018-7' },
   { subject: 'arts and crafts', domain: 'mechanics', direction: 'theory to practice', year: 1995,
     what: 'the same limit analysis is taught to conservation engineers as how to judge and repair a masonry structure',
     source: 'Heyman, The Stone Skeleton: Structural Engineering of Masonry Architecture (1995)' },
@@ -8574,14 +8643,14 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
     source: 'Lawes and Gilbert, Rothamsted Broadbalk experiment, begun 1843' },
   { subject: 'arts and crafts', domain: 'biochemistry', direction: 'practice to theory', year: 1999,
     what: 'the woad vat is a bacterial reduction of indigo that dyers ran and maintained for centuries before the organism responsible was isolated and named',
-    source: 'Padden et al., Clostridium used in mediaeval dyeing, FEMS Microbiol. Lett. 131 (1998)' },
+    source: 'Padden et al., Clostridium used in mediaeval dyeing, Nature 396 (1998)', doi: '10.1038/24290' },
 
   { subject: 'sports', domain: 'statistics', direction: 'theory to practice', year: 1977,
     what: 'record-keeping was turned into inference and changed how players are valued and teams assembled; the inference did not come from sport',
     source: 'James, Baseball Abstract (1977)' },
   { subject: 'sports', domain: 'materials science', direction: 'theory to practice', year: 1979,
     what: 'a running track was designed from a model of leg compliance to return energy to the runner, and it worked as predicted',
-    source: 'McMahon and Greene, The influence of track compliance on running, J. Biomech. 12 (1979)' },
+    source: 'McMahon and Greene, The influence of track compliance on running, J. Biomech. 12 (1979)', doi: '10.1016/0021-9290(79)90057-5' },
   { subject: 'music', domain: 'statistics', direction: 'theory to practice', year: 2006,
     what: 'statistical description of large score corpora gave musicology a way to state stylistic claims that can be checked',
     source: 'Huron, Sweet Anticipation: Music and the Psychology of Expectation (2006)' },
@@ -8647,6 +8716,390 @@ export const qpuTeachingPairsHolds = (read = qpuTeachingPairsOf()): boolean =>
   read.pairs.filter((row) => row.swap === 'entangled').every((row) => row.fromPractice.length > n - n && row.fromTheory.length > n - n)
 
 /**
+ * A UUID COMPUTED FROM CONTENT, WHICH IS WHAT MAKES ONE PROGRAMMABLE.
+ *
+ * uuidImprintOf mints: it counts a sequence and lays the lattice into RFC 9562 fields, so two calls differ.
+ * That is right for a message and wrong for an identity. What a shape needs is the other kind — the same
+ * content yielding the same UUID here, in another repository, and next year, so that two things being THE SAME
+ * THING is decidable by comparing sixteen bytes instead of by argument.
+ *
+ * RFC 9562 VERSION 8 IS EXACTLY THIS CASE and is used as written: v8 is the version the RFC reserves for
+ * implementation-defined layouts, so a deterministic content UUID is not a v4 with the randomness removed —
+ * which would be a lie about its provenance — but the version that says "these bits mean something to whoever
+ * made them". The variant nibble is set as the RFC requires; both are asserted rather than assumed.
+ *
+ * THE POINT IS THE JOIN. Composability was matched on FIELD NAME, and two APIs that both say `id` are not
+ * thereby composable — that was the weakest honest test and it was said to be. Addressing the shape instead
+ * means `id: string` and `id: integer` no longer meet, and a Pet with three named properties meets another
+ * Pet with the same three wherever it is declared and whatever the file calls it.
+ */
+export const qpuShapeUuidOf = (canonical: string): string => {
+  /* Two folds over one hundred and twenty-eight bits: the content, and the content marked, so the halves
+   * cannot be equal by construction and the whole is a function of the whole. */
+  const high = qpuFoldOf(canonical)
+  const low = qpuFoldOf(`${canonical}\u0000shape`)
+  /* TWO COINS SEAL INTO A COIL, which is what the two folds above are doing: coins halves of sixteen sealed
+   * into one identity of mintOf(coins + n) digits. The lattice names every width here and the first attempt
+   * wrote them as arithmetic anyway, getting `coins * mintOf(n)` where mintOf(n) was meant — sixteen for
+   * eight — and producing a UUID-shaped thing that was not one, which the predicate correctly refused.
+   *
+   * 8-4-4-4-12: mintOf(n), mintOf(coins), mintOf(coins), mintOf(coins), faces - coins. */
+  const four = mintOf(coins)
+  const eight = mintOf(n)
+  const sixteen = mintOf(mintOf(coins))
+  const variant = (Number(BigInt(`0x${low.slice(n - n, seed)}`) % BigInt(four)) + mintOf(n)).toString(sixteen)
+  return [
+    high.slice(n - n, eight),
+    high.slice(eight, eight + four),
+    `8${high.slice(eight + four, sixteen - seed)}`,
+    `${variant}${low.slice(seed, four)}`,
+    low.slice(four, sixteen),
+  ].join('-')
+  // the last group is faces - coins = twelve digits, which is what low.slice(four, sixteen) yields
+}
+
+/** The sealed identity is mintOf(coins + n) digits — coins folds of sixteen, made one coil. */
+export const qpuShapeUuidSealHolds = (canonical = 'probe'): boolean =>
+  qpuShapeUuidOf(canonical).replace(/-/g, '').length === mintOf(coins + n) &&
+  qpuShapeUuidOf(canonical).split('-').map((group) => group.length).join(',') === [mintOf(n), mintOf(coins), mintOf(coins), mintOf(coins), qpuFacesOf().faces - coins].join(',')
+
+/** RFC 9562 shape, version 8, a variant nibble in 8..b, and the same content always giving the same UUID. */
+export const qpuShapeUuidHolds = (canonical = 'probe'): boolean => {
+  const uuid = qpuShapeUuidOf(canonical)
+  return (
+    /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid) &&
+    uuid === qpuShapeUuidOf(canonical) &&
+    uuid !== qpuShapeUuidOf(`${canonical} `)
+  )
+}
+
+/** The canonical text of a schema: its type and its property names in order, recursively, so the UUID of a
+ *  shape does not depend on how a document happened to order or name its definitions. */
+const canonicalShapeOf = (schema: unknown, doc: Record<string, unknown>, depth = n - n): string => {
+  if (!schema || typeof schema !== 'object' || depth > coins) return 'unknown'
+  const row = schema as { $ref?: string; properties?: Record<string, unknown>; items?: unknown; type?: string; format?: string }
+  if (typeof row.$ref === 'string') {
+    const parts = row.$ref.replace(/^#\//, '').split('/')
+    let at: unknown = doc
+    for (const part of parts) at = (at as Record<string, unknown> | undefined)?.[part]
+    return canonicalShapeOf(at, doc, depth + seed)
+  }
+  if (row.items !== undefined) return `[${canonicalShapeOf(row.items, doc, depth + seed)}]`
+  if (row.properties)
+    return `{${Object.keys(row.properties)
+      .sort()
+      .map((key) => `${key}:${canonicalShapeOf(row.properties?.[key], doc, depth + seed)}`)
+      .join(',')}}`
+  return `${row.type ?? 'unknown'}${row.format === undefined ? '' : `/${row.format}`}`
+}
+
+/** One field, addressed by what it IS rather than by what it is called: its name and its shape, folded. */
+export const qpuFieldUuidOf = (name: string, schema: unknown, doc: Record<string, unknown> = {}): string =>
+  qpuShapeUuidOf(`${name}:${canonicalShapeOf(schema, doc)}`)
+
+/** Name AND shape decide it, so neither alone does: rename a field and it moves, retype it and it moves. */
+export const qpuFieldUuidHolds = (name = 'id', schema: unknown = { type: 'string' }): boolean =>
+  qpuShapeUuidHolds(`${name}:${canonicalShapeOf(schema, {})}`) &&
+  qpuFieldUuidOf(name, schema) !== qpuFieldUuidOf(`${name}x`, schema) &&
+  qpuFieldUuidOf(name, schema) !== qpuFieldUuidOf(name, { type: 'integer' }) &&
+  qpuFieldUuidOf(name, schema) === qpuFieldUuidOf(name, schema)
+
+/**
+ * DISCOVER THE APIS, THEN THEIR SCHEMAS, THEN THEIR METHODS, THEN WHAT COMPOSES WITH WHAT.
+ *
+ * The teaching corpus is evidence somebody wrote down. This is the same question asked of things that answer
+ * for themselves: a public registry lists APIs, each names a schema, each schema declares methods, and each
+ * method says what it takes and what it gives. Nothing here is typed in — the vocabulary is discovered, which
+ * is the only way "anything imaginable" can mean anything other than a longer list of my own choosing.
+ *
+ * AND THE CROSS FORMULA IS THE ONE ALREADY IN USE. Two APIs compose when a field one RETURNS is a parameter the
+ * other TAKES. Both ways and they are entangled; one way and it is an application, which is what a pipeline
+ * stage is; neither and it is not decidable from their schemas. That is the swap criterion unchanged, applied
+ * to machines rather than to disciplines, and it is checkable rather than argued: the schemas say so.
+ *
+ * BOUNDED, AND SAID TO BE. A Worker request may make fifty subrequests. The registry is one and each schema is
+ * another, so a call discovers `faces` of them from an offset and reports `sampled` beside `apis`. Two thousand
+ * five hundred specs is not a thing to fetch in a request, and a reader that pretended otherwise would deny
+ * every other door in the same request.
+ */
+export type QpuField = { name: string; uuid: string }
+export type QpuMethod = { api: string; verb: string; path: string; operationId?: string; takes: QpuField[]; gives: QpuField[] }
+
+const schemaFieldsOf = (schema: unknown, doc: Record<string, unknown>, depth = n - n): QpuField[] => {
+  if (!schema || typeof schema !== 'object' || depth > coins) return []
+  const row = schema as { $ref?: string; properties?: Record<string, unknown>; items?: unknown; type?: string }
+  if (typeof row.$ref === 'string') {
+    /* One level of $ref, resolved against the document, because a response that is `$ref: Pet` declares its
+     * fields somewhere else and a parser that stops at the reference sees a method that gives nothing. */
+    const parts = row.$ref.replace(/^#\//, '').split('/')
+    let at: unknown = doc
+    for (const part of parts) at = (at as Record<string, unknown> | undefined)?.[part]
+    return schemaFieldsOf(at, doc, depth + seed)
+  }
+  if (row.items !== undefined) return schemaFieldsOf(row.items, doc, depth + seed)
+  return row.properties ? Object.keys(row.properties).map((name) => ({ name, uuid: qpuFieldUuidOf(name, row.properties?.[name], doc) })) : []
+}
+
+/** An OpenAPI document read as methods: what each one takes, and what it gives back. Pure; no network. */
+export const qpuSchemaMethodsOf = (api: string, document: unknown): QpuMethod[] => {
+  if (!document || typeof document !== 'object') return []
+  const doc = document as Record<string, unknown> & { paths?: Record<string, Record<string, unknown>> }
+  const verbs = ['get', 'post', 'put', 'patch', 'delete'] as const
+  const methods: QpuMethod[] = []
+  for (const [path, item] of Object.entries(doc.paths ?? {})) {
+    for (const verb of verbs) {
+      const op = (item as Record<string, unknown>)[verb] as
+        | undefined
+        | { operationId?: string; parameters?: { name?: string; schema?: unknown }[]; requestBody?: { content?: Record<string, { schema?: unknown }> }; responses?: Record<string, { content?: Record<string, { schema?: unknown }>; schema?: unknown }> }
+      if (!op) continue
+      const takes = [
+        ...(op.parameters ?? [])
+          .filter((row): row is { name: string; schema?: unknown } => typeof row.name === 'string')
+          .map((row) => ({ name: row.name, uuid: qpuFieldUuidOf(row.name, row.schema, doc) })),
+        ...Object.values(op.requestBody?.content ?? {}).flatMap((row) => schemaFieldsOf(row.schema, doc)),
+      ]
+      const ok = op.responses?.[String(found)]
+      const gives = ok === undefined ? [] : [...Object.values(ok.content ?? {}).flatMap((row) => schemaFieldsOf(row.schema, doc)), ...schemaFieldsOf(ok.schema, doc)]
+      const once = (rows: QpuField[]) => [...new Map(rows.map((row) => [row.uuid, row])).values()]
+      methods.push({ api, verb, path, operationId: op.operationId, takes: once(takes), gives: once(gives) })
+    }
+  }
+  return methods
+}
+
+/** Every method names its API, a verb and a path, and its two vocabularies are sets rather than lists. */
+export const qpuSchemaMethodsHolds = (methods: readonly QpuMethod[]): boolean =>
+  methods.every(
+    (row) =>
+      row.api.length > n - n &&
+      row.path.startsWith('/') &&
+      new Set(row.takes.map((field) => field.uuid)).size === row.takes.length &&
+      new Set(row.gives.map((field) => field.uuid)).size === row.gives.length &&
+      /* every field carries an identity of the right shape — the predicate probes the UUID, not the name,
+       * which the first version got backwards and so tested nothing about the field it was looking at */
+      [...row.takes, ...row.gives].every((field) => /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(field.uuid)),
+  )
+
+/**
+ * WHAT COMPOSES WITH WHAT, by the swap. A gives a field B takes, in both directions or one or neither.
+ *
+ * The join is on field NAME, which is the weakest honest test and is said to be: two APIs that both speak of
+ * `id` are not thereby composable, and this reports that they might be rather than that they are. What it
+ * cannot do is invent a connection — the names come out of the schemas, and a pair with no shared name is
+ * reported undecided rather than unconnected.
+ */
+export const qpuComposeOf = (methods: readonly QpuMethod[]) => {
+  const none = n - n
+  const apis = [...new Set(methods.map((row) => row.api))].sort()
+  /* ADDRESSED, NOT NAMED. The sets hold shape UUIDs, so `id: string` and `id: integer` are different things
+   * and the same Pet declared in two documents is one thing. */
+  const givesOf = (api: string) => new Map(methods.filter((row) => row.api === api).flatMap((row) => row.gives).map((field) => [field.uuid, field.name]))
+  const takesOf = (api: string) => new Map(methods.filter((row) => row.api === api).flatMap((row) => row.takes).map((field) => [field.uuid, field.name]))
+  const rows: QpuCrossRow[] = []
+  for (let i = none; i < apis.length; i++)
+    for (let j = i + seed; j < apis.length; j++) {
+      const left = apis[i]!
+      const right = apis[j]!
+      const rightTakes = takesOf(right)
+      const leftTakes = takesOf(left)
+      const forwards = [...givesOf(left)].filter(([uuid]) => rightTakes.has(uuid))
+      const backwards = [...givesOf(right)].filter(([uuid]) => leftTakes.has(uuid))
+      if (forwards.length > none)
+        rows.push({ left, right, forward: true, year: none, what: `${left} returns ${forwards.slice(none, n).map(([uuid, name]) => `${name} ${uuid}`).join(', ')}, which ${right} takes`, source: `openapi:${left}` })
+      if (backwards.length > none)
+        rows.push({ left, right, forward: false, year: none, what: `${right} returns ${backwards.slice(none, n).map(([uuid, name]) => `${name} ${uuid}`).join(', ')}, which ${left} takes`, source: `openapi:${right}` })
+    }
+  const cross = qpuCrossOf(rows, true, apis)
+  return { kind: 'compose' as const, apis, methods: methods.length, joinedOn: 'the shape UUID of a field — its name and its type, folded to an RFC 9562 v8 identity' as const, cross, holds: qpuCrossHolds(cross) && qpuSchemaMethodsHolds(methods) }
+}
+
+export const qpuComposeHolds = (read: ReturnType<typeof qpuComposeOf>): boolean => read.holds
+
+/** A discovery is sound when every sampled name is accounted for and every method is well formed — NOT when
+ *  every schema was reached. A registry entry whose spec has gone is a fact about that entry. */
+export const qpuApisLiveHolds = (read: Awaited<ReturnType<typeof qpuApisLiveOf>>): boolean =>
+  read.holds === true && read.sampled === read.rows.length && read.rows.every((row) => row.api.length > n - n)
+
+/** The registry, the schemas and the methods, discovered live and bounded to `faces` schemas from an offset. */
+export const qpuApisLiveOf = async (from = n - n) => {
+  const faces = qpuFacesOf()
+  const none = n - n
+  const deadline = foreignDeadlineOf()
+  const registry = 'https://api.apis.guru/v2/list.json'
+  const miss = { kind: 'apis' as const, live: false as const, registry, apis: none, sampled: none, rows: [] as { api: string; spec: string; live: boolean; methods: number }[], methods: [] as QpuMethod[], holds: false }
+  const listed = await foreignFetchOf(new Request(registry, { method: 'GET', headers: { accept: 'application/json' } }), deadline)
+  if (!listed || listed.status !== found) return { ...miss, why: 'the registry did not answer — no APIs were discovered this run, which is not none existing' as const }
+  const catalogue = (await listed.json().catch(() => undefined)) as undefined | Record<string, { preferred?: string; versions?: Record<string, { swaggerUrl?: string }> }>
+  if (!catalogue) return { ...miss, live: true as const, why: 'the registry answered with something that is not a catalogue' as const }
+  const names = Object.keys(catalogue).sort()
+  const window = names.slice(from, from + faces.faces)
+  const rows: { api: string; spec: string; live: boolean; methods: number }[] = []
+  const methods: QpuMethod[] = []
+  for (const api of window) {
+    const entry = catalogue[api]
+    const spec = entry?.versions?.[entry.preferred ?? '']?.swaggerUrl ?? ''
+    if (spec.length === none) {
+      rows.push({ api, spec, live: false, methods: none })
+      continue
+    }
+    const got = await foreignFetchOf(new Request(spec, { method: 'GET', headers: { accept: 'application/json' } }), deadline)
+    const document = got && got.status === found ? await got.json().catch(() => undefined) : undefined
+    const found_ = document === undefined ? [] : qpuSchemaMethodsOf(api, document)
+    methods.push(...found_)
+    rows.push({ api, spec, live: document !== undefined, methods: found_.length })
+  }
+  return {
+    kind: 'apis' as const,
+    live: true as const,
+    registry,
+    apis: names.length,
+    from,
+    sampled: rows.length,
+    rows,
+    methods,
+    reached: rows.filter((row) => row.live).length,
+    /* Sound when every sampled name was accounted for — NOT when every schema was reached. A registry entry
+     * whose spec is gone is a fact about that entry. */
+    holds: rows.length === Math.min(faces.faces, Math.max(none, names.length - from)) && qpuSchemaMethodsHolds(methods),
+  }
+}
+
+/**
+ * THE CITATIONS, AS IDENTIFIERS A MACHINE CAN RESOLVE RATHER THAN STRINGS A READER MIGHT.
+ *
+ * Every verdict in the teaching and experiment corpora rests on a citation, and until now a citation was a
+ * sentence. A sentence is checkable by a person who goes and looks, which is to say by nobody. A DOI is
+ * checkable by anything with a network, and Crossref serves them free and unauthenticated — so the corpus can
+ * be asked, on demand, whether the works it rests on exist and are the works it says they are.
+ *
+ * THREE FAILURES, KEPT APART, because they mean different things and only two are anyone's fault:
+ *   no identifier   the work predates DOIs. Mersenne 1636 and Chladni 1787 will never have one, and that is a
+ *                   fact about 1636 rather than a doubt about the citation. UNVERIFIABLE HERE, never false.
+ *   does not resolve  the identifier is wrong. Closable, and a lead.
+ *   resolves to something else  the worst case and the one a reader would never catch: a real DOI for the wrong
+ *                   paper. The resolved title is compared against what the citation claims. Also a lead.
+ * And the fourth is the network, which is not a verdict at all.
+ */
+export const qpuCitationsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS, experiments: readonly QpuCrossRow[] = QPU_EXPERIMENTS) => {
+  const none = n - n
+  const rows = [...teachings.map((row) => ({ source: row.source, doi: row.doi })), ...experiments.map((row) => ({ source: row.source, doi: row.doi }))]
+  const seen = new Map<string, { source: string; doi?: string }>()
+  for (const row of rows) if (!seen.has(row.source)) seen.set(row.source, row)
+  const citations = [...seen.values()].sort((a, b) => (a.source < b.source ? -seed : seed))
+  const identified = citations.filter((row) => row.doi !== undefined)
+  return {
+    kind: 'citations' as const,
+    citations,
+    identified: identified.length,
+    /** Works with no DOI. Not a gap to close — a fact about when they were published. */
+    unidentifiable: citations.length - identified.length,
+    holds: citations.every((row) => row.source.length > none) && identified.every((row) => /^10\.\d{4,9}\//.test(row.doi ?? '')),
+  }
+}
+
+/** Every citation names a source, and every identifier that is present is shaped like a DOI. */
+export const qpuCitationsHolds = (read = qpuCitationsOf()): boolean => read.holds && read.citations.length > n - n
+
+/** Distinctive words of a title, so a resolved record can be compared with what the citation claimed. */
+const titleWordsOf = (text: string): string[] =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .split(/\s+/)
+    .filter((word) => word.length > n)
+
+/**
+ * ASK CROSSREF WHETHER THESE WORKS EXIST AND ARE WHAT THEY ARE SAID TO BE.
+ *
+ * BOUNDED, AND SAID TO BE. Forty-one identifiers against a Worker's fifty-subrequest ceiling would spend the
+ * whole request on citations and deny every other door in it — the same arithmetic that made an unreachable
+ * CERN multiply the reads it could not afford. So a call resolves `faces` of them from an offset, reports
+ * `sampled` beside `citations`, and a caller walks the corpus across calls rather than in one.
+ *
+ * It goes through foreignFetchOf like every other ask of a host this tree does not own: counted, bounded by one
+ * shared deadline, caught, and not asked twice into a silence. Which means the whole reading is FOREIGN and
+ * lands in test-readings rather than in the proof — a corpus whose citations could not be checked this morning
+ * is still the same corpus.
+ */
+export const qpuCitationsLiveHolds = (read: Awaited<ReturnType<typeof qpuCitationsLiveOf>>): boolean =>
+  read.holds === true &&
+  read.sampled === read.rows.length &&
+  /* A run in which Crossref declined is SOUND and reports nothing resolved; only a row claiming to hold while
+   * its title disagreed would be unsound. The predicate is about the reading, never about the network. */
+  read.rows.every((row) => row.holds === (row.live === true && row.agrees === true))
+
+export const qpuCitationsLiveOf = async (from = n - n, read = qpuCitationsOf()) => {
+  const faces = qpuFacesOf()
+  const none = n - n
+  const deadline = foreignDeadlineOf()
+  const window = read.citations.slice(from, from + faces.faces)
+  /* SEQUENTIALLY, BECAUSE THE HOST SAYS SO. Fourteen of these in parallel comes back almost all 429: Crossref
+   * rate-limits unauthenticated concurrency, and the polite pool wants a contact address this tree is not going
+   * to put in a published package. One at a time inside the shared deadline costs a few seconds and asks the
+   * service the way it asked to be asked. */
+  const rows: {
+    source: string; doi?: string; live: boolean; status: number; title?: string; agrees: boolean; holds: boolean; why: string
+  }[] = []
+  for (const row of window)
+    rows.push(
+      await (async () => {
+      const miss = { source: row.source, doi: row.doi, live: false as const, status: lost, title: undefined as string | undefined, agrees: false, holds: false }
+      if (row.doi === undefined) return { ...miss, why: 'no identifier — the work predates DOIs, which is not a doubt about it' as const }
+      const href = `https://api.crossref.org/works/${row.doi}`
+      const request = new Request(href, { method: 'GET', headers: { accept: 'application/json' } })
+      const response = await foreignFetchOf(request, deadline)
+      if (!response) return { ...miss, why: 'crossref did not answer — unverified this run, which is not unverified' as const }
+      /* ONLY 404 IS A VERDICT ABOUT THE IDENTIFIER. A 429 or a 5xx is the service declining to answer, and the
+       * first version of this reader called both of them "does not resolve" — twenty-seven citations reported
+       * as bad identifiers when every one of them was fine and Crossref was rate-limiting a burst. That is the
+       * same fault as reading a 503 from CERN as a reading, fixed there and reproduced here within the day. */
+      if (response.status !== found)
+        return response.status === lost
+          ? { ...miss, live: true as const, status: response.status, why: 'the identifier does not resolve' as const }
+          : { ...miss, status: response.status, why: `crossref answered ${response.status} — declined, not a verdict on the work` as const }
+      const body = (await response.json().catch(() => undefined)) as undefined | { message?: { title?: unknown } }
+      const title = Array.isArray(body?.message?.title) ? String(body.message.title[none] ?? '') : undefined
+      if (title === undefined || title.length === none) return { ...miss, live: true as const, status: response.status, why: 'it resolved to a record with no title' as const }
+      /* THE CHECK THAT MATTERS. A DOI that resolves proves a work exists; it does not prove it is THIS work,
+       * and a real identifier for the wrong paper is the error a reader never catches. */
+      const words = titleWordsOf(title)
+      const claimed = titleWordsOf(row.source)
+      const shared = words.filter((word) => claimed.includes(word)).length
+      const agrees = words.length > none && shared * coins >= words.length
+      return {
+        source: row.source,
+        doi: row.doi,
+        live: true as const,
+        status: response.status,
+        title,
+        agrees,
+        holds: agrees,
+        why: agrees ? ('resolved, and the title is the one claimed' as const) : ('resolves to a different work than the citation names' as const),
+      }
+      })(),
+    )
+  const reached = rows.filter((row) => row.live)
+  return {
+    kind: 'citations' as const,
+    live: true as const,
+    api: 'https://api.crossref.org',
+    citations: read.citations.length,
+    from,
+    sampled: rows.length,
+    rows,
+    resolved: rows.filter((row) => row.holds).length,
+    /** Resolves to nothing, or to something else. Both are the citation's fault and both are closable. */
+    wrong: rows.filter((row) => row.live && !row.holds && row.doi !== undefined).length,
+    unidentifiable: rows.filter((row) => row.doi === undefined).length,
+    /** Asked and not answered — refused, rate-limited or timed out. A reading nobody got, not a bad citation. */
+    unreached: rows.filter((row) => !row.live && row.doi !== undefined).length,
+    /* The reading is sound when every row is accounted for — NOT when every citation resolved. A refusal by
+     * Crossref must not read as a corpus full of bad identifiers. */
+    holds: rows.length === Math.min(faces.faces, Math.max(none, read.citations.length - from)) && reached.every((row) => row.status !== lost),
+  }
+}
+
+/**
  * THE SWAP, ONCE, OVER ANY TWO VOCABULARIES.
  *
  * The teaching classifier asked one question — did each side teach the other — and the same question is owed of
@@ -8658,12 +9111,16 @@ export const qpuTeachingPairsHolds = (read = qpuTeachingPairsOf()): boolean =>
  * nine, ordered, every combination a cell. Domains against each other is UNORDERED: acoustics and wave physics
  * is one pair and not two, and acoustics against itself is not a pair at all. `within` says which.
  */
-export type QpuCrossRow = { left: string; right: string; forward: boolean; year: number; what: string; source: string }
+export type QpuCrossRow = { left: string; right: string; forward: boolean; year: number; what: string; source: string; doi?: string }
 
-export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false) => {
+export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false, vocabulary: readonly string[] = []) => {
   const none = n - n
-  const lefts = [...new Set(rows.flatMap((row) => (within ? [row.left, row.right] : [row.left])))].sort()
-  const rights = [...new Set(rows.flatMap((row) => (within ? [row.left, row.right] : [row.right])))].sort()
+  /* THE VOCABULARY MAY BE GIVEN, because a pair nobody has evidenced must still be REPORTED. Derived from the
+   * rows alone, two APIs that share no shape produce no row and so vanish from the cross entirely — which
+   * reads as "not asked" when it is "asked and nothing found". That is the third state deleting itself. */
+  const named = [...vocabulary]
+  const lefts = [...new Set([...named, ...rows.flatMap((row) => (within ? [row.left, row.right] : [row.left]))])].sort()
+  const rights = [...new Set([...named, ...rows.flatMap((row) => (within ? [row.left, row.right] : [row.right]))])].sort()
   /* Unordered pairs are canonicalised by name, so a corpus that happens to write a pair both ways round
    * classifies it once rather than reporting two half-evidenced pairs that are the same pair. */
   const combinations = within
@@ -8720,40 +9177,40 @@ export const QPU_EXPERIMENTS: readonly QpuCrossRow[] = [
     source: 'Rayleigh, The Theory of Sound (1877)' },
   { left: 'materials science', right: 'mechanics', forward: true, year: 1921,
     what: 'Griffith found glass fibres breaking far below their theoretical strength and built fracture mechanics out of the specimens',
-    source: 'Griffith, The phenomena of rupture and flow in solids, Phil. Trans. R. Soc. A 221 (1921)' },
+    source: 'Griffith, The phenomena of rupture and flow in solids, Phil. Trans. R. Soc. A 221 (1921)', doi: '10.1098/rsta.1921.0006' },
   { left: 'materials science', right: 'mechanics', forward: false, year: 1957,
     what: 'the stress-intensity factor is how components are now designed, inspected and retired',
-    source: 'Irwin, Analysis of stresses and strains near the end of a crack, J. Appl. Mech. 24 (1957)' },
+    source: 'Irwin, Analysis of stresses and strains near the end of a crack, J. Appl. Mech. 24 (1957)', doi: '10.1115/1.4011547' },
   { left: 'biomechanics', right: 'mechanics', forward: true, year: 1680,
     what: 'Borelli treated limbs as levers and produced the first quantitative animal mechanics from bodies rather than from machines',
     source: 'Borelli, De Motu Animalium (1680)' },
   { left: 'biomechanics', right: 'mechanics', forward: false, year: 1983,
     what: 'finite element analysis is how bone and implant loading is now predicted before anything is built',
-    source: 'Huiskes and Chao, A survey of finite element analysis in orthopedic biomechanics, J. Biomech. 16 (1983)' },
+    source: 'Huiskes and Chao, A survey of finite element analysis in orthopedic biomechanics, J. Biomech. 16 (1983)', doi: '10.1016/0021-9290(83)90072-6' },
   { left: 'biochemistry', right: 'statistics', forward: true, year: 1908,
     what: 'Gosset derived the t-distribution because brewing gave him samples too small for the normal approximation; the chemistry set the problem',
-    source: 'Student, The probable error of a mean, Biometrika 6 (1908)' },
+    source: 'Student, The probable error of a mean, Biometrika 6 (1908)', doi: '10.2307/2331554' },
   { left: 'biochemistry', right: 'statistics', forward: false, year: 1935,
     what: 'probit analysis gave bioassay a way to estimate a dose response and is how potency is still assigned',
-    source: 'Bliss, The calculation of the dosage-mortality curve, Ann. Appl. Biol. 22 (1935)' },
+    source: 'Bliss, The calculation of the dosage-mortality curve, Ann. Appl. Biol. 22 (1935)', doi: '10.1111/j.1744-7348.1935.tb07713.x' },
   { left: 'radiocarbon dating', right: 'statistics', forward: true, year: 1995,
     what: 'the calibration curve is not monotonic, so dating posed an inference problem that drove Bayesian chronological modelling',
-    source: 'Bronk Ramsey, Radiocarbon calibration and analysis of stratigraphy, Radiocarbon 37 (1995)' },
+    source: 'Bronk Ramsey, Radiocarbon calibration and analysis of stratigraphy, Radiocarbon 37 (1995)', doi: '10.1017/S0033822200030903' },
   { left: 'radiocarbon dating', right: 'statistics', forward: false, year: 2009,
     what: 'those models are now how a date is reported at all, with the prior stated rather than assumed',
-    source: 'Bronk Ramsey, Bayesian analysis of radiocarbon dates, Radiocarbon 51 (2009)' },
+    source: 'Bronk Ramsey, Bayesian analysis of radiocarbon dates, Radiocarbon 51 (2009)', doi: '10.1017/S0033822200033865' },
   { left: 'mechanics', right: 'topology', forward: true, year: 1867,
     what: 'Thomson proposed that atoms were knotted vortices, which is why Tait began tabulating knots and knot theory has a table at its root',
     source: 'Thomson, On vortex atoms, Phil. Mag. 34 (1867)' },
   { left: 'mechanics', right: 'topology', forward: false, year: 1986,
     what: 'knot and tangle theory is used to read what topoisomerases do to DNA and how polymers entangle',
-    source: 'Wasserman and Cozzarelli, Biochemical topology, Science 232 (1986)' },
+    source: 'Wasserman and Cozzarelli, Biochemical Topology: Applications to DNA Recombination and Replication, Science 232 (1986)', doi: '10.1126/science.3010458' },
   { left: 'statistics', right: 'wave physics', forward: true, year: 1958,
     what: 'power spectrum estimation was built to measure real noisy signals, and the statistics came out of the measurement problem',
     source: 'Blackman and Tukey, The Measurement of Power Spectra (1958)' },
   { left: 'statistics', right: 'wave physics', forward: false, year: 1965,
     what: 'the fast Fourier transform changed what spectra it is possible to compute at all',
-    source: 'Cooley and Tukey, An algorithm for the machine calculation of complex Fourier series, Math. Comput. 19 (1965)' },
+    source: 'Cooley and Tukey, An algorithm for the machine calculation of complex Fourier series, Math. Comput. 19 (1965)', doi: '10.1090/S0025-5718-1965-0178586-1' },
   { left: 'acoustics', right: 'mechanics', forward: true, year: 1787,
     what: 'the nodal figures of a bowed plate are a mechanics result obtained acoustically, read off sand rather than derived',
     source: 'Chladni, Entdeckungen \u00fcber die Theorie des Klanges (1787)' },
@@ -8762,22 +9219,22 @@ export const QPU_EXPERIMENTS: readonly QpuCrossRow[] = [
     source: 'Ewins, Modal Testing: Theory and Practice (1984)' },
   { left: 'biochemistry', right: 'biomechanics', forward: true, year: 1938,
     what: 'Hill measured heat and shortening in live muscle and produced the force-velocity relation, which constrained what the chemistry was allowed to be',
-    source: 'Hill, The heat of shortening and the dynamic constants of muscle, Proc. R. Soc. B 126 (1938)' },
+    source: 'Hill, The heat of shortening and the dynamic constants of muscle, Proc. R. Soc. B 126 (1938)', doi: '10.1098/rspb.1938.0050' },
   { left: 'biochemistry', right: 'biomechanics', forward: false, year: 1954,
     what: 'the sliding filament account explained the mechanics it had been measured against',
-    source: 'Huxley and Niedergerke, Structural changes in muscle during contraction, Nature 173 (1954)' },
+    source: 'Huxley and Niedergerke, Structural changes in muscle during contraction, Nature 173 (1954)', doi: '10.1038/173971a0' },
   { left: 'materials science', right: 'radiocarbon dating', forward: true, year: 1977,
     what: 'sample preparation chemistry is what made accelerator dating of milligram samples possible; dating did not produce the chemistry',
-    source: 'Bennett et al., Radiocarbon dating using electrostatic accelerators, Science 198 (1977)' },
+    source: 'Bennett et al., Radiocarbon dating using electrostatic accelerators, Science 198 (1977)', doi: '10.1126/science.198.4316.508' },
   { left: 'biochemistry', right: 'wave physics', forward: false, year: 1958,
     what: 'X-ray diffraction determined the first protein structure; protein chemistry did not produce diffraction physics',
-    source: 'Kendrew et al., A three-dimensional model of the myoglobin molecule, Nature 181 (1958)' },
+    source: 'Kendrew et al., A three-dimensional model of the myoglobin molecule, Nature 181 (1958)', doi: '10.1038/181662a0' },
   { left: 'materials science', right: 'topology', forward: false, year: 1979,
     what: 'the topological classification of defects in ordered media told materials science which defects can exist',
-    source: 'Mermin, The topological theory of defects in ordered media, Rev. Mod. Phys. 51 (1979)' },
+    source: 'Mermin, The topological theory of defects in ordered media, Rev. Mod. Phys. 51 (1979)', doi: '10.1103/RevModPhys.51.591' },
   { left: 'biomechanics', right: 'statistics', forward: false, year: 2001,
     what: 'inference on gait data is what separates a real difference in walking from noise',
-    source: 'Chau, A review of analytical techniques for gait data, Gait Posture 13 (2001)' },
+    source: 'Chau, A review of analytical techniques for gait data, Gait Posture 13 (2001)', doi: '10.1016/S0966-6362(00)00094-1' },
   { left: 'acoustics', right: 'statistics', forward: false, year: 1966,
     what: 'signal detection theory gave psychoacoustics a way to separate sensitivity from willingness to say yes',
     source: 'Green and Swets, Signal Detection Theory and Psychophysics (1966)' },
