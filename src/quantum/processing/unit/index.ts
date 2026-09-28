@@ -8901,9 +8901,20 @@ export const qpuStandardsHolds = (read = qpuStandardsOf()): boolean =>
   [read.walls, read.lattice, read.dry, read.refusals.total, read.refusals.crossed, read.refusals.notCrossed].every((x) => Number.isSafeInteger(x) && x >= n - n) &&
   read.refusals.crossed + read.refusals.notCrossed === read.refusals.total
 
+/** The corpus's own axes, named once: the combinatorial surface is built on these and the reading checks them. */
+export const QPU_TEACHING_SUBJECTS = [...new Set(QPU_TEACHINGS.map((row) => row.subject))].sort()
+export const QPU_TEACHING_DOMAINS = [...new Set(QPU_TEACHINGS.map((row) => row.domain))].sort()
+
 export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS) => {
   const subjects = [...new Set(teachings.map((row) => row.subject))].sort()
   const domains = [...new Set(teachings.map((row) => row.domain))].sort()
+  /* ADDRESSED ONLY WHEN THIS IS THE CORPUS THE SURFACE WAS DERIVED FROM. The suites call this with small
+   * invented tables to test the swap rule, and an address is a position on the `teaching` surface's axes —
+   * asking for one off those axes throws, which would turn "your corpus is not the corpus" into a crash in a
+   * reading. A row with no address says so by absence; it does not pretend to a position it does not have. */
+  const addressable =
+    subjects.every((subject) => QPU_TEACHING_SUBJECTS.includes(subject)) &&
+    domains.every((domain) => QPU_TEACHING_DOMAINS.includes(domain))
   const pairs = subjects.flatMap((subject) =>
     domains.map((domain) => {
       const rows = teachings.filter((row) => row.subject === subject && row.domain === domain)
@@ -8919,6 +8930,8 @@ export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACH
       return {
         subject,
         domain,
+        /** The combination's own address: this pair, on this surface, decodable back to exactly these two names. */
+        uuid: addressable ? qpuCallUuidOf('teaching', subject, domain) : undefined,
         swap,
         /** Which direction is missing, named, because "not entangled" is not something a reader can act on. */
         owes: swap === 'application' ? (fromPractice.length > n - n ? 'theory to practice' : 'practice to theory') : undefined,
@@ -8980,6 +8993,194 @@ export const qpuShapeUuidOf = (canonical: string): string => {
     low.slice(four, sixteen),
   ].join('-')
   // the last group is faces - coins = twelve digits, which is what low.slice(four, sixteen) yields
+}
+
+
+/**
+ * A COMBINATION IS AN ADDRESS, AND THE ADDRESS IS A CALL.
+ *
+ * The captain, 2026-09-28: "a UUID is a program call — 32 bits name the door, 16 carry params, inside the 48-bit
+ * middle", and "compute all combinatorial using uuid programming".
+ *
+ * WHAT WAS MISSING. This unit computes 342 teaching combinations and 36 mixed ones and addresses none of them:
+ * a row is identified by the two strings it is made of, so nothing can cite one, cache one, or hand one to
+ * another host without shipping the strings and hoping both sides spell them the same. qpuShapeUuidOf gives a
+ * content address, which answers "are these the same thing" and cannot answer "which thing is this" — it is a
+ * fold, and a fold does not come back.
+ *
+ * SO THE MIDDLE CARRIES THE CALL, AND THE ENDS CARRY THE CONTENT. The layout is RFC 9562 v8, the same one
+ * qpuShapeUuidOf seals, and the two halves do different work:
+ *
+ *   group 1 (8)   the content's high fold — the subject address
+ *   group 2 (4)   THE DOOR: which combinatorial surface, derived from that surface's own contract
+ *   group 3 (4)   version 8, then a check over the canonical pair text
+ *   group 4 (4)   the variant nibble, then THE PARAMS: the combination's index on that surface
+ *   group 5 (12)  the content's low fold — the envelope
+ *
+ * FORTY BITS, NOT FORTY-EIGHT, and the eight missing ones are not an oversight: RFC 9562 spends one nibble on
+ * the version and one on the variant, both inside the middle. A layout using the whole 48 would mint something
+ * UUID-shaped that is not a UUID, which is the failure qpuShapeUuidHolds already refuses. So the door takes 16
+ * bits and the params 12, and the cap that follows is checked rather than assumed, because 342 fits and a
+ * surface grown past it would silently wrap.
+ *
+ * TWO-WAY, WHICH IS THE WHOLE POINT. qpuCallOfUuid recovers the surface and the exact pair from the address
+ * alone; qpuCallUuidOf mints the same address from that surface and pair. The content halves are not decoded —
+ * they are RECOMPUTED and compared, so an address also says whether it was minted from the pair it names.
+ */
+const COMBINATORIAL_CAP = HEX_RADIX ** n
+const COMBINATORIAL_SEP = String.fromCharCode(n - n)
+
+/**
+ * The rectangular surfaces this unit computes, each with the two axes whose product it addresses.
+ *
+ * READ FROM THE SOURCE TABLES, NOT FROM THE READINGS, and that is forced rather than preferred: the readings
+ * now carry an address per row, so a surface derived from qpuTeachingPairsOf() would ask the reading for the
+ * axes while the reading asks for the address — a cycle. The axes were never the readings' to own; they are
+ * the distinct names in the corpus, which is where both sides get them.
+ */
+const combinatorialSurfacesOf = () => {
+  const fields = [...new Set(QPU_EXPERIMENTS.flatMap((row) => [row.left, row.right]))].sort()
+  const hosts = qpuZoneOf().hosts.filter((h) => h.qpu).map((h) => h.host)
+  return [
+    { door: 'teaching', lefts: QPU_TEACHING_SUBJECTS, rights: QPU_TEACHING_DOMAINS },
+    { door: 'mixed', lefts: fields, rights: fields },
+    { door: 'zone', lefts: hosts, rights: ['/robots.txt', '/sitemap.xml', '/.well-known/mcp.json'] },
+  ]
+}
+
+/** A door's hex is derived from its own contract — its name and its two axes — never invented. */
+const combinatorialDoorHexOf = (surface: { door: string; lefts: readonly string[]; rights: readonly string[] }): string =>
+  qpuFoldOf(`${surface.door}:${surface.lefts.length}x${surface.rights.length}`).slice(n - n, mintOf(coins))
+
+/** The door table, with collisions RECOMPUTED rather than assumed — two names can fold to one hex. */
+export const qpuCombinatorialDoorsOf = () => {
+  const rows = combinatorialSurfacesOf().map((s) => ({
+    door: s.door,
+    hex: combinatorialDoorHexOf(s),
+    lefts: s.lefts.length,
+    rights: s.rights.length,
+    combinations: s.lefts.length * s.rights.length,
+  }))
+  const hexes = rows.map((r) => r.hex)
+  return {
+    kind: 'combinatorial-doors' as const,
+    rows,
+    doors: rows.length,
+    combinations: rows.reduce((sum, r) => sum + r.combinations, n - n),
+    collisions: hexes.filter((h, i) => hexes.indexOf(h) !== i),
+    cap: COMBINATORIAL_CAP,
+  }
+}
+
+/** qpuCombinatorialDoorsHolds → every door folds to its own hex, none collide, none outgrew the params cap. */
+export const qpuCombinatorialDoorsHolds = (d = qpuCombinatorialDoorsOf()): boolean =>
+  d.rows.length > n - n &&
+  d.collisions.length === n - n &&
+  d.rows.every((r) => /^[0-9a-f]{4}$/.test(r.hex)) &&
+  d.rows.every((r) => r.combinations === r.lefts * r.rights && r.combinations > n - n) &&
+  d.rows.every((r) => r.combinations <= d.cap) &&
+  d.combinations === d.rows.reduce((sum, r) => sum + r.combinations, n - n)
+
+/** The canonical text of one combination — what both the content address and the check are taken over. */
+const combinationTextOf = (door: string, left: string, right: string): string =>
+  [door, left, right].join(COMBINATORIAL_SEP)
+
+/**
+ * qpuCallUuidOf(door, left, right) → the address of that combination, as an RFC 9562 v8 UUID.
+ *
+ * Refused HERE when the surface does not exist or either name is not on its axis, because minting an address
+ * for a combination this unit does not compute hands a caller sixteen bytes that decode to nothing.
+ */
+export const qpuCallUuidOf = (door: string, left: string, right: string): string => {
+  const surface = combinatorialSurfacesOf().find((s) => s.door === door)
+  if (surface === undefined) throw new Error(`unknown combinatorial door: ${door} — a door hex is derived from a surface this unit computes, never invented`)
+  const leftIndex = surface.lefts.indexOf(left)
+  const rightIndex = surface.rights.indexOf(right)
+  if (leftIndex < n - n || rightIndex < n - n) throw new Error(`${door} does not carry the combination ${left} / ${right}`)
+  const index = leftIndex * surface.rights.length + rightIndex
+  if (index >= COMBINATORIAL_CAP) throw new Error(`${door} has outgrown the params cap: index ${index} of ${COMBINATORIAL_CAP}`)
+
+  const text = combinationTextOf(door, left, right)
+  const content = qpuShapeUuidOf(text).replace(/-/g, '')
+  const four = mintOf(coins)
+  const eight = mintOf(n)
+  const sixteen = mintOf(mintOf(coins))
+  const check = qpuFoldOf(`${text}${COMBINATORIAL_SEP}check`).slice(n - n, n)
+  return [
+    content.slice(n - n, eight),
+    combinatorialDoorHexOf(surface),
+    `8${check}`,
+    `${content[sixteen]}${index.toString(HEX_RADIX).padStart(n, '0')}`,
+    content.slice(sixteen + four, sixteen + sixteen),
+  ].join('-')
+}
+
+/**
+ * qpuCallUuidHolds → minting is a function of the combination and of nothing else: the same pair gives the same
+ * address twice, a different pair on the same surface gives a different one, the same pair on two surfaces
+ * gives two, and the result is an RFC 9562 v8 UUID carrying that surface's door hex where the door belongs.
+ *
+ * Asked of the first combination of every surface rather than of a fixed example, so a surface added later is
+ * covered on the day it is added and an axis that reorders is caught by qpuCombinatorialHolds beside it.
+ */
+export const qpuCallUuidHolds = (): boolean =>
+  combinatorialSurfacesOf().every((surface) => {
+    const left = surface.lefts[n - n]
+    const right = surface.rights[n - n]
+    if (left === undefined || right === undefined) return false
+    const uuid = qpuCallUuidOf(surface.door, left, right)
+    const other = surface.rights[seed]
+    return (
+      /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid) &&
+      uuid === qpuCallUuidOf(surface.door, left, right) &&
+      uuid.split('-')[seed] === combinatorialDoorHexOf(surface) &&
+      (other === undefined || uuid !== qpuCallUuidOf(surface.door, left, other)) &&
+      combinatorialSurfacesOf()
+        .filter((s) => s.door !== surface.door && s.lefts.includes(left) && s.rights.includes(right))
+        .every((s) => qpuCallUuidOf(s.door, left, right) !== uuid)
+    )
+  })
+
+/**
+ * qpuCallOfUuid(uuid) → the combination that address names: the door, the pair, and whether it verifies.
+ *
+ * An address whose door hex is on no surface comes back with `door: null` rather than refused — a well-formed
+ * address of a surface this unit does not compute is a fact about this unit, and refusing it would report that
+ * absence as a malformed UUID. `verified` is the recomputation: mint the address again from the pair it claims
+ * and compare, so a hand-edited middle is caught rather than believed.
+ */
+export const qpuCallOfUuid = (uuid: string) => {
+  const bare = String(uuid).replace(/-/g, '').toLowerCase()
+  if (!/^[0-9a-f]{32}$/.test(bare)) throw new Error(`not a uuid: ${uuid} — a combinatorial address is ${mintOf(coins + n)} hex characters`)
+  const four = mintOf(coins)
+  const eight = mintOf(n)
+  const sixteen = mintOf(mintOf(coins))
+  const hex = bare.slice(eight, eight + four)
+  const index = parseInt(bare.slice(sixteen + seed, sixteen + four), HEX_RADIX)
+  const surface = combinatorialSurfacesOf().find((s) => combinatorialDoorHexOf(s) === hex)
+  if (surface === undefined) {
+    return { kind: 'combinatorial-call' as const, uuid: String(uuid), hex, door: null, index, left: null, right: null, verified: false }
+  }
+  const left = surface.lefts[Math.floor(index / surface.rights.length)] ?? null
+  const right = surface.rights[index % surface.rights.length] ?? null
+  const verified = left !== null && right !== null && qpuCallUuidOf(surface.door, left, right) === String(uuid).toLowerCase()
+  return { kind: 'combinatorial-call' as const, uuid: String(uuid), hex, door: surface.door, index, left, right, verified }
+}
+
+/** qpuCombinatorialHolds → every combination on every surface addresses, decodes back to itself, and verifies. */
+export const qpuCombinatorialHolds = (): boolean => {
+  if (!qpuCombinatorialDoorsHolds()) return false
+  for (const surface of combinatorialSurfacesOf()) {
+    for (const left of surface.lefts) {
+      for (const right of surface.rights) {
+        const uuid = qpuCallUuidOf(surface.door, left, right)
+        const back = qpuCallOfUuid(uuid)
+        if (back.door !== surface.door || back.left !== left || back.right !== right || !back.verified) return false
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid)) return false
+      }
+    }
+  }
+  return true
 }
 
 /** The sealed identity is mintOf(coins + n) digits — coins folds of sixteen, made one coil. */
@@ -9473,6 +9674,11 @@ export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false, vocabul
   const combinations = within
     ? lefts.flatMap((left, i) => lefts.slice(i + seed).map((right) => ({ left, right })))
     : lefts.flatMap((left) => rights.map((right) => ({ left, right })))
+  /* qpuCrossOf serves any rows it is handed, including a caller's own vocabulary, so only the cross whose axes
+   * ARE the mixed surface can be addressed on it. Asking for an address off the axis would throw, and a reading
+   * that throws because somebody passed their own rows is worse than a reading with no address on those rows. */
+  const mixedAxis = [...new Set(QPU_EXPERIMENTS.flatMap((row) => [row.left, row.right]))]
+  const addressable = within && lefts.every((name) => mixedAxis.includes(name))
   const pairs = combinations.map(({ left, right }) => {
     const held = rows.filter((row) => (within ? (row.left === left && row.right === right) || (row.left === right && row.right === left) : row.left === left && row.right === right))
     const forward = held.filter((row) => (row.left === left ? row.forward : !row.forward))
@@ -9482,6 +9688,8 @@ export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false, vocabul
     return {
       left,
       right,
+      /** Addressed on the `mixed` surface when both names are on its axis; a caller-supplied vocabulary is not. */
+      uuid: addressable ? qpuCallUuidOf('mixed', left, right) : undefined,
       swap,
       owes: swap === 'application' ? (forward.length > none ? 'backward' : 'forward') : undefined,
       earliest: years.length > none ? Math.min(...years) : undefined,

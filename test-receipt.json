@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 181,
-  "pass": 181,
+  "tests": 185,
+  "pass": 185,
   "fail": 0,
   "dry": 0,
   "circuit": 127,
-  "mintOnly": 24,
+  "mintOnly": 28,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "46591b6c0d52ee7b",
-  "computed": 177,
+  "receipt": "5909efbde4289511",
+  "computed": 181,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -1265,6 +1265,94 @@
       "foreign": 0
     },
     {
+      "name": "every door is derived from its own surface, and no two collide",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 3,
+        "chain": "e15571dec1b2e42b"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "all 438 combinations mint, decode back to themselves, and verify",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 18630,
+        "chain": "66e295adff913d9b"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "a tampered address is refused in every field, and an unknown door is named rather than thrown at",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 123,
+        "chain": "928a48f35acfa4bf"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the readings carry the addresses, so the codec has consumers and not only a test",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 13266,
+        "chain": "b2a347a4852c9cad"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
       "name": "a receipt's temperature is the device sensor, named, or unmeasured; never guessed",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
@@ -1812,8 +1900,8 @@
         }
       ],
       "mint": {
-        "calls": 1362714,
-        "chain": "227f254a462e614a"
+        "calls": 1379814,
+        "chain": "df89dfedfd5485b2"
       },
       "served": {
         "count": 8,
@@ -1916,8 +2004,8 @@
         }
       ],
       "mint": {
-        "calls": 345693,
-        "chain": "98e44eed2cf059f1"
+        "calls": 362793,
+        "chain": "9e383e138f1afbb9"
       },
       "served": {
         "count": 0,
@@ -2790,8 +2878,8 @@
         }
       ],
       "mint": {
-        "calls": 123172,
-        "chain": "ced3dad7eabf573e"
+        "calls": 140272,
+        "chain": "f5b0bfcc24df2a86"
       },
       "served": {
         "count": 0,
@@ -4006,8 +4094,8 @@
         }
       ],
       "mint": {
-        "calls": 2961510,
-        "chain": "d2423000cee1c3ac"
+        "calls": 2995710,
+        "chain": "4804fce77a010cfc"
       },
       "served": {
         "count": 2,
@@ -4125,8 +4213,8 @@
         }
       ],
       "mint": {
-        "calls": 2361293,
-        "chain": "8ca23705c8a56db7"
+        "calls": 2395493,
+        "chain": "3180bcf077f07797"
       },
       "served": {
         "count": 0,
@@ -4921,8 +5009,8 @@
         }
       ],
       "mint": {
-        "calls": 5257788,
-        "chain": "f5f629e3a6790b30"
+        "calls": 5355168,
+        "chain": "745e7766593bceb5"
       },
       "served": {
         "count": 0,
@@ -6775,8 +6863,8 @@
         }
       ],
       "mint": {
-        "calls": 319912,
-        "chain": "ed00db84046fc88d"
+        "calls": 354112,
+        "chain": "06cb44075acc045d"
       },
       "served": {
         "count": 1,
@@ -6914,8 +7002,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 9,
-        "chain": "10db40dd16d9c30a"
+        "calls": 3429,
+        "chain": "b473edb037053292"
       },
       "served": {
         "count": 0,
@@ -6936,8 +7024,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 6,
-        "chain": "ab03e735fee7b2fd"
+        "calls": 17106,
+        "chain": "3d128155bad4f3f5"
       },
       "served": {
         "count": 0,
@@ -6958,8 +7046,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 6,
-        "chain": "ab03e735fee7b2fd"
+        "calls": 3426,
+        "chain": "1651d1a7b67c7a45"
       },
       "served": {
         "count": 0,
@@ -6980,8 +7068,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 6,
-        "chain": "ab03e735fee7b2fd"
+        "calls": 7566,
+        "chain": "f862a81c8a4ae86d"
       },
       "served": {
         "count": 0,
@@ -7024,8 +7112,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 86,
-        "chain": "5c8b33be9f7fce3d"
+        "calls": 3506,
+        "chain": "9b2a35a30bd85585"
       },
       "served": {
         "count": 0,
@@ -7068,8 +7156,8 @@
       "receipt": "cbf29ce484222325",
       "states": [],
       "mint": {
-        "calls": 9,
-        "chain": "10db40dd16d9c30a"
+        "calls": 3429,
+        "chain": "d31abb231456ea22"
       },
       "served": {
         "count": 0,
@@ -7119,8 +7207,8 @@
         }
       ],
       "mint": {
-        "calls": 115821,
-        "chain": "6b056b1bf13d9e85"
+        "calls": 132921,
+        "chain": "b272909a4fb533ad"
       },
       "served": {
         "count": 0,
@@ -7466,8 +7554,8 @@
         }
       ],
       "mint": {
-        "calls": 301796,
-        "chain": "23fee930a9a73e7a"
+        "calls": 335996,
+        "chain": "358a26c7a25f69ba"
       },
       "served": {
         "count": 0,
