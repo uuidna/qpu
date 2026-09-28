@@ -355,6 +355,24 @@ if (invoked) {
     }
   }
 
+  /* ── the mounted apps the discovery record names, asked whether they answer ─────────────────────────────────── */
+  {
+    const wk = await get('https://qpu.uuidna.com/.well-known/mcp.json')
+    if (!wk.ok) add('mounts', false, `the discovery record answered ${wk.status || wk.error}`)
+    else {
+      const declared = [...(wk.body.mounts ?? []), ...(wk.body.peers ?? [])]
+      if (declared.length === 0) add('mounts', true, 'the discovery record names no mounted app', [{ source: 'mounts', what: 'nothing is mounted', owes: 'a mount table, or the claim dropped' }])
+      for (const m of declared) {
+        const probe = await get(m.url, { method: 'POST', body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }) })
+        /* 404 IS THE ONLY VERDICT OF ABSENCE. 401 means the door is there and wants a credential — Payload's MCP
+         * answers exactly that — and a timeout or a refusal means this run could not tell, which is not a defect. */
+        if (probe.status === 404) add(`mount:${m.app}`, true, `${m.url} answers 404`, [{ source: `mount:${m.app}`, what: `${m.url} is declared and serves no MCP`, owes: 'the mount removed, or the door served' }])
+        else if (probe.status === 0) add(`mount:${m.app}`, false, `${m.url} did not answer (${probe.error})`)
+        else add(`mount:${m.app}`, true, `${m.url} answers ${probe.status}${probe.status === 401 ? ' — the door is there and wants a credential' : ''}`)
+      }
+    }
+  }
+
   /* ── flaws deposited in this tree by a session that could not send them anywhere else ───────────────────────── */
   for (const file of readdirSync(ROOT).filter((f) => /^flaws(-.*)?-receipt\.json$/.test(f)).sort()) {
     let deposit

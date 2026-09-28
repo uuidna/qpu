@@ -12170,6 +12170,44 @@ export const qpuWellKnownHolds = (w: ReturnType<typeof wellKnownFieldsOf>): bool
     w.install.length > n - n && w.install.every((r) => r.harness.length > n - n && r.how.length > n - n)
 }
 
+
+/**
+ * THE MOUNTED APPS OF THIS ZONE — what a client reaching any first-party name can call, and how.
+ *
+ * Declared, not probed: this rides in a served, memoised document, so it states which endpoints exist and by
+ * what route, and leaves whether one answered today to the gatherer. Measured 2026-09-28 while writing it:
+ * /api/mcp answers 401 rather than 404, so Payload's MCP is genuinely mounted here over the service binding,
+ * and the hologram lattice next door claims four MCP hosts when lean and unreal serve none.
+ */
+const QPU_MOUNTS = [
+  { app: 'qpu', path: '/mcp', reach: 'unit' as const, serves: 'this unit — the circuit, the receipts, the sealed tools' },
+  { app: 'payload', path: '/api/mcp', reach: 'binding' as const, serves: 'the Payload admin MCP, find-only, over the PAYLOAD service binding' },
+]
+
+/** Every mount this unit offers on the host that asked, plus the zone's other MCP, named and not claimed. */
+export const qpuMountsOf = (host: string = unit.host) => {
+  const zoneHost = qpuZoneHostOf(host)
+  const origin = zoneHost?.origin ?? unit.origin
+  const rows = QPU_MOUNTS.map((m) => ({ ...m, url: `${origin}${m.path}`, canonical: `${unit.origin}${m.path}` }))
+  return {
+    kind: 'mounts' as const,
+    host: zoneHost?.host ?? unit.host,
+    rows,
+    /* The apex runs its own worker and its own MCP; this unit has no route there, so it is named as a peer
+     * rather than mounted. Naming it is the difference between a client finding it and a client guessing. */
+    peers: [{ app: 'uuidna', url: `https://${qpuZoneOf().zone}/mcp`, reach: 'worker' as const, serves: 'the sealed ledger — theorems, decide, verify' }],
+    holds: qpuMountsHolds(rows),
+  }
+}
+
+/** qpuMountsHolds → every mount is https on one origin, each path distinct, and each canonical on this unit. */
+export const qpuMountsHolds = (rows: { path: string; url: string; canonical: string; reach: string }[]): boolean =>
+  rows.length > n - n &&
+  new Set(rows.map((r) => r.path)).size === rows.length &&
+  rows.every((r) => r.path.startsWith('/') && URL.canParse(r.url) && new URL(r.url).protocol === 'https:') &&
+  rows.every((r) => new URL(r.canonical).host === unit.host && new URL(r.canonical).pathname === r.path) &&
+  rows.every((r) => r.reach === 'unit' || r.reach === 'binding')
+
 /** .well-known/mcp.json — what a client or registry can learn without an initialize round-trip. */
 const qpuWellKnownOf = () => {
   const w = wellKnownFieldsOf()
@@ -12193,6 +12231,8 @@ const wellKnownFieldsOf = () => {
     catalog: `${unit.origin}/mcp.json`,
     cite: `${unit.origin}/cite`,
     sitemap: `${unit.origin}/sitemap.xml`,
+    mounts: qpuMountsOf().rows.map((m) => ({ app: m.app, url: m.canonical, reach: m.reach })),
+    peers: qpuMountsOf().peers,
     // THE COORDINATION CONTRACT (wave experience online, 2026-09-12): what an agent coordinating across gateways by
     // receipt needs to know before its first call — how receipts are minted, where readings live and that they
     // never enter a fold, how a thermometer is supplied and named, and that the seat is empty by doctrine.
