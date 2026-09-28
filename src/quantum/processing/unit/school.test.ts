@@ -15,6 +15,10 @@ import {
   qpuMixedOf,
   qpuNatureHolds,
   qpuNatureOf,
+  qpuProbeableHolds,
+  qpuProbeableOf,
+  qpuSpecServerHolds,
+  qpuSpecServerOf,
   qpuSchemaMethodsHolds,
   qpuSchemaMethodsOf,
   qpuFacesOf,
@@ -428,4 +432,36 @@ test('a shape UUID is computed from content, is RFC 9562 v8, and the same conten
   assert.notEqual(qpuFieldUuidOf('id', { type: 'string' }), qpuFieldUuidOf('petId', { type: 'string' }))
   assert.notEqual(qpuFieldUuidOf('id', { type: 'string' }), qpuFieldUuidOf('id', { type: 'integer' }))
   assert.equal(qpuFieldUuidOf('id', { type: 'string' }), qpuFieldUuidOf('id', { type: 'string' }))
+})
+
+test('a spec names where its methods live, and only harmless ones are probeable', () => {
+  /* Open Targets is the case that forced POST: its live API answers only POST, and reading a GET refusal as
+   * a fault would condemn every write endpoint and every GraphQL door in the registry. */
+  assert.equal(qpuSpecServerOf({ servers: [{ url: 'https://api.example.test/v4' }] }), 'https://api.example.test/v4')
+  // A PROTOCOL-RELATIVE URL IS WHAT THE REGISTRY ACTUALLY SERVES for opentargets.io — `//platform-api…/v3` —
+  // and fetch refuses it, so it is completed rather than passed through and refused later as a network fault.
+  assert.equal(qpuSpecServerOf({ servers: [{ url: '//platform-api.example.test/v3' }] }), 'https://platform-api.example.test/v3')
+  assert.equal(qpuSpecServerOf({ host: 'old.example.test', basePath: '/v2' }), 'https://old.example.test/v2')
+  assert.equal(qpuSpecServerOf({}), undefined, 'a document that names no server is not guessed at')
+  assert.equal(qpuSpecServerHolds(), true)
+
+  const method = (verb: string, path: string, takes: { name: string; uuid: string }[] = []) => ({ api: 'a', verb, path, takes, gives: [] })
+  const probeable = qpuProbeableOf([
+    method('get', '/ok'),
+    method('post', '/also-ok'),
+    method('get', '/user/{id}'),
+    method('get', '/needs', [{ name: 'q', uuid: 'u' }]),
+    method('delete', '/never'),
+  ])
+  assert.deepEqual(probeable.map((row) => row.path), ['/ok', '/also-ok'], 'a template is not filled in and a required argument is not invented')
+  assert.equal(probeable.some((row) => row.verb === 'post'), true, 'POST is probed, or every write door reads as broken')
+  assert.equal(qpuProbeableOf([method('delete', '/x')]).length, 0, 'and nothing that writes is called at all')
+  assert.equal(qpuProbeableHolds([method('get', '/ok'), method('delete', '/never')]), true)
+
+  /* AND THE BOUND IS THE LATTICE'S. A probe samples `coins` doors by default and the registry sample is
+   * `faces` schemas — both quantities this tree already names, so the cost of a discovery is something a
+   * reader can derive rather than a number somebody chose. */
+  const faces = qpuFacesOf()
+  assert.equal(qpuTeachingCensusOf().pairs, (faces.faces * (faces.faces - 1)) / 2)
+  assert.ok(faces.coins < faces.faces, 'a probe samples fewer doors than the registry samples schemas')
 })

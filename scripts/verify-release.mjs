@@ -26,6 +26,7 @@
  */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { tenOf } from './lattice-values.mjs'
 
 const ROOT = new URL('..', import.meta.url).pathname
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'))
@@ -40,7 +41,7 @@ const conceptDoi = (cff.match(/description:\s*All versions[\s\S]*?value:\s*(10\.
 const conceptRecid = (cff.match(/description:\s*All versions[\s\S]*?value:\s*10\.\d+\/zenodo\.(\d+)/) ?? [])[1]
 
 const ATTEMPTS = Number(process.env.VERIFY_ATTEMPTS ?? 30)
-const EVERY_MS = Number(process.env.VERIFY_EVERY_MS ?? 10_000)
+const EVERY_MS = Number(process.env.VERIFY_EVERY_MS ?? tenOf(4))
 
 const LIVE = 'live'
 const WAITING = 'waiting'

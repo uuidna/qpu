@@ -9,6 +9,7 @@
 // The unit's own fold on the GPU, CHUNKED so no binding exceeds the device limit — the cure for the refusal that
 // returned zeros and timed as a triumph. Every result is still compared with the reference, bit for bit.
 import { qpuFoldOf as cpuFold } from '../dist/quantum/processing/unit/index.js'
+import { mintOf, vertices } from './lattice-values.mjs'
 const N = Number(Deno.args[0] ?? 709050)
 const strings = Array.from({ length: N }, (_, i) => `theorem_${i}|the fold is the identity and the identity is the fold|${i * 7919}`)
 const bytes: number[] = []; const offs: number[] = []
@@ -64,13 +65,13 @@ for (const [from, to] of chunks) {
   for (let i = from; i < to; i++) subOffs.push(offs[i * 2] - base, offs[i * 2 + 1])
   const charsB = buf(new Uint32Array(bytes.slice(base, end)))
   const offsB = buf(new Uint32Array(subOffs))
-  const outB = device.createBuffer({ size: n * 8, usage: S | C })
-  const readB = device.createBuffer({ size: n * 8, usage: D | GPUBufferUsage.MAP_READ })
+  const outB = device.createBuffer({ size: n * vertices, usage: S | C })
+  const readB = device.createBuffer({ size: n * vertices, usage: D | GPUBufferUsage.MAP_READ })
   const bind = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [
     { binding: 0, resource: { buffer: charsB } }, { binding: 1, resource: { buffer: offsB } }, { binding: 2, resource: { buffer: outB } }] })
   const enc = device.createCommandEncoder(); const pass = enc.beginComputePass()
-  pass.setPipeline(pipeline); pass.setBindGroup(0, bind); pass.dispatchWorkgroups(Math.ceil(n / 64)); pass.end()
-  enc.copyBufferToBuffer(outB, 0, readB, 0, n * 8); device.queue.submit([enc.finish()])
+  pass.setPipeline(pipeline); pass.setBindGroup(0, bind); pass.dispatchWorkgroups(Math.ceil(n / mintOf(6))); pass.end()
+  enc.copyBufferToBuffer(outB, 0, readB, 0, n * vertices); device.queue.submit([enc.finish()])
   await readB.mapAsync(GPUMapMode.READ)
   got.set(new Uint32Array(readB.getMappedRange().slice(0)), from * 2)
   readB.unmap(); charsB.destroy(); offsB.destroy(); outB.destroy(); readB.destroy()
@@ -81,7 +82,7 @@ if (err) console.log('VALIDATION:', String(err.message).slice(0, 200))
 const t1 = performance.now(); const want = strings.map(cpuFold); const cpuMs = performance.now() - t1
 let bad = 0, first = ''
 for (let i = 0; i < N; i++) {
-  const hex = (BigInt(got[i * 2 + 1]) * 4294967296n + BigInt(got[i * 2])).toString(16).padStart(16, '0')
+  const hex = (BigInt(got[i * 2 + 1]) * 4294967296n + BigInt(got[i * 2])).toString(mintOf(4)).padStart(mintOf(4), '0')
   if (hex !== want[i]) { if (!bad) first = `#${i} gpu ${hex} cpu ${want[i]}`; bad++ }
 }
 console.log(`exact ${N - bad} | mismatched ${bad}${first ? ' | first ' + first : ''}`)

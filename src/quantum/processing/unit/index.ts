@@ -176,7 +176,7 @@ export const mintOf = (k: number): number => {
   return x
 }
 
-const chooseOf = (nn: number, k: number): number => {
+export const chooseOf = (nn: number, k: number): number => {
   const none = nn - nn
   if (k < none || k > nn) return none
   if (k === none || k === nn) return none + 1
@@ -186,6 +186,13 @@ const chooseOf = (nn: number, k: number): number => {
   for (let i = none + 1; i <= kk; i++) x = (x * (nn - kk + i)) / i
   return x
 }
+
+/** Powers of ten, and they are exact: a run of them must multiply up rather than drift. */
+export const tenOfHolds = (k = n): boolean => tenOf(k) === tenOf(k - seed) * ten && tenOf(n - n) === seed
+
+/** chooseOf is symmetric and Pascal's rule closes it — two identities, so a wrong table fails both. */
+export const chooseOfHolds = (nn = qpuFacesOf().faces, k = coins): boolean =>
+  chooseOf(nn, k) === chooseOf(nn, nn - k) && chooseOf(nn, k) === chooseOf(nn - seed, k - seed) + chooseOf(nn - seed, k)
 
 const faceOf = (text: string, modulus: number): number => {
   const none = modulus - modulus
@@ -316,7 +323,7 @@ export const rpcErrorOf = (id: unknown, code: number, message: string, data?: un
 })
 /** The methods this server answers on /mcp. */
 const rpcMethods = ['initialize', 'server/discover', 'ping', 'notifications/initialized', 'tools/list', 'tools/call'] as const
-const tenOf = (k: number): number => {
+export const tenOf = (k: number): number => {
   let x = mintOf(n - n)
   for (let i = n - n; i < k; i++) x *= ten
   return x
@@ -6760,6 +6767,11 @@ export const qpuStorageOf = async (
     const keys = storageLinksOf(await store.keys())
     return { ...meta, keys, holds: meta.holds }
   }
+  /* THE STORAGE REFUSALS, GROUNDED. An absent key is theorem false — nothing to address, so nothing to
+   * answer, and the third state rather than a fabricated default. The write token is theorem crypto: a public
+   * read and an authenticated write is the split this unit seals, and an unauthenticated write is refused by
+   * that theorem rather than by a preference. The byte ceiling is tenOf(n + n) and the seats are faces, both
+   * fixed by theorem clay, so a caller can derive the limit from the geometry instead of discovering it. */
   if (key.length === n - n) return { ...meta, holds: false as const, denied: 'key' as const }
   const href = `${storageHref}/${key}`
   // A SERVICE BINDING IS ITS OWN CREDENTIAL (the captain, 2026-09-14: deposits through the MCP door, "no token on host").
@@ -7567,6 +7579,30 @@ const opOf = (value: unknown): QpuOp | undefined => {
   return jsonOf(value) as QpuOp
 }
 
+/**
+ * WHY THE SHIMS REFUSE, NAMED ONCE FOR ALL OF THEM.
+ *
+ * Every refusal below is a CONSEQUENCE and not a policy, and the difference is the whole difference between a
+ * computed answer and somebody's preference wearing a proof's clothes. A caller told `denied` without being
+ * told by what has been handed a verdict rather than a reason.
+ *
+ *   ABSENT INPUT — `js`, `path`, `mod`, `worker`, `job`, `key`. There is no answer to compute, which is
+ *   theorem false: a claim with nothing under it is refused rather than answered, and the third state this
+ *   package keeps everywhere says an undecidable question is not a false one. Fabricating a default here
+ *   would be the unit answering a question nobody asked.
+ *
+ *   BOUNDS — `heap`, `depth`, `slots`. Every one is a lattice quantity rather than a number somebody chose:
+ *   the byte ceiling is found * faces, the recursion ceiling is mintOf(n), the seats are faces. theorem cube
+ *   and theorem clay fix those, so the bound is derivable and a reader can check it against the geometry
+ *   instead of taking it on trust.
+ *
+ *   THE SEALED NAMES — `unlocked`, `quantum`, `mint`. A shim may not reach past what the sandbox seats, which
+ *   is theorem names: a name the unit seeded is reserved, and the reply carries the free seat across the
+ *   involution rather than a bare no.
+ *
+ * A refusal that fits none of these three has no theorem behind it and does not belong here — which is what
+ * `npm run refusals` counts, and the count may only fall.
+ */
 const unlockedOf = (name: string, heap: Map<string, unknown>, args: unknown, depth: number): unknown => {
   const bag = bagOf(args)
   const method = typeof bag.method === 'string' ? bag.method : ''
@@ -8845,7 +8881,7 @@ export const qpuFieldUuidHolds = (name = 'id', schema: unknown = { type: 'string
  * every other door in the same request.
  */
 export type QpuField = { name: string; uuid: string }
-export type QpuMethod = { api: string; verb: string; path: string; operationId?: string; takes: QpuField[]; gives: QpuField[] }
+export type QpuMethod = { api: string; verb: string; path: string; operationId?: string; takes: QpuField[]; gives: QpuField[]; declaredStatuses?: string[] }
 
 const schemaFieldsOf = (schema: unknown, doc: Record<string, unknown>, depth = n - n): QpuField[] => {
   if (!schema || typeof schema !== 'object' || depth > coins) return []
@@ -8883,7 +8919,7 @@ export const qpuSchemaMethodsOf = (api: string, document: unknown): QpuMethod[] 
       const ok = op.responses?.[String(found)]
       const gives = ok === undefined ? [] : [...Object.values(ok.content ?? {}).flatMap((row) => schemaFieldsOf(row.schema, doc)), ...schemaFieldsOf(ok.schema, doc)]
       const once = (rows: QpuField[]) => [...new Map(rows.map((row) => [row.uuid, row])).values()]
-      methods.push({ api, verb, path, operationId: op.operationId, takes: once(takes), gives: once(gives) })
+      methods.push({ api, verb, path, operationId: op.operationId, takes: once(takes), gives: once(gives), declaredStatuses: Object.keys(op.responses ?? {}) })
     }
   }
   return methods
@@ -8973,6 +9009,95 @@ export const qpuComposeLiveHolds = (read: Awaited<ReturnType<typeof qpuComposeLi
  *  every schema was reached. A registry entry whose spec has gone is a fact about that entry. */
 export const qpuApisLiveHolds = (read: Awaited<ReturnType<typeof qpuApisLiveOf>>): boolean =>
   read.holds === true && read.sampled === read.rows.length && read.rows.every((row) => row.api.length > n - n)
+
+/**
+ * PROVE THE DISCOVERED APIS BY CALLING THEM, WITH THE VERB THEIR SCHEMA DECLARES.
+ *
+ * Discovering a schema proves somebody wrote one. Crossing two schemas proves their field shapes agree. What
+ * neither proves is that anything answers — and a composability report over APIs that are gone is a diagram
+ * of a world that has closed. So a bounded sample is actually called.
+ *
+ * POST AS WELL AS GET. A method declaring POST cannot be probed with GET — a host fact, stated by the host
+ * in its own schema — and reading its refusal
+ * as a fault would condemn every write endpoint and every GraphQL door in the registry. Open Targets is the
+ * case that forced it: its live API is POST-only and answers 400 to a GET.
+ *
+ * FOUR ANSWERS, AND ONLY ONE OF THEM IS THE API'S FAULT:
+ *   answered   a status the schema declares, which is the door working
+ *   refused    a status it does not declare — the door is there and disagrees with its own spec
+ *   gone       the host does not resolve. THE SPEC IS STALE, which is a fact about the registry entry and
+ *              not about the API: opentargets.io is published at 19.02.1 against platform-api.opentargets.io,
+ *              a host that no longer exists, while the project's current API answers elsewhere. Reporting
+ *              that as a broken API would blame a team for a directory being out of date.
+ *   unreached  the network, which is not a verdict at all.
+ *
+ * Nothing is written. Only methods with no required parameter are called, POST bodies are empty objects, and
+ * a method whose path still carries a template is skipped rather than guessed at.
+ */
+export type QpuProbe = { api: string; verb: string; url: string; status: number; answer: 'answered' | 'refused' | 'gone' | 'unreached'; declared: string[] }
+
+/** The server a document declares, which is where its methods actually live. */
+export const qpuSpecServerOf = (document: unknown): string | undefined => {
+  if (!document || typeof document !== 'object') return undefined
+  const doc = document as { servers?: { url?: string }[]; host?: string; basePath?: string; schemes?: string[] }
+  const declared = doc.servers?.[n - n]?.url
+  if (typeof declared === 'string' && declared.length > n - n) return declared.startsWith('//') ? `https:${declared}` : declared
+  if (typeof doc.host === 'string' && doc.host.length > n - n) return `${doc.schemes?.includes('https') === false ? 'http' : 'https'}://${doc.host}${doc.basePath ?? ''}`
+  return undefined
+}
+
+/** A server is an absolute http(s) origin, or absent — never a protocol-relative fragment a fetch would refuse. */
+export const qpuSpecServerHolds = (server = qpuSpecServerOf({ servers: [{ url: '//example.test/v1' }] })): boolean =>
+  server === undefined || /^https?:\/\/[^/]+/.test(server)
+
+/** Probeable when nothing must be supplied and nothing is written: no path template, no required parameter. */
+export const qpuProbeableOf = (methods: readonly QpuMethod[]): QpuMethod[] =>
+  methods.filter((row) => !row.path.includes('{') && (row.verb === 'get' || row.verb === 'post') && row.takes.length === n - n)
+
+/** Nothing probeable carries a path template or a required argument, and nothing but GET and POST is tried. */
+export const qpuProbeableHolds = (methods: readonly QpuMethod[] = []): boolean =>
+  qpuProbeableOf(methods).every((row) => !row.path.includes('{') && row.takes.length === n - n && (row.verb === 'get' || row.verb === 'post'))
+
+export const qpuProbeLiveOf = async (methods: readonly QpuMethod[], server: string | undefined, howMany = qpuFacesOf().coins) => {
+  const none = n - n
+  const deadline = foreignDeadlineOf()
+  const rows: QpuProbe[] = []
+  if (server === undefined) return { kind: 'probe' as const, live: true as const, server, rows, answered: none, gone: none, holds: true }
+  for (const method of qpuProbeableOf(methods).slice(none, howMany)) {
+    const url = `${server.replace(/\/$/, '')}${method.path}`
+    const request = new Request(url, {
+      method: method.verb.toUpperCase(),
+      headers: { accept: 'application/json', ...(method.verb === 'post' ? { 'content-type': 'application/json' } : {}) },
+      ...(method.verb === 'post' ? { body: '{}' } : {}),
+    })
+    const response = await foreignFetchOf(request, deadline)
+    /* A host that does not resolve and a host that refuses are different facts, and foreignFetchOf returns
+     * undefined for both — so the distinction is drawn on whether ANY door of this server answered. */
+    rows.push({
+      api: method.api,
+      verb: method.verb,
+      url,
+      status: response?.status ?? none,
+      answer: response === undefined ? 'unreached' : method.declaredStatuses?.includes(String(response.status)) === false ? 'refused' : 'answered',
+      declared: method.declaredStatuses ?? [],
+    })
+  }
+  const reached = rows.filter((row) => row.answer !== 'unreached')
+  const gone = rows.length > none && reached.length === none
+  return {
+    kind: 'probe' as const,
+    live: true as const,
+    server,
+    rows: gone ? rows.map((row) => ({ ...row, answer: 'gone' as const })) : rows,
+    answered: rows.filter((row) => row.answer === 'answered').length,
+    /* EVERY DOOR SILENT MEANS THE SPEC IS STALE, not that every door is broken. */
+    gone: gone ? rows.length : none,
+    holds: rows.every((row) => row.url.startsWith(server.slice(none, mintOf(n)))),
+  }
+}
+
+export const qpuProbeLiveHolds = (read: Awaited<ReturnType<typeof qpuProbeLiveOf>>): boolean =>
+  read.holds && read.answered + read.gone <= read.rows.length && read.rows.every((row) => row.verb === 'get' || row.verb === 'post')
 
 /** The registry, the schemas and the methods, discovered live and bounded to `faces` schemas from an offset. */
 export const qpuApisLiveOf = async (from = n - n, howMany = qpuFacesOf().faces) => {

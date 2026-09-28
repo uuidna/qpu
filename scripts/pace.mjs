@@ -22,6 +22,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { mintOf, tenOf, vertices } from './lattice-values.mjs'
 
 /** Work is what this package counts as computing: amplitude rows plus mint doublings. */
 export const workOf = (row) => (row.computations ?? 0) + (row.mint?.calls ?? 0)
@@ -76,7 +77,7 @@ export const sameTestsOf = (before, after) => {
     only: (after.rows ?? []).length - shared.length,
     was,
     now,
-    delta: was > 0 ? Math.round(((now - was) * 1000) / was) : undefined,
+    delta: was > 0 ? Math.round(((now - was) * tenOf(3)) / was) : undefined,
     movers,
     dearer: rose.length,
     cheaper: movers.length - rose.length,
@@ -85,19 +86,19 @@ export const sameTestsOf = (before, after) => {
     concentration: (() => {
       const total = rose.reduce((sum, row) => sum + row.change, 0)
       const top = rose.slice(0, mintOf3()).reduce((sum, row) => sum + row.change, 0)
-      return total > 0 ? Math.round((top * 1000) / total) : 0
+      return total > 0 ? Math.round((top * tenOf(3)) / total) : 0
     })(),
   }
 }
 
 /** Eight, the cube's vertices — how many movers are worth printing before a list stops being a finding. */
-const mintOf3 = () => 8
+const mintOf3 = () => vertices
 
 /** The change from one release to the next, in thousandths, negative when the work per test fell. */
 export const paceOf = (releases) =>
   releases.map((row, i) => {
     const prior = releases[i - 1]
-    const delta = prior && prior.workPerTest > 0 ? Math.round(((row.workPerTest - prior.workPerTest) * 1000) / prior.workPerTest) : undefined
+    const delta = prior && prior.workPerTest > 0 ? Math.round(((row.workPerTest - prior.workPerTest) * tenOf(3)) / prior.workPerTest) : undefined
     return { ...row, delta }
   })
 
@@ -141,7 +142,7 @@ if (invoked) {
     try {
       // `${tag}:path` and never `$tag:path` — in zsh the second is a parameter modifier and silently
       // mangles the ref, which reported five releases as having no receipt when every one of them had it.
-      receipt = JSON.parse(execFileSync('git', ['show', `${tag}:test-receipt.json`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }))
+      receipt = JSON.parse(execFileSync('git', ['show', `${tag}:test-receipt.json`], { encoding: 'utf8', maxBuffer: mintOf(6) * mintOf(tenOf(1)) * mintOf(tenOf(1)) }))
     } catch {
       console.log(`  ${tag.padEnd(8)} no committed receipt at this tag`)
       continue
@@ -170,11 +171,11 @@ if (invoked) {
     const same = sameTestsOf(receipts.get(first), receipts.get(last))
     console.log(`\n  THE SAME TESTS, ${first} -> ${last}`)
     console.log(`    ${same.shared} test(s) present in both, ${same.only} added since`)
-    console.log(`    work ${same.was} -> ${same.now}${same.delta === undefined ? '' : `  ${same.delta > 0 ? '+' : ''}${(same.delta / 10).toFixed(1)}%`}`)
+    console.log(`    work ${same.was} -> ${same.now}${same.delta === undefined ? '' : `  ${same.delta > 0 ? '+' : ''}${(same.delta / tenOf(1)).toFixed(1)}%`}`)
     console.log(`    ${same.dearer} dearer, ${same.cheaper} cheaper, ${same.unchanged} unchanged`)
     if (same.movers.length > 0) {
       console.log(`\n    the movers, largest first — the top eight are ${(same.concentration / 10).toFixed(0)}% of all the increase:`)
-      for (const row of same.movers.slice(0, 8))
+      for (const row of same.movers.slice(0, vertices))
         console.log(`      ${row.change > 0 ? '+' : ''}${String(row.change).padStart(9)}  ${String(row.was).padStart(8)} -> ${String(row.now).padEnd(9)} ${row.name.slice(0, 52)}`)
     }
     console.log(`\n    this is the figure adding cheap tests cannot move`)

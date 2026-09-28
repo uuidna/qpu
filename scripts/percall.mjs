@@ -29,6 +29,7 @@
  */
 import { pathToFileURL } from 'node:url'
 import { join } from 'node:path'
+import { tenOf } from './lattice-values.mjs'
 
 const DOORS = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove']
 
@@ -79,7 +80,7 @@ export const summaryOf = (rows) => {
     cold,
     warm,
     /** What a warm call costs as a share of a cold one. Below 1000 means the memo is doing something. */
-    warmShare: cold > 0 ? Math.round((warm * 1000) / cold) : 0,
+    warmShare: cold > 0 ? Math.round((warm * tenOf(3)) / cold) : 0,
     holds: present.every((row) => row.cold >= 0 && row.warm >= 0) && present.length + (rows.length - present.length) === rows.length,
   }
 }
@@ -88,7 +89,7 @@ export const summaryOf = (rows) => {
 export const seriesOf = (releases) =>
   releases.map((row, i) => {
     const prior = releases[i - 1]
-    return { ...row, delta: prior && prior.cold > 0 ? Math.round(((row.cold - prior.cold) * 1000) / prior.cold) : undefined }
+    return { ...row, delta: prior && prior.cold > 0 ? Math.round(((row.cold - prior.cold) * tenOf(3)) / prior.cold) : undefined }
   })
 
 const invoked = process.argv[1]?.endsWith('percall.mjs') === true
@@ -124,7 +125,7 @@ if (invoked && process.argv.includes('--releases')) {
   console.log(`\nPER CALL ACROSS RELEASES — eight doors called once each, counted\n`)
   console.log(`  ${'tag'.padEnd(8)} ${'cold'.padStart(10)} ${'warm'.padStart(10)}  change`)
   for (const row of series)
-    console.log(`  ${row.tag.padEnd(8)} ${String(row.cold).padStart(10)} ${String(row.warm).padStart(10)}  ${row.delta === undefined ? '' : `${row.delta > 0 ? '+' : ''}${(row.delta / 10).toFixed(1)}%`}`)
+    console.log(`  ${row.tag.padEnd(8)} ${String(row.cold).padStart(10)} ${String(row.warm).padStart(10)}  ${row.delta === undefined ? '' : `${row.delta > 0 ? '+' : ''}${(row.delta / tenOf(1)).toFixed(1)}%`}`)
   const first = series[0]
   const last = series[series.length - 1]
   if (first && last && first !== last)

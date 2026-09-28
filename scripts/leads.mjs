@@ -21,6 +21,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
+import { tenOf } from './lattice-values.mjs'
 
 const ROOT = resolve(import.meta.dirname, '..')
 const SIBLINGS = resolve(ROOT, '..')
@@ -147,7 +148,7 @@ export const teachingNoteOf = ({ school }) => {
    * vocabulary — the undecided count measures how wide the grid is, which is not the same as how much is
    * unknown, and reporting it alone made a richer corpus look like a bigger hole. It is what THIS corpus
    * does not decide — never a claim that the question is unstudied, which no corpus here could support. */
-  const share = entangled + applied > 0 ? Math.round((entangled * 100) / (entangled + applied)) : 0
+  const share = entangled + applied > 0 ? Math.round((entangled * tenOf(2)) / (entangled + applied)) : 0
   return `${seated.length} ray(s) seated; ${school.subjects ?? '?'} subjects x ${school.domains ?? '?'} domains = ${school.combinations ?? '?'} combinations, ${school.evidenced ?? entangled + applied} cited (${entangled} entangled, ${applied} one-way, ${share}% both ways), ${school.undecided ?? 0} this corpus does not decide; ${(school.seating?.crowded ?? []).length} entangled pair(s) have no ray`
 }
 

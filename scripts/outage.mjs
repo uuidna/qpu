@@ -28,6 +28,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync, readdirSync, writeFileSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { mintOf } from './lattice-values.mjs'
 
 const HOST = 'opendata.cern.ch'
 
@@ -128,7 +129,7 @@ const runOf = (dir, name, env) => {
   return {
     name,
     ok: true,
-    receipt: createHash('sha256').update(text).digest('hex').slice(0, 16),
+    receipt: createHash('sha256').update(text).digest('hex').slice(0, mintOf(4)),
     fold: proof.receipt,
     reading: readings.foreign?.fold,
     reads: readings.foreign?.reads,

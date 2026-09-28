@@ -4,6 +4,7 @@
 // the script exits 1 so a gate or a schedule can act on it. No code access is assumed: only HTTP. Usage:
 //   node scripts/examine.mjs https://qpu.uuidna.com
 import { setTimeout as sleep } from 'node:timers/promises'
+import { mintOf, tenOf, vertices } from './lattice-values.mjs'
 
 const origin = (process.argv[2] ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
 const findings = []
@@ -34,7 +35,7 @@ const fold = (text) => {
   const P = 0x100000001b3n
   const M = (1n << 64n) - 1n
   for (let i = 0; i < text.length; i++) { h ^= BigInt(text.charCodeAt(i)); h = (h * P) & M }
-  return h.toString(16).padStart(16, '0')
+  return h.toString(mintOf(4)).padStart(mintOf(4), '0')
 }
 const typeOf = (v) => (v === null ? 'null' : Array.isArray(v) ? 'array' : typeof v === 'number' ? (Number.isInteger(v) ? 'integer' : 'number') : typeof v)
 const fits = (t, v) => { const ts = Array.isArray(t) ? t : [t]; return ts.includes(typeOf(v)) || (typeOf(v) === 'integer' && ts.includes('number')) }
@@ -62,21 +63,21 @@ const validate = (schema, reply) => {
   const p = await rpc('not json'); check('parse error is -32700 on 400', p.status === 400 && p.json?.error?.code === -32700, `${p.status} ${p.text.slice(0, 80)}`)
   const a = await rpc('[]'); check('array body is -32600 on 400', a.status === 400 && a.json?.error?.code === -32600, `${a.status} ${a.text.slice(0, 80)}`)
   const m = await rpc({ jsonrpc: '2.0', id: 3, method: 'resources/list' }); check('unknown method is -32601 with the id', m.status === 200 && m.json?.error?.code === -32601 && m.json?.id === 3, `${m.status} ${m.text.slice(0, 80)}`)
-  const u = await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'nope' } }); check('unknown tool is -32602 listing the tools', u.status === 200 && u.json?.error?.code === -32602 && Array.isArray(u.json?.error?.data?.tools) && u.json.error.data.tools.length === 16, `${u.status} ${u.text.slice(0, 120)}`)
-  const s = await rpc({ jsonrpc: '2.0', id: 6, method: 'nope' }, '/server'); check('sub-server unknown method is -32601, not a job', s.json?.error?.code === -32601, s.text.slice(0, 100))
+  const u = await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'nope' } }); check('unknown tool is -32602 listing the tools', u.status === 200 && u.json?.error?.code === -32602 && Array.isArray(u.json?.error?.data?.tools) && u.json.error.data.tools.length === mintOf(4), `${u.status} ${u.text.slice(0, 120)}`)
+  const s = await rpc({ jsonrpc: '2.0', id: 6, method: 'nope' }, '/server'); check('sub-server unknown method is -32601, not a job', s.json?.error?.code === -32601, s.text.slice(0, tenOf(2)))
 }
 // 3. tools/list: sixteen tools, one input schema, a derived output schema requiring holds
 let tools = []
 {
   const l = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' })
   tools = l.json?.result?.tools ?? []
-  check('tools/list has sixteen tools', tools.length === 16, `${tools.length}`)
+  check('tools/list has sixteen tools', tools.length === mintOf(4), `${tools.length}`)
   check('tool rows carry one input schema', tools.every((t) => t.inputSchema && !('input_schema' in t) && !('parameters' in t) && !('function' in t)), 'duplicated schema keys')
   // THE CONNECT BILL (2026-09-12): the output schema left tools/list and travels with the man page, one call away.
   check('tools/list carries no output schema (the man page does)', tools.every((t) => t.outputSchema === undefined))
   for (const t of tools) t.outputSchema = (await call(t.name, { man: true }, 3)).sc?.outputSchema
   check('output schemas are derived and require holds', tools.every((t) => t.outputSchema?.required?.includes('holds') && Object.keys(t.outputSchema.properties ?? {}).length > 3 && String(t.outputSchema.description ?? '').startsWith('derived from')), 'an empty or undescribed output schema')
-  check('tools/list under one KiB per door', l.text.length < tools.length * 1024, `${l.text.length} B`)
+  check('tools/list under one KiB per door', l.text.length < tools.length * mintOf(tenOf(1)), `${l.text.length} B`)
 }
 // 4. every reply: two copies, honest links, validates against its own schema
 {
@@ -108,7 +109,7 @@ let tools = []
   check('crypto_shor 15/7 factors 3 x 5 by period', s15?.factors?.by === 'period' && [s15.factors.p, s15.factors.q].sort().join('x') === '3x5' && s15.holds === true, JSON.stringify(s15?.factors))
   const s91 = (await call('crypto_shor', { n: 91, a: 7 })).sc
   check('crypto_shor 91/7 hands the gcd factor over', s91?.factors?.by === 'gcd' && s91.rsa?.factored === true && s91.coprime === false, JSON.stringify(s91?.factors))
-  const neg = (await call('crypto_shor', { n: -91, a: 8 })).sc
+  const neg = (await call('crypto_shor', { n: -91, a: vertices })).sc
   check('crypto_shor -91 has no ring and holds nothing', neg?.classical?.ring === false && neg.classical.holds === false && neg.holds === false, JSON.stringify(neg?.classical))
   const garbage = (await call('crypto_shor', { n: [15], a: 7 })).sc
   check('crypto_shor garbage n runs the default and says so', garbage?.read?.n?.how === 'default' && garbage.holds === false, JSON.stringify(garbage?.read))
@@ -117,7 +118,7 @@ let tools = []
   const rounded = (await call('crypto_shor', { n: 2 ** 61, a: 3 })).sc
   check('crypto_shor marks a JSON number past 2^53 inexact', rounded?.read?.n?.exact === false && rounded.holds === false, JSON.stringify(rounded?.read?.n))
   const t0 = Date.now(); const wide = (await call('crypto_shor', { n: '7'.repeat(30000), a: 2 })).sc; const ms = Date.now() - t0
-  check('crypto_shor 30000-digit coprime answers in under 10 s with an exact classical verdict', wide?.classical?.beyond === true && wide.classical.unit === true && ms < 10000, `${ms} ms, ${JSON.stringify(wide?.classical)}`)
+  check('crypto_shor 30000-digit coprime answers in under 10 s with an exact classical verdict', wide?.classical?.beyond === true && wide.classical.unit === true && ms < tenOf(4), `${ms} ms, ${JSON.stringify(wide?.classical)}`)
   const shots = (await call('crypto_shor')).sc?.measure
   check('shots say they are enumerated, not sampled', shots?.sampled === false && shots.enumerated === true && shots.measured === true, JSON.stringify(shots && { sampled: shots.sampled, enumerated: shots.enumerated }))
 }

@@ -25,6 +25,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { tenOf } from './lattice-values.mjs'
 
 /** A row is quantum in proportion to what it computed; the rate is how many nanoseconds each computation cost. */
 export const ONE_SECOND_NS = 1_000_000_000
@@ -66,9 +67,9 @@ export const temporalOf = (rows, wallNs = 0) => {
     foreignNs: nsOf(foreign),
     unexplainedNs: nsOf(unexplained),
     /** Thousandths, so each share is an integer and the three of them close. */
-    computedShare: totalNs > 0 ? Math.round((nsOf(computed) * 1000) / totalNs) : 0,
-    foreignShare: totalNs > 0 ? Math.round((nsOf(foreign) * 1000) / totalNs) : 0,
-    unexplainedShare: totalNs > 0 ? Math.round((nsOf(unexplained) * 1000) / totalNs) : 0,
+    computedShare: totalNs > 0 ? Math.round((nsOf(computed) * tenOf(3)) / totalNs) : 0,
+    foreignShare: totalNs > 0 ? Math.round((nsOf(foreign) * tenOf(3)) / totalNs) : 0,
+    unexplainedShare: totalNs > 0 ? Math.round((nsOf(unexplained) * tenOf(3)) / totalNs) : 0,
     nsPerWork: work > 0 ? Math.round(nsOf(computed) / work) : 0,
     /**
      * THE HARNESS, WHICH IS THE ACTUAL ANSWER TO THE QUESTION.
@@ -87,7 +88,7 @@ export const temporalOf = (rows, wallNs = 0) => {
     workers,
     /** Wall minus the critical path: spawn, module load, the fold. Never negative, and zero when unmeasured. */
     harnessNs: wallNs > 0 ? Math.max(0, wallNs - critical) : 0,
-    harnessShare: wallNs > 0 ? Math.round((Math.max(0, wallNs - critical) * 1000) / wallNs) : 0,
+    harnessShare: wallNs > 0 ? Math.round((Math.max(0, wallNs - critical) * tenOf(3)) / wallNs) : 0,
     /** The rows that took the longest while computing nothing and asking nobody — where to look first. */
     notYetQuantum: [...unexplained].sort((a, b) => b.ns - a.ns).slice(0, 7),
     /* Sound when every row it counted landed in exactly one of the three. A row cannot be both waiting on a

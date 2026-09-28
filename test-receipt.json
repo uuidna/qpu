@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 174,
-  "pass": 174,
+  "tests": 175,
+  "pass": 175,
   "fail": 0,
   "dry": 0,
   "circuit": 121,
-  "mintOnly": 23,
+  "mintOnly": 24,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "6a48bb17bab11994",
-  "computed": 170,
+  "receipt": "a9b6f6d73c026868",
+  "computed": 171,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -1509,7 +1509,7 @@
         "count": 3,
         "folds": [
           "\"db4e1a708ec181fb\"",
-          "\"8ea222fb54412f2a\"",
+          "\"3ebd22b829bb4c47\"",
           "\"8b8cb8b9f1f7b3d2\""
         ]
       },
@@ -1561,7 +1561,7 @@
       "served": {
         "count": 3,
         "folds": [
-          "\"8ea222fb54412f2a\"",
+          "\"3ebd22b829bb4c47\"",
           "\"db4e1a708ec181fb\"",
           "\"8b8cb8b9f1f7b3d2\""
         ]
@@ -4401,7 +4401,7 @@
           "\"5040d89f9db56ef8\"",
           "\"ec7a6f065e969998\"",
           "\"41ed004077b05c5a\"",
-          "\"3ec2affd8f53a916\"",
+          "\"4f343592ee1f00ca\"",
           "\"649806ce500d7a12\"",
           "\"4eef7971f3444c84\"",
           "\"1072a499599e5648\"",
@@ -4467,7 +4467,7 @@
       "served": {
         "count": 1,
         "folds": [
-          "\"3ec2affd8f53a916\""
+          "\"4f343592ee1f00ca\""
         ]
       },
       "foreign": 0
@@ -4652,7 +4652,7 @@
           "\"e1d4e373c681cb0c\"",
           "\"9757f65c4dea3a50\"",
           "\"58b38d7e20f48a74\"",
-          "\"3ec2affd8f53a916\"",
+          "\"4f343592ee1f00ca\"",
           "\"ec7a6f065e969998\"",
           "\"833c65e115042b04\"",
           "\"d31c0458e913d7ee\""
@@ -4711,7 +4711,7 @@
           "\"53c1ecacc3318cc7\"",
           "\"ed73e177fb63ad32\"",
           "\"ec7a6f065e969998\"",
-          "\"3ec2affd8f53a916\"",
+          "\"4f343592ee1f00ca\"",
           "\"4eef7971f3444c84\"",
           "\"347c0e5dabe2a14e\"",
           "\"84d49291a8c4727c\"",
@@ -4774,7 +4774,7 @@
         "count": 10,
         "folds": [
           "\"de3a9217e6aabb97\"",
-          "\"193809e0bbe4f159\"",
+          "\"54ae7b09be18e3e5\"",
           "\"7603e2cfade1b0c6\"",
           "\"542b9d1b7b81d7cd\"",
           "\"53c1ecacc3318cc7\"",
@@ -6528,7 +6528,7 @@
       "served": {
         "count": 1,
         "folds": [
-          "\"193809e0bbe4f159\""
+          "\"54ae7b09be18e3e5\""
         ]
       },
       "foreign": 0
@@ -6997,6 +6997,28 @@
       "mint": {
         "calls": 83,
         "chain": "195f2e9af660ffa6"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "a spec names where its methods live, and only harmless ones are probeable",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 9,
+        "chain": "10db40dd16d9c30a"
       },
       "served": {
         "count": 0,
