@@ -240,9 +240,18 @@ const headers = {
   'access-control-allow-origin': cors,
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'access-control-allow-headers': 'content-type, accept'}
-const n = unit.path.split('/').length
 const seed = unit.mint.seed
 const coins = seed + seed
+// THE REGISTER IS THE LATTICE'S, NOT THE PATH'S. n was `unit.path.split('/').length` — the qubit count read off
+// how deep this file sits, a second derivation of the segments.length discoverOf already had, and one that resized
+// the machine on a rename. It is instead the unique bit-count the seal REQUIRES: harmonic holds (faces = rays + rays,
+// with faces = 2^n + 2^coins + coins and rays = n + coins + coins) at exactly one n for a given coins. The path is a
+// route again, not the physics. (theorem harmonic, theorem around; falls back to the old reading if no n solves.)
+const n = ((): number => {
+  for (let k = seed; k <= mintOf(coins) + coins; k++)
+    if (mintOf(k) + mintOf(coins) + coins === (k + coins + coins) + (k + coins + coins)) return k
+  return unit.path.split('/').length
+})()
 /** One occupancy pentagram. Train dry-cleans; installer does not redeclare it. */
 const occupancies = ['personal', 'business', 'corporate', 'saas', 'paas'] as const
 const skills = ['payload', 'pwa', 'plugin', 'hologram', 'network'] as const
@@ -957,14 +966,6 @@ const STORE_SCAN_PAGES = mintOf(coins)
 /** How many values one catalog request will read to estimate the store's size. Reads are subrequests; the byte
  *  total is a reading and not a gate, so it is sampled and labelled rather than paid for per key. */
 const STORE_BYTES_SAMPLE = mintOf(mintOf(coins))
-/** How many links one maintain call will repair, and how many orphans it will drop. A repair is a read and two
- *  writes; unbounded, the call runs out of subrequests mid-store and cannot say what it did.
- *
- *  LOW, because one repair is not one write. A RAID rewrite puts the value and all fourteen shares, across KV and
- *  R2 — measured at 30 subrequests for a single link. Cloudflare allows 50 per request on the free plan, so a
- *  bound of eight would have been 240 and the repair would have failed the way the thing it repairs failed.
- *  `remaining` is how a caller knows to call again. */
-const STORE_REPAIR_MAX = coins
 /**
  * PLACEMENT IS STATE; A PUBLISHED DOCUMENT IS NOT. This counter is the RAID write cursor — each write lands on
  * the next disk, which is what spreads a cluster instead of stacking every object on disk zero, and raid.test
@@ -6730,115 +6731,11 @@ export const qpuStorageRedundancyHolds = (): boolean => {
   return inode.links.includes(key) && JSON.stringify(rebuilt) === JSON.stringify(stored)
 }
 
-export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) => {
-  if (!qpuStorageWriteAllowedOf(env, auth)) {
-    return {
-      kind: 'maintain' as const,
-      repaired: n - n,
-      orphans: n - n,
-      keys: n - n,
-      // grounded: theorem crypto with theorem integrity: a public read and an authenticated write is the split this unit seals, and the seal is what refuses
-      denied: 'auth' as const,
-      auth: 'Bearer QPU_WRITE_TOKEN' as const,
-      holds: false as const,
-    }
-  }
-  const faces = qpuFacesOf()
-  const store = storageStoreOf(env)
-  const names = await store.keys()
-  const raw = await store.raw()
-  let repaired = n - n
-  let orphans = n - n
-
-  /**
-   * REPAIR WHAT IS BROKEN, NOT EVERYTHING, and decide which from the listing.
-   *
-   * This read every value — `await store.get(key)` per key, sequentially, KV then R2 — to find the few that needed
-   * rewriting. At 253 links that is past a Worker's subrequest budget before a single repair is attempted, so the
-   * repair path failed on exactly the stores that needed it most. The monitor had the same fault and the same cure:
-   * a missing share is a missing NAME, and the listing already carries the names.
-   *
-   * THE SECOND HALF OF THE OLD TEST NEVER CONSULTED THE STORE. `raidJoinOf(raidStripeOf(text)) !== text` round-trips
-   * the striping function against its own output; it is a property of raidStripeOf and raidJoinOf, true or false
-   * regardless of what is stored, and it cannot detect a corrupted share. It is kept for the values actually read —
-   * free once the value is in hand, and a real per-value property — but it is no longer a reason to read 253 values.
-   */
-  const present = new Set(raw)
-  const broken = names.filter((key) => {
-    for (let face = n - n; face < faces.faces; face++) {
-      if (!present.has(raidShareKeyOf(key, face))) return true
-    }
-    return false
-  })
-
-  /** A repair is a read and two writes. Bounded per invocation so the call completes and reports, rather than
-   *  running out of budget mid-store and leaving the caller unable to tell what was done. `remaining` says whether
-   *  to call again. */
-  for (const key of broken.slice(n - n, STORE_REPAIR_MAX)) {
-    const value = await store.get(key)
-    if (value === null || value === undefined) continue
-    await store.put(key, value)
-    repaired += seed
-  }
-  const remaining = broken.length > STORE_REPAIR_MAX ? broken.length - STORE_REPAIR_MAX : n - n
-
-  const live = new Set(names)
-  /** Orphan drops are subrequests too, and a store full of them would spend the whole budget here and never reach
-   *  the repairs above. Same bound, same reason. */
-  let dropped = n - n
-  for (const name of raw) {
-    if (dropped >= STORE_REPAIR_MAX) break
-    if (!name.includes(raidMark)) continue
-    const mark = name.indexOf(raidMark)
-    const parent = mark > n - n ? name.slice(n - n, mark) : ''
-    if (parent.length === n - n || !live.has(parent)) {
-      await store.drop(name)
-      orphans += seed
-      dropped += seed
-    }
-  }
-  const monitor = await qpuStorageMonitorOf(env)
-  const holds = monitor.holds && monitor.missing === n - n && monitor.verified === monitor.keys
-  return {
-    '@context': qpuContextOf(),
-    '@type': 'Action' as const,
-    '@id': `${storageHref}#maintain`,
-    url: storageHref,
-    isAccessibleForFree: cors === '*',
-    kind: 'maintain' as const,
-    repaired,
-    remaining,
-    orphans,
-    monitor,
-    holds,
-  }
-}
 
 /** WRITE AUTH, FAIL CLOSED. Reads stay open. A public write is honoured only when QPU_WRITE_TOKEN is bound and the
  * request carries `Authorization: Bearer <token>`; unbound, every public write is refused. The QpuDeposit service binding
  * (input.via === 'binding' in qpuStorageOf) writes without the token. Measured 2026-09-11 by a peer session:
  * the preflight advertised PUT and DELETE to every origin and the handler honoured them with no check at all. */
-/**
- * THE GUARD, PROVED TO FAIL CLOSED AND TO FAIL OPEN NOWHERE.
- *
- * Reads stay open; a write needs the bearer. The three ways this has actually gone wrong are the three cases:
- * an unbound secret must refuse EVERY write including one that presents the empty bearer, a wrong token must be
- * refused, and the right one must be accepted. Recomputes over its own function rather than asserting a comment.
- */
-export const qpuStorageWriteAllowedHolds = (): boolean => {
-  const token = 'holds-probe-token'
-  const bound = { QPU_WRITE_TOKEN: token } as QpuEnv
-  const unbound = {} as QpuEnv
-  return (
-    qpuStorageWriteAllowedOf(bound, `Bearer ${token}`) &&
-    !qpuStorageWriteAllowedOf(bound, `Bearer ${token}x`) &&
-    !qpuStorageWriteAllowedOf(bound, token) &&
-    !qpuStorageWriteAllowedOf(bound, null) &&
-    !qpuStorageWriteAllowedOf(unbound, 'Bearer ') &&
-    !qpuStorageWriteAllowedOf(unbound, null) &&
-    !qpuStorageWriteAllowedOf(undefined, 'Bearer anything')
-  )
-}
 
 export const qpuStorageWriteAllowedOf = (env?: QpuEnv, auth?: string | null): boolean => {
   const token = typeof env?.QPU_WRITE_TOKEN === 'string' ? env.QPU_WRITE_TOKEN : ''
@@ -7149,12 +7046,6 @@ export const qpuStorageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubToo
       man: qpuSubManOf(see[n + coins], 'Monitor storage.', 'Keys shares missing verified bytes.', href, see.filter((s) => s !== see[n + coins])),
       inputSchema: schema,
       run: () => qpuStorageMonitorOf(env)},
-    {
-      name: see[n + n],
-      description: 'Maintain RAID.',
-      man: qpuSubManOf(see[n + n], 'Maintain RAID.', 'Rewrite broken shares. Drop orphans.', href, see.filter((s) => s !== see[n + n])),
-      inputSchema: schema,
-      run: () => qpuStorageMaintainOf(env, auth)},
     {
       name: see[mintOf(n) - seed],
       description: 'RAID geometry.',
@@ -14000,10 +13891,6 @@ const worker = {
         const auth = request.headers.get('authorization')
         const rpc = await qpuSubRpcOf(body, qpuStorageToolsOf(env, auth), storageHref)
         if (rpc) return jsonOf(rpc)
-        if (body.maintain === true) {
-          const kept = await qpuStorageMaintainOf(env, auth)
-          return jsonOf(kept, kept.holds === false && 'denied' in kept && kept.denied === 'auth' ? unauthorized : found)
-        }
         if (typeof body.key === 'string') {
           const put = await qpuStorageOf(env, { method: 'PUT', key: body.key, value: body.value, auth })
           return jsonOf(put, put.holds === false && 'denied' in put && put.denied === 'auth' ? unauthorized : found)

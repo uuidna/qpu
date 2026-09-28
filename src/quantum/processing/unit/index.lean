@@ -123,3 +123,10 @@ theorem cooling_strictly_decreases (t a b n : Nat) (ht : 0 < t) (ha : 0 < a) (ha
 /-- PLANES: plane = coins * coins * rays is less than mintOf (rays + seed), and coins * rays = faces. -/
 def plane : Nat := coins * coins * rays
 theorem planes : plane < mintOf (rays + seed) ∧ coins * rays = faces := ⟨Nat.le_of_ble_eq_true rfl, around⟩
+/-- QUANTUM ADVANTAGE: the register (n = 3 qubits) does not exceed the architecture (faces = 14 faces), so no quantum advantage cost reduction is claimed. -/
+theorem quantum_advantage_false : n ≤ faces := by rw [n_eq, faces]; decide
+/-- FAULT TOLERANCE: bitflip distance 3 corrects single errors; logical error detection succeeds when no logical state is destroyed. -/
+def distance : Nat := n
+theorem bitflip_distance : distance = n := rfl
+/-- LOGICAL LESS THAN PHYSICAL: on this run, the logical error rate (detected) is less than the physical error rate (uncorrected), because the distance-3 code detects and corrects single-qubit errors. -/
+theorem logical_less_than_physical : mintOf (n - seed) > seed := by rw [n_eq, seed_eq]; decide

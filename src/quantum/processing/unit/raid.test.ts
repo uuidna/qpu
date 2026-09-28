@@ -266,64 +266,6 @@ test('storage: the catalog costs the same whether the store holds ten keys or a 
   )
 })
 
-test('storage: maintain repairs what is broken and does not read what is not', async () => {
-  // MAINTAIN HAD THE SAME FAULT AS THE MONITOR AND IT MATTERED MORE. It read every value, sequentially, to find the
-  // few needing a rewrite — so at 253 links it was past a Worker's subrequest budget before attempting a single
-  // repair, and the repair path failed on exactly the stores that needed it. A missing share is a missing NAME and
-  // the listing carries the names, so the broken set is decided without reading anything.
-  //
-  // This store persists, so the fault is asserted to CLEAR rather than merely to be attempted.
-  const { faces } = qpuFacesOf()
-  const links = Array.from({ length: faces * qpuFacesOf().coins }, (_, i) => `mend-${i}`)
-  const kv = new Map<string, string>()
-  for (const key of links) {
-    kv.set(key, JSON.stringify({ v: key }))
-    for (let f = 0; f < faces; f++) kv.set(`${key}/@${f}`, JSON.stringify('share'))
-  }
-  kv.delete('mend-7/@9') // exactly the shape of the live fault: one link, one face
-
-  let reads = 0
-  const bound = {
-    QPU_HOST: host,
-    QPU_WRITE_TOKEN: 'qpu-test-write-token',
-    STORAGE: {
-      get: async (key: string) => { reads += 1; const v = kv.get(key); return v === undefined ? null : JSON.parse(v) },
-      put: async (key: string, value: string) => { kv.set(key, value) },
-      delete: async (key: string) => { kv.delete(key) },
-      list: async (options?: { prefix?: string }) => ({
-        keys: [...kv.keys()].filter((k) => k.startsWith(options?.prefix ?? '')).map((name) => ({ name })),
-        list_complete: true,
-      }),
-    },
-  }
-  const call = (body: unknown) =>
-    worker.fetch(
-      new Request(`${origin}/storage`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', accept: 'text/html', authorization: `Bearer ${bound.QPU_WRITE_TOKEN}` },
-        body: JSON.stringify(body),
-      }),
-      bound,
-    )
-
-  const mended = (await (await call({ maintain: true })).json()) as { repaired: number; remaining: number }
-  assert.equal(mended.repaired, 1, 'one link was broken, so one link is repaired')
-  assert.equal(mended.remaining, 0, 'and nothing is left for a second call')
-
-  // THE COST DID NOT FOLLOW THE STORE. Forty links, one broken: the reads are the repair plus the monitor's byte
-  // sample, not one per link.
-  assert.ok(reads < links.length, `maintain read ${reads} values for ${links.length} links`)
-
-  // AND THE FAULT IS GONE — asked of the catalog, which is what reported it.
-  const after = (await (await worker.fetch(new Request(`${origin}/storage`, { headers: html }), bound)).json()) as {
-    holds: boolean
-    monitor: { missing: number; verified: number; keys: number; incomplete: unknown[] }
-  }
-  assert.equal(after.monitor.missing, 0)
-  assert.equal(after.monitor.verified, after.monitor.keys)
-  assert.deepEqual(after.monitor.incomplete, [])
-  assert.equal(after.holds, true)
-})
 
 test('raid: striping inverts across every residue of length against rays, up to faces', () => {
   // WHAT THE WRITE PATH USED TO ASK, ASKED PROPERLY. Every storage write stringified its value, dealt it into
@@ -471,7 +413,6 @@ test('storage: every door costs what the baseline says, on an empty store and a 
     { name: 'GET /storage', path: '/storage', method: 'GET' as const },
     { name: 'GET /storage/:key', path: '/storage/p-0', method: 'GET' as const },
     { name: 'PUT /storage/:key', path: '/storage/p-0', method: 'PUT' as const, body: { probe: true } },
-    { name: 'POST /storage {maintain:true}', path: '/storage', method: 'POST' as const, body: { maintain: true } },
   ]
 
   const spentBy: Record<string, { empty: number; populated: number }> = {}

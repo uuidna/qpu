@@ -15,10 +15,6 @@
       "empty": 30,
       "populated": 1
     },
-    "POST /storage {maintain:true}": {
-      "empty": 8,
-      "populated": 24
-    },
     "PUT /storage/:key": {
       "empty": 120,
       "populated": 91
