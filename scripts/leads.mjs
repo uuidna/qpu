@@ -356,7 +356,7 @@ if (invoked) {
   }
 
   /* ── flaws deposited in this tree by a session that could not send them anywhere else ───────────────────────── */
-  for (const file of readdirSync(ROOT).filter((f) => /^flaws-.*-receipt\.json$/.test(f)).sort()) {
+  for (const file of readdirSync(ROOT).filter((f) => /^flaws(-.*)?-receipt\.json$/.test(f)).sort()) {
     let deposit
     try { deposit = JSON.parse(readFileSync(join(ROOT, file), 'utf8')) } catch (error) {
       add(`flaws:${file}`, false, `unreadable (${error.message})`); continue

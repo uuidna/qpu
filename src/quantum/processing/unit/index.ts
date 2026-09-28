@@ -263,6 +263,22 @@ const ten = n * n + seed
  * fold is only ever called after this module has finished initialising.
  */
 const HEX_RADIX = mintOf(mintOf(coins))
+/**
+ * THE SEALED GROUP WIDTHS, DECLARED ONCE, and the layout that uses them.
+ *
+ * 8-4-4-4-12 is one layout and it was re-derived in three places — qpuShapeUuidOf and both halves of the
+ * combinatorial codec — each spelling mintOf(n), mintOf(coins) and mintOf(mintOf(coins)) again and each
+ * re-joining the groups by hand. The note beside qpuShapeUuidOf's own triple says a second derivation that
+ * happens to agree is the drift this tree keeps catching. There were three, and two of them were added the
+ * same day the codec was.
+ */
+const UUID_EIGHT = mintOf(n)
+const UUID_FOUR = mintOf(coins)
+const UUID_SIXTEEN = mintOf(mintOf(coins))
+
+/** The five groups of one 32-hex address — the one place a UUID's dashes are placed. */
+const uuidGroupsOf = (a: string, b: string, c: string, d: string, e: string): string => [a, b, c, d, e].join('-')
+
 const FOLD_DIGITS = (coins * mintOf(n + coins)) / mintOf(coins)
 
 /**
@@ -8991,24 +9007,21 @@ export const qpuShapeUuidOf = (canonical: string): string => {
    * cannot be equal by construction and the whole is a function of the whole. */
   const high = qpuFoldOf(canonical)
   const low = qpuFoldOf(`${canonical}\u0000shape`)
-  /* TWO COINS SEAL INTO A COIL, which is what the two folds above are doing: coins halves of sixteen sealed
+  /* TWO COINS SEAL INTO A COIL, which is what the two folds above are doing: coins halves of UUID_SIXTEEN sealed
    * into one identity of mintOf(coins + n) digits. The lattice names every width here and the first attempt
-   * wrote them as arithmetic anyway, getting `coins * mintOf(n)` where mintOf(n) was meant — sixteen for
-   * eight — and producing a UUID-shaped thing that was not one, which the predicate correctly refused.
+   * wrote them as arithmetic anyway, getting `coins * mintOf(n)` where mintOf(n) was meant — UUID_SIXTEEN for
+   * UUID_EIGHT — and producing a UUID-shaped thing that was not one, which the predicate correctly refused.
    *
    * 8-4-4-4-12: mintOf(n), mintOf(coins), mintOf(coins), mintOf(coins), faces - coins. */
-  const four = mintOf(coins)
-  const eight = mintOf(n)
-  const sixteen = mintOf(mintOf(coins))
-  const variant = (Number(BigInt(`0x${low.slice(n - n, seed)}`) % BigInt(four)) + mintOf(n)).toString(sixteen)
-  return [
-    high.slice(n - n, eight),
-    high.slice(eight, eight + four),
-    `8${high.slice(eight + four, sixteen - seed)}`,
-    `${variant}${low.slice(seed, four)}`,
-    low.slice(four, sixteen),
-  ].join('-')
-  // the last group is faces - coins = twelve digits, which is what low.slice(four, sixteen) yields
+  const variant = (Number(BigInt(`0x${low.slice(n - n, seed)}`) % BigInt(UUID_FOUR)) + mintOf(n)).toString(UUID_SIXTEEN)
+  return uuidGroupsOf(
+    high.slice(n - n, UUID_EIGHT),
+    high.slice(UUID_EIGHT, UUID_EIGHT + UUID_FOUR),
+    `8${high.slice(UUID_EIGHT + UUID_FOUR, UUID_SIXTEEN - seed)}`,
+    `${variant}${low.slice(seed, UUID_FOUR)}`,
+    low.slice(UUID_FOUR, UUID_SIXTEEN),
+  )
+  // the last group is faces - coins = twelve digits, which is what low.slice(UUID_FOUR, UUID_SIXTEEN) yields
 }
 
 
@@ -9118,17 +9131,14 @@ export const qpuCallUuidOf = (door: string, left: string, right: string): string
 
   const text = combinationTextOf(door, left, right)
   const content = qpuShapeUuidOf(text).replace(/-/g, '')
-  const four = mintOf(coins)
-  const eight = mintOf(n)
-  const sixteen = mintOf(mintOf(coins))
   const check = qpuFoldOf(`${text}${COMBINATORIAL_SEP}check`).slice(n - n, n)
-  return [
-    content.slice(n - n, eight),
+  return uuidGroupsOf(
+    content.slice(n - n, UUID_EIGHT),
     combinatorialDoorHexOf(surface),
     `8${check}`,
-    `${content[sixteen]}${index.toString(HEX_RADIX).padStart(n, '0')}`,
-    content.slice(sixteen + four, sixteen + sixteen),
-  ].join('-')
+    `${content[UUID_SIXTEEN]}${index.toString(HEX_RADIX).padStart(n, '0')}`,
+    content.slice(UUID_SIXTEEN + UUID_FOUR, UUID_SIXTEEN + UUID_SIXTEEN),
+  )
 }
 
 /**
@@ -9168,11 +9178,8 @@ export const qpuCallUuidHolds = (): boolean =>
 export const qpuCallOfUuid = (uuid: string) => {
   const bare = String(uuid).replace(/-/g, '').toLowerCase()
   if (!/^[0-9a-f]{32}$/.test(bare)) throw new Error(`not a uuid: ${uuid} — a combinatorial address is ${mintOf(coins + n)} hex characters`)
-  const four = mintOf(coins)
-  const eight = mintOf(n)
-  const sixteen = mintOf(mintOf(coins))
-  const hex = bare.slice(eight, eight + four)
-  const index = parseInt(bare.slice(sixteen + seed, sixteen + four), HEX_RADIX)
+  const hex = bare.slice(UUID_EIGHT, UUID_EIGHT + UUID_FOUR)
+  const index = parseInt(bare.slice(UUID_SIXTEEN + seed, UUID_SIXTEEN + UUID_FOUR), HEX_RADIX)
   const surface = combinatorialSurfacesOf().find((s) => combinatorialDoorHexOf(s) === hex)
   if (surface === undefined) {
     return { kind: 'combinatorial-call' as const, uuid: String(uuid), hex, door: null, index, left: null, right: null, verified: false }
