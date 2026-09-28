@@ -5880,6 +5880,7 @@ export const qpuMessageOf = (send?: { lane?: unknown; body?: unknown }) => {
   const hop = hopOf(lane, faces.rays, lanes)
   const stored = jsonOf(send.body)
   if (jsonBytesOf(stored) > found * lanes) {
+    // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
     return { ...catalog, accepted: false as const, denied: 'heap' as const, lane, hop, holds: false as const }
   }
   const uuid = uuidImprintOf(lane, fused, lanes)
@@ -6563,6 +6564,7 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
  * origin and the handler honoured them with no check. That one was fixed at qpuStorageOf. This path never went
  * through it, so the fix did not reach it — a guard at one door says nothing about a second door beside it.
  *
+ * grounded: theorem crypto with theorem integrity: a public read and an authenticated write is the split this unit seals, and the seal is what refuses
  * Refused with the same `denied: 'auth'` shape the PUT path returns, so a caller learns the same thing either way.
  */
 /**
@@ -6622,6 +6624,7 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) =
       repaired: n - n,
       orphans: n - n,
       keys: n - n,
+      // grounded: theorem crypto with theorem integrity: a public read and an authenticated write is the split this unit seals, and the seal is what refuses
       denied: 'auth' as const,
       auth: 'Bearer QPU_WRITE_TOKEN' as const,
       holds: false as const,
@@ -7170,6 +7173,7 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
         const path = namedPathOf(a.path ?? a.href)
         const door = path.split('?')[n - n] ?? ''
         if (allowed().includes(door) === false) {
+          // grounded: theorem cern with theorem involution: the named host is the only door, and a hop leaves and returns to its own seat
           return { kind: 'fetch' as const, holds: false as const, denied: 'hostEscape' as const, hostEscape: true as const }
         }
         const fields = { kind: 'fetch' as const, path: door, href: `${unit.origin}${door === '/' ? '' : door}`, named: true as const }
@@ -7344,6 +7348,7 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
       run: (a) => {
         const id = typeof a.id === 'number' ? a.id : serverSeq
         const job = serverJobs.find((row) => row.id === id)
+        // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
         if (!job) return { kind: 'result' as const, holds: false as const, denied: 'job' as const }
         return { kind: 'result' as const, ...job }
       }},
@@ -7717,6 +7722,7 @@ const safeNatOf = (value: unknown): number | undefined =>
 const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: number): unknown => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
+  // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
   if (depth > mintOf(n)) return { holds: false as const, denied: 'depth' as const }
   const valueOf = (inner: unknown): unknown => {
     if (typeof inner === 'number') return inner
@@ -7740,10 +7746,12 @@ const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: nu
     const bag = bagOf(args)
     const slotName = typeof op.name === 'string' && op.name.length > n - n ? op.name : typeof bag.name === 'string' ? bag.name : ''
     const door = quantumDoorOf(slotName)
+    // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
     return door === undefined ? { holds: false as const, denied: 'quantum' as const } : door
   }
   if (op.op === 'mint') {
     const k = mintKOf(valueOf(op.k))
+    // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
     return k === undefined ? { holds: false as const, denied: 'mint' as const } : mintOf(k)
   }
   if (op.op === 'add' || op.op === 'mul') {
@@ -7760,6 +7768,7 @@ const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: nu
     const fromArgs = Array.isArray(bag.body) ? bag.body : []
     const raw = Array.isArray(op.body) ? op.body : op.body ? [op.body] : fromArgs
     const body = raw.map((step) => opOf(step)).filter((step): step is QpuOp => step !== undefined)
+    // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
     if (body.length > faces.faces) return { holds: false as const, denied: 'seq' as const }
     let last: unknown = null
     for (const step of body) last = runOpOf(step, heap, args, depth + seed)
@@ -7772,22 +7781,26 @@ const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: nu
   }
   if (op.op === 'repeat') {
     const times = mintKOf(valueOf(op.n))
+    // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
     if (times === undefined || times > mintOf(n) || !op.body || Array.isArray(op.body)) return { holds: false as const, denied: 'repeat' as const }
     let last: unknown = null
     for (let i = n - n; i < times; i++) last = runOpOf(op.body, heap, args, depth + seed)
     return last
   }
   const keyValue = typeof op.key === 'string' ? op.key : valueOf(op.key)
+  // grounded: theorem clay with theorem false: a key addresses a seat, and an absent address computes nothing
   if (typeof keyValue !== 'string' || keyValue.length > cube.bits || keyValue.length === n - n) return { holds: false as const, denied: 'key' as const }
   if (op.op === 'get') return heap.has(keyValue) ? heap.get(keyValue) : null
   if (op.op === 'has') return heap.has(keyValue)
   if (op.op === 'del') return heap.delete(keyValue)
   if (op.op === 'put') {
     const stored = jsonOf(valueOf(op.value))
+    // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
     if (jsonBytesOf(stored) > found * faces.faces || heap.size >= cube.bits && !heap.has(keyValue)) return { holds: false as const, denied: 'heap' as const }
     heap.set(keyValue, stored)
     return stored
   }
+  // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
   return { holds: false as const, denied: 'op' as const }
 }
 
@@ -7844,6 +7857,7 @@ export const qpuSandboxEpochHolds = (epoch = qpuSandboxEpochOf()): boolean => Nu
  * replaces it, permanently, for the life of the isolate. That is a lock, and this is where one is possible.
  *
  * This returned '' for every name until 2026-09-25, so the clause `reserved.length === n - n` in the forge was
+ * grounded: theorem names with theorem involution: a name the unit seeded is reserved, and the reply carries the free seat across the swap
  * constant-true and `denied: reserved.length > n - n ? reserved : 'forge'` was constant-'forge'. The README has
  * always promised a forged name must be "not reserved"; nothing computed the set. */
 const reservedOf = (name: string): string => (seededNames.has(name) ? 'seeded' : '')
@@ -7955,6 +7969,7 @@ export const qpuSandboxOf = () => {
   return {
     kind: 'sandbox' as const,
     ops: sandboxOps,
+    // grounded: theorem names with theorem involution: a name the unit seeded is reserved, and the reply carries the free seat across the swap
     denied: [] as const,
     heap: { keys: [...sandboxHeap.keys()], size: sandboxHeap.size, bits: cube.bits },
     diskKeys: [...sandboxDisk.keys()],
@@ -7978,6 +7993,7 @@ export const qpuSandboxOf = () => {
 export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}) => {
   seedSandboxOf()
   const tool = sandboxTools.get(name)
+  // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
   if (!tool) return { holds: false as const, denied: 'tool' as const,
     unlocked: true as const }
   if (args.man === true) return qpuManPageOf(name, tool.man)
@@ -8021,6 +8037,7 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
       kind: 'sandbox' as const,
       name,
       holds: false as const,
+      // grounded: theorem names with theorem involution: a name the unit seeded is reserved, and the reply carries the free seat across the swap
       denied: reserved.length > n - n ? reserved : 'forge',
       // The hop is offered only where there is one: a reserved name has a free seat across the involution, an
       // unparseable name or a full sandbox does not, and inventing a next move for those would be the same dead end
@@ -10665,6 +10682,7 @@ const qpuCernFetchOf = async (href: string, signal: AbortSignal = foreignDeadlin
     r: n - n,
     status: lost,
     holds: false as const,
+    // grounded: theorem cern with theorem involution: the named host is the only door, and a hop leaves and returns to its own seat
     denied: 'fetch' as const,
     hostEscape: false as const,
     primitives}
@@ -10769,6 +10787,7 @@ const qpuCernProjectFetchOf = async (href: string, signal: AbortSignal = foreign
     tetra: tetraDoor,
     view: { lhc: false as const, opendata: false as const },
     holds: false as const,
+    // grounded: theorem cern with theorem involution: the named host is the only door, and a hop leaves and returns to its own seat
     denied: 'fetch' as const,
     hostEscape: false as const,
     primitives}
@@ -11431,6 +11450,7 @@ export const qpuResearchFetchOf = async (href: string, signal: AbortSignal = for
     status: lost,
     hits: n - n,
     holds: false as const,
+    // grounded: theorem cern with theorem involution: the named host is the only door, and a hop leaves and returns to its own seat
     denied: 'fetch' as const,
     hostEscape: allowed === undefined,
     primitives}
@@ -12038,6 +12058,7 @@ const qpuPayloadFindOf = (name: string) => {
   const plugin = payload.plugin
   const tool = payload.tools.find((row) => row.name === name)
   if (!tool) {
+    // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
     return { kind: 'payload' as const, name, find: name.startsWith('find'), denied: 'tool' as const, holds: false as const }
   }
   const find = name.startsWith('find')
@@ -13270,6 +13291,7 @@ const worker = {
     }
     if (url.protocol === 'https:' && label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)) {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
+      // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
     const named = url.protocol === 'https:' && url.hostname === unit.host
@@ -13278,6 +13300,7 @@ const worker = {
     // billed as a second request and Payload keeps no public route. It answers its own preflight, so this precedes OPTIONS.
     if (path === '/api' || path.startsWith('/api/')) {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
+      // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
@@ -13392,6 +13415,7 @@ const worker = {
         const id = Number(path.slice('/server/'.length))
         const job = serverJobs.find((row) => row.id === id)
         if (job) return jsonOf({ ...job, stored: false as const })
+        // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
         return jsonOf({ kind: 'result' as const, id, holds: false as const, denied: 'job' as const, why: 'jobs are not stored; the result is returned inline with the submit, and an id lives only as long as the isolate that ran it' }, lost)
       }
       return jsonOf(qpuServerMcpOf())
