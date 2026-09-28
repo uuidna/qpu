@@ -131,7 +131,8 @@ test('a one-way pair is a reading, not a lead — a queue that cannot empty is n
    * emptiness. The share that teach both ways is the only figure here that does not move when a name is
    * added, so it is the one a reader should see beside the hole. */
   assert.match(note, /50% both ways/, 'the share is reported, because the undecided count measures the vocabulary')
-  assert.match(note, /nobody has looked at/, 'and the hole is named as unlooked-at rather than as a gap in the work')
+  assert.match(note, /this corpus does not decide/, 'and the hole is named as what THIS corpus does not settle')
+  assert.equal(/nobody has looked/.test(note), false, 'never as a claim that the question is unstudied, which is a survey nobody ran')
 
   // A READING THAT DOES NOT HOLD IS a lead: the instrument disagrees with itself.
   const broken = teachingLeadsOf({ origin: 'o', school: { ...school, holds: false } })

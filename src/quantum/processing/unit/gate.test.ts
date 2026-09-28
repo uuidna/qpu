@@ -35,12 +35,18 @@ test('gate: the instrument drains the known overclaims and passes the bounded re
     'holds true. Quantum computer. SWAP. Toffoli. Reset.',
     'we prove all seven',
     'this encryption is unbreakable',
+    // A CLAIM ABOUT THE ABSENCE OF OTHER PEOPLE'S WORK. An empty cell in a corpus means this corpus does not
+    // decide it; it does not mean the question is unstudied, and saying so asserts a survey nobody ran.
+    'there are 282 combinations nobody has looked at',
+    'the pairing is unstudied',
   ]
   const negatives = [
     'holds true. Possible only in quantum. This host computes exact integer amplitudes; it is not a quantum computer. Entangle.',
     'holds true. Exact state-vector computation of the circuit. SWAP. Toffoli. Reset.',
     'measured, 0 of 7',
     'a counting register of two qubits resolves only a period that divides 4; every other run recovers nothing',
+    // and the honest form of the same sentence passes, which is what makes the drain a distinction
+    'there are 282 combinations this corpus does not decide',
   ]
   for (const p of positives) assert.equal(computes(p).binary, 0, `should drain: ${p}`)
   for (const n of negatives) assert.equal(computes(n).binary, 1, `should pass: ${n}`)

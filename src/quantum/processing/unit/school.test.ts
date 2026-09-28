@@ -290,7 +290,7 @@ test('the universal claim can come out TRUE, or asking it proves nothing', (t) =
   assert.equal(broken.counters.length, 1, 'and the contradicting pair is named rather than only counted')
 
   /* AN UNDECIDED PAIR IS NEITHER FOR NOR AGAINST. It fails the universal, because the universal is about all
-   * pairs, but it leaves `openToIt` true — nothing has contradicted the claim, nobody has looked. */
+   * pairs, but it leaves `openToIt` true — nothing has contradicted the claim, and this corpus does not decide it. */
   const unlooked = qpuNatureOf({ pairs: [] } as unknown as ReturnType<typeof qpuTeachingPairsOf>, qpuCrossOf([mix('a', 'b', true, 1900), mix('a', 'b', false, 1910), mix('c', 'd', true, 1900), mix('c', 'd', false, 1910)], true))
   assert.ok(unlooked.undecided > 0)
   assert.equal(unlooked.supported, false, 'pairs nobody has evidenced are not evidence for a universal')
