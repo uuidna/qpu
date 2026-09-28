@@ -2,7 +2,7 @@
   "kind": "debts-receipt",
   "counted": 5,
   "debts": {
-    "walls": 20,
+    "walls": 16,
     "lattice": 0,
     "refusals": 39,
     "dry": 0,
