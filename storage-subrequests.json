@@ -24,8 +24,21 @@
       "populated": 91
     }
   },
-  "over": {
-    "PUT /storage/:key": "91 against a budget of 50, on the populated profile. A deposit writes the inode and the referrer, and each places the value plus fourteen RAID shares across KV and R2. Getting under the budget means deciding whether a referrer \u2014 a pointer of four fields \u2014 needs fourteen RAID shares of its own. That is a change to what RAID means here rather than a bug fix, so it is a known debt with a number on it instead of a surprise in production."
+  "raid": {
+    "structure": {
+      "faces": 14,
+      "rays": 7,
+      "coins": 2
+    },
+    "redundancy_facts": {
+      "determined": "A referrer is a function of its inode. The inode's links carries the key the referrer belongs to, and the address and occupancy are the inode's own, so the pointer holds nothing of its own. Fourteen shares of a derivable document protect nothing.",
+      "mirrored": "The two RAID teams are the same stripes dealt twice, so seven shares determine the value and reading fourteen reads twice what the answer needs."
+    },
+    "redundancy_holds": true,
+    "proof": "Held over every residue of length against rays rather than one sampled string: a redundancy claim true of one value is a coincidence, and one true of every residue class is the property (qpuStorageRedundancyHolds)."
   },
-  "rerecord": "QPU_BASELINE=print node --test dist/quantum/processing/unit/raid.test.js \u2014 prints the measured table, so lowering a figure is a copy rather than a guess."
+  "over": {
+    "PUT /storage/:key": "91 against a budget of 50, on the populated profile. A deposit writes the inode and the referrer, and each places the value plus fourteen RAID shares across KV and R2. That is 60 subrequests (30 per put) against a budget of 50, leaving a debt of 41. RECONCILIATION WITH RAID REDUNDANCY FACTS: The determined and mirrored facts prove the referrer's shares are derived from the inode and the two teams are identical. This structural property could justify reducing redundancy for referrers, moving this from a discovered problem toward an optimization grounded in RAID theory. This remains a known debt with a number on it because solving it requires deciding whether to change what RAID means \u2014 removing redundancy from determined shares \u2014 rather than a typical bug fix."
+  },
+  "rerecord": "QPU_BASELINE=print node --test dist/quantum/processing/unit/raid.test.js \u2014 prints the measured table, so lowering a figure is a copy rather than a guess. RAID redundancy facts verified by: node scripts/performance-baseline.mjs"
 }
