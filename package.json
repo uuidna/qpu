@@ -85,6 +85,8 @@
     "leads": "node scripts/leads.mjs",
     "leads:test": "node --test scripts/leads.test.mjs",
     "outage": "node scripts/outage.mjs",
+    "pace": "node scripts/pace.mjs",
+    "pace:test": "node --test scripts/pace.test.mjs",
     "temporal": "node scripts/temporal.mjs",
     "temporal:test": "node --test scripts/temporal.test.mjs",
     "outage:test": "node --test scripts/outage.test.mjs",
