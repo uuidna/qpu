@@ -1,15 +1,13 @@
 {
   "kind": "walls-receipt",
-  "walls": 23,
+  "walls": 20,
   "unreadable": 0,
   "byFile": {
     "scripts/leads.mjs": 1,
     "scripts/mutate.mjs": 1,
     "scripts/outage.mjs": 1,
     "scripts/outage.test.mjs": 1,
-    "scripts/pace.mjs": 1,
-    "scripts/pace.test.mjs": 1,
-    "scripts/percall.mjs": 2,
+    "scripts/percall.mjs": 1,
     "scripts/post-push.mjs": 1,
     "scripts/verify-release.mjs": 1,
     "src/quantum/processing/unit/gate.ts": 1,

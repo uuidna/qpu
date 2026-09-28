@@ -15,17 +15,18 @@
  * EXACT, so it compares across releases and machines. Amplitude rows and mint doublings are counted, never
  * timed — a nanosecond figure would measure this laptop.
  *
- * ACROSS RELEASES, `--releases` checks each tag out into its own worktree, builds it and measures it. Slow —
- * a compile per tag — and not part of any gate, but it is how the claim below was checked and it is how
- * anyone can check it again. A detached worktree per tag, because two builds must never share a tree here.
+ * IT ONCE WALKED THE RELEASES and no longer does. A `--releases` mode checked every tag out into its own
+ * worktree, built it and measured it — a compile per tag, minutes of machine, in no gate, run exactly once.
+ * It answered its question and the answer is recorded where answers belong: per-call cost is FLAT, 1,076,192
+ * to 1,093,246 across four releases, +1.6%, and it FELL 3.1% at 0.1.4. That refuted a per-call regression I
+ * had committed on an inference from an absence. A tool kept for a question already answered is a long task
+ * with nothing behind it, and this repository has enough of those; the git history holds the numbers and
+ * anyone who needs them again can write twenty lines.
  *
- * WHAT IT FOUND, and it is the opposite of what I had committed: per-call cost is FLAT. Cold went 1,076,192
- * to 1,093,246 across four releases, +1.6%, and it FELL 3.1% at 0.1.4. The tests that walk the catalogue got
- * 16% dearer over the same span, so they are doing more per test — more calls, more cases — and the doors
- * are not dearer. I had asserted a per-call regression from the surface not having grown, which is an
- * inference from an absence, and this is the measurement that was missing when I made it.
+ * WHAT REMAINS IS A FLOOR. The warm total is ratcheted as a debt, so the memoisation that took it from
+ * 842,163 to 176,185 cannot quietly come undone — which is the only reason this file earns its place.
  *
- *   node scripts/percall.mjs [--json] [--releases]
+ *   node scripts/percall.mjs [--json]
  */
 import { pathToFileURL } from 'node:url'
 import { join } from 'node:path'
@@ -93,46 +94,6 @@ export const seriesOf = (releases) =>
   })
 
 const invoked = process.argv[1]?.endsWith('percall.mjs') === true
-if (invoked && process.argv.includes('--releases')) {
-  const { execFileSync } = await import('node:child_process')
-  const { mkdtempSync, rmSync, copyFileSync, symlinkSync } = await import('node:fs')
-  const { tmpdir } = await import('node:os')
-  const root = process.cwd()
-  const tags = execFileSync('git', ['tag', '-l', 'v*'], { encoding: 'utf8' })
-    .split('\n')
-    .filter(Boolean)
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-  const base = mkdtempSync(join(tmpdir(), 'qpu-percall-'))
-  const releases = []
-  for (const tag of tags) {
-    const where = join(base, tag)
-    try {
-      execFileSync('git', ['worktree', 'add', '-q', '--detach', where, tag], { cwd: root, stdio: 'ignore' })
-      symlinkSync(join(root, 'node_modules'), join(where, 'node_modules'))
-      copyFileSync(join(root, 'scripts', 'percall.mjs'), join(where, 'scripts', 'percall.mjs'))
-      execFileSync('npx', ['tsc', '-p', 'tsconfig.json'], { cwd: where, stdio: 'ignore' })
-      const out = execFileSync(process.execPath, ['scripts/percall.mjs', '--json'], { cwd: where, encoding: 'utf8', maxBuffer: 33554432 })
-      const read = JSON.parse(out)
-      releases.push({ tag, cold: read.cold, warm: read.warm, doors: read.doors })
-    } catch {
-      console.log(`  ${tag.padEnd(8)} could not be built and measured here`)
-    }
-  }
-  for (const tag of tags) execFileSync('git', ['worktree', 'remove', '--force', join(base, tag)], { cwd: root, stdio: 'ignore' }).toString?.()
-  rmSync(base, { force: true, recursive: true })
-
-  const series = seriesOf(releases)
-  console.log(`\nPER CALL ACROSS RELEASES — eight doors called once each, counted\n`)
-  console.log(`  ${'tag'.padEnd(8)} ${'cold'.padStart(10)} ${'warm'.padStart(10)}  change`)
-  for (const row of series)
-    console.log(`  ${row.tag.padEnd(8)} ${String(row.cold).padStart(10)} ${String(row.warm).padStart(10)}  ${row.delta === undefined ? '' : `${row.delta > 0 ? '+' : ''}${(row.delta / tenOf(1)).toFixed(1)}%`}`)
-  const first = series[0]
-  const last = series[series.length - 1]
-  if (first && last && first !== last)
-    console.log(`\n  ${first.tag} -> ${last.tag}: ${(((last.cold - first.cold) * 100) / first.cold).toFixed(1)}% on a cold call.`)
-  console.log(`  Compare with npm run pace, which measures what the TESTS cost. They are different questions.\n`)
-  process.exit(0)
-}
 
 if (invoked) {
   const dist = join(process.cwd(), 'dist', 'quantum', 'processing', 'unit', 'index.js')
@@ -158,6 +119,8 @@ if (invoked) {
     console.log(`  ${row.name.padEnd(14)} ${String(row.cold).padStart(10)} ${String(row.warm).padStart(10)}   ${share}`)
   }
   console.log(`\n  total        ${String(read.cold).padStart(10)} ${String(read.warm).padStart(10)}   ${(read.warmShare / 10).toFixed(1)}%`)
+  const { writeFileSync } = await import('node:fs')
+  writeFileSync(join(process.cwd(), 'percall-receipt.json'), `${JSON.stringify({ kind: 'percall-receipt', doors: read.doors, cold: read.cold, warm: read.warm }, null, 2)}\n`)
   console.log(`\n  Cold is what the first request of an isolate pays; warm is what every one after it pays.`)
   console.log(`  Counted, not timed, so this compares across releases and machines.\n`)
   process.exit(read.holds ? 0 : 1)

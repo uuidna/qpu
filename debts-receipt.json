@@ -1,10 +1,11 @@
 {
   "kind": "debts-receipt",
-  "total": 23,
+  "counted": 5,
   "debts": {
-    "walls": 23,
+    "walls": 20,
     "lattice": 0,
     "refusals": 0,
-    "dry": 0
+    "dry": 0,
+    "warm": 176185
   }
 }

@@ -21,14 +21,16 @@ test('a rise in any single debt fails, whatever the total did', () => {
     { name: 'walls', count: 24 },
     { name: 'refusals', count: 10 },
   ]
-  /* THE TOTAL FELL — 34 against a floor summing to 43 — AND ONE PART ROSE. Ratcheting the sum would call
-   * this progress and let walls grow behind refusals' improvement, which is the entire reason each debt is
-   * named separately rather than added up. */
+  /* ONE PART ROSE WHILE THE OTHER FELL. A sum would have called this progress — 34 against a floor of 43 —
+   * and let walls grow behind refusals' improvement. Each debt ratchets on its own, which is the entire
+   * reason they are named rather than added; and the sum is no longer reported at all, because four of
+   * these count things found in the source and one counts units of work a caller pays, and adding those
+   * gives a number of nothing. */
   const verdict = verdictOf(rows, { walls: 23, refusals: 20 })
   assert.equal(verdict.holds, false)
   assert.deepEqual(verdict.risen, ['walls 23 -> 24'])
   assert.deepEqual(verdict.fallen, ['refusals 20 -> 10'])
-  assert.equal(verdict.total, 34)
+  assert.equal(verdict.counted, 2, 'how many floors were judged, not what they add up to')
 })
 
 test('a fall is recorded and a steady floor holds', () => {

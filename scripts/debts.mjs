@@ -35,6 +35,11 @@ export const DEBTS = [
   { name: 'lattice', what: 'a bare number the lattice already names', run: 'lattice', pick: (r) => r.literals },
   { name: 'refusals', what: 'a refusal where two theorems do not meet', run: 'refusals', pick: (r) => r.notCross },
   { name: 'dry', what: 'a top-level test that computed nothing', run: undefined, pick: (r) => r.dry, from: 'test-receipt.json' },
+  /* WARM COST IS A DEBT LIKE THE OTHERS: work a caller pays on every request after the first. Memoising
+   * three doors took it from 842,163 to 176,185, and nothing stopped that quietly coming undone until it
+   * was ratcheted here. It is the only debt whose floor is not an aspiration of zero — a warm call costs
+   * something — which is why it is counted rather than demanded. */
+  { name: 'warm', what: 'work a caller pays on every request after the first', run: 'percall', pick: (r) => r.warm, from: 'percall-receipt.json' },
 ]
 
 /** The verdict, pure: a rise in any single debt fails, whatever the others did. */
@@ -42,7 +47,10 @@ export const verdictOf = (rows, floor) => {
   const risen = rows.filter((row) => floor[row.name] !== undefined && row.count > floor[row.name])
   const fallen = rows.filter((row) => floor[row.name] !== undefined && row.count < floor[row.name])
   return {
-    total: rows.reduce((sum, row) => sum + row.count, 0),
+    /* NOT A SUM. Four of these count things found in the source and one counts units of work a caller
+     * pays; adding them gave 176,205, a number of nothing. Each debt ratchets on its own — which was
+     * already true and is why the sum was never load-bearing — so it is reported as a list. */
+    counted: rows.length,
     risen: risen.map((row) => `${row.name} ${floor[row.name]} -> ${row.count}`),
     fallen: fallen.map((row) => `${row.name} ${floor[row.name]} -> ${row.count}`),
     /* A SUM THAT FELL WHILE A PART ROSE IS NOT PROGRESS. Ratcheting the total would let one debt grow
@@ -111,7 +119,7 @@ if (invoked) {
     console.log(`\n  ✗ a debt ROSE: ${verdict.risen.join(', ')}\n`)
     process.exit(1)
   }
-  writeFileSync(RECEIPT, `${JSON.stringify({ kind: 'debts-receipt', total: verdict.total, debts: Object.fromEntries(found.map((r) => [r.name, r.count])) }, null, 2)}\n`)
-  console.log(verdict.fallen.length > 0 ? `\n  ✓ ${verdict.fallen.join(', ')} — floor recorded\n` : `\n  ✓ ${verdict.total} in total, none risen\n`)
+  writeFileSync(RECEIPT, `${JSON.stringify({ kind: 'debts-receipt', counted: verdict.counted, debts: Object.fromEntries(found.map((r) => [r.name, r.count])) }, null, 2)}\n`)
+  console.log(verdict.fallen.length > 0 ? `\n  ✓ ${verdict.fallen.join(', ')} — floor recorded\n` : `\n  ✓ ${verdict.counted} floors, none risen\n`)
   process.exit(0)
 }
