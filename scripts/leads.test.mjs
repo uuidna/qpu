@@ -183,6 +183,18 @@ test('a door that needs a third party to hold is not self-sufficient, and says w
   assert.match(down[0].what, /did not answer \(503\)/)
   assert.equal(/does not hold/.test(down[0].what), false)
 
+  /* A DOOR THAT REFUSES ON PURPOSE IS WORKING, NOT BROKEN. storage_put without a key and storage_maintain
+   * without authorisation both answer `denied`, and filing those as open items is filing correct behaviour —
+   * the fault already removed from the teaching queue and from the deploy gate. */
+  const refused = doorLeadsOf({ origin: 'o', doors: [...sound, { name: 'storage_put', ok: true, holds: false, denied: 'key' }] })
+  assert.deepEqual(refused, [], 'a door that names its refusal meant it')
+  // AND THE ABSENCE: not holding with no reason given is still a lead, or the check would excuse everything
+  assert.equal(doorLeadsOf({ origin: 'o', doors: [{ name: 'quiet', ok: true, holds: false }] }).length, 1)
+
+  /* A STORE READING IS THE STORE'S STATE, not the door's soundness, and hostLeadsOf already carries it. */
+  const store = doorLeadsOf({ origin: 'o', doors: [{ name: 'storage_monitor', ok: true, holds: false, monitor: { missing: 1 } }] })
+  assert.deepEqual(store, [], 'the un-mirrored key is one fault and is filed once')
+
   // and no doors at all is a lead, not a clean sheet
   assert.match(doorLeadsOf({ origin: 'o', doors: [] })[0].what, /listed no sealed doors/)
 })

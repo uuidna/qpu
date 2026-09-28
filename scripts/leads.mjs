@@ -172,9 +172,19 @@ export const doorLeadsOf = ({ origin, doors }) => {
       leads.push({ source: `${origin}/mcp ${door.name}`, what: `${door.name} did not answer (${door.why ?? 'no reason given'})`, owes: 'the door served, or the catalogue that lists it corrected' })
       continue
     }
+    /* A DOOR THAT REFUSES ON PURPOSE IS WORKING. Sweeping all four catalogs turned storage_put, storage_del
+     * and storage_maintain into leads, and every one of them was refusing exactly as it should: the first two
+     * were called without a key and the third without authorisation. A gatherer that files correct behaviour
+     * as an open item is a gatherer nobody finishes reading, which is the fault already removed twice here —
+     * once from the teaching queue and once from the deploy gate. `denied` names the refusal, so it is the
+     * door telling us it meant it. */
+    if (door.denied !== undefined && door.denied !== false) continue
+    /* AND A STORE READING THAT FOUND SOMETHING is the store's state, not the door's soundness. hostLeadsOf
+     * already carries the un-mirrored key by name; filing it again from here would double a single fault. */
+    if (door.monitor !== undefined) continue
     if (door.holds !== true)
       leads.push({
-        source: `${origin}/mcp ${door.name}`,
+        source: `${origin} ${door.name}`,
         what: `${door.name} answers but does not hold when asked plainly, with nothing live requested`,
         owes: 'a door that computes its own answer — one that holds only when a third party replies is a proxy, not a unit',
       })
@@ -292,8 +302,20 @@ if (invoked) {
   const conceptRecid = (cff.match(/description:\s*All versions[\s\S]*?value:\s*10\.\d+\/zenodo\.(\d+)/) ?? [])[1]
   if (!conceptRecid) add('zenodo', true, 'CITATION.cff names no concept DOI', [])
   else {
-    const hits = (await get(`https://zenodo.org/api/records?q=conceptdoi:%2210.5281/zenodo.${conceptRecid}%22&size=100`, { accept: 'application/json' })).body?.hits?.hits
-    if (!hits) add('zenodo', false, 'zenodo would not answer — a refusal is not an answer about the archive')
+    /* SIZE 25, BECAUSE THAT IS THE CAP AND ZENODO SAYS SO. This asked for 100 and got a 400 whose body reads
+     * "Page size cannot be greater than 25. Please use authenticated requests to increase the limit to 100."
+     * That is a host fact, stated by the host, with its own remedy attached — and the gatherer reported it
+     * as "zenodo would not answer", so the archive has been UNREACHED on every
+     * run for as long as the line has existed, `settledOf` could never be true, and the one source that says
+     * whether a release was archived was quietly absent. A malformed request of ours is not a refusal of
+     * theirs, and the third state does not cover our own mistakes. */
+    const asked = await get(`https://zenodo.org/api/records?q=conceptdoi:%2210.5281/zenodo.${conceptRecid}%22&size=25&sort=mostrecent`, { accept: 'application/json' })
+    const hits = asked.body?.hits?.hits
+    if (!hits && asked.status >= 400 && asked.status < 500)
+      add('zenodo', true, `zenodo answered ${asked.status} — this gatherer asked wrongly`, [
+        { source: 'zenodo', what: `the archive query was refused with ${asked.status}, which is this tree's fault and not the archive's`, owes: 'a query zenodo accepts; unauthenticated page size is capped at 25' },
+      ])
+    else if (!hits) add('zenodo', false, `zenodo would not answer (${asked.status || asked.error}) — a refusal is not an answer about the archive`)
     else {
       const held = hits.map((h) => String(h.metadata?.version ?? '').replace(/^v/, ''))
       add('zenodo', true, `the archive holds ${held.join(', ') || 'no versioned record'}`, archiveLeadsOf({ version: pkg.version, held }))
@@ -308,29 +330,46 @@ if (invoked) {
    * teaches in one direction owes the other, and the door has been computing that owed direction all along
    * with nobody collecting it. */
   const origin = 'https://qpu.uuidna.com'
-  const callOf = async (name, args = {}) => {
-    const res = await get(`${origin}/mcp`, {
+  const callOf = async (name, catalog = '/mcp', args = {}) => {
+    const res = await get(`${origin}${catalog}`, {
       accept: 'application/json',
       method: 'POST',
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
     })
     const shown = res.body?.result?.structuredContent ?? res.body?.result
-    return { name, ok: res.ok === true && shown !== undefined, holds: shown?.holds, why: res.ok ? 'no structured result' : `${res.status || res.error}`, shown }
+    return {
+      name,
+      ok: res.ok === true && shown !== undefined,
+      holds: shown?.holds,
+      /** The door's own word that it refused on purpose, and the store reading if it carried one. */
+      denied: shown?.denied,
+      monitor: shown?.monitor ?? (shown?.kind === 'monitor' ? shown : undefined),
+      why: res.ok ? 'no structured result' : `${res.status || res.error}`,
+      shown,
+    }
   }
-  const listed = await get(`${origin}/mcp`, {
-    accept: 'application/json',
-    method: 'POST',
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
-  })
-  if (!listed.ok) add(`mcp:${origin}`, false, `tools/list answered ${listed.status || listed.error}`)
-  else {
+  /* EVERY CATALOG, NOT JUST /mcp. This host serves four — /mcp, /storage, /network and /server, forty doors
+   * between them — and the gatherer asked only the first. Sweeping the other three by hand found the answer
+   * in one go, which is the definition of a gap that should not need a hand. */
+  let school
+  for (const catalog of ['/mcp', '/storage', '/network', '/server']) {
+    const listed = await get(`${origin}${catalog}`, { accept: 'application/json', method: 'POST', body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) })
+    if (!listed.ok) {
+      add(`mcp:${origin}${catalog}`, false, `tools/list answered ${listed.status || listed.error}`)
+      continue
+    }
     const names = (listed.body?.result?.tools ?? []).map((row) => row.name)
     const doors = []
-    for (const name of names) doors.push(await callOf(name))
-    add(`mcp:${origin}`, true, `${doors.filter((d) => d.holds === true).length}/${doors.length} sealed door(s) hold when asked plainly`, doorLeadsOf({ origin, doors }))
-    const school = doors.find((door) => door.name === 'qpu_train')?.shown?.school
-    add(`teaching:${origin}`, true, teachingNoteOf({ school }), teachingLeadsOf({ origin, school }))
+    for (const name of names) doors.push(await callOf(name, catalog, name === 'net_fetch' ? { path: '/' } : {}))
+    add(
+      `mcp:${origin}${catalog}`,
+      true,
+      `${doors.filter((d) => d.holds === true).length}/${doors.length} door(s) hold when asked plainly`,
+      doorLeadsOf({ origin: `${origin}${catalog}`, doors }),
+    )
+    school = school ?? doors.find((door) => door.name === 'qpu_train')?.shown?.school
   }
+  add(`teaching:${origin}`, true, teachingNoteOf({ school }), teachingLeadsOf({ origin, school }))
 
   /* ── the host, which is the only source that can say the deployment is well ─────────────────────────────────── */
   const storage = await get(`${origin}/storage`)
