@@ -228,7 +228,8 @@ if (invoked) {
    *
    * The fold's radix and width WERE real and are fixed — index.ts fell from 22 to 10 — and what remains
    * there is physics, anchors and device facts. So src is reported when asked and not swept, because the
-   * finder cannot yet tell a quantity from a coincidence and a sweep would do damage a test would not catch.
+   * finder cannot yet tell a quantity from a coincidence — a declared boundary of matching on value alone,
+   * not a claim that the distinction is undecidable — and a sweep would do damage no test would catch.
    *
    * Not the tests either: a fixture's round number is data chosen to be legible, and renaming it would lend
    * it a significance it does not have. And not this file, which quotes the numbers it is about.

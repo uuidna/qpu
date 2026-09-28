@@ -1,9 +1,8 @@
 {
   "kind": "walls-receipt",
-  "walls": 24,
+  "walls": 23,
   "unreadable": 0,
   "byFile": {
-    "scripts/lattice.mjs": 1,
     "scripts/leads.mjs": 1,
     "scripts/mutate.mjs": 1,
     "scripts/outage.mjs": 1,
