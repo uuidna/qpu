@@ -2,15 +2,15 @@
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
   "tests": 184,
-  "pass": 176,
-  "fail": 8,
-  "dry": 1,
-  "circuit": 125,
+  "pass": 179,
+  "fail": 5,
+  "dry": 0,
+  "circuit": 126,
   "mintOnly": 28,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "d72d66e7c1f4f83f",
+  "receipt": "d9b879ccddb63589",
   "computed": 180,
   "readRows": 4,
   "readingsOf": "test-readings.json",
@@ -62,7 +62,7 @@
         "count": 3,
         "folds": [
           "\"cae925dbd7a96875\"",
-          "\"99b7bb71d390aed5\""
+          "\"d4b1490f49bd1a97\""
         ]
       },
       "foreign": 0
@@ -3748,17 +3748,44 @@
       "name": "index.lean is sorry-free, axiom-free, decide-free, and theorem shor carries no answer",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": false,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
+      "pass": true,
+      "computations": 31,
+      "kinds": {
+        "x": 8,
+        "cnot": 16,
+        "toffoli": 2,
+        "h": 2,
+        "measure": 1,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 29,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "3a28eb693353724f",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 1
+        }
+      ],
       "mint": {
-        "calls": 0,
-        "chain": "cbf29ce484222325"
+        "calls": 637,
+        "chain": "8dbacd74bac0e862"
       },
       "served": {
         "count": 0,
@@ -4403,11 +4430,11 @@
           "\"f3207efbaba72e62\"",
           "\"ed73e177fb63ad32\"",
           "\"5040d89f9db56ef8\"",
-          "\"f24860132d1feaf6\"",
+          "\"f6e6d1c4279b0ff2\"",
           "\"41ed004077b05c5a\"",
           "\"74a5de1cea9cd3ba\"",
           "\"72b086b783a4431e\"",
-          "\"4d28d8556cd27f56\"",
+          "\"8e5b7a78bfd770ac\"",
           "\"1072a499599e5648\"",
           "\"347c0e5dabe2a14e\"",
           "\"4835b40252959370\"",
@@ -4656,7 +4683,7 @@
           "\"9757f65c4dea3a50\"",
           "\"58b38d7e20f48a74\"",
           "\"74a5de1cea9cd3ba\"",
-          "\"f24860132d1feaf6\"",
+          "\"f6e6d1c4279b0ff2\"",
           "\"833c65e115042b04\"",
           "\"d31c0458e913d7ee\""
         ]
@@ -4713,9 +4740,9 @@
         "folds": [
           "\"53c1ecacc3318cc7\"",
           "\"ed73e177fb63ad32\"",
-          "\"f24860132d1feaf6\"",
+          "\"f6e6d1c4279b0ff2\"",
           "\"74a5de1cea9cd3ba\"",
-          "\"4d28d8556cd27f56\"",
+          "\"8e5b7a78bfd770ac\"",
           "\"347c0e5dabe2a14e\"",
           "\"84d49291a8c4727c\"",
           "\"d1f09aee65966614\"",
@@ -4779,7 +4806,7 @@
           "\"cae925dbd7a96875\"",
           "\"a2ab19b3473d26e9\"",
           "\"7603e2cfade1b0c6\"",
-          "\"99b7bb71d390aed5\"",
+          "\"d4b1490f49bd1a97\"",
           "\"53c1ecacc3318cc7\"",
           "\"f44022c32d1c6af8\""
         ]
@@ -4886,7 +4913,7 @@
       "name": "every exported predicate is evaluated: asked with nothing, supplied a reading, or named here",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": false,
+      "pass": true,
       "computations": 286829,
       "kinds": {
         "h": 103597,
@@ -6735,7 +6762,7 @@
       "served": {
         "count": 1,
         "folds": [
-          "\"19a8a280a83e4c02\""
+          "\"f3ca68ea393b74d4\""
         ]
       },
       "foreign": 0
@@ -7035,7 +7062,7 @@
       "name": "the standards the unit serves are the receipts the gates wrote, not a stale bake",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": false,
+      "pass": true,
       "computations": 5874,
       "kinds": {
         "x": 1225,
