@@ -63,14 +63,35 @@ export const sameTestsOf = (before, after) => {
   const shared = (after.rows ?? []).filter((row) => prior.has(row.name))
   const was = shared.reduce((sum, row) => sum + (prior.get(row.name) ?? 0), 0)
   const now = shared.reduce((sum, row) => sum + workOf(row), 0)
+  /* NAMED, NOT JUST COUNTED. "+16.3%" is a true sentence nobody can act on — the same dead end this tree
+   * refuses when it refuses `missing: 1` without the key. The movers are sorted by absolute change because a
+   * test that doubled from nothing matters less than one that added six hundred thousand. */
+  const movers = shared
+    .map((row) => ({ name: row.name, was: prior.get(row.name) ?? 0, now: workOf(row), change: workOf(row) - (prior.get(row.name) ?? 0) }))
+    .filter((row) => row.change !== 0)
+    .sort((a, b) => Math.abs(b.change) - Math.abs(a.change))
+  const rose = movers.filter((row) => row.change > 0)
   return {
     shared: shared.length,
     only: (after.rows ?? []).length - shared.length,
     was,
     now,
     delta: was > 0 ? Math.round(((now - was) * 1000) / was) : undefined,
+    movers,
+    dearer: rose.length,
+    cheaper: movers.length - rose.length,
+    unchanged: shared.length - movers.length,
+    /** What share of the whole increase the worst few account for — where a reader should look, or not. */
+    concentration: (() => {
+      const total = rose.reduce((sum, row) => sum + row.change, 0)
+      const top = rose.slice(0, mintOf3()).reduce((sum, row) => sum + row.change, 0)
+      return total > 0 ? Math.round((top * 1000) / total) : 0
+    })(),
   }
 }
+
+/** Eight, the cube's vertices — how many movers are worth printing before a list stops being a finding. */
+const mintOf3 = () => 8
 
 /** The change from one release to the next, in thousandths, negative when the work per test fell. */
 export const paceOf = (releases) =>
@@ -150,7 +171,13 @@ if (invoked) {
     console.log(`\n  THE SAME TESTS, ${first} -> ${last}`)
     console.log(`    ${same.shared} test(s) present in both, ${same.only} added since`)
     console.log(`    work ${same.was} -> ${same.now}${same.delta === undefined ? '' : `  ${same.delta > 0 ? '+' : ''}${(same.delta / 10).toFixed(1)}%`}`)
-    console.log(`    this is the figure adding cheap tests cannot move`)
+    console.log(`    ${same.dearer} dearer, ${same.cheaper} cheaper, ${same.unchanged} unchanged`)
+    if (same.movers.length > 0) {
+      console.log(`\n    the movers, largest first — the top eight are ${(same.concentration / 10).toFixed(0)}% of all the increase:`)
+      for (const row of same.movers.slice(0, 8))
+        console.log(`      ${row.change > 0 ? '+' : ''}${String(row.change).padStart(9)}  ${String(row.was).padStart(8)} -> ${String(row.now).padEnd(9)} ${row.name.slice(0, 52)}`)
+    }
+    console.log(`\n    this is the figure adding cheap tests cannot move`)
   }
 
   console.log(`\n  ${verdict.fell} of ${verdict.compared} step(s) fell; work per test went ${verdict.first} -> ${verdict.last}.`)

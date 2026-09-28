@@ -56,6 +56,34 @@ test('the average can fall while the same tests get dearer, and the report must 
   assert.equal(same.now, 3000)
   assert.equal(same.delta, 500, 'fifty per cent dearer, in thousandths')
   assert.ok(same.delta > 0 && series[1].delta < 0, 'the two measures disagree, and both are reported')
+
+  /* NAMED, NOT JUST COUNTED. "+50%" is a true sentence nobody can act on, which is the dead end this tree
+   * refuses when it refuses `missing: 1` without the key. */
+  assert.equal(same.dearer, 2)
+  assert.equal(same.cheaper, 0)
+  assert.equal(same.unchanged, 0)
+  assert.deepEqual(same.movers.map((r) => r.name), ['kept', 'also kept'])
+  assert.equal(same.movers[0].change, 500)
+  assert.equal(same.concentration, 1000, 'two movers, so the top eight are all of the increase')
+})
+
+test('a test that got cheaper is a mover too, and does not count toward the concentration', () => {
+  const before = receipt(2, [row('up', 100), row('down', 1000)])
+  const after = receipt(2, [row('up', 900), row('down', 500)])
+  const same = sameTestsOf(before, after)
+  assert.equal(same.dearer, 1)
+  assert.equal(same.cheaper, 1)
+  // SORTED BY ABSOLUTE CHANGE, because a test that doubled from nothing matters less than one that fell hard
+  assert.deepEqual(same.movers.map((r) => r.name), ['up', 'down'])
+  assert.equal(same.concentration, 1000, 'concentration is a share of the INCREASE, and the fall is not part of it')
+  // and the net is what the headline reports: +800 and -500 is +300 on 1100
+  assert.equal(same.now - same.was, 300)
+
+  // nothing moved at all is not a division by zero
+  const flat = sameTestsOf(before, before)
+  assert.deepEqual(flat.movers, [])
+  assert.equal(flat.concentration, 0)
+  assert.equal(flat.unchanged, 2)
 })
 
 test('a renamed test leaves the intersection rather than being guessed at', () => {
