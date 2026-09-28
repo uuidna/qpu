@@ -7762,6 +7762,20 @@ const opRunOf = (op: (typeof sandboxCore)[number]): QpuOp => {
  * a slot or a host shim added to seedSandboxOf is reserved on the day it is added. */
 const seededNames = new Set<string>()
 
+/**
+ * THE SANDBOX'S EPOCH, so a memoised answer cannot outlive the sandbox it described.
+ *
+ * qpu_train, qpu_improve and qpu_compete each carry the sandbox, and qpu_forge writes to it. Caching those
+ * three on their arguments alone would serve the shape of the sandbox as it was before a forge — a stale
+ * answer that still holds, which is the worst kind. The epoch advances on every write and rides in the memo
+ * key, so a forge does not invalidate anything: it simply makes the old keys unreachable and the new ones
+ * miss. That is content-addressing rather than cache invalidation, which this tree prefers everywhere else.
+ */
+let sandboxEpoch = 0
+export const qpuSandboxEpochOf = (): number => sandboxEpoch
+/** It only ever rises, and it starts at the ground state — a counter that could fall would alias two sandboxes. */
+export const qpuSandboxEpochHolds = (epoch = qpuSandboxEpochOf()): boolean => Number.isSafeInteger(epoch) && epoch >= 0
+
 /** RESERVED NAMES, READ FROM THE ONE MAP A FORGE CAN ACTUALLY OVERWRITE. Returns why a name is refused, or the empty
  * string when it is free; the caller reports it as `denied`.
  *
@@ -7972,6 +7986,7 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
     description,
     run,
     man: qpuManOf(name, description, `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`, `${unit.origin}/mcp`, ['qpu_forge', 'qpu_train'])}
+  sandboxEpoch += seed
   sandboxTools.set(name, forged)
   return {
     kind: 'sandbox' as const,
@@ -12967,8 +12982,31 @@ const servedOf = (key: string, build: () => unknown): Served => {
 /** Pure tools: the four readers and the eight cybersecurity tools reply the same to the same arguments for the life of
  * the isolate. train, improve and compete climb an occupancy that moves with each call, and forge seats a sandbox;
  * those are never served from the memo. */
-const pureTools = new Set<string>(['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_prove', ...cryptoToolNames])
-const pureArgs = (args: Record<string, unknown>): boolean => Object.keys(args).every((k) => k === 'man' || k === 'n' || k === 'a')
+/**
+ * THE DOORS WHOSE ANSWER IS A FUNCTION OF THEIR ARGUMENTS, and therefore may be served from the memo.
+ *
+ * Measured with `npm run percall`: four doors memoised to a floor of 5,896 and four paid in full on every
+ * call, qpu_improve at 487,465 — a standing per-request cost that nothing was looking at because the
+ * receipts only aggregate per test. Three of those four are pure and are added here.
+ *
+ * QPU_FORGE IS NOT, AND MUST NOT BE. It writes a name into the sandbox; that is the whole point of it, and a
+ * forge served from a memo would return a forge that did not happen. It stays out, and the epoch it advances
+ * is what keeps the other three honest.
+ *
+ * AND NEITHER IS QPU_PROVE, WHICH WAS IN THIS SET FROM THE BEGINNING. It forges on every call — the epoch
+ * advances each time it is asked — so a second identical request was being answered from the memo without
+ * the forge happening. Two callers sending the same bytes got different effects, and the cached body
+ * described a sandbox that the next forge would make wrong. Nothing noticed because the memo hid the
+ * difference, and it only surfaced when the epoch entered the key and prove stopped hitting its own cache.
+ * Correctness over the cache: it pays in full, and what it pays is now visible.
+ *
+ * THE ARGUMENT ALLOWLIST IS THE SAFETY, not the tool list. `live` and `sequence` are absent from it, so a
+ * call that reaches opendata.cern.ch can never be memoised however pure its door is — a cached reading of
+ * somebody else's host is a lie with a timestamp. `team` is added because qpu_compete takes one and the
+ * answer is a function of it.
+ */
+const pureTools = new Set<string>(['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_improve', 'qpu_compete', ...cryptoToolNames])
+const pureArgs = (args: Record<string, unknown>): boolean => Object.keys(args).every((k) => k === 'man' || k === 'n' || k === 'a' || k === 'team')
 export const qpuServedMemoOf = () => ({ entries: servedMemo.size, cap: servedCap, served: SERVED.length, integrity: { ...integrityMemo } })
 export const qpuServedMemoHolds = (m = qpuServedMemoOf()): boolean => m.entries <= m.cap && m.served >= n - n && (m.integrity.checked ? m.integrity.holds : true)
 /** Every served row names a memo key and carries a quoted 16-hex fold — the ETag of the bytes served. */
@@ -13090,7 +13128,8 @@ const worker = {
           const name = typeof body.params?.name === 'string' ? body.params.name : ''
           const args = body.params?.arguments && typeof body.params.arguments === 'object' && !Array.isArray(body.params.arguments) ? (body.params.arguments as Record<string, unknown>) : {}
           if (pureTools.has(name) && pureArgs(args)) {
-            const key = `call:${name}:${JSON.stringify(args)}`
+            // the epoch rides in the key: a forge makes every earlier key unreachable rather than stale
+            const key = `call:${name}:${sandboxEpoch}:${JSON.stringify(args)}`
             const hit = servedMemo.get(key)
             if (hit) {
               SERVED.push({ key, fold: hit.etag })

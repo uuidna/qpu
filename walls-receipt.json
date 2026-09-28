@@ -1,0 +1,24 @@
+{
+  "kind": "walls-receipt",
+  "walls": 23,
+  "unreadable": 0,
+  "byFile": {
+    "scripts/leads.mjs": 1,
+    "scripts/mutate.mjs": 1,
+    "scripts/outage.mjs": 1,
+    "scripts/outage.test.mjs": 1,
+    "scripts/pace.mjs": 1,
+    "scripts/pace.test.mjs": 1,
+    "scripts/percall.mjs": 2,
+    "scripts/post-push.mjs": 1,
+    "scripts/verify-release.mjs": 1,
+    "src/quantum/processing/unit/gate.ts": 1,
+    "src/quantum/processing/unit/index.ts": 6,
+    "src/quantum/processing/unit/lean.test.ts": 1,
+    "src/quantum/processing/unit/publish.ts": 1,
+    "src/quantum/processing/unit/raid.test.ts": 1,
+    "src/quantum/processing/unit/receipt.ts": 1,
+    "src/quantum/processing/unit/receipted.ts": 1,
+    "src/quantum/processing/unit/school.test.ts": 1
+  }
+}

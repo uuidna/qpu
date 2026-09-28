@@ -94,10 +94,24 @@ jobs:
       # requires test-receipt.json to come back byte-identical from all of them plus the network as it is. Three of
       # those four shapes were live defects the first time they were run.
       # It runs AFTER the proof step, for the reason the mutation step does: it rewrites test-receipt.json.
-      - name: Outage — the verdict itself, proved able to fail
-        run: npm run outage:test
+      # EVERY scripts/ TEST, BY GLOB — and the hand list this replaces is the reason. This step named ONE test file,
+      # `outage:test`, so the four other scripts/*.test.mjs suites ran in no chain at all: leads:test existed only
+      # inside `npm run ci`, which no workflow invokes, and pace/percall/temporal were reachable from nothing. All
+      # five pass; they were simply never asked, which is the failure mode a green board cannot show. The glob is
+      # node's own documented form for selecting test files, so a suite added tomorrow is run the day it exists
+      # (a bare directory argument is NOT that form on this runtime — it is loaded as a module and fails).
+      - name: Guards — every scripts/ suite, discovered rather than listed
+        run: npm run test:scripts
       - name: Outage — the committed proof does not move for a third party's weather
         run: npm run outage
+      # A LIMIT ASSERTED WITHOUT A CAUSE is a choice wearing the costume of a limit: nobody re-examines it, so the
+      # work behind it never gets done. This reads every comment in the package that says something cannot be done
+      # and clears only the ones that name why. A RISE fails; a fall rewrites the receipt, and the proof step turns
+      # that into a diff that has to be committed deliberately. Ported from the sibling repository with the two
+      # corrections it paid for: unreadable is never folded into clean, and the keyword list admits the very cure
+      # the finding prints.
+      - name: Walls — no new limit is asserted without naming its cause
+        run: npm run walls
 
       - name: Deploy to Cloudflare (only when called with deploy and the token exists)
         id: deploy

@@ -1,6 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
-import worker from './index.js'
+import worker, { qpuSandboxEpochHolds, qpuSandboxEpochOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -160,4 +160,48 @@ test('sandbox via mcp', async () => {
   assert.equal(heap.value, 8)
   assert.equal(disk.value, 8)
   assert.equal(parent.value, 1)
+})
+
+/**
+ * A MEMOISED ANSWER MAY NOT OUTLIVE THE SANDBOX IT DESCRIBED.
+ *
+ * qpu_train, qpu_improve and qpu_compete each carry the sandbox and are now served from the memo, which is
+ * worth 79% of a warm call. qpu_forge writes to that sandbox. Keyed on arguments alone, a forge would leave
+ * three cached answers describing a sandbox that no longer exists — stale, and still claiming to hold.
+ *
+ * The epoch rides in the key, so a forge does not invalidate anything: it makes the old keys unreachable.
+ * This drives the condition — forge between two identical calls and the second must see the new sandbox.
+ */
+test('a forge makes the memoised doors answer again, rather than answering from before it', async () => {
+  const ask = async (name: string, args: Record<string, unknown> = {}) => {
+    const res = await worker.fetch(
+      new Request(`https://${host}/mcp`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
+      }),
+      env,
+    )
+    const body = (await res.json()) as { result?: { structuredContent?: { sandbox?: { tools?: number } }; sandbox?: { tools?: number } } }
+    return body.result?.structuredContent ?? body.result
+  }
+
+  const epochBefore = qpuSandboxEpochOf()
+  const first = (await ask('qpu_train')) as { sandbox?: { tools?: number } }
+  const cached = (await ask('qpu_train')) as { sandbox?: { tools?: number } }
+  assert.equal(cached?.sandbox?.tools, first?.sandbox?.tools, 'the same sandbox, served from the memo')
+
+  await ask('qpu_forge', { name: 'epoch_probe', run: { op: 'lit', value: true } })
+  assert.ok(qpuSandboxEpochOf() > epochBefore, 'a forge advances the epoch, or nothing below can work')
+
+  const after = (await ask('qpu_train')) as { sandbox?: { tools?: number } }
+  assert.notEqual(
+    after?.sandbox?.tools,
+    first?.sandbox?.tools,
+    'and the door answers the sandbox as it now is — keyed on arguments alone this would still be the old count',
+  )
+
+  // THE EPOCH ONLY RISES. A counter that could fall would let two different sandboxes share a key.
+  assert.equal(qpuSandboxEpochHolds(), true)
+  assert.ok(qpuSandboxEpochOf() >= epochBefore)
 })
