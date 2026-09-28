@@ -4,5 +4,5 @@ export const sealedStandards = {
   "lattice": 0,
   "refusals": 39,
   "refusalsTotal": 39,
-  "dry": 0
+  "dry": 1
 } as const

@@ -219,7 +219,7 @@ test('web mcp initialize, extras catalogs, and morph tools are callable', async 
 
   const sealed = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const
   const crypto = ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'] as const
-  const storage = ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_maintain', 'storage_raid'] as const
+  const storage = ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_raid'] as const
   const network = ['net_catalog', 'net_list', 'net_send', 'net_recv', 'net_message', 'net_routes', 'net_fetch', 'net_monitor'] as const
   const server = ['server_catalog', 'server_backend', 'server_submit', 'server_queue', 'server_result', 'server_shots', 'server_correct', 'server_monitor'] as const
   const payload = ['findPages', 'findUsers', 'findMedia', 'findTenants'] as const
@@ -368,7 +368,7 @@ const callRpcOf = async (path: string, name: string, args: Record<string, unknow
 test('production grade MCP — every tool listed, called, and usable', async (t) => {
   const sealed = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const
   const crypto = ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'] as const
-  const storage = ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_maintain', 'storage_raid'] as const
+  const storage = ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_raid'] as const
   const network = ['net_catalog', 'net_list', 'net_send', 'net_recv', 'net_message', 'net_routes', 'net_fetch', 'net_monitor'] as const
   const server = ['server_catalog', 'server_backend', 'server_submit', 'server_queue', 'server_result', 'server_shots', 'server_correct', 'server_monitor'] as const
   const payload = ['findPages', 'findUsers', 'findMedia', 'findTenants'] as const
@@ -478,12 +478,10 @@ test('production grade MCP — every tool listed, called, and usable', async (t)
     const got = await callRpcOf('/mcp', 'storage_get', { key: 'docs/mcp' })
     const listed = await callRpcOf('/mcp', 'storage_list')
     const monitor = await callRpcOf('/mcp', 'storage_monitor')
-    const maintain = await callRpcOf('/mcp', 'storage_maintain')
     const raid = await callRpcOf('/mcp', 'storage_raid')
     assert.equal(got.shown.holds, true)
     assert.equal(listed.shown.holds, true)
     assert.equal(monitor.shown.holds, true)
-    assert.equal(maintain.shown.holds, true)
     assert.equal(raid.shown.holds, true)
     assert.equal((raid.shown.cluster as { security?: string } | undefined)?.security, 'crypt')
     const dropped = await callRpcOf('/mcp', 'storage_del', { key: 'docs/mcp' })

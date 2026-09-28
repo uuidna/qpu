@@ -2,15 +2,15 @@
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
   "tests": 184,
-  "pass": 174,
-  "fail": 10,
+  "pass": 176,
+  "fail": 8,
   "dry": 1,
   "circuit": 125,
   "mintOnly": 28,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "daeeecbfe669ae67",
+  "receipt": "d72d66e7c1f4f83f",
   "computed": 180,
   "readRows": 4,
   "readingsOf": "test-readings.json",
@@ -62,7 +62,7 @@
         "count": 3,
         "folds": [
           "\"cae925dbd7a96875\"",
-          "\"542b9d1b7b81d7cd\""
+          "\"99b7bb71d390aed5\""
         ]
       },
       "foreign": 0
@@ -3601,46 +3601,24 @@
       "name": "the embedded Lean source is the file on disk, byte for byte, and GET serves it as text",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": false,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 0,
-        "chain": "cbf29ce484222325"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "the lean dataset folds its source and every served theorem is in it verbatim",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": false,
-      "computations": 177,
+      "pass": true,
+      "computations": 2705,
       "kinds": {
-        "x": 41,
-        "cnot": 80,
-        "toffoli": 8,
-        "h": 40,
-        "measure": 4,
-        "cmodexp": 2,
-        "xx": 2
+        "x": 590,
+        "cnot": 1136,
+        "toffoli": 98,
+        "h": 802,
+        "measure": 49,
+        "cmodexp": 15,
+        "xx": 15
       },
       "dims": {
-        "8": 173,
-        "512": 4
+        "8": 2675,
+        "512": 30
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "adec3af7d6becd26",
+      "receipt": "d8e9a59c5dd4a2fb",
       "states": [
         {
           "name": "measure",
@@ -3655,12 +3633,61 @@
             "0",
             "0"
           ],
-          "rows": 4
+          "rows": 49
         }
       ],
       "mint": {
-        "calls": 3653,
-        "chain": "ea3211168a1fa886"
+        "calls": 56304,
+        "chain": "d099383b4900add9"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the lean dataset folds its source and every served theorem is in it verbatim",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 146,
+      "kinds": {
+        "x": 33,
+        "cnot": 64,
+        "toffoli": 6,
+        "h": 38,
+        "measure": 3,
+        "cmodexp": 1,
+        "xx": 1
+      },
+      "dims": {
+        "8": 144,
+        "512": 2
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "bddfc462469adf0a",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 3
+        }
+      ],
+      "mint": {
+        "calls": 2788,
+        "chain": "0ae01fefa5cafd60"
       },
       "served": {
         "count": 0,
@@ -3721,44 +3748,17 @@
       "name": "index.lean is sorry-free, axiom-free, decide-free, and theorem shor carries no answer",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": true,
-      "computations": 31,
-      "kinds": {
-        "x": 8,
-        "cnot": 16,
-        "toffoli": 2,
-        "h": 2,
-        "measure": 1,
-        "cmodexp": 1,
-        "xx": 1
-      },
-      "dims": {
-        "8": 29,
-        "512": 2
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "3a28eb693353724f",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 1
-        }
-      ],
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 637,
-        "chain": "8dbacd74bac0e862"
+        "calls": 0,
+        "chain": "cbf29ce484222325"
       },
       "served": {
         "count": 0,
@@ -3979,27 +3979,27 @@
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": false,
-      "computations": 138678,
+      "computations": 141014,
       "kinds": {
-        "x": 29190,
-        "cnot": 55884,
-        "toffoli": 4368,
-        "h": 46050,
-        "measure": 2184,
-        "cmodexp": 492,
-        "xx": 492,
+        "x": 29718,
+        "cnot": 56908,
+        "toffoli": 4464,
+        "h": 46658,
+        "measure": 2232,
+        "cmodexp": 508,
+        "xx": 508,
         "planes": 18
       },
       "dims": {
-        "8": 137550,
+        "8": 139854,
         "64": 10,
         "128": 144,
-        "512": 964,
+        "512": 996,
         "2^64": 10
       },
       "dim": "2^64",
       "qubits": 64,
-      "receipt": "b4e2cc44691af6a1",
+      "receipt": "c458a1086dfb2491",
       "states": [
         {
           "name": "measure",
@@ -4014,12 +4014,12 @@
             "0",
             "0"
           ],
-          "rows": 2184
+          "rows": 2232
         }
       ],
       "mint": {
-        "calls": 2715532,
-        "chain": "4d1ad565ed18229c"
+        "calls": 2760689,
+        "chain": "711e34b9a1e3f150"
       },
       "served": {
         "count": 2,
@@ -4245,7 +4245,7 @@
       "name": "extras catalogs list eight and run every tool",
       "file": "dist/quantum/processing/unit/mcp.test.js",
       "nesting": 1,
-      "pass": false,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "dims": {},
@@ -4267,7 +4267,7 @@
       "name": "storage RAID lifecycle via MCP",
       "file": "dist/quantum/processing/unit/mcp.test.js",
       "nesting": 1,
-      "pass": false,
+      "pass": true,
       "computations": 0,
       "kinds": {},
       "dims": {},
@@ -4355,26 +4355,26 @@
       "name": "production grade MCP — every tool listed, called, and usable",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": false,
-      "computations": 65715,
+      "pass": true,
+      "computations": 104556,
       "kinds": {
-        "x": 14369,
-        "cnot": 27687,
-        "toffoli": 2402,
-        "h": 19332,
-        "measure": 1202,
-        "cmodexp": 361,
-        "xx": 361,
+        "x": 22893,
+        "cnot": 44119,
+        "toffoli": 3840,
+        "h": 30626,
+        "measure": 1921,
+        "cmodexp": 578,
+        "xx": 578,
         "planes": 1
       },
       "dims": {
-        "8": 64985,
+        "8": 103392,
         "128": 8,
-        "512": 722
+        "512": 1156
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "d0f111a7466477e3",
+      "receipt": "b6f98a5059b4a239",
       "states": [
         {
           "name": "measure",
@@ -4389,12 +4389,12 @@
             "0",
             "0"
           ],
-          "rows": 1202
+          "rows": 1921
         }
       ],
       "mint": {
-        "calls": 1354919,
-        "chain": "20d554b1d5a57a2f"
+        "calls": 2148814,
+        "chain": "665d227c899e64c5"
       },
       "served": {
         "count": 21,
@@ -4403,11 +4403,11 @@
           "\"f3207efbaba72e62\"",
           "\"ed73e177fb63ad32\"",
           "\"5040d89f9db56ef8\"",
-          "\"ec7a6f065e969998\"",
+          "\"f24860132d1feaf6\"",
           "\"41ed004077b05c5a\"",
           "\"74a5de1cea9cd3ba\"",
           "\"72b086b783a4431e\"",
-          "\"8e5b7a78bfd770ac\"",
+          "\"4d28d8556cd27f56\"",
           "\"1072a499599e5648\"",
           "\"347c0e5dabe2a14e\"",
           "\"4835b40252959370\"",
@@ -4656,7 +4656,7 @@
           "\"9757f65c4dea3a50\"",
           "\"58b38d7e20f48a74\"",
           "\"74a5de1cea9cd3ba\"",
-          "\"ec7a6f065e969998\"",
+          "\"f24860132d1feaf6\"",
           "\"833c65e115042b04\"",
           "\"d31c0458e913d7ee\""
         ]
@@ -4713,9 +4713,9 @@
         "folds": [
           "\"53c1ecacc3318cc7\"",
           "\"ed73e177fb63ad32\"",
-          "\"ec7a6f065e969998\"",
+          "\"f24860132d1feaf6\"",
           "\"74a5de1cea9cd3ba\"",
-          "\"8e5b7a78bfd770ac\"",
+          "\"4d28d8556cd27f56\"",
           "\"347c0e5dabe2a14e\"",
           "\"84d49291a8c4727c\"",
           "\"d1f09aee65966614\"",
@@ -4779,7 +4779,7 @@
           "\"cae925dbd7a96875\"",
           "\"a2ab19b3473d26e9\"",
           "\"7603e2cfade1b0c6\"",
-          "\"542b9d1b7b81d7cd\"",
+          "\"99b7bb71d390aed5\"",
           "\"53c1ecacc3318cc7\"",
           "\"f44022c32d1c6af8\""
         ]
@@ -4886,7 +4886,7 @@
       "name": "every exported predicate is evaluated: asked with nothing, supplied a reading, or named here",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": true,
+      "pass": false,
       "computations": 286829,
       "kinds": {
         "h": 103597,
@@ -6735,7 +6735,7 @@
       "served": {
         "count": 1,
         "folds": [
-          "\"f3ca68ea393b74d4\""
+          "\"19a8a280a83e4c02\""
         ]
       },
       "foreign": 0
@@ -7035,7 +7035,7 @@
       "name": "the standards the unit serves are the receipts the gates wrote, not a stale bake",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": true,
+      "pass": false,
       "computations": 5874,
       "kinds": {
         "x": 1225,

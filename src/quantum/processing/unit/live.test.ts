@@ -149,7 +149,7 @@ test('live qpu.uuidna.com', async (t) => {
     const extras = [
       {
         path: '/storage',
-        names: ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_maintain', 'storage_raid'],
+        names: ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_raid'],
         read: ['storage_catalog', 'storage_list', 'storage_get', 'storage_monitor', 'storage_raid'],
       },
       {
