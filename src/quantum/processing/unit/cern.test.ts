@@ -2,7 +2,7 @@ import { liveReached, rowRead, rowUnread, test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import worker, { qpuCernLiveOf } from './index.js'
+import worker, { qpuCernCatalogsHold, qpuCernLiveOf } from './index.js'
 
 const host = 'qpu.uuidna.com'
 const env = { QPU_HOST: host }
@@ -251,7 +251,42 @@ test('cern faces via mcp', { timeout: 120_000 }, async (t) => {
   assert.equal(prove.intelligence?.holds, true)
   assert.equal(prove.intelligence?.fusion.quantum, true)
   assert.equal(prove.intelligence?.fusion.holds, true)
-  assert.equal(prove.intelligence?.fusion.catalogs.length, 14)
+  // NOT 14. That number was the count of a cuboctahedron's faces, asserted of a
+  // list of CERN API endpoints, and the two are unrelated quantities — see
+  // qpuCernCatalogsHold. What is checked is what a catalog list must satisfy at
+  // any length: distinct names, absolute hrefs, and at least one row.
+  assert.equal(qpuCernCatalogsHold(prove.intelligence!.fusion.catalogs), true)
+  assert.ok(prove.intelligence!.fusion.catalogs.length > 0)
+
+  // AND IT MUST STILL HOLD WHEN THE WORLD ADDS ONE. This is the whole point of
+  // the change: a fifteenth catalog used to be unwireable without displacing a
+  // named one or moving the RAID geometry that 3430 live shares sit on.
+  assert.equal(
+    qpuCernCatalogsHold([
+      ...prove.intelligence!.fusion.catalogs,
+      { name: 'cod', href: 'https://www.crystallography.net/cod/result.php?format=json' },
+    ]),
+    true,
+  )
+
+  // The properties that replaced it are not vacuous: a duplicate name and a
+  // relative href are each refused.
+  assert.equal(
+    qpuCernCatalogsHold([...prove.intelligence!.fusion.catalogs, prove.intelligence!.fusion.catalogs[0]!]),
+    false,
+    'a duplicated door is accepted',
+  )
+  assert.equal(
+    qpuCernCatalogsHold([{ href: 'https://inspirehep.net/api/literature' }]),
+    false,
+    'a row with no name is accepted',
+  )
+  assert.equal(
+    qpuCernCatalogsHold([{ name: 'relative', href: '/api/records' }]),
+    false,
+    'a relative href is accepted',
+  )
+  assert.equal(qpuCernCatalogsHold([]), false, 'an empty catalog list is accepted')
   assert.equal(prove.cern.projects.length, 4)
   assert.deepEqual(
     prove.cern.projects.map((row) => row.experiment),
