@@ -40,11 +40,14 @@ jobs:
           node-version: '22'
       - name: The version to check — the input, else the latest tag
         id: pick
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           IN="${{ inputs.version }}"
           if [ -n "$IN" ]; then
             V="${IN#v}"
+            TAG="v$V"
           else
             TAG="$(git tag --list 'v*' --sort=-v:refname | head -1)"
             if [ -z "$TAG" ]; then
@@ -52,6 +55,24 @@ jobs:
               echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
             fi
             V="${TAG#v}"
+          fi
+          # A TAG WHOSE PUBLISH HAS NOT FINISHED IS NOT YET A RELEASE TO RE-CHECK, and this cost a red badge on
+          # 2026-09-28: the v0.1.9 publish ran 13:52:44 to 14:00:07, this check started at 13:57:16 — four and a
+          # half minutes in — and gave up at 13:59:12, fifty-five seconds before the publish finished. It then
+          # reported npm serving 0.1.6, 0.1.7 and 0.1.8 "not 0.1.9" and no provenance attestation, both of which
+          # were true at that instant and neither of which was a defect. npm and Zenodo both hold 0.1.9 now.
+          #
+          # This is not the lag-gating fault removed from verify-release in 0.1.8 — that was gating on a channel
+          # this pipeline does not own. npm and provenance ARE owned here, and a release that never reaches them
+          # must stay red. What was wrong is only WHEN the question was asked: while the answer was being written.
+          # publish.yml verifies at publish time and is the authority for the minutes it is running; this job is
+          # for the slow rot, as the header says, so it waits for the other one to finish having its say.
+          if [ -n "${TAG:-}" ]; then
+            RUNNING="$(gh run list --workflow=publish.yml --branch "$TAG" --limit 1 --json status --jq '.[0].status // ""' || echo '')"
+            if [ "$RUNNING" = "in_progress" ] || [ "$RUNNING" = "queued" ] || [ "$RUNNING" = "requested" ] || [ "$RUNNING" = "waiting" ]; then
+              echo "::notice::the publish run for $TAG is $RUNNING — it is still writing the answer this job reads, so there is nothing to re-check yet"
+              echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
+            fi
           fi
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "checking $V"
