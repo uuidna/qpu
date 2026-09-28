@@ -40,7 +40,7 @@ export const qpuFoldOf = (text: string): string => {
     h ^= BigInt(text.charCodeAt(i))
     h = (h * FNV_PRIME) & FNV_MASK
   }
-  return h.toString(16).padStart(16, '0')
+  return h.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')
 }
 const receiptOf = (name: string, amps: readonly bigint[]): void => {
   const decimal = amps.map((a) => a.toString())
@@ -139,13 +139,13 @@ const foreignReadOf = (): void => {
  * with every other field on the row byte-identical.
  */
 const MINT = { calls: 0, chain: FNV_OFFSET, scope: FNV_OFFSET }
-export const qpuMintReceiptOf = () => ({ calls: MINT.calls, chain: MINT.chain.toString(16).padStart(16, '0'), scope: MINT.scope.toString(16).padStart(16, '0') })
+export const qpuMintReceiptOf = () => ({ calls: MINT.calls, chain: MINT.chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0'), scope: MINT.scope.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0') })
 /** Both chains are sixteen hex digits, and an unopened scope is the offset basis — the fold of nothing. */
-export const qpuMintScopeOpenHolds = (closed = MINT.scope.toString(16).padStart(16, '0')): boolean => /^[0-9a-f]{16}$/.test(closed)
+export const qpuMintScopeOpenHolds = (closed = MINT.scope.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')): boolean => /^[0-9a-f]{16}$/.test(closed)
 
 /** Start a fresh scope chain and answer the one just closed, so a caller can bracket a region and fold only it. */
 export const qpuMintScopeOpenOf = (): string => {
-  const closed = MINT.scope.toString(16).padStart(16, '0')
+  const closed = MINT.scope.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')
   MINT.scope = FNV_OFFSET
   return closed
 }
@@ -246,6 +246,23 @@ const coins = seed + seed
 const occupancies = ['personal', 'business', 'corporate', 'saas', 'paas'] as const
 const skills = ['payload', 'pwa', 'plugin', 'hologram', 'network'] as const
 const ten = n * n + seed
+
+/**
+ * THE FOLD'S RADIX AND ITS WIDTH ARE THE SAME NUMBER AND NOT THE SAME QUANTITY.
+ *
+ * Sixteen appears twice on the line that returns a fold, meaning something different each time: the base a
+ * hex digit counts in, and how many of those digits a sixty-four-bit fold takes. Both were bare, so a reader
+ * had no way to tell which one would move if the fold were widened — and neither would have. hexOf already
+ * said the radix properly, as mintOf of the cube's hexbit; qpuFoldOf, the function the entire receipt rests
+ * on, did not.
+ *
+ * Derived rather than declared: a hex digit is mintOf(coins) bits, so the radix is mintOf of that, and a
+ * fold of coins × bits bits takes that many digits. Widen the fold and the padding follows instead of lying.
+ * These sit here rather than beside qpuFoldOf because the primitives they need are declared here, and the
+ * fold is only ever called after this module has finished initialising.
+ */
+const HEX_RADIX = mintOf(mintOf(coins))
+const FOLD_DIGITS = (coins * mintOf(n + coins)) / mintOf(coins)
 
 /**
  * THE LEAN THEOREMS, MIRRORED ONCE EACH, NAMED AS index.lean NAMES THEM.
@@ -907,7 +924,7 @@ const raidMark = '/@'
 /** Cloudflare KV and R2 each return at most 1000 names per list call — their documented page. A PAGE SIZE per call,
  *  every listing continues by cursor until it holds the `limit` names asked for or the store is exhausted; qpuStorageListOf's
  *  default limit is qpuFacesOf().faces. */
-const STORE_LIST_PAGE = 1000
+const STORE_LIST_PAGE = tenOf(n)
 /** HOW MANY LIST CALLS ONE REQUEST MAY MAKE, PER LAYER. Not a cap on what the store holds — a cap on what a single
  *  Worker invocation will spend finding out.
  *
@@ -6078,7 +6095,7 @@ export const qpuStorageAddressOf = (value: unknown): string => {
     h ^= BigInt(text.charCodeAt(i))
     h = (h * FNV128_PRIME) & mask
   }
-  return h.toString(16).padStart(digits, '0')
+  return h.toString(HEX_RADIX).padStart(digits, '0')
 }
 
 const storageAddressKeyOf = (occupancy: string, address: string): string => `${occupancy}/${address}`

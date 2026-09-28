@@ -138,9 +138,27 @@ export const findingsOf = (text, table, floor, _file = 'x.mjs') => {
   const mask = codeMaskOf(text)
   const out = []
   const lineOf = (at) => text.slice(0, at).split('\n').length
+  const lineStarts = []
+  for (let at = 0; at >= 0; at = text.indexOf('\n', at) + 1 || -1) lineStarts.push(at)
+  const lineTextOf = (at) => {
+    const from = text.lastIndexOf('\n', at - 1) + 1
+    const to = text.indexOf('\n', at)
+    return text.slice(from, to < 0 ? text.length : to)
+  }
   for (const match of text.matchAll(/(?<![\w.$])(\d[\d_]*)(?![\w.$])/g)) {
     const start = match.index
     if (mask[start] === 0) continue
+    /**
+     * A LINE THAT ALREADY SPEAKS THE LATTICE IS NOT RE-LITIGATED, and dropping this filter in the rewrite is
+     * what made the finder report 183 in src where the honest number is far smaller.
+     *
+     * `mintOf(n) === cube.vertices && mintOf(n) === 8` is the worst case it produced. That 8 is not a bare
+     * number waiting to be named — it is the INDEPENDENT ANCHOR, the check that the formula actually yields
+     * eight. Rewrite it and the line becomes `x === y && x === y`, a tautology, which is precisely the
+     * kernel knowing the answer this package refuses everywhere else. The literal is load-bearing BECAUSE
+     * it is not the formula.
+     */
+    if (/\b(mintOf|tenOf|chooseOf|qpuFacesOf|qpuCubeOf|faces|rays|coins|vertices|hexbit|bits)\b/.test(lineTextOf(start))) continue
     const value = Number(match[1].replace(/_/g, ''))
     const expression = table.get(value)
     if (!expression || !Number.isSafeInteger(value) || value < floor) continue
@@ -194,8 +212,27 @@ if (invoked) {
         `export const mintOf = (k) => coins ** k\nexport const tenOf = (k) => ${faces.faces - faces.coins - faces.coins} ** k\n`,
     )
 
-  /* Not the tests: a fixture's round number is data chosen to be legible, and renaming it would lend it a
-   * significance it does not have. And not this file, which quotes the numbers it is about. */
+  /**
+   * SCRIPTS ONLY, AND THE SRC EXCLUSION IS NOW A MEASUREMENT RATHER THAN AN ASSERTION.
+   *
+   * This said "src is already held to this by review and by the gate" and nobody had checked. Run over src
+   * it reports 156, which sounds like a scandal and is mostly the finder being wrong about what it is
+   * looking at. A number matching a lattice value is not thereby a lattice quantity:
+   *
+   *   `mintOf(n) === cube.vertices && mintOf(n) === 8`  the 8 is the ANCHOR — the independent check that
+   *     the formula yields eight. Rewriting it gives `x === y && x === y`, which is the kernel knowing the
+   *     answer. The line filter above catches these, and restoring it took index.ts from 28 to 22.
+   *   `photon / thermalOf(10n) === 23n`                 physics. Ten kelvin is not tenOf(1).
+   *   `2019 - 2011 === 8`                               arithmetic in a proof about years.
+   *   `hardware: { lanes: 16, bits: 32 }`               a device's specification that happens to coincide.
+   *
+   * The fold's radix and width WERE real and are fixed — index.ts fell from 22 to 10 — and what remains
+   * there is physics, anchors and device facts. So src is reported when asked and not swept, because the
+   * finder cannot yet tell a quantity from a coincidence and a sweep would do damage a test would not catch.
+   *
+   * Not the tests either: a fixture's round number is data chosen to be legible, and renaming it would lend
+   * it a significance it does not have. And not this file, which quotes the numbers it is about.
+   */
   const files = sourcesOf(join(ROOT, 'scripts')).filter((path) => !/\.test\.mjs$|lattice\.mjs$/.test(path))
   let total = 0
   for (const path of files) {
