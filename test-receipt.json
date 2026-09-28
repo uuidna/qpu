@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 175,
-  "pass": 175,
+  "tests": 176,
+  "pass": 176,
   "fail": 0,
   "dry": 0,
-  "circuit": 121,
+  "circuit": 122,
   "mintOnly": 24,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "a9b6f6d73c026868",
-  "computed": 171,
+  "receipt": "3092a7329e62f80e",
+  "computed": 172,
   "readRows": 4,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -4402,8 +4402,8 @@
           "\"ec7a6f065e969998\"",
           "\"41ed004077b05c5a\"",
           "\"74a5de1cea9cd3ba\"",
-          "\"649806ce500d7a12\"",
-          "\"4eef7971f3444c84\"",
+          "\"72b086b783a4431e\"",
+          "\"8fb8b0e32fd4c720\"",
           "\"1072a499599e5648\"",
           "\"347c0e5dabe2a14e\"",
           "\"4835b40252959370\"",
@@ -4641,7 +4641,7 @@
           "\"f3207efbaba72e62\"",
           "\"5040d89f9db56ef8\"",
           "\"41ed004077b05c5a\"",
-          "\"649806ce500d7a12\"",
+          "\"72b086b783a4431e\"",
           "\"1072a499599e5648\"",
           "\"4835b40252959370\"",
           "\"8419372439ce31b4\"",
@@ -4712,7 +4712,7 @@
           "\"ed73e177fb63ad32\"",
           "\"ec7a6f065e969998\"",
           "\"74a5de1cea9cd3ba\"",
-          "\"4eef7971f3444c84\"",
+          "\"8fb8b0e32fd4c720\"",
           "\"347c0e5dabe2a14e\"",
           "\"84d49291a8c4727c\"",
           "\"d1f09aee65966614\"",
@@ -6730,7 +6730,7 @@
       "served": {
         "count": 1,
         "folds": [
-          "\"069f57d6e457c4ac\""
+          "\"08d7bae5b448809c\""
         ]
       },
       "foreign": 0
@@ -7019,6 +7019,57 @@
       "mint": {
         "calls": 9,
         "chain": "10db40dd16d9c30a"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the standards the unit serves are the receipts the gates wrote, not a stale bake",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 5874,
+      "kinds": {
+        "x": 1225,
+        "cnot": 2342,
+        "toffoli": 178,
+        "h": 2003,
+        "measure": 89,
+        "cmodexp": 18,
+        "xx": 18,
+        "planes": 1
+      },
+      "dims": {
+        "8": 5830,
+        "128": 8,
+        "512": 36
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "cbd3be5d5a045613",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 89
+        }
+      ],
+      "mint": {
+        "calls": 115821,
+        "chain": "6b056b1bf13d9e85"
       },
       "served": {
         "count": 0,

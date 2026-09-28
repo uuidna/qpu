@@ -8,6 +8,7 @@
  * decimal amplitudes; BigInt only. Never Math. The reporter reads this ledger per test (isolation none). */
 import { leanSource, leanToolchain } from './lean.js'
 import { packageVersion } from './version.js'
+import { sealedStandards } from './standards.js'
 export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[]; nonzero?: number; qubits?: number }
 /** The exact state worth carrying in the receipt: what was measured — eight amplitudes, the Born weights themselves.
  * Every other state folds only; it is recomputable from the gate list, and a proof that carried every 512-amplitude
@@ -8752,6 +8753,47 @@ export type QpuSwap = 'entangled' | 'application' | 'undecided'
  * when neither is — and `undecided` is returned for a pair nobody has evidenced rather than omitting it, so a
  * gap in the corpus reads as a gap rather than as a negative result.
  */
+/**
+ * WHAT THIS TREE HOLDS ITSELF TO, SERVED RATHER THAN RUN BY HAND.
+ *
+ * Eight gates guard this package and each writes a receipt: walls with no cause named, bare numbers the
+ * lattice already names, refusals with no theorem behind them, tests that computed nothing. Answering "is
+ * this tree holding its own standards" meant running six commands and reading six outputs — the manual
+ * handling those gates exist to remove, done by whoever remembered to do it.
+ *
+ * EVERY FLOOR MAY ONLY SHRINK, which is what makes the numbers worth serving. A rise is refused at the gate
+ * that owns it, so a reader can take these as debts that are being paid down rather than a snapshot that
+ * might be climbing. They are counts of known, named, findable work — not claims that none exists.
+ *
+ * A Worker has no filesystem, so these are baked at build from the receipts the gates wrote, the way the
+ * version already is. That makes staleness the obvious failure, and qpuStandardsHolds is what catches it:
+ * the suite compares what the unit serves against the receipts on disk, so a bake that fell behind fails
+ * rather than reassures.
+ */
+export const qpuStandardsOf = () => {
+  const s = sealedStandards
+  const grounded = s.refusalsTotal - s.refusals
+  return {
+    kind: 'standards' as const,
+    /** A comment asserting a limit without naming its cause: a choice wearing the costume of a limit. */
+    walls: s.walls,
+    /** A bare number in the scripts that the lattice already names. Swept to nothing and held there. */
+    lattice: s.lattice,
+    /** A refusal naming no theorem the tree holds — a policy wearing a proof's clothes. */
+    refusals: { total: s.refusalsTotal, grounded, ungrounded: s.refusals },
+    /** A top-level test that computed nothing, minted nothing and served nothing. Zero, and a gate. */
+    dry: s.dry,
+    ratchet: 'every floor may only shrink; a rise is refused by the gate that owns it' as const,
+    holds: s.walls >= n - n && s.lattice === n - n && s.dry === n - n && grounded >= n - n && s.refusals <= s.refusalsTotal,
+  }
+}
+
+/** The counts are whole, the grounded and ungrounded refusals account for every one, and nothing is negative. */
+export const qpuStandardsHolds = (read = qpuStandardsOf()): boolean =>
+  read.holds &&
+  [read.walls, read.lattice, read.dry, read.refusals.total, read.refusals.grounded, read.refusals.ungrounded].every((x) => Number.isSafeInteger(x) && x >= n - n) &&
+  read.refusals.grounded + read.refusals.ungrounded === read.refusals.total
+
 export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS) => {
   const subjects = [...new Set(teachings.map((row) => row.subject))].sort()
   const domains = [...new Set(teachings.map((row) => row.domain))].sort()
@@ -9851,6 +9893,11 @@ export const qpuTrainOf = () => {
      * census and the per-pair reading are computed from cited instances and carried here so a caller gets the
      * explanation from the same call that gets the verdict — a reading that has to be looked up somewhere else
      * is a reading most callers will not have. */
+    /* THE TREE'S OWN STANDARDS, on the door that already carries what this tree has learned about itself —
+     * the school corpus and the API discovery sit here too. Six commands and six outputs become one
+     * reading, and its holds IS folded into the door's, unlike the discovery beside it: these are counts of
+     * this tree's own files, so a bad one is this tree's fault and should fail it. */
+    standards: qpuStandardsOf(),
     school: {
       kind: 'teaching' as const,
       theorem: 'involution' as const,

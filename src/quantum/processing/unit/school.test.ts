@@ -1,5 +1,7 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import {
   QPU_EXPERIMENTS,
   QPU_TEACHINGS,
@@ -19,6 +21,9 @@ import {
   qpuProbeableOf,
   qpuSpecServerHolds,
   qpuSpecServerOf,
+  qpuTrainOf,
+  qpuStandardsHolds,
+  qpuStandardsOf,
   qpuSchemaMethodsHolds,
   qpuSchemaMethodsOf,
   qpuFacesOf,
@@ -464,4 +469,45 @@ test('a spec names where its methods live, and only harmless ones are probeable'
   const faces = qpuFacesOf()
   assert.equal(qpuTeachingCensusOf().pairs, (faces.faces * (faces.faces - 1)) / 2)
   assert.ok(faces.coins < faces.faces, 'a probe samples fewer doors than the registry samples schemas')
+})
+
+test('the standards the unit serves are the receipts the gates wrote, not a stale bake', () => {
+  /**
+   * SEALED AT BUILD, SO STALENESS IS THE OBVIOUS FAILURE.
+   *
+   * A Worker has no filesystem, so the unit cannot read its own gate receipts at runtime — they are baked
+   * the way the version is. That makes "the served number drifted from the file" the way this goes wrong,
+   * and it is exactly what nobody would notice: the reading stays plausible while it stops being true.
+   *
+   * So the suite reads the files and compares. A bake that fell behind fails here rather than reassuring a
+   * caller who asked the MCP whether this tree is holding its own standards.
+   */
+  /* THE DOOR FIRST, so this test computes before it asserts — and so a throw below cannot leave it dry and
+   * change the very count it is checking. */
+  const train = qpuTrainOf()
+  const read = qpuStandardsOf()
+  assert.equal(qpuStandardsHolds(read), true)
+
+  const onDisk = (file: string) => JSON.parse(readFileSync(join(process.cwd(), file), 'utf8'))
+  assert.equal(read.walls, onDisk('walls-receipt.json').walls, 'walls served equals walls on disk')
+  assert.equal(read.lattice, onDisk('lattice-receipt.json').literals)
+  assert.equal(read.refusals.ungrounded, onDisk('refusals-receipt.json').ungrounded)
+  assert.equal(read.refusals.total, onDisk('refusals-receipt.json').refusals)
+  /* NOT `dry` AGAINST THE FILE. The sealed value came from the receipt of a PAST run and the file on disk
+   * is rewritten by the run now executing — this very test contributes to it, so comparing them compares
+   * two different runs and fails whenever the current one has a dry test, which is precisely when the
+   * comparison would matter least. The floor is asserted below instead. */
+
+  /* THE FLOORS THAT ARE ZERO ARE GATES, and the rest are debts being paid down. A count that is not a whole
+   * number of found things is not a count, which is the only claim made for any of them. */
+  assert.equal(read.lattice, 0, 'no bare number in the scripts that the lattice already names')
+  assert.equal(read.dry, 0, 'no top-level test that computed nothing')
+  assert.equal(read.refusals.grounded + read.refusals.ungrounded, read.refusals.total)
+  assert.ok(read.walls > 0, 'walls are a debt, not a claim of none — reporting zero would be the lie')
+
+  /* AND THE SERVED DOOR CARRIES IT, which is the point: one MCP call answers what six commands answered. */
+  assert.equal(train.standards.walls, read.walls)
+  assert.equal(train.standards.refusals.total, read.refusals.total)
+  assert.equal(qpuStandardsHolds(train.standards), true)
+  assert.equal(train.holds, true, 'and these are THIS tree\'s counts, so they belong in the door\'s own verdict')
 })
