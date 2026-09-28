@@ -7986,7 +7986,14 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
     description,
     run,
     man: qpuManOf(name, description, `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`, `${unit.origin}/mcp`, ['qpu_forge', 'qpu_train'])}
-  sandboxEpoch += seed
+  /* THE EPOCH FOLLOWS CONTENT, NOT WRITES. qpuIntegrityOf forges a sandbox tool called `qpu_quantum` on every
+   * qpu_prove — a deliberate probe showing that the sandbox namespace cannot reach the sealed door of the same
+   * name — and it writes the identical definition each time. Advancing on the write made every prove invalidate
+   * the memos for train, improve and compete, so a mixed traffic pattern would have thrashed the cache that
+   * 0.1.5 had just added and the numbers measured on a single door in isolation would never have appeared in
+   * production. A write that changes nothing changes nothing. */
+  const priorForged = sandboxTools.get(name)
+  if (priorForged === undefined || JSON.stringify(priorForged) !== JSON.stringify(forged)) sandboxEpoch += seed
   sandboxTools.set(name, forged)
   return {
     kind: 'sandbox' as const,

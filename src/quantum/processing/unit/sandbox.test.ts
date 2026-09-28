@@ -205,3 +205,42 @@ test('a forge makes the memoised doors answer again, rather than answering from 
   assert.equal(qpuSandboxEpochHolds(), true)
   assert.ok(qpuSandboxEpochOf() >= epochBefore)
 })
+
+/**
+ * A WRITE THAT CHANGES NOTHING MUST CHANGE NOTHING.
+ *
+ * qpuIntegrityOf forges a sandbox tool named after a sealed door on every qpu_prove — a probe showing the
+ * sandbox namespace cannot reach the real door — and writes the identical definition each time. With the
+ * epoch advancing on the WRITE, every prove invalidated the memos for train, improve and compete, so the
+ * saving measured on a door in isolation would never have survived mixed traffic. Measured: improve fell
+ * back from 5.7ms to 546ms after a single prove.
+ *
+ * The epoch follows CONTENT now, and this drives both halves — an identical forge must not move it, and a
+ * different one must.
+ */
+test('the epoch follows the sandbox content, so an identical forge does not move it', async () => {
+  const forge = async (name: string, value: unknown) => {
+    const res = await worker.fetch(
+      new Request(`https://${host}/mcp`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'qpu_forge', arguments: { name, run: { op: 'lit', value } } } }),
+      }),
+      env,
+    )
+    await res.json()
+    return qpuSandboxEpochOf()
+  }
+
+  const first = await forge('epoch_same', true)
+  const again = await forge('epoch_same', true)
+  assert.equal(again, first, 'the same definition written twice is one state of the sandbox, not two')
+
+  // AND A REAL CHANGE STILL MOVES IT, or the memo would serve a sandbox that had genuinely changed.
+  const changed = await forge('epoch_same', false)
+  assert.ok(changed > first, 'a different definition is a different sandbox')
+
+  // a new name is a change too
+  const added = await forge('epoch_other', true)
+  assert.ok(added > changed)
+})
