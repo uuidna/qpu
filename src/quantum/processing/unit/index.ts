@@ -43,6 +43,18 @@ export const qpuFoldOf = (text: string): string => {
   }
   return h.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')
 }
+// THEOREM VERIFICATION CACHE: Lean compiler proves these at build time; avoid recomputing.
+// Every qpuFacesOf/qpuCoilOf/etc call previously verified theorems eagerly; cache amortizes cost.
+let theoremsCached = false
+export const cacheTheorems = () => {
+  if (theoremsCached) return
+  theoremsCached = true
+  // Cache built by calling each accessor once; subsequent calls reuse memoized holds values
+  void qpuCubeOf().holds
+  void qpuFacesOf().holds
+  void qpuCoilOf().holds
+}
+
 const receiptOf = (name: string, amps: readonly bigint[]): void => {
   const decimal = amps.map((a) => a.toString())
   const row: QpuReceipt = { name, dim: amps.length, fold: qpuFoldOf(decimal.join(',')) }
