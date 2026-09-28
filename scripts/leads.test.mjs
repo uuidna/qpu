@@ -14,7 +14,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { archiveLeadsOf, deployLeadsOf, copyLeadsOf, doorLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf, teachingNoteOf } from './leads.mjs'
+import { archiveLeadsOf, deployLeadsOf, copyLeadsOf, doorLeadsOf, flawLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf, teachingNoteOf } from './leads.mjs'
 
 test('a package the registry never served is a lead, and one it serves is not', () => {
   const never = packageLeadsOf({ name: '@uuidna/school', version: '0.1.0', status: 404 })
@@ -228,4 +228,28 @@ test('a failing CI run is a lead that names the step; an in-flight one is not', 
 
   // and CI being unreadable is itself the lead, rather than an empty list read as "nothing wrong"
   assert.match(deployLeadsOf({ repo: 'r', runs: undefined })[0].what, /could not be read/)
+})
+
+test('a deposited flaw is a lead until it says it is fixed, and a missing state is not a clean bill', () => {
+  // THE SHAPE THAT MADE THIS NECESSARY. Two sessions wrote findings into this tree because POST /message keeps
+  // nothing and /storage wants a token the owner holds; both deposits then sat unread until somebody opened them.
+  const deposit = {
+    file: 'flaws-from-session-receipt.json',
+    flaws: [
+      { id: 'still-broken', severity: 'high', state: 'OPEN', owes: 'a decision' },
+      { id: 'mended', severity: 'high', state: 'fixed in 03b094d', owes: 'nothing' },
+      { id: 'shut', severity: 'low', state: 'closed for this zone', owes: 'nothing' },
+      { id: 'forgot-to-say', severity: 'medium' },
+    ],
+  }
+  const leads = flawLeadsOf(deposit)
+  assert.equal(leads.length, 2, 'the open one and the one that never said')
+  assert.deepEqual(leads.map((l) => l.what), ['high — still-broken', 'medium — forgot-to-say'])
+  assert.equal(leads[0].source, 'flaws:flaws-from-session-receipt.json')
+  assert.match(leads[1].owes, /deposited without one/, 'a deposit that forgot to say is not a deposit that said fine')
+
+  // AND IT CAN COME OUT EMPTY, which is the half that proves the filter is a filter: a file whose every flaw is
+  // recorded fixed owes nothing, and the entries stay in the file because deleting them loses the measurement.
+  assert.deepEqual(flawLeadsOf({ file: 'f.json', flaws: deposit.flaws.filter((f) => f.id !== 'still-broken' && f.id !== 'forgot-to-say') }), [])
+  assert.deepEqual(flawLeadsOf({ file: 'f.json', flaws: [] }), [])
 })

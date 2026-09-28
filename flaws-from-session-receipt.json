@@ -1,0 +1,66 @@
+{
+  "kind": "flaws-from-session-receipt",
+  "why": "Flaws in this zone found while building the per-host SEO surface, deposited here because the live write channels do not retain a message. Recorded in the repository instead, because nothing lives in a private note.",
+  "from": "qpu session 32052c74",
+  "when": "2026-09-28",
+  "channels_tried": [
+    {
+      "channel": "POST https://qpu.uuidna.com/message {lane, body}",
+      "result": "202 accepted, uuid 00000001-0001-1001-8001-001c00000002, lane 1 — and the reading itself says when: never, await: false. The lanes are isolate memory; a GET afterwards returns the catalog, not the message. It imprints a UUID for a message it does not keep."
+    },
+    {
+      "channel": "PUT https://qpu.uuidna.com/storage/...",
+      "result": "refused without QPU_WRITE_TOKEN, which is the owner's to set — unchanged since the 2026-09-28 uuidna deposit recorded the same thing."
+    }
+  ],
+  "flaws": [
+    {
+      "id": "sitemap-listed-a-url-nothing-answered",
+      "severity": "high",
+      "state": "fixed in 03b094d",
+      "measured": "faf8e51 shipped four sitemaps listing https://<sibling>.uuidna.com/.well-known/mcp.json on hosts that answered 404 for it. The test above the predicate said a listed URL must be one this unit can answer; the predicate only checked the URL's HOST. Green the whole time.",
+      "reading": "A predicate weaker than the sentence it sits under is worse than no predicate, because the sentence is what a reader trusts. The check now fetches every <loc>.",
+      "owes": "nothing — the discovery record is served on every routed host and every <loc> was verified 200 live."
+    },
+    {
+      "id": "apex-had-a-pair-computed-for-a-host-out-of-reach",
+      "severity": "medium",
+      "state": "fixed in 03b094d",
+      "measured": "qpuSeoZoneOf computed robots.txt and sitemap.xml for uuidna.com. This worker holds qpu.uuidna.com and the *.uuidna.com wildcard; the apex is under neither, and already serves its own robots.txt and an 11,438-URL sitemap from the worker that does hold it. The sitemap produced here listed a root this unit answers 404 for.",
+      "reading": "A table that says what the zone IS is not a table of what this unit SERVES. Each zone row now carries `qpu`, and the reading filters on it.",
+      "owes": "nothing."
+    },
+    {
+      "id": "four-subdomains-answer-from-a-worker-that-does-not-declare-them",
+      "severity": "high",
+      "state": "OPEN — not this unit's to settle",
+      "measured": "lean, unreal, hardware and school under uuidna.com all answer with `x-powered-by: Next.js, Payload`, i.e. this unit's wildcard route forwards them to Payload as tenant sites. Meanwhile lean/wrangler.toml and unreal/wrangler.toml each declare `custom_domain = true` for those exact names, and those workers' own doors — /nav, /standing, /mcp, /sitemap.xml — exist in their source and answer 404 on the live hosts.",
+      "reading": "Two declarations disagree about who serves four live names, and the one that is winning is not the one written down. Computing `reserved` from the zone table would have pulled all four out of the tenant forward and turned four live 200s into 404s; that was caught by cancelling a deploy mid-flight, not by a test.",
+      "owes": "whoever owns those routes decides: either the sibling workers take their hosts back, or their wrangler.toml stops claiming them. Until then this unit takes only /robots.txt, /sitemap.xml and /.well-known/mcp.json on those names and forwards everything else exactly as before."
+    },
+    {
+      "id": "cloudflare-managed-robots-substitutes-wherever-a-worker-404s",
+      "severity": "medium",
+      "state": "closed for this zone",
+      "measured": "Before this work, five of six first-party hosts answered 404 for /robots.txt, and the zone's managed default was served in their place — a file naming no sitemap. qpu.uuidna.com had been computing a real sitemap at /sitemap.xml the whole time and nothing pointed at it.",
+      "reading": "A 404 on a discovery path is not an absence a reader sees; it is a substitution a reader believes. Any NEW host added to this zone will ship the same default until it is added to QPU_ZONE_HOSTS.",
+      "owes": "a detector that asks each host for its pair and fails when the answer is the managed default rather than this unit's."
+    },
+    {
+      "id": "a-file-dependency-copy-goes-stale-and-nothing-asks",
+      "severity": "medium",
+      "state": "detector exists, coverage does not",
+      "measured": "payload's node_modules copy of @uuidna/uuidna was a 2026-09-27 snapshot, 1187 files against the source's 1253, and every one of payload's fifteen integration spec files failed at import with `Cannot find module .../dist/artifact.js`. scripts/leads.mjs already has copyLeadsOf, which detects exactly this and reports it green now that the copy was refreshed.",
+      "reading": "The detector was right and nobody ran it. pnpm copies a file: dependency instead of linking it, so the copy freezes at install time and the symptom arrives as a missing module in an unrelated repository.",
+      "owes": "payload's own suite should ask before it runs, or this gatherer should run in payload's CI; a detector in one repository does not protect another."
+    },
+    {
+      "id": "hosted-mcp-tool-search-is-conjunctive-with-no-relaxation",
+      "severity": "low",
+      "state": "OPEN",
+      "measured": "On the hosted uuidna MCP, list_tools {query} returns [] for every multi-word query tried — \"message send agent coordinate flaw report\", and for the single words \"messaging\" and \"improve\" — while \"gate\" returns six tools. get_server_status advertises a messaging witness with 2127 keys, and no tool's name or description contains the word.",
+      "reading": "A search that answers nothing for a natural-language query is read as 'no such tool exists' rather than 'no tool matched every word'. The empty result carries no hint that relaxing the query would help.",
+      "owes": "either rank partial matches instead of requiring all terms, or say which terms matched nothing — an empty list is the one answer that cannot be acted on."
+    }
+  ]
+}

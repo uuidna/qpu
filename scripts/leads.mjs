@@ -229,6 +229,27 @@ export const deployLeadsOf = ({ repo, runs }) => {
 }
 
 /** A run is settled only when every source answered AND none holds a lead. Unreached blocks; it is not silence. */
+/**
+ * A FLAW DEPOSITED IN THIS TREE IS A LEAD UNTIL IT SAYS OTHERWISE.
+ *
+ * Two sessions have now written their findings into flaws-*-receipt.json here, because the live write channels do
+ * not retain a message: POST /message answers 202 and imprints a uuid for a message its own reading says it keeps
+ * `never`, and /storage refuses without a token that is the owner's to set. A file nobody reads is the private
+ * note those deposits exist to avoid, so the gatherer reads them.
+ *
+ * ONLY `state` STARTING "OPEN" OPENS A LEAD. A flaw recorded as fixed stays in the file as the record of what was
+ * wrong — deleting it would lose the measurement — and owes nothing. A flaw with no state is open: a deposit that
+ * forgot to say is not a deposit that said fine.
+ */
+export const flawLeadsOf = ({ file, flaws }) =>
+  flaws
+    .filter((f) => !String(f.state ?? '').toUpperCase().startsWith('FIXED') && !String(f.state ?? '').toUpperCase().startsWith('CLOSED'))
+    .map((f) => ({
+      source: `flaws:${file}`,
+      what: `${f.severity ?? 'unrated'} — ${f.id}`,
+      owes: f.owes ?? 'a decision; it was deposited without one',
+    }))
+
 export const settledOf = (sources) =>
   sources.length > 0 && sources.every((s) => s.reached) && sources.every((s) => s.open.length === 0)
 
@@ -332,6 +353,16 @@ if (invoked) {
       add(`copy:${consumer}/${dep}`, copyVersion !== null, copyVersion === null ? 'not installed' : `copy ${copyVersion}, source ${sourceVersion}`,
         copyLeadsOf({ consumer, name: dep, sourceVersion, copyVersion, sourceFiles: sample, copyFiles: copySample }))
     }
+  }
+
+  /* ── flaws deposited in this tree by a session that could not send them anywhere else ───────────────────────── */
+  for (const file of readdirSync(ROOT).filter((f) => /^flaws-.*-receipt\.json$/.test(f)).sort()) {
+    let deposit
+    try { deposit = JSON.parse(readFileSync(join(ROOT, file), 'utf8')) } catch (error) {
+      add(`flaws:${file}`, false, `unreadable (${error.message})`); continue
+    }
+    const flaws = Array.isArray(deposit.flaws) ? deposit.flaws : []
+    add(`flaws:${file}`, true, `${flaws.length} flaw(s) deposited by ${deposit.from ?? 'an unnamed session'}`, flawLeadsOf({ file, flaws }))
   }
 
   /* ── the archive, which mints a DOI from a GitHub Release ───────────────────────────────────────────────────── */
