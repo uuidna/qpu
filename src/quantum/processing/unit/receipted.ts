@@ -108,7 +108,10 @@ export type TestReceipt = {
    *  here, so the row belongs in the proof; above zero means the row records what somebody else's host did or did
    *  not say, which is a reading. */
   foreign: number
-  readings: { time: { ns: number; resolved: boolean }; temperature: Temperature }
+  /** MEASURED, never folded. `pid` is the worker that ran the test: files execute in separate processes, so
+   *  without it the wall cannot be divided into parallel paths and every test appears to be on one. It varies
+   *  between runs, which is exactly why it is a reading and would wreck the proof if it were not. */
+  readings: { time: { ns: number; resolved: boolean }; temperature: Temperature; pid: number }
 }
 
 const unmeasured: Temperature = { measured: false, why: 'no QPU_TEMPERATURE_MILLIKELVIN supplied and no battery gauge read on this host' }
@@ -192,7 +195,7 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
       mint: { calls: mintTo.calls - mintFrom.calls, chain: qpuMintScopeOpenOf() },
       served: { count: qpuServedLedgerOf().length - servedFrom, folds: [...new Set(qpuServedLedgerOf().slice(servedFrom).map((r) => r.fold))] },
       foreign: qpuForeignReadsOf() - foreignFrom,
-      readings: { time: { ns, resolved: ns > 0 }, temperature: temperatureOf() },
+      readings: { time: { ns, resolved: ns > 0 }, temperature: temperatureOf(), pid: process.pid },
     }
     appendFileSync(join(process.cwd(), RECEIPTS_FILE), `${JSON.stringify(row)}\n`)
   }

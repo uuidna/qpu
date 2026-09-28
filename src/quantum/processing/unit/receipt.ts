@@ -51,7 +51,7 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     })
   }
   const receipts = receiptsOf()
-  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, served: { count: 0, folds: [] }, foreign: 0, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' } } }
+  const none: TestReceipt = { name: '', computations: 0, kinds: {}, dims: {}, dim: '0', qubits: 0, receipt: qpuFoldOf(''), states: [], mint: { calls: 0, chain: '' }, served: { count: 0, folds: [] }, foreign: 0, readings: { time: { ns: 0, resolved: false }, temperature: { measured: false, why: 'no record' }, pid: 0 } }
   const rows: Row[] = events.map((e) => {
     const got = receipts.get(e.name) ?? none
     return { name: e.name, file: e.file, nesting: e.nesting, pass: e.pass, computations: got.computations, kinds: got.kinds, dims: got.dims, dim: got.dim, qubits: got.qubits, receipt: got.receipt, states: got.states, mint: got.mint, served: got.served ?? { count: 0, folds: [] }, foreign: got.foreign ?? 0 }
@@ -150,6 +150,18 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
     slowest,
     /** what the hosts this tree does not own said this run, folded apart and reported in full, gated by nothing */
     foreign: { fold: reading, reads: foreignReads, rows: rows.filter((r) => r.foreign > 0) },
+    /**
+     * THE CLOCK AROUND THE TESTS, WHICH NOTHING RECORDED.
+     *
+     * Per-test time has been written since day one and the sum of it is not the run: test files execute in
+     * parallel worker processes, so the wall time is the critical path plus whatever the harness costs to
+     * start, load and report. That remainder is the only part of a run that is neither computation nor
+     * somebody else's host, and it was invisible because nobody wrote the wall down beside the parts.
+     *
+     * process.uptime() in the reporter is the parent's lifetime: module load, every worker, and the fold
+     * itself. Measured, so it is a reading and never enters the proof.
+     */
+    process: { uptimeNs: Math.round(process.uptime() * 1e9), pid: process.pid },
     rows: timed,
   }
   writeFileSync(join(process.cwd(), 'test-readings.json'), `${JSON.stringify(readings, null, 2)}\n`)
