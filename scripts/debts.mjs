@@ -33,7 +33,7 @@ export const RECEIPT = join(ROOT, 'debts-receipt.json')
 export const DEBTS = [
   { name: 'walls', what: 'a limit asserted with no cause named', run: 'walls', pick: (r) => r.walls },
   { name: 'lattice', what: 'a bare number the lattice already names', run: 'lattice', pick: (r) => r.literals },
-  { name: 'refusals', what: 'a refusal naming no theorem this tree holds', run: 'refusals', pick: (r) => r.ungrounded },
+  { name: 'refusals', what: 'a refusal where two theorems do not meet', run: 'refusals', pick: (r) => r.notCross },
   { name: 'dry', what: 'a top-level test that computed nothing', run: undefined, pick: (r) => r.dry, from: 'test-receipt.json' },
 ]
 

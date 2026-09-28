@@ -2,7 +2,7 @@
 export const sealedStandards = {
   "walls": 23,
   "lattice": 0,
-  "refusals": 23,
+  "refusals": 26,
   "refusalsTotal": 39,
   "dry": 0
 } as const

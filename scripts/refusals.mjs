@@ -44,35 +44,85 @@ export const groundedOf = (text, theorems) => {
     let to = i
     while (to < lines.length - 1 && lines[to + 1].trim() !== '') to += 1
     const block = lines.slice(Math.max(0, from - 2), to + 2).join('\n')
-    const cited = [...block.matchAll(/theorem\s+([a-z_]+)/g)].map((row) => row[1]).filter((name) => theorems.has(name))
-    out.push({ line: i + 1, text: line.trim().slice(0, 88), grounded: cited.length > 0, cited: [...new Set(cited)] })
+    const cited = [...new Set([...block.matchAll(/theorem\s+([a-z_]+)/g)].map((row) => row[1]).filter((name) => theorems.has(name)))]
+    /**
+     * ONE THEOREM IS A CITATION. TWO THAT BOTH BEAR ON IT IS A CROSS.
+     *
+     * The first version asked only whether a theorem the tree holds was named nearby, and that is a weaker
+     * question than the one worth asking. A refusal citing `theorem false` is told what KIND of thing it is;
+     * a refusal standing where two theorems meet is told why it could not be otherwise. This package states
+     * every quantity twice on purpose — as a sum of like terms and a product of unlike ones — precisely so
+     * that a claim rests on two readings that prove each other rather than on one that asserts.
+     *
+     * Measured when the question was strengthened: the count of properly grounded refusals fell, which is
+     * the instrument getting sharper and not the tree getting worse. The earlier 36-to-23 fall came from
+     * writing two block comments near clusters of `denied:` — prose moved the number and no refusal changed.
+     */
+    out.push({
+      line: i + 1,
+      text: line.trim().slice(0, 88),
+      cited,
+      cross: cited.length > seedOf(),
+      grounded: cited.length > 0,
+    })
   })
   return out
 }
+
+/** One is a citation; more than one is a cross. Named so the threshold is a statement rather than a digit. */
+const seedOf = () => 1
 
 const invoked = process.argv[1]?.endsWith('refusals.mjs') === true
 if (invoked) {
   const text = readFileSync(UNIT, 'utf8')
   const theorems = theoremsOf(text)
   const rows = groundedOf(text, theorems)
-  const loose = rows.filter((row) => !row.grounded)
+  const loose = rows.filter((row) => !row.cross)
+  const singly = rows.filter((row) => row.grounded && !row.cross)
 
   console.log(`\n  REFUSALS — ${rows.length} in the unit, against ${theorems.size} theorems it declares\n`)
-  console.log(`  grounded in a theorem the tree holds : ${rows.length - loose.length}`)
-  console.log(`  naming no theorem                    : ${loose.length}\n`)
+  console.log(`  cross-grounded, two theorems or more : ${rows.length - loose.length}`)
+  console.log(`  one theorem named — a citation       : ${singly.length}`)
+  console.log(`  naming no theorem at all             : ${loose.length - singly.length}\n`)
   for (const row of loose.slice(0, 20)) console.log(`    ${String(row.line).padStart(6)}  ${row.text}`)
 
   const receiptPath = join(ROOT, 'refusals-receipt.json')
-  const was = existsSync(receiptPath) ? JSON.parse(readFileSync(receiptPath, 'utf8')).ungrounded : undefined
-  if (was === undefined || loose.length < was) {
-    writeFileSync(receiptPath, `${JSON.stringify({ kind: 'refusals-receipt', refusals: rows.length, ungrounded: loose.length, theorems: theorems.size }, null, 2)}\n`)
-    console.log(was === undefined ? '\n  recorded as the first floor\n' : `\n  fell from ${was} — floor recorded\n`)
+  const prior = existsSync(receiptPath) ? JSON.parse(readFileSync(receiptPath, 'utf8')) : {}
+  const measure = 'cross'
+  const notCross = loose.length
+  const write = () =>
+    writeFileSync(
+      receiptPath,
+      `${JSON.stringify({ kind: 'refusals-receipt', measure, refusals: rows.length, notCross, ungrounded: loose.length - singly.length, cited: singly.length, theorems: theorems.size }, null, 2)}\n`,
+    )
+
+  /**
+   * A FLOOR IS ONLY COMPARABLE WITHIN ONE DEFINITION OF THE MEASURE.
+   *
+   * This asked "is a theorem named nearby" and now asks "do two theorems meet here", which is the question
+   * that was wanted: one name is a citation, two that both bear on a refusal is a cross. Under the old
+   * question 23 were loose; under this one 26 are, and that is the instrument sharpening rather than the
+   * tree decaying. Comparing the two numbers would report a regression that did not happen.
+   *
+   * So a change of measure RESETS the floor and says so, once. Every run after it ratchets normally, which
+   * is the only way a floor can mean anything across a redefinition — and the reset is recorded in the
+   * receipt so the next reader can see that the scale moved under the number.
+   */
+  if (prior.measure !== measure) {
+    write()
+    console.log(`\n  the measure changed — "a theorem is named" became "two theorems meet"`)
+    console.log(`  floor reset to ${notCross}; the old ${prior.ungrounded ?? '?'} answered a weaker question\n`)
     process.exit(0)
   }
-  if (loose.length > was) {
-    console.log(`\n  ROSE from ${was}: a refusal was added without naming the theorem that makes it a consequence\n`)
+  if (notCross < prior.notCross) {
+    write()
+    console.log(`\n  fell from ${prior.notCross} — floor recorded\n`)
+    process.exit(0)
+  }
+  if (notCross > prior.notCross) {
+    console.log(`\n  ROSE from ${prior.notCross}: a refusal was added without two theorems meeting at it\n`)
     process.exit(1)
   }
-  console.log(`\n  unchanged at ${was}\n`)
+  console.log(`\n  unchanged at ${prior.notCross}\n`)
   process.exit(0)
 }

@@ -8779,8 +8779,17 @@ export const qpuStandardsOf = () => {
     walls: s.walls,
     /** A bare number in the scripts that the lattice already names. Swept to nothing and held there. */
     lattice: s.lattice,
-    /** A refusal naming no theorem the tree holds — a policy wearing a proof's clothes. */
-    refusals: { total: s.refusalsTotal, grounded, ungrounded: s.refusals },
+    /**
+     * A refusal where two theorems do NOT meet. One theorem named beside a refusal is a citation — it says
+     * what kind of thing the refusal is. Two that both bear on it is a cross, and says why it could not be
+     * otherwise, which is what this package means by a quantity stated twice.
+     *
+     * The earlier count asked only whether a theorem was named nearby and answered 23; asking whether two
+     * meet answers 26. The tree did not get worse — the question got sharper, and the earlier fall from 36
+     * to 23 had come from writing two block comments near clusters of refusals, which moved prose and not
+     * one refusal.
+     */
+    refusals: { total: s.refusalsTotal, crossed: grounded, notCrossed: s.refusals },
     /** A top-level test that computed nothing, minted nothing and served nothing. Zero, and a gate. */
     dry: s.dry,
     ratchet: 'every floor may only shrink; a rise is refused by the gate that owns it' as const,
@@ -8791,8 +8800,8 @@ export const qpuStandardsOf = () => {
 /** The counts are whole, the grounded and ungrounded refusals account for every one, and nothing is negative. */
 export const qpuStandardsHolds = (read = qpuStandardsOf()): boolean =>
   read.holds &&
-  [read.walls, read.lattice, read.dry, read.refusals.total, read.refusals.grounded, read.refusals.ungrounded].every((x) => Number.isSafeInteger(x) && x >= n - n) &&
-  read.refusals.grounded + read.refusals.ungrounded === read.refusals.total
+  [read.walls, read.lattice, read.dry, read.refusals.total, read.refusals.crossed, read.refusals.notCrossed].every((x) => Number.isSafeInteger(x) && x >= n - n) &&
+  read.refusals.crossed + read.refusals.notCrossed === read.refusals.total
 
 export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS) => {
   const subjects = [...new Set(teachings.map((row) => row.subject))].sort()

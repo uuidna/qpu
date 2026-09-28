@@ -491,7 +491,7 @@ test('the standards the unit serves are the receipts the gates wrote, not a stal
   const onDisk = (file: string) => JSON.parse(readFileSync(join(process.cwd(), file), 'utf8'))
   assert.equal(read.walls, onDisk('walls-receipt.json').walls, 'walls served equals walls on disk')
   assert.equal(read.lattice, onDisk('lattice-receipt.json').literals)
-  assert.equal(read.refusals.ungrounded, onDisk('refusals-receipt.json').ungrounded)
+  assert.equal(read.refusals.notCrossed, onDisk('refusals-receipt.json').notCross, 'the cross measure, not the weaker one beside it')
   assert.equal(read.refusals.total, onDisk('refusals-receipt.json').refusals)
   /* NOT `dry` AGAINST THE FILE. The sealed value came from the receipt of a PAST run and the file on disk
    * is rewritten by the run now executing — this very test contributes to it, so comparing them compares
@@ -502,7 +502,7 @@ test('the standards the unit serves are the receipts the gates wrote, not a stal
    * number of found things is not a count, which is the only claim made for any of them. */
   assert.equal(read.lattice, 0, 'no bare number in the scripts that the lattice already names')
   assert.equal(read.dry, 0, 'no top-level test that computed nothing')
-  assert.equal(read.refusals.grounded + read.refusals.ungrounded, read.refusals.total)
+  assert.equal(read.refusals.crossed + read.refusals.notCrossed, read.refusals.total)
   assert.ok(read.walls > 0, 'walls are a debt, not a claim of none — reporting zero would be the lie')
 
   /* AND THE SERVED DOOR CARRIES IT, which is the point: one MCP call answers what six commands answered. */

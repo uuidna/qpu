@@ -44,7 +44,7 @@ const receiptOf = (file, pick) => {
 const standards = {
   walls: receiptOf('walls-receipt.json', (r) => r.walls),
   lattice: receiptOf('lattice-receipt.json', (r) => r.literals),
-  refusals: receiptOf('refusals-receipt.json', (r) => r.ungrounded),
+  refusals: receiptOf('refusals-receipt.json', (r) => r.notCross),
   refusalsTotal: receiptOf('refusals-receipt.json', (r) => r.refusals),
   dry: receiptOf('test-receipt.json', (r) => r.dry),
 }
