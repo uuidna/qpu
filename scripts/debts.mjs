@@ -61,6 +61,24 @@ const receiptOf = (file) => {
 
 const invoked = process.argv[1]?.endsWith('debts.mjs') === true
 if (invoked) {
+  /**
+   * THIS GATE KEEPS ITS OWN FLOOR, and that is the whole reason it holds where a finder does not — a
+   * declared boundary of who writes which file, not a judgement about the finders.
+   *
+   * walls.mjs writes its receipt unconditionally — it printed "rose from 23 to 24" and the next run said
+   * "24, unchanged", because the run that reported the rise also recorded it. That happened twice in this
+   * session and both times the raised floor went in as though it had always been there. A ratchet whose
+   * floor is written by the thing it is ratcheting is not a ratchet.
+   *
+   * The floor here lives in debts-receipt.json, which no finder touches, and a run that finds a rise EXITS
+   * BEFORE WRITING. So the same rise fails again on the next run and the one after, until somebody lowers
+   * the number rather than the bar. Proved rather than asserted: the test sets a floor below the truth and
+   * requires both a non-zero exit and the floor still holding its old value afterwards.
+   *
+   * (I first moved this read earlier in the function believing it fixed something. It did not — the floors
+   * were never in the finders' files — and the change is kept only because reading them up front says so.)
+   */
+  const floorBefore = existsSync(RECEIPT) ? JSON.parse(readFileSync(RECEIPT, 'utf8')).debts : {}
   const rows = []
   for (const debt of DEBTS) {
     if (debt.run) {
@@ -78,7 +96,7 @@ if (invoked) {
 
   const missing = rows.filter((row) => row.count === undefined)
   const found = rows.filter((row) => row.count !== undefined)
-  const floor = existsSync(RECEIPT) ? JSON.parse(readFileSync(RECEIPT, 'utf8')).debts : {}
+  const floor = floorBefore
   const verdict = verdictOf(found, floor)
 
   console.log(`\n  DEBTS — named, findable work this tree carries\n`)
