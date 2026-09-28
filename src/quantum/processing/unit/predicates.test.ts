@@ -1,17 +1,9 @@
 /**
  * EVERY PREDICATE THIS UNIT EXPORTS IS ACTUALLY EVALUATED.
  *
- * The suite has a ratchet that refuses a new exported value with no `*Holds` beside it, and it works: 112 of them
- * exist. Nothing said any of them was ever CALLED. Measured 2026-09-28 by enumerating the module and running
- * them, which had never been done: 23 were referenced from nowhere at all — not from this file, not from another
- * source, not from a test — and two of those were FALSE.
- *
- * qpuCiteHolds pinned the version DOI as a literal, so it went false the first time the archive minted a new one
- * and stayed false through every release after; qpuMcpHolds calls it, so the whole MCP predicate went with it. A
- * counter that only asks whether a predicate EXISTS is satisfied by a predicate that has never been true.
- *
- * So the ratchet gains its other half here, and by enumeration rather than by a list: a predicate added tomorrow
- * is run the day it exists, and one that stops holding fails on the next run instead of on the next reading.
+ * The suite refuses a new exported value with no `*Holds` beside it, and 112 exist. Nothing said any had been
+ * CALLED. Enumerating and running them, measured 2026-09-28: 23 were referenced from nowhere and two of those
+ * were FALSE — qpuCiteHolds pinned a version DOI that moves on every archive, and qpuMcpHolds calls it.
  */
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
@@ -43,24 +35,15 @@ test('every exported predicate is evaluated: asked with nothing, supplied a read
   assert.deepEqual(notTrue, [], 'a predicate that is exported and never run is a claim nobody checks')
 
   /* ── and the ones that take a reading ─────────────────────────────────────────────────────────────────────── */
-  // THE OTHER FIFTEEN. A predicate taking a reading cannot be run from an enumeration — it needs one — so the
-  // check for those is that a suite somewhere supplies it. This reads the sources rather than trusting a list:
-  // deleting the test that exercises one of them fails here rather than quietly dropping it back to unrun.
-  //
-  // THIS FILE COUNTS AS A SUITE, and excluding it was the wrong instinct. The exclusion was meant to stop the
-  // check being satisfied by its own mention of a name; what it actually did was refuse to see the five
-  // readings constructed below — the only place any of them had ever been supplied. The check still bites
-  // exactly as hard: delete the test beneath this one and five names come straight back.
+  // A predicate taking a reading needs one supplied, so the check is that some suite does — this file
+  // included. Sources are read rather than a list trusted: delete the arm below and five names come back.
   const dir = join(process.cwd(), 'src/quantum/processing/unit')
   const suites = readdirSync(dir)
     .filter((f) => f.endsWith('.test.ts'))
     .map((f) => readFileSync(join(dir, f), 'utf8'))
     .join('\n')
 
-  // A PREDICATE FOLDED INTO ITS OWN READING IS EVALUATED TOO, and that is the honest widening: qpuSeoOf calls
-  // qpuSeoHolds and publishes the answer as `holds`, so a suite asserting that field has asked the predicate
-  // without naming it. What is left after both forms is a predicate nothing anywhere ever runs.
-  // the declaration itself is not a call, so the lines that declare one are dropped before counting
+  // A predicate folded into its own reading counts too — qpuSeoOf publishes qpuSeoHolds as `holds`.
   const inUnit = readFileSync(join(dir, 'index.ts'), 'utf8')
     .split('\n')
     .filter((line) => !/^export (const|function) \w+Holds\b/.test(line))
@@ -75,24 +58,15 @@ test('every exported predicate is evaluated: asked with nothing, supplied a read
 
   assert.deepEqual(uncalled, [], 'each of these takes a reading, and neither a suite nor this unit ever supplies one')
 
-/**
- * THE FIVE THAT TAKE A READING, each handed one — and each shown to refuse a broken one.
- *
- * These are the predicates the enumeration above cannot run, because each one takes a reading and an enumeration
- * has none to give. The check that found them proved they had never been evaluated by anything: four guard live
- * readings, so no suite supplied one, and a predicate never asked is indistinguishable from one that is wrong. They are asked here with CONSTRUCTED readings
- * rather than live ones, deliberately — a foreign read would make the row a reading rather than a proof, and what
- * is under test is the predicate's judgement, not whether a third party answered today.
- */
+  /* Constructed readings, not live ones: a foreign read would make the row a reading rather than a proof,
+   * and what is under test is the predicate's judgement, not whether a third party answered today. */
   /* ── each of those five, handed a sound reading and then a broken one ────────────────────────────────────── */
   const apis = { holds: true, sampled: 2, rows: [{ api: 'a' }, { api: 'b' }] }
   assert.equal(unit.qpuApisLiveHolds(apis as never), true)
   assert.equal(unit.qpuApisLiveHolds({ ...apis, sampled: 3 } as never), false, 'a sample that does not match its rows is not accounted for')
   assert.equal(unit.qpuApisLiveHolds({ ...apis, rows: [{ api: '' }, { api: 'b' }] } as never), false, 'a row naming no api is not a discovery')
 
-  // A RUN IN WHICH CROSSREF DECLINED IS SOUND. The predicate is about the reading, never about the network, so a
-  // row that did not resolve holds false and the reading still holds — and a row claiming to hold while its title
-  // disagreed is the one shape that must not.
+  // A run in which Crossref declined is sound: the predicate is about the reading, never the network.
   const cites = { holds: true, sampled: 2, rows: [{ holds: true, live: true, agrees: true }, { holds: false, live: false, agrees: false }] }
   assert.equal(unit.qpuCitationsLiveHolds(cites as never), true)
   assert.equal(unit.qpuCitationsLiveHolds({ ...cites, rows: [{ holds: true, live: true, agrees: false }] } as never), false, 'a row cannot hold while its title disagrees')

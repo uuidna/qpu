@@ -1,19 +1,10 @@
 /**
  * A COMBINATION IS AN ADDRESS, AND THE ADDRESS COMES BACK.
  *
- * The unit computed 342 teaching combinations and 36 mixed ones and addressed none of them: a row was the two
- * strings it was made of, so nothing could cite one, cache one, or hand one to another host without shipping
- * the strings and trusting both sides to spell them alike. qpuShapeUuidOf answers "are these the same thing"
- * and cannot answer "which thing is this", because it is a fold and a fold does not come back.
- *
- * WHAT IS UNDER TEST IS THAT IT COMES BACK. Every combination on every surface is minted, decoded, and checked
- * against the pair it was minted from — not a sample, all 438 of them, because a codec that round-trips the
- * first row and wraps at the four-thousandth is exactly the defect the params cap exists to name.
- *
- * AND THAT IT HAS CONSUMERS, which is the other half and the one that was learned the hard way next door: the
- * sibling repository derived a program hex for all 251 of its doors, proved the set collision-free, exposed an
- * encode/decode pair — and a consumer check found zero callers. A published codec nobody calls is the same
- * defect as a published table nobody reads. So the readings carry the addresses, and that is asserted here.
+ * The unit computed 342 teaching combinations and 36 mixed ones and addressed none: a row was the two strings
+ * it was made of. qpuShapeUuidOf answers "are these the same thing" and cannot answer "which thing is this",
+ * because it is a fold. All 438 are round-tripped here, not a sample — a codec that wraps at the four
+ * thousandth is what the params cap exists to name.
  */
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
@@ -35,9 +26,8 @@ test('every door is derived from its own surface, and no two collide', () => {
   assert.deepEqual(doors.collisions, [], 'two surfaces folding to one hex would address each other’s combinations')
   assert.deepEqual(doors.rows.map((r) => r.door).sort(), ['mixed', 'teaching', 'zone'])
 
-  // THE CAP IS A REAL BOUNDARY, not a comfortable one: the params field is three hex digits inside the middle,
-  // because RFC 9562 spends the other two nibbles of that group on the version and the variant. A surface that
-  // outgrew it would wrap silently onto another combination's address, so the door table refuses to hold.
+  // Three hex digits of params, because RFC 9562 spends the other two nibbles of that group on version and
+  // variant. A surface past the cap would wrap onto another combination's address, so the table refuses.
   assert.equal(doors.cap, 4096)
   for (const row of doors.rows) assert.ok(row.combinations <= doors.cap, `${row.door} has ${row.combinations} combinations`)
   assert.equal(qpuCombinatorialDoorsHolds({ ...doors, cap: 8 }), false, 'the predicate bites when a surface is past the cap')
@@ -56,16 +46,14 @@ test('all 438 combinations mint, decode back to themselves, and verify', () => {
   }
   assert.equal(minted, qpuCombinatorialDoorsOf().combinations)
 
-  // and the addresses are distinct across every surface at once — a door that did not enter the address would
-  // give the same sixteen bytes to the same index on two different surfaces
+  // distinct across every surface at once: a door outside the address would collide index-for-index
   for (const pair of qpuTeachingPairsOf().pairs) if (pair.uuid) seen.add(pair.uuid)
   for (const pair of qpuMixedOf().pairs) if (pair.uuid) seen.add(pair.uuid)
   assert.equal(seen.size, qpuTeachingPairsOf().pairs.length + qpuMixedOf().pairs.length)
   for (const uuid of seen) assert.match(uuid, RFC9562_V8, 'an address that is not a UUID is a UUID-shaped thing')
 
-  // A CORPUS THAT IS NOT THIS CORPUS GETS NO ADDRESS, and says so by absence rather than by crashing: the swap
-  // suites call the same reading with small invented tables, and a position on an axis those names are not on
-  // is not a position. This is the arm that broke when the addresses first went in.
+  // A corpus that is not this corpus gets no address, by absence rather than by crashing — the arm that broke
+  // when the addresses first went in.
   const invented = qpuTeachingPairsOf([
     { subject: 'invented', domain: 'nowhere', direction: 'practice to theory', what: 'x', source: 'x', year: 1 },
   ] as never)
@@ -81,17 +69,15 @@ test('a tampered address is refused in every field, and an unknown door is named
   assert.equal(decoded.right, 'astronomy')
   assert.equal(decoded.verified, true)
 
-  // THE CONTENT HALVES ARE NOT DECORATION. The middle alone would decode a hand-edited address into a perfectly
-  // plausible pair — flipping the params digit below does exactly that — so `verified` recomputes the whole
-  // address from the pair it claims and compares. Every field is checked because every field is in the fold.
+  // The middle alone decodes a hand-edited address into a plausible pair — the params flip below does exactly
+  // that — so `verified` recomputes the address from the pair it claims. Every field is in the fold.
   const flip = (s: string, at: number): string => s.slice(0, at) + ((parseInt(s[at]!, 16) + 1) % 16).toString(16) + s.slice(at + 1)
   for (const [field, at] of [['handle', 2], ['check', 16], ['variant', 19], ['params', 21], ['envelope', 25]] as const) {
     assert.equal(qpuCallOfUuid(flip(uuid, at)).verified, false, `a tampered ${field} must not verify`)
   }
   assert.notEqual(qpuCallOfUuid(flip(uuid, 21)).index, decoded.index, 'the params flip does decode to another combination — which is why verify exists')
 
-  // AN ADDRESS OF A SURFACE THIS UNIT DOES NOT COMPUTE IS A FACT ABOUT THIS UNIT, not a malformed uuid. Refusing
-  // it would report the absence of a door as a broken address, which is the same substitution a soft 404 makes.
+  // An address of a surface this unit does not compute is a fact about this unit, not a malformed uuid.
   const foreign = qpuCallOfUuid('00000000-ffff-8000-8000-000000000000')
   assert.equal(foreign.door, null)
   assert.equal(foreign.verified, false)
@@ -104,9 +90,8 @@ test('a tampered address is refused in every field, and an unknown door is named
 })
 
 test('the readings carry the addresses, so the codec has consumers and not only a test', () => {
-  // THE LESSON FROM NEXT DOOR, asserted rather than remembered. 251 doors, a collision-free hex for each, an
-  // encode/decode pair — and zero callers, because the resolver that was meant to use it reimplemented its
-  // three lines inline. A codec reachable only from its own suite is dead code with a passing test.
+  // Next door: 251 doors, a collision-free hex each, an encode/decode pair — and zero callers, because the
+  // resolver meant to use it reimplemented its three lines inline. A codec only its own suite calls is dead.
   const teaching = qpuTeachingPairsOf()
   assert.equal(teaching.pairs.length, 342)
   for (const pair of teaching.pairs) {
