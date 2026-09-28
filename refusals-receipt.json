@@ -1,9 +1,9 @@
 {
   "kind": "refusals-receipt",
-  "measure": "cross",
+  "measure": "computed-cross",
   "refusals": 39,
-  "notCross": 0,
+  "notCross": 39,
   "ungrounded": 0,
-  "cited": 0,
+  "cited": 39,
   "theorems": 81
 }

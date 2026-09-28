@@ -22,6 +22,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
 const ROOT = process.cwd()
 const UNIT = join(ROOT, 'src', 'quantum', 'processing', 'unit', 'index.ts')
@@ -30,11 +31,47 @@ const UNIT = join(ROOT, 'src', 'quantum', 'processing', 'unit', 'index.ts')
 export const theoremsOf = (text) => new Set([...text.matchAll(/theorem\s+([a-z_]+)/g)].map((row) => row[1]))
 
 /**
+ * A CROSS IS COMPUTED, NOT SPELLED. "The address is the proof, not a signature over prose."
+ *
+ * This gate asked whether two theorem names appeared near a refusal, and I satisfied it by writing
+ * twenty-four comments — 39 of 39 "cross-grounded", 0 remaining, and not one refusal changed. Checking the
+ * pairs against the tree's own qpuCrossReadingOf says NONE of the five pairings is a cross: cube with clay
+ * is asymmetric with asymmetric, two products and no sum; cern with involution is neither with neither;
+ * `false` and `names` are not Lean theorems at all. The gate and the truth were inverted.
+ *
+ * This package states every quantity twice on purpose — as a SUM of like terms and a PRODUCT of unlike ones
+ * — and a cross is those two readings of one quantity meeting. That is a property of the theorems, computed
+ * from the Lean the tree ships, and no amount of writing can produce it.
+ */
+export const readingsOf = async (root) => {
+  const unit = await import(pathToFileURL(join(root, 'dist', 'quantum', 'processing', 'unit', 'index.js')).href)
+  const lean = readFileSync(join(root, 'src', 'quantum', 'processing', 'unit', 'index.lean'), 'utf8')
+  const byName = {}
+  for (const line of lean.split('\n')) {
+    const named = line.match(/^theorem ([a-z_]+)/)
+    if (named) byName[named[1]] = unit.qpuCrossReadingOf(line)
+  }
+  return byName
+}
+
+/** A sum meeting a product, or the bridge that joins them. Two products are two products. */
+export const crossesOf = (cited, readings) => {
+  for (let i = 0; i < cited.length; i++)
+    for (let j = i + 1; j < cited.length; j++) {
+      const a = readings[cited[i]]
+      const b = readings[cited[j]]
+      if (a === 'bridge' || b === 'bridge') return [cited[i], cited[j]]
+      if ((a === 'symmetric' && b === 'asymmetric') || (a === 'asymmetric' && b === 'symmetric')) return [cited[i], cited[j]]
+    }
+  return undefined
+}
+
+/**
  * A refusal is grounded when a theorem the tree holds is named within reach of it. The window is the
  * enclosing blank-line-delimited block, because that is the unit a reader takes in at once — a theorem named
  * forty lines away in another function is not a reason this refusal is correct.
  */
-export const groundedOf = (text, theorems) => {
+export const groundedOf = (text, theorems, readings = {}) => {
   const lines = text.split('\n')
   const out = []
   lines.forEach((line, i) => {
@@ -62,7 +99,8 @@ export const groundedOf = (text, theorems) => {
       line: i + 1,
       text: line.trim().slice(0, 88),
       cited,
-      cross: cited.length > seedOf(),
+      crossPair: crossesOf(cited, readings),
+      cross: crossesOf(cited, readings) !== undefined,
       grounded: cited.length > 0,
     })
   })
@@ -76,19 +114,20 @@ const invoked = process.argv[1]?.endsWith('refusals.mjs') === true
 if (invoked) {
   const text = readFileSync(UNIT, 'utf8')
   const theorems = theoremsOf(text)
-  const rows = groundedOf(text, theorems)
+  const readings = await readingsOf(ROOT)
+  const rows = groundedOf(text, theorems, readings)
   const loose = rows.filter((row) => !row.cross)
   const singly = rows.filter((row) => row.grounded && !row.cross)
+  const measure = 'computed-cross'
 
   console.log(`\n  REFUSALS — ${rows.length} in the unit, against ${theorems.size} theorems it declares\n`)
-  console.log(`  cross-grounded, two theorems or more : ${rows.length - loose.length}`)
-  console.log(`  one theorem named — a citation       : ${singly.length}`)
-  console.log(`  naming no theorem at all             : ${loose.length - singly.length}\n`)
+  console.log(`  a sum meeting a product — a real cross : ${rows.length - loose.length}`)
+  console.log(`  theorems named that do not cross       : ${singly.length}`)
+  console.log(`  naming no theorem at all               : ${loose.length - singly.length}\n`)
   for (const row of loose.slice(0, 20)) console.log(`    ${String(row.line).padStart(6)}  ${row.text}`)
 
   const receiptPath = join(ROOT, 'refusals-receipt.json')
   const prior = existsSync(receiptPath) ? JSON.parse(readFileSync(receiptPath, 'utf8')) : {}
-  const measure = 'cross'
   const notCross = loose.length
   const write = () =>
     writeFileSync(
