@@ -1,1 +1,5 @@
-node_modules\n.git\ndist\n.wrangler\n*.log\n
+node_modules
+.git
+dist
+.wrangler
+*.log
