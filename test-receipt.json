@@ -1,18 +1,855 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 0,
-  "pass": 0,
-  "fail": 0,
-  "dry": 0,
+  "tests": 38,
+  "pass": 26,
+  "fail": 12,
+  "dry": 34,
   "circuit": 0,
-  "mintOnly": 0,
+  "mintOnly": 4,
   "servedOnly": 0,
   "dim": "0",
   "qubits": 0,
-  "receipt": "cbf29ce484222325",
-  "computed": 0,
+  "receipt": "17399bb3f9cefed3",
+  "computed": 38,
   "readRows": 0,
   "readingsOf": "test-readings.json",
-  "rows": []
+  "rows": [
+    {
+      "name": "dist/quantum/processing/unit/clay.test.js",
+      "file": "dist/quantum/processing/unit/clay.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/coil.test.js",
+      "file": "dist/quantum/processing/unit/coil.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "every door is derived from its own surface, and no two collide",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 3,
+        "chain": "e15571dec1b2e42b"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "all 438 combinations mint, decode back to themselves, and verify",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 3822,
+        "chain": "e73917b12de62aaf"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "a tampered address is refused in every field, and an unknown door is named rather than thrown at",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 27,
+        "chain": "e1c3d1df61ecf3d7"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "the readings carry the addresses, so the codec has consumers and not only a test",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 2682,
+        "chain": "84f1e2fe3325a58d"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/harness.test.js",
+      "file": "dist/quantum/processing/unit/harness.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/ladder.test.js",
+      "file": "dist/quantum/processing/unit/ladder.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/lean.test.js",
+      "file": "dist/quantum/processing/unit/lean.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/mcp.test.js",
+      "file": "dist/quantum/processing/unit/mcp.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/planes.test.js",
+      "file": "dist/quantum/processing/unit/planes.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/predicates.test.js",
+      "file": "dist/quantum/processing/unit/predicates.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Single System Execution Time",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Batch Processing Throughput",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Phase Latency Breakdown",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Combinatorial Computation Speed",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Full Benchmark Suite",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Memory Efficiency",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Cache Hit Rate",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Scalability to Core Count",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Proof Cache Accumulation",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Deterministic Output",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM BENCHMARK: Summary Report",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Phase 1 Foundation System",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Phase 2 Topology + Entanglement",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Phase 3 Full Autonomy",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Unified System (All Phases)",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Verification Harness",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Combinatorial Primitives",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Phase Inheritance Chain",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Autonomy Progression",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Theorem Caching at Each Phase",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: QUANTUM_SYSTEM Export",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Computational Correctness",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "QUANTUM KERNEL: Performance Characteristics",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/quantum.test.js",
+      "file": "dist/quantum/processing/unit/quantum.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/router.test.js",
+      "file": "dist/quantum/processing/unit/router.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "dist/quantum/processing/unit/steps.test.js",
+      "file": "dist/quantum/processing/unit/steps.test.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    }
+  ]
 }

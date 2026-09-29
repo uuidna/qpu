@@ -170,8 +170,8 @@ export class HuffmanEncoder {
   }
 
   private buildTree(frequencies: Map<string, number>): HuffmanNode {
-    const nodes = Array.from(frequencies.entries()).map(
-      ([char, freq]) => ({ char, freq, left: null, right: null })
+    const nodes: HuffmanNode[] = Array.from(frequencies.entries()).map(
+      ([char, freq]) => ({ char, freq, left: undefined, right: undefined })
     )
 
     while (nodes.length > 1) {
@@ -281,7 +281,7 @@ export class Trie {
     let node = this.root
     for (const char of word) {
       if (!node[char]) node[char] = {}
-      node = node[char]
+      node = node[char] as TrieNode
     }
     node['$end'] = true
   }
@@ -290,7 +290,7 @@ export class Trie {
     let node = this.root
     for (const char of prefix) {
       if (!node[char]) return []
-      node = node[char]
+      node = node[char] as TrieNode
     }
 
     const results: string[] = []
@@ -302,8 +302,8 @@ export class Trie {
     if (node['$end']) results.push(prefix)
 
     for (const [char, child] of Object.entries(node)) {
-      if (char !== '$end') {
-        this.dfs(child, prefix + char, results)
+      if (char !== '$end' && typeof child === 'object') {
+        this.dfs(child as TrieNode, prefix + char, results)
       }
     }
   }
@@ -312,7 +312,7 @@ export class Trie {
     let node = this.root
     for (const char of prefix) {
       if (!node[char]) return false
-      node = node[char]
+      node = node[char] as TrieNode
     }
     return true
   }
@@ -324,8 +324,8 @@ export class Trie {
   private countNodes(node: TrieNode): number {
     let count = 1
     for (const [key, child] of Object.entries(node)) {
-      if (key !== '$end') {
-        count += this.countNodes(child)
+      if (key !== '$end' && typeof child === 'object') {
+        count += this.countNodes(child as TrieNode)
       }
     }
     return count

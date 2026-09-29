@@ -151,7 +151,7 @@ export class SymptomToDiscoveryEngine {
       .map(solution => ({
         action: solution.action,
         expectedImprovement: solution.improvement,
-        riskLevel: solution.riskLevel,
+        riskLevel: solution.riskLevel as 'low' | 'medium' | 'high',
         estimatedTime: solution.timeSeconds,
         autoFixable: solution.autoFixable
       }))

@@ -2,8 +2,8 @@
  * MCP UI Adapter - Fuses shadcn/ui with MCP system for standardized UI
  */
 
-import { shadcnComponents } from './components'
-import { designSystem } from './design-system'
+import { shadcnComponents } from './components.js'
+import { designSystem } from './design-system.js'
 
 export interface MCPUIRequest {
   tool: string
@@ -296,7 +296,7 @@ export class MCPUIAdapter {
 
     switch (request.action) {
       case 'dashboard':
-        return this.renderDashboard(request.params as DashboardConfig)
+        return this.renderDashboard(request.params as unknown as DashboardConfig)
       case 'form':
         return this.renderForm(
           request.params.title as string,

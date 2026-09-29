@@ -2,13 +2,16 @@
  * shadcn/ui Components - Standard component library for QPU applications
  */
 
-import { designSystem, ComponentConfig, ComponentVariant, ComponentSize } from './design-system'
+import { designSystem, ComponentConfig, ComponentVariant, ComponentSize } from './design-system.js'
 
 export interface ButtonProps extends ComponentConfig {
   text: string
   onClick?: () => void
   icon?: string
   fullWidth?: boolean
+  variant?: ComponentVariant
+  size?: ComponentSize
+  disabled?: boolean
 }
 
 export interface CardProps {

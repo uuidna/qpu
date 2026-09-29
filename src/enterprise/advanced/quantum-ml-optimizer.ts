@@ -262,7 +262,7 @@ export class QuantumMLOptimizer {
     const outputs = results.map(r => r.output)
     // Simple averaging for numeric outputs
     if (typeof outputs[0] === 'number') {
-      return outputs.reduce((a, b) => (a as number) + (b as number), 0) / outputs.length
+      return (outputs.reduce((a: number, b: unknown) => a + (b as number), 0) as number) / outputs.length
     }
 
     // Voting for classification
