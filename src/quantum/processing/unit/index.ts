@@ -13857,6 +13857,9 @@ const worker = {
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
+    if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
+    if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
+    if (path === '/metrics') return jsonOf({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: SERVED.length })
     if (path === '/mcp') {
       // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no
       // server-initiated stream, so a GET asking for text/event-stream gets the spec's other allowed answer — 405 with
