@@ -91,7 +91,7 @@ jobs:
           twine upload sdk/python/dist/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         if: success()
         with:
           files: |
