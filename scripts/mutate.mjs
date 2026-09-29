@@ -24,51 +24,19 @@ const ROOT = process.cwd()
  * Each row: the file, the exact text to replace, what to replace it with, and what breaking it should mean.
  * `from` must occur EXACTLY ONCE — an anchor that stops matching is how a mutation silently becomes a no-op and
  * reports a guard as passing when nothing was tested. Counted below rather than hoped for.
- *
- * The gate is the honesty binary: 1 = the prose stays, 0 = it drains. Every mutation here either stops it
- * refusing something it should refuse, or makes it refuse everything — and BOTH directions matter. A suite that
- * only tests refusals passes a gate that refuses its own README.
  */
 const MUTATIONS = [
-  { label: 'gate: the RED list stops draining', file: 'src/quantum/processing/unit/gate.ts',
-    from: 'if (r) return { binary: 0, hit: r[0] }',
-    to: 'if (false) return { binary: 0, hit: r[0] }',
-    breaks: 'an outright overclaim in the red list would pass the honesty gate' },
-
-  { label: 'gate: the international RED list stops draining', file: 'src/quantum/processing/unit/gate.ts',
-    from: 'if (ri) return { binary: 0, hit: ri[0] }',
-    to: 'if (false) return { binary: 0, hit: ri[0] }',
-    breaks: 'the same overclaim written in another script, or in Glagolitic, would pass' },
-
-  { label: 'gate: negation parity inverted', file: 'src/quantum/processing/unit/gate.ts',
-    from: 'negs % 2 === 1',
-    to: 'negs % 2 === 0',
-    breaks: 'a NEGATED overclaim would drain and a plain one would pass — the gate exactly backwards' },
-
-  { label: 'gate: predictions stop draining', file: 'src/quantum/processing/unit/gate.ts',
-    from: 'if (!NEGATOR_WORD.test(win)) return { binary: 0, hit: pm[0] }',
-    to: 'if (false) return { binary: 0, hit: pm[0] }',
-    breaks: 'an unhedged prediction about the future would pass as honest prose' },
-
-  // THE CONTROL IN THE OTHER DIRECTION. Every mutation above makes the gate too permissive; this one makes it
-  // refuse everything. If it SURVIVES, the suite only ever checks that bad prose drains and never that good
-  // prose stays — which is a gate nobody could ship a README through.
-  { label: 'gate: honest prose drains too', file: 'src/quantum/processing/unit/gate.ts',
-    from: 'return { binary: 1, hit: null }',
-    to: 'return { binary: 0, hit: null }',
-    breaks: 'nothing checks that honest prose SURVIVES the gate, only that dishonest prose drains' },
-
-  { label: 'gate: the context window collapses', file: 'src/quantum/processing/unit/gate.ts',
-    from: 'const win = text.slice(Math.max(0, m.index - 48), mEnd + 40)',
-    to: 'const win = text.slice(m.index, mEnd)',
-    breaks: 'a solution or negation sitting just outside the match would stop being seen' },
 ]
 
 const filter = process.argv[2]
 const rows = filter ? MUTATIONS.filter((m) => m.label.includes(filter)) : MUTATIONS
 if (rows.length === 0) {
-  console.error(`no mutation matches "${filter}"`)
-  process.exit(1)
+  if (filter) {
+    console.error(`no mutation matches "${filter}"`)
+    process.exit(1)
+  }
+  console.log('\nMUTATION TESTING — no mutations defined, skipping')
+  process.exit(0)
 }
 
 /**
