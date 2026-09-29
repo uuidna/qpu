@@ -59,7 +59,7 @@ export interface DWConfig extends ConnectorConfig {
 export abstract class DataWarehouseConnector extends BaseConnector {
   protected dwConfig: DWConfig
   private batchQueue: unknown[] = []
-  private flushInterval: NodeJS.Timer | null = null
+  private flushInterval: ReturnType<typeof setInterval> | null = null
 
   constructor(config: DWConfig) {
     super(config)
@@ -180,7 +180,7 @@ export abstract class DataWarehouseConnector extends BaseConnector {
   }>> {
     const startDate = Date.now() - daysBack * 86400000
 
-    return this.query<{
+    const results = await this.query<{
       date: string
       avg_latency: number
       error_rate: number
@@ -199,6 +199,13 @@ export abstract class DataWarehouseConnector extends BaseConnector {
       `,
       { timeout: 30000 }
     )
+
+    return results.map(r => ({
+      date: r.date,
+      avgLatency: r.avg_latency,
+      errorRate: r.error_rate,
+      throughput: r.throughput
+    }))
   }
 
   /**

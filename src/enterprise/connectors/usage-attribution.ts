@@ -72,7 +72,7 @@ export class UsageAttribution {
   private dataWarehouse?: DataWarehouseConnector
   private quotas = new Map<string, CustomerUsageQuota>()
   private eventQueue: UsageEvent[] = []
-  private flushInterval: NodeJS.Timer | null = null
+  private flushInterval: ReturnType<typeof setInterval> | null = null
 
   constructor(dataWarehouse?: DataWarehouseConnector) {
     this.dataWarehouse = dataWarehouse
