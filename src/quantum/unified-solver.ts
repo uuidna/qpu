@@ -1,6 +1,6 @@
 /** Unified Quantum Solver - Single interface for all domains */
 
-import { tools } from './kernel/index'
+import { tools } from './kernel/index.js'
 
 export interface Problem {
   type: 'factor' | 'search' | 'optimize' | 'simulate' | 'cluster'
@@ -26,22 +26,22 @@ export class QuantumSolver {
         case 'factor':
           return tools.qpu_shor(problem.params.n)
         case 'search':
-          return tools.qpu_grover_search(
-            problem.params.target,
-            problem.params.space
+          return tools.qpu_grover(
+            String(problem.params.target),
+            String(problem.params.space)
           )
         case 'optimize':
           return tools.qpu_knapsack(
             JSON.stringify(problem.params.items),
-            problem.params.capacity
+            String(problem.params.capacity)
           )
         case 'simulate':
-          return tools.qpu_hamiltonian_sim(
-            problem.params.coupling,
-            problem.params.time
+          return tools.qpu_hamiltonian(
+            String(problem.params.coupling),
+            String(problem.params.time)
           )
         case 'cluster':
-          return tools.qpu_graph_coloring(problem.params.vertices)
+          return tools.qpu_graph_coloring(String(problem.params.vertices))
         default:
           throw new Error(`Unknown problem type: ${problem.type}`)
       }

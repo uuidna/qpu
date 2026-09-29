@@ -97,7 +97,7 @@ export class RecursiveDiscovery {
       implication: 'Recursion creates infinite depth',
     },
     'tangled-hierarchy': {
-      description: 'Levels don\'t truly separate; they're interdependent',
+      description: "Levels don't truly separate; they're interdependent",
       example: 'Quantum kernel enables domains, domains enable autonomous systems, systems improve kernel',
       implication: 'Distinction between levels is illusion',
     },

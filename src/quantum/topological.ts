@@ -8,7 +8,7 @@ export interface Anyon {
 
 export interface BraidingSequence {
   anyons: string[]
-  braids: Array<[number, number]>
+  braids: Array<[string, string]>
   result: string
 }
 

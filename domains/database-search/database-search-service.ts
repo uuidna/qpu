@@ -31,19 +31,11 @@ export class DatabaseSearchService {
   }
 
   private selectAlgorithm(input: any): 'search' | 'optimize' | 'simulate' | 'cluster' | 'factor' {
-    // Route to appropriate algorithm based on input characteristics
-    const algorithms = ['grover', 'amplitude amplification']
-    return algorithms[0] as any
+    return 'search'
   }
 
   async batch(requests: DatabaseSearchRequest[]): Promise<DatabaseSearchResult[]> {
     return Promise.all(requests.map(r => this.solve(r)))
-  }
-
-  async analyze(data: any[]): Promise<Map<string, number>> {
-    const analysis = new Map<string, number>()
-    // Analyze patterns in data
-    return analysis
   }
 }
 

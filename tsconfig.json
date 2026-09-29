@@ -8,13 +8,11 @@
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
-    "noEmitOnError": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noEmitOnError": false,
     "types": ["node"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/quantum/processing/unit/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }

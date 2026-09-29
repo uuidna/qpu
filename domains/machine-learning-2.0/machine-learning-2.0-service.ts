@@ -2,19 +2,19 @@
 
 import { solver } from '../../src/quantum/unified-solver'
 
-export interface MachineLearning2.0Request {
+export interface MLRequest {
   input: any
   params: Record<string, number>
 }
 
-export interface MachineLearning2.0Result {
+export interface MLResult {
   output: any
   confidence: number
   executionTime: number
 }
 
-export class MachineLearning2.0Service {
-  async solve(request: MachineLearning2.0Request): Promise<MachineLearning2.0Result> {
+export class MachineLearningService {
+  async solve(request: MLRequest): Promise<MLResult> {
     const startTime = Date.now()
     const algorithm = this.selectAlgorithm(request.input)
 
@@ -31,20 +31,12 @@ export class MachineLearning2.0Service {
   }
 
   private selectAlgorithm(input: any): 'search' | 'optimize' | 'simulate' | 'cluster' | 'factor' {
-    // Route to appropriate algorithm based on input characteristics
-    const algorithms = ['qaoa', 'grover', 'variational']
-    return algorithms[0] as any
+    return 'optimize'
   }
 
-  async batch(requests: MachineLearning2.0Request[]): Promise<MachineLearning2.0Result[]> {
+  async batch(requests: MLRequest[]): Promise<MLResult[]> {
     return Promise.all(requests.map(r => this.solve(r)))
-  }
-
-  async analyze(data: any[]): Promise<Map<string, number>> {
-    const analysis = new Map<string, number>()
-    // Analyze patterns in data
-    return analysis
   }
 }
 
-export default MachineLearning2.0Service
+export default MachineLearningService

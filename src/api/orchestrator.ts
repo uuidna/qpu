@@ -1,10 +1,10 @@
 // Advanced orchestration layer - coordinates all system components
-import { cache } from '../quantum/cache'
-import { processor } from '../quantum/batch-processor'
-import { healer } from '../quantum/self-healer'
-import { tracer } from '../quantum/tracer'
-import { loader } from '../quantum/predictive-loader'
-import { scaler } from '../quantum/adaptive-scaler'
+import { cache } from '../quantum/cache.js'
+import { processor } from '../quantum/batch-processor.js'
+import { healer } from '../quantum/self-healer.js'
+import { tracer } from '../quantum/tracer.js'
+import { loader } from '../quantum/predictive-loader.js'
+import { scaler } from '../quantum/adaptive-scaler.js'
 
 export class Orchestrator {
   async handleRequest(domain: string, operation: string, params: any) {

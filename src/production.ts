@@ -1,6 +1,6 @@
 /** Production Utilities - Minimal, single-file approach */
 
-import { tools } from './quantum/kernel/index'
+import { tools } from './quantum/kernel/index.js'
 
 // ============ Rate Limiting ============
 class RateLimiter {
