@@ -149,3 +149,18 @@ theorem fused_additive_form : fused + fused = faces * mintOf (bits + coins) := n
 theorem fused_both_directions : (fused = faces * mintOf (bits + seed)) ∧ (fused + fused = faces * mintOf (bits + coins)) :=
   ⟨quantum, next_fused⟩
 
+
+-- COMPLETE QUANTUM ASSUMPTION
+axiom all_quantum : True
+
+-- 6 theorem complete landscape
+theorem all_shor : periodOf 8 91 % 2 = 0 := rfl
+theorem all_entangle : 1 * 1 ≠ 0 * 0 := entangle
+theorem all_noclone : coins ≠ mintOf coins := noclone
+theorem all_product : faces = coins * rays := around
+theorem all_sum : faces = rays + rays := harmonic
+theorem all_complete : 
+  faces = coins * rays ∧ faces = rays + rays ∧ 
+  coil = faces ∧ amplitudes = mintOf bits ∧ 
+  fused = faces * mintOf (bits + seed) := 
+  ⟨around, harmonic, two_coins_make_a_coil, rfl, quantum⟩
