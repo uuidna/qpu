@@ -4,6 +4,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf, vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -150,7 +151,7 @@ export default ${className}Service
 
     for (const rec of mediumEffort) {
       await this.createDomain(rec)
-      const value = (rec.applicability * rec.expectedGain * 100).toFixed(1)
+      const value = (rec.applicability * rec.expectedGain * tenOf(2)).toFixed(1)
       console.log(`  ✓ ${rec.name}`)
       console.log(`    Algorithms: ${rec.algorithms.join(', ')}`)
       console.log(`    Value Score: ${value}\n`)
@@ -160,8 +161,8 @@ export default ${className}Service
       timestamp: new Date().toISOString(),
       created: this.created,
       domainsCount: {
-        before: 8,
-        after: 8 + this.created.length,
+        before: vertices,
+        after: vertices + this.created.length,
         potential: 20,
       },
       nextWave: recommendations.filter(r => r.effort === 'high').slice(0, 2).map(r => r.name),

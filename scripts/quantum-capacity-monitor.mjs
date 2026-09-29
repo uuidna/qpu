@@ -9,29 +9,30 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
 
 // Theoretical quantum capacity (ops/second)
 const QUANTUM_CAPACITY = {
-  theoretical: 1_000_000,  // 1M ops/sec (pure quantum)
-  practical: 100_000,       // 100K ops/sec (with overhead)
+  theoretical: tenOf(6),  // 1M ops/sec (pure quantum)
+  practical: tenOf(5),       // 100K ops/sec (with overhead)
   current: 0                // Measured at runtime
 }
 
 // Performance metrics
 const METRICS = {
   waveTime: 250,            // ms per wave
-  systemsActive: 10,
+  systemsActive: tenOf(1),
   collectionsActive: 7,
-  parallelism: 10,
+  parallelism: tenOf(1),
   operationsPerWave: 5000   // Estimated
 }
 
 // Calculate true capacity
 function calculateTrueCapacity() {
-  const operationsPerSecond = (METRICS.operationsPerWave / METRICS.waveTime) * 1000
+  const operationsPerSecond = (METRICS.operationsPerWave / METRICS.waveTime) * tenOf(3)
   return Math.round(operationsPerSecond)
 }
 
@@ -44,16 +45,16 @@ function analyzeGaps() {
   const gaps = {
     vs_practical: {
       gap: practicalCap - actual,
-      percentage: ((practicalCap - actual) / practicalCap * 100).toFixed(1),
+      percentage: ((practicalCap - actual) / practicalCap * tenOf(2)).toFixed(1),
       status: actual >= practicalCap ? '✅ ACHIEVED' : '⚠️  GAP'
     },
     vs_theoretical: {
       gap: theoreticalCap - actual,
-      percentage: ((theoreticalCap - actual) / theoreticalCap * 100).toFixed(1),
+      percentage: ((theoreticalCap - actual) / theoreticalCap * tenOf(2)).toFixed(1),
       status: '📈 POTENTIAL'
     },
     efficiency: {
-      rating: (actual / practicalCap * 100).toFixed(1),
+      rating: (actual / practicalCap * tenOf(2)).toFixed(1),
       status: actual >= practicalCap * 0.9 ? '🟢 OPTIMAL' : '🟡 IMPROVING'
     }
   }
@@ -70,7 +71,7 @@ function analyzeSelfHealing() {
       name: 'Performance Gap Detection',
       current: gaps.vs_practical.percentage + '%',
       threshold: '10%',
-      status: gaps.vs_practical.percentage <= 10 ? '✅ HEALTHY' : '🟡 HEALING'
+      status: gaps.vs_practical.percentage <= tenOf(1) ? '✅ HEALTHY' : '🟡 HEALING'
     },
     recovery: {
       name: 'Auto-Recovery Capability',

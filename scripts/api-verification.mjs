@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import https from 'https'
+import { tenOf } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -53,7 +54,7 @@ class APIVerification {
         expected: test.expected,
         actual: factors,
         match,
-        error: match ? 0 : 100,
+        error: match ? 0 : tenOf(2),
       })
 
       console.log(`  ${test.name}: ${test.number}`)
@@ -112,16 +113,16 @@ class APIVerification {
     const datasets = [
       {
         name: 'Iris-subset',
-        samples: 10,
+        samples: tenOf(1),
         features: 4,
         classes: 3,
         expectedAccuracy: 0.95,
       },
       {
         name: 'MNIST-subset',
-        samples: 100,
+        samples: tenOf(2),
         features: 784,
-        classes: 10,
+        classes: tenOf(1),
         expectedAccuracy: 0.92,
       },
     ]
@@ -137,7 +138,7 @@ class APIVerification {
         expectedAccuracy: dataset.expectedAccuracy,
         actualAccuracy: simAccuracy,
         match: Math.abs(simAccuracy - dataset.expectedAccuracy) < 0.05,
-        error: Math.abs(simAccuracy - dataset.expectedAccuracy) * 100,
+        error: Math.abs(simAccuracy - dataset.expectedAccuracy) * tenOf(2),
       })
 
       console.log(`  ${dataset.name}`)

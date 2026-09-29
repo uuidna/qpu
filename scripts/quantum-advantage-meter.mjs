@@ -4,6 +4,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -77,7 +78,7 @@ class QuantumAdvantage {
         name: 'Superconducting (IBM, Google)',
         qubits: 127,
         gateError: 0.001,
-        t1: 100,
+        t1: tenOf(2),
         scalability: 'moderate',
         cost: 'high',
       },
@@ -85,7 +86,7 @@ class QuantumAdvantage {
         name: 'Ion Trap (IonQ)',
         qubits: 11,
         gateError: 0.001,
-        t1: 1000,
+        t1: tenOf(3),
         scalability: 'moderate',
         cost: 'very high',
       },
@@ -93,7 +94,7 @@ class QuantumAdvantage {
         name: 'Photonic (Xanadu)',
         qubits: 50,
         gateError: 0.01,
-        t1: 10,
+        t1: tenOf(1),
         scalability: 'high',
         cost: 'medium',
       },
@@ -120,7 +121,7 @@ class QuantumAdvantage {
     const physicalErrorRates = [0.1, 0.01, 0.001, 0.0001]
 
     for (const errorRate of physicalErrorRates) {
-      const logicalErrorEstimate = Math.pow(10 * errorRate, Math.log10(errorRate) / Math.log10(0.01))
+      const logicalErrorEstimate = Math.pow(tenOf(1) * errorRate, Math.log10(errorRate) / Math.log10(0.01))
 
       console.log(`  Physical Error Rate: ${errorRate}`)
       console.log(`    Estimated Logical Error: ${logicalErrorEstimate.toExponential(2)}`)
@@ -135,25 +136,25 @@ class QuantumAdvantage {
     const milestones = [
       {
         year: 2024,
-        qubits: 1000,
+        qubits: tenOf(3),
         applications: 'Optimization benchmarks, Drug discovery simulations',
         status: 'near-term',
       },
       {
         year: 2026,
-        qubits: 10000,
+        qubits: tenOf(4),
         applications: 'Finance modeling, Materials discovery',
         status: 'NISQ era',
       },
       {
         year: 2030,
-        qubits: 100000,
+        qubits: tenOf(5),
         applications: 'Drug discovery, Machine learning acceleration',
         status: 'Early fault tolerance',
       },
       {
         year: 2035,
-        qubits: 1000000,
+        qubits: tenOf(6),
         applications: 'Cryptography breaking, Large optimization',
         status: 'Fault tolerant',
       },

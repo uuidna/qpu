@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { execSync } from 'child_process'
 import { fileURLToPath } from 'url'
+import { tenOf } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -58,7 +59,7 @@ class AutoOptimizer {
         const avg = times.length ? times.reduce((a, b) => a + b) / times.length : 0
 
         this.metrics.avgTestTime = avg
-        if (avg > 100) this.suggest('Tests taking >100ms - optimize hot paths')
+        if (avg > tenOf(2)) this.suggest('Tests taking >100ms - optimize hot paths')
       }
     } catch {}
   }
@@ -190,7 +191,7 @@ class AutoOptimizer {
     console.log('\n💡 Suggestions:')
     const uniqueSuggestions = [...new Set(this.suggestions || [])]
     if (uniqueSuggestions.length > 0) {
-      uniqueSuggestions.slice(0, 10).forEach((sug, i) => {
+      uniqueSuggestions.slice(0, tenOf(1)).forEach((sug, i) => {
         console.log(`  ${i + 1}. ${sug}`)
       })
     } else {

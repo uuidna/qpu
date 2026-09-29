@@ -5,6 +5,7 @@ import http from 'http'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -13,7 +14,7 @@ class HealthMonitor {
   constructor(interval = 5000) {
     this.interval = interval
     this.history = []
-    this.maxHistory = 100
+    this.maxHistory = tenOf(2)
     this.alerts = []
     this.running = false
   }
@@ -99,7 +100,7 @@ class HealthMonitor {
     }
 
     // High latency
-    if (metrics.checks.api.latency > 1000) {
+    if (metrics.checks.api.latency > tenOf(3)) {
       checks.push({
         severity: 'warning',
         message: `High API latency: ${metrics.checks.api.latency}ms`,
@@ -157,7 +158,7 @@ class HealthMonitor {
     const snapshot = {
       timestamp: Date.now(),
       iso: new Date().toISOString(),
-      history: this.history.slice(-10),
+      history: this.history.slice(-tenOf(1)),
       recentAlerts: this.alerts.slice(-20),
       uptime: process.uptime(),
       totalRequests: this.history.length,
@@ -169,7 +170,7 @@ class HealthMonitor {
 
   async start() {
     this.running = true
-    console.log('🤖 Health Monitor started (interval: ' + (this.interval / 1000) + 's)\n')
+    console.log('🤖 Health Monitor started (interval: ' + (this.interval / tenOf(3)) + 's)\n')
 
     while (this.running) {
       const metrics = await this.checkHealth()
@@ -191,7 +192,7 @@ class HealthMonitor {
   report() {
     const totalChecks = this.history.length
     const healthyChecks = this.history.filter(h => h.metrics.checks.api.status === 'ok').length
-    const healthPercent = totalChecks > 0 ? ((healthyChecks / totalChecks) * 100).toFixed(1) : 0
+    const healthPercent = totalChecks > 0 ? ((healthyChecks / totalChecks) * tenOf(2)).toFixed(1) : 0
 
     const avgLatency = this.history.length > 0
       ? (this.history.reduce((sum, h) => sum + (h.metrics.checks.api.latency || 0), 0) / this.history.length).toFixed(0)
@@ -211,7 +212,7 @@ class HealthMonitor {
 // Run monitor (10 checks then report)
 if (process.argv[2] === '--test') {
   // Test mode: 10 checks then exit
-  const monitor = new HealthMonitor(1000)
+  const monitor = new HealthMonitor(tenOf(3))
   let count = 0
 
   const testInterval = setInterval(async () => {
@@ -221,7 +222,7 @@ if (process.argv[2] === '--test') {
     monitor.printStatus(metrics, anomalies)
 
     count++
-    if (count >= 10) {
+    if (count >= tenOf(1)) {
       clearInterval(testInterval)
       monitor.report()
       process.exit(0)

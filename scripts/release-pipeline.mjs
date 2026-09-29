@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { execSync } from 'child_process'
+import { tenOf, vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -97,19 +98,19 @@ class ReleasePipeline {
       {
         name: 'Finance Domain',
         capability: 'portfolio-optimization',
-        input: { assets: 5, capital: 100000 },
+        input: { assets: 5, capital: tenOf(5) },
         expected: 'allocation',
       },
       {
         name: 'ML Domain',
         capability: 'classification',
-        input: { samples: 100, features: 10 },
+        input: { samples: tenOf(2), features: tenOf(1) },
         expected: 'model',
       },
       {
         name: 'Supply Chain Domain',
         capability: 'knapsack',
-        input: { items: 10, capacity: 50 },
+        input: { items: tenOf(1), capacity: 50 },
         expected: 'solution',
       },
       {
@@ -179,7 +180,7 @@ class ReleasePipeline {
     const artifacts = [
       { name: 'qpu-core.min.js', size: '45KB', domains: 13 },
       { name: 'mcp-interface.wasm', size: '128KB', domains: 'all' },
-      { name: 'autonomous-systems.bundle.js', size: '88KB', systems: 8 },
+      { name: 'autonomous-systems.bundle.js', size: '88KB', systems: vertices },
       { name: 'domain-specific-tools.tar.gz', size: '256KB', domains: 13 },
     ]
 
@@ -243,7 +244,7 @@ class ReleasePipeline {
     console.log('📝 Generating Release Notes\n')
 
     const releaseNotes = {
-      version: '1.0.' + Math.floor(Date.now() / 1000).toString().slice(-3),
+      version: '1.0.' + Math.floor(Date.now() / tenOf(3)).toString().slice(-3),
       timestamp: new Date().toISOString(),
       checksPassed: this.checks.filter(c => c.status === 'pass').length,
       testsPassed: this.tests.filter(t => t.status === 'pass').length,

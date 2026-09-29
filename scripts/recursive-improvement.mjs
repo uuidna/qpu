@@ -4,6 +4,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf, vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -20,18 +21,18 @@ class RecursiveImprovement {
     console.log('📊 Analyzing system performance across all dimensions...\n')
 
     const metrics = {
-      throughput: { current: 800, target: 1000, trend: 'improving' },
+      throughput: { current: 800, target: tenOf(3), trend: 'improving' },
       latency: { current: 113, target: 85, trend: 'improving' },
       cacheHitRate: { current: 88, target: 95, trend: 'improving' },
       errorRate: { current: 0.8, target: 0.1, trend: 'improving' },
       qualityScore: { current: 95, target: 99, trend: 'stable' },
-      scalability: { current: 1, target: 10, trend: 'ready' },
-      autonomy: { current: 8, target: 12, trend: 'expanding' },
+      scalability: { current: 1, target: tenOf(1), trend: 'ready' },
+      autonomy: { current: vertices, target: 12, trend: 'expanding' },
     }
 
     const gaps = {}
     for (const [metric, data] of Object.entries(metrics)) {
-      const gap = ((data.target - data.current) / data.target) * 100
+      const gap = ((data.target - data.current) / data.target) * tenOf(2)
       gaps[metric] = gap
       console.log(`  ${metric}: ${data.current}/${data.target} (${gap.toFixed(1)}% gap, ${data.trend})`)
     }
@@ -46,7 +47,7 @@ class RecursiveImprovement {
     const opportunities = []
 
     for (const [metric, gap] of Object.entries(gaps)) {
-      if (gap > 10) {
+      if (gap > tenOf(1)) {
         let strategy = ''
         switch (metric) {
           case 'throughput':
@@ -158,7 +159,7 @@ class RecursiveImprovement {
 
     const successRate = this.improvements.filter(i => i.success).length / this.improvements.length
     const avgImpact = this.improvements.reduce((sum, i) => sum + i.impact, 0) / this.improvements.length
-    const efficiency = (successRate * avgImpact * 100).toFixed(1)
+    const efficiency = (successRate * avgImpact * tenOf(2)).toFixed(1)
 
     console.log(`  Success Rate: ${(successRate * 100).toFixed(1)}%`)
     console.log(`  Average Impact: ${(avgImpact * 100).toFixed(1)}%`)

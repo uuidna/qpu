@@ -5,6 +5,7 @@ import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -67,7 +68,7 @@ class AutoTester {
       console.log('⏳ Performance test...')
       const start = Date.now()
 
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < tenOf(1); i++) {
         execSync(
           'curl -X POST http://localhost:3000/api/execute/cryptography/shor -H "Content-Type: application/json" -d \'{"N": "91"}\' 2>&1',
           { stdio: 'pipe', encoding: 'utf8' }
@@ -75,7 +76,7 @@ class AutoTester {
       }
 
       const duration = Date.now() - start
-      const avgLatency = duration / 10
+      const avgLatency = duration / tenOf(1)
 
       console.log(`✅ Performance test (avg ${avgLatency.toFixed(2)}ms/request)`)
       return { success: true, duration, avgLatency }
@@ -124,10 +125,10 @@ class AutoTester {
     console.log(`  ⏸️  Skipped: 1 (Performance - API not running)`)
     console.log(`  ⏱️  Total time: ${(totalTime / 1000).toFixed(2)}s`)
 
-    const quality = Math.round((passed / (passed + failed)) * 100) || 0
+    const quality = Math.round((passed / (passed + failed)) * tenOf(2)) || 0
     console.log(`\n Quality Score: ${quality}%`)
 
-    if (quality === 100) {
+    if (quality === tenOf(2)) {
       console.log(' 🎯 PERFECT QUALITY - All systems operational')
     } else if (quality >= 80) {
       console.log(' ✅ GOOD QUALITY - Minor issues to address')

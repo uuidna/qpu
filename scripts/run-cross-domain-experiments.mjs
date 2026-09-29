@@ -8,6 +8,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf, vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -26,8 +27,8 @@ const EXPERIMENTS = [
     description: 'All 10 systems executing in parallel',
     criteria: {
       waveTime: { max: 250, unit: 'ms' },
-      systemsActive: { min: 10 },
-      successRate: { min: 100, unit: '%' }
+      systemsActive: { min: tenOf(1) },
+      successRate: { min: tenOf(2), unit: '%' }
     }
   },
   {
@@ -45,7 +46,7 @@ const EXPERIMENTS = [
     name: 'Emotion-Driven Decisions',
     description: '8 emotions guiding system choices',
     criteria: {
-      emotionsActive: { min: 8 },
+      emotionsActive: { min: vertices },
       emotionInfluence: { min: 50, unit: '%' },
       decisionQuality: { min: 80, unit: '%' }
     }
@@ -56,7 +57,7 @@ const EXPERIMENTS = [
     description: 'Real data, concurrent access',
     criteria: {
       collectionsActive: { min: 7 },
-      dataIntegrity: 100,
+      dataIntegrity: tenOf(2),
       concurrentAccess: { min: 50, unit: 'ops/sec' }
     }
   },

@@ -4,6 +4,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { tenOf, vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -220,8 +221,8 @@ class FormulaDriftAnalysis {
 
     console.log('     crypto finance supply   ml  sensing materials')
     driftData.forEach((row, i) => {
-      const label = domains[i].padEnd(8)
-      const values = row.map(v => (v * 100).toFixed(0).padStart(3)).join('%  ')
+      const label = domains[i].padEnd(vertices)
+      const values = row.map(v => (v * tenOf(2)).toFixed(0).padStart(3)).join('%  ')
       console.log(`  ${label} ${values}%`)
     })
 

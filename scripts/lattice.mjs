@@ -145,7 +145,7 @@ export const findingsOf = (text, table, floor, _file = 'x.mjs') => {
     const to = text.indexOf('\n', at)
     return text.slice(from, to < 0 ? text.length : to)
   }
-  for (const match of text.matchAll(/(?<![\w.$])(\d[\d_]*)(?![\w.$])/g)) {
+  for (const match of text.matchAll(/(?<![\w.$])(?<![eE][+-])(\d[\d_]*)(?![\w.$])/g)) {
     const start = match.index
     if (mask[start] === 0) continue
     /**

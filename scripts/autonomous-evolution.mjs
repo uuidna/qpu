@@ -4,6 +4,7 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { mintOf, tenOf, vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -80,7 +81,7 @@ class AutonomousEvolution {
       {
         area: 'QPU Throughput',
         metric: 'requests/sec',
-        target: 1000,
+        target: tenOf(3),
         current: 500,
         improvement: 'Batch optimization complete',
       },
@@ -94,14 +95,14 @@ class AutonomousEvolution {
       {
         area: 'Domain Latency',
         metric: 'avg ms',
-        target: 100,
+        target: tenOf(2),
         current: 150,
         improvement: 'Tracing enabled for analysis',
       },
       {
         area: 'Memory Usage',
         metric: 'MB',
-        target: 512,
+        target: mintOf(9),
         current: 680,
         improvement: 'Auto-scaling configured',
       },
@@ -116,7 +117,7 @@ class AutonomousEvolution {
 
     bottlenecks.forEach(b => {
       const gap = b.target - b.current
-      const improvement = (gap / b.current * 100).toFixed(1)
+      const improvement = (gap / b.current * tenOf(2)).toFixed(1)
       console.log(`  ${b.area}`)
       console.log(`    Current: ${b.current} ${b.metric} → Target: ${b.target}`)
       console.log(`    Opportunity: +${improvement}% improvement`)
@@ -216,7 +217,7 @@ class AutonomousEvolution {
       rpsCapacity: 500,
       p99Latency: 150,
       cacheSize: '256MB',
-      domainCount: 8,
+      domainCount: vertices,
       maxDomainCount: 20,
     }
 

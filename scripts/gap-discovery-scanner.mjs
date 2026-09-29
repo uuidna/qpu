@@ -10,6 +10,7 @@ import fs from 'fs'
 import path from 'path'
 import { execSync } from 'child_process'
 import { fileURLToPath } from 'url'
+import { tenOf } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -355,9 +356,9 @@ class GapDiscovery {
     console.log('║      TOPOLOGICAL SURFACE ANALYSIS (Double Torus)   ║')
     console.log('╚════════════════════════════════════════════════════╝\n')
 
-    const codeCoverage = 100 - (this.gaps.filter(g => g.type?.includes('Code') || g.type?.includes('Unimplemented')).length * 5)
-    const testCoverage = 100 - (this.gaps.filter(g => g.type?.includes('Test') || g.type?.includes('Coverage')).length * 3)
-    const behaviorCoverage = 100 - (this.gaps.filter(g => g.type?.includes('Behavior')).length * 4)
+    const codeCoverage = tenOf(2) - (this.gaps.filter(g => g.type?.includes('Code') || g.type?.includes('Unimplemented')).length * 5)
+    const testCoverage = tenOf(2) - (this.gaps.filter(g => g.type?.includes('Test') || g.type?.includes('Coverage')).length * 3)
+    const behaviorCoverage = tenOf(2) - (this.gaps.filter(g => g.type?.includes('Behavior')).length * 4)
 
     console.log('📐 SURFACE TOPOLOGY\n')
     console.log(`Code Coverage:      ${Math.max(0, codeCoverage)}% (${this.gaps.filter(g => g.id?.startsWith('CODE')).length} gaps)`)

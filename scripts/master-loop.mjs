@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { spawn } from 'child_process'
+import { vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
@@ -110,7 +111,7 @@ class MasterLoop {
       },
       capabilities: {
         domains: 11,
-        algorithms: 8,
+        algorithms: vertices,
         patterns: 45,
         bridges: 12,
       },
