@@ -10725,7 +10725,7 @@ export const qpuCernCatalogsHold = (
   new Set(catalogs.map((row) => row.name)).size === catalogs.length &&
   catalogs.every((row) => typeof row.href === 'string' && row.href.startsWith('https://'))
 
-const qpuCernCatalogsOf = onceOf(() => {
+export const qpuCernCatalogsOf = onceOf(() => {
   const api = `https://${cernHost}${cernPath}`
   const inspire = ['literature', 'authors', 'institutions', 'conferences', 'seminars', 'journals', 'jobs', 'experiments', 'data'] as const
   const open = [
@@ -10740,6 +10740,7 @@ const qpuCernCatalogsOf = onceOf(() => {
   return { kind: 'hep' as const,
     catalogs }
 })
+export const qpuCernCatalogsHolds = (x: ReturnType<typeof qpuCernCatalogsOf> = qpuCernCatalogsOf()): boolean => qpuCernCatalogsHold(x.catalogs)
 
 export const qpuCernExperimentsOf = onceOf(() => {
   const faces = qpuFacesOf()
