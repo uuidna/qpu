@@ -24,5 +24,13 @@ export {
   executeCompositionGlobal
 } from './manager.js'
 
+// UUID Bridge (connects to UUID-programmable MCP layer)
+export {
+  UUIDBridge,
+  uuidBridge,
+  executeByUUID,
+  executeByName
+} from './uuid-bridge.js'
+
 // Convenience exports
 export type { OperationMetadata, ExecutionResult, CompositionRequest } from './types.js'
