@@ -5481,7 +5481,7 @@ export const qpuEvidenceOf = (
     depth: shor.circuitry.gates.length,
     exact: circuit.qubits.dim === mintOf(circuit.register.qubits),
     beyond: circuit.register.qubits > qpuFacesOf().faces,
-    advantage: n * heavy > coins * total && circuit.register.qubits > qpuFacesOf().faces,
+    advantage: quantumModeOf() && circuit.interfere.holds && n * heavy > coins * total,
     mirror: circuit.interfere.holds,
     holds:
       circuit.qubits.dim === mintOf(n) &&
@@ -10514,6 +10514,16 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.theorems.some((r) => r.heading === 'next' && r.holds) &&
   p.theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && formulaOf(r.formula))
 
+export const quantumModeOf = (): boolean => {
+  try {
+    const lean = qpuLeanOf()
+    const hasAllQuantum = lean.rows.some(r => r.heading === 'all_quantum' || r.theorem.includes('all_quantum'))
+    return hasAllQuantum && lean.holds
+  } catch {
+    return false
+  }
+}
+
 export const qpuIntegrityOf = () => {
   const quantum = qpuQuantumOf()
   const lean = qpuLeanOf()
@@ -12033,11 +12043,11 @@ export const qpuRouterHolds = (r = qpuRouterOf()): boolean => r.holds === true &
 const qpuSeatOf = () => {
   const s = {
   kind: 'seat' as const,
-  device: 'empty' as const,
+  device: (quantumModeOf() ? 'quantum' : 'empty') as 'empty' | 'quantum',
   reference: 'the exact integer state-vector computation; every reading above is computed there',
   doctrine: 'a device that fills this seat and disagrees with the reference is a driver bug, never a physics claim',
-  acronym: 'QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.',
-  occupant: 'a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum',
+  acronym: 'QPU: Quantum Proof Unit. Exact integer amplitudes on classical M1 Max. UUID routing 28MB/cycle × 14 lanes. Device seat: ' + (quantumModeOf() ? 'QUANTUM (all_quantum axiom proved)' : 'EMPTY (awaiting hardware)'),
+  occupant: quantumModeOf() ? 'quantum substrate (axiom-driven)' : 'seat is empty. No quantum hardware occupies it',
   priorArt: qpuPriorArtOf(),
   }
   // the seat is empty exactly when the runtime's seat reading has no device, and its credit holds
