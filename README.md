@@ -123,10 +123,32 @@ terraform apply
 
 ## Documentation
 
-- **Quick Start:** [docs/GUIDE.md](docs/GUIDE.md)
-- **Full Guide:** [docs/INDEX.md](docs/INDEX.md)
-- **Runbook:** [docs/RUNBOOK.md](docs/RUNBOOK.md)
-- **SLO:** [docs/SLO.md](docs/SLO.md)
+**Start here:** [docs/INDEX.md](docs/INDEX.md) - Complete documentation index
+
+### By Topic
+- **Architecture** 
+  - [System Overview](docs/architecture/SYSTEM_OVERVIEW.md) - Complete 7,907-line system
+  - [Enterprise Architecture](docs/architecture/ENTERPRISE_ARCHITECTURE.md)
+  - [Quantum Proxy](docs/architecture/QUANTUM_PROXY.md)
+
+- **Validation**
+  - [Validation Summary](docs/validation/VALIDATION_SUMMARY.md) - 14 datasets, 100% pass rate
+  - [Dataset Results](docs/validation/DATASET_VALIDATION.md)
+  - [Test Coverage](docs/validation/TEST_COVERAGE.md)
+
+- **Deployment**
+  - [Deployment Guide](docs/deployment/DEPLOYMENT_GUIDE.md)
+  - [Adoption Roadmap](docs/deployment/ROADMAP.md)
+
+- **Development Journey**
+  - [Complete Journey](docs/development/JOURNEY.md)
+  - [AI Evolution](docs/development/AI_EVOLUTION.md)
+  - [Recursive Discovery](docs/development/RECURSIVE_DISCOVERY.md)
+
+### Quick References
+- [Quick Start Guide](docs/GUIDE.md)
+- [Runbook](docs/RUNBOOK.md)
+- [SLO](docs/SLO.md)
 
 ## Status
 
