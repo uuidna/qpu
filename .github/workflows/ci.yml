@@ -40,14 +40,14 @@ jobs:
       # only after the kernel passed in this run; a failing run saves nothing.
       - name: Kernel receipt (index.lean bytes and the toolchain pin already checked in an earlier run)
         id: kernel
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: .lean-ok
           key: lean-ok-${{ hashFiles('lean-toolchain', 'src/quantum/processing/unit/index.lean') }}
       - name: Lean toolchain cache (keyed on lean-toolchain; only when the receipt is missing)
         if: steps.kernel.outputs.cache-hit != 'true'
         id: elan
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.elan
           key: elan-${{ runner.os }}-${{ hashFiles('lean-toolchain') }}
@@ -62,7 +62,7 @@ jobs:
           sha256sum lean-toolchain src/quantum/processing/unit/index.lean > .lean-ok
       - name: Save the kernel receipt (only after the kernel passed here)
         if: steps.kernel.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: .lean-ok
           key: lean-ok-${{ hashFiles('lean-toolchain', 'src/quantum/processing/unit/index.lean') }}
