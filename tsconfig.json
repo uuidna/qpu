@@ -22,7 +22,6 @@
     "src/enterprise/**",
     "src/tools/**",
     "src/core/**",
-    "src/tests/**",
     "node_modules"
   ]
 }
