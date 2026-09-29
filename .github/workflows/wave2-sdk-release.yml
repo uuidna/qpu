@@ -160,7 +160,7 @@ jobs:
 
     steps:
       - name: Notify Slack
-        uses: slackapi/slack-github-action@v1
+        uses: slackapi/slack-github-action@v4
         if: env.SLACK_WEBHOOK_URL != ''
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
