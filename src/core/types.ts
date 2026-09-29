@@ -61,7 +61,7 @@ export interface ScholarlyWork {
   citations: Citation[]
 }
 
-export interface CitationCategory = 'citation' | 'domain' | 'genealogy' | 'problem' | 'scholar'
+export type CitationCategory = 'citation' | 'domain' | 'genealogy' | 'problem' | 'scholar'
 
 // ============================================================================
 // LEAD TRACKING TYPES
