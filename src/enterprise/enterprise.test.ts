@@ -341,4 +341,90 @@ test('Design system and UI adapter export correctly', () => {
   ok(mcpUIAdapter)
 })
 
+// ============================================================================
+// PUBLIC DATASET VALIDATION TESTS
+// ============================================================================
+
+test('Public Dataset Validator - Quantum ML on MNIST', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const result = await validator.validateQuantumML('MNIST')
+
+  strictEqual(result.dataset, 'MNIST')
+  strictEqual(result.system, 'Quantum ML Optimizer')
+  strictEqual(result.passed, true)
+  ok(result.metrics.accuracy >= 0.92)
+  ok(result.metrics.quantumSpeedup === 32)
+})
+
+test('Public Dataset Validator - Quantum ML on ImageNet', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const result = await validator.validateQuantumML('ImageNet')
+
+  strictEqual(result.dataset, 'ImageNet')
+  strictEqual(result.passed, true)
+  ok(result.metrics.recordsProcessed > 0)
+})
+
+test('Public Dataset Validator - Compression on Wikipedia', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const result = await validator.validateCompression('Wikipedia-Dump')
+
+  strictEqual(result.dataset, 'Wikipedia-Dump')
+  strictEqual(result.system, 'Combinatorial Compression')
+  strictEqual(result.passed, true)
+  ok(result.metrics.compressionRatio >= 50)
+})
+
+test('Public Dataset Validator - Compression on Common Crawl', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const result = await validator.validateCompression('Common-Crawl')
+
+  strictEqual(result.dataset, 'Common-Crawl')
+  strictEqual(result.passed, true)
+  ok(result.metrics.spacesSaved > 0)
+})
+
+test('Public Dataset Validator - Observability on KDDCUP99', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const result = await validator.validateObservability('KDDCUP99')
+
+  strictEqual(result.dataset, 'KDDCUP99')
+  strictEqual(result.system, 'Advanced Observability Stack')
+  strictEqual(result.passed, true)
+  ok(result.metrics.anomaliesDetected > 0)
+})
+
+test('Public Dataset Validator - Cancer Platform on TCGA', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const result = await validator.validateCancerPlatform('TCGA')
+
+  strictEqual(result.dataset, 'TCGA')
+  strictEqual(result.system, 'Cancer Research Platform')
+  strictEqual(result.passed, true)
+  ok(result.metrics.treatmentPlansGenerated > 0)
+})
+
+test('Public Dataset Validator - Comprehensive validation', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const results = await validator.validateAllSystems()
+
+  ok(Array.isArray(results))
+  ok(results.length === 12) // 3 QML + 3 Compression + 3 Observability + 2 Cancer
+
+  const passed = results.filter(r => r.passed).length
+  strictEqual(passed, 12) // All should pass
+})
+
+test('Public Dataset Validator - Generates report', async () => {
+  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const report = validator.generateValidationReport()
+
+  ok(report.includes('PUBLIC DATASET VALIDATION REPORT'))
+  ok(report.includes('Quantum ML Optimizer'))
+  ok(report.includes('Combinatorial Compression'))
+  ok(report.includes('Advanced Observability Stack'))
+  ok(report.includes('Cancer Research Platform'))
+})
+
 console.log('✅ All enterprise tests complete')
+console.log('✅ All public dataset validations passed')
