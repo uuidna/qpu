@@ -18,10 +18,11 @@ import { infrastructureGenerator } from './tools/infrastructure-generator.js'
 import { disasterRecovery } from './tools/disaster-recovery.js'
 
 import { complianceDashboard } from './apps/compliance-dashboard.js'
-import { supportPortal } from './apps/support-portal.js'
+import { SupportPortal, supportPortal } from './apps/support-portal.js'
 import { trainingPlatform } from './apps/training-platform.js'
 import { operationsDashboard } from './apps/operations-dashboard.js'
 import { certificationPortal } from './apps/certification-portal.js'
+import { publicDatasetValidator } from './testing/public-dataset-validator.js'
 
 import { designSystem } from './ui/design-system.js'
 import { mcpUIAdapter } from './ui/mcp-ui-adapter.js'
@@ -252,7 +253,7 @@ test('End-to-end - Compliance workflow', () => {
   // Record in dashboard
   complianceDashboard.recordSecurityEvent({
     timestamp: new Date(),
-    severity: 'high',
+    severity: issues[0].severity,
     type: 'hardcoded_secret',
     description: 'Found hardcoded secret in source',
     resolved: false
@@ -264,6 +265,7 @@ test('End-to-end - Compliance workflow', () => {
 })
 
 test('End-to-end - Support workflow', () => {
+  const supportPortal = new SupportPortal()
   // Create ticket
   const ticket = supportPortal.createTicket({
     subject: 'Issue',
@@ -346,77 +348,77 @@ test('Design system and UI adapter export correctly', () => {
 // ============================================================================
 
 test('Public Dataset Validator - Quantum ML on MNIST', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const result = await validator.validateQuantumML('MNIST')
 
   strictEqual(result.dataset, 'MNIST')
   strictEqual(result.system, 'Quantum ML Optimizer')
   strictEqual(result.passed, true)
-  ok(result.metrics.accuracy >= 0.92)
+  ok(Number(result.metrics.accuracy) >= 0.92)
   ok(result.metrics.quantumSpeedup === 32)
 })
 
 test('Public Dataset Validator - Quantum ML on ImageNet', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const result = await validator.validateQuantumML('ImageNet')
 
   strictEqual(result.dataset, 'ImageNet')
   strictEqual(result.passed, true)
-  ok(result.metrics.recordsProcessed > 0)
+  ok(Number(result.metrics.recordsProcessed) > 0)
 })
 
 test('Public Dataset Validator - Compression on Wikipedia', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const result = await validator.validateCompression('Wikipedia-Dump')
 
   strictEqual(result.dataset, 'Wikipedia-Dump')
   strictEqual(result.system, 'Combinatorial Compression')
   strictEqual(result.passed, true)
-  ok(result.metrics.compressionRatio >= 50)
+  ok(Number(result.metrics.compressionRatio) >= 50)
 })
 
 test('Public Dataset Validator - Compression on Common Crawl', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const result = await validator.validateCompression('Common-Crawl')
 
   strictEqual(result.dataset, 'Common-Crawl')
   strictEqual(result.passed, true)
-  ok(result.metrics.spacesSaved > 0)
+  ok(Number(result.metrics.spacesSaved) > 0)
 })
 
 test('Public Dataset Validator - Observability on KDDCUP99', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const result = await validator.validateObservability('KDDCUP99')
 
   strictEqual(result.dataset, 'KDDCUP99')
   strictEqual(result.system, 'Advanced Observability Stack')
   strictEqual(result.passed, true)
-  ok(result.metrics.anomaliesDetected > 0)
+  ok(Number(result.metrics.anomaliesDetected) > 0)
 })
 
 test('Public Dataset Validator - Cancer Platform on TCGA', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const result = await validator.validateCancerPlatform('TCGA')
 
   strictEqual(result.dataset, 'TCGA')
   strictEqual(result.system, 'Cancer Research Platform')
   strictEqual(result.passed, true)
-  ok(result.metrics.treatmentPlansGenerated > 0)
+  ok(Number(result.metrics.treatmentPlansGenerated) > 0)
 })
 
 test('Public Dataset Validator - Comprehensive validation', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const results = await validator.validateAllSystems()
 
   ok(Array.isArray(results))
-  ok(results.length === 12) // 3 QML + 3 Compression + 3 Observability + 2 Cancer
+  ok(results.length === 11) // 3 QML + 3 Compression + 3 Observability + 2 Cancer
 
   const passed = results.filter(r => r.passed).length
-  strictEqual(passed, 12) // All should pass
+  strictEqual(passed, 11) // All should pass
 })
 
 test('Public Dataset Validator - Generates report', async () => {
-  const validator = require('./testing/public-dataset-validator').publicDatasetValidator
+  const validator = publicDatasetValidator
   const report = validator.generateValidationReport()
 
   ok(report.includes('PUBLIC DATASET VALIDATION REPORT'))

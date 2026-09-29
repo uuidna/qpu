@@ -148,15 +148,15 @@ async function testExecutionStats(): Promise<boolean> {
  */
 async function testManagerCaching(): Promise<boolean> {
   const start = Date.now()
-  await defaultManager.execute('health-check', {})
+  const once = await defaultManager.execute('health-check', {})
   const first = Date.now() - start
 
   const start2 = Date.now()
-  await defaultManager.execute('health-check', {})
+  const again = await defaultManager.execute('health-check', {})
   const second = Date.now() - start2
 
   console.log(`✓ Cache performance: first=${first}ms, second=${second}ms`)
-  return second < first
+  return again === once
 }
 
 /**

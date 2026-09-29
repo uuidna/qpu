@@ -18,10 +18,6 @@
   "exclude": [
     "src/autonomous/**",
     "src/payload/**",
-    "src/phases/**",
-    "src/enterprise/**",
-    "src/tools/**",
-    "src/core/**",
     "node_modules"
   ]
 }

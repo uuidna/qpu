@@ -81,6 +81,8 @@
     "prepublishOnly": "npm run build",
     "ship": "npm run build && npx wrangler deploy",
     "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
+    "test:core": "npm run build && node dist/core/__tests__/integration.test.js",
+    "test:enterprise": "npm run build && node --test dist/enterprise/enterprise.test.js",
     "payload:validate": "node scripts/payload-validate.mjs",
     "payload:seed": "node scripts/payload-seed.mjs",
     "payload:admin": "payload dev",
