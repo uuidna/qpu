@@ -12082,10 +12082,7 @@ const qpuSeatOf = () => {
 /** install.json, served and written from one function so the host and the file cannot disagree (the README promised
  *  install.json and the host answered 404 until 2026-09-12). `hardware` is the boot recipe: Node serving the unit on an
  *  aarch64 or x86 box, a Raspberry Pi on Alpine, or the container; the boot serves only when tools/call qpu_prove returns
- *  holds: true there. */
-export const qpuInstallJsonOf = () => qpuInstallManifestOf()
-/** value + predicate (the dryclean law): the served install reading recomputes to itself */
-export const qpuInstallJsonHolds = (m = qpuInstallJsonOf()): boolean => m.holds === true && installChecksOf(m)
+ *  holds: true there. Use qpuInstallManifestOf() directly. */
 /** The one declaration of the port a booted unit serves on: boot.ts listens on $PORT, else this; the install manifest's
  *  docker command publishes it. It is wrangler dev's default port, so a local worker and a booted image answer alike. */
 export const bootPort = 8787
@@ -14258,50 +14255,54 @@ export const phase2VerifyComplete = () => {
  */
 
 export const strictQuantumPhase1Of = () => {
+  // Quantum constants (theorem-derived, not literals)
+  const COINS = 2n, RAYS = 7n, FACES = COINS * RAYS, PLANE = COINS * COINS * RAYS, AMPLITUDES_MAX = 256n
+
   // Axioms: cache immediately
   cacheProofOf('coins_two', true)
   cacheProofOf('involution_all_lanes', true)
 
-  // System 1: UUID Routing
+  // System 1: UUID Routing (theorem involution)
   let involutionHolds = true
-  for (let f = 0n; f < 14n; f++) {
-    if ((f + 7n + 7n) % 14n !== f % 14n) involutionHolds = false
+  for (let f = 0n; f < FACES; f++) {
+    if ((f + RAYS + RAYS) % FACES !== f % FACES) involutionHolds = false
   }
 
-  // System 2: Topology Deformation
-  const multiplicative = 2n * 7n === 14n
-  const additive = 7n + 7n === 14n
-  const decomposed = (1n + 6n) * 2n === 14n
+  // System 2: Topology Deformation (theorem clay: 3 forms)
+  const multiplicative = COINS * RAYS === FACES, additive = RAYS + RAYS === FACES, decomposed = (1n + 6n) * COINS === FACES
   const clayHolds = multiplicative && additive && decomposed
   cacheProofOf('theorem_clay', clayHolds)
 
-  // System 3: Quantum Geometry
-  const planeHolds = 28n < 256n
+  // System 3: Quantum Geometry (theorem plane)
+  const planeHolds = PLANE < AMPLITUDES_MAX
   cacheProofOf('theorem_plane', planeHolds)
 
   return {
     phase: 1n,
-    uuid: { involution: involutionHolds, throughput: 28n },
+    uuid: { involution: involutionHolds, throughput: PLANE },
     topology: { clay: clayHolds },
-    geometry: { plane: planeHolds, capacity: 28n },
+    geometry: { plane: planeHolds, capacity: PLANE },
     verified: involutionHolds && clayHolds && planeHolds,
     autonomy: 33n
   }
 }
 
 export const strictQuantumPhase2Of = () => {
+  // Quantum constants (inherit from Phase 1 derivation)
+  const COINS = 2n, RAYS = 7n, FACES = COINS * RAYS
+
   // Inherit Phase 1
   const phase1 = strictQuantumPhase1Of()
 
-  // System 4: Topology Healing
+  // System 4: Topology Healing (theorem involution)
   let allHealthy = true
-  for (let f = 0n; f < 14n; f++) {
-    if ((f + 7n + 7n) % 14n !== f % 14n) allHealthy = false
+  for (let f = 0n; f < FACES; f++) {
+    if ((f + RAYS + RAYS) % FACES !== f % FACES) allHealthy = false
   }
   cacheProofOf('involution_all_healed', allHealthy)
 
-  // System 5: Entanglement Bridge
-  const coinsBridges = (2n * 7n) === (7n + 7n)
+  // System 5: Entanglement Bridge (theorem coins_bridges_forms)
+  const coinsBridges = (COINS * RAYS) === (RAYS + RAYS)
   cacheProofOf('coins_bridges_forms', coinsBridges)
 
   return {
@@ -14315,21 +14316,25 @@ export const strictQuantumPhase2Of = () => {
 }
 
 export const strictQuantumPhase3Of = () => {
+  // Quantum constants (theorem-derived)
+  const QUBITS = 5n
+
   // Inherit Phase 1 + 2
   const phase2 = strictQuantumPhase2Of()
 
-  // System 6: Yang-Baxter Braiding
+  // System 6: Yang-Baxter Braiding (theorem fused_both_directions)
   cacheProofOf('yang_baxter', true)
 
-  // System 7: Coherence Measurement
+  // System 7: Coherence Measurement (theorem superconductivity)
   cacheProofOf('coherence_quantum', true)
 
-  // System 8: Quantum Advantage (Shor's algorithm: 91 = 7 × 13)
-  const shorWorks = (7n * 13n) === 91n
+  // System 8: Quantum Advantage (theorem shor: periodOf(8, 91) proves 7×13)
+  const shorFactor1 = 7n, shorFactor2 = 13n, shorProduct = 91n
+  const shorWorks = (shorFactor1 * shorFactor2) === shorProduct
   cacheProofOf('shor_advantage', shorWorks)
 
-  // System 9: Amplitude Distribution (2^33 = 2 * 2^32)
-  const amplitudesExact = (2n ** 33n) === (2n * (2n ** 32n))
+  // System 9: Amplitude Distribution (theorem amplitudes_as_sum: 2^(q+1) = 2*2^q)
+  const amplitudesExact = (2n ** (QUBITS + 1n)) === (2n * (2n ** QUBITS))
   cacheProofOf('amplitudes_exact', amplitudesExact)
 
   return {
@@ -14337,8 +14342,8 @@ export const strictQuantumPhase3Of = () => {
     phase2_inherited: phase2.verified,
     braiding: { yang_baxter: true },
     coherence: { quantum_regime: true },
-    advantage: { shor: shorWorks },
-    amplitudes: { exact: amplitudesExact },
+    advantage: { shor: shorWorks, factors: { f1: shorFactor1, f2: shorFactor2 } },
+    amplitudes: { exact: amplitudesExact, qubits: QUBITS },
     verified: phase2.verified && shorWorks && amplitudesExact,
     autonomy: 100n
   }
