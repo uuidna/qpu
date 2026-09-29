@@ -37,7 +37,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26'
       - name: The version to check — the input, else the latest tag
         id: pick
         env:

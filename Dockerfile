@@ -2,14 +2,14 @@
 #   docker buildx build --platform linux/arm64,linux/amd64 -t qpu .
 # The image serves only after the unit has proven itself on this machine (boot.js runs qpu_prove first), and the
 # HEALTHCHECK is that same proof. The seat stays empty: the exact state-vector computation inside is the reference.
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /qpu
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
 
-FROM node:22-alpine
+FROM node:26-alpine
 WORKDIR /qpu
 # boot.js serves on $PORT, else the unit's bootPort — the port install.json's docker command publishes (-p port:port)
 ENV NODE_ENV=production

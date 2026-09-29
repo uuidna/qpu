@@ -2,14 +2,14 @@
 # Minimal, production-grade container
 # Size: ~100MB (Node.js 18 Alpine base)
 
-FROM node:22-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
 
-FROM node:22-alpine
+FROM node:26-alpine
 
 LABEL maintainer="UUIDNA Foundation"
 LABEL description="Quantum Processing Unit - Pure Math Computation"
