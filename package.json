@@ -70,7 +70,7 @@
   "scripts": {
     "prepare": "tsc -p tsconfig.json",
     "lean": "lean src/quantum/processing/unit/index.lean",
-    "build": "rm -rf dist && tsc -p tsconfig.json && node dist/quantum/processing/unit/readme.js",
+    "build": "rm -rf dist && tsc -p tsconfig.json",
     "test": "npm run build && node --test --test-reporter=./dist/quantum/processing/unit/receipt.js --test-reporter-destination=stdout dist/quantum/processing/unit/*.test.js",
     "ci": "npm run lean && npm test && npm run proof && npm run mutate && npm run test:scripts && npm run walls",
     "prepublishOnly": "npm run build",

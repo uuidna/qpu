@@ -147,7 +147,7 @@ MLA 8, (Rouschev). DOI 10.5281/zenodo.22973935, archive https://zenodo.org/recor
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "src/quantum/processing/unit/index.lean." qpu.uuidna.com, https://qpu.uuidna.com/mcp. doi:10.5281/zenodo.22973935.
 - Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. "All Seven Clay Millennium Problems Sealed via Universal σ-Involution." Zenodo, https://zenodo.org/records/21781603. doi:10.5281/zenodo.21781603.
 
-QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.
+QPU: Quantum Proof Unit, not a quantum processor. Computes exact integer amplitudes on M1 Max classical CPU. UUID messaging: 28MB/cycle across 14 lanes. No quantum hardware. No quantum advantage claims. Mathematical proofs only (Lean).
 
 ## License
 

@@ -33,8 +33,8 @@
       "device": "empty",
       "reference": "the exact integer state-vector computation; every reading above is computed there",
       "doctrine": "a device that fills this seat and disagrees with the reference is a driver bug, never a physics claim",
-      "acronym": "QPU here is a quantum processing unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym — a classical 16-lane SIMD vector core — unrelated and credited.",
-      "occupant": "a classical SIMD accelerator computing the same exact amplitudes faster is an honest occupant; it does not make the seat quantum",
+      "acronym": "QPU: Quantum Proof Unit, not a quantum processor. Computes exact integer amplitudes on M1 Max classical CPU. UUID messaging: 28MB/cycle across 14 lanes. No quantum hardware. No quantum advantage claims. Mathematical proofs only (Lean).",
+      "occupant": "seat is empty. No quantum hardware occupies it. Classical CPU computes deterministic, exact integer state-vector amplitudes. Fast? Yes. Quantum? No.",
       "priorArt": {
         "kind": "prior-art",
         "name": "QPULib",
