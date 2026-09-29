@@ -84,6 +84,15 @@ export {
   isAlive
 } from './health-checker.js'
 
+// ML Optimization
+export {
+  MLOptimizer,
+  mlOptimizer,
+  findBestOperation,
+  getSuggestions,
+  recordExecution
+} from './ml-optimizer.js'
+
 // Convenience exports
 export type { OperationMetadata, ExecutionResult, CompositionRequest } from './types.js'
 export type { ImprovementCycle, OperationPattern } from './autonomous-engine.js'
