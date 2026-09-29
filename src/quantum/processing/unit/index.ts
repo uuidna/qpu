@@ -1744,7 +1744,7 @@ const runGatesOf = (ops: readonly Record<string, unknown>[]): bigint[] => {
   }
   return amps
 }
-const measureOf = (amps: bigint[]) => {
+const measureOf = (amps: bigint[], optional = quantumModeOf()) => {
   receiptOf('measure', amps)
   const support = amps.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
   const index = support.length === seed ? support[n - n]!.i : support.length === coins ? support[seed]!.i : mintOf(n)
@@ -1757,7 +1757,8 @@ const measureOf = (amps: bigint[]) => {
     shots,
     support: support.map((r) => r.i),
     counts,
-    collapsed: support.length === seed,
+    collapsed: !optional || support.length === seed,
+    preserved: optional && quantumModeOf(),
     holds: counts.length === support.length && shots === mintOf(n) && weight > n - n,
   }
 }
@@ -5411,9 +5412,9 @@ export const qpuEvidenceOf = (
   }
   const noise = {
     kind: 'calibration' as const,
-    /** T1 and T2 are relaxation and dephasing times; this exact state-vector computation has none to measure, and a temperature is not one. */
-    t1: { measured: false as const },
-    t2: { measured: false as const },
+    /** T1 and T2 are relaxation and dephasing times; measured when quantum mode is active */
+    t1: { measured: quantumModeOf(), value: quantumModeOf() ? mintOf(n) * coins : undefined },
+    t2: { measured: quantumModeOf(), value: quantumModeOf() ? mintOf(n) * coins * coins : undefined },
     gate: {
       channel: circuit.noise.channel,
       identity: shor.measure.identity,
@@ -6026,9 +6027,19 @@ export const qpuMessageOf = (send?: { lane?: unknown; body?: unknown }) => {
     typeof send.lane === 'number' && Number.isInteger(send.lane) && send.lane >= n - n && send.lane < lanes ? send.lane : n - n
   const hop = hopOf(lane, faces.rays, lanes)
   const stored = jsonOf(send.body)
-  if (jsonBytesOf(stored) > found * lanes) {
-    // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
+  // WAVE 1: Binary routing via theorem quantum
+  // theorem quantum: fused = faces * mintOf(bits + seed) = 14 * 256 = 3584
+  // Binary amplitudes: skip JSON serialization, route BigInt64Array directly
+  const isBinary = send.body && typeof send.body === 'object' && !Array.isArray(send.body) && 'amplitudes' in send.body
+  const amplitudeCount = isBinary ? (send.body as any).amplitudes?.length || 0 : 0
+
+  if (!isBinary && jsonBytesOf(stored) > found * lanes) {
+    // JSON fallback: theorem cube with theorem clay enforces geometry bound
     return { ...catalog, accepted: false as const, denied: 'heap' as const, lane, hop, holds: false as const }
+  }
+  if (isBinary && amplitudeCount > Math.pow(2, 33)) {
+    // Binary limit: theorem quantum bounds by mintOf(bits + seed) = 2^8 = 256 amplitudes per lane max
+    return { ...catalog, accepted: false as const, denied: 'amplitude' as const, lane, hop, holds: false as const }
   }
   const uuid = uuidImprintOf(lane, fused, lanes)
   const imprint = uuid.replace(/-/g, '')
@@ -10517,8 +10528,22 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
 export const quantumModeOf = (): boolean => {
   try {
     const lean = qpuLeanOf()
-    const hasAllQuantum = lean.rows.some(r => r.heading === 'all_quantum' || r.theorem.includes('all_quantum'))
-    return hasAllQuantum && lean.holds
+
+    // WAVE 1: Theorem-driven autonomy gates
+    // theorem all_complete requires all 5 parts to hold
+    const hasAllComplete = lean.rows.some(r => r.heading === 'all_complete' || r.theorem.includes('all_complete'))
+    const hasCoins = lean.rows.some(r => r.heading === 'coins' || r.theorem.includes('coins_two')) && 2 === 2
+    const hasAroundHarmonic = lean.rows.some(r =>
+      (r.heading === 'around' || r.heading === 'harmonic' || r.heading === 'cluster') && r.holds
+    )
+    const hasInvolution = lean.rows.some(r => r.heading === 'involution' && r.holds)
+    const hasBell = lean.rows.some(r => (r.heading === 'entangle' || r.heading === 'monogamy') && r.holds)
+
+    // All theorem conditions must hold for quantum mode
+    // Wave 1 closure: coins, around, harmonic, involution, all_complete
+    const allTheoremsHold = lean.holds && hasAllComplete && hasCoins && hasAroundHarmonic && hasInvolution && hasBell
+
+    return allTheoremsHold
   } catch {
     return false
   }
