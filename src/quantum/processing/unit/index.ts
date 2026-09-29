@@ -1341,7 +1341,7 @@ export const qpuZoneHostHolds = (): boolean => {
 export const qpuTenantZoneOf = () => {
   const labels = unit.host.split('.')
   const own = labels[n - n]!
-  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [own, 'www'] as readonly string[] }
+  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [own, 'www', 'saas-fallback'] as readonly string[] }
 }
 /** value + predicate: the zone and this unit's own label recompose its host, and every reserved label is one label */
 export const qpuTenantZoneHolds = (z = qpuTenantZoneOf()): boolean =>
@@ -13834,7 +13834,11 @@ const worker = {
     if (url.protocol === 'https:' && label === www) {
       return new Response(null, { status: found + ten * ten + seed, headers: { location: `https://${zone}${url.pathname}${url.search}` } })
     }
-    if (url.protocol === 'https:' && label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)) {
+    // a tenant under the zone, or a tenant's own domain registered as a Cloudflare for SaaS custom hostname (it reaches
+    // this unit only through the */* route once Cloudflare has it active); both go whole to Payload, which decides
+    const underZone = label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)
+    const ownDomain = url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
+    if (url.protocol === 'https:' && (underZone || ownDomain)) {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
