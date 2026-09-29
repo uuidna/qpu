@@ -10,7 +10,7 @@
 export interface OperationMetadata {
   domain: string
   operation: string
-  version: string
+  version?: string
   handler: (inputs?: Record<string, unknown>) => Promise<ExecutionResult>
 }
 
@@ -61,7 +61,7 @@ export interface ScholarlyWork {
   citations: Citation[]
 }
 
-export type CitationCategory = 'citation' | 'domain' | 'genealogy' | 'problem' | 'scholar'
+export type CitationCategory = 'citation' | 'domain' | 'genealogy' | 'problem' | 'scholar' | 'philosophy' | 'theology' | 'historical'
 
 // ============================================================================
 // LEAD TRACKING TYPES

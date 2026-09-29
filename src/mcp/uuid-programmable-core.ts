@@ -72,10 +72,18 @@ export class UUIDCombinatorialSpace {
    * Parse UUID to extract combinatorial coordinates
    */
   parseOperationUUID(uuid: string): { domain: string; operation: string; inputHash: string } {
-    const bytes = parseUuid(uuid)
+    // Remove hyphens and convert to bytes manually
+    const hex = uuid.replace(/-/g, '')
+    const bytes = new Uint8Array(hex.length / 2)
+    for (let i = 0; i < bytes.length; i++) {
+      bytes[i] = parseInt(hex.substr(i * 2, 2), 16)
+    }
+
     const domain = this.bytesToString(bytes.slice(0, 6))
     const operation = this.bytesToString(bytes.slice(6, 12))
-    const inputHash = bytes.slice(12).toString('hex')
+    const inputHash = Array.from(bytes.slice(12))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('')
 
     return { domain, operation, inputHash }
   }

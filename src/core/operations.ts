@@ -14,6 +14,7 @@ const clayOperations = {
   'solve-p-vs-np': {
     domain: 'clay',
     operation: 'solve-p-vs-np',
+    version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
       data: { problem: 'P vs NP', solved: true }
@@ -22,6 +23,7 @@ const clayOperations = {
   'solve-riemann': {
     domain: 'clay',
     operation: 'solve-riemann',
+    version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
       data: { problem: 'Riemann Hypothesis', solved: true }
@@ -30,6 +32,7 @@ const clayOperations = {
   'solve-navier-stokes': {
     domain: 'clay',
     operation: 'solve-navier-stokes',
+    version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
       data: { problem: 'Navier-Stokes', solved: true }
@@ -38,6 +41,7 @@ const clayOperations = {
   'solve-yang-mills': {
     domain: 'clay',
     operation: 'solve-yang-mills',
+    version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
       data: { problem: 'Yang-Mills', solved: true }
@@ -46,6 +50,7 @@ const clayOperations = {
   'solve-hodge': {
     domain: 'clay',
     operation: 'solve-hodge',
+    version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
       data: { problem: 'Hodge Conjecture', solved: true }
@@ -54,6 +59,7 @@ const clayOperations = {
   'solve-birch-swinnerton-dyer': {
     domain: 'clay',
     operation: 'solve-birch-swinnerton-dyer',
+    version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
       data: { problem: 'Birch-Swinnerton-Dyer', solved: true }
@@ -133,7 +139,7 @@ const citationOperations = {
   'get-genealogy': {
     domain: 'citations',
     operation: 'get-genealogy',
-    handler: async (inputs): Promise<ExecutionResult> => ({
+    handler: async (inputs?: Record<string, unknown>): Promise<ExecutionResult> => ({
       success: true,
       data: { genealogyLength: 28, scholars: 28 }
     })

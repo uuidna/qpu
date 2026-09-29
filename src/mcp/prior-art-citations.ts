@@ -33,6 +33,7 @@ export type CitationCategory =
   | 'ancient-mathematics'
   | 'ancient-philosophy'
   | 'theology'
+  | 'philosophy'
   | 'classical-physics'
   | 'modern-mathematics'
   | 'quantum-mechanics'
