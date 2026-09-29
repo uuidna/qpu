@@ -1,5 +1,7 @@
-// MCP Interface - Agnostic access to domain-specific capabilities
+// MCP Interface - Unified UUID-Programmable MCP
+// All enterprise logic consolidated through UUID-indexed operations
 import { APIError, ValidationError } from '../types/errors.js'
+import { unifiedRouter, UnifiedMCPRequest, UNIVERSAL_OPERATION_REGISTRY, getOperationUUID } from '../mcp/index.js'
 
 export interface Schema {
   type: string
@@ -13,12 +15,14 @@ export interface MCPTool {
   description: string
   inputSchema: Schema
   outputSchema: Schema
+  uuid: string // UUID-indexed
 }
 
 export interface MCPRequest {
   tool: string
   domain?: string
   input: Record<string, any>
+  uuid?: string // Direct UUID execution
   metadata?: {
     traceId?: string
     userId?: string
@@ -30,6 +34,7 @@ export interface MCPResponse {
   result: any
   domain: string
   tool: string
+  uuid?: string
   executionTime: number
   status: 'success' | 'error'
   error?: string
@@ -73,26 +78,34 @@ export class MCPInterface {
     try {
       this.validateRequest(request)
 
-      const router = this.domainRouters.get(domain)
-      if (!router) {
-        throw new APIError(`Domain not found: ${domain}`, 404)
+      // Route to unified UUID-programmable MCP
+      const uuid = request.uuid || getOperationUUID(request.tool as any)
+      const mcpRequest: UnifiedMCPRequest = {
+        requestId: request.metadata?.traceId || `req-${Date.now()}`,
+        method: 'execute',
+        target: 'operation',
+        uuid,
+        domain,
+        operation: request.tool,
+        inputs: request.input,
+        metadata: {
+          userId: request.metadata?.userId || 'anonymous',
+          traceId: request.metadata?.traceId || `trace-${Date.now()}`,
+          permissions: ['*'],
+          timestamp: new Date()
+        }
       }
 
-      const tool = this.tools.get(`${domain}:${request.tool}`)
-      if (!tool) {
-        throw new APIError(`Tool not found: ${request.tool}`, 404)
-      }
-
-      this.validateInput(request.input, tool.inputSchema)
-
-      const result = await router.execute(request.tool, request.input)
+      const mcpResponse = await unifiedRouter.route(mcpRequest)
 
       return {
-        result,
+        result: mcpResponse.data,
         domain,
         tool: request.tool,
-        executionTime: Date.now() - startTime,
-        status: 'success',
+        uuid,
+        executionTime: mcpResponse.executionTime,
+        status: mcpResponse.success ? 'success' : 'error',
+        error: mcpResponse.error,
         traceId: request.metadata?.traceId,
       }
     } catch (error) {
