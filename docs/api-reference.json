@@ -1,0 +1,70 @@
+[
+  {
+    "endpoint": "/quantum/solve",
+    "method": "POST",
+    "description": "Unified quantum solver for all problem types",
+    "params": {
+      "type": "factor|search|optimize|simulate|cluster",
+      "params": "problem parameters"
+    },
+    "examples": [
+      {
+        "type": "factor",
+        "params": {
+          "number": "15"
+        },
+        "result": "[3, 5]"
+      },
+      {
+        "type": "search",
+        "params": {
+          "target": "42",
+          "space": "1000"
+        },
+        "result": "42"
+      },
+      {
+        "type": "optimize",
+        "params": {
+          "items": "[1,2,3]",
+          "capacity": "5"
+        },
+        "result": "5"
+      }
+    ]
+  },
+  {
+    "endpoint": "/domain/:name/solve",
+    "method": "POST",
+    "description": "Domain-specific quantum solver",
+    "params": {
+      "domain": "cryptography|finance|ml|...",
+      "request": "domain-specific request"
+    },
+    "examples": [
+      {
+        "domain": "cryptography",
+        "action": "factorize",
+        "number": "91",
+        "result": "[7, 13]"
+      },
+      {
+        "domain": "finance",
+        "action": "optimize-portfolio",
+        "assets": "[...]",
+        "result": "allocation"
+      }
+    ]
+  },
+  {
+    "endpoint": "/optimize/all",
+    "method": "GET",
+    "description": "Get system optimization status",
+    "returns": {
+      "cache": "hit rate %",
+      "tracer": "success rate %",
+      "healer": "health score",
+      "scaler": "active replicas"
+    }
+  }
+]
