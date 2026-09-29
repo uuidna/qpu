@@ -67,3 +67,38 @@ test('A STEP THE WORKFLOW DOES NOT RUN IS CAUGHT — the check can fail', () => 
   assert.equal(new RegExp(`npm run ${invented}\\b`).test(workflow), false,
     'the matcher must not clear a step the workflow genuinely never mentions — if this passes, the test above proves nothing')
 })
+
+// ── THE OTHER DIRECTION, NAMED RATHER THAN DEMANDED. The workflow may do more than the push does, but every extra
+// GATE step it runs must say so here, with the reason. Before this, `debts` and `outage` ran only in CI while the
+// pre-push hook announced itself as "the same door as GitHub CI" — a drift nobody had written down.
+// Only the gate job counts: steps after the deploy step verify a host, not the tree.
+const CI_ONLY = {
+  debts: 'runs percall, which is minutes of CPU on a laptop; the floors it ratchets are also rewritten by walls in the push',
+  outage: 'reruns the whole suite under five network conditions; a push cannot afford five suites',
+}
+
+const gateSteps = () => {
+  // comments name steps in prose ("inside `npm run ci`"); only what a step actually runs counts
+  const gate = workflow.split(/\n\s+- name: Deploy/)[0].split('\n').filter((line) => !/^\s*#/.test(line)).join('\n')
+  return [...gate.matchAll(/npm run ([\w:-]+)/g)].map((m) => m[1])
+}
+
+test('EVERY GATE STEP ci.yml RUNS IS IN npm run ci, OR IS NAMED CI-ONLY WITH ITS REASON', () => {
+  const chained = new Set(ciSteps())
+  const unnamed = [...new Set(gateSteps())].filter((s) => !chained.has(s) && CI_ONLY[s] === undefined)
+  assert.deepEqual(unnamed, [],
+    `ci.yml gates on ${unnamed.join(', ')}, which the push never runs and CI_ONLY does not explain — chain it or name why not`)
+})
+
+test('a CI-only step that the workflow stopped running, or the push started running, is stale', () => {
+  const gate = new Set(gateSteps())
+  const chained = new Set(ciSteps())
+  const stale = Object.keys(CI_ONLY).filter((s) => !gate.has(s) || chained.has(s))
+  assert.deepEqual(stale, [], `CI_ONLY names ${stale.join(', ')}, which is no longer a CI-only gate step`)
+})
+
+test('THE CONTROL — an unnamed extra gate step is caught', () => {
+  const invented = 'a-gate-step-nobody-chained'
+  assert.equal(new Set(ciSteps()).has(invented) || CI_ONLY[invented] !== undefined, false,
+    'if an invented step clears, the reverse check above proves nothing')
+})

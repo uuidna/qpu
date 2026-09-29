@@ -71,6 +71,10 @@ jobs:
         run: echo "::notice::kernel receipt hit — index.lean and lean-toolchain are byte-identical to a build the kernel already checked ($(cat .lean-ok | tr '\n' ' '))"
       - name: Gate — the receipted suite (live tests in process)
         run: npm test
+      # AN EMPTY SUITE IS NOT A PASS. With every unit suite deleted, `npm test` reported 0/0 and the chain stayed green;
+      # this reads the receipt the suite just wrote and refuses zero tests or any failure.
+      - name: Suite — at least one test ran and none failed
+        run: npm run suite
       # THE PROOF IS A GATE. The suite writes test-receipt.json; the unit, the climb and the receipts are deterministic,
       # so the committed file must equal this run's byte for byte. A stale commit of the proof fails here, and the
       # diff says which row moved.

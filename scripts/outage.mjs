@@ -112,6 +112,19 @@ export const verdictOf = (runs) => {
 const SUITES = 'dist/quantum/processing/unit'
 const suitesOf = () => readdirSync(SUITES).filter((f) => f.endsWith('.test.js')).sort().map((f) => `${SUITES}/${f}`)
 
+/* AN EMPTY LIST IS NOT "NO SUITES", IT IS "EVERY TEST NODE CAN FIND". `node --test` with no file arguments falls back
+ * to discovering the whole repository — src/enterprise, test/integration, and scripts/auto-test.mjs, which builds and
+ * writes .test-results.json — and the receipted reporter then overwrites the committed test-receipt.json with that.
+ * Measured 2026-09-29, on a tree whose unit suites had all been deleted: 45 foreign rows, 4 failing. */
+const suitesOrRefuse = () => {
+  const suites = suitesOf()
+  if (suites.length === 0) {
+    console.error(`outage: RED — no built suite under ${SUITES}; an empty list would make node --test discover the whole repository`)
+    process.exit(1)
+  }
+  return suites
+}
+
 const runOf = (dir, name, env) => {
   const out = join(dir, `${name}.txt`)
   try {
@@ -125,7 +138,7 @@ const runOf = (dir, name, env) => {
         '--test-reporter-destination=stdout',
         // every built suite, read from the tree rather than listed here: a list goes stale the first time a
         // suite is added, and it goes stale silently, which is the failure mode this whole script exists for
-        ...suitesOf(),
+        ...suitesOrRefuse(),
       ],
       { env: { ...process.env, ...env }, encoding: 'utf8', timeout: 600_000, stdio: ['ignore', 'pipe', 'pipe'] },
     )
