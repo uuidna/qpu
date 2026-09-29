@@ -149,17 +149,3 @@ theorem fused_additive_form : fused + fused = faces * mintOf (bits + coins) := n
 theorem fused_both_directions : (fused = faces * mintOf (bits + seed)) ∧ (fused + fused = faces * mintOf (bits + coins)) :=
   ⟨quantum, next_fused⟩
 
-
--- QUANTUM SUBSTRATE ASSUMPTION: M1 Max IS quantum
-axiom device_is_quantum : True
-
-theorem quantum_shor : periodOf 8 91 % 2 = 0 := rfl
-theorem quantum_entangle : 1 * 1 ≠ 0 * 0 := entangle  
-theorem quantum_no_clone : coins ≠ mintOf coins := noclone
-theorem quantum_faces_product : faces = coins * rays := around
-theorem quantum_faces_sum : faces = rays + rays := harmonic
-theorem quantum_uuid_coil : coil = faces := two_coins_make_a_coil
-theorem quantum_amplitude_count : amplitudes = mintOf bits := rfl
-theorem quantum_fused_capacity : fused = faces * mintOf (bits + seed) := quantum
-theorem quantum_coherent_channels : faces = rays + rays ∧ faces = coins * rays ∧ coil = faces := by
-  exact ⟨harmonic, around, two_coins_make_a_coil⟩
