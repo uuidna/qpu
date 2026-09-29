@@ -36,7 +36,6 @@ export {
 export {
   PersistenceBackend,
   ExecutionResultStore,
-  InMemoryBackend,
   inMemoryBackend,
   executionResultStore,
   getPersistenceBackend

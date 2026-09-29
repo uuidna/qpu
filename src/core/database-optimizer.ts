@@ -57,11 +57,7 @@ export class QueryCache {
       return entry.value
     }
 
-    if (entry) {
-      entry.misses++
-      this.updateHitRate()
-    }
-
+    this.updateHitRate()
     return undefined
   }
 

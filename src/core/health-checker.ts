@@ -99,7 +99,7 @@ export class HealthChecker {
   private async checkExecutionEngine() {
     try {
       const stats = defaultManager.getStats()
-      const status =
+      const status: HealthStatus =
         stats.successRate > 95
           ? 'healthy'
           : stats.successRate > 80
