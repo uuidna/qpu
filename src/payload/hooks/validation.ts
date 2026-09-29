@@ -10,7 +10,7 @@ import {
   getFieldReference,
   validateFieldEnum,
   getFieldPath,
-} from './field-references'
+} from './field-references.js'
 
 // Before validation hook
 export const beforeValidateHook = async (args: any) => {

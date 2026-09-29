@@ -7,13 +7,13 @@
  *   await seedDatabase(payload)
  */
 
-import { usersSeed } from './users.seed'
-import { complianceIssuesSeed } from './compliance-issues.seed'
-import { auditLogsSeed } from './audit-logs.seed'
-import { supportTicketsSeed } from './support-tickets.seed'
-import { enrollmentsSeed } from './enrollments.seed'
-import { metricsSeed } from './metrics.seed'
-import { certificationsSeed } from './certifications.seed'
+import { usersSeed } from './users.seed.js'
+import { complianceIssuesSeed } from './compliance-issues.seed.js'
+import { auditLogsSeed } from './audit-logs.seed.js'
+import { supportTicketsSeed } from './support-tickets.seed.js'
+import { enrollmentsSeed } from './enrollments.seed.js'
+import { metricsSeed } from './metrics.seed.js'
+import { certificationsSeed } from './certifications.seed.js'
 
 export { usersSeed, complianceIssuesSeed, auditLogsSeed, supportTicketsSeed, enrollmentsSeed, metricsSeed, certificationsSeed }
 

@@ -3,13 +3,13 @@
  * Exports all autonomous systems for wave coordinator
  */
 
-export { MonitoringSystem, createMonitoringSystem } from './monitoring'
-export { OptimizationSystem, createOptimizationSystem } from './optimization'
-export { LearningSystem, createLearningSystem } from './learning'
-export { ValidationSystem, createValidationSystem } from './validation'
-export { DeploymentSystem, createDeploymentSystem } from './deployment'
-export { CapacityPlanning, createCapacityPlanning } from './capacity'
-export { IncidentResponse, createIncidentResponse } from './incident'
+export { MonitoringSystem, createMonitoringSystem } from './monitoring.js'
+export { OptimizationSystem, createOptimizationSystem } from './optimization.js'
+export { LearningSystem, createLearningSystem } from './learning.js'
+export { ValidationSystem, createValidationSystem } from './validation.js'
+export { DeploymentSystem, createDeploymentSystem } from './deployment.js'
+export { CapacityPlanning, createCapacityPlanning } from './capacity.js'
+export { IncidentResponse, createIncidentResponse } from './incident.js'
 
 // System registry
 export const AUTONOMOUS_SYSTEMS = [

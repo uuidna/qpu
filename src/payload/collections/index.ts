@@ -3,10 +3,10 @@
  * All collections are generated from test data to ensure CMS mirrors actual system
  */
 
-export { Users } from './users'
-export { ComplianceIssues } from './compliance-issues'
-export { AuditLogs } from './audit-logs'
-export { SupportTickets } from './support-tickets'
-export { Enrollments } from './enrollments'
-export { Metrics } from './metrics'
-export { Certifications } from './certifications'
+export { Users } from './users.js'
+export { ComplianceIssues } from './compliance-issues.js'
+export { AuditLogs } from './audit-logs.js'
+export { SupportTickets } from './support-tickets.js'
+export { Enrollments } from './enrollments.js'
+export { Metrics } from './metrics.js'
+export { Certifications } from './certifications.js'

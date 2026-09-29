@@ -3,13 +3,13 @@
  * Ensures all seed data matches collection schemas and test fixtures
  */
 
-import { usersSeed } from '../seeds/users.seed'
-import { complianceIssuesSeed } from '../seeds/compliance-issues.seed'
-import { auditLogsSeed } from '../seeds/audit-logs.seed'
-import { supportTicketsSeed } from '../seeds/support-tickets.seed'
-import { enrollmentsSeed } from '../seeds/enrollments.seed'
-import { metricsSeed } from '../seeds/metrics.seed'
-import { certificationsSeed } from '../seeds/certifications.seed'
+import { usersSeed } from '../seeds/users.seed.js'
+import { complianceIssuesSeed } from '../seeds/compliance-issues.seed.js'
+import { auditLogsSeed } from '../seeds/audit-logs.seed.js'
+import { supportTicketsSeed } from '../seeds/support-tickets.seed.js'
+import { enrollmentsSeed } from '../seeds/enrollments.seed.js'
+import { metricsSeed } from '../seeds/metrics.seed.js'
+import { certificationsSeed } from '../seeds/certifications.seed.js'
 
 interface ValidationResult {
   collection: string
@@ -38,7 +38,7 @@ export function validateAllSeeds(): ValidationResult[] {
 function validateUsersSeed(): ValidationResult {
   const errors: string[] = []
 
-  usersSeed.forEach((user, idx) => {
+  usersSeed.forEach((user: any, idx: number) => {
     if (!user.email) errors.push(`User ${idx}: missing email`)
     if (!user.name) errors.push(`User ${idx}: missing name`)
     if (!['admin', 'support', 'auditor', 'trainer', 'user'].includes(user.role)) {
@@ -57,7 +57,7 @@ function validateUsersSeed(): ValidationResult {
 function validateComplianceIssuesSeed(): ValidationResult {
   const errors: string[] = []
 
-  complianceIssuesSeed.forEach((issue, idx) => {
+  complianceIssuesSeed.forEach((issue: any, idx: number) => {
     if (!['critical', 'high', 'medium', 'low', 'info'].includes(issue.severity)) {
       errors.push(`Issue ${idx}: invalid severity ${issue.severity}`)
     }
@@ -76,7 +76,7 @@ function validateComplianceIssuesSeed(): ValidationResult {
 function validateAuditLogsSeed(): ValidationResult {
   const errors: string[] = []
 
-  auditLogsSeed.forEach((log, idx) => {
+  auditLogsSeed.forEach((log: any, idx: number) => {
     if (!log.timestamp) errors.push(`AuditLog ${idx}: missing timestamp`)
     if (!['deploy', 'access', 'modify', 'delete', 'export'].includes(log.action)) {
       errors.push(`AuditLog ${idx}: invalid action ${log.action}`)
@@ -97,7 +97,7 @@ function validateAuditLogsSeed(): ValidationResult {
 function validateSupportTicketsSeed(): ValidationResult {
   const errors: string[] = []
 
-  supportTicketsSeed.forEach((ticket, idx) => {
+  supportTicketsSeed.forEach((ticket: any, idx: number) => {
     if (!ticket.subject) errors.push(`Ticket ${idx}: missing subject`)
     if (!['low', 'medium', 'high', 'critical'].includes(ticket.priority)) {
       errors.push(`Ticket ${idx}: invalid priority ${ticket.priority}`)
@@ -116,7 +116,7 @@ function validateSupportTicketsSeed(): ValidationResult {
 function validateEnrollmentsSeed(): ValidationResult {
   const errors: string[] = []
 
-  enrollmentsSeed.forEach((enrollment, idx) => {
+  enrollmentsSeed.forEach((enrollment: any, idx: number) => {
     if (!enrollment.courseId) errors.push(`Enrollment ${idx}: missing courseId`)
     if (enrollment.progress < 0 || enrollment.progress > 100) {
       errors.push(`Enrollment ${idx}: progress out of range ${enrollment.progress}`)
@@ -137,7 +137,7 @@ function validateEnrollmentsSeed(): ValidationResult {
 function validateMetricsSeed(): ValidationResult {
   const errors: string[] = []
 
-  metricsSeed.forEach((metric, idx) => {
+  metricsSeed.forEach((metric: any, idx: number) => {
     if (!metric.name) errors.push(`Metric ${idx}: missing name`)
     if (typeof metric.value !== 'number') errors.push(`Metric ${idx}: value not a number`)
     if (metric.status && !['healthy', 'warning', 'critical'].includes(metric.status)) {
@@ -156,7 +156,7 @@ function validateMetricsSeed(): ValidationResult {
 function validateCertificationsSeed(): ValidationResult {
   const errors: string[] = []
 
-  certificationsSeed.forEach((cert, idx) => {
+  certificationsSeed.forEach((cert: any, idx: number) => {
     if (!cert.framework) errors.push(`Certification ${idx}: missing framework`)
     if (!['planning', 'in-progress', 'review', 'completed', 'expired'].includes(cert.status)) {
       errors.push(`Certification ${idx}: invalid status ${cert.status}`)

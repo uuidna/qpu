@@ -9,7 +9,7 @@
  */
 
 import type { Payload } from 'payload'
-import { startAutonomousWaves } from './wave-coordinator'
+import { startAutonomousWaves } from './wave-coordinator.js'
 
 /**
  * Bootstrap autonomous system on startup

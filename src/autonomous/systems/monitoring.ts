@@ -8,7 +8,7 @@ import type { Payload } from 'payload'
 export interface HealthCheckResult {
   system: string
   status: 'healthy' | 'degraded' | 'critical'
-  metrics: Record<string, number>
+  metrics: SystemMetrics & Record<string, any>
   timestamp: Date
   anomalies: Anomaly[]
 }

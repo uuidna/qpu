@@ -486,7 +486,7 @@ export class WaveCoordinator {
   private calculateHealthMetrics(results: any[]): HealthMetrics {
     const learning = results[2]?.patterns?.quality || 0.5
     const robustness = results[0]?.health?.availability || 0.95
-    const efficiency = results[1]?.improvements?.reduce((s, i) => s + i.gain, 0) / 10 || 0.5
+    const efficiency = results[1]?.improvements?.reduce((s: number, i: any) => s + i.gain, 0) / 10 || 0.5
     const collaboration = results[6]?.improvements?.length || 1
     const trustworthiness = results[3]?.validationResults?.passRate || 0.99
 
