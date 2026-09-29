@@ -1,4 +1,6 @@
 // Quantum Proxy - Intelligent routing and task splitting across QPU and external AI APIs
+import { RoutingError, ValidationError } from '../types/errors.js'
+
 export interface ExternalAPI {
   name: string
   provider: string // OpenAI, Anthropic, Google, etc.
@@ -62,15 +64,22 @@ export class QuantumProxy {
         decision.estimatedCost = 0 // QPU cost is amortized
       } else {
         // Fallback to fastest available API
-        decision.destination = this.findBestAPI(request, 'speed').name
+        const bestAPI = this.findBestAPI(request, 'speed')
+        if (!bestAPI) {
+          throw new RoutingError('No available external API found')
+        }
+        decision.destination = bestAPI.name
         decision.reason = 'Quantum queue full - using classical approximation'
-        decision.expectedLatency = this.externalAPIs.get(decision.destination)!.latency
+        decision.expectedLatency = bestAPI.latency
       }
     }
 
     // Classical AI tasks → External APIs
     else if (request.type === 'classical-ai') {
       const best = this.findBestAPI(request, 'cost')
+      if (!best) {
+        throw new RoutingError('No external API available for classical AI task')
+      }
       decision.destination = best.name
       decision.reason = `Routed to ${best.provider} (lowest cost: $${best.cost}/1k tokens)`
       decision.expectedLatency = best.latency
@@ -109,20 +118,20 @@ export class QuantumProxy {
   private findBestAPI(
     request: TaskRequest,
     criterion: 'speed' | 'cost' | 'bandwidth'
-  ): ExternalAPI {
+  ): ExternalAPI | null {
     let best: ExternalAPI | null = null
     let bestScore = criterion === 'speed' ? Infinity : 0
 
     for (const api of this.externalAPIs.values()) {
       let score: number
+      const apiBandwidth = this.bandwidth.get(api.name) ?? 0
 
       if (criterion === 'speed') {
-        score = api.latency + this.bandwidth.get(api.name)! * 100 // Add bandwidth penalty
+        score = api.latency + apiBandwidth * 100
       } else if (criterion === 'cost') {
         score = api.cost
       } else {
-        // bandwidth - prefer underutilized APIs
-        score = this.bandwidth.get(api.name)! // Lower is better
+        score = apiBandwidth
       }
 
       if (criterion === 'speed' || criterion === 'bandwidth') {
@@ -138,7 +147,7 @@ export class QuantumProxy {
       }
     }
 
-    return best!
+    return best
   }
 
   private optimizeSplit(request: TaskRequest): {
@@ -150,18 +159,16 @@ export class QuantumProxy {
     estimatedCost: number
   } {
     const bestAPI = this.findBestAPI(request, 'bandwidth')
+    if (!bestAPI) {
+      throw new RoutingError('No external API available for hybrid task')
+    }
 
-    // Quantum handles algorithm-heavy portions (factorization, optimization)
-    // AI handles pattern-matching and decision portions
     const quantumPortion = Math.min(80, Math.max(20, request.complexity / 2))
     const aiPortion = 100 - quantumPortion
 
-    // Parallel execution if both portions are independent
     const strategy: 'sequential' | 'parallel' | 'distributed' = request.complexity > 70 ? 'parallel' : 'sequential'
 
-    const quantumLatency = 50 // QPU baseline
-    const aiLatency = bestAPI.latency
-
+    const quantumLatency = 50
     const estimatedCost = (request.estimatedTokens || 100) * (bestAPI.cost / 1000) * (aiPortion / 100)
 
     return {
@@ -245,7 +252,9 @@ export class QuantumProxy {
 
     // Cost optimization
     const cheapestAPI = this.findBestAPI({ estimatedTokens: 1000 } as TaskRequest, 'cost')
-    recommendations.push(`Route pure-AI tasks to ${cheapestAPI.name} (lowest cost)`)
+    if (cheapestAPI) {
+      recommendations.push(`Route pure-AI tasks to ${cheapestAPI.name} (lowest cost)`)
+    }
 
     return {
       recommendations,

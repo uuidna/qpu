@@ -1,16 +1,24 @@
 // MCP Interface - Agnostic access to domain-specific capabilities
+import { APIError, ValidationError } from '../types/errors.js'
+
+export interface Schema {
+  type: string
+  properties?: Record<string, any>
+  required?: string[]
+}
+
 export interface MCPTool {
   name: string
   domain: string
   description: string
-  inputSchema: Record<string, any>
-  outputSchema: Record<string, any>
+  inputSchema: Schema
+  outputSchema: Schema
 }
 
 export interface MCPRequest {
   tool: string
   domain?: string
-  input: any
+  input: Record<string, any>
   metadata?: {
     traceId?: string
     userId?: string
@@ -24,19 +32,26 @@ export interface MCPResponse {
   tool: string
   executionTime: number
   status: 'success' | 'error'
+  error?: string
   traceId?: string
+}
+
+export interface DomainRouter {
+  execute(toolName: string, input: Record<string, any>): Promise<any>
 }
 
 export class MCPInterface {
   private tools: Map<string, MCPTool> = new Map()
-  private domainRouters: Map<string, any> = new Map()
+  private domainRouters: Map<string, DomainRouter> = new Map()
 
   registerTool(tool: MCPTool) {
     const key = `${tool.domain}:${tool.name}`
     this.tools.set(key, tool)
   }
 
-  registerDomainRouter(domain: string, router: any) {
+  registerDomainRouter(domain: string, router: DomainRouter): void {
+    if (!domain) throw new ValidationError('Domain name is required')
+    if (!router) throw new ValidationError('Router is required')
     this.domainRouters.set(domain, router)
   }
 
@@ -53,25 +68,23 @@ export class MCPInterface {
 
   async invokeTool(request: MCPRequest): Promise<MCPResponse> {
     const startTime = Date.now()
+    const domain = request.domain || this.inferDomain(request.tool)
 
     try {
-      // Route to domain-specific implementation
-      const domain = request.domain || this.inferDomain(request.tool)
-      const router = this.domainRouters.get(domain)
+      this.validateRequest(request)
 
+      const router = this.domainRouters.get(domain)
       if (!router) {
-        throw new Error(`Domain not found: ${domain}`)
+        throw new APIError(`Domain not found: ${domain}`, 404)
       }
 
       const tool = this.tools.get(`${domain}:${request.tool}`)
       if (!tool) {
-        throw new Error(`Tool not found: ${request.tool}`)
+        throw new APIError(`Tool not found: ${request.tool}`, 404)
       }
 
-      // Validate input
       this.validateInput(request.input, tool.inputSchema)
 
-      // Execute tool
       const result = await router.execute(request.tool, request.input)
 
       return {
@@ -83,12 +96,14 @@ export class MCPInterface {
         traceId: request.metadata?.traceId,
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error)
       return {
-        result: { error: String(error) },
-        domain: request.domain || 'unknown',
+        result: null,
+        domain,
         tool: request.tool,
         executionTime: Date.now() - startTime,
         status: 'error',
+        error: errorMessage,
         traceId: request.metadata?.traceId,
       }
     }
@@ -123,11 +138,22 @@ export class MCPInterface {
     return 'unknown'
   }
 
-  private validateInput(input: any, schema: Record<string, any>): void {
-    // Basic validation - in production, use JSON Schema validator
-    for (const [key, type] of Object.entries(schema)) {
-      if (!(key in input) && type.required) {
-        throw new Error(`Missing required field: ${key}`)
+  private validateRequest(request: MCPRequest): void {
+    if (!request.tool) {
+      throw new ValidationError('Tool name is required')
+    }
+    if (!request.input || typeof request.input !== 'object') {
+      throw new ValidationError('Input must be a valid object')
+    }
+  }
+
+  private validateInput(input: Record<string, any>, schema: Schema): void {
+    if (!schema.properties) return
+
+    const required = schema.required || []
+    for (const field of required) {
+      if (!(field in input)) {
+        throw new ValidationError(`Missing required field: ${field}`)
       }
     }
   }
