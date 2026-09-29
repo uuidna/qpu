@@ -15,6 +15,7 @@
  "flaws": [
   {
    "id": "publish-run-failed-while-npm-succeeded",
+   "state": "FIXED — release-check.yml asks after the run (weekly), and verify-release asks Zenodo for this version under the concept DOI read from CITATION.cff; the leads gatherer confirms the archive holds 0.1.9.",
    "severity": "high",
    "measured": "The v0.1.5 publish run FAILED for e3cc72dffa01ddcd53f535e96229a5180435fc82, while npm itself succeeded: the registry serves 0.1.5 as latest, dist.attestations carries SLSA provenance, and gitHead equals the v0.1.5 tag commit. verify-release reports 4 of 5 green and names the fifth — Zenodo still holds v0.1.4 after 30 rounds.",
    "reading": "The failure is DOWNSTREAM of publishing. publish.yml's own comment says it does three things and confirms none of them; verify-release is the arm that confirms, so a failed run beside a live package means the release is LIVE and INCOMPLETE. A run status alone cannot tell those two apart, which is the thing worth fixing: the run should say which of the five checks it failed.",
@@ -33,6 +34,7 @@
   },
   {
    "id": "liveHolds-throws-instead-of-refusing-by-name",
+   "state": "FIXED 38fb825 — the sixteen Holds that judge a reading take it as optional and answer false without one; across all 113 Holds none throws (97 hold, 16 false for no reading).",
    "severity": "medium",
    "measured": "In a clean install of the published 0.1.5 tarball with no network, 14 of 101 *Holds predicates do not hold. qpuApisLiveHolds, qpuCitationsLiveHolds, qpuComposeHolds, qpuComposeLiveHolds and qpuCrossHolds throw 'Cannot read properties of undefined (reading holds)'; qpuCiteHolds returns false.",
    "reading": "A consumer importing the package offline receives a TypeError from an internal rather than a refusal naming the missing instrument. qpu's own kernelPresent() carries the right law: an absent instrument VOIDS the judgement and says so by name, because a trial whose instrument is missing carries no information about the subject.",
@@ -42,6 +44,7 @@
   },
   {
    "id": "wave-probe-collides-across-concurrent-runs",
+   "state": "CLOSED 2026-09-29 — checked: qpu writes no per-call probe file. Its only per-process path is test-receipts.<ppid>.jsonl, appended by workers and read once by the reporter, so two calls in one pid cannot unlink each other's file.",
    "severity": "medium",
    "measured": "uuidna's kernel-probe writes lean/_wave_probe.<pid>.lean, and its suite runs --test-isolation=none, so every test shares one pid: two probe() calls resolve to one path and each unlinks under the other. Seen as ENOENT inside a landing's clean worktree while passing standalone.",
    "reading": "This is uuidna's defect, reported here because qpu carries the same probe pattern and the same 'one probe file per process' comment. A green that holds only while nothing else probes is not a green.",
