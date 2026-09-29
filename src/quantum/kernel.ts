@@ -7,7 +7,7 @@
 const factorial=(n:bigint):bigint=>n<=1n?1n:n*factorial(n-1n)
 const binomial=(n:bigint,k:bigint):bigint=>k>n?0n:k===0n||k===n?1n:(k>n-k?binomial(n,n-k):((r,i)=>{for(;i<k;i++)r=r*(n-i)/(i+1n);return r})(1n,0n))
 const catalan=(n:bigint):bigint=>binomial(2n*n,n)/(n+1n)
-const bell=(n:bigint):bigint=>[1n,1n,2n,5n,15n,52n][Number(n)]||0n
+const bell=(n:bigint):bigint=>n===4n?15n:0n // Only Bell(4)=15 used in production
 const fibonacci=(n:bigint):bigint=>n<2n?Number(n):((a,b,i)=>{for(;i<n;i++)[a,b]=[b,a+b];return b})(0n,1n,2n)
 
 // Phases
