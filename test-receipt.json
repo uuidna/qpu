@@ -1,17 +1,17 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 4,
-  "pass": 4,
+  "tests": 11,
+  "pass": 11,
   "fail": 0,
   "dry": 0,
-  "circuit": 0,
+  "circuit": 2,
   "mintOnly": 4,
   "servedOnly": 0,
-  "dim": "0",
-  "qubits": 0,
-  "receipt": "801bde8d0ab01ada",
-  "computed": 4,
+  "dim": "2^65538",
+  "qubits": 65538,
+  "receipt": "c461feba84624b13",
+  "computed": 11,
   "readRows": 0,
   "readingsOf": "test-readings.json",
   "rows": [
@@ -96,6 +96,213 @@
       "mint": {
         "calls": 2682,
         "chain": "84f1e2fe3325a58d"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "chat fetch is JSON quantum",
+      "file": "dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "chat calls tools/call",
+      "file": "dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "chat uses every sealed door",
+      "file": "dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "extras catalogs speak MCP JSON-RPC",
+      "file": "dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "no auth message proxy",
+      "file": "dist/quantum/processing/unit/live.test.js",
+      "nesting": 1,
+      "pass": true,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": ""
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "live qpu.uuidna.com",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 13195,
+      "kinds": {
+        "x": 3161,
+        "cnot": 6420,
+        "toffoli": 788,
+        "h": 842,
+        "measure": 402,
+        "cmodexp": 788,
+        "xx": 788,
+        "planes": 6
+      },
+      "dims": {
+        "8": 11571,
+        "64": 10,
+        "128": 48,
+        "512": 1556,
+        "2^64": 10
+      },
+      "dim": "2^64",
+      "qubits": 64,
+      "receipt": "605e94bcd7b86e66",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 402
+        }
+      ],
+      "mint": {
+        "calls": 105774,
+        "chain": "c41a0261a07acd89"
+      },
+      "served": {
+        "count": 2,
+        "folds": [
+          "\"53c1ecacc3318cc7\"",
+          "\"ed73e177fb63ad32\""
+        ]
+      },
+      "foreign": 0
+    },
+    {
+      "name": "live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 30,
+      "kinds": {
+        "cmodexp": 15,
+        "xx": 15
+      },
+      "dims": {
+        "512": 2,
+        "1024": 2,
+        "262144": 2,
+        "17179869184": 2,
+        "2^66": 2,
+        "2^130": 2,
+        "2^258": 2,
+        "2^514": 2,
+        "2^1026": 2,
+        "2^2050": 2,
+        "2^4098": 2,
+        "2^8194": 2,
+        "2^16386": 2,
+        "2^32770": 2,
+        "2^65538": 2
+      },
+      "dim": "2^65538",
+      "qubits": 65538,
+      "receipt": "857bba0cf0aa7045",
+      "states": [],
+      "mint": {
+        "calls": 708,
+        "chain": "37b2f73253da0710"
       },
       "served": {
         "count": 0,

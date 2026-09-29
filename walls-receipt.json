@@ -1,6 +1,6 @@
 {
   "kind": "walls-receipt",
-  "walls": 16,
+  "walls": 17,
   "unreadable": 0,
   "byFile": {
     "scripts/mutate.mjs": 1,
@@ -11,7 +11,7 @@
     "scripts/verify-release.mjs": 1,
     "src/quantum/beyond-classical.ts": 2,
     "src/quantum/processing/unit/axiom-proof-generator.ts": 4,
-    "src/quantum/processing/unit/index.ts": 2,
+    "src/quantum/processing/unit/index.ts": 3,
     "src/quantum/processing/unit/receipt.ts": 1,
     "src/quantum/processing/unit/receipted.ts": 1
   }
