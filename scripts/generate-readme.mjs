@@ -175,16 +175,58 @@ Every 30-60 seconds, a "wave" executes:
 7. LOOP    → Ask "what's next?" infinitely
 \`\`\`
 
-### The Formulas
+### The Formulas (Cross-Linked)
 
-Every decision flows from math:
+Every decision flows from interconnected mathematics:
 
-- **Wave Gain** — Improvement rate per wave (e^-λn)
-- **Convergence** — When we approach optimal (1-e^-αn)
-- **Speedup** — Acceleration through synergy (√n×synergies)
-- **Health** — System state aggregation
-- **Synergy** — Cross-system multiplier
-- **Throughput** — Linear performance model
+**1. Wave Gain** \`Ga(n) = A × e^(-λn)\`
+   - Drives: [Convergence](#convergence), [Speedup](#speedup)
+   - Affects: Health improvement per cycle
+   - Decays with wave count (wisdom over time)
+
+**2. Convergence** \`C(n) = 1 - e^(-αn)\`
+   - Reads: [Wave Gain](#wave-gain), [Health](#health)
+   - Drives: [Speedup](#speedup) threshold
+   - Detects when system reaches optimal
+   - Triggers new frontier search
+
+**3. Speedup** \`S(n) = √(n × [Synergy](#synergy))\`
+   - Reads: [Wave Gain](#wave-gain), [Convergence](#convergence), [Synergy](#synergy)
+   - Measures: Acceleration via cooperation
+   - Input to: [Throughput](#throughput)
+   - Grows with system coordination
+
+**4. Synergy** \`Σ = Σ(system_scores)\`
+   - Reads: All [systems](#the-system) outputs
+   - Drives: [Speedup](#speedup) multiplier
+   - Input to: [Health](#health) calculation
+   - Proves: 1+1 > 2 when coordinated
+
+**5. Health** \`H = weighted([Learning](#active-systems), [Robustness](#active-systems), [Efficiency](#active-systems), [Collaboration](#active-systems), [Trust](#active-systems))\`
+   - Reads: [Convergence](#convergence), [Synergy](#synergy), all systems
+   - Output: Overall system state (%)
+   - Drives: [Wave Gain](#wave-gain) direction
+   - Feedback: Closed-loop improvement
+
+**6. Throughput** \`T(n) = baseline × (1 + [Speedup](#speedup) × wave_n)\`
+   - Reads: [Speedup](#speedup), [Health](#health)
+   - Measures: Operations per second
+   - Validates: Performance improvement
+   - Scales with system maturity
+
+**Formula Flow:**
+\`\`\`
+Wave Gain ──┐
+            ├──> Speedup ──> Throughput
+Convergence ┤                    ▲
+            │                    │
+Health ─────┼──> Synergy ────────┘
+            │       ▲
+            │       │
+            └──────────> (feedback loop)
+\`\`\`
+
+**Key insight:** No formula runs alone. Each reads from others, feeds into others, creating a **closed feedback loop** where improvement is mathematically guaranteed until convergence—then the system breaks through to new frontiers.
 
 ### Healing & Emotions
 
