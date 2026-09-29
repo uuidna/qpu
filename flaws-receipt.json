@@ -24,7 +24,6 @@
   },
   {
    "id": "npm-run-ci-is-invoked-by-no-workflow",
-   "state": "FIXED 2026-09-29 — scripts/chain.test.mjs now checks both directions: every step npm run ci names is reachable from ci.yml, and every gate step ci.yml runs is in npm run ci or named in CI_ONLY with its reason (debts, outage). The pre-push hook runs npm run ci itself (scripts/pre-push.sh).",
    "severity": "medium",
    "measured": "package.json ci = lean && test && proof && mutate && test:scripts. No workflow invokes it; ci.yml re-lists the steps by hand. Before this session ci.yml named ONE scripts test (outage:test), so the leads, pace, percall and temporal suites ran in no chain at all — four of five guard suites unreachable while the board was green. All five pass; they were never asked.",
    "reading": "A list somebody edits is a list somebody forgets. The discovery half is cured — ci.yml now runs test:scripts, which globs scripts/*.test.mjs, so a suite added tomorrow runs the day it exists.",

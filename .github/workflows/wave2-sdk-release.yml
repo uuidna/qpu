@@ -1,11 +1,10 @@
 name: Wave 2 - SDK Release & Deploy
 
-# MANUAL ONLY. On every push to main this failed at scripts package.json never defined (test:integration, lint,
-# build:sdk:js, build:sdk:go, build:sdk:python, build:docs) and on a Node 18 row the package's engines (>=22) refuse —
-# and had it ever gone green, it would have published to npm and PyPI from a push. Define those scripts before
-# re-arming a trigger.
 on:
-  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   test:
