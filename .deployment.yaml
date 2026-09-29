@@ -1,0 +1,142 @@
+# UUIDNA QPU Deployment Configuration
+# Fast release pipeline with e2e testing on green
+
+name: UUIDNA QPU Release Pipeline
+triggers:
+  - push:
+      branches:
+        - main
+  - schedule:
+      - cron: '0 */4 * * *' # Every 4 hours
+
+stages:
+  build:
+    name: Build & Compile
+    steps:
+      - npm run build
+      - npm run lean
+    artifacts:
+      - dist/
+      - src/quantum/processing/unit/
+
+  test:
+    name: Test Suite
+    parallel:
+      - unit:
+          - npm run test
+      - type-check:
+          - npx tsc --noEmit
+      - lint:
+          - npm run lint
+      - security:
+          - npm audit
+
+  e2e:
+    name: End-to-End Testing
+    mcp-capabilities:
+      - cryptography:factorization
+      - finance:portfolio-optimization
+      - ml:classification
+      - supply-chain:knapsack
+      - error-correction:surface-code
+      - topological:anyon-braiding
+      - quantum-sensing:measurement
+      - materials-science:structure
+      - network-optimization:routing
+      - database-search:search
+      - quantum-chemistry:hamiltonian
+      - machine-learning-2:quantum-ml
+      - autonomous:self-improvement
+    test-coverage:
+      - threshold: 80%
+      - required: true
+
+  build-artifacts:
+    name: Build Release Artifacts
+    outputs:
+      - qpu-core.min.js (45KB)
+      - mcp-interface.wasm (128KB)
+      - autonomous-systems.bundle.js (88KB)
+      - domain-specific-tools.tar.gz (256KB)
+      - release-notes.md
+
+  deploy:
+    name: Deploy to Environments
+    gates:
+      - all-tests-pass: required
+      - security-audit-pass: required
+      - coverage-threshold: 80%
+      - artifacts-generated: required
+    environments:
+      - dev:
+          url: dev.qpu.local
+          mcp: enabled
+          auto-deploy: on-green
+      - staging:
+          url: staging.qpu.app
+          mcp: enabled
+          auto-deploy: on-green
+      - production:
+          modes:
+            - browser:
+                url: browser.qpu.app
+                auto-deploy: on-green
+            - standalone:
+                url: qpu.app
+                auto-deploy: on-green
+            - docker:
+                registry: docker.io
+                auto-deploy: on-green
+            - kubernetes:
+                cluster: k8s.qpu.cloud
+                auto-deploy: on-green
+
+release-notes:
+  template: |
+    # UUIDNA QPU v{VERSION}
+
+    **Release Date**: {TIMESTAMP}
+
+    ## What's New
+    - All {DOMAIN_COUNT} quantum domains operational
+    - {SYSTEM_COUNT} autonomous systems active
+    - MCP interface production-ready
+
+    ## Domain-Specific Capabilities
+    {MCP_CAPABILITIES_LIST}
+
+    ## Deployment Status
+    - Development: ✓
+    - Staging: ✓
+    - Production (All 4 modes): ✓
+
+    ## Quality Gates Passed
+    - Build: ✓
+    - Tests: ✓
+    - E2E: ✓
+    - Security: ✓
+    - Coverage: ✓
+
+retention:
+  releases: keep-last-50
+  artifacts: 30-days
+  logs: 7-days
+
+notifications:
+  on-success:
+    - slack: #deployments
+    - email: team@qpu.app
+  on-failure:
+    - slack: #incidents
+    - email: oncall@qpu.app
+    - pagerduty: critical
+
+version-strategy: semantic
+auto-increment: patch
+
+# Enable fast iteration
+fast-mode:
+  enabled: true
+  deploy-on-green: true
+  skip-manual-approval: true
+  rollback-on-error: automatic
