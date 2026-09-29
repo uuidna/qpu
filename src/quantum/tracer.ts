@@ -12,9 +12,13 @@ export interface Span {
 }
 
 export class DistributedTracer {
+  private readonly MAX_SPANS = 10000
+  private readonly MAX_TRACE_HISTORY = 1000
+
   private spans = new Map<string, Span>()
   private activeSpans: Set<string> = new Set()
   private traces: Span[][] = []
+  private spanOrder: string[] = []
 
   startSpan(domain: string, operation: string, parentId?: string): string {
     const spanId = this.generateId()
@@ -29,17 +33,37 @@ export class DistributedTracer {
     }
 
     this.spans.set(spanId, span)
+    this.spanOrder.push(spanId)
     this.activeSpans.add(spanId)
+
+    if (this.spans.size > this.MAX_SPANS) {
+      this.cleanup()
+    }
+
     return spanId
   }
 
-  endSpan(spanId: string, status: 'success' | 'error' = 'success') {
+  endSpan(spanId: string, status: 'success' | 'error' = 'success'): void {
     const span = this.spans.get(spanId)
     if (span) {
       span.endTime = Date.now()
       span.duration = span.endTime - span.startTime
       span.status = status
       this.activeSpans.delete(spanId)
+    }
+  }
+
+  private cleanup(): void {
+    const toRemove = Math.floor(this.MAX_SPANS * 0.1)
+    for (let i = 0; i < toRemove && this.spanOrder.length > 0; i++) {
+      const oldestSpanId = this.spanOrder.shift()
+      if (oldestSpanId) {
+        this.spans.delete(oldestSpanId)
+      }
+    }
+
+    if (this.traces.length > this.MAX_TRACE_HISTORY) {
+      this.traces = this.traces.slice(-this.MAX_TRACE_HISTORY)
     }
   }
 

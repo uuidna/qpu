@@ -8,12 +8,18 @@ export interface LoadPattern {
 }
 
 export class PredictiveLoader {
+  private readonly MAX_HISTORY = 10000
+
   private patterns = new Map<string, LoadPattern>()
   private history: Array<{ timestamp: number; domain: string; operation: string }> = []
   private preloadQueue: Array<{ domain: string; operation: string }> = []
 
-  recordOperation(domain: string, operation: string, duration: number) {
+  recordOperation(domain: string, operation: string, duration: number): void {
     this.history.push({ timestamp: Date.now(), domain, operation })
+
+    if (this.history.length > this.MAX_HISTORY) {
+      this.history = this.history.slice(-Math.floor(this.MAX_HISTORY * 0.9))
+    }
 
     const key = `${domain}:${operation}`
     const pattern = this.patterns.get(key) || { domain, operation, frequency: 0, avgDuration: 0, variance: 0 }
