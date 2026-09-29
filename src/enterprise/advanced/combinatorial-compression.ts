@@ -152,6 +152,7 @@ export class HuffmanEncoder {
 
     for (const bit of encoded) {
       node = bit === '0' ? (node as any).left : (node as any).right
+      if (!node) return decoded
       if (!node.left && !node.right) {
         decoded += node.char
         node = this.tree

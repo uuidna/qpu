@@ -62,6 +62,7 @@ export interface SecurityScheme {
   name?: string
   in?: string
   scheme?: string
+  bearerFormat?: string
   flows?: OAuthFlows
 }
 

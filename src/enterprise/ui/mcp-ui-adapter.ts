@@ -2,7 +2,7 @@
  * MCP UI Adapter - Fuses shadcn/ui with MCP system for standardized UI
  */
 
-import { shadcnComponents } from './components.js'
+import { shadcnComponents, type AlertProps, type CardProps, type TableProps } from './components.js'
 import { designSystem } from './design-system.js'
 
 export interface MCPUIRequest {
@@ -27,7 +27,7 @@ export interface MCPUIResponse {
 export interface DashboardConfig {
   title: string
   widgets: Widget[]
-  layout: 'grid' | 'flex'
+  layout?: 'grid' | 'flex'
   cols?: number
 }
 
@@ -123,10 +123,10 @@ export class MCPUIAdapter {
         content = this.renderTableWidget(widget.content as Record<string, unknown>)
         break
       case 'card':
-        content = shadcnComponents.Card(widget.content as Record<string, unknown>)
+        content = shadcnComponents.Card(widget.content as CardProps)
         break
       case 'alert':
-        content = shadcnComponents.Alert(widget.content as Record<string, unknown>)
+        content = shadcnComponents.Alert(widget.content as AlertProps)
         break
     }
 
@@ -152,7 +152,7 @@ export class MCPUIAdapter {
   }
 
   private renderTableWidget(data: Record<string, unknown>): string {
-    return shadcnComponents.Table(data as Record<string, unknown>)
+    return shadcnComponents.Table(data as unknown as TableProps)
   }
 
   renderForm(title: string, fields: unknown[], onSubmit?: string): MCPUIResponse {

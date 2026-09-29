@@ -4,7 +4,7 @@
 
 import { designSystem, ComponentConfig, ComponentVariant, ComponentSize } from './design-system.js'
 
-export interface ButtonProps extends ComponentConfig {
+export interface ButtonProps extends Partial<ComponentConfig> {
   text: string
   onClick?: () => void
   icon?: string

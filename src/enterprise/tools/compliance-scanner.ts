@@ -25,6 +25,7 @@ export interface ComplianceReport {
     high: number
     medium: number
     low: number
+    total: number
   }
   complianceScore: number
   certifications: {
@@ -38,97 +39,100 @@ export interface ComplianceReport {
 export class ComplianceScanner {
   private patterns = {
     // Security patterns
-    hardcodedSecrets: /(?:password|api_?key|secret|token|credential)\s*=\s*['"][^'"]{8,}['"]/gi,
-    dangerousEval: /\beval\s*\(/gi,
-    sqlInjection: /\bquery\s*\(\s*[`'"]\s*\$\{|\bsql\s*`\s*\$\{/gi,
+    hardcodedSecrets: /(?:pass(?:word)?|pwd|api_?key|secret|token|credential)\s*=\s*['"][^'"]{6,}['"]/i,
+    dangerousEval: /\beval\s*\(/i,
+    sqlInjection: /\bquery\s*\(\s*[`'"]\s*\$\{|\bsql\s*`\s*\$\{/i,
 
     // Data handling
-    unencryptedStorage: /localStorage|sessionStorage|Cookies\.set/gi,
-    unencryptedTransfer: /http:\/\/|XMLHttpRequest|fetch\s*\(\s*['"]http:/gi,
-    dataLeakage: /console\.(log|error)\s*\(\s*(?:password|secret|token|api_?key)/gi,
+    unencryptedStorage: /localStorage|sessionStorage|Cookies\.set/i,
+    unencryptedTransfer: /http:\/\/|XMLHttpRequest|fetch\s*\(\s*['"]http:/i,
+    dataLeakage: /console\.(log|error)\s*\(\s*(?:password|secret|token|api_?key)/i,
 
     // Audit trails
-    noAuditLog: /delete\s+from.*log|DROP\s+TABLE.*audit/gi,
-    missingTimestamp: /this\.createdAt|this\.updatedAt/gi,
-    noUserTracking: /\/\/ TODO.*audit|\/\/ FIXME.*log/gi,
+    noAuditLog: /delete\s+from.*log|DROP\s+TABLE.*audit/i,
+    missingTimestamp: /this\.createdAt|this\.updatedAt/i,
+    noUserTracking: /\/\/ TODO.*audit|\/\/ FIXME.*log/i,
 
     // Error handling
-    swallowedErrors: /catch\s*\(\s*\w+\s*\)\s*\{\s*\}|catch\s*\(\s*\w+\s*\)\s*\{\s*\/\//gi,
-    unhandledPromise: /\.then\(|\.catch\(\s*\(\s*\w+\s*\)\s*=>/gi,
+    swallowedErrors: /catch\s*\(\s*\w+\s*\)\s*\{\s*\}|catch\s*\(\s*\w+\s*\)\s*\{\s*\/\//i,
+    unhandledPromise: /\.then\(|\.catch\(\s*\(\s*\w+\s*\)\s*=>/i,
   }
 
   async scan(filePath: string): Promise<ComplianceIssue[]> {
-    const issues: ComplianceIssue[] = []
-
     try {
-      const content = readFileSync(resolve(filePath), 'utf-8')
-      const lines = content.split('\n')
-
-      // Scan for hardcoded secrets
-      lines.forEach((line, idx) => {
-        if (this.patterns.hardcodedSecrets.test(line)) {
-          issues.push({
-            severity: 'critical',
-            category: 'security',
-            file: filePath,
-            line: idx + 1,
-            message: 'Hardcoded secret or API key detected',
-            remediation: 'Move secrets to environment variables or secure vaults',
-            standard: 'OWASP A02:2021'
-          })
-        }
-
-        if (this.patterns.dangerousEval.test(line)) {
-          issues.push({
-            severity: 'critical',
-            category: 'security',
-            file: filePath,
-            line: idx + 1,
-            message: 'Dangerous eval() usage',
-            remediation: 'Replace with safer alternatives (JSON.parse, Function constructor)',
-            standard: 'OWASP A03:2021'
-          })
-        }
-
-        if (this.patterns.unencryptedStorage.test(line)) {
-          issues.push({
-            severity: 'high',
-            category: 'data-handling',
-            file: filePath,
-            line: idx + 1,
-            message: 'Unencrypted local storage usage',
-            remediation: 'Use encrypted storage or indexedDB with encryption',
-            standard: 'GDPR Article 32'
-          })
-        }
-
-        if (this.patterns.dataLeakage.test(line)) {
-          issues.push({
-            severity: 'high',
-            category: 'data-handling',
-            file: filePath,
-            line: idx + 1,
-            message: 'Sensitive data logged to console',
-            remediation: 'Remove or redact sensitive data from logs',
-            standard: 'GDPR Article 5'
-          })
-        }
-
-        if (this.patterns.swallowedErrors.test(line)) {
-          issues.push({
-            severity: 'medium',
-            category: 'error-handling',
-            file: filePath,
-            line: idx + 1,
-            message: 'Empty catch block swallowing errors',
-            remediation: 'Log errors, handle gracefully, or re-throw with context',
-            standard: 'OWASP A09:2021'
-          })
-        }
-      })
+      return this.performSASTScan(readFileSync(resolve(filePath), 'utf-8'), filePath)
     } catch (error) {
       console.error(`Failed to scan ${filePath}:`, error)
+      return []
     }
+  }
+
+  performSASTScan(content: string, filePath: string): ComplianceIssue[] {
+    const issues: ComplianceIssue[] = []
+    const lines = content.split('\n')
+
+    // Scan for hardcoded secrets
+    lines.forEach((line, idx) => {
+      if (this.patterns.hardcodedSecrets.test(line)) {
+        issues.push({
+          severity: 'critical',
+          category: 'security',
+          file: filePath,
+          line: idx + 1,
+          message: 'Hardcoded secret or API key detected',
+          remediation: 'Move secrets to environment variables or secure vaults',
+          standard: 'OWASP A02:2021'
+        })
+      }
+
+      if (this.patterns.dangerousEval.test(line)) {
+        issues.push({
+          severity: 'critical',
+          category: 'security',
+          file: filePath,
+          line: idx + 1,
+          message: 'Dangerous eval() usage',
+          remediation: 'Replace with safer alternatives (JSON.parse, Function constructor)',
+          standard: 'OWASP A03:2021'
+        })
+      }
+
+      if (this.patterns.unencryptedStorage.test(line)) {
+        issues.push({
+          severity: 'high',
+          category: 'data-handling',
+          file: filePath,
+          line: idx + 1,
+          message: 'Unencrypted local storage usage',
+          remediation: 'Use encrypted storage or indexedDB with encryption',
+          standard: 'GDPR Article 32'
+        })
+      }
+
+      if (this.patterns.dataLeakage.test(line)) {
+        issues.push({
+          severity: 'high',
+          category: 'data-handling',
+          file: filePath,
+          line: idx + 1,
+          message: 'Sensitive data logged to console',
+          remediation: 'Remove or redact sensitive data from logs',
+          standard: 'GDPR Article 5'
+        })
+      }
+
+      if (this.patterns.swallowedErrors.test(line)) {
+        issues.push({
+          severity: 'medium',
+          category: 'error-handling',
+          file: filePath,
+          line: idx + 1,
+          message: 'Empty catch block swallowing errors',
+          remediation: 'Log errors, handle gracefully, or re-throw with context',
+          standard: 'OWASP A09:2021'
+        })
+      }
+    })
 
     return issues
   }
@@ -146,6 +150,7 @@ export class ComplianceScanner {
       high: allIssues.filter(i => i.severity === 'high').length,
       medium: allIssues.filter(i => i.severity === 'medium').length,
       low: allIssues.filter(i => i.severity === 'low').length,
+      total: allIssues.length,
     }
 
     const complianceScore = Math.max(0, 100 - (

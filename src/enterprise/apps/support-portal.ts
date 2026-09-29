@@ -121,7 +121,7 @@ export class SupportPortal {
     requester: { id: string; name: string; email: string }
   }): SupportTicket {
     const ticket: SupportTicket = {
-      id: `ticket-${Date.now()}`,
+      id: `ticket-${this.tickets.size + 1}`,
       subject: data.subject,
       description: data.description,
       priority: data.priority as any,
@@ -152,7 +152,7 @@ export class SupportPortal {
     if (!ticket) return null
 
     ticket.responses.push({
-      id: `response-${Date.now()}`,
+      id: `response-${ticket.responses.length + 1}`,
       ...response
     })
 

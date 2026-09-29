@@ -173,7 +173,7 @@ export class SchemaValidator {
     const errors: string[] = []
 
     // Check type
-    const actualType = typeof value
+    const actualType = Array.isArray(value) ? 'array' : typeof value
     if (actualType !== schema.type && schema.type !== 'any') {
       errors.push(`Field "${name}": expected ${schema.type}, got ${actualType}`)
       return errors

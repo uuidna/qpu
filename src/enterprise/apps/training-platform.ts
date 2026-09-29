@@ -135,7 +135,7 @@ export class TrainingPlatform {
 
   createCourse(data: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>): Course {
     const course: Course = {
-      id: `course-${Date.now()}`,
+      id: `course-${this.courses.size + 1}`,
       ...data,
       createdAt: new Date(),
       updatedAt: new Date()
