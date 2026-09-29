@@ -15,7 +15,7 @@
  *   node scripts/mutate.mjs gate       only those whose label matches
  */
 import { execSync } from 'node:child_process'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 
 const ROOT = process.cwd()
@@ -128,6 +128,11 @@ const noop = []
 
 for (const m of rows) {
   const path = join(ROOT, m.file)
+  if (!existsSync(path)) {
+    noop.push({ ...m, hits: 0 })
+    console.log(`  ?  ${m.label}\n     file not found: ${m.file} — NOT APPLIED`)
+    continue
+  }
   const original = readFileSync(path, 'utf8')
 
   const hits = original.split(m.from).length - 1
