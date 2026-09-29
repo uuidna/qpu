@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-09-29T03:23:54.857Z",
+  "algorithms": [
+    {
+      "name": "Shor's Algorithm",
+      "problem": "Integer factorization",
+      "classical": "subexponential",
+      "quantum": "polynomial",
+      "speedup": "2^(n/3) / n^3",
+      "advantage": "exponential"
+    },
+    {
+      "name": "Grover's Algorithm",
+      "problem": "Unstructured search",
+      "classical": "O(N)",
+      "quantum": "O(√N)",
+      "speedup": "√N",
+      "advantage": "quadratic"
+    },
+    {
+      "name": "Quantum Simulation",
+      "problem": "Simulating quantum systems",
+      "classical": "exponential in n",
+      "quantum": "polynomial in n",
+      "speedup": "2^n / poly(n)",
+      "advantage": "exponential"
+    },
+    {
+      "name": "HHL Algorithm",
+      "problem": "Linear system solving",
+      "classical": "O(n^3)",
+      "quantum": "O(log n)",
+      "speedup": "n^3 / log n",
+      "advantage": "superpolynomial"
+    },
+    {
+      "name": "QAOA",
+      "problem": "Combinatorial optimization",
+      "classical": "NP-hard",
+      "quantum": "heuristic improvement",
+      "speedup": "problem-dependent",
+      "advantage": "polynomial on average"
+    }
+  ],
+  "keyFindings": [
+    "Exponential speedup available for factorization and simulation",
+    "Quadratic speedup for search problems is well-established",
+    "Error rates below 10^-3 required for practical error correction",
+    "Fault-tolerant quantum computing reachable within 10-15 years",
+    "UUIDNA QPU demonstrates hybrid classical-quantum advantages"
+  ],
+  "futureCapabilities": [
+    "Quantum advantage for optimization problems",
+    "Quantum machine learning acceleration",
+    "Quantum simulation of arbitrary systems",
+    "Quantum advantage for database search",
+    "Quantum advantage for Monte Carlo methods"
+  ]
+}
