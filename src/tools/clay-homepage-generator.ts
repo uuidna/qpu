@@ -1,9 +1,11 @@
 /**
  * Clay Problem Homepage Generator
  * Generates beautiful, math-rich HTML pages displaying scientific proofs
+ * Including complete historical citations and prior art genealogy
  */
 
 import { clayProblemSolver, ClayProblem } from '../mcp/clay-problem-solver.js'
+import { priorArtCitationManager } from '../mcp/prior-art-citations.js'
 
 export interface GeneratedPage {
   title: string
@@ -174,11 +176,16 @@ ${problems.map(p => this.generateProblemMarkdown(p.name)).join('\n\n---\n\n')}
   }
 
   /**
-   * Generate individual problem page
+   * Generate individual problem page with prior art citations
    */
   generateProblemPage(problemName: string): GeneratedPage {
     const proof = clayProblemSolver.generateProof(problemName)
     const quantum = clayProblemSolver.getQuantumApproach(problemName)
+    const citations = clayProblemSolver.getPriorArt(problemName)
+    const genealogy = clayProblemSolver.getGenealogy(problemName)
+    const bibliography = clayProblemSolver.generateBibliography(problemName)
+
+    const citationHtml = this.generateCitationSection(problemName, genealogy, bibliography)
 
     const html = `
 <!DOCTYPE html>
@@ -266,6 +273,40 @@ ${problems.map(p => this.generateProblemMarkdown(p.name)).join('\n\n---\n\n')}
       border-radius: 5px;
       border-left: 4px solid #17a2b8;
     }
+    .citation-section {
+      background: #fff3cd;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border-left: 4px solid #ffc107;
+    }
+    .genealogy-timeline {
+      margin: 20px 0;
+      padding-left: 20px;
+      border-left: 3px solid #6c757d;
+    }
+    .genealogy-entry {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+    }
+    .genealogy-entry h4 {
+      color: #2a5298;
+      margin-bottom: 5px;
+    }
+    .genealogy-entry .period {
+      color: #6c757d;
+      font-style: italic;
+      font-size: 0.9em;
+    }
+    .bibliography {
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+      font-size: 0.9em;
+    }
     code {
       background: #e9ecef;
       padding: 2px 6px;
@@ -319,6 +360,8 @@ ${problems.map(p => this.generateProblemMarkdown(p.name)).join('\n\n---\n\n')}
           ${quantum.implementationPath.map(step => `<li>${step}</li>`).join('\n')}
         </ol>
       </div>
+
+      ${citationHtml}
     </div>
   </div>
 </body>
@@ -326,6 +369,56 @@ ${problems.map(p => this.generateProblemMarkdown(p.name)).join('\n\n---\n\n')}
     `
 
     return { title: problemName, html, markdown: proof }
+  }
+
+  /**
+   * Generate historical citations and genealogy section
+   */
+  private generateCitationSection(problemName: string, genealogy: any[], bibliography: string): string {
+    let html = `
+      <div class="citation-section">
+        <h2>📚 Historical Context & Prior Art</h2>
+        <p>This proof builds upon centuries of mathematical, computational, and philosophical development from ancient times through modern quantum theory.</p>
+
+        <h3>Genealogy of Ideas</h3>
+        <div class="genealogy-timeline">
+    `
+
+    // Group genealogy by era
+    const byEra: Record<string, any[]> = {}
+    for (const work of genealogy) {
+      const isBCE = work.period.includes('BCE')
+      const era = isBCE ? 'Ancient (BCE)' : 'Medieval/Modern (CE)'
+      if (!byEra[era]) byEra[era] = []
+      byEra[era].push(work)
+    }
+
+    for (const [era, works] of Object.entries(byEra)) {
+      html += `<h4>${era}</h4>`
+      for (const work of works) {
+        html += `
+          <div class="genealogy-entry">
+            <h5>${work.title}</h5>
+            <p><strong>Author:</strong> ${work.author}</p>
+            <p class="period">${work.period} - ${work.civilization}</p>
+            <p><strong>Key Concepts:</strong> ${work.concepts.join(', ')}</p>
+            <p><strong>Influence:</strong> ${work.influence}</p>
+          </div>
+        `
+      }
+    }
+
+    html += `
+        </div>
+
+        <h3>Complete Bibliography</h3>
+        <div class="bibliography">
+          ${bibliography.replace(/\n/g, '<br/>')}
+        </div>
+      </div>
+    `
+
+    return html
   }
 
   /**

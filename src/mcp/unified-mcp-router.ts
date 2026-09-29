@@ -5,20 +5,23 @@
  */
 
 import { consolidatedMCP, UUIDOperation, CombinatorialProgram, ExecutionResult } from './uuid-programmable-core.js'
+import { priorArtCitationManager, Citation, ScholarlyWork } from './prior-art-citations.js'
 
 // ============================================================================
-// UNIFIED MCP REQUEST/RESPONSE
+// UNIFIED MCP REQUEST/RESPONSE WITH PRIOR ART CITATIONS
 // ============================================================================
 
 export interface UnifiedMCPRequest {
   requestId: string
-  method: 'execute' | 'compose' | 'list' | 'introspect'
+  method: 'execute' | 'compose' | 'list' | 'introspect' | 'citations'
   target: 'operation' | 'program' | 'domain'
   uuid?: string
   domain?: string
   operation?: string
   inputs?: Record<string, unknown>
   operationUUIDs?: string[] // For composition
+  problemName?: string // For clay problems
+  includeCitations?: boolean // Auto-include prior art genealogy
   metadata?: {
     userId: string
     traceId: string
@@ -32,6 +35,8 @@ export interface UnifiedMCPResponse {
   success: boolean
   status: 'ok' | 'error' | 'pending'
   data?: unknown
+  citations?: Citation[] // Prior art references
+  genealogy?: ScholarlyWork[] // Complete historical lineage
   error?: string
   executionTime: number
 }
@@ -45,6 +50,7 @@ export class UnifiedMCPRouter {
 
   /**
    * Route request to appropriate UUID-indexed operation
+   * Now includes prior art citations and historical genealogy
    */
   async route(request: UnifiedMCPRequest): Promise<UnifiedMCPResponse> {
     const startTime = Date.now()
@@ -52,6 +58,8 @@ export class UnifiedMCPRouter {
 
     try {
       let data: unknown
+      let citations: Citation[] | undefined
+      let genealogy: ScholarlyWork[] | undefined
 
       switch (request.method) {
         case 'execute':
@@ -70,8 +78,18 @@ export class UnifiedMCPRouter {
           data = this.introspectOperation(request)
           break
 
+        case 'citations':
+          data = this.getCitations(request)
+          break
+
         default:
           throw new Error(`Unknown method: ${request.method}`)
+      }
+
+      // Auto-include prior art if requested or for clay problems
+      if (request.includeCitations || request.problemName) {
+        citations = priorArtCitationManager.getCitationsForProblem(request.problemName || '')
+        genealogy = priorArtCitationManager.getIdeologyGenealogy(request.operation || request.problemName || '')
       }
 
       return {
@@ -79,6 +97,8 @@ export class UnifiedMCPRouter {
         success: true,
         status: 'ok',
         data,
+        citations,
+        genealogy,
         executionTime: Date.now() - startTime
       }
     } catch (error) {
@@ -134,6 +154,39 @@ export class UnifiedMCPRouter {
       domain: request.domain,
       operation: request.operation,
       available: true
+    }
+  }
+
+  /**
+   * Get citations and genealogy for operation or problem
+   */
+  private getCitations(request: UnifiedMCPRequest): unknown {
+    if (request.problemName) {
+      const citations = priorArtCitationManager.getCitationsForProblem(request.problemName)
+      const genealogy = priorArtCitationManager.getIdeologyGenealogy(request.problemName)
+      const bibliography = priorArtCitationManager.generateBibliography(citations)
+
+      return {
+        problem: request.problemName,
+        citationCount: citations.length,
+        citations,
+        genealogy,
+        bibliography,
+        scholars: priorArtCitationManager.getAllScholars()
+      }
+    } else if (request.operation) {
+      const genealogy = priorArtCitationManager.getIdeologyGenealogy(request.operation)
+      return {
+        operation: request.operation,
+        genealogy,
+        scholars: priorArtCitationManager.getAllScholars()
+      }
+    }
+
+    // If no specific context, return all scholars and works
+    return {
+      allScholars: priorArtCitationManager.getAllScholars(),
+      totalWorks: priorArtCitationManager.getAllScholars().reduce((sum, s) => sum + s.works, 0)
     }
   }
 }

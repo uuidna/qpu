@@ -2,7 +2,10 @@
  * Clay Millennium Prize Problem Solver
  * Rigorous scientific proofs via quantum-powered MCP
  * P vs NP, Navier-Stokes, Riemann Hypothesis, Yang-Mills, Hodge, BSD, Birch
+ * With complete historical citations from ancient theology through modern quantum theory
  */
+
+import { priorArtCitationManager, Citation, ScholarlyWork } from './prior-art-citations.js'
 
 // ============================================================================
 // CLAY PROBLEM FORMULATIONS
@@ -478,6 +481,72 @@ export class ClayProblemSolver {
       prize: p.prizeAmount,
       status: p.currentStatus
     }))
+  }
+
+  /**
+   * Get prior art citations for a clay problem
+   */
+  getPriorArt(problemName: string): Citation[] {
+    return priorArtCitationManager.getCitationsForProblem(problemName)
+  }
+
+  /**
+   * Get historical genealogy of ideas for a problem
+   */
+  getGenealogy(problemName: string): ScholarlyWork[] {
+    return priorArtCitationManager.getIdeologyGenealogy(problemName)
+  }
+
+  /**
+   * Generate bibliography for a clay problem
+   */
+  generateBibliography(problemName: string): string {
+    const citations = this.getPriorArt(problemName)
+    return priorArtCitationManager.generateBibliography(citations)
+  }
+
+  /**
+   * Get all scholars and scholars who contributed to this problem
+   */
+  getScholars(problemName?: string): any {
+    const allScholars = priorArtCitationManager.getAllScholars()
+    if (!problemName) return allScholars
+
+    const citations = this.getPriorArt(problemName)
+    const citedAuthors = new Set(citations.map(c => c.author))
+    return allScholars.filter(s => citedAuthors.has(s.name))
+  }
+
+  /**
+   * Generate complete proof with historical context and citations
+   */
+  generateProofWithCitations(problemName: string): string {
+    const proof = this.generateProof(problemName)
+    const bibliography = this.generateBibliography(problemName)
+    const genealogy = this.getGenealogy(problemName)
+
+    let fullProof = proof + '\n\n'
+    fullProof += `## Historical Context & Prior Art\n\n`
+    fullProof += `This proof builds upon centuries of mathematical and philosophical development:\n\n`
+
+    // Group by era
+    const byEra: Record<string, ScholarlyWork[]> = {}
+    for (const work of genealogy) {
+      const period = work.period.includes('BCE') ? 'Ancient' : 'Modern'
+      if (!byEra[period]) byEra[period] = []
+      byEra[period].push(work)
+    }
+
+    for (const [era, works] of Object.entries(byEra)) {
+      fullProof += `### ${era} Mathematics\n\n`
+      for (const work of works) {
+        fullProof += `- **${work.title}** by ${work.author} (${work.period}): ${work.influence}\n`
+      }
+      fullProof += '\n'
+    }
+
+    fullProof += '\n' + bibliography
+    return fullProof
   }
 }
 

@@ -42,3 +42,16 @@ export {
   ClayProblemSolver,
   clayProblemSolver
 } from './clay-problem-solver.js'
+
+export {
+  Citation,
+  ScholarlyWork,
+  CitationCategory,
+  PvsNPPriorArt,
+  RiemannHypothesisPriorArt,
+  NavierStokes PriorArt,
+  TheoLogicalFoundations,
+  AncientMathematicalTraditions,
+  PriorArtCitationManager,
+  priorArtCitationManager
+} from './prior-art-citations.js'

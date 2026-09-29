@@ -20,6 +20,7 @@
 - **[QUANTUM_PROXY.md](architecture/QUANTUM_PROXY.md)** - Quantum proxy coordination
 - **[GEOMETRY_COMPUTATION.md](architecture/GEOMETRY_COMPUTATION.md)** - Geometry principles
 - **[BEYOND_CLASSICAL.md](architecture/BEYOND_CLASSICAL.md)** - Quantum advantages
+- **[PRIOR_ART_CITATIONS.md](architecture/PRIOR_ART_CITATIONS.md)** - Historical genealogy from ancient times to quantum theory (28 scholars, 1400 BCE–2000 CE)
 
 ---
 
