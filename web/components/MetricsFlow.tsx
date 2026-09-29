@@ -28,14 +28,17 @@ export default function MetricsFlow() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(t => (t + 1) % 360)
-      setMetrics(prev => ({
-        learning: 75 + 15 * Math.sin((t + 0) * 0.01),
-        robustness: 85 + 10 * Math.sin((t + 60) * 0.01),
-        efficiency: 70 + 15 * Math.sin((t + 120) * 0.01),
-        collaboration: 80 + 12 * Math.sin((t + 180) * 0.01),
-        trustworthiness: 88 + 8 * Math.sin((t + 240) * 0.01),
-      }))
+      setTime(prev => {
+        const newTime = (prev + 1) % 360
+        setMetrics({
+          learning: 75 + 15 * Math.sin((newTime + 0) * 0.01),
+          robustness: 85 + 10 * Math.sin((newTime + 60) * 0.01),
+          efficiency: 70 + 15 * Math.sin((newTime + 120) * 0.01),
+          collaboration: 80 + 12 * Math.sin((newTime + 180) * 0.01),
+          trustworthiness: 88 + 8 * Math.sin((newTime + 240) * 0.01),
+        })
+        return newTime
+      })
     }, 50)
     return () => clearInterval(interval)
   }, [])

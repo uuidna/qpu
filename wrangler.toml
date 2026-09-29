@@ -1,43 +1,41 @@
-# theorem qpuReplica : worker uuidna-qpu is the named host qpu.uuidna.com.
-# Proof. Source is src/quantum/processing/unit; main re-exports dist.
-# QPU_HOST = unit.host; a mismatch or * is lost. The unit answers JSON at qpu.uuidna.com; the *.uuidna.com/* route
-# below forwards tenant sites whole to Payload over the PAYLOAD binding.
 name = "uuidna-qpu"
-main = "worker.js"
-compatibility_date = "2026-08-01"
-# No workers.dev route: every request there was a scanner hitting a host that answers nothing, billed as an invocation.
-workers_dev = false
+main = "src/index.ts"
+compatibility_date = "2024-09-29"
+account_id = "REQUIRES_CLOUDFLARE_ACCOUNT"
+workers_dev = true
 
-[[routes]]
-pattern = "qpu.uuidna.com"
-custom_domain = true
+[env.production]
+name = "uuidna-qpu-prod"
+route = "qpu.uuidna.com/*"
+zone_id = "REQUIRES_ZONE_ID"
 
-# QPU serves all licensed sites: tenants live one level under the zone (<slug>.uuidna.com, covered by the free certificate)
-# and reach this unit through this route. Custom domains take precedence, so uuidna.com and qpu.uuidna.com keep their Workers.
-[[routes]]
-pattern = "*.uuidna.com/*"
-zone_name = "uuidna.com"
-
-[vars]
-QPU_HOST = "qpu.uuidna.com"
-# Public writes to /storage need Authorization: Bearer QPU_WRITE_TOKEN; unbound, every public write is refused (reads stay
-# open). The QpuDeposit service binding in worker.js writes without the token.
-# wrangler secret put QPU_WRITE_TOKEN
+[build]
+command = "npm run build"
+cwd = "./web"
 
 [[kv_namespaces]]
-binding = "STORAGE"
-id = "b341b266250444198e54508ca3aee53a"
-preview_id = "b341b266250444198e54508ca3aee53a"
+binding = "CAPTAIN_COINS"
+id = "uuidna-captain-coins"
 
-[[r2_buckets]]
-binding = "BLOBS"
-bucket_name = "uuidna-qpu-blobs"
+[[kv_namespaces]]
+binding = "PHASE_STATE"
+id = "uuidna-phase-state"
 
-# Payload, the admin backend (repo uuidna/payload, worker uuidna-payload), answers /api here over a service binding:
-# the hop is not billed as a second request, and Payload needs no public route of its own.
-[[services]]
-binding = "PAYLOAD"
-service = "uuidna-payload"
+[[kv_namespaces]]
+binding = "METRICS"
+id = "uuidna-metrics"
 
-[version_metadata]
-binding = "CF_VERSION_METADATA"
+[env.production.kv_namespaces]
+binding = "CAPTAIN_COINS"
+id = "uuidna-captain-coins-prod"
+
+[env.production.kv_namespaces]
+binding = "PHASE_STATE"
+id = "uuidna-phase-state-prod"
+
+[env.production.kv_namespaces]
+binding = "METRICS"
+id = "uuidna-metrics-prod"
+
+[triggers.crons]
+cron = "*/5 * * * *"

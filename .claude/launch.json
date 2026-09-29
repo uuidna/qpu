@@ -1,6 +1,7 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "qpu", "runtimeExecutable": "node", "runtimeArgs": ["dist/quantum/processing/unit/boot.js"], "port": 8787 }
+    { "name": "qpu", "runtimeExecutable": "node", "runtimeArgs": ["dist/quantum/processing/unit/boot.js"], "port": 8787 },
+    { "name": "combinatorics-visualizer", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3000, "cwd": "web" }
   ]
 }
