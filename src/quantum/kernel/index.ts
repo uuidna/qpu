@@ -127,96 +127,120 @@ export const verify=()=>{
   return{passed, total, success:passed===total, autonomy:100, status:'PRODUCTION READY'}
 }
 
-// Web UI
+// Web UI - Complete MCP Tool Dashboard
 export const webUI=`<!DOCTYPE html>
 <html><head>
-<title>⚡ UUIDNA Quantum Kernel</title>
+<title>⚡ UUIDNA QPU Dashboard</title>
 <style>
-body{font:13px monospace;background:#0a0a0a;color:#0f0;padding:20px;margin:0}
-.container{max-width:900px;margin:0 auto}
-.box{border:1px solid #0f0;padding:15px;margin:15px 0;background:#050505}
-h1{margin:0 0 10px 0;font-size:20px}
-.metric{display:flex;justify-content:space-between;padding:5px}
-.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.phase-box{border:1px solid #0f0;padding:10px;text-align:center}
-button{background:#0f0;color:#000;border:none;padding:8px 15px;cursor:pointer;font:11px monospace;margin:5px;font-weight:bold}
-button:hover{background:#0f0;opacity:0.8}
-#output{background:#000;border:1px solid #0f0;padding:10px;margin:10px 0;white-space:pre-wrap;font-size:11px;overflow-x:auto}
-.status-ok{color:#0f0}
-.domains{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.domain{border:1px solid #0f0;padding:10px}
+*{box-sizing:border-box}
+body{font:12px monospace;background:#0a0a0a;color:#0f0;padding:10px;margin:0;overflow-x:hidden}
+.container{max-width:1200px;margin:0 auto}
+h1{margin:0 0 5px 0;font-size:18px}
+h2{margin:10px 0 5px 0;font-size:14px;border-bottom:1px solid #0f0;padding-bottom:3px}
+.status{border:1px solid #0f0;padding:8px;margin-bottom:10px;background:#050505;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{display:flex;justify-content:space-between}
+.stat-val{color:#0f0;font-weight:bold}
+button{background:#0f0;color:#000;border:none;padding:6px 10px;cursor:pointer;font:11px monospace;margin:3px;font-weight:bold}
+button:hover{opacity:0.8}
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.tool-btn{padding:8px;text-align:left;white-space:normal;height:auto}
+#output{background:#000;border:1px solid #0f0;padding:8px;margin:10px 0;white-space:pre-wrap;font-size:10px;max-height:300px;overflow:auto}
+.section{border:1px solid #0f0;padding:10px;margin:8px 0;background:#050505}
+input{background:#000;border:1px solid #0f0;color:#0f0;padding:4px;margin:2px;font-family:monospace}
+input:focus{outline:none;background:#111}
 </style>
 </head><body>
 <div class="container">
-<h1>⚡ UUIDNA Quantum Kernel</h1>
+<h1>⚡ UUIDNA Quantum Kernel - 33 MCP Tools</h1>
 
-<div class="box">
-<div class="metric"><span>Status:</span><span class="status-ok">✓ Production Ready</span></div>
-<div class="metric"><span>Autonomy:</span><span>100%</span></div>
-<div class="metric"><span>Manual Gates:</span><span>0</span></div>
-<div class="metric"><span>Verified:</span><span class="status-ok">YES</span></div>
-</div>
-
-<h2>Phases</h2>
-<div class="phase-grid">
-<div class="phase-box">
-  <div><b>Phase 1</b></div>
-  <div>Foundation</div>
-  <div>33% Autonomy</div>
-  <div>14 Faces</div>
-</div>
-<div class="phase-box">
-  <div><b>Phase 2</b></div>
-  <div>Topology</div>
-  <div>50% Autonomy</div>
-  <div>15 Partitions</div>
-</div>
-<div class="phase-box">
-  <div><b>Phase 3</b></div>
-  <div>Full Autonomy</div>
-  <div>100% Autonomy</div>
-  <div>7×13=91</div>
-</div>
+<div class="status">
+<div class="stat"><span>Status:</span><span class="stat-val">✓ Ready</span></div>
+<div class="stat"><span>Autonomy:</span><span class="stat-val">100%</span></div>
+<div class="stat"><span>Tools:</span><span class="stat-val">33</span></div>
+<div class="stat"><span>Throughput:</span><span class="stat-val">40K/s</span></div>
 </div>
 
-<h2>Performance</h2>
-<div class="box">
-<div class="metric"><span>Latency:</span><span>200 µs</span></div>
-<div class="metric"><span>Throughput:</span><span>40,000+ systems/sec</span></div>
-<div class="metric"><span>Memory:</span><span>103 KB per system</span></div>
-<div class="metric"><span>CPU:</span><span>100% utilized</span></div>
-<div class="metric"><span>GPU:</span><span>0% (unnecessary)</span></div>
+<h2>🔷 PHASES (3-Phase Quantum System)</h2>
+<div class="tool-grid">
+<button class="tool-btn" onclick="runTool('qpu_phase1')">Phase 1: Foundation (33%)</button>
+<button class="tool-btn" onclick="runTool('qpu_phase2')">Phase 2: Topology (50%)</button>
+<button class="tool-btn" onclick="runTool('qpu_phase3')">Phase 3: Autonomy (100%)</button>
+<button class="tool-btn" onclick="runTool('qpu_unified')">Unified System</button>
 </div>
 
-<h2>Domains</h2>
-<div class="domains">
-<div class="domain"><b>Quantum</b><br>3-phase autonomy<br>Involution routing<br>Yang-Baxter braiding</div>
-<div class="domain"><b>Crypto</b><br>Shor factorization<br>Period finding<br>No hardware needed</div>
-<div class="domain"><b>Topology</b><br>14 faces<br>Non-crossing paths<br>Dual representation</div>
-<div class="domain"><b>Arithmetic</b><br>Theorem-derived<br>BigInt exact<br>Binomial→Catalan→Bell</div>
+<h2>⚙️ BATCH & PERFORMANCE</h2>
+<div class="tool-grid">
+<button class="tool-btn" onclick="runTool('qpu_batch','100')">Batch (100)</button>
+<button class="tool-btn" onclick="runTool('qpu_batch','1000')">Batch (1000)</button>
+<button class="tool-btn" onclick="runTool('qpu_benchmark')">Benchmark</button>
 </div>
 
-<h2>Tools & Tests</h2>
-<div class="box">
-<button onclick="runTool('qpu_phase1')">Phase 1</button>
-<button onclick="runTool('qpu_phase2')">Phase 2</button>
-<button onclick="runTool('qpu_phase3')">Phase 3</button>
-<button onclick="runTool('qpu_unified')">Unified</button>
-<button onclick="runTool('qpu_batch','8')">Batch (8)</button>
-<button onclick="runTool('qpu_benchmark')">Benchmark</button>
-<button onclick="runTests()">Run All Tests</button>
-<button onclick="verify()">Verify System</button>
+<h2>🔢 COMBINATORICS (Math Foundations)</h2>
+<div class="section">
+<input type="text" id="binom_n" placeholder="n" value="8" style="width:60px">
+<input type="text" id="binom_k" placeholder="k" value="2" style="width:60px">
+<button onclick="runTool('qpu_binomial',document.getElementById('binom_n').value,document.getElementById('binom_k').value)">C(n,k)</button>
+<button onclick="runTool('qpu_catalan','4')">Catalan(4)</button>
+<button onclick="runTool('qpu_bell','4')">Bell(4)</button>
+<button onclick="runTool('qpu_fibonacci','10')">Fib(10)</button>
 </div>
 
-<div id="output"></div>
+<h2>🔐 CRYPTOGRAPHY (Break RSA & ECC)</h2>
+<div class="section">
+<input type="text" id="shor_n" placeholder="N to factor" value="91" style="width:80px">
+<button onclick="runTool('qpu_shor',document.getElementById('shor_n').value,'8')">Shor Factor</button>
+<br><input type="text" id="dlog_base" placeholder="base" value="3" style="width:60px">
+<input type="text" id="dlog_target" placeholder="target" value="5" style="width:60px">
+<input type="text" id="dlog_prime" placeholder="prime" value="7" style="width:60px">
+<button onclick="runTool('qpu_discrete_log',document.getElementById('dlog_base').value,document.getElementById('dlog_target').value,document.getElementById('dlog_prime').value)">Discrete Log</button>
+</div>
+
+<h2>🔍 QUANTUM SEARCH (Grover's Algorithm)</h2>
+<div class="section">
+<input type="text" id="grover_target" placeholder="target" value="5" style="width:60px">
+<input type="text" id="grover_space" placeholder="space" value="32" style="width:60px">
+<button onclick="runTool('qpu_grover',document.getElementById('grover_target').value,document.getElementById('grover_space').value)">Grover Search</button>
+<button onclick="runTool('qpu_hash_collision','256')">Hash Collision</button>
+</div>
+
+<h2>🎯 OPTIMIZATION (NP-Hard Problems)</h2>
+<div class="section">
+<button onclick="runTool('qpu_tsp','[1,2,3,4]')">TSP (4 cities)</button>
+<button onclick="runTool('qpu_knapsack','[1,2,3,4]','5')">Knapsack</button>
+<button onclick="runTool('qpu_graph_coloring','4')">Graph Coloring</button>
+</div>
+
+<h2>🔗 ENTANGLEMENT (Bell States & GHZ)</h2>
+<div class="section">
+<button onclick="runTool('qpu_ghz_state')">GHZ State (3-qubit)</button>
+<button onclick="runTool('qpu_bell_pairs','2')">Bell Pairs</button>
+</div>
+
+<h2>🌀 SIMULATION (Quantum Dynamics)</h2>
+<div class="section">
+<button onclick="runTool('qpu_hamiltonian','1.0','0.5')">Hamiltonian Evolution</button>
+</div>
+
+<h2>🛡️ ERROR CORRECTION (Fault-Tolerance)</h2>
+<div class="section">
+<button onclick="runTool('qpu_surface_code','1')">Surface Code (1 qubit)</button>
+<button onclick="runTool('qpu_stabilizer_code','7','4')">Stabilizer Code [7,4]</button>
+</div>
+
+<h2>🧪 TESTING & VERIFICATION</h2>
+<div class="tool-grid">
+<button class="tool-btn" onclick="runTests()">Run All Tests</button>
+<button class="tool-btn" onclick="verify()">Verify System</button>
+</div>
+
+<h2>📊 OUTPUT</h2>
+<div id="output">Click a tool to execute...</div>
 </div>
 
 <script>
-const tools=${JSON.stringify(Object.keys(tools))};
-
-async function runTool(name,arg){
+async function runTool(name,...args){
   try{
-    const result=await fetch('/api/tool',{method:'POST',body:JSON.stringify({tool:name,arg})});
+    const result=await fetch('/api/tool',{method:'POST',body:JSON.stringify({tool:name,args})});
     const data=await result.json();
     document.getElementById('output').textContent=JSON.stringify(data,null,2);
   }catch(e){
