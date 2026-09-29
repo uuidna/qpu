@@ -10663,6 +10663,44 @@ const qpuCernSearchOf = () => {
     doors}
 }
 
+/**
+ * THE CATALOGS ARE NOT THE FACES.
+ *
+ * This returned fourteen rows — nine INSPIRE endpoints and five open-data doors
+ * — and four assertions plus a test stated that the count MUST equal
+ * qpuFacesOf().faces, which is fourteen because a cuboctahedron has eight
+ * triangles and six squares.
+ *
+ * Neither number determines the other. INSPIRE may publish a tenth endpoint
+ * without consulting geometry, and the cube does not care how CERN organises an
+ * API. The identity held by coincidence and was written down as a law, which is
+ * the fault this tree has already named twice: 12356d2, „the fold's radix and
+ * its width were both a bare sixteen, and they are not the same quantity", and
+ * 6cd77b4, „the exclusion I wrote asserted a limit without naming its cause".
+ *
+ * The cost was real. A fifteenth catalog could not be wired without displacing
+ * a named one or moving `faces` — and `faces` carries the RAID share geometry,
+ * where storage_monitor counts 245 keys × 14 = 3430 live shares. So the
+ * question „is this source worth wiring?" became „which of the fourteen do you
+ * sacrifice?", and the answer was to wire nothing.
+ *
+ * What is asserted now is what is actually true of a catalog list: every name
+ * is distinct, every href is absolute, and there is at least one. Those hold at
+ * fourteen and at fifteen, and they fail for the things that would really be
+ * wrong — a duplicate door, or a relative href that resolves against whatever
+ * page happened to load it.
+ */
+export const qpuCernCatalogsHold = (
+  catalogs: readonly { href?: string; name?: string }[],
+): boolean =>
+  catalogs.length > n - n &&
+  // The fields are OPTIONAL in the fusion view's type, so their presence is
+  // part of what is asserted rather than something to assume: a row that lost
+  // its name is exactly the kind of breakage a count could never have caught.
+  catalogs.every((row) => typeof row.name === 'string' && row.name.length > n - n) &&
+  new Set(catalogs.map((row) => row.name)).size === catalogs.length &&
+  catalogs.every((row) => typeof row.href === 'string' && row.href.startsWith('https://'))
+
 const qpuCernCatalogsOf = () => {
   const api = `https://${cernHost}${cernPath}`
   const inspire = ['literature', 'authors', 'institutions', 'conferences', 'seminars', 'journals', 'jobs', 'experiments', 'data'] as const
@@ -10807,7 +10845,7 @@ const qpuCernExperimentsOf = () => {
   const holds =
     genesis.holds &&
     circuit.lattice.holds &&
-    catalogs.catalogs.length === faces.faces &&
+    qpuCernCatalogsHold(catalogs.catalogs) &&
     views.length === coins &&
     views[none]!.experiments.length === n * n &&
     views[seed]!.experiments.length === n * n &&
@@ -10878,7 +10916,7 @@ const qpuCernLearnOf = () => {
     lattice.holds &&
     entangled.holds &&
     search.doors.length === n * n &&
-    catalogs.catalogs.length === faces.faces &&
+    qpuCernCatalogsHold(catalogs.catalogs) &&
     lhc.length === n * n &&
     opendata.length === n * n &&
     search.views.length === coins 
@@ -12750,7 +12788,7 @@ export const qpuFusionOf = () => {
     learn.holds &&
     learn.lattice.occupied === faces.faces &&
     learn.lattice.vacant === n - n &&
-    learn.catalogs.length === faces.faces &&
+    qpuCernCatalogsHold(learn.catalogs) &&
     tetra.projects.length === mintOf(coins) &&
     coins + coins === mintOf(coins) &&
     theorem.handle(capacity.fused, capacity.faces, capacity.kv.amplitudes) &&
@@ -12805,7 +12843,7 @@ export const qpuFusionHolds = (f = qpuFusionOf()): boolean =>
   f.holds === true &&
   f.kind === 'fusion' &&
   f.theorem === 'fusion' &&
-  f.catalogs.length === qpuFacesOf().faces &&
+  qpuCernCatalogsHold(f.catalogs) &&
   f.tetra.length === mintOf(coins) &&
   f.fused === qpuCapacityOf().fused &&
   theorem.handle(f.fused, qpuCapacityOf().faces, qpuCapacityOf().kv.amplitudes) &&
