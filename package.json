@@ -30,7 +30,7 @@
     "uuidna",
     "mcp"
   ],
-  "main": "./dist/quantum/processing/unit/index.js",
+  "main": "./server.js",
   "types": "./qpu.d.ts",
   "exports": {
     ".": {
@@ -42,6 +42,10 @@
       "types": "./dist/quantum/processing/unit/boot.d.ts",
       "import": "./dist/quantum/processing/unit/boot.js",
       "default": "./dist/quantum/processing/unit/boot.js"
+    },
+    "./server": {
+      "import": "./server.js",
+      "default": "./server.js"
     }
   },
   "files": [
@@ -95,7 +99,26 @@
     "outage:test": "node --test scripts/outage.test.mjs",
     "post-push": "node scripts/post-push.mjs",
     "land": "npm test && git push && node scripts/post-push.mjs --wait && npm run verify:live",
-    "mutate": "node scripts/mutate.mjs"
+    "mutate": "node scripts/mutate.mjs",
+    "server": "NODE_ENV=production node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "docker:build": "docker build -f deploy/docker/Dockerfile -t uuidna-qpu:latest .",
+    "docker:run": "docker-compose -f deploy/docker/docker-compose.yml up -d",
+    "docker:stop": "docker-compose -f deploy/docker/docker-compose.yml down",
+    "docker:logs": "docker-compose -f deploy/docker/docker-compose.yml logs -f qpu",
+    "k8s:deploy": "kubectl apply -f deploy/kubernetes/",
+    "k8s:status": "kubectl rollout status deployment/qpu -n quantum",
+    "k8s:scale": "kubectl scale deployment qpu -n quantum --replicas",
+    "k8s:logs": "kubectl logs -n quantum -l app=uuidna-qpu -f",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "wrangler deploy",
+    "cf:tail": "wrangler tail",
+    "cf:kv:list": "wrangler kv:key list STORAGE",
+    "cf:kv:get": "wrangler kv:key get STORAGE",
+    "cf:kv:put": "wrangler kv:key put STORAGE",
+    "cf:rollback": "wrangler rollback",
+    "cf:verify": "curl https://qpu.uuidna.com/health && echo 'OK'",
+    "install": "bash deploy/install.sh"
   },
   "devDependencies": {
     "@types/node": "26.5.1",
