@@ -102,11 +102,11 @@ export class MCPRouter {
   }
 
   process_wave(wave_num: number): {
-    quantum: QuantumMessage[]
-    harmonic: HarmonicMessage[]
-    creative: CreativeMessage[]
-    enterprise: EnterpriseMessage[]
-    hex: HexMessage[]
+    quantum: MCPMessage[]
+    harmonic: MCPMessage[]
+    creative: MCPMessage[]
+    enterprise: MCPMessage[]
+    hex: MCPMessage[]
   } {
     return {
       quantum: this.queues.quantum.splice(0),
