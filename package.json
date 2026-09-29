@@ -128,5 +128,8 @@
   },
   "bin": {
     "qpu-boot": "./dist/quantum/processing/unit/boot.js"
+  },
+  "dependencies": {
+    "uuid": "14.0.2"
   }
 }

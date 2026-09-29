@@ -289,7 +289,7 @@ export const RiemannHypothesisPriorArt: ScholarlyWork[] = [
 // NAVIER-STOKES - COMPLETE GENEALOGY
 // ============================================================================
 
-export const NavierStokes PriorArt: ScholarlyWork[] = [
+export const NavierStokesPriorArt: ScholarlyWork[] = [
   {
     title: 'Principia Mathematica',
     author: 'Isaac Newton',
@@ -589,7 +589,7 @@ export class PriorArtCitationManager {
   private allWorks: ScholarlyWork[] = [
     ...PvsNPPriorArt,
     ...RiemannHypothesisPriorArt,
-    ...NavierStokes PriorArt,
+    ...NavierStokesPriorArt,
     ...TheoLogicalFoundations,
     ...AncientMathematicalTraditions
   ]
@@ -601,7 +601,7 @@ export class PriorArtCitationManager {
     const worksByProblem: Record<string, ScholarlyWork[]> = {
       'P vs NP': PvsNPPriorArt,
       'Riemann Hypothesis': RiemannHypothesisPriorArt,
-      'Navier-Stokes': NavierStokes PriorArt
+      'Navier-Stokes': NavierStokesPriorArt
     }
 
     const works = worksByProblem[problemName] || []

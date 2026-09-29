@@ -49,7 +49,7 @@ export {
   CitationCategory,
   PvsNPPriorArt,
   RiemannHypothesisPriorArt,
-  NavierStokes PriorArt,
+  NavierStokesPriorArt,
   TheoLogicalFoundations,
   AncientMathematicalTraditions,
   PriorArtCitationManager,
