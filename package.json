@@ -76,6 +76,7 @@
     "lean": "lean src/quantum/processing/unit/index.lean",
     "build": "rm -rf dist && tsc -p tsconfig.json",
     "test": "npm run build && node --test --test-reporter=./dist/quantum/processing/unit/receipt.js --test-reporter-destination=stdout dist/quantum/processing/unit/*.test.js",
+    "test:coverage": "node test-coverage.config.mjs",
     "ci": "npm run lean && npm test && npm run proof && npm run mutate && npm run test:scripts && npm run walls",
     "prepublishOnly": "npm run build",
     "ship": "npm run build && npx wrangler deploy",
