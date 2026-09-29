@@ -1,6 +1,6 @@
 # UUIDNA QPU
 
-**Quantum Processing Unit - 5 domains, Go, JavaScript**
+**Quantum Processing Unit - 9 domains, Go, JavaScript**
 
 
 ## Domains
@@ -8,7 +8,11 @@
 - **cryptography**
 - **drug-discovery**
 - **finance**
+- **materials-science**
 - **ml**
+- **network-optimization**
+- **quantum-sensing**
+- **supply-chain**
 - **unified-domain**
 
 
@@ -62,7 +66,7 @@ Monitoring, Terraform/AWS
 ## Architecture
 
 ```
-Applications (5 domains)
+Applications (9 domains)
     ↓
 Unified Solver
     ↓
