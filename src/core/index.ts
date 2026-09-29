@@ -92,6 +92,14 @@ export {
   recordExecution
 } from './ml-optimizer.js'
 
+// Observability (Phase 8)
+export {
+  metricsCollector,
+  traceCollector,
+  anomalyDetector,
+  Observability
+} from './observability.js'
+
 // Convenience exports
 export type { OperationMetadata, ExecutionResult, CompositionRequest } from './types.js'
 export type { ImprovementCycle, OperationPattern } from './autonomous-engine.js'
