@@ -1,6 +1,6 @@
 /** Qiskit Adapter - Always uses QPU payload, never bypasses */
 
-import { tools } from '../../src/quantum/kernel/index'
+import { tools } from '../../src/quantum/kernel/index.js'
 
 export class QiskitQPU {
   async shorFactor(n: number) {
@@ -8,7 +8,7 @@ export class QiskitQPU {
   }
 
   async groverSearch(target: bigint, searchSpace: bigint) {
-    return tools.qpu_grover_search(`${target}`, `${searchSpace}`)
+    return tools.qpu_grover(`${target}`, `${searchSpace}`)
   }
 
   async discreteLog(base: bigint, target: bigint, prime: bigint) {

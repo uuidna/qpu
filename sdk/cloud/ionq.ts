@@ -1,6 +1,6 @@
 /** IonQ Client - Uses QPU payload for computation */
 
-import { tools } from '../../src/quantum/kernel/index'
+import { tools } from '../../src/quantum/kernel/index.js'
 
 export interface IonQJob {
   id: string
@@ -27,10 +27,10 @@ export class IonQClient {
         result = tools.qpu_shor(`${params.modulus}`)
         break
       case 'grover':
-        result = tools.qpu_grover_search(`${params.target}`, `${params.search_space}`)
+        result = tools.qpu_grover(`${params.target}`, `${params.search_space}`)
         break
       case 'hamiltonian':
-        result = tools.qpu_hamiltonian_sim(`${params.coupling}`, `${params.time}`)
+        result = tools.qpu_hamiltonian(`${params.coupling}`, `${params.time}`)
         break
       case 'knapsack':
         result = tools.qpu_knapsack(JSON.stringify(params.items), `${params.capacity}`)

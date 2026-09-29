@@ -1,6 +1,6 @@
 /** Rigetti Client - Uses QPU payload for computation */
 
-import { tools } from '../../src/quantum/kernel/index'
+import { tools } from '../../src/quantum/kernel/index.js'
 
 export interface RigettiJob {
   job_id: string
@@ -26,9 +26,9 @@ export class RigettiClient {
     if (program.includes('SHOR')) {
       result = tools.qpu_shor(`${params.modulus}`)
     } else if (program.includes('GROVER')) {
-      result = tools.qpu_grover_search(`${params.target}`, `${params.search_space}`)
+      result = tools.qpu_grover(`${params.target}`, `${params.search_space}`)
     } else if (program.includes('VQE')) {
-      result = tools.qpu_hamiltonian_sim(`${params.coupling}`, `${params.time}`)
+      result = tools.qpu_hamiltonian(`${params.coupling}`, `${params.time}`)
     } else if (program.includes('QAOA')) {
       result = tools.qpu_knapsack(JSON.stringify(params.items), `${params.capacity}`)
     } else {

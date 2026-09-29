@@ -1,6 +1,6 @@
 /** Cirq Adapter - Always uses QPU payload, never bypasses */
 
-import { tools } from '../../src/quantum/kernel/index'
+import { tools } from '../../src/quantum/kernel/index.js'
 
 export class CirqQPU {
   async shorFactor(n: number) {
@@ -8,7 +8,7 @@ export class CirqQPU {
   }
 
   async groverSearch(target: bigint, searchSpace: bigint) {
-    return tools.qpu_grover_search(`${target}`, `${searchSpace}`)
+    return tools.qpu_grover(`${target}`, `${searchSpace}`)
   }
 
   async discreteLog(base: bigint, target: bigint, prime: bigint) {
@@ -20,7 +20,7 @@ export class CirqQPU {
   }
 
   async hamiltonianSimulation(coupling: number, time: number) {
-    return tools.qpu_hamiltonian_sim(`${coupling}`, `${time}`)
+    return tools.qpu_hamiltonian(`${coupling}`, `${time}`)
   }
 
   async runPhase(phase: 'phase1' | 'phase2' | 'phase3' | 'unified') {
