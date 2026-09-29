@@ -51,7 +51,43 @@ export {
   getLastCycle
 } from './autonomous-engine.js'
 
+// Resilience Layer (error recovery, retries, circuit breaking)
+export {
+  RetryEngine,
+  CircuitBreaker,
+  ResilientExecutor,
+  retryEngine,
+  circuitBreaker,
+  resilientExecutor,
+  executeWithRetry,
+  executeWithCircuitBreaker,
+  executeResilient
+} from './resilience.js'
+
+// Rate Limiting
+export {
+  TokenBucket,
+  RateLimiter,
+  rateLimiter,
+  isAllowed,
+  getRateLimitStatus
+} from './rate-limiter.js'
+
+// Health Checking & Auto-Healing
+export {
+  HealthChecker,
+  HealthEndpoint,
+  healthChecker,
+  healthEndpoint,
+  performHealthCheck,
+  isReady,
+  isAlive
+} from './health-checker.js'
+
 // Convenience exports
 export type { OperationMetadata, ExecutionResult, CompositionRequest } from './types.js'
 export type { ImprovementCycle, OperationPattern } from './autonomous-engine.js'
 export type { StoredExecutionResult } from './persistence.js'
+export type { ResilienceMetrics } from './resilience.js'
+export type { RateLimitStatus, RateLimitConfig } from './rate-limiter.js'
+export type { HealthCheckResult, HealthStatus } from './health-checker.js'
