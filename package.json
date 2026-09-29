@@ -100,6 +100,7 @@
     "leads:test": "node --test scripts/leads.test.mjs",
     "outage": "node scripts/outage.mjs",
     "percall": "node scripts/percall.mjs",
+    "costs": "node scripts/monitor-costs.mjs",
     "outage:test": "node --test scripts/outage.test.mjs",
     "post-push": "node scripts/post-push.mjs",
     "land": "npm test && git push && node scripts/post-push.mjs --wait && npm run verify:live",
