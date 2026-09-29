@@ -253,7 +253,7 @@ export class ValueAlignmentEngine {
     }
 
     // Recommend based on learned priorities
-    const shift = {}
+    const shift: Record<string, number> = {}
     let recommendation = ''
 
     if (value1.priority > value2.priority) {
