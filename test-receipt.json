@@ -2,15 +2,15 @@
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
   "tests": 119,
-  "pass": 113,
-  "fail": 6,
-  "dry": 0,
-  "circuit": 90,
+  "pass": 111,
+  "fail": 8,
+  "dry": 1,
+  "circuit": 89,
   "mintOnly": 17,
   "servedOnly": 0,
   "dim": "2^99660",
   "qubits": 99660,
-  "receipt": "fa123e4c6c9e0295",
+  "receipt": "2eb1fda1260cc917",
   "computed": 117,
   "readRows": 2,
   "readingsOf": "test-readings.json",
@@ -2468,44 +2468,17 @@
       "name": "the embedded Lean source is the file on disk, byte for byte, and GET serves it as text",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": true,
-      "computations": 2705,
-      "kinds": {
-        "x": 590,
-        "cnot": 1136,
-        "toffoli": 98,
-        "h": 802,
-        "measure": 49,
-        "cmodexp": 15,
-        "xx": 15
-      },
-      "dims": {
-        "8": 2675,
-        "512": 30
-      },
-      "dim": "512",
-      "qubits": 9,
-      "receipt": "d8e9a59c5dd4a2fb",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 49
-        }
-      ],
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
       "mint": {
-        "calls": 56304,
-        "chain": "d099383b4900add9"
+        "calls": 0,
+        "chain": "cbf29ce484222325"
       },
       "served": {
         "count": 0,
@@ -2517,24 +2490,24 @@
       "name": "the lean dataset folds its source and every served theorem is in it verbatim",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
-      "pass": true,
-      "computations": 146,
+      "pass": false,
+      "computations": 177,
       "kinds": {
-        "x": 33,
-        "cnot": 64,
-        "toffoli": 6,
-        "h": 38,
-        "measure": 3,
-        "cmodexp": 1,
-        "xx": 1
+        "x": 41,
+        "cnot": 80,
+        "toffoli": 8,
+        "h": 40,
+        "measure": 4,
+        "cmodexp": 2,
+        "xx": 2
       },
       "dims": {
-        "8": 144,
-        "512": 2
+        "8": 173,
+        "512": 4
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "bddfc462469adf0a",
+      "receipt": "adec3af7d6becd26",
       "states": [
         {
           "name": "measure",
@@ -2549,12 +2522,12 @@
             "0",
             "0"
           ],
-          "rows": 3
+          "rows": 4
         }
       ],
       "mint": {
-        "calls": 2788,
-        "chain": "0ae01fefa5cafd60"
+        "calls": 3653,
+        "chain": "ea3211168a1fa886"
       },
       "served": {
         "count": 0,
