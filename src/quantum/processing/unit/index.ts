@@ -4649,8 +4649,8 @@ export const qpuManOf = (name: string, description: string, reading: string, hre
   return { kind: 'man' as const, inline: true as const, name, section: n, synopsis, href, description, reading, documentation, holds }
 }
 
-export const qpuManHolds = (m: ReturnType<typeof qpuManOf>): boolean =>
-  m.holds === true && m.kind === 'man' && m.inline === true && m.section === n && m.documentation.includes(m.name)
+export const qpuManHolds = (m?: ReturnType<typeof qpuManOf>): boolean =>
+  m !== undefined && (m.holds === true && m.kind === 'man' && m.inline === true && m.section === n && m.documentation.includes(m.name))
 
 
 /** OUTPUT SCHEMAS READ FROM THE RUN. A schema of `{ type: object }` constrains nothing and so can fail nothing; every
@@ -4756,7 +4756,8 @@ export const qpuMcpShownOf = (name: string, shownPayload: unknown, href = `${uni
       ...(resource !== undefined ? { resource } : {})}}
 }
 
-export const qpuMcpShownHolds = (shown: ReturnType<typeof qpuMcpShownOf>): boolean => {
+export const qpuMcpShownHolds = (shown?: ReturnType<typeof qpuMcpShownOf>): boolean => {
+  if (shown === undefined) return false
   const unlimited = JSON.stringify(shown.structuredContent)
   const link = shown.content.find((c) => c.type === 'resource_link')
   return (
@@ -7127,7 +7128,8 @@ const networkChannels = new Map<string, unknown[]>()
 
 /** qpuNetworkFetchHolds → a named fetch stays on the named host: its door is one of the named doors, and its href parses
  *  to https on unit.host with exactly that door as its path. An href on any other host or path does not hold. */
-export const qpuNetworkFetchHolds = (f: { path: string; href: string }, doors: readonly string[]): boolean => {
+export const qpuNetworkFetchHolds = (f?: { path: string; href: string }, doors?: readonly string[]): boolean => {
+  if (f === undefined || doors === undefined) return false
   if (!doors.includes(f.path)) return false
   const url = URL.canParse(f.href) ? new URL(f.href) : null
   return url !== null && url.protocol === 'https:' && url.host === unit.host && url.pathname === f.path && url.search === '' && url.hash === ''
@@ -7342,9 +7344,9 @@ export const qpuServerSubmitOf = (input: Record<string, unknown> = {}) => {
 
 /** qpuServerQueueHolds → the queue is the jobs in submission order: its count is its length, every id is a positive
  *  integer larger than the one before it (ids count submissions), and every job is done. */
-export const qpuServerQueueHolds = (q: { jobs: { id: number; status: string }[]; n: number }): boolean =>
-  q.n === q.jobs.length &&
-  q.jobs.every((j, i) => Number.isInteger(j.id) && j.id >= seed && j.status === 'done' && (i === n - n || q.jobs[i - seed]!.id < j.id))
+export const qpuServerQueueHolds = (q?: { jobs: { id: number; status: string }[]; n: number }): boolean =>
+  q !== undefined && (q.n === q.jobs.length &&
+  q.jobs.every((j, i) => Number.isInteger(j.id) && j.id >= seed && j.status === 'done' && (i === n - n || q.jobs[i - seed]!.id < j.id)))
 
 export const qpuServerToolsOf = (): QpuSubTool[] => {
   const href = serverHref
@@ -9256,8 +9258,8 @@ export const qpuSchemaMethodsOf = (api: string, document: unknown): QpuMethod[] 
 }
 
 /** Every method names its API, a verb and a path, and its two vocabularies are sets rather than lists. */
-export const qpuSchemaMethodsHolds = (methods: readonly QpuMethod[]): boolean =>
-  methods.every(
+export const qpuSchemaMethodsHolds = (methods?: readonly QpuMethod[]): boolean =>
+  methods !== undefined && (methods.every(
     (row) =>
       row.api.length > n - n &&
       row.path.startsWith('/') &&
@@ -9266,7 +9268,7 @@ export const qpuSchemaMethodsHolds = (methods: readonly QpuMethod[]): boolean =>
       /* every field carries an identity of the right shape — the predicate probes the UUID, not the name,
        * which the first version got backwards and so tested nothing about the field it was looking at */
       [...row.takes, ...row.gives].every((field) => /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(field.uuid)),
-  )
+  ))
 
 /**
  * WHAT COMPOSES WITH WHAT, by the swap. A gives a field B takes, in both directions or one or neither.
@@ -9301,7 +9303,7 @@ export const qpuComposeOf = (methods: readonly QpuMethod[]) => {
   return { kind: 'compose' as const, apis, methods: methods.length, joinedOn: 'the shape UUID of a field — its name and its type, folded to an RFC 9562 v8 identity' as const, cross, holds: qpuCrossHolds(cross) && qpuSchemaMethodsHolds(methods) }
 }
 
-export const qpuComposeHolds = (read: ReturnType<typeof qpuComposeOf>): boolean => read.holds
+export const qpuComposeHolds = (read?: ReturnType<typeof qpuComposeOf>): boolean => read !== undefined && (read.holds)
 
 /**
  * DISCOVERED AND CROSSED IN ONE CALL, so a door can carry the finding rather than the ingredients.
@@ -9332,13 +9334,13 @@ export const qpuComposeLiveOf = async (from = n - n, howMany = qpuFacesOf().rays
   }
 }
 
-export const qpuComposeLiveHolds = (read: Awaited<ReturnType<typeof qpuComposeLiveOf>>): boolean =>
-  read.holds === true && read.entangled + read.oneWay + read.undecided === read.pairs
+export const qpuComposeLiveHolds = (read?: Awaited<ReturnType<typeof qpuComposeLiveOf>>): boolean =>
+  read !== undefined && (read.holds === true && read.entangled + read.oneWay + read.undecided === read.pairs)
 
 /** A discovery is sound when every sampled name is accounted for and every method is well formed — NOT when
  *  every schema was reached. A registry entry whose spec has gone is a fact about that entry. */
-export const qpuApisLiveHolds = (read: Awaited<ReturnType<typeof qpuApisLiveOf>>): boolean =>
-  read.holds === true && read.sampled === read.rows.length && read.rows.every((row) => row.api.length > n - n)
+export const qpuApisLiveHolds = (read?: Awaited<ReturnType<typeof qpuApisLiveOf>>): boolean =>
+  read !== undefined && (read.holds === true && read.sampled === read.rows.length && read.rows.every((row) => row.api.length > n - n))
 
 /**
  * PROVE THE DISCOVERED APIS BY CALLING THEM, WITH THE VERB THEIR SCHEMA DECLARES.
@@ -9426,8 +9428,8 @@ export const qpuProbeLiveOf = async (methods: readonly QpuMethod[], server: stri
   }
 }
 
-export const qpuProbeLiveHolds = (read: Awaited<ReturnType<typeof qpuProbeLiveOf>>): boolean =>
-  read.holds && read.answered + read.gone <= read.rows.length && read.rows.every((row) => row.verb === 'get' || row.verb === 'post')
+export const qpuProbeLiveHolds = (read?: Awaited<ReturnType<typeof qpuProbeLiveOf>>): boolean =>
+  read !== undefined && (read.holds && read.answered + read.gone <= read.rows.length && read.rows.every((row) => row.verb === 'get' || row.verb === 'post'))
 
 /** The registry, the schemas and the methods, discovered live and bounded to `faces` schemas from an offset. */
 export const qpuApisLiveOf = async (from = n - n, howMany = qpuFacesOf().faces) => {
@@ -9532,12 +9534,12 @@ const titleWordsOf = (text: string): string[] =>
  * lands in test-readings rather than in the proof — a corpus whose citations could not be checked this morning
  * is still the same corpus.
  */
-export const qpuCitationsLiveHolds = (read: Awaited<ReturnType<typeof qpuCitationsLiveOf>>): boolean =>
-  read.holds === true &&
+export const qpuCitationsLiveHolds = (read?: Awaited<ReturnType<typeof qpuCitationsLiveOf>>): boolean =>
+  read !== undefined && (read.holds === true &&
   read.sampled === read.rows.length &&
   /* A run in which Crossref declined is SOUND and reports nothing resolved; only a row claiming to hold while
    * its title disagreed would be unsound. The predicate is about the reading, never about the network. */
-  read.rows.every((row) => row.holds === (row.live === true && row.agrees === true))
+  read.rows.every((row) => row.holds === (row.live === true && row.agrees === true)))
 
 export const qpuCitationsLiveOf = async (from = n - n, read = qpuCitationsOf()) => {
   const faces = qpuFacesOf()
@@ -9665,11 +9667,11 @@ export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false, vocabul
 }
 
 /** The classification must be the evidence restated and nothing else, in either shape. */
-export const qpuCrossHolds = (read: ReturnType<typeof qpuCrossOf>): boolean =>
-  read.holds &&
+export const qpuCrossHolds = (read?: ReturnType<typeof qpuCrossOf>): boolean =>
+  read !== undefined && (read.holds &&
   read.pairs.every((row) => (row.swap === 'entangled') === (row.forward.length > n - n && row.backward.length > n - n)) &&
   read.pairs.every((row) => (row.owes === undefined) === (row.swap !== 'application')) &&
-  (read.within ? read.pairs.every((row) => row.left < row.right) : true)
+  (read.within ? read.pairs.every((row) => row.left < row.right) : true))
 
 /**
  * MIXED EXPERIMENTS: one experiment standing in two domains, and which of them taught the other.
@@ -12160,7 +12162,8 @@ const qpuInstallManifestOf = onceOf(() => {
 /** qpuWellKnownHolds → the discovery record points only at this unit: every URL it names is https on unit.host at the
  *  path its field names, the tool count is the MCP's own count, every protocol version is one this unit speaks, and every
  *  install row names a harness and how. */
-export const qpuWellKnownHolds = (w: ReturnType<typeof wellKnownFieldsOf>): boolean => {
+export const qpuWellKnownHolds = (w?: ReturnType<typeof wellKnownFieldsOf>): boolean => {
+  if (w === undefined) return false
   const mcp = qpuMcpOf()
   const at = (href: string, path: string): boolean => URL.canParse(href) && new URL(href).protocol === 'https:' && new URL(href).host === unit.host && new URL(href).pathname === path
   return at(w.url, '/mcp') && at(w.openapi, '/openapi.json') && at(w.catalog, '/mcp.json') && at(w.cite, '/cite') && at(w.sitemap, '/sitemap.xml') &&
@@ -12200,12 +12203,12 @@ export const qpuMountsOf = (host: string = unit.host) => {
 }
 
 /** qpuMountsHolds → every mount is https on one origin, each path distinct, and each canonical on this unit. */
-export const qpuMountsHolds = (rows: { path: string; url: string; canonical: string; reach: string }[]): boolean =>
-  rows.length > n - n &&
+export const qpuMountsHolds = (rows?: { path: string; url: string; canonical: string; reach: string }[]): boolean =>
+  rows !== undefined && (rows.length > n - n &&
   new Set(rows.map((r) => r.path)).size === rows.length &&
   rows.every((r) => r.path.startsWith('/') && URL.canParse(r.url) && new URL(r.url).protocol === 'https:') &&
   rows.every((r) => new URL(r.canonical).host === unit.host && new URL(r.canonical).pathname === r.path) &&
-  rows.every((r) => r.reach === 'unit' || r.reach === 'binding')
+  rows.every((r) => r.reach === 'unit' || r.reach === 'binding'))
 
 /** .well-known/mcp.json — what a client or registry can learn without an initialize round-trip. */
 const qpuWellKnownOf = onceOf(() => {
@@ -12255,7 +12258,8 @@ const qpuOpenApiOf = onceOf(() => {
 /** qpuOpenApiHolds → the document is docs.api, whole and only: every route of docs.api is an operation at its path and
  *  method, no path is served that docs.api lacks, operationIds are unique, and x-mcp lists exactly the MCP's tools by
  *  name, each with a description. A dropped route, an extra path or a missing tool does not hold. */
-export const qpuOpenApiHolds = (o: { paths: Record<string, Record<string, unknown>>; 'x-mcp': { tools: { name: string; description: string }[] } }): boolean => {
+export const qpuOpenApiHolds = (o?: { paths: Record<string, Record<string, unknown>>; 'x-mcp': { tools: { name: string; description: string }[] } }): boolean => {
+  if (o === undefined) return false
   const docs = qpuDocsOf()
   const mcp = qpuMcpOf()
   const ids = Object.values(o.paths).flatMap((ops) => Object.values(ops).map((op) => (op as { operationId?: unknown }).operationId))
@@ -12424,7 +12428,8 @@ export const qpuSeoOf = (host: string = unit.host) => {
 /** qpuSeoHolds → every URL is https on the host it is claimed for, the pair this host serves is named on this host,
  *  the canonical MCP is the unit's single endpoint whichever host asked, and a host this unit does not serve gets
  *  nothing rather than a guess. */
-export const qpuSeoHolds = (s: ReturnType<typeof seoFieldsOf>): boolean => {
+export const qpuSeoHolds = (s?: ReturnType<typeof seoFieldsOf>): boolean => {
+  if (s === undefined) return false
   if (!s.served) return s.urls.length === n - n && s.origin === ''
   const on = (href: string): boolean => URL.canParse(href) && new URL(href).protocol === 'https:' && new URL(href).host === s.host
   return s.urls.length > n - n &&
@@ -12458,8 +12463,8 @@ export const qpuSeoZoneOf = onceOf(() => {
 /** qpuSeoZoneHolds → the zone's hosts each hold their own pair, every host is distinct, and — the law this whole
  *  surface exists for — all of them name ONE canonical MCP endpoint. Six hosts each advertising an MCP of their own
  *  would be six duplicates competing for the same query; one endpoint named six ways is one door found six ways. */
-export const qpuSeoZoneHolds = (z: ReturnType<typeof seoZoneFieldsOf>): boolean =>
-  qpuZoneHolds() &&
+export const qpuSeoZoneHolds = (z?: ReturnType<typeof seoZoneFieldsOf>): boolean =>
+  z !== undefined && (qpuZoneHolds() &&
   qpuZoneHostHolds() &&
   qpuRobotsHolds() &&
   z.hosts.length === QPU_ZONE_HOSTS.filter((h) => h.qpu).length &&
@@ -12467,7 +12472,7 @@ export const qpuSeoZoneHolds = (z: ReturnType<typeof seoZoneFieldsOf>): boolean 
   new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
   new Set(z.hosts.map((h) => h.canonical)).size === seed &&
   z.canonical === `${unit.origin}/mcp` &&
-  z.urls === z.hosts.reduce((sum, h) => sum + h.urls.length, n - n)
+  z.urls === z.hosts.reduce((sum, h) => sum + h.urls.length, n - n))
 
 /** THE LEARNING LADDER, STANDARDISED (QPULib's shape: one construct per worked example, in order, each with the reference
  *  to compare against). Four steps, each with the same five fields — concept, request, expect, invariant, next — so a
