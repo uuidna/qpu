@@ -255,7 +255,8 @@ const headers = {
   'content-type': 'application/ld+json; charset=utf-8',
   'access-control-allow-origin': cors,
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept'}
+  'access-control-allow-headers': 'content-type, accept',
+  'cache-control': 'no-store'}
 const seed = unit.mint.seed
 const coins = seed + seed
 // THE REGISTER IS THE LATTICE'S, NOT THE PATH'S. n was `unit.path.split('/').length` — the qubit count read off
@@ -13790,12 +13791,13 @@ const worker = {
       delete out['content-type']
       return out
     }
+    const deployed = { 'cache-control': 'public, max-age=3600' } as const
     const jsonOf = (body: unknown, status = found) =>
       new Response(JSON.stringify(body), { status, headers: { ...headers, ...routeHeaders, ...(isRpc(body) ? rpcMedia : {}) } })
     /** A memoized document: 304 with no body when the client's If-None-Match is its ETag, else the bytes with the ETag. */
     const servedResponse = (row: Served) => {
-      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: emptyHeaders({ etag: row.etag }) })
-      return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag } })
+      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: emptyHeaders({ etag: row.etag, ...deployed }) })
+      return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag, ...deployed } })
     }
     if (host !== unit.host || host.includes('*') || !unit.holds || !integrityOnceOf()) {
       return jsonOf(JSON.parse(dead), lost)
@@ -13823,9 +13825,9 @@ const worker = {
     const zoneHost = qpuZoneHostOf(url.hostname)
     if (url.protocol === 'https:' && zoneHost !== undefined) {
       if (path === '/robots.txt')
-        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/plain; charset=utf-8' } })
+        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
       if (path === '/sitemap.xml')
-        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'application/xml; charset=utf-8' } })
+        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...deployed, 'content-type': 'application/xml; charset=utf-8' } })
       // THE DISCOVERY RECORD IS THE SAME DOCUMENT ON EVERY NAME, because it describes ONE endpoint and that
       // endpoint is this unit's. A sibling serving a copy that named itself would be the duplicate this whole
       // surface exists to avoid; a sibling serving nothing would leave the <loc> its own sitemap carries
@@ -13932,7 +13934,7 @@ const worker = {
       return servedResponse(servedOf('/mcp', () => qpuMcpOf()))
     }
     if (path === `/${unit.fuse.lean}`) {
-      return new Response(leanSource, { status: found, headers: { ...headers, 'content-type': 'text/plain; charset=utf-8' } })
+      return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
     if (path === '/') return servedResponse(servedOf('/', () => qpuQuantumOf()))
     if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
@@ -13953,7 +13955,7 @@ const worker = {
      * fourteen frameworks supply the DOM, and payload/src/qpu-surface.ts already states the split ("QPU is
      * API-only JSON-LD; this host is HTML"). A stylesheet is neither a document nor an API; it is the one asset
      * this contract cannot express as JSON. */
-    if (path === '/qpu.css') return new Response(qpuCssOf().css, { status: found, headers: { ...headers, 'content-type': 'text/css; charset=utf-8' } })
+    if (path === '/qpu.css') return new Response(qpuCssOf().css, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/css; charset=utf-8' } })
     if (path === '/server' || path.startsWith('/server/')) {
       if (request.method === 'POST') {
         const body = (await request.json().catch(() => ({}))) as {
