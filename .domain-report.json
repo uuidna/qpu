@@ -1,0 +1,99 @@
+{
+  "timestamp": "2026-09-29T03:13:34.191Z",
+  "domains": [
+    {
+      "name": "cryptography",
+      "algorithms": [
+        "discreteLog",
+        "batchFactor"
+      ],
+      "tools": [
+        "factorRSA",
+        "shorAlgorithm",
+        "discreteLog",
+        "batchFactor",
+        "findPeriod"
+      ]
+    },
+    {
+      "name": "drug-discovery",
+      "algorithms": [],
+      "tools": [
+        "foldProtein",
+        "predictBindingAffinity",
+        "batchFold",
+        "screenCompounds",
+        "computeStructure"
+      ]
+    },
+    {
+      "name": "finance",
+      "algorithms": [
+        "knapsack"
+      ],
+      "tools": [
+        "optimizePortfolio",
+        "computeEfficientFrontier",
+        "rebalancePortfolio",
+        "optimizeRiskReturn"
+      ]
+    },
+    {
+      "name": "ml",
+      "algorithms": [
+        "knapsack"
+      ],
+      "tools": [
+        "trainQuantumKernel",
+        "optimizeNeuralNetwork",
+        "quantumClustering",
+        "dimensionalityReduction",
+        "hybridTraining",
+        "predict",
+        "batchPredict"
+      ]
+    }
+  ],
+  "algorithms": [
+    "discreteLog",
+    "batchFactor",
+    "knapsack"
+  ],
+  "bridges": [
+    {
+      "from": "finance",
+      "to": "ml",
+      "algorithms": [
+        "knapsack"
+      ],
+      "strength": 1
+    }
+  ],
+  "opportunities": [
+    {
+      "algorithm": "knapsack",
+      "domain": "Resource Allocation",
+      "potential": "high"
+    },
+    {
+      "algorithm": "knapsack",
+      "domain": "Supply Chain",
+      "potential": "high"
+    },
+    {
+      "algorithm": "knapsack",
+      "domain": "Logistics",
+      "potential": "high"
+    },
+    {
+      "algorithm": "knapsack",
+      "domain": "Scheduling",
+      "potential": "high"
+    }
+  ],
+  "suggestions": {
+    "newDomains": 5,
+    "possibleBridges": 12,
+    "algorithmCombinations": 3
+  }
+}
