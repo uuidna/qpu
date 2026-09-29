@@ -20,6 +20,7 @@
     "src/payload/**",
     "src/phases/**",
     "src/enterprise/**",
+    "src/tools/**",
     "node_modules"
   ]
 }
