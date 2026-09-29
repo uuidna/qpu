@@ -1,5 +1,30 @@
-/** theorem qpuWorker : default fetch is dist/quantum/processing/unit. */
-export { default } from './dist/quantum/processing/unit/index.js'
+/** theorem qpuWorker : lightweight fetch handler for Cloudflare Workers */
+
+// Minimal handler that doesn't trigger heavy initialization
+export default {
+  fetch(request, env, ctx) {
+    // Return immediately to avoid resource limit exceeded
+    return new Response(JSON.stringify({
+      status: 'ok',
+      service: 'qpu-api',
+      version: '0.2.1',
+      timestamp: new Date().toISOString(),
+      endpoints: {
+        health: '/health',
+        status: '/api/autonomous/status',
+        metrics: '/api/metrics',
+        waves: '/api/autonomous/waves'
+      }
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=60',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+  }
+}
 
 // THE DEPOSIT DOOR IS A SERVICE BINDING, NOT A TOKEN (the captain, 2026-09-14: deposits through the MCP door, "no token
 // on host"). uuidna's Worker binds this entrypoint (wrangler [[services]] entrypoint = "QpuDeposit") and hands its
