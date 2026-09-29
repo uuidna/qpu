@@ -1,0 +1,325 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1a3e 50%, #0f0f2e 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+/* Animated Grid Background */
+.animated-grid {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124, 58, 237, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(50px);
+  }
+}
+
+/* Node Glow Effects */
+.node-glow {
+  position: relative;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+  transition: all 0.3s ease;
+}
+
+.node-glow:hover {
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.8),
+              0 0 60px rgba(59, 130, 246, 0.4);
+  transform: scale(1.05);
+}
+
+/* Pulse Ring Animation */
+.pulse-ring {
+  position: absolute;
+  border: 2px solid rgba(124, 58, 237, 0.5);
+  border-radius: 50%;
+  animation: pulse-ring-anim 2s ease-out infinite;
+}
+
+@keyframes pulse-ring-anim {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Formula Animation */
+.formula-animate {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(124, 58, 237, 0.2) 25%,
+    rgba(59, 130, 246, 0.2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: formula-shimmer 3s infinite;
+}
+
+@keyframes formula-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Connection Line Animation */
+.connection-line {
+  stroke: url(#gradient);
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: line-flow 4s ease-in-out infinite;
+}
+
+@keyframes line-flow {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  50% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -1000;
+  }
+}
+
+/* Floating Cards */
+.float-card {
+  animation: float-up 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered Animation */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+
+/* Graph Node Animations */
+.graph-node {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+  border: 2px solid rgba(124, 58, 237, 0.6);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.graph-node:hover {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.6) 0%, rgba(59, 130, 246, 0.6) 100%);
+  border-color: rgba(124, 58, 237, 1);
+  box-shadow: 0 0 30px rgba(124, 58, 237, 0.8);
+}
+
+.graph-node.active {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+/* Matrix Effect */
+.matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.05;
+}
+
+.matrix-rain::before {
+  content: '⟨⟩ φ ∫ ∑ ℂ ⊕ ⊗';
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 100px;
+  color: rgba(124, 58, 237, 0.3);
+  animation: matrix-flow 15s linear infinite;
+}
+
+@keyframes matrix-flow {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.05;
+  }
+  90% {
+    opacity: 0.05;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+/* Wave Animation for Metrics */
+.wave {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), transparent);
+  animation: wave-motion 2s ease-in-out infinite;
+}
+
+@keyframes wave-motion {
+  0%, 100% {
+    clip-path: polygon(
+      0% 50%,
+      2% 45%, 4% 40%, 6% 40%, 8% 45%, 10% 50%,
+      12% 55%, 14% 60%, 16% 60%, 18% 55%, 20% 50%,
+      100% 50%,
+      100% 51%, 20% 51%,
+      18% 56%, 16% 61%, 14% 61%, 12% 56%, 10% 51%,
+      8% 46%, 6% 41%, 4% 41%, 2% 46%, 0% 51%
+    );
+  }
+  50% {
+    clip-path: polygon(
+      0% 50%,
+      2% 40%, 4% 35%, 6% 35%, 8% 40%, 10% 50%,
+      12% 60%, 14% 65%, 16% 65%, 18% 60%, 20% 50%,
+      100% 50%,
+      100% 51%, 20% 51%,
+      18% 61%, 16% 66%, 14% 66%, 12% 61%, 10% 51%,
+      8% 41%, 6% 36%, 4% 36%, 2% 41%, 0% 51%
+    );
+  }
+}
+
+/* Metric Bar Animation */
+.metric-bar {
+  position: relative;
+  height: 4px;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.3), rgba(59, 130, 246, 0.3));
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.metric-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0), rgba(59, 130, 246, 1), rgba(124, 58, 237, 0));
+  animation: metric-fill 2s ease-in-out infinite;
+}
+
+@keyframes metric-fill {
+  0% { width: 0%; }
+  50% { width: 100%; }
+  100% { width: 0%; }
+}
+
+/* Combinatorial Burst */
+.burst {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: burst-out 1s ease-out forwards;
+}
+
+@keyframes burst-out {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* Code Block Highlight */
+.code-highlight {
+  position: relative;
+  background: rgba(124, 58, 237, 0.1);
+  border-left: 3px solid rgba(124, 58, 237, 0.6);
+  padding: 8px 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  border-radius: 4px;
+  overflow: auto;
+  animation: code-glow 2s ease-in-out infinite;
+}
+
+@keyframes code-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+  }
+}
+
+/* Scroll Bar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(124, 58, 237, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.8);
+}
