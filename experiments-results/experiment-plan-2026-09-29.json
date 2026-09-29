@@ -1,0 +1,120 @@
+{
+  "timestamp": "2026-09-29T12:49:29.776Z",
+  "version": "v0.2.1",
+  "experiments": [
+    {
+      "id": 1,
+      "name": "Multi-System Coordination",
+      "description": "All 10 systems executing in parallel",
+      "criteria": {
+        "waveTime": {
+          "max": 250,
+          "unit": "ms"
+        },
+        "systemsActive": {
+          "min": 10
+        },
+        "successRate": {
+          "min": 100,
+          "unit": "%"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "name": "Healing + Learning Synergy",
+      "description": "Error recovery with wisdom extraction",
+      "criteria": {
+        "healthGain": {
+          "min": 2,
+          "unit": "%"
+        },
+        "lessonRecorded": true,
+        "recoveryTime": {
+          "max": 5000,
+          "unit": "ms"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "name": "Emotion-Driven Decisions",
+      "description": "8 emotions guiding system choices",
+      "criteria": {
+        "emotionsActive": {
+          "min": 8
+        },
+        "emotionInfluence": {
+          "min": 50,
+          "unit": "%"
+        },
+        "decisionQuality": {
+          "min": 80,
+          "unit": "%"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "name": "Payload Collections Under Load",
+      "description": "Real data, concurrent access",
+      "criteria": {
+        "collectionsActive": {
+          "min": 7
+        },
+        "dataIntegrity": 100,
+        "concurrentAccess": {
+          "min": 50,
+          "unit": "ops/sec"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "name": "Multi-Scale Deployment",
+      "description": "Browser, standalone, docker, k8s, multi-region",
+      "criteria": {
+        "scalesDeployed": {
+          "min": 4
+        },
+        "consistentHealth": true,
+        "noScaleBugs": true
+      }
+    },
+    {
+      "id": 6,
+      "name": "Teaching System Multiplication",
+      "description": "Wisdom spreading and culture forming",
+      "criteria": {
+        "lessonsRecorded": {
+          "min": 20
+        },
+        "wisdomMultiplier": {
+          "min": 2
+        },
+        "cultureFormed": true
+      }
+    }
+  ],
+  "globalCriteria": {
+    "healthTrajectory": {
+      "start": 78.5,
+      "target": 85,
+      "unit": "%"
+    },
+    "coordinationTime": {
+      "max": 250,
+      "unit": "ms"
+    },
+    "reliability": {
+      "min": 99.9,
+      "unit": "%"
+    },
+    "uptime": {
+      "min": 99.9,
+      "unit": "%"
+    }
+  },
+  "status": "ready_to_test",
+  "results": null
+}
