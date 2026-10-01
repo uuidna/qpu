@@ -5,6 +5,7 @@
  */
 
 import { v4 as uuidv4, parse as parseUuid } from 'uuid'
+import { MCP_OPERATIONS } from './operations-metadata.js'
 
 // ============================================================================
 // UUID COMBINATORIAL INDEXING
@@ -307,81 +308,10 @@ export class ConsolidatedMCPOperations {
   }
 
   private initializeConsolidatedOperations(): void {
-    // ENTERPRISE TOOLS → UUID-indexed operations
-    this.registerOperation('enterprise', 'compliance-scan', async (input: any) => {
-      // Consolidated from ComplianceScanner
-      return { issues: [], score: 100 }
-    })
-
-    this.registerOperation('enterprise', 'security-validate', async (input: any) => {
-      // Consolidated from SecurityValidator
-      return { findings: [], score: 100 }
-    })
-
-    this.registerOperation('enterprise', 'performance-benchmark', async (input: any) => {
-      // Consolidated from PerformanceBenchmarker
-      return { latency: 0, throughput: 0 }
-    })
-
-    // QUANTUM ML → UUID-indexed operations
-    this.registerOperation('quantum-ml', 'train-model', async (input: any) => {
-      // Consolidated from QuantumMLOptimizer
-      return { modelId: input.datasetId, accuracy: 0.95 }
-    })
-
-    this.registerOperation('quantum-ml', 'predict', async (input: any) => {
-      // Consolidated quantum predictions
-      return { prediction: 0.85, confidence: 0.92 }
-    })
-
-    // COMPRESSION → UUID-indexed operations
-    this.registerOperation('compression', 'compress', async (input: any) => {
-      // Consolidated from CombinatorialCompression
-      return { compressedSize: 0, ratio: 0.5 }
-    })
-
-    this.registerOperation('compression', 'decompress', async (input: any) => {
-      return { data: input.compressed }
-    })
-
-    // OBSERVABILITY → UUID-indexed operations
-    this.registerOperation('observability', 'trace', async (input: any) => {
-      // Consolidated from ObservabilityStack
-      return { traceId: input.traceId, spans: [] }
-    })
-
-    this.registerOperation('observability', 'detect-anomaly', async (input: any) => {
-      return { anomalies: [], score: 0.05 }
-    })
-
-    // MEDICAL → UUID-indexed operations
-    this.registerOperation('medical', 'profile-patient', async (input: any) => {
-      // Consolidated from CancerResearchPlatform
-      return { mutations: [], prognosis: 0.8 }
-    })
-
-    this.registerOperation('medical', 'generate-treatment-plan', async (input: any) => {
-      return { treatments: [], expectedOutcome: 0.85 }
-    })
-
-    // UI/DASHBOARD → UUID-indexed operations
-    this.registerOperation('ui', 'render-dashboard', async (input: any) => {
-      return { html: '<div>Dashboard</div>', metadata: {} }
-    })
-
-    this.registerOperation('ui', 'render-form', async (input: any) => {
-      return { html: '<form></form>' }
-    })
-
-    // QPU: 8 fold-verified tools, UUID-chained via autonomous reasoning
-    this.registerOperation('quantum', 'quantum', async () => ({ verified: true, fused: 120259084288, holds: true }))
-    this.registerOperation('quantum', 'lean', async () => ({ theorems_verified: 6, toolchain: 'lean4', holds: true }))
-    this.registerOperation('quantum', 'cite', async () => ({ doi: '10.5281/zenodo.22973935', orcid: '0009-0000-7312-9778', holds: true }))
-    this.registerOperation('quantum', 'train', async () => ({ teams: 2, agents: 7, winner: Math.random() > 0.5 ? 'read' : 'call', faces: 14, holds: true }))
-    this.registerOperation('quantum', 'forge', async () => ({ sandbox_tools: 0, max_capacity: 448, holds: true }))
-    this.registerOperation('quantum', 'improve', async () => ({ current: 120259084288, next: 240518168576, ratio: 2, holds: true }))
-    this.registerOperation('quantum', 'compete', async () => ({ winner: Math.random() > 0.5 ? 'read' : 'call', read_score: 92, call_score: 88, holds: true }))
-    this.registerOperation('quantum', 'prove', async () => ({ theorems_hold: true, verified: true, holds: true }))
+    // Auto-register all operations from metadata
+    for (const op of MCP_OPERATIONS) {
+      this.registerOperation(op.domain, op.operation, op.handler)
+    }
   }
 
   private registerOperation(

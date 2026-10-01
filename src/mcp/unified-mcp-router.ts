@@ -6,6 +6,7 @@
 
 import { consolidatedMCP, UUIDOperation, CombinatorialProgram, ExecutionResult } from './uuid-programmable-core.js'
 import { priorArtCitationManager, Citation, ScholarlyWork } from './prior-art-citations.js'
+import { MCP_OPERATIONS, deriveBuilderMethodName } from './operations-metadata.js'
 
 // ============================================================================
 // UNIFIED MCP REQUEST/RESPONSE WITH PRIOR ART CITATIONS
@@ -197,9 +198,40 @@ export class UnifiedMCPRouter {
 
 /**
  * Fluent API for building UUID-programmable operations
+ * Auto-generates add<Operation>() methods from metadata
  */
 export class MCPBuilder {
   private operations: string[] = []
+
+  constructor() {
+    // Auto-generate all add<Operation>() methods from metadata
+    return new Proxy(this, {
+      get: (target: any, prop: string | symbol) => {
+        // Built-in methods
+        if (prop === 'operations' || prop === 'add' || prop === 'build' || prop === 'execute') {
+          return target[prop]
+        }
+
+        // Generate add<Operation>() methods on-the-fly
+        if (typeof prop === 'string' && prop.startsWith('add') && prop.length > 3) {
+          // Convert camelCase back to kebab-case
+          const methodName = prop.slice(3) // Remove 'add' prefix
+          const registryKey = methodName
+            .replace(/([A-Z])/g, '-$1')
+            .toLowerCase()
+            .replace(/^-/, '')
+
+          // Find matching operation from metadata
+          const op = MCP_OPERATIONS.find(o => deriveBuilderMethodName(o.registryKey) === methodName)
+          if (op) {
+            return () => target.add(op.domain, op.operation)
+          }
+        }
+
+        return target[prop]
+      }
+    })
+  }
 
   /**
    * Add operation to composition
@@ -208,83 +240,6 @@ export class MCPBuilder {
     const uuid = consolidatedMCP.getOperationUUID(domain, operation)
     this.operations.push(uuid)
     return this
-  }
-
-  /**
-   * Add compliance scan
-   */
-  addComplianceScan(): this {
-    return this.add('enterprise', 'compliance-scan')
-  }
-
-  /**
-   * Add security validation
-   */
-  addSecurityValidation(): this {
-    return this.add('enterprise', 'security-validate')
-  }
-
-  /**
-   * Add performance benchmark
-   */
-  addPerformanceBenchmark(): this {
-    return this.add('enterprise', 'performance-benchmark')
-  }
-
-  /**
-   * Add quantum ML training
-   */
-  addQuantumMLTraining(): this {
-    return this.add('quantum-ml', 'train-model')
-  }
-
-  /**
-   * Add quantum ML prediction
-   */
-  addQuantumMLPrediction(): this {
-    return this.add('quantum-ml', 'predict')
-  }
-
-  /**
-   * Add compression
-   */
-  addCompression(): this {
-    return this.add('compression', 'compress')
-  }
-
-  /**
-   * Add tracing
-   */
-  addTracing(): this {
-    return this.add('observability', 'trace')
-  }
-
-  /**
-   * Add anomaly detection
-   */
-  addAnomalyDetection(): this {
-    return this.add('observability', 'detect-anomaly')
-  }
-
-  /**
-   * Add medical profiling
-   */
-  addMedicalProfiling(): this {
-    return this.add('medical', 'profile-patient')
-  }
-
-  /**
-   * Add treatment planning
-   */
-  addTreatmentPlanning(): this {
-    return this.add('medical', 'generate-treatment-plan')
-  }
-
-  /**
-   * Add dashboard rendering
-   */
-  addDashboard(): this {
-    return this.add('ui', 'render-dashboard')
   }
 
   /**
@@ -308,29 +263,16 @@ export class MCPBuilder {
 
 /**
  * All operations mapped to UUID for introspection and discovery
+ * Auto-generated from MCP_OPERATIONS metadata
  */
-export const UNIVERSAL_OPERATION_REGISTRY = {
-  'compliance-scan': { domain: 'enterprise', operation: 'compliance-scan' },
-  'security-validate': { domain: 'enterprise', operation: 'security-validate' },
-  'performance-benchmark': { domain: 'enterprise', operation: 'performance-benchmark' },
-  'train-quantum-model': { domain: 'quantum-ml', operation: 'train-model' },
-  'quantum-predict': { domain: 'quantum-ml', operation: 'predict' },
-  'compress-data': { domain: 'compression', operation: 'compress' },
-  'decompress-data': { domain: 'compression', operation: 'decompress' },
-  'trace-request': { domain: 'observability', operation: 'trace' },
-  'detect-anomaly': { domain: 'observability', operation: 'detect-anomaly' },
-  'profile-patient': { domain: 'medical', operation: 'profile-patient' },
-  'generate-treatment': { domain: 'medical', operation: 'generate-treatment-plan' },
-  'render-dashboard': { domain: 'ui', operation: 'render-dashboard' },
-  'render-form': { domain: 'ui', operation: 'render-form' },
-  'qpu_quantum': { domain: 'quantum', operation: 'quantum' },
-  'qpu_lean': { domain: 'quantum', operation: 'lean' },
-  'qpu_cite': { domain: 'quantum', operation: 'cite' },
-  'qpu_train': { domain: 'quantum', operation: 'train' },
-  'qpu_forge': { domain: 'quantum', operation: 'forge' },
-  'qpu_improve': { domain: 'quantum', operation: 'improve' },
-  'qpu_compete': { domain: 'quantum', operation: 'compete' },
-  'qpu_prove': { domain: 'quantum', operation: 'prove' }
+export const UNIVERSAL_OPERATION_REGISTRY: Record<string, { domain: string; operation: string }> = {}
+
+// Initialize registry from metadata
+for (const op of MCP_OPERATIONS) {
+  UNIVERSAL_OPERATION_REGISTRY[op.registryKey] = {
+    domain: op.domain,
+    operation: op.operation
+  }
 }
 
 /**
