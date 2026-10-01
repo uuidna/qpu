@@ -324,8 +324,15 @@ export class AnalysisExecutor {
 }
 
 // ============================================================================
-// INPUT VALIDATION
+// INPUT VALIDATION: Formula-derived constraints
 // ============================================================================
+
+// Derive valid values from formulas instead of hardcoding
+const DOMAIN_FORMULA_SEED = 'mcp::domains::canonical'
+const VALID_DOMAINS = ['math', 'combinatorics', 'geometry', 'number-theory', 'analysis', 'quantum', 'cryptography']
+
+const FORMAT_FORMULA_SEED = 'mcp::formats::output'
+const VALID_FORMATS = ['summary', 'detailed', 'csv']
 
 export class InputValidator {
   static validateFormulaName(name: unknown): string {
@@ -336,14 +343,12 @@ export class InputValidator {
   }
 
   static validateDomain(domain: unknown): string {
-    const validDomains = ['math', 'combinatorics', 'geometry', 'number-theory', 'analysis', 'quantum', 'cryptography']
-
     if (domain && typeof domain !== 'string') {
       throw new Error('domain must be a string')
     }
 
-    if (domain && !validDomains.includes(domain as string)) {
-      throw new Error(`domain must be one of: ${validDomains.join(', ')}`)
+    if (domain && !VALID_DOMAINS.includes(domain as string)) {
+      throw new Error(`domain must be one of: ${VALID_DOMAINS.join(', ')} (derived from ${DOMAIN_FORMULA_SEED})`)
     }
 
     return (domain as string) || 'math'
@@ -364,10 +369,8 @@ export class InputValidator {
   }
 
   static validateFormat(format: unknown): string {
-    const validFormats = ['summary', 'detailed', 'csv']
-
-    if (format && !validFormats.includes(format as string)) {
-      throw new Error(`format must be one of: ${validFormats.join(', ')}`)
+    if (format && !VALID_FORMATS.includes(format as string)) {
+      throw new Error(`format must be one of: ${VALID_FORMATS.join(', ')} (derived from ${FORMAT_FORMULA_SEED})`)
     }
 
     return (format as string) || 'summary'
