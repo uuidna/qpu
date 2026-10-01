@@ -110,6 +110,13 @@ export class FormulaNetwork {
     this.registerNode('auto-upgrade', 'autonomy', 'Upgrade', 'patches = f(learnings)', ['auto-learn'], ['auto-converge'])
     this.registerNode('auto-converge', 'autonomy', 'Converge', 'optimal = iterate(patches)', ['auto-upgrade'], [])
 
+    // Domain: cost optimization (5 ops)
+    this.registerNode('cost-baseline', 'cost', 'Baseline', 'cost = (compute+storage+network+monitoring)', [], ['cost-optimize'])
+    this.registerNode('cost-optimize', 'cost', 'Optimize', 'reduced = baseline * 0.6', ['cost-baseline'], ['cost-roi'])
+    this.registerNode('cost-roi', 'cost', 'ROI', 'payback = savings/investment', ['cost-optimize'], [])
+    this.registerNode('cost-recommend', 'cost', 'Recommend', 'mode = f(traffic, cost)', ['cost-baseline', 'deploy-gate'], [])
+    this.registerNode('cost-forecast', 'cost', 'Forecast', 'monthly = f(queries, storage, compute)', ['obs-collect', 'store-opt'], [])
+
     // Build edges from input/output relationships
     this.buildEdges()
 
@@ -342,6 +349,33 @@ export class FormulaNetwork {
 
       case 'auto-converge':
         return (deps.get('auto-upgrade') || 0) * 1.15
+
+      case 'cost-baseline':
+        // compute(150) + storage(20) + network(30) + monitoring(15) = 215
+        return 215
+
+      case 'cost-optimize':
+        // Optimized: 40% reduction
+        return (deps.get('cost-baseline') || 215) * 0.6
+
+      case 'cost-roi':
+        // Payback = savings / investment (assume $10k dev cost)
+        const costSaved = (deps.get('cost-optimize') || 0)
+        return costSaved > 0 ? (costSaved * 12) / 10000 : 0 // Annual ROI multiplier
+
+      case 'cost-recommend':
+        // Mode selection based on cost and deployment readiness
+        const costBaseline = deps.get('cost-baseline') || 215
+        if (costBaseline < 100) return 1.0 // Browser mode
+        if (costBaseline < 300) return 2.0 // Docker mode
+        return 3.0 // Kubernetes mode
+
+      case 'cost-forecast':
+        // Monthly cost forecast from traffic signals
+        const queries = deps.get('obs-collect') || 1000000
+        const storage = deps.get('store-opt') || 50
+        // Cost = (queries/1M * 0.20) + (storage/1024 * 20)
+        return (queries / 1000000) * 0.2 + (storage / 1024) * 20
 
       default:
         return 0

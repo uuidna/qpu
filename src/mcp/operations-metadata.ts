@@ -858,6 +858,84 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return await formulaNetworkOptimize()
     },
     description: 'Get network optimization suggestions'
+  },
+
+  // COST OPTIMIZATION: 7 operations
+  {
+    key: 'cost-analyze-all-modes',
+    domain: 'cost',
+    operation: 'analyze-all-modes',
+    handler: async () => {
+      const { costAnalyzeAllModes } = await import('./cost-optimization-operations.js')
+      return await costAnalyzeAllModes()
+    },
+    description: 'Analyze costs for all 4 deployment modes'
+  },
+  {
+    key: 'cost-per-formula',
+    domain: 'cost',
+    operation: 'per-formula',
+    handler: async (input?: Record<string, unknown>) => {
+      const { costPerFormulaExecution } = await import('./cost-optimization-operations.js')
+      const mode = (input?.mode as string) || 'docker'
+      return await costPerFormulaExecution(mode)
+    },
+    description: 'Get cost per formula execution by mode'
+  },
+  {
+    key: 'cost-recommend-mode',
+    domain: 'cost',
+    operation: 'recommend-mode',
+    handler: async (input?: Record<string, unknown>) => {
+      const { costRecommendMode } = await import('./cost-optimization-operations.js')
+      const traffic = (input?.traffic as string) || 'medium'
+      return await costRecommendMode(traffic)
+    },
+    description: 'Recommend cheapest deployment mode for traffic'
+  },
+  {
+    key: 'cost-global-savings',
+    domain: 'cost',
+    operation: 'global-savings',
+    handler: async () => {
+      const { costGlobalSavings } = await import('./cost-optimization-operations.js')
+      return await costGlobalSavings()
+    },
+    description: 'Calculate global savings across all modes'
+  },
+  {
+    key: 'cost-optimization-recommendations',
+    domain: 'cost',
+    operation: 'recommendations',
+    handler: async () => {
+      const { costOptimizationRecommendations } = await import('./cost-optimization-operations.js')
+      return await costOptimizationRecommendations()
+    },
+    description: 'Get cost optimization recommendations'
+  },
+  {
+    key: 'cost-forecast',
+    domain: 'cost',
+    operation: 'forecast',
+    handler: async (input?: Record<string, unknown>) => {
+      const { costForecast } = await import('./cost-optimization-operations.js')
+      const queriesPerDay = (input?.queriesPerDay as number) || 1000000
+      const storageGB = (input?.storageGB as number) || 100
+      const computeHours = (input?.computeHours as number) || 720
+      const networkTB = (input?.networkTB as number) || 1
+      return await costForecast(queriesPerDay, storageGB, computeHours, networkTB)
+    },
+    description: 'Forecast monthly cost based on traffic'
+  },
+  {
+    key: 'cost-report',
+    domain: 'cost',
+    operation: 'report',
+    handler: async () => {
+      const { costReport } = await import('./cost-optimization-operations.js')
+      return await costReport()
+    },
+    description: 'Generate comprehensive cost optimization report'
   }
 ]
 
