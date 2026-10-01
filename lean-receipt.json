@@ -1,0 +1,820 @@
+{
+ "kind": "lean-receipt",
+ "source": "8088fb6422822377",
+ "toolchain": "leanprover/lean4:v4.33.0",
+ "theorems": 99,
+ "served": 99,
+ "verbatim": 99,
+ "recomputed": 99,
+ "holds": true,
+ "crossHolds": true,
+ "rows": [
+  {
+   "name": "all_complete",
+   "uuid": "28b8fcf2-45fa-8077-b25c-d4744b25dff2",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "76f4b494db73100c"
+  },
+  {
+   "name": "all_entangle",
+   "uuid": "d79a948f-a306-817c-94bb-19f8e18deb5e",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "8ef5a30c65e5c789"
+  },
+  {
+   "name": "all_noclone",
+   "uuid": "e65fbb5a-66d9-8607-926e-1b4fcaf610c9",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ecdce1e8d3a46f94"
+  },
+  {
+   "name": "all_product",
+   "uuid": "7af6087b-c2e0-89fb-bc06-d38fe944108e",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ba86b69bd716ce56"
+  },
+  {
+   "name": "all_shor",
+   "uuid": "83a6300c-7ce8-8e40-b3ef-3908739f5f02",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "082ad821b3d24916"
+  },
+  {
+   "name": "all_sum",
+   "uuid": "0d24350e-fdbe-8c2d-970e-76b1883d3992",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "7afc470b3006fe26"
+  },
+  {
+   "name": "amplitudes_as_sum",
+   "uuid": "bc9bfea2-086d-8ed6-ab51-f3776ee7275c",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "4255232d8340bdcc"
+  },
+  {
+   "name": "amplitudes_from_sum",
+   "uuid": "8a751079-4737-8557-a6d9-fefd105f9dc9",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "24b287c9b842210c"
+  },
+  {
+   "name": "around",
+   "uuid": "7af6087b-c2e0-89fb-bc06-d38fe944108e",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ba86b69bd716ce56"
+  },
+  {
+   "name": "bits_both_forms",
+   "uuid": "53074b8f-77a9-86e6-9f4b-decdb715706d",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "9170d25b95eaec73"
+  },
+  {
+   "name": "bits_exponential",
+   "uuid": "484eda12-916c-8628-a80e-fa16fae1859e",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ef181e4903e012f9"
+  },
+  {
+   "name": "bits_multiplicative",
+   "uuid": "808038fd-2235-8e20-a6cc-50c033c4e380",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "94f727d8c60d1c78"
+  },
+  {
+   "name": "breakthrough",
+   "uuid": "a76d1f8b-44bf-81d3-8a83-9254ddc27570",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "965eabb51b5f8789"
+  },
+  {
+   "name": "cern",
+   "uuid": "2c6b2293-8e57-8023-92a2-b5cb9fa77fcb",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "067ce884308e691a"
+  },
+  {
+   "name": "circuit",
+   "uuid": "a60ce6bb-2599-8ef4-b226-a0673d7e3b4f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "5e80716bc3db7709"
+  },
+  {
+   "name": "clay",
+   "uuid": "bb1e4619-4404-87b6-b703-ad3855ffb9a1",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "82c82ee278f03791"
+  },
+  {
+   "name": "cluster",
+   "uuid": "d1e63668-40e7-867f-904e-b8d47ff8590b",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "094bf88d03adb074"
+  },
+  {
+   "name": "coil_efficiency",
+   "uuid": "fbadd3b4-7664-8f5b-8849-85028f4ac278",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "0a44d8b888ea0e3b"
+  },
+  {
+   "name": "coins_bridges_forms",
+   "uuid": "b8b75e21-92a3-889d-9052-0c085d09f396",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "over": "x ∈ [0, 32]",
+   "formula": "7cab07cb785be42b"
+  },
+  {
+   "name": "coins_two",
+   "uuid": "eb5b8614-0c34-8ae1-b9f6-ff6bb92df39d",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "bbc50a140659d10b"
+  },
+  {
+   "name": "computer",
+   "uuid": "9b0c5cfd-585e-8ab0-9f99-cfd9b0700747",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "8c710479c24e3916"
+  },
+  {
+   "name": "cooling_stays_positive",
+   "uuid": "1ed4802c-8087-8451-ac27-5419d3bd2df3",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "t, a, n ∈ [0, 8]",
+   "formula": "bf17ffc686766f9f"
+  },
+  {
+   "name": "cooling_strictly_decreases",
+   "uuid": "01942992-b8db-883e-b9c3-df162ad8a567",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "t, a, b, n ∈ [0, 8]",
+   "formula": "985b60ab18c22393"
+  },
+  {
+   "name": "crypto",
+   "uuid": "ea230d57-09d4-8ea9-9dce-b896e149e49f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "4cd4fb0b2a2944d0"
+  },
+  {
+   "name": "cube",
+   "uuid": "808038fd-2235-8e20-a6cc-50c033c4e380",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "94f727d8c60d1c78"
+  },
+  {
+   "name": "dense",
+   "uuid": "ea64cd93-8e98-8954-8304-41eaa1e5ac88",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "2d7fa2784f953d50"
+  },
+  {
+   "name": "design",
+   "uuid": "9c0100b5-4077-86df-92fd-0ebcc2309eb1",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "a100cd2528b88406"
+  },
+  {
+   "name": "deutsch",
+   "uuid": "5972a3be-5574-8509-852f-433f41cb81a4",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "22a1089e0b126d21"
+  },
+  {
+   "name": "distribute",
+   "uuid": "d7c7bf7e-cc07-878c-befb-84299d5b82e3",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "1ffd10a744d456c0"
+  },
+  {
+   "name": "double_is_sum",
+   "uuid": "f4c7099f-415f-8343-a794-935dcb5c6371",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "over": "x ∈ [0, 32]",
+   "formula": "9aa77799eacc42c3"
+  },
+  {
+   "name": "drift",
+   "uuid": "260157bb-742f-8e7c-a809-445db4a9b075",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "c130675368f9b440"
+  },
+  {
+   "name": "electronics",
+   "uuid": "d07538fa-1cfa-8b9e-8a7f-2c937ee09f22",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "00ee4c9c1f8684d1"
+  },
+  {
+   "name": "energy",
+   "uuid": "c4b83816-1292-8e74-9331-63d777e51ede",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "9ddd721352f86ea2"
+  },
+  {
+   "name": "entangle",
+   "uuid": "d79a948f-a306-817c-94bb-19f8e18deb5e",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "8ef5a30c65e5c789"
+  },
+  {
+   "name": "faces_additive",
+   "uuid": "0d24350e-fdbe-8c2d-970e-76b1883d3992",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "7afc470b3006fe26"
+  },
+  {
+   "name": "faces_both_forms",
+   "uuid": "6f6772c9-eaf4-899b-9704-6e341beb8e7f",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "5c6994e7068728ae"
+  },
+  {
+   "name": "faces_multiplicative",
+   "uuid": "7af6087b-c2e0-89fb-bc06-d38fe944108e",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ba86b69bd716ce56"
+  },
+  {
+   "name": "fill",
+   "uuid": "e7e88a23-7aca-8b35-9300-529d2e0cf6df",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "5cc6549a77825ece"
+  },
+  {
+   "name": "follow_the_coins",
+   "uuid": "07fad95a-f485-8ebe-af98-bec546a34d8a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "app ∈ [0, 32]",
+   "formula": "ab12c4670389f9ee"
+  },
+  {
+   "name": "fused_additive_form",
+   "uuid": "d6527fd5-a098-8575-bdd9-4a6df2c76585",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "formula": "f0a4b22c8bd1c3bc"
+  },
+  {
+   "name": "fused_both_directions",
+   "uuid": "722e8ce7-a65b-8bb0-b6fc-434a6aa47abc",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ec59d6a5f71ddd4e"
+  },
+  {
+   "name": "fused_multiplicative_form",
+   "uuid": "279930ad-8508-8b13-a0d6-d582784481f8",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ce850ee84d9a3c16"
+  },
+  {
+   "name": "fusion",
+   "uuid": "75abc466-b763-8a2c-b69f-9a4bb8d05375",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "64121ef70f737948"
+  },
+  {
+   "name": "gates",
+   "uuid": "a6f8c5b5-d9e7-8422-942e-487ac05aef9c",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "8503b986f2b464d5"
+  },
+  {
+   "name": "ghz",
+   "uuid": "ea5e5929-8ac3-8859-907b-f325cbfdbfcc",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "37f3eb719eab5154"
+  },
+  {
+   "name": "handle",
+   "uuid": "b9d152aa-d2a2-8c82-b129-d83c5a7b896f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "07a557b96dd29e35"
+  },
+  {
+   "name": "harmonic",
+   "uuid": "0d24350e-fdbe-8c2d-970e-76b1883d3992",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "7afc470b3006fe26"
+  },
+  {
+   "name": "health",
+   "uuid": "e83711b8-29e9-89a4-bb85-c58922db5ec2",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "a787af949170675d"
+  },
+  {
+   "name": "hexbit_eq",
+   "uuid": "c4c29023-3638-8895-b987-95b3ab39a2b3",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "dd11422d060ddb45"
+  },
+  {
+   "name": "hexbit_pos",
+   "uuid": "18cd95e9-43d4-8425-910d-66e3e229cee4",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "0b07f43cad772a98"
+  },
+  {
+   "name": "hybrid",
+   "uuid": "04fcaf04-8938-8a8e-ae4d-d9c68d9d628a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "f011de51bebaa714"
+  },
+  {
+   "name": "hybrid_cost",
+   "uuid": "a04545c7-547a-89c7-8360-e1cb137ba83d",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "bc15d1e92c2c7108"
+  },
+  {
+   "name": "hybrid_speed",
+   "uuid": "6261d53b-9235-856c-b635-21f321549641",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "aa99d2dee84692ba"
+  },
+  {
+   "name": "infinite",
+   "uuid": "49204bb7-daea-8147-9bd6-d4d910feb131",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "over": "k ∈ [0, 32]",
+   "formula": "6b7b08b342ebe384"
+  },
+  {
+   "name": "integrity",
+   "uuid": "8242a183-b0fb-8b8c-ad54-a73810dfa1fc",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "e2a124034191fbb4"
+  },
+  {
+   "name": "interfere",
+   "uuid": "8f9e78d5-a4fc-805e-b11b-75042312747b",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "98fd82ad48671570"
+  },
+  {
+   "name": "involution",
+   "uuid": "ccb69dad-6f4b-8283-a0f4-586a101b00f8",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "face ∈ [0, 32]",
+   "formula": "6ae052d0acda95b9"
+  },
+  {
+   "name": "kickback",
+   "uuid": "4d6c0272-45aa-813e-b4eb-66ea1a3db955",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "d3ea875d2f0216be"
+  },
+  {
+   "name": "kv",
+   "uuid": "94fccced-de35-89ff-9c74-42322e546fbd",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "be66021fffb35ef6"
+  },
+  {
+   "name": "light",
+   "uuid": "c14e2c3a-de10-85ee-a4cc-ac2ec2066c55",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "f6c26eb90b78bf15"
+  },
+  {
+   "name": "measurement",
+   "uuid": "d6220fe3-5ee2-839c-880d-246754064d08",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "120acc27b6f1b27d"
+  },
+  {
+   "name": "mint",
+   "uuid": "a428007f-b6bb-89e1-8fa9-b79509ae344c",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "2ba7fc7366d7f84b"
+  },
+  {
+   "name": "mintOf_add",
+   "uuid": "4684273b-477a-843b-a148-02728f878cb2",
+   "cross": "bridge",
+   "holds": true,
+   "recomputed": true,
+   "over": "a, b ∈ [0, 32]",
+   "formula": "7b1d53b9d5e03c3a"
+  },
+  {
+   "name": "mintOf_ge_seed",
+   "uuid": "ecafedfc-2544-843c-b5df-47117d5a2c75",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "k ∈ [0, 32]",
+   "formula": "c867edea5c1ddc82"
+  },
+  {
+   "name": "mintOf_lt",
+   "uuid": "f36690b0-67aa-8a54-8e3c-07a8022ed207",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "a, b ∈ [0, 32]",
+   "formula": "1f86387d1454e54a"
+  },
+  {
+   "name": "mintOf_lt_succ",
+   "uuid": "fef8049f-14e5-8a88-822c-504a382c2481",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "k ∈ [0, 32]",
+   "formula": "cfd2868a89496e07"
+  },
+  {
+   "name": "mintOf_pos",
+   "uuid": "72e59398-be85-87c5-a2a8-8364e07bb8e4",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "over": "k ∈ [0, 32]",
+   "formula": "ab2a6dec84d24bb1"
+  },
+  {
+   "name": "mintOf_succ",
+   "uuid": "2f37ab4f-c0fc-89ae-8874-245a1771a17b",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "over": "k ∈ [0, 32]",
+   "formula": "0eeca1f5e60f4f49"
+  },
+  {
+   "name": "mintOf_zero",
+   "uuid": "9b9cd92a-8517-850e-a733-784e23be4e55",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "dcca09eb38ed656c"
+  },
+  {
+   "name": "monogamy",
+   "uuid": "6b032890-a008-8811-b3c2-c4c6aae84feb",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "d5737ab4aa48296e"
+  },
+  {
+   "name": "multiply",
+   "uuid": "4684273b-477a-843b-a148-02728f878cb2",
+   "cross": "bridge",
+   "holds": true,
+   "recomputed": true,
+   "over": "a, b ∈ [0, 32]",
+   "formula": "30ff813452cba6d2"
+  },
+  {
+   "name": "n_eq",
+   "uuid": "9ba04f1c-df59-8a68-b61b-101fb2528886",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "48bd76f9de685dfc"
+  },
+  {
+   "name": "neuro",
+   "uuid": "77318137-2c5f-8be1-8519-97ca287b96ba",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "18f9c7ce102ff14c"
+  },
+  {
+   "name": "next",
+   "uuid": "bc9bfea2-086d-8ed6-ab51-f3776ee7275c",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "4255232d8340bdcc"
+  },
+  {
+   "name": "next_coil",
+   "uuid": "98c0be0e-e959-818e-ab7f-9aff5c2c4026",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "formula": "cea052d7354b9601"
+  },
+  {
+   "name": "next_cover",
+   "uuid": "adccb2c4-95a7-8e3d-beca-6b14209dfd96",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "formula": "b9efb3f583ecb778"
+  },
+  {
+   "name": "next_fused",
+   "uuid": "6e4d9ba9-f8af-8eb7-a9e1-12131d559031",
+   "cross": "cross",
+   "holds": true,
+   "recomputed": true,
+   "formula": "94fb01df97ffe128"
+  },
+  {
+   "name": "noclone",
+   "uuid": "e65fbb5a-66d9-8607-926e-1b4fcaf610c9",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ecdce1e8d3a46f94"
+  },
+  {
+   "name": "noise",
+   "uuid": "32078310-6a07-8c44-b455-c10e480eb8c2",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "7cd818847a21ba23"
+  },
+  {
+   "name": "one_plus_six",
+   "uuid": "9c099ef9-3779-8f71-bd35-48c973fe5ad7",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "4e32e6d03325aefd"
+  },
+  {
+   "name": "only",
+   "uuid": "d586a778-565b-88a2-8603-c2da566803fe",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "6ce3a7d7dfebd071"
+  },
+  {
+   "name": "physical",
+   "uuid": "3eb3d5e6-d887-84fd-b06a-a0be7de50996",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "e3942712072fc502"
+  },
+  {
+   "name": "planes",
+   "uuid": "06a146f5-1a00-8b17-a08f-bffde4b864ec",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "7d0f8cb969b611fe"
+  },
+  {
+   "name": "propulsion",
+   "uuid": "e4029a21-aa31-8dd7-b538-5133411885f2",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "2b4591d5e4f92975"
+  },
+  {
+   "name": "quantum",
+   "uuid": "279930ad-8508-8b13-a0d6-d582784481f8",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "ce850ee84d9a3c16"
+  },
+  {
+   "name": "qubits",
+   "uuid": "3b37bc55-b95c-89f3-a9fe-0f3c09606770",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "a1fc0417ac7f5c8c"
+  },
+  {
+   "name": "raid",
+   "uuid": "6f6772c9-eaf4-899b-9704-6e341beb8e7f",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "2ca2cf2e03dd7388"
+  },
+  {
+   "name": "sciences",
+   "uuid": "24a81724-411e-87e9-94b7-af2c2bd530cc",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "283086d3e5891666"
+  },
+  {
+   "name": "seed_eq",
+   "uuid": "9d650999-7a49-8237-8682-b06cee881f65",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "09284b052d1421ed"
+  },
+  {
+   "name": "server",
+   "uuid": "a3af0aff-7263-881d-ad94-b997207abd2b",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "633f0d33acd83c8f"
+  },
+  {
+   "name": "shor",
+   "uuid": "c58a75c5-607b-871c-b68e-f734a8376a75",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "f1db5208cd6d3643"
+  },
+  {
+   "name": "split_coin",
+   "uuid": "49204bb7-daea-8147-9bd6-d4d910feb131",
+   "cross": "symmetric",
+   "holds": true,
+   "recomputed": true,
+   "over": "k ∈ [0, 32]",
+   "formula": "6b7b08b342ebe384"
+  },
+  {
+   "name": "superconductivity",
+   "uuid": "018e9de5-b1c4-882a-9e2d-8ebc53657895",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "46c4bcf280023c94"
+  },
+  {
+   "name": "teleport",
+   "uuid": "7bf60e50-ec71-8044-b0b4-c28ce5e949c6",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "c14c01c69429df21"
+  },
+  {
+   "name": "temperature",
+   "uuid": "505efbc0-96cd-80a5-a367-91b0dc2a9016",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "50ea28e2bc718430"
+  },
+  {
+   "name": "tetra",
+   "uuid": "1c3aa6e6-68f2-8889-940c-bde639bb5ea9",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "d088155dcc52642d"
+  },
+  {
+   "name": "two_coins_make_a_coil",
+   "uuid": "d07538fa-1cfa-8b9e-8a7f-2c937ee09f22",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "00ee4c9c1f8684d1"
+  },
+  {
+   "name": "two_x_seven_coins",
+   "uuid": "9ae82716-bd64-80cc-bcfb-e0b710f7785e",
+   "cross": "asymmetric",
+   "holds": true,
+   "recomputed": true,
+   "formula": "73787304ed5b16b0"
+  },
+  {
+   "name": "waves",
+   "uuid": "e4029a21-aa31-8dd7-b538-5133411885f2",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "2b4591d5e4f92975"
+  }
+ ]
+}

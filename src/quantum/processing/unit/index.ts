@@ -9,6 +9,7 @@
 import { leanSource, leanToolchain } from './lean.js'
 import { packageVersion } from './version.js'
 import { sealedStandards } from './standards.js'
+import { leanModelOf, leanRecomputeOf, leanTheoremBlocksOf } from './lean-eval.js'
 const onceOf = <T,>(build: () => T): (() => T) => {
   let built: { value: T } | undefined
   return () => (built ??= { value: build() }).value
@@ -3674,7 +3675,9 @@ export const qpuCrossReadingHolds = (rows: readonly QpuLeanRow[] = qpuLeanAllRow
   if (rows.length === n - n) return false
   if (!rows.every((row) => row.cross === qpuCrossReadingOf(row.theorem))) return false
   const count = (which: QpuCross) => rows.filter((row) => row.cross === which).length
-  return count('bridge') === seed && count('symmetric') > n - n && count('asymmetric') > n - n && count('cross') > n - n
+  // ONE BRIDGE LAW, counted by statement: a theorem and its alias (multiply, mintOf_add) state one law at one address.
+  const bridges = new Set(rows.filter((row) => row.cross === 'bridge').map((row) => row.uuid))
+  return bridges.size === seed && count('symmetric') > n - n && count('asymmetric') > n - n && count('cross') > n - n
 }
 
 /** Every theorem row the unit serves: the headline rows, the cover, and the climb. Internal — it is a
@@ -4377,12 +4380,39 @@ export const qpuLeanOf = onceOf(() => {
     reading: `holds ${nextHolds && nextFusedHolds && qpuNextHolds()}. amplitudes ${handle.amplitudes}. next ${handle.next}. fused next ${fused + fused}. coil next ${qpuNextOf().nextCoil}. no last k.`,
     holds: nextHolds && nextFusedHolds && qpuNextHolds(),
   })
+  /* EVERY THEOREM IS SERVED. The curated rows above carry hand-set readings; every other theorem of index.lean is
+   * served from the file itself — its text verbatim, its statement typeset, its holds recomputed exactly over its
+   * defs (lean-eval.ts) — so nothing the proof states is left unserved. Every row, curated or not, is recomputed. */
+  const leanModel = leanModelOf(leanSource)
+  const blocks = leanTheoremBlocksOf(leanSource)
+  const nameOf = (r: QpuLeanRow) => /^theorem (\w+)/.exec(r.theorem)?.[1] ?? r.heading
+  const curated = [...rows, ...cover, climb]
+  const servedNames = new Set(curated.map(nameOf))
+  const uuidOfTheorem = new Map(blocks.map(([name, theorem]) => [name, qpuShapeUuidOf(statementOf(theorem))]))
+  const sameAs = (name: string) => blocks.filter(([other]) => other !== name && uuidOfTheorem.get(other) === uuidOfTheorem.get(name)).map(([other]) => other)
+  const rest = blocks
+    .filter(([name]) => !servedNames.has(name))
+    .map(([name, theorem]) => {
+      const r = leanRecomputeOf(theorem, leanModel)
+      const same = sameAs(name)
+      return crossed({
+        heading: name,
+        theorem,
+        formula: r.formula,
+        reading: `holds ${r.holds}. ${qpuCrossReadingOf(theorem)}. recomputed${r.over ? ` over ${r.over}` : ''} from the defs of index.lean.${same.length ? ` same statement as ${same.join(', ')}.` : ''}`,
+        holds: r.holds,
+      })
+    })
+  const recomputed = [...curated, ...rest].map((r) => leanRecomputeOf(r.theorem, leanModel).holds)
+  const served = [...cover, ...rest]
   const src = unit.fuse.lean
-  const source = qpuLeanSourceOf(rows, cover, climb)
+  const source = { ...qpuLeanSourceOf(rows, served, climb), recomputed: recomputed.filter(Boolean).length }
   const holds =
     source.holds &&
+    source.served === source.theorems &&
+    recomputed.every(Boolean) &&
     rows.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
-    cover.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
+    served.every((r) => r.holds && r.theorem.startsWith(`theorem ${r.heading}`) && !byDecideOf(r.theorem) && formulaOf(r.formula)) &&
     climb.holds &&
     climb.theorem.startsWith('theorem next') &&
     !byDecideOf(climb.theorem) &&
@@ -4398,7 +4428,7 @@ export const qpuLeanOf = onceOf(() => {
     src,
     source,
     rows,
-    cover,
+    cover: served,
     climb,
     holds,
   }

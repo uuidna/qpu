@@ -1,16 +1,17 @@
 {
   "kind": "cross-receipt",
   "when": "2026-10-02",
-  "agree": 21,
-  "of": 23,
+  "agree": 27,
+  "of": 30,
   "differ": [
     "zenodo latest archive",
-    "orcid family name"
+    "orcid family name",
+    "tc niobium mK"
   ],
   "stream": {
-    "length": 46,
+    "length": 60,
     "head": "152a735b-2337-8708-b41f-c3dbc168d759",
-    "chain": "900d874b6c45323e",
+    "chain": "257d2f5e3cba3c5c",
     "holds": true
   },
   "rows": [
@@ -167,6 +168,55 @@
       "mcp": "ca79f173-705c-895e-a154-a7df5c00fea0",
       "live": "871ec489-ba97-8bd8-8ecb-df143c0ef60f",
       "fold": "af09df01304b04a3 ≠ 2ca31f7a74f3ad25"
+    },
+    {
+      "name": "nist planck",
+      "agree": true,
+      "mcp": "bd1e3fb6-806e-8cbd-853e-9ba49c02c9dd",
+      "live": "b1e08401-410e-8d56-85ed-08b8f3535f6d",
+      "fold": "9a6b8359035a785c"
+    },
+    {
+      "name": "nist boltzmann",
+      "agree": true,
+      "mcp": "9f761b2a-54a1-8355-a7f7-eb6c8252630c",
+      "live": "5d6b2557-b103-8dd5-bff4-2058bc741cab",
+      "fold": "2ba572d99a50a0d2"
+    },
+    {
+      "name": "bcs ratio",
+      "agree": true,
+      "mcp": "43d23f7f-1118-8c92-b02d-8e29bcccaee1",
+      "live": "dd341872-a3ef-8b47-b503-33694a420fec",
+      "fold": "2d5de5d8bae67d25"
+    },
+    {
+      "name": "tc aluminium mK",
+      "agree": true,
+      "mcp": "379207ac-5fc0-891d-ac84-38fe36c48264",
+      "live": "c97fbd49-5e73-80e6-a2c6-e2f63f9efc0a",
+      "fold": "ae539348f44e19ba"
+    },
+    {
+      "name": "tc niobium mK",
+      "agree": false,
+      "mcp": "67f08790-a468-8e1c-84ad-11820f492fc0",
+      "live": "7543aae8-0a9e-876e-8832-f2a4f20df1f9",
+      "fold": "f9c6a050ed67fdb6 ≠ d000c08390a7bf0c"
+    },
+    {
+      "name": "live lean rows",
+      "agree": true,
+      "mcp": "3df62c63-3fba-87d6-8014-a4a58653375c",
+      "live": "85c87325-f508-8dce-bb63-dd25fc46cda0",
+      "fold": "d53c8133c68fe2dd"
+    },
+    {
+      "name": "lean source fold",
+      "agree": true,
+      "mcp": "ae7d47ee-ccbf-858b-8d19-e368d41b57b6",
+      "live": "1f4f592b-0e51-89eb-bcbf-93d0ae3519f1",
+      "fold": "0d7af93cd307ff50"
     },
     {
       "name": "shor 91",
