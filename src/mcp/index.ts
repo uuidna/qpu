@@ -1,9 +1,3 @@
-/**
- * MCP Module - Unified Model Context Protocol
- * All enterprise logic consolidated and UUID-programmable
- * Including Clay Millennium Prize Problem Solvers
- */
-
 export {
   ResponseFormatter,
   FormulaExecutor,
@@ -16,6 +10,13 @@ export {
   executeWithErrorHandling,
   type FormattedResponse
 } from './mcp-common-operations.js'
+
+export {
+  QuantumSecureSignalling,
+  type SecureSignal,
+  type QuantumKey,
+  type SignalPath
+} from './quantum-secure-signalling.js'
 
 export {
   UUIDOperation,

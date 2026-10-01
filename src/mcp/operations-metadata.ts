@@ -242,6 +242,86 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       ok: true
     }),
     description: 'Validate'
+  },
+
+  // QUANTUM SECURE SIGNALLING
+  {
+    key: 'bb84',
+    domain: 'qsec',
+    operation: 'bb84',
+    handler: async (input?: Record<string, unknown>) => {
+      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const n = (input?.n as number) || 256
+      const key = QuantumSecureSignalling.BB84KeyGen(n)
+      return { id: key.id, bits: key.bits.length, basis: key.basis.length }
+    },
+    description: 'BB84 key gen'
+  },
+  {
+    key: 'sign',
+    domain: 'qsec',
+    operation: 'sign',
+    handler: async (input?: Record<string, unknown>) => {
+      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const key = (input?.key as any) || QuantumSecureSignalling.BB84KeyGen(128)
+      const data = input?.data || 'test'
+      const sig = QuantumSecureSignalling.sign(data, key)
+      return { id: sig.id, dims: sig.dims, verified: sig.verified }
+    },
+    description: 'Sign secure'
+  },
+  {
+    key: 'encode',
+    domain: 'qsec',
+    operation: 'encode',
+    handler: async (input?: Record<string, unknown>) => {
+      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const sig = (input?.sig as any) || { id: 'test', payload: 'data', dims: 8, hash: 'abc', verified: false, timestamp: Date.now() }
+      const dims = (input?.dims as number) || 8
+      const enc = QuantumSecureSignalling.encode(sig, dims)
+      return { len: enc.length, bits: enc.slice(0, 32) }
+    },
+    description: 'Encode signal'
+  },
+  {
+    key: 'route',
+    domain: 'qsec',
+    operation: 'route',
+    handler: async (input?: Record<string, unknown>) => {
+      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const src = (input?.src as string) || 'alice'
+      const dst = (input?.dst as string) || 'bob'
+      const dims = (input?.dims as number) || 4
+      const path = QuantumSecureSignalling.route(src, dst, dims)
+      return { hops: path.hops, verified: path.verified }
+    },
+    description: 'Route signal'
+  },
+  {
+    key: 'fold',
+    domain: 'qsec',
+    operation: 'fold',
+    handler: async (input?: Record<string, unknown>) => {
+      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const sigs = (input?.sigs as any[]) || [{ id: 'sig1', hash: 'abc', payload: {}, dims: 8, verified: false, timestamp: Date.now() }]
+      const folded = QuantumSecureSignalling.fold(sigs)
+      return { folded, len: sigs.length }
+    },
+    description: 'Fold signals'
+  },
+  {
+    key: 'distribute',
+    domain: 'qsec',
+    operation: 'distribute',
+    handler: async (input?: Record<string, unknown>) => {
+      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const n = (input?.n as number) || 4
+      const dims = (input?.dims as number) || 4
+      const k = (input?.k as number) || 2
+      const dist = QuantumSecureSignalling.distribute(n, dims, k)
+      return { nodes: dist.size, total: n * k }
+    },
+    description: 'Distribute signals'
   }
 ]
 
