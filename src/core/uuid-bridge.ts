@@ -6,7 +6,7 @@
 
 import { operationRegistry, listOperations, getOperation, executeOperation } from './operations.js'
 import { ExecutionResult } from './types.js'
-import { v4 as uuidv4 } from 'uuid'
+import { uuid as registry } from './uuid.js'
 
 // ============================================================================
 // UUID OPERATION INDEX
@@ -39,7 +39,8 @@ export class UUIDBridge {
       if (!operation) continue
 
       // Generate deterministic UUID from domain + operation
-      const uuid = this.generateOperationUUID(operation.domain, operationName)
+      const uuid = registry.deterministic(operation.domain, operationName)
+      if (!registry.has(uuid)) registry.register(uuid, 'operation', operation.domain, operationName)
 
       this.uuidToOperation.set(uuid, operationName)
       this.operationToUUID.set(operationName, uuid)
@@ -51,29 +52,6 @@ export class UUIDBridge {
         this.domainUUIDs.set(operation.domain, domainOps)
       }
     }
-  }
-
-  /**
-   * Generate deterministic UUID for operation
-   * Allows consistent addressing across restarts
-   */
-  private generateOperationUUID(domain: string, operation: string): string {
-    const seed = `${domain}::${operation}`
-    const hash = this.hashString(seed)
-    return `${hash.substring(0, 8)}-${hash.substring(8, 12)}-4${hash.substring(13, 16)}-${hash.substring(16, 20)}-${hash.substring(20, 32)}`
-  }
-
-  /**
-   * Simple hash function for deterministic UUID generation
-   */
-  private hashString(str: string): string {
-    let hash = 0
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i)
-      hash = (hash << 5) - hash + char
-      hash = hash & hash
-    }
-    return Math.abs(hash).toString(16).padStart(32, '0')
   }
 
   /**

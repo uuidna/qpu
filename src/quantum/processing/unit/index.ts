@@ -4640,8 +4640,8 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
 
 const tokensOf = (bytes: number): number => Number(BigInt(bytes) / BigInt(mintOf(coins)))
 
-export const qpuManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) => {
-  const synopsis = `POST ${unit.origin}/mcp tools/call ${name}`
+const manAt = (endpoint: string, name: string, description: string, reading: string, href: string, see: readonly string[]) => {
+  const synopsis = `POST ${endpoint} tools/call ${name}`
   const documentation = [
     'NAME',
     `    ${name} — ${description}`,
@@ -4660,6 +4660,8 @@ export const qpuManOf = (name: string, description: string, reading: string, hre
     see.every((s) => s !== name && documentation.includes(s))
   return { kind: 'man' as const, inline: true as const, name, section: n, synopsis, href, description, reading, documentation, holds }
 }
+export const qpuManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) =>
+  manAt(`${unit.origin}/mcp`, name, description, reading, href, see)
 
 export const qpuManHolds = (m?: ReturnType<typeof qpuManOf>): boolean =>
   m !== undefined && (m.holds === true && m.kind === 'man' && m.inline === true && m.section === n && m.documentation.includes(m.name))
@@ -4788,26 +4790,8 @@ export const qpuMcpShownHolds = (shown?: ReturnType<typeof qpuMcpShownOf>): bool
   )
 }
 
-export const qpuSubManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) => {
-  const synopsis = `POST ${href} tools/call ${name}`
-  const documentation = [
-    'NAME',
-    `    ${name} — ${description}`,
-    'SYNOPSIS',
-    `    ${synopsis}`,
-    `    ${name} { man: true }`,
-    'DESCRIPTION',
-    `    ${reading}`,
-    'SEE ALSO',
-    `    ${see.join(', ')}`].join('\n')
-  const holds =
-    documentation.includes(`NAME`) &&
-    documentation.includes(name) &&
-    documentation.includes(synopsis) &&
-    documentation.includes('{ man: true }') &&
-    see.every((s) => s !== name && documentation.includes(s))
-  return { kind: 'man' as const, inline: true as const, name, section: n, synopsis, href, description, reading, documentation, holds }
-}
+export const qpuSubManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) =>
+  manAt(href, name, description, reading, href, see)
 export const qpuSubManHolds = (x?: ReturnType<typeof qpuSubManOf>): boolean => x !== undefined && x.holds === true
 
 type QpuSubTool = {
@@ -4849,29 +4833,32 @@ const qpuSubRpcOf = async (
   return undefined
 }
 
+const toolItemOf = <T extends { name: string; description: string; inputSchema: unknown; man: unknown }, H extends object = {}, X extends object = {}>(
+  href: string, { name, description, inputSchema, man }: T, i: number, head?: H, tail?: X) => ({
+  '@type': 'SoftwareApplication' as const,
+  ...(head as H),
+  '@id': `${href}#${name}`,
+  url: href,
+  position: i + seed,
+  name,
+  description,
+  inputSchema: inputSchema as T['inputSchema'],
+  man: man as T['man'],
+  ...(tail as X)})
+const toolListOf = <T extends ReturnType<typeof toolItemOf>, I extends object = {}>(items: readonly T[], item: (tool: T) => I = () => ({}) as I) => ({
+  '@type': 'ItemList' as const,
+  name: 'tools' as const,
+  numberOfItems: items.length,
+  itemListElement: items.map((tool) => ({
+    '@type': 'ListItem' as const,
+    position: tool.position,
+    name: tool.name,
+    url: tool['@id'],
+    item: { '@type': tool['@type'], '@id': tool['@id'], name: tool.name, description: tool.description, url: tool.url, ...item(tool) }}))})
+
 export const qpuSubCatalogOf = (kind: string, href: string, tools: readonly QpuSubTool[], extra: Record<string, unknown>) => {
-  const items = tools.map(({ name, description, inputSchema, man }, i) => {
-    const position = i + seed
-    return {
-      '@type': 'SoftwareApplication' as const,
-      '@id': `${href}#${name}`,
-      url: href,
-      position,
-      name,
-      description,
-      inputSchema,
-      man}
-  })
-  const hasPart = {
-    '@type': 'ItemList' as const,
-    name: 'tools' as const,
-    numberOfItems: items.length,
-    itemListElement: items.map((tool) => ({
-      '@type': 'ListItem' as const,
-      position: tool.position,
-      name: tool.name,
-      url: tool['@id'],
-      item: { '@type': tool['@type'], '@id': tool['@id'], name: tool.name, description: tool.description, url: tool.url }}))}
+  const items = tools.map((t, i) => toolItemOf(href, t, i))
+  const hasPart = toolListOf(items)
   const holds =
     items.length === mintOf(n) &&
     hasPart.numberOfItems === mintOf(n) &&
@@ -6377,6 +6364,32 @@ const storageStoreOf = (env?: QpuEnv) => {
   /** Set when a page-budgeted walk stopped with a cursor still in hand — the store is larger than this request
    *  looked. Per store instance, so it describes this request's walks and not some earlier one's. */
   let scanTruncated = false
+  const scanOf = async (take: (name: string) => void, prefix?: string, enough: () => boolean = () => false, census = true): Promise<void> => {
+    if (kv) {
+      let cursor: string | undefined
+      let pages = n - n
+      do {
+        const listed = await kv.list({ ...(prefix ? { prefix } : {}), limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
+        for (const row of listed.keys) take(row.name)
+        cursor = listed.list_complete === false ? listed.cursor : undefined
+        pages += seed
+      } while (cursor && !enough() && pages < STORE_SCAN_PAGES)
+      if (cursor && census) scanTruncated = true
+    }
+    if (r2) {
+      let cursor: string | undefined
+      let pages = n - n
+      do {
+        const listed = await r2.list({ ...(prefix ? { prefix } : {}), limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
+        for (const row of listed.objects) take(row.key)
+        cursor = listed.truncated === true ? listed.cursor : undefined
+        pages += seed
+      } while (cursor && !enough() && pages < STORE_SCAN_PAGES)
+      if (cursor && census) scanTruncated = true
+    }
+    if (kv === undefined) for (const name of storageHeap.keys()) take(name)
+    if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
+  }
   const readFull = async (key: string): Promise<unknown> => {
     if (kv) {
       const value = await kv.get(key, { type: 'json' })
@@ -6501,28 +6514,7 @@ const storageStoreOf = (env?: QpuEnv) => {
       // THE NAMES BOUND IS NOT A SUBREQUEST BOUND. `names.size < limit` stops once enough names are FOUND, and a
       // prefix that matches nothing finds none — so the loop walked every page of the namespace looking for a
       // match it would never make. The page budget is what the Worker's subrequest limit is actually counted in.
-      if (kv) {
-        let cursor: string | undefined
-        let pages = n - n
-        do {
-          const listed = await kv.list({ prefix, limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
-          for (const row of listed.keys) take(row.name)
-          cursor = listed.list_complete === false ? listed.cursor : undefined
-          pages += seed
-        } while (cursor && names.size < limit && pages < STORE_SCAN_PAGES)
-      }
-      if (r2) {
-        let cursor: string | undefined
-        let pages = n - n
-        do {
-          const listed = await r2.list({ prefix, limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
-          for (const row of listed.objects) take(row.key)
-          cursor = listed.truncated === true ? listed.cursor : undefined
-          pages += seed
-        } while (cursor && names.size < limit && pages < STORE_SCAN_PAGES)
-      }
-      if (kv === undefined) for (const name of storageHeap.keys()) take(name)
-      if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
+      await scanOf(take, prefix, () => names.size >= limit, false)
       return [...names].sort().slice(n - n, limit)
     },
     async keys(): Promise<string[]> {
@@ -6536,30 +6528,7 @@ const storageStoreOf = (env?: QpuEnv) => {
       // invocation, and GET /storage — which calls this AND raw(), across KV AND R2 — stopped answering at all.
       // Bounded by pages, which is the unit the subrequest limit is counted in, and the shortfall is reported
       // rather than hidden: keysComplete() says whether the walk reached the end.
-      if (kv) {
-        let cursor: string | undefined
-        let pages = n - n
-        do {
-          const listed = await kv.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
-          for (const row of listed.keys) take(row.name)
-          cursor = listed.list_complete === false ? listed.cursor : undefined
-          pages += seed
-        } while (cursor && pages < STORE_SCAN_PAGES)
-        if (cursor) scanTruncated = true
-      }
-      if (r2) {
-        let cursor: string | undefined
-        let pages = n - n
-        do {
-          const listed = await r2.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
-          for (const row of listed.objects) take(row.key)
-          cursor = listed.truncated === true ? listed.cursor : undefined
-          pages += seed
-        } while (cursor && pages < STORE_SCAN_PAGES)
-        if (cursor) scanTruncated = true
-      }
-      if (kv === undefined) for (const name of storageHeap.keys()) take(name)
-      if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
+      await scanOf(take)
       return [...names]
     },
     /** Did the last keys()/raw() walk reach the end of the store, or stop at the page budget? A census that stopped
@@ -6574,30 +6543,7 @@ const storageStoreOf = (env?: QpuEnv) => {
       }
       // Same budget as keys(), for the same reason: GET /storage calls both, so an unbounded walk here costs the
       // request its subrequest budget just as surely.
-      if (kv) {
-        let cursor: string | undefined
-        let pages = n - n
-        do {
-          const listed = await kv.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
-          for (const row of listed.keys) take(row.name)
-          cursor = listed.list_complete === false ? listed.cursor : undefined
-          pages += seed
-        } while (cursor && pages < STORE_SCAN_PAGES)
-        if (cursor) scanTruncated = true
-      }
-      if (r2) {
-        let cursor: string | undefined
-        let pages = n - n
-        do {
-          const listed = await r2.list({ limit: STORE_LIST_PAGE, ...(cursor ? { cursor } : {}) })
-          for (const row of listed.objects) take(row.key)
-          cursor = listed.truncated === true ? listed.cursor : undefined
-          pages += seed
-        } while (cursor && pages < STORE_SCAN_PAGES)
-        if (cursor) scanTruncated = true
-      }
-      if (kv === undefined) for (const name of storageHeap.keys()) take(name)
-      if (r2 === undefined) for (const name of storageBlobs.keys()) take(name)
+      await scanOf(take)
       return [...names]
     },
     drop: dropSlot}
@@ -8095,6 +8041,24 @@ const seedSandboxOf = () => {
   if (seededNames.size === n - n) for (const seeded of sandboxTools.keys()) seededNames.add(seeded)
 }
 
+
+type OpQuantum = {
+  value?: {
+    kind?: string
+    unlocked?: boolean
+    only?: { holds?: boolean }
+    lattice?: { vacant?: number; holds?: boolean }
+    register?: { holds?: boolean }
+    ns?: number
+    related?: string[]
+    holds?: boolean
+  }
+  holds?: boolean
+}
+const opQuantumOf = (): OpQuantum => qpuSandboxRunOf('op_quantum') as OpQuantum
+const opQuantumHolds = (u: OpQuantum): boolean =>
+  u.value?.kind === 'quantum' && u.value.only?.holds === true && u.value.lattice?.holds === true && u.value.lattice.vacant === n - n
+
 export const qpuSandboxOf = onceOf(() => {
   seedSandboxOf()
   const faces = qpuFacesOf()
@@ -8115,31 +8079,16 @@ export const qpuSandboxOf = onceOf(() => {
     sandboxSlots.every((slot) => tools.some((t) => t.name === `slot_${slot}`)) &&
     sandboxHost.every((host) => tools.some((t) => t.name === host))
   const related = quantumRelatedNamesOf()
-  const quantum = qpuSandboxRunOf('op_quantum') as {
-    value?: {
-      kind?: string
-      unlocked?: boolean
-      only?: { holds?: boolean }
-      lattice?: { vacant?: number; holds?: boolean }
-      register?: { holds?: boolean }
-      ns?: number
-      related?: string[]
-      holds?: boolean
-    }
-    holds?: boolean
-  }
+  const quantum = opQuantumOf()
   const holds =
     faces.holds &&
     cube.holds &&
     catalog &&
     related.every((name) => (sandboxSlots as readonly string[]).includes(name) || tools.some((t) => t.name === `slot_${name}`)) &&
-    quantum.value?.kind === 'quantum' &&
-    quantum.value.only?.holds === true &&
-    quantum.value.lattice?.holds === true &&
-    quantum.value.lattice.vacant === n - n &&
-    quantum.value.register?.holds === true &&
-    quantum.value.related?.length === related.length &&
-    quantum.value.holds === true &&
+    opQuantumHolds(quantum) &&
+    quantum.value?.register?.holds === true &&
+    quantum.value?.related?.length === related.length &&
+    quantum.value?.holds === true &&
     tools.every((t) => qpuManHolds(t.man)) &&
     sandboxHeap.size <= cube.bits
   const has = (name: string) => tools.some((t) => t.name === name)
@@ -8470,17 +8419,7 @@ export const qpuImproveOf = onceOf(() => {
     return { name, value: run.value, holds: run.value === mintOf(n) }
   })
   const durability = qpuSandboxDurabilityOf()
-  const unlocked = qpuSandboxRunOf('op_quantum') as {
-    value?: {
-      kind?: string
-      unlocked?: boolean
-      only?: { holds?: boolean }
-      lattice?: { holds?: boolean; vacant?: number }
-      register?: { holds?: boolean }
-      ns?: number
-      related?: string[]
-    }
-  }
+  const unlocked = opQuantumOf()
   const quantum = {
     kind: 'quantum' as const,
     unlocked: unlocked.value?.unlocked === true,
@@ -8488,10 +8427,7 @@ export const qpuImproveOf = onceOf(() => {
     lattice: unlocked.value?.lattice?.holds === true,
     next,
     holds:
-      unlocked.value?.kind === 'quantum' &&
-      unlocked.value.only?.holds === true &&
-      unlocked.value.lattice?.holds === true &&
-      unlocked.value.lattice.vacant === n - n &&
+      opQuantumHolds(unlocked) &&
       theorem.next_fused(next, fused)}
   const before = {
     quality: n,
@@ -10356,17 +10292,7 @@ export const qpuCompeteOf = (team?: string) => {
   const sandbox = qpuSandboxOf()
   const fused = quantum.fused
   const next = quantum.next
-  const unlocked = qpuSandboxRunOf('op_quantum') as {
-    value?: {
-      kind?: string
-      unlocked?: boolean
-      only?: { holds?: boolean }
-      lattice?: { holds?: boolean; vacant?: number }
-      register?: { holds?: boolean }
-      ns?: number
-      related?: string[]
-    }
-  }
+  const unlocked = opQuantumOf()
   const door = {
     kind: 'quantum' as const,
     unlocked: unlocked.value?.unlocked === true,
@@ -10377,10 +10303,7 @@ export const qpuCompeteOf = (team?: string) => {
       quantum.holds === true &&
       quantum.only.holds === true &&
       quantum.lattice.holds === true &&
-      unlocked.value?.kind === 'quantum' &&
-      unlocked.value.only?.holds === true &&
-      unlocked.value.lattice?.holds === true &&
-      unlocked.value.lattice.vacant === n - n &&
+      opQuantumHolds(unlocked) &&
       theorem.next_fused(next, fused)}
   const agentsOf = (path: 'read' | 'call', throughoutput: number) =>
     efficiency.rows.map((r) => {
@@ -13233,51 +13156,13 @@ export const qpuMcpOf = onceOf(() => {
   const shor = qpuShorOf()
   const encrypt = qpuEncryptOf()
   const cite = qpuCiteOf()
-  const tools = qpuToolsOf().map(({ name, description, inputSchema, man }, i) => {
-    const position = i + seed
-    return {
-      '@type': 'SoftwareApplication' as const,
-      /** the vendor shapes, off the MCP wire and onto the catalogue: Anthropic input_schema, OpenAI function, Gemini functionDeclarations */
-      vendors: { anthropic: { name, description, input_schema: inputSchema }, openai: { type: 'function', function: { name, description, parameters: inputSchema } }, gemini: { functionDeclarations: [{ name, description, parameters: inputSchema }] } },
-      
-      '@id': `${href}#${name}`,
-      url: href,
-      position,
-      name,
-      description,
-      inputSchema,
-      man}
+  const tools = qpuToolsOf().map((t, i) => {
+    const { name, description, inputSchema } = t
+    /** the vendor shapes, off the MCP wire and onto the catalogue: Anthropic input_schema, OpenAI function, Gemini functionDeclarations */
+    return toolItemOf(href, t, i, { vendors: { anthropic: { name, description, input_schema: inputSchema }, openai: { type: 'function', function: { name, description, parameters: inputSchema } }, gemini: { functionDeclarations: [{ name, description, parameters: inputSchema }] } } })
   })
-  const hasPart = {
-    '@type': 'ItemList' as const,
-    name: 'tools' as const,
-    numberOfItems: tools.length,
-    itemListElement: tools.map((tool) => ({
-      '@type': 'ListItem' as const,
-      position: tool.position,
-      name: tool.name,
-      url: tool['@id'],
-      item: {
-        '@type': tool['@type'],
-        '@id': tool['@id'],
-        name: tool.name,
-        description: tool.description,
-        url: tool.url,
-        softwareHelp: tool.man.href}}))}
-  const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema, man }, i) => {
-    const position = i + seed
-    return {
-      '@type': 'SoftwareApplication' as const,
-      '@id': `${href}#${name}`,
-      url: href,
-      position,
-      name,
-      description,
-      inputSchema,
-      man,
-      sealed: false as const,
-      morph: true as const}
-  })
+  const hasPart = toolListOf(tools, (tool) => ({ softwareHelp: tool.man.href }))
+  const cybersecurity = qpuCybersecurityToolsOf().map((t, i) => toolItemOf(href, t, i, {}, { sealed: false as const, morph: true as const }))
   const holds =
     circuit.only.holds &&
     capacity.holds &&
@@ -14104,14 +13989,13 @@ const worker = {
      * API-only JSON-LD; this host is HTML"). A stylesheet is neither a document nor an API; it is the one asset
      * this contract cannot express as JSON. */
     if (path === '/qpu.css') return new Response(qpuCssOf().css, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/css; charset=utf-8' } })
+    const rpcBodyOf = async <X extends object>() =>
+      (await request.json().catch(() => ({}))) as { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown } & X
+    const authedOf = (x: { holds?: boolean; denied?: unknown } | object) =>
+      jsonOf(x, 'holds' in x && x.holds === false && 'denied' in x && x.denied === 'auth' ? unauthorized : found)
     if (path === '/server' || path.startsWith('/server/')) {
       if (request.method === 'POST') {
-        const body = (await request.json().catch(() => ({}))) as {
-          method?: string
-          params?: { name?: string; arguments?: Record<string, unknown> }
-          id?: unknown
-          gates?: unknown
-        }
+        const body = await rpcBodyOf<{ gates?: unknown }>()
         const rpc = await qpuSubRpcOf(body, qpuServerToolsOf(), serverHref)
         if (rpc) return jsonOf(rpc)
         return jsonOf(qpuServerSubmitOf(body))
@@ -14127,13 +14011,7 @@ const worker = {
     }
     if (path === '/network' || path.startsWith('/network/')) {
       if (request.method === 'POST') {
-        const body = (await request.json().catch(() => ({}))) as {
-          method?: string
-          params?: { name?: string; arguments?: Record<string, unknown> }
-          id?: unknown
-          channel?: unknown
-          body?: unknown
-        }
+        const body = await rpcBodyOf<{ channel?: unknown; body?: unknown }>()
         const rpc = await qpuSubRpcOf(body, qpuNetworkToolsOf(), networkHref)
         if (rpc) return jsonOf(rpc)
         const send = qpuNetworkToolsOf().find((t) => t.name === 'net_send')
@@ -14144,34 +14022,27 @@ const worker = {
     if (path === '/storage' || path.startsWith('/storage/')) {
       const key = path === '/storage' ? '' : decodeURIComponent(path.slice('/storage/'.length))
       if (request.method === 'POST' && path === '/storage') {
-        const body = (await request.json().catch(() => ({}))) as {
-          method?: string
-          params?: { name?: string; arguments?: Record<string, unknown> }
-          id?: unknown
-          maintain?: unknown
-          key?: unknown
-          value?: unknown
-        }
+        const body = await rpcBodyOf<{ maintain?: unknown; key?: unknown; value?: unknown }>()
         const auth = request.headers.get('authorization')
         const rpc = await qpuSubRpcOf(body, qpuStorageToolsOf(env, auth), storageHref)
         if (rpc) return jsonOf(rpc)
         if (body.maintain === true) {
           const kept = await qpuStorageMaintainOf(env, auth)
-          return jsonOf(kept, kept.holds === false && 'denied' in kept && kept.denied === 'auth' ? unauthorized : found)
+          return authedOf(kept)
         }
         if (typeof body.key === 'string') {
           const put = await qpuStorageOf(env, { method: 'PUT', key: body.key, value: body.value, auth })
-          return jsonOf(put, put.holds === false && 'denied' in put && put.denied === 'auth' ? unauthorized : found)
+          return authedOf(put)
         }
       }
       if (request.method === 'PUT' || request.method === 'POST') {
         const value = await request.json().catch(() => null)
         const put = await qpuStorageOf(env, { method: 'PUT', key, value, auth: request.headers.get('authorization') })
-        return jsonOf(put, put.holds === false && 'denied' in put && put.denied === 'auth' ? unauthorized : found)
+        return authedOf(put)
       }
       if (request.method === 'DELETE') {
         const del = await qpuStorageOf(env, { method: 'DELETE', key, auth: request.headers.get('authorization') })
-        return jsonOf(del, del.holds === false && 'denied' in del && del.denied === 'auth' ? unauthorized : found)
+        return authedOf(del)
       }
       // GET /storage?prefix=…&limit=… — the links under a prefix, ascending, with their documents (uuidna.com/live reads it)
       const listPrefix = new URL(request.url).searchParams.get('prefix')
