@@ -87,6 +87,8 @@
     "uuid": "npm run mcp -- uuid",
     "ops": "npm run mcp -- ops",
     "obs": "npm run mcp -- obs",
+    "gaps:fill": "npm run mcp -- gaps",
+    "gaps:status": "npm run mcp -- status",
     "server": "NODE_ENV=production node server.js",
     "dev": "NODE_ENV=development node server.js",
     "docker:build": "docker build -f deploy/docker/Dockerfile -t uuidna-qpu:latest .",

@@ -11,6 +11,7 @@ import { health, setupDefaultChecks } from '../core/health.js'
 import { limit } from '../core/limit.js'
 import { circuitBreaker, bulkhead } from '../patterns/resilience.js'
 import { anomaly, autoScale, costOpt } from '../ml/auto.js'
+import { runAutonomousGapFilling } from './auto-gap-fill.js'
 
 type Handler = (args: string[]) => Promise<void>
 
@@ -84,6 +85,11 @@ CB: ${sys.cb.isClosed() ? 'CLOSED' : 'OPEN'} | Bulkhead: ${sys.bulkhead.stats().
     console.log(`Anomaly: Ready | AutoScale: ${sys.scale.stats().current}/${sys.scale.stats().max} | CostOpt: Ready`)
   },
 
+  gaps: async () => {
+    const result = await runAutonomousGapFilling()
+    console.log(`\n✅ Gap filling complete: ${result.gapsFilled}/${result.gapsDiscovered} gaps filled`)
+  },
+
   // ALIASES & SHORTCUTS
   st: async (a) => cmd.status(a),
   h: async (a) => cmd.health(a),
@@ -92,12 +98,13 @@ CB: ${sys.cb.isClosed() ? 'CLOSED' : 'OPEN'} | Bulkhead: ${sys.bulkhead.stats().
   o: async (a) => cmd.obs(a),
   r: async (a) => cmd.resilience(a),
   m: async (a) => cmd.ml(a),
+  g: async (a) => cmd.gaps(a),
 
   help: async () => console.log(`
 MCP CORE - Unified Handler
 
-Commands: status health uuid ops obs limit cache resilience ml
-Aliases: st h u op o r m
+Commands: status health uuid ops obs limit cache resilience ml gaps
+Aliases: st h u op o r m g
 Usage: npm run mcp -- <cmd>
 
 Examples:
