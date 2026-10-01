@@ -9511,27 +9511,106 @@ export const qpuSchemaMethodsHolds = (methods?: readonly QpuMethod[]): boolean =
  * cannot do is invent a connection — the names come out of the schemas, and a pair with no shared name is
  * reported undecided rather than unconnected.
  */
-export const qpuComposeOf = (methods: readonly QpuMethod[]) => {
+/**
+ * FUSION BY INDEX. Every field UUID names the APIs that give it and the APIs that take it; an edge is a giver
+ * and a taker of the same field. That costs the sum over fields of givers × takers, not every pair of APIs times
+ * every method, which is what lets the whole registry be fused rather than a window of it. Edges are keyed by the
+ * ordered pair of API indexes; each carries whether left gives right (forward), right gives left (backward), and
+ * how many fields it was joined on. `detail` keeps up to n field names per direction, for a reading.
+ */
+export type QpuFuseEdge = { i: number; j: number; forward: number; backward: number; names: { forward: string[]; backward: string[] } }
+export const qpuFuseOf = (methods: readonly QpuMethod[], detail = true) => {
   const none = n - n
   const apis = [...new Set(methods.map((row) => row.api))].sort()
-  /* ADDRESSED, NOT NAMED. The sets hold shape UUIDs, so `id: string` and `id: integer` are different things
-   * and the same Pet declared in two documents is one thing. */
-  const givesOf = (api: string) => new Map(methods.filter((row) => row.api === api).flatMap((row) => row.gives).map((field) => [field.uuid, field.name]))
-  const takesOf = (api: string) => new Map(methods.filter((row) => row.api === api).flatMap((row) => row.takes).map((field) => [field.uuid, field.name]))
+  const at = new Map(apis.map((api, k) => [api, k]))
+  const fields = new Map<string, { name: string; gives: Set<number>; takes: Set<number> }>()
+  const slot = (f: QpuField) => fields.get(f.uuid) ?? fields.set(f.uuid, { name: f.name, gives: new Set(), takes: new Set() }).get(f.uuid)!
+  for (const m of methods) {
+    const k = at.get(m.api)!
+    for (const f of m.gives) slot(f).gives.add(k)
+    for (const f of m.takes) slot(f).takes.add(k)
+  }
+  const edges = new Map<number, QpuFuseEdge>()
+  const width = apis.length
+  for (const [uuid, { name, gives, takes }] of fields)
+    for (const g of gives)
+      for (const t of takes) {
+        if (g === t) continue
+        const [i, j, forward] = g < t ? [g, t, true] : [t, g, false]
+        const key = i * width + j
+        const e = edges.get(key) ?? edges.set(key, { i, j, forward: none, backward: none, names: { forward: [], backward: [] } }).get(key)!
+        if (forward) e.forward++
+        else e.backward++
+        const list = forward ? e.names.forward : e.names.backward
+        if (detail && list.length < n) list.push(`${name} ${uuid}`)
+      }
+  const all = [...edges.values()].sort((a, b) => a.i - b.i || a.j - b.j)
+  const entangled = all.filter((e) => e.forward > none && e.backward > none).length
+  const hubs = [...fields.entries()]
+    .map(([uuid, f]) => ({ uuid, name: f.name, gives: f.gives.size, takes: f.takes.size, pairs: f.gives.size * f.takes.size }))
+    .sort((a, b) => b.pairs - a.pairs || a.uuid.localeCompare(b.uuid))
+  return { kind: 'fuse' as const, apis, methods: methods.length, fields: fields.size, edges: all, entangled, oneWay: all.length - entangled, hubs }
+}
+
+/**
+ * THE FUSED GRAPH IS A GRAPH STATE. One qubit per API, |+⟩ on each, CZ across every composing pair: an N-qubit
+ * stabilizer state whose generators K_v = X_v ∏_{u ~ v} Z_u are read off the graph, so it is exact at any N with
+ * no 2^N vector. The entanglement across a cut (A | rest) is, in ebits, the rank over GF(2) of the adjacency
+ * between A and the rest — computed here by elimination on bit rows. Known cases are asserted beside it: a path
+ * cut in the middle, a star, a complete graph and a perfect matching across the cut.
+ */
+export const qpuGraphStateOf = (qubits: number, edges: ReadonlyArray<{ i: number; j: number }>, cut = (v: number) => v < qubits / coins) => {
+  const left = [...Array(qubits).keys()].filter(cut)
+  const right = [...Array(qubits).keys()].filter((v) => !cut(v))
+  const col = new Map(right.map((v, k) => [v, k]))
+  const row = new Map(left.map((v, k) => [v, k]))
+  const words = Math.ceil(right.length / 32) || 1
+  const rows = left.map(() => new Uint32Array(words))
+  for (const { i, j } of edges) {
+    const [a, b] = row.has(i) && col.has(j) ? [i, j] : row.has(j) && col.has(i) ? [j, i] : [-1, -1]
+    if (a < 0) continue
+    const c = col.get(b)!
+    rows[row.get(a)!]![c >>> 5]! ^= 1 << (c & 31)
+  }
+  let rank = 0
+  for (let c = 0; c < right.length && rank < rows.length; c++) {
+    const w = c >>> 5
+    const bit = 1 << (c & 31)
+    const pivot = rows.findIndex((r, k) => k >= rank && (r[w]! & bit) !== 0)
+    if (pivot < 0) continue
+    ;[rows[rank], rows[pivot]] = [rows[pivot]!, rows[rank]!]
+    for (let k = 0; k < rows.length; k++) if (k !== rank && (rows[k]![w]! & bit) !== 0) for (let x = 0; x < words; x++) rows[k]![x]! ^= rows[rank]![x]!
+    rank++
+  }
+  const degree = new Array<number>(qubits).fill(0)
+  for (const { i, j } of edges) { degree[i]!++; degree[j]!++ }
+  return { kind: 'graph-state' as const, qubits, edges: edges.length, stabilizers: qubits, isolated: degree.filter((d) => d === 0).length, cut: { left: left.length, right: right.length }, ebits: rank, bound: Math.min(left.length, right.length) }
+}
+export const qpuGraphStateHolds = (): boolean => {
+  const k = mintOf(n)
+  const path = [...Array(k - seed).keys()].map((v) => ({ i: v, j: v + seed }))
+  const star = [...Array(k - seed).keys()].map((v) => ({ i: n - n, j: v + seed }))
+  const complete = [...Array(k).keys()].flatMap((i) => [...Array(k).keys()].filter((j) => j > i).map((j) => ({ i, j })))
+  const matching = [...Array(k / coins).keys()].map((v) => ({ i: v, j: v + k / coins }))
+  return (
+    qpuGraphStateOf(k, path).ebits === seed &&
+    qpuGraphStateOf(k, star).ebits === seed &&
+    qpuGraphStateOf(k, complete).ebits === seed &&
+    qpuGraphStateOf(k, matching).ebits === k / coins &&
+    qpuGraphStateOf(k, []).ebits === n - n
+  )
+}
+
+export const qpuComposeOf = (methods: readonly QpuMethod[]) => {
+  const fused = qpuFuseOf(methods)
+  const { apis } = fused
   const rows: QpuCrossRow[] = []
-  for (let i = none; i < apis.length; i++)
-    for (let j = i + seed; j < apis.length; j++) {
-      const left = apis[i]!
-      const right = apis[j]!
-      const rightTakes = takesOf(right)
-      const leftTakes = takesOf(left)
-      const forwards = [...givesOf(left)].filter(([uuid]) => rightTakes.has(uuid))
-      const backwards = [...givesOf(right)].filter(([uuid]) => leftTakes.has(uuid))
-      if (forwards.length > none)
-        rows.push({ left, right, forward: true, year: none, what: `${left} returns ${forwards.slice(none, n).map(([uuid, name]) => `${name} ${uuid}`).join(', ')}, which ${right} takes`, source: `openapi:${left}` })
-      if (backwards.length > none)
-        rows.push({ left, right, forward: false, year: none, what: `${right} returns ${backwards.slice(none, n).map(([uuid, name]) => `${name} ${uuid}`).join(', ')}, which ${left} takes`, source: `openapi:${right}` })
-    }
+  for (const e of fused.edges) {
+    const left = apis[e.i]!
+    const right = apis[e.j]!
+    if (e.forward > n - n) rows.push({ left, right, forward: true, year: n - n, what: `${left} returns ${e.names.forward.join(', ')}, which ${right} takes`, source: `openapi:${left}` })
+    if (e.backward > n - n) rows.push({ left, right, forward: false, year: n - n, what: `${right} returns ${e.names.backward.join(', ')}, which ${left} takes`, source: `openapi:${right}` })
+  }
   const cross = qpuCrossOf(rows, true, apis)
   return { kind: 'compose' as const, apis, methods: methods.length, joinedOn: 'the shape UUID of a field — its name and its type, folded to an RFC 9562 v8 identity' as const, cross, holds: qpuCrossHolds(cross) && qpuSchemaMethodsHolds(methods) }
 }
@@ -9547,6 +9626,8 @@ export const qpuComposeHolds = (read?: ReturnType<typeof qpuComposeOf>): boolean
 export const qpuComposeLiveOf = async (from = n - n, howMany = qpuFacesOf().rays) => {
   const discovered = await qpuApisLiveOf(from, howMany)
   const compose = qpuComposeOf(discovered.methods)
+  const fused = qpuFuseOf(discovered.methods, false)
+  const graphState = qpuGraphStateOf(fused.apis.length, fused.edges)
   const of = (swap: QpuSwap) => compose.cross.pairs.filter((row) => row.swap === swap).length
   return {
     kind: 'compose' as const,
@@ -9563,7 +9644,8 @@ export const qpuComposeLiveOf = async (from = n - n, howMany = qpuFacesOf().rays
     oneWay: of('application'),
     undecided: of('undecided'),
     cross: compose.cross,
-    holds: discovered.holds && compose.holds,
+    graphState,
+    holds: discovered.holds && compose.holds && qpuGraphStateHolds() && graphState.ebits <= graphState.bound,
   }
 }
 

@@ -1,0 +1,390 @@
+{
+ "kind": "fuse-receipt",
+ "when": "2026-10-01",
+ "registry": "https://api.apis.guru/v2/list.json",
+ "listed": 2529,
+ "walked": 2529,
+ "reached": 2529,
+ "unreached": {},
+ "methods": 123136,
+ "fields": 87657,
+ "composing": 2517,
+ "edges": 438299,
+ "entangled": 94598,
+ "oneWay": 343701,
+ "graphState": {
+  "kind": "graph-state",
+  "qubits": 2529,
+  "edges": 438299,
+  "stabilizers": 2529,
+  "isolated": 282,
+  "cut": {
+   "left": 1265,
+   "right": 1264
+  },
+  "ebits": 448,
+  "bound": 1264,
+  "cutBy": "name, first half | second half"
+ },
+ "categories": [
+  {
+   "category": "cloud",
+   "apis": 955,
+   "ebits": 362,
+   "bound": 955
+  },
+  {
+   "category": "media",
+   "apis": 340,
+   "ebits": 301,
+   "bound": 340
+  },
+  {
+   "category": "analytics",
+   "apis": 284,
+   "ebits": 252,
+   "bound": 284
+  },
+  {
+   "category": "developer_tools",
+   "apis": 166,
+   "ebits": 144,
+   "bound": 166
+  },
+  {
+   "category": "open_data",
+   "apis": 318,
+   "ebits": 124,
+   "bound": 318
+  },
+  {
+   "category": "ecommerce",
+   "apis": 78,
+   "ebits": 72,
+   "bound": 78
+  },
+  {
+   "category": "financial",
+   "apis": 72,
+   "ebits": 60,
+   "bound": 72
+  },
+  {
+   "category": "messaging",
+   "apis": 62,
+   "ebits": 55,
+   "bound": 62
+  },
+  {
+   "category": "telecom",
+   "apis": 60,
+   "ebits": 54,
+   "bound": 60
+  },
+  {
+   "category": "entertainment",
+   "apis": 61,
+   "ebits": 42,
+   "bound": 61
+  },
+  {
+   "category": "location",
+   "apis": 51,
+   "ebits": 41,
+   "bound": 51
+  },
+  {
+   "category": "text",
+   "apis": 56,
+   "ebits": 41,
+   "bound": 56
+  },
+  {
+   "category": "collaboration",
+   "apis": 38,
+   "ebits": 30,
+   "bound": 38
+  },
+  {
+   "category": "payment",
+   "apis": 32,
+   "ebits": 24,
+   "bound": 32
+  },
+  {
+   "category": "transport",
+   "apis": 29,
+   "ebits": 23,
+   "bound": 29
+  },
+  {
+   "category": "hosting",
+   "apis": 20,
+   "ebits": 20,
+   "bound": 20
+  },
+  {
+   "category": "iot",
+   "apis": 18,
+   "ebits": 18,
+   "bound": 18
+  },
+  {
+   "category": "social",
+   "apis": 18,
+   "ebits": 17,
+   "bound": 18
+  },
+  {
+   "category": "security",
+   "apis": 19,
+   "ebits": 15,
+   "bound": 19
+  },
+  {
+   "category": "enterprise",
+   "apis": 12,
+   "ebits": 12,
+   "bound": 12
+  },
+  {
+   "category": "marketing",
+   "apis": 13,
+   "ebits": 12,
+   "bound": 13
+  },
+  {
+   "category": "tools",
+   "apis": 16,
+   "ebits": 11,
+   "bound": 16
+  },
+  {
+   "category": "email",
+   "apis": 13,
+   "ebits": 10,
+   "bound": 13
+  },
+  {
+   "category": "machine_learning",
+   "apis": 10,
+   "ebits": 7,
+   "bound": 10
+  },
+  {
+   "category": "customer_relation",
+   "apis": 7,
+   "ebits": 6,
+   "bound": 7
+  },
+  {
+   "category": "search",
+   "apis": 7,
+   "ebits": 6,
+   "bound": 7
+  },
+  {
+   "category": "education",
+   "apis": 4,
+   "ebits": 4,
+   "bound": 4
+  },
+  {
+   "category": "backend",
+   "apis": 3,
+   "ebits": 3,
+   "bound": 3
+  },
+  {
+   "category": "forms",
+   "apis": 2,
+   "ebits": 2,
+   "bound": 2
+  },
+  {
+   "category": "monitoring",
+   "apis": 3,
+   "ebits": 2,
+   "bound": 3
+  },
+  {
+   "category": "support",
+   "apis": 2,
+   "ebits": 2,
+   "bound": 2
+  },
+  {
+   "category": "c",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "e",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "i",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "project_management",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "r",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "s",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "storage",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "t",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "time_management",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "u",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  },
+  {
+   "category": "y",
+   "apis": 1,
+   "ebits": 1,
+   "bound": 1
+  }
+ ],
+ "hubs": [
+  {
+   "uuid": "e19ce7e5-b261-859d-9780-6a22cbc2e058",
+   "name": "name",
+   "gives": 692,
+   "takes": 489,
+   "pairs": 338388
+  },
+  {
+   "uuid": "2aa4ab45-5fc8-885e-9bc1-c4dd11aeabed",
+   "name": "type",
+   "gives": 355,
+   "takes": 245,
+   "pairs": 86975
+  },
+  {
+   "uuid": "560f31ff-6d86-838a-a5a4-ee7a6ce78261",
+   "name": "description",
+   "gives": 301,
+   "takes": 262,
+   "pairs": 78862
+  },
+  {
+   "uuid": "b59ed973-9e89-8f0b-8da4-6b07079d198e",
+   "name": "id",
+   "gives": 370,
+   "takes": 213,
+   "pairs": 78810
+  },
+  {
+   "uuid": "b12dfa18-9765-84c7-b690-480bbd3b398b",
+   "name": "status",
+   "gives": 367,
+   "takes": 166,
+   "pairs": 60922
+  },
+  {
+   "uuid": "8949283e-7ad5-8f7c-af11-1baaf03f9b08",
+   "name": "state",
+   "gives": 165,
+   "takes": 171,
+   "pairs": 28215
+  },
+  {
+   "uuid": "64237263-91aa-8c1b-9230-c78920835853",
+   "name": "email",
+   "gives": 140,
+   "takes": 146,
+   "pairs": 20440
+  },
+  {
+   "uuid": "9e45deea-3444-8d5a-ab21-3f42e7c67761",
+   "name": "title",
+   "gives": 146,
+   "takes": 100,
+   "pairs": 14600
+  },
+  {
+   "uuid": "1872a746-a626-8193-b2bb-fcbc9f72fb04",
+   "name": "NextToken",
+   "gives": 145,
+   "takes": 86,
+   "pairs": 12470
+  },
+  {
+   "uuid": "01ac8a85-90fd-8560-84fd-95f755e5b780",
+   "name": "url",
+   "gives": 143,
+   "takes": 87,
+   "pairs": 12441
+  },
+  {
+   "uuid": "c87a038b-fd00-82ff-b97e-978a2c2592da",
+   "name": "message",
+   "gives": 176,
+   "takes": 61,
+   "pairs": 10736
+  },
+  {
+   "uuid": "66bf1dde-5d6d-8ad9-9223-9d2646b63411",
+   "name": "Tags",
+   "gives": 117,
+   "takes": 85,
+   "pairs": 9945
+  },
+  {
+   "uuid": "5038573b-9b4b-843c-bc9b-56ea6f258708",
+   "name": "displayName",
+   "gives": 101,
+   "takes": 86,
+   "pairs": 8686
+  },
+  {
+   "uuid": "4b141783-2a31-88f1-8aea-0af5a0cafe2e",
+   "name": "createTime",
+   "gives": 83,
+   "takes": 95,
+   "pairs": 7885
+  }
+ ],
+ "stream": {
+  "length": 2529,
+  "head": "79c3338b-907f-8648-91b5-990f5ba8f79e",
+  "chain": "3553da068c81a368",
+  "holds": true
+ },
+ "seconds": 37
+}

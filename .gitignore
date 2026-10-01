@@ -9,3 +9,4 @@ dist/
 test-receipts.*.jsonl
 test-readings.json
 .lean-ok
+.fuse/
