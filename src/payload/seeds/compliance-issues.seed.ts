@@ -1,0 +1,46 @@
+// Seed data for Compliance Issues collection - extracted from enterprise.test.ts
+export const complianceIssuesSeed = [
+  {
+    severity: 'critical',
+    type: 'hardcoded_secret',
+    description: 'Found hardcoded API key in source code',
+    file: 'test.ts',
+    line: 34,
+    resolved: false,
+    discoveredAt: new Date('2024-01-15'),
+  },
+  {
+    severity: 'critical',
+    type: 'hardcoded_secret',
+    description: 'Found hardcoded secret in source',
+    file: 'app.ts',
+    resolved: false,
+    discoveredAt: new Date('2024-01-16'),
+  },
+  {
+    severity: 'high',
+    type: 'hardcoded_password',
+    description: 'Found hardcoded password in test file',
+    file: 'test.ts',
+    line: 76,
+    resolved: false,
+    discoveredAt: new Date('2024-01-17'),
+  },
+  {
+    severity: 'medium',
+    type: 'missing_authentication',
+    description: 'API endpoint missing authentication',
+    file: 'api/routes.ts',
+    resolved: false,
+    discoveredAt: new Date('2024-01-18'),
+  },
+  {
+    severity: 'low',
+    type: 'outdated_dependency',
+    description: 'Outdated npm package version',
+    file: 'package.json',
+    resolved: true,
+    resolvedAt: new Date('2024-01-19'),
+    discoveredAt: new Date('2024-01-18'),
+  },
+]

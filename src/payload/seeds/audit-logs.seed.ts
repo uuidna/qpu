@@ -1,0 +1,45 @@
+// Seed data for Audit Logs collection - extracted from enterprise.test.ts
+export const auditLogsSeed = [
+  {
+    timestamp: new Date('2024-01-20T10:00:00Z'),
+    action: 'deploy',
+    actor: 'system',
+    resource: 'api-v1.0.0',
+    status: 'success',
+    details: 'Deployment completed successfully',
+  },
+  {
+    timestamp: new Date('2024-01-20T10:15:00Z'),
+    action: 'access',
+    actor: 'admin-1',
+    resource: 'dashboard',
+    status: 'success',
+    details: 'Admin accessed compliance dashboard',
+    ipAddress: '192.168.1.1',
+  },
+  {
+    timestamp: new Date('2024-01-20T10:30:00Z'),
+    action: 'modify',
+    actor: 'support-1',
+    resource: 'ticket-123',
+    status: 'success',
+    details: 'Support agent updated ticket status to in-progress',
+  },
+  {
+    timestamp: new Date('2024-01-20T10:45:00Z'),
+    action: 'export',
+    actor: 'auditor-1',
+    resource: 'compliance-report',
+    status: 'success',
+    details: 'Exported quarterly compliance report',
+    ipAddress: '192.168.1.2',
+  },
+  {
+    timestamp: new Date('2024-01-20T11:00:00Z'),
+    action: 'delete',
+    actor: 'admin-1',
+    resource: 'old-logs',
+    status: 'success',
+    details: 'Deleted archived logs older than 90 days',
+  },
+]

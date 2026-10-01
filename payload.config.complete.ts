@@ -29,6 +29,10 @@ import { SupportTickets } from './src/payload/collections/support-tickets'
 import { Enrollments } from './src/payload/collections/enrollments'
 import { Metrics } from './src/payload/collections/metrics'
 import { Certifications } from './src/payload/collections/certifications'
+import { FuseApis } from './src/payload/collections/fuse-apis'
+import { FuseFields } from './src/payload/collections/fuse-fields'
+import { FuseFormulas } from './src/payload/collections/fuse-formulas'
+import { QuantumReceipts } from './src/payload/collections/quantum-receipts'
 
 // Globals for site-wide configuration
 import { SiteConfiguration } from './src/payload/globals/site-config'
@@ -84,6 +88,10 @@ export default buildConfig({
     Enrollments,
     Metrics,
     Certifications,
+    FuseApis,
+    FuseFields,
+    FuseFormulas,
+    QuantumReceipts,
   ],
 
   // ============================================================================

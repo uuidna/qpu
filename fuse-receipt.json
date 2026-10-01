@@ -380,11 +380,144 @@
    "pairs": 7885
   }
  ],
+ "formulas": {
+  "produced": 438299,
+  "holds": 438299,
+  "specificity": {
+   "1": 406,
+   "2-4": 1565,
+   "5-16": 3389,
+   "17-64": 6011,
+   "65-256": 12801,
+   ">256": 414127
+  },
+  "entangledMostSpecific": 30,
+  "top": [
+   {
+    "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:fsx",
+    "uuid": "ab56135d-a682-8457-90f7-00e7ec44aa8b",
+    "receipt": "7567d35e-e1db-8b3c-97b0-49024bee7708",
+    "forward": "VolumeType",
+    "backward": "Volume",
+    "pairs": 2
+   },
+   {
+    "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:gamelift",
+    "uuid": "1449fecc-2893-8752-8600-27553df4033b",
+    "receipt": "74288682-ae36-83fe-803f-7aff13de018a",
+    "forward": "DnsName",
+    "backward": "FleetIds",
+    "pairs": 2
+   },
+   {
+    "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:license-manager",
+    "uuid": "f0b1928e-84ae-8813-8cd5-f0a39a928871",
+    "receipt": "17ef0f45-fdd5-8016-b7ab-e77d2d55e9be",
+    "forward": "KeyFingerprint",
+    "backward": "LicenseSpecifications",
+    "pairs": 2
+   },
+   {
+    "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:storagegateway",
+    "uuid": "9b1c2cc1-f30e-8000-9a19-2f296052c48f",
+    "receipt": "0fd17a33-68d0-821b-899f-29465015b853",
+    "forward": "PoolId",
+    "backward": "GatewayId",
+    "pairs": 2
+   },
+   {
+    "id": "fuse amazonaws.com:opsworks ⇄ amazonaws.com:redshift",
+    "uuid": "a2580128-7ccc-830a-80fb-7f6424866c39",
+    "receipt": "ed59d0da-c75d-8cbd-afaa-e3cf90406b5f",
+    "forward": "ElasticIp",
+    "backward": "DbPassword",
+    "pairs": 2
+   },
+   {
+    "id": "fuse drchrono.com ⇄ netbox.dev",
+    "uuid": "680d86b0-b8b9-8c78-b953-59647bcaa74d",
+    "receipt": "d05d5e7c-51c4-8eb0-8074-6b5f8dd0f301",
+    "forward": "is_staff",
+    "backward": "user",
+    "pairs": 2
+   },
+   {
+    "id": "fuse netbox.dev ⇄ netboxdemo.com",
+    "uuid": "45aa841e-bf3b-8045-a6ed-3eb045e5cbab",
+    "receipt": "e0200609-e53c-8125-b30b-2cb04a57a97a",
+    "forward": "family",
+    "backward": "termination_a_type",
+    "pairs": 2
+   },
+   {
+    "id": "fuse biapi.pro ⇄ discourse.local",
+    "uuid": "a74d5c46-aab6-8e7c-a9a4-8deb754c85c0",
+    "receipt": "bebc5706-42cf-8cdc-b47e-642228644108",
+    "forward": "file_size",
+    "backward": "bookmarked",
+    "pairs": 3
+   },
+   {
+    "id": "fuse files.com ⇄ sendgrid.com",
+    "uuid": "85a3bdf6-1936-82e5-a459-c3866bd2c851",
+    "receipt": "c58f752d-208a-88f1-a246-a91f509bfe2e",
+    "forward": "usernames",
+    "backward": "recipients",
+    "pairs": 3
+   },
+   {
+    "id": "fuse salesloft.com ⇄ zuora.com",
+    "uuid": "c533806b-63fe-8e9d-9a29-bef738b61a64",
+    "receipt": "0f5a894b-d464-8c0c-8aa4-f5b1c02fe0cf",
+    "forward": "call_type",
+    "backward": "task_id",
+    "pairs": 3
+   },
+   {
+    "id": "fuse agco-ats.com ⇄ vtex.local:Catalog-API",
+    "uuid": "0ce003e0-01b8-823f-af2a-0bf633d2e6da",
+    "receipt": "c33aeff0-57cb-8ada-a0fc-5e24edab97bb",
+    "forward": "Visible",
+    "backward": "IsPublic",
+    "pairs": 4
+   },
+   {
+    "id": "fuse amazonaws.com:budgets ⇄ amazonaws.com:ce",
+    "uuid": "56a8b9ab-33bd-8eb6-b02f-c4c117f53868",
+    "receipt": "c3d423b8-bf32-8242-92b5-77b0999b3f4a",
+    "forward": "Subscribers",
+    "backward": "TimePeriod",
+    "pairs": 4
+   },
+   {
+    "id": "fuse amazonaws.com:dynamodb ⇄ amazonaws.com:glue",
+    "uuid": "95712f00-7e1a-8bba-8fe3-6890a705222d",
+    "receipt": "ced9c56b-77e8-86fe-80db-bb59de609f26",
+    "forward": "IndexName",
+    "backward": "Statement",
+    "pairs": 4
+   },
+   {
+    "id": "fuse amazonaws.com:glue ⇄ amazonaws.com:ssm",
+    "uuid": "7b492bf3-3196-8d6e-9cde-ee623029a08a",
+    "receipt": "441e25ce-3b4c-842a-9a51-2d5ed3bbbc61",
+    "forward": "PolicyHash",
+    "backward": "Command",
+    "pairs": 4
+   }
+  ],
+  "stream": {
+   "length": 438299,
+   "head": "28e58fb1-ab3a-8cd7-a366-27da0b0de231",
+   "chain": "5b2bd42426636b87",
+   "holds": true
+  }
+ },
  "stream": {
   "length": 2529,
   "head": "79c3338b-907f-8648-91b5-990f5ba8f79e",
-  "chain": "3553da068c81a368",
+  "chain": "2d630792aaa6c120",
   "holds": true
  },
- "seconds": 37
+ "seconds": 46
 }

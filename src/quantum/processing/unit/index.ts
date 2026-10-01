@@ -452,7 +452,8 @@ const liveSchema = {
   properties: {
     man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
     live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
-    sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' }}} as const
+    sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' },
+    from: { type: 'integer', description: '{ live: true, from } on qpu_train: fuse the registry window starting at from; next says where the following window starts.' }}} as const
 
 /** theorem cube, both ways: bits as a product of vertices and hexbit, and each of those as a doubling. */
 export const qpuCubeHolds = (c = qpuCubeOf()): boolean =>
@@ -9518,7 +9519,8 @@ export const qpuSchemaMethodsHolds = (methods?: readonly QpuMethod[]): boolean =
  * ordered pair of API indexes; each carries whether left gives right (forward), right gives left (backward), and
  * how many fields it was joined on. `detail` keeps up to n field names per direction, for a reading.
  */
-export type QpuFuseEdge = { i: number; j: number; forward: number; backward: number; names: { forward: string[]; backward: string[] } }
+export type QpuFuseRare = { uuid: string; name: string; pairs: number }
+export type QpuFuseEdge = { i: number; j: number; forward: number; backward: number; names: { forward: string[]; backward: string[] }; rare: { forward?: QpuFuseRare; backward?: QpuFuseRare } }
 export const qpuFuseOf = (methods: readonly QpuMethod[], detail = true) => {
   const none = n - n
   const apis = [...new Set(methods.map((row) => row.api))].sort()
@@ -9538,7 +9540,12 @@ export const qpuFuseOf = (methods: readonly QpuMethod[], detail = true) => {
         if (g === t) continue
         const [i, j, forward] = g < t ? [g, t, true] : [t, g, false]
         const key = i * width + j
-        const e = edges.get(key) ?? edges.set(key, { i, j, forward: none, backward: none, names: { forward: [], backward: [] } }).get(key)!
+        const e = edges.get(key) ?? edges.set(key, { i, j, forward: none, backward: none, names: { forward: [], backward: [] }, rare: {} }).get(key)!
+        // the rarest field a direction is joined on: fewest giver × taker pairs, so the most specific evidence
+        const pairs = gives.size * takes.size
+        const side = forward ? 'forward' : 'backward'
+        const held = e.rare[side]
+        if (!held || pairs < held.pairs || (pairs === held.pairs && uuid < held.uuid)) e.rare[side] = { uuid, name, pairs }
         if (forward) e.forward++
         else e.backward++
         const list = forward ? e.names.forward : e.names.backward
@@ -9774,6 +9781,7 @@ export const qpuApisLiveOf = async (from = n - n, howMany = qpuFacesOf().faces) 
     const document = got && got.status === found ? await got.json().catch(() => undefined) : undefined
     const found_ = document === undefined ? [] : qpuSchemaMethodsOf(api, document)
     methods.push(...found_)
+    if (document !== undefined) qpuUuidReceiptOf(`fuse ${api}`, qpuContentUuidOf({ api, methods: found_.map((m) => `${m.verb} ${m.path}`) }), { methods: found_.length }, spec)
     rows.push({ api, spec, live: document !== undefined, methods: found_.length })
   }
   return {
@@ -13496,6 +13504,8 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
         (name === toolNames[n] || name === toolNames[n + coins] || name === toolNames[n + n] || name === toolNames[mintOf(n) - seed])
       if (sequenced || (name === toolNames[mintOf(n) - seed] && args.live === true)) return shown(await qpuSequenceLiveOf())
       if (args.live === true) {
+        if (name === toolNames[n] && typeof args.from === 'number' && Number.isInteger(args.from) && args.from >= n - n)
+          return shown({ ...(await qpuComposeLiveOf(args.from, qpuFacesOf().faces)), from: args.from, next: args.from + qpuFacesOf().faces, stream: qpuReceiptStreamsOf(n - n).streams.find((row) => row.stream === 'fuse') ?? null })
         if (name === toolNames[n]) return shown(await qpuTrainLiveOf())
         if (name === toolNames[n + coins]) return shown(await qpuImproveLiveOf())
         if (name === toolNames[n + n]) return shown(await qpuCompeteLiveOf(typeof args.team === 'string' ? args.team : undefined))

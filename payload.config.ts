@@ -12,6 +12,10 @@ import { Enrollments } from './src/payload/collections/enrollments'
 import { Metrics } from './src/payload/collections/metrics'
 import { Users } from './src/payload/collections/users'
 import { Certifications } from './src/payload/collections/certifications'
+import { FuseApis } from './src/payload/collections/fuse-apis'
+import { FuseFields } from './src/payload/collections/fuse-fields'
+import { FuseFormulas } from './src/payload/collections/fuse-formulas'
+import { QuantumReceipts } from './src/payload/collections/quantum-receipts'
 
 export default buildConfig({
   admin: {
@@ -25,6 +29,10 @@ export default buildConfig({
     Enrollments,
     Metrics,
     Certifications,
+    FuseApis,
+    FuseFields,
+    FuseFormulas,
+    QuantumReceipts,
   ],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || 'mongodb://localhost:27017/uuidna-qpu',

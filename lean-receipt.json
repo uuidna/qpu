@@ -1,11 +1,11 @@
 {
  "kind": "lean-receipt",
- "source": "8088fb6422822377",
+ "source": "c94385439e329396",
  "toolchain": "leanprover/lean4:v4.33.0",
- "theorems": 99,
- "served": 99,
- "verbatim": 99,
- "recomputed": 99,
+ "theorems": 100,
+ "served": 100,
+ "verbatim": 100,
+ "recomputed": 100,
  "holds": true,
  "crossHolds": true,
  "rows": [
@@ -325,6 +325,14 @@
    "recomputed": true,
    "over": "app ∈ [0, 32]",
    "formula": "ab12c4670389f9ee"
+  },
+  {
+   "name": "fuse",
+   "uuid": "60deb3cb-cd75-818b-84a0-b1c8877743f1",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "formula": "95343a05dfb34b0f"
   },
   {
    "name": "fused_additive_form",

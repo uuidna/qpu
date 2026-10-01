@@ -18,7 +18,9 @@ import {
   qpuContentUuidOf,
   qpuUuidReceiptOf,
   qpuReceiptStreamsOf,
+  qpuReceiptLedgerOf,
 } from '../dist/quantum/processing/unit/index.js'
+import { crossFormulaOf } from '../dist/mcp/cross-domain-formulas.js'
 
 const REGISTRY = 'https://api.apis.guru/v2/list.json'
 const CONCURRENCY = 8
@@ -92,6 +94,44 @@ const byCategory = categories
   .filter((c) => c.apis > 0)
   .sort((a, b) => b.ebits - a.ebits)
 
+/* EVERY COMPOSING PAIR IS A CROSS FORMULA. Its evidence is the rarest field each direction is joined on (fewest
+ * giver × taker pairs — the most specific); its value is that specificity, 1 / pairs per direction, multiplied when
+ * both directions hold (entangled). Each is a CrossFormula: a content UUID and a quantum receipt (stream `cross`). */
+fs.mkdirSync('.fuse', { recursive: true })
+const out = fs.createWriteStream('.fuse/fuse-formulas.ndjson')
+const buckets = { '1': 0, '2-4': 0, '5-16': 0, '17-64': 0, '65-256': 0, '>256': 0 }
+const bucketOf = (p) => (p <= 1 ? '1' : p <= 4 ? '2-4' : p <= 16 ? '5-16' : p <= 64 ? '17-64' : p <= 256 ? '65-256' : '>256')
+const specific = []
+let formulas = 0
+let holding = 0
+for (const e of fused.edges) {
+  const a = fused.apis[e.i]
+  const b = fused.apis[e.j]
+  const f = e.rare.forward
+  const g = e.rare.backward
+  const both = !!f && !!g
+  const value = (f ? 1 / f.pairs : 1) * (g ? 1 / g.pairs : 1)
+  const formula = [f && `${b}.takes(${f.name}) ← ${a}.gives(${f.name})`, g && `${a}.takes(${g.name}) ← ${b}.gives(${g.name})`].filter(Boolean).join(' ∧ ')
+  const x = crossFormulaOf(
+    {
+      id: `fuse ${a} ${both ? '⇄' : f ? '→' : '←'} ${b}`,
+      src: f ? a : b,
+      dst: f ? b : a,
+      formula,
+      value,
+      proof: [f && `field ${f.uuid}: ${f.pairs} giver × taker pairs in the registry`, g && `field ${g.uuid}: ${g.pairs} giver × taker pairs in the registry`].filter(Boolean).join('; '),
+    },
+    !!(f || g),
+  )
+  formulas++
+  if (x.holds) holding++
+  buckets[bucketOf(Math.max(f?.pairs ?? 0, g?.pairs ?? 0))]++
+  out.write(JSON.stringify({ ...x, entangled: both, forward: f, backward: g }) + '\n')
+  if (both && f.pairs * g.pairs <= 4) specific.push({ id: x.id, uuid: x.uuid, receipt: x.receipt, forward: f.name, backward: g.name, pairs: f.pairs * g.pairs })
+}
+await new Promise((r) => out.end(r))
+specific.sort((p, q) => p.pairs - q.pairs || p.id.localeCompare(q.id))
+const crossStream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'cross')
 const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'fuse')
 const why = rows.filter((r) => !r.reached).reduce((m, r) => ({ ...m, [r.why]: (m[r.why] ?? 0) + 1 }), {})
 const receipt = {
@@ -111,13 +151,24 @@ const receipt = {
   graphState: { ...half, cutBy: 'name, first half | second half' },
   categories: byCategory,
   hubs: fused.hubs.slice(0, 14),
+  formulas: {
+    produced: formulas,
+    holds: holding,
+    specificity: buckets,
+    entangledMostSpecific: specific.length,
+    top: specific.slice(0, 14),
+    stream: crossStream && { length: crossStream.length, head: crossStream.head, chain: crossStream.chain, holds: crossStream.holds },
+  },
   stream: stream && { length: stream.length, head: stream.head, chain: stream.chain, holds: stream.holds },
   seconds: Math.round((Date.now() - t0) / 1000),
 }
 fs.writeFileSync('fuse-receipt.json', JSON.stringify(receipt, null, 1) + '\n')
-fs.mkdirSync('.fuse', { recursive: true })
 fs.writeFileSync(
   '.fuse/fused-apis.json',
-  JSON.stringify({ apis: names, rows, edges: fused.edges.map((e) => [global.get(fused.apis[e.i]), global.get(fused.apis[e.j]), e.forward, e.backward]), hubs: fused.hubs.slice(0, 500) }),
+  JSON.stringify({ apis: names, rows, edges: fused.edges.map((e) => [global.get(fused.apis[e.i]), global.get(fused.apis[e.j]), e.forward, e.backward]), hubs: fused.hubs }),
 )
+// every quantum receipt of the run, for the quantum-receipts collection
+const ledger = fs.createWriteStream('.fuse/receipts.ndjson')
+for (const r of qpuReceiptLedgerOf()) if (r.uuid) ledger.write(JSON.stringify({ uuid: r.uuid, name: r.name, stream: r.stream, seq: r.seq, prev: r.prev, subject: r.subject, referrer: r.referrer, fold: r.fold }) + '\n')
+await new Promise((r) => ledger.end(r))
 console.log(JSON.stringify({ ...receipt, categories: receipt.categories.slice(0, 5), hubs: receipt.hubs.slice(0, 5) }, null, 1))
