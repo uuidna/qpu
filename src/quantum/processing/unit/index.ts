@@ -8150,6 +8150,7 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
   }
   const name = typeof args.name === 'string' ? args.name : ''
   if (name.length === n - n) return qpuSandboxOf()
+  if (args.run === undefined && sandboxTools.has(name)) return qpuSandboxRunOf(name, bagOf(args.args))
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
   const reserved = reservedOf(name)
@@ -8203,6 +8204,7 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
     forged: sandboxTools.has(name),
     memory: sandboxHeap.size <= qpuCubeOf().bits,
     unlocked: allowed,
+    ...(args.args !== undefined ? { value: runOpOf(run, sandboxHeap, jsonOf(args.args), n - n) } : {}),
     holds: sandboxTools.has(name),
   }
 }
@@ -13047,7 +13049,8 @@ export const qpuToolsOf = onceOf(() => {
       ray: { type: 'number', description: 'Agent ray 0..6.' },
       idea: { type: 'string', description: 'Idea the tool challenges.' },
       description: { type: 'string', description: 'What the tool does in memory.' },
-      run: { type: 'object', description: 'Sealed op tree. Memory only. No eval, no fs, no net.' }}} as const
+      run: { type: 'object', description: 'Sealed op tree. Memory only. No eval, no fs, no net.' },
+      args: { type: 'object' }}} as const
   return [
     {
       name: names[n - n],
