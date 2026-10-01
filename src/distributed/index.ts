@@ -3,12 +3,14 @@
  * Multi-node orchestration, consensus, state sync
  */
 
+import NodeRegistry from './node-registry.js'
+import FormulaRouter from './formula-router.js'
+import ConsensusEngine from './consensus.js'
+import StateSynchronizer from './state-sync.js'
+import DistributedExecutor from './distributed-executor.js'
+
 export * from './types.js'
-export { default as NodeRegistry } from './node-registry.js'
-export { default as FormulaRouter } from './formula-router.js'
-export { default as ConsensusEngine } from './consensus.js'
-export { default as StateSynchronizer } from './state-sync.js'
-export { default as DistributedExecutor } from './distributed-executor.js'
+export { NodeRegistry, FormulaRouter, ConsensusEngine, StateSynchronizer, DistributedExecutor }
 
 // Re-export MCP operations
 export {
@@ -32,21 +34,15 @@ export async function bootstrapDistributedIntelligence(config: {
   port?: number
   clusterSize?: number
   seedNodes?: any[]
-}): Promise<{
-  registry: typeof NodeRegistry
-  router: typeof FormulaRouter
-  consensus: typeof ConsensusEngine
-  synchronizer: typeof StateSynchronizer
-  executor: typeof DistributedExecutor
-}> {
-  const registry = new (await import('./node-registry.js')).default(config.nodeId)
-  const router = new (await import('./formula-router.js')).default(registry)
-  const consensus = new (await import('./consensus.js')).default(
+}): Promise<any> {
+  const registry = new (NodeRegistry as any)(config.nodeId)
+  const router = new (FormulaRouter as any)(registry)
+  const consensus = new (ConsensusEngine as any)(
     config.nodeId,
     config.clusterSize || 3
   )
-  const synchronizer = new (await import('./state-sync.js')).default(config.nodeId)
-  const executor = new (await import('./distributed-executor.js')).default(registry, router)
+  const synchronizer = new (StateSynchronizer as any)(config.nodeId)
+  const executor = new (DistributedExecutor as any)(registry, router)
 
   // Register local node
   registry.registerLocalNode({
@@ -62,10 +58,10 @@ export async function bootstrapDistributedIntelligence(config: {
   }
 
   return {
-    registry: NodeRegistry,
-    router: FormulaRouter,
-    consensus: ConsensusEngine,
-    synchronizer: StateSynchronizer,
-    executor: DistributedExecutor
+    registry,
+    router,
+    consensus,
+    synchronizer,
+    executor
   }
 }

@@ -665,8 +665,8 @@ export const mcpSecureChatOps = {
       name: 'qpu_decrypt_message_body',
       description: 'Decrypt quantum-encrypted message body',
       handler: async (req: { messageId: string; tokenId: string }) => {
-        const message = secureChat.messages.get(req.messageId)
-        if (!message) return { error: 'Message not found' }
+        const message = secureChat.readMessage(req.messageId, req.tokenId)
+        if (!message) return { error: 'Message not found or access denied' }
 
         const body = secureChat.decryptMessageBody(message, req.tokenId)
         if (!body) return { error: 'Decryption failed or access denied' }
@@ -718,4 +718,4 @@ export const mcpSecureChatOps = {
   ]
 }
 
-export { secureChat, RBACEngine, QuantumSignaller }
+// Exported above

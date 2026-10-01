@@ -12,7 +12,6 @@ import { limit } from '../core/limit.js'
 import { circuitBreaker, bulkhead } from '../patterns/resilience.js'
 import { anomaly, autoScale, costOpt } from '../ml/auto.js'
 import { runAutonomousGapFilling } from './auto-gap-fill.js'
-import { registerIntegrationOps } from './integrations-ops.js'
 
 type Handler = (args: string[]) => Promise<void>
 
@@ -120,8 +119,7 @@ Examples:
 // ============================================================================
 
 export async function route(args: string[]): Promise<void> {
-  // Register integration operations on startup
-  registerIntegrationOps()
+  // Integration operations exported from integrations-ops.ts
 
   const c = args[0] || 'status'
   const h = cmd[c] || cmd.status
