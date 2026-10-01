@@ -40,4 +40,4 @@ export AUTONOMOUS_MODE=true && npm start
 | Autonomous Systems | 10 |
 | MCP Tools | 8 |
 
-**Status**: v0.2.1 | **License**: CC-BY-NC-ND-4.0 | **DOI**: 10.5281/zenodo.22973935
+**Status**: v0.3.0 | **Author**: Tsvetan Rouschev | **License**: CC-BY-NC-ND-4.0 | **DOI**: 10.5281/zenodo.14167235
