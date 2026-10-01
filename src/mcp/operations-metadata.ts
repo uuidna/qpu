@@ -936,6 +936,68 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return await costReport()
     },
     description: 'Generate comprehensive cost optimization report'
+  },
+
+  // SELF-HEALING: 6 operations
+  {
+    key: 'heal-detect-degradation',
+    domain: 'heal',
+    operation: 'detect-degradation',
+    handler: async () => {
+      const { healDetectDegradation } = await import('./self-healing-operations.js')
+      return await healDetectDegradation()
+    },
+    description: 'Detect performance degradation in formulas'
+  },
+  {
+    key: 'heal-auto-heal',
+    domain: 'heal',
+    operation: 'auto-heal',
+    handler: async () => {
+      const { healAutoHeal } = await import('./self-healing-operations.js')
+      return await healAutoHeal()
+    },
+    description: 'Execute autonomous healing actions'
+  },
+  {
+    key: 'heal-system-health',
+    domain: 'heal',
+    operation: 'system-health',
+    handler: async () => {
+      const { healSystemHealth } = await import('./self-healing-operations.js')
+      return await healSystemHealth()
+    },
+    description: 'Assess overall system health score'
+  },
+  {
+    key: 'heal-detect-anomalies',
+    domain: 'heal',
+    operation: 'detect-anomalies',
+    handler: async () => {
+      const { healDetectAnomalies } = await import('./self-healing-operations.js')
+      return await healDetectAnomalies()
+    },
+    description: 'Detect anomalies before they cause failure'
+  },
+  {
+    key: 'heal-circuit-breaker',
+    domain: 'heal',
+    operation: 'circuit-breaker',
+    handler: async () => {
+      const { healCircuitBreaker } = await import('./self-healing-operations.js')
+      return await healCircuitBreaker()
+    },
+    description: 'Implement circuit breaker pattern for resilience'
+  },
+  {
+    key: 'heal-report',
+    domain: 'heal',
+    operation: 'report',
+    handler: async () => {
+      const { healReport } = await import('./self-healing-operations.js')
+      return await healReport()
+    },
+    description: 'Generate comprehensive self-healing report'
   }
 ]
 
