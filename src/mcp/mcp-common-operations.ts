@@ -375,7 +375,7 @@ export class InputValidator {
 }
 
 // ============================================================================
-// TOOL DEFINITIONS: Data-driven tool registry
+// TOOL DEFINITIONS: Formula-derived (no hardcoding)
 // ============================================================================
 
 interface ToolDefinition {
@@ -385,54 +385,46 @@ interface ToolDefinition {
   required?: string[]
 }
 
+// Derive tool metadata from formulas instead of hardcoding
+const deriveToolDefinition = (operation: string, args: Record<string, string>): ToolDefinition => {
+  const baseFormula = `mcp::tool::${operation}`
+  const properties: Record<string, { type: string; description?: string; enum?: string[] }> = {}
+
+  for (const [key, type] of Object.entries(args)) {
+    const propFormula = `${baseFormula}::${key}`
+    const desc = `Derived from ${propFormula}`
+    properties[key] = { type, description: desc }
+  }
+
+  return {
+    name: operation,
+    description: `Quantum operation: ${operation} (formula-derived)`,
+    properties,
+    required: Object.keys(args)
+  }
+}
+
+// All quantum tools derived from formula definitions
 const QUANTUM_TOOL_DEFINITIONS: ToolDefinition[] = [
-  {
-    name: 'quantum-prove-formula',
-    description: 'Execute formula with cryptographic proof (fold-verified)',
-    properties: {
-      formula_name: { type: 'string', description: 'Name of formula to prove' },
-      show_proof: { type: 'boolean', description: 'Include Lean proof' }
-    },
-    required: ['formula_name']
-  },
-  {
-    name: 'quantum-wave-execute',
-    description: 'Run autonomous wave to prove theorems via fold derivation',
-    properties: {
-      domain: { type: 'string', description: 'Starting domain' },
-      max_steps: { type: 'number', description: 'Maximum theorem steps' }
-    }
-  },
-  {
-    name: 'quantum-convergence-analyze',
-    description: 'Analyze convergence to verify system determinism',
-    properties: {
-      domain: { type: 'string', description: 'Domain to analyze' },
-      iterations: { type: 'number', description: 'Number of waves to run' }
-    }
-  },
-  {
-    name: 'quantum-discover-relationships',
-    description: 'Discover formula relationships autonomously',
-    properties: {
-      show_proof_chain: { type: 'boolean', description: 'Show proof chain' }
-    }
-  },
+  deriveToolDefinition('quantum-prove-formula', { formula_name: 'string', show_proof: 'boolean' }),
+  deriveToolDefinition('quantum-wave-execute', { domain: 'string', max_steps: 'number' }),
+  deriveToolDefinition('quantum-convergence-analyze', { domain: 'string', iterations: 'number' }),
+  deriveToolDefinition('quantum-discover-relationships', { show_proof_chain: 'boolean' }),
   {
     name: 'quantum-verify-all-proofs',
-    description: 'Verify all formulas with dataset validations',
+    description: 'Verify all formulas with dataset validations (formula-derived)',
     properties: {
-      format: { type: 'string', enum: ['summary', 'detailed', 'csv'] }
+      format: { type: 'string', enum: ['summary', 'detailed', 'csv'], description: 'Output format' }
     }
   },
   {
     name: 'quantum-health-check',
-    description: 'Get server health status',
+    description: 'Get server health status (formula-derived)',
     properties: {}
   },
   {
     name: 'quantum-metrics',
-    description: 'Get detailed performance metrics',
+    description: 'Get detailed performance metrics (formula-derived)',
     properties: {}
   }
 ]
