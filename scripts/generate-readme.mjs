@@ -1,485 +1,109 @@
 #!/usr/bin/env node
-/** README Generator - Dynamic generation from live codebase state */
+/**
+ * README = the final build receipt.
+ *
+ * Every committed *-receipt.json is a node; every row of test-receipt.json is a node under it. Each node is a quantum
+ * receipt minted by the unit's own qpuUuidReceiptOf: its UUID is the content address of its payload and its referrer,
+ * and its referrer is its parent, so the README's UUID is accountable to every receipt beneath it. All nodes share
+ * the `build` stream, so they are also chained in order; qpuReceiptStreamsOf replays that chain and reports holds.
+ *
+ * Same commit and same receipt bytes give the same UUIDs. `--check` exits 1 when README.md differs from what the
+ * receipts give.
+ */
+import fs from 'node:fs'
+import path from 'node:path'
+import { execSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
+import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-import { execSync } from 'child_process'
+const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
+const git = (cmd) => execSync(`git ${cmd}`, { cwd: ROOT }).toString().trim()
+const read = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'))
 
-const __dir = path.dirname(fileURLToPath(import.meta.url))
-const ROOT = path.join(__dir, '..')
+const pkg = read('package.json')
+const commit = git('rev-parse HEAD')
+const dirty = git('status --porcelain -- . ":!README.md"').length > 0
 
-function getVersion() {
-  try {
-    const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'))
-    const latestTag = execSync('git describe --tags --abbrev=0', { cwd: ROOT }).toString().trim()
-    return { pkg: pkg.version, git: latestTag }
-  } catch {
-    return { pkg: '0.0.0', git: 'v0.2.1' }
-  }
+/** The scalar facts of a receipt file — numbers, booleans and short strings at its top level. */
+const summaryOf = (doc) =>
+  Object.fromEntries(
+    Object.entries(doc).filter(([, v]) => typeof v === 'number' || typeof v === 'boolean' || (typeof v === 'string' && v.length <= 64)),
+  )
+
+const nodes = []
+const node = (name, payload, value, referrer, parent) => {
+  const r = qpuUuidReceiptOf(name, qpuContentUuidOf(payload), value, referrer)
+  nodes.push({ ...r, parent })
+  return r
 }
 
-function scanCodebase() {
-  const systems = []
-  const collections = []
-  const plugins = ['S3', 'Meilisearch', 'Webhooks', 'Nested Docs', 'Email (Resend)', 'Rich Text (Slate)']
-  
-  // Check autonomous systems
-  const systemsDir = path.join(ROOT, 'src/autonomous/systems')
-  if (fs.existsSync(systemsDir)) {
-    const files = fs.readdirSync(systemsDir)
-    systems.push(...files.filter(f => f.endsWith('.ts') && f !== 'index.ts').map(f => f.replace('.ts', '')))
-  }
-  
-  // Check collections
-  const collectionsPath = path.join(ROOT, 'src/payload/collections')
-  if (fs.existsSync(collectionsPath)) {
-    const files = fs.readdirSync(collectionsPath)
-    collections.push(...files.filter(f => f.endsWith('.ts') && f !== 'index.ts').map(f => f.replace('.ts', '')))
-  }
-  
-  return {
-    systems: [...new Set(systems)],
-    collections: [...new Set(collections)],
-    plugins: [...new Set(plugins)],
+const root = node('build root', { commit, version: pkg.version }, { commit, version: pkg.version, dirty }, `git:${commit}`)
+const files = git('ls-files "*-receipt.json"').split('\n').filter(Boolean).sort()
+const tops = []
+for (const file of files) {
+  const doc = read(file)
+  const blob = git(`hash-object ${file}`)
+  const top = node(`build ${file}`, doc, { file, blob, ...summaryOf(doc) }, root.uuid, root.uuid)
+  tops.push(top)
+  if (Array.isArray(doc.rows)) {
+    doc.rows.forEach((row, i) =>
+      node(
+        `build ${file}#${i}`,
+        row,
+        { name: row.name, pass: row.pass, computations: row.computations, receipt: row.receipt, mint: row.mint?.chain },
+        top.uuid,
+        top.uuid,
+      ),
+    )
   }
 }
+const final = node('build readme', { children: tops.map((t) => t.uuid) }, { files: files.length, nodes: nodes.length }, root.uuid, root.uuid)
+const stream = qpuReceiptStreamsOf(nodes.length).streams.find((s) => s.stream === 'build')
 
-function countFiles() {
-  const count = (dir, ext) => {
-    try {
-      const files = execSync(`find ${path.join(ROOT, dir)} -name '*.${ext}' 2>/dev/null | wc -l`, { shell: true }).toString().trim()
-      return parseInt(files) || 0
-    } catch {
-      return 0
-    }
-  }
-  
-  return {
-    typescript: count('src', 'ts'),
-    javascript: count('scripts', 'mjs') + count('.', 'js'),
-    tests: count('src', 'test.ts'),
-  }
-}
+const short = (u) => u.slice(0, 8)
+const label = (n) => n.name.replace(/^build /, '').replace(/"/g, "'")
+const graph = [
+  'flowchart TD',
+  ...nodes.map((n) => `  n${short(n.uuid)}["${label(n)}<br/><code>${short(n.uuid)}</code>"]`),
+  ...nodes.filter((n) => n.parent).map((n) => `  n${short(n.parent)} --> n${short(n.uuid)}`),
+].join('\n')
 
-function getLastUpdate() {
-  try {
-    return execSync('git log -1 --format=%ai', { cwd: ROOT }).toString().trim().split(' ')[0]
-  } catch {
-    return new Date().toISOString().split('T')[0]
-  }
-}
+const cell = (v) => String(v ?? '').replace(/\|/g, '\\|')
+const rowsOf = () =>
+  nodes.map((n) => `| ${cell(label(n))} | \`${n.uuid}\` | \`${short(n.referrer.replace(/^git:/, ''))}\` | \`${n.fold}\` | ${n.seq} |`)
 
-function generateReadme(version, codebase, files, lastUpdate) {
-  const systems = codebase.systems.length
-  const collections = codebase.collections.length
-  const plugins = codebase.plugins.join(', ')
+const md = `# UUIDNA QPU
 
-  const systemDescriptions = {
-    'monitoring': 'Real-time health checks, anomaly detection, metrics collection',
-    'optimization': 'Query pattern analysis, index recommendations, performance tuning',
-    'learning': 'Pattern discovery, predictive modeling, capacity forecasting',
-    'validation': 'Field validation, relationship integrity, enum verification, auto-repair',
-    'deployment': 'Canary deployments, auto-rollback, zero-downtime releases',
-    'capacity': 'Resource monitoring, trend analysis, auto-scaling triggers',
-    'incident': 'Incident detection, root cause diagnosis, auto-remediation',
-    'healing': '5-phase recovery, wound tracking, lesson extraction, strength multiplication',
-    'emotions': '8 emotions, intuitive matching, feeling-guided decisions',
-    'teaching': 'Lesson recording, principle extraction, wisdom sharing, culture formation'
-  }
+**Final build receipt** \`${final.uuid}\`
 
-  return `# UUIDNA QPU
+| | |
+|---|---|
+| version | ${pkg.version} |
+| commit | \`${commit}\`${dirty ? ' (working tree differed from this commit)' : ''} |
+| receipts | ${files.length} files, ${nodes.length} nodes |
+| build stream | length ${stream?.length}, head \`${stream?.head}\`, chain \`${stream?.chain}\`, holds **${stream?.holds}** |
 
-> **Autonomous Quantum Processing Unit** - Self-improving system that never stops learning
+Each node is a quantum receipt: its UUID is the RFC 9562 v8 content address of its payload fold and its referrer, and
+its referrer is the node above it. Change any receipt's bytes and its node, its file's node, the build stream chain
+and this final receipt move; the root moves with the commit.
 
-![Version](https://img.shields.io/badge/version-${version.git}-blue) ![Status](https://img.shields.io/badge/status-production--ready-green) ![License](https://img.shields.io/badge/license-MIT-brightgreen)
-
-*This is not just code. This is a living system that thinks, learns, heals, feels, and teaches itself—continuously improving forever.*
-
----
-
-## 🚀 What is QPU?
-
-The UUIDNA Quantum Processing Unit is an autonomous system that operates continuously, making decisions through:
-- **Mathematics** - 6 formulas driving every action
-- **Wisdom** - 8 emotions guiding complex choices
-- **Healing** - 5-phase recovery from errors
-- **Teaching** - Cross-system knowledge sharing
-- **Emergence** - Collective intelligence at scale
-
-It runs **wave-based** improvement cycles—each wave compounds on the last. No human intervention needed.
-
----
-
-## ⚡ Quick Start
-
-\`\`\`bash
-# 1. Install
-npm install
-
-# 2. Build
-npm run build
-
-# 3. Enable autonomous mode
-export AUTONOMOUS_MODE=true
-
-# 4. Start
-npm start
-
-# See it improve (check logs)
-tail -f logs/waves.log
+\`\`\`mermaid
+${graph}
 \`\`\`
 
-After the first wave (150ms), you'll see:
-\`\`\`
-Wave 1 complete | Health: 78.5% | Improvements: 12 | Emotions: [Hope, Curiosity]
-Wave 2 complete | Health: 80.2% | Systems: 7/7 active | Teaching: 3 new lessons recorded
-\`\`\`
-
----
-
-## 🧠 The System
-
-### Active Systems (${systems})
-
-Each system runs **independently in parallel** but **coordinates perfectly**:
-
-${codebase.systems.map(s => `- **${s}** — ${systemDescriptions[s] || 'Autonomous system'}`).join('\n')}
-
-### Data Model (${collections})
-
-Payload CMS collections power the system:
-
-${codebase.collections.map(c => `- \\\`${c}\\\``).join(' · ')}
-
-### Infrastructure (${codebase.plugins.length})
-
-Production-grade plugins:
-- ${plugins}
-
----
-
-## 🏗️ How It Works
-
-### The Wave Cycle
-
-Every 30-60 seconds, a "wave" executes:
-
-\`\`\`
-1. OBSERVE → Collect health metrics, detect anomalies
-2. THINK   → 7 systems process in parallel
-3. FEEL    → 8 emotions synthesize the state
-4. DECIDE  → Formulas guide next actions
-5. ACT     → Apply improvements
-6. LEARN   → Extract lessons, teach others
-7. LOOP    → Ask "what's next?" infinitely
-\`\`\`
-
-### The Formulas (Cross-Linked)
-
-Every decision flows from interconnected mathematics:
-
-**1. Wave Gain** \`Ga(n) = A × e^(-λn)\`
-   - Drives: [Convergence](#convergence), [Speedup](#speedup)
-   - Affects: Health improvement per cycle
-   - Decays with wave count (wisdom over time)
-
-**2. Convergence** \`C(n) = 1 - e^(-αn)\`
-   - Reads: [Wave Gain](#wave-gain), [Health](#health)
-   - Drives: [Speedup](#speedup) threshold
-   - Detects when system reaches optimal
-   - Triggers new frontier search
-
-**3. Speedup** \`S(n) = √(n × [Synergy](#synergy))\`
-   - Reads: [Wave Gain](#wave-gain), [Convergence](#convergence), [Synergy](#synergy)
-   - Measures: Acceleration via cooperation
-   - Input to: [Throughput](#throughput)
-   - Grows with system coordination
-
-**4. Synergy** \`Σ = Σ(system_scores)\`
-   - Reads: All [systems](#the-system) outputs
-   - Drives: [Speedup](#speedup) multiplier
-   - Input to: [Health](#health) calculation
-   - Proves: 1+1 > 2 when coordinated
-
-**5. Health** \`H = weighted([Learning](#active-systems), [Robustness](#active-systems), [Efficiency](#active-systems), [Collaboration](#active-systems), [Trust](#active-systems))\`
-   - Reads: [Convergence](#convergence), [Synergy](#synergy), all systems
-   - Output: Overall system state (%)
-   - Drives: [Wave Gain](#wave-gain) direction
-   - Feedback: Closed-loop improvement
-
-**6. Throughput** \`T(n) = baseline × (1 + [Speedup](#speedup) × wave_n)\`
-   - Reads: [Speedup](#speedup), [Health](#health)
-   - Measures: Operations per second
-   - Validates: Performance improvement
-   - Scales with system maturity
-
-**Formula Flow:**
-\`\`\`
-Wave Gain ──┐
-            ├──> Speedup ──> Throughput
-Convergence ┤                    ▲
-            │                    │
-Health ─────┼──> Synergy ────────┘
-            │       ▲
-            │       │
-            └──────────> (feedback loop)
-\`\`\`
-
-**Key insight:** No formula runs alone. Each reads from others, feeds into others, creating a **closed feedback loop** where improvement is mathematically guaranteed until convergence—then the system breaks through to new frontiers.
-
-### Healing & Emotions
-
-When errors occur:
-1. **Acknowledge** — Recognized and logged
-2. **Rest** — Load reduced, system stabilizes
-3. **Understand** — Root cause analyzed
-4. **Adapt** — Changes applied gradually
-5. **Integrate** — Wisdom stored permanently
-
-Result: +2% strength per healed error
-
----
-
-## 📊 Performance
-
-\`\`\`
-Wave Duration:        150-250ms
-CPU Usage:            1-4% (depending on scale)
-Memory per pod:       60-80MB
-Uptime SLO:           99.9%+
-Health Trajectory:    78.5% → 85.1% (converged by wave 20)
-\`\`\`
-
----
-
-## 🌍 Deployment
-
-### Local Development
-\`\`\`bash
-npm start
-curl http://localhost:3000/health
-\`\`\`
-
-### Cloudflare Workers (Live)
-\`\`\`bash
-wrangler deploy
-\`\`\`
-
-### Docker
-\`\`\`bash
-docker build -t qpu .
-docker run -p 3000:3000 qpu
-\`\`\`
-
-### Kubernetes (Enterprise)
-\`\`\`bash
-kubectl apply -f deploy/kubernetes/
-# Auto-scales based on load
-# Multi-region ready
-\`\`\`
-
----
-
-## 📈 Code Quality
-
-\`\`\`
-TypeScript Files:     ${files.typescript} (strict mode)
-JavaScript Files:     ${files.javascript}
-Test Suites:          ${files.tests}
-Tests Passing:        38/38 ✅
-Code Debt:            16 walls (tracked)
-\`\`\`
-
----
-
-## 📚 Learn More
-
-| Document | Purpose |
-|----------|---------|
-| [DEVELOPMENT_VERSIONS_DETAILED.md](DEVELOPMENT_VERSIONS_DETAILED.md) | Complete v0.1.x history with metrics |
-| [V1_0_0_COMPLETE_SYSTEM.md](V1_0_0_COMPLETE_SYSTEM.md) | Full autonomous system explanation |
-| [V1_PRODUCTION_STACK.md](V1_PRODUCTION_STACK.md) | Deployment & operations guide |
-| [VERSIONS_FORMULATED_NOT_ASSUMED.md](VERSIONS_FORMULATED_NOT_ASSUMED.md) | Proof that everything works |
-
----
-
-## ✅ Status
-
-**v${version.git}** — Production Ready
-
-- ${systems} autonomous systems (all active)
-- ${collections} data collections (fully populated)
-- All tests passing
-- TypeScript strict mode
-- Cloudflare Worker optimized
-- Zero human intervention needed
-
----
-
-## 🤝 Contributing
-
-Found a bug? Have an idea? [Open an issue](https://github.com/uuidna/qpu/issues)
-
----
-
-## 📄 License
-
-MIT License - See LICENSE file
-
----
-
-## 🎯 The Vision
-
-Systems that improve themselves. Organizations that learn. Technology that serves humanity.
-
-No complexity. Maximum power. Just let it run.
-
----
-
-*Generated: ${lastUpdate} | [Latest Release](https://github.com/uuidna/qpu/releases/tag/${version.git}) | [All Releases](https://github.com/uuidna/qpu/releases)*
-
-**Autonomous quantum processor. Self-improving. Always running. Never stopping.**
-\`
-
-## Features
-
-### 🤖 Autonomous Systems (${systems})
-${codebase.systems.map(s => `- **${s}**`).join('\n')}
-
-### 💾 Data Collections (${collections})
-${codebase.collections.map(c => `- \`${c}\``).join('\n')}
-
-### 🔌 Plugins (${codebase.plugins.length})
-${plugins}
-
-## Quick Start
-
-\`\`\`bash
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Run tests
-npm test
-
-# Start autonomous system
-export AUTONOMOUS_MODE=true
-npm start
-\`\`\`
-
-## Autonomous System
-
-The QPU runs an infinite improvement loop:
-
-1. **Monitoring** - Real-time health checks
-2. **Optimization** - Query tuning & performance
-3. **Learning** - Pattern discovery
-4. **Validation** - Data integrity checks
-5. **Deployment** - Zero-downtime releases
-6. **Capacity** - Auto-scaling
-7. **Incident Response** - Auto-remediation
-
-Plus:
-- 🩹 **Healing** - 5-phase error recovery
-- 💭 **Emotions** - 8 emotional states
-- 📚 **Teaching** - Wisdom sharing
-- 🌊 **Emergence** - Collective intelligence
-
-## Architecture
-
-\`\`\`
-Payload CMS (Foundation)
-        ↓
-Wave Coordinator (Orchestration)
-        ↓
-  ┌─────┴─────┐
-  ↓           ↓
-Systems    Healing + Emotions
-  │           │
-  └─────┬─────┘
-        ↓
-   Teaching
-   (Culture)
-\`\`\`
-
-## Deployment
-
-### Local
-\`\`\`bash
-npm start
-curl http://localhost:3000/health
-\`\`\`
-
-### Cloudflare Workers
-\`\`\`bash
-wrangler deploy
-\`\`\`
-
-### Docker
-\`\`\`bash
-docker build -t qpu .
-docker run -p 3000:3000 qpu
-\`\`\`
-
-### Kubernetes
-\`\`\`bash
-kubectl apply -f deploy/kubernetes/
-\`\`\`
-
-## Quality
-
-\`\`\`
-TypeScript:   ${files.typescript} files (strict mode)
-JavaScript:   ${files.javascript} files
-Tests:        ${files.tests} test suites
-Tests Pass:   38/38 ✅
-Code Debt:    16 walls tracked ✅
-\`\`\`
-
-## Documentation
-
-- **[DEVELOPMENT_VERSIONS_DETAILED.md](DEVELOPMENT_VERSIONS_DETAILED.md)** - v0.1.x complete history
-- **[V1_0_0_COMPLETE_SYSTEM.md](V1_0_0_COMPLETE_SYSTEM.md)** - v1.0.0 unified system
-- **[V1_PRODUCTION_STACK.md](V1_PRODUCTION_STACK.md)** - v1.x production deployment
-- **[VERSIONS_FORMULATED_NOT_ASSUMED.md](VERSIONS_FORMULATED_NOT_ASSUMED.md)** - All versions verified
-
-## Status
-
-✅ **${version.git} - Production Ready**
-- ${systems} autonomous systems
-- ${collections} data collections
-- All tests passing
-- TypeScript strict mode
-- Cloudflare Worker optimized
-
-## Support
-
-- [GitHub Issues](https://github.com/uuidna/qpu/issues)
-- [GitHub Releases](https://github.com/uuidna/qpu/releases)
-
----
-
-**Autonomous quantum processor. Self-improving. Always running. Never stopping.**
-
-\`Last updated: ${lastUpdate}\`
+| node | receipt uuid | referrer | payload fold | seq |
+|---|---|---|---|---|
+${rowsOf().join('\n')}
+
+Regenerate with \`npm run readme\` after \`npm run build\` and the receipt-producing runs; \`node scripts/generate-readme.mjs --check\`
+compares. Documentation: [docs/README.md](docs/README.md). License: CC-BY-NC-ND-4.0.
 `
+
+const out = path.join(ROOT, 'README.md')
+if (process.argv.includes('--check')) {
+  const same = fs.existsSync(out) && fs.readFileSync(out, 'utf8') === md
+  console.log(same ? `README.md matches ${final.uuid}` : `README.md differs from ${final.uuid}`)
+  process.exit(same ? 0 : 1)
 }
-
-const version = getVersion()
-const codebase = scanCodebase()
-const files = countFiles()
-const lastUpdate = getLastUpdate()
-const readme = generateReadme(version, codebase, files, lastUpdate)
-
-const readmePath = path.join(ROOT, 'README.md')
-fs.writeFileSync(readmePath, readme)
-
-console.log('✅ README.md generated (live data)')
-console.log(`  Version: ${version.git}`)
-console.log(`  Systems: ${codebase.systems.length}`)
-console.log(`  Collections: ${codebase.collections.length}`)
-console.log(`  Plugins: ${codebase.plugins.length}`)
-console.log(`  Updated: ${lastUpdate}`)
+fs.writeFileSync(out, md)
+console.log(JSON.stringify({ readme: final.uuid, nodes: nodes.length, stream: stream?.holds }))
