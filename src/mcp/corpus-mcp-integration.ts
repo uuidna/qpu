@@ -332,7 +332,7 @@ export function generateFormulaGallery(ops: CorpusOperation[]): string {
  */
 export function enrichRegistryWithCorpus(): Record<string, any> {
   const ops = enrichWithCrossReferences(getCorpusAsOperations())
-  const enrichedRegistry = { ...UNIVERSAL_OPERATION_REGISTRY }
+  const enrichedRegistry: Record<string, any> = { ...UNIVERSAL_OPERATION_REGISTRY }
 
   for (const op of ops) {
     enrichedRegistry[op.registryKey] = {
