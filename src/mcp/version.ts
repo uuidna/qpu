@@ -50,7 +50,7 @@ function analyzeChanges(): ChangeAnalysis {
       const msg = commit.toLowerCase()
 
       if (msg.includes('breaking') || msg.includes('⚠️')) analysis.breaking = true
-      if (msg.includes('feat') || msg.includes('add') || msg.includes('new')) analysis.features = true
+      if (msg.includes('feat') || msg.includes('add') || msg.includes('new') || msg.includes('automation') || msg.includes('auto') || msg.includes('gap') || msg.includes('semantic')) analysis.features = true
       if (msg.includes('fix') || msg.includes('bug')) analysis.fixes = true
       if (msg.includes('refactor') || msg.includes('refactoring')) analysis.refactoring = true
       if (msg.includes('efficiency') || msg.includes('optimize') || msg.includes('reduction')) analysis.efficiency = true
