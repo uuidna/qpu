@@ -687,6 +687,91 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return { total: results.length, passed, particles: (totalParticles/1e9).toFixed(1)+'B' }
     },
     description: 'CERN: run all 8 validations'
+  },
+
+  // AUTONOMOUS SELF-DEVELOPMENT
+  {
+    key: 'learn',
+    domain: 'autonomy',
+    operation: 'learn-from-experiments',
+    handler: async () => {
+      const { AutonomousOptimizer } = await import('./autonomous-optimizer.js')
+      const learnings = [
+        AutonomousOptimizer.learningFormulaAccuracy(),
+        AutonomousOptimizer.learningMCPSpeed(),
+        AutonomousOptimizer.learningCrossDomainAccuracy(),
+        AutonomousOptimizer.learningMinimalNaming(),
+        AutonomousOptimizer.learningAutomaticGeneration(),
+        AutonomousOptimizer.learningConsolidation()
+      ]
+      const improvements = learnings.map((l: any) => ({ assumption: l.assumption, improvement: (l.variance*100).toFixed(1)+'%' }))
+      return { total: learnings.length, improvements, focus: 'Formula accuracy, MCP speed, cross-domain precision' }
+    },
+    description: 'Learn from CERN experiments'
+  },
+  {
+    key: 'upgrade',
+    domain: 'autonomy',
+    operation: 'upgrade-from-learnings',
+    handler: async () => {
+      const { AutonomousOptimizer } = await import('./autonomous-optimizer.js')
+      const patches = AutonomousOptimizer.generatePatches()
+      const totalImprovement = patches.reduce((sum: number, p: any) => sum + p.improvement, 0) / patches.length
+      return { patches: patches.length, avgImprovement: (totalImprovement*100).toFixed(2)+'%', files: patches.map((p: any) => p.file) }
+    },
+    description: 'Apply optimization patches'
+  },
+  {
+    key: 'converge',
+    domain: 'autonomy',
+    operation: 'improve-to-convergence',
+    handler: async () => {
+      const { AutonomousOptimizer } = await import('./autonomous-optimizer.js')
+      const learnings: any[] = [
+        AutonomousOptimizer.learningFormulaAccuracy(),
+        AutonomousOptimizer.learningMCPSpeed(),
+        AutonomousOptimizer.learningCrossDomainAccuracy(),
+        AutonomousOptimizer.learningMinimalNaming(),
+        AutonomousOptimizer.learningAutomaticGeneration(),
+        AutonomousOptimizer.learningConsolidation()
+      ]
+      const result = await AutonomousOptimizer.improveFromExperiments(learnings)
+      return { before: result.before.toFixed(4), after: result.after.toFixed(4), iterations: result.iterations, converged: result.convergence }
+    },
+    description: 'Autonomous improvement loop to convergence'
+  },
+  {
+    key: 'heal',
+    domain: 'autonomy',
+    operation: 'self-heal-regression',
+    handler: async (input?: Record<string, unknown>) => {
+      const { AutonomousOptimizer } = await import('./autonomous-optimizer.js')
+      const opId = (input?.operationId as string) || 'qsec-bb84'
+      const measured = (input?.measured as number) || 0.91
+      const expected = (input?.expected as number) || 0.95
+      const heal = await AutonomousOptimizer.selfHeal(opId, measured, expected)
+      return { operation: opId, regression: (heal.regression*100).toFixed(1)+'%', healed: heal.healed, fix: heal.fix }
+    },
+    description: 'Self-heal performance regressions'
+  },
+  {
+    key: 'commit-upgrades',
+    domain: 'autonomy',
+    operation: 'autonomy:commit-upgrades',
+    handler: async () => {
+      const { AutonomousOptimizer } = await import('./autonomous-optimizer.js')
+      const learnings: any[] = [
+        AutonomousOptimizer.learningFormulaAccuracy(),
+        AutonomousOptimizer.learningMCPSpeed(),
+        AutonomousOptimizer.learningCrossDomainAccuracy(),
+        AutonomousOptimizer.learningMinimalNaming(),
+        AutonomousOptimizer.learningAutomaticGeneration(),
+        AutonomousOptimizer.learningConsolidation()
+      ]
+      const msg = AutonomousOptimizer.generateCommitMessage(learnings)
+      return { message: msg.split('\n')[0], details: learnings.length + ' learnings applied', ready: true }
+    },
+    description: 'Generate upgrade commit from learnings'
   }
 ]
 
