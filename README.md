@@ -244,7 +244,7 @@ Found a bug? Have an idea? [Open an issue](https://github.com/uuidna/qpu/issues)
 
 ## 📄 License
 
-MIT License - See LICENSE file
+See LICENSE file
 
 ---
 
