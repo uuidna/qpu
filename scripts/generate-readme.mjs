@@ -21,7 +21,8 @@ const git = (cmd) => execSync(`git ${cmd}`, { cwd: ROOT }).toString().trim()
 const read = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'))
 
 const pkg = read('package.json')
-const commit = git('rev-parse HEAD')
+// the last commit that changed anything but the README: the receipt cannot contain the commit that carries it
+const commit = git('log -1 --format=%H -- . ":!README.md"')
 const dirty = git('status --porcelain -- . ":!README.md"').length > 0
 
 /** The scalar facts of a receipt file — numbers, booleans and short strings at its top level. */
