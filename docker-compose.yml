@@ -5,7 +5,7 @@
 version: '3.9'
 
 services:
-  # Main QPU service
+  # Main QPU service - Formula-based (stateless)
   qpu:
     build:
       context: .
@@ -23,150 +23,67 @@ services:
       FORMULA_CORPUS_SIZE: "42"
       QUANTUM_SIMULATOR: "qiskit"
       MCP_ENABLED: "true"
-      DATABASE_URL: "postgresql://qpu:qpu@postgres:5432/qpu_db"
-      REDIS_URL: "redis://redis:6379/0"
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      # ✅ No DATABASE_URL (formulas computed, not queried)
+      # ✅ No REDIS_URL (computation faster than cache lookup)
+      # ✅ Pure formula-based computation
+    # ✅ No depends_on (no external services needed)
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-      interval: 30s
-      timeout: 10s
+      interval: 10s
+      timeout: 5s
       retries: 3
-      start_period: 10s
+      start_period: 5s
     restart: unless-stopped
     networks:
       - qpu-network
-    volumes:
-      - qpu-cache:/qpu/cache
-      - qpu-logs:/qpu/logs
+    # ✅ No volumes (stateless computation)
     labels:
       app: qpu
       version: "0.2.1"
+      storage: "formula-based"
+      persistence: "none"
 
-  # PostgreSQL: Formula results and metrics storage
-  postgres:
-    image: postgres:16-alpine
-    container_name: qpu-postgres
-    environment:
-      POSTGRES_DB: qpu_db
-      POSTGRES_USER: qpu
-      POSTGRES_PASSWORD: qpu
-      POSTGRES_INITDB_ARGS: "-c max_connections=200 -c shared_buffers=256MB"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U qpu"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    networks:
-      - qpu-network
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+  # Optional: Prometheus for metrics (stateless)
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: qpu-prometheus
+  #   ports:
+  #     - "9000:9090"
+  #   # ✅ Metrics only - optional for observability
 
-  # Redis: Cache and real-time metrics
-  redis:
-    image: redis:7-alpine
-    container_name: qpu-redis
-    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    networks:
-      - qpu-network
-    volumes:
-      - redis-data:/data
-    ports:
-      - "6379:6379"
+  # Optional: Grafana for dashboards (visualization only)
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: qpu-grafana
+  #   ports:
+  #     - "3000:3000"
+  #   # ✅ Dashboard only - optional for UI
 
-  # Prometheus: Metrics collection
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: qpu-prometheus
-    ports:
-      - "9000:9090"
-    volumes:
-      - ./k8s/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-      - prometheus-data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=7d'
-    depends_on:
-      - qpu
-    restart: unless-stopped
-    networks:
-      - qpu-network
+  # Optional: Jaeger for distributed tracing (observability)
+  # jaeger:
+  #   image: jaegertracing/all-in-one:latest
+  #   container_name: qpu-jaeger
+  #   ports:
+  #     - "6831:6831/udp"  # Jaeger agent
+  #     - "16686:16686"     # Jaeger UI
+  #   # ✅ Tracing only - optional for debugging
 
-  # Grafana: Visualization dashboard
-  grafana:
-    image: grafana/grafana:latest
-    container_name: qpu-grafana
-    ports:
-      - "3000:3000"
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
-      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./k8s/grafana-dashboard.json:/etc/grafana/provisioning/dashboards/qpu.json:ro
-    depends_on:
-      - prometheus
-    restart: unless-stopped
-    networks:
-      - qpu-network
-
-  # Jaeger: Distributed tracing
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    container_name: qpu-jaeger
-    ports:
-      - "6831:6831/udp"  # Jaeger agent
-      - "16686:16686"     # Jaeger UI
-    environment:
-      COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
-    restart: unless-stopped
-    networks:
-      - qpu-network
-    volumes:
-      - jaeger-data:/badger/data
-
-volumes:
-  qpu-cache:
-    driver: local
-  qpu-logs:
-    driver: local
-  postgres-data:
-    driver: local
-  redis-data:
-    driver: local
-  prometheus-data:
-    driver: local
-  grafana-data:
-    driver: local
-  jaeger-data:
-    driver: local
+# ✅ No volumes needed (formula-based, stateless)
 
 networks:
   qpu-network:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
 
 # Deployment instructions:
-# 1. Build images: docker-compose build
-# 2. Start services: docker-compose up -d
-# 3. Access QPU: http://localhost:8080
-# 4. View metrics: http://localhost:9000 (Prometheus)
-# 5. View dashboards: http://localhost:3000 (Grafana)
-# 6. View traces: http://localhost:16686 (Jaeger)
-# 7. Stop services: docker-compose down
-# 8. Remove volumes: docker-compose down -v
+# 1. Start services: docker-compose up -d
+# 2. Access QPU: http://localhost:8080
+# 3. Health check: http://localhost:8080/health
+# 4. API docs: http://localhost:8080/api
+# 5. Stop services: docker-compose down
+#
+# ✅ Benefits of formula-based architecture:
+# - No data persistence needed
+# - No volume management
+# - Pod loss = instant recompute (no data loss)
+# - Infinite horizontal scaling
+# - Zero infrastructure overhead
