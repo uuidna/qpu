@@ -322,6 +322,135 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return { nodes: dist.size, total: n * k }
     },
     description: 'Distribute signals'
+  },
+
+  // CROSS-DOMAIN BRIDGES
+  {
+    key: 'bridge-qsec-compress',
+    domain: 'cross',
+    operation: 'qsec→compress',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const klen = (input?.keyLen as number) || 128
+      const cf = CrossDomainFormulas.bb84ToCompress(klen)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'QSec→Compress bridge'
+  },
+  {
+    key: 'bridge-obs-ml',
+    domain: 'cross',
+    operation: 'obs→ml',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const cnt = (input?.signalCount as number) || 100
+      const cf = CrossDomainFormulas.observabilityToML(cnt)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'Obs→ML bridge'
+  },
+  {
+    key: 'bridge-deploy-obs',
+    domain: 'cross',
+    operation: 'deploy→obs',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const bt = (input?.buildTime as number) || 60
+      const tt = (input?.testTime as number) || 60
+      const cf = CrossDomainFormulas.deploymentToObs(bt, tt)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'Deploy→Obs bridge'
+  },
+  {
+    key: 'bridge-quantum-ent',
+    domain: 'cross',
+    operation: 'quantum→enterprise',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const pc = (input?.proofCount as number) || 10
+      const cf = CrossDomainFormulas.quantumToEnterprise(pc)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'Quantum→Enterprise bridge'
+  },
+  {
+    key: 'bridge-med-qsec',
+    domain: 'cross',
+    operation: 'med+qsec',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const pct = (input?.patientCount as number) || 1000
+      const klen = (input?.keyLen as number) || 128
+      const cf = CrossDomainFormulas.medSecureWithQSec(pct, klen)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'Med+QSec bridge'
+  },
+  {
+    key: 'bridge-obs-ui',
+    domain: 'cross',
+    operation: 'obs→ui',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const anom = (input?.anomalies as number) || 5
+      const sigs = (input?.signals as number) || 1000
+      const cf = CrossDomainFormulas.observabilityToUI(anom, sigs)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'Obs→UI bridge'
+  },
+  {
+    key: 'bridge-compress-qsec',
+    domain: 'cross',
+    operation: 'qsec+compress',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const slen = (input?.signalLen as number) || 1024
+      const klen = (input?.keyLen as number) || 128
+      const cf = CrossDomainFormulas.compressQSecSignals(slen, klen)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'QSec+Compress bridge'
+  },
+  {
+    key: 'bridge-ml-obs',
+    domain: 'cross',
+    operation: 'obs+ml',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const sdim = (input?.signalDim as number) || 8
+      const anom = (input?.anomalyCount as number) || 2
+      const cf = CrossDomainFormulas.mlOnObsForPrediction(sdim, anom)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'ML on Obs bridge'
+  },
+  {
+    key: 'bridge-ent-obs',
+    domain: 'cross',
+    operation: 'enterprise→obs',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const comp = (input?.complianceScore as number) || 0.95
+      const lat = (input?.latency as number) || 150
+      const cf = CrossDomainFormulas.enterpriseMetricsViaObs(comp, lat)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'Enterprise→Obs bridge'
+  },
+  {
+    key: 'bridge-test-quality',
+    domain: 'cross',
+    operation: 'test→quality',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const tp = (input?.testsPassed as number) || 26
+      const tt = (input?.totalTests as number) || 26
+      const cf = CrossDomainFormulas.testCoverageToQuality(tp, tt)
+      return { src: cf.src, dst: cf.dst, value: cf.value }
+    },
+    description: 'Test→Quality bridge'
   }
 ]
 
