@@ -6,15 +6,13 @@ name = "uuidna-qpu-edge"
 type = "javascript"
 account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 workers_dev = true
-main = "dist/quantum/processing/unit/cloudflare-worker.js"
+main = "dist/production.js"
 
-# Development default route
-routes = [
-  { pattern = "qpu.dev.workers.dev/*", zone_name = null }
-]
+# Development default route (workers.dev domain)
+routes = []
 
 # Build configuration with optimization
-build = { command = "npm run build:prod", cwd = "./" }
+build = { command = "npm run build", cwd = "./" }
 compatibility_date = "2024-12-15"
 compatibility_flags = ["nodejs_compat"]
 limits = {
