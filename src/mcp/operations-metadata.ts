@@ -451,6 +451,92 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return { src: cf.src, dst: cf.dst, value: cf.value }
     },
     description: 'Test→Quality bridge'
+  },
+
+  // MULTI-HOP CROSS-DOMAIN PATHS
+  {
+    key: 'path-quality→risk',
+    domain: 'cross',
+    operation: 'path:quality→risk',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const path = CrossDomainPaths.qualityToRisk()
+      const result = CrossDomainPaths.executePath(path, input || { quality: 0.95, proofs: 5 })
+      return { hops: path.hops.length, final: result.final }
+    },
+    description: 'Multi-hop: test→deploy→quantum→enterprise'
+  },
+  {
+    key: 'path-obs→action',
+    domain: 'cross',
+    operation: 'path:obs→action',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const path = CrossDomainPaths.obsToAction()
+      const result = CrossDomainPaths.executePath(path, input || { anomalies: 5, mlConf: 0.8 })
+      return { hops: path.hops.length, final: result.final }
+    },
+    description: 'Multi-hop: obs→ml→ui'
+  },
+  {
+    key: 'path-data→ml',
+    domain: 'cross',
+    operation: 'path:compress→ml',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const path = CrossDomainPaths.dataFlowCompressML()
+      const result = CrossDomainPaths.executePath(path, input || { compRatio: 0.6, accuracy: 0.92 })
+      return { hops: path.hops.length, final: result.final }
+    },
+    description: 'Multi-hop: deploy→compress→ml'
+  },
+  {
+    key: 'path-secure→hipaa',
+    domain: 'cross',
+    operation: 'path:qsec→hipaa',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const path = CrossDomainPaths.secureDataPathQSec()
+      const result = CrossDomainPaths.executePath(path, input || { health: 0.98, keyLen: 256, patients: 5000 })
+      return { hops: path.hops.length, final: result.final }
+    },
+    description: 'Multi-hop: deploy→qsec→med'
+  },
+  {
+    key: 'path-perf→sla',
+    domain: 'cross',
+    operation: 'path:perf→sla',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const path = CrossDomainPaths.performanceToMetrics()
+      const result = CrossDomainPaths.executePath(path, input || { perf: 0.99, compliance: 0.95, latency: 50 })
+      return { hops: path.hops.length, final: result.final }
+    },
+    description: 'Multi-hop: deploy→obs→enterprise'
+  },
+  {
+    key: 'path-quantum→security',
+    domain: 'cross',
+    operation: 'path:quantum→security',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const path = CrossDomainPaths.quantumSecurityChain()
+      const result = CrossDomainPaths.executePath(path, input || { proofs: 10, keyLen: 256, comp: 0.98, coverage: 0.99 })
+      return { hops: path.hops.length, final: result.final }
+    },
+    description: 'Multi-hop: quantum→qsec→enterprise→med'
+  },
+  {
+    key: 'path-anomaly→response',
+    domain: 'cross',
+    operation: 'path:anomaly→response',
+    handler: async (input?: Record<string, unknown>) => {
+      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const path = CrossDomainPaths.anomalyToResponse()
+      const result = CrossDomainPaths.executePath(path, input || { detect: 8, predict: 45, decide: 15 })
+      return { hops: path.hops.length, final: result.final }
+    },
+    description: 'Multi-hop: obs→ml→enterprise'
   }
 ]
 
