@@ -14,7 +14,7 @@ import { UNIVERSAL_OPERATION_REGISTRY } from './unified-mcp-router.js'
 
 export interface CorpusOperation {
   uuid: string
-  registryKey: string
+  key: string
   domain: string
   operation: string
   formula: {
@@ -47,10 +47,10 @@ export function getCorpusAsOperations(): CorpusOperation[] {
   const operations: CorpusOperation[] = []
 
   for (const formula of corpus) {
-    const registryKey = formula.name.toLowerCase().replace(/_/g, '-')
+    const k = formula.name.toLowerCase().replace(/_/g, '-')
     const operation: CorpusOperation = {
       uuid: `formula-${formula.name}`,
-      registryKey,
+      key: k,
       domain: formula.domain,
       operation: formula.name,
       formula: {
@@ -335,7 +335,7 @@ export function enrichRegistryWithCorpus(): Record<string, any> {
   const enrichedRegistry: Record<string, any> = { ...UNIVERSAL_OPERATION_REGISTRY }
 
   for (const op of ops) {
-    enrichedRegistry[op.registryKey] = {
+    enrichedRegistry[op.key] = {
       domain: op.domain,
       operation: op.operation,
       formula: op.formula.name,

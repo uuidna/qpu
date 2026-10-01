@@ -212,17 +212,14 @@ export class MCPBuilder {
           return target[prop]
         }
 
-        // Generate add<Operation>() methods on-the-fly
         if (typeof prop === 'string' && prop.startsWith('add') && prop.length > 3) {
-          // Convert camelCase back to kebab-case
-          const methodName = prop.slice(3) // Remove 'add' prefix
-          const registryKey = methodName
+          const methodName = prop.slice(3)
+          const k = methodName
             .replace(/([A-Z])/g, '-$1')
             .toLowerCase()
             .replace(/^-/, '')
 
-          // Find matching operation from metadata
-          const op = MCP_OPERATIONS.find(o => deriveBuilderMethodName(o.registryKey) === methodName)
+          const op = MCP_OPERATIONS.find(o => deriveBuilderMethodName(o.key) === methodName)
           if (op) {
             return () => target.add(op.domain, op.operation)
           }
@@ -269,7 +266,7 @@ export const UNIVERSAL_OPERATION_REGISTRY: Record<string, { domain: string; oper
 
 // Initialize registry from metadata
 for (const op of MCP_OPERATIONS) {
-  UNIVERSAL_OPERATION_REGISTRY[op.registryKey] = {
+  UNIVERSAL_OPERATION_REGISTRY[op.key] = {
     domain: op.domain,
     operation: op.operation
   }

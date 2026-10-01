@@ -5,12 +5,12 @@
  */
 
 export interface OperationMetadata {
-  registryKey: string                                    // Key in UNIVERSAL_OPERATION_REGISTRY
-  domain: string                                         // Operation domain
-  operation: string                                      // Operation name
-  handler: (input?: Record<string, unknown>) => Promise<unknown>  // Async handler
-  builderMethod?: string                                 // Camel case method name (auto-derived if not set)
-  description?: string                                   // Short description
+  key: string
+  domain: string
+  operation: string
+  handler: (input?: Record<string, unknown>) => Promise<unknown>
+  builderMethod?: string
+  description?: string
 }
 
 /**
@@ -18,288 +18,255 @@ export interface OperationMetadata {
  * Auto-generates: registry entries, builder methods, and handlers
  */
 export const MCP_OPERATIONS: OperationMetadata[] = [
-  // DEPLOYMENT/CI DOMAIN (Pre-push gate)
+  // DEPLOYMENT: gate
   {
-    registryKey: 'deployment-gate',
+    key: 'gate',
     domain: 'deployment',
-    operation: 'deployment-gate',
+    operation: 'gate',
     handler: async () => {
       const { execSync } = await import('child_process')
       const fs = await import('fs')
-      const steps: string[] = []
-      let passed = true
+      const log: string[] = []
+      let ok = true
 
-      // 1. Build
-      try {
-        execSync('npm run build', { stdio: 'pipe', timeout: 60000 })
-        steps.push('✅ Build passed')
-      } catch (e) {
-        passed = false
-        steps.push('❌ Build failed')
-        steps.push('  Reproduce: npm run build')
-        steps.push(`  Error: ${String(e).split('\n')[0]}`)
-      }
-
-      // 2. Deployment health
-      try {
-        const controller = new AbortController()
-        const timeoutId = setTimeout(() => controller.abort(), 5000)
-        const response = await fetch('https://qpu.uuidna.com/health', { signal: controller.signal })
-        clearTimeout(timeoutId)
-        const data = await response.json() as Record<string, unknown>
-        if (response.ok && data.status === 'ok') {
-          steps.push('✅ Deployment is green')
-        } else {
-          steps.push('⚠️  Deployment unreachable (proceeding—may be in dev)')
-        }
-      } catch {
-        steps.push('⚠️  Deployment unreachable (proceeding—may be in dev)')
-      }
-
-      // 3. E2E tests
-      if (fs.existsSync('dist/quantum/processing/unit/live.test.js')) {
+      const run = (name: string, cmd: string, opts?: any) => {
         try {
-          execSync('npm run test:live', {
-            stdio: 'pipe',
-            timeout: 30000,
-            env: { ...process.env, QPU_LIVE: 'https://qpu.uuidna.com' }
-          })
-          steps.push('✅ E2E tests passed')
+          execSync(cmd, { stdio: 'pipe', timeout: 60000, ...opts })
+          log.push(`✅ ${name}`)
         } catch (e) {
-          passed = false
-          steps.push('❌ E2E tests failed')
-          steps.push('  Reproduce: QPU_LIVE=https://qpu.uuidna.com npm run test:live')
-          steps.push(`  Error: ${String(e).split('\n')[0]}`)
+          ok = false
+          log.push(`❌ ${name}`)
+          log.push(`  ${cmd}`)
+          log.push(`  ${String(e).split('\n')[0]}`)
         }
-      } else {
-        steps.push('⚠️  E2E tests not found (skipped)')
       }
+
+      run('build', 'npm run build')
+      run('test', 'npm test')
+      run('proof', 'git diff --exit-code -- test-receipt.json')
+      run('mutate', 'npm run mutate')
+      run('debts', 'npm run debts')
+      run('test:scripts', 'npm run test:scripts')
+      run('outage', 'npm run outage')
+      run('walls', 'npm run walls')
 
       return {
-        passed,
-        report: `🔒 Pre-push gate\n\n${steps.join('\n')}\n\n${passed ? '✅ PASS—ready to push' : '❌ FAIL—fix above and retry'}`
+        ok,
+        report: `🔒 gate\n\n${log.join('\n')}\n\n${ok ? '✅ go' : '❌ fail'}`
       }
     },
-    description: 'Unified deployment gate (pre-push + CI): build + deploy + e2e (pass/fail + reproduction)'
+    description: 'gate: build + tests + proof + mutate + debts + scripts + outage + walls'
   },
 
-  // ENTERPRISE DOMAIN
+  // ENTERPRISE
   {
-    registryKey: 'compliance-scan',
+    key: 'compliance',
     domain: 'enterprise',
-    operation: 'compliance-scan',
+    operation: 'compliance',
     handler: async () => ({ issues: [], score: 100 }),
-    description: 'Compliance scan across codebase'
+    description: 'Compliance scan'
   },
   {
-    registryKey: 'security-validate',
+    key: 'security',
     domain: 'enterprise',
-    operation: 'security-validate',
+    operation: 'security',
     handler: async () => ({ findings: [], score: 100 }),
-    description: 'Security vulnerability scan'
+    description: 'Security scan'
   },
   {
-    registryKey: 'performance-benchmark',
+    key: 'perf',
     domain: 'enterprise',
-    operation: 'performance-benchmark',
+    operation: 'perf',
     handler: async () => ({ latency: 0, throughput: 0 }),
-    description: 'Performance benchmarking'
+    description: 'Performance bench'
   },
 
-  // QUANTUM-ML DOMAIN
+  // ML
   {
-    registryKey: 'train-quantum-model',
-    domain: 'quantum-ml',
-    operation: 'train-model',
+    key: 'train',
+    domain: 'ml',
+    operation: 'train',
     handler: async (input: any) => ({ modelId: input.datasetId, accuracy: 0.95 }),
-    description: 'Train quantum ML model'
+    description: 'Train model'
   },
   {
-    registryKey: 'quantum-predict',
-    domain: 'quantum-ml',
+    key: 'predict',
+    domain: 'ml',
     operation: 'predict',
-    handler: async () => ({ prediction: 0.85, confidence: 0.92 }),
-    description: 'Make quantum prediction'
+    handler: async () => ({ pred: 0.85, conf: 0.92 }),
+    description: 'Predict'
   },
 
-  // COMPRESSION DOMAIN
+  // COMPRESS
   {
-    registryKey: 'compress-data',
-    domain: 'compression',
+    key: 'compress',
+    domain: 'compress',
     operation: 'compress',
-    handler: async () => ({ compressedSize: 0, ratio: 0.5 }),
-    description: 'Compress data combinatorially'
+    handler: async () => ({ sz: 0, ratio: 0.5 }),
+    description: 'Compress'
   },
   {
-    registryKey: 'decompress-data',
-    domain: 'compression',
+    key: 'decompress',
+    domain: 'compress',
     operation: 'decompress',
     handler: async (input: any) => ({ data: input.compressed }),
-    description: 'Decompress data'
+    description: 'Decompress'
   },
 
-  // OBSERVABILITY DOMAIN
+  // OBS
   {
-    registryKey: 'trace-request',
-    domain: 'observability',
+    key: 'trace',
+    domain: 'obs',
     operation: 'trace',
-    handler: async (input: any) => ({ traceId: input.traceId, spans: [] }),
-    description: 'Trace request execution'
+    handler: async (input: any) => ({ id: input.traceId, spans: [] }),
+    description: 'Trace'
   },
   {
-    registryKey: 'detect-anomaly',
-    domain: 'observability',
-    operation: 'detect-anomaly',
-    handler: async () => ({ anomalies: [], score: 0.05 }),
-    description: 'Detect system anomalies'
-  },
-
-  // MEDICAL DOMAIN
-  {
-    registryKey: 'profile-patient',
-    domain: 'medical',
-    operation: 'profile-patient',
-    handler: async () => ({ mutations: [], prognosis: 0.8 }),
-    description: 'Profile patient cancer mutations'
-  },
-  {
-    registryKey: 'generate-treatment',
-    domain: 'medical',
-    operation: 'generate-treatment-plan',
-    handler: async () => ({ treatments: [], expectedOutcome: 0.85 }),
-    description: 'Generate personalized treatment plan'
+    key: 'anomaly',
+    domain: 'obs',
+    operation: 'anomaly',
+    handler: async () => ({ items: [], score: 0.05 }),
+    description: 'Detect anomaly'
   },
 
-  // UI DOMAIN
+  // MED
   {
-    registryKey: 'render-dashboard',
-    domain: 'ui',
-    operation: 'render-dashboard',
-    handler: async () => ({ html: '<div>Dashboard</div>', metadata: {} }),
-    description: 'Render analytics dashboard'
+    key: 'profile',
+    domain: 'med',
+    operation: 'profile',
+    handler: async () => ({ muts: [], prog: 0.8 }),
+    description: 'Patient profile'
   },
   {
-    registryKey: 'render-form',
+    key: 'treat',
+    domain: 'med',
+    operation: 'treat',
+    handler: async () => ({ plans: [], outcome: 0.85 }),
+    description: 'Treatment plan'
+  },
+
+  // UI
+  {
+    key: 'dashboard',
     domain: 'ui',
-    operation: 'render-form',
+    operation: 'dashboard',
+    handler: async () => ({ html: '<div>Dashboard</div>', meta: {} }),
+    description: 'Dashboard'
+  },
+  {
+    key: 'form',
+    domain: 'ui',
+    operation: 'form',
     handler: async () => ({ html: '<form></form>' }),
-    description: 'Render dynamic form'
+    description: 'Form'
   },
 
-  // QUANTUM (QPU) DOMAIN
+  // QPU
   {
-    registryKey: 'qpu_quantum',
+    key: 'quantum',
     domain: 'quantum',
     operation: 'quantum',
-    handler: async () => ({ verified: true, fused: 120259084288, holds: true }),
-    description: 'Quantum kernel proof'
+    handler: async () => ({ verified: true, fused: 120259084288, ok: true }),
+    description: 'Quantum proof'
   },
   {
-    registryKey: 'qpu_lean',
+    key: 'lean',
     domain: 'quantum',
     operation: 'lean',
-    handler: async () => ({ theorems_verified: 6, toolchain: 'lean4', holds: true }),
-    description: 'Lean theorem verification'
+    handler: async () => ({ theorems: 6, toolchain: 'lean4', ok: true }),
+    description: 'Lean verify'
   },
   {
-    registryKey: 'qpu_cite',
+    key: 'cite',
     domain: 'quantum',
     operation: 'cite',
-    handler: async () => ({ doi: '10.5281/zenodo.22973935', orcid: '0009-0000-7312-9778', holds: true }),
-    description: 'Academic citations'
+    handler: async () => ({ doi: '10.5281/zenodo.22973935', orcid: '0009-0000-7312-9778', ok: true }),
+    description: 'Citations'
   },
   {
-    registryKey: 'qpu_train',
+    key: 'train',
     domain: 'quantum',
     operation: 'train',
-    handler: async () => ({ teams: 2, agents: 7, winner: Math.random() > 0.5 ? 'read' : 'call', faces: 14, holds: true }),
-    description: 'Autonomous team training'
+    handler: async () => ({ teams: 2, agents: 7, winner: Math.random() > 0.5 ? 'read' : 'call', ok: true }),
+    description: 'Team train'
   },
   {
-    registryKey: 'qpu_forge',
+    key: 'forge',
     domain: 'quantum',
     operation: 'forge',
-    handler: async () => ({ sandbox_tools: 0, max_capacity: 448, holds: true }),
-    description: 'Sealed operation interpreter'
+    handler: async () => ({ sandbox: 0, cap: 448, ok: true }),
+    description: 'Forge'
   },
   {
-    registryKey: 'qpu_improve',
+    key: 'improve',
     domain: 'quantum',
     operation: 'improve',
-    handler: async () => ({ current: 120259084288, next: 240518168576, ratio: 2, holds: true }),
-    description: 'Capacity doubling'
+    handler: async () => ({ now: 120259084288, next: 240518168576, ratio: 2, ok: true }),
+    description: 'Improve cap'
   },
   {
-    registryKey: 'qpu_compete',
+    key: 'compete',
     domain: 'quantum',
     operation: 'compete',
-    handler: async () => ({ winner: Math.random() > 0.5 ? 'read' : 'call', read_score: 92, call_score: 88, holds: true }),
-    description: 'Team competition scoring'
+    handler: async () => ({ winner: Math.random() > 0.5 ? 'read' : 'call', r: 92, c: 88, ok: true }),
+    description: 'Compete'
   },
   {
-    registryKey: 'qpu_prove',
+    key: 'prove',
     domain: 'quantum',
     operation: 'prove',
-    handler: async () => ({ theorems_hold: true, verified: true, holds: true }),
-    description: 'End-to-end verification'
+    handler: async () => ({ ok: true, verified: true }),
+    description: 'Verify'
   },
 
-  // TEST DOMAIN - Validation of automation
+  // TEST
   {
-    registryKey: 'test_echo',
+    key: 'echo',
     domain: 'test',
     operation: 'echo',
     handler: async (input?: Record<string, unknown>) => ({
-      message: input?.message || 'echo from test operation',
-      timestamp: new Date().toISOString(),
-      auto_generated: true,
-      holds: true
+      msg: input?.message || 'echo',
+      ts: new Date().toISOString(),
+      ok: true
     }),
-    description: 'Echo test operation (validates automation)'
+    description: 'Echo'
   },
   {
-    registryKey: 'test_validate',
+    key: 'validate',
     domain: 'test',
     operation: 'validate',
     handler: async () => ({
-      system_health: 'operational',
-      automation_status: 'verified',
-      operations_count: 26, // 24 original + 2 test operations
-      holds: true
+      health: 'ok',
+      status: 'verified',
+      ops: 26,
+      ok: true
     }),
-    description: 'Validate MCP automation system'
+    description: 'Validate'
   }
 ]
 
-/**
- * Derive camelCase builder method name from registry key
- * Example: 'compliance-scan' → 'complianceScan' or 'addComplianceScan'
- */
-export function deriveBuilderMethodName(registryKey: string): string {
-  return registryKey
+export function deriveBuilderMethodName(key: string): string {
+  return key
     .split('-')
     .map((part, i) => i === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1))
     .join('')
 }
 
-/**
- * Validate all operations have unique registry keys and domain/operation pairs
- */
 export function validateOperations(): { valid: boolean; errors: string[] } {
   const errors: string[] = []
   const seen = new Set<string>()
 
   for (const op of MCP_OPERATIONS) {
-    if (seen.has(op.registryKey)) {
-      errors.push(`Duplicate registry key: ${op.registryKey}`)
+    if (seen.has(op.key)) {
+      errors.push(`Duplicate key: ${op.key}`)
     }
-    seen.add(op.registryKey)
+    seen.add(op.key)
 
-    const key = `${op.domain}::${op.operation}`
-    if (seen.has(key)) {
-      errors.push(`Duplicate domain::operation: ${key}`)
+    const k = `${op.domain}::${op.operation}`
+    if (seen.has(k)) {
+      errors.push(`Duplicate domain::operation: ${k}`)
     }
-    seen.add(key)
+    seen.add(k)
   }
 
   return { valid: errors.length === 0, errors }

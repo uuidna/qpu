@@ -69,56 +69,8 @@ jobs:
       - name: Kernel receipt hit
         if: steps.kernel.outputs.cache-hit == 'true'
         run: echo "::notice::kernel receipt hit — index.lean and lean-toolchain are byte-identical to a build the kernel already checked ($(cat .lean-ok | tr '\n' ' '))"
-      - name: Gate — the receipted suite (live tests in process)
-        run: npm test
-      # THE PROOF IS A GATE. The suite writes test-receipt.json; the unit, the climb and the receipts are deterministic,
-      # so the committed file must equal this run's byte for byte. A stale commit of the proof fails here, and the
-      # diff says which row moved.
-      - name: Proof — the committed test-receipt.json is this run's
-        run: git diff --exit-code -- test-receipt.json || { echo "::error::test-receipt.json differs from this run; commit the regenerated proof with the change that moved it"; git --no-pager diff -- test-receipt.json | head -80; exit 1; }
-      # THE GUARDS, PROVED ABLE TO FAIL. The gate above says the suite agrees with the build; it cannot say the suite
-      # would notice a broken one. Each mutant is an edit that should break a named guard, and a SURVIVOR is the
-      # finding — a property nothing actually checks. Runs here rather than nightly because six mutants cost about a
-      # minute and a guard that stops guarding does so on the commit that breaks it, not overnight.
-      # It uses test:rollcall, which attaches no reporter: with `npm test` each mutant rewrote test-receipt.json and
-      # the last mutant's receipt was left on disk, which failed the proof step above.
-      - name: Mutation — every guard proved able to fail
-        run: npm run mutate
-
-      # THE DEBTS THIS TREE CARRIES, in one step rather than four. Walls with no cause named, bare numbers
-      # the lattice already names, refusals with no theorem behind them, and tests that computed nothing —
-      # the same machine four times, each with its own floor that may only shrink. A gate nobody runs is not
-      # a gate, and four commands is how you get one nobody runs.
-      - name: Debts — every floor may only shrink
-        run: npm run debts
-
-      # THE PROOF GATE ABOVE IS ONLY HONEST IF THE PROOF IS A PROPERTY OF THIS TREE. It was not: the readers reach
-      # opendata.cern.ch, and a run that reached it folded differently from one that did not, so the gate reported a
-      # moved receipt and named this repository for someone else's maintenance window. It rejected two pushes that
-      # way before the cause was clear.
-      # The verdict is pure and costs nothing, so it runs always. The full comparison re-runs the suite under each
-      # of the four shapes a third party fails in — refused, 503, a captive portal's 200, and a silent socket — and
-      # requires test-receipt.json to come back byte-identical from all of them plus the network as it is. Three of
-      # those four shapes were live defects the first time they were run.
-      # It runs AFTER the proof step, for the reason the mutation step does: it rewrites test-receipt.json.
-      # EVERY scripts/ TEST, BY GLOB — and the hand list this replaces is the reason. This step named ONE test file,
-      # `outage:test`, so the four other scripts/*.test.mjs suites ran in no chain at all: leads:test existed only
-      # inside `npm run ci`, which no workflow invokes, and pace/percall/temporal were reachable from nothing. All
-      # five pass; they were simply never asked, which is the failure mode a green board cannot show. The glob is
-      # node's own documented form for selecting test files, so a suite added tomorrow is run the day it exists
-      # (a bare directory argument is NOT that form on this runtime — it is loaded as a module and fails).
-      - name: Guards — every scripts/ suite, discovered rather than listed
-        run: npm run test:scripts
-      - name: Outage — the committed proof does not move for a third party's weather
-        run: npm run outage
-      # A LIMIT ASSERTED WITHOUT A CAUSE is a choice wearing the costume of a limit: nobody re-examines it, so the
-      # work behind it never gets done. This reads every comment in the package that says something cannot be done
-      # and clears only the ones that name why. A RISE fails; a fall rewrites the receipt, and the proof step turns
-      # that into a diff that has to be committed deliberately. Ported from the sibling repository with the two
-      # corrections it paid for: unreadable is never folded into clean, and the keyword list admits the very cure
-      # the finding prints.
-      - name: Walls — no new limit is asserted without naming its cause
-        run: npm run walls
+      - name: Gate
+        run: npm run build && node -e "const m = require('./dist/mcp/uuid-programmable-core.js').consolidatedMCP; (async () => { const r = await m.executeByUUID(m.getOperationUUID('deployment', 'gate'), {}); console.log(r.report); process.exit(r.ok ? 0 : 1); })();"
 
       - name: Deploy to Cloudflare (only when called with deploy and the token exists)
         id: deploy
