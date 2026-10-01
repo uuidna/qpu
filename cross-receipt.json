@@ -1,0 +1,179 @@
+{
+  "kind": "cross-receipt",
+  "when": "2026-10-02",
+  "agree": 21,
+  "of": 23,
+  "differ": [
+    "zenodo latest archive",
+    "orcid family name"
+  ],
+  "stream": {
+    "length": 46,
+    "head": "152a735b-2337-8708-b41f-c3dbc168d759",
+    "chain": "900d874b6c45323e",
+    "holds": true
+  },
+  "rows": [
+    {
+      "name": "cern record 38",
+      "agree": true,
+      "mcp": "654f899b-05e7-8dc6-8640-8c54cdf4da0a",
+      "live": "0ece2d9f-4f3b-8a19-8fb3-60f6edf0c673",
+      "fold": "745a5d127fb62859"
+    },
+    {
+      "name": "cern record 63",
+      "agree": true,
+      "mcp": "6d3bfcab-6f71-8580-9e3f-7f8379462980",
+      "live": "07c52847-dc8b-8037-bf01-85efe5ade831",
+      "fold": "9033851ffdaca9f3"
+    },
+    {
+      "name": "cern record 35",
+      "agree": true,
+      "mcp": "19cc300d-84e0-855a-a412-08757ade537e",
+      "live": "a64afa2c-7592-840d-8feb-a1f19a62f28c",
+      "fold": "08f0864cea8551fb"
+    },
+    {
+      "name": "cern record 62",
+      "agree": true,
+      "mcp": "f2ba3e9e-a2bd-855a-88c4-39eb0f13537e",
+      "live": "04c476db-1894-813a-9d74-e35b9b007128",
+      "fold": "f673f3bea3c3c68c"
+    },
+    {
+      "name": "cern total ATLAS",
+      "agree": true,
+      "mcp": "2d53404f-eeea-8371-bd1d-761267d8662e",
+      "live": "d613c6c2-ca8c-85b2-8758-09e6b86ea1b4",
+      "fold": "9ba93a7550bfd4b8"
+    },
+    {
+      "name": "cern total CMS",
+      "agree": true,
+      "mcp": "ed09ad27-4934-8caf-9fd6-a9ccefbbde38",
+      "live": "3fb04426-7495-8b8f-8616-0147e334106c",
+      "fold": "fc255ae7f07cfde9"
+    },
+    {
+      "name": "cern total ALICE",
+      "agree": true,
+      "mcp": "9c0bcd32-396a-83d4-8e5e-9be17d38be99",
+      "live": "67650037-210f-8d10-9fb7-62423e633cc8",
+      "fold": "98609a695b14f292"
+    },
+    {
+      "name": "cern total LHCb",
+      "agree": true,
+      "mcp": "0a6e8b60-d619-8ce1-9070-fde4d4bad829",
+      "live": "8ad64f5f-f8d4-8fa1-aa88-c0454a613c91",
+      "fold": "844af1c701ed765a"
+    },
+    {
+      "name": "cern total TOTEM",
+      "agree": true,
+      "mcp": "d1e43134-89fa-8932-be2d-22c6bb245de2",
+      "live": "739f49f2-7c7d-81b2-823b-7b3141563e4a",
+      "fold": "b5ad34193d715e82"
+    },
+    {
+      "name": "cern total LHCf",
+      "agree": true,
+      "mcp": "c8365d51-87be-8ddc-8891-653c37c27675",
+      "live": "3b966915-95cf-8d11-8e77-f04ea7851b91",
+      "fold": "95054f713614efa4"
+    },
+    {
+      "name": "cern total MoEDAL",
+      "agree": true,
+      "mcp": "dfcf41a6-c598-8517-9559-dddecca059f2",
+      "live": "a20a0a27-86cd-892e-aee8-3f1964332df9",
+      "fold": "66fecc2eb28de490"
+    },
+    {
+      "name": "cern total FASER",
+      "agree": true,
+      "mcp": "55d60f69-2b85-8bd1-976f-b8de8da91b4c",
+      "live": "e6d24ca3-9f7c-84de-b178-275ac93a19f4",
+      "fold": "b687af1e0a826302"
+    },
+    {
+      "name": "cern total SND@LHC",
+      "agree": true,
+      "mcp": "e8187e63-767d-8512-a703-2f3ef55967b4",
+      "live": "d5bc54c9-b479-808e-8690-18cd193a1f7b",
+      "fold": "3de34df16e5e4abd"
+    },
+    {
+      "name": "cern total OPERA",
+      "agree": true,
+      "mcp": "08e5f148-7558-84a4-95e2-b9c3d0ac428d",
+      "live": "b00df434-f71f-8327-a03c-d261cc7b4277",
+      "fold": "4ed45b3eedd10bbe"
+    },
+    {
+      "name": "cern total PHENIX",
+      "agree": true,
+      "mcp": "77ed208a-48f6-8395-bcfe-36c22ff4587a",
+      "live": "c4363c3f-cf76-8fbe-9f51-7520cdbd13c3",
+      "fold": "4c171114c2a1527e"
+    },
+    {
+      "name": "cern total JADE",
+      "agree": true,
+      "mcp": "e16264f7-2141-8fe7-b2c9-4d3f23ac7a3d",
+      "live": "a7bfe2e7-ec51-8ba8-9ade-cc6c4906fc86",
+      "fold": "909316481a087352"
+    },
+    {
+      "name": "cern total DELPHI",
+      "agree": true,
+      "mcp": "0cdbf7ee-ae8d-84b3-9e7c-51b4ac38b6a5",
+      "live": "b47bc654-fb7a-840c-922b-80de50a156c0",
+      "fold": "8d100d8d7217cef5"
+    },
+    {
+      "name": "zenodo archived record",
+      "agree": true,
+      "mcp": "6e42f42e-654f-8fe9-88b9-0f2b25677b73",
+      "live": "a5e6fcb5-cd31-81ff-9519-69df3d81853f",
+      "fold": "a7e7af8d6dd8cb78"
+    },
+    {
+      "name": "zenodo archived commit",
+      "agree": true,
+      "mcp": "723fb79a-fcae-80ff-944f-bd19ba26fb13",
+      "live": "233684a4-6759-856c-9bd2-8132daa946cf",
+      "fold": "9da68b2db6c2bd91"
+    },
+    {
+      "name": "zenodo prior record",
+      "agree": true,
+      "mcp": "63feab15-2c84-8dab-ace2-91e34edaa6f0",
+      "live": "633f3864-2666-898f-b11d-d64e7228f3da",
+      "fold": "7e6a2bfd43f97945"
+    },
+    {
+      "name": "zenodo latest archive",
+      "agree": false,
+      "mcp": "e21c6810-cf98-86bc-8230-4bf1f6510442",
+      "live": "c83ba5bf-9f80-8a85-9ffd-8c3fa87084e4",
+      "fold": "a42a2a43b882bbea ≠ 65bd38c875bff360"
+    },
+    {
+      "name": "orcid family name",
+      "agree": false,
+      "mcp": "ca79f173-705c-895e-a154-a7df5c00fea0",
+      "live": "871ec489-ba97-8bd8-8ecb-df143c0ef60f",
+      "fold": "af09df01304b04a3 ≠ 2ca31f7a74f3ad25"
+    },
+    {
+      "name": "shor 91",
+      "agree": true,
+      "mcp": "03fead8e-450e-8ed5-afb3-0c30a1cf4f51",
+      "live": "152a735b-2337-8708-b41f-c3dbc168d759",
+      "fold": "3b9098aee6bf08ad"
+    }
+  ]
+}
