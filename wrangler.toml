@@ -1,34 +1,141 @@
 # Cloudflare Workers Configuration: UUIDNA QPU Edge Deployment
 # License: CC-BY-NC-ND-4.0
+# Production-Ready & Cost-Optimized
 
 name = "uuidna-qpu-edge"
 type = "javascript"
 account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
 workers_dev = true
 main = "dist/quantum/processing/unit/cloudflare-worker.js"
+
+# Development default route
 routes = [
-  { pattern = "qpu.example.com/*", zone_name = "example.com" }
+  { pattern = "qpu.dev.workers.dev/*", zone_name = null }
 ]
 
-# Environment configuration
+# Build configuration with optimization
+build = { command = "npm run build:prod", cwd = "./" }
+compatibility_date = "2024-12-15"
+compatibility_flags = ["nodejs_compat"]
+limits = {
+  cpu_milliseconds = 50000
+}
+
+# KV Namespaces (cost-optimized)
+[[kv_namespaces]]
+binding = "FORMULA_CACHE"
+id = "YOUR_FORMULA_KV_NAMESPACE_ID"
+preview_id = "YOUR_FORMULA_KV_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "METRICS"
+id = "YOUR_METRICS_KV_NAMESPACE_ID"
+preview_id = "YOUR_METRICS_KV_PREVIEW_ID"
+
+# Durable Objects for stateful quantum computation
+[[durable_objects.bindings]]
+name = "QUANTUM_STATE"
+class_name = "QuantumStateManager"
+script_name = "uuidna-qpu-edge"
+
+# Analytics Engine for cost tracking
+[[analytics_engine_datasets]]
+binding = "QUANTUM_METRICS"
+
+# ============================================================================
+# PRODUCTION ENVIRONMENT
+# ============================================================================
+
 [env.production]
+name = "uuidna-qpu"
 routes = [
-  { pattern = "api.example.com/*", zone_name = "example.com" }
+  { pattern = "api.uuidna.com/*", zone_name = "uuidna.com" },
+  { pattern = "qpu.uuidna.com/*", zone_name = "uuidna.com" }
 ]
-vars = { NODE_ENV = "production", LOG_LEVEL = "info", FORMULA_CORPUS_SIZE = "42" }
+
+# Production variables (non-sensitive)
+vars = {
+  NODE_ENV = "production",
+  LOG_LEVEL = "warn",
+  FORMULA_CORPUS_SIZE = "42",
+  CACHE_TTL_SECONDS = "3600",
+  MAX_REQUEST_SIZE = "10485760",
+  RATE_LIMIT_REQUESTS = "1000",
+  RATE_LIMIT_WINDOW = "60"
+}
+
+# Production secrets (set via CLI)
+# wrangler secret put IBM_QUANTUM_API_KEY --env production
+# wrangler secret put DATABASE_URL --env production
+# wrangler secret put MONITORING_TOKEN --env production
+# wrangler secret put SIGNING_KEY --env production
+
+# Production KV namespaces
+[[env.production.kv_namespaces]]
+binding = "FORMULA_CACHE"
+id = "prod-formula-cache-id"
+
+[[env.production.kv_namespaces]]
+binding = "METRICS"
+id = "prod-metrics-id"
+
+# Production Durable Objects
+[[env.production.durable_objects.bindings]]
+name = "QUANTUM_STATE"
+class_name = "QuantumStateManager"
+script_name = "uuidna-qpu"
+
+# Analytics Engine dataset for production
+[[env.production.analytics_engine_datasets]]
+binding = "QUANTUM_METRICS"
+
+# ============================================================================
+# STAGING ENVIRONMENT
+# ============================================================================
 
 [env.staging]
+name = "uuidna-qpu-staging"
 routes = [
-  { pattern = "staging-api.example.com/*", zone_name = "example.com" }
+  { pattern = "staging-api.uuidna.com/*", zone_name = "uuidna.com" }
 ]
-vars = { NODE_ENV = "staging", LOG_LEVEL = "debug" }
+
+vars = {
+  NODE_ENV = "staging",
+  LOG_LEVEL = "info",
+  FORMULA_CORPUS_SIZE = "42",
+  CACHE_TTL_SECONDS = "1800",
+  MAX_REQUEST_SIZE = "10485760",
+  RATE_LIMIT_REQUESTS = "500",
+  RATE_LIMIT_WINDOW = "60"
+}
+
+[[env.staging.kv_namespaces]]
+binding = "FORMULA_CACHE"
+id = "staging-formula-cache-id"
+
+[[env.staging.kv_namespaces]]
+binding = "METRICS"
+id = "staging-metrics-id"
+
+# ============================================================================
+# DEVELOPMENT ENVIRONMENT
+# ============================================================================
 
 [env.development]
 name = "uuidna-qpu-dev"
 workers_dev = true
-vars = { NODE_ENV = "development", LOG_LEVEL = "debug" }
 
-# Build configuration
-build = { command = "npm run build", cwd = "./" }
-compatibility_date = "2024-12-01"
-compatibility_flags = ["nodejs_compat"]
+vars = {
+  NODE_ENV = "development",
+  LOG_LEVEL = "debug",
+  FORMULA_CORPUS_SIZE = "42",
+  CACHE_TTL_SECONDS = "300",
+  MAX_REQUEST_SIZE = "10485760",
+  RATE_LIMIT_REQUESTS = "10000",
+  RATE_LIMIT_WINDOW = "60"
+}
+
+[[env.development.kv_namespaces]]
+binding = "FORMULA_CACHE"
+id = "dev-formula-cache-id"
+preview_id = "dev-formula-cache-preview-id"
