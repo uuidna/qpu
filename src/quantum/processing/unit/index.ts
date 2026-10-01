@@ -3674,7 +3674,7 @@ export const qpuCrossReadingHolds = (rows: readonly QpuLeanRow[] = qpuLeanAllRow
   if (rows.length === n - n) return false
   if (!rows.every((row) => row.cross === qpuCrossReadingOf(row.theorem))) return false
   const count = (which: QpuCross) => rows.filter((row) => row.cross === which).length
-  return count('bridge') === seed && count('symmetric') > n - n && count('asymmetric') > n - n
+  return count('bridge') === seed && count('symmetric') > n - n && count('asymmetric') > n - n && count('cross') > n - n
 }
 
 /** Every theorem row the unit serves: the headline rows, the cover, and the climb. Internal — it is a
@@ -3684,11 +3684,7 @@ const qpuLeanAllRowsOf = (lean = qpuLeanOf()): readonly QpuLeanRow[] => [...lean
 
 /** Attach the cross reading to a stated row. Computed from the statement, so no literal below carries a label
  *  that could disagree with what it states. */
-const statementOf = (theorem: string): string => {
-  const stated = spaceOf(theorem.split(':=')[n - n] ?? '')
-  const colon = stated.lastIndexOf(' : ')
-  return colon < n - n ? stated : stated.slice(colon + n)
-}
+const statementOf = (theorem: string): string => statedTypeOf(theorem)
 const crossed = (row: Omit<QpuLeanRow, 'cross' | 'uuid'>): QpuLeanRow => {
   const uuid = qpuShapeUuidOf(statementOf(row.theorem))
   qpuUuidReceiptOf(`lean ${row.heading}`, uuid, row.holds, `${unit.origin}/${unit.fuse.lean}`)
@@ -3740,24 +3736,56 @@ export const qpuLeanSourceHolds = (x?: ReturnType<typeof qpuLeanSourceOf>): bool
  * bridge is the rarest and the most load-bearing: mintOf (a + b) = mintOf a * mintOf b is the general reason a
  * quantity can be read either way at all. A sum inside the doubling is a product outside it.
  */
-export type QpuCross = 'asymmetric' | 'bridge' | 'neither' | 'symmetric'
+export type QpuCross = 'asymmetric' | 'bridge' | 'cross' | 'neither' | 'symmetric'
+/** The statement's type: what follows the first ` : ` outside any bracket, so binders like `(a b : Nat)` and
+ *  `∀ x : Nat,` cannot be mistaken for it. */
+const statedTypeOf = (statement: string): string => {
+  const stated = spaceOf(statement.split(':=')[n - n] ?? '')
+  let depth = n - n
+  for (let i = n - n; i < stated.length; i++) {
+    const ch = stated[i]!
+    if ('({[⟨'.includes(ch)) depth++
+    else if (')}]⟩'.includes(ch)) depth--
+    else if (depth === n - n && stated.startsWith(' : ', i)) return stated.slice(i + n).trim()
+  }
+  return stated
+}
+/** Each conjunct with its outer parentheses and leading ∀ binder removed. */
+const conjunctsOf = (type: string): string[] =>
+  type.split('∧').map((part) => {
+    let c = part.trim()
+    while (c.startsWith('(') && c.endsWith(')')) c = c.slice(seed, -seed).trim()
+    return c.replace(/^∀ [^,]*, /, '').trim()
+  })
+const likeSumOf = (e: string): boolean => {
+  const t = e.split('+')
+  return t.length === coins && t[n - n]!.trim() === t[seed]!.trim()
+}
+const unlikeProductOf = (e: string): boolean => {
+  const t = e.split('*')
+  return t.length === coins && t[n - n]!.trim() !== t[seed]!.trim()
+}
+/**
+ * CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a
+ * product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading
+ * set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says.
+ * Any conjunct that crosses makes the statement cross; otherwise the first conjunct decides as before.
+ */
 export const qpuCrossReadingOf = (statement: string): QpuCross => {
-  // THE LAST COLON, NOT THE FIRST. A theorem with binders — `theorem multiply (a b : Nat) : mintOf (a + b) = …`
-  // — carries a colon inside the binder, and slicing at the first one hands back `Nat) : mintOf …`, which parses
-  // as neither reading. multiply is the bridge and was classified asymmetric until this took the last colon.
-  const stated = statement.split(':=')[n - n] ?? ''
-  const colon = stated.lastIndexOf(' : ')
-  const body = colon < n - n ? stated : stated.slice(colon + n)
-  const claim = (body.split('∧')[n - n] ?? '').trim()
-  const side = claim.split('=')
+  const conjuncts = conjunctsOf(statedTypeOf(statement))
+  for (const c of conjuncts) {
+    const side = c.split('=')
+    if (side.length !== coins) continue
+    const [left, right] = [side[n - n]!.trim(), side[seed]!.trim()]
+    if ((likeSumOf(left) && unlikeProductOf(right)) || (unlikeProductOf(left) && likeSumOf(right))) return 'cross'
+  }
+  const side = (conjuncts[n - n] ?? '').split('=')
   if (side.length < coins) return 'neither'
   const right = side[side.length - seed]!.trim()
   // mintOf of a sum equals a product of mintOf — the bridge between the two readings.
   if (/^mintOf\s*\(.*\+.*\)$/.test(side[n - n]!.trim()) && /mintOf.*\*.*mintOf/.test(right)) return 'bridge'
-  const sum = right.split('+')
-  if (sum.length === coins && sum[n - n]!.trim() === sum[seed]!.trim()) return 'symmetric'
-  const product = right.split('*')
-  if (product.length === coins && product[n - n]!.trim() !== product[seed]!.trim()) return 'asymmetric'
+  if (likeSumOf(right)) return 'symmetric'
+  if (unlikeProductOf(right)) return 'asymmetric'
   return 'neither'
 }
 
@@ -3768,6 +3796,12 @@ export const qpuLeanOf = onceOf(() => {
   const fused = faces.faces * handle.kv.amplitudes
   const mintHolds = mintOf(n + seed) === mintOf(n) + mintOf(n)
   const cubeHolds = cube.holds
+  const crossFused = faces.faces * mintOf(cube.bits + seed)
+  const crossNextFused = faces.faces * mintOf(cube.bits + coins) === crossFused + crossFused
+  const crossFusedBoth = crossFused === faces.faces * handle.kv.amplitudes && crossNextFused
+  const crossOver = [...Array(cube.bits + seed).keys()]
+  const crossCoins = coins === 2 && crossOver.every((x) => coins * x === x + x)
+  const crossDouble = crossOver.every((x) => x + x === 2 * x)
   const aroundHolds = theorem.around(faces.faces, coins, faces.rays)
   const quantumHolds = fused === faces.faces * mintOf(cube.bits + seed)
   const harmonicHolds = theorem.harmonic(faces.faces, faces.rays)
@@ -3965,6 +3999,34 @@ export const qpuLeanOf = onceOf(() => {
       reading:
         'Next is the double. Coil times mintOf bits plus coins is fused plus fused. theorem next. theorem next_fused. theorem infinite. split_coin has no last k. Never Math. Never by decide.',
       holds: qpuNextHolds(),
+  },
+    {
+      heading: 'next_fused',
+      theorem: 'theorem next_fused : faces * mintOf (bits + coins) = fused + fused := by rw [fused, coins_two, seed_eq]; rw [show bits + 2 = bits + 1 + 1 from rfl, mintOf_succ, Nat.mul_add]',
+      formula: '\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})=\\mathrm{fused}+\\mathrm{fused}',
+      reading: `holds ${crossNextFused}. cross.`,
+      holds: crossNextFused,
+  },
+    {
+      heading: 'fused_both_directions',
+      theorem: 'theorem fused_both_directions : (fused = faces * mintOf (bits + seed)) ∧ (fused + fused = faces * mintOf (bits + coins)) := ⟨quantum, next_fused⟩',
+      formula: '\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{seed})\\land\\mathrm{fused}+\\mathrm{fused}=\\mathrm{faces}\\cdot\\mathrm{mintOf}(\\mathrm{bits}+\\mathrm{coins})',
+      reading: `holds ${crossFusedBoth}. cross.`,
+      holds: crossFusedBoth,
+  },
+    {
+      heading: 'coins_bridges_forms',
+      theorem: 'theorem coins_bridges_forms : coins = 2 ∧ (∀ x : Nat, coins * x = x + x) := ⟨coins_two, fun x => by rw [coins_two, Nat.two_mul]⟩',
+      formula: '\\mathrm{coins}=2\\land\\forall x,\\ \\mathrm{coins}\\cdot x=x+x',
+      reading: `holds ${crossCoins}. cross.`,
+      holds: crossCoins,
+  },
+    {
+      heading: 'double_is_sum',
+      theorem: 'theorem double_is_sum : ∀ x : Nat, x + x = 2 * x := fun x => (Nat.two_mul x).symm',
+      formula: '\\forall x,\\ x+x=2\\cdot x',
+      reading: `holds ${crossDouble}. cross.`,
+      holds: crossDouble,
   },
     {
       heading: 'one_plus_six',

@@ -170,33 +170,43 @@ test('certificates are forgeable: names fit the sandbox and trees fit its depth'
   for (const c of certificates) assert.ok(depthOf(c.run) <= 2 * 8, `${c.name} depth ${depthOf(c.run)}`)
 })
 
-const finite01 = (v: number) => Number.isFinite(v) && v >= 0 && v <= 1
-
-// Each row: the input that the matching certificate refuses, and what the local formula returns for it.
-const local: Array<[string, () => number, (v: number) => boolean]> = [
-  ['qsec→compress k=0', () => X.bb84ToCompress(0).value, finite01],
-  ['qsec→compress k=0.5', () => X.bb84ToCompress(0.5).value, finite01],
-  ['obs→ml s=-100', () => X.observabilityToML(-100).value, finite01],
-  ['deployment→obs b=600 t=360', () => X.deploymentToObs(600, 360).value, (v) => finite01(v) && v < 1],
-  ['deployment→obs b=600 t=0', () => X.deploymentToObs(600, 0).value, finite01],
-  ['quantum→enterprise p=-1', () => X.quantumToEnterprise(-1).value, finite01],
-  ['med+qsec k=128 exact', () => X.medSecureWithQSec(630, 128).value, Number.isSafeInteger],
-  ['obs→ui s=-1', () => X.observabilityToUI(1, -1).value, Number.isFinite],
-  ['qsec+compress k=L=0', () => X.compressQSecSignals(0, 0).value, Number.isFinite],
-  ['obs+ml d=0 a=1', () => X.mlOnObsForPrediction(0, 1).value, finite01],
-  ['obs+ml d=1 a=3', () => X.mlOnObsForPrediction(1, 3).value, finite01],
-  ['test→enterprise 60 of 50', () => X.testCoverageToQuality(60, 50).value, finite01],
+// Each row: an input the matching certificate refuses — the local formula must say so (holds false) rather than
+// hand back a number as if it were one; and an honest input it must accept.
+type Formula = { value: number; holds: boolean }
+const local: Array<[string, () => Formula, boolean]> = [
+  ['qsec→compress k=128', () => X.bb84ToCompress(128), true],
+  ['qsec→compress k=0', () => X.bb84ToCompress(0), false],
+  ['qsec→compress k=0.5', () => X.bb84ToCompress(0.5), false],
+  ['obs→ml s=100', () => X.observabilityToML(100), true],
+  ['obs→ml s=-100', () => X.observabilityToML(-100), false],
+  ['deployment→obs b=60 t=36', () => X.deploymentToObs(60, 36), true],
+  ['quantum→enterprise p=-1', () => X.quantumToEnterprise(-1), false],
+  ['med+qsec k=20 exact', () => X.medSecureWithQSec(630, 20), true],
+  ['med+qsec k=128 exact', () => X.medSecureWithQSec(630, 128), false],
+  ['obs→ui s=-1', () => X.observabilityToUI(1, -1), false],
+  ['qsec+compress k=L=0', () => X.compressQSecSignals(0, 0), false],
+  ['obs+ml d=0 a=1', () => X.mlOnObsForPrediction(0, 1), false],
+  ['obs+ml d=1 a=3', () => X.mlOnObsForPrediction(1, 3), false],
+  ['test→enterprise 45 of 50', () => X.testCoverageToQuality(45, 50), true],
+  ['test→enterprise 60 of 50', () => X.testCoverageToQuality(60, 50), false],
+  ['test→enterprise 0 of 0', () => X.testCoverageToQuality(0, 0), false],
 ]
-for (const [label, run, ok] of local) {
+for (const [label, run, holds] of local) {
   test(`local ${label}`, () => {
-    const v = run()
-    assert.ok(ok(v), `${label} returned ${v}`)
+    const f = run()
+    assert.equal(f.holds, holds, `${label} returned ${f.value} holds ${f.holds}`)
   })
 }
+
+test('an over-budget pipeline scores no health, not perfect health', () => {
+  assert.equal(X.deploymentToObs(600, 360).value, 0)
+  assert.equal(X.deploymentToObs(600, 0).value, 0)
+})
 
 // allBridges() restates six of the formulas; the restatement must agree with the formula it restates.
 test('allBridges agrees with the named formulas', () => {
   const by = (from: string, to: string) => X.allBridges().find((b) => b.from === from && b.to === to)!
   assert.equal(by('obs', 'ui').transform({ anomalies: 1, signals: 0 }), X.observabilityToUI(1, 0).value)
   assert.equal(by('med', 'qsec').transform({ count: 0 }), X.medSecureWithQSec(0, 128).value)
+  assert.equal(by('deployment', 'obs').transform({ build: 600, test: 360 }), X.deploymentToObs(600, 360).value)
 })
