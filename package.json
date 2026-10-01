@@ -1,6 +1,6 @@
 {
   "name": "@uuidna/qpu",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publishConfig": {
     "access": "public"
   },
@@ -80,6 +80,8 @@
     "ship": "npm run build && npx wrangler deploy",
     "lean": "lean src/quantum/processing/unit/index.lean",
     "mcp": "npm run build && node dist/mcp/core.js",
+    "version:auto": "npm run build && node -e \"import('./dist/mcp/version.js').then(m => m.autoVersion()).then(r => console.log(JSON.stringify(r, null, 2)))\"",
+    "version:status": "npm run build && node -e \"import('./dist/mcp/version.js').then(m => m.statusVersion())\"",
     "status": "npm run mcp -- status",
     "health": "npm run mcp -- health",
     "uuid": "npm run mcp -- uuid",
