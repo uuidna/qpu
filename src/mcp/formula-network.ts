@@ -426,6 +426,54 @@ export class FormulaNetwork {
 
     return [...new Set(chain)] // Remove duplicates
   }
+
+  /**
+   * Get network topology
+   */
+  getTopology(): { nodes: number; edges: number; components: number } {
+    const components = new Set<string>()
+
+    for (const nodeId of this.state.nodes.keys()) {
+      components.add(nodeId.split('-')[0])
+    }
+
+    return {
+      nodes: this.state.nodes.size,
+      edges: this.state.edges.length,
+      components: components.size
+    }
+  }
+
+  /**
+   * Execute network with default inputs if not provided
+   */
+  async executeNetworkDefault(): Promise<Map<string, number>> {
+    const defaultInputs: Record<string, number> = {}
+    for (const node of this.state.nodes.values()) {
+      if (node.inputs.length === 0) {
+        defaultInputs[node.id] = node.value || 1.0
+      }
+    }
+    return this.executeNetwork(defaultInputs)
+  }
+
+  /**
+   * Get cross-domain effects for a domain
+   */
+  getCrossDomainEffects(domain: string): string[] {
+    const effects: string[] = []
+    for (const node of this.state.nodes.values()) {
+      if (node.id.startsWith(domain) || node.domain === 'cross') {
+        for (const outputId of node.outputs) {
+          const outputNode = this.state.nodes.get(outputId)
+          if (outputNode && outputNode.domain !== domain) {
+            effects.push(outputId)
+          }
+        }
+      }
+    }
+    return [...new Set(effects)]
+  }
 }
 
 export const formulaNetwork = new FormulaNetwork()
