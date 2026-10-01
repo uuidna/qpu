@@ -10,7 +10,7 @@ authors:
 url: https://qpu.uuidna.com
 repository-code: https://github.com/uuidna/qpu
 license: CC-BY-NC-ND-4.0
-version: 0.3.0
+version: 1.0.0
 identifiers:
   - description: Production release v1.0.0 (Dec 14, 2026)
     type: doi

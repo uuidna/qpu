@@ -4594,7 +4594,7 @@ export const qpuCiteOf = onceOf(() => {
    * without it until a new version is archived. Both are said, and `current` says whether they are the same version,
    * so a reader who downloads "this version" knows whether it is the code that answered them. */
   const archived = { doi, archive, version: '1.0.0' as string, commit: '50eace7', holds: archive.endsWith(doi.split('.').pop() ?? '') }
-  const served = { version: packageVersion, origin: unit.origin, holds: packageVersion.split('.').length === n }
+  const served = { version: packageVersion, origin: unit.origin, holds: /^1\.(0|[1-9][0-9]*)\.[0-9]$/.test(packageVersion) }
   const current = archived.version === served.version
   const currency = current
     ? `the archive is this version: v${served.version} at ${archived.commit}.`

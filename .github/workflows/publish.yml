@@ -2,7 +2,7 @@ name: publish
 
 on:
   push:
-    tags: ['v*']
+    tags: ['v1.*.[0-9]']
   workflow_dispatch:
 
 concurrency:
@@ -38,6 +38,8 @@ jobs:
           node -e 'const [a,b,c]=process.argv[1].split(".").map(Number);const ok=a>11||(a===11&&(b>5||(b===5&&c>=1)));if(!ok){console.error(`::error::npm ${process.argv[1]} is below the OIDC trusted-publishing floor 11.5.1`);process.exit(1)}' "$NPM"
           echo "npm $NPM meets the OIDC floor 11.5.1"
       - run: npm ci
+      - name: Version lock (v1.<minor>.<digit>; previous version released on npm)
+        run: npm run version:lock
       - run: npm run build
       - name: Tag matches package.json
         if: startsWith(github.ref, 'refs/tags/')
@@ -62,7 +64,7 @@ jobs:
       - name: npm publish (OIDC trusted publishing; E404 on PUT means npmjs.com has no trusted publisher for this workflow)
         run: |
           set +e
-          npm publish --provenance --access public 2>&1 | tee publish.log
+          npm publish --provenance --access public --tag "$(node scripts/version-lock.mjs --dist-tag)" 2>&1 | tee publish.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ] && grep -q "E404" publish.log; then
             echo "::error::npm refused the PUT with 404: npmjs.com has no trusted publisher for uuidna/qpu + publish.yml. Set one under the package's Settings → Trusted publishers (GitHub Actions, repository uuidna/qpu, workflow publish.yml), then rerun this job. The GitHub Release and the Zenodo archive are already made."

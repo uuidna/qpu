@@ -4,6 +4,10 @@
 // Lean file; the build never runs it, so lean.test.ts can fail when the embed is stale (a gate that repairs cannot fail).
 import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { execSync } from 'node:child_process'
+
+// the version embedded is the version the lock allows: v1.<minor>.<digit>, forward only
+execSync('node scripts/version-lock.mjs --offline', { stdio: 'inherit' })
 
 const root = process.cwd()
 const leanPath = 'src/quantum/processing/unit/index.lean'
