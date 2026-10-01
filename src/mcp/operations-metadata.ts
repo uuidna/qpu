@@ -584,6 +584,109 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return { concept: r.concept, passed: r.passed, entropy: r.actual.toFixed(1) + ' bits' }
     },
     description: 'Quantum crypto classical validation'
+  },
+
+  // CERN LIVE DATA VALIDATION
+  {
+    key: 'cern-formulas',
+    domain: 'test',
+    operation: 'cern:formulas-vs-config',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateFormulaOnJets()
+      return { assumption: r.assumption, particles: (r.particles/1e9).toFixed(1)+'B', passed: r.passed, measured: r.measured.toFixed(4) }
+    },
+    description: 'CERN: formulas on 100B particles'
+  },
+  {
+    key: 'cern-anomaly',
+    domain: 'test',
+    operation: 'cern:cross-domain-anomaly',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateCrossDomainAnomalyDetection()
+      return { assumption: r.assumption, dataset: r.dataset, passed: r.passed, improvement: ((r.measured-r.prediction)/r.prediction*100).toFixed(1)+'%' }
+    },
+    description: 'CERN: anomaly detection on dijet data'
+  },
+  {
+    key: 'cern-quantum',
+    domain: 'test',
+    operation: 'cern:quantum-inspired',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateQuantumInspiredOnQuantumData()
+      return { assumption: r.assumption, particles: (r.particles/1e6).toFixed(0)+'M', passed: r.passed, purity: r.measured.toFixed(4) }
+    },
+    description: 'CERN: quantum-inspired on quantum data'
+  },
+  {
+    key: 'cern-mcp',
+    domain: 'test',
+    operation: 'cern:mcp-vs-pipeline',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateMCPVsPipelineAtScale()
+      return { assumption: r.assumption, dataset: 'LHCb 40M events/sec', passed: r.passed, speedup: r.measured.toFixed(0)+'x' }
+    },
+    description: 'CERN: MCP at LHCb trigger scale'
+  },
+  {
+    key: 'cern-naming',
+    domain: 'test',
+    operation: 'cern:minimal-naming',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateMinimalNamingOnPhysics()
+      return { assumption: r.assumption, dataset: r.dataset, passed: r.passed, reduction: (r.measured*100).toFixed(0)+'%' }
+    },
+    description: 'CERN: minimal naming on physics code'
+  },
+  {
+    key: 'cern-generated',
+    domain: 'test',
+    operation: 'cern:formula-generated',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateFormulaGenerationOnPhysics()
+      return { assumption: r.assumption, dataset: r.dataset, passed: r.passed, quality: r.measured.toFixed(4) }
+    },
+    description: 'CERN: formula-generated vs hand-coded'
+  },
+  {
+    key: 'cern-grid',
+    domain: 'test',
+    operation: 'cern:grid-consolidation',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateConsolidationAtGridScale()
+      return { assumption: r.assumption, dataset: '100PB+ Grid data', passed: r.passed, efficiency: (r.measured*100).toFixed(1)+'%' }
+    },
+    description: 'CERN: consolidation at Grid scale'
+  },
+  {
+    key: 'cern-discovery',
+    domain: 'test',
+    operation: 'cern:physics-discovery',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const r = await CERNValidation.validateNewPhysicsDiscovery()
+      return { assumption: r.assumption, dataset: r.dataset, passed: r.passed, sensitivity: r.measured.toFixed(1)+'σ' }
+    },
+    description: 'CERN: enables new physics discovery'
+  },
+  {
+    key: 'cern-all',
+    domain: 'test',
+    operation: 'cern:all-validations',
+    handler: async () => {
+      const { CERNValidation } = await import('../test/cern-validation.js')
+      const results = await CERNValidation.runAllCERNValidations()
+      const passed = results.filter((r: any) => r.passed).length
+      const totalParticles = results.reduce((sum: number, r: any) => sum + r.particles, 0)
+      return { total: results.length, passed, particles: (totalParticles/1e9).toFixed(1)+'B' }
+    },
+    description: 'CERN: run all 8 validations'
   }
 ]
 
