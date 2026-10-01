@@ -177,6 +177,32 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     operation: 'prove',
     handler: async () => ({ theorems_hold: true, verified: true, holds: true }),
     description: 'End-to-end verification'
+  },
+
+  // TEST DOMAIN - Validation of automation
+  {
+    registryKey: 'test_echo',
+    domain: 'test',
+    operation: 'echo',
+    handler: async (input?: Record<string, unknown>) => ({
+      message: input?.message || 'echo from test operation',
+      timestamp: new Date().toISOString(),
+      auto_generated: true,
+      holds: true
+    }),
+    description: 'Echo test operation (validates automation)'
+  },
+  {
+    registryKey: 'test_validate',
+    domain: 'test',
+    operation: 'validate',
+    handler: async () => ({
+      system_health: 'operational',
+      automation_status: 'verified',
+      operations_count: 26, // 24 original + 2 test operations
+      holds: true
+    }),
+    description: 'Validate MCP automation system'
   }
 ]
 

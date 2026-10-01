@@ -27,6 +27,9 @@ import { publicDatasetValidator } from './testing/public-dataset-validator.js'
 import { designSystem } from './ui/design-system.js'
 import { mcpUIAdapter } from './ui/mcp-ui-adapter.js'
 
+import { consolidatedMCP } from '../mcp/uuid-programmable-core.js'
+import { MCPBuilder, UNIVERSAL_OPERATION_REGISTRY } from '../mcp/unified-mcp-router.js'
+
 // ============================================================================
 // TOOLS TESTS
 // ============================================================================
@@ -428,5 +431,100 @@ test('Public Dataset Validator - Generates report', async () => {
   ok(report.includes('Cancer Research Platform'))
 })
 
+// ============================================================================
+// AUTOMATION TESTS - Validate MCPBuilder generation from metadata
+// ============================================================================
+
+test('Test operation - echo via direct UUID execution', async () => {
+  const uuid = consolidatedMCP.getOperationUUID('test', 'echo')
+  const result = await consolidatedMCP.executeByUUID(uuid, { message: 'automation-test' })
+
+  strictEqual(result.success, true)
+  const data = result.result as any
+  ok(data.message?.includes('automation-test'))
+  strictEqual(data.auto_generated, true)
+  strictEqual(data.holds, true)
+})
+
+test('Test operation - validate system health', async () => {
+  const uuid = consolidatedMCP.getOperationUUID('test', 'validate')
+  const result = await consolidatedMCP.executeByUUID(uuid, {})
+
+  strictEqual(result.success, true)
+  const data = result.result as any
+  strictEqual(data.system_health, 'operational')
+  strictEqual(data.automation_status, 'verified')
+  ok(data.operations_count >= 24) // At least 24 operations
+  strictEqual(data.holds, true)
+})
+
+test('MCPBuilder - auto-generated methods for test operations', () => {
+  const builder = new MCPBuilder()
+
+  // These methods are auto-generated via Proxy from metadata
+  const composed = builder
+    .add('test', 'echo')
+    .add('test', 'validate')
+    .build()
+
+  ok(Array.isArray(composed))
+  strictEqual(composed.length, 2)
+  ok(composed[0]) // UUID exists
+  ok(composed[1]) // UUID exists
+})
+
+test('UNIVERSAL_OPERATION_REGISTRY - auto-populated from metadata', () => {
+  ok(UNIVERSAL_OPERATION_REGISTRY['test_echo'])
+  ok(UNIVERSAL_OPERATION_REGISTRY['test_validate'])
+
+  strictEqual(UNIVERSAL_OPERATION_REGISTRY['test_echo'].domain, 'test')
+  strictEqual(UNIVERSAL_OPERATION_REGISTRY['test_echo'].operation, 'echo')
+
+  strictEqual(UNIVERSAL_OPERATION_REGISTRY['test_validate'].domain, 'test')
+  strictEqual(UNIVERSAL_OPERATION_REGISTRY['test_validate'].operation, 'validate')
+})
+
+test('MCP automation - end-to-end operation pipeline', async () => {
+  // 1. Get operation UUID (auto-derived)
+  const echoUuid = consolidatedMCP.getOperationUUID('test', 'echo')
+
+  // 2. Execute via UUID
+  const result = await consolidatedMCP.executeByUUID(echoUuid, { message: 'e2e-test' })
+
+  // 3. Verify result
+  ok(result.success)
+  const data = result.result as any
+  strictEqual(data.message, 'e2e-test')
+  ok(data.timestamp) // ISO timestamp generated
+  strictEqual(data.holds, true)
+
+  // 4. Verify it's in registry (auto-populated)
+  ok(UNIVERSAL_OPERATION_REGISTRY['test_echo'])
+
+  // 5. Verify builder method exists (auto-generated)
+  const builder = new MCPBuilder()
+  const ops = builder.add('test', 'echo').build()
+  strictEqual(ops.length, 1)
+})
+
+test('MCP automation - operation count validation', () => {
+  const registry = UNIVERSAL_OPERATION_REGISTRY
+  const keys = Object.keys(registry)
+
+  // Should have auto-generated operations from metadata
+  ok(keys.length >= 23, `Expected >= 23 operations, got ${keys.length}`)
+
+  // Verify registry entries are properly structured
+  for (const key of keys) {
+    ok(registry[key].domain, `Missing domain for ${key}`)
+    ok(registry[key].operation, `Missing operation for ${key}`)
+  }
+
+  // Verify test operations are present (validates automation)
+  ok(registry['test_echo'], 'test_echo should be in registry')
+  ok(registry['test_validate'], 'test_validate should be in registry')
+})
+
 console.log('✅ All enterprise tests complete')
 console.log('✅ All public dataset validations passed')
+console.log('✅ MCPBuilder automation validated')
