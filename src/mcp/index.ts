@@ -5,6 +5,19 @@
  */
 
 export {
+  ResponseFormatter,
+  FormulaExecutor,
+  WaveExecutor,
+  AnalysisExecutor,
+  ToolRegistry,
+  InputValidator,
+  OperationError,
+  handleOperationError,
+  executeWithErrorHandling,
+  type FormattedResponse
+} from './mcp-common-operations.js'
+
+export {
   UUIDOperation,
   OperationMetadata,
   CombinatorialProgram,
