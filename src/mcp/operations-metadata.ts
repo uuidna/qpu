@@ -772,6 +772,92 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return { message: msg.split('\n')[0], details: learnings.length + ' learnings applied', ready: true }
     },
     description: 'Generate upgrade commit from learnings'
+  },
+
+  // FORMULA NETWORK: 8 operations for interconnected formulas
+  {
+    key: 'formula-network-init',
+    domain: 'formula-network',
+    operation: 'init',
+    handler: async () => {
+      const { formulaNetworkInit } = await import('./formula-network-operations.js')
+      return await formulaNetworkInit()
+    },
+    description: 'Initialize all 65 formulas in network'
+  },
+  {
+    key: 'formula-network-execute',
+    domain: 'formula-network',
+    operation: 'execute',
+    handler: async (input?: Record<string, unknown>) => {
+      const { formulaNetworkExecute } = await import('./formula-network-operations.js')
+      return await formulaNetworkExecute((input as Record<string, number>) || {})
+    },
+    description: 'Execute entire formula network'
+  },
+  {
+    key: 'formula-network-topology',
+    domain: 'formula-network',
+    operation: 'topology',
+    handler: async () => {
+      const { formulaNetworkTopology } = await import('./formula-network-operations.js')
+      return await formulaNetworkTopology()
+    },
+    description: 'Get formula network topology and connections'
+  },
+  {
+    key: 'formula-dependency-chain',
+    domain: 'formula-network',
+    operation: 'dependency-chain',
+    handler: async (input?: Record<string, unknown>) => {
+      const { formulaDependencyChain } = await import('./formula-network-operations.js')
+      const nodeId = (input?.nodeId as string) || 'q-bb84'
+      return await formulaDependencyChain(nodeId)
+    },
+    description: 'Get dependency chain for a formula node'
+  },
+  {
+    key: 'formula-propagate-from',
+    domain: 'formula-network',
+    operation: 'propagate-from',
+    handler: async (input?: Record<string, unknown>) => {
+      const { formulaPropagateFrom } = await import('./formula-network-operations.js')
+      const nodeId = (input?.nodeId as string) || 'q-bb84'
+      const value = (input?.value as number) || 256
+      return await formulaPropagateFrom(nodeId, value)
+    },
+    description: 'Propagate value through formula network from node'
+  },
+  {
+    key: 'formula-cross-domain-effects',
+    domain: 'formula-network',
+    operation: 'cross-domain-effects',
+    handler: async (input?: Record<string, unknown>) => {
+      const { formulaCrossDomainEffects } = await import('./formula-network-operations.js')
+      const domain = (input?.domain as string) || 'qsec'
+      return await formulaCrossDomainEffects(domain)
+    },
+    description: 'Show cross-domain effects of formulas in domain'
+  },
+  {
+    key: 'formula-network-health',
+    domain: 'formula-network',
+    operation: 'health',
+    handler: async () => {
+      const { formulaNetworkHealth } = await import('./formula-network-operations.js')
+      return await formulaNetworkHealth()
+    },
+    description: 'Validate formula network health'
+  },
+  {
+    key: 'formula-network-optimize',
+    domain: 'formula-network',
+    operation: 'optimize',
+    handler: async () => {
+      const { formulaNetworkOptimize } = await import('./formula-network-operations.js')
+      return await formulaNetworkOptimize()
+    },
+    description: 'Get network optimization suggestions'
   }
 ]
 
