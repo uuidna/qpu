@@ -180,7 +180,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     key: 'cite',
     domain: 'quantum',
     operation: 'cite',
-    handler: async () => ({ doi: '10.5281/zenodo.22973935', orcid: '0009-0000-7312-9778', ok: true }),
+    handler: async () => ({ doi: '10.5281/zenodo.23091364', orcid: '0009-0000-7312-9778', ok: true }),
     description: 'Citations'
   },
   {
