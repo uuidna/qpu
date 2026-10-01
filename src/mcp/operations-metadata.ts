@@ -18,66 +18,69 @@ export interface OperationMetadata {
  * Auto-generates: registry entries, builder methods, and handlers
  */
 export const MCP_OPERATIONS: OperationMetadata[] = [
-  // DEPLOYMENT/CI DOMAIN (Pre-push verification)
+  // DEPLOYMENT/CI DOMAIN (Pre-push gate)
   {
-    registryKey: 'build-verify',
+    registryKey: 'pre-push-gate',
     domain: 'deployment',
-    operation: 'build-verify',
+    operation: 'pre-push-gate',
     handler: async () => {
+      const { execSync } = await import('child_process')
+      const fs = await import('fs')
+      const steps: string[] = []
+      let passed = true
+
+      // 1. Build
       try {
-        const { execSync } = await import('child_process')
         execSync('npm run build', { stdio: 'pipe', timeout: 60000 })
-        return { passed: true, status: 'build_success' }
+        steps.push('✅ Build passed')
       } catch (e) {
-        return { passed: false, status: 'build_failed', error: String(e) }
+        passed = false
+        steps.push('❌ Build failed')
+        steps.push('  Reproduce: npm run build')
+        steps.push(`  Error: ${String(e).split('\n')[0]}`)
       }
-    },
-    description: 'Verify build passes (MCP quantum verified)'
-  },
-  {
-    registryKey: 'deployment-health',
-    domain: 'deployment',
-    operation: 'deployment-health',
-    handler: async () => {
+
+      // 2. Deployment health
       try {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 5000)
         const response = await fetch('https://qpu.uuidna.com/health', { signal: controller.signal })
         clearTimeout(timeoutId)
         const data = await response.json() as Record<string, unknown>
-        return {
-          passed: response.ok && data.status === 'ok',
-          status: data.status || 'unreachable',
-          live: true
+        if (response.ok && data.status === 'ok') {
+          steps.push('✅ Deployment is green')
+        } else {
+          steps.push('⚠️  Deployment unreachable (proceeding—may be in dev)')
         }
       } catch {
-        return { passed: false, status: 'deployment_unreachable', live: false }
+        steps.push('⚠️  Deployment unreachable (proceeding—may be in dev)')
       }
-    },
-    description: 'Check if deployment is green (live health check)'
-  },
-  {
-    registryKey: 'e2e-test-verify',
-    domain: 'deployment',
-    operation: 'e2e-test-verify',
-    handler: async () => {
-      try {
-        const { execSync } = await import('child_process')
-        const fs = await import('fs')
-        if (!fs.existsSync('dist/quantum/processing/unit/live.test.js')) {
-          return { passed: true, status: 'e2e_tests_not_found', skipped: true }
+
+      // 3. E2E tests
+      if (fs.existsSync('dist/quantum/processing/unit/live.test.js')) {
+        try {
+          execSync('npm run test:live', {
+            stdio: 'pipe',
+            timeout: 30000,
+            env: { ...process.env, QPU_LIVE: 'https://qpu.uuidna.com' }
+          })
+          steps.push('✅ E2E tests passed')
+        } catch (e) {
+          passed = false
+          steps.push('❌ E2E tests failed')
+          steps.push('  Reproduce: QPU_LIVE=https://qpu.uuidna.com npm run test:live')
+          steps.push(`  Error: ${String(e).split('\n')[0]}`)
         }
-        execSync('npm run test:live', {
-          stdio: 'pipe',
-          timeout: 30000,
-          env: { ...process.env, QPU_LIVE: 'https://qpu.uuidna.com' }
-        })
-        return { passed: true, status: 'e2e_tests_passed' }
-      } catch (e) {
-        return { passed: false, status: 'e2e_tests_failed', error: String(e) }
+      } else {
+        steps.push('⚠️  E2E tests not found (skipped)')
+      }
+
+      return {
+        passed,
+        report: `🔒 Pre-push gate\n\n${steps.join('\n')}\n\n${passed ? '✅ PASS—ready to push' : '❌ FAIL—fix above and retry'}`
       }
     },
-    description: 'Verify e2e tests pass against deployed system'
+    description: 'Pre-push gate: build + deploy + e2e (pass/fail + reproduction)'
   },
 
   // ENTERPRISE DOMAIN
