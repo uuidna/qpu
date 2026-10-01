@@ -292,10 +292,95 @@ export class InputValidator {
 }
 
 // ============================================================================
+// TOOL DEFINITIONS: Data-driven tool registry
+// ============================================================================
+
+interface ToolDefinition {
+  name: string
+  description: string
+  properties: Record<string, { type: string; description?: string; enum?: string[] }>
+  required?: string[]
+}
+
+const QUANTUM_TOOL_DEFINITIONS: ToolDefinition[] = [
+  {
+    name: 'quantum-prove-formula',
+    description: 'Execute formula with cryptographic proof (fold-verified)',
+    properties: {
+      formula_name: { type: 'string', description: 'Name of formula to prove' },
+      show_proof: { type: 'boolean', description: 'Include Lean proof' }
+    },
+    required: ['formula_name']
+  },
+  {
+    name: 'quantum-wave-execute',
+    description: 'Run autonomous wave to prove theorems via fold derivation',
+    properties: {
+      domain: { type: 'string', description: 'Starting domain' },
+      max_steps: { type: 'number', description: 'Maximum theorem steps' }
+    }
+  },
+  {
+    name: 'quantum-convergence-analyze',
+    description: 'Analyze convergence to verify system determinism',
+    properties: {
+      domain: { type: 'string', description: 'Domain to analyze' },
+      iterations: { type: 'number', description: 'Number of waves to run' }
+    }
+  },
+  {
+    name: 'quantum-discover-relationships',
+    description: 'Discover formula relationships autonomously',
+    properties: {
+      show_proof_chain: { type: 'boolean', description: 'Show proof chain' }
+    }
+  },
+  {
+    name: 'quantum-verify-all-proofs',
+    description: 'Verify all formulas with dataset validations',
+    properties: {
+      format: { type: 'string', enum: ['summary', 'detailed', 'csv'] }
+    }
+  },
+  {
+    name: 'quantum-health-check',
+    description: 'Get server health status',
+    properties: {}
+  },
+  {
+    name: 'quantum-metrics',
+    description: 'Get detailed performance metrics',
+    properties: {}
+  }
+]
+
+// ============================================================================
 // CENTRALIZED TOOL REGISTRY
 // ============================================================================
 
 export class ToolRegistry {
+  static buildTool(def: ToolDefinition): Tool {
+    const properties: Record<string, any> = {}
+    for (const [key, value] of Object.entries(def.properties)) {
+      const prop: any = { type: value.type }
+      if (value.description) prop.description = value.description
+      if (value.enum) prop.enum = value.enum
+      properties[key] = prop
+    }
+
+    const schema: any = {
+      type: 'object',
+      properties
+    }
+    if (def.required) schema.required = def.required
+
+    return {
+      name: def.name,
+      description: def.description,
+      inputSchema: schema
+    }
+  }
+
   static getFormulaTools(): Tool[] {
     const corpus = getValidatedCorpus()
 
@@ -312,72 +397,7 @@ export class ToolRegistry {
   }
 
   static getQuantumTools(): Tool[] {
-    return [
-      {
-        name: 'quantum-prove-formula',
-        description: 'Execute formula with cryptographic proof (fold-verified)',
-        inputSchema: {
-          type: 'object' as const,
-          properties: {
-            formula_name: { type: 'string', description: 'Name of formula to prove' },
-            show_proof: { type: 'boolean', description: 'Include Lean proof' }
-          },
-          required: ['formula_name']
-        }
-      },
-      {
-        name: 'quantum-wave-execute',
-        description: 'Run autonomous wave to prove theorems via fold derivation',
-        inputSchema: {
-          type: 'object' as const,
-          properties: {
-            domain: { type: 'string', description: 'Starting domain' },
-            max_steps: { type: 'number', description: 'Maximum theorem steps' }
-          }
-        }
-      },
-      {
-        name: 'quantum-convergence-analyze',
-        description: 'Analyze convergence to verify system determinism',
-        inputSchema: {
-          type: 'object' as const,
-          properties: {
-            domain: { type: 'string', description: 'Domain to analyze' },
-            iterations: { type: 'number', description: 'Number of waves to run' }
-          }
-        }
-      },
-      {
-        name: 'quantum-discover-relationships',
-        description: 'Discover formula relationships autonomously',
-        inputSchema: {
-          type: 'object' as const,
-          properties: {
-            show_proof_chain: { type: 'boolean', description: 'Show proof chain' }
-          }
-        }
-      },
-      {
-        name: 'quantum-verify-all-proofs',
-        description: 'Verify all formulas with dataset validations',
-        inputSchema: {
-          type: 'object' as const,
-          properties: {
-            format: { type: 'string', enum: ['summary', 'detailed', 'csv'] }
-          }
-        }
-      },
-      {
-        name: 'quantum-health-check',
-        description: 'Get server health status',
-        inputSchema: { type: 'object' as const, properties: {} }
-      },
-      {
-        name: 'quantum-metrics',
-        description: 'Get detailed performance metrics',
-        inputSchema: { type: 'object' as const, properties: {} }
-      }
-    ]
+    return QUANTUM_TOOL_DEFINITIONS.map(def => this.buildTool(def))
   }
 
   static getAllTools(): Tool[] {
