@@ -1,5 +1,8 @@
 // UUID Programmable Core: Pre-push Hook Integration
 import { Operation, Result } from './types.js'
+import { uuid as registry } from '../core/uuid.js'
+import { uuidBridge } from '../core/uuid-bridge.js'
+import { qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 
 interface DeploymentGateStatus {
   ok: boolean
@@ -22,23 +25,23 @@ export class ConsolidatedMCP {
   }
 
   /**
-   * Execute operation by UUID
+   * Execute operation by UUID: a content UUID (registry.deterministic(domain, id)) or the legacy "domain:id"
    */
   async executeByUUID(uuid: string, context: any): Promise<Result> {
-    // Parse UUID: "domain:operation-id"
-    const [domain, operationId] = uuid.split(':')
-
-    return {
-      success: true,
-      result: {
-        uuid,
-        domain,
-        operationId,
-        executed: true
-      },
-      accuracy: 0.92,
-      coinsGenerated: 100
+    const address = registry.isValid(uuid) ? uuid : this.getOperationUUID(...(uuid.split(':') as [string, string]))
+    const op = uuidBridge.getOperationName(address)
+    if (op) {
+      const r = await uuidBridge.executeByUUID(address, context)
+      return { success: r.success, result: { uuid: address, operation: op, data: r.data, receipt: r.receipt }, ...(r.error ? { error: r.error } : {}) }
     }
+    const workflow = this.getAllOperations().find((o) => o.uuid === address)
+    if (workflow?.domain === 'operations') {
+      const r = await this.executeWorkflow(workflow.id, context ?? {})
+      const receipt = qpuUuidReceiptOf(`workflow ${workflow.id}`, address, r, context?.referrer).uuid
+      return { success: r.success === true, result: { uuid: address, operation: workflow.id, data: r, receipt }, ...(r.error ? { error: r.error } : {}) }
+    }
+    const error = `No operation at ${address}`
+    return { success: false, result: { uuid: address, receipt: qpuUuidReceiptOf('uuid missing', address, error, context?.referrer).uuid }, error }
   }
 
   /**
@@ -62,7 +65,7 @@ export class ConsolidatedMCP {
    * Get operation UUID
    */
   getOperationUUID(domain: string, operationId: string): string {
-    return `${domain}:${operationId}`
+    return registry.deterministic(domain, operationId)
   }
 
   /**
@@ -82,7 +85,7 @@ export class ConsolidatedMCP {
    * Get all operations including workflows
    */
   getAllOperations(): Array<any> {
-    return [
+    return this.operations ??= ([
       { id: 'health-predictor', domain: 'health' },
       { id: 'treatment-optimizer', domain: 'health' },
       { id: 'longevity-optimization', domain: 'health' },
@@ -95,8 +98,9 @@ export class ConsolidatedMCP {
       { id: 'github-release', domain: 'operations' },
       { id: 'zenodo-doi-register', domain: 'operations' },
       { id: 'release-workflow', domain: 'operations' }
-    ]
+    ] as Array<{ id: string; domain: string }>).map((op) => ({ ...op, uuid: this.getOperationUUID(op.domain, op.id) }))
   }
+  private operations?: Array<{ id: string; domain: string; uuid: string }>
 
   /**
    * Execute workflow operation by name
@@ -187,8 +191,9 @@ export class ConsolidatedMCP {
     const ops = this.getAllOperations()
 
     for (const op of ops) {
-      results.set(this.getOperationUUID(op.domain, op.id), true)
+      results.set(op.uuid, op.domain === 'operations' || uuidBridge.getOperationName(op.uuid) !== undefined)
     }
+    for (const { uuid } of uuidBridge.listAll()) results.set(uuid, true)
 
     return results
   }
@@ -196,12 +201,17 @@ export class ConsolidatedMCP {
   /**
    * Execute program (for unified-mcp-router compatibility)
    */
-  async executeProgram(program: any): Promise<any> {
-    return {
-      success: true,
-      result: { executed: true },
-      steps: []
+  async executeProgram(program: { operations: Array<string | { uuid: string; context?: any }>; referrer?: string }): Promise<any> {
+    const steps: Result[] = []
+    let referrer = program?.referrer
+    for (const step of program?.operations ?? []) {
+      const { uuid, context } = typeof step === 'string' ? { uuid: step, context: {} } : step
+      const r = await this.executeByUUID(uuid, { ...context, ...(referrer ? { referrer } : {}) })
+      referrer = r.result?.receipt ?? referrer
+      steps.push(r)
+      if (!r.success) return { success: false, result: { executed: steps.length, failedAt: uuid }, steps }
     }
+    return { success: true, result: { executed: steps.length }, steps }
   }
 
   /**

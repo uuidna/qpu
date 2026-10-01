@@ -18,6 +18,8 @@ export interface ExecutionResult {
   success: boolean
   data?: Record<string, unknown>
   error?: string
+  /** Programmable UUID of this execution's quantum receipt (payload + referrer). */
+  receipt?: string
 }
 
 export interface CompositionRequest {

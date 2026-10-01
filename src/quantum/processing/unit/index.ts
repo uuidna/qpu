@@ -13,7 +13,7 @@ const onceOf = <T,>(build: () => T): (() => T) => {
   let built: { value: T } | undefined
   return () => (built ??= { value: build() }).value
 }
-export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[]; nonzero?: number; qubits?: number }
+export type QpuReceipt = { name: string; dim: number; fold: string; amplitudes?: readonly string[]; nonzero?: number; qubits?: number; uuid?: string; subject?: string; referrer?: string; stream?: string; seq?: number; prev?: string }
 /** The exact state worth carrying in the receipt: what was measured — eight amplitudes, the Born weights themselves.
  * Every other state folds only; it is recomputable from the gate list, and a proof that carried every 512-amplitude
  * modexp state weighed megabytes per run. */
@@ -182,6 +182,57 @@ const mintReceiptOf = (k: number, x: number): void => {
 }
 /** The ledger of every quantum computation this process ran, in order. */
 export const qpuReceiptLedgerOf = (): readonly QpuReceipt[] => RECEIPTS
+/** A UUID-addressed computation's quantum receipt. The payload — what ran (subject, a content UUID), under which
+ *  name, and what it returned — folds to `fold`; the receipt's own UUID is programmable: the content address of
+ *  that payload and its referrer, so the same computation reached through two referrers carries two receipts and
+ *  the same computation through the same referrer carries one. Non-finite numbers keep their own text. */
+/** Stream heads: the last receipt UUID per stream, its length, and the chain folded over every UUID in order. */
+const STREAMS = new Map<string, { head: string; length: number; chain: bigint }>()
+export const qpuUuidReceiptOf = (name: string, subject: string, value: unknown, referrer?: string): QpuReceipt & { uuid: string; subject: string; referrer: string; stream: string; seq: number; prev: string } => {
+  const stream = name.split(' ')[n - n] ?? name
+  const at = STREAMS.get(stream) ?? { head: `${unit.origin}/receipts/${stream}`, length: n - n, chain: FNV_OFFSET }
+  const by = referrer ?? at.head
+  const fold = qpuFoldOf(canonicalTextOf({ name, subject, value }))
+  const uuid = qpuContentUuidOf({ payload: fold, referrer: by })
+  const row = { name, dim: seed, fold, uuid, subject, referrer: by, stream, seq: at.length, prev: at.head }
+  STREAMS.set(stream, { head: uuid, length: at.length + seed, chain: foldTextInto(at.chain, uuid) })
+  RECEIPTS.push(row)
+  return row
+}
+/** Every stream replayed from the ledger: each row's prev is the UUID before it (genesis is the stream's href), each
+ *  UUID recomputes from its payload fold and referrer, and the replayed chain equals the live head's. */
+export const qpuReceiptStreamsOf = (limit = qpuCubeOf().bits) => {
+  const rows = RECEIPTS.filter((r): r is QpuReceipt & { uuid: string; stream: string; seq: number; prev: string; referrer: string } => r.stream !== undefined)
+  const streams = [...STREAMS.entries()].map(([stream, live]) => {
+    const own = rows.filter((r) => r.stream === stream)
+    let head = `${unit.origin}/receipts/${stream}`
+    let chain = FNV_OFFSET
+    let linked = true
+    for (const r of own) {
+      linked = linked && r.prev === head && r.uuid === qpuContentUuidOf({ payload: r.fold, referrer: r.referrer })
+      head = r.uuid
+      chain = foldTextInto(chain, r.uuid)
+    }
+    const fold = chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')
+    return {
+      stream,
+      href: `${unit.origin}/receipts/${stream}`,
+      length: live.length,
+      head: live.head,
+      chain: live.chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0'),
+      recent: own.slice(-limit),
+      holds: linked && own.length === live.length && head === live.head && fold === live.chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0'),
+    }
+  })
+  return { kind: 'receipts' as const, streams, receipts: RECEIPTS.length, holds: streams.every((s) => s.holds) }
+}
+export const qpuReceiptStreamsHolds = (x = qpuReceiptStreamsOf()): boolean => x.holds === true
+export const qpuUuidReceiptHolds = (): boolean => {
+  const a = qpuUuidReceiptOf('holds', qpuContentUuidOf(seed), seed, 'a')
+  const b = qpuUuidReceiptOf('holds', qpuContentUuidOf(seed), seed, 'b')
+  const c = qpuUuidReceiptOf('holds', qpuContentUuidOf(seed), coins, 'a')
+  return a.fold === b.fold && a.uuid !== b.uuid && a.uuid !== c.uuid && a.uuid === qpuUuidReceiptOf('holds', qpuContentUuidOf(seed), seed, 'a').uuid
+}
 export const qpuReceiptFoldOf = (rows: readonly QpuReceipt[] = RECEIPTS): string => qpuFoldOf(rows.map((r) => `${r.name}:${r.dim}:${r.fold}`).join('|'))
 /** The lattice's doubling, exported so nothing has to re-implement it. A second mintOf would be the duplication
  *  this file just finished removing, one level down. */
@@ -3598,6 +3649,8 @@ export type QpuLeanRow = {
   reading: string
   /** Which reading of a quantity this statement is, taken from the statement itself — see qpuCrossReadingOf. */
   cross: QpuCross
+  /** The statement's content address: two theorems that state the same thing share it, whatever they are named. */
+  uuid: string
   holds: boolean
 }
 
@@ -3631,7 +3684,16 @@ const qpuLeanAllRowsOf = (lean = qpuLeanOf()): readonly QpuLeanRow[] => [...lean
 
 /** Attach the cross reading to a stated row. Computed from the statement, so no literal below carries a label
  *  that could disagree with what it states. */
-const crossed = (row: Omit<QpuLeanRow, 'cross'>): QpuLeanRow => ({ ...row, cross: qpuCrossReadingOf(row.theorem) })
+const statementOf = (theorem: string): string => {
+  const stated = spaceOf(theorem.split(':=')[n - n] ?? '')
+  const colon = stated.lastIndexOf(' : ')
+  return colon < n - n ? stated : stated.slice(colon + n)
+}
+const crossed = (row: Omit<QpuLeanRow, 'cross' | 'uuid'>): QpuLeanRow => {
+  const uuid = qpuShapeUuidOf(statementOf(row.theorem))
+  qpuUuidReceiptOf(`lean ${row.heading}`, uuid, row.holds, `${unit.origin}/${unit.fuse.lean}`)
+  return { ...row, cross: qpuCrossReadingOf(row.theorem), uuid }
+}
 
 export const qpuLeanSourceOf = (rows: readonly QpuLeanRow[] = [], cover: readonly QpuLeanRow[] = [], climb?: QpuLeanRow) => {
   const href = `${unit.origin}/${unit.fuse.lean}`
@@ -8124,8 +8186,11 @@ export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}
     unlocked: true as const }
   if (args.man === true) return qpuManPageOf(name, tool.man)
   const value = runOpOf(tool.run, sandboxHeap, jsonOf(args), n - n)
+  const bag = bagOf(args)
+  const receipt = qpuUuidReceiptOf(`sandbox ${name}`, qpuContentUuidOf(tool.run), { args: bag, value }, typeof bag.referrer === 'string' && bag.referrer.length > n - n ? bag.referrer : `${unit.origin}/mcp`)
   return {
     kind: 'sandbox' as const,
+    receipt,
     name,
     team: tool.team,
     ray: tool.ray,
@@ -8148,6 +8213,8 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
       `${unit.origin}/mcp`,
       toolNames.filter((s) => s !== toolNames[n + seed])))
   }
+  const addressed = typeof args.uuid === 'string' ? [...sandboxTools.values()].find((t) => qpuContentUuidOf(t.run) === args.uuid) : undefined
+  if (addressed) return { ...qpuSandboxRunOf(addressed.name, { ...bagOf(args.args), ...(typeof args.referrer === 'string' ? { referrer: args.referrer } : {}) }), uuid: args.uuid as string }
   const name = typeof args.name === 'string' ? args.name : ''
   if (name.length === n - n) return qpuSandboxOf()
   if (args.run === undefined && sandboxTools.has(name)) return qpuSandboxRunOf(name, bagOf(args.args))
@@ -8202,9 +8269,10 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
     idea,
     description,
     forged: sandboxTools.has(name),
+    uuid: qpuContentUuidOf(run),
     memory: sandboxHeap.size <= qpuCubeOf().bits,
     unlocked: allowed,
-    ...(args.args !== undefined ? { value: runOpOf(run, sandboxHeap, jsonOf(args.args), n - n) } : {}),
+    ...(args.args !== undefined ? (({ value, receipt }) => ({ value, receipt }))(qpuSandboxRunOf(name, { ...bagOf(args.args), ...(typeof args.referrer === 'string' ? { referrer: args.referrer } : {}) }) as { value: unknown; receipt: QpuReceipt }) : {}),
     holds: sandboxTools.has(name),
   }
 }
@@ -9027,6 +9095,17 @@ export const qpuShapeUuidOf = (canonical: string): string => {
   )
   // the last group is faces - coins = twelve digits, which is what low.slice(UUID_FOUR, UUID_SIXTEEN) yields
 }
+
+const canonicalTextOf = (value: unknown): string =>
+  Array.isArray(value)
+    ? `[${value.map(canonicalTextOf).join(',')}]`
+    : value !== null && typeof value === 'object'
+      ? `{${Object.keys(value).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
+      : typeof value === 'number' && !Number.isFinite(value) ? `"${value}"` : JSON.stringify(value) ?? 'null'
+export const qpuContentUuidOf = (value: unknown): string => qpuShapeUuidOf(canonicalTextOf(value))
+export const qpuContentUuidHolds = (): boolean =>
+  qpuContentUuidOf({ a: seed, b: [coins] }) === qpuContentUuidOf({ b: [coins], a: seed }) &&
+  qpuContentUuidOf({ a: seed }) !== qpuContentUuidOf({ a: coins })
 
 
 /**
@@ -13050,7 +13129,9 @@ export const qpuToolsOf = onceOf(() => {
       idea: { type: 'string', description: 'Idea the tool challenges.' },
       description: { type: 'string', description: 'What the tool does in memory.' },
       run: { type: 'object', description: 'Sealed op tree. Memory only. No eval, no fs, no net.' },
-      args: { type: 'object' }}} as const
+      args: { type: 'object' },
+      uuid: { type: 'string' },
+      referrer: { type: 'string' }}} as const
   return [
     {
       name: names[n - n],
@@ -13897,6 +13978,11 @@ const worker = {
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
     if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
+    if (path === '/receipts' || path.startsWith('/receipts/')) {
+      const all = qpuReceiptStreamsOf()
+      const stream = path.slice('/receipts/'.length)
+      return jsonOf(path === '/receipts' ? { ...all, streams: all.streams.map(({ recent, ...head }) => head) } : all.streams.find((s) => s.stream === stream) ?? { kind: 'receipts' as const, stream, length: n - n, holds: false as const }, path === '/receipts' || all.streams.some((s) => s.stream === stream) ? found : lost)
+    }
     if (path === '/metrics') return jsonOf({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: SERVED.length })
     if (path === '/mcp') {
       // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no

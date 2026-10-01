@@ -8,7 +8,7 @@
  * - Cross-Domain Formulas (compliance ↔ standards bridges)
  */
 
-import type { CrossFormula } from '../mcp/cross-domain-formulas.js'
+import { crossFormulaOf, type CrossFormula } from '../mcp/cross-domain-formulas.js'
 
 // ============================================================================
 // AUDIT COMPUTATION MODEL
@@ -187,14 +187,14 @@ export class AuditFormulas {
    * compliance_score = (gdpr_requirements_met + iso27001_controls_met + nist_framework_score) / 3
    */
   static gdprIsoNistFusion(gdpr: number, iso27001: number, nist: number): CrossFormula {
-    return {
+    return crossFormulaOf({
       id: 'compliance-fusion-1',
       src: 'legal.gdpr',
       dst: 'standards.nist',
       formula: 'fusion = (gdpr + iso27001 + nist) / 3',
       value: (gdpr + iso27001 + nist) / 3,
       proof: 'GDPR legal requirement ∩ ISO27001 framework ∩ NIST best practices = comprehensive compliance'
-    }
+    })
   }
 
   /**
@@ -202,14 +202,14 @@ export class AuditFormulas {
    * healthcare_compliance = (hipaa_controls * 0.4) + (soc2_score * 0.35) + (nist_score * 0.25)
    */
   static healthcareComplianceFusion(hipaa: number, soc2: number, nist: number): CrossFormula {
-    return {
+    return crossFormulaOf({
       id: 'compliance-fusion-healthcare',
       src: 'legal.hipaa',
       dst: 'standards.soc2',
       formula: 'healthcare_score = (hipaa * 0.4) + (soc2 * 0.35) + (nist * 0.25)',
       value: hipaa * 0.4 + soc2 * 0.35 + nist * 0.25,
       proof: 'HIPAA regulatory ∩ SOC2 audit scope ∩ NIST framework = healthcare compliance triad'
-    }
+    })
   }
 
   /**
@@ -217,14 +217,14 @@ export class AuditFormulas {
    * payment_security = (pci_dss * 0.45) + (cis_controls * 0.3) + (owasp_asvs * 0.25)
    */
   static paymentSecurityFusion(pciDss: number, cis: number, owasp: number): CrossFormula {
-    return {
+    return crossFormulaOf({
       id: 'compliance-fusion-payment',
       src: 'legal.pci-dss',
       dst: 'standards.owasp',
       formula: 'payment_score = (pci_dss * 0.45) + (cis * 0.3) + (owasp * 0.25)',
       value: pciDss * 0.45 + cis * 0.3 + owasp * 0.25,
       proof: 'PCI-DSS requirements ∩ CIS hardening ∩ OWASP secure coding = payment card protection'
-    }
+    })
   }
 
   /**
@@ -233,14 +233,14 @@ export class AuditFormulas {
    */
   static supplyChainRiskFormula(slsa: number, sbom: number, sca: number, codeQuality: number): CrossFormula {
     const score = (slsa + sbom + sca + codeQuality) / 4
-    return {
+    return crossFormulaOf({
       id: 'audit-supply-chain-risk',
       src: 'standards.slsa',
       dst: 'audit.risk',
       formula: 'supply_chain_risk = 1 / (1 + (slsa + sbom + sca + code_quality) / 4)',
       value: 1 / (1 + score),
       proof: 'Provenance ∩ BOM ∩ dependency scan ∩ code quality = supply chain risk reduction'
-    }
+    })
   }
 
   /**

@@ -5,6 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid'
+import { qpuShapeUuidOf } from '../quantum/processing/unit/index.js'
 
 // ============================================================================
 // TYPES
@@ -121,22 +122,11 @@ export class UUID {
   // GENERATION: Deterministic and random
 
   deterministic(domain: string, resource: string): string {
-    const seed = `${domain}::${resource}`
-    const hash = this.hash(seed)
-    return `${hash.substring(0, 8)}-${hash.substring(8, 12)}-4${hash.substring(13, 16)}-${hash.substring(16, 20)}-${hash.substring(20, 32)}`
+    return qpuShapeUuidOf(`${domain}::${resource}`)
   }
 
   random(): string {
     return uuidv4()
-  }
-
-  private hash(str: string): string {
-    let h = 0
-    for (let i = 0; i < str.length; i++) {
-      h = (h << 5) - h + str.charCodeAt(i)
-      h = h & h
-    }
-    return Math.abs(h).toString(16).padStart(32, '0')
   }
 
   // STATS: Analytics

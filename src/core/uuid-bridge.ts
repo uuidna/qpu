@@ -7,6 +7,7 @@
 import { operationRegistry, listOperations, getOperation, executeOperation } from './operations.js'
 import { ExecutionResult } from './types.js'
 import { uuid as registry } from './uuid.js'
+import { qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 
 // ============================================================================
 // UUID OPERATION INDEX
@@ -18,6 +19,9 @@ interface UUIDIndexEntry {
   operation: string
   registered: Date
 }
+
+const referrerOf = (inputs?: Record<string, unknown>): string | undefined =>
+  typeof inputs?.referrer === 'string' && inputs.referrer.length > 0 ? inputs.referrer : undefined
 
 export class UUIDBridge {
   private uuidToOperation: Map<string, string> = new Map() // uuid -> operation name
@@ -60,13 +64,12 @@ export class UUIDBridge {
   async executeByUUID(uuid: string, inputs?: Record<string, unknown>): Promise<ExecutionResult> {
     const operationName = this.uuidToOperation.get(uuid)
     if (!operationName) {
-      return {
-        success: false,
-        error: `Operation not found for UUID: ${uuid}`
-      }
+      const result = { success: false, error: `Operation not found for UUID: ${uuid}` }
+      return { ...result, receipt: qpuUuidReceiptOf('op missing', uuid, result, referrerOf(inputs)).uuid }
     }
 
-    return executeOperation(operationName, inputs)
+    const result = await executeOperation(operationName, inputs)
+    return { ...result, receipt: qpuUuidReceiptOf(`op ${operationName}`, uuid, result, referrerOf(inputs)).uuid }
   }
 
   /**
