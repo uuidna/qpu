@@ -20,9 +20,9 @@ export interface OperationMetadata {
 export const MCP_OPERATIONS: OperationMetadata[] = [
   // DEPLOYMENT/CI DOMAIN (Pre-push gate)
   {
-    registryKey: 'pre-push-gate',
+    registryKey: 'deployment-gate',
     domain: 'deployment',
-    operation: 'pre-push-gate',
+    operation: 'deployment-gate',
     handler: async () => {
       const { execSync } = await import('child_process')
       const fs = await import('fs')
@@ -80,7 +80,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
         report: `🔒 Pre-push gate\n\n${steps.join('\n')}\n\n${passed ? '✅ PASS—ready to push' : '❌ FAIL—fix above and retry'}`
       }
     },
-    description: 'Pre-push gate: build + deploy + e2e (pass/fail + reproduction)'
+    description: 'Unified deployment gate (pre-push + CI): build + deploy + e2e (pass/fail + reproduction)'
   },
 
   // ENTERPRISE DOMAIN
