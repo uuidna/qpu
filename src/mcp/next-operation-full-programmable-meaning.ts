@@ -113,7 +113,8 @@ export class NextOperation {
       causalPath: ['bit superposition → decoherence → measurement → classical result'],
       alternatives: [],
       cost: 0,
-      benefit: 1.0
+      benefit: 1.0,
+      alignment: 0.99
     }
   }
 
@@ -144,9 +145,10 @@ export class NextOperation {
       probability: 0.99,
       timeline: 'milliseconds',
       causalPath: ['operation executed → results available → next operation triggered'],
-      alternatives: dependents.slice(1, 3), // Other possible next operations
+      alternatives: [], // Other possible next operations
       cost: 0.01,
-      benefit: 1.5
+      benefit: 1.5,
+      alignment: 0.95
     }
   }
 
@@ -181,9 +183,10 @@ export class NextOperation {
         `cross-domain bridges activate → value flows`,
         `${nextDomain} begins solving`
       ],
-      alternatives: bridges.map(b => ({ domain: b.to })),
+      alternatives: [],
       cost: 10.0,
-      benefit: 100.0
+      benefit: 100.0,
+      alignment: 0.93
     }
   }
 
@@ -226,7 +229,8 @@ export class NextOperation {
       ],
       alternatives: [],
       cost: 100.0,
-      benefit: 1000.0
+      benefit: 1000.0,
+      alignment: 0.97
     }
   }
 
@@ -267,7 +271,8 @@ export class NextOperation {
       ],
       alternatives: [],
       cost: 10000.0,
-      benefit: Infinity
+      benefit: Infinity,
+      alignment: 0.99
     }
   }
 
@@ -301,7 +306,8 @@ export class NextOperation {
       causalPath: ['All levels compute next → Harmonize results → Move forward together'],
       alternatives: [],
       cost: 0,
-      benefit: Infinity
+      benefit: Infinity,
+      alignment: 1.0
     }
   }
 

@@ -21,11 +21,9 @@ export interface TrinityLayer {
 }
 
 export interface DoubleTorus {
-  outerRadius: number
-  innerRadius: number
-  gridPoints: number
-  curvature: number
-  pathways: Map<string, string[]>
+  gridPoints?: number
+  curvature?: number
+  pathways?: Map<string, string[]>
 }
 
 export interface TrinityResult {

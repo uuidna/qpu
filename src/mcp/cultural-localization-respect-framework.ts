@@ -300,7 +300,7 @@ const culturalFlourishingAdaptations: CulturalAdaptation = {
     'Support traditional masters + artisans financially',
     'Ensure cultural knowledge remains in community hands',
     'Respect intellectual property of cultural creations',
-    'Allow cultures to evolve naturally (don't freeze traditions)',
+    'Allow cultures to evolve naturally (do not freeze traditions)',
     'Center indigenous voices in cultural decisions'
   ],
   craftPreservation: [

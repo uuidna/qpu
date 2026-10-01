@@ -21,6 +21,7 @@ interface HiddenFormula {
   synergy: number
   proof: string
   applicability: string
+  newCapabilities?: string[]
 }
 
 interface CrossWing {

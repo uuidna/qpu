@@ -138,7 +138,11 @@ export class UnifiedMCPRouter {
    * List operations in domain
    */
   private listOperations(request: UnifiedMCPRequest): unknown {
-    return consolidatedMCP.listOperations(request.domain)
+    const all = consolidatedMCP.listOperations()
+    if (request.domain) {
+      return all.filter(op => op.domain === request.domain)
+    }
+    return all
   }
 
   /**
