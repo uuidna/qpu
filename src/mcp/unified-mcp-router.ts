@@ -310,30 +310,27 @@ export class MCPBuilder {
  * All operations mapped to UUID for introspection and discovery
  */
 export const UNIVERSAL_OPERATION_REGISTRY = {
-  // Enterprise Tools
   'compliance-scan': { domain: 'enterprise', operation: 'compliance-scan' },
   'security-validate': { domain: 'enterprise', operation: 'security-validate' },
   'performance-benchmark': { domain: 'enterprise', operation: 'performance-benchmark' },
-
-  // Quantum ML
   'train-quantum-model': { domain: 'quantum-ml', operation: 'train-model' },
   'quantum-predict': { domain: 'quantum-ml', operation: 'predict' },
-
-  // Compression
   'compress-data': { domain: 'compression', operation: 'compress' },
   'decompress-data': { domain: 'compression', operation: 'decompress' },
-
-  // Observability
   'trace-request': { domain: 'observability', operation: 'trace' },
   'detect-anomaly': { domain: 'observability', operation: 'detect-anomaly' },
-
-  // Medical
   'profile-patient': { domain: 'medical', operation: 'profile-patient' },
   'generate-treatment': { domain: 'medical', operation: 'generate-treatment-plan' },
-
-  // UI/Dashboard
   'render-dashboard': { domain: 'ui', operation: 'render-dashboard' },
-  'render-form': { domain: 'ui', operation: 'render-form' }
+  'render-form': { domain: 'ui', operation: 'render-form' },
+  'qpu_quantum': { domain: 'quantum', operation: 'quantum' },
+  'qpu_lean': { domain: 'quantum', operation: 'lean' },
+  'qpu_cite': { domain: 'quantum', operation: 'cite' },
+  'qpu_train': { domain: 'quantum', operation: 'train' },
+  'qpu_forge': { domain: 'quantum', operation: 'forge' },
+  'qpu_improve': { domain: 'quantum', operation: 'improve' },
+  'qpu_compete': { domain: 'quantum', operation: 'compete' },
+  'qpu_prove': { domain: 'quantum', operation: 'prove' }
 }
 
 /**

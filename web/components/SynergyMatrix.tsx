@@ -291,7 +291,7 @@ export default function SynergyMatrix() {
                     {matrix
                       .map(c => c.value)
                       .sort((a, b) => a - b)
-                    [Math.floor(matrix.length / 2)].toFixed(3)}
+                    [Math.floor(matrix.length / 2)]?.toFixed(3)}
                   </span>
                 </div>
                 <div className="flex justify-between">

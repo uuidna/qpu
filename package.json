@@ -83,6 +83,7 @@
     "test:rollcall": "npm run build && node --test dist/quantum/processing/unit/*.test.js",
     "test:core": "npm run build && node dist/core/__tests__/integration.test.js",
     "test:enterprise": "npm run build && node --test dist/enterprise/enterprise.test.js",
+    "test:ui": "node scripts/test-ui.mjs",
     "payload:validate": "node scripts/payload-validate.mjs",
     "payload:seed": "node scripts/payload-seed.mjs",
     "payload:admin": "payload dev",
@@ -98,6 +99,7 @@
     "leads": "node scripts/leads.mjs",
     "refusals": "node scripts/refusals.mjs",
     "test:scripts": "node --test \"scripts/*.test.mjs\"",
+    "test:e2e": "node --test --test-concurrency=1 \"tests/e2e/*.test.mjs\"",
     "walls": "node scripts/walls.mjs",
     "leads:test": "node --test scripts/leads.test.mjs",
     "outage": "node scripts/outage.mjs",
@@ -130,6 +132,7 @@
   "devDependencies": {
     "@faceless-ui/modal": "3.0.1",
     "@faceless-ui/scroll-info": "2.0.0",
+    "@modelcontextprotocol/sdk": "1.31.0",
     "@payloadcms/db-d1-sqlite": "4.0.0-canary.37",
     "@payloadcms/db-mongodb": "4.0.0-canary.37",
     "@payloadcms/email-resend": "4.0.0-canary.37",
