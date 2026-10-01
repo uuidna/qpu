@@ -1,0 +1,451 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "UUIDNA QPU API",
+    "description": "Autonomous Quantum Formula Discovery System - Zero-latency computation",
+    "version": "0.2.1",
+    "contact": {
+      "name": "Tsvetan Rouschev",
+      "email": "ceccec@psg.bg",
+      "url": "https://github.com/tsvetan/uuidna"
+    },
+    "license": {
+      "name": "CC-BY-NC-ND-4.0",
+      "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api",
+      "description": "Local development"
+    },
+    {
+      "url": "https://api.example.com/api",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/formulas": {
+      "get": {
+        "summary": "Get all validated formulas",
+        "description": "Retrieve the complete corpus of 42+ validated quantum formulas",
+        "tags": ["Formulas"],
+        "responses": {
+          "200": {
+            "description": "List of formulas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Formula"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/formulas/{name}": {
+      "get": {
+        "summary": "Get formula by name",
+        "description": "Retrieve details for a specific formula",
+        "tags": ["Formulas"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "Fibonacci_7"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Formula details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Formula"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Formula not found"
+          }
+        }
+      }
+    },
+    "/formulas/{name}/execute": {
+      "post": {
+        "summary": "Execute formula with proof",
+        "description": "Execute a formula and return cryptographic proof (fold)",
+        "tags": ["Formulas"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Formula execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormulaExecution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quantum/validate": {
+      "post": {
+        "summary": "Validate formula on quantum simulator",
+        "description": "Run quantum simulation on Qiskit/IBM Quantum",
+        "tags": ["Quantum"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["formulaName", "expectedValue"],
+                "properties": {
+                  "formulaName": {
+                    "type": "string",
+                    "example": "Superposition_2_7"
+                  },
+                  "expectedValue": {
+                    "type": "number",
+                    "example": 128
+                  },
+                  "qubits": {
+                    "type": "integer",
+                    "default": 7,
+                    "example": 7
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Quantum validation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuantumValidation"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/quantum/wave": {
+      "post": {
+        "summary": "Execute autonomous wave",
+        "description": "Run autonomous theorem discovery and proof chain execution",
+        "tags": ["Quantum"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "domain": {
+                    "type": "string",
+                    "default": "math",
+                    "example": "math"
+                  },
+                  "maxSteps": {
+                    "type": "integer",
+                    "default": 20,
+                    "example": 20
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Wave execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaveExecution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "summary": "Get dashboard metrics",
+        "description": "Retrieve current system metrics and statistics",
+        "tags": ["Monitoring"],
+        "responses": {
+          "200": {
+            "description": "System metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Metrics"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "description": "Check if service is healthy",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "uptime": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "Readiness check",
+        "description": "Check if service is ready to handle requests",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "Service is ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ready": {
+                      "type": "boolean"
+                    },
+                    "formulasLoaded": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service not ready"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Formula": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Fibonacci_7"
+          },
+          "formula": {
+            "type": "string",
+            "example": "fib(7) = 13"
+          },
+          "value": {
+            "type": "number",
+            "example": 13
+          },
+          "domain": {
+            "type": "string",
+            "example": "combinatorics"
+          },
+          "humanReadable": {
+            "type": "string",
+            "example": "The 7th Fibonacci number"
+          },
+          "theoremProof": {
+            "type": "string",
+            "example": "theorem fib_7 : fib 7 = 13 := by..."
+          },
+          "publicDatasetTests": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dataset": {
+                  "type": "string"
+                },
+                "result": {
+                  "type": "boolean"
+                },
+                "evidence": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FormulaExecution": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          },
+          "fold": {
+            "type": "string",
+            "description": "FNV-1a cryptographic proof"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "proof": {
+            "type": "string"
+          }
+        }
+      },
+      "QuantumValidation": {
+        "type": "object",
+        "properties": {
+          "formulaName": {
+            "type": "string"
+          },
+          "classicalResult": {
+            "type": "number"
+          },
+          "quantumResult": {
+            "type": "number"
+          },
+          "matchesClassical": {
+            "type": "boolean"
+          },
+          "qubits": {
+            "type": "integer"
+          },
+          "gateCount": {
+            "type": "integer"
+          },
+          "depth": {
+            "type": "integer"
+          },
+          "executionTime": {
+            "type": "number",
+            "description": "Execution time in milliseconds"
+          }
+        }
+      },
+      "WaveExecution": {
+        "type": "object",
+        "properties": {
+          "waveId": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "theoremsCrossProved": {
+            "type": "integer"
+          },
+          "totalDuration": {
+            "type": "number"
+          },
+          "foldChainLength": {
+            "type": "integer"
+          },
+          "steps": {
+            "type": "array"
+          },
+          "foldChain": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Metrics": {
+        "type": "object",
+        "properties": {
+          "totalFormulas": {
+            "type": "integer"
+          },
+          "validatedDatasets": {
+            "type": "integer"
+          },
+          "passRate": {
+            "type": "number"
+          },
+          "avgLatency": {
+            "type": "number"
+          },
+          "quantumQubits": {
+            "type": "integer"
+          },
+          "uptime": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Formulas",
+      "description": "Formula corpus management and execution"
+    },
+    {
+      "name": "Quantum",
+      "description": "Quantum validation and wave execution"
+    },
+    {
+      "name": "Monitoring",
+      "description": "System metrics and monitoring"
+    },
+    {
+      "name": "Health",
+      "description": "Health and readiness checks"
+    }
+  ]
+}
