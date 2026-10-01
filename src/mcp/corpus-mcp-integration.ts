@@ -4,7 +4,7 @@
  * Cross-reference all 42 formulas with domains, datasets, proofs
  */
 
-import { getValidatedCorpus } from './validated-formula-corpus.js'
+import { FormulaExecutor } from './mcp-common-operations.js'
 import { MCP_OPERATIONS } from './operations-metadata.js'
 import { UNIVERSAL_OPERATION_REGISTRY } from './unified-mcp-router.js'
 
@@ -43,7 +43,7 @@ export interface CorpusOperation {
  * Generate MCP operations from validated corpus
  */
 export function getCorpusAsOperations(): CorpusOperation[] {
-  const corpus = getValidatedCorpus()
+  const corpus = FormulaExecutor.getAllFormulas()
   const operations: CorpusOperation[] = []
 
   for (const formula of corpus) {
@@ -85,7 +85,7 @@ export function getCorpusAsOperations(): CorpusOperation[] {
  * Enrich corpus operations with cross-references
  */
 export function enrichWithCrossReferences(ops: CorpusOperation[]): CorpusOperation[] {
-  const corpus = getValidatedCorpus()
+  const corpus = FormulaExecutor.getAllFormulas()
   const formulaMap = new Map(corpus.map(f => [f.name, f]))
 
   for (const op of ops) {

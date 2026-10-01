@@ -1,11 +1,15 @@
 /**
  * Quantum Agent Interface
  * How agents invoke quantum proofs via MCP
- * Demonstrates executable proof system
+ * Uses centralized operations registry (DRY)
  */
 
-import { getValidatedCorpus } from './validated-formula-corpus.js'
-import { executeAutonomousWave, analyzeConvergence, discoverFormulaRelationships } from './autonomous-wave.js'
+import {
+  FormulaExecutor,
+  WaveExecutor,
+  AnalysisExecutor,
+  ResponseFormatter
+} from './mcp-common-operations.js'
 
 // ============================================================================
 // PROOF-EXECUTABLE INTERFACE: What agents see
@@ -36,7 +40,7 @@ export interface ExecutableProof {
  * All formulas as directly invocable proofs
  */
 export function getInvocableFormulas(): ExecutableProof[] {
-  const corpus = getValidatedCorpus()
+  const corpus = FormulaExecutor.getAllFormulas()
 
   return corpus.map(formula => ({
     id: formula.name.toLowerCase(),
@@ -67,7 +71,7 @@ export function getInvocableFormulas(): ExecutableProof[] {
 }
 
 /**
- * Quantum operations as directly invocable
+ * Quantum operations as directly invocable (using centralized executors)
  */
 export function getInvocableOperations(): ExecutableProof[] {
   return [
@@ -77,7 +81,7 @@ export function getInvocableOperations(): ExecutableProof[] {
       executable: true,
       description: 'Run autonomous wave on math domain (proves theorems via fold chaining)',
       invoke: async () => {
-        const wave = await executeAutonomousWave('math', 20)
+        const wave = await WaveExecutor.execute('math', 20)
         return {
           waveId: wave.waveId,
           domain: wave.startDomain,
@@ -99,7 +103,7 @@ export function getInvocableOperations(): ExecutableProof[] {
       executable: true,
       description: 'Run autonomous wave on combinatorics domain',
       invoke: async () => {
-        const wave = await executeAutonomousWave('combinatorics', 20)
+        const wave = await WaveExecutor.execute('combinatorics', 20)
         return {
           waveId: wave.waveId,
           domain: wave.startDomain,
@@ -115,7 +119,7 @@ export function getInvocableOperations(): ExecutableProof[] {
       executable: true,
       description: 'Analyze convergence to verify system determinism (no wave collapse)',
       invoke: async () => {
-        const analysis = await analyzeConvergence('math', 7)
+        const analysis = await AnalysisExecutor.analyzeConvergence('math', 7)
         return {
           wavesExecuted: analysis.waves.length,
           convergenceIndex: analysis.convergenceIndex,
@@ -133,7 +137,7 @@ export function getInvocableOperations(): ExecutableProof[] {
       executable: true,
       description: 'Discover formula relationships autonomously (no hardcoding)',
       invoke: async () => {
-        const relationships = discoverFormulaRelationships()
+        const relationships = AnalysisExecutor.discoverRelationships()
         return {
           count: relationships.length,
           discovered: relationships.map(r => ({
