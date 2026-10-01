@@ -149,24 +149,8 @@ async function handleHardwareValidation(
 ): Promise<string> {
   try {
     const result = await QuantumHardwareValidator.validateFormula(formulaName, expectedValue, qubits)
-
-    let response = `✓ QUANTUM HARDWARE VALIDATION\n\n`
-    response += `Formula: ${result.formulaName}\n`
-    response += `Classical Result: ${result.classicalResult}\n`
-    response += `Quantum Result: ${result.quantumResult.toFixed(3)}\n`
-    response += `Match: ${result.matchesClassical ? '✓ YES' : '✗ NO'}\n\n`
-    response += `Circuit Metrics:\n`
-    response += `  Qubits: ${result.qubits}\n`
-    response += `  Gates: ${result.gateCount}\n`
-    response += `  Circuit Depth: ${result.depth}\n`
-    response += `  Execution Time: ${result.executionTime}ms\n\n`
-    response += `Quantum Properties:\n`
-    response += `  ✓ Superposition verified on ${result.qubits} qubits\n`
-    response += `  ✓ Entanglement tested via controlled gates\n`
-    response += `  ✓ Determinism: Classical/Quantum agreement = ${result.matchesClassical ? '100%' : 'checking convergence'}\n`
-    response += `  ✓ Simulator: ${result.simulatorUsed}\n`
-
-    return response
+    const response = ResponseFormatter.formatHardwareValidation(result)
+    return response.content
   } catch (e) {
     return `Error validating quantum hardware: ${e instanceof Error ? e.message : String(e)}`
   }
@@ -179,25 +163,8 @@ async function handleHardwareConvergence(
 ): Promise<string> {
   try {
     const result = await QuantumConvergenceValidator.validateConvergence(formulaName, expectedValue, iterations)
-
-    let response = `✓ QUANTUM-CLASSICAL CONVERGENCE TEST\n\n`
-    response += `Formula: ${formulaName}\n`
-    response += `Expected Value: ${expectedValue}\n`
-    response += `Iterations: ${iterations}\n\n`
-    response += `Results:\n`
-
-    for (let i = 0; i < result.allResults.length; i++) {
-      const r = result.allResults[i]
-      response += `  [${i + 1}] Q=${r.quantumResult.toFixed(3)}, C=${r.classicalResult}, Match=${r.matchesClassical ? '✓' : '✗'}\n`
-    }
-
-    response += `\nConvergence Analysis:\n`
-    response += `  Average Delta: ${result.averageDelta.toFixed(4)}\n`
-    response += `  Fold Agreement: ${result.foldAgreement.toFixed(0)}%\n`
-    response += `  Status: ${result.convergenceAchieved ? '✓ CONVERGED' : '⚠️ OSCILLATING'}\n`
-    response += `  Determinism Verified: ${result.convergenceAchieved ? 'YES' : 'NO'}\n`
-
-    return response
+    const response = ResponseFormatter.formatHardwareConvergence(result)
+    return response.content
   } catch (e) {
     return `Error testing convergence: ${e instanceof Error ? e.message : String(e)}`
   }
@@ -206,34 +173,8 @@ async function handleHardwareConvergence(
 async function handleCircuitProof(formulaName: string, showQasm: boolean = false): Promise<string> {
   try {
     const result = await QuantumHardwareValidator.validateFormula(formulaName, 0)
-
-    let response = `✓ QUANTUM CIRCUIT PROOF\n\n`
-    response += `Formula: ${result.formulaName}\n`
-    response += `Qubits: ${result.qubits}\n`
-    response += `Total Gates: ${result.gateCount}\n`
-    response += `Circuit Depth: ${result.depth}\n\n`
-    response += `Quantum Operations:\n`
-    response += `  1. Hadamard gates on all qubits (superposition)\n`
-    response += `  2. CNOT ladder (entanglement)\n`
-    response += `  3. Formula-specific rotations (RY/RZ)\n`
-    response += `  4. Measurement in computational basis\n\n`
-    response += `Proof of Quantum Completeness:\n`
-    response += `  ✓ Creates 2^${result.qubits} superposition states\n`
-    response += `  ✓ Entangles all qubits via CNOT chain\n`
-    response += `  ✓ Classically simulates to verify determinism\n`
-    response += `  ✓ Proves formula is computable quantum-mechanically\n`
-
-    if (showQasm) {
-      response += `\nOpenQASM 2.0 Circuit:\n`
-      response += `  OPENQASM 2.0;\n`
-      response += `  include "qelib1.inc";\n`
-      response += `  qreg q[${result.qubits}];\n`
-      response += `  creg c[${result.qubits}];\n`
-      response += `  // Hadamard + CNOT + formula-specific gates\n`
-      response += `  measure q -> c;\n`
-    }
-
-    return response
+    const response = ResponseFormatter.formatCircuitProof(result, showQasm)
+    return response.content
   } catch (e) {
     return `Error generating circuit proof: ${e instanceof Error ? e.message : String(e)}`
   }
