@@ -102,12 +102,13 @@ function decideVersionBump(analysis: ChangeAnalysis): 'major' | 'minor' | 'patch
 
 function bumpVersion(current: Version, bump: 'major' | 'minor' | 'patch'): Version {
   switch (bump) {
+    // v1.<minor>.<digit>: major stays 1, a breaking or feature change opens the next minor at LTS (0), and the
+    // development state is one digit, so past 9 it also opens the next minor
     case 'major':
-      return { major: current.major + 1, minor: 0, patch: 0 }
     case 'minor':
-      return { major: current.major, minor: current.minor + 1, patch: 0 }
+      return { major: 1, minor: current.minor + 1, patch: 0 }
     case 'patch':
-      return { major: current.major, minor: current.minor, patch: current.patch + 1 }
+      return current.patch >= 9 ? { major: 1, minor: current.minor + 1, patch: 0 } : { major: 1, minor: current.minor, patch: current.patch + 1 }
   }
 }
 
@@ -174,9 +175,22 @@ export async function autoVersion(): Promise<{
   const newVersionStr = formatVersion(newVer)
   console.log(`\nNew version: ${newVersionStr}`)
 
-  // 5. Update package.json
+  // 5. Update package.json — only if the version lock allows it (scheme, forward, previous released on npm)
+  const priorJson = readFileSync('package.json', 'utf-8')
   pkgJson.version = newVersionStr.substring(1) // Remove 'v' prefix
   writeFileSync('package.json', JSON.stringify(pkgJson, null, 2) + '\n')
+  try {
+    execSync('node scripts/version-lock.mjs', { stdio: 'inherit' })
+  } catch {
+    writeFileSync('package.json', priorJson)
+    return {
+      currentVersion: formatVersion(currentVer),
+      newVersion: formatVersion(currentVer),
+      bumpType,
+      analysis,
+      tagged: false
+    }
+  }
   console.log('✓ Updated package.json')
 
   // 6. Create git tag
