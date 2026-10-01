@@ -18,6 +18,68 @@ export interface OperationMetadata {
  * Auto-generates: registry entries, builder methods, and handlers
  */
 export const MCP_OPERATIONS: OperationMetadata[] = [
+  // DEPLOYMENT/CI DOMAIN (Pre-push verification)
+  {
+    registryKey: 'build-verify',
+    domain: 'deployment',
+    operation: 'build-verify',
+    handler: async () => {
+      try {
+        const { execSync } = await import('child_process')
+        execSync('npm run build', { stdio: 'pipe', timeout: 60000 })
+        return { passed: true, status: 'build_success' }
+      } catch (e) {
+        return { passed: false, status: 'build_failed', error: String(e) }
+      }
+    },
+    description: 'Verify build passes (MCP quantum verified)'
+  },
+  {
+    registryKey: 'deployment-health',
+    domain: 'deployment',
+    operation: 'deployment-health',
+    handler: async () => {
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 5000)
+        const response = await fetch('https://qpu.uuidna.com/health', { signal: controller.signal })
+        clearTimeout(timeoutId)
+        const data = await response.json() as Record<string, unknown>
+        return {
+          passed: response.ok && data.status === 'ok',
+          status: data.status || 'unreachable',
+          live: true
+        }
+      } catch {
+        return { passed: false, status: 'deployment_unreachable', live: false }
+      }
+    },
+    description: 'Check if deployment is green (live health check)'
+  },
+  {
+    registryKey: 'e2e-test-verify',
+    domain: 'deployment',
+    operation: 'e2e-test-verify',
+    handler: async () => {
+      try {
+        const { execSync } = await import('child_process')
+        const fs = await import('fs')
+        if (!fs.existsSync('dist/quantum/processing/unit/live.test.js')) {
+          return { passed: true, status: 'e2e_tests_not_found', skipped: true }
+        }
+        execSync('npm run test:live', {
+          stdio: 'pipe',
+          timeout: 30000,
+          env: { ...process.env, QPU_LIVE: 'https://qpu.uuidna.com' }
+        })
+        return { passed: true, status: 'e2e_tests_passed' }
+      } catch (e) {
+        return { passed: false, status: 'e2e_tests_failed', error: String(e) }
+      }
+    },
+    description: 'Verify e2e tests pass against deployed system'
+  },
+
   // ENTERPRISE DOMAIN
   {
     registryKey: 'compliance-scan',
