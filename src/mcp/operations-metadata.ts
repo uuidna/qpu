@@ -537,6 +537,53 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
       return { hops: path.hops.length, final: result.final }
     },
     description: 'Multi-hop: obs→ml→enterprise'
+  },
+
+  // PUBLIC VALIDATION
+  {
+    key: 'validate-all',
+    domain: 'test',
+    operation: 'validate-public',
+    handler: async () => {
+      const { PublicValidation } = await import('../test/public-validation.js')
+      const results = await PublicValidation.runAllValidations()
+      const passed = results.filter((r: any) => r.passed).length
+      return { total: results.length, passed, rate: (passed / results.length).toFixed(2) }
+    },
+    description: 'Run all public API validations'
+  },
+  {
+    key: 'validate-formulas',
+    domain: 'test',
+    operation: 'validate-formulas',
+    handler: async () => {
+      const { PublicValidation } = await import('../test/public-validation.js')
+      const r = await PublicValidation.validateCrossDomainFormulas()
+      return { concept: r.concept, passed: r.passed, improvement: r.actual.toFixed(4) }
+    },
+    description: 'Cross-domain formula validation'
+  },
+  {
+    key: 'validate-gate',
+    domain: 'test',
+    operation: 'validate-gate',
+    handler: async () => {
+      const { PublicValidation } = await import('../test/public-validation.js')
+      const r = await PublicValidation.validateUnifiedGate()
+      return { concept: r.concept, passed: r.passed, speedup: (r.actual * 100).toFixed(1) + '%' }
+    },
+    description: 'Unified gate performance validation'
+  },
+  {
+    key: 'validate-crypto',
+    domain: 'test',
+    operation: 'validate-crypto',
+    handler: async () => {
+      const { PublicValidation } = await import('../test/public-validation.js')
+      const r = await PublicValidation.validateQuantumCrypto()
+      return { concept: r.concept, passed: r.passed, entropy: r.actual.toFixed(1) + ' bits' }
+    },
+    description: 'Quantum crypto classical validation'
   }
 ]
 
