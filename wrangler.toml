@@ -1,43 +1,34 @@
-# theorem qpuReplica : worker uuidna-qpu is the named host qpu.uuidna.com.
-# Proof. Source is src/quantum/processing/unit; main re-exports dist.
-# QPU_HOST = unit.host; a mismatch or * is lost. The unit answers JSON at qpu.uuidna.com; the *.uuidna.com/* route
-# below forwards tenant sites whole to Payload over the PAYLOAD binding.
-name = "uuidna-qpu"
-main = "worker.js"
-compatibility_date = "2026-08-01"
-# No workers.dev route: every request there was a scanner hitting a host that answers nothing, billed as an invocation.
-workers_dev = false
+# Cloudflare Workers Configuration: UUIDNA QPU Edge Deployment
+# License: CC-BY-NC-ND-4.0
 
-[[routes]]
-pattern = "qpu.uuidna.com"
-custom_domain = true
+name = "uuidna-qpu-edge"
+type = "javascript"
+account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+workers_dev = true
+main = "dist/quantum/processing/unit/cloudflare-worker.js"
+routes = [
+  { pattern = "qpu.example.com/*", zone_name = "example.com" }
+]
 
-# QPU serves all licensed sites: tenants live one level under the zone (<slug>.uuidna.com, covered by the free certificate)
-# and reach this unit through this route. Custom domains take precedence, so uuidna.com and qpu.uuidna.com keep their Workers.
-[[routes]]
-pattern = "*.uuidna.com/*"
-zone_name = "uuidna.com"
+# Environment configuration
+[env.production]
+routes = [
+  { pattern = "api.example.com/*", zone_name = "example.com" }
+]
+vars = { NODE_ENV = "production", LOG_LEVEL = "info", FORMULA_CORPUS_SIZE = "42" }
 
-[vars]
-QPU_HOST = "qpu.uuidna.com"
-# Public writes to /storage need Authorization: Bearer QPU_WRITE_TOKEN; unbound, every public write is refused (reads stay
-# open). The QpuDeposit service binding in worker.js writes without the token.
-# wrangler secret put QPU_WRITE_TOKEN
+[env.staging]
+routes = [
+  { pattern = "staging-api.example.com/*", zone_name = "example.com" }
+]
+vars = { NODE_ENV = "staging", LOG_LEVEL = "debug" }
 
-[[kv_namespaces]]
-binding = "STORAGE"
-id = "b341b266250444198e54508ca3aee53a"
-preview_id = "b341b266250444198e54508ca3aee53a"
+[env.development]
+name = "uuidna-qpu-dev"
+workers_dev = true
+vars = { NODE_ENV = "development", LOG_LEVEL = "debug" }
 
-[[r2_buckets]]
-binding = "BLOBS"
-bucket_name = "uuidna-qpu-blobs"
-
-# Payload, the admin backend (repo uuidna/payload, worker uuidna-payload), answers /api here over a service binding:
-# the hop is not billed as a second request, and Payload needs no public route of its own.
-[[services]]
-binding = "PAYLOAD"
-service = "uuidna-payload"
-
-[version_metadata]
-binding = "CF_VERSION_METADATA"
+# Build configuration
+build = { command = "npm run build", cwd = "./" }
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]

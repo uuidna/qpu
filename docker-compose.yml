@@ -1,0 +1,172 @@
+---
+# Docker Compose: Local/Staging UUIDNA QPU Deployment
+# License: CC-BY-NC-ND-4.0
+
+version: '3.9'
+
+services:
+  # Main QPU service
+  qpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    image: uuidna/qpu:latest
+    container_name: qpu-main
+    ports:
+      - "8080:8080"  # HTTP API
+      - "9090:9090"  # Prometheus metrics
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      FORMULA_CORPUS_SIZE: "42"
+      QUANTUM_SIMULATOR: "qiskit"
+      MCP_ENABLED: "true"
+      DATABASE_URL: "postgresql://qpu:qpu@postgres:5432/qpu_db"
+      REDIS_URL: "redis://redis:6379/0"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - qpu-network
+    volumes:
+      - qpu-cache:/qpu/cache
+      - qpu-logs:/qpu/logs
+    labels:
+      app: qpu
+      version: "0.2.1"
+
+  # PostgreSQL: Formula results and metrics storage
+  postgres:
+    image: postgres:16-alpine
+    container_name: qpu-postgres
+    environment:
+      POSTGRES_DB: qpu_db
+      POSTGRES_USER: qpu
+      POSTGRES_PASSWORD: qpu
+      POSTGRES_INITDB_ARGS: "-c max_connections=200 -c shared_buffers=256MB"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qpu"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - qpu-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Redis: Cache and real-time metrics
+  redis:
+    image: redis:7-alpine
+    container_name: qpu-redis
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - qpu-network
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+
+  # Prometheus: Metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: qpu-prometheus
+    ports:
+      - "9000:9090"
+    volumes:
+      - ./k8s/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=7d'
+    depends_on:
+      - qpu
+    restart: unless-stopped
+    networks:
+      - qpu-network
+
+  # Grafana: Visualization dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: qpu-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./k8s/grafana-dashboard.json:/etc/grafana/provisioning/dashboards/qpu.json:ro
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - qpu-network
+
+  # Jaeger: Distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: qpu-jaeger
+    ports:
+      - "6831:6831/udp"  # Jaeger agent
+      - "16686:16686"     # Jaeger UI
+    environment:
+      COLLECTOR_ZIPKIN_HOST_PORT: ":9411"
+    restart: unless-stopped
+    networks:
+      - qpu-network
+    volumes:
+      - jaeger-data:/badger/data
+
+volumes:
+  qpu-cache:
+    driver: local
+  qpu-logs:
+    driver: local
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  jaeger-data:
+    driver: local
+
+networks:
+  qpu-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+# Deployment instructions:
+# 1. Build images: docker-compose build
+# 2. Start services: docker-compose up -d
+# 3. Access QPU: http://localhost:8080
+# 4. View metrics: http://localhost:9000 (Prometheus)
+# 5. View dashboards: http://localhost:3000 (Grafana)
+# 6. View traces: http://localhost:16686 (Jaeger)
+# 7. Stop services: docker-compose down
+# 8. Remove volumes: docker-compose down -v
