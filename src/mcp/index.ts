@@ -69,3 +69,16 @@ export {
   PriorArtCitationManager,
   priorArtCitationManager
 } from './prior-art-citations.js'
+
+export {
+  profileHotspotsOp,
+  optimizeFormulaOp,
+  benchLatencyOp,
+  phase15Operations,
+  type ProfileHotspotsRequest,
+  type ProfileHotspotsResponse,
+  type OptimizeFormulaRequest,
+  type OptimizeFormulaResponse,
+  type BenchLatencyRequest,
+  type BenchLatencyResponse
+} from './phase-15-optimization.js'
