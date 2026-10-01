@@ -4,10 +4,14 @@ Autonomous quantum processing unit with 10 parallel systems, UUID-indexed operat
 
 ## Quick Links
 
+**Getting Started:**
 - [Quick Start](QUICKSTART.md) — 5 minutes
 - [Architecture](ARCHITECTURE.md) — System design
 - [Deployment](DEPLOYMENT.md) — All modes
-- [Quantum Kernel](QUANTUM_KERNEL_ARCHITECTURE.md) — How it works
+
+**Automation & Strategy:**
+- [Strategic Path Analysis](strategic-path-analysis.md) — Path A vs B comparison, ROI analysis
+- [Execution Tracker](automation-execution-tracker.md) — Real-time automation schedule, metrics, alerts
 - [Full Index](INDEX.md) — All docs
 
 ## Start
