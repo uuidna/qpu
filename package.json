@@ -43,6 +43,11 @@
       "import": "./dist/quantum/processing/unit/boot.js",
       "default": "./dist/quantum/processing/unit/boot.js"
     },
+    "./payload": {
+      "types": "./dist/db/payload-qpu.d.ts",
+      "import": "./dist/db/payload-qpu.js",
+      "default": "./dist/db/payload-qpu.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -58,6 +63,13 @@
     "!dist/**/*.test.d.ts",
     "!dist/**/*.d.ts",
     "dist/quantum/processing/unit/boot.d.ts",
+    "dist/db/payload-qpu.d.ts",
+    "dist/quantum/processing/unit/index.d.ts",
+    "dist/quantum/processing/unit/docdb.d.ts",
+    "dist/quantum/processing/unit/lean-eval.d.ts",
+    "dist/quantum/processing/unit/lean.d.ts",
+    "dist/quantum/processing/unit/version.d.ts",
+    "dist/quantum/processing/unit/standards.d.ts",
     "!dist/**/readme.js",
     "!dist/**/readme.d.ts",
     "!dist/**/receipt.js",
@@ -77,6 +89,7 @@
     "ci": "npm run build && npm test && npm run readme",
     "readme": "node scripts/generate-readme.mjs",
     "fuse": "node scripts/fuse-apis.mjs",
+    "payload:cf": "node scripts/payload-cloudflare.mjs",
     "prepublishOnly": "npm run version:lock && npm run build",
     "ship": "npm run build && npx wrangler deploy",
     "lean": "lean src/quantum/processing/unit/index.lean",
@@ -111,11 +124,14 @@
     "install": "bash deploy/install.sh"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "5.20261001.1",
     "@faceless-ui/modal": "3.0.1",
     "@faceless-ui/scroll-info": "2.0.0",
     "@modelcontextprotocol/sdk": "1.31.0",
+    "@opennextjs/cloudflare": "1.20.7",
     "@payloadcms/db-d1-sqlite": "4.0.0-canary.37",
     "@payloadcms/db-mongodb": "4.0.0-canary.37",
+    "@payloadcms/db-postgres": "4.0.0-canary.37",
     "@payloadcms/email-resend": "4.0.0-canary.37",
     "@payloadcms/graphql": "4.0.0-canary.37",
     "@payloadcms/next": "4.0.0-canary.37",
@@ -137,6 +153,7 @@
     "@payloadcms/storage-s3": "4.0.0-canary.37",
     "@payloadcms/translations": "4.0.0-canary.37",
     "@payloadcms/ui": "4.0.0-canary.37",
+    "@sentry/nextjs": "11.2.0",
     "@types/express": "5.0.6",
     "@types/node": "26.6.0",
     "graphql": "16.14.2",

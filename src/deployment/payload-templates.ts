@@ -5,7 +5,7 @@
  */
 
 export interface PayloadTemplate {
-  mode: 'browser' | 'standalone' | 'docker' | 'kubernetes'
+  mode: 'browser' | 'standalone' | 'docker' | 'kubernetes' | 'cloudflare'
   version: string
   spec: Record<string, unknown>
   hardware: HardwareTarget
@@ -303,6 +303,11 @@ CMD ["node", "dist/docker-server.js"]
   /**
    * All templates indexed by mode
    */
+  /** Next.js + Payload on Cloudflare Workers for one combination; enumerate them with cloudflareCombinations(). */
+  static cloudflarePayload(c: CloudflareCombination, name?: string): CloudflarePayload {
+    return cloudflarePayloadOf(c, name)
+  }
+
   static allTemplates(): Record<string, PayloadTemplate> {
     return {
       browser: this.browserPayload(),
@@ -311,6 +316,170 @@ CMD ["node", "dist/docker-server.js"]
       kubernetes: this.kubernetesPayload()
     }
   }
+}
+
+// ============================================================================
+// CLOUDFLARE: Next.js + Payload on Workers, every combination
+// ============================================================================
+
+export const CLOUDFLARE_RUNTIMES = ['vinext', 'opennext'] as const
+/** qpu-raid and qpu-d1 are the QPU document database (MongoDB semantics) on native bindings: a MongoDB request on Workers is one of these. */
+export const CLOUDFLARE_DATABASES = ['d1', 'postgres', 'qpu-raid', 'qpu-d1'] as const
+export const CLOUDFLARE_STORAGE = ['r2', 's3', 'none'] as const
+export const CLOUDFLARE_EMAIL = ['resend', 'none'] as const
+export const CLOUDFLARE_PLUGINS = ['ecommerce', 'form-builder', 'import-export', 'mcp', 'multi-tenant', 'nested-docs', 'redirects', 'search', 'sentry', 'seo', 'stripe'] as const
+
+export type CloudflareCombination = {
+  runtime: (typeof CLOUDFLARE_RUNTIMES)[number]
+  db: (typeof CLOUDFLARE_DATABASES)[number]
+  storage: (typeof CLOUDFLARE_STORAGE)[number]
+  email: (typeof CLOUDFLARE_EMAIL)[number]
+  plugins: (typeof CLOUDFLARE_PLUGINS)[number][]
+}
+export type CloudflarePayload = PayloadTemplate & { combination: CloudflareCombination; key: string; files: Record<string, string>; dependencies: string[] }
+
+/** A combination's canonical key: the axes in order, plugins sorted — what its content UUID is taken over. */
+export const cloudflareKeyOf = (c: CloudflareCombination): string =>
+  [c.runtime, c.db, c.storage, c.email, [...c.plugins].sort().join('+') || '-'].join('/')
+export const cloudflareCombinationOf = (key: string): CloudflareCombination => {
+  const [runtime, db, storage, email, plugins] = key.split('/') as [never, never, never, never, string]
+  return { runtime, db, storage, email, plugins: plugins === '-' ? [] : (plugins.split('+') as never) }
+}
+
+const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: string; name: string; call: string; star?: boolean }> = {
+  ecommerce: {
+    from: '@payloadcms/plugin-ecommerce', name: 'ecommercePlugin',
+    call: `ecommercePlugin({ products: true, customers: { slug: 'users' }, access: { isAdmin: ({ req }) => Boolean(req.user), adminOnlyFieldAccess: ({ req }) => Boolean(req.user), adminOrPublishedStatus: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }), isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) } })`,
+  },
+  'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: 'formBuilderPlugin({})' },
+  'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: `importExportPlugin({ collections: [{ slug: 'pages' }] })` },
+  mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: `mcpPlugin({ collections: { pages: { description: 'Pages' } } })` },
+  'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: `multiTenantPlugin({ collections: { pages: {} } })` },
+  'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: `nestedDocsPlugin({ collections: ['pages'] })` },
+  redirects: { from: '@payloadcms/plugin-redirects', name: 'redirectsPlugin', call: `redirectsPlugin({ collections: ['pages'] })` },
+  search: { from: '@payloadcms/plugin-search', name: 'searchPlugin', call: `searchPlugin({ collections: ['pages'] })` },
+  sentry: { from: '@payloadcms/plugin-sentry', name: 'sentryPlugin', call: `sentryPlugin({ Sentry, enabled: Boolean(process.env.SENTRY_DSN) })` },
+  seo: { from: '@payloadcms/plugin-seo', name: 'seoPlugin', call: `seoPlugin({ collections: ['pages'] })` },
+  stripe: { from: '@payloadcms/plugin-stripe', name: 'stripePlugin', call: `stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '' })` },
+}
+
+const cloudflareConfigOf = (c: CloudflareCombination): string => {
+  const plugins = [...c.plugins].sort()
+  const imports = [
+    `/// <reference types="@cloudflare/workers-types" />`,
+    `import { buildConfig } from 'payload'`,
+    `import type { CollectionConfig } from 'payload'`,
+    `import { lexicalEditor } from '@payloadcms/richtext-lexical'`,
+    c.runtime === 'vinext' ? `import { env } from 'cloudflare:workers'` : `import { getCloudflareContext } from '@opennextjs/cloudflare'`,
+    c.db === 'd1' ? `import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'` : '',
+    c.db === 'postgres' ? `import { postgresAdapter } from '@payloadcms/db-postgres'` : '',
+    c.db.startsWith('qpu') ? `import { qpuAdapter } from '@uuidna/qpu/payload'` : '',
+    c.db === 'qpu-d1' ? `import { d1DocStore } from '@uuidna/qpu'` : '',
+    c.storage === 'r2' ? `import { r2Storage } from '@payloadcms/storage-r2'` : '',
+    c.storage === 's3' ? `import { s3Storage } from '@payloadcms/storage-s3'` : '',
+    c.email === 'resend' ? `import { resendAdapter } from '@payloadcms/email-resend'` : '',
+    plugins.includes('sentry') ? `import * as Sentry from '@sentry/nextjs'` : '',
+    ...plugins.map((p) => `import { ${PLUGIN_CODE[p].name} } from '${PLUGIN_CODE[p].from}'`),
+  ].filter(Boolean)
+  const bindings = [
+    c.db === 'd1' || c.db === 'qpu-d1' ? 'D1: D1Database' : '',
+    c.db === 'postgres' ? 'HYPERDRIVE: Hyperdrive' : '',
+    c.db === 'qpu-raid' ? 'STORAGE: KVNamespace; BLOBS: R2Bucket' : '',
+    c.storage === 'r2' ? 'MEDIA: R2Bucket' : '',
+  ].filter(Boolean)
+  const cf = c.runtime === 'vinext' ? `const cf = env as unknown as CloudflareEnv` : `const cf = (await getCloudflareContext({ async: true })).env as unknown as CloudflareEnv`
+  const db = {
+    d1: `sqliteD1Adapter({ binding: cf.D1 })`,
+    postgres: `postgresAdapter({ pool: { connectionString: cf.HYPERDRIVE.connectionString } })`,
+    'qpu-raid': `qpuAdapter({ env: { STORAGE: cf.STORAGE, BLOBS: cf.BLOBS } as never })`,
+    'qpu-d1': `qpuAdapter({ store: d1DocStore(cf.D1 as never) })`,
+  }[c.db]
+  const storage = {
+    r2: `r2Storage({ bucket: cf.MEDIA as never, collections: { media: true } })`,
+    s3: `s3Storage({ bucket: process.env.S3_BUCKET ?? '', collections: { media: true }, config: { region: process.env.S3_REGION ?? 'auto', endpoint: process.env.S3_ENDPOINT, credentials: { accessKeyId: process.env.S3_ACCESS_KEY_ID ?? '', secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? '' } } })`,
+    none: '',
+  }[c.storage]
+  const collections = [
+    `const Users: CollectionConfig = { slug: 'users', auth: true, fields: [] }`,
+    `const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }`,
+    `const Pages: CollectionConfig = { slug: 'pages', versions: { drafts: true }, fields: [{ name: 'title', type: 'text', required: true }] }`,
+    plugins.includes('multi-tenant') ? `const Tenants: CollectionConfig = { slug: 'tenants', fields: [{ name: 'name', type: 'text', required: true }] }` : '',
+  ].filter(Boolean)
+  return [
+    `// Generated by PayloadTemplates.cloudflarePayload — ${cloudflareKeyOf(c)}`,
+    ...imports,
+    '',
+    `type CloudflareEnv = { ${bindings.join('; ')} }`,
+    cf,
+    '',
+    ...collections,
+    '',
+    'export default buildConfig({',
+    `  secret: process.env.PAYLOAD_SECRET ?? '',`,
+    `  editor: lexicalEditor(),`,
+    `  collections: [Users, Media, Pages${plugins.includes('multi-tenant') ? ', Tenants' : ''}],`,
+    `  db: ${db},`,
+    c.email === 'resend' ? `  email: resendAdapter({ apiKey: process.env.RESEND_API_KEY ?? '', defaultFromAddress: process.env.EMAIL_FROM ?? 'noreply@example.com', defaultFromName: 'Payload' }),` : '',
+    // Payload 4 takes storage adapters in `storage`, not in `plugins`
+    storage ? `  storage: [${storage}],` : '',
+    `  plugins: [${plugins.map((p) => PLUGIN_CODE[p].call).join(', ')}],`,
+    '})',
+    '',
+  ].filter((l) => l !== '').join('\n') + '\n'
+}
+
+const cloudflareWranglerOf = (c: CloudflareCombination, name: string): string => {
+  const w: Record<string, unknown> = {
+    $schema: './node_modules/wrangler/config-schema.json',
+    name,
+    ...(c.runtime === 'opennext' ? { main: '.open-next/worker.js', assets: { directory: '.open-next/assets', binding: 'ASSETS' } } : {}),
+    compatibility_date: '2026-10-01',
+    compatibility_flags: ['nodejs_compat'],
+    observability: { enabled: true },
+  }
+  if (c.db === 'd1' || c.db === 'qpu-d1') w.d1_databases = [{ binding: 'D1', database_name: `${name}-db` }]
+  if (c.db === 'postgres') w.hyperdrive = [{ binding: 'HYPERDRIVE', id: '<HYPERDRIVE_ID>' }]
+  if (c.db === 'qpu-raid') {
+    w.kv_namespaces = [{ binding: 'STORAGE' }]
+    w.r2_buckets = [{ binding: 'BLOBS', bucket_name: `${name}-blobs` }]
+  }
+  if (c.storage === 'r2') w.r2_buckets = [...((w.r2_buckets as unknown[]) ?? []), { binding: 'MEDIA', bucket_name: `${name}-media` }]
+  return JSON.stringify(w, null, 2) + '\n'
+}
+
+const cloudflareDependenciesOf = (c: CloudflareCombination): string[] =>
+  [
+    'payload', '@payloadcms/next', '@payloadcms/richtext-lexical', 'next', 'react', 'react-dom', 'wrangler',
+    c.runtime === 'opennext' ? '@opennextjs/cloudflare' : 'vinext',
+    { d1: '@payloadcms/db-d1-sqlite', postgres: '@payloadcms/db-postgres', 'qpu-raid': '@uuidna/qpu', 'qpu-d1': '@uuidna/qpu' }[c.db],
+    c.storage === 'none' ? '' : `@payloadcms/storage-${c.storage}`,
+    c.email === 'resend' ? '@payloadcms/email-resend' : '',
+    ...c.plugins.map((p) => PLUGIN_CODE[p].from),
+    c.plugins.includes('sentry') ? '@sentry/nextjs' : '',
+  ].filter(Boolean).sort()
+
+export const cloudflarePayloadOf = (c: CloudflareCombination, name = 'payload-cloudflare'): CloudflarePayload => ({
+  mode: 'cloudflare',
+  version: '1.0.0',
+  spec: { runtime: c.runtime, db: c.db, storage: c.storage, email: c.email, plugins: [...c.plugins].sort(), edge: true, isolates: 'per request' },
+  // a Worker isolate: 128 MB, CPU time per request; the hardware is Cloudflare's, so these are the platform's limits
+  hardware: { cpu: { cores: 1, freq: 0, cache: 'isolate' }, memory: { gb: 0.125, type: 'isolate' }, network: { bw: 'edge', latency: '0ms' }, storage: { ssd: 'no', type: c.db } },
+  optimization: { cpu: { ipc: 1, frequency: 0, powerGating: false }, memory: { prefetch: false, compression: 0, cacheSize: 128 }, network: { routing: 'anycast', linkGating: false }, power: { vrm: 0, thermalTarget: 0 } },
+  deployment: { instances: 1, scaling: { min: 0, max: 0, target: 0 }, monitoring: true, selfHealing: true, autonomousOptimization: false },
+  combination: { ...c, plugins: [...c.plugins].sort() },
+  key: cloudflareKeyOf(c),
+  files: { 'payload.config.ts': cloudflareConfigOf(c), 'wrangler.jsonc': cloudflareWranglerOf(c, name) },
+  dependencies: cloudflareDependenciesOf(c),
+})
+
+/** Every combination of the axes: runtimes × databases × storage × email × every subset of the plugins. */
+export function* cloudflareCombinations(): Generator<CloudflareCombination> {
+  for (const runtime of CLOUDFLARE_RUNTIMES)
+    for (const db of CLOUDFLARE_DATABASES)
+      for (const storage of CLOUDFLARE_STORAGE)
+        for (const email of CLOUDFLARE_EMAIL)
+          for (let mask = 0; mask < 1 << CLOUDFLARE_PLUGINS.length; mask++)
+            yield { runtime, db, storage, email, plugins: CLOUDFLARE_PLUGINS.filter((_, i) => mask & (1 << i)) }
 }
 
 export const payloadTemplates = new PayloadTemplates()

@@ -10,6 +10,8 @@ import { leanSource, leanToolchain } from './lean.js'
 import { packageVersion } from './version.js'
 import { sealedStandards } from './standards.js'
 import { leanModelOf, leanRecomputeOf, leanTheoremBlocksOf } from './lean-eval.js'
+import { docDbOf, type DocStore } from './docdb.js'
+export * from './docdb.js'
 const onceOf = <T,>(build: () => T): (() => T) => {
   let built: { value: T } | undefined
   return () => (built ??= { value: build() }).value
@@ -6703,6 +6705,30 @@ const storageStoreOf = (env?: QpuEnv) => {
     },
     drop: dropSlot}
 }
+
+/**
+ * THE QPU AS A DATABASE. The document database (docdb.ts) over the unit's own store: RAID-striped across the
+ * STORAGE (KV) and BLOBS (R2) bindings when they are bound, the in-memory heap when they are not. Document ids are
+ * programmable content UUIDs; every insert, update and delete is a quantum receipt in the `db` stream, referred by
+ * the collection it touched. A scan walks at most STORE_SCAN_PAGES pages of STORE_LIST_PAGE keys per request.
+ */
+export const qpuDocStoreOf = (env?: QpuEnv): DocStore => {
+  const store = storageStoreOf(env)
+  return {
+    get: async (key) => (await store.get(key)) ?? undefined,
+    put: async (key, value) => void (await store.put(key, value)),
+    del: async (key) => void (await store.del(key)),
+    keys: (prefix) => store.keysUnder(prefix, Number.MAX_SAFE_INTEGER),
+  }
+}
+let docSequence = n - n
+export const qpuDocDbOf = (env?: QpuEnv, name = 'payload', store: DocStore = qpuDocStoreOf(env)) =>
+  docDbOf(
+    store,
+    `db/${name}`,
+    (collection, doc) => qpuContentUuidOf({ collection, doc, at: Date.now(), sequence: docSequence++ }),
+    ({ op, collection, doc }) => void qpuUuidReceiptOf(`db ${op} ${collection}`, doc._id, doc, `${unit.origin}/storage/${collection}`),
+  )
 
 export const qpuStorageMetaOf = (env?: QpuEnv) => {
   const raid = qpuRaidOf()

@@ -1,0 +1,53 @@
+{
+ "kind": "payload-cf-receipt",
+ "when": "2026-10-02",
+ "axes": {
+  "runtime": [
+   "vinext",
+   "opennext"
+  ],
+  "db": [
+   "d1",
+   "postgres",
+   "qpu-raid",
+   "qpu-d1"
+  ],
+  "storage": [
+   "r2",
+   "s3",
+   "none"
+  ],
+  "email": [
+   "resend",
+   "none"
+  ]
+ },
+ "plugins": [
+  "ecommerce",
+  "form-builder",
+  "import-export",
+  "mcp",
+  "multi-tenant",
+  "nested-docs",
+  "redirects",
+  "search",
+  "sentry",
+  "seo",
+  "stripe"
+ ],
+ "combinations": 98304,
+ "typechecked": {
+  "bases": 96,
+  "compiled": true,
+  "ok": 96,
+  "unattributed": [],
+  "failing": []
+ },
+ "coverage": "each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles",
+ "stream": {
+  "length": 98304,
+  "head": "7035e38e-c6fa-80f5-9105-72a81cf13eab",
+  "chain": "db60c22e90bce8ba",
+  "holds": true
+ }
+}
