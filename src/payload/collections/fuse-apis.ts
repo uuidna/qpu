@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 /** One API of the fused registry: one qubit of the graph state, reached or unreached with why. */
 export const FuseApis: CollectionConfig = {

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 /** One cross formula of the fusion: a composing pair, its rarest field per direction, its specificity and receipt. */
 export const FuseFormulas: CollectionConfig = {

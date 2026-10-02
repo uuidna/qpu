@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 /** One field of the fused registry, addressed by shape UUID (name and type): how many APIs give it and take it. */
 export const FuseFields: CollectionConfig = {

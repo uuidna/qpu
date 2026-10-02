@@ -304,8 +304,8 @@ CMD ["node", "dist/docker-server.js"]
    * All templates indexed by mode
    */
   /** Next.js + Payload on Cloudflare Workers for one combination; enumerate them with cloudflareCombinations(). */
-  static cloudflarePayload(c: CloudflareCombination, name?: string): CloudflarePayload {
-    return cloudflarePayloadOf(c, name)
+  static cloudflarePayload(c: CloudflareCombination, name?: string, app?: CloudflareApp): CloudflarePayload {
+    return cloudflarePayloadOf(c, name, app)
   }
 
   static allTemplates(): Record<string, PayloadTemplate> {
@@ -346,25 +346,40 @@ export const cloudflareCombinationOf = (key: string): CloudflareCombination => {
   return { runtime, db, storage, email, plugins: plugins === '-' ? [] : (plugins.split('+') as never) }
 }
 
-const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: string; name: string; call: string; star?: boolean }> = {
+type PluginTargets = string[]
+const slugs = (t: PluginTargets) => `[${t.map((x) => `'${x}'`).join(', ')}]`
+const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: string; name: string; call: (t: PluginTargets) => string }> = {
   ecommerce: {
     from: '@payloadcms/plugin-ecommerce', name: 'ecommercePlugin',
-    call: `ecommercePlugin({ products: true, customers: { slug: 'users' }, access: { isAdmin: ({ req }) => Boolean(req.user), adminOnlyFieldAccess: ({ req }) => Boolean(req.user), adminOrPublishedStatus: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }), isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) } })`,
+    call: () => `ecommercePlugin({ products: true, customers: { slug: 'users' }, access: { isAdmin: ({ req }) => Boolean(req.user), adminOnlyFieldAccess: ({ req }) => Boolean(req.user), adminOrPublishedStatus: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }), isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) } })`,
   },
-  'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: 'formBuilderPlugin({})' },
-  'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: `importExportPlugin({ collections: [{ slug: 'pages' }] })` },
-  mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: `mcpPlugin({ collections: { pages: { description: 'Pages' } } })` },
-  'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: `multiTenantPlugin({ collections: { pages: {} } })` },
-  'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: `nestedDocsPlugin({ collections: ['pages'] })` },
-  redirects: { from: '@payloadcms/plugin-redirects', name: 'redirectsPlugin', call: `redirectsPlugin({ collections: ['pages'] })` },
-  search: { from: '@payloadcms/plugin-search', name: 'searchPlugin', call: `searchPlugin({ collections: ['pages'] })` },
-  sentry: { from: '@payloadcms/plugin-sentry', name: 'sentryPlugin', call: `sentryPlugin({ Sentry, enabled: Boolean(process.env.SENTRY_DSN) })` },
-  seo: { from: '@payloadcms/plugin-seo', name: 'seoPlugin', call: `seoPlugin({ collections: ['pages'] })` },
-  stripe: { from: '@payloadcms/plugin-stripe', name: 'stripePlugin', call: `stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '' })` },
+  'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: () => 'formBuilderPlugin({})' },
+  'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}] })` },
+  mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { description: '${x}' }`).join(', ')} } })` },
+  'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} } })` },
+  'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: (t) => `nestedDocsPlugin({ collections: ${slugs(t)} })` },
+  redirects: { from: '@payloadcms/plugin-redirects', name: 'redirectsPlugin', call: (t) => `redirectsPlugin({ collections: ${slugs(t)} })` },
+  search: { from: '@payloadcms/plugin-search', name: 'searchPlugin', call: (t) => `searchPlugin({ collections: ${slugs(t)} })` },
+  sentry: { from: '@payloadcms/plugin-sentry', name: 'sentryPlugin', call: () => `sentryPlugin({ Sentry, enabled: Boolean(process.env.SENTRY_DSN) })` },
+  seo: { from: '@payloadcms/plugin-seo', name: 'seoPlugin', call: (t) => `seoPlugin({ collections: ${slugs(t)} })` },
+  stripe: { from: '@payloadcms/plugin-stripe', name: 'stripePlugin', call: () => `stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '' })` },
 }
 
-const cloudflareConfigOf = (c: CloudflareCombination): string => {
+/** An application's own content, carried into the generated config: its collections replace the template's Users and
+ *  Pages, plugins attach to the app's collections, and admin, CORS and types output come from the app. */
+export type CloudflareApp = {
+  collections: { name: string; from: string; slug: string }[]
+  adminUser?: string
+  targets?: Partial<Record<CloudflareCombination['plugins'][number], string[]>>
+  dashboard?: string
+  origins?: string[]
+  typescriptOutput?: string
+  title?: string
+}
+
+const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): string => {
   const plugins = [...c.plugins].sort()
+  const targetsOf = (p: CloudflareCombination['plugins'][number]) => app?.targets?.[p] ?? (app ? app.collections.map((x) => x.slug).filter((x) => x !== app.adminUser) : ['pages'])
   const imports = [
     `/// <reference types="@cloudflare/workers-types" />`,
     `import { buildConfig } from 'payload'`,
@@ -380,6 +395,7 @@ const cloudflareConfigOf = (c: CloudflareCombination): string => {
     c.email === 'resend' ? `import { resendAdapter } from '@payloadcms/email-resend'` : '',
     plugins.includes('sentry') ? `import * as Sentry from '@sentry/nextjs'` : '',
     ...plugins.map((p) => `import { ${PLUGIN_CODE[p].name} } from '${PLUGIN_CODE[p].from}'`),
+    ...(app?.collections ?? []).map((x) => `import { ${x.name} } from '${x.from}'`),
   ].filter(Boolean)
   const bindings = [
     c.db === 'd1' || c.db === 'qpu-d1' ? 'D1: D1Database' : '',
@@ -399,14 +415,19 @@ const cloudflareConfigOf = (c: CloudflareCombination): string => {
     s3: `s3Storage({ bucket: process.env.S3_BUCKET ?? '', collections: { media: true }, config: { region: process.env.S3_REGION ?? 'auto', endpoint: process.env.S3_ENDPOINT, credentials: { accessKeyId: process.env.S3_ACCESS_KEY_ID ?? '', secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? '' } } })`,
     none: '',
   }[c.storage]
+  const media = !app || c.storage !== 'none'
   const collections = [
-    `const Users: CollectionConfig = { slug: 'users', auth: true, fields: [] }`,
-    `const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }`,
-    `const Pages: CollectionConfig = { slug: 'pages', versions: { drafts: true }, fields: [{ name: 'title', type: 'text', required: true }] }`,
+    app ? '' : `const Users: CollectionConfig = { slug: 'users', auth: true, fields: [] }`,
+    media ? `const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }` : '',
+    app ? '' : `const Pages: CollectionConfig = { slug: 'pages', versions: { drafts: true }, fields: [{ name: 'title', type: 'text', required: true }] }`,
     plugins.includes('multi-tenant') ? `const Tenants: CollectionConfig = { slug: 'tenants', fields: [{ name: 'name', type: 'text', required: true }] }` : '',
   ].filter(Boolean)
+  const collectionNames = [...(app ? app.collections.map((x) => x.name) : ['Users']), ...(media ? ['Media'] : []), ...(app ? [] : ['Pages']), ...(plugins.includes('multi-tenant') ? ['Tenants'] : [])]
+  const admin = app
+    ? `  admin: { user: '${app.adminUser ?? 'users'}'${app.title ? `, meta: { titleSuffix: ' — ${app.title}' }` : ''}${app.dashboard ? `, components: { views: { dashboard: { Component: '${app.dashboard}' } } }` : ''} },`
+    : ''
   return [
-    `// Generated by PayloadTemplates.cloudflarePayload — ${cloudflareKeyOf(c)}`,
+    `// Generated by PayloadTemplates.cloudflarePayload — ${cloudflareKeyOf(c)}${app ? ' — regenerate, do not edit' : ''}`,
     ...imports,
     '',
     `type CloudflareEnv = { ${bindings.join('; ')} }`,
@@ -417,12 +438,15 @@ const cloudflareConfigOf = (c: CloudflareCombination): string => {
     'export default buildConfig({',
     `  secret: process.env.PAYLOAD_SECRET ?? '',`,
     `  editor: lexicalEditor(),`,
-    `  collections: [Users, Media, Pages${plugins.includes('multi-tenant') ? ', Tenants' : ''}],`,
+    admin,
+    `  collections: [${collectionNames.join(', ')}],`,
     `  db: ${db},`,
     c.email === 'resend' ? `  email: resendAdapter({ apiKey: process.env.RESEND_API_KEY ?? '', defaultFromAddress: process.env.EMAIL_FROM ?? 'noreply@example.com', defaultFromName: 'Payload' }),` : '',
     // Payload 4 takes storage adapters in `storage`, not in `plugins`
     storage ? `  storage: [${storage}],` : '',
-    `  plugins: [${plugins.map((p) => PLUGIN_CODE[p].call).join(', ')}],`,
+    `  plugins: [${plugins.map((p) => PLUGIN_CODE[p].call(targetsOf(p))).join(', ')}],`,
+    app?.origins ? `  cors: ${JSON.stringify(app.origins).replace(/"/g, "'")},\n  csrf: ${JSON.stringify(app.origins).replace(/"/g, "'")},` : '',
+    app?.typescriptOutput ? `  typescript: { outputFile: '${app.typescriptOutput}' },` : '',
     '})',
     '',
   ].filter((l) => l !== '').join('\n') + '\n'
@@ -458,7 +482,7 @@ const cloudflareDependenciesOf = (c: CloudflareCombination): string[] =>
     c.plugins.includes('sentry') ? '@sentry/nextjs' : '',
   ].filter(Boolean).sort()
 
-export const cloudflarePayloadOf = (c: CloudflareCombination, name = 'payload-cloudflare'): CloudflarePayload => ({
+export const cloudflarePayloadOf = (c: CloudflareCombination, name = 'payload-cloudflare', app?: CloudflareApp): CloudflarePayload => ({
   mode: 'cloudflare',
   version: '1.0.0',
   spec: { runtime: c.runtime, db: c.db, storage: c.storage, email: c.email, plugins: [...c.plugins].sort(), edge: true, isolates: 'per request' },
@@ -468,7 +492,7 @@ export const cloudflarePayloadOf = (c: CloudflareCombination, name = 'payload-cl
   deployment: { instances: 1, scaling: { min: 0, max: 0, target: 0 }, monitoring: true, selfHealing: true, autonomousOptimization: false },
   combination: { ...c, plugins: [...c.plugins].sort() },
   key: cloudflareKeyOf(c),
-  files: { 'payload.config.ts': cloudflareConfigOf(c), 'wrangler.jsonc': cloudflareWranglerOf(c, name) },
+  files: { 'payload.config.ts': cloudflareConfigOf(c, app), 'wrangler.jsonc': cloudflareWranglerOf(c, name) },
   dependencies: cloudflareDependenciesOf(c),
 })
 

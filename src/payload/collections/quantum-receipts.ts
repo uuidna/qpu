@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 /** A quantum receipt: its programmable UUID (payload fold + referrer), its stream position and the link before it. */
 export const QuantumReceipts: CollectionConfig = {

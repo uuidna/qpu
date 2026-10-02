@@ -21,6 +21,51 @@ import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined }
 const ROOT = process.cwd()
 
+/* THE REPO'S OWN CONFIGS, regenerated from combinations: MongoDB intent → qpu-raid (the QPU database on the
+ * STORAGE + BLOBS bindings this unit already declares), S3 → R2, the app's collections, plugins on them. */
+const REPO_COLLECTIONS = [
+  ['Users', 'users'], ['ComplianceIssues', 'compliance-issues'], ['AuditLogs', 'audit-logs'], ['SupportTickets', 'support-tickets'],
+  ['Enrollments', 'enrollments'], ['Metrics', 'metrics'], ['Certifications', 'certifications'], ['FuseApis', 'fuse-apis'],
+  ['FuseFields', 'fuse-fields'], ['FuseFormulas', 'fuse-formulas'], ['QuantumReceipts', 'quantum-receipts'],
+].map(([name, slug]) => ({ name, slug, from: `./src/payload/collections/${slug}` }))
+const REPO = {
+  'payload.config.ts': { key: 'vinext/qpu-raid/none/none/-', wrangler: 'deploy/payload/wrangler.jsonc', app: { collections: REPO_COLLECTIONS, adminUser: 'users', typescriptOutput: './src/payload/payload-types.ts' } },
+  'payload.config.complete.ts': {
+    key: 'vinext/qpu-raid/r2/resend/nested-docs+search',
+    wrangler: 'deploy/payload/wrangler.complete.jsonc',
+    app: {
+      collections: REPO_COLLECTIONS, adminUser: 'users', title: 'UUIDNA QPU',
+      targets: { search: ['compliance-issues', 'support-tickets', 'audit-logs', 'enrollments', 'metrics'], 'nested-docs': ['certifications', 'enrollments'] },
+      dashboard: '/src/payload/admin/dashboards/index#AdminDashboard',
+      origins: ['http://localhost:3000', 'http://localhost:3001', 'https://qpu.uuidna.com'],
+      typescriptOutput: './src/payload/payload-types.ts',
+    },
+  },
+}
+if (process.argv.includes('--repo')) {
+  fs.mkdirSync('deploy/payload', { recursive: true })
+  const rows = []
+  for (const [file, { key, app, wrangler }] of Object.entries(REPO)) {
+    const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(key), 'uuidna-qpu-payload', app)
+    fs.writeFileSync(file, t.files['payload.config.ts'])
+    fs.writeFileSync(wrangler, t.files['wrangler.jsonc'])
+    const uuid = qpuContentUuidOf({ key, app })
+    rows.push({ file, key, uuid, receipt: qpuUuidReceiptOf(`payload-cf repo ${file}`, uuid, key, 'scripts/payload-cloudflare.mjs --repo').uuid, wrangler, dependencies: t.dependencies })
+  }
+  // the regenerated configs and the app's collections, compiled against the installed packages
+  const repoCheck = path.join(ROOT, '.payload-cf', 'repo-check')
+  fs.mkdirSync(repoCheck, { recursive: true })
+  fs.writeFileSync(path.join(repoCheck, 'tsconfig.json'), JSON.stringify({
+    compilerOptions: { target: 'ES2022', module: 'ESNext', moduleResolution: 'Bundler', strict: true, noEmit: true, skipLibCheck: true, esModuleInterop: true, jsx: 'react-jsx', types: ['@cloudflare/workers-types', 'node'], paths: { '@uuidna/qpu': ['../../src/quantum/processing/unit/index.ts'], '@uuidna/qpu/payload': ['../../src/db/payload-qpu.ts'] } },
+    include: [...Object.keys(REPO).map((f) => `../../${f}`), '../../src/payload/collections/*.ts'],
+  }, null, 1))
+  let out = ''
+  try { execSync(`npx tsc -p ${repoCheck}/tsconfig.json`, { cwd: ROOT, stdio: 'pipe' }) } catch (e) { out = `${e.stdout}${e.stderr}` }
+  const errors = out.split('\n').filter((l) => /error TS\d+/.test(l))
+  console.log(JSON.stringify({ regenerated: rows, typecheck: { errors: errors.length, first: errors.slice(0, 5) } }, null, 1))
+  process.exit(errors.length ? 1 : 0)
+}
+
 if (arg('--emit')) {
   const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(arg('--emit')), path.basename(arg('--out') ?? 'payload-cloudflare'))
   const out = arg('--out') ?? '.'
