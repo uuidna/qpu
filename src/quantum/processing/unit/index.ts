@@ -4117,7 +4117,7 @@ export const qpuLeanOf = onceOf(() => {
   const thermalOf = (millikelvin: bigint): bigint => boltzmann * millikelvin * 10n
   const gapOf = (tc: bigint): bigint => (352n * boltzmann * tc) / planck / 10n
   const temperatureHolds = photon / thermalOf(10n) === 23n && photon / thermalOf(100n) === 2n && photon / thermalOf(4000n) === 0n && 4000 / 100 === 40 && 100 / 10 === 10 && 10 < 35
-  const superconductivityHolds = 1200n > 10n && 9200n > 1200n && 352 / 100 >= 3 && 352 / 100 < 4 && gapOf(1200n) === 88n && gapOf(1200n) > transmon && gapOf(9200n) === 674n
+  const superconductivityHolds = 1200n > 10n && 9260n > 1200n && 352 / 100 >= 3 && 352 / 100 < 4 && gapOf(1200n) === 88n && gapOf(1200n) > transmon && gapOf(9260n) === 679n
   const rows: readonly QpuLeanRow[] = ([
     {
       heading: 'mint',
@@ -4442,11 +4442,11 @@ export const qpuLeanOf = onceOf(() => {
     {
       heading: 'superconductivity',
       theorem:
-        'theorem superconductivity : aluminium > 10 ∧ niobium > aluminium ∧ bcs / 100 = 3 ∧ gap aluminium = 88 ∧ gap aluminium > transmon ∧ gap niobium = 674 := ⟨Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, rfl⟩',
+        'theorem superconductivity : aluminium > 10 ∧ niobium > aluminium ∧ bcs / 100 = 3 ∧ gap aluminium = 88 ∧ gap aluminium > transmon ∧ gap niobium = 679 := ⟨Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, rfl⟩',
       formula:
-        '\\mathrm{aluminium}>10\\land\\mathrm{niobium}>\\mathrm{aluminium}\\land\\mathrm{bcs}/100=3\\land\\mathrm{gap}(\\mathrm{aluminium})=88\\land\\mathrm{gap}(\\mathrm{aluminium})>\\mathrm{transmon}\\land\\mathrm{gap}(\\mathrm{niobium})=674',
+        '\\mathrm{aluminium}>10\\land\\mathrm{niobium}>\\mathrm{aluminium}\\land\\mathrm{bcs}/100=3\\land\\mathrm{gap}(\\mathrm{aluminium})=88\\land\\mathrm{gap}(\\mathrm{aluminium})>\\mathrm{transmon}\\land\\mathrm{gap}(\\mathrm{niobium})=679',
       reading:
-        'aluminium > 10, niobium > aluminium, bcs / 100 = 3, gap aluminium = 88, gap aluminium > transmon, gap niobium = 674, where gap tc = bcs * boltzmann * tc / planck / 10. JSON Nat. Never Math. Never by decide.',
+        'aluminium > 10, niobium > aluminium, bcs / 100 = 3, gap aluminium = 88, gap aluminium > transmon, gap niobium = 679, where gap tc = bcs * boltzmann * tc / planck / 10. JSON Nat. Never Math. Never by decide.',
       holds: superconductivityHolds,
   },
     {

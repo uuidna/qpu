@@ -9,9 +9,3 @@ import Qpu.Cern
 import Qpu.Fuse
 import Qpu.Cross
 import Qpu.Clay
-import Qpu.CausalInference
-import Qpu.ExplainableAI
-import Qpu.FederatedLearning
-import Qpu.ProgramSynthesis
-import Qpu.ZeroShotLearning
-import Qpu.HarmonicClosure

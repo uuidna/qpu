@@ -1,6 +1,6 @@
 {
  "kind": "lean-receipt",
- "source": "3c77f262771d13cc",
+ "source": "0a8b50240b222d37",
  "toolchain": "leanprover/lean4:v4.33.0",
  "theorems": 124,
  "served": 124,
@@ -2148,8 +2148,8 @@
   {
    "name": "superconductivity",
    "family": "Physics",
-   "uuid": "018e9de5-b1c4-882a-9e2d-8ebc53657895",
-   "handle": "018e9de5",
+   "uuid": "018eaae5-b1c4-898b-82fd-d7b521c697b6",
+   "handle": "018eaae5",
    "cross": "neither",
    "holds": true,
    "recomputed": true,
@@ -2160,7 +2160,7 @@
     "niobium",
     "transmon"
    ],
-   "formula": "46c4bcf280023c94"
+   "formula": "46c4b1f2800229e3"
   },
   {
    "name": "teleport",

@@ -24,15 +24,15 @@ const ROOT = process.cwd()
 /* THE REPO'S OWN APP, regenerated from one combination: the QPU document database on KV + R2 (qpu-raid), uploads on
  * R2, the documentation as the public site (docs collection, seeded from scripts/generate-docs.mjs), search and SEO on it.
  * It deploys as the Worker the unit's PAYLOAD binding names; the unit hands it every browser page and /api. */
-const REPO_COLLECTIONS = [['Users', 'users'], ['Docs', 'docs'], ['FuseApis', 'fuse-apis'], ['FuseFields', 'fuse-fields'], ['FuseFormulas', 'fuse-formulas'], ['QuantumReceipts', 'quantum-receipts']]
+const REPO_COLLECTIONS = [['Users', 'users'], ['Tenants', 'tenants'], ['Docs', 'docs'], ['FuseApis', 'fuse-apis'], ['FuseFields', 'fuse-fields'], ['FuseFormulas', 'fuse-formulas'], ['QuantumReceipts', 'quantum-receipts']]
   .map(([name, slug]) => ({ name, slug, from: `./src/payload/collections/${slug}` }))
 const REPO_NAME = 'uuidna-qpu-payload'
 const REPO_WRANGLER = 'payload.wrangler.jsonc'
 const REPO = {
-  key: 'opennext/qpu-raid/r2/none/search+seo',
+  key: 'opennext/qpu-raid/r2/none/multi-tenant+search+seo',
   app: {
     collections: REPO_COLLECTIONS, adminUser: 'users', title: 'UUIDNA QPU',
-    targets: { search: ['docs'], seo: ['docs'] },
+    targets: { 'multi-tenant': [], search: ['docs'], seo: ['docs'] },
     origins: ['https://qpu.uuidna.com'],
     typescriptOutput: './src/payload/payload-types.ts',
     frontend: { collection: 'docs', route: 'docs', html: 'html' },

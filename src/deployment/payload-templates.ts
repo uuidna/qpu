@@ -394,7 +394,7 @@ const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: stri
   'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: () => 'formBuilderPlugin({})' },
   'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}] })` },
   mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { description: '${x}' }`).join(', ')} } })` },
-  'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} } })` },
+  'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin' })` },
   'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: (t) => `nestedDocsPlugin({ collections: ${slugs(t)} })` },
   redirects: { from: '@payloadcms/plugin-redirects', name: 'redirectsPlugin', call: (t) => `redirectsPlugin({ collections: ${slugs(t)} })` },
   search: { from: '@payloadcms/plugin-search', name: 'searchPlugin', call: (t) => `searchPlugin({ collections: ${slugs(t)} })` },
@@ -426,7 +426,7 @@ export type CloudflareApp = {
 
 const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): string => {
   const plugins = [...c.plugins].sort()
-  const targetsOf = (p: CloudflareCombination['plugins'][number]) => app?.targets?.[p] ?? (app ? app.collections.map((x) => x.slug).filter((x) => x !== app.adminUser) : ['pages'])
+  const targetsOf = (p: CloudflareCombination['plugins'][number]) => app?.targets?.[p] ?? (app ? app.collections.map((x) => x.slug).filter((x) => x !== app.adminUser && x !== 'tenants') : ['pages'])
   const imports = [
     `/// <reference types="@cloudflare/workers-types" />`,
     `import { buildConfig } from 'payload'`,
@@ -468,13 +468,14 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     none: '',
   }[c.storage]
   const media = !app || c.storage !== 'none'
+  const ownTenants = app?.collections.some((x) => x.slug === 'tenants') ?? false
   const collections = [
     app ? '' : `const Users: CollectionConfig = { slug: 'users', auth: true, fields: [] }`,
     media ? `const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }` : '',
     app ? '' : `const Pages: CollectionConfig = { slug: 'pages', versions: { drafts: true }, fields: [{ name: 'title', type: 'text', required: true }] }`,
-    plugins.includes('multi-tenant') ? `const Tenants: CollectionConfig = { slug: 'tenants', fields: [{ name: 'name', type: 'text', required: true }] }` : '',
+    plugins.includes('multi-tenant') && !ownTenants ? `const Tenants: CollectionConfig = { slug: 'tenants', fields: [{ name: 'name', type: 'text', required: true }] }` : '',
   ].filter(Boolean)
-  const collectionNames = [...(app ? app.collections.map((x) => x.name) : ['Users']), ...(media ? ['Media'] : []), ...(app ? [] : ['Pages']), ...(plugins.includes('multi-tenant') ? ['Tenants'] : [])]
+  const collectionNames = [...(app ? app.collections.map((x) => x.name) : ['Users']), ...(media ? ['Media'] : []), ...(app ? [] : ['Pages']), ...(plugins.includes('multi-tenant') && !ownTenants ? ['Tenants'] : [])]
   const admin = app
     ? `  admin: { user: '${app.adminUser ?? 'users'}'${app.title ? `, meta: { titleSuffix: ' — ${app.title}' }` : ''}${app.dashboard ? `, components: { views: { dashboard: { Component: '${app.dashboard}' } } }` : ''} },`
     : ''

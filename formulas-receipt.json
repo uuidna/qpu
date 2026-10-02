@@ -14,12 +14,12 @@
    "name": "cross qsec→compress-1",
    "family": "cross",
    "pass": true,
-   "value": 0.09457474627892029,
+   "value": 0.09385585742417508,
    "formula": "compression_ratio = 1 / (1 + log2(keyLen))",
    "from": "sifted BB84 key bits",
-   "hex": "0c36469f-1000-8000-9000-0000000002fa",
+   "hex": "0c36469f-1000-8000-9000-000000000326",
    "hexAgrees": true,
-   "receipt": "9c42ee53-7fdd-8228-bff2-cbdefe2c39f3"
+   "receipt": "fbe7039c-08b7-8c7f-a57e-1e12eee1526f"
   },
   {
    "name": "cross obs→ml-1",
@@ -30,17 +30,17 @@
    "from": "rows across the committed receipts",
    "hex": "0c36469f-7000-8000-9000-0000000000a5",
    "hexAgrees": true,
-   "receipt": "4241dfbf-93ca-8db3-a35d-a17315940311"
+   "receipt": "2f5bec53-de43-8451-9a29-cfa0bcaf49b7"
   },
   {
    "name": "cross deployment→obs-1",
    "family": "cross",
    "pass": true,
-   "value": 0.9974451851851852,
+   "value": 0.9968898148148149,
    "formula": "health_score = max(0, 1 - buildTime/300) * max(0, 1 - testTime/180)",
    "from": "seconds to load the unit, seconds to run chat and attacks",
    "hex": "0c36469f-3000-8000-8000-000000000000",
-   "receipt": "3f65839e-044f-8d1b-aa99-5cc3366d8da5"
+   "receipt": "a3daf19f-a8b8-86ae-9ffd-96f1ac945ffe"
   },
   {
    "name": "cross quantum→enterprise-1",
@@ -51,7 +51,7 @@
    "from": "Lean theorems in lean-receipt.json",
    "hex": "0c36469f-9000-8000-9000-00000000007c",
    "hexAgrees": true,
-   "receipt": "39b8bc66-6029-87dc-a8d1-00c61c0c71a6"
+   "receipt": "7328c6c1-bfc6-8cc1-8138-18d7c276de83"
   },
   {
    "name": "cross med+qsec-1",
@@ -62,7 +62,7 @@
    "from": "chat users, session key bits",
    "hex": "0c36469f-5000-8000-a000-000004000100",
    "hexAgrees": true,
-   "receipt": "8a03895a-8d74-8b77-be8f-f8741f8a00bf"
+   "receipt": "68e7f3df-4be3-8ef8-bf9b-777b537123c0"
   },
   {
    "name": "cross obs→ui-1",
@@ -73,18 +73,18 @@
    "from": "attacks that got through, attack trials",
    "hex": "0c36469f-8000-8000-a000-00000000016d",
    "hexAgrees": true,
-   "receipt": "3039bdfa-c41b-8cd0-aa10-c2567fa0d734"
+   "receipt": "c8dd8313-8692-8153-a7b0-9710984b9196"
   },
   {
    "name": "cross qsec+compress-1",
    "family": "cross",
    "pass": true,
-   "value": 1.2896725440806058,
+   "value": 1.2219570405727929,
    "formula": "compressed_size = signalLen * (1 - keyLen/(keyLen+signalLen))",
    "from": "sealed body bytes, BB84 key bits",
-   "hex": "0c36469f-2000-8000-a000-0000200002fa",
+   "hex": "0c36469f-2000-8000-a000-000020000326",
    "hexAgrees": true,
-   "receipt": "f0489269-d07d-8052-a2e9-463d3ad839fa"
+   "receipt": "3fa91de5-c092-892b-9de1-ef1216bd9535"
   },
   {
    "name": "cross obs+ml-1",
@@ -95,7 +95,7 @@
    "from": "attacks, breaches",
    "hex": "0c36469f-6000-8000-a000-00001b000000",
    "hexAgrees": true,
-   "receipt": "7efacb7a-c9c3-830f-9465-0ae0e9cc2c67"
+   "receipt": "ae29b1de-5247-8371-a2a0-237e08e970ea"
   },
   {
    "name": "cross enterprise→obs-1",
@@ -106,7 +106,7 @@
    "from": "share of attacks resisted, chat milliseconds",
    "hex": "0c36469f-4000-8000-a000-000001000013",
    "hexAgrees": true,
-   "receipt": "b1bb6610-0db9-8e7e-83b7-275b0834dcc2"
+   "receipt": "ad6ddd63-5ba8-808c-ac06-25deceaf4397"
   },
   {
    "name": "cross test→enterprise-1",
@@ -117,7 +117,7 @@
    "from": "test-receipt.json pass / tests",
    "hex": "0c36469f-a000-8000-a000-00000b00000b",
    "hexAgrees": true,
-   "receipt": "20fb2e5d-ded7-8020-9c7f-9ce8c082817f"
+   "receipt": "033bc5eb-a23b-8ebb-9edd-d331a58c44f6"
   },
   {
    "name": "signal signal-sifted",
@@ -128,7 +128,7 @@
    "from": "raw qubits per chat pair",
    "hex": "5062cd8f-6000-8000-9000-000000000800",
    "hexAgrees": true,
-   "receipt": "b6b57369-460b-83ea-812b-0a31b32321af"
+   "receipt": "190dab63-5b5a-8b21-82b2-e8b27fea51b0"
   },
   {
    "name": "signal signal-key",
@@ -139,7 +139,7 @@
    "from": "raw qubits per chat pair",
    "hex": "5062cd8f-3000-8000-9000-000000000800",
    "hexAgrees": true,
-   "receipt": "2e972e9c-b63e-88f9-b29b-5c9437044452"
+   "receipt": "a963433d-258a-8f70-9960-66ca0fbb4f64"
   },
   {
    "name": "signal signal-qber",
@@ -148,20 +148,20 @@
    "value": 0,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "honest BB84 run",
-   "hex": "5062cd8f-5000-8000-a000-0000000000fd",
+   "hex": "5062cd8f-5000-8000-a000-00000000010c",
    "hexAgrees": true,
-   "receipt": "c05626bd-b70a-8460-8252-6561b991b9a8"
+   "receipt": "078e43d4-546e-89ef-aeda-686cf5cc2185"
   },
   {
    "name": "signal signal-qber",
    "family": "signal",
    "pass": true,
-   "value": 0.1796875,
+   "value": 0.2339622641509434,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "intercept-resend run: holds false means Eve was caught",
-   "hex": "5062cd8f-5000-8000-a000-00002e000100",
+   "hex": "5062cd8f-5000-8000-a000-00003e000109",
    "hexAgrees": true,
-   "receipt": "75541a95-76cf-8b36-bcdd-86c1736b5900"
+   "receipt": "90bfca45-a76d-8b45-9713-c3f6dc00af39"
   },
   {
    "name": "signal signal-detect",
@@ -170,9 +170,9 @@
    "value": 1,
    "formula": "p_detect = 1 - (3/4)^checked",
    "from": "disclosed bits of the intercepted run",
-   "hex": "5062cd8f-1000-8000-9000-000000000100",
+   "hex": "5062cd8f-1000-8000-9000-000000000109",
    "hexAgrees": true,
-   "receipt": "9369370b-2e85-8559-b361-4a8420b58ca1"
+   "receipt": "d2108579-f2f1-8d26-ba66-7f22ca498c7f"
   },
   {
    "name": "signal signal-hops",
@@ -183,7 +183,7 @@
    "from": "corners of alice and bob on the 8-cube",
    "hex": "5062cd8f-2000-8000-b000-00082bd881b6",
    "hexAgrees": true,
-   "receipt": "96cc2a91-a6f8-8266-9637-6f80f42d4a23"
+   "receipt": "4f5e3353-bd1d-8194-abda-e9056edd0186"
   },
   {
    "name": "holo holo-proof",
@@ -194,7 +194,7 @@
    "from": "hologram scales",
    "hex": "4029f1cc-2000-8000-9000-000000000005",
    "hexAgrees": true,
-   "receipt": "ab6ff466-a246-82f5-ba0e-da8cda9b083c"
+   "receipt": "eb486a69-74a4-81c1-b151-54943aa90f20"
   },
   {
    "name": "holo holo-forgery",
@@ -205,7 +205,7 @@
    "from": "SHA-256 output bits",
    "hex": "4029f1cc-1000-8000-9000-000000000100",
    "hexAgrees": true,
-   "receipt": "a9885995-8459-8e62-94cd-b960692d0f8c"
+   "receipt": "b82d8825-5386-88b4-83c0-aed162051e0e"
   },
   {
    "name": "crypt crypt-known",
@@ -216,7 +216,7 @@
    "from": "FIPS 180-4, RFC 1321, RFC 7748, RFC 8032 vectors",
    "hex": "62d1d39f-3000-8000-8000-000000000000",
    "hexAgrees": true,
-   "receipt": "7b0cd2fb-f575-8644-b339-ed499e9430ee"
+   "receipt": "17a64aa5-03a5-8c17-9247-8ddd0576ef38"
   },
   {
    "name": "crypt crypt-grover",
@@ -227,7 +227,7 @@
    "from": "ChaCha20 key bits",
    "hex": "62d1d39f-5000-8000-9000-000000000100",
    "hexAgrees": true,
-   "receipt": "acb11c01-8f9f-8551-8214-e9a391ff1149"
+   "receipt": "3beb742d-f4e9-8795-85bf-fdb3d46bbec1"
   },
   {
    "name": "crypt crypt-rho",
@@ -238,7 +238,7 @@
    "from": "Curve25519 field bits",
    "hex": "62d1d39f-1000-8000-9000-0000000000ff",
    "hexAgrees": true,
-   "receipt": "cb69c310-0b8a-8885-987c-d298f2ec0f69"
+   "receipt": "2557367c-9965-8436-b2a0-8648753d9059"
   },
   {
    "name": "crypt crypt-shor",
@@ -249,7 +249,7 @@
    "from": "Curve25519 field bits",
    "hex": "62d1d39f-2000-8000-9000-0000000000ff",
    "hexAgrees": true,
-   "receipt": "f788568c-a392-8a7e-a26f-fe13a5e8f691"
+   "receipt": "b039b132-da24-83ad-b797-72b9b0bfad13"
   },
   {
    "name": "crypt crypt-poly1305",
@@ -260,7 +260,7 @@
    "from": "sealed body bytes",
    "hex": "62d1d39f-6000-8000-9000-000000000020",
    "hexAgrees": true,
-   "receipt": "43a92bc3-3ef3-8925-9b28-d802679b4036"
+   "receipt": "677f026f-4a08-8b6d-b2ce-0000e4a1da75"
   },
   {
    "name": "crypt crypt-nonce",
@@ -271,7 +271,7 @@
    "from": "messages sent",
    "hex": "62d1d39f-4000-8000-9000-000000000001",
    "hexAgrees": true,
-   "receipt": "3a106326-55ed-88c9-beda-69cbc4c9570d"
+   "receipt": "a4ca74ce-74c0-8422-a063-0e418e440899"
   },
   {
    "name": "np np-subset-sum",
@@ -282,7 +282,7 @@
    "from": "qpu.pdf p. 22: S = {3, 7, 1, 9, 4} packed base 16, mask 13",
    "hex": "08b33c07-6000-8000-a000-04917300000d",
    "hexAgrees": true,
-   "receipt": "0f3adad9-5648-8cec-9698-e3bbd905d34c"
+   "receipt": "c7f89f9f-bec0-8f5a-99e1-357496bc7f53"
   },
   {
    "name": "np np-edge-bit",
@@ -293,7 +293,7 @@
    "from": "4-cycle adjacency packed row-major, edge (0, 1)",
    "hex": "08b33c07-1000-8000-a000-006996000001",
    "hexAgrees": true,
-   "receipt": "3e2fa812-56f4-8732-bf4a-974fcc4cf09c"
+   "receipt": "fe593e97-8b78-84e3-8cfe-d23b46c0de61"
   },
   {
    "name": "np np-is-time",
@@ -304,7 +304,7 @@
    "from": "Petersen vertices",
    "hex": "08b33c07-3000-8000-9000-00000000000a",
    "hexAgrees": true,
-   "receipt": "545be078-751c-812c-a29b-de58fd608558"
+   "receipt": "84bbfbae-29e9-86f5-b732-68e411b961a4"
   },
   {
    "name": "np np-is-space",
@@ -315,7 +315,7 @@
    "from": "Petersen vertices",
    "hex": "08b33c07-2000-8000-9000-00000000000a",
    "hexAgrees": true,
-   "receipt": "71d81ecc-2f6d-8c52-b03a-e1f340084850"
+   "receipt": "353e7e76-88c0-872b-8128-553976aba186"
   },
   {
    "name": "np np-reach-gcd",
@@ -326,7 +326,7 @@
    "from": "reach width 64 = 2k",
    "hex": "08b33c07-4000-8000-9000-000000000020",
    "hexAgrees": true,
-   "receipt": "98995ac8-b709-8325-aec5-03af81278b67"
+   "receipt": "495c88d5-db0b-80de-8a86-fa59e0df7293"
   },
   {
    "name": "np np-sparse-width",
@@ -337,7 +337,7 @@
    "from": "crypto_shor n=1443 on qpu.uuidna.com reported 13 qubits",
    "hex": "08b33c07-5000-8000-9000-0000000005a3",
    "hexAgrees": true,
-   "receipt": "2400f0a0-b5ba-8334-a613-65ae4a930747"
+   "receipt": "669ec3af-76fa-8d9e-832e-61844dcc4a91"
   },
   {
    "name": "np np-sparse-width",
@@ -348,7 +348,7 @@
    "from": "crypto_shor n=481 on qpu.uuidna.com reported 11 qubits",
    "hex": "08b33c07-5000-8000-9000-0000000001e1",
    "hexAgrees": true,
-   "receipt": "789556e2-de3d-8b27-a6e5-8a98280b42fb"
+   "receipt": "83521f49-34ea-8f0c-b59c-2026a4d32047"
   },
   {
    "name": "attack hologram payload tamper",

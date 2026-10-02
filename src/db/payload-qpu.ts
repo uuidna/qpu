@@ -149,6 +149,15 @@ export function qpuAdapter(args: QpuAdapterArgs = {}): DatabaseAdapterObj {
   const db = qpuDocDbOf(args.env, args.name ?? 'payload', args.store)
   function adapter({ payload }: { payload: Payload }) {
     const migrationDir = findMigrationDir(args.migrationDir)
+    // only what the collection defines is stored, as a strict schema would: a form's confirm-password is the password
+    // in clear and must never reach the store
+    const system = new Set(['id', '_id', 'createdAt', 'updatedAt', 'hash', 'salt', 'loginAttempts', 'lockUntil', 'resetPasswordToken', 'resetPasswordExpiration', '_verified', '_verificationToken', 'sessions', 'apiKey', 'apiKeyIndex', 'enableAPIKey', '_status'])
+    const keep = (collection: string, data: Row): Row => {
+      const fields = (payload.collections as unknown as Record<string, { config?: { flattenedFields?: { name?: string }[] } } | undefined>)[collection]?.config?.flattenedFields
+      if (!fields) return data
+      const allowed = new Set([...system, ...fields.map((f) => f.name).filter((x): x is string => Boolean(x))])
+      return Object.fromEntries(Object.entries(data).filter(([k]) => allowed.has(k)))
+    }
     const touch = (data: Row, created = false): Row => ({ ...data, ...(created ? { createdAt: (data.createdAt as string) ?? now() } : {}), updatedAt: (data.updatedAt as string) ?? now() })
     const one = async (collection: string, a: { id?: number | string; where?: Where }) =>
       db.collection(collection).findOne(a.id !== undefined ? { _id: String(a.id) } : filterOf(a.where))
@@ -169,7 +178,7 @@ export function qpuAdapter(args: QpuAdapterArgs = {}): DatabaseAdapterObj {
       init: async () => {},
 
       create: async ({ collection, data, customID }) =>
-        out(await db.collection(collection).insertOne({ ...touch(data as Row, true), ...((customID ?? data.id) !== undefined ? { _id: String(customID ?? data.id) } : {}), id: undefined }))!,
+        out(await db.collection(collection).insertOne({ ...touch(keep(collection, data as Row), true), ...((customID ?? data.id) !== undefined ? { _id: String(customID ?? data.id) } : {}), id: undefined }))!,
       find: async (a) => (await paginate(db, a.collection, filterOf(a.where), a as never)) as never,
       findOne: async ({ collection, where, select }) =>
         out(await db.collection(collection).findOne(filterOf(where), { projection: projectionOf(select as Row) })) as never,
@@ -184,15 +193,15 @@ export function qpuAdapter(args: QpuAdapterArgs = {}): DatabaseAdapterObj {
       updateOne: async ({ collection, data, id, where }) => {
         const found = await one(collection, { id, where })
         if (!found) return null as never
-        const { id: _drop, ...set } = touch(data as Row)
+        const { id: _drop, ...set } = touch(keep(collection, data as Row))
         return out((await db.collection(collection).updateOne({ _id: found._id }, { $set: set })).doc ?? null)!
       },
       updateMany: async ({ collection, data, where, limit, sort }) => {
-        const { id: _drop, ...set } = touch(data as Row)
+        const { id: _drop, ...set } = touch(keep(collection, data as Row))
         return (await db.collection(collection).updateMany(filterOf(where), { $set: set }, { limit, sort: sortOf(sort as never) })).map((d) => out(d)!)
       },
       upsert: async ({ collection, data, where }) => {
-        const { id: _drop, ...set } = touch(data as Row)
+        const { id: _drop, ...set } = touch(keep(collection, data as Row))
         const r = await db.collection(collection).updateOne(filterOf(where), { $set: set, $setOnInsert: { createdAt: now() } }, { upsert: true })
         return out(r.doc ?? null)!
       },

@@ -24,8 +24,10 @@ const unified=()=>({autonomy:100n,phases:3n,manualGates:0n,verified:true,ready:t
 
 // ALGORITHMS (inlined, no wrapper overhead)
 const shorFactor=(n:bigint,base:bigint=8n):bigint[]=>{if(n===0n||n===1n)return[];let p=1n;for(let i=1n;i<n;i++){if(modexp(base,i,n)===1n){p=i;break}}if(p===0n||p&1n)return[];const hp=p>>1n,pw=modexp(base,hp,n),f1=gcd(pw-1n,n),f2=gcd(pw+1n,n);if(f1>1n&&f1<n)return[f1,n/f1];if(f2>1n&&f2<n)return[f2,n/f2];return[]}
-const groverSearch=(t:bigint,s:bigint)=>{const i=Math.ceil(Math.sqrt(Number(s)));let m=0n;for(let x=0n;x<s;x++)if(x===t){m=x;break}return{target:t,found:m===t,iterations:i,amplification:Number(s)/i}}
-const tspSolver=(c:number[])=>{const n=BigInt(c.length),p=catalan(n);let opt=Number.MAX_VALUE;for(let i=0;i<c.length;i++){let cost=0;for(let j=0;j<c.length;j++)cost+=Math.abs(c[j]-c[(j+1)%c.length]);if(cost<opt)opt=cost}return{cities:c.length,totalPaths:Number(p),optimalCost:opt,algorithm:'catalan_enumeration'}}
+// Grover on N basis states, exactly: by symmetry only the target amplitude and the common amplitude of the rest evolve
+const groverSearch=(t:bigint,s:bigint)=>{const N=Number(s),k=Math.floor(Math.PI/4*Math.sqrt(N));let at=1/Math.sqrt(N),ao=at;for(let i=0;i<k;i++){const mean=(-at+(N-1)*ao)/N;at=2*mean+at;ao=2*mean-ao}const probability=t>=0n&&t<s?at*at:0;return{target:t,found:probability>0.5,iterations:k,probability,amplification:probability*N}}
+// cities on a line: every closed tour covers the span twice, and sorted order achieves it
+const tspSolver=(c:number[])=>{const n=c.length;let tours=1;for(let i=3;i<n;i++)tours*=i;return{cities:n,totalPaths:n<3?1:tours,optimalCost:n<2?0:2*(Math.max(...c)-Math.min(...c)),algorithm:'line_span'}}
 const discreteLog=(base:bigint,target:bigint,prime:bigint):bigint=>{for(let x=1n;x<prime;x++)if(modexp(base,x,prime)===target)return x;return 0n}
 const knapsack=(items:number[],cap:number)=>{let max=0,cnt=0;for(let m=0;m<(1<<items.length);m++){let v=0;for(let i=0;i<items.length;i++)if(m&(1<<i))v+=items[i];if(v<=cap&&v>max){max=v;cnt++}}return{capacity:cap,maxValue:max,itemCount:cnt,efficiency:max/cap}}
 const hashCollision=(s:number)=>{const t=Math.floor(Math.random()*s),g=groverSearch(BigInt(t),BigInt(s));return{target:t,foundAt:Number(g.target),collisionProof:g.found,speedup:`√${s}=${Math.sqrt(s).toFixed(1)}`}}
@@ -33,12 +35,15 @@ const ghzState=()=>({type:'GHZ',qubits:3,entanglement:PHASE2_BELL,states:[{ampli
 const bellPairs=(cnt:number)=>({count:cnt,pairs:Number(bell(BigInt(cnt))),maxEntanglement:true,correlations:'100%'})
 const surfaceCode=(q:number)=>{const d=3+2*q;return{type:'surface_code',logicalQubits:q,distance:d,dataQubits:2*d*d-d,threshold:0.01,implementation:'topological'}}
 const stabilizerCode=(n:number,k:number)=>({type:'stabilizer',codeLength:n,dimension:k,stabilizers:Number(1n<<BigInt(n-k)),minDistance:1})
-const hamiltonianSim=(c:number,t:number)=>({coupling:c,time:t,evolution:Math.cos(c*t),phase:Math.sin(c*t),accuracy:0.9999})
-const graphColoring=(v:number)=>({vertices:v,colors:14,possibleColorings:Number(bell(BigInt(v))),algorithm:'involution_routing'})
+// H = c·σx on |0⟩: exp(-iHt)|0⟩ = cos(ct)|0⟩ - i·sin(ct)|1⟩; accuracy is how well the state stays normalised
+const hamiltonianSim=(c:number,t:number)=>{const evolution=Math.cos(c*t),phase=Math.sin(c*t);return{coupling:c,time:t,evolution,phase,accuracy:1-Math.abs(1-(evolution*evolution+phase*phase))}}
+// the complete graph K_v needs v colours; partitions of its vertices into colour classes number Bell(v)
+const graphColoring=(v:number)=>({vertices:v,graph:'complete',colors:v,possibleColorings:Number(bell(BigInt(v))),algorithm:'complete_graph'})
 
 // PERFORMANCE (direct, no batch wrapper)
 const batchExecute=(count:number)=>{const s=Date.now();for(let i=0;i<count;i++)unified();const ms=Date.now()-s;return{executed:count,duration_ms:ms,throughput_per_sec:Math.round(count*1000/ms)}}
-const benchmark=()=>({phase1_us:100,phase2_us:50,phase3_us:50,total_us:200,memory_kb:103,cpu_percent:100,gpu_percent:0})
+const microseconds=(f:()=>unknown,reps=1000)=>{const s=performance.now();for(let i=0;i<reps;i++)f();return Math.round((performance.now()-s)*1000/reps*1000)/1000}
+const benchmark=()=>{const phase1_us=microseconds(phase1),phase2_us=microseconds(phase2),phase3_us=microseconds(phase3);const heap=(globalThis as {process?:{memoryUsage?:()=>{heapUsed:number}}}).process?.memoryUsage?.().heapUsed;return{phase1_us,phase2_us,phase3_us,total_us:phase1_us+phase2_us+phase3_us,memory_kb:heap===undefined?null:Math.round(heap/1024)}}
 
 // MCP TOOLS (direct function references, no wrapper dispatch)
 export const tools={

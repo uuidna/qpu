@@ -14,16 +14,16 @@ export const CLAY_PROBLEMS = {
   p_vs_np: {
     name: "P vs NP",
     description: "Prove P ≠ NP using causal inversion barrier",
-    status: "SOLVED",
+    status: "OPEN",
     approach: "causal_inversion",
-    solution: "P ≠ NP (information-theoretic proof)"
+    proposal: "P ≠ NP via a causal inversion barrier (unverified)"
   },
 
   // 2. Hodge Conjecture (Solve now)
   hodge_conjecture: {
     name: "Hodge Conjecture",
     description: "Hodge classes are algebraic (rational linear combinations of cycles)",
-    status: "SOLVING",
+    status: "OPEN",
     approach: "xai_synthesis_composition",
     cross_formulas: [
       "explain_hodge_decomposition (XAI)",
@@ -36,16 +36,16 @@ export const CLAY_PROBLEMS = {
   riemann_hypothesis: {
     name: "Riemann Hypothesis",
     description: "All non-trivial zeros on critical line Re(s) = 1/2",
-    status: "SOLVED",
+    status: "OPEN",
     approach: "functional_symmetry",
-    solution: "All non-trivial zeros lie on Re(s) = 1/2 (symmetry proof)"
+    proposal: "All non-trivial zeros on Re(s) = 1/2 via functional symmetry (unverified)"
   },
 
   // 4. Yang-Mills and Mass Gap (Solve now)
   yang_mills: {
     name: "Yang-Mills and Mass Gap",
     description: "Yang-Mills theory has a mass gap on R^4",
-    status: "SOLVING",
+    status: "OPEN",
     approach: "federated_gauge_convergence",
     cross_formulas: [
       "federated_gauge_symmetry_convergence (Federated)",
@@ -58,16 +58,16 @@ export const CLAY_PROBLEMS = {
   navier_stokes: {
     name: "Navier-Stokes Existence and Smoothness",
     description: "Smooth solutions exist for all time",
-    status: "SOLVED",
+    status: "OPEN",
     approach: "federated_smoothness_aggregation",
-    solution: "Existence and smoothness proven for smooth initial data"
+    proposal: "Existence and smoothness for smooth initial data (unverified)"
   },
 
   // 6. Birch and Swinnerton-Dyer (Solve now)
   bsd_conjecture: {
     name: "Birch and Swinnerton-Dyer Conjecture",
     description: "Rank of elliptic curve equals order of zero of L-function",
-    status: "SOLVING",
+    status: "OPEN",
     approach: "causal_rank_transfer",
     cross_formulas: [
       "causal_rank_from_l_function (Causal)",
@@ -137,30 +137,22 @@ export const clay_automated_solver = {
         continue
       }
 
-      if (p?.status === "SOLVED") {
+      if (p?.status === "OPEN") {
+        // an open problem stays open: the cross formulas give an approach and a sketch, not a proof
+        const sketch = await composeFormulasForProblem(problem, p)
         solutions[problem] = {
-          status: "SOLVED_BY_CROSS_FORMULAS",
-          solution: p.solution,
-          approach: p.approach
+          status: "OPEN",
+          approach: p.approach,
+          ...("proposal" in p ? { proposal: p.proposal } : {}),
+          ...("cross_formulas" in p ? { cross_formulas: p.cross_formulas } : {}),
+          ...("proof" in sketch ? { sketch: sketch.proof } : {})
         }
-        proofs.push(`${p.name}: ${p.solution}`)
         formulas.push(p.approach)
-        continue
-      }
-
-      if (p?.status === "SOLVING") {
-        // Automatically compose cross-formulas
-        const composed = await composeFormulasForProblem(problem, p)
-        solutions[problem] = composed
-        if ('proof' in composed) {
-          proofs.push(composed.proof)
-          formulas.push(...composed.formulas_used)
-        }
       }
     }
 
     return {
-      problems_solved: Object.keys(solutions).length,
+      problems_solved: Object.values(solutions).filter((x) => x.status === "ALREADY_SOLVED").length,
       solutions,
       proofs_generated: proofs,
       formulas_composed: formulas
@@ -201,7 +193,7 @@ async function solveHodgeConjecture() {
 
   return {
     problem: "Hodge Conjecture",
-    status: "SOLVED",
+    status: "SKETCH",
     proof: `
 HODGE CONJECTURE PROOF via Cross-Domain Formulas:
 
@@ -288,7 +280,7 @@ async function solveYangMills() {
 
   return {
     problem: "Yang-Mills and Mass Gap",
-    status: "SOLVED",
+    status: "SKETCH",
     proof: `
 YANG-MILLS MASS GAP PROOF via Cross-Domain Formulas:
 
@@ -379,7 +371,7 @@ async function solveBirchSwinnerton() {
 
   return {
     problem: "Birch and Swinnerton-Dyer Conjecture",
-    status: "SOLVED",
+    status: "SKETCH",
     proof: `
 BIRCH-SWINNERTON-DYER PROOF via Cross-Domain Formulas:
 
@@ -467,12 +459,12 @@ export const clay_automated_complete = {
       solved: 6,
       already_solved: 1,
       solutions: {
-        "1_p_vs_np": "SOLVED - Causal inversion barrier",
-        "2_hodge_conjecture": "SOLVED - XAI + Synthesis + Transfer",
-        "3_riemann_hypothesis": "SOLVED - Functional symmetry",
-        "4_yang_mills_mass_gap": "SOLVED - Federated gauge convergence",
-        "5_navier_stokes": "SOLVED - Federated smoothness aggregation",
-        "6_birch_swinnerton_dyer": "SOLVED - Causal rank transfer",
+        "1_p_vs_np": "OPEN - proposed: causal inversion barrier",
+        "2_hodge_conjecture": "OPEN - proposed: XAI + Synthesis + Transfer",
+        "3_riemann_hypothesis": "OPEN - proposed: functional symmetry",
+        "4_yang_mills_mass_gap": "OPEN - proposed: federated gauge convergence",
+        "5_navier_stokes": "OPEN - proposed: federated smoothness aggregation",
+        "6_birch_swinnerton_dyer": "OPEN - proposed: causal rank transfer",
         "7_poincare_conjecture": "ALREADY SOLVED (Perelman, 2003)"
       },
       prize_money: "$6,000,000 USD",
