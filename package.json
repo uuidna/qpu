@@ -84,7 +84,12 @@
   "sideEffects": [
     "./dist/mcp/cross-domain-formulas.js",
     "./dist/mcp/cross-domain-paths.js",
-    "./dist/audit/audit-formulas.js"
+    "./dist/audit/audit-formulas.js",
+    "./dist/mcp/quantum-secure-signalling.js",
+    "./dist/mcp/hologram-streams.js",
+    "./dist/mcp/crypt-formulas.js",
+    "./dist/mcp/np-formulas.js",
+    "./dist/mcp/mcp-capabilities.js"
   ],
   "engines": {
     "node": ">=26"
