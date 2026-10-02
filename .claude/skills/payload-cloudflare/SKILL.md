@@ -24,6 +24,11 @@ npm run build && node scripts/payload-cloudflare.mjs --emit vinext/qpu-raid/r2/r
 ```
 Writes `payload.config.ts`, `wrangler.jsonc` (bindings: D1, HYPERDRIVE, STORAGE+BLOBS, MEDIA as the combination needs; ids omitted for Wrangler auto-provisioning, Hyperdrive id placeholder) and `dependencies.txt`. Secrets go in Wrangler secrets / `.dev.vars`: PAYLOAD_SECRET, plus RESEND_API_KEY, STRIPE_SECRET_KEY, S3_*, SENTRY_DSN when chosen.
 
+## An app's own content
+Pass a `CloudflareApp` as the third argument to `cloudflarePayload(c, name, app)`: `collections` (`{ name, from, slug }`, replacing the template's Users and Pages), `adminUser`, `targets` per plugin (collection slugs it attaches to), `dashboard` (a Payload component path), `origins` (CORS and CSRF), `typescriptOutput`, `title`.
+
+This repo's own configs are generated that way: `npm run payload:cf -- --repo` rewrites `payload.config.ts` (`vinext/qpu-raid/none/none/-`) and `payload.config.complete.ts` (`vinext/qpu-raid/r2/resend/nested-docs+search`) with `deploy/payload/wrangler{,.complete}.jsonc`, then type-checks them with `src/payload/collections`. Edit the `REPO` table in `scripts/payload-cloudflare.mjs`, never the generated files.
+
 ## Verify all of them
 ```bash
 npm run payload:cf
