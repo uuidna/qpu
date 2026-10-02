@@ -1,0 +1,33 @@
+// lib/formula-routing.ts
+import { createHash } from 'crypto'
+
+export async function decodeFormulaHash(hash: string) {
+  // In production, this would use a lookup table or cache
+  // For now, we demonstrate the pattern
+
+  const formula = await lookupFormula(hash)
+  const metadata = generateMetadata(formula)
+
+  return { formula, metadata }
+}
+
+function generateMetadata(formula: any) {
+  const formulaNames = formula.map((f) => f.name).join(' + ')
+  const domains = [...new Set(formula.map((f) => f.domain))]
+
+  return {
+    title: `${formulaNames} | Cross-Domain Formula Composition`,
+    description: `Explore ${formulaNames} across ${domains.join(', ')}`,
+    keywords: formula.flatMap((f) => [f.name, f.domain]).join(', '),
+    url: `/formulas/${hash}`,
+    ogImage: 'https://qpu.uuidna.com/og/formulas.png',
+  }
+}
+
+async function lookupFormula(hash: string) {
+  // This would be implemented with:
+  // 1. Redis cache for hot formulas
+  // 2. S3/R2 for formula metadata
+  // 3. In-memory index for fast lookups
+  return []
+}

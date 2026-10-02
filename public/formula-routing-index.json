@@ -1,0 +1,144 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-10-02T11:19:09.544Z",
+  "systemInfo": {
+    "totalFormulas": 12,
+    "totalDomains": 5,
+    "totalProblems": 7,
+    "maxCombinationSize": 5
+  },
+  "estimatedPages": {
+    "description": "Estimated unique formula combination pages",
+    "bySize": {
+      "single": 12,
+      "pairs": 66,
+      "triples": 220,
+      "quads": 495,
+      "quints": 792
+    },
+    "total": 1585
+  },
+  "routingPattern": "/formulas/[16-char-hash]",
+  "formulaDomains": {
+    "causal": {
+      "name": "Causal Inference",
+      "icon": "🔄",
+      "formulas": [
+        {
+          "id": "inv-barrier",
+          "name": "Inversion Barrier",
+          "problem": "P vs NP"
+        },
+        {
+          "id": "rank-transfer",
+          "name": "Rank Transfer",
+          "problem": "BSD"
+        },
+        {
+          "id": "zero-struct",
+          "name": "Zero Structure",
+          "problem": "Riemann"
+        }
+      ]
+    },
+    "xai": {
+      "name": "Explainability (XAI)",
+      "icon": "🔍",
+      "formulas": [
+        {
+          "id": "decomp",
+          "name": "Decomposition",
+          "problem": "Hodge"
+        }
+      ]
+    },
+    "federated": {
+      "name": "Federated Learning",
+      "icon": "🤝",
+      "formulas": [
+        {
+          "id": "gauge-conv",
+          "name": "Gauge Convergence",
+          "problem": "Yang-Mills"
+        },
+        {
+          "id": "smooth-agg",
+          "name": "Smoothness Aggregation",
+          "problem": "Navier-Stokes"
+        },
+        {
+          "id": "energy-bound",
+          "name": "Energy Bounds",
+          "problem": "Navier-Stokes"
+        }
+      ]
+    },
+    "synthesis": {
+      "name": "Program Synthesis",
+      "icon": "⚙️",
+      "formulas": [
+        {
+          "id": "cycle-synth",
+          "name": "Cycle Synthesis",
+          "problem": "Hodge"
+        },
+        {
+          "id": "lag-synth",
+          "name": "Lagrangian Synthesis",
+          "problem": "Yang-Mills"
+        },
+        {
+          "id": "point-synth",
+          "name": "Point Synthesis",
+          "problem": "BSD"
+        }
+      ]
+    },
+    "transfer": {
+      "name": "Zero-Shot Transfer",
+      "icon": "📚",
+      "formulas": [
+        {
+          "id": "grassmann",
+          "name": "Grassmannian Transfer",
+          "problem": "Hodge"
+        },
+        {
+          "id": "isogeny",
+          "name": "Isogeny Transfer",
+          "problem": "BSD"
+        }
+      ]
+    }
+  },
+  "problems": {
+    "p-vs-np": {
+      "name": "P vs NP",
+      "solution": "P ≠ NP"
+    },
+    "hodge": {
+      "name": "Hodge Conjecture",
+      "solution": "All classes algebraic"
+    },
+    "riemann": {
+      "name": "Riemann Hypothesis",
+      "solution": "Zeros on Re(s)=1/2"
+    },
+    "yang-mills": {
+      "name": "Yang-Mills",
+      "solution": "Mass gap exists"
+    },
+    "navier-stokes": {
+      "name": "Navier-Stokes",
+      "solution": "Global smoothness"
+    },
+    "birch-swinnerton": {
+      "name": "Birch-Swinnerton-Dyer",
+      "solution": "rank = L-order"
+    },
+    "poincare": {
+      "name": "Poincaré",
+      "solution": "3-sphere unique"
+    }
+  }
+}
