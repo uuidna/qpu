@@ -18,6 +18,8 @@ export const FAMILIES = [
   ['Fuse', [], 'The fused API registry: qubits, composing pairs, specificity buckets, cut entanglement within bounds.', ['fuse']],
   ['Cross', ['Lattice', 'Coil'], 'Cross forms: every quantity stated as a sum of like terms and as a product of unlike ones, and the bridges between.',
     ['double_is_sum', 'coins_bridges_forms', 'faces_multiplicative', 'faces_additive', 'faces_both_forms', 'bits_multiplicative', 'bits_exponential', 'bits_both_forms', 'amplitudes_as_sum', 'amplitudes_from_sum', 'fused_multiplicative_form', 'fused_additive_form', 'fused_both_directions', 'all_product', 'all_sum', 'all_complete']],
+  // discovered, not split: written by scripts/lean-clay.mjs
+  ['Clay', ['Mint', 'Shor', 'Lattice', 'Hybrid', 'Coil', 'Physics'], 'Discovered equalities joining the wings and the formula families.', []],
 ]
 if (process.argv[1].endsWith('lean-split.mjs')) {
   const src = fs.readFileSync('src/quantum/processing/unit/index.lean', 'utf8').split('\n')

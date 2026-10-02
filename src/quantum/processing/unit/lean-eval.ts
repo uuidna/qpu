@@ -213,7 +213,7 @@ const statementOf = (theorem: string, m: LeanModel): Statement => {
   const body: Ast[] = []
   const inner: string[][] = []
   const all = /^∀\s+([^,:]*):\s*Nat\s*,\s*(.*)$/.exec(type)
-  const parts = all ? [type] : type.split('∧')
+  const parts = all ? [type] : topLevelSplit(type, '∧')
   for (let part of parts) {
     part = part.trim()
     while (part.startsWith('(') && part.endsWith(')')) part = part.slice(1, -1).trim()
@@ -224,6 +224,20 @@ const statementOf = (theorem: string, m: LeanModel): Statement => {
   return { vars, hyps, body, inner }
 }
 
+/** Split on a separator only where it stands outside every bracket. */
+const topLevelSplit = (text: string, sep: string): string[] => {
+  const out: string[] = []
+  let depth = 0
+  let from = 0
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i]!
+    if ('({[⟨'.includes(c)) depth++
+    else if (')}]⟩'.includes(c)) depth--
+    else if (depth === 0 && text.startsWith(sep, i)) { out.push(text.slice(from, i)); from = i + sep.length }
+  }
+  out.push(text.slice(from))
+  return out
+}
 const assignmentsOf = (names: string[], hi: bigint): Map<string, bigint>[] => {
   let out: Map<string, bigint>[] = [new Map()]
   for (const name of names) {

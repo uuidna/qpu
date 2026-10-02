@@ -26,16 +26,16 @@ Stylesheets, schemas, SEO zones, citation and the documents a reader or crawler 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
 | [`qpuAccessOf`](../src/quantum/processing/unit/index.ts#L1061) | builder | Access keys (domain, occupancy) for every occupancy, with their fused names. | `qpuAccessHolds` | holds |
-| [`qpuCiteOf`](../src/quantum/processing/unit/index.ts#L4939) | builder | How to cite the unit (MLA 8): DOI, concept DOI, ORCID, archived version and commit, served version, and whether they match. | `qpuCiteHolds` | holds |
-| [`qpuCssOf`](../src/quantum/processing/unit/index.ts#L12268) | builder | The fused stylesheet the unit serves (qpu.css), with its size against the naive stylesheet. | `qpuCssHolds` | holds |
+| [`qpuCiteOf`](../src/quantum/processing/unit/index.ts#L4946) | builder | How to cite the unit (MLA 8): DOI, concept DOI, ORCID, archived version and commit, served version, and whether they match. | `qpuCiteHolds` | holds |
+| [`qpuCssOf`](../src/quantum/processing/unit/index.ts#L12275) | builder | The fused stylesheet the unit serves (qpu.css), with its size against the naive stylesheet. | `qpuCssHolds` | holds |
 | [`qpuGenesisOf`](../src/quantum/processing/unit/index.ts#L766) | builder | The UI schema: shadcn card variants, sizes, states and themes seated on the lattice's faces and rays, served as data (no HTML). | `qpuGenesisHolds` | holds |
 | [`qpuHologramOf`](../src/quantum/processing/unit/index.ts#L1087) | builder | The 'hologram' reading: the pentagram and access readings composed with the fused capacity and the STORAGE/BLOBS bindings. | `qpuHologramHolds` | holds |
 | [`qpuPentagramOf`](../src/quantum/processing/unit/index.ts#L894) | builder | The occupancy pentagram: five occupancies x five skills joined in a single stroke of step 2. | `qpuPentagramHolds` | holds |
-| [`qpuPresenceOf`](../src/quantum/processing/unit/index.ts#L6599) | builder | Presence of users per face (active, inactive, chatting) with starter templates, merged into storage. | `qpuPresenceHolds` | holds |
-| [`qpuReflectOf`](../src/quantum/processing/unit/index.ts#L12483) | builder | Reflect a caller's text onto a face and its involution hop, with the stylesheet slots it occupies. | `qpuReflectHolds` | holds |
-| [`qpuRobotsOf`](../src/quantum/processing/unit/index.ts#L13517) | builder | robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves. | `qpuRobotsHolds` | holds |
+| [`qpuPresenceOf`](../src/quantum/processing/unit/index.ts#L6606) | builder | Presence of users per face (active, inactive, chatting) with starter templates, merged into storage. | `qpuPresenceHolds` | holds |
+| [`qpuReflectOf`](../src/quantum/processing/unit/index.ts#L12490) | builder | Reflect a caller's text onto a face and its involution hop, with the stylesheet slots it occupies. | `qpuReflectHolds` | holds |
+| [`qpuRobotsOf`](../src/quantum/processing/unit/index.ts#L13524) | builder | robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves. | `qpuRobotsHolds` | holds |
 | [`qpuSchemasOf`](../src/quantum/processing/unit/index.ts#L3469) | builder | The JSON-LD schemas the unit serves, mounted under storage, with their prefixes and context. | `qpuSchemasHolds` | holds |
-| [`qpuSeoZoneOf`](../src/quantum/processing/unit/index.ts#L13647) | builder | SEO zone fields for each host: robots, sitemap and the zone's reserved labels. | `qpuSeoZoneHolds` | holds |
+| [`qpuSeoZoneOf`](../src/quantum/processing/unit/index.ts#L13654) | builder | SEO zone fields for each host: robots, sitemap and the zone's reserved labels. | `qpuSeoZoneHolds` | holds |
 | [`qpuTenantZoneOf`](../src/quantum/processing/unit/index.ts#L1557) | builder | The tenant zone QPU serves and the labels in it that are never a tenant — one declaration, read by the router and by Payload (src/access.ts), never restated there. | `qpuTenantZoneHolds` | holds |
 | [`qpuZoneHostOf`](../src/quantum/processing/unit/index.ts#L1534) | builder | The first-party host this request landed on, or undefined — and `qpu: false` is as good as absent here. | `qpuZoneHostHolds` | holds |
 | [`qpuZoneOf`](../src/quantum/processing/unit/index.ts#L1500) | builder | The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone. | `qpuZoneHolds` | holds |

@@ -20,7 +20,7 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 |---|---|---|
 | [Lattice & arithmetic](lattice.md) | 9 | 7 of 7 |
 | [Quantum computation](quantum.md) | 17 | 14 of 17 |
-| [Formal proof (Lean)](proof.md) | 11 | 4 of 4 |
+| [Formal proof (Lean)](proof.md) | 12 | 4 of 4 |
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
 | [UUIDs & quantum receipts](receipts.md) | 39 | 15 of 17 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |

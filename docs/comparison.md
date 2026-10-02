@@ -22,7 +22,7 @@ Rows are capability classes; a cell says what the system documents, not a benchm
 | Noise / density matrix | XX noise identity only | noise models, density matrix | density matrix | DM1, up to 17 qubits | default.mixed | none |
 | Stabilizer / large structured states | graph state of the fused API registry, 2529 qubits, exact entanglement by GF(2) rank | stabilizer, extended stabilizer, MPS | Clifford simulator | TN1, up to 50 qubits | lightning.tensor (MPS) | none |
 | Physical hardware | none | IBM Quantum | Google Quantum AI (by access) | IonQ, Rigetti, IQM, QuEra and others | via plugins | none |
-| Formal proof | 100 Lean 4 theorems, all served and recomputed (100/100) | none | none | none | none | none |
+| Formal proof | 124 Lean 4 theorems, all served and recomputed (124/124) | none | none | none | none | none |
 | Content-addressed results | RFC 9562 v8 UUIDs and chained quantum receipts on every computation | job ids | none | task ARNs | none | none |
 | Agent interface | MCP server (/mcp), 16 tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |
 | Document database | MongoDB query/update semantics on Cloudflare KV+R2 or D1, Payload adapter | — | — | — | — | — |

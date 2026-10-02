@@ -12,7 +12,7 @@ const l = u.qpuLeanOf()
 const rows = [...l.rows, ...l.cover, l.climb].map((r) => {
   const name = r.theorem.match(/^theorem (\w+)/)[1]
   const x = leanRecomputeOf(r.theorem, m)
-  return { name, family: byName.get(name)?.family, uuid: r.uuid, cross: r.cross, holds: r.holds, recomputed: x.holds, ...(x.over ? { over: x.over } : {}), uses: byName.get(name)?.uses ?? [], formula: u.qpuFoldOf(r.formula) }
+  return { name, family: byName.get(name)?.family, uuid: u.qpuStatementUuidOf(r.theorem), handle: r.handle, cross: r.cross, holds: r.holds, recomputed: x.holds, ...(x.over ? { over: x.over } : {}), uses: byName.get(name)?.uses ?? [], formula: u.qpuFoldOf(r.formula) }
 }).sort((a, b) => a.name.localeCompare(b.name))
 const doc = { kind: 'lean-receipt', source: l.source.fold, toolchain: l.source.toolchain, theorems: l.source.theorems, served: l.source.served, verbatim: l.source.verbatim, recomputed: l.source.recomputed, holds: l.holds,
   crossHolds: u.qpuCrossReadingHolds([...l.rows, ...l.cover, l.climb]), families: g.families, familyLinks: g.familyLinks, related: g.related.length, rows }

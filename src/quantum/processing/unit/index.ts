@@ -3890,8 +3890,9 @@ export type QpuLeanRow = {
   reading: string
   /** Which reading of a quantity this statement is, taken from the statement itself — see qpuCrossReadingOf. */
   cross: QpuCross
-  /** The statement's content address: two theorems that state the same thing share it, whatever they are named. */
-  uuid: string
+  /** The statement's handle: the first 8 hex of its content UUID (qpuStatementUuidOf); two theorems that state the same
+   *  thing share it, whatever they are named. */
+  handle: string
   holds: boolean
 }
 
@@ -3916,7 +3917,7 @@ export const qpuCrossReadingHolds = (rows: readonly QpuLeanRow[] = qpuLeanAllRow
   if (!rows.every((row) => row.cross === qpuCrossReadingOf(row.theorem))) return false
   const count = (which: QpuCross) => rows.filter((row) => row.cross === which).length
   // ONE BRIDGE LAW, counted by statement: a theorem and its alias (multiply, mintOf_add) state one law at one address.
-  const bridges = new Set(rows.filter((row) => row.cross === 'bridge').map((row) => row.uuid))
+  const bridges = new Set(rows.filter((row) => row.cross === 'bridge').map((row) => row.handle))
   return bridges.size === seed && count('symmetric') > n - n && count('asymmetric') > n - n && count('cross') > n - n
 }
 
@@ -3928,10 +3929,16 @@ const qpuLeanAllRowsOf = (lean = qpuLeanOf()): readonly QpuLeanRow[] => [...lean
 /** Attach the cross reading to a stated row. Computed from the statement, so no literal below carries a label
  *  that could disagree with what it states. */
 const statementOf = (theorem: string): string => statedTypeOf(theorem)
-const crossed = (row: Omit<QpuLeanRow, 'cross' | 'uuid'>): QpuLeanRow => {
+/**
+ * The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from.
+ * @wing proof
+ * @kind function
+ */
+export const qpuStatementUuidOf = (theorem: string): string => qpuShapeUuidOf(statementOf(theorem))
+const crossed = (row: Omit<QpuLeanRow, 'cross' | 'handle'>): QpuLeanRow => {
   const uuid = qpuShapeUuidOf(statementOf(row.theorem))
   qpuUuidReceiptOf(`lean ${row.heading}`, uuid, row.holds, `${unit.origin}/${unit.fuse.lean}`)
-  return { ...row, cross: qpuCrossReadingOf(row.theorem), uuid }
+  return { ...row, cross: qpuCrossReadingOf(row.theorem), handle: uuid.slice(n - n, UUID_EIGHT) }
 }
 
 /**
@@ -4654,7 +4661,7 @@ export const qpuLeanOf = onceOf(() => {
         heading: name,
         theorem,
         formula: r.formula,
-        reading: `holds ${r.holds}. ${qpuCrossReadingOf(theorem)}. recomputed${r.over ? ` over ${r.over}` : ''} from the defs of index.lean.${same.length ? ` same statement as ${same.join(', ')}.` : ''}`,
+        reading: `holds ${r.holds}. ${qpuCrossReadingOf(theorem)}.${r.over ? ` over ${r.over}.` : ''}${same.length ? ` same as ${same.join(', ')}.` : ''}`,
         holds: r.holds,
       })
     })
@@ -14410,7 +14417,19 @@ export const qpuMcpOf = onceOf(() => {
  * @kind builder
  */
 export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
-  const shown = async (payload: unknown) => qpuMcpShownOf(name, payload)
+  // the hex address that reproduces this call, when it is a pure door call (no man, live or sequence flags)
+  const hexOf = (): string | undefined => {
+    if (args.man === true || args.live === true || args.sequence === true) return undefined
+    const family = qpuToolsOf().some((t) => t.name === name) ? 'qpu' : qpuCybersecurityToolsOf().some((t) => t.name === name) ? 'crypto' : undefined
+    if (!family) return undefined
+    const params = family === 'crypto' ? [args.n, args.a].map((x) => (x === undefined ? n - n : Number(x))) : []
+    try { return qpuHexUuidOf({ family, program: [name], params: params.every((x) => x === n - n) ? [] : params }) } catch { return undefined }
+  }
+  const shown = async (payload: unknown) => {
+    const r = qpuMcpShownOf(name, payload) as { _meta?: Record<string, unknown> }
+    const hex = hexOf()
+    return hex && r._meta ? { ...r, _meta: { ...r._meta, hex } } : r
+  }
   const tool = qpuToolsOf().find((t) => t.name === name)
   if (tool) {
     if (args.man !== true) {
@@ -15324,6 +15343,10 @@ export const qpuHexFamiliesOf = (): Map<string, HexFormula[]> => {
     if (defs.length === n - n) continue
     out.set(`Qpu.${f.family}`, defs.map((d) => ({ name: d, arity: leanArityOf(model, d), run: (args) => leanCallOf(model, d, args.slice(n - n, leanArityOf(model, d))) })))
   }
+  // the MCP's own doors are families too, so every tool computation has a hex address: qpu (the eight doors, no params)
+  // and crypto (the eight cybersecurity tools, params n and a; 0 means the tool's default)
+  out.set('qpu', qpuToolsOf().map((t) => ({ name: t.name, arity: n - n, run: () => t.run({}) })))
+  out.set('crypto', qpuCybersecurityToolsOf().map((t) => ({ name: t.name, arity: coins, run: (args: readonly bigint[]) => t.run({ ...(args[n - n] ? { n: Number(args[n - n]) } : {}), ...(args[seed] ? { a: Number(args[seed]) } : {}) }) })))
   for (const [family, fns] of HEX_REGISTERED)
     out.set(family, [...fns.keys()].sort().map((name) => ({ name, arity: fns.get(name)!.length, run: (args) => fns.get(name)!(...args.map((a) => Number(a))) })))
   for (const [family, formulas] of out) if (formulas.length > UUID_SIXTEEN - seed) out.set(family, formulas.slice(n - n, UUID_SIXTEEN - seed))
@@ -15390,6 +15413,10 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv)
   const d = qpuHexDecodeOf(uuid)
   if (!d.holds || !('family' in d) || !d.family) return { ...d, ran: false as const }
   const formulas = qpuHexFamiliesOf().get(d.family)!
+  // the address remembers: a program already run here returns what it stored, without recomputing
+  const row = d.row.split('/')[seed]!
+  const stored = (await qpuDocDbOf(env, 'hex').collection(d.handle).findOne({ _id: row })) as { by?: string; value?: unknown; holds?: boolean; receipt?: string } | null
+  if (stored && stored.by === d.uuid) return { ...d, ran: true as const, cached: true as const, steps: [], value: stored.value, holds: stored.holds === true, receipt: stored.receipt }
   const params = d.params.map((x) => BigInt(x))
   let acc: unknown = params[n - n] ?? BigInt(n - n)
   let holds = true
@@ -15406,7 +15433,7 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv)
     }
     const value = typeof acc === 'bigint' ? acc.toString() : acc
     const receipt = qpuUuidReceiptOf(`hex ${d.family}`, d.uuid, { steps, value, holds }, referrer).uuid
-    await qpuDocDbOf(env, 'hex').collection(d.handle).updateOne({ _id: d.row.split('/')[seed]! }, { $set: { family: d.family, program: d.program, value, holds, receipt, by: d.uuid } }, { upsert: true })
+    await qpuDocDbOf(env, 'hex').collection(d.handle).updateOne({ _id: row }, { $set: { family: d.family, program: d.program, value, holds, receipt, by: d.uuid } }, { upsert: true })
     return { ...d, ran: true as const, steps, value, holds, receipt }
   } catch (e) {
     return { ...d, ran: false as const, steps, error: e instanceof Error ? e.message : String(e), holds: false as const }
