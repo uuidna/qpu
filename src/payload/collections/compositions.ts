@@ -45,7 +45,7 @@ export const Compositions: CollectionConfig = {
     {
       name: 'metadata',
       type: 'json',
-      admin: { editable: false }
+      admin: { readOnly: true }
     },
   ],
 }

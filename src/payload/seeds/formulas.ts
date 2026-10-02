@@ -2,6 +2,8 @@
  * Formulas Seed Data
  * Auto-generated from formula definitions
  */
+import type { Payload } from 'payload'
+
 export const formulas = [
   {
     "id": "inv-barrier",
@@ -62,7 +64,7 @@ export const formulas = [
   }
 ]
 
-export async function seedFormulas(payload) {
+export async function seedFormulas(payload: Payload) {
   for (const formula of formulas) {
     try {
       await payload.create({ collection: 'formulas', data: formula })

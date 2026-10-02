@@ -147,7 +147,7 @@ export async function POST(request: Request) {
     // Execute endpoint with POST body
     if (path.length === 2) {
       const [serviceName, endpointName] = path
-      const body = await request.json()
+      const body = (await request.json()) as Record<string, unknown>
 
       const result = await combinator.executeAPICall(serviceName, endpointName, body)
 
@@ -161,7 +161,7 @@ export async function POST(request: Request) {
     // Execute by formula with POST body
     if (path.length === 1 && path[0].length === 16) {
       const formula = path[0]
-      const body = await request.json()
+      const body = (await request.json()) as Record<string, unknown>
 
       const result = await mcp.executeByFormula(formula, body)
 

@@ -16,3 +16,9 @@ test-readings.json
 .next/
 .open-next/
 next-env.d.ts
+.*-report.json
+.master-loop-*.json
+.recursive-improvement-*.json
+.release-*.json
+.system-status.json
+deployment.log

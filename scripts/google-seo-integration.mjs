@@ -345,5 +345,3 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   printSeoSummary()
 }
-
-export { generateRobotsTxt, generateSitemapIndex, generateFormulaSitemap, generateClaySitemap, generateNextSeoConfig, generateSeoApiRoutes }

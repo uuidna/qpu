@@ -37,7 +37,7 @@ export default function MCPDashboard() {
 
   useEffect(() => {
     fetch('/api/mcp/registry')
-      .then((r) => r.json())
+      .then((r) => r.json() as Promise<{ network: CapabilityNetwork }>)
       .then((data) => {
         setNetwork(data.network)
         setLoading(false)

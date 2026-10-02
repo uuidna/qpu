@@ -85,7 +85,7 @@ export const CLAY_PROBLEMS = {
     year: 2003,
     note: "Used Ricci flow (geometric approach)"
   }
-}
+} as const
 
 // ============================================================================
 // AUTOMATED CROSS-FORMULA SOLVER
@@ -152,8 +152,10 @@ export const clay_automated_solver = {
         // Automatically compose cross-formulas
         const composed = await composeFormulasForProblem(problem, p)
         solutions[problem] = composed
-        proofs.push(composed.proof)
-        formulas.push(...composed.formulas_used)
+        if ('proof' in composed) {
+          proofs.push(composed.proof)
+          formulas.push(...composed.formulas_used)
+        }
       }
     }
 

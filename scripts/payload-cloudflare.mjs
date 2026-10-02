@@ -47,7 +47,7 @@ const REPO_TSCONFIG = {
     target: 'ES2022', lib: ['dom', 'dom.iterable', 'esnext'], module: 'esnext', moduleResolution: 'bundler', jsx: 'preserve', strict: true, noEmit: true,
     skipLibCheck: true, esModuleInterop: true, resolveJsonModule: true, isolatedModules: true, incremental: true, allowJs: true,
     types: ['@cloudflare/workers-types', 'node'], plugins: [{ name: 'next' }],
-    paths: { '@payload-config': ['./payload.config.ts'], '@uuidna/qpu': ['./dist/quantum/processing/unit/index'], '@uuidna/qpu/payload': ['./dist/db/payload-qpu'] },
+    paths: { '@/*': ['./*'], '@payload-config': ['./payload.config.ts'], '@uuidna/qpu': ['./dist/quantum/processing/unit/index'], '@uuidna/qpu/payload': ['./dist/db/payload-qpu'] },
   },
   include: ['next-env.d.ts', 'payload.config.ts', 'app/**/*.ts', 'app/**/*.tsx', 'src/payload/**/*.ts', '.next/types/**/*.ts'],
   exclude: ['node_modules', 'dist', '.open-next'],

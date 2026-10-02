@@ -5,7 +5,7 @@
  * Generates executable proofs
  */
 
-import CLAY_TOOLS from './clay-automated-solver'
+import CLAY_TOOLS from './clay-automated-solver.js'
 
 // ============================================================================
 // TEST RUNNER

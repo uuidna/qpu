@@ -5,7 +5,7 @@
  * Generates audit reports, identifies issues, and enforces standards
  */
 
-import MCP_AUDITING_TOOLS from './mcp-auditing-tools'
+import MCP_AUDITING_TOOLS from './mcp-auditing-tools.js'
 
 // ============================================================================
 // AUDIT ORCHESTRATOR: Master Control

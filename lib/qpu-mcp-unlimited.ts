@@ -152,7 +152,7 @@ export class QPUMCPUnlimited {
             const result1 = await op1.execute(input)
             const result2 = await op2.execute({
               ...input,
-              ...result1, // Combine results
+              ...(result1 as Record<string, unknown>), // Combine results
             })
             return {
               formula: composedFormula,
