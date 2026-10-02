@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>State — @uuidna/qpu</title>
+<meta name="description" content="Current state of @uuidna/qpu 1.0.0: what is built, what is verified, and what is open.">
+<meta property="og:title" content="State — @uuidna/qpu">
+<meta property="og:description" content="Current state of @uuidna/qpu 1.0.0: what is built, what is verified, and what is open.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://github.com/uuidna/qpu/blob/main/docs/state.md">
+<meta property="og:image" content="https://opengraph.githubassets.com/qpu/uuidna/qpu">
+<meta property="og:site_name" content="@uuidna/qpu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="State">
+<meta name="twitter:description" content="Current state of @uuidna/qpu 1.0.0: what is built, what is verified, and what is open.">
+<style>body{font:15px/1.55 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#1a1a1a;background:#fff}table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:13px}th,td{border:1px solid #ddd;padding:.35rem .5rem;text-align:left;vertical-align:top}th{background:#f6f6f6}code{font:12px ui-monospace,monospace;background:#f3f3f3;padding:0 .2rem}@media(prefers-color-scheme:dark){body{background:#111;color:#e8e8e8}th{background:#1d1d1d}td,th{border-color:#333}code{background:#222}a{color:#8ab4ff}}</style>
+</head><body>
+<h1>State</h1>
+<p>Version <strong>1.0.0</strong> (version lock: <code>v1.&lt;minor>.&lt;digit></code>, 0 = LTS; <a href="https://github.com/uuidna/qpu/blob/main/scripts/version-lock.mjs">scripts/version-lock.mjs</a>).</p>
+<table>
+<tr><th>Measure</th><th>Value</th><th>Source</th></tr>
+<tr><td>Capabilities documented inline</td><td>232 of 234 exports</td><td><a href="https://github.com/uuidna/qpu/blob/main/scripts/generate-docs.mjs">scripts/generate-docs.mjs</a></td></tr>
+<tr><td>Evidence predicates that hold</td><td>115 of 147 (live ones need the network)</td><td>evaluated by <code>npm run docs</code></td></tr>
+<tr><td>Lean theorems served / recomputed</td><td>100 / 100 of 100</td><td><a href="https://github.com/uuidna/qpu/blob/main/lean-receipt.json">lean-receipt.json</a></td></tr>
+<tr><td>API registry fused</td><td>2529 of 2529 APIs, 438299 cross formulas</td><td><a href="https://github.com/uuidna/qpu/blob/main/fuse-receipt.json">fuse-receipt.json</a></td></tr>
+<tr><td>Payload on Cloudflare</td><td>98304 combinations, 96 of 96 bases type-check</td><td><a href="https://github.com/uuidna/qpu/blob/main/payload-cf-receipt.json">payload-cf-receipt.json</a></td></tr>
+<tr><td>Live cross-proof</td><td>27 of 30 claims agree; differ: zenodo latest archive, orcid family name, tc niobium mK</td><td><a href="https://github.com/uuidna/qpu/blob/main/cross-receipt.json">cross-receipt.json</a></td></tr>
+</table>
+<h2>Open</h2>
+<li><strong>Live host is behind main.</strong> Cloudflare Workers Builds for the uuidna-qpu Worker has failed on every commit since 2026-10-01, so qpu.uuidna.com still serves v0.2.1. A clean clone of main installs, builds and passes <code>wrangler deploy --dry-run</code> (the unit bundles at 526 KiB with the STORAGE, BLOBS and PAYLOAD bindings); the failing step is in the Workers project's dashboard build settings, which this repository does not hold. Evidence: the Workers Builds check run on each commit; <code>npx wrangler deploy --dry-run</code>.</li>
+<li><strong>1.0.0 is not on npm.</strong> v1.0.0 has a GitHub release and a Zenodo record (10.5281/zenodo.23091364) but npm's latest is 0.2.1. The version lock forbids any bump until 1.0.0 is published: run publish.yml by workflow_dispatch from main; it needs a trusted publisher for publish.yml on npmjs.com. Evidence: <code>consolidatedMCP.executeWorkflow('release-workflow', { version: '1.0.0' })</code> reads npm, GitHub and Zenodo.</li>
+<li><strong>Two GitHub workflows still fail.</strong> ci-cd.yml and wave2-sdk-release.yml fail on push and have not been examined here. ci.yml was invalid YAML (a plain scalar holding <code>: </code>) and is fixed; its gate now resolves every operation by UUID and requires qpu_prove to hold. Evidence: GitHub Actions runs on main.</li>
+<li><strong>Two data discrepancies.</strong> ORCID 0009-0000-7312-9778 records the family name Roustchev while the citation and Zenodo say Rouschev; index.lean sets niobium to 9200 mK while the cited reference table gives 9.26 K (theorem superconductivity would read gap niobium = 679, not 674). Evidence: cross-receipt.json.</li>
+<li><strong>QPU database limits.</strong> A collection scan reads at most 4 pages of 1000 keys per request on KV+R2; KV is eventually consistent (prefer the D1 store when a write must be read back at once); no transactions; localized-field queries and geo operators are refused. Evidence: src/quantum/processing/unit/docdb.ts and src/db/payload-qpu.ts.</li>
+<li><strong>Not yet run on Workers.</strong> The Payload adapter, the regenerated payload configs and the 98304 Payload-on-Cloudflare combinations are type-checked and run in Node; none has run on a deployed Worker against real D1, KV, R2 or Hyperdrive bindings. The restored admin dashboard has not been rendered in Payload 4's admin; src/payload/admin/config.tsx imports slate and is unused. Evidence: payload-cf-receipt.json.</li>
+</body></html>

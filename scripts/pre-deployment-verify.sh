@@ -110,8 +110,8 @@ check "Kubernetes deployment config" "grep -q 'kubernetes' src/deployment/payloa
 echo -e "\n${YELLOW}[8/10] Documentation Verification${NC}"
 check "README exists" "[ -f README.md ]"
 check "DEPLOYMENT_CHECKLIST exists" "[ -f DEPLOYMENT_CHECKLIST.md ]"
-check "DEPLOYMENT_GUIDE exists" "[ -f docs/DEPLOYMENT_GUIDE_v0.2.2.md ]"
-check "API documentation" "[ -f docs/API_REFERENCE.md ]"
+check "docs state page exists" "[ -f docs/state.md ]"
+check "docs reproduce from the inline docs" "node scripts/generate-docs.mjs --check"
 
 # ============================================================================
 # 9. PACKAGE VERIFICATION

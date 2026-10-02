@@ -22,6 +22,11 @@ export interface DomainBridge {
   formula: string
 }
 
+/**
+ * Seal a cross formula: content UUID of {src, dst, formula}, holds (inputs in domain, value finite) and a quantum receipt in the cross stream.
+ * @wing fusion
+ * @kind builder
+ */
 export const crossFormulaOf = (f: Omit<CrossFormula, 'uuid' | 'receipt' | 'holds'>, domain = true): CrossFormula => {
   const uuid = qpuContentUuidOf({ src: f.src, dst: f.dst, formula: f.formula })
   const holds = domain && Number.isFinite(f.value)
@@ -29,6 +34,11 @@ export const crossFormulaOf = (f: Omit<CrossFormula, 'uuid' | 'receipt' | 'holds
 }
 const nat = (...xs: number[]): boolean => xs.every((x) => Number.isFinite(x) && x >= 0)
 
+/**
+ * The ten named cross-domain bridges (each a CrossFormula) and allBridges(), their transforms over plain inputs.
+ * @wing fusion
+ * @kind class
+ */
 export class CrossDomainFormulas {
   static bb84ToCompress(keyLen: number): CrossFormula {
     return crossFormulaOf({
@@ -142,4 +152,9 @@ export class CrossDomainFormulas {
   }
 }
 
+/**
+ * A CrossDomainFormulas instance.
+ * @wing fusion
+ * @kind function
+ */
 export const crossDomainFormulas = new CrossDomainFormulas()

@@ -36,6 +36,11 @@ export interface DeploymentConfig {
   autonomousOptimization: boolean
 }
 
+/**
+ * Deployment templates: four hardware modes (browser, standalone, docker, kubernetes) and the Cloudflare family (cloudflarePayload) for Next.js + Payload on Workers.
+ * @wing cms
+ * @kind class
+ */
 export class PayloadTemplates {
   /**
    * BROWSER MODE: In-app execution via WebAssembly
@@ -322,11 +327,35 @@ CMD ["node", "dist/docker-server.js"]
 // CLOUDFLARE: Next.js + Payload on Workers, every combination
 // ============================================================================
 
+/**
+ * Next.js runtimes on Workers: vinext (Cloudflare's recommended path) and the OpenNext adapter.
+ * @wing cms
+ * @kind constant
+ */
 export const CLOUDFLARE_RUNTIMES = ['vinext', 'opennext'] as const
-/** qpu-raid and qpu-d1 are the QPU document database (MongoDB semantics) on native bindings: a MongoDB request on Workers is one of these. */
+/**
+ * qpu-raid and qpu-d1 are the QPU document database (MongoDB semantics) on native bindings: a MongoDB request on Workers is one of these.
+ * @wing cms
+ * @kind constant
+ */
 export const CLOUDFLARE_DATABASES = ['d1', 'postgres', 'qpu-raid', 'qpu-d1'] as const
+/**
+ * Upload storage choices: R2, S3, or none.
+ * @wing cms
+ * @kind constant
+ */
 export const CLOUDFLARE_STORAGE = ['r2', 's3', 'none'] as const
+/**
+ * Email choices: Resend, or none.
+ * @wing cms
+ * @kind constant
+ */
 export const CLOUDFLARE_EMAIL = ['resend', 'none'] as const
+/**
+ * The Payload plugins a combination can include.
+ * @wing cms
+ * @kind constant
+ */
 export const CLOUDFLARE_PLUGINS = ['ecommerce', 'form-builder', 'import-export', 'mcp', 'multi-tenant', 'nested-docs', 'redirects', 'search', 'sentry', 'seo', 'stripe'] as const
 
 export type CloudflareCombination = {
@@ -338,9 +367,18 @@ export type CloudflareCombination = {
 }
 export type CloudflarePayload = PayloadTemplate & { combination: CloudflareCombination; key: string; files: Record<string, string>; dependencies: string[] }
 
-/** A combination's canonical key: the axes in order, plugins sorted — what its content UUID is taken over. */
+/**
+ * A combination's canonical key: the axes in order, plugins sorted — what its content UUID is taken over.
+ * @wing cms
+ * @kind builder
+ */
 export const cloudflareKeyOf = (c: CloudflareCombination): string =>
   [c.runtime, c.db, c.storage, c.email, [...c.plugins].sort().join('+') || '-'].join('/')
+/**
+ * Parse a combination key (runtime/db/storage/email/plugins) back into a combination.
+ * @wing cms
+ * @kind builder
+ */
 export const cloudflareCombinationOf = (key: string): CloudflareCombination => {
   const [runtime, db, storage, email, plugins] = key.split('/') as [never, never, never, never, string]
   return { runtime, db, storage, email, plugins: plugins === '-' ? [] : (plugins.split('+') as never) }
@@ -482,6 +520,11 @@ const cloudflareDependenciesOf = (c: CloudflareCombination): string[] =>
     c.plugins.includes('sentry') ? '@sentry/nextjs' : '',
   ].filter(Boolean).sort()
 
+/**
+ * Generate one combination: payload.config.ts, wrangler.jsonc and dependencies, optionally carrying an app's own collections (CloudflareApp).
+ * @wing cms
+ * @kind builder
+ */
 export const cloudflarePayloadOf = (c: CloudflareCombination, name = 'payload-cloudflare', app?: CloudflareApp): CloudflarePayload => ({
   mode: 'cloudflare',
   version: '1.0.0',
@@ -496,7 +539,11 @@ export const cloudflarePayloadOf = (c: CloudflareCombination, name = 'payload-cl
   dependencies: cloudflareDependenciesOf(c),
 })
 
-/** Every combination of the axes: runtimes × databases × storage × email × every subset of the plugins. */
+/**
+ * Every combination of the axes: runtimes × databases × storage × email × every subset of the plugins.
+ * @wing cms
+ * @kind function
+ */
 export function* cloudflareCombinations(): Generator<CloudflareCombination> {
   for (const runtime of CLOUDFLARE_RUNTIMES)
     for (const db of CLOUDFLARE_DATABASES)
@@ -506,4 +553,9 @@ export function* cloudflareCombinations(): Generator<CloudflareCombination> {
             yield { runtime, db, storage, email, plugins: CLOUDFLARE_PLUGINS.filter((_, i) => mask & (1 << i)) }
 }
 
+/**
+ * A PayloadTemplates instance.
+ * @wing cms
+ * @kind function
+ */
 export const payloadTemplates = new PayloadTemplates()

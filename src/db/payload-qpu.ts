@@ -44,7 +44,11 @@ type Db = ReturnType<typeof qpuDocDbOf>
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const fieldOf = (p: string) => (p === 'id' ? '_id' : p)
 
-/** Payload's where, operator for operator, as a docdb filter. */
+/**
+ * Payload's where, operator for operator, as a docdb filter.
+ * @wing storage
+ * @kind builder
+ */
 export const filterOf = (where?: Where): Filter => {
   if (!where) return {}
   const out: Filter[] = []
@@ -136,6 +140,11 @@ const now = () => new Date().toISOString()
 
 export type QpuAdapterArgs = { env?: QpuEnv; store?: DocStore; name?: string; migrationDir?: string }
 
+/**
+ * Payload database adapter on the QPU document database. Pass { env } on Workers (STORAGE KV + BLOBS R2 RAID), { store } for any DocStore (d1DocStore, memoryDocStore), or nothing for the in-memory heap.
+ * @wing storage
+ * @kind adapter
+ */
 export function qpuAdapter(args: QpuAdapterArgs = {}): DatabaseAdapterObj {
   const db = qpuDocDbOf(args.env, args.name ?? 'payload', args.store)
   function adapter({ payload }: { payload: Payload }) {

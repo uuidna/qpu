@@ -34,6 +34,11 @@ interface Index {
 // CORE ENGINE
 // ============================================================================
 
+/**
+ * The UUID registry: register resources by UUID and index them by domain, resource and type; deterministic() gives content UUIDs (qpuShapeUuidOf).
+ * @wing receipts
+ * @kind class
+ */
 export class UUID {
   private index: Index = {
     uuid: new Map(),
@@ -176,12 +181,22 @@ export class UUID {
 // GLOBAL INSTANCE
 // ============================================================================
 
+/**
+ * The process-wide UUID registry.
+ * @wing receipts
+ * @kind function
+ */
 export const uuid = new UUID()
 
 // ============================================================================
 // HELPER FUNCTIONS: High-level API
 // ============================================================================
 
+/**
+ * Register a resource under a UUID with its type, domain and metadata.
+ * @wing receipts
+ * @kind function
+ */
 export function register(
   id: string,
   type: ResourceType,
@@ -192,38 +207,83 @@ export function register(
   return uuid.register(id, type, domain, resource, meta)
 }
 
+/**
+ * The registry entry for a UUID.
+ * @wing receipts
+ * @kind function
+ */
 export function get(id: string): Entry | undefined {
   return uuid.byUUID(id)
 }
 
+/**
+ * The registry entry for a domain and resource.
+ * @wing receipts
+ * @kind function
+ */
 export function find(domain: string, resource: string): Entry | undefined {
   return uuid.byResource(domain, resource)
 }
 
+/**
+ * A UUID for a domain and resource: content-derived, or random when asked.
+ * @wing receipts
+ * @kind function
+ */
 export function gen(domain: string, resource: string, random?: boolean): string {
   return random ? uuid.random() : uuid.deterministic(domain, resource)
 }
 
+/**
+ * Whether a string has RFC 9562 UUID shape.
+ * @wing receipts
+ * @kind function
+ */
 export function verify(id: string): boolean {
   return uuid.has(id) && uuid.isVerified(id)
 }
 
+/**
+ * Whether a UUID is registered in a domain.
+ * @wing receipts
+ * @kind function
+ */
 export function inDomain(id: string, domain: string): boolean {
   return uuid.isInDomain(id, domain)
 }
 
+/**
+ * Whether a UUID is registered with a type.
+ * @wing receipts
+ * @kind function
+ */
 export function ofType(id: string, type: ResourceType): boolean {
   return uuid.isType(id, type)
 }
 
+/**
+ * Every UUID registered in a domain.
+ * @wing receipts
+ * @kind function
+ */
 export function allInDomain(domain: string): string[] {
   return uuid.byDomain(domain)
 }
 
+/**
+ * Every UUID registered with a type.
+ * @wing receipts
+ * @kind function
+ */
 export function allOfType(type: ResourceType): string[] {
   return uuid.byType(type)
 }
 
+/**
+ * Registry counts: total, domains, per type, verified.
+ * @wing receipts
+ * @kind function
+ */
 export function summary() {
   return uuid.stats()
 }

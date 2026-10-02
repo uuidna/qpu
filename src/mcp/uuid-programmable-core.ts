@@ -2,7 +2,7 @@
 import { Operation, Result } from './types.js'
 import { uuid as registry } from '../core/uuid.js'
 import { uuidBridge } from '../core/uuid-bridge.js'
-import { qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuUuidReceiptOf, qpuProveOf, qpuProveHolds } from '../quantum/processing/unit/index.js'
 
 interface DeploymentGateStatus {
   ok: boolean
@@ -12,6 +12,11 @@ interface DeploymentGateStatus {
   timestamp: string
 }
 
+/**
+ * Operations and workflows addressed by content UUID: executeByUUID, executeProgram (a list of UUIDs, each receipt the next referrer), runDeploymentGate (every operation resolves and qpu_prove holds) and release checks that read npm, GitHub and Zenodo.
+ * @wing receipts
+ * @kind class
+ */
 export class ConsolidatedMCP {
   private static instance: ConsolidatedMCP
 
@@ -47,16 +52,20 @@ export class ConsolidatedMCP {
   /**
    * Run deployment gate checks
    */
-  async runDeploymentGate(): Promise<DeploymentGateStatus> {
-    const operationCount = 61
-    const categoryCount = 10
-    const allVerified = true
-
+  async runDeploymentGate(): Promise<DeploymentGateStatus & { proved: boolean; unresolved: string[] }> {
+    // counted, not declared: every registered operation and workflow, each resolved by its UUID, and the unit's proof
+    const verified = await this.verifyAllOperations()
+    const unresolved = [...verified].filter(([, ok]) => !ok).map(([uuid]) => uuid)
+    const categoryCount = new Set([...uuidBridge.listAll().map((e) => e.domain), ...this.getAllOperations().map((o) => o.domain)]).size
+    const proved = qpuProveHolds(qpuProveOf())
+    const allVerified = unresolved.length === 0
     return {
-      ok: operationCount >= 58 && categoryCount >= 7 && allVerified,
-      operationCount,
+      ok: verified.size > 0 && allVerified && proved,
+      operationCount: verified.size,
       categoryCount,
       allVerified,
+      proved,
+      unresolved,
       timestamp: new Date().toISOString()
     }
   }
@@ -86,12 +95,6 @@ export class ConsolidatedMCP {
    */
   getAllOperations(): Array<any> {
     return this.operations ??= ([
-      { id: 'health-predictor', domain: 'health' },
-      { id: 'treatment-optimizer', domain: 'health' },
-      { id: 'longevity-optimization', domain: 'health' },
-      { id: 'climate-forecast', domain: 'climate' },
-      { id: 'biodiversity-recovery', domain: 'climate' },
-      { id: 'waste-recycling', domain: 'resources' },
       // Workflow operations for release management
       { id: 'cicd-pipeline', domain: 'operations' },
       { id: 'npm-publish', domain: 'operations' },
@@ -122,58 +125,49 @@ export class ConsolidatedMCP {
     return workflow(context)
   }
 
-  private async executeCicdPipeline(context: any): Promise<any> {
-    return {
-      success: true,
-      pipeline: 'complete-ci-cd',
-      steps: ['build', 'test', 'gate', 'deploy', 'publish'],
-      status: 'ready'
+  // THE RELEASE WORKFLOWS READ THE WORLD, they do not narrate it: each asks the registry, GitHub or Zenodo whether
+  // the version is there, and says so. Publishing happens in publish.yml on a v1.<minor>.<digit> tag.
+  private async readJson(url: string): Promise<any> {
+    try {
+      const r = await fetch(url, { headers: { accept: 'application/json', 'user-agent': '@uuidna/qpu' }, signal: AbortSignal.timeout(15000) })
+      return r.ok ? await r.json() : { status: r.status }
+    } catch (e) {
+      return { unreachable: e instanceof Error ? e.message : String(e) }
     }
+  }
+  private versionOf(context: any): string {
+    return String(context?.version ?? '').replace(/^v/, '')
+  }
+
+  private async executeCicdPipeline(context: any): Promise<any> {
+    const gate = await this.runDeploymentGate()
+    return { success: gate.ok, pipeline: 'gate', gate }
   }
 
   private async executeNpmPublish(context: any): Promise<any> {
-    const version = context.version || '0.2.2'
-    return {
-      success: true,
-      package: '@uuidna/qpu',
-      version,
-      published: true,
-      registry: 'https://registry.npmjs.org'
-    }
+    const version = this.versionOf(context)
+    const doc = await this.readJson('https://registry.npmjs.org/@uuidna%2fqpu')
+    const published = Boolean(doc?.versions?.[version])
+    return { success: published, package: '@uuidna/qpu', version, published, latest: doc?.['dist-tags']?.latest ?? null, how: published ? 'on the registry' : 'publish.yml on tag v' + version }
   }
 
   private async executeGithubRelease(context: any): Promise<any> {
-    const tag = context.tag || 'v0.2.2'
-    return {
-      success: true,
-      tag,
-      released: true,
-      url: `https://github.com/uuidna/qpu/releases/tag/${tag}`
-    }
+    const tag = context?.tag ?? `v${this.versionOf(context)}`
+    const doc = await this.readJson(`https://api.github.com/repos/uuidna/qpu/releases/tags/${tag}`)
+    const released = typeof doc?.tag_name === 'string'
+    return { success: released, tag, released, url: released ? doc.html_url : null }
   }
 
   private async executeZenodoDoi(context: any): Promise<any> {
-    const version = context.version || '0.2.2'
-    return {
-      success: true,
-      version,
-      doi: `10.5281/zenodo.uuidna-qpu.${version.replace('.', '')}`,
-      registered: true
-    }
+    const version = this.versionOf(context)
+    const doc = await this.readJson('https://zenodo.org/api/records?q=conceptrecid:22700098&all_versions=1&size=25')
+    const hit = (doc?.hits?.hits ?? []).find((h: any) => String(h?.metadata?.version ?? '').replace(/^v/, '') === version)
+    return { success: Boolean(hit), version, registered: Boolean(hit), doi: hit?.doi ?? null }
   }
 
   private async executeCompleteRelease(context: any): Promise<any> {
-    const version = context.version || '0.2.2'
-    return {
-      success: true,
-      version,
-      phases: [
-        { name: 'npm-publish', status: 'completed' },
-        { name: 'github-release', status: 'completed' },
-        { name: 'zenodo-register', status: 'completed' }
-      ],
-      releaseComplete: true
-    }
+    const phases = [await this.executeNpmPublish(context), await this.executeGithubRelease(context), await this.executeZenodoDoi(context)]
+    return { success: phases.every((p) => p.success), version: this.versionOf(context), phases, releaseComplete: phases.every((p) => p.success) }
   }
 
   /**
@@ -268,6 +262,11 @@ export interface ConsolidatedMCPOperations {
 }
 
 // Export singleton
+/**
+ * The ConsolidatedMCP singleton.
+ * @wing receipts
+ * @kind function
+ */
 export const consolidatedMCP = ConsolidatedMCP.getInstance()
 
 export default ConsolidatedMCP

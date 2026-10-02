@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API fusion — @uuidna/qpu</title>
+<meta name="description" content="Every API in a registry crossed on field UUIDs into compositions, formulas and a graph state. 15 capabilities; 2 of 8 evidence predicates hold.">
+<meta property="og:title" content="API fusion — @uuidna/qpu">
+<meta property="og:description" content="Every API in a registry crossed on field UUIDs into compositions, formulas and a graph state. 15 capabilities; 2 of 8 evidence predicates hold.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://github.com/uuidna/qpu/blob/main/docs/fusion.md">
+<meta property="og:image" content="https://opengraph.githubassets.com/qpu/uuidna/qpu">
+<meta property="og:site_name" content="@uuidna/qpu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="API fusion">
+<meta name="twitter:description" content="Every API in a registry crossed on field UUIDs into compositions, formulas and a graph state. 15 capabilities; 2 of 8 evidence predicates hold.">
+<style>body{font:15px/1.55 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#1a1a1a;background:#fff}table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:13px}th,td{border:1px solid #ddd;padding:.35rem .5rem;text-align:left;vertical-align:top}th{background:#f6f6f6}code{font:12px ui-monospace,monospace;background:#f3f3f3;padding:0 .2rem}@media(prefers-color-scheme:dark){body{background:#111;color:#e8e8e8}th{background:#1d1d1d}td,th{border-color:#333}code{background:#222}a{color:#8ab4ff}}</style>
+</head><body>
+<h1>API fusion</h1>
+<p>Every API in a registry crossed on field UUIDs into compositions, formulas and a graph state.</p>
+<table>
+<tr><th></th><th></th></tr>
+<tr><td>Capabilities</td><td>15</td></tr>
+<tr><td>With an evidence predicate</td><td>8</td></tr>
+<tr><td>Predicates that hold now</td><td>2</td></tr>
+<tr><td>Live (need the network; checked by the live doors)</td><td>3</td></tr>
+</table>
+<table>
+<tr><th>Capability</th><th>Kind</th><th>What it does</th><th>Evidence</th><th>Status</th></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/mcp/cross-domain-formulas.ts#L30"><code>crossFormulaOf</code></a></td><td>builder</td><td>Seal a cross formula: content UUID of {src, dst, formula}, holds (inputs in domain, value finite) and a quantum receipt in the cross stream.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/mcp/cross-domain-paths.ts#L25"><code>domainPathOf</code></a></td><td>builder</td><td>Seal a multi-hop path: content UUID of {hops, formula} and a quantum receipt in the path stream.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10368"><code>qpuApisLiveOf</code></a></td><td>builder</td><td>The registry, the schemas and the methods, discovered live and bounded to <code>faces</code> schemas from an offset.</td><td><code>qpuApisLiveHolds</code></td><td>live (network)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10223"><code>qpuComposeLiveOf</code></a></td><td>builder</td><td>DISCOVERED AND CROSSED IN ONE CALL, so a door can carry the finding rather than the ingredients.</td><td><code>qpuComposeLiveHolds</code></td><td>live (network)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10198"><code>qpuComposeOf</code></a></td><td>builder</td><td>Cross API methods into compositions (entangled, application, undecided) joined on field shape UUIDs.</td><td><code>qpuComposeHolds</code></td><td>checked on each call (needs inputs)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10578"><code>qpuCrossOf</code></a></td><td>builder</td><td>The swap criterion over rows: a pair is entangled when each gives what the other takes, application when one way, undecided otherwise.</td><td><code>qpuCrossHolds</code></td><td>checked on each call (needs inputs)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10102"><code>qpuFuseOf</code></a></td><td>builder</td><td>Fuse API methods by an inverted field-UUID index: an edge is a giver and a taker of one field; edges carry direction, counts and the rarest field per direction; hubs ranked by giver x taker.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10150"><code>qpuGraphStateOf</code></a></td><td>builder</td><td>THE FUSED GRAPH IS A GRAPH STATE.</td><td><code>qpuGraphStateHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10308"><code>qpuProbeableOf</code></a></td><td>builder</td><td>Probeable when nothing must be supplied and nothing is written: no path template, no required parameter.</td><td><code>qpuProbeableHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10321"><code>qpuProbeLiveOf</code></a></td><td>builder</td><td>Probe discovered APIs live with argument-free GET and POST calls and report which answer.</td><td><code>qpuProbeLiveHolds</code></td><td>live (network)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L10041"><code>qpuSchemaMethodsOf</code></a></td><td>builder</td><td>An OpenAPI document read as methods: what each one takes, and what it gives back.</td><td><code>qpuSchemaMethodsHolds</code></td><td>checked on each call (needs inputs)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/mcp/cross-domain-formulas.ts#L160"><code>crossDomainFormulas</code></a></td><td>function</td><td>A CrossDomainFormulas instance.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/mcp/cross-domain-paths.ts#L133"><code>crossDomainPaths</code></a></td><td>function</td><td>A CrossDomainPaths instance.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/mcp/cross-domain-formulas.ts#L42"><code>CrossDomainFormulas</code></a></td><td>class</td><td>The ten named cross-domain bridges (each a CrossFormula) and allBridges(), their transforms over plain inputs.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/mcp/cross-domain-paths.ts#L35"><code>CrossDomainPaths</code></a></td><td>class</td><td>The seven named multi-hop paths across domains, each with its hops, formula and transform.</td><td>—</td><td>—</td></tr>
+</table>
+<p>Generated from the inline docs by <code>npm run docs</code>. Index: <a href="README.html">docs</a>.</p>
+</body></html>

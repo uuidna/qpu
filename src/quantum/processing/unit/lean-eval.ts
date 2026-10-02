@@ -113,7 +113,11 @@ BUILTIN.gcdOf = (a, b) => BUILTIN.gcdAux!(a + b, a, b)
 type Def = { params: string[]; body: Ast }
 export type LeanModel = { defs: Map<string, Def>; constant: (name: string) => bigint; arity: (f: string) => number }
 
-/** The defs of the Lean source: `def x : Nat := e` and `def f (p q : Nat) : Nat := e`. */
+/**
+ * The defs of the Lean source: `def x : Nat := e` and `def f (p q : Nat) : Nat := e`.
+ * @wing proof
+ * @kind builder
+ */
 export const leanModelOf = (source: string): LeanModel => {
   const raw = new Map<string, { params: string[]; text: string }>()
   for (const m of source.matchAll(/^def (\w+)((?:\s*\([^)]*: Nat\))*)\s*:\s*Nat\s*:=\s*(.+)$/gm)) {
@@ -231,7 +235,11 @@ const assignmentsOf = (names: string[], hi: bigint): Map<string, bigint>[] => {
 
 export type LeanRecomputed = { holds: boolean; over?: string; formula: string }
 
-/** Decide one theorem statement exactly, over the stated range when it binds variables, and typeset it. */
+/**
+ * Decide one theorem statement exactly, over the stated range when it binds variables, and typeset it.
+ * @wing proof
+ * @kind builder
+ */
 export const leanRecomputeOf = (theorem: string, m: LeanModel): LeanRecomputed => {
   const s = statementOf(theorem, m)
   const bound = [...s.vars, ...s.inner.flat()]
@@ -269,7 +277,11 @@ const latexOf = (s: Statement): string => {
   return `${head}${hyp}${conj}`.trim()
 }
 
-/** Every theorem of the source as [name, text]: the `theorem` line and its continuation lines, whitespace folded. */
+/**
+ * Every theorem of the source as [name, text]: the `theorem` line and its continuation lines, whitespace folded.
+ * @wing proof
+ * @kind builder
+ */
 export const leanTheoremBlocksOf = (source: string): Array<[string, string]> => {
   const lines = source.split('\n')
   const out: Array<[string, string]> = []

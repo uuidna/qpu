@@ -28,6 +28,11 @@ export interface DocStore {
   keys(prefix: string): Promise<string[]>
 }
 
+/**
+ * An in-memory DocStore (JSON-serialised values), for tests and Node.
+ * @wing storage
+ * @kind store
+ */
 export const memoryDocStore = (): DocStore => {
   const m = new Map<string, string>()
   return {
@@ -90,6 +95,11 @@ const unsetPath = (doc: Record<string, unknown>, path: string): void => {
 /** MongoDB's comparison order across types: null/undefined < numbers < strings < objects < arrays < booleans. */
 const rank = (v: unknown): number =>
   v === null || v === undefined ? 1 : typeof v === 'number' ? 2 : typeof v === 'string' ? 3 : Array.isArray(v) ? 5 : isObj(v) ? 4 : typeof v === 'boolean' ? 6 : 7
+/**
+ * MongoDB comparison order across types: null/undefined < numbers < strings < objects < arrays < booleans; arrays element-wise.
+ * @wing storage
+ * @kind function
+ */
 export const compareValues = (a: unknown, b: unknown): number => {
   const ra = rank(a)
   const rb = rank(b)
@@ -143,6 +153,11 @@ const valueMatch = (values: unknown[], cond: unknown): boolean => {
     return Object.entries(cond).every(([op, arg]) => opMatch(values, op, arg, cond))
   return opMatch(values, '$eq', cond, {})
 }
+/**
+ * Whether a document matches a MongoDB filter (operators, $and/$or/$nor, dotted paths through arrays).
+ * @wing storage
+ * @kind function
+ */
 export const matches = (doc: Record<string, unknown>, filter: Filter = {}): boolean =>
   Object.entries(filter).every(([key, cond]) => {
     if (key === '$and') return (cond as Filter[]).every((f) => matches(doc, f))
@@ -154,6 +169,11 @@ export const matches = (doc: Record<string, unknown>, filter: Filter = {}): bool
 
 // ---- updates -----------------------------------------------------------------------------------------------------
 const clone = <T>(v: T): T => (v === undefined ? v : JSON.parse(JSON.stringify(v)))
+/**
+ * Apply a MongoDB update document (operators or a replacement) to a copy of a document; inserting enables $setOnInsert.
+ * @wing storage
+ * @kind function
+ */
 export const applyUpdate = (doc: Doc, update: Update, inserting = false): Doc => {
   const ops = Object.keys(update)
   if (ops.length > 0 && ops.every((k) => !k.startsWith('$'))) return { ...clone(update), _id: doc._id } as Doc
@@ -190,6 +210,11 @@ export const applyUpdate = (doc: Doc, update: Update, inserting = false): Doc =>
 }
 
 // ---- projection, sort --------------------------------------------------------------------------------------------
+/**
+ * Apply an include or exclude projection to a document.
+ * @wing storage
+ * @kind function
+ */
 export const project = (doc: Doc, projection?: Record<string, 0 | 1 | boolean>): Record<string, unknown> => {
   if (!projection || Object.keys(projection).length === 0) return doc
   const include = Object.entries(projection).filter(([k, v]) => k !== '_id' && v).map(([k]) => k)
@@ -216,6 +241,11 @@ const sortDocs = (docs: Doc[], sort?: SortSpec): Doc[] =>
 // ---- collections -------------------------------------------------------------------------------------------------
 export type DocWriteHook = (event: { op: 'insert' | 'update' | 'delete'; collection: string; doc: Doc }) => void
 
+/**
+ * One collection over a DocStore: insert, find with sort/skip/limit/projection, count, distinct, update (with upsert), replace and delete.
+ * @wing storage
+ * @kind class
+ */
 export class DocCollection {
   constructor(
     private readonly store: DocStore,
@@ -306,7 +336,11 @@ export class DocCollection {
   }
 }
 
-/** A database: named collections over one store, one id function and one write hook. */
+/**
+ * A database: named collections over one store, one id function and one write hook.
+ * @wing storage
+ * @kind builder
+ */
 export const docDbOf = (store: DocStore, name: string, idOf: (collection: string, doc: Record<string, unknown>) => DocId, onWrite?: DocWriteHook) => {
   const cache = new Map<string, DocCollection>()
   return {
@@ -321,7 +355,11 @@ export type D1Like = {
   prepare(sql: string): { bind(...values: unknown[]): { first<T = Record<string, unknown>>(): Promise<T | null>; run(): Promise<unknown>; all<T = Record<string, unknown>>(): Promise<{ results: T[] }> } }
 }
 
-/** A document store on a D1 binding: one key/value table, prefix listing by range, so it never scans past its prefix. */
+/**
+ * A document store on a D1 binding: one key/value table, prefix listing by range, so it never scans past its prefix.
+ * @wing storage
+ * @kind store
+ */
 export const d1DocStore = (d1: D1Like, table = 'qpu_docs'): DocStore => {
   let ready: Promise<unknown> | undefined
   const init = () => (ready ??= d1.prepare(`CREATE TABLE IF NOT EXISTS ${table} (k TEXT PRIMARY KEY, v TEXT NOT NULL)`).bind().run())

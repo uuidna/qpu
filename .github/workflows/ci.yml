@@ -69,8 +69,10 @@ jobs:
       - name: Kernel receipt hit
         if: steps.kernel.outputs.cache-hit == 'true'
         run: echo "::notice::kernel receipt hit — index.lean and lean-toolchain are byte-identical to a build the kernel already checked ($(cat .lean-ok | tr '\n' ' '))"
-      - name: Gate
-        run: npm run build && node --input-type=module -e "import('./dist/mcp/uuid-programmable-core.js').then(async m => { const r = await m.consolidatedMCP.runDeploymentGate(); console.log('Gate:', r.ok ? 'PASS' : 'FAIL', '(' + r.operationCount + ' ops, ' + r.categoryCount + ' cats)'); process.exit(r.ok ? 0 : 1); });"
+      - name: Gate (every operation resolves by UUID and qpu_prove holds)
+        run: |
+          npm run build
+          node --input-type=module -e "import('./dist/mcp/uuid-programmable-core.js').then(async (m) => { const r = await m.consolidatedMCP.runDeploymentGate(); console.log(JSON.stringify(r)); process.exit(r.ok ? 0 : 1) })"
 
       - name: Deploy to Cloudflare (only when called with deploy and the token exists)
         id: deploy

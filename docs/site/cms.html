@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payload & Cloudflare — @uuidna/qpu</title>
+<meta name="description" content="Payload CMS on Workers in every combination, and the Payload readings the unit serves. 15 capabilities; 3 of 4 evidence predicates hold.">
+<meta property="og:title" content="Payload & Cloudflare — @uuidna/qpu">
+<meta property="og:description" content="Payload CMS on Workers in every combination, and the Payload readings the unit serves. 15 capabilities; 3 of 4 evidence predicates hold.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://github.com/uuidna/qpu/blob/main/docs/cms.md">
+<meta property="og:image" content="https://opengraph.githubassets.com/qpu/uuidna/qpu">
+<meta property="og:site_name" content="@uuidna/qpu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Payload & Cloudflare">
+<meta name="twitter:description" content="Payload CMS on Workers in every combination, and the Payload readings the unit serves. 15 capabilities; 3 of 4 evidence predicates hold.">
+<style>body{font:15px/1.55 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#1a1a1a;background:#fff}table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:13px}th,td{border:1px solid #ddd;padding:.35rem .5rem;text-align:left;vertical-align:top}th{background:#f6f6f6}code{font:12px ui-monospace,monospace;background:#f3f3f3;padding:0 .2rem}@media(prefers-color-scheme:dark){body{background:#111;color:#e8e8e8}th{background:#1d1d1d}td,th{border-color:#333}code{background:#222}a{color:#8ab4ff}}</style>
+</head><body>
+<h1>Payload &amp; Cloudflare</h1>
+<p>Payload CMS on Workers in every combination, and the Payload readings the unit serves.</p>
+<table>
+<tr><th></th><th></th></tr>
+<tr><td>Capabilities</td><td>15</td></tr>
+<tr><td>With an evidence predicate</td><td>4</td></tr>
+<tr><td>Predicates that hold now</td><td>3</td></tr>
+<tr><td>Live (need the network; checked by the live doors)</td><td>0</td></tr>
+</table>
+<table>
+<tr><th>Capability</th><th>Kind</th><th>What it does</th><th>Evidence</th><th>Status</th></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L382"><code>cloudflareCombinationOf</code></a></td><td>builder</td><td>Parse a combination key (runtime/db/storage/email/plugins) back into a combination.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L375"><code>cloudflareKeyOf</code></a></td><td>builder</td><td>A combination's canonical key: the axes in order, plugins sorted — what its content UUID is taken over.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L528"><code>cloudflarePayloadOf</code></a></td><td>builder</td><td>Generate one combination: payload.config.ts, wrangler.jsonc and dependencies, optionally carrying an app's own collections (CloudflareApp).</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L14001"><code>qpuFusionOf</code></a></td><td>builder</td><td>Fusion of catalogues, hosts, schemas, Payload, install and hologram readings over the fused capacity.</td><td><code>qpuFusionHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L14058"><code>qpuIntelligenceOf</code></a></td><td>builder</td><td>The 'intelligence' reading: the fusion test over free online research.</td><td><code>qpuIntelligenceHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L13792"><code>qpuPayloadFindOf</code></a></td><td>builder</td><td>One Payload collection's find tool, sealed against writes.</td><td><code>qpuPayloadFindHolds</code></td><td>checked on each call (needs inputs)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L13747"><code>qpuPayloadMcpOf</code></a></td><td>builder</td><td>The Payload MCP the unit describes: collections, find-only tools, the database plugin and its write path.</td><td><code>qpuPayloadMcpHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L547"><code>cloudflareCombinations</code></a></td><td>function</td><td>Every combination of the axes: runtimes × databases × storage × email × every subset of the plugins.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L561"><code>payloadTemplates</code></a></td><td>function</td><td>A PayloadTemplates instance.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L44"><code>PayloadTemplates</code></a></td><td>class</td><td>Deployment templates: four hardware modes (browser, standalone, docker, kubernetes) and the Cloudflare family (cloudflarePayload) for Next.js + Payload on Workers.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L341"><code>CLOUDFLARE_DATABASES</code></a></td><td>constant</td><td>qpu-raid and qpu-d1 are the QPU document database (MongoDB semantics) on native bindings: a MongoDB request on Workers is one of these.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L353"><code>CLOUDFLARE_EMAIL</code></a></td><td>constant</td><td>Email choices: Resend, or none.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L359"><code>CLOUDFLARE_PLUGINS</code></a></td><td>constant</td><td>The Payload plugins a combination can include.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L335"><code>CLOUDFLARE_RUNTIMES</code></a></td><td>constant</td><td>Next.js runtimes on Workers: vinext (Cloudflare's recommended path) and the OpenNext adapter.</td><td>—</td><td>—</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/deployment/payload-templates.ts#L347"><code>CLOUDFLARE_STORAGE</code></a></td><td>constant</td><td>Upload storage choices: R2, S3, or none.</td><td>—</td><td>—</td></tr>
+</table>
+<p>Generated from the inline docs by <code>npm run docs</code>. Index: <a href="README.html">docs</a>.</p>
+</body></html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantum computation — @uuidna/qpu</title>
+<meta name="description" content="Exact integer-amplitude state vectors, the running circuit, Shor and the end-to-end proof. 17 capabilities; 14 of 17 evidence predicates hold.">
+<meta property="og:title" content="Quantum computation — @uuidna/qpu">
+<meta property="og:description" content="Exact integer-amplitude state vectors, the running circuit, Shor and the end-to-end proof. 17 capabilities; 14 of 17 evidence predicates hold.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://github.com/uuidna/qpu/blob/main/docs/quantum.md">
+<meta property="og:image" content="https://opengraph.githubassets.com/qpu/uuidna/qpu">
+<meta property="og:site_name" content="@uuidna/qpu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quantum computation">
+<meta name="twitter:description" content="Exact integer-amplitude state vectors, the running circuit, Shor and the end-to-end proof. 17 capabilities; 14 of 17 evidence predicates hold.">
+<style>body{font:15px/1.55 system-ui,sans-serif;max-width:1100px;margin:2rem auto;padding:0 1rem;color:#1a1a1a;background:#fff}table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:13px}th,td{border:1px solid #ddd;padding:.35rem .5rem;text-align:left;vertical-align:top}th{background:#f6f6f6}code{font:12px ui-monospace,monospace;background:#f3f3f3;padding:0 .2rem}@media(prefers-color-scheme:dark){body{background:#111;color:#e8e8e8}th{background:#1d1d1d}td,th{border-color:#333}code{background:#222}a{color:#8ab4ff}}</style>
+</head><body>
+<h1>Quantum computation</h1>
+<p>Exact integer-amplitude state vectors, the running circuit, Shor and the end-to-end proof.</p>
+<table>
+<tr><th></th><th></th></tr>
+<tr><td>Capabilities</td><td>17</td></tr>
+<tr><td>With an evidence predicate</td><td>17</td></tr>
+<tr><td>Predicates that hold now</td><td>14</td></tr>
+<tr><td>Live (need the network; checked by the live doors)</td><td>3</td></tr>
+</table>
+<table>
+<tr><th>Capability</th><th>Kind</th><th>What it does</th><th>Evidence</th><th>Status</th></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L2797"><code>qpuCircuitOf</code></a></td><td>builder</td><td>The running 3-qubit circuit on exact integer amplitudes: split, Bell, GHZ, interference, no-clone, teleport, kickback, Deutsch, superdense coding, monogamy; each with its Born weights.</td><td><code>qpuCircuitHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L2031"><code>qpuComputerOf</code></a></td><td>builder</td><td>The exact state-vector computer: universal gate basis, reset, SWAP, Toffoli, coupling, compile, collapse, shots, feed-forward, bit-flip correction and readout, each step with its check.</td><td><code>qpuComputerHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L1776"><code>qpuDesignOf</code></a></td><td>builder</td><td>Fourteen named design nodes, one per face, each with a synapse fold; vacant must be zero.</td><td><code>qpuDesignHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L5851"><code>qpuEvidenceOf</code></a></td><td>builder</td><td>Provenance and verification evidence: provider and device (exact-amplitudes), noise, volume, cross-checks, scaling and fault readings.</td><td><code>qpuEvidenceHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L8186"><code>qpuIdeasOf</code></a></td><td>builder</td><td>The seven ideas the sandbox teams compete on, each as a sealed op tree with its left and right sides.</td><td><code>qpuIdeasHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L12705"><code>qpuImproveLiveOf</code></a></td><td>builder</td><td>qpu_improve with live CERN occupancy.</td><td><code>qpuImproveLiveHolds</code></td><td>live (network)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L9043"><code>qpuImproveOf</code></a></td><td>builder</td><td>Improve by doubling: before and after readings of quality, speed, security and throughoutput, with the unlocked quantum door.</td><td><code>qpuImproveHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L11543"><code>qpuIntegrityOf</code></a></td><td>builder</td><td>Three integrity tests (quantum, cube, around) plus the CERN records the cern theorem quotes.</td><td><code>qpuIntegrityHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L1825"><code>qpuNeuroOf</code></a></td><td>builder</td><td>A fixed integer network: depth n, width faces, weights from the lattice, one exact forward pass.</td><td><code>qpuNeuroHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L12781"><code>qpuProveLiveOf</code></a></td><td>builder</td><td>qpu_prove after the live sequence.</td><td><code>qpuProveLiveHolds</code></td><td>live (network)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L11291"><code>qpuProveOf</code></a></td><td>builder</td><td>Prove the unit end to end: every Lean row, the Shor run, the circuit steps, the source fold and the evidence block; holds is their conjunction.</td><td><code>qpuProveHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L5714"><code>qpuPurposeOf</code></a></td><td>builder</td><td>What the unit is for, read from its own state: exact-amplitude platform, n qubits, and its cybersecurity, optimisation, science and sensing readings.</td><td><code>qpuPurposeHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L4798"><code>qpuQuantumOf</code></a></td><td>builder</td><td>The quantum document: circuit, lattice, Shor run, sequence, purpose, evidence, network and design readings in one JSON-LD document.</td><td><code>qpuQuantumHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L5342"><code>qpuReadingOf</code></a></td><td>builder</td><td>A compact reading of the quantum document (circuit, lattice, Shor, sequence, purpose, evidence) for agents.</td><td><code>qpuReadingHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L12808"><code>qpuSequenceLiveOf</code></a></td><td>builder</td><td>The live sequence: train, improve, compete and prove, each live.</td><td><code>qpuSequenceLiveHolds</code></td><td>live (network)</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L5495"><code>qpuSequenceOf</code></a></td><td>builder</td><td>The learning sequence: rungs, API rows and climb over storage, network and server tools.</td><td><code>qpuSequenceHolds</code></td><td>holds</td></tr>
+<tr><td><a href="https://github.com/uuidna/qpu/blob/main/src/quantum/processing/unit/index.ts#L8977"><code>qpuVmOf</code></a></td><td>builder</td><td>The VM reading: isolate rungs and replicas doubling to next, agents per face.</td><td><code>qpuVmHolds</code></td><td>holds</td></tr>
+</table>
+<p>Generated from the inline docs by <code>npm run docs</code>. Index: <a href="README.html">docs</a>.</p>
+</body></html>

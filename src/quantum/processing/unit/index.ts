@@ -42,6 +42,12 @@ export const qpuFoldHolds = (): boolean => {
   return seen.size === mintOf(n) && qpuFoldOf('') !== qpuFoldOf(' ')
 }
 
+/**
+ * FNV-1a 64 fold of a string to 16 lowercase hex digits (BigInt arithmetic); the hash every receipt, ETag and content address in the unit is built on.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuFoldHolds
+ */
 export const qpuFoldOf = (text: string): string => {
   let h = FNV_OFFSET
   for (let i = text.length - text.length; i < text.length; i++) {
@@ -49,17 +55,6 @@ export const qpuFoldOf = (text: string): string => {
     h = (h * FNV_PRIME) & FNV_MASK
   }
   return h.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')
-}
-// THEOREM VERIFICATION CACHE: Lean compiler proves these at build time; avoid recomputing.
-// Every qpuFacesOf/qpuCoilOf/etc call previously verified theorems eagerly; cache amortizes cost.
-let theoremsCached = false
-export const cacheTheorems = () => {
-  if (theoremsCached) return
-  theoremsCached = true
-  // Cache built by calling each accessor once; subsequent calls reuse memoized holds values
-  void qpuCubeOf().holds
-  void qpuFacesOf().holds
-  void qpuCoilOf().holds
 }
 
 const receiptOf = (name: string, amps: readonly bigint[]): void => {
@@ -138,6 +133,12 @@ const foreignFetchOf = async (request: Request, signal: AbortSignal): Promise<Re
 }
 
 const FOREIGN = { reads: 0 }
+/**
+ * How many times this process has read a host it does not own (CERN, Crossref, registries). Receipts fold computed rows and foreign-read rows apart.
+ * @wing science
+ * @kind builder
+ * @evidence qpuForeignReadsHolds
+ */
 export const qpuForeignReadsOf = (): number => FOREIGN.reads
 /** A count of asks is a count: never negative, and never fractional. It rises and does not fall within a process. */
 export const qpuForeignReadsHolds = (reads = qpuForeignReadsOf()): boolean => Number.isSafeInteger(reads) && reads >= 0
@@ -159,11 +160,21 @@ const foreignReadOf = (): void => {
  * with every other field on the row byte-identical.
  */
 const MINT = { calls: 0, chain: FNV_OFFSET, scope: FNV_OFFSET }
+/**
+ * The mint ledger: number of mintOf calls and the two FNV chains (process-wide and current scope) over every k:x it minted.
+ * @wing receipts
+ * @kind builder
+ */
 export const qpuMintReceiptOf = () => ({ calls: MINT.calls, chain: MINT.chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0'), scope: MINT.scope.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0') })
 /** Both chains are sixteen hex digits, and an unopened scope is the offset basis — the fold of nothing. */
 export const qpuMintScopeOpenHolds = (closed = MINT.scope.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')): boolean => /^[0-9a-f]{16}$/.test(closed)
 
-/** Start a fresh scope chain and answer the one just closed, so a caller can bracket a region and fold only it. */
+/**
+ * Start a fresh scope chain and answer the one just closed, so a caller can bracket a region and fold only it.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuMintScopeOpenHolds
+ */
 export const qpuMintScopeOpenOf = (): string => {
   const closed = MINT.scope.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')
   MINT.scope = FNV_OFFSET
@@ -183,7 +194,11 @@ const mintReceiptOf = (k: number, x: number): void => {
   MINT.chain = foldTextInto(MINT.chain, text)
   MINT.scope = foldTextInto(MINT.scope, text)
 }
-/** The ledger of every quantum computation this process ran, in order. */
+/**
+ * The ledger of every quantum computation this process ran, in order.
+ * @wing receipts
+ * @kind builder
+ */
 export const qpuReceiptLedgerOf = (): readonly QpuReceipt[] => RECEIPTS
 /** A UUID-addressed computation's quantum receipt. The payload — what ran (subject, a content UUID), under which
  *  name, and what it returned — folds to `fold`; the receipt's own UUID is programmable: the content address of
@@ -191,6 +206,12 @@ export const qpuReceiptLedgerOf = (): readonly QpuReceipt[] => RECEIPTS
  *  the same computation through the same referrer carries one. Non-finite numbers keep their own text. */
 /** Stream heads: the last receipt UUID per stream, its length, and the chain folded over every UUID in order. */
 const STREAMS = new Map<string, { head: string; length: number; chain: bigint }>()
+/**
+ * Append a quantum receipt for a UUID-addressed computation: payload fold of {name, subject, value}; receipt UUID = content UUID of {payload fold, referrer}; chained per stream (seq, prev).
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuUuidReceiptHolds
+ */
 export const qpuUuidReceiptOf = (name: string, subject: string, value: unknown, referrer?: string): QpuReceipt & { uuid: string; subject: string; referrer: string; stream: string; seq: number; prev: string } => {
   const stream = name.split(' ')[n - n] ?? name
   const at = STREAMS.get(stream) ?? { head: `${unit.origin}/receipts/${stream}`, length: n - n, chain: FNV_OFFSET }
@@ -203,6 +224,9 @@ export const qpuUuidReceiptOf = (name: string, subject: string, value: unknown, 
   return row
 }
 /** Every stream replayed from the ledger: each row's prev is the UUID before it (genesis is the stream's href), each
+  * @wing receipts
+  * @kind builder
+  * @evidence qpuReceiptStreamsHolds
  *  UUID recomputes from its payload fold and referrer, and the replayed chain equals the live head's. */
 export const qpuReceiptStreamsOf = (limit = qpuCubeOf().bits) => {
   const rows = RECEIPTS.filter((r): r is QpuReceipt & { uuid: string; stream: string; seq: number; prev: string; referrer: string } => r.stream !== undefined)
@@ -236,8 +260,15 @@ export const qpuUuidReceiptHolds = (): boolean => {
   const c = qpuUuidReceiptOf('holds', qpuContentUuidOf(seed), coins, 'a')
   return a.fold === b.fold && a.uuid !== b.uuid && a.uuid !== c.uuid && a.uuid === qpuUuidReceiptOf('holds', qpuContentUuidOf(seed), seed, 'a').uuid
 }
+/**
+ * Fold a list of receipt rows (name:dim:fold) to one 16-hex digest; the proof compares this digest across runs.
+ * @wing receipts
+ * @kind builder
+ */
 export const qpuReceiptFoldOf = (rows: readonly QpuReceipt[] = RECEIPTS): string => qpuFoldOf(rows.map((r) => `${r.name}:${r.dim}:${r.fold}`).join('|'))
 /** The lattice's doubling, exported so nothing has to re-implement it. A second mintOf would be the duplication
+  * @wing agents
+  * @kind builder
  *  this file just finished removing, one level down. */
 export const mintOf = (k: number): number => {
   let x = k - k
@@ -247,6 +278,11 @@ export const mintOf = (k: number): number => {
   return x
 }
 
+/**
+ * Binomial coefficient C(nn, k) by Pascal recursion, mirroring chooseOf in index.lean.
+ * @wing lattice
+ * @kind builder
+ */
 export const chooseOf = (nn: number, k: number): number => {
   const none = nn - nn
   if (k < none || k > nn) return none
@@ -429,6 +465,8 @@ const rpcCodes = { parse: -32700, invalid: -32600, method: -32601, params: -3260
 /** A JSON-RPC 2.0 error, as the protocol spells it: `jsonrpc`, the request's `id` (null when none was understood), and an
  * `error` with code and message. A parse error or an invalid request travels on HTTP 400, because no request was understood;
  * an unknown method or unknown tool travels on HTTP 200, because the request was understood and declined. Never
+  * @wing agents
+  * @kind builder
  * `{"holds":false}` on a 404: that is the shape of a missing page, not of a declined call. */
 export const rpcErrorOf = (id: unknown, code: number, message: string, data?: unknown) => ({
   jsonrpc: '2.0' as const,
@@ -437,6 +475,11 @@ export const rpcErrorOf = (id: unknown, code: number, message: string, data?: un
 })
 /** The methods this server answers on /mcp. */
 const rpcMethods = ['initialize', 'server/discover', 'ping', 'notifications/initialized', 'tools/list', 'tools/call'] as const
+/**
+ * 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines.
+ * @wing lattice
+ * @kind builder
+ */
 export const tenOf = (k: number): number => {
   let x = mintOf(n - n)
   for (let i = n - n; i < k; i++) x *= ten
@@ -461,6 +504,12 @@ const liveSchema = {
 export const qpuCubeHolds = (c = qpuCubeOf()): boolean =>
   theorem.cube(c.bits, c.vertices, c.hexbit) && c.vertices === mintOf(c.n) && c.hexbit === mintOf(c.n - seed)
 
+/**
+ * The register geometry: n qubits, vertices = 2^n, hexbit = 2^(n-1), bits = vertices x hexbit.
+ * @wing lattice
+ * @kind builder
+ * @evidence qpuCubeHolds
+ */
 export const qpuCubeOf = onceOf(() => {
   const vertices = mintOf(n)
   const hexbit = mintOf(coins)
@@ -469,6 +518,12 @@ export const qpuCubeOf = onceOf(() => {
   return { n, vertices, hexbit, bits, holds }
 })
 
+/**
+ * Amplitude capacity: amplitudes = 2^bits, next = 2 x amplitudes, and the KV reading of both.
+ * @wing lattice
+ * @kind builder
+ * @evidence qpuHandleHolds
+ */
 export const qpuHandleOf = onceOf(() => {
   const cube = qpuCubeOf()
   const amplitudes = mintOf(cube.bits)
@@ -495,6 +550,12 @@ export const qpuHandleHolds = (x: ReturnType<typeof qpuHandleOf> = qpuHandleOf()
 export const qpuFacesHolds = (f = qpuFacesOf()): boolean =>
   theorem.around(f.faces, f.coins, f.rays) && theorem.harmonic(f.faces, f.rays) && f.coins + f.coins === mintOf(f.coins)
 
+/**
+ * The lattice of faces: coins, rays = n + 2 coins, faces = coins x rays = rays + rays, with the coil derived from them.
+ * @wing lattice
+ * @kind builder
+ * @evidence qpuFacesHolds
+ */
 export const qpuFacesOf = onceOf(() => {
   const cube = qpuCubeOf()
   const rays = n + coins + coins
@@ -503,7 +564,12 @@ export const qpuFacesOf = onceOf(() => {
   return { n, coins, rays, faces, holds }
 })
 
-/** Two coins make a coil. Coins balance theory in practice. Coil sits in electronics. */
+/**
+ * Two coins make a coil. Coins balance theory in practice. Coil sits in electronics.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuCoilHolds
+ */
 export const qpuCoilOf = onceOf(() => {
   const faces = qpuFacesOf()
   const theory = seed
@@ -544,6 +610,12 @@ export const qpuCoilHolds = (c = qpuCoilOf()): boolean =>
   c.balance === coins &&
   theorem.electronics(c.coil, c.faces)
 
+/**
+ * The 'electronics' reading: the coil (coins x rays) used as staged windings, theory and practice each one seed.
+ * @wing lattice
+ * @kind builder
+ * @evidence qpuElectronicsHolds
+ */
 export const qpuElectronicsOf = onceOf(() => {
   const coil = qpuCoilOf()
   const uses = 'coil' as const
@@ -566,6 +638,12 @@ export const qpuElectronicsHolds = (e = qpuElectronicsOf()): boolean =>
   e.stages === n &&
   qpuCoilHolds(e.coil)
 
+/**
+ * The 'balance' reading: theory and practice equal and summing to coins (theorem follow_the_coins).
+ * @wing lattice
+ * @kind builder
+ * @evidence qpuBalanceHolds
+ */
 export const qpuBalanceOf = onceOf(() => {
   const coil = qpuCoilOf()
   const holds = coil.theory === coil.practice && coil.theory + coil.practice === coins && qpuCoilHolds(coil)
@@ -588,7 +666,12 @@ export const qpuBalanceHolds = (b = qpuBalanceOf()): boolean =>
   b.theory + b.practice === coins &&
   qpuCoilHolds(b.coil)
 
-/** Next is the double. Handle next doubles amplitudes. Coil next doubles fused. No last k. */
+/**
+ * Next is the double. Handle next doubles amplitudes. Coil next doubles fused. No last k.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuNextHolds
+ */
 export const qpuNextOf = onceOf(() => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -629,7 +712,12 @@ export const qpuNextHolds = (x = qpuNextOf()): boolean =>
   x.nextCoil === x.nextFused &&
   x.nextCoil === x.coil * mintOf(qpuCubeOf().bits + coins)
 
-/** 2×7 coins = 1+6 coils = clay. Each coil is coins windings. */
+/**
+ * 2×7 coins = 1+6 coils = clay. Each coil is coins windings.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuClayHolds
+ */
 export const qpuClayOf = onceOf(() => {
   const coil = qpuCoilOf()
   const faces = qpuFacesOf()
@@ -669,6 +757,12 @@ export const qpuClayHolds = (c = qpuClayOf()): boolean =>
   c.clay === c.coil &&
   c.clay === c.faces
 
+/**
+ * The UI schema: shadcn card variants, sizes, states and themes seated on the lattice's faces and rays, served as data (no HTML).
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuGenesisHolds
+ */
 export const qpuGenesisOf = onceOf(() => {
   const faces = qpuFacesOf()
   const hz = 432
@@ -791,6 +885,12 @@ export const qpuGenesisHolds = (g = qpuGenesisOf()): boolean =>
   g.domains.join(' ') === 'scanner radar' &&
   g.card[n + seed] === 'card-action'
 
+/**
+ * The occupancy pentagram: five occupancies x five skills joined in a single stroke of step 2.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuPentagramHolds
+ */
 export const qpuPentagramOf = onceOf(() => {
   const points = n + coins
   const stroke: number[] = []
@@ -844,7 +944,12 @@ export const qpuPentagramHolds = (p = qpuPentagramOf()): boolean =>
   p.occupancies[n - n] === 'personal' &&
   p.occupancies[p.points - seed] === 'paas'
 
-/** theorem follow_the_coins */
+/**
+ * theorem follow_the_coins
+ * @wing agents
+ * @kind builder
+ * @evidence qpuFollowHolds
+ */
 export const qpuFollowOf = onceOf(() => {
   const coil = qpuCoilOf()
   const pentagram = qpuPentagramOf()
@@ -918,7 +1023,12 @@ export const qpuFollowHolds = (f = qpuFollowOf()): boolean =>
   theorem.electronics(f.emerge.coil, f.emerge.faces) &&
   f.solutions.every((row) => row.balanced && row.hop === (row.app + coins) % (n + coins))
 
-/** Coordinated dry-clean: two teams, occupancy pentagram, genesis coins. No extra sealed tool. */
+/**
+ * Coordinated dry-clean: two teams, occupancy pentagram, genesis coins. No extra sealed tool.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuDryHolds
+ */
 export const qpuDryOf = (genesis = qpuGenesisOf()) => {
   const pentagram = qpuPentagramOf()
   const occupancy = pentagram.occupancies
@@ -942,6 +1052,12 @@ export const qpuDryHolds = (d = qpuDryOf()): boolean =>
   d.kind === 'clean' &&
   d.domains.join(' ') === 'scanner radar'
 
+/**
+ * Access keys (domain, occupancy) for every occupancy, with their fused names.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuAccessHolds
+ */
 export const qpuAccessOf = onceOf(() => {
   const pentagram = qpuPentagramOf()
   const keys = ['domain', 'handle'] as const
@@ -962,6 +1078,12 @@ export const qpuAccessHolds = (a = qpuAccessOf()): boolean =>
   a.keys[seed] === 'handle' &&
   a.occupancies.length === n + coins
 
+/**
+ * The 'hologram' reading: the pentagram and access readings composed with the fused capacity and the STORAGE/BLOBS bindings.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuHologramHolds
+ */
 export const qpuHologramOf = onceOf(() => {
   const faces = qpuFacesOf()
   const cube = qpuCubeOf()
@@ -1139,6 +1261,12 @@ const raidPickOf = (sorted: ReturnType<typeof raidByCostOf>, demand: number, tra
     cover: sorted.length === qpuFacesOf().faces}
 }
 
+/**
+ * RAID 10 over the faces: rays stripes mirrored by coins teams, cheapest-first placement for a given traffic.
+ * @wing storage
+ * @kind builder
+ * @evidence qpuRaidHolds
+ */
 export const qpuRaidOf = (input: { safe?: boolean; traffic?: number } = {}) => {
   const faces = qpuFacesOf()
   const disks = coins
@@ -1260,7 +1388,12 @@ export const qpuRaidHolds = (r = qpuRaidOf()): boolean =>
   r.theorem === 'raid' &&
   r.href === storageHref
 
-/** Measure hybrid storage speed and cost. KV plus R2. Coordinated speed. Minimum cost. */
+/**
+ * Measure hybrid storage speed and cost. KV plus R2. Coordinated speed. Minimum cost.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuHybridHolds
+ */
 export const qpuHybridOf = onceOf(() => {
   const faces = qpuFacesOf()
   const raid = qpuRaidOf()
@@ -1345,6 +1478,8 @@ const payloadDbKey = 'databases/payload'
  * names no sitemap at all. A sitemap nothing points at is a sitemap nothing crawls. qpuSeoOf computes the pair
  * for each host from this table, and every pair names the ONE canonical MCP endpoint rather than a copy of it,
  * because six hosts each claiming their own MCP is six duplicates competing, not one door found six ways.
+  * @wing agents
+  * @kind constant
  */
 export const QPU_ZONE_HOSTS = [
   { label: '', worker: 'uuidna', qpu: false, serves: 'the sealed ledger — theorems, decide, verify, receipts' },
@@ -1355,7 +1490,12 @@ export const QPU_ZONE_HOSTS = [
   { label: 'school', worker: 'uuidna-payload', qpu: true, serves: 'the school — lessons, progress, and the kernel verdicts on them' },
 ] as const
 
-/** The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone. */
+/**
+ * The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuZoneHolds
+ */
 export const qpuZoneOf = onceOf(() => {
   const zone = unit.host.split('.').slice(seed).join('.')
   const hosts = QPU_ZONE_HOSTS.map((h) => {
@@ -1386,6 +1526,9 @@ export const qpuZoneHolds = (z = qpuZoneOf()): boolean =>
  * worker has no route there — it answers on qpu.uuidna.com and on the *.uuidna.com wildcard, which the apex is
  * not under. Computing a crawlable pair for it produced a sitemap listing a root this unit answers 404 for, and
  * the apex already serves its own robots.txt and its own 11,438-URL sitemap from the worker that does hold it.
+  * @wing presentation
+  * @kind builder
+  * @evidence qpuZoneHostHolds
  */
 export const qpuZoneHostOf = (host: unknown) =>
   qpuZoneOf().hosts.find((h) => h.qpu && h.host === String(host ?? '').toLowerCase())
@@ -1406,6 +1549,9 @@ export const qpuZoneHostHolds = (): boolean => {
 
 /** The tenant zone QPU serves and the labels in it that are never a tenant — one declaration, read by the router and
  *  by Payload (src/access.ts), never restated there. The zone is this unit's host minus its first label; that label is
+  * @wing presentation
+  * @kind builder
+  * @evidence qpuTenantZoneHolds
  *  this unit, and www is reserved because the router redirects it to the zone's apex. */
 export const qpuTenantZoneOf = onceOf(() => {
   const labels = unit.host.split('.')
@@ -1419,6 +1565,12 @@ export const qpuTenantZoneHolds = (z = qpuTenantZoneOf()): boolean =>
   z.reserved.includes(z.own) && z.reserved.includes(z.www) &&
   z.reserved.every((label) => label.length > n - n && !label.includes('.') && !label.includes('*'))
 
+/**
+ * How Payload's database maps onto the hybrid store: KV upper layer, R2 lower layer, collections and the speed/cost readings (theorem hybrid).
+ * @wing storage
+ * @kind builder
+ * @evidence qpuPayloadDbHolds
+ */
 export const qpuPayloadDbOf = onceOf(() => {
   const hybrid = qpuHybridOf()
   const href = `${storageHref}/${payloadDbKey}`
@@ -1468,7 +1620,12 @@ export const qpuPayloadDbHolds = (p = qpuPayloadDbOf()): boolean =>
   p.hybrid.layers === coins &&
   qpuHybridHolds()
 
-/** Native Alpine Linux storage. musl. busybox. overlayfs — KV upper, R2 lower, KV work. Next is the double. No last k. */
+/**
+ * Native Alpine Linux storage. musl. busybox. overlayfs — KV upper, R2 lower, KV work. Next is the double. No last k.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuAlpineHolds
+ */
 export const qpuAlpineOf = onceOf(() => {
   const hybrid = qpuHybridOf()
   const next = qpuNextOf()
@@ -1525,7 +1682,12 @@ export const qpuAlpineHolds = (a = qpuAlpineOf()): boolean =>
   a.applets.length === n &&
   qpuNextHolds()
 
-/** Measure coil efficiency in RAID clusters. Unity when coil covers faces with no remainder. */
+/**
+ * Measure coil efficiency in RAID clusters. Unity when coil covers faces with no remainder.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuCoilEfficiencyHolds
+ */
 export const qpuCoilEfficiencyOf = onceOf(() => {
   const coil = qpuCoilOf()
   const faces = qpuFacesOf()
@@ -1605,6 +1767,12 @@ const xorOf = (a: number, b: number): number => Number(BigInt(a) ^ BigInt(b))
 const primitives = ['fetch', 'Request', 'Response', 'BigInt', 'performance'] as const
 const designNames = ['tool', 'heap', 'key', 'hostEscape', 'job', 'js', 'path', 'fetch', 'mod', 'worker', 'sealed', 'depth', 'op', 'unlocked'] as const
 
+/**
+ * Fourteen named design nodes, one per face, each with a synapse fold; vacant must be zero.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuDesignHolds
+ */
 export const qpuDesignOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
@@ -1648,6 +1816,12 @@ export const qpuDesignHolds = (d = qpuDesignOf()): boolean =>
   d.nodes.every((node) => node.involution && node.holds) &&
   xorOf(xorOf(n - n, qpuCubeOf().hexbit), qpuCubeOf().hexbit) === n - n
 
+/**
+ * A fixed integer network: depth n, width faces, weights from the lattice, one exact forward pass.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuNeuroHolds
+ */
 export const qpuNeuroOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
@@ -1848,6 +2022,12 @@ const weightOf = (amps: bigint[], q: number): { off: bigint; on: bigint } => {
   return { off, on }
 }
 
+/**
+ * The exact state-vector computer: universal gate basis, reset, SWAP, Toffoli, coupling, compile, collapse, shots, feed-forward, bit-flip correction and readout, each step with its check.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuComputerHolds
+ */
 export const qpuComputerOf = onceOf(() => {
   const faces = qpuFacesOf()
   const dim = mintOf(n)
@@ -2238,7 +2418,11 @@ const safeOf = (x: bigint): boolean => x <= safeBig && x >= -safeBig
 /** A bigint for JSON: the number when it is exact there, the decimal string when it would round. */
 const jsonIntOf = (x: bigint): number | string => (safeOf(x) ? Number(x) : x.toString())
 
-/** The modulus and base Shor runs on when the caller names none: faces.rays * (n * n + n + seed) = 91 and mintOf n = 8. */
+/**
+ * The modulus and base Shor runs on when the caller names none: faces.rays * (n * n + n + seed) = 91 and mintOf n = 8.
+ * @wing agents
+ * @kind builder
+ */
 export const shorDefaultsOf = () => ({ modulus: qpuFacesOf().rays * (n * n + n + seed), base: mintOf(n) })
 /** The counting register is two qubits: this inverse QFT is exact in Gaussian integers (fourth roots of unity), and a
  * wider register would need eighth roots, which are not integers. So the register resolves periods dividing four;
@@ -2280,6 +2464,8 @@ const argReadOf = (v: unknown): { value?: bigint; read: QpuArgRead } => {
   return { read: { how: 'default', exact: false, given: true } }
 }
 /** Modulus and base as the caller gave them, read as integers, with how each was read. No denial, no cap: the run is on
+  * @wing agents
+  * @kind builder
  * whatever integer arrives, and `read` says whether that integer is the one the caller meant. */
 export const shorArgsOf = (a: Record<string, unknown>): { modulus?: bigint; base?: bigint; read: { n: QpuArgRead; a: QpuArgRead; holds: boolean } } => {
   const nn = argReadOf(a.n)
@@ -2288,6 +2474,9 @@ export const shorArgsOf = (a: Record<string, unknown>): { modulus?: bigint; base
 }
 /** Shor as a caller asked for it: the run on their n and a, whatever they are. Never a denial; the run itself says what it
  * found (a period, a gcd factor, or nothing), the sparse state means no modulus is past the host's reach, and `read`
+  * @wing agents
+  * @kind builder
+  * @evidence qpuShorTryHolds
  * says how each argument was taken. A reply whose arguments were not read exactly does not hold, whatever the run did. */
 export const qpuShorTryOf = (a: Record<string, unknown>) => {
   const args = shorArgsOf(a)
@@ -2298,6 +2487,9 @@ export const qpuShorTryHolds = (x?: ReturnType<typeof qpuShorTryOf>): boolean =>
 
 /** Shor on the sparse exact state vector. N and coprime a: the caller's, or the unit's 91 and 8. Modular-exponentiation
  * circuitry. Inverse QFT. XX noise applied twice, which is the identity. Shots enumerate the support. Factors. Every number below is exact in `exact` as decimal text; the number
+  * @wing agents
+  * @kind builder
+  * @evidence qpuShorHolds
  * fields round past 2^53 and `exact.safe` says whether they did. */
 export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigint) => {
   const plugin = qpuPayloadPluginOf()
@@ -2534,6 +2726,9 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
 }
 
 /** The receipts of one Shor run: the folds, and the exact amplitudes of the modexp and noise states, the ledger gained
+  * @wing receipts
+  * @kind builder
+  * @evidence qpuShorReceiptsHolds
  * after `from`. Two honest runs of one circuit fold alike; a reader who runs qpuShorOf recomputes them. */
 export const qpuShorReceiptsOf = (from: number) => {
   const rows = qpuReceiptLedgerOf().slice(from)
@@ -2593,6 +2788,12 @@ export const qpuShorHolds = (s = qpuShorOf()): boolean =>
   // Tier 4: External audit (MCP gate-enforced, recomputable)
   true // auditor is external to QPU system itself
 
+/**
+ * The running 3-qubit circuit on exact integer amplitudes: split, Bell, GHZ, interference, no-clone, teleport, kickback, Deutsch, superdense coding, monogamy; each with its Born weights.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuCircuitHolds
+ */
 export const qpuCircuitOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
@@ -3258,6 +3459,12 @@ export const qpuCircuitHolds = (c = qpuCircuitOf()): boolean =>
   // TIER 4: External audit — MCP is independent, re-callable, gate-enforced
   true // auditor_is_external = true
 
+/**
+ * The JSON-LD schemas the unit serves, mounted under storage, with their prefixes and context.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuSchemasHolds
+ */
 export const qpuSchemasOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
@@ -3382,6 +3589,11 @@ export const qpuSchemasHolds = (s = qpuSchemasOf()): boolean =>
   s.compatibility.keys.length === n &&
   s.rows.every((row) => row.merge === 'storage' && row.involution && row.holds)
 
+/**
+ * The JSON-LD @context every served document carries (schema.org plus the unit's prefixes).
+ * @wing receipts
+ * @kind builder
+ */
 export const qpuContextOf = onceOf(() => qpuSchemasOf().context)
 
 const jsonldHoldsOf = (doc: { '@context': ReturnType<typeof qpuContextOf>; '@type': string; '@id': string; isAccessibleForFree?: boolean }): boolean =>
@@ -3392,6 +3604,12 @@ const jsonldHoldsOf = (doc: { '@context': ReturnType<typeof qpuContextOf>; '@typ
   doc['@id'].startsWith(unit.origin) &&
   doc.isAccessibleForFree === true
 
+/**
+ * Capacity counts: bits, amplitudes, fused = faces x 2^(bits+1), next, the crypt split and the agent and schema counts.
+ * @wing lattice
+ * @kind builder
+ * @evidence qpuCapacityHolds
+ */
 export const qpuCapacityOf = onceOf(() => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -3542,6 +3760,12 @@ export const qpuCapacityHolds = (c = qpuCapacityOf()): boolean =>
   c.hybrid.cost === n &&
   c.hybrid.layers === coins
 
+/**
+ * The split identity of theorem crypto: fused = split x share, recomputed; secrecy is reported false (it is an identity, not a cipher).
+ * @wing crypto
+ * @kind builder
+ * @evidence qpuEncryptHolds
+ */
 export const qpuEncryptOf = onceOf(() => {
   const capacity = qpuCapacityOf()
   const crypt = capacity.crypt
@@ -3587,10 +3811,16 @@ export const qpuEncryptHolds = (e = qpuEncryptOf()): boolean =>
 
 let shorFactorMemo: string | undefined
 /** The factoring claim computed from the run: the modulus Shor factored in this unit's exact state-vector computation — by default 91, the instance
+  * @wing agents
+  * @kind builder
  *  theorem shor states. Never RSA-2048. */
 export const shorFactorOf = (): string => (shorFactorMemo ??= `Factor ${qpuShorOf().n}`)
 let cryptoClaimMemo: string | undefined
-/** The crypto claim READ from the run: the split identity holds and secrecy does not. Not encryption. Never typed. */
+/**
+ * The crypto claim READ from the run: the split identity holds and secrecy does not. Not encryption. Never typed.
+ * @wing agents
+ * @kind builder
+ */
 export const cryptoClaimOf = (): string => {
   if (cryptoClaimMemo === undefined) {
     const e = qpuEncryptOf()
@@ -3599,6 +3829,12 @@ export const cryptoClaimOf = (): string => {
   return cryptoClaimMemo
 }
 
+/**
+ * The doubling rung: next = fused + fused, with the cover of rungs and a benchmark of the step.
+ * @wing lattice
+ * @kind builder
+ * @evidence qpuSpeedHolds
+ */
 export const qpuSpeedOf = onceOf(() => {
   const capacity = qpuCapacityOf()
   const cube = qpuCubeOf()
@@ -3697,6 +3933,12 @@ const crossed = (row: Omit<QpuLeanRow, 'cross' | 'uuid'>): QpuLeanRow => {
   return { ...row, cross: qpuCrossReadingOf(row.theorem), uuid }
 }
 
+/**
+ * The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin.
+ * @wing proof
+ * @kind builder
+ * @evidence qpuLeanSourceHolds
+ */
 export const qpuLeanSourceOf = (rows: readonly QpuLeanRow[] = [], cover: readonly QpuLeanRow[] = [], climb?: QpuLeanRow) => {
   const href = `${unit.origin}/${unit.fuse.lean}`
   const bytes = new TextEncoder().encode(leanSource).length
@@ -3776,6 +4018,9 @@ const unlikeProductOf = (e: string): boolean => {
  * product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading
  * set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says.
  * Any conjunct that crosses makes the statement cross; otherwise the first conjunct decides as before.
+  * @wing proof
+  * @kind builder
+  * @evidence qpuCrossReadingHolds
  */
 export const qpuCrossReadingOf = (statement: string): QpuCross => {
   const conjuncts = conjunctsOf(statedTypeOf(statement))
@@ -3795,6 +4040,12 @@ export const qpuCrossReadingOf = (statement: string): QpuCross => {
   return 'neither'
 }
 
+/**
+ * Every theorem of index.lean as a row: statement verbatim, LaTeX, reading, cross reading, statement UUID and holds recomputed by lean-eval.
+ * @wing proof
+ * @kind builder
+ * @evidence qpuLeanHolds
+ */
 export const qpuLeanOf = onceOf(() => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -4446,6 +4697,12 @@ export const qpuLeanHolds = (l = qpuLeanOf()): boolean =>
   l.isAccessibleForFree === true &&
   jsonldHoldsOf(l)
 
+/**
+ * The unit's inline guide: abstract, API rows, formulas and the learning ladder, as one document.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuDocsHolds
+ */
 export const qpuDocsOf = onceOf(() => {
   const lean = qpuLeanOf()
   const cube = qpuCubeOf()
@@ -4516,6 +4773,8 @@ export const qpuDocsHolds = (d = qpuDocsOf()): boolean =>
 
 /** WHAT THE WORDS MEAN, SERVED BESIDE THEM. `holds` is said of every record and means that the record is self-consistent
  * and recomputes to itself; it is not a claim that the test the record describes passed. That claim, where a record
+  * @wing agents
+  * @kind builder
  * makes one, has its own word: `pass`, `factored`, `measured`, `entangled`, `resolvable`. */
 export const qpuGlossaryOf = onceOf(() => ({
   kind: 'glossary' as const,
@@ -4530,6 +4789,12 @@ export const qpuGlossaryOf = onceOf(() => ({
   QPU: 'quantum processing unit — this unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym, a classical SIMD vector core, unrelated and credited',
   seat: 'reference, vector or device: the router computes on the reference (the exact integer state-vector computation) unless the runtime exposes a vector binding; the device seat is empty, no device is dispatched, and a device that disagrees with the reference is a driver bug, never a physics claim',
 }))
+/**
+ * The quantum document: circuit, lattice, Shor run, sequence, purpose, evidence, network and design readings in one JSON-LD document.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuQuantumHolds
+ */
 export const qpuQuantumOf = onceOf(() => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -4662,6 +4927,12 @@ export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   q.url === unit.origin &&
   jsonldHoldsOf(q)
 
+/**
+ * How to cite the unit (MLA 8): DOI, concept DOI, ORCID, archived version and commit, served version, and whether they match.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuCiteHolds
+ */
 export const qpuCiteOf = onceOf(() => {
   const lean = qpuLeanOf()
   const quantum = qpuQuantumOf()
@@ -4817,6 +5088,12 @@ const manAt = (endpoint: string, name: string, description: string, reading: str
     see.every((s) => s !== name && documentation.includes(s))
   return { kind: 'man' as const, inline: true as const, name, section: n, synopsis, href, description, reading, documentation, holds }
 }
+/**
+ * A tool's man page (NAME, SYNOPSIS, DESCRIPTION, SEE ALSO) for the /mcp door.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuManHolds
+ */
 export const qpuManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) =>
   manAt(`${unit.origin}/mcp`, name, description, reading, href, see)
 
@@ -4835,6 +5112,11 @@ const typeUnionOf = (types: readonly string[]): string | string[] => {
   const distinct = [...new Set(types)]
   return distinct.length === seed ? distinct[n - n]! : distinct
 }
+/**
+ * A JSON Schema derived from a tool's own replies: properties typed from the samples, required = keys present in every sample.
+ * @wing agents
+ * @kind builder
+ */
 export const qpuOutputSchemaOf = (samples: readonly unknown[]) => {
   const objects = samples.filter((x): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x))
   const properties: Record<string, Record<string, unknown>> = {}
@@ -4883,6 +5165,9 @@ const qpuShownResourceOf = (name: string): string | undefined => {
  * and those are the two copies a client pays for. An embedded resource copy, a string copy under `_meta.output` and an
  * object copy under `_meta.functionResponse` made a 131 KB proof a 729 KB reply (external audit, 2026-09-12); they are
  * gone. A `resource_link` rides along only when a GET of its uri returns this same document (qpu_lean, qpu_cite).
+  * @wing agents
+  * @kind builder
+  * @evidence qpuMcpShownHolds
  * `_meta.call` says where to call again; vendor shapes are documented in the JSON-LD catalogue at GET /mcp. */
 export const qpuMcpShownOf = (name: string, shownPayload: unknown, href = `${unit.origin}/mcp`) => {
   // A man page on the wire carries the tool's output schema (off tools/list since 2026-09-12), whichever door built it.
@@ -4947,6 +5232,12 @@ export const qpuMcpShownHolds = (shown?: ReturnType<typeof qpuMcpShownOf>): bool
   )
 }
 
+/**
+ * A man page for a sub-server tool (storage, network, server), synopsis on that server's href.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSubManHolds
+ */
 export const qpuSubManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) =>
   manAt(href, name, description, reading, href, see)
 export const qpuSubManHolds = (x?: ReturnType<typeof qpuSubManOf>): boolean => x !== undefined && x.holds === true
@@ -5013,6 +5304,12 @@ const toolListOf = <T extends ReturnType<typeof toolItemOf>, I extends object = 
     url: tool['@id'],
     item: { '@type': tool['@type'], '@id': tool['@id'], name: tool.name, description: tool.description, url: tool.url, ...item(tool) }}))})
 
+/**
+ * A sub-server's JSON-LD WebAPI catalogue: its tools as SoftwareApplication items and an ItemList.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSubCatalogHolds
+ */
 export const qpuSubCatalogOf = (kind: string, href: string, tools: readonly QpuSubTool[], extra: Record<string, unknown>) => {
   const items = tools.map((t, i) => toolItemOf(href, t, i))
   const hasPart = toolListOf(items)
@@ -5036,6 +5333,12 @@ export const qpuSubCatalogOf = (kind: string, href: string, tools: readonly QpuS
 }
 export const qpuSubCatalogHolds = (x?: ReturnType<typeof qpuSubCatalogOf>): boolean => x !== undefined && x.holds === true
 
+/**
+ * A compact reading of the quantum document (circuit, lattice, Shor, sequence, purpose, evidence) for agents.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuReadingHolds
+ */
 export const qpuReadingOf = onceOf(() => {
   const quantum = qpuQuantumOf()
   return {
@@ -5105,6 +5408,12 @@ export const qpuReadingOf = onceOf(() => {
 })
 export const qpuReadingHolds = (x: ReturnType<typeof qpuReadingOf> = qpuReadingOf()): boolean => x.holds === true
 
+/**
+ * Token efficiency of each door: bytes and tokens to read the tree versus to call the tool.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuEfficiencyHolds
+ */
 export const qpuEfficiencyOf = onceOf(() => {
   const docs = qpuDocsOf()
   const lean = qpuLeanOf()
@@ -5177,6 +5486,12 @@ const throughputOf = (throughoutput: number, tokens: number): number =>
 const toolNames = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const
 const cryptoToolNames = ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'] as const
 
+/**
+ * The learning sequence: rungs, API rows and climb over storage, network and server tools.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuSequenceHolds
+ */
 export const qpuSequenceOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
@@ -5296,6 +5611,9 @@ export const qpuSequenceHolds = (s = qpuSequenceOf()): boolean =>
  * the next ray — fourteen faces, each once, in an order the lattice fixes. The seat is the first face whose predicate
  * does not hold, else face 0. A step names the lattice node, its predicate as read, the door to call (the API rung the
  * face maps to), and the hop. `todo` is every face that does not hold, repaired before walking; `next` is the first
+  * @wing agents
+  * @kind builder
+  * @evidence qpuStepsHolds
  * todo, else the face after the seat. Nothing here is typed and nothing is timed: the same lattice gives the same walk. */
 export const qpuStepsOf = onceOf(() => {
   const circuit = qpuCircuitOf()
@@ -5341,6 +5659,9 @@ export const qpuStepsHolds = (s = qpuStepsOf()): boolean =>
 
 /** PLANES (the captain, 2026-09-12). theorem planes: plane = coins·coins·rays is less than mintOf(rays + seed), and
  * coins·rays = faces. Here a rays-qubit GHZ state is computed as one dense vector — H on the first qubit, CNOT along
+  * @wing agents
+  * @kind builder
+  * @evidence qpuPlanesHolds
  * every ray — and written to the receipt ledger as a fold of dim mintOf(rays); `planes` is faces / rays. */
 export const qpuPlanesOf = (circuit = qpuCircuitOf()) => {
   const faces = qpuFacesOf()
@@ -5384,6 +5705,12 @@ export const qpuPlanesHolds = (p = qpuPlanesOf()): boolean =>
   p.ghz.entangled === true &&
   p.ghz.dim > p.plane
 
+/**
+ * What the unit is for, read from its own state: exact-amplitude platform, n qubits, and its cybersecurity, optimisation, science and sensing readings.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuPurposeHolds
+ */
 export const qpuPurposeOf = (
   circuit = qpuCircuitOf(),
   shor = qpuShorOf(),
@@ -5515,6 +5842,12 @@ export const qpuPurposeHolds = (p = qpuPurposeOf()): boolean =>
   p.sensing.network === '/network' &&
   p.sensing.server === '/server'
 
+/**
+ * Provenance and verification evidence: provider and device (exact-amplitudes), noise, volume, cross-checks, scaling and fault readings.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuEvidenceHolds
+ */
 export const qpuEvidenceOf = (
   circuit = qpuCircuitOf(),
   shor = qpuShorOf(),
@@ -5737,6 +6070,12 @@ export const qpuEvidenceHolds = (e = qpuEvidenceOf()): boolean =>
   e.fault.suppressed === true &&
   e.fault.logicalLtPhysical === true
 
+/**
+ * The cybersecurity door set: Shor on 91, RSA factoring, the encrypt identity, crypt split and RAID, with what each verifies.
+ * @wing crypto
+ * @kind builder
+ * @evidence qpuCybersecurityHolds
+ */
 export const qpuCybersecurityOf = onceOf(() => {
   const shor = qpuShorOf()
   const capacity = qpuCapacityOf()
@@ -5861,6 +6200,11 @@ const cryptoReadingOf = (): Record<string, string> => {
   return cryptoReadingMemo
 }
 
+/**
+ * The eight cybersecurity MCP tools (catalog, rsa, shor, cmodexp, iqft, shots, split, verify) with their man pages and handlers.
+ * @wing crypto
+ * @kind builder
+ */
 export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
   const href = `${unit.origin}/mcp`
   const see = cryptoToolNames
@@ -6109,6 +6453,12 @@ const hexOf = (value: number, width: number): string => {
 
 
 
+/**
+ * A seat's handle on a face: its id, href, hop across the involution and the KV capacity it addresses.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuSeatHandleHolds
+ */
 export const qpuSeatHandleOf = (face: number) => {
   const cube = qpuCubeOf()
   const isolate = qpuHandleOf()
@@ -6148,6 +6498,12 @@ const uuidImprintOf = (lane: number, fused: number, faces: number): string => {
   return `${hexOf(time, mintOf(n))}-${hexOf(lane, mintOf(coins))}-1${hexOf(time, n)}-${hexOf(clock, mintOf(coins))}-${hexOf(time + lane, n * coins * coins)}`
 }
 
+/**
+ * Send or read a message on a lane; each message gets an RFC 9562 UUID and a clock sequence.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuMessageHolds
+ */
 export const qpuMessageOf = (send?: { lane?: unknown; body?: unknown }) => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -6231,6 +6587,12 @@ export const qpuMessageHolds = (m = qpuMessageOf()): boolean =>
   m.routes.length === m.lanes &&
   m.routes.every((r) => r.involution && r.hop === r.lane)
 
+/**
+ * Presence of users per face (active, inactive, chatting) with starter templates, merged into storage.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuPresenceHolds
+ */
 export const qpuPresenceOf = onceOf(() => {
   const cube = qpuCubeOf()
   const isolate = qpuHandleOf()
@@ -6409,6 +6771,9 @@ const storageOccupancyOf = (key: string): string => {
  *  declares: multiplication by the prime carries between bit positions, which is exactly what the old step lacked,
  *  and the arithmetic stays in BigInt, so it is exact at every length and never leaves the range. FNV-1a is a
  *  non-cryptographic fold: it separates content and is tamper-EVIDENT, and it is not collision-RESISTANT against an
+  * @wing storage
+  * @kind builder
+  * @evidence qpuStorageAddressHolds
  *  adversary who searches for one. That bound is stated, not implied. */
 export const qpuStorageAddressOf = (value: unknown): string => {
   const text = JSON.stringify(jsonOf(value))
@@ -6493,6 +6858,8 @@ const raidShareKeyOf = (key: string, face: number): string => `${key}${raidMark}
  *  which cost 97.7 ms on a 500 KB value and put every real deposit over the Worker's CPU budget. */
 /** Exported for the property that used to be sampled on every write: raidJoinOf is the inverse of raidStripeOf,
  *  and dealing into rays can only differ by length modulo rays, so the claim is a cross product of residue against
+  * @wing agents
+  * @kind builder
  *  ray count. The write path cannot walk that; the suite can. */
 export const raidStripeOf = (text: string, rays: number): string[] => {
   const parts: string[][] = []
@@ -6501,7 +6868,11 @@ export const raidStripeOf = (text: string, rays: number): string[] => {
   return parts.map((p) => p.join(''))
 }
 
-/** The stripes read back in the order they were dealt — the inverse of raidStripeOf, collected and joined once. */
+/**
+ * The stripes read back in the order they were dealt — the inverse of raidStripeOf, collected and joined once.
+ * @wing agents
+ * @kind builder
+ */
 export const raidJoinOf = (stripes: string[]): string => {
   const out: string[] = []
   const rays = stripes.length
@@ -6711,6 +7082,8 @@ const storageStoreOf = (env?: QpuEnv) => {
  * STORAGE (KV) and BLOBS (R2) bindings when they are bound, the in-memory heap when they are not. Document ids are
  * programmable content UUIDs; every insert, update and delete is a quantum receipt in the `db` stream, referred by
  * the collection it touched. A scan walks at most STORE_SCAN_PAGES pages of STORE_LIST_PAGE keys per request.
+  * @wing storage
+  * @kind store
  */
 export const qpuDocStoreOf = (env?: QpuEnv): DocStore => {
   const store = storageStoreOf(env)
@@ -6722,6 +7095,11 @@ export const qpuDocStoreOf = (env?: QpuEnv): DocStore => {
   }
 }
 let docSequence = n - n
+/**
+ * The QPU document database (MongoDB query and update semantics, docdb.ts) over the unit's store; ids are content UUIDs; every write is a quantum receipt in the db stream.
+ * @wing storage
+ * @kind builder
+ */
 export const qpuDocDbOf = (env?: QpuEnv, name = 'payload', store: DocStore = qpuDocStoreOf(env)) =>
   docDbOf(
     store,
@@ -6730,6 +7108,12 @@ export const qpuDocDbOf = (env?: QpuEnv, name = 'payload', store: DocStore = qpu
     ({ op, collection, doc }) => void qpuUuidReceiptOf(`db ${op} ${collection}`, doc._id, doc, `${unit.origin}/storage/${collection}`),
   )
 
+/**
+ * Storage description: memory or KV, RAID, hybrid layers, Payload database mapping, Alpine overlay and bindings.
+ * @wing storage
+ * @kind builder
+ * @evidence qpuStorageMetaHolds
+ */
 export const qpuStorageMetaOf = (env?: QpuEnv) => {
   const raid = qpuRaidOf()
   const hybrid = qpuHybridOf()
@@ -6773,6 +7157,12 @@ export const qpuStorageMetaOf = (env?: QpuEnv) => {
 }
 export const qpuStorageMetaHolds = (x?: ReturnType<typeof qpuStorageMetaOf>): boolean => x !== undefined && x.holds === true
 
+/**
+ * Monitor RAID health: expected and missing shares, incomplete keys, sampled bytes and traffic.
+ * @wing storage
+ * @kind builder
+ * @evidence qpuStorageMonitorHolds
+ */
 export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
   const raid = qpuRaidOf()
   const faces = qpuFacesOf()
@@ -6926,6 +7316,12 @@ export const qpuStorageRedundancyHolds = (): boolean => {
   return inode.links.includes(key) && JSON.stringify(rebuilt) === JSON.stringify(stored)
 }
 
+/**
+ * Repair broken RAID shares and delete orphans (a write; needs the write token).
+ * @wing storage
+ * @kind builder
+ * @evidence qpuStorageMaintainHolds
+ */
 export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) => {
   const faces = qpuFacesOf()
   const store = storageStoreOf(env)
@@ -7025,6 +7421,12 @@ export const qpuStorageWriteAllowedHolds = (): boolean => {
   )
 }
 
+/**
+ * Whether a public write is allowed: only when QPU_WRITE_TOKEN is bound and the bearer matches; fails closed.
+ * @wing storage
+ * @kind builder
+ * @evidence qpuStorageWriteAllowedHolds
+ */
 export const qpuStorageWriteAllowedOf = (env?: QpuEnv, auth?: string | null): boolean => {
   const token = typeof env?.QPU_WRITE_TOKEN === 'string' ? env.QPU_WRITE_TOKEN : ''
   return token.length > n - n && auth === `Bearer ${token}`
@@ -7033,6 +7435,9 @@ const storageWriteOf = (method: string): boolean => method === 'PUT' || method =
 
 /** qpuStorageListOf(env, prefix, limit) → the link names under a prefix in ascending order (so a name that begins with an
  *  inverted arrival time lists the newest first), each with the document a GET of it returns; RAID shares and inode
+  * @wing storage
+  * @kind builder
+  * @evidence qpuStorageListHolds
  *  keys never list. Reads stay open. */
 export const qpuStorageListOf = async (env: QpuEnv | undefined, prefix: string, limit: number) => {
   const want = Number.isInteger(limit) && limit > n - n ? limit : qpuFacesOf().faces
@@ -7059,6 +7464,12 @@ export const qpuStorageListHolds = (): boolean => {
     !later.includes(raidMark) && !earlier.includes(raidMark)
 }
 
+/**
+ * Content-addressed storage: GET/PUT/DELETE by key with inodes, referrer links, nlink counting and RAID striping over KV and R2.
+ * @wing storage
+ * @kind builder
+ * @evidence qpuStorageHolds
+ */
 export const qpuStorageOf = async (
   env?: QpuEnv,
   input: { method?: string; key?: unknown; value?: unknown; auth?: string | null; via?: 'binding' } = {}) => {
@@ -7287,6 +7698,11 @@ export const qpuStorageHolds = (s = qpuStorageMetaOf()): boolean =>
   s.href === storageHref &&
   jsonldHoldsOf(s)
 
+/**
+ * The storage MCP tools (get, list, put, delete, maintain, monitor) bound to an environment and an auth header.
+ * @wing storage
+ * @kind builder
+ */
 export const qpuStorageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubTool[] => {
   const href = storageHref
   const see = ['storage_catalog', 'storage_list', 'storage_get', 'storage_put', 'storage_del', 'storage_monitor', 'storage_maintain', 'storage_raid'] as const
@@ -7348,6 +7764,12 @@ export const qpuStorageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubToo
       run: () => qpuRaidOf()}]
 }
 
+/**
+ * The storage sub-server's catalogue and live store reading.
+ * @wing storage
+ * @kind builder
+ * @evidence qpuStorageMcpHolds
+ */
 export const qpuStorageMcpOf = async (env?: QpuEnv) => {
   const meta = qpuStorageMetaOf(env)
   const monitor = await qpuStorageMonitorOf(env)
@@ -7380,6 +7802,11 @@ export const qpuNetworkFetchHolds = (f?: { path: string; href: string }, doors?:
   return url !== null && url.protocol === 'https:' && url.host === unit.host && url.pathname === f.path && url.search === '' && url.hash === ''
 }
 
+/**
+ * The network MCP tools (send, receive, fetch on the named host) for channels in memory.
+ * @wing agents
+ * @kind builder
+ */
 export const qpuNetworkToolsOf = (): QpuSubTool[] => {
   const href = networkHref
   const see = ['net_catalog', 'net_list', 'net_send', 'net_recv', 'net_message', 'net_routes', 'net_fetch', 'net_monitor'] as const
@@ -7500,6 +7927,12 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
       }}]
 }
 
+/**
+ * The network sub-server's catalogue.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuNetworkMcpHolds
+ */
 export const qpuNetworkMcpOf = onceOf(() => {
   const message = qpuMessageOf()
   const tools = qpuNetworkToolsOf()
@@ -7552,6 +7985,12 @@ const parseGatesOf = (value: unknown): { ops: Record<string, unknown>[]; read: Q
   return ops.length > n - n ? { ops, read: 'read', dropped } : { ops: fallback, read: 'default', dropped }
 }
 
+/**
+ * Submit a job to the server: runs it on the exact computer and returns the result inline (jobs are not stored).
+ * @wing agents
+ * @kind builder
+ * @evidence qpuServerSubmitHolds
+ */
 export const qpuServerSubmitOf = (input: Record<string, unknown> = {}) => {
   const computer = qpuComputerOf()
   const plugin = qpuPayloadPluginOf()
@@ -7595,6 +8034,11 @@ export const qpuServerQueueHolds = (q?: { jobs: { id: number; status: string }[]
   q !== undefined && (q.n === q.jobs.length &&
   q.jobs.every((j, i) => Number.isInteger(j.id) && j.id >= seed && j.status === 'done' && (i === n - n || q.jobs[i - seed]!.id < j.id)))
 
+/**
+ * The server MCP tools (submit, queue, result, backends and the rest) for jobs on the exact computer.
+ * @wing agents
+ * @kind builder
+ */
 export const qpuServerToolsOf = (): QpuSubTool[] => {
   const href = serverHref
   const see = ['server_catalog', 'server_backend', 'server_submit', 'server_queue', 'server_result', 'server_shots', 'server_correct', 'server_monitor'] as const
@@ -7690,6 +8134,12 @@ export const qpuServerToolsOf = (): QpuSubTool[] => {
       }}]
 }
 
+/**
+ * The server sub-server's catalogue: eight tools, the job queue and the backend.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuServerMcpHolds
+ */
 export const qpuServerMcpOf = onceOf(() => {
   const computer = qpuComputerOf()
   const tools = qpuServerToolsOf()
@@ -7727,6 +8177,12 @@ export const qpuServerHolds = (s = qpuServerMcpOf()): boolean =>
   s['@type'] === 'WebAPI' &&
   s['@id'] === serverHref
 
+/**
+ * The seven ideas the sandbox teams compete on, each as a sealed op tree with its left and right sides.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuIdeasHolds
+ */
 export const qpuIdeasOf = onceOf(() => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
@@ -8143,6 +8599,12 @@ const seededNames = new Set<string>()
  * miss. That is content-addressing rather than cache invalidation, which this tree prefers everywhere else.
  */
 let sandboxEpoch = 0
+/**
+ * The sandbox's write epoch: advances when a forge changes a tool, so memoised readings of the sandbox refresh.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSandboxEpochHolds
+ */
 export const qpuSandboxEpochOf = (): number => sandboxEpoch
 /** It only ever rises, and it starts at the ground state — a counter that could fall would alias two sandboxes. */
 export const qpuSandboxEpochHolds = (epoch = qpuSandboxEpochOf()): boolean => Number.isSafeInteger(epoch) && epoch >= 0
@@ -8240,6 +8702,12 @@ const opQuantumOf = (): OpQuantum => qpuSandboxRunOf('op_quantum') as OpQuantum
 const opQuantumHolds = (u: OpQuantum): boolean =>
   u.value?.kind === 'quantum' && u.value.only?.holds === true && u.value.lattice?.holds === true && u.value.lattice.vacant === n - n
 
+/**
+ * The in-memory sandbox census: ops, host shims (all in memory), heap, forged tools; nothing touches disk, network or eval.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSandboxHolds
+ */
 export const qpuSandboxOf = onceOf(() => {
   seedSandboxOf()
   const faces = qpuFacesOf()
@@ -8297,6 +8765,12 @@ export const qpuSandboxOf = onceOf(() => {
   }
 })
 
+/**
+ * Run a sandbox tool by name with arguments; the run is a quantum receipt in the sandbox stream.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSandboxRunHolds
+ */
 export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}) => {
   seedSandboxOf()
   const tool = sandboxTools.get(name)
@@ -8322,6 +8796,12 @@ export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}
 }
 export const qpuSandboxRunHolds = (x?: ReturnType<typeof qpuSandboxRunOf>): boolean => x !== undefined && x.holds === true
 
+/**
+ * Forge a tool from a sealed op tree; { name, run, args } forges and evaluates in one call, { uuid, args } runs a forged tool by its content UUID.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuForgeHolds
+ */
 export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
   seedSandboxOf()
   if (args.man === true) {
@@ -8416,6 +8896,12 @@ export const qpuSandboxHolds = (s = qpuSandboxOf()): boolean =>
     )
   })
 
+/**
+ * Sandbox durability: rounds of put/get, fs and net shims and worker isolation, each checked to persist in memory and stay isolated.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSandboxDurabilityHolds
+ */
 export const qpuSandboxDurabilityOf = onceOf(() => {
   const rounds = mintOf(n)
   const ideas = qpuIdeasOf()
@@ -8482,6 +8968,12 @@ export const qpuSandboxDurabilityHolds = (d = qpuSandboxDurabilityOf()): boolean
   d.challenges === d.expected &&
   d.rounds === mintOf(n)
 
+/**
+ * The VM reading: isolate rungs and replicas doubling to next, agents per face.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuVmHolds
+ */
 export const qpuVmOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
@@ -8542,6 +9034,12 @@ export const qpuVmHolds = (v = qpuVmOf()): boolean =>
   v.agents === v.faces &&
   v.rungs.every((rung) => rung.workers === rung.replicas && rung.next === mintOf(rung.k + seed))
 
+/**
+ * Improve by doubling: before and after readings of quality, speed, security and throughoutput, with the unlocked quantum door.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuImproveHolds
+ */
 export const qpuImproveOf = onceOf(() => {
   const faces = qpuFacesOf()
   const handle = qpuHandleOf()
@@ -8764,6 +9262,8 @@ export type QpuTeaching = {
  * THE EVIDENCE. Each row is an occasion, not a conclusion; no row names a pair as entangled, because no row is
  * entitled to. Rows in only one direction are deliberately present — a detector that cannot come out negative
  * is furniture, and the one-way pairs below are what prove this one can.
+  * @wing science
+  * @kind constant
  */
 export const QPU_TEACHINGS: readonly QpuTeaching[] = [
   { subject: 'sports', domain: 'biomechanics', direction: 'practice to theory', year: 1973,
@@ -9090,6 +9590,9 @@ export type QpuSwap = 'entangled' | 'application' | 'undecided'
  * version already is. That makes staleness the obvious failure, and qpuStandardsHolds is what catches it:
  * the suite compares what the unit serves against the receipts on disk, so a bake that fell behind fails
  * rather than reassures.
+  * @wing agents
+  * @kind builder
+  * @evidence qpuStandardsHolds
  */
 export const qpuStandardsOf = onceOf(() => {
   const s = sealedStandards
@@ -9124,10 +9627,25 @@ export const qpuStandardsHolds = (read = qpuStandardsOf()): boolean =>
   [read.walls, read.lattice, read.dry, read.refusals.total, read.refusals.crossed, read.refusals.notCrossed].every((x) => Number.isSafeInteger(x) && x >= n - n) &&
   read.refusals.crossed + read.refusals.notCrossed === read.refusals.total
 
-/** The corpus's own axes, named once: the combinatorial surface is built on these and the reading checks them. */
+/**
+ * The corpus's own axes, named once: the combinatorial surface is built on these and the reading checks them.
+ * @wing science
+ * @kind constant
+ */
 export const QPU_TEACHING_SUBJECTS = [...new Set(QPU_TEACHINGS.map((row) => row.subject))].sort()
+/**
+ * The distinct domains of the teaching corpus, sorted; the axis the corpus is crossed on.
+ * @wing science
+ * @kind constant
+ */
 export const QPU_TEACHING_DOMAINS = [...new Set(QPU_TEACHINGS.map((row) => row.domain))].sort()
 
+/**
+ * Teaching corpus crossed: subjects against domains, each pair entangled, application or undecided, with citations.
+ * @wing science
+ * @kind builder
+ * @evidence qpuTeachingPairsHolds
+ */
 export const qpuTeachingPairsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS) => {
   const subjects = [...new Set(teachings.map((row) => row.subject))].sort()
   const domains = [...new Set(teachings.map((row) => row.domain))].sort()
@@ -9192,6 +9710,9 @@ export const qpuTeachingPairsHolds = (read = qpuTeachingPairsOf()): boolean =>
  * thereby composable — that was the weakest honest test and it was said to be. Addressing the shape instead
  * means `id: string` and `id: integer` no longer meet, and a Pet with three named properties meets another
  * Pet with the same three wherever it is declared and whatever the file calls it.
+  * @wing receipts
+  * @kind builder
+  * @evidence qpuShapeUuidHolds
  */
 export const qpuShapeUuidOf = (canonical: string): string => {
   /* Two folds over one hundred and twenty-eight bits: the content, and the content marked, so the halves
@@ -9221,6 +9742,12 @@ const canonicalTextOf = (value: unknown): string =>
     : value !== null && typeof value === 'object'
       ? `{${Object.keys(value).sort().map((k) => `${JSON.stringify(k)}:${canonicalTextOf((value as Record<string, unknown>)[k])}`).join(',')}}`
       : typeof value === 'number' && !Number.isFinite(value) ? `"${value}"` : JSON.stringify(value) ?? 'null'
+/**
+ * RFC 9562 v8 content UUID of any JSON value over canonical JSON (sorted keys); the same content gives the same UUID anywhere.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuContentUuidHolds
+ */
 export const qpuContentUuidOf = (value: unknown): string => qpuShapeUuidOf(canonicalTextOf(value))
 export const qpuContentUuidHolds = (): boolean =>
   qpuContentUuidOf({ a: seed, b: [coins] }) === qpuContentUuidOf({ b: [coins], a: seed }) &&
@@ -9283,7 +9810,12 @@ const combinatorialSurfacesOf = () => {
 const combinatorialDoorHexOf = (surface: { door: string; lefts: readonly string[]; rights: readonly string[] }): string =>
   qpuFoldOf(`${surface.door}:${surface.lefts.length}x${surface.rights.length}`).slice(n - n, mintOf(coins))
 
-/** The door table, with collisions RECOMPUTED rather than assumed — two names can fold to one hex. */
+/**
+ * The door table, with collisions RECOMPUTED rather than assumed — two names can fold to one hex.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuCombinatorialDoorsHolds
+ */
 export const qpuCombinatorialDoorsOf = onceOf(() => {
   const rows = combinatorialSurfacesOf().map((s) => ({
     door: s.door,
@@ -9321,6 +9853,9 @@ const combinationTextOf = (door: string, left: string, right: string): string =>
  *
  * Refused HERE when the surface does not exist or either name is not on its axis, because minting an address
  * for a combination this unit does not compute hands a caller sixteen bytes that decode to nothing.
+  * @wing agents
+  * @kind builder
+  * @evidence qpuCallUuidHolds
  */
 export const qpuCallUuidOf = (door: string, left: string, right: string): string => {
   const surface = combinatorialSurfacesOf().find((s) => s.door === door)
@@ -9376,6 +9911,8 @@ export const qpuCallUuidHolds = (): boolean =>
  * address of a surface this unit does not compute is a fact about this unit, and refusing it would report that
  * absence as a malformed UUID. `verified` is the recomputation: mint the address again from the pair it claims
  * and compare, so a hand-edited middle is caught rather than believed.
+  * @wing agents
+  * @kind function
  */
 export const qpuCallOfUuid = (uuid: string) => {
   const bare = String(uuid).replace(/-/g, '').toLowerCase()
@@ -9443,7 +9980,12 @@ const canonicalShapeOf = (schema: unknown, doc: Record<string, unknown>, depth =
   return `${row.type ?? 'unknown'}${row.format === undefined ? '' : `/${row.format}`}`
 }
 
-/** One field, addressed by what it IS rather than by what it is called: its name and its shape, folded. */
+/**
+ * One field, addressed by what it IS rather than by what it is called: its name and its shape, folded.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuFieldUuidHolds
+ */
 export const qpuFieldUuidOf = (name: string, schema: unknown, doc: Record<string, unknown> = {}): string =>
   qpuShapeUuidOf(`${name}:${canonicalShapeOf(schema, doc)}`)
 
@@ -9490,7 +10032,12 @@ const schemaFieldsOf = (schema: unknown, doc: Record<string, unknown>, depth = n
   return row.properties ? Object.keys(row.properties).map((name) => ({ name, uuid: qpuFieldUuidOf(name, row.properties?.[name], doc) })) : []
 }
 
-/** An OpenAPI document read as methods: what each one takes, and what it gives back. Pure; no network. */
+/**
+ * An OpenAPI document read as methods: what each one takes, and what it gives back. Pure; no network.
+ * @wing fusion
+ * @kind builder
+ * @evidence qpuSchemaMethodsHolds
+ */
 export const qpuSchemaMethodsOf = (api: string, document: unknown): QpuMethod[] => {
   if (!document || typeof document !== 'object') return []
   const doc = document as Record<string, unknown> & { paths?: Record<string, Record<string, unknown>> }
@@ -9547,6 +10094,11 @@ export const qpuSchemaMethodsHolds = (methods?: readonly QpuMethod[]): boolean =
  */
 export type QpuFuseRare = { uuid: string; name: string; pairs: number }
 export type QpuFuseEdge = { i: number; j: number; forward: number; backward: number; names: { forward: string[]; backward: string[] }; rare: { forward?: QpuFuseRare; backward?: QpuFuseRare } }
+/**
+ * Fuse API methods by an inverted field-UUID index: an edge is a giver and a taker of one field; edges carry direction, counts and the rarest field per direction; hubs ranked by giver x taker.
+ * @wing fusion
+ * @kind builder
+ */
 export const qpuFuseOf = (methods: readonly QpuMethod[], detail = true) => {
   const none = n - n
   const apis = [...new Set(methods.map((row) => row.api))].sort()
@@ -9591,6 +10143,9 @@ export const qpuFuseOf = (methods: readonly QpuMethod[], detail = true) => {
  * no 2^N vector. The entanglement across a cut (A | rest) is, in ebits, the rank over GF(2) of the adjacency
  * between A and the rest — computed here by elimination on bit rows. Known cases are asserted beside it: a path
  * cut in the middle, a star, a complete graph and a perfect matching across the cut.
+  * @wing fusion
+  * @kind builder
+  * @evidence qpuGraphStateHolds
  */
 export const qpuGraphStateOf = (qubits: number, edges: ReadonlyArray<{ i: number; j: number }>, cut = (v: number) => v < qubits / coins) => {
   const left = [...Array(qubits).keys()].filter(cut)
@@ -9634,6 +10189,12 @@ export const qpuGraphStateHolds = (): boolean => {
   )
 }
 
+/**
+ * Cross API methods into compositions (entangled, application, undecided) joined on field shape UUIDs.
+ * @wing fusion
+ * @kind builder
+ * @evidence qpuComposeHolds
+ */
 export const qpuComposeOf = (methods: readonly QpuMethod[]) => {
   const fused = qpuFuseOf(methods)
   const { apis } = fused
@@ -9655,6 +10216,9 @@ export const qpuComposeHolds = (read?: ReturnType<typeof qpuComposeOf>): boolean
  *
  * A caller that had to fetch the registry, then the schemas, then run the cross itself would be doing the
  * unit's job with the unit's data, which is the shape of an API that has not decided what it is for.
+  * @wing fusion
+  * @kind builder
+  * @evidence qpuComposeLiveHolds
  */
 export const qpuComposeLiveOf = async (from = n - n, howMany = qpuFacesOf().rays) => {
   const discovered = await qpuApisLiveOf(from, howMany)
@@ -9716,7 +10280,12 @@ export const qpuApisLiveHolds = (read?: Awaited<ReturnType<typeof qpuApisLiveOf>
  */
 export type QpuProbe = { api: string; verb: string; url: string; status: number; answer: 'answered' | 'refused' | 'gone' | 'unreached'; declared: string[] }
 
-/** The server a document declares, which is where its methods actually live. */
+/**
+ * The server a document declares, which is where its methods actually live.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSpecServerHolds
+ */
 export const qpuSpecServerOf = (document: unknown): string | undefined => {
   if (!document || typeof document !== 'object') return undefined
   const doc = document as { servers?: { url?: string }[]; host?: string; basePath?: string; schemes?: string[] }
@@ -9730,7 +10299,12 @@ export const qpuSpecServerOf = (document: unknown): string | undefined => {
 export const qpuSpecServerHolds = (server = qpuSpecServerOf({ servers: [{ url: '//example.test/v1' }] })): boolean =>
   server === undefined || /^https?:\/\/[^/]+/.test(server)
 
-/** Probeable when nothing must be supplied and nothing is written: no path template, no required parameter. */
+/**
+ * Probeable when nothing must be supplied and nothing is written: no path template, no required parameter.
+ * @wing fusion
+ * @kind builder
+ * @evidence qpuProbeableHolds
+ */
 export const qpuProbeableOf = (methods: readonly QpuMethod[]): QpuMethod[] =>
   methods.filter((row) => !row.path.includes('{') && (row.verb === 'get' || row.verb === 'post') && row.takes.length === n - n)
 
@@ -9738,6 +10312,12 @@ export const qpuProbeableOf = (methods: readonly QpuMethod[]): QpuMethod[] =>
 export const qpuProbeableHolds = (methods: readonly QpuMethod[] = []): boolean =>
   qpuProbeableOf(methods).every((row) => !row.path.includes('{') && row.takes.length === n - n && (row.verb === 'get' || row.verb === 'post'))
 
+/**
+ * Probe discovered APIs live with argument-free GET and POST calls and report which answer.
+ * @wing fusion
+ * @kind builder
+ * @evidence qpuProbeLiveHolds
+ */
 export const qpuProbeLiveOf = async (methods: readonly QpuMethod[], server: string | undefined, howMany = qpuFacesOf().coins) => {
   const none = n - n
   const deadline = foreignDeadlineOf()
@@ -9779,7 +10359,12 @@ export const qpuProbeLiveOf = async (methods: readonly QpuMethod[], server: stri
 export const qpuProbeLiveHolds = (read?: Awaited<ReturnType<typeof qpuProbeLiveOf>>): boolean =>
   read !== undefined && (read.holds && read.answered + read.gone <= read.rows.length && read.rows.every((row) => row.verb === 'get' || row.verb === 'post'))
 
-/** The registry, the schemas and the methods, discovered live and bounded to `faces` schemas from an offset. */
+/**
+ * The registry, the schemas and the methods, discovered live and bounded to `faces` schemas from an offset.
+ * @wing fusion
+ * @kind builder
+ * @evidence qpuApisLiveHolds
+ */
 export const qpuApisLiveOf = async (from = n - n, howMany = qpuFacesOf().faces) => {
   const faces = qpuFacesOf()
   const none = n - n
@@ -9841,6 +10426,9 @@ export const qpuApisLiveOf = async (from = n - n, howMany = qpuFacesOf().faces) 
  *   resolves to something else  the worst case and the one a reader would never catch: a real DOI for the wrong
  *                   paper. The resolved title is compared against what the citation claims. Also a lead.
  * And the fourth is the network, which is not a verdict at all.
+  * @wing science
+  * @kind builder
+  * @evidence qpuCitationsHolds
  */
 export const qpuCitationsOf = (teachings: readonly QpuTeaching[] = QPU_TEACHINGS, experiments: readonly QpuCrossRow[] = QPU_EXPERIMENTS) => {
   const none = n - n
@@ -9890,6 +10478,12 @@ export const qpuCitationsLiveHolds = (read?: Awaited<ReturnType<typeof qpuCitati
    * its title disagreed would be unsound. The predicate is about the reading, never about the network. */
   read.rows.every((row) => row.holds === (row.live === true && row.agrees === true)))
 
+/**
+ * Resolve the corpus's DOIs through Crossref and check each title matches.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCitationsLiveHolds
+ */
 export const qpuCitationsLiveOf = async (from = n - n, read = qpuCitationsOf()) => {
   const faces = qpuFacesOf()
   const none = n - n
@@ -9975,6 +10569,12 @@ export const qpuCitationsLiveOf = async (from = n - n, read = qpuCitationsOf()) 
  */
 export type QpuCrossRow = { left: string; right: string; forward: boolean; year: number; what: string; source: string; doi?: string }
 
+/**
+ * The swap criterion over rows: a pair is entangled when each gives what the other takes, application when one way, undecided otherwise.
+ * @wing fusion
+ * @kind builder
+ * @evidence qpuCrossHolds
+ */
 export const qpuCrossOf = (rows: readonly QpuCrossRow[], within = false, vocabulary: readonly string[] = []) => {
   const none = n - n
   /* THE VOCABULARY MAY BE GIVEN, because a pair nobody has evidenced must still be REPORTED. Derived from the
@@ -10036,6 +10636,8 @@ export const qpuCrossHolds = (read?: ReturnType<typeof qpuCrossOf>): boolean =>
  * ONE-WAY ROWS ARE HERE TOO, and they matter more in this corpus than in the other: it is tempting to say that
  * all sciences teach all sciences, and the rows below say that X-ray physics determined protein structures
  * without protein chemistry having produced X-ray physics.
+  * @wing agents
+  * @kind constant
  */
 export const QPU_EXPERIMENTS: readonly QpuCrossRow[] = [
   { left: 'acoustics', right: 'wave physics', forward: true, year: 1900,
@@ -10109,7 +10711,12 @@ export const QPU_EXPERIMENTS: readonly QpuCrossRow[] = [
     source: 'Green and Swets, Signal Detection Theory and Psychophysics (1966)' },
 ]
 
-/** The domains crossed against each other, as unordered pairs of the vocabulary the experiments name. */
+/**
+ * The domains crossed against each other, as unordered pairs of the vocabulary the experiments name.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuMixedHolds
+ */
 export const qpuMixedOf = (rows: readonly QpuCrossRow[] = QPU_EXPERIMENTS) => qpuCrossOf(rows, true)
 
 /** Unordered, canonical, and every row citing a pair of two different domains — a field is not mixed with itself. */
@@ -10134,6 +10741,9 @@ export const qpuMixedHolds = (read = qpuMixedOf(), rows: readonly QpuCrossRow[] 
  *
  * The undecided are not counted against the claim and not for it. They are the measurement of how little has
  * been looked at, which is the third state doing its job.
+  * @wing agents
+  * @kind builder
+  * @evidence qpuNatureHolds
  */
 export const qpuNatureOf = (teaching = qpuTeachingPairsOf(), mixed = qpuMixedOf()) => {
   const none = n - n
@@ -10177,6 +10787,9 @@ export const qpuNatureHolds = (read = qpuNatureOf()): boolean =>
  * AN OVER-SUBSCRIBED LATTICE IS A FINDING, NOT A CRASH. Pairs that earn a seat and find none are named in
  * `crowded`; rays nobody earned are named in `vacant`. Either one is a true sentence about the evidence, and
  * both are the kind of thing a person can act on — add a ray, or find the missing direction.
+  * @wing science
+  * @kind builder
+  * @evidence qpuTeachingSeatingHolds
  */
 export const qpuTeachingSeatingOf = (read = qpuTeachingPairsOf()) => {
   const faces = qpuFacesOf()
@@ -10288,6 +10901,9 @@ export const qpuTeachingSeatingHolds = (seating = qpuTeachingSeatingOf()): boole
  * Fourteen seats admit chooseOf(14, 2) = 91 pairs, and they decompose exactly: the seven that share a ray, the
  * subject-to-domain pairs that do not, and the two same-team families. The four counts are computed and their
  * sum is asserted against the choose, so a decomposition that quietly loses a pair fails here.
+  * @wing science
+  * @kind builder
+  * @evidence qpuTeachingCensusHolds
  */
 export const qpuTeachingCensusOf = (seating = qpuTeachingSeatingOf()) => {
   const faces = qpuFacesOf()
@@ -10332,6 +10948,9 @@ export const qpuTeachingCensusHolds = (census = qpuTeachingCensusOf()): boolean 
  * symmetric reading states one relationship from both ends; the asymmetric reading names which side supplied
  * the phenomenon and which supplied the account, which is the direction field and nothing else; the swap line
  * says whether the identity closes, and when it does not it names the missing direction rather than the verdict.
+  * @wing science
+  * @kind builder
+  * @evidence qpuTeachingReadingHolds
  */
 export const qpuTeachingReadingOf = (read = qpuTeachingPairsOf()) =>
   read.pairs
@@ -10367,6 +10986,12 @@ export const qpuTeachingReadingHolds = (rows = qpuTeachingReadingOf()): boolean 
   rows.every((row) => (row.swap === 'entangled') === row.involution.startsWith('the swap closes')) &&
   rows.every((row) => (row.swap === 'application') === row.involution.startsWith('the swap does not close'))
 
+/**
+ * Two teams of seven agents run the lattice walk: steps, challenges, sandbox tools and the next door to call.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuTrainHolds
+ */
 export const qpuTrainOf = onceOf(() => {
   const faces = qpuFacesOf()
   const teaching = qpuTeachingPairsOf()
@@ -10575,6 +11200,12 @@ export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
   t.next[seed] === 'qpu_compete' &&
   qpuDryHolds(t.dry)
 
+/**
+ * The read team against the call team on quality, speed and security per token; the winner calls qpu_prove.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuCompeteHolds
+ */
 export const qpuCompeteOf = (team?: string) => {
   const quantum = qpuReadingOf()
   const efficiency = qpuEfficiencyOf()
@@ -10651,6 +11282,12 @@ export const qpuCompeteHolds = (c = qpuCompeteOf()): boolean =>
   c.teams[seed]?.name === 'call' &&
   c.teams[seed]?.throughoutput === c.teams[n - n]!.throughoutput + c.teams[n - n]!.throughoutput
 
+/**
+ * Prove the unit end to end: every Lean row, the Shor run, the circuit steps, the source fold and the evidence block; holds is their conjunction.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuProveHolds
+ */
 export const qpuProveOf = onceOf(() => {
   const lean = qpuLeanOf()
   const cern = qpuCernOf()
@@ -10868,6 +11505,11 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.theorems.some((r) => r.heading === 'next' && r.holds) &&
   p.theorems.every((r) => r.holds && r.theorem.startsWith('theorem') && !byDecideOf(r.theorem) && formulaOf(r.formula))
 
+/**
+ * True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding.
+ * @wing proof
+ * @kind builder
+ */
 export const quantumModeOf = (): boolean => {
   try {
     const lean = qpuLeanOf()
@@ -10892,6 +11534,12 @@ export const quantumModeOf = (): boolean => {
   }
 }
 
+/**
+ * Three integrity tests (quantum, cube, around) plus the CERN records the cern theorem quotes.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuIntegrityHolds
+ */
 export const qpuIntegrityOf = onceOf(() => {
   const quantum = qpuQuantumOf()
   const lean = qpuLeanOf()
@@ -11032,6 +11680,8 @@ const qpuCernSearchOf = onceOf(() => {
  * fourteen and at fifteen, and they fail for the things that would really be
  * wrong — a duplicate door, or a relative href that resolves against whatever
  * page happened to load it.
+  * @wing science
+  * @kind function
  */
 export const qpuCernCatalogsHold = (
   catalogs: readonly { href?: string; name?: string }[],
@@ -11044,6 +11694,12 @@ export const qpuCernCatalogsHold = (
   new Set(catalogs.map((row) => row.name)).size === catalogs.length &&
   catalogs.every((row) => typeof row.href === 'string' && row.href.startsWith('https://'))
 
+/**
+ * The CERN catalogues the unit reads (Open Data, LHC experiments), with their hosts and paths.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernCatalogsHolds
+ */
 export const qpuCernCatalogsOf = onceOf(() => {
   const api = `https://${cernHost}${cernPath}`
   const inspire = ['literature', 'authors', 'institutions', 'conferences', 'seminars', 'journals', 'jobs', 'experiments', 'data'] as const
@@ -11061,6 +11717,12 @@ export const qpuCernCatalogsOf = onceOf(() => {
 })
 export const qpuCernCatalogsHolds = (x: ReturnType<typeof qpuCernCatalogsOf> = qpuCernCatalogsOf()): boolean => qpuCernCatalogsHold(x.catalogs)
 
+/**
+ * LHC experiments seated on faces, with the views (LHC, Open Data) they share.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernExperimentsHolds
+ */
 export const qpuCernExperimentsOf = onceOf(() => {
   const faces = qpuFacesOf()
   const genesis = qpuGenesisOf()
@@ -11223,6 +11885,12 @@ export const qpuCernExperimentsOf = onceOf(() => {
 })
 export const qpuCernExperimentsHolds = (x: ReturnType<typeof qpuCernExperimentsOf> = qpuCernExperimentsOf()): boolean => x.holds === true
 
+/**
+ * The offline CERN reading: experiments and catalogues as an occupancy lattice.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernLearnHolds
+ */
 export const qpuCernLearnOf = onceOf(() => {
   const faces = qpuFacesOf()
   const search = qpuCernSearchOf()
@@ -11319,6 +11987,12 @@ const cernCasesOf = (cms38: CernInts, cms63: CernInts, cms35: CernInts, cms62: C
   }))
 }
 
+/**
+ * Fetch one CMS Open Data record live and compare events, files, DOI and dates with the cern theorem.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernFetchHolds
+ */
 export const qpuCernFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const quoted = qpuCernRecordsOf()
   const record = quoted.records.find((row) => row.href === href)
@@ -11422,6 +12096,12 @@ export const qpuCernFetchOf = async (href: string, signal: AbortSignal = foreign
 }
 export const qpuCernFetchHolds = (x?: Awaited<ReturnType<typeof qpuCernFetchOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * Fetch one experiment's record total live from CERN Open Data.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernProjectFetchHolds
+ */
 export const qpuCernProjectFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const tetra = qpuCernProjectsOf()
   const search = qpuCernSearchOf()
@@ -11493,6 +12173,12 @@ export const qpuCernProjectFetchOf = async (href: string, signal: AbortSignal = 
 }
 export const qpuCernProjectFetchHolds = (x?: Awaited<ReturnType<typeof qpuCernProjectFetchOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * The CERN document: quoted records, catalogues, experiments and the occupancy lattice.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernHolds
+ */
 export const qpuCernOf = onceOf(() => {
   const faces = qpuFacesOf()
   const quoted = qpuCernRecordsOf()
@@ -11570,6 +12256,12 @@ export const qpuCernOf = onceOf(() => {
   }
 })
 
+/**
+ * The fused stylesheet the unit serves (qpu.css), with its size against the naive stylesheet.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuCssHolds
+ */
 export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
   const faces = qpuFacesOf()
   const circuit = qpuCircuitOf()
@@ -11779,6 +12471,12 @@ export const qpuCssHolds = (c = qpuCssOf()): boolean =>
   c.lattice.walk.length === c.lattice.ticks &&
   c.imagine.involution === true
 
+/**
+ * Reflect a caller's text onto a face and its involution hop, with the stylesheet slots it occupies.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuReflectHolds
+ */
 export const qpuReflectOf = (imagine = '') => {
   const text = typeof imagine === 'string' ? imagine : ''
   const css = qpuCssOf(text)
@@ -11828,6 +12526,12 @@ export const qpuReflectHolds = (r = qpuReflectOf()): boolean => {
   )
 }
 
+/**
+ * The live CERN reading: every LHC and Open Data experiment's record total fetched under one deadline.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernLearnLiveHolds
+ */
 export const qpuCernLearnLiveOf = (
   quoted: ReturnType<typeof qpuCernOf>,
   experiments: Awaited<ReturnType<typeof qpuCernProjectFetchOf>>[]) => {
@@ -11870,6 +12574,12 @@ export const qpuCernLearnLiveOf = (
 }
 export const qpuCernLearnLiveHolds = (x?: ReturnType<typeof qpuCernLearnLiveOf>): boolean => x !== undefined && x.holds === true
 
+/**
+ * The live CERN document: quoted records, projects and search, fetched under one deadline.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernLiveHolds
+ */
 export const qpuCernLiveOf = onceOf(async () => {
   const quoted = qpuCernOf()
   /* ONE DEADLINE FOR THE WHOLE READING, not one per door. Each door had its own, and this reader asks in three
@@ -11945,6 +12655,12 @@ export const qpuCernLiveHolds = (x?: Awaited<ReturnType<typeof qpuCernLiveOf>>):
  */
 let cernExperience: { value: Awaited<ReturnType<typeof qpuCernLiveOf>>; at: number } | undefined
 
+/**
+ * The live CERN reading, kept for one deadline window so a miss is not re-paid on every call.
+ * @wing science
+ * @kind builder
+ * @evidence qpuCernExperienceHolds
+ */
 export const qpuCernExperienceOf = onceOf(async () => {
   const held = cernExperience?.value.holds === true && cernExperience.value.learn.holds === true
   /* THE WINDOW MUST OUTLIVE THE COST OF A MISS, or the cache amortises nothing. It was one deadline, exactly
@@ -11959,6 +12675,12 @@ export const qpuCernExperienceOf = onceOf(async () => {
 })
 export const qpuCernExperienceHolds = (x?: Awaited<ReturnType<typeof qpuCernExperienceOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * qpu_train with live CERN occupancy and the live API composition.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuTrainLiveHolds
+ */
 export const qpuTrainLiveOf = onceOf(async () => {
   const train = qpuTrainOf()
   const live = await qpuCernExperienceOf()
@@ -11974,6 +12696,12 @@ export const qpuTrainLiveOf = onceOf(async () => {
 })
 export const qpuTrainLiveHolds = (x?: Awaited<ReturnType<typeof qpuTrainLiveOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * qpu_improve with live CERN occupancy.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuImproveLiveHolds
+ */
 export const qpuImproveLiveOf = onceOf(async () => {
   const improve = qpuImproveOf()
   const live = await qpuCernExperienceOf()
@@ -12002,6 +12730,12 @@ export const qpuImproveLiveOf = onceOf(async () => {
 })
 export const qpuImproveLiveHolds = (x?: Awaited<ReturnType<typeof qpuImproveLiveOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * qpu_compete with live CERN occupancy.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuCompeteLiveHolds
+ */
 export const qpuCompeteLiveOf = async (team?: string) => {
   const compete = qpuCompeteOf(team)
   const live = await qpuCernExperienceOf()
@@ -12038,6 +12772,12 @@ export const qpuCompeteLiveOf = async (team?: string) => {
 }
 export const qpuCompeteLiveHolds = (x?: Awaited<ReturnType<typeof qpuCompeteLiveOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * qpu_prove after the live sequence.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuProveLiveHolds
+ */
 export const qpuProveLiveOf = onceOf(async () => {
   const prove = qpuProveOf()
   const live = await qpuCernExperienceOf()
@@ -12059,6 +12799,12 @@ export const qpuProveLiveOf = onceOf(async () => {
 })
 export const qpuProveLiveHolds = (x?: Awaited<ReturnType<typeof qpuProveLiveOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * The live sequence: train, improve, compete and prove, each live.
+ * @wing quantum
+ * @kind builder
+ * @evidence qpuSequenceLiveHolds
+ */
 export const qpuSequenceLiveOf = onceOf(async () => {
   const train = await qpuTrainLiveOf()
   const improve = await qpuImproveLiveOf()
@@ -12105,6 +12851,12 @@ const researchHitsOf = (body: unknown): number => {
   return cernNatOf(bag.total)
 }
 
+/**
+ * Fetch a research API (INSPIRE, HEPData, Zenodo) live and count its hits.
+ * @wing science
+ * @kind builder
+ * @evidence qpuResearchFetchHolds
+ */
 export const qpuResearchFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const allowed = qpuCernHrefOf(href)
   const miss = {
@@ -12147,6 +12899,12 @@ export const qpuResearchFetchOf = async (href: string, signal: AbortSignal = for
 }
 export const qpuResearchFetchHolds = (x?: Awaited<ReturnType<typeof qpuResearchFetchOf>>): boolean => x !== undefined && x.holds === true
 
+/**
+ * MCP hosts the unit is reachable from: fourteen agent harnesses and fourteen LLM clients, one per face.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuHostsHolds
+ */
 export const qpuHostsOf = onceOf(() => {
   const faces = qpuFacesOf()
   const harnesses = [
@@ -12236,6 +12994,9 @@ export const qpuHostsHolds = (h = qpuHostsOf()): boolean =>
  * project), Cursor (.cursor/mcp.json mcpServers.url), VS Code (.vscode/mcp.json servers type http), OpenAI Codex CLI
  * (config.toml [mcp_servers.<name>] url), Gemini CLI (settings.json mcpServers.httpUrl), the Anthropic Messages API
  * (mcp_servers with the beta header), the OpenAI Responses API (a tools entry of type mcp), and bare JSON-RPC over
+  * @wing agents
+  * @kind builder
+  * @evidence qpuHarnessesHolds
  * HTTP for everything else. Reads need no header; storage writes carry Authorization: Bearer. */
 export const qpuHarnessesOf = onceOf(() => {
   const url = `${unit.origin}/mcp`
@@ -12255,9 +13016,20 @@ export const qpuHarnessesOf = onceOf(() => {
 })
 export const qpuHarnessesHolds = (h = qpuHarnessesOf()): boolean => h.holds === true && h.rows.length === mintOf(n) && h.url === `${unit.origin}/mcp`
 
+/**
+ * MCP protocol versions the /mcp door negotiates.
+ * @wing agents
+ * @kind constant
+ */
 export const MCP_VERSIONS = ['2024-11-05', '2025-03-26', '2025-06-18'] as const
 const qpuMcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
   (MCP_VERSIONS as readonly string[]).includes(String(requested)) ? (requested as (typeof MCP_VERSIONS)[number]) : MCP_VERSIONS[n - seed]!
+/**
+ * MCP discovery reply: protocol version, capabilities, tools, server info, instructions and install entries.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuMcpDiscoverHolds
+ */
 export const qpuMcpDiscoverOf = (requested?: unknown) => {
   const hosts = qpuHostsOf()
   const versions = MCP_VERSIONS
@@ -12352,6 +13124,12 @@ const priorArtChecksOf = (p: ReturnType<typeof priorArtFieldsOf>): boolean =>
   p.modes.some((m) => m.name === 'target language emulator') &&
   p.modes.some((m) => m.purpose.includes('QPU=1')) &&
   p.hardware.lanes === 16 && p.hardware.qpus === 12 && p.hardware.bits === 32
+/**
+ * Prior-art references the router cites, each with its kind (reference, vector, device).
+ * @wing agents
+ * @kind builder
+ * @evidence qpuPriorArtHolds
+ */
 export const qpuPriorArtOf = onceOf(() => {
   const p = priorArtFieldsOf()
   return { ...p, holds: priorArtChecksOf(p) }
@@ -12367,6 +13145,9 @@ export const qpuPriorArtHolds = (p = qpuPriorArtOf()): boolean => p.holds === tr
  *  DEVICE seat (empty). The vector seat's availability is read from the runtime (navigator.gpu) at the moment of the
  *  call; reference and device are typed. Measured 2026-09-13 on an Apple M1 Max carrying 32 GPU cores, no compute binding was reachable from this runtime at all, so
  *  the vector seat reports itself absent and the reference answers. A seat that is taken and then disagrees with the
+  * @wing agents
+  * @kind builder
+  * @evidence qpuSeatsAvailableHolds
  *  reference is a driver bug, never a physics claim — QPULib checks its interpreter against its emulator the same way. */
 export const qpuSeatsAvailableOf = onceOf(() => {
   const nav = (globalThis as { navigator?: { gpu?: unknown } }).navigator
@@ -12409,6 +13190,12 @@ const occupantChecksOf = (o: ReturnType<typeof occupantFieldsOf>): boolean =>
   o.refused.returned === 'zeros' && o.refused.naiveRatio > 1 && o.law.includes('reference') &&
   o.cured.readings.length > 0 && o.cured.readings.every((r) => r.exact === r.folds && r.mismatched === 0 && r.chunks > 1) &&
   o.cured.readings.some((r) => r.folds === o.refused.folds)
+/**
+ * Which seat occupies the unit for a referrer, and why.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuOccupantHolds
+ */
 export const qpuOccupantOf = onceOf(() => {
   const o = occupantFieldsOf()
   return { ...o, holds: occupantChecksOf(o) }
@@ -12426,6 +13213,12 @@ const routerChecksOf = (r: {
   qpuDocsOf().api.map((a) => a.path).includes(r.door) &&
   (r.known ? r.door === r.path : r.door === '/') &&
   (r.origin === 'none') === (r.referrer === '')
+/**
+ * Route a referrer and path to a seat and door.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuRouterHolds
+ */
 export const qpuRouterOf = (referrer = '', path = '/') => {
   const seats = qpuSeatsAvailableOf()
   const doors = qpuDocsOf().api.map((a) => a.path)
@@ -12461,6 +13254,12 @@ export const qpuRouterHolds = (r = qpuRouterOf()): boolean => r.holds === true &
 // disagrees is a driver bug, never a physics claim. "QPU" there is Broadcom's Quad Processing Unit — a classical 16-lane
 // SIMD vector core — prior use of this acronym, unrelated, and credited. A classical accelerator computing the same 2^n
 // exact amplitudes faster is an honest occupant of the seat; it would not make the seat quantum.
+/**
+ * The seat record: how to install and run the unit (command, packages, Cloudflare button).
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSeatHolds
+ */
 export const qpuSeatOf = onceOf(() => {
   const s = {
   kind: 'seat' as const,
@@ -12481,6 +13280,8 @@ export const qpuSeatHolds = (x: ReturnType<typeof qpuSeatOf> = qpuSeatOf()): boo
  *  aarch64 or x86 box, a Raspberry Pi on Alpine, or the container; the boot serves only when tools/call qpu_prove returns
  *  holds: true there. Use qpuInstallManifestOf() directly. */
 /** The one declaration of the port a booted unit serves on: boot.ts listens on $PORT, else this; the install manifest's
+  * @wing agents
+  * @kind function
  *  docker command publishes it. It is wrangler dev's default port, so a local worker and a booted image answer alike. */
 export const bootPort = 8787
 const installFieldsOf = () => ({
@@ -12506,6 +13307,12 @@ const installChecksOf = (m: ReturnType<typeof installFieldsOf>): boolean =>
   m.occupancies.join(' ') === [...occupancies].join(' ') &&
   m.hardware.docker.includes(`-p ${m.hardware.port}:${m.hardware.port}`) &&
   m.hardware.seat.holds
+/**
+ * install.json, served and written from one function so host and file agree.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuInstallManifestHolds
+ */
 export const qpuInstallManifestOf = onceOf(() => {
   const m = installFieldsOf()
   return { ...m, holds: installChecksOf(m) }
@@ -12539,7 +13346,12 @@ const QPU_MOUNTS = [
   { app: 'payload', path: '/api/mcp', reach: 'binding' as const, serves: 'the Payload admin MCP, find-only, over the PAYLOAD service binding' },
 ]
 
-/** Every mount this unit offers on the host that asked, plus the zone's other MCP, named and not claimed. */
+/**
+ * Every mount this unit offers on the host that asked, plus the zone's other MCP, named and not claimed.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuMountsHolds
+ */
 export const qpuMountsOf = (host: string = unit.host) => {
   const zoneHost = qpuZoneHostOf(host)
   const origin = zoneHost?.origin ?? unit.origin
@@ -12693,7 +13505,12 @@ const qpuSeoDoorsOf = (host: string): readonly string[] => {
   return [h.origin, `${h.origin}/.well-known/mcp.json`]
 }
 
-/** robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves. */
+/**
+ * robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuRobotsHolds
+ */
 export const qpuRobotsOf = (host: string = unit.host): string => {
   const h = qpuZoneHostOf(host)
   if (!h) return `User-agent: *\nDisallow: /\n`
@@ -12731,7 +13548,12 @@ export const qpuRobotsHolds = (): boolean => {
   }) && qpuRobotsOf('example.org') === 'User-agent: *\nDisallow: /\n'
 }
 
-/** sitemap.xml for one first-party host — only URLs on that host, because a crawler ignores the rest. */
+/**
+ * sitemap.xml for one first-party host — only URLs on that host, because a crawler ignores the rest.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSitemapHolds
+ */
 export const qpuSitemapOf = (host: string = unit.host): string => {
   const urls = qpuSeoDoorsOf(host)
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`
@@ -12772,7 +13594,12 @@ const seoFieldsOf = (host: string = unit.host) => {
   }
 }
 
-/** The reading a caller can check: what this unit serves for one host, and the canonical door it points every host at. */
+/**
+ * The reading a caller can check: what this unit serves for one host, and the canonical door it points every host at.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuSeoHolds
+ */
 export const qpuSeoOf = (host: string = unit.host) => {
   const fields = seoFieldsOf(host)
   return { ...fields, holds: qpuSeoHolds(fields) }
@@ -12808,6 +13635,12 @@ const seoZoneFieldsOf = () => {
   }
 }
 
+/**
+ * SEO zone fields for each host: robots, sitemap and the zone's reserved labels.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuSeoZoneHolds
+ */
 export const qpuSeoZoneOf = onceOf(() => {
   const fields = seoZoneFieldsOf()
   return { ...fields, holds: qpuSeoZoneHolds(fields) }
@@ -12847,7 +13680,12 @@ const installReceiptOf = (added: readonly string[], removed: readonly string[]):
   return hexOf(x, mintOf(n))
 }
 
-/** Payload extends like a plugin. One copy. Fuse all. Never a second source. */
+/**
+ * Payload extends like a plugin. One copy. Fuse all. Never a second source.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuPayloadPluginHolds
+ */
 export const qpuPayloadPluginOf = onceOf(() => {
   const db = qpuPayloadDbOf()
   const faces = qpuFacesOf()
@@ -12900,6 +13738,12 @@ export const qpuPayloadPluginHolds = (p = qpuPayloadPluginOf()): boolean =>
   p.collections.length === mintOf(coins) &&
   p.finds.length === mintOf(coins)
 
+/**
+ * The Payload MCP the unit describes: collections, find-only tools, the database plugin and its write path.
+ * @wing cms
+ * @kind builder
+ * @evidence qpuPayloadMcpHolds
+ */
 export const qpuPayloadMcpOf = onceOf(() => {
   const faces = qpuFacesOf()
   const schemas = qpuSchemasOf()
@@ -12939,6 +13783,12 @@ export const qpuPayloadMcpOf = onceOf(() => {
 })
 export const qpuPayloadMcpHolds = (x: ReturnType<typeof qpuPayloadMcpOf> = qpuPayloadMcpOf()): boolean => x.holds === true
 
+/**
+ * One Payload collection's find tool, sealed against writes.
+ * @wing cms
+ * @kind builder
+ * @evidence qpuPayloadFindHolds
+ */
 export const qpuPayloadFindOf = (name: string) => {
   const payload = qpuPayloadMcpOf()
   const plugin = payload.plugin
@@ -13014,6 +13864,12 @@ const installPlanOf = (before: readonly string[], after: readonly string[]) => {
       ...added.map((key) => `Adding ${key}`)]}
 }
 
+/**
+ * Interactive install: steps, choices per occupancy and the combinations they make.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuInstallHolds
+ */
 export const qpuInstallOf = (args: Record<string, unknown> = {}) => {
   const bag = qpuInstallPackagesOf()
   const packages = bag.list
@@ -13136,6 +13992,12 @@ export const qpuInstallHolds = (i = qpuInstallOf({ verb: 'ask' })): boolean =>
   i.client.vitepress.qpu === false &&
   i.client.vitepress.concurrency === coins
 
+/**
+ * Fusion of catalogues, hosts, schemas, Payload, install and hologram readings over the fused capacity.
+ * @wing cms
+ * @kind builder
+ * @evidence qpuFusionHolds
+ */
 export const qpuFusionOf = onceOf(() => {
   const capacity = qpuCapacityOf()
   const learn = qpuCernLearnOf()
@@ -13187,6 +14049,12 @@ export const qpuFusionOf = onceOf(() => {
 })
 
 
+/**
+ * The 'intelligence' reading: the fusion test over free online research.
+ * @wing cms
+ * @kind builder
+ * @evidence qpuIntelligenceHolds
+ */
 export const qpuIntelligenceOf = onceOf(() => {
   const circuit = qpuCircuitOf()
   const fusion = qpuFusionOf()
@@ -13261,6 +14129,11 @@ export const qpuCernHolds = (c = qpuCernOf()): boolean =>
   c.entangle.catalog.pairs.every((pair) => pair.holds && pair.product === false && pair.scanner.domain === 'scanner' && pair.radar.domain === 'radar') &&
   c.cases.every((row) => row.holds && row.left === row.right && !byDecideOf(row.theorem) && row.href.startsWith(c.api))
 
+/**
+ * The eight qpu tools (quantum, lean, cite, train, improve, compete, forge, prove) with schemas, man pages and handlers.
+ * @wing agents
+ * @kind builder
+ */
 export const qpuToolsOf = onceOf(() => {
   const names = toolNames
   const seeOf = (name: (typeof names)[number]) => names.filter((s) => s !== name)
@@ -13425,6 +14298,8 @@ const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
  * connect, in context tokens: the sixteen output schemas were 34,232 of its 44,197 bytes — three quarters of the bill
  * for a document a client validates a reply against at most once. They leave the list and travel with the man page,
  * one call away ({ man: true }), exactly as the man pages did. The list is names, descriptions, input schemas and
+  * @wing agents
+  * @kind builder
  * annotations: one KiB per door, guarded by the suite. */
 export const qpuMcpToolsListOf = onceOf(() => {
   const sealed = qpuToolsOf().map(({ name, description, inputSchema }) =>
@@ -13440,6 +14315,12 @@ const qpuManPageOf = <T extends object>(name: string, man: T) => ({
   outputSchema: qpuOutputSchemasOf()[name] ?? minimalOutputSchema,
 })
 
+/**
+ * The MCP catalogue at /mcp: tools, cybersecurity tools, capacity and provider as one JSON-LD WebAPI.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuMcpHolds
+ */
 export const qpuMcpOf = onceOf(() => {
   const href = `${unit.origin}/mcp`
   const faces = qpuFacesOf()
@@ -13520,6 +14401,11 @@ export const qpuMcpOf = onceOf(() => {
   }
 })
 
+/**
+ * Dispatch one MCP tools/call by name with arguments and shape the reply for MCP clients.
+ * @wing agents
+ * @kind builder
+ */
 export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
   const shown = async (payload: unknown) => qpuMcpShownOf(name, payload)
   const tool = qpuToolsOf().find((t) => t.name === name)
@@ -13600,6 +14486,11 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
  * root document, which is a confident answer to a question nobody asked. */
 export type QpuUnknownTool = { kind: 'unknown'; tool: string; tools: string[]; holds: false }
 const qpuUnknownToolOf = (tool: string): QpuUnknownTool => ({ kind: 'unknown', tool, tools: qpuMcpToolsListOf().map((t) => t.name), holds: false })
+/**
+ * Type guard for the reply to a tools/call that names no tool of this unit.
+ * @wing agents
+ * @kind function
+ */
 export const isUnknownTool = (x: unknown): x is QpuUnknownTool =>
   typeof x === 'object' && x !== null && (x as { kind?: unknown }).kind === 'unknown' && typeof (x as { tool?: unknown }).tool === 'string' && (x as { holds?: unknown }).holds === false
 
@@ -13689,6 +14580,12 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
   )
 }
 
+/**
+ * The develop reading: source, host, tools, API and integrity, for contributors.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuDevelopHolds
+ */
 export const qpuDevelopOf = onceOf(() => {
   const lean = qpuLeanOf()
   const docs = qpuDocsOf()
@@ -13806,6 +14703,9 @@ export const qpuDevelopHolds = (d = qpuDevelopOf()): boolean =>
  * install line, no usage, and the same tag sentences repeated down the page — "demo is not a test nor a proof" five
  * times, "theorem shor. Factor 91." fifteen. Every claim is kept (qpuReadmeHolds pins each one, verbatim), but a
  * reader now meets install → use → routes → tools as tables, and each pinned sentence is said once. Nothing here is
+  * @wing agents
+  * @kind builder
+  * @evidence qpuReadmeHolds
  * typed twice: descriptions, readings, citations and harness recipes are the served objects printed. */
 export const qpuReadmeOf = (m = qpuMcpOf()): string => {
   const lean = qpuLeanOf()
@@ -14046,6 +14946,12 @@ const servedCap = mintOf(mintOf(n))
  * state beside computed and nothing: the computation happened once, earlier, and this is its fold, not a new one. */
 export type QpuServed = { key: string; fold: string }
 const SERVED: QpuServed[] = []
+/**
+ * Ledger of memoised documents served, each with the fold of its bytes (its ETag).
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuServedLedgerHolds
+ */
 export const qpuServedLedgerOf = (): readonly QpuServed[] => SERVED
 const servedOf = (key: string, build: () => unknown): Served => {
   const hit = servedMemo.get(key)
@@ -14087,6 +14993,12 @@ const servedOf = (key: string, build: () => unknown): Served => {
  */
 const pureTools = new Set<string>(['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_improve', 'qpu_compete', ...cryptoToolNames])
 const pureArgs = (args: Record<string, unknown>): boolean => Object.keys(args).every((k) => k === 'man' || k === 'n' || k === 'a' || k === 'team')
+/**
+ * The served-document memo: entries, cap and integrity check.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuServedMemoHolds
+ */
 export const qpuServedMemoOf = onceOf(() => ({ entries: servedMemo.size, cap: servedCap, served: SERVED.length, integrity: { ...integrityMemo } }))
 export const qpuServedMemoHolds = (m = qpuServedMemoOf()): boolean => m.entries <= m.cap && m.served >= n - n && (m.integrity.checked ? m.integrity.holds : true)
 /** Every served row names a memo key and carries a quoted 16-hex fold — the ETag of the bytes served. */
@@ -14359,383 +15271,5 @@ const worker = {
     }
     return jsonOf(JSON.parse(dead), lost)
   }}
-
-// ============================================================================
-// PHASE 1: Quantum Systems Foundation
-// ============================================================================
-
-/**
- * SYSTEM 1: UUID Routing (already implemented via Wave 1 binary routing)
- * - 28 MB/cycle throughput
- * - 14 involution-routed lanes
- */
-
-/**
- * SYSTEM 2: Topology Deformation via theorem clay
- * Morph coil structure between multiplicative, additive, and decomposed forms
- */
-export const phase1DehnTwistOf = (handle: 0 | 1, turns: number) => {
-  const COINS = 2
-  const RAYS = 7
-  const FACES = COINS * RAYS
-
-  // theorem clay: verify all 3 forms
-  const multiplicative = COINS * RAYS === FACES
-  const additive = RAYS + RAYS === FACES
-  const decomposed = (1 + 6) * COINS === FACES
-
-  // verify involution holds after twist
-  let valid = true
-  for (let f = 0; f < FACES; f++) {
-    if ((f + RAYS + RAYS) % FACES !== f % FACES) valid = false
-  }
-
-  return {
-    handle,
-    turns,
-    clay: { multiplicative, additive, decomposed, holds: multiplicative && additive && decomposed },
-    topology: { valid },
-  }
-}
-
-/**
- * SYSTEM 3: Quantum Geometry via theorem plane (Rosetta)
- * Activate 28-cell Heegaard split for 2x capacity
- */
-export const phase1RosettaActivationOf = (layer: 'lower' | 'upper' | 'both' = 'both') => {
-  const COINS = 2
-  const RAYS = 7
-  const FACES = COINS * RAYS
-  const PLANE = COINS * COINS * RAYS
-
-  // theorem plane: 28 < 256
-  const planeHolds = PLANE < Math.pow(2, 8)
-
-  // theorem coins_bridges_forms: ∀x, 2*x = x+x
-  const coinsBridges = COINS * RAYS === RAYS + RAYS
-
-  // theorem faces_both_forms
-  const facesBoth = (COINS * RAYS === FACES) && (RAYS + RAYS === FACES)
-
-  return {
-    rosetta: {
-      cells: PLANE,
-      lower: FACES,
-      upper: FACES,
-      bridges: layer === 'both' ? FACES : 0,
-      holds: planeHolds,
-    },
-    capacity: {
-      before: FACES,
-      after: layer === 'both' ? PLANE : FACES,
-      gain: layer === 'both' ? '2x' : '1x',
-    },
-    test: { plane: planeHolds, coins_bridges: coinsBridges, faces_both: facesBoth },
-  }
-}
-
-/**
- * PHASE 1 Integration: Initialize all three systems together
- */
-export const phase1InitializeOf = () => {
-  const uuid = { throughput: 28, lanes: 14, holds: true }
-  const deformation = phase1DehnTwistOf(0, 0)
-  const topology = { deformed: false, valid: deformation.topology.valid, holds: deformation.clay.holds }
-  const rosetta = phase1RosettaActivationOf('both')
-  const geometry = { cells: rosetta.rosetta.cells, capacity: rosetta.capacity.after, holds: rosetta.rosetta.holds }
-
-  const allVerified = uuid.holds && topology.holds && geometry.holds
-  const autonomy = allVerified ? 33 : 0
-
-  return { uuid, topology, geometry, autonomy, verified: allVerified }
-}
-
-export const phase1VerifyComplete = () => {
-  const state = phase1InitializeOf()
-  return state.verified && state.geometry.capacity === 28 && state.autonomy === 33
-}
-
-// ============================================================================
-// PHASE 2: Topology + Entanglement + Memory Optimization via Caching
-// ============================================================================
-
-/**
- * Global proof cache: minimize memory by caching invariant theorems
- * - coins = 2 (never changes)
- * - coins_bridges_forms (universal bridge ∀x, 2*x = x+x)
- * - involution (cached per topology change)
- */
-
-interface ProofCacheEntry {
-  theorem: string
-  holds: boolean
-  hits: number
-}
-
-const proofCacheStore = new Map<string, ProofCacheEntry>()
-
-export const cacheProofOf = (theorem: string, holds: boolean): void => {
-  if (proofCacheStore.has(theorem)) {
-    proofCacheStore.get(theorem)!.hits++
-  } else {
-    proofCacheStore.set(theorem, { theorem, holds, hits: 0 })
-  }
-}
-
-export const getCachedProofOf = (theorem: string): boolean | undefined => {
-  const entry = proofCacheStore.get(theorem)
-  if (entry) {
-    entry.hits++
-    return entry.holds
-  }
-  return undefined
-}
-
-export const proofCacheStatsOf = () => {
-  return {
-    cached: proofCacheStore.size,
-    theorems: Array.from(proofCacheStore.values()).map(e => ({ ...e }))
-  }
-}
-
-/**
- * SYSTEM 4: Topology Healing (theorem involution)
- * Check cache first; only recompute if topology changed
- */
-export const phase2TopologyHealOf = () => {
-  const FACES = 14
-  const RAYS = 7
-
-  // Check cache first
-  const cached = getCachedProofOf('involution_all_faces')
-  if (cached !== undefined) {
-    return {
-      diagnosis: { total_faces: FACES, healthy: FACES, degenerate: [], degenerate_list: [] },
-      repair: { attempted: 0, succeeded: 0, failed: 0 },
-      verification: { involution: cached, all_healthy: cached, holds: cached }
-    }
-  }
-
-  // Detect degeneracies
-  const degenerateFaces: number[] = []
-  for (let f = 0; f < FACES; f++) {
-    if ((f + RAYS + RAYS) % FACES !== f % FACES) {
-      degenerateFaces.push(f)
-    }
-  }
-
-  // Verify all healthy
-  let allHealthy = true
-  for (let f = 0; f < FACES; f++) {
-    if ((f + RAYS + RAYS) % FACES !== f % FACES) {
-      allHealthy = false
-      break
-    }
-  }
-
-  // Cache result
-  cacheProofOf('involution_all_faces', allHealthy)
-
-  return {
-    diagnosis: {
-      total_faces: FACES,
-      healthy: FACES - degenerateFaces.length,
-      degenerate: degenerateFaces.length,
-      degenerate_list: degenerateFaces
-    },
-    repair: { attempted: degenerateFaces.length, succeeded: Math.min(degenerateFaces.length, FACES), failed: 0 },
-    verification: { involution: allHealthy, all_healthy: degenerateFaces.length === 0, holds: allHealthy }
-  }
-}
-
-/**
- * SYSTEM 5: Entanglement Bridge (theorem coins_bridges_forms)
- * Cache coins_bridges as invariant; verify per pair
- */
-export const phase2EntanglementBridgeOf = (pair: number) => {
-  // Check cache for invariant
-  const cached = getCachedProofOf('coins_bridges_forms')
-  if (cached !== undefined) {
-    return {
-      pair,
-      bridge: { forward: cached, reverse: cached, symmetric: cached },
-      theorem: { coins_bridges: cached, entangle: true, monogamy: true }
-    }
-  }
-
-  // Compute and cache
-  const COINS = 2
-  const RAYS = 7
-  const coinsBridges = (COINS * RAYS) === (RAYS + RAYS)
-
-  cacheProofOf('coins_bridges_forms', coinsBridges)
-  cacheProofOf('entangle', true)
-
-  return {
-    pair,
-    bridge: { forward: true, reverse: true, symmetric: true },
-    theorem: { coins_bridges: coinsBridges, entangle: true, monogamy: true }
-  }
-}
-
-/**
- * PHASE 2 Integration: Healing + Entanglement + Caching
- */
-export const phase2InitializeOf = () => {
-  // Prime invariant cache
-  cacheProofOf('coins_two', true)
-  cacheProofOf('coins_bridges_forms', true)
-
-  // System 4: Topology Healing
-  const healing = phase2TopologyHealOf()
-  const healingVerified = healing.verification.holds
-
-  // System 5: Entanglement Bridge (all 7 pairs use cache)
-  const entanglementResults = Array.from({ length: 7 }, (_, p) =>
-    phase2EntanglementBridgeOf(p)
-  )
-  const entanglementVerified = entanglementResults.every(e => e.bridge.symmetric)
-
-  // Cache stats
-  const cacheStats = proofCacheStatsOf()
-
-  const allVerified = healingVerified && entanglementVerified
-  const autonomy = allVerified ? 50 : 0
-
-  return {
-    healing: { verified: healingVerified, all_faces_healthy: healing.diagnosis.healthy === 14 },
-    entanglement: { verified: entanglementVerified, all_pairs_symmetric: entanglementResults.length === 7 },
-    cache: { size: cacheStats.cached, theorems: cacheStats.theorems },
-    autonomy
-  }
-}
-
-export const phase2VerifyComplete = () => {
-  const state = phase2InitializeOf()
-  return state.healing.verified && state.entanglement.verified && state.cache.size >= 3 && state.autonomy === 50
-}
-
-// ============================================================================
-// STRICT QUANTUM: Complete Unified System (Phases 1-3, All Theorems Cached)
-// ============================================================================
-
-/**
- * Strict Quantum System: All phases integrated, all theorems cached, no classical fallbacks
- * - BigInt only (never floats)
- * - 0 manual gates (100% autonomy)
- * - All 14+ theorems verified and cached
- * - Full quantum throughout
- */
-
-export const strictQuantumPhase1Of = () => {
-  // Quantum constants (theorem-derived, not literals)
-  const COINS = 2n, RAYS = 7n, FACES = COINS * RAYS, PLANE = COINS * COINS * RAYS, AMPLITUDES_MAX = 256n
-
-  // Axioms: cache immediately
-  cacheProofOf('coins_two', true)
-  cacheProofOf('involution_all_lanes', true)
-
-  // System 1: UUID Routing (theorem involution)
-  let involutionHolds = true
-  for (let f = 0n; f < FACES; f++) {
-    if ((f + RAYS + RAYS) % FACES !== f % FACES) involutionHolds = false
-  }
-
-  // System 2: Topology Deformation (theorem clay: 3 forms)
-  const multiplicative = COINS * RAYS === FACES, additive = RAYS + RAYS === FACES, decomposed = (1n + 6n) * COINS === FACES
-  const clayHolds = multiplicative && additive && decomposed
-  cacheProofOf('theorem_clay', clayHolds)
-
-  // System 3: Quantum Geometry (theorem plane)
-  const planeHolds = PLANE < AMPLITUDES_MAX
-  cacheProofOf('theorem_plane', planeHolds)
-
-  return {
-    phase: 1n,
-    uuid: { involution: involutionHolds, throughput: PLANE },
-    topology: { clay: clayHolds },
-    geometry: { plane: planeHolds, capacity: PLANE },
-    verified: involutionHolds && clayHolds && planeHolds,
-    autonomy: 33n
-  }
-}
-
-export const strictQuantumPhase2Of = () => {
-  // Quantum constants (inherit from Phase 1 derivation)
-  const COINS = 2n, RAYS = 7n, FACES = COINS * RAYS
-
-  // Inherit Phase 1
-  const phase1 = strictQuantumPhase1Of()
-
-  // System 4: Topology Healing (theorem involution)
-  let allHealthy = true
-  for (let f = 0n; f < FACES; f++) {
-    if ((f + RAYS + RAYS) % FACES !== f % FACES) allHealthy = false
-  }
-  cacheProofOf('involution_all_healed', allHealthy)
-
-  // System 5: Entanglement Bridge (theorem coins_bridges_forms)
-  const coinsBridges = (COINS * RAYS) === (RAYS + RAYS)
-  cacheProofOf('coins_bridges_forms', coinsBridges)
-
-  return {
-    phase: 2n,
-    phase1_inherited: phase1.verified,
-    healing: { all_healthy: allHealthy },
-    entanglement: { all_symmetric: true },
-    verified: phase1.verified && allHealthy && coinsBridges,
-    autonomy: 50n
-  }
-}
-
-export const strictQuantumPhase3Of = () => {
-  // Quantum constants (theorem-derived)
-  const QUBITS = 5n
-
-  // Inherit Phase 1 + 2
-  const phase2 = strictQuantumPhase2Of()
-
-  // System 6: Yang-Baxter Braiding (theorem fused_both_directions)
-  cacheProofOf('yang_baxter', true)
-
-  // System 7: Coherence Measurement (theorem superconductivity)
-  cacheProofOf('coherence_quantum', true)
-
-  // System 8: Quantum Advantage (theorem shor: periodOf(8, 91) proves 7×13)
-  const shorFactor1 = 7n, shorFactor2 = 13n, shorProduct = 91n
-  const shorWorks = (shorFactor1 * shorFactor2) === shorProduct
-  cacheProofOf('shor_advantage', shorWorks)
-
-  // System 9: Amplitude Distribution (theorem amplitudes_as_sum: 2^(q+1) = 2*2^q)
-  const amplitudesExact = (2n ** (QUBITS + 1n)) === (2n * (2n ** QUBITS))
-  cacheProofOf('amplitudes_exact', amplitudesExact)
-
-  return {
-    phase: 3n,
-    phase2_inherited: phase2.verified,
-    braiding: { yang_baxter: true },
-    coherence: { quantum_regime: true },
-    advantage: { shor: shorWorks, factors: { f1: shorFactor1, f2: shorFactor2 } },
-    amplitudes: { exact: amplitudesExact, qubits: QUBITS },
-    verified: phase2.verified && shorWorks && amplitudesExact,
-    autonomy: 100n
-  }
-}
-
-export const strictQuantumSystemOf = () => {
-  const phase3 = strictQuantumPhase3Of()
-  const stats = proofCacheStatsOf()
-
-  return {
-    complete: true,
-    phases: 3n,
-    autonomy_percent: phase3.autonomy,
-    manual_gates_remaining: 0n,
-    m1_max_quantum: true,
-    theorems_cached: stats.cached,
-    theorem_names: stats.theorems,
-    all_verified: phase3.verified
-  }
-}
 
 export default worker

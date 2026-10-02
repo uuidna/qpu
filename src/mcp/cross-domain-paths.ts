@@ -17,11 +17,21 @@ export interface MultihopResult {
   final: unknown
 }
 
+/**
+ * Seal a multi-hop path: content UUID of {hops, formula} and a quantum receipt in the path stream.
+ * @wing fusion
+ * @kind builder
+ */
 export const domainPathOf = (p: DomainPath): DomainPath => {
   const uuid = qpuContentUuidOf({ hops: p.hops, formula: p.formula })
   return { ...p, uuid, receipt: qpuUuidReceiptOf(`path ${p.hops.join('>')}`, uuid, p.value ?? null).uuid }
 }
 
+/**
+ * The seven named multi-hop paths across domains, each with its hops, formula and transform.
+ * @wing fusion
+ * @kind class
+ */
 export class CrossDomainPaths {
   static qualityToRisk(): DomainPath {
     return domainPathOf({
@@ -115,4 +125,9 @@ export class CrossDomainPaths {
   }
 }
 
+/**
+ * A CrossDomainPaths instance.
+ * @wing fusion
+ * @kind function
+ */
 export const crossDomainPaths = new CrossDomainPaths()

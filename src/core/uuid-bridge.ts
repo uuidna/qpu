@@ -23,6 +23,11 @@ interface UUIDIndexEntry {
 const referrerOf = (inputs?: Record<string, unknown>): string | undefined =>
   typeof inputs?.referrer === 'string' && inputs.referrer.length > 0 ? inputs.referrer : undefined
 
+/**
+ * Addresses every core operation by its content UUID (registered in the UUID registry) and executes it by UUID, with a quantum receipt per execution.
+ * @wing receipts
+ * @kind class
+ */
 export class UUIDBridge {
   private uuidToOperation: Map<string, string> = new Map() // uuid -> operation name
   private operationToUUID: Map<string, string> = new Map() // operation name -> uuid
@@ -133,10 +138,17 @@ export class UUIDBridge {
 // GLOBAL BRIDGE INSTANCE
 // ============================================================================
 
+/**
+ * The UUIDBridge singleton.
+ * @wing receipts
+ * @kind function
+ */
 export const uuidBridge = new UUIDBridge()
 
 /**
  * Execute operation by UUID (global)
+  * @wing receipts
+  * @kind function
  */
 export async function executeByUUID(uuid: string, inputs?: Record<string, unknown>): Promise<ExecutionResult> {
   return uuidBridge.executeByUUID(uuid, inputs)
@@ -144,6 +156,8 @@ export async function executeByUUID(uuid: string, inputs?: Record<string, unknow
 
 /**
  * Execute operation by name (global)
+  * @wing receipts
+  * @kind function
  */
 export async function executeByName(name: string, inputs?: Record<string, unknown>): Promise<ExecutionResult> {
   return uuidBridge.executeByName(name, inputs)

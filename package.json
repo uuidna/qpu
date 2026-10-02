@@ -88,6 +88,7 @@
     "test": "npm run build && node --test --test-reporter=./dist/quantum/processing/unit/receipt.js --test-reporter-destination=stdout dist/quantum/processing/unit/*.test.js",
     "ci": "npm run build && npm test && npm run readme",
     "readme": "node scripts/generate-readme.mjs",
+    "docs": "node scripts/generate-docs.mjs",
     "fuse": "node scripts/fuse-apis.mjs",
     "payload:cf": "node scripts/payload-cloudflare.mjs",
     "prepublishOnly": "npm run version:lock && npm run build",
