@@ -9,7 +9,7 @@
 import { leanSource, leanToolchain } from './lean.js'
 import { packageVersion } from './version.js'
 import { sealedStandards } from './standards.js'
-import { leanModelOf, leanRecomputeOf, leanTheoremBlocksOf } from './lean-eval.js'
+import { leanModelOf, leanRecomputeOf, leanTheoremBlocksOf, leanCallOf, leanArityOf, leanLinksOf } from './lean-eval.js'
 import { docDbOf, type DocStore } from './docdb.js'
 export * from './docdb.js'
 const onceOf = <T,>(build: () => T): (() => T) => {
@@ -1140,6 +1140,7 @@ export const qpuHologramHolds = (h = qpuHologramOf()): boolean =>
 const storageHref = `${unit.origin}/storage`
 const serverHref = `${unit.origin}/server`
 const networkHref = `${unit.origin}/network`
+const hexHref = `${unit.origin}/hex`
 const storageBindings = { STORAGE: 'kv' as const, BLOBS: 'r2' as const }
 const raidMark = '/@'
 /** Cloudflare KV and R2 each return at most 1000 names per list call — their documented page. A PAGE SIZE per call,
@@ -4684,6 +4685,8 @@ export const qpuLeanOf = onceOf(() => {
     rows,
     cover: served,
     climb,
+    // the formulas discover each other from their own proofs: families, links between them, related definition pairs
+    graph: (({ families, familyLinks, related }) => ({ families: families.map((f) => f.family), links: familyLinks.map((l) => `${l.from}>${l.to}`), related: related.length }))(leanLinksOf(leanSource)),
     holds,
   }
 })
@@ -15220,6 +15223,14 @@ const worker = {
       }
       return jsonOf(qpuServerMcpOf())
     }
+    if (path === '/hex' || path.startsWith('/hex/')) {
+      if (request.method === 'POST') {
+        const rpc = await qpuSubRpcOf(await rpcBodyOf(), qpuHexToolsOf(env), hexHref)
+        if (rpc) return jsonOf(rpc)
+      }
+      const program = path.slice('/hex/'.length)
+      return jsonOf(program ? await qpuHexRunOf(program, request.headers.get('referer') ?? undefined, env) : qpuHexCatalogOf())
+    }
     if (path === '/network' || path.startsWith('/network/')) {
       if (request.method === 'POST') {
         const body = await rpcBodyOf<{ channel?: unknown; body?: unknown }>()
@@ -15271,5 +15282,225 @@ const worker = {
     }
     return jsonOf(JSON.parse(dead), lost)
   }}
+
+// ============================================================================
+// HEX EXECUTION: the UUID is a program of formulas (RFC 9562 v8)
+// ============================================================================
+
+/** How the params section splits: by the two free bits of the variant nibble. */
+export const HEX_PARAM_MODES = ['none', 'one 48-bit', 'two 24-bit', 'three 16-bit'] as const
+const hexWidths = [[], [12], [6, 6], [4, 4, 4]] as const
+type HexFormula = { name: string; arity: number; run: (args: readonly bigint[]) => unknown }
+const HEX_REGISTERED = new Map<string, Map<string, (...a: unknown[]) => unknown>>()
+let hexFamilies: Map<string, HexFormula[]> | undefined
+
+/**
+ * Register a formula in a family (cross, audit, path, fuse) so a hex UUID can run it; formulas are indexed in name order.
+ * @wing receipts
+ * @kind function
+ * @evidence qpuHexHolds
+ */
+export const qpuHexRegisterOf = (family: string, name: string, fn: (...a: unknown[]) => unknown): string => {
+  ;(HEX_REGISTERED.get(family) ?? HEX_REGISTERED.set(family, new Map()).get(family)!).set(name, fn)
+  hexFamilies = undefined
+  return qpuFoldOf(family).slice(n - n, UUID_EIGHT)
+}
+
+/**
+ * Every formula family a hex program can name: each Lean module with definitions (Qpu.Mint, Qpu.Shor, Qpu.Lattice,
+ * Qpu.Hybrid, Qpu.Physics; its definitions in file order, helpers ending Aux left out) evaluated exactly under Lean's
+ * Nat semantics, and every registered family. A family holds at most fifteen formulas, one per nonzero nibble.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuHexHolds
+ */
+export const qpuHexFamiliesOf = (): Map<string, HexFormula[]> => {
+  if (hexFamilies) return hexFamilies
+  const model = leanModelOf(leanSource)
+  const links = leanLinksOf(leanSource)
+  const out = new Map<string, HexFormula[]>()
+  for (const f of links.families) {
+    const defs = f.definitions.filter((d) => !/Aux$/.test(d))
+    if (defs.length === n - n) continue
+    out.set(`Qpu.${f.family}`, defs.map((d) => ({ name: d, arity: leanArityOf(model, d), run: (args) => leanCallOf(model, d, args.slice(n - n, leanArityOf(model, d))) })))
+  }
+  for (const [family, fns] of HEX_REGISTERED)
+    out.set(family, [...fns.keys()].sort().map((name) => ({ name, arity: fns.get(name)!.length, run: (args) => fns.get(name)!(...args.map((a) => Number(a))) })))
+  for (const [family, formulas] of out) if (formulas.length > UUID_SIXTEEN - seed) out.set(family, formulas.slice(n - n, UUID_SIXTEEN - seed))
+  return (hexFamilies = out)
+}
+const hexHandleOf = (family: string) => qpuFoldOf(family).slice(n - n, UUID_EIGHT)
+
+/**
+ * Mint the UUID that is a program of formulas: handle (8 hex) = fold of the family name; three 4-hex program sections
+ * hold up to ten formula indexes, one per nibble (version 8 and the variant kept; the variant's two free bits select
+ * how the params split); params (12 hex) carry up to three naturals.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuHexHolds
+ */
+export const qpuHexUuidOf = (spec: { family: string; program: readonly string[]; params?: readonly number[] }): string => {
+  const formulas = qpuHexFamiliesOf().get(spec.family)
+  if (!formulas) throw new Error(`hex: no formula family ${spec.family}`)
+  const codes = spec.program.map((name) => formulas.findIndex((f) => f.name === name) + seed)
+  if (codes.some((c) => c < seed) || codes.length > ten) throw new Error('hex: at most ten formulas of the family')
+  const nib = [...codes, ...Array(ten).fill(n - n)].slice(n - n, ten).map((c) => c.toString(UUID_SIXTEEN))
+  const params = [...(spec.params ?? [])]
+  const mode = params.length
+  if (mode > n) throw new Error('hex: at most three params')
+  const widths = hexWidths[mode]!
+  params.forEach((v, i) => {
+    if (!Number.isSafeInteger(v) || v < n - n || v >= UUID_SIXTEEN ** widths[i]!) throw new Error(`hex: param ${i} out of range for ${HEX_PARAM_MODES[mode]}`)
+  })
+  const p = params.map((v, i) => v.toString(UUID_SIXTEEN).padStart(widths[i]!, '0')).join('').padEnd(UUID_FOUR * n, '0')
+  return uuidGroupsOf(hexHandleOf(spec.family), nib.slice(n - n, UUID_FOUR).join(''), `8${nib.slice(UUID_FOUR, UUID_FOUR + n).join('')}`, `${(mintOf(n) + mode).toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR + n).join('')}`, p)
+}
+
+/**
+ * Read a hex-program UUID back: its family, its formulas in order, its params.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuHexHolds
+ */
+export const qpuHexDecodeOf = (uuid: string) => {
+  const m = /^([0-9a-f]{8})-([0-9a-f]{4})-8([0-9a-f]{3})-([89ab])([0-9a-f]{3})-([0-9a-f]{12})$/.exec(String(uuid).toLowerCase())
+  if (!m) return { kind: 'hex' as const, uuid, holds: false as const, denied: 'shape' as const }
+  const [, handle, s2, s3, variant, s4, s5] = m
+  const family = [...qpuHexFamiliesOf().keys()].find((f) => hexHandleOf(f) === handle)
+  const formulas = family ? qpuHexFamiliesOf().get(family)! : []
+  const codes = `${s2}${s3}${s4}`.split('').map((x) => parseInt(x, UUID_SIXTEEN))
+  const end = codes.indexOf(n - n)
+  const program = (end < n - n ? codes : codes.slice(n - n, end)).map((c) => formulas[c - seed]?.name)
+  const mode = parseInt(variant!, UUID_SIXTEEN) - mintOf(n)
+  let at = n - n
+  const params = hexWidths[mode]!.map((w) => parseInt(s5!.slice(at, (at += w)), UUID_SIXTEEN))
+  return { kind: 'hex' as const, uuid: uuid.toLowerCase(), handle: handle!, family: family ?? null, program: program.map((x) => x ?? 'unknown'), mode: HEX_PARAM_MODES[mode]!, params, row: `${handle}/${s5}`, holds: family !== undefined && program.length > n - n && program.every((x) => x !== undefined) }
+}
+
+/**
+ * Run a hex program of formulas. One rule, no per-formula code: the accumulator starts at the first param; each formula
+ * takes (accumulator, the remaining params) up to its arity and its value becomes the accumulator. A Lean formula is
+ * evaluated exactly under Nat semantics; a registered formula reports its own holds. The run is a quantum receipt in the
+ * hex stream and its value is stored at its address — table the handle, row the params — on the unit's store.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuHexHolds
+ */
+export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv) => {
+  const d = qpuHexDecodeOf(uuid)
+  if (!d.holds || !('family' in d) || !d.family) return { ...d, ran: false as const }
+  const formulas = qpuHexFamiliesOf().get(d.family)!
+  const params = d.params.map((x) => BigInt(x))
+  let acc: unknown = params[n - n] ?? BigInt(n - n)
+  let holds = true
+  const steps: { formula: string; args: string[]; value: unknown }[] = []
+  try {
+    for (const name of d.program) {
+      const f = formulas.find((x) => x.name === name)!
+      const args = [typeof acc === 'bigint' ? acc : BigInt(Math.max(n - n, Math.trunc(Number(acc)) || n - n)), ...params.slice(seed)]
+      const out = await f.run(args)
+      const value = out && typeof out === 'object' && 'value' in (out as object) ? (out as { value: unknown }).value : out
+      if (out && typeof out === 'object' && 'holds' in (out as object)) holds = holds && (out as { holds: unknown }).holds === true
+      steps.push({ formula: name, args: args.slice(n - n, Math.max(seed, f.arity)).map(String), value: typeof value === 'bigint' ? value.toString() : value })
+      acc = typeof value === 'bigint' ? value : value
+    }
+    const value = typeof acc === 'bigint' ? acc.toString() : acc
+    const receipt = qpuUuidReceiptOf(`hex ${d.family}`, d.uuid, { steps, value, holds }, referrer).uuid
+    await qpuDocDbOf(env, 'hex').collection(d.handle).updateOne({ _id: d.row.split('/')[seed]! }, { $set: { family: d.family, program: d.program, value, holds, receipt, by: d.uuid } }, { upsert: true })
+    return { ...d, ran: true as const, steps, value, holds, receipt }
+  } catch (e) {
+    return { ...d, ran: false as const, steps, error: e instanceof Error ? e.message : String(e), holds: false as const }
+  }
+}
+
+/**
+ * The formulas discover each other: every Lean formula is evaluated over the lattice's own constants (each 0-arity
+ * formula's value, bounded so loops stay small), results are grouped by value, and a value reached by formulas of two
+ * or more families is a discovered relation. Each way of reaching it is returned as the hex program that computes it.
+ * @wing proof
+ * @kind builder
+ * @evidence qpuHexDiscoverHolds
+ */
+export const qpuHexDiscoverOf = onceOf(() => {
+  const families = [...qpuHexFamiliesOf()].filter(([f]) => f.startsWith('Qpu.'))
+  const constants = families.flatMap(([family, fs]) => fs.filter((f) => f.arity === n - n).map((f) => ({ family, name: f.name, value: f.run([]) as bigint })))
+  const small = constants.filter((c) => c.value <= BigInt(tenOf(n)))
+  const reached = new Map<string, { family: string; formula: string; params: number[]; hex: string }[]>()
+  const add = (value: bigint, family: string, formula: string, params: bigint[]) => {
+    // a value equal to one of its own arguments relates a formula to its input, not to another formula
+    if (value < BigInt(mintOf(n)) || params.includes(value)) return
+    const ps = params.map(Number)
+    let hex: string
+    try { hex = qpuHexUuidOf({ family, program: [formula], params: ps }) } catch { return }
+    const key = value.toString()
+    const list = reached.get(key) ?? reached.set(key, []).get(key)!
+    if (!list.some((x) => x.hex === hex)) list.push({ family, formula, params: ps, hex })
+  }
+  for (const c of constants) add(c.value, c.family, c.name, [])
+  for (const [family, fs] of families)
+    for (const f of fs.filter((x) => x.arity > n - n && x.arity <= n)) {
+      const tuples = f.arity === seed ? small.map((a) => [a.value]) : f.arity === coins ? small.flatMap((a) => small.map((b) => [a.value, b.value])) : small.flatMap((a) => small.flatMap((b) => small.map((c) => [a.value, b.value, c.value])))
+      for (const t of tuples) {
+        try { add(f.run(t) as bigint, family, f.name, t) } catch { /* a formula outside its domain reaches nothing */ }
+      }
+    }
+  const relations = [...reached]
+    .map(([value, ways]) => ({ value, families: [...new Set(ways.map((w) => w.family))].sort(), ways }))
+    .filter((r) => r.families.length > seed)
+    .sort((a, b) => b.families.length - a.families.length || Number(BigInt(a.value) - BigInt(b.value)))
+  return { kind: 'hex-discover' as const, constants: constants.length, evaluated: [...reached.values()].reduce((a, w) => a + w.length, n - n), relations, holds: relations.length > n - n }
+})
+/** A discovered relation re-runs: its first two hex programs evaluate to the value they were grouped under. */
+export const qpuHexDiscoverHolds = (d = qpuHexDiscoverOf()): boolean =>
+  d.holds && d.relations.slice(n - n, coins).every((r) => r.ways.slice(n - n, coins).every((w) => {
+    const f = qpuHexFamiliesOf().get(w.family)!.find((x) => x.name === w.formula)!
+    return (f.run(w.params.map((x) => BigInt(x))) as bigint).toString() === r.value
+  }))
+
+/** Mint and decode agree on Lean programs: Mint [chooseOf] over (14, 2), Shor [periodOf] over (8, 91), Mint [mintOf, mintOf] over 2. */
+export const qpuHexHolds = (): boolean => {
+  const cases: [string, string[], number[]][] = [['Qpu.Mint', ['chooseOf'], [14, 2]], ['Qpu.Shor', ['periodOf'], [8, 91]], ['Qpu.Mint', ['mintOf', 'mintOf'], [2]]]
+  return cases.every(([family, program, params]) => {
+    const d = qpuHexDecodeOf(qpuHexUuidOf({ family, program, params }))
+    return d.holds && 'family' in d && d.family === family && d.program.join() === program.join() && d.params.join() === params.join()
+  })
+}
+
+/**
+ * The hex catalogue: every formula family with its handle and formulas by nibble, the param modes, the layout.
+ * @wing receipts
+ * @kind builder
+ * @evidence qpuHexHolds
+ */
+export const qpuHexCatalogOf = () => {
+  const families = [...qpuHexFamiliesOf()].map(([family, formulas]) => ({ family, handle: hexHandleOf(family), formulas: formulas.map((f, i) => ({ nibble: (i + seed).toString(UUID_SIXTEEN), name: f.name, arity: f.arity })) }))
+  const example = qpuHexUuidOf({ family: 'Qpu.Mint', program: ['chooseOf'], params: [14, 2] })
+  return {
+    kind: 'hex-catalog' as const,
+    href: hexHref,
+    layout: { handle: '8 hex: fold of the formula family name; the table its results are stored in', program: '3 x 4 hex: up to ten formula indexes, one per nibble (version 8 and variant kept)', params: '12 hex: none, one 48-bit, two 24-bit or three 16-bit naturals; the row' },
+    rule: 'the accumulator starts at the first param; each formula takes (accumulator, remaining params) up to its arity',
+    modes: HEX_PARAM_MODES.map((mode, i) => ({ variant: (mintOf(n) + i).toString(UUID_SIXTEEN), mode })),
+    families,
+    formulas: families.reduce((a, f) => a + f.formulas.length, n - n),
+    example: { uuid: example, decodes: qpuHexDecodeOf(example), run: `GET ${hexHref}/${example}` },
+    holds: qpuHexHolds(),
+  }
+}
+
+/** The hex sub-server's MCP tools: hex_catalog, hex_mint, hex_decode, hex_run. */
+const qpuHexToolsOf = (hexEnv?: QpuEnv): QpuSubTool[] => {
+  const see = ['hex_catalog', 'hex_mint', 'hex_decode', 'hex_run', 'hex_discover'] as const
+  const schema = { type: 'object', properties: { man: { type: 'boolean' }, uuid: { type: 'string' }, family: { type: 'string' }, program: { type: 'array', items: { type: 'string' } }, params: { type: 'array', items: { type: 'integer' } }, referrer: { type: 'string' } } }
+  const others = (k: number) => see.filter((s) => s !== see[k])
+  return [
+    { name: see[0], description: 'Hex catalogue: handles, opcodes, param modes.', man: qpuSubManOf(see[0], 'Hex catalogue.', 'Family handle 8 hex, formula program 3x4 hex, params 12 hex.', hexHref, others(0)), inputSchema: schema, run: () => qpuHexCatalogOf() },
+    { name: see[1], description: 'Mint the UUID that is a program.', man: qpuSubManOf(see[1], 'Mint a hex program.', '{ family, program, params } to a v8 UUID.', hexHref, others(1)), inputSchema: schema,
+      run: (a) => { try { const uuid = qpuHexUuidOf({ family: String(a.family ?? ''), program: (Array.isArray(a.program) ? a.program : []).map(String), params: (Array.isArray(a.params) ? a.params : []) as number[] }); return { kind: 'hex' as const, uuid, decodes: qpuHexDecodeOf(uuid), holds: true as const } } catch (e) { return { kind: 'hex' as const, holds: false as const, denied: e instanceof Error ? e.message : String(e) } } } },
+    { name: see[2], description: 'Decode a hex-program UUID.', man: qpuSubManOf(see[2], 'Decode a hex program.', 'Family, formulas and params of a UUID.', hexHref, others(2)), inputSchema: schema, run: (a) => qpuHexDecodeOf(String(a.uuid ?? '')) },
+    { name: see[4], description: 'Formulas discover each other: values reached by formulas of two or more families, each as a hex program.', man: qpuSubManOf(see[4], 'Discover relations.', 'Every formula over the lattice constants, grouped by value across families.', hexHref, others(4)), inputSchema: schema, run: () => qpuHexDiscoverOf() },
+    { name: see[3], description: 'Run a hex-program UUID.', man: qpuSubManOf(see[3], 'Run a hex program.', 'Apply the formulas, receipt and store the run.', hexHref, others(3)), inputSchema: schema, run: (a) => qpuHexRunOf(String(a.uuid ?? ''), typeof a.referrer === 'string' ? a.referrer : undefined, hexEnv) },
+  ]
+}
 
 export default worker

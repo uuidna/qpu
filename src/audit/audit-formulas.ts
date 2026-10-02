@@ -9,6 +9,7 @@
  */
 
 import { crossFormulaOf, type CrossFormula } from '../mcp/cross-domain-formulas.js'
+import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
 
 // ============================================================================
 // AUDIT COMPUTATION MODEL
@@ -194,7 +195,7 @@ export class AuditFormulas {
       formula: 'fusion = (gdpr + iso27001 + nist) / 3',
       value: (gdpr + iso27001 + nist) / 3,
       proof: 'GDPR legal requirement ∩ ISO27001 framework ∩ NIST best practices = comprehensive compliance'
-    })
+    }, true, { name: 'audit.gdprIsoNistFusion', params: [gdpr, iso27001, nist] })
   }
 
   /**
@@ -209,7 +210,7 @@ export class AuditFormulas {
       formula: 'healthcare_score = (hipaa * 0.4) + (soc2 * 0.35) + (nist * 0.25)',
       value: hipaa * 0.4 + soc2 * 0.35 + nist * 0.25,
       proof: 'HIPAA regulatory ∩ SOC2 audit scope ∩ NIST framework = healthcare compliance triad'
-    })
+    }, true, { name: 'audit.healthcareComplianceFusion', params: [hipaa, soc2, nist] })
   }
 
   /**
@@ -224,7 +225,7 @@ export class AuditFormulas {
       formula: 'payment_score = (pci_dss * 0.45) + (cis * 0.3) + (owasp * 0.25)',
       value: pciDss * 0.45 + cis * 0.3 + owasp * 0.25,
       proof: 'PCI-DSS requirements ∩ CIS hardening ∩ OWASP secure coding = payment card protection'
-    })
+    }, true, { name: 'audit.paymentSecurityFusion', params: [pciDss, cis, owasp] })
   }
 
   /**
@@ -240,7 +241,7 @@ export class AuditFormulas {
       formula: 'supply_chain_risk = 1 / (1 + (slsa + sbom + sca + code_quality) / 4)',
       value: 1 / (1 + score),
       proof: 'Provenance ∩ BOM ∩ dependency scan ∩ code quality = supply chain risk reduction'
-    })
+    }, true, { name: 'audit.supplyChainRiskFormula', params: [slsa, sbom, sca, codeQuality] })
   }
 
   /**
@@ -325,3 +326,7 @@ export class AuditFormulas {
 
 export const vectorEquilibriumAudit = new VectorEquilibriumAudit()
 export const auditFormulas = new AuditFormulas()
+
+// the audit cross formulas are the hex family `audit`
+for (const name of ['gdprIsoNistFusion', 'healthcareComplianceFusion', 'paymentSecurityFusion', 'supplyChainRiskFormula'] as const)
+  qpuHexRegisterOf('audit', name, (AuditFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(AuditFormulas))

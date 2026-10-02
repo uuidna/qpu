@@ -18,8 +18,8 @@ Version **1.0.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version
 
 | Measure | Value | Source |
 |---|---|---|
-| Capabilities documented inline | 232 of 234 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
-| Evidence predicates that hold | 115 of 147 (live ones need the network) | evaluated by `npm run docs` |
+| Capabilities documented inline | 244 of 246 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
+| Evidence predicates that hold | 117 of 149 (live ones need the network) | evaluated by `npm run docs` |
 | Lean theorems served / recomputed | 100 / 100 of 100 | [lean-receipt.json](../lean-receipt.json) |
 | API registry fused | 2529 of 2529 APIs, 438299 cross formulas | [fuse-receipt.json](../fuse-receipt.json) |
 | Payload on Cloudflare | 98304 combinations, 96 of 96 bases type-check | [payload-cf-receipt.json](../payload-cf-receipt.json) |
@@ -33,3 +33,4 @@ Version **1.0.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version
 - **Two data discrepancies.** ORCID 0009-0000-7312-9778 records the family name Roustchev while the citation and Zenodo say Rouschev; index.lean sets niobium to 9200 mK while the cited reference table gives 9.26 K (theorem superconductivity would read gap niobium = 679, not 674). Evidence: cross-receipt.json.
 - **QPU database limits.** A collection scan reads at most 4 pages of 1000 keys per request on KV+R2; KV is eventually consistent (prefer the D1 store when a write must be read back at once); no transactions; localized-field queries and geo operators are refused. Evidence: src/quantum/processing/unit/docdb.ts and src/db/payload-qpu.ts.
 - **Not yet run on Workers.** The Payload adapter, the regenerated payload configs and the 98304 Payload-on-Cloudflare combinations are type-checked and run in Node; none has run on a deployed Worker against real D1, KV, R2 or Hyperdrive bindings. The restored admin dashboard has not been rendered in Payload 4's admin; src/payload/admin/config.tsx imports slate and is unused. Evidence: payload-cf-receipt.json.
+- **qpu_lean is near its token budget.** The efficiency invariant requires calling a door to cost fewer tokens than reading the tree; qpu_lean now serves all 100 theorems with their family graph at 11574 tokens against 11709 to read. A larger proof will need a paginated or summarised qpu_lean before it grows. Evidence: qpuEfficiencyOf().rows.

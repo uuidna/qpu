@@ -1,4 +1,4 @@
-import { qpuContentUuidOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
 
 export interface DomainPath {
   hops: string[]
@@ -9,6 +9,8 @@ export interface DomainPath {
   uuid?: string
   /** Programmable UUID of this path's quantum receipt (payload + referrer). */
   receipt?: string
+  /** The hex program that returns this path: handle path.<name>, call then receipt. */
+  hex?: string
 }
 
 export interface MultihopResult {
@@ -131,3 +133,9 @@ export class CrossDomainPaths {
  * @kind function
  */
 export const crossDomainPaths = new CrossDomainPaths()
+
+// every path is a formula of the hex family `path`
+const pathNames = Object.getOwnPropertyNames(CrossDomainPaths).filter((k) => typeof (CrossDomainPaths as unknown as Record<string, unknown>)[k] === 'function')
+for (const name of pathNames) qpuHexRegisterOf('path', name, (CrossDomainPaths as unknown as Record<string, () => unknown>)[name]!.bind(CrossDomainPaths))
+/** The hex program that returns a named path. @wing fusion @kind function */
+export const pathHexOf = (name: string): string => qpuHexUuidOf({ family: 'path', program: [name] })

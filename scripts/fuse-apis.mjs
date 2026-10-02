@@ -19,6 +19,8 @@ import {
   qpuUuidReceiptOf,
   qpuReceiptStreamsOf,
   qpuReceiptLedgerOf,
+  qpuHexRegisterOf,
+  qpuHexUuidOf,
 } from '../dist/quantum/processing/unit/index.js'
 import { crossFormulaOf } from '../dist/mcp/cross-domain-formulas.js'
 
@@ -99,6 +101,12 @@ const byCategory = categories
  * both directions hold (entangled). Each is a CrossFormula: a content UUID and a quantum receipt (stream `cross`). */
 fs.mkdirSync('.fuse', { recursive: true })
 const out = fs.createWriteStream('.fuse/fuse-formulas.ndjson')
+// every fused pair is a hex callable: fuse.edge(i, j) returns its formula; params are the two API indexes (24 bits each)
+const edgeAt = new Map(fused.edges.map((e) => [e.i * fused.apis.length + e.j, e]))
+qpuHexRegisterOf('fuse', 'edge', function edge(i, j) {
+  const e = edgeAt.get(Number(i) * fused.apis.length + Number(j))
+  return e ? { kind: 'fuse-edge', left: fused.apis[e.i], right: fused.apis[e.j], forward: e.rare.forward ?? null, backward: e.rare.backward ?? null, holds: Boolean(e.rare.forward || e.rare.backward) } : { kind: 'fuse-edge', holds: false }
+})
 const buckets = { '1': 0, '2-4': 0, '5-16': 0, '17-64': 0, '65-256': 0, '>256': 0 }
 const bucketOf = (p) => (p <= 1 ? '1' : p <= 4 ? '2-4' : p <= 16 ? '5-16' : p <= 64 ? '17-64' : p <= 256 ? '65-256' : '>256')
 const specific = []
@@ -126,7 +134,8 @@ for (const e of fused.edges) {
   formulas++
   if (x.holds) holding++
   buckets[bucketOf(Math.max(f?.pairs ?? 0, g?.pairs ?? 0))]++
-  out.write(JSON.stringify({ ...x, entangled: both, forward: f, backward: g }) + '\n')
+  const hex = qpuHexUuidOf({ family: 'fuse', program: ['edge'], params: [e.i, e.j] })
+  out.write(JSON.stringify({ ...x, hex, hexExact: true, entangled: both, forward: f, backward: g }) + '\n')
   if (both && f.pairs * g.pairs <= 4) specific.push({ id: x.id, uuid: x.uuid, receipt: x.receipt, forward: f.name, backward: g.name, pairs: f.pairs * g.pairs })
 }
 await new Promise((r) => out.end(r))

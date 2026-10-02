@@ -43,7 +43,7 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: .lean-ok
-          key: lean-ok-${{ hashFiles('lean-toolchain', 'src/quantum/processing/unit/index.lean') }}
+          key: lean-ok-${{ hashFiles('lean-toolchain', 'lakefile.lean', 'src/quantum/processing/unit/lean/**', 'src/quantum/processing/unit/index.lean') }}
       - name: Lean toolchain cache (keyed on lean-toolchain; only when the receipt is missing)
         if: steps.kernel.outputs.cache-hit != 'true'
         id: elan
@@ -65,7 +65,7 @@ jobs:
         uses: actions/cache/save@v6
         with:
           path: .lean-ok
-          key: lean-ok-${{ hashFiles('lean-toolchain', 'src/quantum/processing/unit/index.lean') }}
+          key: lean-ok-${{ hashFiles('lean-toolchain', 'lakefile.lean', 'src/quantum/processing/unit/lean/**', 'src/quantum/processing/unit/index.lean') }}
       - name: Kernel receipt hit
         if: steps.kernel.outputs.cache-hit == 'true'
         run: echo "::notice::kernel receipt hit — index.lean and lean-toolchain are byte-identical to a build the kernel already checked ($(cat .lean-ok | tr '\n' ' '))"

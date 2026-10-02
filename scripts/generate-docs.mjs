@@ -93,6 +93,25 @@ for (const [slug, title, blurb] of WINGS) {
   ].join('\n')
 }
 
+// ---- the Lean families: each module is a formula family and a hex handle; links are discovered from the proofs ----
+{
+  const { leanSource } = await import(path.join(ROOT, 'dist/quantum/processing/unit/lean.js'))
+  const { leanLinksOf } = await import(path.join(ROOT, 'dist/quantum/processing/unit/lean-eval.js'))
+  const g = leanLinksOf(leanSource)
+  const fams = unit.qpuHexFamiliesOf()
+  const disc = unit.qpuHexDiscoverOf()
+  pages.proof = pages.proof.replace(/\nGenerated from the inline docs/, [
+    '', '## Lean families', '',
+    'index.lean is the bundle of these modules (scripts/lean-bundle.mjs); `npm run lean` builds the modules with Lake, checks the bundle matches them, and checks the bundle with Lean. Each module with definitions is a hex family: its handle is the fold of its name and each definition is one program nibble.', '',
+    '| Module | Hex handle | Formulas (nibble: name) | Theorems | Uses |', '|---|---|---|---|---|',
+    ...g.families.map((f) => { const h = fams.get(`Qpu.${f.family}`); return `| [Qpu.${f.family}](../src/quantum/processing/unit/lean/Qpu/${f.family}.lean) | ${h ? `\`${unit.qpuFoldOf(`Qpu.${f.family}`).slice(0, 8)}\`` : '—'} | ${h ? h.map((x, i) => `${(i + 1).toString(16)}: ${x.name}`).join(', ') : '—'} | ${f.theorems} | ${g.familyLinks.filter((l) => l.from === f.family).map((l) => `${l.to} (${l.count})`).join(', ') || '—'} |` }),
+    '', `${g.related.length} pairs of definitions are related by at least one theorem. Strongest: ${g.related.slice(0, 6).map((r) => `${r.pair.join(' ~ ')} (${r.by.length})`).join(', ')}.`, '',
+    '## Discovered relations', '', 'Every formula evaluated over the lattice constants; values reached by formulas of two or more families, each way as a runnable hex program (`GET /hex/<uuid>`).', '',
+    '| Value | Families | Ways (hex) |', '|---|---|---|',
+    ...disc.relations.map((r) => `| ${r.value} | ${r.families.join(', ')} | ${r.ways.slice(0, 3).map((w) => `${w.formula}(${w.params.join(', ')}) \`${w.hex}\``).join('<br>')} |`),
+    '', 'Generated from the inline docs'].join('\n'))
+}
+
 // ---- comparison --------------------------------------------------------------------------------------------------
 const lean = receipt('lean-receipt.json'), fuse = receipt('fuse-receipt.json'), pcf = receipt('payload-cf-receipt.json'), cross = receipt('cross-receipt.json')
 const sources = [

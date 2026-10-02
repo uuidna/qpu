@@ -111,7 +111,7 @@ BUILTIN.periodOf = (a, m) => BUILTIN.periodAux!(m, a, m, ONE)
 BUILTIN.gcdOf = (a, b) => BUILTIN.gcdAux!(a + b, a, b)
 
 type Def = { params: string[]; body: Ast }
-export type LeanModel = { defs: Map<string, Def>; constant: (name: string) => bigint; arity: (f: string) => number }
+export type LeanModel = { defs: Map<string, Def>; constant: (name: string) => bigint; arity: (f: string) => number; order: string[] }
 
 /**
  * The defs of the Lean source: `def x : Nat := e` and `def f (p q : Nat) : Nat := e`.
@@ -136,6 +136,7 @@ export const leanModelOf = (source: string): LeanModel => {
   const model: LeanModel = {
     defs,
     arity,
+    order: [...raw.keys(), ...[...source.matchAll(/^def (\w+) : Nat → /gm)].map((m) => m[1]!)].filter((k, i, a) => a.indexOf(k) === i).sort((a, b) => source.indexOf(`def ${a} `) - source.indexOf(`def ${b} `)),
     constant: (name) => {
       const hit = cache.get(name)
       if (hit !== undefined) return hit
@@ -293,4 +294,75 @@ export const leanTheoremBlocksOf = (source: string): Array<[string, string]> => 
     out.push([head[1]!, lines.slice(i, j).join(' ').replace(/\s+/g, ' ').trim()])
   }
   return out
+}
+
+/**
+ * Call one definition of the Lean source by name with natural-number arguments, under Lean's Nat semantics.
+ * @wing proof
+ * @kind function
+ */
+export const leanCallOf = (m: LeanModel, name: string, args: readonly bigint[]): bigint => {
+  const b = BUILTIN[name]
+  if (b) return b(...args)
+  const d = m.defs.get(name)
+  if (!d) throw new Error(`lean-eval: no definition ${name}`)
+  if (d.params.length === 0) return m.constant(name)
+  return evalNat(d.body, m, new Map(d.params.map((p, i) => [p, args[i] ?? ZERO])))
+}
+/** The arity of a definition: its parameter count (pattern-matched builtins by their transcription). */
+export const leanArityOf = (m: LeanModel, name: string): number => (BUILTIN[name] ? BUILTIN[name]!.length : m.defs.get(name)?.params.length ?? 0)
+
+/**
+ * The formulas discover each other: every declaration's statement and proof are read for the other declarations they
+ * name. A definition used by another is a dependency; two definitions named in one theorem are related by it; a family
+ * (the module the declaration came from, marked `/-! # Qpu.<Family>` in the bundle) links to every family it uses.
+ * @wing proof
+ * @kind function
+ */
+export const leanLinksOf = (source: string) => {
+  const lines = source.split('\n')
+  const decls: { name: string; kind: 'def' | 'theorem'; family: string; text: string }[] = []
+  let family = 'Qpu'
+  for (let i = 0; i < lines.length; i++) {
+    const f = /^\/-! # Qpu\.(\w+)/.exec(lines[i]!)
+    if (f) { family = f[1]!; continue }
+    const m = /^(def|theorem) (\w+)/.exec(lines[i]!)
+    if (!m) continue
+    let j = i + 1
+    while (j < lines.length && lines[j]!.trim() !== '' && !/^(def|theorem|--|\/-)/.test(lines[j]!)) j++
+    decls.push({ name: m[2]!, kind: m[1] as 'def' | 'theorem', family, text: lines.slice(i, j).join(' ').replace(/^(def|theorem) \w+/, '') })
+    i = j - 1
+  }
+  const names = new Set(decls.map((d) => d.name))
+  const familyOf = new Map(decls.map((d) => [d.name, d.family]))
+  // a declaration's own bound names (parameters, ∀, fun, match patterns) are not references to declarations
+  const boundOf = (t: string): Set<string> =>
+    new Set([
+      ...[...t.matchAll(/[({]([\w\s']+):/g)].flatMap((m) => m[1]!.trim().split(/\s+/)),
+      ...[...t.matchAll(/(?:∀|fun)\s+([\w\s']+?)\s*(?::|=>|,)/g)].flatMap((m) => m[1]!.trim().split(/\s+/)),
+      ...[...t.matchAll(/\|([^|]*?)=>/g)].flatMap((m) => [...m[1]!.matchAll(/\b[A-Za-z_]\w*\b/g)].map((x) => x[0])),
+    ])
+  const uses = decls.map((d) => {
+    const bound = boundOf(d.text)
+    return { name: d.name, kind: d.kind, family: d.family, uses: [...new Set([...d.text.matchAll(/\b[A-Za-z_][A-Za-z0-9_']*\b/g)].map((x) => x[0]))].filter((x) => names.has(x) && x !== d.name && !bound.has(x)).sort() }
+  })
+  const defs = new Set(decls.filter((d) => d.kind === 'def').map((d) => d.name))
+  const related = new Map<string, Set<string>>()
+  for (const u of uses.filter((x) => x.kind === 'theorem')) {
+    const fs = u.uses.filter((x) => defs.has(x))
+    for (const a of fs) for (const b of fs) if (a < b) (related.get(`${a}~${b}`) ?? related.set(`${a}~${b}`, new Set()).get(`${a}~${b}`)!).add(u.name)
+  }
+  const families = [...new Set(decls.map((d) => d.family))]
+  const familyLinks = families.flatMap((from) => {
+    const to = new Map<string, number>()
+    for (const u of uses.filter((x) => x.family === from)) for (const v of u.uses) { const g = familyOf.get(v)!; if (g !== from) to.set(g, (to.get(g) ?? 0) + 1) }
+    return [...to].map(([t, count]) => ({ from, to: t, count }))
+  })
+  return {
+    kind: 'lean-links' as const,
+    declarations: uses,
+    related: [...related].map(([k, by]) => ({ pair: k.split('~') as [string, string], by: [...by].sort() })).sort((a, b) => b.by.length - a.by.length || a.pair.join().localeCompare(b.pair.join())),
+    families: families.map((f) => ({ family: f, definitions: uses.filter((u) => u.family === f && u.kind === 'def').map((u) => u.name), theorems: uses.filter((u) => u.family === f && u.kind === 'theorem').length })),
+    familyLinks,
+  }
 }

@@ -27,12 +27,12 @@ The register geometry and the exact integer arithmetic every other wing is built
 |---|---|---|---|---|
 | [`chooseOf`](../src/quantum/processing/unit/index.ts#L286) | builder | Binomial coefficient C(nn, k) by Pascal recursion, mirroring chooseOf in index.lean. | — | — |
 | [`qpuBalanceOf`](../src/quantum/processing/unit/index.ts#L647) | builder | The 'balance' reading: theory and practice equal and summing to coins (theorem follow_the_coins). | `qpuBalanceHolds` | holds |
-| [`qpuCapacityOf`](../src/quantum/processing/unit/index.ts#L3613) | builder | Capacity counts: bits, amplitudes, fused = faces x 2^(bits+1), next, the crypt split and the agent and schema counts. | `qpuCapacityHolds` | holds |
+| [`qpuCapacityOf`](../src/quantum/processing/unit/index.ts#L3614) | builder | Capacity counts: bits, amplitudes, fused = faces x 2^(bits+1), next, the crypt split and the agent and schema counts. | `qpuCapacityHolds` | holds |
 | [`qpuCubeOf`](../src/quantum/processing/unit/index.ts#L513) | builder | The register geometry: n qubits, vertices = 2^n, hexbit = 2^(n-1), bits = vertices x hexbit. | `qpuCubeHolds` | holds |
 | [`qpuElectronicsOf`](../src/quantum/processing/unit/index.ts#L619) | builder | The 'electronics' reading: the coil (coins x rays) used as staged windings, theory and practice each one seed. | `qpuElectronicsHolds` | holds |
 | [`qpuFacesOf`](../src/quantum/processing/unit/index.ts#L559) | builder | The lattice of faces: coins, rays = n + 2 coins, faces = coins x rays = rays + rays, with the coil derived from them. | `qpuFacesHolds` | holds |
 | [`qpuHandleOf`](../src/quantum/processing/unit/index.ts#L527) | builder | Amplitude capacity: amplitudes = 2^bits, next = 2 x amplitudes, and the KV reading of both. | `qpuHandleHolds` | holds |
-| [`qpuSpeedOf`](../src/quantum/processing/unit/index.ts#L3838) | builder | The doubling rung: next = fused + fused, with the cover of rungs and a benchmark of the step. | `qpuSpeedHolds` | holds |
+| [`qpuSpeedOf`](../src/quantum/processing/unit/index.ts#L3839) | builder | The doubling rung: next = fused + fused, with the cover of rungs and a benchmark of the step. | `qpuSpeedHolds` | holds |
 | [`tenOf`](../src/quantum/processing/unit/index.ts#L483) | builder | 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines. | — | — |
 
 Generated from the inline docs by `npm run docs`. Index: [docs](README.md).

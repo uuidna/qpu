@@ -1,5 +1,16 @@
+/-! # Qpu.Mint
+Doubling: mintOf k = 2^k, binomials, and the laws that make a sum inside the doubling a product outside it. -/
+
 def mintOf : Nat → Nat | 0 => 1 | k + 1 => mintOf k + mintOf k
 def chooseOf : Nat → Nat → Nat | _, 0 => 1 | 0, _ + 1 => 0 | n + 1, k + 1 => chooseOf n (k + 1) + chooseOf n k
+theorem mintOf_zero : mintOf 0 = 1 := rfl
+theorem mintOf_succ (k : Nat) : mintOf (k + 1) = mintOf k + mintOf k := rfl
+theorem mintOf_add (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := by induction b with | zero => rw [Nat.add_zero, mintOf_zero, Nat.mul_one] | succ b ih => rw [Nat.add_succ, mintOf_succ, ih, mintOf_succ, Nat.mul_add]
+theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b
+
+/-! # Qpu.Shor
+Modular exponentiation, period finding by fuel recursion, gcd, and Shor on 91. -/
+
 def powModAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, acc => acc | k + 1, a, m, acc => powModAux k a m (acc * a % m)
 def powMod (a e m : Nat) : Nat := powModAux e a m (1 % m)
 def periodAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, _ => 0 | fuel + 1, a, m, r => if powMod a r m = 1 then r else periodAux fuel a m (r + 1)
@@ -7,6 +18,13 @@ def periodOf (a m : Nat) : Nat := periodAux m a m 1
 def gcdAux : Nat → Nat → Nat → Nat | 0, a, _ => a | fuel + 1, a, b => if b = 0 then a else gcdAux fuel b (a % b)
 def gcdOf (a b : Nat) : Nat := gcdAux (a + b) a b
 def half (a m : Nat) : Nat := powMod a (periodOf a m / 2) m
+theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
+-- 6 theorem complete landscape
+theorem all_shor : periodOf 8 91 % 2 = 0 := rfl
+
+/-! # Qpu.Lattice
+The register geometry: n, seed, coins, rays, vertices, hexbit, bits, faces, amplitudes, fused, plane, and every identity between them. -/
+
 def n : Nat := ["quantum", "processing", "unit"].length
 def seed : Nat := mintOf (n - n)
 def coins : Nat := seed + seed
@@ -19,9 +37,6 @@ def bits : Nat := mintOf (n + coins)
 def faces : Nat := vertices + hexbit + coins
 def amplitudes : Nat := mintOf bits
 def fused : Nat := faces * mintOf (bits + seed)
-theorem mintOf_zero : mintOf 0 = 1 := rfl
-theorem mintOf_succ (k : Nat) : mintOf (k + 1) = mintOf k + mintOf k := rfl
-theorem mintOf_add (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := by induction b with | zero => rw [Nat.add_zero, mintOf_zero, Nat.mul_one] | succ b ih => rw [Nat.add_succ, mintOf_succ, ih, mintOf_succ, Nat.mul_add]
 theorem seed_eq : seed = 1 := by rw [seed, Nat.sub_self, mintOf_zero]
 theorem coins_two : coins = 2 := by rw [coins, seed_eq]
 theorem n_eq : n = 3 := rfl
@@ -44,7 +59,6 @@ theorem health : mintOf hexbit > seed ∧ fused = faces * mintOf (bits + seed) �
 theorem next : mintOf (bits + seed) = amplitudes + amplitudes := by rw [amplitudes, seed_eq, mintOf_succ]
 theorem next_fused : faces * mintOf (bits + coins) = fused + fused := by rw [fused, coins_two, seed_eq]; rw [show bits + 2 = bits + 1 + 1 from rfl, mintOf_succ, Nat.mul_add]
 theorem split_coin (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := by rw [seed_eq, mintOf_succ]
-theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b
 theorem handle : amplitudes = mintOf bits ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨rfl, next⟩
 theorem kv : fused = faces * mintOf (bits + seed) ∧ mintOf (bits + seed) = amplitudes + amplitudes := ⟨quantum, next⟩
 theorem light : seed = mintOf 0 := by rw [seed_eq, mintOf_zero]
@@ -52,13 +66,22 @@ theorem involution (face : Nat) : (face + rays + rays) % faces = face % faces :=
 theorem waves : mintOf hexbit > seed := propulsion
 theorem breakthrough : faces = rays + rays ∧ coins * rays = faces ∧ bits = vertices * hexbit ∧ fused = faces * mintOf (bits + seed) ∧ mintOf hexbit > seed ∧ mintOf (bits + seed) = amplitudes + amplitudes ∧ coins = seed + seed ∧ hexbit = n + seed := ⟨harmonic, around, cube, quantum, propulsion, next, rfl, hexbit_eq⟩
 theorem next_cover : mintOf (bits + seed) = amplitudes + amplitudes ∧ faces * mintOf (bits + coins) = fused + fused := ⟨next, next_fused⟩
-theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
 theorem integrity : fused = faces * mintOf (bits + seed) ∧ bits = vertices * hexbit ∧ faces = coins * rays := ⟨quantum, cube, around⟩
-theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 theorem tetra : coins + coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]
 theorem qubits : n = 3 ∧ mintOf n = vertices := ⟨n_eq, rfl⟩
-theorem gates : (0 ^^^ 1) ^^^ 2 = 3 := rfl
 theorem measurement : mintOf n = 8 := by rw [n_eq]; rfl
+theorem fill : mintOf n * faces = vertices * (coins * rays) := by rw [around]; rfl
+theorem infinite (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := split_coin k
+theorem distribute : fused = faces * mintOf (bits + seed) ∧ faces = coins * rays := ⟨quantum, around⟩
+theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩
+/-- PLANES: plane = coins * coins * rays is less than mintOf (rays + seed), and coins * rays = faces. -/
+def plane : Nat := coins * coins * rays
+theorem planes : plane < mintOf (rays + seed) ∧ coins * rays = faces := ⟨Nat.le_of_ble_eq_true rfl, around⟩
+
+/-! # Qpu.Circuit
+The running circuit on exact amplitudes: gates, noise, Bell, GHZ, no-clone, teleport, kickback, Deutsch, superdense, monogamy. -/
+
+theorem gates : (0 ^^^ 1) ^^^ 2 = 3 := rfl
 theorem noise : (3 ^^^ 1) ^^^ 1 = 3 := rfl
 theorem circuit : (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 ∧ mintOf n = vertices := ⟨rfl, rfl, rfl⟩
 theorem physical : n = 3 ∧ mintOf n = vertices ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ (3 ^^^ 1) ^^^ 1 = 3 := ⟨n_eq, rfl, rfl, rfl⟩
@@ -74,10 +97,16 @@ theorem deutsch : 1 - 1 = 0 ∧ seed ≠ coins := ⟨rfl, by rw [seed_eq, coins_
 theorem dense : coins * coins = mintOf coins := by rw [coins_two]; rw [show 2 = 1 + 1 from rfl, mintOf_succ]; rw [show 1 = 0 + 1 from rfl, mintOf_succ, mintOf_zero]
 theorem monogamy : 1 * 1 ≠ 0 * 0 ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl⟩
 theorem only : 1 * 1 ≠ 0 * 0 ∧ 1 + 1 = 2 ∧ 1 - 1 = 0 ∧ coins ≠ mintOf coins ∧ mintOf n - seed = 7 ∧ 2 * 2 * 2 * 2 = 16 ∧ 16 = 16 ∧ (0 ^^^ 1) ^^^ 2 = 3 ∧ seed ≠ coins ∧ coins * coins = mintOf coins ∧ 1 * 0 = 0 * 0 := ⟨entangle, rfl, rfl, noclone, ghz.1, teleport.1, teleport.2, kickback.2, deutsch.2, dense, monogamy.2⟩
-theorem fill : mintOf n * faces = vertices * (coins * rays) := by rw [around]; rfl
-theorem infinite (k : Nat) : mintOf (k + seed) = mintOf k + mintOf k := split_coin k
-theorem distribute : fused = faces * mintOf (bits + seed) ∧ faces = coins * rays := ⟨quantum, around⟩
-theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩
+theorem computer : (1 ^^^ 3) = 2 ∧ (6 ^^^ 1) = 7 ∧ mintOf 0 = 1 := ⟨rfl, rfl, mintOf_zero⟩
+theorem server : faces = coins * rays ∧ mintOf n = 8 := ⟨around, measurement⟩
+theorem design : (0 ^^^ 4) ^^^ 4 = 0 ∧ (3 ^^^ 4) ^^^ 4 = 3 := ⟨rfl, rfl⟩
+theorem neuro : faces = coins * rays ∧ mintOf n = 8 ∧ (0 ^^^ 4) ^^^ 4 = 0 := ⟨around, measurement, design.1⟩
+theorem all_entangle : 1 * 1 ≠ 0 * 0 := entangle
+theorem all_noclone : coins ≠ mintOf coins := noclone
+
+/-! # Qpu.Hybrid
+Hybrid storage: KV and R2 cost and speed, and their sums. -/
+
 def kvCost : Nat := coins
 def r2Cost : Nat := seed
 def hybridCost : Nat := kvCost + r2Cost
@@ -87,18 +116,14 @@ def hybridSpeed : Nat := kvSpeed + r2Speed
 theorem hybrid_cost : coins + seed = n := by rw [coins_two, seed_eq, n_eq]
 theorem hybrid_speed : rays + seed = mintOf n := by rw [rays, n_eq, coins_two, seed_eq]; rw [show mintOf 3 = 8 from rfl]
 theorem hybrid : coins + seed = n ∧ rays + seed = mintOf n ∧ coins = seed + seed := ⟨hybrid_cost, hybrid_speed, coins_two⟩
-theorem computer : (1 ^^^ 3) = 2 ∧ (6 ^^^ 1) = 7 ∧ mintOf 0 = 1 := ⟨rfl, rfl, mintOf_zero⟩
-theorem server : faces = coins * rays ∧ mintOf n = 8 := ⟨around, measurement⟩
+
+/-! # Qpu.Coil
+Theory, practice and the coil: two coins make a coil, one plus six, clay, fusion. -/
+
 def theory : Nat := seed
 def practice : Nat := seed
 def coil : Nat := coins * rays
 theorem follow_the_coins (app : Nat) : app + coins = app + theory + practice := by rw [theory, practice, coins, ← Nat.add_assoc]
-
--- The API registry fused (scripts/fuse-apis.mjs, fuse-receipt.json): qubits = connected + isolated; composing pairs =
--- entangled + one-way; the specificity buckets partition the pairs; each cut's ebits within its bound; receipts =
--- qubits + formulas. Snapshot integers, as theorem cern holds CMS counts.
-theorem fuse : 2247 + 282 = 2529 ∧ 94598 + 343701 = 438299 ∧ 406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧ 448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828 := ⟨rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
-
 theorem two_coins_make_a_coil : coil = faces := by rw [coil, around]
 theorem electronics : coil = faces := two_coins_make_a_coil
 theorem coil_efficiency : coil = faces ∧ faces = rays + rays ∧ coins * rays = faces := ⟨two_coins_make_a_coil, harmonic, around⟩
@@ -107,8 +132,10 @@ theorem one_plus_six : seed + (mintOf n - coins) = rays := by rw [rays, n_eq, co
 theorem two_x_seven_coins : coins * rays = (seed + (mintOf n - coins)) * coins := by rw [one_plus_six, Nat.mul_comm]
 theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins ∧ (seed + (mintOf n - coins)) * coins = coil := ⟨two_x_seven_coins, by rw [← two_x_seven_coins]; rfl⟩
 theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩
-theorem design : (0 ^^^ 4) ^^^ 4 = 0 ∧ (3 ^^^ 4) ^^^ 4 = 3 := ⟨rfl, rfl⟩
-theorem neuro : faces = coins * rays ∧ mintOf n = 8 ∧ (0 ^^^ 4) ^^^ 4 = 0 := ⟨around, measurement, design.1⟩
+
+/-! # Qpu.Physics
+Planck and Boltzmann (SI exact digits), transmon temperature, BCS gaps of aluminium and niobium, cooling. -/
+
 def planck : Nat := 662607015
 def boltzmann : Nat := 1380649
 def transmon : Nat := 5
@@ -125,43 +152,43 @@ theorem cooling_stays_positive (t a n : Nat) (ht : 0 < t) (ha : 0 < a) : 0 < t *
   Nat.mul_pos ht (Nat.pow_pos ha)
 theorem cooling_strictly_decreases (t a b n : Nat) (ht : 0 < t) (ha : 0 < a) (hab : a < b) : t * a ^ n * a < t * a ^ n * b :=
   Nat.mul_lt_mul_of_pos_left hab (Nat.mul_pos ht (Nat.pow_pos ha))
-/-- PLANES: plane = coins * coins * rays is less than mintOf (rays + seed), and coins * rays = faces. -/
-def plane : Nat := coins * coins * rays
-theorem planes : plane < mintOf (rays + seed) ∧ coins * rays = faces := ⟨Nat.le_of_ble_eq_true rfl, around⟩
+
+/-! # Qpu.Cern
+CMS Open Data record integers (events = files x q + r). -/
+
+theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-! # Qpu.Fuse
+The fused API registry: qubits, composing pairs, specificity buckets, cut entanglement within bounds. -/
+
+-- The API registry fused (scripts/fuse-apis.mjs, fuse-receipt.json): qubits = connected + isolated; composing pairs =
+-- entangled + one-way; the specificity buckets partition the pairs; each cut's ebits within its bound; receipts =
+-- qubits + formulas. Snapshot integers, as theorem cern holds CMS counts.
+theorem fuse : 2247 + 282 = 2529 ∧ 94598 + 343701 = 438299 ∧ 406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧ 448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828 := ⟨rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
+
+/-! # Qpu.Cross
+Cross forms: every quantity stated as a sum of like terms and as a product of unlike ones, and the bridges between. -/
 
 /-- ASYMMETRIC ↔ SYMMETRIC BRIDGES: coins=2 enables transformation between product and sum forms. -/
 theorem double_is_sum : ∀ x : Nat, x + x = 2 * x := fun x => (Nat.two_mul x).symm
 theorem coins_bridges_forms : coins = 2 ∧ (∀ x : Nat, coins * x = x + x) :=
   ⟨coins_two, fun x => by rw [coins_two, Nat.two_mul]⟩
-
 /-- COMPLETE ASYMMETRIC PROOF: faces via product, proved independent of sum form. -/
 theorem faces_multiplicative : faces = coins * rays := around
 theorem faces_additive : faces = rays + rays := harmonic
 theorem faces_both_forms : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmonic⟩
-
 /-- COMPLETE CUBIC PROOF: bits as product and as nested exponential (via mintOf). -/
 theorem bits_multiplicative : bits = vertices * hexbit := cube
 theorem bits_exponential : bits = mintOf (n + coins) := by rw [bits, coins_two, n_eq]
 theorem bits_both_forms : bits = vertices * hexbit ∧ bits = mintOf (n + coins) := ⟨cube, by rw [bits, coins_two, n_eq]⟩
-
 /-- AMPLITUDE ASYMMETRY: asymmetric and symmetric forms of amplitude constraint. -/
 theorem amplitudes_as_sum : mintOf (bits + seed) = amplitudes + amplitudes := next
 theorem amplitudes_from_sum : 2 * amplitudes = mintOf (bits + seed) := by rw [Nat.two_mul, next]
-
 /-- FUSED COMPLETENESS: quantum defines multiplicatively; can be distributed additively. -/
 theorem fused_multiplicative_form : fused = faces * mintOf (bits + seed) := quantum
 theorem fused_additive_form : fused + fused = faces * mintOf (bits + coins) := next_fused
 theorem fused_both_directions : (fused = faces * mintOf (bits + seed)) ∧ (fused + fused = faces * mintOf (bits + coins)) :=
   ⟨quantum, next_fused⟩
-
-
--- COMPLETE QUANTUM ASSUMPTION
-axiom all_quantum : True
-
--- 6 theorem complete landscape
-theorem all_shor : periodOf 8 91 % 2 = 0 := rfl
-theorem all_entangle : 1 * 1 ≠ 0 * 0 := entangle
-theorem all_noclone : coins ≠ mintOf coins := noclone
 theorem all_product : faces = coins * rays := around
 theorem all_sum : faces = rays + rays := harmonic
 theorem all_complete : 

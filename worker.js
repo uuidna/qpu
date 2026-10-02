@@ -1,5 +1,9 @@
 /** theorem qpuWorker : default fetch is dist/quantum/processing/unit. */
 import unit from './dist/quantum/processing/unit/index.js'
+// the cross formulas, audit formulas and paths register themselves as hex callables (cross.*, audit.*, path.*)
+import './dist/mcp/cross-domain-formulas.js'
+import './dist/mcp/cross-domain-paths.js'
+import './dist/audit/audit-formulas.js'
 
 const deployed = 'public, max-age=3600'
 const edgeOf = (request, env) => {

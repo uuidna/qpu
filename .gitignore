@@ -11,3 +11,4 @@ test-readings.json
 .lean-ok
 .fuse/
 .payload-cf/
+.lake/

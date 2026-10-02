@@ -1,8 +1,37 @@
 [
- {"title": "Live host is behind main", "detail": "Cloudflare Workers Builds for the uuidna-qpu Worker has failed on every commit since 2026-10-01, so qpu.uuidna.com still serves v0.2.1. A clean clone of main installs, builds and passes `wrangler deploy --dry-run` (the unit bundles at 526 KiB with the STORAGE, BLOBS and PAYLOAD bindings); the failing step is in the Workers project's dashboard build settings, which this repository does not hold.", "evidence": "the Workers Builds check run on each commit; `npx wrangler deploy --dry-run`."},
- {"title": "1.0.0 is not on npm", "detail": "v1.0.0 has a GitHub release and a Zenodo record (10.5281/zenodo.23091364) but npm's latest is 0.2.1. The version lock forbids any bump until 1.0.0 is published: run publish.yml by workflow_dispatch from main; it needs a trusted publisher for publish.yml on npmjs.com.", "evidence": "`consolidatedMCP.executeWorkflow('release-workflow', { version: '1.0.0' })` reads npm, GitHub and Zenodo."},
- {"title": "Two GitHub workflows still fail", "detail": "ci-cd.yml and wave2-sdk-release.yml fail on push and have not been examined here. ci.yml was invalid YAML (a plain scalar holding `: `) and is fixed; its gate now resolves every operation by UUID and requires qpu_prove to hold.", "evidence": "GitHub Actions runs on main."},
- {"title": "Two data discrepancies", "detail": "ORCID 0009-0000-7312-9778 records the family name Roustchev while the citation and Zenodo say Rouschev; index.lean sets niobium to 9200 mK while the cited reference table gives 9.26 K (theorem superconductivity would read gap niobium = 679, not 674).", "evidence": "cross-receipt.json."},
- {"title": "QPU database limits", "detail": "A collection scan reads at most 4 pages of 1000 keys per request on KV+R2; KV is eventually consistent (prefer the D1 store when a write must be read back at once); no transactions; localized-field queries and geo operators are refused.", "evidence": "src/quantum/processing/unit/docdb.ts and src/db/payload-qpu.ts."},
- {"title": "Not yet run on Workers", "detail": "The Payload adapter, the regenerated payload configs and the 98304 Payload-on-Cloudflare combinations are type-checked and run in Node; none has run on a deployed Worker against real D1, KV, R2 or Hyperdrive bindings. The restored admin dashboard has not been rendered in Payload 4's admin; src/payload/admin/config.tsx imports slate and is unused.", "evidence": "payload-cf-receipt.json."}
+ {
+  "title": "Live host is behind main",
+  "detail": "Cloudflare Workers Builds for the uuidna-qpu Worker has failed on every commit since 2026-10-01, so qpu.uuidna.com still serves v0.2.1. A clean clone of main installs, builds and passes `wrangler deploy --dry-run` (the unit bundles at 526 KiB with the STORAGE, BLOBS and PAYLOAD bindings); the failing step is in the Workers project's dashboard build settings, which this repository does not hold.",
+  "evidence": "the Workers Builds check run on each commit; `npx wrangler deploy --dry-run`."
+ },
+ {
+  "title": "1.0.0 is not on npm",
+  "detail": "v1.0.0 has a GitHub release and a Zenodo record (10.5281/zenodo.23091364) but npm's latest is 0.2.1. The version lock forbids any bump until 1.0.0 is published: run publish.yml by workflow_dispatch from main; it needs a trusted publisher for publish.yml on npmjs.com.",
+  "evidence": "`consolidatedMCP.executeWorkflow('release-workflow', { version: '1.0.0' })` reads npm, GitHub and Zenodo."
+ },
+ {
+  "title": "Two GitHub workflows still fail",
+  "detail": "ci-cd.yml and wave2-sdk-release.yml fail on push and have not been examined here. ci.yml was invalid YAML (a plain scalar holding `: `) and is fixed; its gate now resolves every operation by UUID and requires qpu_prove to hold.",
+  "evidence": "GitHub Actions runs on main."
+ },
+ {
+  "title": "Two data discrepancies",
+  "detail": "ORCID 0009-0000-7312-9778 records the family name Roustchev while the citation and Zenodo say Rouschev; index.lean sets niobium to 9200 mK while the cited reference table gives 9.26 K (theorem superconductivity would read gap niobium = 679, not 674).",
+  "evidence": "cross-receipt.json."
+ },
+ {
+  "title": "QPU database limits",
+  "detail": "A collection scan reads at most 4 pages of 1000 keys per request on KV+R2; KV is eventually consistent (prefer the D1 store when a write must be read back at once); no transactions; localized-field queries and geo operators are refused.",
+  "evidence": "src/quantum/processing/unit/docdb.ts and src/db/payload-qpu.ts."
+ },
+ {
+  "title": "Not yet run on Workers",
+  "detail": "The Payload adapter, the regenerated payload configs and the 98304 Payload-on-Cloudflare combinations are type-checked and run in Node; none has run on a deployed Worker against real D1, KV, R2 or Hyperdrive bindings. The restored admin dashboard has not been rendered in Payload 4's admin; src/payload/admin/config.tsx imports slate and is unused.",
+  "evidence": "payload-cf-receipt.json."
+ },
+ {
+  "title": "qpu_lean is near its token budget",
+  "detail": "The efficiency invariant requires calling a door to cost fewer tokens than reading the tree; qpu_lean now serves all 100 theorems with their family graph at 11574 tokens against 11709 to read. A larger proof will need a paginated or summarised qpu_lean before it grows.",
+  "evidence": "qpuEfficiencyOf().rows."
+ }
 ]
