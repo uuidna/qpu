@@ -12,3 +12,7 @@ test-readings.json
 .fuse/
 .payload-cf/
 .lake/
+.dev.vars
+.next/
+.open-next/
+next-env.d.ts

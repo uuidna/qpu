@@ -18,7 +18,7 @@ Version **1.0.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version
 
 | Measure | Value | Source |
 |---|---|---|
-| Capabilities documented inline | 245 of 247 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
+| Capabilities documented inline | 245 of 259 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
 | Evidence predicates that hold | 117 of 149 (live ones need the network) | evaluated by `npm run docs` |
 | Lean theorems served / recomputed | 124 / 124 of 124 | [lean-receipt.json](../lean-receipt.json) |
 | API registry fused | 2529 of 2529 APIs, 438299 cross formulas | [fuse-receipt.json](../fuse-receipt.json) |

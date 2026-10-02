@@ -27,7 +27,7 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 | [MCP & agents](agents.md) | 76 | 45 of 54 |
 | [Live science data](science.md) | 21 | 10 of 17 |
 | [API fusion](fusion.md) | 16 | 2 of 8 |
-| [Payload & Cloudflare](cms.md) | 15 | 3 of 4 |
+| [Payload & Cloudflare](cms.md) | 27 | 3 of 4 |
 | [Presentation & discovery](presentation.md) | 14 | 14 of 14 |
 
 Also: [state](state.md) · [comparison](comparison.md) · [build receipt](../README.md)

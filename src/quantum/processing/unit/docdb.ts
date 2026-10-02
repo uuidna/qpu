@@ -239,6 +239,19 @@ const sortDocs = (docs: Doc[], sort?: SortSpec): Doc[] =>
       })
 
 // ---- collections -------------------------------------------------------------------------------------------------
+/** A value short and scalar enough to be part of an address: strings up to 256 characters, finite numbers, booleans. */
+const indexable = (v: unknown): boolean => (typeof v === 'string' && v.length <= 256) || (typeof v === 'number' && Number.isFinite(v)) || typeof v === 'boolean'
+/** The first top-level equality a filter requires (directly, as $eq, or inside $and): the address a find can start from. */
+const equalityOf = (filter: Filter): [string, unknown] | undefined => {
+  for (const [k, v] of Object.entries(filter)) {
+    if (k === '$and' && Array.isArray(v)) for (const part of v) { const eq = equalityOf(part as Filter); if (eq) return eq }
+    if (k.startsWith('$') || k.includes('.') || k === '_id') continue
+    if (indexable(v)) return [k, v]
+    if (isObj(v) && Object.keys(v).length === 1 && indexable((v as Record<string, unknown>).$eq)) return [k, (v as Record<string, unknown>).$eq]
+  }
+  return undefined
+}
+
 export type DocWriteHook = (event: { op: 'insert' | 'update' | 'delete'; collection: string; doc: Doc }) => void
 
 /**
@@ -254,6 +267,22 @@ export class DocCollection {
     private readonly onWrite: DocWriteHook = () => {},
   ) {}
   private keyOf = (id: DocId) => `${this.name}/${encodeURIComponent(id)}`
+  /* EVERY SCALAR FIELD VALUE IS AN ADDRESS: <collection>#<field>=<value>/<id>, one key per document and value, written
+   * with the document. An equality is then one prefix listing and the matching documents, never a scan of the whole
+   * collection; there is no shared index document, so concurrent writers never read-modify-write the same key. */
+  private addressOf = (field: string, value: unknown) => `${this.name}#${field}=${encodeURIComponent(JSON.stringify(value))}/`
+  private addressesOf = (doc: Doc): string[] =>
+    Object.entries(doc).filter(([k, v]) => k !== '_id' && indexable(v)).map(([k, v]) => `${this.addressOf(k, v)}${encodeURIComponent(doc._id)}`)
+  private async readdress(before: Doc | undefined, after: Doc | undefined): Promise<void> {
+    const old = new Set(before ? this.addressesOf(before) : [])
+    const now = new Set(after ? this.addressesOf(after) : [])
+    await Promise.all([...[...old].filter((k) => !now.has(k)).map((k) => this.store.del(k)), ...[...now].filter((k) => !old.has(k)).map((k) => this.store.put(k, 1))])
+  }
+  private async addressed(field: string, value: unknown): Promise<Doc[]> {
+    const prefix = this.addressOf(field, value)
+    const ids = (await this.store.keys(prefix)).map((k) => decodeURIComponent(k.slice(prefix.length)))
+    return (await Promise.all(ids.map((id) => this.store.get(this.keyOf(id))))).filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
+  }
   private async all(): Promise<Doc[]> {
     const keys = await this.store.keys(`${this.name}/`)
     const docs = await Promise.all(keys.map((k) => this.store.get(k)))
@@ -263,7 +292,7 @@ export class DocCollection {
     const _id = typeof doc._id === 'string' ? doc._id : this.idOf(doc)
     if ((await this.store.get(this.keyOf(_id))) !== undefined) throw new Error(`docdb: duplicate _id ${_id} in ${this.name}`)
     const stored = { ...clone(doc), _id } as Doc
-    await this.store.put(this.keyOf(_id), stored)
+    await Promise.all([this.store.put(this.keyOf(_id), stored), this.readdress(undefined, stored)])
     this.onWrite({ op: 'insert', collection: this.name, doc: stored })
     return stored
   }
@@ -274,7 +303,8 @@ export class DocCollection {
   }
   async find(filter: Filter = {}, options: FindOptions = {}): Promise<Record<string, unknown>[]> {
     const id = filter._id
-    const pool = typeof id === 'string' ? [(await this.store.get(this.keyOf(id))) as Doc].filter(isObj) as Doc[] : await this.all()
+    const eq = equalityOf(filter)
+    const pool = typeof id === 'string' ? ([(await this.store.get(this.keyOf(id))) as Doc].filter(isObj) as Doc[]) : eq ? await this.addressed(...eq) : await this.all()
     const hit = sortDocs(pool.filter((d) => matches(d, filter)), options.sort)
     const from = options.skip ?? 0
     const page = options.limit && options.limit > 0 ? hit.slice(from, from + options.limit) : hit.slice(from)
@@ -292,15 +322,15 @@ export class DocCollection {
       if (v !== undefined && !out.some((y) => equal(y, v))) out.push(v)
     return out.sort(compareValues)
   }
-  private async write(doc: Doc): Promise<Doc> {
-    await this.store.put(this.keyOf(doc._id), doc)
+  private async write(before: Doc, doc: Doc): Promise<Doc> {
+    await Promise.all([this.store.put(this.keyOf(doc._id), doc), this.readdress(before, doc)])
     this.onWrite({ op: 'update', collection: this.name, doc })
     return doc
   }
   async updateOne(filter: Filter, update: Update, options: { upsert?: boolean; sort?: SortSpec } = {}): Promise<{ matched: number; modified: number; upserted?: Doc; doc?: Doc }> {
     const found = (await this.find(filter, { sort: options.sort, limit: 1 }))[0] as Doc | undefined
     if (found) {
-      const doc = await this.write(applyUpdate(found, update))
+      const doc = await this.write(found, applyUpdate(found, update))
       return { matched: 1, modified: 1, doc }
     }
     if (!options.upsert) return { matched: 0, modified: 0 }
@@ -312,7 +342,7 @@ export class DocCollection {
   async updateMany(filter: Filter, update: Update, options: { sort?: SortSpec; limit?: number } = {}): Promise<Doc[]> {
     const hit = (await this.find(filter, { sort: options.sort, limit: options.limit })) as Doc[]
     const out: Doc[] = []
-    for (const d of hit) out.push(await this.write(applyUpdate(d, update)))
+    for (const d of hit) out.push(await this.write(d, applyUpdate(d, update)))
     return out
   }
   async replaceOne(filter: Filter, replacement: Record<string, unknown>, options: { upsert?: boolean } = {}) {
@@ -322,14 +352,14 @@ export class DocCollection {
   async deleteOne(filter: Filter): Promise<Doc | null> {
     const found = (await this.find(filter, { limit: 1 }))[0] as Doc | undefined
     if (!found) return null
-    await this.store.del(this.keyOf(found._id))
+    await Promise.all([this.store.del(this.keyOf(found._id)), this.readdress(found, undefined)])
     this.onWrite({ op: 'delete', collection: this.name, doc: found })
     return found
   }
   async deleteMany(filter: Filter): Promise<number> {
     const hit = (await this.find(filter)) as Doc[]
     for (const d of hit) {
-      await this.store.del(this.keyOf(d._id))
+      await Promise.all([this.store.del(this.keyOf(d._id)), this.readdress(d, undefined)])
       this.onWrite({ op: 'delete', collection: this.name, doc: d })
     }
     return hit.length

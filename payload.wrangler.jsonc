@@ -1,0 +1,33 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "uuidna-qpu-payload",
+  "workers_dev": false,
+  "preview_urls": false,
+  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "kv_namespaces": [
+    {
+      "binding": "STORAGE"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BLOBS",
+      "bucket_name": "uuidna-qpu-payload-blobs"
+    },
+    {
+      "binding": "MEDIA",
+      "bucket_name": "uuidna-qpu-payload-media"
+    }
+  ]
+}

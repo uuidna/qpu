@@ -5,33 +5,18 @@ import './dist/mcp/cross-domain-formulas.js'
 import './dist/mcp/cross-domain-paths.js'
 import './dist/audit/audit-formulas.js'
 
-// the documentation site, generated from the inline docs: browsers asking the host for HTML get the pages, every
-// other client keeps the JSON-LD API on the same paths
-import pages from './docs/site/pages.js'
-
 const deployed = 'public, max-age=3600'
-const pageOf = (request, env) => {
-  if (request.method !== 'GET' && request.method !== 'HEAD') return undefined
-  const url = new URL(request.url)
-  if (url.hostname !== (env?.QPU_HOST ?? 'qpu.uuidna.com')) return undefined
-  const page = pages[url.pathname]
-  if (page === undefined) return undefined
-  // a .html path is always the page; / is the page only for a browser (Accept names text/html before JSON)
-  const accept = request.headers.get('accept') ?? ''
-  if (url.pathname === '/' && !/text\/html/.test(accept)) return undefined
-  return new Response(request.method === 'HEAD' ? null : page, { headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': deployed, vary: 'Accept', link: '</.well-known/mcp.json>; rel="service-desc"' } })
-}
 const edgeOf = (request, env) => {
   if (request.method !== 'GET' || typeof caches === 'undefined') return false
   const url = new URL(request.url)
+  // pages are Payload's and are not cached here: the cache keys on the URL, and a browser and an API client share it
+  if (/text\/html/.test(request.headers.get('accept') ?? '')) return false
   return url.hostname === (env?.QPU_HOST ?? 'qpu.uuidna.com') && url.pathname !== '/api' && !url.pathname.startsWith('/api/')
 }
 
 export default {
   ...unit,
   async fetch(request, env, ctx) {
-    const page = pageOf(request, env)
-    if (page) return page
     if (!edgeOf(request, env)) return unit.fetch(request, env, ctx)
     const hit = await caches.default.match(request)
     if (hit) return hit

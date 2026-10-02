@@ -25,7 +25,7 @@ RAID over Cloudflare KV and R2, content-addressed storage and the MongoDB-semant
 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
-| [`docDbOf`](../src/quantum/processing/unit/docdb.ts#L344) | builder | A database: named collections over one store, one id function and one write hook. | — | — |
+| [`docDbOf`](../src/quantum/processing/unit/docdb.ts#L374) | builder | A database: named collections over one store, one id function and one write hook. | — | — |
 | [`filterOf`](../src/db/payload-qpu.ts#L52) | builder | Payload's where, operator for operator, as a docdb filter. | — | — |
 | [`qpuDocDbOf`](../src/quantum/processing/unit/index.ts#L7113) | builder | The QPU document database (MongoDB query and update semantics, docdb.ts) over the unit's store; ids are content UUIDs; every write is a quantum receipt in the db stream. | — | — |
 | [`qpuPayloadDbOf`](../src/quantum/processing/unit/index.ts#L1575) | builder | How Payload's database maps onto the hybrid store: KV upper layer, R2 lower layer, collections and the speed/cost readings (theorem hybrid). | `qpuPayloadDbHolds` | holds |
@@ -45,8 +45,8 @@ RAID over Cloudflare KV and R2, content-addressed storage and the MongoDB-semant
 | [`matches`](../src/quantum/processing/unit/docdb.ts#L161) | function | Whether a document matches a MongoDB filter (operators, $and/$or/$nor, dotted paths through arrays). | — | — |
 | [`project`](../src/quantum/processing/unit/docdb.ts#L218) | function | Apply an include or exclude projection to a document. | — | — |
 | [`up`](../src/db/payload-qpu.ts#L33) | function | — | — | — |
-| [`DocCollection`](../src/quantum/processing/unit/docdb.ts#L249) | class | One collection over a DocStore: insert, find with sort/skip/limit/projection, count, distinct, update (with upsert), replace and delete. | — | — |
-| [`d1DocStore`](../src/quantum/processing/unit/docdb.ts#L363) | store | A document store on a D1 binding: one key/value table, prefix listing by range, so it never scans past its prefix. | — | — |
+| [`DocCollection`](../src/quantum/processing/unit/docdb.ts#L262) | class | One collection over a DocStore: insert, find with sort/skip/limit/projection, count, distinct, update (with upsert), replace and delete. | — | — |
+| [`d1DocStore`](../src/quantum/processing/unit/docdb.ts#L393) | store | A document store on a D1 binding: one key/value table, prefix listing by range, so it never scans past its prefix. | — | — |
 | [`memoryDocStore`](../src/quantum/processing/unit/docdb.ts#L36) | store | An in-memory DocStore (JSON-serialised values), for tests and Node. | — | — |
 | [`qpuDocStoreOf`](../src/quantum/processing/unit/index.ts#L7098) | store | THE QPU AS A DATABASE. | — | — |
 | [`qpuAdapter`](../src/db/payload-qpu.ts#L148) | adapter | Payload database adapter on the QPU document database. | — | — |

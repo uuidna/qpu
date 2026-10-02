@@ -21,48 +21,53 @@ import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined }
 const ROOT = process.cwd()
 
-/* THE REPO'S OWN CONFIGS, regenerated from combinations: MongoDB intent → qpu-raid (the QPU database on the
- * STORAGE + BLOBS bindings this unit already declares), S3 → R2, the app's collections, plugins on them. */
-const REPO_COLLECTIONS = [
-  ['Users', 'users'], ['ComplianceIssues', 'compliance-issues'], ['AuditLogs', 'audit-logs'], ['SupportTickets', 'support-tickets'],
-  ['Enrollments', 'enrollments'], ['Metrics', 'metrics'], ['Certifications', 'certifications'], ['FuseApis', 'fuse-apis'],
-  ['FuseFields', 'fuse-fields'], ['FuseFormulas', 'fuse-formulas'], ['QuantumReceipts', 'quantum-receipts'],
-].map(([name, slug]) => ({ name, slug, from: `./src/payload/collections/${slug}` }))
+/* THE REPO'S OWN APP, regenerated from one combination: the QPU document database on KV + R2 (qpu-raid), uploads on
+ * R2, the documentation as the public site (docs collection, seeded from scripts/generate-docs.mjs), search and SEO on it.
+ * It deploys as the Worker the unit's PAYLOAD binding names; the unit hands it every browser page and /api. */
+const REPO_COLLECTIONS = [['Users', 'users'], ['Docs', 'docs'], ['FuseApis', 'fuse-apis'], ['FuseFields', 'fuse-fields'], ['FuseFormulas', 'fuse-formulas'], ['QuantumReceipts', 'quantum-receipts']]
+  .map(([name, slug]) => ({ name, slug, from: `./src/payload/collections/${slug}` }))
+const REPO_NAME = 'uuidna-qpu-payload'
+const REPO_WRANGLER = 'payload.wrangler.jsonc'
 const REPO = {
-  'payload.config.ts': { key: 'vinext/qpu-raid/none/none/-', wrangler: 'deploy/payload/wrangler.jsonc', app: { collections: REPO_COLLECTIONS, adminUser: 'users', typescriptOutput: './src/payload/payload-types.ts' } },
-  'payload.config.complete.ts': {
-    key: 'vinext/qpu-raid/r2/resend/nested-docs+search',
-    wrangler: 'deploy/payload/wrangler.complete.jsonc',
-    app: {
-      collections: REPO_COLLECTIONS, adminUser: 'users', title: 'UUIDNA QPU',
-      targets: { search: ['compliance-issues', 'support-tickets', 'audit-logs', 'enrollments', 'metrics'], 'nested-docs': ['certifications', 'enrollments'] },
-      dashboard: '/src/payload/admin/dashboards/index#AdminDashboard',
-      origins: ['http://localhost:3000', 'http://localhost:3001', 'https://qpu.uuidna.com'],
-      typescriptOutput: './src/payload/payload-types.ts',
-    },
+  key: 'opennext/qpu-raid/r2/none/search+seo',
+  app: {
+    collections: REPO_COLLECTIONS, adminUser: 'users', title: 'UUIDNA QPU',
+    targets: { search: ['docs'], seo: ['docs'] },
+    origins: ['https://qpu.uuidna.com'],
+    typescriptOutput: './src/payload/payload-types.ts',
+    frontend: { collection: 'docs', route: 'docs', html: 'html' },
+    seed: { name: 'seedDocs', from: './src/payload/seeds/docs' },
+    wrangler: REPO_WRANGLER,
+    bound: true,
   },
 }
+// the app's TypeScript: the generated shell, the config and the collections, with @uuidna/qpu resolved to this build
+const REPO_TSCONFIG = {
+  compilerOptions: {
+    target: 'ES2022', lib: ['dom', 'dom.iterable', 'esnext'], module: 'esnext', moduleResolution: 'bundler', jsx: 'preserve', strict: true, noEmit: true,
+    skipLibCheck: true, esModuleInterop: true, resolveJsonModule: true, isolatedModules: true, incremental: true, allowJs: true,
+    types: ['@cloudflare/workers-types', 'node'], plugins: [{ name: 'next' }],
+    paths: { '@payload-config': ['./payload.config.ts'], '@uuidna/qpu': ['./dist/quantum/processing/unit/index'], '@uuidna/qpu/payload': ['./dist/db/payload-qpu'] },
+  },
+  include: ['next-env.d.ts', 'payload.config.ts', 'app/**/*.ts', 'app/**/*.tsx', 'src/payload/**/*.ts', '.next/types/**/*.ts'],
+  exclude: ['node_modules', 'dist', '.open-next'],
+}
 if (process.argv.includes('--repo')) {
-  fs.mkdirSync('deploy/payload', { recursive: true })
-  const rows = []
-  for (const [file, { key, app, wrangler }] of Object.entries(REPO)) {
-    const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(key), 'uuidna-qpu-payload', app)
-    fs.writeFileSync(file, t.files['payload.config.ts'])
-    fs.writeFileSync(wrangler, t.files['wrangler.jsonc'])
-    const uuid = qpuContentUuidOf({ key, app })
-    rows.push({ file, key, uuid, receipt: qpuUuidReceiptOf(`payload-cf repo ${file}`, uuid, key, 'scripts/payload-cloudflare.mjs --repo').uuid, wrangler, dependencies: t.dependencies })
+  const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(REPO.key), REPO_NAME, REPO.app)
+  const written = { ...t.files, [REPO_WRANGLER]: t.files['wrangler.jsonc'], 'tsconfig.payload.json': JSON.stringify(REPO_TSCONFIG, null, 1) + '\n' }
+  delete written['wrangler.jsonc']
+  for (const [f, text] of Object.entries(written)) {
+    fs.mkdirSync(path.dirname(f), { recursive: true })
+    fs.writeFileSync(f, text)
   }
-  // the regenerated configs and the app's collections, compiled against the installed packages
-  const repoCheck = path.join(ROOT, '.payload-cf', 'repo-check')
-  fs.mkdirSync(repoCheck, { recursive: true })
-  fs.writeFileSync(path.join(repoCheck, 'tsconfig.json'), JSON.stringify({
-    compilerOptions: { target: 'ES2022', module: 'ESNext', moduleResolution: 'Bundler', strict: true, noEmit: true, skipLibCheck: true, esModuleInterop: true, jsx: 'react-jsx', types: ['@cloudflare/workers-types', 'node'], paths: { '@uuidna/qpu': ['../../src/quantum/processing/unit/index.ts'], '@uuidna/qpu/payload': ['../../src/db/payload-qpu.ts'] } },
-    include: [...Object.keys(REPO).map((f) => `../../${f}`), '../../src/payload/collections/*.ts'],
-  }, null, 1))
+  execSync('npx payload generate:importmap', { cwd: ROOT, stdio: 'pipe', env: { ...process.env, PAYLOAD_CONFIG_PATH: 'payload.config.ts' } })
+  const uuid = qpuContentUuidOf(REPO)
+  const row = { key: REPO.key, uuid, receipt: qpuUuidReceiptOf('payload-cf repo', uuid, REPO.key, 'scripts/payload-cloudflare.mjs --repo').uuid, files: Object.keys(written), dependencies: t.dependencies }
+  // the app compiled against the installed packages, exactly as next build checks it
   let out = ''
-  try { execSync(`npx tsc -p ${repoCheck}/tsconfig.json`, { cwd: ROOT, stdio: 'pipe' }) } catch (e) { out = `${e.stdout}${e.stderr}` }
+  try { execSync('npx tsc -p tsconfig.payload.json --noEmit --incremental false', { cwd: ROOT, stdio: 'pipe' }) } catch (e) { out = `${e.stdout}${e.stderr}` }
   const errors = out.split('\n').filter((l) => /error TS\d+/.test(l))
-  console.log(JSON.stringify({ regenerated: rows, typecheck: { errors: errors.length, first: errors.slice(0, 5) } }, null, 1))
+  console.log(JSON.stringify({ regenerated: row, typecheck: { errors: errors.length, first: errors.slice(0, 8) } }, null, 1))
   process.exit(errors.length ? 1 : 0)
 }
 

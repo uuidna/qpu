@@ -37,7 +37,7 @@ bucket_name = "uuidna-qpu-blobs"
 # the hop is not billed as a second request, and Payload needs no public route of its own.
 [[services]]
 binding = "PAYLOAD"
-service = "uuidna-payload"
+service = "uuidna-qpu-payload"
 
 [version_metadata]
 binding = "CF_VERSION_METADATA"

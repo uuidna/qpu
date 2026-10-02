@@ -15202,6 +15202,9 @@ const worker = {
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
+    // PAYLOAD IS THE FRONTEND: a browser asking for a page gets the Payload site over the binding; every other client
+    // keeps the JSON-LD on the same path
+    if (path === '/' && env?.PAYLOAD && /text\/html/.test(request.headers.get('accept') ?? '')) return env.PAYLOAD.fetch(request)
     if (path === '/') return servedResponse(servedOf('/', () => qpuQuantumOf()))
     if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
     if (path === '/cite') return servedResponse(servedOf('/cite', () => qpuCiteOf()))
@@ -15299,6 +15302,8 @@ const worker = {
       }
       return jsonOf(qpuMessageOf())
     }
+    // every path the unit does not answer is Payload's: the admin, its assets, the documentation pages
+    if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
     return jsonOf(JSON.parse(dead), lost)
   }}
 

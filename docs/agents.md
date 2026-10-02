@@ -97,7 +97,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`bootPort`](../src/quantum/processing/unit/index.ts#L13296) | function | The one declaration of the port a booted unit serves on: boot.ts listens on $PORT, else this; the install manifest's docker command publishes it. | — | — |
 | [`isUnknownTool`](../src/quantum/processing/unit/index.ts#L14516) | function | Type guard for the reply to a tools/call that names no tool of this unit. | — | — |
 | [`qpuCallOfUuid`](../src/quantum/processing/unit/index.ts#L9927) | function | qpuCallOfUuid(uuid) → the combination that address names: the door, the pair, and whether it verifies. | — | — |
-| [`HEX_PARAM_MODES`](../src/quantum/processing/unit/index.ts#L15310) | constant | How the params section splits: by the two free bits of the variant nibble. | — | — |
+| [`HEX_PARAM_MODES`](../src/quantum/processing/unit/index.ts#L15315) | constant | How the params section splits: by the two free bits of the variant nibble. | — | — |
 | [`MCP_VERSIONS`](../src/quantum/processing/unit/index.ts#L13034) | constant | MCP protocol versions the /mcp door negotiates. | — | — |
 | [`QPU_EXPERIMENTS`](../src/quantum/processing/unit/index.ts#L10652) | constant | MIXED EXPERIMENTS: one experiment standing in two domains, and which of them taught the other. | — | — |
 | [`QPU_ZONE_HOSTS`](../src/quantum/processing/unit/index.ts#L1485) | constant | THE ZONE, HOST BY HOST — and every one of these names reaches this unit. | — | — |
