@@ -495,6 +495,19 @@ export const qpuMcpRegisterOf = (method: string, handler: McpExtension['handler'
   MCP_EXTENSIONS.set(method, { handler, capability })
   return method
 }
+type FusedTool = { description: string; inputSchema: Record<string, unknown>; run: (args: Record<string, unknown>, env?: QpuEnv) => unknown }
+const FUSED_TOOLS = new Map<string, FusedTool>()
+/**
+ * Fuse a tool into the unit: answered by tools/call, never added to tools/list, so the sixteen sealed doors stay sixteen.
+ * @wing agents
+ * @kind function
+ */
+export const qpuMcpFuseOf = (name: string, tool: FusedTool): string => {
+  FUSED_TOOLS.set(name, tool)
+  return name
+}
+/** Every fused tool with its contract: the catalogue a client reads to call what tools/list does not show. */
+export const qpuMcpFusedOf = () => [...FUSED_TOOLS].map(([name, t]) => ({ name, description: t.description, inputSchema: t.inputSchema }))
 /**
  * 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines.
  * @wing lattice
@@ -11636,7 +11649,7 @@ type CernInts = {
   href: string
 }
 
-const qpuCernRecordsOf = onceOf(() => {
+export const qpuCernRecordsOf = onceOf(() => {
   const api = `https://${cernHost}${cernPath}`
   const tev7 = n + coins + coins
   const tev8 = mintOf(n)
@@ -14467,6 +14480,8 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
     }
     return shown(await tool.run(args))
   }
+  const fused = FUSED_TOOLS.get(name)
+  if (fused) return shown(await fused.run(args, env))
   if (name === 'install' || name === 'apk') {
     if (args.man === true) {
       return shown(qpuManPageOf('install',

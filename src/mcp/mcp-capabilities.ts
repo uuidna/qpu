@@ -1,4 +1,4 @@
-import { qpuFoldOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLeanOf, qpuMcpRegisterOf, qpuReceiptStreamsOf } from '../quantum/processing/unit/index.js'
+import { qpuFoldOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReceiptStreamsOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from './hologram-streams.js'
 
 type Params = Record<string, unknown>
@@ -40,6 +40,7 @@ const resourcesOf = (): Resource[] => [
   { uri: 'qpu://receipts', name: 'receipts', title: 'Receipt streams', description: 'Every quantum-receipt stream: head, length, chain, holds', mimeType: 'application/json' },
   { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles', mimeType: 'application/json' },
   { uri: 'qpu://hologram', name: 'hologram', title: 'Hologram streams', description: 'One signed SHA-256 UUID stream per hologram scale and the Merkle root of all of them', mimeType: 'application/json' },
+  { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed', mimeType: 'application/json' },
   ...streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const })),
   ...families().map((f) => ({ uri: `qpu://formulas/${f}`, name: `formulas-${f}`, title: `Family ${f}`, description: `The formulas of the ${f} hex family`, mimeType: 'application/json' as const })),
@@ -57,6 +58,7 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://receipts') return { ...qpuReceiptStreamsOf(), streams: qpuReceiptStreamsOf().streams.map(({ recent, ...head }) => head) }
   if (uri === 'qpu://hex') return qpuHexCatalogOf()
   if (uri === 'qpu://lean') return qpuLeanOf()
+  if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
   if (uri === 'qpu://hologram') {
     const h = hologramOf()
     return { kind: h.kind, root: h.root, publicKeys: h.publicKeys, entries: h.entries, scales: Object.fromEntries(Object.entries(h.streams).map(([k, v]) => [k, { length: v.length, head: v.at(-1)?.uuid }])), holds: h.holds }
