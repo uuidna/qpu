@@ -1,0 +1,33 @@
+[2026-10-02T11:27:22.010Z] CHECK: Verifying project structure
+[2026-10-02T11:27:22.011Z] OK: All required files present
+[2026-10-02T11:27:22.011Z] INSTALL: Installing npm dependencies
+[2026-10-02T11:27:22.011Z] BUILD: Building Next.js application
+[2026-10-02T11:27:22.011Z] EXEC: Next.js build...
+[2026-10-02T11:27:23.048Z] ERROR: Next.js build failed: Command failed: npm run build
+[2026-10-02T11:27:23.048Z] WARN: Build had issues, but continuing...
+[2026-10-02T11:27:23.048Z] BUILD: Building type definitions
+[2026-10-02T11:27:23.048Z] EXEC: TypeScript type check...
+[2026-10-02T11:27:23.053Z] ERROR: TypeScript type check failed: Command failed: tsc --noEmit
+/bin/sh: tsc: command not found
+
+[2026-10-02T11:27:23.053Z] WARN: TypeScript check had issues, but continuing...
+[2026-10-02T11:27:23.053Z] TEST: Running framework integration tests
+[2026-10-02T11:27:23.053Z] EXEC: Framework tests...
+[2026-10-02T11:27:23.147Z] OK: Framework tests completed
+[2026-10-02T11:27:23.147Z] TEST: Validating audit recommendations
+[2026-10-02T11:27:23.147Z] EXEC: Auto-implementation validation...
+[2026-10-02T11:27:23.227Z] OK: Auto-implementation validation completed
+[2026-10-02T11:27:23.227Z] VERIFY: Checking generated files
+[2026-10-02T11:27:23.228Z] VERIFY: src/payload/collections/formulas.ts: ✅ 1265 bytes
+[2026-10-02T11:27:23.228Z] VERIFY: src/payload/collections/compositions.ts: ✅ 954 bytes
+[2026-10-02T11:27:23.228Z] VERIFY: src/payload/seeds/formulas.ts: ✅ 1643 bytes
+[2026-10-02T11:27:23.228Z] VERIFY: app/(frontend)/formulas/[hash]/page.tsx: ✅ 3829 bytes
+[2026-10-02T11:27:23.228Z] VERIFY: app/api/sitemap/route.ts: ✅ 892 bytes
+[2026-10-02T11:27:23.228Z] VERIFY: .vitepress/config.ts: ✅ 274 bytes
+[2026-10-02T11:27:23.228Z] VERIFY: .vitepress/data-loader.ts: ✅ 464 bytes
+[2026-10-02T11:27:23.228Z] METRICS: Collections created: 2
+[2026-10-02T11:27:23.228Z] METRICS: Routes generated: 1
+[2026-10-02T11:27:23.228Z] METRICS: APIs generated: 1
+[2026-10-02T11:27:23.228Z] METRICS: Formulas seeded: 12
+[2026-10-02T11:27:23.228Z] METRICS: Formula combinations: 1585
+[2026-10-02T11:27:23.228Z] METRICS: Pages accessible: 1585
