@@ -4,6 +4,8 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   typescript: { tsconfigPath: './tsconfig.payload.json' },
+  // one build worker: each worker opens wrangler's local state, and parallel opens race on its SQLite lock
+  experimental: { cpus: 1 },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = { '.cjs': ['.cts', '.cjs'], '.js': ['.ts', '.tsx', '.js', '.jsx'], '.mjs': ['.mts', '.mjs'] }
     return webpackConfig

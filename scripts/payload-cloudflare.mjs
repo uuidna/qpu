@@ -37,6 +37,7 @@ const REPO = {
     typescriptOutput: './src/payload/payload-types.ts',
     frontend: { collection: 'docs', route: 'docs', html: 'html' },
     seed: { name: 'seedDocs', from: './src/payload/seeds/docs' },
+    preload: ['./src/payload/workers-crypto'],
     wrangler: REPO_WRANGLER,
     bound: true,
   },
@@ -50,7 +51,7 @@ const REPO_TSCONFIG = {
     paths: { '@/*': ['./*'], '@payload-config': ['./payload.config.ts'], '@uuidna/qpu': ['./dist/quantum/processing/unit/index'], '@uuidna/qpu/payload': ['./dist/db/payload-qpu'] },
   },
   include: ['next-env.d.ts', 'payload.config.ts', 'app/**/*.ts', 'app/**/*.tsx', 'src/payload/**/*.ts', '.next/types/**/*.ts'],
-  exclude: ['node_modules', 'dist', '.open-next'],
+  exclude: ['node_modules', 'dist', '.open-next', '**/*.test.ts'],
 }
 if (process.argv.includes('--repo')) {
   const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(REPO.key), REPO_NAME, REPO.app)

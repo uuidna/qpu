@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import * as node from 'node:crypto'
-import { aeadOpen, aeadSeal, chacha20, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, randomBytes, sha256, sha512, x25519, x25519PublicKey } from './crypt.js'
+import { aeadOpen, aeadSeal, chacha20, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, pbkdf2Sha256, randomBytes, sha256, sha512, x25519, x25519PublicKey } from './crypt.js'
 
 const b64 = (b: Uint8Array) => Buffer.from(b).toString('base64url')
 const sizes = [0, 1, 55, 56, 63, 64, 111, 112, 127, 128, 1000]
@@ -25,6 +25,16 @@ test('sha256, sha512, hmac, hkdf match node:crypto', () => {
     assert.equal(hexOf(hmac('sha512', k, m)), node.createHmac('sha512', k).update(m).digest('hex'))
     assert.equal(hexOf(hkdf('sha256', m, k, 'info', 42)), Buffer.from(node.hkdfSync('sha256', m, k, 'info', 42)).toString('hex'))
   }
+})
+
+test('pbkdf2-sha256 matches node:crypto, including Payload 600000-iteration hashes', () => {
+  for (const [iterations, length] of [[1, 32], [2, 32], [4096, 32], [1000, 64], [3, 20], [25000, 512]] as const) {
+    const p = randomBytes(17), s = randomBytes(32)
+    assert.equal(hexOf(pbkdf2Sha256(p, s, iterations, length)), node.pbkdf2Sync(p, s, iterations, length, 'sha256').toString('hex'))
+  }
+  const long = randomBytes(100)
+  assert.equal(hexOf(pbkdf2Sha256(long, 'salt', 10, 32)), node.pbkdf2Sync(long, 'salt', 10, 32, 'sha256').toString('hex'))
+  assert.equal(hexOf(pbkdf2Sha256('password', 'salt', 600000, 32)), node.pbkdf2Sync('password', 'salt', 600000, 32, 'sha256').toString('hex'))
 })
 
 test('chacha20-poly1305 matches node:crypto and rejects tampering', () => {

@@ -209,6 +209,73 @@ export const hkdf = (hash: HashName, ikm: Bytes, salt: Bytes, info: Bytes | stri
 }
 
 // ---------------------------------------------------------------------------
+// PBKDF2-HMAC-SHA256 (RFC 8018): the HMAC inner and outer states are computed once, so every iteration is two
+// compressions of one fixed 64-byte block, with no allocation in the loop
+// ---------------------------------------------------------------------------
+
+const compress = (H: Uint32Array, W: Uint32Array): void => {
+  for (let t = 16; t < 64; t++) {
+    const x = W[t - 15]!, y = W[t - 2]!
+    W[t] = W[t - 16]! + (rotr(x, 7) ^ rotr(x, 18) ^ (x >>> 3)) + W[t - 7]! + (rotr(y, 17) ^ rotr(y, 19) ^ (y >>> 10))
+  }
+  let a = H[0]!, b = H[1]!, c = H[2]!, d = H[3]!, e = H[4]!, f = H[5]!, g = H[6]!, h = H[7]!
+  for (let t = 0; t < 64; t++) {
+    const t1 = (h + (rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)) + ((e & f) ^ (~e & g)) + K256[t]! + W[t]!) | 0
+    const t2 = ((rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) | 0
+    h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0
+  }
+  H[0]! += a; H[1]! += b; H[2]! += c; H[3]! += d; H[4]! += e; H[5]! += f; H[6]! += g; H[7]! += h
+}
+
+const padStateOf = (key: Bytes, pad: number): Uint32Array => {
+  const block = new Uint8Array(64)
+  block.set(key)
+  const v = new DataView(block.buffer)
+  const W = new Uint32Array(64)
+  for (let i = 0; i < 16; i++) W[i] = v.getUint32(4 * i) ^ (pad * 0x01010101)
+  const H = H256.slice()
+  compress(H, W)
+  return H
+}
+
+export const pbkdf2Sha256 = (password: Bytes | string, salt: Bytes | string, iterations: number, length: number): Bytes => {
+  if (!Number.isSafeInteger(iterations) || iterations < 1 || !Number.isSafeInteger(length) || length < 1) throw new Error('pbkdf2: iterations and length must be positive integers')
+  let key = bytesOf(password)
+  if (key.length > 64) key = sha256(key)
+  const inner = padStateOf(key, 0x36)
+  const outer = padStateOf(key, 0x5c)
+  const s = bytesOf(salt)
+  const out = new Uint8Array(length)
+  const ov = new DataView(out.buffer)
+  const W = new Uint32Array(64)
+  const H = new Uint32Array(8)
+  const T = new Uint32Array(8)
+  for (let block = 1, at = 0; at < length; block++, at += 32) {
+    // U1 = HMAC(P, S || INT(block))
+    const first = hmac('sha256', key, concat(s, Uint8Array.of(block >>> 24, (block >>> 16) & 255, (block >>> 8) & 255, block & 255)))
+    const fv = new DataView(first.buffer, first.byteOffset, 32)
+    for (let i = 0; i < 8; i++) T[i] = H[i] = fv.getUint32(4 * i)
+    // U_j = HMAC(P, U_{j-1}): one 32-byte message after each pad, so the block is U, 0x80, zeros and the bit length 768
+    for (let j = 1; j < iterations; j++) {
+      for (let i = 0; i < 8; i++) W[i] = H[i]!
+      W[8] = 0x80000000; W[9] = W[10] = W[11] = W[12] = W[13] = W[14] = 0; W[15] = 768
+      H.set(inner)
+      compress(H, W)
+      for (let i = 0; i < 8; i++) W[i] = H[i]!
+      W[8] = 0x80000000; W[9] = W[10] = W[11] = W[12] = W[13] = W[14] = 0; W[15] = 768
+      H.set(outer)
+      compress(H, W)
+      for (let i = 0; i < 8; i++) T[i]! ^= H[i]!
+    }
+    for (let i = 0; i < 8 && at + 4 * i < length; i++) {
+      if (at + 4 * i + 4 <= length) ov.setUint32(at + 4 * i, T[i]!)
+      else for (let k = 0; at + 4 * i + k < length; k++) out[at + 4 * i + k] = (T[i]! >>> (24 - 8 * k)) & 255
+    }
+  }
+  return out
+}
+
+// ---------------------------------------------------------------------------
 // ChaCha20-Poly1305
 // ---------------------------------------------------------------------------
 

@@ -3,6 +3,10 @@
     "qpu": {
       "type": "http",
       "url": "https://qpu.uuidna.com/mcp"
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
     }
   }
 }

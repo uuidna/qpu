@@ -416,6 +416,8 @@ export type CloudflareApp = {
   /** the collection the public site renders: `/` is the document with slug `index`, `/<route>/<slug>` any other; `html`
    *  is the field holding the rendered body */
   frontend?: { collection: string; route: string; html: string }
+  /** side-effect modules imported before anything else in the config (runtime shims) */
+  preload?: string[]
   /** a module exporting `seed(payload)`, run on init (idempotent upserts) */
   seed?: { name: string; from: string }
   /** where the app's wrangler file lives, relative to the app root (OpenNext reads the bindings from it) */
@@ -429,6 +431,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
   const targetsOf = (p: CloudflareCombination['plugins'][number]) => app?.targets?.[p] ?? (app ? app.collections.map((x) => x.slug).filter((x) => x !== app.adminUser && x !== 'tenants') : ['pages'])
   const imports = [
     `/// <reference types="@cloudflare/workers-types" />`,
+    ...(app?.preload ?? []).map((p) => `import '${p}'`),
     `import { buildConfig } from 'payload'`,
     `import type { CollectionConfig } from 'payload'`,
     `import { lexicalEditor } from '@payloadcms/richtext-lexical'`,
@@ -569,6 +572,8 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   typescript: { tsconfigPath: './tsconfig.payload.json' },
+  // one build worker: each worker opens wrangler's local state, and parallel opens race on its SQLite lock
+  experimental: { cpus: 1 },
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = { '.cjs': ['.cts', '.cjs'], '.js': ['.ts', '.tsx', '.js', '.jsx'], '.mjs': ['.mts', '.mjs'] }
     return webpackConfig
