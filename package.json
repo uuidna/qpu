@@ -81,7 +81,11 @@
     "!dist/**/receipted.d.ts",
     "!dist/test/**"
   ],
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/mcp/cross-domain-formulas.js",
+    "./dist/mcp/cross-domain-paths.js",
+    "./dist/audit/audit-formulas.js"
+  ],
   "engines": {
     "node": ">=26"
   },
