@@ -7,7 +7,7 @@
  * for multi-tenant, billing, and MCP integration plugins
  */
 
-import crypto from 'crypto'
+import { sha256Hex } from '../dist/core/crypt.js'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -360,7 +360,7 @@ const COMPOSITION_FORMULAS = {
 // ============================================================================
 
 function generateHex(name) {
-  return crypto.createHash('sha256').update(name).digest('hex').slice(0, 16)
+  return sha256Hex(name).slice(0, 16)
 }
 
 function executeFormula(formulaName) {

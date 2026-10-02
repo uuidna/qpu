@@ -3,7 +3,7 @@
  * 3-phase commit protocol, view changes, quorum management
  */
 
-import crypto from 'crypto'
+import { sha256Hex } from '../core/crypt.js'
 import {
   ConsensusMessage,
   ConsensusPhase,
@@ -335,7 +335,7 @@ export class ConsensusEngine {
    * Hash utility
    */
   private hash(data: string): string {
-    return crypto.createHash('sha256').update(data).digest('hex')
+    return sha256Hex(data)
   }
 
   /**

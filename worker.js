@@ -4,6 +4,10 @@ import unit from './dist/quantum/processing/unit/index.js'
 import './dist/mcp/cross-domain-formulas.js'
 import './dist/mcp/cross-domain-paths.js'
 import './dist/audit/audit-formulas.js'
+import './dist/mcp/quantum-secure-signalling.js'
+import './dist/mcp/hologram-streams.js'
+import './dist/mcp/crypt-formulas.js'
+import './dist/mcp/mcp-capabilities.js'
 
 const deployed = 'public, max-age=3600'
 const edgeOf = (request, env) => {

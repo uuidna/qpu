@@ -24,7 +24,7 @@
  *   node scripts/outage.mjs
  */
 import { execFileSync } from 'node:child_process'
-import { createHash } from 'node:crypto'
+import { sha256Hex } from '../dist/core/crypt.js'
 import { readFileSync, readdirSync, writeFileSync, mkdtempSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -154,7 +154,7 @@ const runOf = (dir, name, env) => {
   return {
     name,
     ok: true,
-    receipt: createHash('sha256').update(text).digest('hex').slice(0, mintOf(4)),
+    receipt: sha256Hex(text).slice(0, mintOf(4)),
     fold: proof.receipt,
     reading: readings.foreign?.fold,
     reads: readings.foreign?.reads,

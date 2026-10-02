@@ -3,7 +3,7 @@
  * Fast by default, safe by design
  */
 
-import crypto from 'crypto'
+import { sha256Hex } from '../core/crypt.js'
 import {
   VectorClock,
   MerkleNode,
@@ -348,7 +348,7 @@ export class StateSynchronizer {
    * Hash utility
    */
   private hash(data: string): string {
-    return crypto.createHash('sha256').update(data).digest('hex')
+    return sha256Hex(data)
   }
 
   /**

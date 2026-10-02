@@ -475,6 +475,18 @@ export const rpcErrorOf = (id: unknown, code: number, message: string, data?: un
 })
 /** The methods this server answers on /mcp. */
 const rpcMethods = ['initialize', 'server/discover', 'ping', 'notifications/initialized', 'tools/list', 'tools/call'] as const
+type McpExtension = { handler: (params: Record<string, unknown>, env?: QpuEnv) => unknown; capability?: Record<string, unknown> }
+const MCP_EXTENSIONS = new Map<string, McpExtension>()
+/**
+ * Register a JSON-RPC method on /mcp (resources, prompts, completion, logging) and the capability it adds to initialize.
+ * A handler that throws { code, message } answers that JSON-RPC error.
+ * @wing receipts
+ * @kind function
+ */
+export const qpuMcpRegisterOf = (method: string, handler: McpExtension['handler'], capability?: Record<string, unknown>): string => {
+  MCP_EXTENSIONS.set(method, { handler, capability })
+  return method
+}
 /**
  * 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines.
  * @wing lattice
@@ -13048,7 +13060,7 @@ export const qpuMcpDiscoverOf = (requested?: unknown) => {
   return {
     protocolVersion: qpuMcpVersionOf(requested),
     install: qpuHarnessesOf(),
-    capabilities: { tools: { listChanged: false as const } },
+    capabilities: Object.assign({ tools: { listChanged: false as const } }, ...[...MCP_EXTENSIONS.values()].map((x) => x.capability ?? {})) as { tools: { listChanged: false } } & Record<string, unknown>,
     serverInfo: { name: `@uuidna/${unit.kind}`, title: 'QPU', version: packageVersion },
     instructions,
     versions,
@@ -15195,7 +15207,17 @@ const worker = {
           if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: called })
         }
-        return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods] }))
+        const extension = MCP_EXTENSIONS.get(body.method)
+        if (extension) {
+          try {
+            const params = body.params && typeof body.params === 'object' && !Array.isArray(body.params) ? (body.params as Record<string, unknown>) : {}
+            return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: await extension.handler(params, env) })
+          } catch (e) {
+            const err = e as { code?: unknown; message?: unknown; data?: unknown }
+            return jsonOf(rpcErrorOf(body.id, typeof err.code === 'number' ? err.code : rpcCodes.params, typeof err.message === 'string' ? err.message : String(e), err.data))
+          }
+        }
+        return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods, ...MCP_EXTENSIONS.keys()] }))
       }
       return servedResponse(servedOf('/mcp', () => qpuMcpOf()))
     }

@@ -5,13 +5,13 @@
  * Tests VitePress + Next.js + Payload working together
  */
 
-import { createHash } from 'crypto'
+import { sha256Hex } from '../dist/core/crypt.js'
 
 /**
  * Generate hex address from slug
  */
 function generateHex(slug) {
-  return createHash('sha256').update(slug).digest('hex').slice(0, 16)
+  return sha256Hex(slug).slice(0, 16)
 }
 
 /**

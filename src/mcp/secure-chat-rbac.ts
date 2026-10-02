@@ -7,6 +7,8 @@
  */
 
 import { EventEmitter } from 'events'
+import { aeadOpen, aeadSeal, concat, ed25519PublicKey, ed25519Sign, ed25519Verify, hexOf, hkdf, randomBytes, randomUUID, sha256Hex, utf8, x25519PublicKey, x25519Shared } from '../core/crypt.js'
+import { QuantumSecureSignalling, bitsToBytes, type SiftedKey } from './quantum-secure-signalling.js'
 
 // ============================================================================
 // RBAC & Access Control
@@ -115,7 +117,7 @@ export class RBACEngine {
   }
 
   issueToken(userId: string, role: Role, ttlSeconds = 3600): string {
-    const tokenId = `token_${Date.now()}_${Math.random().toString(36).slice(2)}`
+    const tokenId = `token_${hexOf(randomBytes(24))}`
     const now = Date.now()
 
     this.contexts.set(tokenId, {
@@ -181,73 +183,80 @@ export interface QuantumSignal {
 
 export interface QuantumKey {
   id: string
+  /** X25519 public key (32 bytes) */
   publicKey: Uint8Array
+  /** Ed25519 public key (32 bytes) */
+  signingKey: Uint8Array
   quantumEntanglement: string // Entanglement ID
   rotationPhase: number
   expiresAt: number
 }
 
+export const BB84_RAW = 2048
+
 export class QuantumSignaller {
   private keys: Map<string, QuantumKey> = new Map()
+  private secrets: Map<string, { agree: Uint8Array; sign: Uint8Array }> = new Map()
+  private pairs: Map<string, SiftedKey> = new Map()
   private signalHistory: QuantumSignal[] = []
   private maxHistorySize = 10000
 
   generateKey(userId: string): QuantumKey {
-    const keyId = `qk_${Date.now()}_${Math.random().toString(36).slice(2)}`
+    const agree = randomBytes(32)
+    const sign = randomBytes(32)
+    const phase = randomBytes(4)
     const key: QuantumKey = {
-      id: keyId,
-      publicKey: this.generateQuantumPublicKey(),
-      quantumEntanglement: `entangle_${Math.random().toString(36).slice(2)}`,
-      rotationPhase: Math.random() * 2 * Math.PI,
+      id: `qk_${randomUUID()}`,
+      publicKey: x25519PublicKey(agree),
+      signingKey: ed25519PublicKey(sign),
+      quantumEntanglement: `entangle_${userId}_${randomUUID()}`,
+      rotationPhase: (new DataView(phase.buffer).getUint32(0) / 2 ** 32) * 2 * Math.PI,
       expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
     }
-
-    this.keys.set(keyId, key)
+    this.keys.set(key.id, key)
+    this.secrets.set(key.id, { agree, sign })
     return key
   }
 
-  private generateQuantumPublicKey(): Uint8Array {
-    const key = new Uint8Array(32)
-    for (let i = 0; i < 32; i++) {
-      key[i] = Math.floor(Math.random() * 256)
-    }
-    return key
+  /** The BB84 key two keys share, sifted once per pair; it salts the session key derivation. */
+  bb84Of(a: string, b: string): SiftedKey {
+    const id = [a, b].sort().join('|')
+    let sifted = this.pairs.get(id)
+    while (!sifted || !sifted.holds) sifted = QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW))
+    this.pairs.set(id, sifted)
+    return sifted
+  }
+
+  /** One key per message: the signal id is in the HKDF info, so a repeated nonce never repeats a keystream. */
+  private messageKeyOf(secret: Uint8Array, peer: QuantumKey, a: string, b: string, id: string): Uint8Array {
+    const shared = x25519Shared(secret, peer.publicKey)
+    if (!shared) throw new Error('Low-order public key')
+    return hkdf('sha256', shared, bitsToBytes(this.bb84Of(a, b).bits), `qpu-chat|${[a, b].sort().join('|')}|${id}`, 32)
+  }
+
+  private boundOf(id: string, sender: string, recipient: string): Uint8Array {
+    return utf8(`${id}|${sender}|${recipient}`)
   }
 
   encryptSignal(plaintext: Uint8Array, senderKeyId: string, recipientKeyId: string): QuantumSignal {
-    const senderKey = this.keys.get(senderKeyId)
-    const recipientKey = this.keys.get(recipientKeyId)
-
-    if (!senderKey || !recipientKey) {
+    const sender = this.secrets.get(senderKeyId)
+    const recipient = this.keys.get(recipientKeyId)
+    if (!sender || !recipient) {
       throw new Error('Invalid key IDs')
     }
 
-    // Quantum XOR encryption with phase rotation
-    const encrypted = new Uint8Array(plaintext.length)
-    for (let i = 0; i < plaintext.length; i++) {
-      const phaseShift = Math.floor(senderKey.rotationPhase * i * 0.001)
-      encrypted[i] = plaintext[i] ^ senderKey.publicKey[i % 32] ^ phaseShift
-    }
-
-    // Generate quantum signature
-    const signature = new Uint8Array(32)
-    for (let i = 0; i < 32; i++) {
-      signature[i] = encrypted[i] ^ recipientKey.publicKey[i]
-    }
-
-    // Generate nonce
-    const nonce = new Uint8Array(16)
-    for (let i = 0; i < 16; i++) {
-      nonce[i] = Math.floor(Math.random() * 256)
-    }
+    const id = `qs_${randomUUID()}`
+    const nonce = randomBytes(12)
+    const bound = this.boundOf(id, senderKeyId, recipientKeyId)
+    const encrypted = aeadSeal(this.messageKeyOf(sender.agree, recipient, senderKeyId, recipientKeyId, id), nonce, plaintext, bound)
 
     const signal: QuantumSignal = {
-      id: `qs_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      id,
       timestamp: Date.now(),
       sender: senderKeyId,
       path: [senderKeyId, recipientKeyId],
       signal: encrypted,
-      signature,
+      signature: ed25519Sign(sender.sign, concat(bound, nonce, encrypted)),
       nonce
     }
 
@@ -256,39 +265,20 @@ export class QuantumSignaller {
   }
 
   decryptSignal(signal: QuantumSignal, recipientKeyId: string, senderKeyId: string): Uint8Array {
-    const senderKey = this.keys.get(senderKeyId)
-    const recipientKey = this.keys.get(recipientKeyId)
-
-    if (!senderKey || !recipientKey) {
+    const sender = this.keys.get(senderKeyId)
+    const recipient = this.secrets.get(recipientKeyId)
+    if (!sender || !recipient) {
       throw new Error('Invalid key IDs')
     }
 
-    // Verify signature
-    const computedSignature = new Uint8Array(32)
-    for (let i = 0; i < 32; i++) {
-      computedSignature[i] = signal.signal[i] ^ recipientKey.publicKey[i]
-    }
-
-    if (!this.signaturesMatch(computedSignature, signal.signature)) {
+    const bound = this.boundOf(signal.id, senderKeyId, recipientKeyId)
+    if (!ed25519Verify(sender.signingKey, concat(bound, signal.nonce, signal.signal), signal.signature)) {
       throw new Error('Signature verification failed')
     }
 
-    // Decrypt
-    const decrypted = new Uint8Array(signal.signal.length)
-    for (let i = 0; i < signal.signal.length; i++) {
-      const phaseShift = Math.floor(senderKey.rotationPhase * i * 0.001)
-      decrypted[i] = signal.signal[i] ^ senderKey.publicKey[i % 32] ^ phaseShift
-    }
-
-    return decrypted
-  }
-
-  private signaturesMatch(a: Uint8Array, b: Uint8Array): boolean {
-    if (a.length !== b.length) return false
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false
-    }
-    return true
+    const plaintext = aeadOpen(this.messageKeyOf(recipient.agree, sender, senderKeyId, recipientKeyId, signal.id), signal.nonce, signal.signal, bound)
+    if (!plaintext) throw new Error('Authentication failed')
+    return plaintext
   }
 
   private addToHistory(signal: QuantumSignal): void {
@@ -320,6 +310,8 @@ export interface SecureMessage {
   subject: string
   body: Uint8Array // Encrypted
   quantumSignal: QuantumSignal
+  /** one signal per recipient, each sealed to that recipient's key */
+  signals: Record<string, QuantumSignal>
   metadata: Record<string, unknown>
 }
 
@@ -346,6 +338,8 @@ export class SecureChat extends EventEmitter {
   private payloads: Map<string, PayloadManifest> = new Map()
   private channels: Map<string, Set<string>> = new Map() // channel -> users
   private coordinationState: Map<string, unknown> = new Map()
+  private userKeys: Map<string, string> = new Map()
+  private chain = sha256Hex('')
 
   constructor() {
     super()
@@ -359,9 +353,22 @@ export class SecureChat extends EventEmitter {
 
   registerUser(userId: string, role: Role): string {
     const token = this.rbac.issueToken(userId, role)
-    const keyPair = this.quantumSignaller.generateKey(userId)
-    this.emit('user-registered', { userId, role, token, keyId: keyPair.id })
+    this.emit('user-registered', { userId, role, token, keyId: this.keyIdOf(userId) })
     return token
+  }
+
+  private keyIdOf(userId: string): string {
+    let keyId = this.userKeys.get(userId)
+    if (!keyId) this.userKeys.set(userId, (keyId = this.quantumSignaller.generateKey(userId).id))
+    return keyId
+  }
+
+  getKeyId(userId: string): string | undefined {
+    return this.userKeys.get(userId)
+  }
+
+  getSignaller(): QuantumSignaller {
+    return this.quantumSignaller
   }
 
   revokeAccess(tokenId: string): void {
@@ -396,19 +403,17 @@ export class SecureChat extends EventEmitter {
       return null
     }
 
-    // Get sender key
-    const senderKey = this.quantumSignaller.generateKey(context.userId)
-    const recipientKey = this.quantumSignaller.generateKey(recipients[0])
-
-    // Encrypt with quantum signalling
-    const quantumSignal = this.quantumSignaller.encryptSignal(
-      body,
-      senderKey.id,
-      recipientKey.id
+    if (recipients.length === 0) return null
+    const senderKeyId = this.keyIdOf(context.userId)
+    const signals = Object.fromEntries(
+      recipients.map((r) => [r, this.quantumSignaller.encryptSignal(body, senderKeyId, this.keyIdOf(r))])
     )
+    const quantumSignal = signals[recipients[0]!]!
+    const bb84 = this.quantumSignaller.bb84Of(senderKeyId, this.keyIdOf(recipients[0]!))
+    this.chain = sha256Hex(concat(utf8(this.chain), quantumSignal.signature))
 
     const message: SecureMessage = {
-      id: `msg_${Date.now()}_${Math.random().toString(36).slice(2)}`,
+      id: `msg_${randomUUID()}`,
       timestamp: Date.now(),
       sender: context.userId,
       recipients,
@@ -416,10 +421,13 @@ export class SecureChat extends EventEmitter {
       subject,
       body: quantumSignal.signal,
       quantumSignal,
+      signals,
       metadata: {
-        encryptionMethod: 'quantum-xor-phase-rotation',
+        encryptionMethod: 'x25519+bb84-hkdf-sha256+chacha20-poly1305+ed25519',
         senderRole: context.role,
-        ipAddress: 'encrypted'
+        ipAddress: 'encrypted',
+        bb84: { raw: bb84.raw, sifted: bb84.sifted, keyBits: bb84.bits.length, qber: bb84.qber, holds: bb84.holds },
+        chain: this.chain
       }
     }
 
@@ -493,18 +501,13 @@ export class SecureChat extends EventEmitter {
     }
 
     try {
-      const senderKey = this.quantumSignaller.getKey(message.quantumSignal.sender)
-      const recipientKey = this.quantumSignaller.getKey(context.userId)
-
-      if (!senderKey || !recipientKey) {
+      const signal = message.signals?.[context.userId]
+      const recipientKeyId = this.userKeys.get(context.userId)
+      if (!signal || !recipientKeyId) {
         return null
       }
 
-      return this.quantumSignaller.decryptSignal(
-        message.quantumSignal,
-        recipientKey.id,
-        senderKey.id
-      )
+      return this.quantumSignaller.decryptSignal(signal, recipientKeyId, signal.sender)
     } catch (e) {
       this.emit('decryption-failed', { messageId: message.id, error: (e as Error).message })
       return null
@@ -577,12 +580,11 @@ export class SecureChat extends EventEmitter {
   // ========================================================================
 
   private computeChecksum(data: Uint8Array): string {
-    let hash = 0
-    for (let i = 0; i < data.length; i++) {
-      hash = ((hash << 5) - hash) + data[i]
-      hash |= 0 // Convert to 32-bit integer
-    }
-    return Math.abs(hash).toString(16)
+    return sha256Hex(data)
+  }
+
+  getChain(): string {
+    return this.chain
   }
 
   getMessageCount(): number {

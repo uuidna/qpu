@@ -13,7 +13,7 @@
  * and can autonomously configure itself using cross-domain formulas.
  */
 
-import crypto from 'crypto'
+import { sha256Hex } from '../core/crypt.js'
 
 /**
  * Plugin Formula Definition
@@ -327,10 +327,7 @@ class MCPPayloadPluginOrchestrator {
     executionOrder: string[]
     conflicts: string[]
   } {
-    const compositionId = crypto
-      .createHash('sha256')
-      .update(formulaNames.join(','))
-      .digest('hex')
+    const compositionId = sha256Hex(formulaNames.join(','))
       .slice(0, 16)
 
     // Resolve dependencies
@@ -675,10 +672,7 @@ ${plugins.map((p) => `    ${p.name.toLowerCase()}Plugin({/* config from ${p.form
   // ===================================================================
 
   private generateFormulaId(name: string): string {
-    return crypto
-      .createHash('sha256')
-      .update(name)
-      .digest('hex')
+    return sha256Hex(name)
       .slice(0, 16)
   }
 

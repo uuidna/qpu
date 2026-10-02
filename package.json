@@ -98,6 +98,7 @@
     "docs": "node scripts/generate-docs.mjs",
     "fuse": "node scripts/fuse-apis.mjs",
     "payload:cf": "node scripts/payload-cloudflare.mjs",
+    "hooks": "node dist/deployment/git-hooks.js install",
     "prepublishOnly": "npm run version:lock && npm run build",
     "ship": "npm run build && npx wrangler deploy",
     "lean": "lake build && node scripts/lean-bundle.mjs --check && lean src/quantum/processing/unit/index.lean",

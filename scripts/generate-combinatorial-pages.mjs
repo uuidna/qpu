@@ -11,7 +11,7 @@
 
 import fs from 'fs'
 import path from 'path'
-import { createHash } from 'crypto'
+import { md5Hex } from '../dist/core/crypt.js'
 
 // Formula domains and their formulas
 const domains = {
@@ -133,9 +133,7 @@ function generateSEOMetadata(combination, index) {
  */
 function generateURL(combination, index) {
   // Create a deterministic ID from the combination
-  const hash = createHash('md5')
-    .update(combination.map((f) => f.id).join('|'))
-    .digest('hex')
+  const hash = md5Hex(combination.map((f) => f.id).join('|'))
     .slice(0, 16)
 
   return `/formulas/${hash}`
@@ -309,7 +307,7 @@ export default async function FormulaPage({ params }) {
 export async function generateStaticParams() {
   const combinations = Array.from(generateCombinations())
   return combinations.map((combo, idx) => ({
-    hash: createHash('md5').update(combo.map((f) => f.id).join('|')).digest('hex').slice(0, 16),
+    hash: md5Hex(combo.map((f) => f.id).join('|')).slice(0, 16),
   }))
 }
 `
@@ -320,7 +318,6 @@ export async function generateStaticParams() {
  */
 function generateRoutingLibrary() {
   return `// lib/formula-routing.ts
-import { createHash } from 'crypto'
 
 export async function decodeFormulaHash(hash: string) {
   // In production, this would use a lookup table or cache

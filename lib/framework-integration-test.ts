@@ -3,7 +3,7 @@
  * Tests VitePress + Next.js + Payload working as unified hex system
  */
 
-import { createHash } from 'crypto'
+import { sha256Hex } from '../src/core/crypt.js'
 
 /**
  * Unified document type - works across all three frameworks
@@ -74,7 +74,7 @@ class PayloadMock {
   }
 
   private generateHex(slug: string): string {
-    return createHash('sha256').update(slug).digest('hex').slice(0, 16)
+    return sha256Hex(slug).slice(0, 16)
   }
 
   async find(query: { collection: string; where?: any }): Promise<{ docs: UnifiedDocument[] }> {

@@ -9,7 +9,7 @@
  * 4. SEO-optimized - Google-tested metadata
  */
 
-import { createHash } from 'crypto'
+import { sha256Hex } from '../src/core/crypt.js'
 
 // Domain and formula definitions
 const FORMULAS_DATABASE = {
@@ -58,7 +58,7 @@ const FLAT_FORMULAS = Object.entries(FORMULAS_DATABASE).flatMap(([domain, formul
  */
 export function generateFormulaHash(formulaIds: string[]): string {
   const sorted = [...formulaIds].sort().join('|')
-  return createHash('sha256').update(sorted).digest('hex').slice(0, 16)
+  return sha256Hex(sorted).slice(0, 16)
 }
 
 /**

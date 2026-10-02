@@ -4,7 +4,7 @@
  * No hardcoding: pure formula composition
  */
 
-import crypto from 'crypto'
+import { sha256Hex } from '../src/core/crypt.js'
 
 export interface APIParameter {
   name: string
@@ -65,10 +65,7 @@ export class UniversalAPICombinator {
       return this.formulaCache.get(key)!
     }
 
-    const hash = crypto
-      .createHash('sha256')
-      .update(key)
-      .digest('hex')
+    const hash = sha256Hex(key)
       .slice(0, 16)
     this.formulaCache.set(key, hash)
     return hash
@@ -88,7 +85,7 @@ export class UniversalAPICombinator {
       .map((k) => `${k}=${JSON.stringify(params[k])}`)
       .join('&')
 
-    return crypto.createHash('sha256').update(sorted).digest('hex').slice(0, 16)
+    return sha256Hex(sorted).slice(0, 16)
   }
 
   /**

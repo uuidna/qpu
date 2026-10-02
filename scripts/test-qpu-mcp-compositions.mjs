@@ -5,14 +5,14 @@
  * Verifies all discovered operations and their compositions
  */
 
-import crypto from 'crypto'
+import { sha256Hex } from '../dist/core/crypt.js'
 
 function generateFormula(op1, op2) {
   return `${op1.slice(0, 4)}.${op2.slice(0, 4)}`
 }
 
 function generateHex(name) {
-  return crypto.createHash('sha256').update(name).digest('hex').slice(0, 16)
+  return sha256Hex(name).slice(0, 16)
 }
 
 const OPERATIONS = {

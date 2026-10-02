@@ -1,5 +1,4 @@
 // lib/formula-routing.ts
-import { createHash } from 'crypto'
 
 export async function decodeFormulaHash(hash: string) {
   // In production, this would use a lookup table or cache
