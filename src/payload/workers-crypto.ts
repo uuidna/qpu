@@ -1,4 +1,4 @@
-import crypto from 'node:crypto'
+import crypto, * as cryptoModule from 'crypto'
 import { pbkdf2Sha256, randomBytes } from '../core/crypt.js'
 
 // Payload hashes passwords through crypto.pbkdf2 (600000 iterations, SHA-256) and salts them with crypto.randomBytes.
@@ -23,6 +23,21 @@ export const qpuRandomBytes = (size: number, callback?: (err: Error | null, buf:
   callback(null, buf)
 }
 
-const target = crypto as unknown as { pbkdf2: typeof qpuPbkdf2; randomBytes: typeof qpuRandomBytes }
-target.pbkdf2 = qpuPbkdf2
-target.randomBytes = qpuRandomBytes
+type Patchable = { pbkdf2: typeof qpuPbkdf2; randomBytes: typeof qpuRandomBytes }
+
+/** Called by the generated config, so no bundler can drop it as an unused import. Payload reads the raw 'crypto'
+ *  module object (a bundler hands it the module, not its default view), so both are patched and the raw one is checked. */
+export const install = (): void => {
+  for (const target of [cryptoModule, crypto] as unknown as Patchable[]) {
+    try {
+      target.pbkdf2 = qpuPbkdf2
+      target.randomBytes = qpuRandomBytes
+    } catch {
+      // an ES module namespace is read-only; the other view carries the patch
+    }
+  }
+  const raw = cryptoModule as unknown as Patchable
+  const view = crypto as unknown as Patchable
+  console.log(`qpu crypto: module pbkdf2 ${raw.pbkdf2 === qpuPbkdf2 ? 'installed' : 'NOT installed'}, default pbkdf2 ${view.pbkdf2 === qpuPbkdf2 ? 'installed' : 'NOT installed'}`)
+}
+install()
