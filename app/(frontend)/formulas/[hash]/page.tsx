@@ -6,12 +6,12 @@ import type { Metadata } from 'next'
 import { decodeFormulaHash, getKnowledgeBaseStats } from '@/lib/formula-routing'
 
 interface Props {
-  params: { hash: string }
+  params: Promise<{ hash: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const { metadata } = decodeFormulaHash(params.hash)
+    const { metadata } = decodeFormulaHash((await params).hash)
     return {
       title: metadata.title,
       description: metadata.description,
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function FormulaPage({ params }: Props) {
   try {
-    const { formulas, metadata, stats } = decodeFormulaHash(params.hash)
+    const { formulas, metadata, stats } = decodeFormulaHash((await params).hash)
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">

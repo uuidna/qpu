@@ -4,6 +4,7 @@
  * No hardcoding: pure formula-driven tool generation
  */
 
+import { sha256Hex } from '../src/core/crypt.js'
 import { UniversalAPICombinator, STANDARD_SERVICES, APIService, APIEndpoint } from './universal-api-framework'
 
 export interface MCPToolDefinition {
@@ -124,11 +125,8 @@ export class QPUMCPUnlimited {
 
         // Only compose compatible operations (output type matches input type)
         const composedName = `${op1.name}__then__${op2.name}`
-        const composedFormula = this.combinator.generateParamsHex(
-          'composed',
-          composedName,
-          { op1: op1.formula, op2: op2.formula },
-        )
+        // the params hash of { op1, op2 }, as generateParamsHex would give it; 'composed' is not a registered service to look up
+        const composedFormula = sha256Hex(`op1=${JSON.stringify(op1.formula)}&op2=${JSON.stringify(op2.formula)}`).slice(0, 16)
 
         const composedOperation: MCPOperation = {
           id: composedFormula,
