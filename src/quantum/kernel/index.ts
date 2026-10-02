@@ -4,7 +4,6 @@
  */
 
 // HEX CONSTANTS (pre-computed, no wrapper lookup)
-const BELL_HEX=[0x1n,0x1n,0x2n,0x5n,0xFn,0x34n,0xCBn,0x36Dn]
 const PHASE1_COINS=0x2n,PHASE1_RAYS=0x7n,PHASE1_FACES=0xEn,PHASE1_PLANE=0x1Cn
 const PHASE2_CATALAN=0xEn,PHASE2_BELL=0xFn
 const PHASE3_SHOR=0x5Bn,PHASE3_F1=0x7n,PHASE3_F2=0xDn
@@ -12,7 +11,8 @@ const PHASE3_SHOR=0x5Bn,PHASE3_F1=0x7n,PHASE3_F2=0xDn
 // PRIMITIVES (inlined, no recursive wrapper calls)
 const binomial=(n:bigint,k:bigint):bigint=>{if(k>n)return 0n;if(k===0n||k===n)return 1n;if(k>n-k)k=n-k;let r=1n;for(let i=0n;i<k;i++)r=r*(n-i)/(i+1n);return r}
 const catalan=(n:bigint):bigint=>binomial(2n*n,n)/(n+1n)
-const bell=(n:bigint):bigint=>n<8n?BELL_HEX[Number(n)]:0n
+// Bell triangle: each row starts with the last entry of the row above; B(n) is row n's first entry
+const bell=(n:bigint):bigint=>{let row=[1n];for(let i=0n;i<n;i++){const next=[row[row.length-1]!];for(const x of row)next.push(next[next.length-1]!+x);row=next}return row[0]!}
 const gcd=(a:bigint,b:bigint):bigint=>{while(b!==0n){const t=b;b=a%b;a=t}return a}
 const modexp=(b:bigint,e:bigint,m:bigint):bigint=>{let r=1n;b=b%m;while(e>0n){if(e&1n)r=(r*b)%m;e>>=1n;b=(b*b)%m}return r}
 

@@ -7,6 +7,7 @@ import './dist/audit/audit-formulas.js'
 import './dist/mcp/quantum-secure-signalling.js'
 import './dist/mcp/hologram-streams.js'
 import './dist/mcp/crypt-formulas.js'
+import './dist/mcp/np-formulas.js'
 import './dist/mcp/mcp-capabilities.js'
 
 const deployed = 'public, max-age=3600'

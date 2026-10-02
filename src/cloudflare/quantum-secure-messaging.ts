@@ -5,6 +5,7 @@
  */
 
 import { QuantumSignaller } from '../mcp/secure-chat-rbac.js'
+import { randomUUID, sha256Hex } from '../core/crypt.js'
 
 // ============================================================================
 // Cloudflare Bindings Interface
@@ -52,6 +53,8 @@ export interface DirectionalQuantumMessage {
     signature: string
     publicKey: string
   }
+  /** one sealed envelope per recipient: the signal id is bound into its AEAD and signature */
+  envelopes: Record<string, { id: string; senderKeyId: string; recipientKeyId: string; ciphertext: string; nonce: string; signature: string }>
   metadata: {
     ttl: number
     priority: 'low' | 'normal' | 'high' | 'critical'
@@ -77,11 +80,18 @@ export class CloudflareQuantumMessenger {
   private bindings: CloudflareBindings
   private quantumSignaller: QuantumSignaller
   private localKeyId: string
+  private userKeys: Map<string, string> = new Map()
 
   constructor(bindings: CloudflareBindings) {
     this.bindings = bindings
     this.quantumSignaller = new QuantumSignaller()
     this.localKeyId = bindings.ENCRYPTION_KEY_ID
+  }
+
+  private keyIdOf(user: string): string {
+    let keyId = this.userKeys.get(user)
+    if (!keyId) this.userKeys.set(user, (keyId = this.quantumSignaller.generateKey(user).id))
+    return keyId
   }
 
   /**
@@ -100,18 +110,16 @@ export class CloudflareQuantumMessenger {
     } = {}
   ): Promise<DirectionalQuantumMessage | null> {
     const now = Date.now()
-    const messageId = `msg_${now}_${Math.random().toString(36).slice(2)}`
-
-    // Generate quantum keys for sender & recipients
-    const senderKey = this.quantumSignaller.generateKey(sender)
-    const recipientKey = this.quantumSignaller.generateKey(recipients[0])
-
-    // Encrypt with quantum signalling
-    const quantumSignal = this.quantumSignaller.encryptSignal(
-      body,
-      senderKey.id,
-      recipientKey.id
-    )
+    if (recipients.length === 0) return null
+    const messageId = `msg_${randomUUID()}`
+    const senderKeyId = this.keyIdOf(sender)
+    const senderKey = this.quantumSignaller.getKey(senderKeyId)!
+    const envelopes = Object.fromEntries(recipients.map((r) => {
+      const recipientKeyId = this.keyIdOf(r)
+      const s = this.quantumSignaller.encryptSignal(body, senderKeyId, recipientKeyId)
+      return [r, { id: s.id, senderKeyId, recipientKeyId, ciphertext: this.uint8ToBase64(s.signal), nonce: this.uint8ToBase64(s.nonce), signature: this.uint8ToBase64(s.signature) }]
+    }))
+    const first = envelopes[recipients[0]!]!
 
     // Create directional message
     const message: DirectionalQuantumMessage = {
@@ -122,15 +130,16 @@ export class CloudflareQuantumMessenger {
       recipients,
       path: [sender, ...recipients],
       quantumEncrypted: {
-        ciphertext: this.uint8ToBase64(quantumSignal.signal),
-        nonce: this.uint8ToBase64(quantumSignal.nonce),
-        signature: this.uint8ToBase64(quantumSignal.signature),
+        ciphertext: first.ciphertext,
+        nonce: first.nonce,
+        signature: first.signature,
         publicKey: this.uint8ToBase64(senderKey.publicKey)
       },
+      envelopes,
       metadata: {
         ttl: metadata.ttl || 24 * 60 * 60, // 24 hours default
         priority: metadata.priority || 'normal',
-        contentHash: this.computeHash(body),
+        contentHash: sha256Hex(first.ciphertext),
         requiresReceipt: metadata.requiresReceipt ?? true
       },
       receipts: []
@@ -324,29 +333,25 @@ export class CloudflareQuantumMessenger {
       if (!stored) continue
 
       const message: DirectionalQuantumMessage = JSON.parse(stored)
+      const envelope = message.envelopes?.[recipient]
+      if (!envelope) continue
 
-      // Decrypt body
       try {
-        const ciphertext = this.base64ToUint8(message.quantumEncrypted.ciphertext)
-        const nonce = this.base64ToUint8(message.quantumEncrypted.nonce)
-        const signature = this.base64ToUint8(message.quantumEncrypted.signature)
-        const publicKey = this.base64ToUint8(message.quantumEncrypted.publicKey)
-
-        // Reconstruct quantum signal for decryption
-        const quantumSignal = {
-          id: message.id,
-          timestamp: message.timestamp,
-          sender: message.sender,
-          path: message.path,
-          signal: ciphertext,
-          signature,
-          nonce
-        }
-
-        // Note: Full decryption would require matching key retrieval
-        // This is a simplified version showing the pattern
-        return { message, body: ciphertext }
-      } catch (e) {
+        const body = this.quantumSignaller.decryptSignal(
+          {
+            id: envelope.id,
+            timestamp: message.timestamp,
+            sender: envelope.senderKeyId,
+            path: [envelope.senderKeyId, envelope.recipientKeyId],
+            signal: this.base64ToUint8(envelope.ciphertext),
+            signature: this.base64ToUint8(envelope.signature),
+            nonce: this.base64ToUint8(envelope.nonce)
+          },
+          envelope.recipientKeyId,
+          envelope.senderKeyId
+        )
+        return { message, body }
+      } catch {
         continue
       }
     }
@@ -434,15 +439,6 @@ export class CloudflareQuantumMessenger {
         }
       }
     )
-  }
-
-  private computeHash(data: Uint8Array): string {
-    let hash = 0
-    for (let i = 0; i < data.length; i++) {
-      hash = ((hash << 5) - hash) + data[i]
-      hash |= 0
-    }
-    return Math.abs(hash).toString(16)
   }
 
   private uint8ToBase64(arr: Uint8Array): string {

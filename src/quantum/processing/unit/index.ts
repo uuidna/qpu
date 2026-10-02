@@ -11,6 +11,7 @@ import { packageVersion } from './version.js'
 import { sealedStandards } from './standards.js'
 import { leanModelOf, leanRecomputeOf, leanTheoremBlocksOf, leanCallOf, leanArityOf, leanLinksOf } from './lean-eval.js'
 import { docDbOf, type DocStore } from './docdb.js'
+import { sha256Hex } from '../../../core/crypt.js'
 export * from './docdb.js'
 const onceOf = <T,>(build: () => T): (() => T) => {
   let built: { value: T } | undefined
@@ -204,8 +205,16 @@ export const qpuReceiptLedgerOf = (): readonly QpuReceipt[] => RECEIPTS
  *  name, and what it returned — folds to `fold`; the receipt's own UUID is programmable: the content address of
  *  that payload and its referrer, so the same computation reached through two referrers carries two receipts and
  *  the same computation through the same referrer carries one. Non-finite numbers keep their own text. */
-/** Stream heads: the last receipt UUID per stream, its length, and the chain folded over every UUID in order. */
-const STREAMS = new Map<string, { head: string; length: number; chain: bigint }>()
+/** Stream heads: the last receipt UUID per stream, its length, and the SHA-256 chain over every UUID in order. */
+const STREAMS = new Map<string, { head: string; length: number; chain: string }>()
+const receiptFoldOf = (text: string): string => sha256Hex(text).slice(n - n, FOLD_DIGITS)
+/** RFC 9562 v8 receipt UUID: SHA-256 of the payload fold and the referrer. */
+const receiptUuidOf = (fold: string, referrer: string): string => {
+  const h = sha256Hex(JSON.stringify({ payload: fold, referrer }))
+  const variant = (mintOf(n) + (parseInt(h[UUID_SIXTEEN]!, UUID_SIXTEEN) % UUID_FOUR)).toString(UUID_SIXTEEN)
+  return uuidGroupsOf(h.slice(n - n, UUID_EIGHT), h.slice(UUID_EIGHT, UUID_EIGHT + UUID_FOUR), `8${h.slice(UUID_EIGHT + UUID_FOUR + seed, UUID_SIXTEEN)}`, `${variant}${h.slice(UUID_SIXTEEN + seed, UUID_SIXTEEN + UUID_FOUR)}`, h.slice(UUID_SIXTEEN + UUID_FOUR, coins * UUID_SIXTEEN))
+}
+const receiptChainOf = (chain: string, uuid: string): string => sha256Hex(`${chain}${uuid}`)
 /**
  * Append a quantum receipt for a UUID-addressed computation: payload fold of {name, subject, value}; receipt UUID = content UUID of {payload fold, referrer}; chained per stream (seq, prev).
  * @wing receipts
@@ -214,12 +223,12 @@ const STREAMS = new Map<string, { head: string; length: number; chain: bigint }>
  */
 export const qpuUuidReceiptOf = (name: string, subject: string, value: unknown, referrer?: string): QpuReceipt & { uuid: string; subject: string; referrer: string; stream: string; seq: number; prev: string } => {
   const stream = name.split(' ')[n - n] ?? name
-  const at = STREAMS.get(stream) ?? { head: `${unit.origin}/receipts/${stream}`, length: n - n, chain: FNV_OFFSET }
+  const at = STREAMS.get(stream) ?? { head: `${unit.origin}/receipts/${stream}`, length: n - n, chain: '' }
   const by = referrer ?? at.head
-  const fold = qpuFoldOf(canonicalTextOf({ name, subject, value }))
-  const uuid = qpuContentUuidOf({ payload: fold, referrer: by })
+  const fold = receiptFoldOf(canonicalTextOf({ name, subject, value }))
+  const uuid = receiptUuidOf(fold, by)
   const row = { name, dim: seed, fold, uuid, subject, referrer: by, stream, seq: at.length, prev: at.head }
-  STREAMS.set(stream, { head: uuid, length: at.length + seed, chain: foldTextInto(at.chain, uuid) })
+  STREAMS.set(stream, { head: uuid, length: at.length + seed, chain: receiptChainOf(at.chain, uuid) })
   RECEIPTS.push(row)
   return row
 }
@@ -233,22 +242,21 @@ export const qpuReceiptStreamsOf = (limit = qpuCubeOf().bits) => {
   const streams = [...STREAMS.entries()].map(([stream, live]) => {
     const own = rows.filter((r) => r.stream === stream)
     let head = `${unit.origin}/receipts/${stream}`
-    let chain = FNV_OFFSET
+    let chain = ''
     let linked = true
     for (const r of own) {
-      linked = linked && r.prev === head && r.uuid === qpuContentUuidOf({ payload: r.fold, referrer: r.referrer })
+      linked = linked && r.prev === head && r.uuid === receiptUuidOf(r.fold, r.referrer)
       head = r.uuid
-      chain = foldTextInto(chain, r.uuid)
+      chain = receiptChainOf(chain, r.uuid)
     }
-    const fold = chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0')
     return {
       stream,
       href: `${unit.origin}/receipts/${stream}`,
       length: live.length,
       head: live.head,
-      chain: live.chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0'),
+      chain: live.chain,
       recent: own.slice(-limit),
-      holds: linked && own.length === live.length && head === live.head && fold === live.chain.toString(HEX_RADIX).padStart(FOLD_DIGITS, '0'),
+      holds: linked && own.length === live.length && head === live.head && chain === live.chain,
     }
   })
   return { kind: 'receipts' as const, streams, receipts: RECEIPTS.length, holds: streams.every((s) => s.holds) }

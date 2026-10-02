@@ -1,12 +1,12 @@
 {
  "kind": "formulas-receipt",
  "when": "2026-10-02",
- "formulas": 24,
- "rowsTotal": 58,
- "pass": 57,
+ "formulas": 31,
+ "rowsTotal": 73,
+ "pass": 72,
  "fail": 1,
  "attacks": "27/27",
- "hexAgrees": 23,
+ "hexAgrees": 30,
  "hologramRoot": "3c42ddbecf0426a9d8711709321c25c03096678ee2a21a9a418789041534bdd4",
  "holds": false,
  "rows": [
@@ -14,12 +14,12 @@
    "name": "cross qsec→compress-1",
    "family": "cross",
    "pass": true,
-   "value": 0.0942252323446062,
+   "value": 0.09457474627892029,
    "formula": "compression_ratio = 1 / (1 + log2(keyLen))",
    "from": "sifted BB84 key bits",
-   "hex": "0c36469f-1000-8000-9000-00000000030f",
+   "hex": "0c36469f-1000-8000-9000-0000000002fa",
    "hexAgrees": true,
-   "receipt": "fefe19f5-162e-8941-8025-5b72f00aa718"
+   "receipt": "9c42ee53-7fdd-8228-bff2-cbdefe2c39f3"
   },
   {
    "name": "cross obs→ml-1",
@@ -30,17 +30,17 @@
    "from": "rows across the committed receipts",
    "hex": "0c36469f-7000-8000-9000-0000000000a5",
    "hexAgrees": true,
-   "receipt": "bef4b151-cd5d-87ff-bf11-365525754fbd"
+   "receipt": "4241dfbf-93ca-8db3-a35d-a17315940311"
   },
   {
    "name": "cross deployment→obs-1",
    "family": "cross",
    "pass": true,
-   "value": 0.9968898148148149,
+   "value": 0.9974451851851852,
    "formula": "health_score = max(0, 1 - buildTime/300) * max(0, 1 - testTime/180)",
    "from": "seconds to load the unit, seconds to run chat and attacks",
    "hex": "0c36469f-3000-8000-8000-000000000000",
-   "receipt": "815cfa8b-5eba-82c3-bf38-77ab8b155132"
+   "receipt": "3f65839e-044f-8d1b-aa99-5cc3366d8da5"
   },
   {
    "name": "cross quantum→enterprise-1",
@@ -51,7 +51,7 @@
    "from": "Lean theorems in lean-receipt.json",
    "hex": "0c36469f-9000-8000-9000-00000000007c",
    "hexAgrees": true,
-   "receipt": "6d319c23-4c68-8ad2-99fd-a604d9bd7b3b"
+   "receipt": "39b8bc66-6029-87dc-a8d1-00c61c0c71a6"
   },
   {
    "name": "cross med+qsec-1",
@@ -62,7 +62,7 @@
    "from": "chat users, session key bits",
    "hex": "0c36469f-5000-8000-a000-000004000100",
    "hexAgrees": true,
-   "receipt": "e143f117-2929-821b-83e4-f58a721f18b6"
+   "receipt": "8a03895a-8d74-8b77-be8f-f8741f8a00bf"
   },
   {
    "name": "cross obs→ui-1",
@@ -73,18 +73,18 @@
    "from": "attacks that got through, attack trials",
    "hex": "0c36469f-8000-8000-a000-00000000016d",
    "hexAgrees": true,
-   "receipt": "11afdf1c-32e7-87ce-b491-1fcd8d9daaed"
+   "receipt": "3039bdfa-c41b-8cd0-aa10-c2567fa0d734"
   },
   {
    "name": "cross qsec+compress-1",
    "family": "cross",
    "pass": true,
-   "value": 1.256441717791411,
+   "value": 1.2896725440806058,
    "formula": "compressed_size = signalLen * (1 - keyLen/(keyLen+signalLen))",
    "from": "sealed body bytes, BB84 key bits",
-   "hex": "0c36469f-2000-8000-a000-00002000030f",
+   "hex": "0c36469f-2000-8000-a000-0000200002fa",
    "hexAgrees": true,
-   "receipt": "c2c16eb9-f591-876b-bf39-fe5eaf5162f0"
+   "receipt": "f0489269-d07d-8052-a2e9-463d3ad839fa"
   },
   {
    "name": "cross obs+ml-1",
@@ -95,7 +95,7 @@
    "from": "attacks, breaches",
    "hex": "0c36469f-6000-8000-a000-00001b000000",
    "hexAgrees": true,
-   "receipt": "ed5d7253-7d3f-849a-b436-5fe642f09503"
+   "receipt": "7efacb7a-c9c3-830f-9465-0ae0e9cc2c67"
   },
   {
    "name": "cross enterprise→obs-1",
@@ -104,9 +104,9 @@
    "value": 1,
    "formula": "slo_met = (complianceScore > 0.9) AND (latency < 200)",
    "from": "share of attacks resisted, chat milliseconds",
-   "hex": "0c36469f-4000-8000-a000-000001000012",
+   "hex": "0c36469f-4000-8000-a000-000001000013",
    "hexAgrees": true,
-   "receipt": "5b76c75f-1cdc-8e59-8122-6c93242e50d2"
+   "receipt": "b1bb6610-0db9-8e7e-83b7-275b0834dcc2"
   },
   {
    "name": "cross test→enterprise-1",
@@ -117,7 +117,7 @@
    "from": "test-receipt.json pass / tests",
    "hex": "0c36469f-a000-8000-a000-00000b00000b",
    "hexAgrees": true,
-   "receipt": "94011fde-2cc9-8e8f-9723-88e5ecfc7e4e"
+   "receipt": "20fb2e5d-ded7-8020-9c7f-9ce8c082817f"
   },
   {
    "name": "signal signal-sifted",
@@ -128,7 +128,7 @@
    "from": "raw qubits per chat pair",
    "hex": "5062cd8f-6000-8000-9000-000000000800",
    "hexAgrees": true,
-   "receipt": "89974f68-6da6-8c9b-afcb-62b55c37eb4b"
+   "receipt": "b6b57369-460b-83ea-812b-0a31b32321af"
   },
   {
    "name": "signal signal-key",
@@ -139,7 +139,7 @@
    "from": "raw qubits per chat pair",
    "hex": "5062cd8f-3000-8000-9000-000000000800",
    "hexAgrees": true,
-   "receipt": "f6b45e02-bd2d-89e6-8cd3-a5da23707fa2"
+   "receipt": "2e972e9c-b63e-88f9-b29b-5c9437044452"
   },
   {
    "name": "signal signal-qber",
@@ -148,20 +148,20 @@
    "value": 0,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "honest BB84 run",
-   "hex": "5062cd8f-5000-8000-a000-000000000105",
+   "hex": "5062cd8f-5000-8000-a000-0000000000fd",
    "hexAgrees": true,
-   "receipt": "fb07d626-beb0-88a9-ae6e-4108b2876911"
+   "receipt": "c05626bd-b70a-8460-8252-6561b991b9a8"
   },
   {
    "name": "signal signal-qber",
    "family": "signal",
    "pass": true,
-   "value": 0.23076923076923078,
+   "value": 0.1796875,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "intercept-resend run: holds false means Eve was caught",
-   "hex": "5062cd8f-5000-8000-a000-00003c000104",
+   "hex": "5062cd8f-5000-8000-a000-00002e000100",
    "hexAgrees": true,
-   "receipt": "91c49633-0e29-84eb-8824-5e5f210ae484"
+   "receipt": "75541a95-76cf-8b36-bcdd-86c1736b5900"
   },
   {
    "name": "signal signal-detect",
@@ -170,9 +170,9 @@
    "value": 1,
    "formula": "p_detect = 1 - (3/4)^checked",
    "from": "disclosed bits of the intercepted run",
-   "hex": "5062cd8f-1000-8000-9000-000000000104",
+   "hex": "5062cd8f-1000-8000-9000-000000000100",
    "hexAgrees": true,
-   "receipt": "f9bf621d-6eba-8543-a57b-7c7ac435b7a5"
+   "receipt": "9369370b-2e85-8559-b361-4a8420b58ca1"
   },
   {
    "name": "signal signal-hops",
@@ -183,7 +183,7 @@
    "from": "corners of alice and bob on the 8-cube",
    "hex": "5062cd8f-2000-8000-b000-00082bd881b6",
    "hexAgrees": true,
-   "receipt": "fba3e8d3-b21a-860b-8175-9834023edd7f"
+   "receipt": "96cc2a91-a6f8-8266-9637-6f80f42d4a23"
   },
   {
    "name": "holo holo-proof",
@@ -194,7 +194,7 @@
    "from": "hologram scales",
    "hex": "4029f1cc-2000-8000-9000-000000000005",
    "hexAgrees": true,
-   "receipt": "f9b95f2c-1687-8b25-a0ae-236a23112c51"
+   "receipt": "ab6ff466-a246-82f5-ba0e-da8cda9b083c"
   },
   {
    "name": "holo holo-forgery",
@@ -205,7 +205,7 @@
    "from": "SHA-256 output bits",
    "hex": "4029f1cc-1000-8000-9000-000000000100",
    "hexAgrees": true,
-   "receipt": "b310a5a0-e463-879d-8920-faa435b50b69"
+   "receipt": "a9885995-8459-8e62-94cd-b960692d0f8c"
   },
   {
    "name": "crypt crypt-known",
@@ -216,7 +216,7 @@
    "from": "FIPS 180-4, RFC 1321, RFC 7748, RFC 8032 vectors",
    "hex": "62d1d39f-3000-8000-8000-000000000000",
    "hexAgrees": true,
-   "receipt": "76bb7b50-7774-8d8d-80cb-dab62102dbfa"
+   "receipt": "7b0cd2fb-f575-8644-b339-ed499e9430ee"
   },
   {
    "name": "crypt crypt-grover",
@@ -227,7 +227,7 @@
    "from": "ChaCha20 key bits",
    "hex": "62d1d39f-5000-8000-9000-000000000100",
    "hexAgrees": true,
-   "receipt": "d3f75e15-b623-8201-92b8-5e3c4d71559d"
+   "receipt": "acb11c01-8f9f-8551-8214-e9a391ff1149"
   },
   {
    "name": "crypt crypt-rho",
@@ -238,7 +238,7 @@
    "from": "Curve25519 field bits",
    "hex": "62d1d39f-1000-8000-9000-0000000000ff",
    "hexAgrees": true,
-   "receipt": "eb321898-60c3-838f-8c83-9a62f7bae572"
+   "receipt": "cb69c310-0b8a-8885-987c-d298f2ec0f69"
   },
   {
    "name": "crypt crypt-shor",
@@ -249,7 +249,7 @@
    "from": "Curve25519 field bits",
    "hex": "62d1d39f-2000-8000-9000-0000000000ff",
    "hexAgrees": true,
-   "receipt": "05061c79-00ec-8290-bffc-fdd963d0486a"
+   "receipt": "f788568c-a392-8a7e-a26f-fe13a5e8f691"
   },
   {
    "name": "crypt crypt-poly1305",
@@ -260,7 +260,7 @@
    "from": "sealed body bytes",
    "hex": "62d1d39f-6000-8000-9000-000000000020",
    "hexAgrees": true,
-   "receipt": "609af518-50fe-8cc4-ae4a-963266091bde"
+   "receipt": "43a92bc3-3ef3-8925-9b28-d802679b4036"
   },
   {
    "name": "crypt crypt-nonce",
@@ -271,7 +271,84 @@
    "from": "messages sent",
    "hex": "62d1d39f-4000-8000-9000-000000000001",
    "hexAgrees": true,
-   "receipt": "0a04fc96-e1f2-84be-acc2-a551b4f731dc"
+   "receipt": "3a106326-55ed-88c9-beda-69cbc4c9570d"
+  },
+  {
+   "name": "np np-subset-sum",
+   "family": "np",
+   "pass": true,
+   "value": 13,
+   "formula": "sum = Σ bit_i(mask) · digit_i(set)",
+   "from": "qpu.pdf p. 22: S = {3, 7, 1, 9, 4} packed base 16, mask 13",
+   "hex": "08b33c07-6000-8000-a000-04917300000d",
+   "hexAgrees": true,
+   "receipt": "0f3adad9-5648-8cec-9698-e3bbd905d34c"
+  },
+  {
+   "name": "np np-edge-bit",
+   "family": "np",
+   "pass": true,
+   "value": 1,
+   "formula": "edge(u, v) = floor(A / 2^(u·n + v)) mod 2",
+   "from": "4-cycle adjacency packed row-major, edge (0, 1)",
+   "hex": "08b33c07-1000-8000-a000-006996000001",
+   "hexAgrees": true,
+   "receipt": "3e2fa812-56f4-8732-bf4a-974fcc4cf09c"
+  },
+  {
+   "name": "np np-is-time",
+   "family": "np",
+   "pass": true,
+   "value": 100000,
+   "formula": "time = n^5",
+   "from": "Petersen vertices",
+   "hex": "08b33c07-3000-8000-9000-00000000000a",
+   "hexAgrees": true,
+   "receipt": "545be078-751c-812c-a29b-de58fd608558"
+  },
+  {
+   "name": "np np-is-space",
+   "family": "np",
+   "pass": true,
+   "value": 4,
+   "formula": "space = bits(n)",
+   "from": "Petersen vertices",
+   "hex": "08b33c07-2000-8000-9000-00000000000a",
+   "hexAgrees": true,
+   "receipt": "71d81ecc-2f6d-8c52-b03a-e1f340084850"
+  },
+  {
+   "name": "np np-reach-gcd",
+   "family": "np",
+   "pass": true,
+   "value": 0,
+   "formula": "(2^(2k) - 1) mod 3",
+   "from": "reach width 64 = 2k",
+   "hex": "08b33c07-4000-8000-9000-000000000020",
+   "hexAgrees": true,
+   "receipt": "98995ac8-b709-8325-aec5-03af81278b67"
+  },
+  {
+   "name": "np np-sparse-width",
+   "family": "np",
+   "pass": true,
+   "value": 13,
+   "formula": "qubits = bits(N) + 2",
+   "from": "crypto_shor n=1443 on qpu.uuidna.com reported 13 qubits",
+   "hex": "08b33c07-5000-8000-9000-0000000005a3",
+   "hexAgrees": true,
+   "receipt": "2400f0a0-b5ba-8334-a613-65ae4a930747"
+  },
+  {
+   "name": "np np-sparse-width",
+   "family": "np",
+   "pass": true,
+   "value": 11,
+   "formula": "qubits = bits(N) + 2",
+   "from": "crypto_shor n=481 on qpu.uuidna.com reported 11 qubits",
+   "hex": "08b33c07-5000-8000-9000-0000000001e1",
+   "hexAgrees": true,
+   "receipt": "789556e2-de3d-8b27-a6e5-8a98280b42fb"
   },
   {
    "name": "attack hologram payload tamper",
@@ -279,7 +356,7 @@
    "pass": true,
    "value": "0/1",
    "from": "fragment checked against another value",
-   "receipt": "3ca3e34a-c7e5-82c2-9ced-51d8ed81e5a8"
+   "receipt": "5e0007db-6919-86fa-bdc3-418c474d4e44"
   },
   {
    "name": "attack hologram reorder",
@@ -287,7 +364,7 @@
    "pass": true,
    "value": "0/1",
    "from": "two fragments swapped",
-   "receipt": "566b3cc5-154b-8537-9e76-b0628aabfcbf"
+   "receipt": "2abdaf72-84c0-8620-be7e-720ae11f9cbc"
   },
   {
    "name": "attack hologram splice",
@@ -295,7 +372,7 @@
    "pass": true,
    "value": "0/1",
    "from": "a fragment from another hologram's stream",
-   "receipt": "c0fc390d-b928-8598-90bd-9a17d142b859"
+   "receipt": "f782a17b-6570-8742-9a63-125293243856"
   },
   {
    "name": "attack hologram root swap",
@@ -303,7 +380,7 @@
    "pass": true,
    "value": "0/1",
    "from": "fragment claims another whole",
-   "receipt": "b6cbda12-a373-8d13-b20b-f93c54abe9ff"
+   "receipt": "a71a8ddf-200f-84e6-8db2-f49b4859b7f0"
   },
   {
    "name": "attack hologram prev rewrite",
@@ -311,7 +388,7 @@
    "pass": true,
    "value": "0/1",
    "from": "history rewritten",
-   "receipt": "8b6a7f98-72e0-827b-9434-a1512164e478"
+   "receipt": "cee41d4b-58de-8456-8286-d28c4d802dba"
   },
   {
    "name": "attack hologram signature forgery",
@@ -319,7 +396,7 @@
    "pass": true,
    "value": "0/1",
    "from": "signature lifted from another fragment",
-   "receipt": "929c7bda-3604-837d-bc6c-893d10ba4e58"
+   "receipt": "e1effeb0-e0cf-8774-a83e-aa205090e6bc"
   },
   {
    "name": "attack ed25519 identity public key",
@@ -327,7 +404,7 @@
    "pass": true,
    "value": "0/16",
    "from": "forge for any message under A = identity",
-   "receipt": "a1b4664d-7339-8276-9286-99f911266420"
+   "receipt": "af8e43dd-217b-8d5e-ab79-1bb19935775a"
   },
   {
    "name": "attack ed25519 order-2 public key",
@@ -335,7 +412,7 @@
    "pass": true,
    "value": "0/16",
    "from": "forge under A = (0, -1); succeeds whenever k is even",
-   "receipt": "06e30f1e-7d64-8dd8-ae23-1299627b160f"
+   "receipt": "91f8c649-8034-84b1-ad6b-40cf7c9ee146"
   },
   {
    "name": "attack ed25519 malleability S + L",
@@ -343,7 +420,7 @@
    "pass": true,
    "value": "0/1",
    "from": "second valid signature from the first",
-   "receipt": "a882e529-41c4-8c60-82b6-d3ec1b60b102"
+   "receipt": "bc41894e-f80a-8cb1-8834-24c98ed67edd"
   },
   {
    "name": "attack ed25519 non-canonical R",
@@ -351,7 +428,7 @@
    "pass": true,
    "value": "0/1",
    "from": "R with y = p + 1",
-   "receipt": "3eb88b22-d8ff-801a-ac74-103757fcb82d"
+   "receipt": "7fc68f5f-e151-802c-b891-462733040773"
   },
   {
    "name": "attack ed25519 bit-flip forgery",
@@ -359,7 +436,7 @@
    "pass": true,
    "value": "0/64",
    "from": "every bit position of the signature",
-   "receipt": "be039e40-e354-8afc-8f71-b319fbd42842"
+   "receipt": "095be714-d61b-88a1-90b8-bd09fa4d0741"
   },
   {
    "name": "attack ed25519 message substitution",
@@ -367,7 +444,7 @@
    "pass": true,
    "value": "0/1",
    "from": "same signature, other message",
-   "receipt": "fe6a46e9-2b2e-8f6e-8c81-fcfff285c7e8"
+   "receipt": "bb832344-09a0-83e8-b34d-594144d27174"
   },
   {
    "name": "attack x25519 low-order points",
@@ -375,7 +452,7 @@
    "pass": true,
    "value": "0/7",
    "from": "u in {0, 1, p-1, p, p+1} and the two order-8 points",
-   "receipt": "cc17652a-f97f-8256-bc6e-7f30372ff220"
+   "receipt": "cf109294-780f-8ba3-aaf7-80431452e06e"
   },
   {
    "name": "attack x25519 contributory",
@@ -383,7 +460,7 @@
    "pass": true,
    "value": "0/4",
    "from": "honest exchange yields zero",
-   "receipt": "254c1921-b716-8e9f-888c-851461b9e9bd"
+   "receipt": "ea094ee2-81bd-8e61-9fed-44218c102496"
   },
   {
    "name": "attack aead ciphertext tamper",
@@ -391,7 +468,7 @@
    "pass": true,
    "value": "0/38",
    "from": "every byte of ciphertext and tag",
-   "receipt": "a154b571-6d05-8100-8caf-63bc9b20cbcd"
+   "receipt": "bf30fc43-0ede-8322-a4db-85fb4decdc72"
   },
   {
    "name": "attack aead header tamper",
@@ -399,7 +476,7 @@
    "pass": true,
    "value": "0/1",
    "from": "associated data changed",
-   "receipt": "bf7a0fb9-43b6-8302-a9a6-d675723db16f"
+   "receipt": "437b0d92-4ede-8c89-8e0c-4da465a549ba"
   },
   {
    "name": "attack aead truncation",
@@ -407,7 +484,7 @@
    "pass": true,
    "value": "0/1",
    "from": "tag shortened",
-   "receipt": "fccc8539-6f67-82a6-9397-9ced8e93bc5c"
+   "receipt": "57635883-1f1d-8e5d-9159-14d271c1b6ee"
   },
   {
    "name": "attack aead wrong nonce",
@@ -415,7 +492,7 @@
    "pass": true,
    "value": "0/1",
    "from": "nonce replaced",
-   "receipt": "96c38aec-a5b8-8855-8c44-2a664885a385"
+   "receipt": "ae2d5267-2b96-82e2-a504-7e15b0dabbf6"
   },
   {
    "name": "attack bb84 intercept-resend",
@@ -423,7 +500,7 @@
    "pass": true,
    "value": "0/200",
    "from": "Eve measures every qubit; QBER must exceed the bound (raw 2048)",
-   "receipt": "865075fe-6b1e-8cfb-9977-0493f7c9f4ac"
+   "receipt": "c6815243-a169-8f31-9245-9a68036ce6c1"
   },
   {
    "name": "attack chat impersonation",
@@ -431,7 +508,7 @@
    "pass": true,
    "value": "0/1",
    "from": "Eve re-signs a signal as Alice",
-   "receipt": "a8de4fe7-03a5-826e-89fe-1f0337ef5e26"
+   "receipt": "e2b2a632-c500-8a01-bc98-11358d0251cc"
   },
   {
    "name": "attack chat redirect",
@@ -439,7 +516,7 @@
    "pass": true,
    "value": "0/1",
    "from": "Bob's signal presented to Carol",
-   "receipt": "62d489c1-3d9b-8308-8eab-522eb7c76c81"
+   "receipt": "f7e2b1c6-3ffa-85da-acbd-b0b2f9383c39"
   },
   {
    "name": "attack chat envelope swap",
@@ -447,7 +524,7 @@
    "pass": true,
    "value": "0/1",
    "from": "Carol's envelope replaced by Bob's",
-   "receipt": "e25e3da0-7e6c-88a0-afb5-71c5e2535502"
+   "receipt": "be39cad9-d4b5-817a-9d56-95a1bf42a71a"
   },
   {
    "name": "attack chat outsider read",
@@ -455,7 +532,7 @@
    "pass": true,
    "value": "0/1",
    "from": "Eve is not a recipient",
-   "receipt": "29696632-cd75-8767-b0c8-fe53161fc7bf"
+   "receipt": "e97bb7f7-63be-81ed-831d-eada944195ab"
   },
   {
    "name": "attack chat ciphertext tamper",
@@ -463,7 +540,7 @@
    "pass": true,
    "value": "0/1",
    "from": "one bit of the sealed body",
-   "receipt": "ca7bfddb-7d4b-87bc-a92c-85b582d22de3"
+   "receipt": "e013fa36-076b-8d19-ae74-bc5395e57d96"
   },
   {
    "name": "attack chat two-time pad",
@@ -471,7 +548,7 @@
    "pass": true,
    "value": "0/1",
    "from": "same plaintext twice must not give the same keystream",
-   "receipt": "c7d8f239-3de1-8475-89f5-220d74415951"
+   "receipt": "ba0087ee-c69a-87b4-807f-09417e37f26a"
   },
   {
    "name": "attack drbg repetition",
@@ -479,7 +556,7 @@
    "pass": true,
    "value": "0/1",
    "from": "4096 UUIDs",
-   "receipt": "c095fcb3-974e-8140-93a4-d88ab8111401"
+   "receipt": "b8225a3a-9bd7-80af-b27e-2667f4589f08"
   },
   {
    "name": "attack drbg monobit",
@@ -487,7 +564,7 @@
    "pass": true,
    "value": "0/1",
    "from": "bit balance within 4 sigma over 2^20 bits",
-   "receipt": "72de7df0-80e4-8c9c-adf9-c99417cf8d5e"
+   "receipt": "28aa41ee-193a-8e30-9fcb-27ed5312cf81"
   },
   {
    "name": "hologram occupancy",
@@ -495,7 +572,7 @@
    "pass": true,
    "value": 5,
    "from": "55fd216c-8243-88b6-ae56-de97b6333cbe",
-   "receipt": "1ef14146-5ccf-8e1b-b277-584dadf935f0"
+   "receipt": "3b57640b-39ed-84cb-a941-8f066d0cfd4d"
   },
   {
    "name": "hologram skill",
@@ -503,7 +580,7 @@
    "pass": true,
    "value": 5,
    "from": "3250ab44-c9ce-83ea-bb13-d1b089715feb",
-   "receipt": "ce0c67e2-abb3-805e-a7d2-d5ddcabc9bdc"
+   "receipt": "6ad2a2da-eee6-8284-a277-30502726e583"
   },
   {
    "name": "hologram access",
@@ -511,7 +588,7 @@
    "pass": true,
    "value": 2,
    "from": "d0849e31-9cc1-8b9e-92af-d435bda30eb9",
-   "receipt": "8d72b12d-3ff7-8484-a2df-7658a1312cf5"
+   "receipt": "6dfd318d-bd06-8e41-9a70-9b3911309350"
   },
   {
    "name": "hologram mcp",
@@ -519,7 +596,7 @@
    "pass": true,
    "value": 8,
    "from": "20e33a1a-32e0-869b-8b62-adf17a332608",
-   "receipt": "de03334c-ecea-82b4-92cf-202f6c0cf8c6"
+   "receipt": "f32a9aaf-e871-836f-aa4c-ca0d85963b98"
   },
   {
    "name": "hologram faces",
@@ -527,7 +604,71 @@
    "pass": true,
    "value": 14,
    "from": "b114c2ff-6a9b-85d9-99a5-2ebd3b06b461",
-   "receipt": "d2d9851e-9f2c-8ff7-93a9-53283de9c2ec"
+   "receipt": "31621466-ef28-8660-b328-a6d157ac4b28"
+  },
+  {
+   "name": "np petersen chromatic 3",
+   "family": "np",
+   "pass": true,
+   "value": 3,
+   "from": "GP(5,2): a verified 3-colouring, no 2-colouring",
+   "receipt": "831a401f-44b7-8a55-9cac-99bbeda3595b"
+  },
+  {
+   "name": "np petersen non-hamiltonian",
+   "family": "np",
+   "pass": true,
+   "value": 0,
+   "from": "exhaustive search: Petersen (1898) has no Hamiltonian cycle",
+   "receipt": "af8c6fb1-24b4-8053-b607-8b12b0371c77"
+  },
+  {
+   "name": "np dodecahedron hamiltonian",
+   "family": "np",
+   "pass": true,
+   "value": "0 1 2 3 4 5 6 7 17 15 13 11 19 9 8 18 16 14 12 10",
+   "from": "GP(10,2): Hamilton's Icosian cycle verified; a forged order is rejected",
+   "receipt": "5f29479e-bf54-8caa-be48-93d9610486ac"
+  },
+  {
+   "name": "np subset sum certificate",
+   "family": "np",
+   "pass": true,
+   "value": 13,
+   "from": "qpu.pdf p. 22: mask 13 reaches K = 13; mask 14 does not",
+   "receipt": "370b91e6-ea6d-8bda-b9fb-27e173b5829d"
+  },
+  {
+   "name": "np pigeonhole unsat",
+   "family": "np",
+   "pass": true,
+   "value": 9,
+   "from": "PHP(3,2): every assignment fails a clause",
+   "receipt": "e8cb1177-c457-81bb-8b66-927ff1161659"
+  },
+  {
+   "name": "np petersen diameter 2",
+   "family": "np",
+   "pass": true,
+   "value": "1,4,10",
+   "from": "inductive counts c_0, c_1, c_2",
+   "receipt": "d0688d3f-a881-88a0-9d73-f8943a7f2b94"
+  },
+  {
+   "name": "np unreachable certified",
+   "family": "np",
+   "pass": true,
+   "value": 10,
+   "from": "Immerman–Szelepcsényi: c_{n-1} = reachable vertices other than t",
+   "receipt": "1b15f51b-ca29-8e03-bdd8-94b1fffe5a58"
+  },
+  {
+   "name": "np sparse width 1443 = live",
+   "family": "np",
+   "pass": true,
+   "value": 13,
+   "from": "crypto_shor 1443 = 3 · 481 by period, base 746, 13 qubits",
+   "receipt": "8a0b75f5-7e52-8deb-8c1c-c1c1c20363cb"
   },
   {
    "name": "chat delivered",
@@ -535,7 +676,7 @@
    "pass": true,
    "value": 2,
    "from": "both recipients decrypt",
-   "receipt": "daaabb1b-03a8-81b2-bf49-63e8fbd03a83"
+   "receipt": "c86eb642-ff9d-84b6-bb68-a52e92273cdb"
   },
   {
    "name": "chat outsider",
@@ -543,7 +684,7 @@
    "pass": true,
    "value": 0,
    "from": "a non-recipient decrypts nothing",
-   "receipt": "ded5eb7f-1395-8bce-86aa-849d9ee4ada0"
+   "receipt": "bfec396d-a06c-8040-b5d9-59bc6d95f5be"
   }
  ]
 }
