@@ -134,6 +134,7 @@
     "./dist/families/environment/index.js",
     "./dist/families/evidence/index.js",
     "./dist/families/family/index.js",
+    "./dist/families/feed/index.js",
     "./dist/families/field/index.js",
     "./dist/families/financial/index.js",
     "./dist/families/forensic/index.js",
