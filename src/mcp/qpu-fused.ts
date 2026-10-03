@@ -248,7 +248,8 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     }
     const xml = await (await ask('/sitemap.xml', 'application/xml')).text()
     const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!.replace(origin, '') || '/')
-    const rows = await Promise.all(paths.map(async (path) => {
+    // n addresses at a time: every page is rendered in this isolate, and sixty at once starve each other of the deadline
+    const one = async (path: string) => {
       const at = Date.now()
       try {
         const r = await ask(path, 'text/html')
@@ -258,7 +259,9 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
       } catch (e) {
         return { path, status: 0, title: '', ms: Date.now() - at, error: (e as Error).message }
       }
-    }))
+    }
+    const rows: Awaited<ReturnType<typeof one>>[] = []
+    for (let i = 0; i < paths.length; i += L.n) rows.push(...(await Promise.all(paths.slice(i, i + L.n).map(one))))
     const failing = rows.filter((r) => r.status !== 200 || !r.title)
     const live = { addresses: rows.length, answered: rows.filter((r) => r.status === 200).length, titled: rows.filter((r) => r.title).length, slowest: rows.reduce((a, b) => (b.ms > a.ms ? b : a), rows[0] ?? { path: '', ms: 0 }).path, failing: failing.map((r) => `${r.path} ${r.status}${r.error ? ` ${r.error}` : ''}`) }
     return { source, url: `${origin}/sitemap.xml`, reading: live, expected: { answered: rows.length, titled: rows.length }, agrees: rows.length > L.n - L.n && failing.length === L.n - L.n, rows }
