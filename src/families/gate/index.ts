@@ -27,16 +27,19 @@ export class GateFormulas {
   // the research of a family and, over the readings' numbers, the relations the family has: discovery runs ONCE per
   // call over the union of readings (a discovery is the whole lattice; fourteen at once exhaust the memory)
   private static async researched(indices: number[]) {
-    const rows: { name: string; answered: number; numbers: number[] }[] = []
-    for (const i of indices) {
+    // SPLIT SLOW IN MANY FAST: the per-family research is network-bound and was a serial loop; every family of the slice
+    // is read at once (Promise.all), so the slice costs one read, not a sum of reads. The whole-lattice discovery below
+    // stays a single pass on purpose — many discoveries at once exhaust the memory (the constraint, not the latency).
+    const sources0 = await qpuDataSourcesOf()
+    const rows = await Promise.all(indices.map(async (i) => {
       const name = families()[i]!
       const research = (await DataFormulas.research(i)) as { reading?: { readings?: { status: number; excerpt?: unknown }[] } }
       const readings = research.reading?.readings ?? []
       // a live source whose check names the family (nist names Qpu.Physics, cern theorem cern) is a cross when it agrees
-      const naming = (await qpuDataSourcesOf()).filter((s) => `${s.label} ${s.checks}`.includes(name) && s.source !== 'research')
+      const naming = sources0.filter((s) => `${s.label} ${s.checks}`.includes(name) && s.source !== 'research')
       const sources = (await Promise.all(naming.map(async (s) => (await qpuDataOf(s.source, s.args)) as { agrees?: boolean }))).filter((r) => r.agrees === true).length
-      rows.push({ name, answered: readings.filter((r) => r.status > 0).length + sources, numbers: readings.flatMap((r) => numbersOf(r.excerpt ?? {})) })
-    }
+      return { name, answered: readings.filter((r) => r.status > 0).length + sources, numbers: readings.flatMap((r) => numbersOf(r.excerpt ?? {})) }
+    }))
     // the readings' numbers as discovery's inputs, a slice of them: every integer of seventy API excerpts is thousands,
     // and discovery over thousands of inputs is the whole lattice squared (it exhausted 4 GB); the first 2^8 distinct
     // ones, smallest first, are what the formulas' small inputs can meet
@@ -136,8 +139,11 @@ export class GateFormulas {
     const reads = await Promise.all(found.apis.filter((y) => y.free !== undefined).slice(0, qpuFacesOf().faces).map((y) => apiCallOf(y.index, y.free!).catch(() => null)))
     const answered = reads.filter((r): r is NonNullable<typeof r> => r !== null && r.status > 0)
     const inputs = x.arity === 0 ? [[]] : x.arity === 1 ? Array.from({ length: 16 }, (_, k) => [k + 1]) : Array.from({ length: 8 }, (_, k) => k + 1).flatMap((a) => Array.from({ length: 8 }, (_, b) => [a, b + 1]))
+    // SPLIT SLOW IN MANY FAST: every input of this one formula run at once (store:false, a single eval each — not the
+    // whole-lattice discovery, so the memory stays bounded), its reached values gathered from the parallel answers
+    const ran = await Promise.all(inputs.map((ps) => (qpuHexRunOf(qpuHexUuidOf({ family: x.family, program: [x.name], params: ps }), undefined, undefined, { store: false }) as Promise<{ value?: unknown; holds?: boolean }>).catch(() => null)))
     const values = new Set<number>()
-    for (const ps of inputs) { try { const r = (await qpuHexRunOf(qpuHexUuidOf({ family: x.family, program: [x.name], params: ps }), undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }; const v = Number(r.value); if (r.holds === true && Number.isSafeInteger(v) && v >= 3) values.add(v) } catch { /* an input the address cannot take */ } }
+    for (const r of ran) { if (!r) continue; const v = Number(r.value); if (r.holds === true && Number.isSafeInteger(v) && v >= 3) values.add(v) }
     const byApi = answered.map((r) => ({ api: r.api, hit: numbersOf(r.excerpt).find((v) => values.has(v)) })).find((r) => r.hit !== undefined)
     // the rosetta in every rotation: 2n addresses, fired at once
     const ring = (await import('../merkaba/index.js')).flowFamiliesOf()
@@ -159,8 +165,8 @@ export class GateFormulas {
   static async push(from: number): Promise<CrossFormula> {
     const all = families()
     const slice = all.slice(from, from + qpuFacesOf().faces)
-    const deep: { family: string; value: number }[] = []
-    for (const [k] of slice.entries()) { const d = (await DataFormulas.deep(from + k)) as { value: number; family?: string }; deep.push({ family: slice[k]!, value: Number(d.value) }) }
+    // SPLIT SLOW IN MANY FAST: deep research of every family of the slice at once, not one after another
+    const deep = await Promise.all(slice.map(async (fam, k) => ({ family: fam, value: Number(((await DataFormulas.deep(from + k)) as { value: number }).value) })))
     const crossed = await GateFormulas.researched(slice.map((_, k) => from + k))
     const failing = crossed.filter((c) => c.answered + c.live + c.crossing.length === 0).map((c) => c.name)
     const proof = GateFormulas.proof(), rules = GateFormulas.rules()
