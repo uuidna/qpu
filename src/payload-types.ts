@@ -1542,6 +1542,7 @@ export interface DocsFeedback {
   path: string;
   helpful?: boolean | null;
   comment?: string | null;
+  uuid?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -3225,6 +3226,7 @@ export interface DocsFeedbackSelect<T extends boolean = true> {
   path?: T;
   helpful?: T;
   comment?: T;
+  uuid?: T;
   updatedAt?: T;
   createdAt?: T;
 }
