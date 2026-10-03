@@ -22,7 +22,11 @@ const categoriesOf = async (): Promise<Map<string, number>> => {
 }
 /** The family names (doors and the Lean prefix stripped), lowercased — what a category is checked against. */
 const familyNames = (): Set<string> => new Set([...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x)).map((x) => x.toLowerCase().replace(/^qpu\./, '')))
-const isCovered = (fams: Set<string>, c: string): boolean => [...fams].some((fam) => c.includes(fam) || fam.includes(c))
+// a category is covered when a family name meets it whole, or meets one of its words (developer_tools → devtools via "tools")
+const isCovered = (fams: Set<string>, c: string): boolean => {
+  const tokens = c.split(/[^a-z0-9]+/).filter((t) => t.length > 3)
+  return [...fams].some((fam) => c.includes(fam) || fam.includes(c) || tokens.some((t) => fam.includes(t) || t.includes(fam)))
+}
 /** The uncovered categories, biggest first. */
 const gapsOf = async (): Promise<{ category: string; apis: number }[]> => {
   const cats = await categoriesOf()
