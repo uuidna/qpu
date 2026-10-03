@@ -11,7 +11,8 @@
  *
  *   node scripts/version-lock.mjs              format + forward + previous released (npm registry)
  *   node scripts/version-lock.mjs --offline    format + forward (no network; used by build)
- *   node scripts/version-lock.mjs --dist-tag   prints the npm dist-tag: latest for an LTS (state 0), dev otherwise
+ *   node scripts/version-lock.mjs --dist-tag   prints the npm dist-tag: latest for every version (a state digit is a
+ *                                              development state of the same line, published as what everyone installs)
  *
  * Exit 1 on any violation.
  */
@@ -32,7 +33,7 @@ if (!VERSION.test(version)) fail(`${version} is not v1.<minor>.<digit> (major 1,
 const [, minor, state] = version.split('.').map(Number)
 
 if (args.includes('--dist-tag')) {
-  console.log(state === 0 ? 'latest' : 'dev')
+  console.log('latest')
   process.exit(0)
 }
 
