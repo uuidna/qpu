@@ -17,8 +17,8 @@ RUN apk add --no-cache python3 make g++
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install dependencies (with scripts for build tools)
-RUN npm ci
+# Install dependencies; no lifecycle scripts: prepare would compile before src/ is copied, and the build step follows
+RUN npm ci --ignore-scripts
 
 # Copy source
 COPY tsconfig.json ./

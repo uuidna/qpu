@@ -147,7 +147,7 @@
     "cf:kv:put": "wrangler kv:key put STORAGE",
     "cf:rollback": "wrangler rollback",
     "cf:verify": "curl https://qpu.uuidna.com/health && echo 'OK'",
-    "install": "bash deploy/install.sh"
+    "deploy:install": "bash deploy/install.sh"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20261001.1",
