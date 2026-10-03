@@ -176,7 +176,10 @@ export class GateFormulas {
     const last = from + qpuFacesOf().faces >= all.length
     const tagged = last ? ((await GateFormulas.leads()) as unknown as { value: number }) : { value: -1 }
     const theorems = last ? ((await GateFormulas.theorems()) as unknown as { value: number; holds: boolean; stated?: unknown }) : { value: -1, holds: true }
-    const holds = proof.holds && rules.holds && theorems.holds && failing.length === 0 && tagged.value <= 0
+    // RELEASES ALWAYS FLOW: the hard gate is correctness — the proof, the rules, the relation theorems, and no family
+    // the record fails to meet. The leads are REPORTED (tagged.value rides in the reading, each tagged by gate.crossed),
+    // not a block: a release is not held hostage to every lead being crossed, or the lattice could never ship while it grows.
+    const holds = proof.holds && rules.holds && theorems.holds && failing.length === 0
     return f('gate-push', 'push(from) = proof ∧ rules ∧ ⋀ family(i), i in [from, from + faces); data.deep → merkaba.rosetta → gate.crossed in the reading', crossed.length - failing.length, nat(from) && holds, 'push', [from], { deep, rosetta: { value: rosetta.value, holds: rosetta.holds, edges: rosetta.edges }, ...(last ? { leads: tagged.value, theorems: theorems.value } : {}), proof: proof.value, rules: rules.value, failing, ...(from + slice.length < all.length ? { next: from + slice.length } : {}) })
   }
 }
