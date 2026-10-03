@@ -78,8 +78,6 @@
     "dist/quantum/processing/unit/lean.d.ts",
     "dist/quantum/processing/unit/version.d.ts",
     "dist/quantum/processing/unit/standards.d.ts",
-    "!dist/**/readme.js",
-    "!dist/**/readme.d.ts",
     "!dist/**/receipt.js",
     "!dist/**/receipt.d.ts",
     "!dist/**/receipted.js",
