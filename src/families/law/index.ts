@@ -56,7 +56,12 @@ export class LawFormulas {
   /** THE REMEDY: of `leads` the court has `crossed` of them — tested against another domain, a dataset or a live API.
    *  value `crossed`; FULL remedy (holds) only when every lead is crossed (crossed = leads), the strict-gate condition. */
   static remedy(crossed: number, leads: number): CrossFormula { return g('law-remedy', 'remedy(crossed, leads) = crossed; full remedy holds only when crossed = leads (every lead crossed)', crossed, nat(crossed, leads) && leads > 0 && crossed === leads, 'remedy', [crossed, leads], { full: leads > 0 && crossed === leads }) }
+  /** THE COURT APPROVES A REMOVAL — AND ONLY A REMOVAL THAT TAKES NO LEAD. A piece of code may be deleted only when it
+   *  is not a lead (`lead` = 0: it registers no formula and carries no undeveloped capability), nothing references it
+   *  (`ref` = 0), and it is not an entry point (`entry` = 0: not a bin, a route, a config loaded by convention). value 1
+   *  when approved; holds ONLY then — so a lead, a referenced module or an entry is never removed on the court's word. */
+  static removable(lead: number, ref: number, entry: number): CrossFormula { const ok = lead === 0 && ref === 0 && entry === 0; return g('law-removable', 'removable(lead, ref, entry) = [lead = 0 ∧ ref = 0 ∧ entry = 0]; the court approves a removal only when it takes no lead, nothing points at it, and it is no entry point', ok ? 1 : 0, nat(lead, ref, entry) && ok, 'removable', [lead, ref, entry], { approved: ok, refused: ok ? undefined : lead ? 'a lead is never removed' : ref ? 'still referenced' : 'an entry point' }) }
 }
 
-for (const name of ['deadline', 'fidelity', 'lawful', 'limitation', 'majority', 'notice', 'quorum', 'redirected', 'remedy', 'reviewed', 'standing', 'supermajority', 'violation'] as const)
+for (const name of ['deadline', 'fidelity', 'lawful', 'limitation', 'majority', 'notice', 'quorum', 'redirected', 'remedy', 'removable', 'reviewed', 'standing', 'supermajority', 'violation'] as const)
   qpuHexRegisterOf('law', name, (LawFormulas[name] as (...x: unknown[]) => unknown).bind(LawFormulas))

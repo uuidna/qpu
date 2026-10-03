@@ -36,12 +36,19 @@ test('law: limitation, deadline, quorum, majority, super-majority, notice — an
   assert.equal(LawFormulas.remedy(26, 26).holds, true, 'full remedy when all leads crossed')
   assert.equal(LawFormulas.remedy(0, 26).holds, false, 'no remedy while leads stand uncrossed')
   assert.equal(LawFormulas.remedy(0, 26).value, 0)
-  assert.equal(qpuHexFamiliesOf().get('law')?.length, 13)
+  // the court approves a removal only when it takes no lead, nothing references it, and it is not an entry point
+  assert.equal(LawFormulas.removable(0, 0, 0).holds, true, 'dead, unreferenced, not an entry: approved')
+  assert.equal(LawFormulas.removable(0, 0, 0).value, 1)
+  assert.equal(LawFormulas.removable(1, 0, 0).holds, false, 'a lead is never removed')
+  assert.equal((LawFormulas.removable(1, 0, 0) as unknown as { refused?: string }).refused, 'a lead is never removed')
+  assert.equal(LawFormulas.removable(0, 1, 0).holds, false, 'still referenced: refused')
+  assert.equal(LawFormulas.removable(0, 0, 1).holds, false, 'an entry point: refused')
+  assert.equal(qpuHexFamiliesOf().get('law')?.length, 14)
   for (const [name, params, expected] of [['limitation', [6], 2190], ['supermajority', [6, 9, 66], 1], ['reviewed', [1], 1]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'law', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `law.${name} at ${uuid}`)
     qpuUuidReceiptOf(`law ${name}`, qpuContentUuidOf(run), { uuid })
   }
-  t.diagnostic('13 formulas, jurisdiction-agnostic; limitation 6y=2190d, quorum 5/9, 66% super-majority; MCP court (fidelity, redirected, standing, violation, lawful floor, remedy) crossed to the gate; advice only when reviewed true')
+  t.diagnostic('14 formulas, jurisdiction-agnostic; limitation 6y=2190d, quorum 5/9, 66% super-majority; MCP court (fidelity, redirected, standing, violation, lawful floor, remedy, removable) crossed to the gate; a removal is approved only when it takes no lead; advice only when reviewed true')
 })
