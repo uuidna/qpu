@@ -1,4 +1,3 @@
 import { blockFields } from '../../fields/blockFields'
 
-/** The published ecommerce products: what QPU bills. */
-export const Products = blockFields('Products', 'Layout')
+export const Products = blockFields('Products', 'Layout', 'The published ecommerce products: what QPU bills.')

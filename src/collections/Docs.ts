@@ -1,7 +1,10 @@
 import type { CollectionConfig } from 'payload'
+import { qpuCiteOf } from '@uuidna/qpu'
 import { HOME } from '../fields/link'
 
-export const SITE = { origin: 'https://qpu.uuidna.com', name: 'UUIDNA QPU' } as const
+// the site is the unit's citation: its origin and its name are what the citation serves, not a string here
+const cite = qpuCiteOf() as unknown as { href: string; website: string }
+export const SITE = { origin: cite.href, name: cite.website } as const
 
 type DocLike = { slug?: unknown; title?: unknown; description?: unknown }
 const textOf = (x: unknown): string => (typeof x === 'string' ? x : '')

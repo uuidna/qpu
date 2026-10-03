@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BlockWrapper } from '@/components/BlockWrapper'
 import { receiptsOf } from '@/app/_data'
@@ -11,7 +12,7 @@ export function Receipts({ heading, intro, anchor, facts }: ReceiptsBlock) {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {receiptsOf().map((r) => (
           <Card key={r.file}>
-            <CardHeader className="pb-2"><CardTitle className="font-mono text-sm">{r.file}</CardTitle></CardHeader>
+            <CardHeader className="pb-2"><CardTitle className="font-mono text-sm"><Link href={`/${r.name}`} className="hover:underline">{r.file}</Link></CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
               {receiptFactsOf(r.doc).slice(0, facts ?? 8).map((f) => (
                 <div key={f.key} className="contents">

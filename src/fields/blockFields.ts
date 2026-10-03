@@ -9,9 +9,15 @@ const head: Field[] = [
   { name: 'intro', type: 'textarea' },
 ]
 
-export const blockFields = (name: string, group: 'Layout' | 'QPU', fields: Field[] = []): Block => ({
+/** What a block is, as data the site composes from: its description is the intro of the page it makes, `live` marks a
+ *  block that reads the network when served (its own page, not the home page), `needs` the fields a page must supply. */
+export type BlockCustom = { description: string; live?: boolean; needs?: string[] }
+
+export const blockFields = (name: string, group: 'Layout' | 'QPU', description: string, fields: Field[] = [], custom: Omit<BlockCustom, 'description'> = {}): Block => ({
   slug: slugOf(name),
   interfaceName: `${name}Block`,
-  admin: { group },
+  admin: { group, custom: { description, ...custom } },
   fields: [...head, ...fields],
 })
+
+export const customOf = (b: Block): BlockCustom => (b.admin?.custom ?? { description: '' }) as BlockCustom

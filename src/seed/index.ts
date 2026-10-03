@@ -1,36 +1,60 @@
-import type { Payload } from 'payload'
-import { qpuContentUuidOf } from '@uuidna/qpu'
+import type { Block, Payload } from 'payload'
+import { qpuCiteOf, qpuContentUuidOf, qpuInstallOf, qpuPurposeOf } from '@uuidna/qpu'
+import { blocks } from '../blocks/index'
+import { customOf } from '../fields/blockFields'
+import { HOME } from '../fields/link'
+import { receipts } from '../receipts/index'
 import { docs as generated } from './docs'
 
 type Row = Record<string, unknown> & { id: string }
 type Slug = Parameters<Payload['find']>[0]['collection']
 
 // ---------------------------------------------------------------------------------------------------------------------
-// THE CONTENT: what the seed writes, as data. A reference names its target by collection and slug (or a form by title)
-// and is resolved when written, so this data is the same in every build and its content UUID is the seed's fingerprint.
+// THE CONTENT IS A COMBINATION. Nothing here is written: the pages are the blocks (home is the hero and every QPU block
+// that does not read the network; each QPU block has a page; each committed receipt has a page; the layout blocks that
+// make a page make one), the navigation is the set of pages, the footer is the citation, the hero is the unit's own
+// readings, the licence is the citation's. A reference names its target by collection and slug (or a form by title) and
+// is resolved when written, so this data is the same in every build and its content UUID is the seed's fingerprint.
 // ---------------------------------------------------------------------------------------------------------------------
 
 type Ref = { ref: 'pages' | 'docs'; slug: string } | { url: string }
 type NavItem = Ref & { label: string }
+type PageData = { slug: string; title: string; description: string; layout: Record<string, unknown>[] }
 
 const lexical = (text: string) => ({
   root: { type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', textFormat: 0, children: [{ type: 'text', text, detail: 0, format: 0, mode: 'normal', style: '', version: 1 }] }] },
 })
 const url = (href: string, label: string): NavItem => ({ url: href, label })
+const page = (slug: string, label: string): NavItem => ({ ref: 'pages', slug, label })
 // a block's link field, as Payload stores it
 const link = (href: string, label: string) => ({ link: { type: 'custom', url: href, label } })
+// a block's slug as a title: `families` is Families, `callToAction` is Call to action
+const titleOf = (slug: string) => slug.replace(/([A-Z])/g, ' $1').toLowerCase().replace(/^./, (c) => c.toUpperCase())
 
-const REDIRECTS: [string, Ref][] = [
-  ['/clay', { url: '/' }],
-  ['/clay/proofs', { ref: 'docs', slug: 'proof' }],
-  ['/clay/formulas', { url: '/' }],
-  ['/formulas', { url: '/' }],
-  ['/mcp', { ref: 'docs', slug: 'agents' }],
+// what the unit says of itself: the citation (origin, author, DOIs, licence), the install manifest (the repository), the
+// purpose (the platform, its qubits, the factoring)
+const cite = qpuCiteOf() as unknown as { href: string; website: string; doi: string; identifier: string; author: { first: string; last: string; orcid: string }; '@context': [string, Record<string, string>] }
+const repo = /[?&]url=(https:\/\/github\.com\/[^&]+)/.exec((qpuInstallOf() as unknown as { cloudflare: { qpu: string } }).cloudflare.qpu)?.[1] ?? cite.href
+const packageName = `@${repo.replace(/^https:\/\/github\.com\//, '')}`
+const cc = cite['@context'][1].cc ?? ''
+const licence = { url: cc, name: `CC ${(/licenses\/([a-z-]+)\/([\d.]+)/.exec(cc)?.[1] ?? '').toUpperCase()} ${/licenses\/[a-z-]+\/([\d.]+)/.exec(cc)?.[1] ?? ''}`.trim() }
+const purpose = qpuPurposeOf() as unknown as { nature: { platform: string; qubits: number }; cybersecurity: { n: number; factors: readonly [number, number] } }
+
+// the blocks by what they are
+const qpu = blocks.filter((b) => b.admin?.group === 'QPU')
+const standing = qpu.filter((b) => !customOf(b).needs?.length) // a page of its own, nothing to supply
+const home = standing.filter((b) => !customOf(b).live) // on the home page: no network when the root is served
+const blockOf = (b: Block, extra: Record<string, unknown> = {}) => ({ blockType: b.slug, heading: titleOf(b.slug), intro: customOf(b).description, ...extra })
+const pageOf = (b: Block): PageData => ({ slug: b.slug, title: titleOf(b.slug), description: customOf(b).description, layout: [blockOf(b)] })
+const byName = (name: string) => blocks.find((b) => b.slug === name)!
+
+const PRODUCTS = [
+  { title: 'Commercial license', slug: 'commercial-license', description: `${packageName} is licensed ${licence.name}: non-commercial use only. Commercial use needs this license, priced per organisation on request.`, priceInUSDEnabled: false, _status: 'published' },
+  { title: 'Storage writes', slug: 'storage-writes', description: `Reads of ${cite.website} are free and open. Writes to the document store need a bearer token; this plan issues one, priced on request.`, priceInUSDEnabled: false, _status: 'published' },
 ]
-
 const FORM = {
-  title: 'Commercial license request',
-  submitButtonLabel: 'Request a commercial license',
+  title: `${PRODUCTS[0]!.title} request`,
+  submitButtonLabel: `Request a ${PRODUCTS[0]!.title.toLowerCase()}`,
   confirmationType: 'message',
   confirmationMessage: lexical('Thank you. Your request is recorded and will be answered by email.'),
   fields: [
@@ -41,46 +65,44 @@ const FORM = {
   ],
 }
 
-// QPU billing through ecommerce: reads are free; what is billed is commercial use and the right to write to storage
-const PRODUCTS = [
-  { title: 'QPU storage writes', slug: 'qpu-storage-writes', description: 'Reads of qpu.uuidna.com are free and open. Writes to the QPU document store need a bearer token; this plan issues one, priced on request.', priceInUSDEnabled: false, _status: 'published' },
-  { title: 'Commercial license', slug: 'commercial-license', description: '@uuidna/qpu is licensed CC BY-NC-ND 4.0: non-commercial use only. Commercial use needs this license, priced per organisation on request.', priceInUSDEnabled: false, _status: 'published' },
-]
+const index = generated.find((d) => d.slug === 'index')
+const HOME_PAGE: PageData = {
+  slug: HOME,
+  title: cite.website,
+  description: index?.description ?? '',
+  layout: [
+    {
+      blockType: 'hero',
+      badge: `RFC 9562 v8 · doi:${cite.doi}`,
+      heading: `${purpose.nature.platform.replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase())} on ${purpose.nature.qubits} qubits.`,
+      emphasis: `Shor: ${purpose.cybersecurity.n} = ${purpose.cybersecurity.factors[0]} × ${purpose.cybersecurity.factors[1]}.`,
+      links: standing.slice(0, 3).map((b) => link(`/${b.slug}`, titleOf(b.slug))),
+    },
+    ...home.map((b) => blockOf(b, b.slug === 'families' ? { anchor: 'families' } : {})),
+  ],
+}
+const RECEIPT_PAGES: PageData[] = receipts.map((r) => ({
+  slug: r.name,
+  title: `${titleOf(r.name.replace(/-receipt$/, ''))} receipt`,
+  description: `The committed ${r.file}${typeof r.doc.when === 'string' ? `, generated ${r.doc.when}` : ''}: every row and the facts it records.`,
+  layout: [blockOf(byName('receipt'), { file: r.file, heading: `${titleOf(r.name.replace(/-receipt$/, ''))} receipt` })],
+}))
+const SEARCH_PAGE = pageOf(byName('search'))
+const LICENCE_PAGE: PageData = {
+  slug: 'license',
+  title: 'License and billing',
+  description: `${packageName} is ${licence.name}: reads are free and non-commercial use is open. Commercial use and storage writes are licensed.`,
+  layout: [blockOf(byName('products'), { heading: 'License and billing' }), { blockType: 'form', form: { formTitle: FORM.title } }],
+}
+const PAGES: PageData[] = [HOME_PAGE, ...standing.map(pageOf), ...RECEIPT_PAGES, SEARCH_PAGE, LICENCE_PAGE]
 
-/** The public site as payloadcms/website builds its own: pages composed of blocks. */
-const PAGES: { slug: string; title: string; description: string; layout: Record<string, unknown>[] }[] = [
-  { slug: 'home', title: 'UUIDNA QPU', description: 'An exact quantum processing unit served over MCP: hex-addressed formula families, Lean-checked theorems, live public data and quantum receipts.', layout: [
-    { blockType: 'hero', badge: 'RFC 9562 v8 · hex programs · quantum receipts', heading: 'Every formula is an address.', emphasis: 'Every composition is a program.', links: [link('/#families', 'Explore the formulas'), link('/data', 'Live data checks'), link('/index', 'Documentation')] },
-    { blockType: 'stats' },
-    { blockType: 'wings', heading: 'What QPU does', intro: 'Each wing as its own page reports it: capabilities, the predicates that check them, and how many hold right now.' },
-    { blockType: 'receipts', heading: 'Evidence', intro: 'Every committed receipt and the facts it records. Each one is a node of the final build receipt in the README.' },
-    { blockType: 'clay', heading: 'Clay Millennium Prize Problems', intro: "The author claims solutions to the Millennium Prize Problems, composed by the unit's cross formulas across its families. Each claim links to the document that states it." },
-    { blockType: 'families', heading: 'Formula families', anchor: 'families', intro: 'Every family at its own name.' },
-    { blockType: 'docs', heading: 'Documentation' },
-  ] },
-  { slug: 'discover', title: 'Discovery', description: 'Cross-formulated solutions across every formula family: values reached by programs of two or more families, with the live public data that fed them.', layout: [
-    { blockType: 'discovery', heading: 'Discovery', intro: 'Every family, every program of one formula and every composition of two, over parameters that fit the hex split (one 48-bit, two 24-bit or three 16-bit naturals), with numbers read live from public sources as inputs. A value reached by two or more families is a cross-formulated solution.' },
-  ] },
-  { slug: 'data', title: 'Live data checks', description: 'Public datasets read live and checked against the unit: CERN Open Data, NIST CODATA, OEIS, Zenodo, DataCite, ORCID, GitHub, npm and every catalogue the unit names.', layout: [
-    { blockType: 'live', heading: 'Live data checks', intro: 'Read from the public source and compared with what the unit proves or computes. The same check is the MCP tool qpu_data.' },
-  ] },
-  { slug: 'license', title: 'License and billing', description: 'QPU is CC BY-NC-ND 4.0: reads are free and non-commercial use is open. Commercial use and storage writes are licensed.', layout: [
-    { blockType: 'products', heading: 'License and billing', intro: '@uuidna/qpu is licensed CC BY-NC-ND 4.0. Reading qpu.uuidna.com and its MCP is free; non-commercial use with attribution is open. What is billed is commercial use and the right to write to the QPU document store.' },
-    { blockType: 'form', form: { formTitle: FORM.title } },
-  ] },
-  { slug: 'heat', title: 'Heat', description: 'Code quality by temperature and time: each file measured by git and run through the heat family, photon / thermal T from Qpu.Physics.', layout: [
-    { blockType: 'receipt', file: 'heat-receipt.json', heading: 'Heat', intro: "A file's temperature is its commits per thousand days; its signal is the unit's photon / thermal T (theorem temperature: 23 at 10 mK, 0 at 4000 mK); its coherence time is the days it holds per fix. Hot files hold no signal: the split shown is the number of ways that would cool each one below the threshold. A row holds when the file is cold." },
-  ] },
-  { slug: 'search', title: 'Search', description: 'Search the QPU documentation and pages.', layout: [{ blockType: 'search', heading: 'Search' }] },
-]
-
-const HEADER: NavItem[] = [url('/#families', 'Formulas'), { ref: 'pages', slug: 'discover', label: 'Discovery' }, { ref: 'pages', slug: 'data', label: 'Live data' }, { ref: 'docs', slug: 'index', label: 'Docs' }, { ref: 'pages', slug: 'search', label: 'Search' }, { ref: 'pages', slug: 'license', label: 'License' }]
+const HEADER: NavItem[] = [...standing.map((b) => page(b.slug, titleOf(b.slug))), ...(index ? [{ ref: 'docs' as const, slug: 'index', label: 'Docs' }] : []), page(SEARCH_PAGE.slug, SEARCH_PAGE.title), page(LICENCE_PAGE.slug, 'License')]
 const FOOTER = {
-  copyright: '© Tsvetan Rouschev · CC BY-NC-ND 4.0',
-  navItems: [{ ref: 'pages', slug: 'home', label: 'Home' }, { ref: 'pages', slug: 'license', label: 'Commercial license' }, url('https://qpu.uuidna.com/mcp', 'MCP'), url('https://github.com/uuidna/qpu', 'GitHub'), url('https://doi.org/10.5281/zenodo.23091364', 'DOI')] as NavItem[],
+  copyright: `© ${cite.author.first} ${cite.author.last} · ${licence.name}`,
+  navItems: [page(HOME, 'Home'), page(LICENCE_PAGE.slug, PRODUCTS[0]!.title), url(`${cite.href}/mcp`, 'MCP'), url(repo, 'GitHub'), url(cite.identifier, 'DOI'), url(cite.author.orcid, 'ORCID')] as NavItem[],
 }
 
-const CONTENT = { docs: generated.map((d) => d.uuid), REDIRECTS, FORM, PRODUCTS, PAGES, HEADER, FOOTER }
+const CONTENT = { docs: generated.map((d) => d.uuid), receipts: receipts.map((r) => r.name), FORM, PRODUCTS, PAGES, HEADER, FOOTER }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // THE APPLIER
@@ -108,12 +130,20 @@ export async function seed(payload: Payload) {
     const id = r.ref === 'docs' ? docId(r.slug) : pages.get(r.slug)
     return id ? { type: 'reference', reference: { relationTo: r.ref, value: id }, ...(label ? { label } : {}) } : { type: 'custom', url: `/${r.slug}`, ...(label ? { label } : {}) }
   }
-  for (const [from, to] of REDIRECTS) await ensure(payload, 'redirects', 'from', from, { from, to: linkOf(to) })
   const form = await ensure(payload, 'forms', 'title', FORM.title, FORM)
   for (const p of PRODUCTS) await ensure(payload, 'products', 'slug', p.slug, p)
   for (const p of PAGES) {
     const layout = p.layout.map((b) => (b.blockType === 'form' ? { ...b, form: form.id } : b))
     pages.set(p.slug, (await ensure(payload, 'pages', 'slug', p.slug, { ...p, layout, _status: 'published' })).id)
+  }
+  // a page the combination no longer makes is unpublished, and its address redirects to the page its first block makes
+  const made = new Set(PAGES.map((p) => p.slug))
+  const stale = (await payload.find({ collection: 'pages', limit: 0, pagination: false, depth: 0, overrideAccess: true })).docs as unknown as (Row & { slug: string; _status?: string; layout?: { blockType: string; file?: string }[] })[]
+  for (const old of stale.filter((p) => !made.has(p.slug))) {
+    const first = old.layout?.[0]
+    const target = first?.blockType === 'receipt' ? first.file?.replace(/\.json$/, '') : first?.blockType === 'hero' ? HOME : first?.blockType
+    if (target && made.has(target)) await ensure(payload, 'redirects', 'from', `/${old.slug}`, { from: `/${old.slug}`, to: linkOf({ ref: 'pages', slug: target }) })
+    if (old._status !== 'draft') await payload.update({ collection: 'pages', id: old.id, data: { _status: 'draft' } as never, overrideAccess: true })
   }
   const nav = (items: NavItem[]) => items.map(({ label, ...r }) => ({ link: linkOf(r as Ref, label) }))
   const header = (await payload.findGlobal({ slug: 'header', depth: 0, overrideAccess: true })) as { navItems?: unknown[] }

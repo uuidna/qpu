@@ -1,4 +1,3 @@
 import { blockFields } from '../../fields/blockFields'
 
-/** Every formula family, each at its own name. */
-export const Families = blockFields('Families', 'QPU')
+export const Families = blockFields('Families', 'QPU', 'Every formula family, each at its own name.')

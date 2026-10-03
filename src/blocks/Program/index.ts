@@ -1,7 +1,6 @@
 import { blockFields } from '../../fields/blockFields'
 
-/** One hex program, minted and run when the page is served. */
-export const Program = blockFields('Program', 'QPU', [
+export const Program = blockFields('Program', 'QPU', 'One hex program, minted and run when the page is served.', [
   {
     type: 'row',
     fields: [
@@ -10,4 +9,4 @@ export const Program = blockFields('Program', 'QPU', [
       { name: 'params', type: 'text', admin: { description: 'up to three naturals, comma-separated' } },
     ],
   },
-])
+], { needs: ['family', 'program'] })

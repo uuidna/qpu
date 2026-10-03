@@ -37,6 +37,7 @@
     "src/fields/**",
     "src/globals/**",
     "src/providers/**",
+    "src/receipts/**",
     "src/seed/**",
     "src/utilities/**",
     "src/payload.config.ts",

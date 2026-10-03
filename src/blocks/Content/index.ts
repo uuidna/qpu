@@ -1,4 +1,3 @@
 import { blockFields } from '../../fields/blockFields'
 
-/** Rich text, edited in Lexical. */
-export const Content = blockFields('Content', 'Layout', [{ name: 'richText', type: 'richText' }])
+export const Content = blockFields('Content', 'Layout', 'Rich text, edited in Lexical.', [{ name: 'richText', type: 'richText' }])

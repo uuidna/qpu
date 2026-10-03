@@ -38,9 +38,8 @@ export const runOf = async (family: string, program: string[], params: number[])
 
 export const liveOf = async () => Promise.all((await qpuDataSourcesOf()).map(async (l) => ({ ...l, result: (await qpuDataOf(l.source, l.args)) as { holds?: boolean; agrees?: boolean; reading?: unknown; receipt?: string; url?: string; denied?: string } })))
 
-// every committed receipt, found by name pattern at build time rather than listed
-const receiptContext = (require as unknown as { context: (dir: string, deep: boolean, re: RegExp) => { keys: () => string[]; (k: string): Record<string, unknown> } }).context('../../..', false, /-receipt\.json$/)
-export const receiptsOf = () => receiptContext.keys().map((k) => ({ file: k.replace(/^\.\//, ''), doc: receiptContext(k) }))
+import { receipts } from '@/receipts'
+export const receiptsOf = () => receipts
 
 export const docsOf = async (): Promise<Doc[]> =>
   (await (await payloadOf()).find({ collection: 'docs', limit: 0, pagination: false, depth: 0, sort: 'title' })).docs as Doc[]

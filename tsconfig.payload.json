@@ -69,6 +69,8 @@
     "src/globals/**/*.tsx",
     "src/providers/**/*.ts",
     "src/providers/**/*.tsx",
+    "src/receipts/**/*.ts",
+    "src/receipts/**/*.tsx",
     "src/seed/**/*.ts",
     "src/seed/**/*.tsx",
     "src/utilities/**/*.ts",
