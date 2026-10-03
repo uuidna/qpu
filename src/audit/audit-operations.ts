@@ -5,8 +5,8 @@
  * Each operation is quantum-secure (RBAC enforced) and vector-equilibrium balanced
  */
 
-import type { AuditResult } from './audit-formulas.js'
-import { VectorEquilibriumAudit, AuditFormulas, vectorEquilibriumAudit, auditFormulas } from './audit-formulas.js'
+import type { AuditResult } from '../families/audit/index.js'
+import { VectorEquilibriumAudit, AuditFormulas, vectorEquilibriumAudit, auditFormulas } from '../families/audit/index.js'
 import { legalAPI, standardsAPI } from './legal-standards-apis.js'
 
 export interface AuditOperation {

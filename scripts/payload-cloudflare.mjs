@@ -42,9 +42,13 @@ const REPO_COLLECTIONS = modulesOf('collections', 'ts').map(fromConfig('collecti
 const REPO_GLOBALS = modulesOf('globals', 'ts').map(fromConfig('globals'))
 // the hex families, fused doors and MCP methods register themselves on import: the modules that do so are found by
 // what they call, and every importer (the Worker, the site, the receipts, the README) imports this one registry
-const registering = ['mcp', 'audit'].flatMap((dir) =>
-  fs.readdirSync(path.join(SRC, dir)).filter((f) => /\.ts$/.test(f) && !/\.test\.ts$|^index\.ts$|^families\.ts$/.test(f) && /\b(qpuHexRegisterOf|qpuMcpFuseOf|qpuMcpRegisterOf)\(/.test(fs.readFileSync(path.join(SRC, dir, f), 'utf8')))
-    .map((f) => ({ name: f.slice(0, -3), from: `${dir === 'mcp' ? '.' : '../' + dir}/${f.slice(0, -3)}.js`, key: f.slice(0, -3) })))
+const registers = (f) => /\b(qpuHexRegisterOf|qpuMcpFuseOf|qpuMcpRegisterOf)\(/.test(fs.readFileSync(f, 'utf8'))
+const registering = [
+  // every family is a folder: src/families/<name>/index.ts (its test beside it as test.ts)
+  ...fs.readdirSync(path.join(SRC, 'families'), { withFileTypes: true }).filter((e) => e.isDirectory() && fs.existsSync(path.join(SRC, 'families', e.name, 'index.ts')) && registers(path.join(SRC, 'families', e.name, 'index.ts'))).map((e) => ({ name: e.name, from: `../families/${e.name}/index.js`, key: e.name })),
+  // and the doors that register themselves, beside the registry
+  ...fs.readdirSync(path.join(SRC, 'mcp')).filter((f) => /\.ts$/.test(f) && !/\.test\.ts$|^index\.ts$|^families\.ts$|^registry\.ts$/.test(f) && registers(path.join(SRC, 'mcp', f))).map((f) => ({ name: f.slice(0, -3), from: `./${f.slice(0, -3)}.js`, key: f.slice(0, -3) })),
+].sort((a, b) => a.key.localeCompare(b.key))
 const REPO_REGISTRIES = [
   { file: `${SRC}/mcp/families.ts`, export: 'families', sideEffects: true, entries: registering },
   { file: `${SRC}/blocks/index.ts`, export: 'blocks', type: { name: 'Block', from: 'payload' }, entries: modulesOf('blocks', 'ts').map((name) => ({ name, from: `./${name}`, key: slugOf(name) })) },

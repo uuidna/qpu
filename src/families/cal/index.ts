@@ -1,6 +1,6 @@
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
-import { designJdOf, sunLongitudeOf } from './hd-formulas.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+import { designJdOf, sunLongitudeOf } from '../hd/index.js'
 
 /** THE CALENDAR'S DRIFT, CROSSED INTO THE WHEEL. A Human Design chart is read off the tropical ecliptic at an instant;
  *  the instant comes from a calendar, and calendars drift. The Julian year (365.25 d) runs 11 min 14 s a year ahead of

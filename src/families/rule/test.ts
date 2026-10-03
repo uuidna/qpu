@@ -1,8 +1,8 @@
-import { test } from './receipted.js'
+import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from './index.js'
-import '../../../mcp/families.js'
-import { RuleFormulas } from '../../../mcp/rule-formulas.js'
+import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import '../../mcp/families.js'
+import { RuleFormulas } from './index.js'
 
 /** THE RULES, RUN. Each rule is a formula; the ones that count what breaks a rule must be zero. */
 test('rule: no family is past its nibble, none is truncated, and every rule runs as a hex program', async (t) => {

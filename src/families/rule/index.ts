@@ -1,5 +1,5 @@
-import { qpuFacesOf, qpuHexFamiliesOf, qpuHexFamilyCapOf, qpuHexRegisterOf, qpuHexRegisteredSizeOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { qpuFacesOf, qpuHexFamiliesOf, qpuHexFamilyCapOf, qpuHexRegisterOf, qpuHexRegisteredSizeOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** RULES ARE FORMULAS. What governs the unit's own shape is computed, not written down: a family holds at most a
  *  nibble of formulas (fifteen; the sixteenth value is no formula), a sweep is a slice of faces per call, every

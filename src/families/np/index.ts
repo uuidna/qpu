@@ -1,5 +1,5 @@
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 export type Graph = { n: number; edges: [number, number][] }
 /** CNF in DIMACS literals: variable v is v (true) or -v (false), 1-based. */

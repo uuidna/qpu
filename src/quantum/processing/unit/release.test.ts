@@ -110,9 +110,11 @@ test('release: the site end to end — every address it lists answers, every pag
     // the seed resumes one slice per request: a page not yet written is asked again, paced, before it is a finding
     let html = ''
     for (let i = 0; i < 6; i++) {
-      const r = await get(path)
-      html = await r.text()
-      if (r.status === 200 && html.includes(p.meta?.title ?? p.title)) break
+      try {
+        const r = await get(path)
+        html = await r.text()
+        if (r.status === 200 && html.includes(p.meta?.title ?? p.title)) break
+      } catch { /* a read that timed out while the seed resumes is asked again */ }
       await new Promise((f) => setTimeout(f, 5000))
     }
     const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? ''

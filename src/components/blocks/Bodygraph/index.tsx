@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { BlockWrapper } from '@/components/BlockWrapper'
 import type { SearchParams } from '@/components/RenderBlocks'
-import { CENTERS, CENTER_GATES, CHANNELS, chartOf, centerOf } from '@uuidna/qpu/mcp/hd-formulas.js'
+import { CENTERS, CENTER_GATES, CHANNELS, chartOf, centerOf } from '@uuidna/qpu/families/hd/index.js'
 import { qpuHexUuidOf } from '@uuidna/qpu'
 import type { BodygraphBlock } from '@/payload-types'
 

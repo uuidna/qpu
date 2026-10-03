@@ -8,7 +8,7 @@
 
 import { EventEmitter } from 'events'
 import { aeadOpen, aeadSeal, concat, ed25519PublicKey, ed25519Sign, ed25519Verify, hexOf, hkdf, randomBytes, randomUUID, sha256Hex, utf8, x25519PublicKey, x25519Shared } from '../core/crypt.js'
-import { QuantumSecureSignalling, bitsToBytes, type SiftedKey } from './quantum-secure-signalling.js'
+import { QuantumSecureSignalling, bitsToBytes, type SiftedKey } from '../families/signal/index.js'
 
 // ============================================================================
 // RBAC & Access Control

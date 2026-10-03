@@ -1,6 +1,6 @@
-import { ed25519PublicKey, ed25519Sign, fromHex, hexOf, md5, sha256, sha512, x25519 } from '../core/crypt.js'
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { ed25519PublicKey, ed25519Sign, fromHex, hexOf, md5, sha256, sha512, x25519 } from '../../core/crypt.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 const nat = (...xs: number[]): boolean => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 

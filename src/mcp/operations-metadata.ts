@@ -250,7 +250,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'qsec',
     operation: 'bb84',
     handler: async (input?: Record<string, unknown>) => {
-      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const { QuantumSecureSignalling } = await import('../families/signal/index.js')
       const n = (input?.n as number) || 256
       const key = QuantumSecureSignalling.BB84KeyGen(n)
       return { id: key.id, bits: key.bits.length, basis: key.basis.length }
@@ -262,7 +262,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'qsec',
     operation: 'sign',
     handler: async (input?: Record<string, unknown>) => {
-      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const { QuantumSecureSignalling } = await import('../families/signal/index.js')
       const key = (input?.key as any) || QuantumSecureSignalling.BB84KeyGen(128)
       const data = input?.data || 'test'
       const sig = QuantumSecureSignalling.sign(data, key)
@@ -275,7 +275,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'qsec',
     operation: 'encode',
     handler: async (input?: Record<string, unknown>) => {
-      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const { QuantumSecureSignalling } = await import('../families/signal/index.js')
       const sig = (input?.sig as any) || { id: 'test', payload: 'data', dims: 8, hash: 'abc', verified: false, timestamp: Date.now() }
       const dims = (input?.dims as number) || 8
       const enc = QuantumSecureSignalling.encode(sig, dims)
@@ -288,7 +288,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'qsec',
     operation: 'route',
     handler: async (input?: Record<string, unknown>) => {
-      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const { QuantumSecureSignalling } = await import('../families/signal/index.js')
       const src = (input?.src as string) || 'alice'
       const dst = (input?.dst as string) || 'bob'
       const dims = (input?.dims as number) || 4
@@ -302,7 +302,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'qsec',
     operation: 'fold',
     handler: async (input?: Record<string, unknown>) => {
-      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const { QuantumSecureSignalling } = await import('../families/signal/index.js')
       const sigs = (input?.sigs as any[]) || [{ id: 'sig1', hash: 'abc', payload: {}, dims: 8, verified: false, timestamp: Date.now() }]
       const folded = QuantumSecureSignalling.fold(sigs)
       return { folded, len: sigs.length }
@@ -314,7 +314,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'qsec',
     operation: 'distribute',
     handler: async (input?: Record<string, unknown>) => {
-      const { QuantumSecureSignalling } = await import('./quantum-secure-signalling.js')
+      const { QuantumSecureSignalling } = await import('../families/signal/index.js')
       const n = (input?.n as number) || 4
       const dims = (input?.dims as number) || 4
       const k = (input?.k as number) || 2
@@ -330,7 +330,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'qsec→compress',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const klen = (input?.keyLen as number) || 128
       const cf = CrossDomainFormulas.bb84ToCompress(klen)
       return { src: cf.src, dst: cf.dst, value: cf.value }
@@ -342,7 +342,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'obs→ml',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const cnt = (input?.signalCount as number) || 100
       const cf = CrossDomainFormulas.observabilityToML(cnt)
       return { src: cf.src, dst: cf.dst, value: cf.value }
@@ -354,7 +354,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'deploy→obs',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const bt = (input?.buildTime as number) || 60
       const tt = (input?.testTime as number) || 60
       const cf = CrossDomainFormulas.deploymentToObs(bt, tt)
@@ -367,7 +367,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'quantum→enterprise',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const pc = (input?.proofCount as number) || 10
       const cf = CrossDomainFormulas.quantumToEnterprise(pc)
       return { src: cf.src, dst: cf.dst, value: cf.value }
@@ -379,7 +379,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'med+qsec',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const pct = (input?.patientCount as number) || 1000
       const klen = (input?.keyLen as number) || 128
       const cf = CrossDomainFormulas.medSecureWithQSec(pct, klen)
@@ -392,7 +392,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'obs→ui',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const anom = (input?.anomalies as number) || 5
       const sigs = (input?.signals as number) || 1000
       const cf = CrossDomainFormulas.observabilityToUI(anom, sigs)
@@ -405,7 +405,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'qsec+compress',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const slen = (input?.signalLen as number) || 1024
       const klen = (input?.keyLen as number) || 128
       const cf = CrossDomainFormulas.compressQSecSignals(slen, klen)
@@ -418,7 +418,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'obs+ml',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const sdim = (input?.signalDim as number) || 8
       const anom = (input?.anomalyCount as number) || 2
       const cf = CrossDomainFormulas.mlOnObsForPrediction(sdim, anom)
@@ -431,7 +431,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'enterprise→obs',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const comp = (input?.complianceScore as number) || 0.95
       const lat = (input?.latency as number) || 150
       const cf = CrossDomainFormulas.enterpriseMetricsViaObs(comp, lat)
@@ -444,7 +444,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'test→quality',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainFormulas } = await import('./cross-domain-formulas.js')
+      const { CrossDomainFormulas } = await import('../families/cross/index.js')
       const tp = (input?.testsPassed as number) || 26
       const tt = (input?.totalTests as number) || 26
       const cf = CrossDomainFormulas.testCoverageToQuality(tp, tt)
@@ -459,7 +459,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'path:quality→risk',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const { CrossDomainPaths } = await import('../families/path/index.js')
       const path = CrossDomainPaths.qualityToRisk()
       const result = CrossDomainPaths.executePath(path, input || { quality: 0.95, proofs: 5 })
       return { hops: path.hops.length, final: result.final }
@@ -471,7 +471,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'path:obs→action',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const { CrossDomainPaths } = await import('../families/path/index.js')
       const path = CrossDomainPaths.obsToAction()
       const result = CrossDomainPaths.executePath(path, input || { anomalies: 5, mlConf: 0.8 })
       return { hops: path.hops.length, final: result.final }
@@ -483,7 +483,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'path:compress→ml',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const { CrossDomainPaths } = await import('../families/path/index.js')
       const path = CrossDomainPaths.dataFlowCompressML()
       const result = CrossDomainPaths.executePath(path, input || { compRatio: 0.6, accuracy: 0.92 })
       return { hops: path.hops.length, final: result.final }
@@ -495,7 +495,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'path:qsec→hipaa',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const { CrossDomainPaths } = await import('../families/path/index.js')
       const path = CrossDomainPaths.secureDataPathQSec()
       const result = CrossDomainPaths.executePath(path, input || { health: 0.98, keyLen: 256, patients: 5000 })
       return { hops: path.hops.length, final: result.final }
@@ -507,7 +507,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'path:perf→sla',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const { CrossDomainPaths } = await import('../families/path/index.js')
       const path = CrossDomainPaths.performanceToMetrics()
       const result = CrossDomainPaths.executePath(path, input || { perf: 0.99, compliance: 0.95, latency: 50 })
       return { hops: path.hops.length, final: result.final }
@@ -519,7 +519,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'path:quantum→security',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const { CrossDomainPaths } = await import('../families/path/index.js')
       const path = CrossDomainPaths.quantumSecurityChain()
       const result = CrossDomainPaths.executePath(path, input || { proofs: 10, keyLen: 256, comp: 0.98, coverage: 0.99 })
       return { hops: path.hops.length, final: result.final }
@@ -531,7 +531,7 @@ export const MCP_OPERATIONS: OperationMetadata[] = [
     domain: 'cross',
     operation: 'path:anomaly→response',
     handler: async (input?: Record<string, unknown>) => {
-      const { CrossDomainPaths } = await import('./cross-domain-paths.js')
+      const { CrossDomainPaths } = await import('../families/path/index.js')
       const path = CrossDomainPaths.anomalyToResponse()
       const result = CrossDomainPaths.executePath(path, input || { detect: 8, predict: 45, decide: 15 })
       return { hops: path.hops.length, final: result.final }

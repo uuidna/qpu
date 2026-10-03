@@ -1,10 +1,10 @@
-import { test } from './receipted.js'
+import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from './index.js'
-import { CENTERS, CENTER_GATES, CHANNELS, HdFormulas, chartOf, gateLineOf, designJdOf } from '../../../mcp/hd-formulas.js'
-import { CalFormulas } from '../../../mcp/cal-formulas.js'
-import { YiFormulas } from '../../../mcp/yi-formulas.js'
-import { KinFormulas } from '../../../mcp/kin-formulas.js'
+import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { CENTERS, CENTER_GATES, CHANNELS, HdFormulas, chartOf, gateLineOf, designJdOf } from './index.js'
+import { CalFormulas } from '../cal/index.js'
+import { YiFormulas } from '../yi/index.js'
+import { KinFormulas } from '../kin/index.js'
 
 /** THE COMBINATIONS OF THE STRUCTURE, EVERY ONE. The wheel partitions the circle into 64 gates of 6 lines; the nine
  *  centers partition the 64 gates; the 36 channels join gates of different centers; the design day lies 70–100 days

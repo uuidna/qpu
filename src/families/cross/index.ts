@@ -1,5 +1,5 @@
-import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
-import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
 // the lattice names and the three formulas every number here is written in
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 

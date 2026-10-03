@@ -1,6 +1,6 @@
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
-import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** The σ-involution seals of "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,

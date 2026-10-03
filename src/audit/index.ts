@@ -18,8 +18,8 @@ export {
   AuditFormulas,
   vectorEquilibriumAudit,
   auditFormulas
-} from './audit-formulas.js'
-export type { AuditFramework, AuditControl, AuditResult } from './audit-formulas.js'
+} from '../families/audit/index.js'
+export type { AuditFramework, AuditControl, AuditResult } from '../families/audit/index.js'
 
 export { auditOperations, auditOps } from './audit-operations.js'
 export type { AuditOperation } from './audit-operations.js'

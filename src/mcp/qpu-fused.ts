@@ -3,11 +3,11 @@ import { leanSource } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
 import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpFuseOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
-import { crossFormulaOf } from './cross-domain-formulas.js'
+import { crossFormulaOf } from '../families/cross/index.js'
 import { apiCallOf, apiSearchOf } from './api-door.js'
-import { CryptFormulas } from './crypt-formulas.js'
-import { hologramStreamsOf } from './hologram-streams.js'
-import { certifyUnreachable, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, verifyColoring, verifyHamCycle, verifySat, verifySubsetSum, type Graph } from './np-formulas.js'
+import { CryptFormulas } from '../families/crypt/index.js'
+import { hologramStreamsOf } from '../families/holo/index.js'
+import { certifyUnreachable, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, verifyColoring, verifyHamCycle, verifySat, verifySubsetSum, type Graph } from '../families/np/index.js'
 import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf, type QpuEnv } from '../quantum/processing/unit/index.js'
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
@@ -401,8 +401,13 @@ export class DataFormulas {
   /** Discovery across every family, bounded to the first n relations: value how many values two or more families reach. */
   static async discover(n: number): Promise<unknown> {
     const { qpuDiscoverOf } = await import('./discovery.js')
-    const d = await qpuDiscoverOf([])
-    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, relations: d.relations.slice(0, n) })
+    // the live inputs are every reading the doors made in this window (data.read, research, the site…): reading the
+    // record and discovering over it is one sequence of calls, nothing passed by hand
+    const readings = await Promise.all([...cache.values()].map((c) => c.value.catch(() => null)))
+    const numbersOf = (x: unknown): number[] => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
+    const live = [...new Set(readings.flatMap((r) => numbersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, 256)
+    const d = await qpuDiscoverOf(live)
+    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relations: d.relations.slice(0, n) })
   }
 }
 for (const name of ['discover', 'errors', 'read', 'research', 'site', 'sources'] as const)

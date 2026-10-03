@@ -8,8 +8,8 @@
  * - Cross-Domain Formulas (compliance ↔ standards bridges)
  */
 
-import { crossFormulaOf, type CrossFormula } from '../mcp/cross-domain-formulas.js'
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
 
 // ============================================================================
 // AUDIT COMPUTATION MODEL

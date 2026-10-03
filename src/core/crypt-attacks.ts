@@ -1,7 +1,7 @@
 import { aeadOpen, aeadSeal, concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, randomBytes, randomUUID, sha512, utf8, x25519PublicKey, x25519Shared } from './crypt.js'
-import { QuantumSecureSignalling } from '../mcp/quantum-secure-signalling.js'
+import { QuantumSecureSignalling } from '../families/signal/index.js'
 import { BB84_RAW, SecureChat } from '../mcp/secure-chat-rbac.js'
-import { HologramStreams, holoEntryHolds, holoStreamHolds } from '../mcp/hologram-streams.js'
+import { HologramStreams, holoEntryHolds, holoStreamHolds } from '../families/holo/index.js'
 
 export interface Attack {
   name: string

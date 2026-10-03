@@ -12064,7 +12064,7 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv,
   const params = d.params.map((x) => BigInt(x))
   let acc: unknown = params[n - n] ?? BigInt(n - n)
   let holds = true
-  const steps: { formula: string; args: string[]; value: unknown }[] = []
+  const steps: { formula: string; args: string[]; value: unknown; reading?: Record<string, unknown> }[] = []
   try {
     for (const name of d.program) {
       const f = formulas.find((x) => x.name === name)!
@@ -12072,7 +12072,9 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv,
       const out = await f.run(args)
       const value = out && typeof out === 'object' && 'value' in (out as object) ? (out as { value: unknown }).value : out
       if (out && typeof out === 'object' && 'holds' in (out as object)) holds = holds && (out as { holds: unknown }).holds === true
-      steps.push({ formula: name, args: args.slice(n - n, Math.max(seed, f.arity)).map(String), value: typeof value === 'bigint' ? value.toString() : value })
+      // the reading rides with the value: a cross formula's failing names, its next, its receipt — what a caller acts on
+      const reading = out && typeof out === 'object' && !Array.isArray(out) ? Object.fromEntries(Object.entries(out as Record<string, unknown>).filter(([k]) => k !== 'value')) : undefined
+      steps.push({ formula: name, args: args.slice(n - n, Math.max(seed, f.arity)).map(String), value: typeof value === 'bigint' ? value.toString() : value, ...(reading ? { reading } : {}) })
       acc = typeof value === 'bigint' ? value : value
     }
     const value = typeof acc === 'bigint' ? acc.toString() : acc

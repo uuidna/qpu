@@ -1,7 +1,7 @@
-import { leanSource } from '../quantum/processing/unit/lean.js'
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
-import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+import { leanSource } from '../../quantum/processing/unit/lean.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** Code quality by temperature and time, as Qpu.Physics measures a qubit. A file is hot when it keeps changing: its

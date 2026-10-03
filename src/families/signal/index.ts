@@ -1,5 +1,5 @@
-import { qpuFoldOf, qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { qpuFoldOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 export interface SecureSignal {
   id: string

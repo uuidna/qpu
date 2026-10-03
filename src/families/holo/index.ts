@@ -1,6 +1,6 @@
-import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBytes, sha256, utf8, type Bytes } from '../core/crypt.js'
-import { qpuHexRegisterOf, qpuHologramOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBytes, sha256, utf8, type Bytes } from '../../core/crypt.js'
+import { qpuHexRegisterOf, qpuHologramOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** One fragment of the hologram: a signed, SHA-256-chained UUID in its scale's stream that carries the root of all scales. */
 export interface HoloEntry {

@@ -57,5 +57,5 @@ const withReexports = (files) => [...new Set(files.flatMap((f) => [f, ...reexpor
 export const FILES = withReexports([
   'src/quantum/processing/unit/index.ts', 'src/quantum/processing/unit/docdb.ts', 'src/quantum/processing/unit/lean-eval.ts',
   'src/db/payload-qpu.ts', 'src/deployment/payload-templates.ts', 'src/mcp/uuid-programmable-core.ts',
-  'src/mcp/cross-domain-formulas.ts', 'src/mcp/cross-domain-paths.ts', 'src/core/uuid.ts', 'src/core/uuid-bridge.ts',
+  'src/families/cross/index.ts', 'src/families/path/index.ts', 'src/core/uuid.ts', 'src/core/uuid-bridge.ts',
 ])

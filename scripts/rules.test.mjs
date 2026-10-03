@@ -17,9 +17,11 @@ test('the Worker config names no manual limit: the work is split instead', () =>
 })
 
 test('the families registry is exactly the modules that register, and the bundler is told to keep each', () => {
-  const registering = ['mcp', 'audit'].flatMap((dir) =>
-    readdirSync(join(ROOT, 'src', dir)).filter((f) => /\.ts$/.test(f) && !/\.test\.ts$|^index\.ts$|^families\.ts$/.test(f) && /\b(qpuHexRegisterOf|qpuMcpFuseOf|qpuMcpRegisterOf)\(/.test(read(`src/${dir}/${f}`)))
-      .map((f) => `./dist/${dir}/${f.slice(0, -3)}.js`))
+  const registers = (f) => /\b(qpuHexRegisterOf|qpuMcpFuseOf|qpuMcpRegisterOf)\(/.test(read(f))
+  const registering = [
+    ...readdirSync(join(ROOT, 'src/families'), { withFileTypes: true }).filter((e) => e.isDirectory() && registers(`src/families/${e.name}/index.ts`)).map((e) => `./dist/families/${e.name}/index.js`),
+    ...readdirSync(join(ROOT, 'src/mcp')).filter((f) => /\.ts$/.test(f) && !/\.test\.ts$|^index\.ts$|^families\.ts$|^registry\.ts$/.test(f) && registers(`src/mcp/${f}`)).map((f) => `./dist/mcp/${f.slice(0, -3)}.js`),
+  ]
   const families = read('src/mcp/families.ts')
   const listed = [...families.matchAll(/^import '([^']+)'/gm)].map((m) => m[1].replace(/^\.\//, './dist/mcp/').replace(/^\.\.\//, './dist/'))
   assert.deepEqual(listed.sort(), registering.sort(), 'families.ts imports every registering module and nothing else')

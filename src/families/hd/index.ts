@@ -1,5 +1,5 @@
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** HUMAN DESIGN, THE STRUCTURE ONLY. The Rave Mandala is a wheel of 64 gates (the I Ching hexagrams) of 360/64° each,
  *  six lines of a gate's arc each, anchored at gate 41 at 302°; nine centers partition the 64 gates; 36 channels join

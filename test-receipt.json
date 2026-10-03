@@ -1,26 +1,437 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 1,
-  "pass": 1,
+  "tests": 9,
+  "pass": 9,
   "fail": 0,
   "dry": 0,
-  "circuit": 1,
+  "circuit": 9,
   "mintOnly": 0,
   "servedOnly": 0,
   "dim": "512",
   "qubits": 9,
-  "receipt": "819b59e371ed9863",
-  "computed": 1,
+  "receipt": "5ac5fd25161efb7e",
+  "computed": 9,
   "readRows": 0,
   "readingsOf": "test-readings.json",
   "rows": [
+    {
+      "name": "hd: the wheel is a partition — every tenth of a degree lands on one gate and one line, 64 × 6 equally",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 58819,
+      "kinds": {
+        "h": 840,
+        "cnot": 6176,
+        "x": 3058,
+        "toffoli": 760,
+        "lean mint": 387,
+        "lean cube": 387,
+        "lean around": 387,
+        "lean quantum": 387,
+        "lean harmonic": 387,
+        "lean cluster": 387,
+        "lean energy": 387,
+        "lean propulsion": 387,
+        "lean crypto": 387,
+        "lean health": 387,
+        "measure": 388,
+        "cmodexp": 744,
+        "xx": 744,
+        "lean breakthrough": 371,
+        "lean split_coin": 371,
+        "lean multiply": 371,
+        "lean handle": 371,
+        "lean kv": 371,
+        "lean light": 371,
+        "lean involution": 371,
+        "lean waves": 371,
+        "lean shor": 371,
+        "lean follow_the_coins": 371,
+        "lean two_coins_make_a_coil": 371,
+        "lean electronics": 371,
+        "lean coil_efficiency": 371,
+        "lean next_coil": 371,
+        "lean next_fused": 371,
+        "lean fused_both_directions": 371,
+        "lean coins_bridges_forms": 371,
+        "lean double_is_sum": 371,
+        "lean one_plus_six": 371,
+        "lean two_x_seven_coins": 371,
+        "lean clay": 371,
+        "lean integrity": 371,
+        "lean cern": 371,
+        "lean tetra": 371,
+        "lean qubits": 371,
+        "lean gates": 371,
+        "lean measurement": 371,
+        "lean noise": 371,
+        "lean circuit": 371,
+        "lean physical": 371,
+        "lean temperature": 371,
+        "lean superconductivity": 371,
+        "lean cooling": 371,
+        "lean drift": 371,
+        "lean sciences": 371,
+        "lean interfere": 371,
+        "lean entangle": 371,
+        "lean ghz": 371,
+        "lean noclone": 371,
+        "lean teleport": 371,
+        "lean kickback": 371,
+        "lean deutsch": 371,
+        "lean dense": 371,
+        "lean monogamy": 371,
+        "lean only": 371,
+        "lean fill": 371,
+        "lean infinite": 371,
+        "lean distribute": 371,
+        "lean raid": 371,
+        "lean hybrid_cost": 371,
+        "lean hybrid_speed": 371,
+        "lean hybrid": 371,
+        "lean computer": 371,
+        "lean server": 371,
+        "lean fusion": 371,
+        "lean design": 371,
+        "lean neuro": 371,
+        "lean next": 741,
+        "lean mintOf_zero": 370,
+        "lean mintOf_succ": 370,
+        "lean mintOf_add": 370,
+        "lean all_shor": 370,
+        "lean seed_eq": 370,
+        "lean coins_two": 370,
+        "lean n_eq": 370,
+        "lean hexbit_eq": 370,
+        "lean mintOf_ge_seed": 370,
+        "lean mintOf_pos": 370,
+        "lean mintOf_lt_succ": 370,
+        "lean mintOf_lt": 370,
+        "lean hexbit_pos": 370,
+        "lean planes": 370,
+        "lean all_entangle": 370,
+        "lean all_noclone": 370,
+        "lean cooling_stays_positive": 370,
+        "lean fuse": 370,
+        "lean faces_multiplicative": 370,
+        "lean faces_additive": 370,
+        "lean faces_both_forms": 370,
+        "lean bits_multiplicative": 370,
+        "lean bits_exponential": 370,
+        "lean bits_both_forms": 370,
+        "lean amplitudes_as_sum": 370,
+        "lean amplitudes_from_sum": 370,
+        "lean fused_multiplicative_form": 370,
+        "lean fused_additive_form": 370,
+        "lean all_product": 370,
+        "lean all_sum": 370,
+        "lean all_complete": 370,
+        "lean receipts_uuid_handle": 370,
+        "lean receipts_uuid_program_section": 370,
+        "lean receipts_uuid_params": 370,
+        "lean receipts_uuid_digits": 370,
+        "lean receipts_uuid_bits": 370,
+        "lean receipts_hex_program_nibbles": 370,
+        "lean agents_mcp_tools": 370,
+        "lean agents_hex_alphabet": 370,
+        "lean crypto_shor_modulus": 370,
+        "lean crypto_shor_factor_p": 370,
+        "lean crypto_shor_factor_q": 370,
+        "lean quantum_shor_dim": 370,
+        "lean quantum_shor_qubits": 370,
+        "lean presentation_stylesheet_hz": 370,
+        "lean cms_payload_plugins": 370,
+        "lean cms_payload_combinations": 370,
+        "lean relation_8": 370,
+        "lean relation_14": 370,
+        "lean relation_16": 370,
+        "lean relation_21": 370,
+        "lean relation_25": 370,
+        "lean relation_28": 370,
+        "lean relation_4294967296": 370,
+        "lean clay_wings": 370,
+        "cross hd-cells": 1
+      },
+      "dims": {
+        "1": 46109,
+        "8": 11222,
+        "512": 1488
+      },
+      "dim": "512",
+      "qubits": 9,
+      "receipt": "83c6f8e196a79afa",
+      "states": [
+        {
+          "name": "measure",
+          "dim": 8,
+          "amplitudes": [
+            "1",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "rows": 388
+        }
+      ],
+      "mint": {
+        "calls": 235140,
+        "chain": "5d547d38276b4eb8"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "hd: the nine centers partition the 64 gates and the 36 channels join different centers",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 272,
+      "kinds": {
+        "cross hd-center": 72,
+        "cross hd-channel": 72,
+        "cross hd-channels": 128
+      },
+      "dims": {
+        "1": 272
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "40975afe5ff6cab3",
+      "states": [],
+      "mint": {
+        "calls": 816,
+        "chain": "ba53e3c0a6a97015"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "hd: the design day is 70–100 days before birth and the chart defines channels and a definition",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 8,
+      "kinds": {
+        "cross hd-design": 4,
+        "hd chart 2451545": 1,
+        "hd chart 2440588": 1,
+        "hd chart 2460000": 1,
+        "hd chart 2433282": 1
+      },
+      "dims": {
+        "1": 8
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "51dd30a3b900178f",
+      "states": [],
+      "mint": {
+        "calls": 20,
+        "chain": "3b3ba3639182e229"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "cal: the calendar's drift explains the wheel — a day per 128 Julian or 3200 Gregorian years, a gate per ~403 years, 86–93 design days",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 71,
+      "kinds": {
+        "cross cal-day-per": 2,
+        "cross cal-julian-drift": 2,
+        "cross cal-gates-precessed": 2,
+        "cross cal-precession": 1,
+        "cross hd-code": 12,
+        "cross hd-jdm": 12,
+        "cross cal-sun-speed": 12,
+        "cross cal-design-days": 24,
+        "cross cal-combinations": 3,
+        "cross cal-bits": 1
+      },
+      "dims": {
+        "1": 71
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "d96eb5d038dd15c4",
+      "states": [],
+      "mint": {
+        "calls": 213,
+        "chain": "bb497640e6685a4c"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "hd: every formula of the family runs as a hex program, and the live host answers the same at the address",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 43,
+      "kinds": {
+        "cross hd-gate": 1,
+        "hex hd": 14,
+        "db insert db/hex/08ba5407": 12,
+        "cross hd-line": 1,
+        "db update db/hex/08ba5407": 2,
+        "cross hd-center": 1,
+        "cross hd-channel": 2,
+        "cross hd-channels": 1,
+        "cross hd-definition": 1,
+        "cross hd-cells": 1,
+        "cross hd-ut": 1,
+        "cross hd-mean": 2,
+        "cross hd-code": 1,
+        "cross hd-jdm": 1,
+        "cross hd-chart": 1,
+        "hd live": 1
+      },
+      "dims": {
+        "1": 43
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "562e8ebef8a4a95b",
+      "states": [],
+      "mint": {
+        "calls": 101,
+        "chain": "0d3dff4871a3325c"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "yi: the 64 figures — complement and inverse are involutions, 8 figures are their own inverse, the nuclear map folds 64 into 16",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 521,
+      "kinds": {
+        "cross yi-complement": 128,
+        "cross yi-inverse": 192,
+        "cross yi-upper": 64,
+        "cross yi-lower": 64,
+        "cross yi-nuclear": 64,
+        "cross yi-with-yang": 7,
+        "cross yi-figures": 2
+      },
+      "dims": {
+        "1": 521
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "1f913a015acf84e6",
+      "states": [],
+      "mint": {
+        "calls": 1563,
+        "chain": "beb0c12cdb83d55a"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "cal: the cycles people ask about — Tzolkin, Dreamspell drift, Metonic, Saros, lunar year, sexagenary, biorhythm, vortex",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 26,
+      "kinds": {
+        "cross cal-cycle": 2,
+        "cross cal-tone": 1,
+        "cross cal-seal": 1,
+        "cross cal-kin": 2,
+        "cross cal-dreamspell-drift": 1,
+        "cross cal-period": 3,
+        "cross cal-metonic-drift": 2,
+        "cross cal-lunar-drift": 1,
+        "cross cal-saros-shift": 1,
+        "cross cal-pillar": 2,
+        "cross cal-biorhythm": 1,
+        "cross cal-vortex": 7,
+        "cross cal-digital-root": 1,
+        "cross cal-enneagram": 1
+      },
+      "dims": {
+        "1": 26
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "1a3e76d15243f89a",
+      "states": [],
+      "mint": {
+        "calls": 78,
+        "chain": "886c2ed9500c461f"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "cal: the Day Out of Time is a coin — a leap year holds both uncounted days, the pairs are the kin lost, the Day Out of Time returns in 52 years",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 52,
+      "kinds": {
+        "cross cal-leap": 40,
+        "cross cal-coin": 2,
+        "cross cal-pairs": 3,
+        "cross cal-dreamspell-drift": 1,
+        "cross cal-faces": 1,
+        "cross cal-doot-kin": 3,
+        "cross cal-crossed": 2
+      },
+      "dims": {
+        "1": 52
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "ca0dd1750e1f55da",
+      "states": [],
+      "mint": {
+        "calls": 156,
+        "chain": "9c864f1b69f575e1"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
     {
       "name": "rule: no family is past its nibble, none is truncated, and every rule runs as a hex program",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 58817,
+      "computations": 58820,
       "kinds": {
         "h": 838,
         "cnot": 6160,
@@ -156,9 +567,9 @@
         "cross rule-slice": 1,
         "cross rule-families": 1,
         "cross rule-over": 2,
-        "cross rule-truncated": 25,
-        "cross rule-nibbles": 24,
-        "cross rule-free": 24,
+        "cross rule-truncated": 26,
+        "cross rule-nibbles": 25,
+        "cross rule-free": 25,
         "cross rule-formulas": 1,
         "hex rule": 3,
         "db insert db/hex/bfe6be1f": 1,
@@ -168,13 +579,13 @@
         "rule truncated": 1
       },
       "dims": {
-        "1": 46139,
+        "1": 46142,
         "8": 11194,
         "512": 1484
       },
       "dim": "512",
       "qubits": 9,
-      "receipt": "4d984dde480b72d5",
+      "receipt": "fc316e27b505e383",
       "states": [
         {
           "name": "measure",
@@ -193,8 +604,8 @@
         }
       ],
       "mint": {
-        "calls": 235025,
-        "chain": "7bd7ee16ba61189d"
+        "calls": 235034,
+        "chain": "4f50a636b51c71a0"
       },
       "served": {
         "count": 0,

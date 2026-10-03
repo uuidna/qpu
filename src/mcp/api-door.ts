@@ -1,6 +1,6 @@
 import { packageVersion } from '../quantum/processing/unit/version.js'
 import { qpuContentUuidOf, qpuFacesOf, qpuHexRegisterOf, qpuHexUuidOf, qpuMcpFuseOf, qpuSchemaMethodsOf, qpuUuidReceiptOf, type QpuMethod } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf } from './cross-domain-formulas.js'
+import { crossFormulaOf } from '../families/cross/index.js'
 
 /** EVERY PUBLIC API IS AN ADDRESS. The APIs.guru registry lists every public API with an OpenAPI document; the unit
  *  reads the registry, reads an API's document, and derives its operations (qpuSchemaMethodsOf). A request is then a
@@ -24,12 +24,19 @@ let registry: { at: number; names: string[]; entries: Record<string, Entry> } | 
 const specs = new Map<string, { at: number; api: Promise<Api> }>()
 
 // a read is tried twice: a moment's failure (a timeout, a dropped connection) is not the document's state
+// what one read may hold: a document past this is named, not parsed — a Worker isolate has 128 MB, and a multi-megabyte
+// OpenAPI document parses to many times its bytes
+const BYTES = 2 ** 20
 const json = async (url: string, accept = 'application/json'): Promise<unknown> => {
   for (let attempt = 0; ; attempt++) {
     try {
       const r = await fetch(url, { headers: { accept, ...ua }, signal: AbortSignal.timeout(DEADLINE) })
       if (!r.ok) throw new Error(`${url} answered ${r.status}`)
-      return await r.json()
+      const length = Number(r.headers.get('content-length') ?? 0)
+      if (length > BYTES) throw new Error(`${url} answered ${r.status}: ${length} bytes, past the ${BYTES} one read holds`)
+      const text = await r.text()
+      if (text.length > BYTES) throw new Error(`${url} answered ${r.status}: ${text.length} bytes, past the ${BYTES} one read holds`)
+      return JSON.parse(text)
     } catch (e) {
       if (attempt === 1 || /answered \d{3}/.test(String((e as Error).message))) throw e
     }
@@ -39,7 +46,10 @@ const json = async (url: string, accept = 'application/json'): Promise<unknown> 
 /** The registry as it stands: every API name in order, read once per window. */
 export const apiRegistryOf = async () => {
   if (registry && Date.now() - registry.at < WINDOW) return registry
-  const entries = (await json(REGISTRY)) as Record<string, Entry>
+  // the snapshot the walk wrote (scripts/api-receipt.mjs --registry): the registry as of its date, a few hundred KB,
+  // read where the live 8 MB list is more than an isolate holds; absent, the live list
+  const snapshot = (await import('./registry.js').catch(() => null)) as { REGISTRY_SNAPSHOT?: Record<string, Entry> } | null
+  const entries = snapshot?.REGISTRY_SNAPSHOT ?? ((await json(REGISTRY)) as Record<string, Entry>)
   return (registry = { at: Date.now(), names: Object.keys(entries).sort(), entries })
 }
 

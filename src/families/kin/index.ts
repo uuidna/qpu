@@ -1,5 +1,5 @@
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE COUNTS PEOPLE ASK ABOUT, AS COMBINATORICS: the Tzolkin and the Dreamspell (a kin of 13 tones × 20 seals, its
  *  correlation a parameter), the Day Out of Time as a coin, the sexagenary pillars, the biorhythm phases, the periods

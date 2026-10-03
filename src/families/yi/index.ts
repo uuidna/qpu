@@ -1,5 +1,5 @@
-import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
-import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THE I CHING AS COMBINATORICS. A hexagram is six lines, each yin (0) or yang (1): the 64 of 2⁶, read bottom to top
  *  as bits 0..5; a trigram is three, the 8 of 2³. The operations on hexagrams are exact: the complement flips every

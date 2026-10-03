@@ -25,7 +25,7 @@ const familiesOfModule = (file) => [...new Set([...fs.readFileSync(file, 'utf8')
 const staged = process.argv.includes('--staged')
 const named = process.argv.slice(2).filter((a) => !a.startsWith('--'))
 const families = staged
-  ? [...new Set(execSync('git diff --cached --name-only', { encoding: 'utf8' }).split('\n').filter((f) => /^src\/(mcp|audit)\/.*\.ts$/.test(f) && fs.existsSync(f)).flatMap(familiesOfModule))].filter((f) => qpuHexFamiliesOf().has(f))
+  ? [...new Set(execSync('git diff --cached --name-only', { encoding: 'utf8' }).split('\n').filter((f) => /^src\/(families\/[^/]+\/index|mcp\/[^/]+)\.ts$/.test(f) && fs.existsSync(f)).flatMap(familiesOfModule))].filter((f) => qpuHexFamiliesOf().has(f))
   : named.length ? named : sorted()
 if (!families.length) {
   console.log('cross-check: no formula module staged')
