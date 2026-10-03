@@ -40,6 +40,7 @@ import '../families/forms/index.js'
 import '../families/gate/index.js'
 import '../families/glyph/index.js'
 import '../families/gravity/index.js'
+import '../families/guide/index.js'
 import '../families/hd/index.js'
 import '../families/heat/index.js'
 import '../families/holo/index.js'
@@ -93,4 +94,4 @@ import '../families/tune/index.js'
 import '../families/wave/index.js'
 import '../families/yi/index.js'
 
-export const families = ['access', 'accounting', 'analytics', 'antitrust', 'api-door', 'audit', 'aviation', 'backend', 'ballistics', 'banking', 'bankruptcy', 'cal', 'chat', 'clay', 'cloud', 'collaboration', 'collide', 'compliance', 'contract', 'court', 'cross', 'crypt', 'customer', 'db', 'devtools', 'ecommerce', 'econ', 'education', 'email', 'employment', 'enterprise', 'entertainment', 'environment', 'evidence', 'family', 'financial', 'forensic', 'forms', 'gate', 'glyph', 'gravity', 'hd', 'heat', 'holo', 'hosting', 'immigration', 'insurance', 'iot', 'job', 'kin', 'law', 'learning', 'location', 'maritime', 'marketing', 'mcp-capabilities', 'med', 'merkaba', 'messaging', 'monitoring', 'np', 'numen', 'opendata', 'patent', 'path', 'payment', 'platonic', 'port', 'project', 'property', 'psych', 'qpu-fused', 'ready', 'rule', 'scale', 'search', 'securities', 'security', 'sentence', 'seo', 'signal', 'social', 'split', 'storage', 'tax', 'telecom', 'tesla', 'text', 'tox', 'trading', 'tune', 'wave', 'yi'] as const
+export const families = ['access', 'accounting', 'analytics', 'antitrust', 'api-door', 'audit', 'aviation', 'backend', 'ballistics', 'banking', 'bankruptcy', 'cal', 'chat', 'clay', 'cloud', 'collaboration', 'collide', 'compliance', 'contract', 'court', 'cross', 'crypt', 'customer', 'db', 'devtools', 'ecommerce', 'econ', 'education', 'email', 'employment', 'enterprise', 'entertainment', 'environment', 'evidence', 'family', 'financial', 'forensic', 'forms', 'gate', 'glyph', 'gravity', 'guide', 'hd', 'heat', 'holo', 'hosting', 'immigration', 'insurance', 'iot', 'job', 'kin', 'law', 'learning', 'location', 'maritime', 'marketing', 'mcp-capabilities', 'med', 'merkaba', 'messaging', 'monitoring', 'np', 'numen', 'opendata', 'patent', 'path', 'payment', 'platonic', 'port', 'project', 'property', 'psych', 'qpu-fused', 'ready', 'rule', 'scale', 'search', 'securities', 'security', 'sentence', 'seo', 'signal', 'social', 'split', 'storage', 'tax', 'telecom', 'tesla', 'text', 'tox', 'trading', 'tune', 'wave', 'yi'] as const
