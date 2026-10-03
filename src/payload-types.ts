@@ -389,6 +389,7 @@ export interface Page {
   description?: string | null;
   layout?:
     | (
+        | AnimationBlock
         | BodygraphBlock
         | CallToActionBlock
         | ClayBlock
@@ -429,6 +430,33 @@ export interface Page {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AnimationBlock".
+ */
+export interface AnimationBlock {
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  /**
+   * the family (default: the first that is not a door)
+   */
+  family?: string | null;
+  /**
+   * the formula (default: the first of the family)
+   */
+  formula?: string | null;
+  /**
+   * how many parameters to run, from 1 (default: faces)
+   */
+  take?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'animation';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1721,6 +1749,7 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        animation?: T | AnimationBlockSelect<T>;
         bodygraph?: T | BodygraphBlockSelect<T>;
         callToAction?: T | CallToActionBlockSelect<T>;
         clay?: T | ClayBlockSelect<T>;
@@ -1759,6 +1788,20 @@ export interface PagesSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AnimationBlock_select".
+ */
+export interface AnimationBlockSelect<T extends boolean = true> {
+  heading?: T;
+  anchor?: T;
+  intro?: T;
+  family?: T;
+  formula?: T;
+  take?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

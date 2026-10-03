@@ -119,10 +119,14 @@ export class GateFormulas {
       const values = new Set<number>()
       for (const ps of inputs) { try { const r = (await qpuHexRunOf(qpuHexUuidOf({ family: x.family, program: [x.name], params: ps }), undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }; const v = Number(r.value); if (r.holds === true && Number.isSafeInteger(v) && v >= 3) values.add(v) } catch { /* an input the address cannot take */ } }
       const byApi = answered.map((r) => ({ api: r.api, hit: numbersOf(r.excerpt).find((v) => values.has(v)) })).find((r) => r.hit !== undefined)
-      const efforts = { oeis: `${oeis.length}/${looked.length}`, seal: seal?.kind ?? 'none', involutes, research: researched.get(x.family) ?? 0, apis: `${answered.length}/${found.matched}`, values: values.size }
-      const checks = looked.length + 1 + 1 + 1 + answered.length
+      // the rosetta rotated in all perspectives: the lead at its family's step, the ring turned from every start both
+      // ways; composing with its neighbours or meeting another family's value develops it
+      const ring = (await import('../merkaba/index.js')).flowFamiliesOf()
+      const developed = ring.includes(x.family) ? (MerkabaFormulas.develop(ring.indexOf(x.family), (qpuHexFamiliesOf().get(x.family) ?? []).findIndex((y) => y.name === x.name)) as unknown as { value: number; holds: boolean; rotations?: number; meets?: string[] }) : undefined
+      const efforts = { oeis: `${oeis.length}/${looked.length}`, seal: seal?.kind ?? 'none', involutes, research: researched.get(x.family) ?? 0, apis: `${answered.length}/${found.matched}`, values: values.size, rosetta: developed ? `${developed.value}/${developed.rotations ?? 0}${developed.meets?.length ? ` meets ${developed.meets.join(', ')}` : ''}` : 'not on the ring' }
+      const checks = looked.length + 1 + 1 + 1 + answered.length + (developed?.rotations ?? 0)
       const liveRel = d.relations.find((r) => r.live && r.ways.some((w) => w.family === x.family && w.program.includes(x.name)))
-      const crossedBy = oeis.length ? `OEIS ${oeis.join(', ')}` : seal ? `seal ${seal.kind}` : byApi ? `API ${byApi.api} answering ${byApi.hit}` : liveRel ? `a live reading reaching ${liveRel.value} with ${liveRel.families.filter((y) => y !== x.family).join(', ')}` : undefined
+      const crossedBy = oeis.length ? `OEIS ${oeis.join(', ')}` : seal ? `seal ${seal.kind}` : byApi ? `API ${byApi.api} answering ${byApi.hit}` : liveRel ? `a live reading reaching ${liveRel.value} with ${liveRel.families.filter((y) => y !== x.family).join(', ')}` : developed?.holds ? `the rosetta: composes with its neighbours in ${developed.value} of ${developed.rotations} rotations${developed.meets?.length ? `, meets ${developed.meets.join(', ')}` : ''}` : undefined
       leads.push({ formula: key, apis: answered.map((r) => r.api).slice(0, qpuFacesOf().faces), efforts, tag: crossedBy ? `crossed by ${crossedBy}` : `unverified after ${checks} checks: ${involutes ? 'consistent from every perspective but confirmed by no other domain' : 'inconsistent across perspectives'} — a manipulation until crossed`, detection: Number(SignalFormulas.detection(checks).value.toFixed(4)) })
     }
     const uncrossed = leads.filter((l) => l.tag.startsWith('unverified')).map((l) => l.formula)

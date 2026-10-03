@@ -64,7 +64,7 @@ if (mode === 'commit') {
   leadsOf = leads.leads
   if (pushes.at(-1)?.rosetta) console.log(`  ${pushes.at(-1).rosetta.holds ? '✓' : '~'} merkaba.rosetta(${sorted.length}) = ${pushes.at(-1).rosetta.value} (${pushes.at(-1).rosetta.edges} edges, one turn each way)`)
   console.log(`  ~ gate.crossed() = ${pushes.at(-1)?.uncrossed ?? '—'} uncrossed`)
-  for (const l of leads.leads ?? []) console.log(`    ${l.tag.startsWith('crossed') ? '✓' : '~'} ${l.formula}: ${l.tag} (OEIS ${l.efforts.oeis}, seal ${l.efforts.seal}, involutes ${l.efforts.involutes}, research ${l.efforts.research}, APIs ${l.efforts.apis} read: ${(l.apis ?? []).join(' ') || '—'}, detection ${l.detection})`)
+  for (const l of leads.leads ?? []) console.log(`    ${l.tag.startsWith('crossed') ? '✓' : '~'} ${l.formula}: ${l.tag} (OEIS ${l.efforts.oeis}, seal ${l.efforts.seal}, involutes ${l.efforts.involutes}, research ${l.efforts.research}, APIs ${l.efforts.apis} read: ${(l.apis ?? []).join(' ') || '—'}, rosetta ${l.efforts.rosetta}, detection ${l.detection})`)
   if (!families.length) console.log('  (no formula module changed since origin/main)')
 }
 console.log(`gate ${mode}: ${holds ? 'holds' : 'does not hold'}`)

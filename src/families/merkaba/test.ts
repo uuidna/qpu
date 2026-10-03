@@ -29,7 +29,12 @@ test('merkaba: trinity flows cross three families, their mirrors counter-rotate,
   assert.ok(coil.value >= 0 && coil.value <= n, 'the coil holds at most n trinities')
   assert.equal((rosetta as unknown as { edges: number }).edges <= 2 * n, true, 'one turn each way is at most 2n edges')
   assert.equal(rosetta.holds, (rosetta as unknown as { forward: number }).forward > 0 && (rosetta as unknown as { back: number }).back > 0, 'the rosetta holds when both turns reach the end')
-  assert.equal(qpuHexFamiliesOf().get('merkaba')?.length, 10)
+  // a lead developed: the first formula of the first ring family, rotated in every perspective
+  const dev = MerkabaFormulas.develop(0, 0) as unknown as { value: number; holds: boolean; rotations: number }
+  assert.equal(dev.rotations, 2 * names.length, 'the rosetta turns from every start, both ways')
+  assert.ok(dev.value >= 0 && dev.value <= dev.rotations)
+  assert.equal(MerkabaFormulas.develop(999, 0).holds, false, 'no such family: nothing develops')
+  assert.equal(qpuHexFamiliesOf().get('merkaba')?.length, 11)
   for (const [name, params, expected] of [['trinity', [0, 1, 2], up.value], ['star', [n], star.value]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'merkaba', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }

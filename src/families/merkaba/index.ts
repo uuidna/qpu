@@ -94,6 +94,40 @@ export class MerkabaFormulas {
     const forward = turn(names), back = turn([...names].reverse())
     return f('merkaba-rosetta', 'rosetta(n) = f_{n−1}∘…∘f_0(3), and f_0∘…∘f_{n−1}(3) the other way: 2n edges, every adjacent cross at once', forward.holds && back.holds ? forward.value : 0, nat(n) && forward.holds && back.holds, 'rosetta', [n], { families: names.length, edges: forward.edges.length + back.edges.length, forward: forward.value, back: back.value, crossed: [...forward.edges, ...back.edges].slice(0, 14) })
   }
+  /** A LEAD DEVELOPED BY ROTATING THE ROSETTA IN ALL PERSPECTIVES: the j-th formula of the a-th flow family is placed
+   *  at its family's step on the ring, and the ring is turned from every start, forward and back (2n rotations). In a
+   *  rotation the lead composes when the family before it gives a value it takes and the family after it takes what
+   *  it gives; it meets another family when a step elsewhere in the same turn gives the very value it gave. Value how
+   *  many of the 2n rotations compose through the lead; holds when one does, or one meets. */
+  static develop(a: number, j: number): CrossFormula {
+    const names = flowFamiliesOf()
+    const family = names[a]
+    const formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
+    if (!family || !formula) return f('merkaba-develop', 'develop(a, j)', 0, false, 'develop', [a, j])
+    const n = names.length
+    const at = (fam: string, value: number): { value: number; holds: boolean; formula: string } => {
+      if (fam !== family) return stepOf(fam, value)
+      if (!Number.isSafeInteger(value) || value < 0) return { value: 0, holds: false, formula: formula.name }
+      try { const r = formula.run(Array.from({ length: Math.max(formula.arity, 1) }, () => BigInt(value))); const v = numberOf(r); return { value: Number.isSafeInteger(v) && v >= 0 ? v : 0, holds: holdsOf(r) && Number.isSafeInteger(v) && v >= 0, formula: formula.name } } catch { return { value: 0, holds: false, formula: formula.name } }
+    }
+    let composed = 0
+    const meets = new Set<string>()
+    const seen: string[] = []
+    for (let start = 0; start < n; start++) for (const dir of [1, -1]) {
+      const order = Array.from({ length: n }, (_, k) => names[(start + dir * k + n * n) % n]!)
+      let value = SEED, before: { family: string; holds: boolean } | undefined, given: number | undefined, gives = new Map<number, string>()
+      for (const fam of order) {
+        const s = at(fam, value)
+        if (fam === family) { if (before?.holds && s.holds) given = s.value } else if (given !== undefined && s.holds && order.indexOf(fam) === order.indexOf(family) + 1) composed += 1
+        if (s.holds && fam !== family) { const prior = gives.get(s.value); if (!prior) gives.set(s.value, fam) }
+        if (given !== undefined && s.holds && fam !== family && s.value === given && s.value >= 3) meets.add(`${fam} at ${s.value}`)
+        before = { family: fam, holds: s.holds }
+        value = s.holds ? s.value : SEED
+      }
+      if (seen.length < 6 && given !== undefined) seen.push(`${dir > 0 ? '→' : '←'}${start}: ${family}.${formula.name} gives ${given}`)
+    }
+    return f('merkaba-develop', 'develop(a, j) = |{rotations of the rosetta in which the j-th formula of family a composes with the step before and after}|', composed, nat(a, j) && (composed > 0 || meets.size > 0), 'develop', [a, j], { family, formula: formula.name, rotations: 2 * n, composed, meets: [...meets].slice(0, 14), turns: seen })
+  }
   /** Among the first n flow families, how many ordered triples of distinct families flow to the end. */
   static flows(n: number): CrossFormula {
     const m = Math.min(n, flowFamiliesOf().length)
@@ -110,5 +144,5 @@ export class MerkabaFormulas {
   }
 }
 
-for (const name of ['coil', 'flows', 'merkaba', 'mirror', 'rosetta', 'spin', 'star', 'steps', 'torus', 'trinity'] as const)
+for (const name of ['coil', 'develop', 'flows', 'merkaba', 'mirror', 'rosetta', 'spin', 'star', 'steps', 'torus', 'trinity'] as const)
   qpuHexRegisterOf('merkaba', name, (MerkabaFormulas[name] as (...x: unknown[]) => unknown).bind(MerkabaFormulas))

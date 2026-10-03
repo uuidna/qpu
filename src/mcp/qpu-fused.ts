@@ -363,6 +363,23 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const live = { family, words: found.words, matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
     return { source, url: 'https://apis.guru', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: found.matched > 0 && reads.some((r) => r.status > 0) }
   }
+  if (source === 'payload') {
+    // THE PAYLOAD RECORD, DEEP: the payloadcms/payload repository read through the GitHub API — its docs (every
+    // section, every page), its templates and its examples — as the unit's own configuration vocabulary. A section
+    // is crossed with the families whose formula words its pages name: what the unit configures with it.
+    const repo = 'payloadcms/payload'
+    const list = async (dir: string) => (await (await get(`https://api.github.com/repos/${repo}/contents/${dir}`, 'application/vnd.github+json')).json()) as { name: string; type: string; path: string }[]
+    const [docs, templates, examples] = await Promise.all([list('docs'), list('templates'), list('examples')])
+    const sections = (Array.isArray(docs) ? docs : []).filter((d) => d.type === 'dir').map((d) => d.name).sort()
+    const c = typeof a.category === 'number' ? a.category : -1
+    const section = sections[c]
+    const pages = section ? (await list(`docs/${section}`)).filter((d) => d.type === 'file').map((d) => d.name.replace(/\.mdx?$/, '')) : []
+    const wordsOf = (s: string) => s.replace(/[A-Z]/g, (ch) => ` ${ch.toLowerCase()}`).split(/[^a-z]+/).filter((w) => w.length > 2)
+    const pageWords = new Set([...(section ? wordsOf(section) : []), ...pages.flatMap(wordsOf)])
+    const families = section ? [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([family, formulas]) => ({ family, formulas: formulas.filter((x) => [...new Set([...wordsOf(family), ...wordsOf(x.name)])].some((w) => pageWords.has(w))).map((x) => x.name) })).filter((x) => x.formulas.length) : []
+    const live = { repo, docs: sections.length, sections, templates: (Array.isArray(templates) ? templates : []).filter((t) => t.type === 'dir').map((t) => t.name), examples: (Array.isArray(examples) ? examples : []).filter((t) => t.type === 'dir').map((t) => t.name), ...(section ? { section, pages, families, configures: families.length ? `${section}: ${families.map((x) => `${x.family} (${x.formulas.join(', ')})`).join('; ')}` : `${section}: no family its pages name yet` } : {}) }
+    return { source, url: `https://github.com/${repo}`, reading: live, expected: { docs: '>= 1', templates: '>= 1', examples: '>= 1' }, agrees: sections.length > 0 && live.templates.length > 0 && live.examples.length > 0 }
+  }
   if (source === 'imagine') {
     // WHAT THE UNIT MAY BE, computed from the record: a request's words (a law firm, an auditor, a forensic expert) or
     // a category of the registry find the public APIs of that world; the words those APIs' titles and operations use
@@ -390,7 +407,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
@@ -514,6 +531,12 @@ export class DataFormulas {
     const datasets = reads.filter((r) => r !== null).length
     return dataFormula('data-deep', 'deep', [f], `deep(${f}) = |APIs of ${family} read to the registry's end| + |datasets of slice ${f} read|`, read + datasets, read + datasets > 0 || (matched === 0 && slice.length === 0), 'https://apis.guru and every dataset', { family, matched, slices, apisRead: read, datasets, of: slice.length })
   }
+  /** The c-th section of Payload's docs crossed with the families: value how many families its pages name; holds
+   *  when the section was read. The templates and examples ride in the reading: what the site is configured from. */
+  static async payload(c: number): Promise<unknown> {
+    const r = (await qpuDataOf('payload', { category: c })) as { agrees?: boolean; reading?: { section?: string; pages?: string[]; families?: unknown[]; docs?: number; templates?: string[]; examples?: string[]; configures?: string } }
+    return dataFormula('data-payload', 'payload', [c], `payload(${c}) = |families the pages of docs/${r.reading?.section ?? '?'} name|`, r.reading?.families?.length ?? 0, r.agrees === true && (r.reading?.pages?.length ?? 0) > 0, 'https://github.com/payloadcms/payload', { reading: r.reading })
+  }
   /** What the unit may be for the c-th category of the registry: the families whose formula words the category's APIs
    *  name; value how many families, holds when one is reached. For a request in words, qpu_data { source: 'imagine', about }. */
   static async imagine(c: number): Promise<unknown> {
@@ -547,11 +570,11 @@ export class DataFormulas {
     return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relations: d.relations.slice(0, n), seals: d.seals.slice(0, n) })
   }
 }
-for (const name of ['deep', 'discover', 'errors', 'imagine', 'perspectives', 'read', 'research', 'site', 'sources'] as const)
+for (const name of ['deep', 'discover', 'errors', 'imagine', 'payload', 'perspectives', 'read', 'research', 'site', 'sources'] as const)
   qpuHexRegisterOf('data', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
 qpuMcpFuseOf('qpu_data', {
-  description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
+  description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category } (payloadcms/payload read: docs sections, templates, examples; the c-th section crossed with the families), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
   inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, about: { type: 'string' }, category: { type: 'integer' }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, words: { type: ['string', 'array'], items: { type: 'string' } }, from: { type: 'integer' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
   run: async (a, env) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env)),
 })

@@ -177,7 +177,7 @@ every effort — OEIS at every small fixed slot, the Clay lens, the involuted pe
 tagged by what crossed it or, failing all, by \`signal.detection(k)\`, the chance k checks would have caught a
 manipulation; an unverified lead is developed before anything is removed or edited${(gate.leads ?? []).length ? ':' : ' — none.'}
 
-${(gate.leads ?? []).map((l) => `- ${cell(l.formula)} — ${cell(l.tag)} (OEIS ${l.efforts?.oeis}, seal ${l.efforts?.seal}, involutes ${l.efforts?.involutes}, research ${l.efforts?.research}, APIs ${l.efforts?.apis} read${(l.apis ?? []).length ? `: ${cell(l.apis.join(', '))}` : ''}, detection ${l.detection})`).join('\n')}
+${(gate.leads ?? []).map((l) => `- ${cell(l.formula)} — ${cell(l.tag)} (OEIS ${l.efforts?.oeis}, seal ${l.efforts?.seal}, involutes ${l.efforts?.involutes}, research ${l.efforts?.research}, APIs ${l.efforts?.apis} read${(l.apis ?? []).length ? `: ${cell(l.apis.join(', '))}` : ''}, rosetta ${l.efforts?.rosetta ?? '—'}, detection ${l.detection})`).join('\n')}
 
 And every row of every other receipt that does not hold, as the receipt names it${next.length ? ':' : ' — none.'}
 

@@ -12006,7 +12006,10 @@ export const qpuHexUuidOf = (spec: { family: string; program: readonly string[];
   const formulas = qpuHexFamiliesOf().get(spec.family)
   if (!formulas) throw new Error(`hex: no formula family ${spec.family}`)
   const codes = spec.program.map((name) => formulas.findIndex((f) => f.name === name) + seed)
-  if (codes.some((c) => c < seed) || codes.length > ten) throw new Error('hex: at most ten formulas of the family')
+  // a name the family does not have is named back; ten formulas is the program's length (ten nibbles)
+  const missing = spec.program.filter((name) => !formulas.some((f) => f.name === name))
+  if (missing.length) throw new Error(`hex: ${spec.family} has no formula ${missing.join(', ')}; it has ${formulas.map((f) => f.name).join(', ')}`)
+  if (codes.length > ten) throw new Error('hex: at most ten formulas of the family')
   const nib = [...codes, ...Array(ten).fill(n - n)].slice(n - n, ten).map((c) => c.toString(UUID_SIXTEEN))
   const params = [...(spec.params ?? [])]
   const mode = params.length

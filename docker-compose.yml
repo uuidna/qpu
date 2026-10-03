@@ -2,7 +2,7 @@
 services:
   qpu:
     build: .
-    image: ghcr.io/uuidna/qpu:1.0.1
+    image: ghcr.io/uuidna/qpu:1.1.0
     ports:
       - "8787:8787"
     environment:

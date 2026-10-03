@@ -6,8 +6,9 @@
  *   - state is one digit 0..9, the state of development, and 0 is always LTS.
  *
  * A version may move only forward, and only once the version before it is RELEASED — published on npm — not merely
- * tagged. "Before it" is the last different version package.json carried in git history; the first version of this
- * scheme has none.
+ * tagged. "Before it" is the last different version package.json carried in git history that was tagged (v<version>):
+ * a version history carried that was never tagged is a bump withdrawn, not a step of the scheme (measured 2026-10-03:
+ * 1.1.0 committed while 1.0.1 was unreleased, then withdrawn); the first version of this scheme has none.
  *
  *   node scripts/version-lock.mjs              format + forward + previous released (npm registry)
  *   node scripts/version-lock.mjs --offline    format + forward (no network; used by build)
@@ -52,7 +53,11 @@ const previousOf = () => {
     } catch {
       continue
     }
-    if (v !== version) return v
+    if (v === version) continue
+    // a version that was never tagged is no step: withdrawn, skipped
+    let tagged = ''
+    try { tagged = execSync(`git tag -l v${v}`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() } catch { tagged = '' }
+    if (tagged === `v${v}`) return v
   }
   return undefined
 }

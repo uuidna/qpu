@@ -192,6 +192,11 @@ test('release: the public APIs a family names test it — the registry searched 
   assert.ok(Number(i.value) >= 0, 'imagine(0) answers')
   qpuUuidReceiptOf('release imagine', qpuContentUuidOf(i), { value: i.value })
   t.diagnostic(`imagine(0): ${i.value} families reached`)
+  // the Payload record: payloadcms/payload's docs, templates and examples read; the first docs section crossed
+  const p = await hex('data', ['payload'], [0])
+  assert.ok(p.holds === true || Number(p.value) >= 0, 'payload(0) answers: the docs section read, or a warning')
+  qpuUuidReceiptOf('release payload', qpuContentUuidOf(p), { value: p.value })
+  t.diagnostic(`payload(0): ${p.value} families the section names, holds ${p.holds}`)
 })
 
 test('release: every clay formula is cross developed from every perspective and tested on the public record', async (t) => {
