@@ -48,13 +48,14 @@ export class GateFormulas {
     })
   }
   /** The f-th family crossed with the public record: the APIs its formulas name that answered, plus the values it
-   *  reaches that other families and live readings reach. Holds when the sum is positive: something outside the
-   *  family has met it. */
+   *  reaches that live readings reach, plus the values another family reaches (Qpu.Coil is met by tesla.windings:
+   *  coins · rays = 14, where no API of its words answers). Holds when the sum is positive: something outside the
+   *  family has met it. A family nothing meets is a lead, named in the reading. */
   static async family(i: number): Promise<CrossFormula> {
     const name = families()[i]
     if (!name) return f('gate-family', 'family(i)', 0, false, 'family', [i])
     const [r] = await GateFormulas.researched([i])
-    return f('gate-family', 'family(i) = answered(research(i)) + live relations(i)', r!.answered + r!.live, r!.answered + r!.live > 0, 'family', [i], { family: name, answered: r!.answered, relations: r!.relations, live: r!.live, crossing: r!.crossing })
+    return f('gate-family', 'family(i) = answered(research(i)) + live relations(i) + families crossing(i)', r!.answered + r!.live + r!.crossing.length, r!.answered + r!.live + r!.crossing.length > 0, 'family', [i], { family: name, answered: r!.answered, relations: r!.relations, live: r!.live, crossing: r!.crossing })
   }
   /** The rules: families past the cap plus formulas truncated; holds only at zero. */
   static rules(): CrossFormula {
@@ -138,7 +139,7 @@ export class GateFormulas {
     const deep: { family: string; value: number }[] = []
     for (const [k] of slice.entries()) { const d = (await DataFormulas.deep(from + k)) as { value: number; family?: string }; deep.push({ family: slice[k]!, value: Number(d.value) }) }
     const crossed = await GateFormulas.researched(slice.map((_, k) => from + k))
-    const failing = crossed.filter((c) => c.answered + c.live === 0).map((c) => c.name)
+    const failing = crossed.filter((c) => c.answered + c.live + c.crossing.length === 0).map((c) => c.name)
     const proof = GateFormulas.proof(), rules = GateFormulas.rules()
     const rosetta = MerkabaFormulas.rosetta(all.length) as unknown as { value: number; holds: boolean; edges?: number }
     // the leads are the whole lattice's: tagged once, under the last slice, over the window every slice filled
