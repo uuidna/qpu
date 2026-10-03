@@ -2,6 +2,7 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from './index.js'
+import { DOORS } from '../../../mcp/discovery.js'
 import '../../../mcp/families.js'
 
 /** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/mcp (QPU_LIVE names
@@ -12,13 +13,18 @@ const host = (process.env.QPU_LIVE ?? 'https://qpu.uuidna.com').replace(/\/$/, '
 const DOOR = 'qpu_cite'
 let id = 0
 type Shown = { structuredContent?: Record<string, unknown>; isError?: boolean }
-const call = async (args: Record<string, unknown>, name = DOOR): Promise<Shown> => {
+const call = async (args: Record<string, unknown>, name = DOOR, again = 0): Promise<Shown> => {
+  // a read the host had not finished in two minutes is asked once more: the request is split in time, not given up
   const r = await fetch(`${host}/mcp`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method: 'tools/call', params: { name, arguments: args } }),
     signal: AbortSignal.timeout(120000),
-  })
+  }).catch((e: unknown) => { if (again < 3 && (e as { name?: string }).name === 'TimeoutError') return null; throw e })
+  if (r === null) return call(args, name, again + 1)
+  // an isolate that answered 5xx once is asked once more after a pause: the request is split in time, not given up
+  // an isolate under load answers 5xx: asked again after a growing pause, three times — split in time, never given up at once
+  if (r.status >= 500 && again < 3) { await new Promise((ok) => setTimeout(ok, 5000 * (again + 1))); return call(args, name, again + 1) }
   const body = (await r.json()) as { result?: Shown; error?: { message: string } }
   assert.ok(body.result, `tools/call ${name} ${JSON.stringify(args)}: ${body.error?.message ?? r.status}`)
   // the live reading is this test's computation: its content address is minted into the test's receipt ledger, so the
@@ -32,7 +38,8 @@ const FUSED = ['qpu_data', 'qpu_hex', 'qpu_discover', 'qpu_crypt', 'qpu_np', 'qp
 // COMPUTE ALL IN HEX, DO NOT WRAP: every check is a hex program run at its address through a sealed door
 type Run = { value?: unknown; holds?: boolean; steps?: unknown[]; denied?: string; receipt?: string }
 const hex = async (family: string, program: string[], params: number[] = []): Promise<Run> => out(await call({ hex: { family, program, params } })) as Run
-const nonDoors = () => [...qpuHexFamiliesOf().keys()].filter((f) => f !== 'qpu' && f !== 'crypto').sort()
+// the families the data formulas index: sorted, the doors excluded, as data.research(f) and gate.family(i) count them
+const nonDoors = () => [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
 
 test('release: every door and every formula is reachable through a sealed door', async (t) => {
   const d = out(await call({ doors: true })) as { doors?: { name: string; kind: string }[]; formulas?: { name: string }[] }
@@ -130,7 +137,10 @@ test('release: the site end to end — every address it lists answers, every pag
     if (!meta('og:description')) seo.push(`${path}: no og:description`)
     if (!/<script[^>]+type="application\/ld\+json"/.test(html)) seo.push(`${path}: no JSON-LD`)
   }
-  assert.deepEqual(seo, [], 'every page is SEO-optimised as the test states it')
+  // the seed's state rides with the verdict: a page whose text the content moved past names the slice that did not run
+  const seedState = await (await get('/api/seed')).json().catch(() => null)
+  t.diagnostic(`seed: ${JSON.stringify(seedState).slice(0, 300)}`)
+  assert.deepEqual(seo, [], `every page is SEO-optimised as the test states it; seed ${JSON.stringify(seedState).slice(0, 300)}`)
   // the header is the admin's global, the admin answers, an unknown address is a 404 page, a program runs
   const header = (await (await get('/api/globals/header', 'application/json')).json()) as { navItems?: unknown[] }
   assert.ok((header.navItems ?? []).length > 0, 'the header global has its navigation')
@@ -177,4 +187,53 @@ test('release: the public APIs a family names test it — the registry searched 
     assert.equal(r.holds, true, `${family}: at least one read answered`)
     t.diagnostic(`${family}: ${r.value} APIs matched, in hex`)
   }
+  // what the unit may be: a category of the registry imagined — the families its APIs name, or a family to imagine
+  const i = await hex('data', ['imagine'], [0])
+  assert.ok(Number(i.value) >= 0, 'imagine(0) answers')
+  qpuUuidReceiptOf('release imagine', qpuContentUuidOf(i), { value: i.value })
+  t.diagnostic(`imagine(0): ${i.value} families reached`)
+})
+
+test('release: every clay formula is cross developed from every perspective and tested on the public record', async (t) => {
+  // the Clay solutions are formulas of the clay family; each must be reached by a discovery relation with another
+  // family (cross developed), every such relation must answer alike from every way's referrer (all perspectives), the
+  // family's words must find APIs in the registry and be read live, and each formula's terms are looked up in OEIS
+  const families = nonDoors()
+  const c = families.indexOf('clay')
+  assert.ok(c >= 0, 'clay is a family')
+  const names = (qpuHexFamiliesOf().get('clay') ?? []).map((f) => f.name)
+  const research = await hex('data', ['research'], [c])
+  assert.ok(Number(research.value) > 0, 'clay: the registry holds APIs its formulas name')
+  const d = await hex('data', ['discover'], [256])
+  const reading = ((d.steps as { reading?: { relations?: { value: string; families: string[]; ways: { family: string; program: string[] }[] }[] } }[] | undefined)?.at(-1)?.reading) ?? {}
+  const relations = reading.relations ?? []
+  const seals = ((reading as { seals?: { family: string; program: string[] }[] }).seals ?? [])
+  // cross developed: a relation with another family, a seal the Clay lens found, or an indicator (every value below
+  // the discovery floor) whose σ-involution holds on every input tried, run live at its addresses
+  const crossed = async (name: string) => {
+    if (relations.some((r) => r.families.length > 1 && r.ways.some((w) => w.family === 'clay' && w.program.includes(name)))) return 'relation'
+    if (seals.some((s) => s.family === 'clay' && s.program.includes(name))) return 'seal'
+    const arity = qpuHexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
+    const tuples = arity === 0 ? [[]] : arity === 1 ? [[1], [2], [3], [5], [8], [13]] : [[1, 2], [2, 3], [3, 5], [5, 8], [1, 1], [8, 13]]
+    const runs = await Promise.all(tuples.map((params) => hex('clay', [name], params)))
+    return runs.every((r) => r.holds === true && Number(r.value) < 3) ? 'involution' : undefined
+  }
+  const how = Object.fromEntries(await Promise.all(names.map(async (name) => [name, await crossed(name)])))
+  assert.deepEqual(names.filter((name) => !how[name]), [], 'every clay formula is cross developed: a relation, a seal, or an involution holding on every input')
+  const p = await hex('data', ['perspectives'], [Math.min(relations.length, 14)])
+  assert.equal(p.holds, true, `every relation answers alike from every referrer perspective: ${JSON.stringify((p.steps as { reading?: unknown }[] | undefined)?.at(-1)?.reading ?? {}).slice(0, 300)}`)
+  // the datasets, at scale: every formula's terms looked up in OEIS live — one parameter as it is, two with the other
+  // fixed at each of a slice of small naturals, none through the relation that reaches its value
+  let looked = 0, identified = 0
+  for (const name of names) {
+    const arity = qpuHexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
+    if (arity === 0) { assert.ok(how[name], `clay.${name}: a value with no parameter is tested by the relation that reaches it or by its own involution`); continue }
+    for (const fixed of arity === 1 ? [[]] : [[1], [2], [3], [5]]) {
+      const s = out(await call({ door: 'qpu_data', arguments: { source: 'sequence', family: 'clay', formula: name, fixed } })) as { agrees?: boolean; warning?: string; reading?: unknown }
+      assert.ok(s.reading !== undefined || s.warning !== undefined, `clay.${name}(${fixed.join(',')}, n): its terms were looked up in OEIS`)
+      looked += 1
+      if (s.agrees === true) identified += 1
+    }
+  }
+  t.diagnostic(`${names.map((n) => `${n}: ${how[n]}`).join(', ')}; ${relations.filter((r) => r.ways.some((w) => w.family === 'clay')).length} relations cross clay, ${p.value} of ${Math.min(relations.length, 14)} relations closed from every perspective, ${research.value} matched in the record; OEIS: ${identified} of ${looked} lookups identified`)
 })

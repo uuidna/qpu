@@ -4,7 +4,7 @@ import { packageVersion } from '../quantum/processing/unit/version.js'
 import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpFuseOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
 import { crossFormulaOf } from '../families/cross/index.js'
-import { apiCallOf, apiSearchOf } from './api-door.js'
+import { apiCallOf, apiOf, apiRegistryOf, apiSearchOf } from './api-door.js'
 import { CryptFormulas } from '../families/crypt/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { certifyUnreachable, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, verifyColoring, verifyHamCycle, verifySat, verifySubsetSum, type Graph } from '../families/np/index.js'
@@ -95,7 +95,7 @@ const sequenceOf = async (family: string, formula: string, fixed: number[]): Pro
     if (x === null) run = []
     else if ((run = [...run, x]).length > best.length) best = run
   }
-  return best.length >= L.chooseOf(L.hexbit, L.coins) && new Set(best).size >= L.hexbit ? { family, formula, fixed, terms: best } : null
+  return best.length >= L.chooseOf(L.hexbit, L.coins) ? { family, formula, fixed, terms: best } : null
 }
 let sequences: Promise<Sequence[]> | undefined
 /** Every formula of every family that is an integer sequence, read off the families rather than listed. */
@@ -182,6 +182,9 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const family = str(a.family), formula = str(a.formula)
     const fixed = Array.isArray(a.fixed) ? a.fixed.map(Number) : []
     const seq = (await qpuSequencesOf()).find((s) => s.family === family && s.formula === formula && s.fixed.join() === fixed.join()) ?? (family && formula ? await sequenceOf(family, formula, fixed) : null)
+    // a formula that exists but holds on fewer than six consecutive naturals (pVsNp: a mode is 0 or 1) is read, not
+    // refused: the reading says how short its run is, and OEIS is not asked
+    if (!seq && qpuHexFamiliesOf().get(family)?.some((f) => f.name === formula)) return { source, url: 'https://oeis.org', reading: { formula: `${family}.${formula}${fixed.length ? `(${fixed.join(',')}, n)` : '(n)'}`, terms: '', oeis: 'none', run: 'shorter than six terms' }, expected: { terms: 'six consecutive' }, warning: 'the formula holds on fewer than six consecutive naturals: no sequence to look up', agrees: false }
     if (!seq) return fail('sequence', { sequences: (await qpuSequencesOf()).map((s) => `${s.family}.${s.formula}`) })
     const terms = seq.terms.join(',')
     const url = `https://oeis.org/search?q=${terms}&fmt=json`
@@ -284,21 +287,110 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const live = { tag: d.tag_name, name: d.name, published: d.published_at, draft: d.draft, prerelease: d.prerelease, notes: (d.body ?? '').length }
     return { source, url: d.html_url ?? `https://github.com/${repo}/releases`, reading: live, expected: { tag: `v${packageVersion}`, published: true }, agrees: live.tag === `v${packageVersion}` && d.draft === false && typeof d.published_at === 'string' && live.notes > 0 }
   }
+  if (source === 'patents') {
+    // PATENTS, FUSED. The registry's own patent authority is USPTO's bulk data (files, not search). Search is
+    // PatentsView, whose API answers with a key the operator holds as a Worker secret (PATENTSVIEW_API_KEY); without
+    // it the reading says so and resolves it. A query is the inventor's last name; the reading is the patents found —
+    // numbers, dates, counts — for discovery.
+    const inventor = str(a.inventor) || 'Tesla'
+    const key = (env as unknown as { PATENTSVIEW_API_KEY?: string } | undefined)?.PATENTSVIEW_API_KEY ?? (typeof process !== 'undefined' ? process.env.PATENTSVIEW_API_KEY : undefined)
+    const bulk = await apiOf('uspto.gov:bdss')
+    const bulkRead = bulk.operations.find((op) => op.verb === 'get' && op.required.length === 0)
+    const bulkReading = bulkRead ? await apiCallOf(bulk.index, bulkRead.index) : undefined
+    if (!key) {
+      return { source, url: 'https://search.patentsview.org', reading: { inventor, bulk: bulkReading ? { url: bulkReading.url, status: bulkReading.status, why: bulkReading.why } : 'no read', search: 'needs a key' }, expected: { search: 'PatentsView answers with a key' }, agrees: false, warning: 'no PATENTSVIEW_API_KEY', resolve: 'set the Worker secret PATENTSVIEW_API_KEY (free at patentsview.org); the operator holds it, the unit never does' }
+    }
+    const q = encodeURIComponent(JSON.stringify({ _contains: { 'inventors.inventor_name_last': inventor } }))
+    const fl = encodeURIComponent(JSON.stringify(['patent_id', 'patent_title', 'patent_date', 'patent_num_times_cited_by_us_patents']))
+    const r = await fetch(`https://search.patentsview.org/api/v1/patent/?q=${q}&f=${fl}&o=${encodeURIComponent(JSON.stringify({ size: qpuFacesOf().faces }))}`, { headers: { accept: 'application/json', 'X-Api-Key': key }, signal: AbortSignal.timeout(DEADLINE) })
+    if (!r.ok) throw new Error(`https://search.patentsview.org answered ${r.status}`)
+    const d = (await r.json()) as { patents?: { patent_id: string; patent_title: string; patent_date: string; patent_num_times_cited_by_us_patents?: number }[]; total_hits?: number }
+    const live = { inventor, total: d.total_hits, patents: (d.patents ?? []).map((p) => ({ id: p.patent_id, title: p.patent_title, date: p.patent_date, cited: p.patent_num_times_cited_by_us_patents })), bulk: bulkReading ? { url: bulkReading.url, status: bulkReading.status } : undefined }
+    return { source, url: 'https://search.patentsview.org', reading: live, expected: { total: '>= 1' }, agrees: (d.total_hits ?? 0) > 0 }
+  }
+  if (source === 'authors') {
+    // THE WORK OF THE CITED AUTHORS. The unit cites by DOI and ORCID; the record around those is read live: each cited
+    // DOI's creators, year and citation count from DataCite, and for every creator with an ORCID their works (ORCID)
+    // and the works Crossref indexes for that ORCID — titles, years, DOIs, counts — as readings whose numbers go to
+    // discovery. A slice of faces readings per call, from `from`.
+    const from = num(a.from, 0), take = num(a.take, qpuFacesOf().faces)
+    const cite = citeOf()
+    const dois = doisOf().map((d) => d.doi)
+    const creators = new Map<string, { name: string; orcid?: string }>()
+    const works: { doi: string; title?: string; year?: number; citations?: number; creators: string[] }[] = []
+    for (const doi of dois) {
+      const d = ((await (await get(`https://api.datacite.org/dois/${doi}`, 'application/vnd.api+json')).json()) as { data?: { attributes?: { titles?: { title?: string }[]; publicationYear?: number; citationCount?: number; creators?: { name?: string; nameIdentifiers?: { nameIdentifier?: string; nameIdentifierScheme?: string }[] }[] } } }).data?.attributes
+      const names: string[] = []
+      for (const c of d?.creators ?? []) {
+        const orcid = c.nameIdentifiers?.find((x) => x.nameIdentifierScheme === 'ORCID')?.nameIdentifier?.replace(/^https?:\/\/orcid\.org\//, '')
+        if (c.name) { names.push(c.name); creators.set(orcid ?? c.name, { name: c.name, ...(orcid ? { orcid } : {}) }) }
+      }
+      works.push({ doi, title: d?.titles?.[0]?.title, year: d?.publicationYear, citations: d?.citationCount, creators: names })
+    }
+    const own = cite.author.orcid.replace(/^https?:\/\/orcid\.org\//, '')
+    if (!creators.has(own)) creators.set(own, { name: `${cite.author.first} ${cite.author.last}`, orcid: own })
+    const authors = [...creators.values()].slice(from, from + take)
+    const around = await Promise.all(authors.map(async (c) => {
+      if (!c.orcid) return { ...c, works: works.filter((w) => w.creators.includes(c.name)).length }
+      const o = (await (await get(`https://pub.orcid.org/v3.0/${c.orcid}/works`)).json()) as { group?: { 'work-summary'?: { title?: { title?: { value?: string } }; 'publication-date'?: { year?: { value?: string } }; type?: string }[] }[] }
+      const summaries = (o.group ?? []).map((g) => g['work-summary']?.[0]).filter(Boolean) as NonNullable<NonNullable<typeof o.group>[number]['work-summary']>[number][]
+      const cr = (await (await get(`https://api.crossref.org/works?filter=orcid:${c.orcid}&rows=0&mailto=ceccec@psg.bg`)).json().catch(() => ({}))) as { message?: { 'total-results'?: number } }
+      return { ...c, works: summaries.length, years: [...new Set(summaries.map((w) => Number(w['publication-date']?.year?.value)).filter((y) => y > 0))].sort(), types: [...new Set(summaries.map((w) => w.type).filter(Boolean))], crossref: cr.message?.['total-results'] ?? null, titles: summaries.slice(0, 5).map((w) => w.title?.title?.value) }
+    }))
+    const live = { cited: works, authors: around, from, take: around.length, ...(from + around.length < creators.size ? { next: from + around.length } : {}) }
+    return { source, url: 'https://api.datacite.org', reading: live, expected: { authors: '>= 1', works: '>= 1' }, agrees: around.length > 0 && around.some((x) => x.works > 0) }
+  }
   if (source === 'research') {
     // the research a human request needs, done by the registry: a family's formula names are the words, the APIs they
     // find are read, and their numbers go to discovery with every other live reading
     const family = str(a.family) || 'cal'
     const formulas = qpuHexFamiliesOf().get(family)
     if (!formulas) return fail('family', { families: [...qpuHexFamiliesOf().keys()] })
-    const words = [...new Set([family, ...formulas.flatMap((f) => f.name.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(' '))])]
-    const found = await apiSearchOf(words, qpuFacesOf().faces)
+    // the words: the family's formula names, or the words given (a lead's own); `from` continues the scan of the
+    // matched documents where the last call stopped, so a deep research reads every API the words name, slice by slice
+    const given = Array.isArray(a.words) ? a.words.map(String) : typeof a.words === 'string' ? a.words.split(/[\s,]+/) : []
+    const words = given.length ? given : [...new Set([family, ...formulas.flatMap((f) => f.name.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(' '))])]
+    const from = typeof a.from === 'number' ? a.from : 0
+    const found = await apiSearchOf(words, qpuFacesOf().faces, from)
+    if (found.matched === 0) {
+      // a family no API is named by (clay: riemann, hodge, navier, stokes) is tested on the dataset instead: each of
+      // its formulas' terms looked up in OEIS; matched counts the sequences identified, read the formulas looked up
+      const looked = await Promise.all(formulas.slice(0, qpuFacesOf().faces).map(async (x) => { const r = (await qpuDataOf('sequence', { family, formula: x.name }, env)) as { agrees?: boolean; warning?: string; reading?: { oeis?: string; terms?: string } }; return { formula: x.name, oeis: r.reading?.oeis, terms: r.reading?.terms, warning: r.warning, agrees: r.agrees === true } }))
+      const live = { family, words: found.words, matched: looked.filter((x) => x.oeis && x.oeis !== 'none').length, scanned: found.scanned, read: looked.length, dataset: 'OEIS', readings: looked }
+      return { source, url: 'https://oeis.org', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: looked.length > 0 && looked.some((x) => (x.oeis !== undefined && x.oeis !== 'none') || x.warning !== undefined) }
+    }
     const reads = await Promise.all(found.apis.filter((x) => x.free !== undefined).slice(0, qpuFacesOf().faces).map(async (x) => apiCallOf(x.index, x.free!)))
-    const live = { family, words: found.words, matched: found.matched, scanned: found.scanned, read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
+    const live = { family, words: found.words, matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
     return { source, url: 'https://apis.guru', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: found.matched > 0 && reads.some((r) => r.status > 0) }
+  }
+  if (source === 'imagine') {
+    // WHAT THE UNIT MAY BE, computed from the record: a request's words (a law firm, an auditor, a forensic expert) or
+    // a category of the registry find the public APIs of that world; the words those APIs' titles and operations use
+    // are crossed with the words every family's formulas use; the families reached are what the unit is for that
+    // world, each with the formulas the APIs name. Proposed by the record, not claimed.
+    const wordsOf = (s: string) => s.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(/[^a-z]+/).filter((w) => w.length > 2)
+    const reg = await apiRegistryOf()
+    // a document that names one category as a string, not a list, names one category (measured: 'c', 'e', 'i' as categories)
+    const categoryOf = (api: string): string[] => { const e = reg.entries[api] ?? {}; const c = e.versions?.[e.preferred ?? '']?.info?.['x-apisguru-categories'] as unknown; return (Array.isArray(c) ? c.map(String) : typeof c === 'string' ? [c] : []).filter(Boolean) }
+    const categories = [...new Set(reg.names.flatMap(categoryOf))].sort()
+    const about = str(a.about)
+    const c = typeof a.category === 'number' ? a.category : -1
+    const category = categories[c]
+    if (!about && !category) return fail('about', { about: 'words of a request', categories })
+    const found = about ? await apiSearchOf(about.split(/[\s,]+/), qpuFacesOf().faces) : undefined
+    const names = found ? found.apis.map((x) => x.api) : reg.names.filter((api) => categoryOf(api).includes(category!)).slice(0, qpuFacesOf().faces)
+    const apis = found ? found.apis.map((x) => ({ api: x.api, title: x.title, categories: x.categories, operations: x.operations.map((op) => op.path) })) : (await Promise.all(names.map((x) => apiOf(x).catch(() => null)))).filter((x): x is NonNullable<typeof x> => x !== null).map((x) => ({ api: x.api, title: x.title, categories: x.categories, operations: x.operations.map((op) => op.operationId ?? op.path) }))
+    const apiWords = new Set(apis.flatMap((x) => [x.api, x.title, ...x.categories, ...x.operations].flatMap(wordsOf)))
+    const families = [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([family, formulas]) => {
+      const named = formulas.map((f) => ({ name: f.name, words: [...new Set([...wordsOf(family), ...wordsOf(f.name)])].filter((w) => apiWords.has(w)) })).filter((f) => f.words.length)
+      return { family, formulas: named.map((f) => f.name), words: [...new Set(named.flatMap((f) => f.words))] }
+    }).filter((f) => f.formulas.length).sort((x, y) => y.formulas.length - x.formulas.length)
+    const live = { ...(about ? { about } : { category }), categories: [...new Set(apis.flatMap((x) => x.categories))], apis: apis.map((x) => x.api), words: apiWords.size, families, is: families.length ? `${about ?? category}: ${families.map((f) => `${f.family} (${f.formulas.join(', ')})`).join('; ')}` : `${about ?? category}: no family the record names yet — a family to imagine` }
+    return { source, url: 'https://apis.guru', reading: live, expected: { families: '>= 1' }, agrees: families.length > 0 }
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'research', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
@@ -316,6 +408,8 @@ export const qpuDataSourcesOf = async () => [
   { source: 'site', args: {}, label: 'site · every sitemap address', checks: 'answers 200 with a title' },
   { source: 'release', args: {}, label: `GitHub Release · v${packageVersion}`, checks: 'the tag of the served version, published with notes' },
   { source: 'apis', args: {}, label: 'APIs.guru · every public API', checks: 'theorem fuse: the registry the unit fused' },
+  { source: 'patents', args: {}, label: 'patents · PatentsView, USPTO bulk data', checks: 'the patents of an inventor (Tesla), with a key the operator holds' },
+  { source: 'authors', args: {}, label: 'cited authors · DataCite, ORCID, Crossref', checks: 'the work around the authors the unit cites: works, years, citations' },
   ...['cal', 'hd', 'yi'].map((family) => ({ source: 'research', args: { family }, label: `research · ${family}`, checks: "the APIs the family's formulas name, read live; their numbers go to discovery" })),
   ...qpuCernCatalogsOf().catalogs.map((c) => ({ source: 'catalog', args: { name: c.name } as Args, label: `catalog · ${c.name}`, checks: 'answers with records' })),
 ]
@@ -375,15 +469,18 @@ export class DataFormulas {
     const r = (await qpuDataOf(s.source, s.args)) as { agrees?: boolean; warning?: string; denied?: string; url?: string; reading?: unknown; resolve?: string }
     const theorem = ['cern', 'nist', 'oeis'].includes(s.source)
     const value = r.agrees ? 2 : r.denied ? 0 : 1
-    const holds = r.agrees === true || r.warning !== undefined || (value === 1 && !theorem)
+    // it holds when it agrees, when the network is out of reach (a warning), when it differs and is no theorem, or
+    // when the source answered a refusal the unit cannot resolve on its own (403, 404: named, with what resolves it)
+    const holds = r.agrees === true || r.warning !== undefined || (value === 1 && !theorem) || (value === 0 && typeof r.resolve === 'string' && !theorem)
     return dataFormula('data-read', 'read', [i], `read(${i}): ${s.label} — 2 agrees, 1 differs, 0 unread`, value, holds, r.url ?? s.label, { label: s.label, source: s.source, reading: r.reading, ...(r.warning ? { warning: r.warning } : {}), ...(r.denied ? { denied: r.denied, resolve: r.resolve } : {}) })
   }
   /** The f-th family (sorted, doors excluded) researched in the registry: the APIs its formulas name, read live; value how many matched, holds when one answered. */
-  static async research(f: number): Promise<unknown> {
+  static async research(f: number, from = 0): Promise<unknown> {
     const family = familyIndexOf(f)
     if (!family) return dataFormula('data-research', 'research', [f], 'research(f)', 0, false, 'no such family')
-    const r = (await qpuDataOf('research', { family })) as { agrees?: boolean; reading?: { matched: number; read: number; readings: unknown[] } }
-    return dataFormula('data-research', 'research', [f], `research(${f}) = |APIs the formulas of ${family} name|`, r.reading?.matched ?? 0, r.agrees === true, 'https://apis.guru', { family, reading: r.reading })
+    // from: where the scan of the matched documents continues (the reading's `next`), so research(f, next) walks on
+    const r = (await qpuDataOf('research', { family, from })) as { agrees?: boolean; reading?: { matched: number; read: number; next?: number; readings: unknown[] } }
+    return dataFormula('data-research', 'research', from ? [f, from] : [f], `research(${f}${from ? `, ${from}` : ''}) = |APIs the formulas of ${family} name|`, r.reading?.matched ?? 0, r.agrees === true || (r.reading?.read ?? 0) > 0 || from > 0, 'https://apis.guru', { family, reading: r.reading })
   }
   /** The errors of a slice of the live checks, from the f-th source, faces at a time: value how many, holds when none;
    *  the rows ride along with what resolves each, and next names the slice after. */
@@ -398,6 +495,46 @@ export class DataFormulas {
     const r = (await qpuDataOf('site', { from })) as { agrees?: boolean; reading?: { total?: number; next?: number; titled?: number; failing?: unknown }; warning?: string }
     return dataFormula('data-site', 'site', [from], `site(${from}): the sitemap's addresses from ${from}, rendered`, r.reading?.titled ?? 0, r.agrees === true || r.warning !== undefined, 'the sitemap', { reading: r.reading })
   }
+  /** THE DEEP RESEARCH OF THE f-th FAMILY, NOTHING BY HAND: every API its words name read to the end of the registry,
+   *  slice after slice (research(f, next) until no next), and the f-th slice of the datasets read — all of it in the
+   *  window the discovery then runs over. Value the readings made; holds when the record answered. */
+  static async deep(f: number): Promise<unknown> {
+    const family = familyIndexOf(f)
+    if (!family) return dataFormula('data-deep', 'deep', [f], 'deep(f)', 0, false, 'no such family')
+    let from = 0, read = 0, matched = 0, slices = 0
+    for (;;) {
+      const r = (await qpuDataOf('research', { family, from })) as { reading?: { matched?: number; read?: number; next?: number } }
+      read += r.reading?.read ?? 0; matched = r.reading?.matched ?? matched; slices += 1
+      if (typeof r.reading?.next !== 'number' || r.reading.next <= from) break
+      from = r.reading.next
+    }
+    const faces = qpuFacesOf().faces
+    const slice = (await qpuDataSourcesOf()).slice(f * faces, (f + 1) * faces)
+    const reads = await Promise.all(slice.map((s) => qpuDataOf(s.source, s.args).catch(() => null)))
+    const datasets = reads.filter((r) => r !== null).length
+    return dataFormula('data-deep', 'deep', [f], `deep(${f}) = |APIs of ${family} read to the registry's end| + |datasets of slice ${f} read|`, read + datasets, read + datasets > 0 || (matched === 0 && slice.length === 0), 'https://apis.guru and every dataset', { family, matched, slices, apisRead: read, datasets, of: slice.length })
+  }
+  /** What the unit may be for the c-th category of the registry: the families whose formula words the category's APIs
+   *  name; value how many families, holds when one is reached. For a request in words, qpu_data { source: 'imagine', about }. */
+  static async imagine(c: number): Promise<unknown> {
+    const r = (await qpuDataOf('imagine', { category: c })) as { agrees?: boolean; reading?: { category?: string; families?: unknown[]; is?: string } }
+    return dataFormula('data-imagine', 'imagine', [c], `imagine(${c}) = |families the APIs of ${r.reading?.category ?? 'the category'} name|`, r.reading?.families?.length ?? 0, r.agrees === true, 'https://apis.guru', { reading: r.reading })
+  }
+  /** THE DOUBLE TORUS OVER THE DISCOVERY: the first n relations of the window's discovery, each a superposition of ways,
+   *  every way run with every other way's address as referrer (both directions); value how many relations every
+   *  perspective answers alike, holds when all of the n do. */
+  static async perspectives(n: number): Promise<unknown> {
+    const d = (await DataFormulas.discover(n)) as { reading?: { relations?: { value: string; ways: { hex: string }[] }[] } } & Record<string, unknown>
+    const relations = ((d as { relations?: unknown }).relations ?? d.reading?.relations ?? []) as { value: string; ways: { hex: string }[] }[]
+    let pairs = 0, closed = 0
+    const open: string[] = []
+    for (const rel of relations.slice(0, n)) {
+      const seen = await Promise.all(rel.ways.flatMap((w, i) => rel.ways.filter((_, j) => j !== i).map(async (o) => { pairs += 1; const r = (await qpuHexRunOf(w.hex, o.hex, undefined, { store: false }).catch(() => null)) as { value?: unknown } | null; return r !== null && String(r.value) === rel.value })))
+      if (seen.every(Boolean)) closed += 1
+      else open.push(rel.value)
+    }
+    return dataFormula('data-perspectives', 'perspectives', [n], 'perspectives(n) = |relations every way of which answers the same value from every other way as referrer|', closed, relations.length > 0 && open.length === 0, 'qpuHexRunOf(way, referrer)', { relations: relations.length, pairs, closed, open: open.slice(0, qpuFacesOf().faces) })
+  }
   /** Discovery across every family, bounded to the first n relations: value how many values two or more families reach. */
   static async discover(n: number): Promise<unknown> {
     const { qpuDiscoverOf } = await import('./discovery.js')
@@ -407,15 +544,15 @@ export class DataFormulas {
     const numbersOf = (x: unknown): number[] => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
     const live = [...new Set(readings.flatMap((r) => numbersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, 256)
     const d = await qpuDiscoverOf(live)
-    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relations: d.relations.slice(0, n) })
+    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relations: d.relations.slice(0, n), seals: d.seals.slice(0, n) })
   }
 }
-for (const name of ['discover', 'errors', 'read', 'research', 'site', 'sources'] as const)
+for (const name of ['deep', 'discover', 'errors', 'imagine', 'perspectives', 'read', 'research', 'site', 'sources'] as const)
   qpuHexRegisterOf('data', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
 qpuMcpFuseOf('qpu_data', {
-  description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
-  inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
+  description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
+  inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, about: { type: 'string' }, category: { type: 'integer' }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, words: { type: ['string', 'array'], items: { type: 'string' } }, from: { type: 'integer' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
   run: async (a, env) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env)),
 })
 

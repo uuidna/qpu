@@ -1,7 +1,10 @@
-import { qpuFacesOf, qpuHexFamiliesOf, qpuHexRegisterOf, qpuProveHolds } from '../../quantum/processing/unit/index.js'
+import { qpuFacesOf, qpuHexFamiliesOf, qpuHexRegisterOf, qpuHexRunOf, qpuHexUuidOf, qpuProveHolds } from '../../quantum/processing/unit/index.js'
+import { SignalFormulas } from '../signal/index.js'
+import { apiCallOf, apiSearchOf } from '../../mcp/api-door.js'
+import { MerkabaFormulas } from '../merkaba/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { DOORS, qpuDiscoverOf } from '../../mcp/discovery.js'
-import { DataFormulas, qpuDataOf, qpuDataSourcesOf } from '../../mcp/qpu-fused.js'
+import { DataFormulas, qpuDataOf, qpuDataSourcesOf, qpuSequencesOf } from '../../mcp/qpu-fused.js'
 import { RuleFormulas } from '../rule/index.js'
 
 /** THE GATES ARE CROSS FORMULAS. What a commit, a push or a deploy must satisfy is not a script that blocks but a
@@ -69,16 +72,82 @@ export class GateFormulas {
   }
   /** A push: the proof, the rules, and every family crossed with the record — a slice of faces families per call
    *  (from the i-th), next in the result when more follow. */
+  /** THE LEADS: the formulas no relation with another family reaches over the enumerated inputs and no sequence of
+   *  which OEIS identifies — what the next development crosses first (a dataset, an API, a composition), before
+   *  anything is removed or edited. Value how many; holds at zero. The Lean families cross in their own domain. */
+  static async crossed(): Promise<CrossFormula> {
+    // the discovery runs over the window: every reading the deep research made before this call (the registry
+    // scanned to its end for every lead's words, every dataset read) is a live input the relations may reach
+    const d = (await DataFormulas.discover(4096)) as unknown as { relations: { value: string; families: string[]; ways: { family: string; program: string[]; hex: string }[]; live: boolean }[]; seals: { family: string; program: string[]; kind: string }[]; liveInputs: number }
+    const reached = new Set(d.relations.filter((r) => r.families.length > 1).flatMap((r) => r.ways.flatMap((w) => w.program.map((p) => `${w.family}.${p}`))))
+    const identified = new Set<string>()
+    for (const s of await qpuSequencesOf()) { const r = (await qpuDataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed })) as { agrees?: boolean }; if (r.agrees === true) identified.add(`${s.family}.${s.formula}`) }
+    const open = [...qpuHexFamiliesOf()].filter(([fam]) => !DOORS.has(fam) && !fam.startsWith('Qpu.')).flatMap(([fam, fs]) => fs.filter((x) => !reached.has(`${fam}.${x.name}`) && !identified.has(`${fam}.${x.name}`)).map((x) => ({ family: fam, name: x.name, arity: x.arity })))
+    // NO LEAD REMAINS UNTAGGED. Every lead is given every effort: its terms looked up in OEIS at every small fixed slot
+    // (at scale, not only the one slot the sources enumerate), the Clay lens (a seal), the involuted perspective (the
+    // formula run from another family's address as referrer answers what it answers directly), and the research of
+    // its family in the record. A lead no effort crosses is tagged by the cross formula for it: signal.detection(k)
+    // — the chance k independent checks would have caught a manipulation — and stands as unverified until crossed.
+    const researched = new Map<string, number>()
+    const leads = []
+    for (const x of open) {
+      const key = `${x.family}.${x.name}`
+      const slots = x.arity === 0 ? [] : x.arity === 1 ? [[]] : Array.from({ length: 8 }, (_, i) => [i + 1])
+      const looked = await Promise.all(slots.map(async (fixed) => (await qpuDataOf('sequence', { family: x.family, formula: x.name, fixed })) as { agrees?: boolean; reading?: { oeis?: string } }))
+      const oeis = looked.filter((r) => r.agrees === true).map((r) => r.reading?.oeis).filter(Boolean)
+      const seal = d.seals.find((s) => s.family === x.family && s.program.includes(x.name))
+      const params = Array.from({ length: x.arity }, () => 3)
+      let involutes = false
+      try {
+        const own = qpuHexUuidOf({ family: x.family, program: [x.name], params })
+        const other = [...qpuHexFamiliesOf()].find(([fam]) => !DOORS.has(fam) && fam !== x.family)
+        const referrer = other ? qpuHexUuidOf({ family: other[0], program: [other[1][0]!.name], params: Array.from({ length: other[1][0]!.arity }, () => 3) }) : undefined
+        const [direct, mirrored] = await Promise.all([qpuHexRunOf(own, undefined, undefined, { store: false }), qpuHexRunOf(own, referrer, undefined, { store: false })]) as { value?: unknown; holds?: boolean }[]
+        // the perspective involutes when the address answers the same from the other family's referrer as directly
+        involutes = String(direct?.value) === String(mirrored?.value)
+      } catch { involutes = false }
+      if (!researched.has(x.family)) researched.set(x.family, Number(((await qpuDataOf('research', { family: x.family })) as { reading?: { matched?: number } }).reading?.matched ?? 0))
+      // THE RIGHT APIs, FUSED AND USED: the lead's own words find the registry's APIs, the readable ones are read, and
+      // the numbers they answer are crossed with the values the lead takes on the small inputs; an API that answers a
+      // value the lead reaches crosses it
+      const words = [...new Set([x.family, ...x.name.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(/[^a-z]+/)])].filter((w) => w.length > 2)
+      const found = await apiSearchOf(words, qpuFacesOf().faces).catch(() => ({ matched: 0, apis: [] as { index: number; api: string; free?: number }[] }))
+      const reads = await Promise.all(found.apis.filter((y) => y.free !== undefined).slice(0, qpuFacesOf().faces).map((y) => apiCallOf(y.index, y.free!).catch(() => null)))
+      const answered = reads.filter((r): r is NonNullable<typeof r> => r !== null && r.status > 0)
+      const inputs = x.arity === 0 ? [[]] : x.arity === 1 ? Array.from({ length: 16 }, (_, i) => [i + 1]) : Array.from({ length: 8 }, (_, i) => i + 1).flatMap((a) => Array.from({ length: 8 }, (_, j) => [a, j + 1]))
+      const values = new Set<number>()
+      for (const ps of inputs) { try { const r = (await qpuHexRunOf(qpuHexUuidOf({ family: x.family, program: [x.name], params: ps }), undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }; const v = Number(r.value); if (r.holds === true && Number.isSafeInteger(v) && v >= 3) values.add(v) } catch { /* an input the address cannot take */ } }
+      const byApi = answered.map((r) => ({ api: r.api, hit: numbersOf(r.excerpt).find((v) => values.has(v)) })).find((r) => r.hit !== undefined)
+      const efforts = { oeis: `${oeis.length}/${looked.length}`, seal: seal?.kind ?? 'none', involutes, research: researched.get(x.family) ?? 0, apis: `${answered.length}/${found.matched}`, values: values.size }
+      const checks = looked.length + 1 + 1 + 1 + answered.length
+      const liveRel = d.relations.find((r) => r.live && r.ways.some((w) => w.family === x.family && w.program.includes(x.name)))
+      const crossedBy = oeis.length ? `OEIS ${oeis.join(', ')}` : seal ? `seal ${seal.kind}` : byApi ? `API ${byApi.api} answering ${byApi.hit}` : liveRel ? `a live reading reaching ${liveRel.value} with ${liveRel.families.filter((y) => y !== x.family).join(', ')}` : undefined
+      leads.push({ formula: key, apis: answered.map((r) => r.api).slice(0, qpuFacesOf().faces), efforts, tag: crossedBy ? `crossed by ${crossedBy}` : `unverified after ${checks} checks: ${involutes ? 'consistent from every perspective but confirmed by no other domain' : 'inconsistent across perspectives'} — a manipulation until crossed`, detection: Number(SignalFormulas.detection(checks).value.toFixed(4)) })
+    }
+    const uncrossed = leads.filter((l) => l.tag.startsWith('unverified')).map((l) => l.formula)
+    return f('gate-crossed', 'crossed = |{formulas no other family reaches and no dataset identifies, after every effort}|', uncrossed.length, uncrossed.length === 0, 'crossed', [], { relations: d.relations.length, liveInputs: d.liveInputs, identified: identified.size, leads: leads.slice(0, 56), uncrossed: uncrossed.slice(0, 56) })
+  }
+  /** THE PUSH IS A TRINITY OF FAMILIES, NOTHING BY HAND: data — every family of the slice deep-researched (its APIs to
+   *  the registry's end, its slice of datasets) into the window; merkaba — the rosetta turned once each way over every
+   *  family, every adjacent cross at once; gate — the families crossed with the record, the proof, the rules, and the
+   *  leads tagged by crossed() over that window. holds = proof ∧ rules ∧ every family of the slice crossed; the
+   *  rosetta and the leads ride in the reading. */
   static async push(from: number): Promise<CrossFormula> {
     const all = families()
     const slice = all.slice(from, from + qpuFacesOf().faces)
+    const deep: { family: string; value: number }[] = []
+    for (const [k] of slice.entries()) { const d = (await DataFormulas.deep(from + k)) as { value: number; family?: string }; deep.push({ family: slice[k]!, value: Number(d.value) }) }
     const crossed = await GateFormulas.researched(slice.map((_, k) => from + k))
     const failing = crossed.filter((c) => c.answered + c.live === 0).map((c) => c.name)
     const proof = GateFormulas.proof(), rules = GateFormulas.rules()
+    const rosetta = MerkabaFormulas.rosetta(all.length) as unknown as { value: number; holds: boolean; edges?: number }
+    // the leads are the whole lattice's: tagged once, under the last slice, over the window every slice filled
+    const last = from + qpuFacesOf().faces >= all.length
+    const tagged = last ? ((await GateFormulas.crossed()) as unknown as { value: number; leads?: unknown[] }) : { value: -1, leads: undefined }
     const holds = proof.holds && rules.holds && failing.length === 0
-    return f('gate-push', 'push(from) = proof ∧ rules ∧ ⋀ family(i), i in [from, from + faces)', crossed.length - failing.length, nat(from) && holds, 'push', [from], { proof: proof.value, rules: rules.value, failing, ...(from + slice.length < all.length ? { next: from + slice.length } : {}) })
+    return f('gate-push', 'push(from) = proof ∧ rules ∧ ⋀ family(i), i in [from, from + faces); data.deep → merkaba.rosetta → gate.crossed in the reading', crossed.length - failing.length, nat(from) && holds, 'push', [from], { deep, rosetta: { value: rosetta.value, holds: rosetta.holds, edges: rosetta.edges }, ...(last ? { uncrossed: tagged.value, leads: tagged.leads } : {}), proof: proof.value, rules: rules.value, failing, ...(from + slice.length < all.length ? { next: from + slice.length } : {}) })
   }
 }
 
-for (const name of ['commit', 'family', 'proof', 'push', 'rules'] as const)
+for (const name of ['commit', 'crossed', 'family', 'proof', 'push', 'rules'] as const)
   qpuHexRegisterOf('gate', name, (GateFormulas[name] as (...x: unknown[]) => unknown).bind(GateFormulas))

@@ -100,7 +100,7 @@ const rowsOf = () =>
 // is the GitHub Release's notes (RELEASE.md) and the top of the npm page.
 const receiptOf = (f) => (fs.existsSync(path.join(ROOT, f)) ? read(f) : {})
 const lean = receiptOf('lean-receipt.json'), formulas = receiptOf('formulas-receipt.json'), fuse = receiptOf('fuse-receipt.json')
-const discovery = receiptOf('discovery-receipt.json'), heat = receiptOf('heat-receipt.json'), payloadCf = receiptOf('payload-cf-receipt.json'), cross = receiptOf('cross-receipt.json')
+const discovery = receiptOf('discovery-receipt.json'), heat = receiptOf('heat-receipt.json'), payloadCf = receiptOf('payload-cf-receipt.json'), cross = receiptOf('cross-receipt.json'), apis = receiptOf('api-receipt.json')
 const doors = qpuMcpDoorsOf()
 const listed = qpuMcpToolsListOf().length
 const num = (x) => (typeof x === 'number' ? x.toLocaleString('en') : String(x ?? '—'))
@@ -118,6 +118,71 @@ const glance = [
   `| Payload on Cloudflare | ${num(payloadCf.combinations)} combinations generated; the site is one Worker | Payload's documented plugins and adapters |`,
   `| Code heat | ${num(heat.cold)} of ${num(heat.files)} files cold, ${num(heat.hot)} hot | Qpu.Physics: photon / thermal T |`,
 ].join('\n')
+// PROOF BY MCP, ANALYTICS: every verdict in every committed receipt counted (pass, fail), the computations the tests
+// folded, the gate's last verdicts; and NEXT: every failing row of every receipt, named with its value — the base for
+// the next development is what the receipts say does not yet hold, not a plan written by hand
+const test = receiptOf('test-receipt.json'), gate = receiptOf('gate-receipt.json'), nextR = receiptOf('next-receipt.json'), uses = receiptOf('uses-receipt.json')
+const kinds = (test.rows ?? []).reduce((m, r) => { for (const [k, v] of Object.entries(r.kinds ?? {})) m[k] = (m[k] ?? 0) + v; return m }, {})
+const computations = (test.rows ?? []).reduce((n, r) => n + (r.computations ?? 0), 0)
+const verdicts = files.map((f) => ({ file: f, doc: read(f) })).filter(({ doc }) => Array.isArray(doc.rows) && doc.rows.some((r) => typeof r.pass === 'boolean'))
+const analytics = [
+  '| Receipt | Verdicts | Hold | Do not hold | Receipt uuid |',
+  '|---|---:|---:|---:|---|',
+  ...verdicts.map(({ file, doc }) => `| ${file.replace(/-receipt\.json$/, '')} | ${num(doc.rows.length)} | ${num(doc.rows.filter((r) => r.pass === true).length)} | ${num(doc.rows.filter((r) => r.pass === false).length)} | \`${doc.receipt ?? doc.uuid ?? doc.stream?.chain ?? '—'}\` |`),
+].join('\n')
+const kindsLine = Object.entries(kinds).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, v]) => `${k} ${num(v)}`).join(', ')
+const next = verdicts.filter(({ file }) => file !== 'next-receipt.json').flatMap(({ file, doc }) => doc.rows.filter((r) => r.pass === false).map((r) => `- ${file.replace(/-receipt\.json$/, '')}: ${cell(r.name)}${r.value !== undefined ? ` — ${cell(String(r.value).slice(0, 160))}` : ''}`))
+// the combinations the MCP discovered in the public record that no test yet drives, or that a referrer perspective
+// does not close: what the next tests are
+const discovered = (nextR.rows ?? []).filter((r) => r.pass === false).map((r) => `- ${cell(r.name)} — ${cell(String(r.value).slice(0, 200))}`)
+const usesTable = [
+  '| World (registry category) | What QPU may be there: the families its APIs name |',
+  '|---|---|',
+  ...(uses.rows ?? []).map((r) => `| ${cell(r.name)} | ${cell(String(r.value).replace(/^\d+ APIs read · [^:]*: /, '').slice(0, 300))} |`),
+].join('\n')
+const proof = `## Proof by MCP
+
+Every figure in this README is read from a receipt a run of the unit wrote; no figure is typed. The tests call the
+unit through its own \`tools/call\` (\`{ hex }\` addresses, the live host for the release tests), the gate is the \`gate\`
+family's formulas run through the MCP in-process, the API walk is the \`api\` family's addresses, the discovery is the
+\`data\` family's. Each receipt below is a node of the final build receipt; its uuid moves with its bytes.
+
+${analytics}
+
+Tests: ${num(test.tests)} top-level, ${num(test.pass)} pass, ${num(test.fail)} fail; ${num(computations)} computations folded (${kindsLine || '—'}); ${num(test.dim)}-dimensional state, ${num(test.qubits)} qubits; test receipt \`${test.receipt ?? '—'}\`.
+Gate: ${gate.mode ?? '—'} on ${gate.when ?? '—'}, ${gate.holds === undefined ? '—' : gate.holds ? 'holds' : 'does not hold'}${gate.rows?.length ? ` — ${gate.rows.map((r) => `${r.name.startsWith('gate.crossed') ? '~' : r.pass ? '✓' : '✗'} ${cell(r.name)} = ${cell(String(r.value).slice(0, 120))}`).join('; ')}` : ''}.
+
+### What QPU may be
+
+Imagined by the MCP, not claimed: for every category of the APIs.guru registry, \`data.imagine(c)\` reads that world's
+APIs and crosses the words of their titles and operations with the words of every family's formulas; the families
+reached are what the unit is for that world (${num(uses.reached)} of ${num(uses.categories)} categories reach a family; ${num(uses.toImagine)} name a family to imagine).
+A request in words — a law firm, an auditor, a forensic expert — is imagined the same way at
+[/uses](https://qpu.uuidna.com/uses) and by \`qpu_data { source: 'imagine', about }\`.
+
+${usesTable}
+
+### Next
+
+The base for the next development, discovered by the MCP: every family researched in the public record
+(${num(nextR.researched)} of ${num(nextR.families)} families found APIs their formulas name, ${num(nextR.read)} read live), one discovery over every reading
+(${num(nextR.liveInputs)} live inputs, ${num(nextR.relations)} superpositions — values reached by two or more families, ${num(nextR.live)} reached by a live reading),
+each superposition run from every other way's referrer perspective (${num(nextR.invariant)} of ${num(nextR.perspectives)} perspectives answer the same value);
+${num(nextR.tested)} are driven by a test and closed, ${num(nextR.untested)} are what the next tests drive${discovered.length ? ':' : '.'}
+
+${discovered.join('\n')}
+
+The leads (\`gate.crossed\`): formulas no relation with another family reaches and no dataset identifies, each given
+every effort — OEIS at every small fixed slot, the Clay lens, the involuted perspective, the family's research — and
+tagged by what crossed it or, failing all, by \`signal.detection(k)\`, the chance k checks would have caught a
+manipulation; an unverified lead is developed before anything is removed or edited${(gate.leads ?? []).length ? ':' : ' — none.'}
+
+${(gate.leads ?? []).map((l) => `- ${cell(l.formula)} — ${cell(l.tag)} (OEIS ${l.efforts?.oeis}, seal ${l.efforts?.seal}, involutes ${l.efforts?.involutes}, research ${l.efforts?.research}, APIs ${l.efforts?.apis} read${(l.apis ?? []).length ? `: ${cell(l.apis.join(', '))}` : ''}, detection ${l.detection})`).join('\n')}
+
+And every row of every other receipt that does not hold, as the receipt names it${next.length ? ':' : ' — none.'}
+
+${next.join('\n')}`
+
 const summary = `An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (\`{ "qpu": { "type": "http",
 "url": "https://qpu.uuidna.com/mcp" } }\`), as a package (\`npm install @uuidna/qpu\`), or as a container.
@@ -152,6 +217,8 @@ ${summary}
 | commit | \`${commit}\`${dirty ? ' (working tree differed from this commit)' : ''} |
 | receipts | ${files.length} files, ${nodes.length} nodes |
 | build stream | length ${stream?.length}, head \`${stream?.head}\`, chain \`${stream?.chain}\`, holds **${stream?.holds}** |
+
+${proof}
 
 ## What QPU does
 

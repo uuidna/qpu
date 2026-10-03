@@ -44,8 +44,16 @@ const purpose = qpuPurposeOf() as unknown as { nature: { platform: string; qubit
 const qpu = blocks.filter((b) => b.admin?.group === 'QPU')
 const standing = qpu.filter((b) => !customOf(b).needs?.length) // a page of its own, nothing to supply
 const home = standing.filter((b) => !customOf(b).live) // on the home page: no network when the root is served
+// a page's description is what search engines show: the block's text cut at the last sentence that fits 160 characters
+// (the SEO rule the release test states), never typed shorter by hand
+const seoOf = (t: string): string => {
+  if (t.length <= 160) return t
+  // the last sentence boundary that still leaves fifty characters; failing that, the last word within 157 and an ellipsis
+  const atSentence = t.slice(0, 160).replace(/[^.;:—]*$/, '').trim()
+  return atSentence.length >= 50 ? atSentence : `${t.slice(0, 157).replace(/\s+\S*$/, '').trim()}…`
+}
 const blockOf = (b: Block, extra: Record<string, unknown> = {}) => ({ blockType: b.slug, heading: titleOf(b.slug), intro: customOf(b).description, ...extra })
-const pageOf = (b: Block): PageData => ({ slug: b.slug, title: titleOf(b.slug), description: customOf(b).description, layout: [blockOf(b)] })
+const pageOf = (b: Block): PageData => ({ slug: b.slug, title: titleOf(b.slug), description: seoOf(customOf(b).description), layout: [blockOf(b)] })
 const byName = (name: string) => blocks.find((b) => b.slug === name)!
 
 const PRODUCTS = [
@@ -69,7 +77,7 @@ const index = generated.find((d) => d.slug === 'index')
 const HOME_PAGE: PageData = {
   slug: HOME,
   title: cite.website,
-  description: index?.description ?? '',
+  description: seoOf(index?.description ?? ''),
   layout: [
     {
       blockType: 'hero',
@@ -84,7 +92,7 @@ const HOME_PAGE: PageData = {
 const RECEIPT_PAGES: PageData[] = receipts.map((r) => ({
   slug: r.name,
   title: `${titleOf(r.name.replace(/-receipt$/, ''))} receipt`,
-  description: `The committed ${r.file}${typeof r.doc.when === 'string' ? `, generated ${r.doc.when}` : ''}: every row and the facts it records.`,
+  description: seoOf(`The committed ${r.file}${typeof r.doc.when === 'string' ? `, generated ${r.doc.when}` : ''}: every row and the facts it records.`),
   layout: [blockOf(byName('receipt'), { file: r.file, heading: `${titleOf(r.name.replace(/-receipt$/, ''))} receipt` })],
 }))
 const SEARCH_PAGE = pageOf(byName('search'))
@@ -112,6 +120,14 @@ const CONTENT = { docs: generated.map((d) => d.uuid), receipts: receipts.map((r)
 const ensure = async (payload: Payload, collection: string, field: string, value: string, data: Record<string, unknown>): Promise<Row> => {
   const found = (await payload.find({ collection: collection as Slug, where: { [field]: { equals: value } }, limit: 0, pagination: false, depth: 0, sort: 'createdAt', overrideAccess: true })).docs as unknown as Row[]
   for (const copy of found.slice(1)) await payload.delete({ collection: collection as Slug, id: copy.id, overrideAccess: true })
+  // a row whose title or description the combination changed is updated in place: its address stays, its text follows
+  const first = found[0] as (Row & { title?: unknown; description?: unknown }) | undefined
+  // only the text that moved is written — the row's own title and description and the SEO plugin's meta, which the
+  // page serves first (measured 2026-10-03: description updated, meta.description still the old text on every page);
+  // a row's layout and relations stay as they were made
+  const meta = (first as { meta?: { title?: unknown; description?: unknown } } | undefined)?.meta ?? {}
+  const moved = ['title', 'description'].filter((k) => k in data && (data[k] !== first?.[k as 'title'] || data[k] !== meta[k as 'title']))
+  if (first && moved.length) return (await payload.update({ collection: collection as Slug, id: first.id, data: { ...Object.fromEntries(moved.map((k) => [k, data[k]])), ...('description' in data || 'title' in data ? { meta: { ...meta, ...Object.fromEntries(['title', 'description'].filter((k) => k in data).map((k) => [k, data[k]])) } } : {}) } as never, overrideAccess: true })) as unknown as Row
   return found[0] ?? ((await payload.create({ collection: collection as Slug, data: data as never, overrideAccess: true })) as unknown as Row)
 }
 
@@ -119,8 +135,29 @@ const ensure = async (payload: Payload, collection: string, field: string, value
  *  the commercial-licence form (form-builder), the products (ecommerce), the pages and the header and footer globals.
  *  Idempotent, run on init only when the content changed: its content UUID is kept in Payload's KV, so a cold isolate
  *  reads one key, and a build that changes no content seeds nothing. */
+/** The seed's state as the site reports it at /api/seed: done, or the cursor and the last failure of a slice. */
+export async function seedStateOf(payload: Payload) {
+  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, indexDocs].map(String) })
+  const done = (await payload.kv.get<string>('seed')) === fingerprint
+  const cursor = await payload.kv.get<{ docs: number; site: boolean; index: number }>(`seed:${fingerprint}`)
+  const error = await payload.kv.get<{ message: string; when: string }>(`seed:error:${fingerprint}`)
+  return { fingerprint, done, docs: generated.length, cursor: cursor ?? null, error: error ?? null }
+}
+
 export async function seed(payload: Payload) {
-  const fingerprint = qpuContentUuidOf(CONTENT)
+  try { await seedSliceOf(payload) } catch (e) {
+    // a slice that failed is written down where the site reports it, then the request goes on; the next request retries
+    const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, indexDocs].map(String) })
+    await payload.kv.set(`seed:error:${fingerprint}`, { message: String((e as { message?: string })?.message ?? e).slice(0, 500), when: new Date().toISOString() }).catch(() => undefined)
+    throw e
+  }
+}
+
+async function seedSliceOf(payload: Payload) {
+  // the content's address and the applier's own text: a change in how rows are written (measured 2026-10-03: ensure
+  // learned to update a row's description, and the host kept the old one because the content had not moved) re-runs
+  // the seed as a change in what is written does
+  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, indexDocs].map(String) })
   if ((await payload.kv.get<string>('seed')) === fingerprint) return
   // RESUMED, NOT WRITTEN AT ONCE: a request may make only so many storage calls, so each call of the seed does one
   // slice (faces docs) and keeps its cursor under the content's own address; the next request continues; the

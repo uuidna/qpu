@@ -73,7 +73,9 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
         }
         if (value === null || BigInt(value) < BigInt(L.n) || params.map(String).includes(value)) continue
         const list = reached.get(value) ?? reached.set(value, []).get(value)!
-        if (list.length < L.n * L.hexbit && !list.some((w) => w.hex === hex)) list.push({ family, program, params, hex, ...(run.receipt ? { receipt: run.receipt } : {}) })
+        // the ways a value keeps are split by family — hexbit per family — so a family that reaches a popular value
+        // (5, 8, 16) is never crowded out by the families that reached it first, and every family's way is a perspective
+        if (list.filter((w) => w.family === family).length < L.hexbit && !list.some((w) => w.hex === hex)) list.push({ family, program, params, hex, ...(run.receipt ? { receipt: run.receipt } : {}) })
       }
       // one formula: its fixed points; two: the identity on every input tried, an involution when it is one formula twice
       if (program.length === 1 && returned.length) seals.push({ family, program, kind: 'fixed', points: returned, tested, hex: last })

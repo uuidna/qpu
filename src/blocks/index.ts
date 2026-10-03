@@ -16,6 +16,7 @@ import { Receipt } from './Receipt'
 import { Receipts } from './Receipts'
 import { Search } from './Search'
 import { Stats } from './Stats'
+import { Uses } from './Uses'
 import { Wings } from './Wings'
 
-export const blocks: Block[] = [Bodygraph, CallToAction, Clay, Content, Discovery, Docs, Families, Form, Hero, Live, Products, Program, Receipt, Receipts, Search, Stats, Wings]
+export const blocks: Block[] = [Bodygraph, CallToAction, Clay, Content, Discovery, Docs, Families, Form, Hero, Live, Products, Program, Receipt, Receipts, Search, Stats, Uses, Wings]

@@ -8,10 +8,12 @@ import type { Doc, Footer, Form, Header, Page, Product, Search } from '@/payload
 import discovery from '@root/discovery-receipt.json'
 
 import { seed } from '@/seed'
-// every request advances the seed one slice when the content changed; a finished seed costs one KV read
+// every request advances the seed one slice when the content changed; a finished seed costs one KV read. Awaited: a
+// promise left behind a Worker's response is dropped with it, and the slice's KV writes with it (measured 2026-10-03:
+// the host served the pages' old descriptions through eleven deployments)
 export const payloadOf = async () => {
   const payload = await getPayload({ config })
-  void seed(payload).catch(() => undefined)
+  await seed(payload).catch(() => undefined)
   return payload
 }
 

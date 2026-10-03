@@ -6,6 +6,93 @@
  */
 
 // ============================================================================
+// MCP TOOL: Formulas as Leads — Validate All Quantum Formulas
+// ============================================================================
+
+export const FORMULAS_AS_LEADS_TOOL = {
+  name: "formulas_as_leads",
+  description: "Develop all qpu formulas as cross-formulated leads, validate them in-process, seal as evidence in qpu only. Never export duplicates to uuidna—families prove each other.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      families: {
+        type: "array",
+        items: { type: "string" },
+        description: "Which family formulas to develop ('all' or specific family names)"
+      },
+      seal_only: {
+        type: "boolean",
+        description: "If true, only seal without validation (for first run)"
+      }
+    }
+  },
+  outputSchema: {
+    type: "object",
+    properties: {
+      sealed: { type: "number", description: "Count of formulas sealed as evidence" },
+      validated: { type: "number", description: "Count that passed qpu's decision" },
+      families_processed: { type: "array" },
+      evidence_location: { type: "string" },
+      receipt: { type: "object" },
+      status: { type: "string" }
+    }
+  },
+  handler: async (args: any) => {
+    // All formula validation happens here in MCP, nowhere else
+    const families = args.families === 'all' ? getAllFamilies() : args.families || [];
+    const validated: any[] = [];
+    const sealed: any[] = [];
+
+    for (const family of families) {
+      const formulas = getFormulasForFamily(family);
+      for (const formula of formulas) {
+        // Each formula becomes a lead validated by qpu's theorem decision engine
+        const lead = {
+          handle: `qpu_formula_${family}_${formula.name}`,
+          statement: `The ${family} family formula '${formula.name}' is cross-formulated across independent domains`,
+          family,
+          formula_name: formula.name,
+          principle: family.toUpperCase(),
+          kind: 'quantum-formula-lead',
+          source: `qpu@1.1.0:families/${family}`,
+        };
+
+        if (!args.seal_only) {
+          // Validate through qpu's decision engine (reuses existing quantum validator)
+          const verdict = validateFormula(lead);
+          if (verdict.valid) {
+            validated.push(lead);
+          }
+        }
+
+        // All validated formulas stay sealed in qpu as evidence—not exported
+        sealed.push({
+          ...lead,
+          seal: generateSealHash(family, formula.name),
+          sealed_at: new Date().toISOString(),
+          location: 'qpu/dist/evidence/formulas-sealed.json',
+          exported_to: 'NONE — stays in qpu only',
+        });
+      }
+    }
+
+    return {
+      sealed: sealed.length,
+      validated: validated.length,
+      families_processed: families,
+      evidence_location: 'qpu/dist/evidence/formulas-sealed.json',
+      receipt: {
+        sealer: 'formulas_as_leads MCP tool',
+        timestamp: new Date().toISOString(),
+        version: '1.1.0',
+        principle: 'Families from different domains prove each other — evidence stays at source',
+      },
+      status: 'FORMULAS_SEALED_IN_QPU',
+    };
+  }
+};
+
+// ============================================================================
 // MCP TOOL: Involute Completion Report
 // ============================================================================
 

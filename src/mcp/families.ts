@@ -11,11 +11,13 @@ import '../families/heat/index.js'
 import '../families/holo/index.js'
 import '../families/kin/index.js'
 import './mcp-capabilities.js'
+import '../families/merkaba/index.js'
 import '../families/np/index.js'
 import '../families/path/index.js'
 import './qpu-fused.js'
 import '../families/rule/index.js'
 import '../families/signal/index.js'
+import '../families/tesla/index.js'
 import '../families/yi/index.js'
 
-export const families = ['api-door', 'audit', 'cal', 'clay', 'cross', 'crypt', 'gate', 'hd', 'heat', 'holo', 'kin', 'mcp-capabilities', 'np', 'path', 'qpu-fused', 'rule', 'signal', 'yi'] as const
+export const families = ['api-door', 'audit', 'cal', 'clay', 'cross', 'crypt', 'gate', 'hd', 'heat', 'holo', 'kin', 'mcp-capabilities', 'merkaba', 'np', 'path', 'qpu-fused', 'rule', 'signal', 'tesla', 'yi'] as const

@@ -427,7 +427,8 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
   if (args.doors === true) return shown(qpuMcpDoorsOf(env, auth))
   if (args.errors === true) return shown(await qpuMcpErrorsOf(env, typeof args.from === 'number' ? args.from : n - n, typeof args.take === 'number' ? args.take : qpuFacesOf().faces))
   if (typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null)) {
-    const h = args.hex as string | { family?: unknown; program?: unknown; params?: unknown }
+    // a client whose schema only knows a string sends the object as JSON: it is the same request
+    const h = (typeof args.hex === 'string' && args.hex.trim().startsWith('{') ? JSON.parse(args.hex) : args.hex) as string | { family?: unknown; program?: unknown; params?: unknown }
     try {
       const uuid = typeof h === 'string' ? h : qpuHexUuidOf({ family: String(h.family ?? ''), program: Array.isArray(h.program) ? h.program.map(String) : String(h.program ?? '').split(/[+,]/).filter(Boolean), params: Array.isArray(h.params) ? h.params.map(Number) : [] })
       return shown(await qpuHexRunOf(uuid, undefined, env))

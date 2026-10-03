@@ -1,0 +1,517 @@
+{
+ "kind": "gate-receipt",
+ "when": "2026-10-03",
+ "mode": "push",
+ "holds": false,
+ "rows": [
+  {
+   "name": "gate.push(0)",
+   "pass": false,
+   "value": "13 gate failing Qpu.Coil",
+   "receipt": "ae785da8-809f-8eaf-8b7d-ee6010101422"
+  },
+  {
+   "name": "gate.push(14)",
+   "pass": true,
+   "value": "8 gate",
+   "receipt": "31aa56ba-fcdf-86bb-80e3-39d9fc6a0d9d"
+  }
+ ],
+ "leads": [
+  {
+   "formula": "cross.deploymentToObs",
+   "apis": [
+    "azure.com:azsadmin-Deployment",
+    "azure.com:deploymentmanager"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 591,
+    "apis": "2/25",
+    "values": 0
+   },
+   "tag": "unverified after 13 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9762
+  },
+  {
+   "formula": "cross.enterpriseMetricsViaObs",
+   "apis": [
+    "azure.com:EnterpriseKnowledgeGraph-EnterpriseKnowledgeGraphSwagger",
+    "azure.com:monitor-metrics_API"
+   ],
+   "efforts": {
+    "oeis": "1/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 591,
+    "apis": "2/46",
+    "values": 0
+   },
+   "tag": "crossed by OEIS A000012",
+   "detection": 0.9762
+  },
+  {
+   "formula": "cross.mlOnObsForPrediction",
+   "apis": [
+    "1forge.com",
+    "ably.io:platform"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 591,
+    "apis": "2/112",
+    "values": 0
+   },
+   "tag": "unverified after 13 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9762
+  },
+  {
+   "formula": "cross.observabilityToML",
+   "apis": [
+    "ebi.ac.uk",
+    "visualcrossing.com:weather"
+   ],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "none",
+    "involutes": true,
+    "research": 591,
+    "apis": "2/4",
+    "values": 0
+   },
+   "tag": "unverified after 6 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.822
+  },
+  {
+   "formula": "cross.quantumToEnterprise",
+   "apis": [
+    "azure.com:EnterpriseKnowledgeGraph-EnterpriseKnowledgeGraphSwagger",
+    "ebi.ac.uk",
+    "id4i.de",
+    "meraki.com"
+   ],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "none",
+    "involutes": true,
+    "research": 591,
+    "apis": "4/23",
+    "values": 0
+   },
+   "tag": "unverified after 8 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.8999
+  },
+  {
+   "formula": "cross.testCoverageToQuality",
+   "apis": [
+    "azure.com:devtestlabs-DTL",
+    "ebi.ac.uk",
+    "googleapis.com:prod_tt_sasportal",
+    "lambdatest.com",
+    "netlicensing.io"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 591,
+    "apis": "5/16",
+    "values": 0
+   },
+   "tag": "unverified after 16 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.99
+  },
+  {
+   "formula": "audit.paymentSecurityFusion",
+   "apis": [
+    "1password.com:events",
+    "6-dot-authentiqio.appspot.com",
+    "adyen.com:CheckoutService"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 145,
+    "apis": "3/112",
+    "values": 0
+   },
+   "tag": "unverified after 14 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9822
+  },
+  {
+   "formula": "audit.supplyChainRiskFormula",
+   "apis": [
+    "azure.com:blockchain",
+    "azure.com:sql-blobAuditing",
+    "googleapis.com:webrisk",
+    "nexmo.com:audit"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": false,
+    "research": 145,
+    "apis": "4/9",
+    "values": 0
+   },
+   "tag": "unverified after 15 checks: inconsistent across perspectives — a manipulation until crossed",
+   "detection": 0.9866
+  },
+  {
+   "formula": "hd.design",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "none",
+    "involutes": true,
+    "research": 123,
+    "apis": "0/0",
+    "values": 0
+   },
+   "tag": "unverified after 4 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.6836
+  },
+  {
+   "formula": "hd.jdm",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 123,
+    "apis": "0/0",
+    "values": 64
+   },
+   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9578
+  },
+  {
+   "formula": "clay.pVsNp",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "fixed",
+    "involutes": true,
+    "research": 3,
+    "apis": "0/0",
+    "values": 0
+   },
+   "tag": "crossed by seal fixed",
+   "detection": 0.6836
+  },
+  {
+   "formula": "clay.yangMills",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/0",
+    "seal": "none",
+    "involutes": true,
+    "research": 3,
+    "apis": "0/0",
+    "values": 0
+   },
+   "tag": "unverified after 3 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.5781
+  },
+  {
+   "formula": "crypt.knownAnswers",
+   "apis": [
+    "azure.com:mariadb-DataEncryptionKeys",
+    "azure.com:mysql-DataEncryptionKeys",
+    "azure.com:postgresql-DataEncryptionKeys",
+    "azure.com:sql-ManagedInstanceEncryptionProtectors",
+    "azure.com:sql-encryptionProtectors"
+   ],
+   "efforts": {
+    "oeis": "0/0",
+    "seal": "none",
+    "involutes": true,
+    "research": 18,
+    "apis": "5/6",
+    "values": 0
+   },
+   "tag": "unverified after 8 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.8999
+  },
+  {
+   "formula": "crypt.nonceCollision",
+   "apis": [
+    "azure.com:mariadb-DataEncryptionKeys",
+    "azure.com:mysql-DataEncryptionKeys",
+    "azure.com:postgresql-DataEncryptionKeys",
+    "azure.com:sql-ManagedInstanceEncryptionProtectors",
+    "azure.com:sql-encryptionProtectors"
+   ],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "none",
+    "involutes": true,
+    "research": 18,
+    "apis": "5/5",
+    "values": 0
+   },
+   "tag": "unverified after 9 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9249
+  },
+  {
+   "formula": "crypt.tagForgery",
+   "apis": [
+    "azure.com:mariadb-DataEncryptionKeys",
+    "azure.com:mysql-DataEncryptionKeys",
+    "azure.com:postgresql-DataEncryptionKeys",
+    "azure.com:sql-ManagedInstanceEncryptionProtectors",
+    "azure.com:sql-encryptionProtectors",
+    "googleapis.com:tagmanager",
+    "instagram.com"
+   ],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "none",
+    "involutes": true,
+    "research": 18,
+    "apis": "7/17",
+    "values": 0
+   },
+   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9578
+  },
+  {
+   "formula": "signal.detection",
+   "apis": [
+    "azure.com:applicationinsights-componentProactiveDetection_API",
+    "azure.com:signalr"
+   ],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "none",
+    "involutes": true,
+    "research": 28,
+    "apis": "2/5",
+    "values": 0
+   },
+   "tag": "unverified after 6 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.822
+  },
+  {
+   "formula": "signal.qber",
+   "apis": [
+    "azure.com:signalr"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 28,
+    "apis": "1/2",
+    "values": 0
+   },
+   "tag": "unverified after 12 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9683
+  },
+  {
+   "formula": "merkaba.merkaba",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 9,
+    "apis": "0/0",
+    "values": 0
+   },
+   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9578
+  },
+  {
+   "formula": "merkaba.spin",
+   "apis": [
+    "spinitron.com"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 9,
+    "apis": "1/2",
+    "values": 0
+   },
+   "tag": "unverified after 12 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9683
+  },
+  {
+   "formula": "merkaba.star",
+   "apis": [
+    "telematicssdk.com"
+   ],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "fixed",
+    "involutes": true,
+    "research": 9,
+    "apis": "1/5",
+    "values": 1
+   },
+   "tag": "crossed by seal fixed",
+   "detection": 0.7627
+  },
+  {
+   "formula": "merkaba.steps",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 9,
+    "apis": "0/0",
+    "values": 0
+   },
+   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9578
+  },
+  {
+   "formula": "merkaba.trinity",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 9,
+    "apis": "0/0",
+    "values": 0
+   },
+   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9578
+  },
+  {
+   "formula": "holo.forgery",
+   "apis": [],
+   "efforts": {
+    "oeis": "0/1",
+    "seal": "none",
+    "involutes": true,
+    "research": 1,
+    "apis": "0/0",
+    "values": 0
+   },
+   "tag": "unverified after 4 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.6836
+  },
+  {
+   "formula": "path.executePath",
+   "apis": [
+    "wikipathways.org"
+   ],
+   "efforts": {
+    "oeis": "0/8",
+    "seal": "none",
+    "involutes": true,
+    "research": 628,
+    "apis": "1/1",
+    "values": 0
+   },
+   "tag": "unverified after 12 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9683
+  },
+  {
+   "formula": "path.obsToAction",
+   "apis": [
+    "azure.com:hdinsight-scriptActions",
+    "azure.com:monitor-actionGroups_API",
+    "azure.com:recoveryservicesbackup-jobs",
+    "azure.com:sql-jobs",
+    "azure.com:streamanalytics-streamingjobs",
+    "googleapis.com:mybusinessplaceactions"
+   ],
+   "efforts": {
+    "oeis": "0/0",
+    "seal": "none",
+    "involutes": true,
+    "research": 628,
+    "apis": "6/23",
+    "values": 0
+   },
+   "tag": "unverified after 9 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.9249
+  },
+  {
+   "formula": "path.performanceToMetrics",
+   "apis": [
+    "azure.com:monitor-metrics_API"
+   ],
+   "efforts": {
+    "oeis": "0/0",
+    "seal": "none",
+    "involutes": true,
+    "research": 628,
+    "apis": "1/17",
+    "values": 0
+   },
+   "tag": "unverified after 4 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.6836
+  },
+  {
+   "formula": "path.qualityToRisk",
+   "apis": [
+    "googleapis.com:webrisk",
+    "wikipathways.org"
+   ],
+   "efforts": {
+    "oeis": "0/0",
+    "seal": "none",
+    "involutes": true,
+    "research": 628,
+    "apis": "2/3",
+    "values": 0
+   },
+   "tag": "unverified after 5 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.7627
+  },
+  {
+   "formula": "path.quantumSecurityChain",
+   "apis": [
+    "1password.com:events",
+    "6-dot-authentiqio.appspot.com",
+    "azure.com:blockchain",
+    "azure.com:hardwaresecuritymodules-dedicatedhsm",
+    "azure.com:security"
+   ],
+   "efforts": {
+    "oeis": "0/0",
+    "seal": "none",
+    "involutes": true,
+    "research": 628,
+    "apis": "5/66",
+    "values": 0
+   },
+   "tag": "unverified after 8 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.8999
+  },
+  {
+   "formula": "path.secureDataPathQSec",
+   "apis": [
+    "1password.com:events",
+    "6-dot-authentiqio.appspot.com"
+   ],
+   "efforts": {
+    "oeis": "0/0",
+    "seal": "none",
+    "involutes": true,
+    "research": 628,
+    "apis": "2/546",
+    "values": 1
+   },
+   "tag": "unverified after 5 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
+   "detection": 0.7627
+  }
+ ],
+ "deep": {
+  "readings": 1044
+ },
+ "uuid": "c36badd2-f016-8663-ae04-9a263fd1772c",
+ "receipt": "909e4fd8-fb51-8d9c-964a-db139cb28b00"
+}

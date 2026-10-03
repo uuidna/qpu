@@ -12060,7 +12060,11 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv,
   // this program's only when the names it was stored under are this program's names (measured 2026-10-03: nibble 9
   // of hd was jdm, then gate, and the address answered the old value)
   const same = stored && stored.by === d.uuid && Array.isArray((stored as { program?: unknown }).program) && JSON.stringify((stored as { program?: unknown }).program) === JSON.stringify(d.program)
-  if (same && stored) return { ...d, ran: true as const, cached: true as const, steps: [], value: stored.value, holds: stored.holds === true, receipt: stored.receipt }
+  // A FAMILY THAT REACHES OUTSIDE IS A READING, AND A STORED ROW IS ITS RECEIPT, NOT ITS ANSWER: an async formula reads
+  // a host, a dataset, the site, so its address runs every time (measured 2026-10-03: data.read(59) answered the row
+  // stored by an older deployment, 0, while the live source agreed)
+  const live = [...(HEX_REGISTERED.get(d.family)?.values() ?? [])].some((fn) => fn.constructor.name === 'AsyncFunction')
+  if (same && stored && !live) return { ...d, ran: true as const, cached: true as const, steps: [], value: stored.value, holds: stored.holds === true, receipt: stored.receipt }
   const params = d.params.map((x) => BigInt(x))
   let acc: unknown = params[n - n] ?? BigInt(n - n)
   let holds = true

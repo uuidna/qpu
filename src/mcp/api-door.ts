@@ -18,7 +18,7 @@ const ua = { 'user-agent': `qpu.uuidna.com/${packageVersion} (+https://qpu.uuidn
 type Entry = { preferred?: string; versions?: Record<string, { swaggerUrl?: string; info?: { title?: string; 'x-apisguru-categories'?: string[] } }> }
 type Param = { name: string; in: string; required: boolean }
 export type Operation = { index: number; verb: string; path: string; operationId?: string; params: Param[]; required: string[]; takes: number; gives: number }
-export type Api = { index: number; api: string; title: string; spec: string; categories: string[]; server: string; operations: Operation[]; why?: string }
+export type Api = { index: number; api: string; title: string; spec: string; categories: string[]; server: string; guessed?: boolean; operations: Operation[]; why?: string }
 
 let registry: { at: number; names: string[]; entries: Record<string, Entry> } | undefined
 const specs = new Map<string, { at: number; api: Promise<Api> }>()
@@ -54,10 +54,12 @@ export const apiRegistryOf = async () => {
 }
 
 // the server an OpenAPI 3 or Swagger 2 document names, resolved against the document's own address
-const serverOf = (doc: Record<string, unknown>, spec: string): string => {
+const serverOf = (doc: Record<string, unknown>, spec: string, api = ''): string => {
   const servers = doc.servers as { url?: string }[] | undefined
   if (servers?.[0]?.url) return new URL(servers[0].url.replace(/\{[^}]+\}/g, 'v1'), spec).toString().replace(/\/$/, '')
-  const host = doc.host as string | undefined
+  // a document that names no host: the registry names the API by its domain, and that domain with the document's
+  // base path is the one computable address — tried, and named as a guess in the reading when it is one
+  const host = (doc.host as string | undefined) ?? (api.split(':')[0] || undefined)
   if (!host) return ''
   const scheme = ((doc.schemes as string[] | undefined) ?? ['https'])[0]
   return `${scheme}://${host}${((doc.basePath as string | undefined) ?? '').replace(/\/$/, '')}`
@@ -88,7 +90,7 @@ export const apiOf = async (which: number | string): Promise<Api> => {
     if (!base.spec) return { ...base, why: 'no spec url' }
     try {
       const doc = (await json(base.spec)) as Record<string, unknown>
-      return { ...base, server: serverOf(doc, base.spec), operations: operationsOf(doc, qpuSchemaMethodsOf(api, doc)) }
+      return { ...base, server: serverOf(doc, base.spec, api), ...(doc.servers || doc.host ? {} : { guessed: true }), operations: operationsOf(doc, qpuSchemaMethodsOf(api, doc)) }
     } catch (e) {
       return { ...base, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message }
     }
@@ -179,7 +181,7 @@ export const apiWalkOf = async (from = 0, take = Infinity, concurrency = 8) => {
 /** The registry searched: every API whose name, title or category holds a word, and — for the first `take` of them,
  *  their documents read — the operations whose path or operationId holds a word. The words are not listed here: a
  *  family's formula names are the words a human request carries (sun, design, kin, lunar, hexagram…). */
-export const apiSearchOf = async (words: string[], take = 14) => {
+export const apiSearchOf = async (words: string[], take = 14, from = 0) => {
   const reg = await apiRegistryOf()
   const terms = words.map((w) => w.toLowerCase()).filter((w) => w.length > 2)
   const hit = (s: string) => terms.some((w) => s.toLowerCase().includes(w))
@@ -189,8 +191,10 @@ export const apiSearchOf = async (words: string[], take = 14) => {
   })
   // `take` APIs that can be read without a parameter, found among the matches a slice at a time: a name is not a read
   const read: { api: string; index: number; title: string; categories: string[]; server: string; operations: { index: number; verb: string; path: string; required: string[] }[]; free?: number }[] = []
-  let scanned = 0
-  while (read.filter((x) => x.free !== undefined).length < take && scanned < named.length && scanned < take * 4) {
+  let scanned = from
+  // one slice of documents per call from `from` (an isolate reads fourteen, not fifty-six); `more` names the matches
+  // not yet read and `next` where the following call starts, so a caller scans the whole registry slice by slice
+  while (read.filter((x) => x.free !== undefined).length < take && scanned < named.length && scanned < from + take) {
     const batch = await Promise.all(named.slice(scanned, scanned + take).map(async ({ index }) => {
       const api = await apiOf(index)
       return { api: api.api, index, title: api.title, categories: api.categories, server: api.server, operations: api.operations.filter((op) => hit(op.path) || hit(op.operationId ?? '')).map((op) => ({ index: op.index, verb: op.verb, path: op.path, required: op.required })), free: api.server ? api.operations.find((op) => op.verb === 'get' && op.required.length === 0)?.index : undefined }
@@ -198,14 +202,14 @@ export const apiSearchOf = async (words: string[], take = 14) => {
     read.push(...batch)
     scanned += take
   }
-  return { kind: 'api-search' as const, words: terms, matched: named.length, scanned, read: read.length, readable: read.filter((x) => x.free !== undefined).length, apis: read, more: named.slice(scanned).map((x) => x.api) }
+  return { kind: 'api-search' as const, words: terms, matched: named.length, from, scanned, read: read.length, readable: read.filter((x) => x.free !== undefined).length, apis: read, more: named.slice(scanned).map((x) => x.api), ...(scanned < named.length ? { next: scanned } : {}) }
 }
 
 qpuMcpFuseOf('qpu_api', {
   description: "Every public API as an address: {} the registry and how to address it; { api } (name or index) its operations; { api, operation, params } makes that read through api.call(i, j, s) and returns the reading with its hex address; { walk: true, from, take } walks a slice of the registry (fused: document read; used: a read made); { search } finds APIs by words in their names, titles, categories and operations.",
   inputSchema: { type: 'object', properties: { api: { type: ['string', 'integer'] }, operation: { type: 'integer' }, params: { type: 'object' }, walk: { type: 'boolean' }, from: { type: 'integer' }, take: { type: 'integer' }, search: { type: ['string', 'array'], items: { type: 'string' } } } },
   run: async (a) => {
-    if (a.search !== undefined) return apiSearchOf(Array.isArray(a.search) ? a.search.map(String) : String(a.search).split(/[\s,]+/), typeof a.take === 'number' ? a.take : qpuFacesOf().faces)
+    if (a.search !== undefined) return apiSearchOf(Array.isArray(a.search) ? a.search.map(String) : String(a.search).split(/[\s,]+/), typeof a.take === 'number' ? a.take : qpuFacesOf().faces, typeof a.from === 'number' ? a.from : 0)
     if (a.walk === true) return apiWalkOf(typeof a.from === 'number' ? a.from : 0, typeof a.take === 'number' ? a.take : qpuFacesOf().faces)
     if (a.api === undefined) {
       const reg = await apiRegistryOf()

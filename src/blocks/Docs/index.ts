@@ -1,3 +1,3 @@
 import { blockFields } from '../../fields/blockFields'
 
-export const Docs = blockFields('Docs', 'QPU', 'The documentation, each page at its own slug.', [{ name: 'limit', type: 'number', min: 1 }])
+export const Docs = blockFields('Docs', 'QPU', 'The documentation the unit generates from itself, each page at its own slug, nested as the docs plugin places it.', [{ name: 'limit', type: 'number', min: 1 }])

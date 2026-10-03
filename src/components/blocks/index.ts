@@ -15,6 +15,7 @@ import { Receipt } from './Receipt'
 import { Receipts } from './Receipts'
 import { Search } from './Search'
 import { Stats } from './Stats'
+import { Uses } from './Uses'
 import { Wings } from './Wings'
 
 export const blockComponents = {
@@ -34,5 +35,6 @@ export const blockComponents = {
   receipts: Receipts,
   search: Search,
   stats: Stats,
+  uses: Uses,
   wings: Wings,
 }

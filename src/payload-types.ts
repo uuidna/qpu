@@ -405,6 +405,7 @@ export interface Page {
         | ReceiptsBlock
         | SearchBlock
         | StatsBlock
+        | UsesBlock
         | WingsBlock
       )[]
     | null;
@@ -901,6 +902,25 @@ export interface StatsBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "UsesBlock".
+ */
+export interface UsesBlock {
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  /**
+   * the request imagined when the page gives none (?about=)
+   */
+  about?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'uses';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1717,6 +1737,7 @@ export interface PagesSelect<T extends boolean = true> {
         receipts?: T | ReceiptsBlockSelect<T>;
         search?: T | SearchBlockSelect<T>;
         stats?: T | StatsBlockSelect<T>;
+        uses?: T | UsesBlockSelect<T>;
         wings?: T | WingsBlockSelect<T>;
       };
   parent?: T;
@@ -1953,6 +1974,18 @@ export interface StatsBlockSelect<T extends boolean = true> {
   heading?: T;
   anchor?: T;
   intro?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "UsesBlock_select".
+ */
+export interface UsesBlockSelect<T extends boolean = true> {
+  heading?: T;
+  anchor?: T;
+  intro?: T;
+  about?: T;
   id?: T;
   blockName?: T;
 }
