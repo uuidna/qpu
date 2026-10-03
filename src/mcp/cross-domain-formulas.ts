@@ -1,4 +1,7 @@
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+// the lattice names and the three formulas every number here is written in
+const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 export interface CrossFormula {
   id: string
@@ -35,7 +38,7 @@ export const crossFormulaOf = (f: Omit<CrossFormula, 'uuid' | 'receipt' | 'holds
   const uuid = qpuContentUuidOf({ src: f.src, dst: f.dst, formula: f.formula })
   const holds = domain && Number.isFinite(f.value)
   // the formula's hex program: its handle, call then holds then receipt, its inputs as params when they are naturals that fit
-  const exact = call !== undefined && call.params.length <= 3 && call.params.every((x) => Number.isSafeInteger(x) && x >= 0 && x < 16 ** [12, 12, 6, 4][call.params.length]!)
+  const exact = call !== undefined && call.params.length <= 3 && call.params.every((x) => Number.isSafeInteger(x) && x >= 0 && x < qpuHexParamMaxOf(call.params.length))
   let hex: string | undefined
   try {
     hex = call ? qpuHexUuidOf({ family: call.name.split('.')[0]!, program: [call.name.split('.')[1]!], params: exact ? call.params : [] }) : undefined
@@ -68,7 +71,7 @@ export class CrossDomainFormulas {
       src: 'obs',
       dst: 'ml',
       formula: 'model_accuracy = 1 - (1 / (1 + signalCount/100))',
-      value: 1 - (1 / (1 + signalCount / 100)),
+      value: 1 - (1 / (1 + signalCount / L.tenOf(L.coins))),
       proof: 'Signal quantity improves prediction accuracy logarithmically'}, nat(signalCount), { name: 'cross.observabilityToML', params: [signalCount] })
   }
 
@@ -78,7 +81,7 @@ export class CrossDomainFormulas {
       src: 'deployment',
       dst: 'obs',
       formula: 'health_score = max(0, 1 - buildTime/300) * max(0, 1 - testTime/180)',
-      value: Math.max(0, 1 - buildTime / 300) * Math.max(0, 1 - testTime / 180),
+      value: Math.max(0, 1 - buildTime / (L.n * L.tenOf(L.coins))) * Math.max(0, 1 - testTime / 180),
       proof: 'Build+test speed indicates system health'}, nat(buildTime, testTime), { name: 'cross.deploymentToObs', params: [buildTime, testTime] })
   }
 
@@ -138,7 +141,7 @@ export class CrossDomainFormulas {
       src: 'enterprise',
       dst: 'obs',
       formula: 'slo_met = (complianceScore > 0.9) AND (latency < 200)',
-      value: complianceScore > 0.9 && latency < 200 ? 1 : 0,
+      value: complianceScore > 0.9 && latency < L.coins * L.tenOf(L.coins) ? 1 : 0,
       proof: 'SLO requires both compliance and performance'}, nat(complianceScore, latency) && complianceScore <= 1, { name: 'cross.enterpriseMetricsViaObs', params: [complianceScore, latency] })
   }
 
@@ -154,11 +157,11 @@ export class CrossDomainFormulas {
 
   static allBridges(): DomainBridge[] {
     return [
-      { from: 'qsec', to: 'compress', formula: 'entropy→ratio', transform: (k: any) => 1 / (1 + Math.log2(k.keyLen || 128)) },
-      { from: 'obs', to: 'ml', formula: 'signals→accuracy', transform: (s: any) => 1 - (1 / (1 + (s.count || 0) / 100)) },
-      { from: 'deployment', to: 'obs', formula: 'timing→health', transform: (t: any) => Math.max(0, 1 - (t.build ?? 0) / 300) * Math.max(0, 1 - (t.test ?? 0) / 180) },
+      { from: 'qsec', to: 'compress', formula: 'entropy→ratio', transform: (k: any) => 1 / (1 + Math.log2(k.keyLen || L.mintOf(L.rays))) },
+      { from: 'obs', to: 'ml', formula: 'signals→accuracy', transform: (s: any) => 1 - (1 / (1 + (s.count || 0) / L.tenOf(L.coins))) },
+      { from: 'deployment', to: 'obs', formula: 'timing→health', transform: (t: any) => Math.max(0, 1 - (t.build ?? 0) / (L.n * L.tenOf(L.coins))) * Math.max(0, 1 - (t.test ?? 0) / 180) },
       { from: 'quantum', to: 'enterprise', formula: 'proofs→risk', transform: (p: any) => 1 / (1 + (p.count || 0)) },
-      { from: 'med', to: 'qsec', formula: 'patients→keyspace', transform: (m: any) => Math.pow(2, m.keyLen ?? 128) * (m.count ?? 0) },
+      { from: 'med', to: 'qsec', formula: 'patients→keyspace', transform: (m: any) => Math.pow(2, m.keyLen ?? L.mintOf(L.rays)) * (m.count ?? 0) },
       { from: 'obs', to: 'ui', formula: 'anomalies→urgency', transform: (o: any) => (o.anomalies ?? 0) / ((o.signals ?? 0) + 1) }
     ]
   }

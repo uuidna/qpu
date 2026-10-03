@@ -3,229 +3,243 @@
  "when": "2026-10-03",
  "window": 30,
  "threshold": 239,
- "files": 328,
- "hot": 14,
- "cold": 314,
+ "files": 340,
+ "hot": 16,
+ "cold": 324,
  "hottest": "src/quantum/processing/unit/index.ts",
- "hottestMilliKelvin": 5233,
+ "hottestMilliKelvin": 5333,
  "followers": 17,
  "holds": true,
  "rows": [
   {
    "name": "src/quantum/processing/unit/index.ts",
    "pass": false,
-   "value": "5233 mK · signal 0 · T₂ 5d · quality 0 · 157 commits/30d · 5 fixes · 12227 lines · split 22",
-   "receipt": "18ec4412-c9ad-8864-887f-c279848cf530",
-   "hex": "0a8f02cc-3000-8000-b000-009d001e0005"
+   "value": "5333 mK · signal 0 · T₂ 5d · quality 0 · 160 commits/30d · 5 fixes · 12270 lines · split 23",
+   "receipt": "f44e3ea6-01f7-8d90-9149-40199b61c8d4",
+   "hex": "0a8f02cc-3000-8000-b000-00a0001e0005"
   },
   {
    "name": "src/quantum/processing/unit/index.lean",
    "pass": false,
    "value": "1033 mK · signal 0 · T₂ 30d · quality 0 · 31 commits/30d · 0 fixes · 252 lines · split 5",
-   "receipt": "50ff3d96-6de2-8937-8422-4a5ca8058b6a",
+   "receipt": "bea44360-eca1-89a3-9f58-7edf50c0d02f",
    "hex": "0a8f02cc-3000-8000-b000-001f001e0000"
   },
   {
    "name": "src/mcp/operations-metadata.ts",
    "pass": false,
    "value": "533 mK · signal 0 · T₂ 30d · quality 0 · 16 commits/30d · 0 fixes · 1030 lines · split 3",
-   "receipt": "576b262b-78fb-84c6-92eb-a45e1bbb399d",
+   "receipt": "9588f888-2347-8b9b-b1ce-401f035b2768",
    "hex": "0a8f02cc-3000-8000-b000-0010001e0000"
   },
   {
    "name": "scripts/leads.mjs",
    "pass": false,
    "value": "466 mK · signal 0 · T₂ 30d · quality 0 · 14 commits/30d · 0 fixes · 519 lines · split 2",
-   "receipt": "ad6fafad-7c0c-8c56-b0a2-137d5c57b4ba",
+   "receipt": "7341a141-3a4c-884d-a0a7-de9131ad1df7",
    "hex": "0a8f02cc-3000-8000-b000-000e001e0000"
   },
   {
    "name": "src/quantum/processing/unit/live.test.ts",
    "pass": false,
    "value": "466 mK · signal 0 · T₂ 15d · quality 0 · 14 commits/30d · 1 fixes · 339 lines · split 2",
-   "receipt": "8ea4926b-b3aa-8a68-bc8b-7def6c48fdba",
+   "receipt": "4116cb81-d258-8e69-9fb3-7ab8d74a00f3",
    "hex": "0a8f02cc-3000-8000-b000-000e001e0001"
   },
   {
    "name": "src/deployment/payload-templates.ts",
    "pass": false,
-   "value": "366 mK · signal 0 · T₂ 30d · quality 0 · 11 commits/30d · 0 fixes · 338 lines · split 2",
-   "receipt": "8c815afd-d2b4-8ab5-9ac6-a958d6d9efd0",
-   "hex": "0a8f02cc-3000-8000-b000-000b001e0000"
+   "value": "433 mK · signal 0 · T₂ 30d · quality 0 · 13 commits/30d · 0 fixes · 391 lines · split 2",
+   "receipt": "62acbd94-09dd-8c67-bdb9-785f04dc3b62",
+   "hex": "0a8f02cc-3000-8000-b000-000d001e0000"
+  },
+  {
+   "name": "src/quantum/processing/unit/readme.ts",
+   "pass": false,
+   "value": "400 mK · signal 0 · T₂ 30d · quality 0 · 12 commits/30d · 0 fixes · 331 lines · split 2",
+   "receipt": "842f7b6e-2f91-8b7c-8eec-ab70293e7e07",
+   "hex": "0a8f02cc-3000-8000-b000-000c001e0000"
   },
   {
    "name": "src/quantum/processing/unit/receipted.ts",
    "pass": false,
    "value": "366 mK · signal 0 · T₂ 30d · quality 0 · 11 commits/30d · 0 fixes · 210 lines · split 2",
-   "receipt": "8e1427d3-f69f-8f49-be08-37d975033d04",
+   "receipt": "5f10b7a1-354b-8cf7-b945-f9079f671f88",
+   "hex": "0a8f02cc-3000-8000-b000-000b001e0000"
+  },
+  {
+   "name": "scripts/payload-cloudflare.mjs",
+   "pass": false,
+   "value": "366 mK · signal 0 · T₂ 30d · quality 0 · 11 commits/30d · 0 fixes · 209 lines · split 2",
+   "receipt": "3efd67cb-c9c1-869d-a666-ce295fe4c537",
    "hex": "0a8f02cc-3000-8000-b000-000b001e0000"
   },
   {
    "name": "src/quantum/processing/unit/receipt.ts",
    "pass": false,
    "value": "366 mK · signal 0 · T₂ 30d · quality 0 · 11 commits/30d · 0 fixes · 173 lines · split 2",
-   "receipt": "d3f6d2cf-7f17-83b3-a6a5-51cb8d4c38f1",
+   "receipt": "8942bd92-12f5-840a-bf1d-da8ab6e6e54d",
    "hex": "0a8f02cc-3000-8000-b000-000b001e0000"
   },
   {
    "name": "scripts/leads.test.mjs",
    "pass": false,
    "value": "333 mK · signal 0 · T₂ 30d · quality 0 · 10 commits/30d · 0 fixes · 256 lines · split 2",
-   "receipt": "926d8869-bc37-8f58-8054-edd5cba1e9b1",
+   "receipt": "d8a1e7f4-5a66-84c9-b48b-ea72eccf7e97",
    "hex": "0a8f02cc-3000-8000-b000-000a001e0000"
   },
   {
    "name": "scripts/outage.mjs",
    "pass": false,
    "value": "333 mK · signal 0 · T₂ 30d · quality 0 · 10 commits/30d · 0 fixes · 203 lines · split 2",
-   "receipt": "cf6893e7-c1a0-8bf8-bf8e-002a23b80376",
+   "receipt": "ed3373ee-db2b-8c33-997d-25cf5fa30506",
    "hex": "0a8f02cc-3000-8000-b000-000a001e0000"
   },
   {
    "name": "src/quantum/kernel/index.ts",
    "pass": false,
    "value": "333 mK · signal 0 · T₂ 15d · quality 0 · 10 commits/30d · 1 fixes · 116 lines · split 2",
-   "receipt": "4ca92e62-211f-86e3-bf7a-8fb44d3dd289",
+   "receipt": "eb04c62a-25e5-8607-9be5-e384946d6ad9",
    "hex": "0a8f02cc-3000-8000-b000-000a001e0001"
-  },
-  {
-   "name": "scripts/payload-cloudflare.mjs",
-   "pass": false,
-   "value": "300 mK · signal 0 · T₂ 30d · quality 0 · 9 commits/30d · 0 fixes · 196 lines · split 2",
-   "receipt": "57f69511-9ddc-8cae-a295-dc82abb03048",
-   "hex": "0a8f02cc-3000-8000-b000-0009001e0000"
   },
   {
    "name": "src/mcp/uuid-programmable-core.ts",
    "pass": false,
    "value": "266 mK · signal 0 · T₂ 10d · quality 0 · 8 commits/30d · 2 fixes · 273 lines · split 2",
-   "receipt": "b3a44713-ac61-8396-8033-02177f6ee87f",
+   "receipt": "503adce9-bcf2-8cc0-a430-a10606cdce01",
    "hex": "0a8f02cc-3000-8000-b000-0008001e0002"
+  },
+  {
+   "name": "scripts/generate-readme.mjs",
+   "pass": false,
+   "value": "266 mK · signal 0 · T₂ 30d · quality 0 · 8 commits/30d · 0 fixes · 203 lines · split 2",
+   "receipt": "e700a8d0-9e49-8975-8b7a-4a2d0dfd4b4b",
+   "hex": "0a8f02cc-3000-8000-b000-0008001e0000"
   },
   {
    "name": "src/core/index.ts",
    "pass": false,
    "value": "266 mK · signal 0 · T₂ 15d · quality 0 · 8 commits/30d · 1 fixes · 37 lines · split 2",
-   "receipt": "4b35e3b5-feb4-86a3-ae50-455918c1d062",
+   "receipt": "f9c628db-c5fd-8370-ae13-b5cd699c44bb",
    "hex": "0a8f02cc-3000-8000-b000-0008001e0001"
-  },
-  {
-   "name": "scripts/generate-readme.mjs",
-   "pass": true,
-   "value": "233 mK · signal 1 · T₂ 30d · quality 30 · 7 commits/30d · 0 fixes · 148 lines · split 1",
-   "receipt": "cfbb8e13-b1c6-8461-93b3-76a1f6180212",
-   "hex": "0a8f02cc-3000-8000-b000-0007001e0000"
   },
   {
    "name": "src/collections/Users.ts",
    "pass": true,
    "value": "233 mK · signal 1 · T₂ 15d · quality 15 · 7 commits/30d · 1 fixes · 71 lines · split 1",
-   "receipt": "06f95bb2-1406-89a6-9791-b4001a23f5f4",
+   "receipt": "4a791c6c-3f59-8562-92f2-84fb49db8cfd",
    "hex": "0a8f02cc-3000-8000-b000-0007001e0001"
   },
   {
    "name": "scripts/generate-docs.mjs",
    "pass": true,
    "value": "200 mK · signal 1 · T₂ 30d · quality 30 · 6 commits/30d · 0 fixes · 241 lines · split 1",
-   "receipt": "e531ce27-a7d1-8722-aabb-def8ae33922a",
+   "receipt": "92be185d-3751-8536-8e3a-c356d77cd52b",
    "hex": "0a8f02cc-3000-8000-b000-0006001e0000"
+  },
+  {
+   "name": "src/mcp/qpu-fused.ts",
+   "pass": true,
+   "value": "166 mK · signal 1 · T₂ 30d · quality 30 · 5 commits/30d · 0 fixes · 427 lines · split 1",
+   "receipt": "70e95332-cc60-852b-979a-72812ebe8add",
+   "hex": "0a8f02cc-3000-8000-b000-0005001e0000"
   },
   {
    "name": "src/mcp/cross-domain-formulas.ts",
    "pass": true,
-   "value": "166 mK · signal 1 · T₂ 30d · quality 30 · 5 commits/30d · 0 fixes · 179 lines · split 1",
-   "receipt": "7339cfc0-7769-8131-af6d-09ad3b3c0c35",
+   "value": "166 mK · signal 1 · T₂ 30d · quality 30 · 5 commits/30d · 0 fixes · 182 lines · split 1",
+   "receipt": "4e400dcc-da2c-8126-a8f9-b3af139ec1f8",
    "hex": "0a8f02cc-3000-8000-b000-0005001e0000"
   },
   {
    "name": "scripts/mutate.mjs",
    "pass": true,
    "value": "166 mK · signal 1 · T₂ 15d · quality 15 · 5 commits/30d · 1 fixes · 136 lines · split 1",
-   "receipt": "07908c7b-672a-8668-aa93-84b08aa00b1a",
+   "receipt": "08962291-7351-8170-b5d2-4ba9a5ae0251",
    "hex": "0a8f02cc-3000-8000-b000-0005001e0001"
   },
   {
    "name": "scripts/embed-lean.mjs",
    "pass": true,
    "value": "166 mK · signal 1 · T₂ 30d · quality 30 · 5 commits/30d · 0 fixes · 61 lines · split 1",
-   "receipt": "51b05bfc-7070-8e9b-9890-5308fe9ccb8f",
+   "receipt": "94e2cb0d-4980-871a-a801-992b208e693d",
    "hex": "0a8f02cc-3000-8000-b000-0005001e0000"
   },
   {
    "name": "src/mcp/clay-automated-solver.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 518 lines · split 1",
-   "receipt": "087838fb-bcc2-8d94-bed3-1ce9fcab27f5",
+   "receipt": "4608e2db-442f-8b9c-891b-df7f4ede0e08",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "src/quantum/processing/unit/lean-eval.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 383 lines · split 1",
-   "receipt": "32e38200-a711-8e76-85e6-8d3ac88d3c8b",
+   "receipt": "48aa9296-4368-87c2-b6c0-bec891472b0a",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "src/utilities/qpu-mcp-unlimited.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 288 lines · split 1",
-   "receipt": "e0a2b293-0a48-867c-b0d2-4d11e1e0a134",
+   "receipt": "aa0e851b-5140-87ef-acb9-76e4a2457e06",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "scripts/lattice.mjs",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 273 lines · split 1",
-   "receipt": "aa809ccc-47ce-87f9-81da-cd8246d88a66",
+   "receipt": "2e36c96b-54b0-8aa1-a427-f9c5b8daaf0b",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "src/mcp/formulas-receipt.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 15d · quality 15 · 4 commits/30d · 1 fixes · 234 lines · split 1",
-   "receipt": "cf4ea919-ca90-8937-80d6-1a07499c343d",
+   "receipt": "7476639f-13c2-8c15-8eb8-da4dcdb8c1d9",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0001"
   },
   {
    "name": "src/core/types.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 10d · quality 10 · 4 commits/30d · 2 fixes · 185 lines · split 1",
-   "receipt": "2e10bed9-6fbe-8c37-b281-7453de42fdb0",
+   "receipt": "b58a341f-337e-8c97-948e-d5b10ff18067",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0002"
   },
   {
    "name": "src/core/uuid-bridge.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 167 lines · split 1",
-   "receipt": "12e35ae4-d259-80be-b661-80cf1a4a1b8d",
+   "receipt": "85eed277-1b1f-8b24-a561-fac6873c979c",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "scripts/examine.mjs",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 161 lines · split 1",
-   "receipt": "4248b14c-d26f-84fe-bc61-cfc9d03a4345",
+   "receipt": "16cde6a1-34c7-83d4-9b70-4500903b90e3",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "src/mcp/cross-domain-paths.ts",
    "pass": true,
-   "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 142 lines · split 1",
-   "receipt": "e8c30d9f-62a1-8777-9ad1-f33940839e11",
+   "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 152 lines · split 1",
+   "receipt": "f689b575-d75e-8ffb-88f7-ea1d56cd0609",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "src/mcp/core.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 135 lines · split 1",
-   "receipt": "de3e258a-0662-8e47-97df-8454f84c3610",
+   "receipt": "f7a212fe-a843-813d-b00d-70d8c0bb97d8",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "scripts/debts.mjs",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 126 lines · split 1",
-   "receipt": "ec3c3ddf-01a4-8dd5-b952-d2db423b3b6a",
+   "receipt": "7a31ac2e-43ec-88f6-81e8-3837dfa9b784",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
@@ -239,59 +253,45 @@
    "name": "src/quantum/processing/unit/boot.ts",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 46 lines · split 1",
-   "receipt": "4f95da28-1929-879d-ac35-0dcaad772dda",
+   "receipt": "34e0cd7a-e1b1-8352-a623-ce16a9d7a540",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "src/quantum/processing/unit/lean/Qpu.lean",
    "pass": true,
    "value": "133 mK · signal 1 · T₂ 30d · quality 30 · 4 commits/30d · 0 fixes · 12 lines · split 1",
-   "receipt": "c60e345d-9639-8aa0-80a5-40255683fc85",
+   "receipt": "66e111e0-f9b9-8b2f-b6b5-62fd3d8c1228",
    "hex": "0a8f02cc-3000-8000-b000-0004001e0000"
   },
   {
    "name": "src/mcp/secure-chat-rbac.ts",
    "pass": true,
    "value": "100 mK · signal 2 · T₂ 30d · quality 60 · 3 commits/30d · 0 fixes · 724 lines · split 1",
-   "receipt": "c12a8adc-1d13-8a7f-9b2d-18eccb0671a7",
+   "receipt": "9982c0e7-48b3-882b-bea0-3b8763fa51a7",
+   "hex": "0a8f02cc-3000-8000-b000-0003001e0000"
+  },
+  {
+   "name": "src/quantum/processing/unit/mcp.ts",
+   "pass": true,
+   "value": "100 mK · signal 2 · T₂ 30d · quality 60 · 3 commits/30d · 0 fixes · 610 lines · split 1",
+   "receipt": "cd824f05-2f2e-8dea-910f-7cf9f5c93cde",
    "hex": "0a8f02cc-3000-8000-b000-0003001e0000"
   },
   {
    "name": "src/mcp/formula-network.ts",
    "pass": true,
    "value": "100 mK · signal 2 · T₂ 30d · quality 60 · 3 commits/30d · 0 fixes · 480 lines · split 1",
-   "receipt": "40c0905c-275b-86b1-90a6-eba74360db48",
+   "receipt": "3e5facdb-19ea-83c5-a6ee-0f2269d18fe0",
    "hex": "0a8f02cc-3000-8000-b000-0003001e0000"
   },
   {
    "name": "src/quantum/processing/unit/docdb.ts",
    "pass": true,
    "value": "100 mK · signal 2 · T₂ 30d · quality 60 · 3 commits/30d · 0 fixes · 417 lines · split 1",
-   "receipt": "aacc6389-4ebe-88bc-a527-8f2bf11d20b3",
-   "hex": "0a8f02cc-3000-8000-b000-0003001e0000"
-  },
-  {
-   "name": "src/distributed/state-sync.ts",
-   "pass": true,
-   "value": "100 mK · signal 2 · T₂ 30d · quality 60 · 3 commits/30d · 0 fixes · 401 lines · split 1",
-   "receipt": "bebf19f2-855b-8d05-b2f4-bb2dc430396f",
-   "hex": "0a8f02cc-3000-8000-b000-0003001e0000"
-  },
-  {
-   "name": "src/mcp/qpu-fused.ts",
-   "pass": true,
-   "value": "100 mK · signal 2 · T₂ 30d · quality 60 · 3 commits/30d · 0 fixes · 401 lines · split 1",
-   "receipt": "f54060b9-590d-845e-a513-30cd46075392",
-   "hex": "0a8f02cc-3000-8000-b000-0003001e0000"
-  },
-  {
-   "name": "src/distributed/consensus.ts",
-   "pass": true,
-   "value": "100 mK · signal 2 · T₂ 30d · quality 60 · 3 commits/30d · 0 fixes · 387 lines · split 1",
-   "receipt": "544c3bf6-99a5-88e2-9edf-d2ec9ffae2d1",
+   "receipt": "ee0ad81d-d133-8e51-b8a2-f6c7400460be",
    "hex": "0a8f02cc-3000-8000-b000-0003001e0000"
   }
  ],
- "uuid": "b387bee0-6581-87aa-9db3-d01af65d907e",
- "receipt": "089fe07a-41a6-8997-8600-d199e71f361d"
+ "uuid": "60ba43f0-656d-87b1-a417-e4905d809a52",
+ "receipt": "ac033619-1bee-8d0a-bdff-12fac479779d"
 }

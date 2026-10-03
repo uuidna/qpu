@@ -1,4 +1,6 @@
 import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** One way a value is reached: a hex-program UUID (family handle, formula nibbles, params split by their count) and its run. */
 export type Way = { family: string; program: string[]; params: number[]; hex: string; receipt?: string }
@@ -10,10 +12,9 @@ export type Seal = { family: string; program: string[]; kind: 'fixed' | 'involut
 
 // the tool doors run whole readings rather than formulas over inputs: they are reached through their own receipts
 export const DOORS = new Set(['qpu', 'crypto'])
-const SMALL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+const SMALL = Array.from({ length: L.mintOf(L.hexbit) }, (_, i) => i + L.seed)
 // the params section splits by count: one 48-bit natural, two 24-bit, three 16-bit
-const WIDTH = [0, 2 ** 48, 2 ** 24, 2 ** 16]
-const fits = (params: number[]) => params.every((p) => Number.isSafeInteger(p) && p >= 0 && p < WIDTH[params.length]!)
+const fits = (params: number[]) => params.every((p) => Number.isSafeInteger(p) && p >= 0 && p < qpuHexParamMaxOf(params.length))
 
 const valueOf = (run: { value?: unknown; holds?: boolean }): string | null => {
   if (run.holds !== true) return null
@@ -33,7 +34,7 @@ const valueOf = (run: { value?: unknown; holds?: boolean }): string | null => {
  */
 export const qpuDiscoverOf = async (live: number[] = []) => {
   const liveSet = new Set(live.filter((x) => Number.isSafeInteger(x) && x >= 0).map(String))
-  const liveInputs = live.filter((x) => Number.isSafeInteger(x) && x >= 0 && x < WIDTH[1]!)
+  const liveInputs = live.filter((x) => Number.isSafeInteger(x) && x >= 0 && x < qpuHexParamMaxOf(L.seed))
   const reached = new Map<string, Way[]>()
   const perFamily: Record<string, { programs: number; runs: number }> = {}
   const seals: Seal[] = []
@@ -42,7 +43,7 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
     const lean = family.startsWith('Qpu.')
     const singles = lean ? SMALL : [...new Set([...SMALL, ...liveInputs])]
     const tuplesOf = (arity: number, short: boolean): number[][] =>
-      arity === 0 ? [[]] : arity === 1 ? (short ? SMALL.slice(0, 4) : singles).map((x) => [x]) : arity === 2 ? SMALL.slice(0, short ? 3 : 8).flatMap((a) => SMALL.slice(0, short ? 3 : 8).map((b) => [a, b])) : SMALL.slice(0, short ? 2 : 5).flatMap((a) => SMALL.slice(0, short ? 2 : 5).flatMap((b) => SMALL.slice(0, short ? 2 : 5).map((c) => [a, b, c])))
+      arity === 0 ? [[]] : arity === 1 ? (short ? SMALL.slice(0, L.hexbit) : singles).map((x) => [x]) : arity === 2 ? SMALL.slice(0, short ? L.n : L.vertices).flatMap((a) => SMALL.slice(0, short ? L.n : L.vertices).map((b) => [a, b])) : SMALL.slice(0, short ? L.coins : L.hexbit + L.seed).flatMap((a) => SMALL.slice(0, short ? L.coins : L.hexbit + L.seed).flatMap((b) => SMALL.slice(0, short ? L.coins : L.hexbit + L.seed).map((c) => [a, b, c])))
     const programs: { program: string[]; tuples: number[][] }[] = [
       ...formulas.map((f) => ({ program: [f.name], tuples: tuplesOf(f.arity, false) })),
       ...formulas.flatMap((a) => formulas.map((b) => ({ program: [a.name, b.name], tuples: tuplesOf(Math.max(a.arity, b.arity), true) }))),
@@ -68,9 +69,9 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
           last = hex
           if (value === String(params[0])) returned.push(params[0]!)
         }
-        if (value === null || BigInt(value) < 3n || params.map(String).includes(value)) continue
+        if (value === null || BigInt(value) < BigInt(L.n) || params.map(String).includes(value)) continue
         const list = reached.get(value) ?? reached.set(value, []).get(value)!
-        if (list.length < 12 && !list.some((w) => w.hex === hex)) list.push({ family, program, params, hex, ...(run.receipt ? { receipt: run.receipt } : {}) })
+        if (list.length < L.n * L.hexbit && !list.some((w) => w.hex === hex)) list.push({ family, program, params, hex, ...(run.receipt ? { receipt: run.receipt } : {}) })
       }
       // one formula: its fixed points; two: the identity on every input tried, an involution when it is one formula twice
       if (program.length === 1 && returned.length) seals.push({ family, program, kind: 'fixed', points: returned, tested, hex: last })

@@ -6,6 +6,8 @@ import { DOORS } from './discovery.js'
 import { CryptFormulas } from './crypt-formulas.js'
 import { hologramStreamsOf } from './hologram-streams.js'
 import { certifyUnreachable, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, verifyColoring, verifyHamCycle, verifySat, verifySubsetSum, type Graph } from './np-formulas.js'
+import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 type Args = Record<string, unknown>
 // an unknown name is answered with every name that resolves it
@@ -44,10 +46,11 @@ qpuMcpFuseOf('qpu_hex', {
 // qpu_data: live public datasets against the unit's own values
 // ---------------------------------------------------------------------------
 
-const DEADLINE = 15000
+// the unit's own deadline: tenOf(hexbit) milliseconds, ten seconds
+const DEADLINE = L.tenOf(L.hexbit)
 // once the network is found out of reach, the network work is skipped for a minute and answered with a warning
 let offlineUntil = 0
-const OFFLINE_WINDOW = 60000
+const OFFLINE_WINDOW = L.tenOf(L.hexbit) * L.coins * L.n
 const get = async (url: string, accept = 'application/json'): Promise<Response> => {
   const r = await fetch(url, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' }, signal: AbortSignal.timeout(DEADLINE) })
   if (!r.ok) throw new Error(`${url} answered ${r.status}`)
@@ -75,7 +78,7 @@ const SEQUENCES: Record<string, { name: string; of: (count: number) => bigint[] 
 /** A formula as an integer sequence: a unary formula over n = 0, 1, …, a binary one as its section f(2, n). The longest run
  *  of whole values is kept; it is a sequence when it has six terms and four distinct values. */
 export type Sequence = { family: string; formula: string; fixed: number[]; terms: string[] }
-const TERMS = 16
+const TERMS = L.mintOf(L.hexbit)
 const sequenceOf = async (family: string, formula: string, fixed: number[]): Promise<Sequence | null> => {
   let best: string[] = [], run: string[] = []
   for (let n = 0; n < TERMS; n++) {
@@ -90,7 +93,7 @@ const sequenceOf = async (family: string, formula: string, fixed: number[]): Pro
     if (x === null) run = []
     else if ((run = [...run, x]).length > best.length) best = run
   }
-  return best.length >= 6 && new Set(best).size >= 4 ? { family, formula, fixed, terms: best } : null
+  return best.length >= L.chooseOf(L.hexbit, L.coins) && new Set(best).size >= L.hexbit ? { family, formula, fixed, terms: best } : null
 }
 let sequences: Promise<Sequence[]> | undefined
 /** Every formula of every family that is an integer sequence, read off the families rather than listed. */
@@ -124,7 +127,7 @@ const reposOf = (): string[] =>
 
 const reading = async (source: string, a: Args) => {
   if (source === 'cern') {
-    const recid = num(a.recid ?? a.id, 38)
+    const recid = num(a.recid ?? a.id, qpuCernRecordsOf().records[L.n - L.n]?.recid ?? L.n - L.n)
     const row = qpuCernRecordsOf().records.find((r) => r.recid === recid)
     if (!row) return fail('recid', { recids: qpuCernRecordsOf().records.map((r) => r.recid) })
     const url = `https://opendata.cern.ch/api/records/${recid}`
@@ -255,7 +258,7 @@ export const qpuDataSourcesOf = async () => [
 ]
 
 // a reading is the same for ten minutes in one isolate: the public sources are read once per window, not once per view
-const WINDOW = 600000
+const WINDOW = L.tenOf(L.hexbit + L.seed) * L.coins * L.n
 const cache = new Map<string, { at: number; value: Promise<unknown> }>()
 
 /** A live public dataset checked against the unit: the reading, what the unit holds, whether they agree, and a receipt. */
@@ -270,7 +273,9 @@ export const qpuDataOf = async (source: string, a: Args = {}) => {
   return value
 }
 const readOf = async (source: string, a: Args) => {
-  if (Date.now() < offlineUntil && source !== 'all')
+  // the name first: an unknown source is answered with every source, network or not
+  if (!SOURCES.includes(source)) return fail('source', { sources: SOURCES })
+  if (Date.now() < offlineUntil)
     return { kind: 'data' as const, source, warning: 'offline', reading: 'skipped: the network was out of reach a moment ago', resolve: 'the network work is skipped while the network is out of reach; it runs again on the next call once it is back' }
   try {
     const r = await reading(source, a)
@@ -279,7 +284,8 @@ const readOf = async (source: string, a: Args) => {
   } catch (e) {
     const f = qpuFailureOf(e, `data ${source}`)
     if (f.level === 'warning') {
-      offlineUntil = Date.now() + OFFLINE_WINDOW
+      // only the network itself out of reach skips the next minute's network work; a slow host is its own warning
+      if (f.why === 'offline') offlineUntil = Date.now() + OFFLINE_WINDOW
       return { kind: 'data' as const, source, warning: f.why, reading: f.reading, resolve: f.resolve }
     }
     return { ...fail('unreachable', { source }), reading: f.reading, why: f.why, resolve: f.resolve }
@@ -302,7 +308,7 @@ qpuMcpFuseOf('qpu_discover', {
   run: async (a) => {
     const { qpuDiscoverOf } = await import('./discovery.js')
     const d = await qpuDiscoverOf(Array.isArray(a.live) ? a.live.map(Number) : [])
-    return { ...d, relations: d.relations.slice(0, num(a.limit, 50)), relationsTotal: d.relations.length }
+    return { ...d, relations: d.relations.slice(0, num(a.limit, (L.hexbit + L.seed) * L.tenOf(L.seed))), relationsTotal: d.relations.length }
   },
 })
 
@@ -352,8 +358,8 @@ qpuMcpFuseOf('qpu_crypt', {
 // qpu_np: certificate verifiers and the theorems they decide
 // ---------------------------------------------------------------------------
 
-const MAX_VERTICES = 4096
-const MAX_EDGES = 100000
+const MAX_VERTICES = L.mintOf(L.n * L.hexbit)
+const MAX_EDGES = L.tenOf(L.hexbit + L.seed)
 const graphOf = (a: Args): Graph | null => {
   const n = num(a.n, -1)
   const edges = Array.isArray(a.edges) ? (a.edges as unknown[]).filter((e): e is [number, number] => Array.isArray(e) && e.length === 2 && e.every((v) => Number.isSafeInteger(v) && v >= 0 && v < n)) : []

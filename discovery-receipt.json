@@ -3,7 +3,7 @@
  "when": "2026-10-03",
  "sources": 45,
  "sourcesAgree": 35,
- "liveNumbers": 257,
+ "liveNumbers": 256,
  "sequences": 8,
  "identities": 1,
  "apisWalked": 2529,
@@ -12,9 +12,9 @@
  "involutions": 1,
  "inversePairs": 0,
  "families": 15,
- "runs": 10924,
- "relationsTotal": 162,
- "liveRelations": 162,
+ "runs": 10902,
+ "relationsTotal": 161,
+ "liveRelations": 161,
  "unrelated": "Qpu.Coil Qpu.Hybrid audit",
  "holds": true,
  "rows": [
@@ -70,13 +70,13 @@
    "name": "live CERN Open Data · record 38",
    "pass": true,
    "value": "{\"title\":\"/SingleMu/Run2011A-v1/RAW\",\"events\":2079006,\"files\":116}",
-   "receipt": "dae1edf1-ee7f-897b-afef-93cccf63b3e6"
+   "receipt": "3c4aba2c-efa5-851a-a4bc-e4f73299b090"
   },
   {
    "name": "live CERN Open Data · record 63",
    "pass": true,
    "value": "{\"title\":\"/SingleMu/Run2012B-v1/RAW\",\"events\":2301668,\"files\":184}",
-   "receipt": "001127d9-e9d2-8f91-a261-48b2ec9565da"
+   "receipt": "700e99ec-32dd-8ad4-a144-1e2283943a5c"
   },
   {
    "name": "live CERN Open Data · record 35",
@@ -88,151 +88,151 @@
    "name": "live CERN Open Data · record 62",
    "pass": true,
    "value": "{\"title\":\"/MinimumBias/Run2012B-v1/RAW\",\"events\":2745751,\"files\":130}",
-   "receipt": "3429ed40-8aac-8668-aec1-986185e2aa89"
+   "receipt": "24f46ca9-d2ad-86d9-bff4-a86a1b85509c"
   },
   {
    "name": "live NIST CODATA · Planck, Boltzmann",
    "pass": true,
    "value": "{\"planck\":{\"value\":\"6.626 070 15 e-34\",\"digits\":\"662607015\",\"exact\":true},\"boltzmann\":{\"value\":\"1.380 649 e-23\",\"digits\":\"1380649\",\"exact\":true}}",
-   "receipt": "526f1e10-d194-83b0-a20d-230829a70185"
+   "receipt": "11d9f82d-bcf5-86b6-b734-599e4640fabd"
   },
   {
    "name": "live OEIS A000110 · Bell numbers",
    "pass": true,
    "value": "{\"name\":\"Bell numbers\",\"terms\":27,\"last\":\"49631246523618756274\"}",
-   "receipt": "47e975d4-3684-84be-b88b-a2a4ce461de9"
+   "receipt": "eb62c26e-1661-806f-a375-6ef469ec8108"
   },
   {
    "name": "live OEIS A000108 · Catalan numbers",
    "pass": true,
    "value": "{\"name\":\"Catalan numbers\",\"terms\":31,\"last\":\"3814986502092304\"}",
-   "receipt": "cb0817e7-7caa-84e5-ba4e-4985578fd78f"
+   "receipt": "bf331e3b-0691-8118-8583-ac2db69956c0"
   },
   {
    "name": "live OEIS · Qpu.Mint.mintOf(n)",
    "pass": true,
    "value": "{\"formula\":\"Qpu.Mint.mintOf(n)\",\"terms\":\"1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768\",\"oeis\":\"A000079\",\"name\":\"Powers of 2: a(n) = 2^n.\",\"candidates\":10}",
-   "receipt": "6a2ad719-58e4-89cb-b60b-1f7c8df11d0a"
+   "receipt": "c1864e38-76d7-871f-ae53-de3739351b55"
   },
   {
    "name": "live OEIS · Qpu.Shor.periodOf(2, n)",
    "pass": false,
    "value": "{\"formula\":\"Qpu.Shor.periodOf(2, n)\",\"terms\":\"0,0,0,2,0,4,0,3,0,6,0,10,0,12,0,4\",\"oeis\":\"none\",\"name\":\"\",\"candidates\":0}",
-   "receipt": "8c67f03a-9c6c-8e9d-8e63-1fdf2fe3ab89"
+   "receipt": "a837c69f-2c85-8950-8f17-b893605a9dd6"
   },
   {
    "name": "live OEIS · Qpu.Shor.half(2, n)",
    "pass": false,
    "value": "{\"formula\":\"Qpu.Shor.half(2, n)\",\"terms\":\"1,0,1,2,1,4,1,2,1,8,1,10,1,12,1,4\",\"oeis\":\"none\",\"name\":\"\",\"candidates\":0}",
-   "receipt": "54b9fc29-da2f-835c-9a4a-c8cdabedc89a"
+   "receipt": "77612fd5-de73-8aef-85d6-7fbd4ae17f72"
   },
   {
    "name": "live OEIS · Qpu.Physics.thermal(n)",
    "pass": false,
    "value": "{\"formula\":\"Qpu.Physics.thermal(n)\",\"terms\":\"0,13806490,27612980,41419470,55225960,69032450,82838940,96645430,110451920,124258410,138064900,151871390,165677880,179484370,193290860,207097350\",\"oeis\":\"none\",\"name\":\"\",\"candidates\":0}",
-   "receipt": "ef6c9025-0686-8da3-9ea1-4835f2e9f8ba"
+   "receipt": "d994fffc-da1e-8987-af95-6e48d58883d3"
   },
   {
    "name": "live OEIS · cross.medSecureWithQSec(2, n)",
    "pass": true,
    "value": "{\"formula\":\"cross.medSecureWithQSec(2, n)\",\"terms\":\"2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768,65536\",\"oeis\":\"A000079\",\"name\":\"Powers of 2: a(n) = 2^n.\",\"candidates\":10}",
-   "receipt": "48da09f9-a48f-8c0d-aab9-e1d656ef60f5"
+   "receipt": "248b602d-c0db-80ec-af6f-fddd71a6cf0e"
   },
   {
    "name": "live OEIS · signal.keyspace(n)",
    "pass": true,
    "value": "{\"formula\":\"signal.keyspace(n)\",\"terms\":\"1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384,32768\",\"oeis\":\"A000079\",\"name\":\"Powers of 2: a(n) = 2^n.\",\"candidates\":10}",
-   "receipt": "84395e6a-9452-87af-aa32-4a89465c5602"
+   "receipt": "ddd54b72-8489-8550-bf38-b2770ebe7677"
   },
   {
    "name": "live OEIS · holo.proofDepth(n)",
    "pass": true,
    "value": "{\"formula\":\"holo.proofDepth(n)\",\"terms\":\"0,1,2,2,3,3,3,3,4,4,4,4,4,4,4\",\"oeis\":\"A029837\",\"name\":\"Binary order of n: log_2(n) rounded up to next integer.\",\"candidates\":4}",
-   "receipt": "ad690800-87ef-80a2-bb8a-b4899941425c"
+   "receipt": "f8a79d39-f29a-8770-b998-5c6871e88fcd"
   },
   {
    "name": "live OEIS · clay.bsd(n)",
    "pass": true,
    "value": "{\"formula\":\"clay.bsd(n)\",\"terms\":\"0,0,1,0,2,0,2,1,4,0,5,2,2\",\"oeis\":\"A329152\",\"name\":\"a(n) = Sum_{i=1..n-1} Sum_{j=1..i-1} [1 == i*j (mod n)], where [] is the Iverson bracket.\",\"candidates\":1}",
-   "receipt": "7987e9df-1dda-8ea0-83b2-8ee9a5596e09"
+   "receipt": "b16aa9d6-bf98-8d4b-b5bc-da4c6afca375"
   },
   {
    "name": "live OEIS · clay.hodge(n)",
    "pass": true,
    "value": "{\"formula\":\"clay.hodge(n)\",\"terms\":\"0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30\",\"oeis\":\"A005843\",\"name\":\"The nonnegative even numbers: a(n) = 2n.\",\"candidates\":8}",
-   "receipt": "5aedcd6a-1f45-80b1-a315-639024734b3e"
+   "receipt": "7f00a8ec-b5ab-89fe-8ef3-58ce50729d25"
   },
   {
    "name": "live OEIS · heat.signal(n)",
    "pass": false,
    "value": "{\"formula\":\"heat.signal(n)\",\"terms\":\"3313035075,239,119,79,59,47,39,34,29,26,23,21,19,18,17,15\",\"oeis\":\"none\",\"name\":\"\",\"candidates\":0}",
-   "receipt": "a64ccb69-9122-8c8e-a24a-53b1e2e2797f"
+   "receipt": "79125417-0966-819d-a6ce-0332c033eec1"
   },
   {
    "name": "live OEIS · heat.temperature(2, n)",
    "pass": false,
    "value": "{\"formula\":\"heat.temperature(2, n)\",\"terms\":\"2000,2000,1000,666,500,400,333,285,250,222,200,181,166,153,142,133\",\"oeis\":\"none\",\"name\":\"\",\"candidates\":0}",
-   "receipt": "5fd8b6b2-20fe-8a0e-a2e1-2a227dd716cf"
+   "receipt": "846f7207-2fbe-8fcd-aa4a-e3b55801b2ba"
   },
   {
    "name": "live OEIS · np.isSpace(n)",
    "pass": true,
    "value": "{\"formula\":\"np.isSpace(n)\",\"terms\":\"1,2,2,3,3,3,3,4,4,4,4,4,4,4,4\",\"oeis\":\"A070939\",\"name\":\"Length of binary representation of n.\",\"candidates\":6}",
-   "receipt": "a700ef70-bf21-8567-a289-61ef6fdab6ca"
+   "receipt": "8007399c-61a1-81bc-9bb3-165d126b6885"
   },
   {
    "name": "live OEIS · np.isTime(n)",
    "pass": true,
    "value": "{\"formula\":\"np.isTime(n)\",\"terms\":\"0,1,32,243,1024,3125,7776,16807,32768,59049,100000,161051,248832,371293,537824,759375\",\"oeis\":\"A000584\",\"name\":\"Fifth powers: a(n) = n^5.\",\"candidates\":1}",
-   "receipt": "95f83124-bcc3-8343-a552-5995b9d2a8a8"
+   "receipt": "c2e1f772-dcbe-825a-9227-ccc15d910e34"
   },
   {
    "name": "live Zenodo · latest release",
-   "pass": true,
+   "pass": false,
    "value": "{\"record\":23091364,\"doi\":\"10.5281/zenodo.23091364\",\"version\":\"v1.0.0\",\"published\":\"2026-10-01\"}",
-   "receipt": "eff80493-e0c7-8067-8941-76fb73ad2a60"
+   "receipt": "f084d68d-c316-8a37-8d73-c4d6eb6910cc"
   },
   {
    "name": "live DataCite · 10.5281/zenodo.23091364",
    "pass": true,
    "value": "{\"title\":\"QPU\",\"creators\":\"Rouschev\",\"year\":2026,\"citations\":0,\"views\":0,\"downloads\":0,\"versions\":0}",
-   "receipt": "f13dcf6e-e8b4-838f-baef-cb7b41e6de37"
+   "receipt": "1cd1e7ff-1d94-8408-9065-ee32f1c527ad"
   },
   {
    "name": "live DataCite · 10.5281/zenodo.22700098",
    "pass": true,
    "value": "{\"title\":\"QPU\",\"creators\":\"Rouschev\",\"year\":2026,\"citations\":0,\"views\":0,\"downloads\":0,\"versions\":14}",
-   "receipt": "a9432290-e283-8555-b536-1c16ff684b91"
+   "receipt": "c68d7731-773a-8008-a242-e03a3a6f5c27"
   },
   {
    "name": "live DataCite · 10.5281/zenodo.21781603",
    "pass": true,
    "value": "{\"title\":\"All Seven Clay Millennium Problems Sealed via Universal σ-Involution\",\"creators\":\"Rouschev\",\"year\":2026,\"citations\":19,\"views\":0,\"downloads\":0,\"versions\":6}",
-   "receipt": "b636723f-5e28-845b-b06d-ec0593b86c57"
+   "receipt": "670107bb-d6b9-85d4-8d04-2b4482ebbfa8"
   },
   {
    "name": "live DataCite · 10.5281/zenodo.21781602",
    "pass": true,
    "value": "{\"title\":\"All Seven Clay Millennium Problems Sealed via Universal σ-Involution\",\"creators\":\"Rouschev\",\"year\":2026,\"citations\":1,\"views\":0,\"downloads\":0,\"versions\":6}",
-   "receipt": "a57d580e-4653-8ef6-b9fa-617da687bcde"
+   "receipt": "c89a01d9-0f3a-8083-91d7-91df07cd1163"
   },
   {
    "name": "live ORCID · author",
-   "pass": false,
-   "value": "{\"family\":\"Roustchev\",\"given\":\"Tsvetan\",\"works\":7}",
-   "receipt": "c6c67b46-5236-8ae3-b6e4-677380d6abe5"
+   "pass": true,
+   "value": "{\"family\":\"Roustchev\",\"given\":\"Tsvetan\",\"credit\":\"Tsvetan Rouschev\",\"works\":7}",
+   "receipt": "24753708-d079-82a9-a703-3a3168ca7760"
   },
   {
    "name": "live GitHub · uuidna/qpu",
    "pass": true,
-   "value": "{\"branch\":\"main\",\"pushed\":\"2026-10-02T23:14:48Z\",\"license\":\"NOASSERTION\",\"stars\":1,\"forks\":0,\"issues\":3}",
-   "receipt": "8617a4ee-047e-8732-995a-9d664e0f20c9"
+   "value": "{\"branch\":\"main\",\"pushed\":\"2026-10-03T07:01:22Z\",\"license\":\"NOASSERTION\",\"stars\":1,\"forks\":0,\"issues\":1}",
+   "receipt": "4869a31b-7cfd-8618-99e9-01c6456abd97"
   },
   {
    "name": "live GitHub · uuidna/uuidna",
    "pass": true,
    "value": "{\"branch\":\"main\",\"pushed\":\"2026-10-02T15:21:24Z\",\"license\":\"NOASSERTION\",\"stars\":2,\"forks\":0,\"issues\":2}",
-   "receipt": "d91043a0-6c5b-8428-a42a-95c8d43d658c"
+   "receipt": "a3e21554-22d1-88f5-9ebf-683552784cdd"
   },
   {
    "name": "live GitHub · uuidna/payload",
@@ -243,86 +243,86 @@
   {
    "name": "live npm · @uuidna/qpu",
    "pass": false,
-   "value": "{\"latest\":\"0.2.1\",\"versions\":12,\"modified\":\"2026-09-29T15:49:17.938Z\"}",
-   "receipt": "9854a376-d1a5-89b1-a2f9-ddbb303cfe3f"
+   "value": "{\"latest\":\"1.0.0\",\"versions\":13,\"modified\":\"2026-10-03T06:50:46.024Z\"}",
+   "receipt": "bc1238b3-28e3-8e4d-94fa-32c666a1d041"
   },
   {
    "name": "live APIs.guru · every public API",
    "pass": true,
    "value": "{\"apis\":2529,\"specs\":3992,\"endpoints\":108837,\"unreachable\":166,\"invalid\":688}",
-   "receipt": "0a28e900-2b80-8f39-9fc6-e817f639a292"
+   "receipt": "57ba1094-6be2-8dc9-b15b-9ab6af520e4a"
   },
   {
    "name": "live catalog · literature",
    "pass": true,
    "value": "{\"name\":\"literature\",\"total\":1890068}",
-   "receipt": "eee9a57e-675a-8ab6-9b6e-1fb566e4ccd0"
+   "receipt": "2a3af094-03cd-8279-8306-91c410f01522"
   },
   {
    "name": "live catalog · authors",
    "pass": true,
-   "value": "{\"name\":\"authors\",\"total\":806609}",
-   "receipt": "b76de923-d7ff-8011-bc91-12a2e49d501c"
+   "value": "{\"name\":\"authors\",\"total\":806647}",
+   "receipt": "5c6ca86a-f0d9-812f-b0d7-14fc7b06cadf"
   },
   {
    "name": "live catalog · institutions",
    "pass": true,
    "value": "{\"name\":\"institutions\",\"total\":12328}",
-   "receipt": "49da7602-cc85-8569-b36a-c519478a608a"
+   "receipt": "f4e91f22-8740-85ca-8f79-26e23b96fb9a"
   },
   {
    "name": "live catalog · conferences",
    "pass": true,
    "value": "{\"name\":\"conferences\",\"total\":31746}",
-   "receipt": "0201aaa1-943e-86fa-8409-c20ad4a3014b"
+   "receipt": "f3b1530b-d9a8-8b2a-9ee5-0abe916cd2cc"
   },
   {
    "name": "live catalog · seminars",
    "pass": true,
    "value": "{\"name\":\"seminars\",\"total\":3567}",
-   "receipt": "5dbbf48a-ea09-8191-b57a-fcc86b38a216"
+   "receipt": "af0bec68-1739-8eee-a079-f8796c6e971b"
   },
   {
    "name": "live catalog · journals",
    "pass": true,
    "value": "{\"name\":\"journals\",\"total\":4331}",
-   "receipt": "31938044-ef9f-819b-9355-b59bd66f77c5"
+   "receipt": "55d6029a-b2d7-8691-b5ad-e47c62fd1b4b"
   },
   {
    "name": "live catalog · jobs",
    "pass": true,
    "value": "{\"name\":\"jobs\",\"total\":31794}",
-   "receipt": "2b36129e-0f35-8a34-8b03-94d1a4367481"
+   "receipt": "0949694d-83b1-86a4-871f-a71762c053f1"
   },
   {
    "name": "live catalog · experiments",
    "pass": true,
    "value": "{\"name\":\"experiments\",\"total\":4007}",
-   "receipt": "51a44a31-48eb-81f4-a3c2-3c66a02121ff"
+   "receipt": "36cfdc39-9926-87b7-80c5-6ef87adf22e2"
   },
   {
    "name": "live catalog · data",
    "pass": true,
    "value": "{\"name\":\"data\",\"total\":11635}",
-   "receipt": "074a3b3d-8659-820a-8ce2-f2fae0d31c71"
+   "receipt": "d4b173af-ce57-81f3-b5b8-53722a8336a7"
   },
   {
    "name": "live catalog · opendata",
    "pass": true,
    "value": "{\"name\":\"opendata\",\"total\":82386}",
-   "receipt": "5ab49771-6baa-88cd-b343-ca9fb2cc1f25"
+   "receipt": "1d88504e-5d5d-8b39-bead-262717195913"
   },
   {
    "name": "live catalog · repository",
    "pass": true,
    "value": "{\"name\":\"repository\",\"total\":72758}",
-   "receipt": "1c169e0a-558b-894c-9d0d-e5c89eccf625"
+   "receipt": "72224e77-b6c3-8245-815b-657bf48023d3"
   },
   {
    "name": "live catalog · zenodo",
    "pass": true,
-   "value": "{\"name\":\"zenodo\",\"total\":7398649}",
-   "receipt": "ffe01587-3dee-89c2-9e27-9ae1700a38a5"
+   "value": "{\"name\":\"zenodo\",\"total\":7400255}",
+   "receipt": "150daecc-058a-8a64-8eb1-7d388b7e26cd"
   },
   {
    "name": "live catalog · hepdata",
@@ -333,7 +333,7 @@
   {
    "name": "live catalog · indico",
    "pass": false,
-   "value": "unreachable: The operation was aborted due to timeout",
+   "value": "\"The operation was aborted due to timeout\"",
    "receipt": ""
   },
   {
@@ -381,37 +381,37 @@
   {
    "name": "family clay",
    "pass": true,
-   "value": "42 programs, 1144 runs",
+   "value": "42 programs, 1141 runs",
    "receipt": ""
   },
   {
    "name": "family cross",
    "pass": true,
-   "value": "110 programs, 2077 runs",
+   "value": "110 programs, 2074 runs",
    "receipt": ""
   },
   {
    "name": "family crypt",
    "pass": true,
-   "value": "42 programs, 1432 runs",
+   "value": "42 programs, 1427 runs",
    "receipt": ""
   },
   {
    "name": "family heat",
    "pass": true,
-   "value": "42 programs, 947 runs",
+   "value": "42 programs, 946 runs",
    "receipt": ""
   },
   {
    "name": "family holo",
    "pass": true,
-   "value": "6 programs, 532 runs",
+   "value": "6 programs, 530 runs",
    "receipt": ""
   },
   {
    "name": "family np",
    "pass": true,
-   "value": "42 programs, 1404 runs",
+   "value": "42 programs, 1400 runs",
    "receipt": ""
   },
   {
@@ -423,25 +423,25 @@
   {
    "name": "family signal",
    "pass": true,
-   "value": "42 programs, 1454 runs",
+   "value": "42 programs, 1450 runs",
    "receipt": ""
   },
   {
    "name": "relation 13",
    "pass": true,
    "value": "clay + crypt + heat + holo + np + signal (live): signal[siftedBits](26) 5062cd8f-6000-8000-9000-00000000001a; holo[proofDepth](4331) 4029f1cc-2000-8000-9000-0000000010eb; crypt[curveClassicalBits](26) 62d1d39f-1000-8000-9000-00000000001a; crypt[symmetricQuantumBits](26) 62d1d39f-5000-8000-9000-00000000001a",
-   "receipt": "ce537591-8b64-86c8-a5f0-a3742d319498"
+   "receipt": "335a1239-5093-8307-9e8f-5902641c2245"
   },
   {
    "name": "relation 17",
    "pass": true,
    "value": "clay + crypt + heat + holo + np + signal (live): signal[siftedBits](34) 5062cd8f-6000-8000-9000-000000000022; holo[proofDepth](108837) 4029f1cc-2000-8000-9000-00000001a925; holo[proofDepth](82386) 4029f1cc-2000-8000-9000-0000000141d2; holo[proofDepth](72758) 4029f1cc-2000-8000-9000-000000011c36",
-   "receipt": "b329dbb2-39be-8bbd-980f-4e804bb08f9a"
+   "receipt": "7e8f30af-399f-82bd-a4b1-4ca93e5f23e1"
   },
   {
    "name": "relation 20",
    "pass": true,
-   "value": "Qpu.Mint + clay + cross + crypt + holo + signal (live): Qpu.Mint[chooseOf](6,3) c8372ae3-2000-8000-a000-000006000003; cross[medSecureWithQSec](5,2) 0c36469f-5000-8000-a000-000005000002; signal[siftedBits](40) 5062cd8f-6000-8000-9000-000000000028; holo[proofDepth](806609) 4029f1cc-2000-8000-9000-0000000c4ed1",
+   "value": "Qpu.Mint + clay + cross + crypt + holo + signal (live): Qpu.Mint[chooseOf](6,3) c8372ae3-2000-8000-a000-000006000003; cross[medSecureWithQSec](5,2) 0c36469f-5000-8000-a000-000005000002; signal[siftedBits](40) 5062cd8f-6000-8000-9000-000000000028; holo[proofDepth](806647) 4029f1cc-2000-8000-9000-0000000c4ef7",
    "receipt": "33a4ae8d-f5c8-8bc5-a9f7-6bec6aec95e9"
   },
   {
@@ -449,12 +449,6 @@
    "pass": true,
    "value": "Qpu.Mint + crypt + heat + holo + np + signal (live): Qpu.Mint[chooseOf](7,2) c8372ae3-2000-8000-a000-000007000002; Qpu.Mint[chooseOf](7,5) c8372ae3-2000-8000-a000-000007000005; signal[keyBits](56) 5062cd8f-3000-8000-9000-000000000038; signal[siftedBits](42) 5062cd8f-6000-8000-9000-00000000002a",
    "receipt": "63554fe2-55ff-8744-b0f8-ba6115e2bd49"
-  },
-  {
-   "name": "relation 25",
-   "pass": true,
-   "value": "Qpu.Physics + clay + crypt + holo + np + signal (live): Qpu.Physics[bcs→gap](1) cf1194df-6900-8000-9000-000000000001; Qpu.Physics[bcs→gap](2) cf1194df-6900-8000-9000-000000000002; Qpu.Physics[bcs→gap](3) cf1194df-6900-8000-9000-000000000003; Qpu.Physics[bcs→gap](4) cf1194df-6900-8000-9000-000000000004",
-   "receipt": "5573a645-8972-83eb-9976-290e9ebebeef"
   },
   {
    "name": "relation 6",
@@ -466,7 +460,7 @@
    "name": "relation 11",
    "pass": true,
    "value": "crypt + heat + holo + np + signal (live): signal[siftedBits](22) 5062cd8f-6000-8000-9000-000000000016; holo[proofDepth](2026) 4029f1cc-2000-8000-9000-0000000007ea; holo[proofDepth](1182) 4029f1cc-2000-8000-9000-00000000049e; crypt[curveClassicalBits](22) 62d1d39f-1000-8000-9000-000000000016",
-   "receipt": "5aa2ceaf-07bb-8758-947a-050553bb8d0e"
+   "receipt": "e113b4d1-011e-8115-8f78-6a52b1faaa0c"
   },
   {
    "name": "relation 15",
@@ -478,37 +472,43 @@
    "name": "relation 18",
    "pass": true,
    "value": "clay + crypt + heat + np + signal (live): signal[keyBits](48) 5062cd8f-3000-8000-9000-000000000030; signal[siftedBits](36) 5062cd8f-6000-8000-9000-000000000024; crypt[curveClassicalBits](36) 62d1d39f-1000-8000-9000-000000000024; crypt[symmetricQuantumBits](36) 62d1d39f-5000-8000-9000-000000000024",
-   "receipt": "75be3706-0fb5-8dca-b9eb-edb7d1590c25"
+   "receipt": "fa7c9bec-3e83-83f3-aa28-c9257b875007"
   },
   {
    "name": "relation 19",
    "pass": true,
    "value": "clay + crypt + heat + np + signal (live): signal[siftedBits](38) 5062cd8f-6000-8000-9000-000000000026; crypt[curveClassicalBits](38) 62d1d39f-1000-8000-9000-000000000026; crypt[symmetricQuantumBits](38) 62d1d39f-5000-8000-9000-000000000026; clay[bsd](41) 13962491-1000-8000-9000-000000000029",
-   "receipt": "c71a6991-9b5f-8b15-981d-919345462482"
+   "receipt": "c74eacb1-1185-8d88-afee-d9625873cd42"
   },
   {
    "name": "relation 22",
    "pass": true,
    "value": "clay + crypt + holo + np + signal (live): signal[siftedBits](44) 5062cd8f-6000-8000-9000-00000000002c; holo[proofDepth](2301668) 4029f1cc-2000-8000-9000-000000231ee4; holo[proofDepth](2745751) 4029f1cc-2000-8000-9000-00000029e597; crypt[curveClassicalBits](44) 62d1d39f-1000-8000-9000-00000000002c",
-   "receipt": "a36fe7e5-ef38-8abe-a407-4301ffeebf10"
+   "receipt": "cd2cb02d-97a4-8979-9ee7-955916f0c8e1"
   },
   {
    "name": "relation 23",
    "pass": true,
-   "value": "crypt + heat + holo + np + signal (live): signal[siftedBits](46) 5062cd8f-6000-8000-9000-00000000002e; holo[proofDepth](7398649) 4029f1cc-2000-8000-9000-00000070e4f9; crypt[curveClassicalBits](46) 62d1d39f-1000-8000-9000-00000000002e; crypt[symmetricQuantumBits](46) 62d1d39f-5000-8000-9000-00000000002e",
-   "receipt": "5b4eee7b-0b17-864f-b338-8d623d2e2159"
+   "value": "crypt + heat + holo + np + signal (live): signal[siftedBits](46) 5062cd8f-6000-8000-9000-00000000002e; holo[proofDepth](7400255) 4029f1cc-2000-8000-9000-00000070eb3f; crypt[curveClassicalBits](46) 62d1d39f-1000-8000-9000-00000000002e; crypt[symmetricQuantumBits](46) 62d1d39f-5000-8000-9000-00000000002e",
+   "receipt": "ea7cc268-c7c0-8d5e-9a6f-b47a4ea8957a"
   },
   {
    "name": "relation 24",
    "pass": true,
    "value": "clay + cross + crypt + np + signal (live): cross[medSecureWithQSec](3,3) 0c36469f-5000-8000-a000-000003000003; cross[medSecureWithQSec](6,2) 0c36469f-5000-8000-a000-000006000002; signal[keyBits](64) 5062cd8f-3000-8000-9000-000000000040; signal[siftedBits](48) 5062cd8f-6000-8000-9000-000000000030",
-   "receipt": "efd76c45-b14b-8c74-b61e-f7486206c436"
+   "receipt": "12cdd1f4-a2cd-8e09-aae7-9f6ba695aa8d"
+  },
+  {
+   "name": "relation 25",
+   "pass": true,
+   "value": "Qpu.Physics + clay + crypt + np + signal (live): Qpu.Physics[bcs→gap](1) cf1194df-6900-8000-9000-000000000001; Qpu.Physics[bcs→gap](2) cf1194df-6900-8000-9000-000000000002; Qpu.Physics[bcs→gap](3) cf1194df-6900-8000-9000-000000000003; Qpu.Physics[bcs→gap](4) cf1194df-6900-8000-9000-000000000004",
+   "receipt": "5573a645-8972-83eb-9976-290e9ebebeef"
   },
   {
    "name": "relation 30",
    "pass": true,
    "value": "clay + crypt + holo + np + signal (live): signal[keyBits](80) 5062cd8f-3000-8000-9000-000000000050; signal[siftedBits](60) 5062cd8f-6000-8000-9000-00000000003c; holo[proofDepth](662607015) 4029f1cc-2000-8000-9000-0000277e94a7; crypt[curveClassicalBits](60) 62d1d39f-1000-8000-9000-00000000003c",
-   "receipt": "9a97eaeb-ea73-856a-890a-3fc5fb3132fb"
+   "receipt": "68e211a6-3ff7-8292-ad42-cd8b1321e949"
   },
   {
    "name": "relation 56",
@@ -526,7 +526,7 @@
    "name": "relation 12",
    "pass": true,
    "value": "cross + crypt + holo + signal (live): cross[medSecureWithQSec](3,2) 0c36469f-5000-8000-a000-000003000002; cross[medSecureWithQSec](6,1) 0c36469f-5000-8000-a000-000006000001; cross[medSecureWithQSec→medSecureWithQSec](3,1) 0c36469f-5500-8000-a000-000003000001; signal[keyBits](32) 5062cd8f-3000-8000-9000-000000000020",
-   "receipt": "f33dc599-34b1-8388-8826-410c38f8a5b6"
+   "receipt": "7f99ecde-08a8-8820-ae5c-6bf25df19b6d"
   },
   {
    "name": "relation 16",
@@ -538,19 +538,13 @@
    "name": "relation 26",
    "pass": true,
    "value": "clay + crypt + heat + signal (live): signal[siftedBits](52) 5062cd8f-6000-8000-9000-000000000034; crypt[curveClassicalBits](52) 62d1d39f-1000-8000-9000-000000000034; crypt[symmetricQuantumBits](52) 62d1d39f-5000-8000-9000-000000000034; clay[bsd](116) 13962491-1000-8000-9000-000000000074",
-   "receipt": "c26d2acb-957f-86c5-8787-18e50703e1df"
-  },
-  {
-   "name": "relation 27",
-   "pass": true,
-   "value": "crypt + heat + np + signal (live): signal[keyBits](72) 5062cd8f-3000-8000-9000-000000000048; signal[siftedBits](54) 5062cd8f-6000-8000-9000-000000000036; crypt[curveClassicalBits](54) 62d1d39f-1000-8000-9000-000000000036; crypt[symmetricQuantumBits](54) 62d1d39f-5000-8000-9000-000000000036",
-   "receipt": "9655daaa-4a2a-88f9-8c78-d56a584d7c92"
+   "receipt": "a9094770-bc15-8008-80ed-454d1af75739"
   },
   {
    "name": "relation 29",
    "pass": true,
    "value": "clay + crypt + heat + signal (live): signal[siftedBits](58) 5062cd8f-6000-8000-9000-00000000003a; crypt[curveClassicalBits](58) 62d1d39f-1000-8000-9000-00000000003a; crypt[symmetricQuantumBits](58) 62d1d39f-5000-8000-9000-00000000003a; clay[bsd](61) 13962491-1000-8000-9000-00000000003d",
-   "receipt": "6bf731db-ae4b-8a3f-86e2-bee0d8681d9d"
+   "receipt": "7fb1c69b-5b03-83ab-bacf-77928a2f13b9"
   },
   {
    "name": "relation 35",
@@ -562,25 +556,25 @@
    "name": "relation 40",
    "pass": true,
    "value": "clay + cross + crypt + signal (live): cross[medSecureWithQSec](5,3) 0c36469f-5000-8000-a000-000005000003; signal[siftedBits](80) 5062cd8f-6000-8000-9000-000000000050; crypt[curveClassicalBits](80) 62d1d39f-1000-8000-9000-000000000050; crypt[symmetricQuantumBits](80) 62d1d39f-5000-8000-9000-000000000050",
-   "receipt": "0e1a8ff9-7db7-825b-a502-d9fe5f7938d1"
+   "receipt": "92b2d4f8-3e4e-8831-8e6c-ac545f34562b"
   },
   {
    "name": "relation 47",
    "pass": true,
    "value": "clay + crypt + heat + signal (live): signal[siftedBits](94) 5062cd8f-6000-8000-9000-00000000005e; crypt[curveClassicalBits](94) 62d1d39f-1000-8000-9000-00000000005e; crypt[symmetricQuantumBits](94) 62d1d39f-5000-8000-9000-00000000005e; clay[bsd](97) 13962491-1000-8000-9000-000000000061",
-   "receipt": "377bc6d9-988e-8318-b2e5-2784b6110909"
+   "receipt": "b3f2c734-e037-876d-abd6-4054f81aedb4"
   },
   {
    "name": "relation 48",
    "pass": true,
    "value": "clay + cross + crypt + signal (live): cross[medSecureWithQSec](3,4) 0c36469f-5000-8000-a000-000003000004; cross[medSecureWithQSec](6,3) 0c36469f-5000-8000-a000-000006000003; cross[medSecureWithQSec→medSecureWithQSec](3,2) 0c36469f-5500-8000-a000-000003000002; signal[siftedBits](96) 5062cd8f-6000-8000-9000-000000000060",
-   "receipt": "27886df5-c970-8a4c-b3e6-4b37c947d26a"
+   "receipt": "9da8bd51-aa75-8ea8-ad96-b6df89c773f3"
   },
   {
    "name": "relation 60",
    "pass": true,
    "value": "clay + crypt + heat + signal (live): signal[siftedBits](120) 5062cd8f-6000-8000-9000-000000000078; crypt[curveClassicalBits](120) 62d1d39f-1000-8000-9000-000000000078; crypt[symmetricQuantumBits](120) 62d1d39f-5000-8000-9000-000000000078; clay[bsd](272) 13962491-1000-8000-9000-000000000110",
-   "receipt": "a43c88d7-7912-8e46-b579-7b1784222e78"
+   "receipt": "1b2f3421-8316-812a-9087-d44a8dd6844d"
   },
   {
    "name": "relation 64",
@@ -598,19 +592,19 @@
    "name": "relation 80",
    "pass": true,
    "value": "clay + cross + heat + path (live): cross[medSecureWithQSec](5,4) 0c36469f-5000-8000-a000-000005000004; clay[bsd](516) 13962491-1000-8000-9000-000000000204; clay[bsd](163) 13962491-1000-8000-9000-0000000000a3; clay[bsd](326) 13962491-1000-8000-9000-000000000146",
-   "receipt": "04e23287-b83f-8438-bfda-39058eeb169f"
+   "receipt": "7b169563-115b-8cbd-838b-99ddad4294f3"
   },
   {
    "name": "relation 112",
    "pass": true,
    "value": "clay + cross + crypt + signal (live): cross[medSecureWithQSec](7,4) 0c36469f-5000-8000-a000-000007000004; signal[siftedBits](224) 5062cd8f-6000-8000-9000-0000000000e0; crypt[curveClassicalBits](224) 62d1d39f-1000-8000-9000-0000000000e0; crypt[symmetricQuantumBits](224) 62d1d39f-5000-8000-9000-0000000000e0",
-   "receipt": "117d61f2-f5cc-8d1b-88c4-179b60bce9ee"
+   "receipt": "00022185-5ebc-887f-9c35-3eb84e50b98f"
   },
   {
    "name": "relation 119",
    "pass": true,
    "value": "clay + crypt + heat + signal (live): signal[siftedBits](238) 5062cd8f-6000-8000-9000-0000000000ee; crypt[curveClassicalBits](238) 62d1d39f-1000-8000-9000-0000000000ee; crypt[symmetricQuantumBits](238) 62d1d39f-5000-8000-9000-0000000000ee; clay[bsd](241) 13962491-1000-8000-9000-0000000000f1",
-   "receipt": "d0ca8ea8-12d9-879d-a31b-a2a52f748c0e"
+   "receipt": "e69f0277-37fa-8a59-8eb9-c911960b0e32"
   },
   {
    "name": "relation 128",
@@ -622,7 +616,7 @@
    "name": "relation 142",
    "pass": true,
    "value": "clay + crypt + heat + signal (live): signal[siftedBits](284) 5062cd8f-6000-8000-9000-00000000011c; crypt[curveClassicalBits](284) 62d1d39f-1000-8000-9000-00000000011c; crypt[symmetricQuantumBits](284) 62d1d39f-5000-8000-9000-00000000011c; clay[hodge](71) 13962491-2000-8000-9000-000000000047",
-   "receipt": "0d1e8d97-3ba3-834a-b36f-23bc53a25265"
+   "receipt": "7b867c0d-4ce5-8bbf-a511-7b72b80e5eac"
   },
   {
    "name": "relation 1024",
@@ -631,256 +625,262 @@
    "receipt": "5e702231-f888-8090-a6e7-9b1496873960"
   },
   {
+   "name": "relation 27",
+   "pass": true,
+   "value": "crypt + heat + signal (live): signal[keyBits](72) 5062cd8f-3000-8000-9000-000000000048; signal[siftedBits](54) 5062cd8f-6000-8000-9000-000000000036; crypt[curveClassicalBits](54) 62d1d39f-1000-8000-9000-000000000036; crypt[symmetricQuantumBits](54) 62d1d39f-5000-8000-9000-000000000036",
+   "receipt": "547e9a1b-e419-8e8a-9dbe-d06e3941ee63"
+  },
+  {
    "name": "relation 34",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](68) 5062cd8f-6000-8000-9000-000000000044; crypt[curveClassicalBits](68) 62d1d39f-1000-8000-9000-000000000044; crypt[symmetricQuantumBits](68) 62d1d39f-5000-8000-9000-000000000044; clay[bsd](71) 13962491-1000-8000-9000-000000000047",
-   "receipt": "c50d766a-7c77-8b03-a115-d88b61ae57d4"
+   "receipt": "c6fb8e11-b664-8aae-b63c-8b86b80a7f58"
   },
   {
    "name": "relation 36",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[keyBits](96) 5062cd8f-3000-8000-9000-000000000060; signal[siftedBits](72) 5062cd8f-6000-8000-9000-000000000048; crypt[curveClassicalBits](72) 62d1d39f-1000-8000-9000-000000000048; crypt[symmetricQuantumBits](72) 62d1d39f-5000-8000-9000-000000000048",
-   "receipt": "699fe7db-8356-86a5-8959-3b2fb892601e"
+   "receipt": "ec7a1760-ec62-8a65-b75b-5191bb7cab27"
   },
   {
    "name": "relation 38",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](76) 5062cd8f-6000-8000-9000-00000000004c; crypt[curveClassicalBits](76) 62d1d39f-1000-8000-9000-00000000004c; crypt[symmetricQuantumBits](76) 62d1d39f-5000-8000-9000-00000000004c; clay[bsd](79) 13962491-1000-8000-9000-00000000004f",
-   "receipt": "b165565a-63fb-86f6-b67a-2fb881022d93"
+   "receipt": "a617f0eb-d700-89e3-8295-626ff6472229"
   },
   {
    "name": "relation 39",
    "pass": true,
    "value": "crypt + heat + signal (live): signal[keyBits](104) 5062cd8f-3000-8000-9000-000000000068; signal[siftedBits](78) 5062cd8f-6000-8000-9000-00000000004e; crypt[curveClassicalBits](78) 62d1d39f-1000-8000-9000-00000000004e; crypt[symmetricQuantumBits](78) 62d1d39f-5000-8000-9000-00000000004e",
-   "receipt": "7b4ede15-2bef-898b-b263-922316e8b3fc"
+   "receipt": "5f0be282-d6ff-83a1-8ecf-5a9ecbf791f0"
   },
   {
    "name": "relation 42",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[keyBits](112) 5062cd8f-3000-8000-9000-000000000070; signal[siftedBits](84) 5062cd8f-6000-8000-9000-000000000054; crypt[curveClassicalBits](84) 62d1d39f-1000-8000-9000-000000000054; crypt[symmetricQuantumBits](84) 62d1d39f-5000-8000-9000-000000000054",
-   "receipt": "23a12e43-ab35-8dc6-abe0-747b13d82b95"
+   "receipt": "36d157b3-313c-887c-88dd-c52a70b6af56"
   },
   {
    "name": "relation 43",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](86) 5062cd8f-6000-8000-9000-000000000056; crypt[curveClassicalBits](86) 62d1d39f-1000-8000-9000-000000000056; crypt[symmetricQuantumBits](86) 62d1d39f-5000-8000-9000-000000000056; clay[bsd](89) 13962491-1000-8000-9000-000000000059",
-   "receipt": "89e9efb8-e1fb-8a89-a5f5-017c4b999e27"
+   "receipt": "2a79823b-40c1-8a49-95de-53d9d7c5d0d0"
   },
   {
    "name": "relation 44",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](88) 5062cd8f-6000-8000-9000-000000000058; crypt[curveClassicalBits](88) 62d1d39f-1000-8000-9000-000000000058; crypt[symmetricQuantumBits](88) 62d1d39f-5000-8000-9000-000000000058; clay[bsd](282) 13962491-1000-8000-9000-00000000011a",
-   "receipt": "24f84219-f01f-88a8-a4fb-ace4ff562445"
+   "receipt": "597a3c86-d90d-8610-b155-b5d73e2bdec2"
   },
   {
    "name": "relation 46",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](92) 5062cd8f-6000-8000-9000-00000000005c; crypt[curveClassicalBits](92) 62d1d39f-1000-8000-9000-00000000005c; crypt[symmetricQuantumBits](92) 62d1d39f-5000-8000-9000-00000000005c; clay[bsd](119) 13962491-1000-8000-9000-000000000077",
-   "receipt": "148374e2-2426-83b1-8e0d-c07de3ec1bc2"
+   "receipt": "bb265049-ac5b-8825-a11e-95872e21cbb2"
   },
   {
    "name": "relation 49",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](98) 5062cd8f-6000-8000-9000-000000000062; crypt[curveClassicalBits](98) 62d1d39f-1000-8000-9000-000000000062; crypt[symmetricQuantumBits](98) 62d1d39f-5000-8000-9000-000000000062; clay[bsd](101) 13962491-1000-8000-9000-000000000065",
-   "receipt": "3089cd86-9e94-818a-873d-e79206c723b2"
+   "receipt": "864dab03-edd3-84b3-8c63-aa3627ad8a4e"
   },
   {
    "name": "relation 50",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](100) 5062cd8f-6000-8000-9000-000000000064; crypt[curveClassicalBits](100) 62d1d39f-1000-8000-9000-000000000064; crypt[symmetricQuantumBits](100) 62d1d39f-5000-8000-9000-000000000064; clay[bsd](159) 13962491-1000-8000-9000-00000000009f",
-   "receipt": "5f72b9bb-fc6e-86bc-a97a-30d23d8a6bff"
+   "receipt": "2bab8ffe-fac9-808f-ae69-a0b6796bda91"
   },
   {
    "name": "relation 52",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](104) 5062cd8f-6000-8000-9000-000000000068; crypt[curveClassicalBits](104) 62d1d39f-1000-8000-9000-000000000068; crypt[symmetricQuantumBits](104) 62d1d39f-5000-8000-9000-000000000068; clay[bsd](171) 13962491-1000-8000-9000-0000000000ab",
-   "receipt": "d565da9d-5e1d-82c8-b615-576dea571cdd"
+   "receipt": "407c4a43-90d2-882c-9a28-4c6dc43453d4"
   },
   {
    "name": "relation 53",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](106) 5062cd8f-6000-8000-9000-00000000006a; crypt[curveClassicalBits](106) 62d1d39f-1000-8000-9000-00000000006a; crypt[symmetricQuantumBits](106) 62d1d39f-5000-8000-9000-00000000006a; clay[bsd](109) 13962491-1000-8000-9000-00000000006d",
-   "receipt": "0a2cee09-d7c4-8f44-9856-85a88da8e8f0"
+   "receipt": "2a923207-6c97-88d0-b0a3-3d38b0aae581"
   },
   {
    "name": "relation 58",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](116) 5062cd8f-6000-8000-9000-000000000074; crypt[curveClassicalBits](116) 62d1d39f-1000-8000-9000-000000000074; crypt[symmetricQuantumBits](116) 62d1d39f-5000-8000-9000-000000000074; clay[bsd](175) 13962491-1000-8000-9000-0000000000af",
-   "receipt": "a5739e60-e523-8d9a-8dc4-7e5e883d6f0c"
+   "receipt": "2b5eb80d-037b-8ab4-a479-78379e355b85"
   },
   {
    "name": "relation 59",
    "pass": true,
    "value": "crypt + heat + signal (live): signal[siftedBits](118) 5062cd8f-6000-8000-9000-000000000076; crypt[curveClassicalBits](118) 62d1d39f-1000-8000-9000-000000000076; crypt[symmetricQuantumBits](118) 62d1d39f-5000-8000-9000-000000000076; heat[signal](4) 0a8f02cc-4000-8000-9000-000000000004",
-   "receipt": "422ae125-cbb4-8a9e-8f83-85c58e05889b"
+   "receipt": "4bd827c9-7260-893c-8d61-78e4e4c78c78"
   },
   {
    "name": "relation 62",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](124) 5062cd8f-6000-8000-9000-00000000007c; crypt[curveClassicalBits](124) 62d1d39f-1000-8000-9000-00000000007c; crypt[symmetricQuantumBits](124) 62d1d39f-5000-8000-9000-00000000007c; clay[bsd](127) 13962491-1000-8000-9000-00000000007f",
-   "receipt": "5b172bfe-58a0-86e0-a57c-c04ef30c1a23"
+   "receipt": "885da32f-42b7-8d2b-b1c4-da65e5d17353"
   },
   {
    "name": "relation 66",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](132) 5062cd8f-6000-8000-9000-000000000084; crypt[curveClassicalBits](132) 62d1d39f-1000-8000-9000-000000000084; crypt[symmetricQuantumBits](132) 62d1d39f-5000-8000-9000-000000000084; clay[hodge](33) 13962491-2000-8000-9000-000000000021",
-   "receipt": "33f2fea5-c136-8295-974e-be9d61dadafb"
+   "receipt": "8bb23eca-791c-89ca-92c9-ae15afc5f0e3"
   },
   {
    "name": "relation 67",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](134) 5062cd8f-6000-8000-9000-000000000086; crypt[curveClassicalBits](134) 62d1d39f-1000-8000-9000-000000000086; crypt[symmetricQuantumBits](134) 62d1d39f-5000-8000-9000-000000000086; clay[bsd](274) 13962491-1000-8000-9000-000000000112",
-   "receipt": "7db2315e-00f5-8426-a489-eb05f2745978"
+   "receipt": "2da183b4-773d-840b-8489-902825a343c9"
   },
   {
    "name": "relation 68",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](136) 5062cd8f-6000-8000-9000-000000000088; crypt[curveClassicalBits](136) 62d1d39f-1000-8000-9000-000000000088; crypt[symmetricQuantumBits](136) 62d1d39f-5000-8000-9000-000000000088; clay[bsd](284) 13962491-1000-8000-9000-00000000011c",
-   "receipt": "10912547-86d1-8c26-89b5-cc175b066249"
+   "receipt": "8a01d03f-7aeb-89da-b7e4-530f81fec1ec"
   },
   {
    "name": "relation 72",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](144) 5062cd8f-6000-8000-9000-000000000090; crypt[curveClassicalBits](144) 62d1d39f-1000-8000-9000-000000000090; crypt[symmetricQuantumBits](144) 62d1d39f-5000-8000-9000-000000000090; clay[hodge](36) 13962491-2000-8000-9000-000000000024",
-   "receipt": "fdeddb4d-e308-8139-af77-dc31a7b9c29e"
+   "receipt": "3fc1f451-5e4f-82ff-a98e-b355fdbeccb3"
   },
   {
    "name": "relation 74",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](148) 5062cd8f-6000-8000-9000-000000000094; crypt[curveClassicalBits](148) 62d1d39f-1000-8000-9000-000000000094; crypt[symmetricQuantumBits](148) 62d1d39f-5000-8000-9000-000000000094; clay[bsd](302) 13962491-1000-8000-9000-00000000012e",
-   "receipt": "0af77451-6439-83d5-ba93-ee521d2b8e16"
+   "receipt": "218493a8-3b76-8564-acfd-839bc78aa6a9"
   },
   {
    "name": "relation 76",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](152) 5062cd8f-6000-8000-9000-000000000098; crypt[curveClassicalBits](152) 62d1d39f-1000-8000-9000-000000000098; crypt[symmetricQuantumBits](152) 62d1d39f-5000-8000-9000-000000000098; clay[bsd](316) 13962491-1000-8000-9000-00000000013c",
-   "receipt": "dffdaf47-01d7-8ad1-948f-bf58f88b4038"
+   "receipt": "52e83418-f1b2-867f-85f7-b0c429538ca8"
   },
   {
    "name": "relation 78",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](156) 5062cd8f-6000-8000-9000-00000000009c; crypt[curveClassicalBits](156) 62d1d39f-1000-8000-9000-00000000009c; crypt[symmetricQuantumBits](156) 62d1d39f-5000-8000-9000-00000000009c; clay[bsd](205) 13962491-1000-8000-9000-0000000000cd",
-   "receipt": "f6c0b23c-5a1e-8c52-98b4-84d36b85b3d4"
+   "receipt": "8f937f3a-1474-804a-9c79-d2922b7128b7"
   },
   {
    "name": "relation 79",
    "pass": true,
    "value": "crypt + heat + signal (live): signal[siftedBits](158) 5062cd8f-6000-8000-9000-00000000009e; crypt[curveClassicalBits](158) 62d1d39f-1000-8000-9000-00000000009e; crypt[symmetricQuantumBits](158) 62d1d39f-5000-8000-9000-00000000009e; heat[signal](3) 0a8f02cc-4000-8000-9000-000000000003",
-   "receipt": "39acba6c-cb2f-8704-8f9b-a2f7257017bb"
+   "receipt": "3d5399f0-68d4-80e2-8c78-e15d58136fca"
   },
   {
    "name": "relation 83",
    "pass": true,
    "value": "crypt + heat + signal (live): signal[siftedBits](166) 5062cd8f-6000-8000-9000-0000000000a6; crypt[curveClassicalBits](166) 62d1d39f-1000-8000-9000-0000000000a6; crypt[symmetricQuantumBits](166) 62d1d39f-5000-8000-9000-0000000000a6; heat[temperature→coherence](1,3) 0a8f02cc-5100-8000-a000-000001000003",
-   "receipt": "e68e2ca7-20d8-895e-98f5-b238954a5a5b"
+   "receipt": "3cb4286e-1b3b-81fb-b6e6-8168fd92f9ca"
   },
   {
    "name": "relation 84",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[keyBits](224) 5062cd8f-3000-8000-9000-0000000000e0; signal[siftedBits](168) 5062cd8f-6000-8000-9000-0000000000a8; crypt[curveClassicalBits](168) 62d1d39f-1000-8000-9000-0000000000a8; crypt[symmetricQuantumBits](168) 62d1d39f-5000-8000-9000-0000000000a8",
-   "receipt": "b467649a-3096-84c0-bd4c-166e05d1268c"
+   "receipt": "4e325111-c754-886b-9f88-f155381d5ae4"
   },
   {
    "name": "relation 86",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](172) 5062cd8f-6000-8000-9000-0000000000ac; crypt[curveClassicalBits](172) 62d1d39f-1000-8000-9000-0000000000ac; crypt[symmetricQuantumBits](172) 62d1d39f-5000-8000-9000-0000000000ac; clay[bsd](356) 13962491-1000-8000-9000-000000000164",
-   "receipt": "7dced382-21ab-88ca-b89e-599a0a832dc1"
+   "receipt": "1a90854e-3994-8c75-8719-16a389cbf087"
   },
   {
    "name": "relation 92",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](184) 5062cd8f-6000-8000-9000-0000000000b8; crypt[curveClassicalBits](184) 62d1d39f-1000-8000-9000-0000000000b8; crypt[symmetricQuantumBits](184) 62d1d39f-5000-8000-9000-0000000000b8; clay[hodge](46) 13962491-2000-8000-9000-00000000002e",
-   "receipt": "17ede4bb-9ae3-8904-91b9-b4d3c5eda4fd"
+   "receipt": "265e589a-7f90-87b5-979f-a51dd4991c37"
   },
   {
    "name": "relation 100",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](200) 5062cd8f-6000-8000-9000-0000000000c8; crypt[curveClassicalBits](200) 62d1d39f-1000-8000-9000-0000000000c8; crypt[symmetricQuantumBits](200) 62d1d39f-5000-8000-9000-0000000000c8; clay[hodge](50) 13962491-2000-8000-9000-000000000032",
-   "receipt": "4141eeab-aa0e-8cf5-b6a7-f8317da3de58"
+   "receipt": "6052aa4b-cfde-8fc7-91f6-a2921a71cf8f"
   },
   {
    "name": "relation 108",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](216) 5062cd8f-6000-8000-9000-0000000000d8; crypt[curveClassicalBits](216) 62d1d39f-1000-8000-9000-0000000000d8; crypt[symmetricQuantumBits](216) 62d1d39f-5000-8000-9000-0000000000d8; clay[hodge](54) 13962491-2000-8000-9000-000000000036",
-   "receipt": "a66d34a1-3135-8df9-9d26-97e263f77c3f"
+   "receipt": "efeccaf8-9226-8800-9edf-ee99e6475a5f"
   },
   {
    "name": "relation 110",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](220) 5062cd8f-6000-8000-9000-0000000000dc; crypt[curveClassicalBits](220) 62d1d39f-1000-8000-9000-0000000000dc; crypt[symmetricQuantumBits](220) 62d1d39f-5000-8000-9000-0000000000dc; clay[bsd](446) 13962491-1000-8000-9000-0000000001be",
-   "receipt": "3c8ab8d5-f8a4-87ae-bc68-5fbf26ca23ac"
+   "receipt": "9fdb038f-cddf-80a4-b53d-ce8bc9b6011f"
   },
   {
    "name": "relation 111",
    "pass": true,
    "value": "crypt + heat + signal (live): signal[siftedBits](222) 5062cd8f-6000-8000-9000-0000000000de; crypt[curveClassicalBits](222) 62d1d39f-1000-8000-9000-0000000000de; crypt[symmetricQuantumBits](222) 62d1d39f-5000-8000-9000-0000000000de; heat[temperature→cooling](1,3) 0a8f02cc-5200-8000-a000-000001000003",
-   "receipt": "858f8223-d444-8da5-8e8f-5a40f896b286"
+   "receipt": "480f222e-d870-8cfa-a305-4e981fa36603"
   },
   {
    "name": "relation 126",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[keyBits](336) 5062cd8f-3000-8000-9000-000000000150; signal[siftedBits](252) 5062cd8f-6000-8000-9000-0000000000fc; crypt[curveClassicalBits](252) 62d1d39f-1000-8000-9000-0000000000fc; crypt[symmetricQuantumBits](252) 62d1d39f-5000-8000-9000-0000000000fc",
-   "receipt": "95f3fb91-249a-8060-826c-d8e842e9933b"
+   "receipt": "2aa9825d-50ba-83b0-afd9-6610b08d23f7"
   },
   {
    "name": "relation 136",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](272) 5062cd8f-6000-8000-9000-000000000110; crypt[curveClassicalBits](272) 62d1d39f-1000-8000-9000-000000000110; crypt[symmetricQuantumBits](272) 62d1d39f-5000-8000-9000-000000000110; clay[hodge](68) 13962491-2000-8000-9000-000000000044",
-   "receipt": "5604c992-6b30-846e-b7fa-d287659ea0aa"
+   "receipt": "1c9de809-b256-8915-a8b9-1533199d238c"
   },
   {
    "name": "relation 137",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](274) 5062cd8f-6000-8000-9000-000000000112; crypt[curveClassicalBits](274) 62d1d39f-1000-8000-9000-000000000112; crypt[symmetricQuantumBits](274) 62d1d39f-5000-8000-9000-000000000112; clay[bsd](277) 13962491-1000-8000-9000-000000000115",
-   "receipt": "da61e649-2ce6-843e-aec3-fec95d87b14f"
+   "receipt": "794b6bcf-522b-8e7f-87cf-5f9e91e21cc8"
   },
   {
    "name": "relation 140",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](280) 5062cd8f-6000-8000-9000-000000000118; crypt[curveClassicalBits](280) 62d1d39f-1000-8000-9000-000000000118; crypt[symmetricQuantumBits](280) 62d1d39f-5000-8000-9000-000000000118; clay[bsd](455) 13962491-1000-8000-9000-0000000001c7",
-   "receipt": "7c45e246-1530-8097-bb53-83efe747643f"
+   "receipt": "f3ceeab9-f2d0-8a63-b2db-994259753cc2"
   },
   {
    "name": "relation 158",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](316) 5062cd8f-6000-8000-9000-00000000013c; crypt[curveClassicalBits](316) 62d1d39f-1000-8000-9000-00000000013c; crypt[symmetricQuantumBits](316) 62d1d39f-5000-8000-9000-00000000013c; clay[hodge](79) 13962491-2000-8000-9000-00000000004f",
-   "receipt": "fed94def-d20e-87d3-b9ec-ed395fb34eab"
+   "receipt": "436fb82f-cdc3-8e88-a7e9-122d14cc6c4b"
   },
   {
    "name": "relation 162",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](324) 5062cd8f-6000-8000-9000-000000000144; crypt[curveClassicalBits](324) 62d1d39f-1000-8000-9000-000000000144; crypt[symmetricQuantumBits](324) 62d1d39f-5000-8000-9000-000000000144; clay[hodge](81) 13962491-2000-8000-9000-000000000051",
-   "receipt": "091ddce6-c84f-8093-9841-0db906bf35ac"
+   "receipt": "6d71ba23-9768-8c80-aed4-60427b32d6f9"
   },
   {
    "name": "relation 167",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](334) 5062cd8f-6000-8000-9000-00000000014e; crypt[curveClassicalBits](334) 62d1d39f-1000-8000-9000-00000000014e; crypt[symmetricQuantumBits](334) 62d1d39f-5000-8000-9000-00000000014e; clay[bsd](674) 13962491-1000-8000-9000-0000000002a2",
-   "receipt": "23cf4c23-a3c7-8dac-8bec-f593223ff588"
+   "receipt": "f26b395c-9ef8-8c11-b135-66a18fbd9b8c"
   },
   {
    "name": "relation 168",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](336) 5062cd8f-6000-8000-9000-000000000150; crypt[curveClassicalBits](336) 62d1d39f-1000-8000-9000-000000000150; crypt[symmetricQuantumBits](336) 62d1d39f-5000-8000-9000-000000000150; clay[hodge](84) 13962491-2000-8000-9000-000000000054",
-   "receipt": "bfdb29fc-cb4a-8c5e-83c6-8932a42070d7"
+   "receipt": "1613a881-09f0-8c66-86bd-109f2501b11d"
   },
   {
    "name": "relation 178",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](356) 5062cd8f-6000-8000-9000-000000000164; crypt[curveClassicalBits](356) 62d1d39f-1000-8000-9000-000000000164; crypt[symmetricQuantumBits](356) 62d1d39f-5000-8000-9000-000000000164; clay[hodge](89) 13962491-2000-8000-9000-000000000059",
-   "receipt": "f2516ab1-edc0-83d0-9937-6c2d005e66f1"
+   "receipt": "2a19101d-cbca-8b8b-8517-ab746c1308d9"
   },
   {
    "name": "relation 193",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](386) 5062cd8f-6000-8000-9000-000000000182; crypt[curveClassicalBits](386) 62d1d39f-1000-8000-9000-000000000182; crypt[symmetricQuantumBits](386) 62d1d39f-5000-8000-9000-000000000182; clay[bsd](389) 13962491-1000-8000-9000-000000000185",
-   "receipt": "e4ae6a6c-1e7c-8b48-a437-c94ac5795a2f"
+   "receipt": "95288b13-2e10-854c-bbb9-cbd27c952d04"
   },
   {
    "name": "relation 214",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](428) 5062cd8f-6000-8000-9000-0000000001ac; crypt[curveClassicalBits](428) 62d1d39f-1000-8000-9000-0000000001ac; crypt[symmetricQuantumBits](428) 62d1d39f-5000-8000-9000-0000000001ac; clay[hodge](107) 13962491-2000-8000-9000-00000000006b",
-   "receipt": "e67ea8a7-eef8-86b8-b724-e5a93adb7dc0"
+   "receipt": "a925af38-cbbe-8336-874c-ec346f5161d8"
   },
   {
    "name": "relation 256",
@@ -892,19 +892,19 @@
    "name": "relation 258",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[keyBits](688) 5062cd8f-3000-8000-9000-0000000002b0; signal[siftedBits](516) 5062cd8f-6000-8000-9000-000000000204; crypt[curveClassicalBits](516) 62d1d39f-1000-8000-9000-000000000204; crypt[symmetricQuantumBits](516) 62d1d39f-5000-8000-9000-000000000204",
-   "receipt": "ba117a13-d870-87ef-9f72-fbf3522ec2af"
+   "receipt": "ac62392b-4265-8af2-a1a9-50e425228d28"
   },
   {
    "name": "relation 344",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](688) 5062cd8f-6000-8000-9000-0000000002b0; crypt[curveClassicalBits](688) 62d1d39f-1000-8000-9000-0000000002b0; crypt[symmetricQuantumBits](688) 62d1d39f-5000-8000-9000-0000000002b0; clay[hodge](172) 13962491-2000-8000-9000-0000000000ac",
-   "receipt": "de500fb8-515e-8445-bf41-e9a2ad86d6fe"
+   "receipt": "f3db4feb-3d87-8a12-b2f4-5eb15a8b411b"
   },
   {
    "name": "relation 404",
    "pass": true,
    "value": "clay + crypt + signal (live): signal[siftedBits](808) 5062cd8f-6000-8000-9000-000000000328; crypt[curveClassicalBits](808) 62d1d39f-1000-8000-9000-000000000328; crypt[symmetricQuantumBits](808) 62d1d39f-5000-8000-9000-000000000328; clay[hodge](202) 13962491-2000-8000-9000-0000000000ca",
-   "receipt": "c67cee4c-e5d7-841c-89da-c2fc05530b2b"
+   "receipt": "0303ed9b-e110-8aa7-90eb-5079597fcb28"
   },
   {
    "name": "relation 512",
@@ -946,7 +946,7 @@
    "name": "relation 9",
    "pass": true,
    "value": "holo + signal (live): signal[keyBits](24) 5062cd8f-3000-8000-9000-000000000018; signal[siftedBits](18) 5062cd8f-6000-8000-9000-000000000012; holo[proofDepth](277) 4029f1cc-2000-8000-9000-000000000115; holo[proofDepth](422) 4029f1cc-2000-8000-9000-0000000001a6",
-   "receipt": "01e61346-ee54-8717-bca7-3d4b5bdeebd0"
+   "receipt": "daeee140-c67d-8067-9047-4fffe627a5a1"
   },
   {
    "name": "relation 28",
@@ -958,7 +958,7 @@
    "name": "relation 31",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](62) 5062cd8f-6000-8000-9000-00000000003e; crypt[curveClassicalBits](62) 62d1d39f-1000-8000-9000-00000000003e; crypt[symmetricQuantumBits](62) 62d1d39f-5000-8000-9000-00000000003e",
-   "receipt": "2c498fbb-e557-8480-8df4-9173534f5bd9"
+   "receipt": "d6ab44c2-d23a-8d9c-956b-184297870a8c"
   },
   {
    "name": "relation 32",
@@ -970,79 +970,79 @@
    "name": "relation 33",
    "pass": true,
    "value": "crypt + signal (live): signal[keyBits](88) 5062cd8f-3000-8000-9000-000000000058; signal[siftedBits](66) 5062cd8f-6000-8000-9000-000000000042; crypt[curveClassicalBits](66) 62d1d39f-1000-8000-9000-000000000042; crypt[symmetricQuantumBits](66) 62d1d39f-5000-8000-9000-000000000042",
-   "receipt": "7e219ec5-72ba-8ab4-bae2-bd68f66a2b93"
+   "receipt": "f2df2ae0-b9cc-87ad-a2d7-71ad33165540"
   },
   {
    "name": "relation 37",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](74) 5062cd8f-6000-8000-9000-00000000004a; crypt[curveClassicalBits](74) 62d1d39f-1000-8000-9000-00000000004a; crypt[symmetricQuantumBits](74) 62d1d39f-5000-8000-9000-00000000004a",
-   "receipt": "649cc1f4-4374-878e-9e7d-0ed5dd9706fc"
+   "receipt": "e1f50dcb-0d17-82be-ad39-41e8a12d3c31"
   },
   {
    "name": "relation 45",
    "pass": true,
    "value": "crypt + signal (live): signal[keyBits](120) 5062cd8f-3000-8000-9000-000000000078; signal[siftedBits](90) 5062cd8f-6000-8000-9000-00000000005a; crypt[curveClassicalBits](90) 62d1d39f-1000-8000-9000-00000000005a; crypt[symmetricQuantumBits](90) 62d1d39f-5000-8000-9000-00000000005a",
-   "receipt": "62790513-2ffb-88ef-8190-3ac7398714fa"
+   "receipt": "a691f164-e90f-88d3-b615-4bbfd84a3fe9"
   },
   {
    "name": "relation 51",
    "pass": true,
    "value": "crypt + signal (live): signal[keyBits](136) 5062cd8f-3000-8000-9000-000000000088; signal[siftedBits](102) 5062cd8f-6000-8000-9000-000000000066; crypt[curveClassicalBits](102) 62d1d39f-1000-8000-9000-000000000066; crypt[symmetricQuantumBits](102) 62d1d39f-5000-8000-9000-000000000066",
-   "receipt": "8b686e62-bcb8-8874-9951-34c13ee676b2"
+   "receipt": "8b79c735-58da-87f0-8d3f-17f2bf258ee1"
   },
   {
    "name": "relation 54",
    "pass": true,
    "value": "clay + signal (live): signal[keyBits](144) 5062cd8f-3000-8000-9000-000000000090; clay[bsd](290) 13962491-1000-8000-9000-000000000122; clay[bsd](121) 13962491-1000-8000-9000-000000000079; clay[hodge](27) 13962491-2000-8000-9000-00000000001b",
-   "receipt": "ca8d8078-4e98-8466-9278-197bf2d2b6a9"
+   "receipt": "64631de8-b4b1-8b0c-9fac-4a43afeb394d"
   },
   {
    "name": "relation 61",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](122) 5062cd8f-6000-8000-9000-00000000007a; crypt[curveClassicalBits](122) 62d1d39f-1000-8000-9000-00000000007a; crypt[symmetricQuantumBits](122) 62d1d39f-5000-8000-9000-00000000007a",
-   "receipt": "c233f8d1-490b-8c98-aa0d-9736af2a4088"
+   "receipt": "476e3171-c922-8373-86b1-e05cf2f6fa7b"
   },
   {
    "name": "relation 63",
    "pass": true,
    "value": "crypt + signal (live): signal[keyBits](168) 5062cd8f-3000-8000-9000-0000000000a8; signal[siftedBits](126) 5062cd8f-6000-8000-9000-00000000007e; crypt[curveClassicalBits](126) 62d1d39f-1000-8000-9000-00000000007e; crypt[symmetricQuantumBits](126) 62d1d39f-5000-8000-9000-00000000007e",
-   "receipt": "4499f9a5-9e86-8e23-a018-c67f0d2a4dd4"
+   "receipt": "1b1aab0b-437d-86b8-b61d-f77fd6dd841b"
   },
   {
    "name": "relation 65",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](130) 5062cd8f-6000-8000-9000-000000000082; crypt[curveClassicalBits](130) 62d1d39f-1000-8000-9000-000000000082; crypt[symmetricQuantumBits](130) 62d1d39f-5000-8000-9000-000000000082",
-   "receipt": "b148787b-22af-86dc-8dde-86b6f88e2d4d"
+   "receipt": "9426b545-9d48-869c-8bc7-0825a2ea2f38"
   },
   {
    "name": "relation 69",
    "pass": true,
    "value": "crypt + signal (live): signal[keyBits](184) 5062cd8f-3000-8000-9000-0000000000b8; signal[siftedBits](138) 5062cd8f-6000-8000-9000-00000000008a; crypt[curveClassicalBits](138) 62d1d39f-1000-8000-9000-00000000008a; crypt[symmetricQuantumBits](138) 62d1d39f-5000-8000-9000-00000000008a",
-   "receipt": "fd6e8575-87de-8d98-a13b-11cde8192aae"
+   "receipt": "93129a12-5bf2-8148-93c8-82616d7f8d57"
   },
   {
    "name": "relation 71",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](142) 5062cd8f-6000-8000-9000-00000000008e; crypt[curveClassicalBits](142) 62d1d39f-1000-8000-9000-00000000008e; crypt[symmetricQuantumBits](142) 62d1d39f-5000-8000-9000-00000000008e",
-   "receipt": "ece382a2-1951-8e87-9cd5-899a548ed621"
+   "receipt": "44b5d57d-8dbe-8d24-920d-52eb86bab0cc"
   },
   {
    "name": "relation 73",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](146) 5062cd8f-6000-8000-9000-000000000092; crypt[curveClassicalBits](146) 62d1d39f-1000-8000-9000-000000000092; crypt[symmetricQuantumBits](146) 62d1d39f-5000-8000-9000-000000000092",
-   "receipt": "8a461514-df2c-8bc7-b05d-af78ef0ebe3f"
+   "receipt": "41655bf9-0019-8024-8e1f-ed2d00142f1e"
   },
   {
    "name": "relation 81",
    "pass": true,
    "value": "crypt + signal (live): signal[keyBits](216) 5062cd8f-3000-8000-9000-0000000000d8; signal[siftedBits](162) 5062cd8f-6000-8000-9000-0000000000a2; crypt[curveClassicalBits](162) 62d1d39f-1000-8000-9000-0000000000a2; crypt[symmetricQuantumBits](162) 62d1d39f-5000-8000-9000-0000000000a2",
-   "receipt": "6d79da69-0ea3-8e36-8ebe-b2b9fa2483e9"
+   "receipt": "18308bc0-ceb5-8343-aa54-8cabf0ea3ad6"
   },
   {
    "name": "relation 87",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](174) 5062cd8f-6000-8000-9000-0000000000ae; crypt[curveClassicalBits](174) 62d1d39f-1000-8000-9000-0000000000ae; crypt[symmetricQuantumBits](174) 62d1d39f-5000-8000-9000-0000000000ae",
-   "receipt": "bf6b59ac-6c04-840d-8a9c-4c6ee117503c"
+   "receipt": "0541d6e8-3ecb-8e3f-a658-631523cb4d91"
   },
   {
    "name": "relation 88",
@@ -1054,235 +1054,235 @@
    "name": "relation 93",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](186) 5062cd8f-6000-8000-9000-0000000000ba; crypt[curveClassicalBits](186) 62d1d39f-1000-8000-9000-0000000000ba; crypt[symmetricQuantumBits](186) 62d1d39f-5000-8000-9000-0000000000ba",
-   "receipt": "fe3cafc2-30fe-889e-bf8c-c0b618eb6478"
+   "receipt": "21dd5ee7-8d31-81af-bb98-c970d46e05d6"
   },
   {
    "name": "relation 96",
    "pass": true,
    "value": "clay + cross (live): cross[medSecureWithQSec](3,5) 0c36469f-5000-8000-a000-000003000005; cross[medSecureWithQSec](6,4) 0c36469f-5000-8000-a000-000006000004; clay[hodge](48) 13962491-2000-8000-9000-000000000030",
-   "receipt": "f6662af9-ccbc-8d77-8f49-ba614ff8ddec"
+   "receipt": "14aa9d13-fc81-8e96-b215-9657b8427622"
   },
   {
    "name": "relation 99",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](198) 5062cd8f-6000-8000-9000-0000000000c6; crypt[curveClassicalBits](198) 62d1d39f-1000-8000-9000-0000000000c6; crypt[symmetricQuantumBits](198) 62d1d39f-5000-8000-9000-0000000000c6",
-   "receipt": "9518464a-7446-8030-816e-85fe775073e1"
+   "receipt": "25ef6219-5e6c-8c1a-b0c6-dc5281bdc807"
   },
   {
    "name": "relation 101",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](202) 5062cd8f-6000-8000-9000-0000000000ca; crypt[curveClassicalBits](202) 62d1d39f-1000-8000-9000-0000000000ca; crypt[symmetricQuantumBits](202) 62d1d39f-5000-8000-9000-0000000000ca",
-   "receipt": "370eb6c2-54f4-8b9f-b821-1405a96c3928"
+   "receipt": "39e6ed98-a890-80c7-b549-ffb8a60a4510"
   },
   {
    "name": "relation 102",
    "pass": true,
    "value": "clay + signal (live): signal[keyBits](272) 5062cd8f-3000-8000-9000-000000000110; clay[hodge](51) 13962491-2000-8000-9000-000000000033",
-   "receipt": "d4b587d2-7fdf-8555-aa0d-f4525fef6ef9"
+   "receipt": "464a9b32-3128-8fe1-8b5e-d3888a7371d6"
   },
   {
    "name": "relation 103",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](206) 5062cd8f-6000-8000-9000-0000000000ce; crypt[curveClassicalBits](206) 62d1d39f-1000-8000-9000-0000000000ce; crypt[symmetricQuantumBits](206) 62d1d39f-5000-8000-9000-0000000000ce",
-   "receipt": "f328cea5-462c-8919-93ea-e3a5e1be6a45"
+   "receipt": "4637512e-13fb-89b8-ab85-b93d2aed4ade"
   },
   {
    "name": "relation 117",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](234) 5062cd8f-6000-8000-9000-0000000000ea; crypt[curveClassicalBits](234) 62d1d39f-1000-8000-9000-0000000000ea; crypt[symmetricQuantumBits](234) 62d1d39f-5000-8000-9000-0000000000ea",
-   "receipt": "736f726c-3c3e-8ef9-87b3-012ec448b4a1"
+   "receipt": "9ebde262-1e15-82ef-a799-9c767e0ad990"
   },
   {
    "name": "relation 120",
    "pass": true,
    "value": "clay + heat (live): clay[hodge](60) 13962491-2000-8000-9000-00000000003c; heat[signal→cooling](1,2) 0a8f02cc-4200-8000-a000-000001000002; heat[signal→ways](1,2) 0a8f02cc-4600-8000-a000-000001000002",
-   "receipt": "16e2a523-4c64-8ef7-900e-97508797deea"
+   "receipt": "e8a3a8bc-90fa-81a2-b1d5-89f73e31944e"
   },
   {
    "name": "relation 129",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](258) 5062cd8f-6000-8000-9000-000000000102; crypt[curveClassicalBits](258) 62d1d39f-1000-8000-9000-000000000102; crypt[symmetricQuantumBits](258) 62d1d39f-5000-8000-9000-000000000102",
-   "receipt": "0e43d3fa-545c-8752-9742-5ed03474bfe6"
+   "receipt": "0baf2ebd-cdfa-8873-be16-e7615fcf2437"
   },
   {
    "name": "relation 141",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](282) 5062cd8f-6000-8000-9000-00000000011a; crypt[curveClassicalBits](282) 62d1d39f-1000-8000-9000-00000000011a; crypt[symmetricQuantumBits](282) 62d1d39f-5000-8000-9000-00000000011a",
-   "receipt": "f25bbd09-34d4-8404-bac7-10fd6014c840"
+   "receipt": "09d1a443-d095-8cb1-92ea-5e0a354463c0"
   },
   {
    "name": "relation 145",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](290) 5062cd8f-6000-8000-9000-000000000122; crypt[curveClassicalBits](290) 62d1d39f-1000-8000-9000-000000000122; crypt[symmetricQuantumBits](290) 62d1d39f-5000-8000-9000-000000000122",
-   "receipt": "05d1ddb4-677e-82f2-80ca-f72da46fd8a4"
+   "receipt": "18671bbd-c778-89f6-ade8-53153ffcf7bd"
   },
   {
    "name": "relation 147",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](294) 5062cd8f-6000-8000-9000-000000000126; crypt[curveClassicalBits](294) 62d1d39f-1000-8000-9000-000000000126; crypt[symmetricQuantumBits](294) 62d1d39f-5000-8000-9000-000000000126",
-   "receipt": "27d2508e-e0ee-88e6-af61-57a19c3f541b"
+   "receipt": "c16dfb5f-8edf-86d0-9444-62156b2a8349"
   },
   {
    "name": "relation 151",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](302) 5062cd8f-6000-8000-9000-00000000012e; crypt[curveClassicalBits](302) 62d1d39f-1000-8000-9000-00000000012e; crypt[symmetricQuantumBits](302) 62d1d39f-5000-8000-9000-00000000012e",
-   "receipt": "6299c71a-4003-8ce0-9784-386e2aad329d"
+   "receipt": "982a1bac-6e6a-84bf-aeb6-ceec4df39cdf"
   },
   {
    "name": "relation 160",
    "pass": true,
    "value": "clay + cross (live): cross[medSecureWithQSec](5,5) 0c36469f-5000-8000-a000-000005000005; clay[hodge](80) 13962491-2000-8000-9000-000000000050",
-   "receipt": "2cc11864-224c-8b89-bce0-88f26eca450d"
+   "receipt": "d5e51338-a2d3-8323-bfb5-8a9cf7187a05"
   },
   {
    "name": "relation 163",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](326) 5062cd8f-6000-8000-9000-000000000146; crypt[curveClassicalBits](326) 62d1d39f-1000-8000-9000-000000000146; crypt[symmetricQuantumBits](326) 62d1d39f-5000-8000-9000-000000000146",
-   "receipt": "c3e617d1-d034-860f-917d-4e07903d3500"
+   "receipt": "103477e0-ea20-899e-9235-0c187e29346a"
   },
   {
    "name": "relation 166",
    "pass": true,
    "value": "clay + heat (live): clay[hodge](83) 13962491-2000-8000-9000-000000000053; heat[temperature](1,6) 0a8f02cc-5000-8000-a000-000001000006; heat[temperature→coherence](1,2) 0a8f02cc-5100-8000-a000-000001000002; heat[temperature→coherence](2,3) 0a8f02cc-5100-8000-a000-000002000003",
-   "receipt": "2a105c06-acaf-882c-8112-2d0805f1cd77"
+   "receipt": "59975ca6-46d7-87f9-a400-838a4a3394f7"
   },
   {
    "name": "relation 175",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](350) 5062cd8f-6000-8000-9000-00000000015e; crypt[curveClassicalBits](350) 62d1d39f-1000-8000-9000-00000000015e; crypt[symmetricQuantumBits](350) 62d1d39f-5000-8000-9000-00000000015e",
-   "receipt": "fc17bfbb-6066-8fa3-abac-b07d637955b8"
+   "receipt": "175bfd35-ab17-827b-89e4-120d953e8b36"
   },
   {
    "name": "relation 179",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](358) 5062cd8f-6000-8000-9000-000000000166; crypt[curveClassicalBits](358) 62d1d39f-1000-8000-9000-000000000166; crypt[symmetricQuantumBits](358) 62d1d39f-5000-8000-9000-000000000166",
-   "receipt": "cdc5edb2-a8d2-8ead-98fd-43ae6a99c425"
+   "receipt": "f3f8cf6d-a98c-859a-95f0-38f2b0478ccc"
   },
   {
    "name": "relation 192",
    "pass": true,
    "value": "clay + cross (live): cross[medSecureWithQSec](3,6) 0c36469f-5000-8000-a000-000003000006; cross[medSecureWithQSec](6,5) 0c36469f-5000-8000-a000-000006000005; cross[medSecureWithQSec→medSecureWithQSec](3,3) 0c36469f-5500-8000-a000-000003000003; clay[hodge](96) 13962491-2000-8000-9000-000000000060",
-   "receipt": "675796fb-ec11-8a4c-b4ef-c8618ae2f710"
+   "receipt": "df57231b-9f07-8fc2-b608-4bb91756b4bf"
   },
   {
    "name": "relation 200",
    "pass": true,
    "value": "clay + heat (live): clay[hodge](100) 13962491-2000-8000-9000-000000000064; heat[temperature](1,5) 0a8f02cc-5000-8000-a000-000001000005",
-   "receipt": "0ee21a98-92b4-8448-9850-c09759c4de51"
+   "receipt": "98504040-ee3e-8f52-af19-151814c98847"
   },
   {
    "name": "relation 211",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](422) 5062cd8f-6000-8000-9000-0000000001a6; crypt[curveClassicalBits](422) 62d1d39f-1000-8000-9000-0000000001a6; crypt[symmetricQuantumBits](422) 62d1d39f-5000-8000-9000-0000000001a6",
-   "receipt": "7a4feb2d-3380-80ee-9654-b756a9d42617"
+   "receipt": "a9677864-e9e0-8099-b96a-461904806314"
   },
   {
    "name": "relation 222",
    "pass": true,
    "value": "clay + heat (live): clay[hodge](111) 13962491-2000-8000-9000-00000000006f; heat[temperature→cooling](2,3) 0a8f02cc-5200-8000-a000-000002000003; heat[temperature→ways](2,3) 0a8f02cc-5600-8000-a000-000002000003",
-   "receipt": "e5b8b4f6-849d-88df-9669-0b64710b5ee0"
+   "receipt": "6f99023d-c99d-81f0-8a6f-c53fd87b5866"
   },
   {
    "name": "relation 223",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](446) 5062cd8f-6000-8000-9000-0000000001be; crypt[curveClassicalBits](446) 62d1d39f-1000-8000-9000-0000000001be; crypt[symmetricQuantumBits](446) 62d1d39f-5000-8000-9000-0000000001be",
-   "receipt": "b3d84f91-c9ba-830b-975f-b075b6252981"
+   "receipt": "39a4fb67-4aaf-8401-baea-00fa44b7cefe"
   },
   {
    "name": "relation 224",
    "pass": true,
    "value": "clay + cross (live): cross[medSecureWithQSec](7,5) 0c36469f-5000-8000-a000-000007000005; clay[hodge](112) 13962491-2000-8000-9000-000000000070",
-   "receipt": "6739080d-8ef4-8cb9-8155-3e8c2b5c200b"
+   "receipt": "869d3042-7ed7-8b14-aed7-bb420d7a816a"
   },
   {
    "name": "relation 279",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](558) 5062cd8f-6000-8000-9000-00000000022e; crypt[curveClassicalBits](558) 62d1d39f-1000-8000-9000-00000000022e; crypt[symmetricQuantumBits](558) 62d1d39f-5000-8000-9000-00000000022e",
-   "receipt": "b5dbeeae-78b9-8e69-abed-173348f675bb"
+   "receipt": "c38de16a-266a-8fa3-bcfc-fc1f151c8f3d"
   },
   {
    "name": "relation 321",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](642) 5062cd8f-6000-8000-9000-000000000282; crypt[curveClassicalBits](642) 62d1d39f-1000-8000-9000-000000000282; crypt[symmetricQuantumBits](642) 62d1d39f-5000-8000-9000-000000000282",
-   "receipt": "83bfeab2-77c6-8189-bcce-6406ab209d7f"
+   "receipt": "350d0f59-8625-8403-b134-e4aaa8c15827"
   },
   {
    "name": "relation 334",
    "pass": true,
    "value": "clay + heat (live): clay[hodge](167) 13962491-2000-8000-9000-0000000000a7; heat[temperature→cooling](3,3) 0a8f02cc-5200-8000-a000-000003000003; heat[temperature→ways](3,3) 0a8f02cc-5600-8000-a000-000003000003",
-   "receipt": "88d0bfea-11c0-8e56-a533-b1996667b4a4"
+   "receipt": "b4e5e989-57ed-812f-a1ff-72e0fa73c898"
   },
   {
    "name": "relation 337",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](674) 5062cd8f-6000-8000-9000-0000000002a2; crypt[curveClassicalBits](674) 62d1d39f-1000-8000-9000-0000000002a2; crypt[symmetricQuantumBits](674) 62d1d39f-5000-8000-9000-0000000002a2",
-   "receipt": "455af3b6-e191-8343-b08a-0af29ac25770"
+   "receipt": "e37d8694-5d59-87c7-9cb0-d0434c85603f"
   },
   {
    "name": "relation 341",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](682) 5062cd8f-6000-8000-9000-0000000002aa; crypt[curveClassicalBits](682) 62d1d39f-1000-8000-9000-0000000002aa; crypt[symmetricQuantumBits](682) 62d1d39f-5000-8000-9000-0000000002aa",
-   "receipt": "86a9d2e5-2eed-8edd-a3e4-afc06db13193"
+   "receipt": "01a56d72-7615-8af5-a50d-e73aa7e97441"
   },
   {
    "name": "relation 347",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](694) 5062cd8f-6000-8000-9000-0000000002b6; crypt[curveClassicalBits](694) 62d1d39f-1000-8000-9000-0000000002b6; crypt[symmetricQuantumBits](694) 62d1d39f-5000-8000-9000-0000000002b6",
-   "receipt": "b3d9eca7-138e-8470-80f6-743ecd8a307a"
+   "receipt": "40baa7f1-6569-8aaa-8201-130015a583f6"
   },
   {
    "name": "relation 393",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](786) 5062cd8f-6000-8000-9000-000000000312; crypt[curveClassicalBits](786) 62d1d39f-1000-8000-9000-000000000312; crypt[symmetricQuantumBits](786) 62d1d39f-5000-8000-9000-000000000312",
-   "receipt": "4582d15a-45e0-8cb0-a507-047c221de394"
+   "receipt": "064037b4-8051-8e7e-8439-40f52127ec07"
   },
   {
    "name": "relation 400",
    "pass": true,
    "value": "clay + heat (live): clay[hodge](200) 13962491-2000-8000-9000-0000000000c8; heat[temperature](2,5) 0a8f02cc-5000-8000-a000-000002000005",
-   "receipt": "9f090f96-4841-871a-8138-348388c07936"
+   "receipt": "ec593e35-ba24-8ad5-b267-91eb706d494e"
   },
   {
    "name": "relation 422",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](844) 5062cd8f-6000-8000-9000-00000000034c; crypt[curveClassicalBits](844) 62d1d39f-1000-8000-9000-00000000034c; crypt[symmetricQuantumBits](844) 62d1d39f-5000-8000-9000-00000000034c",
-   "receipt": "ac68293f-c489-8ed0-aa0d-68e1ee648895"
+   "receipt": "d4d432d8-fcc1-881e-a96f-a06cdce95c5e"
   },
   {
    "name": "relation 448",
    "pass": true,
    "value": "clay + cross (live): cross[medSecureWithQSec](7,6) 0c36469f-5000-8000-a000-000007000006; clay[hodge](224) 13962491-2000-8000-9000-0000000000e0",
-   "receipt": "662a9816-df2e-86d8-9576-998946782a6f"
+   "receipt": "da498352-aa2a-8d2c-a142-7973981d859f"
   },
   {
    "name": "relation 469",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](938) 5062cd8f-6000-8000-9000-0000000003aa; crypt[curveClassicalBits](938) 62d1d39f-1000-8000-9000-0000000003aa; crypt[symmetricQuantumBits](938) 62d1d39f-5000-8000-9000-0000000003aa",
-   "receipt": "a78785fc-bacb-817f-9aa9-669ce02c1dca"
+   "receipt": "98b08f52-1916-8675-a112-c7be9df5d81a"
   },
   {
    "name": "relation 591",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](1182) 5062cd8f-6000-8000-9000-00000000049e; crypt[curveClassicalBits](1182) 62d1d39f-1000-8000-9000-00000000049e; crypt[symmetricQuantumBits](1182) 62d1d39f-5000-8000-9000-00000000049e",
-   "receipt": "0c91083b-905a-8fbf-92d9-04ddc0a841e1"
+   "receipt": "dfe6cb3e-e656-8650-ab6c-7ecde7a61cf0"
   },
   {
    "name": "relation 1013",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](2026) 5062cd8f-6000-8000-9000-0000000007ea; crypt[curveClassicalBits](2026) 62d1d39f-1000-8000-9000-0000000007ea; crypt[symmetricQuantumBits](2026) 62d1d39f-5000-8000-9000-0000000007ea",
-   "receipt": "2e4f5cb6-b94a-89c5-b0c6-7c286c88c513"
+   "receipt": "04c1f3fe-f37f-8914-b7bd-9781f2815957"
   },
   {
    "name": "relation 1479",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](2958) 5062cd8f-6000-8000-9000-000000000b8e; crypt[curveClassicalBits](2958) 62d1d39f-1000-8000-9000-000000000b8e; crypt[symmetricQuantumBits](2958) 62d1d39f-5000-8000-9000-000000000b8e",
-   "receipt": "e8757169-358d-8da8-9f39-aaa671e421a7"
+   "receipt": "b4d5941a-6399-8424-9752-045877905cce"
   },
   {
    "name": "relation 1996",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](3992) 5062cd8f-6000-8000-9000-000000000f98; crypt[curveClassicalBits](3992) 62d1d39f-1000-8000-9000-000000000f98; crypt[symmetricQuantumBits](3992) 62d1d39f-5000-8000-9000-000000000f98",
-   "receipt": "ecd39734-f23b-8a94-87a4-69a0da3e6544"
+   "receipt": "0f55d21f-4466-88fe-b742-13032e54d32a"
   },
   {
    "name": "relation 4096",
@@ -1294,13 +1294,13 @@
    "name": "relation 5711",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](11422) 5062cd8f-6000-8000-9000-000000002c9e; crypt[curveClassicalBits](11422) 62d1d39f-1000-8000-9000-000000002c9e; crypt[symmetricQuantumBits](11422) 62d1d39f-5000-8000-9000-000000002c9e",
-   "receipt": "4ef00050-8702-87e8-9817-bc12f989be7e"
+   "receipt": "d7f67477-ec82-8475-aba6-6c716474f5dc"
   },
   {
    "name": "relation 6164",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](12328) 5062cd8f-6000-8000-9000-000000003028; crypt[curveClassicalBits](12328) 62d1d39f-1000-8000-9000-000000003028; crypt[symmetricQuantumBits](12328) 62d1d39f-5000-8000-9000-000000003028",
-   "receipt": "9f0e39b0-89ed-801b-990f-7808add083e3"
+   "receipt": "99d63ddf-e516-8212-9841-1c456b5783f7"
   },
   {
    "name": "relation 8192",
@@ -1312,13 +1312,13 @@
    "name": "relation 15873",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](31746) 5062cd8f-6000-8000-9000-000000007c02; crypt[curveClassicalBits](31746) 62d1d39f-1000-8000-9000-000000007c02; crypt[symmetricQuantumBits](31746) 62d1d39f-5000-8000-9000-000000007c02",
-   "receipt": "0be06bba-e823-8854-8de8-d9475f465eb6"
+   "receipt": "a2236a9a-7094-86b5-93c6-a6d44f258f8b"
   },
   {
    "name": "relation 15897",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](31794) 5062cd8f-6000-8000-9000-000000007c32; crypt[curveClassicalBits](31794) 62d1d39f-1000-8000-9000-000000007c32; crypt[symmetricQuantumBits](31794) 62d1d39f-5000-8000-9000-000000007c32",
-   "receipt": "3e78cf6c-3b4d-8c60-a849-e2e3274b0e01"
+   "receipt": "ed44dd7e-87a3-813c-b66f-f0889817a7da"
   },
   {
    "name": "relation 16384",
@@ -1330,13 +1330,13 @@
    "name": "relation 36379",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](72758) 5062cd8f-6000-8000-9000-000000011c36; crypt[curveClassicalBits](72758) 62d1d39f-1000-8000-9000-000000011c36; crypt[symmetricQuantumBits](72758) 62d1d39f-5000-8000-9000-000000011c36",
-   "receipt": "cd065109-4798-88ae-a51a-47f06f649cae"
+   "receipt": "f86d2a7d-6a12-8282-b9d2-e23cf40bd1cd"
   },
   {
    "name": "relation 41193",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](82386) 5062cd8f-6000-8000-9000-0000000141d2; crypt[curveClassicalBits](82386) 62d1d39f-1000-8000-9000-0000000141d2; crypt[symmetricQuantumBits](82386) 62d1d39f-5000-8000-9000-0000000141d2",
-   "receipt": "96182c06-dbee-8b7a-b097-95507ebcb071"
+   "receipt": "74ab943f-73b0-832d-a097-1b437c6eac70"
   },
   {
    "name": "relation 65536",
@@ -1348,55 +1348,49 @@
    "name": "relation 945034",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](1890068) 5062cd8f-6000-8000-9000-0000001cd714; crypt[curveClassicalBits](1890068) 62d1d39f-1000-8000-9000-0000001cd714; crypt[symmetricQuantumBits](1890068) 62d1d39f-5000-8000-9000-0000001cd714",
-   "receipt": "5d617d74-073d-80bf-bd57-7970c6bb88d3"
+   "receipt": "53e41fe2-3fd9-897d-b9ec-db85a62e39f1"
   },
   {
    "name": "relation 956595",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](1913190) 5062cd8f-6000-8000-9000-0000001d3166; crypt[curveClassicalBits](1913190) 62d1d39f-1000-8000-9000-0000001d3166; crypt[symmetricQuantumBits](1913190) 62d1d39f-5000-8000-9000-0000001d3166",
-   "receipt": "c16ef186-fb05-81c8-a8a5-a8c82f8d55d6"
+   "receipt": "c0961a3c-fda5-8bd3-9e0e-ebd1c7224d56"
   },
   {
    "name": "relation 1039503",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](2079006) 5062cd8f-6000-8000-9000-0000001fb91e; crypt[curveClassicalBits](2079006) 62d1d39f-1000-8000-9000-0000001fb91e; crypt[symmetricQuantumBits](2079006) 62d1d39f-5000-8000-9000-0000001fb91e",
-   "receipt": "d04ac1e4-2ada-8ce7-9b8c-9e91096aab77"
+   "receipt": "e6cff213-c6ba-8a1f-86a8-0d61d94aeeed"
   },
   {
    "name": "relation 1048576",
    "pass": true,
    "value": "np + signal (live): signal[keyspace](20) 5062cd8f-4000-8000-9000-000000000014; np[isTime](16) 08b33c07-3000-8000-9000-000000000010",
-   "receipt": "d99c5456-47ea-8fb4-b9f3-cb954e9c0314"
+   "receipt": "88303c10-7daa-88a4-add9-3f6a3ef77cf0"
   },
   {
    "name": "relation 1150834",
    "pass": true,
    "value": "crypt + signal (live): signal[siftedBits](2301668) 5062cd8f-6000-8000-9000-000000231ee4; crypt[curveClassicalBits](2301668) 62d1d39f-1000-8000-9000-000000231ee4; crypt[symmetricQuantumBits](2301668) 62d1d39f-5000-8000-9000-000000231ee4",
-   "receipt": "c1502c5c-d212-8846-b3be-92e2072b94c4"
-  },
-  {
-   "name": "relation 11545682",
-   "pass": true,
-   "value": "crypt + signal (live): signal[siftedBits](23091364) 5062cd8f-6000-8000-9000-0000016058a4; crypt[curveClassicalBits](23091364) 62d1d39f-1000-8000-9000-0000016058a4; crypt[symmetricQuantumBits](23091364) 62d1d39f-5000-8000-9000-0000016058a4",
-   "receipt": "e8d1cb74-5226-8262-8b71-35d3d40f8a4e"
+   "receipt": "8a971f58-4439-87c0-b399-dd2090982847"
   },
   {
    "name": "relation 33554432",
    "pass": true,
    "value": "np + signal (live): signal[keyspace](25) 5062cd8f-4000-8000-9000-000000000019; np[isTime](32) 08b33c07-3000-8000-9000-000000000020; np[isTime→isTime](2) 08b33c07-3300-8000-9000-000000000002",
-   "receipt": "fe4f0d81-07a8-88e4-b80b-991b561729bb"
+   "receipt": "ae7518f0-8b8d-8a2c-b21c-4aed694ebd78"
   },
   {
    "name": "relation 1073741824",
    "pass": true,
    "value": "np + signal (live): signal[keyspace](30) 5062cd8f-4000-8000-9000-00000000001e; np[isTime](64) 08b33c07-3000-8000-9000-000000000040",
-   "receipt": "41c2bcdd-ea8a-8fab-a663-823dce97f5c8"
+   "receipt": "fab40798-66d7-8b18-8796-1a1323ba73af"
   },
   {
    "name": "relation 1125899906842624",
    "pass": true,
    "value": "np + signal (live): signal[keyspace](50) 5062cd8f-4000-8000-9000-000000000032; np[isTime→isTime](4) 08b33c07-3300-8000-9000-000000000004",
-   "receipt": "0da51d4d-e1d9-8f5f-9c35-257519ea0005"
+   "receipt": "79ff8009-4802-8f53-849c-daee56510726"
   }
  ]
 }

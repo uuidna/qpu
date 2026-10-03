@@ -11914,6 +11914,21 @@ export const qpuServedLedgerHolds = (rows = qpuServedLedgerOf()): boolean => row
 /** How the params section splits: by the two free bits of the variant nibble. */
 export const HEX_PARAM_MODES = ['none', 'one 48-bit', 'two 24-bit', 'three 16-bit'] as const
 const hexWidths = [[], [12], [6, 6], [4, 4, 4]] as const
+/** The widths of the params section by count, in hex digits, and the first natural a param of that count cannot hold:
+ *  what every module that mints or filters hex programs reads instead of restating 2^48, 2^24, 2^16. */
+export const qpuHexWidthsOf = (): readonly (readonly number[])[] => hexWidths
+export const qpuHexParamMaxOf = (count: number): number => (hexWidths[count]?.[n - n] === undefined ? n - n : UUID_SIXTEEN ** hexWidths[count]![n - n]!)
+/**
+ * The lattice by name — n, seed, coins, hexbit, vertices, bits, rays, faces, plane — so a module outside this one writes
+ * its numbers as this unit does (never a literal: a count is a lattice name, a power is mintOf, a page is tenOf).
+ * @wing lattice
+ * @kind builder
+ */
+export const qpuLatticeNamesOf = onceOf(() => {
+  const cube = qpuCubeOf()
+  const faces = qpuFacesOf()
+  return { n, seed, coins, hexbit: cube.hexbit, vertices: cube.vertices, bits: cube.bits, rays: faces.rays, faces: faces.faces, plane: faces.faces * coins }
+})
 type HexFormula = { name: string; arity: number; run: (args: readonly bigint[]) => unknown }
 const HEX_REGISTERED = new Map<string, Map<string, (...a: unknown[]) => unknown>>()
 let hexFamilies: Map<string, HexFormula[]> | undefined

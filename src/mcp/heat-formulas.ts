@@ -1,6 +1,8 @@
 import { leanSource } from '../quantum/processing/unit/lean.js'
 import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** Code quality by temperature and time, as Qpu.Physics measures a qubit. A file is hot when it keeps changing: its
  *  temperature in millikelvin is commits per thousand days (one commit a day is 1000 mK). Its signal is the unit's
@@ -12,14 +14,14 @@ const PLANCK = leanNat('planck')
 const BOLTZMANN = leanNat('boltzmann')
 const TRANSMON = leanNat('transmon')
 const photon = PLANCK * TRANSMON
-const thermal = (millikelvin: number) => BOLTZMANN * millikelvin * 10
+const thermal = (millikelvin: number) => BOLTZMANN * millikelvin * L.tenOf(L.seed)
 const PROOF = 'src/quantum/processing/unit/index.lean §Qpu.Physics (theorem temperature, cooling_stays_positive)'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 
 export class HeatFormulas {
   /** Temperature: commits over days as millikelvin, ⌊1000 · commits / days⌋. */
   static temperature(commits: number, days: number): CrossFormula {
-    const mK = Math.floor((1000 * commits) / Math.max(days, 1))
+    const mK = Math.floor((L.tenOf(L.n) * commits) / Math.max(days, L.seed))
     return crossFormulaOf({ id: 'heat-temperature', src: 'heat', dst: 'physics', formula: 'T = ⌊1000 · commits / days⌋ mK', value: mK, proof: PROOF }, nat(commits, days), { name: 'heat.temperature', params: [commits, days] })
   }
 
@@ -62,7 +64,7 @@ export type HeatReading = { file: string; commits: number; days: number; fixes: 
  *  bring it to the signal's threshold (the coldest temperature at which the signal is still 1). */
 export const heatOf = (readings: HeatReading[]) => {
   // the threshold is where photon / thermal T reaches 1: T* = ⌊photon / (k_B · 10)⌋ mK
-  const threshold = Math.floor(photon / (BOLTZMANN * 10))
+  const threshold = Math.floor(photon / (BOLTZMANN * L.tenOf(L.seed)))
   const rows = readings
     .map((r) => {
       const t = HeatFormulas.temperature(r.commits, r.days)

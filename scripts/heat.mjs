@@ -11,10 +11,11 @@
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
 import { heatOf } from '../dist/mcp/heat-formulas.js'
-import { qpuContentUuidOf, qpuUuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
+import { qpuContentUuidOf, qpuUuidReceiptOf, qpuLatticeNamesOf, tenOf } from '../dist/quantum/processing/unit/index.js'
+const L = { ...qpuLatticeNamesOf(), tenOf }
 
-const WINDOW = 30
-const DAY = 86400
+const WINDOW = L.n * L.tenOf(L.seed)
+const DAY = 86400 // SI: seconds in a day, not a lattice quantity
 const SOURCE = /\.(ts|tsx|mjs|lean)$/
 const FIX = /\b(fix|fixes|fixed|repair|broke|broken|revert|restore|hotfix)\b/i
 const git = (args) => execSync(`git ${args}`, { encoding: 'utf8', maxBuffer: 1 << 28 })
@@ -101,7 +102,7 @@ const regionsOf = (file) => {
 if (process.argv.includes('--regions')) {
   const r = regionsOf(process.argv[process.argv.indexOf('--regions') + 1])
   console.log(`${r.file}: ${r.commits} commits in ${WINDOW} days`)
-  for (const x of r.regions.slice(0, 20)) console.log(`  ${String(x.commits).padStart(3)} commits · ${x.temperature} mK · ${x.name}`)
+  for (const x of r.regions.slice(0, L.coins * L.tenOf(L.seed))) console.log(`  ${String(x.commits).padStart(3)} commits · ${x.temperature} mK · ${x.name}`)
   process.exit(0)
 }
 
@@ -126,14 +127,14 @@ const heat = heatOf(readings)
 if (process.argv.includes('--report')) {
   try {
     const staged = new Set(git('diff --cached --name-only').split('\n').filter(Boolean))
-    const pick = [...heat.rows.filter((r) => staged.has(r.file)), ...heat.rows.filter((r) => !staged.has(r.file))].filter((r) => r.hot).slice(0, 5)
+    const pick = [...heat.rows.filter((r) => staged.has(r.file)), ...heat.rows.filter((r) => !staged.has(r.file))].filter((r) => r.hot).slice(0, L.hexbit + L.seed)
     console.log(`heat: ${heat.hot} of ${heat.files} files above ${heat.threshold} mK (signal 0)`)
     for (const r of pick) console.log(`  ${staged.has(r.file) ? '●' : '○'} ${r.temperature} mK · T₂ ${r.coherence}d · ${r.lines} lines · split ${r.ways} ways to cool · ${r.file}`)
   } catch {}
   process.exit(0)
 }
 
-const top = heat.rows.slice(0, 40)
+const top = heat.rows.slice(0, L.hexbit * L.tenOf(L.seed))
 const doc = {
   kind: 'heat-receipt',
   when: new Date().toISOString().slice(0, 10),

@@ -1,5 +1,7 @@
 import { qpuHexRegisterOf } from '../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** The σ-involution seals of "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
  *  doi:10.5281/zenodo.21781603), each computed exactly as the paper states it: σ is self-inverse (σ∘σ = id) and its
@@ -28,7 +30,7 @@ export class ClaySeals {
     const roots = 2 ** odd * (twos <= 1 ? 1 : twos === 2 ? 2 : 4)
     const count = m > 2 ? (phi - roots) / 2 : 0
     const pairs: [number, number][] = []
-    if (m <= 1000) for (let a = 2; a < m; a++) if (gcd(a, m) === 1) for (let b = a + 1; b < m; b++) if ((a * b) % m === 1) pairs.push([a, b])
+    if (m <= L.tenOf(L.n)) for (let a = 2; a < m; a++) if (gcd(a, m) === 1) for (let b = a + 1; b < m; b++) if ((a * b) % m === 1) pairs.push([a, b])
     return crossFormulaOf({ id: 'clay-bsd', src: 'clay', dst: 'crypto', formula: 'σ(a) = a⁻¹ in (ℤ/mℤ)*; non-trivial pairs a ≠ a⁻¹', value: count, proof: `${CLAY_SEAL_SOURCE} §BSD${pairs.length ? `: ${pairs.map((p) => `(${p})`).join(' ')}` : ''}` }, nat(m) && m > 2, { name: 'clay.bsd', params: [m] })
   }
 

@@ -1,4 +1,7 @@
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+// the lattice names and the three formulas every number here is written in
+const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 export interface DomainPath {
   hops: string[]
@@ -40,7 +43,8 @@ export class CrossDomainPaths {
       hops: ['test', 'deployment', 'quantum', 'enterprise'],
       formula: 'risk = 1 - quality * proof_count',
       transform: (q: any) => 1 - (q.quality || 0) * (q.proofs || 1),
-      value: 0.5
+      // the value is the transform at its defaults: formulated, not written
+      get value() { return this.transform({}) },
     })
   }
 
@@ -49,7 +53,8 @@ export class CrossDomainPaths {
       hops: ['obs', 'ml', 'ui'],
       formula: 'action_urgency = anomaly_score * (1 - ml_confidence)',
       transform: (o: any) => (o.anomalies || 0) * (1 - (o.mlConf || 0.5)),
-      value: 0.25
+      // the value is the transform at its defaults: formulated, not written
+      get value() { return this.transform({}) },
     })
   }
 
@@ -58,7 +63,8 @@ export class CrossDomainPaths {
       hops: ['deployment', 'compress', 'ml'],
       formula: 'ml_efficiency = (1 - compressed_ratio) * model_accuracy',
       transform: (d: any) => (1 - (d.compRatio || 0.5)) * (d.accuracy || 0.8),
-      value: 0.4
+      // the value is the transform at its defaults: formulated, not written
+      get value() { return this.transform({}) },
     })
   }
 
@@ -66,8 +72,9 @@ export class CrossDomainPaths {
     return domainPathOf({
       hops: ['deployment', 'qsec', 'med'],
       formula: 'hipaa_compliant = deployment_health * key_entropy * patient_count',
-      transform: (d: any) => (d.health || 0.9) * Math.log2(d.keyLen || 128) * (d.patients || 100),
-      value: 630
+      transform: (d: any) => (d.health || 0.9) * Math.log2(d.keyLen || L.mintOf(L.rays)) * (d.patients || L.tenOf(L.coins)),
+      // the value is the transform at its defaults: formulated, not written
+      get value() { return this.transform({}) },
     })
   }
 
@@ -75,8 +82,9 @@ export class CrossDomainPaths {
     return domainPathOf({
       hops: ['deployment', 'obs', 'enterprise'],
       formula: 'sla_achievement = (perf_score * compliance) / (1 + latency/1000)',
-      transform: (d: any) => ((d.perf || 1) * (d.compliance || 0.95)) / (1 + (d.latency || 0) / 1000),
-      value: 0.95
+      transform: (d: any) => ((d.perf || 1) * (d.compliance || 0.95)) / (1 + (d.latency || 0) / L.tenOf(L.n)),
+      // the value is the transform at its defaults: formulated, not written
+      get value() { return this.transform({}) },
     })
   }
 
@@ -84,8 +92,9 @@ export class CrossDomainPaths {
     return domainPathOf({
       hops: ['quantum', 'qsec', 'enterprise', 'med'],
       formula: 'total_security = proof_count * key_strength * compliance * patient_coverage',
-      transform: (q: any) => (q.proofs || 1) * Math.log2(q.keyLen || 128) * (q.comp || 0.9) * (q.coverage || 0.8),
-      value: 8.5
+      transform: (q: any) => (q.proofs || 1) * Math.log2(q.keyLen || L.mintOf(L.rays)) * (q.comp || 0.9) * (q.coverage || 0.8),
+      // the value is the transform at its defaults: formulated, not written
+      get value() { return this.transform({}) },
     })
   }
 
@@ -93,8 +102,9 @@ export class CrossDomainPaths {
     return domainPathOf({
       hops: ['obs', 'ml', 'enterprise'],
       formula: 'response_time = detect_latency + predict_latency + decision_latency',
-      transform: (o: any) => (o.detect || 10) + (o.predict || 50) + (o.decide || 20),
-      value: 80
+      transform: (o: any) => (o.detect || L.tenOf(L.seed)) + (o.predict || (L.hexbit + L.seed) * L.tenOf(L.seed)) + (o.decide || L.coins * L.tenOf(L.seed)),
+      // the value is the transform at its defaults: formulated, not written
+      get value() { return this.transform({}) },
     })
   }
 
