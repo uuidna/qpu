@@ -1,14 +1,16 @@
 import type { Payload } from 'payload'
-import { seoDescriptionOf, seoTitleOf } from '../collections/Docs'
-import { seedDocs } from './docs'
+import { qpuContentUuidOf } from '@uuidna/qpu'
+import { docs as generated } from './docs'
 
 type Row = Record<string, unknown> & { id: string }
 type Slug = Parameters<Payload['find']>[0]['collection']
 
 /** Created when missing and never overwritten: what an admin edits afterwards stays. */
 const ensure = async (payload: Payload, collection: string, field: string, value: string, data: Record<string, unknown>): Promise<Row> => {
-  const found = await payload.find({ collection: collection as Slug, where: { [field]: { equals: value } }, limit: 1, depth: 0, overrideAccess: true })
-  return ((found.docs[0] as unknown as Row | undefined) ?? ((await payload.create({ collection: collection as Slug, data: data as never, overrideAccess: true })) as unknown as Row))
+  const found = (await payload.find({ collection: collection as Slug, where: { [field]: { equals: value } }, limit: 0, pagination: false, depth: 0, sort: 'createdAt', overrideAccess: true })).docs as unknown as Row[]
+  // two seeds racing on cold isolates can both create: the oldest stays, the copies go
+  for (const copy of found.slice(1)) await payload.delete({ collection: collection as Slug, id: copy.id, overrideAccess: true })
+  return found[0] ?? ((await payload.create({ collection: collection as Slug, data: data as never, overrideAccess: true })) as unknown as Row)
 }
 
 const lexical = (text: string) => ({
@@ -16,22 +18,39 @@ const lexical = (text: string) => ({
 })
 
 /** Every plugin's content: docs with SEO and their place in the tree (nested-docs), the search index, redirects for retired
- *  routes, the commercial-licence form (form-builder) and product (ecommerce). Idempotent; runs on init. */
+ *  routes, the commercial-licence form (form-builder) and product (ecommerce), the pages and globals. Idempotent; runs on
+ *  init, but only when what it would write changed: its fingerprint (the docs' content UUIDs and the seed's own code) is
+ *  kept in Payload's KV, so a cold isolate reads one key instead of re-walking the store before its first answer. */
 export async function seed(payload: Payload) {
-  await seedDocs(payload)
+  const fingerprint = qpuContentUuidOf({ docs: generated.map((d) => d.uuid), code: [ensure, seedBody, seedSite, upsertDocs, indexDocs].map(String) })
+  if ((await payload.kv.get<string>('seed')) === fingerprint) return
+  await seedBody(payload)
+  await payload.kv.set('seed', fingerprint)
+}
 
-  const docs = (await payload.find({ collection: 'docs', limit: 0, pagination: false, depth: 0, overrideAccess: true })).docs as unknown as (DocRow & { slug: string; title: string; description?: string; parent?: unknown; meta?: { title?: string; description?: string } })[]
-  const index = docs.find((d) => d.slug === 'index')
-  const indexed = (await payload.count({ collection: 'search', overrideAccess: true })).totalDocs
-  for (const d of docs) {
-    const data: Record<string, unknown> = {}
-    if (index && d.slug !== 'index' && !d.parent) data.parent = index.id
-    if (!d.meta?.title || !d.meta?.description) data.meta = { ...d.meta, title: d.meta?.title || seoTitleOf(d), description: d.meta?.description || seoDescriptionOf(d) }
-    // a save is what the search plugin indexes on: an index shorter than the docs is rebuilt by saving them
-    if (indexed < docs.length) data.title = d.title
-    if (Object.keys(data).length) await payload.update({ collection: 'docs', id: d.id, data, overrideAccess: true })
-  }
+// the docs as generated, each upserted at its own id with its place under the index (nested-docs); SEO is filled by the
+// collection's own hook on save. Read by id, written only when its content UUID changed or its parent is missing.
+async function upsertDocs(payload: Payload) {
+  const index = generated.find((d) => d.slug === 'index')
+  await Promise.all(generated.map(async (doc) => {
+    const parent = index && doc.slug !== 'index' ? index.id : undefined
+    const old = (await payload.findByID({ collection: 'docs', id: doc.id, depth: 0, disableErrors: true, overrideAccess: true })) as { uuid?: string; parent?: unknown } | null
+    const data = { ...doc, ...(parent ? { parent } : {}) } as never
+    if (!old) await payload.create({ collection: 'docs', data, overrideAccess: true })
+    else if (old.uuid !== doc.uuid || (parent && !old.parent)) await payload.update({ collection: 'docs', id: doc.id, data, overrideAccess: true })
+  }))
+}
 
+// the search plugin indexes a doc when it is saved: the docs it has not indexed are saved once, the rest left alone
+async function indexDocs(payload: Payload) {
+  const found = (await payload.find({ collection: 'search', limit: 0, pagination: false, depth: 0, overrideAccess: true })).docs as unknown as { doc?: { value?: unknown } }[]
+  const indexed = new Set(found.map((s) => (s.doc?.value && typeof s.doc.value === 'object' ? (s.doc.value as { id: string }).id : String(s.doc?.value ?? ''))))
+  for (const d of generated.filter((x) => !indexed.has(x.id))) await payload.update({ collection: 'docs', id: d.id, data: { title: d.title }, overrideAccess: true })
+}
+
+async function seedBody(payload: Payload) {
+  await upsertDocs(payload)
+  const docs = generated as unknown as DocRow[]
   const docBySlug = (slug: string) => docs.find((d) => d.slug === slug)
   const redirects: [string, { type: 'custom'; url: string } | { type: 'reference'; slug: string }][] = [
     ['/clay', { type: 'custom', url: '/' }],
@@ -76,6 +95,9 @@ export async function seed(payload: Payload) {
     priceInUSDEnabled: false,
     _status: 'published',
   })
+
+  // last, because it is the only step that can be long: saving the docs the search index lacks
+  await indexDocs(payload)
 }
 
 type DocRow = Row & { slug: string }

@@ -35,7 +35,7 @@ import { seoURLOf } from './collections/Docs'
 import { seed } from './seed'
 preload0()
 type CloudflareEnv = { STORAGE: KVNamespace; BLOBS: R2Bucket; MEDIA: R2Bucket }
-const cf = (process.argv.some((a: string) => /^(generate|migrate)/.test(a)) || process.env.NODE_ENV !== 'production' ? await (await import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`)).getPlatformProxy({ configPath: 'payload.wrangler.jsonc', remoteBindings: false }) : await getCloudflareContext({ async: true })).env as unknown as CloudflareEnv
+const cf = (process.argv.some((a: string) => /^(generate|migrate)/.test(a)) || process.env.NODE_ENV !== 'production' ? await (await import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`)).getPlatformProxy({ configPath: 'wrangler.jsonc', remoteBindings: false }) : await getCloudflareContext({ async: true })).env as unknown as CloudflareEnv
 const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',

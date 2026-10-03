@@ -440,6 +440,9 @@ export type CloudflareApp = {
   wrangler?: string
   /** reached only through another Worker's service binding: no workers.dev or preview address */
   bound?: boolean
+  /** the app's own Worker settings laid over the combination's (entry, routes, vars, binding ids, version metadata):
+   *  one Worker that is the app and whatever fronts it */
+  worker?: Record<string, unknown>
 }
 
 const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): string => {
@@ -546,7 +549,7 @@ const cloudflareWranglerOf = (c: CloudflareCombination, name: string, app?: Clou
     w.r2_buckets = [{ binding: 'BLOBS', bucket_name: `${name}-blobs` }]
   }
   if (c.storage === 'r2') w.r2_buckets = [...((w.r2_buckets as unknown[]) ?? []), { binding: 'MEDIA', bucket_name: `${name}-media` }]
-  return JSON.stringify(w, null, 2) + '\n'
+  return JSON.stringify({ ...w, ...app?.worker }, null, 2) + '\n'
 }
 
 /** The Next.js app around the config, for OpenNext: Payload's admin and REST routes, and a public site that renders one

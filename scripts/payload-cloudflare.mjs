@@ -41,8 +41,25 @@ const REPO_REGISTRIES = [
   { file: `${SRC}/blocks/index.ts`, export: 'blocks', type: { name: 'Block', from: 'payload' }, entries: modulesOf('blocks', 'ts').map((name) => ({ name, from: `./${name}`, key: slugOf(name) })) },
   { file: `${SRC}/components/blocks/index.ts`, export: 'blockComponents', record: true, entries: modulesOf('components/blocks', 'tsx').map((name) => ({ name, from: `./${name}`, key: slugOf(name) })) },
 ]
-const REPO_NAME = 'uuidna-qpu-payload'
-const REPO_WRANGLER = 'payload.wrangler.jsonc'
+// ONE WORKER: qpu runs on Payload running on qpu. uuidna-qpu is the Payload app; worker.js fronts it with the unit, which
+// hands browser pages and /api to the app in-process, and the app keeps its documents in the unit's storage (db/payload).
+// The name stays uuidna-qpu: the custom domain is attached to it and uuidna's Worker binds its QpuDeposit entrypoint.
+const REPO_NAME = 'uuidna-qpu'
+const REPO_WRANGLER = 'wrangler.jsonc'
+const REPO_WORKER = {
+  main: 'worker.js',
+  // no workers.dev or preview address: every request there was a scanner, billed as an invocation
+  workers_dev: false,
+  preview_urls: false,
+  routes: [{ pattern: 'qpu.uuidna.com', custom_domain: true }, { pattern: '*.uuidna.com/*', zone_name: 'uuidna.com' }],
+  vars: { QPU_HOST: 'qpu.uuidna.com' },
+  kv_namespaces: [{ binding: 'STORAGE', id: 'b341b266250444198e54508ca3aee53a', preview_id: 'b341b266250444198e54508ca3aee53a' }],
+  r2_buckets: [{ binding: 'BLOBS', bucket_name: 'uuidna-qpu-blobs' }, { binding: 'MEDIA', bucket_name: 'uuidna-qpu-payload-media' }],
+  version_metadata: { binding: 'CF_VERSION_METADATA' },
+  // a document is written as 15 slots on KV and on R2, so one save is dozens of storage calls: the seed's saves need
+  // more than the default per-invocation budget
+  limits: { subrequests: 50000 },
+}
 const REPO = {
   key: 'opennext/qpu-raid/r2/none/ecommerce+form-builder+import-export+mcp+multi-tenant+nested-docs+redirects+search+sentry+seo+stripe',
   app: {
@@ -65,7 +82,7 @@ const REPO = {
     seed: { name: 'seed', from: './seed' },
     preload: ['./utilities/workers-crypto'],
     wrangler: REPO_WRANGLER,
-    bound: true,
+    worker: REPO_WORKER,
   },
 }
 // the site's folders under src, beside the library's (core, mcp, quantum, …): the app compiles them, the library skips them
@@ -88,7 +105,7 @@ if (process.argv.includes('--repo')) {
   const lib = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8'))
   lib.exclude = [...new Set([...lib.exclude.filter((x) => !x.startsWith(`${SRC}/`) || x.startsWith(`${SRC}/autonomous`)), ...SITE.map((d) => `${SRC}/${d}/**`), ...SITE_FILES.map((f) => `${SRC}/${f}`)])]
   const written = { ...t.files, [REPO_WRANGLER]: t.files['wrangler.jsonc'], 'tsconfig.payload.json': JSON.stringify(REPO_TSCONFIG, null, 1) + '\n', 'tsconfig.json': JSON.stringify(lib, null, 2) + '\n' }
-  delete written['wrangler.jsonc']
+  if (REPO_WRANGLER !== 'wrangler.jsonc') delete written['wrangler.jsonc']
   for (const [f, text] of Object.entries(written)) {
     fs.mkdirSync(path.dirname(f), { recursive: true })
     fs.writeFileSync(f, text)

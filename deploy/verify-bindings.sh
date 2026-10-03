@@ -55,32 +55,32 @@ fi
 
 echo ""
 
-# 2. Verify wrangler.toml configuration
-echo -e "${BLUE}2️⃣  Verifying wrangler.toml${NC}"
-if [ ! -f "wrangler.toml" ]; then
-  fail "wrangler.toml not found"
+# 2. Verify wrangler.jsonc configuration
+echo -e "${BLUE}2️⃣  Verifying wrangler.jsonc${NC}"
+if [ ! -f "wrangler.jsonc" ]; then
+  fail "wrangler.jsonc not found"
   exit 1
 fi
 
-if grep -q "binding = \"STORAGE\"" wrangler.toml; then
+if grep -q "\"binding\": \"STORAGE\"" wrangler.jsonc; then
   pass "STORAGE binding configured"
 else
-  fail "STORAGE binding not found in wrangler.toml"
+  fail "STORAGE binding not found in wrangler.jsonc"
 fi
 
-if grep -q "binding = \"BLOBS\"" wrangler.toml; then
+if grep -q "\"binding\": \"BLOBS\"" wrangler.jsonc; then
   pass "BLOBS binding configured"
 else
-  fail "BLOBS binding not found in wrangler.toml"
+  fail "BLOBS binding not found in wrangler.jsonc"
 fi
 
-if grep -q "binding = \"PAYLOAD\"" wrangler.toml; then
-  pass "PAYLOAD binding configured"
+if grep -q "open-next/worker.js" worker.js; then
+  pass "Payload app served in-process (worker.js)"
 else
-  warn "PAYLOAD binding not found (may be optional)"
+  warn "worker.js does not front the Payload app"
 fi
 
-if grep -q "version_metadata" wrangler.toml; then
+if grep -q "version_metadata" wrangler.jsonc; then
   pass "CF_VERSION_METADATA binding configured"
 else
   warn "CF_VERSION_METADATA binding not configured"
@@ -90,7 +90,7 @@ echo ""
 
 # 3. Test STORAGE (KV) binding
 echo -e "${BLUE}3️⃣  Testing STORAGE (KV Namespace)${NC}"
-STORAGE_ID=$(grep -A1 "binding = \"STORAGE\"" wrangler.toml | grep "^id = " | cut -d'"' -f2)
+STORAGE_ID=$(grep -A1 "binding = \"STORAGE\"" wrangler.jsonc | grep "^id = " | cut -d'"' -f2)
 
 if [ -n "$STORAGE_ID" ]; then
   pass "STORAGE namespace ID: $STORAGE_ID"
@@ -116,14 +116,14 @@ if [ -n "$STORAGE_ID" ]; then
     fail "STORAGE write test failed - namespace may not be accessible"
   fi
 else
-  warn "STORAGE namespace ID not found in wrangler.toml"
+  warn "STORAGE namespace ID not found in wrangler.jsonc"
 fi
 
 echo ""
 
 # 4. Test BLOBS (R2) binding
 echo -e "${BLUE}4️⃣  Testing BLOBS (R2 Bucket)${NC}"
-BLOBS_BUCKET=$(grep -A1 "binding = \"BLOBS\"" wrangler.toml | grep "^bucket_name = " | cut -d'"' -f2)
+BLOBS_BUCKET=$(grep -A1 "binding = \"BLOBS\"" wrangler.jsonc | grep "^bucket_name = " | cut -d'"' -f2)
 
 if [ -n "$BLOBS_BUCKET" ]; then
   pass "BLOBS bucket: $BLOBS_BUCKET"
@@ -158,15 +158,15 @@ if [ -n "$BLOBS_BUCKET" ]; then
     fail "BLOBS bucket '$BLOBS_BUCKET' does not exist"
   fi
 else
-  warn "BLOBS bucket name not found in wrangler.toml"
+  warn "BLOBS bucket name not found in wrangler.jsonc"
 fi
 
 echo ""
 
 # 5. Test PAYLOAD (Service) binding
 echo -e "${BLUE}5️⃣  Testing PAYLOAD (Service Binding)${NC}"
-if grep -q "binding = \"PAYLOAD\"" wrangler.toml; then
-  PAYLOAD_SERVICE=$(grep -A1 "binding = \"PAYLOAD\"" wrangler.toml | grep "^service = " | cut -d'"' -f2)
+if grep -q "binding = \"PAYLOAD\"" wrangler.jsonc; then
+  PAYLOAD_SERVICE=$(grep -A1 "binding = \"PAYLOAD\"" wrangler.jsonc | grep "^service = " | cut -d'"' -f2)
   pass "PAYLOAD service binding configured: $PAYLOAD_SERVICE"
 
   if wrangler services list 2>/dev/null | grep -q "$PAYLOAD_SERVICE"; then
