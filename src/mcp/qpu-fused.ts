@@ -485,28 +485,44 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     return { source, url: 'https://mathoverflow.net/unanswered', reading: live, expected: { open: '>= 1 unanswered question' }, agrees: leads.length > 0 }
   }
   if (source === 'law') {
-    // THE COURT-ADMISSIBLE RECORD: the official legal sources a court accepts as authoritative, read live and keyless —
-    // the US Federal Register (federalregister.gov), UK legislation (legislation.gov.uk), EU law (EUR-Lex via the EU
-    // Open Data Portal) — plus the registry's legal APIs. This is the review layer for the `law` family: a computed
-    // legal conclusion becomes advice only when confirmed TRUE against one of these documents; `about` searches them,
-    // `from` walks the registry. Any jurisdiction the sources cover; the arithmetic is jurisdiction-agnostic.
-    const terms = ['law', 'legal', 'legislation', 'statute', 'statutes', 'regulation', 'regulations', 'court', 'case', 'judicial', 'jurisdiction']
+    // THE COURT-ADMISSIBLE RECORD + THE CASE LAW: the official sources a court accepts as authoritative, read live and
+    // keyless — US Federal Register, UK legislation, EU law (EUR-Lex) — and the CourtListener corpus (the Free Law
+    // Project), walked by citation so the biggest cases and the firms of record surface as leads — plus the registry's
+    // legal APIs. The search TERMS ARE FORMULATED from the law family's own formula names (no hand list): add a law
+    // formula and the record researches its word. The review layer for the `law` family: a computed conclusion becomes
+    // advice only when confirmed TRUE against one of these documents; `about` searches them, `from` walks the registry.
+    // One irreducible anchor word set (the domain word a formula cannot name); the rest is the family, split to words.
+    const seed = ['law', 'legal', 'court', 'case', 'jurisdiction']
+    const terms = [...new Set([...seed, ...(qpuHexFamiliesOf().get('law') ?? []).flatMap((x) => x.name.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(/[^a-z]+/)).filter((w) => w.length > 2)])]
     const ask = str(a.about) ? str(a.about).toLowerCase().split(/[\s,]+/).filter(Boolean) : []
     const from = typeof a.from === 'number' ? a.from : 0
+    const nums = (t: string) => (t.match(/\d+/g) ?? []).map(Number).filter((n) => Number.isSafeInteger(n) && n >= 3)
     type Src = { source: string; title: string; jurisdiction: string; secured: boolean; operation: string; status: number; url: string; records?: number; keyless: boolean }
     const anchor: Src[] = []
+    let cases: { case: string; court: string; citeCount: number; dateFiled?: string; firms: string[]; numbers: number[] }[] = []
     if (from === 0) {
-      const q = ask.length ? encodeURIComponent(ask.join(' ')) : ''
+      const terml = ask.length ? ask.join(' ') : terms.join(' ')
+      const q = encodeURIComponent(terml)
+      const clUrl = `https://www.courtlistener.com/api/rest/v4/search/?type=o&order_by=${encodeURIComponent('citeCount desc')}&q=${q}`
       const official = [
-        { source: 'federalregister.gov', title: 'US Federal Register', jurisdiction: 'US', url: `https://www.federalregister.gov/api/v1/documents.json?per_page=1${q ? `&conditions[term]=${q}` : ''}`, count: (b: Record<string, unknown>) => b.count as number | undefined },
-        { source: 'legislation.gov.uk', title: 'UK legislation', jurisdiction: 'UK', url: `https://www.legislation.gov.uk/${q ? `all?text=${q}&` : 'ukpga?'}results-count=1&format=json`, count: () => undefined },
-        { source: 'data.europa.eu:eur-lex', title: 'EU law (EUR-Lex)', jurisdiction: 'EU', url: `https://data.europa.eu/api/hub/search/search?limit=1&q=${q || 'eur-lex'}`, count: (b: Record<string, unknown>) => (b.result as { count?: number } | undefined)?.count },
+        { source: 'federalregister.gov', title: 'US Federal Register', jurisdiction: 'US', url: `https://www.federalregister.gov/api/v1/documents.json?per_page=1${ask.length ? `&conditions[term]=${q}` : ''}`, count: (b: Record<string, unknown>) => b.count as number | undefined },
+        { source: 'legislation.gov.uk', title: 'UK legislation', jurisdiction: 'UK', url: `https://www.legislation.gov.uk/${ask.length ? `all?text=${q}&` : 'ukpga?'}results-count=1&format=json`, count: () => undefined },
+        { source: 'data.europa.eu:eur-lex', title: 'EU law (EUR-Lex)', jurisdiction: 'EU', url: `https://data.europa.eu/api/hub/search/search?limit=1&q=${ask.length ? q : 'eur-lex'}`, count: (b: Record<string, unknown>) => (b.result as { count?: number } | undefined)?.count },
+        { source: 'courtlistener.com', title: 'US case law (CourtListener / Free Law Project)', jurisdiction: 'US', url: clUrl, count: (b: Record<string, unknown>) => b.count as number | undefined },
       ]
       for (const o of official) {
         const b = (await get(o.url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | null
         const records = b ? o.count(b) : undefined
         anchor.push({ source: o.source, title: o.title, jurisdiction: o.jurisdiction, secured: false, operation: new URL(o.url).pathname, status: b ? 200 : 0, url: o.url, ...(typeof records === 'number' ? { records } : {}), keyless: b !== null })
       }
+      // THE BIGGEST CASES AND THEIR FIRMS AS LEADS — ranked by the record's own citation count, not by hand
+      const cl = (await get(clUrl).then((x) => x.json()).catch(() => null)) as { results?: Record<string, unknown>[] } | null
+      cases = (cl?.results ?? []).slice(0, qpuFacesOf().faces).map((r) => {
+        const name = str(r.caseName).replace(/\s+/g, ' ').slice(0, 120)
+        const citeCount = num(r.citeCount, 0)
+        const firms = [...new Set([str(r.attorney)].flatMap((s) => s.split(/[,;]| and /).map((w) => w.trim()).filter((w) => w.length > 3)))].slice(0, qpuFacesOf().faces)
+        return { case: name, court: str(r.court) || str(r.court_id), citeCount, dateFiled: str(r.dateFiled) || undefined, firms, numbers: [...new Set([citeCount, ...nums(`${name} ${str(r.dateFiled)}`)])].filter((n) => n >= 3) }
+      })
     }
     const found = await apiSearchOf([...terms, ...ask], qpuFacesOf().faces, from)
     const tokened = (s: string) => s.toLowerCase().split(/[^a-z]+/).some((w) => terms.includes(w))
@@ -515,8 +531,8 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const sources = [...anchor, ...reads]
     // the review: a legal claim can be confirmed when an authoritative source answered; reviewed = 1 only then
     const reviewed = sources.some((s) => s.keyless && s.status === 200) ? 1 : 0
-    const live = { terms, about: ask, jurisdictions: [...new Set(anchor.map((s) => s.jurisdiction))], matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), answered: sources.filter((s) => s.status > 0).length, keyless: sources.filter((s) => s.keyless).length, reviewed, advice: reviewed === 1 ? 'a claim confirmed on these documents is advice' : 'no authoritative document answered: computations stay leads, not advice', sources }
-    return { source, url: 'https://www.federalregister.gov + https://www.legislation.gov.uk + https://data.europa.eu', reading: live, expected: { answered: '>= 1 authoritative source' }, agrees: sources.some((s) => s.keyless) }
+    const live = { terms, about: ask, jurisdictions: [...new Set(anchor.map((s) => s.jurisdiction))], matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), answered: sources.filter((s) => s.status > 0).length, keyless: sources.filter((s) => s.keyless).length, reviewed, advice: reviewed === 1 ? 'a claim confirmed on these documents is advice' : 'no authoritative document answered: computations stay leads, not advice', cases, numbers: [...new Set(cases.flatMap((c) => c.numbers))].slice(0, qpuFacesOf().faces), sources }
+    return { source, url: 'https://www.federalregister.gov + https://www.legislation.gov.uk + https://data.europa.eu + https://www.courtlistener.com', reading: live, expected: { answered: '>= 1 authoritative source' }, agrees: sources.some((s) => s.keyless) || cases.length > 0 }
   }
   if (source === 'funding') {
     // FUSE THE OFFICIAL REGIONAL FUNDING: the public finds money for anything through the one door. Keyless official
