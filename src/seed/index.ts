@@ -87,7 +87,8 @@ const HOME_PAGE: PageData = {
       emphasis: `Shor: ${purpose.cybersecurity.n} = ${purpose.cybersecurity.factors[0]} × ${purpose.cybersecurity.factors[1]}.`,
       links: standing.slice(0, 3).map((b) => link(`/${b.slug}`, titleOf(b.slug))),
     },
-    ...home.map((b) => blockOf(b, b.slug === 'families' ? { anchor: 'families' } : {})),
+    // the Clay receipt is the first thing under the hero; the rest keep the registry's order
+    ...[...home.filter((b) => b.slug === 'clay'), ...home.filter((b) => b.slug !== 'clay')].map((b) => blockOf(b, b.slug === 'families' ? { anchor: 'families' } : {})),
   ],
 }
 const RECEIPT_PAGES: PageData[] = receipts.map((r) => ({
