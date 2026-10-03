@@ -241,12 +241,14 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     // unit hands browser pages to (in-process on Workers, the host over the network elsewhere), and a page agrees when
     // it answers 200 with a title. The reading is the site as a whole; each address that does not is named.
     const origin = (qpuCiteOf() as unknown as { href: string }).href
-    const ask = async (path: string, accept: string): Promise<Response> => {
+    const ask = async (path: string, accept: string, within = DEADLINE): Promise<Response> => {
       const request = new Request(`${origin}${path}`, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' } })
       const door = env?.PAYLOAD ? env.PAYLOAD.fetch(request) : fetch(request)
-      return Promise.race([door, new Promise<Response>((_, reject) => setTimeout(() => reject(new Error(`${path} did not answer within the deadline`)), DEADLINE))])
+      return Promise.race([door, new Promise<Response>((_, reject) => setTimeout(() => reject(new Error(`${path} did not answer within ${within === DEADLINE ? 'the deadline' : 'the window'}`)), within))])
     }
-    const xml = await (await ask('/sitemap.xml', 'application/xml')).text()
+    // the sitemap is one read that gathers the whole site, and a cold isolate's first answer is Payload's initialisation:
+    // it gets the window; every page then gets the deadline
+    const xml = await (await ask('/sitemap.xml', 'application/xml', OFFLINE_WINDOW)).text()
     const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!.replace(origin, '') || '/')
     // n addresses at a time: every page is rendered in this isolate, and sixty at once starve each other of the deadline
     const one = async (path: string) => {
