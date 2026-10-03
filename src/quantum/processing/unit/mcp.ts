@@ -1,6 +1,9 @@
 // Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds.
 import {
   FUSED_TOOLS,
+  qpuHexRunOf,
+  qpuHexFamiliesOf,
+  qpuMcpFusedOf,
   coins,
   cors,
   cryptoToolNames,
@@ -69,6 +72,7 @@ import {
   toolListOf,
   toolNames,
   unit,
+  qpuDataLiveOf,
 } from './index.js'
 import type { QpuEnv } from './index.js'
 import { qpuCircuitOf } from './circuit.js'
@@ -303,6 +307,46 @@ export const qpuMcpOf = onceOf(() => {
  * @wing agents
  * @kind builder
  */
+/** EVERY CAPABILITY THROUGH EVERY DOOR. tools/list is sealed (theorem agents_mcp_tools), and an MCP client calls only
+ *  what it was listed; so each listed door also takes an address or another door. The rule is one schema, added to
+ *  every listed door: { hex } runs a hex program (a UUID, or { family, program, params }), { door, arguments } answers
+ *  as any door the registries hold or any formula as family.formula, { doors: true } lists them all. Nothing is named
+ *  here: the doors are read from the registries and the formulas from the families.
+ * @wing agents
+ * @kind builder
+ */
+export const qpuThroughSchemaOf = (inputSchema: Record<string, unknown>): Record<string, unknown> => ({
+  ...inputSchema,
+  properties: {
+    ...((inputSchema.properties as Record<string, unknown> | undefined) ?? {}),
+    hex: { type: ['string', 'object'], description: 'Run any hex program through this door: a hex-program UUID, or { family, program, params }.' },
+    door: { type: 'string', description: 'Answer as any door or formula: { doors: true } lists them; family.formula runs a formula.' },
+    arguments: { type: 'object', description: 'The arguments for door (params for a formula).' },
+    doors: { type: 'boolean', description: '{ doors: true } lists every door and every formula reachable through this one.' },
+  },
+})
+
+/**
+ * Every door this unit answers, read from its registries, and every formula of every hex family as family.formula.
+ * @wing agents
+ * @kind builder
+ */
+export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
+  const doors = [
+    ...qpuToolsOf().map((t) => ({ name: t.name, kind: 'sealed' })),
+    ...qpuCybersecurityToolsOf().map((t) => ({ name: t.name, kind: 'cybersecurity' })),
+    ...qpuMcpFusedOf().map((t) => ({ name: t.name, kind: 'fused', description: t.description })),
+    ...qpuStorageToolsOf(env, auth).map((t) => ({ name: t.name, kind: 'storage' })),
+    ...qpuNetworkToolsOf().map((t) => ({ name: t.name, kind: 'network' })),
+    ...qpuServerToolsOf().map((t) => ({ name: t.name, kind: 'server' })),
+    ...payloadFinds.map((name) => ({ name, kind: 'payload' })),
+    { name: 'install', kind: 'install' },
+    ...[...sandboxTools.keys()].map((name) => ({ name, kind: 'sandbox' })),
+  ]
+  const formulas = [...qpuHexFamiliesOf()].flatMap(([family, fs]) => fs.map((f) => ({ name: `${family}.${f.name}`, arity: f.arity })))
+  return { kind: 'doors' as const, doors, formulas, reachable: doors.length + formulas.length, holds: doors.length > n - n && formulas.length > n - n }
+}
+
 export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
   // the hex address that reproduces this call, when it is a pure door call (no man, live or sequence flags)
   const hexOf = (): string | undefined => {
@@ -317,13 +361,30 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
     const hex = hexOf()
     return hex && r._meta ? { ...r, _meta: { ...r._meta, hex } } : r
   }
+  // through this door: the listing, a hex program, or another door (see qpuThroughSchemaOf)
+  if (args.doors === true) return shown(qpuMcpDoorsOf(env, auth))
+  if (typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null)) {
+    const h = args.hex as string | { family?: unknown; program?: unknown; params?: unknown }
+    try {
+      const uuid = typeof h === 'string' ? h : qpuHexUuidOf({ family: String(h.family ?? ''), program: Array.isArray(h.program) ? h.program.map(String) : String(h.program ?? '').split(/[+,]/).filter(Boolean), params: Array.isArray(h.params) ? h.params.map(Number) : [] })
+      return shown(await qpuHexRunOf(uuid, undefined, env))
+    } catch (e) {
+      return shown({ kind: 'hex' as const, holds: false as const, denied: 'program', reading: (e as Error).message })
+    }
+  }
+  if (typeof args.door === 'string' && args.door !== name) {
+    const inner = typeof args.arguments === 'object' && args.arguments !== null ? (args.arguments as Record<string, unknown>) : {}
+    const formula = /^(.+)\.([A-Za-z0-9_]+)$/.exec(args.door)
+    if (formula && qpuHexFamiliesOf().get(formula[1]!)?.some((f) => f.name === formula[2])) return qpuMcpCallOf(name, { hex: { family: formula[1], program: [formula[2]], params: inner.params ?? [] } }, env, auth)
+    return qpuMcpCallOf(args.door, inner, env, auth)
+  }
   const tool = qpuToolsOf().find((t) => t.name === name)
   if (tool) {
     if (args.man !== true) {
       const sequenced =
         args.sequence === true &&
         (name === toolNames[n] || name === toolNames[n + coins] || name === toolNames[n + n] || name === toolNames[mintOf(n) - seed])
-      if (sequenced || (name === toolNames[mintOf(n) - seed] && args.live === true)) return shown(await qpuSequenceLiveOf())
+      if (sequenced || (name === toolNames[mintOf(n) - seed] && args.live === true)) return shown({ ...(await qpuSequenceLiveOf()), data: await qpuDataLiveOf(env) })
       if (args.live === true) {
         if (name === toolNames[n] && typeof args.from === 'number' && Number.isInteger(args.from) && args.from >= n - n)
           return shown({ ...(await qpuComposeLiveOf(args.from, qpuFacesOf().faces)), from: args.from, next: args.from + qpuFacesOf().faces, stream: qpuReceiptStreamsOf(n - n).streams.find((row) => row.stream === 'fuse') ?? null })

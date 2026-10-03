@@ -25,8 +25,8 @@ import { qpuLeanOf, qpuLeanHolds } from './proof.js'
 export { qpuLeanOf, qpuLeanHolds } from './proof.js'
 import { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
 export { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
-import { qpuToolsOf, qpuMcpOf } from './mcp.js'
-export { qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds } from './mcp.js'
+import { qpuToolsOf, qpuMcpOf, qpuThroughSchemaOf } from './mcp.js'
+export { qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds, qpuThroughSchemaOf, qpuMcpDoorsOf } from './mcp.js'
 import { qpuShorTryOf, qpuShorOf, qpuShorHolds } from './shor.js'
 export { qpuShorTryOf, qpuShorTryHolds, qpuShorOf, qpuShorReceiptsOf, qpuShorReceiptsHolds, qpuShorHolds } from './shor.js'
 import { qpuSandboxOf, qpuSandboxRunOf } from './sandbox.js'
@@ -528,6 +528,32 @@ export const qpuMcpFuseOf = (name: string, tool: FusedTool): string => {
 }
 /** Every fused tool with its contract: the catalogue a client reads to call what tools/list does not show. */
 export const qpuMcpFusedOf = () => [...FUSED_TOOLS].map(([name, t]) => ({ name, description: t.description, inputSchema: t.inputSchema }))
+/**
+ * Every live public dataset the fused qpu_data door checks, read now and carried by qpu_prove { live: true }: the
+ * proof's live block names what agrees with the unit, what differs and what could not be reached. A reading is a
+ * report, not a gate: a stale registry or an unreachable host leaves holds alone (no locks).
+ * @wing agents
+ * @kind builder
+ */
+export const qpuDataLiveOf = async (env?: QpuEnv) => {
+  const door = FUSED_TOOLS.get('qpu_data')
+  if (!door) return { kind: 'data-live' as const, sources: n - n, agree: n - n, differ: [] as string[], unreachable: [] as string[], rows: [] as { label: string; agrees: boolean; reading: unknown }[], holds: false }
+  const listed = (await door.run({ source: 'all' }, env)) as { sources?: { source: string; args: Record<string, unknown>; label: string; checks: string }[] }
+  const sources = listed.sources ?? []
+  const rows = await Promise.all(sources.map(async (s) => {
+    const r = (await door.run({ source: s.source, ...s.args }, env)) as { agrees?: boolean; denied?: string; reading?: unknown; receipt?: string }
+    return { label: s.label, checks: s.checks, agrees: r.agrees === true, unreachable: r.denied === 'unreachable', reading: r.reading, receipt: r.receipt }
+  }))
+  return {
+    kind: 'data-live' as const,
+    sources: rows.length,
+    agree: rows.filter((r) => r.agrees).length,
+    differ: rows.filter((r) => !r.agrees && !r.unreachable).map((r) => r.label),
+    unreachable: rows.filter((r) => r.unreachable).map((r) => r.label),
+    rows,
+    holds: rows.length > n - n,
+  }
+}
 /**
  * 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines.
  * @wing lattice
@@ -11652,10 +11678,11 @@ const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
   * @kind builder
  * annotations: one KiB per door, guarded by the suite. */
 export const qpuMcpToolsListOf = onceOf(() => {
+  // every listed door carries the one through-schema: an MCP client that sees only this list reaches everything
   const sealed = qpuToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: true as const, morph: false as const }))
+    qpuMcpToolShapeOf(name, description, qpuThroughSchemaOf(inputSchema), { sealed: true as const, morph: false as const }))
   const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, description, inputSchema, { sealed: false as const, morph: true as const }))
+    qpuMcpToolShapeOf(name, description, qpuThroughSchemaOf(inputSchema), { sealed: false as const, morph: true as const }))
   return [...sealed, ...cybersecurity]
 })
 

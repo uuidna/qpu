@@ -63,7 +63,8 @@ HEALTHCHECK --interval=60s --timeout=30s --start-period=10s --retries=3 \
     CMD node dist/quantum/processing/unit/boot.js --health || exit 1
 
 # Use dumb-init to properly handle signals
-ENTRYPOINT ["/sbin/dumb-init", "--"]
+# Alpine installs dumb-init under /usr/bin
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 # Run quantum formula discovery system
 CMD ["node", "dist/quantum/processing/unit/boot.js"]
