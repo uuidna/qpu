@@ -171,6 +171,7 @@
     "./dist/families/securities/index.js",
     "./dist/families/security/index.js",
     "./dist/families/sentence/index.js",
+    "./dist/families/seo/index.js",
     "./dist/families/signal/index.js",
     "./dist/families/social/index.js",
     "./dist/families/split/index.js",
