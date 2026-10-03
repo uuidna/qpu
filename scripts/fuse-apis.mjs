@@ -105,9 +105,9 @@ const byCategory = categories
 fs.mkdirSync('.fuse', { recursive: true })
 const out = fs.createWriteStream('.fuse/fuse-formulas.ndjson')
 // every formula of the flow families is a lead the rosetta develops, a cross formula seeded beside the edges; taken
-// before fuse registers below, so the ring is the lattice's own families. The Lean families cross in their own domain,
-// as in gate.crossed (and a Qpu.Shor lead alone runs minutes)
-const developed = flowFamiliesOf().flatMap((family, a) => (family.startsWith('Qpu.') ? [] : (qpuHexFamiliesOf().get(family) ?? []).flatMap((_, j) => Array.from({ length: 2 * flowFamiliesOf().length }, (_, s) => MerkabaFormulas.develop(a, j, s)))))
+// every formula of the flow families is a lead the rosetta develops, in every rotation, a cross formula seeded beside
+// the edges; taken before fuse registers below, so the ring is the lattice's own families
+const developed = flowFamiliesOf().flatMap((family, a) => (qpuHexFamiliesOf().get(family) ?? []).flatMap((_, j) => Array.from({ length: 2 * flowFamiliesOf().length }, (_, s) => MerkabaFormulas.develop(a, j, s))))
 // every fused pair is a hex callable: fuse.edge(i, j) returns its formula; params are the two API indexes (24 bits each)
 const edgeAt = new Map(fused.edges.map((e) => [e.i * fused.apis.length + e.j, e]))
 qpuHexRegisterOf('fuse', 'edge', function edge(i, j) {

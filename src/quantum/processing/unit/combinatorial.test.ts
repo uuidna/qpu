@@ -17,8 +17,39 @@ import {
   qpuMixedOf,
   qpuTeachingPairsOf,
 } from './index.js'
+import { leanCallOf, leanModelOf } from './lean-eval.js'
 
-const RFC9562_V8 = /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+test('powModAux by squaring reaches what Lean\'s k-step definition reaches, and fast', () => {
+  const lean = leanModelOf('')
+  const literal = (k: bigint, a: bigint, m: bigint, acc: bigint) => { for (let i = 0n; i < k; i++) acc = m === 0n ? acc * a : (acc * a) % m; return acc }
+  for (let k = 0n; k <= 12n; k++) for (let a = 0n; a <= 6n; a++) for (let m = 0n; m <= 7n; m++) for (let acc = 0n; acc <= 9n; acc += 3n)
+    assert.equal(leanCallOf(lean, 'powModAux', [k, a, m, acc]), literal(k, a, m, acc), `powModAux ${k} ${a} ${m} ${acc}`)
+  const t = performance.now()
+  leanCallOf(lean, 'powMod', [662607015n, 662607015n, 662607015n])
+  assert.ok(performance.now() - t < 1000, 'the input that took 11.8 s by k steps')
+})
+
+test('chooseOf by its shorter side reaches what the k-step product reaches, and fast', () => {
+  const lean = leanModelOf('')
+  const literal = (n: bigint, k: bigint) => { if (k > n) return 0n; let c = 1n; for (let i = 0n; i < k; i++) c = (c * (n - i)) / (i + 1n); return c }
+  for (let n = 0n; n <= 24n; n++) for (let k = 0n; k <= 26n; k++) assert.equal(leanCallOf(lean, 'chooseOf', [n, k]), literal(n, k), `chooseOf ${n} ${k}`)
+  const t = performance.now()
+  assert.equal(leanCallOf(lean, 'chooseOf', [662607015n, 662607015n]), 1n)
+  assert.ok(performance.now() - t < 1000, 'the input the k-step product never finished')
+})
+
+test('periodAux with the unit test and the carried power reaches what the fuel loop reaches, and fast', () => {
+  const lean = leanModelOf('')
+  const pow = (k: bigint, a: bigint, m: bigint, acc: bigint) => { for (let i = 0n; i < k; i++) acc = m === 0n ? acc * a : (acc * a) % m; return acc }
+  const literal = (fuel: bigint, a: bigint, m: bigint, r: bigint) => { for (let f = fuel; f > 0n; f--, r++) if (pow(r, a, m, m === 0n ? 1n : 1n % m) === 1n) return r; return 0n }
+  for (let fuel = 0n; fuel <= 12n; fuel++) for (let a = 0n; a <= 8n; a++) for (let m = 0n; m <= 9n; m++) for (let r = 0n; r <= 3n; r++)
+    assert.equal(leanCallOf(lean, 'periodAux', [fuel, a, m, r]), literal(fuel, a, m, r), `periodAux ${fuel} ${a} ${m} ${r}`)
+  const t = performance.now()
+  assert.equal(leanCallOf(lean, 'periodOf', [662607015n, 662607015n]), 0n)
+  assert.ok(performance.now() - t < 1000, 'the input the fuel loop never finished')
+})
+
+const RFC9562_V8 =/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
 test('every door is derived from its own surface, and no two collide', () => {
   const doors = qpuCombinatorialDoorsOf()

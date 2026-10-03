@@ -81,14 +81,26 @@ const ONE = BigInt(1)
 const sub = (a: bigint, b: bigint): bigint => (a > b ? a - b : ZERO)
 const div = (a: bigint, b: bigint): bigint => (b === ZERO ? ZERO : a / b)
 const mod = (a: bigint, b: bigint): bigint => (b === ZERO ? a : a % b)
+// Lean's powModAux takes k steps of acc ← acc·a % m; its cross formula acc·aᵏ % m, by squaring, takes log₂ k and
+// reaches the same value (% 0 is the identity, k = 0 leaves acc unreduced)
 const powModAux = (k: bigint, a: bigint, m: bigint, acc: bigint): bigint => {
-  for (let i = ZERO; i < k; i++) acc = mod(acc * a, m)
-  return acc
+  if (k === ZERO) return acc
+  let r = ONE, b = mod(a, m)
+  for (let e = k; ; ) {
+    if (e & ONE) r = mod(r * b, m)
+    e >>= ONE
+    if (e === ZERO) break
+    b = mod(b * b, m)
+  }
+  return mod(acc * r, m)
 }
+const gcd = (a: bigint, b: bigint): bigint => { while (b !== ZERO) [a, b] = [b, a % b]; return a }
 const BUILTIN: Record<string, (...x: bigint[]) => bigint> = {
   mintOf: (k) => ONE << k,
   chooseOf: (n, k) => {
     if (k > n) return ZERO
+    // its cross formula C(n, k) = C(n, n − k): the shorter side is the same value
+    if (n - k < k) k = n - k
     let c = ONE
     for (let i = ZERO; i < k; i++) c = (c * (n - i)) / (i + ONE)
     return c
@@ -96,7 +108,11 @@ const BUILTIN: Record<string, (...x: bigint[]) => bigint> = {
   powModAux,
   powMod: (a, e, m) => powModAux(e, a, m, mod(ONE, m)),
   periodAux: (fuel, a, m, r) => {
-    for (let f = fuel; f > ZERO; f--, r++) if (powModAux(r, a, m, mod(ONE, m)) === ONE) return r
+    if (fuel === ZERO || m === ONE) return ZERO
+    // aʳ ≡ 1 needs a unit: when a shares a factor with m (or m = 0 and a ≠ 1) no r ≥ 1 reaches 1 and the fuel runs out
+    if (r > ZERO && (m === ZERO ? a !== ONE : gcd(a, m) !== ONE)) return ZERO
+    // a^(r+1) = aʳ · a: the power carried, not recomputed
+    for (let f = fuel, p = powModAux(r, a, m, mod(ONE, m)); f > ZERO; f--, r++, p = mod(p * a, m)) if (p === ONE) return r
     return ZERO
   },
   gcdAux: (fuel, a, b) => {
