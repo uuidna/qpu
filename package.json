@@ -99,6 +99,7 @@
     "./dist/families/chat/index.js",
     "./dist/families/clay/index.js",
     "./dist/families/collide/index.js",
+    "./dist/families/court/index.js",
     "./dist/families/cross/index.js",
     "./dist/families/crypt/index.js",
     "./dist/families/db/index.js",
