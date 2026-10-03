@@ -70,11 +70,13 @@ jobs:
           node --input-type=module -e "import('./dist/mcp/uuid-programmable-core.js').then(async (m) => { const r = await m.consolidatedMCP.runDeploymentGate(); console.log(JSON.stringify(r)); process.exit(r.ok ? 0 : 1) })"
       - name: The scripts suites (every scripts/*.test.mjs, discovered by glob)
         run: npm run test:scripts
-      - name: The generated files are what the spec and the receipts generate (deployment, configs, registries, README)
+      # README.md is not in the list: its root node is the commit, which the commit that carries the README cannot know,
+      # so the README is accountable to the commit before it by design and would always differ here.
+      - name: The generated files are what the spec and the receipts generate (deployment, configs, registries, release notes)
         run: |
           node scripts/payload-cloudflare.mjs --repo > /dev/null
           npm run readme
-          git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json README.md RELEASE.md .zenodo.json
+          git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json RELEASE.md .zenodo.json
 
   # CLOUDFLARE WORKERS: the one Worker (uuidna-qpu = the Payload app fronted by the unit) built by OpenNext and deployed.
   deploy:
