@@ -6,7 +6,7 @@ import { DOORS } from './discovery.js'
 import { CryptFormulas } from './crypt-formulas.js'
 import { hologramStreamsOf } from './hologram-streams.js'
 import { certifyUnreachable, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, verifyColoring, verifyHamCycle, verifySat, verifySubsetSum, type Graph } from './np-formulas.js'
-import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf, type QpuEnv } from '../quantum/processing/unit/index.js'
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 type Args = Record<string, unknown>
@@ -125,7 +125,7 @@ const reposOf = (): string[] =>
     .map((href) => /[?&]url=https:\/\/github\.com\/([^/]+\/[^/?#]+)/.exec(href)?.[1])
     .filter((r): r is string => Boolean(r))
 
-const reading = async (source: string, a: Args) => {
+const reading = async (source: string, a: Args, env?: QpuEnv) => {
   if (source === 'cern') {
     const recid = num(a.recid ?? a.id, qpuCernRecordsOf().records[L.n - L.n]?.recid ?? L.n - L.n)
     const row = qpuCernRecordsOf().records.find((r) => r.recid === recid)
@@ -236,6 +236,33 @@ const reading = async (source: string, a: Args) => {
     const expected = { apis: Number(fused?.[3]), theorem: fused ? `theorem fuse: ${fused[1]} + ${fused[2]} = ${fused[3]}` : 'theorem fuse missing' }
     return { source, url: 'https://apis.guru', reading: live, expected, agrees: live.apis === expected.apis }
   }
+  if (source === 'site') {
+    // the unit's own site, walked as the unit serves it: every address the sitemap names is asked of the Payload app the
+    // unit hands browser pages to (in-process on Workers, the host over the network elsewhere), and a page agrees when
+    // it answers 200 with a title. The reading is the site as a whole; each address that does not is named.
+    const origin = citeOf().href as string
+    const ask = async (path: string, accept: string): Promise<Response> => {
+      const request = new Request(`${origin}${path}`, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' } })
+      const door = env?.PAYLOAD ? env.PAYLOAD.fetch(request) : fetch(request)
+      return Promise.race([door, new Promise<Response>((_, reject) => setTimeout(() => reject(new Error(`${path} did not answer within the deadline`)), DEADLINE))])
+    }
+    const xml = await (await ask('/sitemap.xml', 'application/xml')).text()
+    const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!.replace(origin, '') || '/')
+    const rows = await Promise.all(paths.map(async (path) => {
+      const at = Date.now()
+      try {
+        const r = await ask(path, 'text/html')
+        const html = r.status === 200 ? await r.text() : ''
+        const title = /<title>([^<]*)<\/title>/.exec(html)?.[1]?.trim() ?? ''
+        return { path, status: r.status, title, ms: Date.now() - at }
+      } catch (e) {
+        return { path, status: 0, title: '', ms: Date.now() - at, error: (e as Error).message }
+      }
+    }))
+    const failing = rows.filter((r) => r.status !== 200 || !r.title)
+    const live = { addresses: rows.length, answered: rows.filter((r) => r.status === 200).length, titled: rows.filter((r) => r.title).length, slowest: rows.reduce((a, b) => (b.ms > a.ms ? b : a), rows[0] ?? { path: '', ms: 0 }).path, failing: failing.map((r) => `${r.path} ${r.status}${r.error ? ` ${r.error}` : ''}`) }
+    return { source, url: `${origin}/sitemap.xml`, reading: live, expected: { answered: rows.length, titled: rows.length }, agrees: rows.length > n - n && failing.length === n - n, rows }
+  }
   if (source === 'release') {
     // the GitHub Release of the served version: the tag v<version> exists, is published, and carries notes
     const repo = reposOf()[0] ?? ''
@@ -246,7 +273,7 @@ const reading = async (source: string, a: Args) => {
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'apis', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
@@ -261,6 +288,7 @@ export const qpuDataSourcesOf = async () => [
   { source: 'orcid', args: {}, label: 'ORCID · author', checks: `${citeOf().author.first} ${citeOf().author.last}` },
   ...reposOf().map((repo) => ({ source: 'github', args: { repo }, label: `GitHub · ${repo}`, checks: 'public, not archived' })),
   { source: 'npm', args: {}, label: `npm · @${reposOf()[0] ?? ''}`, checks: `latest ${packageVersion}` },
+  { source: 'site', args: {}, label: 'site · every sitemap address', checks: 'answers 200 with a title' },
   { source: 'release', args: {}, label: `GitHub Release · v${packageVersion}`, checks: 'the tag of the served version, published with notes' },
   { source: 'apis', args: {}, label: 'APIs.guru · every public API', checks: 'theorem fuse: the registry the unit fused' },
   ...qpuCernCatalogsOf().catalogs.map((c) => ({ source: 'catalog', args: { name: c.name } as Args, label: `catalog · ${c.name}`, checks: 'answers with records' })),
@@ -271,11 +299,11 @@ const WINDOW = L.tenOf(L.hexbit + L.seed) * L.coins * L.n
 const cache = new Map<string, { at: number; value: Promise<unknown> }>()
 
 /** A live public dataset checked against the unit: the reading, what the unit holds, whether they agree, and a receipt. */
-export const qpuDataOf = async (source: string, a: Args = {}) => {
+export const qpuDataOf = async (source: string, a: Args = {}, env?: QpuEnv) => {
   const key = JSON.stringify([source, a])
   const hit = cache.get(key)
   if (hit && Date.now() - hit.at < WINDOW) return hit.value as ReturnType<typeof readOf>
-  const value = readOf(source, a)
+  const value = readOf(source, a, env)
   cache.set(key, { at: Date.now(), value })
   // a warning is a moment's state, not a reading: it is not kept
   void value.then((v) => { if (v && typeof v === 'object' && 'warning' in v) cache.delete(key) })
@@ -304,7 +332,7 @@ const readOf = async (source: string, a: Args) => {
 qpuMcpFuseOf('qpu_data', {
   description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
   inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
-  run: async (a) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a)),
+  run: async (a, env) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env)),
 })
 
 // ---------------------------------------------------------------------------
