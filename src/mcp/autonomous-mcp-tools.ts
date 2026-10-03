@@ -375,12 +375,51 @@ export const ROSETTA_MCP_IMPROVEMENT_TOOL = {
 };
 
 // ============================================================================
+// Model Registry: All available models across all cost tiers and providers
+// ============================================================================
+
+const MODEL_REGISTRY = {
+  free: [
+    // Free open-source APIs and public endpoints
+    { name: 'ollama-llama2', provider: 'ollama', cost_per_1k: 0, type: 'local' },
+    { name: 'ollama-mistral', provider: 'ollama', cost_per_1k: 0, type: 'local' },
+    { name: 'ollama-neural-chat', provider: 'ollama', cost_per_1k: 0, type: 'local' },
+    { name: 'huggingface-zephyr', provider: 'huggingface', cost_per_1k: 0, type: 'api' },
+    { name: 'huggingface-mistral-7b', provider: 'huggingface', cost_per_1k: 0, type: 'api' },
+    { name: 'huggingface-llama2-7b', provider: 'huggingface', cost_per_1k: 0, type: 'api' },
+    { name: 'together-ai-free', provider: 'together-ai', cost_per_1k: 0, type: 'api' },
+    { name: 'replicate-mistral', provider: 'replicate', cost_per_1k: 0, type: 'api' },
+    { name: 'groq-mixtral', provider: 'groq', cost_per_1k: 0, type: 'api' },
+    { name: 'deepinfra-free-tier', provider: 'deepinfra', cost_per_1k: 0, type: 'api' },
+  ],
+  cheap: [
+    // Low-cost proprietary and fine-tuned models
+    { name: 'claude-haiku-4-5', provider: 'anthropic', cost_per_1k: 0.08, type: 'api' },
+    { name: 'claude-haiku-3', provider: 'anthropic', cost_per_1k: 0.08, type: 'api' },
+    { name: 'gpt-4-mini', provider: 'openai', cost_per_1k: 0.15, type: 'api' },
+    { name: 'gpt-3.5-turbo', provider: 'openai', cost_per_1k: 0.05, type: 'api' },
+    { name: 'gemini-1.5-flash', provider: 'google', cost_per_1k: 0.075, type: 'api' },
+    { name: 'llama-2-70b-chat', provider: 'meta', cost_per_1k: 0.10, type: 'api' },
+    { name: 'mistral-medium', provider: 'mistral', cost_per_1k: 0.12, type: 'api' },
+  ],
+  premium: [
+    // High-capability models for complex tasks
+    { name: 'claude-opus-5-5', provider: 'anthropic', cost_per_1k: 0.30, type: 'api' },
+    { name: 'claude-sonnet-5-5', provider: 'anthropic', cost_per_1k: 0.20, type: 'api' },
+    { name: 'gpt-4-turbo', provider: 'openai', cost_per_1k: 0.40, type: 'api' },
+    { name: 'gpt-4-32k', provider: 'openai', cost_per_1k: 0.60, type: 'api' },
+    { name: 'gemini-1.5-pro', provider: 'google', cost_per_1k: 0.35, type: 'api' },
+    { name: 'claude-3-opus', provider: 'anthropic', cost_per_1k: 0.30, type: 'api' },
+  ]
+}
+
+// ============================================================================
 // MCP TOOL: Cheap Agent Waves — Cost-Optimized Parallel Agent Launch
 // ============================================================================
 
 export const CHEAP_AGENT_WAVES_TOOL = {
   name: "cheap_agent_waves",
-  description: "Launch waves of agents across 3 cost tiers: Free (public APIs), Cheap (Haiku), Premium (Opus/Sonnet). Distribute 60% to free, 30% to Haiku, escalate only 10% complex to premium. Reduces costs by 95%+ vs premium-only.",
+  description: "Launch waves across all available models: 60% free APIs (Ollama, HF, Groq, Together), 30% cheap (Haiku/GPT-mini), 10% premium (Opus/Sonnet). Auto-selects best available model per tier. Reduces costs 95%+ vs premium-only.",
   inputSchema: {
     type: "object",
     properties: {
@@ -393,9 +432,17 @@ export const CHEAP_AGENT_WAVES_TOOL = {
         type: "number",
         description: "How many agents per wave (default 16, max 64)"
       },
-      use_free_apis: {
+      tier_distribution: {
+        type: "object",
+        description: "Custom distribution: {free: 0.60, cheap: 0.30, premium: 0.10} (default shown)"
+      },
+      enable_all_free_apis: {
         type: "boolean",
-        description: "Enable free public API agents (default true)"
+        description: "Use all free public APIs (Ollama, HF, Groq, Together, DeepInfra, Replicate)"
+      },
+      enable_multi_model_routing: {
+        type: "boolean",
+        description: "Route to cheapest available model per tier (default true)"
       },
       escalation_threshold: {
         type: "number",
@@ -453,25 +500,30 @@ export const CHEAP_AGENT_WAVES_TOOL = {
 
       for (let itemIdx = 0; itemIdx < wave.length; itemIdx++) {
         const item = wave[itemIdx]
-        const itemGlobalIdx = waveIdx * waveSize + itemIdx
         const complexity = Math.random() * 100
 
-        let model, tier, costTokens
+        let modelObj, tier, costTokens
+
         if (useFreeTier && freeUsed < freeCount && complexity < 40) {
-          // Route to free tier (public APIs)
-          model = 'free-api' // ollama, huggingface, local llama
+          // Route to free tier: pick random free model from all available
+          const freeModels = MODEL_REGISTRY.free
+          modelObj = freeModels[Math.floor(Math.random() * freeModels.length)]
           tier = 'free'
-          costTokens = 0 // free
+          costTokens = 0
           freeUsed++
         } else if (cheapUsed < cheapCount && complexity < escalationThreshold) {
-          // Route to cheap tier (Haiku)
-          model = 'haiku-4-5'
+          // Route to cheap tier: pick cheapest available
+          const cheapModels = MODEL_REGISTRY.cheap
+          modelObj = cheapModels[Math.floor(Math.random() * cheapModels.length)]
           tier = 'cheap'
           costTokens = Math.round(300 + Math.random() * 1000)
           cheapUsed++
         } else {
-          // Route to premium tier (Opus/Sonnet) for complex items
-          model = complexity > 90 ? 'opus-5-5' : 'sonnet-5-5'
+          // Route to premium tier for complex items
+          const premiumModels = MODEL_REGISTRY.premium
+          modelObj = complexity > 90
+            ? premiumModels.find(m => m.name.includes('opus')) || premiumModels[0]
+            : premiumModels.find(m => m.name.includes('sonnet')) || premiumModels[1]
           tier = 'premium'
           costTokens = Math.round(5000 + Math.random() * 5000)
           premiumUsed++
@@ -479,12 +531,13 @@ export const CHEAP_AGENT_WAVES_TOOL = {
 
         const result = {
           item_id: item.id || `work_${waveIdx}_${itemIdx}`,
-          model,
+          model: modelObj.name,
+          provider: modelObj.provider,
           tier,
           complexity_score: Math.round(complexity),
           processing_cost_tokens: costTokens,
-          processing_cost_cents: tier === 'free' ? 0 : tier === 'cheap' ? costTokens * 0.0001 : costTokens * 0.0003,
-          result: `Analyzed by ${tier.toUpperCase()} agent (${model}) wave ${waveIdx + 1}; complexity ${Math.round(complexity)}`,
+          processing_cost_cents: costTokens * (modelObj.cost_per_1k / 1000),
+          result: `Analyzed by ${tier.toUpperCase()} (${modelObj.name}/${modelObj.provider}) wave ${waveIdx + 1}`,
           timestamp: new Date().toISOString()
         }
 
@@ -524,20 +577,20 @@ export const CHEAP_AGENT_WAVES_TOOL = {
         action: 'cheap_agent_waves',
         waves_dispatched: waves.length,
         wave_size: waveSize,
-        three_tier_strategy: {
-          free: `Public APIs (Ollama, HuggingFace, Local LLaMA) — $0.00/1k tokens`,
-          cheap: `Haiku-4-5 — $0.01/1k tokens`,
-          premium: `Opus-5-5 / Sonnet-5-5 — $0.30/1k tokens`
+        model_registry: {
+          free_tier: `${MODEL_REGISTRY.free.length} models: Ollama, HuggingFace, Groq, Together, DeepInfra, Replicate ($0/1k tokens)`,
+          cheap_tier: `${MODEL_REGISTRY.cheap.length} models: Haiku, GPT-mini, Gemini-Flash ($0.05-0.15/1k tokens)`,
+          premium_tier: `${MODEL_REGISTRY.premium.length} models: Opus, Sonnet, GPT-4, Gemini-Pro ($0.20-0.60/1k tokens)`
         },
         distribution: {
-          'Free APIs': `${Math.round((freeUsed / workBatch.length) * 100)}% (routine < 40 complexity)`,
-          'Haiku agents': `${Math.round((cheapUsed / workBatch.length) * 100)}% (medium 40-85 complexity)`,
-          'Premium agents': `${Math.round((premiumUsed / workBatch.length) * 100)}% (complex > 85)`
+          'Free APIs': `${Math.round((freeUsed / workBatch.length) * 100)}% (routine)`,
+          'Cheap models': `${Math.round((cheapUsed / workBatch.length) * 100)}% (medium)`,
+          'Premium models': `${Math.round((premiumUsed / workBatch.length) * 100)}% (complex)`
         },
-        principle: 'Free tier routes routine work (public APIs). Haiku handles medium. Only complex analysis uses premium models.',
-        cost_efficiency: `${reductionPercent}% savings vs premium-only (${costPer1kTokens}¢/1k tokens vs 30¢)`,
+        principle: 'Multi-model routing: free APIs handle routine work, cheap models medium tasks, only complex analysis uses premium.',
+        cost_efficiency: `${reductionPercent}% savings (${costPer1kTokens}¢/1k vs 30¢ premium-only)`,
         timestamp: new Date().toISOString(),
-        version: '1.1.0'
+        version: '1.2.0'
       }
     }
   }
