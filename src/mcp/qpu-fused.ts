@@ -686,7 +686,15 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const nameOf = (x: unknown) => (Array.isArray(x) ? x.filter((e) => e.type === 'dir').map((e) => e.name).sort() : [])
     const fileNames = (x: unknown) => (Array.isArray(x) ? x.filter((e) => e.type === 'dir' || /\.tsx?$/.test(e.name)).map((e) => e.name.replace(/\.tsx?$/, '')).filter((n) => n !== 'index').sort() : [])
     const [siteSrc, siteBlocks, siteCollections] = await Promise.all([site('src'), site('src/blocks'), site('src/collections')])
-    const website = { repo: 'payloadcms/website', dirs: nameOf(siteSrc), blocks: fileNames(siteBlocks), collections: fileNames(siteCollections) }
+    // THE COMBINATIONS OF USE CASES: the website's blocks and collections cluster by a shared word into the real use cases
+    // it ships — blog (Posts, Categories, BlogContent…), docs (Docs, DocsFeedback), case studies (CaseStudies, CaseStudy*),
+    // partners (Partners, PartnerFilters), media (Media, MediaContent…), grids (CardGrid, LinkGrid, LogoGrid…). A use case
+    // is a block × collection combination; its size is the cross-product of the parts that name it.
+    const siteBlockNames = fileNames(siteBlocks), siteCollNames = fileNames(siteCollections)
+    const tok = (s: string) => s.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z]+/).filter((x) => x.length > 2)
+    const roots = [...new Set([...siteBlockNames, ...siteCollNames].flatMap(tok))].filter((r) => { const parts = [...siteBlockNames, ...siteCollNames].filter((x) => tok(x).includes(r)); return parts.length > 1 && (r.endsWith('s') ? true : [...siteBlockNames, ...siteCollNames].some((x) => tok(x).includes(r))) })
+    const useCases = roots.map((root) => { const blocks = siteBlockNames.filter((b) => tok(b).includes(root)); const collections = siteCollNames.filter((c) => tok(c).includes(root)); return { use: root, blocks, collections, combinations: Math.max(blocks.length, 1) * Math.max(collections.length, 1) } }).filter((u) => u.blocks.length + u.collections.length > 1).sort((a, b) => b.combinations - a.combinations)
+    const website = { repo: 'payloadcms/website', dirs: nameOf(siteSrc), blocks: siteBlockNames, collections: siteCollNames, useCases, combinations: useCases.reduce((s, u) => s + u.combinations, 0) }
     // PAYLOAD AND ITS PLUGINS, IN DETAIL: the monorepo's packages/ holds every official extension — the plugins
     // (plugin-*), the database adapters (db-*), the storage adapters (storage-*), the rich-text (richtext-*) and the
     // email adapters (email-*). Each is read and classed, and crossed with the families whose formula words it names;
