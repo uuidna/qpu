@@ -127,6 +127,17 @@ ${glance}
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).`
 
+// Zenodo shows .zenodo.json's description as HTML: the same summary, its table as a table
+const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+const inline = (t) => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+const rowsHtml = glance.split('\n').filter((l) => l.startsWith('|') && !/^\|---/.test(l)).map((l, i) => `<tr>${l.slice(1, -1).split(' | ').map((c) => `<${i ? 'td' : 'th'}>${inline(c.trim())}</${i ? 'td' : 'th'}>`).join('')}</tr>`).join('')
+const [intro, , ...tail] = summary.split('\n\n')
+const zenodoPath = path.join(ROOT, '.zenodo.json')
+const zenodo = JSON.parse(fs.readFileSync(zenodoPath, 'utf8'))
+zenodo.description = `<p>${inline(intro.replace(/\n/g, ' '))}</p><table>${rowsHtml}</table>${tail.map((t) => `<p>${inline(t.replace(/\n/g, ' '))}</p>`).join('')}`
+zenodo.version = pkg.version
+fs.writeFileSync(zenodoPath, JSON.stringify(zenodo, null, 2) + '\n')
+
 fs.writeFileSync(path.join(ROOT, 'RELEASE.md'), `${summary}\n\nEvery figure above is read from a committed receipt; the README carries the final build receipt that accounts for them.\n`)
 
 const md = `# UUIDNA QPU

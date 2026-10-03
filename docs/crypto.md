@@ -10,7 +10,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Cryptography"
 twitter:description: "Shor on 91, RSA factoring and the crypt split identity as callable doors. 3 capabilities; 2 of 2 evidence predicates hold."
-version: "1.0.0"
+version: "1.0.1"
 ---
 # Cryptography
 
@@ -25,8 +25,8 @@ Shor on 91, RSA factoring and the crypt split identity as callable doors.
 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
-| [`qpuCybersecurityOf`](../src/quantum/processing/unit/index.ts#L4284) | builder | The cybersecurity door set: Shor on 91, RSA factoring, the encrypt identity, crypt split and RAID, with what each verifies. | `qpuCybersecurityHolds` | holds |
-| [`qpuCybersecurityToolsOf`](../src/quantum/processing/unit/index.ts#L4413) | builder | The eight cybersecurity MCP tools (catalog, rsa, shor, cmodexp, iqft, shots, split, verify) with their man pages and handlers. | — | — |
-| [`qpuEncryptOf`](../src/quantum/processing/unit/index.ts#L2836) | builder | The split identity of theorem crypto: fused = split x share, recomputed; secrecy is reported false (it is an identity, not a cipher). | `qpuEncryptHolds` | holds |
+| [`qpuCybersecurityOf`](../src/quantum/processing/unit/index.ts#L4311) | builder | The cybersecurity door set: Shor on 91, RSA factoring, the encrypt identity, crypt split and RAID, with what each verifies. | `qpuCybersecurityHolds` | holds |
+| [`qpuCybersecurityToolsOf`](../src/quantum/processing/unit/index.ts#L4440) | builder | The eight cybersecurity MCP tools (catalog, rsa, shor, cmodexp, iqft, shots, split, verify) with their man pages and handlers. | — | — |
+| [`qpuEncryptOf`](../src/quantum/processing/unit/index.ts#L2862) | builder | The split identity of theorem crypto: fused = split x share, recomputed; secrecy is reported false (it is an identity, not a cipher). | `qpuEncryptHolds` | holds |
 
 Generated from the inline docs by `npm run docs`. Index: [docs](README.md).

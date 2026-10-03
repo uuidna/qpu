@@ -10,7 +10,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Storage & database"
 twitter:description: "RAID over Cloudflare KV and R2, content-addressed storage and the MongoDB-semantics document database. 25 capabilities; 6 of 10 evidence predicates hold."
-version: "1.0.0"
+version: "1.0.1"
 ---
 # Storage & database
 
@@ -27,18 +27,18 @@ RAID over Cloudflare KV and R2, content-addressed storage and the MongoDB-semant
 |---|---|---|---|---|
 | [`docDbOf`](../src/quantum/processing/unit/docdb.ts#L374) | builder | A database: named collections over one store, one id function and one write hook. | — | — |
 | [`filterOf`](../src/db/payload-qpu.ts#L52) | builder | Payload's where, operator for operator, as a docdb filter. | — | — |
-| [`qpuDocDbOf`](../src/quantum/processing/unit/index.ts#L5308) | builder | The QPU document database (MongoDB query and update semantics, docdb.ts) over the unit's store; ids are content UUIDs; every write is a quantum receipt in the db stream. | — | — |
-| [`qpuPayloadDbOf`](../src/quantum/processing/unit/index.ts#L1628) | builder | How Payload's database maps onto the hybrid store: KV upper layer, R2 lower layer, collections and the speed/cost readings (theorem hybrid). | `qpuPayloadDbHolds` | holds |
-| [`qpuRaidOf`](../src/quantum/processing/unit/index.ts#L1324) | builder | RAID 10 over the faces: rays stripes mirrored by coins teams, cheapest-first placement for a given traffic. | `qpuRaidHolds` | holds |
-| [`qpuStorageAddressOf`](../src/quantum/processing/unit/index.ts#L4983) | builder | THE KEY IS THE CONTENT, SO THE ADDRESS MUST SEPARATE CONTENT. | `qpuStorageAddressHolds` | holds |
-| [`qpuStorageListOf`](../src/quantum/processing/unit/index.ts#L5647) | builder | qpuStorageListOf(env, prefix, limit) → the link names under a prefix in ascending order (so a name that begins with an inverted arrival time lists the newest first), each with the document a GET of it returns; RAID shares and inode keys never list. | `qpuStorageListHolds` | holds |
-| [`qpuStorageMaintainOf`](../src/quantum/processing/unit/index.ts#L5530) | builder | Repair broken RAID shares and delete orphans (a write; needs the write token). | `qpuStorageMaintainHolds` | checked on each call (needs inputs) |
-| [`qpuStorageMcpOf`](../src/quantum/processing/unit/index.ts#L5978) | builder | The storage sub-server's catalogue and live store reading. | `qpuStorageMcpHolds` | checked on each call (needs inputs) |
-| [`qpuStorageMetaOf`](../src/quantum/processing/unit/index.ts#L5322) | builder | Storage description: memory or KV, RAID, hybrid layers, Payload database mapping, Alpine overlay and bindings. | `qpuStorageMetaHolds` | checked on each call (needs inputs) |
-| [`qpuStorageMonitorOf`](../src/quantum/processing/unit/index.ts#L5371) | builder | Monitor RAID health: expected and missing shares, incomplete keys, sampled bytes and traffic. | `qpuStorageMonitorHolds` | checked on each call (needs inputs) |
-| [`qpuStorageOf`](../src/quantum/processing/unit/index.ts#L5678) | builder | Content-addressed storage: GET/PUT/DELETE by key with inodes, referrer links, nlink counting and RAID striping over KV and R2. | `qpuStorageHolds` | holds |
-| [`qpuStorageToolsOf`](../src/quantum/processing/unit/index.ts#L5911) | builder | The storage MCP tools (get, list, put, delete, maintain, monitor) bound to an environment and an auth header. | — | — |
-| [`qpuStorageWriteAllowedOf`](../src/quantum/processing/unit/index.ts#L5635) | builder | Whether a public write is allowed: only when QPU_WRITE_TOKEN is bound and the bearer matches; fails closed. | `qpuStorageWriteAllowedHolds` | holds |
+| [`qpuDocDbOf`](../src/quantum/processing/unit/index.ts#L5335) | builder | The QPU document database (MongoDB query and update semantics, docdb.ts) over the unit's store; ids are content UUIDs; every write is a quantum receipt in the db stream. | — | — |
+| [`qpuPayloadDbOf`](../src/quantum/processing/unit/index.ts#L1654) | builder | How Payload's database maps onto the hybrid store: KV upper layer, R2 lower layer, collections and the speed/cost readings (theorem hybrid). | `qpuPayloadDbHolds` | holds |
+| [`qpuRaidOf`](../src/quantum/processing/unit/index.ts#L1350) | builder | RAID 10 over the faces: rays stripes mirrored by coins teams, cheapest-first placement for a given traffic. | `qpuRaidHolds` | holds |
+| [`qpuStorageAddressOf`](../src/quantum/processing/unit/index.ts#L5010) | builder | THE KEY IS THE CONTENT, SO THE ADDRESS MUST SEPARATE CONTENT. | `qpuStorageAddressHolds` | holds |
+| [`qpuStorageListOf`](../src/quantum/processing/unit/index.ts#L5674) | builder | qpuStorageListOf(env, prefix, limit) → the link names under a prefix in ascending order (so a name that begins with an inverted arrival time lists the newest first), each with the document a GET of it returns; RAID shares and inode keys never list. | `qpuStorageListHolds` | holds |
+| [`qpuStorageMaintainOf`](../src/quantum/processing/unit/index.ts#L5557) | builder | Repair broken RAID shares and delete orphans (a write; needs the write token). | `qpuStorageMaintainHolds` | checked on each call (needs inputs) |
+| [`qpuStorageMcpOf`](../src/quantum/processing/unit/index.ts#L6005) | builder | The storage sub-server's catalogue and live store reading. | `qpuStorageMcpHolds` | checked on each call (needs inputs) |
+| [`qpuStorageMetaOf`](../src/quantum/processing/unit/index.ts#L5349) | builder | Storage description: memory or KV, RAID, hybrid layers, Payload database mapping, Alpine overlay and bindings. | `qpuStorageMetaHolds` | checked on each call (needs inputs) |
+| [`qpuStorageMonitorOf`](../src/quantum/processing/unit/index.ts#L5398) | builder | Monitor RAID health: expected and missing shares, incomplete keys, sampled bytes and traffic. | `qpuStorageMonitorHolds` | checked on each call (needs inputs) |
+| [`qpuStorageOf`](../src/quantum/processing/unit/index.ts#L5705) | builder | Content-addressed storage: GET/PUT/DELETE by key with inodes, referrer links, nlink counting and RAID striping over KV and R2. | `qpuStorageHolds` | holds |
+| [`qpuStorageToolsOf`](../src/quantum/processing/unit/index.ts#L5938) | builder | The storage MCP tools (get, list, put, delete, maintain, monitor) bound to an environment and an auth header. | — | — |
+| [`qpuStorageWriteAllowedOf`](../src/quantum/processing/unit/index.ts#L5662) | builder | Whether a public write is allowed: only when QPU_WRITE_TOKEN is bound and the bearer matches; fails closed. | `qpuStorageWriteAllowedHolds` | holds |
 | [`applyUpdate`](../src/quantum/processing/unit/docdb.ts#L177) | function | Apply a MongoDB update document (operators or a replacement) to a copy of a document; inserting enables $setOnInsert. | — | — |
 | [`compareValues`](../src/quantum/processing/unit/docdb.ts#L103) | function | MongoDB comparison order across types: null/undefined < numbers < strings < objects < arrays < booleans; arrays element-wise. | — | — |
 | [`down`](../src/db/payload-qpu.ts#L37) | function | — | — | — |
@@ -48,7 +48,7 @@ RAID over Cloudflare KV and R2, content-addressed storage and the MongoDB-semant
 | [`DocCollection`](../src/quantum/processing/unit/docdb.ts#L262) | class | One collection over a DocStore: insert, find with sort/skip/limit/projection, count, distinct, update (with upsert), replace and delete. | — | — |
 | [`d1DocStore`](../src/quantum/processing/unit/docdb.ts#L393) | store | A document store on a D1 binding: one key/value table, prefix listing by range, so it never scans past its prefix. | — | — |
 | [`memoryDocStore`](../src/quantum/processing/unit/docdb.ts#L36) | store | An in-memory DocStore (JSON-serialised values), for tests and Node. | — | — |
-| [`qpuDocStoreOf`](../src/quantum/processing/unit/index.ts#L5293) | store | THE QPU AS A DATABASE. | — | — |
+| [`qpuDocStoreOf`](../src/quantum/processing/unit/index.ts#L5320) | store | THE QPU AS A DATABASE. | — | — |
 | [`qpuAdapter`](../src/db/payload-qpu.ts#L148) | adapter | Payload database adapter on the QPU document database. | — | — |
 
 Generated from the inline docs by `npm run docs`. Index: [docs](README.md).

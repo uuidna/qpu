@@ -1,10 +1,10 @@
 {
   "name": "@uuidna/qpu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publishConfig": {
     "access": "public"
   },
-  "description": "Running quantum circuit at https://qpu.uuidna.com. theorem quantum. Public quantum API. Reads need no auth; storage writes need a Bearer token. JSON-LD. The TypeScript and Lean sources are the blueprint.",
+  "description": "An exact quantum processing unit served over MCP at https://qpu.uuidna.com: Lean-checked theorems, formula families as hex-program UUIDs, live public data checks and quantum receipts. Reads need no auth; storage writes need a Bearer token.",
   "type": "module",
   "license": "CC-BY-NC-ND-4.0",
   "funding": {

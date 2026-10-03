@@ -67,6 +67,38 @@ test('release: formula discovery holds across every family', async (t) => {
   t.diagnostic(`${d.families?.length} families, ${d.relationsTotal} cross-family solutions`)
 })
 
+test('release: the site end to end — every address it lists answers, every page renders as built', async (t) => {
+  const get = (path: string, accept = 'text/html') => fetch(`${host}${path}`, { headers: { accept }, redirect: 'manual', signal: AbortSignal.timeout(120000) })
+  // the site names its own addresses: nothing is listed here
+  const sitemap = await (await get('/sitemap.xml', 'application/xml')).text()
+  const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]!).pathname)
+  assert.ok(urls.length > 0, 'the sitemap lists the site')
+  const failed: string[] = []
+  await Promise.all(urls.map(async (u) => {
+    const r = await get(u)
+    const body = await r.text()
+    // every address answers; one that serves a page serves it titled; a JSON door answers its JSON
+    const page = (r.headers.get('content-type') ?? '').includes('text/html')
+    if (r.status !== 200 || (page && !/<title>[^<]+<\/title>/.test(body))) failed.push(`${u} ${r.status} ${body.replace(/\s+/g, ' ').slice(0, 160)}`)
+  }))
+  assert.deepEqual(failed, [], 'every address the sitemap lists answers 200, a page with its title')
+  // every published page renders as the admin built it: its title is the page's title
+  const pages = (await (await get('/api/pages?limit=100&depth=0', 'application/json')).json()) as { docs: { slug: string; title: string; meta?: { title?: string } }[] }
+  assert.ok(pages.docs.length > 0, 'Payload serves its pages')
+  for (const p of pages.docs) {
+    const html = await (await get(p.slug === 'home' ? '/' : `/${p.slug}`)).text()
+    assert.ok(html.includes(p.meta?.title ?? p.title), `/${p.slug} renders its title`)
+  }
+  // the header is the admin's global, the admin answers, an unknown address is a 404 page, a program runs
+  const header = (await (await get('/api/globals/header', 'application/json')).json()) as { navItems?: unknown[] }
+  assert.ok((header.navItems ?? []).length > 0, 'the header global has its navigation')
+  assert.equal((await get('/admin/login')).status, 200, 'the admin answers')
+  assert.equal((await get('/no-such-address-anywhere')).status, 404, 'an unknown address is a 404')
+  const program = await (await get('/heat/temperature+signal?p=16,1')).text()
+  assert.ok(program.includes('16000'), 'a hex program renders its run: heat.temperature(16, 1) = 16000')
+  t.diagnostic(`${urls.length} addresses, ${pages.docs.length} pages`)
+})
+
 test('release: every error and warning is answered at once, each with what resolves it', async (t) => {
   const e = out(await call({ errors: true })) as { errors?: { where: string; why: string; resolve: string }[]; warnings?: { where: string; why: string; resolve: string }[]; count?: number; holds?: boolean }
   assert.ok(Array.isArray(e.errors) && Array.isArray(e.warnings), 'one answer carries every error and every warning')
@@ -78,6 +110,6 @@ test('release: every error and warning is answered at once, each with what resol
   assert.equal(e.holds, e.errors.length === 0)
   // an unknown name is answered with every name that would resolve it, not a bare failure
   const bad = out(await call({ door: 'qpu_data', arguments: { source: 'nope' } }))
-  assert.ok(Array.isArray(bad.sources) && typeof bad.resolve === 'string', 'an unknown source lists every source and how to resolve it')
+  assert.ok(Array.isArray(bad.sources) && typeof bad.resolve === 'string', `an unknown source lists every source and how to resolve it: ${JSON.stringify(bad).slice(0, 400)}`)
   t.diagnostic(`${e.errors.length} errors, ${e.warnings.length} warnings`)
 })

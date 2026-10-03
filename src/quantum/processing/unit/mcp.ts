@@ -317,9 +317,14 @@ export const qpuFailureOf = (e: unknown, where = 'call') => {
   const err = e as { name?: string; message?: string; cause?: { code?: string; message?: string } }
   const message = String(err?.message ?? e)
   const code = err?.cause?.code ?? ''
-  const offline = err?.name === 'TimeoutError' || err?.name === 'AbortError' || /ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ENETUNREACH|EHOSTUNREACH|ETIMEDOUT|UND_ERR_CONNECT/.test(`${code} ${message}`) || (err?.name === 'TypeError' && /fetch|network/i.test(message))
+  // one host slow to answer is that host's moment, not the network's: a warning for it alone
+  const timeout = err?.name === 'TimeoutError' || err?.name === 'AbortError' || /ETIMEDOUT|UND_ERR_CONNECT_TIMEOUT|timed? ?out/i.test(`${code} ${message}`)
+  // the network itself out of reach: no name resolution, no route, the connection refused
+  const offline = !timeout && (/ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ENETUNREACH|EHOSTUNREACH|UND_ERR_SOCKET/.test(`${code} ${message}`) || (err?.name === 'TypeError' && /fetch failed|network/i.test(message)))
   const status = /answered (\d{3})/.exec(message)?.[1]
-  return offline
+  return timeout
+    ? { level: 'warning' as const, where, why: 'timeout', reading: message, resolve: 'the source did not answer in time: it is read again on the next call' }
+    : offline
     ? { level: 'warning' as const, where, why: 'offline', reading: message, resolve: 'the network is not reachable from this host: the network work was skipped; it runs again on the next call once the network is back' }
     : status
       ? { level: 'error' as const, where, why: `answered ${status}`, reading: message, resolve: Number(status) === 403 || Number(status) === 401 ? 'the source refuses this client: it needs credentials or another endpoint, or it is dropped from the catalogue' : Number(status) === 404 ? 'the address no longer exists: correct it at its source in the unit' : Number(status) >= 500 ? 'the source is failing on its side: it is read again on the next call' : 'the request is not one the source accepts: correct its arguments' }

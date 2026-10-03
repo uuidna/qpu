@@ -1,24 +1,24 @@
 ---
 title: "State"
-description: "Current state of @uuidna/qpu 1.0.0: what is built, what is verified, and what is open."
+description: "Current state of @uuidna/qpu 1.0.1: what is built, what is verified, and what is open."
 og:title: "State — @uuidna/qpu"
-og:description: "Current state of @uuidna/qpu 1.0.0: what is built, what is verified, and what is open."
+og:description: "Current state of @uuidna/qpu 1.0.1: what is built, what is verified, and what is open."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/state.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "State"
-twitter:description: "Current state of @uuidna/qpu 1.0.0: what is built, what is verified, and what is open."
-version: "1.0.0"
+twitter:description: "Current state of @uuidna/qpu 1.0.1: what is built, what is verified, and what is open."
+version: "1.0.1"
 ---
 # State
 
-Version **1.0.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version-lock.mjs](../scripts/version-lock.mjs)).
+Version **1.0.1** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version-lock.mjs](../scripts/version-lock.mjs)).
 
 | Measure | Value | Source |
 |---|---|---|
-| Capabilities documented inline | 249 of 264 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
+| Capabilities documented inline | 259 of 275 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
 | Evidence predicates that hold | 117 of 149 (live ones need the network) | evaluated by `npm run docs` |
 | Lean theorems served / recomputed | 124 / 124 of 124 | [lean-receipt.json](../lean-receipt.json) |
 | API registry fused | 2529 of 2529 APIs, 438299 cross formulas | [fuse-receipt.json](../fuse-receipt.json) |
