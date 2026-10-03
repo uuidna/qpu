@@ -170,7 +170,7 @@ export class GateFormulas {
     const last = from + qpuFacesOf().faces >= all.length
     const tagged = last ? ((await GateFormulas.leads()) as unknown as { value: number }) : { value: -1 }
     const theorems = last ? ((await GateFormulas.theorems()) as unknown as { value: number; holds: boolean; stated?: unknown }) : { value: -1, holds: true }
-    const holds = proof.holds && rules.holds && theorems.holds && failing.length === 0
+    const holds = proof.holds && rules.holds && theorems.holds && failing.length === 0 && tagged.value <= 0
     return f('gate-push', 'push(from) = proof ∧ rules ∧ ⋀ family(i), i in [from, from + faces); data.deep → merkaba.rosetta → gate.crossed in the reading', crossed.length - failing.length, nat(from) && holds, 'push', [from], { deep, rosetta: { value: rosetta.value, holds: rosetta.holds, edges: rosetta.edges }, ...(last ? { leads: tagged.value, theorems: theorems.value } : {}), proof: proof.value, rules: rules.value, failing, ...(from + slice.length < all.length ? { next: from + slice.length } : {}) })
   }
 }

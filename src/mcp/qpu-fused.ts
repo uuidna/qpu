@@ -858,6 +858,18 @@ export class DataFormulas {
     return dataFormula('data-perspectives', 'perspectives', [n], 'perspectives(n) = |relations every way of which answers the same value from every other way as referrer|', closed, relations.length > 0 && open.length === 0, 'qpuHexRunOf(way, referrer)', { relations: relations.length, pairs, closed, open: open.slice(0, qpuFacesOf().faces) })
   }
   /** Discovery across every family, bounded to the first n relations: value how many values two or more families reach. */
+  /** CROSS PROBLEM-SOLVING: pose a target value, get the cross-formula ways across the lattice that reach it — the
+   *  inverse of discovery. value how many families solve for the target; holds when two or more do (a genuine cross,
+   *  not one family's own value). The ways are the solution paths, each a hex program with a receipt; strength is the
+   *  breadth (how many distinct families reach it), so a broad solve outranks a coincidence. The target is a lead; a
+   *  broad cross is its solution. */
+  static async solve(target: number): Promise<unknown> {
+    const { qpuDiscoverOf } = await import('./discovery.js')
+    const d = await qpuDiscoverOf([target])
+    const rel = d.relations.find((r) => r.value === String(target))
+    const families = rel ? [...new Set(rel.ways.map((w) => w.family))] : []
+    return dataFormula('data-solve', 'solve', [target], `solve(${target}) = |families whose formulas reach ${target}|`, families.length, families.length >= 2, 'qpuDiscoverOf', { target, strength: families.length, families, ways: (rel?.ways ?? []).slice(0, qpuFacesOf().faces).map((w) => ({ family: w.family, program: w.program, params: w.params, hex: w.hex, receipt: w.receipt })) })
+  }
   static async discover(n: number): Promise<unknown> {
     const { qpuDiscoverOf } = await import('./discovery.js')
     // the live inputs are every reading the doors made in this window (data.read, research, the site…): reading the
@@ -869,10 +881,10 @@ export class DataFormulas {
     // 2026-10-03: 22 minutes at 100% CPU after one family's research)
     const live = [...new Set(readings.flatMap((r) => numbersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, qpuFacesOf().faces * 4)
     const d = await qpuDiscoverOf(live)
-    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relationsTotal: d.relations.length, sealsTotal: d.seals.length, relations: d.relations.slice(0, n).map((r) => ({ value: r.value, families: r.families, live: r.live, ways: r.ways.slice(0, 2).map((w) => ({ family: w.family, program: w.program, params: w.params, hex: w.hex })) })), seals: d.seals.slice(0, n).map((s) => ({ family: s.family, program: s.program, kind: s.kind, points: s.points.slice(0, 6) })) })
+    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relationsTotal: d.relations.length, sealsTotal: d.seals.length, relations: [...d.relations].sort((a, b) => b.families.length - a.families.length || (b.live ? 1 : 0) - (a.live ? 1 : 0)).slice(0, n).map((r) => ({ value: r.value, strength: r.families.length, families: r.families, live: r.live, ways: r.ways.slice(0, 2).map((w) => ({ family: w.family, program: w.program, params: w.params, hex: w.hex })) })), seals: d.seals.slice(0, n).map((s) => ({ family: s.family, program: s.program, kind: s.kind, points: s.points.slice(0, 6) })) })
   }
 }
-for (const name of ['ai', 'arxiv', 'collisions', 'deep', 'define', 'discover', 'errors', 'funding', 'imagine', 'jobs', 'law', 'payload', 'perspectives', 'read', 'research', 'site', 'sources', 'unanswered'] as const)
+for (const name of ['ai', 'arxiv', 'collisions', 'deep', 'define', 'discover', 'errors', 'funding', 'imagine', 'jobs', 'law', 'payload', 'perspectives', 'read', 'research', 'site', 'solve', 'sources', 'unanswered'] as const)
   qpuHexRegisterOf('data', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
 qpuMcpFuseOf('qpu_data', {
