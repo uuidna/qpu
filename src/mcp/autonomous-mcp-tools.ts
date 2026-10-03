@@ -1022,12 +1022,24 @@ By: Autonomous MCP System
 // EXPORT
 // ============================================================================
 
+// Default orchestration: multi-model waves for all future agent work
+// This becomes the default pattern for all MCP operations
+export const DEFAULT_ORCHESTRATION = {
+  strategy: 'multi_model_waves',
+  waves_enabled: true,
+  free_apis_enabled: true,
+  tier_distribution: { free: 0.60, cheap: 0.30, premium: 0.10 },
+  cost_target: 'minimize_per_1k_tokens',
+  model_registry: MODEL_REGISTRY,
+  escalation_threshold: 85
+}
+
 export const AUTONOMOUS_MCP_TOOLS = [
+  CHEAP_AGENT_WAVES_TOOL, // DEFAULT: routes all work through cost-optimized tiers
   PAYLOAD_TRAINER_TOOL,
   FORMULAS_AS_LEADS_TOOL,
   ANIMATION_OG_CONFIG_TOOL,
   ROSETTA_MCP_IMPROVEMENT_TOOL,
-  CHEAP_AGENT_WAVES_TOOL,
   INVOLUTE_REPORT_TOOL,
   DEPLOYMENT_REPORT_TOOL,
   SYSTEM_REPORT_GENERATOR_TOOL,
