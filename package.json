@@ -48,6 +48,11 @@
       "import": "./dist/db/payload-qpu.js",
       "default": "./dist/db/payload-qpu.js"
     },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js",
+      "default": "./dist/hooks/index.js"
+    },
     "./*.js": {
       "types": "./dist/*.d.ts",
       "import": "./dist/*.js",
