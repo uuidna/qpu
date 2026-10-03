@@ -51,7 +51,15 @@ test('wave: one call launches faces agents and answers one receipt; the calls sa
   assert.equal(Number(WaveFormulas.bill(14, 2, 1).value), 3, 'two keyed APIs and one model lead are the only bill')
   assert.equal(WaveFormulas.bill(14, 2, 1).holds, false)
   assert.equal((WaveFormulas.bill(14, 0, 0) as unknown as { free: number }).free, 14, 'all fourteen free')
-  assert.equal(qpuHexFamiliesOf().get('wave')?.length, 9)
+  // all at once with one command: every family's first formula across the whole lattice, one receipt
+  const a = (await WaveFormulas.all()) as unknown as { value: number; families: number; agents: number; calls: number; receipt: string; answered: string[]; silent: string[] }
+  assert.equal(a.calls, 1, 'one tools/call for the whole lattice')
+  assert.equal(a.families, waveFamiliesOf().length, 'every family, not a slice')
+  assert.equal(a.value + a.silent.length, a.families, 'every family either answered or is a lead')
+  assert.ok(a.value > 0 && a.answered.length === a.value)
+  assert.match(a.receipt, /^[0-9a-f-]{36}$/, 'one receipt for the whole lattice')
+  qpuUuidReceiptOf('wave all', qpuContentUuidOf(a), { families: a.families, answered: a.value })
+  assert.equal(qpuHexFamiliesOf().get('wave')?.length, 10)
   const uuid = qpuHexUuidOf({ family: 'wave', program: ['waves'], params: [faces] })
   const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
   assert.equal(Number(run.value), Number(WaveFormulas.waves(faces).value))

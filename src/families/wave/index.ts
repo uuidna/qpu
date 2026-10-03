@@ -43,6 +43,15 @@ export class WaveFormulas {
     const held = agents.filter((a) => a.holds)
     return f('wave-wave', 'wave(f, from) = |agents of family f over from + 1 … from + faces that hold|', held.length, nat(fam, from) && held.length > 0, 'wave', [fam, from], { family, agents: agents.length, calls: 1, saved: Math.max(0, agents.length - 1), next: from + faces, receipt: receiptOf(`${family} ${from}`, agents), answers: held.slice(0, faces).map((a) => `${a.program.join('∘')}(${a.params.join(', ')}) = ${a.value}`) })
   }
+  /** ALL AT ONCE WITH ONE MCP COMMAND: the first formula of EVERY family across the whole lattice (no slice), fired in
+   *  parallel and answered as one reading with one receipt. One tools/call develops every family at once; the families
+   *  that stay silent are the leads. Value how many answered; holds only when every family did. */
+  static async all(): Promise<CrossFormula> {
+    const families = waveFamiliesOf()
+    const agents = (await Promise.all(families.flatMap((family) => { const x = qpuHexFamiliesOf().get(family)?.[0]; return x ? [agentOf(family, [x.name], Array.from({ length: x.arity }, () => 3))] : [] }))).filter((a): a is Agent => a !== null)
+    const answered = new Set(agents.filter((a) => a.holds).map((a) => a.family))
+    return f('wave-all', 'all() = |families whose first formula held at the seed|; the whole lattice in one call', answered.size, families.length > 0 && answered.size === families.length, 'all', [], { families: families.length, agents: agents.length, calls: 1, saved: Math.max(0, agents.length - 1), receipt: receiptOf('all', agents), answered: [...answered].sort(), silent: families.filter((x) => !answered.has(x)) })
+  }
   /** A sweep: the first formula of every family of the from-th slice of families, at the seed inputs, one wave across
    *  the lattice. Value how many families answered; holds when all of the slice did. */
   static async sweep(from: number): Promise<CrossFormula> {
@@ -121,5 +130,5 @@ export class WaveFormulas {
   }
 }
 
-for (const name of ['agents', 'bill', 'combo', 'massive', 'remote', 'saved', 'sweep', 'wave', 'waves'] as const)
+for (const name of ['agents', 'all', 'bill', 'combo', 'massive', 'remote', 'saved', 'sweep', 'wave', 'waves'] as const)
   qpuHexRegisterOf('wave', name, (WaveFormulas[name] as (...x: unknown[]) => unknown).bind(WaveFormulas))
