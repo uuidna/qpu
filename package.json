@@ -1,6 +1,6 @@
 {
   "name": "@uuidna/qpu",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "publishConfig": {
     "access": "public"
   },
@@ -101,11 +101,13 @@
     "./dist/families/holo/index.js",
     "./dist/families/kin/index.js",
     "./dist/mcp/mcp-capabilities.js",
+    "./dist/families/merkaba/index.js",
     "./dist/families/np/index.js",
     "./dist/families/path/index.js",
     "./dist/mcp/qpu-fused.js",
     "./dist/families/rule/index.js",
     "./dist/families/signal/index.js",
+    "./dist/families/tesla/index.js",
     "./dist/families/yi/index.js"
   ],
   "engines": {
@@ -118,11 +120,12 @@
     "test:scripts": "node --test scripts/*.test.mjs",
     "ci": "npm run build && npm test && npm run test:scripts && npm run readme",
     "readme": "node scripts/generate-readme.mjs",
+    "next": "node scripts/next-receipt.mjs",
+    "uses": "node scripts/uses-receipt.mjs",
     "docs": "node scripts/generate-docs.mjs",
     "fuse": "node scripts/fuse-apis.mjs",
     "payload:cf": "node scripts/payload-cloudflare.mjs",
     "heat": "node scripts/heat.mjs",
-    "cross-check": "node scripts/cross-check.mjs",
     "hooks": "node dist/deployment/git-hooks.js install",
     "prepublishOnly": "npm run version:lock && npm run build",
     "ship": "npm run build && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
