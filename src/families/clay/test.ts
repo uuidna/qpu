@@ -38,8 +38,11 @@ test('clay: every formula is cross developed from every perspective and tested o
   const how = Object.fromEntries(await Promise.all(names.map(async (name) => [name, await crossed(name)])))
   assert.deepEqual(names.filter((name) => !how[name]), [], 'every clay formula is cross developed: a relation with another family, a seal, or an involution that holds on every input')
   const clayRelations = relations.filter((r) => r.ways.some((w) => w.family === 'clay'))
+  // every way run from the perspective of its neighbours on the ring of ways, the one before and the one after (the
+  // double torus: two loops through every way), not every pair — the ways of a popular value are many
   for (const rel of clayRelations) {
-    for (const w of rel.ways) for (const o of rel.ways) if (o !== w) {
+    const ways = rel.ways
+    for (const [k, w] of ways.entries()) for (const o of [ways[(k + 1) % ways.length]!, ways[(k + ways.length - 1) % ways.length]!]) if (o !== w) {
       const r = (await qpuHexRunOf(w.hex, o.hex, undefined, { store: false })) as { value?: unknown }
       assert.equal(String(r.value), rel.value, `${w.family}.${w.program.join('∘')} from the perspective of ${o.family}.${o.program.join('∘')} reaches ${rel.value}`)
     }

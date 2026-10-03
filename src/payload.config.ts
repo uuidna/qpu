@@ -19,12 +19,20 @@ import { searchPlugin } from '@payloadcms/plugin-search'
 import { sentryPlugin } from '@payloadcms/plugin-sentry'
 import { seoPlugin } from '@payloadcms/plugin-seo'
 import { stripePlugin } from '@payloadcms/plugin-stripe'
+import { CaseStudies } from './collections/CaseStudies'
+import { Categories } from './collections/Categories'
+import { CommunityHelp } from './collections/CommunityHelp'
 import { Docs } from './collections/Docs'
+import { DocsFeedback } from './collections/DocsFeedback'
 import { FuseApis } from './collections/FuseApis'
 import { FuseFields } from './collections/FuseFields'
 import { FuseFormulas } from './collections/FuseFormulas'
 import { Pages } from './collections/Pages'
+import { PartnerFilters } from './collections/PartnerFilters'
+import { Partners } from './collections/Partners'
+import { Posts } from './collections/Posts'
 import { QuantumReceipts } from './collections/QuantumReceipts'
+import { ReusableContent } from './collections/ReusableContent'
 import { Tenants } from './collections/Tenants'
 import { Users } from './collections/Users'
 import { Footer } from './globals/Footer'
@@ -41,11 +49,11 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
   editor: lexicalEditor(),
   admin: { user: 'users', meta: { titleSuffix: ' — UUIDNA QPU' } },
-  collections: [Docs, FuseApis, FuseFields, FuseFormulas, Pages, QuantumReceipts, Tenants, Users, Media],
+  collections: [CaseStudies, Categories, CommunityHelp, Docs, DocsFeedback, FuseApis, FuseFields, FuseFormulas, Pages, PartnerFilters, Partners, Posts, QuantumReceipts, ReusableContent, Tenants, Users, Media],
   globals: [Footer, Header],
   db: qpuAdapter({ env: { STORAGE: cf.STORAGE, BLOBS: cf.BLOBS } as never }),
   storage: [r2Storage({ bucket: cf.MEDIA as never, collections: { media: true } })],
-  plugins: [ecommercePlugin({ customers: { slug: 'users' }, access: { isAdmin: ({ req }) => Boolean(req.user), adminOnlyFieldAccess: ({ req }) => Boolean(req.user), adminOrPublishedStatus: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }), isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) }, products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, ...defaultCollection.fields] }) } }), formBuilderPlugin({}), importExportPlugin({ collections: [{ slug: 'docs' }, { slug: 'fuse-apis' }, { slug: 'fuse-fields' }, { slug: 'fuse-formulas' }, { slug: 'pages' }, { slug: 'quantum-receipts' }, { slug: 'tenants' }] }), mcpPlugin({ collections: { 'docs': { description: 'docs' }, 'pages': { description: 'pages' }, 'quantum-receipts': { description: 'quantum-receipts' }, 'fuse-formulas': { description: 'fuse-formulas' } } }), multiTenantPlugin({ collections: {  }, tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin' }), nestedDocsPlugin({ collections: ['docs', 'pages'] }), redirectsPlugin({ collections: ['docs', 'pages'] }), searchPlugin({ collections: ['docs', 'pages'] }), sentryPlugin({ Sentry, enabled: Boolean(process.env.SENTRY_DSN) }), seoPlugin({ collections: ['docs', 'pages'], uploadsCollection: 'media', generateTitle: ({ doc }) => seoTitleOf(doc), generateDescription: ({ doc }) => seoDescriptionOf(doc), generateURL: ({ doc }) => seoURLOf(doc) }), stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '' })],
+  plugins: [ecommercePlugin({ customers: { slug: 'users' }, access: { isAdmin: ({ req }) => Boolean(req.user), adminOnlyFieldAccess: ({ req }) => Boolean(req.user), adminOrPublishedStatus: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }), isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) }, products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, ...defaultCollection.fields] }) } }), formBuilderPlugin({}), importExportPlugin({ collections: [{ slug: 'case-studies' }, { slug: 'categories' }, { slug: 'community-help' }, { slug: 'docs' }, { slug: 'docs-feedback' }, { slug: 'fuse-apis' }, { slug: 'fuse-fields' }, { slug: 'fuse-formulas' }, { slug: 'pages' }, { slug: 'partner-filters' }, { slug: 'partners' }, { slug: 'posts' }, { slug: 'quantum-receipts' }, { slug: 'reusable-content' }, { slug: 'tenants' }] }), mcpPlugin({ collections: { 'docs': { description: 'docs' }, 'pages': { description: 'pages' }, 'quantum-receipts': { description: 'quantum-receipts' }, 'fuse-formulas': { description: 'fuse-formulas' } } }), multiTenantPlugin({ collections: {  }, tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin' }), nestedDocsPlugin({ collections: ['docs', 'pages'] }), redirectsPlugin({ collections: ['docs', 'pages'] }), searchPlugin({ collections: ['docs', 'pages'] }), sentryPlugin({ Sentry, enabled: Boolean(process.env.SENTRY_DSN) }), seoPlugin({ collections: ['docs', 'pages'], uploadsCollection: 'media', generateTitle: ({ doc }) => seoTitleOf(doc), generateDescription: ({ doc }) => seoDescriptionOf(doc), generateURL: ({ doc }) => seoURLOf(doc) }), stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '' })],
   cors: ['https://qpu.uuidna.com'],
   csrf: ['https://qpu.uuidna.com'],
   typescript: { outputFile: './src/payload-types.ts' },

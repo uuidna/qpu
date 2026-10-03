@@ -18,7 +18,7 @@ const ua = { 'user-agent': `qpu.uuidna.com/${packageVersion} (+https://qpu.uuidn
 type Entry = { preferred?: string; versions?: Record<string, { swaggerUrl?: string; info?: { title?: string; 'x-apisguru-categories'?: string[] } }> }
 type Param = { name: string; in: string; required: boolean }
 export type Operation = { index: number; verb: string; path: string; operationId?: string; params: Param[]; required: string[]; takes: number; gives: number }
-export type Api = { index: number; api: string; title: string; spec: string; categories: string[]; server: string; guessed?: boolean; operations: Operation[]; why?: string }
+export type Api = { index: number; api: string; title: string; spec: string; categories: string[]; server: string; guessed?: boolean; secured?: boolean; operations: Operation[]; why?: string }
 
 let registry: { at: number; names: string[]; entries: Record<string, Entry> } | undefined
 const specs = new Map<string, { at: number; api: Promise<Api> }>()
@@ -46,7 +46,7 @@ const json = async (url: string, accept = 'application/json'): Promise<unknown> 
 /** The registry as it stands: every API name in order, read once per window. */
 export const apiRegistryOf = async () => {
   if (registry && Date.now() - registry.at < WINDOW) return registry
-  // the snapshot the walk wrote (scripts/api-receipt.mjs --registry): the registry as of its date, a few hundred KB,
+  // the snapshot the walk wrote (scripts/receipt.mjs registry): the registry as of its date, a few hundred KB,
   // read where the live 8 MB list is more than an isolate holds; absent, the live list
   const snapshot = (await import('./registry.js').catch(() => null)) as { REGISTRY_SNAPSHOT?: Record<string, Entry> } | null
   const entries = snapshot?.REGISTRY_SNAPSHOT ?? ((await json(REGISTRY)) as Record<string, Entry>)
@@ -90,7 +90,10 @@ export const apiOf = async (which: number | string): Promise<Api> => {
     if (!base.spec) return { ...base, why: 'no spec url' }
     try {
       const doc = (await json(base.spec)) as Record<string, unknown>
-      return { ...base, server: serverOf(doc, base.spec, api), ...(doc.servers || doc.host ? {} : { guessed: true }), operations: operationsOf(doc, qpuSchemaMethodsOf(api, doc)) }
+      // secured: the document asks a credential of every request (a global security requirement, or schemes it declares)
+      const schemes = Object.keys(((doc.components as { securitySchemes?: object } | undefined)?.securitySchemes ?? (doc.securityDefinitions as object | undefined) ?? {}))
+      const secured = (Array.isArray(doc.security) && doc.security.length > 0) || schemes.length > 0
+      return { ...base, server: serverOf(doc, base.spec, api), ...(doc.servers || doc.host ? {} : { guessed: true }), secured, operations: operationsOf(doc, qpuSchemaMethodsOf(api, doc)) }
     } catch (e) {
       return { ...base, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message }
     }

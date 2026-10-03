@@ -88,9 +88,9 @@ const wingTable = [
 ].join('\n')
 const clay = clayOf()
 const clayTable = [
-  '| Problem | Status | Claim and approach composed by the cross formulas |',
+  '| Problem | Status | The claim |',
   '|---|---|---|',
-  ...clay.map((p) => `| ${cell(p.name)} | ${p.status === 'CLAIMED' ? `claimed solved by ${p.claimedBy} ([claim](${p.source}))` : `solved${p.solver ? ` (${p.solver}${p.year ? `, ${p.year}` : ''})` : ''}`} | ${cell([p.claim, p.approach, ...p.crossFormulas].filter(Boolean).join('; '))} |`),
+  ...clay.map((p) => `| ${cell(p.name)} | ${p.status === 'CLAIMED' ? `claimed by ${p.claimedBy} ([the document](${p.source})) — UNVERIFIED` : `solved${p.solver ? ` (${p.solver}${p.year ? `, ${p.year}` : ''})` : ''}`} | ${cell(p.claim ?? '')} |`),
 ].join('\n')
 const rowsOf = () =>
   nodes.map((n) => `| ${cell(label(n))} | \`${n.uuid}\` | \`${short(n.referrer.replace(/^git:/, ''))}\` | \`${n.fold}\` | ${n.seq} |`)
@@ -121,7 +121,7 @@ const glance = [
 // PROOF BY MCP, ANALYTICS: every verdict in every committed receipt counted (pass, fail), the computations the tests
 // folded, the gate's last verdicts; and NEXT: every failing row of every receipt, named with its value — the base for
 // the next development is what the receipts say does not yet hold, not a plan written by hand
-const test = receiptOf('test-receipt.json'), gate = receiptOf('gate-receipt.json'), nextR = receiptOf('next-receipt.json'), uses = receiptOf('uses-receipt.json')
+const test = receiptOf('test-receipt.json'), gate = receiptOf('gate-receipt.json'), nextR = receiptOf('next-receipt.json'), uses = receiptOf('uses-receipt.json'), clayR = receiptOf('clay-receipt.json')
 const kinds = (test.rows ?? []).reduce((m, r) => { for (const [k, v] of Object.entries(r.kinds ?? {})) m[k] = (m[k] ?? 0) + v; return m }, {})
 const computations = (test.rows ?? []).reduce((n, r) => n + (r.computations ?? 0), 0)
 const verdicts = files.map((f) => ({ file: f, doc: read(f) })).filter(({ doc }) => Array.isArray(doc.rows) && doc.rows.some((r) => typeof r.pass === 'boolean'))
@@ -157,8 +157,9 @@ Gate: ${gate.mode ?? '—'} on ${gate.when ?? '—'}, ${gate.holds === undefined
 Imagined by the MCP, not claimed: for every category of the APIs.guru registry, \`data.imagine(c)\` reads that world's
 APIs and crosses the words of their titles and operations with the words of every family's formulas; the families
 reached are what the unit is for that world (${num(uses.reached)} of ${num(uses.categories)} categories reach a family; ${num(uses.toImagine)} name a family to imagine).
-A request in words — a law firm, an auditor, a forensic expert — is imagined the same way at
-[/uses](https://qpu.uuidna.com/uses) and by \`qpu_data { source: 'imagine', about }\`.
+A request in words — a law firm, an auditor, a forensic expert — is imagined the same way by the cross formula
+\`qpu_data { source: 'imagine', about }\` (\`data.imagine\` at its hex address). The chat answers any question from the
+formula its words name: \`qpu_data { source: 'ask', about }\`.
 
 ${usesTable}
 
@@ -235,6 +236,17 @@ across its families; Poincaré was solved by Perelman. Each claim links to the d
 and verification status.
 
 ${clayTable}
+
+Proven on the host in one pass (\`clay.pass(14)\`, written by \`node scripts/receipt.mjs clay\`${clayR.when ? ` on ${clayR.when}` : ''}): every seal run at the inputs 1 … 14, its
+involution checked where it holds, the values handed to the discovery at once, which finds every formula of every other
+family reaching the same value and every seal; each problem looked up in OEIS and the family researched in the record
+(${clayR.record ?? '—'}). Two verdicts per problem and nothing else: the seal (σ∘σ = id and its fixed point) is VERIFIED when
+recomputed at its address — ${num(clayR.sealsVerified)} of ${num(clayR.problems)} are, ${num(clayR.related)} related formulas found — and the Millennium claim
+itself is UNVERIFIED (not accepted by the Clay Institute; no Lean theorem states it). Receipt \`${clayR.receipt ?? '—'}\`.
+
+| Problem (formula) | Seal | Claim | Involution, seal, related formulas, OEIS, address |
+|---|---|---|---|
+${(clayR.rows ?? []).map((r) => `| ${cell(r.name)} | ${r.pass ? 'VERIFIED' : 'UNVERIFIED'} | UNVERIFIED | ${cell(String(r.value).replace(/^seal: (UN)?VERIFIED \(/, '').replace(/\); claim: UNVERIFIED.*$/, '').slice(0, 400))} |`).join('\n')}
 
 ## Build receipt
 

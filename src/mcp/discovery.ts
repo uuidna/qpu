@@ -1,5 +1,5 @@
 import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '../quantum/processing/unit/index.js'
-import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../quantum/processing/unit/index.js'
+import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** One way a value is reached: a hex-program UUID (family handle, formula nibbles, params split by their count) and its run. */
@@ -46,11 +46,18 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
     const singles = lean ? SMALL : [...new Set([...SMALL, ...liveInputs])]
     const tuplesOf = (arity: number, short: boolean): number[][] =>
       arity === 0 ? [[]] : arity === 1 ? (short ? SMALL.slice(0, L.hexbit) : singles).map((x) => [x]) : arity === 2 ? SMALL.slice(0, short ? L.n : L.vertices).flatMap((a) => SMALL.slice(0, short ? L.n : L.vertices).map((b) => [a, b])) : SMALL.slice(0, short ? L.coins : L.hexbit + L.seed).flatMap((a) => SMALL.slice(0, short ? L.coins : L.hexbit + L.seed).flatMap((b) => SMALL.slice(0, short ? L.coins : L.hexbit + L.seed).map((c) => [a, b, c])))
+    // the live formulas (readings, waves, passes) are reached through their own receipts, never enumerated: no wave recurses
+    const still = formulas.filter((f) => !f.live)
     const programs: { program: string[]; tuples: number[][] }[] = [
-      ...formulas.map((f) => ({ program: [f.name], tuples: tuplesOf(f.arity, false) })),
-      ...formulas.flatMap((a) => formulas.map((b) => ({ program: [a.name, b.name], tuples: tuplesOf(Math.max(a.arity, b.arity), true) }))),
+      ...still.map((f) => ({ program: [f.name], tuples: tuplesOf(f.arity, false) })),
+      ...still.flatMap((a) => still.map((b) => ({ program: [a.name, b.name], tuples: tuplesOf(Math.max(a.arity, b.arity), true) }))),
     ]
     perFamily[family] = { programs: programs.length, runs: 0 }
+    // THE CROSS FORMULAS SPEED THE SQUARE: a composition [a, b](p) is b at the value a reached, b(a(p), p₂ …); when both
+    // were run as singles the composition is a lookup, not a run — the known table holds every single's value by
+    // formula and arguments, and the compositions (formulas² of them) cost nothing beyond the singles
+    const known = new Map<string, { value: string | null; holds: boolean }>()
+    const keyOf = (name: string, args: readonly number[]) => `${name}|${args.join(',')}`
     for (const { program, tuples } of programs) {
       // the Clay lens: which inputs does this program return unchanged?
       const returned: number[] = []
@@ -63,9 +70,18 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
         } catch {
           continue
         }
-        const run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string }
-        perFamily[family]!.runs++
+        let run: { value?: unknown; holds?: boolean; receipt?: string }
+        const inner = program.length === 2 ? known.get(keyOf(program[0]!, params)) : undefined
+        const outer = inner && inner.value !== null && inner.holds ? known.get(keyOf(program[1]!, [Number(inner.value), ...params.slice(1)])) : undefined
+        if (inner && outer) {
+          // composed from the singles: the same value the run would give, receipted at the composition's own address
+          run = { value: outer.value ?? undefined, holds: inner.holds && outer.holds, receipt: qpuUuidReceiptOf(`hex ${family}`, hex, { value: outer.value, holds: inner.holds && outer.holds }).uuid }
+        } else {
+          run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string }
+          perFamily[family]!.runs++
+        }
         const value = valueOf(run)
+        if (program.length === 1) known.set(keyOf(program[0]!, params), { value, holds: run.holds === true })
         if (params.length === 1 && value !== null) {
           tested++
           last = hex

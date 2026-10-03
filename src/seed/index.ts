@@ -43,7 +43,8 @@ const purpose = qpuPurposeOf() as unknown as { nature: { platform: string; qubit
 // the blocks by what they are
 const qpu = blocks.filter((b) => b.admin?.group === 'QPU')
 const standing = qpu.filter((b) => !customOf(b).needs?.length) // a page of its own, nothing to supply
-const home = standing.filter((b) => !customOf(b).live) // on the home page: no network when the root is served
+// on the home page: no network when the root is served
+const home = standing.filter((b) => !customOf(b).live)
 // a page's description is what search engines show: the block's text cut at the last sentence that fits 160 characters
 // (the SEO rule the release test states), never typed shorter by hand
 const seoOf = (t: string): string => {

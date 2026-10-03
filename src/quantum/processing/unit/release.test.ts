@@ -242,3 +242,64 @@ test('release: every clay formula is cross developed from every perspective and 
   }
   t.diagnostic(`${names.map((n) => `${n}: ${how[n]}`).join(', ')}; ${relations.filter((r) => r.ways.some((w) => w.family === 'clay')).length} relations cross clay, ${p.value} of ${Math.min(relations.length, 14)} relations closed from every perspective, ${research.value} matched in the record; OEIS: ${identified} of ${looked} lookups identified`)
 })
+
+test('release: the chat answers every formula asked in words with its numbers — combinatorial questions, 100% precision, one wave per family', async (t) => {
+  // the questions are combinations: every family × every formula (the live ones excepted) × two inputs, each asked as
+  // a sentence made of the family's and formula's own words and the numbers; the answer must be the value at the
+  // address. Time is split in calls: one wave per family, and a slice of formulas per wave when a family is wide.
+  const wordsOf = (s: string) => s.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).toLowerCase().trim()
+  let asked = 0, exact = 0
+  const wrong: string[] = []
+  for (const family of nonDoors()) {
+    const formulas = (qpuHexFamiliesOf().get(family) ?? []).filter((x) => !x.live)
+    for (const x of formulas) for (const input of [2, 5]) {
+      const params = Array.from({ length: x.arity }, () => input)
+      const question = `what is ${wordsOf(family)} ${wordsOf(x.name)}${params.length ? ` for ${params.join(' and ')}` : ''}?`
+      const direct = await hex(family, [x.name], params)
+      const reply = out(await call({ door: 'qpu_data', arguments: { source: 'ask', about: question } })) as { reading?: { formula?: string; value?: string; answer?: string } }
+      asked += 1
+      if (reply.reading?.formula === `${family}.${x.name}` && reply.reading?.value === String(direct.value)) exact += 1
+      else if (wrong.length < 14) wrong.push(`${question} → ${reply.reading?.answer ?? JSON.stringify(reply).slice(0, 80)} (address says ${direct.value})`)
+    }
+  }
+  qpuUuidReceiptOf('release chat', qpuContentUuidOf({ asked, exact }), { asked, exact })
+  assert.deepEqual(wrong, [], `every question answered exactly: ${exact}/${asked}`)
+  t.diagnostic(`chat: ${exact}/${asked} questions answered exactly by the formula they name`)
+})
+
+test('release: every theorem that states a cross-domain relation is confirmed by the live discovery', async (t) => {
+  // the Lean kernel proves `relation_<value> : <wing> = <wing>`; the live host must re-reach each value across two or
+  // more families now — the theorem proven by the kernel and validated by the running lattice, in formulas
+  const r = await hex('gate', ['theorems'])
+  const reading = (r.steps as { reading?: { stated?: number; confirmed?: number; missing?: number[]; relations?: string[] } }[] | undefined)?.at(-1)?.reading ?? {}
+  assert.ok((reading.stated ?? 0) > 0, 'the kernel states relation theorems')
+  assert.deepEqual(reading.missing ?? [], [], `every relation theorem's value is reached across domains live; relations ${JSON.stringify(reading.relations).slice(0, 300)}`)
+  assert.equal(r.holds, true, 'every cross-domain theorem is validated by the discovery')
+  qpuUuidReceiptOf('release theorems', qpuContentUuidOf(r), { stated: reading.stated, confirmed: reading.confirmed })
+  t.diagnostic(`theorems: ${reading.confirmed}/${reading.stated} cross-domain relation theorems confirmed by the live discovery`)
+})
+
+test('release: paste the URL into any agent and it develops an idea on the formulas, as a real Payload app', async (t) => {
+  // 1. THE URL ALONE: /.well-known/mcp.json tells an agent how to connect — the one server, no key for reads
+  const wk = await (await fetch(`${host}/.well-known/mcp.json`, { headers: { accept: 'application/json' } })).json().catch(() => null) as { mcp?: unknown; url?: string } | null
+  assert.ok(wk, '/.well-known/mcp.json answers')
+  // 2. initialize + tools/list, as any MCP client makes them
+  const init = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} }) })
+  assert.equal(init.status, 200, 'initialize answers 200')
+  const doors = out(await call({ doors: true })) as { doors?: { name: string }[]; formulas?: { name: string }[] }
+  assert.ok((doors.formulas?.length ?? 0) > 0, 'the agent sees the formulas to build on')
+  // 3. DEVELOP AN IDEA: the agent composes a hex program from the families it was shown and runs it — the idea computes,
+  //    exactly, with a receipt, no code written
+  const idea = await hex('tesla', ['schumann'], [1])
+  assert.equal(Number(idea.value), 7830, "the agent's idea (tesla.schumann 1) computes to the Schumann fundamental")
+  assert.ok(typeof idea.receipt === 'string', 'the idea carries a receipt')
+  // 4. A REAL PAYLOAD APP behind the same origin: the admin answers, the API answers, a collection reads over the door
+  const admin = await fetch(`${host}/admin`, { headers: { accept: 'text/html' } })
+  assert.equal(admin.status, 200, 'the Payload admin is a real app at the same origin')
+  const finds = out(await call({ doors: true })) as { doors?: { name: string }[] }
+  assert.ok(finds.doors?.some((d) => d.name === 'findPages'), 'the Payload collections are fused into the same MCP (findPages)')
+  const pages = await call({}, 'findPages').catch(() => null)
+  assert.ok(pages !== null, 'the agent reads a Payload collection through the one door')
+  qpuUuidReceiptOf('release onboarding', qpuContentUuidOf({ wk: Boolean(wk), idea: idea.value, admin: admin.status }), { idea: idea.value })
+  t.diagnostic(`from ${host}: connect → ${doors.formulas?.length} formulas → idea tesla.schumann(1) = ${idea.value} → Payload admin ${admin.status}, findPages fused`)
+})

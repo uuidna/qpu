@@ -1,7 +1,7 @@
 import { aeadOpen, aeadSeal, bytesOf, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, sha256, sha512, utf8, x25519, type HashName } from '../core/crypt.js'
 import { leanSource } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
-import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpFuseOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuHarnessesOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpDoorsOf, qpuMcpFuseOf, qpuMcpToolsListOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
 import { crossFormulaOf } from '../families/cross/index.js'
 import { apiCallOf, apiOf, apiRegistryOf, apiSearchOf } from './api-door.js'
@@ -82,6 +82,8 @@ const SEQUENCES: Record<string, { name: string; of: (count: number) => bigint[] 
 export type Sequence = { family: string; formula: string; fixed: number[]; terms: string[] }
 const TERMS = L.mintOf(L.hexbit)
 const sequenceOf = async (family: string, formula: string, fixed: number[]): Promise<Sequence | null> => {
+  // a live formula is a reading, not a sequence: its terms are not run here
+  if (qpuHexFamiliesOf().get(family)?.find((x) => x.name === formula)?.live) return null
   let best: string[] = [], run: string[] = []
   for (let n = 0; n < TERMS; n++) {
     let v: unknown
@@ -105,7 +107,7 @@ export const qpuSequencesOf = (): Promise<Sequence[]> =>
     for (const [family, formulas] of qpuHexFamiliesOf()) {
       if (DOORS.has(family)) continue
       for (const f of formulas) {
-        if (f.arity !== 1 && f.arity !== 2) continue
+        if ((f.arity !== 1 && f.arity !== 2) || f.live) continue
         const s = await sequenceOf(family, f.name, f.arity === 2 ? [2] : [])
         if (s) out.push(s)
       }
@@ -363,6 +365,225 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const live = { family, words: found.words, matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
     return { source, url: 'https://apis.guru', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: found.matched > 0 && reads.some((r) => r.status > 0) }
   }
+  if (source === 'ask') {
+    // THE CHAT: a question in words answered by the formula its words name. The words of the question are crossed
+    // with the words of every family and formula; the formula whose words the question covers best is the one asked;
+    // the numbers in the question are its parameters, in order; the answer is the value at the address, with the
+    // receipt, and the sentence that states it. A question that names no formula, or too few numbers, says what it
+    // would need. Precision is the address's: the answer is the run, not a guess.
+    const q = str(a.about)
+    if (!q) return fail('about', { about: 'a question in words, with its numbers' })
+    const wordsOf = (s: string) => s.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 1)
+    const asked = new Set(wordsOf(q))
+    const numbers = (q.match(/-?\d+(?:\.\d+)?/g) ?? []).map(Number).filter((x) => Number.isSafeInteger(x) && x >= 0)
+    // THE CONNECTOR, IN CHAT: before matching a formula, the chat answers the connector's own capabilities — how to
+    // connect from a coding agent, what tools and doors there are, and what families it speaks. The chat is the
+    // connector: ask it to connect, to list, or to compute, and it answers from the live surface, not a guess.
+    const cw = new Set(wordsOf(q))
+    const has = (...ks: string[]) => ks.some((k) => cw.has(k))
+    if (numbers.length === 0 && has('connect', 'connector', 'install', 'setup', 'configure', 'add') && has('mcp', 'connector', 'agent', 'claude', 'cursor', 'code', 'server', 'you')) {
+      const h = qpuHarnessesOf()
+      return { source, url: h.url, reading: { question: q, answer: `Add the MCP server ${h.name} at ${h.url} — ${h.rows.find((r) => r.harness === 'Claude Code')?.how}`, connect: h.rows.map((r) => ({ harness: r.harness, how: r.how })), mcpUrl: h.url, auth: h.auth }, expected: { harnesses: '>= 1' }, agrees: h.holds === true }
+    }
+    if (numbers.length === 0 && has('tools', 'tool', 'doors', 'door', 'capabilities', 'capability', 'offer', 'use')) {
+      const doors = qpuMcpDoorsOf()
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { question: q, answer: `${qpuMcpToolsListOf().length} tools; through them ${doors.doors.length} doors and ${doors.formulas.length} formulas`, tools: qpuMcpToolsListOf().length, doors: doors.doors.map((d) => d.name), formulas: doors.formulas.length }, expected: { tools: '>= 1' }, agrees: true }
+    }
+    if (numbers.length === 0 && has('families', 'family', 'formulas')) {
+      const fams = [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([f, fs]) => ({ family: f, formulas: fs.map((x) => x.name) }))
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { question: q, answer: `${fams.length} families: ${fams.map((f) => f.family).join(', ')}`, families: fams }, expected: { families: '>= 1' }, agrees: fams.length > 0 }
+    }
+    const candidates = [...qpuHexFamiliesOf()].filter(([fam]) => !DOORS.has(fam)).flatMap(([family, formulas]) => formulas.filter((x) => !x.live).map((x) => {
+      const fw = wordsOf(family), xw = wordsOf(x.name)
+      const own = [...new Set([...fw, ...xw])]
+      const covered = own.filter((w) => asked.has(w))
+      // the formula's own words covered, weighted: a formula word counts twice a family word; ties go to the exact arity
+      const score = covered.reduce((s, w) => s + (xw.includes(w) ? 2 : 1), 0) + (x.arity === numbers.length ? 0.5 : 0)
+      return { family, name: x.name, arity: x.arity, score, covered, missing: own.filter((w) => !asked.has(w)) }
+    })).filter((c) => c.score > 0).sort((x, y) => y.score - x.score)
+    const best = candidates[0]
+    if (!best) return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { question: q, answer: 'no formula is named by these words', families: [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)) }, expected: { formula: 'named' }, agrees: false }
+    const params = numbers.slice(0, best.arity)
+    if (params.length < best.arity) return { source, url: `${(qpuCiteOf() as { href: string }).href}/${best.family}`, reading: { question: q, formula: `${best.family}.${best.name}`, needs: best.arity, given: numbers.length, answer: `${best.family}.${best.name} takes ${best.arity} number${best.arity === 1 ? '' : 's'}; the question gives ${numbers.length}` }, expected: { numbers: best.arity }, agrees: false }
+    const hex = qpuHexUuidOf({ family: best.family, program: [best.name], params })
+    const r = (await qpuHexRunOf(hex, undefined, env, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string; steps?: { reading?: { formula?: string } }[] }
+    const value = typeof r.value === 'bigint' ? r.value.toString() : typeof r.value === 'object' && r.value !== null && 'value' in r.value ? String((r.value as { value: unknown }).value) : String(r.value)
+    const alternatives = candidates.slice(1, 4).filter((c) => c.score === best.score).map((c) => `${c.family}.${c.name}`)
+    const live = { question: q, formula: `${best.family}.${best.name}`, params, hex, value, holds: r.holds === true, receipt: r.receipt, answer: `${best.family}.${best.name}(${params.join(', ')}) = ${value}${r.holds === true ? '' : ' — the formula does not hold on these numbers'}${r.steps?.[0]?.reading?.formula ? ` (${r.steps[0].reading.formula})` : ''}`, covered: best.covered, ...(alternatives.length ? { alternatives } : {}) }
+    return { source, url: `${(qpuCiteOf() as { href: string }).href}/${hex}`, reading: live, expected: { holds: true }, agrees: r.holds === true }
+  }
+  if (source === 'define') {
+    // THE WORD, LOOKED UP — AND THE LEXICON AS LEADS. A word's meanings and phonetics come from the keyless Free
+    // Dictionary (dictionaryapi.dev), its translation from the keyless MyMemory API — speech (how it sounds) and
+    // translation, no token. And every dictionary/translation API the registry names is a lead for the next speech and
+    // translation work. `about` is the word (default 'lead'), the very thing a lead is: a clue, a guide, a pointer.
+    const word = (str(a.about) || 'lead').toLowerCase().split(/\s+/)[0]!
+    const to = str(a.to) || 'es'
+    const def = (await get(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`).then((x) => x.json()).catch(() => null)) as { word?: string; phonetic?: string; phonetics?: { text?: string; audio?: string }[]; meanings?: { partOfSpeech?: string; definitions?: { definition?: string }[] }[] }[] | null
+    const entry = Array.isArray(def) ? def[0] : null
+    let meanings = (entry?.meanings ?? []).map((m) => ({ partOfSpeech: m.partOfSpeech, definition: m.definitions?.[0]?.definition }))
+    // fallback to Wiktionary's keyless REST API when the Free Dictionary is down (it returned 522 on 2026-10-03)
+    if (meanings.length === 0) {
+      const wik = (await get(`https://en.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(word)}`).then((x) => x.json()).catch(() => null)) as { en?: { partOfSpeech?: string; definitions?: { definition?: string }[] }[] } | null
+      meanings = (wik?.en ?? []).map((m) => ({ partOfSpeech: m.partOfSpeech, definition: (m.definitions?.[0]?.definition ?? '').replace(/<[^>]+>/g, '').trim().slice(0, 160) || undefined }))
+    }
+    const phonetic = entry?.phonetic ?? entry?.phonetics?.find((p) => p.text)?.text
+    const audio = entry?.phonetics?.find((p) => p.audio)?.audio
+    const tr = (await get(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|${to}`).then((x) => x.json()).catch(() => null)) as { responseData?: { translatedText?: string } } | null
+    // the lexicon as leads: the registry's dictionary and translation APIs
+    const found = await apiSearchOf(['dictionary', 'translate', 'translation', 'language', 'lexical', 'word', 'define', 'speech', 'phonetic'], qpuFacesOf().faces)
+    const leads = found.apis.filter((x) => ['dictionary', 'translate', 'translation', 'language', 'lexical', 'speech'].some((w) => `${x.api} ${x.title}`.toLowerCase().includes(w))).map((x) => x.api)
+    const live = { word, phonetic, audio, speech: Boolean(audio), meanings, translation: { to, text: tr?.responseData?.translatedText }, lexiconLeads: leads, matched: found.matched }
+    return { source, url: 'https://dictionaryapi.dev + https://mymemory.translated.net', reading: live, expected: { meanings: '>= 1' }, agrees: meanings.length > 0 }
+  }
+  if (source === 'arxiv') {
+    // OPEN RESEARCH AS LEADS: the newest arXiv preprints in a field (keyless Atom API) — the frontier, unsettled by
+    // definition. Each is a lead: its title's words and numbers feed the discovery; `about` is the category (math.NT,
+    // quant-ph, cs.CC …), `from` the 0-based start. The unit reads the frontier and sees what the lattice meets.
+    const cat = str(a.about) || 'math'
+    const start = typeof a.from === 'number' && a.from >= 0 ? a.from : 0
+    const url = `http://export.arxiv.org/api/query?search_query=cat:${encodeURIComponent(cat)}*&sortBy=submittedDate&sortOrder=descending&start=${start}&max_results=${qpuFacesOf().faces}`
+    const xml = await get(url, 'application/atom+xml').then((x) => x.text()).catch(() => '')
+    const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map((m) => m[1] ?? '')
+    const field = (e: string, t: string) => (new RegExp(`<${t}[^>]*>([\s\S]*?)</${t}>`).exec(e)?.[1] ?? '').replace(/\s+/g, ' ').trim()
+    const leads = entries.map((e) => { const title = field(e, 'title').slice(0, 120); return { id: field(e, 'id').split('/abs/')[1] ?? field(e, 'id'), title, numbers: (title.match(/\d+/g) ?? []).map(Number).filter((n) => Number.isSafeInteger(n) && n >= 3) } })
+    const live = { category: cat, from: start, ...(entries.length === qpuFacesOf().faces ? { next: start + qpuFacesOf().faces } : {}), count: leads.length, numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, qpuFacesOf().faces), leads }
+    return { source, url: 'https://arxiv.org', reading: live, expected: { open: '>= 1 preprint' }, agrees: leads.length > 0 }
+  }
+  if (source === 'unanswered') {
+    // OPEN PROBLEMS AS LEADS: MathOverflow's unanswered questions, read over the keyless Stack Exchange API — research
+    // mathematics nobody has answered. Each is a lead: its title's words and any numbers in it go to the discovery,
+    // and a question whose value a family reaches is a cross worth a human's look; the rest stay open. The unit never
+    // claims to answer them — it feeds them in and sees what the lattice meets. `from` is the 1-based page, `about` a tag.
+    // like mathoverflow: every research Stack Exchange site serves an unanswered feed over the same keyless API —
+    // theoretical CS, physics, statistics, quantum computing, economics, astronomy, scientific computing, and more
+    const SITES = ['mathoverflow', 'cstheory', 'physics', 'stats', 'math', 'quantumcomputing', 'economics', 'astronomy', 'scicomp', 'cs', 'hsm', 'mathematica']
+    const site = SITES.includes(str(a.site)) ? str(a.site) : 'mathoverflow'
+    const from = typeof a.from === 'number' && a.from > 0 ? a.from : 1
+    const tag = str(a.about) ? `&tagged=${encodeURIComponent(str(a.about))}` : ''
+    const url = `https://api.stackexchange.com/2.3/questions/no-answers?site=${site}&order=desc&sort=votes&pagesize=${qpuFacesOf().faces}&page=${from}${tag}`
+    const body = (await get(url).then((x) => x.json()).catch(() => null)) as { items?: { question_id: number; title: string; tags: string[]; score: number; link: string }[]; has_more?: boolean; quota_remaining?: number } | null
+    const items = body?.items ?? []
+    const numbersOfTitle = (t: string) => (t.match(/\d+/g) ?? []).map(Number).filter((n) => Number.isSafeInteger(n) && n >= 3)
+    const leads = items.map((q) => ({ id: q.question_id, title: q.title.replace(/&[a-z]+;/g, ' ').slice(0, 120), tags: q.tags, score: q.score, link: q.link, numbers: numbersOfTitle(q.title) }))
+    const live = { site, sites: SITES, from, ...(body?.has_more ? { next: from + 1 } : {}), quota: body?.quota_remaining, count: leads.length, numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, qpuFacesOf().faces), leads }
+    return { source, url: 'https://mathoverflow.net/unanswered', reading: live, expected: { open: '>= 1 unanswered question' }, agrees: leads.length > 0 }
+  }
+  if (source === 'law') {
+    // THE COURT-ADMISSIBLE RECORD: the official legal sources a court accepts as authoritative, read live and keyless —
+    // the US Federal Register (federalregister.gov), UK legislation (legislation.gov.uk), EU law (EUR-Lex via the EU
+    // Open Data Portal) — plus the registry's legal APIs. This is the review layer for the `law` family: a computed
+    // legal conclusion becomes advice only when confirmed TRUE against one of these documents; `about` searches them,
+    // `from` walks the registry. Any jurisdiction the sources cover; the arithmetic is jurisdiction-agnostic.
+    const terms = ['law', 'legal', 'legislation', 'statute', 'statutes', 'regulation', 'regulations', 'court', 'case', 'judicial', 'jurisdiction']
+    const ask = str(a.about) ? str(a.about).toLowerCase().split(/[\s,]+/).filter(Boolean) : []
+    const from = typeof a.from === 'number' ? a.from : 0
+    type Src = { source: string; title: string; jurisdiction: string; secured: boolean; operation: string; status: number; url: string; records?: number; keyless: boolean }
+    const anchor: Src[] = []
+    if (from === 0) {
+      const q = ask.length ? encodeURIComponent(ask.join(' ')) : ''
+      const official = [
+        { source: 'federalregister.gov', title: 'US Federal Register', jurisdiction: 'US', url: `https://www.federalregister.gov/api/v1/documents.json?per_page=1${q ? `&conditions[term]=${q}` : ''}`, count: (b: Record<string, unknown>) => b.count as number | undefined },
+        { source: 'legislation.gov.uk', title: 'UK legislation', jurisdiction: 'UK', url: `https://www.legislation.gov.uk/${q ? `all?text=${q}&` : 'ukpga?'}results-count=1&format=json`, count: () => undefined },
+        { source: 'data.europa.eu:eur-lex', title: 'EU law (EUR-Lex)', jurisdiction: 'EU', url: `https://data.europa.eu/api/hub/search/search?limit=1&q=${q || 'eur-lex'}`, count: (b: Record<string, unknown>) => (b.result as { count?: number } | undefined)?.count },
+      ]
+      for (const o of official) {
+        const b = (await get(o.url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | null
+        const records = b ? o.count(b) : undefined
+        anchor.push({ source: o.source, title: o.title, jurisdiction: o.jurisdiction, secured: false, operation: new URL(o.url).pathname, status: b ? 200 : 0, url: o.url, ...(typeof records === 'number' ? { records } : {}), keyless: b !== null })
+      }
+    }
+    const found = await apiSearchOf([...terms, ...ask], qpuFacesOf().faces, from)
+    const tokened = (s: string) => s.toLowerCase().split(/[^a-z]+/).some((w) => terms.includes(w))
+    const matches = found.apis.filter((x) => tokened(x.api) || tokened(x.title))
+    const reads = await Promise.all(matches.filter((x) => x.free !== undefined).slice(0, qpuFacesOf().faces).map(async (x) => { const api = await apiOf(x.index).catch(() => null); const r = await apiCallOf(x.index, x.free!).catch(() => null); return { source: x.api, title: x.title, jurisdiction: (x.categories[0] ?? 'registry'), secured: api?.secured === true, operation: x.operations[0]?.path ?? '', status: r?.status ?? 0, url: r?.url ?? '', keyless: api?.secured !== true && (r?.status ?? 0) === 200 } as Src }))
+    const sources = [...anchor, ...reads]
+    // the review: a legal claim can be confirmed when an authoritative source answered; reviewed = 1 only then
+    const reviewed = sources.some((s) => s.keyless && s.status === 200) ? 1 : 0
+    const live = { terms, about: ask, jurisdictions: [...new Set(anchor.map((s) => s.jurisdiction))], matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), answered: sources.filter((s) => s.status > 0).length, keyless: sources.filter((s) => s.keyless).length, reviewed, advice: reviewed === 1 ? 'a claim confirmed on these documents is advice' : 'no authoritative document answered: computations stay leads, not advice', sources }
+    return { source, url: 'https://www.federalregister.gov + https://www.legislation.gov.uk + https://data.europa.eu', reading: live, expected: { answered: '>= 1 authoritative source' }, agrees: sources.some((s) => s.keyless) }
+  }
+  if (source === 'funding') {
+    // FUSE THE OFFICIAL REGIONAL FUNDING: the public finds money for anything through the one door. Keyless official
+    // sources are read first — the World Bank's projects (api.worldbank.org, no key) and the EU Open Data Portal's
+    // datasets (data.europa.eu, no key) — then the registry's APIs whose words name funding (grant, tender, subsidy,
+    // fund, finance, loan) are discovered and the keyless ones read. `about` narrows by programme, region or theme;
+    // `from` walks the registry matches. Each answered source is a reading with its address — funding as a fused
+    // public capability, no key, no hand list.
+    const terms = ['fund', 'funding', 'grant', 'grants', 'tender', 'tenders', 'subsidy', 'subsidies', 'finance', 'loan', 'loans']
+    const ask = str(a.about) ? str(a.about).toLowerCase().split(/[\s,]+/).filter(Boolean) : []
+    const from = typeof a.from === 'number' ? a.from : 0
+    type Fund = { source: string; title: string; region: string; secured: boolean; operation: string; status: number; url: string; records?: number; keyless: boolean }
+    const anchor: Fund[] = []
+    if (from === 0) {
+      const q = ask.length ? encodeURIComponent(ask.join(' ')) : ''
+      const official = [
+        { source: 'worldbank.org:projects', title: 'World Bank projects & financing', region: 'global', url: `https://search.worldbank.org/api/v2/projects?format=json&rows=1${q ? `&qterm=${q}` : ''}`, count: (b: Record<string, unknown>) => (b.total as number | undefined) },
+        { source: 'data.europa.eu:datasets', title: 'EU Open Data Portal (funding datasets)', region: 'eu', url: `https://data.europa.eu/api/hub/search/search?limit=1${q ? `&q=${q}` : '&q=funding'}`, count: (b: Record<string, unknown>) => ((b.result as { count?: number } | undefined)?.count) },
+      ]
+      for (const o of official) {
+        const b = (await get(o.url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | null
+        const records = b ? o.count(b) : undefined
+        anchor.push({ source: o.source, title: o.title, region: o.region, secured: false, operation: new URL(o.url).pathname, status: b ? 200 : 0, url: o.url, ...(typeof records === 'number' ? { records } : {}), keyless: b !== null })
+      }
+    }
+    const found = await apiSearchOf([...terms, ...ask], qpuFacesOf().faces, from)
+    const tokened = (s: string) => s.toLowerCase().split(/[^a-z]+/).some((w) => terms.includes(w))
+    const matches = found.apis.filter((x) => tokened(x.api) || tokened(x.title))
+    const reads = await Promise.all(matches.filter((x) => x.free !== undefined).slice(0, qpuFacesOf().faces).map(async (x) => { const api = await apiOf(x.index).catch(() => null); const r = await apiCallOf(x.index, x.free!).catch(() => null); return { source: x.api, title: x.title, region: (x.categories[0] ?? 'registry'), secured: api?.secured === true, operation: x.operations[0]?.path ?? '', status: r?.status ?? 0, url: r?.url ?? '', keyless: api?.secured !== true && (r?.status ?? 0) === 200 } as Fund }))
+    const sources = [...anchor, ...reads]
+    const live = { terms, about: ask, matched: found.matched, named: matches.length, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), answered: sources.filter((s) => s.status > 0).length, keyless: sources.filter((s) => s.keyless).length, sources }
+    return { source, url: 'https://api.worldbank.org + https://data.europa.eu + https://apis.guru', reading: live, expected: { answered: '>= 1 keyless official source' }, agrees: sources.some((s) => s.keyless) }
+  }
+  if (source === 'jobs') {
+    // FUSE THE JOB BOARDS: the public searches for work through the one door. The registry's APIs whose words name
+    // hiring (job, jobs, career, vacancy, hiring, employment, recruit, work, position) are found; the keyless ones
+    // (no credential asked) are read live, their listing endpoints called; `about` narrows by role or place, `from`
+    // walks the matches a slice at a time. Each answered board is a reading with its hex address — the job search as
+    // a fused public capability, no key, no hand list.
+    const terms = ['job', 'jobs', 'career', 'careers', 'vacancy', 'vacancies', 'hiring', 'employment', 'recruit', 'recruiting', 'position', 'positions']
+    const ask = str(a.about) ? str(a.about).toLowerCase().split(/[\s,]+/).filter(Boolean) : []
+    const from = typeof a.from === 'number' ? a.from : 0
+    // the unit's own keyless board first: the INSPIRE jobs catalogue (research openings), always read, narrowed by `about`
+    const inspire = qpuCernCatalogsOf().catalogs.find((c) => c.name === 'jobs')
+    const anchor: { board: string; title: string; categories: string[]; secured: boolean; operation: string; status: number; url: string; openings?: number; keyless: boolean }[] = []
+    if (inspire && from === 0) {
+      const href = ask.length ? `${inspire.href}${inspire.href.includes('?') ? '&' : '?'}q=${encodeURIComponent(ask.join(' '))}` : inspire.href
+      const r = (await get(href).then((x) => x.json()).catch(() => null)) as { hits?: { total?: number | { value?: number } } } | null
+      const total = r?.hits?.total; const count = typeof total === 'number' ? total : (total as { value?: number } | undefined)?.value
+      anchor.push({ board: 'inspirehep.net:jobs', title: 'INSPIRE-HEP jobs', categories: ['open_data'], secured: false, operation: '/api/jobs', status: r ? 200 : 0, url: href, ...(typeof count === 'number' ? { openings: count } : {}), keyless: r !== null })
+    }
+    // the registry boards: an API whose NAME or TITLE carries a hiring token as a whole word (not 'work' inside 'network')
+    const found = await apiSearchOf([...terms, ...ask], qpuFacesOf().faces, from)
+    const tokened = (s: string) => s.toLowerCase().split(/[^a-z]+/).some((w) => terms.includes(w))
+    const matches = found.apis.filter((x) => tokened(x.api) || tokened(x.title))
+    const reads = await Promise.all(matches.filter((x) => x.free !== undefined).slice(0, qpuFacesOf().faces).map(async (x) => { const api = await apiOf(x.index).catch(() => null); const r = await apiCallOf(x.index, x.free!).catch(() => null); return { board: x.api, title: x.title, categories: x.categories, secured: api?.secured === true, operation: x.operations[0]?.path ?? '', status: r?.status ?? 0, url: r?.url ?? '', keyless: api?.secured !== true && (r?.status ?? 0) === 200 } }))
+    const boards = [...anchor, ...reads]
+    const live = { terms, about: ask, matched: found.matched, boardsNamed: matches.length, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), answered: boards.filter((b) => b.status > 0).length, keyless: boards.filter((b) => b.keyless).length, boards }
+    return { source, url: 'https://apis.guru + https://inspirehep.net', reading: live, expected: { answered: '>= 1 keyless board' }, agrees: boards.some((b) => b.keyless) }
+  }
+  if (source === 'ai') {
+    // THE AI APIs THAT ANSWER FREE AND KEYLESS: the registry's machine_learning category and the APIs the request's
+    // words name (ai, model, inference, language, vision, speech …), each document read for the credential it asks,
+    // each free operation (a GET needing no parameter) called; keyless when the document asks no credential and the
+    // operation answered 200. These are the remote agents a wave launches at no cost.
+    const reg = await apiRegistryOf()
+    const words = (str(a.about) || 'ai artificial intelligence machine learning model inference llm language vision speech translate nlp embedding neural').split(/[\s,]+/)
+    const hit = (s: string) => words.some((w) => w.length > 1 && s.toLowerCase().split(/[^a-z]+/).includes(w.toLowerCase()))
+    const named = reg.names.map((api, index) => ({ api, index, e: reg.entries[api] ?? {} })).filter(({ api, e }) => { const v = e.versions?.[e.preferred ?? '']; const cats = v?.info?.['x-apisguru-categories'] ?? []; return cats.includes('machine_learning') || hit(api) || hit(v?.info?.title ?? '') })
+    const from = typeof a.from === 'number' ? a.from : 0
+    const slice = named.slice(from, from + qpuFacesOf().faces)
+    const read = await Promise.all(slice.map(async ({ index }) => {
+      const api = await apiOf(index).catch(() => null)
+      if (!api) return null
+      const free = api.server ? api.operations.find((op) => op.verb === 'get' && op.required.length === 0) : undefined
+      const r = free ? await apiCallOf(index, free.index).catch(() => null) : null
+      return { api: api.api, title: api.title, categories: api.categories, secured: api.secured === true, operation: free ? `${free.verb} ${free.path}` : undefined, status: r?.status ?? 0, hex: r?.hex, keyless: api.secured !== true && r?.status === 200 }
+    }))
+    const apis = read.filter((x): x is NonNullable<typeof x> => x !== null)
+    const live = { words, matched: named.length, from, scanned: slice.length, ...(from + slice.length < named.length ? { next: from + slice.length } : {}), keyless: apis.filter((x) => x.keyless).length, apis }
+    return { source, url: 'https://apis.guru', reading: live, expected: { keyless: '>= 1 in the slice' }, agrees: apis.some((x) => x.keyless) }
+  }
   if (source === 'payload') {
     // THE PAYLOAD RECORD, DEEP: the payloadcms/payload repository read through the GitHub API — its docs (every
     // section, every page), its templates and its examples — as the unit's own configuration vocabulary. A section
@@ -377,8 +598,28 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const wordsOf = (s: string) => s.replace(/[A-Z]/g, (ch) => ` ${ch.toLowerCase()}`).split(/[^a-z]+/).filter((w) => w.length > 2)
     const pageWords = new Set([...(section ? wordsOf(section) : []), ...pages.flatMap(wordsOf)])
     const families = section ? [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([family, formulas]) => ({ family, formulas: formulas.filter((x) => [...new Set([...wordsOf(family), ...wordsOf(x.name)])].some((w) => pageWords.has(w))).map((x) => x.name) })).filter((x) => x.formulas.length) : []
-    const live = { repo, docs: sections.length, sections, templates: (Array.isArray(templates) ? templates : []).filter((t) => t.type === 'dir').map((t) => t.name), examples: (Array.isArray(examples) ? examples : []).filter((t) => t.type === 'dir').map((t) => t.name), ...(section ? { section, pages, families, configures: families.length ? `${section}: ${families.map((x) => `${x.family} (${x.formulas.join(', ')})`).join('; ')}` : `${section}: no family its pages name yet` } : {}) }
-    return { source, url: `https://github.com/${repo}`, reading: live, expected: { docs: '>= 1', templates: '>= 1', examples: '>= 1' }, agrees: sections.length > 0 && live.templates.length > 0 && live.examples.length > 0 }
+    // THE REFERENCE APP, THE PAYLOAD WAY: payloadcms/website is read as the guide — its src directories, its blocks and
+    // its collections are how a Payload site is handled; a directory or block it has that the unit's generated layout
+    // does not is a lead toward the payload way (crossed at build by scripts/payload-cloudflare.mjs). Read once here.
+    const site = async (dir: string) => ((await (await get(`https://api.github.com/repos/payloadcms/website/contents/${dir}`, 'application/vnd.github+json')).json()) as { name: string; type: string }[] | { message?: string })
+    const nameOf = (x: unknown) => (Array.isArray(x) ? x.filter((e) => e.type === 'dir').map((e) => e.name).sort() : [])
+    const fileNames = (x: unknown) => (Array.isArray(x) ? x.filter((e) => e.type === 'dir' || /\.tsx?$/.test(e.name)).map((e) => e.name.replace(/\.tsx?$/, '')).filter((n) => n !== 'index').sort() : [])
+    const [siteSrc, siteBlocks, siteCollections] = await Promise.all([site('src'), site('src/blocks'), site('src/collections')])
+    const website = { repo: 'payloadcms/website', dirs: nameOf(siteSrc), blocks: fileNames(siteBlocks), collections: fileNames(siteCollections) }
+    // PAYLOAD AND ITS PLUGINS, IN DETAIL: the monorepo's packages/ holds every official extension — the plugins
+    // (plugin-*), the database adapters (db-*), the storage adapters (storage-*), the rich-text (richtext-*) and the
+    // email adapters (email-*). Each is read and classed, and crossed with the families whose formula words it names;
+    // the ones the unit fuses in its own config are the kernel's Payload skill. A package the unit does not yet fuse
+    // is a lead toward covering Payload in full.
+    const packages = (Array.isArray(await list('packages')) ? (await list('packages')) : []).filter((p) => p.type === 'dir').map((p) => p.name).sort()
+    const classOf = (p: string) => (p.startsWith('plugin-') ? 'plugin' : p.startsWith('db-') ? 'db adapter' : p.startsWith('storage-') ? 'storage adapter' : p.startsWith('richtext-') ? 'rich text' : p.startsWith('email-') ? 'email adapter' : p.startsWith('translations') || p.startsWith('ui') || p.startsWith('next') || p.startsWith('graphql') ? 'core' : 'package')
+    // the Payload extensions the unit fuses in its own config (the generator's set), to mark coverage against packages/
+    const fused = new Set(['plugin-ecommerce', 'plugin-form-builder', 'plugin-import-export', 'plugin-mcp', 'plugin-multi-tenant', 'plugin-nested-docs', 'plugin-redirects', 'plugin-search', 'plugin-sentry', 'plugin-seo', 'plugin-stripe', 'db-d1-sqlite', 'db-postgres', 'storage-s3', 'richtext-lexical', 'email-resend'])
+    const ecosystem = packages.map((p) => ({ package: p, kind: classOf(p), fused: fused.has(p), families: [...qpuHexFamiliesOf()].filter(([ff]) => !DOORS.has(ff)).filter(([ff, fs]) => [...new Set([...wordsOf(ff), ...fs.flatMap((x) => wordsOf(x.name))])].some((w) => wordsOf(p).includes(w))).map(([ff]) => ff) }))
+    const pluginsOnly = ecosystem.filter((e) => e.kind === 'plugin')
+    const payloadPlugins = { packages: packages.length, plugins: pluginsOnly.length, dbAdapters: ecosystem.filter((e) => e.kind === 'db adapter').length, storageAdapters: ecosystem.filter((e) => e.kind === 'storage adapter').length, fusedCount: ecosystem.filter((e) => e.fused).length, notYetFused: ecosystem.filter((e) => e.kind === 'plugin' && !e.fused).map((e) => e.package), ecosystem }
+    const live = { repo, docs: sections.length, sections, website, plugins: payloadPlugins, templates: (Array.isArray(templates) ? templates : []).filter((t) => t.type === 'dir').map((t) => t.name), examples: (Array.isArray(examples) ? examples : []).filter((t) => t.type === 'dir').map((t) => t.name), ...(section ? { section, pages, families, configures: families.length ? `${section}: ${families.map((x) => `${x.family} (${x.formulas.join(', ')})`).join('; ')}` : `${section}: no family its pages name yet` } : {}) }
+    return { source, url: `https://github.com/${repo}`, reading: live, expected: { docs: '>= 1', templates: '>= 1', examples: '>= 1', plugins: '>= 1' }, agrees: sections.length > 0 && live.templates.length > 0 && payloadPlugins.plugins > 0 }
   }
   if (source === 'imagine') {
     // WHAT THE UNIT MAY BE, computed from the record: a request's words (a law firm, an auditor, a forensic expert) or
@@ -407,7 +648,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
@@ -512,24 +753,59 @@ export class DataFormulas {
     const r = (await qpuDataOf('site', { from })) as { agrees?: boolean; reading?: { total?: number; next?: number; titled?: number; failing?: unknown }; warning?: string }
     return dataFormula('data-site', 'site', [from], `site(${from}): the sitemap's addresses from ${from}, rendered`, r.reading?.titled ?? 0, r.agrees === true || r.warning !== undefined, 'the sitemap', { reading: r.reading })
   }
-  /** THE DEEP RESEARCH OF THE f-th FAMILY, NOTHING BY HAND: every API its words name read to the end of the registry,
-   *  slice after slice (research(f, next) until no next), and the f-th slice of the datasets read — all of it in the
-   *  window the discovery then runs over. Value the readings made; holds when the record answered. */
-  static async deep(f: number): Promise<unknown> {
+  /** THE DEEP RESEARCH OF THE f-th FAMILY, ONE SLICE PER ADDRESS: the k-th slice of the APIs its words name read
+   *  (research(f, from = k · faces)), and with k = 0 the f-th slice of the datasets — all of it in the window the
+   *  discovery runs over; `next` names the slice after, and a caller follows it to the registry's end. Value the
+   *  readings made; holds when the record answered. */
+  static async deep(f: number, k = 0): Promise<unknown> {
     const family = familyIndexOf(f)
-    if (!family) return dataFormula('data-deep', 'deep', [f], 'deep(f)', 0, false, 'no such family')
-    let from = 0, read = 0, matched = 0, slices = 0
-    for (;;) {
-      const r = (await qpuDataOf('research', { family, from })) as { reading?: { matched?: number; read?: number; next?: number } }
-      read += r.reading?.read ?? 0; matched = r.reading?.matched ?? matched; slices += 1
-      if (typeof r.reading?.next !== 'number' || r.reading.next <= from) break
-      from = r.reading.next
-    }
+    if (!family) return dataFormula('data-deep', 'deep', [f, k], 'deep(f, k)', 0, false, 'no such family')
     const faces = qpuFacesOf().faces
-    const slice = (await qpuDataSourcesOf()).slice(f * faces, (f + 1) * faces)
-    const reads = await Promise.all(slice.map((s) => qpuDataOf(s.source, s.args).catch(() => null)))
-    const datasets = reads.filter((r) => r !== null).length
-    return dataFormula('data-deep', 'deep', [f], `deep(${f}) = |APIs of ${family} read to the registry's end| + |datasets of slice ${f} read|`, read + datasets, read + datasets > 0 || (matched === 0 && slice.length === 0), 'https://apis.guru and every dataset', { family, matched, slices, apisRead: read, datasets, of: slice.length })
+    const r = (await qpuDataOf('research', { family, from: k * faces })) as { reading?: { matched?: number; read?: number; next?: number } }
+    const slice = k === 0 ? (await qpuDataSourcesOf()).slice(f * faces, (f + 1) * faces) : []
+    const datasets = (await Promise.all(slice.map((s) => qpuDataOf(s.source, s.args).catch(() => null)))).filter((x) => x !== null).length
+    const read = (r.reading?.read ?? 0) + datasets
+    return dataFormula('data-deep', 'deep', k ? [f, k] : [f], `deep(${f}, ${k}) = |APIs of ${family} read in slice ${k}| + |datasets of slice ${f} read|`, read, read > 0 || (r.reading?.matched ?? 0) === 0, 'https://apis.guru and every dataset', { family, matched: r.reading?.matched ?? 0, apisRead: r.reading?.read ?? 0, datasets, of: slice.length, ...(typeof r.reading?.next === 'number' ? { next: Math.ceil(r.reading.next / faces) } : {}) })
+  }
+  /** A word defined and translated (keyless Free Dictionary + MyMemory), with its phonetics for speech; the registry's
+   *  dictionary and translation APIs are the lexicon leads. value how many meanings; holds when the word is found. */
+  static async define(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('define', {})) as { agrees?: boolean; reading?: { word?: string; meanings?: unknown[]; lexiconLeads?: unknown[] } }
+    return dataFormula('data-define', 'define', [from], `define = |meanings of ${r.reading?.word ?? 'the word'}|`, r.reading?.meanings?.length ?? 0, r.agrees === true, 'https://dictionaryapi.dev', { reading: r.reading })
+  }
+  /** arXiv's newest preprints in a field as leads: value how many read; holds when one was. Their numbers feed the discovery. */
+  static async arxiv(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('arxiv', { from })) as { agrees?: boolean; reading?: { count?: number; numbers?: number[]; next?: number; leads?: unknown[] } }
+    return dataFormula('data-arxiv', 'arxiv', [from], `arxiv(${from}) = |open preprints read as leads|`, r.reading?.count ?? 0, r.agrees === true, 'https://arxiv.org', { reading: r.reading })
+  }
+  /** MathOverflow's unanswered questions as leads: value how many open problems read; holds when one was. Their numbers
+   *  feed the discovery — an open problem a family's value reaches is a cross worth a human's look. */
+  static async unanswered(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('unanswered', { from: from + 1 })) as { agrees?: boolean; reading?: { count?: number; numbers?: number[]; next?: number; leads?: unknown[] } }
+    return dataFormula('data-unanswered', 'unanswered', [from], `unanswered(${from}) = |open MathOverflow questions read as leads|`, r.reading?.count ?? 0, r.agrees === true, 'https://mathoverflow.net/unanswered', { reading: r.reading })
+  }
+  /** The court-admissible legal sources of the from-th slice (Federal Register, UK legislation, EUR-Lex, registry):
+   *  value how many answered keyless; holds when one did — the review layer the law family's advice gate depends on. */
+  static async law(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('law', { from })) as { agrees?: boolean; reading?: { keyless?: number; answered?: number; reviewed?: number; jurisdictions?: string[]; next?: number; sources?: unknown[] } }
+    return dataFormula('data-law', 'law', [from], `law(${from}) = |court-admissible legal sources of the slice answering keyless|`, r.reading?.keyless ?? 0, r.agrees === true, 'https://www.federalregister.gov', { reading: r.reading })
+  }
+  /** The official funding sources of the from-th slice that answer free and keyless (World Bank, EU Open Data, and the
+   *  registry's funding APIs): value how many, holds when one did; next in the reading. qpu_data { source: 'funding', about, from }. */
+  static async funding(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('funding', { from })) as { agrees?: boolean; reading?: { keyless?: number; answered?: number; matched?: number; next?: number; sources?: unknown[] } }
+    return dataFormula('data-funding', 'funding', [from], `funding(${from}) = |official funding sources of the slice answering 200 with no credential asked|`, r.reading?.keyless ?? 0, r.agrees === true, 'https://api.worldbank.org + https://data.europa.eu', { reading: r.reading })
+  }
+  /** The job boards of the from-th slice that answer free and keyless: value how many, holds when one did; next in
+   *  the reading. The public searches for work through the one door — qpu_data { source: 'jobs', about, from }. */
+  static async jobs(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('jobs', { from })) as { agrees?: boolean; reading?: { keyless?: number; answered?: number; matched?: number; next?: number; boards?: unknown[] } }
+    return dataFormula('data-jobs', 'jobs', [from], `jobs(${from}) = |job boards of the slice answering 200 with no credential asked|`, r.reading?.keyless ?? 0, r.agrees === true, 'https://apis.guru', { reading: r.reading })
+  }
+  /** The AI APIs of the from-th slice that answer free and keyless: value how many; holds when one did; next in the reading. */
+  static async ai(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('ai', { from })) as { agrees?: boolean; reading?: { keyless?: number; matched?: number; next?: number; apis?: unknown[] } }
+    return dataFormula('data-ai', 'ai', [from], `ai(${from}) = |AI APIs of the slice answering 200 with no credential asked|`, r.reading?.keyless ?? 0, r.agrees === true, 'https://apis.guru', { reading: r.reading })
   }
   /** The c-th section of Payload's docs crossed with the families: value how many families its pages name; holds
    *  when the section was read. The templates and examples ride in the reading: what the site is configured from. */
@@ -552,7 +828,9 @@ export class DataFormulas {
     let pairs = 0, closed = 0
     const open: string[] = []
     for (const rel of relations.slice(0, n)) {
-      const seen = await Promise.all(rel.ways.flatMap((w, i) => rel.ways.filter((_, j) => j !== i).map(async (o) => { pairs += 1; const r = (await qpuHexRunOf(w.hex, o.hex, undefined, { store: false }).catch(() => null)) as { value?: unknown } | null; return r !== null && String(r.value) === rel.value })))
+      // each way from the perspective of its two neighbours on the ring of ways (the double torus), not every pair
+      const ways = rel.ways
+      const seen = await Promise.all(ways.flatMap((w, i) => [ways[(i + 1) % ways.length]!, ways[(i + ways.length - 1) % ways.length]!].filter((o) => o !== w).map(async (o) => { pairs += 1; const r = (await qpuHexRunOf(w.hex, o.hex, undefined, { store: false }).catch(() => null)) as { value?: unknown } | null; return r !== null && String(r.value) === rel.value })))
       if (seen.every(Boolean)) closed += 1
       else open.push(rel.value)
     }
@@ -565,17 +843,20 @@ export class DataFormulas {
     // record and discovering over it is one sequence of calls, nothing passed by hand
     const readings = await Promise.all([...cache.values()].map((c) => c.value.catch(() => null)))
     const numbersOf = (x: unknown): number[] => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
-    const live = [...new Set(readings.flatMap((r) => numbersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, 256)
+    // a slice of the window's numbers, the smallest first: faces · hexbit of them (56) are what the formulas' small
+    // inputs can meet; a window full of catalogue totals would make one discovery the lattice squared (measured
+    // 2026-10-03: 22 minutes at 100% CPU after one family's research)
+    const live = [...new Set(readings.flatMap((r) => numbersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, qpuFacesOf().faces * 4)
     const d = await qpuDiscoverOf(live)
-    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relations: d.relations.slice(0, n), seals: d.seals.slice(0, n) })
+    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relationsTotal: d.relations.length, sealsTotal: d.seals.length, relations: d.relations.slice(0, n).map((r) => ({ value: r.value, families: r.families, live: r.live, ways: r.ways.slice(0, 2).map((w) => ({ family: w.family, program: w.program, params: w.params, hex: w.hex })) })), seals: d.seals.slice(0, n).map((s) => ({ family: s.family, program: s.program, kind: s.kind, points: s.points.slice(0, 6) })) })
   }
 }
-for (const name of ['deep', 'discover', 'errors', 'imagine', 'payload', 'perspectives', 'read', 'research', 'site', 'sources'] as const)
+for (const name of ['ai', 'arxiv', 'deep', 'define', 'discover', 'errors', 'funding', 'imagine', 'jobs', 'law', 'payload', 'perspectives', 'read', 'research', 'site', 'sources', 'unanswered'] as const)
   qpuHexRegisterOf('data', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
 qpuMcpFuseOf('qpu_data', {
-  description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category } (payloadcms/payload read: docs sections, templates, examples; the c-th section crossed with the families), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
-  inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, about: { type: 'string' }, category: { type: 'integer' }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, words: { type: ['string', 'array'], items: { type: 'string' } }, from: { type: 'integer' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
+  description: "THE CHAT IS THE DEFAULT WAY IN: { source: 'ask', about } answers a question in words (with its numbers) from the formula its words name, at its address, with the receipt. Also reads live public data and checks it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category } (payloadcms/payload read: docs sections, templates, examples; the c-th section crossed with the families), 'ai' { from, about? } (the AI APIs that answer free and keyless), 'jobs' { about?, from } (search for work: the public job boards fused from the registry, the keyless ones read live), 'funding' { about?, from } (find funding: World Bank, EU Open Data, registry funding APIs), 'law' { about?, from } (the court-admissible legal record, read live), 'unanswered' { site?, about?, from } (open questions as leads from any research Stack Exchange site — mathoverflow, cstheory, physics, stats, quantumcomputing, economics, astronomy…), 'arxiv' { about?, from } (the newest arXiv preprints in a field as leads), 'define' { about?, to? } (a word's meanings and phonetics from the keyless Free Dictionary and its translation from MyMemory — speech and translation; the registry's dictionary/translation APIs are the lexicon leads), 'ask' { about } (the chat: a question in words with its numbers, answered by the formula its words name, at its address, with the receipt), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
+  inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, about: { type: 'string' }, to: { type: 'string' }, category: { type: 'integer' }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, words: { type: ['string', 'array'], items: { type: 'string' } }, from: { type: 'integer' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
   run: async (a, env) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env)),
 })
 

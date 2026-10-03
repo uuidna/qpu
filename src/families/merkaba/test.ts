@@ -30,10 +30,11 @@ test('merkaba: trinity flows cross three families, their mirrors counter-rotate,
   assert.equal((rosetta as unknown as { edges: number }).edges <= 2 * n, true, 'one turn each way is at most 2n edges')
   assert.equal(rosetta.holds, (rosetta as unknown as { forward: number }).forward > 0 && (rosetta as unknown as { back: number }).back > 0, 'the rosetta holds when both turns reach the end')
   // a lead developed: the first formula of the first ring family, rotated in every perspective
-  const dev = MerkabaFormulas.develop(0, 0) as unknown as { value: number; holds: boolean; rotations: number }
-  assert.equal(dev.rotations, 2 * names.length, 'the rosetta turns from every start, both ways')
-  assert.ok(dev.value >= 0 && dev.value <= dev.rotations)
-  assert.equal(MerkabaFormulas.develop(999, 0).holds, false, 'no such family: nothing develops')
+  const turns = Array.from({ length: 2 * names.length }, (_, s) => MerkabaFormulas.develop(0, 0, s) as unknown as { value: number; holds: boolean; rotations: number; rotation: string })
+  assert.ok(turns.every((d) => d.rotations === 2 * names.length && (d.value === 0 || d.value === 1)), 'one rotation per address, 2n addresses')
+  assert.equal(new Set(turns.map((d) => d.rotation)).size, 2 * names.length, 'every start, both ways, each once')
+  assert.equal(MerkabaFormulas.develop(999, 0, 0).holds, false, 'no such family: nothing develops')
+  assert.equal(MerkabaFormulas.develop(0, 0, 2 * names.length).holds, false, 'a rotation past the ring is none')
   assert.equal(qpuHexFamiliesOf().get('merkaba')?.length, 11)
   for (const [name, params, expected] of [['trinity', [0, 1, 2], up.value], ['star', [n], star.value]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'merkaba', program: [name], params })

@@ -94,39 +94,36 @@ export class MerkabaFormulas {
     const forward = turn(names), back = turn([...names].reverse())
     return f('merkaba-rosetta', 'rosetta(n) = f_{n−1}∘…∘f_0(3), and f_0∘…∘f_{n−1}(3) the other way: 2n edges, every adjacent cross at once', forward.holds && back.holds ? forward.value : 0, nat(n) && forward.holds && back.holds, 'rosetta', [n], { families: names.length, edges: forward.edges.length + back.edges.length, forward: forward.value, back: back.value, crossed: [...forward.edges, ...back.edges].slice(0, 14) })
   }
-  /** A LEAD DEVELOPED BY ROTATING THE ROSETTA IN ALL PERSPECTIVES: the j-th formula of the a-th flow family is placed
-   *  at its family's step on the ring, and the ring is turned from every start, forward and back (2n rotations). In a
-   *  rotation the lead composes when the family before it gives a value it takes and the family after it takes what
-   *  it gives; it meets another family when a step elsewhere in the same turn gives the very value it gave. Value how
-   *  many of the 2n rotations compose through the lead; holds when one does, or one meets. */
-  static develop(a: number, j: number): CrossFormula {
+  /** A LEAD DEVELOPED BY ONE ROTATION OF THE ROSETTA: the j-th formula of the a-th flow family at its family's step,
+   *  the ring turned from start s (s < n forward, s ≥ n backward from s − n): the lead composes when the family before
+   *  it gives a value it takes and the family after takes what it gives; it meets another family when a step
+   *  elsewhere in the turn gives the value it gave. 2n addresses make all perspectives; a caller fires them at once.
+   *  Value 1 when the lead composes in this rotation, else 0; holds when it composes or meets. */
+  static develop(a: number, j: number, s: number): CrossFormula {
     const names = flowFamiliesOf()
     const family = names[a]
     const formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
-    if (!family || !formula) return f('merkaba-develop', 'develop(a, j)', 0, false, 'develop', [a, j])
     const n = names.length
+    if (!family || !formula || s >= 2 * n) return f('merkaba-develop', 'develop(a, j, s)', 0, false, 'develop', [a, j, s], { rotations: 2 * n })
     const at = (fam: string, value: number): { value: number; holds: boolean; formula: string } => {
       if (fam !== family) return stepOf(fam, value)
       if (!Number.isSafeInteger(value) || value < 0) return { value: 0, holds: false, formula: formula.name }
       try { const r = formula.run(Array.from({ length: Math.max(formula.arity, 1) }, () => BigInt(value))); const v = numberOf(r); return { value: Number.isSafeInteger(v) && v >= 0 ? v : 0, holds: holdsOf(r) && Number.isSafeInteger(v) && v >= 0, formula: formula.name } } catch { return { value: 0, holds: false, formula: formula.name } }
     }
-    let composed = 0
-    const meets = new Set<string>()
-    const seen: string[] = []
-    for (let start = 0; start < n; start++) for (const dir of [1, -1]) {
-      const order = Array.from({ length: n }, (_, k) => names[(start + dir * k + n * n) % n]!)
-      let value = SEED, before: { family: string; holds: boolean } | undefined, given: number | undefined, gives = new Map<number, string>()
-      for (const fam of order) {
-        const s = at(fam, value)
-        if (fam === family) { if (before?.holds && s.holds) given = s.value } else if (given !== undefined && s.holds && order.indexOf(fam) === order.indexOf(family) + 1) composed += 1
-        if (s.holds && fam !== family) { const prior = gives.get(s.value); if (!prior) gives.set(s.value, fam) }
-        if (given !== undefined && s.holds && fam !== family && s.value === given && s.value >= 3) meets.add(`${fam} at ${s.value}`)
-        before = { family: fam, holds: s.holds }
-        value = s.holds ? s.value : SEED
-      }
-      if (seen.length < 6 && given !== undefined) seen.push(`${dir > 0 ? '→' : '←'}${start}: ${family}.${formula.name} gives ${given}`)
+    const dir = s < n ? 1 : -1, start = s % n
+    const order = Array.from({ length: n }, (_, k) => names[(start + dir * k + n * n) % n]!)
+    let value = SEED, before: { holds: boolean } | undefined, given: number | undefined, composed = false
+    const meets: string[] = []
+    const edges: string[] = []
+    for (const fam of order) {
+      const step = at(fam, value)
+      edges.push(`${fam}.${step.formula}(${value}) = ${step.holds ? step.value : '∅'}`)
+      if (fam === family) { if (before?.holds && step.holds) given = step.value } else if (given !== undefined && step.holds && order.indexOf(fam) === order.indexOf(family) + 1) composed = true
+      if (given !== undefined && step.holds && fam !== family && step.value === given && step.value >= 3) meets.push(`${fam} at ${step.value}`)
+      before = { holds: step.holds }
+      value = step.holds ? step.value : SEED
     }
-    return f('merkaba-develop', 'develop(a, j) = |{rotations of the rosetta in which the j-th formula of family a composes with the step before and after}|', composed, nat(a, j) && (composed > 0 || meets.size > 0), 'develop', [a, j], { family, formula: formula.name, rotations: 2 * n, composed, meets: [...meets].slice(0, 14), turns: seen })
+    return f('merkaba-develop', 'develop(a, j, s) = [the j-th formula of family a composes with its neighbours in rotation s of the rosetta]', composed ? 1 : 0, nat(a, j, s) && (composed || meets.length > 0), 'develop', [a, j, s], { family, lead: formula.name, rotation: `${dir > 0 ? '→' : '←'}${start}`, rotations: 2 * n, given, meets: meets.slice(0, 6), edges: edges.slice(0, 14) })
   }
   /** Among the first n flow families, how many ordered triples of distinct families flow to the end. */
   static flows(n: number): CrossFormula {

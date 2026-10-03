@@ -69,7 +69,7 @@ const statusOf = (c) => (c.evidence ? results.get(c.evidence) : '—')
 const esc = (s) => String(s).replace(/\|/g, '\\|')
 const yamlStr = (s) => JSON.stringify(String(s))
 const frontmatter = (slug, title, description) =>
-  ['---', `title: ${yamlStr(title)}`, `description: ${yamlStr(description)}`, `og:title: ${yamlStr(`${title} — @uuidna/qpu`)}`, `og:description: ${yamlStr(description)}`,
+  ['---', `uuid: ${yamlStr(unit.qpuContentUuidOf({ slug, title, description }))}`, `title: ${yamlStr(title)}`, `description: ${yamlStr(description)}`, `og:title: ${yamlStr(`${title} — @uuidna/qpu`)}`, `og:description: ${yamlStr(description)}`,
     `og:type: article`, `og:url: ${yamlStr(`${REPO}/blob/main/docs/${slug}.md`)}`, `og:image: ${yamlStr(OG_IMAGE)}`, `og:site_name: "@uuidna/qpu"`,
     `twitter:card: summary_large_image`, `twitter:title: ${yamlStr(title)}`, `twitter:description: ${yamlStr(description)}`, `version: ${yamlStr(pkg.version)}`, '---', ''].join('\n')
 const link = (c) => `[\`${c.name}\`](../${c.file}#L${c.line})`

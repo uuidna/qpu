@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuFacesOf, qpuHexRegisterOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
@@ -70,5 +70,37 @@ export class ClaySeals {
   }
 }
 
+/** THE CLAY SOLUTIONS PROVEN, ONE PROBLEM PER ADDRESS: the i-th seal run at the inputs 1 … faces (every parameter the
+ *  input) — the involution holds where the formula holds; the values it reaches handed to the discovery at once,
+ *  which finds every formula of every other family reaching the same value (the related formulas) and the seal
+ *  (fixed points, involutions). Six addresses make the pass; a caller fires them as one wave. Value how many related
+ *  formulas; holds when the seal is involutive on its inputs and related or sealed. */
+export const CLAY_SEALS = ['bsd', 'hodge', 'navierStokes', 'pVsNp', 'riemann', 'yangMills'] as const
+export const clayPassOf = async (i: number) => {
+  const { qpuDiscoverOf } = await import('../../mcp/discovery.js')
+  const name = CLAY_SEALS[i]
+  if (!name) return null
+  const arity = qpuHexFamiliesOf().get('clay')?.find((f) => f.name === name)?.arity ?? 0
+  const runs = await Promise.all(Array.from({ length: qpuFacesOf().faces }, async (_, k) => {
+    const params = Array.from({ length: arity }, () => k + 1)
+    try { const hex = qpuHexUuidOf({ family: 'clay', program: [name], params }); const r = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }; return { hex, value: Number(r.value), holds: r.holds === true } } catch { return { hex: '', value: 0, holds: false } }
+  }))
+  const held = runs.filter((r) => r.holds)
+  const values = [...new Set(held.map((r) => r.value).filter((v) => Number.isSafeInteger(v) && v >= 3))]
+  const d = await qpuDiscoverOf(values)
+  const related = [...new Set(d.relations.filter((rel) => rel.ways.some((w) => w.family === 'clay' && w.program.includes(name))).flatMap((rel) => rel.ways.filter((w) => w.family !== 'clay').map((w) => `${w.family}.${w.program.join('∘')} = ${rel.value}`)))]
+  const seal = d.seals.find((s) => s.family === 'clay' && s.program.includes(name))
+  return { i, name, involution: held.length === runs.filter((r) => r.hex).length ? 'holds on every input' : `holds on ${held.length} of ${runs.length}`, involutive: held.length > 0, values: [...new Set(held.map((r) => r.value))].slice(0, 8), related, seal: seal ? `${seal.kind} at ${seal.points.slice(0, 6).join(', ')}` : 'none', hex: runs[0]?.hex ?? '', agents: runs.length, relations: d.relations.length, proven: held.length > 0 && (related.length > 0 || seal !== undefined) }
+}
+export class ClayPass {
+  static async pass(i: number): Promise<CrossFormula> {
+    const r = await clayPassOf(i)
+    if (!r) return crossFormulaOf({ id: 'clay-pass', src: 'clay', dst: 'lattice', formula: 'pass(i)', value: 0, proof: CLAY_SEAL_SOURCE }, false, { name: 'clay.pass', params: [i] })
+    const { proven, ...reading } = r
+    const extra: Record<string, unknown> = reading
+    return crossFormulaOf({ id: 'clay-pass', src: 'clay', dst: 'lattice', formula: `pass(${i}) = |related formulas of ${r.name} over inputs 1 … faces, discovered at once|`, value: r.related.length, proof: CLAY_SEAL_SOURCE, ...extra }, nat(i) && proven, { name: 'clay.pass', params: [i] })
+  }
+}
+qpuHexRegisterOf('clay', 'pass', (ClayPass.pass as (...x: unknown[]) => unknown).bind(ClayPass))
 for (const name of ['bsd', 'hodge', 'navierStokes', 'pVsNp', 'riemann', 'yangMills'] as const)
   qpuHexRegisterOf('clay', name, (ClaySeals[name] as (...x: unknown[]) => unknown).bind(ClaySeals))

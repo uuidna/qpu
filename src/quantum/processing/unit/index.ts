@@ -11188,7 +11188,9 @@ const qpuLadderOf = onceOf(() => [
   { step: 3, concept: 'Shor: a period, then a gcd', request: { method: 'POST' as const, path: '/mcp', tool: 'crypto_shor' }, expect: `theorem shor ${shorFactorOf()} — a = 8, period 4, 7 · 13`, invariant: 'p · q = n, recomputed from the period', theorem: 'shor', next: 4 },
   { step: 4, concept: 'a code corrects one flip', request: { method: 'POST' as const, path: '/mcp', tool: 'qpu_prove' }, expect: 'bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run', invariant: 'distance 3 corrects exactly one error', theorem: 'noise', next: 'climb: qpu_train → qpu_improve → qpu_compete → qpu_prove' },
 ])
-const payloadFinds = ['findPages', 'findUsers', 'findMedia', 'findTenants'] as const
+// not a hand list: the find tool of each Payload collection is `find` + the collection capitalised, computed from the
+// db's own collections (pages → findPages …), so a collection added to the db is found without editing this line
+const payloadFinds = qpuPayloadDbOf().collections.map((c) => `find${c[seed - seed].toUpperCase()}${c.slice(seed)}`)
 let installPending: string[] = []
 let installSeated: string[] = []
 
@@ -11940,7 +11942,8 @@ export const qpuLatticeNamesOf = onceOf(() => {
   const faces = qpuFacesOf()
   return { n, seed, coins, hexbit: cube.hexbit, vertices: cube.vertices, bits: cube.bits, rays: faces.rays, faces: faces.faces, plane: faces.faces * coins }
 })
-type HexFormula = { name: string; arity: number; run: (args: readonly bigint[]) => unknown }
+/** `live`: an async formula reads outside or launches others (data, gate, clay.pass, wave.*, merkaba.torus): a reading, never enumerated by discovery or sequences — no wave recurses */
+type HexFormula = { name: string; arity: number; live?: boolean; run: (args: readonly bigint[]) => unknown }
 const HEX_REGISTERED = new Map<string, Map<string, (...a: unknown[]) => unknown>>()
 let hexFamilies: Map<string, HexFormula[]> | undefined
 
@@ -11979,7 +11982,7 @@ export const qpuHexFamiliesOf = (): Map<string, HexFormula[]> => {
   out.set('qpu', qpuToolsOf().map((t) => ({ name: t.name, arity: n - n, run: () => t.run({}) })))
   out.set('crypto', qpuCybersecurityToolsOf().map((t) => ({ name: t.name, arity: coins, run: (args: readonly bigint[]) => t.run({ ...(args[n - n] ? { n: Number(args[n - n]) } : {}), ...(args[seed] ? { a: Number(args[seed]) } : {}) }) })))
   for (const [family, fns] of HEX_REGISTERED)
-    out.set(family, [...fns.keys()].sort().map((name) => ({ name, arity: fns.get(name)!.length, run: (args) => fns.get(name)!(...args.map((a) => Number(a))) })))
+    out.set(family, [...fns.keys()].sort().map((name) => ({ name, arity: fns.get(name)!.length, ...(fns.get(name)!.constructor.name === 'AsyncFunction' ? { live: true } : {}), run: (args) => fns.get(name)!(...args.map((a) => Number(a))) })))
   for (const [family, formulas] of out) if (formulas.length > UUID_SIXTEEN - seed) out.set(family, formulas.slice(n - n, UUID_SIXTEEN - seed))
   return (hexFamilies = out)
 }
