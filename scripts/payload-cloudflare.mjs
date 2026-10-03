@@ -140,6 +140,11 @@ if (process.argv.includes('--repo')) {
   // the library's tsconfig skips the site's folders, read from the same list
   const lib = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8'))
   lib.exclude = [...new Set([...lib.exclude.filter((x) => !x.startsWith(`${SRC}/`) || x.startsWith(`${SRC}/autonomous`)), ...SITE.map((d) => `${SRC}/${d}/**`), ...SITE_FILES.map((f) => `${SRC}/${f}`)])]
+  // the bundler keeps a bare import only when package.json's sideEffects names its file: the list is the registry's
+  const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+  const kept = (pkg.sideEffects ?? []).filter((f) => !f.startsWith('./dist/'))
+  pkg.sideEffects = [...kept, './dist/mcp/families.js', ...registering.map((e) => `./dist/${e.from.startsWith('../') ? e.from.slice(3) : `mcp/${e.from.slice(2)}`}`)]
+  fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n')
   const written = { ...t.files, ...image, ...site, [REPO_WRANGLER]: t.files['wrangler.jsonc'], // written as next build writes it back (react-jsx, its dev types, two spaces), so a build leaves it unchanged
     'tsconfig.payload.json': JSON.stringify(REPO_TSCONFIG, null, 2) + '\n', 'tsconfig.json': JSON.stringify(lib, null, 2) + '\n' }
   if (REPO_WRANGLER !== 'wrangler.jsonc') delete written['wrangler.jsonc']

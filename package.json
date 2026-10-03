@@ -87,19 +87,22 @@
     "!dist/test/**"
   ],
   "sideEffects": [
+    "./src/utilities/workers-crypto.ts",
+    "./dist/mcp/families.js",
+    "./dist/mcp/api-door.js",
+    "./dist/mcp/cal-formulas.js",
+    "./dist/mcp/clay-seals.js",
     "./dist/mcp/cross-domain-formulas.js",
     "./dist/mcp/cross-domain-paths.js",
-    "./dist/audit/audit-formulas.js",
-    "./dist/mcp/quantum-secure-signalling.js",
-    "./dist/mcp/hologram-streams.js",
     "./dist/mcp/crypt-formulas.js",
-    "./dist/mcp/np-formulas.js",
-    "./dist/mcp/clay-seals.js",
+    "./dist/mcp/hd-formulas.js",
     "./dist/mcp/heat-formulas.js",
-    "./dist/mcp/api-door.js",
+    "./dist/mcp/hologram-streams.js",
     "./dist/mcp/mcp-capabilities.js",
+    "./dist/mcp/np-formulas.js",
     "./dist/mcp/qpu-fused.js",
-    "./src/utilities/workers-crypto.ts"
+    "./dist/mcp/quantum-secure-signalling.js",
+    "./dist/audit/audit-formulas.js"
   ],
   "engines": {
     "node": ">=26"
