@@ -125,6 +125,7 @@
     "./dist/families/forensic/index.js",
     "./dist/families/gate/index.js",
     "./dist/families/glyph/index.js",
+    "./dist/families/gravity/index.js",
     "./dist/families/hd/index.js",
     "./dist/families/heat/index.js",
     "./dist/families/holo/index.js",

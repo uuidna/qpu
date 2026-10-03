@@ -32,6 +32,7 @@ import '../families/family/index.js'
 import '../families/forensic/index.js'
 import '../families/gate/index.js'
 import '../families/glyph/index.js'
+import '../families/gravity/index.js'
 import '../families/hd/index.js'
 import '../families/heat/index.js'
 import '../families/holo/index.js'
@@ -74,4 +75,4 @@ import '../families/tune/index.js'
 import '../families/wave/index.js'
 import '../families/yi/index.js'
 
-export const families = ['access', 'accounting', 'analytics', 'antitrust', 'api-door', 'audit', 'aviation', 'ballistics', 'banking', 'bankruptcy', 'cal', 'chat', 'clay', 'cloud', 'collaboration', 'collide', 'compliance', 'contract', 'court', 'cross', 'crypt', 'db', 'devtools', 'ecommerce', 'econ', 'employment', 'entertainment', 'environment', 'evidence', 'family', 'forensic', 'gate', 'glyph', 'hd', 'heat', 'holo', 'immigration', 'insurance', 'job', 'kin', 'law', 'location', 'maritime', 'mcp-capabilities', 'med', 'merkaba', 'messaging', 'np', 'numen', 'patent', 'path', 'payment', 'platonic', 'port', 'property', 'psych', 'qpu-fused', 'ready', 'rule', 'scale', 'securities', 'security', 'sentence', 'signal', 'split', 'tax', 'telecom', 'tesla', 'text', 'tox', 'trading', 'tune', 'wave', 'yi'] as const
+export const families = ['access', 'accounting', 'analytics', 'antitrust', 'api-door', 'audit', 'aviation', 'ballistics', 'banking', 'bankruptcy', 'cal', 'chat', 'clay', 'cloud', 'collaboration', 'collide', 'compliance', 'contract', 'court', 'cross', 'crypt', 'db', 'devtools', 'ecommerce', 'econ', 'employment', 'entertainment', 'environment', 'evidence', 'family', 'forensic', 'gate', 'glyph', 'gravity', 'hd', 'heat', 'holo', 'immigration', 'insurance', 'job', 'kin', 'law', 'location', 'maritime', 'mcp-capabilities', 'med', 'merkaba', 'messaging', 'np', 'numen', 'patent', 'path', 'payment', 'platonic', 'port', 'property', 'psych', 'qpu-fused', 'ready', 'rule', 'scale', 'securities', 'security', 'sentence', 'signal', 'split', 'tax', 'telecom', 'tesla', 'text', 'tox', 'trading', 'tune', 'wave', 'yi'] as const
