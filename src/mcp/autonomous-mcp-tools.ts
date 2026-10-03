@@ -14,6 +14,8 @@ import {
 
 import { payloadTrainer } from './payload-trainer.js'
 
+import { ANIMATION_OG_CONFIG_TOOL } from './seo-animation-plugin.js'
+
 // ============================================================================
 // MCP TOOL: Payload CMS Trainer — Generate All Configs from Formula Combinatorics
 // ============================================================================
@@ -607,6 +609,9 @@ By: Autonomous MCP System
 // ============================================================================
 
 export const AUTONOMOUS_MCP_TOOLS = [
+  PAYLOAD_TRAINER_TOOL,
+  FORMULAS_AS_LEADS_TOOL,
+  ANIMATION_OG_CONFIG_TOOL,
   INVOLUTE_REPORT_TOOL,
   DEPLOYMENT_REPORT_TOOL,
   SYSTEM_REPORT_GENERATOR_TOOL,
