@@ -93,6 +93,7 @@
     "./src/utilities/workers-crypto.ts",
     "./dist/mcp/families.js",
     "./dist/families/access/index.js",
+    "./dist/families/accounting/index.js",
     "./dist/mcp/api-door.js",
     "./dist/families/audit/index.js",
     "./dist/families/cal/index.js",
@@ -128,6 +129,7 @@
     "./dist/families/signal/index.js",
     "./dist/families/split/index.js",
     "./dist/families/tesla/index.js",
+    "./dist/families/trading/index.js",
     "./dist/families/tune/index.js",
     "./dist/families/wave/index.js",
     "./dist/families/yi/index.js"
