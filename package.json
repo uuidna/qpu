@@ -147,6 +147,7 @@
     "./dist/families/property/index.js",
     "./dist/families/psych/index.js",
     "./dist/mcp/qpu-fused.js",
+    "./dist/families/ready/index.js",
     "./dist/families/rule/index.js",
     "./dist/families/scale/index.js",
     "./dist/families/securities/index.js",
