@@ -157,7 +157,6 @@
     "obs": "npm run mcp -- obs",
     "gaps:fill": "npm run mcp -- gaps",
     "gaps:status": "npm run mcp -- status",
-    "formulas:seal": "npm run build && node scripts/formulas-as-leads.mjs",
     "docker:build": "docker build -f deploy/docker/Dockerfile -t uuidna-qpu:latest .",
     "docker:run": "docker-compose -f deploy/docker/docker-compose.yml up -d",
     "docker:stop": "docker-compose -f deploy/docker/docker-compose.yml down",

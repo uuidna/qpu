@@ -123,7 +123,7 @@ export class MerkabaFormulas {
       before = { holds: step.holds }
       value = step.holds ? step.value : SEED
     }
-    return f('merkaba-develop', 'develop(a, j, s) = [the j-th formula of family a composes with its neighbours in rotation s of the rosetta]', composed ? 1 : 0, nat(a, j, s) && (composed || meets.length > 0), 'develop', [a, j, s], { family, lead: formula.name, rotation: `${dir > 0 ? '→' : '←'}${start}`, rotations: 2 * n, given, meets: meets.slice(0, 6), edges: edges.slice(0, 14) })
+    return f('merkaba-develop', `develop(${family}.${formula.name}, ${dir > 0 ? '→' : '←'}${start}) = [it composes with its neighbours in this rotation of the rosetta]`, composed ? 1 : 0, nat(a, j, s) && (composed || meets.length > 0), 'develop', [a, j, s], { family, lead: formula.name, rotation: `${dir > 0 ? '→' : '←'}${start}`, rotations: 2 * n, given, meets: meets.slice(0, 6), edges: edges.slice(0, 14) })
   }
   /** Among the first n flow families, how many ordered triples of distinct families flow to the end. */
   static flows(n: number): CrossFormula {

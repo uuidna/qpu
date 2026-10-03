@@ -21,8 +21,11 @@ import {
   qpuReceiptLedgerOf,
   qpuHexRegisterOf,
   qpuHexUuidOf,
+  qpuHexFamiliesOf,
 } from '../dist/quantum/processing/unit/index.js'
-import { crossFormulaOf } from '../dist/mcp/cross-domain-formulas.js'
+import '../dist/mcp/families.js'
+import { crossFormulaOf } from '../dist/families/cross/index.js'
+import { MerkabaFormulas, flowFamiliesOf } from '../dist/families/merkaba/index.js'
 
 const REGISTRY = 'https://api.apis.guru/v2/list.json'
 const CONCURRENCY = 8
@@ -101,6 +104,10 @@ const byCategory = categories
  * both directions hold (entangled). Each is a CrossFormula: a content UUID and a quantum receipt (stream `cross`). */
 fs.mkdirSync('.fuse', { recursive: true })
 const out = fs.createWriteStream('.fuse/fuse-formulas.ndjson')
+// every formula of the flow families is a lead the rosetta develops, a cross formula seeded beside the edges; taken
+// before fuse registers below, so the ring is the lattice's own families. The Lean families cross in their own domain,
+// as in gate.crossed (and a Qpu.Shor lead alone runs minutes)
+const developed = flowFamiliesOf().flatMap((family, a) => (family.startsWith('Qpu.') ? [] : (qpuHexFamiliesOf().get(family) ?? []).flatMap((_, j) => Array.from({ length: 2 * flowFamiliesOf().length }, (_, s) => MerkabaFormulas.develop(a, j, s)))))
 // every fused pair is a hex callable: fuse.edge(i, j) returns its formula; params are the two API indexes (24 bits each)
 const edgeAt = new Map(fused.edges.map((e) => [e.i * fused.apis.length + e.j, e]))
 qpuHexRegisterOf('fuse', 'edge', function edge(i, j) {
@@ -138,6 +145,7 @@ for (const e of fused.edges) {
   out.write(JSON.stringify({ ...x, hex, hexExact: true, entangled: both, forward: f, backward: g }) + '\n')
   if (both && f.pairs * g.pairs <= 4) specific.push({ id: x.id, uuid: x.uuid, receipt: x.receipt, forward: f.name, backward: g.name, pairs: f.pairs * g.pairs })
 }
+for (const x of developed) { formulas++; if (x.holds) holding++; out.write(JSON.stringify(x) + '\n') }
 await new Promise((r) => out.end(r))
 specific.sort((p, q) => p.pairs - q.pairs || p.id.localeCompare(q.id))
 const crossStream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'cross')
