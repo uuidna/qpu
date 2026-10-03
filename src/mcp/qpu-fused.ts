@@ -466,17 +466,44 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     return { source, url: 'https://arxiv.org', reading: live, expected: { open: '>= 1 preprint' }, agrees: leads.length > 0 }
   }
   if (source === 'news') {
-    // THE LATEST NEWS AS THE BEST LEADS: the newest stories, read over the keyless Hacker News (Algolia) API — the
-    // frontier of what the developer and technology world is talking about right now. Each story is a lead: its title's
-    // words and numbers feed the discovery; `about` narrows by query, `from` is the 0-based page. The freshest signal there is.
+    // ALL NEWS FROM EVERYWHERE, ANYTIME, AS LEADS: the newest stories across many keyless sources — Hacker News, Reddit,
+    // Lobsters, Dev.to, and GDELT (global news in every language and country). Each story is a lead: its title's words and
+    // numbers feed the discovery. `site` picks the source (default hn), `about` is the query (ANYTIME — searched across all
+    // time, not just the latest page), `from` the 0-based page. The freshest and widest signal there is.
     const q = str(a.about)
     const start = typeof a.from === 'number' && a.from >= 0 ? a.from : 0
-    const url = `https://hn.algolia.com/api/v1/search_by_date?tags=story&hitsPerPage=${qpuFacesOf().faces}&page=${start}${q ? `&query=${encodeURIComponent(q)}` : ''}`
-    const body = (await get(url).then((x) => x.json()).catch(() => null)) as { hits?: { objectID?: string; title?: string | null; points?: number; url?: string | null; num_comments?: number }[]; nbPages?: number } | null
-    const hits = body?.hits ?? []
-    const leads = hits.filter((h) => h.title).map((h) => ({ id: h.objectID, title: (h.title ?? '').slice(0, 120), points: h.points ?? 0, comments: h.num_comments ?? 0, link: h.url ?? undefined, numbers: ((h.title ?? '').match(/\d+/g) ?? []).map(Number).filter((n) => Number.isSafeInteger(n) && n >= 3) }))
-    const live = { about: q || 'latest', from: start, ...(body?.nbPages && start + 1 < body.nbPages ? { next: start + 1 } : {}), count: leads.length, numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, qpuFacesOf().faces), leads }
-    return { source, url: 'https://news.ycombinator.com', reading: live, expected: { open: '>= 1 story' }, agrees: leads.length > 0 }
+    const n = qpuFacesOf().faces
+    const SITES = ['hn', 'reddit', 'lobsters', 'devto', 'gdelt'] as const
+    const site = (SITES as readonly string[]).includes(str(a.site)) ? str(a.site) : 'hn'
+    const numsOf = (t: string) => (t.match(/\d+/g) ?? []).map(Number).filter((x) => Number.isSafeInteger(x) && x >= 3)
+    type Lead = { id?: string; title: string; points: number; link?: string; source: string; numbers: number[] }
+    const j = async (url: string) => (await get(url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | unknown[] | null
+    let leads: Lead[] = []
+    let origin = 'https://news.ycombinator.com'
+    try {
+      if (site === 'hn') {
+        const b = (await j(`https://hn.algolia.com/api/v1/${q ? 'search' : 'search_by_date'}?tags=story&hitsPerPage=${n}&page=${start}${q ? `&query=${encodeURIComponent(q)}` : ''}`)) as { hits?: { objectID?: string; title?: string | null; points?: number; url?: string | null }[] } | null
+        leads = (b?.hits ?? []).filter((h) => h.title).map((h) => ({ id: h.objectID, title: (h.title ?? '').slice(0, 120), points: h.points ?? 0, link: h.url ?? undefined, source: 'hn', numbers: numsOf(h.title ?? '') }))
+      } else if (site === 'reddit') {
+        origin = 'https://www.reddit.com'
+        const b = (await j(q ? `https://www.reddit.com/search.json?q=${encodeURIComponent(q)}&sort=new&limit=${n}` : `https://www.reddit.com/r/all/new.json?limit=${n}`)) as { data?: { children?: { data?: { id?: string; title?: string; score?: number; permalink?: string } }[] } } | null
+        leads = (b?.data?.children ?? []).map((c) => c.data).filter((d): d is NonNullable<typeof d> => !!d?.title).map((d) => ({ id: d.id, title: (d.title ?? '').slice(0, 120), points: d.score ?? 0, link: d.permalink ? `https://reddit.com${d.permalink}` : undefined, source: 'reddit', numbers: numsOf(d.title ?? '') }))
+      } else if (site === 'lobsters') {
+        origin = 'https://lobste.rs'
+        const b = (await j('https://lobste.rs/newest.json')) as { short_id?: string; title?: string; score?: number; url?: string }[] | null
+        leads = (Array.isArray(b) ? b : []).slice(start * n, start * n + n).map((s) => ({ id: s.short_id, title: (s.title ?? '').slice(0, 120), points: s.score ?? 0, link: s.url ?? undefined, source: 'lobsters', numbers: numsOf(s.title ?? '') }))
+      } else if (site === 'devto') {
+        origin = 'https://dev.to'
+        const b = (await j(`https://dev.to/api/articles?per_page=${n}&page=${start + 1}${q ? `&tag=${encodeURIComponent(q)}` : ''}`)) as { id?: number; title?: string; positive_reactions_count?: number; url?: string }[] | null
+        leads = (Array.isArray(b) ? b : []).filter((x) => x?.title).map((x) => ({ id: String(x.id), title: (x.title ?? '').slice(0, 120), points: x.positive_reactions_count ?? 0, link: x.url, source: 'devto', numbers: numsOf(x.title ?? '') }))
+      } else {
+        origin = 'https://www.gdeltproject.org'
+        const b = (await j(`https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q || 'technology')}&mode=ArtList&format=json&maxrecords=${n}&sort=datedesc`)) as { articles?: { url?: string; title?: string; domain?: string }[] } | null
+        leads = (b?.articles ?? []).filter((x) => x?.title).map((x) => ({ id: x.url, title: (x.title ?? '').slice(0, 120), points: 0, link: x.url, source: `gdelt:${x.domain ?? ''}`, numbers: numsOf(x.title ?? '') }))
+      }
+    } catch { leads = [] }
+    const live = { site, sites: SITES, about: q || 'latest', from: start, next: start + 1, count: leads.length, numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, n), leads }
+    return { source, url: origin, reading: live, expected: { open: '>= 1 story' }, agrees: leads.length > 0 }
   }
   if (source === 'unanswered') {
     // OPEN PROBLEMS AS LEADS: MathOverflow's unanswered questions, read over the keyless Stack Exchange API — research
@@ -932,7 +959,7 @@ for (const name of ['ai', 'arxiv', 'collisions', 'deep', 'define', 'discover', '
   qpuHexRegisterOf('data', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
 qpuMcpFuseOf('qpu_data', {
-  description: "THE CHAT IS THE DEFAULT WAY IN: { source: 'ask', about } answers a question in words (with its numbers) from the formula its words name, at its address, with the receipt. Also reads live public data and checks it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category } (payloadcms/payload read: docs sections, templates, examples; the c-th section crossed with the families), 'ai' { from, about? } (the AI APIs that answer free and keyless), 'jobs' { about?, from } (search for work: the public job boards fused from the registry, the keyless ones read live), 'funding' { about?, from } (find funding: World Bank, EU Open Data, registry funding APIs), 'law' { about?, from } (the court-admissible legal record, read live), 'unanswered' { site?, about?, from } (open questions as leads from any Stack Exchange site — the research ones (mathoverflow, cstheory, physics, stats, quantumcomputing, economics, astronomy…) and the web-design/developer community (stackoverflow, softwareengineering, ux, webmasters, codereview, graphicdesign, security, gamedev, dba, devops, ai)), 'arxiv' { about?, from } (the newest arXiv preprints in a field as leads), 'news' { about?, from } (the latest Hacker News stories as leads — the freshest developer/technology signal, keyless; about narrows by query), 'collisions' { from } (the CERN Open Data catalogue — 66k records — walked as leads, each an events = files·q + r arithmetic like the proven record 38), 'define' { about?, to? } (a word's meanings and phonetics from the keyless Free Dictionary and its translation from MyMemory — speech and translation; the registry's dictionary/translation APIs are the lexicon leads), 'ask' { about } (the chat: a question in words with its numbers, answered by the formula its words name, at its address, with the receipt), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
+  description: "THE CHAT IS THE DEFAULT WAY IN: { source: 'ask', about } answers a question in words (with its numbers) from the formula its words name, at its address, with the receipt. Also reads live public data and checks it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category } (payloadcms/payload read: docs sections, templates, examples; the c-th section crossed with the families), 'ai' { from, about? } (the AI APIs that answer free and keyless), 'jobs' { about?, from } (search for work: the public job boards fused from the registry, the keyless ones read live), 'funding' { about?, from } (find funding: World Bank, EU Open Data, registry funding APIs), 'law' { about?, from } (the court-admissible legal record, read live), 'unanswered' { site?, about?, from } (open questions as leads from any Stack Exchange site — the research ones (mathoverflow, cstheory, physics, stats, quantumcomputing, economics, astronomy…) and the web-design/developer community (stackoverflow, softwareengineering, ux, webmasters, codereview, graphicdesign, security, gamedev, dba, devops, ai)), 'arxiv' { about?, from } (the newest arXiv preprints in a field as leads), 'news' { site?, about?, from } (all news from everywhere, anytime, as leads — keyless across Hacker News, Reddit, Lobsters, Dev.to and GDELT (global news in every country/language); site picks the source, about queries across all time), 'collisions' { from } (the CERN Open Data catalogue — 66k records — walked as leads, each an events = files·q + r arithmetic like the proven record 38), 'define' { about?, to? } (a word's meanings and phonetics from the keyless Free Dictionary and its translation from MyMemory — speech and translation; the registry's dictionary/translation APIs are the lexicon leads), 'ask' { about } (the chat: a question in words with its numbers, answered by the formula its words name, at its address, with the receipt), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
   inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, about: { type: 'string' }, to: { type: 'string' }, category: { type: 'integer' }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, words: { type: ['string', 'array'], items: { type: 'string' } }, from: { type: 'integer' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
   run: async (a, env) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env)),
 })
