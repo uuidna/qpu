@@ -48,6 +48,11 @@
       "import": "./dist/db/payload-qpu.js",
       "default": "./dist/db/payload-qpu.js"
     },
+    "./*.js": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "default": "./dist/*.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -90,9 +95,10 @@
     "./dist/mcp/crypt-formulas.js",
     "./dist/mcp/np-formulas.js",
     "./dist/mcp/clay-seals.js",
+    "./dist/mcp/heat-formulas.js",
     "./dist/mcp/mcp-capabilities.js",
     "./dist/mcp/qpu-fused.js",
-    "./src/payload/workers-crypto.ts"
+    "./src/utilities/workers-crypto.ts"
   ],
   "engines": {
     "node": ">=26"
@@ -106,6 +112,7 @@
     "docs": "node scripts/generate-docs.mjs",
     "fuse": "node scripts/fuse-apis.mjs",
     "payload:cf": "node scripts/payload-cloudflare.mjs",
+    "heat": "node scripts/heat.mjs",
     "hooks": "node dist/deployment/git-hooks.js install",
     "prepublishOnly": "npm run version:lock && npm run build",
     "ship": "npm run build && npx wrangler deploy",

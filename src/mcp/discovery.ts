@@ -3,9 +3,13 @@ import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '../quantum/processi
 /** One way a value is reached: a hex-program UUID (family handle, formula nibbles, params split by their count) and its run. */
 export type Way = { family: string; program: string[]; params: number[]; hex: string; receipt?: string }
 export type Relation = { value: string; families: string[]; ways: Way[]; live: boolean }
+/** A seal, as the Clay σ-involutions are sealed: a program that returns its own input. One formula with f(x) = x has
+ *  fixed points (Riemann's s = 1/2); a formula composed with itself to the identity is an involution (σ∘σ = id); two
+ *  formulas composing to the identity are an inverse pair (BSD's a · a⁻¹ = 1). */
+export type Seal = { family: string; program: string[]; kind: 'fixed' | 'involution' | 'inverse'; points: number[]; tested: number; hex: string }
 
 // the tool doors run whole readings rather than formulas over inputs: they are reached through their own receipts
-const DOORS = new Set(['qpu', 'crypto'])
+export const DOORS = new Set(['qpu', 'crypto'])
 const SMALL = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 // the params section splits by count: one 48-bit natural, two 24-bit, three 16-bit
 const WIDTH = [0, 2 ** 48, 2 ** 24, 2 ** 16]
@@ -32,6 +36,7 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
   const liveInputs = live.filter((x) => Number.isSafeInteger(x) && x >= 0 && x < WIDTH[1]!)
   const reached = new Map<string, Way[]>()
   const perFamily: Record<string, { programs: number; runs: number }> = {}
+  const seals: Seal[] = []
   for (const [family, formulas] of qpuHexFamiliesOf()) {
     if (DOORS.has(family)) continue
     const lean = family.startsWith('Qpu.')
@@ -44,6 +49,9 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
     ]
     perFamily[family] = { programs: programs.length, runs: 0 }
     for (const { program, tuples } of programs) {
+      // the Clay lens: which inputs does this program return unchanged?
+      const returned: number[] = []
+      let tested = 0, last = ''
       for (const params of tuples) {
         if (!fits(params)) continue
         let hex: string
@@ -55,10 +63,18 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
         const run = (await qpuHexRunOf(hex)) as { value?: unknown; holds?: boolean; receipt?: string }
         perFamily[family]!.runs++
         const value = valueOf(run)
+        if (params.length === 1 && value !== null) {
+          tested++
+          last = hex
+          if (value === String(params[0])) returned.push(params[0]!)
+        }
         if (value === null || BigInt(value) < 3n || params.map(String).includes(value)) continue
         const list = reached.get(value) ?? reached.set(value, []).get(value)!
         if (list.length < 12 && !list.some((w) => w.hex === hex)) list.push({ family, program, params, hex, ...(run.receipt ? { receipt: run.receipt } : {}) })
       }
+      // one formula: its fixed points; two: the identity on every input tried, an involution when it is one formula twice
+      if (program.length === 1 && returned.length) seals.push({ family, program, kind: 'fixed', points: returned, tested, hex: last })
+      if (program.length === 2 && tested > 1 && returned.length === tested) seals.push({ family, program, kind: program[0] === program[1] ? 'involution' : 'inverse', points: returned, tested, hex: last })
     }
   }
   const relations: Relation[] = [...reached]
@@ -75,6 +91,7 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
     relations,
     liveRelations: relations.filter((r) => r.live).length,
     unrelated: families.filter((f) => !related.has(f)),
+    seals,
     holds: families.every((f) => perFamily[f]!.runs > 0) && relations.length > 0,
   }
 }

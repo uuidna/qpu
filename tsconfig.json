@@ -3,22 +3,43 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "lib": ["ES2022", "DOM"],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "jsx": "react-jsx",
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
     "noEmitOnError": false,
-    "types": ["node", "react"],
+    "types": [
+      "node",
+      "react"
+    ],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
   "exclude": [
     "src/autonomous/**",
-    "src/payload/**",
-    "node_modules"
+    "node_modules",
+    "src/access/**",
+    "src/app/**",
+    "src/blocks/**",
+    "src/collections/**",
+    "src/components/**",
+    "src/css/**",
+    "src/fields/**",
+    "src/globals/**",
+    "src/providers/**",
+    "src/seed/**",
+    "src/utilities/**",
+    "src/payload.config.ts",
+    "src/payload-types.ts"
   ]
 }

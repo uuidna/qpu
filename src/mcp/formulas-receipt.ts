@@ -8,6 +8,7 @@ import { CrossDomainFormulas, type CrossFormula } from './cross-domain-formulas.
 import { CryptFormulas } from './crypt-formulas.js'
 import { HoloFormulas, hologramStreamsOf, holoStreamHolds } from './hologram-streams.js'
 import { ClaySeals } from './clay-seals.js'
+import './heat-formulas.js'
 import { qpuDiscoverOf } from './discovery.js'
 // every family registers itself on import, so discovery reaches all of them
 import './cross-domain-paths.js'
@@ -178,10 +179,22 @@ const numbersOf = (x: unknown): number[] =>
 
 /** Every live source the unit names, read now; their numbers fed to discovery across every family as the hex UUID splits it. */
 export const discoveryReceiptOf = async () => {
-  const sources = await Promise.all(qpuDataSourcesOf().map(async (s) => ({ ...s, result: (await qpuDataOf(s.source, s.args)) as { agrees?: boolean; denied?: string; reading?: unknown; receipt?: string; url?: string } })))
-  const live = [...new Set(sources.flatMap((s) => (s.result.agrees ? numbersOf(s.result.reading) : [])))]
+  const sources = await Promise.all((await qpuDataSourcesOf()).map(async (s) => ({ ...s, result: (await qpuDataOf(s.source, s.args)) as { agrees?: boolean; denied?: string; reading?: unknown; receipt?: string; url?: string } })))
+  // at scale: every API the fuse walked live (npm run fuse) gives its method count; with the live sources' numbers they
+  // are discovery's inputs across every family
+  const walked = fs.existsSync('.fuse/fused-apis.json') ? (JSON.parse(fs.readFileSync('.fuse/fused-apis.json', 'utf8')) as { rows: { reached?: boolean; methods?: number }[] }).rows.filter((r) => r.reached && typeof r.methods === 'number') : []
+  const live = [...new Set([...sources.flatMap((s) => (s.result.agrees ? numbersOf(s.result.reading) : [])), ...walked.flatMap((r) => numbersOf(r.methods))])]
   const d = await qpuDiscoverOf(live)
+  // a sequence identity: formulas of different families that OEIS identifies as one sequence
+  const named = new Map<string, string[]>()
+  for (const s of sources) {
+    const r = s.result.reading as { oeis?: string; formula?: string; name?: string } | undefined
+    if (s.source === 'sequence' && s.result.agrees && r?.oeis && r.formula) named.set(r.oeis, [...(named.get(r.oeis) ?? []), r.formula])
+  }
+  const identities = [...named].filter(([, fs]) => new Set(fs.map((f) => f.split('.').slice(0, -1).join('.'))).size > 1)
   const rows = [
+    ...identities.map(([id, fs]) => ({ name: `sequence ${id}`, pass: true, value: fs.join(' = '), receipt: '' })),
+    ...d.seals.map((s) => ({ name: `seal ${s.family}[${s.program.join('→')}]`, pass: true, value: `${s.kind}: ${s.kind === 'fixed' ? `f(x) = x at ${s.points.join(', ')}` : `identity on all ${s.tested} inputs tried`} ${s.hex}`, receipt: '' })),
     ...sources.map((s) => ({ name: `live ${s.label}`, pass: s.result.agrees === true, value: s.result.denied ? `unreachable: ${String(s.result.reading)}` : JSON.stringify(s.result.reading), receipt: s.result.receipt ?? '' })),
     ...d.families.map((f) => ({ name: `family ${f}`, pass: d.perFamily[f]!.runs > 0, value: `${d.perFamily[f]!.programs} programs, ${d.perFamily[f]!.runs} runs`, receipt: '' })),
     ...d.relations.map((r) => ({ name: `relation ${r.value}`, pass: true, value: `${r.families.join(' + ')}${r.live ? ' (live)' : ''}: ${r.ways.slice(0, 4).map((w) => `${w.family}[${w.program.join('→')}](${w.params.join(',')}) ${w.hex}`).join('; ')}`, receipt: r.ways[0]?.receipt ?? '' })),
@@ -192,6 +205,13 @@ export const discoveryReceiptOf = async () => {
     sources: sources.length,
     sourcesAgree: sources.filter((s) => s.result.agrees).length,
     liveNumbers: live.length,
+    sequences: sources.filter((s) => s.source === 'sequence' && s.result.agrees).length,
+    identities: identities.length,
+    apisWalked: walked.length,
+    seals: d.seals.length,
+    fixedPoints: d.seals.filter((s) => s.kind === 'fixed').length,
+    involutions: d.seals.filter((s) => s.kind === 'involution').length,
+    inversePairs: d.seals.filter((s) => s.kind === 'inverse').length,
     families: d.families.length,
     runs: d.runs,
     relationsTotal: d.relations.length,

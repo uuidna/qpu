@@ -1,6 +1,6 @@
 {
  "kind": "fuse-receipt",
- "when": "2026-10-02",
+ "when": "2026-10-03",
  "registry": "https://api.apis.guru/v2/list.json",
  "listed": 2529,
  "walked": 2529,
@@ -396,7 +396,7 @@
    {
     "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:fsx",
     "uuid": "ab56135d-a682-8457-90f7-00e7ec44aa8b",
-    "receipt": "7567d35e-e1db-8b3c-97b0-49024bee7708",
+    "receipt": "49478726-1136-87f0-9392-46299caeb30d",
     "forward": "VolumeType",
     "backward": "Volume",
     "pairs": 2
@@ -404,7 +404,7 @@
    {
     "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:gamelift",
     "uuid": "1449fecc-2893-8752-8600-27553df4033b",
-    "receipt": "74288682-ae36-83fe-803f-7aff13de018a",
+    "receipt": "d55acca1-c171-83cd-b6ff-1a00d09275c6",
     "forward": "DnsName",
     "backward": "FleetIds",
     "pairs": 2
@@ -412,7 +412,7 @@
    {
     "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:license-manager",
     "uuid": "f0b1928e-84ae-8813-8cd5-f0a39a928871",
-    "receipt": "17ef0f45-fdd5-8016-b7ab-e77d2d55e9be",
+    "receipt": "b4053964-58fa-8f8c-b138-6e146aacac46",
     "forward": "KeyFingerprint",
     "backward": "LicenseSpecifications",
     "pairs": 2
@@ -420,7 +420,7 @@
    {
     "id": "fuse amazonaws.com:ec2 ⇄ amazonaws.com:storagegateway",
     "uuid": "9b1c2cc1-f30e-8000-9a19-2f296052c48f",
-    "receipt": "0fd17a33-68d0-821b-899f-29465015b853",
+    "receipt": "8be3f187-0f24-833a-9869-59c7f708f0ed",
     "forward": "PoolId",
     "backward": "GatewayId",
     "pairs": 2
@@ -428,7 +428,7 @@
    {
     "id": "fuse amazonaws.com:opsworks ⇄ amazonaws.com:redshift",
     "uuid": "a2580128-7ccc-830a-80fb-7f6424866c39",
-    "receipt": "ed59d0da-c75d-8cbd-afaa-e3cf90406b5f",
+    "receipt": "80d4efaf-4402-8fd6-94a9-bf2034b14e5a",
     "forward": "ElasticIp",
     "backward": "DbPassword",
     "pairs": 2
@@ -436,7 +436,7 @@
    {
     "id": "fuse drchrono.com ⇄ netbox.dev",
     "uuid": "680d86b0-b8b9-8c78-b953-59647bcaa74d",
-    "receipt": "d05d5e7c-51c4-8eb0-8074-6b5f8dd0f301",
+    "receipt": "787c0e9a-7acb-8439-a27a-79851e4f58f3",
     "forward": "is_staff",
     "backward": "user",
     "pairs": 2
@@ -444,7 +444,7 @@
    {
     "id": "fuse netbox.dev ⇄ netboxdemo.com",
     "uuid": "45aa841e-bf3b-8045-a6ed-3eb045e5cbab",
-    "receipt": "e0200609-e53c-8125-b30b-2cb04a57a97a",
+    "receipt": "2b429eca-589b-8f1b-8381-7e62e66e7008",
     "forward": "family",
     "backward": "termination_a_type",
     "pairs": 2
@@ -452,7 +452,7 @@
    {
     "id": "fuse biapi.pro ⇄ discourse.local",
     "uuid": "a74d5c46-aab6-8e7c-a9a4-8deb754c85c0",
-    "receipt": "bebc5706-42cf-8cdc-b47e-642228644108",
+    "receipt": "769e0c73-ec0c-8262-b915-749a6c32924c",
     "forward": "file_size",
     "backward": "bookmarked",
     "pairs": 3
@@ -460,7 +460,7 @@
    {
     "id": "fuse files.com ⇄ sendgrid.com",
     "uuid": "85a3bdf6-1936-82e5-a459-c3866bd2c851",
-    "receipt": "c58f752d-208a-88f1-a246-a91f509bfe2e",
+    "receipt": "9c6924ac-9b01-84c4-a889-c7ebceffd540",
     "forward": "usernames",
     "backward": "recipients",
     "pairs": 3
@@ -468,7 +468,7 @@
    {
     "id": "fuse salesloft.com ⇄ zuora.com",
     "uuid": "c533806b-63fe-8e9d-9a29-bef738b61a64",
-    "receipt": "0f5a894b-d464-8c0c-8aa4-f5b1c02fe0cf",
+    "receipt": "d83eb3ab-daac-8275-929d-54cfc07b4308",
     "forward": "call_type",
     "backward": "task_id",
     "pairs": 3
@@ -476,7 +476,7 @@
    {
     "id": "fuse agco-ats.com ⇄ vtex.local:Catalog-API",
     "uuid": "0ce003e0-01b8-823f-af2a-0bf633d2e6da",
-    "receipt": "c33aeff0-57cb-8ada-a0fc-5e24edab97bb",
+    "receipt": "fbf17367-dc4a-8c45-96f8-d536f317325f",
     "forward": "Visible",
     "backward": "IsPublic",
     "pairs": 4
@@ -484,7 +484,7 @@
    {
     "id": "fuse amazonaws.com:budgets ⇄ amazonaws.com:ce",
     "uuid": "56a8b9ab-33bd-8eb6-b02f-c4c117f53868",
-    "receipt": "c3d423b8-bf32-8242-92b5-77b0999b3f4a",
+    "receipt": "6d96c6ca-0854-864a-9c61-af481655a734",
     "forward": "Subscribers",
     "backward": "TimePeriod",
     "pairs": 4
@@ -492,7 +492,7 @@
    {
     "id": "fuse amazonaws.com:dynamodb ⇄ amazonaws.com:glue",
     "uuid": "95712f00-7e1a-8bba-8fe3-6890a705222d",
-    "receipt": "ced9c56b-77e8-86fe-80db-bb59de609f26",
+    "receipt": "dbee0a39-fe64-878c-9b0f-eb259be61bbe",
     "forward": "IndexName",
     "backward": "Statement",
     "pairs": 4
@@ -500,7 +500,7 @@
    {
     "id": "fuse amazonaws.com:glue ⇄ amazonaws.com:ssm",
     "uuid": "7b492bf3-3196-8d6e-9cde-ee623029a08a",
-    "receipt": "441e25ce-3b4c-842a-9a51-2d5ed3bbbc61",
+    "receipt": "ca373453-4575-8c92-bc3b-65e37f5c0bf6",
     "forward": "PolicyHash",
     "backward": "Command",
     "pairs": 4
@@ -508,16 +508,16 @@
   ],
   "stream": {
    "length": 438299,
-   "head": "28e58fb1-ab3a-8cd7-a366-27da0b0de231",
-   "chain": "5b2bd42426636b87",
+   "head": "f8bd0aff-35f6-838d-bd2d-0db59f4aff08",
+   "chain": "386ee965cfd0c61687c69a764a4643d57499ca4cc1ade7cfb5d18cc40634734f",
    "holds": true
   }
  },
  "stream": {
   "length": 2529,
-  "head": "087c8d81-65d9-87ee-9a8e-da586aa28121",
-  "chain": "3d21a1458f32d838",
+  "head": "a3fcfa7c-61d7-8c6a-8aa9-4ec279d9b955",
+  "chain": "dfdc8bd960a337901f8c33e1ba3306398bb1666160637319d1b96265da471472",
   "holds": true
  },
- "seconds": 48
+ "seconds": 61
 }

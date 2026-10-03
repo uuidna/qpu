@@ -6,3 +6,5 @@ src="src/quantum/processing/unit/index.lean"
 echo "pre-commit: HARD — lean $src"
 command -v lean >/dev/null || { echo "pre-commit: RED — lean missing. Commit BLOCKED."; exit 1; }
 lean "$src"
+# heat: the hottest files, the staged ones first; a report, never a block
+node scripts/heat.mjs --report 2>/dev/null || true

@@ -9,6 +9,7 @@ import './dist/mcp/hologram-streams.js'
 import './dist/mcp/crypt-formulas.js'
 import './dist/mcp/np-formulas.js'
 import './dist/mcp/clay-seals.js'
+import './dist/mcp/heat-formulas.js'
 import './dist/mcp/mcp-capabilities.js'
 import './dist/mcp/qpu-fused.js'
 

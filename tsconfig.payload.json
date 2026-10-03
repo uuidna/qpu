@@ -28,25 +28,51 @@
     ],
     "paths": {
       "@/*": [
+        "./src/*"
+      ],
+      "@root/*": [
         "./*"
       ],
       "@payload-config": [
-        "./payload.config.ts"
+        "./src/payload.config.ts"
       ],
       "@uuidna/qpu": [
         "./dist/quantum/processing/unit/index"
       ],
       "@uuidna/qpu/payload": [
         "./dist/db/payload-qpu"
+      ],
+      "@uuidna/qpu/*": [
+        "./dist/*"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
-    "payload.config.ts",
-    "app/**/*.ts",
-    "app/**/*.tsx",
-    "src/payload/**/*.ts",
+    "src/payload.config.ts",
+    "src/payload-types.ts",
+    "src/access/**/*.ts",
+    "src/access/**/*.tsx",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
+    "src/blocks/**/*.ts",
+    "src/blocks/**/*.tsx",
+    "src/collections/**/*.ts",
+    "src/collections/**/*.tsx",
+    "src/components/**/*.ts",
+    "src/components/**/*.tsx",
+    "src/css/**/*.ts",
+    "src/css/**/*.tsx",
+    "src/fields/**/*.ts",
+    "src/fields/**/*.tsx",
+    "src/globals/**/*.ts",
+    "src/globals/**/*.tsx",
+    "src/providers/**/*.ts",
+    "src/providers/**/*.tsx",
+    "src/seed/**/*.ts",
+    "src/seed/**/*.tsx",
+    "src/utilities/**/*.ts",
+    "src/utilities/**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
