@@ -72,12 +72,16 @@ test('release: the site end to end — every address it lists answers, every pag
   // THE COLD START IS REPORTED, NOT RACED. The first page after a deploy seeds a changed site before it answers (minutes
   // on a version bump: every doc's UUID moves); this test runs right after the deploy that made the host, so it waits
   // for the first answer and records how long it took, then holds the site to its warm shape.
+  // A 503 is the host saying not yet (the isolate still seeding, or the Worker version still propagating), so the wait
+  // is paced, up to five minutes; the first 200 is the cold start's end.
   const started = Date.now()
   let warm: Response | undefined
-  for (let i = 0; i < 6 && !warm; i++) {
-    try { warm = await get('/') } catch { /* the isolate is still seeding: ask again */ }
+  let last = ''
+  for (let i = 0; i < 30 && !(warm && warm.status === 200); i++) {
+    if (i) await new Promise((r) => setTimeout(r, 10000))
+    try { warm = await get('/'); last = String(warm.status) } catch (e) { last = (e as Error).message }
   }
-  assert.ok(warm && warm.status === 200, `the site answers its root after a deploy (status ${warm?.status})`)
+  assert.ok(warm && warm.status === 200, `the site answers its root within five minutes of a deploy (last: ${last})`)
   t.diagnostic(`cold start ${Math.round((Date.now() - started) / 1000)}s`)
   // the site names its own addresses: nothing is listed here
   const sitemap = await (await get('/sitemap.xml', 'application/xml')).text()
