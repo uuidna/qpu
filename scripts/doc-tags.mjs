@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 /**
  * The one rule set that seats every exported capability in a wing and names its evidence. Used to write the inline
  * frontmatter (@wing, @kind, @evidence) into the sources, and by the docs generator to read it back.
@@ -49,8 +50,12 @@ export const kindOf = (name, line) =>
   : /^[A-Z_]+$/.test(name) ? 'constant'
   : /Of$/.test(name) ? 'builder'
   : 'function'
-export const FILES = [
+// a documented file's capabilities include every sibling it re-exports (export * / export { … } from './x.js'), so a
+// region cooled out of a file into its own module (scripts/cool.mjs) stays documented
+const reexportsOf = (file) => [...fs.readFileSync(file, 'utf8').matchAll(/^export (?:\*|\{[^}]*\}) from '\.\/([\w-]+)\.js'/gm)].map((m) => `${file.slice(0, file.lastIndexOf('/'))}/${m[1]}.ts`)
+const withReexports = (files) => [...new Set(files.flatMap((f) => [f, ...reexportsOf(f)]))]
+export const FILES = withReexports([
   'src/quantum/processing/unit/index.ts', 'src/quantum/processing/unit/docdb.ts', 'src/quantum/processing/unit/lean-eval.ts',
   'src/db/payload-qpu.ts', 'src/deployment/payload-templates.ts', 'src/mcp/uuid-programmable-core.ts',
   'src/mcp/cross-domain-formulas.ts', 'src/mcp/cross-domain-paths.ts', 'src/core/uuid.ts', 'src/core/uuid-bridge.ts',
-]
+])

@@ -91,12 +91,12 @@ const SITE_FILES = ['payload.config.ts', 'payload-types.ts']
 // the app's TypeScript: src as payloadcms/website keeps it (@/ is src), @root/ the repository, @uuidna/qpu this build
 const REPO_TSCONFIG = {
   compilerOptions: {
-    target: 'ES2022', lib: ['dom', 'dom.iterable', 'esnext'], module: 'esnext', moduleResolution: 'bundler', jsx: 'preserve', strict: true, noEmit: true,
+    target: 'ES2022', lib: ['dom', 'dom.iterable', 'esnext'], module: 'esnext', moduleResolution: 'bundler', jsx: 'react-jsx', strict: true, noEmit: true,
     skipLibCheck: true, esModuleInterop: true, resolveJsonModule: true, isolatedModules: true, incremental: true, allowJs: true,
     types: ['@cloudflare/workers-types', 'node'], plugins: [{ name: 'next' }],
     paths: { '@/*': [`./${SRC}/*`], '@root/*': ['./*'], '@payload-config': [`./${SRC}/payload.config.ts`], '@uuidna/qpu': ['./dist/quantum/processing/unit/index'], '@uuidna/qpu/payload': ['./dist/db/payload-qpu'], '@uuidna/qpu/*': ['./dist/*'] },
   },
-  include: ['next-env.d.ts', ...SITE_FILES.map((f) => `${SRC}/${f}`), ...SITE.flatMap((d) => [`${SRC}/${d}/**/*.ts`, `${SRC}/${d}/**/*.tsx`]), '.next/types/**/*.ts'],
+  include: ['next-env.d.ts', ...SITE_FILES.map((f) => `${SRC}/${f}`), ...SITE.flatMap((d) => [`${SRC}/${d}/**/*.ts`, `${SRC}/${d}/**/*.tsx`]), '.next/types/**/*.ts', '.next/dev/types/**/*.ts'],
   exclude: ['node_modules', 'dist', '.open-next', '**/*.test.ts'],
 }
 if (process.argv.includes('--repo')) {
@@ -104,7 +104,8 @@ if (process.argv.includes('--repo')) {
   // the library's tsconfig skips the site's folders, read from the same list
   const lib = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8'))
   lib.exclude = [...new Set([...lib.exclude.filter((x) => !x.startsWith(`${SRC}/`) || x.startsWith(`${SRC}/autonomous`)), ...SITE.map((d) => `${SRC}/${d}/**`), ...SITE_FILES.map((f) => `${SRC}/${f}`)])]
-  const written = { ...t.files, [REPO_WRANGLER]: t.files['wrangler.jsonc'], 'tsconfig.payload.json': JSON.stringify(REPO_TSCONFIG, null, 1) + '\n', 'tsconfig.json': JSON.stringify(lib, null, 2) + '\n' }
+  const written = { ...t.files, [REPO_WRANGLER]: t.files['wrangler.jsonc'], // written as next build writes it back (react-jsx, its dev types, two spaces), so a build leaves it unchanged
+    'tsconfig.payload.json': JSON.stringify(REPO_TSCONFIG, null, 2) + '\n', 'tsconfig.json': JSON.stringify(lib, null, 2) + '\n' }
   if (REPO_WRANGLER !== 'wrangler.jsonc') delete written['wrangler.jsonc']
   for (const [f, text] of Object.entries(written)) {
     fs.mkdirSync(path.dirname(f), { recursive: true })

@@ -25,14 +25,14 @@ The register geometry and the exact integer arithmetic every other wing is built
 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
-| [`chooseOf`](../src/quantum/processing/unit/index.ts#L294) | builder | Binomial coefficient C(nn, k) by Pascal recursion, mirroring chooseOf in index.lean. | — | — |
-| [`qpuBalanceOf`](../src/quantum/processing/unit/index.ts#L680) | builder | The 'balance' reading: theory and practice equal and summing to coins (theorem follow_the_coins). | `qpuBalanceHolds` | holds |
-| [`qpuCapacityOf`](../src/quantum/processing/unit/index.ts#L3647) | builder | Capacity counts: bits, amplitudes, fused = faces x 2^(bits+1), next, the crypt split and the agent and schema counts. | `qpuCapacityHolds` | holds |
-| [`qpuCubeOf`](../src/quantum/processing/unit/index.ts#L546) | builder | The register geometry: n qubits, vertices = 2^n, hexbit = 2^(n-1), bits = vertices x hexbit. | `qpuCubeHolds` | holds |
-| [`qpuElectronicsOf`](../src/quantum/processing/unit/index.ts#L652) | builder | The 'electronics' reading: the coil (coins x rays) used as staged windings, theory and practice each one seed. | `qpuElectronicsHolds` | holds |
-| [`qpuFacesOf`](../src/quantum/processing/unit/index.ts#L592) | builder | The lattice of faces: coins, rays = n + 2 coins, faces = coins x rays = rays + rays, with the coil derived from them. | `qpuFacesHolds` | holds |
-| [`qpuHandleOf`](../src/quantum/processing/unit/index.ts#L560) | builder | Amplitude capacity: amplitudes = 2^bits, next = 2 x amplitudes, and the KV reading of both. | `qpuHandleHolds` | holds |
-| [`qpuSpeedOf`](../src/quantum/processing/unit/index.ts#L3872) | builder | The doubling rung: next = fused + fused, with the cover of rungs and a benchmark of the step. | `qpuSpeedHolds` | holds |
-| [`tenOf`](../src/quantum/processing/unit/index.ts#L516) | builder | 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines. | — | — |
+| [`chooseOf`](../src/quantum/processing/unit/index.ts#L314) | builder | Binomial coefficient C(nn, k) by Pascal recursion, mirroring chooseOf in index.lean. | — | — |
+| [`qpuBalanceOf`](../src/quantum/processing/unit/index.ts#L700) | builder | The 'balance' reading: theory and practice equal and summing to coins (theorem follow_the_coins). | `qpuBalanceHolds` | holds |
+| [`qpuCapacityOf`](../src/quantum/processing/unit/index.ts#L2680) | builder | Capacity counts: bits, amplitudes, fused = faces x 2^(bits+1), next, the crypt split and the agent and schema counts. | `qpuCapacityHolds` | holds |
+| [`qpuCubeOf`](../src/quantum/processing/unit/index.ts#L566) | builder | The register geometry: n qubits, vertices = 2^n, hexbit = 2^(n-1), bits = vertices x hexbit. | `qpuCubeHolds` | holds |
+| [`qpuElectronicsOf`](../src/quantum/processing/unit/index.ts#L672) | builder | The 'electronics' reading: the coil (coins x rays) used as staged windings, theory and practice each one seed. | `qpuElectronicsHolds` | holds |
+| [`qpuFacesOf`](../src/quantum/processing/unit/index.ts#L612) | builder | The lattice of faces: coins, rays = n + 2 coins, faces = coins x rays = rays + rays, with the coil derived from them. | `qpuFacesHolds` | holds |
+| [`qpuHandleOf`](../src/quantum/processing/unit/index.ts#L580) | builder | Amplitude capacity: amplitudes = 2^bits, next = 2 x amplitudes, and the KV reading of both. | `qpuHandleHolds` | holds |
+| [`qpuSpeedOf`](../src/quantum/processing/unit/index.ts#L2905) | builder | The doubling rung: next = fused + fused, with the cover of rungs and a benchmark of the step. | `qpuSpeedHolds` | holds |
+| [`tenOf`](../src/quantum/processing/unit/index.ts#L536) | builder | 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines. | — | — |
 
 Generated from the inline docs by `npm run docs`. Index: [docs](README.md).
