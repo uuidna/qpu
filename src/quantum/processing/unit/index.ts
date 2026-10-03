@@ -11679,18 +11679,23 @@ const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
   * @kind builder
  * annotations: one KiB per door, guarded by the suite. */
 export const qpuMcpToolsListOf = onceOf(() => {
-  // every listed door carries the one through-schema: an MCP client that sees only this list reaches everything
+  // every listed door reaches everything, said in one line: tools/list stays under a KiB per door (the connect bill),
+  // and the through-schema itself travels with the man page, one call away
   const sealed = qpuToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, description, qpuThroughSchemaOf(inputSchema), { sealed: true as const, morph: false as const }))
+    qpuMcpToolShapeOf(name, `${description} ${THROUGH_LINE}`, inputSchema, { sealed: true as const, morph: false as const }))
   const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, description, qpuThroughSchemaOf(inputSchema), { sealed: false as const, morph: true as const }))
+    qpuMcpToolShapeOf(name, `${description} ${THROUGH_LINE}`, inputSchema, { sealed: false as const, morph: true as const }))
   return [...sealed, ...cybersecurity]
 })
 
-/** The man page as served: the tool's man plus its output schema read from the run, off the list and one call away. */
+/** Through any door, in one line for tools/list; the schema of it is on the man page. */
+const THROUGH_LINE = 'Through this door: { hex } runs a hex program, { door, arguments } any door or family.formula, { doors: true } lists them, { errors: true } every error at once.'
+/** The man page as served: the tool's man plus its output schema read from the run and the through-schema every door
+ *  takes, off the list and one call away. */
 const qpuManPageOf = <T extends object>(name: string, man: T) => ({
   ...man,
   outputSchema: qpuOutputSchemasOf()[name] ?? minimalOutputSchema,
+  through: qpuThroughSchemaOf({ type: 'object', properties: {} }).properties,
 })
 
 /** A tool name this server does not have. Read by the router into a JSON-RPC -32602 error; never answered with the

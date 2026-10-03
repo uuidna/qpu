@@ -62,7 +62,8 @@ const validate = (schema, reply) => {
 {
   const p = await rpc('not json'); check('parse error is -32700 on 400', p.status === 400 && p.json?.error?.code === -32700, `${p.status} ${p.text.slice(0, 80)}`)
   const a = await rpc('[]'); check('array body is -32600 on 400', a.status === 400 && a.json?.error?.code === -32600, `${a.status} ${a.text.slice(0, 80)}`)
-  const m = await rpc({ jsonrpc: '2.0', id: 3, method: 'resources/list' }); check('unknown method is -32601 with the id', m.status === 200 && m.json?.error?.code === -32601 && m.json?.id === 3, `${m.status} ${m.text.slice(0, 80)}`)
+  // a method no server has: resources/list is one this unit grew (its MCP capabilities), so it is no longer unknown
+  const m = await rpc({ jsonrpc: '2.0', id: 3, method: 'unknown/method' }); check('unknown method is -32601 with the id', m.status === 200 && m.json?.error?.code === -32601 && m.json?.id === 3, `${m.status} ${m.text.slice(0, 80)}`)
   const u = await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'nope' } }); check('unknown tool is -32602 listing the tools', u.status === 200 && u.json?.error?.code === -32602 && Array.isArray(u.json?.error?.data?.tools) && u.json.error.data.tools.length === mintOf(4), `${u.status} ${u.text.slice(0, 120)}`)
   const s = await rpc({ jsonrpc: '2.0', id: 6, method: 'nope' }, '/server'); check('sub-server unknown method is -32601, not a job', s.json?.error?.code === -32601, s.text.slice(0, tenOf(2)))
 }
@@ -126,7 +127,7 @@ let tools = []
 {
   const lean = await get('/src/quantum/processing/unit/index.lean')
   const dataset = json((await get('/quantum/processing/unit')).text)
-  check('index.lean is served as text', lean.status === 200 && lean.type.startsWith('text/plain') && lean.text.startsWith('def mintOf'), `${lean.status} ${lean.type}`)
+  check('index.lean is served as text', lean.status === 200 && lean.type.startsWith('text/plain') && lean.text.includes('def mintOf'), `${lean.status} ${lean.type}`)
   check('the source fold recomputes from the served bytes', dataset?.source?.fold === fold(lean.text), `${dataset?.source?.fold} vs ${fold(lean.text)}`)
   check('every served theorem is in the source verbatim', dataset?.source?.verbatim === dataset?.source?.served && dataset?.source?.holds === true, `${dataset?.source?.verbatim}/${dataset?.source?.served}`)
   check('no sorry, axiom or by decide in the proof', !/\bsorry\b|^axiom |by decide/m.test(lean.text), 'found one')

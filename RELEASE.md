@@ -7,7 +7,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 | MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 51 doors and 108 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 15 families run as hex-program UUIDs (RFC 9562 v8); 10,902 programs in the last discovery | each other: 161 values reached by two or more families, 7 seals (fixed points, involutions) |
-| Live public data | 35 of 45 sources agree | CERN Open Data, NIST CODATA, OEIS (8 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
+| Live public data | 35 of 46 sources agree | CERN Open Data, NIST CODATA, OEIS (8 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
 | Public APIs | 2,529 of 2,529 APIs walked live, 123,136 methods, 438,299 cross formulas | the APIs.guru registry, against the Lean theorem fuse |
 | Cross formulas | 78 of 79 rows hold across 37 formulas | their own hex programs (36 agree) |
 | Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |

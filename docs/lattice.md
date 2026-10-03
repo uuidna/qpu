@@ -32,7 +32,7 @@ The register geometry and the exact integer arithmetic every other wing is built
 | [`qpuElectronicsOf`](../src/quantum/processing/unit/index.ts#L698) | builder | The 'electronics' reading: the coil (coins x rays) used as staged windings, theory and practice each one seed. | `qpuElectronicsHolds` | holds |
 | [`qpuFacesOf`](../src/quantum/processing/unit/index.ts#L638) | builder | The lattice of faces: coins, rays = n + 2 coins, faces = coins x rays = rays + rays, with the coil derived from them. | `qpuFacesHolds` | holds |
 | [`qpuHandleOf`](../src/quantum/processing/unit/index.ts#L606) | builder | Amplitude capacity: amplitudes = 2^bits, next = 2 x amplitudes, and the KV reading of both. | `qpuHandleHolds` | holds |
-| [`qpuLatticeNamesOf`](../src/quantum/processing/unit/index.ts#L11927) | builder | The lattice by name — n, seed, coins, hexbit, vertices, bits, rays, faces, plane — so a module outside this one writes its numbers as this unit does (never a literal: a count is a lattice name, a power is mintOf, a page is tenOf). | — | — |
+| [`qpuLatticeNamesOf`](../src/quantum/processing/unit/index.ts#L11932) | builder | The lattice by name — n, seed, coins, hexbit, vertices, bits, rays, faces, plane — so a module outside this one writes its numbers as this unit does (never a literal: a count is a lattice name, a power is mintOf, a page is tenOf). | — | — |
 | [`qpuSpeedOf`](../src/quantum/processing/unit/index.ts#L2931) | builder | The doubling rung: next = fused + fused, with the cover of rungs and a benchmark of the step. | `qpuSpeedHolds` | holds |
 | [`tenOf`](../src/quantum/processing/unit/index.ts#L562) | builder | 10^k by repeated multiplication (no Math.pow), used for page sizes and deadlines. | — | — |
 
