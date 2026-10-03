@@ -49,7 +49,7 @@ COPY --from=build /qpu/node_modules ./node_modules
 # Copy license, documentation, configuration
 COPY LICENSE README.md CITATION.cff ./
 COPY src/quantum/processing/unit/index.lean ./src/quantum/processing/unit/
-COPY mcp.json install.json .env.production ./
+COPY mcp.json install.json ./
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S qpu && adduser -S qpu -u 1001
