@@ -5,7 +5,7 @@ cd "$(git rev-parse --show-toplevel)"
 echo "pre-push: HARD — npm run ci"
 node scripts/heat.mjs --report 2>/dev/null || true
 # the gate is a formula: gate.push over every family, the proof and the rules; holds decides
-node scripts/gate.mjs push
+node scripts/receipt.mjs gate push
 npm run ci
 status=$?
 if [ $status -ne 0 ]; then

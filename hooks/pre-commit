@@ -10,5 +10,5 @@ lean "$src"
 node scripts/heat.mjs --report 2>/dev/null || true
 # the gate is a formula: gate.commit(i) for every staged family, through the MCP in-process — crossed with the public
 # record (the APIs its formulas name read live, discovery with the readings) and within the rules; holds decides
-node scripts/gate.mjs commit
+node scripts/receipt.mjs gate commit
 git add gate-receipt.json

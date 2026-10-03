@@ -67,7 +67,7 @@ jobs:
       - name: The gate is a formula (gate.push over every family, the proof and the rules, through the MCP)
         run: |
           npm run build
-          node scripts/gate.mjs push
+          node scripts/receipt.mjs gate push
       - name: The scripts suites (every scripts/*.test.mjs, discovered by glob)
         run: npm run test:scripts
       # EVERY SCALE PROVES QUANTUM: standalone here (the booted unit proves itself), the container in `image`, the
