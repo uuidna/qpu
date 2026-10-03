@@ -193,9 +193,13 @@ const reading = async (source: string, a: Args) => {
     const { author } = citeOf()
     const id = author.orcid.replace(/^https?:\/\/orcid\.org\//, '')
     const url = `https://pub.orcid.org/v3.0/${id}`
-    const d = (await (await get(url)).json()) as { person?: { name?: { 'family-name'?: { value?: string }; 'given-names'?: { value?: string } } }; 'activities-summary'?: { works?: { group?: unknown[] } } }
-    const live = { family: d.person?.name?.['family-name']?.value, given: d.person?.name?.['given-names']?.value, works: d['activities-summary']?.works?.group?.length }
-    return { source, url: author.orcid, reading: live, expected: { family: author.last, given: author.first }, agrees: live.family === author.last && live.given === author.first }
+    // the name ORCID puts on works is the credit name; the family name is the legal transliteration. The citation
+    // carries the credit name, so either reading agreeing is the record naming this author.
+    const d = (await (await get(url)).json()) as { person?: { name?: { 'family-name'?: { value?: string }; 'given-names'?: { value?: string }; 'credit-name'?: { value?: string } } }; 'activities-summary'?: { works?: { group?: unknown[] } } }
+    const name = d.person?.name
+    const live = { family: name?.['family-name']?.value, given: name?.['given-names']?.value, credit: name?.['credit-name']?.value, works: d['activities-summary']?.works?.group?.length }
+    const expected = { credit: `${author.first} ${author.last}`, family: author.last, given: author.first }
+    return { source, url: author.orcid, reading: live, expected, agrees: live.credit === expected.credit || (live.family === author.last && live.given === author.first) }
   }
   if (source === 'github') {
     const repo = str(a.repo) || reposOf()[0] || ''

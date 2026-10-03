@@ -24,8 +24,8 @@ RUN npm ci --ignore-scripts
 COPY tsconfig.json ./
 COPY src/ ./src/
 
-# Build TypeScript
-RUN npm run build && npm prune --omit=dev
+# Compile: the version lock (git history, npm registry) gates every commit and CI run; the image only compiles
+RUN npx tsc -p tsconfig.json && npm prune --omit=dev
 
 # ============================================================================
 # STAGE 2: Runtime
