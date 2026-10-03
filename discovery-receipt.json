@@ -1,0 +1,525 @@
+{
+ "kind": "discovery-receipt",
+ "when": "2026-10-03",
+ "sources": 22,
+ "sourcesAgree": 20,
+ "liveNumbers": 26,
+ "families": 14,
+ "runs": 5420,
+ "relationsTotal": 49,
+ "liveRelations": 29,
+ "unrelated": "Qpu.Coil Qpu.Hybrid audit",
+ "holds": true,
+ "rows": [
+  {
+   "name": "live CERN Open Data · record 38",
+   "pass": true,
+   "value": "{\"title\":\"/SingleMu/Run2011A-v1/RAW\",\"events\":2079006,\"files\":116}",
+   "receipt": "256dfa36-e2ef-8ab6-bb24-1eb6554648f9"
+  },
+  {
+   "name": "live CERN Open Data · record 63",
+   "pass": true,
+   "value": "{\"title\":\"/SingleMu/Run2012B-v1/RAW\",\"events\":2301668,\"files\":184}",
+   "receipt": "8ef5cf2a-1e8c-8acf-b467-5452494b3d9d"
+  },
+  {
+   "name": "live CERN Open Data · record 35",
+   "pass": true,
+   "value": "{\"title\":\"/MinimumBias/Run2011A-v1/RAW\",\"events\":1913190,\"files\":72}",
+   "receipt": "aff14417-4a79-8603-8f76-18027a18f161"
+  },
+  {
+   "name": "live CERN Open Data · record 62",
+   "pass": true,
+   "value": "{\"title\":\"/MinimumBias/Run2012B-v1/RAW\",\"events\":2745751,\"files\":130}",
+   "receipt": "e6246f13-7db6-80fa-91c4-819270685f1f"
+  },
+  {
+   "name": "live NIST CODATA · Planck, Boltzmann",
+   "pass": true,
+   "value": "{\"planck\":{\"value\":\"6.626 070 15 e-34\",\"digits\":\"662607015\",\"exact\":true},\"boltzmann\":{\"value\":\"1.380 649 e-23\",\"digits\":\"1380649\",\"exact\":true}}",
+   "receipt": "ae8ed672-b87b-8477-87a9-ee425584cf93"
+  },
+  {
+   "name": "live OEIS A000110 · Bell numbers",
+   "pass": true,
+   "value": "{\"name\":\"Bell numbers\",\"terms\":27,\"last\":\"49631246523618756274\"}",
+   "receipt": "17f8391f-b1ea-88c5-a3f6-ce738db9a7db"
+  },
+  {
+   "name": "live OEIS A000108 · Catalan numbers",
+   "pass": true,
+   "value": "{\"name\":\"Catalan numbers\",\"terms\":31,\"last\":\"3814986502092304\"}",
+   "receipt": "5afea0fc-84d7-8791-a75e-da03bb382109"
+  },
+  {
+   "name": "live Zenodo · latest release",
+   "pass": true,
+   "value": "{\"record\":23091364,\"doi\":\"10.5281/zenodo.23091364\",\"version\":\"v1.0.0\",\"published\":\"2026-10-01\"}",
+   "receipt": "5750ca9a-82dc-8d11-9165-258c46e120ae"
+  },
+  {
+   "name": "live catalog · literature",
+   "pass": true,
+   "value": "{\"name\":\"literature\",\"total\":1890068}",
+   "receipt": "2387465c-8a30-8f00-98c6-64cb9e75c443"
+  },
+  {
+   "name": "live catalog · authors",
+   "pass": true,
+   "value": "{\"name\":\"authors\",\"total\":806609}",
+   "receipt": "0ffc6fc1-5004-81a9-b153-6095ca309e0b"
+  },
+  {
+   "name": "live catalog · institutions",
+   "pass": true,
+   "value": "{\"name\":\"institutions\",\"total\":12328}",
+   "receipt": "585d193c-81b2-8926-ada5-ef4fc9e64327"
+  },
+  {
+   "name": "live catalog · conferences",
+   "pass": true,
+   "value": "{\"name\":\"conferences\",\"total\":31746}",
+   "receipt": "602303f3-6844-8f9a-aeeb-d5cbebf99665"
+  },
+  {
+   "name": "live catalog · seminars",
+   "pass": true,
+   "value": "{\"name\":\"seminars\",\"total\":3567}",
+   "receipt": "1694d1ac-783a-814b-9a1b-faf12895ce2d"
+  },
+  {
+   "name": "live catalog · journals",
+   "pass": true,
+   "value": "{\"name\":\"journals\",\"total\":4331}",
+   "receipt": "c10620be-1255-80d2-8239-aa2fe6cc5615"
+  },
+  {
+   "name": "live catalog · jobs",
+   "pass": true,
+   "value": "{\"name\":\"jobs\",\"total\":31794}",
+   "receipt": "da0de453-0cf6-8ca1-8ee7-c4a8b102b708"
+  },
+  {
+   "name": "live catalog · experiments",
+   "pass": true,
+   "value": "{\"name\":\"experiments\",\"total\":4007}",
+   "receipt": "b0658c55-1581-8e98-b925-100455a9e33d"
+  },
+  {
+   "name": "live catalog · data",
+   "pass": true,
+   "value": "{\"name\":\"data\",\"total\":11635}",
+   "receipt": "4082cc43-163e-81a7-ab43-df45afd80413"
+  },
+  {
+   "name": "live catalog · opendata",
+   "pass": true,
+   "value": "{\"name\":\"opendata\",\"total\":82386}",
+   "receipt": "56e6b6a9-3e0d-8477-9414-d83e18cea005"
+  },
+  {
+   "name": "live catalog · repository",
+   "pass": true,
+   "value": "{\"name\":\"repository\",\"total\":72758}",
+   "receipt": "116a3f3e-6ee8-8c23-9aac-5303507635ff"
+  },
+  {
+   "name": "live catalog · zenodo",
+   "pass": true,
+   "value": "{\"name\":\"zenodo\",\"total\":7398579}",
+   "receipt": "d2c49e8a-0f2c-86a1-96ab-5a4e2c0dbe63"
+  },
+  {
+   "name": "live catalog · hepdata",
+   "pass": false,
+   "value": "unreachable: https://www.hepdata.net/search/?format=json answered 403",
+   "receipt": ""
+  },
+  {
+   "name": "live catalog · indico",
+   "pass": false,
+   "value": "unreachable: The operation was aborted due to timeout",
+   "receipt": ""
+  },
+  {
+   "name": "family Qpu.Coil",
+   "pass": true,
+   "value": "12 programs, 12 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family Qpu.Hybrid",
+   "pass": true,
+   "value": "42 programs, 42 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family Qpu.Lattice",
+   "pass": true,
+   "value": "182 programs, 182 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family Qpu.Mint",
+   "pass": true,
+   "value": "6 programs, 111 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family Qpu.Physics",
+   "pass": true,
+   "value": "90 programs, 216 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family Qpu.Shor",
+   "pass": true,
+   "value": "20 programs, 454 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family audit",
+   "pass": true,
+   "value": "20 programs, 628 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family clay",
+   "pass": true,
+   "value": "42 programs, 493 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family cross",
+   "pass": true,
+   "value": "110 programs, 1426 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family crypt",
+   "pass": true,
+   "value": "42 programs, 347 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family holo",
+   "pass": true,
+   "value": "6 programs, 98 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family np",
+   "pass": true,
+   "value": "42 programs, 536 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family path",
+   "pass": true,
+   "value": "90 programs, 289 runs",
+   "receipt": ""
+  },
+  {
+   "name": "family signal",
+   "pass": true,
+   "value": "42 programs, 586 runs",
+   "receipt": ""
+  },
+  {
+   "name": "relation 16",
+   "pass": true,
+   "value": "Qpu.Mint + clay + cross + np + signal (live): Qpu.Mint[mintOf](4) c8372ae3-1000-8000-9000-000000000004; Qpu.Mint[mintOf→mintOf](2) c8372ae3-1100-8000-9000-000000000002; cross[medSecureWithQSec](1,4) 0c36469f-5000-8000-a000-000001000004; cross[medSecureWithQSec](2,3) 0c36469f-5000-8000-a000-000002000003",
+   "receipt": "09cf4929-ce7f-8038-9165-6df832f684cd"
+  },
+  {
+   "name": "relation 20",
+   "pass": true,
+   "value": "Qpu.Mint + clay + cross + holo + np (live): Qpu.Mint[chooseOf](6,3) c8372ae3-2000-8000-a000-000006000003; cross[medSecureWithQSec](5,2) 0c36469f-5000-8000-a000-000005000002; holo[proofDepth](806609) 4029f1cc-2000-8000-9000-0000000c4ed1; clay[hodge](10) 13962491-2000-8000-9000-00000000000a",
+   "receipt": "6b19cef2-1703-8786-82c3-6f29773fc8dc"
+  },
+  {
+   "name": "relation 10",
+   "pass": true,
+   "value": "Qpu.Mint + clay + cross + np (live): Qpu.Mint[chooseOf](5,2) c8372ae3-2000-8000-a000-000005000002; Qpu.Mint[chooseOf](5,3) c8372ae3-2000-8000-a000-000005000003; cross[medSecureWithQSec](5,1) 0c36469f-5000-8000-a000-000005000001; clay[hodge](5) 13962491-2000-8000-9000-000000000005",
+   "receipt": "a1198488-5aef-8440-8d7e-c603c9dbc574"
+  },
+  {
+   "name": "relation 12",
+   "pass": true,
+   "value": "clay + cross + holo + np (live): cross[medSecureWithQSec](3,2) 0c36469f-5000-8000-a000-000003000002; cross[medSecureWithQSec](6,1) 0c36469f-5000-8000-a000-000006000001; cross[medSecureWithQSec→medSecureWithQSec](3,1) 0c36469f-5500-8000-a000-000003000001; holo[proofDepth](3567) 4029f1cc-2000-8000-9000-000000000def",
+   "receipt": "cab4f6df-8d14-8e80-a129-9f3e4d50134b"
+  },
+  {
+   "name": "relation 15",
+   "pass": true,
+   "value": "Qpu.Mint + holo + np (live): Qpu.Mint[chooseOf](6,2) c8372ae3-2000-8000-a000-000006000002; Qpu.Mint[chooseOf](6,4) c8372ae3-2000-8000-a000-000006000004; holo[proofDepth](31746) 4029f1cc-2000-8000-9000-000000007c02; holo[proofDepth](31794) 4029f1cc-2000-8000-9000-000000007c32",
+   "receipt": "ea9a7873-ca51-86d1-9adb-48d85449de67"
+  },
+  {
+   "name": "relation 21",
+   "pass": true,
+   "value": "Qpu.Mint + holo + np (live): Qpu.Mint[chooseOf](7,2) c8372ae3-2000-8000-a000-000007000002; Qpu.Mint[chooseOf](7,5) c8372ae3-2000-8000-a000-000007000005; holo[proofDepth](2079006) 4029f1cc-2000-8000-9000-0000001fb91e; holo[proofDepth](1913190) 4029f1cc-2000-8000-9000-0000001d3166",
+   "receipt": "ed01dfd7-7c01-8b24-9924-2b0a0dc37327"
+  },
+  {
+   "name": "relation 22",
+   "pass": true,
+   "value": "clay + holo + np (live): holo[proofDepth](2301668) 4029f1cc-2000-8000-9000-000000231ee4; holo[proofDepth](2745751) 4029f1cc-2000-8000-9000-00000029e597; clay[bsd](130) 13962491-1000-8000-9000-000000000082; clay[hodge](11) 13962491-2000-8000-9000-00000000000b",
+   "receipt": "dc162e55-3ab0-8603-9a70-b81cae957d12"
+  },
+  {
+   "name": "relation 24",
+   "pass": true,
+   "value": "clay + cross + np (live): cross[medSecureWithQSec](3,3) 0c36469f-5000-8000-a000-000003000003; cross[medSecureWithQSec](6,2) 0c36469f-5000-8000-a000-000006000002; clay[hodge](12) 13962491-2000-8000-9000-00000000000c; np[sparseWidth](2301668) 08b33c07-5000-8000-9000-000000231ee4",
+   "receipt": "9651f347-cf44-8822-9c07-19596a0673fe"
+  },
+  {
+   "name": "relation 25",
+   "pass": true,
+   "value": "Qpu.Physics + holo + np (live): Qpu.Physics[bcs→gap](1) cf1194df-6900-8000-9000-000000000001; Qpu.Physics[bcs→gap](2) cf1194df-6900-8000-9000-000000000002; Qpu.Physics[bcs→gap](3) cf1194df-6900-8000-9000-000000000003; Qpu.Physics[bcs→gap](4) cf1194df-6900-8000-9000-000000000004",
+   "receipt": "6eb48285-e7c2-81f4-97be-332ccb380fbe"
+  },
+  {
+   "name": "relation 30",
+   "pass": true,
+   "value": "clay + holo + np (live): holo[proofDepth](662607015) 4029f1cc-2000-8000-9000-0000277e94a7; clay[hodge](15) 13962491-2000-8000-9000-00000000000f; np[isSpace](662607015) 08b33c07-2000-8000-9000-0000277e94a7",
+   "receipt": "241f90f5-6188-88f0-9b2c-66b3257c8084"
+  },
+  {
+   "name": "relation 13",
+   "pass": true,
+   "value": "holo + np (live): holo[proofDepth](4331) 4029f1cc-2000-8000-9000-0000000010eb; np[isSpace](4331) 08b33c07-2000-8000-9000-0000000010eb; np[isTime→sparseWidth](4) 08b33c07-3500-8000-9000-000000000004",
+   "receipt": "0b8f640f-f312-8d1f-a7e0-923b8e6e8f6c"
+  },
+  {
+   "name": "relation 17",
+   "pass": true,
+   "value": "holo + np (live): holo[proofDepth](82386) 4029f1cc-2000-8000-9000-0000000141d2; holo[proofDepth](72758) 4029f1cc-2000-8000-9000-000000011c36; np[isSpace](82386) 08b33c07-2000-8000-9000-0000000141d2; np[isSpace](72758) 08b33c07-2000-8000-9000-000000011c36",
+   "receipt": "a453df33-29fd-8293-bb8b-23d47e7fec29"
+  },
+  {
+   "name": "relation 23",
+   "pass": true,
+   "value": "holo + np (live): holo[proofDepth](7398579) 4029f1cc-2000-8000-9000-00000070e4b3; np[isSpace](7398579) 08b33c07-2000-8000-9000-00000070e4b3; np[sparseWidth](2079006) 08b33c07-5000-8000-9000-0000001fb91e; np[sparseWidth](1913190) 08b33c07-5000-8000-9000-0000001d3166",
+   "receipt": "04365ed1-8bcc-8ef0-81ff-3e87440cf426"
+  },
+  {
+   "name": "relation 27",
+   "pass": true,
+   "value": "np + signal (live): signal[keyBits](72) 5062cd8f-3000-8000-9000-000000000048; np[sparseWidth](23091364) 08b33c07-5000-8000-9000-0000016058a4",
+   "receipt": "19c7840c-bcb6-8c4f-9234-4509855fb1fa"
+  },
+  {
+   "name": "relation 36",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](72) 5062cd8f-6000-8000-9000-000000000048; crypt[curveClassicalBits](72) 62d1d39f-1000-8000-9000-000000000048; crypt[symmetricQuantumBits](72) 62d1d39f-5000-8000-9000-000000000048",
+   "receipt": "dc2ff851-ab95-8aa0-add7-5be1cc7c15ec"
+  },
+  {
+   "name": "relation 40",
+   "pass": true,
+   "value": "clay + cross (live): cross[medSecureWithQSec](5,3) 0c36469f-5000-8000-a000-000005000003; clay[bsd](184) 13962491-1000-8000-9000-0000000000b8",
+   "receipt": "17c98d85-6235-83e5-964c-0f361e45ca90"
+  },
+  {
+   "name": "relation 58",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](116) 5062cd8f-6000-8000-9000-000000000074; crypt[curveClassicalBits](116) 62d1d39f-1000-8000-9000-000000000074; crypt[symmetricQuantumBits](116) 62d1d39f-5000-8000-9000-000000000074",
+   "receipt": "ecc7c1b4-8e85-8901-8568-0780431b14d9"
+  },
+  {
+   "name": "relation 65",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](130) 5062cd8f-6000-8000-9000-000000000082; crypt[curveClassicalBits](130) 62d1d39f-1000-8000-9000-000000000082; crypt[symmetricQuantumBits](130) 62d1d39f-5000-8000-9000-000000000082",
+   "receipt": "4f2e8b4b-7590-87f1-bfbe-581ff4c53ed8"
+  },
+  {
+   "name": "relation 92",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](184) 5062cd8f-6000-8000-9000-0000000000b8; crypt[curveClassicalBits](184) 62d1d39f-1000-8000-9000-0000000000b8; crypt[symmetricQuantumBits](184) 62d1d39f-5000-8000-9000-0000000000b8",
+   "receipt": "3cfb17d5-ad7f-89f0-b17e-c56b5a3d7325"
+  },
+  {
+   "name": "relation 6164",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](12328) 5062cd8f-6000-8000-9000-000000003028; crypt[curveClassicalBits](12328) 62d1d39f-1000-8000-9000-000000003028; crypt[symmetricQuantumBits](12328) 62d1d39f-5000-8000-9000-000000003028",
+   "receipt": "f3ad0e83-8d31-8f70-bea0-b1d376551c6c"
+  },
+  {
+   "name": "relation 15873",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](31746) 5062cd8f-6000-8000-9000-000000007c02; crypt[curveClassicalBits](31746) 62d1d39f-1000-8000-9000-000000007c02; crypt[symmetricQuantumBits](31746) 62d1d39f-5000-8000-9000-000000007c02",
+   "receipt": "f4566b60-bd15-886b-8642-5c017dac91fe"
+  },
+  {
+   "name": "relation 15897",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](31794) 5062cd8f-6000-8000-9000-000000007c32; crypt[curveClassicalBits](31794) 62d1d39f-1000-8000-9000-000000007c32; crypt[symmetricQuantumBits](31794) 62d1d39f-5000-8000-9000-000000007c32",
+   "receipt": "acdbd931-9e33-8301-9f3e-0a12a6e39849"
+  },
+  {
+   "name": "relation 36379",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](72758) 5062cd8f-6000-8000-9000-000000011c36; crypt[curveClassicalBits](72758) 62d1d39f-1000-8000-9000-000000011c36; crypt[symmetricQuantumBits](72758) 62d1d39f-5000-8000-9000-000000011c36",
+   "receipt": "29b88eba-ed9a-80d2-9924-e24cb774cd61"
+  },
+  {
+   "name": "relation 41193",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](82386) 5062cd8f-6000-8000-9000-0000000141d2; crypt[curveClassicalBits](82386) 62d1d39f-1000-8000-9000-0000000141d2; crypt[symmetricQuantumBits](82386) 62d1d39f-5000-8000-9000-0000000141d2",
+   "receipt": "0bd2c1b1-e700-8266-9d9a-7daebec98ee6"
+  },
+  {
+   "name": "relation 945034",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](1890068) 5062cd8f-6000-8000-9000-0000001cd714; crypt[curveClassicalBits](1890068) 62d1d39f-1000-8000-9000-0000001cd714; crypt[symmetricQuantumBits](1890068) 62d1d39f-5000-8000-9000-0000001cd714",
+   "receipt": "3bd01e3d-144b-8fc3-a962-c6549c2a9108"
+  },
+  {
+   "name": "relation 956595",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](1913190) 5062cd8f-6000-8000-9000-0000001d3166; crypt[curveClassicalBits](1913190) 62d1d39f-1000-8000-9000-0000001d3166; crypt[symmetricQuantumBits](1913190) 62d1d39f-5000-8000-9000-0000001d3166",
+   "receipt": "f69cb45d-3b06-8cd5-a93d-5e7ac9e27ed0"
+  },
+  {
+   "name": "relation 1039503",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](2079006) 5062cd8f-6000-8000-9000-0000001fb91e; crypt[curveClassicalBits](2079006) 62d1d39f-1000-8000-9000-0000001fb91e; crypt[symmetricQuantumBits](2079006) 62d1d39f-5000-8000-9000-0000001fb91e",
+   "receipt": "209d9e20-38f3-8457-8542-59a36e62a245"
+  },
+  {
+   "name": "relation 1150834",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](2301668) 5062cd8f-6000-8000-9000-000000231ee4; crypt[curveClassicalBits](2301668) 62d1d39f-1000-8000-9000-000000231ee4; crypt[symmetricQuantumBits](2301668) 62d1d39f-5000-8000-9000-000000231ee4",
+   "receipt": "2e628e12-3389-8dc4-acb0-36c41040fe03"
+  },
+  {
+   "name": "relation 11545682",
+   "pass": true,
+   "value": "crypt + signal (live): signal[siftedBits](23091364) 5062cd8f-6000-8000-9000-0000016058a4; crypt[curveClassicalBits](23091364) 62d1d39f-1000-8000-9000-0000016058a4; crypt[symmetricQuantumBits](23091364) 62d1d39f-5000-8000-9000-0000016058a4",
+   "receipt": "70a50d1b-ac85-87d0-a243-565cec02025b"
+  },
+  {
+   "name": "relation 6",
+   "pass": true,
+   "value": "Qpu.Mint + Qpu.Shor + cross + crypt + signal: Qpu.Mint[chooseOf](4,2) c8372ae3-2000-8000-a000-000004000002; Qpu.Mint[mintOf→chooseOf](2,2) c8372ae3-1200-8000-a000-000002000002; Qpu.Shor[periodOf](3,7) d5716b2a-2000-8000-a000-000003000007; Qpu.Shor[periodOf](5,7) d5716b2a-2000-8000-a000-000005000007",
+   "receipt": "f015978f-fbba-87bf-9e0b-8007aa8dc5a2"
+  },
+  {
+   "name": "relation 1024",
+   "pass": true,
+   "value": "Qpu.Mint + cross + np + signal: Qpu.Mint[mintOf](10) c8372ae3-1000-8000-9000-00000000000a; cross[medSecureWithQSec](4,8) 0c36469f-5000-8000-a000-000004000008; cross[medSecureWithQSec](8,7) 0c36469f-5000-8000-a000-000008000007; signal[keyspace](10) 5062cd8f-4000-8000-9000-00000000000a",
+   "receipt": "c9c3d899-c9e1-855c-9305-e22f5e018d50"
+  },
+  {
+   "name": "relation 64",
+   "pass": true,
+   "value": "Qpu.Mint + cross + signal: Qpu.Mint[mintOf](6) c8372ae3-1000-8000-9000-000000000006; cross[medSecureWithQSec](1,6) 0c36469f-5000-8000-a000-000001000006; cross[medSecureWithQSec](2,5) 0c36469f-5000-8000-a000-000002000005; cross[medSecureWithQSec](4,4) 0c36469f-5000-8000-a000-000004000004",
+   "receipt": "7924f8a5-5ccc-894f-80f2-efb6cea60168"
+  },
+  {
+   "name": "relation 128",
+   "pass": true,
+   "value": "Qpu.Mint + cross + signal: Qpu.Mint[mintOf](7) c8372ae3-1000-8000-9000-000000000007; cross[medSecureWithQSec](1,7) 0c36469f-5000-8000-a000-000001000007; cross[medSecureWithQSec](2,6) 0c36469f-5000-8000-a000-000002000006; cross[medSecureWithQSec](4,5) 0c36469f-5000-8000-a000-000004000005",
+   "receipt": "353c9d1c-58db-822b-bb39-96a0a7c72247"
+  },
+  {
+   "name": "relation 256",
+   "pass": true,
+   "value": "Qpu.Mint + cross + signal: Qpu.Mint[mintOf](8) c8372ae3-1000-8000-9000-000000000008; Qpu.Mint[mintOf→mintOf](3) c8372ae3-1100-8000-9000-000000000003; cross[medSecureWithQSec](1,8) 0c36469f-5000-8000-a000-000001000008; cross[medSecureWithQSec](2,7) 0c36469f-5000-8000-a000-000002000007",
+   "receipt": "a75bedac-3f4d-805e-ae69-fba2f56363c8"
+  },
+  {
+   "name": "relation 512",
+   "pass": true,
+   "value": "Qpu.Mint + cross + signal: Qpu.Mint[mintOf](9) c8372ae3-1000-8000-9000-000000000009; cross[medSecureWithQSec](2,8) 0c36469f-5000-8000-a000-000002000008; cross[medSecureWithQSec](4,7) 0c36469f-5000-8000-a000-000004000007; cross[medSecureWithQSec](8,6) 0c36469f-5000-8000-a000-000008000006",
+   "receipt": "224d6f75-6ea1-8549-87f4-4037bf7213fc"
+  },
+  {
+   "name": "relation 2048",
+   "pass": true,
+   "value": "Qpu.Mint + cross + signal: Qpu.Mint[mintOf](11) c8372ae3-1000-8000-9000-00000000000b; cross[medSecureWithQSec](8,8) 0c36469f-5000-8000-a000-000008000008; signal[keyspace](11) 5062cd8f-4000-8000-9000-00000000000b",
+   "receipt": "b9e21567-7598-8143-a773-c16266c6fa54"
+  },
+  {
+   "name": "relation 32768",
+   "pass": true,
+   "value": "Qpu.Mint + np + signal: Qpu.Mint[mintOf](15) c8372ae3-1000-8000-9000-00000000000f; signal[keyspace](15) 5062cd8f-4000-8000-9000-00000000000f; np[isTime](8) 08b33c07-3000-8000-9000-000000000008",
+   "receipt": "d5ad10ed-c19a-8fd1-971d-bc1523b6d5b1"
+  },
+  {
+   "name": "relation 3",
+   "pass": true,
+   "value": "Qpu.Lattice + Qpu.Shor: Qpu.Shor[periodOf](2,7) d5716b2a-2000-8000-a000-000002000007; Qpu.Shor[periodOf](4,7) d5716b2a-2000-8000-a000-000004000007; Qpu.Shor[half](7,4) d5716b2a-4000-8000-a000-000007000004; Qpu.Lattice[n]() 72af0c7c-1000-8000-8000-000000000000",
+   "receipt": "b28280c5-08f5-8fd9-a304-337e79449414"
+  },
+  {
+   "name": "relation 4",
+   "pass": true,
+   "value": "Qpu.Mint + Qpu.Shor: Qpu.Mint[mintOf](2) c8372ae3-1000-8000-9000-000000000002; Qpu.Mint[mintOf→mintOf](1) c8372ae3-1100-8000-9000-000000000001; Qpu.Mint[mintOf→chooseOf](2,1) c8372ae3-1200-8000-a000-000002000001; Qpu.Mint[mintOf→chooseOf](2,3) c8372ae3-1200-8000-a000-000002000003",
+   "receipt": "268ec282-4334-8452-be03-38fff44e73dd"
+  },
+  {
+   "name": "relation 8",
+   "pass": true,
+   "value": "Qpu.Lattice + Qpu.Mint: Qpu.Mint[mintOf](3) c8372ae3-1000-8000-9000-000000000003; Qpu.Mint[mintOf→chooseOf](3,1) c8372ae3-1200-8000-a000-000003000001; Qpu.Mint[chooseOf→mintOf](3,1) c8372ae3-2100-8000-a000-000003000001; Qpu.Mint[chooseOf→mintOf](3,2) c8372ae3-2100-8000-a000-000003000002",
+   "receipt": "7cc1b1cc-88a7-8a96-81e4-429315bac833"
+  },
+  {
+   "name": "relation 18",
+   "pass": true,
+   "value": "clay + np: clay[hodge](9) 13962491-2000-8000-9000-000000000009; np[isTime→subsetSum](3,3) 08b33c07-3600-8000-a000-000003000003",
+   "receipt": "56408df3-1bdb-857e-9a4a-7e23a908ced8"
+  },
+  {
+   "name": "relation 28",
+   "pass": true,
+   "value": "Qpu.Lattice + Qpu.Mint: Qpu.Mint[chooseOf](8,2) c8372ae3-2000-8000-a000-000008000002; Qpu.Mint[chooseOf](8,6) c8372ae3-2000-8000-a000-000008000006; Qpu.Mint[mintOf→chooseOf](3,2) c8372ae3-1200-8000-a000-000003000002; Qpu.Lattice[plane]() 72af0c7c-d000-8000-8000-000000000000",
+   "receipt": "0860f9d0-e102-877d-bf93-9896df1ed810"
+  },
+  {
+   "name": "relation 32",
+   "pass": true,
+   "value": "Qpu.Lattice + Qpu.Mint: Qpu.Mint[mintOf](5) c8372ae3-1000-8000-9000-000000000005; Qpu.Lattice[bits]() 72af0c7c-9000-8000-8000-000000000000; Qpu.Lattice[n→bits]() 72af0c7c-1900-8000-8000-000000000000; Qpu.Lattice[seed→bits]() 72af0c7c-2900-8000-8000-000000000000",
+   "receipt": "7e8c018e-fbe5-8b1f-9954-fe5363890593"
+  },
+  {
+   "name": "relation 56",
+   "pass": true,
+   "value": "Qpu.Mint + cross: Qpu.Mint[chooseOf](8,3) c8372ae3-2000-8000-a000-000008000003; Qpu.Mint[chooseOf](8,5) c8372ae3-2000-8000-a000-000008000005; Qpu.Mint[mintOf→chooseOf](3,3) c8372ae3-1200-8000-a000-000003000003; cross[medSecureWithQSec](7,3) 0c36469f-5000-8000-a000-000007000003",
+   "receipt": "45a34e87-a132-80db-a4fb-979cabc97168"
+  },
+  {
+   "name": "relation 80",
+   "pass": true,
+   "value": "cross + path: cross[medSecureWithQSec](5,4) 0c36469f-5000-8000-a000-000005000004; path[anomalyToResponse]() 03c52d0d-2000-8000-8000-000000000000; path[allPaths→anomalyToResponse]() 03c52d0d-1200-8000-8000-000000000000; path[anomalyToResponse→anomalyToResponse]() 03c52d0d-2200-8000-8000-000000000000",
+   "receipt": "5dc80bda-334c-8ace-9010-d5f97ab6dea6"
+  },
+  {
+   "name": "relation 4096",
+   "pass": true,
+   "value": "Qpu.Mint + signal: Qpu.Mint[mintOf](12) c8372ae3-1000-8000-9000-00000000000c; signal[keyspace](12) 5062cd8f-4000-8000-9000-00000000000c",
+   "receipt": "c80b5db4-1522-8da9-afdd-b346f020a49b"
+  },
+  {
+   "name": "relation 8192",
+   "pass": true,
+   "value": "Qpu.Mint + signal: Qpu.Mint[mintOf](13) c8372ae3-1000-8000-9000-00000000000d; signal[keyspace](13) 5062cd8f-4000-8000-9000-00000000000d",
+   "receipt": "08d2b89e-ff41-80d1-8f3d-222516669120"
+  },
+  {
+   "name": "relation 16384",
+   "pass": true,
+   "value": "Qpu.Mint + signal: Qpu.Mint[mintOf](14) c8372ae3-1000-8000-9000-00000000000e; signal[keyspace](14) 5062cd8f-4000-8000-9000-00000000000e",
+   "receipt": "473bd2bc-34bb-8585-a3c5-bdfe741afb84"
+  },
+  {
+   "name": "relation 65536",
+   "pass": true,
+   "value": "Qpu.Mint + signal: Qpu.Mint[mintOf](16) c8372ae3-1000-8000-9000-000000000010; Qpu.Mint[mintOf→mintOf](4) c8372ae3-1100-8000-9000-000000000004; signal[keyspace](16) 5062cd8f-4000-8000-9000-000000000010; signal[keyspace→keyspace](4) 5062cd8f-4400-8000-9000-000000000004",
+   "receipt": "e128d2a1-0639-814a-bca8-9b5d89bea224"
+  }
+ ]
+}

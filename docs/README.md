@@ -22,11 +22,11 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 | [Quantum computation](quantum.md) | 17 | 14 of 17 |
 | [Formal proof (Lean)](proof.md) | 12 | 4 of 4 |
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
-| [UUIDs & quantum receipts](receipts.md) | 39 | 15 of 17 |
+| [UUIDs & quantum receipts](receipts.md) | 40 | 15 of 17 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |
-| [MCP & agents](agents.md) | 76 | 45 of 54 |
-| [Live science data](science.md) | 21 | 10 of 17 |
-| [API fusion](fusion.md) | 16 | 2 of 8 |
+| [MCP & agents](agents.md) | 77 | 45 of 54 |
+| [Live science data](science.md) | 22 | 10 of 17 |
+| [API fusion](fusion.md) | 17 | 2 of 8 |
 | [Payload & Cloudflare](cms.md) | 27 | 3 of 4 |
 | [Presentation & discovery](presentation.md) | 14 | 14 of 14 |
 

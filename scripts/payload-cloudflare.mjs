@@ -29,14 +29,24 @@ const REPO_COLLECTIONS = [['Users', 'users'], ['Tenants', 'tenants'], ['Docs', '
 const REPO_NAME = 'uuidna-qpu-payload'
 const REPO_WRANGLER = 'payload.wrangler.jsonc'
 const REPO = {
-  key: 'opennext/qpu-raid/r2/none/multi-tenant+search+seo',
+  key: 'opennext/qpu-raid/r2/none/ecommerce+form-builder+import-export+mcp+multi-tenant+nested-docs+redirects+search+sentry+seo+stripe',
   app: {
     collections: REPO_COLLECTIONS, adminUser: 'users', title: 'UUIDNA QPU',
-    targets: { 'multi-tenant': [], search: ['docs'], seo: ['docs'] },
+    targets: {
+      'multi-tenant': [], search: ['docs'], seo: ['docs'], 'nested-docs': ['docs'], redirects: ['docs'],
+      'import-export': ['docs', 'quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'], mcp: ['docs', 'quantum-receipts', 'fuse-formulas'],
+    },
+    pluginOptions: {
+      'multi-tenant': "tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin'",
+      ecommerce: "products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, ...defaultCollection.fields] }) }",
+      seo: "uploadsCollection: 'media', generateTitle: ({ doc }) => seoTitleOf(doc), generateDescription: ({ doc }) => seoDescriptionOf(doc), generateURL: ({ doc }) => seoURLOf(doc)",
+    },
+    imports: ['seoTitleOf', 'seoDescriptionOf', 'seoURLOf'].map((name) => ({ name, from: './src/payload/collections/docs' })),
+    own: ['app/(frontend)/page.tsx', 'app/(frontend)/layout.tsx', 'app/(frontend)/docs/[slug]/page.tsx'],
     origins: ['https://qpu.uuidna.com'],
     typescriptOutput: './src/payload/payload-types.ts',
     frontend: { collection: 'docs', route: 'docs', html: 'html' },
-    seed: { name: 'seedDocs', from: './src/payload/seeds/docs' },
+    seed: { name: 'seed', from: './src/payload/seeds' },
     preload: ['./src/payload/workers-crypto'],
     wrangler: REPO_WRANGLER,
     bound: true,

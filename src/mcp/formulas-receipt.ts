@@ -7,6 +7,12 @@ import { qpuContentUuidOf, qpuHexRunOf, qpuUuidReceiptOf } from '../quantum/proc
 import { CrossDomainFormulas, type CrossFormula } from './cross-domain-formulas.js'
 import { CryptFormulas } from './crypt-formulas.js'
 import { HoloFormulas, hologramStreamsOf, holoStreamHolds } from './hologram-streams.js'
+import { ClaySeals } from './clay-seals.js'
+import { qpuDiscoverOf } from './discovery.js'
+// every family registers itself on import, so discovery reaches all of them
+import './cross-domain-paths.js'
+import '../audit/audit-formulas.js'
+import { qpuDataOf, qpuDataSourcesOf } from './qpu-fused.js'
 import { NpFormulas, certifyUnreachable, disjointUnion, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, reachCounts, verifyColoring, verifyHamCycle, verifySubsetSum } from './np-formulas.js'
 import { QuantumSecureSignalling, SignalFormulas } from './quantum-secure-signalling.js'
 import { BB84_RAW, SecureChat } from './secure-chat-rbac.js'
@@ -111,6 +117,12 @@ export const formulasReceiptOf = async (root = process.cwd()) => {
     ['np', NpFormulas.reachGcd(32), 'reach width 64 = 2k'],
     ['np', NpFormulas.sparseWidth(1443), 'crypto_shor n=1443 on qpu.uuidna.com reported 13 qubits'],
     ['np', NpFormulas.sparseWidth(481), 'crypto_shor n=481 on qpu.uuidna.com reported 11 qubits'],
+    ['clay', ClaySeals.riemann(1, 2), 'doi:10.5281/zenodo.21781603 §Riemann: the fixed point 1/2'],
+    ['clay', ClaySeals.bsd(9), 'doi:10.5281/zenodo.21781603 §BSD: (ℤ/9ℤ)* pairs (2,5), (4,7)'],
+    ['clay', ClaySeals.hodge(2), 'doi:10.5281/zenodo.21781603 §Hodge: H₁(Σ₂) = ℤ⁴'],
+    ['clay', ClaySeals.navierStokes(3, 3), 'doi:10.5281/zenodo.21781603 §Navier–Stokes: ω₊ = −ω₋'],
+    ['clay', ClaySeals.yangMills(), 'doi:10.5281/zenodo.21781603 §Yang–Mills: σ† = σ, σ² = I'],
+    ['clay', ClaySeals.pVsNp(0), 'doi:10.5281/zenodo.21781603 §P vs NP: no fixed point without a presupposed witness'],
   ]
 
   const rows: FormulaRow[] = []
@@ -158,7 +170,42 @@ export const formulasReceiptOf = async (root = process.cwd()) => {
   }
 }
 
+/** The numbers a live reading carries (counts, digits, versions): the inputs discovery runs on. */
+const numbersOf = (x: unknown): number[] =>
+  typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : [])
+    : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : [])
+    : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : []
+
+/** Every live source the unit names, read now; their numbers fed to discovery across every family as the hex UUID splits it. */
+export const discoveryReceiptOf = async () => {
+  const sources = await Promise.all(qpuDataSourcesOf().map(async (s) => ({ ...s, result: (await qpuDataOf(s.source, s.args)) as { agrees?: boolean; denied?: string; reading?: unknown; receipt?: string; url?: string } })))
+  const live = [...new Set(sources.flatMap((s) => (s.result.agrees ? numbersOf(s.result.reading) : [])))]
+  const d = await qpuDiscoverOf(live)
+  const rows = [
+    ...sources.map((s) => ({ name: `live ${s.label}`, pass: s.result.agrees === true, value: s.result.denied ? `unreachable: ${String(s.result.reading)}` : JSON.stringify(s.result.reading), receipt: s.result.receipt ?? '' })),
+    ...d.families.map((f) => ({ name: `family ${f}`, pass: d.perFamily[f]!.runs > 0, value: `${d.perFamily[f]!.programs} programs, ${d.perFamily[f]!.runs} runs`, receipt: '' })),
+    ...d.relations.map((r) => ({ name: `relation ${r.value}`, pass: true, value: `${r.families.join(' + ')}${r.live ? ' (live)' : ''}: ${r.ways.slice(0, 4).map((w) => `${w.family}[${w.program.join('→')}](${w.params.join(',')}) ${w.hex}`).join('; ')}`, receipt: r.ways[0]?.receipt ?? '' })),
+  ]
+  return {
+    kind: 'discovery-receipt' as const,
+    when: new Date().toISOString().slice(0, 10),
+    sources: sources.length,
+    sourcesAgree: sources.filter((s) => s.result.agrees).length,
+    liveNumbers: live.length,
+    families: d.families.length,
+    runs: d.runs,
+    relationsTotal: d.relations.length,
+    liveRelations: d.liveRelations,
+    unrelated: d.unrelated.join(' ') || 'none',
+    holds: d.holds,
+    rows,
+  }
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const discovery = await discoveryReceiptOf()
+  fs.writeFileSync(path.join(process.cwd(), 'discovery-receipt.json'), JSON.stringify(discovery, null, 1) + '\n')
+  console.log(JSON.stringify({ discovery: { sources: discovery.sources, agree: discovery.sourcesAgree, families: discovery.families, runs: discovery.runs, relations: discovery.relationsTotal, live: discovery.liveRelations, unrelated: discovery.unrelated } }))
   const doc = await formulasReceiptOf()
   fs.writeFileSync(path.join(process.cwd(), 'formulas-receipt.json'), JSON.stringify(doc, null, 1) + '\n')
   for (const r of doc.rows.filter((x) => !x.pass)) console.log(`fail ${r.name} = ${r.value} (${r.from})`)

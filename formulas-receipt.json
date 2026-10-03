@@ -1,12 +1,12 @@
 {
  "kind": "formulas-receipt",
- "when": "2026-10-02",
- "formulas": 31,
- "rowsTotal": 73,
- "pass": 72,
+ "when": "2026-10-03",
+ "formulas": 37,
+ "rowsTotal": 79,
+ "pass": 78,
  "fail": 1,
  "attacks": "27/27",
- "hexAgrees": 30,
+ "hexAgrees": 36,
  "hologramRoot": "3c42ddbecf0426a9d8711709321c25c03096678ee2a21a9a418789041534bdd4",
  "holds": false,
  "rows": [
@@ -14,23 +14,23 @@
    "name": "cross qsec→compress-1",
    "family": "cross",
    "pass": true,
-   "value": 0.09385585742417508,
+   "value": 0.09476275535215582,
    "formula": "compression_ratio = 1 / (1 + log2(keyLen))",
    "from": "sifted BB84 key bits",
-   "hex": "0c36469f-1000-8000-9000-000000000326",
+   "hex": "0c36469f-1000-8000-9000-0000000002ef",
    "hexAgrees": true,
-   "receipt": "fbe7039c-08b7-8c7f-a57e-1e12eee1526f"
+   "receipt": "7e51d40e-8c90-8a18-a003-4e27ea31c871"
   },
   {
    "name": "cross obs→ml-1",
    "family": "cross",
    "pass": true,
-   "value": 0.6226415094339622,
+   "value": 0.7142857142857143,
    "formula": "model_accuracy = 1 - (1 / (1 + signalCount/100))",
    "from": "rows across the committed receipts",
-   "hex": "0c36469f-7000-8000-9000-0000000000a5",
+   "hex": "0c36469f-7000-8000-9000-0000000000fa",
    "hexAgrees": true,
-   "receipt": "2f5bec53-de43-8451-9a29-cfa0bcaf49b7"
+   "receipt": "c58f97f4-7f9c-824c-adde-32eedb614bbb"
   },
   {
    "name": "cross deployment→obs-1",
@@ -40,7 +40,7 @@
    "formula": "health_score = max(0, 1 - buildTime/300) * max(0, 1 - testTime/180)",
    "from": "seconds to load the unit, seconds to run chat and attacks",
    "hex": "0c36469f-3000-8000-8000-000000000000",
-   "receipt": "a3daf19f-a8b8-86ae-9ffd-96f1ac945ffe"
+   "receipt": "f671a388-7a91-89bd-a90c-0f88c35ee8ef"
   },
   {
    "name": "cross quantum→enterprise-1",
@@ -51,7 +51,7 @@
    "from": "Lean theorems in lean-receipt.json",
    "hex": "0c36469f-9000-8000-9000-00000000007c",
    "hexAgrees": true,
-   "receipt": "7328c6c1-bfc6-8cc1-8138-18d7c276de83"
+   "receipt": "dc709984-ccf5-8993-b5f5-1b9109a149a1"
   },
   {
    "name": "cross med+qsec-1",
@@ -62,7 +62,7 @@
    "from": "chat users, session key bits",
    "hex": "0c36469f-5000-8000-a000-000004000100",
    "hexAgrees": true,
-   "receipt": "68e7f3df-4be3-8ef8-bf9b-777b537123c0"
+   "receipt": "9f2ba1c6-42cc-8949-9f96-6b3432a0ebb1"
   },
   {
    "name": "cross obs→ui-1",
@@ -73,18 +73,18 @@
    "from": "attacks that got through, attack trials",
    "hex": "0c36469f-8000-8000-a000-00000000016d",
    "hexAgrees": true,
-   "receipt": "c8dd8313-8692-8153-a7b0-9710984b9196"
+   "receipt": "87d765d5-ca52-8c93-bd62-d3382d939cbe"
   },
   {
    "name": "cross qsec+compress-1",
    "family": "cross",
    "pass": true,
-   "value": 1.2219570405727929,
+   "value": 1.3077905491698587,
    "formula": "compressed_size = signalLen * (1 - keyLen/(keyLen+signalLen))",
    "from": "sealed body bytes, BB84 key bits",
-   "hex": "0c36469f-2000-8000-a000-000020000326",
+   "hex": "0c36469f-2000-8000-a000-0000200002ef",
    "hexAgrees": true,
-   "receipt": "3fa91de5-c092-892b-9de1-ef1216bd9535"
+   "receipt": "70a98514-0557-8f1f-84c4-5789b2b7a85d"
   },
   {
    "name": "cross obs+ml-1",
@@ -95,7 +95,7 @@
    "from": "attacks, breaches",
    "hex": "0c36469f-6000-8000-a000-00001b000000",
    "hexAgrees": true,
-   "receipt": "ae29b1de-5247-8371-a2a0-237e08e970ea"
+   "receipt": "6b4f8745-2165-8c4b-9f9d-b3b15cbbeb85"
   },
   {
    "name": "cross enterprise→obs-1",
@@ -104,9 +104,9 @@
    "value": 1,
    "formula": "slo_met = (complianceScore > 0.9) AND (latency < 200)",
    "from": "share of attacks resisted, chat milliseconds",
-   "hex": "0c36469f-4000-8000-a000-000001000013",
+   "hex": "0c36469f-4000-8000-a000-000001000011",
    "hexAgrees": true,
-   "receipt": "ad6ddd63-5ba8-808c-ac06-25deceaf4397"
+   "receipt": "2ee2733d-53c4-8c8f-8dd8-65763902ad4a"
   },
   {
    "name": "cross test→enterprise-1",
@@ -117,7 +117,7 @@
    "from": "test-receipt.json pass / tests",
    "hex": "0c36469f-a000-8000-a000-00000b00000b",
    "hexAgrees": true,
-   "receipt": "033bc5eb-a23b-8ebb-9edd-d331a58c44f6"
+   "receipt": "e63c89f4-ca4c-812a-b30e-3250f1997aaa"
   },
   {
    "name": "signal signal-sifted",
@@ -128,7 +128,7 @@
    "from": "raw qubits per chat pair",
    "hex": "5062cd8f-6000-8000-9000-000000000800",
    "hexAgrees": true,
-   "receipt": "190dab63-5b5a-8b21-82b2-e8b27fea51b0"
+   "receipt": "dd9740d6-ffad-80e6-9f0d-75f7320836e9"
   },
   {
    "name": "signal signal-key",
@@ -139,7 +139,7 @@
    "from": "raw qubits per chat pair",
    "hex": "5062cd8f-3000-8000-9000-000000000800",
    "hexAgrees": true,
-   "receipt": "a963433d-258a-8f70-9960-66ca0fbb4f64"
+   "receipt": "da6f910c-5085-859b-99bd-08955ffe1fa4"
   },
   {
    "name": "signal signal-qber",
@@ -148,20 +148,20 @@
    "value": 0,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "honest BB84 run",
-   "hex": "5062cd8f-5000-8000-a000-00000000010c",
+   "hex": "5062cd8f-5000-8000-a000-0000000000fa",
    "hexAgrees": true,
-   "receipt": "078e43d4-546e-89ef-aeda-686cf5cc2185"
+   "receipt": "fa50370b-c145-8255-bd87-39cb0182489d"
   },
   {
    "name": "signal signal-qber",
    "family": "signal",
    "pass": true,
-   "value": 0.2339622641509434,
+   "value": 0.1984126984126984,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "intercept-resend run: holds false means Eve was caught",
-   "hex": "5062cd8f-5000-8000-a000-00003e000109",
+   "hex": "5062cd8f-5000-8000-a000-0000320000fc",
    "hexAgrees": true,
-   "receipt": "90bfca45-a76d-8b45-9713-c3f6dc00af39"
+   "receipt": "c2a69b07-4c56-82f1-9e77-e4caa3f59507"
   },
   {
    "name": "signal signal-detect",
@@ -170,9 +170,9 @@
    "value": 1,
    "formula": "p_detect = 1 - (3/4)^checked",
    "from": "disclosed bits of the intercepted run",
-   "hex": "5062cd8f-1000-8000-9000-000000000109",
+   "hex": "5062cd8f-1000-8000-9000-0000000000fc",
    "hexAgrees": true,
-   "receipt": "d2108579-f2f1-8d26-ba66-7f22ca498c7f"
+   "receipt": "0bab932a-8fa4-8650-8d27-3c1fe5ceb5a8"
   },
   {
    "name": "signal signal-hops",
@@ -183,7 +183,7 @@
    "from": "corners of alice and bob on the 8-cube",
    "hex": "5062cd8f-2000-8000-b000-00082bd881b6",
    "hexAgrees": true,
-   "receipt": "4f5e3353-bd1d-8194-abda-e9056edd0186"
+   "receipt": "fe344219-8f34-8af7-8365-ce902fc46d99"
   },
   {
    "name": "holo holo-proof",
@@ -194,7 +194,7 @@
    "from": "hologram scales",
    "hex": "4029f1cc-2000-8000-9000-000000000005",
    "hexAgrees": true,
-   "receipt": "eb486a69-74a4-81c1-b151-54943aa90f20"
+   "receipt": "87eb415c-4e33-8b23-8dd9-e80c3b8694f3"
   },
   {
    "name": "holo holo-forgery",
@@ -205,7 +205,7 @@
    "from": "SHA-256 output bits",
    "hex": "4029f1cc-1000-8000-9000-000000000100",
    "hexAgrees": true,
-   "receipt": "b82d8825-5386-88b4-83c0-aed162051e0e"
+   "receipt": "aba91737-d3bc-8420-acbb-2c297e6d7502"
   },
   {
    "name": "crypt crypt-known",
@@ -216,7 +216,7 @@
    "from": "FIPS 180-4, RFC 1321, RFC 7748, RFC 8032 vectors",
    "hex": "62d1d39f-3000-8000-8000-000000000000",
    "hexAgrees": true,
-   "receipt": "17a64aa5-03a5-8c17-9247-8ddd0576ef38"
+   "receipt": "c5375007-f1a1-8734-8ee4-78aee4271aa7"
   },
   {
    "name": "crypt crypt-grover",
@@ -227,7 +227,7 @@
    "from": "ChaCha20 key bits",
    "hex": "62d1d39f-5000-8000-9000-000000000100",
    "hexAgrees": true,
-   "receipt": "3beb742d-f4e9-8795-85bf-fdb3d46bbec1"
+   "receipt": "8551d093-7d99-8a66-a430-3411e5dd9942"
   },
   {
    "name": "crypt crypt-rho",
@@ -238,7 +238,7 @@
    "from": "Curve25519 field bits",
    "hex": "62d1d39f-1000-8000-9000-0000000000ff",
    "hexAgrees": true,
-   "receipt": "2557367c-9965-8436-b2a0-8648753d9059"
+   "receipt": "cddc1727-0762-82e7-9604-aa9f4c146b41"
   },
   {
    "name": "crypt crypt-shor",
@@ -249,7 +249,7 @@
    "from": "Curve25519 field bits",
    "hex": "62d1d39f-2000-8000-9000-0000000000ff",
    "hexAgrees": true,
-   "receipt": "b039b132-da24-83ad-b797-72b9b0bfad13"
+   "receipt": "ab4f7654-5762-8913-acf3-7f8beaeb8988"
   },
   {
    "name": "crypt crypt-poly1305",
@@ -260,7 +260,7 @@
    "from": "sealed body bytes",
    "hex": "62d1d39f-6000-8000-9000-000000000020",
    "hexAgrees": true,
-   "receipt": "677f026f-4a08-8b6d-b2ce-0000e4a1da75"
+   "receipt": "9ebec110-0459-8b1e-b9fd-e9dbb0980cd7"
   },
   {
    "name": "crypt crypt-nonce",
@@ -271,7 +271,7 @@
    "from": "messages sent",
    "hex": "62d1d39f-4000-8000-9000-000000000001",
    "hexAgrees": true,
-   "receipt": "a4ca74ce-74c0-8422-a063-0e418e440899"
+   "receipt": "a7c1164d-c572-8109-8f50-4279469220f6"
   },
   {
    "name": "np np-subset-sum",
@@ -282,7 +282,7 @@
    "from": "qpu.pdf p. 22: S = {3, 7, 1, 9, 4} packed base 16, mask 13",
    "hex": "08b33c07-6000-8000-a000-04917300000d",
    "hexAgrees": true,
-   "receipt": "c7f89f9f-bec0-8f5a-99e1-357496bc7f53"
+   "receipt": "a8ab2d5e-98ea-8c31-b419-9513f101b299"
   },
   {
    "name": "np np-edge-bit",
@@ -293,7 +293,7 @@
    "from": "4-cycle adjacency packed row-major, edge (0, 1)",
    "hex": "08b33c07-1000-8000-a000-006996000001",
    "hexAgrees": true,
-   "receipt": "fe593e97-8b78-84e3-8cfe-d23b46c0de61"
+   "receipt": "65385727-3563-8d8f-aabb-9e31acc5430d"
   },
   {
    "name": "np np-is-time",
@@ -304,7 +304,7 @@
    "from": "Petersen vertices",
    "hex": "08b33c07-3000-8000-9000-00000000000a",
    "hexAgrees": true,
-   "receipt": "84bbfbae-29e9-86f5-b732-68e411b961a4"
+   "receipt": "6802f87d-5643-8616-b067-8818319b1f6c"
   },
   {
    "name": "np np-is-space",
@@ -315,7 +315,7 @@
    "from": "Petersen vertices",
    "hex": "08b33c07-2000-8000-9000-00000000000a",
    "hexAgrees": true,
-   "receipt": "353e7e76-88c0-872b-8128-553976aba186"
+   "receipt": "02680b1e-fe85-892e-8a54-a4a8be7f85e1"
   },
   {
    "name": "np np-reach-gcd",
@@ -326,7 +326,7 @@
    "from": "reach width 64 = 2k",
    "hex": "08b33c07-4000-8000-9000-000000000020",
    "hexAgrees": true,
-   "receipt": "495c88d5-db0b-80de-8a86-fa59e0df7293"
+   "receipt": "bf78110c-02f3-8bbc-8fca-1dfe13782aa5"
   },
   {
    "name": "np np-sparse-width",
@@ -337,7 +337,7 @@
    "from": "crypto_shor n=1443 on qpu.uuidna.com reported 13 qubits",
    "hex": "08b33c07-5000-8000-9000-0000000005a3",
    "hexAgrees": true,
-   "receipt": "669ec3af-76fa-8d9e-832e-61844dcc4a91"
+   "receipt": "f72a3d07-ff57-84c9-8059-37c172b99304"
   },
   {
    "name": "np np-sparse-width",
@@ -348,7 +348,73 @@
    "from": "crypto_shor n=481 on qpu.uuidna.com reported 11 qubits",
    "hex": "08b33c07-5000-8000-9000-0000000001e1",
    "hexAgrees": true,
-   "receipt": "83521f49-34ea-8f0c-b59c-2026a4d32047"
+   "receipt": "a6c654a3-56c0-8a5f-816f-ea34ab77292f"
+  },
+  {
+   "name": "clay clay-riemann",
+   "family": "clay",
+   "pass": true,
+   "value": 1,
+   "formula": "σ(s) = 1 − s; σ(s) = s ⟺ s = 1/2",
+   "from": "doi:10.5281/zenodo.21781603 §Riemann: the fixed point 1/2",
+   "hex": "13962491-5000-8000-a000-000001000002",
+   "hexAgrees": true,
+   "receipt": "cb967ae2-1514-89e5-9bb3-eb165a4dcd15"
+  },
+  {
+   "name": "clay clay-bsd",
+   "family": "clay",
+   "pass": true,
+   "value": 2,
+   "formula": "σ(a) = a⁻¹ in (ℤ/mℤ)*; non-trivial pairs a ≠ a⁻¹",
+   "from": "doi:10.5281/zenodo.21781603 §BSD: (ℤ/9ℤ)* pairs (2,5), (4,7)",
+   "hex": "13962491-1000-8000-9000-000000000009",
+   "hexAgrees": true,
+   "receipt": "465848b4-789f-8edc-b03d-37cd78e4425e"
+  },
+  {
+   "name": "clay clay-hodge",
+   "family": "clay",
+   "pass": true,
+   "value": 4,
+   "formula": "rank H₁(Σ_g) = 2g",
+   "from": "doi:10.5281/zenodo.21781603 §Hodge: H₁(Σ₂) = ℤ⁴",
+   "hex": "13962491-2000-8000-9000-000000000002",
+   "hexAgrees": true,
+   "receipt": "42b64266-a857-8410-9902-393cdaf71095"
+  },
+  {
+   "name": "clay clay-navier-stokes",
+   "family": "clay",
+   "pass": true,
+   "value": 1,
+   "formula": "σ(ω₊, ω₋) = (−ω₋, −ω₊); σ(ω) = ω ⟺ ω₊ = −ω₋",
+   "from": "doi:10.5281/zenodo.21781603 §Navier–Stokes: ω₊ = −ω₋",
+   "hex": "13962491-3000-8000-a000-000003000003",
+   "hexAgrees": true,
+   "receipt": "aade54bd-3925-8550-bbab-f195e30ec56b"
+  },
+  {
+   "name": "clay clay-yang-mills",
+   "family": "clay",
+   "pass": true,
+   "value": 2,
+   "formula": "σ† = σ, σ² = I ⟹ spec σ ⊂ {−1, +1}",
+   "from": "doi:10.5281/zenodo.21781603 §Yang–Mills: σ† = σ, σ² = I",
+   "hex": "13962491-6000-8000-8000-000000000000",
+   "hexAgrees": true,
+   "receipt": "bc92af9d-f944-8b53-b734-0acfa08b5bed"
+  },
+  {
+   "name": "clay clay-p-vs-np",
+   "family": "clay",
+   "pass": true,
+   "value": 0,
+   "formula": "σ(search, w) = (reuse, w); fixed only if w is presupposed",
+   "from": "doi:10.5281/zenodo.21781603 §P vs NP: no fixed point without a presupposed witness",
+   "hex": "13962491-4000-8000-9000-000000000000",
+   "hexAgrees": true,
+   "receipt": "014704b7-61ef-810b-8990-08cbd6f28c71"
   },
   {
    "name": "attack hologram payload tamper",

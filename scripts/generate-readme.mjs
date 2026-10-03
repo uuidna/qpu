@@ -15,6 +15,7 @@ import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
+import { clayOf, wingOf } from '../dist/core/showcase.js'
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const git = (cmd) => execSync(`git ${cmd}`, { cwd: ROOT }).toString().trim()
@@ -70,6 +71,24 @@ const graph = [
 ].join('\n')
 
 const cell = (v) => String(v ?? '').replace(/\|/g, '\\|')
+
+// what the unit does, read from the docs it generates: a page is a wing when it carries the statistics table
+// the wings are the pages docs/README.md links to
+const wings = [...new Set([...fs.readFileSync(path.join(ROOT, 'docs', 'README.md'), 'utf8').matchAll(/\]\(([\w-]+)\.md\)/g)].map((m) => m[1]))]
+  .filter((slug) => fs.existsSync(path.join(ROOT, 'docs', `${slug}.md`)))
+  .map((slug) => wingOf(slug, fs.readFileSync(path.join(ROOT, 'docs', `${slug}.md`), 'utf8'))).filter(Boolean)
+const labels = [...new Set(wings.flatMap((w) => w.stats.map((s) => s.label)))]
+const wingTable = [
+  `| Wing | ${labels.join(' | ')} |`,
+  `|---|${labels.map(() => '---:').join('|')}|`,
+  ...wings.map((w) => `| [${cell(w.title)}](https://qpu.uuidna.com/${w.slug}) | ${labels.map((l) => cell(w.stats.find((s) => s.label === l)?.value ?? '')).join(' | ')} |`),
+].join('\n')
+const clay = clayOf()
+const clayTable = [
+  '| Problem | Status | Claim and approach composed by the cross formulas |',
+  '|---|---|---|',
+  ...clay.map((p) => `| ${cell(p.name)} | ${p.status === 'CLAIMED' ? `claimed solved by ${p.claimedBy} ([claim](${p.source}))` : `solved${p.solver ? ` (${p.solver}${p.year ? `, ${p.year}` : ''})` : ''}`} | ${cell([p.claim, p.approach, ...p.crossFormulas].filter(Boolean).join('; '))} |`),
+].join('\n')
 const rowsOf = () =>
   nodes.map((n) => `| ${cell(label(n))} | \`${n.uuid}\` | \`${short(n.referrer.replace(/^git:/, ''))}\` | \`${n.fold}\` | ${n.seq} |`)
 
@@ -83,6 +102,24 @@ const md = `# UUIDNA QPU
 | commit | \`${commit}\`${dirty ? ' (working tree differed from this commit)' : ''} |
 | receipts | ${files.length} files, ${nodes.length} nodes |
 | build stream | length ${stream?.length}, head \`${stream?.head}\`, chain \`${stream?.chain}\`, holds **${stream?.holds}** |
+
+## What QPU does
+
+An exact quantum processing unit served over MCP at https://qpu.uuidna.com: integer state vectors, Lean-checked theorems,
+formula families addressed by hex-program UUIDs, quantum receipts, its own cryptography, and live checks against public
+data. Each wing reports itself:
+
+${wingTable}
+
+## Clay Millennium Prize Problems
+
+The author claims solutions to ${clay.filter((p) => p.status === 'CLAIMED').length} of the Millennium Prize Problems, composed by the unit's cross formulas
+across its families; Poincaré was solved by Perelman. Each claim links to the document that states it, with its argument
+and verification status.
+
+${clayTable}
+
+## Build receipt
 
 Each node is a quantum receipt: its UUID is the RFC 9562 v8 content address of its payload fold and its referrer, and
 its referrer is the node above it. Change any receipt's bytes and its node, its file's node, the build stream chain

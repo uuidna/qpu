@@ -1,7 +1,7 @@
 import { aeadOpen, aeadSeal, bytesOf, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, sha256, sha512, utf8, x25519, type HashName } from '../core/crypt.js'
 import { leanSource } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
-import { qpuCernRecordsOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexRunOf, qpuHexUuidOf, qpuMcpFuseOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexRunOf, qpuHexUuidOf, qpuMcpFuseOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { CryptFormulas } from './crypt-formulas.js'
 import { hologramStreamsOf } from './hologram-streams.js'
 import { certifyUnreachable, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, verifyColoring, verifyHamCycle, verifySat, verifySubsetSum, type Graph } from './np-formulas.js'
@@ -106,21 +106,55 @@ const reading = async (source: string, a: Args) => {
     const live = { record: d.id, doi: d.doi, version: d.metadata?.version, published: d.metadata?.publication_date }
     return { source, url, reading: live, expected: { version: `v${packageVersion}` }, agrees: live.version === `v${packageVersion}` }
   }
-  return fail('source', { sources: ['cern', 'nist', 'oeis', 'zenodo'] })
+  if (source === 'catalog') {
+    const catalog = qpuCernCatalogsOf().catalogs.find((c) => c.name === str(a.name))
+    if (!catalog) return fail('catalog', { catalogs: qpuCernCatalogsOf().catalogs.map((c) => c.name) })
+    const body = (await (await get(catalog.href)).json()) as { hits?: { total?: number | { value?: number }; hits?: unknown[] }; total?: number; results?: unknown[]; count?: number }
+    const total = body.hits?.total ?? body.total ?? body.count ?? body.results?.length ?? body.hits?.hits?.length
+    const count = typeof total === 'number' ? total : typeof total === 'object' && total && typeof total.value === 'number' ? total.value : undefined
+    return { source, url: catalog.href, reading: { name: catalog.name, total: count }, expected: { answers: 'records' }, agrees: count !== undefined && count > 0 }
+  }
+  return fail('source', { sources: ['cern', 'nist', 'oeis', 'zenodo', 'catalog'] })
+}
+
+/** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence,
+ *  the physical constants, the release. */
+export const qpuDataSourcesOf = () => [
+  ...qpuCernRecordsOf().records.map((r) => ({ source: 'cern', args: { recid: r.recid }, label: `CERN Open Data · record ${r.recid}`, checks: `theorem cern: ${r.files} * ${r.q} + ${r.r} = ${r.events}` })),
+  { source: 'nist', args: {}, label: 'NIST CODATA · Planck, Boltzmann', checks: 'Qpu.Physics planck, boltzmann' },
+  ...Object.entries(SEQUENCES).map(([id, s]) => ({ source: 'oeis', args: { id }, label: `OEIS ${id} · ${s.name}`, checks: `the unit's ${s.name.toLowerCase()}` })),
+  { source: 'zenodo', args: {}, label: 'Zenodo · latest release', checks: `version v${packageVersion}` },
+  ...qpuCernCatalogsOf().catalogs.map((c) => ({ source: 'catalog', args: { name: c.name }, label: `catalog · ${c.name}`, checks: 'answers with records' })),
+]
+
+/** A live public dataset checked against the unit: the reading, what the unit holds, whether they agree, and a receipt. */
+export const qpuDataOf = async (source: string, a: Args = {}) => {
+  try {
+    const r = await reading(source, a)
+    if ('denied' in r) return r
+    return { kind: 'data' as const, ...r, holds: r.agrees, receipt: receiptOf(`data ${source}`, r.reading, r.agrees) }
+  } catch (e) {
+    return fail('unreachable', { source, reading: (e as Error).message })
+  }
 }
 
 qpuMcpFuseOf('qpu_data', {
-  description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'zenodo' (latest release vs this version).",
-  inputSchema: { type: 'object', properties: { source: { type: 'string', enum: ['cern', 'nist', 'oeis', 'zenodo'] }, recid: { type: 'integer' }, id: { type: 'string' } }, required: ['source'] },
+  description: "Read a live public dataset and check it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'zenodo' (latest release vs this version), 'catalog' { name } (every public catalogue the unit names).",
+  inputSchema: { type: 'object', properties: { source: { type: 'string', enum: ['cern', 'nist', 'oeis', 'zenodo', 'catalog'] }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' } }, required: ['source'] },
+  run: (a) => qpuDataOf(str(a.source), a),
+})
+
+// ---------------------------------------------------------------------------
+// qpu_discover: cross-formulated solutions across every family
+// ---------------------------------------------------------------------------
+
+qpuMcpFuseOf('qpu_discover', {
+  description: 'Discover cross-formulated solutions: every family, every program of one formula and every composition of two, over params that fit the hex split; a value reached by two or more families is a relation. { live: [naturals] } adds live readings as inputs; { limit } caps the relations returned (default 50).',
+  inputSchema: { type: 'object', properties: { live: { type: 'array', items: { type: 'integer' } }, limit: { type: 'integer' } } },
   run: async (a) => {
-    const source = str(a.source)
-    try {
-      const r = await reading(source, a)
-      if ('denied' in r) return r
-      return { kind: 'data', ...r, holds: r.agrees, receipt: receiptOf(`data ${source}`, r.reading, r.agrees) }
-    } catch (e) {
-      return fail('unreachable', { source, reading: (e as Error).message })
-    }
+    const { qpuDiscoverOf } = await import('./discovery.js')
+    const d = await qpuDiscoverOf(Array.isArray(a.live) ? a.live.map(Number) : [])
+    return { ...d, relations: d.relations.slice(0, num(a.limit, 50)), relationsTotal: d.relations.length }
   },
 })
 

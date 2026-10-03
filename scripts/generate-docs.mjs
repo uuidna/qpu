@@ -171,7 +171,7 @@ pages.README = frontmatter('README', 'Documentation', `@uuidna/qpu ${pkg.version
 
 // ---- HTML with Open Graph ----------------------------------------------------------------------------------------
 const inline = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-  .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, t, u) => `<a href="${u.replace(/^README\.md$/, '/').replace(/^(?!https?:)(?!\.\.\/)([\w-]+)\.md$/, '/docs/$1').replace(/^\.\.\//, `${REPO}/blob/main/`)}">${t}</a>`)
+  .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, t, u) => `<a href="${u.replace(/^README\.md$/, '/').replace(/^(?!https?:)(?!\.\.\/)([\w-]+)\.md$/, (_, name) => `/${name.toLowerCase().replace(/_/g, '-')}`).replace(/^\.\.\//, `${REPO}/blob/main/`)}">${t}</a>`)
 const htmlOf = (md) => {
   const fm = Object.fromEntries([...md.matchAll(/^([\w:]+): (.*)$/gm)].slice(0, 13).map(([, k, v]) => [k, v.startsWith('"') ? JSON.parse(v) : v]))
   const body = md.replace(/^---[\s\S]*?---\n/, '').split('\n')
@@ -198,6 +198,13 @@ for (const [slug, md] of Object.entries(pages)) {
   files[`docs/${slug}.md`] = md
   const { fm, html } = htmlOf(md)
   docs.push({ slug: slug === 'README' ? 'index' : slug, title: fm.title, description: fm.description, markdown: md.replace(/^---[\s\S]*?---\n/, ''), html })
+}
+// the root's own documents named CLAY_*.md (README_CLAY_*.md too) are published as they are, each at its name
+for (const f of fs.readdirSync('.').filter((f) => /^(README_)?CLAY_.*\.md$/.test(f)).sort()) {
+  const md = fs.readFileSync(f, 'utf8')
+  const title = /^# (.*)$/m.exec(md)?.[1]?.trim() ?? f
+  const description = (md.split('\n').find((l) => l.trim() && !l.startsWith('#')) ?? '').replace(/\*\*/g, '').trim().slice(0, 300)
+  docs.push({ slug: f.replace(/\.md$/, '').toLowerCase().replace(/_/g, '-'), title, description, markdown: md, html: htmlOf(md).html })
 }
 // the same pages as Payload content: the docs collection, upserted on init by content UUID (the public site)
 // id: the UUID of the slug, so a page has one address however many isolates seed it; uuid: the UUID of its content

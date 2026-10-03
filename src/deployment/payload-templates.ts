@@ -386,7 +386,10 @@ export const cloudflareCombinationOf = (key: string): CloudflareCombination => {
 
 type PluginTargets = string[]
 const slugs = (t: PluginTargets) => `[${t.map((x) => `'${x}'`).join(', ')}]`
-const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: string; name: string; call: (t: PluginTargets, ownTenants?: boolean) => string }> = {
+// an app's options for a plugin go inside the call's object literal, after the template's own
+const withOptions = (call: string, options?: string): string =>
+  !options ? call : options.includes('products:') && call.includes('products: true, ') ? withOptions(call.replace('products: true, ', ''), options) : call.endsWith('({})') ? `${call.slice(0, -3)}{ ${options} })` : call.replace(/\s*\}\)$/, `, ${options} })`)
+const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: string; name: string; call: (t: PluginTargets) => string }> = {
   ecommerce: {
     from: '@payloadcms/plugin-ecommerce', name: 'ecommercePlugin',
     call: () => `ecommercePlugin({ products: true, customers: { slug: 'users' }, access: { isAdmin: ({ req }) => Boolean(req.user), adminOnlyFieldAccess: ({ req }) => Boolean(req.user), adminOrPublishedStatus: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }), isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) } })`,
@@ -394,7 +397,7 @@ const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: stri
   'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: () => 'formBuilderPlugin({})' },
   'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}] })` },
   mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { description: '${x}' }`).join(', ')} } })` },
-  'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t, ownTenants) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} }, ${ownTenants ? 'tenantsArrayField: { includeDefaultField: false }, ' : ''}userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin' })` },
+  'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} } })` },
   'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: (t) => `nestedDocsPlugin({ collections: ${slugs(t)} })` },
   redirects: { from: '@payloadcms/plugin-redirects', name: 'redirectsPlugin', call: (t) => `redirectsPlugin({ collections: ${slugs(t)} })` },
   search: { from: '@payloadcms/plugin-search', name: 'searchPlugin', call: (t) => `searchPlugin({ collections: ${slugs(t)} })` },
@@ -418,6 +421,12 @@ export type CloudflareApp = {
   frontend?: { collection: string; route: string; html: string }
   /** runtime shims, each exporting install(): imported first and called before the config is built */
   preload?: string[]
+  /** extra named imports the app's plugin options use */
+  imports?: { name: string; from: string }[]
+  /** shell files the app writes itself (its own frontend): the template leaves them alone */
+  own?: string[]
+  /** extra options per plugin, as object-literal source appended to the plugin's call */
+  pluginOptions?: Partial<Record<CloudflareCombination['plugins'][number], string>>
   /** a module exporting `seed(payload)`, run on init (idempotent upserts) */
   seed?: { name: string; from: string }
   /** where the app's wrangler file lives, relative to the app root (OpenNext reads the bindings from it) */
@@ -446,6 +455,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     plugins.includes('sentry') ? `import * as Sentry from '@sentry/nextjs'` : '',
     ...plugins.map((p) => `import { ${PLUGIN_CODE[p].name} } from '${PLUGIN_CODE[p].from}'`),
     ...(app?.collections ?? []).map((x) => `import { ${x.name} } from '${x.from}'`),
+    ...(app?.imports ?? []).map((x) => `import { ${x.name} } from '${x.from}'`),
     app?.seed ? `import { ${app.seed.name} } from '${app.seed.from}'` : '',
   ].filter(Boolean)
   const bindings = [
@@ -501,7 +511,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     c.email === 'resend' ? `  email: resendAdapter({ apiKey: process.env.RESEND_API_KEY ?? '', defaultFromAddress: process.env.EMAIL_FROM ?? 'noreply@example.com', defaultFromName: 'Payload' }),` : '',
     // Payload 4 takes storage adapters in `storage`, not in `plugins`
     storage ? `  storage: [${storage}],` : '',
-    `  plugins: [${plugins.map((p) => PLUGIN_CODE[p].call(targetsOf(p), ownTenants)).join(', ')}],`,
+    `  plugins: [${plugins.map((p) => withOptions(PLUGIN_CODE[p].call(targetsOf(p)), app?.pluginOptions?.[p])).join(', ')}],`,
     app?.origins ? `  cors: ${JSON.stringify(app.origins).replace(/"/g, "'")},\n  csrf: ${JSON.stringify(app.origins).replace(/"/g, "'")},` : '',
     app?.typescriptOutput ? `  typescript: { outputFile: '${app.typescriptOutput}' },` : '',
     app?.seed ? `  onInit: async (payload) => { await ${app.seed.name}(payload) },` : '',
@@ -693,7 +703,7 @@ export const cloudflarePayloadOf = (c: CloudflareCombination, name = 'payload-cl
   deployment: { instances: 1, scaling: { min: 0, max: 0, target: 0 }, monitoring: true, selfHealing: true, autonomousOptimization: false },
   combination: { ...c, plugins: [...c.plugins].sort() },
   key: cloudflareKeyOf(c),
-  files: { 'payload.config.ts': cloudflareConfigOf(c, app), 'wrangler.jsonc': cloudflareWranglerOf(c, name, app), ...cloudflareShellOf(c, app) },
+  files: { 'payload.config.ts': cloudflareConfigOf(c, app), 'wrangler.jsonc': cloudflareWranglerOf(c, name, app), ...Object.fromEntries(Object.entries(cloudflareShellOf(c, app)).filter(([f]) => !app?.own?.includes(f))) },
   dependencies: cloudflareDependenciesOf(c),
 })
 

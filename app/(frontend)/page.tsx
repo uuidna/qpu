@@ -1,194 +1,208 @@
-// UUIDNA QPU — Clay Millennium Prize Solutions Hub
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { ArrowRight, Atom, Database, FileText, Sigma } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { countsOf, docOf, docsOf, familiesOf, receiptsOf } from './_lib/qpu'
+import { clayOf, receiptFactsOf, wingOf } from '@/dist/core/showcase.js'
+import { SITE } from '@/src/payload/collections/docs'
 
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const index = await docOf('index')
   return {
-    title: 'UUIDNA QPU — Clay Millennium Prize Solutions',
-    description: 'All 7 Clay Mathematics Institute problems solved via automated cross-domain formula composition. 100% test success rate, $6M prize potential.',
-    openGraph: {
-      title: 'Clay Millennium Prize Solutions',
-      description: 'All 7 problems solved with automated cross-formula composition',
-      type: 'website',
-    },
+    title: { absolute: index?.meta?.title ?? SITE.name },
+    description: index?.meta?.description ?? undefined,
+    alternates: { canonical: SITE.origin },
+    openGraph: { title: index?.meta?.title ?? SITE.name, description: index?.meta?.description ?? undefined, url: SITE.origin },
   }
 }
 
-export default function HomePage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      {/* Navigation */}
-      <nav className="bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-white">UUIDNA QPU</h1>
-          <div className="flex gap-6">
-            <Link href="/clay" className="text-blue-400 hover:text-blue-300 font-semibold">
-              Clay Solutions
-            </Link>
-            <Link href="/admin" className="text-gray-400 hover:text-gray-300">
-              Admin
-            </Link>
-          </div>
-        </div>
-      </nav>
+const fmt = (x: bigint | number) => {
+  const big = BigInt(x)
+  if (big < 10n ** 9n) return Number(big).toLocaleString('en')
+  const digits = big.toString()
+  return `${digits[0]}.${digits.slice(1, 3)}×10${String(digits.length - 1).replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]!)}`
+}
 
-      {/* Hero Section */}
-      <div className="max-w-6xl mx-auto px-6 py-24 text-center">
-        <div className="mb-12">
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-            Clay Millennium Prize Solutions
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            All 7 problems solved via automated cross-domain formula composition across quantum processing unit domains
+export default async function Home() {
+  const families = familiesOf()
+  const index = await docOf('index')
+  const docs = (await docsOf()).filter((d) => d.slug !== 'index')
+  // the wings are the pages the documentation index links to: the index defines them, not a list here
+  const linked = new Set([...(index?.markdown ?? '').matchAll(/\]\(([\w-]+)\.md\)/g)].map((m) => m[1]))
+  const wings = docs.filter((d) => linked.has(d.slug)).flatMap((d) => { const w = wingOf(d.slug, d.markdown ?? ''); return w ? [w] : [] })
+  const receipts = receiptsOf()
+  const clay = clayOf()
+  const totals = families.reduce(
+    (t, f) => {
+      const c = countsOf(f.formulas.length)
+      return { formulas: t.formulas + c.formulas, compositions: t.compositions + c.compositions, programs: t.programs + c.programs }
+    },
+    { formulas: 0, compositions: 0, programs: 0n },
+  )
+
+  return (
+    <div className="space-y-16">
+      <section className="space-y-6">
+        <Badge variant="secondary" className="font-mono">RFC 9562 v8 · hex programs · quantum receipts</Badge>
+        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl">
+          Every formula is an address. <span className="text-primary">Every composition is a program.</span>
+        </h1>
+        <p className="max-w-2xl text-lg text-muted-foreground">{index?.meta?.description ?? index?.description}</p>
+        <div className="flex flex-wrap gap-3">
+          <Button asChild>
+            <Link href="#families">Explore the formulas <ArrowRight /></Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/data">Live data checks</Link>
+          </Button>
+          <Button asChild variant="ghost">
+            <Link href="/index">Documentation</Link>
+          </Button>
+        </div>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { icon: Atom, label: 'formula families', value: fmt(families.length) },
+          { icon: Sigma, label: 'formulas', value: fmt(totals.formulas) },
+          { icon: Database, label: 'two-step compositions', value: fmt(totals.compositions) },
+          { icon: FileText, label: 'programs of up to ten steps', value: fmt(totals.programs) },
+        ].map(({ icon: Icon, label, value }) => (
+          <Card key={label}>
+            <CardHeader className="pb-2">
+              <CardDescription className="flex items-center gap-2"><Icon className="size-4" /> {label}</CardDescription>
+              <CardTitle className="font-mono text-3xl">{value}</CardTitle>
+            </CardHeader>
+          </Card>
+        ))}
+      </section>
+
+      <section className="space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-semibold tracking-tight">What QPU does</h2>
+          <p className="text-sm text-muted-foreground">Each wing as its own page reports it: capabilities, the predicates that check them, and how many hold right now.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {wings.map((w) => (
+            <Link key={w.slug} href={`/${w.slug}`} className="group">
+              <Card className="h-full transition-colors group-hover:border-primary/60">
+                <CardHeader>
+                  <CardTitle className="text-base">{w.title}</CardTitle>
+                  <CardDescription className="line-clamp-2">{w.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                  {w.stats.map((s) => (
+                    <div key={s.label} className="contents">
+                      <span className="text-muted-foreground">{s.label}</span>
+                      <span className="text-right font-mono">{s.value}</span>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-semibold tracking-tight">Evidence</h2>
+          <p className="text-sm text-muted-foreground">Every committed receipt and the facts it records. Each one is a node of the final build receipt in the README.</p>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {receipts.map((r) => (
+            <Card key={r.file}>
+              <CardHeader className="pb-2">
+                <CardTitle className="font-mono text-sm">{r.file}</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                {receiptFactsOf(r.doc).slice(0, 8).map((f) => (
+                  <div key={f.key} className="contents">
+                    <span className="truncate text-muted-foreground">{f.key}</span>
+                    <span className="truncate text-right font-mono" title={f.value}>{f.value}</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-semibold tracking-tight">Clay Millennium Prize Problems</h2>
+          <p className="max-w-3xl text-sm text-muted-foreground">
+            The author claims solutions to the Millennium Prize Problems, composed by the unit's cross formulas across its
+            families. Each claim links to the document that states it, with its argument and verification status.
           </p>
         </div>
-
-        {/* Key Metrics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 max-w-4xl mx-auto">
-          {[
-            { label: 'Problems Solved', value: '7/7', icon: '✅' },
-            { label: 'Success Rate', value: '100%', icon: '🎯' },
-            { label: 'Prize Potential', value: '$6M', icon: '💰' },
-            { label: 'Execution Time', value: '1086ms', icon: '⚡' },
-          ].map((metric) => (
-            <div key={metric.label} className="bg-slate-800/40 border border-slate-700 rounded-lg p-6 backdrop-blur">
-              <div className="text-2xl mb-2">{metric.icon}</div>
-              <div className="text-2xl font-bold text-blue-400">{metric.value}</div>
-              <div className="text-xs text-gray-400 mt-2">{metric.label}</div>
-            </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {clay.map((p) => (
+            <Card key={p.key}>
+              <CardHeader>
+                <div className="flex items-start justify-between gap-2">
+                  <CardTitle className="text-base">{p.name}</CardTitle>
+                  <Badge variant={p.status === 'CLAIMED' ? 'secondary' : 'default'}>{p.status === 'CLAIMED' ? `claimed solved · ${p.claimedBy}` : `solved${p.solver ? ` · ${p.solver}${p.year ? `, ${p.year}` : ''}` : ''}`}</Badge>
+                </div>
+                <CardDescription>{p.description}</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2 text-xs">
+                {p.approach ? <p><span className="text-muted-foreground">approach</span> <span className="font-mono">{p.approach}</span></p> : null}
+                {p.claim ? <p className="text-muted-foreground">{p.claim}</p> : null}
+                {p.crossFormulas.length ? <ul className="list-inside list-disc text-muted-foreground">{p.crossFormulas.map((f) => <li key={f} className="font-mono">{f}</li>)}</ul> : null}
+                {p.source ? <a href={p.source} className="text-primary hover:underline">the claim →</a> : null}
+              </CardContent>
+            </Card>
           ))}
         </div>
+      </section>
 
-        {/* Call to Action */}
-        <div className="flex flex-col md:flex-row gap-4 justify-center max-w-2xl mx-auto mb-16">
-          <Link href="/clay" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-4 px-8 rounded-lg text-center text-lg transition-all">
-            Explore All Solutions →
-          </Link>
-          <Link href="/clay/proofs" className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-8 rounded-lg text-center text-lg transition-colors">
-            View Detailed Proofs
-          </Link>
+      <section id="families" className="scroll-mt-20 space-y-4">
+        <div className="flex items-end justify-between">
+          <h2 className="text-2xl font-semibold tracking-tight">Formula families</h2>
+          <span className="text-sm text-muted-foreground">every family at its own name</span>
         </div>
-      </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {families.map((f) => {
+            const c = countsOf(f.formulas.length)
+            return (
+              <Link key={f.name} href={`/${encodeURIComponent(f.name)}`} className="group">
+                <Card className="h-full transition-colors group-hover:border-primary/60">
+                  <CardHeader>
+                    <CardTitle className="font-mono">{f.name}</CardTitle>
+                    <CardDescription className="line-clamp-2">{f.formulas.map((x) => x.name).join(' · ')}</CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex flex-wrap gap-2">
+                    <Badge variant="outline">{c.formulas} formulas</Badge>
+                    <Badge variant="outline">{c.compositions} compositions</Badge>
+                    <Badge variant="secondary" className="font-mono">{fmt(c.programs)} programs</Badge>
+                  </CardContent>
+                </Card>
+              </Link>
+            )
+          })}
+        </div>
+      </section>
 
-      {/* The 7 Solutions Grid */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12 text-white">The 7 Solutions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { num: 1, name: 'P vs NP', solution: 'P ≠ NP', method: 'Causal Inversion Barrier', color: 'from-blue-600' },
-            { num: 2, name: 'Hodge Conjecture', solution: 'Algebraic Classes', method: 'XAI + Synthesis + Transfer', color: 'from-purple-600' },
-            { num: 3, name: 'Riemann Hypothesis', solution: 'Critical Line', method: 'Functional Symmetry', color: 'from-pink-600' },
-            { num: 4, name: 'Yang-Mills Mass Gap', solution: 'Gap Exists', method: 'Federated Gauge Convergence', color: 'from-orange-600' },
-            { num: 5, name: 'Navier-Stokes', solution: 'Global Smoothness', method: 'Federated Aggregation', color: 'from-green-600' },
-            { num: 6, name: 'Birch-Swinnerton-Dyer', solution: 'rank = L-order', method: 'Causal Rank Transfer', color: 'from-red-600' },
-            { num: 7, name: 'Poincaré Conjecture', solution: '3-sphere Unique', method: 'Ricci Flow (Perelman 2003)', color: 'from-indigo-600' },
-          ].map((p) => (
-            <Link key={p.num} href={`/clay#problem-${p.num}`}>
-              <div className={`bg-gradient-to-br ${p.color} to-slate-800 border border-slate-700 rounded-lg p-6 h-full hover:border-blue-500/50 transition-colors cursor-pointer group`}>
-                <div className="text-3xl font-bold text-white mb-2 group-hover:text-blue-200 transition-colors">
-                  {p.num}
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">{p.name}</h3>
-                <p className="text-sm text-gray-300 mb-3">
-                  <strong>Solution:</strong> {p.solution}
-                </p>
-                <p className="text-xs text-gray-400">
-                  <strong>Method:</strong> {p.method}
-                </p>
-                <div className="mt-4 flex items-center text-blue-400 text-sm">
-                  Learn more → <span className="opacity-0 group-hover:opacity-100 transition-opacity ml-1">→</span>
-                </div>
-              </div>
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold tracking-tight">Documentation</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {docs.map((d) => (
+            <Link key={d.id} href={`/${d.slug}`} className="group">
+              <Card className="h-full transition-colors group-hover:border-primary/60">
+                <CardHeader>
+                  <CardTitle className="text-base">{d.title}</CardTitle>
+                  <CardDescription className="line-clamp-3">{d.meta?.description ?? d.description}</CardDescription>
+                </CardHeader>
+              </Card>
             </Link>
           ))}
         </div>
-      </div>
-
-      {/* Key Innovation */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12 text-white">Key Innovation</h2>
-        <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
-              <h3 className="text-2xl font-bold text-cyan-400 mb-4">Cross-Domain Formula Composition</h3>
-              <p className="text-gray-300 mb-4">
-                Traditional approaches rely on single-domain insights, which are inherently limited. Our breakthrough leverages 5 domains simultaneously:
-              </p>
-              <ul className="space-y-2 text-gray-300">
-                <li>✓ Causal Inference (3 formulas)</li>
-                <li>✓ Explainability/XAI (1 formula)</li>
-                <li>✓ Federated Learning (3 formulas)</li>
-                <li>✓ Program Synthesis (3 formulas)</li>
-                <li>✓ Zero-Shot Transfer (2 formulas)</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-green-400 mb-4">Automated Solver</h3>
-              <p className="text-gray-300 mb-4">
-                MCP tools orchestrate the composition process:
-              </p>
-              <ul className="space-y-2 text-gray-300 font-mono text-sm">
-                <li>→ Identify relevant domains per problem</li>
-                <li>→ Compose formulas automatically</li>
-                <li>→ Apply to problem constraints</li>
-                <li>→ Generate proof sketches</li>
-                <li>→ Verify logical soundness</li>
-                <li>→ Test all 7 problems (1086ms total)</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Implementation */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12 text-white">Implementation</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-8">
-            <div className="text-3xl font-bold text-blue-400 mb-2">8</div>
-            <h3 className="font-bold text-white mb-2">MCP Tools</h3>
-            <p className="text-sm text-gray-400">3,200+ lines of automated proof generation and verification code</p>
-          </div>
-          <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-8">
-            <div className="text-3xl font-bold text-purple-400 mb-2">6</div>
-            <h3 className="font-bold text-white mb-2">Lean Modules</h3>
-            <p className="text-sm text-gray-400">Proof formalization ready for type-checking and verification</p>
-          </div>
-          <div className="bg-slate-800/30 border border-slate-700 rounded-lg p-8">
-            <div className="text-3xl font-bold text-green-400 mb-2">100%</div>
-            <h3 className="font-bold text-white mb-2">Test Coverage</h3>
-            <p className="text-sm text-gray-400">All 7 problems tested and verified logically sound</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Next Steps */}
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-4xl font-bold text-center mb-12 text-white">Path to Prize</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[
-            { phase: 'Phase 1', title: 'Lean Formalization', time: '2-3 weeks', desc: 'Translate sketches to formal proofs' },
-            { phase: 'Phase 2', title: 'Peer Review', time: '1-2 weeks', desc: 'Submit for expert evaluation' },
-            { phase: 'Phase 3', title: 'Clay Submission', time: '1 week', desc: 'Formal submission to Clay Institute' },
-            { phase: 'Phase 4', title: 'Prize Verification', time: '2-4 weeks', desc: 'Expert panel evaluation' },
-          ].map((p, i) => (
-            <div key={i} className="bg-slate-800/30 border border-slate-700 rounded-lg p-6">
-              <div className="text-xs font-mono text-blue-400 mb-1">{p.phase}</div>
-              <h3 className="font-bold text-white mb-2">{p.title}</h3>
-              <p className="text-xs text-orange-400 mb-2">{p.time}</p>
-              <p className="text-xs text-gray-400">{p.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-slate-800 py-12 px-6 text-center text-gray-500">
-        <p className="mb-2">UUIDNA QPU — Clay Millennium Prize Solutions</p>
-        <p>Automated cross-domain formula composition | Ready for formalization, peer review, and Clay Institute evaluation</p>
-      </div>
+      </section>
     </div>
   )
 }
