@@ -15,9 +15,8 @@ import { execSync } from 'node:child_process'
 import '../dist/mcp/families.js'
 import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
 import { DataFormulas, qpuDataOf } from '../dist/mcp/qpu-fused.js'
-import { qpuDiscoverOf } from '../dist/mcp/discovery.js'
+import { DOORS, qpuDiscoverOf } from '../dist/mcp/discovery.js'
 
-const DOORS = new Set(['qpu', 'crypto'])
 const sorted = () => [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
 const numbersOf = (x) => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
 

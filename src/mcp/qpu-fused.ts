@@ -86,7 +86,7 @@ const sequenceOf = async (family: string, formula: string, fixed: number[]): Pro
   for (let n = 0; n < TERMS; n++) {
     let v: unknown
     try {
-      v = ((await qpuHexRunOf(qpuHexUuidOf({ family, program: [formula], params: [...fixed, n] }))) as { value?: unknown; holds?: boolean })
+      v = ((await qpuHexRunOf(qpuHexUuidOf({ family, program: [formula], params: [...fixed, n] }), undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean })
     } catch {
       v = undefined
     }
@@ -292,13 +292,13 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     if (!formulas) return fail('family', { families: [...qpuHexFamiliesOf().keys()] })
     const words = [...new Set([family, ...formulas.flatMap((f) => f.name.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(' '))])]
     const found = await apiSearchOf(words, qpuFacesOf().faces)
-    const reads = await Promise.all(found.apis.filter((x) => x.free !== undefined).map(async (x) => apiCallOf(x.index, x.free!)))
-    const live = { family, words: found.words, matched: found.matched, read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
+    const reads = await Promise.all(found.apis.filter((x) => x.free !== undefined).slice(0, qpuFacesOf().faces).map(async (x) => apiCallOf(x.index, x.free!)))
+    const live = { family, words: found.words, matched: found.matched, scanned: found.scanned, read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
     return { source, url: 'https://apis.guru', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: found.matched > 0 && reads.some((r) => r.status > 0) }
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'research', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and

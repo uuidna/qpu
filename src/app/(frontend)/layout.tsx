@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { SITE } from '@/collections/Docs'
 import { InitTheme } from '@/providers/Theme/InitTheme'
+import { qpuCiteOf } from '@uuidna/qpu'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.origin),
@@ -12,11 +13,28 @@ export const metadata: Metadata = {
   openGraph: { siteName: SITE.name, type: 'website' },
 }
 
+// the site's JSON-LD, read from the citation the unit serves at /cite: nothing restated by hand
+const jsonLd = () => {
+  const c = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; href: string; doi: string; identifier: string }
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.name,
+    url: c.href,
+    license: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    author: { '@type': 'Person', name: `${c.author.first} ${c.author.last}`, sameAs: c.author.orcid },
+    identifier: c.identifier,
+    potentialAction: { '@type': 'SearchAction', target: `${c.href}/search?q={q}`, 'query-input': 'required name=q' },
+  }
+}
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
+        {/* structured data for every page: the site, its author and licence, as the unit's own citation states them */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
       </head>
       <body className="min-h-screen font-sans">
         <Header />

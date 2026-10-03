@@ -10,8 +10,10 @@ export type Relation = { value: string; families: string[]; ways: Way[]; live: b
  *  formulas composing to the identity are an inverse pair (BSD's a · a⁻¹ = 1). */
 export type Seal = { family: string; program: string[]; kind: 'fixed' | 'involution' | 'inverse'; points: number[]; tested: number; hex: string }
 
-// the tool doors run whole readings rather than formulas over inputs: they are reached through their own receipts
-export const DOORS = new Set(['qpu', 'crypto'])
+// the doors run whole readings rather than formulas over inputs — the unit's own doors, and the families whose
+// formulas are live reads (api: a request per address; data: a source per address): they are reached through their
+// own receipts, never enumerated over inputs
+export const DOORS = new Set(['qpu', 'crypto', 'api', 'data'])
 const SMALL = Array.from({ length: L.mintOf(L.hexbit) }, (_, i) => i + L.seed)
 // the params section splits by count: one 48-bit natural, two 24-bit, three 16-bit
 const fits = (params: number[]) => params.every((p) => Number.isSafeInteger(p) && p >= 0 && p < qpuHexParamMaxOf(params.length))
@@ -61,7 +63,7 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
         } catch {
           continue
         }
-        const run = (await qpuHexRunOf(hex)) as { value?: unknown; holds?: boolean; receipt?: string }
+        const run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string }
         perFamily[family]!.runs++
         const value = valueOf(run)
         if (params.length === 1 && value !== null) {

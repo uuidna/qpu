@@ -177,11 +177,18 @@ export const apiSearchOf = async (words: string[], take = 14) => {
     const v = entry.versions?.[entry.preferred ?? ''] ?? {}
     return hit(api) || hit(v.info?.title ?? '') || (v.info?.['x-apisguru-categories'] ?? []).some(hit)
   })
-  const read = await Promise.all(named.slice(0, take).map(async ({ index }) => {
-    const api = await apiOf(index)
-    return { api: api.api, index, title: api.title, categories: api.categories, server: api.server, operations: api.operations.filter((op) => hit(op.path) || hit(op.operationId ?? '')).map((op) => ({ index: op.index, verb: op.verb, path: op.path, required: op.required })), free: api.operations.find((op) => op.verb === 'get' && op.required.length === 0)?.index }
-  }))
-  return { kind: 'api-search' as const, words: terms, matched: named.length, read: read.length, apis: read, more: named.slice(take).map((x) => x.api) }
+  // `take` APIs that can be read without a parameter, found among the matches a slice at a time: a name is not a read
+  const read: { api: string; index: number; title: string; categories: string[]; server: string; operations: { index: number; verb: string; path: string; required: string[] }[]; free?: number }[] = []
+  let scanned = 0
+  while (read.filter((x) => x.free !== undefined).length < take && scanned < named.length && scanned < take * 4) {
+    const batch = await Promise.all(named.slice(scanned, scanned + take).map(async ({ index }) => {
+      const api = await apiOf(index)
+      return { api: api.api, index, title: api.title, categories: api.categories, server: api.server, operations: api.operations.filter((op) => hit(op.path) || hit(op.operationId ?? '')).map((op) => ({ index: op.index, verb: op.verb, path: op.path, required: op.required })), free: api.server ? api.operations.find((op) => op.verb === 'get' && op.required.length === 0)?.index : undefined }
+    }))
+    read.push(...batch)
+    scanned += take
+  }
+  return { kind: 'api-search' as const, words: terms, matched: named.length, scanned, read: read.length, readable: read.filter((x) => x.free !== undefined).length, apis: read, more: named.slice(scanned).map((x) => x.api) }
 }
 
 qpuMcpFuseOf('qpu_api', {

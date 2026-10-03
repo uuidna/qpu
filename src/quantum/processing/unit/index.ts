@@ -12049,14 +12049,18 @@ export const qpuHexDecodeOf = (uuid: string) => {
  * @kind builder
  * @evidence qpuHexHolds
  */
-export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv) => {
+export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv, options: { store?: boolean } = {}) => {
   const d = qpuHexDecodeOf(uuid)
   if (!d.holds || !('family' in d) || !d.family) return { ...d, ran: false as const }
   const formulas = qpuHexFamiliesOf().get(d.family)!
   // the address remembers: a program already run here returns what it stored, without recomputing
   const row = d.row.split('/')[seed]!
-  const stored = (await qpuDocDbOf(env, 'hex').collection(d.handle).findOne({ _id: row })) as { by?: string; value?: unknown; holds?: boolean; receipt?: string } | null
-  if (stored && stored.by === d.uuid) return { ...d, ran: true as const, cached: true as const, steps: [], value: stored.value, holds: stored.holds === true, receipt: stored.receipt }
+  const stored = options.store === false ? null : (await qpuDocDbOf(env, 'hex').collection(d.handle).findOne({ _id: row })) as { by?: string; value?: unknown; holds?: boolean; receipt?: string } | null
+  // THE ADDRESS NAMES A PROGRAM BY ITS NIBBLES, AND A FAMILY'S NIBBLES MOVE WHEN A FORMULA IS ADDED: a stored row is
+  // this program's only when the names it was stored under are this program's names (measured 2026-10-03: nibble 9
+  // of hd was jdm, then gate, and the address answered the old value)
+  const same = stored && stored.by === d.uuid && Array.isArray((stored as { program?: unknown }).program) && JSON.stringify((stored as { program?: unknown }).program) === JSON.stringify(d.program)
+  if (same && stored) return { ...d, ran: true as const, cached: true as const, steps: [], value: stored.value, holds: stored.holds === true, receipt: stored.receipt }
   const params = d.params.map((x) => BigInt(x))
   let acc: unknown = params[n - n] ?? BigInt(n - n)
   let holds = true
@@ -12073,7 +12077,9 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv)
     }
     const value = typeof acc === 'bigint' ? acc.toString() : acc
     const receipt = qpuUuidReceiptOf(`hex ${d.family}`, d.uuid, { steps, value, holds }, referrer).uuid
-    await qpuDocDbOf(env, 'hex').collection(d.handle).updateOne({ _id: row }, { $set: { family: d.family, program: d.program, value, holds, receipt, by: d.uuid } }, { upsert: true })
+    // an enumeration (discovery, the sequences) computes without storing: a request may make only so many storage
+    // calls, and a stored row is a run someone asked for by its address
+    if (options.store !== false) await qpuDocDbOf(env, 'hex').collection(d.handle).updateOne({ _id: row }, { $set: { family: d.family, program: d.program, value, holds, receipt, by: d.uuid } }, { upsert: true })
     return { ...d, ran: true as const, steps, value, holds, receipt }
   } catch (e) {
     return { ...d, ran: false as const, steps, error: e instanceof Error ? e.message : String(e), holds: false as const }

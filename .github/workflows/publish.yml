@@ -70,6 +70,10 @@ jobs:
           node --input-type=module -e "import('./dist/mcp/uuid-programmable-core.js').then(async (m) => { const r = await m.consolidatedMCP.runDeploymentGate(); console.log(JSON.stringify(r)); process.exit(r.ok ? 0 : 1) })"
       - name: The scripts suites (every scripts/*.test.mjs, discovered by glob)
         run: npm run test:scripts
+      # EVERY SCALE PROVES QUANTUM: standalone here (the booted unit proves itself), the container in `image`, the
+      # Worker in `test` against the live host; all three run the same qpu_prove on the same bytes
+      - name: Standalone proves itself (qpu_prove holds in the booted unit)
+        run: node dist/quantum/processing/unit/boot.js --prove
       # README.md is not in the list: its root node is the commit, which the commit that carries the README cannot know,
       # so the README is accountable to the commit before it by design and would always differ here.
       - name: The generated files are what the spec and the receipts generate (deployment, configs, registries, release notes)

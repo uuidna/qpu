@@ -2,6 +2,7 @@ import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from './index.js'
+import '../../../mcp/families.js'
 
 /** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/mcp (QPU_LIVE names
  * another host) through the sealed doors, the one way any MCP client reaches it, and drive what a release must cover:
@@ -98,13 +99,36 @@ test('release: the site end to end — every address it lists answers, every pag
     if (r.status !== 200 || (page && !/<title>[^<]+<\/title>/.test(body))) failed.push(`${u} ${r.status} ${body.replace(/\s+/g, ' ').slice(0, 160)}`)
   }))
   assert.deepEqual(failed, [], 'every address the sitemap lists answers 200, a page with its title')
-  // every published page renders as the admin built it: its title is the page's title
-  const pages = (await (await get('/api/pages?limit=100&depth=0', 'application/json')).json()) as { docs: { slug: string; title: string; meta?: { title?: string } }[] }
+  // every published page renders as the admin built it, and SEO-optimised: the test says what the page must carry,
+  // the code follows — a title of at most 70 characters that is the page's, a description of 50 to 160, a canonical
+  // that is the page's own address, Open Graph title and description, and structured data (JSON-LD)
+  const pages = (await (await get('/api/pages?limit=100&depth=0', 'application/json')).json()) as { docs: { slug: string; title: string; meta?: { title?: string; description?: string } }[] }
   assert.ok(pages.docs.length > 0, 'Payload serves its pages')
+  const seo: string[] = []
   for (const p of pages.docs) {
-    const html = await (await get(p.slug === 'home' ? '/' : `/${p.slug}`)).text()
-    assert.ok(html.includes(p.meta?.title ?? p.title), `/${p.slug} renders its title`)
+    const path = p.slug === 'home' ? '/' : `/${p.slug}`
+    // the seed resumes one slice per request: a page not yet written is asked again, paced, before it is a finding
+    let html = ''
+    for (let i = 0; i < 6; i++) {
+      const r = await get(path)
+      html = await r.text()
+      if (r.status === 200 && html.includes(p.meta?.title ?? p.title)) break
+      await new Promise((f) => setTimeout(f, 5000))
+    }
+    const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? ''
+    const meta = (name: string) => new RegExp(`<meta[^>]+(?:name|property)="${name}"[^>]+content="([^"]*)"`).exec(html)?.[1] ?? new RegExp(`<meta[^>]+content="([^"]*)"[^>]+(?:name|property)="${name}"`).exec(html)?.[1] ?? ''
+    const canonical = /<link[^>]+rel="canonical"[^>]+href="([^"]*)"/.exec(html)?.[1] ?? /<link[^>]+href="([^"]*)"[^>]+rel="canonical"/.exec(html)?.[1] ?? ''
+    const want = p.meta?.title ?? p.title
+    if (!title.includes(want)) seo.push(`${path}: title "${title}" is not the page's "${want}"`)
+    if (title.length > 70) seo.push(`${path}: title ${title.length} chars > 70`)
+    const description = meta('description')
+    if (description.length < 50 || description.length > 160) seo.push(`${path}: description ${description.length} chars, not 50–160`)
+    if (!canonical.endsWith(path === '/' ? '' : path) || !canonical.startsWith('https://')) seo.push(`${path}: canonical "${canonical}"`)
+    if (!meta('og:title')) seo.push(`${path}: no og:title`)
+    if (!meta('og:description')) seo.push(`${path}: no og:description`)
+    if (!/<script[^>]+type="application\/ld\+json"/.test(html)) seo.push(`${path}: no JSON-LD`)
   }
+  assert.deepEqual(seo, [], 'every page is SEO-optimised as the test states it')
   // the header is the admin's global, the admin answers, an unknown address is a 404 page, a program runs
   const header = (await (await get('/api/globals/header', 'application/json')).json()) as { navItems?: unknown[] }
   assert.ok((header.navItems ?? []).length > 0, 'the header global has its navigation')
