@@ -16,7 +16,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS } from '../dist/deployment/payload-templates.js'
-import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
+import { bootPort, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined }
 const ROOT = process.cwd()
@@ -99,12 +99,24 @@ const REPO_TSCONFIG = {
   include: ['next-env.d.ts', ...SITE_FILES.map((f) => `${SRC}/${f}`), ...SITE.flatMap((d) => [`${SRC}/${d}/**/*.ts`, `${SRC}/${d}/**/*.tsx`]), '.next/types/**/*.ts', '.next/dev/types/**/*.ts'],
   exclude: ['node_modules', 'dist', '.open-next', '**/*.test.ts'],
 }
+// THE IMAGE, FROM THE SAME SPEC: the Dockerfile, compose file and Kubernetes manifest derive from package.json (name,
+// version, licence, author, repository, the Node line engines names, what `files` ships) and the unit (the port the boot
+// listens on, the flags it answers). Nothing about the image is written by hand.
+const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
+const REPO_IMAGE = {
+  name: pkg.name, version: pkg.version, license: pkg.license, author: `${pkg.author.name} <${pkg.author.email}>`,
+  repository: pkg.repository.url.replace(/^git\+/, '').replace(/\.git$/, ''), homepage: pkg.homepage,
+  node: Number(/\d+/.exec(pkg.engines.node)[0]), port: bootPort, boot: pkg.bin['qpu-boot'].replace(/^\.\//, ''), health: '--health', prove: '--prove',
+  ship: ['LICENSE', 'README.md', 'CITATION.cff', 'mcp.json', 'install.json'].filter((f) => fs.existsSync(f)),
+  image: `ghcr.io/${pkg.repository.url.replace(/^git\+https:\/\/github\.com\//, '').replace(/\.git$/, '')}`,
+}
 if (process.argv.includes('--repo')) {
   const t = PayloadTemplates.cloudflarePayload(cloudflareCombinationOf(REPO.key), REPO_NAME, REPO.app)
+  const image = { ...PayloadTemplates.dockerPayload(REPO_IMAGE).files, ...PayloadTemplates.kubernetesPayload(REPO_IMAGE).files }
   // the library's tsconfig skips the site's folders, read from the same list
   const lib = JSON.parse(fs.readFileSync('tsconfig.json', 'utf8'))
   lib.exclude = [...new Set([...lib.exclude.filter((x) => !x.startsWith(`${SRC}/`) || x.startsWith(`${SRC}/autonomous`)), ...SITE.map((d) => `${SRC}/${d}/**`), ...SITE_FILES.map((f) => `${SRC}/${f}`)])]
-  const written = { ...t.files, [REPO_WRANGLER]: t.files['wrangler.jsonc'], // written as next build writes it back (react-jsx, its dev types, two spaces), so a build leaves it unchanged
+  const written = { ...t.files, ...image, [REPO_WRANGLER]: t.files['wrangler.jsonc'], // written as next build writes it back (react-jsx, its dev types, two spaces), so a build leaves it unchanged
     'tsconfig.payload.json': JSON.stringify(REPO_TSCONFIG, null, 2) + '\n', 'tsconfig.json': JSON.stringify(lib, null, 2) + '\n' }
   if (REPO_WRANGLER !== 'wrangler.jsonc') delete written['wrangler.jsonc']
   for (const [f, text] of Object.entries(written)) {
@@ -113,8 +125,8 @@ if (process.argv.includes('--repo')) {
   }
   // the registries just written are read by the config and the frontend: the import map and the types follow them
   for (const cmd of ['generate:importmap', 'generate:types']) execSync(`npx payload ${cmd}`, { cwd: ROOT, stdio: 'pipe', env: { ...process.env, PAYLOAD_CONFIG_PATH: `${SRC}/payload.config.ts` } })
-  const uuid = qpuContentUuidOf(REPO)
-  const row = { key: REPO.key, uuid, receipt: qpuUuidReceiptOf('payload-cf repo', uuid, REPO.key, 'scripts/payload-cloudflare.mjs --repo').uuid, files: Object.keys(written), dependencies: t.dependencies }
+  const uuid = qpuContentUuidOf({ ...REPO, image: REPO_IMAGE })
+  const row = { key: REPO.key, uuid, image: REPO_IMAGE.image, receipt: qpuUuidReceiptOf('payload-cf repo', uuid, REPO.key, 'scripts/payload-cloudflare.mjs --repo').uuid, files: Object.keys(written), dependencies: t.dependencies }
   // the app compiled against the installed packages, exactly as next build checks it
   let out = ''
   try { execSync('npx tsc -p tsconfig.payload.json --noEmit --incremental false', { cwd: ROOT, stdio: 'pipe' }) } catch (e) { out = `${e.stdout}${e.stderr}` }

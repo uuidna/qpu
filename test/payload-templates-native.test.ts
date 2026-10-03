@@ -187,8 +187,8 @@ describe('Payload Templates - Native UUIDNA OS', () => {
     it('should define Docker image and Dockerfile', () => {
       const spec = dockerPayload.spec as Record<string, any>
       expect(spec.image).toContain('uuidna/qpu')
-      expect(spec.dockerfile).toContain('FROM node:20-alpine')
-      expect(spec.dockerfile).toContain('EXPOSE 8080')
+      expect(spec.dockerfile).toContain('FROM node:26-alpine')
+      expect(spec.dockerfile).toContain('EXPOSE 8787')
     })
 
     it('should use Node.js Alpine base image', () => {
