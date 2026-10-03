@@ -1,4 +1,5 @@
 ---
+uuid: "d6dc6be0-4e4c-80af-aa7a-c4460b42104e"
 title: "Documentation"
 description: "@uuidna/qpu 1.0.1: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
 og:title: "Documentation — @uuidna/qpu"
@@ -24,9 +25,9 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
 | [UUIDs & quantum receipts](receipts.md) | 40 | 15 of 17 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |
-| [MCP & agents](agents.md) | 97 | 45 of 54 |
+| [MCP & agents](agents.md) | 100 | 45 of 54 |
 | [Live science data](science.md) | 22 | 10 of 17 |
-| [API fusion](fusion.md) | 17 | 2 of 8 |
+| [API fusion](fusion.md) | 16 | 2 of 8 |
 | [Payload & Cloudflare](cms.md) | 19 | 3 of 4 |
 | [Presentation & discovery](presentation.md) | 14 | 14 of 14 |
 

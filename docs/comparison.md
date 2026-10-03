@@ -1,4 +1,5 @@
 ---
+uuid: "e9c06761-1b05-8907-baad-43d304825d8b"
 title: "Comparison"
 description: "What @uuidna/qpu does, wing by wing, beside quantum SDKs and simulators (Qiskit Aer, Cirq, Amazon Braket, PennyLane) and general AI models."
 og:title: "Comparison — @uuidna/qpu"

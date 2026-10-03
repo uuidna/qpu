@@ -1,265 +1,266 @@
 {
  "kind": "uses-receipt",
- "when": "2026-10-03",
  "categories": 42,
  "reached": 42,
  "toImagine": 0,
- "seconds": 13,
  "holds": true,
+ "uuid": "fcfb3140-44ed-877f-9a0f-c179769f7a13",
+ "receipt": "fcfb3140-44ed-877f-9a0f-c179769f7a13",
+ "when": "2026-10-03",
+ "host": "https://qpu.uuidna.com",
+ "seconds": 239,
  "rows": [
   {
    "name": "analytics",
    "pass": true,
    "value": "14 APIs read · : path (anomalyToResponse, obsToAction, performanceToMetrics); cross (enterpriseMetricsViaObs, testCoverageToQuality); hd (channels, code)",
-   "receipt": "8ef96881-7d3c-8940-838b-fdcdad4d2a3a"
+   "receipt": "da1be055-05e7-86c1-82a5-2591dc17bdd5"
   },
   {
    "name": "backend",
    "pass": true,
    "value": "3 APIs read · : audit (paymentSecurityFusion); signal (keyBits)",
-   "receipt": "34e18d00-6b44-89d1-8c94-b1192f0c9b01"
+   "receipt": "a255cfce-c906-8dab-9dcc-7575e305b308"
   },
   {
    "name": "c",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "346e0fe2-0103-8fda-8d48-c6e0c3f75d19"
+   "receipt": "c158ac3e-ee10-8d2c-aa0d-dae003f28d78"
   },
   {
    "name": "cloud",
    "pass": true,
    "value": "14 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); path (allPaths, anomalyToResponse, dataFlowCompressML, executePath, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); cross (deploymentToObs, medSecureWithQSec, mlOnObsForPrediction, testCoverageToQuality); audit (gdprIsoNistFusion, healthcareComplianceFusion, paymentSecurityFusion, supplyChainRiskFormula); hd (channel, channels, definition); crypt (tagForgery); signal (keyBits); np (isTime); tesla (sync); yi (withYang)",
-   "receipt": "ca86fff8-5638-8ae6-8ac5-c58d98b5c7e0"
+   "receipt": "7ed91cc3-c838-878c-aaaa-fecad57ef37c"
   },
   {
    "name": "collaboration",
    "pass": true,
    "value": "14 APIs read · : path (dataFlowCompressML, secureDataPathQSec); audit (paymentSecurityFusion); signal (keyBits)",
-   "receipt": "e67eae48-8463-8332-8a48-b15950db2f6d"
+   "receipt": "04971e70-9304-8d40-a531-0c0e0f828940"
   },
   {
    "name": "customer_relation",
    "pass": true,
    "value": "7 APIs read · : path (allPaths, dataFlowCompressML, obsToAction, secureDataPathQSec); merkaba (steps)",
-   "receipt": "67877a03-92ad-8b2b-b823-d9f0b30dc13c"
+   "receipt": "4c35865d-cf77-813d-956a-79b5fbcfa47b"
   },
   {
    "name": "developer_tools",
    "pass": true,
    "value": "14 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); path (allPaths, dataFlowCompressML, executePath, secureDataPathQSec); cross (mlOnObsForPrediction, testCoverageToQuality); hd (definition); np (isTime); tesla (sync)",
-   "receipt": "57e35f8e-e09d-8d74-b94b-560377964d26"
+   "receipt": "5c95d795-aa8c-819e-80b3-4c856dbfcfdb"
   },
   {
    "name": "e",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "36e14903-5912-8dad-93f8-0f25bbbec0a2"
+   "receipt": "e5b2a66d-810a-8ce4-8836-7b99c939e6b6"
   },
   {
    "name": "ecommerce",
    "pass": true,
    "value": "14 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); hd (channel, channels, code, definition, design); path (allPaths, dataFlowCompressML, performanceToMetrics, secureDataPathQSec); Qpu.Hybrid (kvCost, r2Cost, hybridCost); cross (enterpriseMetricsViaObs, medSecureWithQSec, mlOnObsForPrediction); audit (healthcareComplianceFusion, paymentSecurityFusion, supplyChainRiskFormula); cal (dayPer, designDays); yi (change, withYang); signal (keyBits); merkaba (steps); tesla (field)",
-   "receipt": "bc8f1632-fd47-8925-b561-7a0dba414e4b"
+   "receipt": "1ee9a867-0fab-8e5d-87d9-400c5799f51c"
   },
   {
    "name": "education",
    "pass": true,
    "value": "4 APIs read · : path (allPaths, anomalyToResponse, dataFlowCompressML, secureDataPathQSec); hd (channel, channels); cross (mlOnObsForPrediction); signal (keyBits); kin (digitalRoot)",
-   "receipt": "1c8aac99-9c28-8af3-a614-337959cc5cde"
+   "receipt": "b6033bcb-29f2-8540-9065-08ec9389abea"
   },
   {
    "name": "email",
    "pass": true,
    "value": "13 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); path (allPaths, anomalyToResponse, dataFlowCompressML, executePath, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); cross (medSecureWithQSec, mlOnObsForPrediction, testCoverageToQuality); audit (paymentSecurityFusion); hd (code); signal (keyBits); np (isTime); yi (withYang)",
-   "receipt": "c2714b9f-d6fc-865c-94ce-12676f9c4587"
+   "receipt": "a78f998f-f93a-8ae2-a4bd-7eef65c22540"
   },
   {
    "name": "enterprise",
    "pass": true,
    "value": "12 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); path (allPaths, dataFlowCompressML, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); cross (enterpriseMetricsViaObs, mlOnObsForPrediction, quantumToEnterprise, testCoverageToQuality); np (isTime, sparseWidth, subsetSum); audit (paymentSecurityFusion); hd (chart); signal (keyBits); merkaba (star); heat (quality); kin (cycle); tesla (sync); yi (change)",
-   "receipt": "06b85344-b49a-8210-bb21-d07349bfc150"
+   "receipt": "f0a95dc3-9fcf-814a-bd33-88521787dd64"
   },
   {
    "name": "entertainment",
    "pass": true,
    "value": "14 APIs read · : path (dataFlowCompressML, executePath, secureDataPathQSec); hd (channels, code); yi (change, withYang); cross (medSecureWithQSec); audit (paymentSecurityFusion); crypt (nonceCollision)",
-   "receipt": "e0fd975a-5d46-8e0f-8206-a71483e086fa"
+   "receipt": "2057bb42-9c93-82b2-8d97-c744c05bfbb3"
   },
   {
    "name": "financial",
    "pass": true,
    "value": "14 APIs read · : path (dataFlowCompressML, obsToAction, secureDataPathQSec); cross (medSecureWithQSec, testCoverageToQuality); yi (change, withYang); audit (paymentSecurityFusion); hd (code); signal (keyBits); tesla (sync)",
-   "receipt": "44263cc6-0fb1-86f2-82f3-09c65db91650"
+   "receipt": "2b771e62-a48f-8587-b3d6-856c4d3214e6"
   },
   {
    "name": "forms",
    "pass": true,
    "value": "2 APIs read · : path (anomalyToResponse)",
-   "receipt": "d27c6685-76fd-8dab-a0ba-14ae2a40af37"
+   "receipt": "490a2998-167e-8069-a705-2d573a22f978"
   },
   {
    "name": "hosting",
    "pass": true,
    "value": "14 APIs read · : path (allPaths, obsToAction); signal (keyBits); kin (digitalRoot); yi (change)",
-   "receipt": "fe782c17-0a78-80fc-845f-04db44445acf"
+   "receipt": "2bb3a909-0709-88a3-a18a-d4ac5a0f8a93"
   },
   {
    "name": "i",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "1c7e52f6-97cc-8ff2-b2b2-dd77d6eb5603"
+   "receipt": "41c3962f-f8cc-871b-b8a1-18c56afdb649"
   },
   {
    "name": "iot",
    "pass": true,
    "value": "14 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); path (allPaths, dataFlowCompressML, executePath, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); signal (detection, hops, keyBits, keyspace, qber, siftedBits); cross (deploymentToObs, enterpriseMetricsViaObs, mlOnObsForPrediction, quantumToEnterprise, testCoverageToQuality); audit (gdprIsoNistFusion, healthcareComplianceFusion, paymentSecurityFusion, supplyChainRiskFormula); hd (cells, chart); heat (quality, signal); kin (cycle, digitalRoot); cal (pairs); crypt (tagForgery); merkaba (flows); np (edgeBit); tesla (sync); yi (change)",
-   "receipt": "8adc5cd2-43c7-8463-8756-adf98ab27bcd"
+   "receipt": "1aa17933-1388-816f-8b80-50de2d527d50"
   },
   {
    "name": "location",
    "pass": true,
    "value": "14 APIs read · : path (allPaths, anomalyToResponse, dataFlowCompressML, executePath, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); Qpu.Hybrid (kvCost, r2Cost, hybridCost); cross (medSecureWithQSec, testCoverageToQuality); hd (mean); np (isSpace); tesla (field); yi (withYang)",
-   "receipt": "a7b72ff5-0929-809f-8e1e-50d11f38c1b5"
+   "receipt": "5301ebc6-d470-8813-8e05-0cc6f3c925eb"
   },
   {
    "name": "machine_learning",
    "pass": true,
    "value": "10 APIs read · : signal (detection)",
-   "receipt": "c81067de-1116-8ea0-ab7d-4a8550961b90"
+   "receipt": "e18d828d-7766-8ad8-9765-f81a36327683"
   },
   {
    "name": "marketing",
    "pass": true,
    "value": "13 APIs read · : path (allPaths, anomalyToResponse, dataFlowCompressML, executePath, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); Qpu.Hybrid (kvCost, r2Cost, hybridCost); Qpu.Lattice (seed); cross (mlOnObsForPrediction); cal (designDays); crypt (tagForgery); np (isTime)",
-   "receipt": "fdd8c324-247d-81d0-a666-1bae85903ece"
+   "receipt": "c3ed8c78-26f6-8e3e-a4ab-5d6cd9735a76"
   },
   {
    "name": "media",
    "pass": true,
    "value": "14 APIs read · : path (allPaths, dataFlowCompressML, secureDataPathQSec); hd (channel, channels); signal (keyBits)",
-   "receipt": "2398f2d5-2479-8885-a5a3-53f7a3abfc4f"
+   "receipt": "271b5441-e77b-8f57-997b-1eee9dc8ed5b"
   },
   {
    "name": "messaging",
    "pass": true,
    "value": "14 APIs read · : path (allPaths, dataFlowCompressML, obsToAction, performanceToMetrics, quantumSecurityChain, secureDataPathQSec); cross (enterpriseMetricsViaObs, medSecureWithQSec, testCoverageToQuality); hd (channel, channels, code); yi (change, withYang); audit (paymentSecurityFusion); crypt (knownAnswers); np (isSpace)",
-   "receipt": "ecc0bb33-1e4f-8d84-b1b7-635740f9561d"
+   "receipt": "bebf8da1-f277-8251-bbd8-12c38df11b08"
   },
   {
    "name": "monitoring",
    "pass": true,
    "value": "3 APIs read · : path (allPaths, dataFlowCompressML, qualityToRisk, secureDataPathQSec); cross (enterpriseMetricsViaObs, quantumToEnterprise); Qpu.Lattice (scanner); audit (supplyChainRiskFormula); signal (keyBits); np (isTime); tesla (sync); yi (change)",
-   "receipt": "82e721b5-365c-86bd-a9a9-f5c972218b46"
+   "receipt": "8af94209-436b-8cd7-8aac-94b47650e234"
   },
   {
    "name": "open_data",
    "pass": true,
    "value": "14 APIs read · : path (anomalyToResponse, dataFlowCompressML, performanceToMetrics, secureDataPathQSec); cross (enterpriseMetricsViaObs); hd (mean); np (isSpace)",
-   "receipt": "466d7c3d-8c3d-8429-8ba9-4f380f8079aa"
+   "receipt": "df87fa33-5afb-8b4d-9973-e47a768a4625"
   },
   {
    "name": "payment",
    "pass": true,
    "value": "14 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); Qpu.Hybrid (kvCost, r2Cost, hybridCost); path (dataFlowCompressML, secureDataPathQSec); audit (paymentSecurityFusion)",
-   "receipt": "59c5aa8e-43c4-8547-8c54-da7affb537fe"
+   "receipt": "ad7b8686-8a08-8263-b81c-6119b77ded9b"
   },
   {
    "name": "project_management",
    "pass": true,
    "value": "1 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); Qpu.Hybrid (kvCost, r2Cost, hybridCost); tesla (field, sync); cross (medSecureWithQSec); audit (paymentSecurityFusion); hd (line); np (isTime); path (allPaths); yi (withYang)",
-   "receipt": "0851d625-20e7-8c8e-a6c6-2cf41f0db496"
+   "receipt": "30e52e98-9a3c-88a1-b1d7-b0b882181e1e"
   },
   {
    "name": "r",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "33ba8b4b-f050-8d64-9b0f-f874b8bf7966"
+   "receipt": "8aa73305-e9ca-86d3-a325-3b82d9da4a50"
   },
   {
    "name": "s",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "e1601412-d34e-8178-886c-f98069e1d78c"
+   "receipt": "00a7744e-c6ba-8125-af00-e9ad04c21fd0"
   },
   {
    "name": "search",
    "pass": true,
    "value": "7 APIs read · : path (allPaths, dataFlowCompressML, secureDataPathQSec); cal (dayPer, faces); yi (change, withYang); Qpu.Lattice (faces); cross (medSecureWithQSec); signal (keyBits)",
-   "receipt": "86e2b29c-6ce7-8b88-901d-88031a36028a"
+   "receipt": "3c5a862c-3e9f-834c-b23b-58167621fb9f"
   },
   {
    "name": "security",
    "pass": true,
    "value": "14 APIs read · : path (allPaths, dataFlowCompressML, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); cross (enterpriseMetricsViaObs, medSecureWithQSec, mlOnObsForPrediction); audit (paymentSecurityFusion, supplyChainRiskFormula); yi (change, withYang); hd (code); signal (keyBits); np (isTime)",
-   "receipt": "50ac5a86-6fbd-8651-b19e-4bbdb7540624"
+   "receipt": "8722181c-5183-8cd4-9a2d-5374ea954aee"
   },
   {
    "name": "social",
    "pass": true,
    "value": "14 APIs read · : path (allPaths, anomalyToResponse, dataFlowCompressML, executePath, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); audit (gdprIsoNistFusion, healthcareComplianceFusion, paymentSecurityFusion, supplyChainRiskFormula); cross (enterpriseMetricsViaObs, medSecureWithQSec, mlOnObsForPrediction); hd (channel, channels); yi (change, withYang); crypt (tagForgery); tesla (sync)",
-   "receipt": "ff84cebd-e2c5-84e3-afa0-77a5c3ec6e57"
+   "receipt": "bfebd1d1-e487-8c8e-ae50-9681c3b36502"
   },
   {
    "name": "storage",
    "pass": true,
    "value": "1 APIs read · : cross (bb84ToCompress, compressQSecSignals, mlOnObsForPrediction); signal (keyBits); path (dataFlowCompressML)",
-   "receipt": "503324a2-2872-8f96-bccb-5be3dc08c9c3"
+   "receipt": "5c3ec4e0-f722-82cb-b8b4-04519dc9b305"
   },
   {
    "name": "support",
    "pass": true,
    "value": "2 APIs read · : path (anomalyToResponse, obsToAction, performanceToMetrics); cross (enterpriseMetricsViaObs); hd (definition); crypt (knownAnswers)",
-   "receipt": "34afe6c9-174f-8c84-bb68-06e9e90798a6"
+   "receipt": "5d996fd8-c897-8265-b1dc-47f57a94c159"
   },
   {
    "name": "t",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "e4c25c6a-8922-85b2-a9dd-622ce92f2a60"
+   "receipt": "200f0945-3a0a-8d84-910a-e0dbf72e5fc4"
   },
   {
    "name": "telecom",
    "pass": true,
    "value": "14 APIs read · : path (allPaths, anomalyToResponse, dataFlowCompressML, executePath, obsToAction, performanceToMetrics, qualityToRisk, quantumSecurityChain, secureDataPathQSec); cross (enterpriseMetricsViaObs, mlOnObsForPrediction, quantumToEnterprise, testCoverageToQuality); audit (paymentSecurityFusion); hd (code); signal (keyBits)",
-   "receipt": "35108546-2765-8ab3-b86c-4b68a926aab9"
+   "receipt": "0ae0fb8f-a74e-8874-b44d-ee61ac20a346"
   },
   {
    "name": "text",
    "pass": true,
    "value": "14 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); cross (medSecureWithQSec, testCoverageToQuality); signal (detection, keyBits); path (dataFlowCompressML, secureDataPathQSec); yi (change, withYang); crypt (tagForgery)",
-   "receipt": "b43a93ef-4e35-8468-813f-bab7261cb40b"
+   "receipt": "882f867b-b8c6-8266-ad0e-e89d02addaa0"
   },
   {
    "name": "time_management",
    "pass": true,
    "value": "1 APIs read · : rule (cap, compositions, families, formulas, free, nibbles, over, slice, truncated); Qpu.Hybrid (kvCost, r2Cost, hybridCost); tesla (field, sync); cross (medSecureWithQSec); audit (paymentSecurityFusion); hd (line); np (isTime); path (allPaths); yi (withYang)",
-   "receipt": "8634ce8d-f621-86d5-90b9-7a88ac081c32"
+   "receipt": "67e37e90-40f5-8f03-9bc6-0b6a7e0acd5c"
   },
   {
    "name": "tools",
    "pass": true,
    "value": "14 APIs read · : path (dataFlowCompressML, quantumSecurityChain, secureDataPathQSec); cross (mlOnObsForPrediction, testCoverageToQuality); audit (paymentSecurityFusion); hd (definition)",
-   "receipt": "d7c49eae-556e-8c62-b9ed-216a8b6dd944"
+   "receipt": "b57ddb1c-3bd8-835a-8bad-109348742755"
   },
   {
    "name": "transport",
    "pass": true,
    "value": "14 APIs read · : Qpu.Hybrid (kvCost, r2Cost, hybridCost); path (allPaths, dataFlowCompressML, secureDataPathQSec); hd (code); np (isTime); rule (free)",
-   "receipt": "c9d2f73a-28ca-83ce-85b3-4b036cc7e84a"
+   "receipt": "42a85551-072d-8abf-9b46-15005c950373"
   },
   {
    "name": "u",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "af8ccc68-42ed-83c1-8fa4-afe0b451a1da"
+   "receipt": "9154e3ef-cd5a-8586-9829-15f623e4c961"
   },
   {
    "name": "y",
    "pass": true,
    "value": "1 APIs read · : hd (code); np (isTime); path (allPaths); yi (change)",
-   "receipt": "5433b50d-461f-835b-817e-bec151080ec9"
+   "receipt": "fcfb3140-44ed-877f-9a0f-c179769f7a13"
   }
- ],
- "uuid": "4f018240-7b1e-8ad9-baf9-bba59ac67273",
- "receipt": "b408fc53-23e1-83f1-8f21-b4e25a7d2e5d"
+ ]
 }

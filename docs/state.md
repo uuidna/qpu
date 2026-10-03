@@ -1,4 +1,5 @@
 ---
+uuid: "65b2b67e-e265-86b3-b051-9fd313c5ebf8"
 title: "State"
 description: "Current state of @uuidna/qpu 1.0.1: what is built, what is verified, and what is open."
 og:title: "State — @uuidna/qpu"
@@ -18,7 +19,7 @@ Version **1.0.1** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version
 
 | Measure | Value | Source |
 |---|---|---|
-| Capabilities documented inline | 260 of 276 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
+| Capabilities documented inline | 262 of 278 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
 | Evidence predicates that hold | 117 of 149 (live ones need the network) | evaluated by `npm run docs` |
 | Lean theorems served / recomputed | 124 / 124 of 124 | [lean-receipt.json](../lean-receipt.json) |
 | API registry fused | 2529 of 2529 APIs, 438299 cross formulas | [fuse-receipt.json](../fuse-receipt.json) |
