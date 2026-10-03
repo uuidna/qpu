@@ -20,6 +20,7 @@ import '../families/glyph/index.js'
 import '../families/hd/index.js'
 import '../families/heat/index.js'
 import '../families/holo/index.js'
+import '../families/insurance/index.js'
 import '../families/job/index.js'
 import '../families/kin/index.js'
 import '../families/law/index.js'
@@ -44,4 +45,4 @@ import '../families/tune/index.js'
 import '../families/wave/index.js'
 import '../families/yi/index.js'
 
-export const families = ['access', 'accounting', 'api-door', 'audit', 'cal', 'chat', 'clay', 'collide', 'contract', 'court', 'cross', 'crypt', 'db', 'econ', 'evidence', 'forensic', 'gate', 'glyph', 'hd', 'heat', 'holo', 'job', 'kin', 'law', 'mcp-capabilities', 'med', 'merkaba', 'np', 'numen', 'path', 'platonic', 'port', 'qpu-fused', 'rule', 'scale', 'sentence', 'signal', 'split', 'tax', 'tesla', 'trading', 'tune', 'wave', 'yi'] as const
+export const families = ['access', 'accounting', 'api-door', 'audit', 'cal', 'chat', 'clay', 'collide', 'contract', 'court', 'cross', 'crypt', 'db', 'econ', 'evidence', 'forensic', 'gate', 'glyph', 'hd', 'heat', 'holo', 'insurance', 'job', 'kin', 'law', 'mcp-capabilities', 'med', 'merkaba', 'np', 'numen', 'path', 'platonic', 'port', 'qpu-fused', 'rule', 'scale', 'sentence', 'signal', 'split', 'tax', 'tesla', 'trading', 'tune', 'wave', 'yi'] as const

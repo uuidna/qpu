@@ -113,6 +113,7 @@
     "./dist/families/hd/index.js",
     "./dist/families/heat/index.js",
     "./dist/families/holo/index.js",
+    "./dist/families/insurance/index.js",
     "./dist/families/job/index.js",
     "./dist/families/kin/index.js",
     "./dist/families/law/index.js",
