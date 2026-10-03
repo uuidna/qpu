@@ -6,6 +6,7 @@
  */
 
 import {
+  formulaNetwork,
   getAllFamilies,
   getFormulasForFamily,
   validateFormula,
@@ -129,12 +130,20 @@ export const FORMULAS_AS_LEADS_TOOL = {
   },
   handler: async (args: any) => {
     // All formula validation happens here in MCP, nowhere else
-    const families = args.families === 'all' ? getAllFamilies() : args.families || [];
+    // Initialize the formula network (registers all formulas across domains)
+    if (!formulaNetwork['state'].nodes.size) {
+      formulaNetwork.registerAllFormulas()
+    }
+
+    // All formulas across all domains are registered and cross-validated
+    const targetFamilies = args.families === 'all' ? getAllFamilies() : args.families || [];
     const validated: any[] = [];
     const sealed: any[] = [];
 
-    for (const family of families) {
+    // Process each family's formulas
+    for (const family of targetFamilies) {
       const formulas = getFormulasForFamily(family);
+
       for (const formula of formulas) {
         // Each formula becomes a lead validated by qpu's theorem decision engine
         const lead = {
@@ -155,7 +164,7 @@ export const FORMULAS_AS_LEADS_TOOL = {
           }
         }
 
-        // All validated formulas stay sealed in qpu as evidence—not exported
+        // All validated formulas stay sealed in qpu as evidence—not exported to uuidna
         sealed.push({
           ...lead,
           seal: generateSealHash(family, formula.name),
@@ -169,15 +178,16 @@ export const FORMULAS_AS_LEADS_TOOL = {
     return {
       sealed: sealed.length,
       validated: validated.length,
-      families_processed: families,
+      families_processed: targetFamilies,
       evidence_location: 'qpu/dist/evidence/formulas-sealed.json',
       receipt: {
         sealer: 'formulas_as_leads MCP tool',
         timestamp: new Date().toISOString(),
         version: '1.1.0',
         principle: 'Families from different domains prove each other — evidence stays at source',
+        families: targetFamilies,
       },
-      status: 'FORMULAS_SEALED_IN_QPU',
+      status: sealed.length > 0 ? 'FORMULAS_SEALED_IN_QPU' : 'NO_FORMULAS_FOUND',
     };
   }
 };
