@@ -1,14 +1,18 @@
 import { aeadOpen, aeadSeal, bytesOf, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, sha256, sha512, utf8, x25519, type HashName } from '../core/crypt.js'
 import { leanSource } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
-import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpFuseOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFailureOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpFuseOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
 import { CryptFormulas } from './crypt-formulas.js'
 import { hologramStreamsOf } from './hologram-streams.js'
 import { certifyUnreachable, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, verifyColoring, verifyHamCycle, verifySat, verifySubsetSum, type Graph } from './np-formulas.js'
 
 type Args = Record<string, unknown>
-const fail = (why: string, extra: Record<string, unknown> = {}) => ({ holds: false as const, denied: why, ...extra })
+// an unknown name is answered with every name that resolves it
+const fail = (why: string, extra: Record<string, unknown> = {}) => {
+  const choices = Object.entries(extra).find(([, v]) => Array.isArray(v))
+  return { holds: false as const, denied: why, ...extra, resolve: choices ? `use one of the ${choices[0]}: ${(choices[1] as unknown[]).slice(0, 12).join(', ')}${(choices[1] as unknown[]).length > 12 ? ', …' : ''}` : `correct ${why}` }
+}
 const receiptOf = (name: string, value: unknown, holds: boolean) => qpuUuidReceiptOf(`fused ${name}`, qpuContentUuidOf(value), { holds }).uuid
 const str = (x: unknown): string => (typeof x === 'string' ? x : '')
 const num = (x: unknown, d: number): number => (typeof x === 'number' && Number.isSafeInteger(x) ? x : typeof x === 'string' && /^\d+$/.test(x) ? Number(x) : d)
@@ -41,6 +45,9 @@ qpuMcpFuseOf('qpu_hex', {
 // ---------------------------------------------------------------------------
 
 const DEADLINE = 15000
+// once the network is found out of reach, the network work is skipped for a minute and answered with a warning
+let offlineUntil = 0
+const OFFLINE_WINDOW = 60000
 const get = async (url: string, accept = 'application/json'): Promise<Response> => {
   const r = await fetch(url, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' }, signal: AbortSignal.timeout(DEADLINE) })
   if (!r.ok) throw new Error(`${url} answered ${r.status}`)
@@ -258,15 +265,24 @@ export const qpuDataOf = async (source: string, a: Args = {}) => {
   if (hit && Date.now() - hit.at < WINDOW) return hit.value as ReturnType<typeof readOf>
   const value = readOf(source, a)
   cache.set(key, { at: Date.now(), value })
+  // a warning is a moment's state, not a reading: it is not kept
+  void value.then((v) => { if (v && typeof v === 'object' && 'warning' in v) cache.delete(key) })
   return value
 }
 const readOf = async (source: string, a: Args) => {
+  if (Date.now() < offlineUntil && source !== 'all')
+    return { kind: 'data' as const, source, warning: 'offline', reading: 'skipped: the network was out of reach a moment ago', resolve: 'the network work is skipped while the network is out of reach; it runs again on the next call once it is back' }
   try {
     const r = await reading(source, a)
     if ('denied' in r) return r
     return { kind: 'data' as const, ...r, holds: r.agrees, receipt: receiptOf(`data ${source}`, r.reading, r.agrees) }
   } catch (e) {
-    return fail('unreachable', { source, reading: (e as Error).message })
+    const f = qpuFailureOf(e, `data ${source}`)
+    if (f.level === 'warning') {
+      offlineUntil = Date.now() + OFFLINE_WINDOW
+      return { kind: 'data' as const, source, warning: f.why, reading: f.reading, resolve: f.resolve }
+    }
+    return { ...fail('unreachable', { source }), reading: f.reading, why: f.why, resolve: f.resolve }
   }
 }
 

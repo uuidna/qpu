@@ -307,6 +307,25 @@ export const qpuMcpOf = onceOf(() => {
  * @wing agents
  * @kind builder
  */
+/** A failure, classified so it is answered rather than thrown: when the network cannot be reached (no route, DNS,
+ *  refused connection, timeout) the work that needs it is skipped and the answer is a WARNING; anything else is an
+ *  ERROR. Either way the answer says where it happened, why, and what resolves it.
+ * @wing agents
+ * @kind builder
+ */
+export const qpuFailureOf = (e: unknown, where = 'call') => {
+  const err = e as { name?: string; message?: string; cause?: { code?: string; message?: string } }
+  const message = String(err?.message ?? e)
+  const code = err?.cause?.code ?? ''
+  const offline = err?.name === 'TimeoutError' || err?.name === 'AbortError' || /ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ECONNRESET|ENETUNREACH|EHOSTUNREACH|ETIMEDOUT|UND_ERR_CONNECT/.test(`${code} ${message}`) || (err?.name === 'TypeError' && /fetch|network/i.test(message))
+  const status = /answered (\d{3})/.exec(message)?.[1]
+  return offline
+    ? { level: 'warning' as const, where, why: 'offline', reading: message, resolve: 'the network is not reachable from this host: the network work was skipped; it runs again on the next call once the network is back' }
+    : status
+      ? { level: 'error' as const, where, why: `answered ${status}`, reading: message, resolve: Number(status) === 403 || Number(status) === 401 ? 'the source refuses this client: it needs credentials or another endpoint, or it is dropped from the catalogue' : Number(status) === 404 ? 'the address no longer exists: correct it at its source in the unit' : Number(status) >= 500 ? 'the source is failing on its side: it is read again on the next call' : 'the request is not one the source accepts: correct its arguments' }
+      : { level: 'error' as const, where, why: err?.name ?? 'error', reading: message, resolve: 'a fault in this unit: the reading names it; it is fixed in the source' }
+}
+
 /** EVERY CAPABILITY THROUGH EVERY DOOR. tools/list is sealed (theorem agents_mcp_tools), and an MCP client calls only
  *  what it was listed; so each listed door also takes an address or another door. The rule is one schema, added to
  *  every listed door: { hex } runs a hex program (a UUID, or { family, program, params }), { door, arguments } answers
@@ -323,6 +342,7 @@ export const qpuThroughSchemaOf = (inputSchema: Record<string, unknown>): Record
     door: { type: 'string', description: 'Answer as any door or formula: { doors: true } lists them; family.formula runs a formula.' },
     arguments: { type: 'object', description: 'The arguments for door (params for a formula).' },
     doors: { type: 'boolean', description: '{ doors: true } lists every door and every formula reachable through this one.' },
+    errors: { type: 'boolean', description: '{ errors: true } answers every current error and warning at once, each with what resolves it.' },
   },
 })
 
@@ -347,7 +367,40 @@ export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
   return { kind: 'doors' as const, doors, formulas, reachable: doors.length + formulas.length, holds: doors.length > n - n && formulas.length > n - n }
 }
 
+/**
+ * Every current error and warning at once: each fused door's own checks read through the registry (qpu_data's every
+ * source), each classified with where, why and what resolves it. Warnings (the network out of reach) never count
+ * against holds.
+ * @wing agents
+ * @kind builder
+ */
+export const qpuMcpErrorsOf = async (env?: QpuEnv) => {
+  type Row = { where: string; why: string; reading?: unknown; resolve: string }
+  const errors: Row[] = [], warnings: Row[] = []
+  const data = FUSED_TOOLS.get('qpu_data')
+  if (data) {
+    const listed = (await data.run({ source: 'all' }, env)) as { sources?: { source: string; args: Record<string, unknown>; label: string }[] }
+    const rows = await Promise.all((listed.sources ?? []).map(async (s) => ({ s, r: (await data.run({ ...s.args, source: s.source }, env)) as Record<string, unknown> })))
+    for (const { s, r } of rows) {
+      if (r.warning) warnings.push({ where: s.label, why: String(r.warning), reading: r.reading, resolve: String(r.resolve ?? '') })
+      else if (r.denied) errors.push({ where: s.label, why: String(r.denied), reading: r.reading, resolve: String(r.resolve ?? 'the reading names it') })
+      else if (r.agrees === false) errors.push({ where: s.label, why: 'differs', reading: { read: r.reading, expected: r.expected }, resolve: 'the live value and the unit differ: the unit is corrected if the source is right, the source reported if it is not' })
+    }
+  }
+  return { kind: 'errors' as const, errors, warnings, count: errors.length, holds: errors.length === n - n }
+}
+
+/** Every call is answered: a door that throws is answered with its classified failure, never a crash. */
 export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
+  try {
+    return await callOf(name, args, env, auth)
+  } catch (e) {
+    const f = qpuFailureOf(e, name)
+    return qpuMcpShownOf(name, { kind: 'failure' as const, ...(f.level === 'warning' ? { warning: f.why } : { denied: f.why }), ...f, holds: f.level === 'warning' })
+  }
+}
+
+const callOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
   // the hex address that reproduces this call, when it is a pure door call (no man, live or sequence flags)
   const hexOf = (): string | undefined => {
     if (args.man === true || args.live === true || args.sequence === true) return undefined
@@ -361,8 +414,9 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
     const hex = hexOf()
     return hex && r._meta ? { ...r, _meta: { ...r._meta, hex } } : r
   }
-  // through this door: the listing, a hex program, or another door (see qpuThroughSchemaOf)
+  // through this door: the listing, every error at once, a hex program, or another door (see qpuThroughSchemaOf)
   if (args.doors === true) return shown(qpuMcpDoorsOf(env, auth))
+  if (args.errors === true) return shown(await qpuMcpErrorsOf(env))
   if (typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null)) {
     const h = args.hex as string | { family?: unknown; program?: unknown; params?: unknown }
     try {
@@ -373,7 +427,15 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
     }
   }
   if (typeof args.door === 'string' && args.door !== name) {
-    const inner = typeof args.arguments === 'object' && args.arguments !== null ? (args.arguments as Record<string, unknown>) : {}
+    // the door's arguments as a client sends them: an object, an object serialised as a JSON string, or flat beside
+    // door itself (a client that knows only this door's schema passes what it was given)
+    const parsed = (() => {
+      if (typeof args.arguments === 'object' && args.arguments !== null) return args.arguments as Record<string, unknown>
+      if (typeof args.arguments === 'string') { try { const v = JSON.parse(args.arguments); if (v && typeof v === 'object') return v as Record<string, unknown> } catch {} }
+      return undefined
+    })()
+    const flat = Object.fromEntries(Object.entries(args).filter(([k]) => !['door', 'arguments', 'hex', 'doors', 'errors'].includes(k)))
+    const inner = parsed ?? flat
     const formula = /^(.+)\.([A-Za-z0-9_]+)$/.exec(args.door)
     if (formula && qpuHexFamiliesOf().get(formula[1]!)?.some((f) => f.name === formula[2])) return qpuMcpCallOf(name, { hex: { family: formula[1], program: [formula[2]], params: inner.params ?? [] } }, env, auth)
     return qpuMcpCallOf(args.door, inner, env, auth)

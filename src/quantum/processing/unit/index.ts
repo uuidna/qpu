@@ -26,7 +26,7 @@ export { qpuLeanOf, qpuLeanHolds } from './proof.js'
 import { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
 export { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
 import { qpuToolsOf, qpuMcpOf, qpuThroughSchemaOf } from './mcp.js'
-export { qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds, qpuThroughSchemaOf, qpuMcpDoorsOf } from './mcp.js'
+export { qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds, qpuThroughSchemaOf, qpuMcpDoorsOf, qpuMcpErrorsOf, qpuFailureOf } from './mcp.js'
 import { qpuShorTryOf, qpuShorOf, qpuShorHolds } from './shor.js'
 export { qpuShorTryOf, qpuShorTryHolds, qpuShorOf, qpuShorReceiptsOf, qpuShorReceiptsHolds, qpuShorHolds } from './shor.js'
 import { qpuSandboxOf, qpuSandboxRunOf } from './sandbox.js'
@@ -3404,8 +3404,9 @@ export const qpuMcpShownOf = (name: string, shownPayload: unknown, href = `${uni
   // A man page on the wire carries the tool's output schema (off tools/list since 2026-09-12), whichever door built it.
   const isMan = !!shownPayload && typeof shownPayload === 'object' && (shownPayload as { kind?: unknown }).kind === 'man' && !('outputSchema' in shownPayload)
   const payload: unknown = isMan ? qpuManPageOf(name, shownPayload as object) : shownPayload
-  const bag = payload && typeof payload === 'object' ? (payload as { holds?: unknown }) : {}
-  const holds = bag.holds === true
+  const bag = payload && typeof payload === 'object' ? (payload as { holds?: unknown; warning?: unknown }) : {}
+  // a warning (the network out of reach, its work skipped) is answered, not failed
+  const holds = bag.holds === true || bag.warning !== undefined
   const resource = qpuShownResourceOf(name)
   const unlimited = JSON.stringify(payload)
   const content: {

@@ -16,6 +16,9 @@ import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 import { clayOf, wingOf } from '../dist/core/showcase.js'
+// every family and door registers on import, as on the host, so the summary counts what clients reach
+for (const m of ['mcp/cross-domain-formulas', 'mcp/cross-domain-paths', 'audit/audit-formulas', 'mcp/quantum-secure-signalling', 'mcp/hologram-streams', 'mcp/crypt-formulas', 'mcp/np-formulas', 'mcp/clay-seals', 'mcp/heat-formulas', 'mcp/mcp-capabilities', 'mcp/qpu-fused']) await import(`../dist/${m}.js`)
+const { qpuMcpDoorsOf, qpuMcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const git = (cmd) => execSync(`git ${cmd}`, { cwd: ROOT }).toString().trim()
@@ -92,7 +95,43 @@ const clayTable = [
 const rowsOf = () =>
   nodes.map((n) => `| ${cell(label(n))} | \`${n.uuid}\` | \`${short(n.referrer.replace(/^git:/, ''))}\` | \`${n.fold}\` | ${n.seq} |`)
 
+// AT A GLANCE: what QPU does, how much of it, and what each number is compared with — every figure read from a committed
+// receipt or from the unit's own registries, so the summary cannot claim more than the receipts hold. The same text
+// is the GitHub Release's notes (RELEASE.md) and the top of the npm page.
+const receiptOf = (f) => (fs.existsSync(path.join(ROOT, f)) ? read(f) : {})
+const lean = receiptOf('lean-receipt.json'), formulas = receiptOf('formulas-receipt.json'), fuse = receiptOf('fuse-receipt.json')
+const discovery = receiptOf('discovery-receipt.json'), heat = receiptOf('heat-receipt.json'), payloadCf = receiptOf('payload-cf-receipt.json'), cross = receiptOf('cross-receipt.json')
+const doors = qpuMcpDoorsOf()
+const listed = qpuMcpToolsListOf().length
+const num = (x) => (typeof x === 'number' ? x.toLocaleString('en') : String(x ?? '—'))
+const glance = [
+  '| Capability | How much | Compared with |',
+  '|---|---|---|',
+  `| MCP door (https://qpu.uuidna.com/mcp) | ${listed} listed tools; through any of them ${num(doors.doors.length)} doors and ${num(doors.formulas.length)} formulas (\`{ doors: true }\`, \`{ door }\`, \`{ hex }\`, \`{ errors: true }\`) | the Model Context Protocol: \`tools/list\` sealed by the Lean theorem agents_mcp_tools |`,
+  `| Formal proof | ${num(lean.theorems)} Lean theorems served, ${num(lean.recomputed)} recomputed in TypeScript | the Lean 4 kernel (${lean.toolchain ?? 'toolchain'}) |`,
+  `| Formula families | ${num(discovery.families)} families run as hex-program UUIDs (RFC 9562 v8); ${num(discovery.runs)} programs in the last discovery | each other: ${num(discovery.relationsTotal)} values reached by two or more families, ${num(discovery.seals)} seals (fixed points, involutions) |`,
+  `| Live public data | ${num(discovery.sourcesAgree)} of ${num(discovery.sources)} sources agree | CERN Open Data, NIST CODATA, OEIS (${num(discovery.sequences)} formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |`,
+  `| Public APIs | ${num(fuse.reached)} of ${num(fuse.listed)} APIs walked live, ${num(fuse.methods)} methods, ${num(fuse.edges)} cross formulas | the APIs.guru registry, against the Lean theorem fuse |`,
+  `| Cross formulas | ${num(formulas.pass)} of ${num(formulas.rowsTotal)} rows hold across ${num(formulas.formulas)} formulas | their own hex programs (${num(formulas.hexAgrees)} agree) |`,
+  `| Cryptography | ${formulas.attacks ?? '—'} attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |`,
+  `| Live cross-proof | ${num(cross.agree)} of ${num(cross.of)} claims agree | the hosts the claims name |`,
+  `| Payload on Cloudflare | ${num(payloadCf.combinations)} combinations generated; the site is one Worker | Payload's documented plugins and adapters |`,
+  `| Code heat | ${num(heat.cold)} of ${num(heat.files)} files cold, ${num(heat.hot)} hot | Qpu.Physics: photon / thermal T |`,
+].join('\n')
+const summary = `An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
+same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (\`{ "qpu": { "type": "http",
+"url": "https://qpu.uuidna.com/mcp" } }\`), as a package (\`npm install @uuidna/qpu\`), or as a container.
+
+${glance}
+
+Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
+(commercial use by license: https://qpu.uuidna.com/license).`
+
+fs.writeFileSync(path.join(ROOT, 'RELEASE.md'), `${summary}\n\nEvery figure above is read from a committed receipt; the README carries the final build receipt that accounts for them.\n`)
+
 const md = `# UUIDNA QPU
+
+${summary}
 
 **Final build receipt** \`${final.uuid}\`
 
@@ -121,6 +160,9 @@ ${clayTable}
 
 ## Build receipt
 
+<details>
+<summary>${nodes.length} receipts, chained in the build stream</summary>
+
 Each node is a quantum receipt: its UUID is the RFC 9562 v8 content address of its payload fold and its referrer, and
 its referrer is the node above it. Change any receipt's bytes and its node, its file's node, the build stream chain
 and this final receipt move; the root moves with the commit.
@@ -132,6 +174,8 @@ ${graph}
 | node | receipt uuid | referrer | payload fold | seq |
 |---|---|---|---|---|
 ${rowsOf().join('\n')}
+
+</details>
 
 Regenerate with \`npm run readme\` after \`npm run build\` and the receipt-producing runs; \`node scripts/generate-readme.mjs --check\`
 compares. Documentation: [docs/README.md](docs/README.md). License: CC-BY-NC-ND-4.0.

@@ -1,30 +1,32 @@
 name: ci
 
-# One job, one checkout, one install: the gate (Lean kernel + receipted suite), and — when called with deploy — the
-# verification of the deploy in the same job, so main never spins a second runner to redo what this one just did.
-# (Cloudflare's Git integration is what deploys; this job proves the host serves the bytes it built.)
-# The Lean toolchain is cached on the pin in lean-toolchain; elan runs only on a miss.
+# ONE CI FOR EVERY ENVIRONMENT. Node (the build, the Lean kernel, the gate), Cloudflare Workers (the one Worker:
+# Payload fronted by the unit), the container (the image boots and proves itself), npm and the GitHub Release (a tag),
+# and the live host itself (QPU is live: every test runs against https://qpu.uuidna.com, after the deploy that made it,
+# and on a schedule). Each environment is a job; a push to main deploys and then tests what it deployed; a tag also
+# publishes. Nothing else runs a workflow.
 
 on:
+  push:
+    branches: [main]
+    tags: ['v1.*.[0-9]']
   pull_request:
+  schedule:
+    - cron: '17 */6 * * *'
   workflow_dispatch:
-  workflow_call:
-    inputs:
-      deploy:
-        description: deploy to Cloudflare after the gate, then verify the host serves the bytes this build makes
-        type: boolean
-        default: false
-        required: false
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 permissions:
   contents: read
 
 jobs:
-  ci:
+  # NODE: install by the lockfile, the Lean kernel (cached as a receipt keyed on the proof and the toolchain pin), the
+  # build and the gate (every operation resolves by UUID and qpu_prove holds).
+  build:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -34,10 +36,6 @@ jobs:
           cache: npm
       - name: Install exact (lockfile law; no install scripts)
         run: npm ci
-      # KERNEL RECEIPT. The proof is one file and the kernel is deterministic: the same bytes under the same toolchain
-      # pin check the same way every time. So the kernel's pass is cached as a receipt keyed on both hashes, and the
-      # toolchain (a large restore) is fetched and run only when the proof or the pin changed. The receipt is saved
-      # only after the kernel passed in this run; a failing run saves nothing.
       - name: Kernel receipt (index.lean bytes and the toolchain pin already checked in an earlier run)
         id: kernel
         uses: actions/cache/restore@v6
@@ -66,49 +64,154 @@ jobs:
         with:
           path: .lean-ok
           key: lean-ok-${{ hashFiles('lean-toolchain', 'lakefile.lean', 'src/quantum/processing/unit/lean/**', 'src/quantum/processing/unit/index.lean') }}
-      - name: Kernel receipt hit
-        if: steps.kernel.outputs.cache-hit == 'true'
-        run: echo "::notice::kernel receipt hit — index.lean and lean-toolchain are byte-identical to a build the kernel already checked ($(cat .lean-ok | tr '\n' ' '))"
       - name: Gate (every operation resolves by UUID and qpu_prove holds)
         run: |
           npm run build
           node --input-type=module -e "import('./dist/mcp/uuid-programmable-core.js').then(async (m) => { const r = await m.consolidatedMCP.runDeploymentGate(); console.log(JSON.stringify(r)); process.exit(r.ok ? 0 : 1) })"
-
-      - name: Deploy to Cloudflare (only when called with deploy and the token exists)
-        id: deploy
-        if: ${{ inputs.deploy }}
-        env:
-          HAS_CF: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: The generated files are what the spec generates (deployment, configs, registries)
         run: |
-          if [ "$HAS_CF" = "true" ]; then
-            npm exec -- wrangler deploy
-            echo "deployed=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "::notice::gate PASSED but the worker was not deployed — CLOUDFLARE_API_TOKEN is not set"
-            echo "deployed=false" >> "$GITHUB_OUTPUT"
-          fi
-      # Cloudflare's Git integration deploys qpu.uuidna.com on its own within about a minute of a push to main; the
-      # wrangler step above is a no-op until a token is set. So the verification does not wait on that step: it polls
-      # until the host serves, byte for byte, the documents this build makes, then runs the live suite against it.
-      - name: Verify the host serves this build — bytes equal, then the live suite against it
-        if: ${{ inputs.deploy }}
-        env:
-          VERIFY_ATTEMPTS: '60'
-        run: |
-          node scripts/verify-live.mjs https://qpu.uuidna.com
-          QPU_LIVE=https://qpu.uuidna.com node --test --test-reporter=spec dist/quantum/processing/unit/live.test.js
-          node scripts/examine.mjs https://qpu.uuidna.com
+          node scripts/payload-cloudflare.mjs --repo > /dev/null
+          git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json
 
-  # THE BOOT'S RECEIPT: the image builds, and inside it the unit proves itself (qpu_prove holds) — the same proof the
-  # container's HEALTHCHECK runs. This is what "bootable on hardware" means here; no device is dispatched.
-  boot:
+  # CLOUDFLARE WORKERS: the one Worker (uuidna-qpu = the Payload app fronted by the unit) built by OpenNext and deployed.
+  deploy:
+    needs: [build]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    needs: [ci]
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v7
-      - name: Build the hardware image
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Build and deploy the one Worker (named when the token is missing)
+        env:
+          # the build reads the config; the Worker's own secret is set on Cloudflare and never leaves it
+          PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || 'build-only' }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning::not deployed: the repository has no CLOUDFLARE_API_TOKEN secret; the tests below run against what is live"
+          else
+            npm run ship
+          fi
+
+  # THE LIVE HOST: every test runs against https://qpu.uuidna.com — after the deploy on a push, as it stands on a pull
+  # request or the schedule. On the schedule a failure is filed as the one open `examine` issue.
+  test:
+    needs: [build, deploy]
+    if: always() && (needs.build.result == 'success' || github.event_name == 'schedule') && needs.deploy.result != 'failure'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          cache: npm
+      - run: npm ci
+      - name: Every test, against the live host
+        id: live
+        run: |
+          set +e
+          npm test 2>&1 | tee test.log
+          status=${PIPESTATUS[0]}
+          node scripts/examine.mjs https://qpu.uuidna.com 2>&1 | tee -a test.log
+          status=$(( status | PIPESTATUS[0] ))
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit $status
+      - name: File the findings as the open examine issue (scheduled runs)
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          body="$(printf 'Scheduled run against https://qpu.uuidna.com failed on %s (run %s).\n\n```\n%s\n```\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$GITHUB_RUN_ID" "$(grep -E 'not ok|FIND|# (fail|pass)|examine:' test.log | head -80)")"
+          number="$(gh issue list --label examine --state open --json number --jq '.[0].number')"
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body "$body"
+          else
+            gh label create examine --description 'findings of the scheduled run against the live host' --color D93F0B 2>/dev/null || true
+            gh issue create --title "examine: qpu.uuidna.com has findings" --label examine --body "$body"
+          fi
+
+  # THE CONTAINER: the generated image builds, and inside it the unit proves itself (qpu_prove holds) — the same proof
+  # the image's HEALTHCHECK runs.
+  image:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the image
         run: docker build -t qpu .
       - name: The boot proves itself (qpu_prove holds inside the image)
         run: docker run --rm qpu node dist/quantum/processing/unit/boot.js --prove
+
+  # NPM AND THE RELEASE (a tag): the GitHub Release first (Zenodo archives it), with the notes the README generator
+  # writes, then npm through OIDC trusted publishing, then the check that every surface serves this exact version.
+  publish:
+    needs: [test, image]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+          package-manager-cache: false
+      # OIDC trusted publishing needs npm >= 11.5.1. Node 22 ships npm 10.9 and 404s the PUT.
+      - name: npm meets the OIDC floor (>= 11.5.1)
+        run: |
+          set -euo pipefail
+          NPM=$(npm --version)
+          node -e 'const [a,b,c]=process.argv[1].split(".").map(Number);const ok=a>11||(a===11&&(b>5||(b===5&&c>=1)));if(!ok){console.error(`::error::npm ${process.argv[1]} is below the OIDC trusted-publishing floor 11.5.1`);process.exit(1)}' "$NPM"
+          echo "npm $NPM meets the OIDC floor 11.5.1"
+      - run: npm ci
+      - name: Version lock (v1.<minor>.<digit>; previous version released on npm)
+        run: npm run version:lock
+      - run: npm run build
+      - name: Tag matches package.json
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG="$(node -p "require('./package.json').version")"
+          echo "tag=$TAG package.json=$PKG"
+          test "$TAG" = "$PKG" || { echo "::error::tag v$TAG != package.json $PKG"; exit 1; }
+      - name: GitHub Release (Zenodo archives it), its notes the README generator's summary
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "::notice::$GITHUB_REF_NAME already exists"
+          elif [ -f RELEASE.md ]; then
+            gh release create "$GITHUB_REF_NAME" --title "@uuidna/qpu $GITHUB_REF_NAME" --notes-file RELEASE.md
+          else
+            gh release create "$GITHUB_REF_NAME" --generate-notes
+          fi
+      - name: npm publish (OIDC trusted publishing; E404 on PUT means npmjs.com has no trusted publisher for this workflow)
+        run: |
+          set +e
+          npm publish --provenance --access public --tag "$(node scripts/version-lock.mjs --dist-tag)" 2>&1 | tee publish.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ] && grep -q "E404" publish.log; then
+            echo "::error::npm refused the PUT with 404: npmjs.com has no trusted publisher for uuidna/qpu + ci.yml. Set one under the package's Settings → Trusted publishers (GitHub Actions, repository uuidna/qpu, workflow ci.yml), then rerun this job. The GitHub Release and the Zenodo archive are already made."
+          fi
+          exit $status
+      - name: Verify the release is complete and live — npm, provenance, Release, Zenodo
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERIFY_ATTEMPTS: '30'
+          VERIFY_EVERY_MS: '10000'
+        run: node scripts/verify-release.mjs "${GITHUB_REF_NAME#v}"

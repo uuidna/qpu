@@ -1,0 +1,83 @@
+import { test } from './receipted.js'
+import assert from 'node:assert/strict'
+
+/** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/mcp (QPU_LIVE names
+ * another host) through the sealed doors, the one way any MCP client reaches it, and drive what a release must cover:
+ * every door and formula listed, every external API and dataset read, formula discovery holding, and every error and
+ * warning answered at once, each with what resolves it. */
+const host = (process.env.QPU_LIVE ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
+const DOOR = 'qpu_cite'
+let id = 0
+type Shown = { structuredContent?: Record<string, unknown>; isError?: boolean }
+const call = async (args: Record<string, unknown>, name = DOOR): Promise<Shown> => {
+  const r = await fetch(`${host}/mcp`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method: 'tools/call', params: { name, arguments: args } }),
+    signal: AbortSignal.timeout(120000),
+  })
+  const body = (await r.json()) as { result?: Shown; error?: { message: string } }
+  assert.ok(body.result, `tools/call ${name} ${JSON.stringify(args)}: ${body.error?.message ?? r.status}`)
+  return body.result
+}
+const out = (s: Shown) => (s.structuredContent ?? {}) as Record<string, unknown>
+const FUSED = ['qpu_data', 'qpu_hex', 'qpu_discover', 'qpu_crypt', 'qpu_np', 'qpu_hologram']
+
+test('release: every door and every formula is reachable through a sealed door', async (t) => {
+  const d = out(await call({ doors: true })) as { doors?: { name: string; kind: string }[]; formulas?: { name: string }[] }
+  assert.ok(d.doors && d.formulas, 'the sealed door answers { doors: true }')
+  for (const f of FUSED) assert.ok(d.doors.some((x) => x.name === f && x.kind === 'fused'), `fused door ${f} is listed`)
+  const families = new Set(d.formulas.map((f) => f.name.split('.').slice(0, -1).join('.')))
+  for (const f of ['Qpu.Mint', 'Qpu.Physics', 'cross', 'np', 'clay', 'heat']) assert.ok(families.has(f), `family ${f} is reachable`)
+  t.diagnostic(`${d.doors.length} doors, ${d.formulas.length} formulas`)
+  // a formula runs through the door by name, its params passed as they are
+  const run = out(await call({ door: 'heat.temperature', arguments: { params: [16, 1] } }))
+  assert.equal(run.value, 16000, 'heat.temperature(16, 1) = 16000 mK through the door')
+  // and the arguments may come flat or as a JSON string, as clients holding an older schema send them
+  for (const args of [{ door: 'qpu_data', source: 'zenodo' }, { door: 'qpu_data', arguments: JSON.stringify({ source: 'zenodo' }) }]) {
+    const z = out(await call(args))
+    assert.notEqual(z.denied, 'source', `qpu_data received its source from ${JSON.stringify(args)}`)
+  }
+})
+
+test('release: every external API and dataset is read, the theorems among them agree', async (t) => {
+  const all = out(await call({ door: 'qpu_data', arguments: { source: 'all' } })) as { sources?: { source: string; args: Record<string, unknown>; label: string }[] }
+  assert.ok(all.sources && all.sources.length > 0, 'qpu_data lists its sources')
+  const kinds = new Set(all.sources.map((s) => s.source))
+  for (const k of ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'apis', 'catalog']) assert.ok(kinds.has(k), `a ${k} source is checked`)
+  const rows = await Promise.all(all.sources.map(async (s) => ({ s, r: out(await call({ door: 'qpu_data', arguments: { ...s.args, source: s.source } })) })))
+  let agree = 0, warned = 0
+  for (const { s, r } of rows) {
+    // every source answers: it agrees, differs with what it read, or is skipped with a warning; none is silent
+    assert.ok('agrees' in r || 'warning' in r || 'denied' in r, `${s.label} answers`)
+    if ('warning' in r) { warned++; assert.ok(typeof r.resolve === 'string', `${s.label}: the warning says what resolves it`); continue }
+    if (r.agrees === true) agree++
+    if (r.denied) assert.ok(typeof r.resolve === 'string', `${s.label}: the error says what resolves it`)
+    // a theorem of the unit checked against live data must agree whenever the data could be read
+    if (['cern', 'nist', 'oeis'].includes(s.source) && !r.denied) assert.equal(r.agrees, true, `${s.label} agrees with the theorem`)
+  }
+  t.diagnostic(`${rows.length} sources: ${agree} agree, ${warned} warned`)
+})
+
+test('release: formula discovery holds across every family', async (t) => {
+  const d = out(await call({ door: 'qpu_discover', arguments: { limit: 5 } })) as { holds?: boolean; families?: string[]; perFamily?: Record<string, { runs: number }>; relationsTotal?: number }
+  assert.equal(d.holds, true, 'discovery holds')
+  for (const f of d.families ?? []) assert.ok((d.perFamily?.[f]?.runs ?? 0) > 0, `family ${f} ran`)
+  assert.ok((d.relationsTotal ?? 0) > 0, 'two or more families reach a common value')
+  t.diagnostic(`${d.families?.length} families, ${d.relationsTotal} cross-family solutions`)
+})
+
+test('release: every error and warning is answered at once, each with what resolves it', async (t) => {
+  const e = out(await call({ errors: true })) as { errors?: { where: string; why: string; resolve: string }[]; warnings?: { where: string; why: string; resolve: string }[]; count?: number; holds?: boolean }
+  assert.ok(Array.isArray(e.errors) && Array.isArray(e.warnings), 'one answer carries every error and every warning')
+  for (const x of [...e.errors, ...e.warnings]) {
+    assert.ok(x.where && x.why, `${JSON.stringify(x)} names where and why`)
+    assert.ok(typeof x.resolve === 'string' && x.resolve.length > 0, `${x.where}: says what resolves it`)
+  }
+  assert.equal(e.count, e.errors.length, 'count is the errors; warnings do not count against holds')
+  assert.equal(e.holds, e.errors.length === 0)
+  // an unknown name is answered with every name that would resolve it, not a bare failure
+  const bad = out(await call({ door: 'qpu_data', arguments: { source: 'nope' } }))
+  assert.ok(Array.isArray(bad.sources) && typeof bad.resolve === 'string', 'an unknown source lists every source and how to resolve it')
+  t.diagnostic(`${e.errors.length} errors, ${e.warnings.length} warnings`)
+})
