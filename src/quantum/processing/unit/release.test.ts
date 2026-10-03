@@ -1,5 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { qpuContentUuidOf, qpuUuidReceiptOf } from './index.js'
 
 /** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/mcp (QPU_LIVE names
@@ -122,6 +123,29 @@ test('release: the site end to end — every address it lists answers, every pag
   const program = await (await get('/heat/temperature+signal?p=16,1')).text()
   assert.ok(program.includes('16000'), 'a hex program renders its run: heat.temperature(16, 1) = 16000')
   t.diagnostic(`${urls.length} addresses, ${pages.docs.length} pages`)
+})
+
+test('release: every public API is fused and used — the registry walked through api.call addresses, a slice of it live', async (t) => {
+  // the committed walk covers the whole registry: every API read (fused), and a read made wherever one needs no parameter
+  const walk = JSON.parse(readFileSync(new URL('../../../../api-receipt.json', import.meta.url), 'utf8')) as { listed: number; walked: number; fused: number; used: number; statuses: Record<string, number> }
+  assert.equal(walk.walked, walk.listed, 'the walk covers every API the registry lists')
+  assert.equal(walk.fused, walk.walked, 'every API is fused: its document read and its operations derived')
+  assert.ok(walk.used > 0 && walk.statuses['200'] > 0, 'reads were made and answered')
+  // and live, through the door: the registry is addressed, a slice is walked, an operation is resolved and made
+  const reg = out(await call({ door: 'qpu_api' })) as { listed?: number; address?: string }
+  assert.ok((reg.listed ?? 0) > 0 && typeof reg.address === 'string', 'the door addresses the registry')
+  const from = Math.floor(((reg.listed ?? 1) * 7) / 16)
+  const slice = out(await call({ door: 'qpu_api', walk: true, from, take: 8 })) as { take?: number; fused?: number; rows?: { api: string; fused: boolean; used: boolean; url?: string; why?: string }[] }
+  assert.equal(slice.fused, slice.take, `every API of the live slice is fused: ${JSON.stringify(slice.rows?.filter((r) => !r.fused))}`)
+  const made = slice.rows?.find((r) => r.used)
+  if (made) {
+    const one = out(await call({ door: 'qpu_api', api: made.api })) as { operations?: { index: number; verb: string; required: string[] }[]; server?: string }
+    const op = one.operations?.find((o) => o.verb === 'get' && o.required.length === 0)
+    assert.ok(op && one.server, `${made.api} lists its operations and server`)
+    const r = out(await call({ door: 'qpu_api', api: made.api, operation: op!.index })) as { status?: number; hex?: string; url?: string; receipt?: string }
+    assert.ok((r.status ?? 0) > 0 && typeof r.hex === 'string' && typeof r.receipt === 'string', `${made.api} operation ${op!.index} is made at its hex address: ${JSON.stringify(r).slice(0, 200)}`)
+  }
+  t.diagnostic(`${walk.listed} listed, ${walk.fused} fused, ${walk.used} used; live slice from ${from}: ${slice.fused}/${slice.take} fused, ${slice.rows?.filter((r) => r.used).length} used`)
 })
 
 test('release: every error and warning is answered at once, each with what resolves it', async (t) => {

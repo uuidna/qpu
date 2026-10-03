@@ -35,10 +35,18 @@ const modulesOf = (dir, ext) =>
     .filter((n) => /^[A-Z]/.test(n))
     .sort()
 const slugOf = (name) => `${name[0].toLowerCase()}${name.slice(1)}`
-const fromConfig = (dir) => (name) => ({ name, slug: slugOf(name), from: `./${dir}/${name}` })
+// a collection's or global's slug is the one its source declares (fuse-apis, not fuseApis)
+const declaredSlugOf = (dir, name) => /slug:\s*'([^']+)'/.exec(fs.readFileSync(path.join(SRC, dir, `${name}.ts`), 'utf8'))?.[1] ?? slugOf(name)
+const fromConfig = (dir) => (name) => ({ name, slug: declaredSlugOf(dir, name), from: `./${dir}/${name}` })
 const REPO_COLLECTIONS = modulesOf('collections', 'ts').map(fromConfig('collections'))
 const REPO_GLOBALS = modulesOf('globals', 'ts').map(fromConfig('globals'))
+// the hex families, fused doors and MCP methods register themselves on import: the modules that do so are found by
+// what they call, and every importer (the Worker, the site, the receipts, the README) imports this one registry
+const registering = ['mcp', 'audit'].flatMap((dir) =>
+  fs.readdirSync(path.join(SRC, dir)).filter((f) => /\.ts$/.test(f) && !/\.test\.ts$|^index\.ts$|^families\.ts$/.test(f) && /\b(qpuHexRegisterOf|qpuMcpFuseOf|qpuMcpRegisterOf)\(/.test(fs.readFileSync(path.join(SRC, dir, f), 'utf8')))
+    .map((f) => ({ name: f.slice(0, -3), from: `${dir === 'mcp' ? '.' : '../' + dir}/${f.slice(0, -3)}.js`, key: f.slice(0, -3) })))
 const REPO_REGISTRIES = [
+  { file: `${SRC}/mcp/families.ts`, export: 'families', sideEffects: true, entries: registering },
   { file: `${SRC}/blocks/index.ts`, export: 'blocks', type: { name: 'Block', from: 'payload' }, entries: modulesOf('blocks', 'ts').map((name) => ({ name, from: `./${name}`, key: slugOf(name) })) },
   { file: `${SRC}/components/blocks/index.ts`, export: 'blockComponents', record: true, entries: modulesOf('components/blocks', 'tsx').map((name) => ({ name, from: `./${name}`, key: slugOf(name) })) },
 ]
@@ -67,7 +75,7 @@ const REPO = {
     root: SRC, collections: REPO_COLLECTIONS, globals: REPO_GLOBALS, registries: REPO_REGISTRIES, adminUser: 'users', title: 'UUIDNA QPU',
     targets: {
       'multi-tenant': [], search: ['docs', 'pages'], seo: ['docs', 'pages'], 'nested-docs': ['docs', 'pages'], redirects: ['docs', 'pages'],
-      'import-export': ['docs', 'pages', 'quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'], mcp: ['docs', 'pages', 'quantum-receipts', 'fuse-formulas'],
+      'import-export': REPO_COLLECTIONS.map((c) => c.slug).filter((s) => s !== 'users'), mcp: ['docs', 'pages', 'quantum-receipts', 'fuse-formulas'],
     },
     pluginOptions: {
       'multi-tenant': "tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin'",

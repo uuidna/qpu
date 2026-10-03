@@ -24,7 +24,7 @@ const num = (x: unknown, d: number): number => (typeof x === 'number' && Number.
 // ---------------------------------------------------------------------------
 
 qpuMcpFuseOf('qpu_hex', {
-  description: 'Run a hex program: { uuid } or { family, program, params }. Every family: Lean (Qpu.*), qpu, crypto, cross, path, audit, signal, holo, crypt, np. {} returns the catalogue.',
+  description: 'Run a hex program: { uuid } or { family, program, params }, of any registered family ({} returns the catalogue; { doors: true } through any door lists the families).',
   inputSchema: { type: 'object', properties: { uuid: { type: 'string' }, family: { type: 'string' }, program: { type: ['array', 'string'], items: { type: 'string' } }, params: { type: 'array', items: { type: 'integer' } } } },
   run: async (a, env) => {
     if (!a.uuid && !a.family) return qpuHexCatalogOf()

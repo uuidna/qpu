@@ -5,18 +5,9 @@
 import unit from './dist/quantum/processing/unit/index.js'
 // @ts-ignore built by `opennextjs-cloudflare build`
 import app from './.open-next/worker.js'
-// the cross formulas, audit formulas and paths register themselves as hex callables (cross.*, audit.*, path.*)
-import './dist/mcp/cross-domain-formulas.js'
-import './dist/mcp/cross-domain-paths.js'
-import './dist/audit/audit-formulas.js'
-import './dist/mcp/quantum-secure-signalling.js'
-import './dist/mcp/hologram-streams.js'
-import './dist/mcp/crypt-formulas.js'
-import './dist/mcp/np-formulas.js'
-import './dist/mcp/clay-seals.js'
-import './dist/mcp/heat-formulas.js'
-import './dist/mcp/mcp-capabilities.js'
-import './dist/mcp/qpu-fused.js'
+// every hex family, fused door and MCP method registers itself on import: src/mcp/families.ts is generated from the
+// modules that do so, and this is the one import of them
+import './dist/mcp/families.js'
 
 const deployed = 'public, max-age=3600'
 const edgeOf = (request, env) => {

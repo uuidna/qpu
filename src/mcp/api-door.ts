@@ -1,0 +1,186 @@
+import { packageVersion } from '../quantum/processing/unit/version.js'
+import { qpuContentUuidOf, qpuFacesOf, qpuHexRegisterOf, qpuHexUuidOf, qpuMcpFuseOf, qpuSchemaMethodsOf, qpuUuidReceiptOf, type QpuMethod } from '../quantum/processing/unit/index.js'
+import { crossFormulaOf } from './cross-domain-formulas.js'
+
+/** EVERY PUBLIC API IS AN ADDRESS. The APIs.guru registry lists every public API with an OpenAPI document; the unit
+ *  reads the registry, reads an API's document, and derives its operations (qpuSchemaMethodsOf). A request is then a
+ *  hex program of the family `api`: call(i, j, s) — the i-th API of the registry, its j-th operation, the s-th
+ *  parameter choice — three 16-bit naturals in one RFC 9562 v8 UUID. Nothing names an API by hand: the registry
+ *  orders them, the document orders the operations, the parameters are content-addressed. The fused door `qpu_api`
+ *  lists, resolves and calls through that address. Reads only (GET): reads need no auth. */
+
+const REGISTRY = 'https://api.apis.guru/v2/list.json'
+const DEADLINE = 15000
+const WINDOW = 600000
+const EXCERPT = 2048
+const ua = { 'user-agent': `qpu.uuidna.com/${packageVersion} (+https://qpu.uuidna.com)` }
+
+type Entry = { preferred?: string; versions?: Record<string, { swaggerUrl?: string; info?: { title?: string; 'x-apisguru-categories'?: string[] } }> }
+type Param = { name: string; in: string; required: boolean }
+export type Operation = { index: number; verb: string; path: string; operationId?: string; params: Param[]; required: string[]; takes: number; gives: number }
+export type Api = { index: number; api: string; title: string; spec: string; categories: string[]; server: string; operations: Operation[]; why?: string }
+
+let registry: { at: number; names: string[]; entries: Record<string, Entry> } | undefined
+const specs = new Map<string, { at: number; api: Promise<Api> }>()
+
+// a read is tried twice: a moment's failure (a timeout, a dropped connection) is not the document's state
+const json = async (url: string, accept = 'application/json'): Promise<unknown> => {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const r = await fetch(url, { headers: { accept, ...ua }, signal: AbortSignal.timeout(DEADLINE) })
+      if (!r.ok) throw new Error(`${url} answered ${r.status}`)
+      return await r.json()
+    } catch (e) {
+      if (attempt === 1 || /answered \d{3}/.test(String((e as Error).message))) throw e
+    }
+  }
+}
+
+/** The registry as it stands: every API name in order, read once per window. */
+export const apiRegistryOf = async () => {
+  if (registry && Date.now() - registry.at < WINDOW) return registry
+  const entries = (await json(REGISTRY)) as Record<string, Entry>
+  return (registry = { at: Date.now(), names: Object.keys(entries).sort(), entries })
+}
+
+// the server an OpenAPI 3 or Swagger 2 document names, resolved against the document's own address
+const serverOf = (doc: Record<string, unknown>, spec: string): string => {
+  const servers = doc.servers as { url?: string }[] | undefined
+  if (servers?.[0]?.url) return new URL(servers[0].url.replace(/\{[^}]+\}/g, 'v1'), spec).toString().replace(/\/$/, '')
+  const host = doc.host as string | undefined
+  if (!host) return ''
+  const scheme = ((doc.schemes as string[] | undefined) ?? ['https'])[0]
+  return `${scheme}://${host}${((doc.basePath as string | undefined) ?? '').replace(/\/$/, '')}`
+}
+
+const operationsOf = (doc: Record<string, unknown>, methods: QpuMethod[]): Operation[] => {
+  const paths = (doc.paths ?? {}) as Record<string, Record<string, { parameters?: Param[] }> & { parameters?: Param[] }>
+  return methods.map((m, index) => {
+    const item = paths[m.path] ?? {}
+    const op = item[m.verb] ?? {}
+    const params = [...(item.parameters ?? []), ...(op.parameters ?? [])].filter((p) => typeof p?.name === 'string').map((p) => ({ name: p.name, in: String(p.in ?? 'query'), required: p.required === true || p.in === 'path' }))
+    return { index, verb: m.verb, path: m.path, ...(m.operationId ? { operationId: m.operationId } : {}), params, required: params.filter((p) => p.required).map((p) => p.name), takes: m.takes.length, gives: m.gives.length }
+  })
+}
+
+/** One API of the registry, by index or name: its document read, its operations derived in the document's order. */
+export const apiOf = async (which: number | string): Promise<Api> => {
+  const reg = await apiRegistryOf()
+  const index = typeof which === 'number' ? which : reg.names.indexOf(which)
+  const api = reg.names[index]
+  if (api === undefined) throw new Error(`no API ${which} in the registry of ${reg.names.length}`)
+  const hit = specs.get(api)
+  if (hit && Date.now() - hit.at < WINDOW) return hit.api
+  const promise = (async (): Promise<Api> => {
+    const entry = reg.entries[api] ?? {}
+    const version = entry.versions?.[entry.preferred ?? ''] ?? {}
+    const base = { index, api, title: version.info?.title ?? api, spec: version.swaggerUrl ?? '', categories: version.info?.['x-apisguru-categories'] ?? [], server: '', operations: [] as Operation[] }
+    if (!base.spec) return { ...base, why: 'no spec url' }
+    try {
+      const doc = (await json(base.spec)) as Record<string, unknown>
+      return { ...base, server: serverOf(doc, base.spec), operations: operationsOf(doc, qpuSchemaMethodsOf(api, doc)) }
+    } catch (e) {
+      return { ...base, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message }
+    }
+  })()
+  specs.set(api, { at: Date.now(), api: promise })
+  return promise
+}
+
+/** The address of a request: the s-th parameter choice is the content address of the parameters, folded to 16 bits. */
+export const apiSeedOf = (params: Record<string, unknown>): number => (Object.keys(params).length ? parseInt(qpuContentUuidOf(params).slice(0, 4), 16) : 0)
+
+// the request an operation makes with these parameters: path parameters templated, the rest as the query
+const urlOf = (api: Api, op: Operation, params: Record<string, unknown>): string => {
+  let path = op.path
+  const query = new URLSearchParams()
+  for (const p of op.params) {
+    const v = params[p.name]
+    if (v === undefined) continue
+    if (p.in === 'path') path = path.replace(`{${p.name}}`, encodeURIComponent(String(v)))
+    else if (p.in === 'query') query.set(p.name, String(v))
+  }
+  const q = query.toString()
+  return `${api.server}${path}${q ? `?${q}` : ''}`
+}
+
+export type Reading = { api: string; index: number; operation: number; verb: string; url: string; status: number; type: string; bytes: number; excerpt: unknown; seconds: number; receipt: string; hex?: string; why?: string }
+
+/** The request, made: a GET through the address, its answer read (an excerpt), minted into a receipt. Other verbs
+ *  are resolved to their URL but not made: reads need no auth, writes are not the unit's to make. */
+export const apiCallOf = async (which: number | string, operation: number, params: Record<string, unknown> = {}): Promise<Reading> => {
+  const api = await apiOf(which)
+  const op = api.operations[operation]
+  const seed = apiSeedOf(params)
+  const hex = (() => { try { return qpuHexUuidOf({ family: 'api', program: ['call'], params: [api.index, operation, seed] }) } catch { return undefined } })()
+  const base = { api: api.api, index: api.index, operation, verb: op?.verb ?? '', url: '', status: 0, type: '', bytes: 0, excerpt: null as unknown, seconds: 0, ...(hex ? { hex } : {}) }
+  const sealed = (r: Omit<Reading, 'receipt'>): Reading => ({ ...r, receipt: qpuUuidReceiptOf(`api ${r.api}`, qpuContentUuidOf({ url: r.url, status: r.status, excerpt: r.excerpt }), { status: r.status }, r.url).uuid })
+  if (!op) return sealed({ ...base, why: api.why ?? `no operation ${operation} of ${api.operations.length}` })
+  if (!api.server) return sealed({ ...base, why: 'the document names no server: resolved to a path, not an address' })
+  const url = urlOf(api, op, params)
+  const missing = op.required.filter((name) => params[name] === undefined)
+  if (missing.length) return sealed({ ...base, url, why: `required: ${missing.join(', ')}` })
+  if (op.verb !== 'get') return sealed({ ...base, url, why: `${op.verb} is not a read: resolved, not made` })
+  const t0 = Date.now()
+  const once = () => fetch(url, { headers: { accept: 'application/json, */*;q=0.5', ...ua }, signal: AbortSignal.timeout(DEADLINE) })
+  try {
+    const r = await once().catch(once)
+    const type = r.headers.get('content-type') ?? ''
+    const text = await r.text()
+    let excerpt: unknown = text.slice(0, EXCERPT)
+    if (/json/.test(type)) { try { excerpt = JSON.parse(text.length > EXCERPT * 8 ? text.slice(0, EXCERPT * 8) : text) } catch { /* an excerpt of the text stands */ } }
+    return sealed({ ...base, url, status: r.status, type, bytes: text.length, excerpt, seconds: (Date.now() - t0) / 1000 })
+  } catch (e) {
+    return sealed({ ...base, url, seconds: (Date.now() - t0) / 1000, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message })
+  }
+}
+
+// the family `api`: operations(i) counts an API's operations; call(i, j, s) makes its j-th operation's request
+qpuHexRegisterOf('api', 'operations', (async (i: number) => {
+  const api = await apiOf(i)
+  return crossFormulaOf({ id: 'api-operations', src: 'api', dst: 'fusion', formula: 'operations(i) = |paths × verbs| of the i-th API', value: api.operations.length, proof: api.spec || REGISTRY }, api.why === undefined, { name: 'api.operations', params: [i] })
+}) as (...x: unknown[]) => unknown)
+qpuHexRegisterOf('api', 'call', (async (i: number, j: number, s: number) => {
+  const r = await apiCallOf(i, j, s === 0 ? {} : { seed: s })
+  return crossFormulaOf({ id: 'api-call', src: 'api', dst: 'fusion', formula: 'call(i, j, s): the s-th request of the j-th operation of the i-th API; value its HTTP status', value: r.status, proof: r.url || REGISTRY }, r.why === undefined, { name: 'api.call', params: [i, j, s] })
+}) as (...x: unknown[]) => unknown)
+
+/** Every API of the registry walked: fused when its document was read and its operations derived, used when its first
+ *  read operation that needs no parameter was called and answered. { from, take } slices the walk. */
+export const apiWalkOf = async (from = 0, take = Infinity, concurrency = 8) => {
+  const reg = await apiRegistryOf()
+  const names = reg.names.slice(from, from + take)
+  const rows: { api: string; index: number; fused: boolean; operations: number; used: boolean; status: number; operation?: number; url?: string; why?: string }[] = new Array(names.length)
+  let next = 0
+  await Promise.all(Array.from({ length: Math.min(concurrency, names.length) }, async () => {
+    for (;;) {
+      const k = next++
+      if (k >= names.length) return
+      const api = await apiOf(from + k)
+      const free = api.operations.find((op) => op.verb === 'get' && op.required.length === 0)
+      if (!free || api.why) { rows[k] = { api: api.api, index: api.index, fused: api.why === undefined, operations: api.operations.length, used: false, status: 0, why: api.why ?? 'no read without parameters' }; continue }
+      const r = await apiCallOf(from + k, free.index)
+      rows[k] = { api: api.api, index: api.index, fused: true, operations: api.operations.length, used: r.status > 0, status: r.status, operation: free.index, url: r.url, ...(r.why ? { why: r.why } : {}) }
+    }
+  }))
+  return { kind: 'api-walk' as const, registry: REGISTRY, listed: reg.names.length, from, take: names.length, next: from + names.length < reg.names.length ? from + names.length : null, fused: rows.filter((r) => r.fused).length, used: rows.filter((r) => r.used).length, rows }
+}
+
+qpuMcpFuseOf('qpu_api', {
+  description: "Every public API as an address: {} the registry and how to address it; { api } (name or index) its operations; { api, operation, params } makes that read through api.call(i, j, s) and returns the reading with its hex address; { walk: true, from, take } walks a slice of the registry (fused: document read; used: a read made).",
+  inputSchema: { type: 'object', properties: { api: { type: ['string', 'integer'] }, operation: { type: 'integer' }, params: { type: 'object' }, walk: { type: 'boolean' }, from: { type: 'integer' }, take: { type: 'integer' } } },
+  run: async (a) => {
+    if (a.walk === true) return apiWalkOf(typeof a.from === 'number' ? a.from : 0, typeof a.take === 'number' ? a.take : qpuFacesOf().faces)
+    if (a.api === undefined) {
+      const reg = await apiRegistryOf()
+      return { kind: 'api' as const, registry: REGISTRY, listed: reg.names.length, address: 'api.call(i, j, s): the i-th API of the registry, its j-th operation, the s-th parameter choice — one hex-program UUID', first: reg.names.slice(0, qpuFacesOf().faces), holds: reg.names.length > 0 }
+    }
+    const which = typeof a.api === 'number' ? a.api : String(a.api)
+    if (typeof a.operation !== 'number') {
+      const api = await apiOf(which)
+      return { kind: 'api' as const, ...api, holds: api.why === undefined }
+    }
+    const r = await apiCallOf(which, a.operation, typeof a.params === 'object' && a.params !== null ? (a.params as Record<string, unknown>) : {})
+    return { kind: 'api' as const, ...r, holds: r.status >= 200 && r.status < 300 }
+  },
+})

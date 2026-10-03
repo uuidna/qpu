@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 import { clayOf, wingOf } from '../dist/core/showcase.js'
 // every family and door registers on import, as on the host, so the summary counts what clients reach
-for (const m of ['mcp/cross-domain-formulas', 'mcp/cross-domain-paths', 'audit/audit-formulas', 'mcp/quantum-secure-signalling', 'mcp/hologram-streams', 'mcp/crypt-formulas', 'mcp/np-formulas', 'mcp/clay-seals', 'mcp/heat-formulas', 'mcp/mcp-capabilities', 'mcp/qpu-fused']) await import(`../dist/${m}.js`)
+await import('../dist/mcp/families.js')
 const { qpuMcpDoorsOf, qpuMcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
@@ -111,7 +111,7 @@ const glance = [
   `| Formal proof | ${num(lean.theorems)} Lean theorems served, ${num(lean.recomputed)} recomputed in TypeScript | the Lean 4 kernel (${lean.toolchain ?? 'toolchain'}) |`,
   `| Formula families | ${num(discovery.families)} families run as hex-program UUIDs (RFC 9562 v8); ${num(discovery.runs)} programs in the last discovery | each other: ${num(discovery.relationsTotal)} values reached by two or more families, ${num(discovery.seals)} seals (fixed points, involutions) |`,
   `| Live public data | ${num(discovery.sourcesAgree)} of ${num(discovery.sources)} sources agree | CERN Open Data, NIST CODATA, OEIS (${num(discovery.sequences)} formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |`,
-  `| Public APIs | ${num(fuse.reached)} of ${num(fuse.listed)} APIs walked live, ${num(fuse.methods)} methods, ${num(fuse.edges)} cross formulas | the APIs.guru registry, against the Lean theorem fuse |`,
+  `| Public APIs | ${num(fuse.reached)} of ${num(fuse.listed)} APIs walked live, ${num(fuse.methods)} methods, ${num(fuse.edges)} cross formulas; ${num(apis.fused)} fused and ${num(apis.used)} used as hex addresses api.call(i, j, s) | the APIs.guru registry, against the Lean theorem fuse |`,
   `| Cross formulas | ${num(formulas.pass)} of ${num(formulas.rowsTotal)} rows hold across ${num(formulas.formulas)} formulas | their own hex programs (${num(formulas.hexAgrees)} agree) |`,
   `| Cryptography | ${formulas.attacks ?? '—'} attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |`,
   `| Live cross-proof | ${num(cross.agree)} of ${num(cross.of)} claims agree | the hosts the claims name |`,

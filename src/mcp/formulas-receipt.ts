@@ -8,7 +8,7 @@ import { CrossDomainFormulas, type CrossFormula } from './cross-domain-formulas.
 import { CryptFormulas } from './crypt-formulas.js'
 import { HoloFormulas, hologramStreamsOf, holoStreamHolds } from './hologram-streams.js'
 import { ClaySeals } from './clay-seals.js'
-import './heat-formulas.js'
+import './families.js'
 import { qpuDiscoverOf } from './discovery.js'
 // every family registers itself on import, so discovery reaches all of them
 import './cross-domain-paths.js'

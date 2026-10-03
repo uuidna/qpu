@@ -169,6 +169,17 @@ export const worker = {
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
+    // PAYLOAD IS THE FRONTEND, ON EVERY PATH. A browser asking for a page (GET, text/html) gets Payload's page when
+    // Payload holds one at that address; an API client keeps the unit's JSON on the same path; a page Payload does not
+    // hold (a miss, a redirect it keeps for retired routes, an error while it starts) falls through to the unit's door,
+    // and if the unit has none either, Payload's own not-found page is the answer (kept, not rendered twice). So a
+    // page's address and a door's address may coincide (/receipts, /hex, /storage…) and each answers who asked.
+    let pageMiss: Response | undefined
+    if (request.method === 'GET' && env?.PAYLOAD && /text\/html/.test(request.headers.get('accept') ?? '')) {
+      const page = await env.PAYLOAD.fetch(request)
+      if (page.status === found) return page
+      if (page.status === lost) pageMiss = page
+    }
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
     if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
     if (path === '/receipts' || path.startsWith('/receipts/')) {
@@ -362,6 +373,7 @@ export const worker = {
       return jsonOf(qpuMessageOf())
     }
     // every path the unit does not answer is Payload's: the admin, its assets, the documentation pages
+    if (pageMiss) return pageMiss
     if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
     return jsonOf(JSON.parse(dead), lost)
   }}

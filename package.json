@@ -96,6 +96,7 @@
     "./dist/mcp/np-formulas.js",
     "./dist/mcp/clay-seals.js",
     "./dist/mcp/heat-formulas.js",
+    "./dist/mcp/api-door.js",
     "./dist/mcp/mcp-capabilities.js",
     "./dist/mcp/qpu-fused.js",
     "./src/utilities/workers-crypto.ts"

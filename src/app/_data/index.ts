@@ -1,16 +1,8 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '@uuidna/qpu'
-// every hex family registers itself on import: cross, path, audit, signal, holo, crypt, np, clay, heat
-import '@uuidna/qpu/mcp/cross-domain-formulas.js'
-import '@uuidna/qpu/mcp/cross-domain-paths.js'
-import '@uuidna/qpu/audit/audit-formulas.js'
-import '@uuidna/qpu/mcp/quantum-secure-signalling.js'
-import '@uuidna/qpu/mcp/hologram-streams.js'
-import '@uuidna/qpu/mcp/crypt-formulas.js'
-import '@uuidna/qpu/mcp/np-formulas.js'
-import '@uuidna/qpu/mcp/clay-seals.js'
-import '@uuidna/qpu/mcp/heat-formulas.js'
+// every hex family, fused door and MCP method registers itself on import: the generated registry is the one import
+import '@uuidna/qpu/mcp/families.js'
 import { qpuDataOf, qpuDataSourcesOf } from '@uuidna/qpu/mcp/qpu-fused.js'
 import type { Doc, Footer, Form, Header, Page, Product, Search } from '@/payload-types'
 import discovery from '@root/discovery-receipt.json'

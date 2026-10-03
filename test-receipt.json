@@ -1,308 +1,198 @@
 {
   "kind": "test-receipt",
   "standard": "every top-level test carries a computational receipt: amplitude folds, a mint chain, or served folds. The proof folds only the rows that asked no foreign host, because a row that asked one records what that host said and not what this tree computed; time, temperature, served folds and every foreign-reading row are readings",
-  "tests": 11,
-  "pass": 11,
-  "fail": 0,
-  "dry": 0,
-  "circuit": 2,
-  "mintOnly": 4,
+  "tests": 5,
+  "pass": 3,
+  "fail": 2,
+  "dry": 1,
+  "circuit": 4,
+  "mintOnly": 0,
   "servedOnly": 0,
-  "dim": "2^65538",
-  "qubits": 65538,
-  "receipt": "f75454574c51fcb1",
-  "computed": 11,
+  "dim": "0",
+  "qubits": 0,
+  "receipt": "949a3e4791524c57",
+  "computed": 5,
   "readRows": 0,
   "readingsOf": "test-readings.json",
   "rows": [
     {
-      "name": "every door is derived from its own surface, and no two collide",
+      "name": "release: every door and every formula is reachable through a sealed door",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 3,
-        "chain": "e15571dec1b2e42b"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "all 438 combinations mint, decode back to themselves, and verify",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 3813,
-        "chain": "147d76a5102cac55"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "a tampered address is refused in every field, and an unknown door is named rather than thrown at",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 27,
-        "chain": "e1c3d1df61ecf3d7"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "the readings carry the addresses, so the codec has consumers and not only a test",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 2682,
-        "chain": "84f1e2fe3325a58d"
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "chat fetch is JSON quantum",
-      "file": "dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 0,
-        "chain": ""
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "chat calls tools/call",
-      "file": "dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 0,
-        "chain": ""
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "chat uses every sealed door",
-      "file": "dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 0,
-        "chain": ""
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "extras catalogs speak MCP JSON-RPC",
-      "file": "dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 0,
-        "chain": ""
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "no auth message proxy",
-      "file": "dist/quantum/processing/unit/live.test.js",
-      "nesting": 1,
-      "pass": true,
-      "computations": 0,
-      "kinds": {},
-      "dims": {},
-      "dim": "0",
-      "qubits": 0,
-      "receipt": "cbf29ce484222325",
-      "states": [],
-      "mint": {
-        "calls": 0,
-        "chain": ""
-      },
-      "served": {
-        "count": 0,
-        "folds": []
-      },
-      "foreign": 0
-    },
-    {
-      "name": "live qpu.uuidna.com",
-      "file": "dist/quantum/processing/unit/receipted.js",
-      "nesting": 0,
-      "pass": true,
-      "computations": 13186,
+      "computations": 4,
       "kinds": {
-        "x": 3157,
-        "cnot": 6416,
-        "toffoli": 787,
-        "h": 842,
-        "measure": 402,
-        "cmodexp": 788,
-        "xx": 788,
-        "planes": 6
+        "release qpu_cite {\"doors\":true}": 1,
+        "release qpu_cite {\"door\":\"heat.temperature\",\"arguments\":{\"params\":[16,1]}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"source\":\"zenodo\"}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":\"{\\\"source\\\":\\\"zenodo\\\"}\"}": 1
       },
       "dims": {
-        "8": 11562,
-        "64": 10,
-        "128": 48,
-        "512": 1556,
-        "2^64": 10
+        "1": 4
       },
-      "dim": "2^64",
-      "qubits": 64,
-      "receipt": "e308afc3961971c4",
-      "states": [
-        {
-          "name": "measure",
-          "dim": 8,
-          "amplitudes": [
-            "1",
-            "0",
-            "0",
-            "1",
-            "0",
-            "0",
-            "0",
-            "0"
-          ],
-          "rows": 402
-        }
-      ],
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "5820bbe93ce07a62",
+      "states": [],
       "mint": {
-        "calls": 105753,
-        "chain": "51924c80ed35d151"
+        "calls": 8,
+        "chain": "681b05a0c4ea8e1d"
       },
       "served": {
-        "count": 2,
-        "folds": [
-          "\"53c1ecacc3318cc7\"",
-          "\"ed73e177fb63ad32\""
-        ]
+        "count": 0,
+        "folds": []
       },
       "foreign": 0
     },
     {
-      "name": "live reach: qpu.uuidna.com is climbed under a time budget, and the run at its reach holds",
+      "name": "release: every external API and dataset is read, the theorems among them agree",
       "file": "dist/quantum/processing/unit/receipted.js",
       "nesting": 0,
       "pass": true,
-      "computations": 30,
+      "computations": 48,
       "kinds": {
-        "cmodexp": 15,
-        "xx": 15
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"all\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"recid\":38,\"source\":\"cern\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"zenodo\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"doi\":\"10.5281/zenodo.22700098\",\"source\":\"dataci": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"literature\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"journals\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"indico\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"repo\":\"uuidna/payload\",\"source\":\"github\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"hepdata\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"heat\",\"formula\":\"temperature\",\"fixed\":": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"opendata\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"conferences\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"id\":\"A000110\",\"source\":\"oeis\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"repo\":\"uuidna/qpu\",\"source\":\"github\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"jobs\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"clay\",\"formula\":\"hodge\",\"fixed\":[],\"so": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"orcid\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"institutions\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"signal\",\"formula\":\"keyspace\",\"fixed\":[": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"repo\":\"uuidna/uuidna\",\"source\":\"github\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"release\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"recid\":62,\"source\":\"cern\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"npm\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"id\":\"A000108\",\"source\":\"oeis\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"recid\":35,\"source\":\"cern\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"doi\":\"10.5281/zenodo.23091364\",\"source\":\"dataci": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"doi\":\"10.5281/zenodo.21781603\",\"source\":\"dataci": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"doi\":\"10.5281/zenodo.21781602\",\"source\":\"dataci": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"nist\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"cross\",\"formula\":\"medSecureWithQSec\",\"": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"zenodo\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"recid\":63,\"source\":\"cern\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"apis\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"authors\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"data\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"repository\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"clay\",\"formula\":\"bsd\",\"fixed\":[],\"sour": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"Qpu.Shor\",\"formula\":\"half\",\"fixed\":[2]": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"Qpu.Shor\",\"formula\":\"periodOf\",\"fixed\"": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"heat\",\"formula\":\"signal\",\"fixed\":[],\"s": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"Qpu.Physics\",\"formula\":\"thermal\",\"fixe": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"np\",\"formula\":\"isTime\",\"fixed\":[],\"sou": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"holo\",\"formula\":\"proofDepth\",\"fixed\":[": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"Qpu.Mint\",\"formula\":\"mintOf\",\"fixed\":[": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"family\":\"np\",\"formula\":\"isSpace\",\"fixed\":[],\"so": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"seminars\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"name\":\"experiments\",\"source\":\"catalog\"}}": 1,
+        "release qpu_cite {\"door\":\"qpu_data\",\"arguments\":{\"source\":\"site\"}}": 1
       },
       "dims": {
-        "512": 2,
-        "1024": 2,
-        "262144": 2,
-        "17179869184": 2,
-        "2^66": 2,
-        "2^130": 2,
-        "2^258": 2,
-        "2^514": 2,
-        "2^1026": 2,
-        "2^2050": 2,
-        "2^4098": 2,
-        "2^8194": 2,
-        "2^16386": 2,
-        "2^32770": 2,
-        "2^65538": 2
+        "1": 48
       },
-      "dim": "2^65538",
-      "qubits": 65538,
-      "receipt": "857bba0cf0aa7045",
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "c12bda9d8a924fd7",
       "states": [],
       "mint": {
-        "calls": 708,
-        "chain": "37b2f73253da0710"
+        "calls": 96,
+        "chain": "8f75438c88e6cb05"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "release: formula discovery holds across every family",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": true,
+      "computations": 1,
+      "kinds": {
+        "release qpu_cite {\"door\":\"qpu_discover\",\"arguments\":{\"limit\":5}}": 1
+      },
+      "dims": {
+        "1": 1
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "49d20b3dbc91126d",
+      "states": [],
+      "mint": {
+        "calls": 2,
+        "chain": "0f47c4a3285a2c53"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "release: the site end to end — every address it lists answers, every page renders as built",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 12,
+      "kinds": {
+        "release site /": 2,
+        "release site /sitemap.xml": 2,
+        "release site /.well-known/mcp.json": 1,
+        "release site /quantum/processing/unit": 1,
+        "release site /message": 1,
+        "release site /mcp.json": 1,
+        "release site /install.json": 1,
+        "release site /openapi.json": 1,
+        "release site /mcp": 1,
+        "release site /cite": 1
+      },
+      "dims": {
+        "1": 12
+      },
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "5e62e5dd558e2a2f",
+      "states": [],
+      "mint": {
+        "calls": 24,
+        "chain": "474929f32310076d"
+      },
+      "served": {
+        "count": 0,
+        "folds": []
+      },
+      "foreign": 0
+    },
+    {
+      "name": "release: every error and warning is answered at once, each with what resolves it",
+      "file": "dist/quantum/processing/unit/receipted.js",
+      "nesting": 0,
+      "pass": false,
+      "computations": 0,
+      "kinds": {},
+      "dims": {},
+      "dim": "0",
+      "qubits": 0,
+      "receipt": "cbf29ce484222325",
+      "states": [],
+      "mint": {
+        "calls": 0,
+        "chain": "cbf29ce484222325"
       },
       "served": {
         "count": 0,
