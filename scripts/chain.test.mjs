@@ -23,7 +23,8 @@ import { dirname, join } from 'node:path'
 
 const ROOT = join(dirname(new URL(import.meta.url).pathname), '..')
 const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'))
-const workflow = readFileSync(join(ROOT, '.github/workflows/ci.yml'), 'utf8')
+// the one workflow every environment runs in (publish.yml: npm's trusted publisher is bound to its name)
+const workflow = readFileSync(join(ROOT, '.github/workflows/publish.yml'), 'utf8')
 
 /** the npm scripts `npm run ci` chains, in order, read from the script itself */
 const ciSteps = () =>
@@ -41,11 +42,11 @@ test('npm run ci names a chain at all', () => {
   for (const s of steps) assert.ok(pkg.scripts[s] !== undefined || s === 'test', `ci names "${s}", which is not an npm script`)
 })
 
-test('EVERY STEP npm run ci PROMISES IS REACHABLE FROM ci.yml — a promise the push does not keep is the fault', () => {
+test('EVERY STEP npm run ci PROMISES IS REACHABLE FROM THE WORKFLOW — a promise the push does not keep is the fault', () => {
   const missing = ciSteps().filter((s) => {
     // reachable directly, or as the bare `npm test`, or because the workflow runs the script that runs it
     if (new RegExp(`npm run ${s}\\b`).test(workflow)) return false
-    if (s === 'test' && /run: npm test\b/.test(workflow)) return false
+    if (s === 'test' && /(run: |^\s+)npm test\b/m.test(workflow)) return false
     // a step the workflow performs inline rather than by name (the proof step is a git diff in both places)
     if (s === 'proof' && /test-receipt\.json/.test(workflow)) return false
     return true

@@ -1,4 +1,4 @@
-name: ci
+name: publish
 
 # ONE CI FOR EVERY ENVIRONMENT. Node (the build, the Lean kernel, the gate), Cloudflare Workers (the one Worker:
 # Payload fronted by the unit), the container (the image boots and proves itself), npm and the GitHub Release (a tag),
@@ -68,10 +68,13 @@ jobs:
         run: |
           npm run build
           node --input-type=module -e "import('./dist/mcp/uuid-programmable-core.js').then(async (m) => { const r = await m.consolidatedMCP.runDeploymentGate(); console.log(JSON.stringify(r)); process.exit(r.ok ? 0 : 1) })"
-      - name: The generated files are what the spec generates (deployment, configs, registries)
+      - name: The scripts suites (every scripts/*.test.mjs, discovered by glob)
+        run: npm run test:scripts
+      - name: The generated files are what the spec and the receipts generate (deployment, configs, registries, README)
         run: |
           node scripts/payload-cloudflare.mjs --repo > /dev/null
-          git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json
+          npm run readme
+          git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json README.md RELEASE.md .zenodo.json
 
   # CLOUDFLARE WORKERS: the one Worker (uuidna-qpu = the Payload app fronted by the unit) built by OpenNext and deployed.
   deploy:
@@ -213,7 +216,7 @@ jobs:
           npm publish --provenance --access public --tag "$(node scripts/version-lock.mjs --dist-tag)" 2>&1 | tee publish.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ] && grep -q "E404" publish.log; then
-            echo "::error::npm refused the PUT with 404: npmjs.com has no trusted publisher for uuidna/qpu + ci.yml. Set one under the package's Settings → Trusted publishers (GitHub Actions, repository uuidna/qpu, workflow ci.yml), then rerun this job. The GitHub Release and the Zenodo archive are already made."
+            echo "::error::npm refused the PUT with 404: npmjs.com has no trusted publisher for uuidna/qpu + publish.yml. Set one under the package's Settings → Trusted publishers (GitHub Actions, repository uuidna/qpu, workflow publish.yml), then rerun this job. The GitHub Release and the Zenodo archive are already made."
           fi
           exit $status
       - name: Verify the release is complete and live — npm, provenance, Release, Zenodo

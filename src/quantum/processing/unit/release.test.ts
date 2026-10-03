@@ -69,6 +69,16 @@ test('release: formula discovery holds across every family', async (t) => {
 
 test('release: the site end to end — every address it lists answers, every page renders as built', async (t) => {
   const get = (path: string, accept = 'text/html') => fetch(`${host}${path}`, { headers: { accept }, redirect: 'manual', signal: AbortSignal.timeout(120000) })
+  // THE COLD START IS REPORTED, NOT RACED. The first page after a deploy seeds a changed site before it answers (minutes
+  // on a version bump: every doc's UUID moves); this test runs right after the deploy that made the host, so it waits
+  // for the first answer and records how long it took, then holds the site to its warm shape.
+  const started = Date.now()
+  let warm: Response | undefined
+  for (let i = 0; i < 6 && !warm; i++) {
+    try { warm = await get('/') } catch { /* the isolate is still seeding: ask again */ }
+  }
+  assert.ok(warm && warm.status === 200, `the site answers its root after a deploy (status ${warm?.status})`)
+  t.diagnostic(`cold start ${Math.round((Date.now() - started) / 1000)}s`)
   // the site names its own addresses: nothing is listed here
   const sitemap = await (await get('/sitemap.xml', 'application/xml')).text()
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]!).pathname)
