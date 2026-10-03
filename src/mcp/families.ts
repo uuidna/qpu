@@ -37,10 +37,11 @@ import '../families/scale/index.js'
 import '../families/sentence/index.js'
 import '../families/signal/index.js'
 import '../families/split/index.js'
+import '../families/tax/index.js'
 import '../families/tesla/index.js'
 import '../families/trading/index.js'
 import '../families/tune/index.js'
 import '../families/wave/index.js'
 import '../families/yi/index.js'
 
-export const families = ['access', 'accounting', 'api-door', 'audit', 'cal', 'chat', 'clay', 'collide', 'contract', 'court', 'cross', 'crypt', 'db', 'econ', 'evidence', 'forensic', 'gate', 'glyph', 'hd', 'heat', 'holo', 'job', 'kin', 'law', 'mcp-capabilities', 'med', 'merkaba', 'np', 'numen', 'path', 'platonic', 'port', 'qpu-fused', 'rule', 'scale', 'sentence', 'signal', 'split', 'tesla', 'trading', 'tune', 'wave', 'yi'] as const
+export const families = ['access', 'accounting', 'api-door', 'audit', 'cal', 'chat', 'clay', 'collide', 'contract', 'court', 'cross', 'crypt', 'db', 'econ', 'evidence', 'forensic', 'gate', 'glyph', 'hd', 'heat', 'holo', 'job', 'kin', 'law', 'mcp-capabilities', 'med', 'merkaba', 'np', 'numen', 'path', 'platonic', 'port', 'qpu-fused', 'rule', 'scale', 'sentence', 'signal', 'split', 'tax', 'tesla', 'trading', 'tune', 'wave', 'yi'] as const

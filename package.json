@@ -130,6 +130,7 @@
     "./dist/families/sentence/index.js",
     "./dist/families/signal/index.js",
     "./dist/families/split/index.js",
+    "./dist/families/tax/index.js",
     "./dist/families/tesla/index.js",
     "./dist/families/trading/index.js",
     "./dist/families/tune/index.js",
