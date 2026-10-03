@@ -629,6 +629,16 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const wordsOf = (s: string) => s.replace(/[A-Z]/g, (ch) => ` ${ch.toLowerCase()}`).split(/[^a-z]+/).filter((w) => w.length > 2)
     const pageWords = new Set([...(section ? wordsOf(section) : []), ...pages.flatMap(wordsOf)])
     const families = section ? [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([family, formulas]) => ({ family, formulas: formulas.filter((x) => [...new Set([...wordsOf(family), ...wordsOf(x.name)])].some((w) => pageWords.has(w))).map((x) => x.name) })).filter((x) => x.formulas.length) : []
+    // DETAILED AND PRECISE: the selected section's pages are read as CONTENT, not names — the exact API vocabulary (the
+    // backticked identifiers a doc uses: field types, hook names, config keys) is extracted. A term no family's words
+    // name is a LEAD toward covering that API; a term a family already names is a COMBINATION (that API × that family).
+    const raw = async (page: string) => (await get(`https://raw.githubusercontent.com/${repo}/main/docs/${section}/${page}.mdx`, 'text/plain').then((r) => r.text()).catch(() => ''))
+    const contents = section ? await Promise.all(pages.slice(0, qpuFacesOf().faces).map(raw)) : []
+    const terms = [...new Set(contents.flatMap((txt) => [...txt.matchAll(/`([a-zA-Z][a-zA-Z0-9]{2,})`/g)].map((m) => m[1]!.toLowerCase())))].sort()
+    const famWords = new Set([...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).flatMap(([f, fs]) => [...wordsOf(f), ...fs.flatMap((x) => wordsOf(x.name))]))
+    const leads = terms.filter((t) => !famWords.has(t))
+    const combinations = terms.filter((t) => famWords.has(t))
+    const details = section ? { read: contents.filter((c) => c.length > 0).length, terms: terms.length, leads: leads.slice(0, 48), combinations } : undefined
     // THE REFERENCE APP, THE PAYLOAD WAY: payloadcms/website is read as the guide — its src directories, its blocks and
     // its collections are how a Payload site is handled; a directory or block it has that the unit's generated layout
     // does not is a lead toward the payload way (crossed at build by scripts/payload-cloudflare.mjs). Read once here.
@@ -649,7 +659,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const ecosystem = packages.map((p) => ({ package: p, kind: classOf(p), fused: fused.has(p), families: [...qpuHexFamiliesOf()].filter(([ff]) => !DOORS.has(ff)).filter(([ff, fs]) => [...new Set([...wordsOf(ff), ...fs.flatMap((x) => wordsOf(x.name))])].some((w) => wordsOf(p).includes(w))).map(([ff]) => ff) }))
     const pluginsOnly = ecosystem.filter((e) => e.kind === 'plugin')
     const payloadPlugins = { packages: packages.length, plugins: pluginsOnly.length, dbAdapters: ecosystem.filter((e) => e.kind === 'db adapter').length, storageAdapters: ecosystem.filter((e) => e.kind === 'storage adapter').length, fusedCount: ecosystem.filter((e) => e.fused).length, notYetFused: ecosystem.filter((e) => e.kind === 'plugin' && !e.fused).map((e) => e.package), ecosystem }
-    const live = { repo, docs: sections.length, sections, website, plugins: payloadPlugins, templates: (Array.isArray(templates) ? templates : []).filter((t) => t.type === 'dir').map((t) => t.name), examples: (Array.isArray(examples) ? examples : []).filter((t) => t.type === 'dir').map((t) => t.name), ...(section ? { section, pages, families, configures: families.length ? `${section}: ${families.map((x) => `${x.family} (${x.formulas.join(', ')})`).join('; ')}` : `${section}: no family its pages name yet` } : {}) }
+    const live = { repo, docs: sections.length, sections, website, plugins: payloadPlugins, templates: (Array.isArray(templates) ? templates : []).filter((t) => t.type === 'dir').map((t) => t.name), examples: (Array.isArray(examples) ? examples : []).filter((t) => t.type === 'dir').map((t) => t.name), ...(section ? { section, pages, families, details, configures: families.length ? `${section}: ${families.map((x) => `${x.family} (${x.formulas.join(', ')})`).join('; ')}` : `${section}: no family its pages name yet` } : {}) }
     return { source, url: `https://github.com/${repo}`, reading: live, expected: { docs: '>= 1', templates: '>= 1', examples: '>= 1', plugins: '>= 1' }, agrees: sections.length > 0 && live.templates.length > 0 && payloadPlugins.plugins > 0 }
   }
   if (source === 'imagine') {
