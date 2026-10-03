@@ -65,9 +65,6 @@ const REPO_WORKER = {
   kv_namespaces: [{ binding: 'STORAGE', id: 'b341b266250444198e54508ca3aee53a', preview_id: 'b341b266250444198e54508ca3aee53a' }],
   r2_buckets: [{ binding: 'BLOBS', bucket_name: 'uuidna-qpu-blobs' }, { binding: 'MEDIA', bucket_name: 'uuidna-qpu-payload-media' }],
   version_metadata: { binding: 'CF_VERSION_METADATA' },
-  // a document is written as 15 slots on KV and on R2, so one save is dozens of storage calls: the seed's saves need
-  // more than the default per-invocation budget
-  limits: { subrequests: 50000 },
 }
 const REPO = {
   key: 'opennext/qpu-raid/r2/none/ecommerce+form-builder+import-export+mcp+multi-tenant+nested-docs+redirects+search+sentry+seo+stripe',

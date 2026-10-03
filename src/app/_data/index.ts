@@ -7,7 +7,13 @@ import { qpuDataOf, qpuDataSourcesOf } from '@uuidna/qpu/mcp/qpu-fused.js'
 import type { Doc, Footer, Form, Header, Page, Product, Search } from '@/payload-types'
 import discovery from '@root/discovery-receipt.json'
 
-export const payloadOf = () => getPayload({ config })
+import { seed } from '@/seed'
+// every request advances the seed one slice when the content changed; a finished seed costs one KV read
+export const payloadOf = async () => {
+  const payload = await getPayload({ config })
+  void seed(payload).catch(() => undefined)
+  return payload
+}
 
 export type Family = { name: string; formulas: { nibble: string; name: string; arity: number }[] }
 

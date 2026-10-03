@@ -44,11 +44,27 @@ export class CalFormulas {
     const days = jd - designJdOf(jd)
     return f('cal-design-days', 'd(jdm) = jd − design(jd), the days 88° of solar arc took', Math.round(days * 100), nat(jdm) && jdm > 0 && days > 86 && days < 93, 'designDays', [jdm])
   }
-  /** The pure combinations of a chart of n bodies: 64ⁿ gate placements (exact while it fits a number, n ≤ 8). */
-  static combinations(bodies: number): CrossFormula { return f('cal-combinations', 'C(n) = 64ⁿ', bodies <= 8 ? 64 ** bodies : 0, nat(bodies) && bodies <= 8, 'combinations', [bodies]) }
-  /** The information of a chart of n bodies, in bits: 6 per gate, plus log₂ 6 per line. */
-  static bits(bodies: number): CrossFormula { return f('cal-bits', 'bits(n) = n · (6 + log₂ 6), rounded', Math.round(bodies * (6 + Math.log2(6))), nat(bodies), 'bits', [bodies]) }
+  /** The Metonic cycle's drift: 235 lunations exceed 19 tropical years by ~2 h 5 min; after n cycles, in minutes. */
+  static metonicDrift(cycles: number): CrossFormula { return f('cal-metonic-drift', 'drift_M(n) = n · (235 · 29.530589 d − 19 · 365.24219 d)', Math.round(cycles * (235 * 29.530589 - 19 * 365.24219) * MINUTES), nat(cycles), 'metonicDrift', [cycles]) }
+  /** The lunar year's drift against the tropical year after n years, in days (10.875 a year: the Islamic year walks the seasons in ~33.6 years). */
+  static lunarDrift(years: number): CrossFormula { return f('cal-lunar-drift', 'drift_L(n) = ⌊n · (365.24219 − 12 · 29.530589)⌋ d', Math.floor(years * (365.24219 - 12 * 29.530589)), nat(years), 'lunarDrift', [years]) }
+  /** The Saros' remainder: 6585.32 days is a third of a day past whole days, so each return is 120° farther west; after n returns, in degrees mod 360. */
+  static sarosShift(returns: number): CrossFormula { return f('cal-saros-shift', 'shift(n) = 120 · n mod 360', (120 * returns) % 360, nat(returns), 'sarosShift', [returns]) }
+  /** THE DAY OUT OF TIME IS A COIN. The Dreamspell leaves two days out of its count: the Day Out of Time, 25 July every
+   *  year, and the leap day, 29 February, which it does not count at all. A leap year holds both — the two faces at
+   *  once, a pair — and every pair is one kin the Dreamspell has lost against the count that keeps every day. */
+  /** 1 when a Gregorian year has its leap day (divisible by 4, not by 100 unless by 400). */
+  static leap(year: number): CrossFormula { return f('cal-leap', 'leap(y) = [4 | y] − [100 | y] + [400 | y]', year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 1 : 0, nat(year), 'leap', [year]) }
+  /** The faces of the coin in a year: the uncounted days, 1 + leap(y) — two in a leap year. */
+  static coin(year: number): CrossFormula { return f('cal-coin', 'coin(y) = 1 + leap(y)', 1 + (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 1 : 0), nat(year), 'coin', [year]) }
+  /** The pairs between two years inclusive: the leap years in [a, b], i.e. the kin the Dreamspell lost between them. */
+  static pairs(from: number, to: number): CrossFormula {
+    const leaps = (y: number) => Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400)
+    return f('cal-pairs', 'pairs(a, b) = leaps(b) − leaps(a − 1)', to >= from ? leaps(to) - leaps(from - 1) : 0, nat(from, to) && to >= from, 'pairs', [from, to])
+  }
+  /** The days from a leap day to that year's Day Out of Time: 1 March to 25 July, 147 — the two faces are 147 days apart. */
+  static faces(): CrossFormula { return f('cal-faces', 'faces = |1 March … 25 July| = 31 + 30 + 31 + 30 + 25', 31 + 30 + 31 + 30 + 25, true, 'faces', []) }
 }
 
-for (const name of ['bits', 'combinations', 'dayPer', 'designDays', 'gatesPrecessed', 'gregorianDrift', 'julianDrift', 'precession', 'sunSpeed'] as const)
+for (const name of ['coin', 'dayPer', 'designDays', 'faces', 'gatesPrecessed', 'gregorianDrift', 'julianDrift', 'leap', 'lunarDrift', 'metonicDrift', 'pairs', 'precession', 'sarosShift', 'sunSpeed'] as const)
   qpuHexRegisterOf('cal', name, (CalFormulas[name] as (...x: unknown[]) => unknown).bind(CalFormulas))

@@ -1,5 +1,5 @@
 import type { Block, Payload } from 'payload'
-import { qpuCiteOf, qpuContentUuidOf, qpuInstallOf, qpuPurposeOf } from '@uuidna/qpu'
+import { qpuCiteOf, qpuContentUuidOf, qpuFacesOf, qpuInstallOf, qpuPurposeOf } from '@uuidna/qpu'
 import { blocks } from '../blocks/index'
 import { customOf } from '../fields/blockFields'
 import { HOME } from '../fields/link'
@@ -122,7 +122,29 @@ const ensure = async (payload: Payload, collection: string, field: string, value
 export async function seed(payload: Payload) {
   const fingerprint = qpuContentUuidOf(CONTENT)
   if ((await payload.kv.get<string>('seed')) === fingerprint) return
-  await upsertDocs(payload)
+  // RESUMED, NOT WRITTEN AT ONCE: a request may make only so many storage calls, so each call of the seed does one
+  // slice (faces docs) and keeps its cursor under the content's own address; the next request continues; the
+  // fingerprint is set only when every slice is done
+  const key = `seed:${fingerprint}`
+  const take = qpuFacesOf().faces
+  const cursor = (await payload.kv.get<{ docs: number; site: boolean; index: number }>(key)) ?? { docs: 0, site: false, index: 0 }
+  if (cursor.docs < generated.length) {
+    await upsertDocs(payload, cursor.docs, take)
+    return payload.kv.set(key, { ...cursor, docs: cursor.docs + take })
+  }
+  if (!cursor.site) {
+    await seedSite(payload)
+    return payload.kv.set(key, { ...cursor, site: true })
+  }
+  if (cursor.index < generated.length) {
+    await indexDocs(payload, cursor.index, take)
+    return payload.kv.set(key, { ...cursor, index: cursor.index + take })
+  }
+  await payload.kv.set('seed', fingerprint)
+}
+
+/** The site: redirects, the form, the products, the pages and the globals (a few dozen writes, one slice). */
+async function seedSite(payload: Payload) {
   const pages = new Map<string, string>()
   const docId = (slug: string) => generated.find((d) => d.slug === slug)?.id
   const linkOf = (r: Ref, label?: string) => {
@@ -150,16 +172,13 @@ export async function seed(payload: Payload) {
   if (!header.navItems?.length) await payload.updateGlobal({ slug: 'header', overrideAccess: true, data: { navItems: nav(HEADER) } as never })
   const footer = (await payload.findGlobal({ slug: 'footer', depth: 0, overrideAccess: true })) as { navItems?: unknown[] }
   if (!footer.navItems?.length) await payload.updateGlobal({ slug: 'footer', overrideAccess: true, data: { copyright: FOOTER.copyright, navItems: nav(FOOTER.navItems) } as never })
-  // last, because it is the only step that can be long: saving the docs the search index lacks
-  await indexDocs(payload)
-  await payload.kv.set('seed', fingerprint)
 }
 
 // the docs as generated, each upserted at its own id with its place under the index (nested-docs); SEO is filled by the
 // collection's own hook on save. Read by id, written only when its content UUID changed or its parent is missing.
-async function upsertDocs(payload: Payload) {
+async function upsertDocs(payload: Payload, from: number, take: number) {
   const index = generated.find((d) => d.slug === 'index')
-  await Promise.all(generated.map(async (doc) => {
+  await Promise.all(generated.slice(from, from + take).map(async (doc) => {
     const parent = index && doc.slug !== 'index' ? index.id : undefined
     const old = (await payload.findByID({ collection: 'docs', id: doc.id, depth: 0, disableErrors: true, overrideAccess: true })) as { uuid?: string; parent?: unknown } | null
     const data = { ...doc, ...(parent ? { parent } : {}) } as never
@@ -169,8 +188,8 @@ async function upsertDocs(payload: Payload) {
 }
 
 // the search plugin indexes a doc when it is saved: the docs it has not indexed are saved once, the rest left alone
-async function indexDocs(payload: Payload) {
+async function indexDocs(payload: Payload, from: number, take: number) {
   const found = (await payload.find({ collection: 'search', limit: 0, pagination: false, depth: 0, overrideAccess: true })).docs as unknown as { doc?: { value?: unknown } }[]
   const indexed = new Set(found.map((s) => (s.doc?.value && typeof s.doc.value === 'object' ? (s.doc.value as { id: string }).id : String(s.doc?.value ?? ''))))
-  for (const d of generated.filter((x) => !indexed.has(x.id))) await payload.update({ collection: 'docs', id: d.id, data: { title: d.title }, overrideAccess: true })
+  for (const d of generated.slice(from, from + take).filter((x) => !indexed.has(x.id))) await payload.update({ collection: 'docs', id: d.id, data: { title: d.title }, overrideAccess: true })
 }

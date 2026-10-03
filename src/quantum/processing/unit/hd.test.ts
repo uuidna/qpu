@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from './index.js'
 import { CENTERS, CENTER_GATES, CHANNELS, HdFormulas, chartOf, gateLineOf, designJdOf } from '../../../mcp/hd-formulas.js'
 import { CalFormulas } from '../../../mcp/cal-formulas.js'
+import { YiFormulas } from '../../../mcp/yi-formulas.js'
+import { KinFormulas } from '../../../mcp/kin-formulas.js'
 
 /** THE COMBINATIONS OF THE STRUCTURE, EVERY ONE. The wheel partitions the circle into 64 gates of 6 lines; the nine
  *  centers partition the 64 gates; the 36 channels join gates of different centers; the design day lies 70–100 days
@@ -71,7 +73,7 @@ test("cal: the calendar's drift explains the wheel — a day per 128 Julian or 3
   // across a year, the Sun's speed and so the design arc's days: fastest in January, slowest in July
   let fast = Infinity, slow = 0
   for (let month = 1; month <= 12; month++) {
-    const jdm = Number(HdFormulas.jdm(20000000 + month * 100 + 15, 2160).value)
+    const jdm = Number(HdFormulas.jdm(Number(HdFormulas.code(20000000 + month * 100 + 15).value), 2160).value)
     const speed = Number(CalFormulas.sunSpeed(jdm).value)
     assert.ok(speed >= 950 && speed <= 1022, `month ${month}: ${speed} thousandths of a degree a day`)
     fast = Math.min(fast, speed); slow = Math.max(slow, speed)
@@ -80,17 +82,18 @@ test("cal: the calendar's drift explains the wheel — a day per 128 Julian or 3
     assert.equal(CalFormulas.designDays(jdm).holds, true)
   }
   assert.ok(slow - fast > 40, `the speed varies by ${slow - fast} thousandths across the year`)
-  assert.equal(CalFormulas.combinations(2).value, 4096, 'Sun and Earth: 64² placements')
-  assert.equal(CalFormulas.combinations(8).value, 64 ** 8)
-  assert.equal(CalFormulas.combinations(13).holds, false, '64¹³ does not fit a number: not claimed')
-  assert.equal(CalFormulas.bits(13).value, 112, 'a 13-body chart carries ~112 bits')
-  assert.equal(qpuHexFamiliesOf().get('cal')?.length, 9)
+  assert.equal(KinFormulas.combinations(2).value, 4096, 'Sun and Earth: 64² placements')
+  assert.equal(KinFormulas.combinations(8).value, 64 ** 8)
+  assert.equal(KinFormulas.combinations(13).holds, false, '64¹³ does not fit a number: not claimed')
+  assert.equal(KinFormulas.bits(13).value, 112, 'a 13-body chart carries ~112 bits')
+  assert.equal(qpuHexFamiliesOf().get('cal')?.length, 14)
+  assert.equal(qpuHexFamiliesOf().get('kin')?.length, 15, 'a family holds fifteen formulas: one nibble')
 })
 
 test('hd: every formula of the family runs as a hex program, and the live host answers the same at the address', async (t) => {
   const family = qpuHexFamiliesOf().get('hd')
-  assert.ok(family && family.length === 13, `hd registers 13 formulas: ${family?.map((f) => f.name).join(', ')}`)
-  const probes: [string, number[], number][] = [['gate', [3020], 41], ['line', [3020], 1], ['center', [41], 9], ['channel', [30, 41], 1], ['channel', [30, 42], 0], ['channels', [10], 3], ['definition', [7], 4], ['cells', [], 768], ['ut', [1200, 720], 2160], ['mean', [0], 720], ['mean', [3450], 660], ['jdm', [20000101, 2160], 2451545 * 1440], ['chart', [2451545 * 1440], chartOf(2451545).defined.length]]
+  assert.ok(family && family.length === 14, `hd registers 14 formulas: ${family?.map((f) => f.name).join(', ')}`)
+  const probes: [string, number[], number][] = [['gate', [3020], 41], ['line', [3020], 1], ['center', [41], 9], ['channel', [30, 41], 1], ['channel', [30, 42], 0], ['channels', [10], 3], ['definition', [7], 4], ['cells', [], 768], ['ut', [1200, 720], 2160], ['mean', [0], 720], ['mean', [3450], 660], ['code', [20000101], 2000 * 372], ['jdm', [2000 * 372, 2160], 2451545 * 1440], ['chart', [2451545 * 1440], chartOf(2451545).defined.length]]
   for (const [name, params, expected] of probes) {
     const uuid = qpuHexUuidOf({ family: 'hd', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
@@ -106,4 +109,60 @@ test('hd: every formula of the family runs as a hex program, and the live host a
   assert.equal(live?.denied, undefined, `the host runs the family: ${JSON.stringify(live).slice(0, 200)}`)
   assert.equal(Number(live?.value), 41, `the host answers hd.gate(302.0°) = 41 at ${uuid}`)
   t.diagnostic(`hd.gate(3020) = 41 at ${uuid}, live and here`)
+})
+
+test('yi: the 64 figures — complement and inverse are involutions, 8 figures are their own inverse, the nuclear map folds 64 into 16', () => {
+  const inverses = new Set<number>()
+  for (let h = 0; h < 64; h++) {
+    assert.equal(Number(YiFormulas.complement(Number(YiFormulas.complement(h).value)).value), h)
+    assert.equal(Number(YiFormulas.inverse(Number(YiFormulas.inverse(h).value)).value), h)
+    assert.equal(Number(YiFormulas.upper(h).value) * 8 + Number(YiFormulas.lower(h).value), h, 'two trigrams make the hexagram')
+    inverses.add(Number(YiFormulas.nuclear(h).value))
+  }
+  assert.equal(Array.from({ length: 64 }, (_, h) => h).filter((h) => Number(YiFormulas.inverse(h).value) === h).length, 8, 'the symmetric figures')
+  assert.equal(inverses.size, 16, 'nuclear hexagrams: 16 of them')
+  assert.equal(Array.from({ length: 7 }, (_, k) => Number(YiFormulas.withYang(k).value)).reduce((a, b) => a + b, 0), 64, 'C(6, k) sums to 64')
+  assert.equal(YiFormulas.figures(6).value, 64)
+  assert.equal(YiFormulas.figures(3).value, 8)
+})
+
+test('cal: the cycles people ask about — Tzolkin, Dreamspell drift, Metonic, Saros, lunar year, sexagenary, biorhythm, vortex', () => {
+  assert.equal(KinFormulas.cycle(0).value, 260)
+  assert.equal(KinFormulas.cycle(2).value, 18980, 'lcm(260, 365)')
+  assert.equal(KinFormulas.tone(260).value, 13)
+  assert.equal(KinFormulas.seal(260).value, 20)
+  assert.equal(KinFormulas.kin(2451545 * 1440 + 259 * 1440, 2451545 * 1440).value, 260, '259 days after a kin 1 is kin 260')
+  assert.equal(KinFormulas.kin(2451545 * 1440 + 260 * 1440, 2451545 * 1440).value, 1, 'and the cycle turns')
+  assert.equal(KinFormulas.dreamspellDrift(2026 - 1992).value, 8, 'eight leap days skipped since 1992')
+  assert.equal(KinFormulas.period(3).value, 60)
+  assert.equal(KinFormulas.period(4).value, 21252, 'lcm(23, 28, 33)')
+  assert.equal(KinFormulas.period(5).value, 144000)
+  assert.ok(Number(CalFormulas.metonicDrift(1).value) > 120 && Number(CalFormulas.metonicDrift(1).value) < 130, 'about 2 h 5 min a cycle')
+  assert.equal(CalFormulas.lunarDrift(33).value, 358, 'in 33 years the lunar year has walked ~a whole year')
+  assert.equal(CalFormulas.sarosShift(3).value, 0, 'three Saros returns bring an eclipse back to the same longitude')
+  assert.equal(KinFormulas.pillar(60, 0).value, 0)
+  assert.equal(KinFormulas.pillar(1, 0).value, 13, 'stem 1, branch 1')
+  assert.equal(KinFormulas.biorhythm(0, 0, 23 * 1440).value, 0)
+  assert.deepEqual(Array.from({ length: 6 }, (_, n) => Number(KinFormulas.vortex(n).value)), [1, 2, 4, 8, 7, 5])
+  assert.equal(KinFormulas.vortex(6).value, 1, 'period 6')
+  assert.equal(KinFormulas.digitalRoot(2451545).value, 1 + ((2451545 - 1) % 9))
+  assert.equal(KinFormulas.enneagram().value, 142857)
+})
+
+test('cal: the Day Out of Time is a coin — a leap year holds both uncounted days, the pairs are the kin lost, the Day Out of Time returns in 52 years', () => {
+  assert.deepEqual([1900, 2000, 2024, 2026, 2100].map((y) => Number(CalFormulas.leap(y).value)), [0, 1, 1, 0, 0])
+  assert.equal(CalFormulas.coin(2024).value, 2, 'two faces in a leap year')
+  assert.equal(CalFormulas.coin(2026).value, 1)
+  assert.equal(CalFormulas.pairs(1992, 2026).value, 9, '1992 1996 2000 2004 2008 2012 2016 2020 2024')
+  assert.equal(CalFormulas.pairs(1992, 2026).value, Number(KinFormulas.dreamspellDrift(2026 - 1992).value) + 1, 'the pairs are the kin lost (the drift counts whole quadrennia; the pairs count the leap years themselves)')
+  assert.equal(CalFormulas.pairs(1901, 1999).value, 24, 'no leap day in 1900')
+  assert.equal(CalFormulas.faces().value, 147)
+  assert.equal(KinFormulas.dootKin(2000, 2000, 1).value, 1)
+  assert.equal(KinFormulas.dootKin(2001, 2000, 1).value, 106, '105 kin on')
+  assert.equal(KinFormulas.dootKin(2052, 2000, 1).value, 1, 'the calendar round: 52 years')
+  assert.equal(KinFormulas.crossed(2052, 2000).value, 1)
+  assert.equal(KinFormulas.crossed(2026, 2000).value, 0)
+  // the pairs since the Dreamspell's own epoch, each one a crossing of the two faces
+  const crossings = Array.from({ length: 2026 - 1992 + 1 }, (_, i) => 1992 + i).filter((y) => Number(CalFormulas.leap(y).value) === 1)
+  assert.deepEqual(crossings, [1992, 1996, 2000, 2004, 2008, 2012, 2016, 2020, 2024])
 })

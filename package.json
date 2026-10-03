@@ -98,10 +98,13 @@
     "./dist/mcp/hd-formulas.js",
     "./dist/mcp/heat-formulas.js",
     "./dist/mcp/hologram-streams.js",
+    "./dist/mcp/kin-formulas.js",
     "./dist/mcp/mcp-capabilities.js",
     "./dist/mcp/np-formulas.js",
     "./dist/mcp/qpu-fused.js",
     "./dist/mcp/quantum-secure-signalling.js",
+    "./dist/mcp/rule-formulas.js",
+    "./dist/mcp/yi-formulas.js",
     "./dist/audit/audit-formulas.js"
   ],
   "engines": {
@@ -118,6 +121,7 @@
     "fuse": "node scripts/fuse-apis.mjs",
     "payload:cf": "node scripts/payload-cloudflare.mjs",
     "heat": "node scripts/heat.mjs",
+    "cross-check": "node scripts/cross-check.mjs",
     "hooks": "node dist/deployment/git-hooks.js install",
     "prepublishOnly": "npm run version:lock && npm run build",
     "ship": "npm run build && opennextjs-cloudflare build && opennextjs-cloudflare deploy",

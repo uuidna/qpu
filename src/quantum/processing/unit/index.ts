@@ -535,17 +535,23 @@ export const qpuMcpFusedOf = () => [...FUSED_TOOLS].map(([name, t]) => ({ name, 
  * @wing agents
  * @kind builder
  */
-export const qpuDataLiveOf = async (env?: QpuEnv) => {
+export const qpuDataLiveOf = async (env?: QpuEnv, from = n - n, take = qpuFacesOf().faces) => {
   const door = FUSED_TOOLS.get('qpu_data')
   if (!door) return { kind: 'data-live' as const, sources: n - n, agree: n - n, differ: [] as string[], unreachable: [] as string[], rows: [] as { label: string; agrees: boolean; reading: unknown }[], holds: false }
   const listed = (await door.run({ source: 'all' }, env)) as { sources?: { source: string; args: Record<string, unknown>; label: string; checks: string }[] }
-  const sources = listed.sources ?? []
+  const all = listed.sources ?? []
+  // a slice per call, faces at a time: no one call reads every source
+  const sources = all.slice(from, from + take)
   const rows = await Promise.all(sources.map(async (s) => {
     const r = (await door.run({ source: s.source, ...s.args }, env)) as { agrees?: boolean; denied?: string; reading?: unknown; receipt?: string }
     return { label: s.label, checks: s.checks, agrees: r.agrees === true, unreachable: r.denied === 'unreachable', reading: r.reading, receipt: r.receipt }
   }))
   return {
     kind: 'data-live' as const,
+    from,
+    take: rows.length,
+    total: all.length,
+    ...(from + rows.length < all.length ? { next: from + rows.length } : {}),
     sources: rows.length,
     agree: rows.filter((r) => r.agrees).length,
     differ: rows.filter((r) => !r.agrees && !r.unreachable).map((r) => r.label),
@@ -11978,6 +11984,15 @@ export const qpuHexFamiliesOf = (): Map<string, HexFormula[]> => {
   return (hexFamilies = out)
 }
 const hexHandleOf = (family: string) => qpuFoldOf(family).slice(n - n, UUID_EIGHT)
+/**
+ * How many formulas a family registered, before the nibble's cap: a family past the cap is truncated silently by
+ * qpuHexFamiliesOf, so the rule family reads this to say so.
+ * @wing agents
+ * @kind function
+ */
+export const qpuHexRegisteredSizeOf = (family: string): number => HEX_REGISTERED.get(family)?.size ?? n - n
+/** The nibble's cap on a family's formulas: fifteen (0 is no formula). */
+export const qpuHexFamilyCapOf = (): number => UUID_SIXTEEN - seed
 
 /**
  * Mint the UUID that is a program of formulas: handle (8 hex) = fold of the family name; three 4-hex program sections

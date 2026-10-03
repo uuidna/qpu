@@ -8,10 +8,13 @@ import './crypt-formulas.js'
 import './hd-formulas.js'
 import './heat-formulas.js'
 import './hologram-streams.js'
+import './kin-formulas.js'
 import './mcp-capabilities.js'
 import './np-formulas.js'
 import './qpu-fused.js'
 import './quantum-secure-signalling.js'
+import './rule-formulas.js'
+import './yi-formulas.js'
 import '../audit/audit-formulas.js'
 
-export const families = ['api-door', 'cal-formulas', 'clay-seals', 'cross-domain-formulas', 'cross-domain-paths', 'crypt-formulas', 'hd-formulas', 'heat-formulas', 'hologram-streams', 'mcp-capabilities', 'np-formulas', 'qpu-fused', 'quantum-secure-signalling', 'audit-formulas'] as const
+export const families = ['api-door', 'cal-formulas', 'clay-seals', 'cross-domain-formulas', 'cross-domain-paths', 'crypt-formulas', 'hd-formulas', 'heat-formulas', 'hologram-streams', 'kin-formulas', 'mcp-capabilities', 'np-formulas', 'qpu-fused', 'quantum-secure-signalling', 'rule-formulas', 'yi-formulas', 'audit-formulas'] as const

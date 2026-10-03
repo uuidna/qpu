@@ -141,16 +141,23 @@ export class HdFormulas {
     const east = longitude10 <= 1800 ? longitude10 : longitude10 - 3600
     return f('hd-mean', 'mean(λ) = ⌊4 · λ⌉ + 720 (minutes east of Greenwich, plus 720)', Math.round(east * 0.4) + 720, nat(longitude10) && longitude10 < 3600, 'mean', [longitude10])
   }
-  /** A civil date (yyyymmdd) and ut() minutes to the Julian day in minutes (Meeus ch. 7): the unit every formula of a
+  /** A civil date as a human writes it, yyyymmdd (one 48-bit parameter), to its compact code y·372 + (m − 1)·31 + (d − 1),
+   *  which fits the 24 bits a two-parameter program gives: jdm(code, minutes) takes it. */
+  static code(yyyymmdd: number): CrossFormula {
+    const year = Math.floor(yyyymmdd / 10000), month = Math.floor(yyyymmdd / 100) % 100, day = yyyymmdd % 100
+    const ok = nat(yyyymmdd) && month >= 1 && month <= 12 && day >= 1 && day <= 31
+    return f('hd-code', 'code(yyyymmdd) = 372·y + 31·(m − 1) + (d − 1)', ok ? year * 372 + (month - 1) * 31 + (day - 1) : 0, ok, 'code', [yyyymmdd])
+  }
+  /** A date code (hd.code) and ut() minutes to the Julian day in minutes (Meeus ch. 7): the unit every formula of a
    *  chart takes, so a chart is exact to the minute and the place of birth. */
-  static jdm(date: number, minutes: number): CrossFormula {
-    const year = Math.floor(date / 10000), month = Math.floor(date / 100) % 100, day = date % 100
+  static jdm(code: number, minutes: number): CrossFormula {
+    const year = Math.floor(code / 372), month = Math.floor((code % 372) / 31) + 1, day = (code % 31) + 1
     let y = year, m = month
     if (m <= 2) { y -= 1; m += 12 }
     const A = Math.floor(y / 100), B = 2 - A + Math.floor(A / 4)
     const jd0 = Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + day + B - 1524.5
-    const ok = nat(date, minutes) && month >= 1 && month <= 12 && day >= 1 && day <= 31
-    return f('hd-jdm', 'jdm(yyyymmdd, m) = 1440 · jd₀(y, m, d) + m − 1440, jd₀ at 00:00 UT (Meeus ch. 7)', ok ? Math.round(jd0 * MINUTES) + minutes - MINUTES : 0, ok, 'jdm', [date, minutes])
+    const ok = nat(code, minutes) && month <= 12
+    return f('hd-jdm', 'jdm(code, m) = 1440 · jd₀(y, m, d) + m − 1440, jd₀ at 00:00 UT (Meeus ch. 7), (y, m, d) from the code', ok ? Math.round(jd0 * MINUTES) + minutes - MINUTES : 0, ok, 'jdm', [code, minutes])
   }
   /** The chart at a birth minute (jdm): the number of channels the Sun and Earth define, personality and design
    *  together; the run's steps carry the gates. A chat that knows a birth time asks this and cites the structure. */
@@ -162,5 +169,5 @@ export class HdFormulas {
   static cells(): CrossFormula { return f('hd-cells', 'cells = 64 gates × 6 lines × 2 layers', GATES * LINES * 2, true, 'cells', []) }
 }
 
-for (const name of ['cells', 'center', 'channel', 'channels', 'chart', 'definition', 'design', 'gate', 'jdm', 'line', 'mean', 'sun', 'ut'] as const)
+for (const name of ['cells', 'center', 'channel', 'channels', 'chart', 'code', 'definition', 'design', 'gate', 'jdm', 'line', 'mean', 'sun', 'ut'] as const)
   qpuHexRegisterOf('hd', name, (HdFormulas[name] as (...x: unknown[]) => unknown).bind(HdFormulas))

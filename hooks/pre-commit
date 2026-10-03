@@ -8,3 +8,6 @@ command -v lean >/dev/null || { echo "pre-commit: RED — lean missing. Commit B
 lean "$src"
 # heat: the hottest files, the staged ones first; a report, never a block
 node scripts/heat.mjs --report 2>/dev/null || true
+# cross-check: every staged formula module is crossed with the public record (the APIs its formulas name, read live;
+# discovery with live readings) before it is committed; the receipt is committed with it
+node scripts/cross-check.mjs --staged && git add cross-check-receipt.json 2>/dev/null

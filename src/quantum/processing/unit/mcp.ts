@@ -347,7 +347,7 @@ export const qpuThroughSchemaOf = (inputSchema: Record<string, unknown>): Record
     door: { type: 'string', description: 'Answer as any door or formula: { doors: true } lists them; family.formula runs a formula.' },
     arguments: { type: 'object', description: 'The arguments for door (params for a formula).' },
     doors: { type: 'boolean', description: '{ doors: true } lists every door and every formula reachable through this one.' },
-    errors: { type: 'boolean', description: '{ errors: true } answers every current error and warning at once, each with what resolves it.' },
+    errors: { type: 'boolean', description: '{ errors: true, from, take } answers the errors and warnings of a slice of the live checks at once, each with what resolves it; next names the slice after.' },
   },
 })
 
@@ -379,20 +379,24 @@ export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
  * @wing agents
  * @kind builder
  */
-export const qpuMcpErrorsOf = async (env?: QpuEnv) => {
+export const qpuMcpErrorsOf = async (env?: QpuEnv, from = n - n, take = qpuFacesOf().faces) => {
   type Row = { where: string; why: string; reading?: unknown; resolve: string }
   const errors: Row[] = [], warnings: Row[] = []
   const data = FUSED_TOOLS.get('qpu_data')
+  let total = n - n
   if (data) {
     const listed = (await data.run({ source: 'all' }, env)) as { sources?: { source: string; args: Record<string, unknown>; label: string }[] }
-    const rows = await Promise.all((listed.sources ?? []).map(async (s) => ({ s, r: (await data.run({ ...s.args, source: s.source }, env)) as Record<string, unknown> })))
+    const all = listed.sources ?? []
+    total = all.length
+    // a slice per call, faces at a time: no one call reads every source
+    const rows = await Promise.all(all.slice(from, from + take).map(async (s) => ({ s, r: (await data.run({ ...s.args, source: s.source }, env)) as Record<string, unknown> })))
     for (const { s, r } of rows) {
       if (r.warning) warnings.push({ where: s.label, why: String(r.warning), reading: r.reading, resolve: String(r.resolve ?? '') })
       else if (r.denied) errors.push({ where: s.label, why: String(r.denied), reading: r.reading, resolve: String(r.resolve ?? 'the reading names it') })
       else if (r.agrees === false) errors.push({ where: s.label, why: 'differs', reading: { read: r.reading, expected: r.expected }, resolve: 'the live value and the unit differ: the unit is corrected if the source is right, the source reported if it is not' })
     }
   }
-  return { kind: 'errors' as const, errors, warnings, count: errors.length, holds: errors.length === n - n }
+  return { kind: 'errors' as const, from, take, total, ...(from + take < total ? { next: from + take } : {}), errors, warnings, count: errors.length, holds: errors.length === n - n }
 }
 
 /** Every call is answered: a door that throws is answered with its classified failure, never a crash. */
@@ -421,7 +425,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
   }
   // through this door: the listing, every error at once, a hex program, or another door (see qpuThroughSchemaOf)
   if (args.doors === true) return shown(qpuMcpDoorsOf(env, auth))
-  if (args.errors === true) return shown(await qpuMcpErrorsOf(env))
+  if (args.errors === true) return shown(await qpuMcpErrorsOf(env, typeof args.from === 'number' ? args.from : n - n, typeof args.take === 'number' ? args.take : qpuFacesOf().faces))
   if (typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null)) {
     const h = args.hex as string | { family?: unknown; program?: unknown; params?: unknown }
     try {
@@ -451,7 +455,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
       const sequenced =
         args.sequence === true &&
         (name === toolNames[n] || name === toolNames[n + coins] || name === toolNames[n + n] || name === toolNames[mintOf(n) - seed])
-      if (sequenced || (name === toolNames[mintOf(n) - seed] && args.live === true)) return shown({ ...(await qpuSequenceLiveOf()), data: await qpuDataLiveOf(env) })
+      if (sequenced || (name === toolNames[mintOf(n) - seed] && args.live === true)) return shown({ ...(await qpuSequenceLiveOf()), data: await qpuDataLiveOf(env, typeof args.from === 'number' ? args.from : n - n) })
       if (args.live === true) {
         if (name === toolNames[n] && typeof args.from === 'number' && Number.isInteger(args.from) && args.from >= n - n)
           return shown({ ...(await qpuComposeLiveOf(args.from, qpuFacesOf().faces)), from: args.from, next: args.from + qpuFacesOf().faces, stream: qpuReceiptStreamsOf(n - n).streams.find((row) => row.stream === 'fuse') ?? null })

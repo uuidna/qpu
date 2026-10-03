@@ -1,0 +1,39 @@
+import { qpuFacesOf, qpuHexFamiliesOf, qpuHexFamilyCapOf, qpuHexRegisterOf, qpuHexRegisteredSizeOf } from '../quantum/processing/unit/index.js'
+import { crossFormulaOf, type CrossFormula } from './cross-domain-formulas.js'
+
+/** RULES ARE FORMULAS. What governs the unit's own shape is computed, not written down: a family holds at most a
+ *  nibble of formulas (fifteen; the sixteenth value is no formula), a sweep is a slice of faces per call, every
+ *  family registered is served whole. Each rule is a formula with a value and a receipt, and the one that counts
+ *  what breaks a rule holds only at zero. The file-level rules (no limits block in the Worker config, the bundler's
+ *  sideEffects equal to the registry, the registry equal to the registering modules) are the scripts suite
+ *  rules.test.mjs, discovered by glob and run by the one workflow. */
+
+const PROOF = 'the hex UUID: one nibble per formula, three sections of four; the lattice: faces per slice'
+const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
+const families = () => [...qpuHexFamiliesOf().keys()].sort()
+const f = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
+  crossFormulaOf({ id, src: 'rule', dst: 'lattice', formula, value, proof: PROOF, ...extra }, holds, { name: `rule.${name}`, params })
+
+export class RuleFormulas {
+  /** The cap: fifteen formulas per family, one nibble. */
+  static cap(): CrossFormula { return f('rule-cap', 'cap = 16 − 1', qpuHexFamilyCapOf(), true, 'cap', []) }
+  /** The slice: faces per call of any sweep. */
+  static slice(): CrossFormula { return f('rule-slice', 'slice = faces', qpuFacesOf().faces, true, 'slice', []) }
+  /** How many families are registered. */
+  static families(): CrossFormula { return f('rule-families', 'families = |registry|', families().length, families().length > 0, 'families', [], { families: families() }) }
+  /** The formulas the i-th family (sorted) serves. */
+  static nibbles(i: number): CrossFormula { const name = families()[i]; return f('rule-nibbles', 'nibbles(i) = |formulas served by family i|', name ? qpuHexFamiliesOf().get(name)!.length : 0, name !== undefined, 'nibbles', [i], { family: name }) }
+  /** What the i-th family registered beyond what it serves: truncated by the cap; holds only at zero. */
+  static truncated(i: number): CrossFormula { const name = families()[i]; const over = name ? Math.max(0, qpuHexRegisteredSizeOf(name) - qpuHexFamiliesOf().get(name)!.length) : 0; return f('rule-truncated', 'truncated(i) = registered − served', over, name !== undefined && over === 0, 'truncated', [i], { family: name }) }
+  /** How many families are past the cap: holds only at zero. */
+  static over(): CrossFormula { const list = families().filter((name) => qpuHexRegisteredSizeOf(name) > qpuHexFamilyCapOf()); return f('rule-over', 'over = |{ f : registered(f) > cap }|', list.length, list.length === 0, 'over', [], { over: list }) }
+  /** The room left in the i-th family: cap − served. */
+  static free(i: number): CrossFormula { const name = families()[i]; return f('rule-free', 'free(i) = cap − nibbles(i)', name ? qpuHexFamilyCapOf() - qpuHexFamiliesOf().get(name)!.length : 0, name !== undefined, 'free', [i], { family: name }) }
+  /** The two-step compositions a family of n formulas offers: n². */
+  static compositions(i: number): CrossFormula { const name = families()[i]; const k = name ? qpuHexFamiliesOf().get(name)!.length : 0; return f('rule-compositions', 'compositions(i) = n²', k * k, name !== undefined, 'compositions', [i], { family: name }) }
+  /** Every formula of every family, the addressable whole. */
+  static formulas(): CrossFormula { const total = [...qpuHexFamiliesOf().values()].reduce((s, fs) => s + fs.length, 0); return f('rule-formulas', 'formulas = Σ nibbles(i)', total, total > 0, 'formulas', []) }
+}
+
+for (const name of ['cap', 'compositions', 'families', 'formulas', 'free', 'nibbles', 'over', 'slice', 'truncated'] as const)
+  qpuHexRegisterOf('rule', name, (RuleFormulas[name] as (...x: unknown[]) => unknown).bind(RuleFormulas))

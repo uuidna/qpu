@@ -166,10 +166,29 @@ export const apiWalkOf = async (from = 0, take = Infinity, concurrency = 8) => {
   return { kind: 'api-walk' as const, registry: REGISTRY, listed: reg.names.length, from, take: names.length, next: from + names.length < reg.names.length ? from + names.length : null, fused: rows.filter((r) => r.fused).length, used: rows.filter((r) => r.used).length, rows }
 }
 
+/** The registry searched: every API whose name, title or category holds a word, and — for the first `take` of them,
+ *  their documents read — the operations whose path or operationId holds a word. The words are not listed here: a
+ *  family's formula names are the words a human request carries (sun, design, kin, lunar, hexagram…). */
+export const apiSearchOf = async (words: string[], take = 14) => {
+  const reg = await apiRegistryOf()
+  const terms = words.map((w) => w.toLowerCase()).filter((w) => w.length > 2)
+  const hit = (s: string) => terms.some((w) => s.toLowerCase().includes(w))
+  const named = reg.names.map((api, index) => ({ api, index, entry: reg.entries[api] ?? {} })).filter(({ api, entry }) => {
+    const v = entry.versions?.[entry.preferred ?? ''] ?? {}
+    return hit(api) || hit(v.info?.title ?? '') || (v.info?.['x-apisguru-categories'] ?? []).some(hit)
+  })
+  const read = await Promise.all(named.slice(0, take).map(async ({ index }) => {
+    const api = await apiOf(index)
+    return { api: api.api, index, title: api.title, categories: api.categories, server: api.server, operations: api.operations.filter((op) => hit(op.path) || hit(op.operationId ?? '')).map((op) => ({ index: op.index, verb: op.verb, path: op.path, required: op.required })), free: api.operations.find((op) => op.verb === 'get' && op.required.length === 0)?.index }
+  }))
+  return { kind: 'api-search' as const, words: terms, matched: named.length, read: read.length, apis: read, more: named.slice(take).map((x) => x.api) }
+}
+
 qpuMcpFuseOf('qpu_api', {
-  description: "Every public API as an address: {} the registry and how to address it; { api } (name or index) its operations; { api, operation, params } makes that read through api.call(i, j, s) and returns the reading with its hex address; { walk: true, from, take } walks a slice of the registry (fused: document read; used: a read made).",
-  inputSchema: { type: 'object', properties: { api: { type: ['string', 'integer'] }, operation: { type: 'integer' }, params: { type: 'object' }, walk: { type: 'boolean' }, from: { type: 'integer' }, take: { type: 'integer' } } },
+  description: "Every public API as an address: {} the registry and how to address it; { api } (name or index) its operations; { api, operation, params } makes that read through api.call(i, j, s) and returns the reading with its hex address; { walk: true, from, take } walks a slice of the registry (fused: document read; used: a read made); { search } finds APIs by words in their names, titles, categories and operations.",
+  inputSchema: { type: 'object', properties: { api: { type: ['string', 'integer'] }, operation: { type: 'integer' }, params: { type: 'object' }, walk: { type: 'boolean' }, from: { type: 'integer' }, take: { type: 'integer' }, search: { type: ['string', 'array'], items: { type: 'string' } } } },
   run: async (a) => {
+    if (a.search !== undefined) return apiSearchOf(Array.isArray(a.search) ? a.search.map(String) : String(a.search).split(/[\s,]+/), typeof a.take === 'number' ? a.take : qpuFacesOf().faces)
     if (a.walk === true) return apiWalkOf(typeof a.from === 'number' ? a.from : 0, typeof a.take === 'number' ? a.take : qpuFacesOf().faces)
     if (a.api === undefined) {
       const reg = await apiRegistryOf()

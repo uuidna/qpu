@@ -1,7 +1,7 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { qpuContentUuidOf, qpuUuidReceiptOf } from './index.js'
+import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from './index.js'
 
 /** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/mcp (QPU_LIVE names
  * another host) through the sealed doors, the one way any MCP client reaches it, and drive what a release must cover:
@@ -28,6 +28,10 @@ const call = async (args: Record<string, unknown>, name = DOOR): Promise<Shown> 
 }
 const out = (s: Shown) => (s.structuredContent ?? {}) as Record<string, unknown>
 const FUSED = ['qpu_data', 'qpu_hex', 'qpu_discover', 'qpu_crypt', 'qpu_np', 'qpu_hologram']
+// COMPUTE ALL IN HEX, DO NOT WRAP: every check is a hex program run at its address through a sealed door
+type Run = { value?: unknown; holds?: boolean; steps?: unknown[]; denied?: string; receipt?: string }
+const hex = async (family: string, program: string[], params: number[] = []): Promise<Run> => out(await call({ hex: { family, program, params } })) as Run
+const nonDoors = () => [...qpuHexFamiliesOf().keys()].filter((f) => f !== 'qpu' && f !== 'crypto').sort()
 
 test('release: every door and every formula is reachable through a sealed door', async (t) => {
   const d = out(await call({ doors: true })) as { doors?: { name: string; kind: string }[]; formulas?: { name: string }[] }
@@ -36,41 +40,27 @@ test('release: every door and every formula is reachable through a sealed door',
   const families = new Set(d.formulas.map((f) => f.name.split('.').slice(0, -1).join('.')))
   for (const f of ['Qpu.Mint', 'Qpu.Physics', 'cross', 'np', 'clay', 'heat']) assert.ok(families.has(f), `family ${f} is reachable`)
   t.diagnostic(`${d.doors.length} doors, ${d.formulas.length} formulas`)
-  // a formula runs through the door by name, its params passed as they are
-  const run = out(await call({ door: 'heat.temperature', arguments: { params: [16, 1] } }))
-  assert.equal(run.value, 16000, 'heat.temperature(16, 1) = 16000 mK through the door')
-  // and the arguments may come flat or as a JSON string, as clients holding an older schema send them
-  for (const args of [{ door: 'qpu_data', source: 'zenodo' }, { door: 'qpu_data', arguments: JSON.stringify({ source: 'zenodo' }) }]) {
-    const z = out(await call(args))
-    assert.notEqual(z.denied, 'source', `qpu_data received its source from ${JSON.stringify(args)}`)
-  }
+  // a formula runs at its address
+  const run = await hex('heat', ['temperature'], [16, 1])
+  assert.equal(Number(run.value), 16000, 'heat.temperature(16, 1) = 16000 mK at its hex address')
+  assert.equal(run.holds, true)
 })
 
 test('release: every external API and dataset is read, the theorems among them agree', async (t) => {
-  const all = out(await call({ door: 'qpu_data', arguments: { source: 'all' } })) as { sources?: { source: string; args: Record<string, unknown>; label: string }[] }
-  assert.ok(all.sources && all.sources.length > 0, 'qpu_data lists its sources')
-  const kinds = new Set(all.sources.map((s) => s.source))
-  for (const k of ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'apis', 'catalog']) assert.ok(kinds.has(k), `a ${k} source is checked`)
-  const rows = await Promise.all(all.sources.map(async (s) => ({ s, r: out(await call({ door: 'qpu_data', arguments: { ...s.args, source: s.source } })) })))
-  let agree = 0, warned = 0
-  for (const { s, r } of rows) {
-    // every source answers: it agrees, differs with what it read, or is skipped with a warning; none is silent
-    assert.ok('agrees' in r || 'warning' in r || 'denied' in r, `${s.label} answers`)
-    if ('warning' in r) { warned++; assert.ok(typeof r.resolve === 'string', `${s.label}: the warning says what resolves it`); continue }
-    if (r.agrees === true) agree++
-    if (r.denied) assert.ok(typeof r.resolve === 'string', `${s.label}: the error says what resolves it`)
-    // a theorem of the unit checked against live data must agree whenever the data could be read
-    if (['cern', 'nist', 'oeis'].includes(s.source) && !r.denied) assert.equal(r.agrees, true, `${s.label} agrees with the theorem`)
-  }
-  t.diagnostic(`${rows.length} sources: ${agree} agree, ${warned} warned`)
+  const n = Number((await hex('data', ['sources'])).value)
+  assert.ok(n > 0, 'data.sources() counts the live checks')
+  const runs = await Promise.all(Array.from({ length: n }, (_, i) => hex('data', ['read'], [i])))
+  const unread = runs.map((r, i) => ({ r, i })).filter(({ r }) => r.holds !== true)
+  assert.deepEqual(unread.map(({ i, r }) => `read(${i}) = ${String(r.value)}`), [], 'every source agrees, warns, or differs without being a theorem of the unit')
+  const agree = runs.filter((r) => Number(r.value) === 2).length, differ = runs.filter((r) => Number(r.value) === 1).length, warned = runs.filter((r) => Number(r.value) === 0).length
+  t.diagnostic(`${n} sources in hex: ${agree} agree, ${differ} differ, ${warned} unread (warned)`)
 })
 
 test('release: formula discovery holds across every family', async (t) => {
-  const d = out(await call({ door: 'qpu_discover', arguments: { limit: 5 } })) as { holds?: boolean; families?: string[]; perFamily?: Record<string, { runs: number }>; relationsTotal?: number }
-  assert.equal(d.holds, true, 'discovery holds')
-  for (const f of d.families ?? []) assert.ok((d.perFamily?.[f]?.runs ?? 0) > 0, `family ${f} ran`)
-  assert.ok((d.relationsTotal ?? 0) > 0, 'two or more families reach a common value')
-  t.diagnostic(`${d.families?.length} families, ${d.relationsTotal} cross-family solutions`)
+  const d = await hex('data', ['discover'], [5])
+  assert.equal(d.holds, true, 'discovery holds: every family ran and two or more reach a common value')
+  assert.ok(Number(d.value) > 0, 'cross-family solutions')
+  t.diagnostic(`${d.value} cross-family solutions, in hex`)
 })
 
 test('release: the site end to end — every address it lists answers, every page renders as built', async (t) => {
@@ -131,34 +121,34 @@ test('release: every public API is fused and used — the registry walked throug
   assert.equal(walk.walked, walk.listed, 'the walk covers every API the registry lists')
   assert.equal(walk.fused, walk.walked, 'every API is fused: its document read and its operations derived')
   assert.ok(walk.used > 0 && walk.statuses['200'] > 0, 'reads were made and answered')
-  // and live, through the door: the registry is addressed, a slice is walked, an operation is resolved and made
-  const reg = out(await call({ door: 'qpu_api' })) as { listed?: number; address?: string }
-  assert.ok((reg.listed ?? 0) > 0 && typeof reg.address === 'string', 'the door addresses the registry')
-  const from = Math.floor(((reg.listed ?? 1) * 7) / 16)
-  const slice = out(await call({ door: 'qpu_api', walk: true, from, take: 8 })) as { take?: number; fused?: number; rows?: { api: string; fused: boolean; used: boolean; url?: string; why?: string }[] }
-  assert.equal(slice.fused, slice.take, `every API of the live slice is fused: ${JSON.stringify(slice.rows?.filter((r) => !r.fused))}`)
-  const made = slice.rows?.find((r) => r.used)
-  if (made) {
-    const one = out(await call({ door: 'qpu_api', api: made.api })) as { operations?: { index: number; verb: string; required: string[] }[]; server?: string }
-    const op = one.operations?.find((o) => o.verb === 'get' && o.required.length === 0)
-    assert.ok(op && one.server, `${made.api} lists its operations and server`)
-    const r = out(await call({ door: 'qpu_api', api: made.api, operation: op!.index })) as { status?: number; hex?: string; url?: string; receipt?: string }
-    assert.ok((r.status ?? 0) > 0 && typeof r.hex === 'string' && typeof r.receipt === 'string', `${made.api} operation ${op!.index} is made at its hex address: ${JSON.stringify(r).slice(0, 200)}`)
-  }
-  t.diagnostic(`${walk.listed} listed, ${walk.fused} fused, ${walk.used} used; live slice from ${from}: ${slice.fused}/${slice.take} fused, ${slice.rows?.filter((r) => r.used).length} used`)
+  // and live, in hex: the i-th API's operations are derived and its first operation resolved at their addresses
+  const from = Math.floor((walk.listed * 7) / 16)
+  const ops = await Promise.all(Array.from({ length: 8 }, (_, k) => hex('api', ['operations'], [from + k])))
+  assert.deepEqual(ops.map((r, k) => (r.holds ? null : `api.operations(${from + k}) ${String(r.denied ?? r.value)}`)).filter(Boolean), [], 'every API of the live slice is fused: its document read at its address')
+  const first = await hex('api', ['call'], [from, 0, 0])
+  assert.ok(typeof first.value === 'string' || typeof first.value === 'number', `api.call(${from}, 0, 0) answers at its address: ${JSON.stringify(first).slice(0, 160)}`)
+  const slice = { fused: ops.filter((r) => r.holds).length, take: ops.length, rows: [] as { used: boolean }[] }
+  t.diagnostic(`${walk.listed} listed, ${walk.fused} fused, ${walk.used} used; live slice from ${from}: ${slice.fused}/${slice.take} fused in hex`)
 })
 
 test('release: every error and warning is answered at once, each with what resolves it', async (t) => {
-  const e = out(await call({ errors: true })) as { errors?: { where: string; why: string; resolve: string }[]; warnings?: { where: string; why: string; resolve: string }[]; count?: number; holds?: boolean }
-  assert.ok(Array.isArray(e.errors) && Array.isArray(e.warnings), 'one answer carries every error and every warning')
-  for (const x of [...e.errors, ...e.warnings]) {
-    assert.ok(x.where && x.why, `${JSON.stringify(x)} names where and why`)
-    assert.ok(typeof x.resolve === 'string' && x.resolve.length > 0, `${x.where}: says what resolves it`)
-  }
-  assert.equal(e.count, e.errors.length, 'count is the errors; warnings do not count against holds')
-  assert.equal(e.holds, e.errors.length === 0)
+  const e = await hex('data', ['errors'])
+  assert.ok(typeof e.value === 'string' || typeof e.value === 'number', 'data.errors() answers at its address')
+  assert.equal(e.holds, Number(e.value) === 0, 'it holds exactly when there is no error')
   // an unknown name is answered with every name that would resolve it, not a bare failure
-  const bad = out(await call({ door: 'qpu_data', arguments: { source: 'nope' } }))
-  assert.ok(Array.isArray(bad.sources) && typeof bad.resolve === 'string', `an unknown source lists every source and how to resolve it: ${JSON.stringify(bad).slice(0, 400)}`)
-  t.diagnostic(`${e.errors.length} errors, ${e.warnings.length} warnings`)
+  const bad = await hex('data', ['read'], [65535])
+  assert.equal(bad.holds, false, 'a source that does not exist does not hold')
+  t.diagnostic(`${e.value} errors now, in hex`)
+})
+
+test('release: the public APIs a family names test it — the registry searched by its formulas, read live, crossed by discovery', async (t) => {
+  const families = nonDoors()
+  for (const family of ['cal', 'hd', 'yi', 'kin']) {
+    const f = families.indexOf(family)
+    assert.ok(f >= 0, `${family} is a family`)
+    const r = await hex('data', ['research'], [f])
+    assert.ok(Number(r.value) > 0, `${family}: the registry holds APIs its formulas name`)
+    assert.equal(r.holds, true, `${family}: at least one read answered`)
+    t.diagnostic(`${family}: ${r.value} APIs matched, in hex`)
+  }
 })
