@@ -1,5 +1,6 @@
 import { test } from './receipted.js'
 import assert from 'node:assert/strict'
+import { qpuContentUuidOf, qpuUuidReceiptOf } from './index.js'
 
 /** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/mcp (QPU_LIVE names
  * another host) through the sealed doors, the one way any MCP client reaches it, and drive what a release must cover:
@@ -18,6 +19,10 @@ const call = async (args: Record<string, unknown>, name = DOOR): Promise<Shown> 
   })
   const body = (await r.json()) as { result?: Shown; error?: { message: string } }
   assert.ok(body.result, `tools/call ${name} ${JSON.stringify(args)}: ${body.error?.message ?? r.status}`)
+  // the live reading is this test's computation: its content address is minted into the test's receipt ledger, so the
+  // receipted reporter sees what was read and from where, and a test that only read the host is not "dry"
+  const sc = body.result.structuredContent ?? {}
+  qpuUuidReceiptOf(`release ${name} ${JSON.stringify(args).slice(0, 80)}`, qpuContentUuidOf(sc), { holds: (sc as { holds?: unknown }).holds === true, host })
   return body.result
 }
 const out = (s: Shown) => (s.structuredContent ?? {}) as Record<string, unknown>
@@ -68,14 +73,20 @@ test('release: formula discovery holds across every family', async (t) => {
 })
 
 test('release: the site end to end — every address it lists answers, every page renders as built', async (t) => {
-  const get = (path: string, accept = 'text/html') => fetch(`${host}${path}`, { headers: { accept }, redirect: 'manual', signal: AbortSignal.timeout(120000) })
+  // every page read is minted into the test's receipt ledger (status and content address), as the MCP readings are
+  const get = async (path: string, accept = 'text/html') => {
+    const r = await fetch(`${host}${path}`, { headers: { accept }, redirect: 'manual', signal: AbortSignal.timeout(120000) })
+    const text = await r.text()
+    qpuUuidReceiptOf(`release site ${path}`, qpuContentUuidOf({ status: r.status, text }), { holds: r.status === 200, host })
+    return { status: r.status, headers: r.headers, text: async () => text, json: async () => JSON.parse(text) as unknown }
+  }
   // THE COLD START IS REPORTED, NOT RACED. The first page after a deploy seeds a changed site before it answers (minutes
   // on a version bump: every doc's UUID moves); this test runs right after the deploy that made the host, so it waits
   // for the first answer and records how long it took, then holds the site to its warm shape.
   // A 503 is the host saying not yet (the isolate still seeding, or the Worker version still propagating), so the wait
   // is paced, up to five minutes; the first 200 is the cold start's end.
   const started = Date.now()
-  let warm: Response | undefined
+  let warm: { status: number } | undefined
   let last = ''
   for (let i = 0; i < 30 && !(warm && warm.status === 200); i++) {
     if (i) await new Promise((r) => setTimeout(r, 10000))
