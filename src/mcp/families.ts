@@ -42,6 +42,7 @@ import '../families/field/index.js'
 import '../families/financial/index.js'
 import '../families/forensic/index.js'
 import '../families/forms/index.js'
+import '../families/frontend/index.js'
 import '../families/gate/index.js'
 import '../families/global/index.js'
 import '../families/glyph/index.js'
@@ -106,4 +107,4 @@ import '../families/version/index.js'
 import '../families/wave/index.js'
 import '../families/yi/index.js'
 
-export const families = ['access', 'accounting', 'admin', 'analytics', 'antitrust', 'api-door', 'audit', 'auth', 'aviation', 'backend', 'ballistics', 'banking', 'bankruptcy', 'cal', 'chat', 'clay', 'cloud', 'collaboration', 'collide', 'compliance', 'contract', 'court', 'cross', 'crypt', 'css', 'customer', 'db', 'devtools', 'ecommerce', 'econ', 'education', 'email', 'employment', 'endpoint', 'enterprise', 'entertainment', 'environment', 'evidence', 'family', 'field', 'financial', 'forensic', 'forms', 'gate', 'global', 'glyph', 'gravity', 'guide', 'hd', 'heat', 'holo', 'hook', 'hosting', 'immigration', 'insurance', 'iot', 'job', 'kin', 'law', 'learning', 'locale', 'location', 'maritime', 'marketing', 'mcp-capabilities', 'med', 'merkaba', 'messaging', 'monitoring', 'np', 'numen', 'opendata', 'patent', 'path', 'payload', 'payment', 'platonic', 'port', 'project', 'property', 'psych', 'qpu-fused', 'query', 'ready', 'rule', 'scale', 'search', 'securities', 'security', 'sentence', 'seo', 'signal', 'social', 'split', 'storage', 'tax', 'telecom', 'tesla', 'text', 'tox', 'trading', 'tune', 'upload', 'version', 'wave', 'yi'] as const
+export const families = ['access', 'accounting', 'admin', 'analytics', 'antitrust', 'api-door', 'audit', 'auth', 'aviation', 'backend', 'ballistics', 'banking', 'bankruptcy', 'cal', 'chat', 'clay', 'cloud', 'collaboration', 'collide', 'compliance', 'contract', 'court', 'cross', 'crypt', 'css', 'customer', 'db', 'devtools', 'ecommerce', 'econ', 'education', 'email', 'employment', 'endpoint', 'enterprise', 'entertainment', 'environment', 'evidence', 'family', 'field', 'financial', 'forensic', 'forms', 'frontend', 'gate', 'global', 'glyph', 'gravity', 'guide', 'hd', 'heat', 'holo', 'hook', 'hosting', 'immigration', 'insurance', 'iot', 'job', 'kin', 'law', 'learning', 'locale', 'location', 'maritime', 'marketing', 'mcp-capabilities', 'med', 'merkaba', 'messaging', 'monitoring', 'np', 'numen', 'opendata', 'patent', 'path', 'payload', 'payment', 'platonic', 'port', 'project', 'property', 'psych', 'qpu-fused', 'query', 'ready', 'rule', 'scale', 'search', 'securities', 'security', 'sentence', 'seo', 'signal', 'social', 'split', 'storage', 'tax', 'telecom', 'tesla', 'text', 'tox', 'trading', 'tune', 'upload', 'version', 'wave', 'yi'] as const

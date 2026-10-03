@@ -135,6 +135,7 @@
     "./dist/families/financial/index.js",
     "./dist/families/forensic/index.js",
     "./dist/families/forms/index.js",
+    "./dist/families/frontend/index.js",
     "./dist/families/gate/index.js",
     "./dist/families/global/index.js",
     "./dist/families/glyph/index.js",
