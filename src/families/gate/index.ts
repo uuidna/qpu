@@ -96,7 +96,10 @@ export class GateFormulas {
     const d = (await DataFormulas.discover(4096)) as unknown as { relations: { value: string; families: string[]; ways: { family: string; program: string[]; hex: string }[]; live: boolean }[]; seals: { family: string; program: string[]; kind: string }[]; liveInputs: number }
     const reached = new Set(d.relations.filter((r) => r.families.length > 1).flatMap((r) => r.ways.flatMap((w) => w.program.map((p) => `${w.family}.${p}`))))
     const identified = new Set<string>()
-    for (const s of await qpuSequencesOf()) { const r = (await qpuDataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed })) as { agrees?: boolean }; if (r.agrees === true) identified.add(`${s.family}.${s.formula}`) }
+    // the OEIS identification runs at once, not one at a time — a serial loop over every sequence stalled for minutes
+    const seqs = await qpuSequencesOf()
+    const agreed = await Promise.all(seqs.map((s) => (qpuDataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed }).then((r) => (r as { agrees?: boolean }).agrees === true).catch(() => false))))
+    seqs.forEach((s, i) => { if (agreed[i]) identified.add(`${s.family}.${s.formula}`) })
     const open = [...qpuHexFamiliesOf()].filter(([fam]) => !DOORS.has(fam) && !fam.startsWith('Qpu.')).flatMap(([fam, fs]) => fs.filter((x) => !x.live && !reached.has(`${fam}.${x.name}`) && !identified.has(`${fam}.${x.name}`)).map((x) => ({ family: fam, name: x.name, arity: x.arity })))
     return { d, identified, open }
   }
