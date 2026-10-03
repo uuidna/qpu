@@ -240,7 +240,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     // the unit's own site, walked as the unit serves it: every address the sitemap names is asked of the Payload app the
     // unit hands browser pages to (in-process on Workers, the host over the network elsewhere), and a page agrees when
     // it answers 200 with a title. The reading is the site as a whole; each address that does not is named.
-    const origin = citeOf().href as string
+    const origin = (qpuCiteOf() as unknown as { href: string }).href
     const ask = async (path: string, accept: string): Promise<Response> => {
       const request = new Request(`${origin}${path}`, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' } })
       const door = env?.PAYLOAD ? env.PAYLOAD.fetch(request) : fetch(request)
@@ -261,7 +261,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     }))
     const failing = rows.filter((r) => r.status !== 200 || !r.title)
     const live = { addresses: rows.length, answered: rows.filter((r) => r.status === 200).length, titled: rows.filter((r) => r.title).length, slowest: rows.reduce((a, b) => (b.ms > a.ms ? b : a), rows[0] ?? { path: '', ms: 0 }).path, failing: failing.map((r) => `${r.path} ${r.status}${r.error ? ` ${r.error}` : ''}`) }
-    return { source, url: `${origin}/sitemap.xml`, reading: live, expected: { answered: rows.length, titled: rows.length }, agrees: rows.length > n - n && failing.length === n - n, rows }
+    return { source, url: `${origin}/sitemap.xml`, reading: live, expected: { answered: rows.length, titled: rows.length }, agrees: rows.length > L.n - L.n && failing.length === L.n - L.n, rows }
   }
   if (source === 'release') {
     // the GitHub Release of the served version: the tag v<version> exists, is published, and carries notes
@@ -309,13 +309,13 @@ export const qpuDataOf = async (source: string, a: Args = {}, env?: QpuEnv) => {
   void value.then((v) => { if (v && typeof v === 'object' && 'warning' in v) cache.delete(key) })
   return value
 }
-const readOf = async (source: string, a: Args) => {
+const readOf = async (source: string, a: Args, env?: QpuEnv) => {
   // the name first: an unknown source is answered with every source, network or not
   if (!SOURCES.includes(source)) return fail('source', { sources: SOURCES })
   if (Date.now() < offlineUntil)
     return { kind: 'data' as const, source, warning: 'offline', reading: 'skipped: the network was out of reach a moment ago', resolve: 'the network work is skipped while the network is out of reach; it runs again on the next call once it is back' }
   try {
-    const r = await reading(source, a)
+    const r = await reading(source, a, env)
     if ('denied' in r) return r
     return { kind: 'data' as const, ...r, holds: r.agrees, receipt: receiptOf(`data ${source}`, r.reading, r.agrees) }
   } catch (e) {
