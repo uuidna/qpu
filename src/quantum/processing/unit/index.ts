@@ -4756,12 +4756,12 @@ export const qpuSeatHandleOf = (face: number) => {
 export const qpuSeatHandleHolds = (x?: ReturnType<typeof qpuSeatHandleOf>): boolean => x !== undefined && x.holds === true
 
 
-let messageSeq = n - n
 const messageLanes: unknown[][] = []
 
-const uuidImprintOf = (lane: number, fused: number, faces: number): string => {
-  messageSeq += seed
-  const time = fused + messageSeq
+const uuidImprintOf = (lane: number, fused: number, faces: number, seq: number): string => {
+  // the sequence is the lane's own depth — how many messages already rode it — not a process-wide counter: a replay
+  // of the same sends on the same lanes mints the same imprints, so the message stream recomputes to itself
+  const time = fused + seed + seq
   const clock = mintOf(faces + seed) + lane
   return uuidStampOf(`${hexOf(time, mintOf(n))}${hexOf(lane, mintOf(coins))}${hexOf(time, mintOf(coins))}${hexOf(clock, mintOf(coins))}${hexOf(time + lane, n * coins * coins)}`)
 }
@@ -4831,7 +4831,7 @@ export const qpuMessageOf = (send?: { lane?: unknown; body?: unknown }) => {
     // Binary limit: theorem quantum bounds by mintOf(bits + seed) = 2^8 = 256 amplitudes per lane max
     return { ...catalog, accepted: false as const, denied: 'amplitude' as const, lane, hop, holds: false as const }
   }
-  const uuid = uuidImprintOf(lane, fused, lanes)
+  const uuid = uuidImprintOf(lane, fused, lanes, messageLanes[hop]!.length)
   const imprint = uuid.replace(/-/g, '')
   messageLanes[hop]!.push({ uuid, lane, hop, body: stored })
   return {
@@ -5362,7 +5362,6 @@ export const qpuDocStoreOf = (env?: QpuEnv): DocStore => {
     keys: (prefix) => store.keysUnder(prefix, Number.MAX_SAFE_INTEGER),
   }
 }
-let docSequence = n - n
 /**
  * The QPU document database (MongoDB query and update semantics, docdb.ts) over the unit's store; ids are content UUIDs; every write is a quantum receipt in the db stream.
  * @wing storage
@@ -5372,7 +5371,9 @@ export const qpuDocDbOf = (env?: QpuEnv, name = 'payload', store: DocStore = qpu
   docDbOf(
     store,
     `db/${name}`,
-    (collection, doc) => qpuContentUuidOf({ collection, doc, at: Date.now(), sequence: docSequence++ }),
+    // the id is a pure fold of the content, nothing of the wall clock or a process counter: same bytes, same UUID,
+    // so a document's identity recomputes to itself on any machine at any time — the determinism law, not Date.now()
+    (collection, doc) => qpuContentUuidOf({ collection, doc }),
     ({ op, collection, doc }) => void qpuUuidReceiptOf(`db ${op} ${collection}`, doc._id, doc, `${unit.origin}/storage/${collection}`),
   )
 
