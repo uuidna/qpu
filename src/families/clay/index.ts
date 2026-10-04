@@ -4,9 +4,9 @@ import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/proces
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** The σ-involution seals of "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
- *  doi:10.5281/zenodo.21781603), each computed exactly as the paper states it: σ is self-inverse (σ∘σ = id) and its
+ *  doi:10.5281/zenodo.21781602), each computed exactly as the paper states it: σ is self-inverse (σ∘σ = id) and its
  *  fixed points are the ones the paper names. Registered as the hex family `clay`. */
-export const CLAY_SEAL_SOURCE = 'https://doi.org/10.5281/zenodo.21781603'
+export const CLAY_SEAL_SOURCE = 'https://doi.org/10.5281/zenodo.21781602'
 
 const nat = (...xs: number[]): boolean => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))

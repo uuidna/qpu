@@ -118,12 +118,12 @@ export const formulasReceiptOf = async (root = process.cwd()) => {
     ['np', NpFormulas.reachGcd(32), 'reach width 64 = 2k'],
     ['np', NpFormulas.sparseWidth(1443), 'crypto_shor n=1443 on qpu.uuidna.com reported 13 qubits'],
     ['np', NpFormulas.sparseWidth(481), 'crypto_shor n=481 on qpu.uuidna.com reported 11 qubits'],
-    ['clay', ClaySeals.riemann(1, 2), 'doi:10.5281/zenodo.21781603 §Riemann: the fixed point 1/2'],
-    ['clay', ClaySeals.bsd(9), 'doi:10.5281/zenodo.21781603 §BSD: (ℤ/9ℤ)* pairs (2,5), (4,7)'],
-    ['clay', ClaySeals.hodge(2), 'doi:10.5281/zenodo.21781603 §Hodge: H₁(Σ₂) = ℤ⁴'],
-    ['clay', ClaySeals.navierStokes(3, 3), 'doi:10.5281/zenodo.21781603 §Navier–Stokes: ω₊ = −ω₋'],
-    ['clay', ClaySeals.yangMills(), 'doi:10.5281/zenodo.21781603 §Yang–Mills: σ† = σ, σ² = I'],
-    ['clay', ClaySeals.pVsNp(0), 'doi:10.5281/zenodo.21781603 §P vs NP: no fixed point without a presupposed witness'],
+    ['clay', ClaySeals.riemann(1, 2), 'doi:10.5281/zenodo.21781602 §Riemann: the fixed point 1/2'],
+    ['clay', ClaySeals.bsd(9), 'doi:10.5281/zenodo.21781602 §BSD: (ℤ/9ℤ)* pairs (2,5), (4,7)'],
+    ['clay', ClaySeals.hodge(2), 'doi:10.5281/zenodo.21781602 §Hodge: H₁(Σ₂) = ℤ⁴'],
+    ['clay', ClaySeals.navierStokes(3, 3), 'doi:10.5281/zenodo.21781602 §Navier–Stokes: ω₊ = −ω₋'],
+    ['clay', ClaySeals.yangMills(), 'doi:10.5281/zenodo.21781602 §Yang–Mills: σ† = σ, σ² = I'],
+    ['clay', ClaySeals.pVsNp(0), 'doi:10.5281/zenodo.21781602 §P vs NP: no fixed point without a presupposed witness'],
   ]
 
   const rows: FormulaRow[] = []

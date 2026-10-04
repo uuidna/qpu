@@ -3188,9 +3188,9 @@ export const qpuCiteOf = onceOf(() => {
   const identifier = `https://doi.org/${doi}`
   const prior = {
     title: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution',
-    doi: '10.5281/zenodo.21781603',
+    doi: '10.5281/zenodo.21781602',
     conceptdoi: '10.5281/zenodo.21781602',
-    archive: 'https://zenodo.org/records/21781603',
+    archive: 'https://zenodo.org/records/21781602',
   } as const
   const sameAs = [archive, author.orcid, identifier] as const
   /** WHAT THE ARCHIVE HOLDS, BESIDE WHAT THE HOST SERVES. The versioned DOI is one archived commit; the host moves on
@@ -3220,7 +3220,7 @@ export const qpuCiteOf = onceOf(() => {
     doi.startsWith('10.5281/zenodo.') &&
     archived.holds &&
     conceptdoi.endsWith('22700098') &&
-    prior.doi.endsWith('21781603') &&
+    prior.doi.endsWith('21781602') &&
     prior.archive.startsWith('https://zenodo.org/records/') &&
     priorWorks.includes(`doi:${prior.doi}`) &&
     priorWorks.includes('Zenodo, ') &&
@@ -3296,8 +3296,8 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.current === (c.archived.version === c.served.version) &&
   c.currency.includes(`v${c.served.version}`) &&
   jsonldHoldsOf(c) &&
-  c.prior.doi === '10.5281/zenodo.21781603' &&
-  c.prior.archive === 'https://zenodo.org/records/21781603' &&
+  c.prior.doi === '10.5281/zenodo.21781602' &&
+  c.prior.archive === 'https://zenodo.org/records/21781602' &&
   c.prior.works.includes(`doi:${c.prior.doi}`) &&
   c.prior.works.includes('Zenodo, ') &&
   c.rows.length === n &&
