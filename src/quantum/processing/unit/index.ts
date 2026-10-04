@@ -131,11 +131,13 @@ const foreignDeadlineOf = (): AbortSignal => AbortSignal.timeout(tenOf(qpuCubeOf
  * THE MISS IS THE SAME MISS. Nothing here changes what a reader reports, only how long it takes to report it:
  * the doors answer unreached either way, which is why the proof does not move and only the reading count does.
  */
+// the window is a count of foreign reads, not milliseconds: a formula off the lattice, so the silence is measured in
+// the unit's own logical steps (FOREIGN.reads) and never in wall-clock time
 const foreignWindowOf = (): number => tenOf(qpuCubeOf().hexbit) * coins
 const SILENT = new Map<string, number>()
-const foreignSilentHolds = (host: string, now = Date.now()): boolean => {
+const foreignSilentHolds = (host: string, at = FOREIGN.reads): boolean => {
   const since = SILENT.get(host)
-  return since !== undefined && now - since < foreignWindowOf()
+  return since !== undefined && at - since < foreignWindowOf()
 }
 
 /** Every ask of a host this tree does not own goes through here: counted, bounded, caught, and never twice into
@@ -146,7 +148,7 @@ const foreignFetchOf = async (request: Request, signal: AbortSignal): Promise<Re
   if (foreignSilentHolds(host)) return undefined
   const response = await fetch(request, { signal }).catch((reason: unknown) => {
     // the deadline fired, rather than the connection being refused: this host is silent, not merely unreachable
-    if ((reason as { name?: string })?.name === 'TimeoutError' || (reason as { name?: string })?.name === 'AbortError') SILENT.set(host, Date.now())
+    if ((reason as { name?: string })?.name === 'TimeoutError' || (reason as { name?: string })?.name === 'AbortError') SILENT.set(host, FOREIGN.reads)
     return undefined
   })
   if (response) SILENT.delete(host)
@@ -10214,9 +10216,9 @@ export const qpuCernExperienceOf = onceOf(async () => {
    * served or re-read came down to scheduling. Locally the cern test took 11s under a hang; on a runner the
    * coin landed the other way often enough to pass the 120s budget and be cancelled, which is how a bound that
    * is equal to what it bounds behaves. Two deadlines is strictly greater than one, which is the whole rule. */
-  const fresh = cernExperience !== undefined && Date.now() - cernExperience.at < foreignWindowOf()
+  const fresh = cernExperience !== undefined && FOREIGN.reads - cernExperience.at < foreignWindowOf()
   if (cernExperience && (held || fresh)) return cernExperience.value
-  cernExperience = { value: await qpuCernLiveOf(), at: Date.now() }
+  cernExperience = { value: await qpuCernLiveOf(), at: FOREIGN.reads }
   return cernExperience.value
 })
 export const qpuCernExperienceHolds = (x?: Awaited<ReturnType<typeof qpuCernExperienceOf>>): boolean => x !== undefined && x.holds === true
