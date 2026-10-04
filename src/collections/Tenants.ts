@@ -1,4 +1,5 @@
 import type { CollectionConfig, PayloadRequest } from 'payload'
+import { authenticated } from '../access'
 
 export const hostOf = (req: PayloadRequest): string | undefined => req.headers?.get('x-forwarded-host') ?? req.headers?.get('host') ?? undefined
 
@@ -6,6 +7,7 @@ export const hostOf = (req: PayloadRequest): string | undefined => req.headers?.
 export const Tenants: CollectionConfig = {
   slug: 'tenants',
   admin: { useAsTitle: 'name' },
+  access: { read: authenticated, create: authenticated, update: authenticated, delete: authenticated },
   hooks: {
     beforeChange: [
       async ({ data, operation, req }) => {

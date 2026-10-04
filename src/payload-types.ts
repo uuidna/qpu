@@ -279,6 +279,7 @@ export interface UserAuthOperations {
  */
 export interface CaseStudy {
   id: string;
+  tenant?: (string | null) | Tenant;
   title: string;
   slug?: string | null;
   layout?:
@@ -329,6 +330,17 @@ export interface CaseStudy {
         | WingsBlock
       )[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants".
+ */
+export interface Tenant {
+  id: string;
+  name: string;
+  domain?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -439,6 +451,7 @@ export interface CallToActionBlock {
  */
 export interface Page {
   id: string;
+  tenant?: (string | null) | Tenant;
   title: string;
   slug: string;
   description?: string | null;
@@ -1046,6 +1059,7 @@ export interface HeroBlock {
  */
 export interface Doc {
   id: string;
+  tenant?: (string | null) | Tenant;
   slug: string;
   title: string;
   description?: string | null;
@@ -1520,6 +1534,7 @@ export interface WingsBlock {
  */
 export interface Category {
   id: string;
+  tenant?: (string | null) | Tenant;
   title: string;
   slug?: string | null;
   updatedAt: string;
@@ -1531,6 +1546,7 @@ export interface Category {
  */
 export interface CommunityHelp {
   id: string;
+  tenant?: (string | null) | Tenant;
   title: string;
   slug?: string | null;
   body?: LexicalRichText<LexicalNodes_C755EBD0> | null;
@@ -1543,6 +1559,7 @@ export interface CommunityHelp {
  */
 export interface DocsFeedback {
   id: string;
+  tenant?: (string | null) | Tenant;
   path: string;
   helpful?: boolean | null;
   comment?: string | null;
@@ -1631,6 +1648,7 @@ export interface FuseFormula {
  */
 export interface PartnerFilter {
   id: string;
+  tenant?: (string | null) | Tenant;
   name: string;
   slug?: string | null;
   updatedAt: string;
@@ -1642,6 +1660,7 @@ export interface PartnerFilter {
  */
 export interface Partner {
   id: string;
+  tenant?: (string | null) | Tenant;
   name: string;
   slug?: string | null;
   website?: string | null;
@@ -1655,6 +1674,7 @@ export interface Partner {
  */
 export interface Post {
   id: string;
+  tenant?: (string | null) | Tenant;
   title: string;
   slug?: string | null;
   publishedOn?: string | null;
@@ -1733,20 +1753,10 @@ export interface QuantumReceipt {
  */
 export interface ReusableContent {
   id: string;
+  tenant?: (string | null) | Tenant;
   title: string;
   slug?: string | null;
   richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants".
- */
-export interface Tenant {
-  id: string;
-  name: string;
-  domain?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2453,6 +2463,7 @@ export interface PayloadMigration {
  * via the `definition` "case-studies_select".
  */
 export interface CaseStudiesSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   slug?: T;
   layout?:
@@ -3175,6 +3186,7 @@ export interface WingsBlockSelect<T extends boolean = true> {
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   slug?: T;
   updatedAt?: T;
@@ -3185,6 +3197,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "community-help_select".
  */
 export interface CommunityHelpSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   slug?: T;
   body?: T;
@@ -3196,6 +3209,7 @@ export interface CommunityHelpSelect<T extends boolean = true> {
  * via the `definition` "docs_select".
  */
 export interface DocsSelect<T extends boolean = true> {
+  tenant?: T;
   slug?: T;
   title?: T;
   description?: T;
@@ -3226,6 +3240,7 @@ export interface DocsSelect<T extends boolean = true> {
  * via the `definition` "docs-feedback_select".
  */
 export interface DocsFeedbackSelect<T extends boolean = true> {
+  tenant?: T;
   path?: T;
   helpful?: T;
   comment?: T;
@@ -3286,6 +3301,7 @@ export interface FuseFormulasSelect<T extends boolean = true> {
  * via the `definition` "pages_select".
  */
 export interface PagesSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   slug?: T;
   description?: T;
@@ -3362,6 +3378,7 @@ export interface PagesSelect<T extends boolean = true> {
  * via the `definition` "partner-filters_select".
  */
 export interface PartnerFiltersSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
   slug?: T;
   updatedAt?: T;
@@ -3372,6 +3389,7 @@ export interface PartnerFiltersSelect<T extends boolean = true> {
  * via the `definition` "partners_select".
  */
 export interface PartnersSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
   slug?: T;
   website?: T;
@@ -3384,6 +3402,7 @@ export interface PartnersSelect<T extends boolean = true> {
  * via the `definition` "posts_select".
  */
 export interface PostsSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   slug?: T;
   publishedOn?: T;
@@ -3460,6 +3479,7 @@ export interface QuantumReceiptsSelect<T extends boolean = true> {
  * via the `definition` "reusable-content_select".
  */
 export interface ReusableContentSelect<T extends boolean = true> {
+  tenant?: T;
   title?: T;
   slug?: T;
   richText?: T;

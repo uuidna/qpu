@@ -75,7 +75,11 @@ const REPO = {
   app: {
     root: SRC, collections: REPO_COLLECTIONS, globals: REPO_GLOBALS, registries: REPO_REGISTRIES, adminUser: 'users', title: 'UUIDNA QPU',
     targets: {
-      'multi-tenant': [], search: ['docs', 'pages'], seo: ['docs', 'pages'], 'nested-docs': ['docs', 'pages'], redirects: ['docs', 'pages'],
+      // each tenant is an app: an app owns its own content, so every collection is scoped per tenant except the two
+      // the QPU shares across all apps — the content-addressed engine (quantum-receipts and the fuse-* registry, the
+      // same bytes same UUID for everyone) and the auth/tenant infra (users, tenants) that decides who an app is.
+      'multi-tenant': REPO_COLLECTIONS.map((c) => c.slug).filter((s) => !['users', 'tenants', 'quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'].includes(s)),
+      search: ['docs', 'pages'], seo: ['docs', 'pages'], 'nested-docs': ['docs', 'pages'], redirects: ['docs', 'pages'],
       'import-export': REPO_COLLECTIONS.map((c) => c.slug).filter((s) => s !== 'users'), mcp: ['docs', 'pages', 'quantum-receipts', 'fuse-formulas'],
     },
     pluginOptions: {
