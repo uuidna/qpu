@@ -3416,7 +3416,11 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
   // prefix, capitalised (qpu_quantum → Quantum, crypto_rsa → Rsa).
   title: name.replace(/^[a-z]+_/, '').replace(/^./, (c) => c.toUpperCase()),
   description,
-  inputSchema,
+  // The server routes { door } / { hex } / { doors } to the families on any call (qpuMcpCallOf), but the schema never
+  // advertised them — so a typed MCP client could not ask a family through the MCP and fell back to the shell. Advertise
+  // the routing on every tool so the families answer the MCP, not bash: { door: 'gate.leads' } reaches a family formula,
+  // { hex } runs a hex-program address, { doors: true } lists every door beyond the sixteen.
+  inputSchema: { ...inputSchema, properties: { ...(inputSchema as { properties?: Record<string, unknown> }).properties, door: { type: 'string', description: "Ask a family through the MCP: { door: 'gate.leads' }, or { door: 'gate.crossed', i: 0 } — routes to family.formula." }, hex: { description: 'Run a hex-program address: a UUID string, or { family, program, params }.' }, doors: { type: 'boolean', description: '{ doors: true } lists every family door the unit answers beyond the sixteen in tools/list.' } } },
   annotations: {
     audience: ['user', 'assistant'] as const,
     priority: seed,
