@@ -39,6 +39,11 @@ const packageName = `@${repo.replace(/^https:\/\/github\.com\//, '')}`
 const cc = cite['@context'][1].cc ?? ''
 const licence = { url: cc, name: `CC ${(/licenses\/([a-z-]+)\/([\d.]+)/.exec(cc)?.[1] ?? '').toUpperCase()} ${/licenses\/[a-z-]+\/([\d.]+)/.exec(cc)?.[1] ?? ''}`.trim() }
 const purpose = qpuPurposeOf() as unknown as { nature: { platform: string; qubits: number }; cybersecurity: { n: number; factors: readonly [number, number] } }
+// THE ROOT TENANT. This site is one app, and the multi-tenant plugin scopes every page and doc to a tenant, so the
+// seed's own content must be stamped with one — the tenant whose domain is this host, which is the same tenant a request
+// to this host resolves to, so what the seed writes is what the site reads. Without it every page/doc create is refused
+// ("Assigned Tenant is invalid") and the whole site — pages, nav, receipts — never gets built.
+const ROOT_TENANT = { name: cite.website, domain: cite.website }
 
 // the blocks by what they are
 const qpu = blocks.filter((b) => b.admin?.group === 'QPU')
@@ -112,7 +117,7 @@ const FOOTER = {
   navItems: [page(HOME, 'Home'), page(LICENCE_PAGE.slug, PRODUCTS[0]!.title), url(`${cite.href}/mcp`, 'MCP'), url(repo, 'GitHub'), url(cite.identifier, 'DOI'), url(cite.author.orcid, 'ORCID')] as NavItem[],
 }
 
-const CONTENT = { docs: generated.map((d) => d.uuid), receipts: receipts.map((r) => r.name), FORM, PRODUCTS, PAGES, HEADER, FOOTER }
+const CONTENT = { tenant: ROOT_TENANT, docs: generated.map((d) => d.uuid), receipts: receipts.map((r) => r.name), FORM, PRODUCTS, PAGES, HEADER, FOOTER }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // THE APPLIER
@@ -191,11 +196,13 @@ async function seedSite(payload: Payload) {
     const id = r.ref === 'docs' ? docId(r.slug) : pages.get(r.slug)
     return id ? { type: 'reference', reference: { relationTo: r.ref, value: id }, ...(label ? { label } : {}) } : { type: 'custom', url: `/${r.slug}`, ...(label ? { label } : {}) }
   }
+  // the tenant this host resolves to, stamped on every page the plugin scopes; tenants itself is unscoped, so it needs none
+  const tenant = (await ensure(payload, 'tenants', 'domain', ROOT_TENANT.domain, ROOT_TENANT)).id
   const form = await ensure(payload, 'forms', 'title', FORM.title, FORM)
   for (const p of PRODUCTS) await ensure(payload, 'products', 'slug', p.slug, p)
   for (const p of PAGES) {
     const layout = p.layout.map((b) => (b.blockType === 'form' ? { ...b, form: form.id } : b))
-    pages.set(p.slug, (await ensure(payload, 'pages', 'slug', p.slug, { ...p, layout, _status: 'published' })).id)
+    pages.set(p.slug, (await ensure(payload, 'pages', 'slug', p.slug, { ...p, layout, _status: 'published', tenant })).id)
   }
   // a page the combination no longer makes is unpublished, and its address redirects to the page its first block makes
   const made = new Set(PAGES.map((p) => p.slug))
@@ -217,10 +224,12 @@ async function seedSite(payload: Payload) {
 // collection's own hook on save. Read by id, written only when its content UUID changed or its parent is missing.
 async function upsertDocs(payload: Payload, from: number, take: number) {
   const index = generated.find((d) => d.slug === 'index')
+  // docs are tenant-scoped like pages; stamp the same root tenant so a request to this host reads them
+  const tenant = (await ensure(payload, 'tenants', 'domain', ROOT_TENANT.domain, ROOT_TENANT)).id
   await Promise.all(generated.slice(from, from + take).map(async (doc) => {
     const parent = index && doc.slug !== 'index' ? index.id : undefined
     const old = (await payload.findByID({ collection: 'docs', id: doc.id, depth: 0, disableErrors: true, overrideAccess: true })) as { uuid?: string; parent?: unknown } | null
-    const data = { ...doc, ...(parent ? { parent } : {}) } as never
+    const data = { ...doc, ...(parent ? { parent } : {}), tenant } as never
     if (!old) await payload.create({ collection: 'docs', data, overrideAccess: true })
     else if (old.uuid !== doc.uuid || (parent && !old.parent)) await payload.update({ collection: 'docs', id: doc.id, data, overrideAccess: true })
   }))
