@@ -207,6 +207,19 @@ const zenodoPath = path.join(ROOT, '.zenodo.json')
 const zenodo = JSON.parse(fs.readFileSync(zenodoPath, 'utf8'))
 zenodo.description = `<p>${inline(intro.replace(/\n/g, ' '))}</p><table>${rowsHtml}</table>${tail.map((t) => `<p>${inline(t.replace(/\n/g, ' '))}</p>`).join('')}`
 zenodo.version = pkg.version
+// SEO: the keywords, notes and language are generated, never hand-kept — every registered family and wing is a term a
+// searcher might use, so the archive is found by what the unit actually is, read from the registry and the docs.
+const famKeys = [...new Set(doors.formulas.map((f) => f.name.split('.')[0]))].sort()
+zenodo.keywords = [...new Set([
+  ...pkg.keywords,
+  'quantum computing', 'quantum processing unit', 'Model Context Protocol', 'MCP server',
+  'Lean 4', 'formal verification', 'theorem proving', 'hex-program UUID', 'RFC 9562', 'content addressing',
+  "Shor's algorithm", 'quantum receipts', 'cross-formula', 'exact computation', 'recomputable',
+  'Cloudflare Workers', 'Payload CMS', 'open data', 'OEIS',
+  ...famKeys, ...wings.map((w) => w.slug),
+])].filter(Boolean)
+zenodo.notes = `${num(doors.formulas.length)} formulas across ${famKeys.length} families as hex-program UUIDs (RFC 9562 v8); ${num(lean.theorems)} Lean theorems recomputed in TypeScript; ${num(listed)} MCP tools over ${num(doors.doors.length)} doors; served, recomputable, at https://qpu.uuidna.com.`
+zenodo.language = 'eng'
 fs.writeFileSync(zenodoPath, JSON.stringify(zenodo, null, 2) + '\n')
 
 fs.writeFileSync(path.join(ROOT, 'RELEASE.md'), `${summary}\n\nEvery figure above is read from a committed receipt; the README carries the final build receipt that accounts for them.\n`)
