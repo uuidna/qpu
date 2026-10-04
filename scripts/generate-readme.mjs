@@ -7,8 +7,8 @@
  * and its referrer is its parent, so the README's UUID is accountable to every receipt beneath it. All nodes share
  * the `build` stream, so they are also chained in order; qpuReceiptStreamsOf replays that chain and reports holds.
  *
- * Same commit and same receipt bytes give the same UUIDs. `--check` exits 1 when README.md differs from what the
- * receipts give.
+ * The receipt bytes alone give the UUIDs — nothing depends on the git commit, so committing the tree never moves
+ * them; a UUID moves only when a reading does. `--check` exits 1 when README.md differs from what the receipts give.
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -25,9 +25,6 @@ const git = (cmd) => execSync(`git ${cmd}`, { cwd: ROOT }).toString().trim()
 const read = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'))
 
 const pkg = read('package.json')
-// the last commit that changed anything but the README: the receipt cannot contain the commit that carries it
-const commit = git('log -1 --format=%H -- . ":!README.md"')
-const dirty = git('status --porcelain -- . ":!README.md"').length > 0
 
 /** The scalar facts of a receipt file — numbers, booleans and short strings at its top level. */
 const summaryOf = (doc) =>
@@ -42,7 +39,9 @@ const node = (name, payload, value, referrer, parent) => {
   return r
 }
 
-const root = node('build root', { commit, version: pkg.version }, { commit, version: pkg.version, dirty }, `git:${commit}`)
+// the build root is seeded by the version alone, never the git commit: a receipt is a reading, and committing the
+// tree is not one — so a UUID moves only when a receipt's bytes move, and the README never drifts on a commit
+const root = node('build root', { version: pkg.version }, { version: pkg.version }, 'build')
 const files = git('ls-files "*-receipt.json"').split('\n').filter(Boolean).sort()
 const tops = []
 for (const file of files) {
@@ -221,7 +220,6 @@ ${summary}
 | | |
 |---|---|
 | version | ${pkg.version} |
-| commit | \`${commit}\`${dirty ? ' (working tree differed from this commit)' : ''} |
 | receipts | ${files.length} files, ${nodes.length} nodes |
 | build stream | length ${stream?.length}, head \`${stream?.head}\`, chain \`${stream?.chain}\`, holds **${stream?.holds}** |
 
@@ -261,7 +259,7 @@ ${(clayR.rows ?? []).map((r) => `| ${cell(r.name)} | ${r.pass ? 'VERIFIED' : 'UN
 
 Each node is a quantum receipt: its UUID is the RFC 9562 v8 content address of its payload fold and its referrer, and
 its referrer is the node above it. Change any receipt's bytes and its node, its file's node, the build stream chain
-and this final receipt move; the root moves with the commit.
+and this final receipt move. Nothing here depends on the git commit, so committing the tree never moves a UUID — only a changed reading does.
 
 \`\`\`mermaid
 ${graph}
