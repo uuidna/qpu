@@ -234,6 +234,7 @@
     "ci": "npm run build && npm test && npm run test:scripts && npm run readme",
     "generate": "node scripts/generate.mjs",
     "readme": "node scripts/generate-readme.mjs",
+    "skills": "node scripts/generate-skills.mjs",
     "receipt": "node scripts/receipt.mjs",
     "discover": "node scripts/discover.mjs",
     "docs": "node scripts/generate-docs.mjs",
