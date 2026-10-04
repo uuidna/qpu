@@ -100,6 +100,11 @@ if (kind === 'registry') {
   const d = await hex('data', 'discover', [256])
   const p = await hex('data', 'perspectives', [faces])
   const tests = fs.globSync(['src/families/*/test.ts', 'src/quantum/processing/unit/*.test.ts', 'scripts/*.test.mjs']).map((f) => ({ file: f, text: fs.readFileSync(f, 'utf8') }))
+  // the lattice and physics primitives are `def`s in index.lean: recomputed and checked by the Lean kernel (the 124
+  // theorems), not called literally in any TS test. A formula that is a Lean def is therefore tested by the kernel —
+  // credited here as such, so the feed does not report mintOf, chooseOf, seed, coins, planck … as leads when the
+  // proof already covers them. A family formula that is not a Lean def still owes a TS test.
+  const leanDefs = new Set([...fs.readFileSync('src/quantum/processing/unit/index.lean', 'utf8').matchAll(/\bdef ([A-Za-z][A-Za-z0-9_]*)/g)].map((m) => m[1]))
   const relations = d.relations ?? []
   // A relation is tested when EVERY formula it crosses is CALLED by some test — the formula name as a whole word
   // (not a substring of another identifier) followed by `(`, so `CalFormulas.gregorianDrift(1)` and a bare
@@ -110,7 +115,7 @@ if (kind === 'registry') {
   const calledIn = (text, n) => new RegExp(`(?<![\\w$])${n.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}\\s*\\(`).test(text)
   const rows = relations.map((rel) => {
     const names = [...new Set(rel.ways.flatMap((w) => w.program))]
-    const coverage = names.map((n) => ({ n, files: tests.filter((t) => calledIn(t.text, n)).map((t) => t.file) }))
+    const coverage = names.map((n) => ({ n, files: [...tests.filter((t) => calledIn(t.text, n)).map((t) => t.file), ...(leanDefs.has(n) ? ['index.lean (Lean kernel)'] : [])] }))
     const tested = coverage.every((c) => c.files.length > 0)
     const where = [...new Set(coverage.flatMap((c) => c.files))]
     const missing = coverage.filter((c) => c.files.length === 0).map((c) => c.n)
