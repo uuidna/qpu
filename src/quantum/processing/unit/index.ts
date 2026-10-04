@@ -11979,8 +11979,10 @@ export const qpuHexFamiliesOf = (): Map<string, HexFormula[]> => {
   }
   // the MCP's own doors are families too, so every tool computation has a hex address: qpu (the eight doors, no params)
   // and crypto (the eight cybersecurity tools, params n and a; 0 means the tool's default)
-  out.set('qpu', qpuToolsOf().map((t) => ({ name: t.name, arity: n - n, run: () => t.run({}) })))
-  out.set('crypto', qpuCybersecurityToolsOf().map((t) => ({ name: t.name, arity: coins, run: (args: readonly bigint[]) => t.run({ ...(args[n - n] ? { n: Number(args[n - n]) } : {}), ...(args[seed] ? { a: Number(args[seed]) } : {}) }) })))
+  // the door names are the family; the tool itself is resolved only when a door is actually run, so building the
+  // registry (what Payload loads, what every hex address decodes through) never forces qpuToolsOf's eager circuit
+  out.set('qpu', toolNames.map((name) => ({ name, arity: n - n, run: () => qpuToolsOf().find((t) => t.name === name)!.run({}) })))
+  out.set('crypto', cryptoToolNames.map((name) => ({ name, arity: coins, run: (args: readonly bigint[]) => qpuCybersecurityToolsOf().find((t) => t.name === name)!.run({ ...(args[n - n] ? { n: Number(args[n - n]) } : {}), ...(args[seed] ? { a: Number(args[seed]) } : {}) }) })))
   for (const [family, fns] of HEX_REGISTERED)
     out.set(family, [...fns.keys()].sort().map((name) => ({ name, arity: fns.get(name)!.length, ...(fns.get(name)!.constructor.name === 'AsyncFunction' ? { live: true } : {}), run: (args) => fns.get(name)!(...args.map((a) => Number(a))) })))
   for (const [family, formulas] of out) if (formulas.length > UUID_SIXTEEN - seed) out.set(family, formulas.slice(n - n, UUID_SIXTEEN - seed))
