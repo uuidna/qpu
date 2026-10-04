@@ -131,6 +131,7 @@
     "test": "npm run build && node --test --test-reporter=./dist/quantum/processing/unit/receipt.js --test-reporter-destination=stdout dist/quantum/processing/unit/*.test.js dist/families/*/test.js",
     "test:scripts": "node --test scripts/*.test.mjs",
     "ci": "npm run build && npm test && npm run test:scripts && npm run readme",
+    "generate": "node scripts/generate.mjs",
     "readme": "node scripts/generate-readme.mjs",
     "receipt": "node scripts/receipt.mjs",
     "discover": "node scripts/discover.mjs",
