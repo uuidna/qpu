@@ -104,7 +104,6 @@ const byCategory = categories
  * both directions hold (entangled). Each is a CrossFormula: a content UUID and a quantum receipt (stream `cross`). */
 fs.mkdirSync('.fuse', { recursive: true })
 const out = fs.createWriteStream('.fuse/fuse-formulas.ndjson')
-// every formula of the flow families is a lead the rosetta develops, a cross formula seeded beside the edges; taken
 // every formula of the flow families is a lead the rosetta develops, in every rotation, a cross formula seeded beside
 // the edges; taken before fuse registers below, so the ring is the lattice's own families
 const developed = flowFamiliesOf().flatMap((family, a) => (qpuHexFamiliesOf().get(family) ?? []).flatMap((_, j) => Array.from({ length: 2 * flowFamiliesOf().length }, (_, s) => MerkabaFormulas.develop(a, j, s))))
