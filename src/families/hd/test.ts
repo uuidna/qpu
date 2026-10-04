@@ -118,8 +118,11 @@ test('yi: the 64 figures — complement and inverse are involutions, 8 figures a
     assert.equal(Number(YiFormulas.complement(Number(YiFormulas.complement(h).value)).value), h)
     assert.equal(Number(YiFormulas.inverse(Number(YiFormulas.inverse(h).value)).value), h)
     assert.equal(Number(YiFormulas.upper(h).value) * 8 + Number(YiFormulas.lower(h).value), h, 'two trigrams make the hexagram')
+    assert.equal(YiFormulas.change(h, 0).value, h, 'no changing line, no change')
+    assert.equal(Number(YiFormulas.change(Number(YiFormulas.change(h, 21).value), 21).value), h, 'changing the same lines twice returns the figure')
     inverses.add(Number(YiFormulas.nuclear(h).value))
   }
+  assert.equal(YiFormulas.change(0, 63).value, 63, 'all six lines change: ䷀ becomes its opposite ䷁')
   assert.equal(Array.from({ length: 64 }, (_, h) => h).filter((h) => Number(YiFormulas.inverse(h).value) === h).length, 8, 'the symmetric figures')
   assert.equal(inverses.size, 16, 'nuclear hexagrams: 16 of them')
   assert.equal(Array.from({ length: 7 }, (_, k) => Number(YiFormulas.withYang(k).value)).reduce((a, b) => a + b, 0), 64, 'C(6, k) sums to 64')
