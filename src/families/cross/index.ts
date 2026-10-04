@@ -1,5 +1,6 @@
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
 import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
+import { qpuContextOf, qpuHexDecodeOf, qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
 // the lattice names and the three formulas every number here is written in
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
@@ -178,4 +179,83 @@ export const crossDomainFormulas = new CrossDomainFormulas()
 for (const name of Object.getOwnPropertyNames(CrossDomainFormulas)) {
   const fn = (CrossDomainFormulas as unknown as Record<string, unknown>)[name]
   if (typeof fn === 'function' && name !== 'allBridges') qpuHexRegisterOf('cross', name, (fn as (...x: unknown[]) => unknown).bind(CrossDomainFormulas))
+}
+
+/**
+ * ORGANISE A FAMILY AS A SCHEMA.ORG SCHEMA, ADDRESSED BY THE FULL UUID PROGRAMMABLE CAPACITY.
+ *
+ * Every hex family is a controlled vocabulary of formulas; schema.org already has the type for that — a
+ * DefinedTermSet whose DefinedTerms are the formulas. Each term is named by its own hex-program UUID (the full
+ * programmable address: handle, the formula's nibble, params), so the schema is not a description of the family
+ * beside it but the family's own addresses gathered under one @context. The set's @id is the content UUID of its
+ * term names, so the same family yields the same schema everywhere. Both UUID kinds carry the crypto-decided
+ * version across all eight RFC 9562 versions — nothing here is a literal.
+ * @wing fusion
+ * @kind builder
+ * @evidence crossSchemaHolds
+ */
+export const crossSchemaOf = (family: string) => {
+  const formulas = qpuHexFamiliesOf().get(family) ?? []
+  const id = qpuContentUuidOf({ schema: family, terms: formulas.map((t) => t.name) })
+  return {
+    '@context': qpuContextOf(),
+    '@type': 'DefinedTermSet' as const,
+    '@id': `urn:uuid:${id}`,
+    name: family,
+    identifier: id,
+    hasDefinedTerm: formulas.map((t) => {
+      const hex = qpuHexUuidOf({ family, program: [t.name] })
+      return { '@type': 'DefinedTerm' as const, '@id': `urn:uuid:${hex}`, name: `${family}.${t.name}`, termCode: t.name, identifier: hex }
+    }),
+  }
+}
+
+/** The schema is schema.org-shaped and every term is addressed by a hex program that decodes back to this family's formula. */
+export const crossSchemaHolds = (family = 'cross'): boolean => {
+  const s = crossSchemaOf(family)
+  return (
+    s['@context'][0] === 'https://schema.org' &&
+    s['@type'] === 'DefinedTermSet' &&
+    s['@id'] === `urn:uuid:${s.identifier}` &&
+    s.hasDefinedTerm.length > 0 &&
+    s.hasDefinedTerm.every((term) => {
+      const d = qpuHexDecodeOf(term.identifier) as { family?: string | null; program?: string[] }
+      return d.family === family && Array.isArray(d.program) && d.program[0] === term.termCode
+    })
+  )
+}
+
+/**
+ * ORGANISE ALL FAMILIES AS ONE SCHEMA.ORG CATALOG.
+ *
+ * Every family's DefinedTermSet gathered under one DataCatalog, so the whole lattice of formulas is one schema.org
+ * document whose every term is a hex-program UUID — the full programmable capacity, catalogued. The catalog's @id
+ * is the content UUID of its family names, so the same set of families yields the same catalog everywhere.
+ * @wing fusion
+ * @kind builder
+ * @evidence crossSchemasHolds
+ */
+export const crossSchemasOf = () => {
+  const families = [...qpuHexFamiliesOf().keys()].sort()
+  const id = qpuContentUuidOf({ catalog: 'families', families })
+  return {
+    '@context': qpuContextOf(),
+    '@type': 'DataCatalog' as const,
+    '@id': `urn:uuid:${id}`,
+    name: 'uuidna families',
+    identifier: id,
+    hasPart: families.map((family) => crossSchemaOf(family)),
+  }
+}
+
+/** The catalog is schema.org-shaped and every part is a family schema that itself holds. */
+export const crossSchemasHolds = (): boolean => {
+  const c = crossSchemasOf()
+  return (
+    c['@type'] === 'DataCatalog' &&
+    c['@context'][0] === 'https://schema.org' &&
+    c['@id'] === `urn:uuid:${c.identifier}` &&
+    c.hasPart.length > 0 &&
+    c.hasPart.every((s) => s['@type'] === 'DefinedTermSet' && crossSchemaHolds(s.name))
+  )
 }
