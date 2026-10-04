@@ -6,7 +6,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 326 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 335 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
@@ -20,13 +20,13 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).
 
-**Final build receipt** `cafe6709-a676-8237-8ba6-dac57abb9676`
+**Final build receipt** `6ee541c7-f87c-8ca8-a2b9-4bb15739a593`
 
 | | |
 |---|---|
 | version | 1.0.1 |
 | receipts | 18 files, 3417 nodes |
-| build stream | length 3417, head `cafe6709-a676-8237-8ba6-dac57abb9676`, chain `5e55d7d4d20c212a8b3b104e017a9f610610de01c04b07b4029c7dce1165b947`, holds **true** |
+| build stream | length 3417, head `6ee541c7-f87c-8ca8-a2b9-4bb15739a593`, chain `6b435b57d4e27f210ec32026c508ecd6cf2833468c3bde10112d5e85bdbcc9a9`, holds **true** |
 
 ## Proof by MCP
 
@@ -2121,13 +2121,13 @@ flowchart TD
   n9a38b9f5["lattice-receipt.json<br/><code>9a38b9f5</code>"]
   n67bdb031["lean-receipt.json<br/>124 rows<br/><code>67bdb031</code>"]
   n555bd092["next-receipt.json<br/>214 rows<br/><code>555bd092</code>"]
-  n484bd7ec["payload-cf-receipt.json<br/><code>484bd7ec</code>"]
+  n91a44523["payload-cf-receipt.json<br/><code>91a44523</code>"]
   n6fd83d42["percall-receipt.json<br/><code>6fd83d42</code>"]
   n05618721["refusals-receipt.json<br/><code>05618721</code>"]
   n9ad3afde["test-receipt.json<br/>1 rows<br/><code>9ad3afde</code>"]
   n12ab6bd2["uses-receipt.json<br/>42 rows<br/><code>12ab6bd2</code>"]
   n69b9565c["walls-receipt.json<br/><code>69b9565c</code>"]
-  ncafe6709["readme<br/><code>cafe6709</code>"]
+  n6ee541c7["readme<br/><code>6ee541c7</code>"]
   ne53d1e88 --> nc6fd633e
   ne53d1e88 --> n9f6dce5a
   ne53d1e88 --> ne2416ee4
@@ -2140,13 +2140,13 @@ flowchart TD
   ne53d1e88 --> n9a38b9f5
   ne53d1e88 --> n67bdb031
   ne53d1e88 --> n555bd092
-  ne53d1e88 --> n484bd7ec
+  ne53d1e88 --> n91a44523
   ne53d1e88 --> n6fd83d42
   ne53d1e88 --> n05618721
   ne53d1e88 --> n9ad3afde
   ne53d1e88 --> n12ab6bd2
   ne53d1e88 --> n69b9565c
-  ne53d1e88 --> ncafe6709
+  ne53d1e88 --> n6ee541c7
 ```
 
 | node | receipt uuid | referrer | payload fold | seq |
@@ -5518,7 +5518,7 @@ flowchart TD
 | next-receipt.json#211 | `e1fd5e61-7d6e-8200-be37-b0344ce01eb1` | `555bd092` | `5f4a6e16e9988a4e` | 3364 |
 | next-receipt.json#212 | `e2a06abd-a05d-8303-a9e7-f69502b30e72` | `555bd092` | `b7b0b8ede95ad64c` | 3365 |
 | next-receipt.json#213 | `a2b51e0f-9b60-8a79-862a-3c4dcdf8bb97` | `555bd092` | `1147f44777bcf104` | 3366 |
-| payload-cf-receipt.json | `484bd7ec-a567-8062-b853-58903008a18d` | `e53d1e88` | `f62f0aaf7ff26014` | 3367 |
+| payload-cf-receipt.json | `91a44523-9913-8303-b047-bcdba7bd6760` | `e53d1e88` | `d0e7265dc3fab6fd` | 3367 |
 | percall-receipt.json | `6fd83d42-9877-8a77-aa77-7f3c51933f5c` | `e53d1e88` | `bb48a531ebc72170` | 3368 |
 | refusals-receipt.json | `05618721-e409-811e-9bf4-291458b18e72` | `e53d1e88` | `8c5570077f4d6204` | 3369 |
 | test-receipt.json | `9ad3afde-cce2-8256-a670-b13020111e0b` | `e53d1e88` | `fedc92eeca943ba8` | 3370 |
@@ -5567,7 +5567,7 @@ flowchart TD
 | uses-receipt.json#40 | `286effd0-2250-8741-80ff-1d897d10b68d` | `12ab6bd2` | `edf48c0a47adcbfa` | 3413 |
 | uses-receipt.json#41 | `316904ba-788b-8616-9d2a-1bfcb9346cc7` | `12ab6bd2` | `1e9d453025064335` | 3414 |
 | walls-receipt.json | `69b9565c-2447-8d4f-a33c-e460754f63ae` | `e53d1e88` | `83830280c48bcc9d` | 3415 |
-| readme | `cafe6709-a676-8237-8ba6-dac57abb9676` | `e53d1e88` | `9ad632458f13830a` | 3416 |
+| readme | `6ee541c7-f87c-8ca8-a2b9-4bb15739a593` | `e53d1e88` | `068d981b3f63ea1f` | 3416 |
 
 </details>
 
