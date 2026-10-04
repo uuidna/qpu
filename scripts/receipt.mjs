@@ -76,7 +76,8 @@ if (kind === 'registry') {
     let leadCount = 0
     const pushFrom = []
     for (let from = 0; from < sorted.length; from += faces) pushFrom.push(from)
-    const pushes = await pool(pushFrom, (from) => hex('gate', 'push', [from]))
+    // a slice that times out marks itself not-holding rather than crashing the lane — one slow slice is not the gate's verdict
+    const pushes = await pool(pushFrom, (from) => hex('gate', 'push', [from]).catch((e) => ({ holds: false, value: `unreached: ${e?.name === 'TimeoutError' ? 'timeout' : e?.message ?? 'error'}` })))
     pushes.forEach((raw, k) => {
       const r = line('push', raw, [pushFrom[k]])
       holds &&= r.holds === true
