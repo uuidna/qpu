@@ -108,6 +108,7 @@
     "./dist/families/cal/index.js",
     "./dist/families/canon/index.js",
     "./dist/families/catalyst/index.js",
+    "./dist/families/causal/index.js",
     "./dist/families/ceramic/index.js",
     "./dist/families/chat/index.js",
     "./dist/families/chem/index.js",
@@ -129,6 +130,7 @@
     "./dist/families/engine/index.js",
     "./dist/families/enzyme/index.js",
     "./dist/families/equity/index.js",
+    "./dist/families/federated/index.js",
     "./dist/families/firmware/index.js",
     "./dist/families/fluid/index.js",
     "./dist/families/forensic/index.js",
@@ -195,6 +197,7 @@
     "./dist/families/stream/index.js",
     "./dist/families/survey/index.js",
     "./dist/families/synapse/index.js",
+    "./dist/families/synthesis/index.js",
     "./dist/families/tax/index.js",
     "./dist/families/tesla/index.js",
     "./dist/families/text/index.js",
@@ -206,7 +209,9 @@
     "./dist/families/vector/index.js",
     "./dist/families/wave/index.js",
     "./dist/families/wind/index.js",
-    "./dist/families/yi/index.js"
+    "./dist/families/xai/index.js",
+    "./dist/families/yi/index.js",
+    "./dist/families/zeroshot/index.js"
   ],
   "engines": {
     "node": ">=26"
