@@ -33,7 +33,11 @@ export class RuleFormulas {
   static compositions(i: number): CrossFormula { const name = families()[i]; const k = name ? qpuHexFamiliesOf().get(name)!.length : 0; return f('rule-compositions', 'compositions(i) = n²', k * k, name !== undefined, 'compositions', [i], { family: name }) }
   /** Every formula of every family, the addressable whole. */
   static formulas(): CrossFormula { const total = [...qpuHexFamiliesOf().values()].reduce((s, fs) => s + fs.length, 0); return f('rule-formulas', 'formulas = Σ nibbles(i)', total, total > 0, 'formulas', []) }
+  /** One word per family (the naming rule, until now a convention no formula held): a registered family's name is one
+   *  lowercase word, no separator. Holds only at zero. The Lean families (Qpu.X) and the door families qpu/crypto are
+   *  not registered here, so they are not counted. */
+  static named(): CrossFormula { const bad = families().filter((name) => qpuHexRegisteredSizeOf(name) > 0 && !/^[a-z]+$/.test(name)); return f('rule-named', 'named = |{ registered f : name is not one lowercase word }|', bad.length, bad.length === 0, 'named', [], { bad }) }
 }
 
-for (const name of ['cap', 'compositions', 'families', 'formulas', 'free', 'nibbles', 'over', 'slice', 'truncated'] as const)
+for (const name of ['cap', 'compositions', 'families', 'formulas', 'free', 'named', 'nibbles', 'over', 'slice', 'truncated'] as const)
   qpuHexRegisterOf('rule', name, (RuleFormulas[name] as (...x: unknown[]) => unknown).bind(RuleFormulas))

@@ -37,5 +37,7 @@ test('every family is within its nibble: fifteen formulas, none truncated', asyn
   for (const [family, formulas] of qpuHexFamiliesOf()) {
     assert.ok(formulas.length <= cap, `${family}: ${formulas.length} > ${cap}`)
     assert.ok(qpuHexRegisteredSizeOf(family) <= cap, `${family} registered ${qpuHexRegisteredSizeOf(family)}: past the nibble, split it`)
+    // one word per family (the naming rule): a registered family's name is one lowercase word, no separator
+    if (qpuHexRegisteredSizeOf(family) > 0) assert.match(family, /^[a-z]+$/, `${family}: a registered family is one lowercase word (the one-word rule)`)
   }
 })
