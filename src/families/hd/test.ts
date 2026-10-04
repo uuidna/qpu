@@ -67,6 +67,7 @@ test("cal: the calendar's drift explains the wheel — a day per 128 Julian or 3
   assert.equal(CalFormulas.dayPer(1).value, 3200, 'Gregorian: a day in 3200 years')
   assert.equal(CalFormulas.julianDrift(128).value, 675 * 128)
   assert.ok(Number(CalFormulas.julianDrift(128).value) >= 86400, 'and that is a day')
+  assert.equal(CalFormulas.gregorianDrift(3200).value, 86400, 'the Gregorian gains a day in 3200 years, 27 s each')
   assert.equal(CalFormulas.gatesPrecessed(402).value, 0)
   assert.equal(CalFormulas.gatesPrecessed(403).value, 1, 'one gate of precession in 403 years')
   assert.equal(CalFormulas.precession(100).value, 5029)
