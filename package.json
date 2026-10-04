@@ -113,6 +113,7 @@
     "./dist/families/banking/index.js",
     "./dist/families/bankruptcy/index.js",
     "./dist/families/blog/index.js",
+    "./dist/families/botany/index.js",
     "./dist/families/bundle/index.js",
     "./dist/families/cal/index.js",
     "./dist/families/cardiology/index.js",
@@ -152,6 +153,7 @@
     "./dist/families/energy/index.js",
     "./dist/families/enterprise/index.js",
     "./dist/families/entertainment/index.js",
+    "./dist/families/entomology/index.js",
     "./dist/families/environment/index.js",
     "./dist/families/epidemiology/index.js",
     "./dist/families/evidence/index.js",
@@ -211,6 +213,7 @@
     "./dist/families/monitoring/index.js",
     "./dist/families/motion/index.js",
     "./dist/families/music/index.js",
+    "./dist/families/mycology/index.js",
     "./dist/families/neurology/index.js",
     "./dist/families/notice/index.js",
     "./dist/families/np/index.js",
@@ -273,11 +276,13 @@
     "./dist/families/upload/index.js",
     "./dist/families/version/index.js",
     "./dist/families/vet/index.js",
+    "./dist/families/virology/index.js",
     "./dist/families/vitals/index.js",
     "./dist/families/wave/index.js",
     "./dist/families/weather/index.js",
     "./dist/families/website/index.js",
-    "./dist/families/yi/index.js"
+    "./dist/families/yi/index.js",
+    "./dist/families/zoology/index.js"
   ],
   "engines": {
     "node": ">=26"
