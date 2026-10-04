@@ -88,6 +88,9 @@ export class HeatFormulas {
    *  The times are this device's readings, not part of the address; a run that never returns hangs the finder too. */
   static async slow(from: number): Promise<CrossFormula> {
     const ring = flowFamiliesOf(), faces = qpuFacesOf().faces, slice = ring.slice(from, from + faces)
+    // a Worker's clock does not advance during work and a slice exceeds its CPU budget (error 1102): timing is a device's
+    if ((globalThis as { navigator?: { userAgent?: string } }).navigator?.userAgent === 'Cloudflare-Workers')
+      return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: 'slow(from): timed on a device, not at the edge', value: 0, proof: 'refused at the edge: run `npm run mcp -- heat.slow [from] --all --local`' }, false, { name: 'heat.slow', params: [from] })
     const { MerkabaFormulas } = await import('../merkaba/index.js')
     const hot: { formula: string; ms: number; input: string }[] = []
     let timed = 0

@@ -64,6 +64,9 @@ try {
     }
   }
   console.error(`${via} → ${first ?? 'list'}`)
+} catch (e) {
+  console.error(`${via} → ${first ?? 'list'}: ${(e as Error).message}`)
+  process.exitCode = 1
 } finally {
   await door.close()
 }
