@@ -31,6 +31,9 @@ const powMod = (base: number, exp: number, m: number): number => {
   while (e > 0) { if (e & 1) r = (r * b) % m; b = (b * b) % m; e = Math.floor(e / 2) }
   return r
 }
+// the same two tools over BigInt, so the CRT join carries a product Πp past the safe integer without rounding
+const modPowBig = (base: bigint, exp: bigint, m: bigint): bigint => { let r = 1n, b = base % m, e = exp; while (e > 0n) { if (e & 1n) r = (r * b) % m; b = (b * b) % m; e >>= 1n } return r }
+const modInvBig = (a: bigint, m: bigint): bigint => { let [g, x] = [((a % m) + m) % m, 1n], [g1, x1] = [m, 0n]; while (g1 !== 0n) { const q = g / g1; [g, g1] = [g1, g - q * g1]; [x, x1] = [x1, x - q * x1] } return ((x % m) + m) % m }
 
 export class SplitFormulas {
   /** The prime factors of n, with multiplicity — the value is their count Ω(n): how many primes n splits into. */
@@ -69,6 +72,26 @@ export class SplitFormulas {
   }
   /** 1 when a and b share no prime — coprime; the split has nothing in common. */
   static coprime(a: number, b: number): CrossFormula { const g = (x: number, y: number): number => (y === 0 ? x : g(y, x % y)); return f('split-coprime', 'coprime(a, b) = [gcd(a, b) = 1]', a > 0 && b > 0 && g(a, b) === 1 ? 1 : 0, nat(a, b), 'coprime', [a, b]) }
+
+  /** JOIN, BY THE CHINESE REMAINDER THEOREM — the inverse of the split, and why the split costs so little. heat.split
+   *  sends 2^k to its residues modulo the first `primes` primes, one UUID-addressed job each across the near-infinite
+   *  address space; join reconstructs the value from those residues — x ≡ 2^k (mod Πp), by CRT, without ever forming
+   *  2^k. It is exact (x = 2^k) the moment Πp exceeds 2^k (`exact`): the more primes split across the space, the nearer
+   *  the recovery and the nearer each job's time and heat to zero. Value the reconstruction; holds while Πp stays a
+   *  safe integer (beyond it is the astronomical regime heat.split keeps as jobs) and the join agrees with 2^k mod Πp. */
+  static join(k: number, primes: number): CrossFormula {
+    const ps: number[] = []
+    for (let x = 2; ps.length < primes; x++) if (ps.every((p) => x % p !== 0)) ps.push(x)
+    const M = ps.reduce((a, b) => a * BigInt(b), 1n)
+    const residues = ps.map((p) => powMod(2, k, p))
+    let x = 0n
+    for (let i = 0; i < ps.length; i++) { const pi = BigInt(ps[i]!), Mi = M / pi; x = (x + BigInt(residues[i]!) * Mi * modInvBig(Mi % pi, pi)) % M }
+    x = ((x % M) + M) % M
+    const safe = M <= BigInt(Number.MAX_SAFE_INTEGER)
+    const agrees = x === modPowBig(2n, BigInt(k), M)
+    const exact = ps.reduce((s, p) => s + Math.log2(p), 0) > k
+    return f('split-join', 'join(k, primes) = CRT((2^k mod pᵢ)ᵢ) ≡ 2^k mod Πp — exact when Πp > 2^k', safe ? Number(x) : 0, nat(k, primes) && primes > 0 && safe && agrees, 'join', [k, primes], { product: safe ? Number(M) : `${M}`, exact, residues: residues.slice(0, 16) })
+  }
 
   /** THE MILLIKELVIN PER COMPUTATION when `value` is split into its prime factors and all of them are computed at once
    *  across `cores` cores: by Landauer the core's energy quantum (photon) is spread over every split, so the
@@ -122,5 +145,5 @@ export class SplitFormulas {
   }
 }
 
-for (const name of ['coprime', 'factor', 'free', 'kelvin', 'landauer', 'least', 'omega', 'piHex', 'prime', 'primes', 'quantum', 'secondlaw', 'totient', 'violation'] as const)
+for (const name of ['coprime', 'factor', 'free', 'join', 'kelvin', 'landauer', 'least', 'omega', 'piHex', 'prime', 'primes', 'quantum', 'secondlaw', 'totient', 'violation'] as const)
   qpuHexRegisterOf('split', name, (SplitFormulas[name] as (...x: unknown[]) => unknown).bind(SplitFormulas))

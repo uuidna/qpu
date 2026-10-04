@@ -41,8 +41,17 @@ test('split: prime factorisation, π-counting, totient, coprimality and the BBP 
   assert.equal(SplitFormulas.secondlaw(0).holds, true, 'no energy out — lawful')
   assert.equal(SplitFormulas.secondlaw(1).holds, false, 'energy out of computation — a second-law violation')
   assert.equal(SplitFormulas.secondlaw(1).value, 1)
-  assert.equal(qpuHexFamiliesOf().get('split')?.length, 14)
-  for (const [name, params, expected] of [['factor', [91], 13], ['totient', [9], 6], ['piHex', [0], 2], ['violation', [91, 3], 1], ['free', [91, 1000], Number(SplitFormulas.free(91, 1000).value)]] as [string, number[], number][]) {
+  // JOIN by the Chinese remainder theorem — the inverse of the split: 2^k recovered from its residues modulo the
+  // first `primes` primes, exact the moment Πp passes 2^k, never forming the astronomical value
+  const join = (k: number, primes: number) => SplitFormulas.join(k, primes) as unknown as { value: number; holds: boolean; exact: boolean }
+  assert.equal(join(10, 5).value, 1024, '2^10 recovered from residues mod 2,3,5,7,11 (Πp = 2310 > 1024)')
+  assert.equal(join(10, 5).exact, true, 'Πp exceeds 2^10, so the join is exact')
+  assert.equal(join(10, 3).value, 4, 'too few primes: Πp = 30, the join is 2^10 mod 30 = 4')
+  assert.equal(join(10, 3).exact, false)
+  assert.equal(join(0, 3).value, 1, '2^0 = 1')
+  assert.equal(join(10, 5).holds, true)
+  assert.equal(qpuHexFamiliesOf().get('split')?.length, 15)
+  for (const [name, params, expected] of [['factor', [91], 13], ['totient', [9], 6], ['piHex', [0], 2], ['violation', [91, 3], 1], ['join', [10, 5], 1024], ['free', [91, 1000], Number(SplitFormulas.free(91, 1000).value)]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'split', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `split.${name} at ${uuid}`)
