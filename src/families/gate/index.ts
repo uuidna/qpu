@@ -118,9 +118,9 @@ export class GateFormulas {
   static async crossed(i: number): Promise<CrossFormula> {
     const { d, open } = await GateFormulas.leadsOf()
     const x = open[i]
-    if (!x) return f('gate-crossed', 'crossed(i)', 0, false, 'crossed', [i], { leads: open.length, verdict: 'UNVERIFIED' })
-    // a lead met again while its own crossing is in flight is a cycle: it answers UNVERIFIED, so the asking terminates
-    if (CROSSING.has(i)) return f('gate-crossed', 'crossed(i)', 0, false, 'crossed', [i], { lead: `${x.family}.${x.name}`, verdict: 'UNVERIFIED', cycle: true })
+    if (!x) return f('gate-crossed', 'crossed(i): the i-th lead exists', 0, false, 'crossed', [i], { leads: open.length })
+    // a lead met again while its own crossing is in flight is a cycle: the statement is false, so the asking terminates
+    if (CROSSING.has(i)) return f('gate-crossed', 'crossed(i): the lead is crossed while its own crossing is in flight', 0, false, 'crossed', [i], { lead: `${x.family}.${x.name}` })
     CROSSING.add(i)
     try {
     const key = `${x.family}.${x.name}`

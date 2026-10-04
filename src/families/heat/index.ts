@@ -84,13 +84,13 @@ export class HeatFormulas {
   /** SLOW IS A WRAP: an address that answers slowly wraps a computation instead of reaching a value. One job per formula:
    *  the j-th formula of the f-th flow family is timed on its first faces inputs and in every rotation of the rosetta
    *  (merkaba.develop feeds it its neighbours' values, the route that once fed it planck), each run twice and the faster
-   *  counted, so a warm-up is not a slow address. Value its slowest run in ms; hot above faces ms; VERIFIED when it is
-   *  not hot and the clock was read, else UNVERIFIED — a runtime whose clock does not advance during work (a Worker) too.
+   *  counted, so a warm-up is not a slow address. Value its slowest run in ms; the statement: its slowest
+   *  run is at most faces ms, on a clock that advances during work — false when hot or when the clock stood still (a Worker).
    *  `next` is the following formula's [f, j], so `--all` walks every formula of the ring. */
   static async slow(f: number, j: number): Promise<CrossFormula> {
     const ring = flowFamiliesOf(), faces = qpuFacesOf().faces, family = ring[f], formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
     const after = family && j + 1 < (qpuHexFamiliesOf().get(family) ?? []).length ? [f, j + 1] : f + 1 < ring.length ? [f + 1, 0] : undefined
-    if (!formula) return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: 'slow(f, j)', value: 0, proof: 'UNVERIFIED: no formula at this address', ...{ verdict: 'UNVERIFIED', ...(after ? { next: after } : {}) } }, false, { name: 'heat.slow', params: [f, j] })
+    if (!formula) return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: 'slow(f, j): a formula is registered at (f, j)', value: 0, proof: 'the registry', ...(after ? { next: after } : {}) }, false, { name: 'heat.slow', params: [f, j] })
     const { MerkabaFormulas } = await import('../merkaba/index.js')
     let worst = { ms: 0, input: '' }, timed = 0
     const once = async (run: () => unknown) => { const t = performance.now(); try { await run() } catch { /* an input it does not take */ } return performance.now() - t }
@@ -100,7 +100,7 @@ export class HeatFormulas {
     for (let s = 0; s < 2 * ring.length; s++) await time(`rotation ${s}`, () => MerkabaFormulas.develop(f, j, s))
     const frozen = performance.now() - start === 0
     const ms = Math.round(worst.ms)
-    return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: `slow(${family}.${formula.name}) = its slowest steady-state run in ms; hot above faces ms`, value: ms, proof: 'device readings: performance.now() around each run', ...{ timed, input: worst.input, hot: ms > faces, verdict: !frozen && ms <= faces ? 'VERIFIED' : 'UNVERIFIED', ...(frozen ? { clock: 'did not advance during work' } : {}), ...(after ? { next: after } : {}) } }, nat(f, j) && !frozen && ms <= faces, { name: 'heat.slow', params: [f, j] })
+    return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: `slow(${family}.${formula.name}) = its slowest steady-state run in ms ≤ faces ms, timed by a clock that advances`, value: ms, proof: 'device readings: performance.now() around each run', ...{ timed, input: worst.input, hot: ms > faces, clockAdvanced: !frozen, ...(after ? { next: after } : {}) } }, nat(f, j) && !frozen && ms <= faces, { name: 'heat.slow', params: [f, j] })
   }
 
   /** One job of a split: 2ᵏ mod p by squaring — independent of every other prime, so any node or agent computes it at
