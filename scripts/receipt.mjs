@@ -101,7 +101,19 @@ if (kind === 'registry') {
   const p = await hex('data', 'perspectives', [faces])
   const tests = fs.globSync(['src/families/*/test.ts', 'src/quantum/processing/unit/*.test.ts', 'scripts/*.test.mjs']).map((f) => ({ file: f, text: fs.readFileSync(f, 'utf8') }))
   const relations = d.relations ?? []
-  const rows = relations.map((rel) => { const names = [...new Set(rel.ways.flatMap((w) => w.program))]; const by = tests.find((t) => names.every((n) => t.text.includes(n))); return { name: `${rel.families.join(' × ')} = ${rel.value}`, pass: by !== undefined, value: `${rel.ways.map((w) => `${w.family}.${w.program.join('∘')}(${w.params.join(', ')})`).join(' = ')}${rel.live ? ' · live' : ''}${by ? ` · tested in ${by.file}` : ' · untested'}`, receipt: rel.ways[0]?.receipt ?? '' } })
+  // A relation is tested when EVERY formula it crosses is exercised by some test — each matched as a whole word
+  // (never a substring of another identifier, nor after a dot), across files, so a cross-family relation is credited
+  // to the family tests that drive its parts rather than demanding one file hold every name. When it is untested the
+  // row names the formulas that have no test, so the feed tells development exactly which test to write next.
+  const wordIn = (text, n) => new RegExp(`(?<![\\w.])${n.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}(?![\\w])`).test(text)
+  const rows = relations.map((rel) => {
+    const names = [...new Set(rel.ways.flatMap((w) => w.program))]
+    const coverage = names.map((n) => ({ n, files: tests.filter((t) => wordIn(t.text, n)).map((t) => t.file) }))
+    const tested = coverage.every((c) => c.files.length > 0)
+    const where = [...new Set(coverage.flatMap((c) => c.files))]
+    const missing = coverage.filter((c) => c.files.length === 0).map((c) => c.n)
+    return { name: `${rel.families.join(' × ')} = ${rel.value}`, pass: tested, value: `${rel.ways.map((w) => `${w.family}.${w.program.join('∘')}(${w.params.join(', ')})`).join(' = ')}${rel.live ? ' · live' : ''}${tested ? ` · tested in ${where.slice(0, 3).join(', ')}` : ` · untested (no test for ${missing.join(', ')})`}`, receipt: rel.ways[0]?.receipt ?? '' }
+  })
   write('next-receipt.json', { kind: 'next-receipt', families: sorted.length, researched: researched.filter((r) => r.holds).length, matched: researched.reduce((n, r) => n + r.matched, 0), read: researched.reduce((n, r) => n + r.read, 0), liveInputs: d.liveInputs ?? 0, relations: relations.length, live: relations.filter((r) => r.live).length, perspectives: p.pairs ?? 0, invariant: p.closed ?? 0, tested: rows.filter((r) => r.pass).length, untested: rows.filter((r) => !r.pass).length, holds: d.holds === true, uuid: d.receipt ?? '', receipt: p.receipt ?? d.receipt ?? '' }, rows)
 } else if (kind === 'uses') {
   const rows = []

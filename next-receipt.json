@@ -1,1089 +1,1030 @@
 {
  "kind": "next-receipt",
- "when": "2026-10-03",
- "families": 22,
- "researched": 21,
- "matched": 2399,
- "read": 92,
- "liveInputs": 26,
- "relations": 178,
- "live": 171,
- "perspectives": 25586,
- "invariant": 25586,
- "tested": 22,
- "untested": 156,
- "seconds": 108,
+ "families": 17,
+ "researched": 16,
+ "matched": 1665,
+ "read": 60,
+ "liveInputs": 22,
+ "relations": 168,
+ "live": 148,
+ "perspectives": 17556,
+ "invariant": 14,
+ "tested": 29,
+ "untested": 139,
  "holds": true,
+ "uuid": "cfdbb83f-e562-8fc6-b015-88b7ac3044e5",
+ "receipt": "f6746e0e-a3d6-8f1e-a77b-52000b2b63cf",
+ "when": "2026-10-04",
+ "host": "https://qpu.uuidna.com",
+ "seconds": 29,
  "rows": [
   {
    "name": "Qpu.Hybrid × Qpu.Lattice × Qpu.Shor × audit × cal × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 3",
    "pass": false,
-   "value": "Qpu.Shor.periodOf(2, 7) = Qpu.Shor.periodOf(4, 7) = Qpu.Shor.half(7, 4) = Qpu.Lattice.n() = Qpu.Lattice.n∘n() = Qpu.Lattice.seed∘n() = Qpu.Lattice.coins∘n() = Qpu.Hybrid.hybridCost() = Qpu.Hybrid.kvCost∘hybridCost() = Qpu.Hybrid.r2Cost∘hybridCost() = Qpu.Hybrid.hybridCost∘hybridCost() = cross.compressQSecSignals(6, 6) = cross.observabilityToUI(6, 1) = audit.gdprIsoNistFusion(1, 4, 4) = audit.gdprIsoNistFusion(2, 2, 5) = audit.gdprIsoNistFusion(2, 5, 2) = audit.gdprIsoNistFusion(4, 1, 4) = hd.center(8) = hd.center(12) = hd.center(16) = hd.center(20) = cal.julianDrift∘gatesPrecessed(2) = crypt.curveClassicalBits(6) = crypt.symmetricQuantumBits(6) = signal.hops(4, 2, 5) = signal.hops(4, 5, 2) = signal.hops(5, 2, 5) = signal.hops(5, 5, 2) = merkaba.mirror(2, 1, 4) = merkaba.mirror(2, 1, 5) = merkaba.mirror(2, 4, 1) = merkaba.mirror(2, 4, 5) = holo.proofDepth(5) = holo.proofDepth(6) = holo.proofDepth(7) = holo.proofDepth(8) = np.isSpace(4) = np.isSpace(5) = np.isSpace(6) = np.isSpace(7) = rule.over∘nibbles(1) = rule.over∘nibbles(2) = rule.over∘nibbles(4) = rule.truncated∘nibbles(1) = heat.coherence(6, 1) = heat.coherence(7, 1) = heat.cooling(5, 2) = heat.cooling(6, 2) = kin.digitalRoot(12) = kin.digitalRoot(615) = kin.dreamspellDrift(12) = kin.dreamspellDrift(13) = tesla.schumann∘earth(2) = tesla.schumann∘quarter(4) = yi.change(1, 2) = yi.change(2, 1) = yi.change(4, 7) = yi.change(5, 6) · live · 3306/3306 perspectives · untested",
-   "receipt": "5eead575-9328-8bbb-8c95-04ce6eb4e89c"
+   "value": "Qpu.Shor.periodOf(2, 7) = Qpu.Shor.periodOf(4, 7) = Qpu.Shor.half(7, 4) = Qpu.Lattice.n() = Qpu.Lattice.n∘n() = Qpu.Lattice.seed∘n() = Qpu.Lattice.coins∘n() = Qpu.Hybrid.hybridCost() = Qpu.Hybrid.kvCost∘hybridCost() = Qpu.Hybrid.r2Cost∘hybridCost() = Qpu.Hybrid.hybridCost∘hybridCost() = cross.compressQSecSignals(6, 6) = cross.observabilityToUI(6, 1) = audit.gdprIsoNistFusion(1, 4, 4) = audit.gdprIsoNistFusion(2, 2, 5) = audit.gdprIsoNistFusion(2, 5, 2) = audit.gdprIsoNistFusion(4, 1, 4) = hd.center(8) = hd.center(12) = hd.center(16) = hd.center(31) = cal.julianDrift∘gatesPrecessed(2) = crypt.curveClassicalBits(6) = crypt.symmetricQuantumBits(6) = signal.hops(4, 2, 5) = signal.hops(4, 5, 2) = signal.hops(5, 2, 5) = signal.hops(5, 5, 2) = merkaba.mirror(2, 1, 4) = merkaba.mirror(2, 1, 5) = merkaba.mirror(2, 4, 1) = merkaba.mirror(2, 4, 5) = holo.proofDepth(5) = holo.proofDepth(6) = holo.proofDepth(7) = holo.proofDepth(8) = np.isSpace(4) = np.isSpace(5) = np.isSpace(6) = np.isSpace(7) = rule.over∘nibbles(1) = rule.over∘nibbles(2) = rule.over∘nibbles(4) = rule.truncated∘nibbles(1) = heat.coherence(6, 1) = heat.coherence(7, 1) = heat.cooling(5, 2) = heat.cooling(6, 2) = kin.digitalRoot(12) = kin.dreamspellDrift(12) = kin.dreamspellDrift(13) = kin.dreamspellDrift(14) = tesla.schumann∘earth(2) = tesla.schumann∘quarter(4) = yi.change(1, 2) = yi.change(2, 1) = yi.change(4, 7) = yi.change(5, 6) · live · untested (no test for hybridCost, kvCost, r2Cost, compressQSecSignals, observabilityToUI, gdprIsoNistFusion, julianDrift, gatesPrecessed, curveClassicalBits, symmetricQuantumBits, hops, proofDepth, isSpace, coherence, cooling, digitalRoot, dreamspellDrift, earth)",
+   "receipt": "0ab24e7f-b24c-8841-a989-5666b7561696"
   },
   {
    "name": "Qpu.Lattice × Qpu.Mint × Qpu.Shor × audit × clay × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 4",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(2) = Qpu.Mint.mintOf∘mintOf(1) = Qpu.Mint.mintOf∘chooseOf(2, 1) = Qpu.Mint.mintOf∘chooseOf(2, 3) = Qpu.Shor.powMod(2, 2, 5) = Qpu.Shor.powMod(3, 2, 5) = Qpu.Shor.periodOf(2, 5) = Qpu.Shor.periodOf(3, 5) = Qpu.Lattice.hexbit() = Qpu.Lattice.n∘hexbit() = Qpu.Lattice.seed∘hexbit() = Qpu.Lattice.coins∘hexbit() = cross.compressQSecSignals(6, 3) = cross.compressQSecSignals(8, 8) = cross.medSecureWithQSec(1, 2) = cross.medSecureWithQSec(2, 1) = audit.gdprIsoNistFusion(2, 5, 5) = audit.gdprIsoNistFusion(5, 2, 5) = audit.gdprIsoNistFusion(5, 5, 2) = audit.healthcareComplianceFusion(5, 5, 1) = hd.center(1) = hd.center(2) = hd.center(7) = hd.center(10) = clay.bsd(11) = clay.bsd(28) = clay.bsd(42) = clay.hodge(2) = crypt.curveClassicalBits(8) = crypt.symmetricQuantumBits(8) = signal.keyspace(2) = signal.siftedBits(8) = signal.hops∘keyspace(2, 1, 2) = signal.hops∘keyspace(2, 2, 1) = merkaba.mirror(3, 1, 2) = merkaba.mirror(3, 1, 5) = merkaba.torus(2, 1, 3) = merkaba.torus(5, 1, 3) = holo.proofDepth(9) = holo.proofDepth(10) = holo.proofDepth(11) = holo.proofDepth(12) = np.isSpace(8) = np.isSpace(9) = np.isSpace(10) = np.isSpace(11) = rule.compositions(3) = rule.compositions(6) = rule.nibbles(5) = rule.nibbles(7) = heat.coherence(8, 1) = heat.cooling(7, 2) = heat.cooling(8, 2) = heat.signal(52) = kin.digitalRoot(13) = kin.digitalRoot(400) = kin.dreamspellDrift(16) = kin.dreamspellDrift(18) = tesla.field(2, 2) = tesla.windings(2, 2) = tesla.earth∘quarter(2) = tesla.schumann∘quarter(3) = yi.change(1, 5) = yi.change(2, 6) = yi.change(3, 7) = yi.change(5, 1) · live · 4290/4290 perspectives · untested",
-   "receipt": "7fa53f3b-2a59-86f7-8371-37d19a193451"
+   "value": "Qpu.Mint.mintOf(2) = Qpu.Mint.mintOf∘mintOf(1) = Qpu.Mint.mintOf∘chooseOf(2, 1) = Qpu.Mint.mintOf∘chooseOf(2, 3) = Qpu.Shor.powMod(2, 2, 5) = Qpu.Shor.powMod(3, 2, 5) = Qpu.Shor.periodOf(2, 5) = Qpu.Shor.periodOf(3, 5) = Qpu.Lattice.hexbit() = Qpu.Lattice.n∘hexbit() = Qpu.Lattice.seed∘hexbit() = Qpu.Lattice.coins∘hexbit() = cross.compressQSecSignals(6, 3) = cross.compressQSecSignals(8, 8) = cross.medSecureWithQSec(1, 2) = cross.medSecureWithQSec(2, 1) = audit.gdprIsoNistFusion(2, 5, 5) = audit.gdprIsoNistFusion(5, 2, 5) = audit.gdprIsoNistFusion(5, 5, 2) = audit.healthcareComplianceFusion(5, 5, 1) = hd.center(1) = hd.center(2) = hd.center(7) = hd.center(10) = clay.bsd(11) = clay.hodge(2) = clay.hodge∘hodge(1) = clay.yangMills∘hodge(1) = crypt.curveClassicalBits(8) = crypt.symmetricQuantumBits(8) = signal.keyspace(2) = signal.siftedBits(8) = signal.hops∘keyspace(2, 1, 2) = signal.hops∘keyspace(2, 2, 1) = merkaba.mirror(3, 1, 2) = merkaba.mirror(3, 1, 5) = merkaba.torus(2, 1, 3) = merkaba.torus(5, 1, 3) = holo.proofDepth(9) = holo.proofDepth(10) = holo.proofDepth(11) = holo.proofDepth(12) = np.isSpace(8) = np.isSpace(9) = np.isSpace(10) = np.isSpace(11) = rule.compositions(3) = rule.compositions(6) = rule.nibbles(5) = rule.nibbles(7) = heat.coherence(8, 1) = heat.cooling(7, 2) = heat.cooling(8, 2) = heat.ways(7, 2) = kin.digitalRoot(13) = kin.digitalRoot(31) = kin.digitalRoot(130) = kin.digitalRoot(184) = tesla.field(2, 2) = tesla.windings(2, 2) = tesla.earth∘quarter(2) = tesla.schumann∘quarter(3) = yi.change(1, 5) = yi.change(2, 6) = yi.change(3, 7) = yi.change(5, 1) · live · untested (no test for compressQSecSignals, medSecureWithQSec, gdprIsoNistFusion, healthcareComplianceFusion, bsd, hodge, curveClassicalBits, symmetricQuantumBits, keyspace, siftedBits, hops, proofDepth, isSpace, compositions, coherence, cooling, digitalRoot, earth)",
+   "receipt": "b5e8b774-9757-86f1-8528-fd5654a51dcd"
   },
   {
-   "name": "Qpu.Hybrid × Qpu.Lattice × Qpu.Mint × clay × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 8",
+   "name": "Qpu.Hybrid × Qpu.Lattice × Qpu.Mint × clay × cross × crypt × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 8",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(3) = Qpu.Mint.mintOf∘chooseOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 2) = Qpu.Lattice.vertices() = Qpu.Lattice.n∘vertices() = Qpu.Lattice.seed∘vertices() = Qpu.Lattice.coins∘vertices() = Qpu.Hybrid.hybridSpeed() = Qpu.Hybrid.kvCost∘hybridSpeed() = Qpu.Hybrid.r2Cost∘hybridSpeed() = Qpu.Hybrid.hybridCost∘hybridSpeed() = cross.medSecureWithQSec(1, 3) = cross.medSecureWithQSec(2, 2) = cross.medSecureWithQSec(4, 1) = cross.bb84ToCompress∘medSecureWithQSec(1, 3) = hd.center(18) = hd.center(28) = hd.gate(591) = clay.bsd(72) = clay.hodge(4) = clay.hodge∘hodge(2) = crypt.curveClassicalBits(16) = crypt.symmetricQuantumBits(16) = signal.keyspace(3) = signal.siftedBits(16) = signal.keyspace∘siftedBits(4) = merkaba.mirror(3, 2, 1) = merkaba.mirror(3, 2, 4) = merkaba.mirror(3, 2, 5) = merkaba.rosetta(4) = holo.proofDepth(145) = holo.proofDepth(200) = np.isSpace(145) = np.isSpace(200) = np.sparseWidth(42) = np.sparseWidth(52) = rule.nibbles(12) = heat.signal(28) = kin.digitalRoot(404) = kin.seal(28) = kin.vortex(3) = kin.vortex(9) = tesla.field(2, 4) = tesla.field(4, 2) = tesla.windings(2, 4) = tesla.windings(4, 2) = yi.figures(3) = yi.inverse(4) = yi.change∘figures(1, 2) = yi.change∘figures(2, 1) · live · 2550/2550 perspectives · untested",
-   "receipt": "45e84595-801e-84ae-a842-be738619d023"
+   "value": "Qpu.Mint.mintOf(3) = Qpu.Mint.mintOf∘chooseOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 2) = Qpu.Lattice.vertices() = Qpu.Lattice.n∘vertices() = Qpu.Lattice.seed∘vertices() = Qpu.Lattice.coins∘vertices() = Qpu.Hybrid.hybridSpeed() = Qpu.Hybrid.kvCost∘hybridSpeed() = Qpu.Hybrid.r2Cost∘hybridSpeed() = Qpu.Hybrid.hybridCost∘hybridSpeed() = cross.medSecureWithQSec(1, 3) = cross.medSecureWithQSec(2, 2) = cross.medSecureWithQSec(4, 1) = cross.bb84ToCompress∘medSecureWithQSec(1, 3) = clay.bsd(27) = clay.bsd(72) = clay.hodge(4) = clay.hodge∘hodge(2) = crypt.curveClassicalBits(16) = crypt.symmetricQuantumBits(16) = signal.keyspace(3) = signal.siftedBits(16) = signal.keyspace∘siftedBits(4) = merkaba.mirror(3, 2, 1) = merkaba.mirror(3, 2, 4) = merkaba.mirror(3, 2, 5) = merkaba.rosetta(4) = holo.proofDepth(130) = holo.proofDepth(184) = np.isSpace(130) = np.isSpace(184) = np.isTime∘isSpace(3) = np.isTime∘sparseWidth(2) = rule.nibbles(12) = heat.signal(27) = kin.digitalRoot(116) = kin.digitalRoot(404) = kin.digitalRoot(2301668) = kin.vortex(3) = tesla.field(2, 4) = tesla.field(4, 2) = tesla.windings(2, 4) = tesla.windings(4, 2) = yi.figures(3) = yi.inverse(4) = yi.change∘figures(1, 2) = yi.change∘figures(2, 1) · live · untested (no test for vertices, hybridSpeed, kvCost, r2Cost, hybridCost, medSecureWithQSec, bb84ToCompress, bsd, hodge, curveClassicalBits, symmetricQuantumBits, keyspace, siftedBits, proofDepth, isSpace, isTime, sparseWidth, digitalRoot)",
+   "receipt": "8b6425af-c71d-870f-9017-348c134e5768"
   },
   {
-   "name": "Qpu.Mint × Qpu.Shor × cal × clay × cross × crypt × hd × holo × kin × merkaba × np × rule × signal × tesla × yi = 6",
+   "name": "Qpu.Mint × Qpu.Shor × cal × clay × cross × crypt × hd × kin × merkaba × np × rule × signal × tesla × yi = 6",
    "pass": false,
-   "value": "Qpu.Mint.chooseOf(4, 2) = Qpu.Mint.mintOf∘chooseOf(2, 2) = Qpu.Shor.periodOf(3, 7) = Qpu.Shor.periodOf(5, 7) = Qpu.Shor.half(3, 7) = Qpu.Shor.half(5, 7) = cross.medSecureWithQSec(3, 1) = cross.medSecureWithQSec∘observabilityToUI(3, 3) = hd.center(3) = hd.center(5) = hd.center(9) = hd.center(14) = cal.julianDrift∘gatesPrecessed(4) = clay.hodge(3) = crypt.curveClassicalBits(12) = crypt.symmetricQuantumBits(12) = signal.keyBits(16) = signal.siftedBits(12) = signal.keyspace∘keyBits(4) = merkaba.flows(3) = merkaba.coil∘flows(3) = merkaba.flows∘coil(3) = merkaba.rosetta∘flows(3) = holo.proofDepth(42) = holo.proofDepth(52) = np.isSpace(42) = np.isSpace(52) = np.sparseWidth(8) = np.sparseWidth(9) = rule.free(4) = rule.free(13) = rule.nibbles(1) = rule.nibbles(9) = kin.digitalRoot(15) = kin.digitalRoot(42) = kin.digitalRoot(123) = kin.digitalRoot(591) = tesla.field(2, 3) = tesla.field(3, 2) = tesla.windings(2, 3) = tesla.windings(3, 2) = yi.change(1, 7) = yi.change(2, 4) = yi.change(3, 5) = yi.change(4, 2) · live · 1980/1980 perspectives · untested",
-   "receipt": "5552a219-37b2-86e1-9fcd-beabd4cf339a"
+   "value": "Qpu.Mint.chooseOf(4, 2) = Qpu.Mint.mintOf∘chooseOf(2, 2) = Qpu.Shor.periodOf(3, 7) = Qpu.Shor.periodOf(5, 7) = Qpu.Shor.half(3, 7) = Qpu.Shor.half(5, 7) = cross.medSecureWithQSec(3, 1) = cross.medSecureWithQSec∘observabilityToUI(3, 3) = hd.center(3) = hd.center(5) = hd.center(9) = hd.center(14) = cal.julianDrift∘gatesPrecessed(4) = clay.hodge(3) = crypt.curveClassicalBits(12) = crypt.symmetricQuantumBits(12) = signal.keyBits(16) = signal.siftedBits(12) = signal.keyspace∘keyBits(4) = merkaba.flows(3) = merkaba.coil∘flows(3) = merkaba.flows∘coil(3) = merkaba.rosetta∘flows(3) = np.sparseWidth(8) = np.sparseWidth(9) = np.sparseWidth(10) = np.sparseWidth(11) = rule.free(4) = rule.nibbles(1) = rule.nibbles(9) = rule.nibbles(11) = kin.digitalRoot(15) = kin.digitalRoot(1913190) = kin.digitalRoot(2079006) = kin.digitalRoot(662607015) = tesla.field(2, 3) = tesla.field(3, 2) = tesla.windings(2, 3) = tesla.windings(3, 2) = yi.change(1, 7) = yi.change(2, 4) = yi.change(3, 5) = yi.change(4, 2) · live · untested (no test for medSecureWithQSec, observabilityToUI, julianDrift, gatesPrecessed, hodge, curveClassicalBits, symmetricQuantumBits, keyBits, siftedBits, keyspace, sparseWidth, digitalRoot)",
+   "receipt": "0cde0127-100b-8107-a01f-9da22385cb20"
   },
   {
-   "name": "Qpu.Physics × cal × clay × crypt × hd × heat × holo × kin × np × rule × signal × tesla × yi = 5",
+   "name": "Qpu.Hybrid × Qpu.Lattice × cal × crypt × hd × heat × holo × kin × np × rule × signal × tesla × yi = 7",
    "pass": false,
-   "value": "Qpu.Physics.transmon() = Qpu.Physics.planck∘transmon() = Qpu.Physics.boltzmann∘transmon() = Qpu.Physics.transmon∘transmon() = hd.line(20) = hd.line(28) = hd.line(591) = hd.gate∘line(1) = cal.julianDrift∘gatesPrecessed(3) = clay.bsd(13) = crypt.curveClassicalBits(10) = crypt.symmetricQuantumBits(10) = signal.siftedBits(10) = holo.proofDepth(18) = holo.proofDepth(20) = holo.proofDepth(28) = np.isSpace(16) = np.isSpace(18) = np.isSpace(20) = np.isSpace(28) = rule.free(10) = heat.signal(42) = kin.digitalRoot(14) = kin.digitalRoot(401) = kin.dreamspellDrift(20) = kin.seal(145) = tesla.period∘energy(1, 3) = tesla.schumann∘earth(1) = yi.change(1, 4) = yi.change(2, 7) = yi.change(3, 6) = yi.change(4, 1) · live · 992/992 perspectives · untested",
-   "receipt": "5180883d-a307-86b1-a5ea-216d6e3f85e3"
+   "value": "Qpu.Lattice.rays() = Qpu.Lattice.n∘rays() = Qpu.Lattice.seed∘rays() = Qpu.Lattice.coins∘rays() = Qpu.Hybrid.kvSpeed() = Qpu.Hybrid.kvCost∘kvSpeed() = Qpu.Hybrid.r2Cost∘kvSpeed() = Qpu.Hybrid.hybridCost∘kvSpeed() = hd.center(6) = hd.center∘center(3) = cal.dayPer∘gatesPrecessed(1) = crypt.curveClassicalBits(14) = crypt.symmetricQuantumBits(14) = signal.siftedBits(14) = holo.proofDepth(72) = holo.proofDepth(116) = np.isSpace(72) = np.isSpace(116) = np.sparseWidth(16) = np.sparseWidth(27) = rule.free(12) = heat.signal(31) = kin.digitalRoot(16) = kin.dreamspellDrift(31) = kin.seal(27) = kin.tone(72) = tesla.earth∘quarter(4) = yi.change(1, 6) = yi.change(2, 5) = yi.change(3, 4) = yi.change(4, 3) · live · untested (no test for kvSpeed, kvCost, r2Cost, hybridCost, dayPer, gatesPrecessed, curveClassicalBits, symmetricQuantumBits, siftedBits, proofDepth, isSpace, sparseWidth, digitalRoot, dreamspellDrift, tone, earth)",
+   "receipt": "d204a9cd-0e25-8cd7-aea8-6d2ddacbe87d"
   },
   {
-   "name": "Qpu.Hybrid × Qpu.Lattice × cal × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 7",
+   "name": "Qpu.Physics × cal × clay × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 5",
    "pass": false,
-   "value": "Qpu.Lattice.rays() = Qpu.Lattice.n∘rays() = Qpu.Lattice.seed∘rays() = Qpu.Lattice.coins∘rays() = Qpu.Hybrid.kvSpeed() = Qpu.Hybrid.kvCost∘kvSpeed() = Qpu.Hybrid.r2Cost∘kvSpeed() = Qpu.Hybrid.hybridCost∘kvSpeed() = hd.center(6) = hd.center∘center(3) = cal.dayPer∘gatesPrecessed(1) = crypt.curveClassicalBits(14) = crypt.symmetricQuantumBits(14) = signal.siftedBits(14) = holo.proofDepth(72) = holo.proofDepth(123) = np.isSpace(72) = np.isSpace(123) = np.sparseWidth(16) = np.sparseWidth(18) = rule.free(12) = kin.digitalRoot(16) = kin.digitalRoot(52) = kin.digitalRoot(628) = kin.dreamspellDrift(28) = tesla.earth∘quarter(4) = yi.change(1, 6) = yi.change(2, 5) = yi.change(3, 4) = yi.change(4, 3) · live · 870/870 perspectives · untested",
-   "receipt": "4e7f5c61-fff9-86b0-80bf-786ce6bec25b"
+   "value": "Qpu.Physics.transmon() = Qpu.Physics.planck∘transmon() = Qpu.Physics.boltzmann∘transmon() = Qpu.Physics.transmon∘transmon() = hd.line(27) = hd.gate∘line(1) = hd.gate∘line(2) = hd.gate∘line(3) = cal.julianDrift∘gatesPrecessed(3) = clay.bsd(13) = crypt.curveClassicalBits(10) = crypt.symmetricQuantumBits(10) = signal.siftedBits(10) = holo.proofDepth(27) = holo.proofDepth(31) = np.isSpace(16) = np.isSpace(27) = np.isSpace(31) = np.sparseWidth(4) = rule.free(10) = rule.free(13) = rule.free∘free(3) = rule.nibbles∘free(2) = kin.digitalRoot(14) = kin.digitalRoot(401) = kin.tone(31) = kin.vortex(11) = tesla.period∘energy(1, 3) = tesla.schumann∘earth(1) = yi.change(1, 4) = yi.change(2, 7) = yi.change(3, 6) = yi.change(4, 1) · live · untested (no test for boltzmann, julianDrift, gatesPrecessed, bsd, curveClassicalBits, symmetricQuantumBits, siftedBits, proofDepth, isSpace, sparseWidth, digitalRoot, tone, earth)",
+   "receipt": "9179fa34-c4a7-8256-a4e0-97bd895721ae"
   },
   {
-   "name": "Qpu.Mint × cal × clay × cross × crypt × hd × holo × kin × np × signal × tesla × yi = 10",
+   "name": "Qpu.Mint × cal × clay × cross × hd × kin × np × rule × tesla × yi = 10",
    "pass": false,
-   "value": "Qpu.Mint.chooseOf(5, 2) = Qpu.Mint.chooseOf(5, 3) = cross.medSecureWithQSec(5, 1) = hd.sun∘gate(1) = hd.sun∘gate(2) = hd.sun∘gate(3) = hd.sun∘gate(4) = cal.lunarDrift(1) = cal.coin∘lunarDrift(1) = cal.coin∘lunarDrift(2) = cal.coin∘lunarDrift(3) = clay.bsd(52) = clay.hodge(5) = crypt.curveClassicalBits(20) = crypt.symmetricQuantumBits(20) = signal.siftedBits(20) = holo.proofDepth(591) = holo.proofDepth(615) = holo.proofDepth(628) = np.isSpace(591) = np.isSpace(615) = np.isSpace(628) = np.sparseWidth(145) = kin.dreamspellDrift(42) = tesla.field(2, 5) = tesla.field(5, 2) = tesla.windings(2, 5) = tesla.windings(5, 2) = yi.change(2, 8) = yi.change(8, 2) = yi.inverse(20) = yi.nuclear(4) · live · 992/992 perspectives · untested",
-   "receipt": "2a330d34-c0b4-84c9-a083-565e09b478f9"
+   "value": "Qpu.Mint.chooseOf(5, 2) = Qpu.Mint.chooseOf(5, 3) = cross.medSecureWithQSec(5, 1) = hd.sun∘gate(1) = hd.sun∘gate(2) = hd.sun∘gate(3) = hd.sun∘gate(4) = cal.lunarDrift(1) = cal.coin∘lunarDrift(1) = cal.coin∘lunarDrift(2) = cal.coin∘lunarDrift(3) = clay.hodge(5) = np.sparseWidth(130) = np.sparseWidth(184) = np.isTime∘sparseWidth(3) = rule.nibbles(13) = rule.free∘nibbles(3) = rule.nibbles∘nibbles(2) = kin.seal(130) = tesla.field(2, 5) = tesla.field(5, 2) = tesla.windings(2, 5) = tesla.windings(5, 2) = yi.change(2, 8) = yi.change(8, 2) = yi.nuclear(4) = yi.nuclear(5) · live · untested (no test for medSecureWithQSec, sun, lunarDrift, hodge, sparseWidth, isTime)",
+   "receipt": "7b8089ba-1bae-80e1-a33c-4a53ad6f5fd0"
   },
   {
-   "name": "Qpu.Coil × Qpu.Lattice × clay × cross × crypt × heat × kin × rule × signal × tesla × yi = 14",
+   "name": "Qpu.Lattice × Qpu.Mint × cal × clay × cross × kin × np × signal × tesla × yi = 32",
    "pass": false,
-   "value": "Qpu.Lattice.faces() = Qpu.Lattice.n∘faces() = Qpu.Lattice.seed∘faces() = Qpu.Lattice.coins∘faces() = Qpu.Coil.coil() = Qpu.Coil.theory∘coil() = Qpu.Coil.practice∘coil() = Qpu.Coil.coil∘coil() = cross.medSecureWithQSec(7, 1) = clay.hodge(7) = crypt.curveClassicalBits(28) = crypt.symmetricQuantumBits(28) = signal.siftedBits(28) = rule.nibbles(8) = rule.nibbles(15) = rule.slice() = rule.cap∘nibbles(1) = heat.signal(16) = kin.bits∘seal(4) = kin.cycle∘kin(2, 1) = kin.cycle∘kin(2, 2) = kin.cycle∘kin(2, 3) = tesla.field(2, 7) = tesla.field(7, 2) = tesla.windings(2, 7) = tesla.windings(7, 2) = yi.change(6, 8) = yi.change(8, 6) = yi.inverse(28) = yi.withYang∘change(2, 1) · live · 870/870 perspectives · untested",
-   "receipt": "6059c356-e32f-87d2-832d-97bc2ad8af77"
+   "value": "Qpu.Mint.mintOf(5) = Qpu.Lattice.bits() = Qpu.Lattice.n∘bits() = Qpu.Lattice.seed∘bits() = Qpu.Lattice.coins∘bits() = cross.medSecureWithQSec(1, 5) = cross.medSecureWithQSec(2, 4) = cross.medSecureWithQSec(4, 3) = cross.medSecureWithQSec(8, 2) = cal.lunarDrift(3) = clay.hodge(16) = signal.keyspace(5) = np.isTime(2) = np.sparseWidth(662607015) = np.isSpace∘isTime(2) = np.isSpace∘isTime(3) = kin.dreamspellDrift(130) = tesla.field(4, 8) = tesla.field(8, 4) = tesla.windings(4, 8) = tesla.windings(8, 4) = yi.complement(31) = yi.figures(5) = yi.inverse(1) = yi.nuclear(16) · live · untested (no test for medSecureWithQSec, lunarDrift, hodge, keyspace, isTime, sparseWidth, isSpace, dreamspellDrift)",
+   "receipt": "c8d9ce6b-86a5-88b6-9e12-b9944cdcb410"
   },
   {
-   "name": "Qpu.Mint × clay × cross × holo × kin × np × rule × signal × tesla × yi = 16",
+   "name": "Qpu.Coil × Qpu.Lattice × clay × cross × heat × kin × rule × tesla × yi = 14",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(4) = Qpu.Mint.mintOf∘mintOf(2) = cross.medSecureWithQSec(1, 4) = cross.medSecureWithQSec(2, 3) = cross.medSecureWithQSec(4, 2) = cross.medSecureWithQSec(8, 1) = clay.hodge(8) = clay.hodge∘hodge(4) = signal.keyspace(4) = signal.keyspace∘keyspace(2) = holo.proofDepth(40101) = np.isSpace(40101) = rule.compositions(5) = rule.compositions(7) = kin.bits∘dootKin(2, 2, 1) = kin.combinations∘dreamspellDrift(1) = kin.dootKin∘seal(1, 2, 1) = tesla.field(2, 8) = tesla.field(4, 4) = tesla.field(8, 2) = tesla.windings(2, 8) = yi.figures(4) = yi.inverse(2) = yi.change∘inverse(1, 3) = yi.change∘inverse(3, 1) · live · 600/600 perspectives · untested",
-   "receipt": "9e4356d6-494c-8178-86d1-97da7eb0e1eb"
+   "value": "Qpu.Lattice.faces() = Qpu.Lattice.n∘faces() = Qpu.Lattice.seed∘faces() = Qpu.Lattice.coins∘faces() = Qpu.Coil.coil() = Qpu.Coil.theory∘coil() = Qpu.Coil.practice∘coil() = Qpu.Coil.coil∘coil() = cross.medSecureWithQSec(7, 1) = clay.bsd(31) = clay.hodge(7) = rule.nibbles(8) = rule.nibbles(15) = rule.slice() = rule.cap∘nibbles(1) = heat.signal(16) = kin.bits∘seal(4) = kin.cycle∘kin(2, 1) = kin.cycle∘kin(2, 2) = kin.cycle∘kin(2, 3) = tesla.field(2, 7) = tesla.field(7, 2) = tesla.windings(2, 7) = tesla.windings(7, 2) = yi.change(6, 8) = yi.change(8, 6) = yi.withYang∘change(2, 1) · live · untested (no test for medSecureWithQSec, bsd, hodge, withYang)",
+   "receipt": "bc6d0fde-b68a-8659-91d6-571a39f48f46"
   },
   {
-   "name": "crypt × hd × holo × kin × np × rule × signal × tesla × yi = 9",
+   "name": "Qpu.Mint × clay × cross × kin × rule × signal × tesla × yi = 16",
    "pass": false,
-   "value": "hd.center(52) = crypt.curveClassicalBits(18) = crypt.symmetricQuantumBits(18) = signal.siftedBits(18) = holo.proofDepth(400) = holo.proofDepth(401) = holo.proofDepth(404) = np.isSpace(400) = np.isSpace(401) = np.isSpace(404) = np.sparseWidth(72) = rule.free(1) = rule.free(11) = rule.free(14) = rule.free(16) = kin.bits(1) = kin.digitalRoot(18) = kin.digitalRoot(72) = kin.bits∘digitalRoot(1) = tesla.field(3, 3) = tesla.windings(3, 3) = tesla.resonance∘period(1, 2) = tesla.resonance∘period(2, 1) = yi.change(1, 8) = yi.change(8, 1) = yi.figures∘change(3, 1) · live · 650/650 perspectives · untested",
-   "receipt": "312ee4ca-471c-866f-9c69-351beb9812cc"
+   "value": "Qpu.Mint.mintOf(4) = Qpu.Mint.mintOf∘mintOf(2) = cross.medSecureWithQSec(1, 4) = cross.medSecureWithQSec(2, 3) = cross.medSecureWithQSec(4, 2) = cross.medSecureWithQSec(8, 1) = clay.hodge(8) = clay.hodge∘hodge(4) = signal.keyspace(4) = signal.keyspace∘keyspace(2) = rule.compositions(5) = rule.compositions(7) = kin.seal(116) = kin.bits∘dootKin(2, 2, 1) = kin.combinations∘dreamspellDrift(1) = kin.dootKin∘seal(1, 2, 1) = tesla.field(2, 8) = tesla.field(4, 4) = tesla.field(8, 2) = tesla.windings(2, 8) = yi.figures(4) = yi.inverse(2) = yi.change∘inverse(1, 3) = yi.change∘inverse(3, 1) · live · untested (no test for medSecureWithQSec, hodge, keyspace, compositions, dootKin, dreamspellDrift)",
+   "receipt": "a38a7e9f-7763-80b5-a5dd-98789fcabd93"
   },
   {
-   "name": "Qpu.Lattice × Qpu.Mint × cal × clay × cross × np × signal × tesla × yi = 32",
+   "name": "Qpu.Mint × cal × hd × heat × holo × np × tesla × yi = 21",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(5) = Qpu.Lattice.bits() = Qpu.Lattice.n∘bits() = Qpu.Lattice.seed∘bits() = Qpu.Lattice.coins∘bits() = cross.medSecureWithQSec(1, 5) = cross.medSecureWithQSec(2, 4) = cross.medSecureWithQSec(4, 3) = cross.medSecureWithQSec(8, 2) = cal.lunarDrift(3) = clay.hodge(16) = signal.keyspace(5) = np.isTime(2) = np.isSpace∘isTime(2) = np.isSpace∘isTime(3) = np.subsetSum∘isTime(2, 1) = tesla.field(4, 8) = tesla.field(8, 4) = tesla.windings(4, 8) = tesla.windings(8, 4) = yi.figures(5) = yi.inverse(1) = yi.nuclear(16) = yi.change∘inverse(2, 3) · live · 552/552 perspectives · untested",
-   "receipt": "6ea38e9d-606d-8526-9434-4a0239f9d644"
+   "value": "Qpu.Mint.chooseOf(7, 2) = Qpu.Mint.chooseOf(7, 5) = hd.gate(116) = hd.gate(130) = cal.lunarDrift(2) = cal.coin∘lunarDrift(4) = cal.designDays∘gatesPrecessed(1) = cal.designDays∘gatesPrecessed(2) = holo.proofDepth(1380649) = holo.proofDepth(1913190) = holo.proofDepth(2079006) = np.isSpace(1380649) = np.isSpace(1913190) = np.isSpace(2079006) = heat.signal(11) = tesla.field(3, 7) = tesla.field(7, 3) = tesla.windings(3, 7) = tesla.windings(7, 3) = yi.nuclear(10) = yi.nuclear(11) = yi.nuclear∘nuclear(4) = yi.withYang∘change(3, 1) · live · untested (no test for lunarDrift, designDays, gatesPrecessed, proofDepth, isSpace, withYang)",
+   "receipt": "67eb494c-d716-8639-86f6-0dd6c4be8cf3"
   },
   {
-   "name": "Qpu.Mint × cal × crypt × hd × heat × signal × tesla × yi = 21",
+   "name": "clay × cross × hd × kin × merkaba × np × tesla × yi = 24",
    "pass": false,
-   "value": "Qpu.Mint.chooseOf(7, 2) = Qpu.Mint.chooseOf(7, 5) = hd.gate(123) = hd.gate(145) = cal.lunarDrift(2) = cal.coin∘lunarDrift(4) = cal.designDays∘gatesPrecessed(1) = cal.designDays∘gatesPrecessed(2) = crypt.curveClassicalBits(42) = crypt.symmetricQuantumBits(42) = signal.siftedBits(42) = heat.signal(11) = tesla.field(3, 7) = tesla.field(7, 3) = tesla.windings(3, 7) = tesla.windings(7, 3) = yi.complement(42) = yi.inverse(42) = yi.nuclear(10) = yi.nuclear(11) · live · 380/380 perspectives · untested",
-   "receipt": "bc7537b3-baf8-835a-aee5-695c1402a2dd"
+   "value": "cross.medSecureWithQSec(3, 3) = cross.medSecureWithQSec(6, 2) = hd.gate(400) = hd.gate(401) = hd.gate(404) = clay.hodge(12) = merkaba.flows(4) = merkaba.coil∘flows(4) = np.sparseWidth(2301668) = np.sparseWidth(2745751) = kin.pillar∘pillar(2, 1) = tesla.field(3, 8) = tesla.field(4, 6) = tesla.field(6, 4) = tesla.field(8, 3) = yi.inverse(6) = yi.withYang∘inverse(1) · live · untested (no test for medSecureWithQSec, hodge, sparseWidth, pillar, withYang)",
+   "receipt": "60bd53ac-922d-8afa-9b42-f42fe92400f6"
   },
   {
-   "name": "clay × cross × kin × np × rule × tesla × yi = 12",
+   "name": "Qpu.Mint × hd × kin × np × rule × tesla × yi = 15",
    "pass": false,
-   "value": "cross.medSecureWithQSec(3, 2) = cross.medSecureWithQSec(6, 1) = cross.medSecureWithQSec∘medSecureWithQSec(3, 1) = clay.hodge(6) = clay.hodge∘hodge(3) = np.sparseWidth(591) = np.sparseWidth(615) = np.sparseWidth(628) = rule.over∘free(1) = rule.over∘free(2) = rule.over∘free(3) = rule.over∘free(4) = kin.seal(52) = kin.seal(72) = kin.combinations∘dootKin(1, 2, 2) = kin.combinations∘tone(1) = tesla.field(2, 6) = tesla.field(3, 4) = tesla.field(4, 3) = tesla.field(6, 2) = yi.change(4, 8) = yi.change(8, 4) = yi.withYang∘change(2, 3) · live · 506/506 perspectives · untested",
-   "receipt": "8cb3b39c-41d6-8bd1-bea6-806fc89727ef"
-  },
-  {
-   "name": "Qpu.Mint × clay × cross × hd × kin × tesla × yi = 20",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(6, 3) = cross.medSecureWithQSec(5, 2) = hd.gate(615) = hd.gate(628) = clay.hodge(10) = kin.seal(200) = kin.kin∘seal(1, 2) = kin.kin∘seal(1, 3) = kin.kin∘seal(2, 3) = tesla.field(4, 5) = tesla.field(5, 4) = tesla.sync(1, 6) = tesla.windings(4, 5) = yi.inverse(10) = yi.nuclear(8) = yi.nuclear(9) = yi.withYang(3) · live · 272/272 perspectives · untested",
-   "receipt": "fcc8f793-a47f-8738-a027-1ab704c42b8a"
-  },
-  {
-   "name": "clay × cross × hd × kin × merkaba × tesla × yi = 24",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(3, 3) = cross.medSecureWithQSec(6, 2) = hd.gate(400) = hd.gate(401) = hd.gate(404) = clay.hodge(12) = merkaba.flows(4) = merkaba.coil∘flows(4) = kin.pillar∘pillar(2, 1) = tesla.field(3, 8) = tesla.field(4, 6) = tesla.field(6, 4) = tesla.field(8, 3) = yi.inverse(6) = yi.withYang∘inverse(1) · live · 210/210 perspectives · untested",
-   "receipt": "a3b1e0aa-ed1c-8757-addd-2c529321ba51"
-  },
-  {
-   "name": "clay × crypt × kin × rule × signal × tesla × yi = 36",
-   "pass": false,
-   "value": "clay.bsd(200) = clay.hodge(18) = crypt.curveClassicalBits(72) = crypt.symmetricQuantumBits(72) = signal.siftedBits(72) = rule.compositions(1) = rule.compositions(9) = rule.compositions(11) = rule.compositions(14) = kin.dreamspellDrift(145) = tesla.field(6, 6) = tesla.windings(6, 6) = yi.inverse(9) · live · 156/156 perspectives · untested",
-   "receipt": "449a37a6-ce68-87ee-a5cb-1d89b349ca5c"
+   "value": "Qpu.Mint.chooseOf(6, 2) = Qpu.Mint.chooseOf(6, 4) = hd.code(116) = np.isTime∘subsetSum(3, 2) = rule.cap() = rule.cap∘cap() = rule.compositions∘cap(1) = rule.compositions∘cap(2) = kin.period∘dreamspellDrift(3) = tesla.field(3, 5) = tesla.field(5, 3) = tesla.sync(1, 8) = tesla.windings(3, 5) = yi.change(7, 8) = yi.change(8, 7) = yi.withYang(2) = yi.withYang(4) · live · untested (no test for isTime, subsetSum, compositions, dreamspellDrift, withYang)",
+   "receipt": "8f551c74-ab3e-8929-baf4-845d868d00fb"
   },
   {
    "name": "Qpu.Mint × cross × kin × rule × signal × tesla × yi = 64",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(6) = cross.medSecureWithQSec(1, 6) = cross.medSecureWithQSec(2, 5) = cross.medSecureWithQSec(4, 4) = cross.medSecureWithQSec(8, 3) = signal.keyspace(6) = rule.compositions(12) = kin.combinations(1) = kin.crossed∘combinations(1, 1) = kin.crossed∘combinations(2, 2) = kin.crossed∘combinations(3, 3) = tesla.earth(628) = tesla.field(8, 8) = tesla.windings(8, 8) = yi.figures(6) = yi.withYang∘figures(1) · live · 240/240 perspectives · untested",
-   "receipt": "2962dde6-2fc6-8ffe-b0ad-3bba5309d9b9"
+   "value": "Qpu.Mint.mintOf(6) = cross.medSecureWithQSec(1, 6) = cross.medSecureWithQSec(2, 5) = cross.medSecureWithQSec(4, 4) = cross.medSecureWithQSec(8, 3) = signal.keyspace(6) = rule.compositions(12) = kin.combinations(1) = kin.crossed∘combinations(1, 1) = kin.crossed∘combinations(2, 2) = kin.crossed∘combinations(3, 3) = tesla.field(8, 8) = tesla.windings(8, 8) = yi.figures(6) = yi.withYang∘figures(1) · live · untested (no test for medSecureWithQSec, keyspace, compositions, withYang)",
+   "receipt": "eda77554-c121-8050-aaac-ec3d40f89781"
   },
   {
-   "name": "heat × kin × np × rule × tesla × yi = 11",
+   "name": "holo × kin × np × rule × tesla × yi = 9",
    "pass": false,
-   "value": "np.sparseWidth(400) = np.sparseWidth(401) = np.sparseWidth(404) = np.isTime∘isSpace(4) = rule.free(5) = rule.free(7) = heat.signal(20) = kin.combinations∘dootKin(1, 2, 1) = tesla.resonance∘period(1, 3) = tesla.resonance∘period(3, 1) = tesla.sync∘turns(3, 2) = yi.change(3, 8) = yi.change(8, 3) = yi.complement(52) = yi.inverse(52) · live · 210/210 perspectives · untested",
-   "receipt": "cbce3793-4377-872f-bfe6-99e9dd6d8007"
+   "value": "holo.proofDepth(400) = holo.proofDepth(401) = holo.proofDepth(404) = np.isSpace(400) = np.isSpace(401) = np.isSpace(404) = np.sparseWidth(72) = rule.free(1) = rule.free(11) = rule.free(14) = rule.free(16) = kin.bits(1) = kin.digitalRoot(27) = kin.digitalRoot(72) = kin.bits∘digitalRoot(1) = tesla.field(3, 3) = tesla.windings(3, 3) = tesla.resonance∘period(1, 2) = tesla.resonance∘period(2, 1) = yi.change(1, 8) = yi.change(8, 1) = yi.figures∘change(3, 1) · live · untested (no test for proofDepth, isSpace, sparseWidth, digitalRoot)",
+   "receipt": "8e2834aa-8340-854d-a6f7-4c59bd9d50c1"
   },
   {
-   "name": "heat × kin × np × rule × tesla × yi = 13",
+   "name": "clay × cross × kin × rule × tesla × yi = 12",
    "pass": false,
-   "value": "np.isTime∘sparseWidth(4) = rule.free(3) = rule.free(6) = rule.nibbles(2) = rule.free∘free(4) = heat.signal(18) = kin.dreamspellDrift(52) = kin.pillar(2, 1) = kin.pillar(3, 2) = kin.pillar(4, 3) = tesla.quarter∘period(1) = tesla.resonance∘period(2, 2) = tesla.turns∘earth(1, 3) = yi.change(5, 8) = yi.change(8, 5) = yi.withYang∘change(2, 2) · live · 240/240 perspectives · untested",
-   "receipt": "c6776dfc-9032-8273-893b-56755e4cc89e"
-  },
-  {
-   "name": "Qpu.Mint × kin × np × rule × tesla × yi = 15",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(6, 2) = Qpu.Mint.chooseOf(6, 4) = np.isTime∘subsetSum(3, 2) = rule.cap() = rule.nibbles(18) = rule.cap∘cap() = rule.compositions∘cap(1) = kin.period∘dreamspellDrift(3) = tesla.field(3, 5) = tesla.field(5, 3) = tesla.sync(1, 8) = tesla.windings(3, 5) = yi.change(7, 8) = yi.change(8, 7) = yi.withYang(2) = yi.withYang(4) · live · 240/240 perspectives · untested",
-   "receipt": "d40d927b-5097-881b-8738-58f9f93911a3"
+   "value": "cross.medSecureWithQSec(3, 2) = cross.medSecureWithQSec(6, 1) = cross.medSecureWithQSec∘medSecureWithQSec(3, 1) = clay.hodge(6) = clay.hodge∘hodge(3) = rule.over∘free(1) = rule.over∘free(2) = rule.over∘free(3) = rule.over∘free(4) = kin.seal(72) = kin.tone(116) = kin.combinations∘dootKin(1, 2, 2) = kin.combinations∘tone(1) = tesla.field(2, 6) = tesla.field(3, 4) = tesla.field(4, 3) = tesla.field(6, 2) = yi.change(4, 8) = yi.change(8, 4) = yi.withYang∘change(2, 3) · live · untested (no test for medSecureWithQSec, hodge, tone, dootKin, withYang)",
+   "receipt": "91820ce6-d8d3-86c7-81ee-0d9bee303eb6"
   },
   {
    "name": "clay × heat × kin × np × tesla × yi = 18",
    "pass": false,
-   "value": "clay.hodge(9) = np.sparseWidth(40101) = np.isTime∘subsetSum(3, 3) = heat.signal(13) = kin.dreamspellDrift(72) = tesla.field(3, 6) = tesla.field(6, 3) = tesla.windings(3, 6) = tesla.windings(6, 3) = yi.inverse∘change(2, 2) · live · 90/90 perspectives · untested",
-   "receipt": "f53daead-5b5a-83c9-be47-79fd5c376add"
+   "value": "clay.hodge(9) = np.isTime∘subsetSum(3, 3) = heat.signal(13) = kin.dreamspellDrift(72) = tesla.field(3, 6) = tesla.field(6, 3) = tesla.windings(3, 6) = tesla.windings(6, 3) = yi.inverse∘change(2, 2) · live · untested (no test for hodge, isTime, subsetSum, dreamspellDrift)",
+   "receipt": "21f3a612-437c-8ce8-a795-b0d04a3bc1c3"
+  },
+  {
+   "name": "Qpu.Mint × clay × cross × kin × tesla × yi = 20",
+   "pass": false,
+   "value": "Qpu.Mint.chooseOf(6, 3) = cross.medSecureWithQSec(5, 2) = clay.hodge(10) = kin.kin∘seal(1, 2) = kin.kin∘seal(1, 3) = kin.kin∘seal(2, 3) = kin.period∘seal(3) = tesla.field(4, 5) = tesla.field(5, 4) = tesla.sync(1, 6) = tesla.windings(4, 5) = yi.inverse(10) = yi.nuclear(8) = yi.nuclear(9) = yi.withYang(3) · live · untested (no test for medSecureWithQSec, hodge, withYang)",
+   "receipt": "ee530ce7-ca83-8cd3-ad30-a6db075f0a3f"
   },
   {
    "name": "Qpu.Lattice × Qpu.Mint × clay × cross × tesla × yi = 28",
    "pass": false,
-   "value": "Qpu.Mint.chooseOf(8, 2) = Qpu.Mint.chooseOf(8, 6) = Qpu.Mint.mintOf∘chooseOf(3, 2) = Qpu.Lattice.plane() = Qpu.Lattice.n∘plane() = Qpu.Lattice.seed∘plane() = Qpu.Lattice.coins∘plane() = cross.medSecureWithQSec(7, 2) = clay.hodge(14) = tesla.field(4, 7) = tesla.field(7, 4) = tesla.windings(4, 7) = tesla.windings(7, 4) = yi.inverse(14) · live · 182/182 perspectives · untested",
-   "receipt": "c6bbe058-8764-86c9-a5fc-bd00028025c5"
+   "value": "Qpu.Mint.chooseOf(8, 2) = Qpu.Mint.chooseOf(8, 6) = Qpu.Mint.mintOf∘chooseOf(3, 2) = Qpu.Lattice.plane() = Qpu.Lattice.n∘plane() = Qpu.Lattice.seed∘plane() = Qpu.Lattice.coins∘plane() = cross.medSecureWithQSec(7, 2) = clay.hodge(14) = tesla.field(4, 7) = tesla.field(7, 4) = tesla.windings(4, 7) = tesla.windings(7, 4) = yi.inverse(14) · live · untested (no test for medSecureWithQSec, hodge)",
+   "receipt": "c3b60b73-c9a8-8518-8064-09fc8ad54f0e"
   },
   {
-   "name": "Qpu.Mint × clay × cross × kin × tesla × yi = 56",
+   "name": "clay × holo × kin × np × tesla × yi = 30",
    "pass": false,
-   "value": "Qpu.Mint.chooseOf(8, 3) = Qpu.Mint.chooseOf(8, 5) = Qpu.Mint.mintOf∘chooseOf(3, 3) = cross.medSecureWithQSec(7, 3) = clay.hodge(28) = kin.dootKin(4, 1, 1) = kin.dootKin(5, 2, 1) = kin.period∘pillar(2, 1) = kin.vortex∘dootKin(2, 1, 1) = tesla.field(7, 8) = tesla.field(8, 7) = tesla.windings(7, 8) = tesla.windings(8, 7) = yi.complement(7) = yi.inverse(7) · live · 210/210 perspectives · untested",
-   "receipt": "67bde439-0f66-82a2-a599-fd6306966337"
+   "value": "clay.hodge(15) = holo.proofDepth(662607015) = np.isSpace(662607015) = kin.period∘pillar(2, 3) = tesla.field(5, 6) = tesla.field(6, 5) = tesla.sync(1, 4) = tesla.sync(2, 8) = yi.nuclear(12) = yi.nuclear(13) · live · untested (no test for hodge, proofDepth, isSpace, pillar)",
+   "receipt": "db6cb839-9f3b-8450-b152-113d901d62ab"
   },
   {
    "name": "Qpu.Mint × cal × cross × signal × tesla × yi = 128",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(7) = cross.medSecureWithQSec(1, 7) = cross.medSecureWithQSec(2, 6) = cross.medSecureWithQSec(4, 5) = cross.medSecureWithQSec(8, 4) = cal.gatesPrecessed∘dayPer(1) = cal.gatesPrecessed∘dayPer(2) = cal.gatesPrecessed∘dayPer(3) = cal.gatesPrecessed∘dayPer(4) = signal.keyspace(7) = tesla.schumann∘period(1) = yi.figures(7) · live · 132/132 perspectives · untested",
-   "receipt": "9f872d16-68aa-8e58-8d6f-bc1964030342"
+   "value": "Qpu.Mint.mintOf(7) = cross.medSecureWithQSec(1, 7) = cross.medSecureWithQSec(2, 6) = cross.medSecureWithQSec(4, 5) = cross.medSecureWithQSec(8, 4) = cal.gatesPrecessed∘dayPer(1) = cal.gatesPrecessed∘dayPer(2) = cal.gatesPrecessed∘dayPer(3) = cal.gatesPrecessed∘dayPer(4) = signal.keyspace(7) = tesla.schumann∘period(1) = yi.figures(7) · live · untested (no test for medSecureWithQSec, gatesPrecessed, dayPer, keyspace)",
+   "receipt": "4855ea00-3c4d-8689-8ee2-7e41ea179f4f"
   },
   {
    "name": "Qpu.Mint × cross × kin × np × signal × yi = 1024",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(10) = cross.medSecureWithQSec(4, 8) = cross.medSecureWithQSec(8, 7) = signal.keyspace(10) = np.isTime(4) = np.sparseWidth∘isTime(2) = np.sparseWidth∘isTime(3) = kin.combinations∘dreamspellDrift(2) = yi.figures(10) = yi.nuclear∘figures(4) · live · 90/90 perspectives · untested",
-   "receipt": "3985d7c0-0a62-869b-94eb-4f29d20b5fb4"
+   "value": "Qpu.Mint.mintOf(10) = cross.medSecureWithQSec(4, 8) = cross.medSecureWithQSec(8, 7) = signal.keyspace(10) = np.isTime(4) = np.sparseWidth∘isTime(2) = np.sparseWidth∘isTime(3) = kin.combinations∘dreamspellDrift(2) = yi.figures(10) = yi.nuclear∘figures(4) · live · untested (no test for medSecureWithQSec, keyspace, isTime, sparseWidth, dreamspellDrift)",
+   "receipt": "523e4bba-8e90-8389-8431-74c896c83412"
+  },
+  {
+   "name": "kin × np × rule × tesla × yi = 11",
+   "pass": false,
+   "value": "np.sparseWidth(400) = np.sparseWidth(401) = np.sparseWidth(404) = np.isTime∘isSpace(4) = rule.free(5) = rule.free(7) = kin.seal(31) = kin.combinations∘dootKin(1, 2, 1) = tesla.resonance∘period(1, 3) = tesla.resonance∘period(3, 1) = tesla.sync∘turns(3, 2) = yi.change(3, 8) = yi.change(8, 3) = yi.nuclear(6) = yi.nuclear(7) · live · untested (no test for sparseWidth, isTime, isSpace, dootKin)",
+   "receipt": "2c12b246-ceef-80db-88de-a34fc0509577"
+  },
+  {
+   "name": "kin × np × rule × tesla × yi = 13",
+   "pass": false,
+   "value": "np.isTime∘sparseWidth(4) = rule.free(3) = rule.free(6) = rule.nibbles(2) = rule.free∘free(4) = kin.pillar(2, 1) = kin.pillar(3, 2) = kin.pillar(4, 3) = kin.pillar(5, 4) = tesla.quarter∘period(1) = tesla.resonance∘period(2, 2) = tesla.turns∘earth(1, 3) = yi.change(5, 8) = yi.change(8, 5) = yi.withYang∘change(2, 2) · live · untested (no test for isTime, sparseWidth, pillar, earth, withYang)",
+   "receipt": "689b293f-94d6-8225-885c-5c8a6356a3dc"
   },
   {
    "name": "hd × heat × kin × tesla × yi = 17",
    "pass": false,
-   "value": "hd.gate(42) = hd.gate(52) = hd.gate(72) = heat.signal(14) = kin.bits(2) = kin.bits∘dootKin(2, 2, 2) = kin.bits∘seal(2) = kin.digitalRoot∘bits(2) = tesla.sync∘turns(2, 2) = yi.inverse∘change(2, 1) · live · 90/90 perspectives · untested",
-   "receipt": "534c65bf-0bcc-8ddf-bc6d-df661cf8f5e1"
-  },
-  {
-   "name": "clay × crypt × heat × kin × signal = 26",
-   "pass": false,
-   "value": "clay.hodge(13) = crypt.curveClassicalBits(52) = crypt.symmetricQuantumBits(52) = signal.siftedBits(52) = heat.signal(9) = heat.signal∘coherence(3, 2) = kin.bits(3) = kin.pillar(3, 1) = kin.pillar(4, 2) = kin.pillar(5, 3) · live · 90/90 perspectives · untested",
-   "receipt": "61aa77d4-2384-87c7-a59a-2e400d2a52aa"
+   "value": "hd.gate(72) = heat.signal(14) = kin.bits(2) = kin.bits∘dootKin(2, 2, 2) = kin.bits∘seal(2) = kin.digitalRoot∘bits(2) = tesla.sync∘turns(2, 2) = yi.inverse∘change(2, 1) · live · untested (no test for dootKin, digitalRoot)",
+   "receipt": "048ae866-c11f-8462-af92-cdb450cf56cb"
   },
   {
    "name": "cal × heat × rule × signal × tesla = 27",
    "pass": false,
-   "value": "cal.gregorianDrift(1) = cal.coin∘gregorianDrift(1) = cal.coin∘gregorianDrift(2) = cal.coin∘gregorianDrift(3) = signal.keyBits(72) = rule.families() = rule.cap∘families() = rule.compositions∘families(1) = rule.compositions∘families(2) = heat.signal∘cooling(3, 3) = heat.signal∘ways(3, 3) = tesla.field∘field(3, 3) = tesla.field∘windings(3, 3) = tesla.quarter∘period(2) = tesla.turns∘earth(2, 3) · live · 210/210 perspectives · untested",
-   "receipt": "e1ef687d-7ad5-8ee2-9ae7-246f1728cc1e"
+   "value": "cal.gregorianDrift(1) = cal.coin∘gregorianDrift(1) = cal.coin∘gregorianDrift(2) = cal.coin∘gregorianDrift(3) = signal.keyBits(72) = rule.families() = rule.cap∘families() = rule.compositions∘families(1) = rule.compositions∘families(2) = heat.signal∘cooling(3, 3) = heat.signal∘ways(3, 3) = tesla.field∘field(3, 3) = tesla.field∘windings(3, 3) = tesla.quarter∘period(2) = tesla.turns∘earth(2, 3) · live · untested (no test for gregorianDrift, keyBits, compositions, cooling, earth)",
+   "receipt": "4ce00f42-3413-89ca-94ff-9a414fc8aa91"
+  },
+  {
+   "name": "crypt × rule × signal × tesla × yi = 36",
+   "pass": false,
+   "value": "crypt.curveClassicalBits(72) = crypt.symmetricQuantumBits(72) = signal.siftedBits(72) = rule.compositions(1) = rule.compositions(9) = rule.compositions(11) = rule.compositions(14) = tesla.field(6, 6) = tesla.windings(6, 6) = yi.complement(27) = yi.inverse(9) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits, compositions)",
+   "receipt": "bf4edfc0-6750-8907-90c6-22e48d0cea18"
   },
   {
    "name": "clay × cross × heat × tesla × yi = 40",
    "pass": false,
-   "value": "cross.medSecureWithQSec(5, 3) = clay.hodge(20) = heat.signal∘cooling(2, 3) = heat.signal∘cooling(3, 2) = heat.signal∘ways(2, 3) = heat.signal∘ways(3, 2) = tesla.field(5, 8) = tesla.field(8, 5) = tesla.sync(2, 6) = tesla.windings(5, 8) = yi.inverse(5) · live · 110/110 perspectives · untested",
-   "receipt": "3ce1a705-4c9f-82ae-8455-dd46057e24d5"
+   "value": "cross.medSecureWithQSec(5, 3) = clay.bsd(184) = heat.signal∘cooling(2, 3) = heat.signal∘cooling(3, 2) = heat.signal∘ways(2, 3) = heat.signal∘ways(3, 2) = tesla.field(5, 8) = tesla.field(8, 5) = tesla.sync(2, 6) = tesla.windings(5, 8) = yi.inverse(5) · live · untested (no test for medSecureWithQSec, bsd, cooling)",
+   "receipt": "b8e08ca5-71bd-87c8-9dfb-9a080b61fccd"
   },
   {
    "name": "cal × clay × kin × merkaba × yi = 54",
    "pass": false,
-   "value": "cal.gregorianDrift(2) = cal.lunarDrift(5) = cal.coin∘gregorianDrift(4) = clay.bsd(145) = merkaba.flows(5) = kin.dootKin(1, 3, 4) = kin.dootKin(2, 4, 4) = kin.dootKin(3, 5, 4) = kin.pillar(1, 7) = yi.complement(9) · live · 90/90 perspectives · untested",
-   "receipt": "45b53385-f7a8-80c2-b519-72aee6101fbe"
+   "value": "cal.gregorianDrift(2) = cal.lunarDrift(5) = cal.coin∘gregorianDrift(4) = clay.hodge(27) = merkaba.flows(5) = kin.dootKin(1, 3, 4) = kin.dootKin(2, 4, 4) = kin.dootKin(3, 5, 4) = kin.pillar(1, 7) = yi.complement(9) = yi.inverse(27) · live · untested (no test for gregorianDrift, lunarDrift, hodge, dootKin, pillar)",
+   "receipt": "79bb6a96-25a0-8663-b8c0-d1b0e1a79d5e"
+  },
+  {
+   "name": "Qpu.Mint × cross × kin × tesla × yi = 56",
+   "pass": false,
+   "value": "Qpu.Mint.chooseOf(8, 3) = Qpu.Mint.chooseOf(8, 5) = Qpu.Mint.mintOf∘chooseOf(3, 3) = cross.medSecureWithQSec(7, 3) = kin.dootKin(4, 1, 1) = kin.dootKin(5, 2, 1) = kin.period∘pillar(2, 1) = kin.vortex∘dootKin(2, 1, 1) = tesla.field(7, 8) = tesla.field(8, 7) = tesla.windings(7, 8) = tesla.windings(8, 7) = yi.complement(7) = yi.inverse(7) · live · untested (no test for medSecureWithQSec, dootKin, pillar)",
+   "receipt": "15f31e48-4e1e-8808-a0f6-e25cb3bd1dd4"
   },
   {
    "name": "cross × heat × kin × path × tesla = 80",
    "pass": false,
-   "value": "cross.medSecureWithQSec(5, 4) = heat.signal∘cooling(1, 3) = heat.signal∘ways(1, 3) = kin.pillar(1, 5) = kin.pillar(2, 6) = kin.pillar(3, 7) = kin.pillar(4, 8) = path.anomalyToResponse() = path.allPaths∘anomalyToResponse() = path.anomalyToResponse∘anomalyToResponse() = path.dataFlowCompressML∘anomalyToResponse() = tesla.sync(4, 6) = tesla.slip∘earth(2, 1) = tesla.turns∘earth(2, 1) · live · 182/182 perspectives · untested",
-   "receipt": "98558f49-36fa-8bef-a407-39025263f612"
-  },
-  {
-   "name": "crypt × kin × rule × signal × tesla = 100",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(200) = crypt.symmetricQuantumBits(200) = signal.siftedBits(200) = rule.compositions(10) = kin.dreamspellDrift(400) = kin.dreamspellDrift(401) = kin.enneagram∘kin(1, 1) = kin.enneagram∘kin(1, 2) = tesla.earth(400) = tesla.earth(401) = tesla.sync(5, 6) = tesla.earth∘period(4) · live · 132/132 perspectives · untested",
-   "receipt": "205af2fb-eb5b-809b-9f2c-82b6e35dc9b5"
+   "value": "cross.medSecureWithQSec(5, 4) = heat.signal∘cooling(1, 3) = heat.signal∘ways(1, 3) = kin.pillar(1, 5) = kin.pillar(2, 6) = kin.pillar(3, 7) = kin.pillar(4, 8) = path.anomalyToResponse() = path.allPaths∘anomalyToResponse() = path.anomalyToResponse∘anomalyToResponse() = path.dataFlowCompressML∘anomalyToResponse() = tesla.sync(4, 6) = tesla.slip∘earth(2, 1) = tesla.turns∘earth(2, 1) · live · untested (no test for medSecureWithQSec, cooling, pillar, anomalyToResponse, allPaths, dataFlowCompressML, earth)",
+   "receipt": "5c4f9a2e-f3c4-8b4c-96ec-ba943583a34e"
   },
   {
    "name": "heat × kin × tesla × yi = 19",
    "pass": false,
-   "value": "heat.signal(12) = heat.signal∘coherence(3, 3) = kin.pillar∘seal(1, 2) = kin.pillar∘seal(2, 3) = tesla.resonance∘period(3, 3) = yi.inverse∘change(2, 3) · live · 30/30 perspectives · untested",
-   "receipt": "c557d9c2-156c-8ed3-9e27-462a63195970"
+   "value": "heat.signal(12) = heat.signal∘coherence(3, 3) = kin.pillar∘seal(1, 2) = kin.pillar∘seal(2, 3) = tesla.resonance∘period(3, 3) = yi.inverse∘change(2, 3) · live · untested (no test for coherence, pillar)",
+   "receipt": "afb32506-d81b-8a87-a710-21daafdd839c"
   },
   {
-   "name": "clay × kin × tesla × yi = 30",
+   "name": "clay × holo × np × yi = 22",
    "pass": false,
-   "value": "clay.hodge(15) = kin.dreamspellDrift(123) = kin.period∘pillar(2, 3) = tesla.field(5, 6) = tesla.field(6, 5) = tesla.sync(1, 4) = tesla.sync(2, 8) = yi.nuclear(12) = yi.nuclear(13) · live · 72/72 perspectives · untested",
-   "receipt": "5e293c8c-43b9-8dec-9d4b-3890d9ce8bce"
+   "value": "clay.bsd(130) = clay.hodge(11) = holo.proofDepth(2301668) = holo.proofDepth(2745751) = np.isSpace(2301668) = np.isSpace(2745751) = yi.withYang∘change(3, 2) · live · untested (no test for bsd, hodge, proofDepth, isSpace, withYang)",
+   "receipt": "e609a58f-c7ee-851c-915e-feabeb189cd9"
+  },
+  {
+   "name": "heat × kin × np × yi = 23",
+   "pass": false,
+   "value": "np.sparseWidth(1380649) = np.sparseWidth(1913190) = np.sparseWidth(2079006) = heat.signal(10) = kin.pillar∘pillar(3, 2) = yi.withYang∘change(3, 3) · live · untested (no test for sparseWidth, pillar, withYang)",
+   "receipt": "5b80dfa9-f120-8899-86ad-87bffb9a2c48"
   },
   {
    "name": "Qpu.Mint × hd × tesla × yi = 35",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(7, 3) = Qpu.Mint.chooseOf(7, 4) = hd.cells∘gate(1) = hd.cells∘gate(2) = hd.cells∘gate(3) = hd.cells∘gate(4) = tesla.field(5, 7) = tesla.field(7, 5) = tesla.windings(5, 7) = tesla.windings(7, 5) = yi.complement(28) = yi.inverse∘change(1, 3) · live · 132/132 perspectives · untested",
-   "receipt": "a24fb03e-2ffc-872e-b563-6f4ecf1e1941"
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(7, 3) = Qpu.Mint.chooseOf(7, 4) = hd.cells∘gate(1) = hd.cells∘gate(2) = hd.cells∘gate(3) = hd.cells∘gate(4) = tesla.field(5, 7) = tesla.field(7, 5) = tesla.windings(5, 7) = tesla.windings(7, 5) = yi.inverse∘change(1, 3) · live · tested in src/quantum/processing/unit/combinatorial.test.ts, scripts/leads.test.mjs, src/families/hd/test.ts",
+   "receipt": "fcf0ebd3-2706-84d4-8314-bf40f5442c16"
   },
   {
    "name": "cross × kin × tesla × yi = 48",
    "pass": false,
-   "value": "cross.medSecureWithQSec(3, 4) = cross.medSecureWithQSec(6, 3) = cross.medSecureWithQSec∘medSecureWithQSec(3, 2) = kin.bits∘pillar(3, 2) = tesla.field(6, 8) = tesla.field(8, 6) = tesla.windings(6, 8) = tesla.windings(8, 6) = yi.complement(15) = yi.inverse(3) = yi.change∘inverse(1, 2) = yi.change∘inverse(2, 1) · live · 132/132 perspectives · untested",
-   "receipt": "6907fa1e-6fe8-8b9b-bf4b-61afe9933972"
+   "value": "cross.medSecureWithQSec(3, 4) = cross.medSecureWithQSec(6, 3) = cross.medSecureWithQSec∘medSecureWithQSec(3, 2) = kin.bits∘pillar(3, 2) = tesla.field(6, 8) = tesla.field(8, 6) = tesla.windings(6, 8) = tesla.windings(8, 6) = yi.complement(15) = yi.inverse(3) = yi.change∘inverse(1, 2) = yi.change∘inverse(2, 1) · live · untested (no test for medSecureWithQSec, pillar)",
+   "receipt": "8866b74e-e097-8f1e-b473-0266fda38d68"
   },
   {
    "name": "cal × kin × tesla × yi = 50",
    "pass": false,
-   "value": "cal.precession(1) = cal.coin∘precession(1) = cal.coin∘precession(2) = cal.coin∘precession(3) = kin.dreamspellDrift(200) = kin.bits∘pillar(2, 3) = kin.combinations∘pillar(2, 2) = tesla.earth∘period(2) = tesla.turns∘quarter(2, 3) = yi.complement(13) = yi.inverse∘change(3, 2) · live · 110/110 perspectives · untested",
-   "receipt": "f23319cc-d0b6-8d49-98cf-eafc5ebfd129"
+   "value": "cal.precession(1) = cal.coin∘precession(1) = cal.coin∘precession(2) = cal.coin∘precession(3) = kin.bits∘pillar(2, 3) = kin.combinations∘pillar(2, 2) = tesla.earth∘period(2) = tesla.turns∘quarter(2, 3) = yi.complement(13) = yi.inverse∘change(3, 2) · live · untested (no test for pillar, earth)",
+   "receipt": "d3d25694-01ab-8c6c-84b6-1767091552a6"
+  },
+  {
+   "name": "crypt × kin × signal × yi = 58",
+   "pass": false,
+   "value": "crypt.curveClassicalBits(116) = crypt.symmetricQuantumBits(116) = signal.siftedBits(116) = kin.dootKin(4, 1, 3) = kin.dootKin(5, 2, 3) = kin.dootKin∘pillar(1, 2, 1) = yi.complement(5) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits, dootKin, pillar)",
+   "receipt": "d760d03f-d35a-88d9-8c75-75ac38f14f58"
   },
   {
    "name": "heat × kin × tesla × yi = 60",
    "pass": false,
-   "value": "heat.signal∘cooling(2, 2) = heat.signal∘ways(2, 2) = kin.bits(7) = kin.dootKin(4, 1, 5) = kin.dootKin(5, 2, 5) = kin.period(3) = tesla.sync(1, 2) = tesla.sync(2, 4) = tesla.sync(3, 6) = tesla.sync(4, 8) = yi.complement(3) = yi.inverse(15) = yi.change∘complement(1, 2) = yi.change∘complement(2, 1) · live · 182/182 perspectives · untested",
-   "receipt": "40301d2e-59f6-86ac-a171-85c38fb65dcc"
+   "value": "heat.signal∘cooling(2, 2) = heat.signal∘ways(2, 2) = kin.bits(7) = kin.dootKin(4, 1, 5) = kin.dootKin(5, 2, 5) = kin.period(3) = tesla.sync(1, 2) = tesla.sync(2, 4) = tesla.sync(3, 6) = tesla.sync(4, 8) = yi.complement(3) = yi.inverse(15) = yi.change∘complement(1, 2) = yi.change∘complement(2, 1) · live · untested (no test for cooling, dootKin)",
+   "receipt": "38ae90ea-8466-87e7-9c3e-5f21a088310c"
+  },
+  {
+   "name": "cal × crypt × kin × signal = 65",
+   "pass": false,
+   "value": "cal.lunarDrift(6) = crypt.curveClassicalBits(130) = crypt.symmetricQuantumBits(130) = signal.siftedBits(130) = kin.pillar(6, 1) = kin.pillar(7, 2) = kin.pillar(8, 3) = kin.kin∘dreamspellDrift(1, 2) · live · untested (no test for lunarDrift, curveClassicalBits, symmetricQuantumBits, siftedBits, pillar, dreamspellDrift)",
+   "receipt": "8623ddb5-1ae4-8815-bcbe-bbd610a4d0c0"
+  },
+  {
+   "name": "crypt × kin × signal × tesla = 92",
+   "pass": false,
+   "value": "crypt.curveClassicalBits(184) = crypt.symmetricQuantumBits(184) = signal.siftedBits(184) = kin.combinations∘dootKin(2, 2, 2) = tesla.period∘resonance(1, 3) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits, dootKin)",
+   "receipt": "b10508fa-8035-8dd7-a836-002e7f500cfc"
   },
   {
    "name": "cross × kin × merkaba × tesla = 112",
    "pass": false,
-   "value": "cross.medSecureWithQSec(7, 4) = merkaba.flows(6) = merkaba.flows∘flows(3) = kin.bits(13) = kin.pillar∘bits(2, 1) = kin.pillar∘bits(3, 2) = tesla.slip∘quarter(3, 1) = tesla.turns∘quarter(3, 2) · live · 56/56 perspectives · untested",
-   "receipt": "82f4e210-b210-8dca-8ea7-12614f23d2fb"
-  },
-  {
-   "name": "cal × heat × kin × tesla = 119",
-   "pass": false,
-   "value": "cal.lunarDrift(11) = heat.signal(2) = heat.cooling∘signal(2, 1) = heat.cooling∘signal(3, 2) = heat.signal∘coherence(1, 1) = kin.pillar(1, 2) = kin.pillar(2, 3) = kin.pillar(3, 4) = kin.pillar(4, 5) = tesla.quarter(628) · live · 90/90 perspectives · untested",
-   "receipt": "90a90e87-c668-8574-9406-4a113a3ffdf8"
+   "value": "cross.medSecureWithQSec(7, 4) = merkaba.flows(6) = merkaba.flows∘flows(3) = kin.bits(13) = kin.pillar∘bits(2, 1) = kin.pillar∘bits(3, 2) = tesla.slip∘quarter(3, 1) = tesla.turns∘quarter(3, 2) · live · untested (no test for medSecureWithQSec, pillar)",
+   "receipt": "03bb3ddc-29dc-895b-b64a-279f2b77d3dc"
   },
   {
    "name": "cal × heat × kin × tesla = 120",
    "pass": false,
-   "value": "cal.sarosShift(1) = cal.sarosShift(4) = cal.sarosShift(7) = cal.sarosShift(10) = heat.signal∘cooling(1, 2) = heat.signal∘ways(1, 2) = kin.bits(14) = tesla.sync(2, 2) = tesla.sync(4, 4) = tesla.sync(6, 6) = tesla.sync(8, 8) · live · 110/110 perspectives · untested",
-   "receipt": "c42dcc58-f378-8cf2-ac06-4d5089a3a21a"
+   "value": "cal.sarosShift(1) = cal.sarosShift(4) = cal.sarosShift(7) = cal.sarosShift(10) = heat.signal∘cooling(1, 2) = heat.signal∘ways(1, 2) = kin.bits(14) = tesla.sync(2, 2) = tesla.sync(4, 4) = tesla.sync(6, 6) = tesla.sync(8, 8) · live · untested (no test for sarosShift, cooling)",
+   "receipt": "4cb7f26a-3958-8635-9b97-35b9b5234a86"
   },
   {
    "name": "crypt × heat × signal × tesla = 200",
    "pass": false,
-   "value": "crypt.curveClassicalBits(400) = crypt.symmetricQuantumBits(400) = signal.siftedBits(400) = heat.temperature(1, 5) = tesla.slip(5, 4) = tesla.turns(5, 1) · live · 30/30 perspectives · untested",
-   "receipt": "01adc567-4262-82c0-b592-f765c76250f8"
+   "value": "crypt.curveClassicalBits(400) = crypt.symmetricQuantumBits(400) = signal.siftedBits(400) = heat.temperature(1, 5) = tesla.slip(5, 4) = tesla.turns(5, 1) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "receipt": "9a1d1fc6-b179-8946-9308-b9fdc67b858b"
   },
   {
    "name": "Qpu.Mint × cross × signal × yi = 256",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(8) = Qpu.Mint.mintOf∘mintOf(3) = cross.medSecureWithQSec(1, 8) = cross.medSecureWithQSec(2, 7) = cross.medSecureWithQSec(4, 6) = cross.medSecureWithQSec(8, 5) = signal.keyspace(8) = signal.keyspace∘keyspace(3) = yi.figures(8) = yi.figures∘figures(3) = yi.inverse∘figures(4) · live · 110/110 perspectives · untested",
-   "receipt": "d2e9994e-ecb5-81fc-8f3e-48f6442f463a"
+   "value": "Qpu.Mint.mintOf(8) = Qpu.Mint.mintOf∘mintOf(3) = cross.medSecureWithQSec(1, 8) = cross.medSecureWithQSec(2, 7) = cross.medSecureWithQSec(4, 6) = cross.medSecureWithQSec(8, 5) = signal.keyspace(8) = signal.keyspace∘keyspace(3) = yi.figures(8) = yi.figures∘figures(3) = yi.inverse∘figures(4) · live · untested (no test for medSecureWithQSec, keyspace)",
+   "receipt": "649df153-0588-84c9-ba3d-30c531c4160b"
   },
   {
    "name": "Qpu.Mint × cross × signal × yi = 512",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(9) = cross.medSecureWithQSec(2, 8) = cross.medSecureWithQSec(4, 7) = cross.medSecureWithQSec(8, 6) = signal.keyspace(9) = yi.figures(9) · live · 30/30 perspectives · untested",
-   "receipt": "b2f2831d-fe74-8705-99ee-eebc89907bbb"
-  },
-  {
-   "name": "clay × hd × heat × tesla = 800",
-   "pass": false,
-   "value": "hd.mean(200) = clay.hodge(400) = heat.temperature(4, 5) = tesla.slip(5, 1) = tesla.turns(5, 4) · live · 20/20 perspectives · untested",
-   "receipt": "c2af989d-82ca-8bbe-9e52-90fd6a43fba3"
+   "value": "Qpu.Mint.mintOf(9) = cross.medSecureWithQSec(2, 8) = cross.medSecureWithQSec(4, 7) = cross.medSecureWithQSec(8, 6) = signal.keyspace(9) = yi.figures(9) · live · untested (no test for medSecureWithQSec, keyspace)",
+   "receipt": "0b2d6772-e488-8440-8e1a-123164e9d42c"
   },
   {
    "name": "Qpu.Mint × cross × signal × yi = 2048",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(11) = cross.medSecureWithQSec(8, 8) = signal.keyspace(11) = yi.figures(11) · live · 12/12 perspectives · untested",
-   "receipt": "6733b793-2e96-8a9b-8204-4ba2864a5859"
+   "value": "Qpu.Mint.mintOf(11) = cross.medSecureWithQSec(8, 8) = signal.keyspace(11) = yi.figures(11) · live · untested (no test for medSecureWithQSec, keyspace)",
+   "receipt": "e96649f4-49de-812e-a1ce-d24bdb3f73d6"
   },
   {
    "name": "Qpu.Mint × np × signal × yi = 32768",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(15) = signal.keyspace(15) = np.isTime(8) = yi.figures(15) = yi.withYang∘figures(2) = yi.withYang∘figures(4) · live · 30/30 perspectives · untested",
-   "receipt": "e39df24a-aec1-8f7e-99f9-4753f20342a8"
+   "value": "Qpu.Mint.mintOf(15) = signal.keyspace(15) = np.isTime(8) = yi.figures(15) = yi.withYang∘figures(2) = yi.withYang∘figures(4) · live · untested (no test for keyspace, isTime, withYang)",
+   "receipt": "a08b5808-72fa-863c-b39b-5782d72d203d"
   },
   {
    "name": "Qpu.Mint × kin × signal × yi = 65536",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(16) = Qpu.Mint.mintOf∘mintOf(4) = signal.keyspace(16) = signal.keyspace∘keyspace(4) = kin.combinations∘dreamspellDrift(3) = yi.figures(16) = yi.figures∘figures(4) = yi.inverse∘figures(2) · live · 56/56 perspectives · untested",
-   "receipt": "d635a9ed-e105-8c2e-ac59-369e20fea486"
-  },
-  {
-   "name": "clay × hd × yi = 22",
-   "pass": false,
-   "value": "hd.code(123) = clay.hodge(11) = yi.withYang∘change(3, 2) · live · 6/6 perspectives · untested",
-   "receipt": "52529be8-1b26-8b0b-9ddb-e31c5b371f3d"
-  },
-  {
-   "name": "heat × kin × yi = 23",
-   "pass": false,
-   "value": "heat.signal(10) = kin.pillar∘pillar(3, 2) = yi.withYang∘change(3, 3) · live · 6/6 perspectives · untested",
-   "receipt": "4abfb3df-f62f-8ec9-b3cb-c45b47e3678a"
+   "value": "Qpu.Mint.mintOf(16) = Qpu.Mint.mintOf∘mintOf(4) = signal.keyspace(16) = signal.keyspace∘keyspace(4) = kin.combinations∘dreamspellDrift(3) = yi.figures(16) = yi.figures∘figures(4) = yi.inverse∘figures(2) · live · untested (no test for keyspace, dreamspellDrift)",
+   "receipt": "93a48b5d-00d6-86a8-b446-0f733d76e305"
   },
   {
    "name": "Qpu.Physics × hd × tesla = 25",
    "pass": false,
-   "value": "Qpu.Physics.bcs∘gap(1) = Qpu.Physics.bcs∘gap(2) = Qpu.Physics.bcs∘gap(3) = Qpu.Physics.bcs∘gap(4) = hd.gate(1) = hd.gate(2) = hd.gate(3) = hd.gate(4) = tesla.field(5, 5) = tesla.period(40101) = tesla.windings(5, 5) = tesla.earth∘period(1) · live · 132/132 perspectives · untested",
-   "receipt": "725a5157-3aaf-841c-86a7-eac100375fe2"
+   "value": "Qpu.Physics.bcs∘gap(1) = Qpu.Physics.bcs∘gap(2) = Qpu.Physics.bcs∘gap(3) = Qpu.Physics.bcs∘gap(4) = hd.gate(1) = hd.gate(2) = hd.gate(3) = hd.gate(4) = tesla.field(5, 5) = tesla.windings(5, 5) = tesla.earth∘period(1) = tesla.turns∘quarter(1, 3) · live · untested (no test for bcs, earth)",
+   "receipt": "5e20fd7e-dc71-861a-ac7e-4d36d0c53cb5"
+  },
+  {
+   "name": "clay × heat × kin = 26",
+   "pass": false,
+   "value": "clay.bsd(116) = clay.hodge(13) = heat.signal(9) = heat.signal∘coherence(3, 2) = kin.bits(3) = kin.pillar(3, 1) = kin.pillar(4, 2) = kin.pillar(5, 3) · live · untested (no test for bsd, hodge, coherence, pillar)",
+   "receipt": "1dc225ea-4d2f-80b7-af7d-8d8329e23fbb"
   },
   {
    "name": "hd × heat × kin = 29",
    "pass": false,
-   "value": "hd.ut∘gate(1, 1) = hd.ut∘gate(1, 2) = hd.ut∘gate(1, 3) = hd.ut∘gate(2, 1) = heat.signal(8) = heat.signal∘coherence(2, 3) = kin.pillar∘dreamspellDrift(1, 2) = kin.pillar∘dreamspellDrift(2, 3) · live · 56/56 perspectives · untested",
-   "receipt": "e17ee93f-6776-829c-af69-881a401e2c8e"
-  },
-  {
-   "name": "heat × kin × yi = 34",
-   "pass": false,
-   "value": "heat.signal(7) = kin.bits(4) = kin.digitalRoot∘bits(4) = kin.seal∘bits(4) = kin.tone∘bits(4) = yi.inverse∘change(1, 2) · live · 30/30 perspectives · untested",
-   "receipt": "a6b01b3c-e6b5-8598-bde0-b98199b02805"
+   "value": "hd.code(130) = hd.ut∘gate(1, 1) = hd.ut∘gate(1, 2) = hd.ut∘gate(1, 3) = heat.signal(8) = heat.signal∘coherence(2, 3) = kin.dreamspellDrift(116) = kin.pillar∘dreamspellDrift(1, 2) = kin.pillar∘dreamspellDrift(2, 3) · live · untested (no test for coherence, dreamspellDrift, pillar)",
+   "receipt": "39656f68-0ed8-8bcb-91be-86beeb6e6771"
   },
   {
    "name": "cal × kin × yi = 43",
-   "pass": true,
-   "value": "cal.lunarDrift(4) = kin.bits(5) = kin.period∘pillar(2, 2) = kin.pillar∘pillar(1, 3) = yi.complement(20) = yi.withYang∘complement(3) · live · 30/30 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "b27b6a36-7da4-85fd-81c3-92d75c90ea24"
+   "pass": false,
+   "value": "cal.lunarDrift(4) = kin.bits(5) = kin.period∘pillar(2, 2) = kin.pillar∘pillar(1, 3) = yi.withYang∘complement(3) · live · untested (no test for lunarDrift, pillar, withYang)",
+   "receipt": "74e50ff4-c561-896f-b6c8-d3a885fdce5d"
   },
   {
    "name": "heat × kin × yi = 47",
-   "pass": true,
-   "value": "heat.signal(5) = kin.bits∘pillar(3, 3) = yi.complement(16) = yi.complement∘inverse(2) = yi.figures∘complement(4) = yi.inverse∘complement(2) · live · 30/30 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "da4eaeb9-900c-8ebe-9ddd-f0bbebc1d30e"
+   "pass": false,
+   "value": "heat.signal(5) = kin.bits∘pillar(3, 3) = yi.complement(16) = yi.complement∘inverse(2) = yi.figures∘complement(4) = yi.inverse∘complement(2) · live · untested (no test for pillar)",
+   "receipt": "fa542fd3-a235-8168-87a1-96e05d7677ed"
   },
   {
    "name": "hd × kin × yi = 51",
    "pass": false,
-   "value": "hd.gate(200) = kin.dootKin(1, 3, 1) = kin.dootKin(2, 4, 1) = kin.dootKin(3, 5, 1) = kin.crossed∘dootKin(1, 2, 1) = yi.complement(12) = yi.inverse∘change(3, 3) · live · 42/42 perspectives · untested",
-   "receipt": "48b6ecf7-8f53-8572-b0b6-a55f6b318416"
+   "value": "hd.gate(184) = kin.dootKin(1, 3, 1) = kin.dootKin(2, 4, 1) = kin.dootKin(3, 5, 1) = kin.crossed∘dootKin(1, 2, 1) = yi.complement(12) = yi.inverse∘change(3, 3) · live · untested (no test for dootKin)",
+   "receipt": "75fe6ff3-ccef-8062-84f2-cac9e9ca562b"
   },
   {
    "name": "kin × tesla × yi = 52",
    "pass": false,
-   "value": "kin.bits(6) = kin.dootKin(1, 3, 2) = kin.dootKin(2, 4, 2) = kin.dootKin(3, 5, 2) = tesla.schumann∘period(3) = yi.complement(11) = yi.inverse(11) · live · 42/42 perspectives · untested",
-   "receipt": "e8e54541-5d5a-81d8-bd39-85b7bc5214c5"
+   "value": "kin.bits(6) = kin.dootKin(1, 3, 2) = kin.dootKin(2, 4, 2) = kin.dootKin(3, 5, 2) = tesla.schumann∘period(3) = yi.complement(11) = yi.inverse(11) · live · untested (no test for dootKin)",
+   "receipt": "df097b01-d75e-83f3-83ef-743e9e0f9bf2"
   },
   {
    "name": "kin × tesla × yi = 53",
    "pass": false,
-   "value": "kin.dootKin(1, 3, 3) = kin.dootKin(2, 4, 3) = kin.dootKin(3, 5, 3) = tesla.quarter∘period(4) = yi.complement(10) = yi.complement∘nuclear(4) = yi.nuclear∘complement(4) · live · 42/42 perspectives · untested",
-   "receipt": "3ec63125-d2c0-801d-a382-3aac04442435"
+   "value": "kin.dootKin(1, 3, 3) = kin.dootKin(2, 4, 3) = kin.dootKin(3, 5, 3) = tesla.quarter∘period(4) = yi.complement(10) = yi.nuclear(27) = yi.complement∘nuclear(4) = yi.nuclear∘complement(4) · live · untested (no test for dootKin)",
+   "receipt": "989a1038-a6a6-81bf-b694-4bb8d4923cce"
   },
   {
    "name": "heat × kin × yi = 59",
    "pass": false,
-   "value": "heat.signal(4) = heat.signal∘coherence(1, 3) = heat.signal∘coherence(2, 1) = kin.dootKin(4, 1, 4) = kin.dootKin(5, 2, 4) = yi.complement(4) = yi.figures∘complement(2) = yi.lower∘complement(4) · live · 56/56 perspectives · untested",
-   "receipt": "60bb5a39-6ef5-8837-b4a6-ef39a1438fa9"
+   "value": "heat.signal(4) = heat.signal∘coherence(1, 3) = heat.signal∘coherence(2, 1) = kin.dootKin(4, 1, 4) = kin.dootKin(5, 2, 4) = yi.complement(4) = yi.figures∘complement(2) = yi.lower∘complement(4) · live · untested (no test for coherence, dootKin)",
+   "receipt": "3947d3ed-5724-8ad8-a25d-d35dad941f1b"
   },
   {
-   "name": "cal × kin × tesla = 65",
+   "name": "clay × kin × yi = 62",
    "pass": false,
-   "value": "cal.lunarDrift(6) = kin.pillar(6, 1) = kin.pillar(7, 2) = kin.pillar(8, 3) = kin.kin∘dreamspellDrift(1, 2) = tesla.earth(615) · live · 30/30 perspectives · untested",
-   "receipt": "6505f787-8e58-8f3c-b25e-3a7566f6fdec"
+   "value": "clay.hodge(31) = kin.bits∘dootKin(1, 1, 2) = yi.complement(1) = yi.inverse(31) = yi.change∘complement(2, 3) = yi.change∘complement(3, 2) · live · untested (no test for hodge, dootKin)",
+   "receipt": "e0618602-f9b7-88ca-8e95-a3516f710b13"
   },
   {
    "name": "cal × clay × kin = 76",
    "pass": false,
-   "value": "cal.lunarDrift(7) = clay.bsd(400) = kin.bits∘pillar(2, 1) = kin.period∘dootKin(1, 1, 1) · live · 12/12 perspectives · untested",
-   "receipt": "2b5367cc-5e35-8a52-9c92-f116cbe0e698"
+   "value": "cal.lunarDrift(7) = clay.bsd(400) = kin.bits∘pillar(2, 1) = kin.period∘dootKin(1, 1, 1) · live · untested (no test for lunarDrift, bsd, pillar, dootKin)",
+   "receipt": "947e4a05-0707-829a-ba7c-7baffbebe0a6"
+  },
+  {
+   "name": "kin × rule × tesla = 100",
+   "pass": false,
+   "value": "rule.compositions(10) = rule.compositions(13) = rule.free∘compositions(3) = rule.nibbles∘compositions(2) = kin.dreamspellDrift(400) = kin.dreamspellDrift(401) = kin.enneagram∘kin(1, 1) = kin.enneagram∘kin(1, 2) = tesla.earth(400) = tesla.earth(401) = tesla.sync(5, 6) = tesla.earth∘period(4) · live · untested (no test for compositions, dreamspellDrift, enneagram, earth)",
+   "receipt": "0d5d5a4c-7816-8d5d-b3a1-05552adbdb34"
+  },
+  {
+   "name": "cal × heat × kin = 119",
+   "pass": false,
+   "value": "cal.lunarDrift(11) = heat.signal(2) = heat.cooling∘signal(2, 1) = heat.cooling∘signal(3, 2) = heat.signal∘coherence(1, 1) = kin.pillar(1, 2) = kin.pillar(2, 3) = kin.pillar(3, 4) = kin.pillar(4, 5) · live · untested (no test for lunarDrift, cooling, coherence, pillar)",
+   "receipt": "3b090056-e464-893c-b326-30e189252c50"
   },
   {
    "name": "cal × heat × tesla = 125",
    "pass": false,
-   "value": "cal.metonicDrift(1) = cal.coin∘metonicDrift(1) = cal.coin∘metonicDrift(2) = cal.coin∘metonicDrift(3) = heat.temperature(1, 8) = tesla.slip(8, 7) = tesla.turns(8, 1) · live · 42/42 perspectives · untested",
-   "receipt": "7450d461-effa-8940-86cd-b9ecec2d91d0"
+   "value": "cal.metonicDrift(1) = cal.coin∘metonicDrift(1) = cal.coin∘metonicDrift(2) = cal.coin∘metonicDrift(3) = heat.temperature(1, 8) = tesla.slip(8, 7) = tesla.turns(8, 1) · live · untested (no test for metonicDrift)",
+   "receipt": "a4af9f82-d797-8bbd-96c5-2e55ce807ccf"
   },
   {
    "name": "cross × kin × tesla = 160",
    "pass": false,
-   "value": "cross.medSecureWithQSec(5, 5) = kin.dootKin(1, 2, 5) = kin.dootKin(2, 3, 5) = kin.dootKin(3, 4, 5) = kin.dootKin(4, 5, 5) = tesla.sync(8, 6) · live · 30/30 perspectives · untested",
-   "receipt": "01dbf69f-6212-87c9-afd7-f2bb0e8a4819"
-  },
-  {
-   "name": "hd × kin × rule = 207",
-   "pass": false,
-   "value": "hd.mean∘code(4) = rule.formulas() = rule.cap∘formulas() = rule.compositions∘formulas(1) = rule.compositions∘formulas(2) = kin.dootKin(1, 4, 2) = kin.dootKin(2, 5, 2) · live · 42/42 perspectives · untested",
-   "receipt": "5ccf4d71-40a3-8697-9f7f-c10c98604f25"
-  },
-  {
-   "name": "cal × kin × tesla = 240",
-   "pass": false,
-   "value": "cal.sarosShift(2) = cal.sarosShift(5) = cal.sarosShift(8) = cal.sarosShift(11) = kin.bits(28) = tesla.sync(4, 2) = tesla.sync(8, 4) = tesla.field∘sync(2, 2) = tesla.sync∘field(2, 2) · live · 72/72 perspectives · untested",
-   "receipt": "0e057daf-ede0-88d8-9014-50c99af8913d"
+   "value": "cross.medSecureWithQSec(5, 5) = kin.dootKin(1, 2, 5) = kin.dootKin(2, 3, 5) = kin.dootKin(3, 4, 5) = kin.dootKin(4, 5, 5) = tesla.sync(8, 6) · live · untested (no test for medSecureWithQSec, dootKin)",
+   "receipt": "c5083783-b363-8a74-8dd8-5483696761c5"
   },
   {
    "name": "cal × heat × tesla = 250",
    "pass": false,
-   "value": "cal.metonicDrift(2) = cal.coin∘metonicDrift(4) = heat.temperature(1, 4) = heat.temperature(2, 8) = heat.temperature∘coherence(3, 3) = heat.temperature∘cooling(1, 2) = tesla.slip(4, 3) = tesla.slip(8, 6) = tesla.turns(4, 1) = tesla.turns(8, 2) · live · 90/90 perspectives · untested",
-   "receipt": "6027a74e-a88b-8ada-b7ba-6df3d20039b5"
+   "value": "cal.metonicDrift(2) = cal.coin∘metonicDrift(4) = heat.temperature(1, 4) = heat.temperature(2, 8) = heat.temperature∘coherence(3, 3) = heat.temperature∘cooling(1, 2) = tesla.slip(4, 3) = tesla.slip(8, 6) = tesla.turns(4, 1) = tesla.turns(8, 2) · live · untested (no test for metonicDrift, coherence, cooling)",
+   "receipt": "bc231aab-0405-8caa-b03e-39c10d2bbfac"
+  },
+  {
+   "name": "clay × hd × kin = 260",
+   "pass": false,
+   "value": "hd.sun∘mean(1) = hd.sun∘mean(2) = hd.sun∘mean(3) = hd.sun∘mean(4) = clay.hodge(130) = kin.kin(1, 2) = kin.kin(1, 3) = kin.kin(1, 4) = kin.kin(1, 5) · live · untested (no test for sun, hodge)",
+   "receipt": "2c208ed1-dbdb-891a-be1a-f9ec4cabdca6"
   },
   {
    "name": "cal × heat × tesla = 375",
    "pass": false,
-   "value": "cal.metonicDrift(3) = heat.temperature(3, 8) = tesla.quarter(200) = tesla.slip(8, 5) = tesla.turns(8, 3) · live · 20/20 perspectives · untested",
-   "receipt": "7106a4c1-8df3-8ada-98c0-bf842d488fb9"
-  },
-  {
-   "name": "clay × heat × tesla = 400",
-   "pass": false,
-   "value": "clay.hodge(200) = heat.temperature(2, 5) = tesla.slip(5, 3) = tesla.turns(5, 2) · live · 12/12 perspectives · untested",
-   "receipt": "df0d29fc-83dc-86de-9c8e-1a5a80fb2ec2"
+   "value": "cal.metonicDrift(3) = heat.temperature(3, 8) = tesla.slip(8, 5) = tesla.turns(8, 3) · live · untested (no test for metonicDrift)",
+   "receipt": "ff9a95e5-ab0b-8eec-ba0e-7c0d42051782"
   },
   {
    "name": "cal × heat × tesla = 500",
    "pass": false,
-   "value": "cal.metonicDrift(4) = heat.temperature(1, 2) = heat.temperature(2, 4) = heat.temperature(3, 6) = heat.temperature(4, 8) = tesla.slip(2, 1) = tesla.slip(4, 2) = tesla.slip(6, 3) = tesla.slip(8, 4) · live · 72/72 perspectives · untested",
-   "receipt": "f7a65836-c22b-8786-b0f5-81eb5899b65a"
+   "value": "cal.metonicDrift(4) = heat.temperature(1, 2) = heat.temperature(2, 4) = heat.temperature(3, 6) = heat.temperature(4, 8) = tesla.slip(2, 1) = tesla.slip(4, 2) = tesla.slip(6, 3) = tesla.slip(8, 4) · live · untested (no test for metonicDrift)",
+   "receipt": "70c219c0-a6ec-8403-833e-fc8e49b7ca72"
   },
   {
    "name": "cal × heat × tesla = 625",
    "pass": false,
-   "value": "cal.metonicDrift(5) = heat.temperature(5, 8) = tesla.slip(8, 3) = tesla.turns(8, 5) = tesla.sync∘quarter(2, 2) · live · 20/20 perspectives · untested",
-   "receipt": "4bf1ecbc-9317-8cd8-aabc-846f38cc2ce6"
+   "value": "cal.metonicDrift(5) = heat.temperature(5, 8) = tesla.slip(8, 3) = tesla.turns(8, 5) = tesla.sync∘quarter(2, 2) · live · untested (no test for metonicDrift)",
+   "receipt": "6a23fb61-3da7-838c-9c44-efae65af246d"
   },
   {
    "name": "cal × heat × tesla = 750",
    "pass": false,
-   "value": "cal.metonicDrift(6) = heat.temperature(3, 4) = heat.temperature(6, 8) = heat.temperature∘cooling(3, 2) = heat.temperature∘ways(3, 2) = tesla.slip(4, 1) = tesla.slip(8, 2) = tesla.turns(4, 3) = tesla.turns(8, 6) · live · 72/72 perspectives · untested",
-   "receipt": "4f7bb369-b483-8b3b-954a-b1c20947771c"
+   "value": "cal.metonicDrift(6) = heat.temperature(3, 4) = heat.temperature(6, 8) = heat.temperature∘cooling(3, 2) = heat.temperature∘ways(3, 2) = tesla.slip(4, 1) = tesla.slip(8, 2) = tesla.turns(4, 3) = tesla.turns(8, 6) · live · untested (no test for metonicDrift, cooling)",
+   "receipt": "957cd498-8fe3-8a50-badb-040992c48cd7"
+  },
+  {
+   "name": "clay × heat × tesla = 800",
+   "pass": false,
+   "value": "clay.hodge(400) = heat.temperature(4, 5) = tesla.slip(5, 1) = tesla.turns(5, 4) · live · untested (no test for hodge)",
+   "receipt": "ba7a5f6b-1b34-8543-957e-1107ec93fb5a"
   },
   {
    "name": "cal × heat × tesla = 875",
    "pass": false,
-   "value": "cal.metonicDrift(7) = heat.temperature(7, 8) = tesla.slip(8, 1) = tesla.turns(8, 7) · live · 12/12 perspectives · untested",
-   "receipt": "b10b246b-e4c7-8fbc-aad1-4d495a53d2dc"
+   "value": "cal.metonicDrift(7) = heat.temperature(7, 8) = tesla.slip(8, 1) = tesla.turns(8, 7) · live · untested (no test for metonicDrift)",
+   "receipt": "bb6e910d-903a-8db5-8aaf-6fd341a53905"
   },
   {
    "name": "cal × heat × tesla = 1000",
    "pass": false,
-   "value": "cal.metonicDrift(8) = heat.temperature(1, 1) = heat.temperature(2, 2) = heat.temperature(3, 3) = heat.temperature(4, 4) = tesla.turns(1, 1) = tesla.turns(2, 2) = tesla.turns(3, 3) = tesla.turns(4, 4) · live · 72/72 perspectives · untested",
-   "receipt": "41266b62-957a-846f-90bd-79dee9ca06be"
+   "value": "cal.metonicDrift(8) = heat.temperature(1, 1) = heat.temperature(2, 2) = heat.temperature(3, 3) = heat.temperature(4, 4) = tesla.turns(1, 1) = tesla.turns(2, 2) = tesla.turns(3, 3) = tesla.turns(4, 4) · live · untested (no test for metonicDrift)",
+   "receipt": "f4945939-ef5c-8a99-8a6d-67db3d9808f4"
   },
   {
    "name": "Qpu.Physics × heat × tesla = 1200",
    "pass": false,
-   "value": "Qpu.Physics.aluminium() = Qpu.Physics.planck∘aluminium() = Qpu.Physics.boltzmann∘aluminium() = Qpu.Physics.transmon∘aluminium() = heat.temperature(6, 5) = tesla.turns(5, 6) · live · 30/30 perspectives · untested",
-   "receipt": "ed77f925-9c30-8f2b-80b3-ff25ecb598c4"
+   "value": "Qpu.Physics.aluminium() = Qpu.Physics.planck∘aluminium() = Qpu.Physics.boltzmann∘aluminium() = Qpu.Physics.transmon∘aluminium() = heat.temperature(6, 5) = tesla.turns(5, 6) · live · untested (no test for aluminium, boltzmann)",
+   "receipt": "e054e49f-a4d8-8c3e-8254-be14fd13e880"
   },
   {
    "name": "cal × heat × tesla = 1250",
    "pass": false,
-   "value": "cal.metonicDrift(10) = cal.lunarDrift∘metonicDrift(1) = heat.temperature(5, 4) = tesla.turns(4, 5) · live · 12/12 perspectives · untested",
-   "receipt": "5331628e-2b83-852c-849a-3d0913c468c7"
+   "value": "cal.metonicDrift(10) = cal.lunarDrift∘metonicDrift(1) = heat.temperature(5, 4) = tesla.turns(4, 5) · live · untested (no test for metonicDrift, lunarDrift)",
+   "receipt": "86bf59d0-fa0f-8974-8325-2d824776c580"
   },
   {
    "name": "cal × heat × tesla = 1500",
    "pass": false,
-   "value": "cal.metonicDrift(12) = heat.temperature(3, 2) = heat.temperature(6, 4) = heat.temperature∘coherence(3, 1) = tesla.turns(2, 3) = tesla.turns(4, 6) · live · 30/30 perspectives · untested",
-   "receipt": "55d1bdfa-3c31-87fa-a605-9b73e8ea149f"
+   "value": "cal.metonicDrift(12) = heat.temperature(3, 2) = heat.temperature(6, 4) = heat.temperature∘coherence(3, 1) = tesla.turns(2, 3) = tesla.turns(4, 6) · live · untested (no test for metonicDrift, coherence)",
+   "receipt": "26ec9c87-5e02-8553-b3e4-0848fb8f47d5"
   },
   {
    "name": "cal × heat × tesla = 1750",
    "pass": false,
-   "value": "cal.metonicDrift(14) = heat.temperature(7, 4) = tesla.turns(4, 7) · live · 6/6 perspectives · untested",
-   "receipt": "016ae291-dd9f-8598-be9b-373bc571a1bf"
+   "value": "cal.metonicDrift(14) = heat.temperature(7, 4) = tesla.turns(4, 7) · live · untested (no test for metonicDrift)",
+   "receipt": "db9caa11-9a66-8b4e-bf9a-c50f28aa085e"
   },
   {
    "name": "cal × heat × tesla = 2000",
    "pass": false,
-   "value": "cal.metonicDrift(16) = heat.temperature(2, 1) = heat.temperature(4, 2) = heat.temperature(6, 3) = heat.temperature(8, 4) = tesla.turns(1, 2) = tesla.turns(2, 4) = tesla.turns(3, 6) = tesla.turns(4, 8) · live · 72/72 perspectives · untested",
-   "receipt": "b0e1cf84-7cae-8f59-a1b2-db61afe02906"
-  },
-  {
-   "name": "cal × heat × tesla = 2500",
-   "pass": false,
-   "value": "cal.metonicDrift(20) = heat.temperature(5, 2) = tesla.period(400) = tesla.turns(2, 5) · live · 12/12 perspectives · untested",
-   "receipt": "568c0ba9-78c7-8a0a-b0a1-5a09d80bfaf3"
-  },
-  {
-   "name": "cal × heat × tesla = 3500",
-   "pass": false,
-   "value": "cal.metonicDrift(28) = heat.temperature(7, 2) = tesla.turns(2, 7) · live · 6/6 perspectives · untested",
-   "receipt": "695da130-c5ba-8bc9-83df-e151cea2f496"
+   "value": "cal.metonicDrift(16) = heat.temperature(2, 1) = heat.temperature(4, 2) = heat.temperature(6, 3) = heat.temperature(8, 4) = tesla.turns(1, 2) = tesla.turns(2, 4) = tesla.turns(3, 6) = tesla.turns(4, 8) · live · untested (no test for metonicDrift)",
+   "receipt": "e6908804-77dd-8d1b-aca3-e155811eb32d"
   },
   {
    "name": "cal × heat × tesla = 4000",
    "pass": false,
-   "value": "cal.lunarDrift∘metonicDrift(3) = heat.temperature(4, 1) = heat.temperature(8, 2) = tesla.turns(1, 4) = tesla.turns(2, 8) = tesla.turns∘field(1, 2) = tesla.turns∘windings(1, 2) · live · 42/42 perspectives · untested",
-   "receipt": "2c6a2c27-b45e-877d-bb9f-a21824ce967e"
+   "value": "cal.lunarDrift∘metonicDrift(3) = heat.temperature(4, 1) = heat.temperature(8, 2) = tesla.turns(1, 4) = tesla.turns(2, 8) = tesla.turns∘field(1, 2) = tesla.turns∘windings(1, 2) · live · untested (no test for lunarDrift, metonicDrift)",
+   "receipt": "c807e435-a53f-8d66-b729-c4e447a81a7e"
   },
   {
    "name": "Qpu.Mint × signal × yi = 16384",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(14) = signal.keyspace(14) = yi.figures(14) · live · 6/6 perspectives · untested",
-   "receipt": "987abeb7-57e8-8a38-bf3b-f35508f37c92"
-  },
-  {
-   "name": "kin × signal × yi = 262144",
-   "pass": false,
-   "value": "signal.keyspace(18) = kin.combinations(3) = kin.digitalRoot∘combinations(3) = kin.seal∘combinations(3) = kin.tone∘combinations(3) = yi.figures(18) · live · 30/30 perspectives · untested",
-   "receipt": "0f8e000e-3841-8731-8ae1-27460dc0357d"
-  },
-  {
-   "name": "np × signal × yi = 1048576",
-   "pass": false,
-   "value": "signal.keyspace(20) = np.isTime(16) = yi.figures(20) = yi.withYang∘figures(3) · live · 12/12 perspectives · untested",
-   "receipt": "50f535de-a8f3-80ab-8d7c-3512d3605566"
-  },
-  {
-   "name": "kin × signal × yi = 4398046511104",
-   "pass": false,
-   "value": "signal.keyspace(42) = kin.combinations(7) = kin.vortex∘combinations(4) = yi.figures(42) · live · 12/12 perspectives · untested",
-   "receipt": "f6a9faab-aa14-8605-a450-a191c0fdeefa"
-  },
-  {
-   "name": "tesla × yi = 33",
-   "pass": false,
-   "value": "tesla.sync∘turns(1, 2) = yi.nuclear(18) = yi.inverse∘change(1, 1) · live · 6/6 perspectives · untested",
-   "receipt": "b5dda67f-b617-84ec-b0b8-830e2c6c3a57"
+   "value": "Qpu.Mint.mintOf(14) = signal.keyspace(14) = yi.figures(14) · live · untested (no test for keyspace)",
+   "receipt": "d19b2fbd-4618-892b-8350-c3d01cc9cf67"
   },
   {
    "name": "kin × tesla = 37",
    "pass": false,
-   "value": "kin.combinations∘pillar(2, 3) = tesla.turns∘quarter(1, 2) · live · 2/2 perspectives · untested",
-   "receipt": "6f42abcb-8fe8-82d5-9666-e24c3d52f0f1"
+   "value": "kin.combinations∘pillar(2, 3) = tesla.turns∘quarter(1, 2) · live · untested (no test for pillar)",
+   "receipt": "5d14eff9-5dfd-8cf6-96d0-308b85e7a126"
   },
   {
    "name": "heat × kin = 39",
    "pass": false,
-   "value": "heat.signal(6) = heat.signal∘coherence(2, 2) = heat.signal∘coherence(3, 1) = kin.pillar(4, 1) = kin.pillar(5, 2) = kin.pillar(6, 3) = kin.pillar(7, 4) · live · 42/42 perspectives · untested",
-   "receipt": "7be6edc5-d6ae-8e54-8c0c-0cf71391eef8"
+   "value": "heat.signal(6) = heat.signal∘coherence(2, 2) = heat.signal∘coherence(3, 1) = kin.pillar(4, 1) = kin.pillar(5, 2) = kin.pillar(6, 3) = kin.pillar(7, 4) · live · untested (no test for coherence, pillar)",
+   "receipt": "31b40f3a-d190-8148-ba81-524864aa6274"
   },
   {
    "name": "tesla × yi = 42",
    "pass": false,
-   "value": "tesla.field(6, 7) = tesla.field(7, 6) = tesla.windings(6, 7) = tesla.windings(7, 6) = yi.nuclear(20) = yi.nuclear(52) = yi.withYang∘nuclear(3) · live · 42/42 perspectives · untested",
-   "receipt": "b89da828-bc2e-8b01-9228-4443783e3d81"
-  },
-  {
-   "name": "tesla × yi = 45",
-   "pass": true,
-   "value": "tesla.sync(3, 8) = yi.complement(18) · live · 2/2 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "9c9dea26-feb8-84f3-aa22-cf79e6c70bc7"
+   "value": "tesla.field(6, 7) = tesla.field(7, 6) = tesla.windings(6, 7) = tesla.windings(7, 6) = yi.withYang∘nuclear(3) · live · untested (no test for withYang)",
+   "receipt": "57a5a083-d953-8876-bdd7-badc295ba03a"
   },
   {
    "name": "tesla × yi = 49",
-   "pass": false,
-   "value": "tesla.field(7, 7) = tesla.windings(7, 7) = yi.complement(14) = yi.inverse∘change(3, 1) · live · 12/12 perspectives · untested",
-   "receipt": "dc23746a-d998-8b81-aa09-1e898f8f64c0"
+   "pass": true,
+   "value": "tesla.field(7, 7) = tesla.windings(7, 7) = yi.complement(14) = yi.inverse∘change(3, 1) · live · tested in src/quantum/processing/unit/combinatorial.test.ts, src/families/tesla/test.ts, src/families/hd/test.ts",
+   "receipt": "154223ae-a337-878d-92cf-d670b2153fd0"
   },
   {
    "name": "kin × yi = 55",
-   "pass": true,
-   "value": "kin.dootKin(1, 3, 5) = kin.dootKin(2, 4, 5) = kin.dootKin(3, 5, 5) = yi.complement(8) = yi.complement∘inverse(4) = yi.figures∘complement(3) = yi.inverse∘complement(4) · live · 42/42 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "97482b0b-eeda-867b-8c30-e67eefc760e0"
+   "pass": false,
+   "value": "kin.dootKin(1, 3, 5) = kin.dootKin(2, 4, 5) = kin.dootKin(3, 5, 5) = yi.complement(8) = yi.complement∘inverse(4) = yi.figures∘complement(3) = yi.inverse∘complement(4) · live · untested (no test for dootKin)",
+   "receipt": "1f18a87c-4950-836e-b1e4-446cb42ddfa0"
   },
   {
    "name": "kin × yi = 57",
-   "pass": true,
-   "value": "kin.dootKin(4, 1, 2) = kin.dootKin(5, 2, 2) = kin.vortex∘dootKin(2, 1, 2) = yi.complement(6) = yi.withYang∘complement(1) · live · 20/20 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "e27d82ea-92af-85ab-ba65-44a109004905"
-  },
-  {
-   "name": "kin × yi = 58",
-   "pass": true,
-   "value": "kin.dootKin(4, 1, 3) = kin.dootKin(5, 2, 3) = kin.dootKin∘pillar(1, 2, 1) = yi.complement(5) · live · 12/12 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "80750c90-8c94-821e-b7ca-7851a3776846"
+   "pass": false,
+   "value": "kin.dootKin(4, 1, 2) = kin.dootKin(5, 2, 2) = kin.vortex∘dootKin(2, 1, 2) = yi.complement(6) = yi.withYang∘complement(1) · live · untested (no test for dootKin, withYang)",
+   "receipt": "0598298d-9e22-856d-a752-effaae16902b"
   },
   {
    "name": "kin × yi = 61",
    "pass": false,
-   "value": "kin.bits∘dootKin(1, 1, 1) = kin.bits∘pillar(3, 1) = kin.pillar∘pillar(3, 1) = yi.complement(2) = yi.change∘complement(1, 3) = yi.change∘complement(3, 1) = yi.complement∘change(1, 3) · live · 42/42 perspectives · untested",
-   "receipt": "ba985daf-c9bf-8fae-9d8e-68083feb5b6b"
-  },
-  {
-   "name": "kin × yi = 62",
-   "pass": false,
-   "value": "kin.bits∘dootKin(1, 1, 2) = yi.complement(1) = yi.nuclear(28) = yi.change∘complement(2, 3) = yi.change∘complement(3, 2) · live · 20/20 perspectives · untested",
-   "receipt": "fb7e7ccd-89ec-8c46-9df1-85861f350e1f"
+   "value": "kin.bits∘dootKin(1, 1, 1) = kin.bits∘pillar(3, 1) = kin.pillar∘pillar(3, 1) = yi.complement(2) = yi.change∘complement(1, 3) = yi.change∘complement(3, 1) = yi.complement∘change(1, 3) · live · untested (no test for dootKin, pillar)",
+   "receipt": "0e53be5c-59db-8427-a4f8-d3104611c3c5"
   },
   {
    "name": "kin × yi = 63",
    "pass": false,
-   "value": "kin.bits∘pillar(2, 2) = kin.combinations∘pillar(2, 1) = yi.change∘complement(1, 1) = yi.change∘complement(2, 2) = yi.change∘complement(3, 3) = yi.complement∘change(1, 1) · live · 30/30 perspectives · untested",
-   "receipt": "0b82d9df-0382-82a2-b462-6724f9fe610c"
+   "value": "kin.bits∘pillar(2, 2) = kin.combinations∘pillar(2, 1) = yi.nuclear(31) = yi.change∘complement(1, 1) = yi.change∘complement(2, 2) = yi.change∘complement(3, 3) · live · untested (no test for pillar)",
+   "receipt": "3c93cb74-7939-8604-98d3-ef3ad459f408"
   },
   {
-   "name": "signal × tesla = 75",
+   "name": "kin × signal = 69",
    "pass": false,
-   "value": "signal.keyBits(200) = tesla.sync(5, 8) = tesla.earth∘period(3) = tesla.turns∘quarter(1, 1) = tesla.turns∘quarter(2, 2) · live · 20/20 perspectives · untested",
-   "receipt": "57a18fbc-3125-8e5f-a300-ad8b3d40fe04"
+   "value": "signal.keyBits(184) = kin.bits(8) = kin.dootKin∘pillar(2, 1, 1) = kin.vortex∘bits(3) · live · untested (no test for keyBits, dootKin, pillar)",
+   "receipt": "b0ccb171-ac00-8180-8f42-a0f4b66c3544"
   },
   {
    "name": "cal × rule = 81",
    "pass": false,
-   "value": "cal.gregorianDrift(3) = rule.compositions(4) = rule.compositions(13) = rule.compositions∘compositions(3) = rule.free∘compositions(3) · live · 20/20 perspectives · untested",
-   "receipt": "ffee0294-3c35-8d17-8117-541dcbea39e2"
-  },
-  {
-   "name": "kin × tesla = 92",
-   "pass": false,
-   "value": "kin.combinations∘dootKin(2, 2, 2) = tesla.period∘resonance(1, 3) · live · 2/2 perspectives · untested",
-   "receipt": "4f5653e5-338d-8751-b93a-561ae71f3c67"
+   "value": "cal.gregorianDrift(3) = rule.compositions(4) = rule.compositions∘compositions(3) · live · untested (no test for gregorianDrift, compositions)",
+   "receipt": "4aad5a8a-c186-8423-9907-5e7e8a3cf67a"
   },
   {
    "name": "hd × kin = 93",
-   "pass": true,
-   "value": "hd.code(401) = kin.pillar(1, 4) = kin.pillar(2, 5) = kin.pillar(3, 6) = kin.pillar(4, 7) · live · 20/20 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "c571d98d-f6d3-8ae0-89c5-04677c5b5acb"
+   "pass": false,
+   "value": "hd.code(401) = kin.pillar(1, 4) = kin.pillar(2, 5) = kin.pillar(3, 6) = kin.pillar(4, 7) · live · untested (no test for pillar)",
+   "receipt": "717c7eda-0911-8b8e-8689-c20e766b2f97"
   },
   {
    "name": "cross × hd = 96",
    "pass": false,
-   "value": "cross.medSecureWithQSec(3, 5) = cross.medSecureWithQSec(6, 4) = hd.code(404) · live · 6/6 perspectives · untested",
-   "receipt": "93c34ce9-e7b6-8fa2-8d5f-752faeacaaac"
+   "value": "cross.medSecureWithQSec(3, 5) = cross.medSecureWithQSec(6, 4) = hd.code(404) · live · untested (no test for medSecureWithQSec)",
+   "receipt": "880219a4-2f90-8439-bcc5-09c65643ca31"
   },
   {
    "name": "clay × kin = 98",
    "pass": false,
-   "value": "clay.bsd(404) = kin.period∘pillar(1, 2) · live · 2/2 perspectives · untested",
-   "receipt": "b50a7b15-3c5e-8727-ab34-f6993b5fa3b3"
-  },
-  {
-   "name": "cal × tesla = 99",
-   "pass": false,
-   "value": "cal.gatesPrecessed(40101) = tesla.earth(404) · live · 2/2 perspectives · untested",
-   "receipt": "d4cb0424-e5c1-8ee3-8cc3-679ac88f790b"
+   "value": "clay.bsd(404) = kin.period∘pillar(1, 2) · live · untested (no test for bsd, pillar)",
+   "receipt": "275d4cd3-28f9-8ddf-a7fd-47faecdc33b9"
   },
   {
    "name": "cal × kin = 101",
-   "pass": true,
-   "value": "cal.precession(2) = cal.coin∘precession(4) = kin.dootKin(1, 5, 1) = kin.dreamspellDrift(404) · live · 12/12 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "78158b26-daf7-871d-be89-b3835460afb7"
-  },
-  {
-   "name": "clay × kin = 104",
    "pass": false,
-   "value": "clay.hodge(52) = kin.dootKin(1, 5, 4) = kin.bits∘pillar(1, 1) · live · 6/6 perspectives · untested",
-   "receipt": "caba8f21-5825-8b17-9210-40e00f1b1ed9"
+   "value": "cal.precession(2) = cal.coin∘precession(4) = kin.dootKin(1, 5, 1) = kin.dreamspellDrift(404) · live · untested (no test for dootKin, dreamspellDrift)",
+   "receipt": "370b532e-fd61-8a2e-85dd-4e70b8d517f0"
   },
   {
    "name": "kin × tesla = 105",
-   "pass": true,
-   "value": "kin.dootKin(1, 5, 5) = tesla.sync(7, 8) · live · 2/2 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "4ddd79e9-335a-8aa7-844e-4a67a3450548"
+   "pass": false,
+   "value": "kin.dootKin(1, 5, 5) = tesla.sync(7, 8) · live · untested (no test for dootKin)",
+   "receipt": "c1aa1eaf-1194-80c7-b7b6-98187d3c0c10"
   },
   {
    "name": "cal × kin = 108",
    "pass": false,
-   "value": "cal.gregorianDrift(4) = cal.lunarDrift(10) = cal.lunarDrift∘lunarDrift(1) = kin.dootKin(2, 1, 3) = kin.dootKin(3, 2, 3) = kin.dootKin(4, 3, 3) = kin.dootKin(5, 4, 3) · live · 42/42 perspectives · untested",
-   "receipt": "82e7cfc6-c3f2-8093-9d6f-bfc8e2428e59"
+   "value": "cal.gregorianDrift(4) = cal.lunarDrift(10) = cal.lunarDrift∘lunarDrift(1) = kin.dootKin(2, 1, 3) = kin.dootKin(3, 2, 3) = kin.dootKin(4, 3, 3) = kin.dootKin(5, 4, 3) · live · untested (no test for gregorianDrift, lunarDrift, dootKin)",
+   "receipt": "037d2372-64e1-820a-8492-9c9f0142c119"
   },
   {
    "name": "heat × kin = 111",
    "pass": false,
-   "value": "heat.temperature∘cooling(1, 3) = heat.temperature∘ways(1, 3) = kin.period∘pillar(1, 1) · live · 6/6 perspectives · untested",
-   "receipt": "b8d5eb20-0295-8127-b7f2-99e39419d9a5"
-  },
-  {
-   "name": "kin × tesla = 122",
-   "pass": false,
-   "value": "kin.bits∘dootKin(2, 1, 2) = tesla.quarter(615) · live · 2/2 perspectives · untested",
-   "receipt": "604a8922-ba2e-8716-9103-95c59e264cd0"
+   "value": "heat.temperature∘cooling(1, 3) = heat.temperature∘ways(1, 3) = kin.period∘pillar(1, 1) · live · untested (no test for cooling, pillar)",
+   "receipt": "d468b9bb-a778-841b-bf56-ac9f1d4aa563"
   },
   {
    "name": "cal × tesla = 130",
    "pass": false,
-   "value": "cal.lunarDrift(12) = tesla.period∘resonance(2, 3) · live · 2/2 perspectives · untested",
-   "receipt": "e42c887c-106a-8518-b09c-05c5e3094a6d"
+   "value": "cal.lunarDrift(12) = tesla.period∘resonance(2, 3) · live · untested (no test for lunarDrift)",
+   "receipt": "bb1ab7f1-6892-83d0-b82f-e75fe43a0466"
   },
   {
    "name": "hd × tesla = 143",
-   "pass": false,
-   "value": "hd.ut∘mean(1, 3) = tesla.slip(7, 6) = tesla.turns(7, 1) · live · 6/6 perspectives · untested",
-   "receipt": "84a1cee8-7220-8ecd-b6e0-b93a12147eda"
+   "pass": true,
+   "value": "hd.ut∘mean(1, 3) = tesla.slip(7, 6) = tesla.turns(7, 1) · live · tested in src/families/hd/test.ts, scripts/walls.test.mjs, src/families/tesla/test.ts",
+   "receipt": "ff0e0ad3-7115-8a07-9622-503f16871f95"
   },
   {
    "name": "clay × hd = 144",
    "pass": false,
-   "value": "hd.ut∘mean(1, 1) = hd.ut∘mean(1, 2) = hd.ut∘mean(2, 1) = hd.ut∘mean(2, 2) = clay.hodge(72) · live · 20/20 perspectives · untested",
-   "receipt": "acad1cd4-1f00-8c31-820b-1e8c0ac6a447"
-  },
-  {
-   "name": "cal × kin = 147",
-   "pass": true,
-   "value": "cal.faces() = cal.coin∘faces(1) = cal.coin∘faces(2) = cal.coin∘faces(3) = kin.dreamspellDrift(591) · live · 20/20 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "e4f7bdeb-1869-8f19-9892-53abbe38f096"
+   "value": "hd.ut∘mean(1, 1) = hd.ut∘mean(1, 2) = hd.ut∘mean(2, 1) = hd.ut∘mean(2, 2) = clay.hodge(72) · live · untested (no test for hodge)",
+   "receipt": "7969c8fe-0031-843e-bd08-40d6c8d909a7"
   },
   {
    "name": "signal × tesla = 150",
    "pass": false,
-   "value": "signal.keyBits(400) = tesla.sync(5, 4) = tesla.slip∘quarter(2, 1) = tesla.turns∘quarter(2, 1) · live · 12/12 perspectives · untested",
-   "receipt": "f33bee7e-9746-8802-ba5d-23a54d024908"
-  },
-  {
-   "name": "clay × kin = 156",
-   "pass": false,
-   "value": "clay.bsd(615) = kin.dootKin(1, 2, 1) = kin.dootKin(2, 3, 1) = kin.dootKin(3, 4, 1) = kin.dootKin(4, 5, 1) · live · 20/20 perspectives · untested",
-   "receipt": "d10051c0-53b6-81a0-9d05-38d7efd7a8e4"
+   "value": "signal.keyBits(400) = tesla.sync(5, 4) = tesla.slip∘quarter(2, 1) = tesla.turns∘quarter(2, 1) · live · untested (no test for keyBits)",
+   "receipt": "87ee2211-57e4-80e2-b9a6-292d1d61a6fb"
   },
   {
    "name": "kin × tesla = 159",
    "pass": false,
-   "value": "kin.dootKin(1, 2, 4) = kin.dootKin(2, 3, 4) = kin.dootKin(3, 4, 4) = kin.dootKin(4, 5, 4) = tesla.period∘resonance(1, 1) = tesla.period∘resonance(2, 2) = tesla.period∘resonance(3, 3) · live · 42/42 perspectives · untested",
-   "receipt": "2282382a-f73d-8933-a418-f2f10f9007ea"
+   "value": "kin.dootKin(1, 2, 4) = kin.dootKin(2, 3, 4) = kin.dootKin(3, 4, 4) = kin.dootKin(4, 5, 4) = tesla.period∘resonance(1, 1) = tesla.period∘resonance(2, 2) = tesla.period∘resonance(3, 3) · live · untested (no test for dootKin)",
+   "receipt": "56f870dd-bbd8-8f35-9881-ab7448037738"
   },
   {
    "name": "cal × kin = 162",
    "pass": false,
-   "value": "cal.gregorianDrift(6) = kin.dootKin(5, 1, 2) · live · 2/2 perspectives · untested",
-   "receipt": "bfad20ac-2b45-8875-9f9a-119c3b37bb17"
+   "value": "cal.gregorianDrift(6) = kin.dootKin(5, 1, 2) · live · untested (no test for gregorianDrift, dootKin)",
+   "receipt": "c82c6cc1-fc6e-84fa-a764-73e2cee3817f"
   },
   {
    "name": "cal × kin = 163",
-   "pass": true,
-   "value": "cal.lunarDrift(15) = kin.dootKin(5, 1, 3) · live · 2/2 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "96412ea2-5016-8200-b367-08bedb08204c"
-  },
-  {
-   "name": "hd × rule = 169",
    "pass": false,
-   "value": "hd.code(615) = rule.compositions(2) = rule.free∘compositions(2) = rule.nibbles∘compositions(3) · live · 12/12 perspectives · untested",
-   "receipt": "a20afc39-3b22-8a5e-bdae-7b21d4bfc87b"
-  },
-  {
-   "name": "cal × tesla = 195",
-   "pass": false,
-   "value": "cal.lunarDrift(18) = tesla.period∘resonance(3, 2) · live · 2/2 perspectives · untested",
-   "receipt": "a00789f8-5ebd-869f-bae9-d1df30cc1995"
+   "value": "cal.lunarDrift(15) = kin.dootKin(5, 1, 3) · live · untested (no test for lunarDrift, dootKin)",
+   "receipt": "6c46fd35-0222-82db-9ad3-d1a31d7e80b7"
   },
   {
    "name": "kin × rule = 196",
    "pass": false,
-   "value": "rule.compositions(8) = rule.compositions(15) = rule.cap∘compositions(1) = rule.cap∘compositions(2) = kin.combinations∘dootKin(2, 1, 1) · live · 20/20 perspectives · untested",
-   "receipt": "bb7d92d8-8901-8a6e-8987-5b61f56d9ad9"
+   "value": "rule.compositions(8) = rule.compositions(15) = rule.cap∘compositions(1) = rule.cap∘compositions(2) = kin.combinations∘dootKin(2, 1, 1) · live · untested (no test for compositions, dootKin)",
+   "receipt": "69a00fc2-dca7-88dd-aeae-f4bab7075038"
   },
   {
    "name": "clay × merkaba = 199",
    "pass": false,
-   "value": "clay.bsd(401) = merkaba.flows(7) · live · 2/2 perspectives · untested",
-   "receipt": "3449c2fd-8123-83fb-98dc-69b9d0f31996"
+   "value": "clay.bsd(401) = merkaba.flows(7) · live · untested (no test for bsd)",
+   "receipt": "9c7504e1-e0c3-8d0b-a059-18ec2f328b08"
   },
   {
    "name": "crypt × signal = 202",
    "pass": false,
-   "value": "crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · 6/6 perspectives · untested",
-   "receipt": "0cad098a-cc7d-891d-b808-6b5f02cdef2a"
+   "value": "crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "receipt": "dd749ecf-d9c6-8429-8ae6-2b8e6ad5b386"
   },
   {
    "name": "hd × kin = 206",
-   "pass": true,
-   "value": "hd.mean∘code(2) = hd.mean∘code(3) = kin.dootKin(1, 4, 1) = kin.dootKin(2, 5, 1) · live · 12/12 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "7a102282-5e67-81f7-a73d-fc68f998a05e"
+   "pass": false,
+   "value": "hd.mean∘code(2) = hd.mean∘code(3) = kin.dootKin(1, 4, 1) = kin.dootKin(2, 5, 1) · live · untested (no test for dootKin)",
+   "receipt": "fd79b63e-7120-885b-9aa6-1e76c6627eb3"
   },
   {
-   "name": "kin × tesla = 210",
-   "pass": true,
-   "value": "kin.dootKin(1, 4, 5) = kin.dootKin(2, 5, 5) = tesla.sync(7, 4) · live · 6/6 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "2b35805a-b9a6-8f0c-b11c-edbf8db447c6"
+   "name": "kin × rule = 208",
+   "pass": false,
+   "value": "rule.formulas() = rule.cap∘formulas() = rule.compositions∘formulas(1) = rule.compositions∘formulas(2) = kin.dootKin(1, 4, 3) = kin.dootKin(2, 5, 3) · live · untested (no test for compositions, dootKin)",
+   "receipt": "57ad55eb-4edf-867f-a1b3-87e02467c5d6"
   },
   {
    "name": "cal × kin = 216",
    "pass": false,
-   "value": "cal.gregorianDrift(8) = kin.bits∘dootKin(1, 2, 1) · live · 2/2 perspectives · untested",
-   "receipt": "23252c9e-d0d2-824e-851d-b8c87aa859ac"
-  },
-  {
-   "name": "cal × kin = 217",
-   "pass": true,
-   "value": "cal.lunarDrift(20) = kin.bits∘dootKin(1, 2, 2) · live · 2/2 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "cc579ab9-3cba-8743-b9c2-e07e8aa0ae1a"
+   "value": "cal.gregorianDrift(8) = kin.bits∘dootKin(1, 2, 1) · live · untested (no test for gregorianDrift, dootKin)",
+   "receipt": "5cba643b-9d1c-8f11-9ffd-86bef3f9c1ac"
   },
   {
    "name": "heat × kin = 222",
    "pass": false,
-   "value": "heat.temperature∘cooling(2, 3) = heat.temperature∘ways(2, 3) = kin.enneagram∘dootKin(1, 1, 2) = kin.enneagram∘dootKin(2, 1, 2) = kin.pillar∘dootKin(2, 1, 2) · live · 20/20 perspectives · untested",
-   "receipt": "90807e6b-cc99-8690-85f8-553e1a9fbbb4"
+   "value": "heat.temperature∘cooling(2, 3) = heat.temperature∘ways(2, 3) = kin.enneagram∘dootKin(1, 1, 2) = kin.enneagram∘dootKin(2, 1, 2) = kin.pillar∘dootKin(2, 1, 2) · live · untested (no test for cooling, enneagram, dootKin, pillar)",
+   "receipt": "3373aa41-333e-8d64-87af-768c1ab427ad"
   },
   {
    "name": "kin × tesla = 223",
    "pass": false,
-   "value": "kin.bits∘bits(3) = kin.pillar∘bits(3, 1) = tesla.sync∘earth(3, 2) · live · 6/6 perspectives · untested",
-   "receipt": "ba3c4836-8587-8be8-88bd-b039ed8d0592"
+   "value": "kin.bits∘bits(3) = kin.pillar∘bits(3, 1) = tesla.sync∘earth(3, 2) · live · untested (no test for pillar, earth)",
+   "receipt": "5065f8b4-4506-86e5-9c77-16ff117f18da"
   },
   {
-   "name": "rule × tesla = 225",
+   "name": "clay × kin = 232",
    "pass": false,
-   "value": "rule.compositions(18) = tesla.period∘resonance(2, 1) = tesla.slip∘quarter(3, 2) = tesla.turns∘quarter(3, 1) · live · 12/12 perspectives · untested",
-   "receipt": "b74d66a1-3e98-8b21-89d7-bb4b43673464"
+   "value": "clay.hodge(116) = kin.bits(27) = kin.period∘dootKin(1, 2, 2) · live · untested (no test for hodge, dootKin)",
+   "receipt": "5acc823f-eb3d-822a-88b8-ee6b62cfbf59"
+  },
+  {
+   "name": "cal × tesla = 240",
+   "pass": false,
+   "value": "cal.sarosShift(2) = cal.sarosShift(5) = cal.sarosShift(8) = cal.sarosShift(11) = tesla.sync(4, 2) = tesla.sync(8, 4) = tesla.field∘sync(2, 2) = tesla.sync∘field(2, 2) · live · untested (no test for sarosShift)",
+   "receipt": "39800f58-645e-8e6b-9c74-e7d90bf66b1b"
   },
   {
    "name": "cal × np = 243",
    "pass": false,
-   "value": "cal.gregorianDrift(9) = np.isTime(3) = np.isSpace∘isTime(4) = np.subsetSum∘isTime(3, 1) = np.subsetSum∘isTime(3, 3) · live · 20/20 perspectives · untested",
-   "receipt": "f1cb4ff8-f322-8566-8559-54bb4c28eca2"
-  },
-  {
-   "name": "hd × kin = 260",
-   "pass": true,
-   "value": "hd.sun∘mean(1) = hd.sun∘mean(2) = hd.sun∘mean(3) = hd.sun∘mean(4) = kin.kin(1, 2) = kin.kin(1, 3) = kin.kin(1, 4) = kin.kin(1, 5) · live · 56/56 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "f3592810-0d95-8f95-944f-e843cd586f57"
-  },
-  {
-   "name": "crypt × signal = 314",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(628) = crypt.symmetricQuantumBits(628) = signal.siftedBits(628) · live · 6/6 perspectives · untested",
-   "receipt": "6484ec07-cbf3-86a6-994f-ededc6e1052d"
+   "value": "cal.gregorianDrift(9) = np.isTime(3) = np.isSpace∘isTime(4) = np.subsetSum∘isTime(3, 1) = np.subsetSum∘isTime(3, 3) · live · untested (no test for gregorianDrift, isTime, isSpace, subsetSum)",
+   "receipt": "4a8d76bc-d604-8f55-b3d3-789397276a89"
   },
   {
    "name": "heat × tesla = 333",
    "pass": false,
-   "value": "heat.temperature(1, 3) = heat.temperature(2, 6) = heat.cooling∘temperature(1, 3) = heat.cooling∘temperature(2, 3) = tesla.slip(3, 2) = tesla.slip(6, 4) = tesla.turns(3, 1) = tesla.turns(6, 2) · live · 56/56 perspectives · untested",
-   "receipt": "bb879763-4ff4-84fc-acc1-12f6344139fc"
+   "value": "heat.temperature(1, 3) = heat.temperature(2, 6) = heat.cooling∘temperature(1, 3) = heat.cooling∘temperature(2, 3) = tesla.slip(3, 2) = tesla.slip(6, 4) = tesla.turns(3, 1) = tesla.turns(6, 2) · live · untested (no test for cooling)",
+   "receipt": "c5c4c865-79b0-8168-bee9-582ca1512665"
   },
   {
    "name": "heat × tesla = 334",
    "pass": false,
-   "value": "heat.temperature∘cooling(3, 3) = heat.temperature∘ways(3, 3) = tesla.sync∘earth(2, 2) · live · 6/6 perspectives · untested",
-   "receipt": "c73879d9-39ec-88d2-9067-c56f81ed0ce5"
+   "value": "heat.temperature∘cooling(3, 3) = heat.temperature∘ways(3, 3) = tesla.sync∘earth(2, 2) · live · untested (no test for cooling, earth)",
+   "receipt": "c9e73bf7-8f9b-8efc-8c18-ff1148080f0f"
   },
   {
-   "name": "Qpu.Physics × cal = 352",
-   "pass": false,
-   "value": "Qpu.Physics.bcs() = Qpu.Physics.planck∘bcs() = Qpu.Physics.boltzmann∘bcs() = Qpu.Physics.transmon∘bcs() = cal.precession(7) · live · 20/20 perspectives · untested",
-   "receipt": "316ef54b-4861-8a78-9acd-820f65a2027f"
+   "name": "heat × tesla = 400",
+   "pass": true,
+   "value": "heat.temperature(2, 5) = tesla.slip(5, 3) = tesla.turns(5, 2) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "78d3a5ae-45a2-8bb8-9606-3aadf25dea29"
   },
   {
    "name": "heat × tesla = 571",
-   "pass": false,
-   "value": "heat.temperature(4, 7) = tesla.slip(7, 3) = tesla.turns(7, 4) · live · 6/6 perspectives · untested",
-   "receipt": "09b4009f-ae10-8ca4-af7b-98e538c54697"
+   "pass": true,
+   "value": "heat.temperature(4, 7) = tesla.slip(7, 3) = tesla.turns(7, 4) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "b3f1e592-c95c-8222-b815-cba140a0f9e3"
   },
   {
    "name": "heat × tesla = 600",
-   "pass": false,
-   "value": "heat.temperature(3, 5) = tesla.slip(5, 2) = tesla.turns(5, 3) · live · 6/6 perspectives · untested",
-   "receipt": "e59e2f06-3cf3-82d0-b2c6-7624ef054700"
+   "pass": true,
+   "value": "heat.temperature(3, 5) = tesla.slip(5, 2) = tesla.turns(5, 3) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "56010fd9-54ba-89ef-8dc2-81edf5f48642"
   },
   {
    "name": "heat × tesla = 666",
-   "pass": false,
-   "value": "heat.temperature(2, 3) = heat.temperature(4, 6) = tesla.slip∘field(3, 2) = tesla.slip∘windings(3, 2) · live · 12/12 perspectives · untested",
-   "receipt": "b2caf628-ef31-821b-abcb-c43da7393faa"
-  },
-  {
-   "name": "heat × tesla = 714",
-   "pass": false,
-   "value": "heat.temperature(5, 7) = tesla.slip(7, 2) = tesla.turns(7, 5) · live · 6/6 perspectives · untested",
-   "receipt": "a1d7f855-5436-8432-adfc-826572bbfe05"
+   "pass": true,
+   "value": "heat.temperature(2, 3) = heat.temperature(4, 6) = tesla.slip∘field(3, 2) = tesla.slip∘windings(3, 2) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/quantum/processing/unit/combinatorial.test.ts",
+   "receipt": "5d9fedfa-70cc-882f-8243-812e9eedf5e8"
   },
   {
    "name": "cross × hd = 768",
    "pass": false,
-   "value": "cross.medSecureWithQSec(3, 8) = cross.medSecureWithQSec(6, 7) = hd.cells() = hd.cells∘cells() = hd.center∘cells(1) = hd.center∘cells(2) · live · 30/30 perspectives · untested",
-   "receipt": "17e3387a-1649-89e8-8934-1aab08420e54"
+   "value": "cross.medSecureWithQSec(3, 8) = cross.medSecureWithQSec(6, 7) = hd.cells() = hd.cells∘cells() = hd.center∘cells(1) = hd.center∘cells(2) · live · untested (no test for medSecureWithQSec)",
+   "receipt": "9c31d326-8fe1-85b7-845e-11ba8f8fff64"
   },
   {
    "name": "heat × tesla = 833",
-   "pass": false,
-   "value": "heat.temperature(5, 6) = tesla.slip(6, 1) = tesla.turns(6, 5) · live · 6/6 perspectives · untested",
-   "receipt": "6c185d76-cc51-8f40-bd83-2733aee736ae"
+   "pass": true,
+   "value": "heat.temperature(5, 6) = tesla.slip(6, 1) = tesla.turns(6, 5) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "92c9024f-c9de-876f-a940-a6a5e363c30e"
   },
   {
    "name": "heat × tesla = 857",
-   "pass": false,
-   "value": "heat.temperature(6, 7) = tesla.slip(7, 1) = tesla.turns(7, 6) · live · 6/6 perspectives · untested",
-   "receipt": "d0d45bf3-5f5f-85c1-baaa-af44a5f7c213"
+   "pass": true,
+   "value": "heat.temperature(6, 7) = tesla.slip(7, 1) = tesla.turns(7, 6) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "5302128a-b199-8d25-9042-621facbb4201"
   },
   {
    "name": "cal × hd = 880",
    "pass": false,
-   "value": "hd.mean(400) = hd.mean(401) = cal.gregorianDrift∘lunarDrift(3) · live · 6/6 perspectives · untested",
-   "receipt": "7d96b90d-1fa5-8b98-a6de-1a9775724187"
-  },
-  {
-   "name": "hd × tesla = 966",
-   "pass": false,
-   "value": "hd.mean(615) = tesla.schumann∘resonance(2, 2) · live · 2/2 perspectives · untested",
-   "receipt": "8525e508-85ef-8a5a-b169-010c4ad08f18"
+   "value": "hd.mean(400) = hd.mean(401) = cal.gregorianDrift∘lunarDrift(3) · live · untested (no test for gregorianDrift, lunarDrift)",
+   "receipt": "93a3db60-34d6-8ded-b2a0-a295926eafe9"
   },
   {
    "name": "cal × tesla = 994",
    "pass": false,
-   "value": "cal.dayPer∘sunSpeed(1) = cal.julianDrift∘sunSpeed(4) = tesla.slip∘slip(3, 2) · live · 6/6 perspectives · untested",
-   "receipt": "f02f26cd-2615-8d07-9e89-f07bfc0be0b3"
+   "value": "cal.dayPer∘sunSpeed(1) = cal.julianDrift∘sunSpeed(4) = tesla.slip∘slip(3, 2) · live · untested (no test for dayPer, sunSpeed, julianDrift)",
+   "receipt": "a8c10911-8d96-8609-914a-73ce782c2f18"
   },
   {
-   "name": "cal × kin = 1056",
-   "pass": true,
-   "value": "cal.lunarDrift∘precession(2) = kin.bits(123) · live · 2/2 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "0123a944-be93-81f6-8092-72f9ce6a9cab"
+   "name": "cal × kin = 996",
+   "pass": false,
+   "value": "cal.sunSpeed(1) = cal.sunSpeed(2) = cal.sunSpeed(3) = cal.sunSpeed(4) = kin.bits(116) · live · untested (no test for sunSpeed)",
+   "receipt": "4d7f7691-6c39-82dd-8238-3e8d3c8b44a5"
   },
   {
    "name": "heat × tesla = 1333",
-   "pass": false,
-   "value": "heat.temperature(4, 3) = heat.temperature(8, 6) = tesla.turns(3, 4) = tesla.turns(6, 8) · live · 12/12 perspectives · untested",
-   "receipt": "c2aeccf9-4b1b-8734-816f-170dcdaa4abc"
-  },
-  {
-   "name": "heat × tesla = 1400",
-   "pass": false,
-   "value": "heat.temperature(7, 5) = tesla.turns(5, 7) · live · 2/2 perspectives · untested",
-   "receipt": "75c4ec57-25e0-8583-a65b-1687b82eb9dd"
+   "pass": true,
+   "value": "heat.temperature(4, 3) = heat.temperature(8, 6) = tesla.turns(3, 4) = tesla.turns(6, 8) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "ea6be1aa-af3e-8ed0-a5dd-da22c9cb4ec6"
   },
   {
    "name": "heat × tesla = 1600",
-   "pass": false,
-   "value": "heat.temperature(8, 5) = tesla.turns(5, 8) · live · 2/2 perspectives · untested",
-   "receipt": "cd874ed8-55cc-8e57-9846-11bb1bbf3772"
+   "pass": true,
+   "value": "heat.temperature(8, 5) = tesla.turns(5, 8) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "11774e6d-1af0-86db-b285-e6ebce278551"
   },
   {
    "name": "cal × hd = 2162",
-   "pass": true,
-   "value": "hd.ut(3, 1) = hd.ut(4, 2) = hd.ut(5, 3) = hd.ut(6, 4) = cal.lunarDrift∘precession(4) · live · 20/20 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "80602651-d20c-8658-ba63-79c968f7f16a"
+   "pass": false,
+   "value": "hd.ut(3, 1) = hd.ut(4, 2) = hd.ut(5, 3) = hd.ut(6, 4) = cal.lunarDrift∘precession(4) · live · untested (no test for lunarDrift)",
+   "receipt": "e064a3af-35d2-85f7-aeb6-aea078bc857b"
   },
   {
    "name": "heat × tesla = 2333",
-   "pass": false,
-   "value": "heat.temperature(7, 3) = tesla.turns(3, 7) · live · 2/2 perspectives · untested",
-   "receipt": "7eeff2fd-eae3-8e01-a57b-5fa66dfeba41"
+   "pass": true,
+   "value": "heat.temperature(7, 3) = tesla.turns(3, 7) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "5de847a7-81a7-8edb-b6fc-a6ab2973ee48"
+  },
+  {
+   "name": "heat × tesla = 2500",
+   "pass": true,
+   "value": "heat.temperature(5, 2) = tesla.period(400) = tesla.turns(2, 5) · live · tested in src/quantum/processing/unit/release.test.ts, src/quantum/processing/unit/live.test.ts, src/families/hd/test.ts",
+   "receipt": "a36427e5-b613-87de-aa44-161143797ac2"
   },
   {
    "name": "heat × tesla = 3000",
    "pass": false,
-   "value": "heat.temperature(3, 1) = heat.temperature(6, 2) = heat.cooling∘temperature(3, 1) = heat.temperature∘cooling(3, 1) = tesla.turns(1, 3) = tesla.turns(2, 6) = tesla.turns∘field(3, 3) = tesla.turns∘windings(3, 3) · live · 56/56 perspectives · untested",
-   "receipt": "2387bbb5-a6ed-86fb-b46e-51dd35d900b1"
-  },
-  {
-   "name": "heat × tesla = 5000",
-   "pass": false,
-   "value": "heat.temperature(5, 1) = tesla.period(200) = tesla.turns(1, 5) · live · 6/6 perspectives · untested",
-   "receipt": "7d10a722-a89a-82ee-b32b-96d17dc4d66a"
+   "value": "heat.temperature(3, 1) = heat.temperature(6, 2) = heat.cooling∘temperature(3, 1) = heat.temperature∘cooling(3, 1) = tesla.turns(1, 3) = tesla.turns(2, 6) = tesla.turns∘field(3, 3) = tesla.turns∘windings(3, 3) · live · untested (no test for cooling)",
+   "receipt": "3ba23766-73e0-8b99-9ea2-cc21f404580e"
   },
   {
    "name": "heat × tesla = 6000",
-   "pass": false,
-   "value": "heat.temperature(6, 1) = tesla.turns(1, 6) · live · 2/2 perspectives · untested",
-   "receipt": "fa5b21fd-c064-8f69-bb43-402aea33af42"
-  },
-  {
-   "name": "heat × tesla = 7000",
-   "pass": false,
-   "value": "heat.temperature(7, 1) = tesla.turns(1, 7) · live · 2/2 perspectives · untested",
-   "receipt": "c82c4da6-6a74-8dfc-a544-4e142ff8254a"
+   "pass": true,
+   "value": "heat.temperature(6, 1) = tesla.turns(1, 6) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "b09e68b9-6586-8153-8a3a-557910d9c1ae"
   },
   {
    "name": "heat × tesla = 8000",
-   "pass": false,
-   "value": "heat.temperature(8, 1) = tesla.turns(1, 8) · live · 2/2 perspectives · untested",
-   "receipt": "c35efffd-1057-8909-9748-0f04118f153b"
+   "pass": true,
+   "value": "heat.temperature(8, 1) = tesla.turns(1, 8) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "a37dd851-9ea6-8dca-9cd7-67cde492da16"
   },
   {
    "name": "cal × tesla = 9000",
    "pass": false,
-   "value": "cal.metonicDrift(72) = tesla.turns∘field(1, 3) = tesla.turns∘windings(1, 3) · live · 6/6 perspectives · untested",
-   "receipt": "377de6d3-3e57-8819-9ae4-0e9575885d1a"
+   "value": "cal.metonicDrift(72) = tesla.turns∘field(1, 3) = tesla.turns∘windings(1, 3) · live · untested (no test for metonicDrift)",
+   "receipt": "603ce3da-c347-80dc-83ea-bbaefcfebb22"
   },
   {
    "name": "cal × tesla = 10800",
    "pass": false,
-   "value": "cal.gregorianDrift(400) = cal.julianDrift(16) = tesla.sync∘sync(3, 2) · live · 6/6 perspectives · untested",
-   "receipt": "2f2179a0-4475-8100-bcc6-ad0507757c41"
-  },
-  {
-   "name": "kin × tesla = 35714",
-   "pass": true,
-   "value": "kin.enneagram∘dreamspellDrift(1) = kin.enneagram∘dreamspellDrift(2) = kin.enneagram∘dreamspellDrift(3) = kin.enneagram∘dreamspellDrift(4) = tesla.period(28) · live · 20/20 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "52cde971-0699-8d6d-8226-b8e92e8aa649"
-  },
-  {
-   "name": "cal × tesla = 50000",
-   "pass": true,
-   "value": "cal.metonicDrift(400) = tesla.period(20) · live · 2/2 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "d2981cc4-df0c-8d2c-9396-31c33aa5159b"
-  },
-  {
-   "name": "cal × tesla = 62500",
-   "pass": true,
-   "value": "cal.metonicDrift∘metonicDrift(4) = tesla.period(16) · live · 2/2 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "93fea8d3-1c68-87aa-a13c-0e7fc1d62b0c"
+   "value": "cal.gregorianDrift(400) = cal.julianDrift(16) = tesla.sync∘sync(3, 2) · live · untested (no test for gregorianDrift, julianDrift)",
+   "receipt": "02ab8c91-8dd5-85d1-b78d-d844247be659"
   },
   {
    "name": "np × tesla = 100000",
    "pass": false,
-   "value": "np.isTime(10) = tesla.period(10) · live · 2/2 perspectives · untested",
-   "receipt": "55c54c86-eec6-8dcd-a531-60041552feca"
-  },
-  {
-   "name": "kin × tesla = 142857",
-   "pass": true,
-   "value": "kin.enneagram() = kin.biorhythm∘enneagram(1, 1, 1) = kin.biorhythm∘enneagram(1, 1, 2) = kin.biorhythm∘enneagram(1, 2, 2) = tesla.period(7) · live · 20/20 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "0e153ba8-1f11-8ceb-b00c-a1f4fcb8c165"
-  },
-  {
-   "name": "heat × tesla = 250000",
-   "pass": false,
-   "value": "heat.temperature∘temperature(1, 2) = tesla.period(4) = tesla.field∘period(2, 2) = tesla.windings∘period(2, 2) · live · 12/12 perspectives · untested",
-   "receipt": "2e7a000a-d24f-8b91-86f9-351a8eb15eae"
+   "value": "np.isTime(10) = tesla.period(10) · live · untested (no test for isTime)",
+   "receipt": "d713e661-aff2-8c04-90ec-9a89c79faedc"
   },
   {
    "name": "heat × tesla = 333333",
+   "pass": true,
+   "value": "heat.temperature∘temperature(3, 3) = tesla.period(3) = tesla.field∘period(3, 1) = tesla.period∘field(3, 1) = tesla.period∘windings(3, 1) · live · tested in src/quantum/processing/unit/release.test.ts, src/quantum/processing/unit/live.test.ts, src/families/hd/test.ts",
+   "receipt": "a91efbb1-8214-8f93-bd20-1d246074c8f7"
+  },
+  {
+   "name": "crypt × signal = 956595",
    "pass": false,
-   "value": "heat.temperature∘temperature(3, 3) = tesla.period(3) = tesla.field∘period(3, 1) = tesla.period∘field(3, 1) = tesla.period∘windings(3, 1) · live · 20/20 perspectives · untested",
-   "receipt": "ff4d7e04-6e0d-8f71-87d8-a7a45937b49d"
+   "value": "crypt.curveClassicalBits(1913190) = crypt.symmetricQuantumBits(1913190) = signal.siftedBits(1913190) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "receipt": "ded2e086-98a9-882c-8040-3cfeb58c06c3"
+  },
+  {
+   "name": "crypt × signal = 1039503",
+   "pass": false,
+   "value": "crypt.curveClassicalBits(2079006) = crypt.symmetricQuantumBits(2079006) = signal.siftedBits(2079006) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "receipt": "64f9fa7b-7116-83a1-b65d-174a0188fe17"
+  },
+  {
+   "name": "np × yi = 1048576",
+   "pass": false,
+   "value": "np.isTime(16) = yi.withYang∘figures(3) · live · untested (no test for isTime, withYang)",
+   "receipt": "e955562c-483e-8084-a326-a11050386e11"
+  },
+  {
+   "name": "crypt × signal = 1150834",
+   "pass": false,
+   "value": "crypt.curveClassicalBits(2301668) = crypt.symmetricQuantumBits(2301668) = signal.siftedBits(2301668) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "receipt": "a61ca8a3-59a1-8bb9-a6e0-f46631d64d82"
   },
   {
    "name": "heat × tesla = 3000000",
-   "pass": false,
-   "value": "heat.temperature∘temperature(3, 1) = tesla.period∘field(1, 3) = tesla.period∘windings(1, 3) · live · 6/6 perspectives · untested",
-   "receipt": "c06b6e4d-d5b9-8ce0-89fc-c234890a7bd1"
+   "pass": true,
+   "value": "heat.temperature∘temperature(3, 1) = tesla.period∘field(1, 3) = tesla.period∘windings(1, 3) · live · tested in src/quantum/processing/unit/release.test.ts, src/quantum/processing/unit/live.test.ts, src/families/hd/test.ts",
+   "receipt": "068b8ab0-dd5e-8a93-a259-4a4b88b580e5"
   },
   {
-   "name": "signal × yi = 268435456",
+   "name": "signal × yi = 134217728",
    "pass": false,
-   "value": "signal.keyspace(28) = yi.figures(28) · live · 2/2 perspectives · untested",
-   "receipt": "21b78881-50e2-8ec6-988a-566aa459f854"
+   "value": "signal.keyspace(27) = yi.figures(27) · live · untested (no test for keyspace)",
+   "receipt": "862425d1-e56f-86da-a3bb-75c8b55d5619"
   },
   {
    "name": "Qpu.Physics × merkaba = 662607015",
    "pass": false,
-   "value": "Qpu.Physics.planck() = Qpu.Physics.planck∘planck() = Qpu.Physics.boltzmann∘planck() = Qpu.Physics.transmon∘planck() = merkaba.mirror(4, 1, 2) = merkaba.mirror(4, 1, 3) = merkaba.mirror(4, 1, 5) = merkaba.mirror(4, 2, 1) · live · 56/56 perspectives · untested",
-   "receipt": "d5c472cb-4e4a-862c-8225-2f57d6f1a78b"
+   "value": "Qpu.Physics.planck() = Qpu.Physics.planck∘planck() = Qpu.Physics.boltzmann∘planck() = Qpu.Physics.transmon∘planck() = merkaba.mirror(4, 1, 2) = merkaba.mirror(4, 1, 3) = merkaba.mirror(4, 1, 5) = merkaba.mirror(4, 2, 1) · live · untested (no test for boltzmann)",
+   "receipt": "36c8df4c-cbbd-89ec-bf0a-c2a191313ea1"
+  },
+  {
+   "name": "signal × yi = 2147483648",
+   "pass": false,
+   "value": "signal.keyspace(31) = yi.figures(31) · live · untested (no test for keyspace)",
+   "receipt": "ab47d210-cb76-8948-b575-5b62f62baa8f"
   },
   {
    "name": "kin × yi = 281474976710656",
    "pass": true,
-   "value": "kin.combinations(8) = kin.vortex∘combinations(3) = yi.inverse∘figures(3) · live · 6/6 perspectives · tested in src/families/hd/test.ts",
-   "receipt": "11181f11-6187-858f-b4e5-22ffd500ee91"
+   "value": "kin.combinations(8) = kin.vortex∘combinations(3) = yi.inverse∘figures(3) · live · tested in scripts/leads.test.mjs, src/quantum/processing/unit/combinatorial.test.ts, src/quantum/processing/unit/release.test.ts",
+   "receipt": "839188b2-ffa7-8c65-b204-82652aae2236"
   },
   {
    "name": "Qpu.Mint × kin × signal × yi = 4096",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(12) = signal.keyspace(12) = kin.combinations(2) = kin.digitalRoot∘combinations(2) = kin.dootKin∘combinations(1, 1, 2) = kin.dootKin∘combinations(2, 2, 2) = yi.figures(12) · 42/42 perspectives · untested",
-   "receipt": "e6cb7b49-3b83-8634-a1e3-45e8a735a267"
+   "value": "Qpu.Mint.mintOf(12) = signal.keyspace(12) = kin.combinations(2) = kin.digitalRoot∘combinations(2) = kin.dootKin∘combinations(1, 1, 2) = kin.dootKin∘combinations(2, 2, 2) = yi.figures(12) · untested (no test for keyspace, digitalRoot, dootKin)",
+   "receipt": "77849eb1-88f0-80c6-9dbe-2fd65d7bf6ca"
+  },
+  {
+   "name": "heat × kin × yi = 34",
+   "pass": false,
+   "value": "heat.signal(7) = kin.bits(4) = kin.digitalRoot∘bits(4) = kin.seal∘bits(4) = kin.tone∘bits(4) = yi.inverse∘change(1, 2) · untested (no test for digitalRoot, tone)",
+   "receipt": "9e28fcbb-e904-892a-bfea-f7247cca7302"
   },
   {
    "name": "Qpu.Mint × signal × yi = 8192",
    "pass": false,
-   "value": "Qpu.Mint.mintOf(13) = signal.keyspace(13) = yi.figures(13) · 6/6 perspectives · untested",
-   "receipt": "61134390-6b96-8f62-9e14-35e8f2a9f1dc"
+   "value": "Qpu.Mint.mintOf(13) = signal.keyspace(13) = yi.figures(13) · untested (no test for keyspace)",
+   "receipt": "77377c1a-0fc2-82a2-9e76-e6d2aa677df4"
+  },
+  {
+   "name": "tesla × yi = 33",
+   "pass": true,
+   "value": "tesla.sync∘turns(1, 2) = yi.inverse∘change(1, 1) · tested in src/families/tesla/test.ts, src/families/merkaba/test.ts, src/families/hd/test.ts",
+   "receipt": "597532bb-261c-8a5e-a45f-48e1a6681beb"
+  },
+  {
+   "name": "hd × kin = 207",
+   "pass": false,
+   "value": "hd.mean∘code(4) = kin.dootKin(1, 4, 2) = kin.dootKin(2, 5, 2) · untested (no test for dootKin)",
+   "receipt": "472e1252-def2-8bb9-8d6c-8cb07ffe3545"
+  },
+  {
+   "name": "kin × tesla = 210",
+   "pass": false,
+   "value": "kin.dootKin(1, 4, 5) = kin.dootKin(2, 5, 5) = tesla.sync(7, 4) · untested (no test for dootKin)",
+   "receipt": "af1871dc-814b-8214-9efc-1e807ceda2b7"
+  },
+  {
+   "name": "Qpu.Physics × cal = 352",
+   "pass": false,
+   "value": "Qpu.Physics.bcs() = Qpu.Physics.planck∘bcs() = Qpu.Physics.boltzmann∘bcs() = Qpu.Physics.transmon∘bcs() = cal.precession(7) · untested (no test for bcs, boltzmann)",
+   "receipt": "c0ab3413-7eba-8058-856e-885f5d6998ad"
+  },
+  {
+   "name": "heat × tesla = 714",
+   "pass": true,
+   "value": "heat.temperature(5, 7) = tesla.slip(7, 2) = tesla.turns(7, 5) · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "0e122cd9-db03-81a4-98e2-d614a38e4bac"
+  },
+  {
+   "name": "heat × tesla = 1400",
+   "pass": true,
+   "value": "heat.temperature(7, 5) = tesla.turns(5, 7) · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "24fb8673-19af-8524-9a6c-6f49834b684b"
+  },
+  {
+   "name": "heat × tesla = 3500",
+   "pass": true,
+   "value": "heat.temperature(7, 2) = tesla.turns(2, 7) · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "c0820229-b339-8d48-b0f7-7fb1c87b96a4"
+  },
+  {
+   "name": "heat × tesla = 5000",
+   "pass": true,
+   "value": "heat.temperature(5, 1) = tesla.turns(1, 5) · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "eff1fef9-725c-8e70-bf35-3c23ae940aac"
+  },
+  {
+   "name": "heat × tesla = 7000",
+   "pass": true,
+   "value": "heat.temperature(7, 1) = tesla.turns(1, 7) · tested in src/quantum/processing/unit/release.test.ts, src/families/tesla/test.ts, src/families/merkaba/test.ts",
+   "receipt": "aa94615f-4cd6-8719-b118-e7dbf731a410"
+  },
+  {
+   "name": "cal × tesla = 62500",
+   "pass": false,
+   "value": "cal.metonicDrift∘metonicDrift(4) = tesla.period(16) · untested (no test for metonicDrift)",
+   "receipt": "bd0c210e-a1aa-8bd5-9097-6db51731a27e"
+  },
+  {
+   "name": "kin × tesla = 142857",
+   "pass": false,
+   "value": "kin.enneagram() = kin.biorhythm∘enneagram(1, 1, 1) = kin.biorhythm∘enneagram(1, 1, 2) = kin.biorhythm∘enneagram(1, 2, 2) = tesla.period(7) · untested (no test for enneagram)",
+   "receipt": "2cbea76c-c1c9-8194-8955-fe503f818dc4"
+  },
+  {
+   "name": "heat × tesla = 250000",
+   "pass": true,
+   "value": "heat.temperature∘temperature(1, 2) = tesla.period(4) = tesla.field∘period(2, 2) = tesla.windings∘period(2, 2) · tested in src/quantum/processing/unit/release.test.ts, src/quantum/processing/unit/live.test.ts, src/families/hd/test.ts",
+   "receipt": "e2641863-d866-8cd2-a9c5-8dc977e32a59"
   },
   {
    "name": "heat × tesla = 500000",
-   "pass": false,
-   "value": "heat.temperature∘temperature(2, 2) = tesla.period(2) = tesla.field∘period(2, 1) = tesla.period∘field(2, 1) = tesla.period∘windings(2, 1) · 20/20 perspectives · untested",
-   "receipt": "f8631c20-f7f2-8b70-89cb-ee0f0237284f"
+   "pass": true,
+   "value": "heat.temperature∘temperature(2, 2) = tesla.period(2) = tesla.field∘period(2, 1) = tesla.period∘field(2, 1) = tesla.period∘windings(2, 1) · tested in src/quantum/processing/unit/release.test.ts, src/quantum/processing/unit/live.test.ts, src/families/hd/test.ts",
+   "receipt": "35f786fe-b016-80a6-b982-d0c9fff8794f"
   },
   {
    "name": "heat × tesla = 1000000",
-   "pass": false,
-   "value": "heat.temperature∘temperature(1, 1) = tesla.period(1) = tesla.period∘field(1, 1) = tesla.period∘field(2, 2) = tesla.period∘windings(1, 1) · 20/20 perspectives · untested",
-   "receipt": "692c10e7-f15b-8ac1-a0a5-9619a2af8780"
+   "pass": true,
+   "value": "heat.temperature∘temperature(1, 1) = tesla.period(1) = tesla.period∘field(1, 1) = tesla.period∘field(2, 2) = tesla.period∘windings(1, 1) · tested in src/quantum/processing/unit/release.test.ts, src/quantum/processing/unit/live.test.ts, src/families/hd/test.ts",
+   "receipt": "0cd60284-89af-8bcb-b5db-ae42f5b17c62"
   },
   {
    "name": "heat × tesla = 2000000",
-   "pass": false,
-   "value": "heat.temperature∘temperature(2, 1) = tesla.period∘field(1, 2) = tesla.period∘windings(1, 2) · 6/6 perspectives · untested",
-   "receipt": "64a88f41-e832-8f39-a15d-753335fa4b7d"
+   "pass": true,
+   "value": "heat.temperature∘temperature(2, 1) = tesla.period∘field(1, 2) = tesla.period∘windings(1, 2) · tested in src/quantum/processing/unit/release.test.ts, src/quantum/processing/unit/live.test.ts, src/families/hd/test.ts",
+   "receipt": "2641bf1f-43ea-841c-b47c-b29192f5b74e"
   },
   {
    "name": "Qpu.Physics × heat = 3313035075",
    "pass": false,
-   "value": "Qpu.Physics.photon() = Qpu.Physics.planck∘photon() = Qpu.Physics.boltzmann∘photon() = Qpu.Physics.transmon∘photon() = heat.coherence∘quality(1, 2, 1) = heat.coherence∘quality(2, 2, 1) = heat.coherence∘signal(1, 1) = heat.coherence∘signal(1, 2) · 56/56 perspectives · untested",
-   "receipt": "9a29c0af-03be-8143-b534-7e5c02ed7c81"
+   "value": "Qpu.Physics.photon() = Qpu.Physics.planck∘photon() = Qpu.Physics.boltzmann∘photon() = Qpu.Physics.transmon∘photon() = heat.coherence∘quality(1, 2, 1) = heat.coherence∘quality(2, 2, 1) = heat.coherence∘signal(1, 1) = heat.coherence∘signal(1, 2) · untested (no test for photon, boltzmann, coherence, quality)",
+   "receipt": "955d10b7-131e-81b2-85e9-1c711863eb02"
   },
   {
    "name": "Qpu.Lattice × yi = 4294967296",
-   "pass": false,
-   "value": "Qpu.Lattice.amplitudes() = Qpu.Lattice.n∘amplitudes() = Qpu.Lattice.seed∘amplitudes() = Qpu.Lattice.coins∘amplitudes() = yi.inverse∘figures(1) · 20/20 perspectives · untested",
-   "receipt": "8481d582-3574-8371-a645-11df2b3a8e18"
+   "pass": true,
+   "value": "Qpu.Lattice.amplitudes() = Qpu.Lattice.n∘amplitudes() = Qpu.Lattice.seed∘amplitudes() = Qpu.Lattice.coins∘amplitudes() = yi.inverse∘figures(1) · tested in src/quantum/processing/unit/live.test.ts, scripts/walls.test.mjs, src/quantum/processing/unit/combinatorial.test.ts",
+   "receipt": "c5cfd60e-05a0-8a67-af06-e068a8726241"
   }
- ],
- "uuid": "2e41e897-c4b9-8c06-9965-a53425be8ba6",
- "receipt": "1fb70bcb-ca29-83db-ba35-516167c4e449"
+ ]
 }

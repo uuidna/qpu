@@ -20,13 +20,13 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).
 
-**Final build receipt** `e75dfe57-f0b3-850a-8889-7b94d1a0a987`
+**Final build receipt** `6d83c666-48bb-8520-ac28-8b6ff9e68313`
 
 | | |
 |---|---|
 | version | 1.0.1 |
-| receipts | 18 files, 3381 nodes |
-| build stream | length 3381, head `e75dfe57-f0b3-850a-8889-7b94d1a0a987`, chain `6ec1713e77c5f9c1c192ef0c0af1be47f8a5e1665a20dece1b856c43a1bcb67b`, holds **true** |
+| receipts | 18 files, 3371 nodes |
+| build stream | length 3371, head `6d83c666-48bb-8520-ac28-8b6ff9e68313`, chain `6c6ed7aa5e6665703bf78ec647e728d2cc1d9abe7293ec85c58322b730535a19`, holds **true** |
 
 ## Proof by MCP
 
@@ -42,7 +42,7 @@ family's formulas run through the MCP in-process, the API walk is the `api` fami
 | formulas | 79 | 78 | 1 | `—` |
 | gate | 2 | 1 | 1 | `909e4fd8-fb51-8d9c-964a-db139cb28b00` |
 | heat | 40 | 22 | 18 | `d79202b8-ea76-80aa-83ab-94383d9ecaea` |
-| next | 178 | 22 | 156 | `1fb70bcb-ca29-83db-ba35-516167c4e449` |
+| next | 168 | 29 | 139 | `f6746e0e-a3d6-8f1e-a77b-52000b2b63cf` |
 | test | 1 | 1 | 0 | `f9ae622b9f60bb5f` |
 | uses | 42 | 42 | 0 | `fcfb3140-44ed-877f-9a0f-c179769f7a13` |
 
@@ -106,167 +106,150 @@ formula its words name: `qpu_data { source: 'ask', about }`.
 ### Next
 
 The base for the next development, discovered by the MCP: every family researched in the public record
-(21 of 22 families found APIs their formulas name, 92 read live), one discovery over every reading
-(26 live inputs, 178 superpositions — values reached by two or more families, 171 reached by a live reading),
-each superposition run from every other way's referrer perspective (25,586 of 25,586 perspectives answer the same value);
-22 are driven by a test and closed, 156 are what the next tests drive:
+(16 of 17 families found APIs their formulas name, 60 read live), one discovery over every reading
+(22 live inputs, 168 superpositions — values reached by two or more families, 148 reached by a live reading),
+each superposition run from every other way's referrer perspective (14 of 17,556 perspectives answer the same value);
+29 are driven by a test and closed, 139 are what the next tests drive:
 
 - Qpu.Hybrid × Qpu.Lattice × Qpu.Shor × audit × cal × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 3 — Qpu.Shor.periodOf(2, 7) = Qpu.Shor.periodOf(4, 7) = Qpu.Shor.half(7, 4) = Qpu.Lattice.n() = Qpu.Lattice.n∘n() = Qpu.Lattice.seed∘n() = Qpu.Lattice.coins∘n() = Qpu.Hybrid.hybridCost() = Qpu.Hybrid.kvCo
 - Qpu.Lattice × Qpu.Mint × Qpu.Shor × audit × clay × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 4 — Qpu.Mint.mintOf(2) = Qpu.Mint.mintOf∘mintOf(1) = Qpu.Mint.mintOf∘chooseOf(2, 1) = Qpu.Mint.mintOf∘chooseOf(2, 3) = Qpu.Shor.powMod(2, 2, 5) = Qpu.Shor.powMod(3, 2, 5) = Qpu.Shor.periodOf(2, 5) = Qpu.S
-- Qpu.Hybrid × Qpu.Lattice × Qpu.Mint × clay × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 8 — Qpu.Mint.mintOf(3) = Qpu.Mint.mintOf∘chooseOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 2) = Qpu.Lattice.vertices() = Qpu.Lattice.n∘vertices() = Qpu.Lattice.seed∘vertices() 
-- Qpu.Mint × Qpu.Shor × cal × clay × cross × crypt × hd × holo × kin × merkaba × np × rule × signal × tesla × yi = 6 — Qpu.Mint.chooseOf(4, 2) = Qpu.Mint.mintOf∘chooseOf(2, 2) = Qpu.Shor.periodOf(3, 7) = Qpu.Shor.periodOf(5, 7) = Qpu.Shor.half(3, 7) = Qpu.Shor.half(5, 7) = cross.medSecureWithQSec(3, 1) = cross.medSecu
-- Qpu.Physics × cal × clay × crypt × hd × heat × holo × kin × np × rule × signal × tesla × yi = 5 — Qpu.Physics.transmon() = Qpu.Physics.planck∘transmon() = Qpu.Physics.boltzmann∘transmon() = Qpu.Physics.transmon∘transmon() = hd.line(20) = hd.line(28) = hd.line(591) = hd.gate∘line(1) = cal.julianDri
-- Qpu.Hybrid × Qpu.Lattice × cal × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 7 — Qpu.Lattice.rays() = Qpu.Lattice.n∘rays() = Qpu.Lattice.seed∘rays() = Qpu.Lattice.coins∘rays() = Qpu.Hybrid.kvSpeed() = Qpu.Hybrid.kvCost∘kvSpeed() = Qpu.Hybrid.r2Cost∘kvSpeed() = Qpu.Hybrid.hybridCos
-- Qpu.Mint × cal × clay × cross × crypt × hd × holo × kin × np × signal × tesla × yi = 10 — Qpu.Mint.chooseOf(5, 2) = Qpu.Mint.chooseOf(5, 3) = cross.medSecureWithQSec(5, 1) = hd.sun∘gate(1) = hd.sun∘gate(2) = hd.sun∘gate(3) = hd.sun∘gate(4) = cal.lunarDrift(1) = cal.coin∘lunarDrift(1) = cal
-- Qpu.Coil × Qpu.Lattice × clay × cross × crypt × heat × kin × rule × signal × tesla × yi = 14 — Qpu.Lattice.faces() = Qpu.Lattice.n∘faces() = Qpu.Lattice.seed∘faces() = Qpu.Lattice.coins∘faces() = Qpu.Coil.coil() = Qpu.Coil.theory∘coil() = Qpu.Coil.practice∘coil() = Qpu.Coil.coil∘coil() = cross.
-- Qpu.Mint × clay × cross × holo × kin × np × rule × signal × tesla × yi = 16 — Qpu.Mint.mintOf(4) = Qpu.Mint.mintOf∘mintOf(2) = cross.medSecureWithQSec(1, 4) = cross.medSecureWithQSec(2, 3) = cross.medSecureWithQSec(4, 2) = cross.medSecureWithQSec(8, 1) = clay.hodge(8) = clay.ho
-- crypt × hd × holo × kin × np × rule × signal × tesla × yi = 9 — hd.center(52) = crypt.curveClassicalBits(18) = crypt.symmetricQuantumBits(18) = signal.siftedBits(18) = holo.proofDepth(400) = holo.proofDepth(401) = holo.proofDepth(404) = np.isSpace(400) = np.isSpac
-- Qpu.Lattice × Qpu.Mint × cal × clay × cross × np × signal × tesla × yi = 32 — Qpu.Mint.mintOf(5) = Qpu.Lattice.bits() = Qpu.Lattice.n∘bits() = Qpu.Lattice.seed∘bits() = Qpu.Lattice.coins∘bits() = cross.medSecureWithQSec(1, 5) = cross.medSecureWithQSec(2, 4) = cross.medSecureWit
-- Qpu.Mint × cal × crypt × hd × heat × signal × tesla × yi = 21 — Qpu.Mint.chooseOf(7, 2) = Qpu.Mint.chooseOf(7, 5) = hd.gate(123) = hd.gate(145) = cal.lunarDrift(2) = cal.coin∘lunarDrift(4) = cal.designDays∘gatesPrecessed(1) = cal.designDays∘gatesPrecessed(2) = cry
-- clay × cross × kin × np × rule × tesla × yi = 12 — cross.medSecureWithQSec(3, 2) = cross.medSecureWithQSec(6, 1) = cross.medSecureWithQSec∘medSecureWithQSec(3, 1) = clay.hodge(6) = clay.hodge∘hodge(3) = np.sparseWidth(591) = np.sparseWidth(615) = np.s
-- Qpu.Mint × clay × cross × hd × kin × tesla × yi = 20 — Qpu.Mint.chooseOf(6, 3) = cross.medSecureWithQSec(5, 2) = hd.gate(615) = hd.gate(628) = clay.hodge(10) = kin.seal(200) = kin.kin∘seal(1, 2) = kin.kin∘seal(1, 3) = kin.kin∘seal(2, 3) = tesla.field(4, 5
-- clay × cross × hd × kin × merkaba × tesla × yi = 24 — cross.medSecureWithQSec(3, 3) = cross.medSecureWithQSec(6, 2) = hd.gate(400) = hd.gate(401) = hd.gate(404) = clay.hodge(12) = merkaba.flows(4) = merkaba.coil∘flows(4) = kin.pillar∘pillar(2, 1) = tesla
-- clay × crypt × kin × rule × signal × tesla × yi = 36 — clay.bsd(200) = clay.hodge(18) = crypt.curveClassicalBits(72) = crypt.symmetricQuantumBits(72) = signal.siftedBits(72) = rule.compositions(1) = rule.compositions(9) = rule.compositions(11) = rule.comp
+- Qpu.Hybrid × Qpu.Lattice × Qpu.Mint × clay × cross × crypt × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 8 — Qpu.Mint.mintOf(3) = Qpu.Mint.mintOf∘chooseOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 2) = Qpu.Lattice.vertices() = Qpu.Lattice.n∘vertices() = Qpu.Lattice.seed∘vertices() 
+- Qpu.Mint × Qpu.Shor × cal × clay × cross × crypt × hd × kin × merkaba × np × rule × signal × tesla × yi = 6 — Qpu.Mint.chooseOf(4, 2) = Qpu.Mint.mintOf∘chooseOf(2, 2) = Qpu.Shor.periodOf(3, 7) = Qpu.Shor.periodOf(5, 7) = Qpu.Shor.half(3, 7) = Qpu.Shor.half(5, 7) = cross.medSecureWithQSec(3, 1) = cross.medSecu
+- Qpu.Hybrid × Qpu.Lattice × cal × crypt × hd × heat × holo × kin × np × rule × signal × tesla × yi = 7 — Qpu.Lattice.rays() = Qpu.Lattice.n∘rays() = Qpu.Lattice.seed∘rays() = Qpu.Lattice.coins∘rays() = Qpu.Hybrid.kvSpeed() = Qpu.Hybrid.kvCost∘kvSpeed() = Qpu.Hybrid.r2Cost∘kvSpeed() = Qpu.Hybrid.hybridCos
+- Qpu.Physics × cal × clay × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 5 — Qpu.Physics.transmon() = Qpu.Physics.planck∘transmon() = Qpu.Physics.boltzmann∘transmon() = Qpu.Physics.transmon∘transmon() = hd.line(27) = hd.gate∘line(1) = hd.gate∘line(2) = hd.gate∘line(3) = cal.ju
+- Qpu.Mint × cal × clay × cross × hd × kin × np × rule × tesla × yi = 10 — Qpu.Mint.chooseOf(5, 2) = Qpu.Mint.chooseOf(5, 3) = cross.medSecureWithQSec(5, 1) = hd.sun∘gate(1) = hd.sun∘gate(2) = hd.sun∘gate(3) = hd.sun∘gate(4) = cal.lunarDrift(1) = cal.coin∘lunarDrift(1) = cal
+- Qpu.Lattice × Qpu.Mint × cal × clay × cross × kin × np × signal × tesla × yi = 32 — Qpu.Mint.mintOf(5) = Qpu.Lattice.bits() = Qpu.Lattice.n∘bits() = Qpu.Lattice.seed∘bits() = Qpu.Lattice.coins∘bits() = cross.medSecureWithQSec(1, 5) = cross.medSecureWithQSec(2, 4) = cross.medSecureWit
+- Qpu.Coil × Qpu.Lattice × clay × cross × heat × kin × rule × tesla × yi = 14 — Qpu.Lattice.faces() = Qpu.Lattice.n∘faces() = Qpu.Lattice.seed∘faces() = Qpu.Lattice.coins∘faces() = Qpu.Coil.coil() = Qpu.Coil.theory∘coil() = Qpu.Coil.practice∘coil() = Qpu.Coil.coil∘coil() = cross.
+- Qpu.Mint × clay × cross × kin × rule × signal × tesla × yi = 16 — Qpu.Mint.mintOf(4) = Qpu.Mint.mintOf∘mintOf(2) = cross.medSecureWithQSec(1, 4) = cross.medSecureWithQSec(2, 3) = cross.medSecureWithQSec(4, 2) = cross.medSecureWithQSec(8, 1) = clay.hodge(8) = clay.ho
+- Qpu.Mint × cal × hd × heat × holo × np × tesla × yi = 21 — Qpu.Mint.chooseOf(7, 2) = Qpu.Mint.chooseOf(7, 5) = hd.gate(116) = hd.gate(130) = cal.lunarDrift(2) = cal.coin∘lunarDrift(4) = cal.designDays∘gatesPrecessed(1) = cal.designDays∘gatesPrecessed(2) = hol
+- clay × cross × hd × kin × merkaba × np × tesla × yi = 24 — cross.medSecureWithQSec(3, 3) = cross.medSecureWithQSec(6, 2) = hd.gate(400) = hd.gate(401) = hd.gate(404) = clay.hodge(12) = merkaba.flows(4) = merkaba.coil∘flows(4) = np.sparseWidth(2301668) = np.sp
+- Qpu.Mint × hd × kin × np × rule × tesla × yi = 15 — Qpu.Mint.chooseOf(6, 2) = Qpu.Mint.chooseOf(6, 4) = hd.code(116) = np.isTime∘subsetSum(3, 2) = rule.cap() = rule.cap∘cap() = rule.compositions∘cap(1) = rule.compositions∘cap(2) = kin.period∘dreamspell
 - Qpu.Mint × cross × kin × rule × signal × tesla × yi = 64 — Qpu.Mint.mintOf(6) = cross.medSecureWithQSec(1, 6) = cross.medSecureWithQSec(2, 5) = cross.medSecureWithQSec(4, 4) = cross.medSecureWithQSec(8, 3) = signal.keyspace(6) = rule.compositions(12) = kin.co
-- heat × kin × np × rule × tesla × yi = 11 — np.sparseWidth(400) = np.sparseWidth(401) = np.sparseWidth(404) = np.isTime∘isSpace(4) = rule.free(5) = rule.free(7) = heat.signal(20) = kin.combinations∘dootKin(1, 2, 1) = tesla.resonance∘period(1, 3
-- heat × kin × np × rule × tesla × yi = 13 — np.isTime∘sparseWidth(4) = rule.free(3) = rule.free(6) = rule.nibbles(2) = rule.free∘free(4) = heat.signal(18) = kin.dreamspellDrift(52) = kin.pillar(2, 1) = kin.pillar(3, 2) = kin.pillar(4, 3) = tesl
-- Qpu.Mint × kin × np × rule × tesla × yi = 15 — Qpu.Mint.chooseOf(6, 2) = Qpu.Mint.chooseOf(6, 4) = np.isTime∘subsetSum(3, 2) = rule.cap() = rule.nibbles(18) = rule.cap∘cap() = rule.compositions∘cap(1) = kin.period∘dreamspellDrift(3) = tesla.field(
-- clay × heat × kin × np × tesla × yi = 18 — clay.hodge(9) = np.sparseWidth(40101) = np.isTime∘subsetSum(3, 3) = heat.signal(13) = kin.dreamspellDrift(72) = tesla.field(3, 6) = tesla.field(6, 3) = tesla.windings(3, 6) = tesla.windings(6, 3) = yi
+- holo × kin × np × rule × tesla × yi = 9 — holo.proofDepth(400) = holo.proofDepth(401) = holo.proofDepth(404) = np.isSpace(400) = np.isSpace(401) = np.isSpace(404) = np.sparseWidth(72) = rule.free(1) = rule.free(11) = rule.free(14) = rule.free
+- clay × cross × kin × rule × tesla × yi = 12 — cross.medSecureWithQSec(3, 2) = cross.medSecureWithQSec(6, 1) = cross.medSecureWithQSec∘medSecureWithQSec(3, 1) = clay.hodge(6) = clay.hodge∘hodge(3) = rule.over∘free(1) = rule.over∘free(2) = rule.ove
+- clay × heat × kin × np × tesla × yi = 18 — clay.hodge(9) = np.isTime∘subsetSum(3, 3) = heat.signal(13) = kin.dreamspellDrift(72) = tesla.field(3, 6) = tesla.field(6, 3) = tesla.windings(3, 6) = tesla.windings(6, 3) = yi.inverse∘change(2, 2) · 
+- Qpu.Mint × clay × cross × kin × tesla × yi = 20 — Qpu.Mint.chooseOf(6, 3) = cross.medSecureWithQSec(5, 2) = clay.hodge(10) = kin.kin∘seal(1, 2) = kin.kin∘seal(1, 3) = kin.kin∘seal(2, 3) = kin.period∘seal(3) = tesla.field(4, 5) = tesla.field(5, 4) = t
 - Qpu.Lattice × Qpu.Mint × clay × cross × tesla × yi = 28 — Qpu.Mint.chooseOf(8, 2) = Qpu.Mint.chooseOf(8, 6) = Qpu.Mint.mintOf∘chooseOf(3, 2) = Qpu.Lattice.plane() = Qpu.Lattice.n∘plane() = Qpu.Lattice.seed∘plane() = Qpu.Lattice.coins∘plane() = cross.medSecur
-- Qpu.Mint × clay × cross × kin × tesla × yi = 56 — Qpu.Mint.chooseOf(8, 3) = Qpu.Mint.chooseOf(8, 5) = Qpu.Mint.mintOf∘chooseOf(3, 3) = cross.medSecureWithQSec(7, 3) = clay.hodge(28) = kin.dootKin(4, 1, 1) = kin.dootKin(5, 2, 1) = kin.period∘pillar(2,
+- clay × holo × kin × np × tesla × yi = 30 — clay.hodge(15) = holo.proofDepth(662607015) = np.isSpace(662607015) = kin.period∘pillar(2, 3) = tesla.field(5, 6) = tesla.field(6, 5) = tesla.sync(1, 4) = tesla.sync(2, 8) = yi.nuclear(12) = yi.nuclea
 - Qpu.Mint × cal × cross × signal × tesla × yi = 128 — Qpu.Mint.mintOf(7) = cross.medSecureWithQSec(1, 7) = cross.medSecureWithQSec(2, 6) = cross.medSecureWithQSec(4, 5) = cross.medSecureWithQSec(8, 4) = cal.gatesPrecessed∘dayPer(1) = cal.gatesPrecessed∘d
 - Qpu.Mint × cross × kin × np × signal × yi = 1024 — Qpu.Mint.mintOf(10) = cross.medSecureWithQSec(4, 8) = cross.medSecureWithQSec(8, 7) = signal.keyspace(10) = np.isTime(4) = np.sparseWidth∘isTime(2) = np.sparseWidth∘isTime(3) = kin.combinations∘dreams
-- hd × heat × kin × tesla × yi = 17 — hd.gate(42) = hd.gate(52) = hd.gate(72) = heat.signal(14) = kin.bits(2) = kin.bits∘dootKin(2, 2, 2) = kin.bits∘seal(2) = kin.digitalRoot∘bits(2) = tesla.sync∘turns(2, 2) = yi.inverse∘change(2, 1) · li
-- clay × crypt × heat × kin × signal = 26 — clay.hodge(13) = crypt.curveClassicalBits(52) = crypt.symmetricQuantumBits(52) = signal.siftedBits(52) = heat.signal(9) = heat.signal∘coherence(3, 2) = kin.bits(3) = kin.pillar(3, 1) = kin.pillar(4, 2
+- kin × np × rule × tesla × yi = 11 — np.sparseWidth(400) = np.sparseWidth(401) = np.sparseWidth(404) = np.isTime∘isSpace(4) = rule.free(5) = rule.free(7) = kin.seal(31) = kin.combinations∘dootKin(1, 2, 1) = tesla.resonance∘period(1, 3) =
+- kin × np × rule × tesla × yi = 13 — np.isTime∘sparseWidth(4) = rule.free(3) = rule.free(6) = rule.nibbles(2) = rule.free∘free(4) = kin.pillar(2, 1) = kin.pillar(3, 2) = kin.pillar(4, 3) = kin.pillar(5, 4) = tesla.quarter∘period(1) = tes
+- hd × heat × kin × tesla × yi = 17 — hd.gate(72) = heat.signal(14) = kin.bits(2) = kin.bits∘dootKin(2, 2, 2) = kin.bits∘seal(2) = kin.digitalRoot∘bits(2) = tesla.sync∘turns(2, 2) = yi.inverse∘change(2, 1) · live · untested (no test for d
 - cal × heat × rule × signal × tesla = 27 — cal.gregorianDrift(1) = cal.coin∘gregorianDrift(1) = cal.coin∘gregorianDrift(2) = cal.coin∘gregorianDrift(3) = signal.keyBits(72) = rule.families() = rule.cap∘families() = rule.compositions∘families(1
-- clay × cross × heat × tesla × yi = 40 — cross.medSecureWithQSec(5, 3) = clay.hodge(20) = heat.signal∘cooling(2, 3) = heat.signal∘cooling(3, 2) = heat.signal∘ways(2, 3) = heat.signal∘ways(3, 2) = tesla.field(5, 8) = tesla.field(8, 5) = tesla
-- cal × clay × kin × merkaba × yi = 54 — cal.gregorianDrift(2) = cal.lunarDrift(5) = cal.coin∘gregorianDrift(4) = clay.bsd(145) = merkaba.flows(5) = kin.dootKin(1, 3, 4) = kin.dootKin(2, 4, 4) = kin.dootKin(3, 5, 4) = kin.pillar(1, 7) = yi.c
+- crypt × rule × signal × tesla × yi = 36 — crypt.curveClassicalBits(72) = crypt.symmetricQuantumBits(72) = signal.siftedBits(72) = rule.compositions(1) = rule.compositions(9) = rule.compositions(11) = rule.compositions(14) = tesla.field(6, 6) 
+- clay × cross × heat × tesla × yi = 40 — cross.medSecureWithQSec(5, 3) = clay.bsd(184) = heat.signal∘cooling(2, 3) = heat.signal∘cooling(3, 2) = heat.signal∘ways(2, 3) = heat.signal∘ways(3, 2) = tesla.field(5, 8) = tesla.field(8, 5) = tesla.
+- cal × clay × kin × merkaba × yi = 54 — cal.gregorianDrift(2) = cal.lunarDrift(5) = cal.coin∘gregorianDrift(4) = clay.hodge(27) = merkaba.flows(5) = kin.dootKin(1, 3, 4) = kin.dootKin(2, 4, 4) = kin.dootKin(3, 5, 4) = kin.pillar(1, 7) = yi.
+- Qpu.Mint × cross × kin × tesla × yi = 56 — Qpu.Mint.chooseOf(8, 3) = Qpu.Mint.chooseOf(8, 5) = Qpu.Mint.mintOf∘chooseOf(3, 3) = cross.medSecureWithQSec(7, 3) = kin.dootKin(4, 1, 1) = kin.dootKin(5, 2, 1) = kin.period∘pillar(2, 1) = kin.vortex∘
 - cross × heat × kin × path × tesla = 80 — cross.medSecureWithQSec(5, 4) = heat.signal∘cooling(1, 3) = heat.signal∘ways(1, 3) = kin.pillar(1, 5) = kin.pillar(2, 6) = kin.pillar(3, 7) = kin.pillar(4, 8) = path.anomalyToResponse() = path.allPath
-- crypt × kin × rule × signal × tesla = 100 — crypt.curveClassicalBits(200) = crypt.symmetricQuantumBits(200) = signal.siftedBits(200) = rule.compositions(10) = kin.dreamspellDrift(400) = kin.dreamspellDrift(401) = kin.enneagram∘kin(1, 1) = kin.e
-- heat × kin × tesla × yi = 19 — heat.signal(12) = heat.signal∘coherence(3, 3) = kin.pillar∘seal(1, 2) = kin.pillar∘seal(2, 3) = tesla.resonance∘period(3, 3) = yi.inverse∘change(2, 3) · live · 30/30 perspectives · untested
-- clay × kin × tesla × yi = 30 — clay.hodge(15) = kin.dreamspellDrift(123) = kin.period∘pillar(2, 3) = tesla.field(5, 6) = tesla.field(6, 5) = tesla.sync(1, 4) = tesla.sync(2, 8) = yi.nuclear(12) = yi.nuclear(13) · live · 72/72 persp
-- Qpu.Mint × hd × tesla × yi = 35 — Qpu.Mint.chooseOf(7, 3) = Qpu.Mint.chooseOf(7, 4) = hd.cells∘gate(1) = hd.cells∘gate(2) = hd.cells∘gate(3) = hd.cells∘gate(4) = tesla.field(5, 7) = tesla.field(7, 5) = tesla.windings(5, 7) = tesla.win
+- heat × kin × tesla × yi = 19 — heat.signal(12) = heat.signal∘coherence(3, 3) = kin.pillar∘seal(1, 2) = kin.pillar∘seal(2, 3) = tesla.resonance∘period(3, 3) = yi.inverse∘change(2, 3) · live · untested (no test for coherence, pillar)
+- clay × holo × np × yi = 22 — clay.bsd(130) = clay.hodge(11) = holo.proofDepth(2301668) = holo.proofDepth(2745751) = np.isSpace(2301668) = np.isSpace(2745751) = yi.withYang∘change(3, 2) · live · untested (no test for bsd, hodge, p
+- heat × kin × np × yi = 23 — np.sparseWidth(1380649) = np.sparseWidth(1913190) = np.sparseWidth(2079006) = heat.signal(10) = kin.pillar∘pillar(3, 2) = yi.withYang∘change(3, 3) · live · untested (no test for sparseWidth, pillar, w
 - cross × kin × tesla × yi = 48 — cross.medSecureWithQSec(3, 4) = cross.medSecureWithQSec(6, 3) = cross.medSecureWithQSec∘medSecureWithQSec(3, 2) = kin.bits∘pillar(3, 2) = tesla.field(6, 8) = tesla.field(8, 6) = tesla.windings(6, 8) =
-- cal × kin × tesla × yi = 50 — cal.precession(1) = cal.coin∘precession(1) = cal.coin∘precession(2) = cal.coin∘precession(3) = kin.dreamspellDrift(200) = kin.bits∘pillar(2, 3) = kin.combinations∘pillar(2, 2) = tesla.earth∘period(2) 
+- cal × kin × tesla × yi = 50 — cal.precession(1) = cal.coin∘precession(1) = cal.coin∘precession(2) = cal.coin∘precession(3) = kin.bits∘pillar(2, 3) = kin.combinations∘pillar(2, 2) = tesla.earth∘period(2) = tesla.turns∘quarter(2, 3)
+- crypt × kin × signal × yi = 58 — crypt.curveClassicalBits(116) = crypt.symmetricQuantumBits(116) = signal.siftedBits(116) = kin.dootKin(4, 1, 3) = kin.dootKin(5, 2, 3) = kin.dootKin∘pillar(1, 2, 1) = yi.complement(5) · live · unteste
 - heat × kin × tesla × yi = 60 — heat.signal∘cooling(2, 2) = heat.signal∘ways(2, 2) = kin.bits(7) = kin.dootKin(4, 1, 5) = kin.dootKin(5, 2, 5) = kin.period(3) = tesla.sync(1, 2) = tesla.sync(2, 4) = tesla.sync(3, 6) = tesla.sync(4, 
+- cal × crypt × kin × signal = 65 — cal.lunarDrift(6) = crypt.curveClassicalBits(130) = crypt.symmetricQuantumBits(130) = signal.siftedBits(130) = kin.pillar(6, 1) = kin.pillar(7, 2) = kin.pillar(8, 3) = kin.kin∘dreamspellDrift(1, 2) · 
+- crypt × kin × signal × tesla = 92 — crypt.curveClassicalBits(184) = crypt.symmetricQuantumBits(184) = signal.siftedBits(184) = kin.combinations∘dootKin(2, 2, 2) = tesla.period∘resonance(1, 3) · live · untested (no test for curveClassica
 - cross × kin × merkaba × tesla = 112 — cross.medSecureWithQSec(7, 4) = merkaba.flows(6) = merkaba.flows∘flows(3) = kin.bits(13) = kin.pillar∘bits(2, 1) = kin.pillar∘bits(3, 2) = tesla.slip∘quarter(3, 1) = tesla.turns∘quarter(3, 2) · live ·
-- cal × heat × kin × tesla = 119 — cal.lunarDrift(11) = heat.signal(2) = heat.cooling∘signal(2, 1) = heat.cooling∘signal(3, 2) = heat.signal∘coherence(1, 1) = kin.pillar(1, 2) = kin.pillar(2, 3) = kin.pillar(3, 4) = kin.pillar(4, 5) = 
 - cal × heat × kin × tesla = 120 — cal.sarosShift(1) = cal.sarosShift(4) = cal.sarosShift(7) = cal.sarosShift(10) = heat.signal∘cooling(1, 2) = heat.signal∘ways(1, 2) = kin.bits(14) = tesla.sync(2, 2) = tesla.sync(4, 4) = tesla.sync(6,
-- crypt × heat × signal × tesla = 200 — crypt.curveClassicalBits(400) = crypt.symmetricQuantumBits(400) = signal.siftedBits(400) = heat.temperature(1, 5) = tesla.slip(5, 4) = tesla.turns(5, 1) · live · 30/30 perspectives · untested
+- crypt × heat × signal × tesla = 200 — crypt.curveClassicalBits(400) = crypt.symmetricQuantumBits(400) = signal.siftedBits(400) = heat.temperature(1, 5) = tesla.slip(5, 4) = tesla.turns(5, 1) · live · untested (no test for curveClassicalBi
 - Qpu.Mint × cross × signal × yi = 256 — Qpu.Mint.mintOf(8) = Qpu.Mint.mintOf∘mintOf(3) = cross.medSecureWithQSec(1, 8) = cross.medSecureWithQSec(2, 7) = cross.medSecureWithQSec(4, 6) = cross.medSecureWithQSec(8, 5) = signal.keyspace(8) = si
-- Qpu.Mint × cross × signal × yi = 512 — Qpu.Mint.mintOf(9) = cross.medSecureWithQSec(2, 8) = cross.medSecureWithQSec(4, 7) = cross.medSecureWithQSec(8, 6) = signal.keyspace(9) = yi.figures(9) · live · 30/30 perspectives · untested
-- clay × hd × heat × tesla = 800 — hd.mean(200) = clay.hodge(400) = heat.temperature(4, 5) = tesla.slip(5, 1) = tesla.turns(5, 4) · live · 20/20 perspectives · untested
-- Qpu.Mint × cross × signal × yi = 2048 — Qpu.Mint.mintOf(11) = cross.medSecureWithQSec(8, 8) = signal.keyspace(11) = yi.figures(11) · live · 12/12 perspectives · untested
-- Qpu.Mint × np × signal × yi = 32768 — Qpu.Mint.mintOf(15) = signal.keyspace(15) = np.isTime(8) = yi.figures(15) = yi.withYang∘figures(2) = yi.withYang∘figures(4) · live · 30/30 perspectives · untested
+- Qpu.Mint × cross × signal × yi = 512 — Qpu.Mint.mintOf(9) = cross.medSecureWithQSec(2, 8) = cross.medSecureWithQSec(4, 7) = cross.medSecureWithQSec(8, 6) = signal.keyspace(9) = yi.figures(9) · live · untested (no test for medSecureWithQSec
+- Qpu.Mint × cross × signal × yi = 2048 — Qpu.Mint.mintOf(11) = cross.medSecureWithQSec(8, 8) = signal.keyspace(11) = yi.figures(11) · live · untested (no test for medSecureWithQSec, keyspace)
+- Qpu.Mint × np × signal × yi = 32768 — Qpu.Mint.mintOf(15) = signal.keyspace(15) = np.isTime(8) = yi.figures(15) = yi.withYang∘figures(2) = yi.withYang∘figures(4) · live · untested (no test for keyspace, isTime, withYang)
 - Qpu.Mint × kin × signal × yi = 65536 — Qpu.Mint.mintOf(16) = Qpu.Mint.mintOf∘mintOf(4) = signal.keyspace(16) = signal.keyspace∘keyspace(4) = kin.combinations∘dreamspellDrift(3) = yi.figures(16) = yi.figures∘figures(4) = yi.inverse∘figures(
-- clay × hd × yi = 22 — hd.code(123) = clay.hodge(11) = yi.withYang∘change(3, 2) · live · 6/6 perspectives · untested
-- heat × kin × yi = 23 — heat.signal(10) = kin.pillar∘pillar(3, 2) = yi.withYang∘change(3, 3) · live · 6/6 perspectives · untested
-- Qpu.Physics × hd × tesla = 25 — Qpu.Physics.bcs∘gap(1) = Qpu.Physics.bcs∘gap(2) = Qpu.Physics.bcs∘gap(3) = Qpu.Physics.bcs∘gap(4) = hd.gate(1) = hd.gate(2) = hd.gate(3) = hd.gate(4) = tesla.field(5, 5) = tesla.period(40101) = tesla.
-- hd × heat × kin = 29 — hd.ut∘gate(1, 1) = hd.ut∘gate(1, 2) = hd.ut∘gate(1, 3) = hd.ut∘gate(2, 1) = heat.signal(8) = heat.signal∘coherence(2, 3) = kin.pillar∘dreamspellDrift(1, 2) = kin.pillar∘dreamspellDrift(2, 3) · live · 
-- heat × kin × yi = 34 — heat.signal(7) = kin.bits(4) = kin.digitalRoot∘bits(4) = kin.seal∘bits(4) = kin.tone∘bits(4) = yi.inverse∘change(1, 2) · live · 30/30 perspectives · untested
-- hd × kin × yi = 51 — hd.gate(200) = kin.dootKin(1, 3, 1) = kin.dootKin(2, 4, 1) = kin.dootKin(3, 5, 1) = kin.crossed∘dootKin(1, 2, 1) = yi.complement(12) = yi.inverse∘change(3, 3) · live · 42/42 perspectives · untested
-- kin × tesla × yi = 52 — kin.bits(6) = kin.dootKin(1, 3, 2) = kin.dootKin(2, 4, 2) = kin.dootKin(3, 5, 2) = tesla.schumann∘period(3) = yi.complement(11) = yi.inverse(11) · live · 42/42 perspectives · untested
-- kin × tesla × yi = 53 — kin.dootKin(1, 3, 3) = kin.dootKin(2, 4, 3) = kin.dootKin(3, 5, 3) = tesla.quarter∘period(4) = yi.complement(10) = yi.complement∘nuclear(4) = yi.nuclear∘complement(4) · live · 42/42 perspectives · unt
+- Qpu.Physics × hd × tesla = 25 — Qpu.Physics.bcs∘gap(1) = Qpu.Physics.bcs∘gap(2) = Qpu.Physics.bcs∘gap(3) = Qpu.Physics.bcs∘gap(4) = hd.gate(1) = hd.gate(2) = hd.gate(3) = hd.gate(4) = tesla.field(5, 5) = tesla.windings(5, 5) = tesla
+- clay × heat × kin = 26 — clay.bsd(116) = clay.hodge(13) = heat.signal(9) = heat.signal∘coherence(3, 2) = kin.bits(3) = kin.pillar(3, 1) = kin.pillar(4, 2) = kin.pillar(5, 3) · live · untested (no test for bsd, hodge, coherenc
+- hd × heat × kin = 29 — hd.code(130) = hd.ut∘gate(1, 1) = hd.ut∘gate(1, 2) = hd.ut∘gate(1, 3) = heat.signal(8) = heat.signal∘coherence(2, 3) = kin.dreamspellDrift(116) = kin.pillar∘dreamspellDrift(1, 2) = kin.pillar∘dreamspe
+- cal × kin × yi = 43 — cal.lunarDrift(4) = kin.bits(5) = kin.period∘pillar(2, 2) = kin.pillar∘pillar(1, 3) = yi.withYang∘complement(3) · live · untested (no test for lunarDrift, pillar, withYang)
+- heat × kin × yi = 47 — heat.signal(5) = kin.bits∘pillar(3, 3) = yi.complement(16) = yi.complement∘inverse(2) = yi.figures∘complement(4) = yi.inverse∘complement(2) · live · untested (no test for pillar)
+- hd × kin × yi = 51 — hd.gate(184) = kin.dootKin(1, 3, 1) = kin.dootKin(2, 4, 1) = kin.dootKin(3, 5, 1) = kin.crossed∘dootKin(1, 2, 1) = yi.complement(12) = yi.inverse∘change(3, 3) · live · untested (no test for dootKin)
+- kin × tesla × yi = 52 — kin.bits(6) = kin.dootKin(1, 3, 2) = kin.dootKin(2, 4, 2) = kin.dootKin(3, 5, 2) = tesla.schumann∘period(3) = yi.complement(11) = yi.inverse(11) · live · untested (no test for dootKin)
+- kin × tesla × yi = 53 — kin.dootKin(1, 3, 3) = kin.dootKin(2, 4, 3) = kin.dootKin(3, 5, 3) = tesla.quarter∘period(4) = yi.complement(10) = yi.nuclear(27) = yi.complement∘nuclear(4) = yi.nuclear∘complement(4) · live · unteste
 - heat × kin × yi = 59 — heat.signal(4) = heat.signal∘coherence(1, 3) = heat.signal∘coherence(2, 1) = kin.dootKin(4, 1, 4) = kin.dootKin(5, 2, 4) = yi.complement(4) = yi.figures∘complement(2) = yi.lower∘complement(4) · live ·
-- cal × kin × tesla = 65 — cal.lunarDrift(6) = kin.pillar(6, 1) = kin.pillar(7, 2) = kin.pillar(8, 3) = kin.kin∘dreamspellDrift(1, 2) = tesla.earth(615) · live · 30/30 perspectives · untested
-- cal × clay × kin = 76 — cal.lunarDrift(7) = clay.bsd(400) = kin.bits∘pillar(2, 1) = kin.period∘dootKin(1, 1, 1) · live · 12/12 perspectives · untested
-- cal × heat × tesla = 125 — cal.metonicDrift(1) = cal.coin∘metonicDrift(1) = cal.coin∘metonicDrift(2) = cal.coin∘metonicDrift(3) = heat.temperature(1, 8) = tesla.slip(8, 7) = tesla.turns(8, 1) · live · 42/42 perspectives · untes
-- cross × kin × tesla = 160 — cross.medSecureWithQSec(5, 5) = kin.dootKin(1, 2, 5) = kin.dootKin(2, 3, 5) = kin.dootKin(3, 4, 5) = kin.dootKin(4, 5, 5) = tesla.sync(8, 6) · live · 30/30 perspectives · untested
-- hd × kin × rule = 207 — hd.mean∘code(4) = rule.formulas() = rule.cap∘formulas() = rule.compositions∘formulas(1) = rule.compositions∘formulas(2) = kin.dootKin(1, 4, 2) = kin.dootKin(2, 5, 2) · live · 42/42 perspectives · unte
-- cal × kin × tesla = 240 — cal.sarosShift(2) = cal.sarosShift(5) = cal.sarosShift(8) = cal.sarosShift(11) = kin.bits(28) = tesla.sync(4, 2) = tesla.sync(8, 4) = tesla.field∘sync(2, 2) = tesla.sync∘field(2, 2) · live · 72/72 per
+- clay × kin × yi = 62 — clay.hodge(31) = kin.bits∘dootKin(1, 1, 2) = yi.complement(1) = yi.inverse(31) = yi.change∘complement(2, 3) = yi.change∘complement(3, 2) · live · untested (no test for hodge, dootKin)
+- cal × clay × kin = 76 — cal.lunarDrift(7) = clay.bsd(400) = kin.bits∘pillar(2, 1) = kin.period∘dootKin(1, 1, 1) · live · untested (no test for lunarDrift, bsd, pillar, dootKin)
+- kin × rule × tesla = 100 — rule.compositions(10) = rule.compositions(13) = rule.free∘compositions(3) = rule.nibbles∘compositions(2) = kin.dreamspellDrift(400) = kin.dreamspellDrift(401) = kin.enneagram∘kin(1, 1) = kin.enneagram
+- cal × heat × kin = 119 — cal.lunarDrift(11) = heat.signal(2) = heat.cooling∘signal(2, 1) = heat.cooling∘signal(3, 2) = heat.signal∘coherence(1, 1) = kin.pillar(1, 2) = kin.pillar(2, 3) = kin.pillar(3, 4) = kin.pillar(4, 5) · 
+- cal × heat × tesla = 125 — cal.metonicDrift(1) = cal.coin∘metonicDrift(1) = cal.coin∘metonicDrift(2) = cal.coin∘metonicDrift(3) = heat.temperature(1, 8) = tesla.slip(8, 7) = tesla.turns(8, 1) · live · untested (no test for meto
+- cross × kin × tesla = 160 — cross.medSecureWithQSec(5, 5) = kin.dootKin(1, 2, 5) = kin.dootKin(2, 3, 5) = kin.dootKin(3, 4, 5) = kin.dootKin(4, 5, 5) = tesla.sync(8, 6) · live · untested (no test for medSecureWithQSec, dootKin)
 - cal × heat × tesla = 250 — cal.metonicDrift(2) = cal.coin∘metonicDrift(4) = heat.temperature(1, 4) = heat.temperature(2, 8) = heat.temperature∘coherence(3, 3) = heat.temperature∘cooling(1, 2) = tesla.slip(4, 3) = tesla.slip(8, 
-- cal × heat × tesla = 375 — cal.metonicDrift(3) = heat.temperature(3, 8) = tesla.quarter(200) = tesla.slip(8, 5) = tesla.turns(8, 3) · live · 20/20 perspectives · untested
-- clay × heat × tesla = 400 — clay.hodge(200) = heat.temperature(2, 5) = tesla.slip(5, 3) = tesla.turns(5, 2) · live · 12/12 perspectives · untested
+- clay × hd × kin = 260 — hd.sun∘mean(1) = hd.sun∘mean(2) = hd.sun∘mean(3) = hd.sun∘mean(4) = clay.hodge(130) = kin.kin(1, 2) = kin.kin(1, 3) = kin.kin(1, 4) = kin.kin(1, 5) · live · untested (no test for sun, hodge)
+- cal × heat × tesla = 375 — cal.metonicDrift(3) = heat.temperature(3, 8) = tesla.slip(8, 5) = tesla.turns(8, 3) · live · untested (no test for metonicDrift)
 - cal × heat × tesla = 500 — cal.metonicDrift(4) = heat.temperature(1, 2) = heat.temperature(2, 4) = heat.temperature(3, 6) = heat.temperature(4, 8) = tesla.slip(2, 1) = tesla.slip(4, 2) = tesla.slip(6, 3) = tesla.slip(8, 4) · li
-- cal × heat × tesla = 625 — cal.metonicDrift(5) = heat.temperature(5, 8) = tesla.slip(8, 3) = tesla.turns(8, 5) = tesla.sync∘quarter(2, 2) · live · 20/20 perspectives · untested
+- cal × heat × tesla = 625 — cal.metonicDrift(5) = heat.temperature(5, 8) = tesla.slip(8, 3) = tesla.turns(8, 5) = tesla.sync∘quarter(2, 2) · live · untested (no test for metonicDrift)
 - cal × heat × tesla = 750 — cal.metonicDrift(6) = heat.temperature(3, 4) = heat.temperature(6, 8) = heat.temperature∘cooling(3, 2) = heat.temperature∘ways(3, 2) = tesla.slip(4, 1) = tesla.slip(8, 2) = tesla.turns(4, 3) = tesla.t
-- cal × heat × tesla = 875 — cal.metonicDrift(7) = heat.temperature(7, 8) = tesla.slip(8, 1) = tesla.turns(8, 7) · live · 12/12 perspectives · untested
+- clay × heat × tesla = 800 — clay.hodge(400) = heat.temperature(4, 5) = tesla.slip(5, 1) = tesla.turns(5, 4) · live · untested (no test for hodge)
+- cal × heat × tesla = 875 — cal.metonicDrift(7) = heat.temperature(7, 8) = tesla.slip(8, 1) = tesla.turns(8, 7) · live · untested (no test for metonicDrift)
 - cal × heat × tesla = 1000 — cal.metonicDrift(8) = heat.temperature(1, 1) = heat.temperature(2, 2) = heat.temperature(3, 3) = heat.temperature(4, 4) = tesla.turns(1, 1) = tesla.turns(2, 2) = tesla.turns(3, 3) = tesla.turns(4, 4) 
-- Qpu.Physics × heat × tesla = 1200 — Qpu.Physics.aluminium() = Qpu.Physics.planck∘aluminium() = Qpu.Physics.boltzmann∘aluminium() = Qpu.Physics.transmon∘aluminium() = heat.temperature(6, 5) = tesla.turns(5, 6) · live · 30/30 perspectives
-- cal × heat × tesla = 1250 — cal.metonicDrift(10) = cal.lunarDrift∘metonicDrift(1) = heat.temperature(5, 4) = tesla.turns(4, 5) · live · 12/12 perspectives · untested
-- cal × heat × tesla = 1500 — cal.metonicDrift(12) = heat.temperature(3, 2) = heat.temperature(6, 4) = heat.temperature∘coherence(3, 1) = tesla.turns(2, 3) = tesla.turns(4, 6) · live · 30/30 perspectives · untested
-- cal × heat × tesla = 1750 — cal.metonicDrift(14) = heat.temperature(7, 4) = tesla.turns(4, 7) · live · 6/6 perspectives · untested
+- Qpu.Physics × heat × tesla = 1200 — Qpu.Physics.aluminium() = Qpu.Physics.planck∘aluminium() = Qpu.Physics.boltzmann∘aluminium() = Qpu.Physics.transmon∘aluminium() = heat.temperature(6, 5) = tesla.turns(5, 6) · live · untested (no test 
+- cal × heat × tesla = 1250 — cal.metonicDrift(10) = cal.lunarDrift∘metonicDrift(1) = heat.temperature(5, 4) = tesla.turns(4, 5) · live · untested (no test for metonicDrift, lunarDrift)
+- cal × heat × tesla = 1500 — cal.metonicDrift(12) = heat.temperature(3, 2) = heat.temperature(6, 4) = heat.temperature∘coherence(3, 1) = tesla.turns(2, 3) = tesla.turns(4, 6) · live · untested (no test for metonicDrift, coherence
+- cal × heat × tesla = 1750 — cal.metonicDrift(14) = heat.temperature(7, 4) = tesla.turns(4, 7) · live · untested (no test for metonicDrift)
 - cal × heat × tesla = 2000 — cal.metonicDrift(16) = heat.temperature(2, 1) = heat.temperature(4, 2) = heat.temperature(6, 3) = heat.temperature(8, 4) = tesla.turns(1, 2) = tesla.turns(2, 4) = tesla.turns(3, 6) = tesla.turns(4, 8)
-- cal × heat × tesla = 2500 — cal.metonicDrift(20) = heat.temperature(5, 2) = tesla.period(400) = tesla.turns(2, 5) · live · 12/12 perspectives · untested
-- cal × heat × tesla = 3500 — cal.metonicDrift(28) = heat.temperature(7, 2) = tesla.turns(2, 7) · live · 6/6 perspectives · untested
-- cal × heat × tesla = 4000 — cal.lunarDrift∘metonicDrift(3) = heat.temperature(4, 1) = heat.temperature(8, 2) = tesla.turns(1, 4) = tesla.turns(2, 8) = tesla.turns∘field(1, 2) = tesla.turns∘windings(1, 2) · live · 42/42 perspecti
-- Qpu.Mint × signal × yi = 16384 — Qpu.Mint.mintOf(14) = signal.keyspace(14) = yi.figures(14) · live · 6/6 perspectives · untested
-- kin × signal × yi = 262144 — signal.keyspace(18) = kin.combinations(3) = kin.digitalRoot∘combinations(3) = kin.seal∘combinations(3) = kin.tone∘combinations(3) = yi.figures(18) · live · 30/30 perspectives · untested
-- np × signal × yi = 1048576 — signal.keyspace(20) = np.isTime(16) = yi.figures(20) = yi.withYang∘figures(3) · live · 12/12 perspectives · untested
-- kin × signal × yi = 4398046511104 — signal.keyspace(42) = kin.combinations(7) = kin.vortex∘combinations(4) = yi.figures(42) · live · 12/12 perspectives · untested
-- tesla × yi = 33 — tesla.sync∘turns(1, 2) = yi.nuclear(18) = yi.inverse∘change(1, 1) · live · 6/6 perspectives · untested
-- kin × tesla = 37 — kin.combinations∘pillar(2, 3) = tesla.turns∘quarter(1, 2) · live · 2/2 perspectives · untested
-- heat × kin = 39 — heat.signal(6) = heat.signal∘coherence(2, 2) = heat.signal∘coherence(3, 1) = kin.pillar(4, 1) = kin.pillar(5, 2) = kin.pillar(6, 3) = kin.pillar(7, 4) · live · 42/42 perspectives · untested
-- tesla × yi = 42 — tesla.field(6, 7) = tesla.field(7, 6) = tesla.windings(6, 7) = tesla.windings(7, 6) = yi.nuclear(20) = yi.nuclear(52) = yi.withYang∘nuclear(3) · live · 42/42 perspectives · untested
-- tesla × yi = 49 — tesla.field(7, 7) = tesla.windings(7, 7) = yi.complement(14) = yi.inverse∘change(3, 1) · live · 12/12 perspectives · untested
-- kin × yi = 61 — kin.bits∘dootKin(1, 1, 1) = kin.bits∘pillar(3, 1) = kin.pillar∘pillar(3, 1) = yi.complement(2) = yi.change∘complement(1, 3) = yi.change∘complement(3, 1) = yi.complement∘change(1, 3) · live · 42/42 per
-- kin × yi = 62 — kin.bits∘dootKin(1, 1, 2) = yi.complement(1) = yi.nuclear(28) = yi.change∘complement(2, 3) = yi.change∘complement(3, 2) · live · 20/20 perspectives · untested
-- kin × yi = 63 — kin.bits∘pillar(2, 2) = kin.combinations∘pillar(2, 1) = yi.change∘complement(1, 1) = yi.change∘complement(2, 2) = yi.change∘complement(3, 3) = yi.complement∘change(1, 1) · live · 30/30 perspectives · 
-- signal × tesla = 75 — signal.keyBits(200) = tesla.sync(5, 8) = tesla.earth∘period(3) = tesla.turns∘quarter(1, 1) = tesla.turns∘quarter(2, 2) · live · 20/20 perspectives · untested
-- cal × rule = 81 — cal.gregorianDrift(3) = rule.compositions(4) = rule.compositions(13) = rule.compositions∘compositions(3) = rule.free∘compositions(3) · live · 20/20 perspectives · untested
-- kin × tesla = 92 — kin.combinations∘dootKin(2, 2, 2) = tesla.period∘resonance(1, 3) · live · 2/2 perspectives · untested
-- cross × hd = 96 — cross.medSecureWithQSec(3, 5) = cross.medSecureWithQSec(6, 4) = hd.code(404) · live · 6/6 perspectives · untested
-- clay × kin = 98 — clay.bsd(404) = kin.period∘pillar(1, 2) · live · 2/2 perspectives · untested
-- cal × tesla = 99 — cal.gatesPrecessed(40101) = tesla.earth(404) · live · 2/2 perspectives · untested
-- clay × kin = 104 — clay.hodge(52) = kin.dootKin(1, 5, 4) = kin.bits∘pillar(1, 1) · live · 6/6 perspectives · untested
-- cal × kin = 108 — cal.gregorianDrift(4) = cal.lunarDrift(10) = cal.lunarDrift∘lunarDrift(1) = kin.dootKin(2, 1, 3) = kin.dootKin(3, 2, 3) = kin.dootKin(4, 3, 3) = kin.dootKin(5, 4, 3) · live · 42/42 perspectives · unte
-- heat × kin = 111 — heat.temperature∘cooling(1, 3) = heat.temperature∘ways(1, 3) = kin.period∘pillar(1, 1) · live · 6/6 perspectives · untested
-- kin × tesla = 122 — kin.bits∘dootKin(2, 1, 2) = tesla.quarter(615) · live · 2/2 perspectives · untested
-- cal × tesla = 130 — cal.lunarDrift(12) = tesla.period∘resonance(2, 3) · live · 2/2 perspectives · untested
-- hd × tesla = 143 — hd.ut∘mean(1, 3) = tesla.slip(7, 6) = tesla.turns(7, 1) · live · 6/6 perspectives · untested
-- clay × hd = 144 — hd.ut∘mean(1, 1) = hd.ut∘mean(1, 2) = hd.ut∘mean(2, 1) = hd.ut∘mean(2, 2) = clay.hodge(72) · live · 20/20 perspectives · untested
-- signal × tesla = 150 — signal.keyBits(400) = tesla.sync(5, 4) = tesla.slip∘quarter(2, 1) = tesla.turns∘quarter(2, 1) · live · 12/12 perspectives · untested
-- clay × kin = 156 — clay.bsd(615) = kin.dootKin(1, 2, 1) = kin.dootKin(2, 3, 1) = kin.dootKin(3, 4, 1) = kin.dootKin(4, 5, 1) · live · 20/20 perspectives · untested
-- kin × tesla = 159 — kin.dootKin(1, 2, 4) = kin.dootKin(2, 3, 4) = kin.dootKin(3, 4, 4) = kin.dootKin(4, 5, 4) = tesla.period∘resonance(1, 1) = tesla.period∘resonance(2, 2) = tesla.period∘resonance(3, 3) · live · 42/42 pe
-- cal × kin = 162 — cal.gregorianDrift(6) = kin.dootKin(5, 1, 2) · live · 2/2 perspectives · untested
-- hd × rule = 169 — hd.code(615) = rule.compositions(2) = rule.free∘compositions(2) = rule.nibbles∘compositions(3) · live · 12/12 perspectives · untested
-- cal × tesla = 195 — cal.lunarDrift(18) = tesla.period∘resonance(3, 2) · live · 2/2 perspectives · untested
-- kin × rule = 196 — rule.compositions(8) = rule.compositions(15) = rule.cap∘compositions(1) = rule.cap∘compositions(2) = kin.combinations∘dootKin(2, 1, 1) · live · 20/20 perspectives · untested
-- clay × merkaba = 199 — clay.bsd(401) = merkaba.flows(7) · live · 2/2 perspectives · untested
-- crypt × signal = 202 — crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · 6/6 perspectives · untested
-- cal × kin = 216 — cal.gregorianDrift(8) = kin.bits∘dootKin(1, 2, 1) · live · 2/2 perspectives · untested
-- heat × kin = 222 — heat.temperature∘cooling(2, 3) = heat.temperature∘ways(2, 3) = kin.enneagram∘dootKin(1, 1, 2) = kin.enneagram∘dootKin(2, 1, 2) = kin.pillar∘dootKin(2, 1, 2) · live · 20/20 perspectives · untested
-- kin × tesla = 223 — kin.bits∘bits(3) = kin.pillar∘bits(3, 1) = tesla.sync∘earth(3, 2) · live · 6/6 perspectives · untested
-- rule × tesla = 225 — rule.compositions(18) = tesla.period∘resonance(2, 1) = tesla.slip∘quarter(3, 2) = tesla.turns∘quarter(3, 1) · live · 12/12 perspectives · untested
-- cal × np = 243 — cal.gregorianDrift(9) = np.isTime(3) = np.isSpace∘isTime(4) = np.subsetSum∘isTime(3, 1) = np.subsetSum∘isTime(3, 3) · live · 20/20 perspectives · untested
-- crypt × signal = 314 — crypt.curveClassicalBits(628) = crypt.symmetricQuantumBits(628) = signal.siftedBits(628) · live · 6/6 perspectives · untested
+- cal × heat × tesla = 4000 — cal.lunarDrift∘metonicDrift(3) = heat.temperature(4, 1) = heat.temperature(8, 2) = tesla.turns(1, 4) = tesla.turns(2, 8) = tesla.turns∘field(1, 2) = tesla.turns∘windings(1, 2) · live · untested (no te
+- Qpu.Mint × signal × yi = 16384 — Qpu.Mint.mintOf(14) = signal.keyspace(14) = yi.figures(14) · live · untested (no test for keyspace)
+- kin × tesla = 37 — kin.combinations∘pillar(2, 3) = tesla.turns∘quarter(1, 2) · live · untested (no test for pillar)
+- heat × kin = 39 — heat.signal(6) = heat.signal∘coherence(2, 2) = heat.signal∘coherence(3, 1) = kin.pillar(4, 1) = kin.pillar(5, 2) = kin.pillar(6, 3) = kin.pillar(7, 4) · live · untested (no test for coherence, pillar)
+- tesla × yi = 42 — tesla.field(6, 7) = tesla.field(7, 6) = tesla.windings(6, 7) = tesla.windings(7, 6) = yi.withYang∘nuclear(3) · live · untested (no test for withYang)
+- kin × yi = 55 — kin.dootKin(1, 3, 5) = kin.dootKin(2, 4, 5) = kin.dootKin(3, 5, 5) = yi.complement(8) = yi.complement∘inverse(4) = yi.figures∘complement(3) = yi.inverse∘complement(4) · live · untested (no test for do
+- kin × yi = 57 — kin.dootKin(4, 1, 2) = kin.dootKin(5, 2, 2) = kin.vortex∘dootKin(2, 1, 2) = yi.complement(6) = yi.withYang∘complement(1) · live · untested (no test for dootKin, withYang)
+- kin × yi = 61 — kin.bits∘dootKin(1, 1, 1) = kin.bits∘pillar(3, 1) = kin.pillar∘pillar(3, 1) = yi.complement(2) = yi.change∘complement(1, 3) = yi.change∘complement(3, 1) = yi.complement∘change(1, 3) · live · untested 
+- kin × yi = 63 — kin.bits∘pillar(2, 2) = kin.combinations∘pillar(2, 1) = yi.nuclear(31) = yi.change∘complement(1, 1) = yi.change∘complement(2, 2) = yi.change∘complement(3, 3) · live · untested (no test for pillar)
+- kin × signal = 69 — signal.keyBits(184) = kin.bits(8) = kin.dootKin∘pillar(2, 1, 1) = kin.vortex∘bits(3) · live · untested (no test for keyBits, dootKin, pillar)
+- cal × rule = 81 — cal.gregorianDrift(3) = rule.compositions(4) = rule.compositions∘compositions(3) · live · untested (no test for gregorianDrift, compositions)
+- hd × kin = 93 — hd.code(401) = kin.pillar(1, 4) = kin.pillar(2, 5) = kin.pillar(3, 6) = kin.pillar(4, 7) · live · untested (no test for pillar)
+- cross × hd = 96 — cross.medSecureWithQSec(3, 5) = cross.medSecureWithQSec(6, 4) = hd.code(404) · live · untested (no test for medSecureWithQSec)
+- clay × kin = 98 — clay.bsd(404) = kin.period∘pillar(1, 2) · live · untested (no test for bsd, pillar)
+- cal × kin = 101 — cal.precession(2) = cal.coin∘precession(4) = kin.dootKin(1, 5, 1) = kin.dreamspellDrift(404) · live · untested (no test for dootKin, dreamspellDrift)
+- kin × tesla = 105 — kin.dootKin(1, 5, 5) = tesla.sync(7, 8) · live · untested (no test for dootKin)
+- cal × kin = 108 — cal.gregorianDrift(4) = cal.lunarDrift(10) = cal.lunarDrift∘lunarDrift(1) = kin.dootKin(2, 1, 3) = kin.dootKin(3, 2, 3) = kin.dootKin(4, 3, 3) = kin.dootKin(5, 4, 3) · live · untested (no test for gre
+- heat × kin = 111 — heat.temperature∘cooling(1, 3) = heat.temperature∘ways(1, 3) = kin.period∘pillar(1, 1) · live · untested (no test for cooling, pillar)
+- cal × tesla = 130 — cal.lunarDrift(12) = tesla.period∘resonance(2, 3) · live · untested (no test for lunarDrift)
+- clay × hd = 144 — hd.ut∘mean(1, 1) = hd.ut∘mean(1, 2) = hd.ut∘mean(2, 1) = hd.ut∘mean(2, 2) = clay.hodge(72) · live · untested (no test for hodge)
+- signal × tesla = 150 — signal.keyBits(400) = tesla.sync(5, 4) = tesla.slip∘quarter(2, 1) = tesla.turns∘quarter(2, 1) · live · untested (no test for keyBits)
+- kin × tesla = 159 — kin.dootKin(1, 2, 4) = kin.dootKin(2, 3, 4) = kin.dootKin(3, 4, 4) = kin.dootKin(4, 5, 4) = tesla.period∘resonance(1, 1) = tesla.period∘resonance(2, 2) = tesla.period∘resonance(3, 3) · live · untested
+- cal × kin = 162 — cal.gregorianDrift(6) = kin.dootKin(5, 1, 2) · live · untested (no test for gregorianDrift, dootKin)
+- cal × kin = 163 — cal.lunarDrift(15) = kin.dootKin(5, 1, 3) · live · untested (no test for lunarDrift, dootKin)
+- kin × rule = 196 — rule.compositions(8) = rule.compositions(15) = rule.cap∘compositions(1) = rule.cap∘compositions(2) = kin.combinations∘dootKin(2, 1, 1) · live · untested (no test for compositions, dootKin)
+- clay × merkaba = 199 — clay.bsd(401) = merkaba.flows(7) · live · untested (no test for bsd)
+- crypt × signal = 202 — crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
+- hd × kin = 206 — hd.mean∘code(2) = hd.mean∘code(3) = kin.dootKin(1, 4, 1) = kin.dootKin(2, 5, 1) · live · untested (no test for dootKin)
+- kin × rule = 208 — rule.formulas() = rule.cap∘formulas() = rule.compositions∘formulas(1) = rule.compositions∘formulas(2) = kin.dootKin(1, 4, 3) = kin.dootKin(2, 5, 3) · live · untested (no test for compositions, dootKin
+- cal × kin = 216 — cal.gregorianDrift(8) = kin.bits∘dootKin(1, 2, 1) · live · untested (no test for gregorianDrift, dootKin)
+- heat × kin = 222 — heat.temperature∘cooling(2, 3) = heat.temperature∘ways(2, 3) = kin.enneagram∘dootKin(1, 1, 2) = kin.enneagram∘dootKin(2, 1, 2) = kin.pillar∘dootKin(2, 1, 2) · live · untested (no test for cooling, enn
+- kin × tesla = 223 — kin.bits∘bits(3) = kin.pillar∘bits(3, 1) = tesla.sync∘earth(3, 2) · live · untested (no test for pillar, earth)
+- clay × kin = 232 — clay.hodge(116) = kin.bits(27) = kin.period∘dootKin(1, 2, 2) · live · untested (no test for hodge, dootKin)
+- cal × tesla = 240 — cal.sarosShift(2) = cal.sarosShift(5) = cal.sarosShift(8) = cal.sarosShift(11) = tesla.sync(4, 2) = tesla.sync(8, 4) = tesla.field∘sync(2, 2) = tesla.sync∘field(2, 2) · live · untested (no test for sa
+- cal × np = 243 — cal.gregorianDrift(9) = np.isTime(3) = np.isSpace∘isTime(4) = np.subsetSum∘isTime(3, 1) = np.subsetSum∘isTime(3, 3) · live · untested (no test for gregorianDrift, isTime, isSpace, subsetSum)
 - heat × tesla = 333 — heat.temperature(1, 3) = heat.temperature(2, 6) = heat.cooling∘temperature(1, 3) = heat.cooling∘temperature(2, 3) = tesla.slip(3, 2) = tesla.slip(6, 4) = tesla.turns(3, 1) = tesla.turns(6, 2) · live ·
-- heat × tesla = 334 — heat.temperature∘cooling(3, 3) = heat.temperature∘ways(3, 3) = tesla.sync∘earth(2, 2) · live · 6/6 perspectives · untested
-- Qpu.Physics × cal = 352 — Qpu.Physics.bcs() = Qpu.Physics.planck∘bcs() = Qpu.Physics.boltzmann∘bcs() = Qpu.Physics.transmon∘bcs() = cal.precession(7) · live · 20/20 perspectives · untested
-- heat × tesla = 571 — heat.temperature(4, 7) = tesla.slip(7, 3) = tesla.turns(7, 4) · live · 6/6 perspectives · untested
-- heat × tesla = 600 — heat.temperature(3, 5) = tesla.slip(5, 2) = tesla.turns(5, 3) · live · 6/6 perspectives · untested
-- heat × tesla = 666 — heat.temperature(2, 3) = heat.temperature(4, 6) = tesla.slip∘field(3, 2) = tesla.slip∘windings(3, 2) · live · 12/12 perspectives · untested
-- heat × tesla = 714 — heat.temperature(5, 7) = tesla.slip(7, 2) = tesla.turns(7, 5) · live · 6/6 perspectives · untested
-- cross × hd = 768 — cross.medSecureWithQSec(3, 8) = cross.medSecureWithQSec(6, 7) = hd.cells() = hd.cells∘cells() = hd.center∘cells(1) = hd.center∘cells(2) · live · 30/30 perspectives · untested
-- heat × tesla = 833 — heat.temperature(5, 6) = tesla.slip(6, 1) = tesla.turns(6, 5) · live · 6/6 perspectives · untested
-- heat × tesla = 857 — heat.temperature(6, 7) = tesla.slip(7, 1) = tesla.turns(7, 6) · live · 6/6 perspectives · untested
-- cal × hd = 880 — hd.mean(400) = hd.mean(401) = cal.gregorianDrift∘lunarDrift(3) · live · 6/6 perspectives · untested
-- hd × tesla = 966 — hd.mean(615) = tesla.schumann∘resonance(2, 2) · live · 2/2 perspectives · untested
-- cal × tesla = 994 — cal.dayPer∘sunSpeed(1) = cal.julianDrift∘sunSpeed(4) = tesla.slip∘slip(3, 2) · live · 6/6 perspectives · untested
-- heat × tesla = 1333 — heat.temperature(4, 3) = heat.temperature(8, 6) = tesla.turns(3, 4) = tesla.turns(6, 8) · live · 12/12 perspectives · untested
-- heat × tesla = 1400 — heat.temperature(7, 5) = tesla.turns(5, 7) · live · 2/2 perspectives · untested
-- heat × tesla = 1600 — heat.temperature(8, 5) = tesla.turns(5, 8) · live · 2/2 perspectives · untested
-- heat × tesla = 2333 — heat.temperature(7, 3) = tesla.turns(3, 7) · live · 2/2 perspectives · untested
+- heat × tesla = 334 — heat.temperature∘cooling(3, 3) = heat.temperature∘ways(3, 3) = tesla.sync∘earth(2, 2) · live · untested (no test for cooling, earth)
+- cross × hd = 768 — cross.medSecureWithQSec(3, 8) = cross.medSecureWithQSec(6, 7) = hd.cells() = hd.cells∘cells() = hd.center∘cells(1) = hd.center∘cells(2) · live · untested (no test for medSecureWithQSec)
+- cal × hd = 880 — hd.mean(400) = hd.mean(401) = cal.gregorianDrift∘lunarDrift(3) · live · untested (no test for gregorianDrift, lunarDrift)
+- cal × tesla = 994 — cal.dayPer∘sunSpeed(1) = cal.julianDrift∘sunSpeed(4) = tesla.slip∘slip(3, 2) · live · untested (no test for dayPer, sunSpeed, julianDrift)
+- cal × kin = 996 — cal.sunSpeed(1) = cal.sunSpeed(2) = cal.sunSpeed(3) = cal.sunSpeed(4) = kin.bits(116) · live · untested (no test for sunSpeed)
+- cal × hd = 2162 — hd.ut(3, 1) = hd.ut(4, 2) = hd.ut(5, 3) = hd.ut(6, 4) = cal.lunarDrift∘precession(4) · live · untested (no test for lunarDrift)
 - heat × tesla = 3000 — heat.temperature(3, 1) = heat.temperature(6, 2) = heat.cooling∘temperature(3, 1) = heat.temperature∘cooling(3, 1) = tesla.turns(1, 3) = tesla.turns(2, 6) = tesla.turns∘field(3, 3) = tesla.turns∘windin
-- heat × tesla = 5000 — heat.temperature(5, 1) = tesla.period(200) = tesla.turns(1, 5) · live · 6/6 perspectives · untested
-- heat × tesla = 6000 — heat.temperature(6, 1) = tesla.turns(1, 6) · live · 2/2 perspectives · untested
-- heat × tesla = 7000 — heat.temperature(7, 1) = tesla.turns(1, 7) · live · 2/2 perspectives · untested
-- heat × tesla = 8000 — heat.temperature(8, 1) = tesla.turns(1, 8) · live · 2/2 perspectives · untested
-- cal × tesla = 9000 — cal.metonicDrift(72) = tesla.turns∘field(1, 3) = tesla.turns∘windings(1, 3) · live · 6/6 perspectives · untested
-- cal × tesla = 10800 — cal.gregorianDrift(400) = cal.julianDrift(16) = tesla.sync∘sync(3, 2) · live · 6/6 perspectives · untested
-- np × tesla = 100000 — np.isTime(10) = tesla.period(10) · live · 2/2 perspectives · untested
-- heat × tesla = 250000 — heat.temperature∘temperature(1, 2) = tesla.period(4) = tesla.field∘period(2, 2) = tesla.windings∘period(2, 2) · live · 12/12 perspectives · untested
-- heat × tesla = 333333 — heat.temperature∘temperature(3, 3) = tesla.period(3) = tesla.field∘period(3, 1) = tesla.period∘field(3, 1) = tesla.period∘windings(3, 1) · live · 20/20 perspectives · untested
-- heat × tesla = 3000000 — heat.temperature∘temperature(3, 1) = tesla.period∘field(1, 3) = tesla.period∘windings(1, 3) · live · 6/6 perspectives · untested
-- signal × yi = 268435456 — signal.keyspace(28) = yi.figures(28) · live · 2/2 perspectives · untested
+- cal × tesla = 9000 — cal.metonicDrift(72) = tesla.turns∘field(1, 3) = tesla.turns∘windings(1, 3) · live · untested (no test for metonicDrift)
+- cal × tesla = 10800 — cal.gregorianDrift(400) = cal.julianDrift(16) = tesla.sync∘sync(3, 2) · live · untested (no test for gregorianDrift, julianDrift)
+- np × tesla = 100000 — np.isTime(10) = tesla.period(10) · live · untested (no test for isTime)
+- crypt × signal = 956595 — crypt.curveClassicalBits(1913190) = crypt.symmetricQuantumBits(1913190) = signal.siftedBits(1913190) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
+- crypt × signal = 1039503 — crypt.curveClassicalBits(2079006) = crypt.symmetricQuantumBits(2079006) = signal.siftedBits(2079006) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
+- np × yi = 1048576 — np.isTime(16) = yi.withYang∘figures(3) · live · untested (no test for isTime, withYang)
+- crypt × signal = 1150834 — crypt.curveClassicalBits(2301668) = crypt.symmetricQuantumBits(2301668) = signal.siftedBits(2301668) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
+- signal × yi = 134217728 — signal.keyspace(27) = yi.figures(27) · live · untested (no test for keyspace)
 - Qpu.Physics × merkaba = 662607015 — Qpu.Physics.planck() = Qpu.Physics.planck∘planck() = Qpu.Physics.boltzmann∘planck() = Qpu.Physics.transmon∘planck() = merkaba.mirror(4, 1, 2) = merkaba.mirror(4, 1, 3) = merkaba.mirror(4, 1, 5) = merk
-- Qpu.Mint × kin × signal × yi = 4096 — Qpu.Mint.mintOf(12) = signal.keyspace(12) = kin.combinations(2) = kin.digitalRoot∘combinations(2) = kin.dootKin∘combinations(1, 1, 2) = kin.dootKin∘combinations(2, 2, 2) = yi.figures(12) · 42/42 persp
-- Qpu.Mint × signal × yi = 8192 — Qpu.Mint.mintOf(13) = signal.keyspace(13) = yi.figures(13) · 6/6 perspectives · untested
-- heat × tesla = 500000 — heat.temperature∘temperature(2, 2) = tesla.period(2) = tesla.field∘period(2, 1) = tesla.period∘field(2, 1) = tesla.period∘windings(2, 1) · 20/20 perspectives · untested
-- heat × tesla = 1000000 — heat.temperature∘temperature(1, 1) = tesla.period(1) = tesla.period∘field(1, 1) = tesla.period∘field(2, 2) = tesla.period∘windings(1, 1) · 20/20 perspectives · untested
-- heat × tesla = 2000000 — heat.temperature∘temperature(2, 1) = tesla.period∘field(1, 2) = tesla.period∘windings(1, 2) · 6/6 perspectives · untested
+- signal × yi = 2147483648 — signal.keyspace(31) = yi.figures(31) · live · untested (no test for keyspace)
+- Qpu.Mint × kin × signal × yi = 4096 — Qpu.Mint.mintOf(12) = signal.keyspace(12) = kin.combinations(2) = kin.digitalRoot∘combinations(2) = kin.dootKin∘combinations(1, 1, 2) = kin.dootKin∘combinations(2, 2, 2) = yi.figures(12) · untested (n
+- heat × kin × yi = 34 — heat.signal(7) = kin.bits(4) = kin.digitalRoot∘bits(4) = kin.seal∘bits(4) = kin.tone∘bits(4) = yi.inverse∘change(1, 2) · untested (no test for digitalRoot, tone)
+- Qpu.Mint × signal × yi = 8192 — Qpu.Mint.mintOf(13) = signal.keyspace(13) = yi.figures(13) · untested (no test for keyspace)
+- hd × kin = 207 — hd.mean∘code(4) = kin.dootKin(1, 4, 2) = kin.dootKin(2, 5, 2) · untested (no test for dootKin)
+- kin × tesla = 210 — kin.dootKin(1, 4, 5) = kin.dootKin(2, 5, 5) = tesla.sync(7, 4) · untested (no test for dootKin)
+- Qpu.Physics × cal = 352 — Qpu.Physics.bcs() = Qpu.Physics.planck∘bcs() = Qpu.Physics.boltzmann∘bcs() = Qpu.Physics.transmon∘bcs() = cal.precession(7) · untested (no test for bcs, boltzmann)
+- cal × tesla = 62500 — cal.metonicDrift∘metonicDrift(4) = tesla.period(16) · untested (no test for metonicDrift)
+- kin × tesla = 142857 — kin.enneagram() = kin.biorhythm∘enneagram(1, 1, 1) = kin.biorhythm∘enneagram(1, 1, 2) = kin.biorhythm∘enneagram(1, 2, 2) = tesla.period(7) · untested (no test for enneagram)
 - Qpu.Physics × heat = 3313035075 — Qpu.Physics.photon() = Qpu.Physics.planck∘photon() = Qpu.Physics.boltzmann∘photon() = Qpu.Physics.transmon∘photon() = heat.coherence∘quality(1, 2, 1) = heat.coherence∘quality(2, 2, 1) = heat.coherence
-- Qpu.Lattice × yi = 4294967296 — Qpu.Lattice.amplitudes() = Qpu.Lattice.n∘amplitudes() = Qpu.Lattice.seed∘amplitudes() = Qpu.Lattice.coins∘amplitudes() = yi.inverse∘figures(1) · 20/20 perspectives · untested
 
 The leads (`gate.crossed`): formulas no relation with another family reaches and no dataset identifies, each given
 every effort — OEIS at every small fixed slot, the Clay lens, the involuted perspective, the family's research — and
@@ -2116,7 +2099,7 @@ itself is UNVERIFIED (not accepted by the Clay Institute; no Lean theorem states
 ## Build receipt
 
 <details>
-<summary>3381 receipts, chained in the build stream</summary>
+<summary>3371 receipts, chained in the build stream</summary>
 
 Each node is a quantum receipt: its UUID is the RFC 9562 v8 content address of its payload fold and its referrer, and
 its referrer is the node above it. Change any receipt's bytes and its node, its file's node, the build stream chain
@@ -2136,14 +2119,14 @@ flowchart TD
   n304d6c73["heat-receipt.json<br/>40 rows<br/><code>304d6c73</code>"]
   n9a38b9f5["lattice-receipt.json<br/><code>9a38b9f5</code>"]
   n67bdb031["lean-receipt.json<br/>124 rows<br/><code>67bdb031</code>"]
-  nb0fa5192["next-receipt.json<br/>178 rows<br/><code>b0fa5192</code>"]
+  n8956335c["next-receipt.json<br/>168 rows<br/><code>8956335c</code>"]
   n484bd7ec["payload-cf-receipt.json<br/><code>484bd7ec</code>"]
   n6fd83d42["percall-receipt.json<br/><code>6fd83d42</code>"]
   n05618721["refusals-receipt.json<br/><code>05618721</code>"]
   n9ad3afde["test-receipt.json<br/>1 rows<br/><code>9ad3afde</code>"]
   n12ab6bd2["uses-receipt.json<br/>42 rows<br/><code>12ab6bd2</code>"]
   n69b9565c["walls-receipt.json<br/><code>69b9565c</code>"]
-  ne75dfe57["readme<br/><code>e75dfe57</code>"]
+  n6d83c666["readme<br/><code>6d83c666</code>"]
   ne53d1e88 --> nc6fd633e
   ne53d1e88 --> n9f6dce5a
   ne53d1e88 --> ne2416ee4
@@ -2155,14 +2138,14 @@ flowchart TD
   ne53d1e88 --> n304d6c73
   ne53d1e88 --> n9a38b9f5
   ne53d1e88 --> n67bdb031
-  ne53d1e88 --> nb0fa5192
+  ne53d1e88 --> n8956335c
   ne53d1e88 --> n484bd7ec
   ne53d1e88 --> n6fd83d42
   ne53d1e88 --> n05618721
   ne53d1e88 --> n9ad3afde
   ne53d1e88 --> n12ab6bd2
   ne53d1e88 --> n69b9565c
-  ne53d1e88 --> ne75dfe57
+  ne53d1e88 --> n6d83c666
 ```
 
 | node | receipt uuid | referrer | payload fold | seq |
@@ -5319,235 +5302,225 @@ flowchart TD
 | lean-receipt.json#121 | `d93b37f0-f6c8-888f-aeaa-48b7f470f252` | `67bdb031` | `20f85f44fda02861` | 3149 |
 | lean-receipt.json#122 | `f3eeb633-ecc0-8bf6-9c2b-51fe1a634174` | `67bdb031` | `040743c9cee1336f` | 3150 |
 | lean-receipt.json#123 | `70a878b6-cda4-8a00-834b-378efa6e038e` | `67bdb031` | `bfa20fd6cf759420` | 3151 |
-| next-receipt.json | `b0fa5192-806d-807b-af46-ad68c1fc3bb8` | `e53d1e88` | `6ba6e996698a5e27` | 3152 |
-| next-receipt.json#0 | `e78424f4-5031-8251-ab11-b6ce0d4ff57d` | `b0fa5192` | `a5abceabf1cde8bb` | 3153 |
-| next-receipt.json#1 | `688fb7d1-eb31-8ffb-bb7e-87ac2be36f5e` | `b0fa5192` | `2d8963a4d7057fd9` | 3154 |
-| next-receipt.json#2 | `edf11f4f-5eef-8d15-9c94-5cdf19ccee06` | `b0fa5192` | `fc28f217cdbdd48a` | 3155 |
-| next-receipt.json#3 | `9af01eb5-414d-8009-8660-361ea674ab32` | `b0fa5192` | `1199452c325bea95` | 3156 |
-| next-receipt.json#4 | `46e15337-d01e-879f-961b-ad97ba1185c0` | `b0fa5192` | `a87b84ccd29a42e4` | 3157 |
-| next-receipt.json#5 | `e871d2ed-0c3a-8325-82a9-019e0aca1301` | `b0fa5192` | `e441740adb7cb9cf` | 3158 |
-| next-receipt.json#6 | `26b6002a-a8fa-8701-923d-5f64979994dc` | `b0fa5192` | `5c8dc6d67f6a5499` | 3159 |
-| next-receipt.json#7 | `9c73a7ef-dc70-83ba-9c0d-ca5b2f714d2b` | `b0fa5192` | `14d4062ba0c3163a` | 3160 |
-| next-receipt.json#8 | `40ef9313-cdb4-8745-80bc-29b2ef08617f` | `b0fa5192` | `bb6ca284de6d9195` | 3161 |
-| next-receipt.json#9 | `025b6fcb-1cc5-855c-92b0-1ec532053767` | `b0fa5192` | `d8de8ef509d52710` | 3162 |
-| next-receipt.json#10 | `82627d4f-e663-8786-abdc-efbb47d3c092` | `b0fa5192` | `c118eac2348dd046` | 3163 |
-| next-receipt.json#11 | `1ee2ea29-2b06-8200-a005-cdb9849cd524` | `b0fa5192` | `6cbed0642fda9bad` | 3164 |
-| next-receipt.json#12 | `262743f5-0980-8122-886e-86dd0f6d4559` | `b0fa5192` | `099305668ce73c9e` | 3165 |
-| next-receipt.json#13 | `40956cfa-d7cd-8530-a862-74fab8972e6a` | `b0fa5192` | `07f067f48f8a972b` | 3166 |
-| next-receipt.json#14 | `b1e282c0-99f6-8a27-87ea-d2ef3076ec36` | `b0fa5192` | `a06839b8054cd9da` | 3167 |
-| next-receipt.json#15 | `c9aafff2-e94f-8d2d-9905-bd08447d21fa` | `b0fa5192` | `2f7439928966259a` | 3168 |
-| next-receipt.json#16 | `c19b6121-1341-8519-a6ad-90f5a5cd21af` | `b0fa5192` | `5537501a13dd71db` | 3169 |
-| next-receipt.json#17 | `a6db6fcf-c5a7-8621-b35f-3bbe13b5bf21` | `b0fa5192` | `abb69b619be077c7` | 3170 |
-| next-receipt.json#18 | `5fa53b21-2e17-8ba6-8aa1-1b0751ac0caa` | `b0fa5192` | `8af7254c96c5d867` | 3171 |
-| next-receipt.json#19 | `40957d98-0cb0-8c7a-ada2-3d98ce3ee2f1` | `b0fa5192` | `5fbd2aab23edfc4f` | 3172 |
-| next-receipt.json#20 | `1e4f8bf5-0ad8-8580-8086-98d9ab52afc1` | `b0fa5192` | `fbd527f352171f89` | 3173 |
-| next-receipt.json#21 | `c2f87d5a-24a1-8e07-95d5-72e09bc170f4` | `b0fa5192` | `d37de0db2b537534` | 3174 |
-| next-receipt.json#22 | `7b1588b4-3884-8973-be11-0b52c7093477` | `b0fa5192` | `fab972fcdd23a2c0` | 3175 |
-| next-receipt.json#23 | `6bc73609-ee1c-8902-b3ed-70463079acaf` | `b0fa5192` | `a5aef42387a98d29` | 3176 |
-| next-receipt.json#24 | `faaad0f5-becd-8688-a8e9-98f02cc888dd` | `b0fa5192` | `5199868fdf35a4f6` | 3177 |
-| next-receipt.json#25 | `7168e593-93ef-81dc-9590-59bb04bcbf3c` | `b0fa5192` | `3ba6bffc9ef54cf2` | 3178 |
-| next-receipt.json#26 | `18feb0ac-de21-8143-af86-2a54b0300387` | `b0fa5192` | `9d5876455a5d37f7` | 3179 |
-| next-receipt.json#27 | `e3ecf5cd-d1e4-8711-b480-154107a5dab7` | `b0fa5192` | `194904cad1c09c83` | 3180 |
-| next-receipt.json#28 | `e6f423b1-8513-8e10-9465-cf982049afa5` | `b0fa5192` | `277b87b83b7916dc` | 3181 |
-| next-receipt.json#29 | `7f9a4feb-26fb-86f0-85df-3d8c3407eb19` | `b0fa5192` | `16d465a207eecd94` | 3182 |
-| next-receipt.json#30 | `298f3931-de4f-8e99-ac73-3cb7b46e3e1a` | `b0fa5192` | `39ec3500929ebc93` | 3183 |
-| next-receipt.json#31 | `e8af3c81-2583-8dfe-9e6d-fa156584768b` | `b0fa5192` | `8a4e4fb0fd0c0ad4` | 3184 |
-| next-receipt.json#32 | `846ade35-369f-83bb-9995-33e769240d63` | `b0fa5192` | `960cfc2d13d97ce1` | 3185 |
-| next-receipt.json#33 | `e6a0b6f9-ef2b-8a6e-ae6a-77307b837763` | `b0fa5192` | `95258060f6d159fc` | 3186 |
-| next-receipt.json#34 | `5a33b72a-641c-82a0-9c0d-366b4629c2f4` | `b0fa5192` | `8fedc08b5e6c35b1` | 3187 |
-| next-receipt.json#35 | `cade40d4-fd71-8c5d-87fc-5626bf435a5a` | `b0fa5192` | `854512d00e5d29f1` | 3188 |
-| next-receipt.json#36 | `78e1b13f-874b-80a9-bcb0-ee6a56f7a384` | `b0fa5192` | `a91db1c72a910bd2` | 3189 |
-| next-receipt.json#37 | `3c5e6220-98e8-8bb7-9e86-3be00e29b861` | `b0fa5192` | `7cda515920442d68` | 3190 |
-| next-receipt.json#38 | `fea9a5d5-683c-827b-a8c0-d2ef97f4d85c` | `b0fa5192` | `61ec8aaa9f3b7021` | 3191 |
-| next-receipt.json#39 | `1cb3510a-bd27-81f1-9c2d-3c7b14bb5779` | `b0fa5192` | `f5dfdf51b7a85d93` | 3192 |
-| next-receipt.json#40 | `2527aa69-1c21-8faa-be3a-9030f189afe9` | `b0fa5192` | `723f58bf78775f6e` | 3193 |
-| next-receipt.json#41 | `7d34250d-efe3-8693-94eb-24c2699cc740` | `b0fa5192` | `6ead2ca3710e7e13` | 3194 |
-| next-receipt.json#42 | `6d1d6d4d-9773-854b-9ca8-b8742921d49a` | `b0fa5192` | `4eff5534b38a6f2c` | 3195 |
-| next-receipt.json#43 | `1c704d3c-7f7c-887d-9d94-167a371a4daf` | `b0fa5192` | `087d90fab16f0c56` | 3196 |
-| next-receipt.json#44 | `0741fd24-70b4-8c6c-b59b-c063fed42abd` | `b0fa5192` | `917b689c4dd53325` | 3197 |
-| next-receipt.json#45 | `075b2a22-e6ed-8f2f-9164-0923f7503f8c` | `b0fa5192` | `c7731232b65e45a6` | 3198 |
-| next-receipt.json#46 | `ba41d7dd-1ed7-8e7b-87ae-5d0477bf173f` | `b0fa5192` | `9b89eaa4ad87c500` | 3199 |
-| next-receipt.json#47 | `65ab4be5-fd0d-8d36-b0e1-8a4cbdc14234` | `b0fa5192` | `dc11a4af26600135` | 3200 |
-| next-receipt.json#48 | `37df9fc8-4d4f-8631-b21c-5b11b9249296` | `b0fa5192` | `31823565111d832f` | 3201 |
-| next-receipt.json#49 | `f57c4603-9a86-8565-97aa-2cd5d79e95f4` | `b0fa5192` | `f5498dbaafe934ac` | 3202 |
-| next-receipt.json#50 | `770ccfea-4fd6-84ca-b181-c63c484535e9` | `b0fa5192` | `867d44ce1a9413ed` | 3203 |
-| next-receipt.json#51 | `58941f2c-946f-8efb-ad7a-e0d4f40668f9` | `b0fa5192` | `45268c6be853174d` | 3204 |
-| next-receipt.json#52 | `83e53bb5-8139-81b9-8590-9642f4374b6d` | `b0fa5192` | `7cb1f570b0b01032` | 3205 |
-| next-receipt.json#53 | `3a480e2d-4aea-8e0d-93bc-4b0de1bd0f9b` | `b0fa5192` | `f1047e1522832ef7` | 3206 |
-| next-receipt.json#54 | `65ace6d8-d15c-88ef-a849-c74d1280bd46` | `b0fa5192` | `e4294a393d13776c` | 3207 |
-| next-receipt.json#55 | `12c8ce27-cd5c-8263-9206-080bc169ccfa` | `b0fa5192` | `fd763485a6a1903a` | 3208 |
-| next-receipt.json#56 | `63d47201-74d2-88c2-9fb9-90ab0834c43b` | `b0fa5192` | `febe74112e77ba8e` | 3209 |
-| next-receipt.json#57 | `9350d565-5ee6-8b1a-a801-cc39cca9671a` | `b0fa5192` | `ecd3aeb1aacd6120` | 3210 |
-| next-receipt.json#58 | `2eb9f13e-edf2-852d-8730-d9e908668fab` | `b0fa5192` | `b7319f1297107106` | 3211 |
-| next-receipt.json#59 | `4d9622ab-3d6d-876b-8f5c-f80f495e0a43` | `b0fa5192` | `a6e3db888bc808c4` | 3212 |
-| next-receipt.json#60 | `c8378347-2438-8480-ba91-61be3e46b09f` | `b0fa5192` | `f8a5ec51fe007fad` | 3213 |
-| next-receipt.json#61 | `35c932b6-62c7-8551-ba44-1a61d9ee5212` | `b0fa5192` | `7f97a04ebfdb1a3d` | 3214 |
-| next-receipt.json#62 | `fd111643-83d3-8bc7-afc4-7e8929ff9641` | `b0fa5192` | `bd68544460e88a4f` | 3215 |
-| next-receipt.json#63 | `f252633d-ba74-857c-bb19-8a93165890d2` | `b0fa5192` | `1acbff828b8002e5` | 3216 |
-| next-receipt.json#64 | `4b48264a-15f0-8c33-8257-1cbc47af41f3` | `b0fa5192` | `1645325854546c2c` | 3217 |
-| next-receipt.json#65 | `0025a277-ede1-8408-aaff-efcb294ec1e4` | `b0fa5192` | `32fa527069e4f797` | 3218 |
-| next-receipt.json#66 | `415cb34c-6b7d-8c8b-8f2c-f5496b0c5ab0` | `b0fa5192` | `25efe9a16ec82b17` | 3219 |
-| next-receipt.json#67 | `dcc35ad3-51df-807d-a0fc-2aeb18b657ea` | `b0fa5192` | `c370fe5bfa2a0bff` | 3220 |
-| next-receipt.json#68 | `fd2ce7d5-37c9-8ad6-87c9-060f4292df7a` | `b0fa5192` | `a3832f9a3c37ee9d` | 3221 |
-| next-receipt.json#69 | `4d20c1fd-8da9-830a-83cc-d2b49733e294` | `b0fa5192` | `31aaf380fec796b2` | 3222 |
-| next-receipt.json#70 | `c2bcbce1-33aa-8195-8019-f7f5129c2127` | `b0fa5192` | `3bc43a5fc1d37f59` | 3223 |
-| next-receipt.json#71 | `b8202c81-22ae-84a9-9e9c-0fafe1c024a5` | `b0fa5192` | `6c94e9c416bd5ba4` | 3224 |
-| next-receipt.json#72 | `b7a30095-2299-8a18-8e24-96a42fe715e4` | `b0fa5192` | `6206cc599d2376c1` | 3225 |
-| next-receipt.json#73 | `3e759ea9-5a6e-80f7-9d43-55502b0be53f` | `b0fa5192` | `a20a174b39b5b63f` | 3226 |
-| next-receipt.json#74 | `46ec11da-3a4b-8f08-a330-2a6f716b0f77` | `b0fa5192` | `2355db388c0d6315` | 3227 |
-| next-receipt.json#75 | `71d31554-6a81-88bc-9e7b-78b34534256f` | `b0fa5192` | `45402f3f438f6db9` | 3228 |
-| next-receipt.json#76 | `7bfc2183-6a98-8ea4-9a50-df69569684ce` | `b0fa5192` | `d46eda0944228cd4` | 3229 |
-| next-receipt.json#77 | `184a31ab-1e19-88d6-9ea3-94f649368502` | `b0fa5192` | `4b03cd58828e78a9` | 3230 |
-| next-receipt.json#78 | `3031d8fa-d7a0-8bd6-9533-394dcb7dcaec` | `b0fa5192` | `e535e31f4659747c` | 3231 |
-| next-receipt.json#79 | `77512308-195c-8bcb-b7b2-d50b6ced1eca` | `b0fa5192` | `27cf99129b656f0a` | 3232 |
-| next-receipt.json#80 | `3afeba01-32d4-8211-af39-353523deca5a` | `b0fa5192` | `ab2f5db1855fd09f` | 3233 |
-| next-receipt.json#81 | `f38bf008-6b75-8ce6-ae11-4bae0e29540c` | `b0fa5192` | `c502d1df25b67de3` | 3234 |
-| next-receipt.json#82 | `07ddd033-3e96-8303-8018-aa1d9f9fc3f2` | `b0fa5192` | `36e4ada954824d09` | 3235 |
-| next-receipt.json#83 | `5cbd99d9-edbd-8bb0-b4d6-a91e7957041d` | `b0fa5192` | `be54d5270ea56de4` | 3236 |
-| next-receipt.json#84 | `c9a2cd09-7058-81c8-9025-8e7611f68379` | `b0fa5192` | `ac88dff96e6b0c8b` | 3237 |
-| next-receipt.json#85 | `2a5180bd-83aa-86c4-8793-5ba4e4b829d8` | `b0fa5192` | `29c0ddd8d995f02e` | 3238 |
-| next-receipt.json#86 | `68eff245-de90-852f-b3eb-7504c5e9d528` | `b0fa5192` | `a72dbc622ffe2a76` | 3239 |
-| next-receipt.json#87 | `7ae63238-fd5e-8cd3-8969-7e0d77409dfd` | `b0fa5192` | `5c2fba9c9a1aa144` | 3240 |
-| next-receipt.json#88 | `a6fea525-c2df-849d-bbc5-d29c5c7df99e` | `b0fa5192` | `6f990b1f31e38cf3` | 3241 |
-| next-receipt.json#89 | `fd4027ad-6e2d-8b17-a54e-13e600011605` | `b0fa5192` | `cb00fd1d98cf456a` | 3242 |
-| next-receipt.json#90 | `44926d36-5061-892b-acff-de514d831774` | `b0fa5192` | `4e3f983cae43328b` | 3243 |
-| next-receipt.json#91 | `b7b7d9f5-068a-8c6f-a37d-d4daafb9fa30` | `b0fa5192` | `c008bfc4f71a50e9` | 3244 |
-| next-receipt.json#92 | `c3c599db-ce9c-8dfd-815a-4933d7f33fc0` | `b0fa5192` | `1a0ea8c230319364` | 3245 |
-| next-receipt.json#93 | `78a82cfc-c6db-8c73-b79f-0790db813ca8` | `b0fa5192` | `702ecf66deda793d` | 3246 |
-| next-receipt.json#94 | `ce7fd7ee-9c6c-8b05-82b8-7083062cf1f1` | `b0fa5192` | `4970295361f68cf4` | 3247 |
-| next-receipt.json#95 | `bb901abc-397d-889f-a85d-5cdba711200e` | `b0fa5192` | `c458d419a35dd0f7` | 3248 |
-| next-receipt.json#96 | `81a6d944-5ac2-8210-acc4-21466e3df427` | `b0fa5192` | `6a364929eba6e8b1` | 3249 |
-| next-receipt.json#97 | `b8a6db49-e400-87db-8f20-b687c021f7a2` | `b0fa5192` | `23a761f0f0f24c8f` | 3250 |
-| next-receipt.json#98 | `443189f3-0242-8aea-9d3a-c5ba53e21d64` | `b0fa5192` | `4b83837365675bd4` | 3251 |
-| next-receipt.json#99 | `8413f114-682c-8200-883d-0847a0637e7b` | `b0fa5192` | `abb6bf50eb697bea` | 3252 |
-| next-receipt.json#100 | `7b45189d-c9a0-8f23-b83e-011fcef64744` | `b0fa5192` | `628c82f4aee51b33` | 3253 |
-| next-receipt.json#101 | `d3ca8ec5-4db9-84bf-92f1-597d0cedc53c` | `b0fa5192` | `d64093a16d541510` | 3254 |
-| next-receipt.json#102 | `c3a62b9b-1422-8ab0-90a8-3cec487fce48` | `b0fa5192` | `98044f9257003fda` | 3255 |
-| next-receipt.json#103 | `9507a2a9-bfbc-88e7-a540-0f5681894891` | `b0fa5192` | `cc39d87f72017785` | 3256 |
-| next-receipt.json#104 | `afa47e36-0e22-848a-9205-297b9b34aa97` | `b0fa5192` | `513d2a81a595df29` | 3257 |
-| next-receipt.json#105 | `57322bd5-23bd-8bdb-8296-8af6df1a7911` | `b0fa5192` | `f6eb8b85b381acf7` | 3258 |
-| next-receipt.json#106 | `bf4f7050-b547-8058-9427-f2b5ffdf151d` | `b0fa5192` | `61f8c21dc8c1ab1d` | 3259 |
-| next-receipt.json#107 | `e684bb20-cd95-802a-944c-9b1921b1609a` | `b0fa5192` | `b7dfced0834ddd48` | 3260 |
-| next-receipt.json#108 | `02c90f59-2a5f-805c-961e-a346a1b0639d` | `b0fa5192` | `df6c7898897f8078` | 3261 |
-| next-receipt.json#109 | `5fa1696f-00fb-88af-a57d-3454296f392d` | `b0fa5192` | `fa4daa19a6475049` | 3262 |
-| next-receipt.json#110 | `576f459c-7dbe-86f4-9b90-1b408f2ba00b` | `b0fa5192` | `8f854a4e63145f36` | 3263 |
-| next-receipt.json#111 | `f4a94681-3a78-8fc9-9e79-827b1f52c427` | `b0fa5192` | `c7a66c14b2df52d5` | 3264 |
-| next-receipt.json#112 | `661988a2-d643-845c-bb75-7d959af5826e` | `b0fa5192` | `481d71483f65182d` | 3265 |
-| next-receipt.json#113 | `6e5e04b3-8eb6-8076-9b0e-995aef5229dd` | `b0fa5192` | `63c869af8184dda5` | 3266 |
-| next-receipt.json#114 | `8c7dc9e1-f893-8963-ac19-fc68bc611ddc` | `b0fa5192` | `2e8359fec7e20c21` | 3267 |
-| next-receipt.json#115 | `a379bf0f-c75e-865c-8180-01d58b4d1a75` | `b0fa5192` | `340e8d6605a5dc30` | 3268 |
-| next-receipt.json#116 | `a929240c-7e8e-8591-88e5-f5a259c0366e` | `b0fa5192` | `ffed2e6f01383e6b` | 3269 |
-| next-receipt.json#117 | `25b7e033-ec25-8b7f-8b16-571dd055396b` | `b0fa5192` | `a8c077dab3deef2c` | 3270 |
-| next-receipt.json#118 | `60e81ced-cc89-8fb6-9f40-67e7bee78077` | `b0fa5192` | `c0f8fb29a32452ed` | 3271 |
-| next-receipt.json#119 | `e0de9977-36b1-8429-9b0d-af80903d5a5e` | `b0fa5192` | `990791927fbfd341` | 3272 |
-| next-receipt.json#120 | `eae326f5-784b-8ee1-b4cd-40feba775b0a` | `b0fa5192` | `e0c5a520e4307696` | 3273 |
-| next-receipt.json#121 | `3897593f-2a84-8a19-8ebd-031f4a9807e1` | `b0fa5192` | `405c952ae02e674c` | 3274 |
-| next-receipt.json#122 | `fde98945-04e5-8af5-815c-731e57bea9e5` | `b0fa5192` | `c44720afd957b766` | 3275 |
-| next-receipt.json#123 | `9d1163bb-2c24-85e3-b813-909b40e027d9` | `b0fa5192` | `fa9dc1a4ba194730` | 3276 |
-| next-receipt.json#124 | `bcc63680-65db-8eec-b84a-17af319a3d55` | `b0fa5192` | `8b337a0f7cb87836` | 3277 |
-| next-receipt.json#125 | `1eab5968-65da-8094-959b-109886b4c19f` | `b0fa5192` | `30522917177bdb71` | 3278 |
-| next-receipt.json#126 | `6c9743d0-441c-8344-8dd0-2f0c35a54396` | `b0fa5192` | `ccb1222393c2dec0` | 3279 |
-| next-receipt.json#127 | `7af89d80-29b2-88b8-a7d4-6571bf10b721` | `b0fa5192` | `0b5512c5a4233010` | 3280 |
-| next-receipt.json#128 | `e19ea65e-a3d3-8431-b73a-9d1951727f49` | `b0fa5192` | `1264905864c811e8` | 3281 |
-| next-receipt.json#129 | `d0df6c7d-fa6f-82aa-8408-9bd3977c1092` | `b0fa5192` | `89acd00ba6b62b31` | 3282 |
-| next-receipt.json#130 | `b0ce4a36-ca0a-8f06-b4c8-afd9401fc0a2` | `b0fa5192` | `ad8ea4f655769858` | 3283 |
-| next-receipt.json#131 | `6c6099af-60a4-8c95-b6f0-6899378ecdfe` | `b0fa5192` | `091e14cda4062f9e` | 3284 |
-| next-receipt.json#132 | `88dd942c-0393-8372-92f3-3b55a3f3cf40` | `b0fa5192` | `347d640a74bfbc5c` | 3285 |
-| next-receipt.json#133 | `78b87d4e-ca09-82e0-9150-4f93f012c275` | `b0fa5192` | `36bf0bd54c223dea` | 3286 |
-| next-receipt.json#134 | `fc061310-96b0-858a-9510-a905a10eb074` | `b0fa5192` | `f3d2329000786c63` | 3287 |
-| next-receipt.json#135 | `aa77f9cc-9df6-85cd-96dc-d3017efa250a` | `b0fa5192` | `ba6a1784b818d883` | 3288 |
-| next-receipt.json#136 | `0aaae121-eeff-8f6e-9d1e-f520c6f975a9` | `b0fa5192` | `89518b2bdeb3d37b` | 3289 |
-| next-receipt.json#137 | `5cc5ea72-2600-8847-87e9-9d11a66f3708` | `b0fa5192` | `333fad539a5337f9` | 3290 |
-| next-receipt.json#138 | `95f55cf6-9067-8304-b1c6-f78d78b87aec` | `b0fa5192` | `5442df29c38ef5b7` | 3291 |
-| next-receipt.json#139 | `31b7b7d3-d0bd-8399-bd1c-89ef8382642a` | `b0fa5192` | `f6396157b616b7c8` | 3292 |
-| next-receipt.json#140 | `a12a6f52-5397-8251-a7eb-72faa8ed4037` | `b0fa5192` | `3edb8a31532271f9` | 3293 |
-| next-receipt.json#141 | `47e9736a-a9c2-8566-9882-843156645343` | `b0fa5192` | `a25f00e84878857f` | 3294 |
-| next-receipt.json#142 | `c7ef5fb9-b9d2-82f8-b0c2-a5bb912b643f` | `b0fa5192` | `b9754ede37ed1795` | 3295 |
-| next-receipt.json#143 | `af3d9ba8-fad6-8850-87a6-1f292a553004` | `b0fa5192` | `4e36c3df2485e5dd` | 3296 |
-| next-receipt.json#144 | `d361a43e-e950-8d40-88df-7017ec8177ee` | `b0fa5192` | `1758013609e7a1b6` | 3297 |
-| next-receipt.json#145 | `ca7705b0-e1ff-8616-8c03-f1a35049463d` | `b0fa5192` | `7c5811276486c6c4` | 3298 |
-| next-receipt.json#146 | `1cdf38b5-c351-8cfa-8e6e-4942ed412ff0` | `b0fa5192` | `8f094ac58d6ee381` | 3299 |
-| next-receipt.json#147 | `90cee086-8b00-821b-823b-e109dc67382b` | `b0fa5192` | `03c4a25695d42e32` | 3300 |
-| next-receipt.json#148 | `cf6feaab-3e54-8ced-9eec-724bfd4e0538` | `b0fa5192` | `c8787cd430416814` | 3301 |
-| next-receipt.json#149 | `73589b4d-a022-8631-8403-7c6cd2a0b33d` | `b0fa5192` | `df43fba6d8de5ebb` | 3302 |
-| next-receipt.json#150 | `274fa65e-df96-8ed1-a3f3-2ed8f8303f47` | `b0fa5192` | `506bf29deeb66062` | 3303 |
-| next-receipt.json#151 | `5a683d32-6463-8588-adb8-b12398d67e46` | `b0fa5192` | `2acb0f5e5107709b` | 3304 |
-| next-receipt.json#152 | `112daf16-7ba2-8f10-86f6-f929224b91b4` | `b0fa5192` | `50dccac16c753238` | 3305 |
-| next-receipt.json#153 | `1b42d4ae-8680-89a3-97f5-b90fe1f6ed3d` | `b0fa5192` | `72b03b1fe51820a6` | 3306 |
-| next-receipt.json#154 | `245e8263-8dd4-80a9-9af0-78addacc0172` | `b0fa5192` | `48187eba4e286b5a` | 3307 |
-| next-receipt.json#155 | `90d53c10-8b4e-822b-bfb9-b8de069affed` | `b0fa5192` | `87ee2fdfc0241d39` | 3308 |
-| next-receipt.json#156 | `c14b139a-71f0-8511-99d8-6b15b5450b24` | `b0fa5192` | `6acdd5631c380913` | 3309 |
-| next-receipt.json#157 | `25a8ec48-6f2a-8186-b23d-fe2e02d18b54` | `b0fa5192` | `3ae24e6c269690d2` | 3310 |
-| next-receipt.json#158 | `9c2af233-9a62-87d3-af6f-1177e1de5cce` | `b0fa5192` | `18f755a28c113c2f` | 3311 |
-| next-receipt.json#159 | `a67c9253-e59a-8abe-bbdf-d022179c93ef` | `b0fa5192` | `90e23cb3e0d0fb9d` | 3312 |
-| next-receipt.json#160 | `6da23754-7386-8d48-a6c7-1b42a647686f` | `b0fa5192` | `6627cbb5c11c8cde` | 3313 |
-| next-receipt.json#161 | `4e5fe936-84f6-81bc-b5fe-31d052c97ac9` | `b0fa5192` | `dfc9eaf6a3686ed1` | 3314 |
-| next-receipt.json#162 | `bc368516-43eb-8d86-96ed-4cace3cd41d8` | `b0fa5192` | `fbfa8650499424da` | 3315 |
-| next-receipt.json#163 | `8f7c8646-ec94-8f3c-90d7-b72c25290c72` | `b0fa5192` | `4cea1e6c88895292` | 3316 |
-| next-receipt.json#164 | `7bc2048f-6fcf-8796-a0d5-324de66b16e0` | `b0fa5192` | `d12f6e5259bbdbb0` | 3317 |
-| next-receipt.json#165 | `8abd2a0d-a4be-81e4-9c63-6a460e420082` | `b0fa5192` | `1dcc4424ff37df88` | 3318 |
-| next-receipt.json#166 | `177fba2a-ab7f-8024-b50b-c4fca7de154d` | `b0fa5192` | `13ca04b73d08446b` | 3319 |
-| next-receipt.json#167 | `50d3a247-0e65-878f-9967-4884a4af59fc` | `b0fa5192` | `f817c46fcbca86fc` | 3320 |
-| next-receipt.json#168 | `299bef73-2021-8c2b-a02c-1c3462a925f8` | `b0fa5192` | `2cea3068547e4d92` | 3321 |
-| next-receipt.json#169 | `f52dac50-f5fb-803a-9e52-b1edec71842e` | `b0fa5192` | `c6c435a8f3d07e65` | 3322 |
-| next-receipt.json#170 | `3c9ae527-0e1a-8d57-af2c-ea280cbdd606` | `b0fa5192` | `0e6e27764ef7e08f` | 3323 |
-| next-receipt.json#171 | `d06c5e51-e8a2-8f5c-8dc5-a6be1c773b62` | `b0fa5192` | `0f2b299441108acf` | 3324 |
-| next-receipt.json#172 | `ed6b38e6-b88f-8091-9992-f12796d1aa99` | `b0fa5192` | `a86ec3d20851dd31` | 3325 |
-| next-receipt.json#173 | `8101146b-4f62-853a-8933-8a692e69c51c` | `b0fa5192` | `7976ac9ffe62805f` | 3326 |
-| next-receipt.json#174 | `145e276b-68ac-89f2-be52-7cb62f327f4d` | `b0fa5192` | `4d478a61c7df62f2` | 3327 |
-| next-receipt.json#175 | `151a6a5b-6579-84a6-9285-1481d0f8fd47` | `b0fa5192` | `2ea6cdf1bc73a7b9` | 3328 |
-| next-receipt.json#176 | `14d01c59-973d-8211-8cab-c78f68c766dd` | `b0fa5192` | `6e57997917227c64` | 3329 |
-| next-receipt.json#177 | `6933d17d-fc9a-8297-bea1-28dc557850b9` | `b0fa5192` | `028f617ddc29d592` | 3330 |
-| payload-cf-receipt.json | `484bd7ec-a567-8062-b853-58903008a18d` | `e53d1e88` | `f62f0aaf7ff26014` | 3331 |
-| percall-receipt.json | `6fd83d42-9877-8a77-aa77-7f3c51933f5c` | `e53d1e88` | `bb48a531ebc72170` | 3332 |
-| refusals-receipt.json | `05618721-e409-811e-9bf4-291458b18e72` | `e53d1e88` | `8c5570077f4d6204` | 3333 |
-| test-receipt.json | `9ad3afde-cce2-8256-a670-b13020111e0b` | `e53d1e88` | `fedc92eeca943ba8` | 3334 |
-| test-receipt.json#0 | `16dd142e-8fd9-8a8b-adfb-c2bea95d6da4` | `9ad3afde` | `9446bba24060af2d` | 3335 |
-| uses-receipt.json | `12ab6bd2-70cc-87ce-beee-4a7f9adc63f7` | `e53d1e88` | `b2fe89660765e803` | 3336 |
-| uses-receipt.json#0 | `99478666-15c7-8085-a9ce-e207150d149c` | `12ab6bd2` | `3808b1f74f93e5ae` | 3337 |
-| uses-receipt.json#1 | `21029898-b457-8285-ad0b-0dd667d061a3` | `12ab6bd2` | `76c762304be625b0` | 3338 |
-| uses-receipt.json#2 | `3b487129-ba63-8495-ae38-1f71480d7f31` | `12ab6bd2` | `5ac2e0b312b01b0f` | 3339 |
-| uses-receipt.json#3 | `0826e789-092e-859a-8e28-99aca7d92533` | `12ab6bd2` | `97f205d9afc2c61c` | 3340 |
-| uses-receipt.json#4 | `c09367b4-dd90-8476-b29a-7c7cd0704b5f` | `12ab6bd2` | `2dfe2fa5464d6cf9` | 3341 |
-| uses-receipt.json#5 | `50522112-0710-8dba-926f-2c09e74f6788` | `12ab6bd2` | `ce6af06d4268dfd9` | 3342 |
-| uses-receipt.json#6 | `f569170d-e3a9-8637-b2ab-d7402ae3d24c` | `12ab6bd2` | `0a093e05d997a37d` | 3343 |
-| uses-receipt.json#7 | `4f0b9948-ffa6-866c-98c8-55d29df660df` | `12ab6bd2` | `9e47dec4ab091c38` | 3344 |
-| uses-receipt.json#8 | `48a1d6c7-92f9-8ab6-9112-b5104957dd14` | `12ab6bd2` | `0b1fec12d9f3f4f2` | 3345 |
-| uses-receipt.json#9 | `053bdf57-70d7-88d4-a430-090b0dfb5426` | `12ab6bd2` | `edbfecd356f8728f` | 3346 |
-| uses-receipt.json#10 | `69b06a5e-c56a-85fd-b46e-d0cdf1bf27d1` | `12ab6bd2` | `6c5d6c5046d6d8ca` | 3347 |
-| uses-receipt.json#11 | `a48d402e-1124-89aa-850d-5e1611ee15e6` | `12ab6bd2` | `715322c641a82332` | 3348 |
-| uses-receipt.json#12 | `a1ea0f51-b2db-831a-9d32-6ccd23704f06` | `12ab6bd2` | `a92e5cefd2a7e3ce` | 3349 |
-| uses-receipt.json#13 | `95137a9c-7fc2-86a6-94bd-aa2e9f6f0de5` | `12ab6bd2` | `d02613607b1fc431` | 3350 |
-| uses-receipt.json#14 | `48770bc7-52ec-842f-a507-8901e4c68718` | `12ab6bd2` | `c5b5f533ca36e84a` | 3351 |
-| uses-receipt.json#15 | `9a73f6c5-7727-809a-8028-6ab23e6babae` | `12ab6bd2` | `f4f18358c2ce2a2a` | 3352 |
-| uses-receipt.json#16 | `6fdf9bc6-b3c1-878e-a4fd-fa5cc4dd5c5c` | `12ab6bd2` | `cbc18811525279de` | 3353 |
-| uses-receipt.json#17 | `861b5780-4866-8bf3-a404-eb63210b8e8e` | `12ab6bd2` | `acb9734dbd99ce30` | 3354 |
-| uses-receipt.json#18 | `acfcc32c-2775-835c-b7bb-24203fe0b00f` | `12ab6bd2` | `3af5a8d5deea14f8` | 3355 |
-| uses-receipt.json#19 | `760c1790-81d4-8a90-9efe-229ab8eea314` | `12ab6bd2` | `0da263a43fafbe44` | 3356 |
-| uses-receipt.json#20 | `550d2562-82ae-83a9-bdef-7fe68b89dd91` | `12ab6bd2` | `f70919c4daf6dd6d` | 3357 |
-| uses-receipt.json#21 | `c3a90d01-43c7-8f9e-87dd-9d2715747fb6` | `12ab6bd2` | `79a529631d25f6d2` | 3358 |
-| uses-receipt.json#22 | `9b9eb4d4-7e6b-86ba-bd26-7652ba25b846` | `12ab6bd2` | `914e4e9fa5e66c3b` | 3359 |
-| uses-receipt.json#23 | `a173b4b6-b187-863e-b5e2-d947973a8f1d` | `12ab6bd2` | `c3c5dac0b87a14e5` | 3360 |
-| uses-receipt.json#24 | `104e4df7-2267-80c3-bf0b-728d030466ce` | `12ab6bd2` | `a2b1c8c350396bd7` | 3361 |
-| uses-receipt.json#25 | `8f8630dc-fb83-88c9-8835-13694d824570` | `12ab6bd2` | `43de4c182ce0e619` | 3362 |
-| uses-receipt.json#26 | `14aedf8f-802a-87d4-9eaa-f105273bb1f4` | `12ab6bd2` | `251900fe2fa18694` | 3363 |
-| uses-receipt.json#27 | `ac4cbedb-4dbb-8f63-9b55-0560a4541ccd` | `12ab6bd2` | `93d8c9c4c9bf85f2` | 3364 |
-| uses-receipt.json#28 | `f4d4af26-9eb8-81ba-a3af-df2457fc49c9` | `12ab6bd2` | `6457799e286a16b1` | 3365 |
-| uses-receipt.json#29 | `79823d20-a6dd-85ca-9145-5af0a17420d8` | `12ab6bd2` | `139039653642eec9` | 3366 |
-| uses-receipt.json#30 | `f7a00e29-12f1-89ec-ae9d-2bf680387534` | `12ab6bd2` | `eaf42dd843b384cf` | 3367 |
-| uses-receipt.json#31 | `0cf3a3c7-afb7-8c26-89be-c7e1a1023617` | `12ab6bd2` | `eee46f9c0202a4b2` | 3368 |
-| uses-receipt.json#32 | `0fec1d99-cd9b-87b2-b8b9-cfef812a0e5a` | `12ab6bd2` | `315f0bc22bff36f8` | 3369 |
-| uses-receipt.json#33 | `728e8fe2-bbac-87fc-bec9-4f1d6d3770c1` | `12ab6bd2` | `98cad71adefd6bf7` | 3370 |
-| uses-receipt.json#34 | `3e93951e-bf82-8ac8-827c-78fb02e64a60` | `12ab6bd2` | `e381880c755ef5ca` | 3371 |
-| uses-receipt.json#35 | `3fb5814f-b260-8eee-9d7a-9fbbab8ac11d` | `12ab6bd2` | `98b3344ff0c4c860` | 3372 |
-| uses-receipt.json#36 | `aee4960a-f0b9-88f1-a0d6-64aa89b9d9f8` | `12ab6bd2` | `51d99a7d27d3444d` | 3373 |
-| uses-receipt.json#37 | `194aff1b-9d82-8211-9b76-ef8aaff7d252` | `12ab6bd2` | `95aeb1b2540b512d` | 3374 |
-| uses-receipt.json#38 | `ea40c9a3-62d7-8d38-bca0-007465fd225c` | `12ab6bd2` | `7fc1bcc8e2c5d803` | 3375 |
-| uses-receipt.json#39 | `b4fe3045-4016-84e4-a100-415952a44692` | `12ab6bd2` | `5a4b3aa8364412f0` | 3376 |
-| uses-receipt.json#40 | `286effd0-2250-8741-80ff-1d897d10b68d` | `12ab6bd2` | `edf48c0a47adcbfa` | 3377 |
-| uses-receipt.json#41 | `316904ba-788b-8616-9d2a-1bfcb9346cc7` | `12ab6bd2` | `1e9d453025064335` | 3378 |
-| walls-receipt.json | `69b9565c-2447-8d4f-a33c-e460754f63ae` | `e53d1e88` | `83830280c48bcc9d` | 3379 |
-| readme | `e75dfe57-f0b3-850a-8889-7b94d1a0a987` | `e53d1e88` | `8bff4a1f4cf31f89` | 3380 |
+| next-receipt.json | `8956335c-52aa-890d-aed7-3eea5c5d0a96` | `e53d1e88` | `0121f7d8cbfdf0e4` | 3152 |
+| next-receipt.json#0 | `c1f25844-3026-84fa-9a0b-fc4ffd4c5009` | `8956335c` | `978af976584c4ee1` | 3153 |
+| next-receipt.json#1 | `81e6ae31-0ee0-8734-99c2-1871f22a5ad9` | `8956335c` | `f891a795378bafae` | 3154 |
+| next-receipt.json#2 | `de4a7f20-8edb-83c7-a7bd-6b51422bfea6` | `8956335c` | `c75dab493389035e` | 3155 |
+| next-receipt.json#3 | `831fb03d-cfc9-8bae-bd35-84945f357280` | `8956335c` | `d9d9adadeaaebef9` | 3156 |
+| next-receipt.json#4 | `4f3fb03f-c683-8658-82d0-fda3d3099283` | `8956335c` | `4b0c06b75e0fe01f` | 3157 |
+| next-receipt.json#5 | `c76be907-585e-857f-b870-2f798b1c98c2` | `8956335c` | `9f1164e02805bb19` | 3158 |
+| next-receipt.json#6 | `281bb100-a1fb-8b83-9456-eda955af3f1f` | `8956335c` | `61a42388043ba3b5` | 3159 |
+| next-receipt.json#7 | `81e1799a-141b-8449-8c91-30da6deb73e6` | `8956335c` | `0ec00612c1673217` | 3160 |
+| next-receipt.json#8 | `c8f227d8-5997-81ac-811d-fd8f387430d3` | `8956335c` | `a3650100b7677de1` | 3161 |
+| next-receipt.json#9 | `78cd8401-acd4-8019-8f7f-db6ce3a532bd` | `8956335c` | `fd7abf6354dc2003` | 3162 |
+| next-receipt.json#10 | `de7c200c-8753-8baa-ac1e-10f9c7305d2a` | `8956335c` | `3fac90f61cb10d48` | 3163 |
+| next-receipt.json#11 | `f4ca88bd-f0f2-88ce-abf9-5ed8a975d498` | `8956335c` | `4e0eaaaf3be3b0d2` | 3164 |
+| next-receipt.json#12 | `4bcf0c5e-fe81-83e7-b3ef-11776b95d49f` | `8956335c` | `e8e967e34443e491` | 3165 |
+| next-receipt.json#13 | `00b92fbb-3c93-84d8-873b-247a98af78a5` | `8956335c` | `5e43d04827e625c8` | 3166 |
+| next-receipt.json#14 | `a65106ed-7d00-83d8-a693-d132ab28b5d3` | `8956335c` | `14f002b3bbdb6ffc` | 3167 |
+| next-receipt.json#15 | `b0f5282c-fa94-84fb-a490-c9e510831666` | `8956335c` | `a908fe3509458f39` | 3168 |
+| next-receipt.json#16 | `f4fe4c57-4489-824f-80ff-900575738993` | `8956335c` | `25a9510ba90cbe23` | 3169 |
+| next-receipt.json#17 | `d5ecb008-b75c-857f-9283-3b656d8f246a` | `8956335c` | `345c23b9687b977f` | 3170 |
+| next-receipt.json#18 | `995f435b-ea95-819f-a388-a5364bf541df` | `8956335c` | `0feefc885970bb57` | 3171 |
+| next-receipt.json#19 | `e29a20f5-50fe-8289-87ba-d9086e978480` | `8956335c` | `54c5a1bb6a50c306` | 3172 |
+| next-receipt.json#20 | `9a382801-94a3-8f8f-bd5b-00bace764645` | `8956335c` | `ff49d5044efcd443` | 3173 |
+| next-receipt.json#21 | `da63476c-9568-8e82-b7e6-1c2e8be47ccd` | `8956335c` | `74ce2ea67567ef59` | 3174 |
+| next-receipt.json#22 | `15cb59f9-a10b-8620-b85b-a2bdafbcda28` | `8956335c` | `cb58146e3707ed38` | 3175 |
+| next-receipt.json#23 | `e0170faa-56eb-82f1-bbde-bcc264adc2b9` | `8956335c` | `5adfd10ca227076f` | 3176 |
+| next-receipt.json#24 | `9c5cd25f-fd1c-8691-a95a-41826ee46b30` | `8956335c` | `b8778525f7c2009c` | 3177 |
+| next-receipt.json#25 | `36211d9c-3bc3-8ead-b5e6-b1af8f9da24b` | `8956335c` | `189bb68f3d71be0c` | 3178 |
+| next-receipt.json#26 | `d262d946-d712-8a89-a9da-c7f5680bea36` | `8956335c` | `70381a63d32799fb` | 3179 |
+| next-receipt.json#27 | `8eb44196-5755-8a5d-8071-c88e6d5d0e1f` | `8956335c` | `d7826eb1ac01ed36` | 3180 |
+| next-receipt.json#28 | `b765468d-ed40-8d64-9793-6285f5c72810` | `8956335c` | `2b4fa7e406a1845d` | 3181 |
+| next-receipt.json#29 | `e259b6a0-c45d-88bd-a6cb-6a096f8aa8ce` | `8956335c` | `950e9c04ad3397fb` | 3182 |
+| next-receipt.json#30 | `d5dd760f-33a0-80b7-b2e9-5ee5ac760315` | `8956335c` | `bded64fe7d41a0da` | 3183 |
+| next-receipt.json#31 | `f32060b4-c28c-8174-8571-0950ef81162d` | `8956335c` | `9a6e982358016dcc` | 3184 |
+| next-receipt.json#32 | `46af1bfe-499b-8c84-b7d5-a7d471979380` | `8956335c` | `51b8d470f2185b05` | 3185 |
+| next-receipt.json#33 | `8fbb27ce-c079-82cd-9643-d7ff17db92ef` | `8956335c` | `6e4769d5fed00869` | 3186 |
+| next-receipt.json#34 | `4c6f96bb-c536-844a-9941-3a933dd2a970` | `8956335c` | `1030331e57361351` | 3187 |
+| next-receipt.json#35 | `cbdd7f7c-912b-8e8e-ac2c-254bf3074ee7` | `8956335c` | `f587718983dbe619` | 3188 |
+| next-receipt.json#36 | `804582f9-417b-8dea-a21a-edc1694252ea` | `8956335c` | `d00fb6170b9d49f0` | 3189 |
+| next-receipt.json#37 | `f887e672-b51b-8009-a1b5-714f6261d3ce` | `8956335c` | `5fb9fbcb0391fe83` | 3190 |
+| next-receipt.json#38 | `3569a9bd-d761-80ca-a283-9cc19642b134` | `8956335c` | `410f4e499808f789` | 3191 |
+| next-receipt.json#39 | `e8d34c0b-15df-8e12-935d-b6c032d17049` | `8956335c` | `0e13fa10a587f165` | 3192 |
+| next-receipt.json#40 | `12074a30-0d0d-8adb-9739-0f360e9dec8b` | `8956335c` | `c6dafd488104aab6` | 3193 |
+| next-receipt.json#41 | `ca8d895a-d248-8c5a-aec9-795a041c66d2` | `8956335c` | `29123764650674f4` | 3194 |
+| next-receipt.json#42 | `33379f73-f18e-85f3-948d-edf37b2310e1` | `8956335c` | `08b110c7c5ca1b9b` | 3195 |
+| next-receipt.json#43 | `91abff98-3ac8-8f16-96e8-acde10393538` | `8956335c` | `d25a4edfe0df0949` | 3196 |
+| next-receipt.json#44 | `62135326-8da0-8792-b49f-493dbcfa9cf4` | `8956335c` | `e644e98a7356e39d` | 3197 |
+| next-receipt.json#45 | `9a835462-8b6a-8f21-a1a1-52b0afb2e3c5` | `8956335c` | `a7e13505cad610b8` | 3198 |
+| next-receipt.json#46 | `f3805696-d51f-8872-aa30-1d0557ca927d` | `8956335c` | `a83939830aafd628` | 3199 |
+| next-receipt.json#47 | `92d1fe09-7e8a-858c-bc40-ddacd197e104` | `8956335c` | `39196d4ade607a6a` | 3200 |
+| next-receipt.json#48 | `abcb86cb-abb3-8668-ba56-6fd87c718f07` | `8956335c` | `e946a7002503e797` | 3201 |
+| next-receipt.json#49 | `49cd8847-437c-83f6-8023-73ccb7ba50d4` | `8956335c` | `bbe41468ff094151` | 3202 |
+| next-receipt.json#50 | `a8d4179c-7a1c-8ce9-9361-f946fe71d86a` | `8956335c` | `0de11dad7968f9ed` | 3203 |
+| next-receipt.json#51 | `9eb302d9-efe5-833f-912b-a9d52de882f0` | `8956335c` | `042fbc15f990dcb6` | 3204 |
+| next-receipt.json#52 | `d1f233b0-7eab-89bb-98f1-68b50b1e6146` | `8956335c` | `444bc3a10a3754f3` | 3205 |
+| next-receipt.json#53 | `71937524-2ce0-80c6-abab-dbc846c1b784` | `8956335c` | `ee78aed586de9a17` | 3206 |
+| next-receipt.json#54 | `a3e6831b-f970-8308-bd72-ba21c4b6206b` | `8956335c` | `fb3d68a017ff494d` | 3207 |
+| next-receipt.json#55 | `15de27e1-55de-84b7-b78b-6965db87ce4a` | `8956335c` | `442bd00867eee047` | 3208 |
+| next-receipt.json#56 | `f0b405de-a26a-88a3-8506-58923748edfe` | `8956335c` | `e4dfff1b539d09b4` | 3209 |
+| next-receipt.json#57 | `ea248572-0052-8a8e-9cd6-9657c77545ea` | `8956335c` | `ac02f039a2b2fb23` | 3210 |
+| next-receipt.json#58 | `af1e808c-d427-8568-a1cb-00455636b55e` | `8956335c` | `223204a7a889d98c` | 3211 |
+| next-receipt.json#59 | `cdfe483d-28e2-8ba5-932a-46ff87f8aadd` | `8956335c` | `9b8a1b6a0871abf6` | 3212 |
+| next-receipt.json#60 | `c549eda3-c5a5-85e3-b3e9-dedbd677aff9` | `8956335c` | `b810b3ba6ec6b4f0` | 3213 |
+| next-receipt.json#61 | `c75aeb44-2b5e-8faa-baab-8b62e0153976` | `8956335c` | `607294bb6a7dfed3` | 3214 |
+| next-receipt.json#62 | `887a2979-c3ef-89d1-8dbb-bde3b2ae3b6a` | `8956335c` | `c55387bb0238b09d` | 3215 |
+| next-receipt.json#63 | `7197f671-a85f-8b5a-8c47-508b940cb3fb` | `8956335c` | `a400a7ad3cede660` | 3216 |
+| next-receipt.json#64 | `7f7cd3d6-8a84-8dcd-8463-19353203d1e0` | `8956335c` | `3dd3be92e33514e0` | 3217 |
+| next-receipt.json#65 | `6b09d98c-f2b7-85b7-b390-3f8c37eb6a5c` | `8956335c` | `3cacedbfbae53196` | 3218 |
+| next-receipt.json#66 | `9bdf94cf-3515-870e-9673-f30a0e9c2f2a` | `8956335c` | `a5eb431bd8f622eb` | 3219 |
+| next-receipt.json#67 | `7fe74650-74c8-8c56-85ea-0237f204413a` | `8956335c` | `4d59e9162eb6f33d` | 3220 |
+| next-receipt.json#68 | `87714804-d9d6-89f2-a2f3-d62df2c3eacb` | `8956335c` | `782d1afed2c241a6` | 3221 |
+| next-receipt.json#69 | `2793aa25-eef3-883f-9356-869e500a2bf6` | `8956335c` | `7256aab7322e4efa` | 3222 |
+| next-receipt.json#70 | `b170bd36-e93c-8971-909b-4b185e86ee1d` | `8956335c` | `8cb96799e049b5fd` | 3223 |
+| next-receipt.json#71 | `d334ad4b-8344-8bfa-a756-7b68d1b19dd7` | `8956335c` | `ae7b895d6e458357` | 3224 |
+| next-receipt.json#72 | `da672ba8-f0e8-8053-a4a3-282e1ba3e7b2` | `8956335c` | `7d423f0fdbc991b5` | 3225 |
+| next-receipt.json#73 | `7f28b79b-192f-8b6d-b7b4-5a0839438eb6` | `8956335c` | `37d517e95506abf2` | 3226 |
+| next-receipt.json#74 | `6e85f0b7-96cd-8d95-b3f3-b89560617fcb` | `8956335c` | `7652a62453e0f924` | 3227 |
+| next-receipt.json#75 | `d4ef13f5-4728-8922-829f-3abfaf0bac1b` | `8956335c` | `34d6520c2c1a3f5a` | 3228 |
+| next-receipt.json#76 | `d11674a3-cd40-875f-872e-2ecf90f8ebcb` | `8956335c` | `7443147f54c169ed` | 3229 |
+| next-receipt.json#77 | `370e6561-ba33-8e92-8c27-de57ab6df367` | `8956335c` | `3adb9347d3d488bf` | 3230 |
+| next-receipt.json#78 | `7e9f00d2-e6d6-8875-9996-c033ff39df13` | `8956335c` | `32760a18e84376e2` | 3231 |
+| next-receipt.json#79 | `cad98c7d-993f-8be2-88ba-2f619ab45806` | `8956335c` | `50d59aba4dbf5cd4` | 3232 |
+| next-receipt.json#80 | `184105dd-2183-8e00-ad87-761579095cb7` | `8956335c` | `f4b55ab804826737` | 3233 |
+| next-receipt.json#81 | `a68508b6-27bc-8d33-9128-cf03fcaa3b89` | `8956335c` | `f0a327379c474c58` | 3234 |
+| next-receipt.json#82 | `41995cc1-2762-8dfb-9c32-6cad7595173d` | `8956335c` | `ddc177be21eced67` | 3235 |
+| next-receipt.json#83 | `b1fbee7f-fa7a-8b82-ab8c-24fc4af2a46c` | `8956335c` | `b3387bddcde048af` | 3236 |
+| next-receipt.json#84 | `1ceb6e40-591a-8dea-801f-3ed79842cde1` | `8956335c` | `4e85ae6f49e10595` | 3237 |
+| next-receipt.json#85 | `84d483c2-ea53-8c4f-a71a-8879060dac7e` | `8956335c` | `2867d7b13b05e91e` | 3238 |
+| next-receipt.json#86 | `a68e1ec9-ace3-8c2a-80e2-a8254f91c2b4` | `8956335c` | `9523cec6de8b08d0` | 3239 |
+| next-receipt.json#87 | `2459ee35-f124-8d0e-b4be-786fac7d123c` | `8956335c` | `261bf79846e32904` | 3240 |
+| next-receipt.json#88 | `2b2d7788-9491-85f8-a1a3-2f922b73735e` | `8956335c` | `182cf427876becac` | 3241 |
+| next-receipt.json#89 | `9dddbdc8-fc87-89e5-a0fa-4f95ac7d0fb4` | `8956335c` | `395d0774e984dcbf` | 3242 |
+| next-receipt.json#90 | `c35f3cac-c65f-8d10-ae5c-29f76a387d2a` | `8956335c` | `3338e141d2e62e2b` | 3243 |
+| next-receipt.json#91 | `56a61516-c00a-86bf-8b74-bb7ed7081eb0` | `8956335c` | `70805e2e0201ae5a` | 3244 |
+| next-receipt.json#92 | `213a9ab0-2807-8340-a86d-1da3be53566c` | `8956335c` | `614581cf054b506e` | 3245 |
+| next-receipt.json#93 | `ca9c24b6-00a4-8c55-b413-bcd3fbadfdc6` | `8956335c` | `abd4d13391c1c612` | 3246 |
+| next-receipt.json#94 | `fb2922f0-1aae-8bd4-b242-594fb03e3594` | `8956335c` | `1008ba58de9a27ce` | 3247 |
+| next-receipt.json#95 | `e59bad6e-a7a4-8057-8597-ffc21aca95bd` | `8956335c` | `517a546f19f42d9a` | 3248 |
+| next-receipt.json#96 | `1c1f6aed-50a5-89d7-83a9-67999e62668d` | `8956335c` | `7b036bc186e4d3be` | 3249 |
+| next-receipt.json#97 | `5cb72fe7-7856-8449-86b2-4155b1c00f5e` | `8956335c` | `c7de05382cff809e` | 3250 |
+| next-receipt.json#98 | `94c78b50-3281-83b6-a480-90fceceb6061` | `8956335c` | `415fc4ac21a2d62c` | 3251 |
+| next-receipt.json#99 | `a6f2bce7-7179-8f4b-b968-b5ce69a3082a` | `8956335c` | `6400dc7ce8833158` | 3252 |
+| next-receipt.json#100 | `d0a6b7be-af12-8a0d-bc7f-c36168095029` | `8956335c` | `78e3a1a2c753845e` | 3253 |
+| next-receipt.json#101 | `acb1d5a8-d1f0-851a-b5b1-60016c7e22d3` | `8956335c` | `b4e5959a0d9ad6f1` | 3254 |
+| next-receipt.json#102 | `f7a7f770-65a0-8be1-8aa8-7a4fc61c32f6` | `8956335c` | `607762c5597bccc0` | 3255 |
+| next-receipt.json#103 | `ea8ae560-bd46-8d44-95b8-463949252df9` | `8956335c` | `7310bb54ecbbbcc2` | 3256 |
+| next-receipt.json#104 | `49efa9b9-537b-807a-9d6f-a167adad7c65` | `8956335c` | `95768db6e1fd36ab` | 3257 |
+| next-receipt.json#105 | `d7dfee1c-d7f3-864c-bbe8-6d8cd4911408` | `8956335c` | `15acdcac13ab6714` | 3258 |
+| next-receipt.json#106 | `c9e90ca0-996b-88c1-9177-5b5b1b0ad372` | `8956335c` | `66af74219a1aa3d9` | 3259 |
+| next-receipt.json#107 | `b7f92eb9-ca03-8789-b324-49c6e89b8938` | `8956335c` | `c27361cf1fa2aaca` | 3260 |
+| next-receipt.json#108 | `a408d7a5-0fd2-8c1b-a5de-030aba3b1954` | `8956335c` | `6d2583566abb0903` | 3261 |
+| next-receipt.json#109 | `2ca3d08b-1186-8219-a8ee-cd6604cd4cf8` | `8956335c` | `bd1321b6f0a9df5d` | 3262 |
+| next-receipt.json#110 | `a9761b03-8d85-8dd3-97ff-3098cea9c256` | `8956335c` | `260479561c2b0eba` | 3263 |
+| next-receipt.json#111 | `3ea18321-2bfb-85ca-9188-68ef8f9f57d4` | `8956335c` | `1353c49292a8cfec` | 3264 |
+| next-receipt.json#112 | `4c6a0cc4-8d30-8b50-b752-803a8842b17b` | `8956335c` | `cc3faa0be4cfe238` | 3265 |
+| next-receipt.json#113 | `76c35b38-3b4b-821d-99ce-f594ae4f9856` | `8956335c` | `b99e0f86d4f9f395` | 3266 |
+| next-receipt.json#114 | `bbe552a9-a6e2-881f-8ccc-ad6dd1d481a0` | `8956335c` | `bf8f0def32d89334` | 3267 |
+| next-receipt.json#115 | `0e09fa99-c29c-8127-8fb6-3d908225f0d6` | `8956335c` | `531b346fa57099e2` | 3268 |
+| next-receipt.json#116 | `96c04db4-3167-89f5-aa92-088b36e05985` | `8956335c` | `9af83e034446cd6e` | 3269 |
+| next-receipt.json#117 | `e03bf1e8-80f5-8e41-8028-589fd9647083` | `8956335c` | `92eecf8b38c59d9f` | 3270 |
+| next-receipt.json#118 | `1dc02414-8d89-8e54-85d7-d943fe2772cf` | `8956335c` | `fc37d7a497e0a8dd` | 3271 |
+| next-receipt.json#119 | `e8b124fb-7094-8a12-9595-6e5e8f6b1f04` | `8956335c` | `03827cba8c1f5b11` | 3272 |
+| next-receipt.json#120 | `2345f4d9-f07e-8668-8a5f-aa0f08751224` | `8956335c` | `42039edc9584df8f` | 3273 |
+| next-receipt.json#121 | `37e3cf4b-1e1a-8136-abba-91a9f3e6e98d` | `8956335c` | `e67e2806e561e6e9` | 3274 |
+| next-receipt.json#122 | `b8359f6a-1099-8e12-a614-1ad662f5718b` | `8956335c` | `bb2717a19b053be7` | 3275 |
+| next-receipt.json#123 | `0b222084-adfb-84bc-a944-d0e5619a9f93` | `8956335c` | `ab7e77431f2edd46` | 3276 |
+| next-receipt.json#124 | `958bf8cf-20a9-8640-9fef-0f172a44551e` | `8956335c` | `f821cfd7288377c8` | 3277 |
+| next-receipt.json#125 | `3549a509-8012-8bfc-9b97-f66e8affffb5` | `8956335c` | `65711be88ec6d738` | 3278 |
+| next-receipt.json#126 | `c4d0500e-3bd2-8c7d-b3aa-51a984a5f975` | `8956335c` | `6ed6d5494b7f7272` | 3279 |
+| next-receipt.json#127 | `687033fb-d3a1-847f-b350-e45bfd53e8a0` | `8956335c` | `ee550c3df86140db` | 3280 |
+| next-receipt.json#128 | `554918bd-8a3e-80c7-9b30-ef47f8758352` | `8956335c` | `9d9d91edc2ac265c` | 3281 |
+| next-receipt.json#129 | `4584ce96-7a52-8b72-8673-a3274f94a8c8` | `8956335c` | `f928229d4be185a6` | 3282 |
+| next-receipt.json#130 | `e886126f-5905-8397-9bfc-842bed4a9a67` | `8956335c` | `1bfcfa6dad460234` | 3283 |
+| next-receipt.json#131 | `f3088efd-f14a-8d94-967b-7b9ae32d125c` | `8956335c` | `0ae0d6fa9dec0a32` | 3284 |
+| next-receipt.json#132 | `3f9b3b35-3b5b-8a81-bd01-1ab0192f4548` | `8956335c` | `bc29745cc2e1a46d` | 3285 |
+| next-receipt.json#133 | `45c39ec5-118a-8e58-88cb-c22c28b98b7f` | `8956335c` | `279d0f84ab2562e6` | 3286 |
+| next-receipt.json#134 | `d2554992-e1c0-8e51-895f-d21d1b0d445f` | `8956335c` | `ea3ee98890ec9152` | 3287 |
+| next-receipt.json#135 | `059e84bb-a359-8230-b0bc-6add6e0fb05f` | `8956335c` | `081d3d94d76a398a` | 3288 |
+| next-receipt.json#136 | `d493ed0d-5a3f-83d0-b531-7b1221d18a5e` | `8956335c` | `dc35a8d01cecb410` | 3289 |
+| next-receipt.json#137 | `bd75ef7d-bade-8805-ab26-1b0c26d2a2e2` | `8956335c` | `7d2ecf20092546dd` | 3290 |
+| next-receipt.json#138 | `01bb7c6a-6ded-8f7b-8211-f6f6c0d8e8f2` | `8956335c` | `1ac5c1551bbf4b1f` | 3291 |
+| next-receipt.json#139 | `0b2378b9-a6f9-824c-a9f6-efe60c2e0044` | `8956335c` | `165bb717e6955e25` | 3292 |
+| next-receipt.json#140 | `8b31cdc4-aaa4-8280-a809-9d6ac5595561` | `8956335c` | `d06de87e6841ac01` | 3293 |
+| next-receipt.json#141 | `1c31e76c-6ee8-8d8a-b371-a9393a396401` | `8956335c` | `36781f5414e334cd` | 3294 |
+| next-receipt.json#142 | `9a747a43-89d3-8598-af28-092758b3f605` | `8956335c` | `143661292a46a0d5` | 3295 |
+| next-receipt.json#143 | `06b39c4a-89c8-8add-967d-1c5693c556e3` | `8956335c` | `70f2c99bca3f491a` | 3296 |
+| next-receipt.json#144 | `146cb744-3c97-846d-b0d4-a179516f65e3` | `8956335c` | `e4fc1a3f7c9450e9` | 3297 |
+| next-receipt.json#145 | `ef0294b7-94eb-8b90-8be6-17f3e7e9f4c2` | `8956335c` | `39bcc48069da5793` | 3298 |
+| next-receipt.json#146 | `c09ac6eb-d867-8d93-b43e-411f990fbf87` | `8956335c` | `2b63ed0b239772dc` | 3299 |
+| next-receipt.json#147 | `741fd005-1781-81b2-8490-b5a543ca3f5a` | `8956335c` | `6d957fab11b3569b` | 3300 |
+| next-receipt.json#148 | `322ffa15-f0ee-84a7-8c91-2b47fb7be710` | `8956335c` | `72e3a23cc59799d6` | 3301 |
+| next-receipt.json#149 | `9101402f-2de1-8466-b6bc-145917869c4e` | `8956335c` | `462a9634248e9088` | 3302 |
+| next-receipt.json#150 | `e1627927-0d4a-831a-9b93-20cf6ce6bfa9` | `8956335c` | `353ce423a70a730e` | 3303 |
+| next-receipt.json#151 | `bdf0323d-efe9-85b8-9fd6-68980c49bfc7` | `8956335c` | `2452315af20bd2a1` | 3304 |
+| next-receipt.json#152 | `7aef781e-19b2-840f-86bb-a41ad9a35cc2` | `8956335c` | `03d881476f1d2122` | 3305 |
+| next-receipt.json#153 | `11b7bab1-4e9c-8b44-956e-f89c9ef00ba4` | `8956335c` | `e18691345aa14d77` | 3306 |
+| next-receipt.json#154 | `84548ebb-4371-8b0f-be95-273dbfe6f99a` | `8956335c` | `c81cf133969d102b` | 3307 |
+| next-receipt.json#155 | `1ad69f28-f3c7-8a47-b3cc-8739d38df6b4` | `8956335c` | `c00a2178de584042` | 3308 |
+| next-receipt.json#156 | `ae66f177-2901-8bb7-a231-01bb9638674a` | `8956335c` | `6463a488f7cb7d08` | 3309 |
+| next-receipt.json#157 | `a5239f20-f509-892a-8ce0-1ad58e8469fc` | `8956335c` | `58f3dbc7e69e12b3` | 3310 |
+| next-receipt.json#158 | `91f40ce7-2767-865d-815f-598f1fb031df` | `8956335c` | `d1acee0647930e2c` | 3311 |
+| next-receipt.json#159 | `7792c97f-5dbc-8a42-ab2e-9cad1cb6fe59` | `8956335c` | `f2479ddcf6a1cb81` | 3312 |
+| next-receipt.json#160 | `05d0947c-ff03-84cf-ac80-009698fc9dde` | `8956335c` | `60c3d16d026beb0c` | 3313 |
+| next-receipt.json#161 | `61c5a554-af42-8b28-86fc-4fdb282adcd4` | `8956335c` | `551bb973a4ed65b0` | 3314 |
+| next-receipt.json#162 | `b1951277-b19b-8d97-a052-d3062a1df819` | `8956335c` | `b481923883e5df20` | 3315 |
+| next-receipt.json#163 | `0e382ccd-6da5-88ab-8382-36c48cebbd84` | `8956335c` | `bd68b112e36e866e` | 3316 |
+| next-receipt.json#164 | `eb9e9b25-c7a0-8a8c-85e3-277eb0ec9fbb` | `8956335c` | `55b675b86185e262` | 3317 |
+| next-receipt.json#165 | `35558ead-ebf0-8e9b-9aca-141a959398b2` | `8956335c` | `dfb3354db1c40e60` | 3318 |
+| next-receipt.json#166 | `ef541be4-4ef9-8e94-bc1a-049394a9ea12` | `8956335c` | `15b43309e83d2a5c` | 3319 |
+| next-receipt.json#167 | `9fcce9e8-5ee9-8462-a12e-7362144310d8` | `8956335c` | `c536b095787f3c1b` | 3320 |
+| payload-cf-receipt.json | `484bd7ec-a567-8062-b853-58903008a18d` | `e53d1e88` | `f62f0aaf7ff26014` | 3321 |
+| percall-receipt.json | `6fd83d42-9877-8a77-aa77-7f3c51933f5c` | `e53d1e88` | `bb48a531ebc72170` | 3322 |
+| refusals-receipt.json | `05618721-e409-811e-9bf4-291458b18e72` | `e53d1e88` | `8c5570077f4d6204` | 3323 |
+| test-receipt.json | `9ad3afde-cce2-8256-a670-b13020111e0b` | `e53d1e88` | `fedc92eeca943ba8` | 3324 |
+| test-receipt.json#0 | `16dd142e-8fd9-8a8b-adfb-c2bea95d6da4` | `9ad3afde` | `9446bba24060af2d` | 3325 |
+| uses-receipt.json | `12ab6bd2-70cc-87ce-beee-4a7f9adc63f7` | `e53d1e88` | `b2fe89660765e803` | 3326 |
+| uses-receipt.json#0 | `99478666-15c7-8085-a9ce-e207150d149c` | `12ab6bd2` | `3808b1f74f93e5ae` | 3327 |
+| uses-receipt.json#1 | `21029898-b457-8285-ad0b-0dd667d061a3` | `12ab6bd2` | `76c762304be625b0` | 3328 |
+| uses-receipt.json#2 | `3b487129-ba63-8495-ae38-1f71480d7f31` | `12ab6bd2` | `5ac2e0b312b01b0f` | 3329 |
+| uses-receipt.json#3 | `0826e789-092e-859a-8e28-99aca7d92533` | `12ab6bd2` | `97f205d9afc2c61c` | 3330 |
+| uses-receipt.json#4 | `c09367b4-dd90-8476-b29a-7c7cd0704b5f` | `12ab6bd2` | `2dfe2fa5464d6cf9` | 3331 |
+| uses-receipt.json#5 | `50522112-0710-8dba-926f-2c09e74f6788` | `12ab6bd2` | `ce6af06d4268dfd9` | 3332 |
+| uses-receipt.json#6 | `f569170d-e3a9-8637-b2ab-d7402ae3d24c` | `12ab6bd2` | `0a093e05d997a37d` | 3333 |
+| uses-receipt.json#7 | `4f0b9948-ffa6-866c-98c8-55d29df660df` | `12ab6bd2` | `9e47dec4ab091c38` | 3334 |
+| uses-receipt.json#8 | `48a1d6c7-92f9-8ab6-9112-b5104957dd14` | `12ab6bd2` | `0b1fec12d9f3f4f2` | 3335 |
+| uses-receipt.json#9 | `053bdf57-70d7-88d4-a430-090b0dfb5426` | `12ab6bd2` | `edbfecd356f8728f` | 3336 |
+| uses-receipt.json#10 | `69b06a5e-c56a-85fd-b46e-d0cdf1bf27d1` | `12ab6bd2` | `6c5d6c5046d6d8ca` | 3337 |
+| uses-receipt.json#11 | `a48d402e-1124-89aa-850d-5e1611ee15e6` | `12ab6bd2` | `715322c641a82332` | 3338 |
+| uses-receipt.json#12 | `a1ea0f51-b2db-831a-9d32-6ccd23704f06` | `12ab6bd2` | `a92e5cefd2a7e3ce` | 3339 |
+| uses-receipt.json#13 | `95137a9c-7fc2-86a6-94bd-aa2e9f6f0de5` | `12ab6bd2` | `d02613607b1fc431` | 3340 |
+| uses-receipt.json#14 | `48770bc7-52ec-842f-a507-8901e4c68718` | `12ab6bd2` | `c5b5f533ca36e84a` | 3341 |
+| uses-receipt.json#15 | `9a73f6c5-7727-809a-8028-6ab23e6babae` | `12ab6bd2` | `f4f18358c2ce2a2a` | 3342 |
+| uses-receipt.json#16 | `6fdf9bc6-b3c1-878e-a4fd-fa5cc4dd5c5c` | `12ab6bd2` | `cbc18811525279de` | 3343 |
+| uses-receipt.json#17 | `861b5780-4866-8bf3-a404-eb63210b8e8e` | `12ab6bd2` | `acb9734dbd99ce30` | 3344 |
+| uses-receipt.json#18 | `acfcc32c-2775-835c-b7bb-24203fe0b00f` | `12ab6bd2` | `3af5a8d5deea14f8` | 3345 |
+| uses-receipt.json#19 | `760c1790-81d4-8a90-9efe-229ab8eea314` | `12ab6bd2` | `0da263a43fafbe44` | 3346 |
+| uses-receipt.json#20 | `550d2562-82ae-83a9-bdef-7fe68b89dd91` | `12ab6bd2` | `f70919c4daf6dd6d` | 3347 |
+| uses-receipt.json#21 | `c3a90d01-43c7-8f9e-87dd-9d2715747fb6` | `12ab6bd2` | `79a529631d25f6d2` | 3348 |
+| uses-receipt.json#22 | `9b9eb4d4-7e6b-86ba-bd26-7652ba25b846` | `12ab6bd2` | `914e4e9fa5e66c3b` | 3349 |
+| uses-receipt.json#23 | `a173b4b6-b187-863e-b5e2-d947973a8f1d` | `12ab6bd2` | `c3c5dac0b87a14e5` | 3350 |
+| uses-receipt.json#24 | `104e4df7-2267-80c3-bf0b-728d030466ce` | `12ab6bd2` | `a2b1c8c350396bd7` | 3351 |
+| uses-receipt.json#25 | `8f8630dc-fb83-88c9-8835-13694d824570` | `12ab6bd2` | `43de4c182ce0e619` | 3352 |
+| uses-receipt.json#26 | `14aedf8f-802a-87d4-9eaa-f105273bb1f4` | `12ab6bd2` | `251900fe2fa18694` | 3353 |
+| uses-receipt.json#27 | `ac4cbedb-4dbb-8f63-9b55-0560a4541ccd` | `12ab6bd2` | `93d8c9c4c9bf85f2` | 3354 |
+| uses-receipt.json#28 | `f4d4af26-9eb8-81ba-a3af-df2457fc49c9` | `12ab6bd2` | `6457799e286a16b1` | 3355 |
+| uses-receipt.json#29 | `79823d20-a6dd-85ca-9145-5af0a17420d8` | `12ab6bd2` | `139039653642eec9` | 3356 |
+| uses-receipt.json#30 | `f7a00e29-12f1-89ec-ae9d-2bf680387534` | `12ab6bd2` | `eaf42dd843b384cf` | 3357 |
+| uses-receipt.json#31 | `0cf3a3c7-afb7-8c26-89be-c7e1a1023617` | `12ab6bd2` | `eee46f9c0202a4b2` | 3358 |
+| uses-receipt.json#32 | `0fec1d99-cd9b-87b2-b8b9-cfef812a0e5a` | `12ab6bd2` | `315f0bc22bff36f8` | 3359 |
+| uses-receipt.json#33 | `728e8fe2-bbac-87fc-bec9-4f1d6d3770c1` | `12ab6bd2` | `98cad71adefd6bf7` | 3360 |
+| uses-receipt.json#34 | `3e93951e-bf82-8ac8-827c-78fb02e64a60` | `12ab6bd2` | `e381880c755ef5ca` | 3361 |
+| uses-receipt.json#35 | `3fb5814f-b260-8eee-9d7a-9fbbab8ac11d` | `12ab6bd2` | `98b3344ff0c4c860` | 3362 |
+| uses-receipt.json#36 | `aee4960a-f0b9-88f1-a0d6-64aa89b9d9f8` | `12ab6bd2` | `51d99a7d27d3444d` | 3363 |
+| uses-receipt.json#37 | `194aff1b-9d82-8211-9b76-ef8aaff7d252` | `12ab6bd2` | `95aeb1b2540b512d` | 3364 |
+| uses-receipt.json#38 | `ea40c9a3-62d7-8d38-bca0-007465fd225c` | `12ab6bd2` | `7fc1bcc8e2c5d803` | 3365 |
+| uses-receipt.json#39 | `b4fe3045-4016-84e4-a100-415952a44692` | `12ab6bd2` | `5a4b3aa8364412f0` | 3366 |
+| uses-receipt.json#40 | `286effd0-2250-8741-80ff-1d897d10b68d` | `12ab6bd2` | `edf48c0a47adcbfa` | 3367 |
+| uses-receipt.json#41 | `316904ba-788b-8616-9d2a-1bfcb9346cc7` | `12ab6bd2` | `1e9d453025064335` | 3368 |
+| walls-receipt.json | `69b9565c-2447-8d4f-a33c-e460754f63ae` | `e53d1e88` | `83830280c48bcc9d` | 3369 |
+| readme | `6d83c666-48bb-8520-ac28-8b6ff9e68313` | `e53d1e88` | `e2f23844b23da20c` | 3370 |
 
 </details>
 
