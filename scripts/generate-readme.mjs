@@ -67,10 +67,16 @@ const stream = qpuReceiptStreamsOf(nodes.length).streams.find((s) => s.stream ==
 
 const short = (u) => u.slice(0, 8)
 const label = (n) => n.name.replace(/^build /, '').replace(/"/g, "'")
+// the build tree has one node per receipt file and one per receipt row — thousands; a flowchart of all of them does
+// not render on GitHub and rewrites itself every run (each uuid moves with its bytes). The diagram draws the structure
+// only — the build root, one node per receipt file with how many row-nodes hang beneath it, and the final receipt —
+// and the table below lists every node.
+const childCount = (uuid) => nodes.filter((n) => n.parent === uuid).length
+const structural = nodes.filter((n) => !n.parent || n.parent === root.uuid)
 const graph = [
   'flowchart TD',
-  ...nodes.map((n) => `  n${short(n.uuid)}["${label(n)}<br/><code>${short(n.uuid)}</code>"]`),
-  ...nodes.filter((n) => n.parent).map((n) => `  n${short(n.parent)} --> n${short(n.uuid)}`),
+  ...structural.map((n) => { const k = n.parent ? childCount(n.uuid) : 0; return `  n${short(n.uuid)}["${label(n)}${k ? `<br/>${k} rows` : ''}<br/><code>${short(n.uuid)}</code>"]` }),
+  ...structural.filter((n) => n.parent).map((n) => `  n${short(n.parent)} --> n${short(n.uuid)}`),
 ].join('\n')
 
 const cell = (v) => String(v ?? '').replace(/\|/g, '\\|')
