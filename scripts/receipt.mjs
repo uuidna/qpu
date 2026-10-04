@@ -101,14 +101,16 @@ if (kind === 'registry') {
   const p = await hex('data', 'perspectives', [faces])
   const tests = fs.globSync(['src/families/*/test.ts', 'src/quantum/processing/unit/*.test.ts', 'scripts/*.test.mjs']).map((f) => ({ file: f, text: fs.readFileSync(f, 'utf8') }))
   const relations = d.relations ?? []
-  // A relation is tested when EVERY formula it crosses is exercised by some test — each matched as a whole word
-  // (never a substring of another identifier, nor after a dot), across files, so a cross-family relation is credited
-  // to the family tests that drive its parts rather than demanding one file hold every name. When it is untested the
-  // row names the formulas that have no test, so the feed tells development exactly which test to write next.
-  const wordIn = (text, n) => new RegExp(`(?<![\\w.])${n.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}(?![\\w])`).test(text)
+  // A relation is tested when EVERY formula it crosses is CALLED by some test — the formula name as a whole word
+  // (not a substring of another identifier) followed by `(`, so `CalFormulas.gregorianDrift(1)` and a bare
+  // `gregorianDrift(1)` both count but a loop variable `n` or a string mention does not. Credited across files, so a
+  // cross-family relation is credited to the family tests that drive its parts rather than demanding one file hold
+  // every name. When it is untested the row names the formulas with no test, so the feed tells development exactly
+  // which test to write next.
+  const calledIn = (text, n) => new RegExp(`(?<![\\w$])${n.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&')}\\s*\\(`).test(text)
   const rows = relations.map((rel) => {
     const names = [...new Set(rel.ways.flatMap((w) => w.program))]
-    const coverage = names.map((n) => ({ n, files: tests.filter((t) => wordIn(t.text, n)).map((t) => t.file) }))
+    const coverage = names.map((n) => ({ n, files: tests.filter((t) => calledIn(t.text, n)).map((t) => t.file) }))
     const tested = coverage.every((c) => c.files.length > 0)
     const where = [...new Set(coverage.flatMap((c) => c.files))]
     const missing = coverage.filter((c) => c.files.length === 0).map((c) => c.n)
