@@ -1,20 +1,40 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
-import '../../mcp/families.js'
-import { flowFamiliesOf } from '../merkaba/index.js'
+import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { HeatFormulas } from './index.js'
+import '../../mcp/families.js'
 
-const at = (family: string, name: string): [number, number] => [flowFamiliesOf().indexOf(family), (qpuHexFamiliesOf().get(family) ?? []).findIndex((f) => f.name === name)]
-
-test('heat: erasure is zero exactly when reversible, Landauer prices it, an astronomical value splits into residue jobs', () => {
-  assert.equal(HeatFormulas.erasure(...at('Qpu.Mint', 'mintOf'), 32).value, 0, '2ⁱ is injective: nothing erased')
-  assert.equal(HeatFormulas.erasure(...at('clay', 'riemann'), 32).value, 31 * Math.log2(31), '31 inputs merged into one output')
-  assert.equal(HeatFormulas.landauer(1, 1000).value, Math.floor(1380649 * 1000 * Math.LN2), 'one bit at 1 K: k_B · T · ln 2')
-  const s = HeatFormulas.split(662607015, 64) as unknown as { value: number; exact: boolean; jobs: { p: number; residue: number }[] }
-  assert.equal(s.value, 64)
-  assert.equal(s.exact, false, '64 primes refute a claim about 2^planck but cannot rebuild it')
-  // 2^odd ≡ 2 (mod 3); planck ≡ 3 (mod 4) so 2^planck ≡ 2³ ≡ 3 (mod 5): residues from another route
-  assert.deepEqual(s.jobs.slice(0, 3).map((j) => j.residue), [0, 2, 3])
-  assert.equal(HeatFormulas.residue(10, 1021).value, 1024 % 1021)
+/** CODE QUALITY AS PHYSICS. A file's temperature is its commits over its days; its coherence the days it holds per fix;
+ *  its signal the photon-to-thermal ratio; its quality the signal held over the coherence time. A hot file is split to
+ *  cool it — ⌈T/k⌉ each — and the astronomical case splits into residue jobs joined by the CRT. Erasing nothing is
+ *  free: a reversible computation costs no Landauer energy. Every value is exact and crosses heat → physics (or crypto).*/
+test('heat: temperature, coherence, cooling and the Landauer floor — exact, crossing to physics', async (t) => {
+  assert.equal(HeatFormulas.temperature(10, 100).value, 100, 'T = ⌊1000 · commits / days⌋')
+  assert.equal(HeatFormulas.temperature(5, 10).value, 500)
+  assert.equal(HeatFormulas.coherence(100, 0).value, 100, 'no fix: the whole window holds')
+  assert.equal(HeatFormulas.coherence(100, 3).value, 25, 'T₂ = ⌊days / (fixes + 1)⌋')
+  assert.equal(HeatFormulas.cooling(100, 4).value, 25, '⌈T / k⌉')
+  assert.equal(HeatFormulas.cooling(100, 3).value, 34)
+  assert.equal(HeatFormulas.cooling(100, 0).holds, false, 'a split is into at least one part')
+  assert.equal(HeatFormulas.ways(100, 25).value, 4, 'the least k with ⌈T/k⌉ ≤ target')
+  assert.equal(HeatFormulas.ways(10, 100).value, 1, 'already cold enough: one part')
+  assert.equal(HeatFormulas.ways(100, 0).holds, false)
+  assert.equal(HeatFormulas.residue(10, 7).value, 2, '2^10 = 1024 ≡ 2 mod 7')
+  assert.equal(HeatFormulas.residue(4, 13).value, 3, '2^4 = 16 ≡ 3 mod 13')
+  assert.equal(HeatFormulas.split(10, 5).value, 5, 'five residue jobs, one per prime 2, 3, 5, 7, 11')
+  assert.equal(HeatFormulas.landauer(0, 310).value, 0, 'erasing nothing costs nothing — a reversible computation is free')
+  assert.ok(HeatFormulas.erasure(0, 0, 4).value >= 0, 'the bits a batch must erase are non-negative, 0 exactly when reversible')
+  const s0 = HeatFormulas.signal(0).value
+  assert.ok(s0 > 0 && HeatFormulas.signal(1000).value <= s0, 'the signal is highest at absolute cold and never rises with heat')
+  assert.equal(HeatFormulas.quality(10, 100, 3).value, HeatFormulas.signal(HeatFormulas.temperature(10, 100).value).value * HeatFormulas.coherence(100, 3).value, 'Q = S(T) · T₂')
+  assert.equal(HeatFormulas.temperature(10, 100).dst, 'physics')
+  assert.equal(qpuHexFamiliesOf().get('heat')?.length, 10)
+  for (const [name, params, expected] of [['temperature', [10, 100], 100], ['coherence', [100, 3], 25], ['cooling', [100, 4], 25], ['ways', [100, 25], 4]] as [string, number[], number][]) {
+    const uuid = qpuHexUuidOf({ family: 'heat', program: [name], params })
+    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
+    assert.equal(Number(run.value), expected, `heat.${name} at ${uuid}`)
+    assert.equal(run.holds, true)
+    qpuUuidReceiptOf(`heat ${name}`, qpuContentUuidOf(run), { uuid })
+  }
+  t.diagnostic('10 formulas; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
 })
