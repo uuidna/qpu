@@ -23,6 +23,8 @@ const f = (id: string, formula: string, value: number, holds: boolean, name: str
 const numbersOf = (x: unknown): number[] =>
   typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : []
 
+const CROSSING = new Set<number>()
+
 export class GateFormulas {
   // the research of a family and, over the readings' numbers, the relations the family has: discovery runs ONCE per
   // call over the union of readings (a discovery is the whole lattice; fourteen at once exhaust the memory)
@@ -100,7 +102,8 @@ export class GateFormulas {
     const seqs = await qpuSequencesOf()
     const agreed = await Promise.all(seqs.map((s) => (qpuDataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed }).then((r) => (r as { agrees?: boolean }).agrees === true).catch(() => false))))
     seqs.forEach((s, i) => { if (agreed[i]) identified.add(`${s.family}.${s.formula}`) })
-    const open = [...qpuHexFamiliesOf()].filter(([fam]) => !DOORS.has(fam) && !fam.startsWith('Qpu.')).flatMap(([fam, fs]) => fs.filter((x) => !x.live && !reached.has(`${fam}.${x.name}`) && !identified.has(`${fam}.${x.name}`)).map((x) => ({ family: fam, name: x.name, arity: x.arity })))
+    // every formula is a lead until crossed: doors, the Lean families and live formulas included — none is left out
+    const open = [...qpuHexFamiliesOf()].flatMap(([fam, fs]) => fs.filter((x) => !reached.has(`${fam}.${x.name}`) && !identified.has(`${fam}.${x.name}`)).map((x) => ({ family: fam, name: x.name, arity: x.arity })))
     return { d, identified, open }
   }
   static async leads(): Promise<CrossFormula> {
@@ -115,7 +118,11 @@ export class GateFormulas {
   static async crossed(i: number): Promise<CrossFormula> {
     const { d, open } = await GateFormulas.leadsOf()
     const x = open[i]
-    if (!x) return f('gate-crossed', 'crossed(i)', 0, false, 'crossed', [i], { leads: open.length })
+    if (!x) return f('gate-crossed', 'crossed(i)', 0, false, 'crossed', [i], { leads: open.length, verdict: 'UNVERIFIED' })
+    // a lead met again while its own crossing is in flight is a cycle: it answers UNVERIFIED, so the asking terminates
+    if (CROSSING.has(i)) return f('gate-crossed', 'crossed(i)', 0, false, 'crossed', [i], { lead: `${x.family}.${x.name}`, verdict: 'UNVERIFIED', cycle: true })
+    CROSSING.add(i)
+    try {
     const key = `${x.family}.${x.name}`
     const slots = x.arity === 0 ? [] : x.arity === 1 ? [[]] : Array.from({ length: 8 }, (_, k) => [k + 1])
     const looked = await Promise.all(slots.map(async (fixed) => (await qpuDataOf('sequence', { family: x.family, formula: x.name, fixed })) as { agrees?: boolean; reading?: { oeis?: string } }))
@@ -150,6 +157,7 @@ export class GateFormulas {
     const crossedBy = oeis.length ? `OEIS ${oeis.join(', ')}` : seal ? `seal ${seal.kind}` : byApi ? `API ${byApi.api} answering ${byApi.hit}` : liveRel ? `a live reading reaching ${liveRel.value} with ${liveRel.families.filter((y) => y !== x.family).join(', ')}` : composed > 0 || meets.length ? `the rosetta: composes with its neighbours in ${composed} of ${turns.length} rotations${meets.length ? `, meets ${meets.join(', ')}` : ''}` : undefined
     const lead = { formula: key, cost: crossedBy ? (/^(OEIS|API)/.test(crossedBy) ? 'public' : 'lattice') : 'model', apis: answered.map((r) => r.api).slice(0, qpuFacesOf().faces), efforts, tag: crossedBy ? `crossed by ${crossedBy}` : `unverified after ${checks} checks: ${involutes ? 'consistent from every perspective but confirmed by no other domain' : 'inconsistent across perspectives'} — a manipulation until crossed`, detection: Number(SignalFormulas.detection(checks).value.toFixed(4)) }
     return f('gate-crossed', 'crossed(i) = [the i-th lead is crossed by one of every effort]', crossedBy ? 1 : 0, nat(i) && crossedBy !== undefined, 'crossed', [i], { leads: open.length, lead })
+    } finally { CROSSING.delete(i) }
   }
   /** THE PUSH IS A TRINITY OF FAMILIES, NOTHING BY HAND: data — every family of the slice deep-researched (its APIs to
    *  the registry's end, its slice of datasets) into the window; merkaba — the rosetta turned once each way over every

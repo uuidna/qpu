@@ -57,8 +57,10 @@ try {
       // a formula's reading rides in the last step; a door's in its own body
       const s = r.structuredContent as { next?: unknown; steps?: { reading?: { next?: unknown } }[] } | undefined
       const next = s?.steps?.at(-1)?.reading?.next ?? s?.next
-      if (!all || typeof next !== 'number') break
-      if ('from' in args) args = { ...args, from: next }
+      if (!all || (typeof next !== 'number' && !Array.isArray(next))) break
+      // an address [a, b, …] is the next call's params whole; a number replaces `from`, or the first param
+      if (Array.isArray(next)) args = { ...args, params: next }
+      else if ('from' in args) args = { ...args, from: next }
       else if (Array.isArray(args.params)) args = { ...args, params: [next, ...(args.params as unknown[]).slice(1)] }
       else break
     }

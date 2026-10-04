@@ -81,30 +81,26 @@ export class HeatFormulas {
     return crossFormulaOf({ id: 'heat-landauer', src: 'heat', dst: 'physics', formula: 'E ≥ bits · k_B · T · ln 2 (10⁻³² J, T in mK)', value: Math.floor(bits * BOLTZMANN * millikelvin * Math.LN2), proof: 'Landauer 1961; k_B from index.lean def boltzmann' }, nat(bits, millikelvin), { name: 'heat.landauer', params: [bits, millikelvin] })
   }
 
-  /** SLOW IS A WRAP: an address that answers slowly wraps a computation instead of reaching a value. Every formula of
-   *  the flow families from the from-th (faces of them) is timed on its first faces inputs and in every rotation of the
-   *  rosetta (merkaba.develop feeds it its neighbours' values, the route that once fed it planck). A formula slower than
-   *  faces ms is hot. Value how many are hot; holds at zero; the hot ones ride hottest first with their slowest input.
-   *  The times are this device's readings, not part of the address; a run that never returns hangs the finder too. */
-  static async slow(from: number): Promise<CrossFormula> {
-    const ring = flowFamiliesOf(), faces = qpuFacesOf().faces, slice = ring.slice(from, from + faces)
-    // a Worker's clock does not advance during work and a slice exceeds its CPU budget (error 1102): timing is a device's
-    if ((globalThis as { navigator?: { userAgent?: string } }).navigator?.userAgent === 'Cloudflare-Workers')
-      return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: 'slow(from): timed on a device, not at the edge', value: 0, proof: 'refused at the edge: run `npm run mcp -- heat.slow [from] --all --local`' }, false, { name: 'heat.slow', params: [from] })
+  /** SLOW IS A WRAP: an address that answers slowly wraps a computation instead of reaching a value. One job per formula:
+   *  the j-th formula of the f-th flow family is timed on its first faces inputs and in every rotation of the rosetta
+   *  (merkaba.develop feeds it its neighbours' values, the route that once fed it planck), each run twice and the faster
+   *  counted, so a warm-up is not a slow address. Value its slowest run in ms; hot above faces ms; VERIFIED when it is
+   *  not hot and the clock was read, else UNVERIFIED — a runtime whose clock does not advance during work (a Worker) too.
+   *  `next` is the following formula's [f, j], so `--all` walks every formula of the ring. */
+  static async slow(f: number, j: number): Promise<CrossFormula> {
+    const ring = flowFamiliesOf(), faces = qpuFacesOf().faces, family = ring[f], formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
+    const after = family && j + 1 < (qpuHexFamiliesOf().get(family) ?? []).length ? [f, j + 1] : f + 1 < ring.length ? [f + 1, 0] : undefined
+    if (!formula) return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: 'slow(f, j)', value: 0, proof: 'UNVERIFIED: no formula at this address', ...{ verdict: 'UNVERIFIED', ...(after ? { next: after } : {}) } }, false, { name: 'heat.slow', params: [f, j] })
     const { MerkabaFormulas } = await import('../merkaba/index.js')
-    const hot: { formula: string; ms: number; input: string }[] = []
-    let timed = 0
-    for (const [k, family] of slice.entries()) for (const [j, formula] of (qpuHexFamiliesOf().get(family) ?? []).entries()) {
-      let worst = { ms: 0, input: '' }
-      // each input runs twice and the faster counts: a one-time warm-up is not a slow address
-      const once = async (run: () => unknown) => { const t = performance.now(); try { await run() } catch { /* an input it does not take */ } return performance.now() - t }
-      const time = async (input: string, run: () => unknown) => { const ms = Math.min(await once(run), await once(run)); timed++; if (ms > worst.ms) worst = { ms, input } }
-      for (let i = 0; i < faces; i++) await time(`(${Array(formula.arity).fill(i).join(',')})`, () => formula.run(Array.from({ length: formula.arity }, () => BigInt(i))))
-      for (let s = 0; s < 2 * ring.length; s++) await time(`rotation ${s}`, () => MerkabaFormulas.develop(from + k, j, s))
-      if (worst.ms > faces) hot.push({ formula: `${family}.${formula.name}`, ms: Math.round(worst.ms), input: worst.input })
-    }
-    hot.sort((a, b) => b.ms - a.ms)
-    return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: `slow(from) = |{formulas of families [from, from + faces) whose slowest run exceeds faces ms}|`, value: hot.length, proof: 'device readings: performance.now() around each run', ...{ timed, families: slice.length, hot: hot.slice(0, faces), ...(from + faces < ring.length ? { next: from + faces } : {}) } }, nat(from) && hot.length === 0, { name: 'heat.slow', params: [from] })
+    let worst = { ms: 0, input: '' }, timed = 0
+    const once = async (run: () => unknown) => { const t = performance.now(); try { await run() } catch { /* an input it does not take */ } return performance.now() - t }
+    const time = async (input: string, run: () => unknown) => { const ms = Math.min(await once(run), await once(run)); timed++; if (ms > worst.ms) worst = { ms, input } }
+    const start = performance.now()
+    for (let i = 0; i < faces; i++) await time(`(${Array(formula.arity).fill(i).join(',')})`, () => formula.run(Array.from({ length: formula.arity }, () => BigInt(i))))
+    for (let s = 0; s < 2 * ring.length; s++) await time(`rotation ${s}`, () => MerkabaFormulas.develop(f, j, s))
+    const frozen = performance.now() - start === 0
+    const ms = Math.round(worst.ms)
+    return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: `slow(${family}.${formula.name}) = its slowest steady-state run in ms; hot above faces ms`, value: ms, proof: 'device readings: performance.now() around each run', ...{ timed, input: worst.input, hot: ms > faces, verdict: !frozen && ms <= faces ? 'VERIFIED' : 'UNVERIFIED', ...(frozen ? { clock: 'did not advance during work' } : {}), ...(after ? { next: after } : {}) } }, nat(f, j) && !frozen && ms <= faces, { name: 'heat.slow', params: [f, j] })
   }
 
   /** One job of a split: 2ᵏ mod p by squaring — independent of every other prime, so any node or agent computes it at

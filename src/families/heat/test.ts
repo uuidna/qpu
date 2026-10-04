@@ -34,11 +34,12 @@ test('heat: temperature, coherence, cooling and the Landauer floor — exact, cr
   t.diagnostic('11 formulas; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
 })
 
-test('heat.slow names a formula that answers slowly', async () => {
+test('heat.slow names a formula that answers slowly, UNVERIFIED', async () => {
   const faces = qpuFacesOf().faces
   qpuHexRegisterOf('zzslow', 'spin', () => { const t = performance.now(); while (performance.now() - t < 3 * faces); return 1 })
-  const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'))) as unknown as { holds: boolean; hot: { formula: string; ms: number }[] }
-  assert.equal(r.hot[0]?.formula, 'zzslow.spin', 'the control is found')
-  assert.ok(r.hot[0]!.ms >= 3 * faces)
-  assert.equal(r.holds, false, 'a hot formula fails the finder')
+  const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'), 0)) as unknown as { value: number; holds: boolean; hot: boolean; verdict: string }
+  assert.ok(r.value >= 3 * faces, 'the control runs slow')
+  assert.equal(r.hot, true)
+  assert.equal(r.verdict, 'UNVERIFIED', 'a hot formula is unverified, a lead')
+  assert.equal(r.holds, false)
 })
