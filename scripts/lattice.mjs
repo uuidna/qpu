@@ -179,7 +179,7 @@ export const rewriteOf = (text, findings, importLine) => {
   let at = lines.findIndex((line) => /^import .*from '/.test(line))
   if (at < 0) at = lines.findIndex((line) => line.trim() !== '' && !line.trim().startsWith('*') && !line.trim().startsWith('/*'))
   else while (at + 1 < lines.length && /^import .*from '/.test(lines[at + 1])) at += 1
-  lines.splice(at + 1, 0, importLine)
+  if (importLine) lines.splice(at + 1, 0, importLine)
   return lines.join('\n')
 }
 
@@ -244,8 +244,11 @@ if (invoked) {
     console.log(`\n  ${relative(ROOT, path)}`)
     for (const row of findings) console.log(`    ${String(row.line).padStart(4)}  ${String(row.value).padStart(12)} -> ${row.expression}`)
     if (!fix) continue
-    const names = namesUsedOf(findings.map((row) => row.expression))
-    writeFileSync(path, rewriteOf(text, findings, `import { ${names.join(', ')} } from './${VALUES}'`))
+    // a name already imported in the file (e.g. tenOf from the unit) must not be re-imported from lattice-values — that
+    // is a duplicate declaration and a SyntaxError; take only the names the file does not already bring in.
+    const already = new Set([...text.matchAll(/import\s*\{([^}]*)\}\s*from/g)].flatMap((m) => m[1].split(',').map((s) => s.trim().split(/\s+as\s+/)[0]).filter(Boolean)))
+    const names = namesUsedOf(findings.map((row) => row.expression)).filter((name) => !already.has(name))
+    writeFileSync(path, rewriteOf(text, findings, names.length ? `import { ${names.join(', ')} } from './${VALUES}'` : ''))
   }
 
   const receiptPath = join(ROOT, 'lattice-receipt.json')
