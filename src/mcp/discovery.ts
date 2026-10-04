@@ -13,7 +13,7 @@ export type Seal = { family: string; program: string[]; kind: 'fixed' | 'involut
 // the doors run whole readings rather than formulas over inputs — the unit's own doors, and the families whose
 // formulas are live reads (api: a request per address; data: a source per address): they are reached through their
 // own receipts, never enumerated over inputs
-export const DOORS = new Set(['qpu', 'crypto', 'api', 'data', 'gate'])
+export const DOORS = new Set(['qpu', 'crypto', 'api', 'data', 'lead', 'gate'])
 const SMALL = Array.from({ length: L.mintOf(L.hexbit) }, (_, i) => i + L.seed)
 // the params section splits by count: one 48-bit natural, two 24-bit, three 16-bit
 const fits = (params: number[]) => params.every((p) => Number.isSafeInteger(p) && p >= 0 && p < qpuHexParamMaxOf(params.length))
