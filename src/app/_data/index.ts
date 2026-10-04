@@ -88,6 +88,23 @@ export const pageOf = async (slug: string, draft = false): Promise<Page | undefi
 export const pagesOf = async (): Promise<Page[]> =>
   (await (await payloadOf()).find({ collection: 'pages', where: await tenantWhere(), limit: 0, pagination: false, depth: 0 })).docs as Page[]
 
+export type App = { id: string; name: string; domain?: string | null; pages: number; docs: number }
+/** The tenants as apps: each a name and a domain, with the pages and docs scoped to it. Read with overrideAccess so the
+ *  public dashboard lists every app on the lattice, not only the host's own; the counts are the scoped collections per tenant. */
+export const appsOf = async (): Promise<App[]> => {
+  const payload = await payloadOf()
+  const tenants = (await payload.find({ collection: 'tenants', limit: 50, depth: 0, overrideAccess: true, sort: 'createdAt' })).docs as { id: string; name: string; domain?: string | null }[]
+  const count = async (collection: 'pages' | 'docs', tenant: string) =>
+    (await payload.count({ collection, where: { tenant: { equals: tenant } }, overrideAccess: true })).totalDocs
+  return Promise.all(tenants.map(async (t) => ({ id: t.id, name: t.name, domain: t.domain, pages: await count('pages', t.id), docs: await count('docs', t.id) })))
+}
+
+/** Which collections a tenant owns and which the QPU shares across every app — the multi-tenant split. */
+export const scopeOf = () => ({
+  scoped: ['pages', 'docs', 'posts', 'case-studies', 'categories', 'community-help', 'partners', 'partner-filters', 'docs-feedback', 'reusable-content'],
+  shared: ['quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'],
+})
+
 export const headerOf = async (): Promise<Header> => (await (await payloadOf()).findGlobal({ slug: 'header', depth: 1 })) as Header
 export const footerOf = async (): Promise<Footer> => (await (await payloadOf()).findGlobal({ slug: 'footer', depth: 1 })) as Footer
 

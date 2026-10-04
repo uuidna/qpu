@@ -284,6 +284,7 @@ export interface CaseStudy {
   slug?: string | null;
   layout?:
     | (
+        | AppsBlock
         | BannerBlock
         | BlogContentBlock
         | BlogMarkdownBlock
@@ -343,6 +344,21 @@ export interface Tenant {
   domain?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AppsBlock".
+ */
+export interface AppsBlock {
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'apps';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -457,6 +473,7 @@ export interface Page {
   description?: string | null;
   layout?:
     | (
+        | AppsBlock
         | BannerBlock
         | BlogContentBlock
         | BlogMarkdownBlock
@@ -1681,6 +1698,7 @@ export interface Post {
   categories?: (string | Category)[] | null;
   layout?:
     | (
+        | AppsBlock
         | BannerBlock
         | BlogContentBlock
         | BlogMarkdownBlock
@@ -2469,6 +2487,7 @@ export interface CaseStudiesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        apps?: T | AppsBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         blogContent?: T | BlogContentBlockSelect<T>;
         blogMarkdown?: T | BlogMarkdownBlockSelect<T>;
@@ -2516,6 +2535,17 @@ export interface CaseStudiesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "AppsBlock_select".
+ */
+export interface AppsBlockSelect<T extends boolean = true> {
+  heading?: T;
+  anchor?: T;
+  intro?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -3308,6 +3338,7 @@ export interface PagesSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        apps?: T | AppsBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         blogContent?: T | BlogContentBlockSelect<T>;
         blogMarkdown?: T | BlogMarkdownBlockSelect<T>;
@@ -3410,6 +3441,7 @@ export interface PostsSelect<T extends boolean = true> {
   layout?:
     | T
     | {
+        apps?: T | AppsBlockSelect<T>;
         banner?: T | BannerBlockSelect<T>;
         blogContent?: T | BlogContentBlockSelect<T>;
         blogMarkdown?: T | BlogMarkdownBlockSelect<T>;
