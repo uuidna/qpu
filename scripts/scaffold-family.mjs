@@ -23,6 +23,11 @@ const OPS = {
   max2:      { ar: 2, f: 'max(x, y)',           body: 'Math.max(x, y)',                          holds: 'nat(x, y)',            fn: (x, y) => Math.max(x, y) },
   ge:        { ar: 2, f: '[x ≥ y]',             body: 'x >= y ? 1 : 0',                          holds: 'nat(x, y)',            fn: (x, y) => x >= y ? 1 : 0 },
   prod3sum:  { ar: 3, f: '⌊x · y / z⌋',         body: 'z > 0 ? Math.floor((x * y) / z) : 0',     holds: 'nat(x, y, z) && z > 0',fn: (x, y, z) => z > 0 ? Math.floor((x * y) / z) : 0 },
+  // combinatorics — bounded so every value is an exact safe integer
+  fact:      { ar: 1, f: 'x!',                  body: 'x <= 12 ? ((n: number) => { let r = 1; for (let i = 2; i <= n; i++) r *= i; return r })(x) : 0', holds: 'nat(x) && x <= 12', fn: (x) => { if (x > 12) return 0; let r = 1; for (let i = 2; i <= x; i++) r *= i; return r } },
+  perm:      { ar: 2, f: 'x! / (x − y)!',       body: 'x >= y && x <= 20 ? ((n: number, k: number) => { let r = 1; for (let i = 0; i < k; i++) r *= (n - i); return r })(x, y) : 0', holds: 'nat(x, y) && x >= y && x <= 20', fn: (x, y) => { if (!(x >= y && x <= 20)) return 0; let r = 1; for (let i = 0; i < y; i++) r *= (x - i); return r } },
+  comb:      { ar: 2, f: 'C(x, y)',             body: 'x >= y ? ((n: number, k: number) => { let kk = Math.min(k, n - k); let r = 1; for (let i = 0; i < kk; i++) r = (r * (n - i)) / (i + 1); return Math.round(r) })(x, y) : 0', holds: 'nat(x, y) && x >= y', fn: (x, y) => { if (!(x >= y)) return 0; let kk = Math.min(y, x - y); let r = 1; for (let i = 0; i < kk; i++) r = (r * (x - i)) / (i + 1); return Math.round(r) } },
+  pow2:      { ar: 1, f: '2^x',                 body: 'x <= 30 ? 2 ** x : 0',                     holds: 'nat(x) && x <= 30', fn: (x) => x <= 30 ? 2 ** x : 0 },
 }
 const PARAM = ['x', 'y', 'z']
 
