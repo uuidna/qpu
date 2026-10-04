@@ -32,6 +32,18 @@ const call = async (name, args, again = 0) => {
 const hex = async (family, program, params = []) => { const sc = await call('qpu_cite', { hex: { family, program: [program], params } }); return { ...sc, ...(sc.steps?.at?.(-1)?.reading ?? {}) } }
 const families = async () => (await call('qpu_cite', { doors: true })).formulas?.map((f) => f.name.split('.')[0]).filter((f, i, a) => a.indexOf(f) === i && !['qpu', 'crypto', 'api', 'data', 'gate'].includes(f)).sort() ?? []
 const faces = 14
+/** SPLIT, NOT SEQUENCE — one primitive for every family walk. The items are run through a coordinated pool of `faces`
+ *  workers, so the wall time is the slowest item, not their sum; results keep input order, so a receipt is the same
+ *  whichever worker answered first. The host's hex programs are reads that erase no bit, so by Landauer the walk's
+ *  temperature is zero: time and temperature both near zero, however many families. */
+const pool = async (items, run, width = faces) => {
+  const out = new Array(items.length)
+  let at = 0
+  await Promise.all(Array.from({ length: Math.min(width, items.length) }, async () => {
+    for (;;) { const i = at++; if (i >= items.length) return; out[i] = await run(items[i], i) }
+  }))
+  return out
+}
 const write = (file, doc, rows) => {
   const out = { ...doc, when: new Date().toISOString().slice(0, 10), host, seconds: Math.round((Date.now() - t0) / 1000), rows }
   fs.writeFileSync(file, JSON.stringify(out, null, 1) + '\n')
@@ -62,19 +74,20 @@ if (kind === 'registry') {
     // slice to the registry's end (deep(f, k) until no next), then the leads — one address per lead, waves of faces
     // fired at once; nothing wraps, the wall time is the slowest address of each wave
     let leadCount = 0
-    for (let from = 0; from < sorted.length; from += faces) {
-      const r = line('push', await hex('gate', 'push', [from]), [from])
+    const pushFrom = []
+    for (let from = 0; from < sorted.length; from += faces) pushFrom.push(from)
+    const pushes = await pool(pushFrom, (from) => hex('gate', 'push', [from]))
+    pushes.forEach((raw, k) => {
+      const r = line('push', raw, [pushFrom[k]])
       holds &&= r.holds === true
       if (r.rosetta) console.log(`  ${r.rosetta.holds ? '✓' : '~'} merkaba.rosetta(${sorted.length}) = ${r.rosetta.value} (${r.rosetta.edges} edges, one turn each way)`)
       if (typeof r.leads === 'number') leadCount = r.leads
-    }
+    })
     let deepRead = 0
     await Promise.all(sorted.map(async (family, f) => { for (let k = 1; ; k++) { const d = await hex('data', 'deep', [f, k]).catch(() => null); if (!d) break; deepRead += Number(d.value) || 0; if (typeof d.next !== 'number' || d.next <= k) break; k = d.next - 1 } }))
     console.log(`  · deep research followed to the registry's end: ${deepRead} more readings`)
-    for (let i = 0; i < leadCount; i += faces) {
-      const wave = await Promise.all(Array.from({ length: Math.min(faces, leadCount - i) }, (_, k) => hex('gate', 'crossed', [i + k]).catch(() => null)))
-      for (const r of wave) { const l = r?.lead; if (!l) continue; leads.push(l); console.log(`    ${l.tag.startsWith('crossed') ? '✓' : '~'} ${l.formula} [${l.cost}]: ${l.tag} (OEIS ${l.efforts.oeis}, seal ${l.efforts.seal}, involutes ${l.efforts.involutes}, research ${l.efforts.research}, APIs ${l.efforts.apis}, rosetta ${l.efforts.rosetta}, detection ${l.detection})`) }
-    }
+    const crossed = await pool(Array.from({ length: leadCount }, (_, i) => i), (i) => hex('gate', 'crossed', [i]).catch(() => null))
+    for (const r of crossed) { const l = r?.lead; if (!l) continue; leads.push(l); console.log(`    ${l.tag.startsWith('crossed') ? '✓' : '~'} ${l.formula} [${l.cost}]: ${l.tag} (OEIS ${l.efforts.oeis}, seal ${l.efforts.seal}, involutes ${l.efforts.involutes}, research ${l.efforts.research}, APIs ${l.efforts.apis}, rosetta ${l.efforts.rosetta}, detection ${l.detection})`) }
     console.log(`  ~ gate.leads() = ${leadCount}: ${leads.filter((l) => l.tag.startsWith('crossed')).length} crossed, ${leads.filter((l) => !l.tag.startsWith('crossed')).length} unverified (${leads.filter((l) => l.cost === 'model').length} need a model)`)
   }
   console.log(`gate ${mode}: ${holds ? 'holds' : 'does not hold'}`)
@@ -82,8 +95,7 @@ if (kind === 'registry') {
   process.exit(holds ? 0 : 1)
 } else if (kind === 'next') {
   const sorted = await families()
-  const researched = []
-  for (const [i] of sorted.entries()) { const r = await hex('data', 'research', [i]); researched.push({ matched: Number(r.value), read: r.reading?.read ?? 0, holds: r.holds === true }) }
+  const researched = await pool(sorted, (_f, i) => hex('data', 'research', [i]).then((r) => ({ matched: Number(r.value), read: r.reading?.read ?? 0, holds: r.holds === true })))
   const d = await hex('data', 'discover', [256])
   const p = await hex('data', 'perspectives', [faces])
   const tests = fs.globSync(['src/families/*/test.ts', 'src/quantum/processing/unit/*.test.ts', 'scripts/*.test.mjs']).map((f) => ({ file: f, text: fs.readFileSync(f, 'utf8') }))
@@ -111,9 +123,18 @@ if (kind === 'registry') {
   }
   write('clay-receipt.json', { kind: 'clay-receipt', verdicts: 'seal VERIFIED or UNVERIFIED by recomputation; the Millennium claim UNVERIFIED', problems: rows.length, sealsVerified: rows.filter((r) => r.pass).length, related: Number(pass.value), relations: pass.relations ?? 0, agents: pass.agents ?? 0, record: `${research.value} APIs the clay words name, ${research.reading?.reading?.read ?? 0} read (${research.reading?.reading?.dataset ?? 'apis.guru'})`, holds: pass.holds === true, uuid: pass.receipt ?? '', receipt: pass.receipt ?? '' }, rows)
 } else if (kind === 'api') {
+  // SPLIT, NOT SEQUENCE. The registry is walked in slices of `faces`; every slice is an independent read, so they are
+  // fired through a coordinated pool of `faces` workers rather than one wave after another. The wall time is the
+  // slowest slice, not their sum (the sequential walk was 415 s). A read erases no bit, so by Landauer the walk's
+  // temperature is zero — time and temperature both near zero.
+  const first = await call('qpu_api', { walk: true, from: 0, take: faces })
+  const listed = first.listed ?? 0
+  const cap = process.argv.includes('--take') ? Number(process.argv[process.argv.indexOf('--take') + 1]) : listed
+  const offsets = []
+  for (let from = faces; from < Math.min(listed, cap); from += faces) offsets.push(from)
+  const waves = await pool(offsets, (from) => call('qpu_api', { walk: true, from, take: faces }).catch(() => ({ rows: [] })))
   const rows = []
-  let listed = 0, from = 0
-  for (;;) { const w = await call('qpu_api', { walk: true, from, take: faces }); listed = w.listed ?? listed; for (const r of w.rows ?? []) rows.push({ name: r.api, pass: r.used === true, value: `${r.fused ? `${r.operations} operations` : 'not fused'} · ${r.used ? `${r.status} ${r.url}` : r.why ?? ''}`, receipt: r.receipt ?? '' }); if (typeof w.next !== 'number' || w.next <= from) break; from = w.next; if (process.argv.includes('--take') && from >= Number(process.argv[process.argv.indexOf('--take') + 1])) break }
+  for (const w of [first, ...waves]) for (const r of w.rows ?? []) rows.push({ name: r.api, pass: r.used === true, value: `${r.fused ? `${r.operations} operations` : 'not fused'} · ${r.used ? `${r.status} ${r.url}` : r.why ?? ''}`, receipt: r.receipt ?? '' })
   const statuses = rows.filter((r) => r.pass).reduce((m, r) => ({ ...m, [r.value.split(' · ')[1]?.split(' ')[0] ?? '?']: (m[r.value.split(' · ')[1]?.split(' ')[0] ?? '?'] ?? 0) + 1 }), {})
   write('api-receipt.json', { kind: 'api-receipt', registry: 'https://api.apis.guru/v2/list.json', listed, walked: rows.length, fused: rows.filter((r) => !r.value.startsWith('not fused')).length, used: rows.filter((r) => r.pass).length, statuses, holds: rows.length > 0 && rows.every((r) => !r.value.startsWith('not fused')), uuid: rows.at(-1)?.receipt ?? '', receipt: rows.at(-1)?.receipt ?? '' }, rows)
 } else { console.error('kinds: gate commit|push, next, uses, api, registry'); process.exit(2) }
