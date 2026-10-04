@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "uuidna-verify",
+  "main": "worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "kv_namespaces": [
+    {
+      "binding": "STORAGE",
+      "id": "b341b266250444198e54508ca3aee53a",
+      "preview_id": "b341b266250444198e54508ca3aee53a"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BLOBS",
+      "bucket_name": "uuidna-qpu-blobs"
+    },
+    {
+      "binding": "MEDIA",
+      "bucket_name": "uuidna-qpu-payload-media"
+    }
+  ],
+  "workers_dev": true,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "verify.uuidna.com",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "QPU_HOST": "verify.uuidna.com"
+  },
+  "version_metadata": {
+    "binding": "CF_VERSION_METADATA"
+  }
+}

@@ -12191,12 +12191,12 @@ const qpuHexToolsOf = (hexEnv?: QpuEnv): QpuSubTool[] => {
 }
 
 // what the cooled modules read from this module and do not export as a capability
+export type { Served }
 export {
   FUSED_TOOLS,
   MCP_EXTENSIONS,
   RECEIPTS,
   SERVED,
-  Served,
   ampsOf,
   b0,
   b1,
