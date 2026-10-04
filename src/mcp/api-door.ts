@@ -212,8 +212,9 @@ qpuMcpFuseOf('qpu_api', {
   description: "Every public API as an address: {} the registry and how to address it; { api } (name or index) its operations; { api, operation, params } makes that read through api.call(i, j, s) and returns the reading with its hex address; { walk: true, from, take } walks a slice of the registry (fused: document read; used: a read made); { search } finds APIs by words in their names, titles, categories and operations.",
   inputSchema: { type: 'object', properties: { api: { type: ['string', 'integer'] }, operation: { type: 'integer' }, params: { type: 'object' }, walk: { type: 'boolean' }, from: { type: 'integer' }, take: { type: 'integer' }, search: { type: ['string', 'array'], items: { type: 'string' } } } },
   run: async (a) => {
-    if (a.search !== undefined) return apiSearchOf(Array.isArray(a.search) ? a.search.map(String) : String(a.search).split(/[\s,]+/), typeof a.take === 'number' ? a.take : qpuFacesOf().faces, typeof a.from === 'number' ? a.from : 0)
-    if (a.walk === true) return apiWalkOf(typeof a.from === 'number' ? a.from : 0, typeof a.take === 'number' ? a.take : qpuFacesOf().faces)
+    // unlocked: with no `take` the whole registry is walked or searched, not a slice of faces; from/take still slice when asked
+    if (a.search !== undefined) return apiSearchOf(Array.isArray(a.search) ? a.search.map(String) : String(a.search).split(/[\s,]+/), typeof a.take === 'number' ? a.take : Infinity, typeof a.from === 'number' ? a.from : 0)
+    if (a.walk === true) return apiWalkOf(typeof a.from === 'number' ? a.from : 0, typeof a.take === 'number' ? a.take : Infinity)
     if (a.api === undefined) {
       const reg = await apiRegistryOf()
       return { kind: 'api' as const, registry: REGISTRY, listed: reg.names.length, address: 'api.call(i, j, s): the i-th API of the registry, its j-th operation, the s-th parameter choice — one hex-program UUID', first: reg.names.slice(0, qpuFacesOf().faces), holds: reg.names.length > 0 }
