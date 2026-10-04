@@ -132,7 +132,7 @@ export class SplitFormulas {
   }
   /** THE SECOND LAW, AS A VIOLATION: `out` is energy claimed to come OUT of a computation — a battery charged with no
    *  charger, work from erasing bits. Any out above zero is a perpetual-motion claim below the Landauer floor; the
-   *  value is that surplus, holds (lawful) only at zero. The system recognises the impossible the moment it is asserted. */
+   *  value is that surplus, holds (lawful) only at zero. The system recognises the impossible the moment it is asserted, since no computation emits the energy it claims to erase. */
   static secondlaw(out: number): CrossFormula {
     return f('split-secondlaw', 'secondlaw(out) = out energy claimed from computation (lawful ⟺ 0; the Landauer floor is ≥ 0)', out, nat(out) && out === 0, 'secondlaw', [out], { lawful: out === 0, floor: 0 })
   }
