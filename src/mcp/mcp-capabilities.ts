@@ -1,5 +1,6 @@
 import { qpuFoldOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReceiptStreamsOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
+import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
 
 type Params = Record<string, unknown>
 type Resource = { uri: string; name: string; title: string; description: string; mimeType: 'application/json' }
@@ -42,14 +43,17 @@ const resourcesOf = (): Resource[] => [
   { uri: 'qpu://hologram', name: 'hologram', title: 'Hologram streams', description: 'One signed SHA-256 UUID stream per hologram scale and the Merkle root of all of them', mimeType: 'application/json' },
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed', mimeType: 'application/json' },
+  { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   ...streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const })),
   ...families().map((f) => ({ uri: `qpu://formulas/${f}`, name: `formulas-${f}`, title: `Family ${f}`, description: `The formulas of the ${f} hex family`, mimeType: 'application/json' as const })),
+  ...families().map((f) => ({ uri: `qpu://schema/${f}`, name: `schema-${f}`, title: `Schema ${f}`, description: `The ${f} family as a schema.org DefinedTermSet of hex-program UUIDs`, mimeType: 'application/json' as const })),
   ...Object.keys(hologramOf().streams).map((s) => ({ uri: `qpu://hologram/${s}`, name: `hologram-${s}`, title: `Scale ${s}`, description: `Signed fragments of the ${s} scale`, mimeType: 'application/json' as const })),
 ]
 
 const TEMPLATES: Template[] = [
   { uriTemplate: 'qpu://receipts/{stream}', name: 'receipt-stream', title: 'Receipt stream', description: 'One receipt stream by name', mimeType: 'application/json' },
   { uriTemplate: 'qpu://formulas/{family}', name: 'formula-family', title: 'Formula family', description: 'The formulas of one hex family: name, nibble, arity', mimeType: 'application/json' },
+  { uriTemplate: 'qpu://schema/{family}', name: 'schema-family', title: 'Family schema', description: 'One hex family as a schema.org DefinedTermSet; each term is its formula’s hex-program UUID', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hex/{uuid}', name: 'hex-run', title: 'Hex program run', description: 'Run the hex program a UUID encodes; the run is a quantum receipt', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hologram/{scale}', name: 'hologram-scale', title: 'Hologram scale', description: 'Signed, chained fragments of one hologram scale with their Merkle proofs', mimeType: 'application/json' },
 ]
@@ -59,14 +63,16 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://hex') return qpuHexCatalogOf()
   if (uri === 'qpu://lean') return qpuLeanOf()
   if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
+  if (uri === 'qpu://schema') return crossSchemasOf()
   if (uri === 'qpu://hologram') {
     const h = hologramOf()
     return { kind: h.kind, root: h.root, publicKeys: h.publicKeys, entries: h.entries, scales: Object.fromEntries(Object.entries(h.streams).map(([k, v]) => [k, { length: v.length, head: v.at(-1)?.uuid }])), holds: h.holds }
   }
-  const [, kind, key] = /^qpu:\/\/(receipts|formulas|hex|hologram)\/(.+)$/.exec(uri) ?? []
+  const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram)\/(.+)$/.exec(uri) ?? []
   const name = key ? decodeURIComponent(key) : ''
   if (kind === 'receipts') return qpuReceiptStreamsOf().streams.find((s) => s.stream === name)
   if (kind === 'formulas') return qpuHexFamiliesOf().has(name) ? { family: name, formulas: qpuHexFamiliesOf().get(name)!.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })) } : undefined
+  if (kind === 'schema') return qpuHexFamiliesOf().has(name) ? crossSchemaOf(name) : undefined
   if (kind === 'hex') return qpuHexRunOf(name)
   if (kind === 'hologram') return hologramOf().streams[name] ? { scale: name, root: hologramOf().root, publicKey: hologramOf().publicKeys[name], fragments: hologramOf().streams[name] } : undefined
   return undefined
