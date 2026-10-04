@@ -18,7 +18,7 @@ test('feed: news scored for every domain — relevance, recency, signal, trend, 
   const d = qpuHexFamiliesOf().get('feed')?.find((x) => x.name === 'domain')
   assert.ok(d?.live === true, 'feed.domain is a live news reading per domain')
   assert.equal(FeedFormulas.relevance(9, 12).dst, 'cross')
-  assert.equal(qpuHexFamiliesOf().get('feed')?.length, 8)
+  assert.equal(qpuHexFamiliesOf().get('feed')?.length, 9)
   const uuid = qpuHexUuidOf({ family: 'feed', program: ['signal'], params: [120, 45] })
   const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 165, `feed.signal at ${uuid}`)

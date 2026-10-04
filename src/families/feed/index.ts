@@ -25,6 +25,21 @@ export class FeedFormulas {
     const leads = r.reading?.leads ?? []
     return f('feed-domain', 'domain(i) = |latest stories about the i-th family\'s domain|', leads.length, nat(i) && leads.length > 0, 'domain', [i], { family: name, headlines: leads.slice(0, 8).map((l) => l.title) })
   }
+  /** THE i-th FAMILY'S OWN SPECIFIC LEADS, gathered from its domain across sources: the latest news, the open questions,
+   *  and the public APIs its words name — each family has the leads specific to it. value the total gathered; holds when
+   *  any did; the reading breaks them out by source. Live. */
+  static async leads(i: number): Promise<CrossFormula> {
+    const name = domainsOf()[i]
+    if (!name) return f('feed-leads', 'leads(i)', 0, false, 'leads', [i])
+    const { qpuDataOf } = await import('../../mcp/qpu-fused.js')
+    const [news, open, research] = await Promise.all([
+      qpuDataOf('news', { about: name }).then((r) => (r as { reading?: { leads?: { title: string }[] } }).reading?.leads ?? []).catch(() => []),
+      qpuDataOf('unanswered', { about: name, site: 'stackoverflow' }).then((r) => (r as { reading?: { leads?: { title: string }[] } }).reading?.leads ?? []).catch(() => []),
+      qpuDataOf('research', { family: name }).then((r) => Number((r as { reading?: { matched?: number } }).reading?.matched ?? 0)).catch(() => 0),
+    ])
+    const total = news.length + open.length + research
+    return f('feed-leads', 'leads(i) = |the i-th family\'s specific leads: news + open questions + research APIs|', total, nat(i) && total > 0, 'leads', [i], { family: name, news: news.length, questions: open.length, apis: research, sample: [...news, ...open].slice(0, 8).map((l) => l.title) })
+  }
   /** RELEVANCE as a percentage: stories matching the domain over those read. value ⌊matched · 100 / total⌋. */
   static relevance(matched: number, total: number): CrossFormula { return f('feed-relevance', 'relevance(matched, total) = ⌊matched · 100 / total⌋', total > 0 ? Math.floor((matched * 100) / total) : 0, nat(matched, total) && total > 0 && matched <= total, 'relevance', [matched, total]) }
   /** RECENCY: how fresh a story is — now minus when it was published (same unit). value max(0, now − published). */
@@ -41,5 +56,5 @@ export class FeedFormulas {
   static score(points: number, age: number): CrossFormula { return f('feed-score', 'score(points, age) = ⌊points · 100 / (age + 1)⌋', Math.floor((points * 100) / (age + 1)), nat(points, age), 'score', [points, age]) }
 }
 
-for (const name of ['domain', 'reach', 'recency', 'relevance', 'score', 'signal', 'trend', 'velocity'] as const)
+for (const name of ['domain', 'leads', 'reach', 'recency', 'relevance', 'score', 'signal', 'trend', 'velocity'] as const)
   qpuHexRegisterOf('feed', name, (FeedFormulas[name] as (...x: unknown[]) => unknown).bind(FeedFormulas))
