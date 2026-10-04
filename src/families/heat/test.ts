@@ -3,6 +3,8 @@ import assert from 'node:assert/strict'
 import { verifyHex } from '../verify.js'
 import { HeatFormulas } from './index.js'
 import '../../mcp/families.js'
+import { qpuFacesOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { flowFamiliesOf } from '../merkaba/index.js'
 
 /** CODE QUALITY AS PHYSICS. A file's temperature is its commits over its days; its coherence the days it holds per fix;
  *  its signal the photon-to-thermal ratio; its quality the signal held over the coherence time. A hot file is split to
@@ -28,6 +30,15 @@ test('heat: temperature, coherence, cooling and the Landauer floor — exact, cr
   assert.ok(s0 > 0 && HeatFormulas.signal(1000).value <= s0, 'the signal is highest at absolute cold and never rises with heat')
   assert.equal(HeatFormulas.quality(10, 100, 3).value, HeatFormulas.signal(HeatFormulas.temperature(10, 100).value).value * HeatFormulas.coherence(100, 3).value, 'Q = S(T) · T₂')
   assert.equal(HeatFormulas.temperature(10, 100).dst, 'physics')
-  await verifyHex('heat', 10, [['temperature', [10, 100], 100], ['coherence', [100, 3], 25], ['cooling', [100, 4], 25], ['ways', [100, 25], 4]])
-  t.diagnostic('10 formulas; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
+  await verifyHex('heat', 11, [['temperature', [10, 100], 100], ['coherence', [100, 3], 25], ['cooling', [100, 4], 25], ['ways', [100, 25], 4]])
+  t.diagnostic('11 formulas; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
+})
+
+test('heat.slow names a formula that answers slowly', async () => {
+  const faces = qpuFacesOf().faces
+  qpuHexRegisterOf('zzslow', 'spin', () => { const t = performance.now(); while (performance.now() - t < 3 * faces); return 1 })
+  const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'))) as unknown as { holds: boolean; hot: { formula: string; ms: number }[] }
+  assert.equal(r.hot[0]?.formula, 'zzslow.spin', 'the control is found')
+  assert.ok(r.hot[0]!.ms >= 3 * faces)
+  assert.equal(r.holds, false, 'a hot formula fails the finder')
 })

@@ -81,6 +81,29 @@ export class HeatFormulas {
     return crossFormulaOf({ id: 'heat-landauer', src: 'heat', dst: 'physics', formula: 'E ≥ bits · k_B · T · ln 2 (10⁻³² J, T in mK)', value: Math.floor(bits * BOLTZMANN * millikelvin * Math.LN2), proof: 'Landauer 1961; k_B from index.lean def boltzmann' }, nat(bits, millikelvin), { name: 'heat.landauer', params: [bits, millikelvin] })
   }
 
+  /** SLOW IS A WRAP: an address that answers slowly wraps a computation instead of reaching a value. Every formula of
+   *  the flow families from the from-th (faces of them) is timed on its first faces inputs and in every rotation of the
+   *  rosetta (merkaba.develop feeds it its neighbours' values, the route that once fed it planck). A formula slower than
+   *  faces ms is hot. Value how many are hot; holds at zero; the hot ones ride hottest first with their slowest input.
+   *  The times are this device's readings, not part of the address; a run that never returns hangs the finder too. */
+  static async slow(from: number): Promise<CrossFormula> {
+    const ring = flowFamiliesOf(), faces = qpuFacesOf().faces, slice = ring.slice(from, from + faces)
+    const { MerkabaFormulas } = await import('../merkaba/index.js')
+    const hot: { formula: string; ms: number; input: string }[] = []
+    let timed = 0
+    for (const [k, family] of slice.entries()) for (const [j, formula] of (qpuHexFamiliesOf().get(family) ?? []).entries()) {
+      let worst = { ms: 0, input: '' }
+      // each input runs twice and the faster counts: a one-time warm-up is not a slow address
+      const once = async (run: () => unknown) => { const t = performance.now(); try { await run() } catch { /* an input it does not take */ } return performance.now() - t }
+      const time = async (input: string, run: () => unknown) => { const ms = Math.min(await once(run), await once(run)); timed++; if (ms > worst.ms) worst = { ms, input } }
+      for (let i = 0; i < faces; i++) await time(`(${Array(formula.arity).fill(i).join(',')})`, () => formula.run(Array.from({ length: formula.arity }, () => BigInt(i))))
+      for (let s = 0; s < 2 * ring.length; s++) await time(`rotation ${s}`, () => MerkabaFormulas.develop(from + k, j, s))
+      if (worst.ms > faces) hot.push({ formula: `${family}.${formula.name}`, ms: Math.round(worst.ms), input: worst.input })
+    }
+    hot.sort((a, b) => b.ms - a.ms)
+    return crossFormulaOf({ id: 'heat-slow', src: 'heat', dst: 'physics', formula: `slow(from) = |{formulas of families [from, from + faces) whose slowest run exceeds faces ms}|`, value: hot.length, proof: 'device readings: performance.now() around each run', ...{ timed, families: slice.length, hot: hot.slice(0, faces), ...(from + faces < ring.length ? { next: from + faces } : {}) } }, nat(from) && hot.length === 0, { name: 'heat.slow', params: [from] })
+  }
+
   /** One job of a split: 2ᵏ mod p by squaring — independent of every other prime, so any node or agent computes it at
    *  its own address and receipts it; two nodes answering the same job differently is a violation, exactly. */
   static residue(k: number, p: number): CrossFormula {
@@ -101,7 +124,7 @@ export class HeatFormulas {
   }
 }
 
-for (const name of ['coherence', 'cooling', 'erasure', 'landauer', 'quality', 'residue', 'signal', 'split', 'temperature', 'ways'] as const)
+for (const name of ['coherence', 'cooling', 'erasure', 'landauer', 'quality', 'residue', 'signal', 'slow', 'split', 'temperature', 'ways'] as const)
   qpuHexRegisterOf('heat', name, (HeatFormulas[name] as (...x: unknown[]) => unknown).bind(HeatFormulas))
 
 /** One file as git measures it. */
