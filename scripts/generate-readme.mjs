@@ -109,6 +109,18 @@ const discovery = receiptOf('discovery-receipt.json'), heat = receiptOf('heat-re
 const doors = qpuMcpDoorsOf()
 const listed = qpuMcpToolsListOf().length
 const num = (x) => (typeof x === 'number' ? x.toLocaleString('en') : String(x ?? '—'))
+// THE FULL FAMILY CATALOG, the main lead a reader develops: every registered family and how many formulas it carries,
+// read from the live registry (qpuMcpDoorsOf), not a hand-kept list. The glance counts the Lean families discovery runs;
+// this is the whole registered set, so a reader sees the breadth — every family a hex-program UUID crossing to another
+// (the cross formulations), each holding when its formulas recompute at their addresses (the cross-formula rows).
+const famCounts = (() => { const by = new Map(); for (const fm of doors.formulas) { const k = fm.name.split('.')[0]; by.set(k, (by.get(k) ?? 0) + 1) } return [...by.entries()].sort((a, b) => a[0].localeCompare(b[0])) })()
+const familiesTable = [
+  `${num(famCounts.length)} families carry ${num(doors.formulas.length)} formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; ${num(formulas.pass)} of ${num(formulas.rowsTotal)} cross-formula rows hold (${num(formulas.hexAgrees)} agree with their hex programs).`,
+  '',
+  '| Family | Formulas | Family | Formulas | Family | Formulas |',
+  '|---|---:|---|---:|---|---:|',
+  ...Array.from({ length: Math.ceil(famCounts.length / 3) }, (_, r) => `| ${[0, 1, 2].map((c) => famCounts[r * 3 + c]).map((e) => (e ? `\`${cell(e[0])}\` | ${num(e[1])}` : ' | ')).join(' | ')} |`),
+].join('\n')
 const glance = [
   '| Capability | How much | Compared with |',
   '|---|---|---|',
@@ -245,6 +257,10 @@ formula families addressed by hex-program UUIDs, quantum receipts, its own crypt
 data. Each wing reports itself:
 
 ${wingTable}
+
+### Formula families
+
+${familiesTable}
 
 ## Clay Millennium Prize Problems
 
