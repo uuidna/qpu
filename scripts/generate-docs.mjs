@@ -199,13 +199,8 @@ for (const [slug, md] of Object.entries(pages)) {
   const { fm, html } = htmlOf(md)
   docs.push({ slug: slug === 'README' ? 'index' : slug, title: fm.title, description: fm.description, markdown: md.replace(/^---[\s\S]*?---\n/, ''), html })
 }
-// the root's own documents named CLAY_*.md (README_CLAY_*.md too) are published as they are, each at its name
-for (const f of fs.readdirSync('.').filter((f) => /^(README_)?CLAY_.*\.md$/.test(f)).sort()) {
-  const md = fs.readFileSync(f, 'utf8')
-  const title = /^# (.*)$/m.exec(md)?.[1]?.trim() ?? f
-  const description = (md.split('\n').find((l) => l.trim() && !l.startsWith('#')) ?? '').replace(/\*\*/g, '').trim().slice(0, 300)
-  docs.push({ slug: f.replace(/\.md$/, '').toLowerCase().replace(/_/g, '-'), title, description, markdown: md, html: htmlOf(md).html })
-}
+// nothing written by hand is published: every doc below is generated from the code, so its SEO and quality are the
+// code's. A hand-written Markdown file is a lead (scripts/leads.mjs: manualDocLeadsOf), not a page.
 // the same pages as Payload content: the docs collection, upserted on init by content UUID (the public site)
 // id: the UUID of the slug, so a page has one address however many isolates seed it; uuid: the UUID of its content
 const docRows = docs.map((d) => ({ id: unit.qpuShapeUuidOf(`docs/${d.slug}`), ...d, uuid: unit.qpuContentUuidOf(d) }))

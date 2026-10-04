@@ -13,7 +13,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 | Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
 | Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
 | Payload on Cloudflare | 98,304 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
-| Code heat | 434 of 452 files cold, 18 hot | Qpu.Physics: photon / thermal T |
+| Code heat | 435 of 453 files cold, 18 hot | Qpu.Physics: photon / thermal T |
 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).

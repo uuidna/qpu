@@ -14,7 +14,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { archiveLeadsOf, deployLeadsOf, copyLeadsOf, doorLeadsOf, flawLeadsOf, hostLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf, teachingNoteOf } from './leads.mjs'
+import { archiveLeadsOf, deployLeadsOf, copyLeadsOf, doorLeadsOf, flawLeadsOf, hostLeadsOf, manualDocLeadsOf, packageLeadsOf, repoLeadsOf, settledOf, teachingLeadsOf, teachingNoteOf } from './leads.mjs'
 
 test('a package the registry never served is a lead, and one it serves is not', () => {
   const never = packageLeadsOf({ name: '@uuidna/school', version: '0.1.0', status: 404 })
@@ -28,6 +28,19 @@ test('a package the registry never served is a lead, and one it serves is not', 
 
   // the absent condition: the registry serves exactly what the tree holds
   assert.deepEqual(packageLeadsOf({ name: '@uuidna/qpu', version: '0.1.3', status: 200, served: ['0.1.2', '0.1.3'], latest: '0.1.3' }), [])
+})
+
+test('a hand-written doc is a lead; a tree of only generated docs owes nothing', () => {
+  const generated = new Set(['README.md', 'docs/README.md', 'docs/lattice.md'])
+
+  // the fault it catches: a Markdown file no generator writes — unsigned, untested, its SEO nobody's
+  const open = manualDocLeadsOf({ md: ['README.md', 'docs/lattice.md', 'AUDITING_GUIDE.md', 'docs/MULTI-TENANT-AUDIT.md'], generated })
+  assert.equal(open.length, 2)
+  assert.deepEqual(open.map((l) => l.source).sort(), ['docs:AUDITING_GUIDE.md', 'docs:docs/MULTI-TENANT-AUDIT.md'])
+  assert.match(open[0].owes, /generator that writes it from the code|removal/)
+
+  // the absent condition: every tracked doc is one the generator writes
+  assert.deepEqual(manualDocLeadsOf({ md: ['README.md', 'docs/README.md', 'docs/lattice.md'], generated }), [])
 })
 
 test('a checkout owes for each fault independently, and a clean one owes nothing', () => {
