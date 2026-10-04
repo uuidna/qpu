@@ -6,7 +6,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 1,139 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 1,140 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
@@ -2072,7 +2072,7 @@ data. Each wing reports itself:
 
 ### Formula families
 
-137 families carry 1,139 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 79 cross-formula rows hold (36 agree with their hex programs).
+137 families carry 1,140 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 79 cross-formula rows hold (36 agree with their hex programs).
 
 | Family | Formulas | Family | Formulas | Family | Formulas |
 |---|---:|---|---:|---|---:|
@@ -2111,7 +2111,7 @@ data. Each wing reports itself:
 | `protocol` | 8 | `pulley` | 8 | `pump` | 8 |
 | `qpu` | 8 | `Qpu` | 37 | `queue` | 8 |
 | `radar` | 8 | `record` | 6 | `rotation` | 8 |
-| `router` | 8 | `rule` | 9 | `satellite` | 8 |
+| `router` | 8 | `rule` | 10 | `satellite` | 8 |
 | `scale` | 6 | `signal` | 6 | `socket` | 8 |
 | `software` | 8 | `solar` | 8 | `solvent` | 8 |
 | `sort` | 8 | `split` | 15 | `spring` | 8 |
