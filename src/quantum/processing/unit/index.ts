@@ -11925,8 +11925,11 @@ export const qpuServedLedgerHolds = (rows = qpuServedLedgerOf()): boolean => row
 // ============================================================================
 
 /** How the params section splits: by the two free bits of the variant nibble. */
-export const HEX_PARAM_MODES = ['none', 'one 48-bit', 'two 24-bit', 'three 16-bit'] as const
-const hexWidths = [[], [12], [6, 6], [4, 4, 4]] as const
+// Derived from the lattice, not hand-written: the param group is UUID_FOUR·n hex (48 bits); a v8 variant can carry m
+// params only while mintOf(n)+m stays a valid RFC variant (8…b), so m ≤ n, and the m params share the group equally —
+// the address's own combinatorics, no number typed. hexWidths[m] = m shares of UUID_FOUR·n hex; mode 0 is none.
+const hexWidths: number[][] = Array.from({ length: n + seed }, (_, m) => (m === n - n ? [] : Array.from({ length: m }, () => (UUID_FOUR * n) / m)))
+export const HEX_PARAM_MODES: readonly string[] = hexWidths.map((w, m) => (m === n - n ? 'none' : `${m}×${w[n - n]! * UUID_FOUR}-bit`))
 /** The widths of the params section by count, in hex digits, and the first natural a param of that count cannot hold:
  *  what every module that mints or filters hex programs reads instead of restating 2^48, 2^24, 2^16. */
 export const qpuHexWidthsOf = (): readonly (readonly number[])[] => hexWidths
@@ -12022,7 +12025,7 @@ export const qpuHexUuidOf = (spec: { family: string; program: readonly string[];
     if (!Number.isSafeInteger(v) || v < n - n || v >= UUID_SIXTEEN ** widths[i]!) throw new Error(`hex: param ${i} out of range for ${HEX_PARAM_MODES[mode]}`)
   })
   const p = params.map((v, i) => v.toString(UUID_SIXTEEN).padStart(widths[i]!, '0')).join('').padEnd(UUID_FOUR * n, '0')
-  return uuidGroupsOf(hexHandleOf(spec.family), nib.slice(n - n, UUID_FOUR).join(''), `8${nib.slice(UUID_FOUR, UUID_FOUR + n).join('')}`, `${(mintOf(n) + mode).toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR + n).join('')}`, p)
+  return uuidGroupsOf(hexHandleOf(spec.family), nib.slice(n - n, UUID_FOUR).join(''), `${UUID_EIGHT.toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR, UUID_FOUR + n).join('')}`, `${(mintOf(n) + mode).toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR + n).join('')}`, p)
 }
 
 /**
