@@ -4,7 +4,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 207 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 326 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
@@ -13,7 +13,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 | Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
 | Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
 | Payload on Cloudflare | 98,304 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
-| Code heat | 324 of 340 files cold, 16 hot | Qpu.Physics: photon / thermal T |
+| Code heat | 434 of 452 files cold, 18 hot | Qpu.Physics: photon / thermal T |
 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).

@@ -10,7 +10,7 @@
  */
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
-import { heatOf } from '../dist/mcp/heat-formulas.js'
+import { heatOf } from '../dist/families/heat/index.js'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuLatticeNamesOf, tenOf } from '../dist/quantum/processing/unit/index.js'
 const L = { ...qpuLatticeNamesOf(), tenOf }
 

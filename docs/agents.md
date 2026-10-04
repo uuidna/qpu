@@ -39,7 +39,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`qpuCompeteLiveOf`](../src/quantum/processing/unit/index.ts#L10258) | builder | qpu_compete with live CERN occupancy. | `qpuCompeteLiveHolds` | live (network) |
 | [`qpuCompeteOf`](../src/quantum/processing/unit/index.ts#L8951) | builder | The read team against the call team on quality, speed and security per token; the winner calls qpu_prove. | `qpuCompeteHolds` | holds |
 | [`qpuDataLiveOf`](../src/quantum/processing/unit/index.ts#L538) | builder | Every live public dataset the fused qpu_data door checks, read now and carried by qpu_prove { live: true }: the proof's live block names what agrees with the unit, what differs and what could not be reached. | — | — |
-| [`qpuDevelopOf`](../src/quantum/processing/unit/index.ts#L11725) | builder | The develop reading: source, host, tools, API and integrity, for contributors. | `qpuDevelopHolds` | holds |
+| [`qpuDevelopOf`](../src/quantum/processing/unit/index.ts#L11727) | builder | The develop reading: source, host, tools, API and integrity, for contributors. | `qpuDevelopHolds` | holds |
 | [`qpuDocsOf`](../src/quantum/processing/unit/readme.ts#L41) | builder | The unit's inline guide: abstract, API rows, formulas and the learning ladder, as one document. | `qpuDocsHolds` | holds |
 | [`qpuDryOf`](../src/quantum/processing/unit/index.ts#L1117) | builder | Coordinated dry-clean: two teams, occupancy pentagram, genesis coins. | `qpuDryHolds` | holds |
 | [`qpuEfficiencyOf`](../src/quantum/processing/unit/index.ts#L3655) | builder | Token efficiency of each door: bytes and tokens to read the tree versus to call the tool. | `qpuEfficiencyHolds` | holds |
@@ -48,13 +48,13 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`qpuForgeOf`](../src/quantum/processing/unit/index.ts#L6939) | builder | Forge a tool from a sealed op tree; { name, run, args } forges and evaluates in one call, { uuid, args } runs a forged tool by its content UUID. | `qpuForgeHolds` | holds |
 | [`qpuGlossaryOf`](../src/quantum/processing/unit/index.ts#L3154) | builder | WHAT THE WORDS MEAN, SERVED BESIDE THEM. `holds` is said of every record and means that the record is self-consistent and recomputes to itself; it is not a claim that the test the record describes passed. | — | — |
 | [`qpuHarnessesOf`](../src/quantum/processing/unit/index.ts#L10520) | builder | INTEGRATE IN ANY HARNESS (the captain, 2026-09-12). | `qpuHarnessesHolds` | holds |
-| [`qpuHexFamilyCapOf`](../src/quantum/processing/unit/index.ts#L11996) | builder | The nibble's cap on a family's formulas: fifteen (0 is no formula). | — | — |
-| [`qpuHexParamMaxOf`](../src/quantum/processing/unit/index.ts#L11931) | builder | — | — | — |
-| [`qpuHexWidthsOf`](../src/quantum/processing/unit/index.ts#L11930) | builder | The widths of the params section by count, in hex digits, and the first natural a param of that count cannot hold: what every module that mints or filters hex programs reads instead of restating 2^48, 2^24, 2^16. | — | — |
+| [`qpuHexFamilyCapOf`](../src/quantum/processing/unit/index.ts#L11998) | builder | The nibble's cap on a family's formulas: fifteen (0 is no formula). | — | — |
+| [`qpuHexParamMaxOf`](../src/quantum/processing/unit/index.ts#L11933) | builder | — | — | — |
+| [`qpuHexWidthsOf`](../src/quantum/processing/unit/index.ts#L11932) | builder | The widths of the params section by count, in hex digits, and the first natural a param of that count cannot hold: what every module that mints or filters hex programs reads instead of restating 2^48, 2^24, 2^16. | — | — |
 | [`qpuHostsOf`](../src/quantum/processing/unit/index.ts#L10427) | builder | MCP hosts the unit is reachable from: fourteen agent harnesses and fourteen LLM clients, one per face. | `qpuHostsHolds` | holds |
 | [`qpuHybridOf`](../src/quantum/processing/unit/index.ts#L1483) | builder | Measure hybrid storage speed and cost. | `qpuHybridHolds` | holds |
 | [`qpuInstallManifestOf`](../src/quantum/processing/unit/index.ts#L10835) | builder | install.json, served and written from one function so host and file agree. | `qpuInstallManifestHolds` | holds |
-| [`qpuInstallOf`](../src/quantum/processing/unit/index.ts#L11392) | builder | Interactive install: steps, choices per occupancy and the combinations they make. | `qpuInstallHolds` | holds |
+| [`qpuInstallOf`](../src/quantum/processing/unit/index.ts#L11394) | builder | Interactive install: steps, choices per occupancy and the combinations they make. | `qpuInstallHolds` | holds |
 | [`qpuManOf`](../src/quantum/processing/unit/index.ts#L3334) | builder | A tool's man page (NAME, SYNOPSIS, DESCRIPTION, SEE ALSO) for the /mcp door. | `qpuManHolds` | checked on each call (needs inputs) |
 | [`qpuMcpCallOf`](../src/quantum/processing/unit/mcp.ts#L403) | builder | Every call is answered: a door that throws is answered with its classified failure, never a crash. | — | — |
 | [`qpuMcpDiscoverOf`](../src/quantum/processing/unit/index.ts#L10552) | builder | MCP discovery reply: protocol version, capabilities, tools, server info, instructions and install entries. | `qpuMcpDiscoverHolds` | checked on each call (needs inputs) |
@@ -62,7 +62,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`qpuMcpErrorsOf`](../src/quantum/processing/unit/mcp.ts#L382) | builder | Every current error and warning at once: each fused door's own checks read through the registry (qpu_data's every source), each classified with where, why and what resolves it. | — | — |
 | [`qpuMcpOf`](../src/quantum/processing/unit/mcp.ts#L225) | builder | The MCP catalogue at /mcp: tools, cybersecurity tools, capacity and provider as one JSON-LD WebAPI. | `qpuMcpHolds` | holds |
 | [`qpuMcpShownOf`](../src/quantum/processing/unit/index.ts#L3409) | builder | THE REPLY ON THE WIRE, ONCE AS TEXT AND ONCE AS STRUCTURE. | `qpuMcpShownHolds` | checked on each call (needs inputs) |
-| [`qpuMcpToolsListOf`](../src/quantum/processing/unit/index.ts#L11687) | builder | THE CONNECT BILL (the captain, 2026-09-12: "minimise bills of any kind"). tools/list is paid by every client on every connect, in context tokens: the sixteen output schemas were 34,232 of its 44,197 bytes — three quarters of the bill for a document a client validates a reply against at most once. | — | — |
+| [`qpuMcpToolsListOf`](../src/quantum/processing/unit/index.ts#L11689) | builder | THE CONNECT BILL (the captain, 2026-09-12: "minimise bills of any kind"). tools/list is paid by every client on every connect, in context tokens: the sixteen output schemas were 34,232 of its 44,197 bytes — three quarters of the bill for a document a client validates a reply against at most once. | — | — |
 | [`qpuMintScopeOpenOf`](../src/quantum/processing/unit/index.ts#L199) | builder | Start a fresh scope chain and answer the one just closed, so a caller can bracket a region and fold only it. | `qpuMintScopeOpenHolds` | holds |
 | [`qpuMixedOf`](../src/quantum/processing/unit/index.ts#L8676) | builder | The domains crossed against each other, as unordered pairs of the vocabulary the experiments name. | `qpuMixedHolds` | holds |
 | [`qpuMountsOf`](../src/quantum/processing/unit/index.ts#L10874) | builder | Every mount this unit offers on the host that asked, plus the zone's other MCP, named and not claimed. | `qpuMountsHolds` | holds |
@@ -72,7 +72,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`qpuNextOf`](../src/quantum/processing/unit/index.ts#L760) | builder | Next is the double. | `qpuNextHolds` | holds |
 | [`qpuOccupantOf`](../src/quantum/processing/unit/index.ts#L10718) | builder | Which seat occupies the unit for a referrer, and why. | `qpuOccupantHolds` | holds |
 | [`qpuOutputSchemaOf`](../src/quantum/processing/unit/index.ts#L3357) | builder | A JSON Schema derived from a tool's own replies: properties typed from the samples, required = keys present in every sample. | — | — |
-| [`qpuPayloadPluginOf`](../src/quantum/processing/unit/index.ts#L11208) | builder | Payload extends like a plugin. | `qpuPayloadPluginHolds` | holds |
+| [`qpuPayloadPluginOf`](../src/quantum/processing/unit/index.ts#L11210) | builder | Payload extends like a plugin. | `qpuPayloadPluginHolds` | holds |
 | [`qpuPlanesOf`](../src/quantum/processing/unit/index.ts#L3904) | builder | PLANES (the captain, 2026-09-12). theorem planes: plane = coins·coins·rays is less than mintOf(rays + seed), and coins·rays = faces. | `qpuPlanesHolds` | holds |
 | [`qpuPriorArtOf`](../src/quantum/processing/unit/index.ts#L10652) | builder | Prior-art references the router cites, each with its kind (reference, vector, device). | `qpuPriorArtHolds` | holds |
 | [`qpuReadmeOf`](../src/quantum/processing/unit/readme.ts#L117) | builder | THE README IS THE npm PAGE. | `qpuReadmeHolds` | holds |
@@ -111,14 +111,14 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`generateMetadata`](../src/deployment/payload-cloudflare.ts#L263) | function | — | — | — |
 | [`generateMetadata`](../src/deployment/payload-cloudflare.ts#L326) | function | — | — | — |
 | [`generateMetadata`](../src/deployment/payload-cloudflare.ts#L340) | function | — | — | — |
-| [`isUnknownTool`](../src/quantum/processing/unit/index.ts#L11716) | function | Type guard for the reply to a tools/call that names no tool of this unit. | — | — |
+| [`isUnknownTool`](../src/quantum/processing/unit/index.ts#L11718) | function | Type guard for the reply to a tools/call that names no tool of this unit. | — | — |
 | [`qpuCallOfUuid`](../src/quantum/processing/unit/index.ts#L7873) | function | qpuCallOfUuid(uuid) → the combination that address names: the door, the pair, and whether it verifies. | — | — |
-| [`qpuHexRegisteredSizeOf`](../src/quantum/processing/unit/index.ts#L11994) | function | How many formulas a family registered, before the nibble's cap: a family past the cap is truncated silently by qpuHexFamiliesOf, so the rule family reads this to say so. | — | — |
+| [`qpuHexRegisteredSizeOf`](../src/quantum/processing/unit/index.ts#L11996) | function | How many formulas a family registered, before the nibble's cap: a family past the cap is truncated silently by qpuHexFamiliesOf, so the rule family reads this to say so. | — | — |
 | [`qpuMcpFuseOf`](../src/quantum/processing/unit/index.ts#L525) | function | Fuse a tool into the unit: answered by tools/call, never added to tools/list, so the sixteen sealed doors stay sixteen. | — | — |
 | [`worker`](../src/quantum/processing/unit/router.ts#L78) | function | The unit's front door, cooled out of index.ts by the heat family: the Workers fetch that routes every path to the door that answers it, and hands the rest to Payload. | — | — |
 | [`DELETE`](../src/deployment/payload-cloudflare.ts#L352) | constant | — | — | — |
 | [`GET`](../src/deployment/payload-cloudflare.ts#L350) | constant | — | — | — |
-| [`HEX_PARAM_MODES`](../src/quantum/processing/unit/index.ts#L11926) | constant | How the params section splits: by the two free bits of the variant nibble. | — | — |
+| [`HEX_PARAM_MODES`](../src/quantum/processing/unit/index.ts#L11928) | constant | How the params section splits: by the two free bits of the variant nibble. | — | — |
 | [`MCP_VERSIONS`](../src/quantum/processing/unit/index.ts#L10543) | constant | MCP protocol versions the /mcp door negotiates. | — | — |
 | [`OPTIONS`](../src/deployment/payload-cloudflare.ts#L355) | constant | — | — | — |
 | [`PATCH`](../src/deployment/payload-cloudflare.ts#L353) | constant | — | — | — |
