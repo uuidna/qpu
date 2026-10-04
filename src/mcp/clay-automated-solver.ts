@@ -16,7 +16,7 @@ export const CLAY_PROBLEMS = {
     description: "Prove P ≠ NP using causal inversion barrier",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
-    source: "https://doi.org/10.5281/zenodo.21781603",
+    source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "causal_inversion",
     claim: "P ≠ NP (information-theoretic proof)"
   },
@@ -27,7 +27,7 @@ export const CLAY_PROBLEMS = {
     description: "Hodge classes are algebraic (rational linear combinations of cycles)",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
-    source: "https://doi.org/10.5281/zenodo.21781603",
+    source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "xai_synthesis_composition",
     cross_formulas: [
       "explain_hodge_decomposition (XAI)",
@@ -42,7 +42,7 @@ export const CLAY_PROBLEMS = {
     description: "All non-trivial zeros on critical line Re(s) = 1/2",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
-    source: "https://doi.org/10.5281/zenodo.21781603",
+    source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "functional_symmetry",
     claim: "All non-trivial zeros lie on Re(s) = 1/2 (symmetry proof)"
   },
@@ -53,7 +53,7 @@ export const CLAY_PROBLEMS = {
     description: "Yang-Mills theory has a mass gap on R^4",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
-    source: "https://doi.org/10.5281/zenodo.21781603",
+    source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "federated_gauge_convergence",
     cross_formulas: [
       "federated_gauge_symmetry_convergence (Federated)",
@@ -68,7 +68,7 @@ export const CLAY_PROBLEMS = {
     description: "Smooth solutions exist for all time",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
-    source: "https://doi.org/10.5281/zenodo.21781603",
+    source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "federated_smoothness_aggregation",
     claim: "Existence and smoothness proven for smooth initial data"
   },
@@ -79,7 +79,7 @@ export const CLAY_PROBLEMS = {
     description: "Rank of elliptic curve equals order of zero of L-function",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
-    source: "https://doi.org/10.5281/zenodo.21781603",
+    source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "causal_rank_transfer",
     cross_formulas: [
       "causal_rank_from_l_function (Causal)",
