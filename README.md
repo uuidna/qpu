@@ -6,7 +6,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 1,018 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 1,139 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
@@ -20,13 +20,13 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).
 
-**Final build receipt** `78d4c7aa-535c-8962-81d9-77893d7629ee`
+**Final build receipt** `2454ea2d-b98e-73b7-a2fe-36389f463fc5`
 
 | | |
 |---|---|
 | version | 1.0.1 |
 | receipts | 18 files, 3417 nodes |
-| build stream | length 3417, head `78d4c7aa-535c-8962-81d9-77893d7629ee`, chain `515e098330c03bec537d04fceb362e49665815aa1950f819690d08988efa3933`, holds **true** |
+| build stream | length 3417, head `2454ea2d-b98e-73b7-a2fe-36389f463fc5`, chain `d58174703a90c5210e1c562f11d8bb36a903353e2b1de922d64329c70480cc97`, holds **true** |
 
 ## Proof by MCP
 
@@ -2072,51 +2072,56 @@ data. Each wing reports itself:
 
 ### Formula families
 
-122 families carry 1,018 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 79 cross-formula rows hold (36 agree with their hex programs).
+137 families carry 1,139 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 79 cross-formula rows hold (36 agree with their hex programs).
 
 | Family | Formulas | Family | Formulas | Family | Formulas |
 |---|---:|---|---:|---|---:|
 | `access` | 6 | `adhesive` | 8 | `alloy` | 8 |
 | `antenna` | 8 | `antibody` | 8 | `api` | 10 |
-| `audio` | 8 | `audit` | 4 | `bandwidth` | 8 |
-| `battery` | 8 | `beam` | 8 | `bio` | 8 |
-| `bond` | 8 | `budget` | 8 | `buffer` | 8 |
-| `buoyancy` | 8 | `cache` | 8 | `cal` | 14 |
-| `canon` | 8 | `catalyst` | 8 | `ceramic` | 8 |
-| `chat` | 6 | `chem` | 8 | `clay` | 7 |
-| `codec` | 8 | `collision` | 8 | `color` | 8 |
+| `asteroid` | 8 | `audio` | 8 | `audit` | 4 |
+| `bandwidth` | 8 | `battery` | 8 | `beam` | 8 |
+| `bio` | 8 | `bond` | 8 | `budget` | 8 |
+| `buffer` | 8 | `buoyancy` | 8 | `cache` | 8 |
+| `cal` | 14 | `canon` | 8 | `catalyst` | 8 |
+| `causal` | 8 | `ceramic` | 8 | `chat` | 6 |
+| `chem` | 8 | `clay` | 7 | `codec` | 8 |
+| `collision` | 8 | `color` | 8 | `comet` | 8 |
 | `composite` | 8 | `corrosion` | 8 | `cross` | 10 |
 | `crypt` | 6 | `crypto` | 8 | `crystal` | 8 |
 | `data` | 12 | `db` | 8 | `dividend` | 8 |
-| `dns` | 8 | `driver` | 8 | `econ` | 6 |
-| `electrolyte` | 8 | `engine` | 8 | `enzyme` | 8 |
-| `equity` | 8 | `firmware` | 8 | `fluid` | 8 |
-| `forensic` | 7 | `friction` | 8 | `gate` | 8 |
+| `dns` | 8 | `driver` | 8 | `eclipse` | 8 |
+| `econ` | 6 | `electrolyte` | 8 | `engine` | 8 |
+| `enzyme` | 8 | `equity` | 8 | `federated` | 8 |
+| `firmware` | 8 | `fluid` | 8 | `forensic` | 7 |
+| `friction` | 8 | `galaxy` | 8 | `gate` | 8 |
 | `gear` | 8 | `genome` | 8 | `geo` | 8 |
 | `glyph` | 6 | `graph` | 8 | `hardware` | 8 |
-| `hash` | 8 | `hd` | 14 | `heat` | 10 |
+| `hash` | 8 | `hd` | 14 | `heat` | 11 |
 | `holo` | 2 | `image` | 8 | `invoice` | 8 |
 | `job` | 8 | `kin` | 15 | `law` | 7 |
 | `ledger` | 8 | `lever` | 8 | `loan` | 8 |
 | `matrix` | 8 | `merkaba` | 11 | `metabolism` | 8 |
-| `modular` | 8 | `mutation` | 8 | `neuron` | 8 |
-| `np` | 6 | `numen` | 7 | `optics` | 8 |
-| `option` | 8 | `packet` | 8 | `path` | 9 |
-| `pathogen` | 8 | `payroll` | 8 | `pendulum` | 8 |
-| `piston` | 8 | `polymer` | 8 | `port` | 8 |
+| `modular` | 8 | `moon` | 8 | `mutation` | 8 |
+| `nebula` | 8 | `neuron` | 8 | `np` | 6 |
+| `numen` | 7 | `optics` | 8 | `option` | 8 |
+| `packet` | 8 | `path` | 9 | `pathogen` | 8 |
+| `payroll` | 8 | `pendulum` | 8 | `piston` | 8 |
+| `planet` | 8 | `polymer` | 8 | `port` | 8 |
 | `prime` | 8 | `projectile` | 8 | `protein` | 8 |
 | `protocol` | 8 | `pulley` | 8 | `pump` | 8 |
 | `qpu` | 8 | `Qpu` | 37 | `queue` | 8 |
 | `radar` | 8 | `record` | 6 | `rotation` | 8 |
-| `router` | 8 | `rule` | 9 | `scale` | 6 |
-| `signal` | 6 | `socket` | 8 | `software` | 8 |
-| `solar` | 8 | `solvent` | 8 | `sort` | 8 |
-| `split` | 15 | `spring` | 8 | `stream` | 8 |
-| `survey` | 8 | `synapse` | 8 | `tax` | 8 |
-| `tesla` | 11 | `text` | 8 | `tls` | 8 |
-| `torsion` | 8 | `tree` | 8 | `tune` | 7 |
-| `vaccine` | 8 | `vector` | 8 | `wave` | 9 |
-| `wind` | 8 | `yi` | 9 |  |  |
+| `router` | 8 | `rule` | 9 | `satellite` | 8 |
+| `scale` | 6 | `signal` | 6 | `socket` | 8 |
+| `software` | 8 | `solar` | 8 | `solvent` | 8 |
+| `sort` | 8 | `split` | 15 | `spring` | 8 |
+| `star` | 8 | `stream` | 8 | `survey` | 8 |
+| `synapse` | 8 | `synthesis` | 8 | `tax` | 8 |
+| `telescope` | 8 | `tesla` | 11 | `text` | 8 |
+| `tls` | 8 | `torsion` | 8 | `tree` | 8 |
+| `tune` | 7 | `vaccine` | 8 | `vector` | 8 |
+| `wave` | 9 | `wind` | 8 | `xai` | 8 |
+| `yi` | 9 | `zeroshot` | 8 |  |  |
 
 ## Clay Millennium Prize Problems
 
@@ -2161,7 +2166,7 @@ flowchart TD
   n0480e5fc["cross-receipt.json<br/>30 rows<br/><code>0480e5fc</code>"]
   n6f199401["debts-receipt.json<br/><code>6f199401</code>"]
   n7a74fc09["discovery-receipt.json<br/>336 rows<br/><code>7a74fc09</code>"]
-  n989bada8["flaws-receipt.json<br/><code>989bada8</code>"]
+  n71012a74["flaws-receipt.json<br/><code>71012a74</code>"]
   n51c9aca2["formulas-receipt.json<br/>79 rows<br/><code>51c9aca2</code>"]
   nc40b6046["fuse-receipt.json<br/><code>c40b6046</code>"]
   n8375a30e["gate-receipt.json<br/>2 rows<br/><code>8375a30e</code>"]
@@ -2175,12 +2180,12 @@ flowchart TD
   nbf344003["test-receipt.json<br/>1 rows<br/><code>bf344003</code>"]
   n3612a515["uses-receipt.json<br/>42 rows<br/><code>3612a515</code>"]
   nb3998a8b["walls-receipt.json<br/><code>b3998a8b</code>"]
-  n78d4c7aa["readme<br/><code>78d4c7aa</code>"]
+  n2454ea2d["readme<br/><code>2454ea2d</code>"]
   n28c6264b --> n150431b3
   n28c6264b --> n0480e5fc
   n28c6264b --> n6f199401
   n28c6264b --> n7a74fc09
-  n28c6264b --> n989bada8
+  n28c6264b --> n71012a74
   n28c6264b --> n51c9aca2
   n28c6264b --> nc40b6046
   n28c6264b --> n8375a30e
@@ -2194,7 +2199,7 @@ flowchart TD
   n28c6264b --> nbf344003
   n28c6264b --> n3612a515
   n28c6264b --> nb3998a8b
-  n28c6264b --> n78d4c7aa
+  n28c6264b --> n2454ea2d
 ```
 
 | node | receipt uuid | referrer | payload fold | seq |
@@ -5099,7 +5104,7 @@ flowchart TD
 | discovery-receipt.json#333 | `d4f662a7-07a5-2687-b4d0-b1238749807a` | `7a74fc09` | `99495b1587a62c75` | 2897 |
 | discovery-receipt.json#334 | `e9dd64a6-ec25-660e-a831-cdb927c2f0cb` | `7a74fc09` | `7647a70985738924` | 2898 |
 | discovery-receipt.json#335 | `d06b22cb-576a-1d30-bfb0-1d797620884a` | `7a74fc09` | `75052f64e6044bdb` | 2899 |
-| flaws-receipt.json | `989bada8-135c-1a6b-8c46-f2e014fd44e1` | `28c6264b` | `8d8910f1ce413b57` | 2900 |
+| flaws-receipt.json | `71012a74-1028-8826-91e6-0986a714954b` | `28c6264b` | `43ea9330cdd490a5` | 2900 |
 | formulas-receipt.json | `51c9aca2-5d1d-7b42-a89c-06a3616ce9fe` | `28c6264b` | `dc0a87c1a53e1741` | 2901 |
 | formulas-receipt.json#0 | `a39beaf3-e86a-214c-a1ef-08109adeda4a` | `51c9aca2` | `9f59c953ba4f8e60` | 2902 |
 | formulas-receipt.json#1 | `ccef6399-55c8-8e98-a9ce-24660ae69c70` | `51c9aca2` | `49cefa79979b75cc` | 2903 |
@@ -5615,7 +5620,7 @@ flowchart TD
 | uses-receipt.json#40 | `b73065f1-0a56-6b92-a29c-b44162183c93` | `3612a515` | `a1bacec066656c45` | 3413 |
 | uses-receipt.json#41 | `c21526f2-78c0-6ed6-99c7-7a9fbbe566f7` | `3612a515` | `e43f843d6380eb30` | 3414 |
 | walls-receipt.json | `b3998a8b-e4ee-2aee-abf9-1aa2b9319acf` | `28c6264b` | `a830ee89ed201e46` | 3415 |
-| readme | `78d4c7aa-535c-8962-81d9-77893d7629ee` | `28c6264b` | `067d365df74aa88e` | 3416 |
+| readme | `2454ea2d-b98e-73b7-a2fe-36389f463fc5` | `28c6264b` | `9b4f28dec33af224` | 3416 |
 
 </details>
 
