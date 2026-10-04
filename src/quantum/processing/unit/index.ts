@@ -232,7 +232,7 @@ const receiptFoldOf = (text: string): string => sha256Hex(text).slice(n - n, FOL
 const receiptUuidOf = (fold: string, referrer: string): string => {
   const h = sha256Hex(JSON.stringify({ payload: fold, referrer }))
   const variant = (mintOf(n) + (parseInt(h[UUID_SIXTEEN]!, UUID_SIXTEEN) % UUID_FOUR)).toString(UUID_SIXTEEN)
-  return uuidGroupsOf(h.slice(n - n, UUID_EIGHT), h.slice(UUID_EIGHT, UUID_EIGHT + UUID_FOUR), `8${h.slice(UUID_EIGHT + UUID_FOUR + seed, UUID_SIXTEEN)}`, `${variant}${h.slice(UUID_SIXTEEN + seed, UUID_SIXTEEN + UUID_FOUR)}`, h.slice(UUID_SIXTEEN + UUID_FOUR, coins * UUID_SIXTEEN))
+  return uuidStampOf(`${h.slice(n - n, UUID_SIXTEEN)}${variant}${h.slice(UUID_SIXTEEN + seed, coins * UUID_SIXTEEN)}`)
 }
 const receiptChainOf = (chain: string, uuid: string): string => sha256Hex(`${chain}${uuid}`)
 /**
@@ -2489,6 +2489,36 @@ const bigPowModOf = (base: bigint, exp: bigint, modulus: bigint): bigint => {
   }
   return x
 }
+/**
+ * THE VERSION NIBBLE IS DECIDED BY THE CRYPTO FAMILY, NOT DECLARED.
+ *
+ * RFC 9562 keeps eight versions and this scheme now uses every one of them — no address wears a version a literal
+ * put there. Which version a given address carries is a fold of its own other thirty-one hex digits through the
+ * crypto family's own primitive: bigPowModOf, the modular exponentiation crypto_cmodexp runs and theorem shor
+ * factors with, raised to rays over the Shor modulus (chooseOf(faces, coins) = 91), carried onto 1..8. Because
+ * the version is a function of the content it is deterministic — one content keeps one identity — and it is a
+ * seal: a tampered middle names a version its content does not, which uuidSealOf reports.
+ */
+const UUID_VERSION_AT = UUID_EIGHT + UUID_FOUR
+const uuidVersionOf = (digits: string): string => {
+  const rest = `${digits.slice(n - n, UUID_VERSION_AT)}${digits.slice(UUID_VERSION_AT + seed)}`
+  const fold = bigPowModOf(BigInt(`0x${rest}`), BigInt(qpuFacesOf().rays), BigInt(chooseOf(qpuFacesOf().faces, coins)))
+  return (seed + Number(fold % BigInt(mintOf(n)))).toString(UUID_SIXTEEN)
+}
+/** Group a 32-hex (dashless) address 8-4-4-4-12 with the crypto family's version stamped into the version slot. */
+const uuidStampOf = (digits: string): string =>
+  uuidGroupsOf(
+    digits.slice(n - n, UUID_EIGHT),
+    digits.slice(UUID_EIGHT, UUID_VERSION_AT),
+    `${uuidVersionOf(digits)}${digits.slice(UUID_VERSION_AT + seed, UUID_SIXTEEN)}`,
+    digits.slice(UUID_SIXTEEN, UUID_SIXTEEN + UUID_FOUR),
+    digits.slice(UUID_SIXTEEN + UUID_FOUR, coins * UUID_SIXTEEN),
+  )
+/** Whether an address wears the version its own content decides — the crypto seal, read back. */
+const uuidSealOf = (uuid: string): boolean => {
+  const bare = String(uuid).replace(/-/g, '').toLowerCase()
+  return /^[0-9a-f]{32}$/.test(bare) && bare[UUID_VERSION_AT] === uuidVersionOf(bare)
+}
 /** Bits so that 2^bits > value: the work register that holds every residue mod value. 0 for value <= 0. */
 const bitsOf = (value: bigint): number => {
   let k = n - n
@@ -4733,7 +4763,7 @@ const uuidImprintOf = (lane: number, fused: number, faces: number): string => {
   messageSeq += seed
   const time = fused + messageSeq
   const clock = mintOf(faces + seed) + lane
-  return `${hexOf(time, mintOf(n))}-${hexOf(lane, mintOf(coins))}-1${hexOf(time, n)}-${hexOf(clock, mintOf(coins))}-${hexOf(time + lane, n * coins * coins)}`
+  return uuidStampOf(`${hexOf(time, mintOf(n))}${hexOf(lane, mintOf(coins))}${hexOf(time, mintOf(coins))}${hexOf(clock, mintOf(coins))}${hexOf(time + lane, n * coins * coins)}`)
 }
 
 /**
@@ -7682,12 +7712,10 @@ export const qpuShapeUuidOf = (canonical: string): string => {
    *
    * 8-4-4-4-12: mintOf(n), mintOf(coins), mintOf(coins), mintOf(coins), faces - coins. */
   const variant = (Number(BigInt(`0x${low.slice(n - n, seed)}`) % BigInt(UUID_FOUR)) + mintOf(n)).toString(UUID_SIXTEEN)
-  return uuidGroupsOf(
-    high.slice(n - n, UUID_EIGHT),
-    high.slice(UUID_EIGHT, UUID_EIGHT + UUID_FOUR),
-    `8${high.slice(UUID_EIGHT + UUID_FOUR, UUID_SIXTEEN - seed)}`,
-    `${variant}${low.slice(seed, UUID_FOUR)}`,
-    low.slice(UUID_FOUR, UUID_SIXTEEN),
+  // high[0..12] subject, high[15] rides the version slot (the crypto stamp overwrites it), high[12..15] the check,
+  // variant then low[1..4], then low[4..16] the envelope — the same layout, its version now decided not declared.
+  return uuidStampOf(
+    `${high.slice(n - n, UUID_EIGHT + UUID_FOUR)}${high.slice(UUID_SIXTEEN - seed, UUID_SIXTEEN)}${high.slice(UUID_EIGHT + UUID_FOUR, UUID_SIXTEEN - seed)}${variant}${low.slice(seed, UUID_FOUR)}${low.slice(UUID_FOUR, UUID_SIXTEEN)}`,
   )
   // the last group is faces - coins = twelve digits, which is what low.slice(UUID_FOUR, UUID_SIXTEEN) yields
 }
@@ -7825,12 +7853,10 @@ export const qpuCallUuidOf = (door: string, left: string, right: string): string
   const text = combinationTextOf(door, left, right)
   const content = qpuShapeUuidOf(text).replace(/-/g, '')
   const check = qpuFoldOf(`${text}${COMBINATORIAL_SEP}check`).slice(n - n, n)
-  return uuidGroupsOf(
-    content.slice(n - n, UUID_EIGHT),
-    combinatorialDoorHexOf(surface),
-    `8${check}`,
-    `${content[UUID_SIXTEEN]}${index.toString(HEX_RADIX).padStart(n, '0')}`,
-    content.slice(UUID_SIXTEEN + UUID_FOUR, UUID_SIXTEEN + UUID_SIXTEEN),
+  // content[12] rides the version slot (the crypto stamp overwrites it); door hex, check, content[16] as the
+  // variant, the index, and the content's envelope follow — the version decided by the crypto family, not an 8.
+  return uuidStampOf(
+    `${content.slice(n - n, UUID_EIGHT)}${combinatorialDoorHexOf(surface)}${content.slice(UUID_VERSION_AT, UUID_VERSION_AT + seed)}${check}${content[UUID_SIXTEEN]}${index.toString(HEX_RADIX).padStart(n, '0')}${content.slice(UUID_SIXTEEN + UUID_FOUR, UUID_SIXTEEN + UUID_SIXTEEN)}`,
   )
 }
 
@@ -7850,7 +7876,7 @@ export const qpuCallUuidHolds = (): boolean =>
     const uuid = qpuCallUuidOf(surface.door, left, right)
     const other = surface.rights[seed]
     return (
-      /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid) &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid) &&
       uuid === qpuCallUuidOf(surface.door, left, right) &&
       uuid.split('-')[seed] === combinatorialDoorHexOf(surface) &&
       (other === undefined || uuid !== qpuCallUuidOf(surface.door, left, other)) &&
@@ -7894,7 +7920,7 @@ export const qpuCombinatorialHolds = (): boolean => {
         const uuid = qpuCallUuidOf(surface.door, left, right)
         const back = qpuCallOfUuid(uuid)
         if (back.door !== surface.door || back.left !== left || back.right !== right || !back.verified) return false
-        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid)) return false
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid)) return false
       }
     }
   }
@@ -7910,7 +7936,7 @@ export const qpuShapeUuidSealHolds = (canonical = 'probe'): boolean =>
 export const qpuShapeUuidHolds = (canonical = 'probe'): boolean => {
   const uuid = qpuShapeUuidOf(canonical)
   return (
-    /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid) &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(uuid) &&
     uuid === qpuShapeUuidOf(canonical) &&
     uuid !== qpuShapeUuidOf(`${canonical} `)
   )
@@ -8030,7 +8056,7 @@ export const qpuSchemaMethodsHolds = (methods?: readonly QpuMethod[]): boolean =
       new Set(row.gives.map((field) => field.uuid)).size === row.gives.length &&
       /* every field carries an identity of the right shape — the predicate probes the UUID, not the name,
        * which the first version got backwards and so tested nothing about the field it was looking at */
-      [...row.takes, ...row.gives].every((field) => /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(field.uuid)),
+      [...row.takes, ...row.gives].every((field) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(field.uuid)),
   ))
 
 /**
@@ -12025,7 +12051,9 @@ export const qpuHexUuidOf = (spec: { family: string; program: readonly string[];
     if (!Number.isSafeInteger(v) || v < n - n || v >= UUID_SIXTEEN ** widths[i]!) throw new Error(`hex: param ${i} out of range for ${HEX_PARAM_MODES[mode]}`)
   })
   const p = params.map((v, i) => v.toString(UUID_SIXTEEN).padStart(widths[i]!, '0')).join('').padEnd(UUID_FOUR * n, '0')
-  return uuidGroupsOf(hexHandleOf(spec.family), nib.slice(n - n, UUID_FOUR).join(''), `${UUID_EIGHT.toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR, UUID_FOUR + n).join('')}`, `${(mintOf(n) + mode).toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR + n).join('')}`, p)
+  // the handle's first digit rides the version slot (the crypto stamp overwrites it); the ten program nibbles and
+  // the variant (RFC + the mode's two bits) are untouched, and the version is the crypto family's, not a literal 8.
+  return uuidStampOf(`${hexHandleOf(spec.family)}${nib.slice(n - n, UUID_FOUR).join('')}${hexHandleOf(spec.family).slice(n - n, seed)}${nib.slice(UUID_FOUR, UUID_FOUR + n).join('')}${(mintOf(n) + mode).toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR + n).join('')}${p}`)
 }
 
 /**
@@ -12035,9 +12063,9 @@ export const qpuHexUuidOf = (spec: { family: string; program: readonly string[];
  * @evidence qpuHexHolds
  */
 export const qpuHexDecodeOf = (uuid: string) => {
-  const m = /^([0-9a-f]{8})-([0-9a-f]{4})-8([0-9a-f]{3})-([89ab])([0-9a-f]{3})-([0-9a-f]{12})$/.exec(String(uuid).toLowerCase())
+  const m = /^([0-9a-f]{8})-([0-9a-f]{4})-([1-8])([0-9a-f]{3})-([89ab])([0-9a-f]{3})-([0-9a-f]{12})$/.exec(String(uuid).toLowerCase())
   if (!m) return { kind: 'hex' as const, uuid, holds: false as const, denied: 'shape' as const }
-  const [, handle, s2, s3, variant, s4, s5] = m
+  const [, handle, s2, version, s3, variant, s4, s5] = m
   const family = [...qpuHexFamiliesOf().keys()].find((f) => hexHandleOf(f) === handle)
   const formulas = family ? qpuHexFamiliesOf().get(family)! : []
   const codes = `${s2}${s3}${s4}`.split('').map((x) => parseInt(x, UUID_SIXTEEN))
@@ -12046,7 +12074,7 @@ export const qpuHexDecodeOf = (uuid: string) => {
   const mode = parseInt(variant!, UUID_SIXTEEN) - mintOf(n)
   let at = n - n
   const params = hexWidths[mode]!.map((w) => parseInt(s5!.slice(at, (at += w)), UUID_SIXTEEN))
-  return { kind: 'hex' as const, uuid: uuid.toLowerCase(), handle: handle!, family: family ?? null, program: program.map((x) => x ?? 'unknown'), mode: HEX_PARAM_MODES[mode]!, params, row: `${handle}/${s5}`, holds: family !== undefined && program.length > n - n && program.every((x) => x !== undefined) }
+  return { kind: 'hex' as const, uuid: uuid.toLowerCase(), handle: handle!, version: parseInt(version!, UUID_SIXTEEN), sealed: uuidSealOf(uuid), family: family ?? null, program: program.map((x) => x ?? 'unknown'), mode: HEX_PARAM_MODES[mode]!, params, row: `${handle}/${s5}`, holds: family !== undefined && program.length > n - n && program.every((x) => x !== undefined) }
 }
 
 /**

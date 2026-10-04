@@ -14,8 +14,15 @@ import {
   qpuCombinatorialDoorsHolds,
   qpuCombinatorialDoorsOf,
   qpuCombinatorialHolds,
+  qpuContentUuidHolds,
+  qpuHexDecodeOf,
+  qpuHexFamiliesOf,
+  qpuHexUuidOf,
   qpuMixedOf,
+  qpuShapeUuidHolds,
+  qpuShapeUuidSealHolds,
   qpuTeachingPairsOf,
+  qpuUuidReceiptHolds,
 } from './index.js'
 import { leanCallOf, leanModelOf } from './lean-eval.js'
 
@@ -49,7 +56,8 @@ test('periodAux with the unit test and the carried power reaches what the fuel l
   assert.ok(performance.now() - t < 1000, 'the input the fuel loop never finished')
 })
 
-const RFC9562_V8 =/^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+// RFC 9562 shape, the version across all eight (1..8) — the crypto family decides which, so the scheme uses them all.
+const RFC9562 =/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
 
 test('every door is derived from its own surface, and no two collide', () => {
   const doors = qpuCombinatorialDoorsOf()
@@ -81,7 +89,7 @@ test('all 438 combinations mint, decode back to themselves, and verify', () => {
   for (const pair of qpuTeachingPairsOf().pairs) if (pair.uuid) seen.add(pair.uuid)
   for (const pair of qpuMixedOf().pairs) if (pair.uuid) seen.add(pair.uuid)
   assert.equal(seen.size, qpuTeachingPairsOf().pairs.length + qpuMixedOf().pairs.length)
-  for (const uuid of seen) assert.match(uuid, RFC9562_V8, 'an address that is not a UUID is a UUID-shaped thing')
+  for (const uuid of seen) assert.match(uuid, RFC9562, 'an address that is not a UUID is a UUID-shaped thing')
 
   // A corpus that is not this corpus gets no address, by absence rather than by crashing — the arm that broke
   // when the addresses first went in.
@@ -139,4 +147,46 @@ test('the readings carry the addresses, so the codec has consumers and not only 
     assert.equal(pair.uuid, qpuCallUuidOf('mixed', pair.left, pair.right))
     assert.equal(qpuCallOfUuid(pair.uuid!).verified, true)
   }
+})
+
+test('the crypto family decides the version: all eight are in play, every hex address is sealed, and it round-trips', () => {
+  // Mint the first formula of every family at its hex address, decode it back, and collect the versions worn.
+  const versions = new Set<number>()
+  let addressed = 0
+  for (const [family, formulas] of qpuHexFamiliesOf()) {
+    const first = formulas[0]
+    if (!first) continue
+    const uuid = qpuHexUuidOf({ family, program: [first.name] })
+    const back = qpuHexDecodeOf(uuid)
+    assert.match(uuid, RFC9562, `${family} minted a UUID-shaped non-UUID`)
+    assert.equal(back.holds, true, `${family} did not decode back`)
+    assert.equal(back.sealed, true, `${family} wears a version its content does not decide`)
+    assert.ok(back.version! >= 1 && back.version! <= 8, `${family} version ${back.version} is outside RFC 9562`)
+    assert.deepEqual(back.program, [first.name], `${family} did not round-trip its program`)
+    // the version is a function of the content, not a constant: re-minting the same program gives the same address
+    assert.equal(qpuHexUuidOf({ family, program: [first.name] }), uuid, `${family} minted two addresses for one program`)
+    versions.add(back.version!)
+    addressed += 1
+  }
+  // CAPACITY IS USED, NOT MERELY ALLOWED: across the registry the version nibble takes more than one value — the
+  // scheme combines the RFC's versions rather than freezing one, which a hardcoded version could never show.
+  assert.ok(addressed > 1, 'no families to address')
+  assert.ok(versions.size > 1, `the version nibble is still effectively hardcoded: only ${[...versions].join(', ')} seen across ${addressed} families`)
+
+  // a tampered middle names a version its content does not: flipping a program nibble breaks the seal
+  const [family, formulas] = [...qpuHexFamiliesOf()].find(([, f]) => f.length > 1)!
+  const uuid = qpuHexUuidOf({ family, program: [formulas[0]!.name] })
+  const bare = uuid.replace(/-/g, '')
+  const flipped = `${bare.slice(0, 13)}${((parseInt(bare[13]!, 16) + 1) % 16).toString(16)}${bare.slice(14)}`
+  const grouped = `${flipped.slice(0, 8)}-${flipped.slice(8, 12)}-${flipped.slice(12, 16)}-${flipped.slice(16, 20)}-${flipped.slice(20)}`
+  assert.equal(qpuHexDecodeOf(grouped).sealed, false, 'a tampered program nibble still passed the crypto seal')
+})
+
+test('the content, shape, seal and receipt identities still hold once the version is the crypto family\'s', () => {
+  // the shape codec: RFC shape (any version 1..8), determinism, and content-sensitivity, with its sealed widths
+  assert.equal(qpuShapeUuidHolds(), true, 'the content UUID no longer holds its RFC shape')
+  assert.equal(qpuShapeUuidSealHolds(), true, 'the sealed widths drifted')
+  assert.equal(qpuContentUuidHolds(), true, 'the same content stopped giving the same UUID')
+  // the receipt UUID: deterministic per (payload, referrer), distinct across referrers and across values
+  assert.equal(qpuUuidReceiptHolds(), true, 'the receipt identity drifted')
 })

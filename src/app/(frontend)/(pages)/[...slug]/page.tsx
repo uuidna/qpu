@@ -12,7 +12,7 @@ import type { Redirect } from '@/payload-types'
 export const dynamic = 'force-dynamic'
 type Props = { params: Promise<{ slug: string[] }>; searchParams: Promise<SearchParams & { p?: string }> }
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-8[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 /** A path means what it names: a page built from blocks, a doc, a formula family, a hex-program UUID (one segment), or a
  *  family's program (two segments). One segment can name several things at once; each is shown. */
