@@ -3411,7 +3411,10 @@ export type QpuOutputSchema = ReturnType<typeof qpuOutputSchemaOf>
 const minimalOutputSchema = { type: 'object' as const, properties: { holds: { type: 'boolean' } }, required: ['holds'], additionalProperties: true as const }
 const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Record<string, unknown>, extra: Record<string, unknown> = {}) => ({
   name,
-  title: name,
+  // A display title distinct from the machine name (MCP spec; GitHub and Cloudflare both ship one): the model keys
+  // off `name`, a UI shows the title. Derived from the name's own word, not a hand-kept list — the door after its
+  // prefix, capitalised (qpu_quantum → Quantum, crypto_rsa → Rsa).
+  title: name.replace(/^[a-z]+_/, '').replace(/^./, (c) => c.toUpperCase()),
   description,
   inputSchema,
   annotations: {
@@ -3419,7 +3422,12 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
     priority: seed,
     readOnlyHint: name !== 'qpu_forge',
     destructiveHint: false as const,
-    openWorldHint: true as const},
+    // A tool is open-world only when it can reach the live occupancy — the ones whose input carries `live`. The
+    // deterministic compute and content tools (quantum, lean, cite, the crypto morphs) touch no external world, so
+    // they are closed-world, and a closed-world read is idempotent: the same call returns the same document. This
+    // was a blanket openWorldHint: true, which told a client every tool might reach outside when most never do.
+    openWorldHint: (inputSchema as { properties?: Record<string, unknown> }).properties?.live !== undefined,
+    idempotentHint: name !== 'qpu_forge' && (inputSchema as { properties?: Record<string, unknown> }).properties?.live === undefined},
   ...extra})
 
 /** Where a GET returns the very document a tool replies with — only there is a link to it honest. Two tools have
