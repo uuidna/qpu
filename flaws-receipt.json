@@ -131,6 +131,16 @@
    "owes": "resolveToolName should call callOfUuid; uuidOfCall needs a caller that mints an address somebody reads, or it should go.",
    "from": "qpu session 32052c74",
    "when": "2026-09-28"
+  },
+  {
+   "id": "simulated-theorem-cluster-fabricates-ai-ml-proofs",
+   "severity": "high",
+   "state": "OPEN",
+   "measured": "src/mcp/{theorem-tools,theorem-analysis-tools,mcp-server}.ts serve a 'theorem network' of causal-inference, explainable-AI, federated-learning, program-synthesis and zero-shot 'theorems' with hardcoded proven:true, coverage_percentage 61/73/77/90, deployment_status PRODUCTION_READY and new Date() timestamps. Asked plainly, the families answer otherwise: qpu_prove returns 124 theorems that are the real Lean-proven lattice ones (mint, cube, around, ...); none of the causal/xai/federated names is among them, none is a registered family (no qpuHexRegisterOf, absent from src/mcp/families.ts).",
+   "reading": "The data is fabricated, not computed — a coverage percentage no run produced, a 'proven' no Lean kernel checked, a timestamp that breaks determinism. But the idea under it is a lead, not cruft: the AI/ML domains are candidate formula families exactly like hardware/firmware/software/driver/api — each a domain whose quantities are exact integers at hex addresses, crossed to the record by gate.crossed. Removing the fabrication must not lose the idea; this receipt is the idea sent to leads.",
+   "owes": "develop the five AI/ML domains as real content-addressed formula families (integer formulas at hex addresses, within the per-family nibble, crossing to `cross`, verified by gate.crossed like every other family) — or, failing that, remove the fabricated theorem-* cluster so no false coverage or proof is served. Leads before removal: this lead stands until the families carry the idea or it is struck.",
+   "from": "qpu session 7e2ef1",
+   "when": "2026-10-04"
   }
  ],
  "from": "two sessions, named per row"
