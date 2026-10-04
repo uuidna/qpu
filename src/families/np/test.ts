@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { verifyHex } from '../verify.js'
 import { NpFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -24,13 +24,6 @@ test('np: the certificates and widths complexity states, exact', async (t) => {
   for (const k of [1, 2, 5, 9]) assert.equal(NpFormulas.reachGcd(k).value, 0, `(2^(2·${k}) − 1) ≡ 0 mod 3: 4 ≡ 1, so the gcd step always divides`)
   assert.equal(NpFormulas.subsetSum(291, 5).dst, 'np')
   assert.equal(NpFormulas.isSpace(1).dst, 'qsec', 'the space bound crosses into quantum security')
-  assert.equal(qpuHexFamiliesOf().get('np')?.length, 6)
-  for (const [name, params, expected] of [['subsetSum', [291, 5], 4], ['isTime', [3], 243], ['isSpace', [256], 9], ['sparseWidth', [91], 9]] as [string, number[], number][]) {
-    const uuid = qpuHexUuidOf({ family: 'np', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
-    assert.equal(Number(run.value), expected, `np.${name} at ${uuid}`)
-    assert.equal(run.holds, true)
-    qpuUuidReceiptOf(`np ${name}`, qpuContentUuidOf(run), { uuid })
-  }
+  await verifyHex('np', 6, [['subsetSum', [291, 5], 4], ['isTime', [3], 243], ['isSpace', [256], 9], ['sparseWidth', [91], 9]])
   t.diagnostic('6 formulas; subsetSum 4, isTime n^5, isSpace bits(n), sparseWidth(91) = 9 qubits, reachGcd ≡ 0 mod 3; crossing into np, qsec, quantum')
 })

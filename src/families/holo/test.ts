@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { verifyHex } from '../verify.js'
 import { HoloFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -17,13 +17,6 @@ test('holo: the proof depth is ⌈log₂ scales⌉ and forgery is the birthday b
   assert.ok(HoloFormulas.forgery(256).value < 1e-38, 'and it is negligible')
   assert.equal(HoloFormulas.proofDepth(14).dst, 'merkle')
   assert.equal(HoloFormulas.forgery(256).dst, 'qsec')
-  assert.equal(qpuHexFamiliesOf().get('holo')?.length, 2)
-  for (const [name, params, expected] of [['proofDepth', [14], 4], ['proofDepth', [8], 3]] as [string, number[], number][]) {
-    const uuid = qpuHexUuidOf({ family: 'holo', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
-    assert.equal(Number(run.value), expected, `holo.${name} at ${uuid}`)
-    assert.equal(run.holds, true)
-    qpuUuidReceiptOf(`holo ${name}`, qpuContentUuidOf(run), { uuid })
-  }
+  await verifyHex('holo', 2, [['proofDepth', [14], 4], ['proofDepth', [8], 3]])
   t.diagnostic('2 formulas; proofDepth(14) = 4 over the faces, forgery(256) = 2^-128; crossing to merkle and qsec')
 })

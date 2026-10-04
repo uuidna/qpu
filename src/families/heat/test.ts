@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { verifyHex } from '../verify.js'
 import { HeatFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -28,13 +28,6 @@ test('heat: temperature, coherence, cooling and the Landauer floor — exact, cr
   assert.ok(s0 > 0 && HeatFormulas.signal(1000).value <= s0, 'the signal is highest at absolute cold and never rises with heat')
   assert.equal(HeatFormulas.quality(10, 100, 3).value, HeatFormulas.signal(HeatFormulas.temperature(10, 100).value).value * HeatFormulas.coherence(100, 3).value, 'Q = S(T) · T₂')
   assert.equal(HeatFormulas.temperature(10, 100).dst, 'physics')
-  assert.equal(qpuHexFamiliesOf().get('heat')?.length, 10)
-  for (const [name, params, expected] of [['temperature', [10, 100], 100], ['coherence', [100, 3], 25], ['cooling', [100, 4], 25], ['ways', [100, 25], 4]] as [string, number[], number][]) {
-    const uuid = qpuHexUuidOf({ family: 'heat', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
-    assert.equal(Number(run.value), expected, `heat.${name} at ${uuid}`)
-    assert.equal(run.holds, true)
-    qpuUuidReceiptOf(`heat ${name}`, qpuContentUuidOf(run), { uuid })
-  }
+  await verifyHex('heat', 10, [['temperature', [10, 100], 100], ['coherence', [100, 3], 25], ['cooling', [100, 4], 25], ['ways', [100, 25], 4]])
   t.diagnostic('10 formulas; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
 })

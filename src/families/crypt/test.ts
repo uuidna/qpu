@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { verifyHex } from '../verify.js'
 import { CryptFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -22,13 +22,6 @@ test('crypt: the RFC vectors pass and the security bits are the exact cryptanaly
   assert.equal(CryptFormulas.nonceCollision(2 ** 48).value, 2 ** 96 / 2 ** 97, 'the 96-bit birthday bound at 2^48 messages is 1/2')
   assert.equal(CryptFormulas.symmetricQuantumBits(256).dst, 'crypt')
   assert.equal(CryptFormulas.curveClassicalBits(256).dst, 'enterprise')
-  assert.equal(qpuHexFamiliesOf().get('crypt')?.length, 6)
-  for (const [name, params, expected] of [['knownAnswers', [], 1], ['symmetricQuantumBits', [256], 128], ['curveClassicalBits', [256], 128], ['curveQuantumBits', [256], 0]] as [string, number[], number][]) {
-    const uuid = qpuHexUuidOf({ family: 'crypt', program: [name], params })
-    const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
-    assert.equal(Number(run.value), expected, `crypt.${name} at ${uuid}`)
-    assert.equal(run.holds, true)
-    qpuUuidReceiptOf(`crypt ${name}`, qpuContentUuidOf(run), { uuid })
-  }
+  await verifyHex('crypt', 6, [['knownAnswers', [], 1], ['symmetricQuantumBits', [256], 128], ['curveClassicalBits', [256], 128], ['curveQuantumBits', [256], 0]])
   t.diagnostic('6 formulas; RFC vectors 6/6 pass; AES-256 → 128 (Grover), curve 256 → 128 (rho) → 0 (Shor); Poly1305 and nonce bounds exact')
 })
