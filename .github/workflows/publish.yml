@@ -80,7 +80,7 @@ jobs:
         run: |
           node scripts/payload-cloudflare.mjs --repo > /dev/null
           npm run readme
-          git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json RELEASE.md .zenodo.json
+          git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/mcp/families.ts src/receipts/index.ts package.json src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json RELEASE.md .zenodo.json
 
   # CLOUDFLARE WORKERS: the one Worker (uuidna-qpu = the Payload app fronted by the unit) built by OpenNext and deployed.
   deploy:
