@@ -12,6 +12,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
+import { tenOf } from './lattice-values.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.join(__dirname, '..');
@@ -64,7 +65,7 @@ function extractTheorems(filePath) {
   while ((match = theoremRegex.exec(content)) !== null) {
     theorems.push({
       name: match[1],
-      context: match[0].substring(0, 100),
+      context: match[0].substring(0, tenOf(2)),
       file: filePath,
     });
   }

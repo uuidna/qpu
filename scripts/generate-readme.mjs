@@ -16,6 +16,7 @@ import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 import { clayOf, wingOf } from '../dist/core/showcase.js'
+import { mintOf, vertices } from './lattice-values.mjs'
 // every family and door registers on import, as on the host, so the summary counts what clients reach
 await import('../dist/mcp/families.js')
 const { qpuMcpDoorsOf, qpuMcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
@@ -29,7 +30,7 @@ const pkg = read('package.json')
 /** The scalar facts of a receipt file — numbers, booleans and short strings at its top level. */
 const summaryOf = (doc) =>
   Object.fromEntries(
-    Object.entries(doc).filter(([, v]) => typeof v === 'number' || typeof v === 'boolean' || (typeof v === 'string' && v.length <= 64)),
+    Object.entries(doc).filter(([, v]) => typeof v === 'number' || typeof v === 'boolean' || (typeof v === 'string' && v.length <= mintOf(6))),
   )
 
 const nodes = []
@@ -64,7 +65,7 @@ for (const file of files) {
 const final = node('build readme', { children: tops.map((t) => t.uuid) }, { files: files.length, nodes: nodes.length }, root.uuid, root.uuid)
 const stream = qpuReceiptStreamsOf(nodes.length).streams.find((s) => s.stream === 'build')
 
-const short = (u) => u.slice(0, 8)
+const short = (u) => u.slice(0, vertices)
 const label = (n) => n.name.replace(/^build /, '').replace(/"/g, "'")
 // the build tree has one node per receipt file and one per receipt row — thousands; a flowchart of all of them does
 // not render on GitHub and rewrites itself every run (each uuid moves with its bytes). The diagram draws the structure
@@ -147,7 +148,7 @@ const analytics = [
   '|---|---:|---:|---:|---|',
   ...verdicts.map(({ file, doc }) => `| ${file.replace(/-receipt\.json$/, '')} | ${num(doc.rows.length)} | ${num(doc.rows.filter((r) => r.pass === true).length)} | ${num(doc.rows.filter((r) => r.pass === false).length)} | \`${doc.receipt ?? doc.uuid ?? doc.stream?.chain ?? '—'}\` |`),
 ].join('\n')
-const kindsLine = Object.entries(kinds).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, v]) => `${k} ${num(v)}`).join(', ')
+const kindsLine = Object.entries(kinds).sort((a, b) => b[1] - a[1]).slice(0, vertices).map(([k, v]) => `${k} ${num(v)}`).join(', ')
 const next = verdicts.filter(({ file }) => file !== 'next-receipt.json').flatMap(({ file, doc }) => doc.rows.filter((r) => r.pass === false).map((r) => `- ${file.replace(/-receipt\.json$/, '')}: ${cell(r.name)}${r.value !== undefined ? ` — ${cell(String(r.value).slice(0, 160))}` : ''}`))
 // the combinations the MCP discovered in the public record that no test yet drives, or that a referrer perspective
 // does not close: what the next tests are

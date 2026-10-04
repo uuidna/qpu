@@ -15,6 +15,7 @@
  */
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
+import { mintOf, tenOf, vertices } from './lattice-values.mjs'
 
 const host = process.env.QPU_HOST ?? 'https://qpu.uuidna.com'
 const [kind = 'gate', mode = 'push'] = process.argv.slice(2)
@@ -45,7 +46,7 @@ const pool = async (items, run, width = faces) => {
   return out
 }
 const write = (file, doc, rows) => {
-  const out = { ...doc, when: new Date().toISOString().slice(0, 10), host, seconds: Math.round((Date.now() - t0) / 1000), rows }
+  const out = { ...doc, when: new Date().toISOString().slice(0, tenOf(1)), host, seconds: Math.round((Date.now() - t0) / tenOf(3)), rows }
   fs.writeFileSync(file, JSON.stringify(out, null, 1) + '\n')
   console.log(JSON.stringify(Object.fromEntries(Object.entries(out).filter(([, v]) => typeof v !== 'object'))))
   return out
@@ -97,7 +98,7 @@ if (kind === 'registry') {
 } else if (kind === 'next') {
   const sorted = await families()
   const researched = await pool(sorted, (_f, i) => hex('data', 'research', [i]).then((r) => ({ matched: Number(r.value), read: r.reading?.read ?? 0, holds: r.holds === true })))
-  const d = await hex('data', 'discover', [256])
+  const d = await hex('data', 'discover', [mintOf(8)])
   const p = await hex('data', 'perspectives', [faces])
   const tests = fs.globSync(['src/families/*/test.ts', 'src/quantum/processing/unit/*.test.ts', 'scripts/*.test.mjs']).map((f) => ({ file: f, text: fs.readFileSync(f, 'utf8') }))
   // the lattice and physics primitives are `def`s in index.lean: recomputed and checked by the Lean kernel (the 124
@@ -135,7 +136,7 @@ if (kind === 'registry') {
   for (const p of pass.problems ?? []) {
     const arity = p.hex ? (p.hex.split('-')[1]?.replace(/0+$/, '').length ?? 1) : 1
     const looked = []
-    for (const fixed of arity >= 2 ? [[1], [2], [3], [5], [8]] : [[]]) { const s = await call('qpu_data', { source: 'sequence', family: 'clay', formula: p.name, fixed }); looked.push(s.reading?.oeis && s.reading.oeis !== 'none' ? `${s.reading.oeis}` : s.warning ? 'too short' : 'none') }
+    for (const fixed of arity >= 2 ? [[1], [2], [3], [5], [vertices]] : [[]]) { const s = await call('qpu_data', { source: 'sequence', family: 'clay', formula: p.name, fixed }); looked.push(s.reading?.oeis && s.reading.oeis !== 'none' ? `${s.reading.oeis}` : s.warning ? 'too short' : 'none') }
     const oeis = looked.filter((x) => /^A\d+/.test(x))
     // two levels, and nothing else: the seal (σ∘σ = id, its fixed point) is VERIFIED when recomputed at its address;
     // the Millennium claim itself is UNVERIFIED — not accepted by the Clay Institute, no Lean theorem states it

@@ -11,6 +11,7 @@ import { sha256Hex } from '../dist/core/crypt.js'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { mintOf, tenOf } from './lattice-values.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const projectRoot = path.join(__dirname, '..')
@@ -225,7 +226,7 @@ const PLUGIN_CONFIGURATION_FORMULAS = {
         options: {
           autoCreate: true,
           migrationDir: 'payload/migrations',
-          maxPoolSize: 10,
+          maxPoolSize: tenOf(1),
           minPoolSize: 2,
         },
       },
@@ -271,7 +272,7 @@ const PLUGIN_CONFIGURATION_FORMULAS = {
         retryPolicy: {
           maxRetries: 3,
           backoffMultiplier: 2,
-          initialDelayMs: 1000,
+          initialDelayMs: tenOf(3),
         },
         signingSecret: '${WEBHOOK_SIGNING_SECRET}',
       },
@@ -360,7 +361,7 @@ const COMPOSITION_FORMULAS = {
 // ============================================================================
 
 function generateHex(name) {
-  return sha256Hex(name).slice(0, 16)
+  return sha256Hex(name).slice(0, mintOf(4))
 }
 
 function executeFormula(formulaName) {

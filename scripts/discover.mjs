@@ -7,6 +7,7 @@
  * fixed points, involutions and inverse pairs. Writes discovery-receipt.json over every registered family.
  */
 import fs from 'node:fs'
+import { mintOf, tenOf } from './lattice-values.mjs'
 import '../dist/mcp/families.js'
 import { qpuContentUuidOf, qpuUuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
 import { qpuDiscoverOf } from '../dist/mcp/discovery.js'
@@ -24,12 +25,12 @@ const seqs = await qpuSequencesOf()
 let sequences = 0
 for (const s of seqs) { const r = await qpuDataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed }).catch(() => ({})); if (r.agrees === true) sequences++ }
 
-const d = await qpuDiscoverOf([...live].sort((a, b) => a - b).slice(0, 256))
+const d = await qpuDiscoverOf([...live].sort((a, b) => a - b).slice(0, mintOf(8)))
 const rows = d.relations.map((r) => ({ name: `${r.live ? 'live ' : ''}${r.families.join(' × ')}`, pass: r.families.length > 1, value: `${r.value} = ${r.ways.map((w) => `${w.family}.${w.program.join('∘')}(${w.params.join(', ')})`).join(' = ')}`, receipt: r.ways[0]?.receipt ?? '' }))
   .concat(d.seals.map((s) => ({ name: `seal ${s.family}.${s.program.join('∘')}`, pass: true, value: `${s.kind} at ${s.points.slice(0, 8).join(', ')}`, receipt: '' })))
 const doc = {
   kind: 'discovery-receipt',
-  when: new Date().toISOString().slice(0, 10),
+  when: new Date().toISOString().slice(0, tenOf(1)),
   sources: sources.length,
   sourcesAgree,
   liveNumbers: live.size,
@@ -50,4 +51,4 @@ const doc = {
 doc.uuid = qpuContentUuidOf(doc.rows)
 doc.receipt = qpuUuidReceiptOf('discovery', doc.uuid, `${doc.relationsTotal} relations over ${doc.families} families`, 'scripts/discover.mjs').uuid
 fs.writeFileSync('discovery-receipt.json', JSON.stringify(doc, null, 1) + '\n')
-console.log(JSON.stringify({ families: doc.families, runs: doc.runs, relations: doc.relationsTotal, live: doc.liveRelations, seals: doc.seals, sequences: doc.sequences, unrelated: doc.unrelated, seconds: Math.round((Date.now() - t0) / 1000) }))
+console.log(JSON.stringify({ families: doc.families, runs: doc.runs, relations: doc.relationsTotal, live: doc.liveRelations, seals: doc.seals, sequences: doc.sequences, unrelated: doc.unrelated, seconds: Math.round((Date.now() - t0) / tenOf(3)) }))

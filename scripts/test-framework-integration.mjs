@@ -6,12 +6,13 @@
  */
 
 import { sha256Hex } from '../dist/core/crypt.js'
+import { mintOf, tenOf } from './lattice-values.mjs'
 
 /**
  * Generate hex address from slug
  */
 function generateHex(slug) {
-  return sha256Hex(slug).slice(0, 16)
+  return sha256Hex(slug).slice(0, mintOf(4))
 }
 
 /**
@@ -277,7 +278,7 @@ async function testScaling(loader) {
 
   const current = await loader.loadAll()
   const tier1 = current.length
-  const tier2 = tier1 * 1000 * 100 // formulas × component variants × styling
+  const tier2 = tier1 * tenOf(3) * tenOf(2) // formulas × component variants × styling
   const tier3 = 100_000_000 // estimated all combinations
 
   console.log(`TIER 1 (Current):`)

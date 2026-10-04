@@ -15,6 +15,7 @@
  */
 import fs from 'node:fs'
 import path from 'node:path'
+import { tenOf } from './lattice-values.mjs'
 
 const SRC = path.resolve(import.meta.dirname, '..', 'src', 'families')
 
@@ -32,8 +33,8 @@ const OPS = {
   add3:    { ar: 3, text: '(x, y, z) = x + y + z',      body: 'x + y + z',                                    guard: '', fn: (x, y, z) => x + y + z },
   floordiv:{ ar: 2, text: '(x, y) = x / y',             body: 'y > 0 ? Math.floor(x / y) : 0',                guard: ' && y > 0', fn: (x, y) => (y > 0 ? Math.floor(x / y) : 0) },
   ceildiv: { ar: 2, text: '(x, y) = ceil(x / y)',       body: 'y > 0 ? Math.floor((x + y - 1) / y) : 0',      guard: ' && y > 0', fn: (x, y) => (y > 0 ? Math.floor((x + y - 1) / y) : 0) },
-  pct:     { ar: 2, text: '(x, y) = x · 100 / y',       body: 'y > 0 ? Math.floor((x * 100) / y) : 0',        guard: ' && y > 0', fn: (x, y) => (y > 0 ? Math.floor((x * 100) / y) : 0) },
-  permille:{ ar: 2, text: '(x, y) = x · 1000 / y',      body: 'y > 0 ? Math.floor((x * 1000) / y) : 0',       guard: ' && y > 0', fn: (x, y) => (y > 0 ? Math.floor((x * 1000) / y) : 0) },
+  pct:     { ar: 2, text: '(x, y) = x · 100 / y',       body: 'y > 0 ? Math.floor((x * 100) / y) : 0',        guard: ' && y > 0', fn: (x, y) => (y > 0 ? Math.floor((x * tenOf(2)) / y) : 0) },
+  permille:{ ar: 2, text: '(x, y) = x · 1000 / y',      body: 'y > 0 ? Math.floor((x * 1000) / y) : 0',       guard: ' && y > 0', fn: (x, y) => (y > 0 ? Math.floor((x * tenOf(3)) / y) : 0) },
   submax:  { ar: 2, text: '(x, y) = max(0, x − y)',     body: 'Math.max(0, x - y)',                           guard: '', fn: (x, y) => Math.max(0, x - y) },
   mod:     { ar: 2, text: '(x, y) = x mod y',           body: 'y > 0 ? x % y : 0',                            guard: ' && y > 0', fn: (x, y) => (y > 0 ? x % y : 0) },
   min2:    { ar: 2, text: '(x, y) = min(x, y)',         body: 'Math.min(x, y)',                               guard: '', fn: (x, y) => Math.min(x, y) },

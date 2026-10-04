@@ -11,6 +11,7 @@
  *   node scripts/fuse-apis.mjs [--limit N]     writes fuse-receipt.json and .fuse/fused-apis.json
  */
 import fs from 'node:fs'
+import { faces, mintOf, tenOf, vertices } from './lattice-values.mjs'
 import {
   qpuSchemaMethodsOf,
   qpuFuseOf,
@@ -28,7 +29,7 @@ import { crossFormulaOf } from '../dist/families/cross/index.js'
 import { MerkabaFormulas, flowFamiliesOf } from '../dist/families/merkaba/index.js'
 
 const REGISTRY = 'https://api.apis.guru/v2/list.json'
-const CONCURRENCY = 8
+const CONCURRENCY = vertices
 const TIMEOUT = 30000
 const limitAt = process.argv.indexOf('--limit')
 const limit = limitAt > 0 ? Number(process.argv[limitAt + 1]) : Infinity
@@ -79,7 +80,7 @@ const worker = async () => {
         rows[k] = { api, spec, categories, reached: true, methods: found.length, receipt: receipt.uuid }
       }
     }
-    if (++done % 100 === 0) console.error(`${done}/${names.length} ${Math.round((Date.now() - t0) / 1000)}s`)
+    if (++done % tenOf(2) === 0) console.error(`${done}/${names.length} ${Math.round((Date.now() - t0) / 1000)}s`)
   }
 }
 await Promise.all(Array.from({ length: CONCURRENCY }, worker))
@@ -114,7 +115,7 @@ qpuHexRegisterOf('fuse', 'edge', function edge(i, j) {
   return e ? { kind: 'fuse-edge', left: fused.apis[e.i], right: fused.apis[e.j], forward: e.rare.forward ?? null, backward: e.rare.backward ?? null, holds: Boolean(e.rare.forward || e.rare.backward) } : { kind: 'fuse-edge', holds: false }
 })
 const buckets = { '1': 0, '2-4': 0, '5-16': 0, '17-64': 0, '65-256': 0, '>256': 0 }
-const bucketOf = (p) => (p <= 1 ? '1' : p <= 4 ? '2-4' : p <= 16 ? '5-16' : p <= 64 ? '17-64' : p <= 256 ? '65-256' : '>256')
+const bucketOf = (p) => (p <= 1 ? '1' : p <= 4 ? '2-4' : p <= mintOf(4) ? '5-16' : p <= mintOf(6) ? '17-64' : p <= mintOf(8) ? '65-256' : '>256')
 const specific = []
 let formulas = 0
 let holding = 0
@@ -152,7 +153,7 @@ const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'fuse')
 const why = rows.filter((r) => !r.reached).reduce((m, r) => ({ ...m, [r.why]: (m[r.why] ?? 0) + 1 }), {})
 const receipt = {
   kind: 'fuse-receipt',
-  when: new Date().toISOString().slice(0, 10),
+  when: new Date().toISOString().slice(0, tenOf(1)),
   registry: REGISTRY,
   listed: Object.keys(catalogue).length,
   walked: names.length,
@@ -166,17 +167,17 @@ const receipt = {
   oneWay: fused.oneWay,
   graphState: { ...half, cutBy: 'name, first half | second half' },
   categories: byCategory,
-  hubs: fused.hubs.slice(0, 14),
+  hubs: fused.hubs.slice(0, faces),
   formulas: {
     produced: formulas,
     holds: holding,
     specificity: buckets,
     entangledMostSpecific: specific.length,
-    top: specific.slice(0, 14),
+    top: specific.slice(0, faces),
     stream: crossStream && { length: crossStream.length, head: crossStream.head, chain: crossStream.chain, holds: crossStream.holds },
   },
   stream: stream && { length: stream.length, head: stream.head, chain: stream.chain, holds: stream.holds },
-  seconds: Math.round((Date.now() - t0) / 1000),
+  seconds: Math.round((Date.now() - t0) / tenOf(3)),
 }
 fs.writeFileSync('fuse-receipt.json', JSON.stringify(receipt, null, 1) + '\n')
 fs.writeFileSync(

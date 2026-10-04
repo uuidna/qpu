@@ -12,6 +12,7 @@
 import fs from 'fs'
 import path from 'path'
 import { md5Hex } from '../dist/core/crypt.js'
+import { mintOf, tenOf } from './lattice-values.mjs'
 
 // Formula domains and their formulas
 const domains = {
@@ -134,7 +135,7 @@ function generateSEOMetadata(combination, index) {
 function generateURL(combination, index) {
   // Create a deterministic ID from the combination
   const hash = md5Hex(combination.map((f) => f.id).join('|'))
-    .slice(0, 16)
+    .slice(0, mintOf(4))
 
   return `/formulas/${hash}`
 }
@@ -377,7 +378,7 @@ export async function generateCombinatoralPages() {
   console.log(`\n✅ Routing index: ${indexPath}`)
 
   // Generate sample pages (production would generate all)
-  const sampleCount = 10
+  const sampleCount = tenOf(1)
   let count = 0
   for (const combination of generateCombinations()) {
     if (count >= sampleCount) break

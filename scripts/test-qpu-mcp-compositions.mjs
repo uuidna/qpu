@@ -6,13 +6,14 @@
  */
 
 import { sha256Hex } from '../dist/core/crypt.js'
+import { mintOf } from './lattice-values.mjs'
 
 function generateFormula(op1, op2) {
   return `${op1.slice(0, 4)}.${op2.slice(0, 4)}`
 }
 
 function generateHex(name) {
-  return sha256Hex(name).slice(0, 16)
+  return sha256Hex(name).slice(0, mintOf(4))
 }
 
 const OPERATIONS = {

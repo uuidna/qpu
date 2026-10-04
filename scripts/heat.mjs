@@ -12,14 +12,15 @@ import fs from 'node:fs'
 import { execSync } from 'node:child_process'
 import { heatOf } from '../dist/families/heat/index.js'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuLatticeNamesOf, tenOf } from '../dist/quantum/processing/unit/index.js'
+import { coins, faces, tenOf, vertices } from './lattice-values.mjs'
 const L = { ...qpuLatticeNamesOf(), tenOf }
 
 const WINDOW = L.n * L.tenOf(L.seed)
 const DAY = 86400 // SI: seconds in a day, not a lattice quantity
 const SOURCE = /\.(ts|tsx|mjs|lean)$/
 const FIX = /\b(fix|fixes|fixed|repair|broke|broken|revert|restore|hotfix)\b/i
-const git = (args) => execSync(`git ${args}`, { encoding: 'utf8', maxBuffer: 1 << 28 })
-const now = Math.floor(Date.now() / 1000)
+const git = (args) => execSync(`git ${args}`, { encoding: 'utf8', maxBuffer: 1 << faces * coins })
+const now = Math.floor(Date.now() / tenOf(3))
 
 // one pass over history, oldest first: each commit's time and subject, then the files it touched; a rename carries the
 // file's history to its new path, so moving a file does not make it young
@@ -49,7 +50,7 @@ for (const row of git('log --reverse -M --format=%x00%ct%x09%s --name-status').s
 }
 
 // a generated file carries its source's heat, not its own: it follows the file it is generated from and is not measured
-const generated = (f) => /\bgenerated\b/i.test(fs.readFileSync(f, 'utf8').split('\n').slice(0, 8).join('\n'))
+const generated = (f) => /\bgenerated\b/i.test(fs.readFileSync(f, 'utf8').split('\n').slice(0, vertices).join('\n'))
 // --regions <file>: where in one file the heat sits — each of the window's commits mapped, through its diff, onto the
 // top-level declarations it changed; the hottest are what scripts/cool.mjs should move out
 // lines that open inside a template literal are its text, not declarations: walk the backticks, skipping comments,
@@ -137,7 +138,7 @@ if (process.argv.includes('--report')) {
 const top = heat.rows.slice(0, L.hexbit * L.tenOf(L.seed))
 const doc = {
   kind: 'heat-receipt',
-  when: new Date().toISOString().slice(0, 10),
+  when: new Date().toISOString().slice(0, tenOf(1)),
   window: WINDOW,
   threshold: heat.threshold,
   files: heat.files,

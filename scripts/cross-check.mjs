@@ -12,6 +12,7 @@
  */
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
+import { tenOf } from './lattice-values.mjs'
 import '../dist/mcp/families.js'
 import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from '../dist/quantum/processing/unit/index.js'
 import { DataFormulas, qpuDataOf } from '../dist/mcp/qpu-fused.js'
@@ -61,10 +62,10 @@ for (const row of rows) {
 }
 const doc = {
   kind: 'cross-check-receipt',
-  when: new Date().toISOString().slice(0, 10),
+  when: new Date().toISOString().slice(0, tenOf(1)),
   families: rows.map((r) => r.family),
   liveNumbers: live.size,
-  seconds: Math.round((Date.now() - t0) / 1000),
+  seconds: Math.round((Date.now() - t0) / tenOf(3)),
   holds: rows.every((r) => r.pass),
   rows: rows.map((r) => ({ name: `family ${r.family}`, pass: r.pass, value: `${r.matched} APIs named, ${r.answered.length} answered (${r.answered.slice(0, 4).join(', ')}); ${r.relations} cross-family values, ${r.liveRelations} with live readings, crossing ${r.crossed.slice(0, 8).join(' ')}`, receipt: r.research.receipt ?? '' })),
 }

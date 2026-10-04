@@ -6,6 +6,7 @@
  *   node scripts/lean-clay.mjs [--dry]
  */
 import fs from 'node:fs'
+import { mintOf } from './lattice-values.mjs'
 const u = await import('../dist/quantum/processing/unit/index.js')
 const e = await import('../dist/quantum/processing/unit/lean-eval.js')
 const { leanSource } = await import('../dist/quantum/processing/unit/lean.js')
@@ -23,7 +24,7 @@ const observed = [
   ['receipts', 'uuid_bits', sections.reduce((a, b) => a + b, 0) * 4, 'bits in a UUID'],
   ['receipts', 'hex_program_nibbles', sections[1] + sections[2] + sections[3] - 2, 'formula nibbles in a hex program (version and variant kept)'],
   ['agents', 'mcp_tools', u.qpuMcpToolsListOf().length, 'tools the /mcp door lists'],
-  ['agents', 'hex_alphabet', 16, 'values of one hex nibble'],
+  ['agents', 'hex_alphabet', mintOf(4), 'values of one hex nibble'],
   ['crypto', 'shor_modulus', shor.n, 'the modulus Shor factors'],
   ['crypto', 'shor_factor_p', shor.factors.p, 'the first factor'],
   ['crypto', 'shor_factor_q', shor.factors.q, 'the second factor'],

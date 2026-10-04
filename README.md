@@ -20,13 +20,13 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).
 
-**Final build receipt** `2454ea2d-b98e-73b7-a2fe-36389f463fc5`
+**Final build receipt** `196c98d3-e0fe-64bc-b68b-9a346bea076d`
 
 | | |
 |---|---|
 | version | 1.0.1 |
 | receipts | 18 files, 3417 nodes |
-| build stream | length 3417, head `2454ea2d-b98e-73b7-a2fe-36389f463fc5`, chain `d58174703a90c5210e1c562f11d8bb36a903353e2b1de922d64329c70480cc97`, holds **true** |
+| build stream | length 3417, head `196c98d3-e0fe-64bc-b68b-9a346bea076d`, chain `49166d19a9c92eb77b26ecbec56d0e5bdbcc8320ddb75231e43907af96619abf`, holds **true** |
 
 ## Proof by MCP
 
@@ -2171,7 +2171,7 @@ flowchart TD
   nc40b6046["fuse-receipt.json<br/><code>c40b6046</code>"]
   n8375a30e["gate-receipt.json<br/>2 rows<br/><code>8375a30e</code>"]
   ne2d06d52["heat-receipt.json<br/>40 rows<br/><code>e2d06d52</code>"]
-  n2d23452b["lattice-receipt.json<br/><code>2d23452b</code>"]
+  nca516bb9["lattice-receipt.json<br/><code>ca516bb9</code>"]
   ne716b8c6["lean-receipt.json<br/>124 rows<br/><code>e716b8c6</code>"]
   n1f671e1d["next-receipt.json<br/>214 rows<br/><code>1f671e1d</code>"]
   n67bc6b49["payload-cf-receipt.json<br/><code>67bc6b49</code>"]
@@ -2180,7 +2180,7 @@ flowchart TD
   nbf344003["test-receipt.json<br/>1 rows<br/><code>bf344003</code>"]
   n3612a515["uses-receipt.json<br/>42 rows<br/><code>3612a515</code>"]
   nb3998a8b["walls-receipt.json<br/><code>b3998a8b</code>"]
-  n2454ea2d["readme<br/><code>2454ea2d</code>"]
+  n196c98d3["readme<br/><code>196c98d3</code>"]
   n28c6264b --> n150431b3
   n28c6264b --> n0480e5fc
   n28c6264b --> n6f199401
@@ -2190,7 +2190,7 @@ flowchart TD
   n28c6264b --> nc40b6046
   n28c6264b --> n8375a30e
   n28c6264b --> ne2d06d52
-  n28c6264b --> n2d23452b
+  n28c6264b --> nca516bb9
   n28c6264b --> ne716b8c6
   n28c6264b --> n1f671e1d
   n28c6264b --> n67bc6b49
@@ -2199,7 +2199,7 @@ flowchart TD
   n28c6264b --> nbf344003
   n28c6264b --> n3612a515
   n28c6264b --> nb3998a8b
-  n28c6264b --> n2454ea2d
+  n28c6264b --> n196c98d3
 ```
 
 | node | receipt uuid | referrer | payload fold | seq |
@@ -5230,7 +5230,7 @@ flowchart TD
 | heat-receipt.json#37 | `c6eb68d9-7052-7a48-9cb5-e69090b7d011` | `e2d06d52` | `ed1417a7cfcf94fb` | 3023 |
 | heat-receipt.json#38 | `5db1dd7a-2f3c-3eb1-aa58-46a50cb4b54b` | `e2d06d52` | `37d54a109bd1fba1` | 3024 |
 | heat-receipt.json#39 | `6b93db58-b626-5794-b432-1c21a8848785` | `e2d06d52` | `68561af35da9b8e8` | 3025 |
-| lattice-receipt.json | `2d23452b-1cca-1bc5-8654-9b5ded8e160a` | `28c6264b` | `8e1cab42aaf3ae04` | 3026 |
+| lattice-receipt.json | `ca516bb9-b14a-6b93-805a-da9052c9de9c` | `28c6264b` | `ee9d230b53cf925a` | 3026 |
 | lean-receipt.json | `e716b8c6-b1e2-5067-b7fd-c0a30a1c4ee1` | `28c6264b` | `799a9b24a6e5a1ab` | 3027 |
 | lean-receipt.json#0 | `13ab0ddc-431f-7fa5-bc67-6e6c52a0c2a7` | `e716b8c6` | `98dae585ea1a79ff` | 3028 |
 | lean-receipt.json#1 | `2d24631a-38a7-48b5-b3d9-0052c5f127bd` | `e716b8c6` | `f3b66120465e328f` | 3029 |
@@ -5620,7 +5620,7 @@ flowchart TD
 | uses-receipt.json#40 | `b73065f1-0a56-6b92-a29c-b44162183c93` | `3612a515` | `a1bacec066656c45` | 3413 |
 | uses-receipt.json#41 | `c21526f2-78c0-6ed6-99c7-7a9fbbe566f7` | `3612a515` | `e43f843d6380eb30` | 3414 |
 | walls-receipt.json | `b3998a8b-e4ee-2aee-abf9-1aa2b9319acf` | `28c6264b` | `a830ee89ed201e46` | 3415 |
-| readme | `2454ea2d-b98e-73b7-a2fe-36389f463fc5` | `28c6264b` | `9b4f28dec33af224` | 3416 |
+| readme | `196c98d3-e0fe-64bc-b68b-9a346bea076d` | `28c6264b` | `a5737ad09f33633f` | 3416 |
 
 </details>
 

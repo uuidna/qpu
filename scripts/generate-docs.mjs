@@ -12,6 +12,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { FILES, WINGS, wingOf, kindOf } from './doc-tags.mjs'
+import { mintOf, vertices } from './lattice-values.mjs'
 
 const ROOT = process.cwd()
 const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'))
@@ -126,7 +127,7 @@ pages.comparison = frontmatter('comparison', 'Comparison', 'What @uuidna/qpu doe
   '# Comparison', '',
   'Rows are capability classes; a cell says what the system documents, not a benchmark. The qpu column is generated from this repository (receipts and evidence predicates); the others cite the vendor documentation listed below. qpu runs no physical quantum hardware.', '',
   '| Capability | qpu | Qiskit Aer | Cirq | Amazon Braket | PennyLane | AI models (LLMs) |', '|---|---|---|---|---|---|---|',
-  `| Exact state vector | integer amplitudes, 3-qubit register (dim 8); sparse states, Shor on 9 qubits (dim 512) | statevector (dense, GPU) | state vector; qsim | SV1, up to 34 qubits | lightning.qubit / .gpu / .kokkos | none |`,
+  `| Exact state vector | integer amplitudes, 3-qubit register (dim vertices); sparse states, Shor on 9 qubits (dim mintOf(9)) | statevector (dense, GPU) | state vector; qsim | SV1, up to 34 qubits | lightning.qubit / .gpu / .kokkos | none |`,
   `| Noise / density matrix | XX noise identity only | noise models, density matrix | density matrix | DM1, up to 17 qubits | default.mixed | none |`,
   `| Stabilizer / large structured states | graph state of the fused API registry, ${fuse?.graphState?.qubits ?? '—'} qubits, exact entanglement by GF(2) rank | stabilizer, extended stabilizer, MPS | Clifford simulator | TN1, up to 50 qubits | lightning.tensor (MPS) | none |`,
   `| Physical hardware | none | IBM Quantum | Google Quantum AI (by access) | IonQ, Rigetti, IQM, QuEra and others | via plugins | none |`,

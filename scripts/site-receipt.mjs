@@ -10,6 +10,7 @@
  */
 import fs from 'node:fs'
 import { qpuContentUuidOf, qpuLatticeNamesOf, qpuUuidReceiptOf, tenOf } from '../dist/quantum/processing/unit/index.js'
+import { tenOf } from './lattice-values.mjs'
 
 const L = qpuLatticeNamesOf()
 const host = process.env.QPU_LIVE ?? 'https://qpu.uuidna.com'
@@ -35,7 +36,7 @@ const failing = rows.filter((r) => r.status !== 200 || !r.title)
 const slowest = rows.reduce((a, b) => (b.ms > a.ms ? b : a), rows[0] ?? { path: '', ms: 0 })
 const doc = {
   kind: 'site-receipt',
-  when: new Date().toISOString().slice(0, 10),
+  when: new Date().toISOString().slice(0, tenOf(1)),
   host,
   addresses: rows.length,
   answered: rows.filter((r) => r.status === 200).length,

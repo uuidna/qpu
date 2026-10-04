@@ -18,6 +18,7 @@ import { execSync } from 'node:child_process'
 import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS } from '../dist/deployment/payload-templates.js'
 import { bootPort, qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 import { themeCssOf } from '../dist/deployment/payload-templates.js'
+import { tenOf, vertices } from './lattice-values.mjs'
 
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined }
 const ROOT = process.cwd()
@@ -165,7 +166,7 @@ if (process.argv.includes('--repo')) {
   let out = ''
   try { execSync('npx tsc -p tsconfig.payload.json --noEmit --incremental false', { cwd: ROOT, stdio: 'pipe' }) } catch (e) { out = `${e.stdout}${e.stderr}` }
   const errors = out.split('\n').filter((l) => /error TS\d+/.test(l))
-  console.log(JSON.stringify({ regenerated: row, typecheck: { errors: errors.length, first: errors.slice(0, 8) } }, null, 1))
+  console.log(JSON.stringify({ regenerated: row, typecheck: { errors: errors.length, first: errors.slice(0, vertices) } }, null, 1))
   process.exit(errors.length ? 1 : 0)
 }
 
@@ -230,7 +231,7 @@ const byBase = bases.map((c, i) => {
 const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'payload-cf')
 const receipt = {
   kind: 'payload-cf-receipt',
-  when: new Date().toISOString().slice(0, 10),
+  when: new Date().toISOString().slice(0, tenOf(1)),
   axes: Object.fromEntries(Object.entries(axes).map(([k, v]) => [k, [...v]])),
   plugins: [...CLOUDFLARE_PLUGINS],
   combinations: total,
