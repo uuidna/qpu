@@ -3,9 +3,9 @@
  "when": "2026-10-04",
  "source": "Crossref Funder Registry (https://www.crossref.org/services/funder-registry/)",
  "note": "Candidate funders matched to each novelty by its field (the family dst). LEADS to approach, matched by name/field — NOT secured awards, grants, or endorsements.",
- "families": 988,
+ "families": 1028,
  "domains": 161,
- "matched": 857,
+ "matched": 894,
  "byDomain": {
   "access": {
    "funder": "AccessLex Institute",
@@ -815,6 +815,13 @@
    "location": "Canada"
   },
   {
+   "family": "airship",
+   "domain": "aerospace",
+   "funder": "GKN Aerospace Services",
+   "uri": "https://doi.org/10.13039/501100014815",
+   "location": "United Kingdom"
+  },
+  {
    "family": "alerting",
    "domain": "observability",
    "funder": null,
@@ -1529,6 +1536,13 @@
    "location": "United States"
   },
   {
+   "family": "capacitor",
+   "domain": "electronics",
+   "funder": "Delta Electronics",
+   "uri": "https://doi.org/10.13039/100019206",
+   "location": "Taiwan"
+  },
+  {
    "family": "caramelization",
    "domain": "chemistry",
    "funder": "Division of Chemistry",
@@ -1767,6 +1781,13 @@
    "location": "United States"
   },
   {
+   "family": "cloudphysics",
+   "domain": "physics",
+   "funder": "Applied Physics, Stanford University",
+   "uri": "https://doi.org/10.13039/100023812",
+   "location": "United States"
+  },
+  {
    "family": "clustering",
    "domain": "statistics",
    "funder": "Bureau of Justice Statistics",
@@ -1811,6 +1832,13 @@
   {
    "family": "coffee",
    "domain": "cuisine",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
+   "family": "cogeneration",
+   "domain": "thermodynamics",
    "funder": null,
    "uri": null,
    "location": ""
@@ -2187,6 +2215,13 @@
    "location": "Australia"
   },
   {
+   "family": "cuneiform",
+   "domain": "linguistics",
+   "funder": "Department of Linguistics, University of Pittsburgh",
+   "uri": "https://doi.org/10.13039/100011358",
+   "location": "United States"
+  },
+  {
    "family": "curing",
    "domain": "microbiology",
    "funder": "Microbiology Society",
@@ -2227,6 +2262,13 @@
    "funder": "Japan Health Promotion and Fitness Foundation",
    "uri": "https://doi.org/10.13039/100019434",
    "location": "Japan"
+  },
+  {
+   "family": "cyclone",
+   "domain": "meteorology",
+   "funder": "Bureau of Meteorology, Australian Government",
+   "uri": "https://doi.org/10.13039/501100018901",
+   "location": "Australia"
   },
   {
    "family": "cytogenetics",
@@ -2495,6 +2537,20 @@
    "location": "United States"
   },
   {
+   "family": "drone",
+   "domain": "aerospace",
+   "funder": "GKN Aerospace Services",
+   "uri": "https://doi.org/10.13039/501100014815",
+   "location": "United Kingdom"
+  },
+  {
+   "family": "drought",
+   "domain": "hydrology",
+   "funder": "Centre for Ecology and Hydrology",
+   "uri": "https://doi.org/10.13039/501100011027",
+   "location": "United Kingdom"
+  },
+  {
    "family": "dyeing",
    "domain": "chemistry",
    "funder": "Division of Chemistry",
@@ -2597,6 +2653,20 @@
    "domain": "electrical",
    "funder": "Dielectrics and Electrical Insulation Society",
    "uri": "https://doi.org/10.13039/100026639",
+   "location": "United States"
+  },
+  {
+   "family": "elevator",
+   "domain": "kinematics",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
+   "family": "elnino",
+   "domain": "climate",
+   "funder": "ClimateWorks Foundation",
+   "uri": "https://doi.org/10.13039/100014893",
    "location": "United States"
   },
   {
@@ -2943,6 +3013,13 @@
    "location": "United States"
   },
   {
+   "family": "ferry",
+   "domain": "logistics",
+   "funder": "Defense Logistics Agency",
+   "uri": "https://doi.org/10.13039/100005711",
+   "location": "United States"
+  },
+  {
    "family": "fertilization",
    "domain": "agronomy",
    "funder": "Department of Agronomy, Iowa State University",
@@ -3109,6 +3186,20 @@
    "funder": null,
    "uri": null,
    "location": ""
+  },
+  {
+   "family": "frontogenesis",
+   "domain": "meteorology",
+   "funder": "Bureau of Meteorology, Australian Government",
+   "uri": "https://doi.org/10.13039/501100018901",
+   "location": "Australia"
+  },
+  {
+   "family": "fuelcell",
+   "domain": "energy",
+   "funder": "Energy Networks Australia",
+   "uri": "https://doi.org/10.13039/501100025475",
+   "location": "Australia"
   },
   {
    "family": "fulfillment",
@@ -3307,6 +3398,13 @@
    "location": "United States"
   },
   {
+   "family": "glider",
+   "domain": "aerospace",
+   "funder": "GKN Aerospace Services",
+   "uri": "https://doi.org/10.13039/501100014815",
+   "location": "United Kingdom"
+  },
+  {
    "family": "global",
    "domain": "payload",
    "funder": null,
@@ -3332,6 +3430,13 @@
    "domain": "cross",
    "funder": "My Crossword Maker",
    "uri": "https://doi.org/10.13039/100025173",
+   "location": "United States"
+  },
+  {
+   "family": "glyphs",
+   "domain": "linguistics",
+   "funder": "Department of Linguistics, University of Pittsburgh",
+   "uri": "https://doi.org/10.13039/100011358",
    "location": "United States"
   },
   {
@@ -3361,6 +3466,13 @@
    "funder": null,
    "uri": null,
    "location": ""
+  },
+  {
+   "family": "grammar",
+   "domain": "linguistics",
+   "funder": "Department of Linguistics, University of Pittsburgh",
+   "uri": "https://doi.org/10.13039/100011358",
+   "location": "United States"
   },
   {
    "family": "graph",
@@ -3440,6 +3552,13 @@
    "location": "United States"
   },
   {
+   "family": "hail",
+   "domain": "meteorology",
+   "funder": "Bureau of Meteorology, Australian Government",
+   "uri": "https://doi.org/10.13039/501100018901",
+   "location": "Australia"
+  },
+  {
    "family": "halflife",
    "domain": "chemistry",
    "funder": "Division of Chemistry",
@@ -3503,6 +3622,13 @@
    "location": "United States"
   },
   {
+   "family": "heatindex",
+   "domain": "weather",
+   "funder": "Weatherford International",
+   "uri": "https://doi.org/10.13039/100019818",
+   "location": "United States"
+  },
+  {
    "family": "heattransfer",
    "domain": "thermodynamics",
    "funder": null,
@@ -3515,6 +3641,13 @@
    "funder": "Agriculture Scholarship Centre for Basis Trading Education",
    "uri": "https://doi.org/10.13039/100028873",
    "location": "United States"
+  },
+  {
+   "family": "helicopter",
+   "domain": "aerospace",
+   "funder": "GKN Aerospace Services",
+   "uri": "https://doi.org/10.13039/501100014815",
+   "location": "United Kingdom"
   },
   {
    "family": "heliophysics",
@@ -3570,6 +3703,13 @@
    "domain": "zoology",
    "funder": "Museum of Comparative Zoology, Harvard University",
    "uri": "https://doi.org/10.13039/100010952",
+   "location": "United States"
+  },
+  {
+   "family": "hieroglyphs",
+   "domain": "linguistics",
+   "funder": "Department of Linguistics, University of Pittsburgh",
+   "uri": "https://doi.org/10.13039/100011358",
    "location": "United States"
   },
   {
@@ -3641,6 +3781,13 @@
    "funder": null,
    "uri": null,
    "location": ""
+  },
+  {
+   "family": "hovercraft",
+   "domain": "physics",
+   "funder": "Applied Physics, Stanford University",
+   "uri": "https://doi.org/10.13039/100023812",
+   "location": "United States"
   },
   {
    "family": "huffman",
@@ -3769,6 +3916,13 @@
    "location": "United States"
   },
   {
+   "family": "inductor",
+   "domain": "electronics",
+   "funder": "Delta Electronics",
+   "uri": "https://doi.org/10.13039/100019206",
+   "location": "Taiwan"
+  },
+  {
    "family": "informatics",
    "domain": "code",
    "funder": "CodeWizardsHQ",
@@ -3850,6 +4004,13 @@
    "domain": "philosophy",
    "funder": "Australasian Association of Philosophy",
    "uri": "https://doi.org/10.13039/501100022906",
+   "location": "Australia"
+  },
+  {
+   "family": "jetstream",
+   "domain": "meteorology",
+   "funder": "Bureau of Meteorology, Australian Government",
+   "uri": "https://doi.org/10.13039/501100018901",
    "location": "Australia"
   },
   {
@@ -4224,6 +4385,13 @@
    "location": "Belgium"
   },
   {
+   "family": "logogram",
+   "domain": "combinatorics",
+   "funder": "Combinatorics Foundation",
+   "uri": "https://doi.org/10.13039/100020781",
+   "location": "United States"
+  },
+  {
    "family": "lottery",
    "domain": "combinatorics",
    "funder": "Combinatorics Foundation",
@@ -4581,6 +4749,20 @@
    "location": "United States"
   },
   {
+   "family": "monorail",
+   "domain": "kinematics",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
+   "family": "monsoon",
+   "domain": "climate",
+   "funder": "ClimateWorks Foundation",
+   "uri": "https://doi.org/10.13039/100014893",
+   "location": "United States"
+  },
+  {
    "family": "morphology",
    "domain": "linguistics",
    "funder": "Department of Linguistics, University of Pittsburgh",
@@ -4782,6 +4964,13 @@
    "funder": null,
    "uri": null,
    "location": ""
+  },
+  {
+   "family": "nuclearpower",
+   "domain": "energy",
+   "funder": "Energy Networks Australia",
+   "uri": "https://doi.org/10.13039/501100025475",
+   "location": "Australia"
   },
   {
    "family": "numbertheory",
@@ -5526,6 +5715,13 @@
    "location": "Canada"
   },
   {
+   "family": "powerfactor",
+   "domain": "electronics",
+   "funder": "Delta Electronics",
+   "uri": "https://doi.org/10.13039/100019206",
+   "location": "Taiwan"
+  },
+  {
    "family": "pragmatics",
    "domain": "linguistics",
    "funder": "Department of Linguistics, University of Pittsburgh",
@@ -5904,6 +6100,13 @@
    "location": "United States"
   },
   {
+   "family": "rectifier",
+   "domain": "electronics",
+   "funder": "Delta Electronics",
+   "uri": "https://doi.org/10.13039/100019206",
+   "location": "Taiwan"
+  },
+  {
    "family": "rectifiers",
    "domain": "electrical",
    "funder": "Dielectrics and Electrical Insulation Society",
@@ -6156,6 +6359,13 @@
    "location": ""
   },
   {
+   "family": "runes",
+   "domain": "linguistics",
+   "funder": "Department of Linguistics, University of Pittsburgh",
+   "uri": "https://doi.org/10.13039/100011358",
+   "location": "United States"
+  },
+  {
    "family": "safety",
    "domain": "construction",
    "funder": "A+ Construction and Remodeling",
@@ -6324,6 +6534,13 @@
    "location": "United States"
   },
   {
+   "family": "semiotics",
+   "domain": "linguistics",
+   "funder": "Department of Linguistics, University of Pittsburgh",
+   "uri": "https://doi.org/10.13039/100011358",
+   "location": "United States"
+  },
+  {
    "family": "sentence",
    "domain": "law",
    "funder": "LawnStarter",
@@ -6401,6 +6618,13 @@
    "location": ""
   },
   {
+   "family": "shorthand",
+   "domain": "signal",
+   "funder": "Oncogenic Signals and Chromosome Biology",
+   "uri": "https://doi.org/10.13039/100023682",
+   "location": "United States"
+  },
+  {
    "family": "signal",
    "domain": "qsec",
    "funder": null,
@@ -6471,6 +6695,13 @@
    "location": ""
   },
   {
+   "family": "smartgrid",
+   "domain": "energy",
+   "funder": "Energy Networks Australia",
+   "uri": "https://doi.org/10.13039/501100025475",
+   "location": "Australia"
+  },
+  {
    "family": "smoking",
    "domain": "microbiology",
    "funder": "Microbiology Society",
@@ -6520,6 +6751,13 @@
    "location": "Australia"
   },
   {
+   "family": "solarpower",
+   "domain": "energy",
+   "funder": "Energy Networks Australia",
+   "uri": "https://doi.org/10.13039/501100025475",
+   "location": "Australia"
+  },
+  {
    "family": "solid",
    "domain": "geometry",
    "funder": null,
@@ -6553,6 +6791,13 @@
    "funder": "Public Procurement Service",
    "uri": "https://doi.org/10.13039/501100003596",
    "location": "South Korea"
+  },
+  {
+   "family": "spaceflight",
+   "domain": "aerospace",
+   "funder": "GKN Aerospace Services",
+   "uri": "https://doi.org/10.13039/501100014815",
+   "location": "United Kingdom"
   },
   {
    "family": "spectroscopy",
@@ -6751,6 +6996,13 @@
    "location": "United States"
   },
   {
+   "family": "submarine",
+   "domain": "physics",
+   "funder": "Applied Physics, Stanford University",
+   "uri": "https://doi.org/10.13039/100023812",
+   "location": "United States"
+  },
+  {
    "family": "subsidence",
    "domain": "geology",
    "funder": "Geology Foundation, Jackson School of Geosciences,University of Texas at Austin",
@@ -6812,6 +7064,13 @@
    "funder": "Agriculture and Agri-Food Canada",
    "uri": "https://doi.org/10.13039/501100000040",
    "location": "Canada"
+  },
+  {
+   "family": "syllabary",
+   "domain": "combinatorics",
+   "funder": "Combinatorics Foundation",
+   "uri": "https://doi.org/10.13039/100020781",
+   "location": "United States"
   },
   {
    "family": "syllogism",
@@ -7059,6 +7318,13 @@
    "location": "United Kingdom"
   },
   {
+   "family": "tornado",
+   "domain": "meteorology",
+   "funder": "Bureau of Meteorology, Australian Government",
+   "uri": "https://doi.org/10.13039/501100018901",
+   "location": "Australia"
+  },
+  {
    "family": "totemism",
    "domain": "sociology",
    "funder": "Department of Sociology, University of Pennsylvania",
@@ -7130,6 +7396,13 @@
   },
   {
    "family": "translation",
+   "domain": "linguistics",
+   "funder": "Department of Linguistics, University of Pittsburgh",
+   "uri": "https://doi.org/10.13039/100011358",
+   "location": "United States"
+  },
+  {
+   "family": "transliteration",
    "domain": "linguistics",
    "funder": "Department of Linguistics, University of Pittsburgh",
    "uri": "https://doi.org/10.13039/100011358",
@@ -7518,6 +7791,13 @@
    "domain": "meteorology",
    "funder": "Bureau of Meteorology, Australian Government",
    "uri": "https://doi.org/10.13039/501100018901",
+   "location": "Australia"
+  },
+  {
+   "family": "windpower",
+   "domain": "energy",
+   "funder": "Energy Networks Australia",
+   "uri": "https://doi.org/10.13039/501100025475",
    "location": "Australia"
   },
   {
