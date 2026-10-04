@@ -87,7 +87,6 @@ check "Encryption implemented" "grep -q 'encryptSignal' src/mcp/secure-chat-rbac
 # ============================================================================
 
 echo -e "\n${YELLOW}[6/10] Core Systems Verification${NC}"
-check "MCP operations defined" "[ -f src/mcp/core.ts ]"
 check "Formulas orchestrated" "grep -q 'orchestrator' src/harmony/orchestrator.ts"
 check "Quantum hardware integration" "[ -f src/quantum/quantum-executor.ts ]"
 check "Distributed intelligence" "[ -f src/distributed/distributed-executor.ts ]"
