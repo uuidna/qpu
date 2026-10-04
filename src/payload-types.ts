@@ -1078,7 +1078,11 @@ export interface Doc {
  */
 export interface Media {
   id: string;
-  alt?: string | null;
+  alt: string;
+  /**
+   * Choose an upload to render if the visitor is using dark mode.
+   */
+  darkModeFallback?: (string | null) | Media;
   prefix?: string | null;
   _objectKey?: string | null;
   updatedAt: string;
@@ -3510,6 +3514,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  darkModeFallback?: T;
   prefix?: T;
   _objectKey?: T;
   updatedAt?: T;

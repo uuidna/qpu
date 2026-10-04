@@ -44,7 +44,7 @@ import { seed } from './seed'
 preload0()
 type CloudflareEnv = { STORAGE: KVNamespace; BLOBS: R2Bucket; MEDIA: R2Bucket }
 const cf = (process.argv.some((a: string) => /^(generate|migrate)/.test(a)) || process.env.NODE_ENV !== 'production' ? await (await import(/* webpackIgnore: true */ `${'__wrangler'.replaceAll('_', '')}`)).getPlatformProxy({ configPath: 'wrangler.jsonc', remoteBindings: false }) : await getCloudflareContext({ async: true })).env as unknown as CloudflareEnv
-const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }
+const Media: CollectionConfig = { slug: 'media', access: { read: () => true, create: ({ req }) => Boolean(req.user), update: ({ req }) => Boolean(req.user), delete: ({ req }) => Boolean(req.user) }, defaultPopulate: { alt: true, darkModeFallback: true, filename: true, height: true, mimeType: true, url: true, width: true }, fields: [{ name: 'alt', type: 'text', required: true }, { name: 'darkModeFallback', type: 'upload', relationTo: 'media', admin: { description: 'Choose an upload to render if the visitor is using dark mode.' } }], upload: true }
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
   editor: lexicalEditor(),

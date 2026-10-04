@@ -177,7 +177,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
   const ownTenants = app?.collections.some((x) => x.slug === 'tenants') ?? false
   const collections = [
     app ? '' : `const Users: CollectionConfig = { slug: 'users', auth: true, fields: [] }`,
-    media ? `const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }` : '',
+    media ? `const Media: CollectionConfig = { slug: 'media', access: { read: () => true, create: ({ req }) => Boolean(req.user), update: ({ req }) => Boolean(req.user), delete: ({ req }) => Boolean(req.user) }, defaultPopulate: { alt: true, darkModeFallback: true, filename: true, height: true, mimeType: true, url: true, width: true }, fields: [{ name: 'alt', type: 'text', required: true }, { name: 'darkModeFallback', type: 'upload', relationTo: 'media', admin: { description: 'Choose an upload to render if the visitor is using dark mode.' } }], upload: true }` : '',
     app ? '' : `const Pages: CollectionConfig = { slug: 'pages', versions: { drafts: true }, fields: [{ name: 'title', type: 'text', required: true }] }`,
     plugins.includes('multi-tenant') && !ownTenants ? `const Tenants: CollectionConfig = { slug: 'tenants', fields: [{ name: 'name', type: 'text', required: true }] }` : '',
   ].filter(Boolean)
