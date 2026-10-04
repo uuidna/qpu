@@ -224,10 +224,13 @@ export const worker = {
         if (typeof body.method !== 'string') {
           return jsonOf(rpcErrorOf(body.id, rpcCodes.invalid, 'Invalid Request: method must be a string'), badRequest)
         }
+        // A JSON-RPC notification carries no id; the server must not answer it. Streamable HTTP: 202 Accepted, no body.
+        // (A result with id null — what notifications/initialized returned — is a reply to a request that was never one.)
+        if (body.id === undefined) return new Response(null, { status: 202, headers: { ...headers, ...routeHeaders } })
         if (body.method === 'initialize' || body.method === 'server/discover') {
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf(body.params?.protocolVersion) })
         }
-        if (body.method === 'ping' || body.method === 'notifications/initialized') {
+        if (body.method === 'ping') {
           return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: {} })
         }
         /** The envelope carries the request's id, so the memo holds the result's bytes and the envelope is spliced around
