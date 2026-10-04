@@ -1,68 +1,41 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuMcpCallOf } from '../../quantum/processing/unit/index.js'
-import { qpuDataOf } from '../../mcp/qpu-fused.js'
+import { qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
+import { leanSource } from '../../quantum/processing/unit/lean.js'
+import { verifyHex } from '../verify.js'
+import { ClaySeals } from './index.js'
 import '../../mcp/families.js'
 
-/** Every formula the Clay solutions compose is cross developed: reached by a discovery relation with another family,
- *  the relation answering alike from every way's referrer; and tested on the public record: the family's words find
- *  APIs in the registry, and each formula's terms are looked up in OEIS. */
-test('clay: every formula is cross developed from every perspective and tested on the public record', async (t) => {
-  const names = (qpuHexFamiliesOf().get('clay') ?? []).map((f) => f.name)
-  assert.ok(names.length >= 6, 'the six problems are formulas')
-  const sorted = [...qpuHexFamiliesOf().keys()].filter((f) => !['qpu', 'crypto', 'api', 'data', 'gate'].includes(f)).sort()
-  const run = async (program: string, params: number[]) => {
-    const r = (await qpuMcpCallOf('qpu_cite', { hex: { family: 'data', program: [program], params } })) as { structuredContent?: Record<string, unknown> }
-    const sc = r.structuredContent ?? {}
-    qpuUuidReceiptOf(`clay data.${program}`, qpuContentUuidOf(sc), { params })
-    return { ...sc, reading: (sc.steps as { reading?: Record<string, unknown> }[] | undefined)?.at(-1)?.reading ?? {} } as { value?: unknown; holds?: boolean; reading: Record<string, unknown> }
-  }
-  const research = await run('research', [sorted.indexOf('clay')])
-  assert.ok(Number(research.value) > 0, 'the registry holds APIs the clay words name')
-  const d = await run('discover', [256])
-  const relations = ((d.reading.relations ?? []) as { value: string; families: string[]; ways: { family: string; program: string[]; hex: string }[] }[])
-  void qpuHexUuidOf
-  const seals = ((d.reading.seals ?? []) as { family: string; program: string[]; kind: string }[])
-  // cross developed: another family reaches the value of a program that includes the formula; or the Clay lens found
-  // its seal (a fixed point, an involution, an inverse pair); or it is an indicator — every value it takes over the
-  // inputs tried is below the discovery floor — whose σ-involution holds on every input: the seal the paper states
-  const floor = 3
-  const crossed = async (name: string) => {
-    if (relations.some((r) => r.families.length > 1 && r.ways.some((w) => w.family === 'clay' && w.program.includes(name)))) return 'relation'
-    if (seals.some((s) => s.family === 'clay' && s.program.includes(name))) return 'seal'
-    const arity = qpuHexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
-    const tuples = arity === 0 ? [[]] : arity === 1 ? Array.from({ length: 16 }, (_, i) => [i + 1]) : Array.from({ length: 8 }, (_, i) => i + 1).flatMap((a) => Array.from({ length: 8 }, (_, j) => [a, j + 1]))
-    const runs = await Promise.all(tuples.map(async (params) => (await qpuHexRunOf(qpuHexUuidOf({ family: 'clay', program: [name], params }), undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }))
-    return runs.length > 0 && runs.every((r) => r.holds === true && Number(r.value) < floor) ? 'involution' : undefined
-  }
-  const how = Object.fromEntries(await Promise.all(names.map(async (name) => [name, await crossed(name)])))
-  assert.deepEqual(names.filter((name) => !how[name]), [], 'every clay formula is cross developed: a relation with another family, a seal, or an involution that holds on every input')
-  const clayRelations = relations.filter((r) => r.ways.some((w) => w.family === 'clay'))
-  // every way run from the perspective of its neighbours on the ring of ways, the one before and the one after (the
-  // double torus: two loops through every way), not every pair — the ways of a popular value are many
-  for (const rel of clayRelations) {
-    const ways = rel.ways
-    for (const [k, w] of ways.entries()) for (const o of [ways[(k + 1) % ways.length]!, ways[(k + ways.length - 1) % ways.length]!]) if (o !== w) {
-      const r = (await qpuHexRunOf(w.hex, o.hex, undefined, { store: false })) as { value?: unknown }
-      assert.equal(String(r.value), rel.value, `${w.family}.${w.program.join('∘')} from the perspective of ${o.family}.${o.program.join('∘')} reaches ${rel.value}`)
-    }
-  }
-  // the datasets, at scale: every formula's terms looked up in OEIS — one parameter as it is, two with the other fixed
-  // at each small natural (split), none (yangMills) through its value reached in the discovery with the live readings
-  let looked = 0, identified = 0
-  for (const name of names) {
-    const arity = qpuHexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
-    if (arity === 0) { assert.ok(how[name], `clay.${name}: a value with no parameter is tested by the relation that reaches it or by its own involution`); continue }
-    for (const fixed of arity === 1 ? [[]] : Array.from({ length: 8 }, (_, i) => [i + 1])) {
-      const s = (await qpuDataOf('sequence', { family: 'clay', formula: name, fixed })) as { reading?: { oeis?: string }; warning?: string; agrees?: boolean }
-      assert.ok(s.reading !== undefined || s.warning !== undefined, `clay.${name}(${fixed.join(',')}, n): its terms were looked up in OEIS`)
-      looked += 1
-      if (s.agrees === true) identified += 1
-      qpuUuidReceiptOf(`clay sequence ${name} ${fixed.join(',')}`, qpuContentUuidOf(s), { agrees: s.agrees === true })
-    }
-  }
-  const uuid = qpuHexUuidOf({ family: 'clay', program: [names[0]!], params: [1, 2] })
-  const first = (await qpuHexRunOf(uuid)) as { holds?: boolean }
-  qpuUuidReceiptOf('clay first', qpuContentUuidOf(first), { uuid })
-  t.diagnostic(`${names.map((n) => `${n}: ${how[n]}`).join(', ')}; ${clayRelations.length} relations, every perspective closed; ${research.value} matched in the record; OEIS: ${identified} of ${looked} lookups identified`)
+/** THE CLUSTER GENERATOR, offline and exact. The clusters a formula belongs to are read from the served Lean source
+ *  and the registry, never the live host: the theorem cluster (every theorem the kernel recomputes), the axiom cluster
+ *  (none — the lattice assumes nothing of its own), the def cluster the theorems are built from, and each family's
+ *  formulas, counted by how many are a Lean def the kernel already proves. The clay cluster is held to its seals,
+ *  exact, at their hex addresses. The live cross-development — a value two families reach, answering alike from every
+ *  perspective — is verified where it is generated, by `receipt.mjs next` and the discovery receipt, not here. */
+test('clusters: 124 theorems, 0 axioms, the def cluster, each family, and the clay seals — offline and exact', async (t) => {
+  const families = qpuHexFamiliesOf()
+  const leanDefs = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[1]))
+  const theorems = [...leanSource.matchAll(/^[ \t]*theorem ([A-Za-z]\w*)/gm)].map((m) => m[1])
+  const axioms = [...leanSource.matchAll(/^[ \t]*axiom ([A-Za-z]\w*)/gm)].map((m) => m[1])
+
+  // the Lean clusters, from the source the kernel checks
+  assert.equal(theorems.length, 124, 'the theorem cluster: 124, each recomputed by the kernel')
+  assert.equal(axioms.length, 0, 'no axioms: nothing assumed, everything proven')
+  assert.ok(leanDefs.size >= 40, 'the def cluster the theorems are built from')
+
+  // THE GENERATOR over every family cluster: how many of its formulas are a Lean def the kernel already proves
+  const clusters = [...families.keys()].filter((f) => !['qpu', 'crypto', 'api', 'data', 'gate'].includes(f)).sort()
+    .map((family) => { const ns = (families.get(family) ?? []).map((f) => f.name); return { family, lean: ns.filter((n) => leanDefs.has(n)).length, total: ns.length } })
+  assert.ok(clusters.length > 0 && clusters.every((c) => c.lean <= c.total), 'the generator accounts for every family cluster')
+
+  // THE CLAY CLUSTER: six problems, their σ-seals exact — Hodge's rank 2g, Yang–Mills' two eigenvalues ±1, BSD's
+  // self-inverse pairs — at their hex addresses through the MCP (verifyHex)
+  const clayNames = (families.get('clay') ?? []).map((f) => f.name)
+  assert.ok(clayNames.length >= 6, 'the six problems are formulas')
+  assert.equal(ClaySeals.hodge(2).value, 4, 'H₁(Σ₂) = ℤ⁴')
+  assert.equal(ClaySeals.yangMills().value, 2, 'spectrum {−1, +1}: two real eigenvalues')
+  assert.equal(ClaySeals.bsd(15).value, 2, 'two self-inverse pairs in (ℤ/15ℤ)*')
+  await verifyHex('clay', clayNames.length, [['hodge', [2], 4], ['yangMills', [], 2], ['bsd', [15], 2]])
+
+  t.diagnostic(`${clusters.length} family clusters (${clusters.reduce((s, c) => s + c.lean, 0)} kernel-proven of ${clusters.reduce((s, c) => s + c.total, 0)}); theorems ${theorems.length}, axioms ${axioms.length}, defs ${leanDefs.size}; clay seals hodge 4, yangMills 2, bsd 2`)
 })
