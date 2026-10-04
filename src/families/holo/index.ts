@@ -137,7 +137,8 @@ export class HoloFormulas {
   }
 
   static forgery(hashBits: number): CrossFormula {
-    return crossFormulaOf({ id: 'holo-forgery', src: 'hologram', dst: 'qsec', formula: 'p_forge = 2^-(hashBits/2)', value: 2 ** -(hashBits / 2), proof: 'Splicing a fragment needs a SHA-256 collision; birthday bound' }, nat(hashBits) && hashBits > 0, { name: 'holo.forgery', params: [hashBits] })
+    // the birthday bound as work, 2^⌊bits/2⌋ hash evaluations (the lattice's mintOf(bits/2)); its chance per try beside it
+    return crossFormulaOf({ id: 'holo-forgery', src: 'hologram', dst: 'qsec', formula: 'work_forge = 2^⌊hashBits/2⌋ (p_forge = 2^-(hashBits/2))', value: 2 ** Math.floor(hashBits / 2), proof: 'Splicing a fragment needs a SHA-256 collision; birthday bound', ...{ p: 2 ** -(hashBits / 2) } }, nat(hashBits) && hashBits > 0, { name: 'holo.forgery', params: [hashBits] })
   }
 }
 
