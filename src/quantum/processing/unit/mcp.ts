@@ -582,6 +582,16 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
     qpuMcpToolsListOf().length === mintOf(n) + mintOf(n) &&
     qpuMcpToolsListOf().slice(n - n, mintOf(n)).every((t, i) => t.name === toolNames[i]) &&
     qpuMcpToolsListOf().slice(mintOf(n)).every((t, i) => t.name === cryptoToolNames[i]) &&
+    // the GitHub/Cloudflare tool hints, proved and not merely set, so the conformance is automated and cannot drift:
+    // forge is the one write, nothing is destructive, a tool is open-world only when its input reads the live
+    // occupancy, and it is idempotent exactly when it is a read-only closed-world call — a repeat returns the same
+    // document. Every tool carries a display title distinct from its machine name.
+    qpuMcpToolsListOf().every((raw) => {
+      const t = raw as { name: string; title?: unknown; inputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean; idempotentHint?: boolean; openWorldHint?: boolean } }
+      const a = t.annotations ?? {}
+      const live = t.inputSchema?.properties?.live !== undefined
+      return a.destructiveHint === false && a.readOnlyHint === (t.name !== 'qpu_forge') && a.openWorldHint === live && a.idempotentHint === (a.readOnlyHint === true && live === false) && typeof t.title === 'string' && t.title.length > n - n && t.title !== t.name
+    }) &&
     jsonldHoldsOf(m) &&
     m['@type'] === 'WebAPI' &&
     m['@id'] === m.href &&
