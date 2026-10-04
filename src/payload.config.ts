@@ -40,6 +40,8 @@ import { Header } from './globals/Header'
 import { seoTitleOf } from './collections/Docs'
 import { seoDescriptionOf } from './collections/Docs'
 import { seoURLOf } from './collections/Docs'
+import { BlocksFeature } from '@payloadcms/richtext-lexical'
+import { blocks } from './blocks'
 import { seed } from './seed'
 preload0()
 type CloudflareEnv = { STORAGE: KVNamespace; BLOBS: R2Bucket; MEDIA: R2Bucket }
@@ -47,7 +49,7 @@ const cf = (process.argv.some((a: string) => /^(generate|migrate)/.test(a)) || p
 const Media: CollectionConfig = { slug: 'media', upload: true, fields: [{ name: 'alt', type: 'text' }] }
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET ?? '',
-  editor: lexicalEditor(),
+  editor: lexicalEditor({ features: ({ defaultFeatures }) => [...defaultFeatures, BlocksFeature({ blocks: blocks.filter((b) => b.admin?.group === 'QPU' && !b.fields?.some((f) => f.type === 'richText')) })] }),
   admin: { user: 'users', meta: { titleSuffix: ' — UUIDNA QPU' } },
   collections: [CaseStudies, Categories, CommunityHelp, Docs, DocsFeedback, FuseApis, FuseFields, FuseFormulas, Pages, PartnerFilters, Partners, Posts, QuantumReceipts, ReusableContent, Tenants, Users, Media],
   globals: [Footer, Header],

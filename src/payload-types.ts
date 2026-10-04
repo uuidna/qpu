@@ -67,18 +67,31 @@ export type SupportedTimezones =
   | 'Pacific/Fiji';
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LexicalNodes_C755EBD0".
+ * via the `definition` "LexicalNodes_3D87CA09".
  */
-export type LexicalNodes_C755EBD0 =
+export type LexicalNodes_3D87CA09 =
   | SerializedTextNode
   | SerializedTabNode
   | SerializedLineBreakNode
-  | SerializedParagraphNode<LexicalNodes_C755EBD0>
+  | SerializedParagraphNode<LexicalNodes_3D87CA09>
+  | SerializedBlockNode<
+      | BodygraphBlock
+      | ClayBlock
+      | DiscoveryBlock
+      | DocsBlock
+      | FamiliesBlock
+      | LiveBlock
+      | ProgramBlock
+      | ReceiptBlock
+      | ReceiptsBlock
+      | StatsBlock
+      | WingsBlock
+    >
   | SerializedHorizontalRuleNode
   | SerializedUploadNode<'media'>
   | SerializedUploadNode<'exports'>
   | SerializedUploadNode<'imports'>
-  | SerializedQuoteNode<LexicalNodes_C755EBD0>
+  | SerializedQuoteNode<LexicalNodes_3D87CA09>
   | SerializedRelationshipNode<
       | 'case-studies'
       | 'categories'
@@ -111,11 +124,11 @@ export type LexicalNodes_C755EBD0 =
       | 'payload-preferences'
       | 'payload-migrations'
     >
-  | SerializedAutoLinkNode<LexicalNodes_C755EBD0, LexicalLinkFields>
-  | SerializedLinkNode<LexicalNodes_C755EBD0, LexicalLinkFields>
-  | SerializedListNode<LexicalNodes_C755EBD0>
-  | SerializedListItemNode<LexicalNodes_C755EBD0>
-  | SerializedHeadingNode<LexicalNodes_C755EBD0>;
+  | SerializedAutoLinkNode<LexicalNodes_3D87CA09, LexicalLinkFields>
+  | SerializedLinkNode<LexicalNodes_3D87CA09, LexicalLinkFields>
+  | SerializedListNode<LexicalNodes_3D87CA09>
+  | SerializedListItemNode<LexicalNodes_3D87CA09>
+  | SerializedHeadingNode<LexicalNodes_3D87CA09>;
 
 export interface Config {
   auth: {
@@ -286,47 +299,47 @@ export interface CaseStudy {
         | BannerBlock
         | BlogContentBlock
         | BlogMarkdownBlock
-        | BodygraphBlock
+        | BodygraphBlock_80CE4732
         | CallToActionBlock
         | CalloutBlock
         | CardGridBlock
         | CaseStudiesHighlightBlock
         | CaseStudyCardsBlock
         | CaseStudyParallaxBlock
-        | ClayBlock
+        | ClayBlock_6DB75736
         | CodeBlock
         | CodeFeatureBlock
         | ComparisonTableBlock
         | ContentBlock
         | ContentGridBlock
-        | DiscoveryBlock
-        | DocsBlock
+        | DiscoveryBlock_1338FA1A
+        | DocsBlock_AEA8C455
         | DownloadBlock
         | ExampleTabsBlock
-        | FamiliesBlock
+        | FamiliesBlock_C0F86627
         | FormBlock
         | HeroBlock
         | HoverCardsBlock
         | HoverHighlightsBlock
         | LinkGridBlock
-        | LiveBlock
+        | LiveBlock_6F648C31
         | LogoGridBlock
         | MediaBlock
         | MediaContentBlock
         | MediaContentAccordionBlock
         | PricingBlock
         | ProductsBlock
-        | ProgramBlock
-        | ReceiptBlock
-        | ReceiptsBlock
+        | ProgramBlock_255563D1
+        | ReceiptBlock_9163765D
+        | ReceiptsBlock_A119CD95
         | ReusableContentBlock
         | SearchBlock
         | SliderBlock
         | StatementBlock
-        | StatsBlock
+        | StatsBlock_5FDD8428
         | StepsBlock
         | StickyHighlightsBlock
-        | WingsBlock
+        | WingsBlock_281CC1C4
       )[]
     | null;
   updatedAt: string;
@@ -343,7 +356,7 @@ export interface BannerBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'banner';
@@ -359,7 +372,7 @@ export interface BlogContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'blogContent';
@@ -375,16 +388,18 @@ export interface BlogMarkdownBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'blogMarkdown';
 }
 /**
+ * Multiple blocks resolve to the `BodygraphBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BodygraphBlock".
+ * via the `definition` "BodygraphBlock_80CE4732".
  */
-export interface BodygraphBlock {
+export interface BodygraphBlock_80CE4732 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -447,47 +462,47 @@ export interface Page {
         | BannerBlock
         | BlogContentBlock
         | BlogMarkdownBlock
-        | BodygraphBlock
+        | BodygraphBlock_80CE4732
         | CallToActionBlock
         | CalloutBlock
         | CardGridBlock
         | CaseStudiesHighlightBlock
         | CaseStudyCardsBlock
         | CaseStudyParallaxBlock
-        | ClayBlock
+        | ClayBlock_6DB75736
         | CodeBlock
         | CodeFeatureBlock
         | ComparisonTableBlock
         | ContentBlock
         | ContentGridBlock
-        | DiscoveryBlock
-        | DocsBlock
+        | DiscoveryBlock_1338FA1A
+        | DocsBlock_AEA8C455
         | DownloadBlock
         | ExampleTabsBlock
-        | FamiliesBlock
+        | FamiliesBlock_C0F86627
         | FormBlock
         | HeroBlock
         | HoverCardsBlock
         | HoverHighlightsBlock
         | LinkGridBlock
-        | LiveBlock
+        | LiveBlock_6F648C31
         | LogoGridBlock
         | MediaBlock
         | MediaContentBlock
         | MediaContentAccordionBlock
         | PricingBlock
         | ProductsBlock
-        | ProgramBlock
-        | ReceiptBlock
-        | ReceiptsBlock
+        | ProgramBlock_255563D1
+        | ReceiptBlock_9163765D
+        | ReceiptsBlock_A119CD95
         | ReusableContentBlock
         | SearchBlock
         | SliderBlock
         | StatementBlock
-        | StatsBlock
+        | StatsBlock_5FDD8428
         | StepsBlock
         | StickyHighlightsBlock
-        | WingsBlock
+        | WingsBlock_281CC1C4
       )[]
     | null;
   parent?: (string | null) | Page;
@@ -522,7 +537,7 @@ export interface CalloutBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'callout';
@@ -617,10 +632,12 @@ export interface CaseStudyParallaxBlock {
   blockType: 'caseStudyParallax';
 }
 /**
+ * Multiple blocks resolve to the `ClayBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ClayBlock".
+ * via the `definition` "ClayBlock_6DB75736".
  */
-export interface ClayBlock {
+export interface ClayBlock_6DB75736 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -661,7 +678,7 @@ export interface CodeFeatureBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   family?: string | null;
   program?: string | null;
   params?: string | null;
@@ -704,7 +721,7 @@ export interface ContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
@@ -733,10 +750,12 @@ export interface ContentGridBlock {
   blockType: 'contentGrid';
 }
 /**
+ * Multiple blocks resolve to the `DiscoveryBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "DiscoveryBlock".
+ * via the `definition` "DiscoveryBlock_1338FA1A".
  */
-export interface DiscoveryBlock {
+export interface DiscoveryBlock_1338FA1A {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -752,10 +771,12 @@ export interface DiscoveryBlock {
   blockType: 'discovery';
 }
 /**
+ * Multiple blocks resolve to the `DocsBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "DocsBlock".
+ * via the `definition` "DocsBlock_AEA8C455".
  */
-export interface DocsBlock {
+export interface DocsBlock_AEA8C455 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -811,10 +832,12 @@ export interface ExampleTabsBlock {
   blockType: 'exampleTabs';
 }
 /**
+ * Multiple blocks resolve to the `FamiliesBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FamiliesBlock".
+ * via the `definition` "FamiliesBlock_C0F86627".
  */
-export interface FamiliesBlock {
+export interface FamiliesBlock_C0F86627 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -851,7 +874,7 @@ export interface Form {
   fields?: (Checkbox | Country | Email | Message | Number | Select | State | Text | Textarea)[] | null;
   submitButtonLabel?: string | null;
   confirmationType?: ('message' | 'redirect') | null;
-  confirmationMessage?: LexicalRichText<LexicalNodes_C755EBD0>;
+  confirmationMessage?: LexicalRichText<LexicalNodes_3D87CA09>;
   redirect?: {
     url: string;
   };
@@ -863,7 +886,7 @@ export interface Form {
         replyTo?: string | null;
         emailFrom?: string | null;
         subject: string;
-        message?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+        message?: LexicalRichText<LexicalNodes_3D87CA09> | null;
         id?: string | null;
       }[]
     | null;
@@ -915,7 +938,7 @@ export interface Email {
  * via the `definition` "Message".
  */
 export interface Message {
-  message?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  message?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'message';
@@ -1163,10 +1186,12 @@ export interface LinkGridBlock {
   blockType: 'linkGrid';
 }
 /**
+ * Multiple blocks resolve to the `LiveBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LiveBlock".
+ * via the `definition` "LiveBlock_6F648C31".
  */
-export interface LiveBlock {
+export interface LiveBlock_6F648C31 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -1235,7 +1260,7 @@ export interface MediaContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   /**
    * the media URL
    */
@@ -1256,7 +1281,7 @@ export interface MediaContentAccordionBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   /**
    * the media URL
    */
@@ -1305,10 +1330,12 @@ export interface ProductsBlock {
   blockType: 'products';
 }
 /**
+ * Multiple blocks resolve to the `ProgramBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProgramBlock".
+ * via the `definition` "ProgramBlock_255563D1".
  */
-export interface ProgramBlock {
+export interface ProgramBlock_255563D1 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -1329,10 +1356,12 @@ export interface ProgramBlock {
   blockType: 'program';
 }
 /**
+ * Multiple blocks resolve to the `ReceiptBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ReceiptBlock".
+ * via the `definition` "ReceiptBlock_9163765D".
  */
-export interface ReceiptBlock {
+export interface ReceiptBlock_9163765D {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -1349,10 +1378,12 @@ export interface ReceiptBlock {
   blockType: 'receipt';
 }
 /**
+ * Multiple blocks resolve to the `ReceiptsBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ReceiptsBlock".
+ * via the `definition` "ReceiptsBlock_A119CD95".
  */
-export interface ReceiptsBlock {
+export interface ReceiptsBlock_A119CD95 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -1375,7 +1406,7 @@ export interface ReusableContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'reusableContent';
@@ -1429,16 +1460,18 @@ export interface StatementBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'statement';
 }
 /**
+ * Multiple blocks resolve to the `StatsBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "StatsBlock".
+ * via the `definition` "StatsBlock_5FDD8428".
  */
-export interface StatsBlock {
+export interface StatsBlock_5FDD8428 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -1496,10 +1529,12 @@ export interface StickyHighlightsBlock {
   blockType: 'stickyHighlights';
 }
 /**
+ * Multiple blocks resolve to the `WingsBlock` interface with different fields, so a content hash is appended to keep the generated types stable and unambiguous. Set a unique `interfaceName` on the block to choose the name yourself. See https://payloadcms.com/docs/typescript/generating-types#block-interface-name-collisions
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "WingsBlock".
+ * via the `definition` "WingsBlock_281CC1C4".
  */
-export interface WingsBlock {
+export interface WingsBlock_281CC1C4 {
   heading?: string | null;
   /**
    * id for in-page links (#families)
@@ -1529,7 +1564,7 @@ export interface CommunityHelp {
   id: string;
   title: string;
   slug?: string | null;
-  body?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  body?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1661,47 +1696,47 @@ export interface Post {
         | BannerBlock
         | BlogContentBlock
         | BlogMarkdownBlock
-        | BodygraphBlock
+        | BodygraphBlock_80CE4732
         | CallToActionBlock
         | CalloutBlock
         | CardGridBlock
         | CaseStudiesHighlightBlock
         | CaseStudyCardsBlock
         | CaseStudyParallaxBlock
-        | ClayBlock
+        | ClayBlock_6DB75736
         | CodeBlock
         | CodeFeatureBlock
         | ComparisonTableBlock
         | ContentBlock
         | ContentGridBlock
-        | DiscoveryBlock
-        | DocsBlock
+        | DiscoveryBlock_1338FA1A
+        | DocsBlock_AEA8C455
         | DownloadBlock
         | ExampleTabsBlock
-        | FamiliesBlock
+        | FamiliesBlock_C0F86627
         | FormBlock
         | HeroBlock
         | HoverCardsBlock
         | HoverHighlightsBlock
         | LinkGridBlock
-        | LiveBlock
+        | LiveBlock_6F648C31
         | LogoGridBlock
         | MediaBlock
         | MediaContentBlock
         | MediaContentAccordionBlock
         | PricingBlock
         | ProductsBlock
-        | ProgramBlock
-        | ReceiptBlock
-        | ReceiptsBlock
+        | ProgramBlock_255563D1
+        | ReceiptBlock_9163765D
+        | ReceiptsBlock_A119CD95
         | ReusableContentBlock
         | SearchBlock
         | SliderBlock
         | StatementBlock
-        | StatsBlock
+        | StatsBlock_5FDD8428
         | StepsBlock
         | StickyHighlightsBlock
-        | WingsBlock
+        | WingsBlock_281CC1C4
       )[]
     | null;
   updatedAt: string;
@@ -1732,7 +1767,7 @@ export interface ReusableContent {
   id: string;
   title: string;
   slug?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_3D87CA09> | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -4334,6 +4369,199 @@ export interface TaskCreateCollectionImport {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BodygraphBlock".
+ */
+export interface BodygraphBlock {
+  id: string;
+  blockType: 'bodygraph';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  /**
+   * a birth Julian day (empty: ?jd= on the page, else J2000 = 2451545)
+   */
+  jd?: number | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ClayBlock".
+ */
+export interface ClayBlock {
+  id: string;
+  blockType: 'clay';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DiscoveryBlock".
+ */
+export interface DiscoveryBlock {
+  id: string;
+  blockType: 'discovery';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  /**
+   * empty: every solution
+   */
+  limit?: number | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DocsBlock".
+ */
+export interface DocsBlock {
+  id: string;
+  blockType: 'docs';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  limit?: number | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FamiliesBlock".
+ */
+export interface FamiliesBlock {
+  id: string;
+  blockType: 'families';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LiveBlock".
+ */
+export interface LiveBlock {
+  id: string;
+  blockType: 'live';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  /**
+   * only sources whose label contains this
+   */
+  match?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ProgramBlock".
+ */
+export interface ProgramBlock {
+  id: string;
+  blockType: 'program';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  family: string;
+  /**
+   * formulas joined by +
+   */
+  program: string;
+  /**
+   * up to three naturals, comma-separated
+   */
+  params?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReceiptBlock".
+ */
+export interface ReceiptBlock {
+  id: string;
+  blockType: 'receipt';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  /**
+   * a *-receipt.json at the repository root
+   */
+  file: string;
+  limit?: number | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ReceiptsBlock".
+ */
+export interface ReceiptsBlock {
+  id: string;
+  blockType: 'receipts';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  facts?: number | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  id: string;
+  blockType: 'stats';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WingsBlock".
+ */
+export interface WingsBlock {
+  id: string;
+  blockType: 'wings';
+  heading?: string | null;
+  /**
+   * id for in-page links (#families)
+   */
+  anchor?: string | null;
+  intro?: string | null;
+  blockName?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
@@ -4386,6 +4614,18 @@ export interface SerializedParagraphNode<TChildren> extends SerializedLexicalEle
   textFormat: number;
   textStyle: string;
 }
+
+export type SerializedBlockNode<TFields extends { blockType: string }> = TFields extends unknown ? {
+  type: 'block';
+  format: LexicalElementFormat;
+  version: number;
+  fields: { id: string; blockName?: string | null } & Omit<TFields, 'id' | 'blockName'>;
+} : never;
+export type SerializedInlineBlockNode<TFields extends { blockType: string }> = TFields extends unknown ? {
+  type: 'inlineBlock';
+  version: number;
+  fields: { id: string } & Omit<TFields, 'id'>;
+} : never;
 
 export interface SerializedHorizontalRuleNode {
   type: 'horizontalrule';

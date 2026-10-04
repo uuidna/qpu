@@ -113,6 +113,9 @@ export type CloudflareApp = {
   preload?: string[]
   /** extra named imports the app's plugin options use */
   imports?: { name: string; from: string }[]
+  /** the rich-text editor expression (defaults to lexicalEditor()); an app can widen it, e.g. a BlocksFeature so pages
+   *  are composed in Lexical alone and formula blocks nest inside formula blocks (compatible formulas in formulas) */
+  editor?: string
   /** shell files the app writes itself (its own frontend): the template leaves them alone */
   own?: string[]
   /** extra options per plugin, as object-literal source appended to the plugin's call */
@@ -197,7 +200,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     '',
     'export default buildConfig({',
     `  secret: process.env.PAYLOAD_SECRET ?? '',`,
-    `  editor: lexicalEditor(),`,
+    `  editor: ${app?.editor ?? 'lexicalEditor()'},`,
     admin,
     `  collections: [${collectionNames.join(', ')}],`,
     app?.globals?.length ? `  globals: [${app.globals.map((x) => x.name).join(', ')}],` : '',
