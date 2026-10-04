@@ -1,5 +1,6 @@
 import { qpuFoldOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+import { randomBytes as qpuRandomBytes } from '../../core/crypt.js'
 
 export interface SecureSignal {
   id: string
@@ -38,8 +39,8 @@ export interface SiftedKey {
 export const QBER_LIMIT = 0.11
 
 const randomBits = (n: number): number[] => {
-  const bytes = new Uint8Array(Math.ceil(n / 8))
-  for (let at = 0; at < bytes.length; at += 65536) crypto.getRandomValues(bytes.subarray(at, at + 65536))
+  // the unit's own DRBG (core/crypt), never a platform CSPRNG — no external crypto
+  const bytes = qpuRandomBytes(Math.ceil(n / 8))
   return Array.from({ length: n }, (_, i) => (bytes[i >> 3]! >> (i & 7)) & 1)
 }
 
