@@ -12,7 +12,7 @@ import fs from 'node:fs'
 import { execSync } from 'node:child_process'
 import { heatOf } from '../dist/families/heat/index.js'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuLatticeNamesOf, tenOf } from '../dist/quantum/processing/unit/index.js'
-import { coins, faces, tenOf, vertices } from './lattice-values.mjs'
+import { coins, faces, vertices } from './lattice-values.mjs'
 const L = { ...qpuLatticeNamesOf(), tenOf }
 
 const WINDOW = L.n * L.tenOf(L.seed)

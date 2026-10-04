@@ -10,7 +10,6 @@
  */
 import fs from 'node:fs'
 import { qpuContentUuidOf, qpuLatticeNamesOf, qpuUuidReceiptOf, tenOf } from '../dist/quantum/processing/unit/index.js'
-import { tenOf } from './lattice-values.mjs'
 
 const L = qpuLatticeNamesOf()
 const host = process.env.QPU_LIVE ?? 'https://qpu.uuidna.com'
