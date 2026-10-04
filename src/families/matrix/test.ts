@@ -1,0 +1,24 @@
+import { test } from '../../quantum/processing/unit/receipted.js'
+import assert from 'node:assert/strict'
+import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { MatrixFormulas } from './index.js'
+
+/** matrix: 8 exact-integer formulas, each recomputed from the palette and run at its hex address. */
+test('matrix: elements, mults, adds, trace, rank, determinant, transpose, combos', async (t) => {
+  assert.equal(MatrixFormulas.elements(4, 4).value, 16, 'elements(4, 4)')
+  assert.equal(MatrixFormulas.mults(4, 4, 4).value, 64, 'mults(4, 4, 4)')
+  assert.equal(MatrixFormulas.adds(16, 3).value, 48, 'adds(16, 3)')
+  assert.equal(MatrixFormulas.trace(10, 6).value, 16, 'trace(10, 6)')
+  assert.equal(MatrixFormulas.rank(4, 3).value, 3, 'rank(4, 3)')
+  assert.equal(MatrixFormulas.determinant(100, 40).value, 60, 'determinant(100, 40)')
+  assert.equal(MatrixFormulas.transpose(4, 4).value, 16, 'transpose(4, 4)')
+  assert.equal(MatrixFormulas.combos(4, 2).value, 6, 'combos(4, 2)')
+  assert.equal(qpuHexFamiliesOf().get('matrix')?.length, 8)
+  for (const [name, params, expected] of [["elements",[4,4],16],["mults",[4,4,4],64],["adds",[16,3],48]] as [string, number[], number][]) {
+    const uuid = qpuHexUuidOf({ family: 'matrix', program: [name], params })
+    const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
+    assert.equal(Number(run.value), expected, `matrix.${name} at ${uuid}`)
+    qpuUuidReceiptOf(`matrix ${name}`, qpuContentUuidOf(run), { uuid })
+  }
+  t.diagnostic('8 formulas; ' + "elements=16, mults=64, adds=48")
+})
