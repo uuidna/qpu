@@ -6,7 +6,7 @@ same host. Reads need no auth; storage writes need a Bearer token. Use it as an 
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 858 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 52 doors and 1,018 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
@@ -2072,44 +2072,51 @@ data. Each wing reports itself:
 
 ### Formula families
 
-102 families carry 858 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 79 cross-formula rows hold (36 agree with their hex programs).
+122 families carry 1,018 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 79 cross-formula rows hold (36 agree with their hex programs).
 
 | Family | Formulas | Family | Formulas | Family | Formulas |
 |---|---:|---|---:|---|---:|
 | `access` | 6 | `adhesive` | 8 | `alloy` | 8 |
-| `antenna` | 8 | `api` | 10 | `audio` | 8 |
-| `audit` | 4 | `bandwidth` | 8 | `battery` | 8 |
-| `beam` | 8 | `bio` | 8 | `buffer` | 8 |
+| `antenna` | 8 | `antibody` | 8 | `api` | 10 |
+| `audio` | 8 | `audit` | 4 | `bandwidth` | 8 |
+| `battery` | 8 | `beam` | 8 | `bio` | 8 |
+| `bond` | 8 | `budget` | 8 | `buffer` | 8 |
 | `buoyancy` | 8 | `cache` | 8 | `cal` | 14 |
 | `canon` | 8 | `catalyst` | 8 | `ceramic` | 8 |
 | `chat` | 6 | `chem` | 8 | `clay` | 7 |
 | `codec` | 8 | `collision` | 8 | `color` | 8 |
 | `composite` | 8 | `corrosion` | 8 | `cross` | 10 |
 | `crypt` | 6 | `crypto` | 8 | `crystal` | 8 |
-| `data` | 12 | `db` | 8 | `dns` | 8 |
-| `driver` | 8 | `econ` | 6 | `electrolyte` | 8 |
-| `engine` | 8 | `firmware` | 8 | `fluid` | 8 |
+| `data` | 12 | `db` | 8 | `dividend` | 8 |
+| `dns` | 8 | `driver` | 8 | `econ` | 6 |
+| `electrolyte` | 8 | `engine` | 8 | `enzyme` | 8 |
+| `equity` | 8 | `firmware` | 8 | `fluid` | 8 |
 | `forensic` | 7 | `friction` | 8 | `gate` | 8 |
-| `gear` | 8 | `geo` | 8 | `glyph` | 6 |
-| `graph` | 8 | `hardware` | 8 | `hash` | 8 |
-| `hd` | 14 | `heat` | 10 | `holo` | 2 |
-| `image` | 8 | `job` | 8 | `kin` | 15 |
-| `law` | 7 | `lever` | 8 | `matrix` | 8 |
-| `merkaba` | 11 | `modular` | 8 | `np` | 6 |
-| `numen` | 7 | `optics` | 8 | `packet` | 8 |
-| `path` | 9 | `pendulum` | 8 | `piston` | 8 |
-| `polymer` | 8 | `port` | 8 | `prime` | 8 |
-| `projectile` | 8 | `protocol` | 8 | `pulley` | 8 |
-| `pump` | 8 | `qpu` | 8 | `Qpu` | 37 |
-| `queue` | 8 | `radar` | 8 | `record` | 6 |
-| `rotation` | 8 | `router` | 8 | `rule` | 9 |
-| `scale` | 6 | `signal` | 6 | `socket` | 8 |
-| `software` | 8 | `solar` | 8 | `solvent` | 8 |
-| `sort` | 8 | `split` | 15 | `spring` | 8 |
-| `stream` | 8 | `survey` | 8 | `tesla` | 11 |
-| `text` | 8 | `tls` | 8 | `torsion` | 8 |
-| `tree` | 8 | `tune` | 7 | `vector` | 8 |
-| `wave` | 9 | `wind` | 8 | `yi` | 9 |
+| `gear` | 8 | `genome` | 8 | `geo` | 8 |
+| `glyph` | 6 | `graph` | 8 | `hardware` | 8 |
+| `hash` | 8 | `hd` | 14 | `heat` | 10 |
+| `holo` | 2 | `image` | 8 | `invoice` | 8 |
+| `job` | 8 | `kin` | 15 | `law` | 7 |
+| `ledger` | 8 | `lever` | 8 | `loan` | 8 |
+| `matrix` | 8 | `merkaba` | 11 | `metabolism` | 8 |
+| `modular` | 8 | `mutation` | 8 | `neuron` | 8 |
+| `np` | 6 | `numen` | 7 | `optics` | 8 |
+| `option` | 8 | `packet` | 8 | `path` | 9 |
+| `pathogen` | 8 | `payroll` | 8 | `pendulum` | 8 |
+| `piston` | 8 | `polymer` | 8 | `port` | 8 |
+| `prime` | 8 | `projectile` | 8 | `protein` | 8 |
+| `protocol` | 8 | `pulley` | 8 | `pump` | 8 |
+| `qpu` | 8 | `Qpu` | 37 | `queue` | 8 |
+| `radar` | 8 | `record` | 6 | `rotation` | 8 |
+| `router` | 8 | `rule` | 9 | `scale` | 6 |
+| `signal` | 6 | `socket` | 8 | `software` | 8 |
+| `solar` | 8 | `solvent` | 8 | `sort` | 8 |
+| `split` | 15 | `spring` | 8 | `stream` | 8 |
+| `survey` | 8 | `synapse` | 8 | `tax` | 8 |
+| `tesla` | 11 | `text` | 8 | `tls` | 8 |
+| `torsion` | 8 | `tree` | 8 | `tune` | 7 |
+| `vaccine` | 8 | `vector` | 8 | `wave` | 9 |
+| `wind` | 8 | `yi` | 9 |  |  |
 
 ## Clay Millennium Prize Problems
 
