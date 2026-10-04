@@ -24,16 +24,15 @@ export const equal = (a: Bytes, b: Bytes): boolean => {
 }
 
 // ChaCha20 generator with fast key erasure: each call rekeys from its own keystream, so earlier outputs cannot be
-// recomputed from the current state. NO EXTERNAL CRYPTO: the 32-byte seed is derived from the high-resolution clock, a
-// monotone counter and the unit's own sha256 — never from a platform CSPRNG. This is a deliberate choice: with no
-// external entropy the seed is a function of the start time and call count, so the keys and tokens built on it are
-// predictable to anyone who knows those — the key-erasure chaining only keeps earlier outputs unrecomputable once
-// seeded, it does not make the seed secret. Entropy has no formula; this is the price of taking nothing from outside.
+// recomputed from the current state. NO EXTERNAL CRYPTO AND NO CLOCK: the 32-byte seed is a formula, the crypto folded
+// on itself — sha256 of sha256 of the empty message — never the platform CSPRNG, never Date.now, never a counter. This
+// is deliberate and total: the seed takes nothing from outside, not even the time, so the stream is the same on every
+// run from the first call. The key-erasure chaining still advances the key every call, so two draws in one run differ
+// and an earlier output cannot be recomputed once advanced; it does not make the seed secret. Determinism over entropy:
+// keys, tokens and nonces built on this are predictable to anyone, the price of a unit that is a pure function of itself.
 let drbgKey: Bytes | undefined
-let drbgCount = 0
-const clock = (): number => { try { return performance.now() } catch { return 0 } }
 export const randomBytes = (n: number): Bytes => {
-  drbgKey ??= sha256(concat(utf8(String(Date.now())), utf8(String(clock())), utf8(String(drbgCount++))))
+  drbgKey ??= sha256(sha256(new Uint8Array(0)))
   const stream = chacha20(drbgKey, new Uint8Array(12), 0, new Uint8Array(32 + n))
   drbgKey = stream.slice(0, 32)
   return stream.slice(32)
