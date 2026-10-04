@@ -1,6 +1,8 @@
 import config from '@payload-config'
-import { getPayload } from 'payload'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '@uuidna/qpu'
+import { getPayload, type Where } from 'payload'
+import { headers } from 'next/headers'
+import { cache } from 'react'
+import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuZoneHostOf } from '@uuidna/qpu'
 // every hex family, fused door and MCP method registers itself on import: the generated registry is the one import
 import '@uuidna/qpu/mcp/families.js'
 import { qpuDataOf, qpuDataSourcesOf } from '@uuidna/qpu/mcp/qpu-fused.js'
@@ -15,6 +17,25 @@ export const payloadOf = async () => {
   const payload = await getPayload({ config })
   await seed(payload).catch(() => undefined)
   return payload
+}
+
+/** EACH TENANT IS AN APP, AND THE MAIN WEBSITE MOUNTS ALL OF THEM. A tenant is a domain (src/collections/Tenants.ts);
+ *  the multi-tenant plugin scopes every page and doc to one. The main website — a first-party/reserved zone host the
+ *  unit's own formula qpuZoneHostOf names (qpu.uuidna.com, www, saas-fallback) — is NOT a tenant: it mounts every
+ *  tenant's content, so tenantOf is undefined there and the queries are unscoped. Any other host is a tenant's own
+ *  domain, and its content is scoped to the tenant whose `domain` matches it — that host is the tenant's app. `cache`
+ *  dedupes the lookup within a request. */
+export const tenantOf = cache(async (): Promise<string | undefined> => {
+  // headers() throws outside a request (e.g. a build-time sitemap); there is no tenant then — mount all, unscoped.
+  const host = await headers().then((h) => h.get('host')?.split(':')[0]).catch(() => undefined)
+  if (!host || qpuZoneHostOf(host)) return undefined // the main website mounts all tenants — no scope
+  const match = (await (await payloadOf()).find({ collection: 'tenants', where: { domain: { equals: host } }, limit: 1, depth: 0 })).docs[0]
+  return (match as { id?: string } | undefined)?.id
+})
+/** The where-clause that scopes a tenant-scoped collection to the request's tenant (empty when none resolves). */
+const tenantWhere = async (): Promise<Where> => {
+  const t = await tenantOf()
+  return t ? { tenant: { equals: t } } : {}
 }
 
 export type Family = { name: string; formulas: { nibble: string; name: string; arity: number }[] }
@@ -42,10 +63,10 @@ import { receipts } from '@/receipts'
 export const receiptsOf = () => receipts
 
 export const docsOf = async (): Promise<Doc[]> =>
-  (await (await payloadOf()).find({ collection: 'docs', limit: 0, pagination: false, depth: 0, sort: 'title' })).docs as Doc[]
+  (await (await payloadOf()).find({ collection: 'docs', where: await tenantWhere(), limit: 0, pagination: false, depth: 0, sort: 'title' })).docs as Doc[]
 
 export const docOf = async (slug: string): Promise<Doc | undefined> =>
-  ((await (await payloadOf()).find({ collection: 'docs', where: { slug: { equals: slug } }, limit: 1, depth: 1 })).docs[0] as Doc | undefined)
+  ((await (await payloadOf()).find({ collection: 'docs', where: { slug: { equals: slug }, ...(await tenantWhere()) } as Where, limit: 1, depth: 1 })).docs[0] as Doc | undefined)
 
 export const productsOf = async (): Promise<Product[]> =>
   (await (await payloadOf()).find({ collection: 'products', limit: 20, depth: 0, where: { _status: { equals: 'published' } } })).docs as Product[]
@@ -62,10 +83,10 @@ export const plainOf = (rich: unknown): string => {
 
 /** A published page by slug (drafts too when previewing signed in, as payloadcms/website reads its pages). */
 export const pageOf = async (slug: string, draft = false): Promise<Page | undefined> =>
-  ((await (await payloadOf()).find({ collection: 'pages', where: { slug: { equals: slug } }, limit: 1, depth: 2, draft })).docs[0] as Page | undefined)
+  ((await (await payloadOf()).find({ collection: 'pages', where: { slug: { equals: slug }, ...(await tenantWhere()) } as Where, limit: 1, depth: 2, draft })).docs[0] as Page | undefined)
 
 export const pagesOf = async (): Promise<Page[]> =>
-  (await (await payloadOf()).find({ collection: 'pages', limit: 0, pagination: false, depth: 0 })).docs as Page[]
+  (await (await payloadOf()).find({ collection: 'pages', where: await tenantWhere(), limit: 0, pagination: false, depth: 0 })).docs as Page[]
 
 export const headerOf = async (): Promise<Header> => (await (await payloadOf()).findGlobal({ slug: 'header', depth: 1 })) as Header
 export const footerOf = async (): Promise<Footer> => (await (await payloadOf()).findGlobal({ slug: 'footer', depth: 1 })) as Footer
