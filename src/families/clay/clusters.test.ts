@@ -21,5 +21,7 @@ test('clay clusters: every seal is a formula + theorem + axiom, generated from t
   const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, `clay.hodge at ${uuid}`)
   qpuUuidReceiptOf('clay clusters hodge', qpuContentUuidOf(run), { uuid })
-  t.diagnostic('6 clay clusters (formula+theorem+axiom): bsd=2, hodge=4, navierStokes=1, pVsNp=1, riemann=1, yangMills=2; axiom https://doi.org/10.5281/zenodo.21781603')
+  // public record, verified at generation via the Zenodo single-record API (fast; not OEIS): All Seven Clay Millennium Problems Sealed via Universal σ-Involution — doi:10.5281/zenodo.21781603
+  assert.ok(CLAY_SEAL_SOURCE.includes('21781603'), 'axiom cites the verified Zenodo record')
+  t.diagnostic('6 clay clusters (formula+theorem+axiom): bsd=2, hodge=4, navierStokes=1, pVsNp=1, riemann=1, yangMills=2; public record (zenodo, fast): All Seven Clay Millennium Problems Sealed via Universal σ-Involution — doi:10.5281/zenodo.21781603')
 })

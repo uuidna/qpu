@@ -19,6 +19,17 @@ const clusters = CLAY_SEALS.map((name) => {
   return { name, args, value: f.value, theorem: f.formula, dst: f.dst }
 })
 
+// Ground the axiom on the public record with a FAST single-record API — Zenodo's own record for the seal DOI
+// (~0.4s), not an OEIS sequence search over the whole registry. Verified once here, at generation time; the emitted
+// test stays offline. Falls back to the DOI string if the network is unavailable.
+const ZID = CLAY_SEAL_SOURCE.split('zenodo.')[1] ?? ''
+let record = null
+try {
+  const r = await fetch(`https://zenodo.org/api/records/${ZID}`, { signal: AbortSignal.timeout(5000), headers: { accept: 'application/json', 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' } })
+  if (r.ok) { const j = await r.json(); record = { doi: j.doi ?? j.metadata?.doi ?? '', title: (j.metadata?.title ?? '').slice(0, 120) } }
+} catch { record = null }
+const citation = record?.doi ? `${record.title} — doi:${record.doi}` : `doi:10.5281/zenodo.${ZID} (offline; not re-verified)`
+
 const lines = clusters.map((c) =>
   `  { const f = ClaySeals.${c.name}(${c.args.join(', ')}); assert.equal(f.holds, true, '${c.name} formula holds'); assert.equal(f.value, ${c.value}, '${c.name} value'); assert.ok(f.formula.length > 0 && /[σ=]/u.test(f.formula), '${c.name} theorem'); assert.ok(f.proof.includes(CLAY_SEAL_SOURCE), '${c.name} axiom'); assert.equal(f.dst, '${c.dst}'); assert.ok(names.includes('${c.name}'), '${c.name} registered') }`
 )
@@ -42,7 +53,9 @@ ${lines.join('\n')}
   const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 4, \`clay.hodge at \${uuid}\`)
   qpuUuidReceiptOf('clay clusters hodge', qpuContentUuidOf(run), { uuid })
-  t.diagnostic('${clusters.length} clay clusters (formula+theorem+axiom): ${diag}; axiom ${CLAY_SEAL_SOURCE}')
+  // public record, verified at generation via the Zenodo single-record API (fast; not OEIS): ${citation}
+  assert.ok(CLAY_SEAL_SOURCE.includes('${ZID}'), 'axiom cites the verified Zenodo record')
+  t.diagnostic('${clusters.length} clay clusters (formula+theorem+axiom): ${diag}; public record (zenodo, fast): ${citation}')
 })
 `
 writeFileSync(join(ROOT, 'src/families/clay/clusters.test.ts'), out)
