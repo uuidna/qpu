@@ -3,9 +3,9 @@
  "when": "2026-10-04",
  "source": "Crossref Funder Registry (https://www.crossref.org/services/funder-registry/)",
  "note": "Candidate funders matched to each novelty by its field (the family dst). LEADS to approach, matched by name/field — NOT secured awards, grants, or endorsements.",
- "families": 968,
+ "families": 988,
  "domains": 161,
- "matched": 846,
+ "matched": 857,
  "byDomain": {
   "access": {
    "funder": "AccessLex Institute",
@@ -1165,6 +1165,13 @@
    "location": "United States"
   },
   {
+   "family": "backgammon",
+   "domain": "probability",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
    "family": "backhaul",
    "domain": "logistics",
    "funder": "Defense Logistics Agency",
@@ -1195,6 +1202,13 @@
   {
    "family": "baking",
    "domain": "cuisine",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
+   "family": "ballet",
+   "domain": "kinematics",
    "funder": null,
    "uri": null,
    "location": ""
@@ -1599,6 +1613,13 @@
    "location": ""
   },
   {
+   "family": "checkers",
+   "domain": "graphtheory",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
    "family": "checksum",
    "domain": "networking",
    "funder": "High-Speed Networking Laboratory, NYU Polytechnic School of Engineering",
@@ -1646,6 +1667,13 @@
    "funder": "American Musicological Society",
    "uri": "https://doi.org/10.13039/100005498",
    "location": "United States"
+  },
+  {
+   "family": "choreography",
+   "domain": "kinematics",
+   "funder": null,
+   "uri": null,
+   "location": ""
   },
   {
    "family": "chromatography",
@@ -2415,6 +2443,13 @@
    "domain": "portfolio",
    "funder": "Ethnicity, Race, and Cultural Affairs Portfolio",
    "uri": "https://doi.org/10.13039/100029763",
+   "location": "United States"
+  },
+  {
+   "family": "dominoes",
+   "domain": "combinatorics",
+   "funder": "Combinatorics Foundation",
+   "uri": "https://doi.org/10.13039/100020781",
    "location": "United States"
   },
   {
@@ -3409,6 +3444,13 @@
    "domain": "chemistry",
    "funder": "Division of Chemistry",
    "uri": "https://doi.org/10.13039/100000165",
+   "location": "United States"
+  },
+  {
+   "family": "hanoi",
+   "domain": "combinatorics",
+   "funder": "Combinatorics Foundation",
+   "uri": "https://doi.org/10.13039/100020781",
    "location": "United States"
   },
   {
@@ -4462,6 +4504,13 @@
    "location": "Canada"
   },
   {
+   "family": "mime",
+   "domain": "kinematics",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
    "family": "mineralogy",
    "domain": "materials",
    "funder": "School of Materials Engineering, Purdue University",
@@ -4686,6 +4735,13 @@
    "location": "United States"
   },
   {
+   "family": "nim",
+   "domain": "logic",
+   "funder": "European Association for Computer Science Logic",
+   "uri": "https://doi.org/10.13039/501100019180",
+   "location": "Germany"
+  },
+  {
    "family": "noise",
    "domain": "acoustics",
    "funder": "Wildlife Acoustics",
@@ -4837,6 +4893,13 @@
    "domain": "cross",
    "funder": "My Crossword Maker",
    "uri": "https://doi.org/10.13039/100025173",
+   "location": "United States"
+  },
+  {
+   "family": "opera",
+   "domain": "music",
+   "funder": "American Musicological Society",
+   "uri": "https://doi.org/10.13039/100005498",
    "location": "United States"
   },
   {
@@ -5132,6 +5195,13 @@
    "funder": "Agriculture and Agri-Food Canada",
    "uri": "https://doi.org/10.13039/501100000040",
    "location": "Canada"
+  },
+  {
+   "family": "pentomino",
+   "domain": "combinatorics",
+   "funder": "Combinatorics Foundation",
+   "uri": "https://doi.org/10.13039/100020781",
+   "location": "United States"
   },
   {
    "family": "perception",
@@ -5673,6 +5743,13 @@
    "location": "United States"
   },
   {
+   "family": "puppetry",
+   "domain": "kinematics",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
    "family": "pwm",
    "domain": "electronics",
    "funder": "Delta Electronics",
@@ -6065,6 +6142,13 @@
    "location": ""
   },
   {
+   "family": "rubik",
+   "domain": "combinatorics",
+   "funder": "Combinatorics Foundation",
+   "uri": "https://doi.org/10.13039/100020781",
+   "location": "United States"
+  },
+  {
    "family": "rule",
    "domain": "lattice",
    "funder": null,
@@ -6149,10 +6233,24 @@
    "location": "United States"
   },
   {
+   "family": "scrabble",
+   "domain": "statistics",
+   "funder": "Bureau of Justice Statistics",
+   "uri": "https://doi.org/10.13039/100013173",
+   "location": "United States"
+  },
+  {
    "family": "screening",
    "domain": "epidemiology",
    "funder": "Department of Epidemiology and Biostatistics, University of California, San Francisco",
    "uri": "https://doi.org/10.13039/100020963",
+   "location": "United States"
+  },
+  {
+   "family": "screenwriting",
+   "domain": "statistics",
+   "funder": "Bureau of Justice Statistics",
+   "uri": "https://doi.org/10.13039/100013173",
    "location": "United States"
   },
   {
@@ -6296,6 +6394,13 @@
    "location": "United States"
   },
   {
+   "family": "shogi",
+   "domain": "graphtheory",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
    "family": "signal",
    "domain": "qsec",
    "funder": null,
@@ -6436,6 +6541,13 @@
    "location": "United States"
   },
   {
+   "family": "sounddesign",
+   "domain": "acoustics",
+   "funder": "Wildlife Acoustics",
+   "uri": "https://doi.org/10.13039/100024398",
+   "location": "United States"
+  },
+  {
    "family": "sourcing",
    "domain": "procurement",
    "funder": "Public Procurement Service",
@@ -6504,6 +6616,13 @@
    "funder": "Defense Logistics Agency",
    "uri": "https://doi.org/10.13039/100005711",
    "location": "United States"
+  },
+  {
+   "family": "stagecraft",
+   "domain": "geometry",
+   "funder": null,
+   "uri": null,
+   "location": ""
   },
   {
    "family": "stainedglass",
@@ -6590,6 +6709,13 @@
    "location": "United States"
   },
   {
+   "family": "storyboarding",
+   "domain": "geometry",
+   "funder": null,
+   "uri": null,
+   "location": ""
+  },
+  {
    "family": "straingauge",
    "domain": "mechanical",
    "funder": "School of Mechanical Engineering, Purdue University",
@@ -6629,6 +6755,13 @@
    "domain": "geology",
    "funder": "Geology Foundation, Jackson School of Geosciences,University of Texas at Austin",
    "uri": "https://doi.org/10.13039/100006776",
+   "location": "United States"
+  },
+  {
+   "family": "sudoku",
+   "domain": "combinatorics",
+   "funder": "Combinatorics Foundation",
+   "uri": "https://doi.org/10.13039/100020781",
    "location": "United States"
   },
   {
@@ -6804,6 +6937,13 @@
    "domain": "materials",
    "funder": "School of Materials Engineering, Purdue University",
    "uri": "https://doi.org/10.13039/100019691",
+   "location": "United States"
+  },
+  {
+   "family": "theatre",
+   "domain": "statistics",
+   "funder": "Bureau of Justice Statistics",
+   "uri": "https://doi.org/10.13039/100013173",
    "location": "United States"
   },
   {
