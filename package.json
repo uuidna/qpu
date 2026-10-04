@@ -91,6 +91,7 @@
     "./dist/mcp/api-door.js",
     "./dist/families/audit/index.js",
     "./dist/families/cal/index.js",
+    "./dist/families/canon/index.js",
     "./dist/families/chat/index.js",
     "./dist/families/clay/index.js",
     "./dist/families/cross/index.js",

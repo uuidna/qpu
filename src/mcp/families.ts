@@ -3,6 +3,7 @@ import '../families/access/index.js'
 import './api-door.js'
 import '../families/audit/index.js'
 import '../families/cal/index.js'
+import '../families/canon/index.js'
 import '../families/chat/index.js'
 import '../families/clay/index.js'
 import '../families/cross/index.js'
@@ -34,4 +35,4 @@ import '../families/tune/index.js'
 import '../families/wave/index.js'
 import '../families/yi/index.js'
 
-export const families = ['access', 'api-door', 'audit', 'cal', 'chat', 'clay', 'cross', 'crypt', 'db', 'econ', 'forensic', 'gate', 'glyph', 'hd', 'heat', 'holo', 'job', 'kin', 'law', 'mcp-capabilities', 'merkaba', 'np', 'numen', 'path', 'port', 'qpu-fused', 'rule', 'scale', 'signal', 'split', 'tesla', 'tune', 'wave', 'yi'] as const
+export const families = ['access', 'api-door', 'audit', 'cal', 'canon', 'chat', 'clay', 'cross', 'crypt', 'db', 'econ', 'forensic', 'gate', 'glyph', 'hd', 'heat', 'holo', 'job', 'kin', 'law', 'mcp-capabilities', 'merkaba', 'np', 'numen', 'path', 'port', 'qpu-fused', 'rule', 'scale', 'signal', 'split', 'tesla', 'tune', 'wave', 'yi'] as const

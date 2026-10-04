@@ -1,6 +1,6 @@
 {
  "kind": "payload-cf-receipt",
- "when": "2026-10-02",
+ "when": "2026-10-04",
  "axes": {
   "runtime": [
    "vinext",
@@ -46,8 +46,8 @@
  "coverage": "each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles",
  "stream": {
   "length": 98304,
-  "head": "7035e38e-c6fa-80f5-9105-72a81cf13eab",
-  "chain": "db60c22e90bce8ba",
+  "head": "1b4baeff-fe42-8eeb-ae00-5ffc887d1e20",
+  "chain": "7395ef373b4b447f075bb6c72ffbeeece142821beb0e80c081ba88f6e41e80ea",
   "holds": true
  }
 }
