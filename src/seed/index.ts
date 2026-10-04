@@ -134,7 +134,10 @@ const ensure = async (payload: Payload, collection: string, field: string, value
   // a row's layout and relations stay as they were made
   const meta = (first as { meta?: { title?: unknown; description?: unknown } } | undefined)?.meta ?? {}
   const moved = ['title', 'description'].filter((k) => k in data && (data[k] !== first?.[k as 'title'] || data[k] !== meta[k as 'title']))
-  if (first && moved.length) return (await payload.update({ collection: collection as Slug, id: first.id, data: { ...Object.fromEntries(moved.map((k) => [k, data[k]])), ...('description' in data || 'title' in data ? { meta: { ...meta, ...Object.fromEntries(['title', 'description'].filter((k) => k in data).map((k) => [k, data[k]])) } } : {}) } as never, overrideAccess: true })) as unknown as Row
+  // a scoped row needs its tenant. A row created before this site was multi-tenant has none, and the plugin refuses to
+  // save it until it does — so the tenant is reconciled like a moved field, enough on its own to warrant the update.
+  const tenantMoved = 'tenant' in data && (first as { tenant?: unknown } | undefined)?.tenant !== data.tenant
+  if (first && (moved.length || tenantMoved)) return (await payload.update({ collection: collection as Slug, id: first.id, data: { ...Object.fromEntries(moved.map((k) => [k, data[k]])), ...(tenantMoved ? { tenant: data.tenant } : {}), ...('description' in data || 'title' in data ? { meta: { ...meta, ...Object.fromEntries(['title', 'description'].filter((k) => k in data).map((k) => [k, data[k]])) } } : {}) } as never, overrideAccess: true })) as unknown as Row
   return found[0] ?? ((await payload.create({ collection: collection as Slug, data: data as never, overrideAccess: true })) as unknown as Row)
 }
 
@@ -228,10 +231,11 @@ async function upsertDocs(payload: Payload, from: number, take: number) {
   const tenant = (await ensure(payload, 'tenants', 'domain', ROOT_TENANT.domain, ROOT_TENANT)).id
   await Promise.all(generated.slice(from, from + take).map(async (doc) => {
     const parent = index && doc.slug !== 'index' ? index.id : undefined
-    const old = (await payload.findByID({ collection: 'docs', id: doc.id, depth: 0, disableErrors: true, overrideAccess: true })) as { uuid?: string; parent?: unknown } | null
+    const old = (await payload.findByID({ collection: 'docs', id: doc.id, depth: 0, disableErrors: true, overrideAccess: true })) as { uuid?: string; parent?: unknown; tenant?: unknown } | null
     const data = { ...doc, ...(parent ? { parent } : {}), tenant } as never
     if (!old) await payload.create({ collection: 'docs', data, overrideAccess: true })
-    else if (old.uuid !== doc.uuid || (parent && !old.parent)) await payload.update({ collection: 'docs', id: doc.id, data, overrideAccess: true })
+    // the uuid moved, the parent is missing, or the doc predates multi-tenant and carries no tenant: write it
+    else if (old.uuid !== doc.uuid || (parent && !old.parent) || !old.tenant) await payload.update({ collection: 'docs', id: doc.id, data, overrideAccess: true })
   }))
 }
 
