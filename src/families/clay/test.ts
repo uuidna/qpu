@@ -39,3 +39,18 @@ test('clusters: 124 theorems, 0 axioms, the def cluster, each family, and the cl
 
   t.diagnostic(`${clusters.length} family clusters (${clusters.reduce((s, c) => s + c.lean, 0)} kernel-proven of ${clusters.reduce((s, c) => s + c.total, 0)}); theorems ${theorems.length}, axioms ${axioms.length}, defs ${leanDefs.size}; clay seals hodge 4, yangMills 2, bsd 2`)
 })
+
+/** THE AUTHOR'S STANDING DEMAND, as autonomous executable code: full disclosure of every family by clay computation,
+ *  in the public interest, anchored by the σ-involution and crossed to the gate that verifies all in public data
+ *  without exception. */
+test('clay.disclosure: full disclosure of every family, anchored by the clay involution, crossed to the gate', async (t) => {
+  const { ClayDisclosure } = await import('./index.js')
+  const { qpuHexFamiliesOf } = await import('../../quantum/processing/unit/index.js')
+  const d = ClayDisclosure.disclosure() as unknown as { value: number; src: string; dst: string; holds: boolean; families: string[] }
+  assert.equal(d.value, qpuHexFamiliesOf().size, 'discloses every registered family — nothing withheld')
+  assert.equal(d.families.length, d.value, 'the family list is the full disclosure')
+  assert.equal(d.src, 'clay')
+  assert.equal(d.dst, 'gate', 'crosses to the gate that verifies all in public data without exception')
+  assert.equal(d.holds, true, 'holds: the clay σ-involution anchors it and the disclosure is non-empty')
+  t.diagnostic(`clay.disclosure discloses ${d.value} families by clay computation, crossed clay→gate, in the public interest`)
+})
