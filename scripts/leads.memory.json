@@ -35,6 +35,8 @@
     { "name": "verify-repo-and-deploy", "state": "open", "lead": "private uuidna/verify repo + verify.uuidna.com deploy — the source of the merged families" },
     { "name": "standard-license", "state": "standing", "lead": "CC-BY-NC-ND-4.0 for all uuidna work; third-party deps keep theirs" },
     { "name": "payload-deployment", "state": "crossed", "lead": "4-mode payload (browser/standalone/docker/k8s); payloadcms/website ported (payload.test)" },
-    { "name": "feedback_payload_templates", "state": "crossed", "lead": "always use payload templates; held by payload.test (conformance)" }
+    { "name": "feedback_payload_templates", "state": "crossed", "lead": "always use payload templates; held by payload.test (conformance)" },
+    { "name": "pi-primes-dna-uuid-streams", "state": "open", "lead": "digits of pi and the prime sequence as UUID/DNA-like streams; crosses prime, numbertheory, crypt, numen when developed" },
+    { "name": "merkaba-medical-scans", "state": "open", "lead": "merkaba rotation renders a digital scan as a multidimensional moving graph of hidden aspects; crosses merkaba, tomography, signal when developed" }
   ]
 }
