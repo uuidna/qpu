@@ -11,6 +11,9 @@
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
 
+// the law of this family: a compliance fusion holds only over lawful inputs — finite, non-negative scores
+const nat = (...xs: number[]): boolean => xs.every((x) => Number.isFinite(x) && x >= 0)
+
 // ============================================================================
 // AUDIT COMPUTATION MODEL
 // ============================================================================
@@ -195,7 +198,7 @@ export class AuditFormulas {
       formula: 'fusion = (gdpr + iso27001 + nist) / 3',
       value: (gdpr + iso27001 + nist) / 3,
       proof: 'GDPR legal requirement ∩ ISO27001 framework ∩ NIST best practices = comprehensive compliance'
-    }, true, { name: 'audit.gdprIsoNistFusion', params: [gdpr, iso27001, nist] })
+    }, nat(gdpr, iso27001, nist), { name: 'audit.gdprIsoNistFusion', params: [gdpr, iso27001, nist] })
   }
 
   /**
@@ -210,7 +213,7 @@ export class AuditFormulas {
       formula: 'healthcare_score = (hipaa * 0.4) + (soc2 * 0.35) + (nist * 0.25)',
       value: hipaa * 0.4 + soc2 * 0.35 + nist * 0.25,
       proof: 'HIPAA regulatory ∩ SOC2 audit scope ∩ NIST framework = healthcare compliance triad'
-    }, true, { name: 'audit.healthcareComplianceFusion', params: [hipaa, soc2, nist] })
+    }, nat(hipaa, soc2, nist), { name: 'audit.healthcareComplianceFusion', params: [hipaa, soc2, nist] })
   }
 
   /**
@@ -225,7 +228,7 @@ export class AuditFormulas {
       formula: 'payment_score = (pci_dss * 0.45) + (cis * 0.3) + (owasp * 0.25)',
       value: pciDss * 0.45 + cis * 0.3 + owasp * 0.25,
       proof: 'PCI-DSS requirements ∩ CIS hardening ∩ OWASP secure coding = payment card protection'
-    }, true, { name: 'audit.paymentSecurityFusion', params: [pciDss, cis, owasp] })
+    }, nat(pciDss, cis, owasp), { name: 'audit.paymentSecurityFusion', params: [pciDss, cis, owasp] })
   }
 
   /**
@@ -241,7 +244,7 @@ export class AuditFormulas {
       formula: 'supply_chain_risk = 1 / (1 + (slsa + sbom + sca + code_quality) / 4)',
       value: 1 / (1 + score),
       proof: 'Provenance ∩ BOM ∩ dependency scan ∩ code quality = supply chain risk reduction'
-    }, true, { name: 'audit.supplyChainRiskFormula', params: [slsa, sbom, sca, codeQuality] })
+    }, nat(slsa, sbom, sca, codeQuality), { name: 'audit.supplyChainRiskFormula', params: [slsa, sbom, sca, codeQuality] })
   }
 
   /**

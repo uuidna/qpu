@@ -3,6 +3,12 @@ import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/proces
 // the lattice names and the three formulas every number here is written in
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
+/** The STANDARD of this family: every path carries this proof on its receipt. */
+const PROOF = 'a multi-hop path across domains: a real chain of two or more hops whose transform composes to a finite value; the cross-domain formula network walked hop by hop'
+/** The LAW of this family: a path holds only as a real chain (two or more hops) whose value is a lawful finite number. */
+const nat = (...xs: number[]): boolean => xs.every((x) => Number.isFinite(x))
+const pathHolds = (p: { hops: string[]; value?: number }): boolean => p.hops.length >= 2 && nat(p.value ?? 0)
+
 export interface DomainPath {
   hops: string[]
   transform: (input: unknown) => unknown
@@ -14,6 +20,8 @@ export interface DomainPath {
   receipt?: string
   /** The hex program that returns this path: handle path.<name>, call then receipt. */
   hex?: string
+  /** Whether this path holds under the family law: a real chain (≥2 hops) with a finite value. */
+  holds?: boolean
 }
 
 export interface MultihopResult {
@@ -28,8 +36,8 @@ export interface MultihopResult {
  * @kind builder
  */
 export const domainPathOf = (p: DomainPath): DomainPath => {
-  const uuid = qpuContentUuidOf({ hops: p.hops, formula: p.formula })
-  return { ...p, uuid, receipt: qpuUuidReceiptOf(`path ${p.hops.join('>')}`, uuid, p.value ?? null).uuid }
+  const uuid = qpuContentUuidOf({ hops: p.hops, formula: p.formula, proof: PROOF })
+  return { ...p, uuid, holds: pathHolds(p), receipt: qpuUuidReceiptOf(`path ${p.hops.join('>')}`, uuid, p.value ?? null).uuid }
 }
 
 /**

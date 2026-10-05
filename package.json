@@ -593,6 +593,7 @@
     "./dist/families/ichthyology/index.js",
     "./dist/families/iconography/index.js",
     "./dist/families/idealism/index.js",
+    "./dist/families/identity/index.js",
     "./dist/families/image/index.js",
     "./dist/families/immigration/index.js",
     "./dist/families/immunology/index.js",
