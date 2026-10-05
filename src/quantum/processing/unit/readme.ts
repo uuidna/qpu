@@ -44,15 +44,15 @@ export const qpuDocsOf = onceOf(() => {
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()
   const fused = faces.faces * handle.kv.amplitudes
-  const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} qpu_quantum. GET ${unit.href} qpu_lean. POST ${unit.origin}/mcp tools/list. tools/call qpu_prove. Reads need no auth; storage writes need a Bearer token. JSON-LD.`
+  const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} quantum. GET ${unit.href} lean. POST ${unit.origin}/mcp tools/list. tools/call prove. Reads need no auth; storage writes need a Bearer token. JSON-LD.`
   const api = [
-    { method: 'GET' as const, path: '/', name: 'qpu_quantum', href: unit.origin, reading: `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.` },
-    { method: 'GET' as const, path: `/${unit.path}`, name: 'qpu_lean', href: unit.href, reading: `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.` },
+    { method: 'GET' as const, path: '/', name: 'quantum', href: unit.origin, reading: `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.` },
+    { method: 'GET' as const, path: `/${unit.path}`, name: 'lean', href: unit.href, reading: `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.` },
     { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: `tools ${mintOf(n) + mintOf(n)} in tools/list: ${mintOf(n)} doors and ${mintOf(n)} cybersecurity. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.` },
-    { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'JSON-RPC tools/list tools/call qpu_prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.' },
-    { method: 'GET' as const, path: '/cite', name: 'qpu_cite', href: `${unit.origin}/cite`, reading: 'MLA 8. when never. JSON-LD. No auth.' },
-    { method: 'GET' as const, path: '/message', name: 'qpu_message', href: `${unit.origin}/message`, reading: 'lanes = faces. hop involution. JSON-LD. No auth.' },
-    { method: 'POST' as const, path: '/message', name: 'qpu_message', href: `${unit.origin}/message`, reading: '202. hop involution. JSON-LD. No auth.' }]
+    { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'JSON-RPC tools/list tools/call prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.' },
+    { method: 'GET' as const, path: '/cite', name: 'cite', href: `${unit.origin}/cite`, reading: 'MLA 8. when never. JSON-LD. No auth.' },
+    { method: 'GET' as const, path: '/message', name: 'message', href: `${unit.origin}/message`, reading: 'lanes = faces. hop involution. JSON-LD. No auth.' },
+    { method: 'POST' as const, path: '/message', name: 'message', href: `${unit.origin}/message`, reading: '202. hop involution. JSON-LD. No auth.' }]
   const formulas = [...lean.rows, ...lean.cover, lean.climb].map((r) => ({
     identity: r.heading,
     formula: r.formula,
@@ -136,7 +136,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     "import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'",
     '',
     'const catalog = qpuMcpOf()                       // the MCP catalog: tools, schemas, install recipes',
-    "const circuit = await qpuMcpCallOf('qpu_quantum') // the running circuit as one JSON-LD document",
+    "const circuit = await qpuMcpCallOf('quantum') // the running circuit as one JSON-LD document",
     '```',
     '',
     `Or without installing: \`GET ${unit.origin}\`, or \`POST ${m.href}\` with JSON-RPC \`tools/list\` then \`tools/call\`. Do not import uuidna; this package stands alone. Source \`${lean.src}\`.`,
@@ -165,7 +165,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     '## Interface',
     '',
-    `Seven paths. Eight sealed MCP tools, plus eight cybersecurity morph tools listed on tools/list. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are qpu_lean and qpu_prove. \`{ man: true }\` is the theorem on the wire.`,
+    `Seven paths. Eight sealed MCP tools, plus eight cybersecurity morph tools listed on tools/list. Extra paths do not join that list. Not a ninth sealed tool. User guide is docs.inline on the unit. Theorems are lean and prove. \`{ man: true }\` is the theorem on the wire.`,
     '',
     row('Route', 'Tool', 'Reading'),
     row('---', '---', '---'),
@@ -296,7 +296,7 @@ export const qpuReadmeHolds = (text = qpuReadmeOf()): boolean => {
     text.includes('theorem crypto') &&
     text.includes('theorem temperature') &&
     text.includes('theorem qubits') &&
-    text.includes('Theorems are qpu_lean') &&
+    text.includes('Theorems are lean') &&
     text.includes(`${shorFactorOf()}`) &&
     text.includes(`Up to ${qpuCubeOf().bits * qpuFacesOf().faces} tools`) &&
     text.includes('crypto_rsa') &&

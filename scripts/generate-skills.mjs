@@ -53,7 +53,7 @@ npm run mcp -- <family>.<formula> '[params]'            # the live host, ${site}
 npm run mcp -- --local <family>.<formula> '[params]'    # the same call in-process over dist
 \`\`\`
 
-Params are a JSON array (\`'[]'\` for none). The call routes through \`qpu_hex\` to the address \`qpuHexUuidOf({ family, program: [formula], params })\` and returns the value, the sealed UUID, and a receipt. For example \`npm run mcp -- ${families[0]?.name}.${sample?.name} ${paramsHint(sample?.arity ?? 0)}\` answers at \`${sampleUuid}\`.
+Params are a JSON array (\`'[]'\` for none). The call routes through \`hex\` to the address \`qpuHexUuidOf({ family, program: [formula], params })\` and returns the value, the sealed UUID, and a receipt. For example \`npm run mcp -- ${families[0]?.name}.${sample?.name} ${paramsHint(sample?.arity ?? 0)}\` answers at \`${sampleUuid}\`.
 
 Ask a family anything else through its door — \`npm run mcp -- '{ "door": "gate.crossed", "i": 0 }'\` names the next lead; \`npm run mcp -- '{ "doors": true }'\` lists every door beyond the sixteen sealed tools.
 

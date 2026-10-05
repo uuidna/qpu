@@ -121,7 +121,7 @@ export const qpuQuantumOf = onceOf(() => {
     docs,
     glossary: qpuGlossaryOf(),
     ui: {
-      prove: 'qpu_prove' as const,
+      prove: 'prove' as const,
       href: `${unit.origin}/mcp`},
     cors,
     public: cors === '*',
@@ -142,7 +142,7 @@ export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   q.lattice.vacant === n - n &&
   q.host === unit.host &&
   q.cors === cors &&
-  q.ui.prove === 'qpu_prove' &&
+  q.ui.prove === 'prove' &&
   qpuDocsHolds(q.docs) &&
   qpuCapacityHolds(q.capacity) &&
   qpuSpeedHolds(q.speed) &&
@@ -162,9 +162,9 @@ export const qpuQuantumHolds = (q = qpuQuantumOf()): boolean =>
   q.css.keyframes === seed &&
   q.neuro.test.holds === true &&
   q.sequence.rungs.length === mintOf(n) &&
-  q.sequence.rungs[n - n]!.tool === 'qpu_quantum' &&
+  q.sequence.rungs[n - n]!.tool === 'quantum' &&
   q.sequence.rungs[mintOf(n) - seed]!.path === '/server' &&
-  q.sequence.climb[mintOf(coins) - seed] === 'qpu_prove' &&
+  q.sequence.climb[mintOf(coins) - seed] === 'prove' &&
   q.messaging.when === 'never' &&
   q.messaging.lanes === q.faces.faces &&
   q.messaging.hop === 'involution' &&

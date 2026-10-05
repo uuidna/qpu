@@ -103,7 +103,7 @@ test('hd: every formula of the family runs as a hex program, and the live host a
   }
   // the live host, through a sealed door: the same program at the same address
   const uuid = qpuHexUuidOf({ family: 'hd', program: ['gate'], params: [3020] })
-  const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'qpu_cite', arguments: { hex: uuid } } }), signal: AbortSignal.timeout(120000) })
+  const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'cite', arguments: { hex: uuid } } }), signal: AbortSignal.timeout(120000) })
   const body = (await r.json()) as { result?: { structuredContent?: { value?: unknown; holds?: boolean; denied?: string } } }
   const live = body.result?.structuredContent
   qpuUuidReceiptOf('hd live', qpuContentUuidOf(live ?? {}), { host })

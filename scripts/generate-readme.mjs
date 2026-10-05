@@ -176,8 +176,8 @@ Imagined by the MCP, not claimed: for every category of the APIs.guru registry, 
 APIs and crosses the words of their titles and operations with the words of every family's formulas; the families
 reached are what the unit is for that world (${num(uses.reached)} of ${num(uses.categories)} categories reach a family; ${num(uses.toImagine)} name a family to imagine).
 A request in words — a law firm, an auditor, a forensic expert — is imagined the same way by the cross formula
-\`qpu_data { source: 'imagine', about }\` (\`data.imagine\` at its hex address). The chat answers any question from the
-formula its words name: \`qpu_data { source: 'ask', about }\`.
+\`data { source: 'imagine', about }\` (\`data.imagine\` at its hex address). The chat answers any question from the
+formula its words name: \`data { source: 'ask', about }\`.
 
 ${usesTable}
 

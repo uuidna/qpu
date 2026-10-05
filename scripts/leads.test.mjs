@@ -181,11 +181,11 @@ test('a name holding two seats, and a ray left empty, are the faults worth repor
 })
 
 test('a door that needs a third party to hold is not self-sufficient, and says which failure it is', () => {
-  const sound = [{ name: 'qpu_prove', ok: true, holds: true }]
+  const sound = [{ name: 'prove', ok: true, holds: true }]
   assert.deepEqual(doorLeadsOf({ origin: 'o', doors: sound }), [], 'a door that answers and holds owes nothing')
 
   // THE QUIET FAILURE: it holds every day the network is good. That is what this repository paid for twice.
-  const proxy = doorLeadsOf({ origin: 'o', doors: [...sound, { name: 'qpu_cite', ok: true, holds: false }] })
+  const proxy = doorLeadsOf({ origin: 'o', doors: [...sound, { name: 'cite', ok: true, holds: false }] })
   assert.equal(proxy.length, 1)
   assert.match(proxy[0].what, /answers but does not hold when asked plainly/)
   assert.match(proxy[0].owes, /a proxy, not a unit/)
@@ -196,7 +196,7 @@ test('a door that needs a third party to hold is not self-sufficient, and says w
   assert.deepEqual(doorLeadsOf({ origin: 'o', doors: [{ name: 'x', ok: false, why: 'fetch failed' }] }), [])
 
   // AN OUTAGE IS NOT A DEFECT, and the two are not merged: one is a door served wrongly, the other not served.
-  const down = doorLeadsOf({ origin: 'o', doors: [{ name: 'qpu_lean', ok: false, why: '503' }] })
+  const down = doorLeadsOf({ origin: 'o', doors: [{ name: 'lean', ok: false, why: '503' }] })
   assert.equal(down.length, 1)
   assert.match(down[0].what, /did not answer \(503\)/)
   assert.equal(/does not hold/.test(down[0].what), false)

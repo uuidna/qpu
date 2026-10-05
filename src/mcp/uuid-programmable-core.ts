@@ -13,7 +13,7 @@ interface DeploymentGateStatus {
 }
 
 /**
- * Operations and workflows addressed by content UUID: executeByUUID, executeProgram (a list of UUIDs, each receipt the next referrer), runDeploymentGate (every operation resolves and qpu_prove holds) and release checks that read npm, GitHub and Zenodo.
+ * Operations and workflows addressed by content UUID: executeByUUID, executeProgram (a list of UUIDs, each receipt the next referrer), runDeploymentGate (every operation resolves and prove holds) and release checks that read npm, GitHub and Zenodo.
  * @wing receipts
  * @kind class
  */

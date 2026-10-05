@@ -39,7 +39,7 @@ test('the unit core is node-free: it computes everything itself', () => {
 
 test('qpu crypto is its own: node:crypto is never imported in the runtime', () => {
   const offenders = walk('src').filter((f) => !f.endsWith('.test.ts')).filter((f) => nodeOf(read(f)).includes('node:crypto'))
-  assert.deepEqual(offenders, [], `node:crypto imported by ${offenders.join(', ')} — crypto is qpu_crypt / Web Crypto, no node`)
+  assert.deepEqual(offenders, [], `node:crypto imported by ${offenders.join(', ')} — crypto is crypt / Web Crypto, no node`)
 })
 
 test('port all like node: every node builtin has a qpu port or a declared lead', async (t) => {
@@ -59,7 +59,7 @@ test('port all dependencies: every package.json dependency is a family in the po
   const pkg = JSON.parse(read('package.json'))
   const deps = [...new Set([...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.devDependencies ?? {})])]
   const missing = deps.filter((d) => !(d in QPU_DEPS))
-  assert.deepEqual(missing, [], `dependencies not ported into the graph: ${missing.join(', ')} — add each to QPU_DEPS (domain + relates); ask the MCP how: qpu_data { source: 'ask', about: 'how to port' }`)
+  assert.deepEqual(missing, [], `dependencies not ported into the graph: ${missing.join(', ')} — add each to QPU_DEPS (domain + relates); ask the MCP how: data { source: 'ask', about: 'how to port' }`)
   const extra = Object.keys(QPU_DEPS).filter((d) => !deps.includes(d))
   assert.deepEqual(extra, [], `QPU_DEPS names ${extra.join(', ')} not in package.json — the graph drifted past the manifest; remove them`)
   const ported = deps.filter((d) => !QPU_DEPS[d].lead)
@@ -81,7 +81,7 @@ test('the gate blocks external dependencies: the compute core imports only node:
   assert.deepEqual(
     offenders,
     [],
-    `external dependency in the compute core:\n  ${offenders.join('\n  ')}\n→ port it into qpu, do not depend on it. Ask the MCP how: qpu_data { source: 'ask', about: 'how to port' } (src/quantum/processing/unit/porting.ts).`,
+    `external dependency in the compute core:\n  ${offenders.join('\n  ')}\n→ port it into qpu, do not depend on it. Ask the MCP how: data { source: 'ask', about: 'how to port' } (src/quantum/processing/unit/porting.ts).`,
   )
 })
 

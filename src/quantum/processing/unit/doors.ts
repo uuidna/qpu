@@ -232,7 +232,7 @@ export const qpuImproveOf = onceOf(() => {
     durability: { rounds: durability.rounds, persist: durability.persist, isolate: durability.isolate, holds: durability.holds },
     winner: 'call' as const,
     unlocked: quantum.holds,
-    next: ['qpu_compete', 'qpu_prove'] as const,
+    next: ['compete', 'prove'] as const,
     documentation,
     holds,
   }
@@ -255,8 +255,8 @@ export const qpuImproveHolds = (i = qpuImproveOf()): boolean =>
   i.durability.persist === true &&
   i.durability.isolate === true &&
   i.compression.holds === true &&
-  i.next[n - n] === 'qpu_compete' &&
-  i.next[seed] === 'qpu_prove'
+  i.next[n - n] === 'compete' &&
+  i.next[seed] === 'prove'
 
 /**
  * Two teams of seven agents run the lattice walk: steps, challenges, sandbox tools and the next door to call.
@@ -354,7 +354,7 @@ export const qpuTrainOf = onceOf(() => {
     quality: call.quality > read.quality ? ('call' as const) : ('read' as const),
     speed: call.speed > read.speed ? ('call' as const) : ('read' as const),
     security: call.security > read.security ? ('call' as const) : ('read' as const)}
-  const nextTasks = ['qpu_improve', 'qpu_compete'] as const
+  const nextTasks = ['improve', 'compete'] as const
   const dry = qpuDryOf(genesis)
   const holds =
     efficiency.holds === true &&
@@ -468,8 +468,8 @@ export const qpuTrainHolds = (t = qpuTrainOf()): boolean =>
   t.vm.holds === true &&
   t.vm.agents === coins * t.divide.agents &&
   qpuSandboxDurabilityHolds() &&
-  t.next[n - n] === 'qpu_improve' &&
-  t.next[seed] === 'qpu_compete' &&
+  t.next[n - n] === 'improve' &&
+  t.next[seed] === 'compete' &&
   qpuDryHolds(t.dry)
 
 /**
@@ -498,7 +498,7 @@ export const qpuProveOf = onceOf(() => {
   const ui = {
     href: unit.origin,
     mcp: `${unit.origin}/mcp`,
-    door: 'qpu_prove' as const,
+    door: 'prove' as const,
     inline: lean.src.endsWith('/index.lean')}
   const entangle = {
     theorem: 'entangle' as const,
@@ -687,7 +687,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.intelligence.research === 'free online' &&
   qpuNeuroHolds(p.neuro) &&
   p.neuro.test.holds === true &&
-  p.ui.door === 'qpu_prove' &&
+  p.ui.door === 'prove' &&
   p.theorems.length === p.lean.rows.length + p.lean.cover.length + seed &&
   p.theorems.some((r) => r.heading === 'entangle' && r.holds) &&
   p.theorems.some((r) => r.heading === 'two_coins_make_a_coil' && r.holds) &&

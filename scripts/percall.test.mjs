@@ -48,20 +48,20 @@ test('cold and warm are measured apart, because averaging a miss with a hit desc
   /* First call builds and memoises; the second is served. A single figure would report 550 as "the cost of a
    * call to this door", which is true of neither the first nor any that follow. */
   const { unit, worker } = unitOf([{ computations: 1000 }, { computations: 100 }])
-  const row = await doorCostOf(unit, worker, 'qpu_prove', {})
+  const row = await doorCostOf(unit, worker, 'prove', {})
   assert.equal(row.present, true)
   assert.equal(row.cold, 1000)
   assert.equal(row.warm, 100)
   assert.notEqual(row.cold, row.warm)
 
   // A DOOR WITH NO MEMO pays the same twice, which must read as equal and not as a measurement error.
-  const flat = await doorCostOf(...Object.values(unitOf([{ computations: 500 }, { computations: 500 }])), 'qpu_improve', {})
+  const flat = await doorCostOf(...Object.values(unitOf([{ computations: 500 }, { computations: 500 }])), 'improve', {})
   assert.equal(flat.cold, flat.warm)
 })
 
 test('a door that is absent is absent, not free', async () => {
   const { unit, worker } = unitOf([null])
-  const row = await doorCostOf(unit, worker, 'qpu_future', {})
+  const row = await doorCostOf(unit, worker, 'future', {})
   assert.equal(row.present, false)
   assert.match(row.why, /answered 500/)
   assert.equal(row.cold, undefined, 'no cost is reported for a call that did not happen')

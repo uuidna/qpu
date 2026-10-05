@@ -6,7 +6,7 @@ import { crossFormulaOf } from '../families/cross/index.js'
  *  reads the registry, reads an API's document, and derives its operations (qpuSchemaMethodsOf). A request is then a
  *  hex program of the family `api`: call(i, j, s) — the i-th API of the registry, its j-th operation, the s-th
  *  parameter choice — three 16-bit naturals in one RFC 9562 v8 UUID. Nothing names an API by hand: the registry
- *  orders them, the document orders the operations, the parameters are content-addressed. The fused door `qpu_api`
+ *  orders them, the document orders the operations, the parameters are content-addressed. The fused door `api`
  *  lists, resolves and calls through that address. Reads only (GET): reads need no auth. */
 
 const REGISTRY = 'https://api.apis.guru/v2/list.json'
@@ -208,7 +208,7 @@ export const apiSearchOf = async (words: string[], take = 14, from = 0) => {
   return { kind: 'api-search' as const, words: terms, matched: named.length, from, scanned, read: read.length, readable: read.filter((x) => x.free !== undefined).length, apis: read, more: named.slice(scanned).map((x) => x.api), ...(scanned < named.length ? { next: scanned } : {}) }
 }
 
-qpuMcpFuseOf('qpu_api', {
+qpuMcpFuseOf('api', {
   description: "Every public API as an address: {} the registry and how to address it; { api } (name or index) its operations; { api, operation, params } makes that read through api.call(i, j, s) and returns the reading with its hex address; { walk: true, from, take } walks a slice of the registry (fused: document read; used: a read made); { search } finds APIs by words in their names, titles, categories and operations.",
   inputSchema: { type: 'object', properties: { api: { type: ['string', 'integer'] }, operation: { type: 'integer' }, params: { type: 'object' }, walk: { type: 'boolean' }, from: { type: 'integer' }, take: { type: 'integer' }, search: { type: ['string', 'array'], items: { type: 'string' } } } },
   run: async (a) => {

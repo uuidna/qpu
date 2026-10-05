@@ -8,7 +8,7 @@
  *   node scripts/receipt.mjs gate commit|push   gate-receipt.json    gate.commit(i) for the staged families / gate.push(from) slice by slice
  *   node scripts/receipt.mjs next               next-receipt.json    data.research(f) ∀f, data.discover(n), data.perspectives(n): the superpositions, tested or not
  *   node scripts/receipt.mjs uses               uses-receipt.json    data.imagine(c) for every registry category
- *   node scripts/receipt.mjs api                api-receipt.json     qpu_api { walk } slice by slice: every API fused and used
+ *   node scripts/receipt.mjs api                api-receipt.json     api { walk } slice by slice: every API fused and used
  *   node scripts/receipt.mjs clay               clay-receipt.json    clay.pass(faces): the six seals, their involutions, every related formula in one pass; OEIS and the record per problem
  *   node scripts/receipt.mjs registry           src/mcp/registry.ts  the APIs.guru list, reduced to what the door needs
  *   QPU_HOST=http://localhost:8787 …            another host
@@ -30,8 +30,8 @@ const call = async (name, args, again = 0) => {
   return body.result.structuredContent ?? {}
 }
 /** A hex program at its address on the host; the formula's own reading rides with the last step. */
-const hex = async (family, program, params = []) => { const sc = await call('qpu_cite', { hex: { family, program: [program], params } }); return { ...sc, ...(sc.steps?.at?.(-1)?.reading ?? {}) } }
-const families = async () => (await call('qpu_cite', { doors: true })).formulas?.map((f) => f.name.split('.')[0]).filter((f, i, a) => a.indexOf(f) === i && !['qpu', 'crypto', 'api', 'data', 'gate'].includes(f)).sort() ?? []
+const hex = async (family, program, params = []) => { const sc = await call('cite', { hex: { family, program: [program], params } }); return { ...sc, ...(sc.steps?.at?.(-1)?.reading ?? {}) } }
+const families = async () => (await call('cite', { doors: true })).formulas?.map((f) => f.name.split('.')[0]).filter((f, i, a) => a.indexOf(f) === i && !['qpu', 'crypto', 'api', 'data', 'gate'].includes(f)).sort() ?? []
 const faces = 14
 /** SPLIT, NOT SEQUENCE — one primitive for every family walk. The items are run through a coordinated pool of `faces`
  *  workers, so the wall time is the slowest item, not their sum; results keep input order, so a receipt is the same
@@ -136,7 +136,7 @@ if (kind === 'registry') {
   for (const p of pass.problems ?? []) {
     const arity = p.hex ? (p.hex.split('-')[1]?.replace(/0+$/, '').length ?? 1) : 1
     const looked = []
-    for (const fixed of arity >= 2 ? [[1], [2], [3], [5], [vertices]] : [[]]) { const s = await call('qpu_data', { source: 'sequence', family: 'clay', formula: p.name, fixed }); looked.push(s.reading?.oeis && s.reading.oeis !== 'none' ? `${s.reading.oeis}` : s.warning ? 'too short' : 'none') }
+    for (const fixed of arity >= 2 ? [[1], [2], [3], [5], [vertices]] : [[]]) { const s = await call('data', { source: 'sequence', family: 'clay', formula: p.name, fixed }); looked.push(s.reading?.oeis && s.reading.oeis !== 'none' ? `${s.reading.oeis}` : s.warning ? 'too short' : 'none') }
     const oeis = looked.filter((x) => /^A\d+/.test(x))
     // two levels, and nothing else: the seal (σ∘σ = id, its fixed point) is VERIFIED when recomputed at its address;
     // the Millennium claim itself is UNVERIFIED — not accepted by the Clay Institute, no Lean theorem states it
@@ -148,12 +148,12 @@ if (kind === 'registry') {
   // fired through a coordinated pool of `faces` workers rather than one wave after another. The wall time is the
   // slowest slice, not their sum (the sequential walk was 415 s). A read erases no bit, so by Landauer the walk's
   // temperature is zero — time and temperature both near zero.
-  const first = await call('qpu_api', { walk: true, from: 0, take: faces })
+  const first = await call('api', { walk: true, from: 0, take: faces })
   const listed = first.listed ?? 0
   const cap = process.argv.includes('--take') ? Number(process.argv[process.argv.indexOf('--take') + 1]) : listed
   const offsets = []
   for (let from = faces; from < Math.min(listed, cap); from += faces) offsets.push(from)
-  const waves = await pool(offsets, (from) => call('qpu_api', { walk: true, from, take: faces }).catch(() => ({ rows: [] })))
+  const waves = await pool(offsets, (from) => call('api', { walk: true, from, take: faces }).catch(() => ({ rows: [] })))
   const rows = []
   for (const w of [first, ...waves]) for (const r of w.rows ?? []) rows.push({ name: r.api, pass: r.used === true, value: `${r.fused ? `${r.operations} operations` : 'not fused'} · ${r.used ? `${r.status} ${r.url}` : r.why ?? ''}`, receipt: r.receipt ?? '' })
   const statuses = rows.filter((r) => r.pass).reduce((m, r) => ({ ...m, [r.value.split(' · ')[1]?.split(' ')[0] ?? '?']: (m[r.value.split(' · ')[1]?.split(' ')[0] ?? '?'] ?? 0) + 1 }), {})

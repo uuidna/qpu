@@ -45,7 +45,7 @@ export function RunCard({ uuid, run }: { uuid: string; run: Run }) {
         ) : null}
         {run.receipt ? <p className="font-mono text-xs text-muted-foreground">receipt {run.receipt}</p> : null}
         <p className="text-xs text-muted-foreground">
-          Permalink <Link href={`/${uuid}`} className="font-mono underline">/{uuid}</Link> · MCP <code className="font-mono">tools/call qpu_hex {'{'} "uuid": "{uuid}" {'}'}</code>
+          Permalink <Link href={`/${uuid}`} className="font-mono underline">/{uuid}</Link> · MCP <code className="font-mono">tools/call hex {'{'} "uuid": "{uuid}" {'}'}</code>
         </p>
       </CardContent>
     </Card>

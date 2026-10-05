@@ -4,7 +4,7 @@
  *
  *   npm run mcp -- list [words]                     the tools, filtered by words in name or description
  *   npm run mcp -- <tool> ['<json>']                tools/call; prints structuredContent (else the content)
- *   npm run mcp -- <family>.<formula> ['[params]']  a family formula, through qpu_hex
+ *   npm run mcp -- <family>.<formula> ['[params]']  a family formula, through hex
  *   --all          follow `next` (it replaces `from`, or the first param) until the reading has none
  *   --url=<door>   another door (default: package.json homepage + /mcp)
  *   --local        the same call in-process over dist, labelled "computed locally"
@@ -56,9 +56,9 @@ const callOf = async (name: string, args: Record<string, unknown>) => {
   if (r.isError) process.exitCode = 1
   return r
 }
-// a family formula is asked through qpu_hex; its params are a JSON array
+// a family formula is asked through hex; its params are a JSON array
 const asked = (tool: string, raw?: unknown): [string, Record<string, unknown>] => {
-  if (tool.includes('.') && !tool.startsWith('qpu_')) { const [family, formula] = tool.split('.'); return ['qpu_hex', { family, program: [formula], params: raw ?? [] }] }
+  if (tool.includes('.') && !tool.startsWith('qpu_')) { const [family, formula] = tool.split('.'); return ['hex', { family, program: [formula], params: raw ?? [] }] }
   return [tool, (raw ?? {}) as Record<string, unknown>]
 }
 try {

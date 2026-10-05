@@ -81,7 +81,7 @@ test('live qpu.uuidna.com', async (t) => {
     const called = await liveFetch(`${live}/mcp`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'qpu_quantum', arguments: {} } }),
+      body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'quantum', arguments: {} } }),
     })
     assert.equal(listed.status, 200)
     assert.equal(called.status, 200)
@@ -99,7 +99,7 @@ test('live qpu.uuidna.com', async (t) => {
     const shown = call.result.structuredContent ?? call.result
     assert.deepEqual(
       catalog.result.tools.slice(0, 8).map((t) => t.name),
-      ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'],
+      ['quantum', 'lean', 'cite', 'train', 'forge', 'improve', 'compete', 'prove'],
     )
     assert.equal(shown.holds, true)
     assert.equal(shown.fused, local.fused)
@@ -108,7 +108,7 @@ test('live qpu.uuidna.com', async (t) => {
     assert.equal(shown.docs, undefined)
   })
   await t.test('chat uses every sealed door', async () => {
-    const names = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const
+    const names = ['quantum', 'lean', 'cite', 'train', 'forge', 'improve', 'compete', 'prove'] as const
     const crypto = ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'] as const
     const discovered = await liveFetch(`${live}/mcp`, {
       method: 'POST',

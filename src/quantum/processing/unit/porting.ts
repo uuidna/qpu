@@ -22,18 +22,18 @@ export const QPU_PORTS: Record<string, Port> = {
   path: { domain: 'storage', relates: ['fs', 'url'], how: 'an address is the path: handle/row, not a filesystem path' },
   sqlite: { domain: 'storage', relates: ['fs', 'db'], how: 'qpuDocDbOf / the db family — the store, content-addressed' },
   // net domain — readings and the edge, never a raw socket
-  http: { domain: 'net', relates: ['https', 'http2', 'net', 'url', 'stream', 'dns'], how: 'the fetch handler serves; qpu_data reads a host as a reading with agrees/holds' },
+  http: { domain: 'net', relates: ['https', 'http2', 'net', 'url', 'stream', 'dns'], how: 'the fetch handler serves; data reads a host as a reading with agrees/holds' },
   https: { domain: 'net', relates: ['http', 'tls'], how: 'as http — one fetch, bounded, counted, caught' },
   http2: { domain: 'net', relates: ['http', 'tls', 'stream'], how: 'as http — the edge multiplexes' },
   net: { domain: 'net', relates: ['tls', 'dns', 'dgram', 'stream'], how: 'a reading, not a raw socket' },
-  dns: { domain: 'net', relates: ['net'], how: 'resolve as a reading through qpu_data', lead: true },
+  dns: { domain: 'net', relates: ['net'], how: 'resolve as a reading through data', lead: true },
   dgram: { domain: 'net', relates: ['net'], how: 'no datagram port yet', lead: true },
   url: { domain: 'net', relates: ['path', 'querystring'], how: 'URL — a Web value; an address is the unit’s own url' },
   querystring: { domain: 'net', relates: ['url'], how: 'URLSearchParams — a Web value' },
   punycode: { domain: 'net', relates: ['url'], how: 'deprecated in node; only if a family needs it', lead: true },
   // crypt domain — qpu's own crypto
-  crypto: { domain: 'crypt', relates: ['tls', 'hash', 'buffer'], how: 'qpu_crypt / Web Crypto (src/core/crypt.ts) — sha256, hkdf, ed25519, x25519, aead; no node:crypto' },
-  tls: { domain: 'crypt', relates: ['net', 'crypto'], how: 'qpu_crypt seals; the edge terminates TLS' },
+  crypto: { domain: 'crypt', relates: ['tls', 'hash', 'buffer'], how: 'crypt / Web Crypto (src/core/crypt.ts) — sha256, hkdf, ed25519, x25519, aead; no node:crypto' },
+  tls: { domain: 'crypt', relates: ['net', 'crypto'], how: 'crypt seals; the edge terminates TLS' },
   // compute domain — the host and the clock, read never driven
   os: { domain: 'compute', relates: ['process', 'fs'], how: 'compute_machine — cores, load, memory as readings' },
   process: { domain: 'compute', relates: ['os', 'child_process'], how: 'the unit reads its own context (compute_context), it does not fork the host' },
@@ -48,7 +48,7 @@ export const QPU_PORTS: Record<string, Port> = {
   console: { domain: 'stdio', relates: ['readline', 'tty', 'process'], how: 'the unit writes through its own stdio adapter' },
   readline: { domain: 'stdio', relates: ['console', 'tty', 'stream'], how: 'the unit reads a line through its own stdio adapter' },
   tty: { domain: 'stdio', relates: ['console', 'readline'], how: 'as readline/console — one stdio port' },
-  repl: { domain: 'stdio', relates: ['readline', 'vm'], how: 'the MCP is the repl — ask qpu_data { ask }', lead: true },
+  repl: { domain: 'stdio', relates: ['readline', 'vm'], how: 'the MCP is the repl — ask data { ask }', lead: true },
   // sandbox domain — running code, never a forked host
   child_process: { domain: 'sandbox', relates: ['process', 'worker_threads', 'stream'], how: 'run in a sandbox, not a forked host process' },
   worker_threads: { domain: 'sandbox', relates: ['child_process', 'stream'], how: 'an isolate is the worker' },
@@ -155,7 +155,7 @@ export const QPU_DEPS: Record<string, Port> = {
 export const PORTING_STEPS: readonly string[] = [
   'Name it one lowercase word (the rule.named rule): anything ported is a FAMILY that crosses to a DOMAIN and relates to other families (its neighbours in the open graph) — never a flat door and never a package.',
   'Express what it computes as formulas — { name, params, expr } data (expr.ts), or a registered formula crossing to its dst; each becomes a hex program at an address the one engine runs, holds-checks and receipts.',
-  'If it reads the outside (a host, a dataset, an API), add it as a qpu_data SOURCE — a reading with agrees/holds, sliced by { from, take } — never a dependency.',
+  'If it reads the outside (a host, a dataset, an API), add it as a data SOURCE — a reading with agrees/holds, sliced by { from, take } — never a dependency.',
   'If it is a host capability (fs, http, os, process, child_process), answer it through a PORT door (storage, server, stdio, sandbox, install), guarded, through the MCP — never a bare import in the core.',
   'Add the file; the registry regenerates from the filesystem (no hand lists). Do not edit a list.',
   'The gate crosses it: an uncrossed formula is a lead (gate.crossed), not a block. Develop the lead; never take the dependency.',

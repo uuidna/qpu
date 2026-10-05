@@ -32,7 +32,7 @@ import { pathToFileURL } from 'node:url'
 import { join } from 'node:path'
 import { tenOf } from './lattice-values.mjs'
 
-const DOORS = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove']
+const DOORS = ['quantum', 'lean', 'cite', 'train', 'forge', 'improve', 'compete', 'prove']
 
 /** The two ledgers this package counts as computing, read at a point in time. */
 export const markOf = (unit) => ({

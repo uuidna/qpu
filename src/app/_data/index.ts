@@ -113,7 +113,7 @@ export const searchOf = async (q: string): Promise<Search[]> =>
   q ? ((await (await payloadOf()).find({ collection: 'search', where: { title: { like: q } }, limit: 30, depth: 1, sort: '-priority' })).docs as Search[]) : []
 
 export type ReceiptRow = { name: string; pass: boolean; value: string; receipt: string }
-/** The committed discovery receipt (qpu_discover over every live source), split by what each row records. */
+/** The committed discovery receipt (discover over every live source), split by what each row records. */
 export const discoveryOf = () => {
   const rows = discovery.rows as ReceiptRow[]
   const by = (prefix: string) => rows.filter((r) => r.name.startsWith(prefix))

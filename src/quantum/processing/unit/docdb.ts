@@ -390,7 +390,7 @@ export type D1Like = {
  * @wing storage
  * @kind store
  */
-export const d1DocStore = (d1: D1Like, table = 'qpu_docs'): DocStore => {
+export const d1DocStore = (d1: D1Like, table = 'docs'): DocStore => {
   let ready: Promise<unknown> | undefined
   const init = () => (ready ??= d1.prepare(`CREATE TABLE IF NOT EXISTS ${table} (k TEXT PRIMARY KEY, v TEXT NOT NULL)`).bind().run())
   return {

@@ -111,7 +111,7 @@ export const qpuToolsOf = onceOf(() => {
   const trainMan = qpuManOf(
     names[n],
     'Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.',
-    `tools/call ${names[n]} returns steps.next.door (the tool an autonomous agent calls next), steps.todo (faces to repair first), steps.walk (all fourteen faces, scanner then radar), teams[] and winner. { live: true } learn occupancy. { sequence: true } then qpu_improve then qpu_compete then qpu_prove. No auth.`,
+    `tools/call ${names[n]} returns steps.next.door (the tool an autonomous agent calls next), steps.todo (faces to repair first), steps.walk (all fourteen faces, scanner then radar), teams[] and winner. { live: true } learn occupancy. { sequence: true } then improve then compete then prove. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n]))
   const forgeMan = qpuManOf(
@@ -123,19 +123,19 @@ export const qpuToolsOf = onceOf(() => {
   const improveMan = qpuManOf(
     names[n + coins],
     `Improve by doubling: next = fused + fused = ${capacity.fused + capacity.fused}, the next capacity rung, with before and after readings of quality, speed, and throughoutput (the total count of fused amplitudes; throughput is that divided by the tokens of the reply). The numbers are counts of amplitudes. next = fused + fused.`,
-    `tools/call ${names[n + coins]} returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_train. Before qpu_compete. No auth.`,
+    `tools/call ${names[n + coins]} returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After train. Before compete. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + coins]))
   const competeMan = qpuManOf(
     names[n + n],
-    'Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls qpu_prove. theorem next_fused. throughoutput is the total of fused amplitudes served; throughput is that per token of reply.',
-    `tools/call ${names[n + n]} returns winner.{quality,speed,security}, teams[] with scores, and the axes. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After qpu_improve. Winner calls qpu_prove. No auth.`,
+    'Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls prove. theorem next_fused. throughoutput is the total of fused amplitudes served; throughput is that per token of reply.',
+    `tools/call ${names[n + n]} returns winner.{quality,speed,security}, teams[] with scores, and the axes. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After improve. Winner calls prove. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[n + n]))
   const proveMan = qpuManOf(
     names[mintOf(n) - seed],
     `Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
-    `tools/call ${names[mintOf(n) - seed]} returns theorems[] (each with holds), shor.factors, receipts, source.fold, evidence. theorem shor. theorem crypto. ${shorFactorOf()}. { live: true } sequence then prove. { sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. fetch Request Response. Source ${unit.fuse.lean}. After qpu_compete. No auth.`,
+    `tools/call ${names[mintOf(n) - seed]} returns theorems[] (each with holds), shor.factors, receipts, source.fold, evidence. theorem shor. theorem crypto. ${shorFactorOf()}. { live: true } sequence then prove. { sequence: true } train then improve then compete then prove. fetch Request Response. Source ${unit.fuse.lean}. After compete. No auth.`,
     `${unit.origin}/mcp`,
     seeOf(names[mintOf(n) - seed]))
   const proveSchema = {
@@ -143,13 +143,13 @@ export const qpuToolsOf = onceOf(() => {
     properties: {
       man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
       live: { type: 'boolean', description: '{ live: true } sequence then prove. fetch Request Response.' },
-      sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' }}} as const
+      sequence: { type: 'boolean', description: '{ sequence: true } train then improve then compete then prove. Live. Memory.' }}} as const
   const competeSchema = {
     type: 'object',
     properties: {
       man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
       live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
-      sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' },
+      sequence: { type: 'boolean', description: '{ sequence: true } train then improve then compete then prove. Live. Memory.' },
       team: { type: 'string', description: 'read or call. Omit for both teams.' }}} as const
   const forgeSchema = {
     type: 'object',
@@ -289,7 +289,7 @@ export const qpuMcpOf = onceOf(() => {
       encrypt: { kind: encrypt.kind, theorem: encrypt.theorem, identity: encrypt.identity, holds: encrypt.holds },
       tools: cybersecurity},
     prove: {
-      ui: { href: unit.origin, mcp: href, door: 'qpu_prove' as const },
+      ui: { href: unit.origin, mcp: href, door: 'prove' as const },
       cern: { faces: faces.faces },
       coil: { theorem: 'two_coins_make_a_coil' as const, faces: faces.faces },
       entangle: { product: seed * seed === (n - n) * (n - n), pairs: faces.rays },
@@ -373,7 +373,7 @@ export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
 }
 
 /**
- * Every current error and warning at once: each fused door's own checks read through the registry (qpu_data's every
+ * Every current error and warning at once: each fused door's own checks read through the registry (data's every
  * source), each classified with where, why and what resolves it. Warnings (the network out of reach) never count
  * against holds.
  * @wing agents
@@ -382,7 +382,7 @@ export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
 export const qpuMcpErrorsOf = async (env?: QpuEnv, from = n - n, take = qpuFacesOf().faces) => {
   type Row = { where: string; why: string; reading?: unknown; resolve: string }
   const errors: Row[] = [], warnings: Row[] = []
-  const data = FUSED_TOOLS.get('qpu_data')
+  const data = FUSED_TOOLS.get('data')
   let total = n - n
   if (data) {
     const listed = (await data.run({ source: 'all' }, env)) as { sources?: { source: string; args: Record<string, unknown>; label: string }[] }
@@ -554,14 +554,14 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
     m.href === `${unit.origin}/mcp` &&
     qpuSandboxDurabilityHolds() &&
     m.tools.length === mintOf(n) &&
-    m.tools[n - n]?.name === 'qpu_quantum' &&
-    m.tools[seed]?.name === 'qpu_lean' &&
-    m.tools[coins]?.name === 'qpu_cite' &&
-    m.tools[n]?.name === 'qpu_train' &&
-    m.tools[n + seed]?.name === 'qpu_forge' &&
-    m.tools[n + coins]?.name === 'qpu_improve' &&
-    m.tools[n + n]?.name === 'qpu_compete' &&
-    m.tools[mintOf(n) - seed]?.name === 'qpu_prove' &&
+    m.tools[n - n]?.name === 'quantum' &&
+    m.tools[seed]?.name === 'lean' &&
+    m.tools[coins]?.name === 'cite' &&
+    m.tools[n]?.name === 'train' &&
+    m.tools[n + seed]?.name === 'forge' &&
+    m.tools[n + coins]?.name === 'improve' &&
+    m.tools[n + n]?.name === 'compete' &&
+    m.tools[mintOf(n) - seed]?.name === 'prove' &&
     m.tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name) &&
     m.cybersecurity.listed === true &&
     m.cybersecurity.sealed === false &&
@@ -590,7 +590,7 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
       const t = raw as { name: string; title?: unknown; inputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean; idempotentHint?: boolean; openWorldHint?: boolean } }
       const a = t.annotations ?? {}
       const live = t.inputSchema?.properties?.live !== undefined
-      return a.destructiveHint === false && a.readOnlyHint === (t.name !== 'qpu_forge') && a.openWorldHint === live && a.idempotentHint === (a.readOnlyHint === true && live === false) && typeof t.title === 'string' && t.title.length > n - n && t.title !== t.name
+      return a.destructiveHint === false && a.readOnlyHint === (t.name !== 'forge') && a.openWorldHint === live && a.idempotentHint === (a.readOnlyHint === true && live === false) && typeof t.title === 'string' && t.title.length > n - n && t.title !== t.name
     }) &&
     jsonldHoldsOf(m) &&
     m['@type'] === 'WebAPI' &&

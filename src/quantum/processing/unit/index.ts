@@ -531,14 +531,14 @@ export const qpuMcpFuseOf = (name: string, tool: FusedTool): string => {
 /** Every fused tool with its contract: the catalogue a client reads to call what tools/list does not show. */
 export const qpuMcpFusedOf = () => [...FUSED_TOOLS].map(([name, t]) => ({ name, description: t.description, inputSchema: t.inputSchema }))
 /**
- * Every live public dataset the fused qpu_data door checks, read now and carried by qpu_prove { live: true }: the
+ * Every live public dataset the fused data door checks, read now and carried by prove { live: true }: the
  * proof's live block names what agrees with the unit, what differs and what could not be reached. A reading is a
  * report, not a gate: a stale registry or an unreachable host leaves holds alone (no locks).
  * @wing agents
  * @kind builder
  */
 export const qpuDataLiveOf = async (env?: QpuEnv, from = n - n, take = qpuFacesOf().faces) => {
-  const door = FUSED_TOOLS.get('qpu_data')
+  const door = FUSED_TOOLS.get('data')
   if (!door) return { kind: 'data-live' as const, sources: n - n, agree: n - n, differ: [] as string[], unreachable: [] as string[], rows: [] as { label: string; agrees: boolean; reading: unknown }[], holds: false }
   const listed = (await door.run({ source: 'all' }, env)) as { sources?: { source: string; args: Record<string, unknown>; label: string; checks: string }[] }
   const all = listed.sources ?? []
@@ -584,8 +584,8 @@ const liveSchema = {
   properties: {
     man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
     live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
-    sequence: { type: 'boolean', description: '{ sequence: true } qpu_train then qpu_improve then qpu_compete then qpu_prove. Live. Memory.' },
-    from: { type: 'integer', description: '{ live: true, from } on qpu_train: fuse the registry window starting at from; next says where the following window starts.' }}} as const
+    sequence: { type: 'boolean', description: '{ sequence: true } train then improve then compete then prove. Live. Memory.' },
+    from: { type: 'integer', description: '{ live: true, from } on train: fuse the registry window starting at from; next says where the following window starts.' }}} as const
 
 /** theorem cube, both ways: bits as a product of vertices and hexbit, and each of those as a doubling. */
 export const qpuCubeHolds = (c = qpuCubeOf()): boolean =>
@@ -1125,7 +1125,7 @@ export const qpuDryOf = (genesis = qpuGenesisOf()) => {
     speed: 'coordinated' as const,
     coordinated: coins === seed + seed,
     entropy: occupancies.join(' ').includes('random'),
-    sealed: (toolNames as readonly string[]).includes('qpu_dry'),
+    sealed: (toolNames as readonly string[]).includes('dry'),
     teams: coins,
     occupancy,
     domains: genesis.domains,
@@ -3434,7 +3434,7 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
   name,
   // A display title distinct from the machine name (MCP spec; GitHub and Cloudflare both ship one): the model keys
   // off `name`, a UI shows the title. Derived from the name's own word, not a hand-kept list — the door after its
-  // prefix, capitalised (qpu_quantum → Quantum, crypto_rsa → Rsa).
+  // prefix, capitalised (quantum → Quantum, crypto_rsa → Rsa).
   title: name.replace(/^[a-z]+_/, '').replace(/^./, (c) => c.toUpperCase()),
   description,
   // The server routes { door } / { hex } / { doors } to the families on any call (qpuMcpCallOf), but the schema never
@@ -3445,28 +3445,28 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
   annotations: {
     audience: ['user', 'assistant'] as const,
     priority: seed,
-    readOnlyHint: name !== 'qpu_forge',
+    readOnlyHint: name !== 'forge',
     destructiveHint: false as const,
     // A tool is open-world only when it can reach the live occupancy — the ones whose input carries `live`. The
     // deterministic compute and content tools (quantum, lean, cite, the crypto morphs) touch no external world, so
     // they are closed-world, and a closed-world read is idempotent: the same call returns the same document. This
     // was a blanket openWorldHint: true, which told a client every tool might reach outside when most never do.
     openWorldHint: (inputSchema as { properties?: Record<string, unknown> }).properties?.live !== undefined,
-    idempotentHint: name !== 'qpu_forge' && (inputSchema as { properties?: Record<string, unknown> }).properties?.live === undefined},
+    idempotentHint: name !== 'forge' && (inputSchema as { properties?: Record<string, unknown> }).properties?.live === undefined},
   ...extra})
 
 /** Where a GET returns the very document a tool replies with — only there is a link to it honest. Two tools have
  * such a page; the rest reply with what no GET serves, and carry no link rather than one to a different document. */
 const qpuShownResourceOf = (name: string): string | undefined => {
-  if (name === 'qpu_lean') return unit.href
-  if (name === 'qpu_cite') return `${unit.origin}/cite`
+  if (name === 'lean') return unit.href
+  if (name === 'cite') return `${unit.origin}/cite`
   return undefined
 }
 
 /** THE REPLY ON THE WIRE, ONCE AS TEXT AND ONCE AS STRUCTURE. The protocol asks for `content` and `structuredContent`,
  * and those are the two copies a client pays for. An embedded resource copy, a string copy under `_meta.output` and an
  * object copy under `_meta.functionResponse` made a 131 KB proof a 729 KB reply (external audit, 2026-09-12); they are
- * gone. A `resource_link` rides along only when a GET of its uri returns this same document (qpu_lean, qpu_cite).
+ * gone. A `resource_link` rides along only when a GET of its uri returns this same document (lean, cite).
   * @wing agents
   * @kind builder
   * @evidence qpuMcpShownHolds
@@ -3727,9 +3727,9 @@ export const qpuEfficiencyOf = onceOf(() => {
     .join('\n')
   const readBytes = `${docs.documentation}\n${proof}`.length
   const rows = [
-    { question: 'what is quantum?', name: 'qpu_quantum', door: 'qpu_quantum', reading },
-    { question: 'what does Lean prove?', name: 'qpu_lean', door: 'qpu_lean', reading: lean },
-    { question: 'how is the QPU cited?', name: 'qpu_cite', door: 'qpu_cite', reading: cite }].map((row) => {
+    { question: 'what is quantum?', name: 'quantum', door: 'quantum', reading },
+    { question: 'what does Lean prove?', name: 'lean', door: 'lean', reading: lean },
+    { question: 'how is the QPU cited?', name: 'cite', door: 'cite', reading: cite }].map((row) => {
     const callBytes = JSON.stringify(row.reading).length
     const readTokens = tokensOf(readBytes)
     const callTokens = tokensOf(callBytes)
@@ -3786,7 +3786,7 @@ export const qpuEfficiencyHolds = (e = qpuEfficiencyOf()): boolean =>
 const throughputOf = (throughoutput: number, tokens: number): number =>
   tokens > seed ? Number(BigInt(throughoutput) / BigInt(tokens)) : throughoutput
 
-const toolNames = ['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_forge', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const
+const toolNames = ['quantum', 'lean', 'cite', 'train', 'forge', 'improve', 'compete', 'prove'] as const
 const cryptoToolNames = ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'] as const
 
 /**
@@ -3812,8 +3812,8 @@ export const qpuSequenceOf = onceOf(() => {
     { method: 'GET' as const, path: '/mcp', door: 'catalog' as const, pattern: 'jsonld-get' as const, type: 'WebAPI' as const, verb: 'read' as const },
     { method: 'POST' as const, path: '/mcp', door: 'tools/call' as const, pattern: 'jsonrpc-call' as const, type: 'JSON-RPC' as const, verb: 'call' as const },
     { method: 'GET' as const, path: '/cite', door: toolNames[coins], pattern: 'jsonld-get' as const, type: 'CreativeWork' as const, verb: 'read' as const },
-    { method: 'GET' as const, path: '/message', door: 'qpu_message' as const, pattern: 'jsonld-get' as const, type: 'EntryPoint' as const, verb: 'read' as const },
-    { method: 'POST' as const, path: '/message', door: 'qpu_message' as const, pattern: 'jsonld-post' as const, type: 'EntryPoint' as const, verb: 'send' as const },
+    { method: 'GET' as const, path: '/message', door: 'message' as const, pattern: 'jsonld-get' as const, type: 'EntryPoint' as const, verb: 'read' as const },
+    { method: 'POST' as const, path: '/message', door: 'message' as const, pattern: 'jsonld-post' as const, type: 'EntryPoint' as const, verb: 'send' as const },
     { method: 'POST' as const, path: '/server', door: 'jobs' as const, pattern: 'jsonrpc-job' as const, type: 'WebAPI' as const, verb: 'submit' as const }] as const
   const pairs = [
     { path: '/mcp', read: 'GET' as const, call: 'POST' as const },
@@ -3859,17 +3859,17 @@ export const qpuSequenceOf = onceOf(() => {
     extras.length === n &&
     mintOf(n) === faces.rays + seed &&
     rungs[n - n]!.path === '/' &&
-    rungs[n - n]!.tool === 'qpu_quantum' &&
-    rungs[seed]!.tool === 'qpu_lean' &&
-    rungs[coins]!.tool === 'qpu_cite' &&
-    rungs[n]!.tool === 'qpu_train' &&
+    rungs[n - n]!.tool === 'quantum' &&
+    rungs[seed]!.tool === 'lean' &&
+    rungs[coins]!.tool === 'cite' &&
+    rungs[n]!.tool === 'train' &&
     rungs[mintOf(n) - seed]!.path === '/server' &&
-    rungs[mintOf(n) - seed]!.tool === 'qpu_prove' &&
+    rungs[mintOf(n) - seed]!.tool === 'prove' &&
     rungs[mintOf(n) - seed]!.pattern === 'jsonrpc-job' &&
     rungs.every((row, k) => row.mint === mintOf(k) && row.speed === cover[k] && row.sealed === k < faces.rays && row.cybersecurity === cybersecurity[k]) &&
     docs.api.every((row, k) => row.method === api[k]!.method && row.path === api[k]!.path) &&
-    climb[n - n] === 'qpu_train' &&
-    climb[mintOf(coins) - seed] === 'qpu_prove' &&
+    climb[n - n] === 'train' &&
+    climb[mintOf(coins) - seed] === 'prove' &&
     extras[n - n]!.path === '/storage' &&
     extras[seed]!.path === '/network' &&
     extras[coins]!.path === '/server'
@@ -4096,8 +4096,8 @@ export const qpuPurposeOf = (
     extras: sequence.extras.map((row) => row.path),
     holds:
       sequence.holds &&
-      sequence.climb[mintOf(coins) - seed] === 'qpu_prove' &&
-      sequence.rungs[n - n]!.tool === 'qpu_quantum' &&
+      sequence.climb[mintOf(coins) - seed] === 'prove' &&
+      sequence.rungs[n - n]!.tool === 'quantum' &&
       unit.fuse.lean.endsWith('/index.lean'),
   }
   const sensing = {
@@ -4141,7 +4141,7 @@ export const qpuPurposeHolds = (p = qpuPurposeOf()): boolean =>
   p.cybersecurity.encrypt.identity === true &&
   p.cybersecurity.encrypt.holds === true &&
   theorem.next_fused(p.optimization.next, p.optimization.fused) &&
-  p.science.climb[mintOf(coins) - seed] === 'qpu_prove' &&
+  p.science.climb[mintOf(coins) - seed] === 'prove' &&
   p.sensing.network === '/network' &&
   p.sensing.server === '/server'
 
@@ -6896,7 +6896,7 @@ const seededNames = new Set<string>()
 /**
  * THE SANDBOX'S EPOCH, so a memoised answer cannot outlive the sandbox it described.
  *
- * qpu_train, qpu_improve and qpu_compete each carry the sandbox, and qpu_forge writes to it. Caching those
+ * train, improve and compete each carry the sandbox, and forge writes to it. Caching those
  * three on their arguments alone would serve the shape of the sandbox as it was before a forge — a stale
  * answer that still holds, which is the worst kind. The epoch advances on every write and rides in the memo
  * key, so a forge does not invalidate anything: it simply makes the old keys unreachable and the new ones
@@ -6906,7 +6906,7 @@ let sandboxEpoch = 0
 /** RESERVED NAMES, READ FROM THE ONE MAP A FORGE CAN ACTUALLY OVERWRITE. Returns why a name is refused, or the empty
  * string when it is free; the caller reports it as `denied`.
  *
- * NOT THE SEALED DOORS. A door is dispatched before the sandbox is consulted, so forging `qpu_quantum` adds a shadow
+ * NOT THE SEALED DOORS. A door is dispatched before the sandbox is consulted, so forging `quantum` adds a shadow
  * that can never be reached and the door keeps answering — which is `theorem 'no one may lock'`, one of the three
  * integrity tests, and it is proved by forging a door's name and watching the door survive. Reserving doors here
  * turned that theorem false and took every path to 404 with it.
@@ -6949,7 +6949,7 @@ const putToolOf = (name: string, team: 'read' | 'call', ray: number, idea: strin
       description,
       `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`,
       `${unit.origin}/mcp`,
-      ['qpu_forge', 'qpu_train'])})
+      ['forge', 'train'])})
 }
 
 const seedSandboxOf = () => {
@@ -7050,9 +7050,9 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
     idea,
     description,
     run,
-    man: qpuManOf(name, description, `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`, `${unit.origin}/mcp`, ['qpu_forge', 'qpu_train'])}
-  /* THE EPOCH FOLLOWS CONTENT, NOT WRITES. qpuIntegrityOf forges a sandbox tool called `qpu_quantum` on every
-   * qpu_prove — a deliberate probe showing that the sandbox namespace cannot reach the sealed door of the same
+    man: qpuManOf(name, description, `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`, `${unit.origin}/mcp`, ['forge', 'train'])}
+  /* THE EPOCH FOLLOWS CONTENT, NOT WRITES. qpuIntegrityOf forges a sandbox tool called `quantum` on every
+   * prove — a deliberate probe showing that the sandbox namespace cannot reach the sealed door of the same
    * name — and it writes the identical definition each time. Advancing on the write made every prove invalidate
    * the memos for train, improve and compete, so a mixed traffic pattern would have thrashed the cache that
    * 0.1.5 had just added and the numbers measured on a single door in isolation would never have appeared in
@@ -9005,7 +9005,7 @@ export const qpuTeachingReadingHolds = (rows = qpuTeachingReadingOf()): boolean 
   rows.every((row) => (row.swap === 'application') === row.involution.startsWith('the swap does not close'))
 
 /**
- * The read team against the call team on quality, speed and security per token; the winner calls qpu_prove.
+ * The read team against the call team on quality, speed and security per token; the winner calls prove.
  * @wing agents
  * @kind builder
  * @evidence qpuCompeteHolds
@@ -9064,7 +9064,7 @@ export const qpuCompeteOf = (team?: string) => {
     quantum: { holds: theorem.next_fused(next, fused), next },
     teams,
     winner,
-    next: ['qpu_prove'] as const,
+    next: ['prove'] as const,
     holds,
   }
   if (team === 'read') return { ...match, teams: [read] as const }
@@ -9081,7 +9081,7 @@ export const qpuCompeteHolds = (c = qpuCompeteOf()): boolean =>
   c.winner === 'call' &&
   c.quantum.holds === true &&
   c.quantum.next === c.teams[seed]?.throughoutput &&
-  c.next[n - n] === 'qpu_prove' &&
+  c.next[n - n] === 'prove' &&
   c.teams.length === coins &&
   c.teams[seed]?.name === 'call' &&
   c.teams[seed]?.throughoutput === c.teams[n - n]!.throughoutput + c.teams[n - n]!.throughoutput
@@ -9612,7 +9612,7 @@ export const qpuCernFetchOf = async (href: string, signal: AbortSignal = foreign
    * explicit too, because a fetch with no deadline is a hang rather than a miss.
    *
    * THE DEADLINE IS tenOf(hexbit) — ten seconds — AND WAS THIRTY. A run asks this host five times over (prove,
-   * then qpu_train, qpu_improve, qpu_compete and the sequence, each live), and a host that accepts the connection
+   * then train, improve, compete and the sequence, each live), and a host that accepts the connection
    * and then says nothing costs the full deadline every time. At thirty that is a hundred and fifty seconds
    * against a hundred-and-twenty-second test budget: measured, the suite did not fail, it was CANCELLED, which
    * writes no receipt at all. Ten holds the worst case to fifty.
@@ -10219,7 +10219,7 @@ export const qpuCernLiveHolds = (x?: Awaited<ReturnType<typeof qpuCernLiveOf>>):
  * ONE READING SHARED, AND A MISS IS A READING.
  *
  * This memo kept the answer only when it HELD, so every caller that followed a miss read the host again from
- * scratch. Four callers sit behind one qpu_prove — train, improve, compete, prove — each asking seventeen doors,
+ * scratch. Four callers sit behind one prove — train, improve, compete, prove — each asking seventeen doors,
  * and the sequence adds more. Measured: 87 foreign reads when CERN answered, 205 when it did not. The failure
  * case cost two and a half times the network work of the success case, which is precisely backwards.
  *
@@ -10257,7 +10257,7 @@ export const qpuCernExperienceOf = onceOf(async () => {
 export const qpuCernExperienceHolds = (x?: Awaited<ReturnType<typeof qpuCernExperienceOf>>): boolean => x !== undefined && x.holds === true
 
 /**
- * qpu_train with live CERN occupancy and the live API composition.
+ * train with live CERN occupancy and the live API composition.
  * @wing agents
  * @kind builder
  * @evidence qpuTrainLiveHolds
@@ -10278,7 +10278,7 @@ export const qpuTrainLiveOf = onceOf(async () => {
 export const qpuTrainLiveHolds = (x?: Awaited<ReturnType<typeof qpuTrainLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
- * qpu_improve with live CERN occupancy.
+ * improve with live CERN occupancy.
  * @wing quantum
  * @kind builder
  * @evidence qpuImproveLiveHolds
@@ -10312,7 +10312,7 @@ export const qpuImproveLiveOf = onceOf(async () => {
 export const qpuImproveLiveHolds = (x?: Awaited<ReturnType<typeof qpuImproveLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
- * qpu_compete with live CERN occupancy.
+ * compete with live CERN occupancy.
  * @wing agents
  * @kind builder
  * @evidence qpuCompeteLiveHolds
@@ -10341,7 +10341,7 @@ export const qpuCompeteLiveOf = async (team?: string) => {
     views.scanner === n * n &&
     views.radar === n * n &&
     compete.winner === 'call' &&
-    compete.next[n - n] === 'qpu_prove'
+    compete.next[n - n] === 'prove'
   return {
     ...compete,
     live: true as const,
@@ -10354,7 +10354,7 @@ export const qpuCompeteLiveOf = async (team?: string) => {
 export const qpuCompeteLiveHolds = (x?: Awaited<ReturnType<typeof qpuCompeteLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
- * qpu_prove after the live sequence.
+ * prove after the live sequence.
  * @wing quantum
  * @kind builder
  * @evidence qpuProveLiveHolds
@@ -10366,7 +10366,7 @@ export const qpuProveLiveOf = onceOf(async () => {
     prove.holds &&
     live.holds &&
     live.learn.holds &&
-    prove.ui.door === 'qpu_prove'
+    prove.ui.door === 'prove'
   return {
     ...prove,
     cern: {
@@ -10396,7 +10396,7 @@ export const qpuSequenceLiveOf = onceOf(async () => {
   const sequence = {
     kind: 'sequence' as const,
     live: true as const,
-    doors: ['qpu_train', 'qpu_improve', 'qpu_compete', 'qpu_prove'] as const,
+    doors: ['train', 'improve', 'compete', 'prove'] as const,
     winner: compete.winner,
     occupancy: compete.occupancy,
     views: compete.views,
@@ -10408,13 +10408,13 @@ export const qpuSequenceLiveOf = onceOf(async () => {
       compete.holds &&
       prove.holds &&
       compete.winner === 'call' &&
-      compete.next[n - n] === 'qpu_prove' &&
+      compete.next[n - n] === 'prove' &&
       improve.after.throughoutput === next &&
       theorem.next_fused(next, fused) &&
-      train.next[n - n] === 'qpu_improve' &&
-      train.next[seed] === 'qpu_compete' &&
-      improve.next[n - n] === 'qpu_compete' &&
-      improve.next[seed] === 'qpu_prove'}
+      train.next[n - n] === 'improve' &&
+      train.next[seed] === 'compete' &&
+      improve.next[n - n] === 'compete' &&
+      improve.next[seed] === 'prove'}
   return { ...prove, sequence, holds: prove.holds && sequence.holds }
 })
 export const qpuSequenceLiveHolds = (x?: Awaited<ReturnType<typeof qpuSequenceLiveOf>>): boolean => x !== undefined && x.holds === true
@@ -10858,7 +10858,7 @@ export const qpuSeatHolds = (x: ReturnType<typeof qpuSeatOf> = qpuSeatOf()): boo
 
 /** install.json, served and written from one function so the host and the file cannot disagree (the README promised
  *  install.json and the host answered 404 until 2026-09-12). `hardware` is the boot recipe: Node serving the unit on an
- *  aarch64 or x86 box, a Raspberry Pi on Alpine, or the container; the boot serves only when tools/call qpu_prove returns
+ *  aarch64 or x86 box, a Raspberry Pi on Alpine, or the container; the boot serves only when tools/call prove returns
  *  holds: true there. Use qpuInstallManifestOf() directly. */
 /** The one declaration of the port a booted unit serves on: boot.ts listens on $PORT, else this; the install manifest's
   * @wing agents
@@ -10879,7 +10879,7 @@ const installFieldsOf = () => ({
     multiarch: 'docker buildx build --platform linux/arm64,linux/amd64 -t qpu .',
     pi: 'Alpine aarch64: apk add nodejs npm && npm i -g @uuidna/qpu && qpu-boot',
     prove: 'node dist/quantum/processing/unit/boot.js --prove',
-    receipt: 'the boot passes iff qpu_prove holds inside the machine; a boot that cannot prove itself does not serve',
+    receipt: 'the boot passes iff prove holds inside the machine; a boot that cannot prove itself does not serve',
     seat: qpuSeatOf(),
   },
 })
@@ -11245,10 +11245,10 @@ export const qpuSeoZoneHolds = (z?: ReturnType<typeof seoZoneFieldsOf>): boolean
  *  to compare against). Four steps, each with the same five fields — concept, request, expect, invariant, next — so a
  *  reader climbs the same way every time and nothing is taught twice. Served in docs.inline and printed in the README. */
 const qpuLadderOf = onceOf(() => [
-  { step: 1, concept: 'one gate, exact amplitudes', request: { method: 'GET' as const, path: '/', tool: 'qpu_quantum' }, expect: 'Bell outcomes 00 and 11 at exactly 1/2 — Gaussian-integer amplitudes, no floats', invariant: 'H·H = I on |0⟩', theorem: 'qubits', next: 2 },
-  { step: 2, concept: 'entanglement is not correlation', request: { method: 'POST' as const, path: '/mcp', tool: 'qpu_prove' }, expect: 'GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing', invariant: 'no-cloning and monogamy hold on the served states', theorem: 'entangle', next: 3 },
+  { step: 1, concept: 'one gate, exact amplitudes', request: { method: 'GET' as const, path: '/', tool: 'quantum' }, expect: 'Bell outcomes 00 and 11 at exactly 1/2 — Gaussian-integer amplitudes, no floats', invariant: 'H·H = I on |0⟩', theorem: 'qubits', next: 2 },
+  { step: 2, concept: 'entanglement is not correlation', request: { method: 'POST' as const, path: '/mcp', tool: 'prove' }, expect: 'GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing', invariant: 'no-cloning and monogamy hold on the served states', theorem: 'entangle', next: 3 },
   { step: 3, concept: 'Shor: a period, then a gcd', request: { method: 'POST' as const, path: '/mcp', tool: 'crypto_shor' }, expect: `theorem shor ${shorFactorOf()} — a = 8, period 4, 7 · 13`, invariant: 'p · q = n, recomputed from the period', theorem: 'shor', next: 4 },
-  { step: 4, concept: 'a code corrects one flip', request: { method: 'POST' as const, path: '/mcp', tool: 'qpu_prove' }, expect: 'bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run', invariant: 'distance 3 corrects exactly one error', theorem: 'noise', next: 'climb: qpu_train → qpu_improve → qpu_compete → qpu_prove' },
+  { step: 4, concept: 'a code corrects one flip', request: { method: 'POST' as const, path: '/mcp', tool: 'prove' }, expect: 'bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run', invariant: 'distance 3 corrects exactly one error', theorem: 'noise', next: 'climb: train → improve → compete → prove' },
 ])
 // not a hand list: the find tool of each Payload collection is `find` + the collection capitalised, computed from the
 // db's own collections (pages → findPages …), so a collection added to the db is found without editing this line
@@ -11949,7 +11949,7 @@ const servedOf = (key: string, build: () => unknown): Served => {
  * THE DOORS WHOSE ANSWER IS A FUNCTION OF THEIR ARGUMENTS, and therefore may be served from the memo.
  *
  * Measured with `npm run percall`: four doors memoised to a floor of 5,896 and four paid in full on every
- * call, qpu_improve at 487,465 — a standing per-request cost that nothing was looking at because the
+ * call, improve at 487,465 — a standing per-request cost that nothing was looking at because the
  * receipts only aggregate per test. Three of those four are pure and are added here.
  *
  * QPU_FORGE IS NOT, AND MUST NOT BE. It writes a name into the sandbox; that is the whole point of it, and a
@@ -11965,10 +11965,10 @@ const servedOf = (key: string, build: () => unknown): Served => {
  *
  * THE ARGUMENT ALLOWLIST IS THE SAFETY, not the tool list. `live` and `sequence` are absent from it, so a
  * call that reaches opendata.cern.ch can never be memoised however pure its door is — a cached reading of
- * somebody else's host is a lie with a timestamp. `team` is added because qpu_compete takes one and the
+ * somebody else's host is a lie with a timestamp. `team` is added because compete takes one and the
  * answer is a function of it.
  */
-const pureTools = new Set<string>(['qpu_quantum', 'qpu_lean', 'qpu_cite', 'qpu_train', 'qpu_improve', 'qpu_compete', ...cryptoToolNames])
+const pureTools = new Set<string>(['quantum', 'lean', 'cite', 'train', 'improve', 'compete', ...cryptoToolNames])
 const pureArgs = (args: Record<string, unknown>): boolean => Object.keys(args).every((k) => k === 'man' || k === 'n' || k === 'a' || k === 'team')
 /**
  * The served-document memo: entries, cap and integrity check.

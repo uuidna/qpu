@@ -14,7 +14,7 @@ import { leanSource } from '../../quantum/processing/unit/lean.js'
  *  live readings reach), rule (no family past its nibble, none truncated) and the unit's own proof. The hooks and the
  *  workflow run these through the MCP in-process (scripts/receipt.mjs gate: waves of the host's agents) and act on holds; nothing else decides. */
 
-const PROOF = 'gate = cross(data.research, discovery, rule, qpu_prove): holds is the verdict'
+const PROOF = 'gate = cross(data.research, discovery, rule, prove): holds is the verdict'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 const families = () => [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
 const f = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
@@ -80,8 +80,8 @@ export class GateFormulas {
     const truncated = families().reduce((s, _, i) => s + Number(RuleFormulas.truncated(i).value), 0)
     return f('gate-rules', 'rules = over + Σ truncated(i)', over + truncated, over + truncated === 0, 'rules', [])
   }
-  /** The proof: the unit proves itself end to end (qpu_prove holds). */
-  static proof(): CrossFormula { const ok = qpuProveHolds(); return f('gate-proof', 'proof = [qpu_prove holds]', ok ? 1 : 0, ok, 'proof', []) }
+  /** The proof: the unit proves itself end to end (prove holds). */
+  static proof(): CrossFormula { const ok = qpuProveHolds(); return f('gate-proof', 'proof = [prove holds]', ok ? 1 : 0, ok, 'proof', []) }
   /** A commit of the i-th family: crossed with the record, within the rules. */
   static async commit(i: number): Promise<CrossFormula> {
     const fam = await GateFormulas.family(i)

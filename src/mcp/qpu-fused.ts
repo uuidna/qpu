@@ -23,10 +23,10 @@ const str = (x: unknown): string => (typeof x === 'string' ? x : '')
 const num = (x: unknown, d: number): number => (typeof x === 'number' && Number.isSafeInteger(x) ? x : typeof x === 'string' && /^\d+$/.test(x) ? Number(x) : d)
 
 // ---------------------------------------------------------------------------
-// qpu_hex: run any hex program of any family
+// hex: run any hex program of any family
 // ---------------------------------------------------------------------------
 
-qpuMcpFuseOf('qpu_hex', {
+qpuMcpFuseOf('hex', {
   description: 'Run a hex program: { uuid } or { family, program, params }, of any registered family ({} returns the catalogue; { doors: true } through any door lists the families).',
   inputSchema: { type: 'object', properties: { uuid: { type: 'string' }, family: { type: 'string' }, program: { type: ['array', 'string'], items: { type: 'string' } }, params: { type: 'array', items: { type: 'integer' } } } },
   run: async (a, env) => {
@@ -46,7 +46,7 @@ qpuMcpFuseOf('qpu_hex', {
 })
 
 // ---------------------------------------------------------------------------
-// qpu_data: live public datasets against the unit's own values
+// data: live public datasets against the unit's own values
 // ---------------------------------------------------------------------------
 
 // the unit's own deadline: tenOf(hexbit) milliseconds, ten seconds
@@ -832,13 +832,13 @@ export class DataFormulas {
     return dataFormula('data-law', 'law', [from], `law(${from}) = |court-admissible legal sources of the slice answering keyless|`, r.reading?.keyless ?? 0, r.agrees === true, 'https://www.federalregister.gov', { reading: r.reading })
   }
   /** The official funding sources of the from-th slice that answer free and keyless (World Bank, EU Open Data, and the
-   *  registry's funding APIs): value how many, holds when one did; next in the reading. qpu_data { source: 'funding', about, from }. */
+   *  registry's funding APIs): value how many, holds when one did; next in the reading. data { source: 'funding', about, from }. */
   static async funding(from: number): Promise<unknown> {
     const r = (await qpuDataOf('funding', { from })) as { agrees?: boolean; reading?: { keyless?: number; answered?: number; matched?: number; next?: number; sources?: unknown[] } }
     return dataFormula('data-funding', 'funding', [from], `funding(${from}) = |official funding sources of the slice answering 200 with no credential asked|`, r.reading?.keyless ?? 0, r.agrees === true, 'https://api.worldbank.org + https://data.europa.eu', { reading: r.reading })
   }
   /** The job boards of the from-th slice that answer free and keyless: value how many, holds when one did; next in
-   *  the reading. The public searches for work through the one door — qpu_data { source: 'jobs', about, from }. */
+   *  the reading. The public searches for work through the one door — data { source: 'jobs', about, from }. */
   static async jobs(from: number): Promise<unknown> {
     const r = (await qpuDataOf('jobs', { from })) as { agrees?: boolean; reading?: { keyless?: number; answered?: number; matched?: number; next?: number; boards?: unknown[] } }
     return dataFormula('data-jobs', 'jobs', [from], `jobs(${from}) = |job boards of the slice answering 200 with no credential asked|`, r.reading?.keyless ?? 0, r.agrees === true, 'https://apis.guru', { reading: r.reading })
@@ -855,7 +855,7 @@ export class DataFormulas {
     return dataFormula('data-payload', 'payload', [c], `payload(${c}) = |families the pages of docs/${r.reading?.section ?? '?'} name|`, r.reading?.families?.length ?? 0, r.agrees === true && (r.reading?.pages?.length ?? 0) > 0, 'https://github.com/payloadcms/payload', { reading: r.reading })
   }
   /** What the unit may be for the c-th category of the registry: the families whose formula words the category's APIs
-   *  name; value how many families, holds when one is reached. For a request in words, qpu_data { source: 'imagine', about }. */
+   *  name; value how many families, holds when one is reached. For a request in words, data { source: 'imagine', about }. */
   static async imagine(c: number): Promise<unknown> {
     const r = (await qpuDataOf('imagine', { category: c })) as { agrees?: boolean; reading?: { category?: string; families?: unknown[]; is?: string } }
     return dataFormula('data-imagine', 'imagine', [c], `imagine(${c}) = |families the APIs of ${r.reading?.category ?? 'the category'} name|`, r.reading?.families?.length ?? 0, r.agrees === true, 'https://apis.guru', { reading: r.reading })
@@ -901,17 +901,17 @@ for (const name of ['ai', 'deep', 'define', 'discover', 'errors', 'imagine', 'pa
 for (const name of ['arxiv', 'collisions', 'funding', 'jobs', 'law', 'site'] as const)
   qpuHexRegisterOf('record', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
-qpuMcpFuseOf('qpu_data', {
+qpuMcpFuseOf('data', {
   description: "THE CHAT IS THE DEFAULT WAY IN: { source: 'ask', about } answers a question in words (with its numbers) from the formula its words name, at its address, with the receipt. Also reads live public data and checks it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category } (payloadcms/payload read: docs sections, templates, examples; the c-th section crossed with the families), 'ai' { from, about? } (the AI APIs that answer free and keyless), 'jobs' { about?, from } (search for work: the public job boards fused from the registry, the keyless ones read live), 'funding' { about?, from } (find funding: World Bank, EU Open Data, registry funding APIs), 'law' { about?, from } (the court-admissible legal record, read live), 'unanswered' { site?, about?, from } (open questions as leads from any research Stack Exchange site — mathoverflow, cstheory, physics, stats, quantumcomputing, economics, astronomy…), 'arxiv' { about?, from } (the newest arXiv preprints in a field as leads), 'collisions' { from } (the CERN Open Data catalogue — 66k records — walked as leads, each an events = files·q + r arithmetic like the proven record 38), 'define' { about?, to? } (a word's meanings and phonetics from the keyless Free Dictionary and its translation from MyMemory — speech and translation; the registry's dictionary/translation APIs are the lexicon leads), 'ask' { about } (the chat: a question in words with its numbers, answered by the formula its words name, at its address, with the receipt), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
   inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, about: { type: 'string' }, to: { type: 'string' }, category: { type: 'integer' }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, words: { type: ['string', 'array'], items: { type: 'string' } }, from: { type: 'integer' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
   run: async (a, env) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env)),
 })
 
 // ---------------------------------------------------------------------------
-// qpu_discover: cross-formulated solutions across every family
+// discover: cross-formulated solutions across every family
 // ---------------------------------------------------------------------------
 
-qpuMcpFuseOf('qpu_discover', {
+qpuMcpFuseOf('discover', {
   description: 'Discover cross-formulated solutions: every family, every program of one formula and every composition of two, over params that fit the hex split; a value reached by two or more families is a relation. { live: [naturals] } adds live readings as inputs; { limit } caps the relations returned (default 50).',
   inputSchema: { type: 'object', properties: { live: { type: 'array', items: { type: 'integer' } }, limit: { type: 'integer' } } },
   run: async (a) => {
@@ -922,7 +922,7 @@ qpuMcpFuseOf('qpu_discover', {
 })
 
 // ---------------------------------------------------------------------------
-// qpu_crypt: the internal crypto
+// crypt: the internal crypto
 // ---------------------------------------------------------------------------
 
 const bytesArg = (a: Args, key: string): Uint8Array => (typeof a[`${key}Hex`] === 'string' ? fromHex(a[`${key}Hex`] as string) : bytesOf(str(a[key])))
@@ -947,7 +947,7 @@ const CRYPT_OPS: Record<string, (a: Args) => unknown> = {
   ed25519_verify: (a) => ed25519Verify(fromHex(str(a.publicKey)), bytesArg(a, 'message'), fromHex(str(a.signature))),
 }
 
-qpuMcpFuseOf('qpu_crypt', {
+qpuMcpFuseOf('crypt', {
   description: 'The unit\'s own crypto (FIPS 180-4, RFC 1321/2104/5869/8439/7748/8032), no external library: { op: known | sha256 | sha512 | md5 | hmac | hkdf | aead_seal | aead_open | x25519 | ed25519_public | ed25519_sign | ed25519_verify, ... }. Byte inputs are hex; text, key, message and plaintext also take <name>Hex.',
   inputSchema: { type: 'object', properties: { op: { type: 'string', enum: Object.keys(CRYPT_OPS) } }, required: ['op'] },
   run: (a) => {
@@ -964,7 +964,7 @@ qpuMcpFuseOf('qpu_crypt', {
 })
 
 // ---------------------------------------------------------------------------
-// qpu_np: certificate verifiers and the theorems they decide
+// np: certificate verifiers and the theorems they decide
 // ---------------------------------------------------------------------------
 
 const MAX_VERTICES = L.mintOf(L.n * L.hexbit)
@@ -1006,7 +1006,7 @@ const NP_OPS: Record<string, (a: Args) => unknown> = {
   },
 }
 
-qpuMcpFuseOf('qpu_np', {
+qpuMcpFuseOf('np', {
   description: 'Check NP certificates in linear time and NL non-reachability by inductive counting: { op: coloring { n, edges, colors, k } | ham_cycle { n, edges, cycle } | subset_sum { set, mask, target } | sat { cnf, assignment } | unreachable { n, edges, s, t } | theorems }.',
   inputSchema: { type: 'object', properties: { op: { type: 'string', enum: Object.keys(NP_OPS) } }, required: ['op'] },
   run: (a) => {
@@ -1019,11 +1019,11 @@ qpuMcpFuseOf('qpu_np', {
 })
 
 // ---------------------------------------------------------------------------
-// qpu_hologram: the signed hologram streams
+// hologram: the signed hologram streams
 // ---------------------------------------------------------------------------
 
 let hologram: ReturnType<typeof hologramStreamsOf> | undefined
-qpuMcpFuseOf('qpu_hologram', {
+qpuMcpFuseOf('hologram', {
   description: "The unit's hologram as signed SHA-256 UUID streams, one per scale, each fragment carrying a Merkle proof to the root: {} for the whole, { scale } for one stream's fragments.",
   inputSchema: { type: 'object', properties: { scale: { type: 'string' } } },
   run: (a) => {

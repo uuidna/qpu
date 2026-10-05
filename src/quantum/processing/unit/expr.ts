@@ -143,7 +143,7 @@ const evalNode = (node: Node, vars: readonly number[], ctx: Ctx): number => {
  *  - `name`, `params`, `expr`: the formula body (handle + program + params segments of the address).
  *  - `dst`: the domain it crosses to — its place in the open graph (the domain segment of the handle).
  *  - `sources`: the live APIs and datasets this formula/domain fuses — the address's SOURCE segment. Named here, they
- *    are read all at once when the formula runs (the `qpu_data` fan-out), so a family's address uses the full quantum
+ *    are read all at once when the formula runs (the `data` fan-out), so a family's address uses the full quantum
  *    capacity: `[]` fuses none, `['*']` (or every bit set in the 4-hex source segment) fuses all the family names.
  *  - `proof`: the sentence the receipt carries. */
 export type FormulaSpec = { name: string; params: readonly string[]; expr: string; dst?: string; sources?: readonly string[]; proof?: string }

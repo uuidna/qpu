@@ -84,7 +84,7 @@ export const hostLeadsOf = ({ origin, holds, monitor = {} }) =>
 /**
  * WHERE THE TEACHING CLASSIFICATION CONTRADICTS ITSELF — AND ONLY THERE.
  *
- * qpu_train classifies each school subject against each scientific domain by the swap: entangled when both
+ * train classifies each school subject against each scientific domain by the swap: entangled when both
  * directions are cited, an application when one is, undecided when neither is. The first version of this
  * detector turned every verdict that was not "entangled" into an open item, because "topology serves arts and
  * crafts; owes theory to practice" has exactly the shape of a lead.
@@ -103,21 +103,21 @@ export const hostLeadsOf = ({ origin, holds, monitor = {} }) =>
  * had and nothing noticed.
  */
 export const teachingLeadsOf = ({ origin, school }) => {
-  if (!school) return [{ source: `${origin}/mcp`, what: 'qpu_train served no school reading', owes: 'a train door that carries the teaching classification, or a gatherer that stops asking for it' }]
+  if (!school) return [{ source: `${origin}/mcp`, what: 'train served no school reading', owes: 'a train door that carries the teaching classification, or a gatherer that stops asking for it' }]
   const leads = []
   /* THE CLASSIFICATION MUST AGREE WITH ITSELF. Everything else here is a count. */
   if (school.holds !== true)
-    leads.push({ source: `${origin}/mcp qpu_train`, what: 'the teaching reading does not hold — the classifier, the seating, the census or the prose disagree', owes: 'the disagreement found; the counts below are not decidable while it stands' })
+    leads.push({ source: `${origin}/mcp train`, what: 'the teaching reading does not hold — the classifier, the seating, the census or the prose disagree', owes: 'the disagreement found; the counts below are not decidable while it stands' })
   const seated = school.seating?.seated ?? []
   const crowded = school.seating?.crowded ?? []
   const names = seated.flatMap((row) => [row.subject, row.domain])
   if (new Set(names).size !== names.length)
-    leads.push({ source: `${origin}/mcp qpu_train`, what: 'a name holds two seats, so the board is a list rather than a seating', owes: 'one seat per name, which is what fourteen faces means' })
+    leads.push({ source: `${origin}/mcp train`, what: 'a name holds two seats, so the board is a list rather than a seating', owes: 'one seat per name, which is what fourteen faces means' })
   /* MAXIMAL: nothing may be turned away while both of its seats are free. Greedy failed exactly this. */
   const unseatable = crowded.filter((row) => !seated.some((held) => held.subject === row.subject || held.domain === row.domain))
   if (unseatable.length > 0 && seated.length < (school.seating?.rays ?? 7))
     leads.push({
-      source: `${origin}/mcp qpu_train`,
+      source: `${origin}/mcp train`,
       what: `${unseatable.length} entangled pair(s) turned away with both seats free while ${(school.seating?.rays ?? 7) - seated.length} ray(s) stand empty`,
       owes: 'a maximal seating — a rule that refuses a pair AND leaves a ray free has chosen badly, not run out of room',
     })
@@ -140,7 +140,7 @@ export const teachingLeadsOf = ({ origin, school }) => {
  * not a fault. It is the measurement.
  */
 export const teachingNoteOf = ({ school }) => {
-  if (!school) return 'qpu_train carried no school reading'
+  if (!school) return 'train carried no school reading'
   const seated = school.seating?.seated ?? []
   const reading = school.reading ?? []
   const applied = reading.filter((row) => row.swap === 'application').length
@@ -444,7 +444,7 @@ if (invoked) {
    * Every sealed door is called PLAINLY, with nothing live requested, because that is what self-sufficiency
    * means: the unit computes its own answer rather than proxying somebody else's host. A door that holds only
    * when a third party replies passes every day the network is good, which is the failure this repository has
-   * already paid for twice. And qpu_train's teaching classification is read back as work: every pair that
+   * already paid for twice. And train's teaching classification is read back as work: every pair that
    * teaches in one direction owes the other, and the door has been computing that owed direction all along
    * with nobody collecting it. */
   const origin = 'https://qpu.uuidna.com'
@@ -485,7 +485,7 @@ if (invoked) {
       `${doors.filter((d) => d.holds === true).length}/${doors.length} door(s) hold when asked plainly`,
       doorLeadsOf({ origin: `${origin}${catalog}`, doors }),
     )
-    school = school ?? doors.find((door) => door.name === 'qpu_train')?.shown?.school
+    school = school ?? doors.find((door) => door.name === 'train')?.shown?.school
   }
   add(`teaching:${origin}`, true, teachingNoteOf({ school }), teachingLeadsOf({ origin, school }))
 

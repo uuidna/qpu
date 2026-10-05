@@ -29,7 +29,7 @@ export function Discovery({ heading, intro, anchor, limit }: DiscoveryBlock) {
         </div>
       ) : null}
       <RelationsTable rows={limit ? d.relations.slice(0, limit) : d.relations} />
-      <p className="text-xs text-muted-foreground">Generated {d.when} from {d.sourcesAgree} of {d.sources} live sources; the same run is the MCP tool <code className="font-mono">qpu_discover</code>.</p>
+      <p className="text-xs text-muted-foreground">Generated {d.when} from {d.sourcesAgree} of {d.sources} live sources; the same run is the MCP tool <code className="font-mono">discover</code>.</p>
     </BlockWrapper>
   )
 }

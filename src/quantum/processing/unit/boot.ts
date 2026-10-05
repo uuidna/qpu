@@ -4,7 +4,7 @@
 // The unit is a fetch handler that answers only when named: https scheme, host qpu.uuidna.com. On a machine it has no
 // Cloudflare in front of it, so this adapter presents every local request AS the named origin — same bytes, same unit,
 // no fork — and a Node http server carries the replies. The exact state-vector computation inside is the reference, and this boot does not
-// serve until tools/call qpu_prove returns holds: true on this machine.
+// serve until tools/call prove returns holds: true on this machine.
 //
 //   node dist/quantum/processing/unit/boot.js            → prove, then serve on $PORT, else the unit's bootPort
 //   node dist/quantum/processing/unit/boot.js --prove    → prove and exit 0/1 (the boot's receipt; the container's HEALTHCHECK)
@@ -26,10 +26,10 @@ const toRequest = async (req: IncomingMessage): Promise<Request> => {
 }
 
 const prove = async (): Promise<boolean> => {
-  const r = await worker.fetch(new Request(`${ORIGIN}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'qpu_prove', arguments: {} } }) }), env)
+  const r = await worker.fetch(new Request(`${ORIGIN}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'prove', arguments: {} } }) }), env)
   const j = (await r.json()) as { result?: { holds?: unknown; structuredContent?: { holds?: unknown } } }
   const holds = j.result?.structuredContent?.holds ?? j.result?.holds
-  console.log(`qpu boot — ${holds === true ? '✓ qpu_prove holds' : '✗ qpu_prove does not hold'} on ${process.platform}/${process.arch}, node ${process.version}`)
+  console.log(`qpu boot — ${holds === true ? '✓ prove holds' : '✗ prove does not hold'} on ${process.platform}/${process.arch}, node ${process.version}`)
   return holds === true
 }
 

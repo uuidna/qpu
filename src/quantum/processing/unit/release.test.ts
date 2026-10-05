@@ -10,7 +10,7 @@ import '../../../mcp/families.js'
  * every door and formula listed, every external API and dataset read, formula discovery holding, and every error and
  * warning answered at once, each with what resolves it. */
 const host = (process.env.QPU_LIVE ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
-const DOOR = 'qpu_cite'
+const DOOR = 'cite'
 let id = 0
 type Shown = { structuredContent?: Record<string, unknown>; isError?: boolean }
 const call = async (args: Record<string, unknown>, name = DOOR, again = 0): Promise<Shown> => {
@@ -34,7 +34,7 @@ const call = async (args: Record<string, unknown>, name = DOOR, again = 0): Prom
   return body.result
 }
 const out = (s: Shown) => (s.structuredContent ?? {}) as Record<string, unknown>
-const FUSED = ['qpu_data', 'qpu_hex', 'qpu_discover', 'qpu_crypt', 'qpu_np', 'qpu_hologram']
+const FUSED = ['data', 'hex', 'discover', 'crypt', 'np', 'hologram']
 // COMPUTE ALL IN HEX, DO NOT WRAP: every check is a hex program run at its address through a sealed door
 type Run = { value?: unknown; holds?: boolean; steps?: unknown[]; denied?: string; receipt?: string }
 const hex = async (family: string, program: string[], params: number[] = []): Promise<Run> => out(await call({ hex: { family, program, params } })) as Run
@@ -234,7 +234,7 @@ test('release: every clay formula is cross developed from every perspective and 
     const arity = qpuHexFamiliesOf().get('clay')!.find((f) => f.name === name)!.arity
     if (arity === 0) { assert.ok(how[name], `clay.${name}: a value with no parameter is tested by the relation that reaches it or by its own involution`); continue }
     for (const fixed of arity === 1 ? [[]] : [[1], [2], [3], [5]]) {
-      const s = out(await call({ door: 'qpu_data', arguments: { source: 'sequence', family: 'clay', formula: name, fixed } })) as { agrees?: boolean; warning?: string; reading?: unknown }
+      const s = out(await call({ door: 'data', arguments: { source: 'sequence', family: 'clay', formula: name, fixed } })) as { agrees?: boolean; warning?: string; reading?: unknown }
       assert.ok(s.reading !== undefined || s.warning !== undefined, `clay.${name}(${fixed.join(',')}, n): its terms were looked up in OEIS`)
       looked += 1
       if (s.agrees === true) identified += 1
@@ -256,7 +256,7 @@ test('release: the chat answers every formula asked in words with its numbers â€
       const params = Array.from({ length: x.arity }, () => input)
       const question = `what is ${wordsOf(family)} ${wordsOf(x.name)}${params.length ? ` for ${params.join(' and ')}` : ''}?`
       const direct = await hex(family, [x.name], params)
-      const reply = out(await call({ door: 'qpu_data', arguments: { source: 'ask', about: question } })) as { reading?: { formula?: string; value?: string; answer?: string } }
+      const reply = out(await call({ door: 'data', arguments: { source: 'ask', about: question } })) as { reading?: { formula?: string; value?: string; answer?: string } }
       asked += 1
       if (reply.reading?.formula === `${family}.${x.name}` && reply.reading?.value === String(direct.value)) exact += 1
       else if (wrong.length < 14) wrong.push(`${question} â†’ ${reply.reading?.answer ?? JSON.stringify(reply).slice(0, 80)} (address says ${direct.value})`)

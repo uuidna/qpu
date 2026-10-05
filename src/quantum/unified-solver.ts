@@ -24,19 +24,19 @@ export class QuantumSolver {
     const result = (() => {
       switch (problem.type) {
         case 'factor':
-          return tools.qpu_shor(problem.params.n)
+          return tools.shor(problem.params.n)
         case 'search':
-          return tools.qpu_grover(
+          return tools.grover(
             String(problem.params.target),
             String(problem.params.space)
           )
         case 'optimize':
-          return tools.qpu_knapsack(
+          return tools.knapsack(
             JSON.stringify(problem.params.items),
             String(problem.params.capacity)
           )
         case 'simulate':
-          return tools.qpu_hamiltonian(
+          return tools.hamiltonian(
             String(problem.params.coupling),
             String(problem.params.time)
           )

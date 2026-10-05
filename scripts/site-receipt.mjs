@@ -15,7 +15,7 @@ const L = qpuLatticeNamesOf()
 const host = process.env.QPU_LIVE ?? 'https://qpu.uuidna.com'
 const take = L.faces
 const call = async (args) => {
-  const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'qpu_prove', arguments: { door: 'qpu_data', source: 'site', ...args } } }), signal: AbortSignal.timeout(tenOf(L.hexbit) * L.coins * L.n) })
+  const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'prove', arguments: { door: 'data', source: 'site', ...args } } }), signal: AbortSignal.timeout(tenOf(L.hexbit) * L.coins * L.n) })
   const body = await r.json()
   return body.result?.structuredContent ?? JSON.parse(body.result?.content?.[0]?.text ?? '{}')
 }
