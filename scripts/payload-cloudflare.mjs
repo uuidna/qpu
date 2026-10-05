@@ -81,7 +81,8 @@ const REPO = {
       // same bytes same UUID for everyone) and the auth/tenant infra (users, tenants) that decides who an app is.
       'multi-tenant': REPO_COLLECTIONS.map((c) => c.slug).filter((s) => !['users', 'tenants', 'quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'].includes(s)),
       search: ['docs', 'pages'], seo: ['docs', 'pages'], 'nested-docs': ['docs', 'pages'], redirects: ['docs', 'pages'],
-      'import-export': REPO_COLLECTIONS.map((c) => c.slug).filter((s) => s !== 'users'), mcp: ['docs', 'pages', 'quantum-receipts', 'fuse-formulas'],
+      // every fused API is usable in the Payload MCP: the fused apis, their shape fields and the cross-formulas they produce
+      'import-export': REPO_COLLECTIONS.map((c) => c.slug).filter((s) => s !== 'users'), mcp: ['docs', 'pages', 'quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'],
     },
     pluginOptions: {
       'multi-tenant': "tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin'",
