@@ -16,7 +16,7 @@ const menu = (): string[] => [...qpuHexFamiliesOf().keys()].filter((x) => !DOORS
 
 export class GuideFormulas {
   /** THE MENU: how many families you can run, and their names in the reading. Start here. */
-  static families(): CrossFormula { const list = menu(); return f('guide-families', 'families() = |families you can run|', list.length, list.length > 0, 'families', [], { families: list, run: "qpu_hex { family, program, params } — e.g. qpu_hex { family: 'law', program: ['limitation'], params: [6] }" }) }
+  static families(): CrossFormula { const list = menu(); return f('guide-families', 'families() = |families you can run|', list.length, list.length > 0, 'families', [], { families: list, run: "hex { family, program, params } — e.g. hex { family: 'law', program: ['limitation'], params: [6] }" }) }
   /** THE FORMULAS of the i-th family (the menu's order): their names and how many inputs each takes. */
   static formulas(i: number): CrossFormula {
     const name = menu()[i]
@@ -36,17 +36,17 @@ export class GuideFormulas {
     let result = 0
     let ran = false
     if (!fn.live) { try { const r = fn.run(params.map((p) => BigInt(p))) as { value?: unknown } | number; const v = typeof r === 'object' && r !== null && 'value' in r ? (r as { value: unknown }).value : r; result = Number(v); ran = Number.isFinite(result) } catch { ran = false } }
-    return f('guide-example', 'example(i) = a ready call for the i-th family and the value it returns', ran ? result : 0, name !== undefined && fn !== undefined, 'example', [i], { family: name, call: `qpu_hex { family: '${name}', program: ['${fn.name}'], params: [${params.join(', ')}] }`, hex, ...(ran ? { result } : { note: 'a live reading — call it to read' }) })
+    return f('guide-example', 'example(i) = a ready call for the i-th family and the value it returns', ran ? result : 0, name !== undefined && fn !== undefined, 'example', [i], { family: name, call: `hex { family: '${name}', program: ['${fn.name}'], params: [${params.join(', ')}] }`, hex, ...(ran ? { result } : { note: 'a live reading — call it to read' }) })
   }
   /** THE WAYS IN: every entry point, as copy-paste. value how many. */
   static ways(): CrossFormula {
     const ways = [
-      "qpu_hex { family, program, params } — run any family's formula",
-      'qpu_hex { uuid } — run a hex address directly',
-      'qpu_hex {} — the catalogue; qpu_hex { doors: true } — the families',
-      "qpu_data { source: 'ask', about: '...' } — ask in words, answered by the formula your words name",
-      "qpu_data { source: 'all' } — every live data check",
-      'the eight doors: qpu_quantum, qpu_prove, qpu_lean, qpu_improve, qpu_train, qpu_compete, qpu_forge, qpu_cite',
+      "hex { family, program, params } — run any family's formula",
+      'hex { uuid } — run a hex address directly',
+      'hex {} — the catalogue; hex { doors: true } — the families',
+      "data { source: 'ask', about: '...' } — ask in words, answered by the formula your words name",
+      "data { source: 'all' } — every live data check",
+      'the eight doors: quantum, prove, lean, improve, train, compete, forge, cite',
     ]
     return f('guide-ways', 'ways() = |entry points into the unit|', ways.length, true, 'ways', [], { ways })
   }

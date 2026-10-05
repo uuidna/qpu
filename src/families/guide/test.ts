@@ -8,14 +8,14 @@ import '../../mcp/families.js'
 test('guide: the menu, a family listing, a runnable example, and the ways in — from the live registry', async (t) => {
   const fams = (GuideFormulas.families()) as unknown as { value: number; families: string[]; run: string }
   assert.ok(fams.value > 50 && fams.families.length === fams.value, 'the menu lists every runnable family')
-  assert.match(fams.run, /qpu_hex/, 'the menu shows how to run one')
+  assert.match(fams.run, /hex/, 'the menu shows how to run one')
 
   const forms = (GuideFormulas.formulas(0)) as unknown as { value: number; family: string; formulas: string[] }
   assert.ok(forms.value > 0 && forms.formulas.length === forms.value, 'a family lists its formulas with arities')
 
   const ex = (GuideFormulas.example(0)) as unknown as { value: number; holds: boolean; family: string; call: string; hex: string; result?: number }
   assert.equal(ex.holds, true, 'an example is produced')
-  assert.match(ex.call, /^qpu_hex \{ family: '/, 'the example is a copy-paste call')
+  assert.match(ex.call, /^hex \{ family: '/, 'the example is a copy-paste call')
   assert.match(ex.hex, /^[0-9a-f-]{36}$/, 'the example carries its hex address')
 
   const ways = (GuideFormulas.ways()) as unknown as { value: number; ways: string[] }
