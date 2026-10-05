@@ -28,10 +28,16 @@ const resolve = async (path: string[]) => {
       uuid: decoded && 'holds' in decoded && decoded.holds ? x.toLowerCase() : undefined,
     }
   }
-  if (segs.length === 2) {
+  if (segs.length >= 2) {
+    // a multi-segment path is a COMBINATION: family / formula / formula / … / [params]. Formula segments also split on
+    // '+', and a trailing all-numeric segment is the params — so /family/f1/f2/1,2 and /family/f1+f2 both name the program.
     const family = familiesOf().find((f) => f.name === segs[0])
-    const names = segs[1]!.split('+').filter(Boolean)
-    if (family && names.length > 0 && names.length <= 10 && names.every((n) => family.formulas.some((x) => x.name === n))) return { program: { family: family.name, names, formulas: family.formulas.map((x) => x.name) } }
+    if (family) {
+      const last = segs[segs.length - 1]!
+      const params = /^[0-9]+([,+][0-9]+)*$/.test(last) ? last.split(/[,+]/).map(Number).filter((x) => Number.isSafeInteger(x) && x >= 0).slice(0, 3) : undefined
+      const names = segs.slice(1, params ? -1 : undefined).flatMap((s) => s.split('+')).filter(Boolean)
+      if (names.length > 0 && names.length <= 10 && names.every((n) => family.formulas.some((x) => x.name === n))) return { program: { family: family.name, names, formulas: family.formulas.map((x) => x.name) }, params }
+    }
   }
   return {}
 }
@@ -49,8 +55,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (r.page) return metadataOf(r.page)
   if (r.doc) return metadataOf(r.doc, 'article')
   if (r.family) return { title: `${r.family.name} formulas`, description: `The ${r.family.formulas.length} formulas of the ${r.family.name} family and their ${r.family.formulas.length ** 2} compositions.`, alternates: { canonical: `/${encodeURIComponent(r.family.name)}` } }
-  if (r.program) return { title: `${r.program.family} [${r.program.names.join(' → ')}]`, description: `Run the hex program ${r.program.names.join(' → ')} of the ${r.program.family} family and read its quantum receipt.` }
-  if (r.uuid) return { title: `hex ${r.uuid}`, description: 'A hex-program UUID, run: the family, its formulas, the value and the quantum receipt.' }
+  // every path-variant of a combination (/family/f1/f2/p, /family/f1+f2?p=…) shares ONE canonical — the normalized
+  // combination — so a path change does not break SEO: it still resolves (200) and points at the same canonical.
+  if (r.program) return { title: `${r.program.family} [${r.program.names.join(' → ')}]`, description: `Run the hex program ${r.program.names.join(' → ')} of the ${r.program.family} family and read its quantum receipt.`, alternates: { canonical: `/${encodeURIComponent(r.program.family)}/${r.program.names.join('+')}${r.params?.length ? `/${r.params.join(',')}` : ''}` } }
+  if (r.uuid) return { title: `hex ${r.uuid}`, description: 'A hex-program UUID, run: the family, its formulas, the value and the quantum receipt.', alternates: { canonical: `/${r.uuid}` } }
   return {}
 }
 
@@ -60,7 +68,8 @@ export default async function Resolved({ params, searchParams }: Props) {
   const query = await searchParams
 
   if (r.program) {
-    const raw = String(query.p ?? '')
+    // params from the path (a multi-segment combination) win; otherwise the ?p= query, as before
+    const raw = r.params?.length ? r.params.join(',') : String(query.p ?? '')
     const nums = raw.split(',').map((x) => x.trim()).filter(Boolean).map(Number).slice(0, 3)
     if (!nums.every((x) => Number.isSafeInteger(x) && x >= 0)) return <ProgramView family={r.program.family} names={r.program.names} formulas={r.program.formulas} raw={raw} error="Parameters must be natural numbers." />
     try {
