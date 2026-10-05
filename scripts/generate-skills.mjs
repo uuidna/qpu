@@ -11,6 +11,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { qpuHexFamiliesOf, qpuHexUuidOf, qpuCiteOf } from '../dist/quantum/processing/unit/index.js'
+import { mintOf } from './lattice-values.mjs'
 // every family registers on import of the generated registry — the one import that is the whole surface
 await import('../dist/mcp/families.js')
 
@@ -21,7 +22,7 @@ const site = (qpuCiteOf()).website
 const families = [...qpuHexFamiliesOf()]
   .map(([name, formulas]) => ({
     name,
-    formulas: formulas.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })),
+    formulas: formulas.map((f, i) => ({ nibble: (i + 1).toString(mintOf(4)), name: f.name, arity: f.arity })),
   }))
   .sort((a, b) => a.name.localeCompare(b.name))
 
