@@ -8,5 +8,6 @@ export const metadataOf = (doc: Page | Doc | undefined, type: 'website' | 'artic
   const title = doc.meta?.title ?? doc.title
   const description = doc.meta?.description ?? doc.description ?? undefined
   const url = seoURLOf(doc)
-  return { title: { absolute: title }, description, alternates: { canonical: url }, openGraph: { title, description, type, url } }
+  // best-practice SEO by architecture: title, description, one canonical, Open Graph, a Twitter card, and indexable robots
+  return { title: { absolute: title }, description, alternates: { canonical: url }, openGraph: { title, description, type, url }, twitter: { card: 'summary_large_image', title, description }, robots: { index: true, follow: true } }
 }
