@@ -37,6 +37,7 @@
     { "name": "payload-deployment", "state": "crossed", "lead": "4-mode payload (browser/standalone/docker/k8s); payloadcms/website ported (payload.test)" },
     { "name": "feedback_payload_templates", "state": "crossed", "lead": "always use payload templates; held by payload.test (conformance)" },
     { "name": "pi-primes-dna-uuid-streams", "state": "open", "lead": "digits of pi and the prime sequence as UUID/DNA-like streams; crosses prime, numbertheory, crypt, numen when developed" },
-    { "name": "merkaba-medical-scans", "state": "open", "lead": "merkaba rotation renders a digital scan as a multidimensional moving graph of hidden aspects; crosses merkaba, tomography, signal when developed" }
+    { "name": "merkaba-medical-scans", "state": "open", "lead": "merkaba rotation renders a digital scan as a multidimensional moving graph of hidden aspects; crosses merkaba, tomography, signal when developed" },
+    { "name": "insurance-indemnity", "state": "crossed", "lead": "indemnity already lives in the insurance family (insurance.indemnity = min(claim, limit), with insurance.claim = max(0, loss − deductible)); court.indemnity would have duplicated it and overflowed the 15 nibble cap, so it was not added to court — law and order by the right family" }
   ]
 }
