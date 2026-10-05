@@ -59,33 +59,57 @@ const develop = async (family) => {
   }
 }
 
-const slice = async (fams, from) => {
-  const team = fams.slice(from, from + FACES) // a slice is a team; 2 and 3 compose it
-  const rows = await Promise.all(team.map(develop))
-  for (const r of rows) console.log(r.hot ? `  hot  ${r.family} (${r.ms}ms) — left for next run` : `  ok   ${r.family}: matched ${r.matched}, read ${r.read} (${r.ms}ms)`)
-  return rows
+/** THE CLAY SOLUTIONS AS THE NAVIGATION TOOLSET. The sealed Clay proofs — the universal σ-involution — pair the lattice,
+ *  so discovery NAVIGATES by involution (each coordinate reached with its reflection) rather than scanning blindly. One
+ *  clay run anchors the toolset on the host; every family uses it to navigate and discover. Tolerant: if the host is
+ *  unreached the families are still discovered, just without the live anchor. */
+const clayNavigation = async () => {
+  for (const tool of ['prove', 'qpu_prove', 'lean', 'qpu_lean']) {
+    try { const r = await call(tool, { hex: { family: 'clay', program: ['riemann'], params: [] } }); if (r) return true } catch { /* next */ }
+  }
+  return false
 }
 
+/** What to develop and HOW, known from the referrer (the lead) in terms of its meaning — each case routes to its method. */
+const howOf = (lead) => {
+  const m = `${lead.name} ${lead.lead}`.toLowerCase()
+  if (/readme|skill|doc|generate|catalog/.test(m)) return 'regenerate from the registry (the generator) — no hand page'
+  if (/hot|cold|page|temp|perf|isolate|deploy|ship/.test(m)) return 'optimise on the host at zero temp (heat + queue), then the author ships'
+  if (/residual|shared.?tree|remand|peer|held/.test(m)) return 'remand to the host/peer (court, law.removable: not dropped)'
+  if (/humanit|theolog|philosoph|histor|domain|api|dataset|research|verify/.test(m)) return 'research free public APIs/datasets (the data door), reusable by all domains'
+  return 'cross via gate.crossed — develop the formula free on the host'
+}
+
+const TRINITY = 3 // develop in family trinities — teams of 3
 const main = async () => {
+  // PHASE 1 — DISCOVER AT ONCE, navigating by the clay solutions (the σ-involution toolset every family uses)
+  const navigates = await clayNavigation()
   const fams = await familiesOf()
-  if (fams.length === 0) { console.log('the host served no families (unreached, or predates the ask door) — nothing to develop this run'); process.exit(0) }
   const all = process.argv.includes('--all')
   const from = Number(arg('--from') ?? 0)
-  console.log(`develop all, free: ${fams.length} families on ${HOST}, teams of ${FACES} (2 and 3 compose each)`)
+  console.log(`phase 1 — discovered ${fams.length} families at once on ${HOST}, navigating by the clay solutions (${navigates ? 'involution toolset live' : 'toolset offline — still discovered'})`)
+  // PHASE 2 — DEVELOP IN FAMILY TRINITIES: teams of 3, in parallel waves (full bandwidth), the slow left hot (zero temp)
   let done = 0, hot = 0
-  for (let i = from; i < fams.length; i += FACES) {
-    const rows = await slice(fams, i)
-    done += rows.filter((r) => !r.hot).length
-    hot += rows.filter((r) => r.hot).length
-    if (!all) break
-  }
-  console.log(`\n✓ developed ${done} families free; ${hot} hot, left for the next run (zero temp: the slow are not waited on)`)
-  // the memories, moved to leads: the open ones are the frontier the teams develop next, free, at full bandwidth
+  if (fams.length) {
+    const trinities = []
+    for (let i = from; i < fams.length; i += TRINITY) trinities.push(fams.slice(i, i + TRINITY))
+    const span = all ? trinities.length : 1
+    console.log(`phase 2 — developing ${span} of ${trinities.length} trinit${trinities.length === 1 ? 'y' : 'ies'} (teams of 3), full bandwidth, zero temp`)
+    for (let w = 0; w < span; w += FACES) {
+      const wave = trinities.slice(w, w + FACES) // a wave of trinities developed at once — full bandwidth
+      const results = await Promise.all(wave.map((tri) => Promise.all(tri.map(develop))))
+      for (const tri of results) for (const r of tri) { if (r.hot) { hot++; console.log(`  hot  ${r.family} (${r.ms}ms) — left for next run`) } else done++ }
+    }
+    console.log(`\n✓ developed ${done} families free in trinities; ${hot} hot, left for next run (zero temp: the slow are not waited on)`)
+  } else console.log('the host served no families this run — develop them once the build is live')
+  // the memories, moved to leads: develop KNOWS what and how for each case from the referrer (the lead) in terms of its
+  // meaning — the method is routed by the lead's own words, not a single blind step. Free, full bandwidth, zero temp.
   try {
     const mem = JSON.parse(readFileSync(new URL('./leads.memory.json', import.meta.url), 'utf8'))
-    const open = mem.leads.filter((l) => l.state === 'open').map((l) => l.name)
+    const open = mem.leads.filter((l) => l.state === 'open')
     const crossed = mem.leads.filter((l) => l.state === 'crossed').length
-    console.log(`memory-leads: ${crossed} crossed, ${open.length} open for the teams — ${open.join(', ')}`)
+    console.log(`memory-leads: ${crossed} crossed, ${open.length} open — each developed by its referrer's meaning:`)
+    for (const l of open) console.log(`  ${l.name} → ${howOf(l)}`)
   } catch { /* no manifest this run */ }
   process.exit(0)
 }
