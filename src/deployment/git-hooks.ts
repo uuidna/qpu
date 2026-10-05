@@ -85,6 +85,19 @@ const findingsOut = (findings: string[], limit = 20) => {
   if (findings.length > limit) console.log(`  … ${findings.length - limit} more`)
 }
 
+/** Every package.json dependency must be ported into the family/domain port graph (QPU_DEPS); an unported one is a
+ *  finding, so a dependency added without a port is caught at commit. Skips silently when dist is not built (the build/
+ *  pre-push covers it then). */
+const dependencyFindings = async (): Promise<string[]> => {
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'))
+    const deps = [...new Set([...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.devDependencies ?? {})])]
+    const porting = (await import(pathToFileURL(path.join(ROOT, 'dist/quantum/processing/unit/porting.js')).href).catch(() => null)) as { QPU_DEPS?: Record<string, unknown> } | null
+    if (!porting?.QPU_DEPS) return []
+    return deps.filter((d) => !(d in porting.QPU_DEPS!)).map((d) => `package.json: dependency '${d}' is unported — port it into QPU_DEPS (domain + relates) in src/quantum/processing/unit/porting.ts`)
+  } catch { return [] }
+}
+
 /** Report-only: measures the staged files, evaluates cross formulas on the measurement, never blocks or edits. */
 export const preCommit = async (): Promise<void> => {
   const staged = execFileSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z'], { cwd: ROOT, encoding: 'utf8' }).split('\0').filter(Boolean)
@@ -95,7 +108,8 @@ export const preCommit = async (): Promise<void> => {
     const perFile = await Promise.all(staged.map(async (f) => (await stagedFindings(f, tmp)).map((why) => `${f}: ${why}`)))
     const ts = staged.filter((f) => /\.tsx?$/.test(f))
     const typed = await Promise.all(PROJECTS.filter(([, owns]) => ts.some(owns)).map(([p]) => tscErrors(p)))
-    return [...perFile.flat(), ...typed.flat().filter((l) => staged.includes(fileOfTscError(l)))]
+    const deps = staged.includes('package.json') ? await dependencyFindings() : []
+    return [...perFile.flat(), ...typed.flat().filter((l) => staged.includes(fileOfTscError(l))), ...deps]
   })
   fs.rmSync(tmp, { recursive: true, force: true })
   const bad = new Set(findings.map((f) => (f.includes('): error') ? fileOfTscError(f) : f.slice(0, f.indexOf(': ')))))
