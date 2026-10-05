@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { qpuHexDecodeOf, qpuHexRunOf } from '@uuidna/qpu'
-import { docOf, docsOf, familiesOf, pageOf, payloadOf, runOf } from '@/app/_data'
+import { askOf, docOf, docsOf, familiesOf, pageOf, payloadOf, runOf } from '@/app/_data'
 import { RenderBlocks, type SearchParams } from '@/components/RenderBlocks'
 import { metadataOf } from '@/utilities/metadataOf'
 import { DocView } from '@/components/Doc'
@@ -74,6 +74,10 @@ export default async function Resolved({ params, searchParams }: Props) {
   if (!r.page && !r.doc && !r.family && !r.uuid) {
     const to = await redirectOf(path)
     if (to) redirect(to)
+    // ANY MEANINGFUL PATH IS A LEAD, NOT A 404: parse its words; if they name a formula (a meaningful combination),
+    // return the combinatorics (200). Nothing is recorded — the path is a lead the ask resolves on the fly.
+    const lead = await askOf(path.map((s) => decodeURIComponent(s)).join(' '))
+    if (lead?.hex) return <div className="space-y-16"><RunCard uuid={lead.hex} run={(await qpuHexRunOf(lead.hex)) as Run} /></div>
     notFound()
   }
 

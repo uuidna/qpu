@@ -62,6 +62,17 @@ export const liveOf = async () => Promise.all((await qpuDataSourcesOf()).map(asy
 import { receipts } from '@/receipts'
 export const receiptsOf = () => receipts
 
+/** ANY MEANINGFUL PATH IS A LEAD, NOT A RECORD. A path that names no page, doc, family or UUID is not stored and not a
+ *  404 on sight: its words are parsed (the `ask` door) and, if they name a formula — a meaningful combination — its
+ *  combinatorics are returned (200). Nothing is written: the path is a lead the discovery resolves on the fly. Returns
+ *  the ask reading when a formula is named (with its hex and value), or undefined when the words name nothing. */
+export const askOf = async (about: string): Promise<{ hex?: string; formula?: string; value?: unknown; holds?: boolean; answer?: string } | undefined> => {
+  if (!about.trim()) return undefined
+  const r = (await qpuDataOf('ask', { about })) as { reading?: { hex?: string; formula?: string; value?: unknown; holds?: boolean; answer?: string }; agrees?: boolean }
+  const reading = r?.reading
+  return reading?.hex && r.agrees ? reading : undefined
+}
+
 export const docsOf = async (): Promise<Doc[]> =>
   (await (await payloadOf()).find({ collection: 'docs', where: await tenantWhere(), limit: 0, pagination: false, depth: 0, sort: 'title' })).docs as Doc[]
 
