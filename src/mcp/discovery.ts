@@ -34,13 +34,60 @@ const valueOf = (run: { value?: unknown; holds?: boolean }): string | null => {
  * live when a live reading is its value or among its params. Lean formulas compute exactly (2^n as a natural), so they take
  * the small naturals and meet live readings as values.
  */
-export const qpuDiscoverOf = async (live: number[] = []) => {
+/** The relations and seals as an envelope, over whatever `reached` holds — the same shape whether one call swept every
+ *  family or several slices were merged. `ways` and `liveKeys` carry enough to merge two envelopes into one (a value's
+ *  ways are concatenated, the live keys unioned) and recompute the crosses in full. */
+const envelopeOf = (reached: Map<string, Way[]>, perFamily: Record<string, { programs: number; runs: number }>, seals: Seal[], liveSet: Set<string>) => {
+  const relations: Relation[] = [...reached]
+    .map(([value, ways]) => ({ value, ways, families: [...new Set(ways.map((w) => w.family))].sort(), live: liveSet.has(value) || ways.some((w) => w.params.some((p) => liveSet.has(String(p)))) }))
+    .filter((r) => r.families.length > 1)
+    .sort((a, b) => Number(b.live) - Number(a.live) || b.families.length - a.families.length || (BigInt(a.value) < BigInt(b.value) ? -1 : 1))
+  const families = Object.keys(perFamily).sort()
+  const related = new Set(relations.flatMap((r) => r.families))
+  return {
+    kind: 'discover' as const,
+    families,
+    perFamily,
+    runs: Object.values(perFamily).reduce((a, b) => a + b.runs, 0),
+    relations,
+    liveRelations: relations.filter((r) => r.live).length,
+    unrelated: families.filter((f) => !related.has(f)),
+    seals,
+    ways: [...reached] as [string, Way[]][],
+    liveKeys: [...liveSet],
+    holds: families.every((f) => perFamily[f]!.runs > 0) && relations.length > 0,
+  }
+}
+export type Discovered = ReturnType<typeof envelopeOf>
+
+/** Merge the slices of a split discovery back into one full result: a value's ways are unioned by hex, the per-family
+ *  counts and seals concatenated, the live keys unioned, and every cross recomputed over the union — the same relations
+ *  one monolithic sweep would have found, computed in slices that each stay within a call's limits (no skips, no caps
+ *  raised; the whole lattice, in full). */
+export const qpuDiscoverMergeOf = (parts: Discovered[]): Discovered => {
+  const reached = new Map<string, Way[]>()
+  for (const p of parts)
+    for (const [value, ways] of p.ways) {
+      const list = reached.get(value) ?? reached.set(value, []).get(value)!
+      for (const w of ways) if (!list.some((x) => x.hex === w.hex)) list.push(w)
+    }
+  const perFamily = Object.assign({}, ...parts.map((p) => p.perFamily)) as Record<string, { programs: number; runs: number }>
+  const seals = parts.flatMap((p) => p.seals)
+  const liveSet = new Set(parts.flatMap((p) => p.liveKeys))
+  return envelopeOf(reached, perFamily, seals, liveSet)
+}
+
+export const qpuDiscoverOf = async (live: number[] = [], slice?: { from?: number; count?: number }) => {
   const liveSet = new Set(live.filter((x) => Number.isSafeInteger(x) && x >= 0).map(String))
   const liveInputs = live.filter((x) => Number.isSafeInteger(x) && x >= 0 && x < qpuHexParamMaxOf(L.seed))
   const reached = new Map<string, Way[]>()
   const perFamily: Record<string, { programs: number; runs: number }> = {}
   const seals: Seal[] = []
-  for (const [family, formulas] of qpuHexFamiliesOf()) {
+  // a family slice stays within a call's limits; the caller merges the slices back in full with qpuDiscoverMergeOf
+  const all = [...qpuHexFamiliesOf()]
+  const from = Math.max(0, slice?.from ?? 0)
+  const entries = slice ? all.slice(from, from + (slice.count ?? all.length)) : all
+  for (const [family, formulas] of entries) {
     if (DOORS.has(family)) continue
     const lean = family.startsWith('Qpu.')
     const singles = lean ? SMALL : [...new Set([...SMALL, ...liveInputs])]
@@ -98,21 +145,5 @@ export const qpuDiscoverOf = async (live: number[] = []) => {
       if (program.length === 2 && tested > 1 && returned.length === tested) seals.push({ family, program, kind: program[0] === program[1] ? 'involution' : 'inverse', points: returned, tested, hex: last })
     }
   }
-  const relations: Relation[] = [...reached]
-    .map(([value, ways]) => ({ value, ways, families: [...new Set(ways.map((w) => w.family))].sort(), live: liveSet.has(value) || ways.some((w) => w.params.some((p) => liveSet.has(String(p)))) }))
-    .filter((r) => r.families.length > 1)
-    .sort((a, b) => Number(b.live) - Number(a.live) || b.families.length - a.families.length || (BigInt(a.value) < BigInt(b.value) ? -1 : 1))
-  const families = Object.keys(perFamily).sort()
-  const related = new Set(relations.flatMap((r) => r.families))
-  return {
-    kind: 'discover' as const,
-    families,
-    perFamily,
-    runs: Object.values(perFamily).reduce((a, b) => a + b.runs, 0),
-    relations,
-    liveRelations: relations.filter((r) => r.live).length,
-    unrelated: families.filter((f) => !related.has(f)),
-    seals,
-    holds: families.every((f) => perFamily[f]!.runs > 0) && relations.length > 0,
-  }
+  return envelopeOf(reached, perFamily, seals, liveSet)
 }

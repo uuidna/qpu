@@ -878,7 +878,7 @@ export class DataFormulas {
     return dataFormula('data-perspectives', 'perspectives', [n], 'perspectives(n) = |relations every way of which answers the same value from every other way as referrer|', closed, relations.length > 0 && open.length === 0, 'qpuHexRunOf(way, referrer)', { relations: relations.length, pairs, closed, open: open.slice(0, qpuFacesOf().faces) })
   }
   /** Discovery across every family, bounded to the first n relations: value how many values two or more families reach. */
-  static async discover(n: number): Promise<unknown> {
+  static async discover(n: number, slice?: { from?: number; count?: number }): Promise<unknown> {
     const { qpuDiscoverOf } = await import('./discovery.js')
     // the live inputs are every reading the doors made in this window (data.read, research, the site…): reading the
     // record and discovering over it is one sequence of calls, nothing passed by hand
@@ -888,8 +888,9 @@ export class DataFormulas {
     // inputs can meet; a window full of catalogue totals would make one discovery the lattice squared (measured
     // 2026-10-03: 22 minutes at 100% CPU after one family's research)
     const live = [...new Set(readings.flatMap((r) => numbersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, qpuFacesOf().faces * 4)
-    const d = await qpuDiscoverOf(live)
-    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, liveInputs: live.length, liveRelations: d.liveRelations, relationsTotal: d.relations.length, sealsTotal: d.seals.length, relations: d.relations.slice(0, n).map((r) => ({ value: r.value, families: r.families, live: r.live, ways: r.ways.slice(0, 2).map((w) => ({ family: w.family, program: w.program, params: w.params, hex: w.hex })) })), seals: d.seals.slice(0, n).map((s) => ({ family: s.family, program: s.program, kind: s.kind, points: s.points.slice(0, 6) })) })
+    // a family slice stays within a call's limits; the caller fires the slices and merges them back in full
+    const d = await qpuDiscoverOf(live, slice)
+    return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families|, over every reading of the window', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, slice: slice ? { from: slice.from ?? 0, count: slice.count ?? null } : null, liveInputs: live.length, liveRelations: d.liveRelations, relationsTotal: d.relations.length, sealsTotal: d.seals.length, relations: d.relations.slice(0, n).map((r) => ({ value: r.value, families: r.families, live: r.live, ways: r.ways.slice(0, 2).map((w) => ({ family: w.family, program: w.program, params: w.params, hex: w.hex })) })), seals: d.seals.slice(0, n).map((s) => ({ family: s.family, program: s.program, kind: s.kind, points: s.points.slice(0, 6) })) })
   }
 }
 // Two families, each within its nibble (15): `data` keeps the discovery and research core the rest of the unit calls
