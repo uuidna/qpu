@@ -3,7 +3,8 @@ import { leanSource } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
 import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuHarnessesOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpDoorsOf, qpuMcpFuseOf, qpuMcpToolsListOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
-import { crossFormulaOf } from '../families/cross/index.js'
+import { qpuPortingOf } from '../quantum/processing/unit/porting.js'
+import { crossFormulaOf, qpuCrossBridgesOf } from '../families/cross/index.js'
 import { apiCallOf, apiOf, apiRegistryOf, apiSearchOf } from './api-door.js'
 import { CryptFormulas } from '../families/crypt/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
@@ -392,6 +393,25 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     if (numbers.length === 0 && has('families', 'family', 'formulas')) {
       const fams = [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([f, fs]) => ({ family: f, formulas: fs.map((x) => x.name) }))
       return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { question: q, answer: `${fams.length} families: ${fams.map((f) => f.family).join(', ')}`, families: fams }, expected: { families: '>= 1' }, agrees: fams.length > 0 }
+    }
+    // HOW TO PORT, not what to depend on: the gate blocks an external dependency in the core, and the chat says what to do
+    // instead — the steps and the port map (src/quantum/processing/unit/porting.ts).
+    if (numbers.length === 0 && has('port', 'porting', 'dependency', 'dependencies', 'external', 'depend')) {
+      const p = qpuPortingOf()
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { question: q, answer: p.rule, steps: p.steps, ports: p.ports, blocks: p.blocks }, expected: { steps: '>= 1' }, agrees: p.holds }
+    }
+    // NEXT, THE INTELLIGENT STEP: let the families organise by domain and discover all around. The bridges (family → domain,
+    // filled as the families seal) group into domains; the neighbourhood of a named family is the families sharing its
+    // domain; the frontier is the thinnest domains — where next develops. No hand list: the graph organises itself.
+    if (numbers.length === 0 && has('next', 'organize', 'organise', 'discover', 'around', 'domain', 'domains', 'neighbour', 'neighbor', 'frontier')) {
+      const bridges = qpuCrossBridgesOf()
+      const byDomain = new Map<string, string[]>()
+      for (const [fam, dom] of bridges) (byDomain.get(dom) ?? byDomain.set(dom, []).get(dom)!).push(fam)
+      const domains = [...byDomain].map(([domain, families]) => ({ domain, families: families.sort(), count: families.length })).sort((a, b) => b.count - a.count)
+      const named = [...bridges.keys()].find((fm) => asked.has(fm))
+      const around = named ? (byDomain.get(bridges.get(named)!) ?? []).filter((fm) => fm !== named).sort() : undefined
+      const frontier = [...domains].sort((a, b) => a.count - b.count).slice(0, qpuFacesOf().faces).map((d) => d.domain)
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { question: q, answer: `${bridges.size} families organise into ${domains.length} domains; next develops the thin edges: ${frontier.join(', ') || 'none yet'}`, domains, ...(named ? { around: { family: named, domain: bridges.get(named), neighbours: around } } : {}), frontier }, expected: { domains: '>= 1' }, agrees: domains.length > 0 }
     }
     const candidates = [...qpuHexFamiliesOf()].filter(([fam]) => !DOORS.has(fam)).flatMap(([family, formulas]) => formulas.filter((x) => !x.live).map((x) => {
       const fw = wordsOf(family), xw = wordsOf(x.name)

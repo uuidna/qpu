@@ -35,7 +35,15 @@ export interface DomainBridge {
  * @wing fusion
  * @kind builder
  */
+// THE FAMILY → DOMAIN BRIDGES, recorded as each formula seals: a family (src) crosses to a domain (dst). The intelligent
+// `next` reads this to let the families organise by domain and discover the neighbourhood around each — no hand list, the
+// graph fills itself as the families are exercised.
+const BRIDGES = new Map<string, string>()
+/** Each family's domain, as far as the families have sealed a formula — src → dst. A copy, so a caller cannot mutate it. */
+export const qpuCrossBridgesOf = (): Map<string, string> => new Map(BRIDGES)
+
 export const crossFormulaOf = (f: Omit<CrossFormula, 'uuid' | 'receipt' | 'holds' | 'hex' | 'hexExact'>, domain = true, call?: { name: string; params: number[] }): CrossFormula => {
+  if (f.src && f.dst) BRIDGES.set(f.src, f.dst)
   const uuid = qpuContentUuidOf({ src: f.src, dst: f.dst, formula: f.formula })
   const holds = domain && Number.isFinite(f.value)
   // the formula's hex program: its handle, call then holds then receipt, its inputs as params when they are naturals that fit

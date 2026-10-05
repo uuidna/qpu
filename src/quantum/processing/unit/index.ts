@@ -2521,6 +2521,27 @@ const uuidSealOf = (uuid: string): boolean => {
   const bare = String(uuid).replace(/-/g, '').toLowerCase()
   return /^[0-9a-f]{32}$/.test(bare) && bare[UUID_VERSION_AT] === uuidVersionOf(bare)
 }
+/**
+ * THE WHOLE VERSION SUPERPOSITION, AT ONCE — qpu:crypto. RFC 9562 keeps eight versions; a content folds
+ * (uuidVersionOf) to the ONE it wears, but the same thirty-one digits are a valid UUID under every one of the eight.
+ * This returns all eight at once — each RFC-valid 8-4-4-4-12 for this content, the variant untouched, only the version
+ * nibble changing 1..8 — with the crypto fold naming the `decided` one. The address is in all versions at once; the
+ * fold is the measurement that collapses it, and `uuidSealOf` holds for exactly the decided member.
+ */
+const uuidVersionsOf = (uuid: string): { decided: string; versions: Record<string, string> } => {
+  const d = String(uuid).replace(/-/g, '').toLowerCase()
+  const at = (v: number) =>
+    uuidGroupsOf(
+      d.slice(n - n, UUID_EIGHT),
+      d.slice(UUID_EIGHT, UUID_VERSION_AT),
+      `${v.toString(UUID_SIXTEEN)}${d.slice(UUID_VERSION_AT + seed, UUID_SIXTEEN)}`,
+      d.slice(UUID_SIXTEEN, UUID_SIXTEEN + UUID_FOUR),
+      d.slice(UUID_SIXTEEN + UUID_FOUR, coins * UUID_SIXTEEN),
+    )
+  const versions: Record<string, string> = {}
+  for (let v = seed; v <= mintOf(n); v++) versions[v] = at(v) // RFC versions 1..8, all at once
+  return { decided: uuidStampOf(d), versions }
+}
 /** Bits so that 2^bits > value: the work register that holds every residue mod value. 0 for value <= 0. */
 const bitsOf = (value: bigint): number => {
   let k = n - n
@@ -12089,7 +12110,7 @@ export const qpuHexDecodeOf = (uuid: string) => {
   const mode = parseInt(variant!, UUID_SIXTEEN) - mintOf(n)
   let at = n - n
   const params = hexWidths[mode]!.map((w) => parseInt(s5!.slice(at, (at += w)), UUID_SIXTEEN))
-  return { kind: 'hex' as const, uuid: uuid.toLowerCase(), handle: handle!, version: parseInt(version!, UUID_SIXTEEN), sealed: uuidSealOf(uuid), family: family ?? null, program: program.map((x) => x ?? 'unknown'), mode: HEX_PARAM_MODES[mode]!, params, row: `${handle}/${s5}`, holds: family !== undefined && program.length > n - n && program.every((x) => x !== undefined) }
+  return { kind: 'hex' as const, uuid: uuid.toLowerCase(), handle: handle!, version: parseInt(version!, UUID_SIXTEEN), sealed: uuidSealOf(uuid), versions: uuidVersionsOf(uuid).versions, family: family ?? null, program: program.map((x) => x ?? 'unknown'), mode: HEX_PARAM_MODES[mode]!, params, row: `${handle}/${s5}`, holds: family !== undefined && program.length > n - n && program.every((x) => x !== undefined) }
 }
 
 /**
@@ -12346,6 +12367,7 @@ export {
   toolNames,
   unauthorized,
   unit,
+  uuidVersionsOf,
   weightOf,
   xGateOf,
   xorOf,
