@@ -10,7 +10,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { qpuHexFamiliesOf, qpuHexUuidOf, qpuCiteOf } from '../dist/quantum/processing/unit/index.js'
+import { qpuHexFamiliesOf, qpuHexUuidOf, qpuCiteOf, qpuFoldOf } from '../dist/quantum/processing/unit/index.js'
 import { mintOf } from './lattice-values.mjs'
 // every family registers on import of the generated registry — the one import that is the whole surface
 await import('../dist/mcp/families.js')
@@ -22,6 +22,7 @@ const site = (qpuCiteOf()).website
 const families = [...qpuHexFamiliesOf()]
   .map(([name, formulas]) => ({
     name,
+    handle: qpuFoldOf(name).slice(0, mintOf(3)), // the 8-hex handle: the compact address a call routes by (token-free)
     formulas: formulas.map((f, i) => ({ nibble: (i + 1).toString(mintOf(4)), name: f.name, arity: f.arity })),
   }))
   .sort((a, b) => a.name.localeCompare(b.name))
@@ -35,7 +36,7 @@ const sampleUuid = sample ? qpuHexUuidOf({ family: families[0].name, program: [s
 
 const paramsHint = (arity) => (arity === 0 ? "'[]'" : `'[${Array.from({ length: arity }, (_, i) => i + 1).join(', ')}]'`)
 
-const description = `Call any of the ${families.length} QPU formula families (${totalFormulas} exact-integer formulas) through the MCP — each a hex-program UUID that recomputes to the same value, so a call is idempotent and verifiable. Use when computing or verifying with the QPU over MCP. Families: ${families.map((f) => f.name).join(', ')}. Each formula answers at \`npm run mcp -- <family>.<formula> '[params]'\`.`
+const description = `Call any of the ${families.length} QPU formula families (${totalFormulas} exact-integer formulas) through the MCP by its 8-hex HANDLE — each formula is a hex-program UUID (handle + nibble + params) that recomputes to the same value, so a call is a compact address, idempotent and verifiable, at no token cost. Use when computing or verifying with the QPU over MCP. The handle table is below; call \`npm run mcp -- <family>.<formula> '[params]'\`.`
 
 const body = `---
 name: qpu-families
@@ -59,11 +60,11 @@ Ask a family anything else through its door — \`npm run mcp -- '{ "door": "gat
 
 ## The ${families.length} families (${totalFormulas} tools)
 
-| family | formulas |
-|---|---|
-${families.map((f) => `| \`${f.name}\` | ${f.formulas.map((x) => `\`${x.name}\`/${x.arity}`).join(', ')} |`).join('\n')}
+| family | handle | formulas |
+|---|---|---|
+${families.map((f) => `| \`${f.name}\` | \`${f.handle}\` | ${f.formulas.map((x) => `\`${x.name}\`/${x.arity}`).join(', ')} |`).join('\n')}
 
-Each \`name\`/\`arity\` above is one tool: a formula of that many parameters, callable as \`npm run mcp -- ${'<family>'}.<name> '[…]'\`. Every value is an exact integer a Lean kernel can check — no estimate, no coverage percentage, no wall clock.
+Each row is a family at its 8-hex \`handle\` — the compact address a call routes by (handle + the formula's nibble + params = the hex-program UUID), so the LLM addresses by handle at no token cost. Each \`name\`/\`arity\` is one tool: a formula of that many parameters, callable as \`npm run mcp -- ${'<family>'}.<name> '[…]'\`. Every value is an exact integer a Lean kernel can check — no estimate, no coverage percentage, no wall clock.
 `
 
 const dir = path.join(ROOT, '.claude', 'skills', 'qpu-families')
