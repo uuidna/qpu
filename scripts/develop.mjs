@@ -111,6 +111,14 @@ const main = async () => {
     console.log(`memory-leads: ${crossed} crossed, ${open.length} open — each developed by its referrer's meaning:`)
     for (const l of open) console.log(`  ${l.name} → ${howOf(l)}`)
   } catch { /* no manifest this run */ }
+  // DEVELOP ALL RELATED PORTS: the node builtins and dependencies still leads in the port graph — navigated by the clay
+  // solutions, developed in trinities, free. A node-builtin lead becomes a qpu door; a dependency lead becomes a family.
+  try {
+    const porting = await import(new URL('../dist/quantum/processing/unit/porting.js', import.meta.url))
+    const ports = Object.entries(porting.QPU_PORTS ?? {}).filter(([, p]) => p.lead).map(([n]) => n)
+    const deps = Object.entries(porting.QPU_DEPS ?? {}).filter(([, p]) => p.lead).map(([n]) => n)
+    console.log(`related ports: ${ports.length} node-builtin + ${deps.length} dependency leads to port (clay-navigated, developed in trinities)${ports.length ? ` — node: ${ports.join(', ')}` : ''}`)
+  } catch { /* dist not built this run */ }
   process.exit(0)
 }
 main().catch((e) => { console.error(`develop: ${e.message}`); process.exit(0) })
