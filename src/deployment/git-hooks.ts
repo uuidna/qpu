@@ -92,9 +92,16 @@ const dependencyFindings = async (): Promise<string[]> => {
   try {
     const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'))
     const deps = [...new Set([...Object.keys(pkg.dependencies ?? {}), ...Object.keys(pkg.devDependencies ?? {})])]
-    const porting = (await import(pathToFileURL(path.join(ROOT, 'dist/quantum/processing/unit/porting.js')).href).catch(() => null)) as { QPU_DEPS?: Record<string, unknown> } | null
-    if (!porting?.QPU_DEPS) return []
-    return deps.filter((d) => !(d in porting.QPU_DEPS!)).map((d) => `package.json: dependency '${d}' is unported — port it into QPU_DEPS (domain + relates) in src/quantum/processing/unit/porting.ts`)
+    const porting = (await import(pathToFileURL(path.join(ROOT, 'dist/quantum/processing/unit/porting.js')).href).catch(() => null)) as { QPU_DEPS?: Record<string, { domain?: string; relates?: unknown }> } | null
+    if (!porting?.QPU_DEPS) return [] // dist not built — cannot check here; the build and pre-push cover it
+    const out: string[] = []
+    for (const d of deps) {
+      const port = porting.QPU_DEPS[d]
+      if (!port) out.push(`package.json: dependency '${d}' is unported — port it into QPU_DEPS in src/quantum/processing/unit/porting.ts`)
+      // full compatibility: a port is complete only with a domain and a relates array — a stub is an unsuccessful port
+      else if (!port.domain || !Array.isArray(port.relates)) out.push(`package.json: dependency '${d}' is ported incompletely — a full-compatibility port needs { domain, relates }`)
+    }
+    return out
   } catch { return [] }
 }
 
@@ -104,12 +111,13 @@ export const preCommit = async (): Promise<void> => {
   if (!staged.length) return
   const bridges = bridgesOf()
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'qpu-hook-'))
+  // every dependency must be ported in full compatibility — checked on every commit, not only when package.json is staged
+  const depFindings = await dependencyFindings()
   const { value: findings, seconds } = await timed(async () => {
     const perFile = await Promise.all(staged.map(async (f) => (await stagedFindings(f, tmp)).map((why) => `${f}: ${why}`)))
     const ts = staged.filter((f) => /\.tsx?$/.test(f))
     const typed = await Promise.all(PROJECTS.filter(([, owns]) => ts.some(owns)).map(([p]) => tscErrors(p)))
-    const deps = staged.includes('package.json') ? await dependencyFindings() : []
-    return [...perFile.flat(), ...typed.flat().filter((l) => staged.includes(fileOfTscError(l))), ...deps]
+    return [...perFile.flat(), ...typed.flat().filter((l) => staged.includes(fileOfTscError(l))), ...depFindings]
   })
   fs.rmSync(tmp, { recursive: true, force: true })
   const bad = new Set(findings.map((f) => (f.includes('): error') ? fileOfTscError(f) : f.slice(0, f.indexOf(': ')))))
@@ -117,10 +125,16 @@ export const preCommit = async (): Promise<void> => {
   console.log(`pre-commit: ${staged.length} staged, ${passed} clean, ${findings.length} findings (${seconds}s)`)
   findingsOut(findings)
   const X = await bridges
-  if (!X) return console.log('  cross formulas need dist/ — npm run build')
-  show(X.testCoverageToQuality!(passed, staged.length))
-  show(X.observabilityToUI!(findings.length, staged.length))
-  show(X.deploymentToObs!(seconds, 0))
+  if (X) {
+    show(X.testCoverageToQuality!(passed, staged.length))
+    show(X.observabilityToUI!(findings.length, staged.length))
+    show(X.deploymentToObs!(seconds, 0))
+  } else console.log('  cross formulas need dist/ — npm run build')
+  // a port that did not succeed BLOCKS the commit — the rest of the pre-commit stays report-only
+  if (depFindings.length) {
+    console.log(`  ✗ ${depFindings.length} dependenc${depFindings.length === 1 ? 'y' : 'ies'} not ported in full compatibility — commit blocked until ported`)
+    process.exit(1)
+  }
 }
 
 /** Report-only: both TypeScript projects, every script, the deployment gate and dist freshness, as cross formulas. */
