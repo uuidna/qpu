@@ -15,6 +15,7 @@
  *   node scripts/develop.mjs --all      walk every family, slice by slice
  *   node scripts/develop.mjs --from N   start the walk at family N
  */
+import { readFileSync } from 'node:fs'
 const HOST = process.env.QPU_HOST ? `https://${process.env.QPU_HOST}` : 'https://qpu.uuidna.com'
 const MCP = `${HOST}/mcp`
 const FACES = 14 // the slice width and the team span: 2 and 3 compose it
@@ -79,6 +80,13 @@ const main = async () => {
     if (!all) break
   }
   console.log(`\n✓ developed ${done} families free; ${hot} hot, left for the next run (zero temp: the slow are not waited on)`)
+  // the memories, moved to leads: the open ones are the frontier the teams develop next, free, at full bandwidth
+  try {
+    const mem = JSON.parse(readFileSync(new URL('./leads.memory.json', import.meta.url), 'utf8'))
+    const open = mem.leads.filter((l) => l.state === 'open').map((l) => l.name)
+    const crossed = mem.leads.filter((l) => l.state === 'crossed').length
+    console.log(`memory-leads: ${crossed} crossed, ${open.length} open for the teams — ${open.join(', ')}`)
+  } catch { /* no manifest this run */ }
   process.exit(0)
 }
 main().catch((e) => { console.error(`develop: ${e.message}`); process.exit(0) })
