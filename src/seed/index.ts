@@ -141,15 +141,34 @@ const ensure = async (payload: Payload, collection: string, field: string, value
   return found[0] ?? ((await payload.create({ collection: collection as Slug, data: data as never, overrideAccess: true })) as unknown as Row)
 }
 
+/** THE VERIFICATION, STORED IN THE PAYLOAD DB. Every committed *-receipt.json becomes a quantum-receipts row, so the
+ *  verification the unit runs — the gate, the proof, each family — lives in its own store and not only in files, read
+ *  back at /quantum-receipts and over the MCP. A `receipts` stream chained by content UUID; idempotent by uuid, so a
+ *  receipt already stored is left. quantum-receipts is the shared engine, not tenant-scoped, so it carries no tenant. */
+async function seedReceipts(payload: Payload) {
+  const genesis = `${cite.href}/receipts`
+  let prev = genesis
+  for (let i = 0; i < receipts.length; i++) {
+    const r = receipts[i]!
+    const doc = r.doc as { uuid?: unknown }
+    const fold = qpuContentUuidOf(doc)
+    const uuid = typeof doc.uuid === 'string' ? doc.uuid : fold
+    const row = { uuid, name: r.name, stream: 'receipts', seq: i, prev, subject: r.file, referrer: `${genesis}/${r.name}`, fold }
+    const found = (await payload.find({ collection: 'quantum-receipts', where: { uuid: { equals: uuid } }, limit: 1, depth: 0, overrideAccess: true })).docs
+    if (!found.length) await payload.create({ collection: 'quantum-receipts', data: row as never, overrideAccess: true })
+    prev = uuid
+  }
+}
+
 /** Every plugin's content: docs with their place in the tree (nested-docs) and in search, redirects for retired routes,
  *  the commercial-licence form (form-builder), the products (ecommerce), the pages and the header and footer globals.
  *  Idempotent, run on init only when the content changed: its content UUID is kept in Payload's KV, so a cold isolate
  *  reads one key, and a build that changes no content seeds nothing. */
 /** The seed's state as the site reports it at /api/seed: done, or the cursor and the last failure of a slice. */
 export async function seedStateOf(payload: Payload) {
-  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, indexDocs].map(String) })
+  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
   const done = (await payload.kv.get<string>('seed')) === fingerprint
-  const cursor = await payload.kv.get<{ docs: number; site: boolean; index: number }>(`seed:${fingerprint}`)
+  const cursor = await payload.kv.get<{ docs: number; site: boolean; receipts: boolean; index: number }>(`seed:${fingerprint}`)
   const error = await payload.kv.get<{ message: string; when: string }>(`seed:error:${fingerprint}`)
   return { fingerprint, done, docs: generated.length, cursor: cursor ?? null, error: error ?? null }
 }
@@ -157,7 +176,7 @@ export async function seedStateOf(payload: Payload) {
 export async function seed(payload: Payload) {
   try { await seedSliceOf(payload) } catch (e) {
     // a slice that failed is written down where the site reports it, then the request goes on; the next request retries
-    const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, indexDocs].map(String) })
+    const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
     await payload.kv.set(`seed:error:${fingerprint}`, { message: String((e as { message?: string })?.message ?? e).slice(0, 500), when: new Date().toISOString() }).catch(() => undefined)
     throw e
   }
@@ -167,14 +186,14 @@ async function seedSliceOf(payload: Payload) {
   // the content's address and the applier's own text: a change in how rows are written (measured 2026-10-03: ensure
   // learned to update a row's description, and the host kept the old one because the content had not moved) re-runs
   // the seed as a change in what is written does
-  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, indexDocs].map(String) })
+  const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
   if ((await payload.kv.get<string>('seed')) === fingerprint) return
   // RESUMED, NOT WRITTEN AT ONCE: a request may make only so many storage calls, so each call of the seed does one
   // slice (faces docs) and keeps its cursor under the content's own address; the next request continues; the
   // fingerprint is set only when every slice is done
   const key = `seed:${fingerprint}`
   const take = qpuFacesOf().faces
-  const cursor = (await payload.kv.get<{ docs: number; site: boolean; index: number }>(key)) ?? { docs: 0, site: false, index: 0 }
+  const cursor = (await payload.kv.get<{ docs: number; site: boolean; receipts: boolean; index: number }>(key)) ?? { docs: 0, site: false, receipts: false, index: 0 }
   if (cursor.docs < generated.length) {
     await upsertDocs(payload, cursor.docs, take)
     return payload.kv.set(key, { ...cursor, docs: cursor.docs + take })
@@ -182,6 +201,10 @@ async function seedSliceOf(payload: Payload) {
   if (!cursor.site) {
     await seedSite(payload)
     return payload.kv.set(key, { ...cursor, site: true })
+  }
+  if (!cursor.receipts) {
+    await seedReceipts(payload)
+    return payload.kv.set(key, { ...cursor, receipts: true })
   }
   if (cursor.index < generated.length) {
     await indexDocs(payload, cursor.index, take)
