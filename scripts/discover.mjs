@@ -16,7 +16,7 @@ import { qpuDataOf, qpuSequencesOf } from '../dist/mcp/qpu-fused.js'
 const t0 = Date.now()
 const numbersOf = (x) => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
 // the live window: every public source read now, its numbers the discovery's inputs
-const sources = ['cern', 'nist', 'oeis', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'apis']
+const sources = ['cern', 'nist', 'oeis', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'alpine', 'apis']
 const live = new Set()
 let sourcesAgree = 0
 for (const source of sources) { const r = await qpuDataOf(source, {}).catch(() => ({})); if (r.agrees === true) sourcesAgree++; for (const n of numbersOf(r.reading ?? {})) live.add(n) }

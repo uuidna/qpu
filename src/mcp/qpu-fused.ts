@@ -235,6 +235,17 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const live = { latest: d['dist-tags']?.latest, versions: Object.keys(d.versions ?? {}).length, modified: d.time?.modified }
     return { source, url: `https://www.npmjs.com/package/${name}`, reading: live, expected: { latest: packageVersion }, agrees: live.latest === packageVersion }
   }
+  if (source === 'alpine') {
+    // Alpine Linux community apps: one directory per package in aports/community (GitLab, keyless). The app count is the
+    // lead; the GitLab tree API returns the total in the x-total header, and the first page names a sample. A neutral
+    // count, reusable by any family the way the OEIS and apis.guru readings are — a number to cross, not a claim.
+    const url = `https://gitlab.alpinelinux.org/api/v4/projects/alpine%2Faports/repository/tree?path=community&per_page=100&page=1`
+    const r = await get(url)
+    const apps = Number(r.headers.get('x-total'))
+    const names = (await r.json()) as { name?: string }[]
+    const live = { apps, pages: Number(r.headers.get('x-total-pages')), named: names.length }
+    return { source, url: 'https://pkgs.alpinelinux.org/packages?repo=community', reading: live, expected: { answers: 'apps' }, agrees: Number.isInteger(apps) && apps > 0 }
+  }
   if (source === 'apis') {
     // the API registry the unit fused, against theorem fuse: the APIs it listed then, read live now
     const fused = /theorem fuse : (\d+) \+ (\d+) = (\d+)/.exec(leanSource)
@@ -683,7 +694,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
