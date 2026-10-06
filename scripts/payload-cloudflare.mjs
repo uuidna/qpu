@@ -74,7 +74,10 @@ const REPO_WORKER = {
   version_metadata: { binding: 'CF_VERSION_METADATA' },
 }
 const REPO = {
-  key: 'opennext/qpu-raid/r2/none/ecommerce+form-builder+import-export+mcp+multi-tenant+nested-docs+redirects+search+sentry+seo+stripe',
+  // sentry dropped from the served build: it is disabled at runtime without SENTRY_DSN yet `import * as Sentry from
+  // '@sentry/nextjs'` bundles its whole tree (226 MB in node_modules) into the Worker, pushing the render over the
+  // 128 MB limit. Cloudflare observability covers the host. Re-add '+sentry' here if a DSN-backed deployment needs it.
+  key: 'opennext/qpu-raid/r2/none/ecommerce+form-builder+import-export+mcp+multi-tenant+nested-docs+redirects+search+seo+stripe',
   app: {
     root: SRC, collections: REPO_COLLECTIONS, globals: REPO_GLOBALS, registries: REPO_REGISTRIES, adminUser: 'users', title: 'UUIDNA QPU',
     targets: {
