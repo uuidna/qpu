@@ -1,6 +1,6 @@
 ---
 name: qpu-families
-description: Call any of the 1133 QPU formula families (9068 exact-integer formulas) through the MCP by its 8-hex HANDLE — each formula is a hex-program UUID (handle + nibble + params) that recomputes to the same value, so a call is a compact address, idempotent and verifiable, at no token cost. Use when computing or verifying with the QPU over MCP. The handle table is below; call `npm run mcp -- <family>.<formula> '[params]'`.
+description: Call any of the 1134 QPU formula families (9084 exact-integer formulas) through the MCP by its 8-hex HANDLE — each formula is a hex-program UUID (handle + nibble + params) that recomputes to the same value, so a call is a compact address, idempotent and verifiable, at no token cost. Use when computing or verifying with the QPU over MCP. The handle table is below; call `npm run mcp -- <family>.<formula> '[params]'`.
 ---
 
 # QPU families over MCP
@@ -18,7 +18,7 @@ Params are a JSON array (`'[]'` for none). The call routes through `hex` to the 
 
 Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate.crossed", "i": 0 }'` names the next lead; `npm run mcp -- '{ "doors": true }'` lists every door beyond the sixteen sealed tools.
 
-## The 1133 families (9068 tools)
+## The 1134 families (9084 tools)
 
 | family | handle | formulas |
 |---|---|---|
@@ -194,7 +194,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `cinematography` | `575fcf2d` | `aspect`/2, `depthoffield`/2, `exposure`/2, `focallength`/2, `framerate`/2, `fstop`/2, `iso`/2, `shutterangle`/2 |
 | `civil` | `a977c17c` | `beamload`/2, `bearing`/2, `concrete`/2, `deflection`/2, `runoff`/2, `settlement`/2, `slope`/2, `trafficflow`/2 |
 | `claims` | `be2fbe80` | `deductible`/2, `frequency`/2, `incurred`/2, `lossratio`/2, `payout`/2, `reserve`/2, `settlement`/2, `severity`/2 |
-| `clay` | `13962491` | `bsd`/1, `hodge`/1, `navierStokes`/2, `pVsNp`/1, `pass`/1, `riemann`/2, `yangMills`/0 |
+| `clay` | `13962491` | `bsd`/1, `disclosure`/0, `hodge`/1, `navierStokes`/2, `pVsNp`/1, `pass`/1, `riemann`/2, `yangMills`/0 |
 | `clearance` | `40076cb1` | `extractionratio`/2, `filtration`/2, `firstpass`/1, `hepatic`/2, `ratio`/2, `renal`/3, `residual`/2, `total`/2 |
 | `climate` | `6963a8e6` | `anomaly`/2, `budget`/2, `emissions`/2, `intensity`/2, `offset`/2, `renewable`/2, `sealevel`/2, `warming`/2 |
 | `climatology` | `2a659a0c` | `albedo`/2, `anomaly`/2, `aridity`/2, `carbon`/2, `degreeday`/2, `forcing`/2, `seasonality`/2, `trend`/2 |
@@ -253,7 +253,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `cosmology` | `00f6bfbb` | `age`/2, `curvature`/2, `density`/2, `expansion`/2, `horizon`/2, `hubble`/2, `recession`/2, `temperature`/2 |
 | `costing` | `bc038c25` | `absorption`/2, `breakeven`/2, `contribution`/2, `margin`/2, `markup`/2, `overhead`/2, `target`/2, `unitcost`/2 |
 | `counterpoint` | `ec30f0d9` | `cantusspan`/2, `dissonancecount`/2, `imitationdelay`/2, `intervalconsonance`/2, `motioncontrary`/2, `parallelfifths`/2, `speciesratio`/2, `voicecount`/2 |
-| `court` | `b1a1e28e` | `apportion`/3, `cap`/2, `costs`/2, `damages`/3, `fee`/2, `interest`/3, `settlement`/2, `standard`/2 |
+| `court` | `b1a1e28e` | `apportion`/3, `barred`/2, `cap`/2, `compliant`/2, `costs`/2, `damages`/3, `distribution`/3, `fee`/2, `interest`/3, `liquidated`/2, `penalty`/3, `possession`/2, `restitution`/3, `settlement`/2, `standard`/2 |
 | `covenant` | `182a99b3` | `blessingcurses`/2, `clausecombos`/2, `conditionsubsets`/1, `fulfillmentratio`/2, `obligationpairs`/2, `partycount`/2, `renewalcycle`/2, `stageorderings`/1 |
 | `coverage` | `98f24bc9` | `branches`/2, `combinatorialt`/2, `functionpairs`/2, `lines`/2, `mutationscore`/2, `pathsubsets`/1, `testcount`/2, `uncovered`/2 |
 | `creditscore` | `71f6fc89` | `defaultprob`/2, `factorcombos`/2, `inquiries`/2, `paymenthistory`/2, `riskbands`/2, `score`/2, `tier`/2, `utilization`/2 |
@@ -283,7 +283,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `cytology` | `558ff6c8` | `apoptosis`/2, `confluence`/2, `diameter`/1, `doubling`/2, `mitosis`/2, `passage`/1, `ratio`/2, `viability`/2 |
 | `dairy` | `37363f58` | `butterfat`/2, `conception`/2, `feedefficiency`/2, `lactation`/1, `output`/2, `persistency`/2, `protein`/2, `somatic`/2 |
 | `dance` | `f9872458` | `counts`/2, `elevation`/2, `phrase`/2, `rotation`/1, `stamina`/2, `steps`/2, `synchrony`/2, `tempo`/2 |
-| `data` | `855b5567` | `ai`/1, `deep`/1, `define`/1, `discover`/1, `errors`/1, `imagine`/1, `payload`/1, `perspectives`/1, `read`/1, `research`/1, `sources`/0, `unanswered`/1 |
+| `data` | `855b5567` | `ai`/1, `deep`/1, `define`/1, `discover`/2, `errors`/1, `imagine`/1, `payload`/1, `perspectives`/1, `read`/1, `research`/1, `sources`/0, `unanswered`/1 |
 | `dataquality` | `700c138f` | `accuracy`/2, `completeness`/2, `consistency`/2, `duplicaterate`/2, `freshness`/2, `nullrate`/2, `uniqueness`/2, `validity`/2 |
 | `db` | `08914e07` | `adapters`/0, `binding`/1, `browser`/1, `combinations`/0, `experiments`/1, `migrations`/1, `ported`/1, `stable`/2 |
 | `deadreckoning` | `70ce5360` | `coursecorrection`/2, `distance`/2, `driftangle`/2, `elapsedtime`/2, `estimatedposition`/2, `positionerror`/2, `setandrift`/2, `speedmadegood`/2 |
@@ -529,6 +529,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `ichthyology` | `699c3ca1` | `buoyancy`/2, `condition`/2, `fecundity`/2, `gillrate`/2, `growth`/2, `mortality`/2, `schooling`/2, `trophic`/1 |
 | `iconography` | `791155b4` | `attributepairs`/2, `canonratio`/2, `colorsubsets`/1, `compositionorderings`/1, `gesturetypes`/2, `haloforms`/2, `motifcombos`/2, `symbolcount`/2 |
 | `idealism` | `ca3360ad` | `absolutelevels`/2, `conceptpairs`/2, `dialecticstages`/1, `mindcategories`/2, `phenomenasubsets`/1, `representationmodes`/2, `syntheticunity`/2, `thesisorderings`/2 |
+| `identity` | `e90f184c` | `assurance`/2, `attestation`/2, `documentvalidity`/2, `federation`/2, `liveness`/2, `matchconfidence`/2, `stepup`/2, `uniqueness`/2 |
 | `image` | `2ab61288` | `aspect`/2, `blocks`/2, `bytesrgb`/3, `channels`/2, `mipmaps`/2, `palettebits`/1, `pixels`/2, `stride`/2 |
 | `immigration` | `e9b61f80` | `continuous`/2, `dependents`/2, `naturalization`/2, `overstay`/2, `points`/3, `quota`/2, `residence`/2, `sponsorship`/2 |
 | `immunology` | `7414bcc2` | `affinity`/2, `boost`/2, `cellcount`/2, `cytokine`/2, `neutralization`/2, `response`/2, `seroconversion`/2, `titer`/2 |

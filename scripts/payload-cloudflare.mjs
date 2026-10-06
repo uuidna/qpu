@@ -16,7 +16,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS } from '../dist/deployment/payload-templates.js'
-import { bootPort, qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
+import { bootPort, qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf, qpuHexUuidOf, qpuHexRunOf } from '../dist/quantum/processing/unit/index.js'
+// every family registers on import — so the combinatorics family that seals the combination count is callable here
+await import('../dist/mcp/families.js')
 import { themeCssOf } from '../dist/deployment/payload-templates.js'
 import { tenOf, vertices } from './lattice-values.mjs'
 
@@ -197,6 +199,16 @@ for (const c of cloudflareCombinations()) {
 }
 await new Promise((r) => manifest.end(r))
 
+// The API combination count is SEALED BY THE FAMILY, not just counted: the combinatorics family's power-set formula
+// binomial(n) = 2ⁿ gives the plugin subsets, times the axis cardinalities. The enumerator and the family must agree —
+// a mismatch means the plugin axis drifted from what the family computes, and the run fails rather than ship a wrong count.
+const binomialUuid = qpuHexUuidOf({ family: 'combinatorics', program: ['binomial'], params: [CLOUDFLARE_PLUGINS.length] })
+const binomial = await qpuHexRunOf(binomialUuid)
+const pluginSubsets = binomial.value
+const familyCombinations = axes.runtime.size * axes.db.size * axes.storage.size * axes.email.size * pluginSubsets
+if (!(binomial.holds === true) || familyCombinations !== total)
+  throw new Error(`payload-cf combinatorics drift: family ${familyCombinations} (2^${CLOUDFLARE_PLUGINS.length}=${pluginSubsets} × axes) ≠ enumerated ${total} (holds ${binomial.holds})`)
+
 // typecheck: every base with no plugins and with all plugins, one tsc program
 const check = path.join(dir, 'check')
 fs.rmSync(check, { recursive: true, force: true })
@@ -236,6 +248,7 @@ const receipt = {
   axes: Object.fromEntries(Object.entries(axes).map(([k, v]) => [k, [...v]])),
   plugins: [...CLOUDFLARE_PLUGINS],
   combinations: total,
+  combinatorics: { pluginSubsets, familyCombinations, formula: `2^${CLOUDFLARE_PLUGINS.length} × axes`, by: binomialUuid, holds: binomial.holds === true && familyCombinations === total },
   typechecked: { bases: bases.length, compiled: tsc === '' || errors.length > unattributed.length || unattributed.length === 0, ok: byBase.filter((b) => b.ok).length, unattributed: unattributed.slice(0, 5), failing: byBase.filter((b) => !b.ok) },
   coverage: 'each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles',
   stream: stream && { length: stream.length, head: stream.head, chain: stream.chain, holds: stream.holds },
