@@ -236,15 +236,27 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     return { source, url: `https://www.npmjs.com/package/${name}`, reading: live, expected: { latest: packageVersion }, agrees: live.latest === packageVersion }
   }
   if (source === 'alpine') {
-    // Alpine Linux community apps: one directory per package in aports/community (GitLab, keyless). The app count is the
-    // lead; the GitLab tree API returns the total in the x-total header, and the first page names a sample. A neutral
-    // count, reusable by any family the way the OEIS and apis.guru readings are — a number to cross, not a claim.
-    const url = `https://gitlab.alpinelinux.org/api/v4/projects/alpine%2Faports/repository/tree?path=community&per_page=100&page=1`
-    const r = await get(url)
-    const apps = Number(r.headers.get('x-total'))
-    const names = (await r.json()) as { name?: string }[]
-    const live = { apps, pages: Number(r.headers.get('x-total-pages')), named: names.length }
-    return { source, url: 'https://pkgs.alpinelinux.org/packages?repo=community', reading: live, expected: { answers: 'apps' }, agrees: Number.isInteger(apps) && apps > 0 }
+    // Alpine Linux community apps: one directory per package in aports/community (GitLab, keyless). The count (x-total on
+    // page 1) is always the lead; the full enumeration is attempted page by page but DEADLINE-BOUNDED and fail-fast — a
+    // slow or throttled page stops the walk (HOT, continued next run), never a long wait. The reading stays small: a
+    // count and a content digest over the sorted names so far (the address that recomputes), never the names inlined.
+    const base = 'https://gitlab.alpinelinux.org/api/v4/projects/alpine%2Faports/repository/tree?path=community&per_page=100'
+    const t0 = Date.now()
+    const first = await get(`${base}&page=1`)
+    const apps = Number(first.headers.get('x-total'))
+    const pages = Number(first.headers.get('x-total-pages'))
+    const names = ((await first.json()) as { name?: string }[]).map((e) => e.name ?? '')
+    let page = 1
+    for (let p = 2; p <= pages && Date.now() - t0 < DEADLINE; p++) {
+      try {
+        for (const e of (await get(`${base}&page=${p}`).then((r) => r.json())) as { name?: string }[]) if (e.name) names.push(e.name)
+        page = p
+      } catch { break } // a throttled/slow page is HOT: stop here, the next run resumes the walk
+    }
+    const complete = names.length === apps
+    const digest = qpuContentUuidOf([...names].sort())
+    const live = { apps, pages, discovered: names.length, page, complete, digest }
+    return { source, url: 'https://pkgs.alpinelinux.org/packages?repo=community', reading: live, expected: { apps }, agrees: Number.isInteger(apps) && apps > 0 }
   }
   if (source === 'apis') {
     // the API registry the unit fused, against theorem fuse: the APIs it listed then, read live now
