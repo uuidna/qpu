@@ -1263,11 +1263,11 @@
     "deploy:install": "bash deploy/install.sh"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "5.20261002.1",
+    "@cloudflare/workers-types": "5.20261003.1",
     "@faceless-ui/modal": "3.0.1",
     "@faceless-ui/scroll-info": "2.0.0",
-    "@modelcontextprotocol/sdk": "1.31.0",
-    "@opennextjs/cloudflare": "1.20.7",
+    "@modelcontextprotocol/sdk": "1.32.0",
+    "@opennextjs/cloudflare": "1.20.8",
     "@payloadcms/db-d1-sqlite": "4.0.0-internal.9726517",
     "@payloadcms/db-mongodb": "4.0.0-internal.9726517",
     "@payloadcms/db-postgres": "4.0.0-internal.9726517",
@@ -1292,7 +1292,7 @@
     "@payloadcms/storage-s3": "4.0.0-internal.9726517",
     "@payloadcms/translations": "4.0.0-internal.9726517",
     "@payloadcms/ui": "4.0.0-internal.9726517",
-    "@sentry/nextjs": "11.2.0",
+    "@sentry/nextjs": "11.4.0",
     "@types/express": "5.0.6",
     "@types/node": "26.6.4",
     "graphql": "16.14.2",
@@ -1301,7 +1301,7 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "typescript": "7.0.2",
-    "wrangler": "4.146.0"
+    "wrangler": "4.147.0"
   },
   "bin": {
     "qpu-boot": "./dist/quantum/processing/unit/boot.js"
@@ -1314,7 +1314,7 @@
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cn": "0.4.0",
-    "lucide-react": "1.49.0",
+    "lucide-react": "1.51.0",
     "postcss": "8.5.28",
     "radix-ui": "1.6.7",
     "recharts": "3.10.1",
