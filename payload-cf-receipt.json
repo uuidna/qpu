@@ -1,6 +1,6 @@
 {
  "kind": "payload-cf-receipt",
- "when": "2026-10-05",
+ "when": "2026-10-06",
  "axes": {
   "runtime": [
    "vinext",
@@ -36,6 +36,13 @@
   "stripe"
  ],
  "combinations": 98304,
+ "combinatorics": {
+  "pluginSubsets": 2048,
+  "familyCombinations": 98304,
+  "formula": "2^11 × axes",
+  "by": "541e2d7f-1000-7000-9000-00000000000b",
+  "holds": true
+ },
  "typechecked": {
   "bases": 96,
   "compiled": true,
