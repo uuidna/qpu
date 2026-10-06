@@ -135,6 +135,21 @@ export const preCommit = async (): Promise<void> => {
     console.log(`  ✗ ${depFindings.length} dependenc${depFindings.length === 1 ? 'y' : 'ies'} not ported in full compatibility — commit blocked until ported`)
     process.exit(1)
   }
+  // FAIL FAST, develop and deploy faster and cheaper: a staged type error blocks the commit — caught locally, the
+  // cheapest point, so a red build is never committed and shipped half-built (it was, once, this build).
+  const typeErrors = findings.filter((f) => /\): error TS\d+/.test(f))
+  if (typeErrors.length) {
+    console.log(`  ✗ ${typeErrors.length} staged type error(s) — commit blocked (fail fast)`)
+    process.exit(1)
+  }
+  // HARD FAIL on a qpu_ prefix: the qpu MCP surface is bare-only; a qpu_-prefixed served tool must never creep in.
+  const toolNames = await import(pathToFileURL(path.join(ROOT, 'dist/quantum/processing/unit/index.js')).href)
+    .then((m) => ((m as { qpuMcpToolsListOf?: () => { name: string }[] }).qpuMcpToolsListOf?.() ?? []).map((t) => t.name), () => [] as string[])
+  const prefixed = toolNames.filter((n) => n.startsWith('qpu_'))
+  if (prefixed.length) {
+    console.log(`  ✗ qpu_ prefix in the MCP: ${prefixed.join(', ')} — commit blocked (the qpu mcp is bare-only)`)
+    process.exit(1)
+  }
 }
 
 /** Report-only: both TypeScript projects, every script, the deployment gate and dist freshness, as cross formulas. */
