@@ -13,11 +13,21 @@ import { seed } from '@/seed'
 // every request advances the seed one slice when the content changed; a finished seed costs one KV read. Awaited: a
 // promise left behind a Worker's response is dropped with it, and the slice's KV writes with it (measured 2026-10-03:
 // the host served the pages' old descriptions through eleven deployments)
-export const payloadOf = async () => {
+export const payloadOf = cache(async () => {
   const payload = await getPayload({ config })
-  await seed(payload).catch(() => undefined)
+  // SEEDING MUST NOT BLOCK THE RENDER. A GET that awaits a seed slice can exceed the Worker CPU limit and be killed
+  // before the slice commits, so seeding never advances — a deadlock that leaves every page 503. Run it AFTER the
+  // response with waitUntil (which keeps the promise alive past the Worker's reply, unlike a bare dangling promise);
+  // the render returns fast on the content already there and seeding advances across requests. At build time / outside
+  // a request there is no context, so await it there (no response to race).
+  try {
+    const { getCloudflareContext } = await import('@opennextjs/cloudflare')
+    getCloudflareContext().ctx.waitUntil(seed(payload).catch(() => undefined))
+  } catch {
+    await seed(payload).catch(() => undefined)
+  }
   return payload
-}
+})
 
 /** EACH TENANT IS AN APP, AND THE MAIN WEBSITE MOUNTS ALL OF THEM. A tenant is a domain (src/collections/Tenants.ts);
  *  the multi-tenant plugin scopes every page and doc to one. The main website — a first-party/reserved zone host the
@@ -73,8 +83,8 @@ export const askOf = async (about: string): Promise<{ hex?: string; formula?: st
   return reading?.hex && r.agrees ? reading : undefined
 }
 
-export const docsOf = async (): Promise<Doc[]> =>
-  (await (await payloadOf()).find({ collection: 'docs', where: await tenantWhere(), limit: 0, pagination: false, depth: 0, sort: 'title' })).docs as Doc[]
+export const docsOf = cache(async (): Promise<Doc[]> =>
+  (await (await payloadOf()).find({ collection: 'docs', where: await tenantWhere(), limit: 500, depth: 0, sort: 'title' })).docs as Doc[])
 
 export const docOf = async (slug: string): Promise<Doc | undefined> =>
   ((await (await payloadOf()).find({ collection: 'docs', where: { slug: { equals: slug }, ...(await tenantWhere()) } as Where, limit: 1, depth: 1 })).docs[0] as Doc | undefined)
@@ -96,8 +106,8 @@ export const plainOf = (rich: unknown): string => {
 export const pageOf = async (slug: string, draft = false): Promise<Page | undefined> =>
   ((await (await payloadOf()).find({ collection: 'pages', where: { slug: { equals: slug }, ...(await tenantWhere()) } as Where, limit: 1, depth: 2, draft })).docs[0] as Page | undefined)
 
-export const pagesOf = async (): Promise<Page[]> =>
-  (await (await payloadOf()).find({ collection: 'pages', where: await tenantWhere(), limit: 0, pagination: false, depth: 0 })).docs as Page[]
+export const pagesOf = cache(async (): Promise<Page[]> =>
+  (await (await payloadOf()).find({ collection: 'pages', where: await tenantWhere(), limit: 500, depth: 0 })).docs as Page[])
 
 export type App = { id: string; name: string; domain?: string | null; pages: number; docs: number }
 /** The tenants as apps: each a name and a domain, with the pages and docs scoped to it. Read with overrideAccess so the
@@ -116,8 +126,8 @@ export const scopeOf = () => ({
   shared: ['quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'],
 })
 
-export const headerOf = async (): Promise<Header> => (await (await payloadOf()).findGlobal({ slug: 'header', depth: 1 })) as Header
-export const footerOf = async (): Promise<Footer> => (await (await payloadOf()).findGlobal({ slug: 'footer', depth: 1 })) as Footer
+export const headerOf = cache(async (): Promise<Header> => (await (await payloadOf()).findGlobal({ slug: 'header', depth: 1 })) as Header)
+export const footerOf = cache(async (): Promise<Footer> => (await (await payloadOf()).findGlobal({ slug: 'footer', depth: 1 })) as Footer)
 
 /** The search plugin's index for a query, best first. */
 export const searchOf = async (q: string): Promise<Search[]> =>

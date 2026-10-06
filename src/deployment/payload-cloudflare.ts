@@ -224,6 +224,10 @@ const cloudflareWranglerOf = (c: CloudflareCombination, name: string, app?: Clou
     compatibility_date: '2026-10-01',
     compatibility_flags: ['nodejs_compat'],
     observability: { enabled: true },
+    // A cold Payload init (many collections + plugins) plus the first render can exceed the default 30s CPU limit and
+    // return 503; raise the ceiling to the paid maximum so cold renders complete. This is a ceiling, not a cost — billing
+    // is on actual CPU used — so it unblocks 503→200 while the actual per-render CPU is driven down by caching upstream.
+    limits: { cpu_ms: 300_000 },
   }
   if (c.db === 'd1' || c.db === 'qpu-d1') w.d1_databases = [{ binding: 'D1', database_name: `${name}-db` }]
   if (c.db === 'postgres') w.hyperdrive = [{ binding: 'HYPERDRIVE', id: '<HYPERDRIVE_ID>' }]
