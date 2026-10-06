@@ -699,7 +699,10 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const apiWords = new Set(apis.flatMap((x) => [x.api, x.title, ...x.categories, ...x.operations].flatMap(wordsOf)))
     const families = [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([family, formulas]) => {
       const named = formulas.map((f) => ({ name: f.name, words: [...new Set([...wordsOf(family), ...wordsOf(f.name)])].filter((w) => apiWords.has(w)) })).filter((f) => f.words.length)
-      return { family, formulas: named.map((f) => f.name), words: [...new Set(named.flatMap((f) => f.words))] }
+      // imagine now hands back the ADDRESS, not just the names: the family's hex handle (first formula, no params) so a
+      // caller goes straight from "which families fit this request" to "the hex program to run" — imagine → run, closing the loop
+      const handle = named.length ? qpuHexUuidOf({ family, program: [named[0].name], params: [] }).slice(0, 8) : undefined
+      return { family, ...(handle ? { handle } : {}), formulas: named.map((f) => f.name), words: [...new Set(named.flatMap((f) => f.words))] }
     }).filter((f) => f.formulas.length).sort((x, y) => y.formulas.length - x.formulas.length)
     const live = { ...(about ? { about } : { category }), categories: [...new Set(apis.flatMap((x) => x.categories))], apis: apis.map((x) => x.api), words: apiWords.size, families, is: families.length ? `${about ?? category}: ${families.map((f) => `${f.family} (${f.formulas.join(', ')})`).join('; ')}` : `${about ?? category}: no family the record names yet — a family to imagine` }
     return { source, url: 'https://apis.guru', reading: live, expected: { families: '>= 1' }, agrees: families.length > 0 }
