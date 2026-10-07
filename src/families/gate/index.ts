@@ -1,4 +1,4 @@
-import { qpuFacesOf, qpuHexFamiliesOf, qpuHexRegisterOf, qpuHexRunOf, qpuHexUuidOf, qpuProveHolds } from '../../quantum/processing/unit/index.js'
+import { qpuFacesOf, qpuHexFamiliesOf, qpuHexRegisterOf, qpuHexRunOf, qpuHexUuidOf, qpuMcpErrorsOf, qpuProveHolds } from '../../quantum/processing/unit/index.js'
 import { SignalFormulas } from '../signal/index.js'
 import { apiCallOf, apiSearchOf } from '../../mcp/api-door.js'
 import { MerkabaFormulas } from '../merkaba/index.js'
@@ -123,6 +123,16 @@ export class GateFormulas {
     const next = from + count < fams.length ? from + count : undefined
     return f('gate-leads', 'leads(from) = |{formulas of the family slice [from, from+faces) no relation reaches and no dataset identifies}|', open.length, open.length === 0, 'leads', [from], { from, count, families: fams.length, ...(next !== undefined ? { next } : {}), relations: d.relations.length, liveInputs: d.liveInputs, identified: identified.size, leads: open.map((x) => { try { return qpuHexUuidOf({ family: x.family, program: [x.name], params: [] }) } catch { return `${x.family}.${x.name}` } }) })
   }
+  /** THE GAPS AS COURT LEADS. The live checks that do not hold — a source denied, a reading that differs from the unit,
+   *  a warning — are found by the errors door (a slice at a time, each with what resolves it) and surfaced here as leads
+   *  the court develops beside the formula leads: find the gap, it is a lead, develop it, re-check, hold. Value how many
+   *  gaps (hard errors) in the slice; holds at zero. `next` walks the slices, so no gap is tracked by hand — every
+   *  violation is immediately a court lead with its where, why and resolve. */
+  static async gaps(from = 0): Promise<CrossFormula> {
+    const e = await qpuMcpErrorsOf(undefined, from)
+    const gaps = [...e.errors, ...e.warnings].map((g) => ({ where: g.where, why: g.why, resolve: g.resolve }))
+    return f('gate-gaps', 'gaps(from) = |{live checks of the slice that do not hold}| — each a court lead with its resolve', e.errors.length, e.errors.length === 0, 'gaps', [from], { from, take: e.take, total: e.total, ...(e.next !== undefined ? { next: e.next } : {}), warnings: e.warnings.length, gaps })
+  }
   /** THE i-th LEAD GIVEN EVERY EFFORT, ONE ADDRESS PER LEAD: its terms looked up in OEIS at every small fixed slot,
    *  the Clay lens (a seal), the involuted perspective, the research of its family, its own words' APIs read and
    *  crossed by value, a live relation, and the rosetta turned in every rotation (merkaba.develop, 2n addresses). A
@@ -197,5 +207,5 @@ export class GateFormulas {
   }
 }
 
-for (const name of ['commit', 'crossed', 'family', 'leads', 'proof', 'push', 'rules', 'theorems'] as const)
+for (const name of ['commit', 'crossed', 'family', 'gaps', 'leads', 'proof', 'push', 'rules', 'theorems'] as const)
   qpuHexRegisterOf('gate', name, (GateFormulas[name] as (...x: unknown[]) => unknown).bind(GateFormulas))

@@ -1,6 +1,6 @@
 ---
 name: qpu-families
-description: Call any of the 1134 QPU formula families (9084 exact-integer formulas) through the MCP by its 8-hex HANDLE — each formula is a hex-program UUID (handle + nibble + params) that recomputes to the same value, so a call is a compact address, idempotent and verifiable, at no token cost. Use when computing or verifying with the QPU over MCP. The handle table is below; call `npm run mcp -- <family>.<formula> '[params]'`.
+description: Call any of the 1134 QPU formula families (9088 exact-integer formulas) through the MCP by its 8-hex HANDLE — each formula is a hex-program UUID (handle + nibble + params) that recomputes to the same value, so a call is a compact address, idempotent and verifiable, at no token cost. Use when computing or verifying with the QPU over MCP. The handle table is below; call `npm run mcp -- <family>.<formula> '[params]'`.
 ---
 
 # QPU families over MCP
@@ -18,13 +18,13 @@ Params are a JSON array (`'[]'` for none). The call routes through `hex` to the 
 
 Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate.crossed", "i": 0 }'` names the next lead; `npm run mcp -- '{ "doors": true }'` lists every door beyond the sixteen sealed tools.
 
-## The 1134 families (9084 tools)
+## The 1134 families (9088 tools)
 
 | family | handle | formulas |
 |---|---|---|
 | `absorption` | `3b03ac82` | `coefficient`/2, `impedance`/2, `nrc`/2, `panelresonance`/2, `porosity`/2, `reductionindex`/2, `sabins`/2, `transmissionloss`/2 |
 | `accelerometer` | `5e1c9f4b` | `bandwidth`/1, `fullscale`/1, `gforce`/2, `offset`/2, `samplerate`/2, `sensitivity`/2, `tilt`/2, `vibrationrms`/1 |
-| `access` | `7e6283be` | `read`/2, `role`/2, `screen`/1, `tenant`/3, `token`/1, `write`/3 |
+| `access` | `7e6283be` | `grant`/2, `rank`/1, `read`/2, `role`/2, `root`/1, `screen`/1, `sudo`/2, `tenant`/3, `token`/1, `write`/3 |
 | `accessibility` | `51325187` | `altcoverage`/2, `aria`/2, `contrastratio`/2, `focusorder`/2, `readinglevel`/2, `taptarget`/2, `textscale`/2, `wcagscore`/2 |
 | `accounting` | `96f92c22` | `accrue`/3, `balance`/2, `current`/2, `depreciation`/3, `equity`/2, `margin`/2, `net`/2, `tax`/2 |
 | `acoustics` | `4cca5e12` | `attenuation`/2, `decibel`/2, `doppler`/2, `frequency`/2, `impedance`/2, `resonance`/2, `reverb`/2, `wavelength`/2 |
