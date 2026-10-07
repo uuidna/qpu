@@ -842,7 +842,12 @@ export const qpuDataSourcesOf = async () => [
   ...qpuCernRecordsOf().records.map((r) => ({ source: 'cern', args: { recid: r.recid } as Args, label: `CERN Open Data · record ${r.recid}`, checks: `theorem cern: ${r.files} * ${r.q} + ${r.r} = ${r.events}` })),
   { source: 'nist', args: {}, label: 'NIST CODATA · Planck, Boltzmann', checks: 'Qpu.Physics planck, boltzmann' },
   ...Object.entries(SEQUENCES).map(([id, s]) => ({ source: 'oeis', args: { id }, label: `OEIS ${id} · ${s.name}`, checks: `the unit's ${s.name.toLowerCase()}` })),
-  ...(await qpuSequencesOf()).map((s) => ({ source: 'sequence', args: { family: s.family, formula: s.formula, fixed: s.fixed }, label: `OEIS · ${s.family}.${s.formula}${s.fixed.length ? `(${s.fixed.join(',')}, n)` : '(n)'}`, checks: `identifies ${s.terms.slice(0, 6).join(',')}, …` })),
+  // THE SEQUENCES ARE NOT EXPANDED TO LIST THE SOURCES. Running every family formula as an integer sequence (the
+  // lattice-wide qpuSequencesOf scan) to enumerate one source row per sequence took ~33s and, with the rest of a call,
+  // exceeded the isolate — so { source: 'all' } and the errors door a remote agent self-checks with would 1102. One
+  // summary row stands for them; a specific sequence is read on demand with source:sequence, and the gate identifies
+  // them a family slice at a time (gate.leads). The lattice-wide scan is never on the hot path of listing the sources.
+  { source: 'sequence', args: {} as Args, label: 'OEIS · integer-sequence formulas', checks: 'each family formula that is an integer sequence, identified in OEIS; read one with source:sequence, enumerate via gate.leads a slice at a time' },
   { source: 'zenodo', args: {}, label: 'Zenodo · latest release', checks: `version v${packageVersion}` },
   ...doisOf().map((d) => ({ source: 'datacite', args: { doi: d.doi }, label: `DataCite · ${d.doi}`, checks: `creator ${citeOf().author.last}${d.title ? `, title` : ''}` })),
   { source: 'orcid', args: {}, label: 'ORCID · author', checks: `${citeOf().author.first} ${citeOf().author.last}` },
