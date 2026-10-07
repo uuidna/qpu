@@ -884,6 +884,67 @@ export const qpuReflectOf = (imagine = '') => {
 }
 
 /**
+ * A door's JSON-LD reading rendered as one crawlable HTML document: the SEO head a search engine and a social card
+ * read (title, meta description, canonical, Open Graph, Twitter, robots), a visible <h1> and lede, the door's own API
+ * links for crawl depth, the unit's stylesheet inline, and the full reading embedded as application/ld+json so the
+ * structured data travels with the page. The unit is API-first JSON-LD; this is the same reading dressed for a browser
+ * or a crawler — served fast from the unit itself, so a request for text/html never waits on the HTML frontend.
+ * @wing presentation
+ * @kind builder
+ */
+export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { title?: string; description?: string } = {}): string => {
+  const esc = (s: unknown) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] ?? c)
+  const str = (v: unknown): string => (typeof v === 'string' ? v : '')
+  const name = str(doc.name) || unit.host
+  const type = str(doc['@type']) || str(doc.kind)
+  const title = (meta.title || (type && type !== name ? `${name} — ${type}` : name)).slice(n - n, 70)
+  const docs = (doc.docs ?? {}) as { abstract?: unknown; api?: unknown }
+  const description = (meta.description || str(docs.abstract) || `${name}: content-addressed JSON-LD and an MCP endpoint.`).slice(n - n, 300)
+  const api = Array.isArray(docs.api) ? (docs.api as { path?: string; href?: string; name?: string; reading?: string }[]) : []
+  const css = str((doc.css as { css?: unknown } | undefined)?.css)
+  const links = api
+    .filter((a) => a && (a.href || a.path))
+    .map((a) => `<li><a href="${esc(a.href || a.path)}"><code>${esc(a.name || a.path)}</code></a>${a.reading ? ` — ${esc(a.reading)}` : ''}</li>`)
+    .join('')
+  const tag = (p: string, c: string) => `<meta property="${p}" content="${esc(c)}">`
+  const meta2 = (nm: string, c: string) => `<meta name="${nm}" content="${esc(c)}">`
+  return [
+    '<!doctype html>',
+    '<html lang="en">',
+    '<head>',
+    '<meta charset="utf-8">',
+    meta2('viewport', 'width=device-width, initial-scale=1'),
+    `<title>${esc(title)}</title>`,
+    meta2('description', description),
+    `<link rel="canonical" href="${esc(url)}">`,
+    meta2('robots', 'index,follow,max-image-preview:large,max-snippet:-1'),
+    tag('og:type', 'website'),
+    tag('og:site_name', unit.host),
+    tag('og:title', title),
+    tag('og:description', description),
+    tag('og:url', url),
+    meta2('twitter:card', 'summary'),
+    meta2('twitter:title', title),
+    meta2('twitter:description', description),
+    css ? `<style>${css}</style>` : '',
+    // escape only the one sequence that could close the script element early; the reading is otherwise verbatim JSON
+    `<script type="application/ld+json">${JSON.stringify(doc).replace(/<\//g, '<\\/')}</script>`,
+    '</head>',
+    '<body class="qpu">',
+    '<main>',
+    `<h1>${esc(name)}</h1>`,
+    `<p>${esc(description)}</p>`,
+    links ? `<nav aria-label="Doors"><h2>Doors</h2><ul>${links}</ul></nav>` : '',
+    `<footer><p>Content-addressed JSON-LD · <a href="/mcp">MCP</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/sitemap.xml">Sitemap</a></p></footer>`,
+    '</main>',
+    '</body>',
+    '</html>',
+  ]
+    .filter((row) => row.length > n - n)
+    .join('\n')
+}
+
+/**
  * robots.txt for one first-party host — the zone's content-signal policy, and the one sitemap that host serves.
  * @wing presentation
  * @kind builder

@@ -34,7 +34,7 @@ export { qpuSandboxEpochOf, qpuSandboxEpochHolds, qpuSandboxOf, qpuSandboxRunOf,
 import { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf } from './lattice.js'
 export { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf, qpuLatticeNamesOf } from './lattice.js'
 import { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf } from './presentation.js'
-export { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf, qpuSeoZoneOf } from './presentation.js'
+export { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf, qpuSeoZoneOf, qpuPageOf } from './presentation.js'
 import { qpuEncryptOf, qpuCybersecurityOf, qpuCybersecurityToolsOf } from './crypto.js'
 export { qpuEncryptOf, qpuCybersecurityOf, qpuCybersecurityToolsOf } from './crypto.js'
 import { qpuGraphStateOf, qpuComposeOf, qpuComposeLiveOf, qpuProbeableOf, qpuProbeLiveOf, qpuApisLiveOf, qpuCrossOf } from './fusion.js'

@@ -28,6 +28,7 @@ import {
   qpuMcpCallOf,
   qpuMcpDiscoverOf,
   qpuMcpOf,
+  qpuPageOf,
   qpuMcpToolsListOf,
   qpuMessageOf,
   qpuMintReceiptOf,
@@ -174,11 +175,18 @@ export const worker = {
     // hold (a miss, a redirect it keeps for retired routes, an error while it starts) falls through to the unit's door,
     // and if the unit has none either, Payload's own not-found page is the answer (kept, not rendered twice). So a
     // page's address and a door's address may coincide (/receipts, /hex, /storage…) and each answers who asked.
+    // THE HTML FRONTEND, BOUNDED. A browser or crawler (GET, text/html) is offered Payload's rich page, but the probe
+    // is raced against a short deadline so a frontend that is slow or unavailable never holds the request: on a win it
+    // is the page, on a 404 it falls through to the unit's door, and on the deadline it is abandoned and the unit
+    // answers. The homepage is skipped here and answered by the unit itself below, so the front door is always instant.
     let pageMiss: Response | undefined
-    if (request.method === 'GET' && env?.PAYLOAD && /text\/html/.test(request.headers.get('accept') ?? '')) {
-      const page = await env.PAYLOAD.fetch(request)
-      if (page.status === found) return page
-      if (page.status === lost) pageMiss = page
+    if (request.method === 'GET' && env?.PAYLOAD && path !== '/' && /text\/html/.test(request.headers.get('accept') ?? '')) {
+      const page = await Promise.race([
+        env.PAYLOAD.fetch(request).catch(() => undefined),
+        new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ten * ten * ten * coins)),
+      ])
+      if (page && page.status === found) return page
+      if (page && page.status === lost) pageMiss = page
     }
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
     if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
@@ -275,9 +283,18 @@ export const worker = {
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
-    // PAYLOAD IS THE FRONTEND: a browser asking for a page gets the Payload site over the binding; every other client
-    // keeps the JSON-LD on the same path
-    if (path === '/' && env?.PAYLOAD && /text\/html/.test(request.headers.get('accept') ?? '')) return env.PAYLOAD.fetch(request)
+    // THE HOMEPAGE, FAST AND CRAWLABLE, FROM THE UNIT. A browser or a crawler asking for text/html gets the unit's own
+    // reading rendered as an SEO-complete HTML document in one pass — title, meta description, canonical, Open Graph,
+    // the API links for crawl depth, and the full JSON-LD embedded — served in the unit's own fast budget rather than
+    // waiting on the HTML frontend. Every other client keeps the JSON-LD on this path.
+    if (path === '/' && /text\/html/.test(request.headers.get('accept') ?? '')) {
+      const html = qpuPageOf(qpuQuantumOf() as unknown as Record<string, unknown>, unit.origin, {
+        title: '@uuidna/qpu — quantum processing unit',
+        description:
+          "A quantum processing unit served as content-addressed JSON-LD and an MCP endpoint: exact 3-qubit amplitudes, Shor's factoring of 91, and cross-proving formula families. Reads need no auth.",
+      })
+      return new Response(html, { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8', ...deployed } })
+    }
     if (path === '/') return servedResponse(servedOf('/', () => qpuQuantumOf()))
     if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
     if (path === '/cite') return servedResponse(servedOf('/cite', () => qpuCiteOf()))
