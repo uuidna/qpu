@@ -643,41 +643,69 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     return { source, url: 'https://apis.guru', reading: live, expected: { keyless: '>= 1 in the slice' }, agrees: apis.some((x) => x.keyless) }
   }
   if (source === 'payload') {
-    // THE PAYLOAD RECORD, DEEP: the payloadcms/payload repository read through the GitHub API — its docs (every
-    // section, every page), its templates and its examples — as the unit's own configuration vocabulary. A section
-    // is crossed with the families whose formula words its pages name: what the unit configures with it.
+    // THE NEXT PAYLOAD CONFIG, AS AN ENDLESS FEED OF LEADS. payloadcms/payload and payloadcms/website are read through
+    // the GitHub API and returned one BOUNDED part per call, chained by `next` so the feed never ends and no call
+    // spends more than a few fetches inside the deadline (the whole-repo sweep in one call timed out and fed nothing).
+    // Each part is one contribution the next config is consolidated from:
+    //   from 0    — the map: the docs sections, the starter templates, the examples.
+    //   from 1    — content architecture: payloadcms/website's src dirs, blocks and collections to mirror (the leads
+    //               that grow the site's content architecture).
+    //   from 2    — monetisation: the official packages classed, the ones that earn (ecommerce, stripe, payments) and
+    //               the plugins the unit does not yet fuse (the leads that grow monetisation and coverage).
+    //   from 3..  — vocabulary: one docs section per call crossed with the families whose formula its pages name; when
+    //               the sections run out the feed wraps to 0, so it is endless.
+    // { category: c } reads the c-th section's vocabulary directly, unchanged — what the data.payload formula crosses.
     const repo = 'payloadcms/payload'
-    const list = async (dir: string) => (await (await get(`https://api.github.com/repos/${repo}/contents/${dir}`, 'application/vnd.github+json')).json()) as { name: string; type: string; path: string }[]
-    const [docs, templates, examples] = await Promise.all([list('docs'), list('templates'), list('examples')])
-    const sections = (Array.isArray(docs) ? docs : []).filter((d) => d.type === 'dir').map((d) => d.name).sort()
-    const c = typeof a.category === 'number' ? a.category : -1
-    const section = sections[c]
-    const pages = section ? (await list(`docs/${section}`)).filter((d) => d.type === 'file').map((d) => d.name.replace(/\.mdx?$/, '')) : []
+    const url = `https://github.com/${repo}`
+    const list = async (dir: string, where = repo) => (await (await get(`https://api.github.com/repos/${where}/contents/${dir}`, 'application/vnd.github+json')).json()) as { name: string; type: string }[]
     const wordsOf = (s: string) => s.replace(/[A-Z]/g, (ch) => ` ${ch.toLowerCase()}`).split(/[^a-z]+/).filter((w) => w.length > 2)
-    const pageWords = new Set([...(section ? wordsOf(section) : []), ...pages.flatMap(wordsOf)])
-    const families = section ? [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([family, formulas]) => ({ family, formulas: formulas.filter((x) => [...new Set([...wordsOf(family), ...wordsOf(x.name)])].some((w) => pageWords.has(w))).map((x) => x.name) })).filter((x) => x.formulas.length) : []
-    // THE REFERENCE APP, THE PAYLOAD WAY: payloadcms/website is read as the guide — its src directories, its blocks and
-    // its collections are how a Payload site is handled; a directory or block it has that the unit's generated layout
-    // does not is a lead toward the payload way (crossed at build by scripts/payload-cloudflare.mjs). Read once here.
-    const site = async (dir: string) => ((await (await get(`https://api.github.com/repos/payloadcms/website/contents/${dir}`, 'application/vnd.github+json')).json()) as { name: string; type: string }[] | { message?: string })
-    const nameOf = (x: unknown) => (Array.isArray(x) ? x.filter((e) => e.type === 'dir').map((e) => e.name).sort() : [])
-    const fileNames = (x: unknown) => (Array.isArray(x) ? x.filter((e) => e.type === 'dir' || /\.tsx?$/.test(e.name)).map((e) => e.name.replace(/\.tsx?$/, '')).filter((n) => n !== 'index').sort() : [])
-    const [siteSrc, siteBlocks, siteCollections] = await Promise.all([site('src'), site('src/blocks'), site('src/collections')])
-    const website = { repo: 'payloadcms/website', dirs: nameOf(siteSrc), blocks: fileNames(siteBlocks), collections: fileNames(siteCollections) }
-    // PAYLOAD AND ITS PLUGINS, IN DETAIL: the monorepo's packages/ holds every official extension — the plugins
-    // (plugin-*), the database adapters (db-*), the storage adapters (storage-*), the rich-text (richtext-*) and the
-    // email adapters (email-*). Each is read and classed, and crossed with the families whose formula words it names;
-    // the ones the unit fuses in its own config are the kernel's Payload skill. A package the unit does not yet fuse
-    // is a lead toward covering Payload in full.
-    const packages = (Array.isArray(await list('packages')) ? (await list('packages')) : []).filter((p) => p.type === 'dir').map((p) => p.name).sort()
-    const classOf = (p: string) => (p.startsWith('plugin-') ? 'plugin' : p.startsWith('db-') ? 'db adapter' : p.startsWith('storage-') ? 'storage adapter' : p.startsWith('richtext-') ? 'rich text' : p.startsWith('email-') ? 'email adapter' : p.startsWith('translations') || p.startsWith('ui') || p.startsWith('next') || p.startsWith('graphql') ? 'core' : 'package')
-    // the Payload extensions the unit fuses in its own config (the generator's set), to mark coverage against packages/
-    const fused = new Set(['plugin-ecommerce', 'plugin-form-builder', 'plugin-import-export', 'plugin-mcp', 'plugin-multi-tenant', 'plugin-nested-docs', 'plugin-redirects', 'plugin-search', 'plugin-sentry', 'plugin-seo', 'plugin-stripe', 'db-d1-sqlite', 'db-postgres', 'storage-s3', 'richtext-lexical', 'email-resend'])
-    const ecosystem = packages.map((p) => ({ package: p, kind: classOf(p), fused: fused.has(p), families: [...qpuHexFamiliesOf()].filter(([ff]) => !DOORS.has(ff)).filter(([ff, fs]) => [...new Set([...wordsOf(ff), ...fs.flatMap((x) => wordsOf(x.name))])].some((w) => wordsOf(p).includes(w))).map(([ff]) => ff) }))
-    const pluginsOnly = ecosystem.filter((e) => e.kind === 'plugin')
-    const payloadPlugins = { packages: packages.length, plugins: pluginsOnly.length, dbAdapters: ecosystem.filter((e) => e.kind === 'db adapter').length, storageAdapters: ecosystem.filter((e) => e.kind === 'storage adapter').length, fusedCount: ecosystem.filter((e) => e.fused).length, notYetFused: ecosystem.filter((e) => e.kind === 'plugin' && !e.fused).map((e) => e.package), ecosystem }
-    const live = { repo, docs: sections.length, sections, website, plugins: payloadPlugins, templates: (Array.isArray(templates) ? templates : []).filter((t) => t.type === 'dir').map((t) => t.name), examples: (Array.isArray(examples) ? examples : []).filter((t) => t.type === 'dir').map((t) => t.name), ...(section ? { section, pages, families, configures: families.length ? `${section}: ${families.map((x) => `${x.family} (${x.formulas.join(', ')})`).join('; ')}` : `${section}: no family its pages name yet` } : {}) }
-    return { source, url: `https://github.com/${repo}`, reading: live, expected: { docs: '>= 1', templates: '>= 1', examples: '>= 1', plugins: '>= 1' }, agrees: sections.length > 0 && live.templates.length > 0 && payloadPlugins.plugins > 0 }
+    // one listing, dirs only (the double-fetch that helped time the sweep out is gone — the entries are read once)
+    const dirsOf = async (dir: string, where = repo): Promise<string[]> => { const x = await list(dir, where).catch(() => []); return Array.isArray(x) ? x.filter((d) => d.type === 'dir').map((d) => d.name).sort() : [] }
+    // the c-th docs section crossed with the families its pages name — the vocabulary, one section at a time
+    const vocabularyOf = async (c: number, part: number, next: number, pre?: string[]) => {
+      const sections = pre ?? (await dirsOf('docs'))
+      const section = sections[c]
+      const pages = section ? (await list(`docs/${section}`)).filter((d) => d.type === 'file').map((d) => d.name.replace(/\.mdx?$/, '')) : []
+      const pageWords = new Set([...(section ? wordsOf(section) : []), ...pages.flatMap(wordsOf)])
+      const families = section ? [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([family, formulas]) => ({ family, formulas: formulas.filter((x) => [...new Set([...wordsOf(family), ...wordsOf(x.name)])].some((w) => pageWords.has(w))).map((x) => x.name) })).filter((x) => x.formulas.length) : []
+      const reading = { part, of: 'vocabulary', repo, docs: sections.length, sections, section, pages, families, configures: families.length ? `${section}: ${families.map((x) => `${x.family} (${x.formulas.join(', ')})`).join('; ')}` : section ? `${section}: no family its pages name yet` : 'no such section', feed: section ? `next payload config: the '${section}' docs vocabulary, and the families its pages name` : 'no such section', ...(next >= 0 ? { next } : {}) }
+      return { source, url, reading, expected: { pages: '>= 1' }, agrees: pages.length > 0 }
+    }
+    // the formula's direct read of one section — no feed cursor, holds on pages found
+    if (typeof a.category === 'number') return vocabularyOf(a.category, a.category, -1)
+    const from = typeof a.from === 'number' && a.from >= 0 ? Math.floor(a.from) : 0
+    if (from === 0) {
+      const [sections, templates, examples] = await Promise.all([dirsOf('docs'), dirsOf('templates'), dirsOf('examples')])
+      const reading = { part: 0, of: 'map', repo, docs: sections.length, sections, templates, examples, next: 1, feed: 'next payload config: the map — docs sections, starter templates and examples' }
+      return { source, url, reading, expected: { sections: '>= 1' }, agrees: sections.length > 0 }
+    }
+    if (from === 1) {
+      // the reference app, the Payload way: payloadcms/website's src dirs, blocks and collections are the content
+      // architecture the next config mirrors (a block or collection it handles that the unit does not yet is a lead)
+      const where = 'payloadcms/website'
+      const fileNames = async (dir: string): Promise<string[]> => { const x = await list(dir, where).catch(() => []); return Array.isArray(x) ? x.filter((e) => e.type === 'dir' || /\.tsx?$/.test(e.name)).map((e) => e.name.replace(/\.tsx?$/, '')).filter((nm) => nm !== 'index').sort() : [] }
+      const [dirs, blocks, collections] = await Promise.all([dirsOf('src', where), fileNames('src/blocks'), fileNames('src/collections')])
+      const reading = { part: 1, of: 'architecture', website: { repo: where, dirs, blocks, collections }, leads: [...blocks.map((b) => `block:${b}`), ...collections.map((c) => `collection:${c}`)], next: 2, feed: 'next payload config: the content architecture — the blocks and collections the reference site handles, to mirror' }
+      return { source, url: `https://github.com/${where}`, reading, expected: { blocks: '>= 1' }, agrees: blocks.length > 0 }
+    }
+    if (from === 2) {
+      // monetisation: the official packages classed; the ones whose name earns, and the plugins not yet fused, are the
+      // leads that grow what the site earns and how much of Payload it covers
+      const MONEY = ['ecommerce', 'commerce', 'stripe', 'payment', 'payments', 'subscription', 'subscriptions', 'checkout', 'billing', 'paywall', 'shop', 'store', 'order', 'cart', 'price', 'pricing', 'invoice', 'affiliate']
+      const packages = await dirsOf('packages')
+      const classOf = (p: string) => (p.startsWith('plugin-') ? 'plugin' : p.startsWith('db-') ? 'db adapter' : p.startsWith('storage-') ? 'storage adapter' : p.startsWith('richtext-') ? 'rich text' : p.startsWith('email-') ? 'email adapter' : p.startsWith('translations') || p.startsWith('ui') || p.startsWith('next') || p.startsWith('graphql') ? 'core' : 'package')
+      const fused = new Set(['plugin-ecommerce', 'plugin-form-builder', 'plugin-import-export', 'plugin-mcp', 'plugin-multi-tenant', 'plugin-nested-docs', 'plugin-redirects', 'plugin-search', 'plugin-sentry', 'plugin-seo', 'plugin-stripe', 'db-d1-sqlite', 'db-postgres', 'storage-s3', 'richtext-lexical', 'email-resend'])
+      const ecosystem = packages.map((p) => ({ package: p, kind: classOf(p), fused: fused.has(p), earns: MONEY.some((m) => wordsOf(p).includes(m)), families: [...qpuHexFamiliesOf()].filter(([ff]) => !DOORS.has(ff)).filter(([ff, fs]) => [...new Set([...wordsOf(ff), ...fs.flatMap((x) => wordsOf(x.name))])].some((w) => wordsOf(p).includes(w))).map(([ff]) => ff) }))
+      const monetisation = ecosystem.filter((e) => e.earns).map((e) => ({ package: e.package, fused: e.fused, families: e.families }))
+      const notYetFused = ecosystem.filter((e) => e.kind === 'plugin' && !e.fused).map((e) => e.package)
+      const reading = { part: 2, of: 'monetisation', packages: packages.length, plugins: ecosystem.filter((e) => e.kind === 'plugin').length, monetisation, notYetFused, leads: [...monetisation.filter((m) => !m.fused).map((m) => `monetise:${m.package}`), ...notYetFused.map((p) => `fuse:${p}`)], next: 3, feed: 'next payload config: monetisation — the packages that earn (ecommerce, stripe, payments) and the plugins not yet fused' }
+      return { source, url, reading, expected: { packages: '>= 1' }, agrees: ecosystem.length > 0 }
+    }
+    // from >= 3: walk the docs sections one per call; wrap to 0 when they run out, so the feed never terminates
+    const sections = await dirsOf('docs')
+    const i = from - 3
+    if (i >= sections.length) return { source, url, reading: { part: from, of: 'wrap', sections: sections.length, next: 0, feed: 'next payload config: the sections are read; the feed wraps to the map' }, expected: { wrap: 'to 0' }, agrees: true }
+    return vocabularyOf(i, from, from + 1, sections)
   }
   if (source === 'imagine') {
     // WHAT THE UNIT MAY BE, computed from the record: a request's words (a law firm, an auditor, a forensic expert) or
