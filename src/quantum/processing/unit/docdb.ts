@@ -266,42 +266,49 @@ export class DocCollection {
     private readonly idOf: (doc: Record<string, unknown>) => DocId,
     private readonly onWrite: DocWriteHook = () => {},
   ) {}
-  // HEXBIT STORAGE: shard every document key by the leading hex nibble of its id, so a collection spreads across a
-  // 16-way tree (${name}/<nibble>/<id>) and no single prefix ever nears the scan bound — the full UUID space stays
-  // reachable, the shard is a pure function of the id (near-zero temp, no recompute), and the shards read in parallel.
-  // A handle lower than a byte (one hexbit = 4 bits) is the coordination key; deeper collections nest more nibbles.
+  // HEXBIT STORAGE: shard every key by the leading hex nibble of the id, so a collection spreads across a 16-way tree
+  // (${name}/<nibble>/<id>) and no single prefix ever nears the scan bound — the full UUID space stays reachable, the
+  // shard is a pure function of the id (near-zero temp, no recompute), and the shards read in parallel. A handle lower
+  // than a byte (one hexbit = 4 bits) is the coordination key; deeper collections nest more nibbles. One scheme only:
+  // a store that predates it is rebuilt (re-seeded by the families), never migrated through a slower read path.
   private shardOf = (id: DocId) => (id.match(/[0-9a-fA-F]/)?.[0] ?? '0').toLowerCase()
   private keyOf = (id: DocId) => `${this.name}/${this.shardOf(id)}/${encodeURIComponent(id)}`
-  // the pre-shard key, kept so documents written before sharding stay readable and migrate on their next write
-  private flatKeyOf = (id: DocId) => `${this.name}/${encodeURIComponent(id)}`
-  private readDoc = async (id: DocId): Promise<unknown> => (await this.store.get(this.keyOf(id))) ?? (await this.store.get(this.flatKeyOf(id)))
-  /* EVERY SCALAR FIELD VALUE IS AN ADDRESS: <collection>#<field>=<value>/<id>, one key per document and value, written
-   * with the document. An equality is then one prefix listing and the matching documents, never a scan of the whole
-   * collection; there is no shared index document, so concurrent writers never read-modify-write the same key. */
+  private readDoc = (id: DocId): Promise<unknown> => this.store.get(this.keyOf(id))
+  /* EVERY SCALAR FIELD VALUE IS AN ADDRESS: <collection>#<field>=<value>/<nibble>/<id>, one key per document and value,
+   * written with the document and sharded by the same hexbit so a value shared by many documents spreads across 16
+   * bounded sub-prefixes. An equality is then a bounded prefix listing and the matching documents, never a scan of the
+   * whole collection; there is no shared index document, so concurrent writers never read-modify-write the same key. */
   private addressOf = (field: string, value: unknown) => `${this.name}#${field}=${encodeURIComponent(JSON.stringify(value))}/`
-  private addressesOf = (doc: Doc): string[] =>
-    Object.entries(doc).filter(([k, v]) => k !== '_id' && indexable(v)).map(([k, v]) => `${this.addressOf(k, v)}${encodeURIComponent(doc._id)}`)
+  private addressKeyOf = (field: string, value: unknown, id: DocId) => `${this.addressOf(field, value)}${this.shardOf(id)}/${encodeURIComponent(id)}`
+  private addressFieldsOf = (doc: Doc): Array<[string, unknown]> => Object.entries(doc).filter(([k, v]) => k !== '_id' && indexable(v))
   private async readdress(before: Doc | undefined, after: Doc | undefined): Promise<void> {
-    const old = new Set(before ? this.addressesOf(before) : [])
-    const now = new Set(after ? this.addressesOf(after) : [])
-    await Promise.all([...[...old].filter((k) => !now.has(k)).map((k) => this.store.del(k)), ...[...now].filter((k) => !old.has(k)).map((k) => this.store.put(k, 1))])
+    const id = (after ?? before)?._id
+    if (id === undefined) return
+    const keyAt = (e: [string, unknown]) => this.addressKeyOf(e[0], e[1], id)
+    const old = before ? this.addressFieldsOf(before) : []
+    const now = after ? this.addressFieldsOf(after) : []
+    const nowKeys = new Set(now.map(keyAt))
+    const oldKeys = new Set(old.map(keyAt))
+    await Promise.all([
+      ...old.filter((e) => !nowKeys.has(keyAt(e))).map((e) => this.store.del(keyAt(e))),
+      ...now.filter((e) => !oldKeys.has(keyAt(e))).map((e) => this.store.put(keyAt(e), 1)),
+    ])
   }
   private async addressed(field: string, value: unknown): Promise<Doc[]> {
-    const prefix = this.addressOf(field, value)
-    const ids = (await this.store.keys(prefix)).map((k) => decodeURIComponent(k.slice(prefix.length)))
+    const base = this.addressOf(field, value)
+    // list each hexbit shard of the value-prefix separately so no sub-prefix nears the scan bound; the id is the final
+    // '/'-separated segment (ids are percent-encoded, so they never contain a literal '/').
+    const shards = '0123456789abcdef'.split('').map((nb) => `${base}${nb}/`)
+    const lists = await Promise.all(shards.map((p) => this.store.keys(p)))
+    const ids = [...new Set(lists.flat().map((k) => decodeURIComponent(k.slice(k.lastIndexOf('/') + 1))))]
     return (await Promise.all(ids.map((id) => this.readDoc(id)))).filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
   }
   private async all(): Promise<Doc[]> {
-    // list each hexbit shard separately so every prefix stays under the scan bound; a legacy flat scan catches documents
-    // written before sharding (id directly under ${name}/, not ${name}/<nibble>/). Dedup by _id — a shard copy wins.
+    // list each hexbit shard separately so every prefix stays under the scan bound
     const shards = '0123456789abcdef'.split('').map((nb) => `${this.name}/${nb}/`)
     const lists = await Promise.all(shards.map((p) => this.store.keys(p)))
-    const flat = (await this.store.keys(`${this.name}/`)).filter((k) => !/^[0-9a-f]\//.test(k.slice(this.name.length + 1)))
-    const keys = [...lists.flat(), ...flat]
-    const docs = (await Promise.all(keys.map((k) => this.store.get(k)))).filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
-    const byId = new Map<string, Doc>()
-    for (const d of docs) if (!byId.has(d._id)) byId.set(d._id, d)
-    return [...byId.values()]
+    const docs = await Promise.all(lists.flat().map((k) => this.store.get(k)))
+    return docs.filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
   }
   async insertOne(doc: Record<string, unknown>): Promise<Doc> {
     const _id = typeof doc._id === 'string' ? doc._id : this.idOf(doc)
@@ -338,7 +345,7 @@ export class DocCollection {
     return out.sort(compareValues)
   }
   private async write(before: Doc, doc: Doc): Promise<Doc> {
-    await Promise.all([this.store.put(this.keyOf(doc._id), doc), this.store.del(this.flatKeyOf(doc._id)), this.readdress(before, doc)])
+    await Promise.all([this.store.put(this.keyOf(doc._id), doc), this.readdress(before, doc)])
     this.onWrite({ op: 'update', collection: this.name, doc })
     return doc
   }
@@ -367,14 +374,14 @@ export class DocCollection {
   async deleteOne(filter: Filter): Promise<Doc | null> {
     const found = (await this.find(filter, { limit: 1 }))[0] as Doc | undefined
     if (!found) return null
-    await Promise.all([this.store.del(this.keyOf(found._id)), this.store.del(this.flatKeyOf(found._id)), this.readdress(found, undefined)])
+    await Promise.all([this.store.del(this.keyOf(found._id)), this.readdress(found, undefined)])
     this.onWrite({ op: 'delete', collection: this.name, doc: found })
     return found
   }
   async deleteMany(filter: Filter): Promise<number> {
     const hit = (await this.find(filter)) as Doc[]
     for (const d of hit) {
-      await Promise.all([this.store.del(this.keyOf(d._id)), this.store.del(this.flatKeyOf(d._id)), this.readdress(d, undefined)])
+      await Promise.all([this.store.del(this.keyOf(d._id)), this.readdress(d, undefined)])
       this.onWrite({ op: 'delete', collection: this.name, doc: d })
     }
     return hit.length
