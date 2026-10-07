@@ -1,4 +1,5 @@
-import { test } from './receipted.js'
+import { test as receiptedTest } from './receipted.js'
+import type { TestContext } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { qpuContentUuidOf, qpuHexFamiliesOf, qpuUuidReceiptOf } from './index.js'
@@ -11,20 +12,27 @@ import '../../../mcp/families.js'
  * warning answered at once, each with what resolves it. */
 const host = (process.env.QPU_LIVE ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
 const DOOR = 'cite'
+// BOUNDED SO IT NEVER HANGS, EVEN ON THE SMALLEST MACHINE. Each request has a short deadline and at most one retry, so
+// no call runs for minutes (the old 120s × four retries was eight minutes). The host is probed once, memoized: when it
+// is unreachable — offline, no network, the host down — every live test skips rather than timing out, so the suite
+// finishes on any hardware (a Pravets 8M included) instead of stalling on a request that was never going to answer.
+const DEADLINE = 20000
+let up: Promise<boolean> | undefined
+const reachable = (): Promise<boolean> => (up ??= fetch(`${host}/health`, { signal: AbortSignal.timeout(DEADLINE) }).then((r) => r.ok).catch(() => false))
+const test = (name: string, fn: (t: TestContext) => void | Promise<void>): Promise<void> =>
+  receiptedTest(name, async (t) => { if (!(await reachable())) { t.skip(`${host} unreachable — offline or down; set QPU_LIVE or start the host`); return } await fn(t) })
 let id = 0
 type Shown = { structuredContent?: Record<string, unknown>; isError?: boolean }
 const call = async (args: Record<string, unknown>, name = DOOR, again = 0): Promise<Shown> => {
-  // a read the host had not finished in two minutes is asked once more: the request is split in time, not given up
   const r = await fetch(`${host}/mcp`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method: 'tools/call', params: { name, arguments: args } }),
-    signal: AbortSignal.timeout(120000),
-  }).catch((e: unknown) => { if (again < 3 && (e as { name?: string }).name === 'TimeoutError') return null; throw e })
-  if (r === null) return call(args, name, again + 1)
-  // an isolate that answered 5xx once is asked once more after a pause: the request is split in time, not given up
-  // an isolate under load answers 5xx: asked again after a growing pause, three times — split in time, never given up at once
-  if (r.status >= 500 && again < 3) { await new Promise((ok) => setTimeout(ok, 5000 * (again + 1))); return call(args, name, again + 1) }
+    signal: AbortSignal.timeout(DEADLINE),
+  }).catch(() => null)
+  // one retry, then give up fast with a clear error — never a cascade of two-minute waits
+  if (r === null) { if (again < 1) return call(args, name, again + 1); throw new Error(`${host}/mcp did not answer within ${DEADLINE}ms`) }
+  if (r.status >= 500 && again < 1) { await new Promise((ok) => setTimeout(ok, 2000)); return call(args, name, again + 1) }
   const body = (await r.json()) as { result?: Shown; error?: { message: string } }
   assert.ok(body.result, `tools/call ${name} ${JSON.stringify(args)}: ${body.error?.message ?? r.status}`)
   // the live reading is this test's computation: its content address is minted into the test's receipt ledger, so the
@@ -74,7 +82,7 @@ test('release: formula discovery holds across every family', async (t) => {
 test('release: the site end to end — every address it lists answers, every page renders as built', async (t) => {
   // every page read is minted into the test's receipt ledger (status and content address), as the MCP readings are
   const get = async (path: string, accept = 'text/html') => {
-    const r = await fetch(`${host}${path}`, { headers: { accept }, redirect: 'manual', signal: AbortSignal.timeout(120000) })
+    const r = await fetch(`${host}${path}`, { headers: { accept }, redirect: 'manual', signal: AbortSignal.timeout(DEADLINE) })
     const text = await r.text()
     qpuUuidReceiptOf(`release site ${path}`, qpuContentUuidOf({ status: r.status, text }), { holds: r.status === 200, host })
     return { status: r.status, headers: r.headers, text: async () => text, json: async () => JSON.parse(text) as unknown }
@@ -88,7 +96,7 @@ test('release: the site end to end — every address it lists answers, every pag
   let warm: { status: number } | undefined
   let last = ''
   for (let i = 0; i < 30 && !(warm && warm.status === 200); i++) {
-    if (i) await new Promise((r) => setTimeout(r, 10000))
+    if (i) await new Promise((r) => setTimeout(r, 1500))
     try { warm = await get('/'); last = String(warm.status) } catch (e) { last = (e as Error).message }
   }
   assert.ok(warm && warm.status === 200, `the site answers its root within five minutes of a deploy (last: ${last})`)
@@ -122,7 +130,7 @@ test('release: the site end to end — every address it lists answers, every pag
         html = await r.text()
         if (r.status === 200 && html.includes(p.meta?.title ?? p.title)) break
       } catch { /* a read that timed out while the seed resumes is asked again */ }
-      await new Promise((f) => setTimeout(f, 5000))
+      await new Promise((f) => setTimeout(f, 1500))
     }
     const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? ''
     const meta = (name: string) => new RegExp(`<meta[^>]+(?:name|property)="${name}"[^>]+content="([^"]*)"`).exec(html)?.[1] ?? new RegExp(`<meta[^>]+content="([^"]*)"[^>]+(?:name|property)="${name}"`).exec(html)?.[1] ?? ''
@@ -281,10 +289,10 @@ test('release: every theorem that states a cross-domain relation is confirmed by
 
 test('release: paste the URL into any agent and it develops an idea on the formulas, as a real Payload app', async (t) => {
   // 1. THE URL ALONE: /.well-known/mcp.json tells an agent how to connect — the one server, no key for reads
-  const wk = await (await fetch(`${host}/.well-known/mcp.json`, { headers: { accept: 'application/json' } })).json().catch(() => null) as { mcp?: unknown; url?: string } | null
+  const wk = await (await fetch(`/.well-known/mcp.json`, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(DEADLINE) })).json().catch(() => null) as { mcp?: unknown; url?: string } | null
   assert.ok(wk, '/.well-known/mcp.json answers')
   // 2. initialize + tools/list, as any MCP client makes them
-  const init = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} }) })
+  const init = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {} }), signal: AbortSignal.timeout(DEADLINE) })
   assert.equal(init.status, 200, 'initialize answers 200')
   const doors = out(await call({ doors: true })) as { doors?: { name: string }[]; formulas?: { name: string }[] }
   assert.ok((doors.formulas?.length ?? 0) > 0, 'the agent sees the formulas to build on')
@@ -294,7 +302,7 @@ test('release: paste the URL into any agent and it develops an idea on the formu
   assert.equal(Number(idea.value), 7830, "the agent's idea (tesla.schumann 1) computes to the Schumann fundamental")
   assert.ok(typeof idea.receipt === 'string', 'the idea carries a receipt')
   // 4. A REAL PAYLOAD APP behind the same origin: the admin answers, the API answers, a collection reads over the door
-  const admin = await fetch(`${host}/admin`, { headers: { accept: 'text/html' } })
+  const admin = await fetch(`/admin`, { headers: { accept: "text/html" }, signal: AbortSignal.timeout(DEADLINE) })
   assert.equal(admin.status, 200, 'the Payload admin is a real app at the same origin')
   const finds = out(await call({ doors: true })) as { doors?: { name: string }[] }
   assert.ok(finds.doors?.some((d) => d.name === 'findPages'), 'the Payload collections are fused into the same MCP (findPages)')

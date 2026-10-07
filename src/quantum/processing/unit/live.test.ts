@@ -293,7 +293,7 @@ test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at 
    * guard: the climb is bounded by WIDTH, read from the host's own reply — once it says the state is sparse, a wider
    * modulus costs only its digits on the wire, so the climb doubles the width to a ceiling of 2^16 bits and stops
    * there, in a dozen requests, instead of spending the budget on round trips that measure nothing but the network. */
-  const budgetMs = target ? 20000 : Infinity
+  const budgetMs = target ? 20000 : 2000
   const widthCeiling = 65536
   type Run = { circuitry: { qubits: number; holds: boolean }; exact: { n: string }; prepare: { prepared: boolean; amplitudes: number; sparse: boolean }; measure: { holds: boolean }; factors: { by: string } }
   const steps: { qubits: number; work: number; ms: number }[] = []
