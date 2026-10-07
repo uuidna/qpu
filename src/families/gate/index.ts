@@ -94,21 +94,34 @@ export class GateFormulas {
    *  identifies — what the next development crosses first, before anything is removed or edited. Value how many;
    *  holds at zero. The Lean families cross in their own domain. One discovery and the sequence lookups; the efforts
    *  per lead are crossed(i), one address per lead, fired at once by the caller. */
-  private static async leadsOf() {
-    const d = (await DataFormulas.discover(4096)) as unknown as { relations: { value: string; families: string[]; ways: { family: string; program: string[]; hex: string }[]; live: boolean }[]; seals: { family: string; program: string[]; kind: string }[]; liveInputs: number }
+  private static async leadsOf(slice?: { from?: number; count?: number }) {
+    // WITH A FAMILY SLICE, THE WHOLE COMPUTATION FITS ONE CALL. discover, the sequences and the open list are all bound
+    // to the slice's families, so a sliced leads() runs inside the Worker budget instead of exceeding it (error 1102);
+    // the caller walks the slices by `next`. Without a slice the full lattice is computed, as the gate's CI push does.
+    const fams = [...qpuHexFamiliesOf()]
+    const window = slice ? fams.slice(slice.from ?? 0, (slice.from ?? 0) + (slice.count ?? fams.length)) : fams
+    const d = (await DataFormulas.discover(4096, slice)) as unknown as { relations: { value: string; families: string[]; ways: { family: string; program: string[]; hex: string }[]; live: boolean }[]; seals: { family: string; program: string[]; kind: string }[]; liveInputs: number }
     const reached = new Set(d.relations.filter((r) => r.families.length > 1).flatMap((r) => r.ways.flatMap((w) => w.program.map((p) => `${w.family}.${p}`))))
     const identified = new Set<string>()
-    // the OEIS identification runs at once, not one at a time — a serial loop over every sequence stalled for minutes
-    const seqs = await qpuSequencesOf()
+    // the OEIS identification is the lattice-wide sequence scan (every family's formulas run as integer sequences); for
+    // a bounded slice it is skipped, because that scan does not slice — a sequence-identified formula simply stays a
+    // candidate lead here and is caught by crossed(i), which does the full OEIS lookup. The full push still runs it.
+    const seqs = slice ? [] : (await qpuSequencesOf())
     const agreed = await Promise.all(seqs.map((s) => (qpuDataOf('sequence', { family: s.family, formula: s.formula, fixed: s.fixed }).then((r) => (r as { agrees?: boolean }).agrees === true).catch(() => false))))
     seqs.forEach((s, i) => { if (agreed[i]) identified.add(`${s.family}.${s.formula}`) })
     // every formula is a lead until crossed: doors, the Lean families and live formulas included — none is left out
-    const open = [...qpuHexFamiliesOf()].flatMap(([fam, fs]) => fs.filter((x) => !reached.has(`${fam}.${x.name}`) && !identified.has(`${fam}.${x.name}`)).map((x) => ({ family: fam, name: x.name, arity: x.arity })))
+    const open = window.flatMap(([fam, fs]) => fs.filter((x) => !reached.has(`${fam}.${x.name}`) && !identified.has(`${fam}.${x.name}`)).map((x) => ({ family: fam, name: x.name, arity: x.arity })))
     return { d, identified, open }
   }
-  static async leads(): Promise<CrossFormula> {
-    const { d, identified, open } = await GateFormulas.leadsOf()
-    return f('gate-leads', 'leads() = |{formulas no other family reaches over the window and no dataset identifies}|', open.length, open.length === 0, 'leads', [], { relations: d.relations.length, liveInputs: d.liveInputs, identified: identified.size, leads: open.map((x) => { try { return qpuHexUuidOf({ family: x.family, program: [x.name], params: [] }) } catch { return `${x.family}.${x.name}` } }) })
+  /** The leads of one family slice [from, from + faces), with `next` to the following slice — so the system computes
+   *  what to develop next itself, one bounded slice per call, and never needs the window named by hand. from 0 walks
+   *  the whole lattice over its slices; holds when the slice has no open lead. */
+  static async leads(from = 0): Promise<CrossFormula> {
+    const fams = [...qpuHexFamiliesOf()]
+    const count = qpuFacesOf().faces
+    const { d, identified, open } = await GateFormulas.leadsOf({ from, count })
+    const next = from + count < fams.length ? from + count : undefined
+    return f('gate-leads', 'leads(from) = |{formulas of the family slice [from, from+faces) no relation reaches and no dataset identifies}|', open.length, open.length === 0, 'leads', [from], { from, count, families: fams.length, ...(next !== undefined ? { next } : {}), relations: d.relations.length, liveInputs: d.liveInputs, identified: identified.size, leads: open.map((x) => { try { return qpuHexUuidOf({ family: x.family, program: [x.name], params: [] }) } catch { return `${x.family}.${x.name}` } }) })
   }
   /** THE i-th LEAD GIVEN EVERY EFFORT, ONE ADDRESS PER LEAD: its terms looked up in OEIS at every small fixed slot,
    *  the Clay lens (a seal), the involuted perspective, the research of its family, its own words' APIs read and
@@ -176,7 +189,8 @@ export class GateFormulas {
     // the leads are the whole lattice's: counted once, under the last slice, over the window every slice filled; each
     // is then given its efforts at its own address, crossed(i), fired by the caller at once
     const last = from + qpuFacesOf().faces >= all.length
-    const tagged = last ? ((await GateFormulas.leads()) as unknown as { value: number }) : { value: -1 }
+    // the whole lattice's leads, counted once under the last slice — the full (unsliced) computation, as the CI push runs
+    const tagged = last ? { value: (await GateFormulas.leadsOf()).open.length } : { value: -1 }
     const theorems = last ? ((await GateFormulas.theorems()) as unknown as { value: number; holds: boolean; stated?: unknown }) : { value: -1, holds: true }
     const holds = proof.holds && rules.holds && theorems.holds && failing.length === 0
     return f('gate-push', 'push(from) = proof ∧ rules ∧ ⋀ family(i), i in [from, from + faces); data.deep → merkaba.rosetta → gate.crossed in the reading', crossed.length - failing.length, nat(from) && holds, 'push', [from], { deep, rosetta: { value: rosetta.value, holds: rosetta.holds, edges: rosetta.edges }, ...(last ? { leads: tagged.value, theorems: theorems.value } : {}), proof: proof.value, rules: rules.value, failing, ...(from + slice.length < all.length ? { next: from + slice.length } : {}) })
