@@ -42,13 +42,13 @@ const liveEnv = { QPU_HOST: 'qpu.uuidna.com', STORAGE: memoryKv(), BLOBS: memory
 const liveFetch = (url: string, init?: RequestInit): Promise<Response> => (target ? fetch(url, init) : worker.fetch(new Request(url, init), liveEnv))
 const where = target ? `live host ${target}` : 'the worker in this process (set QPU_LIVE=https://qpu.uuidna.com to test the host)'
 
-const html = { accept: 'text/html' }
+const json = { accept: 'application/json' }
 
 test('live qpu.uuidna.com', async (t) => {
   const live = target ?? 'https://qpu.uuidna.com'
   t.diagnostic(`against ${where}`)
   const local = qpuQuantumOf()
-  const root = await liveFetch(live, { headers: html })
+  const root = await liveFetch(live, { headers: json })
   await t.test('chat fetch is JSON quantum', async () => {
     assert.equal(root.status, 200)
     assert.equal((root.headers.get('content-type') ?? '').includes('json'), true)
@@ -262,7 +262,7 @@ test('live qpu.uuidna.com', async (t) => {
     }
   })
   await t.test('no auth message proxy', async () => {
-    const inbox = await liveFetch(`${live}/message`, { headers: html })
+    const inbox = await liveFetch(`${live}/message`, { headers: json })
     assert.equal(inbox.status, 200)
     assert.equal(inbox.headers.get('access-control-allow-origin'), '*')
     const proxy = (await inbox.json()) as { kind: string; proxy: boolean; auth: boolean; holds: boolean }
