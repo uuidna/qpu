@@ -266,7 +266,15 @@ export class DocCollection {
     private readonly idOf: (doc: Record<string, unknown>) => DocId,
     private readonly onWrite: DocWriteHook = () => {},
   ) {}
-  private keyOf = (id: DocId) => `${this.name}/${encodeURIComponent(id)}`
+  // HEXBIT STORAGE: shard every document key by the leading hex nibble of its id, so a collection spreads across a
+  // 16-way tree (${name}/<nibble>/<id>) and no single prefix ever nears the scan bound — the full UUID space stays
+  // reachable, the shard is a pure function of the id (near-zero temp, no recompute), and the shards read in parallel.
+  // A handle lower than a byte (one hexbit = 4 bits) is the coordination key; deeper collections nest more nibbles.
+  private shardOf = (id: DocId) => (id.match(/[0-9a-fA-F]/)?.[0] ?? '0').toLowerCase()
+  private keyOf = (id: DocId) => `${this.name}/${this.shardOf(id)}/${encodeURIComponent(id)}`
+  // the pre-shard key, kept so documents written before sharding stay readable and migrate on their next write
+  private flatKeyOf = (id: DocId) => `${this.name}/${encodeURIComponent(id)}`
+  private readDoc = async (id: DocId): Promise<unknown> => (await this.store.get(this.keyOf(id))) ?? (await this.store.get(this.flatKeyOf(id)))
   /* EVERY SCALAR FIELD VALUE IS AN ADDRESS: <collection>#<field>=<value>/<id>, one key per document and value, written
    * with the document. An equality is then one prefix listing and the matching documents, never a scan of the whole
    * collection; there is no shared index document, so concurrent writers never read-modify-write the same key. */
@@ -281,16 +289,23 @@ export class DocCollection {
   private async addressed(field: string, value: unknown): Promise<Doc[]> {
     const prefix = this.addressOf(field, value)
     const ids = (await this.store.keys(prefix)).map((k) => decodeURIComponent(k.slice(prefix.length)))
-    return (await Promise.all(ids.map((id) => this.store.get(this.keyOf(id))))).filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
+    return (await Promise.all(ids.map((id) => this.readDoc(id)))).filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
   }
   private async all(): Promise<Doc[]> {
-    const keys = await this.store.keys(`${this.name}/`)
-    const docs = await Promise.all(keys.map((k) => this.store.get(k)))
-    return docs.filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
+    // list each hexbit shard separately so every prefix stays under the scan bound; a legacy flat scan catches documents
+    // written before sharding (id directly under ${name}/, not ${name}/<nibble>/). Dedup by _id — a shard copy wins.
+    const shards = '0123456789abcdef'.split('').map((nb) => `${this.name}/${nb}/`)
+    const lists = await Promise.all(shards.map((p) => this.store.keys(p)))
+    const flat = (await this.store.keys(`${this.name}/`)).filter((k) => !/^[0-9a-f]\//.test(k.slice(this.name.length + 1)))
+    const keys = [...lists.flat(), ...flat]
+    const docs = (await Promise.all(keys.map((k) => this.store.get(k)))).filter((d): d is Doc => isObj(d) && typeof d._id === 'string')
+    const byId = new Map<string, Doc>()
+    for (const d of docs) if (!byId.has(d._id)) byId.set(d._id, d)
+    return [...byId.values()]
   }
   async insertOne(doc: Record<string, unknown>): Promise<Doc> {
     const _id = typeof doc._id === 'string' ? doc._id : this.idOf(doc)
-    if ((await this.store.get(this.keyOf(_id))) !== undefined) throw new Error(`docdb: duplicate _id ${_id} in ${this.name}`)
+    if ((await this.readDoc(_id)) !== undefined) throw new Error(`docdb: duplicate _id ${_id} in ${this.name}`)
     const stored = { ...clone(doc), _id } as Doc
     await Promise.all([this.store.put(this.keyOf(_id), stored), this.readdress(undefined, stored)])
     this.onWrite({ op: 'insert', collection: this.name, doc: stored })
@@ -304,7 +319,7 @@ export class DocCollection {
   async find(filter: Filter = {}, options: FindOptions = {}): Promise<Record<string, unknown>[]> {
     const id = filter._id
     const eq = equalityOf(filter)
-    const pool = typeof id === 'string' ? ([(await this.store.get(this.keyOf(id))) as Doc].filter(isObj) as Doc[]) : eq ? await this.addressed(...eq) : await this.all()
+    const pool = typeof id === 'string' ? ([(await this.readDoc(id)) as Doc].filter(isObj) as Doc[]) : eq ? await this.addressed(...eq) : await this.all()
     const hit = sortDocs(pool.filter((d) => matches(d, filter)), options.sort)
     const from = options.skip ?? 0
     const page = options.limit && options.limit > 0 ? hit.slice(from, from + options.limit) : hit.slice(from)
@@ -323,7 +338,7 @@ export class DocCollection {
     return out.sort(compareValues)
   }
   private async write(before: Doc, doc: Doc): Promise<Doc> {
-    await Promise.all([this.store.put(this.keyOf(doc._id), doc), this.readdress(before, doc)])
+    await Promise.all([this.store.put(this.keyOf(doc._id), doc), this.store.del(this.flatKeyOf(doc._id)), this.readdress(before, doc)])
     this.onWrite({ op: 'update', collection: this.name, doc })
     return doc
   }
@@ -352,14 +367,14 @@ export class DocCollection {
   async deleteOne(filter: Filter): Promise<Doc | null> {
     const found = (await this.find(filter, { limit: 1 }))[0] as Doc | undefined
     if (!found) return null
-    await Promise.all([this.store.del(this.keyOf(found._id)), this.readdress(found, undefined)])
+    await Promise.all([this.store.del(this.keyOf(found._id)), this.store.del(this.flatKeyOf(found._id)), this.readdress(found, undefined)])
     this.onWrite({ op: 'delete', collection: this.name, doc: found })
     return found
   }
   async deleteMany(filter: Filter): Promise<number> {
     const hit = (await this.find(filter)) as Doc[]
     for (const d of hit) {
-      await Promise.all([this.store.del(this.keyOf(d._id)), this.readdress(d, undefined)])
+      await Promise.all([this.store.del(this.keyOf(d._id)), this.store.del(this.flatKeyOf(d._id)), this.readdress(d, undefined)])
       this.onWrite({ op: 'delete', collection: this.name, doc: d })
     }
     return hit.length
