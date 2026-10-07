@@ -15,7 +15,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
-import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS } from '../dist/deployment/payload-templates.js'
+import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS, CLOUDFLARE_FRONTENDS } from '../dist/deployment/payload-templates.js'
 import { bootPort, qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf, qpuHexUuidOf, qpuHexRunOf } from '../dist/quantum/processing/unit/index.js'
 // every family registers on import — so the combinatorics family that seals the combination count is callable here
 await import('../dist/mcp/families.js')
@@ -208,7 +208,7 @@ await new Promise((r) => manifest.end(r))
 const binomialUuid = qpuHexUuidOf({ family: 'combinatorics', program: ['binomial'], params: [CLOUDFLARE_PLUGINS.length] })
 const binomial = await qpuHexRunOf(binomialUuid)
 const pluginSubsets = binomial.value
-const familyCombinations = axes.runtime.size * axes.db.size * axes.storage.size * axes.email.size * pluginSubsets
+const familyCombinations = axes.runtime.size * axes.db.size * axes.storage.size * axes.email.size * axes.frontend.size * pluginSubsets
 if (!(binomial.holds === true) || familyCombinations !== total)
   throw new Error(`payload-cf combinatorics drift: family ${familyCombinations} (2^${CLOUDFLARE_PLUGINS.length}=${pluginSubsets} × axes) ≠ enumerated ${total} (holds ${binomial.holds})`)
 
@@ -244,6 +244,22 @@ const byBase = bases.map((c, i) => {
   const all = [...own, ...unattributed]
   return { key: cloudflareKeyOf(c), ok: all.length === 0, errors: all.slice(0, 3).map((l) => l.replace(/^.*?error /, 'error ')) }
 })
+// FRONTEND AXIS, STRICTLY GENERATED: each frontend delivers its own files over the same (frontend-independent, already
+// type-checked) backend. A representative opennext combination is generated per frontend and the shell files it must
+// carry are asserted present — next the React app, shadcn its Tailwind/shadcn setup, pwa its manifest and worker,
+// vitepress its alternative static frontend.
+const expectOf = {
+  next: ['app/(frontend)/layout.tsx', 'app/(frontend)/page.tsx'],
+  shadcn: ['components.json', 'app/(frontend)/globals.css', 'lib/utils.ts', 'postcss.config.mjs'],
+  pwa: ['public/manifest.webmanifest', 'public/sw.js', 'public/icon.svg'],
+  vitepress: ['vitepress/.vitepress/config.ts', 'vitepress/pages.data.ts', 'vitepress/index.md'],
+}
+const frontends = CLOUDFLARE_FRONTENDS.map((frontend) => {
+  const files = Object.keys(PayloadTemplates.cloudflarePayload({ runtime: 'opennext', db: 'qpu-raid', storage: 'r2', email: 'none', frontend, plugins: ['seo'] }).files)
+  const missing = (expectOf[frontend] ?? []).filter((f) => !files.includes(f))
+  return { frontend, files: files.length, ok: missing.length === 0, missing }
+})
+
 const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'payload-cf')
 const receipt = {
   kind: 'payload-cf-receipt',
@@ -253,7 +269,8 @@ const receipt = {
   combinations: total,
   combinatorics: { pluginSubsets, familyCombinations, formula: `2^${CLOUDFLARE_PLUGINS.length} × axes`, by: binomialUuid, holds: binomial.holds === true && familyCombinations === total },
   typechecked: { bases: bases.length, compiled: tsc === '' || errors.length > unattributed.length || unattributed.length === 0, ok: byBase.filter((b) => b.ok).length, unattributed: unattributed.slice(0, 5), failing: byBase.filter((b) => !b.ok) },
-  coverage: 'each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles',
+  frontends: { axis: [...CLOUDFLARE_FRONTENDS], ok: frontends.every((fr) => fr.ok), each: frontends },
+  coverage: 'each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles; each frontend generates its own shell files over the frontend-independent config',
   stream: stream && { length: stream.length, head: stream.head, chain: stream.chain, holds: stream.holds },
 }
 fs.writeFileSync('payload-cf-receipt.json', JSON.stringify(receipt, null, 1) + '\n')

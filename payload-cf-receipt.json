@@ -1,6 +1,6 @@
 {
  "kind": "payload-cf-receipt",
- "when": "2026-10-06",
+ "when": "2026-10-07",
  "axes": {
   "runtime": [
    "vinext",
@@ -20,6 +20,12 @@
   "email": [
    "resend",
    "none"
+  ],
+  "frontend": [
+   "next",
+   "shadcn",
+   "pwa",
+   "vitepress"
   ]
  },
  "plugins": [
@@ -35,10 +41,10 @@
   "seo",
   "stripe"
  ],
- "combinations": 98304,
+ "combinations": 393216,
  "combinatorics": {
   "pluginSubsets": 2048,
-  "familyCombinations": 98304,
+  "familyCombinations": 393216,
   "formula": "2^11 × axes",
   "by": "541e2d7f-1000-7000-9000-00000000000b",
   "holds": true
@@ -50,11 +56,46 @@
   "unattributed": [],
   "failing": []
  },
- "coverage": "each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles",
+ "frontends": {
+  "axis": [
+   "next",
+   "shadcn",
+   "pwa",
+   "vitepress"
+  ],
+  "ok": true,
+  "each": [
+   {
+    "frontend": "next",
+    "files": 13,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "shadcn",
+    "files": 17,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "pwa",
+    "files": 16,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "vitepress",
+    "files": 16,
+    "ok": true,
+    "missing": []
+   }
+  ]
+ },
+ "coverage": "each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles; each frontend generates its own shell files over the frontend-independent config",
  "stream": {
-  "length": 98304,
-  "head": "873ecc5b-2222-1559-b3f9-91b3568ce88d",
-  "chain": "0096a47453a0dfc0344c1db6277ad30950f4a637a47ab07ec56b9d8f8ab2c2b4",
+  "length": 393216,
+  "head": "6b3cdf13-5737-8d76-9cb3-042635d8e9fa",
+  "chain": "5f5adfa7fb0b1173bc7576b5ff64dba471a59a325998fa8b3a1e265b0ff41dcd",
   "holds": true
  }
 }
