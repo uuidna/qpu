@@ -51,14 +51,36 @@ qpuMcpFuseOf('hex', {
 
 // the unit's own deadline: tenOf(hexbit) milliseconds, ten seconds
 const DEADLINE = L.tenOf(L.hexbit)
+// A TRANSIENT FAILURE IS RETRIED, A SETTLED ONE IS NOT. A 5xx, a 429 (rate limit) or a dropped connection is a blip the
+// next attempt may clear, so get() retries it a few times with a short growing backoff. A 4xx below 429 is the client's
+// own (it will not change on a retry) and a timeout has already spent the whole deadline (retrying would spend it
+// again), so neither is retried — the budget stays near one deadline while a flaky source no longer fails a whole feed.
+const RETRIES = L.coins
+const BACKOFF = L.tenOf(L.coins)
 // once the network is found out of reach, the network work is skipped for a minute and answered with a warning
 let offlineUntil = 0
 const OFFLINE_WINDOW = L.tenOf(L.hexbit) * L.coins * L.n
 const get = async (url: string, accept = 'application/json'): Promise<Response> => {
-  const r = await fetch(url, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' }, signal: AbortSignal.timeout(DEADLINE) })
-  if (!r.ok) throw new Error(`${url} answered ${r.status}`)
-  return r
+  const headers = { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' }
+  let last: Error = new Error(`${url} did not answer`)
+  for (let attempt = L.n - L.n; attempt <= RETRIES; attempt++) {
+    if (attempt > L.n - L.n) await new Promise((resolve) => setTimeout(resolve, BACKOFF * attempt))
+    try {
+      const r = await fetch(url, { headers, signal: AbortSignal.timeout(DEADLINE) })
+      if (r.ok) return r
+      // 4xx below 429 is settled, not transient: fail now rather than retry something that cannot change
+      if (r.status < 500 && r.status !== 429) throw new Error(`${url} answered ${r.status}`)
+      last = new Error(`${url} answered ${r.status}`)
+    } catch (e) {
+      last = e instanceof Error ? e : new Error(String(e))
+      // a client 4xx raised just above, and a timeout that already spent the deadline, are not worth another attempt
+      if (last.name === 'TimeoutError' || last.name === 'AbortError' || /answered 4\d\d$/.test(last.message)) break
+    }
+  }
+  throw last
 }
+/** The deadline-bounded, transient-retrying fetch the data door uses, exported so its retry contract can be tested. */
+export const qpuGetOf = get
 const leanNat = (name: string): string | undefined => new RegExp(`def ${name} : Nat := (\\d+)`).exec(leanSource)?.[1]
 const bellOf = (count: number): bigint[] => {
   const out: bigint[] = []
