@@ -175,19 +175,16 @@ export const worker = {
     // hold (a miss, a redirect it keeps for retired routes, an error while it starts) falls through to the unit's door,
     // and if the unit has none either, Payload's own not-found page is the answer (kept, not rendered twice). So a
     // page's address and a door's address may coincide (/receipts, /hex, /storage…) and each answers who asked.
-    // THE HTML FRONTEND, BOUNDED. A browser or crawler (GET, text/html) is offered Payload's rich page, but the probe
-    // is raced against a short deadline so a frontend that is slow or unavailable never holds the request: on a win it
-    // is the page, on a 404 it falls through to the unit's door, and on the deadline it is abandoned and the unit
-    // answers. The homepage is skipped here and answered by the unit itself below, so the front door is always instant.
-    let pageMiss: Response | undefined
-    if (request.method === 'GET' && env?.PAYLOAD && path !== '/' && /text\/html/.test(request.headers.get('accept') ?? '')) {
-      const page = await Promise.race([
-        env.PAYLOAD.fetch(request).catch(() => undefined),
-        new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ten * ten * ten * coins)),
-      ])
-      if (page && page.status === found) return page
-      if (page && page.status === lost) pageMiss = page
-    }
+    // THE UNIT ANSWERS ITS OWN DOORS FIRST, AND EACH ANSWERS WHO ASKED. A browser or crawler (GET, text/html) gets the
+    // door's reading as one SEO-complete HTML document; every other client keeps the JSON-LD on the same path. Only a
+    // path no door answers is the frontend's, probed under a short deadline at the end — so the unit's content is never
+    // held waiting on a slow or unavailable HTML frontend.
+    const wantsHtml = request.method === 'GET' && /text\/html/.test(request.headers.get('accept') ?? '')
+    const canonicalOf = (p: string) => `${unit.origin}${p === '/' ? '' : p}`
+    const pageOrServed = (p: string, build: () => object, meta?: { title?: string; description?: string }) =>
+      wantsHtml
+        ? new Response(qpuPageOf(build() as Record<string, unknown>, canonicalOf(p), meta), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8', ...deployed } })
+        : servedResponse(servedOf(p, build))
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
     if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
     if (path === '/receipts' || path.startsWith('/receipts/')) {
@@ -278,26 +275,30 @@ export const worker = {
         }
         return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods, ...MCP_EXTENSIONS.keys()] }))
       }
-      return servedResponse(servedOf('/mcp', () => qpuMcpOf()))
+      return pageOrServed('/mcp', () => qpuMcpOf(), {
+        title: '@uuidna/qpu — MCP endpoint',
+        description: 'The Model Context Protocol endpoint for the whole zone: tools/list and tools/call over Streamable HTTP. Eight door tools and eight cryptography tools; reads need no auth.',
+      })
     }
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
-    // THE HOMEPAGE, FAST AND CRAWLABLE, FROM THE UNIT. A browser or a crawler asking for text/html gets the unit's own
-    // reading rendered as an SEO-complete HTML document in one pass — title, meta description, canonical, Open Graph,
-    // the API links for crawl depth, and the full JSON-LD embedded — served in the unit's own fast budget rather than
-    // waiting on the HTML frontend. Every other client keeps the JSON-LD on this path.
-    if (path === '/' && /text\/html/.test(request.headers.get('accept') ?? '')) {
-      const html = qpuPageOf(qpuQuantumOf() as unknown as Record<string, unknown>, unit.origin, {
+    if (path === '/')
+      return pageOrServed('/', () => qpuQuantumOf(), {
         title: '@uuidna/qpu — quantum processing unit',
         description:
           "A quantum processing unit served as content-addressed JSON-LD and an MCP endpoint: exact 3-qubit amplitudes, Shor's factoring of 91, and cross-proving formula families. Reads need no auth.",
       })
-      return new Response(html, { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8', ...deployed } })
-    }
-    if (path === '/') return servedResponse(servedOf('/', () => qpuQuantumOf()))
-    if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
-    if (path === '/cite') return servedResponse(servedOf('/cite', () => qpuCiteOf()))
+    if (path === `/${unit.path}`)
+      return pageOrServed(`/${unit.path}`, () => qpuLeanOf(), {
+        title: '@uuidna/qpu — the Lean proof',
+        description: 'The unit proved end to end: every Lean theorem with its evidence, the Shor run with receipts, and the source fold of index.lean. A false anywhere makes every path 404.',
+      })
+    if (path === '/cite')
+      return pageOrServed('/cite', () => qpuCiteOf(), {
+        title: '@uuidna/qpu — cite',
+        description: 'How to cite the unit: the content-addressed identifier, the authors, the licence (CC BY-NC-ND 4.0), and the recompute that verifies the citation rather than trusting it.',
+      })
     // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed). What an MCP client, a
     // registry, an OpenAPI consumer or a crawler asks for by convention, each derived from the readings above. Measured
     // 2026-09-12: all five answered 404 while the README promised install.json.
@@ -390,10 +391,20 @@ export const worker = {
         const sent = qpuMessageOf(body)
         return jsonOf(sent, 'accepted' in sent && sent.accepted === true ? found + coins : found)
       }
-      return jsonOf(qpuMessageOf())
+      return pageOrServed('/message', () => qpuMessageOf(), {
+        title: '@uuidna/qpu — message',
+        description: 'The lattice message door: fourteen lanes, involution routing, no stored state. Posts are proxied and sealed; the door never awaits and keeps nothing.',
+      })
     }
-    // every path the unit does not answer is Payload's: the admin, its assets, the documentation pages
-    if (pageMiss) return pageMiss
-    if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
+    // EVERY PATH THE UNIT DOES NOT ANSWER IS PAYLOAD'S — the admin, its assets, the CMS pages. The frontend is probed
+    // under a short deadline so a slow or unavailable frontend returns a bounded answer here instead of holding the
+    // request; whatever it answers (a page or its own 404) is kept, and on the deadline the unit's own 404 stands.
+    if (env?.PAYLOAD) {
+      const page = await Promise.race([
+        env.PAYLOAD.fetch(request).catch(() => undefined),
+        new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ten * ten * ten * coins)),
+      ])
+      if (page) return page
+    }
     return jsonOf(JSON.parse(dead), lost)
   }}
