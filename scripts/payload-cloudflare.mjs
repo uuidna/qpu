@@ -15,7 +15,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
-import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS, CLOUDFLARE_FRONTENDS } from '../dist/deployment/payload-templates.js'
+import { PayloadTemplates, cloudflareCombinations, cloudflareKeyOf, cloudflareCombinationOf, CLOUDFLARE_PLUGINS, CLOUDFLARE_FRONTENDS, ALT_FRONTENDS } from '../dist/deployment/payload-templates.js'
 import { bootPort, qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf, qpuHexUuidOf, qpuHexRunOf } from '../dist/quantum/processing/unit/index.js'
 // every family registers on import — so the combinatorics family that seals the combination count is callable here
 await import('../dist/mcp/families.js')
@@ -252,8 +252,10 @@ const expectOf = {
   next: ['app/(frontend)/layout.tsx', 'app/(frontend)/page.tsx'],
   shadcn: ['components.json', 'app/(frontend)/globals.css', 'lib/utils.ts', 'postcss.config.mjs'],
   pwa: ['public/manifest.webmanifest', 'public/sw.js', 'public/icon.svg'],
-  vitepress: ['vitepress/.vitepress/config.ts', 'vitepress/pages.data.ts', 'vitepress/index.md'],
 }
+// every alternative framework must generate exactly the files its own table declares — derived, so it never drifts
+const probeCtx = { name: 'demo', head: '//', collection: 'pages', html: 'html', theme: '#000' }
+for (const [fw, def] of Object.entries(ALT_FRONTENDS)) expectOf[fw] = Object.keys(def.files(probeCtx))
 const frontends = CLOUDFLARE_FRONTENDS.map((frontend) => {
   const files = Object.keys(PayloadTemplates.cloudflarePayload({ runtime: 'opennext', db: 'qpu-raid', storage: 'r2', email: 'none', frontend, plugins: ['seo'] }).files)
   const missing = (expectOf[frontend] ?? []).filter((f) => !files.includes(f))

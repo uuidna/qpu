@@ -44,7 +44,7 @@ export const CLOUDFLARE_PLUGINS = ['ecommerce', 'form-builder', 'import-export',
  * @wing cms
  * @kind constant
  */
-export const CLOUDFLARE_FRONTENDS = ['next', 'shadcn', 'pwa', 'vitepress'] as const
+export const CLOUDFLARE_FRONTENDS = ['next', 'shadcn', 'pwa', 'astro', 'sveltekit', 'nuxt', 'remix', 'solidstart', 'qwik', 'hono', 'vitepress', 'docusaurus', 'angular', 'gatsby'] as const
 
 export type CloudflareCombination = {
   runtime: (typeof CLOUDFLARE_RUNTIMES)[number]
@@ -252,6 +252,92 @@ const cloudflareWranglerOf = (c: CloudflareCombination, name: string, app?: Clou
 
 /** The Next.js app around the config, for OpenNext: Payload's admin and REST routes, and a public site that renders one
  *  collection. Generated with the config so an app is one combination plus its content, nothing written by hand. */
+// EVERY CLOUDFLARE-COMPATIBLE FRAMEWORK OVER ONE SHARED BACKEND. next/shadcn/pwa are the Payload-native React app; the
+// rest are alternative frontends that read the same Payload REST API (set PAYLOAD_URL to the backend origin) and deploy
+// to Workers with their own adapter — a minimal, valid starter per framework, the config frontend-independent and
+// shared. Each framework's files live under its own folder so they never clash with the admin app; generated URLs use
+// string concatenation to avoid nested template literals.
+export type FrontendCtx = { name: string; head: string; collection: string; html: string; theme: string }
+export const ALT_FRONTENDS: Record<string, { deps: string[]; files: (x: FrontendCtx) => Record<string, string> }> = {
+  vitepress: {
+    deps: ['vitepress', 'vue'],
+    files: (x) => ({
+      'vitepress/.vitepress/config.ts': `${x.head}\nimport { defineConfig } from 'vitepress'\nexport default defineConfig({ title: '${x.name}', description: 'A Payload site, delivered with VitePress.', cleanUrls: true })\n`,
+      'vitepress/pages.data.ts': `${x.head}\nimport { defineLoader } from 'vitepress'\nconst base = process.env.PAYLOAD_URL || 'http://localhost:3000'\nexport default defineLoader({\n  async load() {\n    const r = await fetch(base + '/api/${x.collection}?limit=100&depth=0')\n    const { docs = [] } = (await r.json()) as { docs?: { title?: string; slug?: string; ${x.html}?: string }[] }\n    return docs.map((d) => ({ title: d.title || '', slug: d.slug || '', html: d.${x.html} || '' }))\n  },\n})\n`,
+      'vitepress/index.md': `---\ntitle: ${x.name}\n---\n<script setup>\nimport { data as pages } from './pages.data.ts'\n</script>\n\n# {{ $frontmatter.title }}\n\n<ul>\n  <li v-for="p in pages" :key="p.slug"><a :href="'/' + p.slug">{{ p.title }}</a></li>\n</ul>\n`,
+    }),
+  },
+  astro: {
+    deps: ['astro', '@astrojs/cloudflare'],
+    files: (x) => ({
+      'astro/astro.config.mjs': `${x.head}\nimport { defineConfig } from 'astro/config'\nimport cloudflare from '@astrojs/cloudflare'\nexport default defineConfig({ output: 'server', adapter: cloudflare() })\n`,
+      'astro/src/pages/index.astro': `---\nconst base = import.meta.env.PAYLOAD_URL || 'http://localhost:3000'\nconst { docs = [] } = await fetch(base + '/api/${x.collection}?limit=100&depth=0').then((r) => r.json())\n---\n<html lang="en"><head><meta charset="utf-8" /><title>${x.name}</title></head>\n<body><h1>${x.name}</h1><ul>{docs.map((d: any) => <li><a href={'/' + d.slug}>{d.title}</a></li>)}</ul></body></html>\n`,
+    }),
+  },
+  sveltekit: {
+    deps: ['@sveltejs/kit', '@sveltejs/adapter-cloudflare', 'svelte'],
+    files: (x) => ({
+      'sveltekit/svelte.config.js': `${x.head}\nimport adapter from '@sveltejs/adapter-cloudflare'\nexport default { kit: { adapter: adapter() } }\n`,
+      'sveltekit/src/routes/+page.server.ts': `${x.head}\nexport const load = async ({ fetch }) => {\n  const base = process.env.PAYLOAD_URL || 'http://localhost:3000'\n  const { docs = [] } = await fetch(base + '/api/${x.collection}?limit=100&depth=0').then((r) => r.json())\n  return { docs }\n}\n`,
+      'sveltekit/src/routes/+page.svelte': `<script lang="ts">export let data</script>\n<h1>${x.name}</h1>\n<ul>{#each data.docs as d}<li><a href={'/' + d.slug}>{d.title}</a></li>{/each}</ul>\n`,
+    }),
+  },
+  nuxt: {
+    deps: ['nuxt'],
+    files: (x) => ({
+      'nuxt/nuxt.config.ts': `${x.head}\nexport default defineNuxtConfig({ nitro: { preset: 'cloudflare_module' }, runtimeConfig: { public: { payloadUrl: process.env.PAYLOAD_URL || 'http://localhost:3000' } } })\n`,
+      'nuxt/app.vue': `<script setup lang="ts">\nconst base = useRuntimeConfig().public.payloadUrl\nconst { data } = await useFetch(base + '/api/${x.collection}?limit=100&depth=0')\n</script>\n<template><h1>${x.name}</h1><ul><li v-for="d in (data?.docs || [])" :key="d.slug"><a :href="'/' + d.slug">{{ d.title }}</a></li></ul></template>\n`,
+    }),
+  },
+  remix: {
+    deps: ['react-router', '@react-router/cloudflare', 'react', 'react-dom'],
+    files: (x) => ({
+      'remix/react-router.config.ts': `${x.head}\nimport type { Config } from '@react-router/dev/config'\nexport default { ssr: true } satisfies Config\n`,
+      'remix/app/routes/_index.tsx': `${x.head}\nexport async function loader() {\n  const base = process.env.PAYLOAD_URL || 'http://localhost:3000'\n  const { docs = [] } = await fetch(base + '/api/${x.collection}?limit=100&depth=0').then((r) => r.json())\n  return { docs }\n}\nexport default function Index({ loaderData }: { loaderData: { docs: any[] } }) {\n  return <main><h1>${x.name}</h1><ul>{loaderData.docs.map((d) => <li key={d.slug}><a href={'/' + d.slug}>{d.title}</a></li>)}</ul></main>\n}\n`,
+    }),
+  },
+  solidstart: {
+    deps: ['@solidjs/start', 'solid-js', 'vinxi'],
+    files: (x) => ({
+      'solidstart/app.config.ts': `${x.head}\nimport { defineConfig } from '@solidjs/start/config'\nexport default defineConfig({ server: { preset: 'cloudflare_module' } })\n`,
+      'solidstart/src/routes/index.tsx': `${x.head}\nimport { createAsync, query } from '@solidjs/router'\nconst getDocs = query(async () => {\n  'use server'\n  const base = process.env.PAYLOAD_URL || 'http://localhost:3000'\n  const { docs = [] } = await fetch(base + '/api/${x.collection}?limit=100&depth=0').then((r) => r.json())\n  return docs as any[]\n}, 'docs')\nexport default function Index() {\n  const docs = createAsync(() => getDocs())\n  return <main><h1>${x.name}</h1><ul>{(docs() || []).map((d) => <li><a href={'/' + d.slug}>{d.title}</a></li>)}</ul></main>\n}\n`,
+    }),
+  },
+  qwik: {
+    deps: ['@builder.io/qwik', '@builder.io/qwik-city'],
+    files: (x) => ({
+      'qwik/src/routes/index.tsx': `${x.head}\nimport { component$ } from '@builder.io/qwik'\nimport { routeLoader$ } from '@builder.io/qwik-city'\nexport const useDocs = routeLoader$(async () => {\n  const base = process.env.PAYLOAD_URL || 'http://localhost:3000'\n  const { docs = [] } = await fetch(base + '/api/${x.collection}?limit=100&depth=0').then((r) => r.json())\n  return docs as any[]\n})\nexport default component$(() => {\n  const docs = useDocs()\n  return <main><h1>${x.name}</h1><ul>{docs.value.map((d) => <li><a href={'/' + d.slug}>{d.title}</a></li>)}</ul></main>\n})\n`,
+    }),
+  },
+  hono: {
+    deps: ['hono'],
+    files: (x) => ({
+      'hono/src/index.ts': `${x.head}\nimport { Hono } from 'hono'\nconst app = new Hono()\napp.get('/', async (c) => {\n  const base = c.env?.PAYLOAD_URL || 'http://localhost:3000'\n  const { docs = [] } = await fetch(base + '/api/${x.collection}?limit=100&depth=0').then((r) => r.json())\n  const items = docs.map((d: any) => '<li><a href=\"/' + d.slug + '\">' + d.title + '</a></li>').join('')\n  return c.html('<h1>${x.name}</h1><ul>' + items + '</ul>')\n})\nexport default app\n`,
+    }),
+  },
+  docusaurus: {
+    deps: ['@docusaurus/core', '@docusaurus/preset-classic', 'react', 'react-dom'],
+    files: (x) => ({
+      'docusaurus/docusaurus.config.ts': `${x.head}\nimport type { Config } from '@docusaurus/types'\nconst config: Config = { title: '${x.name}', url: 'https://example.com', baseUrl: '/', presets: [['classic', { docs: { routeBasePath: '/' } }]] }\nexport default config\n`,
+      'docusaurus/src/pages/index.tsx': `${x.head}\nimport React from 'react'\nexport default function Home(): React.ReactElement {\n  return <main><h1>${x.name}</h1><p>Content is read from the Payload REST API at build time (PAYLOAD_URL).</p></main>\n}\n`,
+    }),
+  },
+  angular: {
+    deps: ['@angular/core', '@analogjs/platform', 'vite'],
+    files: (x) => ({
+      'angular/vite.config.ts': `${x.head}\nimport { defineConfig } from 'vite'\nimport analog from '@analogjs/platform'\nexport default defineConfig({ plugins: [analog({ nitro: { preset: 'cloudflare-module' } })] })\n`,
+      'angular/src/app/pages/index.page.ts': `${x.head}\nimport { Component } from '@angular/core'\n@Component({ standalone: true, template: '<h1>${x.name}</h1>' })\nexport default class IndexPage {}\n`,
+    }),
+  },
+  gatsby: {
+    deps: ['gatsby', 'react', 'react-dom'],
+    files: (x) => ({
+      'gatsby/gatsby-config.ts': `${x.head}\nimport type { GatsbyConfig } from 'gatsby'\nconst config: GatsbyConfig = { siteMetadata: { title: '${x.name}' }, plugins: [] }\nexport default config\n`,
+      'gatsby/src/pages/index.tsx': `${x.head}\nimport * as React from 'react'\nexport default function IndexPage(): React.ReactElement {\n  return <main><h1>${x.name}</h1></main>\n}\n`,
+    }),
+  },
+}
+
 const cloudflareShellOf = (c: CloudflareCombination, name = 'payload-cloudflare', app?: CloudflareApp): Record<string, string> => {
   if (c.runtime !== 'opennext') return {}
   const head = '// Generated by PayloadTemplates.cloudflarePayload — regenerate, do not edit'
@@ -318,13 +404,7 @@ ${pwa ? `export const viewport = { themeColor: '${theme}' }\n` : ''}export defau
           'public/icon.svg': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="96" fill="${theme}"/><text x="256" y="356" font-family="system-ui,sans-serif" font-size="320" font-weight="700" text-anchor="middle" fill="#fff">q</text></svg>\n`,
           'public/sw.js': `const C='pwa-v1'\nself.addEventListener('install',()=>self.skipWaiting())\nself.addEventListener('activate',e=>e.waitUntil(self.clients.claim()))\nself.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET')return;e.respondWith((async()=>{try{const net=await fetch(r);const c=await caches.open(C);c.put(r,net.clone());return net}catch{const c=await caches.open(C);return (await c.match(r))||(r.mode==='navigate'?await c.match('/'):Response.error())}})())})\n`,
         }
-      : c.frontend === 'vitepress'
-        ? {
-            'vitepress/.vitepress/config.ts': `${head}\nimport { defineConfig } from 'vitepress'\n// An alternative frontend over the same Payload backend: VitePress renders the site; its content is read from\n// Payload's REST API at build time (set PAYLOAD_URL to the backend origin). The admin and REST stay on the Payload Worker.\nexport default defineConfig({ title: '${app?.title ?? name}', description: 'A Payload site, delivered with VitePress.', cleanUrls: true })\n`,
-            'vitepress/pages.data.ts': `${head}\nimport { defineLoader } from 'vitepress'\nconst base = process.env.PAYLOAD_URL ?? 'http://localhost:3000'\nexport default defineLoader({\n  async load() {\n    const r = await fetch(\`\${base}/api/${f.collection}?limit=100&depth=0\`)\n    const { docs = [] } = (await r.json()) as { docs?: { title?: string; slug?: string; ${f.html}?: string }[] }\n    return docs.map((d) => ({ title: d.title ?? '', slug: d.slug ?? '', html: d.${f.html} ?? '' }))\n  },\n})\n`,
-            'vitepress/index.md': `---\ntitle: ${app?.title ?? name}\n---\n<script setup>\nimport { data as pages } from './pages.data.ts'\n</script>\n\n# {{ $frontmatter.title }}\n\n<ul>\n  <li v-for="p in pages" :key="p.slug"><a :href="'/' + p.slug">{{ p.title }}</a></li>\n</ul>\n`,
-          }
-        : {}
+      : (ALT_FRONTENDS[c.frontend]?.files({ name: app?.title ?? name, head, collection: f.collection, html: f.html, theme }) ?? {})
   return {
     'next.config.ts': `${head}
 import { withPayload } from '@payloadcms/next/withPayload'
@@ -456,7 +536,7 @@ const cloudflareDependenciesOf = (c: CloudflareCombination): string[] =>
     // the frontend axis: shadcn brings Tailwind and the shadcn primitives; vitepress is its own static frontend; pwa
     // ships a hand-written manifest and service worker, so it needs nothing beyond next
     ...(c.frontend === 'shadcn' ? ['tailwindcss', '@tailwindcss/postcss', 'class-variance-authority', 'clsx', 'tailwind-merge', 'lucide-react'] : []),
-    ...(c.frontend === 'vitepress' ? ['vitepress', 'vue'] : []),
+    ...(ALT_FRONTENDS[c.frontend]?.deps ?? []),
   ].filter(Boolean).sort()
 
 /**

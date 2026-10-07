@@ -25,7 +25,17 @@
    "next",
    "shadcn",
    "pwa",
-   "vitepress"
+   "astro",
+   "sveltekit",
+   "nuxt",
+   "remix",
+   "solidstart",
+   "qwik",
+   "hono",
+   "vitepress",
+   "docusaurus",
+   "angular",
+   "gatsby"
   ]
  },
  "plugins": [
@@ -41,10 +51,10 @@
   "seo",
   "stripe"
  ],
- "combinations": 393216,
+ "combinations": 1376256,
  "combinatorics": {
   "pluginSubsets": 2048,
-  "familyCombinations": 393216,
+  "familyCombinations": 1376256,
   "formula": "2^11 × axes",
   "by": "541e2d7f-1000-7000-9000-00000000000b",
   "holds": true
@@ -61,7 +71,17 @@
    "next",
    "shadcn",
    "pwa",
-   "vitepress"
+   "astro",
+   "sveltekit",
+   "nuxt",
+   "remix",
+   "solidstart",
+   "qwik",
+   "hono",
+   "vitepress",
+   "docusaurus",
+   "angular",
+   "gatsby"
   ],
   "ok": true,
   "each": [
@@ -84,8 +104,68 @@
     "missing": []
    },
    {
+    "frontend": "astro",
+    "files": 15,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "sveltekit",
+    "files": 16,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "nuxt",
+    "files": 15,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "remix",
+    "files": 15,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "solidstart",
+    "files": 15,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "qwik",
+    "files": 14,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "hono",
+    "files": 14,
+    "ok": true,
+    "missing": []
+   },
+   {
     "frontend": "vitepress",
     "files": 16,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "docusaurus",
+    "files": 15,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "angular",
+    "files": 15,
+    "ok": true,
+    "missing": []
+   },
+   {
+    "frontend": "gatsby",
+    "files": 15,
     "ok": true,
     "missing": []
    }
@@ -93,9 +173,9 @@
  },
  "coverage": "each base compiled with no plugins and with all plugins; plugins are independent Plugin calls, so every subset of a compiling base compiles; each frontend generates its own shell files over the frontend-independent config",
  "stream": {
-  "length": 393216,
-  "head": "6b3cdf13-5737-8d76-9cb3-042635d8e9fa",
-  "chain": "5f5adfa7fb0b1173bc7576b5ff64dba471a59a325998fa8b3a1e265b0ff41dcd",
+  "length": 1376256,
+  "head": "d9d1d0f3-d46f-44b5-bc94-dcf152de1b4e",
+  "chain": "cdbfa9972876c04ee4c4c0fa5e85ad4058f2a120417f6aecf40757aac7082d91",
   "holds": true
  }
 }

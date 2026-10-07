@@ -1,6 +1,6 @@
 import { chooseOf, mintOf, qpuFoldOf, qpuHexFamiliesOf, qpuLatticeNamesOf, qpuMcpFusedOf, tenOf } from '../quantum/processing/unit/index.js'
 import { CloudflareCombination, CloudflarePayload, CloudflareApp, cloudflarePayloadOf } from './payload-cloudflare.js'
-export { CLOUDFLARE_RUNTIMES, CLOUDFLARE_DATABASES, CLOUDFLARE_STORAGE, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CloudflareCombination, CloudflarePayload, cloudflareKeyOf, cloudflareCombinationOf, CloudflareApp, cloudflarePayloadOf, cloudflareCombinations } from './payload-cloudflare.js'
+export { CLOUDFLARE_RUNTIMES, CLOUDFLARE_DATABASES, CLOUDFLARE_STORAGE, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, ALT_FRONTENDS, CloudflareCombination, CloudflarePayload, cloudflareKeyOf, cloudflareCombinationOf, CloudflareApp, cloudflarePayloadOf, cloudflareCombinations } from './payload-cloudflare.js'
 /**
  * Payload Templates for 4-Mode Deployment
  * Browser / Standalone / Docker / Kubernetes
