@@ -15,7 +15,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { qpuHexFamiliesOf, qpuHexUuidOf, qpuCiteOf, qpuFoldOf, qpuHexRunOf } from '../dist/quantum/processing/unit/index.js'
-import { CLOUDFLARE_RUNTIMES, CLOUDFLARE_DATABASES, CLOUDFLARE_STORAGE, CLOUDFLARE_EMAIL, CLOUDFLARE_PLUGINS, cloudflareCombinations, cloudflareKeyOf } from '../dist/deployment/payload-templates.js'
+import { CLOUDFLARE_RUNTIMES, CLOUDFLARE_DATABASES, CLOUDFLARE_STORAGE, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, cloudflareCombinations, cloudflareKeyOf } from '../dist/deployment/payload-templates.js'
 import { mintOf } from './lattice-values.mjs'
 // every family registers on import of the generated registry — the one import that is the whole surface
 await import('../dist/mcp/families.js')
@@ -81,7 +81,7 @@ console.log(`wrote .claude/skills/qpu-families/SKILL.md — ${families.length} f
 // The API combination count is COMPUTED BY THE FAMILY, not typed: the combinatorics family's power-set formula
 // binomial(n) = 2ⁿ gives the plugin subsets, multiplied by the axis cardinalities. The result is checked against the
 // enumerator so the number in the skill can never drift from what cloudflareCombinations() actually yields.
-const axes = { runtime: CLOUDFLARE_RUNTIMES, db: CLOUDFLARE_DATABASES, storage: CLOUDFLARE_STORAGE, email: CLOUDFLARE_EMAIL }
+const axes = { runtime: CLOUDFLARE_RUNTIMES, db: CLOUDFLARE_DATABASES, storage: CLOUDFLARE_STORAGE, email: CLOUDFLARE_EMAIL, frontend: CLOUDFLARE_FRONTENDS }
 const binomialUuid = qpuHexUuidOf({ family: 'combinatorics', program: ['binomial'], params: [CLOUDFLARE_PLUGINS.length] })
 const binomial = await qpuHexRunOf(binomialUuid)
 const pluginSubsets = binomial.value // 2^|plugins|, with receipt binomial.receipt
@@ -94,7 +94,7 @@ if (!(binomial.holds === true) || total !== enumerated)
 // a representative combination key, built from the axes and run through cloudflareKeyOf — not typed
 const sampleDb = CLOUDFLARE_DATABASES.find((d) => d.startsWith('qpu')) ?? CLOUDFLARE_DATABASES[0]
 const samplePlugins = ['mcp', 'seo'].filter((p) => CLOUDFLARE_PLUGINS.includes(p))
-const sampleKey = cloudflareKeyOf({ runtime: CLOUDFLARE_RUNTIMES[0], db: sampleDb, storage: CLOUDFLARE_STORAGE.includes('r2') ? 'r2' : CLOUDFLARE_STORAGE[0], email: CLOUDFLARE_EMAIL.includes('resend') ? 'resend' : CLOUDFLARE_EMAIL[0], plugins: samplePlugins })
+const sampleKey = cloudflareKeyOf({ runtime: CLOUDFLARE_RUNTIMES[0], db: sampleDb, storage: CLOUDFLARE_STORAGE.includes('r2') ? 'r2' : CLOUDFLARE_STORAGE[0], email: CLOUDFLARE_EMAIL.includes('resend') ? 'resend' : CLOUDFLARE_EMAIL[0], frontend: CLOUDFLARE_FRONTENDS.includes('shadcn') ? 'shadcn' : CLOUDFLARE_FRONTENDS[0], plugins: samplePlugins })
 const axisNote = {
   runtime: "vinext is Cloudflare's recommended Next.js path (bindings from `cloudflare:workers`); OpenNext reads them with `getCloudflareContext`",
   db: '`postgres` connects through a Hyperdrive binding. MongoDB has no Workers path: a MongoDB request is `qpu-raid` or `qpu-d1` — the QPU document database with MongoDB query/update semantics, Payload adapter `@uuidna/qpu/payload`',

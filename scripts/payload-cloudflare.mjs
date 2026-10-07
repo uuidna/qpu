@@ -190,7 +190,7 @@ if (arg('--emit')) {
 const dir = path.join(ROOT, '.payload-cf')
 fs.mkdirSync(dir, { recursive: true })
 const manifest = fs.createWriteStream(path.join(dir, 'combinations.ndjson'))
-const axes = { runtime: new Set(), db: new Set(), storage: new Set(), email: new Set() }
+const axes = { runtime: new Set(), db: new Set(), storage: new Set(), email: new Set(), frontend: new Set() }
 let total = 0
 for (const c of cloudflareCombinations()) {
   const key = cloudflareKeyOf(c)
