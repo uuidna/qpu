@@ -729,6 +729,52 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     if (i >= sections.length) return { source, url, reading: { part: from, of: 'wrap', sections: sections.length, next: 0, feed: 'next payload config: the sections are read; the feed wraps to the map' }, expected: { wrap: 'to 0' }, agrees: true }
     return vocabularyOf(i, from, from + 1, sections)
   }
+  if (source === 'org') {
+    // ANY GITHUB ORG, AS AN ENDLESS FEED OF FUSION LEADS. { about: '<org>' } reads github.com/<org> through the GitHub
+    // API (default cloudflare), so one source covers cloudflare, zeropoint-foundation and any other org named without a
+    // branch per org. Each repo is a complex app, SDK, framework, agent or template — a lead for fusing a complex app
+    // or deployment into the unit's combinatorics. One BOUNDED part per call, chained by next:
+    //   from 0   — the org: its most-recently-updated repos, classed (template, sdk, framework, agent, ai, docs, tool)
+    //              and crossed with the families whose formula words they name.
+    //   from 1.. — one repo examined per call (its top-level files, the config its wrangler declares) mapped to the
+    //              unit's axes (runtime, storage, db); the concrete fusion lead. Wraps to 0 when the repos run out.
+    const org = (str(a.about) || 'cloudflare').toLowerCase()
+    if (!/^[a-z0-9][a-z0-9-]{0,38}$/.test(org)) return fail('about', { about: 'a GitHub org login: letters, digits and dashes' })
+    const url = `https://github.com/${org}`
+    const wordsOf = (s: string) => s.replace(/[A-Z]/g, (ch) => ` ${ch.toLowerCase()}`).split(/[^a-z]+/).filter((w) => w.length > 2)
+    const crossed = (name: string): string[] => [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).filter(([f, fs]) => [...new Set([...wordsOf(f), ...fs.flatMap((x) => wordsOf(x.name))])].some((w) => wordsOf(name).includes(w))).map(([f]) => f)
+    // tolerate a missing org or a network blip: a 404 (the org login does not exist) or an error yields null, so the
+    // feed answers agrees:false rather than throwing a raw message
+    const api = async (path: string): Promise<unknown> => get(`https://api.github.com/${path}`, 'application/vnd.github+json').then((r) => r.json()).catch(() => null)
+    const reposOf = async (): Promise<{ name: string; language?: string | null; stargazers_count?: number; archived?: boolean }[]> => {
+      const x = await api(`orgs/${org}/repos?per_page=100&sort=updated&type=public`)
+      return (Array.isArray(x) ? x : []).filter((r) => r && !r.archived).slice(0, qpuFacesOf().faces * L.tenOf(L.seed))
+    }
+    const classOf = (s: string) => (/template|starter|example/.test(s) ? 'template' : /sdk|^wrangler$|workers-sdk/.test(s) ? 'sdk' : /agent/.test(s) ? 'agent' : /(^|-)ai(-|$)|workers-ai|vectorize|rag|vector/.test(s) ? 'ai' : /doc/.test(s) ? 'docs' : /next|pages|vite|remix|nuxt|astro|svelte|react|vue/.test(s) ? 'framework' : 'repo')
+    const from = typeof a.from === 'number' && a.from >= 0 ? Math.floor(a.from) : 0
+    if (from === 0) {
+      // no family cross here — crossing every repo against 1134 families is the walk's job, one repo at a time, so the
+      // map stays within a fast budget; the map is the repos, their kind and the leads
+      const rows = (await reposOf()).map((r) => ({ repo: r.name, kind: classOf(r.name.toLowerCase()), stars: r.stargazers_count ?? 0, language: r.language ?? null }))
+      const reading = { part: 0, of: 'org', org, count: rows.length, repos: rows, leads: rows.map((r) => `${r.kind}:${org}/${r.repo}`), next: 1, feed: `${org} fusion: the repos — templates, SDK, frameworks, agents, AI and tools — to fuse into the combinatorics` }
+      return { source, url, reading, expected: { repos: '>= 1' }, agrees: rows.length > 0 }
+    }
+    const repos = await reposOf()
+    const i = from - 1
+    if (i >= repos.length) return { source, url, reading: { part: from, of: 'wrap', org, repos: repos.length, next: 0, feed: `${org} fusion: every repo is read; the feed wraps to the org` }, expected: { wrap: 'to 0' }, agrees: true }
+    const repo = repos[i]!.name
+    const c = await api(`repos/${org}/${repo}/contents`)
+    const files = Array.isArray(c) ? (c as { name: string }[]).map((x) => x.name) : []
+    const has = (re: RegExp) => files.some((x) => re.test(x))
+    const maps = {
+      runtime: has(/open-?next/) ? 'opennext' : has(/next\.config/) ? 'vinext' : has(/wrangler\./) ? 'worker' : 'none',
+      storage: has(/r2|bucket/i) ? 'r2' : 'none',
+      db: has(/d1|drizzle|prisma|schema\.sql/i) ? 'd1' : 'qpu-raid',
+      wrangler: files.find((x) => /^wrangler\./.test(x)) ?? null,
+    }
+    const reading = { part: from, of: 'repo', org, repo, files, maps, families: crossed(repo), next: from + 1, feed: `${org} fusion: '${repo}' — its files and the unit axes (runtime ${maps.runtime}, storage ${maps.storage}, db ${maps.db}) it maps to` }
+    return { source, url: `${url}/${repo}`, reading, expected: { files: '>= 1' }, agrees: files.length > 0 }
+  }
   if (source === 'imagine') {
     // WHAT THE UNIT MAY BE, computed from the record: a request's words (a law firm, an auditor, a forensic expert) or
     // a category of the registry find the public APIs of that world; the words those APIs' titles and operations use
@@ -759,7 +805,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
