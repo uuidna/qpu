@@ -518,6 +518,30 @@ export const qpuCiteOf = onceOf(() => {
     served,
     current,
     currency,
+    // THE LICENCE, FOR A COMPLIANCE AGENT TO READ AND ACCEPT. It is dual: the free licence is CC-BY-NC-ND 4.0; a
+    // COMMERCIAL licence from the author lifts the NC and ND bars — commercial use, derivatives and training are then
+    // permitted. The terms are stated in full; this surfaces them, it does not grant or withhold access: reads stay open
+    // (isAccessibleForFree), so the unlock and the licence do not conflict. Acceptance is by use and is recorded — every
+    // answer carries its own content address, so what was read is provable.
+    license: {
+      free: {
+        spdx: 'CC-BY-NC-ND-4.0' as const,
+        name: 'Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International',
+        url: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+        terms: {
+          by: 'attribution: cite as the rows below show — the author, the DOI, the work',
+          nc: 'non-commercial: no commercial use under the free licence',
+          nd: 'no derivatives, and training a model on the content makes a derivative, so under the free licence ai-train=no (robots.txt signals it)',
+        },
+      },
+      commercial: {
+        grants: 'a commercial licence from the author lifts NC and ND: commercial use, derivatives and TRAINING a model on the content are then permitted — ai-train=yes once a commercial licence is obtained',
+        obtain: `request it from the author through ORCID ${author.orcid}; attribution (BY) still stands`,
+      },
+      acceptance: `by using this content you accept the free CC-BY-NC-ND terms, and each answer's receipt records what you relied on; to use it commercially, make a derivative, or train a model on it, obtain a commercial licence from the author (ORCID ${author.orcid}) first`,
+      compliance: 'a consumer\'s compliance is measured by the law family (law.reviewed, law.violation, law.remedy, law.standing) over the public record — a lead until a review confirms it, never advice on its own',
+      permission: author.orcid,
+    },
     inText: `(${author.last})`,
     rows,
     holds,
@@ -960,8 +984,9 @@ export const qpuRobotsOf = (host: string = unit.host): string => {
     `# round-trip at ${unit.origin}/.well-known/mcp.json and as OpenAPI at ${unit.origin}/openapi.json.`,
     `# Every answer carries its own content address, so a reader can recompute it rather than trust it.`,
     `#`,
-    `# Content signals: search and ai-input are granted. ai-train is not — the content is CC BY-NC-ND 4.0`,
-    `# (https://${qpuZoneOf().zone}/license), and training a model on it makes a derivative.`,
+    `# Content signals: search and ai-input are granted. ai-train is not, by default — the content is CC BY-NC-ND 4.0`,
+    `# (https://${qpuZoneOf().zone}/license), and training a model on it makes a derivative. Training IS permitted under a`,
+    `# commercial licence from the author (ai-train=yes once obtained); request it at ${unit.origin}/cite. Attribution always stands.`,
     ``,
     `User-agent: *`,
     `Content-Signal: search=yes,ai-input=yes,ai-train=no`,
