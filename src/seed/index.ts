@@ -62,8 +62,9 @@ const blockOf = (b: Block, extra: Record<string, unknown> = {}) => ({ blockType:
 const pageOf = (b: Block): PageData => ({ slug: b.slug, title: titleOf(b.slug), description: seoOf(customOf(b).description), layout: [blockOf(b)] })
 const byName = (name: string) => blocks.find((b) => b.slug === name)!
 
+// Sale record. Price stays off, so it holds false until the author sets one. Cloudflare for SaaS custom hostname billing bills the other user's Cloudflare account; the account id stays unset. No card is stored.
 const PRODUCTS = [
-  { title: 'Commercial license', slug: 'commercial-license', description: `${packageName} is licensed ${licence.name}: non-commercial use only. Commercial use needs this license, priced per organisation on request.`, priceInUSDEnabled: false, _status: 'published' },
+  { title: 'Commercial license', slug: 'commercial-license', description: `${packageName} is licensed ${licence.name}: non-commercial use only. Commercial use needs this license, priced per organisation on request.`, organisation: null, use: null, licence: 'CC-BY-NC-ND-4.0', priceInUSDEnabled: false, billedAccount: 'other-cloudflare-account', cloudflareAccountId: null, _status: 'published' },
   { title: 'Storage writes', slug: 'storage-writes', description: `Reads of ${cite.website} are free and open. Writes to the document store need a bearer token; this plan issues one, priced on request.`, priceInUSDEnabled: false, _status: 'published' },
 ]
 const FORM = {
@@ -134,10 +135,12 @@ const ensure = async (payload: Payload, collection: string, field: string, value
   // a row's layout and relations stay as they were made
   const meta = (first as { meta?: { title?: unknown; description?: unknown } } | undefined)?.meta ?? {}
   const moved = ['title', 'description'].filter((k) => k in data && (data[k] !== first?.[k as 'title'] || data[k] !== meta[k as 'title']))
+  // an absent sale field takes the seed, including an explicit unset; a value an admin already set stays
+  const saleMoved = ['organisation', 'use', 'licence', 'priceInUSDEnabled', 'billedAccount', 'cloudflareAccountId'].filter((k) => k in data && (first as Record<string, unknown> | undefined)?.[k] == null && (first as Record<string, unknown> | undefined)?.[k] !== data[k])
   // a scoped row needs its tenant. A row created before this site was multi-tenant has none, and the plugin refuses to
   // save it until it does — so the tenant is reconciled like a moved field, enough on its own to warrant the update.
   const tenantMoved = 'tenant' in data && (first as { tenant?: unknown } | undefined)?.tenant !== data.tenant
-  if (first && (moved.length || tenantMoved)) return (await payload.update({ collection: collection as Slug, id: first.id, data: { ...Object.fromEntries(moved.map((k) => [k, data[k]])), ...(tenantMoved ? { tenant: data.tenant } : {}), ...('description' in data || 'title' in data ? { meta: { ...meta, ...Object.fromEntries(['title', 'description'].filter((k) => k in data).map((k) => [k, data[k]])) } } : {}) } as never, overrideAccess: true })) as unknown as Row
+  if (first && (moved.length || saleMoved.length || tenantMoved)) return (await payload.update({ collection: collection as Slug, id: first.id, data: { ...Object.fromEntries([...moved, ...saleMoved].map((k) => [k, data[k]])), ...(tenantMoved ? { tenant: data.tenant } : {}), ...('description' in data || 'title' in data ? { meta: { ...meta, ...Object.fromEntries(['title', 'description'].filter((k) => k in data).map((k) => [k, data[k]])) } } : {}) } as never, overrideAccess: true })) as unknown as Row
   return found[0] ?? ((await payload.create({ collection: collection as Slug, data: data as never, overrideAccess: true })) as unknown as Row)
 }
 

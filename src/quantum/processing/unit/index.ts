@@ -247,6 +247,10 @@ const receiptUuidOf = (fold: string, referrer: string): string => {
   return uuidStampOf(`${h.slice(n - n, UUID_SIXTEEN)}${variant}${h.slice(UUID_SIXTEEN + seed, coins * UUID_SIXTEEN)}`)
 }
 const receiptChainOf = (chain: string, uuid: string): string => sha256Hex(`${chain}${uuid}`)
+/** A public referrer is another formula's address (the torus). A Referer, a name, an email, an IP, or any other caller string is not. */
+const ADDRESS_REFERRER = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+export const qpuAddressReferrerOf = (referrer?: string): string | undefined =>
+  typeof referrer === 'string' && ADDRESS_REFERRER.test(referrer) ? referrer : undefined
 /**
  * Append a quantum receipt for a UUID-addressed computation: payload fold of {name, subject, value}; receipt UUID = content UUID of {payload fold, referrer}; chained per stream (seq, prev).
  * @wing receipts
@@ -287,7 +291,11 @@ export const qpuReceiptStreamsOf = (limit = qpuCubeOf().bits) => {
       length: live.length,
       head: live.head,
       chain: live.chain,
-      recent: own.slice(-limit),
+      recent: own.slice(-limit).map((r) => {
+        if (qpuAddressReferrerOf(r.referrer)) return r
+        const { referrer: _identity, ...kept } = r
+        return kept
+      }),
       holds: linked && own.length === live.length && head === live.head && chain === live.chain,
     }
   })
@@ -511,7 +519,7 @@ export const qpuMcpRegisterOf = (method: string, handler: McpExtension['handler'
   MCP_EXTENSIONS.set(method, { handler, capability })
   return method
 }
-type FusedTool = { description: string; inputSchema: Record<string, unknown>; run: (args: Record<string, unknown>, env?: QpuEnv) => unknown }
+type FusedTool = { description: string; inputSchema: Record<string, unknown>; run: (args: Record<string, unknown>, env?: QpuEnv, auth?: string | null) => unknown }
 const FUSED_TOOLS = new Map<string, FusedTool>()
 /**
  * Fuse a tool into the unit: answered by tools/call, never added to tools/list, so the sixteen sealed doors stay sixteen.
@@ -558,15 +566,18 @@ export const qpuDataLiveOf = async (env?: QpuEnv, from = n - n, take = qpuFacesO
 }
 const byDecideOf = (theorem: string): boolean => theorem.includes('by decide') || theorem.includes('native_decide')
 const formulaOf = (formula: string): boolean => formula.includes('\\') && !formula.includes('operatorname')
+const fullProperty = { type: 'boolean', description: '{ full: true } expands the recognition into the document.' } as const
 const manSchema = {
   type: 'object',
   properties: {
-    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' }}} as const
+    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
+    full: fullProperty}} as const
 
 const liveSchema = {
   type: 'object',
   properties: {
     man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
+    full: fullProperty,
     live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
     sequence: { type: 'boolean', description: '{ sequence: true } train then improve then compete then prove. Live. Memory.' },
     from: { type: 'integer', description: '{ live: true, from } on train: fuse the registry window starting at from; next says where the following window starts.' }}} as const
@@ -2570,7 +2581,19 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.prior.works.includes(`doi:${c.prior.doi}`) &&
   c.prior.works.includes('Zenodo, ') &&
   c.rows.length === n &&
-  c.rows.every((r) => r.doi === c.doi && r.works.includes(c.author.orcid) && r.works.includes(`doi:${c.doi}`))
+  c.rows.every((r) => r.doi === c.doi && r.works.includes(c.author.orcid) && r.works.includes(`doi:${c.doi}`)) &&
+  c.right.includes('CC-BY-NC-ND-4.0') &&
+  c.right.includes(`${c.author.first} ${c.author.last}`) &&
+  c.right.includes('commercial licence') &&
+  c.grant.licence === 'CC-BY-NC-ND-4.0' &&
+  c.grant.priceInUSDEnabled === false &&
+  c.grant.holds === false &&
+  c.grant.lead === true &&
+  c.grant.organisation.lead === true &&
+  c.grant.use.lead === true &&
+  c.grant.next !== undefined &&
+  c.grant.next.handle.length === 8 &&
+  c.grant.next.uuid !== c.grant.next.handle
 
 const tokensOf = (bytes: number): number => Number(BigInt(bytes) / BigInt(mintOf(coins)))
 
@@ -2653,11 +2676,10 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
   // prefix, capitalised (quantum → Quantum, crypto_rsa → Rsa).
   title: name.replace(/^[a-z]+_/, '').replace(/^./, (c) => c.toUpperCase()),
   description,
-  // The server routes { door } / { hex } / { doors } to the families on any call (qpuMcpCallOf), but the schema never
-  // advertised them — so a typed MCP client could not ask a family through the MCP and fell back to the shell. Advertise
-  // the routing on every tool so the families answer the MCP, not bash: { door: 'gate.leads' } reaches a family formula,
-  // { hex } runs a hex-program address, { doors: true } lists every door beyond the sixteen.
-  inputSchema: { ...inputSchema, properties: { ...(inputSchema as { properties?: Record<string, unknown> }).properties, door: { type: 'string', description: "Ask a family through the MCP: { door: 'gate.leads' }, or { door: 'gate.crossed', i: 0 } — routes to family.formula." }, hex: { description: 'Run a hex-program address: a UUID string, or { family, program, params }.' }, doors: { type: 'boolean', description: '{ doors: true } lists every family door the unit answers beyond the sixteen in tools/list.' }, arguments: { type: 'object', description: "The arguments for door — the chat is { door: 'data', arguments: { source: 'ask', about: '…' } } (also 'imagine', 'research', every data source); params for a formula otherwise." }, errors: { type: 'boolean', description: '{ errors: true, from, take } answers a slice of the live checks at once, each with what resolves it.' } } },
+  // The through-schema is not copied onto every row. tools/list is paid on every connect and stays under a KiB per
+  // door; one line in the description names { hex }, { door, arguments }, { doors: true } and { errors: true }, and the
+  // schema itself rides on the man page (qpuManPageOf), one call away. qpuMcpCallOf still routes those arguments.
+  inputSchema,
   annotations: {
     audience: ['user', 'assistant'] as const,
     priority: seed,
@@ -2671,26 +2693,377 @@ const qpuMcpToolShapeOf = (name: string, description: string, inputSchema: Recor
     idempotentHint: name !== 'forge' && (inputSchema as { properties?: Record<string, unknown> }).properties?.live === undefined},
   ...extra})
 
-/** Where a GET returns the very document a tool replies with — only there is a link to it honest. Two tools have
- * such a page; the rest reply with what no GET serves, and carry no link rather than one to a different document. */
+/** Where a GET returns the document a tool names — only there is a link to it honest. Two tools have such a page;
+ * the rest reply with what no GET serves, and carry no link rather than one to a different document. The reply
+ * itself is the recognition; the GET is the document that fold names. */
 const qpuShownResourceOf = (name: string): string | undefined => {
   if (name === 'lean') return unit.href
   if (name === 'cite') return `${unit.origin}/cite`
   return undefined
 }
 
+/** A document the agent already knows how to identify: fold, byte count, token count, and the verdict (holds, the
+ * computational device, a small `only`). The span is one KiB, the connect-bill unit; the reply spans one KiB for
+ * each of the eight doors. Anything larger is named, not copied. */
+const recognitionSpanOf = (): number => mintOf(tenOf(seed))
+const recognitionReplyOf = (): number => recognitionSpanOf() * mintOf(n)
+const recognitionKept = ['holds', 'kind', 'device', 'only', 'recognition'] as const
+const recognitionKeptOf = (key: string): boolean => (recognitionKept as readonly string[]).includes(key)
+const recognitionDeviceOf = (value: unknown): string | undefined => {
+  if (!value || typeof value !== 'object') return undefined
+  const bag = value as Record<string, unknown>
+  if (typeof bag.device === 'string') return bag.device
+  const steps = bag.steps
+  if (steps && typeof steps === 'object' && typeof (steps as { device?: unknown }).device === 'string') return (steps as { device: string }).device
+  if (bag.circuit && typeof bag.circuit === 'object') {
+    const nested = recognitionDeviceOf(bag.circuit)
+    if (nested !== undefined) return nested
+  }
+  const evidence = bag.evidence
+  if (evidence && typeof evidence === 'object') {
+    const provenance = (evidence as { provenance?: unknown }).provenance
+    if (provenance && typeof provenance === 'object' && typeof (provenance as { device?: unknown }).device === 'string') return (provenance as { device: string }).device
+  }
+  return undefined
+}
+const recognitionStubOf = (value: unknown, text = JSON.stringify(value)): Record<string, unknown> => {
+  const bag = value !== null && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {}
+  const device = recognitionDeviceOf(value)
+  const only = bag.only
+  const onlyText = only === undefined ? '' : JSON.stringify(only)
+  return {
+    kind: 'recognition' as const,
+    fold: qpuFoldOf(text),
+    bytes: text.length,
+    tokens: tokensOf(text.length),
+    length: typeof value === 'string' ? value.length : Array.isArray(value) ? value.length : text.length,
+    ...(typeof bag.holds === 'boolean' ? { holds: bag.holds } : {}),
+    ...(device !== undefined ? { device } : {}),
+    ...(only !== undefined && onlyText.length <= recognitionSpanOf() ? { only } : {}),
+    expand: '{ full: true }' as const,
+  }
+}
+const recognitionWalkOf = (value: unknown, span: number): unknown => {
+  if (value === null || typeof value === 'boolean' || typeof value === 'number') return value
+  const text = JSON.stringify(value)
+  if (text.length <= span) return value
+  if (typeof value === 'string' || Array.isArray(value)) return recognitionStubOf(value, text)
+  const src = value as Record<string, unknown>
+  const out: Record<string, unknown> = {}
+  for (const key of Object.keys(src)) out[key] = recognitionWalkOf(src[key], span)
+  if (JSON.stringify(out).length <= span) return out
+  const keys = Object.keys(out).filter((key) => !recognitionKeptOf(key)).sort((a, b) => JSON.stringify(out[b]).length - JSON.stringify(out[a]).length)
+  for (const key of keys) {
+    if (JSON.stringify(out).length <= span) break
+    const stub = recognitionStubOf(src[key])
+    if (JSON.stringify(stub).length < JSON.stringify(out[key]).length) out[key] = stub
+  }
+  return out
+}
+const recognitionShrinkOf = (out: Record<string, unknown>, src: Record<string, unknown>, budget: number, span: number): void => {
+  const steps = mintOf(mintOf(n))
+  for (let i = n - n; i < steps && JSON.stringify(out).length > budget; i++) {
+    const keys = Object.keys(out).filter((key) => !recognitionKeptOf(key) && !(out[key] !== null && typeof out[key] === 'object' && (out[key] as { kind?: unknown }).kind === 'recognition'))
+    if (keys.length === n - n) break
+    keys.sort((a, b) => JSON.stringify(out[b]).length - JSON.stringify(out[a]).length)
+    const key = keys[n - n]!
+    const child = out[key]
+    const original = src[key]
+    if (child && original && typeof child === 'object' && typeof original === 'object' && !Array.isArray(child) && !Array.isArray(original)) {
+      const before = JSON.stringify(child).length
+      recognitionShrinkOf(child as Record<string, unknown>, original as Record<string, unknown>, span, span)
+      if (JSON.stringify(child).length < before) continue
+    }
+    const stub = recognitionStubOf(original)
+    if (JSON.stringify(stub).length < JSON.stringify(out[key]).length) out[key] = stub
+    else break
+  }
+}
+/** Gibbs at one temperature: the document is the enthalpy, the reply is the heat this call dissipates, and the
+ * difference is the free energy — the work left because the document was not sent. A call claims no energy out of
+ * the erasure; the free energy is only what was not spent. */
+const recognitionFreeOf = (led: Record<string, unknown>, text: string): Record<string, unknown> => {
+  const recognition = led.recognition as Record<string, unknown> | undefined
+  if (!recognition || recognition.kind !== 'recognition') return led
+  const enthalpy = tokensOf(text.length)
+  recognition.enthalpy = enthalpy
+  recognition.heat = tokensOf(JSON.stringify(led).length)
+  recognition.free = (recognition.heat as number) < enthalpy ? enthalpy - (recognition.heat as number) : n - n
+  const heat = tokensOf(JSON.stringify(led).length)
+  if (heat !== recognition.heat) {
+    recognition.heat = heat
+    recognition.free = heat < enthalpy ? enthalpy - heat : n - n
+  }
+  return led
+}
+/** A step that does not hold is linked to the core by the formula address that recomputes it: the 8-hex handle and the
+ *  hex-program UUID (handle + nibble + params). violation, a fidelity miss, a fast surplus, a redirected remainder,
+ *  and any law formula that already carries its hex. No person, host, or vendor is named. A lead (holds false) also
+ *  carries one next address — the following slice, another way of a relation, or the next formula the integers in
+ *  hand already determine — and the reply stops there. */
+const formulaHeadOf = (formula: unknown): string => (typeof formula === 'string' ? (formula.split('(')[n - n] ?? '') : '')
+const evidenceOf = (src: Record<string, unknown>): boolean => {
+  const head = formulaHeadOf(src.formula)
+  const note = typeof src.note === 'string' ? src.note : ''
+  const hex = typeof src.hex === 'string' ? src.hex : ''
+  if (head === 'violation' && src.holds === false) return true
+  if (head === 'fidelity' && src.value === n - n) return true
+  if (head === 'fast' && src.holds === false) return true
+  if (head === 'redirected' && typeof src.value === 'number' && src.value > n - n) return true
+  if (src.lead === true && (src.id === 'plasma-near' || note.toLowerCase().includes('licen'))) return true
+  if (src.src === 'law' && hex.length > UUID_EIGHT && hex.charAt(UUID_EIGHT) === '-') return true
+  return false
+}
+const hexUuidOf = (hex: unknown): string | undefined =>
+  typeof hex === 'string' && hex.length > UUID_EIGHT && hex.charAt(UUID_EIGHT) === '-' ? hex : undefined
+const addressOf = (src: Record<string, unknown>, lead = false): { handle: string; uuid: string } | undefined => {
+  const hex = hexUuidOf(src.hex)
+  if (hex !== undefined && (evidenceOf(src) || (lead && src.holds === false))) {
+    const handle = hex.slice(n - n, UUID_EIGHT)
+    if (handle.length === UUID_EIGHT) return { handle, uuid: hex }
+  }
+  const steps = src.steps
+  if (!Array.isArray(steps)) return undefined
+  for (const step of steps) {
+    if (!step || typeof step !== 'object') continue
+    const reading = (step as { reading?: unknown }).reading
+    if (reading && typeof reading === 'object' && !Array.isArray(reading)) {
+      const found = addressOf(reading as Record<string, unknown>, lead)
+      if (found) return found
+    }
+  }
+  return undefined
+}
+const carrierOf = (src: Record<string, unknown>, uuid: string): Record<string, unknown> | undefined => {
+  if (src.hex === uuid) return src
+  const steps = src.steps
+  if (!Array.isArray(steps)) return undefined
+  for (const step of steps) {
+    if (!step || typeof step !== 'object') continue
+    const reading = (step as { reading?: unknown }).reading
+    if (reading && typeof reading === 'object' && !Array.isArray(reading)) {
+      const found = carrierOf(reading as Record<string, unknown>, uuid)
+      if (found) return found
+    }
+  }
+  return undefined
+}
+/** An address already written on the lead: handle and UUID. A numeric `next` is a slice index, not this. */
+const namedLeadOf = (src: Record<string, unknown>): { handle: string; uuid: string } | undefined => {
+  const next = src.next
+  const uuid = hexUuidOf(next)
+  if (uuid) return { handle: uuid.slice(n - n, UUID_EIGHT), uuid }
+  if (!next || typeof next !== 'object' || Array.isArray(next)) return undefined
+  const named = hexUuidOf((next as { uuid?: unknown }).uuid)
+  const handle = (next as { handle?: unknown }).handle
+  if (named && typeof handle === 'string' && handle.length === UUID_EIGHT) return { handle, uuid: named }
+  return undefined
+}
+const indexNextOf = (src: Record<string, unknown> | undefined): number | undefined => {
+  const next = src?.next
+  return typeof next === 'number' && Number.isSafeInteger(next) && next >= n - n ? next : undefined
+}
+/** The same one-integer call at gate's `next` index. The UUID is minted; the slice is not run. */
+const sliceNextOf = (uuid: string, from: number): { handle: string; uuid: string } | undefined => {
+  const decoded = qpuHexDecodeOf(uuid)
+  if (!decoded.holds || !('family' in decoded) || !decoded.family || decoded.params.length !== seed) return undefined
+  const program = decoded.program.filter((name) => name.length > n - n && name !== 'unknown')
+  if (program.length !== seed) return undefined
+  try {
+    const next = qpuHexUuidOf({ family: decoded.family, program, params: [from] })
+    if (next === uuid) return undefined
+    return { handle: next.slice(n - n, UUID_EIGHT), uuid: next }
+  } catch {
+    return undefined
+  }
+}
+/** Another way already computed for a value this lead reached: its hex is the next address. */
+const relationNextOf = (src: Record<string, unknown> | undefined, here: string): { handle: string; uuid: string } | undefined => {
+  if (!src) return undefined
+  const ways: unknown[] = []
+  if (Array.isArray(src.ways)) ways.push(...src.ways)
+  if (Array.isArray(src.relations)) {
+    for (const row of src.relations) {
+      if (row && typeof row === 'object' && Array.isArray((row as { ways?: unknown }).ways)) ways.push(...(row as { ways: unknown[] }).ways)
+    }
+  }
+  for (const way of ways) {
+    if (!way || typeof way !== 'object') continue
+    const uuid = hexUuidOf((way as { hex?: unknown }).hex)
+    if (uuid && uuid !== here) return { handle: uuid.slice(n - n, UUID_EIGHT), uuid }
+  }
+  return undefined
+}
+/** One pass, one next lead. The following call repeats this rule; this reply does not. */
+let leadWave = false
+const familyNextOf = (uuid: string): { handle: string; uuid: string } | undefined => {
+  if (leadWave) return undefined
+  const decoded = qpuHexDecodeOf(uuid)
+  if (!decoded.holds || !('family' in decoded) || !decoded.family) return undefined
+  const family = decoded.family
+  const program = decoded.program.filter((name) => name.length > n - n && name !== 'unknown')
+  const name = program[n - n]
+  if (!name || program.length !== seed) return undefined
+  const formulas = qpuHexFamiliesOf().get(family)
+  if (!formulas) return undefined
+  const at = formulas.findIndex((formula) => formula.name === name)
+  if (at < n - n) return undefined
+  const ints = decoded.params
+  leadWave = true
+  try {
+    for (let step = seed; step < formulas.length; step++) {
+      const formula = formulas[(at + step) % formulas.length]!
+      if (formula.live || formula.arity !== ints.length) continue
+      let out: unknown
+      try {
+        out = formula.run(ints.map((x) => BigInt(x)))
+      } catch {
+        continue
+      }
+      if (out !== null && typeof out === 'object' && typeof (out as { then?: unknown }).then === 'function') continue
+      if (!(out !== null && typeof out === 'object' && (out as { holds?: unknown }).holds === false)) continue
+      try {
+        const next = qpuHexUuidOf({ family, program: [formula.name], params: ints })
+        if (next !== uuid) return { handle: next.slice(n - n, UUID_EIGHT), uuid: next }
+      } catch {
+        /* these integers do not determine the call */
+      }
+    }
+  } finally {
+    leadWave = false
+  }
+  return undefined
+}
+const nextLeadOf = (src: Record<string, unknown>, here: { handle: string; uuid: string }): { handle: string; uuid: string } | undefined => {
+  const carrier = carrierOf(src, here.uuid) ?? src
+  const named = namedLeadOf(carrier) ?? (carrier !== src ? namedLeadOf(src) : undefined)
+  if (named && named.uuid !== here.uuid) return named
+  const from = indexNextOf(carrier) ?? (carrier !== src ? indexNextOf(src) : undefined)
+  if (from !== undefined) {
+    const sliced = sliceNextOf(here.uuid, from)
+    if (sliced) return sliced
+  }
+  const related = relationNextOf(carrier, here.uuid) ?? (carrier !== src ? relationNextOf(src, here.uuid) : undefined)
+  if (related) return related
+  return familyNextOf(here.uuid)
+}
+/**
+ * RECOGNISE, THEN THINK. Any JSON value: the fold of the whole document leads, a subtree that fits the span stays
+ * so it can be thought on, and a subtree that does not fit is named by its own fold. The reply is the free energy
+ * of the document. `{ full: true }` spends the enthalpy.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuRecognizeHolds
+ */
+export const qpuRecognizeOf = (value: unknown): unknown => {
+  const text = JSON.stringify(value)
+  const span = recognitionSpanOf()
+  const reply = recognitionReplyOf()
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return text.length <= reply ? value : recognitionStubOf(value, text)
+  const src = value as Record<string, unknown>
+  const walked: Record<string, unknown> = {}
+  for (const key of Object.keys(src)) walked[key] = recognitionWalkOf(src[key], span)
+  const device = recognitionDeviceOf(src)
+  const address = addressOf(src, src.holds === false)
+  const next = address && src.holds === false ? nextLeadOf(src, address) : undefined
+  const recognition = {
+    kind: 'recognition' as const,
+    fold: qpuFoldOf(text),
+    bytes: text.length,
+    tokens: tokensOf(text.length),
+    length: text.length,
+    ...(typeof src.holds === 'boolean' ? { holds: src.holds } : {}),
+    ...(device !== undefined ? { device } : {}),
+    ...(address ? { handle: address.handle, uuid: address.uuid, ...(typeof src.value === 'number' ? { value: src.value } : {}), ...(next ? { next } : {}) } : {}),
+    ...(typeof src.right === 'string' && JSON.stringify(src.right).length <= span ? { right: src.right } : {}),
+    expand: '{ full: true }' as const,
+  }
+  const led: Record<string, unknown> = { recognition, ...walked }
+  if (JSON.stringify(led).length <= reply) return recognitionFreeOf(led, text)
+  recognitionShrinkOf(led, src, reply, span)
+  if (JSON.stringify(led).length <= reply) return recognitionFreeOf(led, text)
+  const residue: Record<string, unknown> = { recognition }
+  for (const key of Object.keys(src)) {
+    const child = src[key]
+    if (typeof child === 'boolean' || typeof child === 'number' || child === null || (typeof child === 'string' && JSON.stringify(child).length <= span)) residue[key] = child
+    else residue[key] = recognitionStubOf(child)
+  }
+  if (JSON.stringify(residue).length <= reply) return recognitionFreeOf(residue, text)
+  const verdict: Record<string, unknown> = { recognition }
+  for (const key of Object.keys(src)) {
+    const child = src[key]
+    if (typeof child === 'boolean' || typeof child === 'number' || child === null) verdict[key] = child
+  }
+  return recognitionFreeOf(verdict, text)
+}
+/**
+ * Every value this unit can show is recognisable: the fold matches the document, recognition leads, and a document
+ * larger than the reply span comes back inside it.
+ * @wing agents
+ * @kind builder
+ * @evidence qpuRecognizeHolds
+ */
+export const qpuRecognizeHolds = (value?: unknown): boolean => {
+  const span = recognitionSpanOf()
+  const reply = recognitionReplyOf()
+  const fat = value ?? {
+    kind: 'recognize' as const,
+    holds: true as const,
+    device: 'exact-amplitudes' as const,
+    fused: span,
+    next: span + span,
+    only: { holds: true as const, entangle: true as const },
+    circuit: { holds: true as const, device: 'exact-amplitudes' as const, only: { holds: true as const } },
+    lean: { holds: true as const, source: 'x'.repeat(reply) },
+    blob: 'y'.repeat(reply),
+  }
+  const text = JSON.stringify(fat)
+  const led = qpuRecognizeOf(fat)
+  if (led === null || typeof led !== 'object' || Array.isArray(led)) return false
+  const bag = led as Record<string, unknown>
+  const recognition = bag.recognition as { kind?: unknown; fold?: unknown; holds?: unknown; device?: unknown; expand?: unknown; bytes?: unknown; enthalpy?: unknown; heat?: unknown; free?: unknown } | undefined
+  const shown = JSON.stringify(led)
+  const nested = bag.lean as { holds?: unknown } | undefined
+  const circuit = bag.circuit as { only?: { holds?: unknown }; holds?: unknown } | undefined
+  const small = qpuRecognizeOf({ holds: true as const }) as Record<string, unknown>
+  const smallRecognition = small.recognition as { kind?: unknown } | undefined
+  const smallLeads = smallRecognition?.kind === 'recognition' && small.holds === true && Object.keys(small)[n - n] === 'recognition'
+  return (
+    recognition?.kind === 'recognition' &&
+    Object.keys(bag)[n - n] === 'recognition' &&
+    recognition.fold === qpuFoldOf(text) &&
+    recognition.expand === '{ full: true }' &&
+    recognition.holds === true &&
+    recognition.device === 'exact-amplitudes' &&
+    recognition.bytes === text.length &&
+    recognition.enthalpy === tokensOf(text.length) &&
+    recognition.free === ((recognition.heat as number) < (recognition.enthalpy as number) ? (recognition.enthalpy as number) - (recognition.heat as number) : n - n) &&
+    (recognition.free as number) > n - n &&
+    nested?.holds === true &&
+    (circuit?.only?.holds === true || circuit?.holds === true) &&
+    bag.holds === true &&
+    bag.fused === span &&
+    shown.length <= reply &&
+    shown.length < text.length &&
+    smallLeads
+  )
+}
+
 /** THE REPLY ON THE WIRE, ONCE AS TEXT AND ONCE AS STRUCTURE. The protocol asks for `content` and `structuredContent`,
  * and those are the two copies a client pays for. An embedded resource copy, a string copy under `_meta.output` and an
  * object copy under `_meta.functionResponse` made a 131 KB proof a 729 KB reply (external audit, 2026-09-12); they are
- * gone. A `resource_link` rides along only when a GET of its uri returns this same document (lean, cite).
+ * gone. Both copies are the recognition. `{ full: true }` is the document. A `resource_link` rides along only when a
+ * GET of its uri returns the document the recognition fold names (lean, cite).
   * @wing agents
   * @kind builder
   * @evidence qpuMcpShownHolds
  * `_meta.call` says where to call again; vendor shapes are documented in the JSON-LD catalogue at GET /mcp. */
-export const qpuMcpShownOf = (name: string, shownPayload: unknown, href = `${unit.origin}/mcp`) => {
+export const qpuMcpShownOf = (name: string, shownPayload: unknown, href = `${unit.origin}/mcp`, full = false) => {
   // A man page on the wire carries the tool's output schema (off tools/list since 2026-09-12), whichever door built it.
-  const isMan = !!shownPayload && typeof shownPayload === 'object' && (shownPayload as { kind?: unknown }).kind === 'man' && !('outputSchema' in shownPayload)
-  const payload: unknown = isMan ? qpuManPageOf(name, shownPayload as object) : shownPayload
+  // A man page is the document the caller asked to read. Every other reply leads with recognition unless { full: true }.
+  const isMan = !!shownPayload && typeof shownPayload === 'object' && (shownPayload as { kind?: unknown }).kind === 'man'
+  const paged = isMan && !('outputSchema' in (shownPayload as object)) ? qpuManPageOf(name, shownPayload as object) : shownPayload
+  const payload: unknown = isMan || full === true ? paged : qpuRecognizeOf(paged)
   const bag = payload && typeof payload === 'object' ? (payload as { holds?: unknown; warning?: unknown }) : {}
   // a warning (the network out of reach, its work skipped) is answered, not failed
   const holds = bag.holds === true || bag.warning !== undefined
@@ -2715,7 +3088,7 @@ export const qpuMcpShownOf = (name: string, shownPayload: unknown, href = `${uni
       uri: resource,
       name,
       mimeType: 'application/ld+json',
-      description: `GET ${resource} returns this document`,
+      description: payload !== null && typeof payload === 'object' && (payload as { recognition?: { kind?: unknown } }).recognition?.kind === 'recognition' ? `GET ${resource} returns the document this recognition names` : `GET ${resource} returns this document`,
       annotations: { audience: ['user'] as const, priority: seed }})
   }
   return {
@@ -2735,12 +3108,16 @@ export const qpuMcpShownHolds = (shown?: ReturnType<typeof qpuMcpShownOf>): bool
   if (shown === undefined) return false
   const unlimited = JSON.stringify(shown.structuredContent)
   const link = shown.content.find((c) => c.type === 'resource_link')
+  const led = shown.structuredContent as { recognition?: { kind?: unknown; fold?: unknown; expand?: unknown } } | undefined
+  const recognition = led?.recognition
+  const recognitionLeads = recognition === undefined || (recognition.kind === 'recognition' && recognition.expand === '{ full: true }' && typeof recognition.fold === 'string' && recognition.fold.length === FOLD_DIGITS && Object.keys(led as object)[n - n] === 'recognition')
   return (
     shown._meta.resultType === 'complete' &&
     shown.content.length >= seed &&
     shown.content.length <= coins &&
     shown.content[n - n]?.type === 'text' &&
     shown.content[n - n]?.text === unlimited &&
+    recognitionLeads &&
     (link === undefined || (link.mimeType === 'application/ld+json' && link.uri === shown._meta.resource)) &&
     shown._meta.role === 'tool' &&
     shown._meta.compatibility === 'max' &&
@@ -2793,7 +3170,7 @@ const qpuSubRpcOf = async (
     const tool = tools.find((t) => t.name === name)
     if (!tool) return rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name}`, { tools: tools.map((t) => t.name), href })
     if (args.man === true) return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, qpuManPageOf(name, tool.man), href) }
-    return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, await tool.run(args), href) }
+    return { jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpShownOf(name, await tool.run(args), href, args.full === true) }
   }
   /** A body that names a method this server does not have is a declined call, not a job or a message. */
   if (typeof body.method === 'string') return rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods], href })
@@ -2928,7 +3305,8 @@ export const qpuReadingOf = onceOf(() => {
 export const qpuReadingHolds = (x: ReturnType<typeof qpuReadingOf> = qpuReadingOf()): boolean => x.holds === true
 
 /**
- * Token efficiency of each door: bytes and tokens to read the tree versus to call the tool.
+ * Token efficiency of each door: bytes and tokens to read the tree versus to call the tool. The call is the free
+ * energy of that document — the recognition — not the enthalpy of sending it.
  * @wing agents
  * @kind builder
  * @evidence qpuEfficiencyHolds
@@ -2946,11 +3324,13 @@ export const qpuEfficiencyOf = onceOf(() => {
     { question: 'what is quantum?', name: 'quantum', door: 'quantum', reading },
     { question: 'what does Lean prove?', name: 'lean', door: 'lean', reading: lean },
     { question: 'how is the QPU cited?', name: 'cite', door: 'cite', reading: cite }].map((row) => {
-    const callBytes = JSON.stringify(row.reading).length
+    const callBytes = JSON.stringify(qpuRecognizeOf(row.reading)).length
     const readTokens = tokensOf(readBytes)
     const callTokens = tokensOf(callBytes)
+    const enthalpy = tokensOf(JSON.stringify(row.reading).length)
+    const free = callTokens < enthalpy ? enthalpy - callTokens : n - n
     const ratio = callTokens > seed ? Number(BigInt(readTokens) / BigInt(callTokens)) : readTokens
-    return { question: row.question, name: row.name, door: row.door, readBytes, callBytes, readTokens, callTokens, ratio }
+    return { question: row.question, name: row.name, door: row.door, readBytes, callBytes, readTokens, callTokens, enthalpy, heat: callTokens, free, ratio }
   })
   const quantum = { ...reading.only, queries: seed, vs: coins, lattice: reading.circuit.lattice }
   const holds =
@@ -2970,7 +3350,7 @@ export const qpuEfficiencyOf = onceOf(() => {
     quantum.lattice.occupied === quantum.lattice.faces &&
     quantum.lattice.vacant === n - n &&
     rows.length === n &&
-    rows.every((r) => r.callTokens > seed && r.readTokens >= r.callTokens && r.door === r.name && r.ratio >= mintOf(n - n))
+    rows.every((r) => r.callTokens > seed && r.readTokens >= r.callTokens && r.door === r.name && r.ratio >= mintOf(n - n) && r.free === (r.heat < r.enthalpy ? r.enthalpy - r.heat : n - n) && (r.enthalpy <= tokensOf(recognitionReplyOf()) || r.free > n - n))
   return { kind: 'efficiency' as const, module: 'agent efficiency' as const, quantum, tokens: 'four bytes' as const, readBytes, rows, holds }
 })
 
@@ -3416,6 +3796,7 @@ export const qpuEvidenceOf = (
     holds:
       unit.host === 'qpu.uuidna.com' &&
       !unit.host.includes('*') &&
+      circuit.steps.device === 'exact-amplitudes' &&
       circuit.steps.device === circuit.register.kind &&
       shor.device === circuit.register.kind &&
       shor.circuitry.native.join(' ') === 'h cnot' &&
@@ -3492,6 +3873,7 @@ export const qpuEvidenceOf = (
       shor.factors.p * shor.factors.q === shor.n &&
       shor.measure.outcomes.every((y) => shor.measure.support.includes(y)),
   }
+  const scalingAdvantage = quantumModeOf() && circuit.interfere.holds && n * heavy > coins * total
   const scaling = {
     kind: 'scaling' as const,
     qubits: circuit.register.qubits,
@@ -3499,7 +3881,7 @@ export const qpuEvidenceOf = (
     depth: shor.circuitry.gates.length,
     exact: circuit.qubits.dim === mintOf(circuit.register.qubits),
     beyond: circuit.register.qubits > qpuFacesOf().faces,
-    advantage: quantumModeOf() && circuit.interfere.holds && n * heavy > coins * total,
+    advantage: scalingAdvantage,
     mirror: circuit.interfere.holds,
     holds:
       circuit.qubits.dim === mintOf(n) &&
@@ -3507,7 +3889,8 @@ export const qpuEvidenceOf = (
       shor.circuitry.gates.length > n &&
       circuit.qubits.dim === mintOf(circuit.register.qubits) &&
       circuit.register.qubits > qpuFacesOf().faces === false &&
-      circuit.interfere.holds,
+      circuit.interfere.holds &&
+      scalingAdvantage === false,
   }
   const verify = {
     kind: 'verify' as const,
@@ -5883,7 +6266,7 @@ export const qpuForgeOf = (args: Record<string, unknown> = {}) => {
   if (addressed) return { ...qpuSandboxRunOf(addressed.name, { ...bagOf(args.args), ...(typeof args.referrer === 'string' ? { referrer: args.referrer } : {}) }), uuid: args.uuid as string }
   const name = typeof args.name === 'string' ? args.name : ''
   if (name.length === n - n) return qpuSandboxOf()
-  if (args.run === undefined && sandboxTools.has(name)) return qpuSandboxRunOf(name, bagOf(args.args))
+  if (args.run === undefined && sandboxTools.has(name)) return qpuSandboxRunOf(name, { ...bagOf(args.args), ...(typeof args.referrer === 'string' ? { referrer: args.referrer } : {}) })
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
   const reserved = reservedOf(name)
@@ -7837,7 +8220,7 @@ export const qpuCernCatalogsOf = onceOf(() => {
     { name: 'opendata', href: `${api}?size=${seed}` },
     { name: 'repository', href: `https://repository.cern/api/records?size=${seed}` },
     { name: 'zenodo', href: `https://zenodo.org/api/records?size=${seed}` },
-    { name: 'hepdata', href: 'https://www.hepdata.net/search/?format=json' },
+    { name: 'hepdata', href: 'https://www.hepdata.net/record/count' },
     { name: 'indico', href: 'https://indico.cern.ch/export/categ/0.json' }] as const
   const catalogs = [
     ...inspire.map((name) => ({ name, href: `https://inspirehep.net/api/${name}?size=${seed}` })),
@@ -8925,8 +9308,9 @@ const qpuMcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
 export const qpuMcpDiscoverOf = (requested?: unknown) => {
   const hosts = qpuHostsOf()
   const versions = MCP_VERSIONS
-  const instructions = `tools/list then tools/call. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. Reads need no auth; storage writes need a Bearer token.`
-  const holds = qpuHostsHolds(hosts) && versions.length === n && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto')
+  const right = qpuCiteOf().right
+  const instructions = `tools/list then tools/call. prompts/list then prompts/get: each prompt is a boolean chain, a step holds or it is a lead. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. Reads need no auth; storage writes need a Bearer token. Token-free: a reply is the free energy of the document, recognition first; { full: true } spends the enthalpy. ${right}`
+  const holds = qpuHostsHolds(hosts) && versions.length === n && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto') && instructions.includes('free energy') && instructions.includes('{ full: true }') && instructions.includes(right)
   return {
     protocolVersion: qpuMcpVersionOf(requested),
     install: qpuHarnessesOf(),
@@ -9822,9 +10206,9 @@ export const qpuCernHolds = (c = qpuCernOf()): boolean =>
   c.entangle.catalog.pairs.every((pair) => pair.holds && pair.product === false && pair.scanner.domain === 'scanner' && pair.radar.domain === 'radar') &&
   c.cases.every((row) => row.holds && row.left === row.right && !byDecideOf(row.theorem) && row.href.startsWith(c.api))
 
-/** The schemas, derived once per isolate from each tool's replies: the default call, and for the five tools that take
- * n and a, a second call on 15 and 7 so that `required` is what every reply carries. While they are being derived,
- * tools/list answers with the minimal schema, so a tool whose reply lists the tools does not recurse. */
+/** The schemas, derived once per isolate from each tool's replies as the agent sees them: recognition first, and for
+ * the five tools that take n and a, a second call on 15 and 7 so that `required` is what every reply carries. While
+ * they are being derived, tools/list answers with the minimal schema, so a tool whose reply lists the tools does not recurse. */
 let outputSchemasMemo: Record<string, QpuOutputSchema> | undefined
 let outputSchemasBuilding = false
 const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
@@ -9836,7 +10220,7 @@ const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
     const r = run(args)
     return r && typeof r === 'object' && typeof (r as { then?: unknown }).then === 'function' ? undefined : r
   }
-  for (const t of qpuToolsOf()) out[t.name] = qpuOutputSchemaOf([sample(t.run, {})].filter((x) => x !== undefined))
+  for (const t of qpuToolsOf()) out[t.name] = qpuOutputSchemaOf([sample(t.run, {})].filter((x) => x !== undefined).map((x) => qpuRecognizeOf(x)))
   const withArgs = new Set(['crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa'])
   for (const t of qpuCybersecurityToolsOf()) {
     /** Three samples for the five tools that take n and a: the unit's own 91, a small 15, and 2^61 sent as digits, so the
@@ -9845,7 +10229,7 @@ const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
     const samples = withArgs.has(t.name)
       ? [sample(t.run, {}), sample(t.run, { n: n * (n + coins), a: n + coins + coins }), sample(t.run, { n: past, a: `${n}` })]
       : [sample(t.run, {})]
-    out[t.name] = qpuOutputSchemaOf(samples.filter((x) => x !== undefined))
+    out[t.name] = qpuOutputSchemaOf(samples.filter((x) => x !== undefined).map((x) => qpuRecognizeOf(x)))
   }
   outputSchemasBuilding = false
   outputSchemasMemo = out
@@ -9869,7 +10253,7 @@ export const qpuMcpToolsListOf = onceOf(() => {
 })
 
 /** Through any door, in one line for tools/list; the schema of it is on the man page. */
-const THROUGH_LINE = 'Through this door: { hex } runs a hex program, { door, arguments } any door or family.formula, { doors: true } lists them, { errors: true } every error at once.'
+const THROUGH_LINE = 'Through this door: { hex }, { door, arguments }, { doors: true }, { errors: true }. Schema on the man page.'
 /** The man page as served: the tool's man plus its output schema read from the run and the through-schema every door
  *  takes, off the list and one call away. */
 const qpuManPageOf = <T extends object>(name: string, man: T) => ({
@@ -10175,7 +10559,7 @@ export const qpuHexUuidOf = (spec: { family: string; program: readonly string[];
   const codes = spec.program.map((name) => formulas.findIndex((f) => f.name === name) + seed)
   // a name the family does not have is named back; ten formulas is the program's length (ten nibbles)
   const missing = spec.program.filter((name) => !formulas.some((f) => f.name === name))
-  if (missing.length) throw new Error(`hex: ${spec.family} has no formula ${missing.join(', ')}; it has ${formulas.map((f) => f.name).join(', ')}`)
+  if (missing.length) throw new Error(`hex: ${spec.family} has no formula ${missing.join(', ')}`)
   if (codes.length > ten) throw new Error('hex: at most ten formulas of the family')
   const nib = [...codes, ...Array(ten).fill(n - n)].slice(n - n, ten).map((c) => c.toString(UUID_SIXTEEN))
   const params = [...(spec.params ?? [])]
@@ -10189,6 +10573,25 @@ export const qpuHexUuidOf = (spec: { family: string; program: readonly string[];
   // the handle's first digit rides the version slot (the crypto stamp overwrites it); the ten program nibbles and
   // the variant (RFC + the mode's two bits) are untouched, and the version is the crypto family's, not a literal 8.
   return uuidStampOf(`${hexHandleOf(spec.family)}${nib.slice(n - n, UUID_FOUR).join('')}${hexHandleOf(spec.family).slice(n - n, seed)}${nib.slice(UUID_FOUR, UUID_FOUR + n).join('')}${(mintOf(n) + mode).toString(UUID_SIXTEEN)}${nib.slice(UUID_FOUR + n).join('')}${p}`)
+}
+
+/** One next address when a formula name is not in the family. The reply names that address and stops. Holds stays false. */
+export const qpuHexMissOf = (family: string, params: readonly number[] = []): { handle: string; uuid: string } | undefined => {
+  const formulas = qpuHexFamiliesOf().get(family)
+  if (!formulas) return undefined
+  const width = params.length > n ? n : params.length
+  const ordered = [...formulas.filter((f) => f.live !== true && f.arity === width), ...formulas.filter((f) => f.live !== true && f.arity !== width)]
+  for (const formula of ordered) {
+    const use = params.slice(n - n, formula.arity)
+    if (use.length !== formula.arity || use.some((x) => !Number.isSafeInteger(x) || x < n - n)) continue
+    try {
+      const uuid = qpuHexUuidOf({ family, program: [formula.name], params: use })
+      return { handle: uuid.slice(n - n, UUID_EIGHT), uuid }
+    } catch {
+      /* these integers do not determine this formula */
+    }
+  }
+  return undefined
 }
 
 /**
@@ -10254,7 +10657,7 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv,
       acc = typeof value === 'bigint' ? value : value
     }
     const value = typeof acc === 'bigint' ? acc.toString() : acc
-    const receipt = qpuUuidReceiptOf(`hex ${d.family}`, d.uuid, { steps, value, holds }, referrer).uuid
+    const receipt = qpuUuidReceiptOf(`hex ${d.family}`, d.uuid, { steps, value, holds }, qpuAddressReferrerOf(referrer)).uuid
     // an enumeration (discovery, the sequences) computes without storing: a request may make only so many storage
     // calls, and a stored row is a run someone asked for by its address
     if (options.store !== false) await qpuDocDbOf(env, 'hex').collection(d.handle).updateOne({ _id: row }, { $set: { family: d.family, program: d.program, value, holds, receipt, by: d.uuid } }, { upsert: true })
@@ -10347,10 +10750,35 @@ const qpuHexToolsOf = (hexEnv?: QpuEnv): QpuSubTool[] => {
   return [
     { name: see[0], description: 'Hex catalogue: handles, opcodes, param modes.', man: qpuSubManOf(see[0], 'Hex catalogue.', 'Family handle 8 hex, formula program 3x4 hex, params 12 hex.', hexHref, others(0)), inputSchema: schema, run: () => qpuHexCatalogOf() },
     { name: see[1], description: 'Mint the UUID that is a program.', man: qpuSubManOf(see[1], 'Mint a hex program.', '{ family, program, params } to a v8 UUID.', hexHref, others(1)), inputSchema: schema,
-      run: (a) => { try { const uuid = qpuHexUuidOf({ family: String(a.family ?? ''), program: (Array.isArray(a.program) ? a.program : []).map(String), params: (Array.isArray(a.params) ? a.params : []) as number[] }); return { kind: 'hex' as const, uuid, decodes: qpuHexDecodeOf(uuid), holds: true as const } } catch (e) { return { kind: 'hex' as const, holds: false as const, denied: e instanceof Error ? e.message : String(e) } } } },
+      run: (a) => {
+        const family = String(a.family ?? '')
+        const params = (Array.isArray(a.params) ? a.params : []) as number[]
+        try {
+          const uuid = qpuHexUuidOf({ family, program: (Array.isArray(a.program) ? a.program : []).map(String), params })
+          return { kind: 'hex' as const, uuid, decodes: qpuHexDecodeOf(uuid), holds: true as const }
+        } catch (e) {
+          const next = qpuHexMissOf(family, params.map(Number))
+          const reading = e instanceof Error ? e.message : String(e)
+          return { kind: 'hex' as const, holds: false as const, denied: 'program' as const, reading, ...(next ? { next } : {}) }
+        }
+      } },
     { name: see[2], description: 'Decode a hex-program UUID.', man: qpuSubManOf(see[2], 'Decode a hex program.', 'Family, formulas and params of a UUID.', hexHref, others(2)), inputSchema: schema, run: (a) => qpuHexDecodeOf(String(a.uuid ?? '')) },
     { name: see[4], description: 'Formulas discover each other: values reached by formulas of two or more families, each as a hex program.', man: qpuSubManOf(see[4], 'Discover relations.', 'Every formula over the lattice constants, grouped by value across families.', hexHref, others(4)), inputSchema: schema, run: () => qpuHexDiscoverOf() },
-    { name: see[3], description: 'Run a hex-program UUID.', man: qpuSubManOf(see[3], 'Run a hex program.', 'Apply the formulas, receipt and store the run.', hexHref, others(3)), inputSchema: schema, run: (a) => qpuHexRunOf(String(a.uuid ?? ''), typeof a.referrer === 'string' ? a.referrer : undefined, hexEnv) },
+    { name: see[3], description: 'Run a hex-program UUID.', man: qpuSubManOf(see[3], 'Run a hex program.', 'Apply the formulas, receipt and store the run.', hexHref, others(3)), inputSchema: schema, run: (a) => {
+      const referrer = typeof a.referrer === 'string' ? a.referrer : undefined
+      const uuid = typeof a.uuid === 'string' ? a.uuid : ''
+      if (uuid.length > n - n) return qpuHexRunOf(uuid, referrer, hexEnv)
+      const family = typeof a.family === 'string' ? a.family : ''
+      if (family.length === n - n) return qpuHexRunOf(uuid, referrer, hexEnv)
+      const program = Array.isArray(a.program) ? a.program.map(String) : String(a.program ?? '').split(/[+,]/).filter(Boolean)
+      const params = Array.isArray(a.params) ? (a.params as unknown[]).map(Number) : []
+      try {
+        return qpuHexRunOf(qpuHexUuidOf({ family, program, params }), referrer, hexEnv)
+      } catch (e) {
+        const next = qpuHexMissOf(family, params)
+        return { kind: 'hex' as const, holds: false as const, denied: 'program' as const, reading: e instanceof Error ? e.message : String(e), ...(next ? { next } : {}) }
+      }
+    } },
   ]
 }
 

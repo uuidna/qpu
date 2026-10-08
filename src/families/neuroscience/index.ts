@@ -22,7 +22,7 @@ export class NeuroscienceFormulas {
   static conduction(distance: number, time: number): CrossFormula { return c('neuroscience-conduction', 'conduction(distance, time) = ⌊distance / time⌋', time > 0 ? Math.floor(distance / time) : 0, nat(distance, time) && time > 0, 'conduction', [distance, time]) }
   /** PLASTICITY: the share of synapses strengthened. value ⌊strengthened · 100 / synapses⌋. */
   static plasticity(strengthened: number, synapses: number): CrossFormula { return c('neuroscience-plasticity', 'plasticity(strengthened, synapses) = ⌊strengthened · 100 / synapses⌋', synapses > 0 ? Math.floor((strengthened * 100) / synapses) : 0, nat(strengthened, synapses) && synapses > 0 && strengthened <= synapses, 'plasticity', [strengthened, synapses]) }
-  /** REFRACTORY WINDOW: the milliseconds a neuron cannot fire. value milliseconds. */
+  /** REFRACTORY WINDOW: the milliseconds a neuron cannot fire — the membrane has not recovered. value milliseconds. */
   static refractory(milliseconds: number): CrossFormula { return c('neuroscience-refractory', 'refractory(milliseconds) = milliseconds', milliseconds, nat(milliseconds), 'refractory', [milliseconds]) }
   /** CONNECTIVITY: edges over nodes. value ⌊edges / nodes⌋. */
   static connectivity(edges: number, nodes: number): CrossFormula { return c('neuroscience-connectivity', 'connectivity(edges, nodes) = ⌊edges / nodes⌋', nodes > 0 ? Math.floor(edges / nodes) : 0, nat(edges, nodes) && nodes > 0, 'connectivity', [edges, nodes]) }

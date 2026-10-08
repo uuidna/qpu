@@ -13,6 +13,7 @@ import {
   qpuFacesOf,
   qpuManHolds,
   qpuManPageOf,
+  qpuAddressReferrerOf,
   qpuUuidReceiptOf,
   quantumRelatedNamesOf,
   runOpOf,
@@ -117,7 +118,9 @@ export const qpuSandboxRunOf = (name: string, args: Record<string, unknown> = {}
   if (args.man === true) return qpuManPageOf(name, tool.man)
   const value = runOpOf(tool.run, sandboxHeap, jsonOf(args), n - n)
   const bag = bagOf(args)
-  const receipt = qpuUuidReceiptOf(`sandbox ${name}`, qpuContentUuidOf(tool.run), { args: bag, value }, typeof bag.referrer === 'string' && bag.referrer.length > n - n ? bag.referrer : `${unit.origin}/mcp`)
+  const address = qpuAddressReferrerOf(typeof bag.referrer === 'string' ? bag.referrer : undefined)
+  const argsFold = address ? bag : Object.fromEntries(Object.entries(bag).filter(([key]) => key !== 'referrer'))
+  const receipt = qpuUuidReceiptOf(`sandbox ${name}`, qpuContentUuidOf(tool.run), { args: argsFold, value }, address ?? `${unit.origin}/mcp`)
   return {
     kind: 'sandbox' as const,
     receipt,

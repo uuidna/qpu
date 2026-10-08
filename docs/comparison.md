@@ -1,5 +1,5 @@
 ---
-uuid: "e9c06761-1b05-8907-baad-43d304825d8b"
+uuid: "e9c06761-1b05-6907-baad-43d304825d8b"
 title: "Comparison"
 description: "What @uuidna/qpu does, wing by wing, beside quantum SDKs and simulators (Qiskit Aer, Cirq, Amazon Braket, PennyLane) and general AI models."
 og:title: "Comparison — @uuidna/qpu"
@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Comparison"
 twitter:description: "What @uuidna/qpu does, wing by wing, beside quantum SDKs and simulators (Qiskit Aer, Cirq, Amazon Braket, PennyLane) and general AI models."
-version: "1.0.1"
+version: "1.1.0"
 ---
 # Comparison
 
@@ -19,7 +19,7 @@ Rows are capability classes; a cell says what the system documents, not a benchm
 
 | Capability | qpu | Qiskit Aer | Cirq | Amazon Braket | PennyLane | AI models (LLMs) |
 |---|---|---|---|---|---|---|
-| Exact state vector | integer amplitudes, 3-qubit register (dim 8); sparse states, Shor on 9 qubits (dim 512) | statevector (dense, GPU) | state vector; qsim | SV1, up to 34 qubits | lightning.qubit / .gpu / .kokkos | none |
+| Exact state vector | integer amplitudes, 3-qubit register (dim vertices); sparse states, Shor on 9 qubits (dim mintOf(9)) | statevector (dense, GPU) | state vector; qsim | SV1, up to 34 qubits | lightning.qubit / .gpu / .kokkos | none |
 | Noise / density matrix | XX noise identity only | noise models, density matrix | density matrix | DM1, up to 17 qubits | default.mixed | none |
 | Stabilizer / large structured states | graph state of the fused API registry, 2529 qubits, exact entanglement by GF(2) rank | stabilizer, extended stabilizer, MPS | Clifford simulator | TN1, up to 50 qubits | lightning.tensor (MPS) | none |
 | Physical hardware | none | IBM Quantum | Google Quantum AI (by access) | IonQ, Rigetti, IQM, QuEra and others | via plugins | none |
@@ -28,7 +28,7 @@ Rows are capability classes; a cell says what the system documents, not a benchm
 | Agent interface | MCP server (/mcp), 16 tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |
 | Document database | MongoDB query/update semantics on Cloudflare KV+R2 or D1, Payload adapter | — | — | — | — | — |
 | API fusion | 2529 APIs, 438299 composing pairs, 438299 cross formulas | — | — | — | — | — |
-| CMS on the edge | 98304 Next.js + Payload configurations on Workers | — | — | — | — | — |
+| CMS on the edge | 1376256 Next.js + Payload configurations on Workers | — | — | — | — | — |
 | License | CC-BY-NC-ND-4.0 (non-commercial, no derivatives) | Apache-2.0 | Apache-2.0 | commercial service | Apache-2.0 | per provider |
 
 ## Sources
@@ -40,4 +40,4 @@ Rows are capability classes; a cell says what the system documents, not a benchm
 - [PennyLane Lightning](https://pypi.org/project/PennyLane-Lightning/0.32.0)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 
-Live cross-checks of qpu's own claims against CERN, Zenodo, ORCID and NIST: 27 of 30 agree (see [state](state.md)).
+Live cross-checks of qpu's own claims against CERN, Zenodo, ORCID and NIST: 2026-10-02: 27 of 30 agree (see [state](state.md)).

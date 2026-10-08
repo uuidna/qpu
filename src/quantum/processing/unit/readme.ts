@@ -136,7 +136,7 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     "import { qpuMcpCallOf, qpuMcpOf } from '@uuidna/qpu'",
     '',
     'const catalog = qpuMcpOf()                       // the MCP catalog: tools, schemas, install recipes',
-    "const circuit = await qpuMcpCallOf('quantum') // the running circuit as one JSON-LD document",
+    "const circuit = await qpuMcpCallOf('quantum') // recognition first; { full: true } is the JSON-LD document",
     '```',
     '',
     `Or without installing: \`GET ${unit.origin}\`, or \`POST ${m.href}\` with JSON-RPC \`tools/list\` then \`tools/call\`. Do not import uuidna; this package stands alone. Source \`${lean.src}\`.`,

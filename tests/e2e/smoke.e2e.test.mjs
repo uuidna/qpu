@@ -239,9 +239,18 @@ test('tools/list returns well-formed, uniquely named tools including qpu_prove',
   }
 })
 
-test('tools/call qpu_prove holds and its numbers match independent derivations', async () => {
-  const result = await client.callTool({ name: 'qpu_prove', arguments: {} })
+test('tools/call qpu_prove leads with recognition and expands on { full: true }', async () => {
+  const seen = await client.callTool({ name: 'qpu_prove', arguments: {} })
+  const led = seen.structuredContent
+  assert.equal(seen.isError, false)
+  assert.equal(JSON.parse(seen.content.find((c) => c.type === 'text').text).recognition.kind, 'recognition')
+  assert.equal(led.recognition.kind, 'recognition')
+  assert.equal(led.recognition.holds, true)
+  assert.equal(led.holds, true)
+  assert.equal(Object.keys(led)[0], 'recognition')
+  const result = await client.callTool({ name: 'qpu_prove', arguments: { full: true } })
   const s = assertProve(result)
+  assert.ok(JSON.stringify(led).length < JSON.stringify(s).length)
   const lean = await fetch(new URL(s.source.path, qpu.url))
   assert.equal(lean.status, 200)
   const source = await lean.text()
@@ -335,7 +344,7 @@ test('stdio transport serves the same tools and the same proof', { skip: existsS
     const { tools } = await stdio.listTools()
     const { tools: httpTools } = await client.listTools()
     assert.deepEqual(tools.map((t) => t.name).sort(), httpTools.map((t) => t.name).sort())
-    assertProve(await stdio.callTool({ name: 'qpu_prove', arguments: {} }))
+    assertProve(await stdio.callTool({ name: 'qpu_prove', arguments: { full: true } }))
   } finally {
     await stdio.close()
   }

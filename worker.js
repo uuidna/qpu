@@ -6,7 +6,7 @@ import unit from './dist/quantum/processing/unit/index.js'
 // @ts-ignore built by `opennextjs-cloudflare build`
 import app from './.open-next/worker.js'
 // every hex family, fused door and MCP method registers itself on import: src/mcp/families.ts is generated from the
-// modules that do so, and this is the one import of them
+// modules that do so. This Worker and the node boot (boot.ts) each import them once.
 import './dist/mcp/families.js'
 
 const deployed = 'public, max-age=3600'

@@ -7,6 +7,8 @@ import '../../mcp/families.js'
 test('evidence: the tribunal weighs by threshold — balance, corroboration, balancing test, chain, sufficiency', async (t) => {
   assert.equal(EvidenceFormulas.weight(7, 3).value, 1, 'the proof for outweighs against')
   assert.equal(EvidenceFormulas.weight(3, 7).value, 0)
+  assert.equal(EvidenceFormulas.margin(7, 3).value, 4, 'the facts for stand four above the facts against')
+  assert.equal(EvidenceFormulas.margin(3, 7).value, 0, 'no margin when the facts against are heavier')
   assert.equal(EvidenceFormulas.corroboration(1).holds, false, 'one source is not corroboration')
   assert.equal(EvidenceFormulas.corroboration(3).holds, true, 'three independent sources')
   assert.equal(EvidenceFormulas.admissible(8, 3).value, 1, 'probative value exceeds prejudice')
@@ -17,10 +19,10 @@ test('evidence: the tribunal weighs by threshold — balance, corroboration, bal
   assert.equal(EvidenceFormulas.sufficiency(4, 3).value, 0, 'an element missing')
   assert.equal(EvidenceFormulas.hearsay(0).value, 0, 'no exception: inadmissible')
   assert.equal(EvidenceFormulas.hearsay(1).value, 1, 'an exception applies')
-  assert.equal(qpuHexFamiliesOf().get('evidence')?.length, 8)
+  assert.equal(qpuHexFamiliesOf().get('evidence')?.length, 9)
   const uuid = qpuHexUuidOf({ family: 'evidence', program: ['chain'], params: [5, 5] })
   const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
   assert.equal(Number(run.value), 1, `evidence.chain at ${uuid}`)
   qpuUuidReceiptOf('evidence chain', qpuContentUuidOf(run), { uuid })
-  t.diagnostic('8 formulas; weight 7>3, corroboration 3, admissible 8>3, chain 5/5, sufficiency 4/4; crossing to law')
+  t.diagnostic('9 formulas; weight 7>3, margin 4, corroboration 3, admissible 8>3, chain 5/5, sufficiency 4/4; crossing to law')
 })

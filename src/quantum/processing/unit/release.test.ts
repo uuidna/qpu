@@ -16,6 +16,7 @@ const DOOR = 'cite'
 // no call runs for minutes (the old 120s × four retries was eight minutes). The host is probed once, memoized: when it
 // is unreachable — offline, no network, the host down — every live test skips rather than timing out, so the suite
 // finishes on any hardware (a Pravets 8M included) instead of stalling on a request that was never going to answer.
+// What that register recomputes one byte at a time is qpuZeroPageOf; qpuAnalyticsOf holds every integer, including the amplitude count.
 const DEADLINE = 20000
 let up: Promise<boolean> | undefined
 const reachable = (): Promise<boolean> => (up ??= fetch(`${host}/health`, { signal: AbortSignal.timeout(DEADLINE) }).then((r) => r.ok).catch(() => false))

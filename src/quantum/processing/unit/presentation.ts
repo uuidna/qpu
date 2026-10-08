@@ -11,6 +11,8 @@ import {
   onceOf,
   qpuCernExperimentsOf,
   qpuContextOf,
+  qpuHexDecodeOf,
+  qpuHexUuidOf,
   qpuHostsOf,
   qpuPentagramHolds,
   qpuSeatHandleOf,
@@ -435,13 +437,12 @@ export const qpuCiteOf = onceOf(() => {
     first: 'Tsvetan',
     orcid: 'https://orcid.org/0009-0000-7312-9778',
   }
-  /** THE VERSIONED DOI, AND IT MUST NAME THIS VERSION. Zenodo mints one per GitHub Release from the concept
-   *  record below; this is the one it minted for v0.1.3. It said v0.1.1 while the package shipped 0.1.3 — a
-   *  citation that sends a reader to an artefact two releases behind what it claims to describe. verify-release
-   *  checks the archive holds the version being released, which is what caught it. */
-  const doi = '10.5281/zenodo.23091364'
+  /** THE VERSIONED DOI NAMES THE LATEST ARCHIVED RELEASE. Zenodo mints one record per GitHub Release from the
+   *  concept record below. The package version is generated from package.json and moves ahead of that archive;
+   *  `current` is whether the two are the same version. */
+  const doi = '10.5281/zenodo.23156998'
   const conceptdoi = '10.5281/zenodo.22700098'
-  const archive = `https://zenodo.org/records/23091364`
+  const archive = `https://zenodo.org/records/23156998`
   const identifier = `https://doi.org/${doi}`
   const prior = {
     title: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution',
@@ -453,7 +454,7 @@ export const qpuCiteOf = onceOf(() => {
   /** WHAT THE ARCHIVE HOLDS, BESIDE WHAT THE HOST SERVES. The versioned DOI is one archived commit; the host moves on
    * without it until a new version is archived. Both are said, and `current` says whether they are the same version,
    * so a reader who downloads "this version" knows whether it is the code that answered them. */
-  const archived = { doi, archive, version: '1.0.0' as string, commit: '50eace7', holds: archive.endsWith(doi.split('.').pop() ?? '') }
+  const archived = { doi, archive, version: '1.0.1' as string, commit: '36da076', holds: archive.endsWith(doi.split('.').pop() ?? '') }
   const served = { version: packageVersion, origin: unit.origin, holds: /^1\.(0|[1-9][0-9]*)\.[0-9]$/.test(packageVersion) }
   const current = archived.version === served.version
   const currency = current
@@ -468,6 +469,7 @@ export const qpuCiteOf = onceOf(() => {
     { title: unit.kind, url: unit.origin, doi, works: worksOf(unit.kind, unit.origin), holds: unit.origin.startsWith('https://') && unit.kind.length > n - n },
     { title: 'quantum processing unit', url: unit.href, doi, works: worksOf('quantum processing unit', unit.href), holds: unit.href.startsWith('https://') },
     { title: lean.src, url: mcp, doi, works: worksOf(lean.src, mcp), holds: mcp.startsWith(unit.origin) && lean.src.endsWith('/index.lean') }] as const
+  const right = `${author.first} ${author.last} explores this knowledge under CC-BY-NC-ND-4.0: attribute the author, do not distribute a derivative, and do not use it commercially unless a commercial licence was granted on request.`
   const holds =
     qpuLeanHolds(lean) &&
     qpuQuantumHolds(quantum) &&
@@ -481,6 +483,9 @@ export const qpuCiteOf = onceOf(() => {
     prior.archive.startsWith('https://zenodo.org/records/') &&
     priorWorks.includes(`doi:${prior.doi}`) &&
     priorWorks.includes('Zenodo, ') &&
+    right.includes('CC-BY-NC-ND-4.0') &&
+    right.includes(`${author.first} ${author.last}`) &&
+    right.includes('commercial licence') &&
     archive.startsWith('https://zenodo.org/records/') &&
     website === unit.host &&
     rows.length === n &&
@@ -495,6 +500,36 @@ export const qpuCiteOf = onceOf(() => {
         r.works.includes(`doi:${doi}`) &&
         r.url.startsWith(unit.origin) &&
         !r.url.includes('*'))
+  // The commercial-license form names organisation and intended use, and leaves priceInUSDEnabled false.
+  // No price was set. licensing.truecost is the existing formula that would recompute a sale once a price exists.
+  // Empty params are not a price. The grant stays a lead. It is not a 16th law or court formula.
+  const grantOf = () => {
+    const licence = 'CC-BY-NC-ND-4.0' as const
+    const priceInUSDEnabled = false
+    const grant: {
+      licence: 'CC-BY-NC-ND-4.0'
+      organisation: { lead: true }
+      use: { lead: true }
+      priceInUSDEnabled: false
+      holds: false
+      lead: true
+      next?: { handle: string; uuid: string }
+    } = {
+      licence,
+      organisation: { lead: true as const },
+      use: { lead: true as const },
+      priceInUSDEnabled,
+      holds: false as const,
+      lead: true as const,
+    }
+    try {
+      const uuid = qpuHexUuidOf({ family: 'licensing', program: ['truecost'], params: [] })
+      const decoded = qpuHexDecodeOf(uuid)
+      if (decoded.holds && 'program' in decoded && decoded.program[0] === 'truecost' && decoded.params.length === 0)
+        grant.next = { handle: decoded.handle, uuid: decoded.uuid }
+    } catch { /* licensing is not registered in this isolate yet */ }
+    return grant
+  }
   return {
     '@context': qpuContextOf(),
     '@type': 'CreativeWork' as const,
@@ -519,8 +554,10 @@ export const qpuCiteOf = onceOf(() => {
     current,
     currency,
     inText: `(${author.last})`,
+    right,
     rows,
     holds,
+    get grant() { return grantOf() },
   }
 })
 
@@ -790,7 +827,7 @@ export const qpuCssOf = (imagine = '', genesis = qpuGenesisOf()) => {
      * and its tests scan the text, which is the best a fixed string allows. This one is GENERATED from a closed
      * alphabet — the six keys' declared members, the fourteen frameworks, the two domains — so the property is
      * decidable rather than sampled: every attribute value emitted is checked to be one genesis declares, and a
-     * value from anywhere else cannot reach the sheet to carry a URL in the first place. The request check below
+     * value from anywhere else cannot reach the sheet to carry a URL in the first place — the alphabet is closed and every emitted value is checked. The request check below
      * then has nothing left to find, which is the point of it.
      */
     [...engine.matchAll(/\[data-(?:slot|variant|size|state|element|theme|framework|domain)=([^\]]+)\]/g)].every(
@@ -900,6 +937,7 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
   const title = (meta.title || (type && type !== name ? `${name} — ${type}` : name)).slice(n - n, 70)
   const docs = (doc.docs ?? {}) as { abstract?: unknown; api?: unknown }
   const description = (meta.description || str(docs.abstract) || `${name}: content-addressed JSON-LD and an MCP endpoint.`).slice(n - n, 300)
+  const lines = Array.isArray(doc.public) ? doc.public.filter((row): row is string => typeof row === 'string' && row.length > n - n) : []
   const api = Array.isArray(docs.api) ? (docs.api as { path?: string; href?: string; name?: string; reading?: string }[]) : []
   const css = str((doc.css as { css?: unknown } | undefined)?.css)
   const links = api
@@ -933,7 +971,7 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
     '<body class="qpu">',
     '<main>',
     `<h1>${esc(name)}</h1>`,
-    `<p>${esc(description)}</p>`,
+    lines.length > n - n ? lines.map((row) => `<p>${esc(row)}</p>`).join('\n') : `<p>${esc(description)}</p>`,
     links ? `<nav aria-label="Doors"><h2>Doors</h2><ul>${links}</ul></nav>` : '',
     `<footer><p>Content-addressed JSON-LD · <a href="/mcp">MCP</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/sitemap.xml">Sitemap</a></p></footer>`,
     '</main>',

@@ -98,8 +98,9 @@ let tools = []
     if (link) {
       linked += 1
       const page = await get(new URL(link.uri).pathname)
-      const same = page.status === 200 && JSON.stringify(json(page.text)) === payload
-      check(`${t.name}: resource_link resolves to the same document`, same, `GET ${link.uri} -> ${page.status}, ${same ? 'equal' : 'a different document'}`)
+      const named = r.structuredContent?.recognition?.fold
+      const same = named ? page.status === 200 && fold(page.text) === named : page.status === 200 && JSON.stringify(json(page.text)) === payload
+      check(`${t.name}: resource_link names the document its recognition folds`, same, `GET ${link.uri} -> ${page.status}, ${same ? 'the fold' : 'a different document'}`)
     }
   }
   notes.push(`${linked} of ${tools.length} tools link a page that returns their reply`)

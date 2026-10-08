@@ -5,6 +5,7 @@ import { CENTERS, CENTER_GATES, CHANNELS, HdFormulas, chartOf, gateLineOf, desig
 import { CalFormulas } from '../cal/index.js'
 import { YiFormulas } from '../yi/index.js'
 import { KinFormulas } from '../kin/index.js'
+import '../../mcp/families.js'
 
 /** THE COMBINATIONS OF THE STRUCTURE, EVERY ONE. The wheel partitions the circle into 64 gates of 6 lines; the nine
  *  centers partition the 64 gates; the 36 channels join gates of different centers; the design day lies 70–100 days
@@ -169,4 +170,68 @@ test('cal: the Day Out of Time is a coin — a leap year holds both uncounted da
   // the pairs since the Dreamspell's own epoch, each one a crossing of the two faces
   const crossings = Array.from({ length: 2026 - 1992 + 1 }, (_, i) => 1992 + i).filter((y) => Number(CalFormulas.leap(y).value) === 1)
   assert.deepEqual(crossings, [1992, 1996, 2000, 2004, 2008, 2012, 2016, 2020, 2024])
+})
+
+/** ut and definition, called through the unit. The shared integer is the value the ways agree on. */
+test('hd: ut and definition meet the superpositions the unit still reaches', async (t) => {
+  const at = async (family: string, program: string[], params: number[]) => {
+    const uuid = qpuHexUuidOf({ family, program, params })
+    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
+    return String(run.value)
+  }
+  const agree = async (ways: readonly (readonly [string, string[], number[]])[]) => {
+    const values = []
+    for (const [family, program, params] of ways) values.push(await at(family, program, params))
+    assert.equal(new Set(values).size, 1, values.join(' ≠ '))
+    return values[0]!
+  }
+  assert.equal(String(HdFormulas.ut(1200, 720).value), await at('hd', ['ut'], [1200, 720]))
+  const byUt = await agree([
+    ['hd', ['ut', 'gate'], [1, 1]],
+    ['hd', ['ut', 'gate'], [1, 2]],
+    ['hd', ['ut', 'gate'], [1, 3]],
+    ['hd', ['ut', 'gate'], [2, 1]],
+    ['clay', ['bsd'], [122]],
+    ['heat', ['signal'], [8]],
+    ['heat', ['signal', 'coherence'], [2, 3]],
+    ['kin', ['dreamspellDrift'], [119]],
+    ['kin', ['pillar', 'dreamspellDrift'], [1, 2]],
+    ['kin', ['pillar', 'dreamspellDrift'], [2, 3]],
+  ])
+  assert.equal(String(HdFormulas.definition(2).value), await at('hd', ['definition'], [2]))
+  const byDefinition = await agree([
+    ['hd', ['mean'], [2]],
+    ['hd', ['mean'], [3]],
+    ['hd', ['center', 'mean'], [4]],
+    ['hd', ['definition', 'mean'], [2]],
+    ['kin', ['bits'], [84]],
+    ['tesla', ['quarter'], [104]],
+  ])
+  t.diagnostic(`ut meets ${byUt}; definition∘mean meets ${byDefinition}`)
+})
+
+/** sun, called through the unit. The shared integer is the value the ways agree on. */
+test('hd: sun∘mean meets the kin the unit still reaches', async (t) => {
+  const at = async (family: string, program: string[], params: number[]) => {
+    const uuid = qpuHexUuidOf({ family, program, params })
+    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
+    return String(run.value)
+  }
+  assert.equal(String(HdFormulas.sun(1).value), await at('hd', ['sun'], [1]))
+  const ways: readonly (readonly [string, string[], number[]])[] = [
+    ['hd', ['sun', 'mean'], [1]],
+    ['hd', ['sun', 'mean'], [2]],
+    ['hd', ['sun', 'mean'], [3]],
+    ['hd', ['sun', 'mean'], [4]],
+    ['kin', ['kin'], [1, 2]],
+    ['kin', ['kin'], [1, 3]],
+    ['kin', ['kin'], [1, 4]],
+    ['kin', ['kin'], [1, 5]],
+  ]
+  const values = []
+  for (const [family, program, params] of ways) values.push(await at(family, program, params))
+  assert.equal(new Set(values).size, 1, values.join(' ≠ '))
+  t.diagnostic(`sun∘mean meets ${values[0]}`)
 })

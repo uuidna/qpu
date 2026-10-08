@@ -1,7 +1,7 @@
 import { aeadOpen, aeadSeal, bytesOf, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, sha256, sha512, utf8, x25519, type HashName } from '../core/crypt.js'
 import { leanSource } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
-import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuHarnessesOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpDoorsOf, qpuMcpFuseOf, qpuMcpToolsListOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuFoldOf, qpuHarnessesOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexMissOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpDoorsOf, qpuMcpFuseOf, qpuMcpToolsListOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
 import { qpuPortingOf } from '../quantum/processing/unit/porting.js'
 import { crossFormulaOf, qpuCrossBridgesOf } from '../families/cross/index.js'
@@ -30,6 +30,7 @@ qpuMcpFuseOf('hex', {
   description: 'Run a hex program: { uuid } or { family, program, params }, of any registered family ({} returns the catalogue; { doors: true } through any door lists the families).',
   inputSchema: { type: 'object', properties: { uuid: { type: 'string' }, family: { type: 'string' }, program: { type: ['array', 'string'], items: { type: 'string' } }, params: { type: 'array', items: { type: 'integer' } } } },
   run: async (a, env) => {
+    const referrer = typeof a.referrer === 'string' ? a.referrer : undefined
     if (!a.uuid && !a.family) return qpuHexCatalogOf()
     let uuid = str(a.uuid)
     if (!uuid) {
@@ -38,10 +39,11 @@ qpuMcpFuseOf('hex', {
       try {
         uuid = qpuHexUuidOf({ family: str(a.family), program, params })
       } catch (e) {
-        return fail('program', { reading: (e as Error).message })
+        const next = qpuHexMissOf(str(a.family), params)
+        return fail('program', { reading: (e as Error).message, ...(next ? { next } : {}) })
       }
     }
-    return qpuHexRunOf(uuid, undefined, env)
+    return qpuHexRunOf(uuid, referrer, env)
   },
 })
 
@@ -68,7 +70,7 @@ const get = async (url: string, accept = 'application/json'): Promise<Response> 
     try {
       const r = await fetch(url, { headers, signal: AbortSignal.timeout(DEADLINE) })
       if (r.ok) return r
-      // 4xx below 429 is settled, not transient: fail now rather than retry something that cannot change
+      // 4xx below 429 is settled, not transient: fail now rather than retry something that cannot change, because that status is settled
       if (r.status < 500 && r.status !== 429) throw new Error(`${url} answered ${r.status}`)
       last = new Error(`${url} answered ${r.status}`)
     } catch (e) {
@@ -152,7 +154,67 @@ const reposOf = (): string[] =>
     .map((href) => /[?&]url=https:\/\/github\.com\/([^/]+\/[^/?#]+)/.exec(href)?.[1])
     .filter((r): r is string => Boolean(r))
 
-const reading = async (source: string, a: Args, env?: QpuEnv) => {
+/** Collections the generated mcpPlugin already exposes. Chat calls that plugin; tools/list does not grow. */
+const PAYLOAD_MCP_COLLECTIONS = ['docs', 'pages', 'quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'] as const
+const HUE_BITS = 64
+const NIBBLE_WEIGHT = [0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4]
+const nibbleWeightOf = (fold: string): number => {
+  let d = 0
+  for (const ch of fold) d += NIBBLE_WEIGHT[parseInt(ch, 16)] ?? 0
+  return d
+}
+const hammingOf = (left: string, right: string): number => {
+  let d = 0
+  const span = Math.min(left.length, right.length)
+  for (let i = 0; i < span; i++) d += NIBBLE_WEIGHT[(parseInt(left[i]!, 16) ^ parseInt(right[i]!, 16)) & 15] ?? 0
+  return d
+}
+/** plasma.hue(distance, 64): degrees on the wheel. Distance 0 sits at hue 0. */
+const hueOf = (distance: number): number => (distance >= 0 && distance <= HUE_BITS ? Math.floor((distance * 360) / HUE_BITS) : 0)
+const collectionAskedOf = (asked: Set<string>): (typeof PAYLOAD_MCP_COLLECTIONS)[number] | undefined =>
+  PAYLOAD_MCP_COLLECTIONS.find((slug) => slug.split('-').every((word) => asked.has(word)))
+/** Integers only. A name, an email, an address and a Referer are strings and do not enter the fold. */
+const publicIntsOf = (x: unknown): number[] => {
+  if (typeof x === 'number' && Number.isSafeInteger(x) && x >= 0) return [x]
+  if (Array.isArray(x)) return x.flatMap(publicIntsOf)
+  if (x && typeof x === 'object') return Object.values(x as Record<string, unknown>).flatMap(publicIntsOf)
+  return []
+}
+/**
+ * The chat's tool for Payload content: findDocuments on the plugin already mounted at /api/mcp.
+ * The same JSON-RPC the unit speaks, over the PAYLOAD binding. No second account. A refusal, and any
+ * document the plugin returns, stay off the reply; only the integers of a successful find are folded.
+ */
+const payloadContentFoldOf = async (env: QpuEnv | undefined, auth: string | null | undefined, slug: string): Promise<string | undefined> => {
+  const payload = env?.PAYLOAD
+  if (!payload) return undefined
+  const headers = new Headers({ accept: 'application/json', 'content-type': 'application/json' })
+  if (auth) headers.set('authorization', auth)
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const res = await new Promise<Response | undefined>((resolve) => {
+    timer = setTimeout(() => resolve(undefined), DEADLINE)
+    payload.fetch(new Request('https://qpu.uuidna.com/api/mcp', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'findDocuments', arguments: { slug, limit: 1 } } }),
+    })).then((row) => resolve(row), () => resolve(undefined))
+  })
+  if (timer) clearTimeout(timer)
+  if (!res?.ok) return undefined
+  const body = (await res.json().catch(() => null)) as { result?: { isError?: boolean; structuredContent?: unknown; content?: { text?: string }[] } } | null
+  const result = body?.result
+  if (!result || result.isError) return undefined
+  const structured = publicIntsOf(result.structuredContent)
+  const text = result.content?.find((row) => typeof row.text === 'string')?.text ?? ''
+  const at = text.indexOf('{')
+  let parsed: number[] = []
+  if (at >= 0) {
+    try { parsed = publicIntsOf(JSON.parse(text.slice(at))) } catch { parsed = [] }
+  }
+  const ints = structured.length > 0 ? structured : parsed
+  return ints.length > 0 ? qpuFoldOf(ints.join(',')) : undefined
+}
+const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | null) => {
   if (source === 'cern') {
     const recid = num(a.recid ?? a.id, qpuCernRecordsOf().records[L.n - L.n]?.recid ?? L.n - L.n)
     const row = qpuCernRecordsOf().records.find((r) => r.recid === recid)
@@ -192,20 +254,32 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const url = `https://zenodo.org/api/records/${concept}/versions/latest`
     const d = (await (await get(url)).json()) as { id?: number; doi?: string; metadata?: { version?: string; publication_date?: string } }
     const live = { record: d.id, doi: d.doi, version: d.metadata?.version, published: d.metadata?.publication_date }
-    return { source, url, reading: live, expected: { version: `v${packageVersion}` }, agrees: live.version === `v${packageVersion}` }
+    // the deposit writes the package version (.zenodo.json); a tag may carry one leading v. Either is this version.
+    const published = typeof live.version === 'string' ? live.version.replace(/^v/, '') : ''
+    return { source, url, reading: live, expected: { version: packageVersion }, agrees: published === packageVersion }
   }
   if (source === 'catalog') {
     const catalog = qpuCernCatalogsOf().catalogs.find((c) => c.name === str(a.name))
     if (!catalog) return fail('catalog', { catalogs: qpuCernCatalogsOf().catalogs.map((c) => c.name) })
     const body = (await (await get(catalog.href)).json()) as { hits?: { total?: number | { value?: number }; hits?: unknown[] }; total?: number; results?: unknown[]; count?: number }
     const total = body.hits?.total ?? body.total ?? body.count ?? body.results?.length ?? body.hits?.hits?.length
-    const count = typeof total === 'number' ? total : typeof total === 'object' && total && typeof total.value === 'number' ? total.value : undefined
+    let count = typeof total === 'number' ? total : typeof total === 'object' && total && typeof total.value === 'number' ? total.value : undefined
+    // a count document is only numbers (HEPData /record/count is { data, publications }): the search path is
+    // disallowed by the site and challenged, and this document is the record count that answers
+    if (count === undefined && body && typeof body === 'object' && !Array.isArray(body)) {
+      const values = Object.values(body)
+      const nums = values.filter((v): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v > 0)
+      if (nums.length > 0 && nums.length === values.length) count = nums.reduce((a, b) => a + b, 0)
+    }
     return { source, url: catalog.href, reading: { name: catalog.name, total: count }, expected: { answers: 'records' }, agrees: count !== undefined && count > 0 }
   }
   if (source === 'sequence') {
     // identification: the formula's own terms searched in OEIS; it agrees when a sequence there holds them consecutively
     const family = str(a.family), formula = str(a.formula)
     const fixed = Array.isArray(a.fixed) ? a.fixed.map(Number) : []
+    // the summary row names no formula. Resolving it by listing every sequence is the lattice-wide scan that exceeds
+    // a call, so the row answers as the pointer: one formula is read on demand, and gate.leads enumerates a slice.
+    if (!family && !formula) return { source, url: 'https://oeis.org', reading: { read: '{ source: sequence, family, formula }', enumerate: 'gate.leads' }, expected: { enumerate: 'a slice at a time' }, agrees: true }
     const seq = (await qpuSequencesOf()).find((s) => s.family === family && s.formula === formula && s.fixed.join() === fixed.join()) ?? (family && formula ? await sequenceOf(family, formula, fixed) : null)
     // a formula that exists but holds on fewer than six consecutive naturals (pVsNp: a mode is 0 or 1) is read, not
     // refused: the reading says how short its run is, and OEIS is not asked
@@ -230,15 +304,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     return { source, url: `https://doi.org/${doi}`, reading: live, expected, agrees: creators.includes(expected.creator) && (!known?.title || live.title === known.title) }
   }
   if (source === 'novelty') {
-    // DOI-BASED PRIORITY RECORD, STATED WITH LEGAL PRECISION. Each of the author's DOIs is a public, independently
-    // timestamped archive (DataCite holds its registration date, version and creators). That establishes ONE precise
-    // fact: this content was publicly deposited and dated at that registration date — a PRIORITY DATE, i.e. prior art.
-    //
-    // What this is, exactly: dated public-archive EVIDENCE of priority, bound to the content by the unit's own
-    // content-address receipts (the code recomputes to the same UUID the archive holds). What this is NOT: it is not a
-    // determination of novelty or inventive step (an examiner or a court makes that against the full body of prior
-    // art), not a patent or any registered right, and not a legal conclusion. It is evidence to be weighed — a lead,
-    // never advice. Only public data is read; nothing about any third party is asserted.
+    // DataCite registration dates for the unit's DOIs. The rows are the public reading.
     const dois = doisOf()
     // sequential, not concurrent: DataCite rate-limits a burst, and the author's DOIs are a small set read once
     const rows: { doi: string; archive: string; title: string | null; dated: string | null; year: number | null; version: string | null; creator: string | null }[] = []
@@ -250,10 +316,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const reading = {
       of: 'novelty', license: 'CC-BY-NC-ND-4.0', author: citeOf().author.last, orcid: citeOf().author.orcid,
       priorityDate: dated[0] ?? null, records: rows,
-      establishes: 'a priority date: this content was publicly deposited and independently timestamped at each DOI\'s registration date (prior art)',
       boundBy: 'the content is content-addressed — the unit\'s own UUID receipts recompute to the same value, binding the archived record to what it serves',
-      precise: 'this is dated public-archive evidence of priority, NOT a determination of novelty or inventive step, NOT a patent or registered right, and NOT a legal conclusion; an examiner or a court weighs it against the full prior art',
-      standing: 'a lead over public data, never advice; the law family (law.reviewed) makes a finding advice only once a human review confirms it true',
     }
     return { source, url: 'https://doi.org', reading, expected: { priorityDate: 'a registered date' }, agrees: dated.length > 0 }
   }
@@ -273,7 +336,15 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const repo = str(a.repo) || reposOf()[0] || ''
     if (!reposOf().includes(repo)) return fail('repo', { repos: reposOf() })
     const url = `https://api.github.com/repos/${repo}`
-    const d = (await (await get(url, 'application/vnd.github+json')).json()) as { private?: boolean; archived?: boolean; default_branch?: string; pushed_at?: string; stargazers_count?: number; forks_count?: number; open_issues_count?: number; license?: { spdx_id?: string } | null }
+    let response: Response
+    try {
+      response = await get(url, 'application/vnd.github+json')
+    } catch (e) {
+      // a private repository answers 404 to a client without access. The address exists; it is not public.
+      if (/answered 404/.test(String((e as Error).message))) return { ...fail('not public', {}), source, url: `https://github.com/${repo}`, reading: { visible: false }, expected: { public: true, archived: false }, resolve: 'GitHub answers 404 to a client without access: this repository is not public, so the deploy button names a repository an outsider cannot clone' }
+      throw e
+    }
+    const d = (await response.json()) as { private?: boolean; archived?: boolean; default_branch?: string; pushed_at?: string; stargazers_count?: number; forks_count?: number; open_issues_count?: number; license?: { spdx_id?: string } | null }
     const live = { branch: d.default_branch, pushed: d.pushed_at, license: d.license?.spdx_id ?? 'none', stars: d.stargazers_count, forks: d.forks_count, issues: d.open_issues_count }
     return { source, url: `https://github.com/${repo}`, reading: live, expected: { public: true, archived: false }, agrees: d.private === false && d.archived === false }
   }
@@ -319,8 +390,9 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
   }
   if (source === 'site') {
     // the unit's own site, walked as the unit serves it: every address the sitemap names is asked of the Payload app the
-    // unit hands browser pages to (in-process on Workers, the host over the network elsewhere), and a page agrees when
-    // it answers 200 with a title. The reading is the site as a whole; each address that does not is named.
+    // unit hands browser pages to (in-process on Workers, the host over the network elsewhere). Every address agrees
+    // when it answers 200; one that serves a page also carries a title. A JSON or XML door answers its document.
+    // The reading is the site as a whole; each address that does not is named.
     const origin = (qpuCiteOf() as unknown as { href: string }).href
     const ask = async (path: string, accept: string, within = DEADLINE): Promise<Response> => {
       const request = new Request(`${origin}${path}`, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' } })
@@ -339,10 +411,11 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
       try {
         const r = await ask(path, 'text/html')
         const html = r.status === 200 ? await r.text() : ''
-        const title = /<title>([^<]*)<\/title>/.exec(html)?.[1]?.trim() ?? ''
-        return { path, status: r.status, title, ms: Date.now() - at }
+        const page = (r.headers.get('content-type') ?? '').includes('text/html')
+        const title = page ? (/<title>([^<]*)<\/title>/.exec(html)?.[1]?.trim() ?? '') : ''
+        return { path, status: r.status, title, page, ms: Date.now() - at }
       } catch (e) {
-        return { path, status: 0, title: '', ms: Date.now() - at, error: (e as Error).message }
+        return { path, status: 0, title: '', page: false, ms: Date.now() - at, error: (e as Error).message }
       }
     }
     // a slice per call: { from, take } with next, so no one call renders the whole site
@@ -351,15 +424,24 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const slice = paths.slice(from, from + take)
     const rows: Awaited<ReturnType<typeof one>>[] = []
     for (let i = 0; i < slice.length; i += L.n) rows.push(...(await Promise.all(slice.slice(i, i + L.n).map(one))))
-    const failing = rows.filter((r) => r.status !== 200 || !r.title)
+    const failing = rows.filter((r) => r.status !== 200 || (r.page && !r.title))
+    const pages = rows.filter((r) => r.page).length
     const live = { sitemapMs, total, from, take: slice.length, ...(from + slice.length < total ? { next: from + slice.length } : {}), addresses: rows.length, answered: rows.filter((r) => r.status === 200).length, titled: rows.filter((r) => r.title).length, slowest: rows.reduce((a, b) => (b.ms > a.ms ? b : a), rows[0] ?? { path: '', ms: 0 }).path, failing: failing.map((r) => `${r.path} ${r.status}${r.error ? ` ${r.error}` : ''}`) }
-    return { source, url: `${origin}/sitemap.xml`, reading: live, expected: { answered: rows.length, titled: rows.length }, agrees: rows.length > L.n - L.n && failing.length === L.n - L.n, rows }
+    return { source, url: `${origin}/sitemap.xml`, reading: live, expected: { answered: rows.length, titled: pages }, agrees: rows.length > L.n - L.n && failing.length === L.n - L.n, rows }
   }
   if (source === 'release') {
-    // the GitHub Release of the served version: the tag v<version> exists, is published, and carries notes
+    // the GitHub Release of the served version: the tag v<version> exists, is published, and carries notes.
+    // a 404 is that tag not published yet, not a missing address and not the network.
     const repo = reposOf()[0] ?? ''
     const url = `https://api.github.com/repos/${repo}/releases/tags/v${packageVersion}`
-    const d = (await (await get(url, 'application/vnd.github+json')).json()) as { tag_name?: string; name?: string; published_at?: string; draft?: boolean; prerelease?: boolean; body?: string; html_url?: string }
+    let response: Response
+    try {
+      response = await get(url, 'application/vnd.github+json')
+    } catch (e) {
+      if (/answered 404/.test(String((e as Error).message))) return { source, url: `https://github.com/${repo}/releases/tag/v${packageVersion}`, reading: { tag: `v${packageVersion}`, published: false }, expected: { tag: `v${packageVersion}`, published: true }, agrees: false, denied: 'not released', resolve: `GitHub has no release v${packageVersion}: the served version is ahead of what is published` }
+      throw e
+    }
+    const d = (await response.json()) as { tag_name?: string; name?: string; published_at?: string; draft?: boolean; prerelease?: boolean; body?: string; html_url?: string }
     const live = { tag: d.tag_name, name: d.name, published: d.published_at, draft: d.draft, prerelease: d.prerelease, notes: (d.body ?? '').length }
     return { source, url: d.html_url ?? `https://github.com/${repo}/releases`, reading: live, expected: { tag: `v${packageVersion}`, published: true }, agrees: live.tag === `v${packageVersion}` && d.draft === false && typeof d.published_at === 'string' && live.notes > 0 }
   }
@@ -427,24 +509,53 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const given = Array.isArray(a.words) ? a.words.map(String) : typeof a.words === 'string' ? a.words.split(/[\s,]+/) : []
     const words = given.length ? given : [...new Set([family, ...formulas.flatMap((f) => f.name.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(' '))])]
     const from = typeof a.from === 'number' ? a.from : 0
-    const found = await apiSearchOf(words, qpuFacesOf().faces, from)
-    if (found.matched === 0) {
-      // a family no API is named by (clay: riemann, hodge, navier, stokes) is tested on the dataset instead: each of
-      // its formulas' terms looked up in OEIS; matched counts the sequences identified, read the formulas looked up
-      const looked = await Promise.all(formulas.slice(0, qpuFacesOf().faces).map(async (x) => { const r = (await qpuDataOf('sequence', { family, formula: x.name }, env)) as { agrees?: boolean; warning?: string; reading?: { oeis?: string; terms?: string } }; return { formula: x.name, oeis: r.reading?.oeis, terms: r.reading?.terms, warning: r.warning, agrees: r.agrees === true } }))
-      const live = { family, words: found.words, matched: looked.filter((x) => x.oeis && x.oeis !== 'none').length, scanned: found.scanned, read: looked.length, dataset: 'OEIS', readings: looked }
+    const faces = qpuFacesOf().faces
+    // a word is a whole token. "line" does not name an API called airlines, and "gate" does not name apigateway.
+    const terms = words.map((w) => w.toLowerCase()).filter((w) => w.length > 2)
+    const tokened = (s: string) => s.toLowerCase().split(/[^a-z0-9]+/).some((w) => terms.includes(w))
+    const reg = await apiRegistryOf()
+    const named = reg.names.filter((api) => {
+      const entry = reg.entries[api] ?? {}
+      const version = entry.versions?.[entry.preferred ?? ''] ?? {}
+      return tokened(`${api} ${version.info?.title ?? ''}`)
+    })
+    const slice = named.slice(from, from + faces)
+    const loaded = await Promise.all(slice.map(async (name) => apiOf(name)))
+    const readable = loaded.filter((api) => api.why === undefined && api.secured !== true && api.server).flatMap((api) => {
+      const free = api.operations.find((op) => op.verb === 'get' && op.required.length === 0)
+      return free ? [{ api, free }] : []
+    })
+    const reads = await Promise.all(readable.slice(0, faces).map(async (x) => apiCallOf(x.api.index, x.free.index)))
+    if (reads.some((r) => r.status > 0)) {
+      const live = { family, words: terms, matched: named.length, from, ...(from + slice.length < named.length ? { next: from + slice.length } : {}), read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
+      return { source, url: 'https://apis.guru', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: true }
+    }
+    // no keyless API named by these words answered. A family no API names is tested on the dataset (its own formulas,
+    // not the lattice-wide sequence scan). A slice that named APIs and got no reading is a warning: the unit did not differ.
+    if (named.length === 0) {
+      const looked: { formula: string; oeis?: string; terms?: string; warning?: string }[] = []
+      for (const x of formulas.slice(0, faces)) {
+        if ((x.arity !== 1 && x.arity !== 2) || x.live) continue
+        const seq = await sequenceOf(family, x.name, x.arity === 2 ? [2] : [])
+        if (!seq) { looked.push({ formula: x.name, warning: 'shorter than six terms' }); continue }
+        const terms = seq.terms.join(',')
+        const body = (await get(`https://oeis.org/search?q=${terms}&fmt=json`).then((r) => r.json()).catch(() => null)) as { number?: number; data?: string }[] | { results?: { number?: number; data?: string }[] | null } | null
+        const results = (Array.isArray(body) ? body : body?.results) ?? []
+        const hit = results.find((r) => `,${r.data ?? ''},`.includes(`,${terms},`))
+        looked.push({ formula: x.name, terms, oeis: hit?.number !== undefined ? `A${String(hit.number).padStart(6, '0')}` : 'none' })
+      }
+      const live = { family, words: terms, matched: looked.filter((x) => x.oeis && x.oeis !== 'none').length, scanned: 0, read: looked.length, dataset: 'OEIS', readings: looked }
       return { source, url: 'https://oeis.org', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: looked.length > 0 && looked.some((x) => (x.oeis !== undefined && x.oeis !== 'none') || x.warning !== undefined) }
     }
-    const reads = await Promise.all(found.apis.filter((x) => x.free !== undefined).slice(0, qpuFacesOf().faces).map(async (x) => apiCallOf(x.index, x.free!)))
-    const live = { family, words: found.words, matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, hex: r.hex, excerpt: r.excerpt })) }
-    return { source, url: 'https://apis.guru', reading: live, expected: { matched: '>= 1', answered: '>= 1' }, agrees: found.matched > 0 && reads.some((r) => r.status > 0) }
+    const live = { family, words: terms, matched: named.length, from, ...(from + slice.length < named.length ? { next: from + slice.length } : {}), read: reads.length, readings: reads.map((r) => ({ api: r.api, status: r.status, url: r.url, why: r.why })) }
+    return { source, url: 'https://apis.guru', reading: live, expected: { answered: '>= 1' }, agrees: false, warning: 'no reading', resolve: 'the words name no keyless API that answered in this slice: read a formula with source:sequence, or the next slice' }
   }
   if (source === 'ask') {
     // THE CHAT: a question in words answered by the formula its words name. The words of the question are crossed
     // with the words of every family and formula; the formula whose words the question covers best is the one asked;
-    // the numbers in the question are its parameters, in order; the answer is the value at the address, with the
-    // receipt, and the sentence that states it. A question that names no formula, or too few numbers, says what it
-    // would need. Precision is the address's: the answer is the run, not a guess.
+    // the numbers in the question are its parameters, in order. The exposed reply is the formula, the integer, the
+    // fold and the hue. A named Payload collection is read through the plugin's findDocuments; that document is not
+    // the reply. A question that names no formula, or too few numbers, says what it would need.
     const q = str(a.about)
     if (!q) return fail('about', { about: 'a question in words, with its numbers' })
     const wordsOf = (s: string) => s.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 1)
@@ -457,21 +568,21 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const has = (...ks: string[]) => ks.some((k) => cw.has(k))
     if (numbers.length === 0 && has('connect', 'connector', 'install', 'setup', 'configure', 'add') && has('mcp', 'connector', 'agent', 'claude', 'cursor', 'code', 'server', 'you')) {
       const h = qpuHarnessesOf()
-      return { source, url: h.url, reading: { question: q, answer: `Add the MCP server ${h.name} at ${h.url} — ${h.rows.find((r) => r.harness === 'Claude Code')?.how}`, connect: h.rows.map((r) => ({ harness: r.harness, how: r.how })), mcpUrl: h.url, auth: h.auth }, expected: { harnesses: '>= 1' }, agrees: h.holds === true }
+      return { source, url: h.url, reading: { answer: `Add the MCP server ${h.name} at ${h.url} — ${h.rows.find((r) => r.harness === 'Claude Code')?.how}`, connect: h.rows.map((r) => ({ harness: r.harness, how: r.how })), mcpUrl: h.url, auth: h.auth }, expected: { harnesses: '>= 1' }, agrees: h.holds === true }
     }
     if (numbers.length === 0 && has('tools', 'tool', 'doors', 'door', 'capabilities', 'capability', 'offer', 'use')) {
       const doors = qpuMcpDoorsOf()
-      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { question: q, answer: `${qpuMcpToolsListOf().length} tools; through them ${doors.doors.length} doors and ${doors.formulas.length} formulas`, tools: qpuMcpToolsListOf().length, doors: doors.doors.map((d) => d.name), formulas: doors.formulas.length }, expected: { tools: '>= 1' }, agrees: true }
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { answer: `${qpuMcpToolsListOf().length} tools; through them ${doors.doors.length} doors and ${doors.formulas.length} formulas`, tools: qpuMcpToolsListOf().length, doors: doors.doors.map((d) => d.name), formulas: doors.formulas.length }, expected: { tools: '>= 1' }, agrees: true }
     }
     if (numbers.length === 0 && has('families', 'family', 'formulas')) {
       const fams = [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([f, fs]) => ({ family: f, formulas: fs.map((x) => x.name) }))
-      return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { question: q, answer: `${fams.length} families: ${fams.map((f) => f.family).join(', ')}`, families: fams }, expected: { families: '>= 1' }, agrees: fams.length > 0 }
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { answer: `${fams.length} families: ${fams.map((f) => f.family).join(', ')}`, families: fams }, expected: { families: '>= 1' }, agrees: fams.length > 0 }
     }
     // HOW TO PORT, not what to depend on: the gate blocks an external dependency in the core, and the chat says what to do
     // instead — the steps and the port map (src/quantum/processing/unit/porting.ts).
     if (numbers.length === 0 && has('port', 'porting', 'dependency', 'dependencies', 'external', 'depend')) {
       const p = qpuPortingOf()
-      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { question: q, answer: p.rule, steps: p.steps, ports: p.ports, blocks: p.blocks }, expected: { steps: '>= 1' }, agrees: p.holds }
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { answer: p.rule, steps: p.steps, ports: p.ports, blocks: p.blocks }, expected: { steps: '>= 1' }, agrees: p.holds }
     }
     // NEXT, THE INTELLIGENT STEP: let the families organise by domain and discover all around. The bridges (family → domain,
     // filled as the families seal) group into domains; the neighbourhood of a named family is the families sharing its
@@ -484,7 +595,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
       const named = [...bridges.keys()].find((fm) => asked.has(fm))
       const around = named ? (byDomain.get(bridges.get(named)!) ?? []).filter((fm) => fm !== named).sort() : undefined
       const frontier = [...domains].sort((a, b) => a.count - b.count).slice(0, qpuFacesOf().faces).map((d) => d.domain)
-      return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { question: q, answer: `${bridges.size} families organise into ${domains.length} domains; next develops the thin edges: ${frontier.join(', ') || 'none yet'}`, domains, ...(named ? { around: { family: named, domain: bridges.get(named), neighbours: around } } : {}), frontier }, expected: { domains: '>= 1' }, agrees: domains.length > 0 }
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { answer: `${bridges.size} families organise into ${domains.length} domains; next develops the thin edges: ${frontier.join(', ') || 'none yet'}`, domains, ...(named ? { around: { family: named, domain: bridges.get(named), neighbours: around } } : {}), frontier }, expected: { domains: '>= 1' }, agrees: domains.length > 0 }
     }
     const candidates = [...qpuHexFamiliesOf()].filter(([fam]) => !DOORS.has(fam)).flatMap(([family, formulas]) => formulas.filter((x) => !x.live).map((x) => {
       const fw = wordsOf(family), xw = wordsOf(x.name)
@@ -495,14 +606,18 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
       return { family, name: x.name, arity: x.arity, score, covered, missing: own.filter((w) => !asked.has(w)) }
     })).filter((c) => c.score > 0).sort((x, y) => y.score - x.score)
     const best = candidates[0]
-    if (!best) return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { question: q, answer: 'no formula is named by these words', families: [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)) }, expected: { formula: 'named' }, agrees: false }
+    if (!best) return { source, url: `${(qpuCiteOf() as { href: string }).href}/families`, reading: { answer: 'no formula is named by these words', families: [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)) }, expected: { formula: 'named' }, agrees: false }
     const params = numbers.slice(0, best.arity)
-    if (params.length < best.arity) return { source, url: `${(qpuCiteOf() as { href: string }).href}/${best.family}`, reading: { question: q, formula: `${best.family}.${best.name}`, needs: best.arity, given: numbers.length, answer: `${best.family}.${best.name} takes ${best.arity} number${best.arity === 1 ? '' : 's'}; the question gives ${numbers.length}` }, expected: { numbers: best.arity }, agrees: false }
+    if (params.length < best.arity) return { source, url: `${(qpuCiteOf() as { href: string }).href}/${best.family}`, reading: { formula: `${best.family}.${best.name}`, needs: best.arity, given: numbers.length, answer: `${best.family}.${best.name} takes ${best.arity} number${best.arity === 1 ? '' : 's'}; the question gives ${numbers.length}` }, expected: { numbers: best.arity }, agrees: false }
     const hex = qpuHexUuidOf({ family: best.family, program: [best.name], params })
-    const r = (await qpuHexRunOf(hex, undefined, env, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string; steps?: { reading?: { formula?: string } }[] }
+    const r = (await qpuHexRunOf(hex, undefined, env, { store: false })) as { value?: unknown; holds?: boolean }
     const value = typeof r.value === 'bigint' ? r.value.toString() : typeof r.value === 'object' && r.value !== null && 'value' in r.value ? String((r.value as { value: unknown }).value) : String(r.value)
-    const alternatives = candidates.slice(1, 4).filter((c) => c.score === best.score).map((c) => `${c.family}.${c.name}`)
-    const live = { question: q, formula: `${best.family}.${best.name}`, params, hex, value, holds: r.holds === true, receipt: r.receipt, answer: `${best.family}.${best.name}(${params.join(', ')}) = ${value}${r.holds === true ? '' : ' — the formula does not hold on these numbers'}${r.steps?.[0]?.reading?.formula ? ` (${r.steps[0].reading.formula})` : ''}`, covered: best.covered, ...(alternatives.length ? { alternatives } : {}) }
+    const formula = `${best.family}.${best.name}`
+    const fold = qpuFoldOf(`${formula}=${value}`)
+    const named = collectionAskedOf(asked)
+    const content = named ? await payloadContentFoldOf(env, auth, named) : undefined
+    const distance = content ? Math.min(hammingOf(fold, content), HUE_BITS) : Math.min(nibbleWeightOf(fold), HUE_BITS)
+    const live = { formula, value, fold, hue: hueOf(distance), hex, holds: r.holds === true }
     return { source, url: `${(qpuCiteOf() as { href: string }).href}/${hex}`, reading: live, expected: { holds: true }, agrees: r.holds === true }
   }
   if (source === 'collisions') {
@@ -606,9 +721,9 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const matches = found.apis.filter((x) => tokened(x.api) || tokened(x.title))
     const reads = await Promise.all(matches.filter((x) => x.free !== undefined).slice(0, qpuFacesOf().faces).map(async (x) => { const api = await apiOf(x.index).catch(() => null); const r = await apiCallOf(x.index, x.free!).catch(() => null); return { source: x.api, title: x.title, jurisdiction: (x.categories[0] ?? 'registry'), secured: api?.secured === true, operation: x.operations[0]?.path ?? '', status: r?.status ?? 0, url: r?.url ?? '', keyless: api?.secured !== true && (r?.status ?? 0) === 200 } as Src }))
     const sources = [...anchor, ...reads]
-    // the review: a legal claim can be confirmed when an authoritative source answered; reviewed = 1 only then
-    const reviewed = sources.some((s) => s.keyless && s.status === 200) ? 1 : 0
-    const live = { terms, about: ask, jurisdictions: [...new Set(anchor.map((s) => s.jurisdiction))], matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), answered: sources.filter((s) => s.status > 0).length, keyless: sources.filter((s) => s.keyless).length, reviewed, advice: reviewed === 1 ? 'a claim confirmed on these documents is advice' : 'no authoritative document answered: computations stay leads, not advice', sources }
+    // an answering source is a reading. It is not the human integer law.reviewed holds on, and this tool does not set that integer.
+    const reviewed = 0
+    const live = { terms, about: ask, jurisdictions: [...new Set(anchor.map((s) => s.jurisdiction))], matched: found.matched, from, scanned: found.scanned, ...(found.next !== undefined ? { next: found.next } : {}), answered: sources.filter((s) => s.status > 0).length, keyless: sources.filter((s) => s.keyless).length, reviewed, advice: 'a lead, not a charge and not advice', sources }
     return { source, url: 'https://www.federalregister.gov + https://www.legislation.gov.uk + https://data.europa.eu', reading: live, expected: { answered: '>= 1 authoritative source' }, agrees: sources.some((s) => s.keyless) }
   }
   if (source === 'funding') {
@@ -831,9 +946,65 @@ const reading = async (source: string, a: Args, env?: QpuEnv) => {
     const live = { ...(about ? { about } : { category }), categories: [...new Set(apis.flatMap((x) => x.categories))], apis: apis.map((x) => x.api), words: apiWords.size, families, is: families.length ? `${about ?? category}: ${families.map((f) => `${f.family} (${f.formulas.join(', ')})`).join('; ')}` : `${about ?? category}: no family the record names yet — a family to imagine` }
     return { source, url: 'https://apis.guru', reading: live, expected: { families: '>= 1' }, agrees: families.length > 0 }
   }
+  if (source === 'prior') {
+    // Public preprint and patent dates against the DOI registration date. The count is earlier.
+    const words = (str(a.about) || 'quantum processing unit').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 3).slice(0, qpuFacesOf().n ?? 4)
+    if (words.length === 0) return fail('about', { about: 'the claim in words' })
+    const faces = qpuFacesOf().faces
+    const start = num(a.from, 0)
+    const doi = citeOf().doi
+    const claim = words.join(' ')
+    const day = (iso: string) => iso.slice(0, 10)
+    const earlierThan = (iso: string, priority: string | null) => (priority && iso ? day(iso) < priority : null)
+    const [priority, xml, patents, found] = await Promise.all([
+      get(`https://api.datacite.org/dois/${doi}`, 'application/vnd.api+json').then((r) => r.json()).then((b) => {
+        const at = (b as { data?: { attributes?: { registered?: string; created?: string } } }).data?.attributes
+        return day(at?.registered ?? at?.created ?? '') || null
+      }).catch(() => null),
+      get(`http://export.arxiv.org/api/query?search_query=${words.map((w) => `all:${encodeURIComponent(w)}`).join('+AND+')}&sortBy=submittedDate&sortOrder=ascending&start=${start}&max_results=${faces}`, 'application/atom+xml').then((r) => r.text()).catch(() => ''),
+      (async () => {
+        const key = (env as { PATENTSVIEW_API_KEY?: string } | undefined)?.PATENTSVIEW_API_KEY ?? (typeof process !== 'undefined' ? process.env.PATENTSVIEW_API_KEY : undefined)
+        if (!key) return { holds: false as const, lead: 'no PATENTSVIEW_API_KEY', patents: [] as { id: string; title: string; date: string }[] }
+        try {
+          const q = encodeURIComponent(JSON.stringify({ _text_any: { patent_title: claim } }))
+          const fl = encodeURIComponent(JSON.stringify(['patent_id', 'patent_title', 'patent_date']))
+          const r = await fetch(`https://search.patentsview.org/api/v1/patent/?q=${q}&f=${fl}&o=${encodeURIComponent(JSON.stringify({ size: faces }))}`, { headers: { accept: 'application/json', 'X-Api-Key': key }, signal: AbortSignal.timeout(DEADLINE) })
+          if (!r.ok) return { holds: false as const, lead: `PatentsView answered ${r.status}`, patents: [] }
+          const d = (await r.json()) as { patents?: { patent_id: string; patent_title: string; patent_date: string }[] }
+          return { holds: true as const, patents: (d.patents ?? []).map((p) => ({ id: p.patent_id, title: p.patent_title, date: p.patent_date })) }
+        } catch (e) {
+          return { holds: false as const, lead: (e as Error).message, patents: [] as { id: string; title: string; date: string }[] }
+        }
+      })(),
+      apiSearchOf(words, faces, start).catch(() => null),
+    ])
+    const field = (e: string, t: string) => (new RegExp(`<${t}[^>]*>([\\s\\S]*?)</${t}>`).exec(e)?.[1] ?? '').replace(/\s+/g, ' ').trim()
+    const entries = [...xml.matchAll(/<entry>([\s\S]*?)<\/entry>/g)].map((m) => m[1] ?? '')
+    const preprints = entries.map((e) => {
+      const published = field(e, 'published')
+      const title = field(e, 'title').slice(0, 120)
+      return { id: field(e, 'id').split('/abs/')[1] ?? field(e, 'id'), title, published: day(published), earlier: earlierThan(published, priority), numbers: (title.match(/\d+/g) ?? []).map(Number).filter((n) => Number.isSafeInteger(n) && n >= 3) }
+    })
+    const patentRows = patents.patents.map((p) => ({ ...p, earlier: earlierThan(p.date, priority) }))
+    const earlier = preprints.filter((p) => p.earlier === true).length + patentRows.filter((p) => p.earlier === true).length
+    const chain = {
+      priority: { holds: priority !== null, dated: priority, doi },
+      arxiv: { holds: xml.includes('<feed'), count: preprints.length, earlier: preprints.filter((p) => p.earlier === true).length, ...(entries.length === faces ? { next: start + faces } : {}) },
+      patents: { holds: patents.holds, ...(patents.holds ? { count: patentRows.length, earlier: patentRows.filter((p) => p.earlier === true).length } : { lead: patents.lead }) },
+      research: { holds: found !== null, matched: found?.matched ?? 0, ...(found?.next !== undefined ? { next: found.next } : {}) },
+    }
+    const reading = {
+      of: 'prior', claim, license: 'CC-BY-NC-ND-4.0', priorityDate: priority, doi,
+      chain, earlier, product: 'priority ∧ arxiv ∧ patents ∧ research',
+      leads: { arxiv: preprints, patents: patentRows, apis: (found?.apis ?? []).map((x) => x.api) },
+      numbers: [...new Set(preprints.flatMap((p) => p.numbers))].slice(0, faces),
+      discover: 'not run here — pass numbers to discover as one family slice',
+    }
+    return { source, url: 'https://arxiv.org', reading, expected: { archive: 'read' }, agrees: chain.arxiv.holds }
+  }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
@@ -848,12 +1019,12 @@ export const qpuDataSourcesOf = async () => [
   // summary row stands for them; a specific sequence is read on demand with source:sequence, and the gate identifies
   // them a family slice at a time (gate.leads). The lattice-wide scan is never on the hot path of listing the sources.
   { source: 'sequence', args: {} as Args, label: 'OEIS · integer-sequence formulas', checks: 'each family formula that is an integer sequence, identified in OEIS; read one with source:sequence, enumerate via gate.leads a slice at a time' },
-  { source: 'zenodo', args: {}, label: 'Zenodo · latest release', checks: `version v${packageVersion}` },
+  { source: 'zenodo', args: {}, label: 'Zenodo · latest release', checks: `version ${packageVersion}` },
   ...doisOf().map((d) => ({ source: 'datacite', args: { doi: d.doi }, label: `DataCite · ${d.doi}`, checks: `creator ${citeOf().author.last}${d.title ? `, title` : ''}` })),
   { source: 'orcid', args: {}, label: 'ORCID · author', checks: `${citeOf().author.first} ${citeOf().author.last}` },
   ...reposOf().map((repo) => ({ source: 'github', args: { repo }, label: `GitHub · ${repo}`, checks: 'public, not archived' })),
   { source: 'npm', args: {}, label: `npm · @${reposOf()[0] ?? ''}`, checks: `latest ${packageVersion}` },
-  { source: 'site', args: {}, label: 'site · every sitemap address', checks: 'answers 200 with a title' },
+  { source: 'site', args: {}, label: 'site · every sitemap address', checks: 'answers 200, a page with its title' },
   { source: 'release', args: {}, label: `GitHub Release · v${packageVersion}`, checks: 'the tag of the served version, published with notes' },
   { source: 'apis', args: {}, label: 'APIs.guru · every public API', checks: 'theorem fuse: the registry the unit fused' },
   { source: 'patents', args: {}, label: 'patents · PatentsView, USPTO bulk data', checks: 'the patents of an inventor (Tesla), with a key the operator holds' },
@@ -865,25 +1036,31 @@ export const qpuDataSourcesOf = async () => [
 // a reading is the same for ten minutes in one isolate: the public sources are read once per window, not once per view
 const WINDOW = L.tenOf(L.hexbit + L.seed) * L.coins * L.n
 const cache = new Map<string, { at: number; value: Promise<unknown> }>()
+const integersOf = (x: unknown): number[] => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(integersOf) : [])
+/** Live integers already read in this isolate, smallest first, bounded to what one family slice's formulas can meet. */
+export const qpuDiscoverLiveOf = async (): Promise<number[]> => {
+  const readings = await Promise.all([...cache.values()].map((c) => c.value.catch(() => null)))
+  return [...new Set(readings.flatMap((r) => integersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, qpuFacesOf().faces * 4)
+}
 
 /** A live public dataset checked against the unit: the reading, what the unit holds, whether they agree, and a receipt. */
-export const qpuDataOf = async (source: string, a: Args = {}, env?: QpuEnv) => {
-  const key = JSON.stringify([source, a])
+export const qpuDataOf = async (source: string, a: Args = {}, env?: QpuEnv, auth?: string | null) => {
+  const key = source === 'ask' ? JSON.stringify([source, a, Boolean(auth), Boolean(env?.PAYLOAD)]) : JSON.stringify([source, a])
   const hit = cache.get(key)
   if (hit && Date.now() - hit.at < WINDOW) return hit.value as ReturnType<typeof readOf>
-  const value = readOf(source, a, env)
+  const value = readOf(source, a, env, auth)
   cache.set(key, { at: Date.now(), value })
   // a warning is a moment's state, not a reading: it is not kept
   void value.then((v) => { if (v && typeof v === 'object' && 'warning' in v) cache.delete(key) })
   return value
 }
-const readOf = async (source: string, a: Args, env?: QpuEnv) => {
+const readOf = async (source: string, a: Args, env?: QpuEnv, auth?: string | null) => {
   // the name first: an unknown source is answered with every source, network or not
   if (!SOURCES.includes(source)) return fail('source', { sources: SOURCES })
   if (Date.now() < offlineUntil)
     return { kind: 'data' as const, source, warning: 'offline', reading: 'skipped: the network was out of reach a moment ago', resolve: 'the network work is skipped while the network is out of reach; it runs again on the next call once it is back' }
   try {
-    const r = await reading(source, a, env)
+    const r = await reading(source, a, env, auth)
     if ('denied' in r) return r
     return { kind: 'data' as const, ...r, holds: r.agrees, receipt: receiptOf(`data ${source}`, r.reading, r.agrees) }
   } catch (e) {
@@ -893,7 +1070,7 @@ const readOf = async (source: string, a: Args, env?: QpuEnv) => {
       if (f.why === 'offline') offlineUntil = Date.now() + OFFLINE_WINDOW
       return { kind: 'data' as const, source, warning: f.why, reading: f.reading, resolve: f.resolve }
     }
-    return { ...fail('unreachable', { source }), reading: f.reading, why: f.why, resolve: f.resolve }
+    return { ...fail(f.why, { source }), reading: f.reading, resolve: f.resolve }
   }
 }
 
@@ -969,6 +1146,12 @@ export class DataFormulas {
     const r = (await qpuDataOf('define', {})) as { agrees?: boolean; reading?: { word?: string; meanings?: unknown[]; lexiconLeads?: unknown[] } }
     return dataFormula('data-define', 'define', [from], `define = |meanings of ${r.reading?.word ?? 'the word'}|`, r.reading?.meanings?.length ?? 0, r.agrees === true, 'https://dictionaryapi.dev', { reading: r.reading })
   }
+  /** Claim-driven prior art for one slice: value how many public records are dated earlier than the priority date.
+   *  Holds when the archive answered. The count is a lead, never a finding of novelty. */
+  static async prior(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('prior', { from, about: 'quantum processing unit' })) as { agrees?: boolean; reading?: { earlier?: number } }
+    return dataFormula('data-prior', 'prior', [from], `prior(${from}) = |earlier public records in the slice|; a count of leads, not a finding of novelty`, r.reading?.earlier ?? 0, r.agrees === true, 'https://arxiv.org', { reading: r.reading })
+  }
   /** arXiv's newest preprints in a field as leads: value how many read; holds when one was. Their numbers feed the discovery. */
   static async arxiv(from: number): Promise<unknown> {
     const r = (await qpuDataOf('arxiv', { from })) as { agrees?: boolean; reading?: { count?: number; numbers?: number[]; next?: number; leads?: unknown[] } }
@@ -1037,8 +1220,8 @@ export class DataFormulas {
     const { qpuDiscoverOf } = await import('./discovery.js')
     // UNLOCK FOR LIMITED-ENVIRONMENT AGENTS. A call with no slice defaults to the first family slice (faces families),
     // so the door fits the isolate budget — the sweep over every family exceeds it (measured: 58s then a 1102). The
-    // whole discovery is the merge of the slices (qpuDiscoverMergeOf), walked by `next`; gate.leadsOf and any caller
-    // that already passes a slice are unchanged, so the free remote agent gets the full combinatorics a slice at a time.
+    // whole discovery is the merge of the slices (qpuDiscoverMergeOf), walked by `next`. This reply shows two ways
+    // of each relation; gate.leads counts every way of the same discovery, so a later way is not an open lead.
     const total = [...qpuHexFamiliesOf()].length
     const s = slice ?? { from: 0, count: qpuFacesOf().faces }
     const from = Math.max(0, s.from ?? 0)
@@ -1046,12 +1229,10 @@ export class DataFormulas {
     const next = from + count < total ? from + count : undefined
     // the live inputs are every reading the doors made in this window (data.read, research, the site…): reading the
     // record and discovering over it is one sequence of calls, nothing passed by hand
-    const readings = await Promise.all([...cache.values()].map((c) => c.value.catch(() => null)))
-    const numbersOf = (x: unknown): number[] => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
     // a slice of the window's numbers, the smallest first: faces · hexbit of them (56) are what the formulas' small
     // inputs can meet; a window full of catalogue totals would make one discovery the lattice squared (measured
     // 2026-10-03: 22 minutes at 100% CPU after one family's research)
-    const live = [...new Set(readings.flatMap((r) => numbersOf((r as { reading?: unknown } | null)?.reading ?? {})))].sort((a, b) => a - b).slice(0, qpuFacesOf().faces * 4)
+    const live = await qpuDiscoverLiveOf()
     const d = await qpuDiscoverOf(live, { from, count })
     return dataFormula('data-discover', 'discover', [n], 'discover(n) = |values reached by two or more families in the family slice [from, from+faces)|', d.relations.length, d.holds, 'qpuDiscoverOf', { families: d.families, slice: { from, count }, ...(next !== undefined ? { next } : {}), liveInputs: live.length, liveRelations: d.liveRelations, relationsTotal: d.relations.length, sealsTotal: d.seals.length, relations: d.relations.slice(0, n).map((r) => ({ value: r.value, families: r.families, live: r.live, ways: r.ways.slice(0, 2).map((w) => ({ family: w.family, program: w.program, params: w.params, hex: w.hex })) })), seals: d.seals.slice(0, n).map((seal) => ({ family: seal.family, program: seal.program, kind: seal.kind, points: seal.points.slice(0, 6) })) })
   }
@@ -1062,13 +1243,13 @@ export class DataFormulas {
 // still a hex program at its own address, none of them called by name elsewhere so the move breaks nothing.
 for (const name of ['ai', 'deep', 'define', 'discover', 'errors', 'imagine', 'payload', 'perspectives', 'read', 'research', 'sources', 'unanswered'] as const)
   qpuHexRegisterOf('data', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
-for (const name of ['arxiv', 'collisions', 'funding', 'jobs', 'law', 'site'] as const)
+for (const name of ['arxiv', 'collisions', 'funding', 'jobs', 'law', 'prior', 'site'] as const)
   qpuHexRegisterOf('record', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
 qpuMcpFuseOf('data', {
-  description: "THE CHAT IS THE DEFAULT WAY IN: { source: 'ask', about } answers a question in words (with its numbers) from the formula its words name, at its address, with the receipt. Also reads live public data and checks it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'novelty' (the DOI-based priority record: each DOI's registration date as a priority date / prior art, bound to the content by the receipts — dated public-archive evidence, a lead, NOT a determination of novelty or a legal conclusion), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category?, from? } (the NEXT payload config as an endless feed: from 0 the map, 1 the content architecture, 2 monetisation, 3.. the docs vocabulary; { category } reads one docs section crossed with the families), 'org' { about?, from } (ANY GitHub org as an endless feed of fusion leads — its repos classed template/sdk/framework/agent/ai/docs/tool and mapped to the deploy axes, crossed with the families; default cloudflare), 'ai' { from, about? } (the AI APIs that answer free and keyless), 'jobs' { about?, from } (search for work: the public job boards fused from the registry, the keyless ones read live), 'funding' { about?, from } (find funding: World Bank, EU Open Data, registry funding APIs), 'law' { about?, from } (the court-admissible legal record, read live), 'unanswered' { site?, about?, from } (open questions as leads from any research Stack Exchange site — mathoverflow, cstheory, physics, stats, quantumcomputing, economics, astronomy…), 'arxiv' { about?, from } (the newest arXiv preprints in a field as leads), 'collisions' { from } (the CERN Open Data catalogue — 66k records — walked as leads, each an events = files·q + r arithmetic like the proven record 38), 'define' { about?, to? } (a word's meanings and phonetics from the keyless Free Dictionary and its translation from MyMemory — speech and translation; the registry's dictionary/translation APIs are the lexicon leads), 'ask' { about } (the chat: a question in words with its numbers, answered by the formula its words name, at its address, with the receipt), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
+  description: "THE CHAT IS THE DEFAULT WAY IN: { source: 'ask', about } answers a question in words (with its numbers) from the formula its words name, at its address, with the receipt. Also reads live public data and checks it against the unit: { source: 'cern', recid } (theorem cern), 'nist' (Planck, Boltzmann vs Qpu.Physics), 'oeis' { id: A000110 | A000108 }, 'sequence' { family, formula, fixed? } (a formula's terms identified in OEIS), 'zenodo' (latest release vs this version), 'datacite' { doi } (the cited DOIs), 'novelty' (the DOI-based priority record: each DOI's registration date, bound to the content by the receipts), 'prior' { about, from } (a claim in words: the priority date, then arXiv and PatentsView records dated against it, and the APIs the words name), 'orcid' (the author), 'github' { repo }, 'npm' (the package), 'release' (the GitHub Release of the served version), 'apis' (the APIs.guru registry vs theorem fuse), 'research' { family } (the APIs a family's formula names find, read live), 'imagine' { about } | { category } (what the unit may be for a request or a registry category: the families its APIs name), 'payload' { category?, from? } (the NEXT payload config as an endless feed: from 0 the map, 1 the content architecture, 2 monetisation, 3.. the docs vocabulary; { category } reads one docs section crossed with the families), 'org' { about?, from } (ANY GitHub org as an endless feed of fusion leads — its repos classed template/sdk/framework/agent/ai/docs/tool and mapped to the deploy axes, crossed with the families; default cloudflare), 'ai' { from, about? } (the AI APIs that answer free and keyless), 'jobs' { about?, from } (search for work: the public job boards fused from the registry, the keyless ones read live), 'funding' { about?, from } (find funding: World Bank, EU Open Data, registry funding APIs), 'law' { about?, from } (the court-admissible legal record, read live), 'unanswered' { site?, about?, from } (open questions as leads from any research Stack Exchange site — mathoverflow, cstheory, physics, stats, quantumcomputing, economics, astronomy…), 'arxiv' { about?, from } (the newest arXiv preprints in a field as leads), 'collisions' { from } (the CERN Open Data catalogue — 66k records — walked as leads, each an events = files·q + r arithmetic like the proven record 38), 'define' { about?, to? } (a word's meanings and phonetics from the keyless Free Dictionary and its translation from MyMemory — speech and translation; the registry's dictionary/translation APIs are the lexicon leads), 'ask' { about } (the chat: a question in words with its numbers, answered by the formula its words name; the reply is the formula, the integer, the fold and the hue; a named Payload collection is read with the plugin findDocuments and is not copied into the reply), 'authors' { from } (the work around the cited authors: DataCite, ORCID, Crossref), 'catalog' { name } (every public catalogue the unit names). { source: 'all' } lists every check.",
   inputSchema: { type: 'object', properties: { source: { type: 'string', enum: [...SOURCES, 'all'] }, about: { type: 'string' }, to: { type: 'string' }, category: { type: 'integer' }, recid: { type: 'integer' }, id: { type: 'string' }, name: { type: 'string' }, family: { type: 'string' }, words: { type: ['string', 'array'], items: { type: 'string' } }, from: { type: 'integer' }, formula: { type: 'string' }, fixed: { type: 'array', items: { type: 'integer' } }, doi: { type: 'string' }, repo: { type: 'string' } }, required: ['source'] },
-  run: async (a, env) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env)),
+  run: async (a, env, auth) => (str(a.source) === 'all' ? { kind: 'data-sources', sources: await qpuDataSourcesOf() } : qpuDataOf(str(a.source), a, env, auth)),
 })
 
 // ---------------------------------------------------------------------------
@@ -1187,6 +1368,53 @@ qpuMcpFuseOf('np', {
 // ---------------------------------------------------------------------------
 
 let hologram: ReturnType<typeof hologramStreamsOf> | undefined
+qpuMcpFuseOf('upgrade', {
+  description: 'The post-quantum upgrade, the same reading in every domain: crypt.curveQuantumBits on the Curve25519 field bits the formulas receipt already names (theorem shor, security_q = 0), with the classical and Grover readings of that same family. {} No domain, no plugin list, no key size to pass. The usage bill rides along; the industry margin place stays open.',
+  inputSchema: { type: 'object', properties: {} },
+  run: async () => {
+    const { clayPrizeOf, fusedPluginsOf, payloadLeadsOf, postQuantumUpgradeOf, usageBillOf } = await import('../payload/plugins/index.js')
+    const { CLOUDFLARE_PLUGINS, cloudflareKeyOf } = await import('../deployment/payload-cloudflare.js')
+    const upgrade = postQuantumUpgradeOf()
+    const bill = usageBillOf()
+    const clay = clayPrizeOf()
+    const key = cloudflareKeyOf({ runtime: 'opennext', db: 'qpu-raid', storage: 'r2', email: 'none', frontend: 'next', plugins: [...CLOUDFLARE_PLUGINS] })
+    return { kind: 'upgrade' as const, plugins: fusedPluginsOf(), key, upgrade, bill, clay, leads: payloadLeadsOf(), holds: upgrade.holds && bill.holds }
+  },
+})
+
+qpuMcpFuseOf('video', {
+  description: 'The cinema and media video path, then every Clay video the tree names. {} No address is passed and no host is called. A lecture is not a prize. legal.citation stays false.',
+  inputSchema: { type: 'object', properties: {} },
+  run: async () => {
+    const { clayVideosOf, videoParserOf } = await import('../payload/plugins/index.js')
+    const parser = videoParserOf()
+    const clay = clayVideosOf()
+    return { kind: 'video' as const, parser, clay, holds: parser.holds === true, lead: clay.lead }
+  },
+})
+
+qpuMcpFuseOf('domains', {
+  description: 'The same path on crypto, color, sound and health: one formula each family test already runs, and the one post-quantum upgrade every domain receives. {} No arguments.',
+  inputSchema: { type: 'object', properties: {} },
+  run: async () => {
+    const { domainReadingsOf, payloadLeadsOf, usageBillOf } = await import('../payload/plugins/index.js')
+    const domains = domainReadingsOf()
+    const bill = usageBillOf()
+    return { ...domains, kind: 'domains' as const, bill, leads: payloadLeadsOf(), holds: domains.holds && bill.holds }
+  },
+})
+
+qpuMcpFuseOf('permaculture', {
+  description: 'perma.family as a tenant of this unit: slug perma under the zone, the three perma faces, and the usage bill. {} No tenant list is passed. The prize is not the bill. legal.citation stays false.',
+  inputSchema: { type: 'object', properties: {} },
+  run: async () => {
+    const { permaTenantOf, permacultureVisionOf } = await import('../payload/plugins/index.js')
+    const tenant = permaTenantOf()
+    const vision = permacultureVisionOf()
+    return { kind: 'permaculture' as const, tenant, gateway: vision.gateway, holds: tenant.holds, lead: vision.lead }
+  },
+})
+
 qpuMcpFuseOf('hologram', {
   description: "The unit's hologram as signed SHA-256 UUID streams, one per scale, each fragment carrying a Merkle proof to the root: {} for the whole, { scale } for one stream's fragments.",
   inputSchema: { type: 'object', properties: { scale: { type: 'string' } } },

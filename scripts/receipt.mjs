@@ -11,6 +11,7 @@
  *   node scripts/receipt.mjs api                api-receipt.json     api { walk } slice by slice: every API fused and used
  *   node scripts/receipt.mjs clay               clay-receipt.json    clay.pass(faces): the six seals, their involutions, every related formula in one pass; OEIS and the record per problem
  *   node scripts/receipt.mjs registry           src/mcp/registry.ts  the APIs.guru list, reduced to what the door needs
+ *   node scripts/receipt.mjs stamp <file>       rewrite one receipt with its legal block; no remote sweep
  *   QPU_HOST=http://localhost:8787 …            another host
  */
 import fs from 'node:fs'
@@ -45,10 +46,80 @@ const pool = async (items, run, width = faces) => {
   }))
   return out
 }
-const write = (file, doc, rows) => {
-  const out = { ...doc, when: new Date().toISOString().slice(0, tenOf(1)), host, seconds: Math.round((Date.now() - t0) / tenOf(3)), rows }
+/** Counts the receipt already carries. A missing count is not filled in. */
+const countOf = (v) => (Number.isSafeInteger(v) && v >= 0 ? v : undefined)
+/**
+ * Legal requisites already computed by the unit, plus the zeropoint-node citation read from the npm registry.
+ * A requisite with no count on this receipt is a lead: its address only. Prize acceptance is not set here.
+ */
+const legalOf = async (doc) => {
+  await import('../dist/families/law/index.js')
+  const { qpuHexUuidOf, qpuHexDecodeOf, qpuEvidenceOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { LawFormulas } = await import('../dist/families/law/index.js')
+  const evidence = qpuEvidenceOf()
+  const addressOf = (name, params) => {
+    const uuid = qpuHexUuidOf({ family: 'law', program: [name], params })
+    return { handle: qpuHexDecodeOf(uuid).handle, uuid }
+  }
+  const called = (name, params, row) => {
+    const item = { value: row.value, holds: row.holds === true, ...addressOf(name, params) }
+    if (item.holds !== true) item.lead = true
+    return item
+  }
+  const lead = (name) => ({ lead: true, ...addressOf(name, []) })
+  const ordered = countOf(doc.ordered)
+  const computed = countOf(doc.computed)
+  const against = countOf(doc.against)
+  const receipts = countOf(doc.receipts)
+  const lawful = called('lawful', [0], LawFormulas.lawful(0))
+  const fidelity = ordered !== undefined && computed !== undefined ? called('fidelity', [ordered, computed], LawFormulas.fidelity(ordered, computed)) : lead('fidelity')
+  const violation = against !== undefined ? called('violation', [against], LawFormulas.violation(against)) : lead('violation')
+  const standing = receipts !== undefined ? called('standing', [receipts], LawFormulas.standing(receipts)) : lead('standing')
+  const pack = await (await fetch('https://registry.npmjs.org/zeropoint-node', { headers: { accept: 'application/json' } })).json()
+  const dated = Object.entries(pack.time ?? {}).filter(([k, t]) => /^\d+\.\d+\.\d+$/.test(k) && typeof t === 'string').sort((a, b) => (a[1] < b[1] ? -1 : 1))
+  const day = (v) => (typeof pack.time?.[v] === 'string' ? pack.time[v].slice(0, 10) : undefined)
+  const first2025 = dated.find(([, t]) => t.startsWith('2025-'))
+  const firstAugust = dated.find(([, t]) => t.slice(5, 7) === '08')
+  const latest = pack['dist-tags']?.latest
+  // Quotes from the tarballs of these versions. Attached only when the registry still names that version.
+  const sequence2025 = first2025?.[0] === '1.0.0' ? '1-2-4-8-7-5' : undefined
+  const sequenceNow = latest === '1.5.8' ? '0\\1\\2\\4\\8/7/5/3\\6\\9/0\\1' : undefined
+  const citation = {
+    package: 'zeropoint-node',
+    version: first2025?.[0],
+    date: first2025 ? day(first2025[0]) : undefined,
+    ...(sequence2025 ? { sequence: sequence2025 } : {}),
+    latest,
+    latestDate: day(latest),
+    ...(sequenceNow ? { sequenceNow, doi: '10.5281/zenodo.22178675' } : {}),
+    augustVersion: firstAugust?.[0],
+    augustDate: firstAugust ? day(firstAugust[0]) : undefined,
+    statement: 'clay solved in august',
+    words: 'This file is a naming scheme. It solves none of the problems it names',
+    orcid: 'https://orcid.org/0009-0000-7312-9778',
+    holds: false,
+    lead: true,
+  }
+  const requisites = [lawful, fidelity, violation, standing, citation]
+  return {
+    licence: 'CC-BY-NC-ND-4.0',
+    device: evidence.provenance.device,
+    advantage: evidence.scaling.advantage,
+    lawful,
+    fidelity,
+    violation,
+    standing,
+    citation,
+    holds: requisites.every((item) => item.holds === true),
+  }
+}
+const write = async (file, doc, rows) => {
+  const legal = await legalOf(doc)
+  const holds = doc.holds === true && legal.holds === true
+  const out = { ...doc, legal, holds, when: new Date().toISOString().slice(0, tenOf(1)), host, seconds: Math.round((Date.now() - t0) / tenOf(3)), rows }
   fs.writeFileSync(file, JSON.stringify(out, null, 1) + '\n')
   console.log(JSON.stringify(Object.fromEntries(Object.entries(out).filter(([, v]) => typeof v !== 'object'))))
+  console.log(JSON.stringify({ legal: out.legal }))
   return out
 }
 
@@ -74,7 +145,6 @@ if (kind === 'registry') {
     // push: every slice of families (data.deep → merkaba.rosetta → gate), then the deep research followed slice by
     // slice to the registry's end (deep(f, k) until no next), then the leads — one address per lead, waves of faces
     // fired at once; nothing wraps, the wall time is the slowest address of each wave
-    let leadCount = 0
     const pushFrom = []
     for (let from = 0; from < sorted.length; from += faces) pushFrom.push(from)
     // a slice that times out marks itself not-holding rather than crashing the lane — one slow slice is not the gate's verdict
@@ -83,17 +153,26 @@ if (kind === 'registry') {
       const r = line('push', raw, [pushFrom[k]])
       holds &&= r.holds === true
       if (r.rosetta) console.log(`  ${r.rosetta.holds ? '✓' : '~'} merkaba.rosetta(${sorted.length}) = ${r.rosetta.value} (${r.rosetta.edges} edges, one turn each way)`)
-      if (typeof r.leads === 'number') leadCount = r.leads
     })
     let deepRead = 0
     await Promise.all(sorted.map(async (family, f) => { for (let k = 1; ; k++) { const d = await hex('data', 'deep', [f, k]).catch(() => null); if (!d) break; deepRead += Number(d.value) || 0; if (typeof d.next !== 'number' || d.next <= k) break; k = d.next - 1 } }))
     console.log(`  · deep research followed to the registry's end: ${deepRead} more readings`)
-    const crossed = await pool(Array.from({ length: leadCount }, (_, i) => i), (i) => hex('gate', 'crossed', [i]).catch(() => null))
+    // the leads, one slice a call: gate.leads(from) names `at` (crossed's address) and `next`
+    const at = []
+    for (let from = 0; ;) {
+      const r = await hex('gate', 'leads', [from]).catch(() => null)
+      if (!r) break
+      if (Array.isArray(r.at)) at.push(...r.at)
+      if (typeof r.next !== 'number') break
+      from = r.next
+    }
+    const leadCount = at.length
+    const crossed = await pool(at, (i) => hex('gate', 'crossed', [i]).catch(() => null))
     for (const r of crossed) { const l = r?.lead; if (!l) continue; leads.push(l); console.log(`    ${l.tag.startsWith('crossed') ? '✓' : '~'} ${l.formula} [${l.cost}]: ${l.tag} (OEIS ${l.efforts.oeis}, seal ${l.efforts.seal}, involutes ${l.efforts.involutes}, research ${l.efforts.research}, APIs ${l.efforts.apis}, rosetta ${l.efforts.rosetta}, detection ${l.detection})`) }
     console.log(`  ~ gate.leads() = ${leadCount}: ${leads.filter((l) => l.tag.startsWith('crossed')).length} crossed, ${leads.filter((l) => !l.tag.startsWith('crossed')).length} unverified (${leads.filter((l) => l.cost === 'model').length} need a model)`)
   }
   console.log(`gate ${mode}: ${holds ? 'holds' : 'does not hold'}`)
-  write('gate-receipt.json', { kind: 'gate-receipt', mode, holds, leads, uuid: rows.at(-1)?.receipt ?? '', receipt: rows.at(-1)?.receipt ?? '' }, rows)
+  await write('gate-receipt.json', { kind: 'gate-receipt', mode, holds, leads, uuid: rows.at(-1)?.receipt ?? '', receipt: rows.at(-1)?.receipt ?? '' }, rows)
   process.exit(holds ? 0 : 1)
 } else if (kind === 'next') {
   const sorted = await families()
@@ -122,11 +201,11 @@ if (kind === 'registry') {
     const missing = coverage.filter((c) => c.files.length === 0).map((c) => c.n)
     return { name: `${rel.families.join(' × ')} = ${rel.value}`, pass: tested, value: `${rel.ways.map((w) => `${w.family}.${w.program.join('∘')}(${w.params.join(', ')})`).join(' = ')}${rel.live ? ' · live' : ''}${tested ? ` · tested in ${where.slice(0, 3).join(', ')}` : ` · untested (no test for ${missing.join(', ')})`}`, receipt: rel.ways[0]?.receipt ?? '' }
   })
-  write('next-receipt.json', { kind: 'next-receipt', families: sorted.length, researched: researched.filter((r) => r.holds).length, matched: researched.reduce((n, r) => n + r.matched, 0), read: researched.reduce((n, r) => n + r.read, 0), liveInputs: d.liveInputs ?? 0, relations: relations.length, live: relations.filter((r) => r.live).length, perspectives: p.pairs ?? 0, invariant: p.closed ?? 0, tested: rows.filter((r) => r.pass).length, untested: rows.filter((r) => !r.pass).length, holds: d.holds === true, uuid: d.receipt ?? '', receipt: p.receipt ?? d.receipt ?? '' }, rows)
+  await write('next-receipt.json', { kind: 'next-receipt', families: sorted.length, researched: researched.filter((r) => r.holds).length, matched: researched.reduce((n, r) => n + r.matched, 0), read: researched.reduce((n, r) => n + r.read, 0), liveInputs: d.liveInputs ?? 0, relations: relations.length, live: relations.filter((r) => r.live).length, perspectives: p.pairs ?? 0, invariant: p.closed ?? 0, tested: rows.filter((r) => r.pass).length, untested: rows.filter((r) => !r.pass).length, holds: d.holds === true, uuid: d.receipt ?? '', receipt: p.receipt ?? d.receipt ?? '' }, rows)
 } else if (kind === 'uses') {
   const rows = []
   for (let c = 0; ; c++) { const r = await hex('data', 'imagine', [c]); const reading = r.reading ?? {}; if (!reading.category) break; rows.push({ name: reading.category, pass: r.holds === true, value: `${reading.apis?.length ?? 0} APIs read · ${reading.is}`, receipt: r.receipt ?? '' }) }
-  write('uses-receipt.json', { kind: 'uses-receipt', categories: rows.length, reached: rows.filter((r) => r.pass).length, toImagine: rows.filter((r) => !r.pass).length, holds: rows.length > 0, uuid: rows.at(-1)?.receipt ?? '', receipt: rows.at(-1)?.receipt ?? '' }, rows)
+  await write('uses-receipt.json', { kind: 'uses-receipt', categories: rows.length, reached: rows.filter((r) => r.pass).length, toImagine: rows.filter((r) => !r.pass).length, holds: rows.length > 0, uuid: rows.at(-1)?.receipt ?? '', receipt: rows.at(-1)?.receipt ?? '' }, rows)
 } else if (kind === 'clay') {
   const sorted = await families()
   // six addresses fired at once: one problem per address, the discovery over its own values; the family's research
@@ -142,7 +221,7 @@ if (kind === 'registry') {
     // the Millennium claim itself is UNVERIFIED — not accepted by the Clay Institute, no Lean theorem states it
     rows.push({ name: `clay.${p.name}`, pass: p.proven === true, value: `seal: ${p.proven ? 'VERIFIED' : 'UNVERIFIED'} (involution ${p.involution}; seal ${p.seal}; related: ${p.related.length ? p.related.slice(0, 6).join(', ') : 'none'}; values ${p.values.join(', ')}; OEIS ${oeis.length ? oeis.join(', ') : `none (${looked.join(', ')})`}; hex ${p.hex}); claim: UNVERIFIED (doi:10.5281/zenodo.21781602; not accepted by the Clay Institute, no Lean theorem states it)`, receipt: pass.receipt ?? '' })
   }
-  write('clay-receipt.json', { kind: 'clay-receipt', verdicts: 'seal VERIFIED or UNVERIFIED by recomputation; the Millennium claim UNVERIFIED', problems: rows.length, sealsVerified: rows.filter((r) => r.pass).length, related: Number(pass.value), relations: pass.relations ?? 0, agents: pass.agents ?? 0, record: `${research.value} APIs the clay words name, ${research.reading?.reading?.read ?? 0} read (${research.reading?.reading?.dataset ?? 'apis.guru'})`, holds: pass.holds === true, uuid: pass.receipt ?? '', receipt: pass.receipt ?? '' }, rows)
+  await write('clay-receipt.json', { kind: 'clay-receipt', verdicts: 'seal VERIFIED or UNVERIFIED by recomputation; the Millennium claim UNVERIFIED', problems: rows.length, sealsVerified: rows.filter((r) => r.pass).length, related: Number(pass.value), relations: pass.relations ?? 0, agents: pass.agents ?? 0, record: `${research.value} APIs the clay words name, ${research.reading?.reading?.read ?? 0} read (${research.reading?.reading?.dataset ?? 'apis.guru'})`, holds: pass.holds === true, uuid: pass.receipt ?? '', receipt: pass.receipt ?? '' }, rows)
 } else if (kind === 'api') {
   // SPLIT, NOT SEQUENCE. The registry is walked in slices of `faces`; every slice is an independent read, so they are
   // fired through a coordinated pool of `faces` workers rather than one wave after another. The wall time is the
@@ -157,5 +236,11 @@ if (kind === 'registry') {
   const rows = []
   for (const w of [first, ...waves]) for (const r of w.rows ?? []) rows.push({ name: r.api, pass: r.used === true, value: `${r.fused ? `${r.operations} operations` : 'not fused'} · ${r.used ? `${r.status} ${r.url}` : r.why ?? ''}`, receipt: r.receipt ?? '' })
   const statuses = rows.filter((r) => r.pass).reduce((m, r) => ({ ...m, [r.value.split(' · ')[1]?.split(' ')[0] ?? '?']: (m[r.value.split(' · ')[1]?.split(' ')[0] ?? '?'] ?? 0) + 1 }), {})
-  write('api-receipt.json', { kind: 'api-receipt', registry: 'https://api.apis.guru/v2/list.json', listed, walked: rows.length, fused: rows.filter((r) => !r.value.startsWith('not fused')).length, used: rows.filter((r) => r.pass).length, statuses, holds: rows.length > 0 && rows.every((r) => !r.value.startsWith('not fused')), uuid: rows.at(-1)?.receipt ?? '', receipt: rows.at(-1)?.receipt ?? '' }, rows)
-} else { console.error('kinds: gate commit|push, next, uses, api, registry'); process.exit(2) }
+  await write('api-receipt.json', { kind: 'api-receipt', registry: 'https://api.apis.guru/v2/list.json', listed, walked: rows.length, fused: rows.filter((r) => !r.value.startsWith('not fused')).length, used: rows.filter((r) => r.pass).length, statuses, holds: rows.length > 0 && rows.every((r) => !r.value.startsWith('not fused')), uuid: rows.at(-1)?.receipt ?? '', receipt: rows.at(-1)?.receipt ?? '' }, rows)
+} else if (kind === 'stamp') {
+  const file = process.argv[3]
+  if (!file) { console.error('stamp <receipt.json>'); process.exit(2) }
+  const prev = JSON.parse(fs.readFileSync(file, 'utf8'))
+  const { rows = [], when, seconds, legal, host: _host, ...doc } = prev
+  await write(file, doc, rows)
+} else { console.error('kinds: gate commit|push, next, uses, api, registry, stamp <file>'); process.exit(2) }

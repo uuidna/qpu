@@ -17,7 +17,7 @@ export class ContractFormulas {
   static expectation(promised: number, received: number): CrossFormula { return k('contract-expectation', 'expectation(promised, received) = max(0, promised − received)', Math.max(0, promised - received), nat(promised, received), 'expectation', [promised, received]) }
   /** MITIGATED LOSS: the loss the innocent party could not avoid. value max(0, loss − avoided). */
   static mitigation(loss: number, avoided: number): CrossFormula { return k('contract-mitigation', 'mitigation(loss, avoided) = max(0, loss − avoided)', Math.max(0, loss - avoided), nat(loss, avoided), 'mitigation', [loss, avoided]) }
-  /** RELIANCE: what was spent in reliance on the promise, recoverable when expectation cannot be shown. value spent. */
+  /** RELIANCE: what was spent in reliance on the promise, recoverable when expectation cannot be shown — the promised value was not proved. value spent. */
   static reliance(spent: number): CrossFormula { return k('contract-reliance', 'reliance(spent) = spent', spent, nat(spent), 'reliance', [spent]) }
   /** LIQUIDATED DAMAGES at an agreed `rate` per day of delay. value rate · days. */
   static liquidated(rate: number, days: number): CrossFormula { return k('contract-liquidated', 'liquidated(rate, days) = rate · days', rate * days, nat(rate, days), 'liquidated', [rate, days]) }

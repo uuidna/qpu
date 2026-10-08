@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexDecodeOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuRecognizeOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { LawFormulas } from './index.js'
 
 /** The court arithmetic, jurisdiction-agnostic, and the advice gate: nothing holds as advice until reviewed true. */
@@ -24,6 +24,12 @@ test('law: limitation, deadline, quorum, majority, super-majority, notice — an
   assert.equal(LawFormulas.fidelity(14, 9).value, 0, 'the order was not kept')
   assert.equal(LawFormulas.redirected(14, 9).value, 5, 'five tokens redirected away from the order')
   assert.equal(LawFormulas.redirected(14, 14).value, 0, 'none redirected')
+  assert.equal(LawFormulas.fast(90121, 400).value, 89721, 'tokens spent beyond the order are the lead')
+  assert.equal(LawFormulas.fast(90121, 400).holds, false, 'a surplus does not hold: it is a lead, not a charge')
+  assert.equal(LawFormulas.fast(400, 400).value, 0)
+  assert.equal(LawFormulas.fast(400, 400).holds, true, 'nothing spent beyond the order')
+  assert.equal(LawFormulas.fast(10, 14).value, 0, 'an underserved order is redirected, not an overspend')
+  assert.equal((LawFormulas.fast(90121, 400) as unknown as { lead?: boolean }).lead, true)
   assert.equal(LawFormulas.standing(12).holds, true, 'receipts in the record give the author standing')
   assert.equal(LawFormulas.standing(0).holds, false, 'no record, no standing')
   assert.equal(LawFormulas.violation(0).holds, true, 'no work against the order')
@@ -43,12 +49,41 @@ test('law: limitation, deadline, quorum, majority, super-majority, notice — an
   assert.equal((LawFormulas.removable(1, 0, 0) as unknown as { refused?: string }).refused, 'a lead is never removed')
   assert.equal(LawFormulas.removable(0, 1, 0).holds, false, 'still referenced: refused')
   assert.equal(LawFormulas.removable(0, 0, 1).holds, false, 'an entry point: refused')
-  assert.equal(qpuHexFamiliesOf().get('law')?.length, 14)
-  for (const [name, params, expected] of [['limitation', [6], 2190], ['supermajority', [6, 9, 66], 1], ['reviewed', [1], 1]] as [string, number[], number][]) {
+  assert.equal(qpuHexFamiliesOf().get('law')?.length, 15)
+  for (const [name, params, expected] of [['limitation', [6], 2190], ['supermajority', [6, 9, 66], 1], ['reviewed', [1], 1], ['fast', [90121, 400], 89721]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'law', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `law.${name} at ${uuid}`)
     qpuUuidReceiptOf(`law ${name}`, qpuContentUuidOf(run), { uuid })
   }
-  t.diagnostic('14 formulas, jurisdiction-agnostic; limitation 6y=2190d, quorum 5/9, 66% super-majority; MCP court (fidelity, redirected, standing, violation, lawful floor, remedy, removable) crossed to the gate; a removal is approved only when it takes no lead; advice only when reviewed true')
+  // one wave: this lead's address, and the next lead's address. The following call repeats the rule.
+  const leadReplyOf = (row: { holds: boolean; value: number; hex?: string; formula?: string }) => {
+    const led = qpuRecognizeOf(row) as { recognition?: { holds?: boolean; handle?: string; uuid?: string; value?: number; next?: { handle?: string; uuid?: string } } }
+    return { led, recognition: led.recognition, bytes: JSON.stringify(led).length, formula: row.formula?.split('(')[0] ?? '' }
+  }
+  const followOf = (uuid: string) => {
+    const decoded = qpuHexDecodeOf(uuid)
+    const name = decoded.holds && 'program' in decoded ? decoded.program[0] : undefined
+    if (!name || !(name in LawFormulas)) throw new Error(`no law formula at ${uuid}`)
+    const row = (LawFormulas[name as keyof typeof LawFormulas] as (...xs: number[]) => ReturnType<typeof LawFormulas.fast>)(...(decoded.holds && 'params' in decoded ? decoded.params : []))
+    return leadReplyOf(row)
+  }
+  const wave = [leadReplyOf(LawFormulas.fast(90121, 400))]
+  wave.push(followOf(wave[0]!.recognition!.next!.uuid!))
+  wave.push(followOf(wave[1]!.recognition!.next!.uuid!))
+  for (const step of wave) {
+    assert.equal(step.recognition?.holds, false, step.formula)
+    assert.equal(step.recognition?.handle?.length, 8, step.formula)
+    assert.match(step.recognition?.uuid ?? '', /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/, step.formula)
+    assert.equal(typeof step.recognition?.value, 'number', step.formula)
+    assert.equal(step.recognition?.next?.handle?.length, 8, step.formula)
+    assert.match(step.recognition?.next?.uuid ?? '', /^[0-9a-f]{8}-/)
+    assert.notEqual(step.recognition?.next?.uuid, step.recognition?.uuid)
+    assert.ok(step.bytes <= 8192, `${step.formula} wave is ${step.bytes} bytes`)
+  }
+  assert.equal(JSON.stringify(wave[0]!.led).includes(wave[2]!.recognition!.uuid!), false, 'the first reply names one next address')
+  assert.equal(wave[0]!.recognition!.next!.uuid, wave[1]!.recognition!.uuid)
+  assert.equal(wave[1]!.recognition!.next!.uuid, wave[2]!.recognition!.uuid)
+  t.diagnostic(`wave ${wave.map((s) => `${s.formula} ${s.recognition?.handle} ${s.recognition?.uuid} value ${s.recognition?.value} holds ${s.recognition?.holds} → ${s.recognition?.next?.handle} ${s.recognition?.next?.uuid}`).join(' ; ')} ; reply ${wave[0]!.bytes} bytes`)
+  t.diagnostic('15 formulas, at the cap; limitation 6y=2190d, quorum 5/9, 66% super-majority; MCP court (fidelity, redirected, fast-track overspend, standing, violation, lawful floor, remedy, removable) crossed to the gate; a surplus of spent tokens is a lead, not a charge; advice only when reviewed true')
 })

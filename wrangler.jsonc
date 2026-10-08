@@ -41,6 +41,10 @@
       "custom_domain": true
     },
     {
+      "pattern": "mcp.psg.bg",
+      "custom_domain": true
+    },
+    {
       "pattern": "*.uuidna.com/*",
       "zone_name": "uuidna.com"
     }

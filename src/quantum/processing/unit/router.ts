@@ -113,6 +113,10 @@ export const worker = {
     if (host !== unit.host || host.includes('*') || !unit.holds || !integrityOnceOf()) {
       return jsonOf(JSON.parse(dead), lost)
     }
+    const evidence = qpuQuantumOf().evidence
+    if (evidence.provenance.device !== 'exact-amplitudes' || evidence.scaling.advantage !== false) {
+      return jsonOf(JSON.parse(dead), lost)
+    }
     const url = new URL(request.url)
     const raw = url.pathname.replace(/\/$/, '') || '/'
     const path = raw === '/index.html' ? '/' : raw
@@ -152,15 +156,17 @@ export const worker = {
       return new Response(null, { status: found + ten * ten + seed, headers: { location: `https://${zone}${url.pathname}${url.search}` } })
     }
     // a tenant under the zone, or a tenant's own domain registered as a Cloudflare for SaaS custom hostname (it reaches
-    // this unit only through the */* route once Cloudflare has it active); both go whole to Payload, which decides
+    // this unit only through the */* route once Cloudflare has it active); both go whole to Payload, which decides.
+    // mcp.psg.bg is the commercial MCP hostname, attached with the same custom_domain as this unit, and it answers these doors.
+    const commercialMcp = url.hostname === 'mcp.psg.bg'
     const underZone = label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)
-    const ownDomain = url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
+    const ownDomain = !commercialMcp && url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
     if (url.protocol === 'https:' && (underZone || ownDomain)) {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
-    const named = url.protocol === 'https:' && url.hostname === unit.host
+    const named = url.protocol === 'https:' && (url.hostname === unit.host || commercialMcp)
     if (!named) return jsonOf(JSON.parse(dead), lost)
     // /api IS PAYLOAD, OVER THE BINDING. Registration, REST and the find-only MCP answer at this one host; the hop is not
     // billed as a second request and Payload keeps no public route. It answers its own preflight, so this precedes OPTIONS.
@@ -194,6 +200,28 @@ export const worker = {
     }
     if (path === '/metrics') return jsonOf({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: SERVED.length })
     if (path === '/mcp') {
+      // THE COMMERCIAL HOST IS GATED BY PAYLOAD ALONE. qpu.uuidna.com stays a public read. mcp.psg.bg answers this door
+      // only after Payload's own user auth (GET /api/users/me, the same cookie or Authorization the admin already uses)
+      // returns a user. No second store. The frontends in front of that backend are CLOUDFLARE_FRONTENDS, the axis the
+      // payload-cloudflare generator already marks compatible. A missing binding, a failed read, or a body with no user
+      // is a refusal: a request Payload did not decide does not pass. Storage writes keep their Bearer token.
+      if (commercialMcp) {
+        if (!env?.PAYLOAD) return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, unauthorized)
+        const authHeaders = new Headers({ accept: 'application/json' })
+        const authorization = request.headers.get('authorization')
+        const cookie = request.headers.get('cookie')
+        if (authorization) authHeaders.set('authorization', authorization)
+        if (cookie) authHeaders.set('cookie', cookie)
+        let decided = false
+        try {
+          const me = await env.PAYLOAD.fetch(new Request(new URL('/api/users/me', request.url), { method: 'GET', headers: authHeaders }))
+          const body = (await me.json().catch(() => null)) as { user?: unknown } | null
+          decided = me.ok === true && body?.user != null && typeof body.user === 'object'
+        } catch {
+          decided = false
+        }
+        if (!decided) return jsonOf({ holds: false, denied: 'payload', reading: 'Payload did not authorize this request' }, unauthorized)
+      }
       // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no
       // server-initiated stream, so a GET asking for text/event-stream gets the spec's other allowed answer — 405 with
       // Allow — and the client falls back to POST instead of parsing a JSON-LD catalog as an event stream.
@@ -283,12 +311,16 @@ export const worker = {
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
-    if (path === '/')
-      return pageOrServed('/', () => qpuQuantumOf(), {
+    if (path === '/') {
+      // Counts, not the documents. The summary holds every integer, including the amplitude count.
+      const { qpuAnalyticsOf, qpuPublicOf } = await import('./zeropage.js')
+      const analytics = qpuAnalyticsOf()
+      const face = qpuPublicOf(analytics)
+      return pageOrServed('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize }), {
         title: '@uuidna/qpu — quantum processing unit',
-        description:
-          "A quantum processing unit served as content-addressed JSON-LD and an MCP endpoint: exact 3-qubit amplitudes, Shor's factoring of 91, and cross-proving formula families. Reads need no auth.",
+        description: face.sentence,
       })
+    }
     if (path === `/${unit.path}`)
       return pageOrServed(`/${unit.path}`, () => qpuLeanOf(), {
         title: '@uuidna/qpu — the Lean proof',
@@ -320,9 +352,21 @@ export const worker = {
       (await request.json().catch(() => ({}))) as { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown } & X
     const authedOf = (x: { holds?: boolean; denied?: unknown } | object) =>
       jsonOf(x, 'holds' in x && x.holds === false && 'denied' in x && x.denied === 'auth' ? unauthorized : found)
+    const throughOf = async (body: { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown }) => {
+      if (body.method !== 'tools/call') return undefined
+      const args = body.params?.arguments && typeof body.params.arguments === 'object' && !Array.isArray(body.params.arguments) ? body.params.arguments : {}
+      const asked = args.doors === true || args.errors === true || typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null) || typeof args.door === 'string'
+      if (!asked) return undefined
+      const name = typeof body.params?.name === 'string' ? body.params.name : ''
+      const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
+      if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
+      return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: called })
+    }
     if (path === '/server' || path.startsWith('/server/')) {
       if (request.method === 'POST') {
         const body = await rpcBodyOf<{ gates?: unknown }>()
+        const via = await throughOf(body)
+        if (via) return via
         const rpc = await qpuSubRpcOf(body, qpuServerToolsOf(), serverHref)
         if (rpc) return jsonOf(rpc)
         return jsonOf(qpuServerSubmitOf(body))
@@ -338,15 +382,20 @@ export const worker = {
     }
     if (path === '/hex' || path.startsWith('/hex/')) {
       if (request.method === 'POST') {
-        const rpc = await qpuSubRpcOf(await rpcBodyOf(), qpuHexToolsOf(env), hexHref)
+        const body = await rpcBodyOf()
+        const via = await throughOf(body)
+        if (via) return via
+        const rpc = await qpuSubRpcOf(body, qpuHexToolsOf(env), hexHref)
         if (rpc) return jsonOf(rpc)
       }
       const program = path.slice('/hex/'.length)
-      return jsonOf(program ? await qpuHexRunOf(program, request.headers.get('referer') ?? undefined, env) : qpuHexCatalogOf())
+      return jsonOf(program ? await qpuHexRunOf(program, undefined, env) : qpuHexCatalogOf())
     }
     if (path === '/network' || path.startsWith('/network/')) {
       if (request.method === 'POST') {
         const body = await rpcBodyOf<{ channel?: unknown; body?: unknown }>()
+        const via = await throughOf(body)
+        if (via) return via
         const rpc = await qpuSubRpcOf(body, qpuNetworkToolsOf(), networkHref)
         if (rpc) return jsonOf(rpc)
         const send = qpuNetworkToolsOf().find((t) => t.name === 'net_send')
@@ -358,6 +407,8 @@ export const worker = {
       const key = path === '/storage' ? '' : decodeURIComponent(path.slice('/storage/'.length))
       if (request.method === 'POST' && path === '/storage') {
         const body = await rpcBodyOf<{ maintain?: unknown; key?: unknown; value?: unknown }>()
+        const via = await throughOf(body)
+        if (via) return via
         const auth = request.headers.get('authorization')
         const rpc = await qpuSubRpcOf(body, qpuStorageToolsOf(env, auth), storageHref)
         if (rpc) return jsonOf(rpc)

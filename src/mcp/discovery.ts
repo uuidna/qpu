@@ -118,10 +118,16 @@ export const qpuDiscoverOf = async (live: number[] = [], slice?: { from?: number
           continue
         }
         let run: { value?: unknown; holds?: boolean; receipt?: string }
-        const inner = program.length === 2 ? known.get(keyOf(program[0]!, params)) : undefined
-        const outer = inner && inner.value !== null && inner.holds ? known.get(keyOf(program[1]!, [Number(inner.value), ...params.slice(1)])) : undefined
-        if (inner && outer) {
-          // composed from the singles: the same value the run would give, receipted at the composition's own address
+        const head = formulas.find((x) => x.name === program[0])
+        const inner = program.length === 2 ? known.get(keyOf(program[0]!, head?.arity === 0 ? [] : params)) : undefined
+        const fed = inner?.value !== null && inner?.value !== undefined ? [Number(inner.value), ...params.slice(1)] : undefined
+        const outer = inner?.holds && fed ? known.get(keyOf(program[1]!, fed)) : undefined
+        // a composition is b at the value a reached. The singles' table answers it when b was already run at that
+        // value. Otherwise it is run only when that value is below mintOf(hexbit²): split.primes of a photon-scale
+        // kelvin does not finish, and gap(bcs) = 25 does.
+        const bounded = fed !== undefined && fed.every((p) => Number.isSafeInteger(p) && p >= 0 && p < L.mintOf(L.hexbit * L.hexbit))
+        if (program.length === 2 && !(inner && outer) && !(inner?.holds && bounded)) continue
+        if (program.length === 2 && inner && outer) {
           run = { value: outer.value ?? undefined, holds: inner.holds && outer.holds, receipt: qpuUuidReceiptOf(`hex ${family}`, hex, { value: outer.value, holds: inner.holds && outer.holds }).uuid }
         } else {
           run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; receipt?: string }

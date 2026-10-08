@@ -1903,6 +1903,11 @@ export interface Product {
   title: string;
   slug?: string | null;
   description?: string | null;
+  organisation?: string | null;
+  use?: string | null;
+  licence?: string | null;
+  billedAccount?: string | null;
+  cloudflareAccountId?: string | null;
   inventory?: number | null;
   enableVariants?: boolean | null;
   variantTypes?: (string | VariantType)[] | null;
@@ -3650,6 +3655,11 @@ export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   description?: T;
+  organisation?: T;
+  use?: T;
+  licence?: T;
+  billedAccount?: T;
+  cloudflareAccountId?: T;
   inventory?: T;
   enableVariants?: T;
   variantTypes?: T;

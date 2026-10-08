@@ -18,7 +18,7 @@ export class EvapotranspirationFormulas {
   static cropcoefficient(etc: number, et0: number): CrossFormula { return c('evapotranspiration-cropcoefficient', 'cropcoefficient(etc, et0) = ⌊etc · 100 / et0⌋', et0 > 0 ? Math.floor((etc * 100) / et0) : 0, nat(etc, et0) && et0 > 0, 'cropcoefficient', [etc, et0]) }
   /** ACTUAL ETc: the reference scaled by the crop coefficient (percent). value ⌊reference · coefficient / 100⌋. */
   static actual(reference: number, coefficient: number): CrossFormula { return c('evapotranspiration-actual', 'actual(reference, coefficient) = ⌊reference · coefficient / 100⌋', Math.floor((reference * coefficient) / 100), nat(reference, coefficient), 'actual', [reference, coefficient]) }
-  /** WATER DEFICIT: demand the supply cannot meet. value max(0, demand − supply). */
+  /** WATER DEFICIT: demand the supply cannot meet — demand exceeds the supply. value max(0, demand − supply). */
   static waterdeficit(demand: number, supply: number): CrossFormula { return c('evapotranspiration-waterdeficit', 'waterdeficit(demand, supply) = max(0, demand − supply)', Math.max(0, demand - supply), nat(demand, supply), 'waterdeficit', [demand, supply]) }
   /** IRRIGATION NEED: the gross water a deficit needs at an application efficiency (percent). value ⌈deficit · 100 / efficiency⌉. */
   static irrigationneed(deficit: number, efficiency: number): CrossFormula { return c('evapotranspiration-irrigationneed', 'irrigationneed(deficit, efficiency) = ⌈deficit · 100 / efficiency⌉', efficiency > 0 ? Math.ceil((deficit * 100) / efficiency) : 0, nat(deficit, efficiency) && efficiency > 0, 'irrigationneed', [deficit, efficiency]) }

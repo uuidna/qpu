@@ -14,6 +14,10 @@ test-readings.json
 .payload-cf/
 .lake/
 .dev.vars
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
 .next/
 .open-next/
 next-env.d.ts

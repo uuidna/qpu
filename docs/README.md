@@ -1,17 +1,17 @@
 ---
-uuid: "d6dc6be0-4e4c-80af-aa7a-c4460b42104e"
+uuid: "bf92c791-b4fb-80d3-9d27-3a2bbe8d6a32"
 title: "Documentation"
-description: "@uuidna/qpu 1.0.1: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
+description: "@uuidna/qpu 1.1.0: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
 og:title: "Documentation — @uuidna/qpu"
-og:description: "@uuidna/qpu 1.0.1: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
+og:description: "@uuidna/qpu 1.1.0: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/README.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Documentation"
-twitter:description: "@uuidna/qpu 1.0.1: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
-version: "1.0.1"
+twitter:description: "@uuidna/qpu 1.1.0: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
+version: "1.1.0"
 ---
 # @uuidna/qpu documentation
 
@@ -25,11 +25,11 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
 | [UUIDs & quantum receipts](receipts.md) | 40 | 15 of 17 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |
-| [MCP & agents](agents.md) | 100 | 45 of 54 |
+| [MCP & agents](agents.md) | 106 | 46 of 55 |
 | [Live science data](science.md) | 22 | 10 of 17 |
-| [API fusion](fusion.md) | 16 | 2 of 8 |
-| [Payload & Cloudflare](cms.md) | 19 | 3 of 4 |
-| [Presentation & discovery](presentation.md) | 14 | 14 of 14 |
+| [API fusion](fusion.md) | 17 | 4 of 10 |
+| [Payload & Cloudflare](cms.md) | 20 | 3 of 4 |
+| [Presentation & discovery](presentation.md) | 15 | 14 of 14 |
 
 Also: [state](state.md) · [comparison](comparison.md) · [build receipt](../README.md)
 

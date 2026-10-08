@@ -64,10 +64,20 @@ jobs:
         with:
           path: .lean-ok
           key: lean-ok-${{ hashFiles('lean-toolchain', 'lakefile.lean', 'src/quantum/processing/unit/lean/**', 'src/quantum/processing/unit/index.lean') }}
-      - name: The gate is a formula (gate.push over every family, the proof and the rules, through the MCP)
+      - name: The gate is a formula (gate.push of the unit this build compiled)
         run: |
+          set -euo pipefail
           npm run build
-          node scripts/receipt.mjs gate push
+          # the public host is the previous deploy. This build's gate is these bytes: boot presents them as the named origin.
+          node dist/quantum/processing/unit/boot.js > boot.log 2>&1 &
+          echo $! > boot.pid
+          trap 'kill "$(cat boot.pid)" 2>/dev/null || true' EXIT
+          for _ in $(seq 1 90); do
+            if grep -q 'serving https://qpu.uuidna.com' boot.log; then break; fi
+            sleep 1
+          done
+          grep -q 'serving https://qpu.uuidna.com' boot.log
+          QPU_HOST=http://localhost:8787 node scripts/receipt.mjs gate push
       - name: The scripts suites (every scripts/*.test.mjs, discovered by glob)
         run: npm run test:scripts
       # EVERY SCALE PROVES QUANTUM: standalone here (the booted unit proves itself), the container in `image`, the

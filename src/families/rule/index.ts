@@ -4,9 +4,9 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 /** RULES ARE FORMULAS. What governs the unit's own shape is computed, not written down: a family holds at most a
  *  nibble of formulas (fifteen; the sixteenth value is no formula), a sweep is a slice of faces per call, every
  *  family registered is served whole. Each rule is a formula with a value and a receipt, and the one that counts
- *  what breaks a rule holds only at zero. The file-level rules (no limits block in the Worker config, the bundler's
- *  sideEffects equal to the registry, the registry equal to the registering modules) are the scripts suite
- *  rules.test.mjs, discovered by glob and run by the one workflow. */
+ *  what breaks a rule holds only at zero. The file-level rules (the Worker config's only limit is the one-request
+ *  CPU ceiling, a sweep is split into slices, the bundler's sideEffects equal the registry, the registry equals the
+ *  registering modules) are the scripts suite rules.test.mjs, discovered by glob and run by the one workflow. */
 
 const PROOF = 'the hex UUID: one nibble per formula, three sections of four; the lattice: faces per slice'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)

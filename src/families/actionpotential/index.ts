@@ -2,7 +2,7 @@ import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** ACTIONPOTENTIAL — THE NERVE IMPULSE, AS ARITHMETIC. The spike a neuron fires is numbers: how fast it conducts, how far
- *  the membrane swings when it depolarizes, how long it cannot fire again, the voltage it must reach to trigger, the peak
+ *  the membrane swings when it depolarizes, how long it cannot fire again — the refractory period of the membrane, the voltage it must reach to trigger, the peak
  *  swing, how often it fires, how long it takes to travel, and how far past threshold it overshoots. Crosses to `neurology`
  *  — the action potential is what neurology measures. A measure. */
 

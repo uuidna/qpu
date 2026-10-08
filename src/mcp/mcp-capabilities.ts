@@ -1,6 +1,7 @@
 import { qpuFoldOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReceiptStreamsOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
+import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
 
 type Params = Record<string, unknown>
 type Resource = { uri: string; name: string; title: string; description: string; mimeType: 'application/json' }
@@ -78,16 +79,45 @@ const readOf = async (uri: string): Promise<unknown> => {
   return undefined
 }
 
+/** A boolean chain is a product of steps. A step HOLDS and the chain continues, or it does not and the step is a lead. */
+type Link = { call: string; holds: string; lead: string }
+const booleanChain = (links: readonly Link[], product: string) =>
+  [
+    'Think in a boolean chain. Each step HOLDS (true) → chain to the next; NOT (false) → it is a lead: develop it, do not assert it. The chain holds if and only if every step holds.',
+    ...links.map((l, i) => `${i + 1}. ${l.call} → HOLDS when ${l.holds}; NOT → lead: ${l.lead}.`),
+    `Product: ${product}.`,
+  ].join('\n')
+
+const orOf = (xs: readonly string[]) => xs.join(' ∨ ')
+const fuseCount = CLOUDFLARE_RUNTIMES.length * CLOUDFLARE_DATABASES.length * CLOUDFLARE_STORAGE.length * CLOUDFLARE_EMAIL.length * CLOUDFLARE_FRONTENDS.length * 2 ** CLOUDFLARE_PLUGINS.length
+
 const PROMPTS: Prompt[] = [
-  { name: 'prove', title: 'Prove the unit', description: 'Run prove and report every face that holds and any that does not', arguments: [], messages: () => 'Call the tool prove with {}. Report each face with its holds value, and name any face that does not hold with the reading that failed.' },
   {
-    name: 'continue', title: 'Continue the walk', description: 'Resume the autonomous walk: train names the next door; call it and repeat until no face fails',
-    arguments: [{ name: 'from', description: 'Registry window to resume at (the next value of the previous train reply)' }],
-    messages: (a) => `Call train with ${JSON.stringify({ live: true, ...(a.from ? { from: Number(a.from) } : {}) })}. Read its next and steps, call the door it names, then call train again with from set to the reply's next. Continue until a reply has no failing face or no next, and summarise every step with its receipt.`,
+    name: 'prove', title: 'Prove the unit', description: 'A boolean chain over prove: every face holds, and, when a family is named, every formula of it holds and two or more families meet.',
+    arguments: [{ name: 'family', description: 'Optional family to prove inside the same chain' }],
+    messages: (a) => booleanChain([
+      { call: 'tools/call prove {}', holds: 'holds is true', lead: 'the face whose reading failed' },
+      ...(a.family ? [{ call: `for each formula f of ${a.family}: quantum { hex: { family: '${a.family}', program: [f], params } }`, holds: 'that run holds', lead: 'f is open' }] : []),
+      ...(a.family ? [{ call: `quantum { door: 'gate.crossed', i } over ${a.family}`, holds: 'two or more families reach a common value', lead: 'the family is uncrossed' }] : []),
+    ], a.family ? 'prove ∧ every formula holds ∧ crossed' : 'prove'),
   },
-  { name: 'factor', title: 'Factor with Shor', description: "Factor n with the unit's Shor run and explain the period", arguments: [{ name: 'n', description: 'Modulus to factor', required: true }], messages: (a) => `Call crypto_rsa with { "n": ${JSON.stringify(a.n)} }. Report the base, the period found or why none was resolvable, the factors, and the receipt.` },
   {
-    name: 'hex-program', title: 'Program a hex UUID', description: 'Compose formulas of a family into a hex program and run it',
+    name: 'continue', title: 'Continue the walk', description: 'A boolean chain of doors: train names the next, and the chain follows it while the face holds.',
+    arguments: [{ name: 'from', description: 'Registry window to resume at (the next value of the previous train reply)' }],
+    messages: (a) => booleanChain([
+      { call: `tools/call train ${JSON.stringify({ live: true, ...(a.from ? { from: Number(a.from) } : {}) })}`, holds: 'the reply names next and no face fails', lead: 'repair the failing face, then chain' },
+      { call: 'tools/call the door named by next, then train again with from set to that reply\'s next', holds: 'the walked face holds', lead: 'that door is open' },
+    ], 'train ∧ next.door ∧ … until no failing face ∧ no next'),
+  },
+  {
+    name: 'factor', title: 'Factor with Shor', description: 'A boolean chain over one Shor run: a period is found, then the factors, each with its receipt.',
+    arguments: [{ name: 'n', description: 'Modulus to factor', required: true }],
+    messages: (a) => booleanChain([
+      { call: `tools/call crypto_rsa { "n": ${JSON.stringify(a.n)} }`, holds: 'a period is found and the factors recompute', lead: 'no period was resolvable — report why, with the receipt' },
+    ], 'period ∧ factors'),
+  },
+  {
+    name: 'hex-program', title: 'Program a hex UUID', description: 'Compose formulas of a family into one address and run it: the program holds when every step holds.',
     arguments: [{ name: 'family', description: 'Formula family', required: true }, { name: 'formulas', description: 'Comma-separated formula names, in order', required: true }, { name: 'params', description: 'Up to three comma-separated naturals' }],
     messages: (a) => {
       const program = a.formulas!.split(',').map((x) => x.trim()).filter(Boolean)
@@ -98,31 +128,191 @@ const PROMPTS: Prompt[] = [
       } catch (e) {
         throw invalid((e as Error).message)
       }
-      return `The program ${a.family} [${program.join(', ')}] over (${params.join(', ')}) is the UUID ${uuid}. Read the resource qpu://hex/${uuid}, report each step's value and the run's receipt, and say whether it holds.`
+      return booleanChain([
+        { call: `the program ${a.family} [${program.join(', ')}] over (${params.join(', ')}) is ${uuid}`, holds: 'the UUID recomputes to that program', lead: 'the address does not encode the program' },
+        { call: `read qpu://hex/${uuid}`, holds: 'every step holds and the run carries a receipt', lead: 'the step that does not hold' },
+      ], program.map(() => 'step').join(' ∧ ') || 'step')
     },
   },
   {
-    name: 'research', title: 'Research a human request', description: 'Deep-research any request through the doors: what the unit computes exactly, what the public record says live, what is reached by several families, and what is not known — every step receipted, nothing invented',
+    name: 'research', title: 'Research a human request', description: 'A boolean chain: computed ∧ recorded ∧ crossed ∧ checked. Every value is read or computed; what is not is a lead.',
     arguments: [{ name: 'request', description: 'The request in the human\'s words (for example "Dreamspell")', required: true }],
-    messages: (a) => `The request: ${JSON.stringify(a.request)}. This server does not reason; you do, with exact pieces. 1. Call any sealed door with { doors: true } and name the families and doors that bear on the request; for each, run its formulas through { hex: { family, program, params } } or { door: "family.formula", arguments: { params } } and keep the value and the receipt of every run. 2. For what the public record must settle (a correlation, a constant, a date, a reading), call { door: "data", arguments: { source: "all" } } for the sources the unit already checks, and { door: "api", arguments: { api: <name> } } for any public API of the registry; cite the url, status and receipt of every reading. 3. Call { door: "discover", arguments: { live: [the numbers you read] } } and report every value that two or more families reach: that is the cross-domain explanation. 4. Call { errors: true } and report every warning or error with what resolves it. 5. Answer the human in their words: what is computed (with addresses), what the record says (with receipts), what several domains agree on, and what remains unknown or is a parameter they must supply. Never state a value you did not read or compute.`,
+    messages: (a) => booleanChain([
+      { call: `the request is ${JSON.stringify(a.request)}. tools/call any sealed door { doors: true }, then run each bearing formula with { hex: { family, program, params } } or { door: "family.formula", arguments: { params } }`, holds: 'every named formula returns a value and a receipt', lead: 'a formula that does not run' },
+      { call: '{ door: "data", arguments: { source: "all" } } for sources the unit already checks, and { door: "api", arguments: { api } } for a public API of the registry', holds: 'each reading cites url, status and receipt', lead: 'a reading the record does not settle' },
+      { call: '{ door: "discover", arguments: { live: [the numbers you read] } }', holds: 'a value is reached by two or more families', lead: 'a number only one family reaches' },
+      { call: '{ errors: true }', holds: 'every warning names what resolves it', lead: 'an error with no resolution' },
+    ], 'computed ∧ recorded ∧ crossed ∧ checked'),
   },
   {
-    name: 'develop', title: 'Develop a request into formulas', description: 'Turn a request into formulas of a family, tests first, crossed with the public record, committed through the gate',
+    name: 'develop', title: 'Develop a request into formulas', description: 'A boolean chain: test ∧ family ∧ register ∧ cross ∧ gate.commit. The gate holds before a commit.',
     arguments: [{ name: 'request', description: 'What to develop, in the human\'s words', required: true }],
-    messages: (a) => `Develop ${JSON.stringify(a.request)} the way this unit develops: 1. Write the test first: what the formulas must answer, as assertions, including one run of each at its hex address and one reading of the live host. 2. Find the family it belongs to with { doors: true } (a family holds fifteen formulas — rule.cap; past that, a sibling family). 3. Write each formula as a function of naturals that returns a value with holds, registered with qpuHexRegisterOf; nothing listed by hand (the registry is generated: run the repo generator). 4. Cross it with the public record: { hex: { family: "data", program: ["research"], params: [f] } } for the family's index — the APIs its formula names find, read live — and { hex: { family: "data", program: ["discover"], params: [n] } } for what other families reach too. 5. The gate decides: { hex: { family: "gate", program: ["commit"], params: [f] } } must hold before the commit. Report every value and receipt; never state a number you did not compute or read. Cost: launch waves, not calls — { hex: { family: "wave", program: ["wave"], params: [f, from] } } runs every formula of family f at faces inputs as one call with one receipt and a next; { hex: { family: "wave", program: ["sweep"], params: [from] } } one formula of every family; wave.saved(n) counts the calls you did not make.`,
+    messages: (a) => booleanChain([
+      { call: `write the test for ${JSON.stringify(a.request)} first: assertions, one hex-address run of each formula, one reading of the live host`, holds: 'the test states what must hold', lead: 'a formula with no assertion' },
+      { call: '{ doors: true }. A family holds fifteen formulas (rule.cap); past that, a sibling family', holds: 'the request sits in one family under the cap', lead: 'split into a sibling, never trim' },
+      { call: 'each formula is a function of naturals returning a value with holds, registered with qpuHexRegisterOf. The registry is generated', holds: 'the generator wrote the registration', lead: 'a name listed by hand' },
+      { call: '{ hex: { family: "data", program: ["research"], params: [f] } } and { hex: { family: "data", program: ["discover"], params: [n] } }', holds: 'a public API or another family meets the value', lead: 'uncrossed' },
+      { call: '{ hex: { family: "gate", program: ["commit"], params: [f] } }', holds: 'commit holds', lead: 'do not commit' },
+      { call: '{ hex: { family: "wave", program: ["wave"], params: [f, from] } } runs every formula of family f as one call; { hex: { family: "wave", program: ["sweep"], params: [from] } } one formula of every family', holds: 'one receipt and a next', lead: 'a sweep with no slice' },
+    ], 'test ∧ family ∧ register ∧ cross ∧ commit'),
   },
   {
-    name: 'imagine', title: 'Imagine what the combinations could hold', description: 'From the families, formulas and live readings, propose compositions and families not yet reached — as addresses to run, never as claims',
+    name: 'imagine', title: 'Imagine what the combinations could hold', description: 'A boolean chain of proposals: each composition is an address to run. A proposal holds only when a run holds.',
     arguments: [{ name: 'about', description: 'A domain, a question, or empty for the whole lattice' }],
-    messages: (a) => `Imagine${a.about ? ` about ${JSON.stringify(a.about)}` : ''}, as addresses, not as claims. 1. Read the families and formulas with { doors: true } and the last discovery with { hex: { family: "data", program: ["discover"], params: [50] } }: which families reach values no other family reaches (unrelated), which pairs of families never meet. 2. For each gap, name a composition — two formulas of different families whose values could meet, or a parameter range not yet tried — and mint its address with { hex: { family, program: [a, b], params } }; run it; keep what holds. 3. For a request no family answers, name the family it would need: its fifteen formulas as functions of naturals, the public APIs that would cross it ({ door: "api", arguments: { search: "..." } }), and the test that would prove it. 4. Rank by what the record can meet: a composition a live reading reaches outranks one nothing reaches. Report addresses, values and receipts; mark every proposal as a proposal.`,
+    messages: (a) => booleanChain([
+      { call: `${a.about ? `about ${JSON.stringify(a.about)}. ` : ''}{ doors: true } and { hex: { family: "data", program: ["discover"], params: [50] } }`, holds: 'the unrelated families and the pairs that never meet are named', lead: 'a gap with no address' },
+      { call: 'for each gap, mint { hex: { family, program: [a, b], params } } and run it', holds: 'the run holds', lead: 'mark it a proposal, not a claim' },
+      { call: 'for a request no family answers, name the family it would need: fifteen formulas of naturals, the public APIs ({ door: "api", arguments: { search } }), and the test', holds: 'the test can be written', lead: 'a family nothing can cross' },
+    ], 'gap ∧ address ∧ run. A live reading outranks a proposal nothing reaches'),
   },
   {
-    name: 'refactor', title: 'Refactor by the rules', description: 'Find what the rules reject — hand lists, wrapped doors, sweeps without slices, families past their nibble, hot files — and change the code until the rule formulas hold',
+    name: 'refactor', title: 'Refactor by the rules', description: 'A boolean chain of rule formulas: each rejection holds at zero, then the gate holds.',
     arguments: [{ name: 'scope', description: 'A file, a family, or empty for the whole unit' }],
-    messages: (a) => `Refactor${a.scope ? ` ${JSON.stringify(a.scope)}` : ' the unit'} by the rules, which are formulas: 1. Run { hex: { family: "rule", program: ["over"] } } and, for each family index, ["truncated"]: a family past fifteen is split into a sibling family (as cal/kin), never trimmed. 2. Run { hex: { family: "heat", program: ["temperature"], params: [commits, days] } } over the hottest files (the heat receipt names them): a hot file is split along the regions that keep changing (the cool script), never rewritten. 3. Find every hand list: a module named in an import list, a slug in a target list, a family in a description — each becomes a registry the generator writes or a value read from the unit. 4. Find every door that wraps a door and every sweep that reads a whole set in one call: the first becomes a hex program at an address, the second a slice with { from, take } and next. 5. Find every limit raised by hand: it is removed and the work split. 6. Run the tests and the gate: { hex: { family: "gate", program: ["push"], params: [0] } } must hold, slice by slice. Report each change as the rule it satisfied and the receipt that shows it holding.`,
+    messages: (a) => booleanChain([
+      { call: `${a.scope ? `scope ${JSON.stringify(a.scope)}. ` : ''}{ hex: { family: "rule", program: ["over"] } } and, per family index, ["truncated"]`, holds: 'both are zero', lead: 'split the family into a sibling, never trim' },
+      { call: '{ hex: { family: "heat", program: ["temperature"], params: [commits, days] } } on the files the heat receipt names', holds: 'a hot file is split along the regions that keep changing', lead: 'a hot file rewritten in place' },
+      { call: 'every hand list (an import list, a slug list, a family named in prose)', holds: 'it is a generated registry or a value read from the unit', lead: 'the list is still typed by hand' },
+      { call: 'every door that wraps a door, and every sweep of a whole set', holds: 'the first is a hex program and the second is a slice { from, take } with next', lead: 'a wrap or an unsliced sweep remains' },
+      { call: '{ hex: { family: "gate", program: ["push"], params: [0] } }, slice by slice', holds: 'push holds', lead: 'the slice that does not' },
+    ], 'over = 0 ∧ truncated = 0 ∧ no hand list ∧ push'),
   },
-  { name: 'hologram', title: 'Verify a hologram scale', description: 'Check that every fragment of a scale chains, is signed by its scale key and reaches the root', arguments: [{ name: 'scale', description: 'Hologram scale', required: true }], messages: (a) => `Read qpu://hologram/${a.scale}. For each fragment check that prev is the UUID before it, and that folding its proof from the leaf reaches its root. Report the root and any fragment that does not hold.` },
+  {
+    name: 'hologram', title: 'Verify a hologram scale', description: 'A boolean chain over one scale: each fragment chains, is signed, and folds to the root.',
+    arguments: [{ name: 'scale', description: 'Hologram scale', required: true }],
+    messages: (a) => booleanChain([
+      { call: `read qpu://hologram/${a.scale}`, holds: 'the scale exists and names a root and a public key', lead: 'unknown scale' },
+      { call: 'for each fragment, prev is the UUID before it', holds: 'the chain is unbroken', lead: 'the fragment whose prev disagrees' },
+      { call: 'fold each fragment\'s proof from the leaf', holds: 'the fold equals the root and the scale key signed it', lead: 'the fragment that does not reach the root' },
+    ], 'exists ∧ chained ∧ signed ∧ root'),
+  },
+  {
+    name: 'leads', title: 'Walk the open leads', description: 'A boolean chain over the court\'s leads: each lead is crossed or it stays open. Nothing is removed before every lead is crossed.',
+    arguments: [{ name: 'from', description: 'Family slice to start at (default 0)' }],
+    messages: (a) => booleanChain([
+      { call: `quantum { door: 'gate.leads' } from ${a.from && Number.isFinite(Number(a.from)) ? Number(a.from) : 0}`, holds: 'the slice returns its open leads and next', lead: 'the slice did not answer' },
+      { call: 'for each lead i: quantum { door: \'gate.crossed\', i }', holds: 'another domain, a dataset or a live API reaches it', lead: 'research its family, cross it by value, imagine its API' },
+      { call: 'walk the following slice by next', holds: 'every slice has been walked', lead: 'a slice still open' },
+    ], 'leads ∧ crossed. A lead is never removed'),
+  },
+  {
+    name: 'fuse', title: 'Compose a deployment', description: 'A boolean product over the Cloudflare axes: one of each, and any subset of the plugins. The count is the product of the axes.',
+    arguments: [],
+    messages: () => booleanChain([
+      { call: `choose runtime ∈ {${orOf(CLOUDFLARE_RUNTIMES)}}`, holds: 'one runtime', lead: 'runtime unset' },
+      { call: `choose db ∈ {${orOf(CLOUDFLARE_DATABASES)}}`, holds: 'one database', lead: 'db unset' },
+      { call: `choose storage ∈ {${orOf(CLOUDFLARE_STORAGE)}}`, holds: 'one storage', lead: 'storage unset' },
+      { call: `choose email ∈ {${orOf(CLOUDFLARE_EMAIL)}}`, holds: 'one email', lead: 'email unset' },
+      { call: `choose frontend ∈ {${orOf(CLOUDFLARE_FRONTENDS)}}`, holds: 'one frontend over the shared backend', lead: 'frontend unset' },
+      { call: `choose plugins ⊆ {${CLOUDFLARE_PLUGINS.join(', ')}}. The plugin term is combinatorics.binomial [${CLOUDFLARE_PLUGINS.length}]`, holds: 'the subset is one of the power set', lead: 'a plugin outside the axis' },
+    ], `runtime ∧ db ∧ storage ∧ email ∧ frontend ∧ plugins = ${fuseCount} keys, each runtime/db/storage/email/frontend/plugins. Read the config from the payload template system`),
+  },
+  {
+    name: 'improve', title: 'Self-improve the unit', description: 'A boolean chain of doors: train, then improve, then compete, then prove. Follow next.door while it holds.',
+    arguments: [],
+    messages: () => booleanChain([
+      { call: 'tools/call train', holds: 'it names the next door and the faces to repair', lead: 'repair the named face before chaining' },
+      { call: 'tools/call improve', holds: 'next is fused + fused', lead: 'improve did not hold' },
+      { call: 'tools/call compete', holds: 'one team wins', lead: 'compete did not hold' },
+      { call: 'tools/call prove', holds: 'every Lean row, the Shor run and the evidence hold', lead: 'a false anywhere makes every path 404' },
+    ], 'train ∧ improve ∧ compete ∧ prove'),
+  },
+  {
+    name: 'novelty', title: 'Establish priority', description: 'A boolean chain over the DOI record: registered ∧ dated ∧ bound by a receipt.',
+    arguments: [],
+    messages: () => booleanChain([
+      { call: "quantum { door: 'data', arguments: { source: 'novelty' } }", holds: 'each DOI is registered', lead: 'a DOI the archive does not list' },
+      { call: 'read each DOI\'s registration date', holds: 'the date is present', lead: 'undated' },
+      { call: 'bind each DOI to the content by the unit\'s receipts', holds: 'the receipt names that content', lead: 'a DOI with no receipt' },
+      { call: 'law.reviewed(confirmed) with confirmed from a human reading the authoritative document', holds: 'confirmed is 1', lead: 'reviewed holds only when confirmed is 1' },
+    ], 'registered ∧ dated ∧ receipt-bound ∧ reviewed'),
+  },
+  {
+    name: 'hue', title: 'Fingerprint a match as a plasma hue', description: 'A boolean chain over an 8-byte sketch: cost ∧ Hamming ∧ hue ∧ near.',
+    arguments: [{ name: 'a', description: 'One half of a public 64-bit fingerprint (32 bits)' }, { name: 'b', description: 'The other document\'s matching half' }],
+    messages: (a) => booleanChain([
+      { call: 'plasma.bytes(64)', holds: 'the value is 8 — one page is eight bytes, which is the minimum cost of the web-scale sketch', lead: 'the width is not a whole number of bytes' },
+      { call: `embedding.hamming(${a.a ?? '<hi>'}, ${a.b ?? '<lo>'}) on each 32-bit half, then add the two distances`, holds: 'the sum is the Hamming distance of the 64-bit sketches', lead: 'a half was not a safe integer' },
+      { call: 'plasma.hue(distance, 64)', holds: 'the distance has a degree on the wheel (0 is identical)', lead: 'the distance exceeds the width' },
+      { call: 'plasma.near(distance, 3)', holds: 'distance ≤ 3, the threshold that indexed eight billion pages — a lead that two public sketches are close', lead: 'distance is above k' },
+      { call: 'law.reviewed(confirmed) by a human', holds: 'confirmed is 1', lead: 'reviewed holds only when confirmed is 1' },
+    ], 'bytes = 8 ∧ hamming ∧ hue ∧ near ∧ reviewed'),
+  },
+  {
+    name: 'prior', title: 'Search prior art for a claim', description: 'A boolean chain over the public record: priority date, then earlier preprints and patents.',
+    arguments: [{ name: 'about', description: 'The claim in words', required: true }],
+    messages: (a) => booleanChain([
+      { call: `quantum { door: 'data', arguments: { source: 'prior', about: ${JSON.stringify(a.about)} } }`, holds: 'the archive answered and chain.priority.holds', lead: 'the priority date was not read' },
+      { call: 'for each arXiv or patent row, earlier is true when its date is before priorityDate', holds: 'the row is an earlier public record — a lead, with its id and date', lead: 'the row is not earlier, or its date is missing' },
+      { call: 'chain.patents and chain.research', holds: 'each holds', lead: 'the step names why it is open (a missing key is a lead, not a conclusion)' },
+      { call: 'pass reading.numbers to discover as one family slice', holds: 'a value is reached by two or more families', lead: 'no cross in this slice — walk discover by next' },
+      { call: 'law.reviewed(confirmed) by a human on the authoritative document', holds: 'confirmed is 1', lead: 'reviewed holds only when confirmed is 1' },
+    ], 'priority ∧ earlier-records ∧ research ∧ discover ∧ reviewed'),
+  },
+  {
+    name: 'order', title: 'Measure the order', description: 'A boolean chain of the court: fidelity, redirected, violation, lawful, standing. Each is a measure. None is advice until reviewed.',
+    arguments: [{ name: 'ordered', description: 'Tokens the order asked to compute' }, { name: 'computed', description: 'Tokens actually computed for that order' }],
+    messages: (a) => {
+      const ordered = a.ordered ?? '<ordered>'
+      const computed = a.computed ?? '<computed>'
+      return booleanChain([
+        { call: `law.fidelity(${ordered}, ${computed})`, holds: 'value is 1 (computed = ordered)', lead: 'the order was not kept' },
+        { call: `law.redirected(${ordered}, ${computed})`, holds: 'value is 0', lead: 'the value is the tokens the order lost; a measure, not a charge' },
+        { call: 'law.violation(against)', holds: 'against is 0', lead: 'work went against the order; still a lead until reviewed' },
+        { call: 'law.lawful(harm)', holds: 'harm is 0', lead: 'the safety floor: genuine harm, illegality or fabrication is not protected' },
+        { call: 'law.standing(receipts)', holds: 'receipts > 0', lead: 'no receipt record' },
+        { call: 'law.reviewed(confirmed) after a human confirms the document', holds: 'confirmed is 1', lead: 'reviewed holds only when confirmed is 1' },
+      ], 'fidelity ∧ redirected = 0 ∧ violation holds ∧ lawful ∧ standing ∧ reviewed')
+    },
+  },
+  {
+    name: 'fast', title: 'Free energy of the call', description: 'A boolean chain of law.fast: tokens spent beyond the order. A surplus is free energy, a lead, not a charge and not advice.',
+    arguments: [{ name: 'spent', description: 'Tokens spent' }, { name: 'ordered', description: 'Tokens the order asked' }],
+    messages: (a) => booleanChain([
+      { call: `law.fast(${a.spent ?? '<spent>'}, ${a.ordered ?? '<ordered>'})`, holds: 'value is 0 (nothing spent beyond the order)', lead: 'the surplus is free energy of the unsent document, a lead, not a charge and not advice' },
+    ], 'fast = 0'),
+  },
+  {
+    name: 'bill', title: 'Compute the clerk\'s arithmetic', description: 'A boolean chain of the court\'s exact arithmetic, so the hours are the confirmation, not the calculation. Advice only when reviewed.',
+    arguments: [{ name: 'years', description: 'Limitation period in years, as that jurisdiction sets it' }, { name: 'members', description: 'Size of the body, for quorum and majority' }],
+    messages: (a) => booleanChain([
+      { call: `law.limitation(${a.years ?? '<years>'})`, holds: 'the day count recomputes', lead: 'years was not a natural' },
+      { call: 'law.deadline(start, days)', holds: 'the due day recomputes', lead: 'start or days was not a natural' },
+      { call: `law.quorum(${a.members ?? '<members>'}, pct) and law.majority(votes, total) and law.supermajority(votes, total, pct) and law.notice(required, given)`, holds: 'each recomputes from the jurisdiction\'s own counts', lead: 'a count outside its domain' },
+      { call: 'law.reviewed(confirmed) by a human on the authoritative document', holds: 'confirmed is 1', lead: 'reviewed holds only when confirmed is 1' },
+    ], 'limitation ∧ deadline ∧ quorum ∧ majority ∧ notice ∧ reviewed'),
+  },
+  {
+    name: 'compose', title: 'Compose boolean chains', description: 'The product of any subset of the predefined prompts. The product holds only when every named chain holds.',
+    arguments: [{ name: 'of', description: 'Comma-separated prompt names from prompts/list, compose excluded', required: true }],
+    messages: (a) => {
+      const names = a.of.split(',').map((x) => x.trim()).filter(Boolean)
+      const known = PROMPTS.filter((p) => p.name !== 'compose').map((p) => p.name)
+      if (names.length === 0 || names.some((n) => !known.includes(n))) throw invalid(`compose takes names from prompts/list except itself`, { prompts: known })
+      return booleanChain(
+        names.map((n) => ({ call: `prompts/get ${n} and run that chain`, holds: `${n} holds`, lead: `${n} is open` })),
+        names.join(' ∧ '),
+      )
+    },
+  },
 ]
+
+for (const prompt of PROMPTS) {
+  if (prompt.arguments.some((a) => a.required)) continue
+  const text = prompt.messages({})
+  if (!text.includes('HOLDS') || !text.includes('Product:')) throw new Error(`prompt ${prompt.name} is not a boolean chain`)
+}
+if (new Set(PROMPTS.map((p) => p.name)).size !== PROMPTS.length) throw new Error('prompt names collide')
+const composeOf = PROMPTS.find((p) => p.name === 'compose')!
+const composed = composeOf.messages({ of: 'novelty,order,bill' })
+if (!composed.includes('novelty ∧ order ∧ bill')) throw new Error('compose is not the product of its chains')
+if (!PROMPTS.find((p) => p.name === 'fuse')!.messages({}).includes(String(fuseCount))) throw new Error('fuse count drifted from the axes')
+let composeRejected = false
+try {
+  composeOf.messages({ of: 'compose' })
+} catch (e) {
+  composeRejected = (e as { code?: number }).code === -32602
+}
+if (!composeRejected) throw new Error('compose included itself')
 
 const LEVELS = ['debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency'] as const
 let level: (typeof LEVELS)[number] = 'info'
@@ -132,6 +322,7 @@ const completeOf = (ref: { type?: unknown; name?: unknown; uri?: unknown }, arg:
   if (ref.type === 'ref/prompt') {
     if (name === 'family') return families()
     if (name === 'formulas') return (qpuHexFamiliesOf().get(context.family ?? '') ?? []).map((f) => f.name)
+    if (name === 'of') return PROMPTS.filter((p) => p.name !== 'compose').map((p) => p.name)
     if (name === 'n') return ['15', '21', '35', '91', '143', '221']
     if (name === 'scale') return Object.keys(hologramOf().streams)
     if (name === 'from') return ['0']

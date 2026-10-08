@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * DOCUMENTATION FROM THE INLINE DOCS. Every exported capability's doc comment carries its frontmatter (@wing, @kind,
- * @evidence); this reads them, evaluates each evidence predicate against the built unit, and writes:
+ * @evidence); this reads them, evaluates each evidence predicate (on the built unit, or in the module
+ * that declares the tag), and writes:
  *   docs/README.md, docs/<wing>.md, docs/comparison.md, docs/state.md   — Markdown with YAML frontmatter (Open Graph)
  *   src/seed/docs.ts                                             — the same pages as Payload content (the public site)
  * then checks every page: each path it names exists, each `npm run` script exists, each relative link resolves.
@@ -42,16 +43,31 @@ for (const file of FILES) {
 
 // ---- evaluate the evidence ---------------------------------------------------------------------------------------
 const unit = await import(path.join(ROOT, 'dist/quantum/processing/unit/index.js'))
+// family modules register on import; a predicate that reads the registry (crossSchemasHolds) needs every family present
+await import(path.join(ROOT, 'dist/mcp/families.js'))
+const evidenceWhere = new Map()
+for (const c of caps) if (c.evidence && !evidenceWhere.has(c.evidence)) evidenceWhere.set(c.evidence, c.file)
+const loaded = new Map()
+const predicateOf = async (name) => {
+  if (typeof unit[name] === 'function') return unit[name]
+  const file = evidenceWhere.get(name)
+  if (!file) return undefined
+  const dist = path.join(ROOT, file.replace(/^src\//, 'dist/').replace(/\.ts$/, '.js'))
+  if (!fs.existsSync(dist)) return undefined
+  const mod = loaded.get(dist) ?? await import(dist)
+  loaded.set(dist, mod)
+  return typeof mod[name] === 'function' ? mod[name] : undefined
+}
 const results = new Map()
 for (const c of caps) {
   if (!c.evidence || results.has(c.evidence)) continue
-  const f = unit[c.evidence]
+  const f = await predicateOf(c.evidence)
   if (typeof f !== 'function') { results.set(c.evidence, 'missing'); continue }
   if (/Live|Fetch/.test(c.evidence)) { results.set(c.evidence, 'live'); continue }
   try {
     let v = f()
     // a predicate over a value (x?: ReturnType<typeof qpuXOf>) is asked of the builder's own output
-    const builder = unit[c.evidence.replace(/Holds$/, 'Of')]
+    const builder = unit[c.evidence.replace(/Holds$/, 'Of')] ?? await predicateOf(c.evidence.replace(/Holds$/, 'Of'))
     if (v === false && typeof builder === 'function') {
       if (builder.length > 0) { results.set(c.evidence, 'on-call'); continue }
       const built = builder()
@@ -139,7 +155,7 @@ pages.comparison = frontmatter('comparison', 'Comparison', 'What @uuidna/qpu doe
   `| CMS on the edge | ${pcf ? `${pcf.combinations} Next.js + Payload configurations on Workers` : '—'} | — | — | — | — | — |`,
   `| License | CC-BY-NC-ND-4.0 (non-commercial, no derivatives) | Apache-2.0 | Apache-2.0 | commercial service | Apache-2.0 | per provider |`,
   '', '## Sources', '', ...sources.map(([t, u]) => `- [${t}](${u})`), '',
-  `Live cross-checks of qpu's own claims against CERN, Zenodo, ORCID and NIST: ${cross ? `${cross.agree} of ${cross.of} agree` : '—'} (see [state](state.md)).`, '',
+  `Live cross-checks of qpu's own claims against CERN, Zenodo, ORCID and NIST: ${cross ? `${cross.when}: ${cross.agree} of ${cross.of} agree` : '—'} (see [state](state.md)).`, '',
 ].join('\n')
 
 // ---- state -------------------------------------------------------------------------------------------------------
@@ -153,7 +169,7 @@ pages.state = frontmatter('state', 'State', `Current state of @uuidna/qpu ${pkg.
   lean && `| Lean theorems served / recomputed | ${lean.served} / ${lean.recomputed} of ${lean.theorems} | [lean-receipt.json](../lean-receipt.json) |`,
   fuse && `| API registry fused | ${fuse.reached} of ${fuse.listed} APIs, ${fuse.formulas?.produced ?? '—'} cross formulas | [fuse-receipt.json](../fuse-receipt.json) |`,
   pcf && `| Payload on Cloudflare | ${pcf.combinations} combinations, ${pcf.typechecked.ok} of ${pcf.typechecked.bases} bases type-check | [payload-cf-receipt.json](../payload-cf-receipt.json) |`,
-  cross && `| Live cross-proof | ${cross.agree} of ${cross.of} claims agree; differ: ${cross.differ.join(', ')} | [cross-receipt.json](../cross-receipt.json) |`,
+  cross && `| Live cross-proof | ${cross.when}: ${cross.agree} of ${cross.of} claims agree; differ: ${cross.differ.join(', ') || 'none'} | [cross-receipt.json](../cross-receipt.json) |`,
   '', '## Open', '', ...issues.map((x) => `- **${x.title}.** ${x.detail}${x.evidence ? ` Evidence: ${x.evidence}` : ''}`), '',
 ].filter((x) => x !== undefined && x !== false).join('\n')
 

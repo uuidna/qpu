@@ -14,7 +14,7 @@ const b = (id: string, formula: string, value: number, holds: boolean, name: str
 export class BankruptcyFormulas {
   /** THE DIVIDEND as a percentage — cents on the dollar paid to creditors. value ⌊estate · 100 / claims⌋. */
   static dividend(estate: number, claims: number): CrossFormula { return b('bankruptcy-dividend', 'dividend(estate, claims) = ⌊estate · 100 / claims⌋', claims > 0 ? Math.min(100, Math.floor((estate * 100) / claims)) : 0, nat(estate, claims) && claims > 0, 'dividend', [estate, claims]) }
-  /** THE SHORTFALL: claims the estate cannot meet. value max(0, claims − estate). */
+  /** THE SHORTFALL: claims the estate cannot meet — the claims exceed the estate. value max(0, claims − estate). */
   static shortfall(claims: number, estate: number): CrossFormula { return b('bankruptcy-shortfall', 'shortfall(claims, estate) = max(0, claims − estate)', Math.max(0, claims - estate), nat(claims, estate), 'shortfall', [claims, estate]) }
   /** SECURED PRIORITY: the secured creditors are paid first, up to the estate. value min(secured, estate). */
   static priority(secured: number, estate: number): CrossFormula { return b('bankruptcy-priority', 'priority(secured, estate) = min(secured, estate)', Math.min(secured, estate), nat(secured, estate), 'priority', [secured, estate]) }

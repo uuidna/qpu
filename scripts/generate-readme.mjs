@@ -15,6 +15,7 @@ import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
+import { qpuAnalyticsOf, qpuPublicOf } from '../dist/quantum/processing/unit/zeropage.js'
 import { clayOf, wingOf } from '../dist/core/showcase.js'
 import { mintOf, vertices } from './lattice-values.mjs'
 // every family and door registers on import, as on the host, so the summary counts what clients reach
@@ -202,20 +203,32 @@ And every row of every other receipt that does not hold, as the receipt names it
 
 ${next.join('\n')}`
 
+const clayRegister = qpuAnalyticsOf()
+const clayRegisterTable = [
+  '| Count | Integer |',
+  '|---|---:|',
+  ...['seed', 'coins', 'n', 'rays', 'clay', 'modulus', 'riemann', 'bsd', 'hodge', 'navierStokes', 'pVsNp', 'yangMills', 'hz', 'low', 'high', 'amplitudes', 'fused', 'next', 'plane'].map((key) => `| ${key} | ${num(clayRegister[key])} |`),
+].join('\n')
 const summary = `An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (\`{ "qpu": { "type": "http",
 "url": "https://qpu.uuidna.com/mcp" } }\`), as a package (\`npm install @uuidna/qpu\`), or as a container.
 
+${qpuPublicOf(clayRegister).lines.join('\n\n')}
+
+${clayRegisterTable}
+
 ${glance}
 
-Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23091364](https://doi.org/10.5281/zenodo.23091364). License: CC-BY-NC-ND-4.0
+Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).`
 
 // Zenodo shows .zenodo.json's description as HTML: the same summary, its table as a table
 const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const inline = (t) => esc(t).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
 const rowsHtml = glance.split('\n').filter((l) => l.startsWith('|') && !/^\|---/.test(l)).map((l, i) => `<tr>${l.slice(1, -1).split(' | ').map((c) => `<${i ? 'td' : 'th'}>${inline(c.trim())}</${i ? 'td' : 'th'}>`).join('')}</tr>`).join('')
-const [intro, , ...tail] = summary.split('\n\n')
+const blocks = summary.split('\n\n')
+const intro = blocks[0] ?? ''
+const tail = blocks.slice(1).filter((block) => !block.startsWith('| Capability'))
 const zenodoPath = path.join(ROOT, '.zenodo.json')
 const zenodo = JSON.parse(fs.readFileSync(zenodoPath, 'utf8'))
 zenodo.description = `<p>${inline(intro.replace(/\n/g, ' '))}</p><table>${rowsHtml}</table>${tail.map((t) => `<p>${inline(t.replace(/\n/g, ' '))}</p>`).join('')}`

@@ -1,6 +1,7 @@
 /**
- * Automated Versioning via Cross-Domain Formulas
- * Semantic versioning driven by change analysis
+ * The next version is a suggestion. The base is the latest version of this package published on npm, and a feature
+ * opens the next v1.<minor>.0, forward only. Nothing is written unless a human passes that exact version string.
+ * A version-lock refusal restores the file; it does not choose a different version.
  */
 
 import { execSync } from 'child_process'
@@ -97,8 +98,11 @@ function decideVersionBump(analysis: ChangeAnalysis): 'major' | 'minor' | 'patch
 }
 
 // ============================================================================
-// VERSION BUMP IMPLEMENTATION
+// VERSION BUMP — suggestion only, from the published version
 // ============================================================================
+
+/** v1.<minor>.<digit>, the same scheme as scripts/version-lock.mjs. Major is 1, state is one digit, 0 is LTS. */
+const VERSION = /^1\.(0|[1-9][0-9]*)\.[0-9]$/
 
 function bumpVersion(current: Version, bump: 'major' | 'minor' | 'patch'): Version {
   switch (bump) {
@@ -113,109 +117,125 @@ function bumpVersion(current: Version, bump: 'major' | 'minor' | 'patch'): Versi
 }
 
 function parseVersion(versionStr: string): Version {
-  const match = versionStr.match(/v?(\d+)\.(\d+)\.(\d+)/)
-  if (!match) return { major: 0, minor: 0, patch: 1 }
-  return {
-    major: parseInt(match[1], 10),
-    minor: parseInt(match[2], 10),
-    patch: parseInt(match[3], 10)
-  }
+  const bare = versionStr.trim().replace(/^v/, '')
+  const parts = bare.split('.')
+  if (!VERSION.test(bare) || parts.length !== 3) throw new Error(`${versionStr} is not v1.<minor>.<digit>`)
+  return { major: Number(parts[0]), minor: Number(parts[1]), patch: Number(parts[2]) }
 }
 
 function formatVersion(v: Version): string {
-  return `v${v.major}.${v.minor}.${v.patch}`
+  return `${v.major}.${v.minor}.${v.patch}`
+}
+
+function isForward(from: string, to: string): boolean {
+  const [a = 0, b = 0, c = 0] = from.split('.').map(Number)
+  const [d = 0, e = 0, f = 0] = to.split('.').map(Number)
+  return d > a || (d === a && (e > b || (e === b && f > c)))
+}
+
+/**
+ * One next suggestion. A feature opens the next minor at LTS (state 0), forward only, from the version passed in —
+ * the latest published version, never the working tree. Pure: it does not read or write a file.
+ */
+export function suggestNextVersion(published: string): string {
+  const bare = published.trim().replace(/^v/, '')
+  const suggestion = formatVersion(bumpVersion(parseVersion(bare), 'minor'))
+  if (!isForward(bare, suggestion)) throw new Error(`${suggestion} is not forward from ${bare}`)
+  return suggestion
+}
+
+/** Latest published version from `npm view <name> version`. There is no fallback to package.json. */
+export function readPublishedVersion(name: string): string {
+  let out = ''
+  try {
+    out = execSync(`npm view ${JSON.stringify(name)} version --json`, {
+      stdio: ['ignore', 'pipe', 'pipe'],
+    }).toString().trim()
+  } catch (e) {
+    const err = e as { stderr?: Buffer; message?: string }
+    const why = err.stderr?.toString().trim() || err.message || 'no registry answer'
+    throw new Error(`npm view ${name} version failed: ${why}`)
+  }
+  let parsed: unknown
+  try { parsed = JSON.parse(out) } catch { parsed = undefined }
+  const version = typeof parsed === 'string' ? parsed : ''
+  if (!VERSION.test(version)) throw new Error(`npm view ${name} version returned ${out || 'nothing'}, not a published v1.<minor>.<digit>`)
+  return version
 }
 
 // ============================================================================
 // AUTOMATED VERSIONING
 // ============================================================================
 
-export async function autoVersion(): Promise<{
+export async function autoVersion(approved?: string): Promise<{
+  published: string
+  suggestion: string
   currentVersion: string
   newVersion: string
   bumpType: string
   analysis: ChangeAnalysis
   tagged: boolean
+  wrote: boolean
 }> {
-  console.log('\n🔄 AUTOMATED VERSIONING')
-  console.log('═══════════════════════════════════════════════════════════════')
-
-  // 1. Get current version
-  const pkgJson = JSON.parse(readFileSync('package.json', 'utf8'))
-  const currentVer = parseVersion(pkgJson.version)
-  console.log(`\nCurrent version: ${formatVersion(currentVer)}`)
-
-  // 2. Analyze changes
+  const prior = readFileSync('package.json', 'utf8')
+  const pkg = JSON.parse(prior) as { name: string; version: string }
+  const published = readPublishedVersion(pkg.name)
+  const suggestion = suggestNextVersion(published)
   const analysis = analyzeChanges()
-  console.log(`\nChange analysis:`)
-  console.log(`  Breaking: ${analysis.breaking ? '✓' : '✗'}`)
-  console.log(`  Features: ${analysis.features ? '✓' : '✗'}`)
-  console.log(`  Fixes: ${analysis.fixes ? '✓' : '✗'}`)
-  console.log(`  Refactoring: ${analysis.refactoring ? '✓' : '✗'}`)
-  console.log(`  Efficiency: ${analysis.efficiency ? '✓' : '✗'}`)
-  console.log(`  Docs: ${analysis.documentation ? '✓' : '✗'}`)
+  const held = pkg.version
 
-  // 3. Decide version bump via cross-domain formula
-  const bumpType = decideVersionBump(analysis)
-  console.log(`\nVersion bump formula result: ${bumpType}`)
+  console.log('\nNEXT VERSION (suggestion)')
+  console.log('═══════════════════════════════════════════════════════════════')
+  console.log(`Published on npm: ${published}`)
+  console.log(`Suggestion: ${suggestion} (a feature opens the next minor; forward only)`)
+  console.log(`Working tree: ${held}`)
+  console.log(`Change analysis: features ${analysis.features ? 'yes' : 'no'}, fixes ${analysis.fixes ? 'yes' : 'no'} (does not choose the number)`)
 
-  if (bumpType === 'none') {
-    console.log('✓ No version bump needed')
-    return {
-      currentVersion: formatVersion(currentVer),
-      newVersion: formatVersion(currentVer),
-      bumpType: 'none',
-      analysis,
-      tagged: false
-    }
+  const unchanged = {
+    published,
+    suggestion,
+    currentVersion: held,
+    newVersion: held,
+    bumpType: 'minor' as const,
+    analysis,
+    tagged: false,
+    wrote: false,
   }
 
-  // 4. Apply bump
-  const newVer = bumpVersion(currentVer, bumpType)
-  const newVersionStr = formatVersion(newVer)
-  console.log(`\nNew version: ${newVersionStr}`)
+  // A suggestion is not a write. The human approves by passing this exact version string.
+  if (approved !== suggestion) {
+    console.log(approved === undefined
+      ? `Not written. Approve by passing the exact version ${suggestion}.`
+      : `Not written. ${approved} is not the suggestion ${suggestion}.`)
+    return unchanged
+  }
 
-  // 5. Update package.json — only if the version lock allows it (scheme, forward, previous released on npm)
-  const priorJson = readFileSync('package.json', 'utf-8')
-  pkgJson.version = newVersionStr.substring(1) // Remove 'v' prefix
-  writeFileSync('package.json', JSON.stringify(pkgJson, null, 2) + '\n')
+  if (held === suggestion) {
+    console.log(`${suggestion} is already the working tree version. package.json was not rewritten.`)
+    return unchanged
+  }
+
+  const rewritten = prior.replace(/("version"\s*:\s*")[^"]+(")/, `$1${suggestion}$2`)
+  if (rewritten === prior) throw new Error('package.json has no version to approve')
+  writeFileSync('package.json', rewritten)
   try {
     execSync('node scripts/version-lock.mjs', { stdio: 'inherit' })
   } catch {
-    writeFileSync('package.json', priorJson)
-    return {
-      currentVersion: formatVersion(currentVer),
-      newVersion: formatVersion(currentVer),
-      bumpType,
-      analysis,
-      tagged: false
-    }
+    writeFileSync('package.json', prior)
+    console.log(`version-lock refused ${suggestion}. package.json restored to ${held}. That refusal does not choose a version; the suggestion stays ${suggestion}.`)
+    return unchanged
   }
-  console.log('✓ Updated package.json')
+  console.log(`✓ Updated package.json to the approved version ${suggestion}`)
 
-  // 6. Create git tag
   try {
-    execSync(`git add package.json`)
-    execSync(`git commit -m "Release: ${newVersionStr}"`)
-    execSync(`git tag -a ${newVersionStr} -m "Release ${newVersionStr}"`)
-    console.log(`✓ Created tag: ${newVersionStr}`)
-
-    return {
-      currentVersion: formatVersion(currentVer),
-      newVersion: newVersionStr,
-      bumpType,
-      analysis,
-      tagged: true
-    }
+    execSync('git add package.json')
+    execSync(`git commit -m "Release: v${suggestion}"`)
+    execSync(`git tag -a v${suggestion} -m "Release v${suggestion}"`)
+    console.log(`✓ Created tag: v${suggestion}`)
+    return { ...unchanged, newVersion: suggestion, tagged: true, wrote: true }
   } catch (e) {
     console.log(`⚠️  Tag creation failed: ${(e as Error).message}`)
-    return {
-      currentVersion: formatVersion(currentVer),
-      newVersion: newVersionStr,
-      bumpType,
-      analysis,
-      tagged: false
-    }
+    return { ...unchanged, newVersion: suggestion, tagged: false, wrote: true }
   }
 }
 
@@ -237,21 +257,16 @@ export async function statusVersion(): Promise<void> {
       .toString()
       .trim()
 
-    console.log(`\nCurrent version: v${pkgJson.version}`)
+    const published = readPublishedVersion(pkgJson.name)
+    const suggestion = suggestNextVersion(published)
+    const bumpType = decideVersionBump(analyzeChanges())
+
+    console.log(`\nPublished on npm: ${published}`)
+    console.log(`Suggestion: ${suggestion} (not written)`)
+    console.log(`Working tree: ${pkgJson.version}`)
     console.log(`Last tag: ${lastTag}`)
     console.log(`Commits since tag: ${commitsSinceTag}`)
-
-    if (parseInt(commitsSinceTag) > 0) {
-      const analysis = analyzeChanges()
-      const bumpType = decideVersionBump(analysis)
-      if (bumpType !== 'none') {
-        const current = parseVersion(pkgJson.version)
-        const next = bumpVersion(current, bumpType)
-        console.log(`\n⚠️  Version update pending:`)
-        console.log(`  Run: npm run version:auto`)
-        console.log(`  Will bump to: ${formatVersion(next)} (${bumpType})`)
-      }
-    }
+    console.log(`Commit reading: ${bumpType} (informational; the suggestion is taken from the published version)`)
   } catch (e) {
     console.log(`Error: ${(e as Error).message}`)
   }
@@ -279,10 +294,7 @@ export async function statusVersion(): Promise<void> {
  * Refactoring only → NO BUMP (quality without feature change)
  * Docs only → NO BUMP (documentation)
  *
- * Advantages:
- * ✓ Semantic versioning automatically enforced
- * ✓ No manual version bumping
- * ✓ Version matches actual changes
- * ✓ Cross-domain aware (quality improvements recognized)
- * ✓ Cost-efficient (single formula-based decision)
+ * The number shown is one suggestion: a feature opens the next minor from the latest version published on npm,
+ * forward only. It is written only when a human passes that exact version. Commit keywords do not choose it,
+ * and a version-lock refusal does not choose it either.
  */

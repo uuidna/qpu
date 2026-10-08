@@ -1,5 +1,5 @@
 ---
-uuid: "f734ef57-4203-80ff-b29d-db6e9b93b0b1"
+uuid: "f734ef57-4203-70ff-b29d-db6e9b93b0b1"
 title: "Formal proof (Lean)"
 description: "index.lean served theorem by theorem, recomputed and typeset. 12 capabilities; 4 of 4 evidence predicates hold."
 og:title: "Formal proof (Lean) — @uuidna/qpu"
@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Formal proof (Lean)"
 twitter:description: "index.lean served theorem by theorem, recomputed and typeset. 12 capabilities; 4 of 4 evidence predicates hold."
-version: "1.0.1"
+version: "1.1.0"
 ---
 # Formal proof (Lean)
 
@@ -30,14 +30,14 @@ index.lean served theorem by theorem, recomputed and typeset.
 | [`leanModelOf`](../src/quantum/processing/unit/lean-eval.ts#L137) | builder | The defs of the Lean source: `def x : Nat := e` and `def f (p q : Nat) : Nat := e`. | — | — |
 | [`leanRecomputeOf`](../src/quantum/processing/unit/lean-eval.ts#L274) | builder | Decide one theorem statement exactly, over the stated range when it binds variables, and typeset it. | — | — |
 | [`leanTheoremBlocksOf`](../src/quantum/processing/unit/lean-eval.ts#L316) | builder | Every theorem of the source as [name, text]: the `theorem` line and its continuation lines, whitespace folded. | — | — |
-| [`qpuCrossReadingOf`](../src/quantum/processing/unit/index.ts#L3131) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `qpuCrossReadingHolds` | holds |
-| [`qpuHexDiscoverOf`](../src/quantum/processing/unit/index.ts#L12109) | builder | The formulas discover each other: every Lean formula is evaluated over the lattice's own constants (each 0-arity formula's value, bounded so loops stay small), results are grouped by value, and a value reached by formulas of two or more families is a discovered relation. | `qpuHexDiscoverHolds` | holds |
+| [`qpuCrossReadingOf`](../src/quantum/processing/unit/index.ts#L2514) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `qpuCrossReadingHolds` | holds |
+| [`qpuHexDiscoverOf`](../src/quantum/processing/unit/index.ts#L10678) | builder | The formulas discover each other: every Lean formula is evaluated over the lattice's own constants (each 0-arity formula's value, bounded so loops stay small), results are grouped by value, and a value reached by formulas of two or more families is a discovered relation. | `qpuHexDiscoverHolds` | holds |
 | [`qpuLeanOf`](../src/quantum/processing/unit/proof.ts#L52) | builder | Every theorem of index.lean as a row: statement verbatim, LaTeX, reading, cross reading, statement UUID and holds recomputed by lean-eval. | `qpuLeanHolds` | holds |
-| [`qpuLeanSourceOf`](../src/quantum/processing/unit/index.ts#L3048) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `qpuLeanSourceHolds` | holds |
-| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L9032) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
+| [`qpuLeanSourceOf`](../src/quantum/processing/unit/index.ts#L2431) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `qpuLeanSourceHolds` | holds |
+| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8026) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
 | [`leanCallOf`](../src/quantum/processing/unit/lean-eval.ts#L334) | function | Call one definition of the Lean source by name with natural-number arguments, under Lean's Nat semantics. | — | — |
 | [`leanLinksOf`](../src/quantum/processing/unit/lean-eval.ts#L352) | function | The formulas discover each other: every declaration's statement and proof are read for the other declarations they name. | — | — |
-| [`qpuStatementUuidOf`](../src/quantum/processing/unit/index.ts#L3035) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
+| [`qpuStatementUuidOf`](../src/quantum/processing/unit/index.ts#L2418) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
 
 ## Lean families
 
@@ -65,15 +65,15 @@ Every formula evaluated over the lattice constants; values reached by formulas o
 
 | Value | Families | Ways (hex) |
 |---|---|---|
-| 8 | Qpu.Hybrid, Qpu.Lattice, Qpu.Mint, Qpu.Shor | vertices() `72af0c7c-7000-8000-8000-000000000000`<br>hybridSpeed() `61b7d2d2-6000-8000-8000-000000000000`<br>mintOf(3) `c8372ae3-1000-8000-9000-000000000003` |
-| 32 | Qpu.Lattice, Qpu.Mint, Qpu.Shor | bits() `72af0c7c-9000-8000-8000-000000000000`<br>mintOf(5) `c8372ae3-1000-8000-9000-000000000005`<br>powMod(2, 5, 352) `d5716b2a-1000-8000-b000-000200050160` |
-| 14 | Qpu.Coil, Qpu.Lattice | faces() `72af0c7c-a000-8000-8000-000000000000`<br>coil() `a13a4aae-3000-8000-8000-000000000000` |
-| 16 | Qpu.Mint, Qpu.Shor | mintOf(4) `c8372ae3-1000-8000-9000-000000000004`<br>powMod(2, 7, 28) `d5716b2a-1000-8000-b000-00020007001c`<br>powMod(2, 4, 32) `d5716b2a-1000-8000-b000-000200040020` |
-| 21 | Qpu.Mint, Qpu.Shor | chooseOf(7, 2) `c8372ae3-2000-8000-a000-000007000002`<br>chooseOf(7, 5) `c8372ae3-2000-8000-a000-000007000005`<br>powMod(7, 2, 28) `d5716b2a-1000-8000-b000-00070002001c` |
-| 25 | Qpu.Physics, Qpu.Shor | powMod(3, 4, 28) `d5716b2a-1000-8000-b000-00030004001c`<br>powMod(3, 14, 32) `d5716b2a-1000-8000-b000-0003000e0020`<br>powMod(3, 28, 28) `d5716b2a-1000-8000-b000-0003001c001c` |
-| 28 | Qpu.Lattice, Qpu.Mint | plane() `72af0c7c-d000-8000-8000-000000000000`<br>chooseOf(8, 2) `c8372ae3-2000-8000-a000-000008000002` |
-| 128 | Qpu.Mint, Qpu.Shor | mintOf(7) `c8372ae3-1000-8000-9000-000000000007`<br>powMod(2, 7, 352) `d5716b2a-1000-8000-b000-000200070160`<br>powMod(28, 3, 352) `d5716b2a-1000-8000-b000-001c00030160` |
-| 256 | Qpu.Mint, Qpu.Shor | mintOf(8) `c8372ae3-1000-8000-9000-000000000008`<br>powMod(2, 8, 352) `d5716b2a-1000-8000-b000-000200080160`<br>powMod(2, 28, 352) `d5716b2a-1000-8000-b000-0002001c0160` |
-| 4294967296 | Qpu.Lattice, Qpu.Mint | amplitudes() `72af0c7c-b000-8000-8000-000000000000`<br>mintOf(32) `c8372ae3-1000-8000-9000-000000000020` |
+| 8 | Qpu.Hybrid, Qpu.Lattice, Qpu.Mint, Qpu.Shor | vertices() `72af0c7c-7000-2000-8000-000000000000`<br>hybridSpeed() `61b7d2d2-6000-3000-8000-000000000000`<br>mintOf(3) `c8372ae3-1000-1000-9000-000000000003` |
+| 32 | Qpu.Lattice, Qpu.Mint, Qpu.Shor | bits() `72af0c7c-9000-7000-8000-000000000000`<br>mintOf(5) `c8372ae3-1000-8000-9000-000000000005`<br>powMod(2, 5, 352) `d5716b2a-1000-2000-b000-000200050160` |
+| 14 | Qpu.Coil, Qpu.Lattice | faces() `72af0c7c-a000-7000-8000-000000000000`<br>coil() `a13a4aae-3000-7000-8000-000000000000` |
+| 16 | Qpu.Mint, Qpu.Shor | mintOf(4) `c8372ae3-1000-2000-9000-000000000004`<br>powMod(2, 7, 28) `d5716b2a-1000-1000-b000-00020007001c`<br>powMod(2, 4, 32) `d5716b2a-1000-5000-b000-000200040020` |
+| 21 | Qpu.Mint, Qpu.Shor | chooseOf(7, 2) `c8372ae3-2000-6000-a000-000007000002`<br>chooseOf(7, 5) `c8372ae3-2000-3000-a000-000007000005`<br>powMod(7, 2, 28) `d5716b2a-1000-5000-b000-00070002001c` |
+| 25 | Qpu.Physics, Qpu.Shor | powMod(3, 4, 28) `d5716b2a-1000-3000-b000-00030004001c`<br>powMod(3, 14, 32) `d5716b2a-1000-1000-b000-0003000e0020`<br>powMod(3, 28, 28) `d5716b2a-1000-4000-b000-0003001c001c` |
+| 28 | Qpu.Lattice, Qpu.Mint | plane() `72af0c7c-d000-5000-8000-000000000000`<br>chooseOf(8, 2) `c8372ae3-2000-3000-a000-000008000002` |
+| 128 | Qpu.Mint, Qpu.Shor | mintOf(7) `c8372ae3-1000-5000-9000-000000000007`<br>powMod(2, 7, 352) `d5716b2a-1000-1000-b000-000200070160`<br>powMod(28, 3, 352) `d5716b2a-1000-1000-b000-001c00030160` |
+| 256 | Qpu.Mint, Qpu.Shor | mintOf(8) `c8372ae3-1000-6000-9000-000000000008`<br>powMod(2, 8, 352) `d5716b2a-1000-1000-b000-000200080160`<br>powMod(2, 28, 352) `d5716b2a-1000-5000-b000-0002001c0160` |
+| 4294967296 | Qpu.Lattice, Qpu.Mint | amplitudes() `72af0c7c-b000-2000-8000-000000000000`<br>mintOf(32) `c8372ae3-1000-6000-9000-000000000020` |
 
 Generated from the inline docs by `npm run docs`. Index: [docs](README.md).

@@ -142,7 +142,7 @@ export const preCommit = async (): Promise<void> => {
     console.log(`  ✗ ${typeErrors.length} staged type error(s) — commit blocked (fail fast)`)
     process.exit(1)
   }
-  // HARD FAIL on a qpu_ prefix: the qpu MCP surface is bare-only; a qpu_-prefixed served tool must never creep in.
+  // HARD FAIL on a qpu_ prefix: a qpu_-prefixed served tool must never creep in; the qpu MCP surface is bare-only.
   const toolNames = await import(pathToFileURL(path.join(ROOT, 'dist/quantum/processing/unit/index.js')).href)
     .then((m) => ((m as { qpuMcpToolsListOf?: () => { name: string }[] }).qpuMcpToolsListOf?.() ?? []).map((t) => t.name), () => [] as string[])
   const prefixed = toolNames.filter((n) => n.startsWith('qpu_'))

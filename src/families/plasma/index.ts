@@ -6,9 +6,12 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
  *  magnetic beta, and the plasma frequency. Crosses to `energy` — plasma is energy held in a field. A measure. */
 
 const PROOF = 'plasma arithmetic (temperature, density, Debye length, confinement, ionization, fusion Q, magnetic beta, plasma frequency); the fourth state of matter as numbers; a measure crossed to energy'
+const HUE = 'a 64-bit simhash (Charikar; Manku, Jain, Sarma, WWW 2007: 8 bytes a page, Hamming ≤ 3 on 8 billion pages) painted on the wheel'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 const c = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
   crossFormulaOf({ id, src: 'plasma', dst: 'energy', formula, value, proof: PROOF, ...extra }, holds, { name: `plasma.${name}`, params })
+const hueTo = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
+  crossFormulaOf({ id, src: 'plasma', dst: 'colortheory', formula, value, proof: HUE, ...extra }, holds, { name: `plasma.${name}`, params })
 
 export class PlasmaFormulas {
   /** TEMPERATURE: energy shared over the particles. value ⌊energy / particles⌋. */
@@ -27,7 +30,14 @@ export class PlasmaFormulas {
   static magnetic(pressure: number, field: number): CrossFormula { return c('plasma-magnetic', 'magnetic(pressure, field) = ⌊pressure / field⌋', field > 0 ? Math.floor(pressure / field) : 0, nat(pressure, field) && field > 0, 'magnetic', [pressure, field]) }
   /** PLASMA FREQUENCY proxy: density times charge. value density_ · charge. */
   static frequency(density_: number, charge: number): CrossFormula { return c('plasma-frequency', 'frequency(density_, charge) = density_ · charge', density_ * charge, nat(density_, charge), 'frequency', [density_, charge]) }
+
+  /** BYTES of a fingerprint: the minimum cost of one page. 64 bits is 8 bytes — the width that indexed 8 billion pages. */
+  static bytes(bits: number): CrossFormula { return hueTo('plasma-bytes', 'bytes(bits) = ⌊bits / 8⌋', bits > 0 ? Math.floor(bits / 8) : 0, nat(bits) && bits > 0 && bits % 8 === 0, 'bytes', [bits], { bits }) }
+  /** HUE of a Hamming distance on a fingerprint of `bits`: degrees around the wheel. Distance 0 sits at hue 0. */
+  static hue(distance: number, bits: number): CrossFormula { return hueTo('plasma-hue', 'hue(distance, bits) = ⌊distance · 360 / bits⌋', bits > 0 ? Math.floor((distance * 360) / bits) : 0, nat(distance, bits) && bits > 0 && distance <= bits, 'hue', [distance, bits]) }
+  /** NEAR: 1 when two fingerprints differ in at most `k` bits. The web-scale choice is k = 3 on 64 bits. Holds only then. */
+  static near(distance: number, k: number): CrossFormula { const ok = distance <= k; return hueTo('plasma-near', 'near(distance, k) = [distance ≤ k]', ok ? 1 : 0, nat(distance, k) && ok, 'near', [distance, k], { lead: true, note: 'a near public fingerprint is a lead; law.reviewed before any advice' }) }
 }
 
-for (const name of ['confinement', 'debye', 'density', 'frequency', 'fusion', 'ionization', 'magnetic', 'temperature'] as const)
+for (const name of ['bytes', 'confinement', 'debye', 'density', 'frequency', 'fusion', 'hue', 'ionization', 'magnetic', 'near', 'temperature'] as const)
   qpuHexRegisterOf('plasma', name, (PlasmaFormulas[name] as (...x: unknown[]) => unknown).bind(PlasmaFormulas))

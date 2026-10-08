@@ -7,7 +7,7 @@
 import { operationRegistry, listOperations, getOperation, executeOperation } from './operations.js'
 import { ExecutionResult } from './types.js'
 import { uuid as registry } from './uuid.js'
-import { qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuAddressReferrerOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 
 // ============================================================================
 // UUID OPERATION INDEX
@@ -21,7 +21,7 @@ interface UUIDIndexEntry {
 }
 
 const referrerOf = (inputs?: Record<string, unknown>): string | undefined =>
-  typeof inputs?.referrer === 'string' && inputs.referrer.length > 0 ? inputs.referrer : undefined
+  qpuAddressReferrerOf(typeof inputs?.referrer === 'string' ? inputs.referrer : undefined)
 
 /**
  * Addresses every core operation by its content UUID (registered in the UUID registry) and executes it by UUID, with a quantum receipt per execution.

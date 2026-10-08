@@ -1,7 +1,8 @@
 /**
- * THE FILE-LEVEL RULES, AS A SUITE: what the repository's files must say, read from the files. No manual limits in the
- * Worker config; the bundler's sideEffects equal to the families registry; the registry equal to the modules that
- * register; every family within its nibble. Discovered by glob (scripts/*.test.mjs), run by the one workflow.
+ * THE FILE-LEVEL RULES, AS A SUITE: what the repository's files must say, read from the files. The Worker config's
+ * only limit is the platform CPU ceiling for one request; a sweep is split into slices. The bundler's sideEffects
+ * equal the families registry; the registry equals the modules that register; every family stays within its nibble.
+ * Discovered by glob (scripts/*.test.mjs), run by the one workflow.
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
@@ -11,9 +12,11 @@ import { join, dirname } from 'node:path'
 const ROOT = join(dirname(new URL(import.meta.url).pathname), '..')
 const read = (f) => readFileSync(join(ROOT, f), 'utf8')
 
-test('the Worker config names no manual limit: the work is split instead', () => {
+test('the Worker config names no sweep limit: the work is split instead', () => {
   const w = JSON.parse(read('wrangler.jsonc').replace(/^\s*\/\/.*$/gm, ''))
-  assert.equal(w.limits, undefined, 'no limits block: a sweep that needs one is split into slices')
+  // the paid CPU ceiling for one request (a cold Payload render exceeds the 30s default and 503s). A sweep is not
+  // given a longer budget: it is split into slices.
+  assert.deepEqual(w.limits, { cpu_ms: 300000 }, 'the only limit is the one-request CPU ceiling')
 })
 
 test('the families registry is exactly the modules that register, and the bundler is told to keep each', () => {

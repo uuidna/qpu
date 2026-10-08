@@ -67,7 +67,7 @@ const REPO_WORKER = {
   // no workers.dev or preview address: every request there was a scanner, billed as an invocation
   workers_dev: false,
   preview_urls: false,
-  routes: [{ pattern: 'qpu.uuidna.com', custom_domain: true }, { pattern: '*.uuidna.com/*', zone_name: 'uuidna.com' }],
+  routes: [{ pattern: 'qpu.uuidna.com', custom_domain: true }, { pattern: 'mcp.psg.bg', custom_domain: true }, { pattern: '*.uuidna.com/*', zone_name: 'uuidna.com' }],
   vars: { QPU_HOST: 'qpu.uuidna.com' },
   kv_namespaces: [{ binding: 'STORAGE', id: 'b341b266250444198e54508ca3aee53a', preview_id: 'b341b266250444198e54508ca3aee53a' }],
   r2_buckets: [{ binding: 'BLOBS', bucket_name: 'uuidna-qpu-blobs' }, { binding: 'MEDIA', bucket_name: 'uuidna-qpu-payload-media' }],
@@ -77,7 +77,7 @@ const REPO = {
   // sentry dropped from the served build: it is disabled at runtime without SENTRY_DSN yet `import * as Sentry from
   // '@sentry/nextjs'` bundles its whole tree (226 MB in node_modules) into the Worker, pushing the render over the
   // 128 MB limit. Cloudflare observability covers the host. Re-add '+sentry' here if a DSN-backed deployment needs it.
-  key: 'opennext/qpu-raid/r2/none/ecommerce+form-builder+import-export+mcp+multi-tenant+nested-docs+redirects+search+seo+stripe',
+  key: 'opennext/qpu-raid/r2/none/next/ecommerce+form-builder+import-export+mcp+multi-tenant+nested-docs+redirects+search+seo+stripe',
   app: {
     root: SRC, collections: REPO_COLLECTIONS, globals: REPO_GLOBALS, registries: REPO_REGISTRIES, adminUser: 'users', title: 'UUIDNA QPU',
     targets: {
@@ -91,7 +91,7 @@ const REPO = {
     },
     pluginOptions: {
       'multi-tenant': "tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin'",
-      ecommerce: "products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, ...defaultCollection.fields] }) }",
+      ecommerce: "products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, { name: 'organisation', type: 'text' }, { name: 'use', type: 'textarea' }, { name: 'licence', type: 'text', defaultValue: 'CC-BY-NC-ND-4.0' }, { name: 'billedAccount', type: 'text' }, { name: 'cloudflareAccountId', type: 'text' }, ...defaultCollection.fields] }) }",
       seo: "uploadsCollection: 'media', generateTitle: ({ doc }) => seoTitleOf(doc), generateDescription: ({ doc }) => seoDescriptionOf(doc), generateURL: ({ doc }) => seoURLOf(doc)",
     },
     imports: ['seoTitleOf', 'seoDescriptionOf', 'seoURLOf'].map((name) => ({ name, from: './collections/Docs' })),

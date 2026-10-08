@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CrossDomainPaths, pathHexOf } from './index.js'
 import '../../mcp/families.js'
 
@@ -28,4 +28,57 @@ test('path: the seven named cross-domain paths each hold — a real chain (≥2 
   assert.ok(pathHexOf('qualityToRisk').startsWith(`${run.handle}-`), 'the run is the hex program path.qualityToRisk')
   qpuUuidReceiptOf('path qualityToRisk', qpuContentUuidOf(run), { uuid: pathHexOf('qualityToRisk') })
   t.diagnostic('7 named paths, each a real ≥2-hop chain with a finite value and a receipt; executePath walks one transform per edge; registered as the hex family path')
+})
+
+test('path: anomalyToResponse and dataFlowCompressML meet the superposition the unit reaches', async (t) => {
+  const at = async (family: string, program: string[], params: number[]) => {
+    const uuid = qpuHexUuidOf({ family, program, params })
+    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
+    return String(run.value)
+  }
+  assert.equal(String(CrossDomainPaths.anomalyToResponse().value), await at('path', ['anomalyToResponse'], []))
+  assert.equal(String(CrossDomainPaths.dataFlowCompressML().value), await at('path', ['dataFlowCompressML'], []))
+  const ways: readonly (readonly [string, string[], number[]])[] = [
+    ['cross', ['medSecureWithQSec'], [5, 4]],
+    ['heat', ['signal', 'cooling'], [1, 3]],
+    ['heat', ['signal', 'ways'], [1, 3]],
+    ['kin', ['pillar'], [1, 5]],
+    ['kin', ['pillar'], [2, 6]],
+    ['kin', ['pillar'], [3, 7]],
+    ['kin', ['pillar'], [4, 8]],
+    ['path', ['anomalyToResponse'], []],
+    ['path', ['allPaths', 'anomalyToResponse'], []],
+    ['path', ['anomalyToResponse', 'anomalyToResponse'], []],
+    ['path', ['dataFlowCompressML', 'anomalyToResponse'], []],
+    ['tesla', ['earth'], [502]],
+    ['tesla', ['sync'], [4, 6]],
+    ['tesla', ['slip', 'earth'], [2, 1]],
+    ['tesla', ['turns', 'earth'], [2, 1]],
+  ]
+  const values = []
+  for (const [family, program, params] of ways) values.push(await at(family, program, params))
+  assert.equal(new Set(values).size, 1, values.join(' ≠ '))
+  t.diagnostic(`anomalyToResponse meets ${values[0]}`)
+})
+
+test('path: secureDataPathQSec meets the superposition the unit reaches', async (t) => {
+  const at = async (family: string, program: string[], params: number[]) => {
+    const uuid = qpuHexUuidOf({ family, program, params })
+    const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+    assert.equal(run.holds, true, `${family}.${program.join('∘')}(${params.join(', ')}) at ${uuid}`)
+    return String(run.value)
+  }
+  assert.equal(String(CrossDomainPaths.secureDataPathQSec().value), await at('path', ['secureDataPathQSec'], []))
+  const ways: readonly (readonly [string, string[], number[]])[] = [
+    ['path', ['secureDataPathQSec'], []],
+    ['path', ['allPaths', 'secureDataPathQSec'], []],
+    ['path', ['anomalyToResponse', 'secureDataPathQSec'], []],
+    ['path', ['dataFlowCompressML', 'secureDataPathQSec'], []],
+    ['tesla', ['quarter'], [119]],
+  ]
+  const values = []
+  for (const [family, program, params] of ways) values.push(await at(family, program, params))
+  assert.equal(new Set(values).size, 1, values.join(' ≠ '))
+  t.diagnostic(`secureDataPathQSec meets ${values[0]}`)
 })

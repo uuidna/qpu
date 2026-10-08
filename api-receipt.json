@@ -1,6 +1,5 @@
 {
  "kind": "api-receipt",
- "when": "2026-10-03",
  "registry": "https://api.apis.guru/v2/list.json",
  "listed": 2529,
  "walked": 2529,
@@ -29,8 +28,56 @@
   "the document names no server: resolved to a path, not an address": 40,
   "timeout": 3
  },
- "seconds": 415,
- "holds": true,
+ "holds": false,
+ "uuid": "ac1d99b9-7fcf-8767-b3bc-d27ef12041ec",
+ "receipt": "64cc1301-059c-8d95-97d1-383a361b1ec5",
+ "legal": {
+  "licence": "CC-BY-NC-ND-4.0",
+  "device": "exact-amplitudes",
+  "advantage": false,
+  "lawful": {
+   "value": 1,
+   "holds": true,
+   "handle": "12658319",
+   "uuid": "12658319-4000-3000-9000-000000000000"
+  },
+  "fidelity": {
+   "lead": true,
+   "handle": "12658319",
+   "uuid": "12658319-3000-3000-8000-000000000000"
+  },
+  "violation": {
+   "lead": true,
+   "handle": "12658319",
+   "uuid": "12658319-f000-2000-8000-000000000000"
+  },
+  "standing": {
+   "lead": true,
+   "handle": "12658319",
+   "uuid": "12658319-d000-7000-8000-000000000000"
+  },
+  "citation": {
+   "package": "zeropoint-node",
+   "version": "1.0.0",
+   "date": "2025-07-08",
+   "sequence": "1-2-4-8-7-5",
+   "latest": "1.5.8",
+   "latestDate": "2026-09-07",
+   "sequenceNow": "0\\1\\2\\4\\8/7/5/3\\6\\9/0\\1",
+   "doi": "10.5281/zenodo.22178675",
+   "augustVersion": "1.0.3",
+   "augustDate": "2026-08-19",
+   "statement": "clay solved in august",
+   "words": "This file is a naming scheme. It solves none of the problems it names",
+   "orcid": "https://orcid.org/0009-0000-7312-9778",
+   "holds": false,
+   "lead": true
+  },
+  "holds": false
+ },
+ "when": "2026-10-07",
+ "host": "https://qpu.uuidna.com",
+ "seconds": 6,
  "rows": [
   {
    "name": "1forge.com",
@@ -15206,7 +15253,5 @@
    "value": "428 operations · 400 https://rest.zuora.com/events/event-triggers",
    "receipt": ""
   }
- ],
- "uuid": "ac1d99b9-7fcf-8767-b3bc-d27ef12041ec",
- "receipt": "64cc1301-059c-8d95-97d1-383a361b1ec5"
+ ]
 }

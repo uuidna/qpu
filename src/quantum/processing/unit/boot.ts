@@ -7,9 +7,13 @@
 // serve until tools/call prove returns holds: true on this machine.
 //
 //   node dist/quantum/processing/unit/boot.js            → prove, then serve on $PORT, else the unit's bootPort
-//   node dist/quantum/processing/unit/boot.js --prove    → prove and exit 0/1 (the boot's receipt; the container's HEALTHCHECK)
+//   node dist/quantum/processing/unit/boot.js --prove    → prove and exit 0/1 (the boot's receipt)
+//   node dist/quantum/processing/unit/boot.js --health   → the container probe: GET /health, then exit 0/1
 import { createServer, type IncomingMessage } from 'node:http'
 import worker, { bootPort } from './index.js'
+// the same registration worker.js performs: every hex family, fused door and MCP method. Without it the local
+// unit answers an empty data door and an unregistered lattice, and a gate run against this boot is not the unit.
+import '../../../mcp/families.js'
 
 const ORIGIN = 'https://qpu.uuidna.com'
 const env = { QPU_HOST: 'qpu.uuidna.com' }
@@ -31,6 +35,14 @@ const prove = async (): Promise<boolean> => {
   const holds = j.result?.structuredContent?.holds ?? j.result?.holds
   console.log(`qpu boot — ${holds === true ? '✓ prove holds' : '✗ prove does not hold'} on ${process.platform}/${process.arch}, node ${process.version}`)
   return holds === true
+}
+
+if (process.argv.includes('--health')) {
+  const r = await worker.fetch(new Request(`${ORIGIN}/health`), env)
+  const j = (await r.json()) as { status?: unknown; holds?: unknown }
+  const ok = r.status === 200 && j.status === 'healthy' && j.holds === true
+  console.log(`qpu boot — ${ok ? 'healthy' : 'not healthy'}`)
+  process.exit(ok ? 0 : 1)
 }
 
 const proven = await prove()

@@ -48,6 +48,11 @@
       "import": "./dist/db/payload-qpu.js",
       "default": "./dist/db/payload-qpu.js"
     },
+    "./payload/plugins": {
+      "types": "./dist/payload/plugins/index.d.ts",
+      "import": "./dist/payload/plugins/index.js",
+      "default": "./dist/payload/plugins/index.js"
+    },
     "./*.js": {
       "types": "./dist/*.d.ts",
       "import": "./dist/*.js",
@@ -72,6 +77,7 @@
     "!dist/**/*.d.ts",
     "dist/quantum/processing/unit/boot.d.ts",
     "dist/db/payload-qpu.d.ts",
+    "dist/payload/plugins/index.d.ts",
     "dist/quantum/processing/unit/index.d.ts",
     "dist/quantum/processing/unit/docdb.d.ts",
     "dist/quantum/processing/unit/lean-eval.d.ts",

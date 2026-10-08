@@ -1,517 +1,543 @@
 {
  "kind": "gate-receipt",
- "when": "2026-10-03",
  "mode": "push",
  "holds": false,
+ "leads": [],
+ "uuid": "",
+ "receipt": "",
+ "legal": {
+  "licence": "CC-BY-NC-ND-4.0",
+  "device": "exact-amplitudes",
+  "advantage": false,
+  "lawful": {
+   "value": 1,
+   "holds": true,
+   "handle": "12658319",
+   "uuid": "12658319-4000-3000-9000-000000000000"
+  },
+  "fidelity": {
+   "lead": true,
+   "handle": "12658319",
+   "uuid": "12658319-3000-3000-8000-000000000000"
+  },
+  "violation": {
+   "lead": true,
+   "handle": "12658319",
+   "uuid": "12658319-f000-2000-8000-000000000000"
+  },
+  "standing": {
+   "lead": true,
+   "handle": "12658319",
+   "uuid": "12658319-d000-7000-8000-000000000000"
+  },
+  "citation": {
+   "package": "zeropoint-node",
+   "version": "1.0.0",
+   "date": "2025-07-08",
+   "sequence": "1-2-4-8-7-5",
+   "latest": "1.5.8",
+   "latestDate": "2026-09-07",
+   "sequenceNow": "0\\1\\2\\4\\8/7/5/3\\6\\9/0\\1",
+   "doi": "10.5281/zenodo.22178675",
+   "augustVersion": "1.0.3",
+   "augustDate": "2026-08-19",
+   "statement": "clay solved in august",
+   "words": "This file is a naming scheme. It solves none of the problems it names",
+   "orcid": "https://orcid.org/0009-0000-7312-9778",
+   "holds": false,
+   "lead": true
+  },
+  "holds": false
+ },
+ "when": "2026-10-07",
+ "host": "https://qpu.uuidna.com",
+ "seconds": 6,
  "rows": [
   {
    "name": "gate.push(0)",
    "pass": false,
-   "value": "13 gate failing Qpu.Coil",
-   "receipt": "ae785da8-809f-8eaf-8b7d-ee6010101422"
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[0]}}: 503",
+   "receipt": ""
   },
   {
    "name": "gate.push(14)",
-   "pass": true,
-   "value": "8 gate",
-   "receipt": "31aa56ba-fcdf-86bb-80e3-39d9fc6a0d9d"
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[14]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(28)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[28]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(42)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[42]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(56)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[56]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(70)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[70]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(84)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[84]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(98)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[98]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(112)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[112]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(126)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[126]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(140)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[140]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(154)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[154]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(168)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[168]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(182)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[182]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(196)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[196]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(210)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[210]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(224)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[224]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(238)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[238]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(252)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[252]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(266)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[266]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(280)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[280]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(294)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[294]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(308)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[308]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(322)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[322]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(336)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[336]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(350)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[350]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(364)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[364]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(378)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[378]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(392)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[392]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(406)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[406]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(420)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[420]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(434)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[434]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(448)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[448]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(462)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[462]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(476)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[476]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(490)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[490]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(504)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[504]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(518)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[518]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(532)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[532]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(546)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[546]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(560)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[560]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(574)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[574]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(588)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[588]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(602)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[602]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(616)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[616]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(630)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[630]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(644)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[644]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(658)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[658]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(672)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[672]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(686)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[686]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(700)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[700]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(714)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[714]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(728)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[728]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(742)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[742]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(756)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[756]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(770)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[770]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(784)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[784]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(798)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[798]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(812)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[812]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(826)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[826]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(840)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[840]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(854)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[854]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(868)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[868]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(882)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[882]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(896)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[896]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(910)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[910]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(924)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[924]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(938)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[938]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(952)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[952]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(966)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[966]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(980)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[980]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(994)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[994]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1008)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1008]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1022)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1022]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1036)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1036]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1050)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1050]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1064)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1064]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1078)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1078]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1092)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1092]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1106)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1106]}}: 503",
+   "receipt": ""
+  },
+  {
+   "name": "gate.push(1120)",
+   "pass": false,
+   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[1120]}}: 503",
+   "receipt": ""
   }
- ],
- "leads": [
-  {
-   "formula": "cross.deploymentToObs",
-   "apis": [
-    "azure.com:azsadmin-Deployment",
-    "azure.com:deploymentmanager"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 591,
-    "apis": "2/25",
-    "values": 0
-   },
-   "tag": "unverified after 13 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9762
-  },
-  {
-   "formula": "cross.enterpriseMetricsViaObs",
-   "apis": [
-    "azure.com:EnterpriseKnowledgeGraph-EnterpriseKnowledgeGraphSwagger",
-    "azure.com:monitor-metrics_API"
-   ],
-   "efforts": {
-    "oeis": "1/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 591,
-    "apis": "2/46",
-    "values": 0
-   },
-   "tag": "crossed by OEIS A000012",
-   "detection": 0.9762
-  },
-  {
-   "formula": "cross.mlOnObsForPrediction",
-   "apis": [
-    "1forge.com",
-    "ably.io:platform"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 591,
-    "apis": "2/112",
-    "values": 0
-   },
-   "tag": "unverified after 13 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9762
-  },
-  {
-   "formula": "cross.observabilityToML",
-   "apis": [
-    "ebi.ac.uk",
-    "visualcrossing.com:weather"
-   ],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "none",
-    "involutes": true,
-    "research": 591,
-    "apis": "2/4",
-    "values": 0
-   },
-   "tag": "unverified after 6 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.822
-  },
-  {
-   "formula": "cross.quantumToEnterprise",
-   "apis": [
-    "azure.com:EnterpriseKnowledgeGraph-EnterpriseKnowledgeGraphSwagger",
-    "ebi.ac.uk",
-    "id4i.de",
-    "meraki.com"
-   ],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "none",
-    "involutes": true,
-    "research": 591,
-    "apis": "4/23",
-    "values": 0
-   },
-   "tag": "unverified after 8 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.8999
-  },
-  {
-   "formula": "cross.testCoverageToQuality",
-   "apis": [
-    "azure.com:devtestlabs-DTL",
-    "ebi.ac.uk",
-    "googleapis.com:prod_tt_sasportal",
-    "lambdatest.com",
-    "netlicensing.io"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 591,
-    "apis": "5/16",
-    "values": 0
-   },
-   "tag": "unverified after 16 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.99
-  },
-  {
-   "formula": "audit.paymentSecurityFusion",
-   "apis": [
-    "1password.com:events",
-    "6-dot-authentiqio.appspot.com",
-    "adyen.com:CheckoutService"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 145,
-    "apis": "3/112",
-    "values": 0
-   },
-   "tag": "unverified after 14 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9822
-  },
-  {
-   "formula": "audit.supplyChainRiskFormula",
-   "apis": [
-    "azure.com:blockchain",
-    "azure.com:sql-blobAuditing",
-    "googleapis.com:webrisk",
-    "nexmo.com:audit"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": false,
-    "research": 145,
-    "apis": "4/9",
-    "values": 0
-   },
-   "tag": "unverified after 15 checks: inconsistent across perspectives — a manipulation until crossed",
-   "detection": 0.9866
-  },
-  {
-   "formula": "hd.design",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "none",
-    "involutes": true,
-    "research": 123,
-    "apis": "0/0",
-    "values": 0
-   },
-   "tag": "unverified after 4 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.6836
-  },
-  {
-   "formula": "hd.jdm",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 123,
-    "apis": "0/0",
-    "values": 64
-   },
-   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9578
-  },
-  {
-   "formula": "clay.pVsNp",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "fixed",
-    "involutes": true,
-    "research": 3,
-    "apis": "0/0",
-    "values": 0
-   },
-   "tag": "crossed by seal fixed",
-   "detection": 0.6836
-  },
-  {
-   "formula": "clay.yangMills",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/0",
-    "seal": "none",
-    "involutes": true,
-    "research": 3,
-    "apis": "0/0",
-    "values": 0
-   },
-   "tag": "unverified after 3 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.5781
-  },
-  {
-   "formula": "crypt.knownAnswers",
-   "apis": [
-    "azure.com:mariadb-DataEncryptionKeys",
-    "azure.com:mysql-DataEncryptionKeys",
-    "azure.com:postgresql-DataEncryptionKeys",
-    "azure.com:sql-ManagedInstanceEncryptionProtectors",
-    "azure.com:sql-encryptionProtectors"
-   ],
-   "efforts": {
-    "oeis": "0/0",
-    "seal": "none",
-    "involutes": true,
-    "research": 18,
-    "apis": "5/6",
-    "values": 0
-   },
-   "tag": "unverified after 8 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.8999
-  },
-  {
-   "formula": "crypt.nonceCollision",
-   "apis": [
-    "azure.com:mariadb-DataEncryptionKeys",
-    "azure.com:mysql-DataEncryptionKeys",
-    "azure.com:postgresql-DataEncryptionKeys",
-    "azure.com:sql-ManagedInstanceEncryptionProtectors",
-    "azure.com:sql-encryptionProtectors"
-   ],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "none",
-    "involutes": true,
-    "research": 18,
-    "apis": "5/5",
-    "values": 0
-   },
-   "tag": "unverified after 9 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9249
-  },
-  {
-   "formula": "crypt.tagForgery",
-   "apis": [
-    "azure.com:mariadb-DataEncryptionKeys",
-    "azure.com:mysql-DataEncryptionKeys",
-    "azure.com:postgresql-DataEncryptionKeys",
-    "azure.com:sql-ManagedInstanceEncryptionProtectors",
-    "azure.com:sql-encryptionProtectors",
-    "googleapis.com:tagmanager",
-    "instagram.com"
-   ],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "none",
-    "involutes": true,
-    "research": 18,
-    "apis": "7/17",
-    "values": 0
-   },
-   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9578
-  },
-  {
-   "formula": "signal.detection",
-   "apis": [
-    "azure.com:applicationinsights-componentProactiveDetection_API",
-    "azure.com:signalr"
-   ],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "none",
-    "involutes": true,
-    "research": 28,
-    "apis": "2/5",
-    "values": 0
-   },
-   "tag": "unverified after 6 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.822
-  },
-  {
-   "formula": "signal.qber",
-   "apis": [
-    "azure.com:signalr"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 28,
-    "apis": "1/2",
-    "values": 0
-   },
-   "tag": "unverified after 12 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9683
-  },
-  {
-   "formula": "merkaba.merkaba",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 9,
-    "apis": "0/0",
-    "values": 0
-   },
-   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9578
-  },
-  {
-   "formula": "merkaba.spin",
-   "apis": [
-    "spinitron.com"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 9,
-    "apis": "1/2",
-    "values": 0
-   },
-   "tag": "unverified after 12 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9683
-  },
-  {
-   "formula": "merkaba.star",
-   "apis": [
-    "telematicssdk.com"
-   ],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "fixed",
-    "involutes": true,
-    "research": 9,
-    "apis": "1/5",
-    "values": 1
-   },
-   "tag": "crossed by seal fixed",
-   "detection": 0.7627
-  },
-  {
-   "formula": "merkaba.steps",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 9,
-    "apis": "0/0",
-    "values": 0
-   },
-   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9578
-  },
-  {
-   "formula": "merkaba.trinity",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 9,
-    "apis": "0/0",
-    "values": 0
-   },
-   "tag": "unverified after 11 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9578
-  },
-  {
-   "formula": "holo.forgery",
-   "apis": [],
-   "efforts": {
-    "oeis": "0/1",
-    "seal": "none",
-    "involutes": true,
-    "research": 1,
-    "apis": "0/0",
-    "values": 0
-   },
-   "tag": "unverified after 4 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.6836
-  },
-  {
-   "formula": "path.executePath",
-   "apis": [
-    "wikipathways.org"
-   ],
-   "efforts": {
-    "oeis": "0/8",
-    "seal": "none",
-    "involutes": true,
-    "research": 628,
-    "apis": "1/1",
-    "values": 0
-   },
-   "tag": "unverified after 12 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9683
-  },
-  {
-   "formula": "path.obsToAction",
-   "apis": [
-    "azure.com:hdinsight-scriptActions",
-    "azure.com:monitor-actionGroups_API",
-    "azure.com:recoveryservicesbackup-jobs",
-    "azure.com:sql-jobs",
-    "azure.com:streamanalytics-streamingjobs",
-    "googleapis.com:mybusinessplaceactions"
-   ],
-   "efforts": {
-    "oeis": "0/0",
-    "seal": "none",
-    "involutes": true,
-    "research": 628,
-    "apis": "6/23",
-    "values": 0
-   },
-   "tag": "unverified after 9 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.9249
-  },
-  {
-   "formula": "path.performanceToMetrics",
-   "apis": [
-    "azure.com:monitor-metrics_API"
-   ],
-   "efforts": {
-    "oeis": "0/0",
-    "seal": "none",
-    "involutes": true,
-    "research": 628,
-    "apis": "1/17",
-    "values": 0
-   },
-   "tag": "unverified after 4 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.6836
-  },
-  {
-   "formula": "path.qualityToRisk",
-   "apis": [
-    "googleapis.com:webrisk",
-    "wikipathways.org"
-   ],
-   "efforts": {
-    "oeis": "0/0",
-    "seal": "none",
-    "involutes": true,
-    "research": 628,
-    "apis": "2/3",
-    "values": 0
-   },
-   "tag": "unverified after 5 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.7627
-  },
-  {
-   "formula": "path.quantumSecurityChain",
-   "apis": [
-    "1password.com:events",
-    "6-dot-authentiqio.appspot.com",
-    "azure.com:blockchain",
-    "azure.com:hardwaresecuritymodules-dedicatedhsm",
-    "azure.com:security"
-   ],
-   "efforts": {
-    "oeis": "0/0",
-    "seal": "none",
-    "involutes": true,
-    "research": 628,
-    "apis": "5/66",
-    "values": 0
-   },
-   "tag": "unverified after 8 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.8999
-  },
-  {
-   "formula": "path.secureDataPathQSec",
-   "apis": [
-    "1password.com:events",
-    "6-dot-authentiqio.appspot.com"
-   ],
-   "efforts": {
-    "oeis": "0/0",
-    "seal": "none",
-    "involutes": true,
-    "research": 628,
-    "apis": "2/546",
-    "values": 1
-   },
-   "tag": "unverified after 5 checks: consistent from every perspective but confirmed by no other domain — a manipulation until crossed",
-   "detection": 0.7627
-  }
- ],
- "deep": {
-  "readings": 1044
- },
- "uuid": "c36badd2-f016-8663-ae04-9a263fd1772c",
- "receipt": "909e4fd8-fb51-8d9c-964a-db139cb28b00"
+ ]
 }

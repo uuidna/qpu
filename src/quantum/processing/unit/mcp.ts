@@ -37,6 +37,7 @@ import {
   qpuEncryptOf,
   qpuFacesOf,
   qpuForgeOf,
+  qpuHexMissOf,
   qpuHexUuidOf,
   qpuHostsHolds,
   qpuImproveLiveOf,
@@ -44,7 +45,11 @@ import {
   qpuManHolds,
   qpuManOf,
   qpuManPageOf,
+  qpuFoldOf,
+  qpuMcpShownHolds,
   qpuMcpShownOf,
+  qpuRecognizeHolds,
+  qpuRecognizeOf,
   qpuMcpToolsListOf,
   qpuMessageHolds,
   qpuNetworkToolsOf,
@@ -67,6 +72,7 @@ import {
   seed,
   seedSandboxOf,
   shorFactorOf,
+  tenOf,
   theorem,
   toolItemOf,
   toolListOf,
@@ -142,12 +148,14 @@ export const qpuToolsOf = onceOf(() => {
     type: 'object',
     properties: {
       man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
+      full: { type: 'boolean', description: '{ full: true } expands the recognition into the document.' },
       live: { type: 'boolean', description: '{ live: true } sequence then prove. fetch Request Response.' },
       sequence: { type: 'boolean', description: '{ sequence: true } train then improve then compete then prove. Live. Memory.' }}} as const
   const competeSchema = {
     type: 'object',
     properties: {
       man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
+      full: { type: 'boolean', description: '{ full: true } expands the recognition into the document.' },
       live: { type: 'boolean', description: '{ live: true } learn CERN occupancy. fetch Request Response. Memory.' },
       sequence: { type: 'boolean', description: '{ sequence: true } train then improve then compete then prove. Live. Memory.' },
       team: { type: 'string', description: 'read or call. Omit for both teams.' }}} as const
@@ -155,6 +163,7 @@ export const qpuToolsOf = onceOf(() => {
     type: 'object',
     properties: {
       man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
+      full: { type: 'boolean', description: '{ full: true } expands the recognition into the document.' },
       name: { type: 'string', description: 'Tool name to forge. Omit to inspect the in-memory sandbox.' },
       team: { type: 'string', description: 'read or call.' },
       ray: { type: 'number', description: 'Agent ray 0..6.' },
@@ -332,10 +341,11 @@ export const qpuFailureOf = (e: unknown, where = 'call') => {
 }
 
 /** EVERY CAPABILITY THROUGH EVERY DOOR. tools/list is sealed (theorem agents_mcp_tools), and an MCP client calls only
- *  what it was listed; so each listed door also takes an address or another door. The rule is one schema, added to
- *  every listed door: { hex } runs a hex program (a UUID, or { family, program, params }), { door, arguments } answers
- *  as any door the registries hold or any formula as family.formula, { doors: true } lists them all. Nothing is named
- *  here: the doors are read from the registries and the formulas from the families.
+ *  what it was listed; so each listed door also takes an address or another door. The schema is one, and it rides on
+ *  the man page rather than on tools/list — the list stays under a KiB per door. { hex } runs a hex program (a UUID,
+ *  or { family, program, params }), { door, arguments } answers as any door the registries hold or any formula as
+ *  family.formula, { doors: true } lists them all. Nothing is named here: the doors are read from the registries and
+ *  the formulas from the families.
  * @wing agents
  * @kind builder
  */
@@ -348,6 +358,7 @@ export const qpuThroughSchemaOf = (inputSchema: Record<string, unknown>): Record
     arguments: { type: 'object', description: 'The arguments for door (params for a formula).' },
     doors: { type: 'boolean', description: '{ doors: true } lists every door and every formula reachable through this one.' },
     errors: { type: 'boolean', description: '{ errors: true, from, take } answers the errors and warnings of a slice of the live checks at once, each with what resolves it; next names the slice after.' },
+    full: { type: 'boolean', description: '{ full: true } expands the recognition into the document.' },
   },
 })
 
@@ -419,7 +430,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
     try { return qpuHexUuidOf({ family, program: [name], params: params.every((x) => x === n - n) ? [] : params }) } catch { return undefined }
   }
   const shown = async (payload: unknown) => {
-    const r = qpuMcpShownOf(name, payload) as { _meta?: Record<string, unknown> }
+    const r = qpuMcpShownOf(name, payload, `${unit.origin}/mcp`, args.full === true) as { _meta?: Record<string, unknown> }
     const hex = hexOf()
     return hex && r._meta ? { ...r, _meta: { ...r._meta, hex } } : r
   }
@@ -429,26 +440,42 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
   if (typeof args.hex === 'string' || (typeof args.hex === 'object' && args.hex !== null)) {
     // a client whose schema only knows a string sends the object as JSON: it is the same request
     const h = (typeof args.hex === 'string' && args.hex.trim().startsWith('{') ? JSON.parse(args.hex) : args.hex) as string | { family?: unknown; program?: unknown; params?: unknown }
+    const referrer = typeof args.referrer === 'string' ? args.referrer : undefined
     try {
       const uuid = typeof h === 'string' ? h : qpuHexUuidOf({ family: String(h.family ?? ''), program: Array.isArray(h.program) ? h.program.map(String) : String(h.program ?? '').split(/[+,]/).filter(Boolean), params: Array.isArray(h.params) ? h.params.map(Number) : [] })
-      return shown(await qpuHexRunOf(uuid, undefined, env))
+      return shown(await qpuHexRunOf(uuid, referrer, env))
     } catch (e) {
-      return shown({ kind: 'hex' as const, holds: false as const, denied: 'program', reading: (e as Error).message })
+      const family = typeof h === 'object' && h !== null && typeof h.family === 'string' ? h.family : ''
+      const params = typeof h === 'object' && h !== null && Array.isArray(h.params) ? h.params.map(Number) : []
+      const next = family.length > n - n ? qpuHexMissOf(family, params) : undefined
+      return shown({ kind: 'hex' as const, holds: false as const, denied: 'program', reading: (e as Error).message, ...(next ? { next } : {}) })
     }
   }
   if (typeof args.door === 'string' && args.door !== name) {
     // the door's arguments as a client sends them: an object, an object serialised as a JSON string, or flat beside
     // door itself (a client that knows only this door's schema passes what it was given)
     const parsed = (() => {
-      if (typeof args.arguments === 'object' && args.arguments !== null) return args.arguments as Record<string, unknown>
-      if (typeof args.arguments === 'string') { try { const v = JSON.parse(args.arguments); if (v && typeof v === 'object') return v as Record<string, unknown> } catch {} }
+      if (typeof args.arguments === 'object' && args.arguments !== null && !Array.isArray(args.arguments)) return args.arguments as Record<string, unknown>
+      if (typeof args.arguments === 'string') { try { const v = JSON.parse(args.arguments); if (v && typeof v === 'object' && !Array.isArray(v)) return v as Record<string, unknown> } catch {} }
       return undefined
     })()
     const flat = Object.fromEntries(Object.entries(args).filter(([k]) => !['door', 'arguments', 'hex', 'doors', 'errors'].includes(k)))
     const inner = parsed ?? flat
+    const referrer = typeof args.referrer === 'string' ? args.referrer : typeof inner.referrer === 'string' ? inner.referrer : undefined
+    const carried = { ...(referrer ? { referrer } : {}), ...(args.full === true ? { full: true as const } : {}) }
     const formula = /^(.+)\.([A-Za-z0-9_]+)$/.exec(args.door)
-    if (formula && qpuHexFamiliesOf().get(formula[1]!)?.some((f) => f.name === formula[2])) return qpuMcpCallOf(name, { hex: { family: formula[1], program: [formula[2]], params: inner.params ?? [] } }, env, auth)
-    return qpuMcpCallOf(args.door, inner, env, auth)
+    if (formula) {
+      const family = formula[1]!
+      const program = formula[2]!
+      const formulas = qpuHexFamiliesOf().get(family)
+      const params = Array.isArray(inner.params) ? (inner.params as unknown[]).map(Number) : []
+      if (formulas?.some((f) => f.name === program)) return qpuMcpCallOf(name, { hex: { family, program: [program], params }, ...carried }, env, auth)
+      if (formulas) {
+        const next = qpuHexMissOf(family, params)
+        return shown({ kind: 'hex' as const, holds: false as const, denied: 'program' as const, reading: `hex: ${family} has no formula ${program}`, ...(next ? { next } : {}) })
+      }
+    }
+    return qpuMcpCallOf(args.door, { ...inner, ...carried }, env, auth)
   }
   const tool = qpuToolsOf().find((t) => t.name === name)
   if (tool) {
@@ -468,7 +495,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
     return shown(await tool.run(args))
   }
   const fused = FUSED_TOOLS.get(name)
-  if (fused) return shown(await fused.run(args, env))
+  if (fused) return shown(await fused.run(args, env, auth))
   if (name === 'install' || name === 'apk') {
     if (args.man === true) {
       return shown(qpuManPageOf('install',
@@ -527,9 +554,60 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
   return qpuUnknownToolOf(name)
 }
 
+const deviceOn = (value: unknown): string | undefined => {
+  if (!value || typeof value !== 'object') return undefined
+  const bag = value as Record<string, unknown>
+  if (typeof bag.device === 'string') return bag.device
+  const steps = bag.steps
+  if (steps && typeof steps === 'object' && typeof (steps as { device?: unknown }).device === 'string') return (steps as { device: string }).device
+  const circuit = bag.circuit
+  if (circuit && typeof circuit === 'object') return deviceOn(circuit)
+  return undefined
+}
+/** A top-level boolean, number, or short string is the verdict. Recognition may name a large branch; it does not drop these. */
+const verdictKeptOf = (raw: Record<string, unknown>, led: Record<string, unknown>): boolean =>
+  Object.keys(raw).every((key) => {
+    const child = raw[key]
+    if (typeof child === 'boolean' || typeof child === 'number' || child === null) return led[key] === child
+    if (typeof child === 'string' && JSON.stringify(child).length <= mintOf(tenOf(seed))) return led[key] === child
+    return true
+  })
+const recognisedReplyOf = (name: string, raw: unknown): boolean => {
+  if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) return false
+  if (typeof (raw as { then?: unknown }).then === 'function') return true
+  const text = JSON.stringify(raw)
+  const led = qpuRecognizeOf(raw) as Record<string, unknown>
+  const recognition = led.recognition as { kind?: unknown; fold?: unknown; expand?: unknown; device?: unknown } | undefined
+  const shown = JSON.stringify(led)
+  const reply = mintOf(tenOf(seed)) * mintOf(n)
+  const holds = (raw as { holds?: unknown }).holds
+  const device = deviceOn(raw)
+  const expanded = qpuMcpShownOf(name, raw, `${unit.origin}/mcp`, true)
+  return (
+    recognition?.kind === 'recognition' &&
+    Object.keys(led)[n - n] === 'recognition' &&
+    recognition.fold === qpuFoldOf(text) &&
+    recognition.expand === '{ full: true }' &&
+    (typeof holds !== 'boolean' || led.holds === holds) &&
+    (device === undefined || recognition.device === device) &&
+    verdictKeptOf(raw as Record<string, unknown>, led) &&
+    shown.length <= reply &&
+    (text.length <= reply || shown.length < text.length) &&
+    JSON.stringify(expanded.structuredContent) === text &&
+    qpuMcpShownHolds(expanded)
+  )
+}
+
 export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
   const capacity = qpuCapacityOf()
   const circuit = qpuCircuitOf()
+  const proved = qpuProveOf()
+  const proveShown = qpuMcpShownOf('prove', proved)
+  const proveFull = qpuMcpShownOf('prove', proved, `${unit.origin}/mcp`, true)
+  const proveLed = proveShown.structuredContent as { recognition?: { device?: unknown; enthalpy?: number; heat?: number; free?: number }; holds?: unknown }
+  const reading = qpuReadingOf()
+  const recognisedReading = qpuRecognizeOf(reading) as { holds?: boolean; fused?: number; next?: number; docs?: unknown; circuit?: { only?: { holds?: boolean } } }
+  const listed = [...qpuToolsOf(), ...qpuCybersecurityToolsOf()]
   return (
     qpuQuantumHolds() &&
     qpuLeanHolds() &&
@@ -580,6 +658,8 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
     m.cybersecurity.encrypt.identity === true &&
     m.cybersecurity.encrypt.holds === true &&
     qpuMcpToolsListOf().length === mintOf(n) + mintOf(n) &&
+    // THE CONNECT BILL, the same bytes examine measures: id 2, compact JSON, under a KiB per door.
+    `{"jsonrpc":"2.0","id":2,"result":${JSON.stringify({ resultType: 'complete', tools: qpuMcpToolsListOf() })}}`.length < qpuMcpToolsListOf().length * mintOf(tenOf(seed)) &&
     qpuMcpToolsListOf().slice(n - n, mintOf(n)).every((t, i) => t.name === toolNames[i]) &&
     qpuMcpToolsListOf().slice(mintOf(n)).every((t, i) => t.name === cryptoToolNames[i]) &&
     // the GitHub/Cloudflare tool hints, proved and not merely set, so the conformance is automated and cannot drift:
@@ -619,6 +699,22 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
     m.prove.shor.p * m.prove.shor.q === m.prove.shor.n &&
     m.prove.src === unit.fuse.lean &&
     qpuHostsHolds() &&
-    qpuDevelopHolds()
+    qpuDevelopHolds() &&
+    qpuRecognizeHolds() &&
+    listed.length === mintOf(n) + mintOf(n) &&
+    listed.every((t) => recognisedReplyOf(t.name, t.run({}))) &&
+    recognisedReplyOf('prove', { kind: 'failure' as const, denied: 'program' as const, holds: false as const, blob: 'z'.repeat(mintOf(tenOf(seed)) * mintOf(n)) }) &&
+    qpuMcpShownHolds(proveShown) &&
+    qpuMcpShownHolds(proveFull) &&
+    proveLed.holds === true &&
+    proveLed.recognition?.device === 'exact-amplitudes' &&
+    (proveLed.recognition?.free ?? n - n) > n - n &&
+    proveLed.recognition?.free === ((proveLed.recognition?.heat ?? n) < (proveLed.recognition?.enthalpy ?? n - n) ? (proveLed.recognition?.enthalpy ?? n - n) - (proveLed.recognition?.heat ?? n) : n - n) &&
+    JSON.stringify(proveFull.structuredContent) === JSON.stringify(proved) &&
+    recognisedReading.holds === true &&
+    recognisedReading.fused === reading.fused &&
+    recognisedReading.next === reading.next &&
+    recognisedReading.circuit?.only?.holds === true &&
+    recognisedReading.docs === undefined
   )
 }

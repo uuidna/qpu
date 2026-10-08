@@ -1,6 +1,6 @@
 ---
 name: qpu-families
-description: Call any of the 1134 QPU formula families (9088 exact-integer formulas) through the MCP by its 8-hex HANDLE — each formula is a hex-program UUID (handle + nibble + params) that recomputes to the same value, so a call is a compact address, idempotent and verifiable, at no token cost. Use when computing or verifying with the QPU over MCP. The handle table is below; call `npm run mcp -- <family>.<formula> '[params]'`.
+description: Call any of the 1134 QPU formula families (9095 exact-integer formulas) through the MCP by its 8-hex HANDLE — each formula is a hex-program UUID (handle + nibble + params) that recomputes to the same value, so a call is a compact address, idempotent and verifiable, at no token cost. Use when computing or verifying with the QPU over MCP. The handle table is below; call `npm run mcp -- <family>.<formula> '[params]'`.
 ---
 
 # QPU families over MCP
@@ -18,7 +18,7 @@ Params are a JSON array (`'[]'` for none). The call routes through `hex` to the 
 
 Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate.crossed", "i": 0 }'` names the next lead; `npm run mcp -- '{ "doors": true }'` lists every door beyond the sixteen sealed tools.
 
-## The 1134 families (9088 tools)
+## The 1134 families (9095 tools)
 
 | family | handle | formulas |
 |---|---|---|
@@ -381,7 +381,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `etymology` | `243e3d51` | `attestationage`/2, `borrowingshare`/2, `cognaterate`/2, `derivationchain`/2, `loanratio`/2, `reconstructionscore`/2, `rootdepth`/2, `soundchange`/2 |
 | `evapotranspiration` | `31b2544c` | `actual`/2, `cropcoefficient`/2, `cropwateruse`/2, `irrigationneed`/2, `netirrigation`/2, `potential`/2, `reference`/2, `waterdeficit`/2 |
 | `events` | `dd63d0ce` | `attendance`/2, `capacity`/2, `conversion`/2, `costperattendee`/2, `engagement`/2, `noshow`/2, `revenue`/2, `satisfaction`/2 |
-| `evidence` | `ae70fc8f` | `admissible`/2, `authentication`/2, `chain`/2, `corroboration`/1, `hearsay`/1, `relevance`/2, `sufficiency`/2, `weight`/2 |
+| `evidence` | `ae70fc8f` | `admissible`/2, `authentication`/2, `chain`/2, `corroboration`/1, `hearsay`/1, `margin`/2, `relevance`/2, `sufficiency`/2, `weight`/2 |
 | `excavation` | `f340cf4a` | `bench`/2, `compaction`/2, `cut`/2, `fill`/2, `haul`/2, `slope`/2, `swell`/2, `volume`/3 |
 | `exchangerate` | `ab91f0f9` | `conversioncombos`/2, `crossrate`/2, `forwardpoints`/2, `peggedmargin`/2, `pippips`/2, `reservemonths`/2, `spread`/2, `volatilitypct`/2 |
 | `exegesis` | `2de8fb00` | `clauseorderings`/2, `lexemecombos`/2, `morphemecount`/2, `parsepaths`/1, `rootmatches`/2, `semanticrange`/2, `senseoptions`/1, `variantreadings`/2 |
@@ -435,7 +435,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `gaming` | `04a23c5c` | `accuracy`/2, `damage`/2, `framerate`/2, `kd`/2, `latency`/1, `score`/2, `winrate`/2, `xp`/2 |
 | `gastroenterology` | `e42cb5d6` | `absorption`/2, `bleeding`/2, `bmi`/2, `clearance`/2, `enzyme`/2, `motility`/2, `ph`/2, `transit`/2 |
 | `gastronomy` | `67cc4481` | `covers`/2, `foodcostpercent`/2, `margin`/2, `menuprice`/2, `platecost`/3, `portioncost`/2, `waste`/2, `yield`/2 |
-| `gate` | `8af97972` | `commit`/1, `crossed`/1, `family`/1, `leads`/0, `proof`/0, `push`/1, `rules`/0, `theorems`/0 |
+| `gate` | `8af97972` | `commit`/1, `crossed`/1, `family`/1, `gaps`/0, `leads`/0, `proof`/0, `push`/1, `rules`/0, `theorems`/0 |
 | `gear` | `674dee71` | `backlash`/2, `mesh`/2, `pairs`/2, `ratio`/2, `rpm`/2, `stages`/1, `teeth`/2, `torque`/2 |
 | `gearing` | `edf48fa9` | `backlashangle`/2, `efficiency`/2, `mechanicaladvantage`/2, `ratio`/2, `reductionstages`/2, `speedout`/2, `toothcount`/2, `torqueout`/2 |
 | `gelatinization` | `572602a2` | `granuleexpansion`/2, `onsettemp`/2, `pasteclarity`/2, `peakviscosity`/2, `setbacktemp`/2, `starchconversion`/2, `swellingratio`/2, `waterabsorption`/2 |
@@ -574,7 +574,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `lastmile` | `7854604c` | `costperstop`/2, `deliverydensity`/2, `detourfactor`/2, `failedratio`/2, `packagespervehicle`/2, `routetime`/2, `stopspermile`/2, `successrate`/2 |
 | `latency` | `af0c6115` | `oneway`/3, `processing`/2, `propagation`/2, `queuing`/2, `roundtrip`/1, `serialization`/2, `total`/2, `transmission`/2 |
 | `lattice` | `58a63987` | `coordinationnumber`/2, `latticevectors`/2, `millerindices`/1, `packingfraction`/2, `planepairs`/2, `points`/3, `symmetryorderings`/1, `unitcells`/2 |
-| `law` | `12658319` | `deadline`/2, `fidelity`/2, `lawful`/1, `limitation`/1, `majority`/2, `notice`/2, `quorum`/2, `redirected`/2, `remedy`/2, `removable`/3, `reviewed`/1, `standing`/1, `supermajority`/3, `violation`/1 |
+| `law` | `12658319` | `deadline`/2, `fast`/2, `fidelity`/2, `lawful`/1, `limitation`/1, `majority`/2, `notice`/2, `quorum`/2, `redirected`/2, `remedy`/2, `removable`/3, `reviewed`/1, `standing`/1, `supermajority`/3, `violation`/1 |
 | `layout` | `9c4f784a` | `aspect`/2, `basis`/1, `columns`/1, `gap`/2, `grow`/2, `order`/2, `span`/2, `track`/2 |
 | `lean` | `24ad8cad` | `changeover`/2, `flow`/2, `kanban`/3, `leadtime`/3, `oee`/3, `pull`/2, `valueadd`/2, `waste`/2 |
 | `learning` | `1a9268ee` | `accuracy`/2, `epochs`/2, `f1`/2, `loss`/2, `overfit`/2, `params`/2, `split`/2, `throughput`/2 |
@@ -796,7 +796,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `piston` | `b7571a94` | `bore`/2, `combos`/2, `compression`/2, `cycles`/2, `displacement`/2, `force`/2, `rings`/2, `stroke`/2 |
 | `planet` | `e7f23bb0` | `axialtilt`/2, `combos`/2, `day`/2, `gravity`/2, `moons`/2, `orbit`/2, `radius`/2, `rings`/2 |
 | `planetology` | `ff8fc46b` | `albedo`/2, `density`/2, `equilibrium`/2, `escapevelocity`/2, `gravity`/2, `hillsphere`/2, `insolation`/2, `roche`/2 |
-| `plasma` | `9c3a8bb0` | `confinement`/2, `debye`/2, `density`/2, `frequency`/2, `fusion`/2, `ionization`/2, `magnetic`/2, `temperature`/2 |
+| `plasma` | `9c3a8bb0` | `bytes`/1, `confinement`/2, `debye`/2, `density`/2, `frequency`/2, `fusion`/2, `hue`/2, `ionization`/2, `magnetic`/2, `near`/2, `temperature`/2 |
 | `platonic` | `68bb082f` | `dual`/1, `edges`/1, `euler`/3, `faces`/1, `meeting`/1, `self`/1, `sides`/1, `vertices`/1 |
 | `podcasting` | `0b6c662a` | `adload`/2, `bitrate`/2, `cadence`/2, `completion`/2, `downloads`/2, `growth`/2, `rank`/2, `retention`/2 |
 | `podiatry` | `b3b3608c` | `arch`/2, `balance`/2, `callus`/1, `gait`/2, `healing`/2, `pressure`/2, `pronation`/1, `stride`/2 |
@@ -880,7 +880,7 @@ Ask a family anything else through its door — `npm run mcp -- '{ "door": "gate
 | `reasoning` | `938f9c45` | `accuracy`/2, `biasrate`/2, `confidencecalibration`/2, `deductionvalidity`/2, `inferencesteps`/2, `responselatency`/2, `syllogismscore`/2, `workingmemoryload`/2 |
 | `receipts` | `3baca467` | `chainlength`/2, `discountpct`/2, `itemcount`/2, `linepairs`/2, `orderings`/1, `subtotal`/2, `taxamount`/2, `total`/2 |
 | `receivables` | `aacf3cc1` | `aging`/2, `baddebt`/2, `collection`/2, `dso`/2, `factoring`/2, `outstanding`/2, `terms`/2, `turnover`/2 |
-| `record` | `9c9327ff` | `arxiv`/1, `collisions`/1, `funding`/1, `jobs`/1, `law`/1, `site`/1 |
+| `record` | `9c9327ff` | `arxiv`/1, `collisions`/1, `funding`/1, `jobs`/1, `law`/1, `prior`/1, `site`/1 |
 | `recovery` | `fb7885d3` | `heartratedrop`/2, `hydrationgap`/2, `musclerepair`/2, `overtrainingindex`/2, `readiness`/2, `recoveryrate`/2, `resttime`/2, `sleepdebt`/2 |
 | `recruitment` | `3b7a96db` | `acceptance`/2, `costperhire`/2, `funnel`/2, `offer`/2, `retention`/2, `sourcing`/2, `timetofill`/2, `yield`/2 |
 | `rectifier` | `6da79e87` | `conductionangle`/2, `diodecount`/2, `efficiency`/2, `formfactor`/2, `loadcombos`/2, `outputvoltage`/2, `pivrating`/2, `ripplefactor`/2 |
