@@ -161,20 +161,19 @@ export const worker = {
     // host pays publishing.royalty on the product.
     const underZone = label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)
     const ownDomain = url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
-    if (url.protocol === 'https:' && (underZone || ownDomain)) {
+    // ONE HANDOFF. A request that is Payload's is this fetch or the named miss. Tenants, /admin and /api all use it.
+    // /admin is app/(payload)/admin/[[...segments]]; REST is app/(payload)/api/[...slug] (docs is a public read).
+    // The unit's own page at / stays qpuPageOf. A missing binding is named; it is not the unit's {"holds":false}.
+    const handToPayload = () => {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
+    if (url.protocol === 'https:' && (underZone || ownDomain)) return handToPayload()
     const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
-    // /api IS PAYLOAD, OVER THE BINDING. Registration, REST and the find-only MCP answer at this one host; the hop is not
-    // billed as a second request and Payload keeps no public route. It answers its own preflight, so this precedes OPTIONS.
-    if (path === '/api' || path.startsWith('/api/')) {
-      if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
-      // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
-      return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
-    }
+    // Payload answers its own preflight, so /admin and /api precede OPTIONS.
+    if (path === '/admin' || path.startsWith('/admin/') || path === '/api' || path.startsWith('/api/')) return handToPayload()
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
     // PAYLOAD IS THE FRONTEND, ON EVERY PATH. A browser asking for a page (GET, text/html) gets Payload's page when
     // Payload holds one at that address; an API client keeps the unit's JSON on the same path; a page Payload does not
@@ -429,9 +428,9 @@ export const worker = {
         description: 'The lattice message door: fourteen lanes, involution routing, no stored state. Posts are proxied and sealed; the door never awaits and keeps nothing.',
       })
     }
-    // EVERY PATH THE UNIT DOES NOT ANSWER IS PAYLOAD'S — the admin, its assets, the CMS pages. The frontend is probed
-    // under a short deadline so a slow or unavailable frontend returns a bounded answer here instead of holding the
-    // request; whatever it answers (a page or its own 404) is kept, and on the deadline the unit's own 404 stands.
+    // A PATH THE UNIT DOES NOT ANSWER, OTHER THAN /admin AND /api (those already left through handToPayload), is a CMS
+    // page. It is probed under a short deadline so a slow frontend does not hold the request; on the deadline the
+    // unit's own 404 stands. / stays qpuPageOf and never reaches here.
     if (env?.PAYLOAD) {
       const page = await Promise.race([
         env.PAYLOAD.fetch(request).catch(() => undefined),
