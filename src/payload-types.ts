@@ -1908,6 +1908,17 @@ export interface Product {
   licence?: string | null;
   billedAccount?: string | null;
   cloudflareAccountId?: string | null;
+  royalty?: {
+    name?: string | null;
+    formula?: string | null;
+    host?: string | null;
+    called?: boolean | null;
+    params?: { sales?: number | null; rate?: number | null } | null;
+    missing?: string | null;
+    value?: number | null;
+    holds?: boolean | null;
+    uuid?: string | null;
+  } | null;
   inventory?: number | null;
   enableVariants?: boolean | null;
   variantTypes?: (string | VariantType)[] | null;
@@ -3660,6 +3671,7 @@ export interface ProductsSelect<T extends boolean = true> {
   licence?: T;
   billedAccount?: T;
   cloudflareAccountId?: T;
+  royalty?: T;
   inventory?: T;
   enableVariants?: T;
   variantTypes?: T;

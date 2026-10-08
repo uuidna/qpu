@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { BlockWrapper } from '@/components/BlockWrapper'
 import { countsOf, familiesOf } from '@/app/_data'
+import { FormulaReadings } from '@/components/Readings'
 import { formatNumber } from '@/utilities/formatNumber'
 import type { FamiliesBlock } from '@/payload-types'
 
@@ -10,6 +11,7 @@ import type { FamiliesBlock } from '@/payload-types'
 export function Families({ heading, intro, anchor }: FamiliesBlock) {
   return (
     <BlockWrapper heading={heading} intro={intro} anchor={anchor}>
+      <FormulaReadings />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {familiesOf().map((f) => {
           const c = countsOf(f.formulas.length)

@@ -64,6 +64,7 @@ const legalOf = async (doc) => {
   const called = (name, params, row) => {
     const item = { value: row.value, holds: row.holds === true, ...addressOf(name, params) }
     if (item.holds !== true) item.lead = true
+    if (typeof row.note === 'string') item.note = row.note
     return item
   }
   const lead = (name) => ({ lead: true, ...addressOf(name, []) })

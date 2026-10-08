@@ -73,9 +73,9 @@ export const repoLeadsOf = ({ folder, dirty, remote, ahead }) => {
   return leads
 }
 
-/** What the archive owes for a version. */
+/** What the archive owes for a version. The working tree's version stays the tag. A held version stays the archive. */
 export const archiveLeadsOf = ({ version, held = [] }) =>
-  held.includes(version) ? [] : [{ source: 'zenodo', what: `${version} is not archived`, owes: 'a published GitHub Release for the tag; Zenodo mints the DOI from it' }]
+  held.includes(version) ? [] : [{ source: 'zenodo', what: `${version} is not archived; archive ${held.length ? held.join(', ') : 'none'}; tag ${version}`, owes: 'a published GitHub Release for the tag; Zenodo mints the DOI from it' }]
 
 /** What the host owes when its own monitor says it is unwell. */
 export const hostLeadsOf = ({ origin, holds, monitor = {} }) =>

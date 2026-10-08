@@ -63,4 +63,28 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+  /* The type the theme already names. No size is set here: theme.css has no type-size token. */
+  .prose {
+    font-family: var(--font-sans);
+  }
+  .prose :where(code, kbd, samp, pre) {
+    font-family: var(--font-mono);
+  }
+}
+
+/* One rule, both directions: the qpu steps already served, and the theme border ease. */
+:where(.border, .border-t, .border-b, .border-l, .border-r, .border-x, .border-y) {
+  animation-name: qpu, qpu;
+  animation-duration: var(--qpu-period), var(--qpu-period);
+  animation-timing-function: steps(var(--qpu-faces), jump-none), steps(var(--qpu-faces), jump-none);
+  animation-iteration-count: infinite, infinite;
+  animation-direction: normal, reverse;
+  animation-delay: calc(-1 * var(--qpu-period) * var(--walk, 0) / var(--qpu-faces)), calc(-1 * var(--qpu-period) * var(--walk, 0) / var(--qpu-faces));
+  transition: border-color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.border, .border-t, .border-b, .border-l, .border-r, .border-x, .border-y) {
+    animation: none;
+  }
 }

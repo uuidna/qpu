@@ -1,4 +1,4 @@
-import { blockFields } from '../../fields/blockFields'
+import { blockFields } from '../../fields/blockFields.js'
 
 /** The Human Design structure at a Julian day: the wheel's gates for the Sun and Earth at birth and at the design
  *  day, the channels they define among the nine centers, and the definition — the hex family `hd`, drawn. Structure

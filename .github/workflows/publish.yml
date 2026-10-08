@@ -1,10 +1,14 @@
 name: publish
 
-# ONE CI FOR EVERY ENVIRONMENT. Node (the build, the Lean kernel, the gate), Cloudflare Workers (the one Worker:
-# Payload fronted by the unit), the container (the image boots and proves itself), npm and the GitHub Release (a tag),
-# and the live host itself (QPU is live: every test runs against https://qpu.uuidna.com, after the deploy that made it,
-# and on a schedule). Each environment is a job; a push to main deploys and then tests what it deployed; a tag also
-# publishes. Nothing else runs a workflow.
+# COMBINATORIAL CI. ONE WORKFLOW — this file, because npm's trusted publisher is bound to publish.yml.
+# The matrix is read from the tree, not typed as a second list: runtime (vinext, opennext), the plugin extremes
+# none and all (CLOUDFLARE_PLUGINS; the generator seals every subset by combinatorics.binomial), occupancy
+# (personal, business, corporate, saas, paas), and os (ubuntu-latest — the runner OS is Linux). The
+# payload-cloudflare generator, in `build`, enumerates runtime × db × storage × email × frontend × every plugin
+# subset. IaaS and FaaS are unnamed leads and are not cells. Alpine is the `image` job; the matrix does not boot it.
+# Jobs the matrix does not cover stay named: build (Lean kernel, gate, scripts, prove, generated files, generator),
+# deploy (the one Worker), test (the live host), image (Alpine), publish (a tag). A push to main deploys and then
+# tests what it deployed; a tag also publishes. Nothing else runs a workflow.
 
 on:
   push:
@@ -23,6 +27,103 @@ permissions:
   contents: read
 
 jobs:
+  # AXES, from the source the combinations are computed from. A name added to a constant enters the matrix; a name
+  # removed leaves it. IaaS and FaaS are not constants here.
+  axes:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.axes.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+      - name: Read the combinatorial axes
+        id: axes
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'EOF'
+          import { appendFileSync, readFileSync } from 'node:fs'
+          const grab = (src, name) => {
+            const m = src.match(new RegExp(`(?:export )?const ${name} = \\[([^\\]]+)\\]`))
+            if (!m) throw new Error(`missing ${name}`)
+            return [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1])
+          }
+          const cf = readFileSync('src/deployment/payload-cloudflare.ts', 'utf8')
+          const unit = readFileSync('src/quantum/processing/unit/index.ts', 'utf8')
+          const docker = readFileSync('Dockerfile', 'utf8')
+          const workflow = readFileSync('.github/workflows/publish.yml', 'utf8')
+          const runtime = grab(cf, 'CLOUDFLARE_RUNTIMES')
+          const plugins = grab(cf, 'CLOUDFLARE_PLUGINS')
+          const db = grab(cf, 'CLOUDFLARE_DATABASES')
+          const storage = grab(cf, 'CLOUDFLARE_STORAGE')
+          const email = grab(cf, 'CLOUDFLARE_EMAIL')
+          const frontend = grab(cf, 'CLOUDFLARE_FRONTENDS')
+          const occupancy = grab(unit, 'occupancies')
+          for (const r of ['vinext', 'opennext']) if (!runtime.includes(r)) throw new Error(`runtime ${r} is not on the axis`)
+          for (const o of ['personal', 'business', 'corporate', 'saas', 'paas']) if (!occupancy.includes(o)) throw new Error(`occupancy ${o} is not on the axis`)
+          if (plugins.length === 0 || db.length === 0 || storage.length === 0 || email.length === 0 || frontend.length === 0) throw new Error('an axis is empty')
+          const leads = ['iaas', 'faas']
+          const named = [...runtime, ...plugins, ...db, ...storage, ...email, ...frontend, ...occupancy]
+          for (const lead of leads) if (named.some((n) => n.toLowerCase() === lead)) throw new Error(`${lead} is an unnamed lead, not an environment`)
+          if (!docker.includes('node:26-alpine')) throw new Error('the Alpine image is not the one the tree names')
+          if (!workflow.includes('docker run --rm qpu node dist/quantum/processing/unit/boot.js --prove')) throw new Error('the image job is the Alpine prove; it is not in this workflow')
+          const os = ['ubuntu-latest']
+          const matrix = { runtime, plugins: ['none', 'all'], occupancy, os }
+          appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify(matrix)}\n`)
+          console.log(JSON.stringify({ matrix, db, storage, email, frontend, plugins, image: 'alpine' }))
+          EOF
+
+  # ONE CELL PER NAMED TUPLE. The generator in `build` is what enumerates the full product; a cell checks that this
+  # tuple is one the tree names, on the runner OS that tuple selected.
+  combinatorial:
+    needs: axes
+    if: github.event_name != 'schedule'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.axes.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+      - name: This cell is a named environment
+        env:
+          RUNTIME: ${{ matrix.runtime }}
+          PLUGINS: ${{ matrix.plugins }}
+          OCCUPANCY: ${{ matrix.occupancy }}
+          OS: ${{ matrix.os }}
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'EOF'
+          import { readFileSync } from 'node:fs'
+          const grab = (src, name) => {
+            const m = src.match(new RegExp(`(?:export )?const ${name} = \\[([^\\]]+)\\]`))
+            if (!m) throw new Error(`missing ${name}`)
+            return [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1])
+          }
+          const cf = readFileSync('src/deployment/payload-cloudflare.ts', 'utf8')
+          const unit = readFileSync('src/quantum/processing/unit/index.ts', 'utf8')
+          const runtime = grab(cf, 'CLOUDFLARE_RUNTIMES')
+          const plugins = grab(cf, 'CLOUDFLARE_PLUGINS')
+          const occupancy = grab(unit, 'occupancies')
+          const cellRuntime = process.env.RUNTIME
+          const cellPlugins = process.env.PLUGINS
+          const cellOccupancy = process.env.OCCUPANCY
+          const cellOs = process.env.OS
+          if (!runtime.includes(cellRuntime)) throw new Error(`${cellRuntime} is not a runtime`)
+          if (!occupancy.includes(cellOccupancy)) throw new Error(`${cellOccupancy} is not an occupancy`)
+          if (cellOs !== 'ubuntu-latest') throw new Error(`${cellOs} is not the runner this workflow names`)
+          if (process.env.RUNNER_OS !== 'Linux') throw new Error(`ubuntu-latest reported ${process.env.RUNNER_OS}, not Linux`)
+          const pluginSegment = cellPlugins === 'all' ? [...plugins].sort().join('+') : cellPlugins === 'none' ? '-' : null
+          if (pluginSegment === null) throw new Error(`${cellPlugins} is not a plugin extreme`)
+          if (cellPlugins === 'all' && plugins.some((p) => !pluginSegment.split('+').includes(p))) throw new Error('all does not name every CLOUDFLARE_PLUGINS entry')
+          const key = `${cellRuntime}/qpu-raid/r2/none/next/${pluginSegment}`
+          console.log(JSON.stringify({ key, occupancy: cellOccupancy, os: cellOs, runner: process.env.RUNNER_OS }))
+          EOF
+
   # NODE: install by the lockfile, the Lean kernel (cached as a receipt keyed on the proof and the toolchain pin), the
   # build and the gate (every operation resolves by UUID and qpu_prove holds).
   build:
@@ -34,6 +135,113 @@ jobs:
         with:
           node-version: '26'
           cache: npm
+      # push, pull_request, workflow_dispatch. The schedule runs the same scan in `test`.
+      - name: Scan public channels through the QPU MCP
+        if: github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: &channel_scan |
+          set -euo pipefail
+          node --input-type=module <<'EOF'
+          import { execSync } from 'node:child_process'
+          import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+          const MCP = 'https://qpu.uuidna.com/mcp'
+          const FACES = 14
+          const call = async (args) => {
+            let last = new Error('unreached')
+            for (let again = 0; again < 3; again++) {
+              try {
+                const r = await fetch(MCP, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'cite', arguments: args } }), signal: AbortSignal.timeout(180000) })
+                if (r.status >= 500) throw new Error(`cite ${r.status}`)
+                const b = await r.json()
+                if (!b.result) throw new Error(b.error?.message ?? 'cite')
+                return b.result.structuredContent ?? {}
+              } catch (e) {
+                last = e instanceof Error ? e : new Error(String(e))
+                if (again === 2) break
+                await new Promise((ok) => setTimeout(ok, 5000 * (again + 1)))
+              }
+            }
+            throw last
+          }
+          const waveOf = (sc) => {
+            const step = sc.steps?.at?.(-1)
+            const reading = step?.reading ?? {}
+            return { hex: reading.hex ?? sc.uuid ?? null, value: sc.value ?? step?.value ?? reading.value ?? null, holds: sc.holds === true, receipt: sc.receipt ?? reading.receipt ?? null }
+          }
+          const grab = (src, name) => {
+            const m = src.match(new RegExp(`(?:export )?const ${name} = \\[([^\\]]+)\\]`))
+            return m ? [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]) : []
+          }
+          const workflow = readFileSync('.github/workflows/publish.yml', 'utf8')
+          const cf = readFileSync('src/deployment/payload-cloudflare.ts', 'utf8')
+          const unit = readFileSync('src/quantum/processing/unit/index.ts', 'utf8')
+          const listed = [...new Set([
+            ...grab(cf, 'CLOUDFLARE_RUNTIMES'),
+            ...grab(cf, 'CLOUDFLARE_DATABASES'),
+            ...grab(cf, 'CLOUDFLARE_STORAGE'),
+            ...grab(cf, 'CLOUDFLARE_EMAIL'),
+            ...grab(cf, 'CLOUDFLARE_FRONTENDS'),
+            ...grab(cf, 'CLOUDFLARE_PLUGINS'),
+            ...grab(unit, 'occupancies'),
+            ...grab(workflow, 'os'),
+            ...(workflow.includes('node:26-alpine') ? ['node:26-alpine', 'alpine'] : []),
+            ...(workflow.includes('registry.npmjs.org') ? ['npm'] : []),
+            ...[...workflow.matchAll(/plugins: \['([^']+)', '([^']+)'\]/g)].flatMap((m) => [m[1], m[2]]),
+          ])]
+          const unnamed = grab(workflow, 'leads')
+          const terms = new Set()
+          for (const family of readdirSync('src/families')) {
+            let src
+            try { src = readFileSync(`src/families/${family}/index.ts`, 'utf8') } catch { continue }
+            if (family.length > 2) terms.add(family.toLowerCase())
+            const listedNames = src.match(/for \(const name of \[([^\]]+)\]/)
+            if (listedNames) for (const n of listedNames[1].matchAll(/'([^']+)'/g)) if (n[1].length > 2) terms.add(n[1].toLowerCase())
+          }
+          const tokensOf = (s) => [...new Set(s.toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length > 2 && terms.has(w)))]
+          const file = 'channels-receipt.json'
+          const text = existsSync(file) ? readFileSync(file, 'utf8') : ''
+          const doc = text ? JSON.parse(text) : { kind: 'channels-receipt', lines: [] }
+          const prior = [...(doc.lines ?? [])].reverse().find((l) => l.kind === 'channels')
+          const page = Number.isInteger(prior?.next) && prior.next > 0 ? prior.next : 2
+          const search = JSON.parse(execSync(`gh api "search/repositories?q=is:public&per_page=${FACES}&page=${page}&sort=updated&order=desc"`, { encoding: 'utf8', maxBuffer: 1 << 20 }))
+          const items = (search.items ?? []).filter((r) => r.private === false).slice(0, FACES)
+          const addresses = items.map((r) => ({ address: r.html_url, repo: r.full_name, archived: r.archived === true, tokens: tokensOf(r.full_name) }))
+          const next = page * FACES >= 1000 ? 1 : page + 1
+          const [waves, develop, massive, npm, alpine] = await Promise.all([
+            call({ hex: { family: 'wave', program: ['waves'], params: [FACES] } }).then(waveOf),
+            call({ hex: { family: 'merkaba', program: ['develop'], params: [0, 0, 0] } }).then(waveOf),
+            call({ hex: { family: 'wave', program: ['massive'], params: [0] } }).then(waveOf),
+            call({ door: 'data', arguments: { source: 'npm' } }),
+            call({ door: 'data', arguments: { source: 'alpine' } }),
+          ])
+          const record = {
+            kind: 'channels',
+            events: ['push', 'pull_request', 'workflow_dispatch', 'schedule'],
+            jobs: { push: 'build', pull_request: 'build', workflow_dispatch: 'build', schedule: 'test' },
+            deploy: 'deploy',
+            wave: FACES,
+            page,
+            next,
+            githubMcp: null,
+            githubCall: `gh api search/repositories?q=is:public&per_page=${FACES}&page=${page}&sort=updated&order=desc`,
+            waveCall: { formula: 'wave.waves', params: [FACES], ...waves },
+            develop: { formula: 'merkaba.develop', params: [0, 0, 0], ...develop },
+            massive: { formula: 'wave.massive', params: [0], ...massive, unnamed, absent: 'github mcp server' },
+            npm: { source: 'npm', url: npm.url ?? null, holds: npm.holds === true, agrees: npm.agrees === true, latest: npm.reading?.latest ?? null, receipt: npm.receipt ?? null },
+            alpine: { source: 'alpine', url: alpine.url ?? null, holds: alpine.holds === true, agrees: alpine.agrees === true, apps: alpine.reading?.apps ?? null, digest: alpine.reading?.digest ?? null, receipt: alpine.receipt ?? null },
+            channels: listed.map((name) => ({ name, tokens: tokensOf(name) })),
+            addresses,
+          }
+          const block = JSON.stringify(record, null, 1).split('\n').map((l) => `  ${l}`).join('\n')
+          const at = text.lastIndexOf('\n ]\n}')
+          const candidate = at < 0
+            ? JSON.stringify({ kind: 'channels-receipt', lines: [record] }, null, 1) + '\n'
+            : `${text.slice(0, at)},\n${block}${text.slice(at)}${text.endsWith('\n') ? '' : '\n'}`
+          JSON.parse(candidate)
+          writeFileSync(file, candidate)
+          console.log(JSON.stringify({ wave: record.wave, hex: record.waveCall.hex, value: record.waveCall.value, holds: record.waveCall.holds, addresses: addresses.length, next, githubMcp: null }))
+          EOF
       - name: Install exact (lockfile law; no install scripts)
         run: npm ci
       - name: Kernel receipt (index.lean bytes and the toolchain pin already checked in an earlier run)
@@ -91,10 +299,26 @@ jobs:
           node scripts/payload-cloudflare.mjs --repo > /dev/null
           npm run readme
           git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/mcp/families.ts src/receipts/index.ts package.json src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json RELEASE.md .zenodo.json
+      - name: The generator enumerates every combination (runtime, db, storage, email, frontend, plugin subset)
+        run: npm run payload:cf
+      - name: The generator's receipt holds
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'EOF'
+          import { readFileSync } from 'node:fs'
+          const r = JSON.parse(readFileSync('payload-cf-receipt.json', 'utf8'))
+          if (r.combinatorics?.holds !== true) throw new Error('combinatorics does not hold')
+          if ((r.typechecked?.failing?.length ?? 1) !== 0) throw new Error('a base failed typecheck')
+          if (r.typechecked?.ok !== r.typechecked?.bases) throw new Error('a base was not typechecked')
+          if (r.frontends?.ok !== true) throw new Error('a frontend did not generate')
+          if (r.stream?.holds !== true) throw new Error('the payload-cf stream does not hold')
+          console.log(JSON.stringify({ combinations: r.combinations, bases: r.typechecked.bases, ok: r.typechecked.ok, plugins: r.plugins, runtimes: r.axes.runtime, frontends: r.frontends.axis }))
+          EOF
 
   # CLOUDFLARE WORKERS: the one Worker (uuidna-qpu = the Payload app fronted by the unit) built by OpenNext and deployed.
+  # The channel scan in `build` has run. This job follows it on push and workflow_dispatch.
   deploy:
-    needs: [build]
+    needs: [build, combinatorial]
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
@@ -137,6 +361,11 @@ jobs:
         with:
           node-version: '26'
           cache: npm
+      - name: Scan public channels through the QPU MCP
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: *channel_scan
       - run: npm ci
       - name: Every test, against the live host
         id: live
@@ -163,8 +392,9 @@ jobs:
             gh issue create --title "examine: qpu.uuidna.com has findings" --label examine --body "$body"
           fi
 
-  # THE CONTAINER: the generated image builds, and inside it the unit proves itself (qpu_prove holds) — the same proof
-  # the image's HEALTHCHECK runs.
+  # THE CONTAINER, kept by name: Alpine (node:26-alpine). The combinatorial matrix runs on ubuntu-latest and does not
+  # boot this image. The generated image builds, and inside it the unit proves itself (qpu_prove holds) — the same
+  # proof the image's HEALTHCHECK runs.
   image:
     needs: [build]
     runs-on: ubuntu-latest
@@ -178,7 +408,7 @@ jobs:
   # NPM AND THE RELEASE (a tag): the GitHub Release first (Zenodo archives it), with the notes the README generator
   # writes, then npm through OIDC trusted publishing, then the check that every surface serves this exact version.
   publish:
-    needs: [test, image]
+    needs: [test, image, combinatorial]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     concurrency:
@@ -203,7 +433,7 @@ jobs:
           node -e 'const [a,b,c]=process.argv[1].split(".").map(Number);const ok=a>11||(a===11&&(b>5||(b===5&&c>=1)));if(!ok){console.error(`::error::npm ${process.argv[1]} is below the OIDC trusted-publishing floor 11.5.1`);process.exit(1)}' "$NPM"
           echo "npm $NPM meets the OIDC floor 11.5.1"
       - run: npm ci
-      - name: Version lock (v1.<minor>.<digit>; previous version released on npm)
+      - name: Version lock (v1.<minor>.<digit>, forward)
         run: npm run version:lock
       - run: npm run build
       - name: Tag matches package.json

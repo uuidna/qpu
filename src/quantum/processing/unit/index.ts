@@ -34,7 +34,7 @@ export { qpuSandboxEpochOf, qpuSandboxEpochHolds, qpuSandboxOf, qpuSandboxRunOf,
 import { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf } from './lattice.js'
 export { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf, qpuLatticeNamesOf } from './lattice.js'
 import { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf } from './presentation.js'
-export { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf, qpuSeoZoneOf, qpuPageOf } from './presentation.js'
+export { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf, qpuSeoZoneOf, qpuCombinatoricsWindowOf, qpuPageOf } from './presentation.js'
 import { qpuEncryptOf, qpuCybersecurityOf, qpuCybersecurityToolsOf } from './crypto.js'
 export { qpuEncryptOf, qpuCybersecurityOf, qpuCybersecurityToolsOf } from './crypto.js'
 import { qpuGraphStateOf, qpuComposeOf, qpuComposeLiveOf, qpuProbeableOf, qpuProbeLiveOf, qpuApisLiveOf, qpuCrossOf } from './fusion.js'
@@ -377,7 +377,7 @@ const headers = {
   'content-type': 'application/ld+json; charset=utf-8',
   'access-control-allow-origin': cors,
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'access-control-allow-headers': 'content-type, accept',
+  'access-control-allow-headers': 'content-type, accept, mcp-protocol-version, mcp-session-id',
   'cache-control': 'no-store'}
 const seed = unit.mint.seed
 const coins = seed + seed
@@ -2593,7 +2593,22 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.grant.use.lead === true &&
   c.grant.next !== undefined &&
   c.grant.next.handle.length === 8 &&
-  c.grant.next.uuid !== c.grant.next.handle
+  c.grant.next.uuid !== c.grant.next.handle &&
+  c.links.kind === 'links' &&
+  c.links.holds === false &&
+  c.links.edges.length > 0 &&
+  c.links.edges.every((edge) => edge.holds === false && edge.address === undefined && !edge.from.includes('@') && !edge.to.includes('@') && !edge.from.includes('orcid.org') && !edge.to.includes('orcid.org')) &&
+  c.links.edges.some((edge) => edge.from.includes(c.doi) || edge.to.includes(c.doi)) &&
+  c.links.edges.some((edge) => edge.from.includes(c.conceptdoi) || edge.to.includes(c.conceptdoi)) &&
+  c.links.edges.some((edge) => edge.from === 'https://github.com/uuidna/qpu' || edge.to === 'https://github.com/uuidna/qpu') &&
+  c.links.edges.some((edge) => edge.from === `${unit.origin}/mcp` || edge.to === `${unit.origin}/mcp`) &&
+  c.links.edges.some((edge) => (edge.from === `${unit.origin}/license` || edge.to === `${unit.origin}/license`) && edge.lead === true) &&
+  c.links.edges.some((edge) => edge.from === unit.origin && edge.to === `https://doi.org/${c.doi}`) &&
+  c.links.edges.some((edge) => edge.from === `https://doi.org/${c.doi}` && edge.to === unit.origin) &&
+  !('price' in c.links) &&
+  !('referer' in c.links) &&
+  !('referrer' in c.links) &&
+  (!qpuHexFamiliesOf().has('graph') || (c.links.next !== undefined && c.links.next.handle.length === 8 && c.links.next.uuid !== c.links.next.handle))
 
 const tokensOf = (bytes: number): number => Number(BigInt(bytes) / BigInt(mintOf(coins)))
 
@@ -10507,6 +10522,32 @@ export const qpuHexRegisterOf = (family: string, name: string, fn: (...a: unknow
   return qpuFoldOf(family).slice(n - n, UUID_EIGHT)
 }
 
+/** The integer a crypto tool already computed: dim, or fused on theorem crypto, or the rsa modulus. */
+const hexCryptoIntegerOf = (body: unknown): number | undefined => {
+  if (!body || typeof body !== 'object') return undefined
+  const row = body as Record<string, unknown>
+  const intOf = (v: unknown): number | undefined => {
+    if (typeof v === 'number' && Number.isSafeInteger(v)) return v
+    if (typeof v === 'string' && /^\d+$/.test(v)) {
+      const parsed = Number(v)
+      if (Number.isSafeInteger(parsed)) return parsed
+    }
+    return undefined
+  }
+  const at = (v: unknown): number | undefined => (v && typeof v === 'object' ? intOf((v as { dim?: unknown }).dim) : undefined)
+  const shor = row.shor
+  const dim = at(row.circuitry) ?? at(row.exact) ?? at(row.prepare) ?? (shor && typeof shor === 'object' ? at((shor as { circuitry?: unknown }).circuitry) ?? at((shor as { exact?: unknown }).exact) ?? at((shor as { prepare?: unknown }).prepare) : undefined)
+  if (dim !== undefined) return dim
+  const kind = row.kind
+  const theorem = row.theorem
+  if (kind === 'encrypt' || theorem === 'crypto') {
+    const fused = intOf(row.fused)
+    if (fused !== undefined) return fused
+  }
+  if (kind === 'rsa') return intOf(row.modulus)
+  return undefined
+}
+
 /**
  * Every formula family a hex program can name: each Lean module with definitions (Qpu.Mint, Qpu.Shor, Qpu.Lattice,
  * Qpu.Hybrid, Qpu.Physics; its definitions in file order, helpers ending Aux left out) evaluated exactly under Lean's
@@ -10528,7 +10569,18 @@ export const qpuHexFamiliesOf = (): Map<string, HexFormula[]> => {
   // the MCP's own doors are families too, so every tool computation has a hex address: qpu (the eight doors, no params)
   // and crypto (the eight cybersecurity tools, params n and a; 0 means the tool's default)
   out.set('qpu', qpuToolsOf().map((t) => ({ name: t.name, arity: n - n, run: () => t.run({}) })))
-  out.set('crypto', qpuCybersecurityToolsOf().map((t) => ({ name: t.name, arity: coins, run: (args: readonly bigint[]) => t.run({ ...(args[n - n] ? { n: Number(args[n - n]) } : {}), ...(args[seed] ? { a: Number(args[seed]) } : {}) }) })))
+  out.set('crypto', qpuCybersecurityToolsOf().map((t) => ({
+    name: t.name,
+    arity: coins,
+    run: (args: readonly bigint[]) => {
+      const body = t.run({ ...(args[n - n] ? { n: Number(args[n - n]) } : {}), ...(args[seed] ? { a: Number(args[seed]) } : {}) })
+      const dim = hexCryptoIntegerOf(body)
+      if (dim === undefined) return body
+      const holds = body !== null && typeof body === 'object' && 'holds' in body ? (body as { holds: unknown }).holds === true : false
+      const named = body !== null && typeof body === 'object' && typeof (body as { theorem?: unknown }).theorem === 'string' ? (body as { theorem: string }).theorem : undefined
+      return { value: dim, holds, ...(named ? { theorem: named } : {}) }
+    },
+  })))
   for (const [family, fns] of HEX_REGISTERED)
     out.set(family, [...fns.keys()].sort().map((name) => ({ name, arity: fns.get(name)!.length, ...(fns.get(name)!.constructor.name === 'AsyncFunction' ? { live: true } : {}), run: (args) => fns.get(name)!(...args.map((a) => Number(a))) })))
   for (const [family, formulas] of out) if (formulas.length > UUID_SIXTEEN - seed) out.set(family, formulas.slice(n - n, UUID_SIXTEEN - seed))
@@ -10624,7 +10676,17 @@ export const qpuHexDecodeOf = (uuid: string) => {
  * @kind builder
  * @evidence qpuHexHolds
  */
+/** The shared registry imports every family module that exists. Each module registers through qpuHexRegisterOf.
+ *  One load. Law is its own family module on that list, not an import from mcp.ts. */
+let hexRegistry: Promise<void> | undefined
+const qpuHexRegistryOf = (): Promise<void> => {
+  // perma has a module and calls qpuHexRegisterOf. The generated registry does not name it.
+  if (!hexRegistry) hexRegistry = import('../../../mcp/families.js').then(() => import('../../../families/perma/index.js')).then(() => undefined)
+  return hexRegistry
+}
+
 export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv, options: { store?: boolean } = {}) => {
+  await qpuHexRegistryOf()
   const d = qpuHexDecodeOf(uuid)
   if (!d.holds || !('family' in d) || !d.family) return { ...d, ran: false as const }
   const formulas = qpuHexFamiliesOf().get(d.family)!
@@ -10651,17 +10713,35 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv,
       const out = await f.run(args)
       const value = out && typeof out === 'object' && 'value' in (out as object) ? (out as { value: unknown }).value : out
       if (out && typeof out === 'object' && 'holds' in (out as object)) holds = holds && (out as { holds: unknown }).holds === true
-      // the reading rides with the value: a cross formula's failing names, its next, its receipt — what a caller acts on
+      // the reading rides with the value: a cross formula's failing names, its next, its receipt — what a caller acts on.
+      // a result that omits next, or sets it null, takes the next wave.sweep already names (sweep(0) next is from + faces).
+      // re-entry while that sweep runs does not call it again.
       const reading = out && typeof out === 'object' && !Array.isArray(out) ? Object.fromEntries(Object.entries(out as Record<string, unknown>).filter(([k]) => k !== 'value')) : undefined
+      if (reading && (reading.next === undefined || reading.next === null)) {
+        const state = qpuHexRunOf as typeof qpuHexRunOf & { sweepNext?: number; sweepNaming?: boolean }
+        let named = state.sweepNext
+        if (named === undefined && !state.sweepNaming) {
+          state.sweepNaming = true
+          try {
+            const { WaveFormulas } = await import('../../../families/wave/index.js')
+            const sweep = (await WaveFormulas.sweep(n - n)) as { next?: unknown }
+            if (typeof sweep.next === 'number') named = state.sweepNext = sweep.next
+          } finally {
+            state.sweepNaming = false
+          }
+        }
+        if (named !== undefined) reading.next = named
+      }
       steps.push({ formula: name, args: args.slice(n - n, Math.max(seed, f.arity)).map(String), value: typeof value === 'bigint' ? value.toString() : value, ...(reading ? { reading } : {}) })
       acc = typeof value === 'bigint' ? value : value
     }
     const value = typeof acc === 'bigint' ? acc.toString() : acc
+    const next = steps.at(-1)?.reading?.next
     const receipt = qpuUuidReceiptOf(`hex ${d.family}`, d.uuid, { steps, value, holds }, qpuAddressReferrerOf(referrer)).uuid
     // an enumeration (discovery, the sequences) computes without storing: a request may make only so many storage
     // calls, and a stored row is a run someone asked for by its address
     if (options.store !== false) await qpuDocDbOf(env, 'hex').collection(d.handle).updateOne({ _id: row }, { $set: { family: d.family, program: d.program, value, holds, receipt, by: d.uuid } }, { upsert: true })
-    return { ...d, ran: true as const, steps, value, holds, receipt }
+    return { ...d, ran: true as const, steps, value, holds, receipt, ...(next !== undefined ? { next } : {}) }
   } catch (e) {
     return { ...d, ran: false as const, steps, error: e instanceof Error ? e.message : String(e), holds: false as const }
   }
@@ -10783,13 +10863,12 @@ const qpuHexToolsOf = (hexEnv?: QpuEnv): QpuSubTool[] => {
 }
 
 // what the cooled modules read from this module and do not export as a capability
+export type { QpuSubTool, Served }
 export {
   FUSED_TOOLS,
   MCP_EXTENSIONS,
-  QpuSubTool,
   RECEIPTS,
   SERVED,
-  Served,
   ampsOf,
   b0,
   b1,

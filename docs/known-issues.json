@@ -6,7 +6,7 @@
  },
  {
   "title": "1.1.0 is not published",
-  "detail": "npm's latest is 1.0.1. The latest Zenodo record is 10.5281/zenodo.23156998 (v1.0.1). GitHub has no release v1.1.0. On this tree the zenodo, npm and release checks differ for that reason. The version lock holds because 1.0.1 is the previous released version.",
+  "detail": "npm's latest is 1.0.1. archive 1.0.1 is true at 10.5281/zenodo.23156998. tag 1.1.0 is true: package.json is 1.1.0 and git tag v1.1.0 is that version. GitHub has no release v1.1.0. On this tree the zenodo, npm and release checks differ for that reason. The version lock holds because 1.0.1 is the previous released version.",
   "evidence": "`npm view @uuidna/qpu version`; gate.gaps."
  },
  {

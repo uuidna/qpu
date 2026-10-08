@@ -1,0 +1,385 @@
+{
+ "kind": "clay-zero-wave-receipt",
+ "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+ "value": 48,
+ "holds": true,
+ "next": null,
+ "waveHex": "5e2cc5f6-8000-4000-a000-000000000000",
+ "waveValue": 42,
+ "waveHolds": true,
+ "waveNext": 14,
+ "rosettaHex": "89c984c4-6000-4000-9000-000000000000",
+ "rosettaValue": 0,
+ "rosettaHolds": false,
+ "rosettaNext": null,
+ "rosetta": {
+  "call": "merkaba.rosetta",
+  "params": [
+   0
+  ],
+  "clay": 177,
+  "hex": "89c984c4-6000-4000-9000-000000000000",
+  "value": 0,
+  "holds": false,
+  "next": null,
+  "families": 0,
+  "edges": 0,
+  "forward": 0,
+  "back": 0,
+  "crossed": []
+ },
+ "rotation": {
+  "call": "merkaba.rosetta",
+  "params": [
+   1128
+  ],
+  "hex": "89c984c4-6000-6000-9000-000000000468",
+  "value": 0,
+  "holds": false,
+  "next": null,
+  "families": 1128,
+  "edges": 14,
+  "forward": 0,
+  "back": 0,
+  "crossed": [
+   "Qpu.Coil.theory(3) = 1",
+   "Qpu.Hybrid.kvCost(1) = 2",
+   "Qpu.Lattice.n(2) = 3",
+   "Qpu.Mint.mintOf(3) = 8",
+   "Qpu.Physics.planck(8) = 662607015",
+   "Qpu.Shor.powMod(662607015) = 0",
+   "absorption.coefficient(0) = 0",
+   "zoroastrianism.amesha(3) = 6",
+   "zoology.density(6) = 1",
+   "zoning.coverage(1) = 100",
+   "zerotrust.attacksurface(100) = 10000",
+   "zeroshot.attributes(10000) = 100000000",
+   "yield.couponrate(100000000) = 100",
+   "yi.change(100) = 0"
+  ],
+  "walked": 14
+ },
+ "skipped": [
+  {
+   "family": "absorption",
+   "formula": "coefficient",
+   "parameter": "incident"
+  }
+ ],
+ "named": 14,
+ "fresh": 11,
+ "alreadyInLeadWaves": 1,
+ "wave": {
+  "call": "wave.massive",
+  "params": [
+   0
+  ],
+  "family": "Qpu.Coil",
+  "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+  "value": 48,
+  "holds": true,
+  "next": null,
+  "agents": 48,
+  "programs": 12,
+  "signals": [
+   "a13a4aae-1000-7000-8000-000000000000",
+   "a13a4aae-1000-7000-8000-000000000000",
+   "a13a4aae-1000-7000-8000-000000000000",
+   "a13a4aae-1000-7000-8000-000000000000",
+   "a13a4aae-2000-1000-8000-000000000000",
+   "a13a4aae-2000-1000-8000-000000000000",
+   "a13a4aae-2000-1000-8000-000000000000",
+   "a13a4aae-2000-1000-8000-000000000000",
+   "a13a4aae-3000-7000-8000-000000000000",
+   "a13a4aae-3000-7000-8000-000000000000",
+   "a13a4aae-3000-7000-8000-000000000000",
+   "a13a4aae-3000-7000-8000-000000000000",
+   "a13a4aae-1100-2000-8000-000000000000",
+   "a13a4aae-1100-2000-8000-000000000000"
+  ],
+  "receipt": "bf8bd2a5-d459-6568-9da5-89fdc18ff20d"
+ },
+ "waves": [
+  {
+   "call": "wave.wave",
+   "params": [
+    0,
+    0
+   ],
+   "family": "Qpu.Coil",
+   "hex": "5e2cc5f6-8000-4000-a000-000000000000",
+   "value": 42,
+   "holds": true,
+   "next": 14,
+   "agents": 42,
+   "answers": [
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined",
+    "theory() = undefined"
+   ],
+   "receipt": "7956caa5-569c-338c-822e-0fc4bb16f23b"
+  }
+ ],
+ "developed": 16,
+ "addresses": [
+  {
+   "address": "a13a4aae-1000-7000-8000-000000000000",
+   "family": "Qpu.Coil",
+   "formula": "theory",
+   "input": 3,
+   "value": 1,
+   "holds": true,
+   "hex": "a13a4aae-1000-7000-8000-000000000000",
+   "namedByWave": true,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "61b7d2d2-1000-6000-8000-000000000000",
+   "family": "Qpu.Hybrid",
+   "formula": "kvCost",
+   "input": 1,
+   "value": 2,
+   "holds": true,
+   "hex": "61b7d2d2-1000-6000-8000-000000000000",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "72af0c7c-1000-2000-8000-000000000000",
+   "family": "Qpu.Lattice",
+   "formula": "n",
+   "input": 2,
+   "value": 3,
+   "holds": true,
+   "hex": "72af0c7c-1000-2000-8000-000000000000",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "c8372ae3-1000-1000-9000-000000000003",
+   "family": "Qpu.Mint",
+   "formula": "mintOf",
+   "input": 3,
+   "value": 8,
+   "holds": true,
+   "hex": "c8372ae3-1000-1000-9000-000000000003",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "cf1194df-1000-6000-8000-000000000000",
+   "family": "Qpu.Physics",
+   "formula": "planck",
+   "input": 8,
+   "value": 662607015,
+   "holds": true,
+   "hex": "cf1194df-1000-6000-8000-000000000000",
+   "alreadyInLeadWaves": true,
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "61c8c8ac-b6c8-5d67-ab7c-3f6eae68fa65",
+   "family": "Qpu.Shor",
+   "formula": "powMod",
+   "input": 662607015,
+   "value": 0,
+   "holds": true,
+   "hex": "61c8c8ac-b6c8-5d67-ab7c-3f6eae68fa65",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "3b03ac82-1000-8000-a000-000000000000",
+   "family": "absorption",
+   "formula": "coefficient",
+   "input": 0,
+   "value": 0,
+   "holds": false,
+   "hex": "3b03ac82-1000-8000-a000-000000000000",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "b96fdaef-1000-5000-a000-000003000003",
+   "family": "zoroastrianism",
+   "formula": "amesha",
+   "input": 3,
+   "value": 6,
+   "holds": true,
+   "hex": "b96fdaef-1000-5000-a000-000003000003",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "f4388e85-1000-5000-a000-000006000006",
+   "family": "zoology",
+   "formula": "density",
+   "input": 6,
+   "value": 1,
+   "holds": true,
+   "hex": "f4388e85-1000-5000-a000-000006000006",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "cb27aab3-1000-1000-a000-000001000001",
+   "family": "zoning",
+   "formula": "coverage",
+   "input": 1,
+   "value": 100,
+   "holds": true,
+   "hex": "cb27aab3-1000-1000-a000-000001000001",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "3e3df885-1000-7000-a000-000064000064",
+   "family": "zerotrust",
+   "formula": "attacksurface",
+   "input": 100,
+   "value": 10000,
+   "holds": true,
+   "hex": "3e3df885-1000-7000-a000-000064000064",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "e72f4f4f-1000-4000-a000-002710002710",
+   "family": "zeroshot",
+   "formula": "attributes",
+   "input": 10000,
+   "value": 100000000,
+   "holds": true,
+   "hex": "e72f4f4f-1000-4000-a000-002710002710",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "d21464fa-aded-30f8-80b9-ef438d5ae986",
+   "family": "yield",
+   "formula": "couponrate",
+   "input": 100000000,
+   "value": 100,
+   "holds": true,
+   "hex": "d21464fa-aded-30f8-80b9-ef438d5ae986",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "08ed5b07-1000-3000-a000-000064000064",
+   "family": "yi",
+   "formula": "change",
+   "input": 100,
+   "value": 0,
+   "holds": false,
+   "hex": "08ed5b07-1000-3000-a000-000064000064",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "f8db7e58-107a-52af-a0e4-d87f9b3d726c",
+   "where": "legal.citation",
+   "holds": false,
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  },
+  {
+   "address": "ca37db36-5ca9-7947-adfc-65f5dc4a44f2",
+   "where": "tag",
+   "namedByWave": false,
+   "wave": {
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "next": null
+   }
+  }
+ ]
+}

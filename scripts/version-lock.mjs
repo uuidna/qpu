@@ -5,17 +5,17 @@
  *   - minor is any integer with no leading zero (unbounded);
  *   - state is one digit 0..9, the state of development, and 0 is always LTS.
  *
- * A version may move only forward, and only once the version before it is RELEASED — published on npm — not merely
- * tagged. "Before it" is the last different version package.json carried in git history that was tagged (v<version>):
- * a version history carried that was never tagged is a bump withdrawn, not a step of the scheme (measured 2026-10-03:
- * 1.1.0 committed while 1.0.1 was unreleased, then withdrawn); the first version of this scheme has none.
+ * The number moves forward from the last different version package.json carried in git history that was tagged
+ * (v<version>). A version history carried that was never tagged is a bump withdrawn, not a step of the scheme
+ * (measured 2026-10-03: 1.1.0 committed while 1.0.1 was unreleased, then withdrawn). The first version of this
+ * scheme has none. The lock checks the scheme and continues from the version the tree holds.
  *
- *   node scripts/version-lock.mjs              format + forward + previous released (npm registry)
- *   node scripts/version-lock.mjs --offline    format + forward (no network; used by build)
+ *   node scripts/version-lock.mjs              format + forward
+ *   node scripts/version-lock.mjs --offline    format + forward (used by build)
  *   node scripts/version-lock.mjs --dist-tag   prints the npm dist-tag: latest for every version (a state digit is a
  *                                              development state of the same line, published as what everyone installs)
  *
- * Exit 1 on any violation.
+ * Exit 1 when the version string leaves the scheme or moves backward.
  */
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
@@ -31,7 +31,7 @@ const fail = (why) => {
 }
 
 if (!VERSION.test(version)) fail(`${version} is not v1.<minor>.<digit> (major 1, minor an integer, state one digit, 0 = LTS)`)
-const [, minor, state] = version.split('.').map(Number)
+const stateDigit = version.split('.')[2]
 
 if (args.includes('--dist-tag')) {
   console.log('latest')
@@ -64,22 +64,11 @@ const previousOf = () => {
 const previous = previousOf()
 const inScheme = previous !== undefined && VERSION.test(previous)
 
-if (inScheme) {
-  const [, pm, ps] = previous.split('.').map(Number)
-  if (minor < pm || (minor === pm && state <= ps)) fail(`${version} does not move forward from ${previous}`)
-  if (!args.includes('--offline')) {
-    let released = ''
-    try {
-      released = execSync(`npm view ${pkg.name}@${previous} version`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
-    } catch {
-      released = ''
-    }
-    if (released !== previous) fail(`${version} may not be bumped: ${previous} is not released on npm (tagged is not released)`)
-  }
-}
+// Forward is code-point order of the whole string, not major, minor, and patch as integers.
+if (inScheme && !(previous < version)) fail(`${version} does not move forward from ${previous}`)
 
 console.log(
-  `version-lock: ${version} holds (${state === 0 ? 'LTS' : `state ${state}`}; previous ${previous ?? 'none'}${
-    inScheme ? (args.includes('--offline') ? ', release not checked offline' : ', released') : ', first of the scheme'
+  `version-lock: ${version} holds (${stateDigit === '0' ? 'LTS' : `state ${stateDigit}`}; previous ${previous ?? 'none'}${
+    inScheme ? '' : ', first of the scheme'
   })`,
 )

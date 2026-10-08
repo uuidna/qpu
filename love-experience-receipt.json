@@ -1,0 +1,36 @@
+{
+ "kind": "love-experience-receipt",
+ "formula": "wave.wave",
+ "family": "Qpu.Coil",
+ "params": [
+  0,
+  14
+ ],
+ "faces": 14,
+ "hex": "5e2cc5f6-8000-2000-a000-00000000000e",
+ "value": 42,
+ "holds": true,
+ "next": 28,
+ "receipt": "a357d729-9c76-83b7-86a4-68a42def0d59",
+ "agents": 42,
+ "named": {
+  "love": null,
+  "experience": null
+ },
+ "amountsAbsent": [
+  {
+   "formula": "phenomenology.experiencepairs",
+   "hex": "72cd3364-3000-7000-8000-000000000000",
+   "arity": 2,
+   "amounts": "absent"
+  }
+ ],
+ "rows": [
+  {
+   "name": "wave.wave",
+   "pass": true,
+   "value": "42",
+   "hex": "5e2cc5f6-8000-2000-a000-00000000000e"
+  }
+ ]
+}

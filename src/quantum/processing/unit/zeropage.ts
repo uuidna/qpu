@@ -391,6 +391,8 @@ export type QpuMachine = {
   amplitudesInOneRegister: boolean
   fusedInOneRegister: boolean
   oneRegisterFidelity: number
+  /** value and holds, named when the equality bit and the holds bit differ. */
+  note?: string
   redirected: number
   amplitudesRedirected: number
   registerNext: string
@@ -506,6 +508,7 @@ const machineOf = (spec: MachineSpec, floor: number, a: QpuAnalytics, advantage?
   const amplitudesComputed = registerOf(a.amplitudes, spec.width)
   const fusedComputed = registerOf(a.fused, spec.width)
   const fidelity = LawFormulas.fidelity(a.fused, fusedComputed)
+  const fidelityNote = (fidelity as { note?: string }).note
   const redirected = LawFormulas.redirected(a.fused, fusedComputed)
   const amplitudesRedirected = LawFormulas.redirected(a.amplitudes, amplitudesComputed)
   const lawful = LawFormulas.lawful(none)
@@ -526,6 +529,7 @@ const machineOf = (spec: MachineSpec, floor: number, a: QpuAnalytics, advantage?
     amplitudesInOneRegister,
     fusedInOneRegister,
     oneRegisterFidelity: fidelity.value,
+    ...(fidelityNote ? { note: fidelityNote } : {}),
     redirected: redirected.value,
     amplitudesRedirected: amplitudesRedirected.value,
     registerNext,

@@ -240,6 +240,8 @@ export const qpuReadmeOf = (m = qpuMcpOf()): string => {
     '',
     ...cite.rows.map((r) => `- ${r.works}`),
     `- ${cite.prior.works}`,
+    ...cite.links.edges.map((edge) => `- ${edge.from} → ${edge.to} holds ${edge.holds}${edge.lead ? ' lead' : ''}`),
+    ...(cite.links.next ? [`- next ${cite.links.next.uuid}`] : []),
     '',
     qpuSeatOf().acronym,
     '',

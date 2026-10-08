@@ -1,4 +1,4 @@
-import { blockFields } from '../../fields/blockFields'
+import { blockFields } from '../../fields/blockFields.js'
 
 /** Each tenant as an app on the lattice: its domain, the pages and docs scoped to it, and the engine every app shares.
  *  `live` because it reads the document store when served, so it is its own page, not the home page. */

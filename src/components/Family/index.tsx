@@ -1,12 +1,15 @@
 import Link from 'next/link'
+import { qpuHexUuidOf } from '@uuidna/qpu'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { countsOf, type Family } from '@/app/_data'
+import { FormulaReadings, listedOf } from '@/components/Readings'
 
 export const programHref = (family: string, program: string[]) => `/${encodeURIComponent(family)}/${program.map(encodeURIComponent).join('+')}`
 
 export function FamilyView({ family: f }: { family: Family }) {
   const c = countsOf(f.formulas.length)
+  const formulas = listedOf(f.formulas, (x) => x.name)
   return (
     <div className="space-y-10">
       <div className="space-y-3">
@@ -20,6 +23,7 @@ export function FamilyView({ family: f }: { family: Family }) {
         </div>
       </div>
 
+      <FormulaReadings />
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Formulas</h2>
         <Table>
@@ -27,17 +31,22 @@ export function FamilyView({ family: f }: { family: Family }) {
             <TableRow>
               <TableHead className="w-16">Nibble</TableHead>
               <TableHead>Formula</TableHead>
+              <TableHead>Hex</TableHead>
               <TableHead className="text-right">Arity</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {f.formulas.map((x) => (
-              <TableRow key={x.name}>
-                <TableCell className="font-mono text-muted-foreground">{x.nibble}</TableCell>
-                <TableCell><Link href={programHref(f.name, [x.name])} className="font-mono text-primary hover:underline">{x.name}</Link></TableCell>
-                <TableCell className="text-right font-mono">{x.arity}</TableCell>
-              </TableRow>
-            ))}
+            {formulas.map((x) => {
+              const hex = x.arity === 0 ? qpuHexUuidOf({ family: f.name, program: [x.name], params: [] }) : undefined
+              return (
+                <TableRow key={x.name}>
+                  <TableCell className="font-mono text-muted-foreground">{x.nibble}</TableCell>
+                  <TableCell><Link href={programHref(f.name, [x.name])} className="font-mono text-primary hover:underline">{x.name}</Link></TableCell>
+                  <TableCell className="font-mono text-xs">{hex ? <Link href={`/${hex}`} className="text-primary hover:underline">{hex}</Link> : 'minted when the parameters are entered'}</TableCell>
+                  <TableCell className="text-right font-mono">{x.arity}</TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </section>

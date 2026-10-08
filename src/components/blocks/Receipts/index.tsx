@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { BlockWrapper } from '@/components/BlockWrapper'
 import { receiptsOf } from '@/app/_data'
+import { FormulaReadings, listedOf } from '@/components/Readings'
 import { receiptFactsOf } from '@uuidna/qpu/core/showcase.js'
 import type { ReceiptsBlock } from '@/payload-types'
 
@@ -9,8 +10,9 @@ import type { ReceiptsBlock } from '@/payload-types'
 export function Receipts({ heading, intro, anchor, facts }: ReceiptsBlock) {
   return (
     <BlockWrapper heading={heading} intro={intro} anchor={anchor}>
+      <FormulaReadings />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {receiptsOf().map((r) => (
+        {listedOf(receiptsOf(), (r) => r.file).map((r) => (
           <Card key={r.file}>
             <CardHeader className="pb-2"><CardTitle className="font-mono text-sm"><Link href={`/${r.name}`} className="hover:underline">{r.file}</Link></CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">

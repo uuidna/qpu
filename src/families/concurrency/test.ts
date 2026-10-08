@@ -4,7 +4,7 @@ import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidR
 import { ConcurrencyFormulas } from './index.js'
 import '../../mcp/families.js'
 
-test('concurrency: amdahl, speedup, throughput, utilization, contention, latency, deadlock, scalability — crossing to code', async (t) => {
+test('concurrency: amdahl, speedup, throughput, utilization, contention, latency, deadlock, scalability, steal — crossing to code', async (t) => {
   assert.equal(ConcurrencyFormulas.amdahl(90, 10).value, 10, 'Amdahl: denom 910, speedup ×100')
   assert.equal(ConcurrencyFormulas.speedup(100, 25).value, 400, 'four times faster, ×100')
   assert.equal(ConcurrencyFormulas.throughput(6000, 60).value, 100, 'tasks per second')
@@ -13,11 +13,20 @@ test('concurrency: amdahl, speedup, throughput, utilization, contention, latency
   assert.equal(ConcurrencyFormulas.latency(5000, 100).value, 50)
   assert.equal(ConcurrencyFormulas.deadlock(3).value, 3, 'three cycles hold')
   assert.equal(ConcurrencyFormulas.scalability(800, 100).value, 800)
+  const { ParallelExecutor } = await import('../../optimization/parallel-executor.js')
+  const exec = new ParallelExecutor(2)
+  exec.enqueue({ id: 'a', formulaId: 'f', input: [1], priority: 1 })
+  await exec.executeAll((v) => v)
+  const stolen = exec.stolen
+  const steal = ConcurrencyFormulas.steal(stolen)
+  assert.equal(steal.value, stolen, 'steal returns the scheduler stolen-task count')
+  assert.equal(steal.holds, Number.isSafeInteger(stolen) && stolen >= 0)
   assert.equal(ConcurrencyFormulas.amdahl(90, 10).dst, 'code')
-  assert.equal(qpuHexFamiliesOf().get('concurrency')?.length, 8)
-  const uuid = qpuHexUuidOf({ family: 'concurrency', program: ['amdahl'], params: [90, 10] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
-  assert.equal(Number(run.value), 10, `concurrency.amdahl at ${uuid}`)
-  qpuUuidReceiptOf('concurrency amdahl', qpuContentUuidOf(run), { uuid })
-  t.diagnostic('8 formulas; amdahl 10, speedup 400, throughput 100, utilization 75, contention 30, latency 50, deadlock 3, scalability 800; crossing to code')
+  assert.equal(qpuHexFamiliesOf().get('concurrency')?.length, 9)
+  const uuid = qpuHexUuidOf({ family: 'concurrency', program: ['steal'], params: [stolen] })
+  const run = (await qpuHexRunOf(uuid, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }
+  assert.equal(Number(run.value), stolen, `concurrency.steal at ${uuid}`)
+  assert.equal(run.holds, steal.holds)
+  qpuUuidReceiptOf('concurrency steal', qpuContentUuidOf(run), { uuid })
+  t.diagnostic(`9 formulas; amdahl 10, speedup 400, throughput 100, utilization 75, contention 30, latency 50, deadlock 3, scalability 800, steal ${stolen} holds ${run.holds} at ${uuid}; crossing to code`)
 })

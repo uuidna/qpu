@@ -13,13 +13,15 @@ test('wave: one call launches faces agents and answers one receipt; the calls sa
   const i = names.indexOf('tesla') >= 0 ? names.indexOf('tesla') : 0
   const w = (await WaveFormulas.wave(i, 0)) as unknown as { value: number; holds: boolean; agents: number; calls: number; saved: number; next: number; receipt: string }
   assert.equal(w.calls, 1)
-  assert.equal(w.agents, (qpuHexFamiliesOf().get(names[i]!)?.length ?? 0) * faces, 'every formula of the family at faces inputs')
+  const called = (qpuHexFamiliesOf().get(names[i]!) ?? []).filter((x) => x.arity <= 1)
+  assert.equal(w.agents, called.length * faces, 'one amount calls a formula of arity 0 or 1')
   assert.equal(w.saved, w.agents - 1, 'the calls saved by one wave')
   assert.equal(w.next, faces)
   assert.ok(w.holds && w.value > 0, 'some agent held')
   assert.match(w.receipt, /^[0-9a-f-]{36}$/, 'one receipt for the wave')
   const s = (await WaveFormulas.sweep(0)) as unknown as { value: number; agents: number; families: string[]; silent: string[] }
-  assert.equal(s.agents, Math.min(faces, names.length), 'one agent per family of the slice')
+  const swept = names.slice(0, faces).filter((family) => (qpuHexFamiliesOf().get(family)?.[0]?.arity ?? 2) <= 1)
+  assert.equal(s.agents, swept.length, 'the seed fills one parameter; a wider first formula is not called')
   assert.equal(s.value + s.silent.length, s.families.length)
   const n = 16
   assert.equal(Number(WaveFormulas.saved(n).value), Number(WaveFormulas.agents(n).value) - Number(WaveFormulas.waves(n).value))
@@ -31,12 +33,15 @@ test('wave: one call launches faces agents and answers one receipt; the calls sa
   assert.equal(m.calls, 1)
   const k = qpuHexFamiliesOf().get(names[i]!)!.length
   assert.equal(m.programs, k + k * k, 'every program of one or two formulas')
-  assert.ok(m.agents === m.programs * 4 && m.value > 0 && m.ms > 0 && m.perSecond > 0, `${m.agents} agents in ${m.ms} ms`)
+  const fs = qpuHexFamiliesOf().get(names[i]!)!
+  const callable = fs.filter((x) => x.arity <= 1).length + fs.reduce((n, x) => n + fs.filter((y) => Math.max(x.arity, y.arity) <= 1).length, 0)
+  assert.ok(m.agents === callable * 4 && m.value > 0 && m.ms > 0 && m.perSecond > 0, `${m.agents} agents in ${m.ms} ms`)
   assert.ok(m.signals.every((u) => /^[0-9a-f-]{36}$/.test(u)), 'every signal is a UUID')
   // a program as a hex combination: 0x21 is the second formula composed with the first
   const c = (await WaveFormulas.combo(i, 0x21, 0)) as unknown as { program: string[]; agents: number; holds: boolean }
   assert.deepEqual(c.program, [qpuHexFamiliesOf().get(names[i]!)![1]!.name, qpuHexFamiliesOf().get(names[i]!)![0]!.name])
-  assert.equal(c.agents, faces)
+  const comboArity = Math.max(qpuHexFamiliesOf().get(names[i]!)![1]!.arity, qpuHexFamiliesOf().get(names[i]!)![0]!.arity)
+  assert.equal(c.agents, comboArity <= 1 ? faces : 0)
   assert.equal((await WaveFormulas.combo(i, 0xf, 0)).holds, false, 'a digit past the family names no formula')
   // the remote agents: a slice of the AI APIs read for the credential they ask and called free; the reading says which
   const rem = (await WaveFormulas.remote(0)) as unknown as { value: number; matched: number; agents: string[]; calls: number }

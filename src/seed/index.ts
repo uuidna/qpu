@@ -1,6 +1,7 @@
 import type { Block, Payload } from 'payload'
 import { qpuCiteOf, qpuContentUuidOf, qpuFacesOf, qpuInstallOf, qpuPurposeOf } from '@uuidna/qpu'
 import { blocks } from '../blocks/index'
+import { pluginAxisLengthOf, saleRoyaltyOf, unpagedLayoutBlocksOf } from '../payload/plugins/public'
 import { customOf } from '../fields/blockFields'
 import { HOME } from '../fields/link'
 import { receipts } from '../receipts/index'
@@ -63,9 +64,11 @@ const pageOf = (b: Block): PageData => ({ slug: b.slug, title: titleOf(b.slug), 
 const byName = (name: string) => blocks.find((b) => b.slug === name)!
 
 // Sale record. Price stays off, so it holds false until the author sets one. Cloudflare for SaaS custom hostname billing bills the other user's Cloudflare account; the account id stays unset. No card is stored.
+// A sale on this uuidna.com host pays publishing.royalty. The rate integer is unset; the formula returns 0 and holds false.
+const royalty = saleRoyaltyOf(cite.website)
 const PRODUCTS = [
-  { title: 'Commercial license', slug: 'commercial-license', description: `${packageName} is licensed ${licence.name}: non-commercial use only. Commercial use needs this license, priced per organisation on request.`, organisation: null, use: null, licence: 'CC-BY-NC-ND-4.0', priceInUSDEnabled: false, billedAccount: 'other-cloudflare-account', cloudflareAccountId: null, _status: 'published' },
-  { title: 'Storage writes', slug: 'storage-writes', description: `Reads of ${cite.website} are free and open. Writes to the document store need a bearer token; this plan issues one, priced on request.`, priceInUSDEnabled: false, _status: 'published' },
+  { title: 'Commercial license', slug: 'commercial-license', description: `${packageName} is licensed ${licence.name}: non-commercial use only. Commercial use needs this license, priced per organisation on request.`, organisation: null, use: null, licence: 'CC-BY-NC-ND-4.0', priceInUSDEnabled: false, billedAccount: 'other-cloudflare-account', cloudflareAccountId: null, royalty, _status: 'published' },
+  { title: 'Storage writes', slug: 'storage-writes', description: `Reads of ${cite.website} are free and open. Writes to the document store need a bearer token; this plan issues one, priced on request.`, priceInUSDEnabled: false, royalty, _status: 'published' },
 ]
 const FORM = {
   title: `${PRODUCTS[0]!.title} request`,
@@ -103,6 +106,13 @@ const RECEIPT_PAGES: PageData[] = receipts.map((r) => ({
   description: seoOf(`The committed ${r.file}${typeof r.doc.when === 'string' ? `, generated ${r.doc.when}` : ''}: every row and the facts it records.`),
   layout: [blockOf(byName('receipt'), { file: r.file, heading: `${titleOf(r.name.replace(/-receipt$/, ''))} receipt` })],
 }))
+const PROGRAM_PAGE: PageData = {
+  slug: 'program',
+  title: 'Program',
+  description: seoOf(customOf(byName('program')).description),
+  layout: [blockOf(byName('program'), { family: 'combinatorics', program: 'binomial', params: String(pluginAxisLengthOf()) })],
+}
+const LAYOUT_PAGES: PageData[] = unpagedLayoutBlocksOf().map(pageOf)
 const SEARCH_PAGE = pageOf(byName('search'))
 const LICENCE_PAGE: PageData = {
   slug: 'license',
@@ -110,7 +120,7 @@ const LICENCE_PAGE: PageData = {
   description: `${packageName} is ${licence.name}: reads are free and non-commercial use is open. Commercial use and storage writes are licensed.`,
   layout: [blockOf(byName('products'), { heading: 'License and billing' }), { blockType: 'form', form: { formTitle: FORM.title } }],
 }
-const PAGES: PageData[] = [HOME_PAGE, ...standing.map(pageOf), ...RECEIPT_PAGES, SEARCH_PAGE, LICENCE_PAGE]
+const PAGES: PageData[] = [HOME_PAGE, ...standing.map(pageOf), ...LAYOUT_PAGES, PROGRAM_PAGE, ...RECEIPT_PAGES, SEARCH_PAGE, LICENCE_PAGE]
 
 const HEADER: NavItem[] = [...standing.map((b) => page(b.slug, titleOf(b.slug))), ...(index ? [{ ref: 'docs' as const, slug: 'index', label: 'Docs' }] : []), page(SEARCH_PAGE.slug, SEARCH_PAGE.title), page(LICENCE_PAGE.slug, 'License')]
 const FOOTER = {
@@ -136,7 +146,7 @@ const ensure = async (payload: Payload, collection: string, field: string, value
   const meta = (first as { meta?: { title?: unknown; description?: unknown } } | undefined)?.meta ?? {}
   const moved = ['title', 'description'].filter((k) => k in data && (data[k] !== first?.[k as 'title'] || data[k] !== meta[k as 'title']))
   // an absent sale field takes the seed, including an explicit unset; a value an admin already set stays
-  const saleMoved = ['organisation', 'use', 'licence', 'priceInUSDEnabled', 'billedAccount', 'cloudflareAccountId'].filter((k) => k in data && (first as Record<string, unknown> | undefined)?.[k] == null && (first as Record<string, unknown> | undefined)?.[k] !== data[k])
+  const saleMoved = ['organisation', 'use', 'licence', 'priceInUSDEnabled', 'billedAccount', 'cloudflareAccountId', 'royalty'].filter((k) => k in data && (first as Record<string, unknown> | undefined)?.[k] == null && (first as Record<string, unknown> | undefined)?.[k] !== data[k])
   // a scoped row needs its tenant. A row created before this site was multi-tenant has none, and the plugin refuses to
   // save it until it does — so the tenant is reconciled like a moved field, enough on its own to warrant the update.
   const tenantMoved = 'tenant' in data && (first as { tenant?: unknown } | undefined)?.tenant !== data.tenant

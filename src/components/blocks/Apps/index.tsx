@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { BlockWrapper } from '@/components/BlockWrapper'
 import { appsOf, scopeOf } from '@/app/_data'
+import { FormulaReadings, listedOf } from '@/components/Readings'
 import type { AppsBlock } from '@/payload-types'
 
 /** Each tenant as an app on the lattice: its domain and the pages and docs scoped to it, with the per-app / shared split
@@ -11,6 +12,7 @@ export async function Apps({ heading, intro, anchor }: AppsBlock) {
   const { scoped, shared } = scopeOf()
   return (
     <BlockWrapper heading={heading} intro={intro} anchor={anchor}>
+      <FormulaReadings />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {apps.map((a) => (
           <Card key={a.id} className="h-full">
@@ -29,7 +31,7 @@ export async function Apps({ heading, intro, anchor }: AppsBlock) {
         <section>
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Scoped per app</h3>
           <div className="flex flex-wrap gap-2">
-            {scoped.map((c) => (
+            {listedOf(scoped, (c) => c).map((c) => (
               <Badge key={c} variant="secondary" className="font-mono">{c}</Badge>
             ))}
           </div>
@@ -37,7 +39,7 @@ export async function Apps({ heading, intro, anchor }: AppsBlock) {
         <section>
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Shared across all apps</h3>
           <div className="flex flex-wrap gap-2">
-            {shared.map((c) => (
+            {listedOf(shared, (c) => c).map((c) => (
               <Badge key={c} variant="outline" className="font-mono">{c}</Badge>
             ))}
           </div>

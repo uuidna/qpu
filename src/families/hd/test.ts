@@ -235,3 +235,11 @@ test('hd: sun∘mean meets the kin the unit still reaches', async (t) => {
   assert.equal(new Set(values).size, 1, values.join(' ≠ '))
   t.diagnostic(`sun∘mean meets ${values[0]}`)
 })
+
+/** line(24), line(84), line(141) and line(252) are the superposition named 5. */
+test('hd: line meets 5', () => {
+  assert.equal(HdFormulas.line(24).value, 5)
+  assert.equal(HdFormulas.line(84).value, 5)
+  assert.equal(HdFormulas.line(141).value, 5)
+  assert.equal(HdFormulas.line(252).value, 5)
+})

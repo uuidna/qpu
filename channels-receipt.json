@@ -1,0 +1,367 @@
+{
+ "kind": "channels-receipt",
+ "lines": [
+  {
+   "kind": "channels",
+   "events": [
+    "push",
+    "pull_request",
+    "workflow_dispatch",
+    "schedule"
+   ],
+   "jobs": {
+    "push": "build",
+    "pull_request": "build",
+    "workflow_dispatch": "build",
+    "schedule": "test"
+   },
+   "deploy": "deploy",
+   "wave": 14,
+   "page": 1,
+   "next": 2,
+   "githubMcp": null,
+   "githubCall": "gh api search/repositories?q=is:public&per_page=14&page=1&sort=updated&order=desc",
+   "waveCall": {
+    "formula": "wave.waves",
+    "params": [
+     14
+    ],
+    "hex": "5e2cc5f6-9000-1000-9000-00000000000e",
+    "value": 1128,
+    "holds": true,
+    "receipt": "08a03660-0663-1c80-adba-6ab1af1c319c"
+   },
+   "develop": {
+    "formula": "merkaba.develop",
+    "params": [
+     0,
+     0,
+     0
+    ],
+    "hex": "89c984c4-2000-7000-b000-000000000000",
+    "value": 0,
+    "holds": false,
+    "receipt": "677daf82-f7b1-7f4a-b11c-c0dc2cf25e70"
+   },
+   "massive": {
+    "formula": "wave.massive",
+    "params": [
+     0
+    ],
+    "hex": "5e2cc5f6-4000-3000-9000-000000000000",
+    "value": 48,
+    "holds": true,
+    "receipt": "332d15f8-bc11-3369-984c-db7e266e7241",
+    "unnamed": [
+     "iaas",
+     "faas"
+    ],
+    "absent": "github mcp server"
+   },
+   "npm": {
+    "source": "npm",
+    "url": "https://www.npmjs.com/package/@uuidna/qpu",
+    "holds": false,
+    "agrees": false,
+    "latest": "1.0.1",
+    "receipt": "7fa110bf-8ba9-3b0c-8bdc-35152d052dde"
+   },
+   "alpine": {
+    "source": "alpine",
+    "url": "https://pkgs.alpinelinux.org/packages?repo=community",
+    "holds": true,
+    "agrees": true,
+    "apps": 7882,
+    "digest": "5372c5c1-1c15-1081-8d28-322adb7d3c56",
+    "receipt": "6ef02bb3-d97c-40d6-9369-6a9533844abf"
+   },
+   "channels": [
+    {
+     "name": "vinext",
+     "tokens": []
+    },
+    {
+     "name": "opennext",
+     "tokens": []
+    },
+    {
+     "name": "d1",
+     "tokens": []
+    },
+    {
+     "name": "postgres",
+     "tokens": []
+    },
+    {
+     "name": "qpu-raid",
+     "tokens": []
+    },
+    {
+     "name": "qpu-d1",
+     "tokens": []
+    },
+    {
+     "name": "r2",
+     "tokens": []
+    },
+    {
+     "name": "s3",
+     "tokens": []
+    },
+    {
+     "name": "none",
+     "tokens": []
+    },
+    {
+     "name": "resend",
+     "tokens": []
+    },
+    {
+     "name": "next",
+     "tokens": []
+    },
+    {
+     "name": "shadcn",
+     "tokens": []
+    },
+    {
+     "name": "pwa",
+     "tokens": []
+    },
+    {
+     "name": "astro",
+     "tokens": []
+    },
+    {
+     "name": "sveltekit",
+     "tokens": []
+    },
+    {
+     "name": "nuxt",
+     "tokens": []
+    },
+    {
+     "name": "remix",
+     "tokens": []
+    },
+    {
+     "name": "solidstart",
+     "tokens": []
+    },
+    {
+     "name": "qwik",
+     "tokens": []
+    },
+    {
+     "name": "hono",
+     "tokens": []
+    },
+    {
+     "name": "vitepress",
+     "tokens": []
+    },
+    {
+     "name": "docusaurus",
+     "tokens": []
+    },
+    {
+     "name": "angular",
+     "tokens": [
+      "angular"
+     ]
+    },
+    {
+     "name": "gatsby",
+     "tokens": []
+    },
+    {
+     "name": "ecommerce",
+     "tokens": [
+      "ecommerce"
+     ]
+    },
+    {
+     "name": "form-builder",
+     "tokens": []
+    },
+    {
+     "name": "import-export",
+     "tokens": []
+    },
+    {
+     "name": "mcp",
+     "tokens": []
+    },
+    {
+     "name": "multi-tenant",
+     "tokens": [
+      "tenant"
+     ]
+    },
+    {
+     "name": "nested-docs",
+     "tokens": [
+      "nested"
+     ]
+    },
+    {
+     "name": "redirects",
+     "tokens": []
+    },
+    {
+     "name": "search",
+     "tokens": [
+      "search"
+     ]
+    },
+    {
+     "name": "sentry",
+     "tokens": []
+    },
+    {
+     "name": "seo",
+     "tokens": [
+      "seo"
+     ]
+    },
+    {
+     "name": "stripe",
+     "tokens": []
+    },
+    {
+     "name": "personal",
+     "tokens": []
+    },
+    {
+     "name": "business",
+     "tokens": []
+    },
+    {
+     "name": "corporate",
+     "tokens": []
+    },
+    {
+     "name": "saas",
+     "tokens": []
+    },
+    {
+     "name": "paas",
+     "tokens": []
+    },
+    {
+     "name": "ubuntu-latest",
+     "tokens": []
+    },
+    {
+     "name": "node:26-alpine",
+     "tokens": []
+    },
+    {
+     "name": "alpine",
+     "tokens": []
+    },
+    {
+     "name": "npm",
+     "tokens": []
+    },
+    {
+     "name": "all",
+     "tokens": []
+    }
+   ],
+   "addresses": [
+    {
+     "address": "https://github.com/05aptrading-jpg/sportsAPBot",
+     "repo": "05aptrading-jpg/sportsAPBot",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/battlegoldpage/Diablo",
+     "repo": "battlegoldpage/Diablo",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/boobooes1935/Teamfight-Tactics",
+     "repo": "boobooes1935/Teamfight-Tactics",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/diahuksw/bangun-datar",
+     "repo": "diahuksw/bangun-datar",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/numb59biggie/Half-Life-2-Full-Version",
+     "repo": "numb59biggie/Half-Life-2-Full-Version",
+     "archived": false,
+     "tokens": [
+      "life",
+      "version"
+     ]
+    },
+    {
+     "address": "https://github.com/erecorbir0/gfihj",
+     "repo": "erecorbir0/gfihj",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/DaewooKim/daily-ai-news-brief",
+     "repo": "DaewooKim/daily-ai-news-brief",
+     "archived": false,
+     "tokens": [
+      "daily"
+     ]
+    },
+    {
+     "address": "https://github.com/loganfoxdale/d3",
+     "repo": "loganfoxdale/d3",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/dimonvor1942/Kodak-Easyshare",
+     "repo": "dimonvor1942/Kodak-Easyshare",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/uvolakev/pnvb",
+     "repo": "uvolakev/pnvb",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/blossombuttern72/Instagram",
+     "repo": "blossombuttern72/Instagram",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/devatlas9709/zxfg-19o",
+     "repo": "devatlas9709/zxfg-19o",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/dusa89/site-health-tools",
+     "repo": "dusa89/site-health-tools",
+     "archived": false,
+     "tokens": []
+    },
+    {
+     "address": "https://github.com/faizz-167/Faiz-Portfolio",
+     "repo": "faizz-167/Faiz-Portfolio",
+     "archived": false,
+     "tokens": [
+      "portfolio"
+     ]
+    }
+   ]
+  }
+ ]
+}

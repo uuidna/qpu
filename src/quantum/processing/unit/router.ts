@@ -157,16 +157,16 @@ export const worker = {
     }
     // a tenant under the zone, or a tenant's own domain registered as a Cloudflare for SaaS custom hostname (it reaches
     // this unit only through the */* route once Cloudflare has it active); both go whole to Payload, which decides.
-    // mcp.psg.bg is the commercial MCP hostname, attached with the same custom_domain as this unit, and it answers these doors.
-    const commercialMcp = url.hostname === 'mcp.psg.bg'
+    // This unit's own door is unit.host (qpu.uuidna.com). Public reads on that host stay open. A sale on a uuidna.com
+    // host pays publishing.royalty on the product.
     const underZone = label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)
-    const ownDomain = !commercialMcp && url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
+    const ownDomain = url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
     if (url.protocol === 'https:' && (underZone || ownDomain)) {
       if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
       // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
       return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
     }
-    const named = url.protocol === 'https:' && (url.hostname === unit.host || commercialMcp)
+    const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
     // /api IS PAYLOAD, OVER THE BINDING. Registration, REST and the find-only MCP answer at this one host; the hop is not
     // billed as a second request and Payload keeps no public route. It answers its own preflight, so this precedes OPTIONS.
@@ -200,28 +200,7 @@ export const worker = {
     }
     if (path === '/metrics') return jsonOf({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: SERVED.length })
     if (path === '/mcp') {
-      // THE COMMERCIAL HOST IS GATED BY PAYLOAD ALONE. qpu.uuidna.com stays a public read. mcp.psg.bg answers this door
-      // only after Payload's own user auth (GET /api/users/me, the same cookie or Authorization the admin already uses)
-      // returns a user. No second store. The frontends in front of that backend are CLOUDFLARE_FRONTENDS, the axis the
-      // payload-cloudflare generator already marks compatible. A missing binding, a failed read, or a body with no user
-      // is a refusal: a request Payload did not decide does not pass. Storage writes keep their Bearer token.
-      if (commercialMcp) {
-        if (!env?.PAYLOAD) return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, unauthorized)
-        const authHeaders = new Headers({ accept: 'application/json' })
-        const authorization = request.headers.get('authorization')
-        const cookie = request.headers.get('cookie')
-        if (authorization) authHeaders.set('authorization', authorization)
-        if (cookie) authHeaders.set('cookie', cookie)
-        let decided = false
-        try {
-          const me = await env.PAYLOAD.fetch(new Request(new URL('/api/users/me', request.url), { method: 'GET', headers: authHeaders }))
-          const body = (await me.json().catch(() => null)) as { user?: unknown } | null
-          decided = me.ok === true && body?.user != null && typeof body.user === 'object'
-        } catch {
-          decided = false
-        }
-        if (!decided) return jsonOf({ holds: false, denied: 'payload', reading: 'Payload did not authorize this request' }, unauthorized)
-      }
+      // qpu.uuidna.com /mcp is a public read. Storage writes keep their Bearer token.
       // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no
       // server-initiated stream, so a GET asking for text/event-stream gets the spec's other allowed answer — 405 with
       // Allow — and the client falls back to POST instead of parsing a JSON-LD catalog as an event stream.
@@ -313,10 +292,13 @@ export const worker = {
     }
     if (path === '/') {
       // Counts, not the documents. The summary holds every integer, including the amplitude count.
+      // The readings window is the combinatorics family on the UUID's own dimensions. Prize stays the public face.
       const { qpuAnalyticsOf, qpuPublicOf } = await import('./zeropage.js')
+      const { qpuCombinatoricsWindowOf } = await import('./presentation.js')
       const analytics = qpuAnalyticsOf()
       const face = qpuPublicOf(analytics)
-      return pageOrServed('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize }), {
+      const readings = await qpuCombinatoricsWindowOf()
+      return pageOrServed('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize, links: qpuCiteOf().links, readings }), {
         title: '@uuidna/qpu — quantum processing unit',
         description: face.sentence,
       })

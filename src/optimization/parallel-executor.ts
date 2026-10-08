@@ -62,6 +62,8 @@ export class ParallelExecutor {
   private coreCount: number
   private workers: OptimizationWorker[]
   private queue: WorkItem[] = []
+  /** Tasks taken off the queue by the work-stealing scheduler. */
+  stolen = 0
   private metrics: ExecutionMetrics = {
     itemsProcessed: 0,
     totalTimeMs: 0,
@@ -93,10 +95,11 @@ export class ParallelExecutor {
   }
 
   /**
-   * Work-stealing scheduler: assign work to idle workers
-   * Load balance: assign heavy items to less-loaded workers
+   * Work-stealing scheduler: assign work to idle workers.
+   * Load balance: assign heavy items to less-loaded workers.
+   * The integer is the stolen-task count after this take.
    */
-  private steal(): { worker: OptimizationWorker; item: WorkItem } | null {
+  private steal(): { worker: OptimizationWorker; item: WorkItem; stolen: number } | null {
     if (this.queue.length === 0) return null
 
     // Find least-loaded worker
@@ -120,7 +123,8 @@ export class ParallelExecutor {
     const item = this.queue.shift()
     if (!item) return null
 
-    return { worker: leastLoadedWorker, item }
+    this.stolen++
+    return { worker: leastLoadedWorker, item, stolen: this.stolen }
   }
 
   /**
@@ -179,6 +183,7 @@ export class ParallelExecutor {
 
   reset(): void {
     this.queue = []
+    this.stolen = 0
     this.workers.forEach(w => {
       w.processed = 0
       w.totalTimeMs = 0

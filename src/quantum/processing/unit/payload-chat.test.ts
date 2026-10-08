@@ -57,8 +57,8 @@ test('chat: ask calls Payload MCP findDocuments and exposes formula, integer, fo
   assert.equal(JSON.stringify(qpuMcpToolsListOf()).length < 16384, true)
 })
 
-/** mcp.psg.bg /mcp stays behind Payload GET /api/users/me. No user is a refusal. */
-test('chat: an unauthenticated mcp.psg.bg /mcp call is refused', async () => {
+/** qpu.uuidna.com /mcp is a public read. Payload user auth is not consulted. */
+test('chat: an unauthenticated qpu.uuidna.com /mcp call is a public read', async () => {
   let me = ''
   const env = {
     PAYLOAD: {
@@ -68,16 +68,14 @@ test('chat: an unauthenticated mcp.psg.bg /mcp call is refused', async () => {
       },
     },
   }
-  const res = await worker.fetch(new Request('https://mcp.psg.bg/mcp', {
+  const res = await worker.fetch(new Request('https://qpu.uuidna.com/mcp', {
     method: 'POST',
-    headers: { 'content-type': 'application/json', referer: 'https://secret.example/path' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
+    headers: { 'content-type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping' }),
   }), env as never)
-  const body = (await res.json()) as { holds?: boolean; denied?: string; email?: string; reading?: string }
-  assert.equal(res.status, 401)
-  assert.equal(body.holds, false)
-  assert.equal(body.denied, 'payload')
-  assert.equal(me, '/api/users/me')
+  const body = (await res.json()) as { result?: unknown; holds?: boolean; denied?: string; email?: string }
+  assert.equal(res.status, 200)
+  assert.deepEqual(body.result, {})
+  assert.equal(me, '')
   assert.equal(JSON.stringify(body).includes('ada@example.com'), false)
-  assert.equal(JSON.stringify(body).includes('secret.example'), false)
 })

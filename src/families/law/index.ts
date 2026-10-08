@@ -65,7 +65,7 @@ export class LawFormulas {
   // ── THE MCP COURT: THE AUTHOR'S LEGAL PROTECTION, CROSSED TO THE GATE ──
   /** FIDELITY of the delivered work to the author's order: 1 when `computed` tokens equal `ordered`, else 0. The author's
    *  right is that the order is computed, not that an agent redirects the budget elsewhere; fidelity 1 is the kept order. */
-  static fidelity(ordered: number, computed: number): CrossFormula { const boolean = ordered === computed ? 1 : 0; return g('law-fidelity', 'fidelity(ordered, computed) = [computed = ordered]', boolean, nat(ordered, computed), 'fidelity', [ordered, computed], { boolean }) }
+  static fidelity(ordered: number, computed: number): CrossFormula { const boolean = ordered === computed ? 1 : 0; const held = nat(ordered, computed) ? 1 : 0; return g('law-fidelity', 'fidelity(ordered, computed) = [computed = ordered]', boolean, held === 1, 'fidelity', [ordered, computed], { boolean, ...(boolean !== held ? { note: `value ${boolean}; holds ${held}` } : {}) }) }
   /** REDIRECTED tokens: `ordered − computed` when the order was underserved, else 0 — the tokens the order lost. A measure,
    *  not a charge; 0 is no redirection. The court's work is fidelity of the same pair. */
   static redirected(ordered: number, computed: number): CrossFormula { const measure = computed < ordered ? ordered - computed : 0; const boolean = LawFormulas.fidelity(ordered, computed).value === 1 ? 1 : 0; return g('law-redirected', 'redirected(ordered, computed) = max(0, ordered − computed)', measure, nat(ordered, computed), 'redirected', [ordered, computed], { boolean, measure, by: 'fidelity' }) }

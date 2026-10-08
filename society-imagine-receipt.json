@@ -1,0 +1,361 @@
+{
+ "kind": "society-imagine-receipt",
+ "formula": "merkaba.develop",
+ "params": [
+  8,
+  0,
+  0
+ ],
+ "hex": "89c984c4-2000-2000-b000-000800000000",
+ "value": 1,
+ "holds": true,
+ "next": 14,
+ "receipt": "df0b1ba1-0275-4962-ac99-f6b16877afc9",
+ "families": 75,
+ "words": 104,
+ "agrees": true,
+ "imagineReceipt": "a68c704e-b037-7696-a8c8-f5e75b418714",
+ "imagineHex": "absent",
+ "imagineValue": "absent",
+ "imagineNext": "absent",
+ "pointer": "wave.sweep",
+ "pointerHex": "5e2cc5f6-7000-8000-9000-000000000000",
+ "pointerValue": 6,
+ "pointerHolds": false,
+ "pointerNext": 14,
+ "rows": [
+  {
+   "name": "data.imagine",
+   "source": "imagine",
+   "about": "what society needs using the apis and computed feelings",
+   "receipt": "a68c704e-b037-7696-a8c8-f5e75b418714",
+   "families": [
+    "access",
+    "cloud",
+    "code",
+    "ecommerce",
+    "engine",
+    "financial",
+    "identity",
+    "payment",
+    "query",
+    "search",
+    "security",
+    "statistics",
+    "Qpu.Hybrid",
+    "path",
+    "global",
+    "irrigation",
+    "linearalgebra",
+    "cross",
+    "accounting",
+    "admin",
+    "annuity",
+    "audit",
+    "auth",
+    "authentication",
+    "battery",
+    "bayesian",
+    "bioinformatics",
+    "hd",
+    "canning",
+    "cardiology",
+    "chat",
+    "cinema",
+    "construction",
+    "costing",
+    "crypt",
+    "customer",
+    "dns",
+    "dynamics",
+    "editing",
+    "education",
+    "elo",
+    "employment",
+    "endpoint",
+    "energy",
+    "entertainment",
+    "field",
+    "friction",
+    "rule",
+    "gradient",
+    "highlights",
+    "hospitality",
+    "loan",
+    "logicgates",
+    "logistics",
+    "matrix",
+    "media",
+    "messaging",
+    "mining",
+    "payroll",
+    "physics",
+    "podcasting",
+    "premium",
+    "property",
+    "protocol",
+    "queue",
+    "rehabilitation",
+    "serialization",
+    "staffing",
+    "storage",
+    "theatre",
+    "thermodynamics",
+    "tls",
+    "trading",
+    "vector",
+    "woodworking"
+   ],
+   "words": 104,
+   "agrees": true,
+   "holds": true,
+   "hex": "absent",
+   "value": "absent",
+   "next": "absent",
+   "pass": true
+  },
+  {
+   "name": "merkaba.develop(8, 0, 0)",
+   "formula": "develop(access.grant, →0) = [it composes with its neighbours in this rotation of the rosetta]",
+   "params": [
+    8,
+    0,
+    0
+   ],
+   "pass": true,
+   "value": "1",
+   "holds": true,
+   "hex": "89c984c4-2000-2000-b000-000800000000",
+   "next": null,
+   "receipt": "df0b1ba1-0275-4962-ac99-f6b16877afc9",
+   "family": "access",
+   "lead": "grant",
+   "rotation": "→0",
+   "given": 1,
+   "meets": [],
+   "rotations": 2256,
+   "pointer": {
+    "formula": "wave.sweep",
+    "hex": "5e2cc5f6-7000-8000-9000-000000000000",
+    "value": 6,
+    "holds": false,
+    "next": 14
+   }
+  },
+  {
+   "name": "wave.sweep",
+   "formula": "wave.sweep",
+   "hex": "5e2cc5f6-7000-8000-9000-000000000000",
+   "value": "6",
+   "holds": false,
+   "next": 14,
+   "pass": false
+  },
+  {
+   "name": "api.call",
+   "hex": "e74fc019-2000-3000-b000-061500000000",
+   "status": 403,
+   "reading": false,
+   "called": false
+  },
+  {
+   "name": "society",
+   "address": "absent",
+   "called": false
+  },
+  {
+   "name": "feeling",
+   "address": "absent",
+   "called": false
+  },
+  {
+   "name": "api.backoff",
+   "arity": 2,
+   "hex": "e74fc019-1000-5000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.call",
+   "arity": 3,
+   "hex": "e74fc019-2000-7000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.methods",
+   "arity": 1,
+   "hex": "e74fc019-3000-7000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.offset",
+   "arity": 2,
+   "hex": "e74fc019-4000-2000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.operations",
+   "arity": 1,
+   "hex": "e74fc019-5000-6000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.pages",
+   "arity": 2,
+   "hex": "e74fc019-6000-5000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.payload",
+   "arity": 2,
+   "hex": "e74fc019-7000-4000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.remaining",
+   "arity": 2,
+   "hex": "e74fc019-8000-4000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.statusClass",
+   "arity": 1,
+   "hex": "e74fc019-9000-4000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "api.window",
+   "arity": 2,
+   "hex": "e74fc019-a000-6000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.arousal",
+   "arity": 2,
+   "hex": "c16bcbb9-1000-6000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.contagion",
+   "arity": 2,
+   "hex": "c16bcbb9-2000-5000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.empathy",
+   "arity": 2,
+   "hex": "c16bcbb9-3000-8000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.intensity",
+   "arity": 2,
+   "hex": "c16bcbb9-4000-5000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.recovery",
+   "arity": 2,
+   "hex": "c16bcbb9-5000-7000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.regulation",
+   "arity": 2,
+   "hex": "c16bcbb9-6000-5000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.stress",
+   "arity": 2,
+   "hex": "c16bcbb9-7000-5000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "emotion.valence",
+   "arity": 2,
+   "hex": "c16bcbb9-8000-5000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "petroleum.api",
+   "arity": 1,
+   "hex": "d8a4bd84-1000-3000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.cohesion",
+   "arity": 2,
+   "hex": "8f55c5de-1000-6000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.cohort",
+   "arity": 1,
+   "hex": "8f55c5de-2000-4000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.diffusion",
+   "arity": 2,
+   "hex": "8f55c5de-3000-1000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.gini",
+   "arity": 2,
+   "hex": "8f55c5de-4000-1000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.mobility",
+   "arity": 2,
+   "hex": "8f55c5de-5000-7000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.network",
+   "arity": 2,
+   "hex": "8f55c5de-6000-1000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.participation",
+   "arity": 2,
+   "hex": "8f55c5de-7000-1000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  },
+  {
+   "name": "sociology.segregation",
+   "arity": 2,
+   "hex": "8f55c5de-8000-1000-8000-000000000000",
+   "amounts": "absent",
+   "called": false
+  }
+ ]
+}

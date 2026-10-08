@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import { qpuHarnessesOf } from '@uuidna/qpu'
+import { usageBillOf } from '@/payload/plugins/billing'
 import { Fragment } from 'react'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Badge } from '@/components/ui/badge'
@@ -7,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { FormulaReadings, listedOf } from '@/components/Readings'
 
 export type Run = { holds?: boolean; value?: unknown; receipt?: string; steps?: { formula: string; args: string[]; value: unknown }[]; error?: string }
 
@@ -44,11 +47,30 @@ export function RunCard({ uuid, run }: { uuid: string; run: Run }) {
           </Table>
         ) : null}
         {run.receipt ? <p className="font-mono text-xs text-muted-foreground">receipt {run.receipt}</p> : null}
+        <BillLine delivered={run.holds === true} />
         <p className="text-xs text-muted-foreground">
-          Permalink <Link href={`/${uuid}`} className="font-mono underline">/{uuid}</Link> · MCP <code className="font-mono">tools/call hex {'{'} "uuid": "{uuid}" {'}'}</code>
+          Permalink <Link href={`/${uuid}`} className="font-mono underline">/{uuid}</Link>
+          {' · '}
+          <code className="font-mono">POST {qpuHarnessesOf().url}</code>
+          {' '}
+          <code className="font-mono">tools/call cite {'{'} &quot;hex&quot;: &quot;{uuid}&quot; {'}'}</code>
+          {' · '}
+          <code className="font-mono">{'{'} &quot;hex&quot;: &quot;{uuid}&quot;, &quot;full&quot;: true {'}'}</code>
         </p>
       </CardContent>
     </Card>
+  )
+}
+
+/** The usage ledger beside a reading. A null margin is a lead and is not shown as a number. */
+function BillLine({ delivered }: { delivered: boolean }) {
+  const bill = usageBillOf()
+  return (
+    <p className="text-xs text-muted-foreground">
+      {delivered ? 'holds' : 'lead, not delivered value'}
+      {' · '}ledger {bill.units} · charged {bill.charged} · billed {bill.billed}
+      {' · '}margin is a lead · citation is not solved
+    </p>
   )
 }
 
@@ -88,8 +110,9 @@ export function ProgramView({ family, names, formulas = [], raw, uuid, run, erro
       {formulas.length && names.length < 10 ? (
         <div className="space-y-2">
           <h2 className="text-sm font-medium text-muted-foreground">Nested one step further</h2>
+          <FormulaReadings />
           <div className="flex flex-wrap gap-2">
-            {formulas.map((f) => <Link key={f} href={hrefOf(family, [...names, f], raw)}><Badge variant="outline" className="font-mono">{names.join('+')}+{f}</Badge></Link>)}
+            {listedOf(formulas, (f) => f).map((f) => <Link key={f} href={hrefOf(family, [...names, f], raw)}><Badge variant="outline" className="font-mono">{names.join('+')}+{f}</Badge></Link>)}
           </div>
         </div>
       ) : null}

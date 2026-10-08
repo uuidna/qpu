@@ -54,8 +54,8 @@ const registering = [
 ].sort((a, b) => a.key.localeCompare(b.key))
 const REPO_REGISTRIES = [
   { file: `${SRC}/mcp/families.ts`, export: 'families', sideEffects: true, entries: registering },
-  { file: `${SRC}/blocks/index.ts`, export: 'blocks', type: { name: 'Block', from: 'payload' }, entries: modulesOf('blocks', 'ts').map((name) => ({ name, from: `./${name}`, key: slugOf(name) })) },
-  { file: `${SRC}/components/blocks/index.ts`, export: 'blockComponents', record: true, entries: modulesOf('components/blocks', 'tsx').map((name) => ({ name, from: `./${name}`, key: slugOf(name) })) },
+  { file: `${SRC}/blocks/index.ts`, export: 'blocks', type: { name: 'Block', from: 'payload' }, entries: modulesOf('blocks', 'ts').map((name) => ({ name, from: `./${name}/index.js`, key: slugOf(name) })) },
+  { file: `${SRC}/components/blocks/index.ts`, export: 'blockComponents', record: true, entries: modulesOf('components/blocks', 'tsx').map((name) => ({ name, from: `./${name}/index.js`, key: slugOf(name) })) },
 ]
 // ONE WORKER: qpu runs on Payload running on qpu. uuidna-qpu is the Payload app; worker.js fronts it with the unit, which
 // hands browser pages and /api to the app in-process, and the app keeps its documents in the unit's storage (db/payload).
@@ -67,7 +67,7 @@ const REPO_WORKER = {
   // no workers.dev or preview address: every request there was a scanner, billed as an invocation
   workers_dev: false,
   preview_urls: false,
-  routes: [{ pattern: 'qpu.uuidna.com', custom_domain: true }, { pattern: 'mcp.psg.bg', custom_domain: true }, { pattern: '*.uuidna.com/*', zone_name: 'uuidna.com' }],
+  routes: [{ pattern: 'qpu.uuidna.com', custom_domain: true }, { pattern: '*.uuidna.com/*', zone_name: 'uuidna.com' }],
   vars: { QPU_HOST: 'qpu.uuidna.com' },
   kv_namespaces: [{ binding: 'STORAGE', id: 'b341b266250444198e54508ca3aee53a', preview_id: 'b341b266250444198e54508ca3aee53a' }],
   r2_buckets: [{ binding: 'BLOBS', bucket_name: 'uuidna-qpu-blobs' }, { binding: 'MEDIA', bucket_name: 'uuidna-qpu-payload-media' }],
@@ -91,7 +91,7 @@ const REPO = {
     },
     pluginOptions: {
       'multi-tenant': "tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin'",
-      ecommerce: "products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, { name: 'organisation', type: 'text' }, { name: 'use', type: 'textarea' }, { name: 'licence', type: 'text', defaultValue: 'CC-BY-NC-ND-4.0' }, { name: 'billedAccount', type: 'text' }, { name: 'cloudflareAccountId', type: 'text' }, ...defaultCollection.fields] }) }",
+      ecommerce: "products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, { name: 'organisation', type: 'text' }, { name: 'use', type: 'textarea' }, { name: 'licence', type: 'text', defaultValue: 'CC-BY-NC-ND-4.0' }, { name: 'billedAccount', type: 'text' }, { name: 'cloudflareAccountId', type: 'text' }, { name: 'royalty', type: 'json' }, ...defaultCollection.fields] }) }",
       seo: "uploadsCollection: 'media', generateTitle: ({ doc }) => seoTitleOf(doc), generateDescription: ({ doc }) => seoDescriptionOf(doc), generateURL: ({ doc }) => seoURLOf(doc)",
     },
     imports: ['seoTitleOf', 'seoDescriptionOf', 'seoURLOf'].map((name) => ({ name, from: './collections/Docs' })),

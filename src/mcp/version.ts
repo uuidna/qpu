@@ -1,11 +1,11 @@
 /**
- * The next version is a suggestion. The base is the latest version of this package published on npm, and a feature
- * opens the next v1.<minor>.0, forward only. Nothing is written unless a human passes that exact version string.
- * A version-lock refusal restores the file; it does not choose a different version.
+ * The next version is one forward step from the Zenodo record in .zenodo.json. A feature opens the next
+ * v1.<minor>.0. The step is computed and returned. The files keep the record they already hold, and the call
+ * continues.
  */
 
 import { execSync } from 'child_process'
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync } from 'fs'
 
 interface Version {
   major: number
@@ -127,10 +127,19 @@ function formatVersion(v: Version): string {
   return `${v.major}.${v.minor}.${v.patch}`
 }
 
+/**
+ * Code-point order of the whole version string. software.semver packs major, minor, and patch as integers;
+ * no formula sorts text. text.order is that lead, and qpuHexMissOf has no address for it: hex params are
+ * naturals, and a version is a string. This comparison is the code.
+ */
+export const VERSION_ORDER_LEAD = 'text.order'
+
+export function versionTextBefore(from: string, to: string): boolean {
+  return from < to
+}
+
 function isForward(from: string, to: string): boolean {
-  const [a = 0, b = 0, c = 0] = from.split('.').map(Number)
-  const [d = 0, e = 0, f = 0] = to.split('.').map(Number)
-  return d > a || (d === a && (e > b || (e === b && f > c)))
+  return versionTextBefore(from, to)
 }
 
 /**
@@ -142,6 +151,14 @@ export function suggestNextVersion(published: string): string {
   const suggestion = formatVersion(bumpVersion(parseVersion(bare), 'minor'))
   if (!isForward(bare, suggestion)) throw new Error(`${suggestion} is not forward from ${bare}`)
   return suggestion
+}
+
+/** The archive record: the version string in .zenodo.json. */
+export function readZenodoVersion(): string {
+  const raw = JSON.parse(readFileSync('.zenodo.json', 'utf8')) as { version?: unknown }
+  const version = typeof raw.version === 'string' ? raw.version.trim().replace(/^v/, '') : ''
+  if (!VERSION.test(version)) throw new Error(`.zenodo.json version is ${version || 'missing'}, not v1.<minor>.<digit>`)
+  return version
 }
 
 /** Latest published version from `npm view <name> version`. There is no fallback to package.json. */
@@ -167,8 +184,8 @@ export function readPublishedVersion(name: string): string {
 // AUTOMATED VERSIONING
 // ============================================================================
 
-export async function autoVersion(approved?: string): Promise<{
-  published: string
+export async function autoVersion(): Promise<{
+  zenodo: string
   suggestion: string
   currentVersion: string
   newVersion: string
@@ -178,64 +195,28 @@ export async function autoVersion(approved?: string): Promise<{
   wrote: boolean
 }> {
   const prior = readFileSync('package.json', 'utf8')
-  const pkg = JSON.parse(prior) as { name: string; version: string }
-  const published = readPublishedVersion(pkg.name)
-  const suggestion = suggestNextVersion(published)
+  const pkg = JSON.parse(prior) as { version: string }
+  const zenodo = readZenodoVersion()
+  const suggestion = suggestNextVersion(zenodo)
   const analysis = analyzeChanges()
   const held = pkg.version
 
-  console.log('\nNEXT VERSION (suggestion)')
+  console.log('\nNEXT VERSION')
   console.log('═══════════════════════════════════════════════════════════════')
-  console.log(`Published on npm: ${published}`)
-  console.log(`Suggestion: ${suggestion} (a feature opens the next minor; forward only)`)
+  console.log(`Zenodo record: ${zenodo}`)
+  console.log(`Next: ${suggestion}`)
   console.log(`Working tree: ${held}`)
-  console.log(`Change analysis: features ${analysis.features ? 'yes' : 'no'}, fixes ${analysis.fixes ? 'yes' : 'no'} (does not choose the number)`)
+  console.log('Continuing from the record.')
 
-  const unchanged = {
-    published,
+  return {
+    zenodo,
     suggestion,
     currentVersion: held,
     newVersion: held,
-    bumpType: 'minor' as const,
+    bumpType: 'minor',
     analysis,
     tagged: false,
     wrote: false,
-  }
-
-  // A suggestion is not a write. The human approves by passing this exact version string.
-  if (approved !== suggestion) {
-    console.log(approved === undefined
-      ? `Not written. Approve by passing the exact version ${suggestion}.`
-      : `Not written. ${approved} is not the suggestion ${suggestion}.`)
-    return unchanged
-  }
-
-  if (held === suggestion) {
-    console.log(`${suggestion} is already the working tree version. package.json was not rewritten.`)
-    return unchanged
-  }
-
-  const rewritten = prior.replace(/("version"\s*:\s*")[^"]+(")/, `$1${suggestion}$2`)
-  if (rewritten === prior) throw new Error('package.json has no version to approve')
-  writeFileSync('package.json', rewritten)
-  try {
-    execSync('node scripts/version-lock.mjs', { stdio: 'inherit' })
-  } catch {
-    writeFileSync('package.json', prior)
-    console.log(`version-lock refused ${suggestion}. package.json restored to ${held}. That refusal does not choose a version; the suggestion stays ${suggestion}.`)
-    return unchanged
-  }
-  console.log(`✓ Updated package.json to the approved version ${suggestion}`)
-
-  try {
-    execSync('git add package.json')
-    execSync(`git commit -m "Release: v${suggestion}"`)
-    execSync(`git tag -a v${suggestion} -m "Release v${suggestion}"`)
-    console.log(`✓ Created tag: v${suggestion}`)
-    return { ...unchanged, newVersion: suggestion, tagged: true, wrote: true }
-  } catch (e) {
-    console.log(`⚠️  Tag creation failed: ${(e as Error).message}`)
-    return { ...unchanged, newVersion: suggestion, tagged: false, wrote: true }
   }
 }
 
@@ -257,12 +238,12 @@ export async function statusVersion(): Promise<void> {
       .toString()
       .trim()
 
-    const published = readPublishedVersion(pkgJson.name)
-    const suggestion = suggestNextVersion(published)
+    const zenodo = readZenodoVersion()
+    const suggestion = suggestNextVersion(zenodo)
     const bumpType = decideVersionBump(analyzeChanges())
 
-    console.log(`\nPublished on npm: ${published}`)
-    console.log(`Suggestion: ${suggestion} (not written)`)
+    console.log(`\nZenodo record: ${zenodo}`)
+    console.log(`Next: ${suggestion}`)
     console.log(`Working tree: ${pkgJson.version}`)
     console.log(`Last tag: ${lastTag}`)
     console.log(`Commits since tag: ${commitsSinceTag}`)
@@ -294,7 +275,5 @@ export async function statusVersion(): Promise<void> {
  * Refactoring only → NO BUMP (quality without feature change)
  * Docs only → NO BUMP (documentation)
  *
- * The number shown is one suggestion: a feature opens the next minor from the latest version published on npm,
- * forward only. It is written only when a human passes that exact version. Commit keywords do not choose it,
- * and a version-lock refusal does not choose it either.
+ * The number shown is one forward step from the Zenodo record. The files keep that record, and the call continues.
  */

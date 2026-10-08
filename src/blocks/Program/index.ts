@@ -1,4 +1,4 @@
-import { blockFields } from '../../fields/blockFields'
+import { blockFields } from '../../fields/blockFields.js'
 
 export const Program = blockFields('Program', 'QPU', 'One hex program, minted and run when the page is served.', [
   {

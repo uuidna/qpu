@@ -142,8 +142,8 @@ export const QPU_DEPS: Record<string, Port> = {
   '@opennextjs/cloudflare': { domain: 'edge', relates: ['next', 'wrangler'], lead: true },
   wrangler: { domain: 'edge', relates: ['@cloudflare/workers-types'], lead: true },
   '@cloudflare/workers-types': { domain: 'edge', relates: ['wrangler'], lead: true, how: 'types' },
-  // obs — monitoring; qpu’s own monitoring is formulas (heat.slow)
-  '@sentry/nextjs': { domain: 'obs', relates: ['next'], lead: true },
+  // obs — monitoring
+  '@sentry/nextjs': { domain: 'obs', relates: ['next'], how: 'monitoring is formulas (heat.slow)', lead: true },
   // mcp — qpu IS the server; the sdk is the client shell
   '@modelcontextprotocol/sdk': { domain: 'mcp', relates: ['module'], lead: true, how: 'qpu serves its own MCP (qpuMcpOf, tools/list + tools/call); the sdk is the shell client only' },
   // value/build — types and the compiler; compiling is not computing, it stays

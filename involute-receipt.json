@@ -1,0 +1,105 @@
+{
+ "kind": "involute-receipt",
+ "formula": "yi.complement(0)",
+ "hex": "08ed5b07-2000-8000-9000-000000000000",
+ "value": 63,
+ "holds": true,
+ "next": null,
+ "rows": [
+  {
+   "formula": "merkaba.develop(0, 0, 0)",
+   "hex": "89c984c4-2000-7000-b000-000000000000",
+   "value": 0,
+   "holds": false,
+   "next": null
+  },
+  {
+   "formula": "yi.complement(0)",
+   "hex": "08ed5b07-2000-8000-9000-000000000000",
+   "value": 63,
+   "holds": true,
+   "next": null
+  },
+  {
+   "formula": "merkaba.develop(1, 0, 1)",
+   "hex": "89c984c4-2000-1000-b000-000100000001",
+   "value": 0,
+   "holds": false,
+   "next": null
+  },
+  {
+   "formula": "merkaba.develop(2, 0, 2)",
+   "hex": "89c984c4-2000-7000-b000-000200000002",
+   "value": 0,
+   "holds": false,
+   "next": null
+  },
+  {
+   "formula": "merkaba.develop(3, 0, 3)",
+   "hex": "89c984c4-2000-7000-b000-000300000003",
+   "value": 0,
+   "holds": false,
+   "next": null
+  },
+  {
+   "formula": "merkaba.develop(4, 0, 4)",
+   "hex": "89c984c4-2000-7000-b000-000400000004",
+   "value": 0,
+   "holds": false,
+   "next": null
+  },
+  {
+   "formula": "merkaba.develop(5, 0, 5)",
+   "hex": "89c984c4-2000-8000-b000-000500000005",
+   "value": 0,
+   "holds": false,
+   "next": null
+  },
+  {
+   "formula": "merkaba.develop(7, 0, 7)",
+   "hex": "89c984c4-2000-5000-b000-000700000007",
+   "value": 0,
+   "holds": false,
+   "next": null
+  },
+  {
+   "formula": "criticalchain.fevermargin",
+   "hex": "c167d2c0-5000-2000-8000-000000000000",
+   "value": null,
+   "holds": null,
+   "next": null,
+   "amounts": "absent"
+  },
+  {
+   "formula": "cosmogony.dualitypairs",
+   "hex": "cd5dbb91-3000-5000-8000-000000000000",
+   "value": null,
+   "holds": null,
+   "next": null,
+   "amounts": "absent"
+  },
+  {
+   "formula": "zoroastrianism.dualitypairs",
+   "hex": "b96fdaef-3000-8000-8000-000000000000",
+   "value": null,
+   "holds": null,
+   "next": null,
+   "amounts": "absent"
+  },
+  {
+   "formula": "phenomenology.experiencepairs",
+   "hex": "72cd3364-3000-7000-8000-000000000000",
+   "value": null,
+   "holds": null,
+   "next": null,
+   "amounts": "absent"
+  },
+  {
+   "formula": "logic.proof(10, 2)",
+   "hex": "03c762b6-6000-7000-a000-00000a000002",
+   "value": 5,
+   "holds": true,
+   "next": null
+  }
+ ]
+}

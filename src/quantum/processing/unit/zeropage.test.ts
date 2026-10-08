@@ -61,6 +61,7 @@ test('machines: Pravets first, clay on every class that holds the integers', asy
   assert.equal(m.rows[0]?.amplitudesHeld, true)
   assert.equal(m.rows[0]?.fusedHeld, true)
   assert.equal(m.rows[0]?.oneRegisterFidelity, 0)
+  assert.equal(m.rows[0]?.note, 'value 0; holds 1')
   assert.equal(m.rows[0]?.lead, true)
   assert.equal(m.rows[0]?.registerNext, '16-bit')
   assert.equal(m.rows[0]?.lawful, 1)

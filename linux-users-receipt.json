@@ -1,0 +1,181 @@
+{
+ "kind": "linux-users-receipt",
+ "formula": "admin.groups",
+ "hex": "e5cde7fd-4000-3000-a000-00000c000004",
+ "value": 3,
+ "holds": true,
+ "next": null,
+ "image": "node:26-alpine",
+ "receipt": "635139b3-5aab-8b11-ad22-0cf2d510d1f8",
+ "rows": [
+  {
+   "name": "admin.groups(12,4)",
+   "formula": "admin.groups",
+   "term": "groups",
+   "params": [
+    12,
+    4
+   ],
+   "hex": "e5cde7fd-4000-3000-a000-00000c000004",
+   "value": 3,
+   "holds": true,
+   "pass": true,
+   "receipt": "635139b3-5aab-8b11-ad22-0cf2d510d1f8",
+   "next": null
+  },
+  {
+   "name": "chat.groups(5,3)",
+   "formula": "chat.groups",
+   "term": "groups",
+   "params": [
+    5,
+    3
+   ],
+   "hex": "f2a38d91-4000-2000-a000-000005000003",
+   "value": 10,
+   "holds": true,
+   "pass": true,
+   "receipt": "abe3f8ef-94ee-3ddf-979d-51e044dc8116",
+   "next": null
+  },
+  {
+   "name": "choreography.symmetrygroups(4)",
+   "formula": "choreography.symmetrygroups",
+   "term": "groups",
+   "params": [
+    4
+   ],
+   "hex": "9f21e74d-7000-1000-9000-000000000004",
+   "value": 16,
+   "holds": true,
+   "pass": true,
+   "receipt": "0c88cf2f-dad2-1cab-bfb1-0f965512a52a",
+   "next": null
+  },
+  {
+   "name": "field.group(100,4)",
+   "formula": "field.group",
+   "term": "group",
+   "params": [
+    100,
+    4
+   ],
+   "hex": "2c5d047f-2000-4000-a000-000064000004",
+   "value": 25,
+   "holds": true,
+   "pass": true,
+   "receipt": "60d8a54c-de47-2573-bbf4-23b07f1c42bd",
+   "next": null
+  },
+  {
+   "name": "filtering.groupdelay(101)",
+   "formula": "filtering.groupdelay",
+   "term": "group",
+   "params": [
+    101
+   ],
+   "hex": "327b1c5e-4000-3000-9000-000000000065",
+   "value": 50,
+   "holds": true,
+   "pass": true,
+   "receipt": "add407c3-977d-668e-82d9-4607fce11ff8",
+   "next": null
+  },
+  {
+   "name": "grouptheory.subgroupindex(60,12)",
+   "formula": "grouptheory.subgroupindex",
+   "term": "group",
+   "params": [
+    60,
+    12
+   ],
+   "hex": "fcde0d3b-7000-6000-a000-00003c00000c",
+   "value": 5,
+   "holds": true,
+   "pass": true,
+   "receipt": "82d32568-b839-7d69-9843-09654550f3b5",
+   "next": null
+  },
+  {
+   "name": "passwords.reuserisk(10,3)",
+   "formula": "passwords.reuserisk",
+   "term": "user",
+   "params": [
+    10,
+    3
+   ],
+   "hex": "514dd01c-7000-2000-a000-00000a000003",
+   "value": 30,
+   "holds": true,
+   "pass": true,
+   "receipt": "a14afe48-0551-55ee-bb56-64b02fcee8e3",
+   "next": null
+  },
+  {
+   "name": "pilgrimage.groupsize(40,1)",
+   "formula": "pilgrimage.groupsize",
+   "term": "groups",
+   "params": [
+    40,
+    1
+   ],
+   "hex": "9f9bdc2a-3000-8000-a000-000028000001",
+   "value": 40,
+   "holds": true,
+   "pass": true,
+   "receipt": "976b7491-f979-13de-bfe9-a1acaad3b96c",
+   "next": null
+  },
+  {
+   "name": "totemism.descentgroups(4,3)",
+   "formula": "totemism.descentgroups",
+   "term": "groups",
+   "params": [
+    4,
+    3
+   ],
+   "hex": "40c00a2c-2000-7000-a000-000004000003",
+   "value": 12,
+   "holds": true,
+   "pass": true,
+   "receipt": "57c504a6-a890-5030-a40f-a6d4f973be98",
+   "next": null
+  },
+  {
+   "name": "linux",
+   "term": "linux",
+   "image": "node:26-alpine",
+   "imageJob": ".github/workflows/publish.yml",
+   "dockerfile": "Dockerfile",
+   "registry": "absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "alpine",
+   "term": "alpine",
+   "image": "node:26-alpine",
+   "imageJob": ".github/workflows/publish.yml",
+   "dockerfile": "Dockerfile",
+   "registry": "absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "merkaba.develop(18,3,18)",
+   "formula": "merkaba.develop",
+   "params": [
+    18,
+    3,
+    18
+   ],
+   "hex": "89c984c4-2000-5000-b000-001200030012",
+   "value": 0,
+   "holds": false,
+   "pass": false,
+   "receipt": "6a6bd805-7ff6-12fb-b20e-0c88bde4bbeb",
+   "next": null,
+   "family": "admin",
+   "lead": "groups",
+   "rotation": "→18"
+  }
+ ]
+}

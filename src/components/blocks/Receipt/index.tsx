@@ -3,6 +3,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { BlockWrapper } from '@/components/BlockWrapper'
 import { receiptsOf, type ReceiptRow } from '@/app/_data'
+import { FormulaReadings, listedOf } from '@/components/Readings'
 import { receiptFactsOf } from '@uuidna/qpu/core/showcase.js'
 import type { ReceiptBlock } from '@/payload-types'
 
@@ -10,9 +11,10 @@ import type { ReceiptBlock } from '@/payload-types'
 export function Receipt({ heading, intro, anchor, file, limit }: ReceiptBlock) {
   const found = receiptsOf().find((r) => r.file === file)
   if (!found) return <BlockWrapper heading={heading} intro={`No receipt named ${file}.`} anchor={anchor}>{null}</BlockWrapper>
-  const rows = (Array.isArray(found.doc.rows) ? found.doc.rows : []) as (ReceiptRow & { hex?: string })[]
+  const rows = listedOf((Array.isArray(found.doc.rows) ? found.doc.rows : []) as (ReceiptRow & { hex?: string })[], (r) => r.name)
   return (
     <BlockWrapper heading={heading} intro={intro} anchor={anchor}>
+      <FormulaReadings />
       <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {receiptFactsOf(found.doc).filter((f) => !/uuid|receipt|kind/.test(f.key)).slice(0, 6).map((f) => (
           <Card key={f.key}>

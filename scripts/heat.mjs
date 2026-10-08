@@ -5,12 +5,13 @@
  *   node scripts/heat.mjs              measure every tracked source file, write heat-receipt.json
  *   node scripts/heat.mjs --report     print the hottest files (the staged ones first), write nothing; never fails
  *
- * A file's temperature is its commits per thousand days over the window, whatever its age; its coherence
- * time is the days it holds per fix; its signal and quality are Qpu.Physics' photon / thermal T (dist/mcp/heat-formulas.js).
+ * A file's temperature is heat.temperature, commits per thousand days over the window, whatever its age; its coherence
+ * time is heat.coherence, the days it holds per fix; its signal and quality are heat.signal and heat.quality,
+ * Qpu.Physics photon / thermal T.
  */
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
-import { heatOf } from '../dist/families/heat/index.js'
+import { HeatFormulas, heatOf } from '../dist/families/heat/index.js'
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuLatticeNamesOf, tenOf } from '../dist/quantum/processing/unit/index.js'
 import { coins, faces, vertices } from './lattice-values.mjs'
 const L = { ...qpuLatticeNamesOf(), tenOf }
@@ -98,7 +99,7 @@ const regionsOf = (file) => {
     }
     for (const n of names) heat.set(n, (heat.get(n) ?? 0) + 1)
   }
-  return { file, commits: commitsOf.length, regions: [...heat].sort((a, b) => b[1] - a[1]).map(([name, commits]) => ({ name, commits, temperature: heatOf([{ file: name, commits, days: WINDOW, fixes: 0, lines: 0, age: WINDOW, since: 0 }]).rows[0].temperature })) }
+  return { file, commits: commitsOf.length, regions: [...heat].sort((a, b) => b[1] - a[1]).map(([name, commits]) => ({ name, commits, temperature: HeatFormulas.temperature(commits, WINDOW).value })) }
 }
 if (process.argv.includes('--regions')) {
   const r = regionsOf(process.argv[process.argv.indexOf('--regions') + 1])

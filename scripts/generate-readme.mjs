@@ -14,7 +14,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
+import { qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 import { qpuAnalyticsOf, qpuPublicOf } from '../dist/quantum/processing/unit/zeropage.js'
 import { clayOf, wingOf } from '../dist/core/showcase.js'
 import { mintOf, vertices } from './lattice-values.mjs'
@@ -203,6 +203,9 @@ And every row of every other receipt that does not hold, as the receipt names it
 
 ${next.join('\n')}`
 
+const cite = qpuCiteOf()
+const licenseHref = cite.links.edges.find((edge) => edge.to.endsWith('/license'))?.to ?? cite.links.edges.find((edge) => edge.from.endsWith('/license'))?.from ?? ''
+const linkNews = cite.links.edges.map((edge) => `- ${edge.from} → ${edge.to}`).join('\n')
 const clayRegister = qpuAnalyticsOf()
 const clayRegisterTable = [
   '| Count | Integer |',
@@ -219,8 +222,10 @@ ${clayRegisterTable}
 
 ${glance}
 
-Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
-(commercial use by license: https://qpu.uuidna.com/license).`
+Cite: ${cite.author.last}, ${cite.author.first}. "qpu." doi:[${cite.doi}](${cite.identifier}). License: CC-BY-NC-ND-4.0
+(commercial use by license: ${licenseHref}).
+
+${linkNews}`
 
 // Zenodo shows .zenodo.json's description as HTML: the same summary, its table as a table
 const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -232,7 +237,7 @@ const tail = blocks.slice(1).filter((block) => !block.startsWith('| Capability')
 const zenodoPath = path.join(ROOT, '.zenodo.json')
 const zenodo = JSON.parse(fs.readFileSync(zenodoPath, 'utf8'))
 zenodo.description = `<p>${inline(intro.replace(/\n/g, ' '))}</p><table>${rowsHtml}</table>${tail.map((t) => `<p>${inline(t.replace(/\n/g, ' '))}</p>`).join('')}`
-zenodo.version = pkg.version
+// The version field names the published Zenodo archive. package.json's version is the git tag and is not copied here.
 // SEO: the keywords, notes and language are generated, never hand-kept — every registered family and wing is a term a
 // searcher might use, so the archive is found by what the unit actually is, read from the registry and the docs.
 const famKeys = [...new Set(doors.formulas.map((f) => f.name.split('.')[0]))].sort()
@@ -258,7 +263,7 @@ ${summary}
 
 | | |
 |---|---|
-| version | ${pkg.version} |
+| git tag | v${pkg.version} |
 | receipts | ${files.length} files, ${nodes.length} nodes |
 | build stream | length ${stream?.length}, head \`${stream?.head}\`, chain \`${stream?.chain}\`, holds **${stream?.holds}** |
 

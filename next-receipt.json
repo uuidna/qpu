@@ -893,7 +893,7 @@
   {
    "name": "kin × rule = 196",
    "pass": false,
-   "value": "rule.compositions(8) = rule.compositions(15) = rule.cap∘compositions(1) = rule.cap∘compositions(2) = kin.combinations∘dootKin(2, 1, 1) · live · untested (no test for compositions)",
+   "value": "196 holds false; kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(8) is 100 (compositions); next bfe6be1f-2000-1000-9000-000000000008",
    "receipt": "8abb8727-2c47-8e2f-9f74-74505fb07324"
   },
   {

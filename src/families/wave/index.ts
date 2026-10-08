@@ -30,25 +30,32 @@ const agentOf = async (family: string, program: string[], params: number[]): Pro
 /** The wave's one receipt: the content address of every agent's answer, minted once for the whole wave. */
 const receiptOf = (name: string, agents: Agent[]) => qpuUuidReceiptOf(`wave ${name}`, qpuContentUuidOf(agents.map((a) => [a.hex, a.value ?? '', a.holds])), { agents: agents.length, held: agents.filter((a) => a.holds).length }).uuid
 
+/** One known amount is the argument of a formula of arity 0 or 1. A wider signature has the other amounts absent: no call. */
+const argsOf = (arity: number, amount: number): number[] | null => (arity <= 0 ? [] : arity === 1 ? [amount] : null)
+
 export class WaveFormulas {
-  /** A wave over the f-th family: every formula at the inputs from + 1 … from + faces (each parameter the same input),
-   *  launched at once. Value how many agents held; holds when one did; next names the following wave. */
+  /** A wave over the f-th family: every formula whose own signature takes the one input from + 1 … from + faces,
+   *  launched at once. A formula of two or more parameters is not called. Value how many agents held; holds when one
+   *  did; next is the following wave, the one this formula names. */
   static async wave(fam: number, from: number): Promise<CrossFormula> {
     const family = waveFamiliesOf()[fam]
     if (!family) return f('wave-wave', 'wave(f, from)', 0, false, 'wave', [fam, from])
     const faces = qpuFacesOf().faces
     const formulas = qpuHexFamiliesOf().get(family) ?? []
-    const launched = formulas.flatMap((x) => Array.from({ length: faces }, (_, i) => ({ program: [x.name], params: Array.from({ length: x.arity }, () => from + i + 1) })))
+    const launched = formulas.flatMap((x) => Array.from({ length: faces }, (_, i) => {
+      const params = argsOf(x.arity, from + i + 1)
+      return params ? { program: [x.name], params } : null
+    }).filter((l): l is { program: string[]; params: number[] } => l !== null))
     const agents = (await Promise.all(launched.map((l) => agentOf(family, l.program, l.params)))).filter((a): a is Agent => a !== null)
     const held = agents.filter((a) => a.holds)
     return f('wave-wave', 'wave(f, from) = |agents of family f over from + 1 … from + faces that hold|', held.length, nat(fam, from) && held.length > 0, 'wave', [fam, from], { family, agents: agents.length, calls: 1, saved: Math.max(0, agents.length - 1), next: from + faces, receipt: receiptOf(`${family} ${from}`, agents), answers: held.slice(0, faces).map((a) => `${a.program.join('∘')}(${a.params.join(', ')}) = ${a.value}`) })
   }
-  /** A sweep: the first formula of every family of the from-th slice of families, at the seed inputs, one wave across
-   *  the lattice. Value how many families answered; holds when all of the slice did. */
+  /** A sweep: the first formula of every family of the from-th slice, when that formula takes the seed as its one
+   *  argument. A wider first formula is not called. Value how many families answered; holds when all of the slice did. */
   static async sweep(from: number): Promise<CrossFormula> {
     const faces = qpuFacesOf().faces
     const slice = waveFamiliesOf().slice(from, from + faces)
-    const agents = (await Promise.all(slice.flatMap((family) => { const x = qpuHexFamiliesOf().get(family)?.[0]; return x ? [agentOf(family, [x.name], Array.from({ length: x.arity }, () => 3))] : [] }))).filter((a): a is Agent => a !== null)
+    const agents = (await Promise.all(slice.flatMap((family) => { const x = qpuHexFamiliesOf().get(family)?.[0]; const params = x ? argsOf(x.arity, 3) : null; return x && params ? [agentOf(family, [x.name], params)] : [] }))).filter((a): a is Agent => a !== null)
     const answered = new Set(agents.filter((a) => a.holds).map((a) => a.family))
     return f('wave-sweep', 'sweep(from) = |families of the slice whose first formula held at the seed|', answered.size, nat(from) && slice.length > 0 && answered.size === slice.length, 'sweep', [from], { families: slice, agents: agents.length, calls: 1, saved: Math.max(0, agents.length - 1), next: from + faces, receipt: receiptOf(`sweep ${from}`, agents), silent: slice.filter((x) => !answered.has(x)) })
   }
@@ -73,7 +80,10 @@ export class WaveFormulas {
     const formulas = qpuHexFamiliesOf().get(family) ?? []
     const programs = [...formulas.map((x) => [x]), ...formulas.flatMap((x) => formulas.map((y) => [x, y]))]
     const hexbit = 4
-    const launched = programs.flatMap((p) => Array.from({ length: hexbit }, (_, i) => ({ program: p.map((x) => x.name), params: Array.from({ length: Math.max(...p.map((x) => x.arity)) }, () => i + 1) })))
+    const launched = programs.flatMap((p) => Array.from({ length: hexbit }, (_, i) => {
+      const params = argsOf(Math.max(...p.map((x) => x.arity)), i + 1)
+      return params ? { program: p.map((x) => x.name), params } : null
+    }).filter((l): l is { program: string[]; params: number[] } => l !== null))
     const timed = await Promise.all(launched.map(async (l) => { const t = Date.now(); const a = await agentOf(family, l.program, l.params); return a ? { ...a, ms: Date.now() - t } : null }))
     const agents = timed.filter((a): a is Agent & { ms: number } => a !== null)
     const ms = Math.max(1, Date.now() - at)
@@ -92,7 +102,7 @@ export class WaveFormulas {
     if (!family || !digits.length || program.length !== digits.length || digits.length > 4) return f('wave-combo', 'combo(f, p, from)', 0, false, 'combo', [fam, p, from], { why: family ? `p's digits must each name a formula of ${family} (1 … ${formulas.length}), at most four` : 'no such family' })
     const faces = qpuFacesOf().faces
     const arity = Math.max(...digits.map((d) => formulas[d - 1]!.arity))
-    const agents = (await Promise.all(Array.from({ length: faces }, (_, i) => agentOf(family, program, Array.from({ length: arity }, () => from + i + 1))))).filter((a): a is Agent => a !== null)
+    const agents = (await Promise.all(Array.from({ length: faces }, (_, i) => { const params = argsOf(arity, from + i + 1); return params ? agentOf(family, program, params) : Promise.resolve(null) }))).filter((a): a is Agent => a !== null)
     const held = agents.filter((a) => a.holds)
     return f('wave-combo', 'combo(f, p, from) = |agents of the program p (hex digits = nibbles) over from + 1 … from + faces that hold|', held.length, nat(fam, p, from) && held.length > 0, 'combo', [fam, p, from], { family, program, agents: agents.length, calls: 1, saved: Math.max(0, agents.length - 1), next: from + faces, receipt: receiptOf(`combo ${family} ${p} ${from}`, agents), signals: held.map((a) => `${a.hex} = ${a.value}`).slice(0, faces) })
   }

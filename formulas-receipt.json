@@ -2,7 +2,7 @@
  "kind": "formulas-receipt",
  "when": "2026-10-03",
  "formulas": 37,
- "rowsTotal": 79,
+ "rowsTotal": 124,
  "pass": 78,
  "fail": 1,
  "attacks": "27/27",
@@ -17,7 +17,7 @@
    "value": 0.09444016903048884,
    "formula": "compression_ratio = 1 / (1 + log2(keyLen))",
    "from": "sifted BB84 key bits",
-   "hex": "0c36469f-1000-8000-9000-000000000302",
+   "hex": "0c36469f-1000-5000-9000-000000000302",
    "hexAgrees": true,
    "receipt": "81d9580d-7ea8-8e34-b065-f9695509ea08"
   },
@@ -39,7 +39,7 @@
    "value": 0.9974451851851852,
    "formula": "health_score = max(0, 1 - buildTime/300) * max(0, 1 - testTime/180)",
    "from": "seconds to load the unit, seconds to run chat and attacks",
-   "hex": "0c36469f-3000-8000-8000-000000000000",
+   "hex": "0c36469f-3000-5000-8000-000000000000",
    "receipt": "469bd7f4-d097-8f21-85cc-9e8cf32d3bb5"
   },
   {
@@ -49,7 +49,7 @@
    "value": 0.008,
    "formula": "risk_score = 1 / (1 + proofCount)",
    "from": "Lean theorems in lean-receipt.json",
-   "hex": "0c36469f-9000-8000-9000-00000000007c",
+   "hex": "0c36469f-9000-1000-9000-00000000007c",
    "hexAgrees": true,
    "receipt": "36e403ab-9dde-8365-8761-91919389c375"
   },
@@ -71,7 +71,7 @@
    "value": 0,
    "formula": "alert_urgency = anomalies / (signals + 1)",
    "from": "attacks that got through, attack trials",
-   "hex": "0c36469f-8000-8000-a000-00000000016d",
+   "hex": "0c36469f-8000-7000-a000-00000000016d",
    "hexAgrees": true,
    "receipt": "59c16b48-9082-8ce8-8912-7ba097041d11"
   },
@@ -82,7 +82,7 @@
    "value": 1.276807980049874,
    "formula": "compressed_size = signalLen * (1 - keyLen/(keyLen+signalLen))",
    "from": "sealed body bytes, BB84 key bits",
-   "hex": "0c36469f-2000-8000-a000-000020000302",
+   "hex": "0c36469f-2000-7000-a000-000020000302",
    "hexAgrees": true,
    "receipt": "e935de1c-50db-80de-8a07-d2539c5b1b14"
   },
@@ -93,7 +93,7 @@
    "value": 1,
    "formula": "prediction_confidence = 1 - (anomalyCount/(signalDim*signalDim))",
    "from": "attacks, breaches",
-   "hex": "0c36469f-6000-8000-a000-00001b000000",
+   "hex": "0c36469f-6000-7000-a000-00001b000000",
    "hexAgrees": true,
    "receipt": "826abf4d-3181-897e-af16-646a0f0b16c7"
   },
@@ -126,7 +126,7 @@
    "value": 1024,
    "formula": "sifted = raw / 2",
    "from": "raw qubits per chat pair",
-   "hex": "5062cd8f-6000-8000-9000-000000000800",
+   "hex": "5062cd8f-6000-4000-9000-000000000800",
    "hexAgrees": true,
    "receipt": "dc5356d3-71d8-83d2-8908-a3ba1ff8d33e"
   },
@@ -137,7 +137,7 @@
    "value": 768,
    "formula": "key_bits = 3 * raw / 8",
    "from": "raw qubits per chat pair",
-   "hex": "5062cd8f-3000-8000-9000-000000000800",
+   "hex": "5062cd8f-3000-2000-9000-000000000800",
    "hexAgrees": true,
    "receipt": "11245826-35a4-888e-b488-1949ea0a9450"
   },
@@ -148,7 +148,7 @@
    "value": 0,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "honest BB84 run",
-   "hex": "5062cd8f-5000-8000-a000-000000000100",
+   "hex": "5062cd8f-5000-1000-a000-000000000100",
    "hexAgrees": true,
    "receipt": "5c37874f-bca2-8c54-85a1-50cecaa580d9"
   },
@@ -159,7 +159,7 @@
    "value": 0.2857142857142857,
    "formula": "qber = errors / sampled <= 0.11",
    "from": "intercept-resend run: holds false means Eve was caught",
-   "hex": "5062cd8f-5000-8000-a000-00004a000103",
+   "hex": "5062cd8f-5000-3000-a000-00004a000103",
    "hexAgrees": true,
    "receipt": "daf4a884-6b6e-8d26-8c39-a224c5586656"
   },
@@ -170,7 +170,7 @@
    "value": 1,
    "formula": "p_detect = 1 - (3/4)^checked",
    "from": "disclosed bits of the intercepted run",
-   "hex": "5062cd8f-1000-8000-9000-000000000103",
+   "hex": "5062cd8f-1000-6000-9000-000000000103",
    "hexAgrees": true,
    "receipt": "cf91ad0b-d60d-8c31-9491-daa03cf030a0"
   },
@@ -181,7 +181,7 @@
    "value": 5,
    "formula": "hops = popcount((a xor b) mod 2^dims)",
    "from": "corners of alice and bob on the 8-cube",
-   "hex": "5062cd8f-2000-8000-b000-00082bd881b6",
+   "hex": "5062cd8f-2000-3000-b000-00082bd881b6",
    "hexAgrees": true,
    "receipt": "1bba9291-8d24-8dd3-af2f-2b6b7210cc79"
   },
@@ -192,7 +192,7 @@
    "value": 3,
    "formula": "depth = ceil(log2(scales))",
    "from": "hologram scales",
-   "hex": "4029f1cc-2000-8000-9000-000000000005",
+   "hex": "4029f1cc-2000-1000-9000-000000000005",
    "hexAgrees": true,
    "receipt": "7f00519a-6dd2-8c36-b223-4d518af92f04"
   },
@@ -203,7 +203,7 @@
    "value": 2.938735877055719e-39,
    "formula": "p_forge = 2^-(hashBits/2)",
    "from": "SHA-256 output bits",
-   "hex": "4029f1cc-1000-8000-9000-000000000100",
+   "hex": "4029f1cc-1000-6000-9000-000000000100",
    "hexAgrees": true,
    "receipt": "7be62047-3442-82e7-a45c-fb2ebfafae47"
   },
@@ -214,7 +214,7 @@
    "value": 1,
    "formula": "known_answers = passed / 6",
    "from": "FIPS 180-4, RFC 1321, RFC 7748, RFC 8032 vectors",
-   "hex": "62d1d39f-3000-8000-8000-000000000000",
+   "hex": "62d1d39f-3000-1000-8000-000000000000",
    "hexAgrees": true,
    "receipt": "44720cec-5577-87c6-b628-93ca170f4b97"
   },
@@ -225,7 +225,7 @@
    "value": 128,
    "formula": "security_q = keyBits / 2",
    "from": "ChaCha20 key bits",
-   "hex": "62d1d39f-5000-8000-9000-000000000100",
+   "hex": "62d1d39f-5000-1000-9000-000000000100",
    "hexAgrees": true,
    "receipt": "00567008-8853-821f-ae88-cf4f9cc4403f"
   },
@@ -236,7 +236,7 @@
    "value": 127.5,
    "formula": "security_c = curveBits / 2",
    "from": "Curve25519 field bits",
-   "hex": "62d1d39f-1000-8000-9000-0000000000ff",
+   "hex": "62d1d39f-1000-3000-9000-0000000000ff",
    "hexAgrees": true,
    "receipt": "a153fb09-0f98-8828-9aef-81b2220474b6"
   },
@@ -247,7 +247,7 @@
    "value": 0,
    "formula": "security_q = 0",
    "from": "Curve25519 field bits",
-   "hex": "62d1d39f-2000-8000-9000-0000000000ff",
+   "hex": "62d1d39f-2000-1000-9000-0000000000ff",
    "hexAgrees": true,
    "receipt": "157b05f7-4150-8c8e-ab04-2fb2e3645059"
   },
@@ -258,7 +258,7 @@
    "value": 1.9721522630525295e-31,
    "formula": "p_forge <= 8 * ceil(bytes / 16) / 2^106",
    "from": "sealed body bytes",
-   "hex": "62d1d39f-6000-8000-9000-000000000020",
+   "hex": "62d1d39f-6000-2000-9000-000000000020",
    "hexAgrees": true,
    "receipt": "de1c8702-5934-8991-bbe3-9e1f57a994a8"
   },
@@ -269,7 +269,7 @@
    "value": 6.310887241768095e-30,
    "formula": "p_collide = messages^2 / 2^97",
    "from": "messages sent",
-   "hex": "62d1d39f-4000-8000-9000-000000000001",
+   "hex": "62d1d39f-4000-5000-9000-000000000001",
    "hexAgrees": true,
    "receipt": "f896ef10-888f-8aa7-bec5-36480c3a5236"
   },
@@ -280,7 +280,7 @@
    "value": 13,
    "formula": "sum = Σ bit_i(mask) · digit_i(set)",
    "from": "qpu.pdf p. 22: S = {3, 7, 1, 9, 4} packed base 16, mask 13",
-   "hex": "08b33c07-6000-8000-a000-04917300000d",
+   "hex": "08b33c07-6000-3000-a000-04917300000d",
    "hexAgrees": true,
    "receipt": "474c2b3a-5716-88b0-b0df-8b4c5308200b"
   },
@@ -291,7 +291,7 @@
    "value": 1,
    "formula": "edge(u, v) = floor(A / 2^(u·n + v)) mod 2",
    "from": "4-cycle adjacency packed row-major, edge (0, 1)",
-   "hex": "08b33c07-1000-8000-a000-006996000001",
+   "hex": "08b33c07-1000-5000-a000-006996000001",
    "hexAgrees": true,
    "receipt": "863e545c-c85b-8d92-ae95-55749df6b982"
   },
@@ -302,7 +302,7 @@
    "value": 100000,
    "formula": "time = n^5",
    "from": "Petersen vertices",
-   "hex": "08b33c07-3000-8000-9000-00000000000a",
+   "hex": "08b33c07-3000-5000-9000-00000000000a",
    "hexAgrees": true,
    "receipt": "db8d01a1-774b-8c00-bd7e-3b1fe1c8a55b"
   },
@@ -313,7 +313,7 @@
    "value": 4,
    "formula": "space = bits(n)",
    "from": "Petersen vertices",
-   "hex": "08b33c07-2000-8000-9000-00000000000a",
+   "hex": "08b33c07-2000-2000-9000-00000000000a",
    "hexAgrees": true,
    "receipt": "0ff6ca6a-994e-86d5-bfd9-18631a6449e5"
   },
@@ -346,7 +346,7 @@
    "value": 11,
    "formula": "qubits = bits(N) + 2",
    "from": "crypto_shor n=481 on qpu.uuidna.com reported 11 qubits",
-   "hex": "08b33c07-5000-8000-9000-0000000001e1",
+   "hex": "08b33c07-5000-7000-9000-0000000001e1",
    "hexAgrees": true,
    "receipt": "964ad04d-1e7b-829e-8868-3380da43f462"
   },
@@ -357,7 +357,7 @@
    "value": 1,
    "formula": "σ(s) = 1 − s; σ(s) = s ⟺ s = 1/2",
    "from": "doi:10.5281/zenodo.21781603 §Riemann: the fixed point 1/2",
-   "hex": "13962491-5000-8000-a000-000001000002",
+   "hex": "13962491-7000-2000-a000-000001000002",
    "hexAgrees": true,
    "receipt": "083a29eb-c714-8118-bea2-bf0b00dcd4c5"
   },
@@ -368,7 +368,7 @@
    "value": 2,
    "formula": "σ(a) = a⁻¹ in (ℤ/mℤ)*; non-trivial pairs a ≠ a⁻¹",
    "from": "doi:10.5281/zenodo.21781603 §BSD: (ℤ/9ℤ)* pairs (2,5), (4,7)",
-   "hex": "13962491-1000-8000-9000-000000000009",
+   "hex": "13962491-1000-2000-9000-000000000009",
    "hexAgrees": true,
    "receipt": "bdcc734b-170a-8207-96c8-848ca0121367"
   },
@@ -379,7 +379,7 @@
    "value": 4,
    "formula": "rank H₁(Σ_g) = 2g",
    "from": "doi:10.5281/zenodo.21781603 §Hodge: H₁(Σ₂) = ℤ⁴",
-   "hex": "13962491-2000-8000-9000-000000000002",
+   "hex": "13962491-3000-3000-9000-000000000002",
    "hexAgrees": true,
    "receipt": "660a9758-ccaa-835f-85b4-523223c7acf3"
   },
@@ -390,7 +390,7 @@
    "value": 1,
    "formula": "σ(ω₊, ω₋) = (−ω₋, −ω₊); σ(ω) = ω ⟺ ω₊ = −ω₋",
    "from": "doi:10.5281/zenodo.21781603 §Navier–Stokes: ω₊ = −ω₋",
-   "hex": "13962491-3000-8000-a000-000003000003",
+   "hex": "13962491-4000-7000-a000-000003000003",
    "hexAgrees": true,
    "receipt": "d5ddfd16-f245-84fe-a334-612894b8a607"
   },
@@ -401,7 +401,7 @@
    "value": 2,
    "formula": "σ† = σ, σ² = I ⟹ spec σ ⊂ {−1, +1}",
    "from": "doi:10.5281/zenodo.21781603 §Yang–Mills: σ† = σ, σ² = I",
-   "hex": "13962491-6000-8000-8000-000000000000",
+   "hex": "13962491-8000-2000-8000-000000000000",
    "hexAgrees": true,
    "receipt": "43045f10-60ca-8119-a8d6-3262010e08dc"
   },
@@ -412,7 +412,7 @@
    "value": 0,
    "formula": "σ(search, w) = (reuse, w); fixed only if w is presupposed",
    "from": "doi:10.5281/zenodo.21781603 §P vs NP: no fixed point without a presupposed witness",
-   "hex": "13962491-4000-8000-9000-000000000000",
+   "hex": "13962491-5000-6000-9000-000000000000",
    "hexAgrees": true,
    "receipt": "5522f395-51f4-879d-8ff5-d7859b1e8172"
   },
@@ -751,6 +751,447 @@
    "value": 0,
    "from": "a non-recipient decrypts nothing",
    "receipt": "bfec396d-a06c-8040-b5d9-59bc6d95f5be"
+  },
+  {
+   "name": "cross.deploymentToObs",
+   "family": "cross",
+   "hex": "0c36469f-3000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "actuarial.lifeexpectancy",
+   "family": "actuarial",
+   "hex": "1e72427d-3000-6000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 1,
+   "next": null
+  },
+  {
+   "name": "audit.healthcareComplianceFusion",
+   "family": "audit",
+   "hex": "ed4df38c-2000-6000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 3,
+   "next": null
+  },
+  {
+   "name": "demographics.life",
+   "family": "demographics",
+   "hex": "0f907f87-6000-4000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "demography.lifeexpectancy",
+   "family": "demography",
+   "hex": "0fa210e7-5000-8000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "demography.naturalincrease",
+   "family": "demography",
+   "hex": "0fa210e7-7000-8000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "dermatology.healing",
+   "family": "dermatology",
+   "hex": "07dcf1ad-1000-8000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "econ.life",
+   "family": "econ",
+   "hex": "3011e460-3000-3000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 1,
+   "next": null
+  },
+  {
+   "name": "foodsafety.pathogenpairs",
+   "family": "foodsafety",
+   "hex": "7ec505d3-8000-6000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "gerontology.lifeexpectancy",
+   "family": "gerontology",
+   "hex": "5f0bfe61-6000-8000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "immigration.naturalization",
+   "family": "immigration",
+   "hex": "e9b61f80-3000-1000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.combos",
+   "family": "pathogen",
+   "hex": "0d739d6b-1000-2000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.generations",
+   "family": "pathogen",
+   "hex": "0d739d6b-2000-2000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.incubation",
+   "family": "pathogen",
+   "hex": "0d739d6b-3000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.mortality",
+   "family": "pathogen",
+   "hex": "0d739d6b-4000-7000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.r0",
+   "family": "pathogen",
+   "hex": "0d739d6b-5000-7000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.reservoir",
+   "family": "pathogen",
+   "hex": "0d739d6b-6000-2000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.strains",
+   "family": "pathogen",
+   "hex": "0d739d6b-7000-6000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "pathogen.transmission",
+   "family": "pathogen",
+   "hex": "0d739d6b-8000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "podiatry.healing",
+   "family": "podiatry",
+   "hex": "b3b3608c-5000-7000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "prevalence.lifetimeprevalence",
+   "family": "prevalence",
+   "hex": "ddcbd977-5000-2000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "psychiatry.wellbeing",
+   "family": "psychiatry",
+   "hex": "416cf9b1-8000-8000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "shamanism.healingcombos",
+   "family": "shamanism",
+   "hex": "da2bd215-4000-2000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "smartgrid.selfhealingpaths",
+   "family": "smartgrid",
+   "hex": "930c1f55-7000-4000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "tooling.life",
+   "family": "tooling",
+   "hex": "4dfe42bf-4000-4000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "unemployment.naturalrate",
+   "family": "unemployment",
+   "hex": "eedd5cb7-4000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "vibration.naturalfrequency",
+   "family": "vibration",
+   "hex": "5695df9f-5000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 2,
+   "next": null
+  },
+  {
+   "name": "zoology.lifespan",
+   "family": "zoology",
+   "hex": "f4388e85-3000-6000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent",
+   "arity": 1,
+   "next": null
+  },
+  {
+   "name": "merkaba.develop",
+   "family": "merkaba",
+   "hex": "89c984c4-2000-7000-b000-000000000000",
+   "value": "0",
+   "pass": false,
+   "holds": false,
+   "next": null,
+   "edges": 14,
+   "params": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "formula": "Qpu.Coil.theory",
+   "hex": "a13a4aae-1000-4000-9000-000000000003",
+   "value": 1,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Coil.theory(3) = 1",
+   "edgeOf": "merkaba.develop(0,0,0)"
+  },
+  {
+   "formula": "Qpu.Hybrid.kvCost",
+   "hex": "61b7d2d2-1000-8000-9000-000000000001",
+   "value": 2,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Hybrid.kvCost(1) = 2",
+   "edgeOf": "merkaba.develop(0,0,0)"
+  },
+  {
+   "formula": "Qpu.Lattice.n",
+   "hex": "72af0c7c-1000-8000-9000-000000000002",
+   "value": 3,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Lattice.n(2) = 3",
+   "edgeOf": "merkaba.develop(0,0,0)"
+  },
+  {
+   "formula": "Qpu.Mint.mintOf",
+   "hex": "c8372ae3-1000-1000-9000-000000000003",
+   "value": 8,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Mint.mintOf(3) = 8",
+   "edgeOf": "merkaba.develop(0,0,0)"
+  },
+  {
+   "formula": "Qpu.Physics.planck",
+   "hex": "cf1194df-1000-7000-9000-000000000008",
+   "value": 662607015,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Physics.planck(8) = 662607015",
+   "edgeOf": "merkaba.develop(0,0,0)"
+  },
+  {
+   "formula": "Qpu.Shor.powMod",
+   "hex": "d5716b2a-1000-7000-8000-000000000000",
+   "value": 0,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Shor.powMod(662607015) = 0",
+   "edgeOf": "merkaba.develop(0,0,0)"
+  },
+  {
+   "formula": "accelerometer.bandwidth",
+   "hex": "5e1c9f4b-1000-1000-9000-000000000003",
+   "value": 1,
+   "holds": true,
+   "next": null,
+   "edge": "accelerometer.bandwidth(3) = 1",
+   "edgeOf": "merkaba.develop(0,0,0)"
+  },
+  {
+   "formula": "merkaba.develop",
+   "lead": "Qpu.Hybrid.kvCost",
+   "params": [
+    1,
+    0,
+    1
+   ],
+   "hex": "89c984c4-2000-1000-b000-000100000001",
+   "value": 0,
+   "holds": false,
+   "next": null,
+   "edgeOf": "merkaba.develop(1,0,1)"
+  },
+  {
+   "formula": "Qpu.Hybrid.kvCost",
+   "hex": "61b7d2d2-1000-2000-9000-000000000003",
+   "value": 2,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Hybrid.kvCost(3) = 2",
+   "edgeOf": "merkaba.develop(1,0,1)"
+  },
+  {
+   "formula": "merkaba.develop",
+   "lead": "Qpu.Lattice.n",
+   "params": [
+    2,
+    0,
+    2
+   ],
+   "hex": "89c984c4-2000-7000-b000-000200000002",
+   "value": 0,
+   "holds": false,
+   "next": null,
+   "edgeOf": "merkaba.develop(2,0,2)"
+  },
+  {
+   "formula": "Qpu.Lattice.n",
+   "hex": "72af0c7c-1000-1000-9000-000000000003",
+   "value": 3,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Lattice.n(3) = 3",
+   "edgeOf": "merkaba.develop(2,0,2)"
+  },
+  {
+   "formula": "merkaba.develop",
+   "lead": "Qpu.Mint.mintOf",
+   "params": [
+    3,
+    0,
+    3
+   ],
+   "hex": "89c984c4-2000-7000-b000-000300000003",
+   "value": 0,
+   "holds": false,
+   "next": null,
+   "edgeOf": "merkaba.develop(3,0,3)"
+  },
+  {
+   "formula": "merkaba.develop",
+   "lead": "Qpu.Physics.planck",
+   "params": [
+    4,
+    0,
+    4
+   ],
+   "hex": "89c984c4-2000-7000-b000-000400000004",
+   "value": 0,
+   "holds": false,
+   "next": null,
+   "edgeOf": "merkaba.develop(4,0,4)"
+  },
+  {
+   "formula": "Qpu.Physics.planck",
+   "hex": "cf1194df-1000-2000-9000-000000000003",
+   "value": 662607015,
+   "holds": true,
+   "next": null,
+   "edge": "Qpu.Physics.planck(3) = 662607015",
+   "edgeOf": "merkaba.develop(4,0,4)"
+  },
+  {
+   "formula": "merkaba.develop",
+   "lead": "Qpu.Shor.powMod",
+   "params": [
+    5,
+    0,
+    5
+   ],
+   "hex": "89c984c4-2000-8000-b000-000500000005",
+   "value": 0,
+   "holds": false,
+   "next": null,
+   "edgeOf": "merkaba.develop(5,0,5)"
+  },
+  {
+   "formula": "merkaba.develop",
+   "lead": "accelerometer.bandwidth",
+   "params": [
+    7,
+    0,
+    7
+   ],
+   "hex": "89c984c4-2000-5000-b000-000700000007",
+   "value": 0,
+   "holds": false,
+   "next": null,
+   "edgeOf": "merkaba.develop(7,0,7)"
   }
  ]
 }

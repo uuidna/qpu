@@ -1,6 +1,6 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { verifyHex } from '../verify.js'
 import { AuditingFormulas } from './index.js'
 import '../../mcp/families.js'
 
@@ -14,10 +14,15 @@ test('auditing: materiality, samplesize, errorrate, coverage, findings, variance
   assert.equal(AuditingFormulas.risk(3, 4).value, 12, 'likelihood times impact')
   assert.equal(AuditingFormulas.compliance(95, 100).value, 95)
   assert.equal(AuditingFormulas.materiality(5, 1000).dst, 'accounting')
-  assert.equal(qpuHexFamiliesOf().get('auditing')?.length, 8)
-  const uuid = qpuHexUuidOf({ family: 'auditing', program: ['coverage'], params: [80, 100] })
-  const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
-  assert.equal(Number(run.value), 80, `auditing.coverage at ${uuid}`)
-  qpuUuidReceiptOf('auditing coverage', qpuContentUuidOf(run), { uuid })
+  await verifyHex('auditing', 8, [
+    ['materiality', [5, 1000], 0],
+    ['samplesize', [1000, 20], 50],
+    ['errorrate', [3, 50], 6],
+    ['coverage', [80, 100], 80],
+    ['findings', [2, 40], 5],
+    ['variance', [110, 100], 110],
+    ['risk', [3, 4], 12],
+    ['compliance', [95, 100], 95],
+  ])
   t.diagnostic('8 formulas; materiality 0, samplesize 50, errorrate 6, coverage 80, findings 5, variance 110, risk 12, compliance 95; crossing to accounting')
 })

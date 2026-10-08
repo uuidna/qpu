@@ -1,12 +1,18 @@
 import type { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import { notFound, redirect } from 'next/navigation'
-import { qpuHexDecodeOf, qpuHexRunOf } from '@uuidna/qpu'
-import { askOf, docOf, docsOf, familiesOf, pageOf, payloadOf, runOf } from '@/app/_data'
+import { qpuHexDecodeOf } from '@uuidna/qpu'
+import { askOf, citeFullOf, docOf, docsOf, familiesOf, pageOf, payloadOf, runOf } from '@/app/_data'
 import { RenderBlocks, type SearchParams } from '@/components/RenderBlocks'
 import { metadataOf } from '@/utilities/metadataOf'
+import { blocks } from '@/blocks'
+import { blockComponents } from '@/components/blocks'
 import { DocView } from '@/components/Doc'
 import { FamilyView } from '@/components/Family'
+import { Program as ProgramBlock } from '@/components/blocks/Program'
 import { ProgramView, RunCard, type Run } from '@/components/Program'
+import { customOf } from '@/fields/blockFields'
+import { pluginAxisLengthOf } from '@/payload/plugins/public'
 import type { Redirect } from '@/payload-types'
 
 export const dynamic = 'force-dynamic'
@@ -80,13 +86,24 @@ export default async function Resolved({ params, searchParams }: Props) {
     }
   }
 
+  const only = path.length === 1 ? decodeURIComponent(path[0]!) : undefined
+  const block = only ? blocks.find((b) => b.slug === only) : undefined
+  const already = Boolean(r.page?.layout?.some((row) => row.blockType === only))
+  const registered = block && !already ? await (async () => {
+    if (block.slug === 'program') return <ProgramBlock blockType="program" family="combinatorics" program="binomial" params={String(pluginAxisLengthOf())} heading="Program" intro={customOf(block).description} />
+    if (customOf(block).needs?.length) return null
+    const Component = (blockComponents as Record<string, (p: { heading?: string; intro?: string; searchParams?: SearchParams; blockType?: string }) => ReactNode>)[block.slug]
+    return Component ? <Component heading={block.slug} intro={customOf(block).description} searchParams={query} blockType={block.slug} /> : null
+  })() : null
+
   if (!r.page && !r.doc && !r.family && !r.uuid) {
+    if (registered) return <div className="space-y-16">{registered}</div>
     const to = await redirectOf(path)
     if (to) redirect(to)
     // ANY MEANINGFUL PATH IS A LEAD, NOT A 404: parse its words; if they name a formula (a meaningful combination),
     // return the combinatorics (200). Nothing is recorded — the path is a lead the ask resolves on the fly.
     const lead = await askOf(path.map((s) => decodeURIComponent(s)).join(' '))
-    if (lead?.hex) return <div className="space-y-16"><RunCard uuid={lead.hex} run={(await qpuHexRunOf(lead.hex)) as Run} /></div>
+    if (lead?.hex) return <div className="space-y-16"><RunCard uuid={lead.hex} run={(await citeFullOf(lead.hex)) as Run} /></div>
     notFound()
   }
 
@@ -95,7 +112,8 @@ export default async function Resolved({ params, searchParams }: Props) {
       {r.page ? <RenderBlocks blocks={r.page.layout} searchParams={query} /> : null}
       {r.doc ? <DocView doc={r.doc} docs={await docsOf()} /> : null}
       {r.family ? <FamilyView family={r.family} /> : null}
-      {r.uuid ? <RunCard uuid={r.uuid} run={(await qpuHexRunOf(r.uuid)) as Run} /> : null}
+      {r.uuid ? <RunCard uuid={r.uuid} run={(await citeFullOf(r.uuid)) as Run} /> : null}
+      {registered}
     </div>
   )
 }

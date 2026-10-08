@@ -52,7 +52,7 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 
 | | |
 |---|---|
-| version | 1.1.0 |
+| git tag | v1.1.0 |
 | receipts | 18 files, 3496 nodes |
 | build stream | length 3496, head `ec1bc4ea-3ecf-561e-81ec-26524ffa94d0`, chain `28864cdaa1bafee2a24ab77984c907459a369545ffb38d36bf61b209fbe3da58`, holds **true** |
 
@@ -242,7 +242,7 @@ each superposition run from every other way's referrer perspective (14 of 18,896
 - clay × tesla = 168 — clay.hodge(84) = tesla.earth(238) · live · untested (no test for hodge)
 - crypt × signal = 181 — crypt.curveClassicalBits(362) = crypt.symmetricQuantumBits(362) = signal.siftedBits(362) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
 - clay × tesla = 186 — clay.hodge(93) = tesla.quarter(404) · live · untested (no test for hodge)
-- kin × rule = 196 — rule.compositions(8) = rule.compositions(15) = rule.cap∘compositions(1) = rule.cap∘compositions(2) = kin.combinations∘dootKin(2, 1, 1) · live · untested (no test for compositions)
+- kin × rule = 196 holds false — kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(8) is 100 (compositions); next bfe6be1f-2000-1000-9000-000000000008
 - clay × merkaba = 199 — clay.bsd(401) = merkaba.flows(7) · live · untested (no test for bsd)
 - crypt × signal = 202 — crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
 - hd × kin = 206 — hd.mean∘code(2) = hd.mean∘code(3) = kin.bits(24) = kin.dootKin(1, 4, 1) = kin.dootKin(2, 5, 1) · live · untested (no test for mean)

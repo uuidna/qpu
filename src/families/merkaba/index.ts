@@ -20,18 +20,26 @@ const f = (id: string, formula: string, value: number, holds: boolean, name: str
 export const flowFamiliesOf = (): string[] => [...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && x !== 'merkaba').sort()
 const numberOf = (r: unknown): number => (typeof r === 'object' && r !== null && 'value' in r ? Number((r as { value: unknown }).value) : typeof r === 'bigint' ? Number(r) : Number(r))
 const holdsOf = (r: unknown): boolean => (typeof r === 'object' && r !== null && 'holds' in r ? (r as { holds: unknown }).holds !== false : true)
-/** One edge: the family's first formula fed the value on every parameter it takes. */
+/** One edge: the family's first formula, called on its own signature. One carried value fills arity 0 or 1.
+ *  A wider signature has the other amounts absent, so the formula is not called. */
 const edges = new Map<string, { value: number; holds: boolean; formula: string }>() // an edge computed once per family and value: the star walks the same edges many times
+const callArgs = (arity: number, value: number): bigint[] | null => {
+  if (!Number.isSafeInteger(value) || value < 0) return null
+  if (arity <= 0) return []
+  if (arity === 1) return [BigInt(value)]
+  return null
+}
 const stepOf = (family: string, value: number): { value: number; holds: boolean; formula: string } => {
   const key = `${family}/${value}`
   const known = edges.get(key)
   if (known) return known
   const first = qpuHexFamiliesOf().get(family)?.[0]
   let out: { value: number; holds: boolean; formula: string }
-  if (!first || !Number.isSafeInteger(value) || value < 0) out = { value: 0, holds: false, formula: first?.name ?? '' }
+  const args = first ? callArgs(first.arity, value) : null
+  if (!first || !args) out = { value: 0, holds: false, formula: first?.name ?? '' }
   else {
     try {
-      const r = first.run(Array.from({ length: Math.max(first.arity, 1) }, () => BigInt(value)))
+      const r = first.run(args)
       const v = numberOf(r)
       out = { value: Number.isSafeInteger(v) && v >= 0 ? v : 0, holds: holdsOf(r) && Number.isSafeInteger(v) && v >= 0, formula: first.name }
     } catch { out = { value: 0, holds: false, formula: first.name } }
@@ -107,8 +115,9 @@ export class MerkabaFormulas {
     if (!family || !formula || s >= 2 * n) return f('merkaba-develop', 'develop(a, j, s)', 0, false, 'develop', [a, j, s], { rotations: 2 * n })
     const at = (fam: string, value: number): { value: number; holds: boolean; formula: string } => {
       if (fam !== family) return stepOf(fam, value)
-      if (!Number.isSafeInteger(value) || value < 0) return { value: 0, holds: false, formula: formula.name }
-      try { const r = formula.run(Array.from({ length: Math.max(formula.arity, 1) }, () => BigInt(value))); const v = numberOf(r); return { value: Number.isSafeInteger(v) && v >= 0 ? v : 0, holds: holdsOf(r) && Number.isSafeInteger(v) && v >= 0, formula: formula.name } } catch { return { value: 0, holds: false, formula: formula.name } }
+      const args = callArgs(formula.arity, value)
+      if (!args) return { value: 0, holds: false, formula: formula.name }
+      try { const r = formula.run(args); const v = numberOf(r); return { value: Number.isSafeInteger(v) && v >= 0 ? v : 0, holds: holdsOf(r) && Number.isSafeInteger(v) && v >= 0, formula: formula.name } } catch { return { value: 0, holds: false, formula: formula.name } }
     }
     const dir = s < n ? 1 : -1, start = s % n
     const order = Array.from({ length: n }, (_, k) => names[(start + dir * k + n * n) % n]!)

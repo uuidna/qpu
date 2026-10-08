@@ -141,7 +141,7 @@ export const qpuSequencesOf = (): Promise<Sequence[]> =>
   })())
 
 // the unit's own identities: its author and DOIs from the citation, its repositories from the install manifest
-const citeOf = () => qpuCiteOf() as unknown as { author: { last: string; first: string; orcid: string }; doi: string; conceptdoi: string; prior?: { title?: string; doi?: string; conceptdoi?: string } }
+const citeOf = () => qpuCiteOf() as unknown as { author: { last: string; first: string; orcid: string }; doi: string; conceptdoi: string; archived?: { version: string; doi: string }; served?: { version: string }; prior?: { title?: string; doi?: string; conceptdoi?: string } }
 const doisOf = () => {
   const c = citeOf()
   return [
@@ -254,9 +254,13 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     const url = `https://zenodo.org/api/records/${concept}/versions/latest`
     const d = (await (await get(url)).json()) as { id?: number; doi?: string; metadata?: { version?: string; publication_date?: string } }
     const live = { record: d.id, doi: d.doi, version: d.metadata?.version, published: d.metadata?.publication_date }
-    // the deposit writes the package version (.zenodo.json); a tag may carry one leading v. Either is this version.
+    // The Zenodo field is the archived cite. A tag may carry one leading v. The git tag is named beside it.
+    const cite = citeOf()
+    const archiveVersion = cite.archived?.version ?? ''
+    const gitTag = cite.served?.version ?? packageVersion
     const published = typeof live.version === 'string' ? live.version.replace(/^v/, '') : ''
-    return { source, url, reading: live, expected: { version: packageVersion }, agrees: published === packageVersion }
+    const doi = typeof live.doi === 'string' ? live.doi : ''
+    return { source, url, reading: { ...live, gitTag: `v${gitTag}` }, expected: { version: archiveVersion, doi: cite.doi }, agrees: published === archiveVersion && doi === cite.doi }
   }
   if (source === 'catalog') {
     const catalog = qpuCernCatalogsOf().catalogs.find((c) => c.name === str(a.name))
@@ -1019,7 +1023,7 @@ export const qpuDataSourcesOf = async () => [
   // summary row stands for them; a specific sequence is read on demand with source:sequence, and the gate identifies
   // them a family slice at a time (gate.leads). The lattice-wide scan is never on the hot path of listing the sources.
   { source: 'sequence', args: {} as Args, label: 'OEIS · integer-sequence formulas', checks: 'each family formula that is an integer sequence, identified in OEIS; read one with source:sequence, enumerate via gate.leads a slice at a time' },
-  { source: 'zenodo', args: {}, label: 'Zenodo · latest release', checks: `version ${packageVersion}` },
+  { source: 'zenodo', args: {}, label: 'Zenodo · latest release', checks: `archive ${citeOf().archived?.version ?? ''} at ${citeOf().doi}; git tag v${packageVersion}` },
   ...doisOf().map((d) => ({ source: 'datacite', args: { doi: d.doi }, label: `DataCite · ${d.doi}`, checks: `creator ${citeOf().author.last}${d.title ? `, title` : ''}` })),
   { source: 'orcid', args: {}, label: 'ORCID · author', checks: `${citeOf().author.first} ${citeOf().author.last}` },
   ...reposOf().map((repo) => ({ source: 'github', args: { repo }, label: `GitHub · ${repo}`, checks: 'public, not archived' })),
@@ -1404,14 +1408,30 @@ qpuMcpFuseOf('domains', {
   },
 })
 
+qpuMcpFuseOf('connector', {
+  description: 'The one public connector. Every harness qpuHarnessesOf names is this same MCP url. {} is the recognition. { full: true } is the document. { man: true } is the schema. A secured API stays outside. No price is passed.',
+  inputSchema: { type: 'object', properties: {
+    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
+    full: { type: 'boolean', description: '{ full: true } expands the recognition into the document.' },
+  } },
+  run: async (a) => {
+    const { publicConnectorOf } = await import('../payload/plugins/index.js')
+    const { qpuManOf } = await import('../quantum/processing/unit/index.js')
+    if (a.man === true) return qpuManOf('connector', 'The one public connector. Every harness is this MCP url.', 'The reply is the recognition. { full: true } is the document. { man: true } is this page. A read needs no credential. A secured API stays outside.', 'https://qpu.uuidna.com/mcp', ['hex', 'law', 'clay'])
+    return publicConnectorOf()
+  },
+})
+
 qpuMcpFuseOf('permaculture', {
-  description: 'perma.family as a tenant of this unit: slug perma under the zone, the three perma faces, and the usage bill. {} No tenant list is passed. The prize is not the bill. legal.citation stays false.',
-  inputSchema: { type: 'object', properties: {} },
-  run: async () => {
-    const { permaTenantOf, permacultureVisionOf } = await import('../payload/plugins/index.js')
-    const tenant = permaTenantOf()
-    const vision = permacultureVisionOf()
-    return { kind: 'permaculture' as const, tenant, gateway: vision.gateway, holds: tenant.holds, lead: vision.lead }
+  description: 'perma.family as a tenant of this unit. {} is the recognition. { full: true } is the document. { man: true } is the schema. clay.bsd is the author\'s seal arithmetic, recomputed. The citation row is a lead. No price is passed.',
+  inputSchema: { type: 'object', properties: {
+    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
+    full: { type: 'boolean', description: '{ full: true } expands the recognition into the document.' },
+  } },
+  run: async (a) => {
+    const { permaManOf, permaTenantOf } = await import('../payload/plugins/index.js')
+    if (a.man === true) return permaManOf()
+    return permaTenantOf()
   },
 })
 
@@ -1423,5 +1443,14 @@ qpuMcpFuseOf('hologram', {
     const scale = str(a.scale)
     if (scale) return h.streams[scale] ? { kind: 'hologram-scale', scale, root: h.root, publicKey: h.publicKeys[scale], fragments: h.streams[scale], holds: h.holds } : fail('scale', { scales: Object.keys(h.streams) })
     return { kind: h.kind, root: h.root, publicKeys: h.publicKeys, entries: h.entries, scales: Object.fromEntries(Object.entries(h.streams).map(([k, v]) => [k, { length: v.length, head: v.at(-1)?.uuid }])), holds: h.holds }
+  },
+})
+
+qpuMcpFuseOf('papers', {
+  description: 'Every blueprint and white-paper generator the tree names. {} runs each one. A script that imports dist waits while dist is held.',
+  inputSchema: { type: 'object', properties: {} },
+  run: async () => {
+    const { papersOf } = await import('./papers.js')
+    return papersOf()
   },
 })

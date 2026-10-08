@@ -72,6 +72,7 @@ test('a checkout owes for each fault independently, and a clean one owes nothing
 test('an unarchived version is a lead, and an archived one is not', () => {
   assert.equal(archiveLeadsOf({ version: '0.1.3', held: ['0.1.2'] }).length, 1)
   assert.match(archiveLeadsOf({ version: '0.1.3', held: ['0.1.2'] })[0].owes, /Zenodo mints the DOI/)
+  assert.equal(archiveLeadsOf({ version: '1.1.0', held: ['1.0.1'] })[0].what, '1.1.0 is not archived; archive 1.0.1; tag 1.1.0')
   assert.deepEqual(archiveLeadsOf({ version: '0.1.3', held: ['0.1.2', '0.1.3'] }), [])
   // an empty archive is not silence — it is a lead
   assert.equal(archiveLeadsOf({ version: '0.1.3', held: [] }).length, 1)

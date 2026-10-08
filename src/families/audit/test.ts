@@ -22,6 +22,13 @@ test('audit: the compliance fusions are the exact weighted scores, and risk fall
   assert.equal(AuditFormulas.paymentSecurityFusion(90, 85, 80).dst, 'standards.owasp')
   assert.equal(AuditFormulas.supplyChainRiskFormula(0, 0, 0, 0).dst, 'audit.risk')
   // supplyChainRiskFormula takes four params; a hex program addresses at most three, so it is checked directly above
-  await verifyHex('audit', 4, [['gdprIsoNistFusion', [90, 85, 80], 85], ['paymentSecurityFusion', [90, 85, 80], 86], ['healthcareComplianceFusion', [100, 100, 100], 100]])
+  await verifyHex('audit', 4, [
+    ['gdprIsoNistFusion', [90, 85, 80], 85],
+    ['gdprIsoNistFusion', [60, 60, 60], 60],
+    ['healthcareComplianceFusion', [90, 85, 80], 85.75],
+    ['healthcareComplianceFusion', [100, 100, 100], 100],
+    ['paymentSecurityFusion', [90, 85, 80], 86],
+    ['paymentSecurityFusion', [100, 100, 100], 100],
+  ])
   t.diagnostic('4 formulas; GDPR/ISO/NIST mean 85, healthcare 85.75, payment 86, supply-chain risk 1 at zero controls and falling; crossing to the standards')
 })

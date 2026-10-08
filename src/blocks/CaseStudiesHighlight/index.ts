@@ -1,3 +1,3 @@
-import { blockFields } from '../../fields/blockFields'
+import { blockFields } from '../../fields/blockFields.js'
 
 export const CaseStudiesHighlight = blockFields('CaseStudiesHighlight', 'Layout', 'A grid highlighting entries, each a title, a description and a link.', [{ name: 'items', type: 'array', fields: [{ name: 'title', type: 'text' }, { name: 'description', type: 'textarea' }, { name: 'href', type: 'text' }] }])

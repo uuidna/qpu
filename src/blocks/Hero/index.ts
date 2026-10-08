@@ -1,5 +1,5 @@
-import { blockFields } from '../../fields/blockFields'
-import { links } from '../../fields/link'
+import { blockFields } from '../../fields/blockFields.js'
+import { links } from '../../fields/link.js'
 
 export const Hero = blockFields('Hero', 'Layout', 'The page\'s opening: a badge, a heading with its highlighted half, text and links.', [
   { name: 'badge', type: 'text' },

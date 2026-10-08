@@ -12,6 +12,7 @@ import {
   qpuCernExperimentsOf,
   qpuContextOf,
   qpuHexDecodeOf,
+  qpuHexFamiliesOf,
   qpuHexUuidOf,
   qpuHostsOf,
   qpuPentagramHolds,
@@ -34,6 +35,7 @@ import { qpuCircuitOf } from './circuit.js'
 import { qpuLeanOf, qpuLeanHolds } from './proof.js'
 import { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
 import { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf } from './lattice.js'
+import { qpuLinkGraphOf } from './links.js'
 
 /**
  * The UI schema: shadcn card variants, sizes, states and themes seated on the lattice's faces and rays, served as data (no HTML).
@@ -501,8 +503,8 @@ export const qpuCiteOf = onceOf(() => {
         r.url.startsWith(unit.origin) &&
         !r.url.includes('*'))
   // The commercial-license form names organisation and intended use, and leaves priceInUSDEnabled false.
-  // No price was set. licensing.truecost is the existing formula that would recompute a sale once a price exists.
-  // Empty params are not a price. The grant stays a lead. It is not a 16th law or court formula.
+  // No price was set. A sale on this uuidna.com host pays publishing.royalty. The rate integer is unset, so the
+  // address carries no params. The grant stays a lead. It is not a 16th law or court formula.
   const grantOf = () => {
     const licence = 'CC-BY-NC-ND-4.0' as const
     const priceInUSDEnabled = false
@@ -523,11 +525,11 @@ export const qpuCiteOf = onceOf(() => {
       lead: true as const,
     }
     try {
-      const uuid = qpuHexUuidOf({ family: 'licensing', program: ['truecost'], params: [] })
+      const uuid = qpuHexUuidOf({ family: 'publishing', program: ['royalty'], params: [] })
       const decoded = qpuHexDecodeOf(uuid)
-      if (decoded.holds && 'program' in decoded && decoded.program[0] === 'truecost' && decoded.params.length === 0)
+      if (decoded.holds && 'program' in decoded && decoded.program[0] === 'royalty' && decoded.params.length === 0)
         grant.next = { handle: decoded.handle, uuid: decoded.uuid }
-    } catch { /* licensing is not registered in this isolate yet */ }
+    } catch { /* publishing is not registered in this isolate yet */ }
     return grant
   }
   return {
@@ -558,6 +560,19 @@ export const qpuCiteOf = onceOf(() => {
     rows,
     holds,
     get grant() { return grantOf() },
+    // The hrefs the citation already prints. A URL pair is not a formula, so each edge holds false and the graph names one next address.
+    links: qpuLinkGraphOf([
+      doi,
+      conceptdoi,
+      archive,
+      identifier,
+      prior.doi,
+      prior.conceptdoi,
+      prior.archive,
+      priorWorks,
+      `${unit.origin}/cite`,
+      ...rows.map((row) => `${row.url}\n${row.works}`),
+    ]),
   }
 })
 
@@ -921,11 +936,45 @@ export const qpuReflectOf = (imagine = '') => {
 }
 
 /**
+ * One window of the combinatorics family on a UUID's own dimensions.
+ * The hex-digit count is mintOf(coins + n). The window length is the lattice face count.
+ * A one-argument formula is tried on the window, then on the hex digits.
+ * A two-argument formula is tried on (hex digits, window), then (window, window), then (window, hex digits).
+ * A row is kept when that existing formula holds and the integer is exact. The window stops at the face count.
+ * Subdomain and tld counts are not rows: the zone table does not ask combinatorics for them.
+ * @wing presentation
+ * @kind builder
+ */
+export const qpuCombinatoricsWindowOf = async (): Promise<{ formula: string; value: number; uuid: string }[]> => {
+  const { CombinatoricsFormulas } = await import('../../../families/combinatorics/index.js')
+  const hexDigits = mintOf(coins + n)
+  const window = qpuFacesOf().faces
+  const formulas = qpuHexFamiliesOf().get('combinatorics') ?? []
+  const call = CombinatoricsFormulas as unknown as Record<string, (...args: number[]) => { value: number; holds: boolean; hex?: string; hexExact: boolean }>
+  const rows: { formula: string; value: number; uuid: string }[] = []
+  const tuplesOf = (arity: number): number[][] =>
+    arity === seed ? [[window], [hexDigits]] : arity === coins ? [[hexDigits, window], [window, window], [window, hexDigits]] : []
+  for (const formula of formulas) {
+    if (rows.length >= window) break
+    const fn = call[formula.name]
+    if (typeof fn !== 'function') continue
+    for (const params of tuplesOf(formula.arity)) {
+      if (rows.length >= window) break
+      const row = fn(...params)
+      if (row.holds !== true || row.hexExact !== true || typeof row.hex !== 'string' || !Number.isSafeInteger(row.value)) continue
+      rows.push({ formula: `combinatorics.${formula.name}(${params.join(',')})`, value: row.value, uuid: row.hex })
+    }
+  }
+  return rows
+}
+
+/**
  * A door's JSON-LD reading rendered as one crawlable HTML document: the SEO head a search engine and a social card
  * read (title, meta description, canonical, Open Graph, Twitter, robots), a visible <h1> and lede, the door's own API
  * links for crawl depth, the unit's stylesheet inline, and the full reading embedded as application/ld+json so the
- * structured data travels with the page. The unit is API-first JSON-LD; this is the same reading dressed for a browser
- * or a crawler — served fast from the unit itself, so a request for text/html never waits on the HTML frontend.
+ * structured data travels with the page. A readings window on the document is the first list in Links: formula, integer,
+ * and the hex-program UUID, capped at the face count. The unit is API-first JSON-LD; this is the same reading dressed
+ * for a browser or a crawler — served fast from the unit itself, so a request for text/html never waits on the HTML frontend.
  * @wing presentation
  * @kind builder
  */
@@ -944,6 +993,25 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
     .filter((a) => a && (a.href || a.path))
     .map((a) => `<li><a href="${esc(a.href || a.path)}"><code>${esc(a.name || a.path)}</code></a>${a.reading ? ` — ${esc(a.reading)}` : ''}</li>`)
     .join('')
+  const graph = ((): { edges: { from: string; to: string; holds: boolean; lead?: true }[]; next?: { uuid: string } } => {
+    const raw = doc.links
+    if (raw && typeof raw === 'object' && Array.isArray((raw as { edges?: unknown }).edges)) return raw as { edges: { from: string; to: string; holds: boolean; lead?: true }[]; next?: { uuid: string } }
+    return qpuCiteOf().links
+  })()
+  const cited = graph.edges
+    .map((edge) => `<li><a href="${esc(edge.from)}">${esc(edge.from)}</a> → <a href="${esc(edge.to)}">${esc(edge.to)}</a> holds ${esc(edge.holds)}${edge.lead ? ' lead' : ''}</li>`)
+    .join('')
+  const readings = (Array.isArray(doc.readings) ? doc.readings : [])
+    .filter((row): row is { formula: string; value: number; uuid: string } => {
+      if (!row || typeof row !== 'object') return false
+      const reading = row as { formula?: unknown; value?: unknown; uuid?: unknown }
+      return typeof reading.formula === 'string' && typeof reading.value === 'number' && Number.isSafeInteger(reading.value) && typeof reading.uuid === 'string'
+    })
+    .slice(n - n, qpuFacesOf().faces)
+  const readingList = readings
+    .map((row) => `<li><code>${esc(row.formula)}</code> ${esc(row.value)} <a href="${esc(`${unit.origin}/hex/${row.uuid}`)}"><code>${esc(row.uuid)}</code></a></li>`)
+    .join('')
+  const next = graph.next?.uuid ? `<p>next <a href="${esc(`${unit.origin}/hex/${graph.next.uuid}`)}">${esc(graph.next.uuid)}</a></p>` : ''
   const tag = (p: string, c: string) => `<meta property="${p}" content="${esc(c)}">`
   const meta2 = (nm: string, c: string) => `<meta name="${nm}" content="${esc(c)}">`
   return [
@@ -973,6 +1041,7 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
     `<h1>${esc(name)}</h1>`,
     lines.length > n - n ? lines.map((row) => `<p>${esc(row)}</p>`).join('\n') : `<p>${esc(description)}</p>`,
     links ? `<nav aria-label="Doors"><h2>Doors</h2><ul>${links}</ul></nav>` : '',
+    cited || readingList ? `<nav aria-label="Links"><h2>Links</h2>${readingList ? `<ul>${readingList}</ul>` : ''}${cited ? `<ul>${cited}</ul>` : ''}${next}</nav>` : '',
     `<footer><p>Content-addressed JSON-LD · <a href="/mcp">MCP</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/sitemap.xml">Sitemap</a></p></footer>`,
     '</main>',
     '</body>',

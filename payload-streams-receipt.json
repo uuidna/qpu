@@ -1,0 +1,1028 @@
+{
+ "kind": "payload-streams-receipt",
+ "formula": "merkaba.develop",
+ "hex": "89c984c4-2000-2000-b000-000800000008",
+ "value": 0,
+ "holds": false,
+ "next": null,
+ "receipt": "24452eab-1b20-5e79-8d0e-bba9ea530368",
+ "agrees": true,
+ "words": 99,
+ "families": 71,
+ "rows": [
+  {
+   "name": "data.imagine",
+   "agrees": true,
+   "words": 99,
+   "families": 71,
+   "holds": true,
+   "pass": true,
+   "receipt": "c90b30d6-5656-5fd3-8e16-4d2decf348b5",
+   "next": null
+  },
+  {
+   "name": "stream.pipes(3,0)",
+   "formula": "stream.pipes",
+   "params": [
+    3,
+    0
+   ],
+   "hex": "4f6a36d8-5000-5000-a000-000003000000",
+   "value": 3,
+   "holds": true,
+   "pass": true,
+   "cited": true,
+   "next": null
+  },
+  {
+   "name": "stream.backpressure",
+   "formula": "stream.backpressure",
+   "hex": "4f6a36d8-1000-3000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "stream.buffers",
+   "formula": "stream.buffers",
+   "hex": "4f6a36d8-2000-3000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "stream.chunks",
+   "formula": "stream.chunks",
+   "hex": "4f6a36d8-3000-3000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "stream.combos",
+   "formula": "stream.combos",
+   "hex": "4f6a36d8-4000-2000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "stream.segments",
+   "formula": "stream.segments",
+   "hex": "4f6a36d8-6000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "stream.throughput",
+   "formula": "stream.throughput",
+   "hex": "4f6a36d8-7000-8000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "stream.windows",
+   "formula": "stream.windows",
+   "hex": "4f6a36d8-8000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "Qpu.Lattice.rays()",
+   "formula": "Qpu.Lattice.rays",
+   "params": [],
+   "hex": "72af0c7c-6000-2000-8000-000000000000",
+   "value": "7",
+   "holds": true,
+   "pass": true,
+   "receipt": "8bf167cb-4338-2722-9905-3f9b358a5bda",
+   "next": null
+  },
+  {
+   "name": "rendering.raytracing",
+   "formula": "rendering.raytracing",
+   "hex": "5c3506d7-6000-8000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "payload.collections()",
+   "formula": "payload.collections",
+   "params": [],
+   "hex": "cfb8a9d0-1000-4000-8000-000000000000",
+   "value": 1123,
+   "holds": true,
+   "pass": true,
+   "receipt": "0d41bdb8-d7be-1f4f-84fc-fd4bfec067b8",
+   "next": null
+  },
+  {
+   "name": "payload.coverage",
+   "formula": "payload.coverage",
+   "hex": "cfb8a9d0-2000-6000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "payload.fields(2)",
+   "formula": "payload.fields",
+   "params": [
+    2
+   ],
+   "hex": "cfb8a9d0-3000-7000-9000-000000000002",
+   "value": 10,
+   "holds": true,
+   "pass": true,
+   "receipt": "aab2ad96-27f2-3a60-a749-01fc17859f53",
+   "next": null
+  },
+  {
+   "name": "payload.imagine(2)",
+   "formula": "payload.imagine",
+   "params": [
+    2
+   ],
+   "hex": "cfb8a9d0-4000-4000-9000-000000000002",
+   "value": 10,
+   "holds": true,
+   "pass": true,
+   "receipt": "745d1d21-5441-413c-bf36-3d4c533a0e82",
+   "next": null
+  },
+  {
+   "name": "db.adapters()",
+   "formula": "db.adapters",
+   "params": [],
+   "hex": "08914e07-1000-6000-8000-000000000000",
+   "value": 7,
+   "holds": true,
+   "pass": true,
+   "receipt": "6bcca9f6-7ee4-37b1-8bd6-1c3d67aa6b97",
+   "next": null
+  },
+  {
+   "name": "db.binding",
+   "formula": "db.binding",
+   "hex": "08914e07-2000-5000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "db.browser",
+   "formula": "db.browser",
+   "hex": "08914e07-3000-4000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "db.combinations()",
+   "formula": "db.combinations",
+   "params": [],
+   "hex": "08914e07-4000-4000-8000-000000000000",
+   "value": 28,
+   "holds": true,
+   "pass": true,
+   "receipt": "601fd00e-cb30-6a39-ae32-5957856b6d0c",
+   "next": null
+  },
+  {
+   "name": "db.experiments",
+   "formula": "db.experiments",
+   "hex": "08914e07-5000-4000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "db.migrations",
+   "formula": "db.migrations",
+   "hex": "08914e07-6000-6000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "db.ported",
+   "formula": "db.ported",
+   "hex": "08914e07-7000-4000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "db.stable",
+   "formula": "db.stable",
+   "hex": "08914e07-8000-1000-8000-000000000000",
+   "value": "amounts absent",
+   "amounts": "absent"
+  },
+  {
+   "name": "merkaba.develop(8,0,8)",
+   "formula": "merkaba.develop",
+   "params": [
+    8,
+    0,
+    8
+   ],
+   "hex": "89c984c4-2000-2000-b000-000800000008",
+   "value": 0,
+   "holds": false,
+   "pass": false,
+   "receipt": "24452eab-1b20-5e79-8d0e-bba9ea530368",
+   "next": null,
+   "family": "access",
+   "lead": "grant",
+   "rotation": "→8"
+  }
+ ],
+ "imagined": [
+  {
+   "family": "access",
+   "handle": "7e6283be",
+   "formulas": [
+    "grant",
+    "rank",
+    "read",
+    "role",
+    "root",
+    "screen",
+    "sudo",
+    "tenant",
+    "token",
+    "write"
+   ],
+   "words": [
+    "access"
+   ]
+  },
+  {
+   "family": "cloud",
+   "handle": "9ebb5c95",
+   "formulas": [
+    "cost",
+    "egress",
+    "latency",
+    "scale",
+    "sla",
+    "storage",
+    "throughput",
+    "uptime"
+   ],
+   "words": [
+    "cloud",
+    "cost"
+   ]
+  },
+  {
+   "family": "code",
+   "handle": "0bb51791",
+   "formulas": [
+    "density",
+    "highlight",
+    "indent",
+    "languages",
+    "lines",
+    "snippet",
+    "tokens",
+    "wrap"
+   ],
+   "words": [
+    "code"
+   ]
+  },
+  {
+   "family": "engine",
+   "handle": "3dacd07f",
+   "formulas": [
+    "compression",
+    "cylinders",
+    "displacement",
+    "firingorders",
+    "power",
+    "rpm",
+    "torque",
+    "valves"
+   ],
+   "words": [
+    "engine"
+   ]
+  },
+  {
+   "family": "identity",
+   "handle": "e90f184c",
+   "formulas": [
+    "assurance",
+    "attestation",
+    "documentvalidity",
+    "federation",
+    "liveness",
+    "matchconfidence",
+    "stepup",
+    "uniqueness"
+   ],
+   "words": [
+    "identity"
+   ]
+  },
+  {
+   "family": "media",
+   "handle": "b333b8c7",
+   "formulas": [
+    "aspect",
+    "caption",
+    "fit",
+    "gallery",
+    "lazy",
+    "load",
+    "ratio",
+    "sizes"
+   ],
+   "words": [
+    "media",
+    "sizes"
+   ]
+  },
+  {
+   "family": "payment",
+   "handle": "c1f69fc9",
+   "formulas": [
+    "authorization",
+    "chargeback",
+    "decline",
+    "fee",
+    "fx",
+    "interchange",
+    "payout",
+    "settlement"
+   ],
+   "words": [
+    "payment",
+    "payout"
+   ]
+  },
+  {
+   "family": "query",
+   "handle": "b1068f14",
+   "formulas": [
+    "depth",
+    "hit",
+    "limit",
+    "pages",
+    "population",
+    "skip",
+    "sort",
+    "where"
+   ],
+   "words": [
+    "query"
+   ]
+  },
+  {
+   "family": "security",
+   "handle": "fbf6b731",
+   "formulas": [
+    "coverage",
+    "detection",
+    "exposure",
+    "mttr",
+    "patch",
+    "severity",
+    "strength",
+    "window"
+   ],
+   "words": [
+    "security"
+   ]
+  },
+  {
+   "family": "statistics",
+   "handle": "4e4f4106",
+   "formulas": [
+    "confidence",
+    "correlation",
+    "mean",
+    "percentile",
+    "range",
+    "sample",
+    "variance",
+    "zscore"
+   ],
+   "words": [
+    "statistics"
+   ]
+  },
+  {
+   "family": "Qpu.Hybrid",
+   "handle": "61b7d2d2",
+   "formulas": [
+    "kvCost",
+    "r2Cost",
+    "hybridCost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "path",
+   "handle": "03c52d0d",
+   "formulas": [
+    "dataFlowCompressML",
+    "quantumSecurityChain",
+    "secureDataPathQSec"
+   ],
+   "words": [
+    "data",
+    "security"
+   ]
+  },
+  {
+   "family": "global",
+   "handle": "7fb43557",
+   "formulas": [
+    "access",
+    "versions"
+   ],
+   "words": [
+    "access",
+    "versions"
+   ]
+  },
+  {
+   "family": "irrigation",
+   "handle": "10d0b3c6",
+   "formulas": [
+    "application",
+    "runtime"
+   ],
+   "words": [
+    "application",
+    "runtime"
+   ]
+  },
+  {
+   "family": "cross",
+   "handle": "0c36469f",
+   "formulas": [
+    "mlOnObsForPrediction"
+   ],
+   "words": [
+    "for"
+   ]
+  },
+  {
+   "family": "crypt",
+   "handle": "62d1d39f",
+   "formulas": [
+    "tagForgery"
+   ],
+   "words": [
+    "tag"
+   ]
+  },
+  {
+   "family": "admin",
+   "handle": "e5cde7fd",
+   "formulas": [
+    "groups"
+   ],
+   "words": [
+    "groups"
+   ]
+  },
+  {
+   "family": "annuity",
+   "handle": "986e69e3",
+   "formulas": [
+    "payment"
+   ],
+   "words": [
+    "payment"
+   ]
+  },
+  {
+   "family": "audit",
+   "handle": "ed4df38c",
+   "formulas": [
+    "paymentSecurityFusion"
+   ],
+   "words": [
+    "payment",
+    "security"
+   ]
+  },
+  {
+   "family": "auth",
+   "handle": "5dc77a84",
+   "formulas": [
+    "sessions"
+   ],
+   "words": [
+    "sessions"
+   ]
+  },
+  {
+   "family": "authentication",
+   "handle": "1e266dba",
+   "formulas": [
+    "sessions"
+   ],
+   "words": [
+    "sessions"
+   ]
+  },
+  {
+   "family": "battery",
+   "handle": "651a6213",
+   "formulas": [
+    "runtime"
+   ],
+   "words": [
+    "runtime"
+   ]
+  },
+  {
+   "family": "bayesian",
+   "handle": "ac51c44a",
+   "formulas": [
+    "update"
+   ],
+   "words": [
+    "update"
+   ]
+  },
+  {
+   "family": "bioinformatics",
+   "handle": "8d35fb11",
+   "formulas": [
+    "identity"
+   ],
+   "words": [
+    "identity"
+   ]
+  },
+  {
+   "family": "hd",
+   "handle": "08ba5407",
+   "formulas": [
+    "code"
+   ],
+   "words": [
+    "code"
+   ]
+  },
+  {
+   "family": "canning",
+   "handle": "9791c787",
+   "formulas": [
+    "batch"
+   ],
+   "words": [
+    "batch"
+   ]
+  },
+  {
+   "family": "cardiology",
+   "handle": "f00fdc41",
+   "formulas": [
+    "target"
+   ],
+   "words": [
+    "target"
+   ]
+  },
+  {
+   "family": "chat",
+   "handle": "f2a38d91",
+   "formulas": [
+    "groups"
+   ],
+   "words": [
+    "groups"
+   ]
+  },
+  {
+   "family": "cinema",
+   "handle": "4e38ff6c",
+   "formulas": [
+    "runtime"
+   ],
+   "words": [
+    "runtime"
+   ]
+  },
+  {
+   "family": "claims",
+   "handle": "be2fbe80",
+   "formulas": [
+    "payout"
+   ],
+   "words": [
+    "payout"
+   ]
+  },
+  {
+   "family": "construction",
+   "handle": "59746196",
+   "formulas": [
+    "cost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "content",
+   "handle": "420c75b5",
+   "formulas": [
+    "media"
+   ],
+   "words": [
+    "media"
+   ]
+  },
+  {
+   "family": "conversion",
+   "handle": "3b27d534",
+   "formulas": [
+    "checkout"
+   ],
+   "words": [
+    "checkout"
+   ]
+  },
+  {
+   "family": "costing",
+   "handle": "bc038c25",
+   "formulas": [
+    "target"
+   ],
+   "words": [
+    "target"
+   ]
+  },
+  {
+   "family": "customer",
+   "handle": "92267375",
+   "formulas": [
+    "upsell"
+   ],
+   "words": [
+    "upsell"
+   ]
+  },
+  {
+   "family": "dividend",
+   "handle": "2256544e",
+   "formulas": [
+    "payout"
+   ],
+   "words": [
+    "payout"
+   ]
+  },
+  {
+   "family": "dns",
+   "handle": "cab22f18",
+   "formulas": [
+    "queries"
+   ],
+   "words": [
+    "queries"
+   ]
+  },
+  {
+   "family": "dynamics",
+   "handle": "d9c3c973",
+   "formulas": [
+    "work"
+   ],
+   "words": [
+    "work"
+   ]
+  },
+  {
+   "family": "editing",
+   "handle": "e0407fa1",
+   "formulas": [
+    "runtime"
+   ],
+   "words": [
+    "runtime"
+   ]
+  },
+  {
+   "family": "education",
+   "handle": "d391a4d1",
+   "formulas": [
+    "cost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "elo",
+   "handle": "c2e8fa18",
+   "formulas": [
+    "update"
+   ],
+   "words": [
+    "update"
+   ]
+  },
+  {
+   "family": "endpoint",
+   "handle": "fb9b5fb7",
+   "formulas": [
+    "status"
+   ],
+   "words": [
+    "status"
+   ]
+  },
+  {
+   "family": "energy",
+   "handle": "f2fd4f91",
+   "formulas": [
+    "cost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "entertainment",
+   "handle": "a927e4ea",
+   "formulas": [
+    "runtime"
+   ],
+   "words": [
+    "runtime"
+   ]
+  },
+  {
+   "family": "field",
+   "handle": "2c5d047f",
+   "formulas": [
+    "group"
+   ],
+   "words": [
+    "group"
+   ]
+  },
+  {
+   "family": "friction",
+   "handle": "41b4641c",
+   "formulas": [
+    "work"
+   ],
+   "words": [
+    "work"
+   ]
+  },
+  {
+   "family": "rule",
+   "handle": "bfe6be1f",
+   "formulas": [
+    "named"
+   ],
+   "words": [
+    "named"
+   ]
+  },
+  {
+   "family": "gradient",
+   "handle": "e9c2c0a6",
+   "formulas": [
+    "update"
+   ],
+   "words": [
+    "update"
+   ]
+  },
+  {
+   "family": "hospitality",
+   "handle": "72cf16f7",
+   "formulas": [
+    "upsell"
+   ],
+   "words": [
+    "upsell"
+   ]
+  },
+  {
+   "family": "linearalgebra",
+   "handle": "b04f0188",
+   "formulas": [
+    "dot2"
+   ],
+   "words": [
+    "dot"
+   ]
+  },
+  {
+   "family": "loan",
+   "handle": "ce0ef2ad",
+   "formulas": [
+    "payment"
+   ],
+   "words": [
+    "payment"
+   ]
+  },
+  {
+   "family": "logicgates",
+   "handle": "65a023aa",
+   "formulas": [
+    "and"
+   ],
+   "words": [
+    "and"
+   ]
+  },
+  {
+   "family": "logistics",
+   "handle": "0b14bdbd",
+   "formulas": [
+    "cost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "messaging",
+   "handle": "889eb03b",
+   "formulas": [
+    "cost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "microeconomics",
+   "handle": "2c74e9e2",
+   "formulas": [
+    "utility"
+   ],
+   "words": [
+    "utility"
+   ]
+  },
+  {
+   "family": "mining",
+   "handle": "4dfe83be",
+   "formulas": [
+    "cost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "philosophy",
+   "handle": "80314f89",
+   "formulas": [
+    "utility"
+   ],
+   "words": [
+    "utility"
+   ]
+  },
+  {
+   "family": "physics",
+   "handle": "97d1eeeb",
+   "formulas": [
+    "work"
+   ],
+   "words": [
+    "work"
+   ]
+  },
+  {
+   "family": "property",
+   "handle": "58da6b1c",
+   "formulas": [
+    "payment"
+   ],
+   "words": [
+    "payment"
+   ]
+  },
+  {
+   "family": "protocol",
+   "handle": "b2b41998",
+   "formulas": [
+    "versions"
+   ],
+   "words": [
+    "versions"
+   ]
+  },
+  {
+   "family": "queue",
+   "handle": "b11e8b14",
+   "formulas": [
+    "service"
+   ],
+   "words": [
+    "service"
+   ]
+  },
+  {
+   "family": "rehabilitation",
+   "handle": "f955d25a",
+   "formulas": [
+    "sessions"
+   ],
+   "words": [
+    "sessions"
+   ]
+  },
+  {
+   "family": "serialization",
+   "handle": "2cb82381",
+   "formulas": [
+    "batch"
+   ],
+   "words": [
+    "batch"
+   ]
+  },
+  {
+   "family": "staffing",
+   "handle": "b70cc054",
+   "formulas": [
+    "demand"
+   ],
+   "words": [
+    "demand"
+   ]
+  },
+  {
+   "family": "storage",
+   "handle": "cf105a68",
+   "formulas": [
+    "cost"
+   ],
+   "words": [
+    "cost"
+   ]
+  },
+  {
+   "family": "theatre",
+   "handle": "33161348",
+   "formulas": [
+    "runtime"
+   ],
+   "words": [
+    "runtime"
+   ]
+  },
+  {
+   "family": "thermodynamics",
+   "handle": "4e729afb",
+   "formulas": [
+    "work"
+   ],
+   "words": [
+    "work"
+   ]
+  },
+  {
+   "family": "tls",
+   "handle": "5703cf19",
+   "formulas": [
+    "sessions"
+   ],
+   "words": [
+    "sessions"
+   ]
+  },
+  {
+   "family": "trading",
+   "handle": "70c68610",
+   "formulas": [
+    "stop"
+   ],
+   "words": [
+    "stop"
+   ]
+  },
+  {
+   "family": "vector",
+   "handle": "e9628aca",
+   "formulas": [
+    "dot"
+   ],
+   "words": [
+    "dot"
+   ]
+  },
+  {
+   "family": "woodworking",
+   "handle": "3e938c16",
+   "formulas": [
+    "usage"
+   ],
+   "words": [
+    "usage"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,64 @@
+{
+  "kind": "public-health-receipt",
+  "formula": "wave.wave",
+  "family": "med",
+  "hex": "5e2cc5f6-8000-2000-a000-000263000000",
+  "value": 102,
+  "holds": true,
+  "next": 14,
+  "receipt": "98873453-ed24-731d-aba9-ff09855ccc58",
+  "rows": [
+    {
+      "name": "wave.wave",
+      "pass": true,
+      "value": "102",
+      "hex": "5e2cc5f6-8000-2000-a000-000263000000"
+    },
+    {
+      "name": "wave.wave(611,14)",
+      "pass": true,
+      "value": "98",
+      "hex": "5e2cc5f6-8000-3000-a000-00026300000e",
+      "next": 28
+    },
+    {
+      "name": "glyph.systems",
+      "pass": true,
+      "value": "6",
+      "hex": "226447d5-5000-3000-8000-000000000000",
+      "next": null
+    },
+    {
+      "name": "cloud.scale(100,30)",
+      "pass": true,
+      "value": "4",
+      "hex": "9ebb5c95-4000-4000-a000-00006400001e",
+      "next": null
+    },
+    {
+      "name": "audit.healthcareComplianceFusion",
+      "hex": "ed4df38c-2000-6000-8000-000000000000",
+      "value": "amounts absent",
+      "amounts": "absent"
+    },
+    {
+      "name": "queueing.systemlength",
+      "hex": "82423800-6000-8000-8000-000000000000",
+      "value": "amounts absent",
+      "amounts": "absent"
+    },
+    {
+      "name": "sampling.systematic",
+      "hex": "c723b182-7000-4000-8000-000000000000",
+      "value": "amounts absent",
+      "amounts": "absent"
+    },
+    {
+      "name": "cloud.scale",
+      "hex": "9ebb5c95-4000-6000-8000-000000000000",
+      "value": "amount absent",
+      "amounts": "absent",
+      "next": null
+    }
+  ]
+}

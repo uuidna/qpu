@@ -5,7 +5,7 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
  *  speedup, throughput, utilization, contention, latency, deadlock cycles, and how work scales with nodes. Crosses to
  *  `code` — concurrency is a property of the code that runs. A measure. */
 
-const PROOF = 'concurrency arithmetic (amdahl speedup, speedup, throughput, utilization, contention, latency, deadlock, scalability); a measure crossed to code'
+const PROOF = 'concurrency arithmetic (amdahl speedup, speedup, throughput, utilization, contention, latency, deadlock, scalability, stolen-task count); a measure crossed to code'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 const c = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
   crossFormulaOf({ id, src: 'concurrency', dst: 'code', formula, value, proof: PROOF, ...extra }, holds, { name: `concurrency.${name}`, params })
@@ -30,7 +30,9 @@ export class ConcurrencyFormulas {
   static deadlock(cycles: number): CrossFormula { return c('concurrency-deadlock', 'deadlock(cycles) = cycles', cycles, nat(cycles), 'deadlock', [cycles]) }
   /** SCALABILITY as a percentage: nodes over the baseline. value ⌊nodes · 100 / baseline⌋. */
   static scalability(nodes: number, baseline: number): CrossFormula { return c('concurrency-scalability', 'scalability(nodes, baseline) = ⌊nodes · 100 / baseline⌋', baseline > 0 ? Math.floor((nodes * 100) / baseline) : 0, nat(nodes, baseline) && baseline > 0, 'scalability', [nodes, baseline]) }
+  /** STOLEN TASKS: the work-stealing scheduler's count of items taken from its queue. value stolen. */
+  static steal(stolen: number): CrossFormula { return c('concurrency-steal', 'steal(stolen) = stolen', stolen, nat(stolen), 'steal', [stolen]) }
 }
 
-for (const name of ['amdahl', 'contention', 'deadlock', 'latency', 'scalability', 'speedup', 'throughput', 'utilization'] as const)
+for (const name of ['amdahl', 'contention', 'deadlock', 'latency', 'scalability', 'speedup', 'steal', 'throughput', 'utilization'] as const)
   qpuHexRegisterOf('concurrency', name, (ConcurrencyFormulas[name] as (...x: unknown[]) => unknown).bind(ConcurrencyFormulas))

@@ -2,7 +2,7 @@ import config from '@payload-config'
 import { getPayload, type Where } from 'payload'
 import { headers } from 'next/headers'
 import { cache } from 'react'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuZoneHostOf } from '@uuidna/qpu'
+import { qpuHexFamiliesOf, qpuHexUuidOf, qpuMcpCallOf, qpuZoneHostOf } from '@uuidna/qpu'
 // every hex family, fused door and MCP method registers itself on import: the generated registry is the one import
 import '@uuidna/qpu/mcp/families.js'
 import { qpuDataOf, qpuDataSourcesOf } from '@uuidna/qpu/mcp/qpu-fused.js'
@@ -62,9 +62,15 @@ export const countsOf = (n: number) => {
   return { formulas: n, programs, compositions: n * n, pairs: (n * (n - 1)) / 2 }
 }
 
+/** The page runs through the one public connector: tools/call cite { hex, full: true }. */
+export const citeFullOf = async (uuid: string) => {
+  const shown = (await qpuMcpCallOf('cite', { hex: uuid, full: true })) as { structuredContent?: { holds?: boolean; value?: unknown; receipt?: string; steps?: { formula: string; args: string[]; value: unknown }[]; error?: string } }
+  return shown.structuredContent ?? {}
+}
+
 export const runOf = async (family: string, program: string[], params: number[]) => {
   const uuid = qpuHexUuidOf({ family, program, params })
-  return { uuid, run: await qpuHexRunOf(uuid) }
+  return { uuid, run: await citeFullOf(uuid) }
 }
 
 export const liveOf = async () => Promise.all((await qpuDataSourcesOf()).map(async (l) => ({ ...l, result: (await qpuDataOf(l.source, l.args)) as { holds?: boolean; agrees?: boolean; reading?: unknown; receipt?: string; url?: string; denied?: string } })))

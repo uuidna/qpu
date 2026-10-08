@@ -33,7 +33,7 @@ export function DocView({ doc, docs }: { doc: Doc; docs: Doc[] }) {
             <BreadcrumbItem><BreadcrumbPage>{doc.title}</BreadcrumbPage></BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <article className="prose prose-neutral max-w-none dark:prose-invert prose-table:text-sm prose-a:text-primary" dangerouslySetInnerHTML={{ __html: doc.html ?? '' }} />
+        <article className="prose prose-neutral max-w-none font-sans dark:prose-invert prose-table:text-sm prose-a:text-primary" dangerouslySetInnerHTML={{ __html: doc.html ?? '' }} />
       </div>
     </div>
   )

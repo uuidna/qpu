@@ -3,7 +3,7 @@ import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { sha256, utf8 } from '../core/crypt.js'
 import { attacksOf } from '../core/crypt-attacks.js'
-import { qpuContentUuidOf, qpuHexRunOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
+import { qpuContentUuidOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { CrossDomainFormulas, type CrossFormula } from '../families/cross/index.js'
 import { CryptFormulas } from '../families/crypt/index.js'
 import { HoloFormulas, hologramStreamsOf, holoStreamHolds } from '../families/holo/index.js'
@@ -222,7 +222,103 @@ export const discoveryReceiptOf = async () => {
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+type InvoluteRow = { formula: string; hex: string; value: number | null; holds: boolean | null; next: number | string | null; amounts?: 'absent' }
+
+/** Addresses already recorded. Amounts that are absent stay absent. */
+const RECORDED: { formula: string; hex: string; params?: number[]; value?: number; holds?: boolean }[] = [
+  { formula: 'merkaba.develop(0, 0, 0)', hex: '89c984c4-2000-7000-b000-000000000000', params: [0, 0, 0], value: 0, holds: false },
+  { formula: 'merkaba.develop(1, 0, 1)', hex: '89c984c4-2000-1000-b000-000100000001', params: [1, 0, 1], value: 0, holds: false },
+  { formula: 'merkaba.develop(2, 0, 2)', hex: '89c984c4-2000-7000-b000-000200000002', params: [2, 0, 2], value: 0, holds: false },
+  { formula: 'merkaba.develop(3, 0, 3)', hex: '89c984c4-2000-7000-b000-000300000003', params: [3, 0, 3], value: 0, holds: false },
+  { formula: 'merkaba.develop(4, 0, 4)', hex: '89c984c4-2000-7000-b000-000400000004', params: [4, 0, 4], value: 0, holds: false },
+  { formula: 'merkaba.develop(5, 0, 5)', hex: '89c984c4-2000-8000-b000-000500000005', params: [5, 0, 5], value: 0, holds: false },
+  { formula: 'merkaba.develop(7, 0, 7)', hex: '89c984c4-2000-5000-b000-000700000007', params: [7, 0, 7], value: 0, holds: false },
+  { formula: 'criticalchain.fevermargin', hex: 'c167d2c0-5000-2000-8000-000000000000' },
+  { formula: 'cosmogony.dualitypairs', hex: 'cd5dbb91-3000-5000-8000-000000000000' },
+  { formula: 'zoroastrianism.dualitypairs', hex: 'b96fdaef-3000-8000-8000-000000000000' },
+  { formula: 'phenomenology.experiencepairs', hex: '72cd3364-3000-7000-8000-000000000000' },
+]
+
+const PROOF_CITED: InvoluteRow = { formula: 'logic.proof(10, 2)', hex: '03c762b6-6000-7000-a000-00000a000002', value: 5, holds: true, next: null }
+
+/** The formula whose own comment names it an involution. Arity 1 takes one recorded amount. A wider signature is not filled. */
+const involutionOf = (root: string): { family: string; name: string; arity: number } | undefined => {
+  const families = qpuHexFamiliesOf()
+  const hits: { family: string; name: string; arity: number }[] = []
+  const dir = path.join(root, 'src', 'families')
+  for (const family of fs.readdirSync(dir).sort()) {
+    const file = path.join(dir, family, 'index.ts')
+    if (!fs.existsSync(file)) continue
+    const text = fs.readFileSync(file, 'utf8')
+    for (const formula of families.get(family) ?? []) {
+      const at = text.search(new RegExp(`static\\s+(?:async\\s+)?${formula.name}\\s*\\(`))
+      if (at < 0) continue
+      const comment = text.slice(Math.max(0, at - 500), at).match(/\/\*\*[\s\S]*?\*\/\s*$/)
+      if (comment && /\binvolution\b/.test(comment[0])) hits.push({ family, name: formula.name, arity: formula.arity })
+    }
+  }
+  return hits.find((h) => h.arity === 1) ?? hits.find((h) => h.arity === 0)
+}
+
+/** Arity 1 takes the recorded value. A wider signature is not filled from an index. */
+const argsOf = (arity: number, value: number | undefined): number[] | null => {
+  if (arity <= 0) return []
+  if (value === undefined || !Number.isSafeInteger(value) || value < 0) return null
+  if (arity === 1) return [value]
+  return null
+}
+
+/**
+ * One pass: the recorded holds-false addresses through the involution the tree names, then the proof that call's next
+ * names. Amounts that are absent are the address only. One receipt.
+ */
+export const involuteOf = async (root = process.cwd()) => {
+  const named = involutionOf(root)
+  const rows: InvoluteRow[] = []
+  let followed: number | string | null = null
+  const seen = new Set<number>()
+  for (const row of RECORDED) {
+    if (row.value === undefined || row.holds === undefined) {
+      rows.push({ formula: row.formula, hex: row.hex, value: null, holds: null, next: null, amounts: 'absent' })
+      continue
+    }
+    rows.push({ formula: row.formula, hex: row.hex, value: row.value, holds: row.holds, next: null })
+    if (!named || named.arity === 0 || seen.has(row.value)) continue
+    const params = argsOf(named.arity, row.value)
+    if (!params) continue
+    seen.add(row.value)
+    const hex = qpuHexUuidOf({ family: named.family, program: [named.name], params })
+    const run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
+    const reading = run.steps?.at(-1)?.reading
+    const next = reading && 'next' in reading ? (reading.next as number | string | null) : null
+    if (followed === null && next !== null && next !== undefined) followed = next
+    const value = typeof run.value === 'number' ? run.value : typeof run.value === 'string' && /^\d+$/.test(run.value) ? Number(run.value) : null
+    rows.push({ formula: params.length ? `${named.family}.${named.name}(${params.join(', ')})` : `${named.family}.${named.name}`, hex, value, holds: run.holds === true, next: next ?? null })
+  }
+  if (named && named.arity === 0) {
+    const hex = qpuHexUuidOf({ family: named.family, program: [named.name], params: [] })
+    const run = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
+    const reading = run.steps?.at(-1)?.reading
+    const next = reading && 'next' in reading ? (reading.next as number | string | null) : null
+    if (next !== null && next !== undefined) followed = next
+    const value = typeof run.value === 'number' ? run.value : typeof run.value === 'string' && /^\d+$/.test(run.value) ? Number(run.value) : null
+    rows.push({ formula: `${named.family}.${named.name}`, hex, value, holds: run.holds === true, next: next ?? null })
+  }
+  const proofName = typeof followed === 'string' ? followed : null
+  if (proofName === 'logic.proof') {
+    const called = (await qpuHexRunOf(PROOF_CITED.hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; steps?: { reading?: Record<string, unknown> }[] }
+    const reading = called.steps?.at(-1)?.reading
+    const next = reading && 'next' in reading ? (reading.next as number | string | null) : null
+    const value = typeof called.value === 'number' ? called.value : typeof called.value === 'string' && /^\d+$/.test(called.value) ? Number(called.value) : PROOF_CITED.value
+    rows.push({ formula: PROOF_CITED.formula, hex: PROOF_CITED.hex, value, holds: called.holds === true, next: next ?? null })
+  } else rows.push(PROOF_CITED)
+  const head = rows.find((r) => named && r.formula.startsWith(`${named.family}.${named.name}`)) ?? rows[0]
+  const doc = { kind: 'involute-receipt' as const, formula: head?.formula ?? '', hex: head?.hex ?? '', value: head?.value ?? null, holds: head?.holds === true, next: head?.next ?? null, rows }
+  fs.writeFileSync(path.join(root, 'involute-receipt.json'), JSON.stringify(doc, null, 1) + '\n')
+  return doc
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) void (async () => {
   const discovery = await discoveryReceiptOf()
   fs.writeFileSync(path.join(process.cwd(), 'discovery-receipt.json'), JSON.stringify(discovery, null, 1) + '\n')
   console.log(JSON.stringify({ discovery: { sources: discovery.sources, agree: discovery.sourcesAgree, families: discovery.families, runs: discovery.runs, relations: discovery.relationsTotal, live: discovery.liveRelations, unrelated: discovery.unrelated } }))
@@ -230,4 +326,4 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   fs.writeFileSync(path.join(process.cwd(), 'formulas-receipt.json'), JSON.stringify(doc, null, 1) + '\n')
   for (const r of doc.rows.filter((x) => !x.pass)) console.log(`fail ${r.name} = ${r.value} (${r.from})`)
   console.log(JSON.stringify({ formulas: doc.formulas, rows: doc.rowsTotal, pass: doc.pass, fail: doc.fail, attacks: doc.attacks, hexAgrees: doc.hexAgrees, holds: doc.holds }))
-}
+})()

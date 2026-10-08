@@ -1,0 +1,79 @@
+{
+  "kind": "cures-receipt",
+  "called": 10,
+  "absent": "path.secureDataPathQSec",
+  "address": "03c52d0d-9000-6000-8000-000000000000",
+  "next": null,
+  "rows": [
+    {
+      "name": "adhesive.cure(1440,60)",
+      "pass": true,
+      "value": "24",
+      "hex": "d71e2c22-4000-6000-a000-0005a000003c",
+      "next": null
+    },
+    {
+      "name": "bankruptcy.unsecured(50000,30000)",
+      "pass": true,
+      "value": "20000",
+      "hex": "df872d6d-8000-2000-a000-00c350007530",
+      "next": null
+    },
+    {
+      "name": "concrete.cure(28,7)",
+      "pass": true,
+      "value": "21",
+      "hex": "ca8971c7-2000-8000-a000-00001c000007",
+      "next": null
+    },
+    {
+      "name": "contract.cure(7,14)",
+      "pass": true,
+      "value": "1",
+      "hex": "2b3b9a8f-1000-4000-a000-00000700000e",
+      "next": null
+    },
+    {
+      "name": "contract.cure(21,14)",
+      "pass": true,
+      "value": "0",
+      "hex": "2b3b9a8f-1000-6000-a000-00001500000e",
+      "next": null
+    },
+    {
+      "name": "cross.medSecureWithQSec(2,5)",
+      "pass": true,
+      "value": "64",
+      "hex": "0c36469f-5000-6000-a000-000002000005",
+      "next": null
+    },
+    {
+      "name": "cross.medSecureWithQSec(3,4)",
+      "pass": true,
+      "value": "48",
+      "hex": "0c36469f-5000-6000-a000-000003000004",
+      "next": null
+    },
+    {
+      "name": "cross.medSecureWithQSec(1,10)",
+      "pass": true,
+      "value": "1024",
+      "hex": "0c36469f-5000-5000-a000-00000100000a",
+      "next": null
+    },
+    {
+      "name": "curing.curetime(7,24)",
+      "pass": true,
+      "value": "168",
+      "hex": "b87fc640-2000-7000-a000-000007000018",
+      "next": null
+    },
+    {
+      "name": "enterprise.procurement(100,60)",
+      "pass": true,
+      "value": "60",
+      "hex": "fc357171-4000-2000-a000-00006400003c",
+      "next": null
+    }
+  ]
+}

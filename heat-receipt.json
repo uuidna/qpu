@@ -338,6 +338,23 @@
    "value": "166 mK · signal 1 · T₂ 30d · quality 30 · 5 commits/30d · 0 fixes · 415 lines · split 1",
    "receipt": "25241dae-072c-2ff7-bcb8-785f4091329f",
    "hex": "0a8f02cc-5000-3000-b000-0005001e0000"
+  },
+  {
+   "name": "merkaba.develop(243,4,0)",
+   "pass": false,
+   "value": "0",
+   "receipt": "347ae10c-e6d8-6e4a-9ac8-c30d1dee2d5c",
+   "hex": "89c984c4-2000-3000-b000-00f300040000",
+   "lead": "fevermargin",
+   "formula": "develop(criticalchain.fevermargin, →0) = [it composes with its neighbours in this rotation of the rosetta]"
+  },
+  {
+   "name": "criticalchain.fevermargin",
+   "pass": false,
+   "value": "buffer absent, consumed absent",
+   "receipt": "2f21414b-ce24-85ac-9afe-0a7debdc9604",
+   "hex": "c167d2c0-5000-2000-8000-000000000000",
+   "formula": "fevermargin(buffer, consumed) = max(0, buffer − consumed)"
   }
  ]
 }

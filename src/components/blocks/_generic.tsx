@@ -4,7 +4,8 @@ import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { BlockWrapper } from '@/components/BlockWrapper'
-import { qpuHexRunOf, qpuHexUuidOf } from '@uuidna/qpu'
+import { qpuHexUuidOf, qpuMcpCallOf } from '@uuidna/qpu'
+import { usageBillOf } from '@/payload/plugins/billing'
 
 /** The one generic block renderer. Every block of the payload-way set composes from a shared vocabulary — a heading and
  *  intro, Lexical rich text, an array of items (title, description, href), a media reference with a caption, and a hex
@@ -30,10 +31,13 @@ export async function GenericBlock({ heading, intro, anchor, richText, items, me
   if (family && program) {
     try {
       const hex = qpuHexUuidOf({ family, program: program.split(/[+,\s]+/).filter(Boolean), params: (params ?? '').split(/[\s,]+/).map(Number).filter((n) => Number.isFinite(n)) })
-      const r = (await qpuHexRunOf(hex)) as { value?: unknown; holds?: boolean; receipt?: string }
+      const shown = (await qpuMcpCallOf('cite', { hex, full: true })) as { structuredContent?: { value?: unknown; holds?: boolean; receipt?: string } }
+      const r = shown.structuredContent
+      if (!r) throw new Error('cite')
       run = { hex, value: typeof r.value === 'object' ? JSON.stringify(r.value) : r.value, holds: r.holds, receipt: r.receipt }
     } catch { run = undefined }
   }
+  const bill = usageBillOf()
   return (
     <BlockWrapper heading={heading} intro={intro} anchor={anchor}>
       {richText ? <RichText data={richText} className="prose max-w-3xl dark:prose-invert" /> : null}
@@ -41,7 +45,8 @@ export async function GenericBlock({ heading, intro, anchor, richText, items, me
       {run ? (
         <p className="font-mono text-xs">
           <Link href={`/${run.hex}`} className="text-primary hover:underline">{family}.{program}({params ?? ''}) = {String(run.value)}</Link>
-          {run.holds === false ? <Badge variant="outline" className="ml-2">does not hold</Badge> : null}
+          {run.holds === true ? <Badge className="ml-2">holds</Badge> : <Badge variant="outline" className="ml-2">lead, not delivered value</Badge>}
+          <span className="ml-2 text-muted-foreground">ledger {bill.units} · charged {bill.charged} · billed {bill.billed} · margin is a lead · citation is not solved</span>
         </p>
       ) : null}
       {media ? (
