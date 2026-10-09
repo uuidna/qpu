@@ -30,7 +30,6 @@
     "node_modules",
     "src/access/**",
     "src/app/**",
-    "src/blocks/**",
     "src/collections/**",
     "src/components/**",
     "src/css/**",

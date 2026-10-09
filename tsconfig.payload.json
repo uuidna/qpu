@@ -55,8 +55,6 @@
     "src/access/**/*.tsx",
     "src/app/**/*.ts",
     "src/app/**/*.tsx",
-    "src/blocks/**/*.ts",
-    "src/blocks/**/*.tsx",
     "src/collections/**/*.ts",
     "src/collections/**/*.tsx",
     "src/components/**/*.ts",

@@ -54,8 +54,6 @@ const registering = [
 ].sort((a, b) => a.key.localeCompare(b.key))
 const REPO_REGISTRIES = [
   { file: `${SRC}/mcp/families.ts`, export: 'families', sideEffects: true, entries: registering },
-  { file: `${SRC}/blocks/index.ts`, export: 'blocks', type: { name: 'Block', from: 'payload' }, entries: modulesOf('blocks', 'ts').map((name) => ({ name, from: `./${name}/index.js`, key: slugOf(name) })) },
-  { file: `${SRC}/components/blocks/index.ts`, export: 'blockComponents', record: true, entries: modulesOf('components/blocks', 'tsx').map((name) => ({ name, from: `./${name}/index.js`, key: slugOf(name) })) },
 ]
 // ONE WORKER: qpu runs on Payload running on qpu. uuidna-qpu is the Payload app; worker.js fronts it with the unit, which
 // hands browser pages and /api to the app in-process, and the app keeps its documents in the unit's storage (db/payload).
@@ -107,7 +105,7 @@ const REPO = {
   },
 }
 // the site's folders under src, beside the library's (core, mcp, quantum, …): the app compiles them, the library skips them
-const SITE = ['access', 'app', 'blocks', 'collections', 'components', 'css', 'fields', 'globals', 'providers', 'receipts', 'seed', 'utilities']
+const SITE = ['access', 'app', 'collections', 'components', 'css', 'fields', 'globals', 'providers', 'receipts', 'seed', 'utilities']
 const SITE_FILES = ['payload.config.ts', 'payload-types.ts']
 // the app's TypeScript: src as payloadcms/website keeps it (@/ is src), @root/ the repository, @uuidna/qpu this build
 const REPO_TSCONFIG = {

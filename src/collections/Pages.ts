@@ -1,6 +1,5 @@
 import type { CollectionConfig } from 'payload'
 import { publishedOnly } from '../access/publishedOnly'
-import { blocks } from '../blocks'
 import { seoDescriptionOf, seoTitleOf, seoURLOf } from './Docs'
 
 /** Pages built from blocks, as payloadcms/website builds its own: drafts, a preview at the page's address, SEO filled on
@@ -22,6 +21,5 @@ export const Pages: CollectionConfig = {
     { name: 'title', type: 'text', required: true },
     { name: 'slug', type: 'text', required: true, unique: true, index: true, admin: { position: 'sidebar' } },
     { name: 'description', type: 'textarea' },
-    { name: 'layout', type: 'blocks', blocks },
   ],
 }

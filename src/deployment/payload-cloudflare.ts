@@ -93,7 +93,7 @@ export const CLOUDFLARE_STORAGE_ADAPTERS = {
 export const PAYLOAD_WEBSITE_CLONE = {
   upstream: 'https://github.com/payloadcms/website',
   tree: 'uuidna/payload',
-  layout: 'src/{collections,globals,blocks,components/blocks,app} as payloadcms/website',
+  layout: 'src/{collections,globals,app}: the lean surface (qpuPageOf, docs, families) — no Payload blocks',
   generate: 'npm run payload:cf -- --repo',
   qpuOwns: [
     'db axis: qpu-raid | qpu-d1 | d1 | postgres',

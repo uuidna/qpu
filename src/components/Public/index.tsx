@@ -245,19 +245,6 @@ export async function PublicSurface({ breadcrumbs }: { breadcrumbs?: Page['bread
         ) : null}
       </section>
 
-      <section id="blocks" className="space-y-3">
-        <h2 className="text-xl font-semibold">Blocks</h2>
-        <ul className="space-y-2 text-sm">
-          {surface.blocks.map((row) => (
-            <li key={row.slug}>
-              <Link href={row.href} className="font-mono text-primary hover:underline">{row.slug}</Link>
-              <span className="text-muted-foreground"> · {row.group} · {row.registered} · {row.renders} · page {row.placed ? 'yes' : 'no'}{row.needs.length ? ` · needs ${row.needs.join(', ')}` : ''}</span>
-              <span className="block text-muted-foreground">{row.description}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
       <section id="forms" className="space-y-3">
         <h2 className="text-xl font-semibold">Forms</h2>
         <p className="text-sm text-muted-foreground">The commercial-license form is on <Link href="/license" className="text-primary hover:underline">/license</Link>. Field types are the form-builder blocks in src/payload-types.ts.</p>

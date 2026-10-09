@@ -153,7 +153,6 @@ export {
   publicMcpOf,
   publicPlugin,
   publicSurfaceOf,
-  unpagedLayoutBlocksOf,
   variantLeadOf,
 } from './public.js'
 export {

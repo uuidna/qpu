@@ -1,4 +1,3 @@
-import { blocks } from '../../blocks/index.js'
 import { CLOUDFLARE_PLUGINS } from '../../deployment/payload-cloudflare.js'
 import { CloudFormulas } from '../../families/cloud/index.js'
 import { CombinatoricsFormulas } from '../../families/combinatorics/index.js'
@@ -6,7 +5,6 @@ import { LawFormulas } from '../../families/law/index.js'
 import { PublishingFormulas } from '../../families/publishing/index.js'
 import { RuleFormulas } from '../../families/rule/index.js'
 import { WaveFormulas } from '../../families/wave/index.js'
-import { customOf } from '../../fields/blockFields.js'
 import {
   MCP_EXTENSIONS,
   SERVED,
@@ -59,11 +57,7 @@ import type { QpuPlugin } from './surface.js'
 /** The plugin axis length the combination key already multiplies. Not a variant count. */
 export const pluginAxisLengthOf = () => CLOUDFLARE_PLUGINS.length
 
-/** Layout blocks the seed has not already placed on home, search, or the license page. */
-export const unpagedLayoutBlocksOf = () =>
-  blocks.filter((b) => b.admin?.group === 'Layout' && !(customOf(b).needs?.length) && !['search', 'products', 'hero'].includes(b.slug))
-
-const readingOf = (formula: string, row: { hex?: string; value: number; holds: boolean }, params: readonly number[]) => ({
+const readingOf =(formula: string, row: { hex?: string; value: number; holds: boolean }, params: readonly number[]) => ({
   formula,
   params: [...params],
   hex: row.hex ?? null,
@@ -263,30 +257,6 @@ export const doorsOf = async () => {
   }
 }
 
-const hrefOf = (slug: string): string => {
-  if (slug === 'hero') return '/'
-  if (slug === 'products' || slug === 'form') return '/license'
-  if (slug === 'receipt') return '/receipts'
-  return `/${slug}`
-}
-
-/** Every block folder registered in src/blocks and src/components/blocks. */
-export const blockReachOf = () =>
-  blocks.map((b) => {
-    const needs = [...(customOf(b).needs ?? [])]
-    const placed = needs.length === 0 || b.slug === 'form' || b.slug === 'program' || b.slug === 'receipt'
-    return {
-      slug: b.slug,
-      group: String(b.admin?.group ?? ''),
-      description: customOf(b).description,
-      href: hrefOf(b.slug),
-      needs,
-      placed,
-      registered: 'src/blocks/index.ts' as const,
-      renders: 'src/components/blocks/index.ts' as const,
-    }
-  })
-
 /** Form-builder field block types from src/payload-types.ts, and whether CMSForm draws them. */
 export const formFieldsOf = () => [
   { blockType: 'checkbox', file: 'src/components/CMSForm/index.tsx', renders: true, absent: null },
@@ -394,7 +364,6 @@ export const publicSurfaceOf = async () => {
     doors: await doorsOf(),
     network: networkMachineOf(),
     access: await accessSurfaceOf(),
-    blocks: blockReachOf(),
     forms: formFieldsOf(),
     components: componentsOf(),
     document: '/api/qpu/permaculture?full=true' as const,

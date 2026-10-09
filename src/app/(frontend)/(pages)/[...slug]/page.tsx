@@ -1,18 +1,13 @@
 import type { Metadata } from 'next'
-import type { ReactNode } from 'react'
 import { notFound, redirect } from 'next/navigation'
 import { qpuHexDecodeOf } from '@uuidna/qpu'
-import { askOf, citeFullOf, docOf, docsOf, familiesOf, pageOf, payloadOf, runOf } from '@/app/_data'
-import { RenderBlocks, type SearchParams } from '@/components/RenderBlocks'
+import { askOf, citeFullOf, docOf, docsOf, familiesOf, payloadOf, runOf } from '@/app/_data'
 import { metadataOf } from '@/utilities/metadataOf'
-import { blocks } from '@/blocks'
-import { blockComponents } from '@/components/blocks'
+
+type SearchParams = Record<string, string | string[] | undefined>
 import { DocView } from '@/components/Doc'
 import { FamilyView } from '@/components/Family'
-import { Program as ProgramBlock } from '@/components/blocks/Program'
 import { ProgramView, RunCard, type Run } from '@/components/Program'
-import { customOf } from '@/fields/blockFields'
-import { pluginAxisLengthOf } from '@/payload/plugins/public'
 import type { Redirect } from '@/payload-types'
 
 export const dynamic = 'force-dynamic'
@@ -20,15 +15,14 @@ type Props = { params: Promise<{ slug: string[] }>; searchParams: Promise<Search
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
-/** A path means what it names: a page built from blocks, a doc, a formula family, a hex-program UUID (one segment), or a
- *  family's program (two segments). One segment can name several things at once; each is shown. */
+/** A path means what it names: a doc, a formula family, a hex-program UUID (one segment), or a family's program (two or
+ *  more segments). Content is served from the lean surface (docs, families, the unit's qpuPageOf) — not Payload blocks. */
 const resolve = async (path: string[]) => {
   const segs = path.map((s) => decodeURIComponent(s))
   if (segs.length === 1) {
     const [x] = segs as [string]
     const decoded = UUID.test(x) ? qpuHexDecodeOf(x) : null
     return {
-      page: await pageOf(x),
       doc: await docOf(x),
       family: familiesOf().find((f) => f.name === x),
       uuid: decoded && 'holds' in decoded && decoded.holds ? x.toLowerCase() : undefined,
@@ -58,7 +52,6 @@ const redirectOf = async (path: string[]): Promise<string | undefined> => {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const r = await resolve((await params).slug)
-  if (r.page) return metadataOf(r.page)
   if (r.doc) return metadataOf(r.doc, 'article')
   if (r.family) return { title: `${r.family.name} formulas`, description: `The ${r.family.formulas.length} formulas of the ${r.family.name} family and their ${r.family.formulas.length ** 2} compositions.`, alternates: { canonical: `/${encodeURIComponent(r.family.name)}` } }
   // every path-variant of a combination (/family/f1/f2/p, /family/f1+f2?p=…) shares ONE canonical — the normalized
@@ -86,18 +79,7 @@ export default async function Resolved({ params, searchParams }: Props) {
     }
   }
 
-  const only = path.length === 1 ? decodeURIComponent(path[0]!) : undefined
-  const block = only ? blocks.find((b) => b.slug === only) : undefined
-  const already = Boolean(r.page?.layout?.some((row) => row.blockType === only))
-  const registered = block && !already ? await (async () => {
-    if (block.slug === 'program') return <ProgramBlock blockType="program" family="combinatorics" program="binomial" params={String(pluginAxisLengthOf())} heading="Program" intro={customOf(block).description} />
-    if (customOf(block).needs?.length) return null
-    const Component = (blockComponents as unknown as Record<string, (p: { heading?: string; intro?: string; searchParams?: SearchParams; blockType?: string }) => ReactNode>)[block.slug]
-    return Component ? <Component heading={block.slug} intro={customOf(block).description} searchParams={query} blockType={block.slug} /> : null
-  })() : null
-
-  if (!r.page && !r.doc && !r.family && !r.uuid) {
-    if (registered) return <div className="space-y-16">{registered}</div>
+  if (!r.doc && !r.family && !r.uuid) {
     const to = await redirectOf(path)
     if (to) redirect(to)
     // ANY MEANINGFUL PATH IS A LEAD, NOT A 404: parse its words; if they name a formula (a meaningful combination),
@@ -109,11 +91,9 @@ export default async function Resolved({ params, searchParams }: Props) {
 
   return (
     <div className="space-y-16">
-      {r.page ? <RenderBlocks blocks={r.page.layout} searchParams={query} /> : null}
       {r.doc ? <DocView doc={r.doc} docs={await docsOf()} /> : null}
       {r.family ? <FamilyView family={r.family} /> : null}
       {r.uuid ? <RunCard uuid={r.uuid} run={(await citeFullOf(r.uuid)) as Run} /> : null}
-      {registered}
     </div>
   )
 }
