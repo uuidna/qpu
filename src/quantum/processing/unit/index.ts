@@ -2210,10 +2210,20 @@ const shorCountBits = coins
 const classicalOrderOf = (base: bigint, modulus: bigint): { ring: boolean; unit: boolean; order: number; beyond: boolean } => {
   if (modulus <= b1) return { ring: false, unit: false, order: n - n, beyond: false }
   if (bigGcdOf(base, modulus) !== b1) return { ring: true, unit: false, order: n - n, beyond: false }
-  for (const r of [seed, coins, mintOf(coins)]) {
-    if (bigPowModOf(base, BigInt(r), modulus) === b1) return { ring: true, unit: true, order: r, beyond: false }
+  // The true multiplicative order: the least r with base^r ≡ 1 (mod modulus). It divides φ(modulus) < modulus, so the
+  // walk ends — the order IS what quantum period-finding returns, computed here as its exact simulation, one O(1)-memory
+  // step at a time (the split: no 2^qubits vector, no fixed reach). This is what Primes.shor_factored then factors.
+  // `beyond` now means only the order runs past the classically simulatable cap (2^(mintOf n + faces)), not that a
+  // two-qubit register could not resolve it — unlimited n factor once their order is in reach.
+  const ceiling = b1 << BigInt(mintOf(n) + qpuFacesOf().faces)
+  const cap = modulus < ceiling ? modulus : ceiling
+  let acc = modOf(base, modulus)
+  let r = seed
+  while (acc !== b1 && BigInt(r) < cap) {
+    acc = modOf(acc * base, modulus)
+    r += seed
   }
-  return { ring: true, unit: true, order: n - n, beyond: true }
+  return acc === b1 ? { ring: true, unit: true, order: r, beyond: false } : { ring: true, unit: true, order: n - n, beyond: true }
 }
 /** How one argument was read. `digits` is a string of digits, exact at any size. `number` is a JSON number, exact only up
  * to 2^53 (past that the caller's own parser rounded it before it arrived). `numeric` is any other numeric string, read

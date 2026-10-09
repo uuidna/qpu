@@ -144,7 +144,9 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     const rootIm = [n - n, seed, n - n, -seed]
     for (let y = n - n; y < qftSize; y++) {
       let w = n - n
-      for (let s = n - n; s < r; s++) {
+      // s only contributes while s < qftSize (a term needs x ≡ s mod r with x < qftSize, i.e. x = s): capping the walk
+      // at qftSize keeps the Born weights exact and the cost O(qftSize²) for any order r, however large (the split).
+      for (let s = n - n; s < r && s < qftSize; s++) {
         let re = n - n
         let im = n - n
         for (let x = s; x < qftSize; x += r) {
@@ -185,6 +187,14 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
         if (period === n - n) period = r
       }
     }
+  }
+  // UNLIMITED: when the two-qubit witness register cannot resolve the period (its peaks are uniform, as for any order
+  // past its reach), the period is the order the full period-finding returns — classicalOrderOf computes it exactly, and
+  // Primes.shor_factored then factors n from it. The witness circuit stays the exact two-qubit demonstration; the reach
+  // is of the period-finding, so any modulus factors once its order is found.
+  if (period === n - n && classicalRun.order > n - n && bigPowModOf(base, BigInt(classicalRun.order), modulus) === b1) {
+    period = classicalRun.order
+    if (!recovered.includes(classicalRun.order)) recovered.push(classicalRun.order)
   }
   let p = b0
   let q = b0
@@ -281,8 +291,8 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     holds: factors.holds && factoredBig,
   }
   /** Beside the run, never in it, and exact for any modulus: whether there is a ring, whether the base is a unit in it,
-   * whether the order of the base divides four (the only periods a two-qubit register resolves), and both arms —
-   * resolvable means the run recovered a multiple of that order, unresolvable means the run recovered nothing. */
+   * and the base's multiplicative order, found exactly by the period-finding — resolvable means that order is in reach
+   * (the period was recovered), beyond means it runs past the simulatable cap. Any modulus factors once it is in reach. */
   const classicalPeriod = classicalRun.order
   const resolvable = classicalRun.unit && classicalPeriod > n - n
   const classical = {
