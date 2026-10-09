@@ -64,7 +64,12 @@ const leanHandles = (): readonly { heading: string; handle: string; uuid: string
   return [...seen.values()]
 }
 
-const resourcesOf = (): Resource[] => [
+// SERVE FAST, STABLE OFFSETS. The catalogue is a memoized deterministic spine — the fixed aggregates, then every
+// family (formulas and schema), every lean UUID program and every hologram scale — computed once, not folded afresh
+// on each list. The one collection that grows as the unit runs (the per-stream receipt folders) is appended at the
+// TAIL, so append-growth never shifts an offset into the spine: a hexbit-folder cursor stays valid for the whole run.
+let spine: Resource[] | undefined
+const stableSpineOf = (): Resource[] => (spine ??= [
   { uri: 'qpu://receipts', name: 'receipts', title: 'Receipt streams', description: 'Every quantum-receipt stream: head, length, chain, holds', mimeType: 'application/json' },
   { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles', mimeType: 'application/json' },
   { uri: 'qpu://hologram', name: 'hologram', title: 'Hologram streams', description: 'One signed SHA-256 UUID stream per hologram scale and the Merkle root of all of them', mimeType: 'application/json' },
@@ -73,11 +78,14 @@ const resourcesOf = (): Resource[] => [
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
-  ...streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const })),
   ...families().map((f) => ({ uri: `qpu://formulas/${f}`, name: `formulas-${f}`, title: `Family ${f}`, description: `The formulas of the ${f} hex family`, mimeType: 'application/json' as const })),
   ...families().map((f) => ({ uri: `qpu://schema/${f}`, name: `schema-${f}`, title: `Schema ${f}`, description: `The ${f} family as a schema.org DefinedTermSet of hex-program UUIDs`, mimeType: 'application/json' as const })),
   ...leanHandles().map((h) => ({ uri: `qpu://lean/${h.handle}`, name: `lean-${h.handle}`, title: `Theorem ${h.heading}`, description: `The ${h.heading} lean computation — a UUID program ${h.uuid}, addressed by its hexbit handle ${h.handle}; recomputed, with holds`, mimeType: 'application/json' as const })),
   ...Object.keys(hologramOf().streams).map((s) => ({ uri: `qpu://hologram/${s}`, name: `hologram-${s}`, title: `Scale ${s}`, description: `Signed fragments of the ${s} scale`, mimeType: 'application/json' as const })),
+])
+const resourcesOf = (): Resource[] => [
+  ...stableSpineOf(),
+  ...streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const })),
 ]
 
 const TEMPLATES: Template[] = [
