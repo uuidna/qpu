@@ -32,7 +32,7 @@ import { qpuShorTryOf, qpuShorOf, qpuShorHolds } from './shor.js'
 export { qpuShorTryOf, qpuShorTryHolds, qpuShorOf, qpuShorReceiptsOf, qpuShorReceiptsHolds, qpuShorHolds } from './shor.js'
 import { qpuSandboxOf, qpuSandboxRunOf } from './sandbox.js'
 export { qpuSandboxEpochOf, qpuSandboxEpochHolds, qpuSandboxOf, qpuSandboxRunOf, qpuSandboxRunHolds } from './sandbox.js'
-import { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf } from './lattice.js'
+import { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf, qpuLatticeNamesOf } from './lattice.js'
 export { chooseOf, tenOf, qpuCubeOf, qpuHandleOf, qpuFacesOf, qpuElectronicsOf, qpuBalanceOf, qpuCapacityOf, qpuSpeedOf, qpuLatticeNamesOf } from './lattice.js'
 import { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf } from './presentation.js'
 export { qpuGenesisOf, qpuPentagramOf, qpuAccessOf, qpuHologramOf, qpuZoneOf, qpuZoneHostOf, qpuTenantZoneOf, qpuSchemasOf, qpuCiteOf, qpuPresenceOf, qpuCssOf, qpuReflectOf, qpuRobotsOf, qpuSeoZoneOf, qpuCombinatoricsWindowOf, qpuPageOf } from './presentation.js'
@@ -10841,9 +10841,15 @@ const qpuHexDiscoverBaseOf = onceOf(() => {
     try { return bigOf(f.run(args)) } catch { return undefined }
   }
   const all = [...qpuHexFamiliesOf()]
+  // ANCHOR DISCOVERY ON THE THEOREMS, NOT ON ARBITRARY CONSTANTS. The seed is no longer every 0-arity formula's output
+  // but only the values the Lean theorems prove — the lattice names (qpuLatticeNamesOf: n, seed, coins, hexbit,
+  // vertices, bits, rays, faces, plane, the turns). A 0-arity formula is kept iff its value is one a theorem proves, so
+  // each surviving constant is a real hex-addressable formula AND a theorem-backed value. Discovery then grows only from
+  // proven ground, and the input set shrinks to it — leaner, and every relation it finds stands on a theorem.
+  const proven = new Set(Object.values(qpuLatticeNamesOf()).map((v) => BigInt(v).toString()))
   const constants = all
     .flatMap(([family, fs]) => fs.filter((f) => f.arity === n - n).map((f) => ({ family, name: f.name, value: runOf(f, []) })))
-    .filter((c): c is { family: string; name: string; value: bigint } => c.value !== undefined)
+    .filter((c): c is { family: string; name: string; value: bigint } => c.value !== undefined && proven.has(c.value.toString()))
   const small = constants.filter((c) => c.value <= BigInt(tenOf(n)))
   return { runOf, all, constants, small }
 })
