@@ -368,14 +368,26 @@ export const qpuThroughSchemaOf = (inputSchema: Record<string, unknown>): Record
  * @wing agents
  * @kind builder
  */
+/** ONE source of the method surface, in door order: the six tool categories. qpuMcpDoorsOf lists them all; callOf
+ *  dispatches the four 'morph' categories (every kind but sealed and fused — those have their own call-time handling).
+ *  Add a category here and both the door listing and the dispatch pick it up — one list, iterated in both places. */
+const qpuMethodCategoriesOf = (env?: QpuEnv, auth?: string | null): { kind: string; morph: boolean; tools: readonly { name: string; description?: string }[] }[] => [
+  { kind: 'sealed', morph: false, tools: qpuToolsOf() },
+  { kind: 'cybersecurity', morph: true, tools: qpuCybersecurityToolsOf() },
+  { kind: 'fused', morph: false, tools: qpuMcpFusedOf() },
+  { kind: 'storage', morph: true, tools: qpuStorageToolsOf(env, auth) },
+  { kind: 'network', morph: true, tools: qpuNetworkToolsOf() },
+  { kind: 'server', morph: true, tools: qpuServerToolsOf() },
+]
+
+/** The morph tools (name, man, run) — the categories callOf dispatches uniformly, from the one source. */
+const qpuMorphToolsOf = (env?: QpuEnv, auth?: string | null): ReturnType<typeof qpuCybersecurityToolsOf> =>
+  qpuMethodCategoriesOf(env, auth).filter((c) => c.morph).flatMap((c) => c.tools as ReturnType<typeof qpuCybersecurityToolsOf>)
+
 export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
   const doors = [
-    ...qpuToolsOf().map((t) => ({ name: t.name, kind: 'sealed' })),
-    ...qpuCybersecurityToolsOf().map((t) => ({ name: t.name, kind: 'cybersecurity' })),
-    ...qpuMcpFusedOf().map((t) => ({ name: t.name, kind: 'fused', description: t.description })),
-    ...qpuStorageToolsOf(env, auth).map((t) => ({ name: t.name, kind: 'storage' })),
-    ...qpuNetworkToolsOf().map((t) => ({ name: t.name, kind: 'network' })),
-    ...qpuServerToolsOf().map((t) => ({ name: t.name, kind: 'server' })),
+    ...qpuMethodCategoriesOf(env, auth).flatMap((c) =>
+      c.tools.map((t) => (c.kind === 'fused' ? { name: t.name, kind: c.kind, description: t.description } : { name: t.name, kind: c.kind }))),
     ...payloadFinds.map((name) => ({ name, kind: 'payload' })),
     { name: 'install', kind: 'install' },
     ...[...sandboxTools.keys()].map((name) => ({ name, kind: 'sandbox' })),
@@ -525,12 +537,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
     }
     return shown(qpuPayloadFindOf(name))
   }
-  const morph = [
-    ...qpuCybersecurityToolsOf(),
-    ...qpuStorageToolsOf(env, auth),
-    ...qpuNetworkToolsOf(),
-    ...qpuServerToolsOf(),
-  ].find((t) => t.name === name)
+  const morph = qpuMorphToolsOf(env, auth).find((t) => t.name === name)
   if (morph) {
     if (args.man === true) return shown(qpuManPageOf(name, morph.man))
     return shown(await morph.run(args))
