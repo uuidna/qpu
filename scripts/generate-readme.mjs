@@ -23,6 +23,35 @@ import { mintOf, vertices } from './lattice-values.mjs'
 await import('../dist/mcp/families.js')
 const { qpuMcpDoorsOf, qpuMcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
 
+// the MCP resource surface, counted the way a client reaches it (resources/list + templates) — not a hand list. The
+// default listing is the quantum computer core; `scope` loads the rest (every family, every lean UUID program, the
+// compatible-programs query) on request, paged into hexbit folders.
+const { publicMcpOf } = await import('../dist/payload/plugins/public.js')
+const mcpRpc = async (method, params) =>
+  (await publicMcpOf(new Request('https://qpu.uuidna.com/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }), {})).json()
+const mcpListLen = async (scope) => {
+  let len = 0, cursor, pages = 0
+  do {
+    const list = (await mcpRpc('resources/list', { ...(scope ? { scope } : {}), ...(cursor ? { cursor } : {}) })).result
+    len += list.resources.length
+    cursor = list.nextCursor
+    pages += 1
+  } while (cursor && pages < 5000)
+  return len
+}
+const mcpCore = await mcpListLen()
+const mcpAll = await mcpListLen('all')
+const mcpTemplates = await (async () => {
+  let len = 0, cursor, pages = 0
+  do {
+    const list = (await mcpRpc('resources/templates/list', cursor ? { cursor } : {})).result
+    len += (list.resourceTemplates ?? []).length
+    cursor = list.nextCursor
+    pages += 1
+  } while (cursor && pages < 5000)
+  return len
+})()
+
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..')
 const git = (cmd) => execSync(`git ${cmd}`, { cwd: ROOT }).toString().trim()
 const read = (f) => JSON.parse(fs.readFileSync(path.join(ROOT, f), 'utf8'))
@@ -138,6 +167,7 @@ const glance = [
   '| Capability | How much | Compared with |',
   '|---|---|---|',
   `| MCP door (https://qpu.uuidna.com/mcp) | ${listed} listed tools; through any of them ${num(doors.doors.length)} doors and ${num(doors.formulas.length)} formulas (\`{ doors: true }\`, \`{ door }\`, \`{ hex }\`, \`{ errors: true }\`) | the Model Context Protocol: \`tools/list\` sealed by the Lean theorem agents_mcp_tools |`,
+  `| MCP resources | ${num(mcpCore)} core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); \`{ scope: 'all' }\` reaches ${num(mcpAll)}, \`{ scope: family }\` a scoped set, over ${num(mcpTemplates)} \`qpu://…\` templates (each lean theorem and hex program a UUID) | the Model Context Protocol \`resources/list\` + \`resources/read\` |`,
   `| Formal proof | ${num(lean.theorems)} Lean theorems served, ${num(lean.recomputed)} recomputed in TypeScript | the Lean 4 kernel (${lean.toolchain ?? 'toolchain'}) |`,
   `| Formula families | ${num(discovery.families)} families run as hex-program UUIDs (RFC 9562 v8); ${num(discovery.runs)} programs in the last discovery | each other: ${num(discovery.relationsTotal)} values reached by two or more families, ${num(discovery.seals)} seals (fixed points, involutions) |`,
   `| Live public data | ${num(discovery.sourcesAgree)} of ${num(discovery.sources)} sources agree | CERN Open Data, NIST CODATA, OEIS (${num(discovery.sequences)} formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |`,
