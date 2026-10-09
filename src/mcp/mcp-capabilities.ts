@@ -1,4 +1,4 @@
-import { qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
+import { qpuClayOf, qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
 import { HookFormulas } from '../families/hook/index.js'
@@ -111,6 +111,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
+  { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The seven Clay Millennium Problems sealed via the universal σ-involution — each seal recomputed, with holds', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
@@ -151,6 +152,7 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://lean') return qpuLeanOf()
   if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
   if (uri === 'qpu://hooks') return toolHooksOf()
+  if (uri === 'qpu://clay') return qpuClayOf()
   if (uri === 'qpu://schema') return crossSchemasOf()
   if (uri === 'qpu://hologram') {
     const h = hologramOf()

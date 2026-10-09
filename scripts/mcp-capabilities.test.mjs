@@ -45,7 +45,7 @@ const allResources = async (scope) => {
 
 test('by default resources/list is the quantum computer core — the aggregates only, one page, the rest not spilled', async () => {
   const core = await allResources()
-  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram', 'qpu://hooks']) {
+  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://clay', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram', 'qpu://hooks']) {
     assert.ok(core.includes(u), `core aggregate ${u} missing from the default listing`)
   }
   assert.ok(!core.some((u) => u.startsWith('qpu://formulas/')), 'the default listing spilled the families — they belong on request')
