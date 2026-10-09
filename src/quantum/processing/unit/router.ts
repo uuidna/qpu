@@ -208,9 +208,11 @@ export const worker = {
     if (path === '/receipts' || path.startsWith('/receipts/')) {
       const all = qpuReceiptStreamsOf()
       const stream = path.slice('/receipts/'.length)
-      return jsonOf(path === '/receipts' ? { ...all, streams: all.streams.map(({ recent, ...head }) => head) } : all.streams.find((s) => s.stream === stream) ?? { kind: 'receipts' as const, stream, length: n - n, holds: false as const }, path === '/receipts' || all.streams.some((s) => s.stream === stream) ? found : lost)
+      if (path === '/receipts') return pageOrServed('/receipts', () => ({ ...all, streams: all.streams.map(({ recent, ...head }) => head) }), { title: '@uuidna/qpu — receipts', description: 'Every quantum-receipt stream — head, length, chain and whether it holds.' })
+      const row = all.streams.find((s) => s.stream === stream)
+      return row ? pageOrServed(path, () => row, { title: `@uuidna/qpu — receipts ${stream}`, description: `The ${stream} quantum-receipt stream and its recent receipts.` }) : jsonOf({ kind: 'receipts' as const, stream, length: n - n, holds: false as const }, lost)
     }
-    if (path === '/metrics') return jsonOf({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: qpuServedLedgerOf().length })
+    if (path === '/metrics') return pageOrServed('/metrics', () => ({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: qpuServedLedgerOf().length }), { title: '@uuidna/qpu — metrics', description: 'Mint receipt, foreign reads, and the receipt and served-ledger counts.' })
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
