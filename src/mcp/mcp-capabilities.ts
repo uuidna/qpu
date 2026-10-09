@@ -1,6 +1,7 @@
-import { qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
+import { qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
+import { HookFormulas } from '../families/hook/index.js'
 import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
 
 type Params = Record<string, unknown>
@@ -84,6 +85,18 @@ const compatibleOf = (key: string): { scope: string; family: string; values: str
   return { scope: key, family, values: relations.map((r) => r.value), programs }
 }
 
+// IMPROVE TOOLS TO BE USED ALSO AS HOOKS — ALL COMBINATORICS. Every MCP tool can fire at every Payload lifecycle event,
+// so the hook surface is the full product: tools × events. qpu://hooks enumerates every (tool, event) binding — a tool
+// used as a hook — and measures the whole as HookFormulas.fired(tools, events), the hook family's own arithmetic.
+// Nothing is activated (an active hook would spend the cold-init budget); the matrix is served on request.
+const LIFECYCLE = ['beforeOperation', 'beforeValidate', 'beforeChange', 'afterChange', 'afterRead', 'beforeDelete', 'afterDelete'] as const
+const toolHooksOf = () => {
+  const tools = qpuMcpToolsListOf().map((t) => t.name)
+  const fired = HookFormulas.fired(tools.length, LIFECYCLE.length)
+  const bindings = tools.flatMap((tool) => LIFECYCLE.map((event) => ({ tool, event })))
+  return { kind: 'tool-hooks' as const, events: [...LIFECYCLE], tools, formula: 'hook.fired(tools, events) = tools · events', combinations: Number(fired.value), hex: fired.hex ?? null, holds: fired.holds === true && bindings.length === tools.length * LIFECYCLE.length, bindings }
+}
+
 // BY DEFAULT, THE QUANTUM COMPUTER — THE REST ON REQUEST. A bare resources/list serves only the core: the aggregates
 // that describe the quantum computer itself (its receipts, its hex catalogue, its hologram, its fused tools, its Lean
 // proof, its schema, its paper and its docs). Each of these is an index that, read, names the rest — so nothing is
@@ -96,6 +109,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles — the index of the rest', mimeType: 'application/json' },
   { uri: 'qpu://hologram', name: 'hologram', title: 'Hologram streams', description: 'One signed SHA-256 UUID stream per hologram scale and the Merkle root of all of them', mimeType: 'application/json' },
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
+  { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
@@ -136,6 +150,7 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://hex') return qpuHexCatalogOf()
   if (uri === 'qpu://lean') return qpuLeanOf()
   if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
+  if (uri === 'qpu://hooks') return toolHooksOf()
   if (uri === 'qpu://schema') return crossSchemasOf()
   if (uri === 'qpu://hologram') {
     const h = hologramOf()

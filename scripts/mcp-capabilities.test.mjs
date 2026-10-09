@@ -45,7 +45,7 @@ const allResources = async (scope) => {
 
 test('by default resources/list is the quantum computer core — the aggregates only, one page, the rest not spilled', async () => {
   const core = await allResources()
-  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram']) {
+  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram', 'qpu://hooks']) {
     assert.ok(core.includes(u), `core aggregate ${u} missing from the default listing`)
   }
   assert.ok(!core.some((u) => u.startsWith('qpu://formulas/')), 'the default listing spilled the families — they belong on request')
@@ -85,6 +85,14 @@ test('lean computations are UUID programs: addressed by hexbit handle or full uu
   assert.ok(body.theorems.every((t) => t.holds === true), 'a distributed lean computation does not hold')
   const byUuid = JSON.parse((await rpc('resources/read', { uri: `qpu://lean/${body.uuid}` })).result.contents[0].text)
   assert.equal(byUuid.handle, handle, 'the full UUID program did not resolve to the same computation as its handle')
+})
+
+test('tools are also hooks: qpu://hooks is the full combinatorics of tools × lifecycle events', async () => {
+  const h = JSON.parse((await rpc('resources/read', { uri: 'qpu://hooks' })).result.contents[0].text)
+  assert.ok(h.tools.length > 0 && h.events.length > 0, 'no tools or events to combine')
+  assert.equal(h.combinations, h.tools.length * h.events.length, 'combinations is not the full tool × event product')
+  assert.equal(h.bindings.length, h.combinations, 'not every tool × event binding is enumerated')
+  assert.ok(h.holds, 'the hook combinatorics does not hold')
 })
 
 test('hard fail fast on a hex violation: a malformed hex program address is an error, not a soft miss', async () => {
