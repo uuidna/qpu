@@ -5,8 +5,11 @@
 import unit from './dist/quantum/processing/unit/index.js'
 // @ts-ignore built by `opennextjs-cloudflare build`
 import app from './.open-next/worker.js'
-// One registry: the build beside this worker. The unit's qpuFamilyRegistryUrlOf names this same module.
-import './dist/mcp/families.js'
+// One registry, loaded LAZILY, not here at global scope. The unit's qpuHexRegistryOf dynamic-imports
+// dist/mcp/families.js (which esbuild still bundles from that reference) on the first request that reads the
+// registry — a hex run, a door/fused MCP call, or the /hex catalogue. Importing all ~1130 family modules at
+// module top-level cost ~394ms of CPU, over the Worker's ~400ms global-startup budget, so every cold isolate
+// 1102'd before any handler ran and nothing ever cached (the death spiral). Deferred, cold init is cheap.
 
 // THE EDGE CACHE Cloudflare's CDN will not hold for a Worker-generated response (Worker sits in front of the
 // cache). Same pattern as quintessay/worker.ts: caches.default, URL-only key, only shareable public GETs,

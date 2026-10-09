@@ -10698,7 +10698,7 @@ export const qpuFamilyModuleUrlOf = (family: string): string => {
 /** The shared registry imports every family module that exists. Each module registers through qpuHexRegisterOf.
  *  One load, from qpuFamilyRootOf. Law is its own family module on that list, not an import from mcp.ts. */
 let hexRegistry: Promise<void> | undefined
-const qpuHexRegistryOf = (): Promise<void> => {
+export const qpuHexRegistryOf = (): Promise<void> => {
   // perma has a module and calls qpuHexRegisterOf. The generated registry does not name it.
   // These specifiers are qpuFamilyRegistryUrlOf and qpuFamilyModuleUrlOf('perma'): this module's tree only.
   if (!hexRegistry) hexRegistry = import('../../../mcp/families.js').then(() => import('../../../families/perma/index.js')).then(() => undefined)

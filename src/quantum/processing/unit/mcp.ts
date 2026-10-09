@@ -1,6 +1,7 @@
 // Cooled out of index.ts by the heat family (scripts/cool.mjs): qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds.
 import {
   FUSED_TOOLS,
+  qpuHexRegistryOf,
   qpuHexRunOf,
   qpuHexFamiliesOf,
   qpuMcpFusedOf,
@@ -421,6 +422,10 @@ export const qpuMcpCallOf = async (name: string, args: Record<string, unknown> =
 }
 
 const callOf = async (name: string, args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null): Promise<unknown> => {
+  // The registry loads here, lazily, not at the Worker's global scope: every door/hex/fused call that reads the
+  // registry (qpuMcpDoorsOf, a family.formula door, improve/train/compete) needs every family registered first.
+  // Memoized (qpuHexRegistryOf is one shared promise), so this is free after the first call of the isolate.
+  await qpuHexRegistryOf()
   // the hex address that reproduces this call, when it is a pure door call (no man, live or sequence flags)
   const hexOf = (): string | undefined => {
     if (args.man === true || args.live === true || args.sequence === true) return undefined

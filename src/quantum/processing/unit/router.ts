@@ -14,6 +14,7 @@ import {
   qpuCiteOf,
   qpuForeignReadsOf,
   qpuHexCatalogOf,
+  qpuHexRegistryOf,
   qpuHexRunOf,
   qpuHexToolsOf,
   qpuInstallManifestOf,
@@ -239,6 +240,8 @@ export const worker = {
       return jsonOf(qpuServerMcpOf())
     }
     if (path === '/hex' || path.startsWith('/hex/')) {
+      // the hex catalogue and the hex tools enumerate every family, so the registry loads here (lazily, memoized)
+      await qpuHexRegistryOf()
       if (request.method === 'POST') {
         const body = await rpcBodyOf()
         const via = await throughOf(body)
