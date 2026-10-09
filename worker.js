@@ -3,8 +3,13 @@
  *  the Payload app (OpenNext, .open-next/worker.js) in-process, where a service binding used to carry them; the app keeps
  *  its documents in the unit's own storage (db/payload on STORAGE and BLOBS). */
 import unit from './dist/quantum/processing/unit/index.js'
+// The opennext/Next bundle is heavy to EVALUATE (~8s of CPU on a cold isolate — measured: /health, a pure unit door,
+// was 8.87s cold with a 0ms gate and a 28ms unit import, so the ~8s is this bundle). Load it LAZILY, only when a request
+// is actually handed to the Payload app (a page or /api/*), so the unit's OWN doors (/health, /, /hex, /receipts,
+// /metrics, lean, …) never pay that eval at global scope on every cold isolate. Memoized per isolate.
+let appMod
 // @ts-ignore built by `opennextjs-cloudflare build`
-import app from './.open-next/worker.js'
+const loadApp = async () => (appMod ??= (await import('./.open-next/worker.js')).default)
 // One registry, loaded LAZILY, not here at global scope. The unit's qpuHexRegistryOf dynamic-imports
 // dist/mcp/families.js (which esbuild still bundles from that reference) on the first request that reads the
 // registry — a hex run, a door/fused MCP call, or the /hex catalogue. Importing all ~1130 family modules at
@@ -43,7 +48,7 @@ const tagged = (response, state) => {
 }
 
 // the app as the unit's PAYLOAD: the same request, this Worker's env and context
-const withApp = (env, ctx) => ({ ...env, PAYLOAD: { fetch: (request) => app.fetch(request, env, ctx) } })
+const withApp = (env, ctx) => ({ ...env, PAYLOAD: { fetch: async (request) => (await loadApp()).fetch(request, env, ctx) } })
 
 export default {
   ...unit,
@@ -91,6 +96,8 @@ export class QpuDeposit extends WorkerEntrypoint {
   }
 }
 
-// the app's Durable Objects and handlers (cache queue, tag cache), as OpenNext exports them
-// @ts-ignore built by `opennextjs-cloudflare build`
-export * from './.open-next/worker.js'
+// The DO classes opennext exports (DOQueueHandler/DOShardedTagCache/BucketCachePurge) are NOT bound in wrangler.jsonc
+// (no durable_objects, no migrations; open-next config is empty), so re-exporting them was unnecessary — and this
+// `export *` was what forced the whole opennext bundle to evaluate at module load on every cold isolate (the ~8s). The
+// bundle now evaluates lazily, only on the first request handed to the Payload app (loadApp above). If incremental
+// cache / tag-cache DOs are ever configured in open-next.config + bound in wrangler, re-add the named DO exports then.
