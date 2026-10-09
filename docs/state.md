@@ -19,9 +19,9 @@ Version **1.1.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version
 
 | Measure | Value | Source |
 |---|---|---|
-| Capabilities documented inline | 267 of 287 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
-| Evidence predicates that hold | 120 of 152 (live ones need the network) | evaluated by `npm run docs` |
-| Lean theorems served / recomputed | 124 / 124 of 124 | [lean-receipt.json](../lean-receipt.json) |
+| Capabilities documented inline | 276 of 298 exports | [scripts/generate-docs.mjs](../scripts/generate-docs.mjs) |
+| Evidence predicates that hold | 121 of 153 (live ones need the network) | evaluated by `npm run docs` |
+| Lean theorems served / recomputed | 145 / 145 of 145 | [lean-receipt.json](../lean-receipt.json) |
 | API registry fused | 2529 of 2529 APIs, 438299 cross formulas | [fuse-receipt.json](../fuse-receipt.json) |
 | Payload on Cloudflare | 1376256 combinations, 96 of 96 bases type-check | [payload-cf-receipt.json](../payload-cf-receipt.json) |
 | Live cross-proof | 2026-10-02: 27 of 30 claims agree; differ: zenodo latest archive, orcid family name, tc niobium mK | [cross-receipt.json](../cross-receipt.json) |

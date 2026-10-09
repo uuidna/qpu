@@ -23,13 +23,13 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 | [Quantum computation](quantum.md) | 17 | 14 of 17 |
 | [Formal proof (Lean)](proof.md) | 12 | 4 of 4 |
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
-| [UUIDs & quantum receipts](receipts.md) | 40 | 15 of 17 |
+| [UUIDs & quantum receipts](receipts.md) | 39 | 14 of 16 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |
-| [MCP & agents](agents.md) | 106 | 46 of 55 |
+| [MCP & agents](agents.md) | 112 | 46 of 55 |
 | [Live science data](science.md) | 22 | 10 of 17 |
-| [API fusion](fusion.md) | 17 | 4 of 10 |
-| [Payload & Cloudflare](cms.md) | 20 | 3 of 4 |
-| [Presentation & discovery](presentation.md) | 15 | 14 of 14 |
+| [API fusion](fusion.md) | 18 | 5 of 11 |
+| [Payload & Cloudflare](cms.md) | 24 | 3 of 4 |
+| [Presentation & discovery](presentation.md) | 16 | 14 of 14 |
 
 Also: [state](state.md) · [comparison](comparison.md) · [build receipt](../README.md)
 

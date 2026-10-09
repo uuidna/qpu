@@ -31,10 +31,10 @@ index.lean served theorem by theorem, recomputed and typeset.
 | [`leanRecomputeOf`](../src/quantum/processing/unit/lean-eval.ts#L274) | builder | Decide one theorem statement exactly, over the stated range when it binds variables, and typeset it. | — | — |
 | [`leanTheoremBlocksOf`](../src/quantum/processing/unit/lean-eval.ts#L316) | builder | Every theorem of the source as [name, text]: the `theorem` line and its continuation lines, whitespace folded. | — | — |
 | [`qpuCrossReadingOf`](../src/quantum/processing/unit/index.ts#L2514) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `qpuCrossReadingHolds` | holds |
-| [`qpuHexDiscoverOf`](../src/quantum/processing/unit/index.ts#L10678) | builder | The formulas discover each other: every Lean formula is evaluated over the lattice's own constants (each 0-arity formula's value, bounded so loops stay small), results are grouped by value, and a value reached by formulas of two or more families is a discovered relation. | `qpuHexDiscoverHolds` | holds |
+| [`qpuHexDiscoverOf`](../src/quantum/processing/unit/index.ts#L10780) | builder | The formulas discover each other: every Lean formula is evaluated over the lattice's own constants (each 0-arity formula's value, bounded so loops stay small), results are grouped by value, and a value reached by formulas of two or more families is a discovered relation. | `qpuHexDiscoverHolds` | holds |
 | [`qpuLeanOf`](../src/quantum/processing/unit/proof.ts#L52) | builder | Every theorem of index.lean as a row: statement verbatim, LaTeX, reading, cross reading, statement UUID and holds recomputed by lean-eval. | `qpuLeanHolds` | holds |
 | [`qpuLeanSourceOf`](../src/quantum/processing/unit/index.ts#L2431) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `qpuLeanSourceHolds` | holds |
-| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8026) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
+| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8043) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
 | [`leanCallOf`](../src/quantum/processing/unit/lean-eval.ts#L334) | function | Call one definition of the Lean source by name with natural-number arguments, under Lean's Nat semantics. | — | — |
 | [`leanLinksOf`](../src/quantum/processing/unit/lean-eval.ts#L352) | function | The formulas discover each other: every declaration's statement and proof are read for the other declarations they name. | — | — |
 | [`qpuStatementUuidOf`](../src/quantum/processing/unit/index.ts#L2418) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
@@ -55,9 +55,11 @@ index.lean is the bundle of these modules (scripts/lean-bundle.mjs); `npm run le
 | [Qpu.Cern](../src/quantum/processing/unit/lean/Qpu/Cern.lean) | — | — | 1 | — |
 | [Qpu.Fuse](../src/quantum/processing/unit/lean/Qpu/Fuse.lean) | — | — | 1 | — |
 | [Qpu.Cross](../src/quantum/processing/unit/lean/Qpu/Cross.lean) | — | — | 16 | Lattice (73), Mint (8), Coil (2) |
-| [Qpu.Clay](../src/quantum/processing/unit/lean/Qpu/Clay.lean) | — | — | 24 | Lattice (56), Mint (14), Hybrid (2), Coil (2), Shor (4) |
+| [Qpu.Primes](../src/quantum/processing/unit/lean/Qpu/Primes.lean) | — | — | 13 | Lattice (36), Mint (6) |
+| [Qpu.Pi](../src/quantum/processing/unit/lean/Qpu/Pi.lean) | — | — | 8 | Lattice (26), Mint (2) |
+| [Qpu.Clay](../src/quantum/processing/unit/lean/Qpu/Clay.lean) | — | — | 8 | Hybrid (2), Mint (7), Lattice (31), Coil (2), Shor (4) |
 
-133 pairs of definitions are related by at least one theorem. Strongest: mintOf ~ seed (35), coins ~ mintOf (28), mintOf ~ n (25), bits ~ mintOf (24), coins ~ rays (23), faces ~ rays (23).
+131 pairs of definitions are related by at least one theorem. Strongest: mintOf ~ seed (39), coins ~ mintOf (32), coins ~ faces (27), coins ~ rays (27), faces ~ rays (27), mintOf ~ n (26).
 
 ## Discovered relations
 
