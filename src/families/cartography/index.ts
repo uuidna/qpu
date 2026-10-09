@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** CARTOGRAPHY — MAPPING THE GROUND AS ARITHMETIC. A map is numbers: the scale a ground distance maps to, a pixel
  *  distance on the ground, contour lines by interval, projection distortion, the resolution of an area in pixels,
@@ -15,7 +17,7 @@ export class CartographyFormulas {
   /** AREA: a region's length by width. value length · width. */
   static area(length: number, width: number): CrossFormula { return c('cartography-area', 'area(length, width) = length · width', length * width, nat(length, width), 'area', [length, width]) }
   /** BEARING: a compass direction normalised to [0, 360). value ((degrees mod 360) + 360) mod 360. */
-  static bearing(degrees: number): CrossFormula { return c('cartography-bearing', 'bearing(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % 360) + 360) % 360, Number.isSafeInteger(degrees), 'bearing', [degrees]) }
+  static bearing(degrees: number): CrossFormula { return c('cartography-bearing', 'bearing(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % fullTurn) + fullTurn) % fullTurn, Number.isSafeInteger(degrees), 'bearing', [degrees]) }
   /** CONTOUR: the contour line an elevation falls on at a spacing. value ⌊elevation / interval⌋. */
   static contour(elevation: number, interval: number): CrossFormula { return c('cartography-contour', 'contour(elevation, interval) = ⌊elevation / interval⌋', interval > 0 ? Math.floor(elevation / interval) : 0, nat(elevation, interval) && interval > 0, 'contour', [elevation, interval]) }
   /** DISTANCE: pixels on the map at a scale, as ground distance. value pixels · scale. */

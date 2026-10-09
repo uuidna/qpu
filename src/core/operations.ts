@@ -17,7 +17,7 @@ const clayOperations = {
     version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
-      data: { problem: 'P vs NP', solved: true }
+      data: { problem: 'P vs NP' }
     })
   },
   'solve-riemann': {
@@ -26,7 +26,7 @@ const clayOperations = {
     version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
-      data: { problem: 'Riemann Hypothesis', solved: true }
+      data: { problem: 'Riemann Hypothesis' }
     })
   },
   'solve-navier-stokes': {
@@ -35,7 +35,7 @@ const clayOperations = {
     version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
-      data: { problem: 'Navier-Stokes', solved: true }
+      data: { problem: 'Navier-Stokes' }
     })
   },
   'solve-yang-mills': {
@@ -44,7 +44,7 @@ const clayOperations = {
     version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
-      data: { problem: 'Yang-Mills', solved: true }
+      data: { problem: 'Yang-Mills' }
     })
   },
   'solve-hodge': {
@@ -53,7 +53,7 @@ const clayOperations = {
     version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
-      data: { problem: 'Hodge Conjecture', solved: true }
+      data: { problem: 'Hodge Conjecture' }
     })
   },
   'solve-birch-swinnerton-dyer': {
@@ -62,7 +62,7 @@ const clayOperations = {
     version: '1.0.0',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
-      data: { problem: 'Birch-Swinnerton-Dyer', solved: true }
+      data: { problem: 'Birch-Swinnerton-Dyer' }
     })
   }
 }

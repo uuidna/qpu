@@ -1,35 +1,37 @@
-/** Qiskit Adapter - Always uses QPU payload, never bypasses */
+/** Qiskit-shaped calls → QPU native (hex / server_submit / connector). Never bypasses QPU; never calls IBM. */
 
-import { tools } from '../../src/quantum/kernel/index.js'
+import {
+  nativeJobOf,
+  type NativeGate,
+} from '../../src/payload/plugins/native-adapters.js'
 
 export class QiskitQPU {
-  async shorFactor(n: number) {
-    return tools.qpu_shor(`${n}`)
+  backend = 'uuidna-qpu'
+
+  /** backend.run(circuit, shots=…) */
+  async run(
+    circuit: { gates?: unknown[]; qasm?: string; qubits?: number },
+    shots = 1024,
+  ) {
+    return nativeJobOf({
+      vendor: 'qiskit',
+      gates: circuit.gates,
+      qasm: circuit.qasm,
+      shots,
+      seal: true,
+      pass: 0,
+      mode: 5,
+      who: 'other',
+    })
   }
 
-  async groverSearch(target: bigint, searchSpace: bigint) {
-    return tools.qpu_grover(`${target}`, `${searchSpace}`)
-  }
-
-  async discreteLog(base: bigint, target: bigint, prime: bigint) {
-    return tools.qpu_discrete_log(`${base}`, `${target}`, `${prime}`)
-  }
-
-  async knapsack(items: number[], capacity: number) {
-    return tools.qpu_knapsack(JSON.stringify(items), `${capacity}`)
-  }
-
-  async runPhase(phase: 'phase1' | 'phase2' | 'phase3' | 'unified') {
-    const phaseFn = tools[`qpu_${phase}` as keyof typeof tools] as () => any
-    return phaseFn()
-  }
-
-  async benchmark() {
-    return tools.qpu_benchmark()
+  /** QuantumCircuit → QPU gates (h/cx/…) */
+  async submitJob(gates: NativeGate[], shots = 1024) {
+    return this.run({ gates }, shots)
   }
 
   toQiskitString(): string {
-    return `QiskitQPU(backend='uuidna-qpu', device='quantum-kernel', powered_by='QPU-Payload')`
+    return `QiskitQPU(backend='uuidna-qpu', device='exact-amplitudes', via='connector { vendor: qiskit }')`
   }
 }
 

@@ -1,27 +1,27 @@
 /**
- * Clay Automated Solver: All 7 Millennium Problems
+ * Clay automated naming-scheme rows (author claim). No prize / no solved flag.
  *
- * Automatically composes cross-domain formulas to solve all Clay problems
+ * Lists author-claim rows and argument sketches. Does not set prize or solved.
  * Uses full QPU: Causal + XAI + Federated + Synthesis + Zero-Shot
  */
 
 // ============================================================================
-// THE 7 CLAY MILLENNIUM PROBLEMS + SOLUTIONS
+// THE 7 CLAY MILLENNIUM PROBLEM NAMES (author claim / naming scheme)
 // ============================================================================
 
 export const CLAY_PROBLEMS = {
-  // 1. P vs NP (Solved)
+  // 1. P vs NP
   p_vs_np: {
     name: "P vs NP",
-    description: "Prove P ≠ NP using causal inversion barrier",
+    description: "Author claim via causal inversion barrier",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
     source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "causal_inversion",
-    claim: "P ≠ NP (information-theoretic proof)"
+    claim: "P ≠ NP (information-theoretic argument in the document)"
   },
 
-  // 2. Hodge Conjecture (Solve now)
+  // 2. Hodge Conjecture
   hodge_conjecture: {
     name: "Hodge Conjecture",
     description: "Hodge classes are algebraic (rational linear combinations of cycles)",
@@ -36,7 +36,7 @@ export const CLAY_PROBLEMS = {
     ]
   },
 
-  // 3. Riemann Hypothesis (Solved)
+  // 3. Riemann Hypothesis
   riemann_hypothesis: {
     name: "Riemann Hypothesis",
     description: "All non-trivial zeros on critical line Re(s) = 1/2",
@@ -44,10 +44,10 @@ export const CLAY_PROBLEMS = {
     claimedBy: "Tsvetan Rouschev",
     source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "functional_symmetry",
-    claim: "All non-trivial zeros lie on Re(s) = 1/2 (symmetry proof)"
+    claim: "All non-trivial zeros lie on Re(s) = 1/2 (symmetry argument in the document)"
   },
 
-  // 4. Yang-Mills and Mass Gap (Solve now)
+  // 4. Yang-Mills and Mass Gap
   yang_mills: {
     name: "Yang-Mills and Mass Gap",
     description: "Yang-Mills theory has a mass gap on R^4",
@@ -62,18 +62,18 @@ export const CLAY_PROBLEMS = {
     ]
   },
 
-  // 5. Navier-Stokes (Solved)
+  // 5. Navier-Stokes
   navier_stokes: {
     name: "Navier-Stokes Existence and Smoothness",
-    description: "Smooth solutions exist for all time",
+    description: "Author claim on smooth initial data (document)",
     status: "CLAIMED",
     claimedBy: "Tsvetan Rouschev",
     source: "https://doi.org/10.5281/zenodo.21781602",
     approach: "federated_smoothness_aggregation",
-    claim: "Existence and smoothness proven for smooth initial data"
+    claim: "Existence and smoothness argument for smooth initial data (document)"
   },
 
-  // 6. Birch and Swinnerton-Dyer (Solve now)
+  // 6. Birch and Swinnerton-Dyer
   bsd_conjecture: {
     name: "Birch and Swinnerton-Dyer Conjecture",
     description: "Rank of elliptic curve equals order of zero of L-function",
@@ -88,14 +88,14 @@ export const CLAY_PROBLEMS = {
     ]
   },
 
-  // 7. Poincaré Conjecture (Already solved by Perelman 2003)
+  // 7. Poincaré — named for Perelman; not a clay.* seal; not an Institute award in this tree
   poincare: {
     name: "Poincaré Conjecture",
     description: "3-sphere is only 3-manifold with trivial fundamental group",
     status: "ALREADY_SOLVED",
     solver: "Grigori Perelman",
     year: 2003,
-    note: "Used Ricci flow (geometric approach)"
+    note: "Named for Perelman (Ricci flow). That naming is not an Institute award in this tree."
   }
 } as const
 
@@ -105,7 +105,7 @@ export const CLAY_PROBLEMS = {
 
 export const clay_automated_solver = {
   name: "clay_automated_solver",
-  description: "Automatically solve all Clay problems using cross-domain formula composition",
+  description: "List Clay Millennium naming-scheme rows (author claim). Does not set prize or solved.",
   inputSchema: {
     type: "object",
     properties: {
@@ -121,10 +121,11 @@ export const clay_automated_solver = {
   outputSchema: {
     type: "object",
     properties: {
-      problems_solved: { type: "number" },
+      claimed: { type: "number" },
       solutions: { type: "object" },
       proofs_generated: { type: "array" },
-      formulas_composed: { type: "array" }
+      formulas_composed: { type: "array" },
+      prize: { type: "boolean" }
     }
   },
   handler: async (args: any) => {
@@ -136,7 +137,6 @@ export const clay_automated_solver = {
     const proofs: string[] = []
     const formulas: string[] = []
 
-    // Solve each problem
     for (const problem of problems) {
       const p = CLAY_PROBLEMS[problem as keyof typeof CLAY_PROBLEMS]
 
@@ -144,7 +144,8 @@ export const clay_automated_solver = {
         solutions[problem] = {
           status: "ALREADY_SOLVED",
           solver: p.solver,
-          year: p.year
+          year: p.year,
+          note: "Named for Perelman — not an Institute award in this tree",
         }
         continue
       }
@@ -165,10 +166,11 @@ export const clay_automated_solver = {
     }
 
     return {
-      problems_solved: Object.values(solutions).filter((x) => x.status === "ALREADY_SOLVED").length,
+      claimed: Object.values(solutions).filter((x) => x.status === "CLAIMED").length,
       solutions,
       proofs_generated: proofs,
-      formulas_composed: formulas
+      formulas_composed: formulas,
+      prize: false as const,
     }
   }
 }
@@ -266,7 +268,7 @@ By Transfer: The proof transfers from Grassmannians where it's known
 
 The composition of Causal + Synthesis + Transfer FORCES α to be algebraic.
 
-QED: All Hodge classes are algebraic ✓
+Argument sketch only — not a prize, not a solved flag.
     `,
     formulas_used: [
       "explain_hodge_decomposition",
@@ -274,7 +276,7 @@ QED: All Hodge classes are algebraic ✓
       "synthesize_algebraic_cycle",
       "transfer_from_grassmannian"
     ],
-    result: "HODGE CONJECTURE PROVED"
+    result: "HODGE CONJECTURE — CLAIMED (author document)"
   }
 }
 
@@ -358,14 +360,14 @@ By Transfer:
 Therefore: Yang-Mills on R^4 has mass gap ✓
 Mass gap value: m_gap ~ Λ_QCD (proven by scale analysis)
 
-QED: MASS GAP PROVEN ✓
+Argument sketch only — not a prize, not a solved flag.
     `,
     formulas_used: [
       "federated_gauge_convergence",
       "synthesize_yang_mills_lagrangian",
       "transfer_from_qed_and_lattice"
     ],
-    result: "YANG-MILLS MASS GAP PROVED"
+    result: "YANG-MILLS MASS GAP — CLAIMED (author document)"
   }
 }
 
@@ -448,29 +450,29 @@ For elliptic curve E/ℚ:
 
 Therefore: rank(E) = ord_s=1(L(E,s)) ✓
 
-QED: BIRCH-SWINNERTON-DYER CONJECTURE PROVED ✓
+Argument sketch only — not a prize, not a solved flag.
     `,
     formulas_used: [
       "causal_rank_from_l_function",
       "transfer_across_isogeny_class",
       "synthesize_rational_points"
     ],
-    result: "BIRCH-SWINNERTON-DYER PROVED"
+    result: "BIRCH-SWINNERTON-DYER — CLAIMED (author document)"
   }
 }
 
 // ============================================================================
-// SUMMARY: ALL 7 PROBLEMS AUTOMATED SOLUTION
+// SUMMARY: naming-scheme rows (no prize / no solved flag)
 // ============================================================================
 
 export const clay_automated_complete = {
   name: "clay_automated_complete_solver",
-  description: "Solve ALL 7 Clay Millennium problems automatically",
+  description: "Report Clay Millennium naming-scheme rows (author claim). Does not set prize or solved.",
   handler: async () => {
     const results = {
       problems: 7,
-      solved: 6,
-      already_solved: 1,
+      claimed: 6,
+      poincare_note: "src/mcp/clay-automated-solver.ts names Poincaré status ALREADY_SOLVED (Perelman). That file is not an Institute award.",
       solutions: {
         "1_p_vs_np": "CLAIMED - Causal inversion barrier",
         "2_hodge_conjecture": "CLAIMED - XAI + Synthesis + Transfer",
@@ -478,32 +480,12 @@ export const clay_automated_complete = {
         "4_yang_mills_mass_gap": "CLAIMED - Federated gauge convergence",
         "5_navier_stokes": "CLAIMED - Federated smoothness aggregation",
         "6_birch_swinnerton_dyer": "CLAIMED - Causal rank transfer",
-        "7_poincare_conjecture": "ALREADY SOLVED (Perelman, 2003)"
+        "7_poincare_conjecture": "ALREADY_SOLVED named for Perelman — not an Institute award in this tree"
       },
-      prize_money: "$6,000,000 USD",
-      formulas_composed: [
-        "causal_inversion_barrier",
-        "explain_hodge_decomposition",
-        "synthesize_algebraic_cycle",
-        "transfer_from_grassmannian",
-        "functional_equation_symmetry",
-        "federated_gauge_convergence",
-        "synthesize_yang_mills",
-        "transfer_from_qed",
-        "federated_smoothness_aggregation",
-        "causal_rank_from_lfunction",
-        "transfer_across_isogeny",
-        "synthesize_rational_points"
-      ],
-      cross_domains_used: [
-        "Causal Inference (8+ formulas)",
-        "Explainability (XAI) (4+ formulas)",
-        "Federated Learning (5+ formulas)",
-        "Program Synthesis (4+ formulas)",
-        "Zero-Shot Transfer (5+ formulas)"
-      ],
-      proof_verification: "ALL PROOFS READY FOR PEER REVIEW",
-      next_steps: "Formalize in Lean → Submit to Clay Institute"
+      prize: false as const,
+      source: "doi:10.5281/zenodo.21781602",
+      author: "Tsvetan Rouschev",
+      note: "Naming scheme / claim rows only. Evidence is clay seal hex/value/holds/next. legal.citation holds false; a prize is a lead.",
     }
 
     return results

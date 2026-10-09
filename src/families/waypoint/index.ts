@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** WAYPOINT — ROUTE GEOMETRY AS ARITHMETIC (chosen by the public-API registry, not by hand). A flight or sail plan is
  *  numbers: the squared distance of a leg, the time to reach it, how far off the line you drift, the whole route, the turn
@@ -21,7 +23,7 @@ export class WaypointFormulas {
   /** TOTAL ROUTE: the legs of a plan at a length each. value legs · perLeg. */
   static totalroute(legs: number, perLeg: number): CrossFormula { return c('waypoint-totalroute', 'totalroute(legs, perLeg) = legs · perLeg', legs * perLeg, nat(legs, perLeg), 'totalroute', [legs, perLeg]) }
   /** BEARING DELTA: the turn from one bearing to another, normalised to [0, 360). value ((to − from) mod 360 + 360) mod 360. */
-  static bearingdelta(from: number, to: number): CrossFormula { return c('waypoint-bearingdelta', 'bearingdelta(from, to) = ((to − from) mod 360 + 360) mod 360', (((to - from) % 360) + 360) % 360, nat(from, to), 'bearingdelta', [from, to]) }
+  static bearingdelta(from: number, to: number): CrossFormula { return c('waypoint-bearingdelta', 'bearingdelta(from, to) = ((to − from) mod 360 + 360) mod 360', (((to - from) % fullTurn) + fullTurn) % fullTurn, nat(from, to), 'bearingdelta', [from, to]) }
   /** FUEL BURN: the fuel a leg burns at a rate per hundred distance. value ⌊distance · rate / 100⌋. */
   static fuelburn(distance: number, rate: number): CrossFormula { return c('waypoint-fuelburn', 'fuelburn(distance, rate) = ⌊distance · rate / 100⌋', Math.floor((distance * rate) / 100), nat(distance, rate), 'fuelburn', [distance, rate]) }
   /** GROUND SPEED: distance over the ground in a time. value ⌊distance / time⌋. */

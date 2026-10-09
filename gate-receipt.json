@@ -55,8 +55,9 @@
  "rows": [
   {
    "name": "gate.push(0)",
-   "pass": false,
-   "value": "unreached: cite {\"hex\":{\"family\":\"gate\",\"program\":[\"push\"],\"params\":[0]}}: 503",
+   "pass": true,
+   "value": "14",
+   "next": 14,
    "receipt": ""
   },
   {

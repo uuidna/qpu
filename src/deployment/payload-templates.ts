@@ -1,6 +1,23 @@
 import { chooseOf, mintOf, qpuFoldOf, qpuHexFamiliesOf, qpuLatticeNamesOf, qpuMcpFusedOf, tenOf } from '../quantum/processing/unit/index.js'
 import { CloudflareCombination, CloudflarePayload, CloudflareApp, cloudflarePayloadOf } from './payload-cloudflare.js'
-export { CLOUDFLARE_RUNTIMES, CLOUDFLARE_DATABASES, CLOUDFLARE_STORAGE, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, ALT_FRONTENDS, CloudflareCombination, CloudflarePayload, cloudflareKeyOf, cloudflareCombinationOf, CloudflareApp, cloudflarePayloadOf, cloudflareCombinations } from './payload-cloudflare.js'
+export {
+  CLOUDFLARE_RUNTIMES,
+  CLOUDFLARE_DATABASES,
+  CLOUDFLARE_STORAGE,
+  CLOUDFLARE_EMAIL,
+  CLOUDFLARE_FRONTENDS,
+  CLOUDFLARE_PLUGINS,
+  CLOUDFLARE_DB_ADAPTERS,
+  CLOUDFLARE_STORAGE_ADAPTERS,
+  PAYLOAD_WEBSITE_CLONE,
+  ALT_FRONTENDS,
+  cloudflareKeyOf,
+  cloudflareCombinationOf,
+  cloudflareRaidAdaptersOf,
+  cloudflarePayloadOf,
+  cloudflareCombinations,
+} from './payload-cloudflare.js'
+export type { CloudflareCombination, CloudflarePayload, CloudflareApp } from './payload-cloudflare.js'
 /**
  * Payload Templates for 4-Mode Deployment
  * Browser / Standalone / Docker / Kubernetes
@@ -288,9 +305,11 @@ export class PayloadTemplates {
       mode: 'standalone',
       version: '1.0.0',
       spec: {
-        runtime: 'node.js/v20+',
+        // SEA single-executable is a delivery shell (porting: sea → standalone), not a core import.
+        // The shipped entry is qpu-boot / boot.js — same prove-then-serve path as docker.
+        runtime: 'node.js/v26+',
         binary: 'qpu-standalone',
-        entrypoint: 'dist/standalone-server.js',
+        entrypoint: 'dist/quantum/processing/unit/boot.js',
         modules: qpuMcpFusedOf().length + mintOf(L.hexbit),
         domains: qpuHexFamiliesOf().size,
         size: 'unmeasured',

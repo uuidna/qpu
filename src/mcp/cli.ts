@@ -38,8 +38,8 @@ export const main = async (): Promise<void> => {
     }
   }
   const inProcess = async (): Promise<Door> => {
-    await import('./families.js')
     const unit = await import('../quantum/processing/unit/index.js')
+    await import(unit.qpuFamilyRegistryUrlOf())
     return { list: async () => unit.qpuMcpToolsListOf(), call: async (name, args) => (await unit.qpuMcpCallOf(name, args)) as Called, close: async () => {} }
   }
 

@@ -43,7 +43,7 @@ test('external link graph: citation hrefs, both directions, one next address', (
   assert.equal(links.edges.some((edge) => edge.from.includes('orcid.org') || edge.to.includes('orcid.org') || edge.from.includes('@') || edge.to.includes('@')), false)
   assert.equal('price' in links, false)
   assert.equal('referer' in links, false)
-  assert.equal(cite.grant.priceInUSDEnabled, false)
+  assert.equal(cite.grant.price, 'relation')
   assert.equal(cite.grant.licence, 'CC-BY-NC-ND-4.0')
   const royalty = qpuHexDecodeOf(cite.grant.next?.uuid ?? '')
   assert.equal(royalty.holds, true)

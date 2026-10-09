@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** PLASMA — THE FOURTH STATE OF MATTER, AS ARITHMETIC. An ionized gas is numbers: temperature per particle, number density
  *  in a volume, the Debye screening length, how long energy stays confined, the fraction ionized, the fusion gain Q, the
@@ -34,7 +36,7 @@ export class PlasmaFormulas {
   /** BYTES of a fingerprint: the minimum cost of one page. 64 bits is 8 bytes — the width that indexed 8 billion pages. */
   static bytes(bits: number): CrossFormula { return hueTo('plasma-bytes', 'bytes(bits) = ⌊bits / 8⌋', bits > 0 ? Math.floor(bits / 8) : 0, nat(bits) && bits > 0 && bits % 8 === 0, 'bytes', [bits], { bits }) }
   /** HUE of a Hamming distance on a fingerprint of `bits`: degrees around the wheel. Distance 0 sits at hue 0. */
-  static hue(distance: number, bits: number): CrossFormula { return hueTo('plasma-hue', 'hue(distance, bits) = ⌊distance · 360 / bits⌋', bits > 0 ? Math.floor((distance * 360) / bits) : 0, nat(distance, bits) && bits > 0 && distance <= bits, 'hue', [distance, bits]) }
+  static hue(distance: number, bits: number): CrossFormula { return hueTo('plasma-hue', 'hue(distance, bits) = ⌊distance · 360 / bits⌋', bits > 0 ? Math.floor((distance * fullTurn) / bits) : 0, nat(distance, bits) && bits > 0 && distance <= bits, 'hue', [distance, bits]) }
   /** NEAR: 1 when two fingerprints differ in at most `k` bits. The web-scale choice is k = 3 on 64 bits. Holds only then. */
   static near(distance: number, k: number): CrossFormula { const ok = distance <= k; return hueTo('plasma-near', 'near(distance, k) = [distance ≤ k]', ok ? 1 : 0, nat(distance, k) && ok, 'near', [distance, k], { lead: true, note: 'a near public fingerprint is a lead; law.reviewed before any advice' }) }
 }

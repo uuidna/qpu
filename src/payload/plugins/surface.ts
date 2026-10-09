@@ -43,7 +43,7 @@ export const typescriptPlugin = (outputFile: string): QpuPlugin => (config) => (
   typescript: { outputFile },
 })
 
-export const seedPlugin = (seed: (payload: unknown) => Promise<unknown>): QpuPlugin => (config) => ({
+export const seedPlugin = <P>(seed: (payload: P) => Promise<unknown>): QpuPlugin => (config) => ({
   ...config,
-  onInit: async (payload: unknown) => { await seed(payload) },
+  onInit: async (payload: unknown) => { await seed(payload as P) },
 })

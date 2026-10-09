@@ -10,6 +10,8 @@ Summarised analytics hold a Pravets 8M clay register: seed 1, coins 2, n 3, rays
 
 Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the author, do not distribute a derivative, and do not use it commercially unless a commercial licence was granted on request.
 
+Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat hex `0a8f02cc-4000-8000-9000-00000000174e`; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds true.
+
 | Count | Integer |
 |---|---:|
 | seed | 1 |
@@ -31,15 +33,21 @@ Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the au
 | fused | 120,259,084,288 |
 | next | 240,518,168,576 |
 | plane | 28 |
+| zero | 0 |
+| temp | 5,966 |
+| time | 6 |
+| heat | 25 |
+| cold | 2,597 |
+| coldFusion | 100 |
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 56 doors and 9,095 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,107 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
 | Public APIs | 2,529 of 2,529 APIs walked live, 123,136 methods, 438,299 cross formulas; 2,529 fused and 808 used as hex addresses api.call(i, j, s) | the APIs.guru registry, against the Lean theorem fuse |
-| Cross formulas | 78 of 79 rows hold across 37 formulas | their own hex programs (36 agree) |
+| Cross formulas | 78 of 124 rows hold across 37 formulas | their own hex programs (36 agree) |
 | Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
 | Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
 | Payload on Cloudflare | 1,376,256 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
@@ -48,13 +56,84 @@ Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the au
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).
 
-**Final build receipt** `ec1bc4ea-3ecf-561e-81ec-26524ffa94d0`
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/quantum/processing/unit
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/cite
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/license
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/mcp
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/quantum/processing/unit
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/cite → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/cite → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/cite → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/license → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/license → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/license → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/mcp → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/mcp → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/mcp → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/quantum/processing/unit → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/23156998
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/cite
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/license
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/mcp
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/quantum/processing/unit
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/cite
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/license
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/mcp
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/quantum/processing/unit
+
+**Final build receipt** `5a3770a6-116c-1740-a0c7-c9f45555da72`
 
 | | |
 |---|---|
 | git tag | v1.1.0 |
-| receipts | 18 files, 3496 nodes |
-| build stream | length 3496, head `ec1bc4ea-3ecf-561e-81ec-26524ffa94d0`, chain `28864cdaa1bafee2a24ab77984c907459a369545ffb38d36bf61b209fbe3da58`, holds **true** |
+| receipts | 29 files, 3695 nodes |
+| build stream | length 3695, head `5a3770a6-116c-1740-a0c7-c9f45555da72`, chain `5a3bdd532447b882ee18aefb050099279d5eee16f0bdbdaee016bd5ba870bdbc`, holds **true** |
 
 ## Proof by MCP
 
@@ -66,16 +145,24 @@ family's formulas run through the MCP in-process, the API walk is the `api` fami
 | Receipt | Verdicts | Hold | Do not hold | Receipt uuid |
 |---|---:|---:|---:|---|
 | api | 2,529 | 808 | 1,721 | `64cc1301-059c-8d95-97d1-383a361b1ec5` |
+| cures | 10 | 10 | 0 | `—` |
 | discovery | 336 | 317 | 19 | `—` |
-| formulas | 79 | 78 | 1 | `—` |
-| gate | 81 | 0 | 81 | `` |
-| heat | 40 | 15 | 25 | `dc6998d4-6724-8a00-9888-2fd8e188f424` |
-| next | 214 | 74 | 140 | `8e3bbb64-3008-8746-9765-d1e9b079da1b` |
-| test | 1 | 1 | 0 | `f9ae622b9f60bb5f` |
+| formulas | 124 | 78 | 2 | `—` |
+| gate | 81 | 1 | 80 | `` |
+| heat | 42 | 15 | 27 | `dc6998d4-6724-8a00-9888-2fd8e188f424` |
+| linux-users | 12 | 9 | 1 | `635139b3-5aab-8b11-ad22-0cf2d510d1f8` |
+| love-experience | 1 | 1 | 0 | `a357d729-9c76-83b7-86a4-68a42def0d59` |
+| next | 214 | 209 | 5 | `8e3bbb64-3008-8746-9765-d1e9b079da1b` |
+| payload-streams | 24 | 8 | 1 | `24452eab-1b20-5e79-8d0e-bba9ea530368` |
+| percall | 1 | 0 | 1 | `—` |
+| public-health | 8 | 4 | 0 | `98873453-ed24-731d-aba9-ff09855ccc58` |
+| public-raid | 36 | 3 | 1 | `9d98a86c-812b-1e0d-8cb7-2c862b9f14bc` |
+| society-imagine | 33 | 2 | 1 | `df0b1ba1-0275-4962-ac99-f6b16877afc9` |
+| test | 4 | 4 | 0 | `cb548b5e2b853e5e` |
 | uses | 42 | 42 | 0 | `fcfb3140-44ed-877f-9a0f-c179769f7a13` |
 
-Tests: 1 top-level, 1 pass, 0 fail; 58,752 computations folded (cnot 6,160, x 3,051, h 838, toffoli 758, cmodexp 742, xx 742, lean next 740, lean mint 387); 512-dimensional state, 9 qubits; test receipt `f9ae622b9f60bb5f`.
-Gate: push on 2026-10-07, does not hold — ✗ gate.push(0) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[0]}}: 503; ✗ gate.push(14) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[14]}}: 503; ✗ gate.push(28) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[28]}}: 503; ✗ gate.push(42) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[42]}}: 503; ✗ gate.push(56) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[56]}}: 503; ✗ gate.push(70) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[70]}}: 503; ✗ gate.push(84) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[84]}}: 503; ✗ gate.push(98) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[98]}}: 503; ✗ gate.push(112) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[112]}}: 503; ✗ gate.push(126) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[126]}}: 503; ✗ gate.push(140) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[140]}}: 503; ✗ gate.push(154) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[154]}}: 503; ✗ gate.push(168) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[168]}}: 503; ✗ gate.push(182) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[182]}}: 503; ✗ gate.push(196) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[196]}}: 503; ✗ gate.push(210) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[210]}}: 503; ✗ gate.push(224) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[224]}}: 503; ✗ gate.push(238) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[238]}}: 503; ✗ gate.push(252) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[252]}}: 503; ✗ gate.push(266) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[266]}}: 503; ✗ gate.push(280) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[280]}}: 503; ✗ gate.push(294) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[294]}}: 503; ✗ gate.push(308) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[308]}}: 503; ✗ gate.push(322) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[322]}}: 503; ✗ gate.push(336) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[336]}}: 503; ✗ gate.push(350) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[350]}}: 503; ✗ gate.push(364) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[364]}}: 503; ✗ gate.push(378) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[378]}}: 503; ✗ gate.push(392) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[392]}}: 503; ✗ gate.push(406) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[406]}}: 503; ✗ gate.push(420) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[420]}}: 503; ✗ gate.push(434) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[434]}}: 503; ✗ gate.push(448) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[448]}}: 503; ✗ gate.push(462) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[462]}}: 503; ✗ gate.push(476) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[476]}}: 503; ✗ gate.push(490) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[490]}}: 503; ✗ gate.push(504) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[504]}}: 503; ✗ gate.push(518) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[518]}}: 503; ✗ gate.push(532) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[532]}}: 503; ✗ gate.push(546) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[546]}}: 503; ✗ gate.push(560) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[560]}}: 503; ✗ gate.push(574) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[574]}}: 503; ✗ gate.push(588) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[588]}}: 503; ✗ gate.push(602) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[602]}}: 503; ✗ gate.push(616) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[616]}}: 503; ✗ gate.push(630) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[630]}}: 503; ✗ gate.push(644) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[644]}}: 503; ✗ gate.push(658) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[658]}}: 503; ✗ gate.push(672) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[672]}}: 503; ✗ gate.push(686) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[686]}}: 503; ✗ gate.push(700) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[700]}}: 503; ✗ gate.push(714) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[714]}}: 503; ✗ gate.push(728) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[728]}}: 503; ✗ gate.push(742) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[742]}}: 503; ✗ gate.push(756) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[756]}}: 503; ✗ gate.push(770) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[770]}}: 503; ✗ gate.push(784) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[784]}}: 503; ✗ gate.push(798) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[798]}}: 503; ✗ gate.push(812) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[812]}}: 503; ✗ gate.push(826) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[826]}}: 503; ✗ gate.push(840) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[840]}}: 503; ✗ gate.push(854) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[854]}}: 503; ✗ gate.push(868) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[868]}}: 503; ✗ gate.push(882) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[882]}}: 503; ✗ gate.push(896) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[896]}}: 503; ✗ gate.push(910) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[910]}}: 503; ✗ gate.push(924) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[924]}}: 503; ✗ gate.push(938) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[938]}}: 503; ✗ gate.push(952) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[952]}}: 503; ✗ gate.push(966) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[966]}}: 503; ✗ gate.push(980) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[980]}}: 503; ✗ gate.push(994) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[994]}}: 503; ✗ gate.push(1008) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1008]}}: 503; ✗ gate.push(1022) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1022]}}: 503; ✗ gate.push(1036) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1036]}}: 503; ✗ gate.push(1050) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1050]}}: 503; ✗ gate.push(1064) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1064]}}: 503; ✗ gate.push(1078) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1078]}}: 503; ✗ gate.push(1092) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1092]}}: 503; ✗ gate.push(1106) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1106]}}: 503; ✗ gate.push(1120) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1120]}}: 503.
+Tests: 4 top-level, 4 pass, 0 fail; 60,072 computations folded (cnot 6,176, x 3,058, h 840, toffoli 760, cmodexp 744, xx 744, lean next 741, measure 388); 512-dimensional state, 9 qubits; test receipt `cb548b5e2b853e5e`.
+Gate: push on 2026-10-07, does not hold — ✓ gate.push(0) = 14; ✗ gate.push(14) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[14]}}: 503; ✗ gate.push(28) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[28]}}: 503; ✗ gate.push(42) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[42]}}: 503; ✗ gate.push(56) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[56]}}: 503; ✗ gate.push(70) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[70]}}: 503; ✗ gate.push(84) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[84]}}: 503; ✗ gate.push(98) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[98]}}: 503; ✗ gate.push(112) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[112]}}: 503; ✗ gate.push(126) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[126]}}: 503; ✗ gate.push(140) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[140]}}: 503; ✗ gate.push(154) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[154]}}: 503; ✗ gate.push(168) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[168]}}: 503; ✗ gate.push(182) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[182]}}: 503; ✗ gate.push(196) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[196]}}: 503; ✗ gate.push(210) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[210]}}: 503; ✗ gate.push(224) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[224]}}: 503; ✗ gate.push(238) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[238]}}: 503; ✗ gate.push(252) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[252]}}: 503; ✗ gate.push(266) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[266]}}: 503; ✗ gate.push(280) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[280]}}: 503; ✗ gate.push(294) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[294]}}: 503; ✗ gate.push(308) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[308]}}: 503; ✗ gate.push(322) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[322]}}: 503; ✗ gate.push(336) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[336]}}: 503; ✗ gate.push(350) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[350]}}: 503; ✗ gate.push(364) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[364]}}: 503; ✗ gate.push(378) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[378]}}: 503; ✗ gate.push(392) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[392]}}: 503; ✗ gate.push(406) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[406]}}: 503; ✗ gate.push(420) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[420]}}: 503; ✗ gate.push(434) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[434]}}: 503; ✗ gate.push(448) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[448]}}: 503; ✗ gate.push(462) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[462]}}: 503; ✗ gate.push(476) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[476]}}: 503; ✗ gate.push(490) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[490]}}: 503; ✗ gate.push(504) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[504]}}: 503; ✗ gate.push(518) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[518]}}: 503; ✗ gate.push(532) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[532]}}: 503; ✗ gate.push(546) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[546]}}: 503; ✗ gate.push(560) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[560]}}: 503; ✗ gate.push(574) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[574]}}: 503; ✗ gate.push(588) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[588]}}: 503; ✗ gate.push(602) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[602]}}: 503; ✗ gate.push(616) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[616]}}: 503; ✗ gate.push(630) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[630]}}: 503; ✗ gate.push(644) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[644]}}: 503; ✗ gate.push(658) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[658]}}: 503; ✗ gate.push(672) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[672]}}: 503; ✗ gate.push(686) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[686]}}: 503; ✗ gate.push(700) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[700]}}: 503; ✗ gate.push(714) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[714]}}: 503; ✗ gate.push(728) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[728]}}: 503; ✗ gate.push(742) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[742]}}: 503; ✗ gate.push(756) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[756]}}: 503; ✗ gate.push(770) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[770]}}: 503; ✗ gate.push(784) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[784]}}: 503; ✗ gate.push(798) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[798]}}: 503; ✗ gate.push(812) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[812]}}: 503; ✗ gate.push(826) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[826]}}: 503; ✗ gate.push(840) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[840]}}: 503; ✗ gate.push(854) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[854]}}: 503; ✗ gate.push(868) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[868]}}: 503; ✗ gate.push(882) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[882]}}: 503; ✗ gate.push(896) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[896]}}: 503; ✗ gate.push(910) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[910]}}: 503; ✗ gate.push(924) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[924]}}: 503; ✗ gate.push(938) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[938]}}: 503; ✗ gate.push(952) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[952]}}: 503; ✗ gate.push(966) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[966]}}: 503; ✗ gate.push(980) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[980]}}: 503; ✗ gate.push(994) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[994]}}: 503; ✗ gate.push(1008) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1008]}}: 503; ✗ gate.push(1022) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1022]}}: 503; ✗ gate.push(1036) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1036]}}: 503; ✗ gate.push(1050) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1050]}}: 503; ✗ gate.push(1064) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1064]}}: 503; ✗ gate.push(1078) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1078]}}: 503; ✗ gate.push(1092) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1092]}}: 503; ✗ gate.push(1106) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1106]}}: 503; ✗ gate.push(1120) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1120]}}: 503.
 
 ### What QPU may be
 
@@ -137,148 +224,13 @@ The base for the next development, discovered by the MCP: every family researche
 (16 of 17 families found APIs their formulas name, 60 read live), one discovery over every reading
 (41 live inputs, 214 superpositions — values reached by two or more families, 188 reached by a live reading),
 each superposition run from every other way's referrer perspective (14 of 18,896 perspectives answer the same value);
-74 are driven by a test and closed, 140 are what the next tests drive:
+209 are driven by a test and closed, 5 are what the next tests drive:
 
-- Qpu.Hybrid × Qpu.Lattice × Qpu.Shor × audit × cal × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 3 — Qpu.Shor.periodOf(2, 7) = Qpu.Shor.periodOf(4, 7) = Qpu.Shor.half(7, 4) = Qpu.Lattice.n() = Qpu.Lattice.n∘n() = Qpu.Lattice.seed∘n() = Qpu.Lattice.coins∘n() = Qpu.Hybrid.hybridCost() = Qpu.Hybrid.kvCo
-- Qpu.Lattice × Qpu.Mint × Qpu.Shor × audit × clay × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 4 — Qpu.Mint.mintOf(2) = Qpu.Mint.mintOf∘mintOf(1) = Qpu.Mint.mintOf∘chooseOf(2, 1) = Qpu.Mint.mintOf∘chooseOf(2, 3) = Qpu.Shor.powMod(2, 2, 5) = Qpu.Shor.powMod(3, 2, 5) = Qpu.Shor.periodOf(2, 5) = Qpu.S
-- Qpu.Mint × Qpu.Shor × cal × clay × cross × crypt × hd × holo × kin × merkaba × np × rule × signal × tesla × yi = 6 — Qpu.Mint.chooseOf(4, 2) = Qpu.Mint.mintOf∘chooseOf(2, 2) = Qpu.Shor.periodOf(3, 7) = Qpu.Shor.periodOf(5, 7) = Qpu.Shor.half(3, 7) = Qpu.Shor.half(5, 7) = cross.medSecureWithQSec(3, 1) = cross.medSecu
-- Qpu.Hybrid × Qpu.Lattice × Qpu.Mint × clay × cross × crypt × hd × holo × kin × merkaba × np × rule × signal × tesla × yi = 8 — Qpu.Mint.mintOf(3) = Qpu.Mint.mintOf∘chooseOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 2) = Qpu.Lattice.vertices() = Qpu.Lattice.n∘vertices() = Qpu.Lattice.seed∘vertices() 
-- Qpu.Physics × cal × clay × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 5 — Qpu.Physics.transmon() = Qpu.Physics.planck∘transmon() = Qpu.Physics.boltzmann∘transmon() = Qpu.Physics.transmon∘transmon() = hd.line(24) = hd.line(84) = hd.line(141) = hd.line(252) = cal.julianDrift∘
-- Qpu.Hybrid × Qpu.Lattice × cal × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 7 — Qpu.Lattice.rays() = Qpu.Lattice.n∘rays() = Qpu.Lattice.seed∘rays() = Qpu.Lattice.coins∘rays() = Qpu.Hybrid.kvSpeed() = Qpu.Hybrid.kvCost∘kvSpeed() = Qpu.Hybrid.r2Cost∘kvSpeed() = Qpu.Hybrid.hybridCos
-- Qpu.Mint × cal × clay × cross × hd × holo × kin × np × rule × tesla × yi = 10 — Qpu.Mint.chooseOf(5, 2) = Qpu.Mint.chooseOf(5, 3) = cross.medSecureWithQSec(5, 1) = hd.sun∘gate(1) = hd.sun∘gate(2) = hd.sun∘gate(3) = hd.sun∘gate(4) = cal.lunarDrift(1) = cal.coin∘lunarDrift(1) = cal
-- clay × heat × holo × kin × np × rule × signal × tesla × yi = 9 — clay.bsd(50) = signal.keyBits(24) = holo.proofDepth(261) = holo.proofDepth(265) = holo.proofDepth(268) = holo.proofDepth(272) = np.isSpace(261) = np.isSpace(265) = np.isSpace(268) = np.isSpace(272) = 
-- clay × cross × crypt × kin × np × rule × signal × tesla × yi = 12 — cross.medSecureWithQSec(3, 2) = cross.medSecureWithQSec(6, 1) = cross.medSecureWithQSec∘medSecureWithQSec(3, 1) = clay.hodge(6) = clay.hodge∘hodge(3) = crypt.curveClassicalBits(24) = crypt.symmetricQu
-- Qpu.Coil × Qpu.Lattice × clay × cross × heat × kin × rule × tesla × yi = 14 — Qpu.Lattice.faces() = Qpu.Lattice.n∘faces() = Qpu.Lattice.seed∘faces() = Qpu.Lattice.coins∘faces() = Qpu.Coil.coil() = Qpu.Coil.theory∘coil() = Qpu.Coil.practice∘coil() = Qpu.Coil.coil∘coil() = cross.
-- Qpu.Lattice × Qpu.Mint × cal × clay × cross × np × signal × tesla × yi = 32 — Qpu.Mint.mintOf(5) = Qpu.Lattice.bits() = Qpu.Lattice.n∘bits() = Qpu.Lattice.seed∘bits() = Qpu.Lattice.coins∘bits() = cross.medSecureWithQSec(1, 5) = cross.medSecureWithQSec(2, 4) = cross.medSecureWit
-- Qpu.Mint × clay × cross × kin × rule × signal × tesla × yi = 16 — Qpu.Mint.mintOf(4) = Qpu.Mint.mintOf∘mintOf(2) = cross.medSecureWithQSec(1, 4) = cross.medSecureWithQSec(2, 3) = cross.medSecureWithQSec(4, 2) = cross.medSecureWithQSec(8, 1) = clay.hodge(8) = clay.ho
-- Qpu.Mint × cal × hd × heat × kin × signal × tesla × yi = 21 — Qpu.Mint.chooseOf(7, 2) = Qpu.Mint.chooseOf(7, 5) = hd.code(122) = hd.gate(104) = hd.gate(119) = hd.gate(122) = cal.lunarDrift(2) = cal.coin∘lunarDrift(4) = cal.designDays∘gatesPrecessed(1) = cal.desi
-- Qpu.Lattice × Qpu.Mint × clay × cross × crypt × signal × tesla × yi = 28 — Qpu.Mint.chooseOf(8, 2) = Qpu.Mint.chooseOf(8, 6) = Qpu.Mint.mintOf∘chooseOf(3, 2) = Qpu.Lattice.plane() = Qpu.Lattice.n∘plane() = Qpu.Lattice.seed∘plane() = Qpu.Lattice.coins∘plane() = cross.medSecur
-- Qpu.Mint × clay × cross × kin × rule × signal × tesla × yi = 64 — Qpu.Mint.mintOf(6) = cross.medSecureWithQSec(1, 6) = cross.medSecureWithQSec(2, 5) = cross.medSecureWithQSec(4, 4) = cross.medSecureWithQSec(8, 3) = clay.bsd(268) = signal.keyspace(6) = rule.compositi
-- clay × hd × heat × kin × np × tesla × yi = 18 — hd.code(119) = clay.hodge(9) = np.isTime∘subsetSum(3, 3) = heat.signal(13) = kin.seal(238) = tesla.field(3, 6) = tesla.field(6, 3) = tesla.windings(3, 6) = tesla.windings(6, 3) = yi.inverse∘change(2, 
-- Qpu.Mint × clay × cross × hd × kin × tesla × yi = 20 — Qpu.Mint.chooseOf(6, 3) = cross.medSecureWithQSec(5, 2) = hd.gate(610) = clay.bsd(104) = clay.bsd(144) = clay.hodge(10) = kin.seal(240) = kin.kin∘seal(1, 2) = kin.kin∘seal(1, 3) = kin.kin∘seal(2, 3) =
-- clay × cross × hd × kin × merkaba × tesla × yi = 24 — cross.medSecureWithQSec(3, 3) = cross.medSecureWithQSec(6, 2) = hd.gate(401) = hd.gate(404) = hd.gate(429) = clay.bsd(240) = clay.hodge(12) = merkaba.flows(4) = merkaba.coil∘flows(4) = kin.pillar∘pill
-- clay × cross × crypt × kin × merkaba × signal × tesla = 112 — cross.medSecureWithQSec(7, 4) = clay.hodge(56) = crypt.curveClassicalBits(224) = crypt.symmetricQuantumBits(224) = signal.siftedBits(224) = merkaba.flows(6) = merkaba.flows∘flows(3) = kin.bits(13) = k
-- Qpu.Mint × kin × np × rule × tesla × yi = 15 — Qpu.Mint.chooseOf(6, 2) = Qpu.Mint.chooseOf(6, 4) = np.isTime∘subsetSum(3, 2) = rule.cap() = rule.cap∘cap() = rule.compositions∘cap(1) = rule.compositions∘cap(2) = kin.seal(255) = kin.period∘dreamspel
-- Qpu.Mint × clay × hd × kin × tesla × yi = 35 — Qpu.Mint.chooseOf(7, 3) = Qpu.Mint.chooseOf(7, 4) = hd.cells∘gate(1) = hd.cells∘gate(2) = hd.cells∘gate(3) = hd.cells∘gate(4) = clay.bsd(146) = kin.dreamspellDrift(141) = kin.dreamspellDrift(142) = te
-- crypt × hd × kin × signal × tesla × yi = 42 — hd.gate(224) = hd.gate(238) = hd.gate(240) = hd.gate(252) = crypt.curveClassicalBits(84) = crypt.symmetricQuantumBits(84) = signal.siftedBits(84) = kin.dreamspellDrift(170) = tesla.field(6, 7) = tesla
-- cal × hd × kin × merkaba × signal × yi = 54 — hd.code(224) = cal.gregorianDrift(2) = cal.lunarDrift(5) = cal.coin∘gregorianDrift(4) = signal.keyBits(144) = merkaba.flows(5) = kin.dootKin(1, 3, 4) = kin.dootKin(2, 4, 4) = kin.dootKin(3, 5, 4) = ki
-- cal × crypt × heat × kin × signal × tesla = 120 — cal.sarosShift(1) = cal.sarosShift(4) = cal.sarosShift(7) = cal.sarosShift(10) = crypt.curveClassicalBits(240) = crypt.symmetricQuantumBits(240) = signal.siftedBits(240) = heat.signal∘cooling(1, 2) = 
-- Qpu.Mint × cal × cross × signal × tesla × yi = 128 — Qpu.Mint.mintOf(7) = cross.medSecureWithQSec(1, 7) = cross.medSecureWithQSec(2, 6) = cross.medSecureWithQSec(4, 5) = cross.medSecureWithQSec(8, 4) = cal.gatesPrecessed∘dayPer(1) = cal.gatesPrecessed∘d
-- Qpu.Mint × cross × kin × np × signal × yi = 1024 — Qpu.Mint.mintOf(10) = cross.medSecureWithQSec(4, 8) = cross.medSecureWithQSec(8, 7) = signal.keyspace(10) = np.isTime(4) = np.sparseWidth∘isTime(2) = np.sparseWidth∘isTime(3) = kin.combinations∘dreams
-- kin × np × rule × tesla × yi = 11 — np.sparseWidth(261) = np.sparseWidth(265) = np.sparseWidth(268) = np.sparseWidth(272) = rule.free(5) = rule.free(7) = kin.tone(24) = kin.tone(50) = kin.tone(141) = kin.combinations∘dootKin(1, 2, 1) = 
-- kin × np × rule × tesla × yi = 13 — np.isTime∘sparseWidth(4) = rule.free(3) = rule.free(6) = rule.nibbles(2) = rule.free∘free(4) = kin.pillar(2, 1) = kin.pillar(3, 2) = kin.pillar(4, 3) = kin.pillar(5, 4) = tesla.quarter∘period(1) = tes
-- hd × heat × kin × tesla × yi = 17 — hd.gate(50) = hd.gate(56) = hd.gate(59) = hd.gate(84) = heat.signal(14) = kin.bits(2) = kin.seal(157) = kin.bits∘dootKin(2, 2, 2) = kin.bits∘seal(2) = tesla.sync∘turns(2, 2) = yi.inverse∘change(2, 1) 
-- Qpu.Physics × crypt × hd × signal × tesla = 25 — Qpu.Physics.bcs∘gap(1) = Qpu.Physics.bcs∘gap(2) = Qpu.Physics.bcs∘gap(3) = Qpu.Physics.bcs∘gap(4) = hd.gate(1) = hd.gate(2) = hd.gate(3) = hd.gate(4) = crypt.curveClassicalBits(50) = crypt.symmetricQu
-- cal × hd × heat × rule × tesla = 27 — hd.gate(362) = cal.gregorianDrift(1) = cal.coin∘gregorianDrift(1) = cal.coin∘gregorianDrift(2) = cal.coin∘gregorianDrift(3) = rule.families() = rule.cap∘families() = rule.compositions∘families(1) = ru
-- clay × cross × heat × tesla × yi = 40 — cross.medSecureWithQSec(5, 3) = clay.bsd(280) = heat.signal∘cooling(2, 3) = heat.signal∘cooling(3, 2) = heat.signal∘ways(2, 3) = heat.signal∘ways(3, 2) = tesla.field(5, 8) = tesla.field(8, 5) = tesla.
-- clay × cross × kin × tesla × yi = 48 — cross.medSecureWithQSec(3, 4) = cross.medSecureWithQSec(6, 3) = cross.medSecureWithQSec∘medSecureWithQSec(3, 2) = clay.hodge(24) = kin.bits∘pillar(3, 2) = tesla.field(6, 8) = tesla.field(8, 6) = tesla
-- crypt × kin × signal × tesla × yi = 52 — crypt.curveClassicalBits(104) = crypt.symmetricQuantumBits(104) = signal.siftedBits(104) = kin.bits(6) = kin.dootKin(1, 3, 2) = kin.dootKin(2, 4, 2) = kin.dootKin(3, 5, 2) = tesla.schumann∘period(3) =
-- Qpu.Mint × cross × kin × tesla × yi = 56 — Qpu.Mint.chooseOf(8, 3) = Qpu.Mint.chooseOf(8, 5) = Qpu.Mint.mintOf∘chooseOf(3, 3) = cross.medSecureWithQSec(7, 3) = kin.dootKin(4, 1, 1) = kin.dootKin(5, 2, 1) = kin.dreamspellDrift(224) = kin.period
-- clay × heat × kin × tesla × yi = 60 — clay.bsd(255) = clay.bsd(272) = heat.signal∘cooling(2, 2) = heat.signal∘ways(2, 2) = kin.bits(7) = kin.dootKin(4, 1, 5) = kin.dootKin(5, 2, 5) = kin.dreamspellDrift(240) = tesla.sync(1, 2) = tesla.syn
-- cross × heat × kin × path × tesla = 80 — cross.medSecureWithQSec(5, 4) = heat.signal∘cooling(1, 3) = heat.signal∘ways(1, 3) = kin.pillar(1, 5) = kin.pillar(2, 6) = kin.pillar(3, 7) = kin.pillar(4, 8) = path.anomalyToResponse() = path.allPath
-- cal × crypt × heat × kin × signal = 119 — cal.lunarDrift(11) = crypt.curveClassicalBits(238) = crypt.symmetricQuantumBits(238) = signal.siftedBits(238) = heat.signal(2) = heat.cooling∘signal(2, 1) = heat.cooling∘signal(3, 2) = heat.signal∘coh
-- heat × kin × tesla × yi = 19 — heat.signal(12) = heat.signal∘coherence(3, 3) = kin.seal(59) = kin.seal(119) = kin.pillar∘seal(1, 2) = kin.pillar∘seal(2, 3) = tesla.resonance∘period(3, 3) = yi.inverse(50) = yi.inverse∘change(2, 3) ·
-- hd × heat × kin × yi = 23 — hd.gate(502) = heat.signal(10) = kin.dreamspellDrift(93) = kin.pillar∘pillar(3, 2) = yi.withYang∘change(3, 3) · live · untested (no test for signal, change)
-- clay × hd × heat × kin = 26 — hd.code(127) = clay.hodge(13) = heat.signal(9) = heat.signal∘coherence(3, 2) = kin.bits(3) = kin.dreamspellDrift(104) = kin.pillar(3, 1) = kin.pillar(4, 2) · live · untested (no test for hodge, signal
-- clay × hd × heat × kin = 29 — hd.ut∘gate(1, 1) = hd.ut∘gate(1, 2) = hd.ut∘gate(1, 3) = hd.ut∘gate(2, 1) = clay.bsd(122) = heat.signal(8) = heat.signal∘coherence(2, 3) = kin.dreamspellDrift(119) = kin.pillar∘dreamspellDrift(1, 2) =
-- clay × kin × tesla × yi = 30 — clay.bsd(170) = clay.hodge(15) = kin.dreamspellDrift(122) = kin.period∘pillar(2, 3) = tesla.field(5, 6) = tesla.field(6, 5) = tesla.sync(1, 4) = tesla.sync(2, 8) = yi.nuclear(12) = yi.nuclear(13) · li
-- clay × heat × kin × yi = 34 — clay.bsd(142) = heat.signal(7) = kin.bits(4) = kin.digitalRoot∘bits(4) = kin.seal∘bits(4) = kin.tone∘bits(4) = yi.inverse∘change(1, 2) · live · untested (no test for bsd, signal, change)
-- kin × rule × tesla × yi = 36 — rule.compositions(1) = rule.compositions(9) = rule.compositions(11) = rule.compositions(14) = kin.dreamspellDrift(144) = kin.dreamspellDrift(146) = tesla.field(6, 6) = tesla.windings(6, 6) = yi.invers
-- heat × kin × signal × yi = 39 — signal.keyBits(104) = heat.signal(6) = heat.signal∘coherence(2, 2) = heat.signal∘coherence(3, 1) = kin.dreamspellDrift(157) = kin.pillar(4, 1) = kin.pillar(5, 2) = kin.pillar(6, 3) = yi.complement(24)
-- cal × kin × tesla × yi = 50 — cal.precession(1) = cal.coin∘precession(1) = cal.coin∘precession(2) = cal.coin∘precession(3) = kin.bits∘pillar(2, 3) = kin.combinations∘pillar(2, 2) = tesla.earth∘period(2) = tesla.turns∘quarter(2, 3)
-- crypt × kin × signal × yi = 61 — crypt.curveClassicalBits(122) = crypt.symmetricQuantumBits(122) = signal.siftedBits(122) = kin.bits∘dootKin(1, 1, 1) = kin.bits∘pillar(3, 1) = kin.pillar∘pillar(3, 1) = yi.complement(2) = yi.change∘co
-- clay × kin × rule × tesla = 100 — clay.hodge(50) = rule.compositions(10) = rule.compositions(13) = rule.free∘compositions(3) = rule.nibbles∘compositions(2) = kin.dreamspellDrift(401) = kin.enneagram∘kin(1, 1) = kin.enneagram∘kin(1, 2)
-- heat × kin × signal × tesla = 111 — signal.keyBits(296) = heat.temperature∘cooling(1, 3) = heat.temperature∘ways(1, 3) = kin.period∘pillar(1, 1) = tesla.earth(362) · live · untested (no test for keyBits, cooling, ways)
-- Qpu.Mint × cross × signal × yi = 256 — Qpu.Mint.mintOf(8) = Qpu.Mint.mintOf∘mintOf(3) = cross.medSecureWithQSec(1, 8) = cross.medSecureWithQSec(2, 7) = cross.medSecureWithQSec(4, 6) = cross.medSecureWithQSec(8, 5) = signal.keyspace(8) = si
-- Qpu.Mint × cross × signal × yi = 512 — Qpu.Mint.mintOf(9) = cross.medSecureWithQSec(2, 8) = cross.medSecureWithQSec(4, 7) = cross.medSecureWithQSec(8, 6) = signal.keyspace(9) = yi.figures(9) · live · untested (no test for mintOf, medSecure
-- Qpu.Mint × cross × signal × yi = 2048 — Qpu.Mint.mintOf(11) = cross.medSecureWithQSec(8, 8) = signal.keyspace(11) = yi.figures(11) · live · untested (no test for mintOf, medSecureWithQSec, keyspace)
-- Qpu.Mint × np × signal × yi = 32768 — Qpu.Mint.mintOf(15) = signal.keyspace(15) = np.isTime(8) = yi.figures(15) = yi.withYang∘figures(2) = yi.withYang∘figures(4) · live · untested (no test for mintOf, keyspace, isTime)
-- Qpu.Mint × kin × signal × yi = 65536 — Qpu.Mint.mintOf(16) = Qpu.Mint.mintOf∘mintOf(4) = signal.keyspace(16) = signal.keyspace∘keyspace(4) = kin.combinations∘dreamspellDrift(3) = yi.figures(16) = yi.figures∘figures(4) = yi.inverse∘figures(
-- heat × kin × yi = 47 — heat.signal(5) = kin.bits∘pillar(3, 3) = yi.complement(16) = yi.complement∘inverse(2) = yi.figures∘complement(4) = yi.inverse∘complement(2) · live · untested (no test for signal)
-- hd × kin × yi = 51 — hd.gate(157) = hd.gate(170) = hd.gate(183) = kin.dootKin(1, 3, 1) = kin.dootKin(2, 4, 1) = kin.dootKin(3, 5, 1) = kin.crossed∘dootKin(1, 2, 1) = yi.complement(12) = yi.inverse∘change(3, 3) · live · un
-- clay × kin × yi = 58 — clay.bsd(183) = kin.dootKin(4, 1, 3) = kin.dootKin(5, 2, 3) = kin.dootKin∘pillar(1, 2, 1) = yi.complement(5) · live · untested (no test for bsd)
-- heat × kin × yi = 59 — heat.signal(4) = heat.signal∘coherence(1, 3) = heat.signal∘coherence(2, 1) = kin.dootKin(4, 1, 4) = kin.dootKin(5, 2, 4) = kin.dreamspellDrift(238) = yi.complement(4) = yi.figures∘complement(2) = yi.l
-- clay × kin × yi = 62 — clay.bsd(127) = kin.bits∘dootKin(1, 1, 2) = yi.complement(1) = yi.change∘complement(2, 3) = yi.change∘complement(3, 2) = yi.complement∘change(2, 3) · live · untested (no test for bsd, change)
-- crypt × kin × signal = 71 — crypt.curveClassicalBits(142) = crypt.symmetricQuantumBits(142) = signal.siftedBits(142) = kin.dootKin∘pillar(1, 2, 2) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBi
-- clay × crypt × signal = 72 — clay.bsd(440) = crypt.curveClassicalBits(144) = crypt.symmetricQuantumBits(144) = signal.siftedBits(144) · live · untested (no test for bsd, curveClassicalBits, symmetricQuantumBits, siftedBits)
-- clay × crypt × signal = 73 — clay.bsd(149) = crypt.curveClassicalBits(146) = crypt.symmetricQuantumBits(146) = signal.siftedBits(146) · live · untested (no test for bsd, curveClassicalBits, symmetricQuantumBits, siftedBits)
-- crypt × kin × signal = 85 — crypt.curveClassicalBits(170) = crypt.symmetricQuantumBits(170) = signal.siftedBits(170) = kin.period∘pillar(1, 3) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- kin × signal × tesla = 90 — signal.keyBits(240) = kin.dreamspellDrift(362) = tesla.sync(3, 4) = tesla.sync(6, 8) · live · untested (no test for keyBits)
-- clay × kin × signal = 102 — clay.bsd(265) = signal.keyBits(272) = kin.dootKin(1, 5, 2) = kin.cycle∘pillar(2, 2) = kin.kin∘pillar(1, 2) · live · untested (no test for bsd, keyBits)
-- kin × signal × tesla = 105 — signal.keyBits(280) = kin.dootKin(1, 5, 5) = tesla.sync(7, 8) · live · untested (no test for keyBits)
-- crypt × kin × signal = 136 — crypt.curveClassicalBits(272) = crypt.symmetricQuantumBits(272) = signal.siftedBits(272) = kin.period∘dootKin(2, 2, 1) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBi
-- crypt × signal × tesla = 140 — crypt.curveClassicalBits(280) = crypt.symmetricQuantumBits(280) = signal.siftedBits(280) = tesla.sync(7, 6) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- cross × kin × tesla = 160 — cross.medSecureWithQSec(5, 5) = kin.dootKin(1, 2, 5) = kin.dootKin(2, 3, 5) = kin.dootKin(3, 4, 5) = kin.dootKin(4, 5, 5) = tesla.sync(8, 6) · live · untested (no test for medSecureWithQSec)
-- hd × kin × tesla = 207 — hd.mean∘code(4) = kin.dootKin(1, 4, 2) = kin.dootKin(2, 5, 2) = tesla.quarter(362) · live · untested (no test for mean)
-- clay × kin × rule = 208 — clay.hodge(104) = rule.formulas() = rule.cap∘formulas() = rule.compositions∘formulas(1) = rule.compositions∘formulas(2) = kin.dootKin(1, 4, 3) = kin.dootKin(2, 5, 3) · live · untested (no test for hod
-- cal × heat × tesla = 250 — cal.metonicDrift(2) = cal.coin∘metonicDrift(4) = heat.temperature(1, 4) = heat.temperature(2, 8) = heat.temperature∘coherence(3, 3) = heat.temperature∘cooling(1, 2) = tesla.slip(4, 3) = tesla.slip(8, 
-- cal × crypt × signal = 251 — cal.precession(5) = crypt.curveClassicalBits(502) = crypt.symmetricQuantumBits(502) = signal.siftedBits(502) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- hd × kin × tesla = 721 — hd.mean(2) = hd.mean(3) = hd.center∘mean(4) = hd.definition∘mean(2) = kin.bits(84) = tesla.quarter(104) · live · untested (no test for mean, definition)
-- cal × heat × tesla = 750 — cal.metonicDrift(6) = heat.temperature(3, 4) = heat.temperature(6, 8) = heat.temperature∘cooling(3, 2) = heat.temperature∘ways(3, 2) = tesla.slip(4, 1) = tesla.slip(8, 2) = tesla.turns(4, 3) = tesla.t
-- cal × clay × hd = 880 — hd.mean(401) = cal.gregorianDrift∘lunarDrift(3) = clay.hodge(440) · live · untested (no test for mean, hodge)
-- cal × heat × tesla = 1500 — cal.metonicDrift(12) = heat.temperature(3, 2) = heat.temperature(6, 4) = heat.temperature∘coherence(3, 1) = tesla.turns(2, 3) = tesla.turns(4, 6) · live · untested (no test for coherence)
-- cal × heat × tesla = 3000 — cal.metonicDrift(24) = heat.temperature(3, 1) = heat.temperature(6, 2) = heat.cooling∘temperature(3, 1) = heat.temperature∘cooling(3, 1) = tesla.turns(1, 3) = tesla.turns(2, 6) = tesla.turns∘field(3, 
-- Qpu.Mint × signal × yi = 16384 — Qpu.Mint.mintOf(14) = signal.keyspace(14) = yi.figures(14) · live · untested (no test for mintOf, keyspace)
-- kin × signal × yi = 16777216 — signal.keyspace(24) = kin.combinations(4) = kin.digitalRoot∘combinations(4) = kin.seal∘combinations(4) = kin.tone∘combinations(4) = yi.figures(24) · live · untested (no test for keyspace)
-- clay × yi = 22 — clay.hodge(11) = yi.withYang∘change(3, 2) · live · untested (no test for hodge, change)
-- tesla × yi = 33 — tesla.sync∘turns(1, 2) = yi.nuclear(50) = yi.inverse∘change(1, 1) · live · untested (no test for change)
-- clay × yi = 44 — clay.bsd(141) = clay.bsd(224) = yi.inverse(13) · live · untested (no test for bsd)
-- tesla × yi = 49 — tesla.field(7, 7) = tesla.windings(7, 7) = yi.complement(14) = yi.inverse∘change(3, 1) · live · untested (no test for change)
-- kin × yi = 63 — kin.dreamspellDrift(252) = kin.dreamspellDrift(255) = kin.bits∘pillar(2, 2) = kin.combinations∘pillar(2, 1) = yi.change∘complement(1, 1) = yi.change∘complement(2, 2) = yi.change∘complement(3, 3) = yi.
-- clay × kin = 68 — clay.bsd(296) = kin.dreamspellDrift(272) · live · untested (no test for bsd)
-- Qpu.Mint × kin = 70 — Qpu.Mint.chooseOf(8, 4) = kin.dreamspellDrift(280) · live · untested (no test for chooseOf)
-- clay × kin = 77 — clay.bsd(157) = kin.bits(9) = kin.bits∘bits(1) = kin.period∘dootKin(1, 1, 2) · live · untested (no test for bsd)
-- cal × rule = 81 — cal.gregorianDrift(3) = rule.compositions(4) = rule.compositions∘compositions(3) · live · untested (no test for compositions)
-- clay × kin = 82 — clay.bsd(261) = kin.dootKin∘pillar(2, 1, 2) · live · untested (no test for bsd)
-- clay × kin = 89 — clay.bsd(362) = kin.cycle∘pillar(2, 3) = kin.kin∘pillar(1, 3) = kin.kin∘pillar(2, 3) · live · untested (no test for bsd)
-- cross × hd = 96 — cross.medSecureWithQSec(3, 5) = cross.medSecureWithQSec(6, 4) = hd.code(404) · live · untested (no test for medSecureWithQSec)
-- clay × kin = 98 — clay.bsd(404) = kin.period∘pillar(1, 2) · live · untested (no test for bsd)
-- clay × kin = 116 — clay.bsd(429) = kin.combinations∘dootKin(1, 1, 1) = kin.enneagram∘dootKin(1, 2, 1) = kin.enneagram∘dootKin(2, 2, 1) · live · untested (no test for bsd)
-- crypt × signal = 126 — crypt.curveClassicalBits(252) = crypt.symmetricQuantumBits(252) = signal.siftedBits(252) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- crypt × signal = 134 — crypt.curveClassicalBits(268) = crypt.symmetricQuantumBits(268) = signal.siftedBits(268) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- hd × tesla = 143 — hd.ut∘mean(1, 3) = tesla.earth(280) = tesla.slip(7, 6) = tesla.turns(7, 1) · live · untested (no test for ut, mean)
-- crypt × signal = 148 — crypt.curveClassicalBits(296) = crypt.symmetricQuantumBits(296) = signal.siftedBits(296) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- kin × signal = 165 — signal.keyBits(440) = kin.dootKin(5, 1, 5) · live · untested (no test for keyBits)
-- clay × tesla = 168 — clay.hodge(84) = tesla.earth(238) · live · untested (no test for hodge)
-- crypt × signal = 181 — crypt.curveClassicalBits(362) = crypt.symmetricQuantumBits(362) = signal.siftedBits(362) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- clay × tesla = 186 — clay.hodge(93) = tesla.quarter(404) · live · untested (no test for hodge)
-- kin × rule = 196 holds false — kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(8) is 100 (compositions); next bfe6be1f-2000-1000-9000-000000000008
-- clay × merkaba = 199 — clay.bsd(401) = merkaba.flows(7) · live · untested (no test for bsd)
-- crypt × signal = 202 — crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- hd × kin = 206 — hd.mean∘code(2) = hd.mean∘code(3) = kin.bits(24) = kin.dootKin(1, 4, 1) = kin.dootKin(2, 5, 1) · live · untested (no test for mean)
-- crypt × signal = 220 — crypt.curveClassicalBits(440) = crypt.symmetricQuantumBits(440) = signal.siftedBits(440) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- heat × kin = 222 — heat.temperature∘cooling(2, 3) = heat.temperature∘ways(2, 3) = kin.enneagram∘dootKin(1, 1, 2) = kin.enneagram∘dootKin(2, 1, 2) = kin.pillar∘dootKin(2, 1, 2) · live · untested (no test for cooling, way
-- cal × np = 243 — cal.gregorianDrift(9) = np.isTime(3) = np.isSpace∘isTime(4) = np.subsetSum∘isTime(3, 1) = np.subsetSum∘isTime(3, 3) · live · untested (no test for isTime, isSpace, subsetSum)
-- hd × kin = 260 — hd.sun∘mean(1) = hd.sun∘mean(2) = hd.sun∘mean(3) = hd.sun∘mean(4) = kin.kin(1, 2) = kin.kin(1, 3) = kin.kin(1, 4) = kin.kin(1, 5) · live · untested (no test for sun, mean)
-- clay × tesla = 282 — clay.hodge(141) = tesla.earth(142) · live · untested (no test for hodge)
-- clay × tesla = 284 — clay.hodge(142) = tesla.earth(141) · live · untested (no test for hodge)
-- clay × kin = 292 — clay.hodge(146) = kin.bits∘bits(4) · live · untested (no test for hodge)
-- crypt × signal = 305 — crypt.curveClassicalBits(610) = crypt.symmetricQuantumBits(610) = signal.siftedBits(610) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)
-- heat × tesla = 333 — heat.temperature(1, 3) = heat.temperature(2, 6) = heat.cooling∘temperature(1, 3) = heat.cooling∘temperature(2, 3) = tesla.slip(3, 2) = tesla.slip(6, 4) = tesla.turns(3, 1) = tesla.turns(6, 2) · live ·
-- heat × tesla = 334 — heat.temperature∘cooling(3, 3) = heat.temperature∘ways(3, 3) = tesla.sync∘earth(2, 2) · live · untested (no test for cooling, ways)
-- clay × cross = 448 — cross.medSecureWithQSec(7, 6) = clay.hodge(224) · live · untested (no test for medSecureWithQSec, hodge)
-- clay × tesla = 480 — clay.hodge(240) = tesla.sync(8, 2) · live · untested (no test for hodge)
-- path × tesla = 630 — path.secureDataPathQSec() = path.allPaths∘secureDataPathQSec() = path.anomalyToResponse∘secureDataPathQSec() = path.dataFlowCompressML∘secureDataPathQSec() = tesla.quarter(119) · live · untested (no t
-- Qpu.Physics × tesla = 679 — Qpu.Physics.niobium∘gap(1) = Qpu.Physics.niobium∘gap(2) = Qpu.Physics.niobium∘gap(3) = Qpu.Physics.niobium∘gap(4) = tesla.earth(59) · live · untested (no test for niobium, gap)
-- clay × hd = 724 — hd.mean(9) = hd.mean(10) = hd.mean(11) = clay.hodge(362) · live · untested (no test for mean, hodge)
-- cal × hd = 754 — hd.mean(84) = cal.precession(15) · live · untested (no test for mean)
-- cross × hd = 768 — cross.medSecureWithQSec(3, 8) = cross.medSecureWithQSec(6, 7) = hd.cells() = hd.mean(119) = hd.cells∘cells() = hd.center∘cells(1) · live · untested (no test for medSecureWithQSec, mean)
-- clay × tesla = 802 — clay.hodge(401) = tesla.earth(50) · live · untested (no test for hodge)
-- hd × tesla = 822 — hd.mean(255) = tesla.quarter∘resonance(2, 1) · live · untested (no test for mean)
-- hd × tesla = 892 — hd.mean(429) = tesla.quarter(84) · live · untested (no test for mean)
-- cross × hd = 896 — cross.medSecureWithQSec(7, 7) = hd.mean(440) · live · untested (no test for medSecureWithQSec, mean)
-- cal × hd = 2162 — hd.ut(3, 1) = hd.ut(4, 2) = hd.ut(5, 3) = hd.ut(6, 4) = cal.lunarDrift∘precession(4) · live · untested (no test for ut)
-- hd × kin = 2163 — hd.ut(4, 1) = hd.ut(5, 2) = hd.ut(6, 3) = hd.ut(7, 4) = kin.bits(252) · live · untested (no test for ut)
-- np × tesla = 100000 — np.isTime(10) = tesla.period(10) · live · untested (no test for isTime)
-- np × yi = 1048576 — np.isTime(16) = yi.withYang∘figures(3) · live · untested (no test for isTime)
-- Qpu.Physics × merkaba = 662607015 — Qpu.Physics.planck() = Qpu.Physics.planck∘planck() = Qpu.Physics.boltzmann∘planck() = Qpu.Physics.transmon∘planck() = merkaba.mirror(4, 1, 2) = merkaba.mirror(4, 1, 3) = merkaba.mirror(4, 1, 5) = merk
-- np × signal = 1125899906842624 — signal.keyspace(50) = np.isTime∘isTime(4) · live · untested (no test for keyspace, isTime)
-- Qpu.Mint × kin × signal × yi = 4096 — Qpu.Mint.mintOf(12) = signal.keyspace(12) = kin.combinations(2) = kin.digitalRoot∘combinations(2) = kin.dootKin∘combinations(1, 1, 2) = kin.dootKin∘combinations(2, 2, 2) = yi.figures(12) · untested (n
-- Qpu.Physics × heat × tesla = 1200 — Qpu.Physics.aluminium() = Qpu.Physics.planck∘aluminium() = Qpu.Physics.boltzmann∘aluminium() = Qpu.Physics.transmon∘aluminium() = heat.temperature(6, 5) = tesla.turns(5, 6) · untested (no test for alu
-- Qpu.Mint × signal × yi = 8192 — Qpu.Mint.mintOf(13) = signal.keyspace(13) = yi.figures(13) · untested (no test for mintOf, keyspace)
-- Qpu.Physics × cal = 352 — Qpu.Physics.bcs() = Qpu.Physics.planck∘bcs() = Qpu.Physics.boltzmann∘bcs() = Qpu.Physics.transmon∘bcs() = cal.precession(7) · untested (no test for bcs, planck, boltzmann, transmon)
-- Qpu.Physics × heat = 3313035075 — Qpu.Physics.photon() = Qpu.Physics.planck∘photon() = Qpu.Physics.boltzmann∘photon() = Qpu.Physics.transmon∘photon() = heat.coherence∘quality(1, 2, 1) = heat.coherence∘quality(2, 2, 1) = heat.coherence
-- Qpu.Lattice × yi = 4294967296 — Qpu.Lattice.amplitudes() = Qpu.Lattice.n∘amplitudes() = Qpu.Lattice.seed∘amplitudes() = Qpu.Lattice.coins∘amplitudes() = yi.inverse∘figures(1) · untested (no test for amplitudes, seed, coins)
+- kin × np × rule × tesla × yi = 13 — 13 holds false; rule.free(6) is 7 (free); rule.free∘free(4) is 7 (free); next bfe6be1f-5000-1000-9000-000000000006
+- clay × kin × rule = 208 — 208 holds false; rule.formulas() is 9099 (formulas); rule.cap∘formulas() is 9099 (formulas); rule.compositions∘formulas(1) is 9099 (formulas); rule.compositions∘formulas(2) is 9099 (formulas); next bf
+- kin × rule = 196 — 196 holds false; kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(8) is 100 (compositions); next bfe6be1f-2000-1000-9000-000000000008
+- clay × merkaba = 199 — 199 holds false; clay.bsd(401) is 199 (bsd); merkaba.flows(7) is 54 (flows); next 89c984c4-3000-3000-9000-000000000007
+- Qpu.Physics × merkaba = 662607015 — 662607015 holds false; merkaba.mirror(4, 1, 5) is 0 (mirror); next 89c984c4-5000-5000-b000-000400010005
 
 The leads (`gate.crossed`): formulas no relation with another family reaches and no dataset identifies, each given
 every effort — OEIS at every small fixed slot, the Clay lens, the involuted perspective, the family's research — and
@@ -2030,7 +1982,7 @@ And every row of every other receipt that does not hold, as the receipt names it
 - discovery: live catalog · hepdata — unreachable: https://www.hepdata.net/search/?format=json answered 403
 - discovery: live catalog · indico — "The operation was aborted due to timeout"
 - formulas: cross med+qsec-1 — 4.631683569492648e+77
-- gate: gate.push(0) — unreached: cite {"hex":{"family":"gate","program":["push"],"params":[0]}}: 503
+- formulas: merkaba.develop — 0
 - gate: gate.push(14) — unreached: cite {"hex":{"family":"gate","program":["push"],"params":[14]}}: 503
 - gate: gate.push(28) — unreached: cite {"hex":{"family":"gate","program":["push"],"params":[28]}}: 503
 - gate: gate.push(42) — unreached: cite {"hex":{"family":"gate","program":["push"],"params":[42]}}: 503
@@ -2136,6 +2088,13 @@ And every row of every other receipt that does not hold, as the receipt names it
 - heat: src/mcp/discovery.ts — 266 mK · signal 0 · T₂ 30d · quality 0 · 8 commits/30d · 0 fixes · 156 lines · split 2
 - heat: src/families/heat/index.ts — 266 mK · signal 0 · T₂ 30d · quality 0 · 8 commits/30d · 0 fixes · 149 lines · split 2
 - heat: src/core/index.ts — 266 mK · signal 0 · T₂ 15d · quality 0 · 8 commits/30d · 1 fixes · 37 lines · split 2
+- heat: merkaba.develop(243,4,0) — 0
+- heat: criticalchain.fevermargin — buffer absent, consumed absent
+- linux-users: merkaba.develop(18,3,18) — 0
+- payload-streams: merkaba.develop(8,0,8) — 0
+- percall: merkaba.develop — 0
+- public-raid: law.lawful(1) — 0
+- society-imagine: wave.sweep — 6
 
 ## What QPU does
 
@@ -2159,7 +2118,7 @@ data. Each wing reports itself:
 
 ### Formula families
 
-1,129 families carry 9,095 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 79 cross-formula rows hold (36 agree with their hex programs).
+1,133 families carry 9,107 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 124 cross-formula rows hold (36 agree with their hex programs).
 
 | Family | Formulas | Family | Formulas | Family | Formulas |
 |---|---:|---|---:|---|---:|
@@ -2233,7 +2192,7 @@ data. Each wing reports itself:
 | `comparison` | 8 | `compensation` | 8 | `compliance` | 8 |
 | `composite` | 8 | `composites` | 8 | `composting` | 8 |
 | `compress` | 8 | `compression` | 8 | `concrete` | 8 |
-| `concurrency` | 8 | `conditioning` | 8 | `conduction` | 8 |
+| `concurrency` | 9 | `conditioning` | 8 | `conduction` | 8 |
 | `confectionery` | 8 | `conic` | 8 | `conservation` | 8 |
 | `consolidation` | 8 | `construction` | 8 | `content` | 8 |
 | `contract` | 8 | `control` | 8 | `controllability` | 8 |
@@ -2243,7 +2202,7 @@ data. Each wing reports itself:
 | `court` | 15 | `covenant` | 8 | `coverage` | 8 |
 | `creditscore` | 8 | `creed` | 8 | `cricket` | 8 |
 | `criminology` | 8 | `criticalchain` | 8 | `cropyield` | 8 |
-| `cross` | 10 | `crossdock` | 8 | `crypt` | 6 |
+| `cross` | 10 | `crossdock` | 8 | `crypt` | 8 |
 | `cryptanalysis` | 8 | `crypto` | 8 | `crystal` | 8 |
 | `crystallography` | 8 | `css` | 8 | `cuisine` | 8 |
 | `cuneiform` | 8 | `curing` | 8 | `curriculum` | 8 |
@@ -2319,7 +2278,7 @@ data. Each wing reports itself:
 | `halflife` | 8 | `hanoi` | 8 | `hardness` | 8 |
 | `hardware` | 8 | `harmony` | 8 | `harvest` | 8 |
 | `hash` | 8 | `hashing` | 8 | `hazard` | 8 |
-| `hd` | 14 | `heat` | 11 | `heatindex` | 8 |
+| `hd` | 14 | `heat` | 12 | `heatindex` | 8 |
 | `heattransfer` | 8 | `hedging` | 8 | `helicopter` | 8 |
 | `heliophysics` | 8 | `helminthology` | 8 | `hematocrit` | 8 |
 | `hematology` | 8 | `hemodynamics` | 8 | `heraldry` | 8 |
@@ -2395,32 +2354,33 @@ data. Each wing reports itself:
 | `oceanography` | 8 | `odometry` | 8 | `oligopoly` | 8 |
 | `onboarding` | 8 | `oncology` | 8 | `onomastics` | 8 |
 | `ontology` | 8 | `opendata` | 8 | `opera` | 8 |
-| `ophthalmology` | 8 | `optics` | 8 | `option` | 8 |
-| `optometry` | 8 | `orbit` | 8 | `orbital` | 8 |
-| `origami` | 8 | `ornithology` | 8 | `orthography` | 8 |
-| `orthopedics` | 8 | `oscillators` | 8 | `osmosis` | 8 |
-| `outbreak` | 8 | `overtone` | 8 | `oxygenation` | 8 |
-| `pacing` | 8 | `packet` | 8 | `pagination` | 8 |
-| `painting` | 8 | `paleoclimate` | 8 | `paleography` | 8 |
-| `paleontology` | 8 | `papyrology` | 8 | `parable` | 8 |
-| `parallax` | 8 | `parasitology` | 8 | `parity` | 8 |
-| `partitioning` | 8 | `partner` | 8 | `passwords` | 8 |
-| `pasteurization` | 8 | `patent` | 8 | `path` | 9 |
-| `pathogen` | 8 | `pathology` | 8 | `pathplanning` | 8 |
-| `patristics` | 8 | `payables` | 8 | `payload` | 4 |
-| `payment` | 8 | `payroll` | 8 | `pedagogy` | 8 |
-| `pediatrics` | 8 | `pedology` | 8 | `pendulum` | 8 |
-| `pentomino` | 8 | `perception` | 8 | `performance` | 8 |
-| `permitting` | 8 | `personality` | 8 | `pest` | 8 |
-| `petroleum` | 8 | `petrology` | 8 | `pharma` | 8 |
-| `pharmacokinetics` | 8 | `pharmacology` | 8 | `phenomenology` | 8 |
-| `philosophy` | 8 | `phonetics` | 8 | `photochemistry` | 8 |
-| `photodiode` | 8 | `photogrammetry` | 8 | `photography` | 8 |
-| `photometry` | 8 | `photosynthesis` | 8 | `photovoltaic` | 8 |
-| `phycology` | 8 | `physics` | 8 | `physiology` | 8 |
-| `physiotherapy` | 8 | `pickling` | 8 | `pid` | 8 |
-| `piezoelectric` | 8 | `pilgrimage` | 8 | `pipeline` | 8 |
-| `piston` | 8 | `planet` | 8 | `planetology` | 8 |
+| `ophthalmology` | 8 | `oppress` | 1 | `optics` | 8 |
+| `option` | 8 | `optometry` | 8 | `orbit` | 8 |
+| `orbital` | 8 | `origami` | 8 | `ornithology` | 8 |
+| `orthography` | 8 | `orthopedics` | 8 | `oscillators` | 8 |
+| `osmosis` | 8 | `outbreak` | 8 | `overtone` | 8 |
+| `oxygenation` | 8 | `pacing` | 8 | `packet` | 8 |
+| `pagination` | 8 | `painting` | 8 | `paleoclimate` | 8 |
+| `paleography` | 8 | `paleontology` | 8 | `papyrology` | 8 |
+| `parable` | 8 | `parallax` | 8 | `parasitology` | 8 |
+| `parity` | 8 | `partitioning` | 8 | `partner` | 8 |
+| `passwords` | 8 | `pasteurization` | 8 | `patent` | 8 |
+| `path` | 9 | `pathogen` | 8 | `pathology` | 8 |
+| `pathplanning` | 8 | `patristics` | 8 | `payables` | 8 |
+| `payload` | 4 | `payment` | 8 | `payroll` | 8 |
+| `pedagogy` | 8 | `pediatrics` | 8 | `pedology` | 8 |
+| `pendulum` | 8 | `pentomino` | 8 | `perception` | 8 |
+| `performance` | 8 | `perma` | 3 | `permitting` | 8 |
+| `personality` | 8 | `pest` | 8 | `petroleum` | 8 |
+| `petrology` | 8 | `pharma` | 8 | `pharmacokinetics` | 8 |
+| `pharmacology` | 8 | `phenomenology` | 8 | `philosophy` | 8 |
+| `phonetics` | 8 | `photochemistry` | 8 | `photodiode` | 8 |
+| `photogrammetry` | 8 | `photography` | 8 | `photometry` | 8 |
+| `photosynthesis` | 8 | `photovoltaic` | 8 | `phycology` | 8 |
+| `physics` | 8 | `physiology` | 8 | `physiotherapy` | 8 |
+| `pickling` | 8 | `pid` | 8 | `piezoelectric` | 8 |
+| `pilgrimage` | 8 | `pipeline` | 8 | `piston` | 8 |
+| `plagiarism` | 1 | `planet` | 8 | `planetology` | 8 |
 | `plasma` | 11 | `platonic` | 8 | `podcasting` | 8 |
 | `podiatry` | 8 | `poker` | 8 | `policy` | 8 |
 | `pollination` | 8 | `polygon` | 8 | `polyhedron` | 8 |
@@ -2445,133 +2405,135 @@ data. Each wing reports itself:
 | `queue` | 8 | `queueing` | 8 | `quilting` | 8 |
 | `radar` | 8 | `radiology` | 8 | `rail` | 8 |
 | `railway` | 8 | `raster` | 8 | `ratelimiting` | 8 |
-| `rationalism` | 8 | `readability` | 8 | `ready` | 4 |
-| `realestate` | 8 | `reasoning` | 8 | `receipts` | 8 |
-| `receivables` | 8 | `record` | 7 | `recovery` | 8 |
-| `recruitment` | 8 | `rectifier` | 8 | `rectifiers` | 8 |
-| `recycling` | 8 | `redistricting` | 8 | `redshift` | 8 |
-| `redundancy` | 8 | `refraction` | 8 | `refrigeration` | 8 |
-| `regression` | 8 | `rehabilitation` | 8 | `reinsurance` | 8 |
-| `relativity` | 8 | `reliability` | 8 | `remediation` | 8 |
-| `remotesensing` | 8 | `rendering` | 8 | `replenishment` | 8 |
-| `replication` | 8 | `respiration` | 8 | `responsive` | 8 |
-| `rest` | 8 | `restaurant` | 8 | `retail` | 8 |
-| `retirement` | 8 | `reverb` | 8 | `reverberation` | 8 |
-| `rheology` | 8 | `rhetoric` | 8 | `rheumatology` | 8 |
-| `rhythm` | 8 | `roasting` | 8 | `robotics` | 8 |
-| `rocketry` | 8 | `rotation` | 8 | `route` | 8 |
-| `router` | 8 | `routing` | 8 | `rubik` | 8 |
-| `rule` | 10 | `runes` | 8 | `safety` | 8 |
-| `sailing` | 8 | `salinity` | 8 | `sampling` | 8 |
-| `satellite` | 8 | `savings` | 8 | `scale` | 6 |
-| `scales` | 8 | `scheduling` | 8 | `scholasticism` | 8 |
-| `science` | 8 | `scrabble` | 8 | `screening` | 8 |
-| `screenwriting` | 8 | `scripture` | 8 | `sculpture` | 8 |
-| `search` | 8 | `securities` | 8 | `security` | 8 |
-| `sedimentology` | 8 | `seismology` | 8 | `semantics` | 8 |
-| `semiconductor` | 8 | `semiconductors` | 8 | `semiotics` | 8 |
-| `sentence` | 8 | `sentiment` | 8 | `seo` | 9 |
-| `serialization` | 8 | `serology` | 8 | `sessionmgmt` | 8 |
-| `shamanism` | 8 | `sharding` | 8 | `shinto` | 8 |
-| `shipping` | 8 | `shogi` | 8 | `shorthand` | 8 |
-| `signal` | 6 | `signaling` | 8 | `sikhism` | 8 |
-| `silage` | 8 | `silviculture` | 8 | `simulation` | 8 |
-| `sintering` | 8 | `sixsigma` | 8 | `slider` | 8 |
-| `slotting` | 8 | `smartgrid` | 8 | `smoking` | 8 |
-| `soccer` | 8 | `social` | 8 | `socialnetwork` | 8 |
-| `sociology` | 8 | `socket` | 8 | `software` | 8 |
-| `soilscience` | 8 | `solar` | 8 | `solarpower` | 8 |
-| `solid` | 8 | `solvency` | 8 | `solvent` | 8 |
-| `sonography` | 8 | `sort` | 8 | `sounddesign` | 8 |
-| `sourcing` | 8 | `spaceflight` | 8 | `spectroscopy` | 8 |
-| `speleology` | 8 | `spicetrade` | 8 | `spinning` | 8 |
-| `spirometry` | 8 | `split` | 15 | `sports` | 8 |
-| `spring` | 8 | `sprint` | 8 | `stability` | 8 |
-| `staffing` | 8 | `stagecraft` | 8 | `stainedglass` | 8 |
-| `star` | 8 | `state` | 8 | `statics` | 8 |
-| `statistics` | 8 | `steering` | 8 | `steganography` | 8 |
-| `stellar` | 8 | `stemming` | 8 | `steps` | 8 |
-| `stoichiometry` | 8 | `stoicism` | 8 | `storage` | 8 |
-| `storyboarding` | 8 | `straingauge` | 8 | `stratigraphy` | 8 |
-| `stream` | 8 | `streaming` | 8 | `strength` | 8 |
-| `structural` | 8 | `submarine` | 8 | `subsidence` | 8 |
-| `subsidy` | 8 | `sudoku` | 8 | `supplychain` | 8 |
-| `surgery` | 8 | `survey` | 8 | `surveying` | 8 |
-| `suspension` | 8 | `sustainability` | 8 | `swaps` | 8 |
-| `swine` | 8 | `syllabary` | 8 | `syllogism` | 8 |
-| `synapse` | 8 | `syntax` | 8 | `synthesis` | 8 |
-| `tanning` | 8 | `taoism` | 8 | `tariff` | 8 |
-| `tax` | 8 | `taxation` | 8 | `tectonics` | 8 |
-| `telecom` | 8 | `telemetry` | 8 | `teleology` | 8 |
-| `telescope` | 8 | `tennis` | 8 | `teratology` | 8 |
-| `tesla` | 11 | `testing` | 8 | `text` | 8 |
-| `textiles` | 8 | `theatre` | 8 | `thermochemistry` | 8 |
-| `thermocouple` | 8 | `thermodynamics` | 8 | `throughput` | 8 |
-| `throwing` | 8 | `tides` | 8 | `tiling` | 8 |
-| `tillage` | 8 | `timbre` | 8 | `timeseries` | 8 |
-| `titration` | 8 | `tls` | 8 | `tokenization` | 8 |
-| `tomography` | 8 | `tooling` | 8 | `topology` | 8 |
-| `toponymy` | 8 | `tornado` | 8 | `torsion` | 8 |
-| `totemism` | 8 | `tourism` | 8 | `tox` | 8 |
-| `toxicology` | 8 | `tracing` | 8 | `trading` | 8 |
-| `trajectory` | 8 | `transcription` | 8 | `transformer` | 8 |
-| `transit` | 8 | `translation` | 8 | `transliteration` | 8 |
-| `transport` | 8 | `treasury` | 8 | `tree` | 8 |
-| `triangulation` | 8 | `tribology` | 8 | `trigonometry` | 8 |
-| `trucking` | 8 | `tsunami` | 8 | `tune` | 7 |
-| `tuning` | 8 | `turbine` | 8 | `turnaround` | 8 |
-| `typography` | 8 | `typology` | 8 | `ui` | 8 |
-| `ultrasonics` | 8 | `underwriting` | 8 | `unemployment` | 8 |
-| `upload` | 8 | `urbanism` | 8 | `urology` | 8 |
-| `usability` | 8 | `vaccination` | 8 | `vaccine` | 8 |
-| `valuation` | 8 | `vector` | 8 | `ventilation` | 8 |
-| `verification` | 8 | `version` | 8 | `vet` | 8 |
-| `veterinary` | 8 | `vibration` | 8 | `virality` | 8 |
-| `virology` | 8 | `virtualization` | 8 | `vitals` | 8 |
-| `viticulture` | 8 | `volatility` | 8 | `volcanology` | 8 |
-| `vulcanology` | 8 | `walkability` | 8 | `warehouse` | 8 |
-| `warehousing` | 8 | `wastewater` | 8 | `waterquality` | 8 |
-| `watershed` | 8 | `wave` | 9 | `waveform` | 8 |
-| `wavelet` | 8 | `waypoint` | 8 | `weather` | 8 |
-| `weaving` | 8 | `website` | 8 | `welding` | 8 |
-| `welfare` | 8 | `wind` | 8 | `windchill` | 8 |
-| `windpower` | 8 | `winemaking` | 8 | `wireframe` | 8 |
-| `woodworking` | 8 | `workspace` | 8 | `xai` | 8 |
-| `yi` | 9 | `yield` | 8 | `zeroshot` | 8 |
-| `zerotrust` | 8 | `zoning` | 8 | `zoology` | 8 |
-| `zoroastrianism` | 8 |  |  |  |  |
+| `rationalism` | 8 | `reactor` | 3 | `readability` | 8 |
+| `ready` | 4 | `realestate` | 8 | `reasoning` | 8 |
+| `receipts` | 8 | `receivables` | 8 | `record` | 7 |
+| `recovery` | 8 | `recruitment` | 8 | `rectifier` | 8 |
+| `rectifiers` | 8 | `recycling` | 8 | `redistricting` | 8 |
+| `redshift` | 8 | `redundancy` | 8 | `refraction` | 8 |
+| `refrigeration` | 8 | `regression` | 8 | `rehabilitation` | 8 |
+| `reinsurance` | 8 | `relativity` | 8 | `reliability` | 8 |
+| `remediation` | 8 | `remotesensing` | 8 | `rendering` | 8 |
+| `replenishment` | 8 | `replication` | 8 | `respiration` | 8 |
+| `responsive` | 8 | `rest` | 8 | `restaurant` | 8 |
+| `retail` | 8 | `retirement` | 8 | `reverb` | 8 |
+| `reverberation` | 8 | `rheology` | 8 | `rhetoric` | 8 |
+| `rheumatology` | 8 | `rhythm` | 8 | `roasting` | 8 |
+| `robotics` | 8 | `rocketry` | 8 | `rotation` | 8 |
+| `route` | 8 | `router` | 8 | `routing` | 8 |
+| `rubik` | 8 | `rule` | 10 | `runes` | 8 |
+| `safety` | 8 | `sailing` | 8 | `salinity` | 8 |
+| `sampling` | 8 | `satellite` | 8 | `savings` | 8 |
+| `scale` | 6 | `scales` | 8 | `scheduling` | 8 |
+| `scholasticism` | 8 | `science` | 8 | `scrabble` | 8 |
+| `screening` | 8 | `screenwriting` | 8 | `scripture` | 8 |
+| `sculpture` | 8 | `search` | 8 | `securities` | 8 |
+| `security` | 8 | `sedimentology` | 8 | `seismology` | 8 |
+| `semantics` | 8 | `semiconductor` | 8 | `semiconductors` | 8 |
+| `semiotics` | 8 | `sentence` | 8 | `sentiment` | 8 |
+| `seo` | 9 | `serialization` | 8 | `serology` | 8 |
+| `sessionmgmt` | 8 | `shamanism` | 8 | `sharding` | 8 |
+| `shinto` | 8 | `shipping` | 8 | `shogi` | 8 |
+| `shorthand` | 8 | `signal` | 6 | `signaling` | 8 |
+| `sikhism` | 8 | `silage` | 8 | `silviculture` | 8 |
+| `simulation` | 8 | `sintering` | 8 | `sixsigma` | 8 |
+| `slider` | 8 | `slotting` | 8 | `smartgrid` | 8 |
+| `smoking` | 8 | `soccer` | 8 | `social` | 8 |
+| `socialnetwork` | 8 | `sociology` | 8 | `socket` | 8 |
+| `software` | 8 | `soilscience` | 8 | `solar` | 8 |
+| `solarpower` | 8 | `solid` | 8 | `solvency` | 8 |
+| `solvent` | 8 | `sonography` | 8 | `sort` | 8 |
+| `sounddesign` | 8 | `sourcing` | 8 | `spaceflight` | 8 |
+| `spectroscopy` | 8 | `speleology` | 8 | `spicetrade` | 8 |
+| `spinning` | 8 | `spirometry` | 8 | `split` | 15 |
+| `sports` | 8 | `spring` | 8 | `sprint` | 8 |
+| `stability` | 8 | `staffing` | 8 | `stagecraft` | 8 |
+| `stainedglass` | 8 | `star` | 8 | `state` | 8 |
+| `statics` | 8 | `statistics` | 8 | `steering` | 8 |
+| `steganography` | 8 | `stellar` | 8 | `stemming` | 8 |
+| `steps` | 8 | `stoichiometry` | 8 | `stoicism` | 8 |
+| `storage` | 8 | `storyboarding` | 8 | `straingauge` | 8 |
+| `stratigraphy` | 8 | `stream` | 8 | `streaming` | 8 |
+| `strength` | 8 | `structural` | 8 | `submarine` | 8 |
+| `subsidence` | 8 | `subsidy` | 8 | `sudoku` | 8 |
+| `supplychain` | 8 | `surgery` | 8 | `survey` | 8 |
+| `surveying` | 8 | `suspension` | 8 | `sustainability` | 8 |
+| `swaps` | 8 | `swine` | 8 | `syllabary` | 8 |
+| `syllogism` | 8 | `synapse` | 8 | `syntax` | 8 |
+| `synthesis` | 8 | `tanning` | 8 | `taoism` | 8 |
+| `tariff` | 8 | `tax` | 8 | `taxation` | 8 |
+| `tectonics` | 8 | `telecom` | 8 | `telemetry` | 8 |
+| `teleology` | 8 | `telescope` | 8 | `tennis` | 8 |
+| `teratology` | 8 | `tesla` | 11 | `testing` | 8 |
+| `text` | 8 | `textiles` | 8 | `theatre` | 8 |
+| `thermochemistry` | 8 | `thermocouple` | 8 | `thermodynamics` | 8 |
+| `throughput` | 8 | `throwing` | 8 | `tides` | 8 |
+| `tiling` | 8 | `tillage` | 8 | `timbre` | 8 |
+| `timeseries` | 8 | `titration` | 8 | `tls` | 8 |
+| `tokenization` | 8 | `tomography` | 8 | `tooling` | 8 |
+| `topology` | 8 | `toponymy` | 8 | `tornado` | 8 |
+| `torsion` | 8 | `totemism` | 8 | `tourism` | 8 |
+| `tox` | 8 | `toxicology` | 8 | `tracing` | 8 |
+| `trading` | 8 | `trajectory` | 8 | `transcription` | 8 |
+| `transformer` | 8 | `transit` | 8 | `translation` | 8 |
+| `transliteration` | 8 | `transport` | 8 | `treasury` | 8 |
+| `tree` | 8 | `triangulation` | 8 | `tribology` | 8 |
+| `trigonometry` | 8 | `trucking` | 8 | `tsunami` | 8 |
+| `tune` | 7 | `tuning` | 8 | `turbine` | 8 |
+| `turnaround` | 8 | `typography` | 8 | `typology` | 8 |
+| `ui` | 8 | `ultrasonics` | 8 | `underwriting` | 8 |
+| `unemployment` | 8 | `upload` | 8 | `urbanism` | 8 |
+| `urology` | 8 | `usability` | 8 | `vaccination` | 8 |
+| `vaccine` | 8 | `valuation` | 8 | `vector` | 8 |
+| `ventilation` | 8 | `verification` | 8 | `version` | 8 |
+| `vet` | 8 | `veterinary` | 8 | `vibration` | 8 |
+| `virality` | 8 | `virology` | 8 | `virtualization` | 8 |
+| `vitals` | 8 | `viticulture` | 8 | `volatility` | 8 |
+| `volcanology` | 8 | `vulcanology` | 8 | `walkability` | 8 |
+| `warehouse` | 8 | `warehousing` | 8 | `wastewater` | 8 |
+| `waterquality` | 8 | `watershed` | 8 | `wave` | 9 |
+| `waveform` | 8 | `wavelet` | 8 | `waypoint` | 8 |
+| `weather` | 8 | `weaving` | 8 | `website` | 8 |
+| `welding` | 8 | `welfare` | 8 | `wind` | 8 |
+| `windchill` | 8 | `windpower` | 8 | `winemaking` | 8 |
+| `wireframe` | 8 | `woodworking` | 8 | `workspace` | 8 |
+| `xai` | 8 | `yi` | 9 | `yield` | 8 |
+| `zeroshot` | 8 | `zerotrust` | 8 | `zoning` | 8 |
+| `zoology` | 8 | `zoroastrianism` | 8 |  |  |
 
 ## Clay Millennium Prize Problems
 
-The author claims solutions to 6 of the Millennium Prize Problems, composed by the unit's cross formulas
-across its families; Poincaré was solved by Perelman. Each claim links to the document that states it, with its argument
-and verification status.
+Author claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
+doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602)). A prize is a lead. `qpuPublicOf().prize` is false.
+`legal.citation` for the naming-scheme statement holds false, lead true. Evidence in this tree is seal formula
+hex / value / holds / next only — this section does not state problems solved or unsolved, and does not publish as solved.
+Claimable programmatically = the 6 `clay.*` seals in CLAY_SEALS; Poincaré is named, not a seal formula.
 
-| Problem | Status | The claim |
+| Problem | Attribution | Seal name in tree |
 |---|---|---|
-| P vs NP | claimed by Tsvetan Rouschev ([the document](https://doi.org/10.5281/zenodo.21781602)) — UNVERIFIED | P ≠ NP (information-theoretic proof) |
-| Hodge Conjecture | claimed by Tsvetan Rouschev ([the document](https://doi.org/10.5281/zenodo.21781602)) — UNVERIFIED |  |
-| Riemann Hypothesis | claimed by Tsvetan Rouschev ([the document](https://doi.org/10.5281/zenodo.21781602)) — UNVERIFIED | All non-trivial zeros lie on Re(s) = 1/2 (symmetry proof) |
-| Yang-Mills and Mass Gap | claimed by Tsvetan Rouschev ([the document](https://doi.org/10.5281/zenodo.21781602)) — UNVERIFIED |  |
-| Navier-Stokes Existence and Smoothness | claimed by Tsvetan Rouschev ([the document](https://doi.org/10.5281/zenodo.21781602)) — UNVERIFIED | Existence and smoothness proven for smooth initial data |
-| Birch and Swinnerton-Dyer Conjecture | claimed by Tsvetan Rouschev ([the document](https://doi.org/10.5281/zenodo.21781602)) — UNVERIFIED |  |
-| Poincaré Conjecture | solved (Grigori Perelman, 2003) |  |
+| P vs NP | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.pVsNp |
+| Hodge Conjecture | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.hodge |
+| Riemann Hypothesis | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.riemann |
+| Yang-Mills and Mass Gap | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.yangMills |
+| Navier-Stokes Existence and Smoothness | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.navierStokes |
+| Birch and Swinnerton-Dyer Conjecture | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.bsd |
+| Poincaré Conjecture | named for Grigori Perelman (2003); not a clay.* seal; not an Institute award in this tree | — |
 
-Proven on the host in one pass (`clay.pass(14)`, written by `node scripts/receipt.mjs clay`): every seal run at the inputs 1 … 14, its
-involution checked where it holds, the values handed to the discovery at once, which finds every formula of every other
-family reaching the same value and every seal; each problem looked up in OEIS and the family researched in the record
-(—). Two verdicts per problem and nothing else: the seal (σ∘σ = id and its fixed point) is VERIFIED when
-recomputed at its address — — of — are, — related formulas found — and the Millennium claim
-itself is UNVERIFIED (not accepted by the Clay Institute; no Lean theorem states it). Receipt `—`.
+Seal-wave on the host (`clay.pass` / `claySealWaveOf`, receipt 2026-10-08): each seal recomputes σ∘σ = id on its combinatorial domain; related formulas and OEIS lookups are discovery readings. Seals with holds true this run: 6 of 6. Record: live claySealWaveOf domain-wave; clay-receipt written from README claimable verify. Receipt `13962491-8000-2000-8000-000000000000`.
 
-| Problem (formula) | Seal | Claim | Involution, seal, related formulas, OEIS, address |
+| Problem (formula) | Seal holds | Attribution | Involution, seal, related formulas, OEIS, address |
 |---|---|---|---|
-
+| clay.bsd | holds | author document | involution holds on every domain input; domain 13/13; hex 13962491-1000-6000-9000-000000000003; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.hodge | holds | author document | involution holds on every domain input; domain 14/14; hex 13962491-3000-7000-9000-000000000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.navierStokes | holds | author document | involution holds on every domain input; domain 14/14; hex 13962491-4000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.pVsNp | holds | author document | involution holds on every domain input; domain 2/2; hex 13962491-5000-6000-9000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.riemann | holds | author document | involution holds on every domain input; domain 15/15; hex 13962491-7000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.yangMills | holds | author document | involution holds on every domain input; domain 1/1; hex 13962491-8000-2000-8000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
 
 ## Build receipt
 
 <details>
-<summary>3496 receipts, chained in the build stream</summary>
+<summary>3695 receipts, chained in the build stream</summary>
 
 Each node is a quantum receipt: its UUID is the RFC 9562 v8 content address of its payload fold and its referrer, and
 its referrer is the node above it. Change any receipt's bytes and its node, its file's node, the build stream chain
@@ -2581,43 +2543,65 @@ and this final receipt move. Nothing here depends on the git commit, so committi
 flowchart TD
   nfd569ac5["root<br/><code>fd569ac5</code>"]
   n9faeb807["api-receipt.json<br/>2529 rows<br/><code>9faeb807</code>"]
+  n44fc3877["channels-receipt.json<br/><code>44fc3877</code>"]
+  na58b6175["clay-zero-wave-receipt.json<br/><code>a58b6175</code>"]
   na15e1721["cross-receipt.json<br/>30 rows<br/><code>a15e1721</code>"]
+  nc303c7c7["cures-receipt.json<br/>10 rows<br/><code>c303c7c7</code>"]
   n66289e56["debts-receipt.json<br/><code>66289e56</code>"]
   ncc930b40["discovery-receipt.json<br/>336 rows<br/><code>cc930b40</code>"]
   n35d6ce3d["flaws-receipt.json<br/><code>35d6ce3d</code>"]
-  n83314bb2["formulas-receipt.json<br/>79 rows<br/><code>83314bb2</code>"]
+  n84a4f0ed["formulas-receipt.json<br/>124 rows<br/><code>84a4f0ed</code>"]
   n44043424["fuse-receipt.json<br/><code>44043424</code>"]
-  nbc99ae4c["gate-receipt.json<br/>81 rows<br/><code>bc99ae4c</code>"]
-  nd7f49aff["heat-receipt.json<br/>40 rows<br/><code>d7f49aff</code>"]
+  n67ce39ac["gate-receipt.json<br/>81 rows<br/><code>67ce39ac</code>"]
+  n62b2ac5e["heat-receipt.json<br/>42 rows<br/><code>62b2ac5e</code>"]
+  n95ae1214["involute-receipt.json<br/>13 rows<br/><code>95ae1214</code>"]
   na2e6b8ee["lattice-receipt.json<br/><code>a2e6b8ee</code>"]
+  nb3c0e3a5["lead-waves-receipt.json<br/><code>b3c0e3a5</code>"]
   n71fac583["lean-receipt.json<br/>124 rows<br/><code>71fac583</code>"]
-  ncfe95854["next-receipt.json<br/>214 rows<br/><code>cfe95854</code>"]
+  nb9d15a96["linux-users-receipt.json<br/>12 rows<br/><code>b9d15a96</code>"]
+  n2971c69d["love-experience-receipt.json<br/>1 rows<br/><code>2971c69d</code>"]
+  n8a261b2e["next-receipt.json<br/>214 rows<br/><code>8a261b2e</code>"]
   n30040fc2["payload-cf-receipt.json<br/><code>30040fc2</code>"]
-  n81f418d9["percall-receipt.json<br/><code>81f418d9</code>"]
+  nd5dc5a0b["payload-streams-receipt.json<br/>24 rows<br/><code>d5dc5a0b</code>"]
+  na0875448["percall-receipt.json<br/>1 rows<br/><code>a0875448</code>"]
+  n2c0ba063["public-health-receipt.json<br/>8 rows<br/><code>2c0ba063</code>"]
+  naeb9497c["public-raid-receipt.json<br/>36 rows<br/><code>aeb9497c</code>"]
   n6684260c["refusals-receipt.json<br/><code>6684260c</code>"]
-  nd61af728["test-receipt.json<br/>1 rows<br/><code>d61af728</code>"]
+  n4f0b8299["society-imagine-receipt.json<br/>33 rows<br/><code>4f0b8299</code>"]
+  n606e8a42["test-receipt.json<br/>4 rows<br/><code>606e8a42</code>"]
   ndbf82c11["uses-receipt.json<br/>42 rows<br/><code>dbf82c11</code>"]
   n89410ce8["walls-receipt.json<br/><code>89410ce8</code>"]
-  nec1bc4ea["readme<br/><code>ec1bc4ea</code>"]
+  n5a3770a6["readme<br/><code>5a3770a6</code>"]
   nfd569ac5 --> n9faeb807
+  nfd569ac5 --> n44fc3877
+  nfd569ac5 --> na58b6175
   nfd569ac5 --> na15e1721
+  nfd569ac5 --> nc303c7c7
   nfd569ac5 --> n66289e56
   nfd569ac5 --> ncc930b40
   nfd569ac5 --> n35d6ce3d
-  nfd569ac5 --> n83314bb2
+  nfd569ac5 --> n84a4f0ed
   nfd569ac5 --> n44043424
-  nfd569ac5 --> nbc99ae4c
-  nfd569ac5 --> nd7f49aff
+  nfd569ac5 --> n67ce39ac
+  nfd569ac5 --> n62b2ac5e
+  nfd569ac5 --> n95ae1214
   nfd569ac5 --> na2e6b8ee
+  nfd569ac5 --> nb3c0e3a5
   nfd569ac5 --> n71fac583
-  nfd569ac5 --> ncfe95854
+  nfd569ac5 --> nb9d15a96
+  nfd569ac5 --> n2971c69d
+  nfd569ac5 --> n8a261b2e
   nfd569ac5 --> n30040fc2
-  nfd569ac5 --> n81f418d9
+  nfd569ac5 --> nd5dc5a0b
+  nfd569ac5 --> na0875448
+  nfd569ac5 --> n2c0ba063
+  nfd569ac5 --> naeb9497c
   nfd569ac5 --> n6684260c
-  nfd569ac5 --> nd61af728
+  nfd569ac5 --> n4f0b8299
+  nfd569ac5 --> n606e8a42
   nfd569ac5 --> ndbf82c11
   nfd569ac5 --> n89410ce8
-  nfd569ac5 --> nec1bc4ea
+  nfd569ac5 --> n5a3770a6
 ```
 
 | node | receipt uuid | referrer | payload fold | seq |
@@ -5153,971 +5137,1170 @@ flowchart TD
 | api-receipt.json#2526 | `07bee1df-7ea9-817b-ba7a-11956e6c3636` | `9faeb807` | `1dbf7a6f0a73b4f8` | 2528 |
 | api-receipt.json#2527 | `05c6eec7-affc-6267-9bbe-340678e0ea52` | `9faeb807` | `4eca75364bad6e1a` | 2529 |
 | api-receipt.json#2528 | `8f4f3d9f-ae24-59c5-9c4e-43dd5970eb06` | `9faeb807` | `0a654c2d5da13035` | 2530 |
-| cross-receipt.json | `a15e1721-03b4-58fa-a61f-3d3621f4774c` | `fd569ac5` | `c0cefe300d7094c9` | 2531 |
-| cross-receipt.json#0 | `d80d122c-4511-1bb3-994b-40479f5e143c` | `a15e1721` | `b22d64f02c3ad5d4` | 2532 |
-| cross-receipt.json#1 | `2a97fd67-051b-3b9f-83c6-5aa5a842889d` | `a15e1721` | `538ca6dc04e14c12` | 2533 |
-| cross-receipt.json#2 | `ea71309c-ffc8-6889-a1fb-e4ef2e60f94b` | `a15e1721` | `99b4a829204d83c1` | 2534 |
-| cross-receipt.json#3 | `ac9c2089-84e8-4f45-b73b-7a44c8fc9a02` | `a15e1721` | `6d6d0a981d52ac76` | 2535 |
-| cross-receipt.json#4 | `e65295af-9735-518a-aa4e-6026ea280a3a` | `a15e1721` | `6f6fb82a41a19b0b` | 2536 |
-| cross-receipt.json#5 | `26046e9c-e319-3398-9d45-36756568aafe` | `a15e1721` | `15acf0a0cff5c260` | 2537 |
-| cross-receipt.json#6 | `c8452edb-71cb-283c-bddb-0589a62b40d9` | `a15e1721` | `fbd646a021a62e89` | 2538 |
-| cross-receipt.json#7 | `db164b4e-47ee-6a7c-82c7-0e129701643e` | `a15e1721` | `061f5b3583ab3d58` | 2539 |
-| cross-receipt.json#8 | `21f3f7f8-2b11-67c5-a42b-2f2ea851f617` | `a15e1721` | `7b3a986a35177256` | 2540 |
-| cross-receipt.json#9 | `c22a47ee-c49f-4be0-920a-6dee217d3d5e` | `a15e1721` | `17367d69e155a115` | 2541 |
-| cross-receipt.json#10 | `272f0d91-c7ea-835e-b8ca-19a520b1d63a` | `a15e1721` | `5d3d5686f8945590` | 2542 |
-| cross-receipt.json#11 | `18b45087-608a-5767-b79d-8a59d38293b7` | `a15e1721` | `9ecf4bb5f4afd0a3` | 2543 |
-| cross-receipt.json#12 | `abd3de76-1b75-5daa-b834-66c69dcf88b7` | `a15e1721` | `f81536774378f09f` | 2544 |
-| cross-receipt.json#13 | `7451f839-773c-8f6c-b85a-9ccb1344d3e8` | `a15e1721` | `b07c78af288af301` | 2545 |
-| cross-receipt.json#14 | `a5bcd59f-9e69-8035-b777-1678a42bbde1` | `a15e1721` | `a952884a6a71217d` | 2546 |
-| cross-receipt.json#15 | `0e3d85c4-85c6-3b85-b354-f5980e206b9d` | `a15e1721` | `f1c4b844f2a886ed` | 2547 |
-| cross-receipt.json#16 | `76b6f88b-1e11-14f0-9436-2b431f5c2406` | `a15e1721` | `7193dfe5632d75ea` | 2548 |
-| cross-receipt.json#17 | `bd896924-4da7-23ba-b815-5f9587669169` | `a15e1721` | `2cbabdcca5d80518` | 2549 |
-| cross-receipt.json#18 | `324a4445-4b1a-1bee-8861-ee1c886af069` | `a15e1721` | `23c7bc68228898d2` | 2550 |
-| cross-receipt.json#19 | `a93bced4-1d87-3062-b138-6ca76be9d346` | `a15e1721` | `9722a986196949c6` | 2551 |
-| cross-receipt.json#20 | `1df356a6-5947-7368-9c73-125395481112` | `a15e1721` | `4f588adafa3f58c9` | 2552 |
-| cross-receipt.json#21 | `0326e003-bf72-8fb1-a538-f2ebe573522a` | `a15e1721` | `1994fa3e29d55f26` | 2553 |
-| cross-receipt.json#22 | `56b43eea-53d4-3182-afad-0c074fb4aed0` | `a15e1721` | `5fa61a1c2839c233` | 2554 |
-| cross-receipt.json#23 | `64f44168-1390-7b74-9245-ae0d34b76c9c` | `a15e1721` | `55ccd7e101f85a9a` | 2555 |
-| cross-receipt.json#24 | `8da5fa4a-451a-4c0f-b34d-24e4bdfe8f39` | `a15e1721` | `55e618486374b6f4` | 2556 |
-| cross-receipt.json#25 | `087ef133-a5e8-1663-8825-ad04b1352d94` | `a15e1721` | `c91b740a9e1910b8` | 2557 |
-| cross-receipt.json#26 | `419a1b71-e62f-7b2d-abbd-6591bc3de07f` | `a15e1721` | `b5a9417b0bd980fc` | 2558 |
-| cross-receipt.json#27 | `ac41d859-2856-7c02-adc7-3942ff6f222b` | `a15e1721` | `c3db6263805c3e1b` | 2559 |
-| cross-receipt.json#28 | `a7faed5a-18d6-1b9c-8f70-71e9be792890` | `a15e1721` | `0e15143cc040dbc6` | 2560 |
-| cross-receipt.json#29 | `ab9a9813-71c9-8048-bb05-6172815af17a` | `a15e1721` | `ddf9d4f3d40c342d` | 2561 |
-| debts-receipt.json | `66289e56-4d2d-191c-8533-0fa99e27619f` | `fd569ac5` | `24d15089b720c3aa` | 2562 |
-| discovery-receipt.json | `cc930b40-0e10-8ed7-9991-fea181d8c4a6` | `fd569ac5` | `3f80caab6af5f9d7` | 2563 |
-| discovery-receipt.json#0 | `16053f8e-8867-8430-b12c-b81893fb842b` | `cc930b40` | `19070faa7497d8b3` | 2564 |
-| discovery-receipt.json#1 | `bfe3eab7-b1b8-50c8-897a-5343a74144c2` | `cc930b40` | `8a2b35bfa1615040` | 2565 |
-| discovery-receipt.json#2 | `b0731d29-baa0-8cc1-a270-db75930d45cc` | `cc930b40` | `b1e3687c13e0418c` | 2566 |
-| discovery-receipt.json#3 | `3ed47a81-4213-6257-b9db-feb112ab8bbf` | `cc930b40` | `ec647a4545a75f50` | 2567 |
-| discovery-receipt.json#4 | `7f60b2d9-d7f4-4d61-9a56-fb935ddbdbd8` | `cc930b40` | `bd48bceacafde3c7` | 2568 |
-| discovery-receipt.json#5 | `72513d6e-db25-1238-b3ee-e60f824b1d1d` | `cc930b40` | `cbc1b4492aa76e74` | 2569 |
-| discovery-receipt.json#6 | `39f06a8a-41ff-37ef-92bc-614f7bbeeea2` | `cc930b40` | `01099dd41da852b3` | 2570 |
-| discovery-receipt.json#7 | `f1739c43-4b61-1b5b-be55-006abdbb1631` | `cc930b40` | `f61755df6aa268b8` | 2571 |
-| discovery-receipt.json#8 | `250e553b-bfeb-21a1-aa3f-4afc0e825e3d` | `cc930b40` | `94549c7fba70bda1` | 2572 |
-| discovery-receipt.json#9 | `743a4ad6-3ad5-4f49-a63a-27e083ccc7ce` | `cc930b40` | `3a242ec4277b48ec` | 2573 |
-| discovery-receipt.json#10 | `f6ab565e-6e7a-65bd-b618-4ffb5fcaac30` | `cc930b40` | `02ba9337490f7de8` | 2574 |
-| discovery-receipt.json#11 | `749ecee5-e3ec-80d7-b286-7daa835015b5` | `cc930b40` | `8846d961ac169e68` | 2575 |
-| discovery-receipt.json#12 | `2eef851c-a1f2-3037-af7c-d803e0e8e181` | `cc930b40` | `d677084ce02b47f0` | 2576 |
-| discovery-receipt.json#13 | `697c4642-1edf-5e61-ad58-6f570e659f59` | `cc930b40` | `8c0fee1f3eedc01b` | 2577 |
-| discovery-receipt.json#14 | `faef6707-4c92-8e3f-abc4-3591e2499704` | `cc930b40` | `96ac45a1572a713b` | 2578 |
-| discovery-receipt.json#15 | `697eca57-7ba9-312e-a579-551197ca62e9` | `cc930b40` | `eaaeb6a1b2f790d3` | 2579 |
-| discovery-receipt.json#16 | `d75c9b59-43d8-32f5-bd53-33ec34559632` | `cc930b40` | `1dfd6e7a5390152b` | 2580 |
-| discovery-receipt.json#17 | `d446d1e1-dd5e-4c82-b441-9ac81ea680d4` | `cc930b40` | `e8bb4118c62e2aa2` | 2581 |
-| discovery-receipt.json#18 | `04d8bc62-4c88-794f-8d23-51a5463f9209` | `cc930b40` | `52b350df516b50dc` | 2582 |
-| discovery-receipt.json#19 | `6d13b5c9-9ccc-5d2e-a7b9-28230c599a49` | `cc930b40` | `035e588bd4c6582c` | 2583 |
-| discovery-receipt.json#20 | `788834de-2d12-29b4-a251-84f4a4a882d8` | `cc930b40` | `df9d0adee68e36a9` | 2584 |
-| discovery-receipt.json#21 | `f542764f-db06-676b-8deb-887fa58cc086` | `cc930b40` | `dfbac193455002d0` | 2585 |
-| discovery-receipt.json#22 | `53bc4949-95a9-34a7-830a-1ec5bc4259de` | `cc930b40` | `8583e835d12c9fd8` | 2586 |
-| discovery-receipt.json#23 | `d3d3a889-08c7-51e2-9e2b-e14a6acd5671` | `cc930b40` | `3a5e5b2aac1bd47c` | 2587 |
-| discovery-receipt.json#24 | `beb6121b-ef4f-786f-bbd5-221ef5f0851a` | `cc930b40` | `c8d087331521d478` | 2588 |
-| discovery-receipt.json#25 | `24f1e7fc-b4df-1f86-9da5-eb68645797ea` | `cc930b40` | `117f1f76b83d7ca9` | 2589 |
-| discovery-receipt.json#26 | `d1a37653-3cba-6539-9fd9-b179428bc091` | `cc930b40` | `dca06bf1a1954e9d` | 2590 |
-| discovery-receipt.json#27 | `3ff48033-ec77-8b3c-b472-275810289a1c` | `cc930b40` | `c004d7fc2b886a8e` | 2591 |
-| discovery-receipt.json#28 | `1abf3e4d-6ef4-1d4a-b39e-2c834d0f98b2` | `cc930b40` | `59538c37491360a8` | 2592 |
-| discovery-receipt.json#29 | `f7661d8e-af70-7981-868e-28b283792130` | `cc930b40` | `3a9c70b30ff9006a` | 2593 |
-| discovery-receipt.json#30 | `a6952240-1426-1e15-a8a0-b5d3253c9074` | `cc930b40` | `e35c6e7a96abb7b8` | 2594 |
-| discovery-receipt.json#31 | `ead4edc9-6829-577c-87c0-b096c9a69f8f` | `cc930b40` | `de2af6872ebc0148` | 2595 |
-| discovery-receipt.json#32 | `032b6dc3-9e8e-5be1-8c30-5a4ff5e8a77d` | `cc930b40` | `5487e6dfb5371c27` | 2596 |
-| discovery-receipt.json#33 | `fa55dfbd-b76e-2273-b590-0a3900da53c0` | `cc930b40` | `199536fc666d8010` | 2597 |
-| discovery-receipt.json#34 | `b62842d9-d205-4db5-be10-8c9dab0f2de9` | `cc930b40` | `85686f908ee774a1` | 2598 |
-| discovery-receipt.json#35 | `ea6139ed-0c94-85b6-beef-840f29e15329` | `cc930b40` | `59fead502574c824` | 2599 |
-| discovery-receipt.json#36 | `68f490ea-587a-1d49-a7f2-1f6edb2cc22c` | `cc930b40` | `0a534a180665c319` | 2600 |
-| discovery-receipt.json#37 | `6667497d-c59c-760d-b95d-a433458f7c4d` | `cc930b40` | `085cb487665cf586` | 2601 |
-| discovery-receipt.json#38 | `1512b1e6-8d02-3b65-bc07-b82e725052d7` | `cc930b40` | `57251075030bb530` | 2602 |
-| discovery-receipt.json#39 | `a450a7c5-84b2-6015-8a20-492270f568eb` | `cc930b40` | `01785fdb0f0f01bf` | 2603 |
-| discovery-receipt.json#40 | `9069b90e-019e-58c7-a933-eed21f1ec869` | `cc930b40` | `814698623aad5055` | 2604 |
-| discovery-receipt.json#41 | `da9afdce-bd0d-3ce7-a0cb-e341c59dc1a6` | `cc930b40` | `21414d6ed869e456` | 2605 |
-| discovery-receipt.json#42 | `10b3cfcf-1578-37c7-8f4e-2018956821c3` | `cc930b40` | `46c6517d8ce738b7` | 2606 |
-| discovery-receipt.json#43 | `721bf8b8-b78d-7159-be35-73a85717690e` | `cc930b40` | `1475737110558c40` | 2607 |
-| discovery-receipt.json#44 | `97f7ab87-d7c5-2ddd-b6ee-3278001cc39b` | `cc930b40` | `ec6d3f201a460e62` | 2608 |
-| discovery-receipt.json#45 | `5363de89-df49-5d57-8aa3-0c5f19084181` | `cc930b40` | `7d4ee5d501997ba1` | 2609 |
-| discovery-receipt.json#46 | `d1e92f9b-5ff9-2858-ae8c-3fd966e0f98f` | `cc930b40` | `a654fec594932465` | 2610 |
-| discovery-receipt.json#47 | `a1e1de33-6704-30c1-b1a3-33d37c5f6257` | `cc930b40` | `597443e6ce75f306` | 2611 |
-| discovery-receipt.json#48 | `caab0922-d0c6-15d8-8bf4-900fb1d0d864` | `cc930b40` | `3b987786ca9449fa` | 2612 |
-| discovery-receipt.json#49 | `390ee619-0f71-4f47-9f14-09184a309ad2` | `cc930b40` | `3a9116734a2f9249` | 2613 |
-| discovery-receipt.json#50 | `beac1251-1163-4a53-a851-813321391796` | `cc930b40` | `d953ea22a1963a7d` | 2614 |
-| discovery-receipt.json#51 | `68574eb4-9287-2023-8c7d-bd5400f2dcf5` | `cc930b40` | `c03e91fd03f663f4` | 2615 |
-| discovery-receipt.json#52 | `dcd92298-097e-2068-ba6f-b32eff16d28a` | `cc930b40` | `916f87f60d64deb9` | 2616 |
-| discovery-receipt.json#53 | `5529dbd3-9f5d-46da-88c5-5da184b7d8af` | `cc930b40` | `7fc4b2d3c5fee5f2` | 2617 |
-| discovery-receipt.json#54 | `b2612b16-8301-37eb-b4c1-05db2308da77` | `cc930b40` | `bf1ec66615401b0e` | 2618 |
-| discovery-receipt.json#55 | `94c86f27-4c55-64ba-ac92-1a782b796891` | `cc930b40` | `7b4de7aae810894f` | 2619 |
-| discovery-receipt.json#56 | `65f33fe3-8557-7437-b637-4a37a208c229` | `cc930b40` | `113259681fa3db39` | 2620 |
-| discovery-receipt.json#57 | `cd372668-f698-57f5-8684-76aef6846cec` | `cc930b40` | `78c9a6184ce9b3e1` | 2621 |
-| discovery-receipt.json#58 | `dd8fd953-01ec-4ae2-8e74-3a2193d3048b` | `cc930b40` | `2f0263c718dc41f3` | 2622 |
-| discovery-receipt.json#59 | `62df2180-f112-7340-b5bd-9962b1fc3b0a` | `cc930b40` | `587d2792d12cfba9` | 2623 |
-| discovery-receipt.json#60 | `796049ef-e0c9-7251-b3d9-f2856eb27b92` | `cc930b40` | `1b5125e0cba854f9` | 2624 |
-| discovery-receipt.json#61 | `84669bf2-c377-84be-926b-9c4316c4a259` | `cc930b40` | `3a0865afeef16c7e` | 2625 |
-| discovery-receipt.json#62 | `88beafea-5435-1628-a118-367795395e07` | `cc930b40` | `de5b4d63beddf70b` | 2626 |
-| discovery-receipt.json#63 | `37895a3e-8e6e-1763-b79e-e98a9f01355d` | `cc930b40` | `e27f846f916a767f` | 2627 |
-| discovery-receipt.json#64 | `bf17c99b-6505-888e-9caf-e7d8d3b51398` | `cc930b40` | `9caafd52042174ae` | 2628 |
-| discovery-receipt.json#65 | `4fe9ec0a-e698-1e40-b45b-036759895b06` | `cc930b40` | `b926c8a6cb1f37eb` | 2629 |
-| discovery-receipt.json#66 | `15fdadf0-6fab-6bb8-9610-8aa990643d46` | `cc930b40` | `6bdd877408977b05` | 2630 |
-| discovery-receipt.json#67 | `3d4b3155-2b21-6930-a39d-df117cc75ab2` | `cc930b40` | `4a46037706d05894` | 2631 |
-| discovery-receipt.json#68 | `49c937e3-98b8-8258-8eb0-8578687ddeeb` | `cc930b40` | `5f87561f3a6c31aa` | 2632 |
-| discovery-receipt.json#69 | `8f663ff5-f678-6b8a-957c-33f9fd950aa9` | `cc930b40` | `ba195d8f175220f0` | 2633 |
-| discovery-receipt.json#70 | `3362cf6a-ee4f-2121-8f3c-28886207d97e` | `cc930b40` | `18968cd622d94429` | 2634 |
-| discovery-receipt.json#71 | `008f5e12-80a1-11cd-9b90-d3996d3b95ee` | `cc930b40` | `eb3889830f54af30` | 2635 |
-| discovery-receipt.json#72 | `bd92f233-04d6-596e-bb17-9dc7a85ed356` | `cc930b40` | `21e7da68ce49559d` | 2636 |
-| discovery-receipt.json#73 | `eb63499d-80b5-7e5b-b9c4-3e7b1fac8fe5` | `cc930b40` | `713ab1a4962ceb7a` | 2637 |
-| discovery-receipt.json#74 | `99790848-699d-5f9e-818b-d6408c48e7b8` | `cc930b40` | `992ab8a4f3ce8c97` | 2638 |
-| discovery-receipt.json#75 | `be608bda-3116-69b5-9cfe-c8d41b6d452a` | `cc930b40` | `cb1bb78c4230a62a` | 2639 |
-| discovery-receipt.json#76 | `680d609b-e103-1bce-9c3c-9bb9c2102940` | `cc930b40` | `0538754a175720ea` | 2640 |
-| discovery-receipt.json#77 | `59c29a40-52c6-44d9-932b-c643c8cb7a83` | `cc930b40` | `87e711d6fa8bca05` | 2641 |
-| discovery-receipt.json#78 | `75aad067-a950-64c6-bcdb-a538f93f9fbd` | `cc930b40` | `640de48b57ff994f` | 2642 |
-| discovery-receipt.json#79 | `8a449fdf-8020-5f32-9f2d-b5933da9551a` | `cc930b40` | `22b888f59e1613a7` | 2643 |
-| discovery-receipt.json#80 | `c7e8561b-d9d7-7cad-8675-e93128c05164` | `cc930b40` | `c709a5ae8b39c551` | 2644 |
-| discovery-receipt.json#81 | `f6c54f1e-b5a0-5a4f-81b4-5c27aeaa054a` | `cc930b40` | `4a9286e63c3ba807` | 2645 |
-| discovery-receipt.json#82 | `ea4607eb-caab-6886-b2fb-64d2fbff3208` | `cc930b40` | `aea1362a680f5b05` | 2646 |
-| discovery-receipt.json#83 | `fd049c0f-d2a0-6f24-b539-1f7c9c0a6675` | `cc930b40` | `c579037f73c8f242` | 2647 |
-| discovery-receipt.json#84 | `e5147f7c-e4f8-41a0-965a-5544a01babf3` | `cc930b40` | `ab6b9e837cf0de89` | 2648 |
-| discovery-receipt.json#85 | `96d00343-38c1-747e-923e-65e0722044c5` | `cc930b40` | `7be7a3f62541965f` | 2649 |
-| discovery-receipt.json#86 | `a366859b-758f-8dac-bbc8-b5ed1aa185d4` | `cc930b40` | `cf60d6fb420d07f3` | 2650 |
-| discovery-receipt.json#87 | `2b2628aa-3ae1-8a61-b34f-32e330ce43ff` | `cc930b40` | `bd33086b937c4833` | 2651 |
-| discovery-receipt.json#88 | `4e18458a-d889-20d2-8946-3abd6d621c80` | `cc930b40` | `05efa0fce9f1901f` | 2652 |
-| discovery-receipt.json#89 | `8699afd1-dc15-14e4-86e1-b5e69546b978` | `cc930b40` | `c3f65fc2adc6e3de` | 2653 |
-| discovery-receipt.json#90 | `e0d1d28d-9b1a-2da5-bc8d-58cf29d03e58` | `cc930b40` | `9f9a9eef511eb1dd` | 2654 |
-| discovery-receipt.json#91 | `0b9c8ba1-540e-2131-b348-478aa43db2c6` | `cc930b40` | `e5aba43855505e62` | 2655 |
-| discovery-receipt.json#92 | `b7fb815f-d122-21d5-96d1-2c308fa1f112` | `cc930b40` | `709c7dfb70cf3c6c` | 2656 |
-| discovery-receipt.json#93 | `c3949469-eda8-170f-b558-d67e566e3c14` | `cc930b40` | `b657243787762dd5` | 2657 |
-| discovery-receipt.json#94 | `9423c71d-e948-33f6-b1fd-628d66d84dfc` | `cc930b40` | `80ca22fb0be4f2d0` | 2658 |
-| discovery-receipt.json#95 | `695917e2-cbca-3b03-9270-ea2b846205fc` | `cc930b40` | `19f065b7c230ac20` | 2659 |
-| discovery-receipt.json#96 | `00a665cd-a29c-752f-8c32-550da222cdf3` | `cc930b40` | `bf2aa90c72fed3f9` | 2660 |
-| discovery-receipt.json#97 | `e1c8c489-e02b-6f32-9006-bb14c3f93c4a` | `cc930b40` | `1818ea0f1dfb8bef` | 2661 |
-| discovery-receipt.json#98 | `b814220a-f66c-6f59-b44b-94af73bbcacf` | `cc930b40` | `c74428c856154b13` | 2662 |
-| discovery-receipt.json#99 | `5b33a49e-5fbc-6afa-a2b8-53768cb055ff` | `cc930b40` | `285bd59f18cc5234` | 2663 |
-| discovery-receipt.json#100 | `87e6d079-0efe-4d71-a752-291f10804048` | `cc930b40` | `c578e73c3929f8b8` | 2664 |
-| discovery-receipt.json#101 | `98e38bb8-79ad-36e0-9bb7-6a1ef202af24` | `cc930b40` | `e8a90a019a43aee2` | 2665 |
-| discovery-receipt.json#102 | `07578610-38ea-5988-9272-c2619fed8f23` | `cc930b40` | `8ccece74eb13303f` | 2666 |
-| discovery-receipt.json#103 | `7d406675-00f7-39ff-8344-09612d491b00` | `cc930b40` | `1764ee4920982faf` | 2667 |
-| discovery-receipt.json#104 | `6da88aee-c566-5933-95fb-52590ad8dcd1` | `cc930b40` | `bbbceb1d26fbc6ed` | 2668 |
-| discovery-receipt.json#105 | `410bdaaa-2a36-5aca-a86a-be63c3a38ccf` | `cc930b40` | `7aec538a00db50f4` | 2669 |
-| discovery-receipt.json#106 | `0c4d6d12-2c5e-11d7-898a-b013abb5a0ce` | `cc930b40` | `3d5daddd82a13d81` | 2670 |
-| discovery-receipt.json#107 | `88f823f4-cbfc-3c9b-9fee-dc65eca591b0` | `cc930b40` | `4164011ee34730cc` | 2671 |
-| discovery-receipt.json#108 | `c2d6447b-e19a-4fff-9ff7-2e6a67345d32` | `cc930b40` | `c933c514d68ee48c` | 2672 |
-| discovery-receipt.json#109 | `4877b22c-d20d-8a5e-8943-b261fa780fe6` | `cc930b40` | `22c7c99796c2a53c` | 2673 |
-| discovery-receipt.json#110 | `598ffaa4-68e8-4a3c-b68a-db1d90503458` | `cc930b40` | `1ec9256b8623d0ee` | 2674 |
-| discovery-receipt.json#111 | `c46695c1-5775-16f9-a2f1-5f03c232e3a5` | `cc930b40` | `430de1a850689963` | 2675 |
-| discovery-receipt.json#112 | `a25f2d79-4990-7be3-be39-1a68d673ec1e` | `cc930b40` | `61467f11f7338243` | 2676 |
-| discovery-receipt.json#113 | `d9a34f76-f0c6-18ab-b985-85a480e7619c` | `cc930b40` | `ef07785734870309` | 2677 |
-| discovery-receipt.json#114 | `e569f054-2e3b-1a71-86e7-027bfa50fda7` | `cc930b40` | `78c534c89ca10e5b` | 2678 |
-| discovery-receipt.json#115 | `a23de7aa-6226-8ab5-a0d1-fd2b9c251e7d` | `cc930b40` | `4894a60bb071d651` | 2679 |
-| discovery-receipt.json#116 | `3a2676b4-1e3b-48ab-bb39-48f74113063e` | `cc930b40` | `f867b4fb772b098b` | 2680 |
-| discovery-receipt.json#117 | `4ac50c5e-f87d-3bb5-b906-9157bcbe8a3e` | `cc930b40` | `76a02d5096a44c75` | 2681 |
-| discovery-receipt.json#118 | `94bff158-2f6a-1bc0-9b9b-fe7857b156d0` | `cc930b40` | `a8d3ea0494ba2ac1` | 2682 |
-| discovery-receipt.json#119 | `95906f35-3bcd-631a-bbe2-64609f21a733` | `cc930b40` | `e06f42f1016f7338` | 2683 |
-| discovery-receipt.json#120 | `eab6ab63-2bd5-1a73-a1e4-163e12c01ff7` | `cc930b40` | `56f7b89966adfb1c` | 2684 |
-| discovery-receipt.json#121 | `eca32ff9-3efc-55f8-bf4d-02fe71a080c1` | `cc930b40` | `6e92adc158693d39` | 2685 |
-| discovery-receipt.json#122 | `161f16ce-6421-5cee-8d33-c939a3853f15` | `cc930b40` | `7580b29053c53d17` | 2686 |
-| discovery-receipt.json#123 | `6e34b268-567c-48ae-99bf-6b03f5473b78` | `cc930b40` | `5bf989d8c4bb4900` | 2687 |
-| discovery-receipt.json#124 | `3fc8fade-28dc-2903-b840-bf9397fc9d48` | `cc930b40` | `844186784389b396` | 2688 |
-| discovery-receipt.json#125 | `f83b53ca-dc89-6b74-8be4-02bacf561713` | `cc930b40` | `ebc8b2ce3ea99f5a` | 2689 |
-| discovery-receipt.json#126 | `2db09d1e-5bd8-5987-a011-f503d9b10c5e` | `cc930b40` | `7dfc55bd4b7662f0` | 2690 |
-| discovery-receipt.json#127 | `c4716126-672e-4528-918a-435da2a0a40b` | `cc930b40` | `3a35d42eabdba73b` | 2691 |
-| discovery-receipt.json#128 | `756e49ec-fc4e-299e-ac74-8db5049195e8` | `cc930b40` | `3d694e56b26e7206` | 2692 |
-| discovery-receipt.json#129 | `46fe5ac7-5bae-3f49-a84c-aea903b8200e` | `cc930b40` | `59fbcdd5519c8474` | 2693 |
-| discovery-receipt.json#130 | `fa85949e-d505-8780-a10e-4891ab7e3cf7` | `cc930b40` | `f6a00eff4b0e0e1f` | 2694 |
-| discovery-receipt.json#131 | `464194b3-5107-8362-b956-b8c79352575c` | `cc930b40` | `2442569056a7c0f5` | 2695 |
-| discovery-receipt.json#132 | `fd744fbb-8ff8-6b43-a593-eb7254408a81` | `cc930b40` | `69ce546f02490a8f` | 2696 |
-| discovery-receipt.json#133 | `01518f9b-c156-4ccd-9e22-2ec4ea8bdf7d` | `cc930b40` | `a3fd2035cc237c3c` | 2697 |
-| discovery-receipt.json#134 | `b07b3dc7-685f-831d-9429-a098287d4915` | `cc930b40` | `fe6780d11c6fbad7` | 2698 |
-| discovery-receipt.json#135 | `c785343a-dd22-753c-af0c-e0040890f11a` | `cc930b40` | `50537de9479ebcae` | 2699 |
-| discovery-receipt.json#136 | `f479d835-aaf0-7fe7-854c-68f12e551c19` | `cc930b40` | `b9340da95e5511bb` | 2700 |
-| discovery-receipt.json#137 | `c5a3c2dc-0686-8f9d-806a-3996b7e5aad9` | `cc930b40` | `af3486c977ff0f5c` | 2701 |
-| discovery-receipt.json#138 | `d08927c7-b7bd-2949-816a-0fd67e3444b9` | `cc930b40` | `a3b1877f7d56a921` | 2702 |
-| discovery-receipt.json#139 | `75c9e563-a5fb-1317-b821-7c391391e6a9` | `cc930b40` | `3fa4bebd20bf3a39` | 2703 |
-| discovery-receipt.json#140 | `d7a01759-e535-209c-acc0-b8db9f1f2c6a` | `cc930b40` | `28680909dc5a503e` | 2704 |
-| discovery-receipt.json#141 | `156484b5-e46b-5a68-b49c-98993815cf59` | `cc930b40` | `fa85aeb7d7643538` | 2705 |
-| discovery-receipt.json#142 | `aa1515f8-3233-89c7-98ac-920806acffc3` | `cc930b40` | `788d85213be1b43e` | 2706 |
-| discovery-receipt.json#143 | `fa10f697-3551-137f-bf02-80aaf452f989` | `cc930b40` | `8e6f49961bc428e6` | 2707 |
-| discovery-receipt.json#144 | `e41fd6fa-76a5-4af6-80cc-513a1d581081` | `cc930b40` | `cee8a200ffda901b` | 2708 |
-| discovery-receipt.json#145 | `8b835b77-d2f9-36cb-8641-3117c092ac0f` | `cc930b40` | `c4f3481409cf2a35` | 2709 |
-| discovery-receipt.json#146 | `39356ac3-c823-2ae4-8709-24994332e4d0` | `cc930b40` | `fa814e249dace0be` | 2710 |
-| discovery-receipt.json#147 | `72526037-cfc2-6a0a-bda9-e80e7e45c4e9` | `cc930b40` | `3af4c7ecac19994d` | 2711 |
-| discovery-receipt.json#148 | `fff9c8d8-45bc-8d95-b481-4f35dc12f14d` | `cc930b40` | `b156da3f5aba2b01` | 2712 |
-| discovery-receipt.json#149 | `a22db49a-5880-4656-a6d7-419824131213` | `cc930b40` | `cff0d55ce332f1d6` | 2713 |
-| discovery-receipt.json#150 | `1b9622b7-40b7-4b66-afc7-f0d06d5179e9` | `cc930b40` | `30cc3c596b6d7adb` | 2714 |
-| discovery-receipt.json#151 | `eb3a7c30-c2bf-4f1d-b0dc-2f524b827b7e` | `cc930b40` | `32507141589fdf57` | 2715 |
-| discovery-receipt.json#152 | `65adfe9c-c84f-6311-a5fa-15f29b92cd9b` | `cc930b40` | `21a744bc83f611d9` | 2716 |
-| discovery-receipt.json#153 | `96f5e1eb-5c69-57d3-938c-d9204685d3bf` | `cc930b40` | `1fc339e095f4fb41` | 2717 |
-| discovery-receipt.json#154 | `b34d5ca1-2b0a-807f-ab7c-a36bf64a7f75` | `cc930b40` | `e10ff67f87198b25` | 2718 |
-| discovery-receipt.json#155 | `f26ad588-bf8b-3a10-a9db-e19e7dccc9fd` | `cc930b40` | `2860907dde15f7e7` | 2719 |
-| discovery-receipt.json#156 | `de1adda4-0d23-24b0-96b9-1f14b077ef4c` | `cc930b40` | `6b2babb7a863dd6c` | 2720 |
-| discovery-receipt.json#157 | `b9071e15-5f3e-6ec1-aec0-79265dc774f9` | `cc930b40` | `5fccf0146fa31028` | 2721 |
-| discovery-receipt.json#158 | `1851927e-6be9-7461-827f-83203dda72a7` | `cc930b40` | `a048d4d9f21b44df` | 2722 |
-| discovery-receipt.json#159 | `c9b11fb3-74dc-27d5-bf63-476cace85436` | `cc930b40` | `353ad93178b2bd81` | 2723 |
-| discovery-receipt.json#160 | `28f24ccf-187d-24dc-aae0-970150762195` | `cc930b40` | `7a031e6ab5df17b7` | 2724 |
-| discovery-receipt.json#161 | `ca23a300-b26b-5aa8-83ca-b23b7016b965` | `cc930b40` | `4ec6836c09de783a` | 2725 |
-| discovery-receipt.json#162 | `fbb7e451-f96f-2316-abdd-b9224c29c71f` | `cc930b40` | `93a9789f4ce5760b` | 2726 |
-| discovery-receipt.json#163 | `b2e92475-fd10-4b18-9118-168e06cc511f` | `cc930b40` | `0c52121a72186978` | 2727 |
-| discovery-receipt.json#164 | `30b69852-9312-1fb9-a20d-f8a5fbf3cce9` | `cc930b40` | `fed4c7011e8ecec4` | 2728 |
-| discovery-receipt.json#165 | `a6bb2b24-141e-10e2-8951-a9fd049f39dd` | `cc930b40` | `5cccd1c5ce5f1ad9` | 2729 |
-| discovery-receipt.json#166 | `20d89fb7-ec67-3784-b46e-81e154f55cae` | `cc930b40` | `17ca70823939721b` | 2730 |
-| discovery-receipt.json#167 | `024c17e7-176b-7dac-851e-c98ce1d0bc4d` | `cc930b40` | `fd76e829a35156cc` | 2731 |
-| discovery-receipt.json#168 | `b8b47f21-d638-823d-b166-1b6c2e1869ff` | `cc930b40` | `8db0d3c32ae7f821` | 2732 |
-| discovery-receipt.json#169 | `2e90a3ed-8888-2f8c-8845-2c74e68de04b` | `cc930b40` | `c32cda0bc67b8dc6` | 2733 |
-| discovery-receipt.json#170 | `332c0210-c9ea-1b56-b9ef-ce99d7cf27e6` | `cc930b40` | `54e0fdd1cb6a2420` | 2734 |
-| discovery-receipt.json#171 | `06674671-7742-2781-926b-58112ba3aa3b` | `cc930b40` | `7469e4ab0bd5250d` | 2735 |
-| discovery-receipt.json#172 | `3baa731c-4601-5134-86df-2fc06c76ef97` | `cc930b40` | `b376df11e1f0b40d` | 2736 |
-| discovery-receipt.json#173 | `79efcb5c-af3d-6ed3-a01e-a88978bbd912` | `cc930b40` | `6598260e3fd5c5ac` | 2737 |
-| discovery-receipt.json#174 | `57514113-e237-5eea-8f5d-6ae1134c349c` | `cc930b40` | `965cc192df77e732` | 2738 |
-| discovery-receipt.json#175 | `fbe93fda-2fe0-7cd0-90c6-d050f0a99328` | `cc930b40` | `2e63134d0725334a` | 2739 |
-| discovery-receipt.json#176 | `08c49dbb-8cb9-6bf2-af50-9d6c974abbd6` | `cc930b40` | `0c8560cc904168b8` | 2740 |
-| discovery-receipt.json#177 | `24d6c8d9-2498-7ccb-b7b8-b87d1297713c` | `cc930b40` | `aea394548956787e` | 2741 |
-| discovery-receipt.json#178 | `ca942de6-9b00-15c3-a617-7a8bb7208cfe` | `cc930b40` | `560fa72bc113f887` | 2742 |
-| discovery-receipt.json#179 | `af2e2086-70d5-5a7d-a6be-2cc09ec3cd12` | `cc930b40` | `66c478ea9b306abb` | 2743 |
-| discovery-receipt.json#180 | `175f5547-0e0a-6041-868d-71def9e5e6bc` | `cc930b40` | `843820ce9c91c766` | 2744 |
-| discovery-receipt.json#181 | `301d2803-3a9d-1994-bb0f-48d9597affe8` | `cc930b40` | `ca44edb49f90a1c9` | 2745 |
-| discovery-receipt.json#182 | `5b9bbbb0-2338-5d77-9bd2-908440e0ec33` | `cc930b40` | `7c2fe356221fe927` | 2746 |
-| discovery-receipt.json#183 | `b831246c-f900-5737-8325-15aa1afca577` | `cc930b40` | `0a1662c4a8bb2138` | 2747 |
-| discovery-receipt.json#184 | `9ca7f7c4-6a3e-82b2-a931-0a69d4c22673` | `cc930b40` | `d5b99809dcf90e85` | 2748 |
-| discovery-receipt.json#185 | `d65c25b7-3020-38e5-8209-df2babdc242c` | `cc930b40` | `f19fe25a97d73f10` | 2749 |
-| discovery-receipt.json#186 | `6a0d513d-5e62-18ca-ab47-95486704f654` | `cc930b40` | `928bed73bfcd8e30` | 2750 |
-| discovery-receipt.json#187 | `2546f013-d013-159e-8ddc-54afe37a73f4` | `cc930b40` | `0d74ec6d2dc0e51c` | 2751 |
-| discovery-receipt.json#188 | `3ac8f1d6-d48e-6b0d-ad83-126f4577ef49` | `cc930b40` | `342e05cb5c41937b` | 2752 |
-| discovery-receipt.json#189 | `c229fcdb-d665-1c1d-baba-560c7bb95faf` | `cc930b40` | `2e13e6646caaf228` | 2753 |
-| discovery-receipt.json#190 | `e0ad9e90-db0a-8174-92ec-9f8c3a183159` | `cc930b40` | `5a0ed68aee6a9a29` | 2754 |
-| discovery-receipt.json#191 | `6bafa898-bc2b-599e-9953-b501a28f3c55` | `cc930b40` | `11192a53f6d36a82` | 2755 |
-| discovery-receipt.json#192 | `9faf49eb-ab29-7229-be79-2a392cecb185` | `cc930b40` | `f1c2dd4a9b94c0b6` | 2756 |
-| discovery-receipt.json#193 | `10f4fd71-0679-3d24-9be1-bf16f192f59f` | `cc930b40` | `452909a7ce690a63` | 2757 |
-| discovery-receipt.json#194 | `e3d4f780-7b20-58ce-974b-e408fb9a279c` | `cc930b40` | `2c5f6c97ce1b8f6a` | 2758 |
-| discovery-receipt.json#195 | `fa47ba63-9fc6-5305-bd12-f54715f9e006` | `cc930b40` | `04d0bdd01c9a5b33` | 2759 |
-| discovery-receipt.json#196 | `060fb35e-b60e-3356-9db9-3d7c5e5d52e9` | `cc930b40` | `6f2f714285303058` | 2760 |
-| discovery-receipt.json#197 | `6dad8971-beef-67c7-9257-1a0d26dbf8b9` | `cc930b40` | `2e5ecf4082327b96` | 2761 |
-| discovery-receipt.json#198 | `7f58e0b3-6216-8082-9bbf-c2d2c8631f47` | `cc930b40` | `5851e6b5a6a26583` | 2762 |
-| discovery-receipt.json#199 | `8f925a7c-5d40-192d-aa40-f5c6ba8fc7fb` | `cc930b40` | `f1cdbee63eba25d6` | 2763 |
-| discovery-receipt.json#200 | `1b432f23-1baa-8657-8639-51373e228fb2` | `cc930b40` | `d5993871cee0bff2` | 2764 |
-| discovery-receipt.json#201 | `ada2a64f-95d3-319c-b212-daee3b5800ad` | `cc930b40` | `90b1523ec327bdd2` | 2765 |
-| discovery-receipt.json#202 | `14dacaf7-8cb9-3ce8-926a-f264df9c717b` | `cc930b40` | `6264e9162ed47437` | 2766 |
-| discovery-receipt.json#203 | `7d8d7b59-0412-2814-972e-aaedd30a6618` | `cc930b40` | `ffc8f55e3f8d0b11` | 2767 |
-| discovery-receipt.json#204 | `c57c68c5-6efb-5185-a427-6ad6055accba` | `cc930b40` | `f620eff5ef57b3c3` | 2768 |
-| discovery-receipt.json#205 | `6926f992-29b1-7af6-b4e9-867962f1f46f` | `cc930b40` | `26dc00309cb3faee` | 2769 |
-| discovery-receipt.json#206 | `dbc7c61b-8565-81d5-851e-f8e860fc84cd` | `cc930b40` | `64a9408a9581f574` | 2770 |
-| discovery-receipt.json#207 | `19bb43a2-69cf-4231-8fe4-a6e669f865ea` | `cc930b40` | `3f37df51b14ebe9f` | 2771 |
-| discovery-receipt.json#208 | `6b1e230a-e32e-65f8-8613-5ad65f68007c` | `cc930b40` | `0d977173fe6851ec` | 2772 |
-| discovery-receipt.json#209 | `1f264d84-dd6c-367f-a944-439f41af6f25` | `cc930b40` | `bb919a56999bf7df` | 2773 |
-| discovery-receipt.json#210 | `28be103f-d67b-436d-a81f-15fadaf11d72` | `cc930b40` | `22619bb4e51b5f26` | 2774 |
-| discovery-receipt.json#211 | `14d145d2-498e-5046-a122-f4e5d3b48cf4` | `cc930b40` | `7a76e62f05874320` | 2775 |
-| discovery-receipt.json#212 | `230c32f6-4c22-2b4e-a716-40a553a25a9b` | `cc930b40` | `ca2aa185b856d0c5` | 2776 |
-| discovery-receipt.json#213 | `09798430-3fd6-8833-81ca-d7d154d64f88` | `cc930b40` | `082ff899dbd3992d` | 2777 |
-| discovery-receipt.json#214 | `ac80980e-a2ee-6ea6-9553-fd8a160ddb02` | `cc930b40` | `354c0350f82c32fe` | 2778 |
-| discovery-receipt.json#215 | `badd0ad6-5671-8109-8c49-fc7222055719` | `cc930b40` | `f516c3014afc22ce` | 2779 |
-| discovery-receipt.json#216 | `1ddaf0cd-4e7b-688c-ab5d-0231c778aaf7` | `cc930b40` | `7466eaaa0f09dbf2` | 2780 |
-| discovery-receipt.json#217 | `73808bd3-6025-2a6f-90f6-42197ae03cc4` | `cc930b40` | `29f65d2810d44976` | 2781 |
-| discovery-receipt.json#218 | `3f104c58-c5e7-8224-9408-57c7b4a59f94` | `cc930b40` | `9e4a76523c638980` | 2782 |
-| discovery-receipt.json#219 | `f4dc6625-07bb-7512-bd86-b33434a0d96e` | `cc930b40` | `217b3b71ca81378d` | 2783 |
-| discovery-receipt.json#220 | `26ab0700-206e-2ec4-b91a-86b2daf0ed8a` | `cc930b40` | `6863235361c4f14c` | 2784 |
-| discovery-receipt.json#221 | `57fb3157-5167-3053-bc26-4c4a50e87066` | `cc930b40` | `9c826471790d9e90` | 2785 |
-| discovery-receipt.json#222 | `11c89d88-7e82-7664-8b40-a434704d0e70` | `cc930b40` | `ba1de30a8e812bfb` | 2786 |
-| discovery-receipt.json#223 | `d0c9b010-6d25-7524-9aeb-9d2527f4683e` | `cc930b40` | `3e1ca22930f77ae0` | 2787 |
-| discovery-receipt.json#224 | `299875aa-68b5-5dcd-8565-e242888e85fd` | `cc930b40` | `486fff99f9391e2c` | 2788 |
-| discovery-receipt.json#225 | `d9195898-7a18-1832-9715-8c927fa366b6` | `cc930b40` | `7f27ee7f2accb678` | 2789 |
-| discovery-receipt.json#226 | `a7d2c3c0-4e00-2840-bca1-2b8c2ee1e8d4` | `cc930b40` | `622786701ae61925` | 2790 |
-| discovery-receipt.json#227 | `e461b82c-2a89-7596-ac5a-16d6ac00a43a` | `cc930b40` | `4d995310c9472f84` | 2791 |
-| discovery-receipt.json#228 | `4cafad91-6b03-409e-86cf-d57e0df5ebd0` | `cc930b40` | `778c75a9699050d9` | 2792 |
-| discovery-receipt.json#229 | `ece19579-89fd-7929-9ecf-51eb18e373be` | `cc930b40` | `604f8ccbcdafaab3` | 2793 |
-| discovery-receipt.json#230 | `1db8b39d-9a43-1bd2-bd25-c3562f5ad52c` | `cc930b40` | `f2bfa31dd35893c1` | 2794 |
-| discovery-receipt.json#231 | `61a0b4fa-a6a9-3c33-874a-ed21b36023cf` | `cc930b40` | `16b30278518059f7` | 2795 |
-| discovery-receipt.json#232 | `874d9484-6fc9-4d2d-8ea6-ef04dacdaba4` | `cc930b40` | `4228f4b8779934d1` | 2796 |
-| discovery-receipt.json#233 | `d6ea5725-febe-72c4-acfa-4078fe581bae` | `cc930b40` | `56143b873956b419` | 2797 |
-| discovery-receipt.json#234 | `ec65fc9b-48ee-44a0-b42a-ca00c5cbca52` | `cc930b40` | `6c73f3f706c015c4` | 2798 |
-| discovery-receipt.json#235 | `c087c6db-6e99-79e5-b9e9-c1177e2f5051` | `cc930b40` | `32e9138d32f9e8a0` | 2799 |
-| discovery-receipt.json#236 | `b8ab3de9-3ce3-7f92-83c7-e44396f1505c` | `cc930b40` | `be66471560a2515a` | 2800 |
-| discovery-receipt.json#237 | `72c8f22c-0658-27b8-951b-163a9cbf968f` | `cc930b40` | `311fa4d115c0fc21` | 2801 |
-| discovery-receipt.json#238 | `493e1673-c668-7afb-a3af-c2d8c0ccb5c4` | `cc930b40` | `11cd9f00ae747a1a` | 2802 |
-| discovery-receipt.json#239 | `649232d6-652a-7c2d-8e16-120ee859f29b` | `cc930b40` | `874ae23f53e325ae` | 2803 |
-| discovery-receipt.json#240 | `476f536e-3a34-1d55-b019-ac2597860f8a` | `cc930b40` | `7b32cad7d188b2ea` | 2804 |
-| discovery-receipt.json#241 | `5a90312e-8e3b-32fe-b58f-bbdbd0855e4f` | `cc930b40` | `c99064b8f6f45d53` | 2805 |
-| discovery-receipt.json#242 | `16407354-9a7d-6636-bd67-f9524f2fbbfa` | `cc930b40` | `0915df0fddaf2acf` | 2806 |
-| discovery-receipt.json#243 | `5cd66705-04c4-497b-8e86-c03c12d0b8b9` | `cc930b40` | `b477d2a23fbe647e` | 2807 |
-| discovery-receipt.json#244 | `0b44a1bd-d79f-5781-be8b-b0ba7b4375dc` | `cc930b40` | `09d38df2c265fec3` | 2808 |
-| discovery-receipt.json#245 | `fbb63c1c-2dd5-336d-817e-3546579505a3` | `cc930b40` | `1e8743123c1fd848` | 2809 |
-| discovery-receipt.json#246 | `a54e1460-73c5-27f8-939c-f9a512c0b9e7` | `cc930b40` | `394b92cc767d778f` | 2810 |
-| discovery-receipt.json#247 | `b90a5f91-02bf-4a8f-80f5-5285fbe3129b` | `cc930b40` | `5a721cbcbf90db95` | 2811 |
-| discovery-receipt.json#248 | `bce1dccd-a8d3-154c-a621-77a7093bba8c` | `cc930b40` | `0b4a124bbbc5cf07` | 2812 |
-| discovery-receipt.json#249 | `92e1c5d5-540d-8d8d-902d-b86d67cafb5d` | `cc930b40` | `add1f30664333066` | 2813 |
-| discovery-receipt.json#250 | `13b3c208-28e3-2d12-abf3-b25a634d2314` | `cc930b40` | `541dff3aae81b54e` | 2814 |
-| discovery-receipt.json#251 | `46afdf6f-a604-62fa-a776-23f2aeea6230` | `cc930b40` | `58ce123b0a24514c` | 2815 |
-| discovery-receipt.json#252 | `f772dd5b-c1d7-60f5-bbdd-6b390b1239a0` | `cc930b40` | `4a9606cb41983353` | 2816 |
-| discovery-receipt.json#253 | `838d7512-f0c9-178b-8eec-1d3a104fbeeb` | `cc930b40` | `619393c8890e07a9` | 2817 |
-| discovery-receipt.json#254 | `bc3d62a7-325d-40fd-8db9-240690dec5de` | `cc930b40` | `1f58086ce4869e59` | 2818 |
-| discovery-receipt.json#255 | `a42c77a6-5169-43f6-b088-78e0e1df7685` | `cc930b40` | `6bc6a6dd80af8b36` | 2819 |
-| discovery-receipt.json#256 | `059d1302-c5a0-4507-af58-288f0894ad09` | `cc930b40` | `868c0a7058ede2dd` | 2820 |
-| discovery-receipt.json#257 | `69262367-ec08-5e5b-b1a0-f4285590f6e0` | `cc930b40` | `bc388a9c41e99ed7` | 2821 |
-| discovery-receipt.json#258 | `4dfda99e-14b8-1829-b27e-78ebad2e97da` | `cc930b40` | `30a05c3d5d4d5d7e` | 2822 |
-| discovery-receipt.json#259 | `85636c6b-af8b-2a1c-822a-f5dd700101df` | `cc930b40` | `bce65909c7c157fc` | 2823 |
-| discovery-receipt.json#260 | `e7bb2ca0-0f27-34e4-8358-87456fabd517` | `cc930b40` | `64bd0276b2af393d` | 2824 |
-| discovery-receipt.json#261 | `1aca1de0-752e-8537-8e74-1c2fedcee297` | `cc930b40` | `03dc83732d71efbc` | 2825 |
-| discovery-receipt.json#262 | `8e10c757-eea9-7b4c-887a-aa34040305d9` | `cc930b40` | `c322573bf7c460e6` | 2826 |
-| discovery-receipt.json#263 | `73ab17bb-d7b0-1fe5-847e-d005b3fa45a4` | `cc930b40` | `8c218a8e84eec538` | 2827 |
-| discovery-receipt.json#264 | `7dafc6ef-c79f-4922-bd80-cc2b9b84f4c4` | `cc930b40` | `8a0ac945a6af4e71` | 2828 |
-| discovery-receipt.json#265 | `fd01dda4-5c24-1728-bf65-1ebb95c7500c` | `cc930b40` | `b15518141a10d03c` | 2829 |
-| discovery-receipt.json#266 | `ef2c4ad7-bff8-1b47-87b0-d3b821e53714` | `cc930b40` | `e293666073d7c5a0` | 2830 |
-| discovery-receipt.json#267 | `c8ba14d5-6470-6862-877d-e16a3844a74d` | `cc930b40` | `81d01f46b9ea1e44` | 2831 |
-| discovery-receipt.json#268 | `26ef58f9-8712-3564-865f-baaa891da16e` | `cc930b40` | `59e8cd50ec84861f` | 2832 |
-| discovery-receipt.json#269 | `0d5e685d-d2a4-1fad-8f24-eb4c2bdbf844` | `cc930b40` | `c906ccc9d65613e3` | 2833 |
-| discovery-receipt.json#270 | `d0f8a5f3-cfdf-7c50-ad3a-ee6755ffd220` | `cc930b40` | `b7c02fff4311b418` | 2834 |
-| discovery-receipt.json#271 | `07792fc0-d286-839e-8b20-a50435f699ff` | `cc930b40` | `df998e185bec76af` | 2835 |
-| discovery-receipt.json#272 | `f763adbe-1a7e-429c-8290-7bfcd7f6f815` | `cc930b40` | `0fe96eb29f3f9f5b` | 2836 |
-| discovery-receipt.json#273 | `6371459b-144e-11be-be2f-602cc83bab1b` | `cc930b40` | `3da867865446df60` | 2837 |
-| discovery-receipt.json#274 | `573ea57a-c009-8ad1-ac89-ead7280a4783` | `cc930b40` | `c6bfb57547c69394` | 2838 |
-| discovery-receipt.json#275 | `7e6fc5dc-f3a4-424e-9d3b-678bf3b4e6d0` | `cc930b40` | `46a502409fb3233d` | 2839 |
-| discovery-receipt.json#276 | `513669e1-b7bb-23f7-a6c4-86b52c13a25d` | `cc930b40` | `57fc76ba6ff91395` | 2840 |
-| discovery-receipt.json#277 | `71141d9f-4c9f-3d25-a333-b28243018c62` | `cc930b40` | `06b0ec85bfec3f6a` | 2841 |
-| discovery-receipt.json#278 | `bcb7ded5-2058-4b0b-b18e-6f4a2b965814` | `cc930b40` | `e9f633ff91d997d4` | 2842 |
-| discovery-receipt.json#279 | `b61fdfa9-6c63-89d5-b434-e1271405a82d` | `cc930b40` | `53f1558aca6dab9c` | 2843 |
-| discovery-receipt.json#280 | `2745ef23-bcf2-8b5e-9f7f-ea27e588e750` | `cc930b40` | `ad031f7385a68d4c` | 2844 |
-| discovery-receipt.json#281 | `282f4555-a671-3ba5-960f-b976e026f3ae` | `cc930b40` | `1d762250532eb9b2` | 2845 |
-| discovery-receipt.json#282 | `0114d77f-d3c7-416b-9c0c-de46d7073ea7` | `cc930b40` | `058fe12570be4ce5` | 2846 |
-| discovery-receipt.json#283 | `fad6a7b1-b898-6a63-97c8-8d10bf3da535` | `cc930b40` | `2f116cb5de3b4e93` | 2847 |
-| discovery-receipt.json#284 | `6f30713d-ee69-798a-8d8a-17e39b8fad6c` | `cc930b40` | `101ca9fb8c28b159` | 2848 |
-| discovery-receipt.json#285 | `a9e72021-7b15-220c-b376-96662baa7f81` | `cc930b40` | `ef3f06e9c267a27d` | 2849 |
-| discovery-receipt.json#286 | `0cf3e9e6-435a-7ef1-af6f-37774d53f8ce` | `cc930b40` | `36ab85173c90263c` | 2850 |
-| discovery-receipt.json#287 | `1bc9983d-fa2b-76b2-9cd1-fa934ceb6bb6` | `cc930b40` | `420d9d63f4e256a2` | 2851 |
-| discovery-receipt.json#288 | `9cfdef98-f579-4e54-a381-fd44491edd67` | `cc930b40` | `6b99da40a6d88cf6` | 2852 |
-| discovery-receipt.json#289 | `9fa0e69b-65d1-4cee-b9d6-1c377a8b42fc` | `cc930b40` | `f68f0ab8b01650ad` | 2853 |
-| discovery-receipt.json#290 | `4f473e96-3afc-6bec-90ca-76978c51cc03` | `cc930b40` | `c954821f34048c71` | 2854 |
-| discovery-receipt.json#291 | `6be4a440-ae31-4ec2-a0ef-4ec639ef294e` | `cc930b40` | `ddac2638065b6aab` | 2855 |
-| discovery-receipt.json#292 | `f7e9af92-aac2-34dd-995f-6b75edacd073` | `cc930b40` | `d41bc5f092c0247b` | 2856 |
-| discovery-receipt.json#293 | `71ff59c5-1e83-1468-bdd0-a56d3a5cb3db` | `cc930b40` | `9bfd02afc2a4b667` | 2857 |
-| discovery-receipt.json#294 | `2db02181-e16e-8ddb-9f0b-aa5e77b8e88d` | `cc930b40` | `374c7dbbd737d6e4` | 2858 |
-| discovery-receipt.json#295 | `7061d6e8-85bd-24ee-acf0-35307eb8e3b5` | `cc930b40` | `aa74da21b53ab30a` | 2859 |
-| discovery-receipt.json#296 | `89220c03-6368-257a-9852-49b9c17939d6` | `cc930b40` | `f98e878e2e8cc1a3` | 2860 |
-| discovery-receipt.json#297 | `a75a0cb2-3dcb-2a41-bc14-a2924244b827` | `cc930b40` | `3b7db946e0ec8c4d` | 2861 |
-| discovery-receipt.json#298 | `fa070986-7ef5-12b0-8951-81258cff5a95` | `cc930b40` | `19c54e4efadb5b67` | 2862 |
-| discovery-receipt.json#299 | `04ded635-781e-5ba4-84ac-9f157520561d` | `cc930b40` | `8d7e9d8e69aec6b5` | 2863 |
-| discovery-receipt.json#300 | `f02e8ab3-c13f-7d29-8d44-e427017179a4` | `cc930b40` | `b89810e548658d93` | 2864 |
-| discovery-receipt.json#301 | `1ed0968d-ee91-5d37-93ce-48ab4a7b5bed` | `cc930b40` | `5d7d7ddb0aaa2901` | 2865 |
-| discovery-receipt.json#302 | `4456f95d-a76b-2cf6-a78c-87b35be83382` | `cc930b40` | `72a49f6356fed5fd` | 2866 |
-| discovery-receipt.json#303 | `3af9487f-6cb8-2255-befc-2650bd008d11` | `cc930b40` | `b1255e7d36876897` | 2867 |
-| discovery-receipt.json#304 | `da08d809-8be6-76e7-9976-ca3c73e4ca43` | `cc930b40` | `8ab502f3ab5e84c1` | 2868 |
-| discovery-receipt.json#305 | `167054c1-9617-5786-ab38-d235410bd876` | `cc930b40` | `400846ad9a8a915f` | 2869 |
-| discovery-receipt.json#306 | `a7c5118d-35ec-3338-8f8f-e8e12a929dd1` | `cc930b40` | `fc44d1eeb49b16bc` | 2870 |
-| discovery-receipt.json#307 | `c4cc3389-0585-34c9-af38-d5c92bd635a5` | `cc930b40` | `45bbeda4f5ff66e6` | 2871 |
-| discovery-receipt.json#308 | `cea6e8b8-574a-238f-a0aa-335322c951c6` | `cc930b40` | `2f2543e576419602` | 2872 |
-| discovery-receipt.json#309 | `83d72bf5-f251-5453-85f2-eb7e93065913` | `cc930b40` | `c4330ac4196a225f` | 2873 |
-| discovery-receipt.json#310 | `6e62600d-b0f2-4bed-b1a3-69b7c52cde40` | `cc930b40` | `17c572804f93c8bd` | 2874 |
-| discovery-receipt.json#311 | `684a53f6-7161-20a9-b6b2-b9ce14d53c3f` | `cc930b40` | `c1a6242a070b8c30` | 2875 |
-| discovery-receipt.json#312 | `9bb044e7-1b5d-8887-8ede-c586191eb693` | `cc930b40` | `c94e2dbb9e4e3b4c` | 2876 |
-| discovery-receipt.json#313 | `2031d266-9356-7daa-b3b8-a4cd9937286f` | `cc930b40` | `d76c9350cfca86e6` | 2877 |
-| discovery-receipt.json#314 | `060eb541-fe76-7c18-805f-2a0f2b828a65` | `cc930b40` | `f41c4e5f0c5070c8` | 2878 |
-| discovery-receipt.json#315 | `9abb9759-8cb9-7d4c-9e9e-42fb3f61c295` | `cc930b40` | `9b35a10333804bc3` | 2879 |
-| discovery-receipt.json#316 | `681fadf1-5f42-35a8-b0f7-252abe73e470` | `cc930b40` | `5107213147cd9d46` | 2880 |
-| discovery-receipt.json#317 | `e328db9c-9a75-5877-ada7-e62d85534c98` | `cc930b40` | `d67a2c9e7f1a98b6` | 2881 |
-| discovery-receipt.json#318 | `b3d76a23-7dd0-3465-bdd3-736ccc98c664` | `cc930b40` | `9dd68e8bb269f0ff` | 2882 |
-| discovery-receipt.json#319 | `205244c8-5f1f-285c-a594-80181c58dc60` | `cc930b40` | `2ae7a9bea70ce930` | 2883 |
-| discovery-receipt.json#320 | `ec5b867e-3397-19ad-aa0f-317ce278b191` | `cc930b40` | `223badd5a5092ee3` | 2884 |
-| discovery-receipt.json#321 | `96aae147-f3d0-1647-81bc-4457dd3334c4` | `cc930b40` | `1258fc7a943e2f47` | 2885 |
-| discovery-receipt.json#322 | `cba996f2-6608-6a74-8bb1-c71c6161a4e3` | `cc930b40` | `1938e29f0f8b0d79` | 2886 |
-| discovery-receipt.json#323 | `e8b8eb5d-c3db-7b8b-9d15-b52ae7fd9f4b` | `cc930b40` | `c650c544d965a2b1` | 2887 |
-| discovery-receipt.json#324 | `0be328dd-c9f9-775e-9337-434a5d40b939` | `cc930b40` | `4f9c6f4ca4abe99c` | 2888 |
-| discovery-receipt.json#325 | `abb9a0f1-1010-6b59-bb9c-cae5d352091d` | `cc930b40` | `cab8e0811196d8ab` | 2889 |
-| discovery-receipt.json#326 | `a672960d-517c-5c80-a313-a384c0d5d069` | `cc930b40` | `366cb89d9a468317` | 2890 |
-| discovery-receipt.json#327 | `4d4b8234-8983-4793-91b8-3a57fc2871c1` | `cc930b40` | `291ec60a7c459dfa` | 2891 |
-| discovery-receipt.json#328 | `4836ec06-7991-8d33-bea4-ce695bda8285` | `cc930b40` | `c76e5fa0bef61bd9` | 2892 |
-| discovery-receipt.json#329 | `39d96f28-9c0e-4edb-85e2-07562dfadbd5` | `cc930b40` | `4ceab65fb0359a25` | 2893 |
-| discovery-receipt.json#330 | `f150c11f-33d9-2cf4-93a0-d37cf2f0ed1e` | `cc930b40` | `9d191cc15a06951f` | 2894 |
-| discovery-receipt.json#331 | `7e84bbc0-ffd6-4024-a6f4-03aabfe488ea` | `cc930b40` | `fec78d68d7783a83` | 2895 |
-| discovery-receipt.json#332 | `50ecae8d-45dd-4bde-9174-8e719616fe37` | `cc930b40` | `d52acec0382eb032` | 2896 |
-| discovery-receipt.json#333 | `516e9291-ae1a-44f2-ac7f-f45f2ca74cfb` | `cc930b40` | `99495b1587a62c75` | 2897 |
-| discovery-receipt.json#334 | `3a59fcec-797e-575d-b054-634b5d46c65d` | `cc930b40` | `7647a70985738924` | 2898 |
-| discovery-receipt.json#335 | `fab68283-b391-8edc-9496-246170f64f7a` | `cc930b40` | `75052f64e6044bdb` | 2899 |
-| flaws-receipt.json | `35d6ce3d-d587-74a4-b17e-f3a2d62394d6` | `fd569ac5` | `43ea9330cdd490a5` | 2900 |
-| formulas-receipt.json | `83314bb2-637a-3701-ad38-ef70550759f9` | `fd569ac5` | `dc0a87c1a53e1741` | 2901 |
-| formulas-receipt.json#0 | `5f9efe88-8aff-339f-9a5c-c0f6e32c8a96` | `83314bb2` | `9f59c953ba4f8e60` | 2902 |
-| formulas-receipt.json#1 | `ed1ee014-bcc7-46e4-9fa5-964b062bd2a2` | `83314bb2` | `49cefa79979b75cc` | 2903 |
-| formulas-receipt.json#2 | `af3288ef-0cc7-3d77-bcb7-a4511a28372f` | `83314bb2` | `2371ebd8bbdc88a3` | 2904 |
-| formulas-receipt.json#3 | `86c0bd02-ed77-4767-a497-78a049fe338d` | `83314bb2` | `76b941cffe27724f` | 2905 |
-| formulas-receipt.json#4 | `825856ed-0136-6f19-baaa-1416a2239cdb` | `83314bb2` | `1d9dbbde5ad56e5e` | 2906 |
-| formulas-receipt.json#5 | `16a93a68-6962-1455-9d01-713c9a56f9be` | `83314bb2` | `9e7949129944726f` | 2907 |
-| formulas-receipt.json#6 | `9807cb74-2dcd-5312-98ee-55c63289f97f` | `83314bb2` | `95221abf0d155cbb` | 2908 |
-| formulas-receipt.json#7 | `496f49b1-912d-2fb3-840b-b46d873e4b7f` | `83314bb2` | `0b23b7b55c81dae6` | 2909 |
-| formulas-receipt.json#8 | `733527c7-eff2-7c71-9224-e878309ff179` | `83314bb2` | `545b374fe96714ad` | 2910 |
-| formulas-receipt.json#9 | `9fbdd1c9-2848-838b-95cb-8bc86f1dd492` | `83314bb2` | `469355482843b792` | 2911 |
-| formulas-receipt.json#10 | `ff53ea90-daca-113c-b062-e6c7cf379dc8` | `83314bb2` | `61be4084d153dcc6` | 2912 |
-| formulas-receipt.json#11 | `b4961e26-23b0-67ac-bef1-da0795052c00` | `83314bb2` | `9a201feb7ac91ac1` | 2913 |
-| formulas-receipt.json#12 | `947e1f63-5841-2d7f-b3ae-dff927187e72` | `83314bb2` | `555e557101ee86f0` | 2914 |
-| formulas-receipt.json#13 | `c63ad2ef-e9e0-7abe-a3bf-2fbb5b17a703` | `83314bb2` | `516e770b475adaf2` | 2915 |
-| formulas-receipt.json#14 | `f7fab7a3-aad9-43a0-933e-dc467eb18ced` | `83314bb2` | `402ab091fb2708ed` | 2916 |
-| formulas-receipt.json#15 | `ed34bc8c-d19c-6239-8e7a-328aecbae602` | `83314bb2` | `e8bc8445f97ae1ed` | 2917 |
-| formulas-receipt.json#16 | `47cd6dc6-a9d1-4303-b9a8-a6e30cea2d0a` | `83314bb2` | `681b395be61e1ea6` | 2918 |
-| formulas-receipt.json#17 | `0adc3fde-4b2a-4103-82ad-0d30d302fe2e` | `83314bb2` | `c569431aaefb5b7d` | 2919 |
-| formulas-receipt.json#18 | `16bc4ec4-ff43-5c91-aa7e-17656ec3e351` | `83314bb2` | `529d3f8c375efeb9` | 2920 |
-| formulas-receipt.json#19 | `b3f2fd3b-9a94-2584-ac6d-7b7941dafb65` | `83314bb2` | `6f1cb0e7962346be` | 2921 |
-| formulas-receipt.json#20 | `9cbf91e2-a667-55b7-95af-8bcec0389db6` | `83314bb2` | `b5226401ec6bda41` | 2922 |
-| formulas-receipt.json#21 | `e9591902-7ff7-17f4-bd61-27fc0f4b1502` | `83314bb2` | `2bf588ff59970283` | 2923 |
-| formulas-receipt.json#22 | `ff8d8b81-cbc0-6d5d-995d-c35fa7e23429` | `83314bb2` | `ceaa2169150e5b75` | 2924 |
-| formulas-receipt.json#23 | `7e805614-e9f7-61d4-8625-71bc655d07ba` | `83314bb2` | `859af5e550c9ab22` | 2925 |
-| formulas-receipt.json#24 | `b74a51d1-7065-603b-b022-f6a3dbd804ad` | `83314bb2` | `d2aa0274704f5e02` | 2926 |
-| formulas-receipt.json#25 | `59815b84-1168-536d-b9c2-c8ae3f2565d9` | `83314bb2` | `7e7cafdeb2c595b4` | 2927 |
-| formulas-receipt.json#26 | `95c04b58-cdc8-4d0d-a5db-4743861aa3d8` | `83314bb2` | `ede964fd628c704a` | 2928 |
-| formulas-receipt.json#27 | `5d6b9a62-a108-3903-a34a-e0f3721d16b0` | `83314bb2` | `0f93675e9a742b60` | 2929 |
-| formulas-receipt.json#28 | `46210380-7f58-8890-94c5-bb1dbd8976f2` | `83314bb2` | `0f6ccedbff42a79b` | 2930 |
-| formulas-receipt.json#29 | `ce766a4e-7b54-1a73-8d15-fe0f39b4ee9d` | `83314bb2` | `051f67e9f7a2420f` | 2931 |
-| formulas-receipt.json#30 | `284bf4b4-979f-36ac-8161-4c3f30528a9c` | `83314bb2` | `e25d6539524ec462` | 2932 |
-| formulas-receipt.json#31 | `8d0451f2-dfc4-24a4-9009-fb79e350e422` | `83314bb2` | `0301dcf926f32890` | 2933 |
-| formulas-receipt.json#32 | `e8d80789-b88e-8a05-a4e0-4f0ff3e850a3` | `83314bb2` | `d5af82a1478e58f9` | 2934 |
-| formulas-receipt.json#33 | `67197ffd-2cff-748a-a867-157346e74b6b` | `83314bb2` | `9ecbeb96bbe59055` | 2935 |
-| formulas-receipt.json#34 | `1fd08156-0d75-5515-bdf5-ec51d94e69f1` | `83314bb2` | `50f3b2ea9d6451de` | 2936 |
-| formulas-receipt.json#35 | `70c0665a-8176-79ca-872a-fac4cde26be8` | `83314bb2` | `04f7d00bd8a80efd` | 2937 |
-| formulas-receipt.json#36 | `9825286c-eed0-6059-bd4a-bcaeb7b4dd8a` | `83314bb2` | `990ce9e531e37f86` | 2938 |
-| formulas-receipt.json#37 | `b90aaade-8474-8cd3-bf59-a39f6763286c` | `83314bb2` | `2faf9c7ffebd7eec` | 2939 |
-| formulas-receipt.json#38 | `833972b4-4cb4-25ce-b1e1-9b2da2c77dc7` | `83314bb2` | `c40a0f5b771b768c` | 2940 |
-| formulas-receipt.json#39 | `7f541e1f-57cb-5345-8502-d5508773b22e` | `83314bb2` | `a66558356891d3a6` | 2941 |
-| formulas-receipt.json#40 | `7afa0cdc-dd18-1623-8abc-a8e4180be0c0` | `83314bb2` | `195a94bd9a769acf` | 2942 |
-| formulas-receipt.json#41 | `58e9c5e3-d8a6-3f4b-8936-2064ae78485f` | `83314bb2` | `92831b82805af163` | 2943 |
-| formulas-receipt.json#42 | `d9616e0b-b438-4a91-b1d2-34565e9a5a58` | `83314bb2` | `0806d54914b4caf9` | 2944 |
-| formulas-receipt.json#43 | `46d53092-924f-5c95-9d7e-9c4ea2580dfb` | `83314bb2` | `3232778ef9d2d11e` | 2945 |
-| formulas-receipt.json#44 | `5b6a749e-7cee-89b6-a886-bec89634d63c` | `83314bb2` | `0b69d970114260f6` | 2946 |
-| formulas-receipt.json#45 | `550af55c-624b-8c75-ad5f-f53b4faf3518` | `83314bb2` | `c5e569a9955ff6a3` | 2947 |
-| formulas-receipt.json#46 | `7f55b293-77ae-27b8-921e-a6824d3ec432` | `83314bb2` | `6e66fba87a91b954` | 2948 |
-| formulas-receipt.json#47 | `0a21566b-9941-28f1-9a1b-0cbb48fa28b9` | `83314bb2` | `ae31f9ab25b603d9` | 2949 |
-| formulas-receipt.json#48 | `fafb6d1b-0c3c-1529-8bf2-16790e095738` | `83314bb2` | `ca69c8b2bfd18768` | 2950 |
-| formulas-receipt.json#49 | `385831f5-71f5-3bfc-bd29-3f6e1707013c` | `83314bb2` | `4b6aab5b5071ba14` | 2951 |
-| formulas-receipt.json#50 | `1be40e97-fe35-16c5-982e-4f44dcaf5ec6` | `83314bb2` | `79165b15a85cd1c9` | 2952 |
-| formulas-receipt.json#51 | `2c67d85a-a87c-62c9-89c3-220eef3a101c` | `83314bb2` | `9266f7dec507f5fb` | 2953 |
-| formulas-receipt.json#52 | `bb05b1a4-1920-818e-96d4-6c54c7f273f7` | `83314bb2` | `a82ce9bbaf3b74ba` | 2954 |
-| formulas-receipt.json#53 | `864b94a0-1a92-2265-be6d-3e0200af9a5b` | `83314bb2` | `8ac24f880f4c914c` | 2955 |
-| formulas-receipt.json#54 | `03fc3a82-043a-8db1-bd95-d4349424720c` | `83314bb2` | `23fdd640377e79bf` | 2956 |
-| formulas-receipt.json#55 | `0f4cccdb-261d-4c52-b63f-5a2544e47dc4` | `83314bb2` | `0958aefb6d75f617` | 2957 |
-| formulas-receipt.json#56 | `6a481cf4-d6c8-3827-bfed-168ceb0addb4` | `83314bb2` | `9796b363a77cdc27` | 2958 |
-| formulas-receipt.json#57 | `2ccd60f3-d663-48a7-85b2-11fe555fc8d9` | `83314bb2` | `e1016d184d08867a` | 2959 |
-| formulas-receipt.json#58 | `c2330d35-26c8-649d-8d82-c197f6372923` | `83314bb2` | `909c1b5bede8dfce` | 2960 |
-| formulas-receipt.json#59 | `428607d3-61fe-46c9-b0fb-06cb239adcf2` | `83314bb2` | `4ed5db5cbc79dd28` | 2961 |
-| formulas-receipt.json#60 | `2facdb4b-835c-64f0-ac8e-80e36b49e317` | `83314bb2` | `e856c137149495c1` | 2962 |
-| formulas-receipt.json#61 | `acee33c6-8bae-119c-a4b9-bbe6503afdd1` | `83314bb2` | `0540c899565627fa` | 2963 |
-| formulas-receipt.json#62 | `4565e813-50b4-277f-adb7-21439524c1a4` | `83314bb2` | `9e3e80b5bd4cd363` | 2964 |
-| formulas-receipt.json#63 | `d598d51a-c2da-7a4d-9c33-a3eb1edbbd56` | `83314bb2` | `32c3d1c380408649` | 2965 |
-| formulas-receipt.json#64 | `0f4c8e05-dc69-4d7a-be09-703fce2dc72d` | `83314bb2` | `d27034b03898c4fb` | 2966 |
-| formulas-receipt.json#65 | `082bd6cc-d4c7-7c19-b02d-9b5f9284351c` | `83314bb2` | `ab940b45add682a2` | 2967 |
-| formulas-receipt.json#66 | `8d3907a2-1b47-321e-ae48-58aef17f6725` | `83314bb2` | `c4dce46bfd3685bd` | 2968 |
-| formulas-receipt.json#67 | `cbd17a58-72e5-7e2b-a443-44b241adf340` | `83314bb2` | `4ff51caaa310ac75` | 2969 |
-| formulas-receipt.json#68 | `2d0f70d4-21fa-24da-a0c0-999c3d85c361` | `83314bb2` | `364f2966ed058327` | 2970 |
-| formulas-receipt.json#69 | `989b5d6e-dc09-69aa-ad30-65efe5ba2d20` | `83314bb2` | `6739c9ea08526937` | 2971 |
-| formulas-receipt.json#70 | `74fb3183-2bd7-47e0-afea-379125dfc40c` | `83314bb2` | `e5f576c60600c58e` | 2972 |
-| formulas-receipt.json#71 | `6d8ad72e-c610-7225-b772-4028c8e1da54` | `83314bb2` | `ea27547bc065cb3c` | 2973 |
-| formulas-receipt.json#72 | `b7dae5d4-fd85-4ca7-99b4-7bc865fcbeb7` | `83314bb2` | `9cd257d0b130c3a4` | 2974 |
-| formulas-receipt.json#73 | `f4abf7a0-b3eb-244f-8673-e90e7e9f96c2` | `83314bb2` | `d6a4282ad2c096e1` | 2975 |
-| formulas-receipt.json#74 | `2ebf087b-447b-60be-af62-94e2820aab50` | `83314bb2` | `2e86c12b9bce22b0` | 2976 |
-| formulas-receipt.json#75 | `b701d706-7e42-1b3d-8659-398fbec59d84` | `83314bb2` | `fa7478819b605165` | 2977 |
-| formulas-receipt.json#76 | `5c20dcce-fd42-5e52-b995-11f1a95a6829` | `83314bb2` | `3dbef990e6db2b35` | 2978 |
-| formulas-receipt.json#77 | `0b593354-bb70-83a0-9357-7c85d589e625` | `83314bb2` | `0fbd672da2ef0c58` | 2979 |
-| formulas-receipt.json#78 | `c0739c09-e102-7863-8765-875a1a6dcfff` | `83314bb2` | `ca5daa73db681f11` | 2980 |
-| fuse-receipt.json | `44043424-cf44-6a7b-8116-7ec93e3615dc` | `fd569ac5` | `b7817703d521450c` | 2981 |
-| gate-receipt.json | `bc99ae4c-7934-1a2b-8319-b100866450e4` | `fd569ac5` | `052072104062f7f9` | 2982 |
-| gate-receipt.json#0 | `77bafdd8-ff96-381c-8b94-ab99859d4c68` | `bc99ae4c` | `cab0eecbd3b74ac8` | 2983 |
-| gate-receipt.json#1 | `f6dbee87-6575-8f99-9db6-8c0f219b5e83` | `bc99ae4c` | `51b36700216a439e` | 2984 |
-| gate-receipt.json#2 | `ab53ebf5-47c1-498b-b8de-f22b6e865fb7` | `bc99ae4c` | `3dbb87536eb869ae` | 2985 |
-| gate-receipt.json#3 | `12cc5ae5-c805-8703-8907-ae8b5eed93b3` | `bc99ae4c` | `252d05641bee7e63` | 2986 |
-| gate-receipt.json#4 | `ff72ec3d-2aff-3513-80c1-ccc4c767b96c` | `bc99ae4c` | `633a3a2c11dcc7fe` | 2987 |
-| gate-receipt.json#5 | `ffe17fe3-44d9-81b6-bab8-35a1c751c8d1` | `bc99ae4c` | `fd6e05a282469b9e` | 2988 |
-| gate-receipt.json#6 | `f95ea053-a11b-85cd-a856-43a247aaa188` | `bc99ae4c` | `9f638b8c40bf4751` | 2989 |
-| gate-receipt.json#7 | `572f115f-4eb4-6db4-bd4d-aa2d39e504f6` | `bc99ae4c` | `ee169b71f128fc71` | 2990 |
-| gate-receipt.json#8 | `a6930fcb-c1e4-17f1-ae1d-5525063c3120` | `bc99ae4c` | `cdf6fa1f4453649f` | 2991 |
-| gate-receipt.json#9 | `b8aba0ed-6794-610c-b20f-29a937131f59` | `bc99ae4c` | `0c1e9b98bce2ecd4` | 2992 |
-| gate-receipt.json#10 | `339f0d58-7980-4901-83f2-44c6262637db` | `bc99ae4c` | `561b1041e3b6304e` | 2993 |
-| gate-receipt.json#11 | `4ee43ccd-8c68-2efd-b920-de12fbfa15c8` | `bc99ae4c` | `8e89ae73f6a6efa7` | 2994 |
-| gate-receipt.json#12 | `0cbd9fd2-94c1-65ad-8afe-5ead01cf67fd` | `bc99ae4c` | `63351846ac5110cc` | 2995 |
-| gate-receipt.json#13 | `dc10cb2d-8bd4-4ed0-9fb1-68c12957ad56` | `bc99ae4c` | `16e1b091d0d63c4b` | 2996 |
-| gate-receipt.json#14 | `2ef657fe-7134-61cb-b40c-3681fc876672` | `bc99ae4c` | `12ed812ffe2d31b9` | 2997 |
-| gate-receipt.json#15 | `63004501-55f9-5eb4-86fa-382c8b31d81b` | `bc99ae4c` | `8d3899f6e1dc7512` | 2998 |
-| gate-receipt.json#16 | `8630b60d-c897-1fc7-b5c2-340da16d814f` | `bc99ae4c` | `288a9ece82c4cf71` | 2999 |
-| gate-receipt.json#17 | `395e7b8a-b60d-50c3-8a95-363a70c51a43` | `bc99ae4c` | `2147959eed788d13` | 3000 |
-| gate-receipt.json#18 | `262bb0d0-9322-3e5c-aeb7-2f6ca46a3746` | `bc99ae4c` | `5784dad526b3ffe2` | 3001 |
-| gate-receipt.json#19 | `78e33dd2-2a5d-468b-bfec-4b40c9613337` | `bc99ae4c` | `88ba811479d50609` | 3002 |
-| gate-receipt.json#20 | `7c839ab9-8be6-7254-b370-387c650025e0` | `bc99ae4c` | `5e7f08cdfcbb1e21` | 3003 |
-| gate-receipt.json#21 | `a644b346-cdec-5862-9c24-45d2e1ebb61c` | `bc99ae4c` | `f7446d84d53d1f0c` | 3004 |
-| gate-receipt.json#22 | `6f68c9ed-e93c-706c-8079-921813fab43a` | `bc99ae4c` | `8d0a1bdcd06551d3` | 3005 |
-| gate-receipt.json#23 | `cb865ac4-eeaa-66e3-aef6-19e76cc3c9cc` | `bc99ae4c` | `5d7c3631ac3dc576` | 3006 |
-| gate-receipt.json#24 | `a864c71d-c017-73fc-91bd-ebbf943ed128` | `bc99ae4c` | `10e594e68e6afb29` | 3007 |
-| gate-receipt.json#25 | `467bc4ec-6e29-6fbe-9a9b-27256ba948e9` | `bc99ae4c` | `c2fd0d811cff5c7a` | 3008 |
-| gate-receipt.json#26 | `ef963764-5e23-128e-915c-e265433cc02e` | `bc99ae4c` | `b75647f59ca75cd3` | 3009 |
-| gate-receipt.json#27 | `dbcaca25-8328-60b1-98a4-5bde521841d5` | `bc99ae4c` | `a48bda075a72f2b5` | 3010 |
-| gate-receipt.json#28 | `90c8ab13-de08-5f5c-89f7-f4eaadc5cdda` | `bc99ae4c` | `d579b0493ab56396` | 3011 |
-| gate-receipt.json#29 | `de876e06-d8e0-37c8-92dc-fd7a0dc60701` | `bc99ae4c` | `817ec6eb65844dd0` | 3012 |
-| gate-receipt.json#30 | `14b0dcbb-facb-7267-86de-ab3388f24049` | `bc99ae4c` | `45e68041ea9a0d33` | 3013 |
-| gate-receipt.json#31 | `676c52db-30cb-3899-a5ab-d3e4771021c0` | `bc99ae4c` | `c732f0f9d800a347` | 3014 |
-| gate-receipt.json#32 | `40a654b7-a694-5b5f-862f-1a53aa9f8edd` | `bc99ae4c` | `eff87568628047b3` | 3015 |
-| gate-receipt.json#33 | `9c97a849-a423-4c5a-8500-7b8eb2abfca9` | `bc99ae4c` | `deae2cfd0ca809f0` | 3016 |
-| gate-receipt.json#34 | `6987fddc-47ee-3df5-b81f-5343f2342772` | `bc99ae4c` | `541852a5145879fa` | 3017 |
-| gate-receipt.json#35 | `02227cce-3a07-5aaf-a2c4-3771c46fa024` | `bc99ae4c` | `e3f6024665eb0527` | 3018 |
-| gate-receipt.json#36 | `7fb90471-79bf-4c62-a660-423125f9064b` | `bc99ae4c` | `b0f6a49e653f82ef` | 3019 |
-| gate-receipt.json#37 | `e552fb64-ad0f-1ee5-94ef-c750fa3a38c3` | `bc99ae4c` | `c87c95619884e09b` | 3020 |
-| gate-receipt.json#38 | `34828487-5ee8-6459-9c90-cc28e93f7001` | `bc99ae4c` | `342beacf6c74c909` | 3021 |
-| gate-receipt.json#39 | `fe6ff87e-d361-5c77-8fbe-6b7b663983d2` | `bc99ae4c` | `02251ed478dd4d1a` | 3022 |
-| gate-receipt.json#40 | `9059368f-05a7-552f-9a4c-10332c2882da` | `bc99ae4c` | `733db9d6a8a2d7f3` | 3023 |
-| gate-receipt.json#41 | `ba3de33d-2141-3e56-9b54-b3a634f4a056` | `bc99ae4c` | `8808bea015fa7d61` | 3024 |
-| gate-receipt.json#42 | `bab3fed6-beb5-3ee8-9f3f-0a838536e52f` | `bc99ae4c` | `3a1fdd7bbcb7a6ce` | 3025 |
-| gate-receipt.json#43 | `938691b1-cb5b-2231-a318-f3f8841a7aec` | `bc99ae4c` | `206cc88a8cbb4b18` | 3026 |
-| gate-receipt.json#44 | `bb793f5f-a463-2e74-bb81-2446de834eac` | `bc99ae4c` | `d1a091a41ce78f9e` | 3027 |
-| gate-receipt.json#45 | `505e7ab7-e4de-36e1-8ee6-6e8d5b15d781` | `bc99ae4c` | `c6e67f04791174c4` | 3028 |
-| gate-receipt.json#46 | `01d1ac43-3952-7d34-9bd1-7d062caa7ac9` | `bc99ae4c` | `321b0fa85e130678` | 3029 |
-| gate-receipt.json#47 | `5f546ea1-8ae6-8ca5-9cfd-7431bfc82254` | `bc99ae4c` | `cac850c121c34290` | 3030 |
-| gate-receipt.json#48 | `afa4f176-6ba6-52a3-afb4-dafcfe4c6d67` | `bc99ae4c` | `c0703bf211b3bb04` | 3031 |
-| gate-receipt.json#49 | `934c9ca5-103f-61c0-b903-e9213cbdcbed` | `bc99ae4c` | `1f5012decc8b52eb` | 3032 |
-| gate-receipt.json#50 | `ca5ece90-ef89-835b-9739-0df55d58a1ca` | `bc99ae4c` | `c6e695dd8241c397` | 3033 |
-| gate-receipt.json#51 | `6aa4822a-a78b-2624-bb2e-e49e1fad5d99` | `bc99ae4c` | `5e77deb720b6c481` | 3034 |
-| gate-receipt.json#52 | `35cab722-65d0-5c90-ac55-9adef8ebae6b` | `bc99ae4c` | `c16deaa71f8388a1` | 3035 |
-| gate-receipt.json#53 | `4bfd6846-ec1f-1d91-94cb-c797df8ed226` | `bc99ae4c` | `e78c2ff887129d06` | 3036 |
-| gate-receipt.json#54 | `e084b5fd-10e0-431f-98f3-9332906f3688` | `bc99ae4c` | `c2b397e675bd9018` | 3037 |
-| gate-receipt.json#55 | `b03d175e-5cb8-4af3-a497-bcf8f439025c` | `bc99ae4c` | `cb55cdbb8ca38f4f` | 3038 |
-| gate-receipt.json#56 | `eea3a3a3-b941-1419-903a-6d459d533945` | `bc99ae4c` | `20165693973eb0a4` | 3039 |
-| gate-receipt.json#57 | `40ec77b3-e6ed-5df5-93d7-1bf1413e519f` | `bc99ae4c` | `cecf6e8c0662534e` | 3040 |
-| gate-receipt.json#58 | `2a5c29b0-6e37-217d-a14a-32b14fb50910` | `bc99ae4c` | `e1ba5ba61ff8c00a` | 3041 |
-| gate-receipt.json#59 | `0b013acf-240a-3b0d-9c8c-07587990ac16` | `bc99ae4c` | `645c8957f736abcb` | 3042 |
-| gate-receipt.json#60 | `32e93702-1646-5307-9fa4-11c88465775c` | `bc99ae4c` | `6994038598a69343` | 3043 |
-| gate-receipt.json#61 | `6df312f9-ac0f-76b7-a0ec-25f94acf4f7d` | `bc99ae4c` | `899129f7845df830` | 3044 |
-| gate-receipt.json#62 | `6e6c017d-09f6-68a5-9ccc-edcbe7607339` | `bc99ae4c` | `5f4261316cfe2caf` | 3045 |
-| gate-receipt.json#63 | `62dfa8b9-e150-5a34-812a-2e231ead65d8` | `bc99ae4c` | `1dd4aeaa4643ebfd` | 3046 |
-| gate-receipt.json#64 | `7bbad321-1d13-6d05-b439-28851b6f834a` | `bc99ae4c` | `59ff36e23e65556a` | 3047 |
-| gate-receipt.json#65 | `14bebdd1-d7d8-660c-806f-f2ca644d2205` | `bc99ae4c` | `a15021dc144ffbdc` | 3048 |
-| gate-receipt.json#66 | `5c3c0026-1c19-4feb-83df-ff2198a2393b` | `bc99ae4c` | `bee0cdcb80125c81` | 3049 |
-| gate-receipt.json#67 | `3ed590fa-f2f5-8cf1-b905-0c31c90fb8a1` | `bc99ae4c` | `8b4bc8a221b15258` | 3050 |
-| gate-receipt.json#68 | `10a0ea00-6cdd-4af5-be97-52cc43b26590` | `bc99ae4c` | `3a393e28599069bc` | 3051 |
-| gate-receipt.json#69 | `f2db021b-8383-3d94-a6da-b08e2536b277` | `bc99ae4c` | `9b7a2aa80b102d89` | 3052 |
-| gate-receipt.json#70 | `5e866faa-f9f6-8bcc-b5f0-bd82fa712666` | `bc99ae4c` | `b28cb4afcde15f0a` | 3053 |
-| gate-receipt.json#71 | `faaaffb9-53c9-3de6-9ee6-a148e2d89c4b` | `bc99ae4c` | `0a145c7c8274377a` | 3054 |
-| gate-receipt.json#72 | `5288e71d-0f5c-25d9-8396-db98ecd446c9` | `bc99ae4c` | `f9141072b0d0851e` | 3055 |
-| gate-receipt.json#73 | `8cece851-4c1d-1eff-acab-7f162df39e44` | `bc99ae4c` | `f5a81600dfd707e2` | 3056 |
-| gate-receipt.json#74 | `98d15b60-2199-3449-9511-1d757f56b961` | `bc99ae4c` | `4e39fc639f927809` | 3057 |
-| gate-receipt.json#75 | `1a274828-aecb-2e44-88d2-bb5575eed8c1` | `bc99ae4c` | `284db7f14bf23dcd` | 3058 |
-| gate-receipt.json#76 | `6348c3d3-3b0d-2ca8-badb-73b3cf1ad05c` | `bc99ae4c` | `b88066ab813f2fc5` | 3059 |
-| gate-receipt.json#77 | `bc2080cd-f657-26c1-99eb-726b81d6d3f7` | `bc99ae4c` | `d64644253a4ba9b1` | 3060 |
-| gate-receipt.json#78 | `f234725f-1b37-67ad-bf1a-af8947ae4684` | `bc99ae4c` | `07ed4807887f543a` | 3061 |
-| gate-receipt.json#79 | `be6af2aa-34f5-7775-a46d-48dd4bcef301` | `bc99ae4c` | `0b47873dfddcb0e2` | 3062 |
-| gate-receipt.json#80 | `58eadd72-579d-880e-8cb3-25f8d66d0eee` | `bc99ae4c` | `5eaa733e6a3d0b33` | 3063 |
-| heat-receipt.json | `d7f49aff-0899-2eb5-8b51-13cf0f6963df` | `fd569ac5` | `11d0d0d8cf585e61` | 3064 |
-| heat-receipt.json#0 | `42b9ce34-b1f2-3762-b04c-403662963bf8` | `d7f49aff` | `de6e440cc482efe5` | 3065 |
-| heat-receipt.json#1 | `50d8fb03-6d85-6384-853c-246f55df3b81` | `d7f49aff` | `dd9aef5f025d5901` | 3066 |
-| heat-receipt.json#2 | `fe9ac939-aa54-5082-a972-67be59939de1` | `d7f49aff` | `9cb6f05d0e101ee5` | 3067 |
-| heat-receipt.json#3 | `395a7c78-e407-373f-be68-a7263e56871b` | `d7f49aff` | `239e31eaac60b854` | 3068 |
-| heat-receipt.json#4 | `302d86c2-f3b2-6461-9a38-dab4c7fdd750` | `d7f49aff` | `c99143955272b817` | 3069 |
-| heat-receipt.json#5 | `5f54c80d-a645-57c4-a532-39682a9fcdf8` | `d7f49aff` | `e0919ad1697894bf` | 3070 |
-| heat-receipt.json#6 | `3b2e2ccf-9a56-3495-9e29-07306e9a6edf` | `d7f49aff` | `229386faf93856c9` | 3071 |
-| heat-receipt.json#7 | `7bf95dda-6c10-6679-9ee5-6d41d57a7c74` | `d7f49aff` | `6c7d432dc05e6c66` | 3072 |
-| heat-receipt.json#8 | `340d86d5-f95a-267a-8bea-180b8de3da27` | `d7f49aff` | `bd70fd65b8f5d41b` | 3073 |
-| heat-receipt.json#9 | `3485b4b4-7f84-7f2f-bb86-872c29e81f02` | `d7f49aff` | `c60c62cfcbc02735` | 3074 |
-| heat-receipt.json#10 | `c12251b4-779c-2e07-918b-75ba20f4fdb3` | `d7f49aff` | `e2d9fd8e256b596c` | 3075 |
-| heat-receipt.json#11 | `0bb76018-9adf-4027-a65c-577f4fde7b2f` | `d7f49aff` | `4035bd9c1840af76` | 3076 |
-| heat-receipt.json#12 | `5d8b256a-68ca-7730-8b1f-8b0f43e61f42` | `d7f49aff` | `5d10d2d8d42a91fd` | 3077 |
-| heat-receipt.json#13 | `d8e215c4-f636-3ae8-afc2-5d78a86c8fed` | `d7f49aff` | `f23b11c263896760` | 3078 |
-| heat-receipt.json#14 | `d963abf2-3d14-3b66-937a-20f8761f0702` | `d7f49aff` | `efee0133040d8af1` | 3079 |
-| heat-receipt.json#15 | `a2a4ad64-1ce3-254e-bc61-5ee1adb1adfd` | `d7f49aff` | `2ccb18b4e7c1727a` | 3080 |
-| heat-receipt.json#16 | `1b048290-71ce-30d1-a05a-737685ad1a18` | `d7f49aff` | `e2269fa6b7444cac` | 3081 |
-| heat-receipt.json#17 | `9d3dfed3-f12c-4370-b9ef-067c6fec473a` | `d7f49aff` | `1b54c657408f5a2c` | 3082 |
-| heat-receipt.json#18 | `cb15fece-5fd6-20f1-bbd3-a4ef65ff0436` | `d7f49aff` | `3c63a709559150ac` | 3083 |
-| heat-receipt.json#19 | `7c7a0f3d-cc19-4fba-965c-78be67999cb2` | `d7f49aff` | `c1a41337c298c8ab` | 3084 |
-| heat-receipt.json#20 | `91dfd0f5-e7a9-8ab4-a597-499c981c6278` | `d7f49aff` | `eacd99969c32411a` | 3085 |
-| heat-receipt.json#21 | `55989d8b-fa7c-8eaf-bce4-f36803027cc1` | `d7f49aff` | `fe21d45f7bc52bf4` | 3086 |
-| heat-receipt.json#22 | `456cbe34-f0b1-7a2e-9835-3e057d0e6ac0` | `d7f49aff` | `e1d4f3b347941bec` | 3087 |
-| heat-receipt.json#23 | `88b25cfa-c9c5-79f7-a3f3-77699cab2b33` | `d7f49aff` | `e26d3d41e548c6da` | 3088 |
-| heat-receipt.json#24 | `b88130ef-6e00-19db-840d-265eeb1c7206` | `d7f49aff` | `a86e6d40a3f00452` | 3089 |
-| heat-receipt.json#25 | `6747c819-9a26-17b7-b407-b6066706e214` | `d7f49aff` | `32c5e4758adad960` | 3090 |
-| heat-receipt.json#26 | `d15fdb17-05ff-547c-a70a-8185f0ea217e` | `d7f49aff` | `3c3239b3bc922823` | 3091 |
-| heat-receipt.json#27 | `df704b9c-0c70-6f74-844f-c9f5fd2afa27` | `d7f49aff` | `2f36b2efea786152` | 3092 |
-| heat-receipt.json#28 | `fbfca710-e73d-32e5-882c-c3ec11cb821d` | `d7f49aff` | `68b2e2033d772002` | 3093 |
-| heat-receipt.json#29 | `b85bb0ed-4acf-4fbe-8f70-deae12f38a0a` | `d7f49aff` | `349678da39eceefa` | 3094 |
-| heat-receipt.json#30 | `fbe55324-e5b2-6892-8815-23c1ea1d0889` | `d7f49aff` | `9cb3c8d698cd8eb3` | 3095 |
-| heat-receipt.json#31 | `aace5566-ec9a-6517-98ad-ce71772505af` | `d7f49aff` | `2fe05207178a5b87` | 3096 |
-| heat-receipt.json#32 | `87672028-10fa-857f-82b3-d2c3ec2abd22` | `d7f49aff` | `e22205693b51a858` | 3097 |
-| heat-receipt.json#33 | `a15c7383-52b3-7c4e-8629-8b632c0266d8` | `d7f49aff` | `4cb9e32414b794c7` | 3098 |
-| heat-receipt.json#34 | `d02b7e01-6779-4607-8846-f2ec7f675ed2` | `d7f49aff` | `f123dc43a4d6eb01` | 3099 |
-| heat-receipt.json#35 | `7871359c-3cdf-1e8c-8f98-8d978d094c8a` | `d7f49aff` | `4a2649903e5e5259` | 3100 |
-| heat-receipt.json#36 | `bd2e3f5c-3bb4-5468-abd7-241a905e8f34` | `d7f49aff` | `940bfdf39d45a4e0` | 3101 |
-| heat-receipt.json#37 | `efa8fe6b-9df4-4ba3-ab37-03d1c94b1d27` | `d7f49aff` | `b420fd55acba6ffd` | 3102 |
-| heat-receipt.json#38 | `e6571a8d-43a7-8b8e-aa2d-e1074302cd81` | `d7f49aff` | `f04effbf905b323e` | 3103 |
-| heat-receipt.json#39 | `a5cb8f35-c809-6815-8b65-8eabdfd2c379` | `d7f49aff` | `64c5d4150cea721a` | 3104 |
-| lattice-receipt.json | `a2e6b8ee-4294-268f-a2ec-c23708cbb22b` | `fd569ac5` | `5abe2ff51f9b6458` | 3105 |
-| lean-receipt.json | `71fac583-e1c5-8bbb-bc62-9b0b4bb5e4c7` | `fd569ac5` | `79052a7c7b18fa33` | 3106 |
-| lean-receipt.json#0 | `f7e7c3aa-253b-8541-aa8a-7d7bb673a16a` | `71fac583` | `98dae585ea1a79ff` | 3107 |
-| lean-receipt.json#1 | `d42f5024-3ebb-75a3-b862-0cdbcc6f05c5` | `71fac583` | `f3b66120465e328f` | 3108 |
-| lean-receipt.json#2 | `52d8fbf7-5145-7982-ac7e-8d3e7908e9e6` | `71fac583` | `6d76448430422a22` | 3109 |
-| lean-receipt.json#3 | `5106a841-0525-312b-b004-896847abe7e2` | `71fac583` | `b5b2a70a3b5f65cd` | 3110 |
-| lean-receipt.json#4 | `54ad1e85-e674-3b3b-ab36-82e178351cfe` | `71fac583` | `786ce44a7a918a0b` | 3111 |
-| lean-receipt.json#5 | `f33b454f-68ef-3f8f-998d-5bb74c5cdab1` | `71fac583` | `0a5ca686728d138e` | 3112 |
-| lean-receipt.json#6 | `3626944b-f8a7-3b45-8692-4e399647b12f` | `71fac583` | `7ba7f4316530b79f` | 3113 |
-| lean-receipt.json#7 | `f30e4606-c62c-7326-bd75-723828e51f6d` | `71fac583` | `831bb3a03a244a5f` | 3114 |
-| lean-receipt.json#8 | `43d47017-5496-7a63-8e99-776c1129501c` | `71fac583` | `9c61109bc94c3b00` | 3115 |
-| lean-receipt.json#9 | `0c6d47dc-fa9c-4c42-a782-ed2e8bd53564` | `71fac583` | `dc5023ffb1295544` | 3116 |
-| lean-receipt.json#10 | `0e865c8d-ce40-73d6-afb5-b9cd9e795ca0` | `71fac583` | `0f37bf7606252ab7` | 3117 |
-| lean-receipt.json#11 | `45f28c60-960e-247f-8279-3d2ea6fb45a7` | `71fac583` | `86fb132f5fecfb2f` | 3118 |
-| lean-receipt.json#12 | `810aeeb8-7f14-119b-b5bc-03b143e01be5` | `71fac583` | `8c9358a16d9f9de4` | 3119 |
-| lean-receipt.json#13 | `374712d1-1897-5cfa-838d-3fefeb17912e` | `71fac583` | `ab7e4f549351856d` | 3120 |
-| lean-receipt.json#14 | `694e5cb2-d5ab-1877-930a-8c2b0469a69a` | `71fac583` | `ccbc114c64b5d7d5` | 3121 |
-| lean-receipt.json#15 | `1844637b-a8e7-8c87-b7f6-7bb87fd26b1c` | `71fac583` | `de6424145fc0c8b8` | 3122 |
-| lean-receipt.json#16 | `c5c8c2f9-1b34-74de-a3c2-d368b36b1568` | `71fac583` | `aece61f01357cbd7` | 3123 |
-| lean-receipt.json#17 | `32e5a00f-eaa1-2a5e-9bcf-e0845d486133` | `71fac583` | `fb8e82b299377903` | 3124 |
-| lean-receipt.json#18 | `fc709641-cf85-487a-8785-5b402d13702f` | `71fac583` | `f1523ba67b117d4c` | 3125 |
-| lean-receipt.json#19 | `03c5312f-30a5-1dc7-9b63-658f84fd2b78` | `71fac583` | `61e8d3c0622271ec` | 3126 |
-| lean-receipt.json#20 | `11a04e2e-1b3a-383c-bf77-490c5f9ab02d` | `71fac583` | `e0d0cdc7f6d8ad86` | 3127 |
-| lean-receipt.json#21 | `cc611541-9fe1-2900-875d-53634078488d` | `71fac583` | `0bafd2209c7788ad` | 3128 |
-| lean-receipt.json#22 | `5f6365cb-5b64-2e65-a21a-23a80032191c` | `71fac583` | `148df1c5e3f7a033` | 3129 |
-| lean-receipt.json#23 | `72da39ac-f3f3-8b22-b6a4-cb2732d7c5e9` | `71fac583` | `63e502ad092b91aa` | 3130 |
-| lean-receipt.json#24 | `dbb1aaed-6e95-1b76-8714-a210f29e9592` | `71fac583` | `892beb0c6c10c5d8` | 3131 |
-| lean-receipt.json#25 | `867f4962-cfbd-221c-a7e7-637fa0a214d5` | `71fac583` | `54b1ada5511adb73` | 3132 |
-| lean-receipt.json#26 | `3a6b5a4f-0835-2231-82f0-6b9892aec690` | `71fac583` | `06e44a32904aa211` | 3133 |
-| lean-receipt.json#27 | `1b8c02a7-393f-2c1d-b9b1-e6467f6a07f2` | `71fac583` | `6d2416c687a930e4` | 3134 |
-| lean-receipt.json#28 | `b8dcef6b-51fb-1386-a09f-d4267bdd4ecd` | `71fac583` | `93bf447603bdb79a` | 3135 |
-| lean-receipt.json#29 | `a1644180-738d-3843-a7d9-a59eebc65125` | `71fac583` | `32c946198ef49177` | 3136 |
-| lean-receipt.json#30 | `2aa807ad-6489-77a9-9d08-15b8777d155b` | `71fac583` | `8bcb015fa3928550` | 3137 |
-| lean-receipt.json#31 | `22f7ae1e-4739-1bd4-94f0-c84d9afc8b1a` | `71fac583` | `a12cd48985c60f75` | 3138 |
-| lean-receipt.json#32 | `882ec6e5-3dbc-14c9-8d50-3d1b5e9a65a4` | `71fac583` | `3fb895ae30cc4fca` | 3139 |
-| lean-receipt.json#33 | `3e03e644-3227-6f02-bfb7-81c6cebbd4bf` | `71fac583` | `65f6a8105a150c9c` | 3140 |
-| lean-receipt.json#34 | `c0e52045-afb2-203d-8184-f8b515b784d8` | `71fac583` | `25dcfb927a6c7ab7` | 3141 |
-| lean-receipt.json#35 | `9fdfc7c1-d6dc-6dac-83ee-fd7cb67983f2` | `71fac583` | `e2c4d4ea22ec9b50` | 3142 |
-| lean-receipt.json#36 | `7fd4b7cd-a7ef-3cd4-864d-2ae36243ae19` | `71fac583` | `4d79c9a87c9e9aa7` | 3143 |
-| lean-receipt.json#37 | `09ad5676-09e8-5aee-b22b-b0d263c9e4c4` | `71fac583` | `133529274652bf3f` | 3144 |
-| lean-receipt.json#38 | `d9d6c66f-9dc3-6ea3-b09f-1a8d1302d83b` | `71fac583` | `3a9d0303d541d513` | 3145 |
-| lean-receipt.json#39 | `9622a3c0-deb0-2655-bbf0-3d193e47d8e2` | `71fac583` | `58f76ca5db22c5fe` | 3146 |
-| lean-receipt.json#40 | `34dbce57-a3ec-1ea1-90af-831aacf9fd4f` | `71fac583` | `54ced7ee08c43b01` | 3147 |
-| lean-receipt.json#41 | `a8136f4e-a863-3f2d-9486-002a2348eee4` | `71fac583` | `9b758c3693ce6bae` | 3148 |
-| lean-receipt.json#42 | `13e476f4-cb6a-77ac-aa44-3053e907beef` | `71fac583` | `f20dfb5c7c3170e2` | 3149 |
-| lean-receipt.json#43 | `ed2f0693-d825-17dd-8978-780d4fbc40b2` | `71fac583` | `f9b7bcab6eb1f2ec` | 3150 |
-| lean-receipt.json#44 | `d3b570c7-6156-51f0-93bd-50156ca5a1fc` | `71fac583` | `ec7a4be84a1d7374` | 3151 |
-| lean-receipt.json#45 | `c0918c4b-03c3-83f0-b3da-935abd026db0` | `71fac583` | `091caf13facaf725` | 3152 |
-| lean-receipt.json#46 | `820afaa7-cffe-64e9-8f06-f5dbaa8351b9` | `71fac583` | `9139a6c403c2cb33` | 3153 |
-| lean-receipt.json#47 | `b13834ff-8143-51f4-b957-e0db6f0b8379` | `71fac583` | `abd795244d840ade` | 3154 |
-| lean-receipt.json#48 | `a8bb10ea-a41c-58d6-8bd1-742cf81bdae2` | `71fac583` | `51ae029641cb7565` | 3155 |
-| lean-receipt.json#49 | `5baea1e7-f3bf-2dc5-98bc-f3ca3f5ee8e0` | `71fac583` | `eb6998ed3865f4dc` | 3156 |
-| lean-receipt.json#50 | `163acb32-ea78-4fec-9d5a-b4f4c8617bc4` | `71fac583` | `a26d61f94731765b` | 3157 |
-| lean-receipt.json#51 | `79f44154-c172-114b-bbd4-574f6987f524` | `71fac583` | `05c54779a6533b0b` | 3158 |
-| lean-receipt.json#52 | `077521c0-da94-4326-95d3-c95b4fe4f5cc` | `71fac583` | `0072569fecabc8b9` | 3159 |
-| lean-receipt.json#53 | `c6fb162d-afed-3e7b-848d-437e75f1dacb` | `71fac583` | `213941078bf657e5` | 3160 |
-| lean-receipt.json#54 | `ea9d7031-d822-2967-bfb8-a60450653158` | `71fac583` | `9948915f0d476d67` | 3161 |
-| lean-receipt.json#55 | `96233468-6658-7699-85b5-d16fe5b71488` | `71fac583` | `4e0f8d28c2a80cb1` | 3162 |
-| lean-receipt.json#56 | `93714323-27f0-7abc-8490-791a5ae24cf1` | `71fac583` | `17ab6fd92f1f34cc` | 3163 |
-| lean-receipt.json#57 | `6f1298cf-0298-44cd-8aa1-ac5c57340a55` | `71fac583` | `14d198b202826a19` | 3164 |
-| lean-receipt.json#58 | `e997373a-584b-454d-987c-4ecd4c023f4e` | `71fac583` | `542b2d0b94fd286a` | 3165 |
-| lean-receipt.json#59 | `162248be-3c18-7987-8d96-017e45168ebb` | `71fac583` | `c6939f6926d44b73` | 3166 |
-| lean-receipt.json#60 | `14f818e4-1a6c-31ee-9bc1-c739fe1d8a44` | `71fac583` | `f801284c8f306605` | 3167 |
-| lean-receipt.json#61 | `a2dc10a5-5f95-88ef-ae7b-7301e66be4d2` | `71fac583` | `5797780a90f1c55a` | 3168 |
-| lean-receipt.json#62 | `ad6eaa48-f47d-84d9-83f1-260f0d863533` | `71fac583` | `8a3218a2e6b30d43` | 3169 |
-| lean-receipt.json#63 | `75e9d3af-1e7b-1578-9b28-088b8bdc66c9` | `71fac583` | `bef5351e078cb2e9` | 3170 |
-| lean-receipt.json#64 | `f0c43e17-c77f-4d6d-9ad8-71d17cb37a8a` | `71fac583` | `07581e8bdefca38e` | 3171 |
-| lean-receipt.json#65 | `f4185059-475e-4fa3-9bb5-fe115a9d4b0b` | `71fac583` | `b35979b4a23d2c8f` | 3172 |
-| lean-receipt.json#66 | `6c7dde88-6088-2665-bbc9-fbc16f9e6f57` | `71fac583` | `1970a7d9a6e1b128` | 3173 |
-| lean-receipt.json#67 | `1b28cc29-44d3-14f9-83cd-04d8d46e95d0` | `71fac583` | `438f8d3bb05676bb` | 3174 |
-| lean-receipt.json#68 | `59988715-04a7-16bb-ac9a-1c59565ff1a7` | `71fac583` | `458554770fb655c9` | 3175 |
-| lean-receipt.json#69 | `2ec3e19b-350d-5ab2-bac5-b1c36a6cbe2d` | `71fac583` | `4c58562466ecfcae` | 3176 |
-| lean-receipt.json#70 | `8fba78af-b932-2c0b-bffd-2b4934e5a471` | `71fac583` | `228f135985843f8b` | 3177 |
-| lean-receipt.json#71 | `538581ac-d9b6-8687-8fa1-b1c493ca981d` | `71fac583` | `4c1e7c2705f41559` | 3178 |
-| lean-receipt.json#72 | `3d2681c5-bda4-5719-968d-b72a0b110875` | `71fac583` | `baa8f2e66f1928a0` | 3179 |
-| lean-receipt.json#73 | `aedc118c-def2-59ff-82a1-3de37a4ee218` | `71fac583` | `9d7741f68ed126db` | 3180 |
-| lean-receipt.json#74 | `f37e8c47-abc5-3e92-a742-d80d98b584c2` | `71fac583` | `2279e30a9419a50f` | 3181 |
-| lean-receipt.json#75 | `8e90f56e-00bb-15b4-8416-eb5d03ed241e` | `71fac583` | `8126c6809bb65361` | 3182 |
-| lean-receipt.json#76 | `81a6abaf-8f31-1512-b622-0f13352c78fc` | `71fac583` | `ee17d9dbd21ce471` | 3183 |
-| lean-receipt.json#77 | `e1c7594d-70c5-6cf7-a7c5-014eefdbd551` | `71fac583` | `fcba20b70c7ed301` | 3184 |
-| lean-receipt.json#78 | `8c5e0b57-a042-16b7-839e-760f27a86969` | `71fac583` | `b5420a6de3021558` | 3185 |
-| lean-receipt.json#79 | `409450b8-3ff5-1ef1-8594-168fc572a702` | `71fac583` | `ffdfa29be8f08bb9` | 3186 |
-| lean-receipt.json#80 | `0d07a410-8c4b-1217-8f44-66bb23eaf85c` | `71fac583` | `9af3c2a57c34864d` | 3187 |
-| lean-receipt.json#81 | `f7cc66c1-1bae-7f36-8c1f-654e2f0a5826` | `71fac583` | `5d3d0b9693f645a9` | 3188 |
-| lean-receipt.json#82 | `c4466252-fe57-42a2-bbf8-b05e568f9d83` | `71fac583` | `ca40f3358e8ba4a4` | 3189 |
-| lean-receipt.json#83 | `b079b624-3cdd-4c47-926e-eebe219441f1` | `71fac583` | `fcbcf09c28118a56` | 3190 |
-| lean-receipt.json#84 | `0aab8f5c-41b9-4924-8741-61ac3ccb60b8` | `71fac583` | `e6576a5630a6770a` | 3191 |
-| lean-receipt.json#85 | `9ea21a4f-2ef5-87f8-a296-a383bd185e1c` | `71fac583` | `282e8c60b2f9417a` | 3192 |
-| lean-receipt.json#86 | `55488079-8f2e-3488-94ce-8ac92a8d414e` | `71fac583` | `d8ed6351f82dc020` | 3193 |
-| lean-receipt.json#87 | `0550563c-6493-559f-b26d-fff21e3546ee` | `71fac583` | `895497a84aec1c20` | 3194 |
-| lean-receipt.json#88 | `dcb41320-ce11-5ea0-8df4-9fe4320d5d39` | `71fac583` | `2c19154d2d6ad06d` | 3195 |
-| lean-receipt.json#89 | `d478aa50-af93-7d4d-a31c-fd57de5946b1` | `71fac583` | `a19876494e12024b` | 3196 |
-| lean-receipt.json#90 | `2997bedf-3ba7-516d-a152-c15a7d7ca48b` | `71fac583` | `6cc1caa5b0273c6c` | 3197 |
-| lean-receipt.json#91 | `1a9a0ba0-607c-1bb7-9ecd-51a9fbee951b` | `71fac583` | `65afcaee18c777ce` | 3198 |
-| lean-receipt.json#92 | `d3449909-e03d-7f5f-8c94-484ecad68560` | `71fac583` | `5b5a7d7454556304` | 3199 |
-| lean-receipt.json#93 | `7c90dbe9-7a5d-6a89-856b-f94afc8ba934` | `71fac583` | `c83cd890f2bc04e3` | 3200 |
-| lean-receipt.json#94 | `3b094323-6ef0-2407-91fa-59a5454545a3` | `71fac583` | `4460023560a838ab` | 3201 |
-| lean-receipt.json#95 | `47aac831-63db-8d91-8de1-6dd4418ac5c9` | `71fac583` | `887c23b9472df5cb` | 3202 |
-| lean-receipt.json#96 | `c9195982-a499-143b-9102-c1c55113c8f9` | `71fac583` | `34a1ee91f5a18f4d` | 3203 |
-| lean-receipt.json#97 | `d8ca1fb4-a03d-8ca0-9d2f-209b611b004a` | `71fac583` | `1256517ded10340d` | 3204 |
-| lean-receipt.json#98 | `ee91f14a-e92e-4b3b-a8f8-c21ebc9856d5` | `71fac583` | `d6aad521dd3822c7` | 3205 |
-| lean-receipt.json#99 | `6e9e53b0-9c52-315a-87a5-84b54af9bc90` | `71fac583` | `5a590a03674b45b6` | 3206 |
-| lean-receipt.json#100 | `d643da57-35e2-14bb-990d-f17b7b9dc02d` | `71fac583` | `da644cd4148166d4` | 3207 |
-| lean-receipt.json#101 | `ba8eb6ee-5d1d-59e9-b331-fa9b77c428c0` | `71fac583` | `af94e4be5897b4ed` | 3208 |
-| lean-receipt.json#102 | `925171f1-5776-68c8-b870-0ec5f4f68544` | `71fac583` | `e51f4c0a0290ecfe` | 3209 |
-| lean-receipt.json#103 | `909134a5-e816-6092-ab0c-911d81f3b4fe` | `71fac583` | `0883ba4020371dc0` | 3210 |
-| lean-receipt.json#104 | `a4820dd0-f0bc-4205-83ff-ec9ba80d17a2` | `71fac583` | `4a836ccbe4a0b49b` | 3211 |
-| lean-receipt.json#105 | `d850a1f3-e87e-4520-ba06-a01ad640c068` | `71fac583` | `8995d8a066b7efef` | 3212 |
-| lean-receipt.json#106 | `9620d047-5050-6d6f-9aac-7f7678db8dac` | `71fac583` | `b841b46f42f8a88d` | 3213 |
-| lean-receipt.json#107 | `424168c6-07d8-608c-bfd7-a379d272355f` | `71fac583` | `8fec63d44d80417f` | 3214 |
-| lean-receipt.json#108 | `8d4b66e2-9f54-7bdf-b469-bbdc8ec7ef6a` | `71fac583` | `c68eabb53ab406ff` | 3215 |
-| lean-receipt.json#109 | `ac1a1b57-354b-2956-95c5-ca301696ed69` | `71fac583` | `fcdfda574d30be8c` | 3216 |
-| lean-receipt.json#110 | `4c3cad71-7913-38b9-918a-33709c154921` | `71fac583` | `bd5169585f7e0f6f` | 3217 |
-| lean-receipt.json#111 | `9f0380a9-578d-5dbc-b8ef-129e1a5865bc` | `71fac583` | `c3a82eb987de0283` | 3218 |
-| lean-receipt.json#112 | `ac602317-75dd-5906-b0f7-6bcf7e829d82` | `71fac583` | `a2300104ad018f89` | 3219 |
-| lean-receipt.json#113 | `9f681460-0190-4c91-99e6-f605e912b0f1` | `71fac583` | `bc9e6294314d11db` | 3220 |
-| lean-receipt.json#114 | `585edf78-6a9a-4c2a-8484-62024354c550` | `71fac583` | `35fe99849e9e190e` | 3221 |
-| lean-receipt.json#115 | `cffb9fb9-15d8-71ee-9f3e-e769ccc7b037` | `71fac583` | `428a88a81aa26f15` | 3222 |
-| lean-receipt.json#116 | `68b90fd3-fc97-1690-8379-8ce346bbec32` | `71fac583` | `fc953ba4d928cf15` | 3223 |
-| lean-receipt.json#117 | `2cb76c6c-4942-1fbd-8f6a-51e27ad41277` | `71fac583` | `f9ab16f4109fcc5e` | 3224 |
-| lean-receipt.json#118 | `91c85230-237f-3340-9c59-4cf240633614` | `71fac583` | `780032d798eb46e8` | 3225 |
-| lean-receipt.json#119 | `3fbbf4e3-5900-1340-b12b-1e8a662ae4b8` | `71fac583` | `35e9db947551e104` | 3226 |
-| lean-receipt.json#120 | `474bb1c8-b672-73cd-b52a-09230e1f372f` | `71fac583` | `2f2ff3fe85268ecd` | 3227 |
-| lean-receipt.json#121 | `9c84cacb-b1f2-77f1-b0ff-6792d41a27b7` | `71fac583` | `b6134f09015e409e` | 3228 |
-| lean-receipt.json#122 | `7e5cb6e5-c4d0-81b1-81ff-8f0db0e456b6` | `71fac583` | `d2744472e429dc58` | 3229 |
-| lean-receipt.json#123 | `e3dcafdc-11f9-4deb-a172-82f284d1cf52` | `71fac583` | `bfa20fd6cf759420` | 3230 |
-| next-receipt.json | `cfe95854-2271-2359-a742-2cea4b588589` | `fd569ac5` | `5bd9118477690f6c` | 3231 |
-| next-receipt.json#0 | `0613a09b-71c3-76c0-9f5e-0c7d871b4207` | `cfe95854` | `5fa59ce6882a7c7e` | 3232 |
-| next-receipt.json#1 | `df4348d3-bc6b-6bf7-86af-a3ccc83d291d` | `cfe95854` | `1d78bc02949ac02f` | 3233 |
-| next-receipt.json#2 | `97726e2b-35e0-8ee5-b743-dab9011ed917` | `cfe95854` | `1828a3b72c2b447c` | 3234 |
-| next-receipt.json#3 | `e2a22f93-8635-1b02-a1c8-ed25eff8c1b2` | `cfe95854` | `b66a71a56d5ed577` | 3235 |
-| next-receipt.json#4 | `7eda142e-1d32-5add-b525-13332cb0a784` | `cfe95854` | `6ad019f977769822` | 3236 |
-| next-receipt.json#5 | `daa79540-a4f0-2fcd-9eeb-12afe19bdcc0` | `cfe95854` | `0fc0abe75a4876d2` | 3237 |
-| next-receipt.json#6 | `66a4407b-a96a-205d-af4e-5e087c486548` | `cfe95854` | `7c01164accc655fc` | 3238 |
-| next-receipt.json#7 | `017fe556-90f0-11ea-a0c7-d25b7b9989db` | `cfe95854` | `5809b83305b2b560` | 3239 |
-| next-receipt.json#8 | `c963d55a-0624-40d4-90d7-457762259c6b` | `cfe95854` | `5bf1b59d0ca2ba64` | 3240 |
-| next-receipt.json#9 | `2283c9d4-c26f-3fce-be6f-b4829bb3c868` | `cfe95854` | `1f1d22a4db42670d` | 3241 |
-| next-receipt.json#10 | `29884de9-918b-1b06-9c12-bbaf37c7fa62` | `cfe95854` | `2eb0ff4c862889ea` | 3242 |
-| next-receipt.json#11 | `4d99b84a-242f-3e93-9cd3-c9c1984a6457` | `cfe95854` | `39207e336cf1dfea` | 3243 |
-| next-receipt.json#12 | `91a52fea-2093-12ab-8f13-05606f91afb4` | `cfe95854` | `13ed19361f77ca8c` | 3244 |
-| next-receipt.json#13 | `db11e231-f554-3a5f-90c0-6a7cc7f218ba` | `cfe95854` | `1d07dc33790e6129` | 3245 |
-| next-receipt.json#14 | `e94ee7f2-b1bd-5e1c-ae93-d8ee676b811a` | `cfe95854` | `1437171709f0a470` | 3246 |
-| next-receipt.json#15 | `51cdb888-8d0a-480a-8c43-cbaf1a212bc6` | `cfe95854` | `144d644e1f6f582a` | 3247 |
-| next-receipt.json#16 | `f1be5cc3-0d48-7c8f-9cb7-80fd75363e75` | `cfe95854` | `6910025dedf89c69` | 3248 |
-| next-receipt.json#17 | `774b133a-91d2-208b-a2d7-03ab69f9b1c0` | `cfe95854` | `1de98dcc5ae3b6a9` | 3249 |
-| next-receipt.json#18 | `ecd60e90-b8fa-8449-a5ed-a425ee4958c9` | `cfe95854` | `93002b91db4e941e` | 3250 |
-| next-receipt.json#19 | `4d19c5c5-174f-1205-847a-313b94b98e58` | `cfe95854` | `f29546065831b80d` | 3251 |
-| next-receipt.json#20 | `298cd59f-ab00-3603-9c6c-ba10142cb439` | `cfe95854` | `51b4e3dad624c282` | 3252 |
-| next-receipt.json#21 | `d556fcff-0510-1ec2-8a96-b824f7423d73` | `cfe95854` | `891f028fb4fd4840` | 3253 |
-| next-receipt.json#22 | `3ce84ed4-1cad-357f-871c-51e3866d96bc` | `cfe95854` | `98348c7cac74accf` | 3254 |
-| next-receipt.json#23 | `c33ce8d3-9fb5-8b92-ae57-dc937ffd2a6d` | `cfe95854` | `68a1053d2507ab5b` | 3255 |
-| next-receipt.json#24 | `74b5e9c9-81c7-4280-8d8d-2c810a689466` | `cfe95854` | `7e88287076b29109` | 3256 |
-| next-receipt.json#25 | `edd0e99f-fb9a-3661-b423-27de6708760b` | `cfe95854` | `d883a0cb0ae4fdc9` | 3257 |
-| next-receipt.json#26 | `3cd27d2c-98df-349c-9613-3e019c31e0da` | `cfe95854` | `ced76db9833a921a` | 3258 |
-| next-receipt.json#27 | `c7064896-a10e-6c6c-a894-cf4856f4ed23` | `cfe95854` | `e47588922b0f34dd` | 3259 |
-| next-receipt.json#28 | `33885c95-b000-604d-975a-ba78b8edfa11` | `cfe95854` | `f5f05882d579eb31` | 3260 |
-| next-receipt.json#29 | `2378307d-3ad0-6dfe-aca0-4847e6fcad6a` | `cfe95854` | `b7951d1e6778c48d` | 3261 |
-| next-receipt.json#30 | `b3a5e5bb-89cb-6104-abcb-4c2a7b8402ba` | `cfe95854` | `536066b735be5265` | 3262 |
-| next-receipt.json#31 | `9a153997-8a12-4684-988e-aa7e7626e1a4` | `cfe95854` | `42410aa4069d3ca8` | 3263 |
-| next-receipt.json#32 | `25921cf5-def8-7f01-8348-ff216fea823e` | `cfe95854` | `073af52a0f9ab810` | 3264 |
-| next-receipt.json#33 | `77f2b379-b564-89b3-89ee-38f887f4847b` | `cfe95854` | `bba981ac8de279be` | 3265 |
-| next-receipt.json#34 | `bc799fd2-0c90-57e2-8350-a167bbe5c2d4` | `cfe95854` | `b959baf085b26422` | 3266 |
-| next-receipt.json#35 | `cb16698a-7e10-5873-add1-e1a3c1527aa3` | `cfe95854` | `4488ce0f19b2b9bd` | 3267 |
-| next-receipt.json#36 | `fa36ede4-13dc-756e-836f-54d6394d3453` | `cfe95854` | `9a842db3f7059557` | 3268 |
-| next-receipt.json#37 | `f8036909-2a33-2171-86b3-7d4eda0cd4f4` | `cfe95854` | `55b2608290ca207a` | 3269 |
-| next-receipt.json#38 | `098d6aff-29ea-348a-b004-c85ad9fcdd2b` | `cfe95854` | `8c412b756136abc0` | 3270 |
-| next-receipt.json#39 | `7bc11880-0d21-5097-9ce6-584fb8ff7ab2` | `cfe95854` | `67ddba9524ca666f` | 3271 |
-| next-receipt.json#40 | `5f00ca2c-0639-4d85-ab58-5002d34cfbff` | `cfe95854` | `0598ca7dd16557d8` | 3272 |
-| next-receipt.json#41 | `a4e046dd-edff-8d74-9feb-22459f38c3bf` | `cfe95854` | `cf09847e16152a71` | 3273 |
-| next-receipt.json#42 | `6a32bd73-791a-66ab-8c9a-a21d4adbc3d1` | `cfe95854` | `d561f621b6728680` | 3274 |
-| next-receipt.json#43 | `273c6942-c9fe-7c13-827f-fe1d078d3340` | `cfe95854` | `f5d72e88402cf481` | 3275 |
-| next-receipt.json#44 | `7fef6f1f-3cb7-33d1-bcbd-61d28ad4f627` | `cfe95854` | `ee083dfc9469b0a8` | 3276 |
-| next-receipt.json#45 | `514d1914-ab1a-571d-bf2b-4355578f59cb` | `cfe95854` | `9934bea69eaa3e16` | 3277 |
-| next-receipt.json#46 | `359597aa-4722-4efb-9512-ac338b973d5f` | `cfe95854` | `fa812be5f2d57b08` | 3278 |
-| next-receipt.json#47 | `a11d5099-25c9-1057-b235-30b973343ce6` | `cfe95854` | `29ffaeb32c9a8acb` | 3279 |
-| next-receipt.json#48 | `11918fdb-a6ef-4a81-a46e-83c81c43fd23` | `cfe95854` | `e8aa00b03611df76` | 3280 |
-| next-receipt.json#49 | `3e2ae3cb-fda1-5d3f-963e-b89ee8b54975` | `cfe95854` | `b687fa0931c03298` | 3281 |
-| next-receipt.json#50 | `bcf0e590-425b-761a-ba9a-f675a8dea4c4` | `cfe95854` | `14314ece1e1db42f` | 3282 |
-| next-receipt.json#51 | `f1b3d60e-7c59-42aa-9516-8a4c8f758fe5` | `cfe95854` | `b2a34baea870fa84` | 3283 |
-| next-receipt.json#52 | `01e53953-c878-6c5d-9e48-e5e53aadadc8` | `cfe95854` | `0fff682c299a9c36` | 3284 |
-| next-receipt.json#53 | `36cf9a4b-b343-8360-88d7-99d88909c95b` | `cfe95854` | `5b149c69ac49810e` | 3285 |
-| next-receipt.json#54 | `625e786e-0c49-6f88-89f1-b02136d0dcd1` | `cfe95854` | `070ee80f6c6593a4` | 3286 |
-| next-receipt.json#55 | `0758458c-892c-74d4-9d6f-fc22a165e817` | `cfe95854` | `1bc5162822445a65` | 3287 |
-| next-receipt.json#56 | `53fa8b9b-0034-4889-8c51-00c07329bbd0` | `cfe95854` | `ac9d867b2e03d8be` | 3288 |
-| next-receipt.json#57 | `3d92f7ae-04f8-4000-9d34-3e994c957170` | `cfe95854` | `f5f5e2053b5ab1e6` | 3289 |
-| next-receipt.json#58 | `4a90b362-6ebb-4b16-ad2e-d9a379f704f2` | `cfe95854` | `55801c0e36187529` | 3290 |
-| next-receipt.json#59 | `d88b183a-05e0-3521-bedf-2d316a274464` | `cfe95854` | `4710b632f93661c1` | 3291 |
-| next-receipt.json#60 | `6cf6d26d-fca8-7ac2-852d-33ac81972a3a` | `cfe95854` | `6d8035887fd2454f` | 3292 |
-| next-receipt.json#61 | `fbaa3479-0391-414a-b94d-7206567fe57b` | `cfe95854` | `87a99f04745b8dc5` | 3293 |
-| next-receipt.json#62 | `abf84247-1c3e-2f34-8262-2064be2f6210` | `cfe95854` | `6f4736e2e4530bd7` | 3294 |
-| next-receipt.json#63 | `0cc7f10d-33e6-1651-a289-987edcf61a30` | `cfe95854` | `81bf6b89e36ce688` | 3295 |
-| next-receipt.json#64 | `775a9879-8a2e-5288-ac1e-4b831b40ab5c` | `cfe95854` | `39775edd4a51fb13` | 3296 |
-| next-receipt.json#65 | `f060a6af-2e85-5791-988d-2300679a8c25` | `cfe95854` | `0d8d6cfe36e778f1` | 3297 |
-| next-receipt.json#66 | `d3aa8cb8-6ce0-4b6a-8e49-03533354b3e6` | `cfe95854` | `01fde61ab641cd80` | 3298 |
-| next-receipt.json#67 | `584df891-3d24-6f2a-83af-184bc66aa02a` | `cfe95854` | `21d9738518bb5ae5` | 3299 |
-| next-receipt.json#68 | `81ce1b6a-135e-8959-bb36-36afe4c94a8b` | `cfe95854` | `d325c1676427b56b` | 3300 |
-| next-receipt.json#69 | `e0288999-e177-27c3-ac22-2c4d225f7025` | `cfe95854` | `4a54e4a20de47d47` | 3301 |
-| next-receipt.json#70 | `1f471f00-c220-54c8-8a24-d161c89a577d` | `cfe95854` | `07bc4c874c18d390` | 3302 |
-| next-receipt.json#71 | `6d39c376-befd-7493-9b99-f85fbcbae377` | `cfe95854` | `0934eff506e94905` | 3303 |
-| next-receipt.json#72 | `14c5f801-e2ee-5c4e-b488-fdcafa2a0f47` | `cfe95854` | `3a6b44c68e17aa84` | 3304 |
-| next-receipt.json#73 | `8f3c8fd1-696f-5da6-8c67-8f3dd1d72588` | `cfe95854` | `8317c596e068e24e` | 3305 |
-| next-receipt.json#74 | `33ab154d-fef5-43ae-805d-1d1118b8a62e` | `cfe95854` | `67ce0dd217cbee59` | 3306 |
-| next-receipt.json#75 | `7311b1ae-0f35-8473-897c-112b1ba18a1d` | `cfe95854` | `c333c6bc6a85ef7c` | 3307 |
-| next-receipt.json#76 | `b185d24b-b11a-4934-b5c1-86e7ffa5d33b` | `cfe95854` | `ac03d87995d7b3cf` | 3308 |
-| next-receipt.json#77 | `ed72a311-eccf-747f-9d42-4ce41f0c0a90` | `cfe95854` | `0498d996ba5de01b` | 3309 |
-| next-receipt.json#78 | `e1a805d2-a0b5-5fbd-9022-6a17b70c74ba` | `cfe95854` | `305a9575ebe06f54` | 3310 |
-| next-receipt.json#79 | `6e3a94a8-59d9-1858-9d18-aa9a198cad8f` | `cfe95854` | `4c3b7828370f69fc` | 3311 |
-| next-receipt.json#80 | `39d6b7b4-b099-36ea-872f-9431143654d2` | `cfe95854` | `5e723843a4a57453` | 3312 |
-| next-receipt.json#81 | `4a73ddd0-da34-3ebc-af9e-eb046e9d9e5c` | `cfe95854` | `76005f2633fd7688` | 3313 |
-| next-receipt.json#82 | `8c476aea-e375-38b7-99e1-3ff6cc66015e` | `cfe95854` | `337c814762b36934` | 3314 |
-| next-receipt.json#83 | `f202131c-6743-8f4d-b351-d21ab1c7ea96` | `cfe95854` | `81c387e1d459b4ff` | 3315 |
-| next-receipt.json#84 | `20c26617-f812-5325-9672-1a6506ee549a` | `cfe95854` | `a31338ab78f9a7c2` | 3316 |
-| next-receipt.json#85 | `761b53bf-de26-5c80-a86c-459833160843` | `cfe95854` | `e99c4fd26c75c28b` | 3317 |
-| next-receipt.json#86 | `28b06772-475a-1246-9e54-e18310da92f4` | `cfe95854` | `52aef38e1348cc86` | 3318 |
-| next-receipt.json#87 | `23dca1c2-1dc3-7374-a6c3-f61721e432cc` | `cfe95854` | `13559dbf868f2b7e` | 3319 |
-| next-receipt.json#88 | `fca765ef-fca0-1681-83f2-4cc4d9e5c424` | `cfe95854` | `76c71ef456a59928` | 3320 |
-| next-receipt.json#89 | `aca72a55-4324-4e4c-999c-e125090e3b84` | `cfe95854` | `4f5f1071f1065611` | 3321 |
-| next-receipt.json#90 | `882b323f-c301-711f-8e73-911b4a20d70e` | `cfe95854` | `461b942bbe03e5a0` | 3322 |
-| next-receipt.json#91 | `1fddfb41-4dc6-58ab-9d1c-e9037e18b199` | `cfe95854` | `4b010738beed1327` | 3323 |
-| next-receipt.json#92 | `6ce14560-b8ca-34a2-93a6-71a3f6b31a44` | `cfe95854` | `b90db0541693b853` | 3324 |
-| next-receipt.json#93 | `44aa1e60-beb1-1101-b05b-7a7a6b6ad27c` | `cfe95854` | `5c562067c99bc5d3` | 3325 |
-| next-receipt.json#94 | `9bacde9e-1b21-1fc5-b90f-71e7305afe05` | `cfe95854` | `48430d92af8f0b28` | 3326 |
-| next-receipt.json#95 | `57dfaed1-3bf3-5cb2-a114-cb420c7355e7` | `cfe95854` | `480f0af23e3bb4a9` | 3327 |
-| next-receipt.json#96 | `117a7d69-ce74-2883-98fe-7f9f5a7d6ae5` | `cfe95854` | `fae1750cfb46cce5` | 3328 |
-| next-receipt.json#97 | `40a75b7b-9644-283e-84b7-73cde5e7ecd0` | `cfe95854` | `77ddd5f911825171` | 3329 |
-| next-receipt.json#98 | `8da68678-8ede-1f21-8e20-999fa81ae788` | `cfe95854` | `b65d338eb0b39514` | 3330 |
-| next-receipt.json#99 | `eff813e3-1381-38ec-9174-38dc17711926` | `cfe95854` | `a2ef2d70ef1f24e3` | 3331 |
-| next-receipt.json#100 | `1de8c385-f299-39a0-b734-8f67b47538af` | `cfe95854` | `4b062aa2bc61a4cf` | 3332 |
-| next-receipt.json#101 | `56bef29f-e916-32e2-903c-2159583749b6` | `cfe95854` | `29ab676c115f275f` | 3333 |
-| next-receipt.json#102 | `46bcbe1b-a05d-5a77-afb6-8223d41d79fa` | `cfe95854` | `faafc4cfde04fb00` | 3334 |
-| next-receipt.json#103 | `db7810f0-2075-7c72-aafc-f8412dd8ddc7` | `cfe95854` | `1b305c0768f9cc8d` | 3335 |
-| next-receipt.json#104 | `57090e77-e302-7f97-9e00-6e6cdd776ada` | `cfe95854` | `4de94c5d126f8139` | 3336 |
-| next-receipt.json#105 | `38306bb9-5bc0-33e3-b346-1bc7e216480f` | `cfe95854` | `ad9f76f78014be5b` | 3337 |
-| next-receipt.json#106 | `733f61f9-114d-7b10-aeb6-4f5b52f8e48a` | `cfe95854` | `ee82e9789ecc17ac` | 3338 |
-| next-receipt.json#107 | `124b58aa-a9ee-7924-8b9f-77ce2bae3e15` | `cfe95854` | `b4fbc7cefea01f03` | 3339 |
-| next-receipt.json#108 | `a5995689-1ff2-4e95-b438-2ddc56ab0bb6` | `cfe95854` | `731a30a1065864ec` | 3340 |
-| next-receipt.json#109 | `94adb062-a0f8-2fb2-9f08-c85183ff9546` | `cfe95854` | `7b9b9eb4ae4b5c9e` | 3341 |
-| next-receipt.json#110 | `81a2bef8-a371-6a43-b9d9-f4be9a1cf7fa` | `cfe95854` | `d2372fcee74fa0ad` | 3342 |
-| next-receipt.json#111 | `2c01543a-f467-6d4e-9d99-e17c5e3c9607` | `cfe95854` | `dbf99cf14761dadd` | 3343 |
-| next-receipt.json#112 | `466794f4-0efc-884f-8b5d-f01eca96c03b` | `cfe95854` | `1c855071029d8b50` | 3344 |
-| next-receipt.json#113 | `6bf266bb-eaa3-7cc2-b2cd-95f38b8b8dae` | `cfe95854` | `5de3231b95c8bee9` | 3345 |
-| next-receipt.json#114 | `e563fa91-40b2-7bea-9ff8-3109e956d0b6` | `cfe95854` | `ebbc67ea2d61fb04` | 3346 |
-| next-receipt.json#115 | `8648ce4d-7416-4b7f-807b-73b3030cee56` | `cfe95854` | `e6dd890bf574397d` | 3347 |
-| next-receipt.json#116 | `d2c3d208-1793-7894-95b6-474d80b24314` | `cfe95854` | `5ab5150c3f8fd4d4` | 3348 |
-| next-receipt.json#117 | `c2299708-7105-3e02-80c1-80f87d796b30` | `cfe95854` | `162946a110cb951d` | 3349 |
-| next-receipt.json#118 | `e994f873-7e31-227d-8028-38b77e1a200e` | `cfe95854` | `29997537a37f4257` | 3350 |
-| next-receipt.json#119 | `5a3b68c1-6c27-1dbe-a537-271157a9da28` | `cfe95854` | `fedad1bc58c6b616` | 3351 |
-| next-receipt.json#120 | `362d9bb0-9570-18fc-a52f-091a29fd103c` | `cfe95854` | `276d32d941a23070` | 3352 |
-| next-receipt.json#121 | `6540c726-df82-35fe-b948-0be5f7c820fb` | `cfe95854` | `b52d6fe7ee916e8f` | 3353 |
-| next-receipt.json#122 | `12a5befb-d806-20e3-b524-2c0f04825852` | `cfe95854` | `70e9a1a0795f11d0` | 3354 |
-| next-receipt.json#123 | `2d1cf349-6a33-795b-bf2f-e3a806b93b40` | `cfe95854` | `83516583ceaf22af` | 3355 |
-| next-receipt.json#124 | `11148dde-095c-3b8c-8b42-49ae06a89ad7` | `cfe95854` | `219fb633230cb66f` | 3356 |
-| next-receipt.json#125 | `a28c469f-0780-27ec-9244-fa1359af674e` | `cfe95854` | `6aa2f72396da27dc` | 3357 |
-| next-receipt.json#126 | `730f35b1-8eb0-69d3-ba49-f05865ba85ad` | `cfe95854` | `4941f0042727a9c9` | 3358 |
-| next-receipt.json#127 | `4baf1416-739f-344e-b7c7-06a8d8695450` | `cfe95854` | `ff7a91862cc34990` | 3359 |
-| next-receipt.json#128 | `4c801e27-7d3e-654b-9f28-14ba25d0a957` | `cfe95854` | `5a38c1308d4ec05e` | 3360 |
-| next-receipt.json#129 | `13420a9e-721c-1bb5-b9e8-268650a58075` | `cfe95854` | `7a89d069d2709e55` | 3361 |
-| next-receipt.json#130 | `deb508cc-2427-7801-83f2-52afe03c30b2` | `cfe95854` | `6b8a79b1151c23a4` | 3362 |
-| next-receipt.json#131 | `5ba4efb2-bf36-4f5e-a978-54d5ac2cf27d` | `cfe95854` | `e81130370aff97cf` | 3363 |
-| next-receipt.json#132 | `c2b8fc92-4351-79d6-a784-e92f37a697a3` | `cfe95854` | `3d0933bd9dd0e6cc` | 3364 |
-| next-receipt.json#133 | `63d60cfd-e716-2fc3-b73c-8c4510e9704e` | `cfe95854` | `1abfb19426372c73` | 3365 |
-| next-receipt.json#134 | `5b77fc17-7567-87b8-8c9e-0a8eede924ff` | `cfe95854` | `30ea226ddd3e9e52` | 3366 |
-| next-receipt.json#135 | `4dfb139f-e6ed-7b67-8c19-05e10daaebfe` | `cfe95854` | `df57503d580e73c5` | 3367 |
-| next-receipt.json#136 | `b531fa83-43b7-780a-bdcf-33cbe8d99fab` | `cfe95854` | `0c56a3b150d2200a` | 3368 |
-| next-receipt.json#137 | `bbd66a00-485a-7ca2-80f8-2f9aa697ddf9` | `cfe95854` | `20d4fb3ac419ee32` | 3369 |
-| next-receipt.json#138 | `fad4e4f2-ee97-65f8-9f94-7dbb617eccd8` | `cfe95854` | `b6f56e1bfc0e197e` | 3370 |
-| next-receipt.json#139 | `cfc12bab-e83c-8538-8ddd-3a38a52ab769` | `cfe95854` | `0f2c40bb57abd3a3` | 3371 |
-| next-receipt.json#140 | `86ced6fb-dece-3234-baf5-fcb3a4ab547e` | `cfe95854` | `b63bfbacb41e202e` | 3372 |
-| next-receipt.json#141 | `be1d0194-aaaf-1b8a-857b-8102edf36316` | `cfe95854` | `1de3ef9beb26f738` | 3373 |
-| next-receipt.json#142 | `4fd03006-7687-3ecf-b09c-0fb88e954a3b` | `cfe95854` | `71f9d0300183dcc4` | 3374 |
-| next-receipt.json#143 | `39e2e1e5-37f3-6c8d-924a-88a74419e904` | `cfe95854` | `b51365e4ab3a2528` | 3375 |
-| next-receipt.json#144 | `94eb15a5-1ff7-17f6-af7f-d1b992365805` | `cfe95854` | `74374cd68ba0e770` | 3376 |
-| next-receipt.json#145 | `f7a2b3a5-c68f-3f6e-ab21-2adcd2cdd3b4` | `cfe95854` | `0f7ce3eb3383720e` | 3377 |
-| next-receipt.json#146 | `d1d77eee-56f5-412d-813a-ad7285d89822` | `cfe95854` | `78ae8e3dcaed1674` | 3378 |
-| next-receipt.json#147 | `c20fb38c-ac1e-2c02-8d4b-e3c47d73a1e6` | `cfe95854` | `20f08445cd45fe86` | 3379 |
-| next-receipt.json#148 | `2b3e79dd-acba-7da3-99f8-4cb49d4d014f` | `cfe95854` | `09434ff77a2091d9` | 3380 |
-| next-receipt.json#149 | `9165f637-93d5-169c-b10a-3e69ebbbe6fe` | `cfe95854` | `e66ee1e3b38dc71d` | 3381 |
-| next-receipt.json#150 | `8c5584e8-bb47-55e0-a315-00fdd64f9f7c` | `cfe95854` | `27aa9138504db3cf` | 3382 |
-| next-receipt.json#151 | `eb7ba2cc-d97b-38e0-bc09-ef1300bc30ee` | `cfe95854` | `d08e68d0b5f99c76` | 3383 |
-| next-receipt.json#152 | `dc338ac1-855a-6b0b-bbdc-0dec39995ade` | `cfe95854` | `4de16075bbdd9a7f` | 3384 |
-| next-receipt.json#153 | `3ae1f4d4-4c3c-24b6-bccf-239e5af0c006` | `cfe95854` | `b42c1b2a5c888276` | 3385 |
-| next-receipt.json#154 | `0f571d9c-e839-8387-9de8-730e69f63273` | `cfe95854` | `3ade597e5eb5696c` | 3386 |
-| next-receipt.json#155 | `2aa54e3d-4c46-79b1-806e-9dd52d64e1f4` | `cfe95854` | `5f0683d3749020f2` | 3387 |
-| next-receipt.json#156 | `91807ae0-b48a-72a3-80f0-52ad86eb2b72` | `cfe95854` | `081d78d5bbb5a714` | 3388 |
-| next-receipt.json#157 | `4d3c3a0d-a4e9-8306-bdaf-ee7b02039d20` | `cfe95854` | `6fc63d33a92b65cb` | 3389 |
-| next-receipt.json#158 | `a5ef2c86-d1c8-268a-9bb8-072d7fb67ad2` | `cfe95854` | `ede294dea93cac38` | 3390 |
-| next-receipt.json#159 | `dff4d39c-488f-3b87-a5ea-65e2e015cbb6` | `cfe95854` | `adfe7b526928da21` | 3391 |
-| next-receipt.json#160 | `d5a05501-ef1b-1d0b-9aa6-d001a85c8162` | `cfe95854` | `d105ee5a7b3d666d` | 3392 |
-| next-receipt.json#161 | `b5aa5ebe-0995-256d-a6e5-9cacd9353bbf` | `cfe95854` | `0521cb623a413f5c` | 3393 |
-| next-receipt.json#162 | `c7b6a39e-ffcb-2cd3-9c95-e93db4916c6f` | `cfe95854` | `6d40fb92a084d0e8` | 3394 |
-| next-receipt.json#163 | `bc27479a-2a8a-6ecd-9fa3-55e10412efbd` | `cfe95854` | `5792ef456eaf56f9` | 3395 |
-| next-receipt.json#164 | `1ef5086b-2dfc-3c8c-ad6d-e5531d6b41fd` | `cfe95854` | `d3bca7f3f314c746` | 3396 |
-| next-receipt.json#165 | `6cd1bd41-1602-8dc9-b1ae-58e2dd9e70c8` | `cfe95854` | `15fb9195f121e6a7` | 3397 |
-| next-receipt.json#166 | `7dc6ae0d-1050-49f4-b941-04dfa0450c1c` | `cfe95854` | `371ace21fa747a3b` | 3398 |
-| next-receipt.json#167 | `0a970eb0-dd72-457d-b2d7-45f5ee30d94f` | `cfe95854` | `2d3244acab7686fb` | 3399 |
-| next-receipt.json#168 | `a58254b4-a3e0-5d67-afdb-5235fd33cbd5` | `cfe95854` | `8581b927fe83461f` | 3400 |
-| next-receipt.json#169 | `58458895-8ed6-30dc-9a94-39ed34fcf77e` | `cfe95854` | `8826380526b65e2e` | 3401 |
-| next-receipt.json#170 | `d1ec7555-ee16-716b-85a9-f306c01b095c` | `cfe95854` | `f7f430adbb185c15` | 3402 |
-| next-receipt.json#171 | `45a8ed8c-bf6d-3ac0-bd42-2b28d04dcd30` | `cfe95854` | `8e6b770a1504536e` | 3403 |
-| next-receipt.json#172 | `e50ded20-c89f-7194-b0c9-cb240cb74d47` | `cfe95854` | `d12099aab5fcc68e` | 3404 |
-| next-receipt.json#173 | `7d283e26-4f2b-8af1-865d-d5517424b137` | `cfe95854` | `c3a6608fbd6af523` | 3405 |
-| next-receipt.json#174 | `ef4a2239-f853-6233-be94-8855900b38ef` | `cfe95854` | `5f438ff7c1b8d257` | 3406 |
-| next-receipt.json#175 | `ef9740e2-4cc7-6362-8366-09799a3480bd` | `cfe95854` | `fd188a4eaec9212b` | 3407 |
-| next-receipt.json#176 | `9a1555db-0e46-20bf-a3d8-e5b5217d5b4c` | `cfe95854` | `87115faec6679b99` | 3408 |
-| next-receipt.json#177 | `1b691ab2-0b24-2b9f-ae8d-5d31b7b5c3b5` | `cfe95854` | `e518662d6ed30488` | 3409 |
-| next-receipt.json#178 | `378a9475-4fa4-68e0-acbb-579ecbaea7ed` | `cfe95854` | `5e5192d22141ce9d` | 3410 |
-| next-receipt.json#179 | `d768ad8c-1f8f-3069-a732-2fe8c8a5dc26` | `cfe95854` | `c62bb548129ccec2` | 3411 |
-| next-receipt.json#180 | `e1bd578a-df26-57b5-b451-f59de4938e3b` | `cfe95854` | `928568b232f67b9c` | 3412 |
-| next-receipt.json#181 | `d74cb3a7-6127-3cd9-b331-b1fad83d88d1` | `cfe95854` | `db1d0f8bfba2b1c5` | 3413 |
-| next-receipt.json#182 | `78ddc441-fd6a-820c-a3f3-f4dc38c13d6d` | `cfe95854` | `b196040a4b4c9abe` | 3414 |
-| next-receipt.json#183 | `3bb2e303-1580-17ba-897b-59997b9168c2` | `cfe95854` | `d975d7fad68ba117` | 3415 |
-| next-receipt.json#184 | `b18418f1-7228-5577-ae1b-39b920d4a17f` | `cfe95854` | `d72563bab73919c1` | 3416 |
-| next-receipt.json#185 | `d58d6274-7bc4-355d-8fe7-666664f148f8` | `cfe95854` | `afdae066b83b592f` | 3417 |
-| next-receipt.json#186 | `b1dbba46-03b2-87bc-97dc-e0649db4f82c` | `cfe95854` | `b9105ddb80d54e59` | 3418 |
-| next-receipt.json#187 | `9729fa8e-fef0-55ec-809c-f86c045d4f58` | `cfe95854` | `43451e02e33bd0bf` | 3419 |
-| next-receipt.json#188 | `06e0972a-7f8e-35e6-ae63-b971b170228c` | `cfe95854` | `c9e67dd032c25a31` | 3420 |
-| next-receipt.json#189 | `a26d7dec-7dfa-2c88-b62b-f9dce9df560e` | `cfe95854` | `d331c24ec332c4ca` | 3421 |
-| next-receipt.json#190 | `fd5d1cc0-a5b4-274f-a604-24437f54465e` | `cfe95854` | `ecf28ed0630472c5` | 3422 |
-| next-receipt.json#191 | `cc25f6c6-6315-8bbd-b9a8-adffe49b09be` | `cfe95854` | `62974ed8517f7a03` | 3423 |
-| next-receipt.json#192 | `6ceba8dd-992e-37ad-be5e-8e26a483ab6c` | `cfe95854` | `545e20a627342b29` | 3424 |
-| next-receipt.json#193 | `7ff650b4-2cea-82d3-b0bb-8b5e4cb6b9c0` | `cfe95854` | `2fae130342ad934a` | 3425 |
-| next-receipt.json#194 | `a3a7314c-3f18-59dd-b8c4-8c665f2e21ec` | `cfe95854` | `ec0825858662cf36` | 3426 |
-| next-receipt.json#195 | `d3562d45-0ce6-452f-b1cd-59cff208c5ef` | `cfe95854` | `14b42a7bc85ab99d` | 3427 |
-| next-receipt.json#196 | `a02c0d7a-396f-2c7a-85bc-9dcfbc79287d` | `cfe95854` | `ae21833e6cd3f7ad` | 3428 |
-| next-receipt.json#197 | `51b797c7-f43f-63b8-be31-5d37452075f9` | `cfe95854` | `0ca80cf6b3d94e01` | 3429 |
-| next-receipt.json#198 | `0fe594d0-69a8-3753-878f-471be4745981` | `cfe95854` | `72643c920473475f` | 3430 |
-| next-receipt.json#199 | `4dc25fb4-95be-856b-9d71-60e74c84a4a1` | `cfe95854` | `d719bb40c04a6f9b` | 3431 |
-| next-receipt.json#200 | `51560b04-69eb-508c-b685-c0ad8f3022ba` | `cfe95854` | `d1fa96051c7d4e1d` | 3432 |
-| next-receipt.json#201 | `31366fe6-f3b8-6c6f-bcbc-77edee6a7ad2` | `cfe95854` | `8ad5095a5c5441ef` | 3433 |
-| next-receipt.json#202 | `9169b990-085d-8c0b-a748-c22fa1f96d00` | `cfe95854` | `02d9fa8fb100be78` | 3434 |
-| next-receipt.json#203 | `7e349c46-5f2a-2630-89af-510d5e508b9f` | `cfe95854` | `fa314451dc2ad6b2` | 3435 |
-| next-receipt.json#204 | `4c44225b-d7a1-3cd4-9a9e-9c57414e9ca0` | `cfe95854` | `434d317333a82ee7` | 3436 |
-| next-receipt.json#205 | `13787cce-a0b4-7f9d-85b7-cf728af75212` | `cfe95854` | `ba55547491f92617` | 3437 |
-| next-receipt.json#206 | `7dcf2795-3c5f-438c-9ee4-cc81d2333b1e` | `cfe95854` | `9ed54e81e6a9ae1e` | 3438 |
-| next-receipt.json#207 | `83d8bc52-5b4b-820a-9472-ac889b11ec25` | `cfe95854` | `fb358b1987787fd7` | 3439 |
-| next-receipt.json#208 | `b14b04f8-ff87-176d-8bee-1534fed91bbe` | `cfe95854` | `f0868688cc88a435` | 3440 |
-| next-receipt.json#209 | `f634f5b7-7b54-3310-8ecc-5a8a0884e170` | `cfe95854` | `5ed20137c1c8f307` | 3441 |
-| next-receipt.json#210 | `33c3b243-3e21-1f95-8529-4fc85c6ff5c2` | `cfe95854` | `fe750578bd2fc892` | 3442 |
-| next-receipt.json#211 | `645b05d7-ebb9-21ce-847c-c82cebb67091` | `cfe95854` | `38b0a729ce1a6a8f` | 3443 |
-| next-receipt.json#212 | `953bb048-52f6-3513-96f5-e4ad78f3c566` | `cfe95854` | `399192424eb4b56f` | 3444 |
-| next-receipt.json#213 | `fb9d510e-f180-2bdc-b615-acd7837f1e78` | `cfe95854` | `3ac95d66b868d1ea` | 3445 |
-| payload-cf-receipt.json | `30040fc2-3bb7-828d-8810-4c2bfc7d60b9` | `fd569ac5` | `1efdf46c90476620` | 3446 |
-| percall-receipt.json | `81f418d9-1051-81fb-83c9-8a7053b9bc9e` | `fd569ac5` | `a715c780af4af9b4` | 3447 |
-| refusals-receipt.json | `6684260c-7fd7-28d1-b74a-d9fbe70e8576` | `fd569ac5` | `6b66ddd9d9e500df` | 3448 |
-| test-receipt.json | `d61af728-f68a-5def-8538-79ee813b3956` | `fd569ac5` | `93ab06b392ba14d8` | 3449 |
-| test-receipt.json#0 | `8ee790f3-9816-2559-9b2c-1cf6f85b59b1` | `d61af728` | `03f1dbc39b7fe388` | 3450 |
-| uses-receipt.json | `dbf82c11-440d-756a-9fa1-fd0950f29c9d` | `fd569ac5` | `ce02a76c7f180cbc` | 3451 |
-| uses-receipt.json#0 | `4f17f6b5-a596-73dc-a29f-bfa656191cd6` | `dbf82c11` | `49ed53a4b88b6d41` | 3452 |
-| uses-receipt.json#1 | `30b9d536-7a88-8139-b5b9-b9bbd3e5d97c` | `dbf82c11` | `254fe42372ded96d` | 3453 |
-| uses-receipt.json#2 | `e9c15d40-7db4-714e-8166-06e94c4e0bd8` | `dbf82c11` | `d9205d9c6310a1d0` | 3454 |
-| uses-receipt.json#3 | `6054af57-de28-605f-996f-367dc6351f38` | `dbf82c11` | `73f7052c16747ca1` | 3455 |
-| uses-receipt.json#4 | `118aa92f-2f40-54db-bee7-5310f914a673` | `dbf82c11` | `edf65a9473b84b29` | 3456 |
-| uses-receipt.json#5 | `d582c8bc-3dc3-5262-b0b0-d851be257620` | `dbf82c11` | `13eac9b1a3e451fb` | 3457 |
-| uses-receipt.json#6 | `2f4d060f-b5b3-5665-bdb4-83b31140f4f8` | `dbf82c11` | `fb3d08085a405306` | 3458 |
-| uses-receipt.json#7 | `94f73730-bd90-2a05-ac10-31d0d75e411c` | `dbf82c11` | `0eb2f3ca42073ab5` | 3459 |
-| uses-receipt.json#8 | `95622a6d-de4e-1397-8549-4ed16924dc94` | `dbf82c11` | `10de23175b8e69ec` | 3460 |
-| uses-receipt.json#9 | `e028f4da-200e-8b07-ba46-703a324d9f65` | `dbf82c11` | `6f11b1337ff8f8a7` | 3461 |
-| uses-receipt.json#10 | `1e20d617-38e9-60ad-8f28-83428905fc46` | `dbf82c11` | `a32f41a95803ee5e` | 3462 |
-| uses-receipt.json#11 | `c07df691-e17e-6f26-846b-18579725332e` | `dbf82c11` | `3c37ef954e2c99b6` | 3463 |
-| uses-receipt.json#12 | `a8c60a96-c5ee-4a27-b11f-7fa8ca06b497` | `dbf82c11` | `522015fe57edb5cd` | 3464 |
-| uses-receipt.json#13 | `47425f7d-8e8d-2de5-afef-78641277cdde` | `dbf82c11` | `9e0c5fc81958538a` | 3465 |
-| uses-receipt.json#14 | `a28e3e7a-e24f-7882-89d5-764c61d38167` | `dbf82c11` | `8270b2dbfb030d9b` | 3466 |
-| uses-receipt.json#15 | `c83ff2fd-b762-20e3-87f0-d139eebaba69` | `dbf82c11` | `b27a43e7a153d869` | 3467 |
-| uses-receipt.json#16 | `9a1c1979-9338-5a1d-ba7c-c666f10f68ad` | `dbf82c11` | `0919a29ed8f98682` | 3468 |
-| uses-receipt.json#17 | `7751002e-e6de-188f-afd2-12d6f98988dd` | `dbf82c11` | `2d3fca3cd71a57be` | 3469 |
-| uses-receipt.json#18 | `9dd42981-dd07-46b7-bba9-c935761572cb` | `dbf82c11` | `c15ecd69e3563bf9` | 3470 |
-| uses-receipt.json#19 | `ebcf84c8-c62a-8bcf-8dc2-6eab170f4523` | `dbf82c11` | `d82013b88168b3e6` | 3471 |
-| uses-receipt.json#20 | `1a996406-a04b-7de0-b049-6fbe31248c43` | `dbf82c11` | `f70919c4daf6dd6d` | 3472 |
-| uses-receipt.json#21 | `a4a7c230-dda4-38f7-808b-c24209720f67` | `dbf82c11` | `ccb9954a2fece6f8` | 3473 |
-| uses-receipt.json#22 | `35afcb66-d05a-3fba-a422-b33cbf7e1e83` | `dbf82c11` | `d6d0dc7bb07a5ca0` | 3474 |
-| uses-receipt.json#23 | `11ef4c92-7cdb-7e5e-91e3-e82b086a4a06` | `dbf82c11` | `31e49d1597625a63` | 3475 |
-| uses-receipt.json#24 | `fda07a7b-8010-596b-a1e1-a6d09509df06` | `dbf82c11` | `777c44b25245d813` | 3476 |
-| uses-receipt.json#25 | `dd2f16e5-3137-5e09-a8ec-7975ee63f00b` | `dbf82c11` | `20da35ee199fa9e0` | 3477 |
-| uses-receipt.json#26 | `3316bdfe-0189-568a-a8ac-dff5fc972253` | `dbf82c11` | `251900fe2fa18694` | 3478 |
-| uses-receipt.json#27 | `fd1f680f-d4bf-76e6-856e-1166a59e6740` | `dbf82c11` | `b15f95c99d798ebb` | 3479 |
-| uses-receipt.json#28 | `05590cf2-f082-4f56-98e5-df6b969aaec9` | `dbf82c11` | `1a43050001a16658` | 3480 |
-| uses-receipt.json#29 | `9ae5e96c-cf21-4532-8a3f-3e8c6c502b5d` | `dbf82c11` | `a42bf0f28fe0d82a` | 3481 |
-| uses-receipt.json#30 | `b8665f8a-7867-47dd-a7c3-3becf2305b02` | `dbf82c11` | `97e8526d8cf3b0d0` | 3482 |
-| uses-receipt.json#31 | `b956d63d-6731-4f05-ac1c-be10d6e0996f` | `dbf82c11` | `2ec703044412837a` | 3483 |
-| uses-receipt.json#32 | `241ebb1d-cf41-5d14-af93-1d5d9fda5be7` | `dbf82c11` | `d9ec9e10032f3479` | 3484 |
-| uses-receipt.json#33 | `66eba695-2b6c-890c-8acb-b2b3dc868222` | `dbf82c11` | `df002708e916c549` | 3485 |
-| uses-receipt.json#34 | `50c87964-0c9b-5a45-998f-2c5114e1ddf0` | `dbf82c11` | `4a00f039e338fd08` | 3486 |
-| uses-receipt.json#35 | `bea7d650-8dac-2a18-a7df-92d0f984fca5` | `dbf82c11` | `999f423b11b271c5` | 3487 |
-| uses-receipt.json#36 | `a24f5eba-c0ae-840f-a4b1-014f0320e389` | `dbf82c11` | `6a355962961ae429` | 3488 |
-| uses-receipt.json#37 | `c8c002d4-b590-3259-802d-0624b1a1fcf8` | `dbf82c11` | `a180961c493653b4` | 3489 |
-| uses-receipt.json#38 | `6248e822-174c-4813-b0f4-bf34f5fbac60` | `dbf82c11` | `7fc1bcc8e2c5d803` | 3490 |
-| uses-receipt.json#39 | `4415cf9b-958a-4a3e-82b3-4600ffd27afb` | `dbf82c11` | `5e8ccfdc561e39d3` | 3491 |
-| uses-receipt.json#40 | `6a9b725d-02d9-6382-8386-c6388e3d4545` | `dbf82c11` | `a1bacec066656c45` | 3492 |
-| uses-receipt.json#41 | `30dfff95-31c8-37d4-b6b3-559620fbe25e` | `dbf82c11` | `e43f843d6380eb30` | 3493 |
-| walls-receipt.json | `89410ce8-7bc2-5619-9d22-554ed650f6a0` | `fd569ac5` | `06c8b6b4222149e2` | 3494 |
-| readme | `ec1bc4ea-3ecf-561e-81ec-26524ffa94d0` | `fd569ac5` | `64b8e037d429f567` | 3495 |
+| channels-receipt.json | `44fc3877-46f6-3a33-9bd1-85b35b1b3cf4` | `fd569ac5` | `b4cf612c5c219525` | 2531 |
+| clay-zero-wave-receipt.json | `a58b6175-5429-50d5-a500-afbafcb7f758` | `fd569ac5` | `5be00631b10397b2` | 2532 |
+| cross-receipt.json | `a15e1721-03b4-58fa-a61f-3d3621f4774c` | `fd569ac5` | `c0cefe300d7094c9` | 2533 |
+| cross-receipt.json#0 | `d80d122c-4511-1bb3-994b-40479f5e143c` | `a15e1721` | `b22d64f02c3ad5d4` | 2534 |
+| cross-receipt.json#1 | `2a97fd67-051b-3b9f-83c6-5aa5a842889d` | `a15e1721` | `538ca6dc04e14c12` | 2535 |
+| cross-receipt.json#2 | `ea71309c-ffc8-6889-a1fb-e4ef2e60f94b` | `a15e1721` | `99b4a829204d83c1` | 2536 |
+| cross-receipt.json#3 | `ac9c2089-84e8-4f45-b73b-7a44c8fc9a02` | `a15e1721` | `6d6d0a981d52ac76` | 2537 |
+| cross-receipt.json#4 | `e65295af-9735-518a-aa4e-6026ea280a3a` | `a15e1721` | `6f6fb82a41a19b0b` | 2538 |
+| cross-receipt.json#5 | `26046e9c-e319-3398-9d45-36756568aafe` | `a15e1721` | `15acf0a0cff5c260` | 2539 |
+| cross-receipt.json#6 | `c8452edb-71cb-283c-bddb-0589a62b40d9` | `a15e1721` | `fbd646a021a62e89` | 2540 |
+| cross-receipt.json#7 | `db164b4e-47ee-6a7c-82c7-0e129701643e` | `a15e1721` | `061f5b3583ab3d58` | 2541 |
+| cross-receipt.json#8 | `21f3f7f8-2b11-67c5-a42b-2f2ea851f617` | `a15e1721` | `7b3a986a35177256` | 2542 |
+| cross-receipt.json#9 | `c22a47ee-c49f-4be0-920a-6dee217d3d5e` | `a15e1721` | `17367d69e155a115` | 2543 |
+| cross-receipt.json#10 | `272f0d91-c7ea-835e-b8ca-19a520b1d63a` | `a15e1721` | `5d3d5686f8945590` | 2544 |
+| cross-receipt.json#11 | `18b45087-608a-5767-b79d-8a59d38293b7` | `a15e1721` | `9ecf4bb5f4afd0a3` | 2545 |
+| cross-receipt.json#12 | `abd3de76-1b75-5daa-b834-66c69dcf88b7` | `a15e1721` | `f81536774378f09f` | 2546 |
+| cross-receipt.json#13 | `7451f839-773c-8f6c-b85a-9ccb1344d3e8` | `a15e1721` | `b07c78af288af301` | 2547 |
+| cross-receipt.json#14 | `a5bcd59f-9e69-8035-b777-1678a42bbde1` | `a15e1721` | `a952884a6a71217d` | 2548 |
+| cross-receipt.json#15 | `0e3d85c4-85c6-3b85-b354-f5980e206b9d` | `a15e1721` | `f1c4b844f2a886ed` | 2549 |
+| cross-receipt.json#16 | `76b6f88b-1e11-14f0-9436-2b431f5c2406` | `a15e1721` | `7193dfe5632d75ea` | 2550 |
+| cross-receipt.json#17 | `bd896924-4da7-23ba-b815-5f9587669169` | `a15e1721` | `2cbabdcca5d80518` | 2551 |
+| cross-receipt.json#18 | `324a4445-4b1a-1bee-8861-ee1c886af069` | `a15e1721` | `23c7bc68228898d2` | 2552 |
+| cross-receipt.json#19 | `a93bced4-1d87-3062-b138-6ca76be9d346` | `a15e1721` | `9722a986196949c6` | 2553 |
+| cross-receipt.json#20 | `1df356a6-5947-7368-9c73-125395481112` | `a15e1721` | `4f588adafa3f58c9` | 2554 |
+| cross-receipt.json#21 | `0326e003-bf72-8fb1-a538-f2ebe573522a` | `a15e1721` | `1994fa3e29d55f26` | 2555 |
+| cross-receipt.json#22 | `56b43eea-53d4-3182-afad-0c074fb4aed0` | `a15e1721` | `5fa61a1c2839c233` | 2556 |
+| cross-receipt.json#23 | `64f44168-1390-7b74-9245-ae0d34b76c9c` | `a15e1721` | `55ccd7e101f85a9a` | 2557 |
+| cross-receipt.json#24 | `8da5fa4a-451a-4c0f-b34d-24e4bdfe8f39` | `a15e1721` | `55e618486374b6f4` | 2558 |
+| cross-receipt.json#25 | `087ef133-a5e8-1663-8825-ad04b1352d94` | `a15e1721` | `c91b740a9e1910b8` | 2559 |
+| cross-receipt.json#26 | `419a1b71-e62f-7b2d-abbd-6591bc3de07f` | `a15e1721` | `b5a9417b0bd980fc` | 2560 |
+| cross-receipt.json#27 | `ac41d859-2856-7c02-adc7-3942ff6f222b` | `a15e1721` | `c3db6263805c3e1b` | 2561 |
+| cross-receipt.json#28 | `a7faed5a-18d6-1b9c-8f70-71e9be792890` | `a15e1721` | `0e15143cc040dbc6` | 2562 |
+| cross-receipt.json#29 | `ab9a9813-71c9-8048-bb05-6172815af17a` | `a15e1721` | `ddf9d4f3d40c342d` | 2563 |
+| cures-receipt.json | `c303c7c7-c74f-6b55-ae54-a64fb8e3bbee` | `fd569ac5` | `aca7b1de256e4b83` | 2564 |
+| cures-receipt.json#0 | `37ac2e86-2802-21f2-be2b-0b4958f36cbd` | `c303c7c7` | `e5cec70fbb1703e8` | 2565 |
+| cures-receipt.json#1 | `b76c2bb0-64b6-858b-953e-3d35ceee6dee` | `c303c7c7` | `5585c4118f415a6c` | 2566 |
+| cures-receipt.json#2 | `58982790-cb8a-1fe5-9687-453e85cd8b1f` | `c303c7c7` | `06a072ea5a3d5572` | 2567 |
+| cures-receipt.json#3 | `4d8c42c7-5504-5895-b03d-06dda9387f96` | `c303c7c7` | `2593b351b074b190` | 2568 |
+| cures-receipt.json#4 | `cd7d9ccb-4cb8-5131-aec7-74b910945bf0` | `c303c7c7` | `84a2a123cadf1446` | 2569 |
+| cures-receipt.json#5 | `4dfcc490-b3f6-43f9-ba1e-99fb8a1faa9c` | `c303c7c7` | `95fcde84008e8bbc` | 2570 |
+| cures-receipt.json#6 | `991f59a6-bb2d-5fb5-9211-4656eb3911e5` | `c303c7c7` | `9fcb8ab0234b4ff0` | 2571 |
+| cures-receipt.json#7 | `c4e5921e-4d9b-14db-9843-1de31cd64574` | `c303c7c7` | `83d9fec4abd63875` | 2572 |
+| cures-receipt.json#8 | `2ad82ac1-55cf-7f5a-b9a1-a3b6644a9aa8` | `c303c7c7` | `0a2548493287305e` | 2573 |
+| cures-receipt.json#9 | `f8fb73f6-d48f-6861-ab59-827f57bf1c51` | `c303c7c7` | `a26fcbf38060fd02` | 2574 |
+| debts-receipt.json | `66289e56-4d2d-191c-8533-0fa99e27619f` | `fd569ac5` | `24d15089b720c3aa` | 2575 |
+| discovery-receipt.json | `cc930b40-0e10-8ed7-9991-fea181d8c4a6` | `fd569ac5` | `3f80caab6af5f9d7` | 2576 |
+| discovery-receipt.json#0 | `16053f8e-8867-8430-b12c-b81893fb842b` | `cc930b40` | `19070faa7497d8b3` | 2577 |
+| discovery-receipt.json#1 | `bfe3eab7-b1b8-50c8-897a-5343a74144c2` | `cc930b40` | `8a2b35bfa1615040` | 2578 |
+| discovery-receipt.json#2 | `b0731d29-baa0-8cc1-a270-db75930d45cc` | `cc930b40` | `b1e3687c13e0418c` | 2579 |
+| discovery-receipt.json#3 | `3ed47a81-4213-6257-b9db-feb112ab8bbf` | `cc930b40` | `ec647a4545a75f50` | 2580 |
+| discovery-receipt.json#4 | `7f60b2d9-d7f4-4d61-9a56-fb935ddbdbd8` | `cc930b40` | `bd48bceacafde3c7` | 2581 |
+| discovery-receipt.json#5 | `72513d6e-db25-1238-b3ee-e60f824b1d1d` | `cc930b40` | `cbc1b4492aa76e74` | 2582 |
+| discovery-receipt.json#6 | `39f06a8a-41ff-37ef-92bc-614f7bbeeea2` | `cc930b40` | `01099dd41da852b3` | 2583 |
+| discovery-receipt.json#7 | `f1739c43-4b61-1b5b-be55-006abdbb1631` | `cc930b40` | `f61755df6aa268b8` | 2584 |
+| discovery-receipt.json#8 | `250e553b-bfeb-21a1-aa3f-4afc0e825e3d` | `cc930b40` | `94549c7fba70bda1` | 2585 |
+| discovery-receipt.json#9 | `743a4ad6-3ad5-4f49-a63a-27e083ccc7ce` | `cc930b40` | `3a242ec4277b48ec` | 2586 |
+| discovery-receipt.json#10 | `f6ab565e-6e7a-65bd-b618-4ffb5fcaac30` | `cc930b40` | `02ba9337490f7de8` | 2587 |
+| discovery-receipt.json#11 | `749ecee5-e3ec-80d7-b286-7daa835015b5` | `cc930b40` | `8846d961ac169e68` | 2588 |
+| discovery-receipt.json#12 | `2eef851c-a1f2-3037-af7c-d803e0e8e181` | `cc930b40` | `d677084ce02b47f0` | 2589 |
+| discovery-receipt.json#13 | `697c4642-1edf-5e61-ad58-6f570e659f59` | `cc930b40` | `8c0fee1f3eedc01b` | 2590 |
+| discovery-receipt.json#14 | `faef6707-4c92-8e3f-abc4-3591e2499704` | `cc930b40` | `96ac45a1572a713b` | 2591 |
+| discovery-receipt.json#15 | `697eca57-7ba9-312e-a579-551197ca62e9` | `cc930b40` | `eaaeb6a1b2f790d3` | 2592 |
+| discovery-receipt.json#16 | `d75c9b59-43d8-32f5-bd53-33ec34559632` | `cc930b40` | `1dfd6e7a5390152b` | 2593 |
+| discovery-receipt.json#17 | `d446d1e1-dd5e-4c82-b441-9ac81ea680d4` | `cc930b40` | `e8bb4118c62e2aa2` | 2594 |
+| discovery-receipt.json#18 | `04d8bc62-4c88-794f-8d23-51a5463f9209` | `cc930b40` | `52b350df516b50dc` | 2595 |
+| discovery-receipt.json#19 | `6d13b5c9-9ccc-5d2e-a7b9-28230c599a49` | `cc930b40` | `035e588bd4c6582c` | 2596 |
+| discovery-receipt.json#20 | `788834de-2d12-29b4-a251-84f4a4a882d8` | `cc930b40` | `df9d0adee68e36a9` | 2597 |
+| discovery-receipt.json#21 | `f542764f-db06-676b-8deb-887fa58cc086` | `cc930b40` | `dfbac193455002d0` | 2598 |
+| discovery-receipt.json#22 | `53bc4949-95a9-34a7-830a-1ec5bc4259de` | `cc930b40` | `8583e835d12c9fd8` | 2599 |
+| discovery-receipt.json#23 | `d3d3a889-08c7-51e2-9e2b-e14a6acd5671` | `cc930b40` | `3a5e5b2aac1bd47c` | 2600 |
+| discovery-receipt.json#24 | `beb6121b-ef4f-786f-bbd5-221ef5f0851a` | `cc930b40` | `c8d087331521d478` | 2601 |
+| discovery-receipt.json#25 | `24f1e7fc-b4df-1f86-9da5-eb68645797ea` | `cc930b40` | `117f1f76b83d7ca9` | 2602 |
+| discovery-receipt.json#26 | `d1a37653-3cba-6539-9fd9-b179428bc091` | `cc930b40` | `dca06bf1a1954e9d` | 2603 |
+| discovery-receipt.json#27 | `3ff48033-ec77-8b3c-b472-275810289a1c` | `cc930b40` | `c004d7fc2b886a8e` | 2604 |
+| discovery-receipt.json#28 | `1abf3e4d-6ef4-1d4a-b39e-2c834d0f98b2` | `cc930b40` | `59538c37491360a8` | 2605 |
+| discovery-receipt.json#29 | `f7661d8e-af70-7981-868e-28b283792130` | `cc930b40` | `3a9c70b30ff9006a` | 2606 |
+| discovery-receipt.json#30 | `a6952240-1426-1e15-a8a0-b5d3253c9074` | `cc930b40` | `e35c6e7a96abb7b8` | 2607 |
+| discovery-receipt.json#31 | `ead4edc9-6829-577c-87c0-b096c9a69f8f` | `cc930b40` | `de2af6872ebc0148` | 2608 |
+| discovery-receipt.json#32 | `032b6dc3-9e8e-5be1-8c30-5a4ff5e8a77d` | `cc930b40` | `5487e6dfb5371c27` | 2609 |
+| discovery-receipt.json#33 | `fa55dfbd-b76e-2273-b590-0a3900da53c0` | `cc930b40` | `199536fc666d8010` | 2610 |
+| discovery-receipt.json#34 | `b62842d9-d205-4db5-be10-8c9dab0f2de9` | `cc930b40` | `85686f908ee774a1` | 2611 |
+| discovery-receipt.json#35 | `ea6139ed-0c94-85b6-beef-840f29e15329` | `cc930b40` | `59fead502574c824` | 2612 |
+| discovery-receipt.json#36 | `68f490ea-587a-1d49-a7f2-1f6edb2cc22c` | `cc930b40` | `0a534a180665c319` | 2613 |
+| discovery-receipt.json#37 | `6667497d-c59c-760d-b95d-a433458f7c4d` | `cc930b40` | `085cb487665cf586` | 2614 |
+| discovery-receipt.json#38 | `1512b1e6-8d02-3b65-bc07-b82e725052d7` | `cc930b40` | `57251075030bb530` | 2615 |
+| discovery-receipt.json#39 | `a450a7c5-84b2-6015-8a20-492270f568eb` | `cc930b40` | `01785fdb0f0f01bf` | 2616 |
+| discovery-receipt.json#40 | `9069b90e-019e-58c7-a933-eed21f1ec869` | `cc930b40` | `814698623aad5055` | 2617 |
+| discovery-receipt.json#41 | `da9afdce-bd0d-3ce7-a0cb-e341c59dc1a6` | `cc930b40` | `21414d6ed869e456` | 2618 |
+| discovery-receipt.json#42 | `10b3cfcf-1578-37c7-8f4e-2018956821c3` | `cc930b40` | `46c6517d8ce738b7` | 2619 |
+| discovery-receipt.json#43 | `721bf8b8-b78d-7159-be35-73a85717690e` | `cc930b40` | `1475737110558c40` | 2620 |
+| discovery-receipt.json#44 | `97f7ab87-d7c5-2ddd-b6ee-3278001cc39b` | `cc930b40` | `ec6d3f201a460e62` | 2621 |
+| discovery-receipt.json#45 | `5363de89-df49-5d57-8aa3-0c5f19084181` | `cc930b40` | `7d4ee5d501997ba1` | 2622 |
+| discovery-receipt.json#46 | `d1e92f9b-5ff9-2858-ae8c-3fd966e0f98f` | `cc930b40` | `a654fec594932465` | 2623 |
+| discovery-receipt.json#47 | `a1e1de33-6704-30c1-b1a3-33d37c5f6257` | `cc930b40` | `597443e6ce75f306` | 2624 |
+| discovery-receipt.json#48 | `caab0922-d0c6-15d8-8bf4-900fb1d0d864` | `cc930b40` | `3b987786ca9449fa` | 2625 |
+| discovery-receipt.json#49 | `390ee619-0f71-4f47-9f14-09184a309ad2` | `cc930b40` | `3a9116734a2f9249` | 2626 |
+| discovery-receipt.json#50 | `beac1251-1163-4a53-a851-813321391796` | `cc930b40` | `d953ea22a1963a7d` | 2627 |
+| discovery-receipt.json#51 | `68574eb4-9287-2023-8c7d-bd5400f2dcf5` | `cc930b40` | `c03e91fd03f663f4` | 2628 |
+| discovery-receipt.json#52 | `dcd92298-097e-2068-ba6f-b32eff16d28a` | `cc930b40` | `916f87f60d64deb9` | 2629 |
+| discovery-receipt.json#53 | `5529dbd3-9f5d-46da-88c5-5da184b7d8af` | `cc930b40` | `7fc4b2d3c5fee5f2` | 2630 |
+| discovery-receipt.json#54 | `b2612b16-8301-37eb-b4c1-05db2308da77` | `cc930b40` | `bf1ec66615401b0e` | 2631 |
+| discovery-receipt.json#55 | `94c86f27-4c55-64ba-ac92-1a782b796891` | `cc930b40` | `7b4de7aae810894f` | 2632 |
+| discovery-receipt.json#56 | `65f33fe3-8557-7437-b637-4a37a208c229` | `cc930b40` | `113259681fa3db39` | 2633 |
+| discovery-receipt.json#57 | `cd372668-f698-57f5-8684-76aef6846cec` | `cc930b40` | `78c9a6184ce9b3e1` | 2634 |
+| discovery-receipt.json#58 | `dd8fd953-01ec-4ae2-8e74-3a2193d3048b` | `cc930b40` | `2f0263c718dc41f3` | 2635 |
+| discovery-receipt.json#59 | `62df2180-f112-7340-b5bd-9962b1fc3b0a` | `cc930b40` | `587d2792d12cfba9` | 2636 |
+| discovery-receipt.json#60 | `796049ef-e0c9-7251-b3d9-f2856eb27b92` | `cc930b40` | `1b5125e0cba854f9` | 2637 |
+| discovery-receipt.json#61 | `84669bf2-c377-84be-926b-9c4316c4a259` | `cc930b40` | `3a0865afeef16c7e` | 2638 |
+| discovery-receipt.json#62 | `88beafea-5435-1628-a118-367795395e07` | `cc930b40` | `de5b4d63beddf70b` | 2639 |
+| discovery-receipt.json#63 | `37895a3e-8e6e-1763-b79e-e98a9f01355d` | `cc930b40` | `e27f846f916a767f` | 2640 |
+| discovery-receipt.json#64 | `bf17c99b-6505-888e-9caf-e7d8d3b51398` | `cc930b40` | `9caafd52042174ae` | 2641 |
+| discovery-receipt.json#65 | `4fe9ec0a-e698-1e40-b45b-036759895b06` | `cc930b40` | `b926c8a6cb1f37eb` | 2642 |
+| discovery-receipt.json#66 | `15fdadf0-6fab-6bb8-9610-8aa990643d46` | `cc930b40` | `6bdd877408977b05` | 2643 |
+| discovery-receipt.json#67 | `3d4b3155-2b21-6930-a39d-df117cc75ab2` | `cc930b40` | `4a46037706d05894` | 2644 |
+| discovery-receipt.json#68 | `49c937e3-98b8-8258-8eb0-8578687ddeeb` | `cc930b40` | `5f87561f3a6c31aa` | 2645 |
+| discovery-receipt.json#69 | `8f663ff5-f678-6b8a-957c-33f9fd950aa9` | `cc930b40` | `ba195d8f175220f0` | 2646 |
+| discovery-receipt.json#70 | `3362cf6a-ee4f-2121-8f3c-28886207d97e` | `cc930b40` | `18968cd622d94429` | 2647 |
+| discovery-receipt.json#71 | `008f5e12-80a1-11cd-9b90-d3996d3b95ee` | `cc930b40` | `eb3889830f54af30` | 2648 |
+| discovery-receipt.json#72 | `bd92f233-04d6-596e-bb17-9dc7a85ed356` | `cc930b40` | `21e7da68ce49559d` | 2649 |
+| discovery-receipt.json#73 | `eb63499d-80b5-7e5b-b9c4-3e7b1fac8fe5` | `cc930b40` | `713ab1a4962ceb7a` | 2650 |
+| discovery-receipt.json#74 | `99790848-699d-5f9e-818b-d6408c48e7b8` | `cc930b40` | `992ab8a4f3ce8c97` | 2651 |
+| discovery-receipt.json#75 | `be608bda-3116-69b5-9cfe-c8d41b6d452a` | `cc930b40` | `cb1bb78c4230a62a` | 2652 |
+| discovery-receipt.json#76 | `680d609b-e103-1bce-9c3c-9bb9c2102940` | `cc930b40` | `0538754a175720ea` | 2653 |
+| discovery-receipt.json#77 | `59c29a40-52c6-44d9-932b-c643c8cb7a83` | `cc930b40` | `87e711d6fa8bca05` | 2654 |
+| discovery-receipt.json#78 | `75aad067-a950-64c6-bcdb-a538f93f9fbd` | `cc930b40` | `640de48b57ff994f` | 2655 |
+| discovery-receipt.json#79 | `8a449fdf-8020-5f32-9f2d-b5933da9551a` | `cc930b40` | `22b888f59e1613a7` | 2656 |
+| discovery-receipt.json#80 | `c7e8561b-d9d7-7cad-8675-e93128c05164` | `cc930b40` | `c709a5ae8b39c551` | 2657 |
+| discovery-receipt.json#81 | `f6c54f1e-b5a0-5a4f-81b4-5c27aeaa054a` | `cc930b40` | `4a9286e63c3ba807` | 2658 |
+| discovery-receipt.json#82 | `ea4607eb-caab-6886-b2fb-64d2fbff3208` | `cc930b40` | `aea1362a680f5b05` | 2659 |
+| discovery-receipt.json#83 | `fd049c0f-d2a0-6f24-b539-1f7c9c0a6675` | `cc930b40` | `c579037f73c8f242` | 2660 |
+| discovery-receipt.json#84 | `e5147f7c-e4f8-41a0-965a-5544a01babf3` | `cc930b40` | `ab6b9e837cf0de89` | 2661 |
+| discovery-receipt.json#85 | `96d00343-38c1-747e-923e-65e0722044c5` | `cc930b40` | `7be7a3f62541965f` | 2662 |
+| discovery-receipt.json#86 | `a366859b-758f-8dac-bbc8-b5ed1aa185d4` | `cc930b40` | `cf60d6fb420d07f3` | 2663 |
+| discovery-receipt.json#87 | `2b2628aa-3ae1-8a61-b34f-32e330ce43ff` | `cc930b40` | `bd33086b937c4833` | 2664 |
+| discovery-receipt.json#88 | `4e18458a-d889-20d2-8946-3abd6d621c80` | `cc930b40` | `05efa0fce9f1901f` | 2665 |
+| discovery-receipt.json#89 | `8699afd1-dc15-14e4-86e1-b5e69546b978` | `cc930b40` | `c3f65fc2adc6e3de` | 2666 |
+| discovery-receipt.json#90 | `e0d1d28d-9b1a-2da5-bc8d-58cf29d03e58` | `cc930b40` | `9f9a9eef511eb1dd` | 2667 |
+| discovery-receipt.json#91 | `0b9c8ba1-540e-2131-b348-478aa43db2c6` | `cc930b40` | `e5aba43855505e62` | 2668 |
+| discovery-receipt.json#92 | `b7fb815f-d122-21d5-96d1-2c308fa1f112` | `cc930b40` | `709c7dfb70cf3c6c` | 2669 |
+| discovery-receipt.json#93 | `c3949469-eda8-170f-b558-d67e566e3c14` | `cc930b40` | `b657243787762dd5` | 2670 |
+| discovery-receipt.json#94 | `9423c71d-e948-33f6-b1fd-628d66d84dfc` | `cc930b40` | `80ca22fb0be4f2d0` | 2671 |
+| discovery-receipt.json#95 | `695917e2-cbca-3b03-9270-ea2b846205fc` | `cc930b40` | `19f065b7c230ac20` | 2672 |
+| discovery-receipt.json#96 | `00a665cd-a29c-752f-8c32-550da222cdf3` | `cc930b40` | `bf2aa90c72fed3f9` | 2673 |
+| discovery-receipt.json#97 | `e1c8c489-e02b-6f32-9006-bb14c3f93c4a` | `cc930b40` | `1818ea0f1dfb8bef` | 2674 |
+| discovery-receipt.json#98 | `b814220a-f66c-6f59-b44b-94af73bbcacf` | `cc930b40` | `c74428c856154b13` | 2675 |
+| discovery-receipt.json#99 | `5b33a49e-5fbc-6afa-a2b8-53768cb055ff` | `cc930b40` | `285bd59f18cc5234` | 2676 |
+| discovery-receipt.json#100 | `87e6d079-0efe-4d71-a752-291f10804048` | `cc930b40` | `c578e73c3929f8b8` | 2677 |
+| discovery-receipt.json#101 | `98e38bb8-79ad-36e0-9bb7-6a1ef202af24` | `cc930b40` | `e8a90a019a43aee2` | 2678 |
+| discovery-receipt.json#102 | `07578610-38ea-5988-9272-c2619fed8f23` | `cc930b40` | `8ccece74eb13303f` | 2679 |
+| discovery-receipt.json#103 | `7d406675-00f7-39ff-8344-09612d491b00` | `cc930b40` | `1764ee4920982faf` | 2680 |
+| discovery-receipt.json#104 | `6da88aee-c566-5933-95fb-52590ad8dcd1` | `cc930b40` | `bbbceb1d26fbc6ed` | 2681 |
+| discovery-receipt.json#105 | `410bdaaa-2a36-5aca-a86a-be63c3a38ccf` | `cc930b40` | `7aec538a00db50f4` | 2682 |
+| discovery-receipt.json#106 | `0c4d6d12-2c5e-11d7-898a-b013abb5a0ce` | `cc930b40` | `3d5daddd82a13d81` | 2683 |
+| discovery-receipt.json#107 | `88f823f4-cbfc-3c9b-9fee-dc65eca591b0` | `cc930b40` | `4164011ee34730cc` | 2684 |
+| discovery-receipt.json#108 | `c2d6447b-e19a-4fff-9ff7-2e6a67345d32` | `cc930b40` | `c933c514d68ee48c` | 2685 |
+| discovery-receipt.json#109 | `4877b22c-d20d-8a5e-8943-b261fa780fe6` | `cc930b40` | `22c7c99796c2a53c` | 2686 |
+| discovery-receipt.json#110 | `598ffaa4-68e8-4a3c-b68a-db1d90503458` | `cc930b40` | `1ec9256b8623d0ee` | 2687 |
+| discovery-receipt.json#111 | `c46695c1-5775-16f9-a2f1-5f03c232e3a5` | `cc930b40` | `430de1a850689963` | 2688 |
+| discovery-receipt.json#112 | `a25f2d79-4990-7be3-be39-1a68d673ec1e` | `cc930b40` | `61467f11f7338243` | 2689 |
+| discovery-receipt.json#113 | `d9a34f76-f0c6-18ab-b985-85a480e7619c` | `cc930b40` | `ef07785734870309` | 2690 |
+| discovery-receipt.json#114 | `e569f054-2e3b-1a71-86e7-027bfa50fda7` | `cc930b40` | `78c534c89ca10e5b` | 2691 |
+| discovery-receipt.json#115 | `a23de7aa-6226-8ab5-a0d1-fd2b9c251e7d` | `cc930b40` | `4894a60bb071d651` | 2692 |
+| discovery-receipt.json#116 | `3a2676b4-1e3b-48ab-bb39-48f74113063e` | `cc930b40` | `f867b4fb772b098b` | 2693 |
+| discovery-receipt.json#117 | `4ac50c5e-f87d-3bb5-b906-9157bcbe8a3e` | `cc930b40` | `76a02d5096a44c75` | 2694 |
+| discovery-receipt.json#118 | `94bff158-2f6a-1bc0-9b9b-fe7857b156d0` | `cc930b40` | `a8d3ea0494ba2ac1` | 2695 |
+| discovery-receipt.json#119 | `95906f35-3bcd-631a-bbe2-64609f21a733` | `cc930b40` | `e06f42f1016f7338` | 2696 |
+| discovery-receipt.json#120 | `eab6ab63-2bd5-1a73-a1e4-163e12c01ff7` | `cc930b40` | `56f7b89966adfb1c` | 2697 |
+| discovery-receipt.json#121 | `eca32ff9-3efc-55f8-bf4d-02fe71a080c1` | `cc930b40` | `6e92adc158693d39` | 2698 |
+| discovery-receipt.json#122 | `161f16ce-6421-5cee-8d33-c939a3853f15` | `cc930b40` | `7580b29053c53d17` | 2699 |
+| discovery-receipt.json#123 | `6e34b268-567c-48ae-99bf-6b03f5473b78` | `cc930b40` | `5bf989d8c4bb4900` | 2700 |
+| discovery-receipt.json#124 | `3fc8fade-28dc-2903-b840-bf9397fc9d48` | `cc930b40` | `844186784389b396` | 2701 |
+| discovery-receipt.json#125 | `f83b53ca-dc89-6b74-8be4-02bacf561713` | `cc930b40` | `ebc8b2ce3ea99f5a` | 2702 |
+| discovery-receipt.json#126 | `2db09d1e-5bd8-5987-a011-f503d9b10c5e` | `cc930b40` | `7dfc55bd4b7662f0` | 2703 |
+| discovery-receipt.json#127 | `c4716126-672e-4528-918a-435da2a0a40b` | `cc930b40` | `3a35d42eabdba73b` | 2704 |
+| discovery-receipt.json#128 | `756e49ec-fc4e-299e-ac74-8db5049195e8` | `cc930b40` | `3d694e56b26e7206` | 2705 |
+| discovery-receipt.json#129 | `46fe5ac7-5bae-3f49-a84c-aea903b8200e` | `cc930b40` | `59fbcdd5519c8474` | 2706 |
+| discovery-receipt.json#130 | `fa85949e-d505-8780-a10e-4891ab7e3cf7` | `cc930b40` | `f6a00eff4b0e0e1f` | 2707 |
+| discovery-receipt.json#131 | `464194b3-5107-8362-b956-b8c79352575c` | `cc930b40` | `2442569056a7c0f5` | 2708 |
+| discovery-receipt.json#132 | `fd744fbb-8ff8-6b43-a593-eb7254408a81` | `cc930b40` | `69ce546f02490a8f` | 2709 |
+| discovery-receipt.json#133 | `01518f9b-c156-4ccd-9e22-2ec4ea8bdf7d` | `cc930b40` | `a3fd2035cc237c3c` | 2710 |
+| discovery-receipt.json#134 | `b07b3dc7-685f-831d-9429-a098287d4915` | `cc930b40` | `fe6780d11c6fbad7` | 2711 |
+| discovery-receipt.json#135 | `c785343a-dd22-753c-af0c-e0040890f11a` | `cc930b40` | `50537de9479ebcae` | 2712 |
+| discovery-receipt.json#136 | `f479d835-aaf0-7fe7-854c-68f12e551c19` | `cc930b40` | `b9340da95e5511bb` | 2713 |
+| discovery-receipt.json#137 | `c5a3c2dc-0686-8f9d-806a-3996b7e5aad9` | `cc930b40` | `af3486c977ff0f5c` | 2714 |
+| discovery-receipt.json#138 | `d08927c7-b7bd-2949-816a-0fd67e3444b9` | `cc930b40` | `a3b1877f7d56a921` | 2715 |
+| discovery-receipt.json#139 | `75c9e563-a5fb-1317-b821-7c391391e6a9` | `cc930b40` | `3fa4bebd20bf3a39` | 2716 |
+| discovery-receipt.json#140 | `d7a01759-e535-209c-acc0-b8db9f1f2c6a` | `cc930b40` | `28680909dc5a503e` | 2717 |
+| discovery-receipt.json#141 | `156484b5-e46b-5a68-b49c-98993815cf59` | `cc930b40` | `fa85aeb7d7643538` | 2718 |
+| discovery-receipt.json#142 | `aa1515f8-3233-89c7-98ac-920806acffc3` | `cc930b40` | `788d85213be1b43e` | 2719 |
+| discovery-receipt.json#143 | `fa10f697-3551-137f-bf02-80aaf452f989` | `cc930b40` | `8e6f49961bc428e6` | 2720 |
+| discovery-receipt.json#144 | `e41fd6fa-76a5-4af6-80cc-513a1d581081` | `cc930b40` | `cee8a200ffda901b` | 2721 |
+| discovery-receipt.json#145 | `8b835b77-d2f9-36cb-8641-3117c092ac0f` | `cc930b40` | `c4f3481409cf2a35` | 2722 |
+| discovery-receipt.json#146 | `39356ac3-c823-2ae4-8709-24994332e4d0` | `cc930b40` | `fa814e249dace0be` | 2723 |
+| discovery-receipt.json#147 | `72526037-cfc2-6a0a-bda9-e80e7e45c4e9` | `cc930b40` | `3af4c7ecac19994d` | 2724 |
+| discovery-receipt.json#148 | `fff9c8d8-45bc-8d95-b481-4f35dc12f14d` | `cc930b40` | `b156da3f5aba2b01` | 2725 |
+| discovery-receipt.json#149 | `a22db49a-5880-4656-a6d7-419824131213` | `cc930b40` | `cff0d55ce332f1d6` | 2726 |
+| discovery-receipt.json#150 | `1b9622b7-40b7-4b66-afc7-f0d06d5179e9` | `cc930b40` | `30cc3c596b6d7adb` | 2727 |
+| discovery-receipt.json#151 | `eb3a7c30-c2bf-4f1d-b0dc-2f524b827b7e` | `cc930b40` | `32507141589fdf57` | 2728 |
+| discovery-receipt.json#152 | `65adfe9c-c84f-6311-a5fa-15f29b92cd9b` | `cc930b40` | `21a744bc83f611d9` | 2729 |
+| discovery-receipt.json#153 | `96f5e1eb-5c69-57d3-938c-d9204685d3bf` | `cc930b40` | `1fc339e095f4fb41` | 2730 |
+| discovery-receipt.json#154 | `b34d5ca1-2b0a-807f-ab7c-a36bf64a7f75` | `cc930b40` | `e10ff67f87198b25` | 2731 |
+| discovery-receipt.json#155 | `f26ad588-bf8b-3a10-a9db-e19e7dccc9fd` | `cc930b40` | `2860907dde15f7e7` | 2732 |
+| discovery-receipt.json#156 | `de1adda4-0d23-24b0-96b9-1f14b077ef4c` | `cc930b40` | `6b2babb7a863dd6c` | 2733 |
+| discovery-receipt.json#157 | `b9071e15-5f3e-6ec1-aec0-79265dc774f9` | `cc930b40` | `5fccf0146fa31028` | 2734 |
+| discovery-receipt.json#158 | `1851927e-6be9-7461-827f-83203dda72a7` | `cc930b40` | `a048d4d9f21b44df` | 2735 |
+| discovery-receipt.json#159 | `c9b11fb3-74dc-27d5-bf63-476cace85436` | `cc930b40` | `353ad93178b2bd81` | 2736 |
+| discovery-receipt.json#160 | `28f24ccf-187d-24dc-aae0-970150762195` | `cc930b40` | `7a031e6ab5df17b7` | 2737 |
+| discovery-receipt.json#161 | `ca23a300-b26b-5aa8-83ca-b23b7016b965` | `cc930b40` | `4ec6836c09de783a` | 2738 |
+| discovery-receipt.json#162 | `fbb7e451-f96f-2316-abdd-b9224c29c71f` | `cc930b40` | `93a9789f4ce5760b` | 2739 |
+| discovery-receipt.json#163 | `b2e92475-fd10-4b18-9118-168e06cc511f` | `cc930b40` | `0c52121a72186978` | 2740 |
+| discovery-receipt.json#164 | `30b69852-9312-1fb9-a20d-f8a5fbf3cce9` | `cc930b40` | `fed4c7011e8ecec4` | 2741 |
+| discovery-receipt.json#165 | `a6bb2b24-141e-10e2-8951-a9fd049f39dd` | `cc930b40` | `5cccd1c5ce5f1ad9` | 2742 |
+| discovery-receipt.json#166 | `20d89fb7-ec67-3784-b46e-81e154f55cae` | `cc930b40` | `17ca70823939721b` | 2743 |
+| discovery-receipt.json#167 | `024c17e7-176b-7dac-851e-c98ce1d0bc4d` | `cc930b40` | `fd76e829a35156cc` | 2744 |
+| discovery-receipt.json#168 | `b8b47f21-d638-823d-b166-1b6c2e1869ff` | `cc930b40` | `8db0d3c32ae7f821` | 2745 |
+| discovery-receipt.json#169 | `2e90a3ed-8888-2f8c-8845-2c74e68de04b` | `cc930b40` | `c32cda0bc67b8dc6` | 2746 |
+| discovery-receipt.json#170 | `332c0210-c9ea-1b56-b9ef-ce99d7cf27e6` | `cc930b40` | `54e0fdd1cb6a2420` | 2747 |
+| discovery-receipt.json#171 | `06674671-7742-2781-926b-58112ba3aa3b` | `cc930b40` | `7469e4ab0bd5250d` | 2748 |
+| discovery-receipt.json#172 | `3baa731c-4601-5134-86df-2fc06c76ef97` | `cc930b40` | `b376df11e1f0b40d` | 2749 |
+| discovery-receipt.json#173 | `79efcb5c-af3d-6ed3-a01e-a88978bbd912` | `cc930b40` | `6598260e3fd5c5ac` | 2750 |
+| discovery-receipt.json#174 | `57514113-e237-5eea-8f5d-6ae1134c349c` | `cc930b40` | `965cc192df77e732` | 2751 |
+| discovery-receipt.json#175 | `fbe93fda-2fe0-7cd0-90c6-d050f0a99328` | `cc930b40` | `2e63134d0725334a` | 2752 |
+| discovery-receipt.json#176 | `08c49dbb-8cb9-6bf2-af50-9d6c974abbd6` | `cc930b40` | `0c8560cc904168b8` | 2753 |
+| discovery-receipt.json#177 | `24d6c8d9-2498-7ccb-b7b8-b87d1297713c` | `cc930b40` | `aea394548956787e` | 2754 |
+| discovery-receipt.json#178 | `ca942de6-9b00-15c3-a617-7a8bb7208cfe` | `cc930b40` | `560fa72bc113f887` | 2755 |
+| discovery-receipt.json#179 | `af2e2086-70d5-5a7d-a6be-2cc09ec3cd12` | `cc930b40` | `66c478ea9b306abb` | 2756 |
+| discovery-receipt.json#180 | `175f5547-0e0a-6041-868d-71def9e5e6bc` | `cc930b40` | `843820ce9c91c766` | 2757 |
+| discovery-receipt.json#181 | `301d2803-3a9d-1994-bb0f-48d9597affe8` | `cc930b40` | `ca44edb49f90a1c9` | 2758 |
+| discovery-receipt.json#182 | `5b9bbbb0-2338-5d77-9bd2-908440e0ec33` | `cc930b40` | `7c2fe356221fe927` | 2759 |
+| discovery-receipt.json#183 | `b831246c-f900-5737-8325-15aa1afca577` | `cc930b40` | `0a1662c4a8bb2138` | 2760 |
+| discovery-receipt.json#184 | `9ca7f7c4-6a3e-82b2-a931-0a69d4c22673` | `cc930b40` | `d5b99809dcf90e85` | 2761 |
+| discovery-receipt.json#185 | `d65c25b7-3020-38e5-8209-df2babdc242c` | `cc930b40` | `f19fe25a97d73f10` | 2762 |
+| discovery-receipt.json#186 | `6a0d513d-5e62-18ca-ab47-95486704f654` | `cc930b40` | `928bed73bfcd8e30` | 2763 |
+| discovery-receipt.json#187 | `2546f013-d013-159e-8ddc-54afe37a73f4` | `cc930b40` | `0d74ec6d2dc0e51c` | 2764 |
+| discovery-receipt.json#188 | `3ac8f1d6-d48e-6b0d-ad83-126f4577ef49` | `cc930b40` | `342e05cb5c41937b` | 2765 |
+| discovery-receipt.json#189 | `c229fcdb-d665-1c1d-baba-560c7bb95faf` | `cc930b40` | `2e13e6646caaf228` | 2766 |
+| discovery-receipt.json#190 | `e0ad9e90-db0a-8174-92ec-9f8c3a183159` | `cc930b40` | `5a0ed68aee6a9a29` | 2767 |
+| discovery-receipt.json#191 | `6bafa898-bc2b-599e-9953-b501a28f3c55` | `cc930b40` | `11192a53f6d36a82` | 2768 |
+| discovery-receipt.json#192 | `9faf49eb-ab29-7229-be79-2a392cecb185` | `cc930b40` | `f1c2dd4a9b94c0b6` | 2769 |
+| discovery-receipt.json#193 | `10f4fd71-0679-3d24-9be1-bf16f192f59f` | `cc930b40` | `452909a7ce690a63` | 2770 |
+| discovery-receipt.json#194 | `e3d4f780-7b20-58ce-974b-e408fb9a279c` | `cc930b40` | `2c5f6c97ce1b8f6a` | 2771 |
+| discovery-receipt.json#195 | `fa47ba63-9fc6-5305-bd12-f54715f9e006` | `cc930b40` | `04d0bdd01c9a5b33` | 2772 |
+| discovery-receipt.json#196 | `060fb35e-b60e-3356-9db9-3d7c5e5d52e9` | `cc930b40` | `6f2f714285303058` | 2773 |
+| discovery-receipt.json#197 | `6dad8971-beef-67c7-9257-1a0d26dbf8b9` | `cc930b40` | `2e5ecf4082327b96` | 2774 |
+| discovery-receipt.json#198 | `7f58e0b3-6216-8082-9bbf-c2d2c8631f47` | `cc930b40` | `5851e6b5a6a26583` | 2775 |
+| discovery-receipt.json#199 | `8f925a7c-5d40-192d-aa40-f5c6ba8fc7fb` | `cc930b40` | `f1cdbee63eba25d6` | 2776 |
+| discovery-receipt.json#200 | `1b432f23-1baa-8657-8639-51373e228fb2` | `cc930b40` | `d5993871cee0bff2` | 2777 |
+| discovery-receipt.json#201 | `ada2a64f-95d3-319c-b212-daee3b5800ad` | `cc930b40` | `90b1523ec327bdd2` | 2778 |
+| discovery-receipt.json#202 | `14dacaf7-8cb9-3ce8-926a-f264df9c717b` | `cc930b40` | `6264e9162ed47437` | 2779 |
+| discovery-receipt.json#203 | `7d8d7b59-0412-2814-972e-aaedd30a6618` | `cc930b40` | `ffc8f55e3f8d0b11` | 2780 |
+| discovery-receipt.json#204 | `c57c68c5-6efb-5185-a427-6ad6055accba` | `cc930b40` | `f620eff5ef57b3c3` | 2781 |
+| discovery-receipt.json#205 | `6926f992-29b1-7af6-b4e9-867962f1f46f` | `cc930b40` | `26dc00309cb3faee` | 2782 |
+| discovery-receipt.json#206 | `dbc7c61b-8565-81d5-851e-f8e860fc84cd` | `cc930b40` | `64a9408a9581f574` | 2783 |
+| discovery-receipt.json#207 | `19bb43a2-69cf-4231-8fe4-a6e669f865ea` | `cc930b40` | `3f37df51b14ebe9f` | 2784 |
+| discovery-receipt.json#208 | `6b1e230a-e32e-65f8-8613-5ad65f68007c` | `cc930b40` | `0d977173fe6851ec` | 2785 |
+| discovery-receipt.json#209 | `1f264d84-dd6c-367f-a944-439f41af6f25` | `cc930b40` | `bb919a56999bf7df` | 2786 |
+| discovery-receipt.json#210 | `28be103f-d67b-436d-a81f-15fadaf11d72` | `cc930b40` | `22619bb4e51b5f26` | 2787 |
+| discovery-receipt.json#211 | `14d145d2-498e-5046-a122-f4e5d3b48cf4` | `cc930b40` | `7a76e62f05874320` | 2788 |
+| discovery-receipt.json#212 | `230c32f6-4c22-2b4e-a716-40a553a25a9b` | `cc930b40` | `ca2aa185b856d0c5` | 2789 |
+| discovery-receipt.json#213 | `09798430-3fd6-8833-81ca-d7d154d64f88` | `cc930b40` | `082ff899dbd3992d` | 2790 |
+| discovery-receipt.json#214 | `ac80980e-a2ee-6ea6-9553-fd8a160ddb02` | `cc930b40` | `354c0350f82c32fe` | 2791 |
+| discovery-receipt.json#215 | `badd0ad6-5671-8109-8c49-fc7222055719` | `cc930b40` | `f516c3014afc22ce` | 2792 |
+| discovery-receipt.json#216 | `1ddaf0cd-4e7b-688c-ab5d-0231c778aaf7` | `cc930b40` | `7466eaaa0f09dbf2` | 2793 |
+| discovery-receipt.json#217 | `73808bd3-6025-2a6f-90f6-42197ae03cc4` | `cc930b40` | `29f65d2810d44976` | 2794 |
+| discovery-receipt.json#218 | `3f104c58-c5e7-8224-9408-57c7b4a59f94` | `cc930b40` | `9e4a76523c638980` | 2795 |
+| discovery-receipt.json#219 | `f4dc6625-07bb-7512-bd86-b33434a0d96e` | `cc930b40` | `217b3b71ca81378d` | 2796 |
+| discovery-receipt.json#220 | `26ab0700-206e-2ec4-b91a-86b2daf0ed8a` | `cc930b40` | `6863235361c4f14c` | 2797 |
+| discovery-receipt.json#221 | `57fb3157-5167-3053-bc26-4c4a50e87066` | `cc930b40` | `9c826471790d9e90` | 2798 |
+| discovery-receipt.json#222 | `11c89d88-7e82-7664-8b40-a434704d0e70` | `cc930b40` | `ba1de30a8e812bfb` | 2799 |
+| discovery-receipt.json#223 | `d0c9b010-6d25-7524-9aeb-9d2527f4683e` | `cc930b40` | `3e1ca22930f77ae0` | 2800 |
+| discovery-receipt.json#224 | `299875aa-68b5-5dcd-8565-e242888e85fd` | `cc930b40` | `486fff99f9391e2c` | 2801 |
+| discovery-receipt.json#225 | `d9195898-7a18-1832-9715-8c927fa366b6` | `cc930b40` | `7f27ee7f2accb678` | 2802 |
+| discovery-receipt.json#226 | `a7d2c3c0-4e00-2840-bca1-2b8c2ee1e8d4` | `cc930b40` | `622786701ae61925` | 2803 |
+| discovery-receipt.json#227 | `e461b82c-2a89-7596-ac5a-16d6ac00a43a` | `cc930b40` | `4d995310c9472f84` | 2804 |
+| discovery-receipt.json#228 | `4cafad91-6b03-409e-86cf-d57e0df5ebd0` | `cc930b40` | `778c75a9699050d9` | 2805 |
+| discovery-receipt.json#229 | `ece19579-89fd-7929-9ecf-51eb18e373be` | `cc930b40` | `604f8ccbcdafaab3` | 2806 |
+| discovery-receipt.json#230 | `1db8b39d-9a43-1bd2-bd25-c3562f5ad52c` | `cc930b40` | `f2bfa31dd35893c1` | 2807 |
+| discovery-receipt.json#231 | `61a0b4fa-a6a9-3c33-874a-ed21b36023cf` | `cc930b40` | `16b30278518059f7` | 2808 |
+| discovery-receipt.json#232 | `874d9484-6fc9-4d2d-8ea6-ef04dacdaba4` | `cc930b40` | `4228f4b8779934d1` | 2809 |
+| discovery-receipt.json#233 | `d6ea5725-febe-72c4-acfa-4078fe581bae` | `cc930b40` | `56143b873956b419` | 2810 |
+| discovery-receipt.json#234 | `ec65fc9b-48ee-44a0-b42a-ca00c5cbca52` | `cc930b40` | `6c73f3f706c015c4` | 2811 |
+| discovery-receipt.json#235 | `c087c6db-6e99-79e5-b9e9-c1177e2f5051` | `cc930b40` | `32e9138d32f9e8a0` | 2812 |
+| discovery-receipt.json#236 | `b8ab3de9-3ce3-7f92-83c7-e44396f1505c` | `cc930b40` | `be66471560a2515a` | 2813 |
+| discovery-receipt.json#237 | `72c8f22c-0658-27b8-951b-163a9cbf968f` | `cc930b40` | `311fa4d115c0fc21` | 2814 |
+| discovery-receipt.json#238 | `493e1673-c668-7afb-a3af-c2d8c0ccb5c4` | `cc930b40` | `11cd9f00ae747a1a` | 2815 |
+| discovery-receipt.json#239 | `649232d6-652a-7c2d-8e16-120ee859f29b` | `cc930b40` | `874ae23f53e325ae` | 2816 |
+| discovery-receipt.json#240 | `476f536e-3a34-1d55-b019-ac2597860f8a` | `cc930b40` | `7b32cad7d188b2ea` | 2817 |
+| discovery-receipt.json#241 | `5a90312e-8e3b-32fe-b58f-bbdbd0855e4f` | `cc930b40` | `c99064b8f6f45d53` | 2818 |
+| discovery-receipt.json#242 | `16407354-9a7d-6636-bd67-f9524f2fbbfa` | `cc930b40` | `0915df0fddaf2acf` | 2819 |
+| discovery-receipt.json#243 | `5cd66705-04c4-497b-8e86-c03c12d0b8b9` | `cc930b40` | `b477d2a23fbe647e` | 2820 |
+| discovery-receipt.json#244 | `0b44a1bd-d79f-5781-be8b-b0ba7b4375dc` | `cc930b40` | `09d38df2c265fec3` | 2821 |
+| discovery-receipt.json#245 | `fbb63c1c-2dd5-336d-817e-3546579505a3` | `cc930b40` | `1e8743123c1fd848` | 2822 |
+| discovery-receipt.json#246 | `a54e1460-73c5-27f8-939c-f9a512c0b9e7` | `cc930b40` | `394b92cc767d778f` | 2823 |
+| discovery-receipt.json#247 | `b90a5f91-02bf-4a8f-80f5-5285fbe3129b` | `cc930b40` | `5a721cbcbf90db95` | 2824 |
+| discovery-receipt.json#248 | `bce1dccd-a8d3-154c-a621-77a7093bba8c` | `cc930b40` | `0b4a124bbbc5cf07` | 2825 |
+| discovery-receipt.json#249 | `92e1c5d5-540d-8d8d-902d-b86d67cafb5d` | `cc930b40` | `add1f30664333066` | 2826 |
+| discovery-receipt.json#250 | `13b3c208-28e3-2d12-abf3-b25a634d2314` | `cc930b40` | `541dff3aae81b54e` | 2827 |
+| discovery-receipt.json#251 | `46afdf6f-a604-62fa-a776-23f2aeea6230` | `cc930b40` | `58ce123b0a24514c` | 2828 |
+| discovery-receipt.json#252 | `f772dd5b-c1d7-60f5-bbdd-6b390b1239a0` | `cc930b40` | `4a9606cb41983353` | 2829 |
+| discovery-receipt.json#253 | `838d7512-f0c9-178b-8eec-1d3a104fbeeb` | `cc930b40` | `619393c8890e07a9` | 2830 |
+| discovery-receipt.json#254 | `bc3d62a7-325d-40fd-8db9-240690dec5de` | `cc930b40` | `1f58086ce4869e59` | 2831 |
+| discovery-receipt.json#255 | `a42c77a6-5169-43f6-b088-78e0e1df7685` | `cc930b40` | `6bc6a6dd80af8b36` | 2832 |
+| discovery-receipt.json#256 | `059d1302-c5a0-4507-af58-288f0894ad09` | `cc930b40` | `868c0a7058ede2dd` | 2833 |
+| discovery-receipt.json#257 | `69262367-ec08-5e5b-b1a0-f4285590f6e0` | `cc930b40` | `bc388a9c41e99ed7` | 2834 |
+| discovery-receipt.json#258 | `4dfda99e-14b8-1829-b27e-78ebad2e97da` | `cc930b40` | `30a05c3d5d4d5d7e` | 2835 |
+| discovery-receipt.json#259 | `85636c6b-af8b-2a1c-822a-f5dd700101df` | `cc930b40` | `bce65909c7c157fc` | 2836 |
+| discovery-receipt.json#260 | `e7bb2ca0-0f27-34e4-8358-87456fabd517` | `cc930b40` | `64bd0276b2af393d` | 2837 |
+| discovery-receipt.json#261 | `1aca1de0-752e-8537-8e74-1c2fedcee297` | `cc930b40` | `03dc83732d71efbc` | 2838 |
+| discovery-receipt.json#262 | `8e10c757-eea9-7b4c-887a-aa34040305d9` | `cc930b40` | `c322573bf7c460e6` | 2839 |
+| discovery-receipt.json#263 | `73ab17bb-d7b0-1fe5-847e-d005b3fa45a4` | `cc930b40` | `8c218a8e84eec538` | 2840 |
+| discovery-receipt.json#264 | `7dafc6ef-c79f-4922-bd80-cc2b9b84f4c4` | `cc930b40` | `8a0ac945a6af4e71` | 2841 |
+| discovery-receipt.json#265 | `fd01dda4-5c24-1728-bf65-1ebb95c7500c` | `cc930b40` | `b15518141a10d03c` | 2842 |
+| discovery-receipt.json#266 | `ef2c4ad7-bff8-1b47-87b0-d3b821e53714` | `cc930b40` | `e293666073d7c5a0` | 2843 |
+| discovery-receipt.json#267 | `c8ba14d5-6470-6862-877d-e16a3844a74d` | `cc930b40` | `81d01f46b9ea1e44` | 2844 |
+| discovery-receipt.json#268 | `26ef58f9-8712-3564-865f-baaa891da16e` | `cc930b40` | `59e8cd50ec84861f` | 2845 |
+| discovery-receipt.json#269 | `0d5e685d-d2a4-1fad-8f24-eb4c2bdbf844` | `cc930b40` | `c906ccc9d65613e3` | 2846 |
+| discovery-receipt.json#270 | `d0f8a5f3-cfdf-7c50-ad3a-ee6755ffd220` | `cc930b40` | `b7c02fff4311b418` | 2847 |
+| discovery-receipt.json#271 | `07792fc0-d286-839e-8b20-a50435f699ff` | `cc930b40` | `df998e185bec76af` | 2848 |
+| discovery-receipt.json#272 | `f763adbe-1a7e-429c-8290-7bfcd7f6f815` | `cc930b40` | `0fe96eb29f3f9f5b` | 2849 |
+| discovery-receipt.json#273 | `6371459b-144e-11be-be2f-602cc83bab1b` | `cc930b40` | `3da867865446df60` | 2850 |
+| discovery-receipt.json#274 | `573ea57a-c009-8ad1-ac89-ead7280a4783` | `cc930b40` | `c6bfb57547c69394` | 2851 |
+| discovery-receipt.json#275 | `7e6fc5dc-f3a4-424e-9d3b-678bf3b4e6d0` | `cc930b40` | `46a502409fb3233d` | 2852 |
+| discovery-receipt.json#276 | `513669e1-b7bb-23f7-a6c4-86b52c13a25d` | `cc930b40` | `57fc76ba6ff91395` | 2853 |
+| discovery-receipt.json#277 | `71141d9f-4c9f-3d25-a333-b28243018c62` | `cc930b40` | `06b0ec85bfec3f6a` | 2854 |
+| discovery-receipt.json#278 | `bcb7ded5-2058-4b0b-b18e-6f4a2b965814` | `cc930b40` | `e9f633ff91d997d4` | 2855 |
+| discovery-receipt.json#279 | `b61fdfa9-6c63-89d5-b434-e1271405a82d` | `cc930b40` | `53f1558aca6dab9c` | 2856 |
+| discovery-receipt.json#280 | `2745ef23-bcf2-8b5e-9f7f-ea27e588e750` | `cc930b40` | `ad031f7385a68d4c` | 2857 |
+| discovery-receipt.json#281 | `282f4555-a671-3ba5-960f-b976e026f3ae` | `cc930b40` | `1d762250532eb9b2` | 2858 |
+| discovery-receipt.json#282 | `0114d77f-d3c7-416b-9c0c-de46d7073ea7` | `cc930b40` | `058fe12570be4ce5` | 2859 |
+| discovery-receipt.json#283 | `fad6a7b1-b898-6a63-97c8-8d10bf3da535` | `cc930b40` | `2f116cb5de3b4e93` | 2860 |
+| discovery-receipt.json#284 | `6f30713d-ee69-798a-8d8a-17e39b8fad6c` | `cc930b40` | `101ca9fb8c28b159` | 2861 |
+| discovery-receipt.json#285 | `a9e72021-7b15-220c-b376-96662baa7f81` | `cc930b40` | `ef3f06e9c267a27d` | 2862 |
+| discovery-receipt.json#286 | `0cf3e9e6-435a-7ef1-af6f-37774d53f8ce` | `cc930b40` | `36ab85173c90263c` | 2863 |
+| discovery-receipt.json#287 | `1bc9983d-fa2b-76b2-9cd1-fa934ceb6bb6` | `cc930b40` | `420d9d63f4e256a2` | 2864 |
+| discovery-receipt.json#288 | `9cfdef98-f579-4e54-a381-fd44491edd67` | `cc930b40` | `6b99da40a6d88cf6` | 2865 |
+| discovery-receipt.json#289 | `9fa0e69b-65d1-4cee-b9d6-1c377a8b42fc` | `cc930b40` | `f68f0ab8b01650ad` | 2866 |
+| discovery-receipt.json#290 | `4f473e96-3afc-6bec-90ca-76978c51cc03` | `cc930b40` | `c954821f34048c71` | 2867 |
+| discovery-receipt.json#291 | `6be4a440-ae31-4ec2-a0ef-4ec639ef294e` | `cc930b40` | `ddac2638065b6aab` | 2868 |
+| discovery-receipt.json#292 | `f7e9af92-aac2-34dd-995f-6b75edacd073` | `cc930b40` | `d41bc5f092c0247b` | 2869 |
+| discovery-receipt.json#293 | `71ff59c5-1e83-1468-bdd0-a56d3a5cb3db` | `cc930b40` | `9bfd02afc2a4b667` | 2870 |
+| discovery-receipt.json#294 | `2db02181-e16e-8ddb-9f0b-aa5e77b8e88d` | `cc930b40` | `374c7dbbd737d6e4` | 2871 |
+| discovery-receipt.json#295 | `7061d6e8-85bd-24ee-acf0-35307eb8e3b5` | `cc930b40` | `aa74da21b53ab30a` | 2872 |
+| discovery-receipt.json#296 | `89220c03-6368-257a-9852-49b9c17939d6` | `cc930b40` | `f98e878e2e8cc1a3` | 2873 |
+| discovery-receipt.json#297 | `a75a0cb2-3dcb-2a41-bc14-a2924244b827` | `cc930b40` | `3b7db946e0ec8c4d` | 2874 |
+| discovery-receipt.json#298 | `fa070986-7ef5-12b0-8951-81258cff5a95` | `cc930b40` | `19c54e4efadb5b67` | 2875 |
+| discovery-receipt.json#299 | `04ded635-781e-5ba4-84ac-9f157520561d` | `cc930b40` | `8d7e9d8e69aec6b5` | 2876 |
+| discovery-receipt.json#300 | `f02e8ab3-c13f-7d29-8d44-e427017179a4` | `cc930b40` | `b89810e548658d93` | 2877 |
+| discovery-receipt.json#301 | `1ed0968d-ee91-5d37-93ce-48ab4a7b5bed` | `cc930b40` | `5d7d7ddb0aaa2901` | 2878 |
+| discovery-receipt.json#302 | `4456f95d-a76b-2cf6-a78c-87b35be83382` | `cc930b40` | `72a49f6356fed5fd` | 2879 |
+| discovery-receipt.json#303 | `3af9487f-6cb8-2255-befc-2650bd008d11` | `cc930b40` | `b1255e7d36876897` | 2880 |
+| discovery-receipt.json#304 | `da08d809-8be6-76e7-9976-ca3c73e4ca43` | `cc930b40` | `8ab502f3ab5e84c1` | 2881 |
+| discovery-receipt.json#305 | `167054c1-9617-5786-ab38-d235410bd876` | `cc930b40` | `400846ad9a8a915f` | 2882 |
+| discovery-receipt.json#306 | `a7c5118d-35ec-3338-8f8f-e8e12a929dd1` | `cc930b40` | `fc44d1eeb49b16bc` | 2883 |
+| discovery-receipt.json#307 | `c4cc3389-0585-34c9-af38-d5c92bd635a5` | `cc930b40` | `45bbeda4f5ff66e6` | 2884 |
+| discovery-receipt.json#308 | `cea6e8b8-574a-238f-a0aa-335322c951c6` | `cc930b40` | `2f2543e576419602` | 2885 |
+| discovery-receipt.json#309 | `83d72bf5-f251-5453-85f2-eb7e93065913` | `cc930b40` | `c4330ac4196a225f` | 2886 |
+| discovery-receipt.json#310 | `6e62600d-b0f2-4bed-b1a3-69b7c52cde40` | `cc930b40` | `17c572804f93c8bd` | 2887 |
+| discovery-receipt.json#311 | `684a53f6-7161-20a9-b6b2-b9ce14d53c3f` | `cc930b40` | `c1a6242a070b8c30` | 2888 |
+| discovery-receipt.json#312 | `9bb044e7-1b5d-8887-8ede-c586191eb693` | `cc930b40` | `c94e2dbb9e4e3b4c` | 2889 |
+| discovery-receipt.json#313 | `2031d266-9356-7daa-b3b8-a4cd9937286f` | `cc930b40` | `d76c9350cfca86e6` | 2890 |
+| discovery-receipt.json#314 | `060eb541-fe76-7c18-805f-2a0f2b828a65` | `cc930b40` | `f41c4e5f0c5070c8` | 2891 |
+| discovery-receipt.json#315 | `9abb9759-8cb9-7d4c-9e9e-42fb3f61c295` | `cc930b40` | `9b35a10333804bc3` | 2892 |
+| discovery-receipt.json#316 | `681fadf1-5f42-35a8-b0f7-252abe73e470` | `cc930b40` | `5107213147cd9d46` | 2893 |
+| discovery-receipt.json#317 | `e328db9c-9a75-5877-ada7-e62d85534c98` | `cc930b40` | `d67a2c9e7f1a98b6` | 2894 |
+| discovery-receipt.json#318 | `b3d76a23-7dd0-3465-bdd3-736ccc98c664` | `cc930b40` | `9dd68e8bb269f0ff` | 2895 |
+| discovery-receipt.json#319 | `205244c8-5f1f-285c-a594-80181c58dc60` | `cc930b40` | `2ae7a9bea70ce930` | 2896 |
+| discovery-receipt.json#320 | `ec5b867e-3397-19ad-aa0f-317ce278b191` | `cc930b40` | `223badd5a5092ee3` | 2897 |
+| discovery-receipt.json#321 | `96aae147-f3d0-1647-81bc-4457dd3334c4` | `cc930b40` | `1258fc7a943e2f47` | 2898 |
+| discovery-receipt.json#322 | `cba996f2-6608-6a74-8bb1-c71c6161a4e3` | `cc930b40` | `1938e29f0f8b0d79` | 2899 |
+| discovery-receipt.json#323 | `e8b8eb5d-c3db-7b8b-9d15-b52ae7fd9f4b` | `cc930b40` | `c650c544d965a2b1` | 2900 |
+| discovery-receipt.json#324 | `0be328dd-c9f9-775e-9337-434a5d40b939` | `cc930b40` | `4f9c6f4ca4abe99c` | 2901 |
+| discovery-receipt.json#325 | `abb9a0f1-1010-6b59-bb9c-cae5d352091d` | `cc930b40` | `cab8e0811196d8ab` | 2902 |
+| discovery-receipt.json#326 | `a672960d-517c-5c80-a313-a384c0d5d069` | `cc930b40` | `366cb89d9a468317` | 2903 |
+| discovery-receipt.json#327 | `4d4b8234-8983-4793-91b8-3a57fc2871c1` | `cc930b40` | `291ec60a7c459dfa` | 2904 |
+| discovery-receipt.json#328 | `4836ec06-7991-8d33-bea4-ce695bda8285` | `cc930b40` | `c76e5fa0bef61bd9` | 2905 |
+| discovery-receipt.json#329 | `39d96f28-9c0e-4edb-85e2-07562dfadbd5` | `cc930b40` | `4ceab65fb0359a25` | 2906 |
+| discovery-receipt.json#330 | `f150c11f-33d9-2cf4-93a0-d37cf2f0ed1e` | `cc930b40` | `9d191cc15a06951f` | 2907 |
+| discovery-receipt.json#331 | `7e84bbc0-ffd6-4024-a6f4-03aabfe488ea` | `cc930b40` | `fec78d68d7783a83` | 2908 |
+| discovery-receipt.json#332 | `50ecae8d-45dd-4bde-9174-8e719616fe37` | `cc930b40` | `d52acec0382eb032` | 2909 |
+| discovery-receipt.json#333 | `516e9291-ae1a-44f2-ac7f-f45f2ca74cfb` | `cc930b40` | `99495b1587a62c75` | 2910 |
+| discovery-receipt.json#334 | `3a59fcec-797e-575d-b054-634b5d46c65d` | `cc930b40` | `7647a70985738924` | 2911 |
+| discovery-receipt.json#335 | `fab68283-b391-8edc-9496-246170f64f7a` | `cc930b40` | `75052f64e6044bdb` | 2912 |
+| flaws-receipt.json | `35d6ce3d-d587-74a4-b17e-f3a2d62394d6` | `fd569ac5` | `43ea9330cdd490a5` | 2913 |
+| formulas-receipt.json | `84a4f0ed-5541-12ed-95b1-65cc8c230ee2` | `fd569ac5` | `15eb0a5c0076b1bc` | 2914 |
+| formulas-receipt.json#0 | `aa82c5e4-2875-7458-af49-53b7b9c75b62` | `84a4f0ed` | `760b9989efbf378d` | 2915 |
+| formulas-receipt.json#1 | `33202945-fc5e-5b35-9fee-db20281cb934` | `84a4f0ed` | `49cefa79979b75cc` | 2916 |
+| formulas-receipt.json#2 | `4cd34e3d-34ed-4c12-857e-d51f5af937c4` | `84a4f0ed` | `84f3337e58dd8c27` | 2917 |
+| formulas-receipt.json#3 | `41c844b0-ddc4-2c05-b219-ca72a3b2dcdf` | `84a4f0ed` | `6d792c32b0e767d9` | 2918 |
+| formulas-receipt.json#4 | `d69d8747-2be0-2db2-84a1-9106cb19ee22` | `84a4f0ed` | `1d9dbbde5ad56e5e` | 2919 |
+| formulas-receipt.json#5 | `d072c0a2-333e-5d06-986a-f36220147907` | `84a4f0ed` | `3b83aee0870b437a` | 2920 |
+| formulas-receipt.json#6 | `7c33a817-49e5-6af8-af6b-7855927e5a84` | `84a4f0ed` | `ef529a72c3ce9848` | 2921 |
+| formulas-receipt.json#7 | `20457437-3625-4c25-bf58-b62294f41689` | `84a4f0ed` | `3a7f241c78f811c6` | 2922 |
+| formulas-receipt.json#8 | `983398cc-bfee-1278-a231-5ebfeb32d740` | `84a4f0ed` | `545b374fe96714ad` | 2923 |
+| formulas-receipt.json#9 | `44a0eee1-8e03-6a12-8996-feff80f55197` | `84a4f0ed` | `469355482843b792` | 2924 |
+| formulas-receipt.json#10 | `165be9a3-e1da-26ea-85f2-58a03cd95dbe` | `84a4f0ed` | `b9571f2f36b12816` | 2925 |
+| formulas-receipt.json#11 | `4fcd742b-be99-3771-94bc-4b55deb79882` | `84a4f0ed` | `1f8379344917af84` | 2926 |
+| formulas-receipt.json#12 | `89cee7fb-a664-2d1a-8019-77917557decf` | `84a4f0ed` | `cd842cecd9d5a8e4` | 2927 |
+| formulas-receipt.json#13 | `e29bf55f-5f6f-7c5f-9b3b-2249c5a2672e` | `84a4f0ed` | `c47eeb1819c3ce3e` | 2928 |
+| formulas-receipt.json#14 | `af5e2a1b-7661-50cf-8474-2a626e2eecdc` | `84a4f0ed` | `e3f8b5a50cdb1994` | 2929 |
+| formulas-receipt.json#15 | `5ac99f13-b746-7821-b6b5-d709f4a179f7` | `84a4f0ed` | `9720c8e61dda9516` | 2930 |
+| formulas-receipt.json#16 | `d1b32e62-fc18-730b-b9d8-e4e96ad1e0c2` | `84a4f0ed` | `4ecb303481adc6af` | 2931 |
+| formulas-receipt.json#17 | `7472b5a6-0e97-53e7-bdeb-f2fd09d9f2a2` | `84a4f0ed` | `3210a16e157924f5` | 2932 |
+| formulas-receipt.json#18 | `593db6f6-e52a-4768-8c0a-80b03fe90d6f` | `84a4f0ed` | `bf99294c00db26ac` | 2933 |
+| formulas-receipt.json#19 | `25ff1b65-d538-7382-956c-f4282a9990bc` | `84a4f0ed` | `cf82e1192681dede` | 2934 |
+| formulas-receipt.json#20 | `e69091a3-f2d0-5f12-8564-b4b21f10e357` | `84a4f0ed` | `a0b45ee43751b81b` | 2935 |
+| formulas-receipt.json#21 | `2a9e35ad-d94d-2f29-9836-8c4d9ec3f578` | `84a4f0ed` | `866db9758f5b7be2` | 2936 |
+| formulas-receipt.json#22 | `139238eb-48d1-24e7-8686-4c2a93782c84` | `84a4f0ed` | `5c4989128390539d` | 2937 |
+| formulas-receipt.json#23 | `5862fef9-3ea8-831b-a7c5-73f14988828e` | `84a4f0ed` | `73804786e9a2076c` | 2938 |
+| formulas-receipt.json#24 | `8f874080-5959-44e9-8260-24d8e4b56b30` | `84a4f0ed` | `e4401ee52acac440` | 2939 |
+| formulas-receipt.json#25 | `15c69a93-49df-389f-b95e-7c29f68a85b6` | `84a4f0ed` | `6f91770ed62bd185` | 2940 |
+| formulas-receipt.json#26 | `f582c24d-0d09-1561-bd6e-49f82cf7cd23` | `84a4f0ed` | `17573f4d1ca25041` | 2941 |
+| formulas-receipt.json#27 | `328ab994-f5a4-397f-a84c-f25deac6ef43` | `84a4f0ed` | `30b14cea7fc5712a` | 2942 |
+| formulas-receipt.json#28 | `b472c6f3-e0ce-68ea-b027-d1c66bc75114` | `84a4f0ed` | `0f6ccedbff42a79b` | 2943 |
+| formulas-receipt.json#29 | `3c84bd54-0a98-1a7f-9180-dd6e72b35500` | `84a4f0ed` | `051f67e9f7a2420f` | 2944 |
+| formulas-receipt.json#30 | `0f9c7239-eed8-79e3-aa80-0b6dc39c874d` | `84a4f0ed` | `5eff3da8857ee463` | 2945 |
+| formulas-receipt.json#31 | `7286917b-8bb9-8a6a-84f7-4528aa2b4044` | `84a4f0ed` | `e948895cf99b1eb9` | 2946 |
+| formulas-receipt.json#32 | `129deed6-f78d-3ada-aba3-7a2e552d0c3e` | `84a4f0ed` | `ea8283ef03316067` | 2947 |
+| formulas-receipt.json#33 | `8d3f49a2-13a7-261f-a52d-39ee9c214ea6` | `84a4f0ed` | `55649dcf4bcaffa1` | 2948 |
+| formulas-receipt.json#34 | `434082c5-fbe3-29a3-ac63-c72b6d5d82aa` | `84a4f0ed` | `c264f845f1fab40c` | 2949 |
+| formulas-receipt.json#35 | `d4dbdd30-04a9-78a2-8a9a-9d5d17990108` | `84a4f0ed` | `986b5253df34315d` | 2950 |
+| formulas-receipt.json#36 | `fe5dc226-269c-7c80-836e-50e34bde1d47` | `84a4f0ed` | `de32dd343d754cf9` | 2951 |
+| formulas-receipt.json#37 | `3d0f32e2-48a2-1fd9-8827-56f5e3368bd8` | `84a4f0ed` | `2faf9c7ffebd7eec` | 2952 |
+| formulas-receipt.json#38 | `467dd14b-d34a-85c1-88b6-e4762e4b3a80` | `84a4f0ed` | `c40a0f5b771b768c` | 2953 |
+| formulas-receipt.json#39 | `54ae6d36-5108-8278-9fe8-700f5b11762b` | `84a4f0ed` | `a66558356891d3a6` | 2954 |
+| formulas-receipt.json#40 | `12190e01-091d-326a-8875-c7213ae56e94` | `84a4f0ed` | `195a94bd9a769acf` | 2955 |
+| formulas-receipt.json#41 | `7887e094-3db1-7685-9fef-f779cc66f287` | `84a4f0ed` | `92831b82805af163` | 2956 |
+| formulas-receipt.json#42 | `8dc11d11-2b6e-80f1-9f30-73b2ced26ccb` | `84a4f0ed` | `0806d54914b4caf9` | 2957 |
+| formulas-receipt.json#43 | `99435b8a-0d2d-4089-8644-f8cd8faca385` | `84a4f0ed` | `3232778ef9d2d11e` | 2958 |
+| formulas-receipt.json#44 | `32a72d79-869d-2816-a071-325d365cbde1` | `84a4f0ed` | `0b69d970114260f6` | 2959 |
+| formulas-receipt.json#45 | `bddc0ed4-69c8-6b08-8d94-d77c8f3a617e` | `84a4f0ed` | `c5e569a9955ff6a3` | 2960 |
+| formulas-receipt.json#46 | `4a59230a-20c6-88ce-be39-a2d4ccb4f38a` | `84a4f0ed` | `6e66fba87a91b954` | 2961 |
+| formulas-receipt.json#47 | `10b0b764-b1af-6bbd-bab5-0f0f982ca8ae` | `84a4f0ed` | `ae31f9ab25b603d9` | 2962 |
+| formulas-receipt.json#48 | `fe5e97ca-dc68-1907-a4d0-8525f5bbc200` | `84a4f0ed` | `ca69c8b2bfd18768` | 2963 |
+| formulas-receipt.json#49 | `c726de1f-10c7-4a94-bcd6-35037644dc34` | `84a4f0ed` | `4b6aab5b5071ba14` | 2964 |
+| formulas-receipt.json#50 | `96ee547b-52ad-2e84-8b50-747f96072d58` | `84a4f0ed` | `79165b15a85cd1c9` | 2965 |
+| formulas-receipt.json#51 | `e82db38d-c357-8481-99f9-f6c665d2b81f` | `84a4f0ed` | `9266f7dec507f5fb` | 2966 |
+| formulas-receipt.json#52 | `9133211a-8b7a-5c25-932e-31f06cd4541d` | `84a4f0ed` | `a82ce9bbaf3b74ba` | 2967 |
+| formulas-receipt.json#53 | `ef8910b0-d91f-80af-9dfb-f385e17bed30` | `84a4f0ed` | `8ac24f880f4c914c` | 2968 |
+| formulas-receipt.json#54 | `1ec02088-d970-4b3e-8f28-e2f90bae8042` | `84a4f0ed` | `23fdd640377e79bf` | 2969 |
+| formulas-receipt.json#55 | `1d51b689-aded-36b7-98a6-0012913aafbb` | `84a4f0ed` | `0958aefb6d75f617` | 2970 |
+| formulas-receipt.json#56 | `dab173c1-fcb0-1390-b1f6-7d86f1faa783` | `84a4f0ed` | `9796b363a77cdc27` | 2971 |
+| formulas-receipt.json#57 | `459094f3-8553-6035-b191-b0db30b8868d` | `84a4f0ed` | `e1016d184d08867a` | 2972 |
+| formulas-receipt.json#58 | `4d6e3464-d155-3b73-ade2-da231a203ac9` | `84a4f0ed` | `909c1b5bede8dfce` | 2973 |
+| formulas-receipt.json#59 | `134783bb-c152-31c4-a682-fc91aeef5c61` | `84a4f0ed` | `4ed5db5cbc79dd28` | 2974 |
+| formulas-receipt.json#60 | `c95e7a50-dc36-48f6-9556-d4a7c5c13210` | `84a4f0ed` | `e856c137149495c1` | 2975 |
+| formulas-receipt.json#61 | `5195ef03-e2fa-3dc3-aab3-086929f1c892` | `84a4f0ed` | `0540c899565627fa` | 2976 |
+| formulas-receipt.json#62 | `6a5b2f02-8cad-278e-8e62-31ba24676b62` | `84a4f0ed` | `9e3e80b5bd4cd363` | 2977 |
+| formulas-receipt.json#63 | `e41950bf-17f2-226b-ab25-1ac6e7737f70` | `84a4f0ed` | `32c3d1c380408649` | 2978 |
+| formulas-receipt.json#64 | `35128956-9b32-212a-9309-ed565ff16afc` | `84a4f0ed` | `d27034b03898c4fb` | 2979 |
+| formulas-receipt.json#65 | `b8847134-fcc3-15aa-80b5-73d9f80be39d` | `84a4f0ed` | `ab940b45add682a2` | 2980 |
+| formulas-receipt.json#66 | `1d28ec8f-c418-2132-a356-87d58ae8740c` | `84a4f0ed` | `c4dce46bfd3685bd` | 2981 |
+| formulas-receipt.json#67 | `1d22fdbc-8a40-7dbf-a31d-d6552abb397c` | `84a4f0ed` | `4ff51caaa310ac75` | 2982 |
+| formulas-receipt.json#68 | `f17c130c-ef5b-4112-bfaa-e8586bf0722e` | `84a4f0ed` | `364f2966ed058327` | 2983 |
+| formulas-receipt.json#69 | `941812b2-a089-3cfe-aaa6-6f17e225fd43` | `84a4f0ed` | `6739c9ea08526937` | 2984 |
+| formulas-receipt.json#70 | `6dce912a-60ff-6a84-a666-5cf6c26bf0d9` | `84a4f0ed` | `e5f576c60600c58e` | 2985 |
+| formulas-receipt.json#71 | `205426f8-0a83-1344-93ab-e8f27fbab2cd` | `84a4f0ed` | `ea27547bc065cb3c` | 2986 |
+| formulas-receipt.json#72 | `cf685b40-3efe-2748-b9fc-e86c125bfc6b` | `84a4f0ed` | `9cd257d0b130c3a4` | 2987 |
+| formulas-receipt.json#73 | `6a34cdbe-5878-4145-b8d5-78d0ef7733ef` | `84a4f0ed` | `d6a4282ad2c096e1` | 2988 |
+| formulas-receipt.json#74 | `be3113b2-7102-2944-bc1c-3b67908ee2f3` | `84a4f0ed` | `2e86c12b9bce22b0` | 2989 |
+| formulas-receipt.json#75 | `8a03871c-7fb9-5381-9d23-0c7f043fccbf` | `84a4f0ed` | `fa7478819b605165` | 2990 |
+| formulas-receipt.json#76 | `8543bfb6-3997-1067-96d1-978c34c792fe` | `84a4f0ed` | `3dbef990e6db2b35` | 2991 |
+| formulas-receipt.json#77 | `f49151df-475b-4ae8-a156-815432095924` | `84a4f0ed` | `0fbd672da2ef0c58` | 2992 |
+| formulas-receipt.json#78 | `d0a07715-3355-7933-9d11-fef0c29e97d1` | `84a4f0ed` | `ca5daa73db681f11` | 2993 |
+| formulas-receipt.json#79 | `b16034c6-0b9d-2639-aa2f-8ca8668ea728` | `84a4f0ed` | `8fffcc56961fdf3e` | 2994 |
+| formulas-receipt.json#80 | `9032e04f-c814-3c7a-a978-e0d82352a756` | `84a4f0ed` | `ff4cbacad8ee5fe8` | 2995 |
+| formulas-receipt.json#81 | `b72014f1-9702-62a5-bd8a-6d29c2cd6947` | `84a4f0ed` | `43aebdd725cf6886` | 2996 |
+| formulas-receipt.json#82 | `170af178-0b44-8a6d-8756-c8391e45b889` | `84a4f0ed` | `5256c2bad0aee188` | 2997 |
+| formulas-receipt.json#83 | `a86aa111-ab1d-7496-9f94-1cff90429754` | `84a4f0ed` | `8821a0e5eba38397` | 2998 |
+| formulas-receipt.json#84 | `5de3ff4d-4447-177c-bb0e-8953a0231faf` | `84a4f0ed` | `7f4e212aaea2a4aa` | 2999 |
+| formulas-receipt.json#85 | `6691c4bf-f4fd-5bd8-8cb9-075d59d7b61b` | `84a4f0ed` | `f51249963aa37bd3` | 3000 |
+| formulas-receipt.json#86 | `2b978e74-3f2e-8a40-a50a-a140b79597cb` | `84a4f0ed` | `5c4d953817eafa09` | 3001 |
+| formulas-receipt.json#87 | `303d8ffa-c98e-2f90-b124-18a921f48784` | `84a4f0ed` | `fb88d42b272791dd` | 3002 |
+| formulas-receipt.json#88 | `32ff71cd-0172-7a9c-88b7-f1c56872c457` | `84a4f0ed` | `aeabec26ad7c7478` | 3003 |
+| formulas-receipt.json#89 | `e9b7ce00-9ea2-66cd-90df-584e82c6e3f6` | `84a4f0ed` | `b2ca5ff358ee31bd` | 3004 |
+| formulas-receipt.json#90 | `d3e0a25a-406d-68be-bbe8-2b52e91426db` | `84a4f0ed` | `3709ec5ee202c3f8` | 3005 |
+| formulas-receipt.json#91 | `8a854c6d-8007-5db4-9eef-5a2066a53a46` | `84a4f0ed` | `e5bbeb14626a4b20` | 3006 |
+| formulas-receipt.json#92 | `e6c44eb5-251a-8a2e-86ea-9f39020a3311` | `84a4f0ed` | `c77498f3911499df` | 3007 |
+| formulas-receipt.json#93 | `1cba9de7-42c0-3b94-835c-d48221e450c7` | `84a4f0ed` | `e0898fcbc7e8f6b9` | 3008 |
+| formulas-receipt.json#94 | `fe20cbb7-1f36-8a0e-a9ea-1935d93e0c37` | `84a4f0ed` | `9500123f127fd342` | 3009 |
+| formulas-receipt.json#95 | `eeed9fb9-95fe-5c8b-ac7c-edbd7fc6a072` | `84a4f0ed` | `f11ad30cff0fb8ba` | 3010 |
+| formulas-receipt.json#96 | `aa098d73-c6e6-1aa0-8eba-410d0a6bba16` | `84a4f0ed` | `4f6dfc0fad1952e0` | 3011 |
+| formulas-receipt.json#97 | `0ddb18bf-4d51-4e87-8f26-9316403de12d` | `84a4f0ed` | `8a639a8c69608e47` | 3012 |
+| formulas-receipt.json#98 | `95b116d4-d5a6-2df9-a63f-5ab79179a4a7` | `84a4f0ed` | `df2eba34a1c5c278` | 3013 |
+| formulas-receipt.json#99 | `05a7ec71-9759-5d24-b3e3-a2b854d993f8` | `84a4f0ed` | `084debd31036eac9` | 3014 |
+| formulas-receipt.json#100 | `2b9c019d-4b6b-36d6-af80-c1cc8cd162de` | `84a4f0ed` | `7eb7b353e5f26410` | 3015 |
+| formulas-receipt.json#101 | `9ccae921-12ee-53be-aac0-e37b638c5b42` | `84a4f0ed` | `3d9eff0db7ab2b4d` | 3016 |
+| formulas-receipt.json#102 | `dbc4af3b-7242-76bf-ae9b-bec50985e736` | `84a4f0ed` | `b462abdd62272284` | 3017 |
+| formulas-receipt.json#103 | `b1c7fd78-2a75-3299-8fc0-8eacd6544750` | `84a4f0ed` | `d6efe73c357b9002` | 3018 |
+| formulas-receipt.json#104 | `fd150775-b7b8-36d5-95c1-fa4b0cf14211` | `84a4f0ed` | `a5fa0f227d8c85a3` | 3019 |
+| formulas-receipt.json#105 | `514f39ba-2ccf-8de0-bca1-98d627048e67` | `84a4f0ed` | `bda0b0ad3cefafb8` | 3020 |
+| formulas-receipt.json#106 | `4badfbc2-a012-6e3d-8aa3-9a74a541cffa` | `84a4f0ed` | `8551c70995d00c31` | 3021 |
+| formulas-receipt.json#107 | `2a7d9d98-3ecc-349d-bc90-ce7202d81d5b` | `84a4f0ed` | `0400454d8a2e0780` | 3022 |
+| formulas-receipt.json#108 | `a29f2fe6-f868-6a89-889b-aa3acb0d3017` | `84a4f0ed` | `4467f898596d9800` | 3023 |
+| formulas-receipt.json#109 | `1e446f34-7eb2-8f5e-9918-403f1a6f7be9` | `84a4f0ed` | `b060997d69806644` | 3024 |
+| formulas-receipt.json#110 | `ad5c2778-63cb-8830-8a6e-d473df4dcede` | `84a4f0ed` | `66eb5d7492e01327` | 3025 |
+| formulas-receipt.json#111 | `a4930a62-3acd-7e37-9d62-7d6ea45a5c3d` | `84a4f0ed` | `52bb8e8af2195e80` | 3026 |
+| formulas-receipt.json#112 | `35342c9f-6a5d-7890-8f7d-3108de27f4c0` | `84a4f0ed` | `0222058bd66f30f1` | 3027 |
+| formulas-receipt.json#113 | `7549353d-afe8-3f36-b51b-910e9e565d9d` | `84a4f0ed` | `f4d0d82efd422051` | 3028 |
+| formulas-receipt.json#114 | `667d89d3-7bf1-3a06-a7f4-f48a3e4f325c` | `84a4f0ed` | `50ccb58fc59c028f` | 3029 |
+| formulas-receipt.json#115 | `2d489e87-bc5e-72fb-9589-e631d88e01ab` | `84a4f0ed` | `72f88fe858dc88d0` | 3030 |
+| formulas-receipt.json#116 | `44b46230-3164-2a31-876a-205779786fab` | `84a4f0ed` | `6aa5ce3d0d65dfd7` | 3031 |
+| formulas-receipt.json#117 | `e2b7e476-ce7a-5f6d-95ff-39f7d1bcd197` | `84a4f0ed` | `789ffb27c91ac928` | 3032 |
+| formulas-receipt.json#118 | `dc192891-dc06-4a79-90ba-a72910cefea3` | `84a4f0ed` | `7e0b287e6d58a0d0` | 3033 |
+| formulas-receipt.json#119 | `4c2a4c52-e863-700d-bc92-dae95c7e48ff` | `84a4f0ed` | `10e4e9c43ddbda66` | 3034 |
+| formulas-receipt.json#120 | `49b71030-461d-7fd6-b142-a19388e3aba7` | `84a4f0ed` | `fa5a8ec30278e93a` | 3035 |
+| formulas-receipt.json#121 | `0cdb5d40-3783-305a-84f9-14cb25e6550e` | `84a4f0ed` | `681c0d7a0f3f759c` | 3036 |
+| formulas-receipt.json#122 | `8a688f4d-6d9a-380d-86cf-35fc51c0b65b` | `84a4f0ed` | `f144c86af2c2e147` | 3037 |
+| formulas-receipt.json#123 | `0b73e3f6-6a9b-8a07-aeab-055ad233c674` | `84a4f0ed` | `d435d94f9d25a976` | 3038 |
+| fuse-receipt.json | `44043424-cf44-6a7b-8116-7ec93e3615dc` | `fd569ac5` | `b7817703d521450c` | 3039 |
+| gate-receipt.json | `67ce39ac-eed7-35a3-9bcc-d7be4cbd91d0` | `fd569ac5` | `088a511995ac0f16` | 3040 |
+| gate-receipt.json#0 | `5c321602-e7ba-70bf-a0ec-c40980095a01` | `67ce39ac` | `abe7eb6b09fb51c8` | 3041 |
+| gate-receipt.json#1 | `26ae9735-79a0-3f49-a1c9-b8687df1b7c7` | `67ce39ac` | `51b36700216a439e` | 3042 |
+| gate-receipt.json#2 | `4242a6e9-cfc6-1c6a-91f0-7c212b95cdcb` | `67ce39ac` | `3dbb87536eb869ae` | 3043 |
+| gate-receipt.json#3 | `43d0070a-3685-18e4-a05d-e1ed247eeb74` | `67ce39ac` | `252d05641bee7e63` | 3044 |
+| gate-receipt.json#4 | `074be730-deaf-2868-afcd-97e2182de730` | `67ce39ac` | `633a3a2c11dcc7fe` | 3045 |
+| gate-receipt.json#5 | `28c9d89c-6694-368a-a7fe-5d6591298624` | `67ce39ac` | `fd6e05a282469b9e` | 3046 |
+| gate-receipt.json#6 | `4fa2deda-30d8-5558-96d0-a1785aa4cca7` | `67ce39ac` | `9f638b8c40bf4751` | 3047 |
+| gate-receipt.json#7 | `8a234131-5435-8601-a3d9-35daab9e2c42` | `67ce39ac` | `ee169b71f128fc71` | 3048 |
+| gate-receipt.json#8 | `572a3c40-86a4-2a31-be5b-3c07e659b2a1` | `67ce39ac` | `cdf6fa1f4453649f` | 3049 |
+| gate-receipt.json#9 | `6b0730e8-dd7d-8262-bc33-388f194110f9` | `67ce39ac` | `0c1e9b98bce2ecd4` | 3050 |
+| gate-receipt.json#10 | `c414503f-e55f-2243-830e-4df65ad7a8ee` | `67ce39ac` | `561b1041e3b6304e` | 3051 |
+| gate-receipt.json#11 | `bd570c29-a5ea-12e2-8555-907f4412e772` | `67ce39ac` | `8e89ae73f6a6efa7` | 3052 |
+| gate-receipt.json#12 | `aab61b01-6f73-1640-ac61-9364b833067b` | `67ce39ac` | `63351846ac5110cc` | 3053 |
+| gate-receipt.json#13 | `2cd2ed21-d511-1e51-b63f-3d84530bc5d3` | `67ce39ac` | `16e1b091d0d63c4b` | 3054 |
+| gate-receipt.json#14 | `7a79b6a8-7480-3c37-813d-1a662029eced` | `67ce39ac` | `12ed812ffe2d31b9` | 3055 |
+| gate-receipt.json#15 | `e3b2ce0f-afaf-7d45-b7d4-1a5c2902076d` | `67ce39ac` | `8d3899f6e1dc7512` | 3056 |
+| gate-receipt.json#16 | `74cb62cf-8884-2e93-880c-1406149fdcaa` | `67ce39ac` | `288a9ece82c4cf71` | 3057 |
+| gate-receipt.json#17 | `e62c0c70-48fc-42d9-a8a4-44b5451fe90e` | `67ce39ac` | `2147959eed788d13` | 3058 |
+| gate-receipt.json#18 | `e1d483a8-56ee-40e0-a029-c9bde8908c7f` | `67ce39ac` | `5784dad526b3ffe2` | 3059 |
+| gate-receipt.json#19 | `f8f21d96-837a-6038-9118-8d6f40330b47` | `67ce39ac` | `88ba811479d50609` | 3060 |
+| gate-receipt.json#20 | `42ab8273-fffe-7f6e-a1c3-363e0f77289e` | `67ce39ac` | `5e7f08cdfcbb1e21` | 3061 |
+| gate-receipt.json#21 | `8b880f4b-d4de-4ee7-b06d-c0cee72503c2` | `67ce39ac` | `f7446d84d53d1f0c` | 3062 |
+| gate-receipt.json#22 | `007d51d9-6663-3929-bb84-ff0f1d2a27cb` | `67ce39ac` | `8d0a1bdcd06551d3` | 3063 |
+| gate-receipt.json#23 | `d3b70e2b-3cff-1cf1-9006-eaec1134e263` | `67ce39ac` | `5d7c3631ac3dc576` | 3064 |
+| gate-receipt.json#24 | `981b01d7-d8f0-6f62-a8f9-0239f0cd3d76` | `67ce39ac` | `10e594e68e6afb29` | 3065 |
+| gate-receipt.json#25 | `a2597d8d-e3c8-6f1e-b514-da935d90ca72` | `67ce39ac` | `c2fd0d811cff5c7a` | 3066 |
+| gate-receipt.json#26 | `fff14347-e0c7-3e76-b6e3-dcb88acc1c84` | `67ce39ac` | `b75647f59ca75cd3` | 3067 |
+| gate-receipt.json#27 | `03409c20-67eb-8af5-8ea3-98e52b1c42af` | `67ce39ac` | `a48bda075a72f2b5` | 3068 |
+| gate-receipt.json#28 | `7d7f4f97-26ef-8939-bdb3-cb081e22f4f9` | `67ce39ac` | `d579b0493ab56396` | 3069 |
+| gate-receipt.json#29 | `3697ee61-9956-5145-aa30-3c18771c5a8d` | `67ce39ac` | `817ec6eb65844dd0` | 3070 |
+| gate-receipt.json#30 | `f5bae65a-2978-1bb6-bfa6-15ebf295a7d7` | `67ce39ac` | `45e68041ea9a0d33` | 3071 |
+| gate-receipt.json#31 | `f8045376-ba02-80fb-948e-b496ea26dec8` | `67ce39ac` | `c732f0f9d800a347` | 3072 |
+| gate-receipt.json#32 | `254c34e6-6a8f-41ae-ab30-e15e3afd03f3` | `67ce39ac` | `eff87568628047b3` | 3073 |
+| gate-receipt.json#33 | `83ccf2b7-a42a-8a7a-aaed-90be1fbdaba0` | `67ce39ac` | `deae2cfd0ca809f0` | 3074 |
+| gate-receipt.json#34 | `6bce5436-0f45-1e72-b683-7d6457e891ec` | `67ce39ac` | `541852a5145879fa` | 3075 |
+| gate-receipt.json#35 | `01bffb75-0f12-1ad7-8ff5-334adb0d1133` | `67ce39ac` | `e3f6024665eb0527` | 3076 |
+| gate-receipt.json#36 | `04a78a96-2243-6e69-a622-31af78e7640d` | `67ce39ac` | `b0f6a49e653f82ef` | 3077 |
+| gate-receipt.json#37 | `cf183896-bdf1-8493-95b4-4b7b183dfd41` | `67ce39ac` | `c87c95619884e09b` | 3078 |
+| gate-receipt.json#38 | `88ca756a-7b6a-3fd8-a71e-2ae4e05c1a7d` | `67ce39ac` | `342beacf6c74c909` | 3079 |
+| gate-receipt.json#39 | `a7452455-6bf7-6f93-8d19-a807a72d461c` | `67ce39ac` | `02251ed478dd4d1a` | 3080 |
+| gate-receipt.json#40 | `ccc19f8b-acfd-44f7-bd2a-9220ea50038b` | `67ce39ac` | `733db9d6a8a2d7f3` | 3081 |
+| gate-receipt.json#41 | `c5f291f7-fbdc-4b07-843b-8de285df9bbf` | `67ce39ac` | `8808bea015fa7d61` | 3082 |
+| gate-receipt.json#42 | `0fc3ba2e-ec6e-613c-8adc-1d73cc1fa9e0` | `67ce39ac` | `3a1fdd7bbcb7a6ce` | 3083 |
+| gate-receipt.json#43 | `2243ceb7-163d-20af-869a-bdaf0afb2a68` | `67ce39ac` | `206cc88a8cbb4b18` | 3084 |
+| gate-receipt.json#44 | `92df8091-692f-2a49-8407-6a268a7e76f1` | `67ce39ac` | `d1a091a41ce78f9e` | 3085 |
+| gate-receipt.json#45 | `377a57cf-711b-32ed-81ea-5701af2686ab` | `67ce39ac` | `c6e67f04791174c4` | 3086 |
+| gate-receipt.json#46 | `16aab1d9-dc4c-108d-903a-0052b6a8226c` | `67ce39ac` | `321b0fa85e130678` | 3087 |
+| gate-receipt.json#47 | `5e635200-05d6-732a-9ee3-94bf25dcb480` | `67ce39ac` | `cac850c121c34290` | 3088 |
+| gate-receipt.json#48 | `ec8638fb-1649-66ce-ad79-8f110fba66d6` | `67ce39ac` | `c0703bf211b3bb04` | 3089 |
+| gate-receipt.json#49 | `0fa5b150-cdf7-86a9-bfca-557e950dfbf4` | `67ce39ac` | `1f5012decc8b52eb` | 3090 |
+| gate-receipt.json#50 | `33334cb7-801e-4f41-82ef-0696882efd66` | `67ce39ac` | `c6e695dd8241c397` | 3091 |
+| gate-receipt.json#51 | `975e6c5a-810c-1820-aebf-7a9c906e64bb` | `67ce39ac` | `5e77deb720b6c481` | 3092 |
+| gate-receipt.json#52 | `6eeaace3-ca9e-1899-bea0-40a87fc2135e` | `67ce39ac` | `c16deaa71f8388a1` | 3093 |
+| gate-receipt.json#53 | `5726f464-d9f8-7af5-80fb-0d3e17aa581f` | `67ce39ac` | `e78c2ff887129d06` | 3094 |
+| gate-receipt.json#54 | `1d92bc77-ceba-58ae-b2bc-4456e6eda474` | `67ce39ac` | `c2b397e675bd9018` | 3095 |
+| gate-receipt.json#55 | `5934ab59-2af2-6478-b782-47d0bd51e7b1` | `67ce39ac` | `cb55cdbb8ca38f4f` | 3096 |
+| gate-receipt.json#56 | `a34b2b01-a691-4ec8-adf7-4220338c0e81` | `67ce39ac` | `20165693973eb0a4` | 3097 |
+| gate-receipt.json#57 | `89d4e34b-0c0f-463b-aa99-56c7075851c5` | `67ce39ac` | `cecf6e8c0662534e` | 3098 |
+| gate-receipt.json#58 | `8048e864-cc24-118f-ab5b-215130196dab` | `67ce39ac` | `e1ba5ba61ff8c00a` | 3099 |
+| gate-receipt.json#59 | `198bf16f-2c48-2cd2-b501-e53e48cd0455` | `67ce39ac` | `645c8957f736abcb` | 3100 |
+| gate-receipt.json#60 | `65633965-4407-8431-a5ae-3746adfe5b98` | `67ce39ac` | `6994038598a69343` | 3101 |
+| gate-receipt.json#61 | `9a733dd9-b25e-26e2-9b0a-4e6882e2d8bb` | `67ce39ac` | `899129f7845df830` | 3102 |
+| gate-receipt.json#62 | `5a315e05-353f-81f5-aeb4-6a2e5db6110b` | `67ce39ac` | `5f4261316cfe2caf` | 3103 |
+| gate-receipt.json#63 | `63ec2115-0b9e-23dc-94ca-2f3703041b9a` | `67ce39ac` | `1dd4aeaa4643ebfd` | 3104 |
+| gate-receipt.json#64 | `6145a8d7-3c8b-1990-814e-00573529788e` | `67ce39ac` | `59ff36e23e65556a` | 3105 |
+| gate-receipt.json#65 | `f0015263-081d-6ad0-a9aa-2c283cdeafcb` | `67ce39ac` | `a15021dc144ffbdc` | 3106 |
+| gate-receipt.json#66 | `333055b0-2308-4c2c-82eb-e5171ac83c2e` | `67ce39ac` | `bee0cdcb80125c81` | 3107 |
+| gate-receipt.json#67 | `21adfac5-7291-4457-93df-a4c53da869fe` | `67ce39ac` | `8b4bc8a221b15258` | 3108 |
+| gate-receipt.json#68 | `c715de0c-4ff6-88f1-84c3-d0e040cfdf4d` | `67ce39ac` | `3a393e28599069bc` | 3109 |
+| gate-receipt.json#69 | `4a23bbfb-ee00-1e8f-b793-1bf3d4c27dc6` | `67ce39ac` | `9b7a2aa80b102d89` | 3110 |
+| gate-receipt.json#70 | `a578ab0a-cef5-475c-a5dd-e452008e8a11` | `67ce39ac` | `b28cb4afcde15f0a` | 3111 |
+| gate-receipt.json#71 | `27279f4b-350b-8e89-b317-5f12fa9aa82f` | `67ce39ac` | `0a145c7c8274377a` | 3112 |
+| gate-receipt.json#72 | `c129a399-d96f-5842-970d-d6071f775be0` | `67ce39ac` | `f9141072b0d0851e` | 3113 |
+| gate-receipt.json#73 | `8805e325-61b6-268d-aefd-3d705a29aa84` | `67ce39ac` | `f5a81600dfd707e2` | 3114 |
+| gate-receipt.json#74 | `69a4b736-3292-2aa4-ad60-f360f841dd6b` | `67ce39ac` | `4e39fc639f927809` | 3115 |
+| gate-receipt.json#75 | `49eb2cca-3b4b-1848-88fb-e3e383e2c460` | `67ce39ac` | `284db7f14bf23dcd` | 3116 |
+| gate-receipt.json#76 | `8f8130c9-5175-7129-bf1e-da9fbe5f4525` | `67ce39ac` | `b88066ab813f2fc5` | 3117 |
+| gate-receipt.json#77 | `b84ac302-a5d3-1017-8311-7c5cc156a7b8` | `67ce39ac` | `d64644253a4ba9b1` | 3118 |
+| gate-receipt.json#78 | `873087a6-a8d5-33cf-855d-de545500a00d` | `67ce39ac` | `07ed4807887f543a` | 3119 |
+| gate-receipt.json#79 | `880b3ca3-802a-2339-98be-e3cc9f4b4f7e` | `67ce39ac` | `0b47873dfddcb0e2` | 3120 |
+| gate-receipt.json#80 | `b8e65a42-6f80-28f1-a871-3d6a79b5617c` | `67ce39ac` | `5eaa733e6a3d0b33` | 3121 |
+| heat-receipt.json | `62b2ac5e-37ba-7504-9a05-4b32d12e2299` | `fd569ac5` | `4c80a94f54cf76c8` | 3122 |
+| heat-receipt.json#0 | `f698a0e9-c4cf-51f1-9713-2690f8063b19` | `62b2ac5e` | `de6e440cc482efe5` | 3123 |
+| heat-receipt.json#1 | `6616138c-49be-43c1-a79d-52d27f691b57` | `62b2ac5e` | `dd9aef5f025d5901` | 3124 |
+| heat-receipt.json#2 | `084accdb-5c9e-70ff-ab40-453d9f2a8d05` | `62b2ac5e` | `9cb6f05d0e101ee5` | 3125 |
+| heat-receipt.json#3 | `eca51112-2c3a-2c7b-a68c-00533542783f` | `62b2ac5e` | `239e31eaac60b854` | 3126 |
+| heat-receipt.json#4 | `f973839e-99e3-36d5-85d9-432263eeef7c` | `62b2ac5e` | `c99143955272b817` | 3127 |
+| heat-receipt.json#5 | `f3ae9147-a822-154b-98ac-0b0e929b0abe` | `62b2ac5e` | `e0919ad1697894bf` | 3128 |
+| heat-receipt.json#6 | `f785134e-e5f1-72c3-bfda-d46b4bc362da` | `62b2ac5e` | `229386faf93856c9` | 3129 |
+| heat-receipt.json#7 | `9e86c708-5f0b-1641-8d9d-5a865e0c11f0` | `62b2ac5e` | `6c7d432dc05e6c66` | 3130 |
+| heat-receipt.json#8 | `77efeec8-eacc-8b28-92df-40c7d547b161` | `62b2ac5e` | `bd70fd65b8f5d41b` | 3131 |
+| heat-receipt.json#9 | `7aa7d42a-dbe4-7e65-9169-db257a3e3ed0` | `62b2ac5e` | `c60c62cfcbc02735` | 3132 |
+| heat-receipt.json#10 | `3e6fb8b5-4a9c-2877-ab22-4e6cec9c4f28` | `62b2ac5e` | `e2d9fd8e256b596c` | 3133 |
+| heat-receipt.json#11 | `553f461b-971a-5dc1-9253-c7d283b4fecf` | `62b2ac5e` | `4035bd9c1840af76` | 3134 |
+| heat-receipt.json#12 | `eee97aba-6709-1774-85d5-69fd07e32405` | `62b2ac5e` | `5d10d2d8d42a91fd` | 3135 |
+| heat-receipt.json#13 | `ac9f85b7-682c-670f-a3a5-9917352ae674` | `62b2ac5e` | `f23b11c263896760` | 3136 |
+| heat-receipt.json#14 | `c4d71313-8e73-86c3-889f-6ddd5e466e34` | `62b2ac5e` | `efee0133040d8af1` | 3137 |
+| heat-receipt.json#15 | `7d731e1f-a429-1981-92e1-6804d666e9a8` | `62b2ac5e` | `2ccb18b4e7c1727a` | 3138 |
+| heat-receipt.json#16 | `af47809d-97ab-2343-b507-a3e40baf8f9b` | `62b2ac5e` | `e2269fa6b7444cac` | 3139 |
+| heat-receipt.json#17 | `0f70722b-e47b-599f-93b2-01d6cb715530` | `62b2ac5e` | `1b54c657408f5a2c` | 3140 |
+| heat-receipt.json#18 | `9675a4c4-8977-1796-a32f-8e22111963a7` | `62b2ac5e` | `3c63a709559150ac` | 3141 |
+| heat-receipt.json#19 | `639b504f-2074-4858-8a66-b414526819b3` | `62b2ac5e` | `c1a41337c298c8ab` | 3142 |
+| heat-receipt.json#20 | `1df0744b-d07b-6549-976e-b21e355f17eb` | `62b2ac5e` | `eacd99969c32411a` | 3143 |
+| heat-receipt.json#21 | `bc232656-bc62-8b1d-bf95-e1e91e698e69` | `62b2ac5e` | `fe21d45f7bc52bf4` | 3144 |
+| heat-receipt.json#22 | `71f6955c-f95c-6fcc-a295-ec30a8178c97` | `62b2ac5e` | `e1d4f3b347941bec` | 3145 |
+| heat-receipt.json#23 | `6976731e-6669-8a5a-a552-e5714bdd644b` | `62b2ac5e` | `e26d3d41e548c6da` | 3146 |
+| heat-receipt.json#24 | `6b2024d0-2905-6e7c-8b04-49030e4e6010` | `62b2ac5e` | `a86e6d40a3f00452` | 3147 |
+| heat-receipt.json#25 | `c9d7eb09-e103-30f4-955b-649f14f5e078` | `62b2ac5e` | `32c5e4758adad960` | 3148 |
+| heat-receipt.json#26 | `af752b73-0a3d-20a6-99c3-0b47e2076c50` | `62b2ac5e` | `3c3239b3bc922823` | 3149 |
+| heat-receipt.json#27 | `3139fe27-5822-5c0d-a9c5-05326161d1b9` | `62b2ac5e` | `2f36b2efea786152` | 3150 |
+| heat-receipt.json#28 | `903db953-72ab-527d-9c0c-2b327a897b82` | `62b2ac5e` | `68b2e2033d772002` | 3151 |
+| heat-receipt.json#29 | `aba3835b-17a7-11ae-849c-5e4b13a6e61f` | `62b2ac5e` | `349678da39eceefa` | 3152 |
+| heat-receipt.json#30 | `15a3238a-0af6-8905-9e34-d9a2fafb5c6e` | `62b2ac5e` | `9cb3c8d698cd8eb3` | 3153 |
+| heat-receipt.json#31 | `03ee9029-1d04-5776-b466-02202675b030` | `62b2ac5e` | `2fe05207178a5b87` | 3154 |
+| heat-receipt.json#32 | `0b34d493-f3ff-5d5d-b596-1bcd92d67cce` | `62b2ac5e` | `e22205693b51a858` | 3155 |
+| heat-receipt.json#33 | `dcc3e0b1-ceba-1671-b0e0-5164ed69618b` | `62b2ac5e` | `4cb9e32414b794c7` | 3156 |
+| heat-receipt.json#34 | `5789b5cd-f302-7f24-bcd0-c3dec0a49db3` | `62b2ac5e` | `f123dc43a4d6eb01` | 3157 |
+| heat-receipt.json#35 | `2b13cd17-f2f4-773d-9cd8-79e5ed1fb6c6` | `62b2ac5e` | `4a2649903e5e5259` | 3158 |
+| heat-receipt.json#36 | `4f435f56-0638-8218-a2f4-3bd5b97df6bf` | `62b2ac5e` | `940bfdf39d45a4e0` | 3159 |
+| heat-receipt.json#37 | `95d9e7db-d506-3667-89e1-451f8a20643c` | `62b2ac5e` | `b420fd55acba6ffd` | 3160 |
+| heat-receipt.json#38 | `a643ce4c-b0de-15d0-aeda-61fe85afb5b7` | `62b2ac5e` | `f04effbf905b323e` | 3161 |
+| heat-receipt.json#39 | `59f38038-077f-4989-b55f-8da0d08b77bc` | `62b2ac5e` | `64c5d4150cea721a` | 3162 |
+| heat-receipt.json#40 | `836da7ea-aea5-29cc-afdb-35afa73c927d` | `62b2ac5e` | `8386548ce82873dd` | 3163 |
+| heat-receipt.json#41 | `5f9a1008-0c83-7eeb-8f15-4e929cb401b1` | `62b2ac5e` | `ad14d1053f85b0c5` | 3164 |
+| involute-receipt.json | `95ae1214-f438-68b4-923a-ff1fc60dd142` | `fd569ac5` | `6301e1667b63b9a2` | 3165 |
+| involute-receipt.json#0 | `edd34576-5a3b-48ea-8199-ded17e1e9818` | `95ae1214` | `3e70176d75954196` | 3166 |
+| involute-receipt.json#1 | `b0f9387f-9457-7dbd-bd7d-1d05079d9c11` | `95ae1214` | `36df85a1243c3e02` | 3167 |
+| involute-receipt.json#2 | `63988df8-8ebe-805d-b9e0-4cf268901a77` | `95ae1214` | `5006935dc0e85677` | 3168 |
+| involute-receipt.json#3 | `e5876577-59cf-43bf-9430-a4691afdb613` | `95ae1214` | `e664f6a12b35733c` | 3169 |
+| involute-receipt.json#4 | `80e281ba-4e9c-57e3-aac9-3568867ed1aa` | `95ae1214` | `487ac85602c8554a` | 3170 |
+| involute-receipt.json#5 | `c22b7a7d-a221-1c72-849d-e6ba51739add` | `95ae1214` | `aacfed85793c98f2` | 3171 |
+| involute-receipt.json#6 | `13f60a1a-f76d-56da-bf79-655d6771b568` | `95ae1214` | `c4dc4114deb2b70b` | 3172 |
+| involute-receipt.json#7 | `3d51b96b-7533-6655-8cfc-d7d3865f125e` | `95ae1214` | `16bbb9e80cbc9dfa` | 3173 |
+| involute-receipt.json#8 | `e2848bfe-4402-871e-8a62-2813b2f35e7e` | `95ae1214` | `0bbec6f06b2d2b0f` | 3174 |
+| involute-receipt.json#9 | `e06107d8-99f2-3e6c-be49-98afed288937` | `95ae1214` | `a887f6276b0ff7b7` | 3175 |
+| involute-receipt.json#10 | `cff55a85-80f8-67cd-8d3f-c18137febe55` | `95ae1214` | `5667726fd2160301` | 3176 |
+| involute-receipt.json#11 | `75ade109-ecd7-393b-8f96-03e8f4d6046c` | `95ae1214` | `2fa13464bc78f470` | 3177 |
+| involute-receipt.json#12 | `fbff3e1c-7fba-4a5b-93e7-f43a24932296` | `95ae1214` | `90838848b423fadc` | 3178 |
+| lattice-receipt.json | `a2e6b8ee-4294-268f-a2ec-c23708cbb22b` | `fd569ac5` | `5abe2ff51f9b6458` | 3179 |
+| lead-waves-receipt.json | `b3c0e3a5-c408-80e4-b64c-837dd315afa5` | `fd569ac5` | `77a564a445f38b17` | 3180 |
+| lean-receipt.json | `71fac583-e1c5-8bbb-bc62-9b0b4bb5e4c7` | `fd569ac5` | `79052a7c7b18fa33` | 3181 |
+| lean-receipt.json#0 | `f7e7c3aa-253b-8541-aa8a-7d7bb673a16a` | `71fac583` | `98dae585ea1a79ff` | 3182 |
+| lean-receipt.json#1 | `d42f5024-3ebb-75a3-b862-0cdbcc6f05c5` | `71fac583` | `f3b66120465e328f` | 3183 |
+| lean-receipt.json#2 | `52d8fbf7-5145-7982-ac7e-8d3e7908e9e6` | `71fac583` | `6d76448430422a22` | 3184 |
+| lean-receipt.json#3 | `5106a841-0525-312b-b004-896847abe7e2` | `71fac583` | `b5b2a70a3b5f65cd` | 3185 |
+| lean-receipt.json#4 | `54ad1e85-e674-3b3b-ab36-82e178351cfe` | `71fac583` | `786ce44a7a918a0b` | 3186 |
+| lean-receipt.json#5 | `f33b454f-68ef-3f8f-998d-5bb74c5cdab1` | `71fac583` | `0a5ca686728d138e` | 3187 |
+| lean-receipt.json#6 | `3626944b-f8a7-3b45-8692-4e399647b12f` | `71fac583` | `7ba7f4316530b79f` | 3188 |
+| lean-receipt.json#7 | `f30e4606-c62c-7326-bd75-723828e51f6d` | `71fac583` | `831bb3a03a244a5f` | 3189 |
+| lean-receipt.json#8 | `43d47017-5496-7a63-8e99-776c1129501c` | `71fac583` | `9c61109bc94c3b00` | 3190 |
+| lean-receipt.json#9 | `0c6d47dc-fa9c-4c42-a782-ed2e8bd53564` | `71fac583` | `dc5023ffb1295544` | 3191 |
+| lean-receipt.json#10 | `0e865c8d-ce40-73d6-afb5-b9cd9e795ca0` | `71fac583` | `0f37bf7606252ab7` | 3192 |
+| lean-receipt.json#11 | `45f28c60-960e-247f-8279-3d2ea6fb45a7` | `71fac583` | `86fb132f5fecfb2f` | 3193 |
+| lean-receipt.json#12 | `810aeeb8-7f14-119b-b5bc-03b143e01be5` | `71fac583` | `8c9358a16d9f9de4` | 3194 |
+| lean-receipt.json#13 | `374712d1-1897-5cfa-838d-3fefeb17912e` | `71fac583` | `ab7e4f549351856d` | 3195 |
+| lean-receipt.json#14 | `694e5cb2-d5ab-1877-930a-8c2b0469a69a` | `71fac583` | `ccbc114c64b5d7d5` | 3196 |
+| lean-receipt.json#15 | `1844637b-a8e7-8c87-b7f6-7bb87fd26b1c` | `71fac583` | `de6424145fc0c8b8` | 3197 |
+| lean-receipt.json#16 | `c5c8c2f9-1b34-74de-a3c2-d368b36b1568` | `71fac583` | `aece61f01357cbd7` | 3198 |
+| lean-receipt.json#17 | `32e5a00f-eaa1-2a5e-9bcf-e0845d486133` | `71fac583` | `fb8e82b299377903` | 3199 |
+| lean-receipt.json#18 | `fc709641-cf85-487a-8785-5b402d13702f` | `71fac583` | `f1523ba67b117d4c` | 3200 |
+| lean-receipt.json#19 | `03c5312f-30a5-1dc7-9b63-658f84fd2b78` | `71fac583` | `61e8d3c0622271ec` | 3201 |
+| lean-receipt.json#20 | `11a04e2e-1b3a-383c-bf77-490c5f9ab02d` | `71fac583` | `e0d0cdc7f6d8ad86` | 3202 |
+| lean-receipt.json#21 | `cc611541-9fe1-2900-875d-53634078488d` | `71fac583` | `0bafd2209c7788ad` | 3203 |
+| lean-receipt.json#22 | `5f6365cb-5b64-2e65-a21a-23a80032191c` | `71fac583` | `148df1c5e3f7a033` | 3204 |
+| lean-receipt.json#23 | `72da39ac-f3f3-8b22-b6a4-cb2732d7c5e9` | `71fac583` | `63e502ad092b91aa` | 3205 |
+| lean-receipt.json#24 | `dbb1aaed-6e95-1b76-8714-a210f29e9592` | `71fac583` | `892beb0c6c10c5d8` | 3206 |
+| lean-receipt.json#25 | `867f4962-cfbd-221c-a7e7-637fa0a214d5` | `71fac583` | `54b1ada5511adb73` | 3207 |
+| lean-receipt.json#26 | `3a6b5a4f-0835-2231-82f0-6b9892aec690` | `71fac583` | `06e44a32904aa211` | 3208 |
+| lean-receipt.json#27 | `1b8c02a7-393f-2c1d-b9b1-e6467f6a07f2` | `71fac583` | `6d2416c687a930e4` | 3209 |
+| lean-receipt.json#28 | `b8dcef6b-51fb-1386-a09f-d4267bdd4ecd` | `71fac583` | `93bf447603bdb79a` | 3210 |
+| lean-receipt.json#29 | `a1644180-738d-3843-a7d9-a59eebc65125` | `71fac583` | `32c946198ef49177` | 3211 |
+| lean-receipt.json#30 | `2aa807ad-6489-77a9-9d08-15b8777d155b` | `71fac583` | `8bcb015fa3928550` | 3212 |
+| lean-receipt.json#31 | `22f7ae1e-4739-1bd4-94f0-c84d9afc8b1a` | `71fac583` | `a12cd48985c60f75` | 3213 |
+| lean-receipt.json#32 | `882ec6e5-3dbc-14c9-8d50-3d1b5e9a65a4` | `71fac583` | `3fb895ae30cc4fca` | 3214 |
+| lean-receipt.json#33 | `3e03e644-3227-6f02-bfb7-81c6cebbd4bf` | `71fac583` | `65f6a8105a150c9c` | 3215 |
+| lean-receipt.json#34 | `c0e52045-afb2-203d-8184-f8b515b784d8` | `71fac583` | `25dcfb927a6c7ab7` | 3216 |
+| lean-receipt.json#35 | `9fdfc7c1-d6dc-6dac-83ee-fd7cb67983f2` | `71fac583` | `e2c4d4ea22ec9b50` | 3217 |
+| lean-receipt.json#36 | `7fd4b7cd-a7ef-3cd4-864d-2ae36243ae19` | `71fac583` | `4d79c9a87c9e9aa7` | 3218 |
+| lean-receipt.json#37 | `09ad5676-09e8-5aee-b22b-b0d263c9e4c4` | `71fac583` | `133529274652bf3f` | 3219 |
+| lean-receipt.json#38 | `d9d6c66f-9dc3-6ea3-b09f-1a8d1302d83b` | `71fac583` | `3a9d0303d541d513` | 3220 |
+| lean-receipt.json#39 | `9622a3c0-deb0-2655-bbf0-3d193e47d8e2` | `71fac583` | `58f76ca5db22c5fe` | 3221 |
+| lean-receipt.json#40 | `34dbce57-a3ec-1ea1-90af-831aacf9fd4f` | `71fac583` | `54ced7ee08c43b01` | 3222 |
+| lean-receipt.json#41 | `a8136f4e-a863-3f2d-9486-002a2348eee4` | `71fac583` | `9b758c3693ce6bae` | 3223 |
+| lean-receipt.json#42 | `13e476f4-cb6a-77ac-aa44-3053e907beef` | `71fac583` | `f20dfb5c7c3170e2` | 3224 |
+| lean-receipt.json#43 | `ed2f0693-d825-17dd-8978-780d4fbc40b2` | `71fac583` | `f9b7bcab6eb1f2ec` | 3225 |
+| lean-receipt.json#44 | `d3b570c7-6156-51f0-93bd-50156ca5a1fc` | `71fac583` | `ec7a4be84a1d7374` | 3226 |
+| lean-receipt.json#45 | `c0918c4b-03c3-83f0-b3da-935abd026db0` | `71fac583` | `091caf13facaf725` | 3227 |
+| lean-receipt.json#46 | `820afaa7-cffe-64e9-8f06-f5dbaa8351b9` | `71fac583` | `9139a6c403c2cb33` | 3228 |
+| lean-receipt.json#47 | `b13834ff-8143-51f4-b957-e0db6f0b8379` | `71fac583` | `abd795244d840ade` | 3229 |
+| lean-receipt.json#48 | `a8bb10ea-a41c-58d6-8bd1-742cf81bdae2` | `71fac583` | `51ae029641cb7565` | 3230 |
+| lean-receipt.json#49 | `5baea1e7-f3bf-2dc5-98bc-f3ca3f5ee8e0` | `71fac583` | `eb6998ed3865f4dc` | 3231 |
+| lean-receipt.json#50 | `163acb32-ea78-4fec-9d5a-b4f4c8617bc4` | `71fac583` | `a26d61f94731765b` | 3232 |
+| lean-receipt.json#51 | `79f44154-c172-114b-bbd4-574f6987f524` | `71fac583` | `05c54779a6533b0b` | 3233 |
+| lean-receipt.json#52 | `077521c0-da94-4326-95d3-c95b4fe4f5cc` | `71fac583` | `0072569fecabc8b9` | 3234 |
+| lean-receipt.json#53 | `c6fb162d-afed-3e7b-848d-437e75f1dacb` | `71fac583` | `213941078bf657e5` | 3235 |
+| lean-receipt.json#54 | `ea9d7031-d822-2967-bfb8-a60450653158` | `71fac583` | `9948915f0d476d67` | 3236 |
+| lean-receipt.json#55 | `96233468-6658-7699-85b5-d16fe5b71488` | `71fac583` | `4e0f8d28c2a80cb1` | 3237 |
+| lean-receipt.json#56 | `93714323-27f0-7abc-8490-791a5ae24cf1` | `71fac583` | `17ab6fd92f1f34cc` | 3238 |
+| lean-receipt.json#57 | `6f1298cf-0298-44cd-8aa1-ac5c57340a55` | `71fac583` | `14d198b202826a19` | 3239 |
+| lean-receipt.json#58 | `e997373a-584b-454d-987c-4ecd4c023f4e` | `71fac583` | `542b2d0b94fd286a` | 3240 |
+| lean-receipt.json#59 | `162248be-3c18-7987-8d96-017e45168ebb` | `71fac583` | `c6939f6926d44b73` | 3241 |
+| lean-receipt.json#60 | `14f818e4-1a6c-31ee-9bc1-c739fe1d8a44` | `71fac583` | `f801284c8f306605` | 3242 |
+| lean-receipt.json#61 | `a2dc10a5-5f95-88ef-ae7b-7301e66be4d2` | `71fac583` | `5797780a90f1c55a` | 3243 |
+| lean-receipt.json#62 | `ad6eaa48-f47d-84d9-83f1-260f0d863533` | `71fac583` | `8a3218a2e6b30d43` | 3244 |
+| lean-receipt.json#63 | `75e9d3af-1e7b-1578-9b28-088b8bdc66c9` | `71fac583` | `bef5351e078cb2e9` | 3245 |
+| lean-receipt.json#64 | `f0c43e17-c77f-4d6d-9ad8-71d17cb37a8a` | `71fac583` | `07581e8bdefca38e` | 3246 |
+| lean-receipt.json#65 | `f4185059-475e-4fa3-9bb5-fe115a9d4b0b` | `71fac583` | `b35979b4a23d2c8f` | 3247 |
+| lean-receipt.json#66 | `6c7dde88-6088-2665-bbc9-fbc16f9e6f57` | `71fac583` | `1970a7d9a6e1b128` | 3248 |
+| lean-receipt.json#67 | `1b28cc29-44d3-14f9-83cd-04d8d46e95d0` | `71fac583` | `438f8d3bb05676bb` | 3249 |
+| lean-receipt.json#68 | `59988715-04a7-16bb-ac9a-1c59565ff1a7` | `71fac583` | `458554770fb655c9` | 3250 |
+| lean-receipt.json#69 | `2ec3e19b-350d-5ab2-bac5-b1c36a6cbe2d` | `71fac583` | `4c58562466ecfcae` | 3251 |
+| lean-receipt.json#70 | `8fba78af-b932-2c0b-bffd-2b4934e5a471` | `71fac583` | `228f135985843f8b` | 3252 |
+| lean-receipt.json#71 | `538581ac-d9b6-8687-8fa1-b1c493ca981d` | `71fac583` | `4c1e7c2705f41559` | 3253 |
+| lean-receipt.json#72 | `3d2681c5-bda4-5719-968d-b72a0b110875` | `71fac583` | `baa8f2e66f1928a0` | 3254 |
+| lean-receipt.json#73 | `aedc118c-def2-59ff-82a1-3de37a4ee218` | `71fac583` | `9d7741f68ed126db` | 3255 |
+| lean-receipt.json#74 | `f37e8c47-abc5-3e92-a742-d80d98b584c2` | `71fac583` | `2279e30a9419a50f` | 3256 |
+| lean-receipt.json#75 | `8e90f56e-00bb-15b4-8416-eb5d03ed241e` | `71fac583` | `8126c6809bb65361` | 3257 |
+| lean-receipt.json#76 | `81a6abaf-8f31-1512-b622-0f13352c78fc` | `71fac583` | `ee17d9dbd21ce471` | 3258 |
+| lean-receipt.json#77 | `e1c7594d-70c5-6cf7-a7c5-014eefdbd551` | `71fac583` | `fcba20b70c7ed301` | 3259 |
+| lean-receipt.json#78 | `8c5e0b57-a042-16b7-839e-760f27a86969` | `71fac583` | `b5420a6de3021558` | 3260 |
+| lean-receipt.json#79 | `409450b8-3ff5-1ef1-8594-168fc572a702` | `71fac583` | `ffdfa29be8f08bb9` | 3261 |
+| lean-receipt.json#80 | `0d07a410-8c4b-1217-8f44-66bb23eaf85c` | `71fac583` | `9af3c2a57c34864d` | 3262 |
+| lean-receipt.json#81 | `f7cc66c1-1bae-7f36-8c1f-654e2f0a5826` | `71fac583` | `5d3d0b9693f645a9` | 3263 |
+| lean-receipt.json#82 | `c4466252-fe57-42a2-bbf8-b05e568f9d83` | `71fac583` | `ca40f3358e8ba4a4` | 3264 |
+| lean-receipt.json#83 | `b079b624-3cdd-4c47-926e-eebe219441f1` | `71fac583` | `fcbcf09c28118a56` | 3265 |
+| lean-receipt.json#84 | `0aab8f5c-41b9-4924-8741-61ac3ccb60b8` | `71fac583` | `e6576a5630a6770a` | 3266 |
+| lean-receipt.json#85 | `9ea21a4f-2ef5-87f8-a296-a383bd185e1c` | `71fac583` | `282e8c60b2f9417a` | 3267 |
+| lean-receipt.json#86 | `55488079-8f2e-3488-94ce-8ac92a8d414e` | `71fac583` | `d8ed6351f82dc020` | 3268 |
+| lean-receipt.json#87 | `0550563c-6493-559f-b26d-fff21e3546ee` | `71fac583` | `895497a84aec1c20` | 3269 |
+| lean-receipt.json#88 | `dcb41320-ce11-5ea0-8df4-9fe4320d5d39` | `71fac583` | `2c19154d2d6ad06d` | 3270 |
+| lean-receipt.json#89 | `d478aa50-af93-7d4d-a31c-fd57de5946b1` | `71fac583` | `a19876494e12024b` | 3271 |
+| lean-receipt.json#90 | `2997bedf-3ba7-516d-a152-c15a7d7ca48b` | `71fac583` | `6cc1caa5b0273c6c` | 3272 |
+| lean-receipt.json#91 | `1a9a0ba0-607c-1bb7-9ecd-51a9fbee951b` | `71fac583` | `65afcaee18c777ce` | 3273 |
+| lean-receipt.json#92 | `d3449909-e03d-7f5f-8c94-484ecad68560` | `71fac583` | `5b5a7d7454556304` | 3274 |
+| lean-receipt.json#93 | `7c90dbe9-7a5d-6a89-856b-f94afc8ba934` | `71fac583` | `c83cd890f2bc04e3` | 3275 |
+| lean-receipt.json#94 | `3b094323-6ef0-2407-91fa-59a5454545a3` | `71fac583` | `4460023560a838ab` | 3276 |
+| lean-receipt.json#95 | `47aac831-63db-8d91-8de1-6dd4418ac5c9` | `71fac583` | `887c23b9472df5cb` | 3277 |
+| lean-receipt.json#96 | `c9195982-a499-143b-9102-c1c55113c8f9` | `71fac583` | `34a1ee91f5a18f4d` | 3278 |
+| lean-receipt.json#97 | `d8ca1fb4-a03d-8ca0-9d2f-209b611b004a` | `71fac583` | `1256517ded10340d` | 3279 |
+| lean-receipt.json#98 | `ee91f14a-e92e-4b3b-a8f8-c21ebc9856d5` | `71fac583` | `d6aad521dd3822c7` | 3280 |
+| lean-receipt.json#99 | `6e9e53b0-9c52-315a-87a5-84b54af9bc90` | `71fac583` | `5a590a03674b45b6` | 3281 |
+| lean-receipt.json#100 | `d643da57-35e2-14bb-990d-f17b7b9dc02d` | `71fac583` | `da644cd4148166d4` | 3282 |
+| lean-receipt.json#101 | `ba8eb6ee-5d1d-59e9-b331-fa9b77c428c0` | `71fac583` | `af94e4be5897b4ed` | 3283 |
+| lean-receipt.json#102 | `925171f1-5776-68c8-b870-0ec5f4f68544` | `71fac583` | `e51f4c0a0290ecfe` | 3284 |
+| lean-receipt.json#103 | `909134a5-e816-6092-ab0c-911d81f3b4fe` | `71fac583` | `0883ba4020371dc0` | 3285 |
+| lean-receipt.json#104 | `a4820dd0-f0bc-4205-83ff-ec9ba80d17a2` | `71fac583` | `4a836ccbe4a0b49b` | 3286 |
+| lean-receipt.json#105 | `d850a1f3-e87e-4520-ba06-a01ad640c068` | `71fac583` | `8995d8a066b7efef` | 3287 |
+| lean-receipt.json#106 | `9620d047-5050-6d6f-9aac-7f7678db8dac` | `71fac583` | `b841b46f42f8a88d` | 3288 |
+| lean-receipt.json#107 | `424168c6-07d8-608c-bfd7-a379d272355f` | `71fac583` | `8fec63d44d80417f` | 3289 |
+| lean-receipt.json#108 | `8d4b66e2-9f54-7bdf-b469-bbdc8ec7ef6a` | `71fac583` | `c68eabb53ab406ff` | 3290 |
+| lean-receipt.json#109 | `ac1a1b57-354b-2956-95c5-ca301696ed69` | `71fac583` | `fcdfda574d30be8c` | 3291 |
+| lean-receipt.json#110 | `4c3cad71-7913-38b9-918a-33709c154921` | `71fac583` | `bd5169585f7e0f6f` | 3292 |
+| lean-receipt.json#111 | `9f0380a9-578d-5dbc-b8ef-129e1a5865bc` | `71fac583` | `c3a82eb987de0283` | 3293 |
+| lean-receipt.json#112 | `ac602317-75dd-5906-b0f7-6bcf7e829d82` | `71fac583` | `a2300104ad018f89` | 3294 |
+| lean-receipt.json#113 | `9f681460-0190-4c91-99e6-f605e912b0f1` | `71fac583` | `bc9e6294314d11db` | 3295 |
+| lean-receipt.json#114 | `585edf78-6a9a-4c2a-8484-62024354c550` | `71fac583` | `35fe99849e9e190e` | 3296 |
+| lean-receipt.json#115 | `cffb9fb9-15d8-71ee-9f3e-e769ccc7b037` | `71fac583` | `428a88a81aa26f15` | 3297 |
+| lean-receipt.json#116 | `68b90fd3-fc97-1690-8379-8ce346bbec32` | `71fac583` | `fc953ba4d928cf15` | 3298 |
+| lean-receipt.json#117 | `2cb76c6c-4942-1fbd-8f6a-51e27ad41277` | `71fac583` | `f9ab16f4109fcc5e` | 3299 |
+| lean-receipt.json#118 | `91c85230-237f-3340-9c59-4cf240633614` | `71fac583` | `780032d798eb46e8` | 3300 |
+| lean-receipt.json#119 | `3fbbf4e3-5900-1340-b12b-1e8a662ae4b8` | `71fac583` | `35e9db947551e104` | 3301 |
+| lean-receipt.json#120 | `474bb1c8-b672-73cd-b52a-09230e1f372f` | `71fac583` | `2f2ff3fe85268ecd` | 3302 |
+| lean-receipt.json#121 | `9c84cacb-b1f2-77f1-b0ff-6792d41a27b7` | `71fac583` | `b6134f09015e409e` | 3303 |
+| lean-receipt.json#122 | `7e5cb6e5-c4d0-81b1-81ff-8f0db0e456b6` | `71fac583` | `d2744472e429dc58` | 3304 |
+| lean-receipt.json#123 | `e3dcafdc-11f9-4deb-a172-82f284d1cf52` | `71fac583` | `bfa20fd6cf759420` | 3305 |
+| linux-users-receipt.json | `b9d15a96-b955-78de-ba29-0367d28ff8c0` | `fd569ac5` | `94d35fe4e1a6de3c` | 3306 |
+| linux-users-receipt.json#0 | `5a84675c-3cd9-7d1a-ba3b-38b0d9d9d2ac` | `b9d15a96` | `39aa66897070cb50` | 3307 |
+| linux-users-receipt.json#1 | `91ee1698-f77b-39e1-bad8-8a6bda45c1ae` | `b9d15a96` | `596b9b5373a39e3a` | 3308 |
+| linux-users-receipt.json#2 | `39817078-bcfd-4d79-9964-e4826ea5a43b` | `b9d15a96` | `7b41375e5252228d` | 3309 |
+| linux-users-receipt.json#3 | `09d6eb54-d777-7296-a561-7c97e9d70230` | `b9d15a96` | `ab5fef2a0e204dce` | 3310 |
+| linux-users-receipt.json#4 | `e5506cd4-9031-8016-8683-1a9b915f59f5` | `b9d15a96` | `e54a3768c91fcd59` | 3311 |
+| linux-users-receipt.json#5 | `99f21c9f-4d74-551a-97a1-4d04c7bdb54b` | `b9d15a96` | `c838c726ced7189d` | 3312 |
+| linux-users-receipt.json#6 | `a95bc565-f98b-13ab-b1b6-27aca1306570` | `b9d15a96` | `4730b4cf632ed045` | 3313 |
+| linux-users-receipt.json#7 | `1496eb35-af4e-2afd-95f2-d9fca91e17ac` | `b9d15a96` | `5b4c75045f6c6ddc` | 3314 |
+| linux-users-receipt.json#8 | `80bc9a45-1f6d-26e6-8399-e7cadd2b4c4e` | `b9d15a96` | `5806e85a68f402d4` | 3315 |
+| linux-users-receipt.json#9 | `9a2ea5dc-4fa5-544b-9218-178199d00c27` | `b9d15a96` | `ce287bfada9f5231` | 3316 |
+| linux-users-receipt.json#10 | `19edc42e-1d3f-1af6-a7bc-7f391fba921b` | `b9d15a96` | `072b1fb756f6d573` | 3317 |
+| linux-users-receipt.json#11 | `da33abe6-9e84-6fc2-ac3c-e985d891516f` | `b9d15a96` | `d887d931ef7e2018` | 3318 |
+| love-experience-receipt.json | `2971c69d-b83d-598c-a727-7fb86a322d2c` | `fd569ac5` | `b14c6232a937c4d7` | 3319 |
+| love-experience-receipt.json#0 | `d436d4de-66ef-8159-a2f1-56c4265e8adb` | `2971c69d` | `448a39d0dca8ad4c` | 3320 |
+| next-receipt.json | `8a261b2e-d45e-4006-8b58-6fae18acf2e0` | `fd569ac5` | `0fb2209c1e604d76` | 3321 |
+| next-receipt.json#0 | `044c089a-b834-7a31-bf21-8f62021ae2a8` | `8a261b2e` | `acb66d35428e02d5` | 3322 |
+| next-receipt.json#1 | `ef5c046f-8d1e-40c7-bae9-1d9da9799f3d` | `8a261b2e` | `a41d8dc0f6fb7d27` | 3323 |
+| next-receipt.json#2 | `089b0351-2a1b-739e-9a1d-f2e9c88a73cc` | `8a261b2e` | `ca37fe8580b5c3ee` | 3324 |
+| next-receipt.json#3 | `e78f6e45-a822-872f-a64b-ce63ed2c9ee1` | `8a261b2e` | `8b9cf65051384023` | 3325 |
+| next-receipt.json#4 | `e69ddac2-a4d0-1c2e-96c3-e8d80eab6df3` | `8a261b2e` | `987d46ebea71da93` | 3326 |
+| next-receipt.json#5 | `aac4c584-bdcb-1c30-b955-6e5801b0c87e` | `8a261b2e` | `34a6c94363956da7` | 3327 |
+| next-receipt.json#6 | `e3a3a9bc-92b9-6ec7-ba1c-ecc7b035fcb7` | `8a261b2e` | `5f8c1cb0587d67ce` | 3328 |
+| next-receipt.json#7 | `4654797c-9fe0-1d7e-9282-456826f8ba97` | `8a261b2e` | `7253199161b614c0` | 3329 |
+| next-receipt.json#8 | `465b4aab-0adb-1111-9751-ccca7a3bdf70` | `8a261b2e` | `095cd56285431170` | 3330 |
+| next-receipt.json#9 | `c9748672-ecea-1696-9c03-e0b291b15e1b` | `8a261b2e` | `cdba91220ac75662` | 3331 |
+| next-receipt.json#10 | `4523b5b6-7eda-49e2-8029-43d186618926` | `8a261b2e` | `0050dc4ccc62b3d4` | 3332 |
+| next-receipt.json#11 | `3176ef38-a03d-67ef-b613-7806b210b5d6` | `8a261b2e` | `9ec3bd9169250670` | 3333 |
+| next-receipt.json#12 | `cf2964e0-d4e8-76c9-9956-aa1f853990ec` | `8a261b2e` | `eb037aefc21be431` | 3334 |
+| next-receipt.json#13 | `ed76cbec-f7dd-1cd2-8e1b-7087f2f380e1` | `8a261b2e` | `7dbba6d46a96ecca` | 3335 |
+| next-receipt.json#14 | `544ae225-173a-1989-afe2-d6a2e8f79a55` | `8a261b2e` | `aa387b8e922c0621` | 3336 |
+| next-receipt.json#15 | `34aa4465-bf5a-2fcf-a4c2-6d41d7cb849b` | `8a261b2e` | `2facf199c27b8412` | 3337 |
+| next-receipt.json#16 | `c425d0f5-a49c-764a-80b0-e4e96f158491` | `8a261b2e` | `336d3c018c94484f` | 3338 |
+| next-receipt.json#17 | `eae59c60-d7cb-2945-a14d-ebe44e727bc7` | `8a261b2e` | `b199ed2025361d40` | 3339 |
+| next-receipt.json#18 | `5576f9f3-1683-2042-a275-1ea22ca6f9b3` | `8a261b2e` | `4726bb4fa4fc2e8e` | 3340 |
+| next-receipt.json#19 | `ea5ddc20-f55a-50f7-af13-9a216729536b` | `8a261b2e` | `575b7a19cef172e1` | 3341 |
+| next-receipt.json#20 | `09153369-a053-5d9b-a3f5-477848875d63` | `8a261b2e` | `6ef0c31304f46fa2` | 3342 |
+| next-receipt.json#21 | `2d3ba769-7ec3-5a31-8119-e8ee626080c8` | `8a261b2e` | `848cf554e9902a17` | 3343 |
+| next-receipt.json#22 | `78d9061b-a7da-61a2-9b6b-0a9bb966cbee` | `8a261b2e` | `bf09201c595a8681` | 3344 |
+| next-receipt.json#23 | `88afabdb-9d76-4807-ac0e-cac27764e8bd` | `8a261b2e` | `3e35c3d41bbe6dee` | 3345 |
+| next-receipt.json#24 | `d1cd7e2b-381d-2a63-ba70-6759df6fc5c8` | `8a261b2e` | `686c0d7781291592` | 3346 |
+| next-receipt.json#25 | `b127c21d-cc08-6802-bdfd-ce84982c05f3` | `8a261b2e` | `fc139883228f0f22` | 3347 |
+| next-receipt.json#26 | `888acd9b-d17a-4c81-826a-26c6a8768504` | `8a261b2e` | `5900127cf7c6008c` | 3348 |
+| next-receipt.json#27 | `18c31758-061c-3acd-a98d-c726384c27d3` | `8a261b2e` | `23a397cdfda3befd` | 3349 |
+| next-receipt.json#28 | `224a4ce6-15c4-29a5-9fe6-9beb4b828237` | `8a261b2e` | `d55ee3b86dc796da` | 3350 |
+| next-receipt.json#29 | `97d1a63a-c8f2-1cc2-843c-76c873059560` | `8a261b2e` | `3d89de2d80317963` | 3351 |
+| next-receipt.json#30 | `863bf5f4-df02-7dd8-b00c-9ab315182378` | `8a261b2e` | `73a0c4cf433c81bd` | 3352 |
+| next-receipt.json#31 | `a3452865-39d5-6747-91c5-8c97800f34af` | `8a261b2e` | `dc75ce0893092e21` | 3353 |
+| next-receipt.json#32 | `94505958-fb49-5238-bcac-a9b85f23c6e6` | `8a261b2e` | `51b93e1a96ef9c2c` | 3354 |
+| next-receipt.json#33 | `fab35b5a-a2a3-1e6c-bac2-374a9b7d141d` | `8a261b2e` | `e91719e75dab89b0` | 3355 |
+| next-receipt.json#34 | `482e437e-2871-380f-9445-1ffea3560c6b` | `8a261b2e` | `d39b5cbb31a2b3d0` | 3356 |
+| next-receipt.json#35 | `99e52878-6893-1721-98d2-dec610e7ff28` | `8a261b2e` | `1aeaad7736eed64e` | 3357 |
+| next-receipt.json#36 | `7b59c6e5-2533-17e9-8774-52c9d2389dde` | `8a261b2e` | `6b3e9a3eb5e0263c` | 3358 |
+| next-receipt.json#37 | `ff0a7f0d-2ca8-17f3-a26e-952077522f67` | `8a261b2e` | `19028a860b0e71b5` | 3359 |
+| next-receipt.json#38 | `e463a4eb-b11d-1d6e-abdf-77404c20b564` | `8a261b2e` | `8c412b756136abc0` | 3360 |
+| next-receipt.json#39 | `3effab2b-ad66-4594-8f29-32a18d413ed7` | `8a261b2e` | `725b516f344368ec` | 3361 |
+| next-receipt.json#40 | `3472b075-397e-4055-9626-5cc2fa96a1f2` | `8a261b2e` | `f035bb4e555633df` | 3362 |
+| next-receipt.json#41 | `eddf2c6d-212c-1784-bf84-b89c8cdb14b2` | `8a261b2e` | `23d632d17b5a088a` | 3363 |
+| next-receipt.json#42 | `7eb27e83-3044-7eae-a237-d9fee7b0d89c` | `8a261b2e` | `725ed6f5d094f95a` | 3364 |
+| next-receipt.json#43 | `373fb8f4-7ebc-6c19-8426-e08915382279` | `8a261b2e` | `15cf4b8d5c82b848` | 3365 |
+| next-receipt.json#44 | `79ca64b0-a73a-1dff-ba8d-e16ff1627cb9` | `8a261b2e` | `05c1fb99df816861` | 3366 |
+| next-receipt.json#45 | `ac00ad0f-b0ff-6966-9cb1-2a8cf8f8830d` | `8a261b2e` | `0f116d96fc33e1fd` | 3367 |
+| next-receipt.json#46 | `9b8bd9c4-ca53-68d3-8696-67c8c8ed75d1` | `8a261b2e` | `ab6dc8008c5448b1` | 3368 |
+| next-receipt.json#47 | `503825e9-1d30-6bcd-ab1d-2408c3987de2` | `8a261b2e` | `4cfe6ee9a3785b2d` | 3369 |
+| next-receipt.json#48 | `44fe925f-0354-340b-b77f-e9d1c2b8a69c` | `8a261b2e` | `b3f2c7eab29c15af` | 3370 |
+| next-receipt.json#49 | `65c69fbd-921e-1bc9-962b-504ce5ea8322` | `8a261b2e` | `068fd81a02f95afb` | 3371 |
+| next-receipt.json#50 | `10530921-88a2-1d76-8eea-79df932e76c0` | `8a261b2e` | `9e224c3580b750c0` | 3372 |
+| next-receipt.json#51 | `a3404380-3e7c-785e-b850-9afe96ce093e` | `8a261b2e` | `6e35e8a4d65c62c6` | 3373 |
+| next-receipt.json#52 | `53a64d58-0243-326c-af4f-78c23d535fb7` | `8a261b2e` | `dca474cc8d44d9c6` | 3374 |
+| next-receipt.json#53 | `4b4e0a2b-6b55-88dc-885a-1519b8473dfd` | `8a261b2e` | `00b223e46ea7ba15` | 3375 |
+| next-receipt.json#54 | `351cf239-9db6-7c83-a042-488440c36845` | `8a261b2e` | `18db63cd2cf37ae3` | 3376 |
+| next-receipt.json#55 | `a808ee4b-df6f-2a46-8d13-cb7dcee636fe` | `8a261b2e` | `772cc087e8bc4899` | 3377 |
+| next-receipt.json#56 | `9ca48e0b-7ab4-817a-b9b5-680a9ceecd98` | `8a261b2e` | `ac9d867b2e03d8be` | 3378 |
+| next-receipt.json#57 | `3e2d0577-f7c9-86c4-bfc5-f4eedaa9c754` | `8a261b2e` | `ac1d8d6ffae8fc5c` | 3379 |
+| next-receipt.json#58 | `f727c2d8-2680-5289-81d3-a3c545617a52` | `8a261b2e` | `8c4e6b65c2c5c0c3` | 3380 |
+| next-receipt.json#59 | `9a050cac-07a0-72c8-b216-d32d30cccbdd` | `8a261b2e` | `4710b632f93661c1` | 3381 |
+| next-receipt.json#60 | `c205b954-2f6b-7cce-a96c-bc317e23a665` | `8a261b2e` | `7997631b5febe64b` | 3382 |
+| next-receipt.json#61 | `65023b08-5946-8252-990d-26f641f46f00` | `8a261b2e` | `067f01ddcfa0fbb2` | 3383 |
+| next-receipt.json#62 | `24deefe3-652b-156e-bf22-8597bbc4c485` | `8a261b2e` | `987e842982bf95c1` | 3384 |
+| next-receipt.json#63 | `4f3a1b43-2672-393b-a594-d75eaded0634` | `8a261b2e` | `e23713ab98ead93c` | 3385 |
+| next-receipt.json#64 | `dc8270f1-9778-6080-bc83-98df67c70587` | `8a261b2e` | `5307c9e9dd43b9e3` | 3386 |
+| next-receipt.json#65 | `621993a8-54c7-8f4d-abc1-54c9e1690ce1` | `8a261b2e` | `ccae40de6bdba2a3` | 3387 |
+| next-receipt.json#66 | `8c2bb789-54a2-34c1-96a6-c104668d0ce5` | `8a261b2e` | `698f545d0909c126` | 3388 |
+| next-receipt.json#67 | `214f2fee-1579-7732-901c-913035a03d1a` | `8a261b2e` | `a1050a230c45bd05` | 3389 |
+| next-receipt.json#68 | `876e6573-e321-5947-8a2a-00cf8bd9239f` | `8a261b2e` | `d325c1676427b56b` | 3390 |
+| next-receipt.json#69 | `4a6b200f-11df-67e0-88f0-57b58f0a8af8` | `8a261b2e` | `aa375652916b5b3c` | 3391 |
+| next-receipt.json#70 | `3fb16293-e4df-3e11-9da6-26d10224b1ea` | `8a261b2e` | `24821468d56f1b9f` | 3392 |
+| next-receipt.json#71 | `caa11abc-1c54-317b-83d2-1d6889777f7e` | `8a261b2e` | `71cc64dd98914265` | 3393 |
+| next-receipt.json#72 | `25e1ccb5-05de-624e-90d8-a31e3bcd224c` | `8a261b2e` | `8e00b897a11b1402` | 3394 |
+| next-receipt.json#73 | `64502316-9712-3d2d-b2d8-1df1b5cd1705` | `8a261b2e` | `d7f2ae4eff699209` | 3395 |
+| next-receipt.json#74 | `219f0562-a36d-8b51-b7ac-2858fc7ac044` | `8a261b2e` | `b1f98ced9162678d` | 3396 |
+| next-receipt.json#75 | `44d3fd69-0d7f-78b6-af8f-107720ce7e56` | `8a261b2e` | `c1bc65808765b6cd` | 3397 |
+| next-receipt.json#76 | `1fb1b854-84a0-38f2-a94f-d062d2766357` | `8a261b2e` | `957bc72ddfcb5302` | 3398 |
+| next-receipt.json#77 | `df4359ca-5dcb-1e87-a69a-597c63f81be1` | `8a261b2e` | `ac8262d74ffaee77` | 3399 |
+| next-receipt.json#78 | `2e2f22b9-0db7-30fa-b65b-9b53a0897311` | `8a261b2e` | `305a9575ebe06f54` | 3400 |
+| next-receipt.json#79 | `2950b39a-5c5f-4d86-8251-538b8f8a76e0` | `8a261b2e` | `4c3b7828370f69fc` | 3401 |
+| next-receipt.json#80 | `f7519e38-cf73-3ef5-9b13-ae2d4aba6bad` | `8a261b2e` | `5e723843a4a57453` | 3402 |
+| next-receipt.json#81 | `7522f483-2550-3a5d-8e87-2f458b5c18f4` | `8a261b2e` | `7f4ece81c3e2798e` | 3403 |
+| next-receipt.json#82 | `6bf3ba35-53cf-6c6b-979b-8a3cebf07802` | `8a261b2e` | `05922b92db7fb7b0` | 3404 |
+| next-receipt.json#83 | `74895e78-802e-2bdc-a8a0-6ff6760b2f2b` | `8a261b2e` | `81c387e1d459b4ff` | 3405 |
+| next-receipt.json#84 | `ec9de3f5-8dc2-5b28-897c-69379ce0a37d` | `8a261b2e` | `e8bc2dacf2806d27` | 3406 |
+| next-receipt.json#85 | `fff60d31-295c-5158-937d-28738db22e6b` | `8a261b2e` | `e99c4fd26c75c28b` | 3407 |
+| next-receipt.json#86 | `ca981a29-5b84-4c8a-bad7-e4e90cf43092` | `8a261b2e` | `52aef38e1348cc86` | 3408 |
+| next-receipt.json#87 | `3d422058-a3cb-2216-9be5-07d8449039d5` | `8a261b2e` | `fe25c2b206c4b7de` | 3409 |
+| next-receipt.json#88 | `f21596a8-1e03-6c22-a25b-d17ff74fc297` | `8a261b2e` | `76c71ef456a59928` | 3410 |
+| next-receipt.json#89 | `a1940d51-f2e9-361e-a4c1-4cf4ccd54b75` | `8a261b2e` | `4f5f1071f1065611` | 3411 |
+| next-receipt.json#90 | `20bd1eec-43f4-7082-ab1e-dd2af5ae2487` | `8a261b2e` | `48b43a7448c24ecf` | 3412 |
+| next-receipt.json#91 | `d9c5f02e-85b8-62d0-8be3-cb7b6e8c0828` | `8a261b2e` | `4b010738beed1327` | 3413 |
+| next-receipt.json#92 | `c3167c58-b7fc-5df5-a93e-936b0364a998` | `8a261b2e` | `b90db0541693b853` | 3414 |
+| next-receipt.json#93 | `3dfd73f7-d979-804a-b1d1-5f95ba5eff95` | `8a261b2e` | `906cdc01aa739008` | 3415 |
+| next-receipt.json#94 | `290e5232-47d2-7e62-9618-41476280cf10` | `8a261b2e` | `c76be0ea7e2c399c` | 3416 |
+| next-receipt.json#95 | `6d9d38e0-6ccd-3cbe-a98c-5af1c65f70a4` | `8a261b2e` | `846b5a58605ca86e` | 3417 |
+| next-receipt.json#96 | `340b28e9-6a34-6ca3-8f4d-51f1d19d9e19` | `8a261b2e` | `fae1750cfb46cce5` | 3418 |
+| next-receipt.json#97 | `f6672a84-6069-7fae-ac7b-d4bdc3e312c6` | `8a261b2e` | `faab03f7bbe17806` | 3419 |
+| next-receipt.json#98 | `81238ce5-c2e1-860c-bf19-59056e289426` | `8a261b2e` | `b65d338eb0b39514` | 3420 |
+| next-receipt.json#99 | `e54b3fcf-e6e8-1b1b-a3f4-998fe9086048` | `8a261b2e` | `cb0c9ef543d1eeba` | 3421 |
+| next-receipt.json#100 | `d20cb16f-33a0-131b-9be4-a7b49f7d2d8a` | `8a261b2e` | `4b062aa2bc61a4cf` | 3422 |
+| next-receipt.json#101 | `461e0907-3135-34c3-be34-6e6e40caa29f` | `8a261b2e` | `a981b24c291cd8cf` | 3423 |
+| next-receipt.json#102 | `40d8bcc7-b71d-8970-8ded-f9744641886c` | `8a261b2e` | `faafc4cfde04fb00` | 3424 |
+| next-receipt.json#103 | `38cc039c-51da-6820-9ee0-6e46794b5986` | `8a261b2e` | `7b4a346ccda2b04f` | 3425 |
+| next-receipt.json#104 | `808dbfd7-a84a-2144-a789-69b12522539f` | `8a261b2e` | `4de94c5d126f8139` | 3426 |
+| next-receipt.json#105 | `d474d91e-6377-234f-add5-d946f31de152` | `8a261b2e` | `ad9f76f78014be5b` | 3427 |
+| next-receipt.json#106 | `06a9b069-3fcd-4508-be29-13247f101a3a` | `8a261b2e` | `9711ea9664aaeed8` | 3428 |
+| next-receipt.json#107 | `0f64c7a0-63b3-1d97-b1ae-ba49f5145865` | `8a261b2e` | `11f47b4896f8c3a0` | 3429 |
+| next-receipt.json#108 | `196ecc60-70fa-3680-8734-f8b7d5677018` | `8a261b2e` | `731a30a1065864ec` | 3430 |
+| next-receipt.json#109 | `66eff250-ffd5-5dc9-bc29-028b4970841a` | `8a261b2e` | `386b45b843061967` | 3431 |
+| next-receipt.json#110 | `fb7e03be-1167-7b72-821f-5ea15274a985` | `8a261b2e` | `54668268bca54ec8` | 3432 |
+| next-receipt.json#111 | `99462309-94fe-84b9-a725-1a3cfcc7fa2a` | `8a261b2e` | `d19b027f2f9193a3` | 3433 |
+| next-receipt.json#112 | `16e3c303-6a1d-6712-9718-ff896a6b17cd` | `8a261b2e` | `282f678ebfec1a6d` | 3434 |
+| next-receipt.json#113 | `aeb02fca-ca12-2149-9870-892465f0a01a` | `8a261b2e` | `5de3231b95c8bee9` | 3435 |
+| next-receipt.json#114 | `d3c6e214-2258-1446-9fdc-b523cf989991` | `8a261b2e` | `ebbc67ea2d61fb04` | 3436 |
+| next-receipt.json#115 | `1782fb40-7ec2-2749-8381-c737ba4dc6af` | `8a261b2e` | `4cc750179fadbe3f` | 3437 |
+| next-receipt.json#116 | `9da8b418-63a7-855b-838b-f2fac6c039cb` | `8a261b2e` | `f58340a56238f97a` | 3438 |
+| next-receipt.json#117 | `10af2083-9ca3-68bf-a5a4-98904aec43bb` | `8a261b2e` | `162946a110cb951d` | 3439 |
+| next-receipt.json#118 | `dce89ecd-4ec3-8002-8016-bd8ad158ea92` | `8a261b2e` | `29997537a37f4257` | 3440 |
+| next-receipt.json#119 | `9d2f493a-f7e5-1926-8818-ef89e4f47b77` | `8a261b2e` | `ef50a334f12f09ba` | 3441 |
+| next-receipt.json#120 | `ab3d1012-6047-21ee-af08-ba34c51251de` | `8a261b2e` | `276d32d941a23070` | 3442 |
+| next-receipt.json#121 | `c93162cc-79f6-52a3-82af-638c307c1b2f` | `8a261b2e` | `03720a553e1cd34d` | 3443 |
+| next-receipt.json#122 | `9fbade1b-5748-2764-b94e-1490864b8b61` | `8a261b2e` | `70e9a1a0795f11d0` | 3444 |
+| next-receipt.json#123 | `9df3511f-68b7-3ade-bc27-832964439cfe` | `8a261b2e` | `b8efe57c27669cee` | 3445 |
+| next-receipt.json#124 | `0d399bcf-cf9d-8f07-89eb-8559462b5c4e` | `8a261b2e` | `219fb633230cb66f` | 3446 |
+| next-receipt.json#125 | `41fc5ef8-bbcb-21d2-b21e-db640065a078` | `8a261b2e` | `17bd835f1240d446` | 3447 |
+| next-receipt.json#126 | `fbc40b6d-018e-6f1e-bf89-2995fd7202aa` | `8a261b2e` | `4941f0042727a9c9` | 3448 |
+| next-receipt.json#127 | `5533e880-cab1-7d07-9232-b09709b58099` | `8a261b2e` | `0f4e6bfdf2999a9a` | 3449 |
+| next-receipt.json#128 | `c3cbbb89-2185-1003-b1ce-f1c26e18c296` | `8a261b2e` | `5a38c1308d4ec05e` | 3450 |
+| next-receipt.json#129 | `a19ffa3b-1cdd-1482-937d-fbe83dcffa50` | `8a261b2e` | `7a89d069d2709e55` | 3451 |
+| next-receipt.json#130 | `e698ab1c-c9ad-5973-930a-694c85a7089d` | `8a261b2e` | `6b8a79b1151c23a4` | 3452 |
+| next-receipt.json#131 | `1a2841d1-32f6-703a-90bf-9ec017a8d73b` | `8a261b2e` | `e81130370aff97cf` | 3453 |
+| next-receipt.json#132 | `6be4d5d4-c21d-6b23-85f6-018776c6e17e` | `8a261b2e` | `3d0933bd9dd0e6cc` | 3454 |
+| next-receipt.json#133 | `ffae670b-522f-2e1f-bc86-01d1a4ad1363` | `8a261b2e` | `1abfb19426372c73` | 3455 |
+| next-receipt.json#134 | `80da2f23-5833-23b5-a740-278921b69c6d` | `8a261b2e` | `da2cc7375c3ab27a` | 3456 |
+| next-receipt.json#135 | `7fa1099e-562f-25c8-a733-c501b2c52cd7` | `8a261b2e` | `40192f5305e06acb` | 3457 |
+| next-receipt.json#136 | `53516c71-f1d4-2e46-b7f1-1d3e8055cb5e` | `8a261b2e` | `40986d44700ee030` | 3458 |
+| next-receipt.json#137 | `d4392995-ef86-8fd4-99a6-f121432aa9ad` | `8a261b2e` | `436c41714f0404e3` | 3459 |
+| next-receipt.json#138 | `e5b2b6ec-9b4c-7c54-b65f-9ba7e44275df` | `8a261b2e` | `14c94f8e78489dec` | 3460 |
+| next-receipt.json#139 | `ccefda54-29d9-1878-b9c3-56e06a6aa7a1` | `8a261b2e` | `41438c5b3e5bea43` | 3461 |
+| next-receipt.json#140 | `920c2212-8b78-6c0a-a0e5-1b53b32d8660` | `8a261b2e` | `fdc74bba9d35bd00` | 3462 |
+| next-receipt.json#141 | `58300fb7-3e36-3c0a-9a39-d214c64c275c` | `8a261b2e` | `713529e0c981a284` | 3463 |
+| next-receipt.json#142 | `e42c976d-243f-85fb-9b02-339c248e6f99` | `8a261b2e` | `71f9d0300183dcc4` | 3464 |
+| next-receipt.json#143 | `a30e73bf-1337-2d65-b38d-a1d1f8e50b4e` | `8a261b2e` | `295f75827a03800f` | 3465 |
+| next-receipt.json#144 | `9db440de-82a0-67c9-8ec6-879e2aa57c6b` | `8a261b2e` | `6e8b4e1fea4ad8c4` | 3466 |
+| next-receipt.json#145 | `e9ad284e-b652-89db-90c5-c29ccdd0960f` | `8a261b2e` | `0f7ce3eb3383720e` | 3467 |
+| next-receipt.json#146 | `6d9eebd6-938a-2f1c-9c4b-9badb272d6ca` | `8a261b2e` | `78ae8e3dcaed1674` | 3468 |
+| next-receipt.json#147 | `a01e50b8-e52c-7dfc-9c59-b705f45dab1e` | `8a261b2e` | `faed81158885dc36` | 3469 |
+| next-receipt.json#148 | `af341c2c-e65c-74de-b383-0fbf997a8d77` | `8a261b2e` | `bcd931bafd683c23` | 3470 |
+| next-receipt.json#149 | `2c71f399-f8f1-1f85-94ea-2370e7526e79` | `8a261b2e` | `894d4dbbb6437cb6` | 3471 |
+| next-receipt.json#150 | `6d2fe780-9d5f-4fa6-8e6e-9f4e6aa8276b` | `8a261b2e` | `c378ecf607801be4` | 3472 |
+| next-receipt.json#151 | `71eecb85-fafd-6359-a509-f735c43397c5` | `8a261b2e` | `ca1caac788c1d625` | 3473 |
+| next-receipt.json#152 | `eedd5761-1e22-7884-931f-48db944ea9b7` | `8a261b2e` | `4de16075bbdd9a7f` | 3474 |
+| next-receipt.json#153 | `badaa675-04e1-7eaa-9b4e-ad0ec78c175d` | `8a261b2e` | `ef146876c1612326` | 3475 |
+| next-receipt.json#154 | `429fdd7f-7a4e-79c6-98f0-28d51562d6b6` | `8a261b2e` | `e8533b9fcb4c1c17` | 3476 |
+| next-receipt.json#155 | `0b980940-6f9a-5282-9c5d-0259a90d0d1f` | `8a261b2e` | `3efef670876d6265` | 3477 |
+| next-receipt.json#156 | `b15ef664-0da2-3cd4-a30b-2ff0e6793864` | `8a261b2e` | `081d78d5bbb5a714` | 3478 |
+| next-receipt.json#157 | `cb1e29a8-e9e8-1ba5-b15e-5955cd8d9466` | `8a261b2e` | `6fc63d33a92b65cb` | 3479 |
+| next-receipt.json#158 | `6667fa83-563d-552a-a46e-feea3d7f9ad4` | `8a261b2e` | `c16a33978c0172f0` | 3480 |
+| next-receipt.json#159 | `6e727f4e-fde1-2ccf-a68e-6753a6096751` | `8a261b2e` | `42489e297ebd3e42` | 3481 |
+| next-receipt.json#160 | `bb1930a1-bd6b-1d1e-a7a4-cd7035cb08bf` | `8a261b2e` | `d105ee5a7b3d666d` | 3482 |
+| next-receipt.json#161 | `aa2f460c-5af8-81e7-9a5b-d481459bb1e9` | `8a261b2e` | `0521cb623a413f5c` | 3483 |
+| next-receipt.json#162 | `f045f7ca-1113-8a21-bb38-90f5c0617cb3` | `8a261b2e` | `6d40fb92a084d0e8` | 3484 |
+| next-receipt.json#163 | `b8e21578-515e-7635-856e-4744988a5052` | `8a261b2e` | `8ba8230e0f744a24` | 3485 |
+| next-receipt.json#164 | `2c9fcf3e-bdff-8d23-b236-52adf3cc6dfe` | `8a261b2e` | `d3bca7f3f314c746` | 3486 |
+| next-receipt.json#165 | `41806a70-5d63-7e42-a3d5-9d754df38557` | `8a261b2e` | `87f473232d8b2ea0` | 3487 |
+| next-receipt.json#166 | `b2452e45-8221-1dd8-acc5-57da4390ee7c` | `8a261b2e` | `d3cecb2a2575dd82` | 3488 |
+| next-receipt.json#167 | `f9756525-b802-1c0c-bbd3-228fdc0848fa` | `8a261b2e` | `1fb722b80632579a` | 3489 |
+| next-receipt.json#168 | `46342a7b-fb94-56ac-883e-7101391e4215` | `8a261b2e` | `617e6255149e90e2` | 3490 |
+| next-receipt.json#169 | `237b683f-f28b-5d6b-9a42-eca139ccd654` | `8a261b2e` | `be086e80ef0e1ebf` | 3491 |
+| next-receipt.json#170 | `aa2d59e2-5c58-80f5-8421-b0f3bcc069a1` | `8a261b2e` | `64af2886c56ff449` | 3492 |
+| next-receipt.json#171 | `336b5282-4dad-3722-a7cc-e013289fe1d3` | `8a261b2e` | `8d70506c3eee3cab` | 3493 |
+| next-receipt.json#172 | `434a6d05-5ab0-1f1d-85ed-ea90a46439f7` | `8a261b2e` | `2f86144cf4b9932e` | 3494 |
+| next-receipt.json#173 | `3acd396b-2020-5a26-a97a-6caf9a961aeb` | `8a261b2e` | `c3a6608fbd6af523` | 3495 |
+| next-receipt.json#174 | `e094bd8d-f282-2d8a-a452-195d1138ebeb` | `8a261b2e` | `5f438ff7c1b8d257` | 3496 |
+| next-receipt.json#175 | `6fb74432-e25d-1bb4-89af-9353b7b787aa` | `8a261b2e` | `fd188a4eaec9212b` | 3497 |
+| next-receipt.json#176 | `219b2a61-52aa-20da-a495-2a87ad824d67` | `8a261b2e` | `792de642ebcc732c` | 3498 |
+| next-receipt.json#177 | `61f4ff83-aa4e-88f2-ab67-69848d30a372` | `8a261b2e` | `491ab99f22a6f42c` | 3499 |
+| next-receipt.json#178 | `d8e9c449-fbb7-88fa-9042-274f58ebef21` | `8a261b2e` | `5e5192d22141ce9d` | 3500 |
+| next-receipt.json#179 | `b9f60634-ac40-218d-8de1-a07bdee0e6f6` | `8a261b2e` | `c62bb548129ccec2` | 3501 |
+| next-receipt.json#180 | `3fd78ce8-76b9-733d-b199-48d2d027f131` | `8a261b2e` | `928568b232f67b9c` | 3502 |
+| next-receipt.json#181 | `f5ef58d4-ab95-39db-a791-570c261ee678` | `8a261b2e` | `50617050d9f93ff8` | 3503 |
+| next-receipt.json#182 | `7bca4af3-d727-1bab-9147-b8e589318068` | `8a261b2e` | `b196040a4b4c9abe` | 3504 |
+| next-receipt.json#183 | `b53893fc-46ce-81c0-9a7b-f4a071ade2cc` | `8a261b2e` | `eccd987b5cd878dc` | 3505 |
+| next-receipt.json#184 | `e9d84dc4-64d3-1cce-a8c3-c88f18c908ff` | `8a261b2e` | `d72563bab73919c1` | 3506 |
+| next-receipt.json#185 | `23380d51-39c9-2f7b-be4d-c574b12335b9` | `8a261b2e` | `53a9a4f5fe6d71ab` | 3507 |
+| next-receipt.json#186 | `db0ed288-fede-2634-af6b-3ec99d7fa50e` | `8a261b2e` | `b9105ddb80d54e59` | 3508 |
+| next-receipt.json#187 | `cb753ab3-c113-1306-aeb5-76cfd6011388` | `8a261b2e` | `28c5125753e1c634` | 3509 |
+| next-receipt.json#188 | `b88f990d-7d72-827c-84bb-8dbe8581b174` | `8a261b2e` | `88389a714f52f4b9` | 3510 |
+| next-receipt.json#189 | `0cbbc8ad-7ba6-8c43-b89f-59546a3c1a2e` | `8a261b2e` | `576b86293ecbbc23` | 3511 |
+| next-receipt.json#190 | `0fc92777-667a-2511-8d38-3e1c3b9331c4` | `8a261b2e` | `64b590b5a2727861` | 3512 |
+| next-receipt.json#191 | `2f489fb1-7eaa-7713-bf78-82947c8d957f` | `8a261b2e` | `62974ed8517f7a03` | 3513 |
+| next-receipt.json#192 | `66407e48-1c84-473b-8dca-7553d6be2e7f` | `8a261b2e` | `545e20a627342b29` | 3514 |
+| next-receipt.json#193 | `83d3abad-6ab9-6ca0-8c0d-52e1f2e0e91f` | `8a261b2e` | `2fae130342ad934a` | 3515 |
+| next-receipt.json#194 | `3fc6d742-2778-3335-aff0-276ac4b61d38` | `8a261b2e` | `ec0825858662cf36` | 3516 |
+| next-receipt.json#195 | `36ad617d-8038-8073-bcc0-d549a8b39641` | `8a261b2e` | `14b42a7bc85ab99d` | 3517 |
+| next-receipt.json#196 | `f9fe3d89-0fa7-7a32-9bbf-ee2faa57c685` | `8a261b2e` | `b2378a9a44c3f73b` | 3518 |
+| next-receipt.json#197 | `e491ec5f-9efd-842a-94e3-f2132efa7046` | `8a261b2e` | `0ca80cf6b3d94e01` | 3519 |
+| next-receipt.json#198 | `75035127-d304-4e6c-bc97-10c1026d3cfe` | `8a261b2e` | `72643c920473475f` | 3520 |
+| next-receipt.json#199 | `469a679e-2bb1-7d50-96b4-94f2903ae139` | `8a261b2e` | `d719bb40c04a6f9b` | 3521 |
+| next-receipt.json#200 | `68089c56-223c-796f-87e8-7a9f7d4aea53` | `8a261b2e` | `d1fa96051c7d4e1d` | 3522 |
+| next-receipt.json#201 | `ba9bf1f4-0f92-3eb8-a32e-cfad299ade11` | `8a261b2e` | `8ad5095a5c5441ef` | 3523 |
+| next-receipt.json#202 | `b7786352-6064-122d-97fa-993fe28fb963` | `8a261b2e` | `02d9fa8fb100be78` | 3524 |
+| next-receipt.json#203 | `25ef6eee-6d6c-6e5e-8361-bba952126c51` | `8a261b2e` | `fa314451dc2ad6b2` | 3525 |
+| next-receipt.json#204 | `a1be2f6b-7dc4-1fbf-9905-26e4395d9fae` | `8a261b2e` | `434d317333a82ee7` | 3526 |
+| next-receipt.json#205 | `acf6faf1-6482-2a41-a23b-f9025243b3b4` | `8a261b2e` | `ba55547491f92617` | 3527 |
+| next-receipt.json#206 | `29f63a3a-ebe1-6cc0-8a65-290de91c74fd` | `8a261b2e` | `9ed54e81e6a9ae1e` | 3528 |
+| next-receipt.json#207 | `9cd6fa85-dabb-2590-8705-bd6d6522a5bd` | `8a261b2e` | `fb358b1987787fd7` | 3529 |
+| next-receipt.json#208 | `438e513f-623e-7693-94cb-25010b1fd83f` | `8a261b2e` | `f0868688cc88a435` | 3530 |
+| next-receipt.json#209 | `9d90494a-316b-6d67-a3d0-6e9f6739635d` | `8a261b2e` | `5ed20137c1c8f307` | 3531 |
+| next-receipt.json#210 | `6d39b3d6-0bbd-3c4f-a0a3-1bbc51e8ff45` | `8a261b2e` | `fe750578bd2fc892` | 3532 |
+| next-receipt.json#211 | `86a378fa-c6ae-8ab1-b110-704c2370b663` | `8a261b2e` | `38b0a729ce1a6a8f` | 3533 |
+| next-receipt.json#212 | `f4209d2b-c586-18e4-9bcf-a76f20b51273` | `8a261b2e` | `56c4bcba40cef437` | 3534 |
+| next-receipt.json#213 | `3cab4387-4926-7b6f-b053-f2b093190a6f` | `8a261b2e` | `9d8ceb2237dc52f1` | 3535 |
+| payload-cf-receipt.json | `30040fc2-3bb7-828d-8810-4c2bfc7d60b9` | `fd569ac5` | `1efdf46c90476620` | 3536 |
+| payload-streams-receipt.json | `d5dc5a0b-5132-4c29-b5c9-85d22e889e39` | `fd569ac5` | `759a03346852ef6a` | 3537 |
+| payload-streams-receipt.json#0 | `9fee6f4f-6833-3aa1-88a9-17ed191d2503` | `d5dc5a0b` | `0dbfe059dcb25527` | 3538 |
+| payload-streams-receipt.json#1 | `3dcb4e94-99dd-1fbf-b0ff-56259db2e894` | `d5dc5a0b` | `65eae5da4cd1ab1d` | 3539 |
+| payload-streams-receipt.json#2 | `c56cb650-b9a6-3ff4-b78e-db797cd23436` | `d5dc5a0b` | `0ec57c43847e5d38` | 3540 |
+| payload-streams-receipt.json#3 | `44e6e63c-5354-6b3d-9971-3552ec12d3de` | `d5dc5a0b` | `7a346642f29b46eb` | 3541 |
+| payload-streams-receipt.json#4 | `9fedfeef-b521-29e8-bf40-6231a0294e29` | `d5dc5a0b` | `e855855b8aad63a3` | 3542 |
+| payload-streams-receipt.json#5 | `a2d8f57f-696c-3df1-ae2e-ed9f6a5fbdce` | `d5dc5a0b` | `84e69c11fb2056e1` | 3543 |
+| payload-streams-receipt.json#6 | `2efb2bdb-4751-1c69-a995-174ce903b833` | `d5dc5a0b` | `7d1c88cbeef6cc70` | 3544 |
+| payload-streams-receipt.json#7 | `ae848546-f667-56cc-ac07-3e952ee4fc2f` | `d5dc5a0b` | `7c0090e4fd003d45` | 3545 |
+| payload-streams-receipt.json#8 | `f8684858-1ee3-3ebc-836a-d92a4f790f6a` | `d5dc5a0b` | `1c064d2c44775a0a` | 3546 |
+| payload-streams-receipt.json#9 | `07a92590-a83b-4c91-b5ce-bec7f1c164a4` | `d5dc5a0b` | `816d79229525f43b` | 3547 |
+| payload-streams-receipt.json#10 | `6cdb31f0-fd41-3d81-93f1-20071f9d5926` | `d5dc5a0b` | `e921021cc08c9120` | 3548 |
+| payload-streams-receipt.json#11 | `1b847855-7fc7-2f52-aad5-5407bd796b5c` | `d5dc5a0b` | `c0ef9cc33a55c173` | 3549 |
+| payload-streams-receipt.json#12 | `9bc7c951-6ae4-4db5-b6fd-1f944fbf6210` | `d5dc5a0b` | `65a960421f45e6de` | 3550 |
+| payload-streams-receipt.json#13 | `a79b4912-5d38-4729-9ff9-75bfacb31561` | `d5dc5a0b` | `a3918b9a458e23fd` | 3551 |
+| payload-streams-receipt.json#14 | `52953169-e186-70e6-8d72-bd1308b34a33` | `d5dc5a0b` | `b8684be857469d2b` | 3552 |
+| payload-streams-receipt.json#15 | `7a19db04-4056-63f4-a4cc-047e96ed3e4a` | `d5dc5a0b` | `22020e01b70ffc91` | 3553 |
+| payload-streams-receipt.json#16 | `64f377d9-0fb7-861a-88ab-c35c77d59c5c` | `d5dc5a0b` | `41c848b0c5969d14` | 3554 |
+| payload-streams-receipt.json#17 | `905fdb4d-1232-5535-a593-7fd85d4e259d` | `d5dc5a0b` | `eff5e57a6160e0c1` | 3555 |
+| payload-streams-receipt.json#18 | `2be15c47-8c48-1a00-a2ea-f03eb2f263d8` | `d5dc5a0b` | `bd3b1219029f7295` | 3556 |
+| payload-streams-receipt.json#19 | `8d437277-c891-658a-8a66-fdca39dc4177` | `d5dc5a0b` | `5f68a4c1966c3aaf` | 3557 |
+| payload-streams-receipt.json#20 | `6d22e263-34b7-366b-847f-a10682db8d06` | `d5dc5a0b` | `9f94740504ccba20` | 3558 |
+| payload-streams-receipt.json#21 | `9b16fa58-b45b-45c3-98ef-9fee1a3f4942` | `d5dc5a0b` | `81fcee451a54c267` | 3559 |
+| payload-streams-receipt.json#22 | `1afbe4d8-00a6-8726-9428-3f541578a0a0` | `d5dc5a0b` | `a7607a16dc150c85` | 3560 |
+| payload-streams-receipt.json#23 | `8ad9dcee-9d0c-58f9-ac6c-3cad660e4b21` | `d5dc5a0b` | `6634c31b117cb0a1` | 3561 |
+| percall-receipt.json | `a0875448-88fb-5087-880d-a0cc63064b8b` | `fd569ac5` | `8e47a9e23d597ee1` | 3562 |
+| percall-receipt.json#0 | `12a855d2-429e-7c50-ac37-bcbbe6f62c74` | `a0875448` | `145d437784f14d7d` | 3563 |
+| public-health-receipt.json | `2c0ba063-e93a-1b61-ba0c-e1d023af5963` | `fd569ac5` | `641c1f31112d0f4f` | 3564 |
+| public-health-receipt.json#0 | `3b30b1c1-f8b4-6c83-bdf3-4df0888f1fa6` | `2c0ba063` | `3c28ddd5d258e28a` | 3565 |
+| public-health-receipt.json#1 | `6f9fed59-05e4-7650-a3b7-f0f44e695029` | `2c0ba063` | `cd2548133244d8fa` | 3566 |
+| public-health-receipt.json#2 | `378c3eaa-f63a-43a0-b9b6-323351bdb6ce` | `2c0ba063` | `1b83f57be9498cdf` | 3567 |
+| public-health-receipt.json#3 | `511e8a3c-525b-2f96-870c-8ce66ae5107f` | `2c0ba063` | `4b5d931acaea3e30` | 3568 |
+| public-health-receipt.json#4 | `147d6519-2477-8bf5-9bd6-c03e2fef9b8b` | `2c0ba063` | `81328c18044131bb` | 3569 |
+| public-health-receipt.json#5 | `d6feca77-8ac6-342f-a79b-6b5ba6b4a06b` | `2c0ba063` | `7a77608933849026` | 3570 |
+| public-health-receipt.json#6 | `30334227-8876-3b99-bda7-65911336b429` | `2c0ba063` | `8dbd41062bf5564f` | 3571 |
+| public-health-receipt.json#7 | `d7bf7877-747a-2d2a-8355-4201bf526ef5` | `2c0ba063` | `36decf195bd60e31` | 3572 |
+| public-raid-receipt.json | `aeb9497c-3f81-335c-ac99-40558144dc4c` | `fd569ac5` | `a999ab540c42aa43` | 3573 |
+| public-raid-receipt.json#0 | `2fb9bbf2-576a-4a77-8f4e-7d63abfbe60d` | `aeb9497c` | `7fe33beed6efd982` | 3574 |
+| public-raid-receipt.json#1 | `7da0ca89-5ae8-781f-b112-c247b5809001` | `aeb9497c` | `a2a6134ff3affd85` | 3575 |
+| public-raid-receipt.json#2 | `e56158cd-1639-429e-9eb5-ae9082ba4844` | `aeb9497c` | `80926a69d949eea1` | 3576 |
+| public-raid-receipt.json#3 | `49047619-3ad5-754b-a92f-5befe10fa5b8` | `aeb9497c` | `8ecd018f0fb85f92` | 3577 |
+| public-raid-receipt.json#4 | `ef40b980-33f4-1aa1-be14-40e94b820360` | `aeb9497c` | `e8ffcff3063cb7c5` | 3578 |
+| public-raid-receipt.json#5 | `1ef5bd7a-7422-53d4-824f-084490fa5cd5` | `aeb9497c` | `1b49092041bf1708` | 3579 |
+| public-raid-receipt.json#6 | `2fdea19c-e812-5a81-830e-4b0da922ece6` | `aeb9497c` | `9d10fe42edea4f7b` | 3580 |
+| public-raid-receipt.json#7 | `a52cff5a-c420-1d21-949c-93f4a49a2821` | `aeb9497c` | `56c785deb12e8d33` | 3581 |
+| public-raid-receipt.json#8 | `e1495aec-cea2-86e2-89e4-dfa37a1c60e8` | `aeb9497c` | `75e3554f12cb0fb2` | 3582 |
+| public-raid-receipt.json#9 | `10a77175-7e46-6446-a7a2-14490c8030d0` | `aeb9497c` | `027a96a274c5204e` | 3583 |
+| public-raid-receipt.json#10 | `1c688387-5ed1-3c3b-91e6-6296cf193d10` | `aeb9497c` | `150e8eb73a8dd840` | 3584 |
+| public-raid-receipt.json#11 | `89de8772-573a-6dcf-9b67-7f03208dfd6f` | `aeb9497c` | `f739b571a83e2e39` | 3585 |
+| public-raid-receipt.json#12 | `fad4f0fc-2bdb-11de-9b32-5135d0a5e409` | `aeb9497c` | `aafd3685a08965c1` | 3586 |
+| public-raid-receipt.json#13 | `028aa185-9a16-4f37-8fea-ff7150090ad1` | `aeb9497c` | `74daf6aed7825910` | 3587 |
+| public-raid-receipt.json#14 | `67beb9d9-9be7-2f61-adb1-ad7d1d9beb31` | `aeb9497c` | `0751209cc7d477c7` | 3588 |
+| public-raid-receipt.json#15 | `edc3f7ca-f01b-11fa-af21-20a03e4f03d0` | `aeb9497c` | `f7e57a95902508e8` | 3589 |
+| public-raid-receipt.json#16 | `7107f07f-1940-669e-953c-ade3152ce4f9` | `aeb9497c` | `838315f92b8765bf` | 3590 |
+| public-raid-receipt.json#17 | `3926cfc5-58cf-39bc-8bd5-504a0a83928d` | `aeb9497c` | `d557a355c7f44b08` | 3591 |
+| public-raid-receipt.json#18 | `5403a2df-3f0c-3c90-a915-adf03080796d` | `aeb9497c` | `b9711cddd5ffebd2` | 3592 |
+| public-raid-receipt.json#19 | `eb2cc620-c7bb-1cc1-bdfb-528f3f204db4` | `aeb9497c` | `617a2ae7f6467c80` | 3593 |
+| public-raid-receipt.json#20 | `e7b9a8ed-88d5-3da4-b72a-57974e421545` | `aeb9497c` | `c08eb1d885c929ec` | 3594 |
+| public-raid-receipt.json#21 | `e435d2af-a533-1103-9367-fe3beb125c4e` | `aeb9497c` | `d59f57dcf4099803` | 3595 |
+| public-raid-receipt.json#22 | `9186590d-04c3-3c23-857a-c2d84b64bc9b` | `aeb9497c` | `0f695a6b796d0f4f` | 3596 |
+| public-raid-receipt.json#23 | `26d94ada-ed80-4ff3-af9f-fcdb6b320213` | `aeb9497c` | `852354a087cfd6d9` | 3597 |
+| public-raid-receipt.json#24 | `71de472d-c692-51ed-8c6e-a5cfd89f5462` | `aeb9497c` | `e357a4fb7fbed2ea` | 3598 |
+| public-raid-receipt.json#25 | `a9eee349-455b-8125-b31a-3e8e550903a7` | `aeb9497c` | `ea3b3d41be474bb7` | 3599 |
+| public-raid-receipt.json#26 | `2a344f20-3c19-6641-815e-b2f9c2a2c216` | `aeb9497c` | `58ab070a978d5fba` | 3600 |
+| public-raid-receipt.json#27 | `4ca65408-bbd4-1ac8-8ba0-027cb4ec3db3` | `aeb9497c` | `d0feaa7f451c6cb9` | 3601 |
+| public-raid-receipt.json#28 | `22e5cfc8-fb8e-2989-af4c-47d62ba1eb3a` | `aeb9497c` | `bb327a60f95de283` | 3602 |
+| public-raid-receipt.json#29 | `f0f3bdc7-ca45-7336-a95d-78c7527c6a6c` | `aeb9497c` | `7c1272a654dea02d` | 3603 |
+| public-raid-receipt.json#30 | `93411b17-1652-7c9c-8647-15a153d2fef4` | `aeb9497c` | `b861da6c184cb014` | 3604 |
+| public-raid-receipt.json#31 | `fa9829df-c3f4-6b00-9d94-c5f74fa510db` | `aeb9497c` | `40ac5717b982ee11` | 3605 |
+| public-raid-receipt.json#32 | `021e7311-9095-7b94-aeb6-3c3ae494cc27` | `aeb9497c` | `ad4a583bc7bb0072` | 3606 |
+| public-raid-receipt.json#33 | `35b0d563-e50a-463d-abe2-7f8cc11f6dbb` | `aeb9497c` | `7268df5b6d4223f1` | 3607 |
+| public-raid-receipt.json#34 | `2d39794f-c9c6-749d-a5a2-a531768fc916` | `aeb9497c` | `1e4f0df6d2378619` | 3608 |
+| public-raid-receipt.json#35 | `c348debf-97df-230b-b95f-b2db5ec0965d` | `aeb9497c` | `860f2314c4a3e361` | 3609 |
+| refusals-receipt.json | `6684260c-7fd7-28d1-b74a-d9fbe70e8576` | `fd569ac5` | `6b66ddd9d9e500df` | 3610 |
+| society-imagine-receipt.json | `4f0b8299-af2a-5c78-b575-3d664392a41c` | `fd569ac5` | `1b44794cc5c67e37` | 3611 |
+| society-imagine-receipt.json#0 | `d1b53da2-f322-2ee7-8e2f-9fe97bcd6a83` | `4f0b8299` | `a9c5f51ce35dc299` | 3612 |
+| society-imagine-receipt.json#1 | `2110f2d7-6e39-28e6-8cd1-6183e974ce6c` | `4f0b8299` | `6afe12f3b0cab966` | 3613 |
+| society-imagine-receipt.json#2 | `422e5bac-a506-5bff-9a90-fd3738a36f93` | `4f0b8299` | `08bb963744fe3201` | 3614 |
+| society-imagine-receipt.json#3 | `2be48915-28a5-3835-97ca-ac31bbf8c352` | `4f0b8299` | `60bc617f3e7818ec` | 3615 |
+| society-imagine-receipt.json#4 | `205cf7ec-c3e0-7f59-9d3d-5c0e7e2252a6` | `4f0b8299` | `e793b370f4bb29fc` | 3616 |
+| society-imagine-receipt.json#5 | `015e8875-6d25-35c3-b521-44f61486644a` | `4f0b8299` | `8b5f17a123584153` | 3617 |
+| society-imagine-receipt.json#6 | `5bee36c7-fc48-585b-a8f2-7d592a73d120` | `4f0b8299` | `88e37e0087db9280` | 3618 |
+| society-imagine-receipt.json#7 | `073be933-231b-2b28-91ea-f521055bde0d` | `4f0b8299` | `d3239f6dd829abe3` | 3619 |
+| society-imagine-receipt.json#8 | `9b16d48b-a915-742a-b37e-eaa58260e51d` | `4f0b8299` | `756c299ccaa1bd7d` | 3620 |
+| society-imagine-receipt.json#9 | `e8ccf76d-ea5d-753d-ae33-f57602f23199` | `4f0b8299` | `5641754a72b3335a` | 3621 |
+| society-imagine-receipt.json#10 | `1826ad67-e4d3-3864-b103-ddd5efc62cc4` | `4f0b8299` | `11674f9dd83767ab` | 3622 |
+| society-imagine-receipt.json#11 | `55f0cf90-b2d0-3147-b658-a6f27cd634e3` | `4f0b8299` | `3cfba95700417992` | 3623 |
+| society-imagine-receipt.json#12 | `73eaf32a-4f91-20eb-bfab-8b98365f53c4` | `4f0b8299` | `2c0c3abc455142fb` | 3624 |
+| society-imagine-receipt.json#13 | `d533762b-42b7-368f-a48f-c7bab4ac73ca` | `4f0b8299` | `52132c532a284509` | 3625 |
+| society-imagine-receipt.json#14 | `9f47a46f-485a-5236-a966-b9f4cc71c8c3` | `4f0b8299` | `8936f81da5f323fd` | 3626 |
+| society-imagine-receipt.json#15 | `d8d33956-2270-11c9-bbec-494bbb9d1cc7` | `4f0b8299` | `54137a7da4209411` | 3627 |
+| society-imagine-receipt.json#16 | `76a3d579-0f03-605c-a12f-306fe86c54d3` | `4f0b8299` | `a79dbd312d471d71` | 3628 |
+| society-imagine-receipt.json#17 | `5ea7a566-c3cd-45d1-8959-45310d646cad` | `4f0b8299` | `5331ee61783a84da` | 3629 |
+| society-imagine-receipt.json#18 | `77f260ab-0f26-1d19-b44a-c5d190f55356` | `4f0b8299` | `1cd0bd42ace9ab56` | 3630 |
+| society-imagine-receipt.json#19 | `214feba8-85f9-33ac-8937-23d2f6800f48` | `4f0b8299` | `64aed4934e7243f6` | 3631 |
+| society-imagine-receipt.json#20 | `be0d6054-99dd-3a9d-a045-268a7b972782` | `4f0b8299` | `29694ab5965c7fef` | 3632 |
+| society-imagine-receipt.json#21 | `ad5c5a37-a86f-1811-9a67-9c3dbcb50203` | `4f0b8299` | `d0aa8a637ee1e663` | 3633 |
+| society-imagine-receipt.json#22 | `ed475607-084b-8ec6-b749-a1600f916a24` | `4f0b8299` | `51b750ad9337390e` | 3634 |
+| society-imagine-receipt.json#23 | `4413c0d0-627f-84f2-b9ca-8818b7f8fbd9` | `4f0b8299` | `fee1560a09557a12` | 3635 |
+| society-imagine-receipt.json#24 | `420cd18d-819c-2e69-9d99-d0c89dd496b6` | `4f0b8299` | `86e2e9a792748636` | 3636 |
+| society-imagine-receipt.json#25 | `1af35af0-21e5-54ad-b167-26121f5f76d1` | `4f0b8299` | `b7830d90c856cd4b` | 3637 |
+| society-imagine-receipt.json#26 | `c8834066-516a-72fc-a305-6b8f202e9057` | `4f0b8299` | `5c717d9ed4cb1d45` | 3638 |
+| society-imagine-receipt.json#27 | `8dc5af79-ba3d-7193-bc70-4de2a22a6439` | `4f0b8299` | `e65aedfe67aff485` | 3639 |
+| society-imagine-receipt.json#28 | `7c1f4458-27ba-3988-9a70-c987706c9072` | `4f0b8299` | `947d27bf70d68fe0` | 3640 |
+| society-imagine-receipt.json#29 | `7c659dd9-efd0-2d38-af6f-51683f9eacb7` | `4f0b8299` | `200596c4f568cb2b` | 3641 |
+| society-imagine-receipt.json#30 | `f96f9541-f201-3b69-896c-5c2710179cc5` | `4f0b8299` | `817c0c5159532749` | 3642 |
+| society-imagine-receipt.json#31 | `adaf7e23-ec39-3154-9f85-f1ff72a25f9a` | `4f0b8299` | `038c71d5e30d2d91` | 3643 |
+| society-imagine-receipt.json#32 | `31528b9a-7c7d-22ba-add2-a410c6b48b81` | `4f0b8299` | `f1730ba6843416df` | 3644 |
+| test-receipt.json | `606e8a42-b184-500d-becc-ba3ebfcfb54d` | `fd569ac5` | `0e86b236743c24c9` | 3645 |
+| test-receipt.json#0 | `603bc014-6bf8-5918-8626-91c5b8317d44` | `606e8a42` | `eebca387c30173ac` | 3646 |
+| test-receipt.json#1 | `c83bf157-7799-7a09-bb60-dd65bc9bfb4c` | `606e8a42` | `e8b6bec68be1a881` | 3647 |
+| test-receipt.json#2 | `4d89fcea-8d30-704c-94d6-69f7e4aed7b2` | `606e8a42` | `b4800b8c96bab4f5` | 3648 |
+| test-receipt.json#3 | `bc70c742-850d-8fe3-a64c-e70959f9c172` | `606e8a42` | `e32c8d20ca3a728e` | 3649 |
+| uses-receipt.json | `dbf82c11-440d-756a-9fa1-fd0950f29c9d` | `fd569ac5` | `ce02a76c7f180cbc` | 3650 |
+| uses-receipt.json#0 | `4f17f6b5-a596-73dc-a29f-bfa656191cd6` | `dbf82c11` | `49ed53a4b88b6d41` | 3651 |
+| uses-receipt.json#1 | `30b9d536-7a88-8139-b5b9-b9bbd3e5d97c` | `dbf82c11` | `254fe42372ded96d` | 3652 |
+| uses-receipt.json#2 | `e9c15d40-7db4-714e-8166-06e94c4e0bd8` | `dbf82c11` | `d9205d9c6310a1d0` | 3653 |
+| uses-receipt.json#3 | `6054af57-de28-605f-996f-367dc6351f38` | `dbf82c11` | `73f7052c16747ca1` | 3654 |
+| uses-receipt.json#4 | `118aa92f-2f40-54db-bee7-5310f914a673` | `dbf82c11` | `edf65a9473b84b29` | 3655 |
+| uses-receipt.json#5 | `d582c8bc-3dc3-5262-b0b0-d851be257620` | `dbf82c11` | `13eac9b1a3e451fb` | 3656 |
+| uses-receipt.json#6 | `2f4d060f-b5b3-5665-bdb4-83b31140f4f8` | `dbf82c11` | `fb3d08085a405306` | 3657 |
+| uses-receipt.json#7 | `94f73730-bd90-2a05-ac10-31d0d75e411c` | `dbf82c11` | `0eb2f3ca42073ab5` | 3658 |
+| uses-receipt.json#8 | `95622a6d-de4e-1397-8549-4ed16924dc94` | `dbf82c11` | `10de23175b8e69ec` | 3659 |
+| uses-receipt.json#9 | `e028f4da-200e-8b07-ba46-703a324d9f65` | `dbf82c11` | `6f11b1337ff8f8a7` | 3660 |
+| uses-receipt.json#10 | `1e20d617-38e9-60ad-8f28-83428905fc46` | `dbf82c11` | `a32f41a95803ee5e` | 3661 |
+| uses-receipt.json#11 | `c07df691-e17e-6f26-846b-18579725332e` | `dbf82c11` | `3c37ef954e2c99b6` | 3662 |
+| uses-receipt.json#12 | `a8c60a96-c5ee-4a27-b11f-7fa8ca06b497` | `dbf82c11` | `522015fe57edb5cd` | 3663 |
+| uses-receipt.json#13 | `47425f7d-8e8d-2de5-afef-78641277cdde` | `dbf82c11` | `9e0c5fc81958538a` | 3664 |
+| uses-receipt.json#14 | `a28e3e7a-e24f-7882-89d5-764c61d38167` | `dbf82c11` | `8270b2dbfb030d9b` | 3665 |
+| uses-receipt.json#15 | `c83ff2fd-b762-20e3-87f0-d139eebaba69` | `dbf82c11` | `b27a43e7a153d869` | 3666 |
+| uses-receipt.json#16 | `9a1c1979-9338-5a1d-ba7c-c666f10f68ad` | `dbf82c11` | `0919a29ed8f98682` | 3667 |
+| uses-receipt.json#17 | `7751002e-e6de-188f-afd2-12d6f98988dd` | `dbf82c11` | `2d3fca3cd71a57be` | 3668 |
+| uses-receipt.json#18 | `9dd42981-dd07-46b7-bba9-c935761572cb` | `dbf82c11` | `c15ecd69e3563bf9` | 3669 |
+| uses-receipt.json#19 | `ebcf84c8-c62a-8bcf-8dc2-6eab170f4523` | `dbf82c11` | `d82013b88168b3e6` | 3670 |
+| uses-receipt.json#20 | `1a996406-a04b-7de0-b049-6fbe31248c43` | `dbf82c11` | `f70919c4daf6dd6d` | 3671 |
+| uses-receipt.json#21 | `a4a7c230-dda4-38f7-808b-c24209720f67` | `dbf82c11` | `ccb9954a2fece6f8` | 3672 |
+| uses-receipt.json#22 | `35afcb66-d05a-3fba-a422-b33cbf7e1e83` | `dbf82c11` | `d6d0dc7bb07a5ca0` | 3673 |
+| uses-receipt.json#23 | `11ef4c92-7cdb-7e5e-91e3-e82b086a4a06` | `dbf82c11` | `31e49d1597625a63` | 3674 |
+| uses-receipt.json#24 | `fda07a7b-8010-596b-a1e1-a6d09509df06` | `dbf82c11` | `777c44b25245d813` | 3675 |
+| uses-receipt.json#25 | `dd2f16e5-3137-5e09-a8ec-7975ee63f00b` | `dbf82c11` | `20da35ee199fa9e0` | 3676 |
+| uses-receipt.json#26 | `3316bdfe-0189-568a-a8ac-dff5fc972253` | `dbf82c11` | `251900fe2fa18694` | 3677 |
+| uses-receipt.json#27 | `fd1f680f-d4bf-76e6-856e-1166a59e6740` | `dbf82c11` | `b15f95c99d798ebb` | 3678 |
+| uses-receipt.json#28 | `05590cf2-f082-4f56-98e5-df6b969aaec9` | `dbf82c11` | `1a43050001a16658` | 3679 |
+| uses-receipt.json#29 | `9ae5e96c-cf21-4532-8a3f-3e8c6c502b5d` | `dbf82c11` | `a42bf0f28fe0d82a` | 3680 |
+| uses-receipt.json#30 | `b8665f8a-7867-47dd-a7c3-3becf2305b02` | `dbf82c11` | `97e8526d8cf3b0d0` | 3681 |
+| uses-receipt.json#31 | `b956d63d-6731-4f05-ac1c-be10d6e0996f` | `dbf82c11` | `2ec703044412837a` | 3682 |
+| uses-receipt.json#32 | `241ebb1d-cf41-5d14-af93-1d5d9fda5be7` | `dbf82c11` | `d9ec9e10032f3479` | 3683 |
+| uses-receipt.json#33 | `66eba695-2b6c-890c-8acb-b2b3dc868222` | `dbf82c11` | `df002708e916c549` | 3684 |
+| uses-receipt.json#34 | `50c87964-0c9b-5a45-998f-2c5114e1ddf0` | `dbf82c11` | `4a00f039e338fd08` | 3685 |
+| uses-receipt.json#35 | `bea7d650-8dac-2a18-a7df-92d0f984fca5` | `dbf82c11` | `999f423b11b271c5` | 3686 |
+| uses-receipt.json#36 | `a24f5eba-c0ae-840f-a4b1-014f0320e389` | `dbf82c11` | `6a355962961ae429` | 3687 |
+| uses-receipt.json#37 | `c8c002d4-b590-3259-802d-0624b1a1fcf8` | `dbf82c11` | `a180961c493653b4` | 3688 |
+| uses-receipt.json#38 | `6248e822-174c-4813-b0f4-bf34f5fbac60` | `dbf82c11` | `7fc1bcc8e2c5d803` | 3689 |
+| uses-receipt.json#39 | `4415cf9b-958a-4a3e-82b3-4600ffd27afb` | `dbf82c11` | `5e8ccfdc561e39d3` | 3690 |
+| uses-receipt.json#40 | `6a9b725d-02d9-6382-8386-c6388e3d4545` | `dbf82c11` | `a1bacec066656c45` | 3691 |
+| uses-receipt.json#41 | `30dfff95-31c8-37d4-b6b3-559620fbe25e` | `dbf82c11` | `e43f843d6380eb30` | 3692 |
+| walls-receipt.json | `89410ce8-7bc2-5619-9d22-554ed650f6a0` | `fd569ac5` | `06c8b6b4222149e2` | 3693 |
+| readme | `5a3770a6-116c-1740-a0c7-c9f45555da72` | `fd569ac5` | `c2237edeba409f5c` | 3694 |
 
 </details>
 

@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
 import { leanSource } from '../../quantum/processing/unit/lean.js'
 import { verifyHex } from '../verify.js'
-import { ClaySeals } from './index.js'
+import { ClaySeals, CLAY_SEALS, claySealDomainOf, claySealDomainCoverageOf } from './index.js'
+import { qpuFacesOf } from '../../quantum/processing/unit/index.js'
 import '../../mcp/families.js'
 
 /** THE CLUSTER GENERATOR, offline and exact. The clusters a formula belongs to are read from the served Lean source
@@ -38,6 +39,23 @@ test('clusters: 124 theorems, 0 axioms, the def cluster, each family, and the cl
   await verifyHex('clay', clayNames.length, [['hodge', [2], 4], ['yangMills', [], 2], ['bsd', [15], 2]])
 
   t.diagnostic(`${clusters.length} family clusters (${clusters.reduce((s, c) => s + c.lean, 0)} kernel-proven of ${clusters.reduce((s, c) => s + c.total, 0)}); theorems ${theorems.length}, axioms ${axioms.length}, defs ${leanDefs.size}; clay seals hodge 4, yangMills 2, bsd 2`)
+})
+
+/** Combinatorial domains: bsd m>2 ∪ {15}, pVsNp {0,1}, others arity-correct — not blind 1…faces. */
+test('claySealDomainOf: tree-valid domains; universal coverage holds', async (t) => {
+  const faces = qpuFacesOf().faces
+  const bsd = claySealDomainOf('bsd', faces)
+  assert.ok(bsd.params.every((p) => p[0]! > 2), 'bsd domain excludes m=1,2')
+  assert.ok(bsd.params.some((p) => p[0] === 15), 'bsd domain includes named 15')
+  const pnp = claySealDomainOf('pVsNp', faces)
+  assert.deepEqual(pnp.params, [[0], [1]])
+  const ym = claySealDomainOf('yangMills', faces)
+  assert.deepEqual(ym.params, [[]])
+  const cov = claySealDomainCoverageOf(faces)
+  assert.equal(cov.rows.length, CLAY_SEALS.length)
+  assert.equal(cov.universal, true, 'σ holds on every domain input')
+  assert.equal(cov.held, cov.size)
+  t.diagnostic(`domains ${cov.size} slots; universal ${cov.universal}; bsd ${bsd.kind}; pVsNp ${pnp.kind}`)
 })
 
 /** THE AUTHOR'S STANDING DEMAND, as autonomous executable code: full disclosure of every family by clay computation,

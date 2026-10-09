@@ -495,3 +495,176 @@ export const ed25519Verify = (publicKey: Bytes, message: Bytes | string, signatu
   const k = modL(sha512(concat(signature.subarray(0, 32), publicKey, bytesOf(message))))
   return equal(encodePoint(multiply(S, BASE)), encodePoint(add(R, multiply(k, A))))
 }
+
+/** PBKDF2-HMAC-SHA512 (RFC 8018) — registered digest beside sha256 for Workers/Payload. */
+export const pbkdf2Sha512 = (password: Bytes | string, salt: Bytes | string, iterations: number, length: number): Bytes => {
+  if (!Number.isSafeInteger(iterations) || iterations < 1 || !Number.isSafeInteger(length) || length < 1) throw new Error('pbkdf2: iterations and length must be positive integers')
+  const out = new Uint8Array(length)
+  for (let block = 1, at = 0; at < length; block++, at += 64) {
+    let u = hmac('sha512', password, concat(bytesOf(salt), Uint8Array.of(block >>> 24, (block >>> 16) & 255, (block >>> 8) & 255, block & 255)))
+    const t = u.slice()
+    for (let j = 1; j < iterations; j++) {
+      u = hmac('sha512', password, u)
+      for (let i = 0; i < 64; i++) t[i]! ^= u[i]!
+    }
+    out.set(t.subarray(0, Math.min(64, length - at)), at)
+  }
+  return out
+}
+
+/** Uniform integer in [min, max) from formula DRBG (exclusive max). */
+export const randomInt = (min: number, max: number): number => {
+  if (!Number.isSafeInteger(min) || !Number.isSafeInteger(max) || max <= min) throw new Error('randomInt: need safe integers with max > min')
+  const span = BigInt(max - min)
+  const bits = span.toString(2).length
+  const bytes = Math.ceil(bits / 8)
+  for (;;) {
+    const r = leToBig(randomBytes(bytes))
+    const v = r % (1n << BigInt(bytes * 8))
+    if (v < span * ((1n << BigInt(bytes * 8)) / span)) return min + Number(v % span)
+  }
+}
+
+const modPow = (b: bigint, e: bigint, m: bigint): bigint => {
+  let r = 1n
+  for (b %= m; e > 0n; e >>= 1n, b = (b * b) % m) if (e & 1n) r = (r * b) % m
+  return r
+}
+
+/** Miller–Rabin primality — formula state for checkPrime. */
+export const checkPrime = (n: bigint | number, rounds = 16): boolean => {
+  const N = typeof n === 'number' ? BigInt(n) : n
+  if (N < 2n) return false
+  if (N === 2n || N === 3n) return true
+  if ((N & 1n) === 0n) return false
+  let d = N - 1n, s = 0n
+  while ((d & 1n) === 0n) { d >>= 1n; s++ }
+  const witnesses = N < 0x1_0000_0000_0000_0000n
+    ? [2n, 3n, 5n, 7n, 11n, 13n, 23n]
+    : Array.from({ length: rounds }, () => 2n + (leToBig(randomBytes(8)) % (N - 3n)))
+  for (const a of witnesses) {
+    if (a % N === 0n) continue
+    let x = modPow(a, d, N)
+    if (x === 1n || x === N - 1n) continue
+    let composite = true
+    for (let r = 1n; r < s; r++) {
+      x = (x * x) % N
+      if (x === N - 1n) { composite = false; break }
+    }
+    if (composite) return false
+  }
+  return true
+}
+
+export const generatePrime = (bits: number): bigint => {
+  if (!Number.isSafeInteger(bits) || bits < 8) throw new Error('generatePrime: bits >= 8')
+  for (;;) {
+    const b = randomBytes(Math.ceil(bits / 8))
+    b[0]! |= 0x80
+    b[b.length - 1]! |= 1
+    let n = leToBig(b) & ((1n << BigInt(bits)) - 1n)
+    if ((n & 1n) === 0n) n += 1n
+    if (checkPrime(n)) return n
+  }
+}
+
+const salsa20_8 = (B: Uint32Array): void => {
+  const x = B.slice()
+  const R = (a: number, b: number) => (a << b) | (a >>> (32 - b))
+  for (let i = 0; i < 8; i += 2) {
+    x[4]! ^= R((x[0]! + x[12]!) >>> 0, 7); x[8]! ^= R((x[4]! + x[0]!) >>> 0, 9)
+    x[12]! ^= R((x[8]! + x[4]!) >>> 0, 13); x[0]! ^= R((x[12]! + x[8]!) >>> 0, 18)
+    x[9]! ^= R((x[5]! + x[1]!) >>> 0, 7); x[13]! ^= R((x[9]! + x[5]!) >>> 0, 9)
+    x[1]! ^= R((x[13]! + x[9]!) >>> 0, 13); x[5]! ^= R((x[1]! + x[13]!) >>> 0, 18)
+    x[14]! ^= R((x[10]! + x[6]!) >>> 0, 7); x[2]! ^= R((x[14]! + x[10]!) >>> 0, 9)
+    x[6]! ^= R((x[2]! + x[14]!) >>> 0, 13); x[10]! ^= R((x[6]! + x[2]!) >>> 0, 18)
+    x[3]! ^= R((x[15]! + x[11]!) >>> 0, 7); x[7]! ^= R((x[3]! + x[15]!) >>> 0, 9)
+    x[11]! ^= R((x[7]! + x[3]!) >>> 0, 13); x[15]! ^= R((x[11]! + x[7]!) >>> 0, 18)
+    x[1]! ^= R((x[0]! + x[3]!) >>> 0, 7); x[2]! ^= R((x[1]! + x[0]!) >>> 0, 9)
+    x[3]! ^= R((x[2]! + x[1]!) >>> 0, 13); x[0]! ^= R((x[3]! + x[2]!) >>> 0, 18)
+    x[6]! ^= R((x[5]! + x[4]!) >>> 0, 7); x[7]! ^= R((x[6]! + x[5]!) >>> 0, 9)
+    x[4]! ^= R((x[7]! + x[6]!) >>> 0, 13); x[5]! ^= R((x[4]! + x[7]!) >>> 0, 18)
+    x[11]! ^= R((x[10]! + x[9]!) >>> 0, 7); x[8]! ^= R((x[11]! + x[10]!) >>> 0, 9)
+    x[9]! ^= R((x[8]! + x[11]!) >>> 0, 13); x[10]! ^= R((x[9]! + x[8]!) >>> 0, 18)
+    x[12]! ^= R((x[15]! + x[14]!) >>> 0, 7); x[13]! ^= R((x[12]! + x[15]!) >>> 0, 9)
+    x[14]! ^= R((x[13]! + x[12]!) >>> 0, 13); x[15]! ^= R((x[14]! + x[13]!) >>> 0, 18)
+  }
+  for (let i = 0; i < 16; i++) B[i] = (B[i]! + x[i]!) >>> 0
+}
+
+const blockMix = (B: Uint32Array, r: number): Uint32Array => {
+  const X = B.subarray(B.length - 16).slice()
+  const Y = new Uint32Array(B.length)
+  for (let i = 0; i < 2 * r; i++) {
+    for (let j = 0; j < 16; j++) X[j]! ^= B[i * 16 + j]!
+    salsa20_8(X)
+    const dest = (i % 2 === 0 ? i / 2 : r + (i - 1) / 2) * 16
+    Y.set(X, dest)
+  }
+  return Y
+}
+
+const roMix = (B: Uint32Array, N: number, r: number): Uint32Array => {
+  const V: Uint32Array[] = []
+  let X: Uint32Array = B.slice()
+  for (let i = 0; i < N; i++) { V.push(X.slice()); X = new Uint32Array(blockMix(X, r)) }
+  for (let i = 0; i < N; i++) {
+    const j = X[(2 * r - 1) * 16]! % N
+    for (let k = 0; k < X.length; k++) X[k]! ^= V[j]![k]!
+    X = new Uint32Array(blockMix(X, r))
+  }
+  return X
+}
+
+/** scrypt (RFC 7914) — memory-hard KDF, parity-tested against node:crypto. */
+export const scrypt = (
+  password: Bytes | string,
+  salt: Bytes | string,
+  length: number,
+  opts: { N?: number; r?: number; p?: number } = {},
+): Bytes => {
+  const N = opts.N ?? 16384, r = opts.r ?? 8, p = opts.p ?? 1
+  if ((N & (N - 1)) !== 0 || N < 2) throw new Error('scrypt: N must be power of 2 ≥ 2')
+  const B = pbkdf2Sha256(password, salt, 1, p * 128 * r)
+  const buf = new ArrayBuffer(B.byteLength)
+  new Uint8Array(buf).set(B)
+  const words = new Uint32Array(buf)
+  const view = new DataView(buf)
+  for (let i = 0; i < words.length; i++) words[i] = view.getUint32(i * 4, true)
+  for (let i = 0; i < p; i++) {
+    const block = words.subarray(i * 32 * r, (i + 1) * 32 * r)
+    block.set(roMix(block, N, r))
+  }
+  for (let i = 0; i < words.length; i++) view.setUint32(i * 4, words[i]!, true)
+  return pbkdf2Sha256(password, new Uint8Array(buf), 1, length)
+}
+
+/** Digests qpu:crypto owns — the catalogue, not OpenSSL's. */
+export const getHashes = (): readonly string[] => ['md5', 'sha256', 'sha512']
+/** AEAD ciphers qpu:crypto owns. */
+export const getCiphers = (): readonly string[] => ['chacha20-poly1305']
+/** Curves qpu:crypto owns (X25519 / Ed25519). */
+export const getCurves = (): readonly string[] => ['X25519', 'Ed25519']
+/** Cipher parameters for a name in getCiphers(); undefined when unbound. */
+export const getCipherInfo = (name: string): { name: string; mode: string; keyLength: number; ivLength: number } | undefined =>
+  name === 'chacha20-poly1305' ? { name, mode: 'aead', keyLength: 32, ivLength: 12 } : undefined
+
+/** Opaque secret key — raw bytes, no PEM/DER KeyObject. */
+export type SecretKey = { type: 'secret'; export: () => Bytes }
+export const createSecretKey = (key: Bytes | string): SecretKey => {
+  const k = bytesOf(key).slice()
+  return { type: 'secret', export: () => k.slice() }
+}
+/** hmac / aes secret material as length bits — formula DRBG, not OpenSSL KeyObject. */
+export const generateKeySync = (type: string, options: { length: number }): SecretKey => {
+  if (type !== 'hmac' && type !== 'aes') throw new Error(`generateKeySync: unbound type ${type}`)
+  if (!Number.isSafeInteger(options.length) || options.length < 8 || options.length % 8 !== 0)
+    throw new Error('generateKeySync: length must be a positive multiple of 8 (bits)')
+  return createSecretKey(randomBytes(options.length / 8))
+}
+export const generateKey = (type: string, options: { length: number }): Promise<SecretKey> =>
+  Promise.resolve(generateKeySync(type, options))
+
+// Absent formula state (not policy): argon2id, ML-KEM, RSA-OAEP, ECDSA-P256, PEM KeyObject,
+// finite-field DH — unbound until hex-registered. OpenSSL FIPS/engines/removed stay ABSENT.
+// cryptDigestGateOf / court trials treat unbound algorithms as holds false.

@@ -157,14 +157,14 @@ function generateSEOMetadata(formulas: typeof FLAT_FORMULAS): SEOMetadata {
     inLanguage: 'en',
     isPartOf: {
       '@type': 'WebSite',
-      name: 'UUIDNA QPU - Clay Solutions Knowledge Base',
+      name: 'UUIDNA QPU — formula knowledge base',
       url: 'https://qpu.uuidna.com',
     },
   }
 
   return {
     title: `${formulaNames} | Cross-Domain Formula Composition`,
-    description: `Explore ${formulaNames} across ${domains.join(', ')}. Applies to ${problems.join(', ')}. Part of UUIDNA QPU's knowledge base for Clay Millennium Prize Solutions.`,
+    description: `Explore ${formulaNames} across ${domains.join(', ')}. Applies to ${problems.join(', ')}. Part of UUIDNA QPU. Clay claim: Rouschev doi:10.5281/zenodo.21781602; a prize is a lead.`,
     keywords: keywords.join(', '),
     url: url,
     ogImage: `https://qpu.uuidna.com/og/formula-${hash}.png`,

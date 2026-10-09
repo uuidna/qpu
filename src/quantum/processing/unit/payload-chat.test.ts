@@ -57,14 +57,16 @@ test('chat: ask calls Payload MCP findDocuments and exposes formula, integer, fo
   assert.equal(JSON.stringify(qpuMcpToolsListOf()).length < 16384, true)
 })
 
-/** qpu.uuidna.com /mcp is a public read. Payload user auth is not consulted. */
+/** qpu.uuidna.com /mcp enters Payload at /api/qpu/mcp. User auth is not consulted for a public ping. */
 test('chat: an unauthenticated qpu.uuidna.com /mcp call is a public read', async () => {
   let me = ''
   const env = {
     PAYLOAD: {
       fetch: async (request: Request) => {
         me = new URL(request.url).pathname
-        return new Response(JSON.stringify({ user: null, email: 'ada@example.com' }), { status: 401, headers: { 'content-type': 'application/json' } })
+        assert.equal(me, '/api/qpu/mcp')
+        const { publicMcpOf } = await import('../../../payload/plugins/public.js')
+        return publicMcpOf(request)
       },
     },
   }
@@ -76,6 +78,6 @@ test('chat: an unauthenticated qpu.uuidna.com /mcp call is a public read', async
   const body = (await res.json()) as { result?: unknown; holds?: boolean; denied?: string; email?: string }
   assert.equal(res.status, 200)
   assert.deepEqual(body.result, {})
-  assert.equal(me, '')
+  assert.equal(me, '/api/qpu/mcp')
   assert.equal(JSON.stringify(body).includes('ada@example.com'), false)
 })

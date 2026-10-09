@@ -11,6 +11,11 @@ import { flowFamiliesOf } from '../merkaba/index.js'
  *  cool it — ⌈T/k⌉ each — and the astronomical case splits into residue jobs joined by the CRT. Erasing nothing is
  *  free: a reversible computation costs no Landauer energy. Every value is exact and crosses heat → physics (or crypto).*/
 test('heat: temperature, coherence, cooling and the Landauer floor — exact, crossing to physics', async (t) => {
+  const id = HeatFormulas.identity(100)
+  assert.equal((id as { kind?: unknown }).kind, 'heat', 'deepest identity is kind: heat')
+  assert.equal((id as { identity?: unknown }).identity, 'heat')
+  assert.ok(id.hex, 'heat.identity has a hex')
+  assert.equal((HeatFormulas.temperature(10, 100) as { kind?: unknown }).kind, 'heat')
   assert.equal(HeatFormulas.temperature(10, 100).value, 100, 'T = ⌊1000 · commits / days⌋')
   assert.equal(HeatFormulas.temperature(5, 10).value, 500)
   assert.equal(HeatFormulas.coherence(100, 0).value, 100, 'no fix: the whole window holds')
@@ -30,8 +35,8 @@ test('heat: temperature, coherence, cooling and the Landauer floor — exact, cr
   assert.ok(s0 > 0 && HeatFormulas.signal(1000).value <= s0, 'the signal is highest at absolute cold and never rises with heat')
   assert.equal(HeatFormulas.quality(10, 100, 3).value, HeatFormulas.signal(HeatFormulas.temperature(10, 100).value).value * HeatFormulas.coherence(100, 3).value, 'Q = S(T) · T₂')
   assert.equal(HeatFormulas.temperature(10, 100).dst, 'physics')
-  await verifyHex('heat', 11, [['temperature', [10, 100], 100], ['coherence', [100, 3], 25], ['cooling', [100, 4], 25], ['ways', [100, 25], 4]])
-  t.diagnostic('11 formulas; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
+  await verifyHex('heat', 12, [['identity', [100], 100], ['temperature', [10, 100], 100], ['coherence', [100, 3], 25], ['cooling', [100, 4], 25], ['ways', [100, 25], 4]])
+  t.diagnostic('12 formulas; identity kind heat; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
 })
 
 test('heat.slow names a formula that answers slowly: its statement is false', async () => {

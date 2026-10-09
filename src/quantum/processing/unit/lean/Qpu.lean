@@ -8,4 +8,6 @@ import Qpu.Physics
 import Qpu.Cern
 import Qpu.Fuse
 import Qpu.Cross
+import Qpu.Primes
+import Qpu.Pi
 import Qpu.Clay

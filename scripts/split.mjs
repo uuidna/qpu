@@ -12,6 +12,7 @@
  */
 import fs from 'node:fs'
 import { execSync } from 'node:child_process'
+import { mintOf } from './lattice-values.mjs'
 
 const file = process.argv[2] ?? 'src/quantum/processing/unit/index.ts'
 const dir = file.replace(/[^/]+$/, '')
@@ -26,7 +27,7 @@ const wingsOf = () => {
   for (let i = 0; i < lines.length; i++) {
     const m = lines[i].match(decl); if (!m) continue
     let wing = null
-    for (let j = i - 1; j >= Math.max(0, i - 16); j--) { const w = lines[j].match(/@wing ([a-z]+)/); if (w) { wing = w[1]; break }; if (/^export /.test(lines[j]) && j < i - 1) break }
+    for (let j = i - 1; j >= Math.max(0, i - mintOf(4)); j--) { const w = lines[j].match(/@wing ([a-z]+)/); if (w) { wing = w[1]; break }; if (/^export /.test(lines[j]) && j < i - 1) break }
     if (wing) (by[wing] ??= []).push(m[1])
   }
   return by

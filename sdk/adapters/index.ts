@@ -1,0 +1,10 @@
+/** All native foreign→QPU SDK adapters. Catalogue also via connector { adapters: true }. */
+export { default as QiskitQPU } from './qiskit.js'
+export { default as CirqQPU } from './cirq.js'
+export { default as BraketQPU } from './braket.js'
+export { default as OpenQasmQPU } from './openqasm.js'
+export { default as AzureQuantumQPU } from './azure.js'
+export { default as PennyLaneQPU } from './pennylane.js'
+export { default as DWaveQPU } from './dwave.js'
+export { default as IonQClient } from '../cloud/ionq.js'
+export { default as RigettiClient } from '../cloud/rigetti.js'

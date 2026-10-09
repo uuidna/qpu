@@ -12,12 +12,17 @@ if (argv.length > 0 || process.stdin.isTTY === true) {
 } else {
   globalThis.console = new Console(process.stderr, process.stderr)
 
-  const { default: worker, qpuHarnessesOf, rpcErrorOf } = await import('./index.js')
-  await import('../../../mcp/families.js')
+  const { default: worker, qpuHarnessesOf, rpcErrorOf, qpuFamilyRegistryUrlOf } = await import('./index.js')
+  const { publicDoorFetchOf } = await import('../../../payload/plugins/public.js')
+  await import(qpuFamilyRegistryUrlOf())
 
   const { url } = qpuHarnessesOf()
   const token = process.env.QPU_WRITE_TOKEN
-  const env = { QPU_HOST: new URL(url).hostname, ...(token ? { QPU_WRITE_TOKEN: token } : {}) }
+  const env: { QPU_HOST: string; QPU_WRITE_TOKEN?: string; PAYLOAD: { fetch: (request: Request) => Promise<Response> } } = {
+    QPU_HOST: new URL(url).hostname,
+    ...(token ? { QPU_WRITE_TOKEN: token } : {}),
+    PAYLOAD: { fetch: (request) => publicDoorFetchOf(request, env) },
+  }
   const headers = { 'content-type': 'application/json', accept: 'application/json, text/event-stream', ...(token ? { authorization: `Bearer ${token}` } : {}) }
   const internal = -32603
 

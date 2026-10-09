@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** SAILING — THE POINTS OF A BOAT, AS ARITHMETIC. A hull's speed proxy, velocity made good, heel under force against
  *  righting moment, the distance of a tack across legs, a sail's triangle area, drift over time, a compass bearing
@@ -14,7 +16,7 @@ export class SailingFormulas {
   /** BALLAST RATIO: keel against displacement, as a percentage. value ⌊keel · 100 / displacement⌋. */
   static ballast(keel: number, displacement: number): CrossFormula { return c('sailing-ballast', 'ballast(keel, displacement) = ⌊keel · 100 / displacement⌋', displacement > 0 ? Math.floor((keel * 100) / displacement) : 0, nat(keel, displacement) && displacement > 0 && keel <= displacement, 'ballast', [keel, displacement]) }
   /** BEARING: a compass heading normalised to 0..359. value ((degrees mod 360) + 360) mod 360. */
-  static bearing(degrees: number): CrossFormula { return c('sailing-bearing', 'bearing(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % 360) + 360) % 360, Number.isSafeInteger(degrees), 'bearing', [degrees]) }
+  static bearing(degrees: number): CrossFormula { return c('sailing-bearing', 'bearing(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % fullTurn) + fullTurn) % fullTurn, Number.isSafeInteger(degrees), 'bearing', [degrees]) }
   /** DRIFT: current carried over time. value current · time. */
   static drift(current: number, time: number): CrossFormula { return c('sailing-drift', 'drift(current, time) = current · time', current * time, nat(current, time), 'drift', [current, time]) }
   /** HEEL: force against the righting moment, as a percentage. value ⌊force · 100 / righting⌋. */

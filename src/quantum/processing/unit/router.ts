@@ -1,8 +1,5 @@
 import {
-  MCP_EXTENSIONS,
   RECEIPTS,
-  SERVED,
-  badRequest,
   coins,
   dead,
   found,
@@ -10,15 +7,11 @@ import {
   hexHref,
   integrityOnceOf,
   isUnknownTool,
-  jsonOf,
   lost,
   mintOf,
   n,
   networkHref,
-  pureArgs,
-  pureTools,
   qpuCiteOf,
-  qpuCssOf,
   qpuForeignReadsOf,
   qpuHexCatalogOf,
   qpuHexRunOf,
@@ -26,10 +19,6 @@ import {
   qpuInstallManifestOf,
   qpuLeanOf,
   qpuMcpCallOf,
-  qpuMcpDiscoverOf,
-  qpuMcpOf,
-  qpuPageOf,
-  qpuMcpToolsListOf,
   qpuMessageOf,
   qpuMintReceiptOf,
   qpuNetworkMcpOf,
@@ -43,6 +32,7 @@ import {
   qpuServerMcpOf,
   qpuServerSubmitOf,
   qpuServerToolsOf,
+  qpuServedLedgerOf,
   qpuSitemapOf,
   qpuStorageListOf,
   qpuStorageMaintainOf,
@@ -55,10 +45,7 @@ import {
   qpuZoneHostOf,
   rpcCodes,
   rpcErrorOf,
-  rpcMethods,
-  sandboxEpoch,
   seed,
-  servedMemo,
   servedOf,
   serverHref,
   serverJobs,
@@ -70,6 +57,13 @@ import {
 import type { QpuEnv, Served } from './index.js'
 import { leanSource } from './lean.js'
 import { packageVersion } from './version.js'
+
+/** Public doors Payload owns. Paths only — handlers load from the plugin so this module does not cycle with it. */
+const PUBLIC_DOORS = {
+  '/mcp': '/api/qpu/mcp',
+  '/cite': '/api/qpu/cite',
+  '/qpu.css': '/api/qpu/css',
+} as const
 
 /** The unit's front door, cooled out of index.ts by the heat family: the Workers fetch that routes every path to
  *  the door that answers it, and hands the rest to Payload. Moved verbatim; index.ts keeps it as its default export.
@@ -102,7 +96,8 @@ export const worker = {
       delete out['content-type']
       return out
     }
-    const deployed = { 'cache-control': 'public, max-age=3600' } as const
+    // public discovery GETs: browser revalidates (max-age), Workers Cache API / edge use s-maxage (quintessay middleware)
+    const deployed = { 'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400' } as const
     const jsonOf = (body: unknown, status = found) =>
       new Response(JSON.stringify(body), { status, headers: { ...headers, ...routeHeaders, ...(isRpc(body) ? rpcMedia : {}) } })
     /** A memoized document: 304 with no body when the client's If-None-Match is its ETag, else the bytes with the ETag. */
@@ -161,13 +156,17 @@ export const worker = {
     // host pays publishing.royalty on the product.
     const underZone = label && !label.includes('.') && !label.includes('*') && !reserved.includes(label)
     const ownDomain = url.hostname !== zone && !url.hostname.endsWith(`.${zone}`) && !url.hostname.includes('*')
-    // ONE HANDOFF. A request that is Payload's is this fetch or the named miss. Tenants, /admin and /api all use it.
-    // /admin is app/(payload)/admin/[[...segments]]; REST is app/(payload)/api/[...slug] (docs is a public read).
-    // The unit's own page at / stays qpuPageOf. A missing binding is named; it is not the unit's {"holds":false}.
-    const handToPayload = () => {
-      if (env?.PAYLOAD) return env.PAYLOAD.fetch(request)
-      // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
-      return jsonOf({ holds: false, denied: 'payload', reading: 'no PAYLOAD service binding on this host' }, lost)
+    // ONE HANDOFF. Website pages, /admin, /api, cite, /qpu.css and fused MCP enter only through Payload.
+    // A missing binding uses the same publicDoorFetchOf the publicPlugin mounts — not a second stack.
+    const handToPayload = async (to: Request = request) => {
+      if (env?.PAYLOAD) return env.PAYLOAD.fetch(to)
+      const { publicDoorFetchOf } = await import('../../../payload/plugins/public.js')
+      return publicDoorFetchOf(to, env)
+    }
+    const handPublic = (apiPath: string) => {
+      const next = new URL(request.url)
+      next.pathname = apiPath
+      return handToPayload(new Request(next, request))
     }
     if (url.protocol === 'https:' && (underZone || ownDomain)) return handToPayload()
     const named = url.protocol === 'https:' && url.hostname === unit.host
@@ -175,21 +174,12 @@ export const worker = {
     // Payload answers its own preflight, so /admin and /api precede OPTIONS.
     if (path === '/admin' || path.startsWith('/admin/') || path === '/api' || path.startsWith('/api/')) return handToPayload()
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
-    // PAYLOAD IS THE FRONTEND, ON EVERY PATH. A browser asking for a page (GET, text/html) gets Payload's page when
-    // Payload holds one at that address; an API client keeps the unit's JSON on the same path; a page Payload does not
-    // hold (a miss, a redirect it keeps for retired routes, an error while it starts) falls through to the unit's door,
-    // and if the unit has none either, Payload's own not-found page is the answer (kept, not rendered twice). So a
-    // page's address and a door's address may coincide (/receipts, /hex, /storage…) and each answers who asked.
-    // THE UNIT ANSWERS ITS OWN DOORS FIRST, AND EACH ANSWERS WHO ASKED. A browser or crawler (GET, text/html) gets the
-    // door's reading as one SEO-complete HTML document; every other client keeps the JSON-LD on the same path. Only a
-    // path no door answers is the frontend's, probed under a short deadline at the end — so the unit's content is never
-    // held waiting on a slow or unavailable HTML frontend.
+    // Website HTML is Payload's Next frontend — never qpuPageOf beside it.
     const wantsHtml = request.method === 'GET' && /text\/html/.test(request.headers.get('accept') ?? '')
-    const canonicalOf = (p: string) => `${unit.origin}${p === '/' ? '' : p}`
-    const pageOrServed = (p: string, build: () => object, meta?: { title?: string; description?: string }) =>
-      wantsHtml
-        ? new Response(qpuPageOf(build() as Record<string, unknown>, canonicalOf(p), meta), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8', ...deployed } })
-        : servedResponse(servedOf(p, build))
+    if (wantsHtml) return handToPayload()
+    // Public doors: rewrite to the Payload plugin endpoints and hand off. One server per door.
+    const publicApi = PUBLIC_DOORS[path as keyof typeof PUBLIC_DOORS]
+    if (publicApi) return handPublic(publicApi)
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
     if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
     if (path === '/receipts' || path.startsWith('/receipts/')) {
@@ -197,138 +187,25 @@ export const worker = {
       const stream = path.slice('/receipts/'.length)
       return jsonOf(path === '/receipts' ? { ...all, streams: all.streams.map(({ recent, ...head }) => head) } : all.streams.find((s) => s.stream === stream) ?? { kind: 'receipts' as const, stream, length: n - n, holds: false as const }, path === '/receipts' || all.streams.some((s) => s.stream === stream) ? found : lost)
     }
-    if (path === '/metrics') return jsonOf({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: SERVED.length })
-    if (path === '/mcp') {
-      // qpu.uuidna.com /mcp is a public read. Storage writes keep their Bearer token.
-      // STREAMABLE HTTP, HONESTLY (measured 2026-09-12): this unit answers every JSON-RPC request in its POST and opens no
-      // server-initiated stream, so a GET asking for text/event-stream gets the spec's other allowed answer — 405 with
-      // Allow — and the client falls back to POST instead of parsing a JSON-LD catalog as an event stream.
-      if (request.method === 'GET' && (request.headers.get('accept') ?? '').includes('text/event-stream')) {
-        return new Response(null, { status: lost + seed, headers: emptyHeaders({ allow: 'POST, OPTIONS' }) })
-      }
-      if (request.method === 'POST') {
-        let parsed: unknown
-        try {
-          parsed = JSON.parse(await request.text())
-        } catch {
-          return jsonOf(rpcErrorOf(null, rpcCodes.parse, 'Parse error: the body is not JSON'), badRequest)
-        }
-        if (Array.isArray(parsed)) {
-          // JSON-RPC BATCH. MCP 2025-03-26 allowed batches and 2025-06-18 removed them; a server advertising both accepts
-          // them. Every member is re-dispatched through this same door, so a batch is exactly its members; a notification
-          // (no id) gets no entry, per JSON-RPC 2.0; an empty array is the spec's Invalid Request.
-          const members = parsed as unknown[]
-          if (members.length === n - n || !members.every((m) => m !== null && typeof m === 'object' && !Array.isArray(m)))
-            return jsonOf(rpcErrorOf(null, rpcCodes.invalid, 'Invalid Request: a batch must be a non-empty array of request objects'), badRequest)
-          const auth = request.headers.get('authorization')
-          const replies = await Promise.all(members.map(async (m) => {
-            const one = new Request(request.url, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json', ...(auth ? { authorization: auth } : {}) }, body: JSON.stringify(m) })
-            const r = await worker.fetch(one, env)
-            return (m as { id?: unknown }).id === undefined ? null : ((await r.json()) as unknown)
-          }))
-          return jsonOf(replies.filter((r) => r !== null))
-        }
-        if (parsed === null || typeof parsed !== 'object') {
-          return jsonOf(rpcErrorOf(null, rpcCodes.invalid, 'Invalid Request: expected one JSON-RPC 2.0 request object'), badRequest)
-        }
-        const body = parsed as { method?: unknown; params?: { name?: unknown; arguments?: unknown; protocolVersion?: unknown }; id?: unknown }
-        if (typeof body.method !== 'string') {
-          return jsonOf(rpcErrorOf(body.id, rpcCodes.invalid, 'Invalid Request: method must be a string'), badRequest)
-        }
-        // A JSON-RPC notification carries no id; the server must not answer it. Streamable HTTP: 202 Accepted, no body.
-        // (A result with id null — what notifications/initialized returned — is a reply to a request that was never one.)
-        if (body.id === undefined) return new Response(null, { status: 202, headers: { ...headers, ...routeHeaders } })
-        if (body.method === 'initialize' || body.method === 'server/discover') {
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: qpuMcpDiscoverOf(body.params?.protocolVersion) })
-        }
-        if (body.method === 'ping') {
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: {} })
-        }
-        /** The envelope carries the request's id, so the memo holds the result's bytes and the envelope is spliced around
-         * them — the same bytes JSON.stringify would produce for the whole object. */
-        const envelope = (id: unknown, resultBody: string) => new Response(`{"jsonrpc":"2.0","id":${JSON.stringify(id ?? null)},"result":${resultBody}}`, { status: found, headers: { ...headers, ...routeHeaders, ...rpcMedia } })
-        if (body.method === 'tools/list') {
-          return envelope(body.id, servedOf('tools/list', () => ({ resultType: 'complete' as const, tools: qpuMcpToolsListOf() })).body)
-        }
-        if (body.method === 'tools/call') {
-          const name = typeof body.params?.name === 'string' ? body.params.name : ''
-          const args = body.params?.arguments && typeof body.params.arguments === 'object' && !Array.isArray(body.params.arguments) ? (body.params.arguments as Record<string, unknown>) : {}
-          if (pureTools.has(name) && pureArgs(args)) {
-            // the epoch rides in the key: a forge makes every earlier key unreachable rather than stale
-            const key = `call:${name}:${sandboxEpoch}:${JSON.stringify(args)}`
-            const hit = servedMemo.get(key)
-            if (hit) {
-              SERVED.push({ key, fold: hit.etag })
-              return envelope(body.id, hit.body)
-            }
-            const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
-            if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
-            return envelope(body.id, servedOf(key, () => called).body)
-          }
-          const called = await qpuMcpCallOf(name, args, env, request.headers.get('authorization'))
-          if (isUnknownTool(called)) return jsonOf(rpcErrorOf(body.id, rpcCodes.params, `Unknown tool: ${name || '(none)'}`, { tools: called.tools }))
-          return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: called })
-        }
-        const extension = MCP_EXTENSIONS.get(body.method)
-        if (extension) {
-          try {
-            const params = body.params && typeof body.params === 'object' && !Array.isArray(body.params) ? (body.params as Record<string, unknown>) : {}
-            return jsonOf({ jsonrpc: '2.0', id: body.id ?? null, result: await extension.handler(params, env) })
-          } catch (e) {
-            const err = e as { code?: unknown; message?: unknown; data?: unknown }
-            return jsonOf(rpcErrorOf(body.id, typeof err.code === 'number' ? err.code : rpcCodes.params, typeof err.message === 'string' ? err.message : String(e), err.data))
-          }
-        }
-        return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods, ...MCP_EXTENSIONS.keys()] }))
-      }
-      return pageOrServed('/mcp', () => qpuMcpOf(), {
-        title: '@uuidna/qpu — MCP endpoint',
-        description: 'The Model Context Protocol endpoint for the whole zone: tools/list and tools/call over Streamable HTTP. Eight door tools and eight cryptography tools; reads need no auth.',
-      })
-    }
+    if (path === '/metrics') return jsonOf({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: qpuServedLedgerOf().length })
     if (path === `/${unit.fuse.lean}`) {
       return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
     if (path === '/') {
-      // Counts, not the documents. The summary holds every integer, including the amplitude count.
-      // The readings window is the combinatorics family on the UUID's own dimensions. Prize stays the public face.
+      // API client: quantum JSON. HTML already left through handToPayload.
       const { qpuAnalyticsOf, qpuPublicOf } = await import('./zeropage.js')
       const { qpuCombinatoricsWindowOf } = await import('./presentation.js')
       const analytics = qpuAnalyticsOf()
       const face = qpuPublicOf(analytics)
       const readings = await qpuCombinatoricsWindowOf()
-      return pageOrServed('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize, links: qpuCiteOf().links, readings }), {
-        title: '@uuidna/qpu — quantum processing unit',
-        description: face.sentence,
-      })
+      return servedResponse(servedOf('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize, links: qpuCiteOf().links, readings })))
     }
-    if (path === `/${unit.path}`)
-      return pageOrServed(`/${unit.path}`, () => qpuLeanOf(), {
-        title: '@uuidna/qpu — the Lean proof',
-        description: 'The unit proved end to end: every Lean theorem with its evidence, the Shor run with receipts, and the source fold of index.lean. A false anywhere makes every path 404.',
-      })
-    if (path === '/cite')
-      return pageOrServed('/cite', () => qpuCiteOf(), {
-        title: '@uuidna/qpu — cite',
-        description: 'How to cite the unit: the content-addressed identifier, the authors, the licence (CC BY-NC-ND 4.0), and the recompute that verifies the citation rather than trusting it.',
-      })
-    // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed). What an MCP client, a
-    // registry, an OpenAPI consumer or a crawler asks for by convention, each derived from the readings above. Measured
-    // 2026-09-12: all five answered 404 while the README promised install.json.
+    if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
+    // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed).
     if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
-    if (path === '/mcp.json') return servedResponse(servedOf(path, () => qpuMcpOf()))
+    if (path === '/mcp.json') return handPublic('/api/qpu/mcp')
     if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
     if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
-    /** THE SHEET, WITH THE MEDIA TYPE A BROWSER NEEDS. It was already computed and already served — as a JSON
-     * string inside GET /, where nothing can link to it. A stylesheet reachable only by parsing a document that
-     * quotes it is a stylesheet no page can use, which is what made the UI incomplete rather than absent.
-     *
-     * OFF THE SEVEN-PATH GUIDE, like the other discovery paths, so no sealed count moves: docs.api stays rays and
-     * extras stays n. And NO HTML IS SERVED HERE — the unit ships the stylesheet and the seating contract, the
-     * fourteen frameworks supply the DOM, and payload/src/qpu-surface.ts already states the split ("QPU is
-     * API-only JSON-LD; this host is HTML"). A stylesheet is neither a document nor an API; it is the one asset
-     * this contract cannot express as JSON. */
-    if (path === '/qpu.css') return new Response(qpuCssOf().css, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/css; charset=utf-8' } })
     const rpcBodyOf = async <X extends object>() =>
       (await request.json().catch(() => ({}))) as { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown } & X
     const authedOf = (x: { holds?: boolean; denied?: unknown } | object) =>
@@ -423,20 +300,8 @@ export const worker = {
         const sent = qpuMessageOf(body)
         return jsonOf(sent, 'accepted' in sent && sent.accepted === true ? found + coins : found)
       }
-      return pageOrServed('/message', () => qpuMessageOf(), {
-        title: '@uuidna/qpu — message',
-        description: 'The lattice message door: fourteen lanes, involution routing, no stored state. Posts are proxied and sealed; the door never awaits and keeps nothing.',
-      })
+      return servedResponse(servedOf('/message', () => qpuMessageOf()))
     }
-    // A PATH THE UNIT DOES NOT ANSWER, OTHER THAN /admin AND /api (those already left through handToPayload), is a CMS
-    // page. It is probed under a short deadline so a slow frontend does not hold the request; on the deadline the
-    // unit's own 404 stands. / stays qpuPageOf and never reaches here.
-    if (env?.PAYLOAD) {
-      const page = await Promise.race([
-        env.PAYLOAD.fetch(request).catch(() => undefined),
-        new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ten * ten * ten * coins)),
-      ])
-      if (page) return page
-    }
-    return jsonOf(JSON.parse(dead), lost)
+    // A path the unit does not answer is Payload's (CMS page or plugin). HTML already left earlier.
+    return handToPayload()
   }}

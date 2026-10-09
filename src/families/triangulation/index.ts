@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** TRIANGULATION — FIXING POINTS FROM ANGLES AND A KNOWN BASE, AS ARITHMETIC (chosen by the public-API registry, not by
  *  hand). Locating a station is numbers: the triangle's closing angle, the squared base length, where two sightlines meet,
@@ -19,7 +21,7 @@ export class TriangulationFormulas {
   /** BASELINE: the squared length of the known base, Pythagoras without the root. value dx² + dy². */
   static baseline(dx: number, dy: number): CrossFormula { return c('triangulation-baseline', 'baseline(dx, dy) = dx² + dy²', dx * dx + dy * dy, nat(dx, dy), 'baseline', [dx, dy]) }
   /** BEARING SUM: a running bearing, two turns added and wrapped to a circle. value (b1 + b2) mod 360. */
-  static bearingsum(b1: number, b2: number): CrossFormula { return c('triangulation-bearingsum', 'bearingsum(b1, b2) = (b1 + b2) mod 360', (b1 + b2) % 360, nat(b1, b2), 'bearingsum', [b1, b2]) }
+  static bearingsum(b1: number, b2: number): CrossFormula { return c('triangulation-bearingsum', 'bearingsum(b1, b2) = (b1 + b2) mod 360', (b1 + b2) % fullTurn, nat(b1, b2), 'bearingsum', [b1, b2]) }
   /** INTERSECTION: where two sightlines meet along the base, their midpoint coordinate. value ⌊(x1 + x2) / 2⌋. */
   static intersection(x1: number, x2: number): CrossFormula { return c('triangulation-intersection', 'intersection(x1, x2) = ⌊(x1 + x2) / 2⌋', Math.floor((x1 + x2) / 2), nat(x1, x2), 'intersection', [x1, x2]) }
   /** NETWORK REDUNDANCY: the degrees of freedom, observations beyond the unknowns. value max(0, obs − unknowns). */

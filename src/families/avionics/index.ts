@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** AVIONICS — FLIGHT INSTRUMENTS AS ARITHMETIC. The numbers a cockpit reads: airspeed from distance over time, altitude-hold
  *  deviation, heading error wrapped to the shortest turn, the glide ratio, fuel burn, climb rate, a transponder squawk's
@@ -17,7 +19,7 @@ export class AvionicsFormulas {
   /** ALTITUDE HOLD: deviation from the target altitude. value |current − target|. */
   static altitudehold(current: number, target: number): CrossFormula { return c('avionics-altitudehold', 'altitudehold(current, target) = |current − target|', Math.abs(current - target), nat(current, target), 'altitudehold', [current, target]) }
   /** HEADING ERROR: the shortest turn to the target heading. value min(m, 360 − m), m = |target − actual| mod 360. */
-  static headingerror(target: number, actual: number): CrossFormula { const m = Math.abs(target - actual) % 360; return c('avionics-headingerror', 'headingerror(target, actual) = min(m, 360 − m), m = |target − actual| mod 360', Math.min(m, Math.max(0, 360 - m)), nat(target, actual), 'headingerror', [target, actual]) }
+  static headingerror(target: number, actual: number): CrossFormula { const m = Math.abs(target - actual) % fullTurn; return c('avionics-headingerror', 'headingerror(target, actual) = min(m, 360 − m), m = |target − actual| mod 360', Math.min(m, Math.max(0, 360 - m)), nat(target, actual), 'headingerror', [target, actual]) }
   /** GLIDE PATH: the glide ratio, horizontal distance over altitude lost. value ⌊distance / drop⌋. */
   static glidepath(distance: number, drop: number): CrossFormula { return c('avionics-glidepath', 'glidepath(distance, drop) = ⌊distance / drop⌋', drop > 0 ? Math.floor(distance / drop) : 0, nat(distance, drop) && drop > 0, 'glidepath', [distance, drop]) }
   /** FUEL FLOW: fuel burned at a rate over time. value rate · time. */

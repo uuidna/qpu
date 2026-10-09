@@ -1,12 +1,12 @@
 {
  "kind": "lean-receipt",
- "source": "0a8b50240b222d37",
+ "source": "03391f237867231f",
  "toolchain": "leanprover/lean4:v4.33.0",
- "theorems": 124,
- "served": 124,
- "verbatim": 124,
- "recomputed": 124,
- "holds": false,
+ "theorems": 145,
+ "served": 145,
+ "verbatim": 145,
+ "recomputed": 145,
+ "holds": true,
  "crossHolds": true,
  "families": [
   {
@@ -106,6 +106,16 @@
    "theorems": 16
   },
   {
+   "family": "Primes",
+   "definitions": [],
+   "theorems": 13
+  },
+  {
+   "family": "Pi",
+   "definitions": [],
+   "theorems": 8
+  },
+  {
    "family": "Clay",
    "definitions": [],
    "theorems": 24
@@ -163,6 +173,26 @@
    "count": 2
   },
   {
+   "from": "Primes",
+   "to": "Lattice",
+   "count": 36
+  },
+  {
+   "from": "Primes",
+   "to": "Mint",
+   "count": 6
+  },
+  {
+   "from": "Pi",
+   "to": "Lattice",
+   "count": 26
+  },
+  {
+   "from": "Pi",
+   "to": "Mint",
+   "count": 2
+  },
+  {
    "from": "Clay",
    "to": "Lattice",
    "count": 56
@@ -189,58 +219,11 @@
   }
  ],
  "related": 133,
- "legal": {
-  "licence": "CC-BY-NC-ND-4.0",
-  "device": "exact-amplitudes",
-  "advantage": false,
-  "lawful": {
-   "value": 1,
-   "holds": true,
-   "handle": "12658319",
-   "uuid": "12658319-4000-3000-9000-000000000000"
-  },
-  "fidelity": {
-   "lead": true,
-   "handle": "12658319",
-   "uuid": "12658319-3000-3000-8000-000000000000"
-  },
-  "violation": {
-   "lead": true,
-   "handle": "12658319",
-   "uuid": "12658319-f000-2000-8000-000000000000"
-  },
-  "standing": {
-   "lead": true,
-   "handle": "12658319",
-   "uuid": "12658319-d000-7000-8000-000000000000"
-  },
-  "citation": {
-   "package": "zeropoint-node",
-   "version": "1.0.0",
-   "date": "2025-07-08",
-   "sequence": "1-2-4-8-7-5",
-   "latest": "1.5.8",
-   "latestDate": "2026-09-07",
-   "sequenceNow": "0\\1\\2\\4\\8/7/5/3\\6\\9/0\\1",
-   "doi": "10.5281/zenodo.22178675",
-   "augustVersion": "1.0.3",
-   "augustDate": "2026-08-19",
-   "statement": "clay solved in august",
-   "words": "This file is a naming scheme. It solves none of the problems it names",
-   "orcid": "https://orcid.org/0009-0000-7312-9778",
-   "holds": false,
-   "lead": true
-  },
-  "holds": false
- },
- "when": "2026-10-07",
- "host": "https://qpu.uuidna.com",
- "seconds": 6,
  "rows": [
   {
    "name": "agents_hex_alphabet",
    "family": "Clay",
-   "uuid": "2883acd1-1475-8ad6-8756-49eec13b9943",
+   "uuid": "2883acd1-1475-1ad6-8756-49eec13b9943",
    "handle": "2883acd1",
    "cross": "neither",
    "holds": true,
@@ -254,7 +237,7 @@
   {
    "name": "agents_mcp_tools",
    "family": "Clay",
-   "uuid": "2883acd1-1475-8ad6-8756-49eec13b9943",
+   "uuid": "2883acd1-1475-1ad6-8756-49eec13b9943",
    "handle": "2883acd1",
    "cross": "neither",
    "holds": true,
@@ -268,7 +251,7 @@
   {
    "name": "all_complete",
    "family": "Cross",
-   "uuid": "28b8fcf2-45fa-8077-b25c-d4744b25dff2",
+   "uuid": "28b8fcf2-45fa-7077-b25c-d4744b25dff2",
    "handle": "28b8fcf2",
    "cross": "asymmetric",
    "holds": true,
@@ -293,7 +276,7 @@
   {
    "name": "all_entangle",
    "family": "Circuit",
-   "uuid": "d79a948f-a306-817c-94bb-19f8e18deb5e",
+   "uuid": "d79a948f-a306-417c-94bb-19f8e18deb5e",
    "handle": "d79a948f",
    "cross": "neither",
    "holds": true,
@@ -306,7 +289,7 @@
   {
    "name": "all_noclone",
    "family": "Circuit",
-   "uuid": "e65fbb5a-66d9-8607-926e-1b4fcaf610c9",
+   "uuid": "e65fbb5a-66d9-7607-926e-1b4fcaf610c9",
    "handle": "e65fbb5a",
    "cross": "neither",
    "holds": true,
@@ -321,7 +304,7 @@
   {
    "name": "all_product",
    "family": "Cross",
-   "uuid": "7af6087b-c2e0-89fb-bc06-d38fe944108e",
+   "uuid": "7af6087b-c2e0-19fb-bc06-d38fe944108e",
    "handle": "7af6087b",
    "cross": "asymmetric",
    "holds": true,
@@ -337,7 +320,7 @@
   {
    "name": "all_shor",
    "family": "Shor",
-   "uuid": "83a6300c-7ce8-8e40-b3ef-3908739f5f02",
+   "uuid": "83a6300c-7ce8-6e40-b3ef-3908739f5f02",
    "handle": "83a6300c",
    "cross": "neither",
    "holds": true,
@@ -350,7 +333,7 @@
   {
    "name": "all_sum",
    "family": "Cross",
-   "uuid": "0d24350e-fdbe-8c2d-970e-76b1883d3992",
+   "uuid": "0d24350e-fdbe-1c2d-970e-76b1883d3992",
    "handle": "0d24350e",
    "cross": "symmetric",
    "holds": true,
@@ -365,7 +348,7 @@
   {
    "name": "amplitudes_as_sum",
    "family": "Cross",
-   "uuid": "bc9bfea2-086d-8ed6-ab51-f3776ee7275c",
+   "uuid": "bc9bfea2-086d-1ed6-ab51-f3776ee7275c",
    "handle": "bc9bfea2",
    "cross": "symmetric",
    "holds": true,
@@ -382,7 +365,7 @@
   {
    "name": "amplitudes_from_sum",
    "family": "Cross",
-   "uuid": "8a751079-4737-8557-a6d9-fefd105f9dc9",
+   "uuid": "8a751079-4737-5557-a6d9-fefd105f9dc9",
    "handle": "8a751079",
    "cross": "neither",
    "holds": true,
@@ -399,7 +382,7 @@
   {
    "name": "around",
    "family": "Lattice",
-   "uuid": "7af6087b-c2e0-89fb-bc06-d38fe944108e",
+   "uuid": "7af6087b-c2e0-19fb-bc06-d38fe944108e",
    "handle": "7af6087b",
    "cross": "asymmetric",
    "holds": true,
@@ -420,7 +403,7 @@
   {
    "name": "bits_both_forms",
    "family": "Cross",
-   "uuid": "53074b8f-77a9-86e6-9f4b-decdb715706d",
+   "uuid": "53074b8f-77a9-36e6-9f4b-decdb715706d",
    "handle": "53074b8f",
    "cross": "asymmetric",
    "holds": true,
@@ -459,7 +442,7 @@
   {
    "name": "bits_multiplicative",
    "family": "Cross",
-   "uuid": "808038fd-2235-8e20-a6cc-50c033c4e380",
+   "uuid": "808038fd-2235-1e20-a6cc-50c033c4e380",
    "handle": "808038fd",
    "cross": "asymmetric",
    "holds": true,
@@ -475,7 +458,7 @@
   {
    "name": "breakthrough",
    "family": "Lattice",
-   "uuid": "a76d1f8b-44bf-81d3-8a83-9254ddc27570",
+   "uuid": "a76d1f8b-44bf-41d3-8a83-9254ddc27570",
    "handle": "a76d1f8b",
    "cross": "symmetric",
    "holds": true,
@@ -505,7 +488,7 @@
   {
    "name": "cern",
    "family": "Cern",
-   "uuid": "2c6b2293-8e57-8023-92a2-b5cb9fa77fcb",
+   "uuid": "2c6b2293-8e57-1023-92a2-b5cb9fa77fcb",
    "handle": "2c6b2293",
    "cross": "neither",
    "holds": true,
@@ -516,7 +499,7 @@
   {
    "name": "circuit",
    "family": "Circuit",
-   "uuid": "a60ce6bb-2599-8ef4-b226-a0673d7e3b4f",
+   "uuid": "a60ce6bb-2599-2ef4-b226-a0673d7e3b4f",
    "handle": "a60ce6bb",
    "cross": "neither",
    "holds": true,
@@ -531,7 +514,7 @@
   {
    "name": "clay",
    "family": "Coil",
-   "uuid": "bb1e4619-4404-87b6-b703-ad3855ffb9a1",
+   "uuid": "bb1e4619-4404-27b6-b703-ad3855ffb9a1",
    "handle": "bb1e4619",
    "cross": "asymmetric",
    "holds": true,
@@ -550,7 +533,7 @@
   {
    "name": "clay_wings",
    "family": "Clay",
-   "uuid": "2e5df02b-7b4f-8925-87c5-a688e91b80ee",
+   "uuid": "2e5df02b-7b4f-1925-87c5-a688e91b80ee",
    "handle": "2e5df02b",
    "cross": "neither",
    "holds": true,
@@ -600,7 +583,7 @@
   {
    "name": "cluster",
    "family": "Lattice",
-   "uuid": "d1e63668-40e7-867f-904e-b8d47ff8590b",
+   "uuid": "d1e63668-40e7-367f-904e-b8d47ff8590b",
    "handle": "d1e63668",
    "cross": "symmetric",
    "holds": true,
@@ -617,7 +600,7 @@
   {
    "name": "cms_payload_combinations",
    "family": "Clay",
-   "uuid": "a64eb3c6-ab52-8277-b86b-d29a96a20365",
+   "uuid": "a64eb3c6-ab52-2277-b86b-d29a96a20365",
    "handle": "a64eb3c6",
    "cross": "neither",
    "holds": true,
@@ -646,7 +629,7 @@
   {
    "name": "coil_efficiency",
    "family": "Coil",
-   "uuid": "fbadd3b4-7664-8f5b-8849-85028f4ac278",
+   "uuid": "fbadd3b4-7664-2f5b-8849-85028f4ac278",
    "handle": "fbadd3b4",
    "cross": "neither",
    "holds": true,
@@ -680,7 +663,7 @@
   {
    "name": "coins_two",
    "family": "Lattice",
-   "uuid": "eb5b8614-0c34-8ae1-b9f6-ff6bb92df39d",
+   "uuid": "eb5b8614-0c34-5ae1-b9f6-ff6bb92df39d",
    "handle": "eb5b8614",
    "cross": "neither",
    "holds": true,
@@ -694,7 +677,7 @@
   {
    "name": "computer",
    "family": "Circuit",
-   "uuid": "9b0c5cfd-585e-8ab0-9f99-cfd9b0700747",
+   "uuid": "9b0c5cfd-585e-5ab0-9f99-cfd9b0700747",
    "handle": "9b0c5cfd",
    "cross": "neither",
    "holds": true,
@@ -708,7 +691,7 @@
   {
    "name": "cooling_stays_positive",
    "family": "Physics",
-   "uuid": "1ed4802c-8087-8451-ac27-5419d3bd2df3",
+   "uuid": "1ed4802c-8087-6451-ac27-5419d3bd2df3",
    "handle": "1ed4802c",
    "cross": "neither",
    "holds": true,
@@ -720,7 +703,7 @@
   {
    "name": "cooling_strictly_decreases",
    "family": "Physics",
-   "uuid": "01942992-b8db-883e-b9c3-df162ad8a567",
+   "uuid": "01942992-b8db-683e-b9c3-df162ad8a567",
    "handle": "01942992",
    "cross": "neither",
    "holds": true,
@@ -732,7 +715,7 @@
   {
    "name": "crypto",
    "family": "Lattice",
-   "uuid": "ea230d57-09d4-8ea9-9dce-b896e149e49f",
+   "uuid": "ea230d57-09d4-6ea9-9dce-b896e149e49f",
    "handle": "ea230d57",
    "cross": "neither",
    "holds": true,
@@ -752,7 +735,7 @@
   {
    "name": "crypto_shor_factor_p",
    "family": "Clay",
-   "uuid": "7002ffc3-eaa8-832a-9bee-ea9164a334bb",
+   "uuid": "7002ffc3-eaa8-632a-9bee-ea9164a334bb",
    "handle": "7002ffc3",
    "cross": "neither",
    "holds": true,
@@ -779,7 +762,7 @@
   {
    "name": "crypto_shor_modulus",
    "family": "Clay",
-   "uuid": "c79c8a8a-1b30-866e-8a1d-ab1e722c61f9",
+   "uuid": "c79c8a8a-1b30-666e-8a1d-ab1e722c61f9",
    "handle": "c79c8a8a",
    "cross": "neither",
    "holds": true,
@@ -794,7 +777,7 @@
   {
    "name": "cube",
    "family": "Lattice",
-   "uuid": "808038fd-2235-8e20-a6cc-50c033c4e380",
+   "uuid": "808038fd-2235-1e20-a6cc-50c033c4e380",
    "handle": "808038fd",
    "cross": "asymmetric",
    "holds": true,
@@ -854,7 +837,7 @@
   {
    "name": "distribute",
    "family": "Lattice",
-   "uuid": "d7c7bf7e-cc07-878c-befb-84299d5b82e3",
+   "uuid": "d7c7bf7e-cc07-778c-befb-84299d5b82e3",
    "handle": "d7c7bf7e",
    "cross": "asymmetric",
    "holds": true,
@@ -875,7 +858,7 @@
   {
    "name": "double_is_sum",
    "family": "Cross",
-   "uuid": "f4c7099f-415f-8343-a794-935dcb5c6371",
+   "uuid": "f4c7099f-415f-6343-a794-935dcb5c6371",
    "handle": "f4c7099f",
    "cross": "cross",
    "holds": true,
@@ -887,7 +870,7 @@
   {
    "name": "drift",
    "family": "Circuit",
-   "uuid": "260157bb-742f-8e7c-a809-445db4a9b075",
+   "uuid": "260157bb-742f-3e7c-a809-445db4a9b075",
    "handle": "260157bb",
    "cross": "neither",
    "holds": true,
@@ -904,7 +887,7 @@
   {
    "name": "electronics",
    "family": "Coil",
-   "uuid": "d07538fa-1cfa-8b9e-8a7f-2c937ee09f22",
+   "uuid": "d07538fa-1cfa-5b9e-8a7f-2c937ee09f22",
    "handle": "d07538fa",
    "cross": "neither",
    "holds": true,
@@ -919,7 +902,7 @@
   {
    "name": "energy",
    "family": "Lattice",
-   "uuid": "c4b83816-1292-8e74-9331-63d777e51ede",
+   "uuid": "c4b83816-1292-3e74-9331-63d777e51ede",
    "handle": "c4b83816",
    "cross": "neither",
    "holds": true,
@@ -936,7 +919,7 @@
   {
    "name": "entangle",
    "family": "Circuit",
-   "uuid": "d79a948f-a306-817c-94bb-19f8e18deb5e",
+   "uuid": "d79a948f-a306-417c-94bb-19f8e18deb5e",
    "handle": "d79a948f",
    "cross": "neither",
    "holds": true,
@@ -947,7 +930,7 @@
   {
    "name": "faces_additive",
    "family": "Cross",
-   "uuid": "0d24350e-fdbe-8c2d-970e-76b1883d3992",
+   "uuid": "0d24350e-fdbe-1c2d-970e-76b1883d3992",
    "handle": "0d24350e",
    "cross": "symmetric",
    "holds": true,
@@ -962,7 +945,7 @@
   {
    "name": "faces_both_forms",
    "family": "Cross",
-   "uuid": "6f6772c9-eaf4-899b-9704-6e341beb8e7f",
+   "uuid": "6f6772c9-eaf4-399b-9704-6e341beb8e7f",
    "handle": "6f6772c9",
    "cross": "asymmetric",
    "holds": true,
@@ -979,7 +962,7 @@
   {
    "name": "faces_multiplicative",
    "family": "Cross",
-   "uuid": "7af6087b-c2e0-89fb-bc06-d38fe944108e",
+   "uuid": "7af6087b-c2e0-19fb-bc06-d38fe944108e",
    "handle": "7af6087b",
    "cross": "asymmetric",
    "holds": true,
@@ -995,7 +978,7 @@
   {
    "name": "fill",
    "family": "Lattice",
-   "uuid": "e7e88a23-7aca-8b35-9300-529d2e0cf6df",
+   "uuid": "e7e88a23-7aca-7b35-9300-529d2e0cf6df",
    "handle": "e7e88a23",
    "cross": "neither",
    "holds": true,
@@ -1030,7 +1013,7 @@
   {
    "name": "fuse",
    "family": "Fuse",
-   "uuid": "60deb3cb-cd75-818b-84a0-b1c8877743f1",
+   "uuid": "60deb3cb-cd75-318b-84a0-b1c8877743f1",
    "handle": "60deb3cb",
    "cross": "neither",
    "holds": true,
@@ -1041,7 +1024,7 @@
   {
    "name": "fused_additive_form",
    "family": "Cross",
-   "uuid": "d6527fd5-a098-8575-bdd9-4a6df2c76585",
+   "uuid": "d6527fd5-a098-2575-bdd9-4a6df2c76585",
    "handle": "d6527fd5",
    "cross": "cross",
    "holds": true,
@@ -1059,7 +1042,7 @@
   {
    "name": "fused_both_directions",
    "family": "Cross",
-   "uuid": "722e8ce7-a65b-8bb0-b6fc-434a6aa47abc",
+   "uuid": "722e8ce7-a65b-4bb0-b6fc-434a6aa47abc",
    "handle": "722e8ce7",
    "cross": "cross",
    "holds": true,
@@ -1079,7 +1062,7 @@
   {
    "name": "fused_multiplicative_form",
    "family": "Cross",
-   "uuid": "279930ad-8508-8b13-a0d6-d582784481f8",
+   "uuid": "279930ad-8508-4b13-a0d6-d582784481f8",
    "handle": "279930ad",
    "cross": "asymmetric",
    "holds": true,
@@ -1097,7 +1080,7 @@
   {
    "name": "fusion",
    "family": "Coil",
-   "uuid": "75abc466-b763-8a2c-b69f-9a4bb8d05375",
+   "uuid": "75abc466-b763-1a2c-b69f-9a4bb8d05375",
    "handle": "75abc466",
    "cross": "asymmetric",
    "holds": true,
@@ -1117,7 +1100,7 @@
   {
    "name": "gates",
    "family": "Circuit",
-   "uuid": "a6f8c5b5-d9e7-8422-942e-487ac05aef9c",
+   "uuid": "a6f8c5b5-d9e7-3422-942e-487ac05aef9c",
    "handle": "a6f8c5b5",
    "cross": "neither",
    "holds": true,
@@ -1128,7 +1111,7 @@
   {
    "name": "ghz",
    "family": "Circuit",
-   "uuid": "ea5e5929-8ac3-8859-907b-f325cbfdbfcc",
+   "uuid": "ea5e5929-8ac3-4859-907b-f325cbfdbfcc",
    "handle": "ea5e5929",
    "cross": "neither",
    "holds": true,
@@ -1146,7 +1129,7 @@
   {
    "name": "handle",
    "family": "Lattice",
-   "uuid": "b9d152aa-d2a2-8c82-b129-d83c5a7b896f",
+   "uuid": "b9d152aa-d2a2-5c82-b129-d83c5a7b896f",
    "handle": "b9d152aa",
    "cross": "neither",
    "holds": true,
@@ -1163,7 +1146,7 @@
   {
    "name": "harmonic",
    "family": "Lattice",
-   "uuid": "0d24350e-fdbe-8c2d-970e-76b1883d3992",
+   "uuid": "0d24350e-fdbe-1c2d-970e-76b1883d3992",
    "handle": "0d24350e",
    "cross": "symmetric",
    "holds": true,
@@ -1221,7 +1204,7 @@
   {
    "name": "hexbit_pos",
    "family": "Lattice",
-   "uuid": "18cd95e9-43d4-8425-910d-66e3e229cee4",
+   "uuid": "18cd95e9-43d4-4425-910d-66e3e229cee4",
    "handle": "18cd95e9",
    "cross": "neither",
    "holds": true,
@@ -1237,7 +1220,7 @@
   {
    "name": "hybrid",
    "family": "Hybrid",
-   "uuid": "04fcaf04-8938-8a8e-ae4d-d9c68d9d628a",
+   "uuid": "04fcaf04-8938-2a8e-ae4d-d9c68d9d628a",
    "handle": "04fcaf04",
    "cross": "neither",
    "holds": true,
@@ -1257,7 +1240,7 @@
   {
    "name": "hybrid_cost",
    "family": "Hybrid",
-   "uuid": "a04545c7-547a-89c7-8360-e1cb137ba83d",
+   "uuid": "a04545c7-547a-19c7-8360-e1cb137ba83d",
    "handle": "a04545c7",
    "cross": "neither",
    "holds": true,
@@ -1275,7 +1258,7 @@
   {
    "name": "hybrid_speed",
    "family": "Hybrid",
-   "uuid": "6261d53b-9235-856c-b635-21f321549641",
+   "uuid": "6261d53b-9235-156c-b635-21f321549641",
    "handle": "6261d53b",
    "cross": "neither",
    "holds": true,
@@ -1294,7 +1277,7 @@
   {
    "name": "infinite",
    "family": "Lattice",
-   "uuid": "49204bb7-daea-8147-9bd6-d4d910feb131",
+   "uuid": "49204bb7-daea-2147-9bd6-d4d910feb131",
    "handle": "49204bb7",
    "cross": "symmetric",
    "holds": true,
@@ -1310,7 +1293,7 @@
   {
    "name": "integrity",
    "family": "Lattice",
-   "uuid": "8242a183-b0fb-8b8c-ad54-a73810dfa1fc",
+   "uuid": "8242a183-b0fb-3b8c-ad54-a73810dfa1fc",
    "handle": "8242a183",
    "cross": "asymmetric",
    "holds": true,
@@ -1345,7 +1328,7 @@
   {
    "name": "involution",
    "family": "Lattice",
-   "uuid": "ccb69dad-6f4b-8283-a0f4-586a101b00f8",
+   "uuid": "ccb69dad-6f4b-5283-a0f4-586a101b00f8",
    "handle": "ccb69dad",
    "cross": "neither",
    "holds": true,
@@ -1361,7 +1344,7 @@
   {
    "name": "kickback",
    "family": "Circuit",
-   "uuid": "4d6c0272-45aa-813e-b4eb-66ea1a3db955",
+   "uuid": "4d6c0272-45aa-713e-b4eb-66ea1a3db955",
    "handle": "4d6c0272",
    "cross": "neither",
    "holds": true,
@@ -1372,7 +1355,7 @@
   {
    "name": "kv",
    "family": "Lattice",
-   "uuid": "94fccced-de35-89ff-9c74-42322e546fbd",
+   "uuid": "94fccced-de35-79ff-9c74-42322e546fbd",
    "handle": "94fccced",
    "cross": "asymmetric",
    "holds": true,
@@ -1408,7 +1391,7 @@
   {
    "name": "measurement",
    "family": "Lattice",
-   "uuid": "d6220fe3-5ee2-839c-880d-246754064d08",
+   "uuid": "d6220fe3-5ee2-439c-880d-246754064d08",
    "handle": "d6220fe3",
    "cross": "neither",
    "holds": true,
@@ -1421,9 +1404,68 @@
    "formula": "120acc27b6f1b27d"
   },
   {
+   "name": "mersenne_127",
+   "family": "Primes",
+   "uuid": "d86ef5cb-6d16-8d17-9457-5cc2150a39c9",
+   "handle": "d86ef5cb",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "mintOf",
+    "rays",
+    "seed"
+   ],
+   "formula": "a47fd8f4be2accf6"
+  },
+  {
+   "name": "mersenne_3",
+   "family": "Primes",
+   "uuid": "ebf6815d-9eb8-30f8-878f-e0d02518af4d",
+   "handle": "ebf6815d",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "mintOf",
+    "seed"
+   ],
+   "formula": "fdb47b5f55be7402"
+  },
+  {
+   "name": "mersenne_31",
+   "family": "Primes",
+   "uuid": "a3882e14-e823-5895-b266-aa756351fb5d",
+   "handle": "a3882e14",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "seed"
+   ],
+   "formula": "652e797c0074dcec"
+  },
+  {
+   "name": "mersenne_7",
+   "family": "Primes",
+   "uuid": "2cd7393a-b15e-7b7e-8941-392ef6226af9",
+   "handle": "2cd7393a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "mintOf",
+    "n",
+    "seed"
+   ],
+   "formula": "df600db0fafb8052"
+  },
+  {
    "name": "mint",
    "family": "Lattice",
-   "uuid": "a428007f-b6bb-89e1-8fa9-b79509ae344c",
+   "uuid": "a428007f-b6bb-39e1-8fa9-b79509ae344c",
    "handle": "a428007f",
    "cross": "symmetric",
    "holds": true,
@@ -1440,7 +1482,7 @@
   {
    "name": "mintOf_add",
    "family": "Mint",
-   "uuid": "4684273b-477a-843b-a148-02728f878cb2",
+   "uuid": "4684273b-477a-443b-a148-02728f878cb2",
    "handle": "4684273b",
    "cross": "bridge",
    "holds": true,
@@ -1456,7 +1498,7 @@
   {
    "name": "mintOf_ge_seed",
    "family": "Lattice",
-   "uuid": "ecafedfc-2544-843c-b5df-47117d5a2c75",
+   "uuid": "ecafedfc-2544-243c-b5df-47117d5a2c75",
    "handle": "ecafedfc",
    "cross": "neither",
    "holds": true,
@@ -1474,7 +1516,7 @@
   {
    "name": "mintOf_lt",
    "family": "Lattice",
-   "uuid": "f36690b0-67aa-8a54-8e3c-07a8022ed207",
+   "uuid": "f36690b0-67aa-1a54-8e3c-07a8022ed207",
    "handle": "f36690b0",
    "cross": "neither",
    "holds": true,
@@ -1489,7 +1531,7 @@
   {
    "name": "mintOf_lt_succ",
    "family": "Lattice",
-   "uuid": "fef8049f-14e5-8a88-822c-504a382c2481",
+   "uuid": "fef8049f-14e5-1a88-822c-504a382c2481",
    "handle": "fef8049f",
    "cross": "neither",
    "holds": true,
@@ -1505,7 +1547,7 @@
   {
    "name": "mintOf_pos",
    "family": "Lattice",
-   "uuid": "72e59398-be85-87c5-a2a8-8364e07bb8e4",
+   "uuid": "72e59398-be85-27c5-a2a8-8364e07bb8e4",
    "handle": "72e59398",
    "cross": "neither",
    "holds": true,
@@ -1521,7 +1563,7 @@
   {
    "name": "mintOf_succ",
    "family": "Mint",
-   "uuid": "2f37ab4f-c0fc-89ae-8874-245a1771a17b",
+   "uuid": "2f37ab4f-c0fc-69ae-8874-245a1771a17b",
    "handle": "2f37ab4f",
    "cross": "symmetric",
    "holds": true,
@@ -1535,7 +1577,7 @@
   {
    "name": "mintOf_zero",
    "family": "Mint",
-   "uuid": "9b9cd92a-8517-850e-a733-784e23be4e55",
+   "uuid": "9b9cd92a-8517-550e-a733-784e23be4e55",
    "handle": "9b9cd92a",
    "cross": "neither",
    "holds": true,
@@ -1548,7 +1590,7 @@
   {
    "name": "monogamy",
    "family": "Circuit",
-   "uuid": "6b032890-a008-8811-b3c2-c4c6aae84feb",
+   "uuid": "6b032890-a008-5811-b3c2-c4c6aae84feb",
    "handle": "6b032890",
    "cross": "neither",
    "holds": true,
@@ -1561,7 +1603,7 @@
   {
    "name": "multiply",
    "family": "Mint",
-   "uuid": "4684273b-477a-843b-a148-02728f878cb2",
+   "uuid": "4684273b-477a-443b-a148-02728f878cb2",
    "handle": "4684273b",
    "cross": "bridge",
    "holds": true,
@@ -1576,7 +1618,7 @@
   {
    "name": "n_eq",
    "family": "Lattice",
-   "uuid": "9ba04f1c-df59-8a68-b61b-101fb2528886",
+   "uuid": "9ba04f1c-df59-2a68-b61b-101fb2528886",
    "handle": "9ba04f1c",
    "cross": "neither",
    "holds": true,
@@ -1589,7 +1631,7 @@
   {
    "name": "neuro",
    "family": "Circuit",
-   "uuid": "77318137-2c5f-8be1-8519-97ca287b96ba",
+   "uuid": "77318137-2c5f-3be1-8519-97ca287b96ba",
    "handle": "77318137",
    "cross": "asymmetric",
    "holds": true,
@@ -1609,7 +1651,7 @@
   {
    "name": "next",
    "family": "Lattice",
-   "uuid": "bc9bfea2-086d-8ed6-ab51-f3776ee7275c",
+   "uuid": "bc9bfea2-086d-1ed6-ab51-f3776ee7275c",
    "handle": "bc9bfea2",
    "cross": "symmetric",
    "holds": true,
@@ -1627,7 +1669,7 @@
   {
    "name": "next_coil",
    "family": "Coil",
-   "uuid": "98c0be0e-e959-818e-ab7f-9aff5c2c4026",
+   "uuid": "98c0be0e-e959-318e-ab7f-9aff5c2c4026",
    "handle": "98c0be0e",
    "cross": "cross",
    "holds": true,
@@ -1646,7 +1688,7 @@
   {
    "name": "next_cover",
    "family": "Lattice",
-   "uuid": "adccb2c4-95a7-8e3d-beca-6b14209dfd96",
+   "uuid": "adccb2c4-95a7-1e3d-beca-6b14209dfd96",
    "handle": "adccb2c4",
    "cross": "cross",
    "holds": true,
@@ -1667,7 +1709,7 @@
   {
    "name": "next_fused",
    "family": "Lattice",
-   "uuid": "6e4d9ba9-f8af-8eb7-a9e1-12131d559031",
+   "uuid": "6e4d9ba9-f8af-7eb7-a9e1-12131d559031",
    "handle": "6e4d9ba9",
    "cross": "cross",
    "holds": true,
@@ -1687,7 +1729,7 @@
   {
    "name": "noclone",
    "family": "Circuit",
-   "uuid": "e65fbb5a-66d9-8607-926e-1b4fcaf610c9",
+   "uuid": "e65fbb5a-66d9-7607-926e-1b4fcaf610c9",
    "handle": "e65fbb5a",
    "cross": "neither",
    "holds": true,
@@ -1704,7 +1746,7 @@
   {
    "name": "noise",
    "family": "Circuit",
-   "uuid": "32078310-6a07-8c44-b455-c10e480eb8c2",
+   "uuid": "32078310-6a07-3c44-b455-c10e480eb8c2",
    "handle": "32078310",
    "cross": "neither",
    "holds": true,
@@ -1715,7 +1757,7 @@
   {
    "name": "one_plus_six",
    "family": "Coil",
-   "uuid": "9c099ef9-3779-8f71-bd35-48c973fe5ad7",
+   "uuid": "9c099ef9-3779-3f71-bd35-48c973fe5ad7",
    "handle": "9c099ef9",
    "cross": "neither",
    "holds": true,
@@ -1735,7 +1777,7 @@
   {
    "name": "only",
    "family": "Circuit",
-   "uuid": "d586a778-565b-88a2-8603-c2da566803fe",
+   "uuid": "d586a778-565b-38a2-8603-c2da566803fe",
    "handle": "d586a778",
    "cross": "neither",
    "holds": true,
@@ -1759,7 +1801,7 @@
   {
    "name": "physical",
    "family": "Circuit",
-   "uuid": "3eb3d5e6-d887-84fd-b06a-a0be7de50996",
+   "uuid": "3eb3d5e6-d887-44fd-b06a-a0be7de50996",
    "handle": "3eb3d5e6",
    "cross": "neither",
    "holds": true,
@@ -1773,9 +1815,140 @@
    "formula": "e3942712072fc502"
   },
   {
+   "name": "pi_all",
+   "family": "Pi",
+   "uuid": "759a5a99-f313-383b-b1ff-58c7f45447f0",
+   "handle": "759a5a99",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "faces",
+    "hexbit",
+    "mintOf",
+    "n",
+    "pi_archimedes_den",
+    "pi_archimedes_num",
+    "pi_floor",
+    "pi_half_turn",
+    "pi_turn_degrees",
+    "pi_zu_den",
+    "pi_zu_num",
+    "plane",
+    "rays",
+    "seed",
+    "vertices"
+   ],
+   "formula": "5c07a6d55c267f3c"
+  },
+  {
+   "name": "pi_archimedes_den",
+   "family": "Pi",
+   "uuid": "7002ffc3-eaa8-632a-9bee-ea9164a334bb",
+   "handle": "7002ffc3",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "rays"
+   ],
+   "formula": "3b9accd9419072fb"
+  },
+  {
+   "name": "pi_archimedes_num",
+   "family": "Pi",
+   "uuid": "eb1e9234-a0e0-2a41-b5c3-1a4a69bbb99d",
+   "handle": "eb1e9234",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "vertices"
+   ],
+   "formula": "54b9f4fd98b2cfcc"
+  },
+  {
+   "name": "pi_floor",
+   "family": "Pi",
+   "uuid": "ebf6815d-9eb8-30f8-878f-e0d02518af4d",
+   "handle": "ebf6815d",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "mintOf",
+    "seed"
+   ],
+   "formula": "fdb47b5f55be7402"
+  },
+  {
+   "name": "pi_half_turn",
+   "family": "Pi",
+   "uuid": "a11baaf8-c11f-50fe-8882-28f56fa187c3",
+   "handle": "a11baaf8",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "faces",
+    "seed"
+   ],
+   "formula": "4b58b7fb610c6cce"
+  },
+  {
+   "name": "pi_turn_degrees",
+   "family": "Pi",
+   "uuid": "269837f3-3c99-2669-a0af-a3fc71ed09d2",
+   "handle": "269837f3",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "faces",
+    "plane"
+   ],
+   "formula": "9b3a57a9cd21a2d3"
+  },
+  {
+   "name": "pi_zu_den",
+   "family": "Pi",
+   "uuid": "3717b04a-aa37-5df8-ac1c-3cc42bc75500",
+   "handle": "3717b04a",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "hexbit",
+    "plane",
+    "seed"
+   ],
+   "formula": "73d5bf8dc0a46476"
+  },
+  {
+   "name": "pi_zu_num",
+   "family": "Pi",
+   "uuid": "9562553e-e237-7f5b-bad1-68e6b5c76aac",
+   "handle": "9562553e",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "n",
+    "plane",
+    "seed"
+   ],
+   "formula": "c60ed7cec10d4922"
+  },
+  {
    "name": "planes",
    "family": "Lattice",
-   "uuid": "06a146f5-1a00-8b17-a08f-bffde4b864ec",
+   "uuid": "06a146f5-1a00-3b17-a08f-bffde4b864ec",
    "handle": "06a146f5",
    "cross": "neither",
    "holds": true,
@@ -1794,7 +1967,7 @@
   {
    "name": "presentation_stylesheet_hz",
    "family": "Clay",
-   "uuid": "6e3b1cf6-73fd-898c-8676-bcfad847f8cf",
+   "uuid": "6e3b1cf6-73fd-598c-8676-bcfad847f8cf",
    "handle": "6e3b1cf6",
    "cross": "neither",
    "holds": true,
@@ -1808,9 +1981,84 @@
    "formula": "1af9076c2beb6466"
   },
   {
+   "name": "prime_three",
+   "family": "Primes",
+   "uuid": "9ba04f1c-df59-2a68-b61b-101fb2528886",
+   "handle": "9ba04f1c",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "n",
+    "n_eq"
+   ],
+   "formula": "48bd76f9de685dfc"
+  },
+  {
+   "name": "prime_two",
+   "family": "Primes",
+   "uuid": "eb5b8614-0c34-5ae1-b9f6-ff6bb92df39d",
+   "handle": "eb5b8614",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "coins_two"
+   ],
+   "formula": "bbc50a140659d10b"
+  },
+  {
+   "name": "primes_all",
+   "family": "Primes",
+   "uuid": "2f39e0fa-c604-3e73-b40c-da92448272a5",
+   "handle": "2f39e0fa",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "bits",
+    "chooseOf",
+    "coins",
+    "faces",
+    "mersenne_127",
+    "mersenne_3",
+    "mersenne_31",
+    "mersenne_7",
+    "mintOf",
+    "n",
+    "prime_three",
+    "prime_two",
+    "primorial_210",
+    "rays",
+    "seed",
+    "shor_factored",
+    "shor_modulus_binomial",
+    "twin_gap",
+    "twin_lower",
+    "twin_upper"
+   ],
+   "formula": "bf1d51040ec8b84f"
+  },
+  {
+   "name": "primorial_210",
+   "family": "Primes",
+   "uuid": "aa0d7ca7-b225-565d-aaf4-858031cdb55f",
+   "handle": "aa0d7ca7",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "n",
+    "rays"
+   ],
+   "formula": "f906d40586d3b5c1"
+  },
+  {
    "name": "propulsion",
    "family": "Lattice",
-   "uuid": "e4029a21-aa31-8dd7-b538-5133411885f2",
+   "uuid": "e4029a21-aa31-4dd7-b538-5133411885f2",
    "handle": "e4029a21",
    "cross": "neither",
    "holds": true,
@@ -1829,7 +2077,7 @@
   {
    "name": "quantum",
    "family": "Lattice",
-   "uuid": "279930ad-8508-8b13-a0d6-d582784481f8",
+   "uuid": "279930ad-8508-4b13-a0d6-d582784481f8",
    "handle": "279930ad",
    "cross": "asymmetric",
    "holds": true,
@@ -1846,7 +2094,7 @@
   {
    "name": "quantum_shor_dim",
    "family": "Clay",
-   "uuid": "ac10e93d-3666-86ec-b0fc-7a3b7957af87",
+   "uuid": "ac10e93d-3666-16ec-b0fc-7a3b7957af87",
    "handle": "ac10e93d",
    "cross": "neither",
    "holds": true,
@@ -1860,7 +2108,7 @@
   {
    "name": "quantum_shor_qubits",
    "family": "Clay",
-   "uuid": "05b2395b-5e5a-859d-bbb7-becd1fb20a64",
+   "uuid": "05b2395b-5e5a-159d-bbb7-becd1fb20a64",
    "handle": "05b2395b",
    "cross": "neither",
    "holds": true,
@@ -1873,7 +2121,7 @@
   {
    "name": "qubits",
    "family": "Lattice",
-   "uuid": "3b37bc55-b95c-89f3-a9fe-0f3c09606770",
+   "uuid": "3b37bc55-b95c-39f3-a9fe-0f3c09606770",
    "handle": "3b37bc55",
    "cross": "neither",
    "holds": true,
@@ -1889,7 +2137,7 @@
   {
    "name": "raid",
    "family": "Lattice",
-   "uuid": "6f6772c9-eaf4-899b-9704-6e341beb8e7f",
+   "uuid": "6f6772c9-eaf4-399b-9704-6e341beb8e7f",
    "handle": "6f6772c9",
    "cross": "asymmetric",
    "holds": true,
@@ -1920,7 +2168,7 @@
   {
    "name": "receipts_uuid_bits",
    "family": "Clay",
-   "uuid": "7492cb07-5b68-8dd4-b536-2e3795ee9ac6",
+   "uuid": "7492cb07-5b68-1dd4-b536-2e3795ee9ac6",
    "handle": "7492cb07",
    "cross": "neither",
    "holds": true,
@@ -1934,7 +2182,7 @@
   {
    "name": "receipts_uuid_digits",
    "family": "Clay",
-   "uuid": "baa72ecb-46be-866d-af2d-59014af32896",
+   "uuid": "baa72ecb-46be-166d-af2d-59014af32896",
    "handle": "baa72ecb",
    "cross": "neither",
    "holds": true,
@@ -1947,7 +2195,7 @@
   {
    "name": "receipts_uuid_handle",
    "family": "Clay",
-   "uuid": "22968267-b291-8337-842e-1c5ebea222b8",
+   "uuid": "22968267-b291-6337-842e-1c5ebea222b8",
    "handle": "22968267",
    "cross": "neither",
    "holds": true,
@@ -1960,7 +2208,7 @@
   {
    "name": "receipts_uuid_params",
    "family": "Clay",
-   "uuid": "2ac3fa54-97a9-8efe-824a-f68aa9d608a0",
+   "uuid": "2ac3fa54-97a9-4efe-824a-f68aa9d608a0",
    "handle": "2ac3fa54",
    "cross": "neither",
    "holds": true,
@@ -1974,7 +2222,7 @@
   {
    "name": "receipts_uuid_program_section",
    "family": "Clay",
-   "uuid": "d4135ab7-5df7-82f6-a0bf-9b54ab9d8b43",
+   "uuid": "d4135ab7-5df7-32f6-a0bf-9b54ab9d8b43",
    "handle": "d4135ab7",
    "cross": "neither",
    "holds": true,
@@ -1987,7 +2235,7 @@
   {
    "name": "relation_14",
    "family": "Clay",
-   "uuid": "a9024a79-c52b-8f14-b919-a853ce782994",
+   "uuid": "a9024a79-c52b-2f14-b919-a853ce782994",
    "handle": "a9024a79",
    "cross": "neither",
    "holds": true,
@@ -2001,7 +2249,7 @@
   {
    "name": "relation_16",
    "family": "Clay",
-   "uuid": "80276e85-f9ea-8662-b571-9b5d51adf14a",
+   "uuid": "80276e85-f9ea-2662-b571-9b5d51adf14a",
    "handle": "80276e85",
    "cross": "neither",
    "holds": true,
@@ -2020,7 +2268,7 @@
   {
    "name": "relation_21",
    "family": "Clay",
-   "uuid": "23187e30-f650-8282-8f96-0762bb1810e6",
+   "uuid": "23187e30-f650-7282-8f96-0762bb1810e6",
    "handle": "23187e30",
    "cross": "neither",
    "holds": true,
@@ -2038,7 +2286,7 @@
   {
    "name": "relation_25",
    "family": "Clay",
-   "uuid": "f4e6a3df-3a01-88dd-aae9-dd0011bbfbdd",
+   "uuid": "f4e6a3df-3a01-18dd-aae9-dd0011bbfbdd",
    "handle": "f4e6a3df",
    "cross": "neither",
    "holds": true,
@@ -2056,7 +2304,7 @@
   {
    "name": "relation_28",
    "family": "Clay",
-   "uuid": "7e79e543-93ab-85f6-ba1f-8eabd4c4d7be",
+   "uuid": "7e79e543-93ab-75f6-ba1f-8eabd4c4d7be",
    "handle": "7e79e543",
    "cross": "neither",
    "holds": true,
@@ -2072,7 +2320,7 @@
   {
    "name": "relation_4294967296",
    "family": "Clay",
-   "uuid": "ed554819-789a-89d7-a704-8161faeb45f2",
+   "uuid": "ed554819-789a-29d7-a704-8161faeb45f2",
    "handle": "ed554819",
    "cross": "neither",
    "holds": true,
@@ -2087,7 +2335,7 @@
   {
    "name": "relation_8",
    "family": "Clay",
-   "uuid": "143c57a6-9f99-8c03-8f1d-0e034bc381b7",
+   "uuid": "143c57a6-9f99-5c03-8f1d-0e034bc381b7",
    "handle": "143c57a6",
    "cross": "neither",
    "holds": true,
@@ -2103,7 +2351,7 @@
   {
    "name": "sciences",
    "family": "Circuit",
-   "uuid": "24a81724-411e-87e9-94b7-af2c2bd530cc",
+   "uuid": "24a81724-411e-67e9-94b7-af2c2bd530cc",
    "handle": "24a81724",
    "cross": "neither",
    "holds": true,
@@ -2130,7 +2378,7 @@
   {
    "name": "seed_eq",
    "family": "Lattice",
-   "uuid": "9d650999-7a49-8237-8682-b06cee881f65",
+   "uuid": "9d650999-7a49-3237-8682-b06cee881f65",
    "handle": "9d650999",
    "cross": "neither",
    "holds": true,
@@ -2144,7 +2392,7 @@
   {
    "name": "server",
    "family": "Circuit",
-   "uuid": "a3af0aff-7263-881d-ad94-b997207abd2b",
+   "uuid": "a3af0aff-7263-481d-ad94-b997207abd2b",
    "handle": "a3af0aff",
    "cross": "asymmetric",
    "holds": true,
@@ -2163,7 +2411,7 @@
   {
    "name": "shor",
    "family": "Shor",
-   "uuid": "c58a75c5-607b-871c-b68e-f734a8376a75",
+   "uuid": "c58a75c5-607b-171c-b68e-f734a8376a75",
    "handle": "c58a75c5",
    "cross": "neither",
    "holds": true,
@@ -2176,9 +2424,41 @@
    "formula": "f1db5208cd6d3643"
   },
   {
+   "name": "shor_factored",
+   "family": "Primes",
+   "uuid": "65d72dca-9c8e-1c91-a23d-7c9ac20d1cd7",
+   "handle": "65d72dca",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "rays",
+    "seed"
+   ],
+   "formula": "f191af86ea55c617"
+  },
+  {
+   "name": "shor_modulus_binomial",
+   "family": "Primes",
+   "uuid": "8b05d66f-cfef-7308-952b-ef4e447b6c81",
+   "handle": "8b05d66f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "chooseOf",
+    "coins",
+    "faces",
+    "rays",
+    "seed"
+   ],
+   "formula": "549893e579702069"
+  },
+  {
    "name": "split_coin",
    "family": "Lattice",
-   "uuid": "49204bb7-daea-8147-9bd6-d4d910feb131",
+   "uuid": "49204bb7-daea-2147-9bd6-d4d910feb131",
    "handle": "49204bb7",
    "cross": "symmetric",
    "holds": true,
@@ -2195,7 +2475,7 @@
   {
    "name": "superconductivity",
    "family": "Physics",
-   "uuid": "018eaae5-b1c4-898b-82fd-d7b521c697b6",
+   "uuid": "018eaae5-b1c4-198b-82fd-d7b521c697b6",
    "handle": "018eaae5",
    "cross": "neither",
    "holds": true,
@@ -2212,7 +2492,7 @@
   {
    "name": "teleport",
    "family": "Circuit",
-   "uuid": "7bf60e50-ec71-8044-b0b4-c28ce5e949c6",
+   "uuid": "7bf60e50-ec71-4044-b0b4-c28ce5e949c6",
    "handle": "7bf60e50",
    "cross": "neither",
    "holds": true,
@@ -2223,7 +2503,7 @@
   {
    "name": "temperature",
    "family": "Physics",
-   "uuid": "505efbc0-96cd-80a5-a367-91b0dc2a9016",
+   "uuid": "505efbc0-96cd-40a5-a367-91b0dc2a9016",
    "handle": "505efbc0",
    "cross": "neither",
    "holds": true,
@@ -2237,7 +2517,7 @@
   {
    "name": "tetra",
    "family": "Lattice",
-   "uuid": "1c3aa6e6-68f2-8889-940c-bde639bb5ea9",
+   "uuid": "1c3aa6e6-68f2-5889-940c-bde639bb5ea9",
    "handle": "1c3aa6e6",
    "cross": "neither",
    "holds": true,
@@ -2252,9 +2532,53 @@
    "formula": "d088155dcc52642d"
   },
   {
+   "name": "twin_gap",
+   "family": "Primes",
+   "uuid": "a1e5906f-179f-29c9-ab0a-0bfcfef40e1d",
+   "handle": "a1e5906f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "coins",
+    "faces",
+    "n",
+    "seed"
+   ],
+   "formula": "313dd04121a1b776"
+  },
+  {
+   "name": "twin_lower",
+   "family": "Primes",
+   "uuid": "54081b5b-9247-16a2-8b02-9f08f37bd54a",
+   "handle": "54081b5b",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "n"
+   ],
+   "formula": "20f1575ca9aac8d7"
+  },
+  {
+   "name": "twin_upper",
+   "family": "Primes",
+   "uuid": "0b07124f-b263-87fa-862a-9a2679510339",
+   "handle": "0b07124f",
+   "cross": "neither",
+   "holds": true,
+   "recomputed": true,
+   "uses": [
+    "faces",
+    "seed"
+   ],
+   "formula": "8b19224dc3e0ba10"
+  },
+  {
    "name": "two_coins_make_a_coil",
    "family": "Coil",
-   "uuid": "d07538fa-1cfa-8b9e-8a7f-2c937ee09f22",
+   "uuid": "d07538fa-1cfa-5b9e-8a7f-2c937ee09f22",
    "handle": "d07538fa",
    "cross": "neither",
    "holds": true,
@@ -2269,7 +2593,7 @@
   {
    "name": "two_x_seven_coins",
    "family": "Coil",
-   "uuid": "9ae82716-bd64-80cc-bcfb-e0b710f7785e",
+   "uuid": "9ae82716-bd64-30cc-bcfb-e0b710f7785e",
    "handle": "9ae82716",
    "cross": "asymmetric",
    "holds": true,
@@ -2287,7 +2611,7 @@
   {
    "name": "waves",
    "family": "Lattice",
-   "uuid": "e4029a21-aa31-8dd7-b538-5133411885f2",
+   "uuid": "e4029a21-aa31-4dd7-b538-5133411885f2",
    "handle": "e4029a21",
    "cross": "neither",
    "holds": true,

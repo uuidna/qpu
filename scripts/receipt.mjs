@@ -78,7 +78,7 @@ const legalOf = async (doc) => {
   const standing = receipts !== undefined ? called('standing', [receipts], LawFormulas.standing(receipts)) : lead('standing')
   const pack = await (await fetch('https://registry.npmjs.org/zeropoint-node', { headers: { accept: 'application/json' } })).json()
   const dated = Object.entries(pack.time ?? {}).filter(([k, t]) => /^\d+\.\d+\.\d+$/.test(k) && typeof t === 'string').sort((a, b) => (a[1] < b[1] ? -1 : 1))
-  const day = (v) => (typeof pack.time?.[v] === 'string' ? pack.time[v].slice(0, 10) : undefined)
+  const day = (v) => (typeof pack.time?.[v] === 'string' ? pack.time[v].slice(0, tenOf(1)) : undefined)
   const first2025 = dated.find(([, t]) => t.startsWith('2025-'))
   const firstAugust = dated.find(([, t]) => t.slice(5, 7) === '08')
   const latest = pack['dist-tags']?.latest
@@ -117,10 +117,34 @@ const legalOf = async (doc) => {
 const write = async (file, doc, rows) => {
   const legal = await legalOf(doc)
   const holds = doc.holds === true && legal.holds === true
-  const out = { ...doc, legal, holds, when: new Date().toISOString().slice(0, tenOf(1)), host, seconds: Math.round((Date.now() - t0) / tenOf(3)), rows }
+  const seconds = Math.round((Date.now() - t0) / tenOf(3))
+  const failRows = Array.isArray(rows) ? rows.filter((r) => r?.pass !== true).length : 0
+  const passRows = Array.isArray(rows) ? rows.length - failRows : 0
+  // Observability stamp: formulated via dist (same path as legalOf). Verbosity default 2 = holds/value + ms/door.
+  let observability
+  try {
+    const { receiptObservabilityOf } = await import('../dist/payload/plugins/observability.js')
+    observability = receiptObservabilityOf({
+      kind: typeof doc.kind === 'string' ? doc.kind : file,
+      file,
+      seconds,
+      door: 'connector',
+      tool: kind,
+      holds,
+      value: doc.uuid ?? doc.receipt ?? (holds ? 1 : 0),
+      verbosity: Number.isSafeInteger(Number(process.env.QPU_VERBOSITY)) ? Number(process.env.QPU_VERBOSITY) : 2,
+      errors: failRows ? rows.filter((r) => r?.pass !== true).slice(0, vertices).map((r) => String(r?.name ?? 'row')) : [],
+      pass: passRows,
+      fail: failRows,
+      rows: Array.isArray(rows) ? rows.length : 0,
+    })
+  } catch {
+    observability = { kind: 'receipt-observability', ms: seconds * tenOf(3), door: 'connector', tool: kind, holds, value: holds ? 1 : 0, verbosity: 2, errors: [], note: 'dist observability unavailable at stamp' }
+  }
+  const out = { ...doc, legal, holds, when: new Date().toISOString().slice(0, tenOf(1)), host, seconds, observability, rows }
   fs.writeFileSync(file, JSON.stringify(out, null, 1) + '\n')
   console.log(JSON.stringify(Object.fromEntries(Object.entries(out).filter(([, v]) => typeof v !== 'object'))))
-  console.log(JSON.stringify({ legal: out.legal }))
+  console.log(JSON.stringify({ legal: out.legal, observability: { ms: observability.ms, door: observability.door, tool: observability.tool, verbosity: observability.verbosity, holds: observability.holds } }))
   return out
 }
 
@@ -218,11 +242,10 @@ if (kind === 'registry') {
     const looked = []
     for (const fixed of arity >= 2 ? [[1], [2], [3], [5], [vertices]] : [[]]) { const s = await call('data', { source: 'sequence', family: 'clay', formula: p.name, fixed }); looked.push(s.reading?.oeis && s.reading.oeis !== 'none' ? `${s.reading.oeis}` : s.warning ? 'too short' : 'none') }
     const oeis = looked.filter((x) => /^A\d+/.test(x))
-    // two levels, and nothing else: the seal (σ∘σ = id, its fixed point) is VERIFIED when recomputed at its address;
-    // the Millennium claim itself is UNVERIFIED — not accepted by the Clay Institute, no Lean theorem states it
-    rows.push({ name: `clay.${p.name}`, pass: p.proven === true, value: `seal: ${p.proven ? 'VERIFIED' : 'UNVERIFIED'} (involution ${p.involution}; seal ${p.seal}; related: ${p.related.length ? p.related.slice(0, 6).join(', ') : 'none'}; values ${p.values.join(', ')}; OEIS ${oeis.length ? oeis.join(', ') : `none (${looked.join(', ')})`}; hex ${p.hex}); claim: UNVERIFIED (doi:10.5281/zenodo.21781602; not accepted by the Clay Institute, no Lean theorem states it)`, receipt: pass.receipt ?? '' })
+    // seal row = formula hex/value/holds evidence only; prize stays a lead; do not state problems solved/unsolved
+    rows.push({ name: `clay.${p.name}`, pass: p.proven === true, value: `seal: ${p.proven ? 'holds' : 'does not hold'} (involution ${p.involution}; seal ${p.seal}; related: ${p.related.length ? p.related.slice(0, 6).join(', ') : 'none'}; values ${p.values.join(', ')}; OEIS ${oeis.length ? oeis.join(', ') : `none (${looked.join(', ')})`}; hex ${p.hex}); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false`, receipt: pass.receipt ?? '' })
   }
-  await write('clay-receipt.json', { kind: 'clay-receipt', verdicts: 'seal VERIFIED or UNVERIFIED by recomputation; the Millennium claim UNVERIFIED', problems: rows.length, sealsVerified: rows.filter((r) => r.pass).length, related: Number(pass.value), relations: pass.relations ?? 0, agents: pass.agents ?? 0, record: `${research.value} APIs the clay words name, ${research.reading?.reading?.read ?? 0} read (${research.reading?.reading?.dataset ?? 'apis.guru'})`, holds: pass.holds === true, uuid: pass.receipt ?? '', receipt: pass.receipt ?? '' }, rows)
+  await write('clay-receipt.json', { kind: 'clay-receipt', verdicts: 'seal holds/does-not-hold by recomputation; prize false; citation holds false; no solved flag', problems: rows.length, sealsVerified: rows.filter((r) => r.pass).length, related: Number(pass.value), relations: pass.relations ?? 0, agents: pass.agents ?? 0, record: `${research.value} APIs the clay words name, ${research.reading?.reading?.read ?? 0} read (${research.reading?.reading?.dataset ?? 'apis.guru'})`, holds: pass.holds === true, uuid: pass.receipt ?? '', receipt: pass.receipt ?? '' }, rows)
 } else if (kind === 'api') {
   // SPLIT, NOT SEQUENCE. The registry is walked in slices of `faces`; every slice is an independent read, so they are
   // fired through a coordinated pool of `faces` workers rather than one wave after another. The wall time is the

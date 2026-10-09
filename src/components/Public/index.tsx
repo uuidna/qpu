@@ -3,8 +3,10 @@ import { headers } from 'next/headers'
 import { Badge } from '@/components/ui/badge'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { FormulaReadings, listedOf } from '@/components/Readings'
+import { AccessPanel, type AccessReading } from '@/components/Public/AccessPanel'
 import { payloadLeadsOf } from '@/payload/plugins/leads'
 import { pluginAxisLengthOf, publicSurfaceOf } from '@/payload/plugins/public'
+import { qpuFacesOf } from '@uuidna/qpu'
 import type { Page } from '@/payload-types'
 
 const crumbOf = (b: { doc?: unknown; url?: string | null; label?: string | null }) => {
@@ -12,16 +14,80 @@ const crumbOf = (b: { doc?: unknown; url?: string | null; label?: string | null 
   return { href: b.url || (slug ? `/${slug}` : ''), label: b.label || slug }
 }
 
-/** The home page's public surface: every registered block, the license reading, and the product-variant lead. */
+/** The home page's public surface: every registered block, the license reading, and the product-variant catalog. */
 export async function PublicSurface({ breadcrumbs }: { breadcrumbs?: Page['breadcrumbs'] } = {}) {
   const surface = await publicSurfaceOf()
   const referer = (await headers()).get('referer')
-  const { license, variant, doors, navigation: nav, network } = surface
+  const { license, variant, doors, navigation: nav, network, access, stats } = surface
+  const lattice = qpuFacesOf()
   const trail = (breadcrumbs ?? []).filter((b) => b.label).slice(0, -1).map(crumbOf).filter((b) => b.href)
   const families = new Set(variant.product.map((row) => row.family).concat(variant.variant.map((row) => row.family)))
   const readings = [nav.binomial, nav.slice, nav.cap, nav.waves, nav.agents, nav.saved]
+  const registerRows = [
+    ...Object.entries(stats.register).map(([k, v]) => [k, v] as const),
+    ['zero', stats.zero] as const,
+    ['temp', stats.temp] as const,
+    ['time', stats.time] as const,
+    ['heat', stats.heat] as const,
+    ['cold', stats.cold] as const,
+    ['coldFusion', stats.coldFusion] as const,
+  ]
   return (
-    <div className="space-y-16">
+    <div className="qpu-machine space-y-16">
+      <section id="machine" className="qpu-panel space-y-3 border p-4">
+        <p className="font-mono text-xs tracking-[0.2em] text-muted-foreground">QPU · INSIDE OUT</p>
+        <h1 className="font-mono text-4xl font-semibold tracking-tight sm:text-5xl">QPU</h1>
+        <p className="max-w-2xl text-sm text-muted-foreground">
+          The site is the machine: lattice coins={lattice.coins} rays={lattice.rays} faces={lattice.faces}
+          — formulas → hex → fused doors → connector → tenant/mode. Clay evidence is seal-wave (
+          <code className="font-mono text-xs">{'{ seal: true } / { pass: i }'}</code>
+          ), not full discover. Access is Unix chmod (rwx×ugo).
+        </p>
+        <p className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
+          <Link href="#access" className="text-primary hover:underline">#access</Link>
+          <Link href="#connector-use" className="text-primary hover:underline">#connector-use</Link>
+          <Link href="#observe" className="text-primary hover:underline">#observe</Link>
+          <Link href="#seal-wave" className="text-primary hover:underline">#seal-wave</Link>
+          <Link href="#native-adapters" className="text-primary hover:underline">#native-adapters</Link>
+          <Link href="#print-chips" className="text-primary hover:underline">#print-chips</Link>
+          <span>
+            bill doors {access.reading.connectBill.doors} · bytes {access.reading.connectBill.bytes}
+            {access.reading.connectBill.qpuPrefixed ? ` · qpu_ ${access.reading.connectBill.qpuPrefixed}` : ' · no qpu_'}
+          </span>
+        </p>
+      </section>
+
+      <section id="register-stats" className="space-y-3">
+        <h2 className="text-xl font-semibold">Register</h2>
+        <p className="font-mono text-xs text-muted-foreground">
+          zero / temp / time / heat / coldFusion from heat.identity → reactor.coldfusion
+          {stats.heatIdentity ? <> · heat <Link href={`/${stats.heatIdentity}`} className="text-primary hover:underline">{stats.heatIdentity}</Link></> : null}
+          {stats.coldFusionHex ? <> · coldFusion <Link href={`/${stats.coldFusionHex}`} className="text-primary hover:underline">{stats.coldFusionHex}</Link></> : null}
+          {' · '}holds {String(stats.holds)}
+          {' · '}bill units {stats.bill.units} · charged {stats.bill.charged} · billed {stats.bill.billed}
+        </p>
+        <table className="w-full max-w-md text-sm font-mono">
+          <thead>
+            <tr className="text-left text-muted-foreground"><th className="py-1 pr-4">Count</th><th className="py-1 text-right">Integer</th></tr>
+          </thead>
+          <tbody>
+            {registerRows.map(([k, v]) => (
+              <tr key={k} className="border-t border-border/40">
+                <td className="py-1 pr-4">{k}</td>
+                <td className="py-1 text-right">{typeof v === 'number' ? v.toLocaleString('en') : String(v)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <AccessPanel
+        initial={access.reading as AccessReading}
+        doors={doors.doors}
+        products={access.products.map((p) => ({ ...p, enums: [...p.enums] }))}
+        faces={lattice.faces}
+      />
+
       <section id="navigation" className="space-y-3">
         <h2 className="text-xl font-semibold">Navigation</h2>
         <Breadcrumb>
@@ -101,6 +167,13 @@ export async function PublicSurface({ breadcrumbs }: { breadcrumbs?: Page['bread
           <Badge variant="outline" className="ml-2">lead</Badge>
         </p>
         <p className="text-sm text-muted-foreground">{variant.absent}</p>
+        {variant.mapped ? (
+          <p className="text-sm text-muted-foreground">
+            sale-surface map (not this hex) · offers {variant.mapped.catalog.offers} · products {variant.mapped.catalog.products} · services {variant.mapped.catalog.services}
+            {' · '}
+            <Link href="/api/qpu/ecommerce" className="font-mono text-primary hover:underline">{variant.mapped.catalog.call}</Link>
+          </p>
+        ) : null}
         <p className="font-mono text-xs">
           <Link href={`/${variant.combinatorics.hex}`} className="text-primary hover:underline">
             {variant.combinatorics.formula}({variant.combinatorics.params.join(',')}) = {String(variant.combinatorics.value)}

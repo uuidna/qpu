@@ -1,6 +1,7 @@
 import type { Block, Payload } from 'payload'
 import { qpuCiteOf, qpuContentUuidOf, qpuFacesOf, qpuInstallOf, qpuPurposeOf } from '@uuidna/qpu'
 import { blocks } from '../blocks/index'
+import { formulatedCatalogOf } from '../payload/plugins/ecommerce'
 import { pluginAxisLengthOf, saleRoyaltyOf, unpagedLayoutBlocksOf } from '../payload/plugins/public'
 import { customOf } from '../fields/blockFields'
 import { HOME } from '../fields/link'
@@ -45,6 +46,8 @@ const purpose = qpuPurposeOf() as unknown as { nature: { platform: string; qubit
 // to this host resolves to, so what the seed writes is what the site reads. Without it every page/doc create is refused
 // ("Assigned Tenant is invalid") and the whole site — pages, nav, receipts — never gets built.
 const ROOT_TENANT = { name: cite.website, domain: cite.website }
+/** Sold tenants from formulatedCatalogOf (root + perma); reserved zone labels are not seeded as tenants. */
+const SOLD_TENANTS = formulatedCatalogOf().seedTenants
 
 // the blocks by what they are
 const qpu = blocks.filter((b) => b.admin?.group === 'QPU')
@@ -65,11 +68,23 @@ const byName = (name: string) => blocks.find((b) => b.slug === name)!
 
 // Sale record. Price stays off, so it holds false until the author sets one. Cloudflare for SaaS custom hostname billing bills the other user's Cloudflare account; the account id stays unset. No card is stored.
 // A sale on this uuidna.com host pays publishing.royalty. The rate integer is unset; the formula returns 0 and holds false.
+// Offers come from formulatedCatalogOf — doors/harnesses/arities/lattice names only; no invented SKUs or prices.
 const royalty = saleRoyaltyOf(cite.website)
-const PRODUCTS = [
-  { title: 'Commercial license', slug: 'commercial-license', description: `${packageName} is licensed ${licence.name}: non-commercial use only. Commercial use needs this license, priced per organisation on request.`, organisation: null, use: null, licence: 'CC-BY-NC-ND-4.0', priceInUSDEnabled: false, billedAccount: 'other-cloudflare-account', cloudflareAccountId: null, royalty, _status: 'published' },
-  { title: 'Storage writes', slug: 'storage-writes', description: `Reads of ${cite.website} are free and open. Writes to the document store need a bearer token; this plan issues one, priced on request.`, priceInUSDEnabled: false, royalty, _status: 'published' },
-]
+const catalog = formulatedCatalogOf()
+const PRODUCTS = catalog.seedProducts.map((p) => ({
+  ...p,
+  organisation: null as null,
+  use: null as null,
+  billedAccount: p.slug === 'commercial-license' ? 'other-cloudflare-account' : null,
+  cloudflareAccountId: null as null,
+  royalty,
+  description:
+    p.slug === 'commercial-license'
+      ? `${packageName} is licensed ${licence.name}: non-commercial use only. Commercial use needs this license, priced per organisation on request.`
+      : p.slug === 'storage-writes'
+        ? `Reads of ${cite.website} are free and open. Writes to the document store need a bearer token; this plan issues one, priced on request.`
+        : p.description,
+}))
 const FORM = {
   title: `${PRODUCTS[0]!.title} request`,
   submitButtonLabel: `Request a ${PRODUCTS[0]!.title.toLowerCase()}`,
@@ -128,7 +143,7 @@ const FOOTER = {
   navItems: [page(HOME, 'Home'), page(LICENCE_PAGE.slug, PRODUCTS[0]!.title), url(`${cite.href}/mcp`, 'MCP'), url(repo, 'GitHub'), url(cite.identifier, 'DOI'), url(cite.author.orcid, 'ORCID')] as NavItem[],
 }
 
-const CONTENT = { tenant: ROOT_TENANT, docs: generated.map((d) => d.uuid), receipts: receipts.map((r) => r.name), FORM, PRODUCTS, PAGES, HEADER, FOOTER }
+const CONTENT = { tenant: ROOT_TENANT, tenants: SOLD_TENANTS, docs: generated.map((d) => d.uuid), receipts: receipts.map((r) => r.name), FORM, PRODUCTS, PAGES, HEADER, FOOTER }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // THE APPLIER
@@ -235,7 +250,9 @@ async function seedSite(payload: Payload) {
     const id = r.ref === 'docs' ? docId(r.slug) : pages.get(r.slug)
     return id ? { type: 'reference', reference: { relationTo: r.ref, value: id }, ...(label ? { label } : {}) } : { type: 'custom', url: `/${r.slug}`, ...(label ? { label } : {}) }
   }
-  // the tenant this host resolves to, stamped on every page the plugin scopes; tenants itself is unscoped, so it needs none
+  // tenants the catalog sells/serves (root host + perma); tenants collection is unscoped
+  for (const t of SOLD_TENANTS) await ensure(payload, 'tenants', 'domain', t.domain, t)
+  // the tenant this host resolves to, stamped on every page the plugin scopes
   const tenant = (await ensure(payload, 'tenants', 'domain', ROOT_TENANT.domain, ROOT_TENANT)).id
   const form = await ensure(payload, 'forms', 'title', FORM.title, FORM)
   for (const p of PRODUCTS) await ensure(payload, 'products', 'slug', p.slug, p)

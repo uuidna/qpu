@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** SURVEYING — THE FIELD BOOK AS ARITHMETIC (chosen by the land-survey registry, not by hand). Running a traverse is
  *  numbers: the forward bearing off a back-bearing, the chained length of the legs, the height of instrument carried
@@ -14,7 +16,7 @@ const c = (id: string, formula: string, value: number, holds: boolean, name: str
 
 export class SurveyingFormulas {
   /** FORWARD BEARING: the back-bearing turned through the interior angle, wrapped to the circle. value (back + angle) mod 360. */
-  static bearing(back: number, angle: number): CrossFormula { return c('surveying-bearing', 'bearing(back, angle) = (back + angle) mod 360', (back + angle) % 360, nat(back, angle), 'bearing', [back, angle]) }
+  static bearing(back: number, angle: number): CrossFormula { return c('surveying-bearing', 'bearing(back, angle) = (back + angle) mod 360', (back + angle) % fullTurn, nat(back, angle), 'bearing', [back, angle]) }
   /** TRAVERSE: the chained length of the legs at a chain each. value legs · chain. */
   static traverse(legs: number, chain: number): CrossFormula { return c('surveying-traverse', 'traverse(legs, chain) = legs · chain', legs * chain, nat(legs, chain), 'traverse', [legs, chain]) }
   /** ELEVATION by height of instrument: the bench plus backsight less foresight. value max(0, bench + bs − fs). */

@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** OSCILLATORS — PERIODIC SIGNALS AS ARITHMETIC. A running oscillator is numbers: its frequency from the cycles it turns
  *  in a span, the period of one cycle, the duty a square wave holds high, the phase a shift lands at, the resonant point of
@@ -19,7 +21,7 @@ export class OscillatorsFormulas {
   /** DUTY CYCLE: fraction a wave is held high, as a percentage. value ⌊on · 100 / total⌋. */
   static dutycycle(on: number, total: number): CrossFormula { return c('oscillators-dutycycle', 'dutycycle(on, total) = ⌊on · 100 / total⌋', total > 0 ? Math.floor((on * 100) / total) : 0, nat(on, total) && total > 0 && on <= total, 'dutycycle', [on, total]) }
   /** PHASE: a shift of the period, in degrees. value ⌊shift · 360 / period⌋. */
-  static phase(shift: number, period: number): CrossFormula { return c('oscillators-phase', 'phase(shift, period) = ⌊shift · 360 / period⌋', period > 0 ? Math.floor((shift * 360) / period) : 0, nat(shift, period) && period > 0, 'phase', [shift, period]) }
+  static phase(shift: number, period: number): CrossFormula { return c('oscillators-phase', 'phase(shift, period) = ⌊shift · 360 / period⌋', period > 0 ? Math.floor((shift * fullTurn) / period) : 0, nat(shift, period) && period > 0, 'phase', [shift, period]) }
   /** RESONANCE: the resonant point of an LC tank. value ⌊1000000 / (l · cc)⌋. */
   static resonance(l: number, cc: number): CrossFormula { return c('oscillators-resonance', 'resonance(l, cc) = ⌊1000000 / (l · cc)⌋', l * cc > 0 ? Math.floor(1000000 / (l * cc)) : 0, nat(l, cc) && l * cc > 0, 'resonance', [l, cc]) }
   /** HARMONICS: the nth harmonic of a fundamental. value fundamental · n. */

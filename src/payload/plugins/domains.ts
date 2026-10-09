@@ -24,8 +24,13 @@ const readingOf = (asked: string, family: string, formula: string, run: CrossFor
 
 export const domainReadingsOf = () => {
   const upgrade = postQuantumUpgradeOf().upgrade
+  const known = CryptFormulas.knownAnswers()
+  const classical = CryptFormulas.curveClassicalBits(256)
+  const quantum = CryptFormulas.curveQuantumBits(256)
   const readings = [
-    readingOf('crypto', 'crypt', 'knownAnswers', CryptFormulas.knownAnswers()),
+    readingOf('crypto', 'crypt', 'knownAnswers', known),
+    readingOf('crypto-curve-classical', 'crypt', 'curveClassicalBits', classical),
+    readingOf('crypto-curve-quantum', 'crypt', 'curveQuantumBits', quantum),
     readingOf('color', 'color', 'channels', ColorFormulas.channels(3, 1)),
     readingOf('sound', 'audio', 'samples', AudioFormulas.samples(44100, 2)),
     readingOf('health', 'med', 'gcs', MedFormulas.gcs(4, 5, 6)),
@@ -34,6 +39,13 @@ export const domainReadingsOf = () => {
     kind: 'domains' as const,
     upgrade,
     readings,
+    crypt: {
+      knownAnswers: known,
+      curveClassicalBits256: classical,
+      curveQuantumBits256: quantum,
+      aeadTagBits: CryptFormulas.aeadTagBits(),
+      hashCollisionBits256: CryptFormulas.hashCollisionBits(256),
+    },
     holds: readings.every((r) => r.holds === true) && upgrade.holds === true,
   }
 }

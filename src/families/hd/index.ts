@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn, halfTurn } = qpuLatticeNamesOf()
 
 /** HUMAN DESIGN, THE STRUCTURE ONLY. The Rave Mandala is a wheel of 64 gates (the I Ching hexagrams) of 360/64° each,
  *  six lines of a gate's arc each, anchored at gate 41 at 302°; nine centers partition the 64 gates; 36 channels join
@@ -17,7 +19,7 @@ const WHEEL = [
 ] as const
 const GATES = WHEEL.length
 const LINES = 6
-const GATE_ARC = 360 / GATES
+const GATE_ARC = fullTurn / GATES
 const LINE_ARC = GATE_ARC / LINES
 const GATE_41_START = 302
 const DESIGN_ARC = 88
@@ -46,10 +48,10 @@ export const DEFINITIONS = ['none', 'single', 'split', 'triple split', 'quadrupl
 const PROOF = 'ceccec.github.io src/quantum/spirit (wheel W3, lattice W5) and src/heaven/sky/astronomy (Meeus W4, design solver); structure only'
 
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
-const norm = (deg: number) => ((deg % 360) + 360) % 360
-const rad = (deg: number) => (deg * Math.PI) / 180
+const norm = (deg: number) => ((deg % fullTurn) + fullTurn) % fullTurn
+const rad = (deg: number) => (deg * Math.PI) / halfTurn
 // the shortest signed turn from a to b, in (−180, 180]
-const signed = (from: number, to: number) => { let d = norm(to) - norm(from); if (d > 180) d -= 360; if (d <= -180) d += 360; return d }
+const signed = (from: number, to: number) => { let d = norm(to) - norm(from); if (d > halfTurn) d -= fullTurn; if (d <= -halfTurn) d += fullTurn; return d }
 
 /** Sun's apparent geocentric ecliptic longitude at a Julian day (Meeus ch. 25, reduced). */
 export const sunLongitudeOf = (jd: number): number => {

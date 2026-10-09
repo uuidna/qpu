@@ -1,0 +1,52 @@
+{
+ "kind": "clay-receipt",
+ "when": "2026-10-08",
+ "verdicts": "seal holds/does-not-hold by recomputation; prize false; citation holds false; no solved flag",
+ "problems": 6,
+ "sealsVerified": 6,
+ "related": 59,
+ "relations": 0,
+ "agents": 0,
+ "record": "live claySealWaveOf domain-wave; clay-receipt written from README claimable verify",
+ "holds": true,
+ "uuid": "13962491-8000-2000-8000-000000000000",
+ "receipt": "13962491-8000-2000-8000-000000000000",
+ "rows": [
+  {
+   "name": "clay.bsd",
+   "pass": true,
+   "value": "seal: holds (involution holds on every domain input; domain 13/13; hex 13962491-1000-6000-9000-000000000003; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false",
+   "receipt": "13962491-1000-6000-9000-000000000003"
+  },
+  {
+   "name": "clay.hodge",
+   "pass": true,
+   "value": "seal: holds (involution holds on every domain input; domain 14/14; hex 13962491-3000-7000-9000-000000000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false",
+   "receipt": "13962491-3000-7000-9000-000000000001"
+  },
+  {
+   "name": "clay.navierStokes",
+   "pass": true,
+   "value": "seal: holds (involution holds on every domain input; domain 14/14; hex 13962491-4000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false",
+   "receipt": "13962491-4000-1000-a000-000001000001"
+  },
+  {
+   "name": "clay.pVsNp",
+   "pass": true,
+   "value": "seal: holds (involution holds on every domain input; domain 2/2; hex 13962491-5000-6000-9000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false",
+   "receipt": "13962491-5000-6000-9000-000000000000"
+  },
+  {
+   "name": "clay.riemann",
+   "pass": true,
+   "value": "seal: holds (involution holds on every domain input; domain 15/15; hex 13962491-7000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false",
+   "receipt": "13962491-7000-1000-a000-000001000001"
+  },
+  {
+   "name": "clay.yangMills",
+   "pass": true,
+   "value": "seal: holds (involution holds on every domain input; domain 1/1; hex 13962491-8000-2000-8000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false",
+   "receipt": "13962491-8000-2000-8000-000000000000"
+  }
+ ]
+}

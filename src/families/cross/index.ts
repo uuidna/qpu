@@ -11,6 +11,8 @@ export interface CrossFormula {
   formula: string
   value: number
   proof: string
+  /** Family mark at the deepest seal (e.g. heat, reactor) — identifiable without prose. */
+  kind?: string
   /** Content address of src, dst and formula: the same bridge has the same uuid wherever it is declared. */
   uuid: string
   /** Programmable UUID of this evaluation's quantum receipt (payload + referrer). */

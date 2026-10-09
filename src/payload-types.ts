@@ -67,18 +67,18 @@ export type SupportedTimezones =
   | 'Pacific/Fiji';
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LexicalNodes_C755EBD0".
+ * via the `definition` "LexicalNodes_CDDA2F68".
  */
-export type LexicalNodes_C755EBD0 =
+export type LexicalNodes_CDDA2F68 =
   | SerializedTextNode
   | SerializedTabNode
   | SerializedLineBreakNode
-  | SerializedParagraphNode<LexicalNodes_C755EBD0>
+  | SerializedParagraphNode<LexicalNodes_CDDA2F68>
   | SerializedHorizontalRuleNode
   | SerializedUploadNode<'media'>
   | SerializedUploadNode<'exports'>
   | SerializedUploadNode<'imports'>
-  | SerializedQuoteNode<LexicalNodes_C755EBD0>
+  | SerializedQuoteNode<LexicalNodes_CDDA2F68>
   | SerializedRelationshipNode<
       | 'case-studies'
       | 'categories'
@@ -96,6 +96,8 @@ export type LexicalNodes_C755EBD0 =
       | 'reusable-content'
       | 'tenants'
       | 'users'
+      | 'usage'
+      | 'wave-sweeps'
       | 'addresses'
       | 'variants'
       | 'variantTypes'
@@ -111,11 +113,11 @@ export type LexicalNodes_C755EBD0 =
       | 'payload-preferences'
       | 'payload-migrations'
     >
-  | SerializedAutoLinkNode<LexicalNodes_C755EBD0, LexicalLinkFields>
-  | SerializedLinkNode<LexicalNodes_C755EBD0, LexicalLinkFields>
-  | SerializedListNode<LexicalNodes_C755EBD0>
-  | SerializedListItemNode<LexicalNodes_C755EBD0>
-  | SerializedHeadingNode<LexicalNodes_C755EBD0>;
+  | SerializedAutoLinkNode<LexicalNodes_CDDA2F68, LexicalLinkFields>
+  | SerializedLinkNode<LexicalNodes_CDDA2F68, LexicalLinkFields>
+  | SerializedListNode<LexicalNodes_CDDA2F68>
+  | SerializedListItemNode<LexicalNodes_CDDA2F68>
+  | SerializedHeadingNode<LexicalNodes_CDDA2F68>;
 
 export interface Config {
   auth: {
@@ -140,6 +142,8 @@ export interface Config {
     tenants: Tenant;
     users: User;
     media: Media;
+    usage: Usage;
+    'wave-sweeps': WaveSweep;
     addresses: Address;
     variants: Variant;
     variantTypes: VariantType;
@@ -186,6 +190,8 @@ export interface Config {
     tenants: TenantsSelect<false> | TenantsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    usage: UsageSelect<false> | UsageSelect<true>;
+    'wave-sweeps': WaveSweepsSelect<false> | WaveSweepsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
     variantTypes: VariantTypesSelect<false> | VariantTypesSelect<true>;
@@ -213,12 +219,10 @@ export interface Config {
   globals: {
     footer: Footer;
     header: Header;
-    'payload-jobs-stats': PayloadJobsStat;
   };
   globalsSelect: {
     footer: FooterSelect<false> | FooterSelect<true>;
     header: HeaderSelect<false> | HeaderSelect<true>;
-    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -371,7 +375,7 @@ export interface BannerBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'banner';
@@ -387,7 +391,7 @@ export interface BlogContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'blogContent';
@@ -403,7 +407,7 @@ export interface BlogMarkdownBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'blogMarkdown';
@@ -552,7 +556,7 @@ export interface CalloutBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'callout';
@@ -691,7 +695,7 @@ export interface CodeFeatureBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   family?: string | null;
   program?: string | null;
   params?: string | null;
@@ -734,7 +738,7 @@ export interface ContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'content';
@@ -881,7 +885,7 @@ export interface Form {
   fields?: (Checkbox | Country | Email | Message | Number | Select | State | Text | Textarea)[] | null;
   submitButtonLabel?: string | null;
   confirmationType?: ('message' | 'redirect') | null;
-  confirmationMessage?: LexicalRichText<LexicalNodes_C755EBD0>;
+  confirmationMessage?: LexicalRichText<LexicalNodes_CDDA2F68>;
   redirect?: {
     url: string;
   };
@@ -893,7 +897,7 @@ export interface Form {
         replyTo?: string | null;
         emailFrom?: string | null;
         subject: string;
-        message?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+        message?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
         id?: string | null;
       }[]
     | null;
@@ -945,7 +949,7 @@ export interface Email {
  * via the `definition` "Message".
  */
 export interface Message {
-  message?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  message?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'message';
@@ -1114,8 +1118,6 @@ export interface Media {
    * Choose an upload to render if the visitor is using dark mode.
    */
   darkModeFallback?: (string | null) | Media;
-  prefix?: string | null;
-  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1270,7 +1272,7 @@ export interface MediaContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   /**
    * the media URL
    */
@@ -1291,7 +1293,7 @@ export interface MediaContentAccordionBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   /**
    * the media URL
    */
@@ -1410,7 +1412,7 @@ export interface ReusableContentBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'reusableContent';
@@ -1464,7 +1466,7 @@ export interface StatementBlock {
    */
   anchor?: string | null;
   intro?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'statement';
@@ -1566,7 +1568,7 @@ export interface CommunityHelp {
   tenant?: (string | null) | Tenant;
   title: string;
   slug?: string | null;
-  body?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  body?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1774,7 +1776,7 @@ export interface ReusableContent {
   tenant?: (string | null) | Tenant;
   title: string;
   slug?: string | null;
-  richText?: LexicalRichText<LexicalNodes_C755EBD0> | null;
+  richText?: LexicalRichText<LexicalNodes_CDDA2F68> | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1800,7 +1802,6 @@ export interface User {
   resetPasswordExpiration?: string | null;
   salt?: string | null;
   hash?: string | null;
-  resetPasswordRequestedAt?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
   sessions?:
@@ -1812,6 +1813,43 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "usage".
+ */
+export interface Usage {
+  id: string;
+  units?: number | null;
+  charged?: number | null;
+  billed?: number | null;
+  margin?: number | null;
+  tenant?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Combinatorial wave.sweep grids; afterRead runs the lattice stride.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wave-sweeps".
+ */
+export interface WaveSweep {
+  id: string;
+  from: number;
+  width?: number | null;
+  passes?: number | null;
+  reading?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1908,17 +1946,15 @@ export interface Product {
   licence?: string | null;
   billedAccount?: string | null;
   cloudflareAccountId?: string | null;
-  royalty?: {
-    name?: string | null;
-    formula?: string | null;
-    host?: string | null;
-    called?: boolean | null;
-    params?: { sales?: number | null; rate?: number | null } | null;
-    missing?: string | null;
-    value?: number | null;
-    holds?: boolean | null;
-    uuid?: string | null;
-  } | null;
+  royalty?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   inventory?: number | null;
   enableVariants?: boolean | null;
   variantTypes?: (string | VariantType)[] | null;
@@ -2054,7 +2090,7 @@ export interface Transaction {
     country?: string | null;
     phone?: string | null;
   };
-  status: 'pending' | 'processing' | 'succeeded' | 'failed' | 'cancelled' | 'expired' | 'refunded';
+  status: 'pending' | 'succeeded' | 'failed' | 'cancelled' | 'expired' | 'refunded';
   customer?: (string | null) | User;
   customerEmail?: string | null;
   order?: (string | null) | Order;
@@ -2244,15 +2280,6 @@ export interface PayloadJob {
     | number
     | boolean
     | null;
-  meta?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
   completedAt?: string | null;
   totalTried?: number | null;
   /**
@@ -2280,7 +2307,7 @@ export interface PayloadJob {
         completedAt: string;
         taskSlug: 'inline' | 'createCollectionExport' | 'createCollectionImport';
         taskID: string;
-        input:
+        input?:
           | {
               [k: string]: unknown;
             }
@@ -2308,10 +2335,6 @@ export interface PayloadJob {
           | number
           | boolean
           | null;
-        parent?: {
-          taskSlug?: ('inline' | 'createCollectionExport' | 'createCollectionImport') | null;
-          taskID?: string | null;
-        };
         id?: string | null;
       }[]
     | null;
@@ -2319,11 +2342,6 @@ export interface PayloadJob {
   queue?: string | null;
   waitUntil?: string | null;
   processingUntil?: string | null;
-  processingToken?: string | null;
-  /**
-   * Used for concurrency control. Jobs with the same key are subject to exclusive/supersedes rules.
-   */
-  concurrencyKey?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2401,6 +2419,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'usage';
+        value: string | Usage;
+      } | null)
+    | ({
+        relationTo: 'wave-sweeps';
+        value: string | WaveSweep;
       } | null)
     | ({
         relationTo: 'addresses';
@@ -3565,7 +3591,6 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
-  resetPasswordRequestedAt?: T;
   loginAttempts?: T;
   lockUntil?: T;
   sessions?:
@@ -3583,8 +3608,6 @@ export interface UsersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   darkModeFallback?: T;
-  prefix?: T;
-  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -3596,6 +3619,31 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "usage_select".
+ */
+export interface UsageSelect<T extends boolean = true> {
+  units?: T;
+  charged?: T;
+  billed?: T;
+  margin?: T;
+  tenant?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wave-sweeps_select".
+ */
+export interface WaveSweepsSelect<T extends boolean = true> {
+  from?: T;
+  width?: T;
+  passes?: T;
+  reading?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -4029,7 +4077,6 @@ export interface PayloadKvSelect<T extends boolean = true> {
 export interface PayloadJobsSelect<T extends boolean = true> {
   input?: T;
   taskStatus?: T;
-  meta?: T;
   completedAt?: T;
   totalTried?: T;
   hasError?: T;
@@ -4045,20 +4092,12 @@ export interface PayloadJobsSelect<T extends boolean = true> {
         output?: T;
         state?: T;
         error?: T;
-        parent?:
-          | T
-          | {
-              taskSlug?: T;
-              taskID?: T;
-            };
         id?: T;
       };
   taskSlug?: T;
   queue?: T;
   waitUntil?: T;
   processingUntil?: T;
-  processingToken?: T;
-  concurrencyKey?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -4153,24 +4192,6 @@ export interface Header {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-jobs-stats".
- */
-export interface PayloadJobsStat {
-  id: string;
-  stats?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer_select".
  */
 export interface FooterSelect<T extends boolean = true> {
@@ -4216,16 +4237,6 @@ export interface HeaderSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payload-jobs-stats_select".
- */
-export interface PayloadJobsStatsSelect<T extends boolean = true> {
-  stats?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -4259,6 +4270,8 @@ export interface CollectionQueryWidget {
       | 'tenants'
       | 'users'
       | 'media'
+      | 'usage'
+      | 'wave-sweeps'
       | 'variants'
       | 'variantTypes'
       | 'variantOptions'
@@ -4312,6 +4325,8 @@ export interface ActivityWidget {
           | 'tenants'
           | 'users'
           | 'media'
+          | 'usage'
+          | 'wave-sweeps'
           | 'variants'
           | 'variantTypes'
           | 'variantOptions'
@@ -4357,6 +4372,8 @@ export interface TaskCreateCollectionExport {
       | 'tenants'
       | 'users'
       | 'media'
+      | 'usage'
+      | 'wave-sweeps'
       | 'addresses'
       | 'variants'
       | 'variantTypes'

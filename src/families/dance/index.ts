@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** DANCE — MOVEMENT AS ARITHMETIC. The craft is numbers: the tempo a count keeps, the counts a bar holds, how in time the
  *  floor is, the steps a routine drills, the phrase a section spans, how high a jump clears, the turn an angle lands on, and
@@ -24,7 +26,7 @@ export class DanceFormulas {
   /** ELEVATION: the height a jump clears per attempt. value ⌊height / attempts⌋. */
   static elevation(height: number, attempts: number): CrossFormula { return c('dance-elevation', 'elevation(height, attempts) = ⌊height / attempts⌋', attempts > 0 ? Math.floor(height / attempts) : 0, nat(height, attempts) && attempts > 0, 'elevation', [height, attempts]) }
   /** ROTATION: the turn an angle lands on. value ((degrees mod 360) + 360) mod 360. */
-  static rotation(degrees: number): CrossFormula { return c('dance-rotation', 'rotation(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % 360) + 360) % 360, nat(degrees), 'rotation', [degrees]) }
+  static rotation(degrees: number): CrossFormula { return c('dance-rotation', 'rotation(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % fullTurn) + fullTurn) % fullTurn, nat(degrees), 'rotation', [degrees]) }
   /** STAMINA: how long the body lasts between rests, as a percentage. value ⌊duration · 100 / rest⌋. */
   static stamina(duration: number, rest: number): CrossFormula { return c('dance-stamina', 'stamina(duration, rest) = ⌊duration · 100 / rest⌋', rest > 0 ? Math.floor((duration * 100) / rest) : 0, nat(duration, rest) && rest > 0, 'stamina', [duration, rest]) }
 }

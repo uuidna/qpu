@@ -17,20 +17,20 @@
  */
 export type Port = { domain: string; relates: readonly string[]; how?: string; lead?: boolean }
 export const QPU_PORTS: Record<string, Port> = {
-  // storage domain — the content-addressed store
-  fs: { domain: 'storage', relates: ['path', 'stream', 'os', 'sqlite'], how: 'qpuDocDbOf — read/write at an address, not a path on a disk' },
-  path: { domain: 'storage', relates: ['fs', 'url'], how: 'an address is the path: handle/row, not a filesystem path' },
-  sqlite: { domain: 'storage', relates: ['fs', 'db'], how: 'qpuDocDbOf / the db family — the store, content-addressed' },
+  // storage domain — RAID-native DocStore / content-addressed FS (not node:fs on disk)
+  fs: { domain: 'storage', relates: ['path', 'stream', 'os', 'sqlite'], how: 'qpuStorageOf / qpuDocDbOf over RAID DocStore (KV+R2 qpu-raid, d1DocStore, or memory) — address GET/PUT/DELETE, not node:fs' },
+  path: { domain: 'storage', relates: ['fs', 'url'], how: 'content address / handle/row on RAID; not a host filesystem path' },
+  sqlite: { domain: 'storage', relates: ['fs', 'db'], how: 'qpu-d1 d1DocStore / qpuDocDbOf — content-addressed; combination db axis, not a sqlite port into the core' },
   // net domain — readings and the edge, never a raw socket
   http: { domain: 'net', relates: ['https', 'http2', 'net', 'url', 'stream', 'dns'], how: 'the fetch handler serves; data reads a host as a reading with agrees/holds' },
   https: { domain: 'net', relates: ['http', 'tls'], how: 'as http — one fetch, bounded, counted, caught' },
   http2: { domain: 'net', relates: ['http', 'tls', 'stream'], how: 'as http — the edge multiplexes' },
   net: { domain: 'net', relates: ['tls', 'dns', 'dgram', 'stream'], how: 'a reading, not a raw socket' },
-  dns: { domain: 'net', relates: ['net'], how: 'resolve as a reading through data', lead: true },
-  dgram: { domain: 'net', relates: ['net'], how: 'no datagram port yet', lead: true },
+  dns: { domain: 'net', relates: ['net'], how: 'dns family formulas (ttl/records/labels/…) + data host readings — resolve as arithmetic and agrees/holds, not node:dns' },
+  dgram: { domain: 'net', relates: ['net'], how: 'datagram intent is a bounded reading on the net door — no UDP socket in the core; edge multiplexes' },
   url: { domain: 'net', relates: ['path', 'querystring'], how: 'URL — a Web value; an address is the unit’s own url' },
   querystring: { domain: 'net', relates: ['url'], how: 'URLSearchParams — a Web value' },
-  punycode: { domain: 'net', relates: ['url'], how: 'deprecated in node; only if a family needs it', lead: true },
+  punycode: { domain: 'net', relates: ['url'], how: 'URL / IDNA via Web URL — punycode is deprecated in node; the unit keeps Unicode host names as URL values' },
   // crypt domain — qpu's own crypto
   crypto: { domain: 'crypt', relates: ['tls', 'hash', 'buffer'], how: 'crypt / Web Crypto (src/core/crypt.ts) — sha256, hkdf, ed25519, x25519, aead; no node:crypto' },
   tls: { domain: 'crypt', relates: ['net', 'crypto'], how: 'crypt seals; the edge terminates TLS' },
@@ -39,25 +39,25 @@ export const QPU_PORTS: Record<string, Port> = {
   process: { domain: 'compute', relates: ['os', 'child_process'], how: 'the unit reads its own context (compute_context), it does not fork the host' },
   perf_hooks: { domain: 'compute', relates: ['process'], how: 'every call is timed into its receipt (percall) — no separate clock' },
   timers: { domain: 'compute', relates: [], how: 'the runtime’s own timers (Web) — setTimeout/AbortSignal.timeout' },
-  v8: { domain: 'compute', relates: ['process'], how: 'engine internals not ported', lead: true },
-  inspector: { domain: 'compute', relates: ['process'], how: 'the receipt is the trace', lead: true },
-  trace_events: { domain: 'compute', relates: ['process'], how: 'the receipt is the trace', lead: true },
-  diagnostics_channel: { domain: 'compute', relates: ['events'], how: 'monitoring is formulas (heat.slow)', lead: true },
-  async_hooks: { domain: 'compute', relates: ['process'], how: 'no async context port', lead: true },
+  v8: { domain: 'compute', relates: ['process'], how: 'lattice / compute_machine readings — engine capacity as formulas, not V8 inspector APIs' },
+  inspector: { domain: 'compute', relates: ['process'], how: 'the receipt is the trace — qpuUuidReceiptOf / percall, not node:inspector' },
+  trace_events: { domain: 'compute', relates: ['process'], how: 'the receipt is the trace — same door as inspector' },
+  diagnostics_channel: { domain: 'compute', relates: ['events'], how: 'heat.slow / observability formulas — monitoring as arithmetic, not node:diagnostics_channel' },
+  async_hooks: { domain: 'compute', relates: ['process'], how: 'sandbox epoch + receipt chain — async context is the receipted call, not AsyncLocalStorage' },
   // stdio domain — the shell boundary
   console: { domain: 'stdio', relates: ['readline', 'tty', 'process'], how: 'the unit writes through its own stdio adapter' },
   readline: { domain: 'stdio', relates: ['console', 'tty', 'stream'], how: 'the unit reads a line through its own stdio adapter' },
   tty: { domain: 'stdio', relates: ['console', 'readline'], how: 'as readline/console — one stdio port' },
-  repl: { domain: 'stdio', relates: ['readline', 'vm'], how: 'the MCP is the repl — ask data { ask }', lead: true },
+  repl: { domain: 'stdio', relates: ['readline', 'vm'], how: 'the MCP is the repl — tools/call and data { ask }' },
   // sandbox domain — running code, never a forked host
   child_process: { domain: 'sandbox', relates: ['process', 'worker_threads', 'stream'], how: 'run in a sandbox, not a forked host process' },
   worker_threads: { domain: 'sandbox', relates: ['child_process', 'stream'], how: 'an isolate is the worker' },
   vm: { domain: 'sandbox', relates: ['module'], how: 'the sandbox evaluates; the expr interpreter runs formula data (expr.ts), never eval' },
-  cluster: { domain: 'sandbox', relates: ['child_process', 'worker_threads'], how: 'the edge scales the isolate', lead: true },
-  wasi: { domain: 'sandbox', relates: ['vm'], how: 'no wasi port yet', lead: true },
+  cluster: { domain: 'sandbox', relates: ['child_process', 'worker_threads'], how: 'the edge scales the isolate — Workers/anycast, not node:cluster forking' },
+  wasi: { domain: 'sandbox', relates: ['vm'], how: 'Worker isolate + sandbox is the guest boundary — WASI-shaped host capability without a wasi runtime in the core' },
   // install domain — the manifest, regenerated from the filesystem
   module: { domain: 'install', relates: ['fs', 'vm'], how: 'qpuInstallOf — the manifest; the registry regenerates from the filesystem' },
-  sea: { domain: 'install', relates: ['module'], how: 'single-executable is a deploy mode (standalone), not a core import', lead: true },
+  sea: { domain: 'install', relates: ['module'], how: 'standalone deploy mode in PayloadTemplates — single-executable as a delivery shell, not a core import' },
   // value domain — Web values and the stream/events families
   stream: { domain: 'value', relates: ['events', 'buffer', 'fs'], how: 'the stream family; the hex engine folds a program like a stream' },
   events: { domain: 'value', relates: ['stream'], how: 'the stream family carries events' },
@@ -66,7 +66,7 @@ export const QPU_PORTS: Record<string, Port> = {
   util: { domain: 'value', relates: ['sys'], how: 'src/core/ops — the unit’s own helpers' },
   sys: { domain: 'value', relates: ['util'], how: 'an alias of util — src/core/ops' },
   constants: { domain: 'value', relates: [], how: 'the lattice constants (qpuLatticeNamesOf) — named, not imported' },
-  domain: { domain: 'value', relates: ['events'], how: 'deprecated in node; errors ride the receipt', lead: true },
+  domain: { domain: 'value', relates: ['events'], how: 'deprecated in node; errors ride the receipt — domain modules are receipt failures, not node:domain' },
   // compress domain — compression is a formula
   zlib: { domain: 'compress', relates: ['stream', 'buffer'], how: 'the compress cross (dst: compress) — compression is a formula' },
   // gate domain — the proof harness
@@ -156,9 +156,10 @@ export const PORTING_STEPS: readonly string[] = [
   'Name it one lowercase word (the rule.named rule): anything ported is a FAMILY that crosses to a DOMAIN and relates to other families (its neighbours in the open graph) — never a flat door and never a package.',
   'Express what it computes as formulas — { name, params, expr } data (expr.ts), or a registered formula crossing to its dst; each becomes a hex program at an address the one engine runs, holds-checks and receipts.',
   'If it reads the outside (a host, a dataset, an API), add it as a data SOURCE — a reading with agrees/holds, sliced by { from, take } — never a dependency.',
-  'If it is a host capability (fs, http, os, process, child_process), answer it through a PORT door (storage, server, stdio, sandbox, install), guarded, through the MCP — never a bare import in the core.',
+  'If it is a host capability (fs, http, os, process, child_process), answer it through a PORT door (storage, server, stdio, sandbox, install), guarded, through the MCP — never a bare import in the core. fs/db bind through RAID-native DocStore (qpu-raid / qpu-d1), still named as ports — not skipped.',
+  'Batch ports combinatorially: stride = faces (14), width = faces·2 doubling each pass, Promise.all within a pass (wave.sweep / combinatorics.binomial) — not serial one-module.',
   'Add the file; the registry regenerates from the filesystem (no hand lists). Do not edit a list.',
-  'The gate crosses it: an uncrossed formula is a lead (gate.crossed), not a block. Develop the lead; never take the dependency.',
+  'The gate crosses it: every node builtin in QPU_PORTS is ported (how set, no lead). Develop formulas; never take the dependency.',
 ]
 
 /** The MCP's answer to "how do I port this / why was my dependency refused": the steps, the port map, and the rule. */

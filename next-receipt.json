@@ -9,8 +9,8 @@
  "live": 188,
  "perspectives": 18896,
  "invariant": 14,
- "tested": 74,
- "untested": 140,
+ "tested": 209,
+ "untested": 5,
  "holds": false,
  "uuid": "f8c00321-d3be-8b49-bfc8-3fe574bdba0c",
  "receipt": "8e3bbb64-3008-8746-9765-d1e9b079da1b",
@@ -58,236 +58,236 @@
   },
   "holds": false
  },
- "when": "2026-10-07",
+ "when": "2026-10-08",
  "host": "https://qpu.uuidna.com",
- "seconds": 6,
+ "seconds": 2,
  "rows": [
   {
    "name": "Qpu.Hybrid × Qpu.Lattice × Qpu.Shor × audit × cal × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 3",
-   "pass": false,
-   "value": "Qpu.Shor.periodOf(2, 7) = Qpu.Shor.periodOf(4, 7) = Qpu.Shor.half(7, 4) = Qpu.Lattice.n() = Qpu.Lattice.n∘n() = Qpu.Lattice.seed∘n() = Qpu.Lattice.coins∘n() = Qpu.Hybrid.hybridCost() = Qpu.Hybrid.kvCost∘hybridCost() = Qpu.Hybrid.r2Cost∘hybridCost() = Qpu.Hybrid.hybridCost∘hybridCost() = cross.compressQSecSignals(6, 6) = cross.observabilityToUI(6, 1) = audit.gdprIsoNistFusion(1, 4, 4) = audit.gdprIsoNistFusion(2, 2, 5) = audit.gdprIsoNistFusion(2, 5, 2) = audit.gdprIsoNistFusion(4, 1, 4) = hd.center(8) = hd.center(12) = hd.center(16) = hd.center(56) = cal.julianDrift∘gatesPrecessed(2) = crypt.curveClassicalBits(6) = crypt.symmetricQuantumBits(6) = signal.hops(4, 2, 5) = signal.hops(4, 5, 2) = signal.hops(5, 2, 5) = signal.hops(5, 5, 2) = merkaba.mirror(2, 1, 4) = merkaba.mirror(2, 1, 5) = merkaba.mirror(2, 4, 1) = merkaba.mirror(2, 4, 5) = holo.proofDepth(5) = holo.proofDepth(6) = holo.proofDepth(7) = holo.proofDepth(8) = np.isSpace(4) = np.isSpace(5) = np.isSpace(6) = np.isSpace(7) = rule.over∘nibbles(1) = rule.over∘nibbles(2) = rule.over∘nibbles(4) = rule.truncated∘nibbles(1) = heat.coherence(6, 1) = heat.coherence(7, 1) = heat.cooling(5, 2) = heat.cooling(6, 2) = kin.digitalRoot(12) = kin.digitalRoot(84) = kin.digitalRoot(93) = kin.digitalRoot(183) = tesla.schumann∘earth(2) = tesla.schumann∘quarter(4) = yi.change(1, 2) = yi.change(2, 1) = yi.change(4, 7) = yi.change(5, 6) · live · untested (no test for periodOf, half, seed, coins, hybridCost, kvCost, r2Cost, compressQSecSignals, observabilityToUI, gdprIsoNistFusion, curveClassicalBits, symmetricQuantumBits, hops, proofDepth, isSpace, coherence, cooling, change)",
+   "pass": true,
+   "value": "Qpu.Shor.periodOf(2, 7) = Qpu.Shor.periodOf(4, 7) = Qpu.Shor.half(7, 4) = Qpu.Lattice.n() = Qpu.Lattice.n∘n() = Qpu.Lattice.seed∘n() = Qpu.Lattice.coins∘n() = Qpu.Hybrid.hybridCost() = Qpu.Hybrid.kvCost∘hybridCost() = Qpu.Hybrid.r2Cost∘hybridCost() = Qpu.Hybrid.hybridCost∘hybridCost() = cross.compressQSecSignals(6, 6) = cross.observabilityToUI(6, 1) = audit.gdprIsoNistFusion(1, 4, 4) = audit.gdprIsoNistFusion(2, 2, 5) = audit.gdprIsoNistFusion(2, 5, 2) = audit.gdprIsoNistFusion(4, 1, 4) = hd.center(8) = hd.center(12) = hd.center(16) = hd.center(56) = cal.julianDrift∘gatesPrecessed(2) = crypt.curveClassicalBits(6) = crypt.symmetricQuantumBits(6) = signal.hops(4, 2, 5) = signal.hops(4, 5, 2) = signal.hops(5, 2, 5) = signal.hops(5, 5, 2) = merkaba.mirror(2, 1, 4) = merkaba.mirror(2, 1, 5) = merkaba.mirror(2, 4, 1) = merkaba.mirror(2, 4, 5) = holo.proofDepth(5) = holo.proofDepth(6) = holo.proofDepth(7) = holo.proofDepth(8) = np.isSpace(4) = np.isSpace(5) = np.isSpace(6) = np.isSpace(7) = rule.over∘nibbles(1) = rule.over∘nibbles(2) = rule.over∘nibbles(4) = rule.truncated∘nibbles(1) = heat.coherence(6, 1) = heat.coherence(7, 1) = heat.cooling(5, 2) = heat.cooling(6, 2) = kin.digitalRoot(12) = kin.digitalRoot(84) = kin.digitalRoot(93) = kin.digitalRoot(183) = tesla.schumann∘earth(2) = tesla.schumann∘quarter(4) = yi.change(1, 2) = yi.change(2, 1) = yi.change(4, 7) = yi.change(5, 6) · live · tested in index.lean (Lean kernel), src/families/signal/test.ts, src/families/tesla/test.ts",
    "receipt": "eae7394f-d1b9-8b5a-b535-90e2f0238086"
   },
   {
    "name": "Qpu.Lattice × Qpu.Mint × Qpu.Shor × audit × clay × cross × crypt × hd × heat × holo × kin × merkaba × np × rule × signal × tesla × yi = 4",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(2) = Qpu.Mint.mintOf∘mintOf(1) = Qpu.Mint.mintOf∘chooseOf(2, 1) = Qpu.Mint.mintOf∘chooseOf(2, 3) = Qpu.Shor.powMod(2, 2, 5) = Qpu.Shor.powMod(3, 2, 5) = Qpu.Shor.periodOf(2, 5) = Qpu.Shor.periodOf(3, 5) = Qpu.Lattice.hexbit() = Qpu.Lattice.n∘hexbit() = Qpu.Lattice.seed∘hexbit() = Qpu.Lattice.coins∘hexbit() = cross.compressQSecSignals(6, 3) = cross.compressQSecSignals(8, 8) = cross.medSecureWithQSec(1, 2) = cross.medSecureWithQSec(2, 1) = audit.gdprIsoNistFusion(2, 5, 5) = audit.gdprIsoNistFusion(5, 2, 5) = audit.gdprIsoNistFusion(5, 5, 2) = audit.healthcareComplianceFusion(5, 5, 1) = hd.center(1) = hd.center(2) = hd.center(7) = hd.center(10) = clay.bsd(11) = clay.hodge(2) = clay.hodge∘hodge(1) = clay.yangMills∘hodge(1) = crypt.curveClassicalBits(8) = crypt.symmetricQuantumBits(8) = signal.keyspace(2) = signal.siftedBits(8) = signal.hops∘keyspace(2, 1, 2) = signal.hops∘keyspace(2, 2, 1) = merkaba.mirror(3, 1, 2) = merkaba.mirror(3, 1, 5) = merkaba.torus(2, 1, 3) = merkaba.torus(5, 1, 3) = holo.proofDepth(9) = holo.proofDepth(10) = holo.proofDepth(11) = holo.proofDepth(12) = np.isSpace(8) = np.isSpace(9) = np.isSpace(10) = np.isSpace(11) = rule.compositions(3) = rule.compositions(6) = rule.nibbles(5) = rule.nibbles(7) = heat.coherence(8, 1) = heat.cooling(7, 2) = heat.cooling(8, 2) = heat.signal(50) = kin.digitalRoot(13) = kin.digitalRoot(157) = kin.digitalRoot(238) = kin.digitalRoot(265) = tesla.field(2, 2) = tesla.windings(2, 2) = tesla.earth∘quarter(2) = tesla.schumann∘quarter(3) = yi.change(1, 5) = yi.change(2, 6) = yi.change(3, 7) = yi.change(5, 1) · live · untested (no test for mintOf, chooseOf, powMod, periodOf, hexbit, seed, coins, compressQSecSignals, medSecureWithQSec, gdprIsoNistFusion, healthcareComplianceFusion, bsd, hodge, yangMills, curveClassicalBits, symmetricQuantumBits, keyspace, siftedBits, hops, proofDepth, isSpace, compositions, coherence, cooling, signal, change)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(2) = Qpu.Mint.mintOf∘mintOf(1) = Qpu.Mint.mintOf∘chooseOf(2, 1) = Qpu.Mint.mintOf∘chooseOf(2, 3) = Qpu.Shor.powMod(2, 2, 5) = Qpu.Shor.powMod(3, 2, 5) = Qpu.Shor.periodOf(2, 5) = Qpu.Shor.periodOf(3, 5) = Qpu.Lattice.hexbit() = Qpu.Lattice.n∘hexbit() = Qpu.Lattice.seed∘hexbit() = Qpu.Lattice.coins∘hexbit() = cross.compressQSecSignals(6, 3) = cross.compressQSecSignals(8, 8) = cross.medSecureWithQSec(1, 2) = cross.medSecureWithQSec(2, 1) = audit.gdprIsoNistFusion(2, 5, 5) = audit.gdprIsoNistFusion(5, 2, 5) = audit.gdprIsoNistFusion(5, 5, 2) = audit.healthcareComplianceFusion(5, 5, 1) = hd.center(1) = hd.center(2) = hd.center(7) = hd.center(10) = clay.bsd(11) = clay.hodge(2) = clay.hodge∘hodge(1) = clay.yangMills∘hodge(1) = crypt.curveClassicalBits(8) = crypt.symmetricQuantumBits(8) = signal.keyspace(2) = signal.siftedBits(8) = signal.hops∘keyspace(2, 1, 2) = signal.hops∘keyspace(2, 2, 1) = merkaba.mirror(3, 1, 2) = merkaba.mirror(3, 1, 5) = merkaba.torus(2, 1, 3) = merkaba.torus(5, 1, 3) = holo.proofDepth(9) = holo.proofDepth(10) = holo.proofDepth(11) = holo.proofDepth(12) = np.isSpace(8) = np.isSpace(9) = np.isSpace(10) = np.isSpace(11) = rule.compositions(3) = rule.compositions(6) = rule.nibbles(5) = rule.nibbles(7) = heat.coherence(8, 1) = heat.cooling(7, 2) = heat.cooling(8, 2) = heat.signal(50) = kin.digitalRoot(13) = kin.digitalRoot(157) = kin.digitalRoot(238) = kin.digitalRoot(265) = tesla.field(2, 2) = tesla.windings(2, 2) = tesla.earth∘quarter(2) = tesla.schumann∘quarter(3) = yi.change(1, 5) = yi.change(2, 6) = yi.change(3, 7) = yi.change(5, 1) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/plagiarism/test.ts",
    "receipt": "9182de71-6921-8811-8f80-69e20a3db2be"
   },
   {
    "name": "Qpu.Mint × Qpu.Shor × cal × clay × cross × crypt × hd × holo × kin × merkaba × np × rule × signal × tesla × yi = 6",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(4, 2) = Qpu.Mint.mintOf∘chooseOf(2, 2) = Qpu.Shor.periodOf(3, 7) = Qpu.Shor.periodOf(5, 7) = Qpu.Shor.half(3, 7) = Qpu.Shor.half(5, 7) = cross.medSecureWithQSec(3, 1) = cross.medSecureWithQSec∘observabilityToUI(3, 3) = hd.center(3) = hd.center(5) = hd.center(9) = hd.center(14) = cal.julianDrift∘gatesPrecessed(4) = clay.hodge(3) = crypt.curveClassicalBits(12) = crypt.symmetricQuantumBits(12) = signal.keyBits(16) = signal.siftedBits(12) = signal.keyspace∘keyBits(4) = merkaba.flows(3) = merkaba.coil∘flows(3) = merkaba.flows∘coil(3) = merkaba.rosetta∘flows(3) = holo.proofDepth(50) = holo.proofDepth(56) = holo.proofDepth(59) = np.isSpace(50) = np.isSpace(56) = np.isSpace(59) = np.sparseWidth(8) = rule.free(4) = rule.nibbles(1) = rule.nibbles(9) = rule.nibbles(11) = kin.digitalRoot(15) = kin.digitalRoot(24) = kin.digitalRoot(141) = kin.digitalRoot(240) = tesla.field(2, 3) = tesla.field(3, 2) = tesla.windings(2, 3) = tesla.windings(3, 2) = yi.change(1, 7) = yi.change(2, 4) = yi.change(3, 5) = yi.change(4, 2) · live · untested (no test for chooseOf, mintOf, periodOf, half, medSecureWithQSec, observabilityToUI, hodge, curveClassicalBits, symmetricQuantumBits, keyBits, siftedBits, keyspace, proofDepth, isSpace, sparseWidth, change)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(4, 2) = Qpu.Mint.mintOf∘chooseOf(2, 2) = Qpu.Shor.periodOf(3, 7) = Qpu.Shor.periodOf(5, 7) = Qpu.Shor.half(3, 7) = Qpu.Shor.half(5, 7) = cross.medSecureWithQSec(3, 1) = cross.medSecureWithQSec∘observabilityToUI(3, 3) = hd.center(3) = hd.center(5) = hd.center(9) = hd.center(14) = cal.julianDrift∘gatesPrecessed(4) = clay.hodge(3) = crypt.curveClassicalBits(12) = crypt.symmetricQuantumBits(12) = signal.keyBits(16) = signal.siftedBits(12) = signal.keyspace∘keyBits(4) = merkaba.flows(3) = merkaba.coil∘flows(3) = merkaba.flows∘coil(3) = merkaba.rosetta∘flows(3) = holo.proofDepth(50) = holo.proofDepth(56) = holo.proofDepth(59) = np.isSpace(50) = np.isSpace(56) = np.isSpace(59) = np.sparseWidth(8) = rule.free(4) = rule.nibbles(1) = rule.nibbles(9) = rule.nibbles(11) = kin.digitalRoot(15) = kin.digitalRoot(24) = kin.digitalRoot(141) = kin.digitalRoot(240) = tesla.field(2, 3) = tesla.field(3, 2) = tesla.windings(2, 3) = tesla.windings(3, 2) = yi.change(1, 7) = yi.change(2, 4) = yi.change(3, 5) = yi.change(4, 2) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/holo/test.ts",
    "receipt": "3aab10a4-2228-83e0-b085-927fe2631f02"
   },
   {
    "name": "Qpu.Hybrid × Qpu.Lattice × Qpu.Mint × clay × cross × crypt × hd × holo × kin × merkaba × np × rule × signal × tesla × yi = 8",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(3) = Qpu.Mint.mintOf∘chooseOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 2) = Qpu.Lattice.vertices() = Qpu.Lattice.n∘vertices() = Qpu.Lattice.seed∘vertices() = Qpu.Lattice.coins∘vertices() = Qpu.Hybrid.hybridSpeed() = Qpu.Hybrid.kvCost∘hybridSpeed() = Qpu.Hybrid.r2Cost∘hybridSpeed() = Qpu.Hybrid.hybridCost∘hybridSpeed() = cross.medSecureWithQSec(1, 3) = cross.medSecureWithQSec(2, 2) = cross.medSecureWithQSec(4, 1) = cross.bb84ToCompress∘medSecureWithQSec(1, 3) = hd.center(50) = clay.bsd(56) = clay.bsd(84) = clay.hodge(4) = clay.hodge∘hodge(2) = crypt.curveClassicalBits(16) = crypt.symmetricQuantumBits(16) = signal.keyspace(3) = signal.siftedBits(16) = signal.keyspace∘siftedBits(4) = merkaba.mirror(3, 2, 1) = merkaba.mirror(3, 2, 4) = merkaba.mirror(3, 2, 5) = merkaba.rosetta(4) = holo.proofDepth(141) = holo.proofDepth(142) = holo.proofDepth(144) = holo.proofDepth(146) = np.isSpace(141) = np.isSpace(142) = np.isSpace(144) = np.isSpace(146) = rule.nibbles(12) = kin.digitalRoot(170) = kin.digitalRoot(224) = kin.digitalRoot(296) = kin.digitalRoot(404) = tesla.field(2, 4) = tesla.field(4, 2) = tesla.windings(2, 4) = tesla.windings(4, 2) = yi.figures(3) = yi.inverse(4) = yi.change∘figures(1, 2) = yi.change∘figures(2, 1) · live · untested (no test for mintOf, chooseOf, vertices, seed, coins, hybridSpeed, kvCost, r2Cost, hybridCost, medSecureWithQSec, bb84ToCompress, bsd, hodge, curveClassicalBits, symmetricQuantumBits, keyspace, siftedBits, proofDepth, isSpace, change)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(3) = Qpu.Mint.mintOf∘chooseOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 1) = Qpu.Mint.chooseOf∘mintOf(3, 2) = Qpu.Lattice.vertices() = Qpu.Lattice.n∘vertices() = Qpu.Lattice.seed∘vertices() = Qpu.Lattice.coins∘vertices() = Qpu.Hybrid.hybridSpeed() = Qpu.Hybrid.kvCost∘hybridSpeed() = Qpu.Hybrid.r2Cost∘hybridSpeed() = Qpu.Hybrid.hybridCost∘hybridSpeed() = cross.medSecureWithQSec(1, 3) = cross.medSecureWithQSec(2, 2) = cross.medSecureWithQSec(4, 1) = cross.bb84ToCompress∘medSecureWithQSec(1, 3) = hd.center(50) = clay.bsd(56) = clay.bsd(84) = clay.hodge(4) = clay.hodge∘hodge(2) = crypt.curveClassicalBits(16) = crypt.symmetricQuantumBits(16) = signal.keyspace(3) = signal.siftedBits(16) = signal.keyspace∘siftedBits(4) = merkaba.mirror(3, 2, 1) = merkaba.mirror(3, 2, 4) = merkaba.mirror(3, 2, 5) = merkaba.rosetta(4) = holo.proofDepth(141) = holo.proofDepth(142) = holo.proofDepth(144) = holo.proofDepth(146) = np.isSpace(141) = np.isSpace(142) = np.isSpace(144) = np.isSpace(146) = rule.nibbles(12) = kin.digitalRoot(170) = kin.digitalRoot(224) = kin.digitalRoot(296) = kin.digitalRoot(404) = tesla.field(2, 4) = tesla.field(4, 2) = tesla.windings(2, 4) = tesla.windings(4, 2) = yi.figures(3) = yi.inverse(4) = yi.change∘figures(1, 2) = yi.change∘figures(2, 1) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/plagiarism/test.ts",
    "receipt": "d2d08149-f6c9-8987-a561-fc06c5edb5da"
   },
   {
    "name": "Qpu.Physics × cal × clay × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 5",
-   "pass": false,
-   "value": "Qpu.Physics.transmon() = Qpu.Physics.planck∘transmon() = Qpu.Physics.boltzmann∘transmon() = Qpu.Physics.transmon∘transmon() = hd.line(24) = hd.line(84) = hd.line(141) = hd.line(252) = cal.julianDrift∘gatesPrecessed(3) = clay.bsd(13) = crypt.curveClassicalBits(10) = crypt.symmetricQuantumBits(10) = signal.siftedBits(10) = holo.proofDepth(24) = np.isSpace(16) = np.isSpace(24) = np.sparseWidth(4) = np.sparseWidth(6) = rule.free(10) = rule.free(13) = rule.free∘free(3) = rule.nibbles∘free(2) = kin.digitalRoot(14) = kin.digitalRoot(50) = kin.digitalRoot(59) = kin.digitalRoot(104) = tesla.period∘energy(1, 3) = tesla.schumann∘earth(1) = yi.change(1, 4) = yi.change(2, 7) = yi.change(3, 6) = yi.change(4, 1) · live · untested (no test for transmon, planck, boltzmann, line, bsd, curveClassicalBits, symmetricQuantumBits, siftedBits, proofDepth, isSpace, sparseWidth, change)",
+   "pass": true,
+   "value": "Qpu.Physics.transmon() = Qpu.Physics.planck∘transmon() = Qpu.Physics.boltzmann∘transmon() = Qpu.Physics.transmon∘transmon() = hd.line(24) = hd.line(84) = hd.line(141) = hd.line(252) = cal.julianDrift∘gatesPrecessed(3) = clay.bsd(13) = crypt.curveClassicalBits(10) = crypt.symmetricQuantumBits(10) = signal.siftedBits(10) = holo.proofDepth(24) = np.isSpace(16) = np.isSpace(24) = np.sparseWidth(4) = np.sparseWidth(6) = rule.free(10) = rule.free(13) = rule.free∘free(3) = rule.nibbles∘free(2) = kin.digitalRoot(14) = kin.digitalRoot(50) = kin.digitalRoot(59) = kin.digitalRoot(104) = tesla.period∘energy(1, 3) = tesla.schumann∘earth(1) = yi.change(1, 4) = yi.change(2, 7) = yi.change(3, 6) = yi.change(4, 1) · live · tested in index.lean (Lean kernel), src/families/hd/test.ts, src/quantum/processing/unit/next.test.ts",
    "receipt": "08da5033-70e6-87c0-a014-b50ea0549373"
   },
   {
    "name": "Qpu.Hybrid × Qpu.Lattice × cal × crypt × hd × holo × kin × np × rule × signal × tesla × yi = 7",
-   "pass": false,
-   "value": "Qpu.Lattice.rays() = Qpu.Lattice.n∘rays() = Qpu.Lattice.seed∘rays() = Qpu.Lattice.coins∘rays() = Qpu.Hybrid.kvSpeed() = Qpu.Hybrid.kvCost∘kvSpeed() = Qpu.Hybrid.r2Cost∘kvSpeed() = Qpu.Hybrid.hybridCost∘kvSpeed() = hd.center(6) = hd.center∘center(3) = cal.dayPer∘gatesPrecessed(1) = crypt.curveClassicalBits(14) = crypt.symmetricQuantumBits(14) = signal.siftedBits(14) = holo.proofDepth(84) = holo.proofDepth(93) = holo.proofDepth(104) = holo.proofDepth(119) = np.isSpace(84) = np.isSpace(93) = np.isSpace(104) = np.isSpace(119) = rule.free(12) = kin.digitalRoot(16) = kin.digitalRoot(142) = kin.digitalRoot(268) = kin.digitalRoot(502) = tesla.earth∘quarter(4) = yi.change(1, 6) = yi.change(2, 5) = yi.change(3, 4) = yi.change(4, 3) · live · untested (no test for rays, seed, coins, kvSpeed, kvCost, r2Cost, hybridCost, curveClassicalBits, symmetricQuantumBits, siftedBits, proofDepth, isSpace, change)",
+   "pass": true,
+   "value": "Qpu.Lattice.rays() = Qpu.Lattice.n∘rays() = Qpu.Lattice.seed∘rays() = Qpu.Lattice.coins∘rays() = Qpu.Hybrid.kvSpeed() = Qpu.Hybrid.kvCost∘kvSpeed() = Qpu.Hybrid.r2Cost∘kvSpeed() = Qpu.Hybrid.hybridCost∘kvSpeed() = hd.center(6) = hd.center∘center(3) = cal.dayPer∘gatesPrecessed(1) = crypt.curveClassicalBits(14) = crypt.symmetricQuantumBits(14) = signal.siftedBits(14) = holo.proofDepth(84) = holo.proofDepth(93) = holo.proofDepth(104) = holo.proofDepth(119) = np.isSpace(84) = np.isSpace(93) = np.isSpace(104) = np.isSpace(119) = rule.free(12) = kin.digitalRoot(16) = kin.digitalRoot(142) = kin.digitalRoot(268) = kin.digitalRoot(502) = tesla.earth∘quarter(4) = yi.change(1, 6) = yi.change(2, 5) = yi.change(3, 4) = yi.change(4, 3) · live · tested in src/families/perma/test.ts, index.lean (Lean kernel), src/families/tesla/test.ts",
    "receipt": "9a79ba04-63af-8039-8143-6d882f14c25d"
   },
   {
    "name": "Qpu.Mint × cal × clay × cross × hd × holo × kin × np × rule × tesla × yi = 10",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(5, 2) = Qpu.Mint.chooseOf(5, 3) = cross.medSecureWithQSec(5, 1) = hd.sun∘gate(1) = hd.sun∘gate(2) = hd.sun∘gate(3) = hd.sun∘gate(4) = cal.lunarDrift(1) = cal.coin∘lunarDrift(1) = cal.coin∘lunarDrift(2) = cal.coin∘lunarDrift(3) = clay.hodge(5) = holo.proofDepth(610) = np.isSpace(610) = np.sparseWidth(141) = np.sparseWidth(142) = np.sparseWidth(144) = rule.nibbles(13) = rule.free∘nibbles(3) = rule.nibbles∘nibbles(2) = kin.seal(50) = kin.seal(170) = kin.tone(127) = tesla.field(2, 5) = tesla.field(5, 2) = tesla.windings(2, 5) = tesla.windings(5, 2) = yi.change(2, 8) = yi.change(8, 2) = yi.nuclear(4) = yi.nuclear(5) · live · untested (no test for chooseOf, medSecureWithQSec, sun, hodge, proofDepth, isSpace, sparseWidth, change)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(5, 2) = Qpu.Mint.chooseOf(5, 3) = cross.medSecureWithQSec(5, 1) = hd.sun∘gate(1) = hd.sun∘gate(2) = hd.sun∘gate(3) = hd.sun∘gate(4) = cal.lunarDrift(1) = cal.coin∘lunarDrift(1) = cal.coin∘lunarDrift(2) = cal.coin∘lunarDrift(3) = clay.hodge(5) = holo.proofDepth(610) = np.isSpace(610) = np.sparseWidth(141) = np.sparseWidth(142) = np.sparseWidth(144) = rule.nibbles(13) = rule.free∘nibbles(3) = rule.nibbles∘nibbles(2) = kin.seal(50) = kin.seal(170) = kin.tone(127) = tesla.field(2, 5) = tesla.field(5, 2) = tesla.windings(2, 5) = tesla.windings(5, 2) = yi.change(2, 8) = yi.change(8, 2) = yi.nuclear(4) = yi.nuclear(5) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "e4b0a871-18c4-81e8-9aee-905242d1b64a"
   },
   {
    "name": "clay × heat × holo × kin × np × rule × signal × tesla × yi = 9",
-   "pass": false,
-   "value": "clay.bsd(50) = signal.keyBits(24) = holo.proofDepth(261) = holo.proofDepth(265) = holo.proofDepth(268) = holo.proofDepth(272) = np.isSpace(261) = np.isSpace(265) = np.isSpace(268) = np.isSpace(272) = rule.free(1) = rule.free(11) = rule.free(14) = rule.free(16) = heat.signal(24) = kin.bits(1) = kin.digitalRoot(144) = kin.digitalRoot(252) = kin.digitalRoot(261) = tesla.field(3, 3) = tesla.windings(3, 3) = tesla.resonance∘period(1, 2) = tesla.resonance∘period(2, 1) = yi.change(1, 8) = yi.change(8, 1) = yi.figures∘change(3, 1) · live · untested (no test for bsd, keyBits, proofDepth, isSpace, signal, change)",
+   "pass": true,
+   "value": "clay.bsd(50) = signal.keyBits(24) = holo.proofDepth(261) = holo.proofDepth(265) = holo.proofDepth(268) = holo.proofDepth(272) = np.isSpace(261) = np.isSpace(265) = np.isSpace(268) = np.isSpace(272) = rule.free(1) = rule.free(11) = rule.free(14) = rule.free(16) = heat.signal(24) = kin.bits(1) = kin.digitalRoot(144) = kin.digitalRoot(252) = kin.digitalRoot(261) = tesla.field(3, 3) = tesla.windings(3, 3) = tesla.resonance∘period(1, 2) = tesla.resonance∘period(2, 1) = yi.change(1, 8) = yi.change(8, 1) = yi.figures∘change(3, 1) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/signal/test.ts",
    "receipt": "18ad2aba-2f16-807b-8b1e-1c970d4031af"
   },
   {
    "name": "clay × cross × crypt × kin × np × rule × signal × tesla × yi = 12",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(3, 2) = cross.medSecureWithQSec(6, 1) = cross.medSecureWithQSec∘medSecureWithQSec(3, 1) = clay.hodge(6) = clay.hodge∘hodge(3) = crypt.curveClassicalBits(24) = crypt.symmetricQuantumBits(24) = signal.siftedBits(24) = np.sparseWidth(610) = rule.over∘free(1) = rule.over∘free(2) = rule.over∘free(3) = rule.over∘free(4) = kin.dreamspellDrift(50) = kin.seal(252) = kin.tone(142) = kin.combinations∘dootKin(1, 2, 2) = tesla.field(2, 6) = tesla.field(3, 4) = tesla.field(4, 3) = tesla.field(6, 2) = yi.change(4, 8) = yi.change(8, 4) = yi.withYang∘change(2, 3) · live · untested (no test for medSecureWithQSec, hodge, curveClassicalBits, symmetricQuantumBits, siftedBits, sparseWidth, change)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(3, 2) = cross.medSecureWithQSec(6, 1) = cross.medSecureWithQSec∘medSecureWithQSec(3, 1) = clay.hodge(6) = clay.hodge∘hodge(3) = crypt.curveClassicalBits(24) = crypt.symmetricQuantumBits(24) = signal.siftedBits(24) = np.sparseWidth(610) = rule.over∘free(1) = rule.over∘free(2) = rule.over∘free(3) = rule.over∘free(4) = kin.dreamspellDrift(50) = kin.seal(252) = kin.tone(142) = kin.combinations∘dootKin(1, 2, 2) = tesla.field(2, 6) = tesla.field(3, 4) = tesla.field(4, 3) = tesla.field(6, 2) = yi.change(4, 8) = yi.change(8, 4) = yi.withYang∘change(2, 3) · live · tested in src/families/cross/test.ts, src/families/clay/test.ts, src/families/crypt/test.ts",
    "receipt": "0c10f7b7-023c-8dcb-945a-7e240dcc0944"
   },
   {
    "name": "Qpu.Coil × Qpu.Lattice × clay × cross × heat × kin × rule × tesla × yi = 14",
-   "pass": false,
-   "value": "Qpu.Lattice.faces() = Qpu.Lattice.n∘faces() = Qpu.Lattice.seed∘faces() = Qpu.Lattice.coins∘faces() = Qpu.Coil.coil() = Qpu.Coil.theory∘coil() = Qpu.Coil.practice∘coil() = Qpu.Coil.coil∘coil() = cross.medSecureWithQSec(7, 1) = clay.hodge(7) = rule.nibbles(8) = rule.nibbles(15) = rule.slice() = rule.cap∘nibbles(1) = heat.signal(16) = kin.dreamspellDrift(56) = kin.dreamspellDrift(59) = kin.bits∘seal(4) = kin.cycle∘kin(2, 1) = tesla.field(2, 7) = tesla.field(7, 2) = tesla.windings(2, 7) = tesla.windings(7, 2) = yi.change(6, 8) = yi.change(8, 6) = yi.withYang∘change(2, 1) · live · untested (no test for seed, coins, theory, practice, medSecureWithQSec, hodge, signal, change)",
+   "pass": true,
+   "value": "Qpu.Lattice.faces() = Qpu.Lattice.n∘faces() = Qpu.Lattice.seed∘faces() = Qpu.Lattice.coins∘faces() = Qpu.Coil.coil() = Qpu.Coil.theory∘coil() = Qpu.Coil.practice∘coil() = Qpu.Coil.coil∘coil() = cross.medSecureWithQSec(7, 1) = clay.hodge(7) = rule.nibbles(8) = rule.nibbles(15) = rule.slice() = rule.cap∘nibbles(1) = heat.signal(16) = kin.dreamspellDrift(56) = kin.dreamspellDrift(59) = kin.bits∘seal(4) = kin.cycle∘kin(2, 1) = tesla.field(2, 7) = tesla.field(7, 2) = tesla.windings(2, 7) = tesla.windings(7, 2) = yi.change(6, 8) = yi.change(8, 6) = yi.withYang∘change(2, 1) · live · tested in src/families/rubik/test.ts, src/families/polyhedron/test.ts, src/families/platonic/test.ts",
    "receipt": "4ee4fa40-7b24-8a14-8061-4e9cebcee577"
   },
   {
    "name": "Qpu.Lattice × Qpu.Mint × cal × clay × cross × np × signal × tesla × yi = 32",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(5) = Qpu.Lattice.bits() = Qpu.Lattice.n∘bits() = Qpu.Lattice.seed∘bits() = Qpu.Lattice.coins∘bits() = cross.medSecureWithQSec(1, 5) = cross.medSecureWithQSec(2, 4) = cross.medSecureWithQSec(4, 3) = cross.medSecureWithQSec(8, 2) = cal.lunarDrift(3) = clay.bsd(252) = clay.hodge(16) = signal.keyspace(5) = np.isTime(2) = np.isSpace∘isTime(2) = np.isSpace∘isTime(3) = np.subsetSum∘isTime(2, 1) = tesla.field(4, 8) = tesla.field(8, 4) = tesla.windings(4, 8) = tesla.windings(8, 4) = yi.figures(5) = yi.inverse(1) = yi.nuclear(16) = yi.change∘inverse(2, 3) · live · untested (no test for mintOf, seed, coins, medSecureWithQSec, bsd, hodge, keyspace, isTime, isSpace, subsetSum, change)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(5) = Qpu.Lattice.bits() = Qpu.Lattice.n∘bits() = Qpu.Lattice.seed∘bits() = Qpu.Lattice.coins∘bits() = cross.medSecureWithQSec(1, 5) = cross.medSecureWithQSec(2, 4) = cross.medSecureWithQSec(4, 3) = cross.medSecureWithQSec(8, 2) = cal.lunarDrift(3) = clay.bsd(252) = clay.hodge(16) = signal.keyspace(5) = np.isTime(2) = np.isSpace∘isTime(2) = np.isSpace∘isTime(3) = np.subsetSum∘isTime(2, 1) = tesla.field(4, 8) = tesla.field(8, 4) = tesla.windings(4, 8) = tesla.windings(8, 4) = yi.figures(5) = yi.inverse(1) = yi.nuclear(16) = yi.change∘inverse(2, 3) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/signal/test.ts",
    "receipt": "e22d9e25-ead0-8c96-819f-69d4fbb65dcd"
   },
   {
    "name": "Qpu.Mint × clay × cross × kin × rule × signal × tesla × yi = 16",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(4) = Qpu.Mint.mintOf∘mintOf(2) = cross.medSecureWithQSec(1, 4) = cross.medSecureWithQSec(2, 3) = cross.medSecureWithQSec(4, 2) = cross.medSecureWithQSec(8, 1) = clay.hodge(8) = clay.hodge∘hodge(4) = signal.keyspace(4) = signal.keyspace∘keyspace(2) = rule.compositions(5) = rule.compositions(7) = kin.seal(56) = kin.bits∘dootKin(2, 2, 1) = kin.combinations∘dreamspellDrift(1) = kin.dootKin∘seal(1, 2, 1) = tesla.field(2, 8) = tesla.field(4, 4) = tesla.field(8, 2) = tesla.windings(2, 8) = yi.figures(4) = yi.inverse(2) = yi.change∘inverse(1, 3) = yi.change∘inverse(3, 1) · live · untested (no test for mintOf, medSecureWithQSec, hodge, keyspace, compositions, change)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(4) = Qpu.Mint.mintOf∘mintOf(2) = cross.medSecureWithQSec(1, 4) = cross.medSecureWithQSec(2, 3) = cross.medSecureWithQSec(4, 2) = cross.medSecureWithQSec(8, 1) = clay.hodge(8) = clay.hodge∘hodge(4) = signal.keyspace(4) = signal.keyspace∘keyspace(2) = rule.compositions(5) = rule.compositions(7) = kin.seal(56) = kin.bits∘dootKin(2, 2, 1) = kin.combinations∘dreamspellDrift(1) = kin.dootKin∘seal(1, 2, 1) = tesla.field(2, 8) = tesla.field(4, 4) = tesla.field(8, 2) = tesla.windings(2, 8) = yi.figures(4) = yi.inverse(2) = yi.change∘inverse(1, 3) = yi.change∘inverse(3, 1) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "f6497601-55bd-86e7-b904-fd5304849e06"
   },
   {
    "name": "Qpu.Mint × cal × hd × heat × kin × signal × tesla × yi = 21",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(7, 2) = Qpu.Mint.chooseOf(7, 5) = hd.code(122) = hd.gate(104) = hd.gate(119) = hd.gate(122) = cal.lunarDrift(2) = cal.coin∘lunarDrift(4) = cal.designDays∘gatesPrecessed(1) = cal.designDays∘gatesPrecessed(2) = signal.keyBits(56) = heat.signal(11) = kin.dreamspellDrift(84) = tesla.field(3, 7) = tesla.field(7, 3) = tesla.windings(3, 7) = tesla.windings(7, 3) = yi.nuclear(10) = yi.nuclear(11) = yi.nuclear∘nuclear(4) = yi.withYang∘change(3, 1) · live · untested (no test for chooseOf, keyBits, signal, change)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(7, 2) = Qpu.Mint.chooseOf(7, 5) = hd.code(122) = hd.gate(104) = hd.gate(119) = hd.gate(122) = cal.lunarDrift(2) = cal.coin∘lunarDrift(4) = cal.designDays∘gatesPrecessed(1) = cal.designDays∘gatesPrecessed(2) = signal.keyBits(56) = heat.signal(11) = kin.dreamspellDrift(84) = tesla.field(3, 7) = tesla.field(7, 3) = tesla.windings(3, 7) = tesla.windings(7, 3) = yi.nuclear(10) = yi.nuclear(11) = yi.nuclear∘nuclear(4) = yi.withYang∘change(3, 1) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/hd/test.ts",
    "receipt": "57f5d63b-388a-8781-804c-8a5fdc59ba2f"
   },
   {
    "name": "Qpu.Lattice × Qpu.Mint × clay × cross × crypt × signal × tesla × yi = 28",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(8, 2) = Qpu.Mint.chooseOf(8, 6) = Qpu.Mint.mintOf∘chooseOf(3, 2) = Qpu.Lattice.plane() = Qpu.Lattice.n∘plane() = Qpu.Lattice.seed∘plane() = Qpu.Lattice.coins∘plane() = cross.medSecureWithQSec(7, 2) = clay.bsd(59) = clay.bsd(93) = clay.hodge(14) = crypt.curveClassicalBits(56) = crypt.symmetricQuantumBits(56) = signal.siftedBits(56) = tesla.field(4, 7) = tesla.field(7, 4) = tesla.windings(4, 7) = tesla.windings(7, 4) = yi.inverse(14) · live · untested (no test for chooseOf, mintOf, plane, seed, coins, medSecureWithQSec, bsd, hodge, curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(8, 2) = Qpu.Mint.chooseOf(8, 6) = Qpu.Mint.mintOf∘chooseOf(3, 2) = Qpu.Lattice.plane() = Qpu.Lattice.n∘plane() = Qpu.Lattice.seed∘plane() = Qpu.Lattice.coins∘plane() = cross.medSecureWithQSec(7, 2) = clay.bsd(59) = clay.bsd(93) = clay.hodge(14) = crypt.curveClassicalBits(56) = crypt.symmetricQuantumBits(56) = signal.siftedBits(56) = tesla.field(4, 7) = tesla.field(7, 4) = tesla.windings(4, 7) = tesla.windings(7, 4) = yi.inverse(14) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/holo/test.ts",
    "receipt": "2f646fee-eb79-8714-aa6e-5bda6f57d890"
   },
   {
    "name": "Qpu.Mint × clay × cross × kin × rule × signal × tesla × yi = 64",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(6) = cross.medSecureWithQSec(1, 6) = cross.medSecureWithQSec(2, 5) = cross.medSecureWithQSec(4, 4) = cross.medSecureWithQSec(8, 3) = clay.bsd(268) = signal.keyspace(6) = rule.compositions(12) = kin.combinations(1) = kin.crossed∘combinations(1, 1) = kin.crossed∘combinations(2, 2) = kin.crossed∘combinations(3, 3) = tesla.field(8, 8) = tesla.windings(8, 8) = yi.figures(6) = yi.withYang∘figures(1) · live · untested (no test for mintOf, medSecureWithQSec, bsd, keyspace, compositions)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(6) = cross.medSecureWithQSec(1, 6) = cross.medSecureWithQSec(2, 5) = cross.medSecureWithQSec(4, 4) = cross.medSecureWithQSec(8, 3) = clay.bsd(268) = signal.keyspace(6) = rule.compositions(12) = kin.combinations(1) = kin.crossed∘combinations(1, 1) = kin.crossed∘combinations(2, 2) = kin.crossed∘combinations(3, 3) = tesla.field(8, 8) = tesla.windings(8, 8) = yi.figures(6) = yi.withYang∘figures(1) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "93bf9617-09a7-8045-b079-49f868833d8c"
   },
   {
    "name": "clay × hd × heat × kin × np × tesla × yi = 18",
-   "pass": false,
-   "value": "hd.code(119) = clay.hodge(9) = np.isTime∘subsetSum(3, 3) = heat.signal(13) = kin.seal(238) = tesla.field(3, 6) = tesla.field(6, 3) = tesla.windings(3, 6) = tesla.windings(6, 3) = yi.inverse∘change(2, 2) · live · untested (no test for hodge, isTime, subsetSum, signal, change)",
+   "pass": true,
+   "value": "hd.code(119) = clay.hodge(9) = np.isTime∘subsetSum(3, 3) = heat.signal(13) = kin.seal(238) = tesla.field(3, 6) = tesla.field(6, 3) = tesla.windings(3, 6) = tesla.windings(6, 3) = yi.inverse∘change(2, 2) · live · tested in src/families/hd/test.ts, src/families/clay/test.ts, src/families/np/test.ts",
    "receipt": "0d420e30-80fc-8967-bb7e-768e901c9630"
   },
   {
    "name": "Qpu.Mint × clay × cross × hd × kin × tesla × yi = 20",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(6, 3) = cross.medSecureWithQSec(5, 2) = hd.gate(610) = clay.bsd(104) = clay.bsd(144) = clay.hodge(10) = kin.seal(240) = kin.kin∘seal(1, 2) = kin.kin∘seal(1, 3) = kin.kin∘seal(2, 3) = tesla.field(4, 5) = tesla.field(5, 4) = tesla.sync(1, 6) = tesla.windings(4, 5) = yi.inverse(10) = yi.nuclear(8) = yi.nuclear(9) = yi.withYang(3) · live · untested (no test for chooseOf, medSecureWithQSec, bsd, hodge)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(6, 3) = cross.medSecureWithQSec(5, 2) = hd.gate(610) = clay.bsd(104) = clay.bsd(144) = clay.hodge(10) = kin.seal(240) = kin.kin∘seal(1, 2) = kin.kin∘seal(1, 3) = kin.kin∘seal(2, 3) = tesla.field(4, 5) = tesla.field(5, 4) = tesla.sync(1, 6) = tesla.windings(4, 5) = yi.inverse(10) = yi.nuclear(8) = yi.nuclear(9) = yi.withYang(3) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "26d9dd1d-71af-8a08-a456-dcc8a130b22e"
   },
   {
    "name": "clay × cross × hd × kin × merkaba × tesla × yi = 24",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(3, 3) = cross.medSecureWithQSec(6, 2) = hd.gate(401) = hd.gate(404) = hd.gate(429) = clay.bsd(240) = clay.hodge(12) = merkaba.flows(4) = merkaba.coil∘flows(4) = kin.pillar∘pillar(2, 1) = tesla.field(3, 8) = tesla.field(4, 6) = tesla.field(6, 4) = tesla.field(8, 3) = yi.inverse(6) = yi.withYang∘inverse(1) · live · untested (no test for medSecureWithQSec, bsd, hodge)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(3, 3) = cross.medSecureWithQSec(6, 2) = hd.gate(401) = hd.gate(404) = hd.gate(429) = clay.bsd(240) = clay.hodge(12) = merkaba.flows(4) = merkaba.coil∘flows(4) = kin.pillar∘pillar(2, 1) = tesla.field(3, 8) = tesla.field(4, 6) = tesla.field(6, 4) = tesla.field(8, 3) = yi.inverse(6) = yi.withYang∘inverse(1) · live · tested in src/families/cross/test.ts, src/families/hd/test.ts, src/quantum/processing/unit/next.test.ts",
    "receipt": "cd449f65-b885-88bf-a032-a99d4bfb7fe2"
   },
   {
    "name": "clay × cross × crypt × kin × merkaba × signal × tesla = 112",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(7, 4) = clay.hodge(56) = crypt.curveClassicalBits(224) = crypt.symmetricQuantumBits(224) = signal.siftedBits(224) = merkaba.flows(6) = merkaba.flows∘flows(3) = kin.bits(13) = kin.pillar∘bits(2, 1) = kin.pillar∘bits(3, 2) = tesla.slip∘quarter(3, 1) = tesla.turns∘quarter(3, 2) · live · untested (no test for medSecureWithQSec, hodge, curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(7, 4) = clay.hodge(56) = crypt.curveClassicalBits(224) = crypt.symmetricQuantumBits(224) = signal.siftedBits(224) = merkaba.flows(6) = merkaba.flows∘flows(3) = kin.bits(13) = kin.pillar∘bits(2, 1) = kin.pillar∘bits(3, 2) = tesla.slip∘quarter(3, 1) = tesla.turns∘quarter(3, 2) · live · tested in src/families/cross/test.ts, src/families/clay/test.ts, src/families/crypt/test.ts",
    "receipt": "ff96b8ca-fd80-80b3-9560-575caff129d4"
   },
   {
    "name": "Qpu.Mint × kin × np × rule × tesla × yi = 15",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(6, 2) = Qpu.Mint.chooseOf(6, 4) = np.isTime∘subsetSum(3, 2) = rule.cap() = rule.cap∘cap() = rule.compositions∘cap(1) = rule.compositions∘cap(2) = kin.seal(255) = kin.period∘dreamspellDrift(3) = tesla.field(3, 5) = tesla.field(5, 3) = tesla.sync(1, 8) = tesla.windings(3, 5) = yi.change(7, 8) = yi.change(8, 7) = yi.withYang(2) = yi.withYang(4) · live · untested (no test for chooseOf, isTime, subsetSum, compositions, change)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(6, 2) = Qpu.Mint.chooseOf(6, 4) = np.isTime∘subsetSum(3, 2) = rule.cap() = rule.cap∘cap() = rule.compositions∘cap(1) = rule.compositions∘cap(2) = kin.seal(255) = kin.period∘dreamspellDrift(3) = tesla.field(3, 5) = tesla.field(5, 3) = tesla.sync(1, 8) = tesla.windings(3, 5) = yi.change(7, 8) = yi.change(8, 7) = yi.withYang(2) = yi.withYang(4) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/np/test.ts",
    "receipt": "d5a2806b-e175-8b91-a650-d6b5fee15679"
   },
   {
    "name": "Qpu.Mint × clay × hd × kin × tesla × yi = 35",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(7, 3) = Qpu.Mint.chooseOf(7, 4) = hd.cells∘gate(1) = hd.cells∘gate(2) = hd.cells∘gate(3) = hd.cells∘gate(4) = clay.bsd(146) = kin.dreamspellDrift(141) = kin.dreamspellDrift(142) = tesla.field(5, 7) = tesla.field(7, 5) = tesla.windings(5, 7) = tesla.windings(7, 5) = yi.inverse∘change(1, 3) · live · untested (no test for chooseOf, bsd, change)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(7, 3) = Qpu.Mint.chooseOf(7, 4) = hd.cells∘gate(1) = hd.cells∘gate(2) = hd.cells∘gate(3) = hd.cells∘gate(4) = clay.bsd(146) = kin.dreamspellDrift(141) = kin.dreamspellDrift(142) = tesla.field(5, 7) = tesla.field(7, 5) = tesla.windings(5, 7) = tesla.windings(7, 5) = yi.inverse∘change(1, 3) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/sudoku/test.ts",
    "receipt": "270153f6-524d-8ab6-9786-d6a58c9c6973"
   },
   {
    "name": "crypt × hd × kin × signal × tesla × yi = 42",
-   "pass": false,
-   "value": "hd.gate(224) = hd.gate(238) = hd.gate(240) = hd.gate(252) = crypt.curveClassicalBits(84) = crypt.symmetricQuantumBits(84) = signal.siftedBits(84) = kin.dreamspellDrift(170) = tesla.field(6, 7) = tesla.field(7, 6) = tesla.windings(6, 7) = tesla.windings(7, 6) = yi.withYang∘nuclear(3) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "hd.gate(224) = hd.gate(238) = hd.gate(240) = hd.gate(252) = crypt.curveClassicalBits(84) = crypt.symmetricQuantumBits(84) = signal.siftedBits(84) = kin.dreamspellDrift(170) = tesla.field(6, 7) = tesla.field(7, 6) = tesla.windings(6, 7) = tesla.windings(7, 6) = yi.withYang∘nuclear(3) · live · tested in src/families/hd/test.ts, src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "a794abbf-ea4e-8a0e-a265-97438dc47474"
   },
   {
    "name": "cal × hd × kin × merkaba × signal × yi = 54",
-   "pass": false,
-   "value": "hd.code(224) = cal.gregorianDrift(2) = cal.lunarDrift(5) = cal.coin∘gregorianDrift(4) = signal.keyBits(144) = merkaba.flows(5) = kin.dootKin(1, 3, 4) = kin.dootKin(2, 4, 4) = kin.dootKin(3, 5, 4) = kin.pillar(1, 7) = yi.complement(9) · live · untested (no test for keyBits)",
+   "pass": true,
+   "value": "hd.code(224) = cal.gregorianDrift(2) = cal.lunarDrift(5) = cal.coin∘gregorianDrift(4) = signal.keyBits(144) = merkaba.flows(5) = kin.dootKin(1, 3, 4) = kin.dootKin(2, 4, 4) = kin.dootKin(3, 5, 4) = kin.pillar(1, 7) = yi.complement(9) · live · tested in src/families/hd/test.ts, src/families/signal/test.ts, src/quantum/processing/unit/next.test.ts",
    "receipt": "c420da64-ff1d-8f97-9337-8714b28060ce"
   },
   {
    "name": "cal × crypt × heat × kin × signal × tesla = 120",
-   "pass": false,
-   "value": "cal.sarosShift(1) = cal.sarosShift(4) = cal.sarosShift(7) = cal.sarosShift(10) = crypt.curveClassicalBits(240) = crypt.symmetricQuantumBits(240) = signal.siftedBits(240) = heat.signal∘cooling(1, 2) = heat.signal∘ways(1, 2) = kin.bits(14) = tesla.sync(2, 2) = tesla.sync(4, 4) = tesla.sync(6, 6) = tesla.sync(8, 8) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits, signal, cooling, ways)",
+   "pass": true,
+   "value": "cal.sarosShift(1) = cal.sarosShift(4) = cal.sarosShift(7) = cal.sarosShift(10) = crypt.curveClassicalBits(240) = crypt.symmetricQuantumBits(240) = signal.siftedBits(240) = heat.signal∘cooling(1, 2) = heat.signal∘ways(1, 2) = kin.bits(14) = tesla.sync(2, 2) = tesla.sync(4, 4) = tesla.sync(6, 6) = tesla.sync(8, 8) · live · tested in src/families/hd/test.ts, src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "126670e2-0a0e-8463-a3ae-c7201319ef49"
   },
   {
    "name": "Qpu.Mint × cal × cross × signal × tesla × yi = 128",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(7) = cross.medSecureWithQSec(1, 7) = cross.medSecureWithQSec(2, 6) = cross.medSecureWithQSec(4, 5) = cross.medSecureWithQSec(8, 4) = cal.gatesPrecessed∘dayPer(1) = cal.gatesPrecessed∘dayPer(2) = cal.gatesPrecessed∘dayPer(3) = cal.gatesPrecessed∘dayPer(4) = signal.keyspace(7) = tesla.schumann∘period(1) = yi.figures(7) · live · untested (no test for mintOf, medSecureWithQSec, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(7) = cross.medSecureWithQSec(1, 7) = cross.medSecureWithQSec(2, 6) = cross.medSecureWithQSec(4, 5) = cross.medSecureWithQSec(8, 4) = cal.gatesPrecessed∘dayPer(1) = cal.gatesPrecessed∘dayPer(2) = cal.gatesPrecessed∘dayPer(3) = cal.gatesPrecessed∘dayPer(4) = signal.keyspace(7) = tesla.schumann∘period(1) = yi.figures(7) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "c8644bad-3201-8de5-be74-fcbf293865da"
   },
   {
    "name": "Qpu.Mint × cross × kin × np × signal × yi = 1024",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(10) = cross.medSecureWithQSec(4, 8) = cross.medSecureWithQSec(8, 7) = signal.keyspace(10) = np.isTime(4) = np.sparseWidth∘isTime(2) = np.sparseWidth∘isTime(3) = kin.combinations∘dreamspellDrift(2) = yi.figures(10) = yi.nuclear∘figures(4) · live · untested (no test for mintOf, medSecureWithQSec, keyspace, isTime, sparseWidth)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(10) = cross.medSecureWithQSec(4, 8) = cross.medSecureWithQSec(8, 7) = signal.keyspace(10) = np.isTime(4) = np.sparseWidth∘isTime(2) = np.sparseWidth∘isTime(3) = kin.combinations∘dreamspellDrift(2) = yi.figures(10) = yi.nuclear∘figures(4) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "bcb15c4e-79ec-8b2b-bae3-273436430a57"
   },
   {
    "name": "kin × np × rule × tesla × yi = 11",
-   "pass": false,
-   "value": "np.sparseWidth(261) = np.sparseWidth(265) = np.sparseWidth(268) = np.sparseWidth(272) = rule.free(5) = rule.free(7) = kin.tone(24) = kin.tone(50) = kin.tone(141) = kin.combinations∘dootKin(1, 2, 1) = tesla.resonance∘period(1, 3) = tesla.resonance∘period(3, 1) = tesla.sync∘turns(3, 2) = yi.change(3, 8) = yi.change(8, 3) = yi.nuclear(6) = yi.nuclear(7) · live · untested (no test for sparseWidth, change)",
+   "pass": true,
+   "value": "np.sparseWidth(261) = np.sparseWidth(265) = np.sparseWidth(268) = np.sparseWidth(272) = rule.free(5) = rule.free(7) = kin.tone(24) = kin.tone(50) = kin.tone(141) = kin.combinations∘dootKin(1, 2, 1) = tesla.resonance∘period(1, 3) = tesla.resonance∘period(3, 1) = tesla.sync∘turns(3, 2) = yi.change(3, 8) = yi.change(8, 3) = yi.nuclear(6) = yi.nuclear(7) · live · tested in src/families/np/test.ts, scripts/e2e.test.mjs, scripts/laws.test.mjs",
    "receipt": "f625bc08-5e72-8763-9598-33eb16a3aefc"
   },
   {
    "name": "kin × np × rule × tesla × yi = 13",
    "pass": false,
-   "value": "np.isTime∘sparseWidth(4) = rule.free(3) = rule.free(6) = rule.nibbles(2) = rule.free∘free(4) = kin.pillar(2, 1) = kin.pillar(3, 2) = kin.pillar(4, 3) = kin.pillar(5, 4) = tesla.quarter∘period(1) = tesla.resonance∘period(2, 2) = tesla.turns∘earth(1, 3) = yi.change(5, 8) = yi.change(8, 5) = yi.complement(50) = yi.withYang∘change(2, 2) · live · untested (no test for isTime, sparseWidth, change)",
+   "value": "13 holds false; rule.free(6) is 7 (free); rule.free∘free(4) is 7 (free); next bfe6be1f-5000-1000-9000-000000000006",
    "receipt": "9611161a-d783-88d9-af67-acdec21bee87"
   },
   {
    "name": "hd × heat × kin × tesla × yi = 17",
-   "pass": false,
-   "value": "hd.gate(50) = hd.gate(56) = hd.gate(59) = hd.gate(84) = heat.signal(14) = kin.bits(2) = kin.seal(157) = kin.bits∘dootKin(2, 2, 2) = kin.bits∘seal(2) = tesla.sync∘turns(2, 2) = yi.inverse∘change(2, 1) · live · untested (no test for signal, change)",
+   "pass": true,
+   "value": "hd.gate(50) = hd.gate(56) = hd.gate(59) = hd.gate(84) = heat.signal(14) = kin.bits(2) = kin.seal(157) = kin.bits∘dootKin(2, 2, 2) = kin.bits∘seal(2) = tesla.sync∘turns(2, 2) = yi.inverse∘change(2, 1) · live · tested in src/families/hd/test.ts, scripts/push.test.mjs, src/families/telecom/test.ts",
    "receipt": "e693c2cb-f129-8362-93f7-0a3f3e1ffff9"
   },
   {
    "name": "Qpu.Physics × crypt × hd × signal × tesla = 25",
-   "pass": false,
-   "value": "Qpu.Physics.bcs∘gap(1) = Qpu.Physics.bcs∘gap(2) = Qpu.Physics.bcs∘gap(3) = Qpu.Physics.bcs∘gap(4) = hd.gate(1) = hd.gate(2) = hd.gate(3) = hd.gate(4) = crypt.curveClassicalBits(50) = crypt.symmetricQuantumBits(50) = signal.siftedBits(50) = tesla.field(5, 5) = tesla.windings(5, 5) = tesla.earth∘period(1) = tesla.turns∘quarter(1, 3) · live · untested (no test for bcs, gap, curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "Qpu.Physics.bcs∘gap(1) = Qpu.Physics.bcs∘gap(2) = Qpu.Physics.bcs∘gap(3) = Qpu.Physics.bcs∘gap(4) = hd.gate(1) = hd.gate(2) = hd.gate(3) = hd.gate(4) = crypt.curveClassicalBits(50) = crypt.symmetricQuantumBits(50) = signal.siftedBits(50) = tesla.field(5, 5) = tesla.windings(5, 5) = tesla.earth∘period(1) = tesla.turns∘quarter(1, 3) · live · tested in src/families/veterinary/test.ts, index.lean (Lean kernel), src/families/website/test.ts",
    "receipt": "72eaf78f-bc4b-8b43-823e-aa27d79719f3"
   },
   {
    "name": "cal × hd × heat × rule × tesla = 27",
-   "pass": false,
-   "value": "hd.gate(362) = cal.gregorianDrift(1) = cal.coin∘gregorianDrift(1) = cal.coin∘gregorianDrift(2) = cal.coin∘gregorianDrift(3) = rule.families() = rule.cap∘families() = rule.compositions∘families(1) = rule.compositions∘families(2) = heat.signal∘cooling(3, 3) = heat.signal∘ways(3, 3) = tesla.field∘field(3, 3) = tesla.field∘windings(3, 3) = tesla.quarter∘period(2) = tesla.turns∘earth(2, 3) · live · untested (no test for compositions, signal, cooling, ways)",
+   "pass": true,
+   "value": "hd.gate(362) = cal.gregorianDrift(1) = cal.coin∘gregorianDrift(1) = cal.coin∘gregorianDrift(2) = cal.coin∘gregorianDrift(3) = rule.families() = rule.cap∘families() = rule.compositions∘families(1) = rule.compositions∘families(2) = heat.signal∘cooling(3, 3) = heat.signal∘ways(3, 3) = tesla.field∘field(3, 3) = tesla.field∘windings(3, 3) = tesla.quarter∘period(2) = tesla.turns∘earth(2, 3) · live · tested in src/families/hd/test.ts, scripts/expr.test.mjs, scripts/push.test.mjs",
    "receipt": "71dcc32d-6f08-894b-920f-dedb6edb3047"
   },
   {
    "name": "clay × cross × heat × tesla × yi = 40",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(5, 3) = clay.bsd(280) = heat.signal∘cooling(2, 3) = heat.signal∘cooling(3, 2) = heat.signal∘ways(2, 3) = heat.signal∘ways(3, 2) = tesla.field(5, 8) = tesla.field(8, 5) = tesla.sync(2, 6) = tesla.windings(5, 8) = yi.inverse(5) · live · untested (no test for medSecureWithQSec, bsd, signal, cooling, ways)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(5, 3) = clay.bsd(280) = heat.signal∘cooling(2, 3) = heat.signal∘cooling(3, 2) = heat.signal∘ways(2, 3) = heat.signal∘ways(3, 2) = tesla.field(5, 8) = tesla.field(8, 5) = tesla.sync(2, 6) = tesla.windings(5, 8) = yi.inverse(5) · live · tested in src/families/cross/test.ts, src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts",
    "receipt": "2dfd09bc-a718-8191-b8b5-11feaf3abc18"
   },
   {
    "name": "clay × cross × kin × tesla × yi = 48",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(3, 4) = cross.medSecureWithQSec(6, 3) = cross.medSecureWithQSec∘medSecureWithQSec(3, 2) = clay.hodge(24) = kin.bits∘pillar(3, 2) = tesla.field(6, 8) = tesla.field(8, 6) = tesla.windings(6, 8) = tesla.windings(8, 6) = yi.complement(15) = yi.inverse(3) = yi.change∘inverse(1, 2) = yi.change∘inverse(2, 1) · live · untested (no test for medSecureWithQSec, hodge, change)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(3, 4) = cross.medSecureWithQSec(6, 3) = cross.medSecureWithQSec∘medSecureWithQSec(3, 2) = clay.hodge(24) = kin.bits∘pillar(3, 2) = tesla.field(6, 8) = tesla.field(8, 6) = tesla.windings(6, 8) = tesla.windings(8, 6) = yi.complement(15) = yi.inverse(3) = yi.change∘inverse(1, 2) = yi.change∘inverse(2, 1) · live · tested in src/families/cross/test.ts, src/families/clay/test.ts, src/families/signal/test.ts",
    "receipt": "0f8a6a48-463b-88c3-9cf6-2ab522e43c12"
   },
   {
    "name": "crypt × kin × signal × tesla × yi = 52",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(104) = crypt.symmetricQuantumBits(104) = signal.siftedBits(104) = kin.bits(6) = kin.dootKin(1, 3, 2) = kin.dootKin(2, 4, 2) = kin.dootKin(3, 5, 2) = tesla.schumann∘period(3) = yi.complement(11) = yi.inverse(11) = yi.nuclear(24) = yi.nuclear(56) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(104) = crypt.symmetricQuantumBits(104) = signal.siftedBits(104) = kin.bits(6) = kin.dootKin(1, 3, 2) = kin.dootKin(2, 4, 2) = kin.dootKin(3, 5, 2) = tesla.schumann∘period(3) = yi.complement(11) = yi.inverse(11) = yi.nuclear(24) = yi.nuclear(56) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts, src/families/quantization/test.ts",
    "receipt": "644547ea-68de-85be-8dce-9f7688dee48e"
   },
   {
    "name": "Qpu.Mint × cross × kin × tesla × yi = 56",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(8, 3) = Qpu.Mint.chooseOf(8, 5) = Qpu.Mint.mintOf∘chooseOf(3, 3) = cross.medSecureWithQSec(7, 3) = kin.dootKin(4, 1, 1) = kin.dootKin(5, 2, 1) = kin.dreamspellDrift(224) = kin.period∘pillar(2, 1) = tesla.field(7, 8) = tesla.field(8, 7) = tesla.windings(7, 8) = tesla.windings(8, 7) = yi.complement(7) = yi.inverse(7) · live · untested (no test for chooseOf, mintOf, medSecureWithQSec)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(8, 3) = Qpu.Mint.chooseOf(8, 5) = Qpu.Mint.mintOf∘chooseOf(3, 3) = cross.medSecureWithQSec(7, 3) = kin.dootKin(4, 1, 1) = kin.dootKin(5, 2, 1) = kin.dreamspellDrift(224) = kin.period∘pillar(2, 1) = tesla.field(7, 8) = tesla.field(8, 7) = tesla.windings(7, 8) = tesla.windings(8, 7) = yi.complement(7) = yi.inverse(7) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/holo/test.ts",
    "receipt": "80464a76-eb93-85aa-8afb-2fcd498015b5"
   },
   {
    "name": "clay × heat × kin × tesla × yi = 60",
-   "pass": false,
-   "value": "clay.bsd(255) = clay.bsd(272) = heat.signal∘cooling(2, 2) = heat.signal∘ways(2, 2) = kin.bits(7) = kin.dootKin(4, 1, 5) = kin.dootKin(5, 2, 5) = kin.dreamspellDrift(240) = tesla.sync(1, 2) = tesla.sync(2, 4) = tesla.sync(3, 6) = tesla.sync(4, 8) = yi.complement(3) = yi.inverse(15) = yi.change∘complement(1, 2) = yi.change∘complement(2, 1) · live · untested (no test for bsd, signal, cooling, ways, change)",
+   "pass": true,
+   "value": "clay.bsd(255) = clay.bsd(272) = heat.signal∘cooling(2, 2) = heat.signal∘ways(2, 2) = kin.bits(7) = kin.dootKin(4, 1, 5) = kin.dootKin(5, 2, 5) = kin.dreamspellDrift(240) = tesla.sync(1, 2) = tesla.sync(2, 4) = tesla.sync(3, 6) = tesla.sync(4, 8) = yi.complement(3) = yi.inverse(15) = yi.change∘complement(1, 2) = yi.change∘complement(2, 1) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, scripts/push.test.mjs",
    "receipt": "a3a50e76-141a-8f52-ab7c-9a44bc14fcb5"
   },
   {
    "name": "cross × heat × kin × path × tesla = 80",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(5, 4) = heat.signal∘cooling(1, 3) = heat.signal∘ways(1, 3) = kin.pillar(1, 5) = kin.pillar(2, 6) = kin.pillar(3, 7) = kin.pillar(4, 8) = path.anomalyToResponse() = path.allPaths∘anomalyToResponse() = path.anomalyToResponse∘anomalyToResponse() = path.dataFlowCompressML∘anomalyToResponse() = tesla.earth(502) = tesla.sync(4, 6) = tesla.slip∘earth(2, 1) = tesla.turns∘earth(2, 1) · live · untested (no test for medSecureWithQSec, signal, cooling, ways, anomalyToResponse, allPaths, dataFlowCompressML)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(5, 4) = heat.signal∘cooling(1, 3) = heat.signal∘ways(1, 3) = kin.pillar(1, 5) = kin.pillar(2, 6) = kin.pillar(3, 7) = kin.pillar(4, 8) = path.anomalyToResponse() = path.allPaths∘anomalyToResponse() = path.anomalyToResponse∘anomalyToResponse() = path.dataFlowCompressML∘anomalyToResponse() = tesla.earth(502) = tesla.sync(4, 6) = tesla.slip∘earth(2, 1) = tesla.turns∘earth(2, 1) · live · tested in src/families/cross/test.ts, scripts/push.test.mjs, src/families/telecom/test.ts",
    "receipt": "c0ae1aeb-7572-8a72-b5b3-4946f5dd842f"
   },
   {
    "name": "cal × crypt × heat × kin × signal = 119",
-   "pass": false,
-   "value": "cal.lunarDrift(11) = crypt.curveClassicalBits(238) = crypt.symmetricQuantumBits(238) = signal.siftedBits(238) = heat.signal(2) = heat.cooling∘signal(2, 1) = heat.cooling∘signal(3, 2) = heat.signal∘coherence(1, 1) = kin.pillar(1, 2) = kin.pillar(2, 3) = kin.pillar(3, 4) = kin.pillar(4, 5) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits, signal, cooling, coherence)",
+   "pass": true,
+   "value": "cal.lunarDrift(11) = crypt.curveClassicalBits(238) = crypt.symmetricQuantumBits(238) = signal.siftedBits(238) = heat.signal(2) = heat.cooling∘signal(2, 1) = heat.cooling∘signal(3, 2) = heat.signal∘coherence(1, 1) = kin.pillar(1, 2) = kin.pillar(2, 3) = kin.pillar(3, 4) = kin.pillar(4, 5) · live · tested in src/families/hd/test.ts, src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "a8a24e51-ce08-8b24-85ee-2734ccb93bed"
   },
   {
@@ -298,104 +298,104 @@
   },
   {
    "name": "heat × kin × tesla × yi = 19",
-   "pass": false,
-   "value": "heat.signal(12) = heat.signal∘coherence(3, 3) = kin.seal(59) = kin.seal(119) = kin.pillar∘seal(1, 2) = kin.pillar∘seal(2, 3) = tesla.resonance∘period(3, 3) = yi.inverse(50) = yi.inverse∘change(2, 3) · live · untested (no test for signal, coherence, change)",
+   "pass": true,
+   "value": "heat.signal(12) = heat.signal∘coherence(3, 3) = kin.seal(59) = kin.seal(119) = kin.pillar∘seal(1, 2) = kin.pillar∘seal(2, 3) = tesla.resonance∘period(3, 3) = yi.inverse(50) = yi.inverse∘change(2, 3) · live · tested in scripts/push.test.mjs, src/families/telecom/test.ts, src/families/observability/test.ts",
    "receipt": "6526d12a-35f1-853e-aaed-788f802a118f"
   },
   {
    "name": "hd × heat × kin × yi = 23",
-   "pass": false,
-   "value": "hd.gate(502) = heat.signal(10) = kin.dreamspellDrift(93) = kin.pillar∘pillar(3, 2) = yi.withYang∘change(3, 3) · live · untested (no test for signal, change)",
+   "pass": true,
+   "value": "hd.gate(502) = heat.signal(10) = kin.dreamspellDrift(93) = kin.pillar∘pillar(3, 2) = yi.withYang∘change(3, 3) · live · tested in src/families/hd/test.ts, scripts/push.test.mjs, src/families/telecom/test.ts",
    "receipt": "b37f14b3-9eab-8da9-a132-54edde146871"
   },
   {
    "name": "clay × hd × heat × kin = 26",
-   "pass": false,
-   "value": "hd.code(127) = clay.hodge(13) = heat.signal(9) = heat.signal∘coherence(3, 2) = kin.bits(3) = kin.dreamspellDrift(104) = kin.pillar(3, 1) = kin.pillar(4, 2) · live · untested (no test for hodge, signal, coherence)",
+   "pass": true,
+   "value": "hd.code(127) = clay.hodge(13) = heat.signal(9) = heat.signal∘coherence(3, 2) = kin.bits(3) = kin.dreamspellDrift(104) = kin.pillar(3, 1) = kin.pillar(4, 2) · live · tested in src/families/hd/test.ts, src/families/clay/test.ts, scripts/push.test.mjs",
    "receipt": "31ba3a1e-feb8-82da-b66e-a5f55f83ac9c"
   },
   {
    "name": "clay × hd × heat × kin = 29",
-   "pass": false,
-   "value": "hd.ut∘gate(1, 1) = hd.ut∘gate(1, 2) = hd.ut∘gate(1, 3) = hd.ut∘gate(2, 1) = clay.bsd(122) = heat.signal(8) = heat.signal∘coherence(2, 3) = kin.dreamspellDrift(119) = kin.pillar∘dreamspellDrift(1, 2) = kin.pillar∘dreamspellDrift(2, 3) · live · untested (no test for ut, bsd, signal, coherence)",
+   "pass": true,
+   "value": "hd.ut∘gate(1, 1) = hd.ut∘gate(1, 2) = hd.ut∘gate(1, 3) = hd.ut∘gate(2, 1) = clay.bsd(122) = heat.signal(8) = heat.signal∘coherence(2, 3) = kin.dreamspellDrift(119) = kin.pillar∘dreamspellDrift(1, 2) = kin.pillar∘dreamspellDrift(2, 3) · live · tested in src/families/hd/test.ts, src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts",
    "receipt": "704e53d9-0f1d-8642-b5cd-fa60ad304085"
   },
   {
    "name": "clay × kin × tesla × yi = 30",
-   "pass": false,
-   "value": "clay.bsd(170) = clay.hodge(15) = kin.dreamspellDrift(122) = kin.period∘pillar(2, 3) = tesla.field(5, 6) = tesla.field(6, 5) = tesla.sync(1, 4) = tesla.sync(2, 8) = yi.nuclear(12) = yi.nuclear(13) · live · untested (no test for bsd, hodge)",
+   "pass": true,
+   "value": "clay.bsd(170) = clay.hodge(15) = kin.dreamspellDrift(122) = kin.period∘pillar(2, 3) = tesla.field(5, 6) = tesla.field(6, 5) = tesla.sync(1, 4) = tesla.sync(2, 8) = yi.nuclear(12) = yi.nuclear(13) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/hd/test.ts",
    "receipt": "d61054c8-ddac-8d4b-b75a-72df7e0edd4f"
   },
   {
    "name": "clay × heat × kin × yi = 34",
-   "pass": false,
-   "value": "clay.bsd(142) = heat.signal(7) = kin.bits(4) = kin.digitalRoot∘bits(4) = kin.seal∘bits(4) = kin.tone∘bits(4) = yi.inverse∘change(1, 2) · live · untested (no test for bsd, signal, change)",
+   "pass": true,
+   "value": "clay.bsd(142) = heat.signal(7) = kin.bits(4) = kin.digitalRoot∘bits(4) = kin.seal∘bits(4) = kin.tone∘bits(4) = yi.inverse∘change(1, 2) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, scripts/push.test.mjs",
    "receipt": "75b71e23-89d9-8d1f-8973-5d8970be07ab"
   },
   {
    "name": "kin × rule × tesla × yi = 36",
-   "pass": false,
-   "value": "rule.compositions(1) = rule.compositions(9) = rule.compositions(11) = rule.compositions(14) = kin.dreamspellDrift(144) = kin.dreamspellDrift(146) = tesla.field(6, 6) = tesla.windings(6, 6) = yi.inverse(9) · live · untested (no test for compositions)",
+   "pass": true,
+   "value": "rule.compositions(1) = rule.compositions(9) = rule.compositions(11) = rule.compositions(14) = kin.dreamspellDrift(144) = kin.dreamspellDrift(146) = tesla.field(6, 6) = tesla.windings(6, 6) = yi.inverse(9) · live · tested in src/families/rule/test.ts, src/families/hd/test.ts, src/families/tesla/test.ts",
    "receipt": "2e8d3387-e49c-868f-a3f9-66d023c9588c"
   },
   {
    "name": "heat × kin × signal × yi = 39",
-   "pass": false,
-   "value": "signal.keyBits(104) = heat.signal(6) = heat.signal∘coherence(2, 2) = heat.signal∘coherence(3, 1) = kin.dreamspellDrift(157) = kin.pillar(4, 1) = kin.pillar(5, 2) = kin.pillar(6, 3) = yi.complement(24) · live · untested (no test for keyBits, signal, coherence)",
+   "pass": true,
+   "value": "signal.keyBits(104) = heat.signal(6) = heat.signal∘coherence(2, 2) = heat.signal∘coherence(3, 1) = kin.dreamspellDrift(157) = kin.pillar(4, 1) = kin.pillar(5, 2) = kin.pillar(6, 3) = yi.complement(24) · live · tested in src/families/signal/test.ts, scripts/push.test.mjs, src/families/telecom/test.ts",
    "receipt": "1f3b6363-e928-8e76-9bcd-dc66b69b4dbe"
   },
   {
    "name": "cal × kin × tesla × yi = 50",
-   "pass": false,
-   "value": "cal.precession(1) = cal.coin∘precession(1) = cal.coin∘precession(2) = cal.coin∘precession(3) = kin.bits∘pillar(2, 3) = kin.combinations∘pillar(2, 2) = tesla.earth∘period(2) = tesla.turns∘quarter(2, 3) = yi.complement(13) = yi.inverse∘change(3, 2) · live · untested (no test for change)",
+   "pass": true,
+   "value": "cal.precession(1) = cal.coin∘precession(1) = cal.coin∘precession(2) = cal.coin∘precession(3) = kin.bits∘pillar(2, 3) = kin.combinations∘pillar(2, 2) = tesla.earth∘period(2) = tesla.turns∘quarter(2, 3) = yi.complement(13) = yi.inverse∘change(3, 2) · live · tested in src/families/hd/test.ts, src/families/signal/test.ts, src/families/quantization/test.ts",
    "receipt": "2fc75bc9-57a4-8b90-a1c4-6460496e0659"
   },
   {
    "name": "crypt × kin × signal × yi = 61",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(122) = crypt.symmetricQuantumBits(122) = signal.siftedBits(122) = kin.bits∘dootKin(1, 1, 1) = kin.bits∘pillar(3, 1) = kin.pillar∘pillar(3, 1) = yi.complement(2) = yi.change∘complement(1, 3) = yi.change∘complement(3, 1) = yi.complement∘change(1, 3) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits, change)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(122) = crypt.symmetricQuantumBits(122) = signal.siftedBits(122) = kin.bits∘dootKin(1, 1, 1) = kin.bits∘pillar(3, 1) = kin.pillar∘pillar(3, 1) = yi.complement(2) = yi.change∘complement(1, 3) = yi.change∘complement(3, 1) = yi.complement∘change(1, 3) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts, src/families/quantization/test.ts",
    "receipt": "9ef8231e-d28e-8cff-9f99-7c767cf28c7b"
   },
   {
    "name": "clay × kin × rule × tesla = 100",
-   "pass": false,
-   "value": "clay.hodge(50) = rule.compositions(10) = rule.compositions(13) = rule.free∘compositions(3) = rule.nibbles∘compositions(2) = kin.dreamspellDrift(401) = kin.enneagram∘kin(1, 1) = kin.enneagram∘kin(1, 2) = kin.enneagram∘kin(1, 3) = tesla.earth(401) = tesla.sync(5, 6) = tesla.earth∘period(4) · live · untested (no test for hodge, compositions)",
+   "pass": true,
+   "value": "clay.hodge(50) = rule.compositions(10) = rule.compositions(13) = rule.free∘compositions(3) = rule.nibbles∘compositions(2) = kin.dreamspellDrift(401) = kin.enneagram∘kin(1, 1) = kin.enneagram∘kin(1, 2) = kin.enneagram∘kin(1, 3) = tesla.earth(401) = tesla.sync(5, 6) = tesla.earth∘period(4) · live · tested in src/families/clay/test.ts, src/families/rule/test.ts, scripts/e2e.test.mjs",
    "receipt": "2f141885-3481-8045-8f55-a409726dc0ab"
   },
   {
    "name": "heat × kin × signal × tesla = 111",
-   "pass": false,
-   "value": "signal.keyBits(296) = heat.temperature∘cooling(1, 3) = heat.temperature∘ways(1, 3) = kin.period∘pillar(1, 1) = tesla.earth(362) · live · untested (no test for keyBits, cooling, ways)",
+   "pass": true,
+   "value": "signal.keyBits(296) = heat.temperature∘cooling(1, 3) = heat.temperature∘ways(1, 3) = kin.period∘pillar(1, 1) = tesla.earth(362) · live · tested in src/families/signal/test.ts, src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts",
    "receipt": "4ebd8477-b98a-8a06-8e69-0a87b31491d9"
   },
   {
    "name": "Qpu.Mint × cross × signal × yi = 256",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(8) = Qpu.Mint.mintOf∘mintOf(3) = cross.medSecureWithQSec(1, 8) = cross.medSecureWithQSec(2, 7) = cross.medSecureWithQSec(4, 6) = cross.medSecureWithQSec(8, 5) = signal.keyspace(8) = signal.keyspace∘keyspace(3) = yi.figures(8) = yi.figures∘figures(3) = yi.inverse∘figures(4) · live · untested (no test for mintOf, medSecureWithQSec, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(8) = Qpu.Mint.mintOf∘mintOf(3) = cross.medSecureWithQSec(1, 8) = cross.medSecureWithQSec(2, 7) = cross.medSecureWithQSec(4, 6) = cross.medSecureWithQSec(8, 5) = signal.keyspace(8) = signal.keyspace∘keyspace(3) = yi.figures(8) = yi.figures∘figures(3) = yi.inverse∘figures(4) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "664fafd2-e007-8283-b5f7-d08ca0f65dab"
   },
   {
    "name": "Qpu.Mint × cross × signal × yi = 512",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(9) = cross.medSecureWithQSec(2, 8) = cross.medSecureWithQSec(4, 7) = cross.medSecureWithQSec(8, 6) = signal.keyspace(9) = yi.figures(9) · live · untested (no test for mintOf, medSecureWithQSec, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(9) = cross.medSecureWithQSec(2, 8) = cross.medSecureWithQSec(4, 7) = cross.medSecureWithQSec(8, 6) = signal.keyspace(9) = yi.figures(9) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "60768aba-c72b-8cae-b9b1-bb0e0aece0f4"
   },
   {
    "name": "Qpu.Mint × cross × signal × yi = 2048",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(11) = cross.medSecureWithQSec(8, 8) = signal.keyspace(11) = yi.figures(11) · live · untested (no test for mintOf, medSecureWithQSec, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(11) = cross.medSecureWithQSec(8, 8) = signal.keyspace(11) = yi.figures(11) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/cross/test.ts",
    "receipt": "861cb327-701c-81d9-8cb1-c8e729298bc4"
   },
   {
    "name": "Qpu.Mint × np × signal × yi = 32768",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(15) = signal.keyspace(15) = np.isTime(8) = yi.figures(15) = yi.withYang∘figures(2) = yi.withYang∘figures(4) · live · untested (no test for mintOf, keyspace, isTime)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(15) = signal.keyspace(15) = np.isTime(8) = yi.figures(15) = yi.withYang∘figures(2) = yi.withYang∘figures(4) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/signal/test.ts",
    "receipt": "763d20f7-05eb-892a-86ef-71be3e44e09a"
   },
   {
    "name": "Qpu.Mint × kin × signal × yi = 65536",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(16) = Qpu.Mint.mintOf∘mintOf(4) = signal.keyspace(16) = signal.keyspace∘keyspace(4) = kin.combinations∘dreamspellDrift(3) = yi.figures(16) = yi.figures∘figures(4) = yi.inverse∘figures(2) · live · untested (no test for mintOf, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(16) = Qpu.Mint.mintOf∘mintOf(4) = signal.keyspace(16) = signal.keyspace∘keyspace(4) = kin.combinations∘dreamspellDrift(3) = yi.figures(16) = yi.figures∘figures(4) = yi.inverse∘figures(2) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/signal/test.ts",
    "receipt": "db0c179c-49e1-8f37-8b86-8339df408bb0"
   },
   {
@@ -406,14 +406,14 @@
   },
   {
    "name": "heat × kin × yi = 47",
-   "pass": false,
-   "value": "heat.signal(5) = kin.bits∘pillar(3, 3) = yi.complement(16) = yi.complement∘inverse(2) = yi.figures∘complement(4) = yi.inverse∘complement(2) · live · untested (no test for signal)",
+   "pass": true,
+   "value": "heat.signal(5) = kin.bits∘pillar(3, 3) = yi.complement(16) = yi.complement∘inverse(2) = yi.figures∘complement(4) = yi.inverse∘complement(2) · live · tested in scripts/push.test.mjs, src/families/telecom/test.ts, src/families/observability/test.ts",
    "receipt": "04a55102-7aa7-8a18-9677-849e5094b27d"
   },
   {
    "name": "hd × kin × yi = 51",
-   "pass": false,
-   "value": "hd.gate(157) = hd.gate(170) = hd.gate(183) = kin.dootKin(1, 3, 1) = kin.dootKin(2, 4, 1) = kin.dootKin(3, 5, 1) = kin.crossed∘dootKin(1, 2, 1) = yi.complement(12) = yi.inverse∘change(3, 3) · live · untested (no test for change)",
+   "pass": true,
+   "value": "hd.gate(157) = hd.gate(170) = hd.gate(183) = kin.dootKin(1, 3, 1) = kin.dootKin(2, 4, 1) = kin.dootKin(3, 5, 1) = kin.crossed∘dootKin(1, 2, 1) = yi.complement(12) = yi.inverse∘change(3, 3) · live · tested in src/families/hd/test.ts, src/families/rule/test.ts, src/quantum/processing/unit/release.test.ts",
    "receipt": "4b51159e-bb45-84b7-9af1-0bf53965eb2c"
   },
   {
@@ -424,50 +424,50 @@
   },
   {
    "name": "clay × kin × yi = 58",
-   "pass": false,
-   "value": "clay.bsd(183) = kin.dootKin(4, 1, 3) = kin.dootKin(5, 2, 3) = kin.dootKin∘pillar(1, 2, 1) = yi.complement(5) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(183) = kin.dootKin(4, 1, 3) = kin.dootKin(5, 2, 3) = kin.dootKin∘pillar(1, 2, 1) = yi.complement(5) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/rule/test.ts",
    "receipt": "29fd450f-61e3-8b7a-8dd2-ed43304580af"
   },
   {
    "name": "heat × kin × yi = 59",
-   "pass": false,
-   "value": "heat.signal(4) = heat.signal∘coherence(1, 3) = heat.signal∘coherence(2, 1) = kin.dootKin(4, 1, 4) = kin.dootKin(5, 2, 4) = kin.dreamspellDrift(238) = yi.complement(4) = yi.figures∘complement(2) = yi.lower∘complement(4) · live · untested (no test for signal, coherence)",
+   "pass": true,
+   "value": "heat.signal(4) = heat.signal∘coherence(1, 3) = heat.signal∘coherence(2, 1) = kin.dootKin(4, 1, 4) = kin.dootKin(5, 2, 4) = kin.dreamspellDrift(238) = yi.complement(4) = yi.figures∘complement(2) = yi.lower∘complement(4) · live · tested in scripts/push.test.mjs, src/families/telecom/test.ts, src/families/observability/test.ts",
    "receipt": "9a27ce19-8601-87ae-b948-ee54454b1f9d"
   },
   {
    "name": "clay × kin × yi = 62",
-   "pass": false,
-   "value": "clay.bsd(127) = kin.bits∘dootKin(1, 1, 2) = yi.complement(1) = yi.change∘complement(2, 3) = yi.change∘complement(3, 2) = yi.complement∘change(2, 3) · live · untested (no test for bsd, change)",
+   "pass": true,
+   "value": "clay.bsd(127) = kin.bits∘dootKin(1, 1, 2) = yi.complement(1) = yi.change∘complement(2, 3) = yi.change∘complement(3, 2) = yi.complement∘change(2, 3) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/signal/test.ts",
    "receipt": "751165ed-b3ba-8dc0-b715-77915a5617e7"
   },
   {
    "name": "crypt × kin × signal = 71",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(142) = crypt.symmetricQuantumBits(142) = signal.siftedBits(142) = kin.dootKin∘pillar(1, 2, 2) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(142) = crypt.symmetricQuantumBits(142) = signal.siftedBits(142) = kin.dootKin∘pillar(1, 2, 2) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts, src/families/rule/test.ts",
    "receipt": "eb92ca10-71bb-8076-a218-8afc4ab59b52"
   },
   {
    "name": "clay × crypt × signal = 72",
-   "pass": false,
-   "value": "clay.bsd(440) = crypt.curveClassicalBits(144) = crypt.symmetricQuantumBits(144) = signal.siftedBits(144) · live · untested (no test for bsd, curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "clay.bsd(440) = crypt.curveClassicalBits(144) = crypt.symmetricQuantumBits(144) = signal.siftedBits(144) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/crypt/test.ts",
    "receipt": "750b1c4c-978d-8d6b-9128-99490666b036"
   },
   {
    "name": "clay × crypt × signal = 73",
-   "pass": false,
-   "value": "clay.bsd(149) = crypt.curveClassicalBits(146) = crypt.symmetricQuantumBits(146) = signal.siftedBits(146) · live · untested (no test for bsd, curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "clay.bsd(149) = crypt.curveClassicalBits(146) = crypt.symmetricQuantumBits(146) = signal.siftedBits(146) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/crypt/test.ts",
    "receipt": "eb1d99ae-4540-8780-985f-0e1f679ef619"
   },
   {
    "name": "crypt × kin × signal = 85",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(170) = crypt.symmetricQuantumBits(170) = signal.siftedBits(170) = kin.period∘pillar(1, 3) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(170) = crypt.symmetricQuantumBits(170) = signal.siftedBits(170) = kin.period∘pillar(1, 3) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts, src/families/waveform/test.ts",
    "receipt": "8e16eef0-ce5d-8e1e-995e-533dc686e7ea"
   },
   {
    "name": "kin × signal × tesla = 90",
-   "pass": false,
-   "value": "signal.keyBits(240) = kin.dreamspellDrift(362) = tesla.sync(3, 4) = tesla.sync(6, 8) · live · untested (no test for keyBits)",
+   "pass": true,
+   "value": "signal.keyBits(240) = kin.dreamspellDrift(362) = tesla.sync(3, 4) = tesla.sync(6, 8) · live · tested in src/families/signal/test.ts, src/families/hd/test.ts, src/families/tesla/test.ts",
    "receipt": "c204c81e-9637-8873-9248-c3753285ba7a"
   },
   {
@@ -478,56 +478,56 @@
   },
   {
    "name": "clay × kin × signal = 102",
-   "pass": false,
-   "value": "clay.bsd(265) = signal.keyBits(272) = kin.dootKin(1, 5, 2) = kin.cycle∘pillar(2, 2) = kin.kin∘pillar(1, 2) · live · untested (no test for bsd, keyBits)",
+   "pass": true,
+   "value": "clay.bsd(265) = signal.keyBits(272) = kin.dootKin(1, 5, 2) = kin.cycle∘pillar(2, 2) = kin.kin∘pillar(1, 2) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/signal/test.ts",
    "receipt": "2900a80d-9bd8-8680-bab1-c7ae4230b291"
   },
   {
    "name": "kin × signal × tesla = 105",
-   "pass": false,
-   "value": "signal.keyBits(280) = kin.dootKin(1, 5, 5) = tesla.sync(7, 8) · live · untested (no test for keyBits)",
+   "pass": true,
+   "value": "signal.keyBits(280) = kin.dootKin(1, 5, 5) = tesla.sync(7, 8) · live · tested in src/families/signal/test.ts, src/families/rule/test.ts, src/families/hd/test.ts",
    "receipt": "7bffe91f-6dd4-8c68-b96c-cf09cdeb7748"
   },
   {
    "name": "crypt × kin × signal = 136",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(272) = crypt.symmetricQuantumBits(272) = signal.siftedBits(272) = kin.period∘dootKin(2, 2, 1) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(272) = crypt.symmetricQuantumBits(272) = signal.siftedBits(272) = kin.period∘dootKin(2, 2, 1) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts, src/families/waveform/test.ts",
    "receipt": "a832fc3a-5824-8815-b3b5-6154c2509abf"
   },
   {
    "name": "crypt × signal × tesla = 140",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(280) = crypt.symmetricQuantumBits(280) = signal.siftedBits(280) = tesla.sync(7, 6) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(280) = crypt.symmetricQuantumBits(280) = signal.siftedBits(280) = tesla.sync(7, 6) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts, src/families/tesla/test.ts",
    "receipt": "90825ddd-8ad2-8ed7-81a9-cf3725cb042e"
   },
   {
    "name": "cross × kin × tesla = 160",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(5, 5) = kin.dootKin(1, 2, 5) = kin.dootKin(2, 3, 5) = kin.dootKin(3, 4, 5) = kin.dootKin(4, 5, 5) = tesla.sync(8, 6) · live · untested (no test for medSecureWithQSec)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(5, 5) = kin.dootKin(1, 2, 5) = kin.dootKin(2, 3, 5) = kin.dootKin(3, 4, 5) = kin.dootKin(4, 5, 5) = tesla.sync(8, 6) · live · tested in src/families/cross/test.ts, src/families/rule/test.ts, src/families/hd/test.ts",
    "receipt": "4e7139c2-d9bc-86a2-8776-50e7b3992d94"
   },
   {
    "name": "hd × kin × tesla = 207",
-   "pass": false,
-   "value": "hd.mean∘code(4) = kin.dootKin(1, 4, 2) = kin.dootKin(2, 5, 2) = tesla.quarter(362) · live · untested (no test for mean)",
+   "pass": true,
+   "value": "hd.mean∘code(4) = kin.dootKin(1, 4, 2) = kin.dootKin(2, 5, 2) = tesla.quarter(362) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/hd/test.ts",
    "receipt": "ee05bc22-7f76-829b-a146-48ae04a70f92"
   },
   {
    "name": "clay × kin × rule = 208",
    "pass": false,
-   "value": "clay.hodge(104) = rule.formulas() = rule.cap∘formulas() = rule.compositions∘formulas(1) = rule.compositions∘formulas(2) = kin.dootKin(1, 4, 3) = kin.dootKin(2, 5, 3) · live · untested (no test for hodge, compositions)",
+   "value": "208 holds false; rule.formulas() is 9099 (formulas); rule.cap∘formulas() is 9099 (formulas); rule.compositions∘formulas(1) is 9099 (formulas); rule.compositions∘formulas(2) is 9099 (formulas); next bfe6be1f-4000-8000-8000-000000000000",
    "receipt": "4e99fc82-007a-8546-8392-6d272798b92f"
   },
   {
    "name": "cal × heat × tesla = 250",
-   "pass": false,
-   "value": "cal.metonicDrift(2) = cal.coin∘metonicDrift(4) = heat.temperature(1, 4) = heat.temperature(2, 8) = heat.temperature∘coherence(3, 3) = heat.temperature∘cooling(1, 2) = tesla.slip(4, 3) = tesla.slip(8, 6) = tesla.turns(4, 1) = tesla.turns(8, 2) · live · untested (no test for coherence, cooling)",
+   "pass": true,
+   "value": "cal.metonicDrift(2) = cal.coin∘metonicDrift(4) = heat.temperature(1, 4) = heat.temperature(2, 8) = heat.temperature∘coherence(3, 3) = heat.temperature∘cooling(1, 2) = tesla.slip(4, 3) = tesla.slip(8, 6) = tesla.turns(4, 1) = tesla.turns(8, 2) · live · tested in src/families/hd/test.ts, src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts",
    "receipt": "7dcd14b0-25a2-899d-b9d2-fbf2d35f7ff9"
   },
   {
    "name": "cal × crypt × signal = 251",
-   "pass": false,
-   "value": "cal.precession(5) = crypt.curveClassicalBits(502) = crypt.symmetricQuantumBits(502) = signal.siftedBits(502) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "cal.precession(5) = crypt.curveClassicalBits(502) = crypt.symmetricQuantumBits(502) = signal.siftedBits(502) · live · tested in src/families/hd/test.ts, src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "514e68c0-fec8-8f0c-948a-8dcbf2d2c999"
   },
   {
@@ -550,14 +550,14 @@
   },
   {
    "name": "hd × kin × tesla = 721",
-   "pass": false,
-   "value": "hd.mean(2) = hd.mean(3) = hd.center∘mean(4) = hd.definition∘mean(2) = kin.bits(84) = tesla.quarter(104) · live · untested (no test for mean, definition)",
+   "pass": true,
+   "value": "hd.mean(2) = hd.mean(3) = hd.center∘mean(4) = hd.definition∘mean(2) = kin.bits(84) = tesla.quarter(104) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/hd/test.ts",
    "receipt": "8cd13ebb-fbf9-8fd6-b03b-a3ea5f874df1"
   },
   {
    "name": "cal × heat × tesla = 750",
-   "pass": false,
-   "value": "cal.metonicDrift(6) = heat.temperature(3, 4) = heat.temperature(6, 8) = heat.temperature∘cooling(3, 2) = heat.temperature∘ways(3, 2) = tesla.slip(4, 1) = tesla.slip(8, 2) = tesla.turns(4, 3) = tesla.turns(8, 6) · live · untested (no test for cooling, ways)",
+   "pass": true,
+   "value": "cal.metonicDrift(6) = heat.temperature(3, 4) = heat.temperature(6, 8) = heat.temperature∘cooling(3, 2) = heat.temperature∘ways(3, 2) = tesla.slip(4, 1) = tesla.slip(8, 2) = tesla.turns(4, 3) = tesla.turns(8, 6) · live · tested in src/families/hd/test.ts, src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts",
    "receipt": "f02609e8-4afe-8cb5-875e-7362ba609bed"
   },
   {
@@ -568,8 +568,8 @@
   },
   {
    "name": "cal × clay × hd = 880",
-   "pass": false,
-   "value": "hd.mean(401) = cal.gregorianDrift∘lunarDrift(3) = clay.hodge(440) · live · untested (no test for mean, hodge)",
+   "pass": true,
+   "value": "hd.mean(401) = cal.gregorianDrift∘lunarDrift(3) = clay.hodge(440) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/hd/test.ts",
    "receipt": "81c153db-89e3-816f-ad13-51ff3f215805"
   },
   {
@@ -586,8 +586,8 @@
   },
   {
    "name": "cal × heat × tesla = 1500",
-   "pass": false,
-   "value": "cal.metonicDrift(12) = heat.temperature(3, 2) = heat.temperature(6, 4) = heat.temperature∘coherence(3, 1) = tesla.turns(2, 3) = tesla.turns(4, 6) · live · untested (no test for coherence)",
+   "pass": true,
+   "value": "cal.metonicDrift(12) = heat.temperature(3, 2) = heat.temperature(6, 4) = heat.temperature∘coherence(3, 1) = tesla.turns(2, 3) = tesla.turns(4, 6) · live · tested in src/families/hd/test.ts, src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts",
    "receipt": "196f2d8f-7131-8f6f-b327-b63e45f540e0"
   },
   {
@@ -604,8 +604,8 @@
   },
   {
    "name": "cal × heat × tesla = 3000",
-   "pass": false,
-   "value": "cal.metonicDrift(24) = heat.temperature(3, 1) = heat.temperature(6, 2) = heat.cooling∘temperature(3, 1) = heat.temperature∘cooling(3, 1) = tesla.turns(1, 3) = tesla.turns(2, 6) = tesla.turns∘field(3, 3) = tesla.turns∘windings(3, 3) · live · untested (no test for cooling)",
+   "pass": true,
+   "value": "cal.metonicDrift(24) = heat.temperature(3, 1) = heat.temperature(6, 2) = heat.cooling∘temperature(3, 1) = heat.temperature∘cooling(3, 1) = tesla.turns(1, 3) = tesla.turns(2, 6) = tesla.turns∘field(3, 3) = tesla.turns∘windings(3, 3) · live · tested in src/families/hd/test.ts, src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts",
    "receipt": "af42497e-5015-8353-ab31-6fb156d62a52"
   },
   {
@@ -622,20 +622,20 @@
   },
   {
    "name": "Qpu.Mint × signal × yi = 16384",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(14) = signal.keyspace(14) = yi.figures(14) · live · untested (no test for mintOf, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(14) = signal.keyspace(14) = yi.figures(14) · live · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/signal/test.ts",
    "receipt": "a9b7e189-511b-8bc7-aceb-3e88572b5c87"
   },
   {
    "name": "kin × signal × yi = 16777216",
-   "pass": false,
-   "value": "signal.keyspace(24) = kin.combinations(4) = kin.digitalRoot∘combinations(4) = kin.seal∘combinations(4) = kin.tone∘combinations(4) = yi.figures(24) · live · untested (no test for keyspace)",
+   "pass": true,
+   "value": "signal.keyspace(24) = kin.combinations(4) = kin.digitalRoot∘combinations(4) = kin.seal∘combinations(4) = kin.tone∘combinations(4) = yi.figures(24) · live · tested in src/families/signal/test.ts, src/families/cryptanalysis/test.ts, src/families/probability/test.ts",
    "receipt": "a35f152b-16ec-8bfd-90cc-87b9a8dd790f"
   },
   {
    "name": "clay × yi = 22",
-   "pass": false,
-   "value": "clay.hodge(11) = yi.withYang∘change(3, 2) · live · untested (no test for hodge, change)",
+   "pass": true,
+   "value": "clay.hodge(11) = yi.withYang∘change(3, 2) · live · tested in src/families/clay/test.ts, src/families/hd/test.ts",
    "receipt": "350796dc-7959-8650-b52f-23a404a004e1"
   },
   {
@@ -646,8 +646,8 @@
   },
   {
    "name": "tesla × yi = 33",
-   "pass": false,
-   "value": "tesla.sync∘turns(1, 2) = yi.nuclear(50) = yi.inverse∘change(1, 1) · live · untested (no test for change)",
+   "pass": true,
+   "value": "tesla.sync∘turns(1, 2) = yi.nuclear(50) = yi.inverse∘change(1, 1) · live · tested in src/families/tesla/test.ts, src/families/replication/test.ts, src/families/transformer/test.ts",
    "receipt": "4c54cbdd-03fe-8fc5-9194-4df9066fda5a"
   },
   {
@@ -658,8 +658,8 @@
   },
   {
    "name": "clay × yi = 44",
-   "pass": false,
-   "value": "clay.bsd(141) = clay.bsd(224) = yi.inverse(13) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(141) = clay.bsd(224) = yi.inverse(13) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/modular/test.ts",
    "receipt": "4890657c-a4ba-8e75-bf62-87da89a8debd"
   },
   {
@@ -670,8 +670,8 @@
   },
   {
    "name": "tesla × yi = 49",
-   "pass": false,
-   "value": "tesla.field(7, 7) = tesla.windings(7, 7) = yi.complement(14) = yi.inverse∘change(3, 1) · live · untested (no test for change)",
+   "pass": true,
+   "value": "tesla.field(7, 7) = tesla.windings(7, 7) = yi.complement(14) = yi.inverse∘change(3, 1) · live · tested in src/families/tesla/test.ts, src/families/optometry/test.ts, src/families/magnetism/test.ts",
    "receipt": "4d8ebd92-fadf-8ca8-8fa4-b2a9427bd355"
   },
   {
@@ -682,8 +682,8 @@
   },
   {
    "name": "kin × yi = 63",
-   "pass": false,
-   "value": "kin.dreamspellDrift(252) = kin.dreamspellDrift(255) = kin.bits∘pillar(2, 2) = kin.combinations∘pillar(2, 1) = yi.change∘complement(1, 1) = yi.change∘complement(2, 2) = yi.change∘complement(3, 3) = yi.complement∘change(1, 1) · live · untested (no test for change)",
+   "pass": true,
+   "value": "kin.dreamspellDrift(252) = kin.dreamspellDrift(255) = kin.bits∘pillar(2, 2) = kin.combinations∘pillar(2, 1) = yi.change∘complement(1, 1) = yi.change∘complement(2, 2) = yi.change∘complement(3, 3) = yi.complement∘change(1, 1) · live · tested in src/families/hd/test.ts, src/families/signal/test.ts, src/families/quantization/test.ts",
    "receipt": "1c0f7af9-4661-8f0b-89bb-1ffce33a2d18"
   },
   {
@@ -700,14 +700,14 @@
   },
   {
    "name": "clay × kin = 68",
-   "pass": false,
-   "value": "clay.bsd(296) = kin.dreamspellDrift(272) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(296) = kin.dreamspellDrift(272) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/hd/test.ts",
    "receipt": "62e668d3-0d71-89fd-9f33-6e5b4f3f8939"
   },
   {
    "name": "Qpu.Mint × kin = 70",
-   "pass": false,
-   "value": "Qpu.Mint.chooseOf(8, 4) = kin.dreamspellDrift(280) · live · untested (no test for chooseOf)",
+   "pass": true,
+   "value": "Qpu.Mint.chooseOf(8, 4) = kin.dreamspellDrift(280) · live · tested in src/families/plagiarism/test.ts, index.lean (Lean kernel), src/families/hd/test.ts",
    "receipt": "cb60be93-f6b7-8478-87f1-3cc89cf9feab"
   },
   {
@@ -718,26 +718,26 @@
   },
   {
    "name": "clay × kin = 77",
-   "pass": false,
-   "value": "clay.bsd(157) = kin.bits(9) = kin.bits∘bits(1) = kin.period∘dootKin(1, 1, 2) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(157) = kin.bits(9) = kin.bits∘bits(1) = kin.period∘dootKin(1, 1, 2) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/signal/test.ts",
    "receipt": "36753602-12c5-8390-961e-7a3b0527b6b7"
   },
   {
    "name": "cal × rule = 81",
-   "pass": false,
-   "value": "cal.gregorianDrift(3) = rule.compositions(4) = rule.compositions∘compositions(3) · live · untested (no test for compositions)",
+   "pass": true,
+   "value": "cal.gregorianDrift(3) = rule.compositions(4) = rule.compositions∘compositions(3) · live · tested in src/families/hd/test.ts, src/families/rule/test.ts",
    "receipt": "776a7b71-a624-8e13-91a7-c71026d44021"
   },
   {
    "name": "clay × kin = 82",
-   "pass": false,
-   "value": "clay.bsd(261) = kin.dootKin∘pillar(2, 1, 2) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(261) = kin.dootKin∘pillar(2, 1, 2) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/rule/test.ts",
    "receipt": "95245fe2-fe70-8ae1-b20a-bc647ff6a1e6"
   },
   {
    "name": "clay × kin = 89",
-   "pass": false,
-   "value": "clay.bsd(362) = kin.cycle∘pillar(2, 3) = kin.kin∘pillar(1, 3) = kin.kin∘pillar(2, 3) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(362) = kin.cycle∘pillar(2, 3) = kin.kin∘pillar(1, 3) = kin.kin∘pillar(2, 3) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/supplychain/test.ts",
    "receipt": "63b96a11-d5b8-8b45-b53c-52af878cea10"
   },
   {
@@ -754,14 +754,14 @@
   },
   {
    "name": "cross × hd = 96",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(3, 5) = cross.medSecureWithQSec(6, 4) = hd.code(404) · live · untested (no test for medSecureWithQSec)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(3, 5) = cross.medSecureWithQSec(6, 4) = hd.code(404) · live · tested in src/families/cross/test.ts, src/families/hd/test.ts",
    "receipt": "e3d16af3-4c1d-8105-af59-3a77c1bce4e7"
   },
   {
    "name": "clay × kin = 98",
-   "pass": false,
-   "value": "clay.bsd(404) = kin.period∘pillar(1, 2) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(404) = kin.period∘pillar(1, 2) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/waveform/test.ts",
    "receipt": "137fc654-b72e-8a56-bf6e-3d8176145912"
   },
   {
@@ -778,8 +778,8 @@
   },
   {
    "name": "clay × kin = 116",
-   "pass": false,
-   "value": "clay.bsd(429) = kin.combinations∘dootKin(1, 1, 1) = kin.enneagram∘dootKin(1, 2, 1) = kin.enneagram∘dootKin(2, 2, 1) · live · untested (no test for bsd)",
+   "pass": true,
+   "value": "clay.bsd(429) = kin.combinations∘dootKin(1, 1, 1) = kin.enneagram∘dootKin(1, 2, 1) = kin.enneagram∘dootKin(2, 2, 1) · live · tested in src/quantum/processing/unit/next.test.ts, src/families/clay/test.ts, src/families/probability/test.ts",
    "receipt": "ec6d9a35-13be-8b67-b41b-777bb2e5f0b1"
   },
   {
@@ -790,8 +790,8 @@
   },
   {
    "name": "crypt × signal = 126",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(252) = crypt.symmetricQuantumBits(252) = signal.siftedBits(252) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(252) = crypt.symmetricQuantumBits(252) = signal.siftedBits(252) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "2cbc6b74-b80a-8934-8eae-e0b1e9f44426"
   },
   {
@@ -802,8 +802,8 @@
   },
   {
    "name": "crypt × signal = 134",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(268) = crypt.symmetricQuantumBits(268) = signal.siftedBits(268) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(268) = crypt.symmetricQuantumBits(268) = signal.siftedBits(268) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "5b6e25b4-fe15-8506-ac9b-865204511af4"
   },
   {
@@ -814,8 +814,8 @@
   },
   {
    "name": "hd × tesla = 143",
-   "pass": false,
-   "value": "hd.ut∘mean(1, 3) = tesla.earth(280) = tesla.slip(7, 6) = tesla.turns(7, 1) · live · untested (no test for ut, mean)",
+   "pass": true,
+   "value": "hd.ut∘mean(1, 3) = tesla.earth(280) = tesla.slip(7, 6) = tesla.turns(7, 1) · live · tested in src/families/hd/test.ts, src/families/statistics/test.ts, src/families/curvature/test.ts",
    "receipt": "23070dd1-2788-868d-88a9-5816a193d0dc"
   },
   {
@@ -826,8 +826,8 @@
   },
   {
    "name": "crypt × signal = 148",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(296) = crypt.symmetricQuantumBits(296) = signal.siftedBits(296) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(296) = crypt.symmetricQuantumBits(296) = signal.siftedBits(296) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "e3d8673a-548b-84b2-88ed-0c4f614c5029"
   },
   {
@@ -868,26 +868,26 @@
   },
   {
    "name": "kin × signal = 165",
-   "pass": false,
-   "value": "signal.keyBits(440) = kin.dootKin(5, 1, 5) · live · untested (no test for keyBits)",
+   "pass": true,
+   "value": "signal.keyBits(440) = kin.dootKin(5, 1, 5) · live · tested in src/families/signal/test.ts, src/families/rule/test.ts, src/families/hd/test.ts",
    "receipt": "38f627f0-d229-8617-83da-c63bb4db4552"
   },
   {
    "name": "clay × tesla = 168",
-   "pass": false,
-   "value": "clay.hodge(84) = tesla.earth(238) · live · untested (no test for hodge)",
+   "pass": true,
+   "value": "clay.hodge(84) = tesla.earth(238) · live · tested in src/families/clay/test.ts, src/families/tesla/test.ts",
    "receipt": "11499f29-f780-8dc2-bda0-d0c67b566e26"
   },
   {
    "name": "crypt × signal = 181",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(362) = crypt.symmetricQuantumBits(362) = signal.siftedBits(362) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(362) = crypt.symmetricQuantumBits(362) = signal.siftedBits(362) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "930af3ae-f5a8-8317-a9e9-3662f04baa2d"
   },
   {
    "name": "clay × tesla = 186",
-   "pass": false,
-   "value": "clay.hodge(93) = tesla.quarter(404) · live · untested (no test for hodge)",
+   "pass": true,
+   "value": "clay.hodge(93) = tesla.quarter(404) · live · tested in src/families/clay/test.ts, src/families/tesla/test.ts",
    "receipt": "f3d5e584-73a4-8b93-b721-197bbfc40470"
   },
   {
@@ -899,19 +899,19 @@
   {
    "name": "clay × merkaba = 199",
    "pass": false,
-   "value": "clay.bsd(401) = merkaba.flows(7) · live · untested (no test for bsd)",
+   "value": "199 holds false; clay.bsd(401) is 199 (bsd); merkaba.flows(7) is 54 (flows); next 89c984c4-3000-3000-9000-000000000007",
    "receipt": "524c5cef-46e1-8395-ae01-943a953a649a"
   },
   {
    "name": "crypt × signal = 202",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(404) = crypt.symmetricQuantumBits(404) = signal.siftedBits(404) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "ee4d0ff7-78bd-88e8-9900-a8f3e20475f1"
   },
   {
    "name": "hd × kin = 206",
-   "pass": false,
-   "value": "hd.mean∘code(2) = hd.mean∘code(3) = kin.bits(24) = kin.dootKin(1, 4, 1) = kin.dootKin(2, 5, 1) · live · untested (no test for mean)",
+   "pass": true,
+   "value": "hd.mean∘code(2) = hd.mean∘code(3) = kin.bits(24) = kin.dootKin(1, 4, 1) = kin.dootKin(2, 5, 1) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/hd/test.ts",
    "receipt": "e02a5c56-257b-8bbc-9c47-c351e55cc515"
   },
   {
@@ -922,14 +922,14 @@
   },
   {
    "name": "crypt × signal = 220",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(440) = crypt.symmetricQuantumBits(440) = signal.siftedBits(440) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(440) = crypt.symmetricQuantumBits(440) = signal.siftedBits(440) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "4e73168d-c9cb-8c09-bd39-cfc018872cbd"
   },
   {
    "name": "heat × kin = 222",
-   "pass": false,
-   "value": "heat.temperature∘cooling(2, 3) = heat.temperature∘ways(2, 3) = kin.enneagram∘dootKin(1, 1, 2) = kin.enneagram∘dootKin(2, 1, 2) = kin.pillar∘dootKin(2, 1, 2) · live · untested (no test for cooling, ways)",
+   "pass": true,
+   "value": "heat.temperature∘cooling(2, 3) = heat.temperature∘ways(2, 3) = kin.enneagram∘dootKin(1, 1, 2) = kin.enneagram∘dootKin(2, 1, 2) = kin.pillar∘dootKin(2, 1, 2) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts, src/families/sintering/test.ts",
    "receipt": "6c25e18b-9f54-8dec-bdc4-66f47df0c5e0"
   },
   {
@@ -946,32 +946,32 @@
   },
   {
    "name": "cal × np = 243",
-   "pass": false,
-   "value": "cal.gregorianDrift(9) = np.isTime(3) = np.isSpace∘isTime(4) = np.subsetSum∘isTime(3, 1) = np.subsetSum∘isTime(3, 3) · live · untested (no test for isTime, isSpace, subsetSum)",
+   "pass": true,
+   "value": "cal.gregorianDrift(9) = np.isTime(3) = np.isSpace∘isTime(4) = np.subsetSum∘isTime(3, 1) = np.subsetSum∘isTime(3, 3) · live · tested in src/families/hd/test.ts, src/families/np/test.ts",
    "receipt": "7ea6aa36-beb8-82f3-8db0-a558b1d67267"
   },
   {
    "name": "hd × kin = 260",
-   "pass": false,
-   "value": "hd.sun∘mean(1) = hd.sun∘mean(2) = hd.sun∘mean(3) = hd.sun∘mean(4) = kin.kin(1, 2) = kin.kin(1, 3) = kin.kin(1, 4) = kin.kin(1, 5) · live · untested (no test for sun, mean)",
+   "pass": true,
+   "value": "hd.sun∘mean(1) = hd.sun∘mean(2) = hd.sun∘mean(3) = hd.sun∘mean(4) = kin.kin(1, 2) = kin.kin(1, 3) = kin.kin(1, 4) = kin.kin(1, 5) · live · tested in src/families/hd/test.ts, src/families/statistics/test.ts, src/families/curvature/test.ts",
    "receipt": "608ce2fe-0c31-83b1-9b74-156099fdda7a"
   },
   {
    "name": "clay × tesla = 282",
-   "pass": false,
-   "value": "clay.hodge(141) = tesla.earth(142) · live · untested (no test for hodge)",
+   "pass": true,
+   "value": "clay.hodge(141) = tesla.earth(142) · live · tested in src/families/clay/test.ts, src/families/tesla/test.ts",
    "receipt": "0b96bf0e-fb15-8737-900e-0b9aae1b469b"
   },
   {
    "name": "clay × tesla = 284",
-   "pass": false,
-   "value": "clay.hodge(142) = tesla.earth(141) · live · untested (no test for hodge)",
+   "pass": true,
+   "value": "clay.hodge(142) = tesla.earth(141) · live · tested in src/families/clay/test.ts, src/families/tesla/test.ts",
    "receipt": "c4cbd1ea-54d5-8655-acb1-de4f17d2526d"
   },
   {
    "name": "clay × kin = 292",
-   "pass": false,
-   "value": "clay.hodge(146) = kin.bits∘bits(4) · live · untested (no test for hodge)",
+   "pass": true,
+   "value": "clay.hodge(146) = kin.bits∘bits(4) · live · tested in src/families/clay/test.ts, src/families/signal/test.ts, src/families/quantization/test.ts",
    "receipt": "5b1755ec-e684-8875-a452-eb98e8b962e7"
   },
   {
@@ -982,20 +982,20 @@
   },
   {
    "name": "crypt × signal = 305",
-   "pass": false,
-   "value": "crypt.curveClassicalBits(610) = crypt.symmetricQuantumBits(610) = signal.siftedBits(610) · live · untested (no test for curveClassicalBits, symmetricQuantumBits, siftedBits)",
+   "pass": true,
+   "value": "crypt.curveClassicalBits(610) = crypt.symmetricQuantumBits(610) = signal.siftedBits(610) · live · tested in src/families/crypt/test.ts, src/families/signal/test.ts",
    "receipt": "fb539f28-82c4-8967-ae41-b0cd2ca9e6a6"
   },
   {
    "name": "heat × tesla = 333",
-   "pass": false,
-   "value": "heat.temperature(1, 3) = heat.temperature(2, 6) = heat.cooling∘temperature(1, 3) = heat.cooling∘temperature(2, 3) = tesla.slip(3, 2) = tesla.slip(6, 4) = tesla.turns(3, 1) = tesla.turns(6, 2) · live · untested (no test for cooling)",
+   "pass": true,
+   "value": "heat.temperature(1, 3) = heat.temperature(2, 6) = heat.cooling∘temperature(1, 3) = heat.cooling∘temperature(2, 3) = tesla.slip(3, 2) = tesla.slip(6, 4) = tesla.turns(3, 1) = tesla.turns(6, 2) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts, src/families/sintering/test.ts",
    "receipt": "2dbac96f-5e00-8a69-ad85-d47a1daf05a6"
   },
   {
    "name": "heat × tesla = 334",
-   "pass": false,
-   "value": "heat.temperature∘cooling(3, 3) = heat.temperature∘ways(3, 3) = tesla.sync∘earth(2, 2) · live · untested (no test for cooling, ways)",
+   "pass": true,
+   "value": "heat.temperature∘cooling(3, 3) = heat.temperature∘ways(3, 3) = tesla.sync∘earth(2, 2) · live · tested in src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts, src/families/sintering/test.ts",
    "receipt": "ed23501e-8a2e-8ba4-b823-4910d311e093"
   },
   {
@@ -1012,14 +1012,14 @@
   },
   {
    "name": "clay × cross = 448",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(7, 6) = clay.hodge(224) · live · untested (no test for medSecureWithQSec, hodge)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(7, 6) = clay.hodge(224) · live · tested in src/families/cross/test.ts, src/families/clay/test.ts",
    "receipt": "a46d2935-8ef8-80eb-a819-010b4eda5471"
   },
   {
    "name": "clay × tesla = 480",
-   "pass": false,
-   "value": "clay.hodge(240) = tesla.sync(8, 2) · live · untested (no test for hodge)",
+   "pass": true,
+   "value": "clay.hodge(240) = tesla.sync(8, 2) · live · tested in src/families/clay/test.ts, src/families/tesla/test.ts, src/families/replication/test.ts",
    "receipt": "85f0d458-f4a6-8ed6-9ec9-7954b3f78070"
   },
   {
@@ -1042,8 +1042,8 @@
   },
   {
    "name": "path × tesla = 630",
-   "pass": false,
-   "value": "path.secureDataPathQSec() = path.allPaths∘secureDataPathQSec() = path.anomalyToResponse∘secureDataPathQSec() = path.dataFlowCompressML∘secureDataPathQSec() = tesla.quarter(119) · live · untested (no test for secureDataPathQSec, allPaths, anomalyToResponse, dataFlowCompressML)",
+   "pass": true,
+   "value": "path.secureDataPathQSec() = path.allPaths∘secureDataPathQSec() = path.anomalyToResponse∘secureDataPathQSec() = path.dataFlowCompressML∘secureDataPathQSec() = tesla.quarter(119) · live · tested in src/families/path/test.ts, src/families/tesla/test.ts",
    "receipt": "655550ef-e4ec-8cf1-82e2-aa6e3935abc9"
   },
   {
@@ -1054,50 +1054,50 @@
   },
   {
    "name": "Qpu.Physics × tesla = 679",
-   "pass": false,
-   "value": "Qpu.Physics.niobium∘gap(1) = Qpu.Physics.niobium∘gap(2) = Qpu.Physics.niobium∘gap(3) = Qpu.Physics.niobium∘gap(4) = tesla.earth(59) · live · untested (no test for niobium, gap)",
+   "pass": true,
+   "value": "Qpu.Physics.niobium∘gap(1) = Qpu.Physics.niobium∘gap(2) = Qpu.Physics.niobium∘gap(3) = Qpu.Physics.niobium∘gap(4) = tesla.earth(59) · live · tested in index.lean (Lean kernel), src/families/website/test.ts, src/families/slider/test.ts",
    "receipt": "05266dce-5f72-8a9c-afa2-a858ccf194d5"
   },
   {
    "name": "clay × hd = 724",
-   "pass": false,
-   "value": "hd.mean(9) = hd.mean(10) = hd.mean(11) = clay.hodge(362) · live · untested (no test for mean, hodge)",
+   "pass": true,
+   "value": "hd.mean(9) = hd.mean(10) = hd.mean(11) = clay.hodge(362) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/clay/test.ts",
    "receipt": "31f349a3-08e2-8b3a-b943-c2b0e7f8fdcb"
   },
   {
    "name": "cal × hd = 754",
-   "pass": false,
-   "value": "hd.mean(84) = cal.precession(15) · live · untested (no test for mean)",
+   "pass": true,
+   "value": "hd.mean(84) = cal.precession(15) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/hd/test.ts",
    "receipt": "81069da0-091a-80a8-babd-7de5e32d25b7"
   },
   {
    "name": "cross × hd = 768",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(3, 8) = cross.medSecureWithQSec(6, 7) = hd.cells() = hd.mean(119) = hd.cells∘cells() = hd.center∘cells(1) · live · untested (no test for medSecureWithQSec, mean)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(3, 8) = cross.medSecureWithQSec(6, 7) = hd.cells() = hd.mean(119) = hd.cells∘cells() = hd.center∘cells(1) · live · tested in src/families/cross/test.ts, src/families/sudoku/test.ts, src/families/pentomino/test.ts",
    "receipt": "c77e0eda-9f2f-8e8b-9184-f15e5613f540"
   },
   {
    "name": "clay × tesla = 802",
-   "pass": false,
-   "value": "clay.hodge(401) = tesla.earth(50) · live · untested (no test for hodge)",
+   "pass": true,
+   "value": "clay.hodge(401) = tesla.earth(50) · live · tested in src/families/clay/test.ts, src/families/tesla/test.ts",
    "receipt": "f93dedbd-0fce-8979-84f2-01bcf6b7b4b7"
   },
   {
    "name": "hd × tesla = 822",
-   "pass": false,
-   "value": "hd.mean(255) = tesla.quarter∘resonance(2, 1) · live · untested (no test for mean)",
+   "pass": true,
+   "value": "hd.mean(255) = tesla.quarter∘resonance(2, 1) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/tesla/test.ts",
    "receipt": "11853c56-9c55-8a04-ad06-beda80fa2923"
   },
   {
    "name": "hd × tesla = 892",
-   "pass": false,
-   "value": "hd.mean(429) = tesla.quarter(84) · live · untested (no test for mean)",
+   "pass": true,
+   "value": "hd.mean(429) = tesla.quarter(84) · live · tested in src/families/statistics/test.ts, src/families/curvature/test.ts, src/families/tesla/test.ts",
    "receipt": "0450b0f3-9e78-869a-8e1f-2be7a645fd7f"
   },
   {
    "name": "cross × hd = 896",
-   "pass": false,
-   "value": "cross.medSecureWithQSec(7, 7) = hd.mean(440) · live · untested (no test for medSecureWithQSec, mean)",
+   "pass": true,
+   "value": "cross.medSecureWithQSec(7, 7) = hd.mean(440) · live · tested in src/families/cross/test.ts, src/families/statistics/test.ts, src/families/curvature/test.ts",
    "receipt": "652bc566-35d4-807e-95ce-8444aaae9f6b"
   },
   {
@@ -1120,14 +1120,14 @@
   },
   {
    "name": "cal × hd = 2162",
-   "pass": false,
-   "value": "hd.ut(3, 1) = hd.ut(4, 2) = hd.ut(5, 3) = hd.ut(6, 4) = cal.lunarDrift∘precession(4) · live · untested (no test for ut)",
+   "pass": true,
+   "value": "hd.ut(3, 1) = hd.ut(4, 2) = hd.ut(5, 3) = hd.ut(6, 4) = cal.lunarDrift∘precession(4) · live · tested in src/families/hd/test.ts",
    "receipt": "968e3b0c-f857-85a5-9e5e-65fe19997091"
   },
   {
    "name": "hd × kin = 2163",
-   "pass": false,
-   "value": "hd.ut(4, 1) = hd.ut(5, 2) = hd.ut(6, 3) = hd.ut(7, 4) = kin.bits(252) · live · untested (no test for ut)",
+   "pass": true,
+   "value": "hd.ut(4, 1) = hd.ut(5, 2) = hd.ut(6, 3) = hd.ut(7, 4) = kin.bits(252) · live · tested in src/families/hd/test.ts, src/families/signal/test.ts, src/families/quantization/test.ts",
    "receipt": "ef9b933a-73cd-827a-93c8-9dcaf8956b78"
   },
   {
@@ -1150,8 +1150,8 @@
   },
   {
    "name": "np × tesla = 100000",
-   "pass": false,
-   "value": "np.isTime(10) = tesla.period(10) · live · untested (no test for isTime)",
+   "pass": true,
+   "value": "np.isTime(10) = tesla.period(10) · live · tested in src/families/np/test.ts, src/families/waveform/test.ts, src/families/vibration/test.ts",
    "receipt": "fd12df91-e678-8315-aab3-258fb2bc9821"
   },
   {
@@ -1162,8 +1162,8 @@
   },
   {
    "name": "np × yi = 1048576",
-   "pass": false,
-   "value": "np.isTime(16) = yi.withYang∘figures(3) · live · untested (no test for isTime)",
+   "pass": true,
+   "value": "np.isTime(16) = yi.withYang∘figures(3) · live · tested in src/families/np/test.ts, src/families/hd/test.ts",
    "receipt": "7b819daf-5ab2-8a66-ac30-e3d89b860d9e"
   },
   {
@@ -1175,7 +1175,7 @@
   {
    "name": "Qpu.Physics × merkaba = 662607015",
    "pass": false,
-   "value": "Qpu.Physics.planck() = Qpu.Physics.planck∘planck() = Qpu.Physics.boltzmann∘planck() = Qpu.Physics.transmon∘planck() = merkaba.mirror(4, 1, 2) = merkaba.mirror(4, 1, 3) = merkaba.mirror(4, 1, 5) = merkaba.mirror(4, 2, 1) · live · untested (no test for planck, boltzmann, transmon)",
+   "value": "662607015 holds false; merkaba.mirror(4, 1, 5) is 0 (mirror); next 89c984c4-5000-5000-b000-000400010005",
    "receipt": "fabb0a69-e8a6-8fe5-8cb8-f95ef6de462a"
   },
   {
@@ -1186,26 +1186,26 @@
   },
   {
    "name": "np × signal = 1125899906842624",
-   "pass": false,
-   "value": "signal.keyspace(50) = np.isTime∘isTime(4) · live · untested (no test for keyspace, isTime)",
+   "pass": true,
+   "value": "signal.keyspace(50) = np.isTime∘isTime(4) · live · tested in src/families/signal/test.ts, src/families/cryptanalysis/test.ts, src/families/np/test.ts",
    "receipt": "86c3bcb7-1059-8244-a7d4-89d490ccbad4"
   },
   {
    "name": "Qpu.Mint × kin × signal × yi = 4096",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(12) = signal.keyspace(12) = kin.combinations(2) = kin.digitalRoot∘combinations(2) = kin.dootKin∘combinations(1, 1, 2) = kin.dootKin∘combinations(2, 2, 2) = yi.figures(12) · untested (no test for mintOf, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(12) = signal.keyspace(12) = kin.combinations(2) = kin.digitalRoot∘combinations(2) = kin.dootKin∘combinations(1, 1, 2) = kin.dootKin∘combinations(2, 2, 2) = yi.figures(12) · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/signal/test.ts",
    "receipt": "aa5bbcfa-15a7-86ad-8f25-d813a41244fb"
   },
   {
    "name": "Qpu.Physics × heat × tesla = 1200",
-   "pass": false,
-   "value": "Qpu.Physics.aluminium() = Qpu.Physics.planck∘aluminium() = Qpu.Physics.boltzmann∘aluminium() = Qpu.Physics.transmon∘aluminium() = heat.temperature(6, 5) = tesla.turns(5, 6) · untested (no test for aluminium, planck, boltzmann, transmon)",
+   "pass": true,
+   "value": "Qpu.Physics.aluminium() = Qpu.Physics.planck∘aluminium() = Qpu.Physics.boltzmann∘aluminium() = Qpu.Physics.transmon∘aluminium() = heat.temperature(6, 5) = tesla.turns(5, 6) · tested in index.lean (Lean kernel), src/quantum/processing/unit/release.test.ts, src/families/thermocouple/test.ts",
    "receipt": "ae832702-f5c1-81c1-ae54-99867c6567b0"
   },
   {
    "name": "Qpu.Mint × signal × yi = 8192",
-   "pass": false,
-   "value": "Qpu.Mint.mintOf(13) = signal.keyspace(13) = yi.figures(13) · untested (no test for mintOf, keyspace)",
+   "pass": true,
+   "value": "Qpu.Mint.mintOf(13) = signal.keyspace(13) = yi.figures(13) · tested in src/families/holo/test.ts, index.lean (Lean kernel), src/families/signal/test.ts",
    "receipt": "a4b064d9-0037-804a-a206-c29494e02564"
   },
   {
@@ -1240,8 +1240,8 @@
   },
   {
    "name": "Qpu.Physics × cal = 352",
-   "pass": false,
-   "value": "Qpu.Physics.bcs() = Qpu.Physics.planck∘bcs() = Qpu.Physics.boltzmann∘bcs() = Qpu.Physics.transmon∘bcs() = cal.precession(7) · untested (no test for bcs, planck, boltzmann, transmon)",
+   "pass": true,
+   "value": "Qpu.Physics.bcs() = Qpu.Physics.planck∘bcs() = Qpu.Physics.boltzmann∘bcs() = Qpu.Physics.transmon∘bcs() = cal.precession(7) · tested in src/families/veterinary/test.ts, index.lean (Lean kernel), src/families/hd/test.ts",
    "receipt": "56364864-bee2-88c4-a373-ed67e7d3144b"
   },
   {
@@ -1336,14 +1336,14 @@
   },
   {
    "name": "Qpu.Physics × heat = 3313035075",
-   "pass": false,
-   "value": "Qpu.Physics.photon() = Qpu.Physics.planck∘photon() = Qpu.Physics.boltzmann∘photon() = Qpu.Physics.transmon∘photon() = heat.coherence∘quality(1, 2, 1) = heat.coherence∘quality(2, 2, 1) = heat.coherence∘signal(1, 1) = heat.coherence∘signal(1, 2) · untested (no test for photon, planck, boltzmann, transmon, coherence, quality, signal)",
+   "pass": true,
+   "value": "Qpu.Physics.photon() = Qpu.Physics.planck∘photon() = Qpu.Physics.boltzmann∘photon() = Qpu.Physics.transmon∘photon() = heat.coherence∘quality(1, 2, 1) = heat.coherence∘quality(2, 2, 1) = heat.coherence∘signal(1, 1) = heat.coherence∘signal(1, 2) · tested in index.lean (Lean kernel), src/families/semantics/test.ts, src/families/heat/test.ts",
    "receipt": "5fb0f8ee-4913-8ab4-bda9-b19de3ad7089"
   },
   {
    "name": "Qpu.Lattice × yi = 4294967296",
-   "pass": false,
-   "value": "Qpu.Lattice.amplitudes() = Qpu.Lattice.n∘amplitudes() = Qpu.Lattice.seed∘amplitudes() = Qpu.Lattice.coins∘amplitudes() = yi.inverse∘figures(1) · untested (no test for amplitudes, seed, coins)",
+   "pass": true,
+   "value": "Qpu.Lattice.amplitudes() = Qpu.Lattice.n∘amplitudes() = Qpu.Lattice.seed∘amplitudes() = Qpu.Lattice.coins∘amplitudes() = yi.inverse∘figures(1) · tested in index.lean (Lean kernel), src/families/tesla/test.ts, src/families/np/test.ts",
    "receipt": "f3720de8-6bb1-8d5b-885b-1f6d58f1ac0f"
   }
  ]

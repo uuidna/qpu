@@ -92,7 +92,7 @@ export default async function Resolved({ params, searchParams }: Props) {
   const registered = block && !already ? await (async () => {
     if (block.slug === 'program') return <ProgramBlock blockType="program" family="combinatorics" program="binomial" params={String(pluginAxisLengthOf())} heading="Program" intro={customOf(block).description} />
     if (customOf(block).needs?.length) return null
-    const Component = (blockComponents as Record<string, (p: { heading?: string; intro?: string; searchParams?: SearchParams; blockType?: string }) => ReactNode>)[block.slug]
+    const Component = (blockComponents as unknown as Record<string, (p: { heading?: string; intro?: string; searchParams?: SearchParams; blockType?: string }) => ReactNode>)[block.slug]
     return Component ? <Component heading={block.slug} intro={customOf(block).description} searchParams={query} blockType={block.slug} /> : null
   })() : null
 

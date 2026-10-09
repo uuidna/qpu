@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** RECTIFIERS — TURNING ALTERNATING CURRENT INTO DIRECT, AS ARITHMETIC. A rectifier is numbers: the average (DC) level it
  *  delivers, the ripple left on it, how efficiently AC power becomes DC, the peak inverse voltage a diode must stand, the
@@ -27,7 +29,7 @@ export class RectifiersFormulas {
   /** REGULATION: the no-load to full-load droop over full-load voltage, as a percentage. value ⌊max(0, vnl − vfl) · 100 / vfl⌋. */
   static regulation(vnl: number, vfl: number): CrossFormula { return c('rectifiers-regulation', 'regulation(vnl, vfl) = ⌊max(0, vnl − vfl) · 100 / vfl⌋', vfl > 0 ? Math.floor((Math.max(0, vnl - vfl) * 100) / vfl) : 0, nat(vnl, vfl) && vfl > 0, 'regulation', [vnl, vfl]) }
   /** CONDUCTION ANGLE: the degrees each cycle conducts, from the conducting fraction. value ⌊on · 360 / total⌋. */
-  static conductionangle(on: number, total: number): CrossFormula { return c('rectifiers-conductionangle', 'conductionangle(on, total) = ⌊on · 360 / total⌋', total > 0 ? Math.floor((on * 360) / total) : 0, nat(on, total) && total > 0 && on <= total, 'conductionangle', [on, total]) }
+  static conductionangle(on: number, total: number): CrossFormula { return c('rectifiers-conductionangle', 'conductionangle(on, total) = ⌊on · 360 / total⌋', total > 0 ? Math.floor((on * fullTurn) / total) : 0, nat(on, total) && total > 0 && on <= total, 'conductionangle', [on, total]) }
 }
 
 for (const name of ['average', 'conductionangle', 'efficiency', 'formfactor', 'pivrating', 'regulation', 'ripple', 'ripplefactor'] as const)

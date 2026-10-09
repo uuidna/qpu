@@ -1,0 +1,71 @@
+{
+  "kind": "chip-license-imprint",
+  "spdx": "CC-BY-NC-ND-4.0",
+  "file": "LICENSE",
+  "deed": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+  "commercial": "/license",
+  "law": {
+    "lawful": {
+      "address": "law.lawful",
+      "params": [
+        0
+      ],
+      "value": 1,
+      "holds": true,
+      "hex": "12658319-4000-3000-9000-000000000000"
+    },
+    "reviewed": {
+      "address": "law.reviewed",
+      "params": [
+        0
+      ],
+      "value": 0,
+      "holds": false,
+      "hex": "12658319-c000-6000-9000-000000000000",
+      "lead": true
+    }
+  },
+  "access": {
+    "read": {
+      "address": "access.read",
+      "params": [
+        2,
+        0
+      ],
+      "value": 1,
+      "holds": true,
+      "hex": "7e6283be-3000-4000-a000-000002000000"
+    },
+    "grant": {
+      "address": "access.grant",
+      "params": [
+        0,
+        15
+      ],
+      "value": 1,
+      "holds": true,
+      "hex": "7e6283be-1000-1000-a000-00000000000f"
+    },
+    "token": {
+      "address": "access.token",
+      "params": [
+        256
+      ],
+      "value": 0,
+      "holds": true,
+      "hex": "7e6283be-9000-5000-9000-000000000100"
+    }
+  },
+  "digest": "1eb5836d10940c9b5a88e3fa9aa7626221bf548bb467192c1569b0e77e0388b3",
+  "hmac": "5f73c4f9b6282eedf935d507712a1825d631f14c9d9d2fecfb908c511bf88fd2",
+  "publicKey": "009a68bc845a8243b7c42adf3bc92c1b1d6bb8c5a1ea778b41cc863d5c66c665",
+  "signature": "d91d993debd0724acf7995e1147f3e368d9d905a159a8feb1d590a21a7fba4879c4cd830caa0a6856531f8c852142c54883a6c201d13c62e98492a521b99eb0a",
+  "verified": true,
+  "holds": true,
+  "note": "ed25519+HMAC over SPDX+law hex+body digest; law.reviewed remains lead; no Clay prize",
+  "verify": {
+    "verified": true,
+    "digestMatch": true,
+    "holds": true
+  }
+}

@@ -10,13 +10,17 @@
 //   node dist/quantum/processing/unit/boot.js --prove    → prove and exit 0/1 (the boot's receipt)
 //   node dist/quantum/processing/unit/boot.js --health   → the container probe: GET /health, then exit 0/1
 import { createServer, type IncomingMessage } from 'node:http'
-import worker, { bootPort } from './index.js'
-// the same registration worker.js performs: every hex family, fused door and MCP method. Without it the local
-// unit answers an empty data door and an unregistered lattice, and a gate run against this boot is not the unit.
-import '../../../mcp/families.js'
+import worker, { bootPort, qpuFamilyRegistryUrlOf } from './index.js'
+import { publicDoorFetchOf } from '../../../payload/plugins/public.js'
+// the same registration worker.js performs: every hex family, fused door and MCP method, from this unit's one tree.
+await import(qpuFamilyRegistryUrlOf())
 
 const ORIGIN = 'https://qpu.uuidna.com'
-const env = { QPU_HOST: 'qpu.uuidna.com' }
+// Payload public doors in-process: the same handlers publicPlugin mounts. No parallel MCP/cite/css stack.
+const env: { QPU_HOST: string; PAYLOAD: { fetch: (request: Request) => Promise<Response> } } = {
+  QPU_HOST: 'qpu.uuidna.com',
+  PAYLOAD: { fetch: (request) => publicDoorFetchOf(request, env) },
+}
 
 const bodyOf = (req: IncomingMessage): Promise<Buffer> =>
   new Promise((resolve) => { const chunks: Buffer[] = []; req.on('data', (d: Buffer) => chunks.push(d)); req.on('end', () => resolve(Buffer.concat(chunks))) })

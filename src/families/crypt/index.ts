@@ -39,7 +39,17 @@ export class CryptFormulas {
   static nonceCollision(messages: number): CrossFormula {
     return crossFormulaOf({ id: 'crypt-nonce', src: 'crypt', dst: 'chat', formula: 'p_collide = messages^2 / 2^97', value: messages ** 2 / 2 ** 97, proof: 'Birthday bound on 96-bit random nonces; per-message keys make a collision harmless' }, nat(messages), { name: 'crypt.nonceCollision', params: [messages] })
   }
+
+  /** ChaCha20-Poly1305 authentication tag width (RFC 8439). */
+  static aeadTagBits(): CrossFormula {
+    return crossFormulaOf({ id: 'crypt-aead-tag', src: 'crypt', dst: 'crypt', formula: 'aead_tag_bits = 128', value: 128, proof: 'RFC 8439 Poly1305 tag is 16 bytes' }, true, { name: 'crypt.aeadTagBits', params: [] })
+  }
+
+  /** Classical birthday collision cost for a hash of `hashBits` (SHA-256 → 128). */
+  static hashCollisionBits(hashBits: number): CrossFormula {
+    return crossFormulaOf({ id: 'crypt-birthday', src: 'crypt', dst: 'enterprise', formula: 'collision_bits = hashBits / 2', value: hashBits / 2, proof: 'Birthday bound: collision cost is the square root of the digest space' }, nat(hashBits) && hashBits > 0, { name: 'crypt.hashCollisionBits', params: [hashBits] })
+  }
 }
 
-for (const name of ['curveClassicalBits', 'curveQuantumBits', 'knownAnswers', 'nonceCollision', 'symmetricQuantumBits', 'tagForgery'] as const)
+for (const name of ['aeadTagBits', 'curveClassicalBits', 'curveQuantumBits', 'hashCollisionBits', 'knownAnswers', 'nonceCollision', 'symmetricQuantumBits', 'tagForgery'] as const)
   qpuHexRegisterOf('crypt', name, (CryptFormulas[name] as (...x: unknown[]) => unknown).bind(CryptFormulas))

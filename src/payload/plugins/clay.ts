@@ -3,11 +3,8 @@ import { qpuCiteOf } from '../../quantum/processing/unit/presentation.js'
 import { qpuPublicOf } from '../../quantum/processing/unit/zeropage.js'
 
 /**
- * The prize claim the receipt already refuses. scripts/receipt.mjs sets legal.citation.holds to false and legal.citation.lead
- * to true for the statement "clay solved in august", with the words "This file is a naming scheme. It solves none of the
- * problems it names." This reading does not flip that. It does not submit anything to the Clay Mathematics Institute.
- *
- * The rules quoted here are the Institute's own, adopted 26 September 2018:
+ * Prize / citation as the tree already computes them (holds false, lead true for the naming-scheme statement).
+ * scripts/receipt.mjs sets legal.citation; this reading reports that state. Institute rules:
  * https://www.claymath.org/wp-content/uploads/2022/03/millennium_prize_rules_0.pdf
  */
 const RULES = 'https://www.claymath.org/wp-content/uploads/2022/03/millennium_prize_rules_0.pdf'
@@ -44,8 +41,8 @@ export const clayPrizeOf = () => {
 const OPEN = [
   { seal: 'bsd' as const, name: 'Birch and Swinnerton-Dyer Conjecture', params: [15] as readonly number[], by: 'src/families/clay/test.ts' },
   { seal: 'hodge' as const, name: 'Hodge Conjecture', params: [2] as readonly number[], by: 'src/families/clay/test.ts' },
-  { seal: 'navierStokes' as const, name: 'Navier-Stokes Existence and Smoothness', params: null, by: 'clay.pass walks inputs 1 … faces; the test does not pin a pair' },
-  { seal: 'pVsNp' as const, name: 'P vs NP', params: null, by: 'clay.pass walks inputs 1 … faces; the test does not pin a witness' },
+  { seal: 'navierStokes' as const, name: 'Navier-Stokes Existence and Smoothness', params: null, by: 'claySealWaveOf walks arity-correct domain 1…faces on each slot; the test does not pin a pair' },
+  { seal: 'pVsNp' as const, name: 'P vs NP', params: null, by: 'claySealWaveOf walks domain {0,1}; the test does not pin a witness' },
   { seal: 'riemann' as const, name: 'Riemann Hypothesis', params: [1, 2] as readonly number[], by: 'ClayDisclosure anchors riemann(1, 2)' },
   { seal: 'yangMills' as const, name: 'Yang-Mills and Mass Gap', params: [] as readonly number[], by: 'src/families/clay/test.ts' },
 ] as const
@@ -97,8 +94,7 @@ export type ClaySealReading = {
 }
 
 /** Each seal at the inputs the tree already names. bsd, hodge, riemann and yangMills use the test and the disclosure
- *  anchor. navierStokes and pVsNp have no pinned pair in the test; the first input of the clay.pass walk is 1 on every
- *  parameter (inputs 1 … faces). */
+ *  anchor. navierStokes has no pinned pair in the test (domain walk is arity-correct 1…faces); pVsNp domain is {0,1}. */
 export const claySealReadingsOf = (): ClaySealReading[] =>
   OPEN.map((row) => {
     const params = row.params === null ? Array.from({ length: ClaySeals[row.seal].length }, () => 1) : [...row.params]

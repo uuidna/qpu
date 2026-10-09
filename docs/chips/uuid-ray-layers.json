@@ -1,0 +1,91 @@
+{
+  "kind": "chip-ray-layers",
+  "lattice": {
+    "n": 3,
+    "coins": 2,
+    "rays": 7,
+    "faces": 14,
+    "holds": true,
+    "identity": "coins · rays = faces (theorem around / harmonic)"
+  },
+  "uuid": {
+    "handleBits": 32,
+    "hexbit": 4,
+    "vertices": 8,
+    "amplitudes": 4294967296,
+    "next": 8589934592,
+    "holds": true
+  },
+  "dimension": {
+    "address": "topology.dimension",
+    "params": [
+      7
+    ],
+    "value": 7,
+    "holds": true,
+    "hex": "51618845-4000-2000-9000-000000000007"
+  },
+  "manifold": {
+    "address": "manifold.dimension",
+    "params": [
+      14,
+      2
+    ],
+    "value": 12,
+    "holds": true,
+    "hex": "6f0af495-4000-8000-a000-00000e000002"
+  },
+  "layers": [
+    {
+      "ray": 0,
+      "dimension": 7,
+      "coinSlot": 0,
+      "faceIndex": 0,
+      "manages": "UUID ray 0/7 · coin 0 · face 0"
+    },
+    {
+      "ray": 1,
+      "dimension": 7,
+      "coinSlot": 1,
+      "faceIndex": 2,
+      "manages": "UUID ray 1/7 · coin 1 · face 2"
+    },
+    {
+      "ray": 2,
+      "dimension": 7,
+      "coinSlot": 0,
+      "faceIndex": 4,
+      "manages": "UUID ray 2/7 · coin 0 · face 4"
+    },
+    {
+      "ray": 3,
+      "dimension": 7,
+      "coinSlot": 1,
+      "faceIndex": 6,
+      "manages": "UUID ray 3/7 · coin 1 · face 6"
+    },
+    {
+      "ray": 4,
+      "dimension": 7,
+      "coinSlot": 0,
+      "faceIndex": 8,
+      "manages": "UUID ray 4/7 · coin 0 · face 8"
+    },
+    {
+      "ray": 5,
+      "dimension": 7,
+      "coinSlot": 1,
+      "faceIndex": 10,
+      "manages": "UUID ray 5/7 · coin 1 · face 10"
+    },
+    {
+      "ray": 6,
+      "dimension": 7,
+      "coinSlot": 0,
+      "faceIndex": 12,
+      "manages": "UUID ray 6/7 · coin 0 · face 12"
+    }
+  ],
+  "layerCount": 7,
+  "holds": true
+}

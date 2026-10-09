@@ -88,3 +88,59 @@
     animation: none;
   }
 }
+
+/* Inside-out machine surface: lattice tokens from /qpu.css, monospace console — not marketing cards. */
+.qpu-machine {
+  font-family: var(--font-mono);
+  background:
+    radial-gradient(120% 80% at 0% 0%, color-mix(in oklch, var(--primary) 12%, transparent), transparent 55%),
+    radial-gradient(90% 70% at 100% 10%, color-mix(in oklch, var(--destructive) 8%, transparent), transparent 50%),
+    linear-gradient(180deg, color-mix(in oklch, var(--muted) 55%, transparent), transparent 40%);
+}
+
+.qpu-panel {
+  position: relative;
+  background: color-mix(in oklch, var(--background) 88%, var(--muted));
+}
+
+.qpu-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--border) 70%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--border) 70%, transparent) 1px, transparent 1px);
+  background-size: calc(100% / var(--qpu-rays, 7)) calc(100% / var(--qpu-coins, 2));
+  opacity: 0.35;
+}
+
+.qpu-panel > * {
+  position: relative;
+}
+
+.qpu-access-grid select:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+#seal-wave,
+#connector-use,
+#native-adapters {
+  margin-top: 1.5rem;
+}
+
+#seal-wave ul li,
+#connector-use button,
+#native-adapters li {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+#seal-wave ul li:hover,
+#native-adapters li:hover {
+  background: color-mix(in oklch, var(--muted) 40%, transparent);
+}
+
+#connector-use {
+  scroll-margin-top: 1rem;
+}

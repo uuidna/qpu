@@ -43,6 +43,14 @@
       "import": "./dist/quantum/processing/unit/boot.js",
       "default": "./dist/quantum/processing/unit/boot.js"
     },
+    "./mcp": {
+      "import": "./dist/quantum/processing/unit/stdio.js",
+      "default": "./dist/quantum/processing/unit/stdio.js"
+    },
+    "./stdio": {
+      "import": "./dist/quantum/processing/unit/stdio.js",
+      "default": "./dist/quantum/processing/unit/stdio.js"
+    },
     "./payload": {
       "types": "./dist/db/payload-qpu.d.ts",
       "import": "./dist/db/payload-qpu.js",
@@ -52,6 +60,14 @@
       "types": "./dist/payload/plugins/index.d.ts",
       "import": "./dist/payload/plugins/index.js",
       "default": "./dist/payload/plugins/index.js"
+    },
+    "./chat": {
+      "import": "./dist/payload/plugins/chat-search.js",
+      "default": "./dist/payload/plugins/chat-search.js"
+    },
+    "./worker": {
+      "import": "./worker.js",
+      "default": "./worker.js"
     },
     "./*.js": {
       "types": "./dist/*.d.ts",
@@ -63,6 +79,8 @@
   "files": [
     "dist",
     "qpu.d.ts",
+    "worker.js",
+    "sdk/js",
     "src/quantum/processing/unit/index.lean",
     "lean-toolchain",
     "lakefile.lean",
@@ -73,7 +91,9 @@
     "mcp.json",
     "install.json",
     "!dist/**/*.test.js",
+    "!dist/**/test.js",
     "!dist/**/*.test.d.ts",
+    "!dist/**/test.d.ts",
     "!dist/**/*.d.ts",
     "dist/quantum/processing/unit/boot.d.ts",
     "dist/db/payload-qpu.d.ts",
@@ -638,6 +658,7 @@
     "./dist/families/kinship/index.js",
     "./dist/families/knitting/index.js",
     "./dist/families/knot/index.js",
+    "./dist/families/kyc/index.js",
     "./dist/families/landslide/index.js",
     "./dist/families/landuse/index.js",
     "./dist/families/lasers/index.js",
@@ -790,6 +811,7 @@
     "./dist/families/opendata/index.js",
     "./dist/families/opera/index.js",
     "./dist/families/ophthalmology/index.js",
+    "./dist/families/oppress/index.js",
     "./dist/families/optics/index.js",
     "./dist/families/option/index.js",
     "./dist/families/optometry/index.js",
@@ -837,6 +859,7 @@
     "./dist/families/pentomino/index.js",
     "./dist/families/perception/index.js",
     "./dist/families/performance/index.js",
+    "./dist/families/perma/index.js",
     "./dist/families/permitting/index.js",
     "./dist/families/personality/index.js",
     "./dist/families/pest/index.js",
@@ -865,6 +888,7 @@
     "./dist/families/pilgrimage/index.js",
     "./dist/families/pipeline/index.js",
     "./dist/families/piston/index.js",
+    "./dist/families/plagiarism/index.js",
     "./dist/families/planet/index.js",
     "./dist/families/planetology/index.js",
     "./dist/families/plasma/index.js",
@@ -939,6 +963,7 @@
     "./dist/families/raster/index.js",
     "./dist/families/ratelimiting/index.js",
     "./dist/families/rationalism/index.js",
+    "./dist/families/reactor/index.js",
     "./dist/families/readability/index.js",
     "./dist/families/ready/index.js",
     "./dist/families/realestate/index.js",
@@ -1239,6 +1264,14 @@
     "fuse": "node scripts/fuse-apis.mjs",
     "payload:cf": "node scripts/payload-cloudflare.mjs",
     "heat": "node scripts/heat.mjs",
+    "online": "npx tsx scripts/online-mode.mts",
+    "offline": "npx tsx scripts/online-mode.mts",
+    "waits": "npx tsx scripts/online-mode.mts --all",
+    "port": "node scripts/port.mjs",
+    "port:all": "node scripts/port.mjs --all --wave",
+    "port:wave": "node scripts/port.mjs --wave",
+    "distro": "npm run build && node --import ./dist/mcp/families.js -e \"import('./dist/payload/plugins/chat-search.js').then(m=>m.distroOf({passes:2,k:2})).then(r=>console.log(JSON.stringify({kind:r.kind,holds:r.holds,cover:r.cover?.holds,manifold:r.manifold?.holds,counts:r.counts,tokenSeal:r.tokenSeal,goal:r.goal},null,2)))\"",
+    "walls": "node scripts/walls.mjs",
     "hooks": "node dist/deployment/git-hooks.js install",
     "prepublishOnly": "npm run version:lock && npm run build",
     "ship": "npm run build && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
@@ -1311,7 +1344,10 @@
     "wrangler": "4.146.0"
   },
   "bin": {
-    "qpu-boot": "./dist/quantum/processing/unit/boot.js"
+    "qpu-boot": "./dist/quantum/processing/unit/boot.js",
+    "qpu-standalone": "./dist/quantum/processing/unit/boot.js",
+    "qpu": "./dist/quantum/processing/unit/stdio.js",
+    "qpu-mcp": "./dist/quantum/processing/unit/stdio.js"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.3.3",

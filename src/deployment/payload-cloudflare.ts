@@ -23,6 +23,94 @@ export const CLOUDFLARE_DATABASES = ['d1', 'postgres', 'qpu-raid', 'qpu-d1'] as 
 export const CLOUDFLARE_STORAGE = ['r2', 's3', 'none'] as const
 
 /**
+ * RAID-native DB adapters on the combination `db` axis. Swap this axis (and wrangler bindings); Payload API and Mongo
+ * query/update semantics stay. Do not port node:fs / mongod / postgres into QPU_PORTS — QPU-native rows are DocStore
+ * facades (qpuAdapter + env RAID or d1DocStore); offline with no bindings is the in-memory DocStore.
+ * @wing cms
+ * @kind constant
+ */
+export const CLOUDFLARE_DB_ADAPTERS = {
+  'qpu-raid': {
+    package: '@uuidna/qpu',
+    call: 'qpuAdapter({ env: { STORAGE, BLOBS } })',
+    bindings: ['STORAGE', 'BLOBS'] as const,
+    store: 'RAID KV+R2',
+    native: true,
+    mongoSemantics: true,
+  },
+  'qpu-d1': {
+    package: '@uuidna/qpu',
+    call: 'qpuAdapter({ store: d1DocStore(D1) })',
+    bindings: ['D1'] as const,
+    store: 'd1DocStore',
+    native: true,
+    mongoSemantics: true,
+  },
+  d1: {
+    package: '@payloadcms/db-d1-sqlite',
+    call: 'sqliteD1Adapter({ binding: D1 })',
+    bindings: ['D1'] as const,
+    store: 'D1 sqlite',
+    native: false,
+    mongoSemantics: false,
+  },
+  postgres: {
+    package: '@payloadcms/db-postgres',
+    call: 'postgresAdapter({ pool: Hyperdrive })',
+    bindings: ['HYPERDRIVE'] as const,
+    store: 'Hyperdrive postgres',
+    native: false,
+    mongoSemantics: false,
+  },
+} as const satisfies Record<(typeof CLOUDFLARE_DATABASES)[number], {
+  package: string
+  call: string
+  bindings: readonly string[]
+  store: string
+  native: boolean
+  mongoSemantics: boolean
+}>
+
+/**
+ * Upload storage adapters on the combination `storage` axis (Payload 4 `storage: []`). FS bytes for media are these
+ * adapters; content-addressed FS for the unit is qpuStorageOf over the same RAID bindings — not node:fs.
+ * @wing cms
+ * @kind constant
+ */
+export const CLOUDFLARE_STORAGE_ADAPTERS = {
+  r2: { package: '@payloadcms/storage-r2', call: 'r2Storage({ bucket: MEDIA })', binding: 'MEDIA' as const },
+  s3: { package: '@payloadcms/storage-s3', call: 's3Storage({ bucket, config })', binding: null },
+  none: { package: '', call: '', binding: null },
+} as const satisfies Record<(typeof CLOUDFLARE_STORAGE)[number], { package: string; call: string; binding: string | null }>
+
+/**
+ * Clone path for Payload CMS website, then QPU does the rest. Upstream is payloadcms/website; the tree-named sibling
+ * uuidna/payload is that clone; this repo mirrors the same src layout via `payload:cf --repo`. QPU owns RAID DB/FS,
+ * MCP connector, publicPlugin, cures and healing — not a rewrite of the Payload marketing site.
+ * @wing cms
+ * @kind constant
+ */
+export const PAYLOAD_WEBSITE_CLONE = {
+  upstream: 'https://github.com/payloadcms/website',
+  tree: 'uuidna/payload',
+  layout: 'src/{collections,globals,blocks,components/blocks,app} as payloadcms/website',
+  generate: 'npm run payload:cf -- --repo',
+  qpuOwns: [
+    'db axis: qpu-raid | qpu-d1 | d1 | postgres',
+    'storage axis: r2 | s3 | none',
+    'RAID DocStore / qpuStorageOf (FS native — no node:fs port)',
+    'MCP connector + publicPlugin',
+    'cures formulas (contract.cure, adhesive.cure, concrete.cure, curing.curetime, …)',
+    'healing formulas (dermatology.healing, podiatry.healing, shamanism.healingcombos, …)',
+  ],
+  doNot: [
+    'rewrite the Payload marketing site',
+    'port node:fs / mongodb / postgres into QPU_PORTS (crypt-style)',
+    'bypass Payload db / storage config fields with a second non-adapter path',
+  ],
+} as const
+
+/**
  * Email choices: Resend, or none.
  * @wing cms
  * @kind constant
@@ -56,6 +144,30 @@ export type CloudflareCombination = {
 }
 
 export type CloudflarePayload = PayloadTemplate & { combination: CloudflareCombination; key: string; files: Record<string, string>; dependencies: string[] }
+
+/**
+ * Replace checklist: which binding/package to swap for a combination's db + storage. Stays on Payload's `db` and
+ * `storage` fields — never a Plugin. Offline with no STORAGE/BLOBS is the in-memory DocStore under the same qpuAdapter.
+ * @wing cms
+ * @kind builder
+ */
+export const cloudflareRaidAdaptersOf = (c: Pick<CloudflareCombination, 'db' | 'storage'> = { db: 'qpu-raid', storage: 'r2' }) => {
+  const db = CLOUDFLARE_DB_ADAPTERS[c.db]
+  const storage = CLOUDFLARE_STORAGE_ADAPTERS[c.storage]
+  const holds =
+    (c.db === 'qpu-raid' || c.db === 'qpu-d1' ? db.native && db.mongoSemantics : db.native === false) &&
+    (c.storage === 'none' ? storage.package === '' : storage.package.startsWith('@payloadcms/storage-'))
+  return {
+    kind: 'raid-adapters' as const,
+    clone: PAYLOAD_WEBSITE_CLONE,
+    db: { axis: c.db, ...db },
+    storage: { axis: c.storage, ...storage },
+    offline: 'no STORAGE/BLOBS → memory DocStore / in-memory heap; same qpuAdapter()',
+    port: false as const,
+    note: 'swap combination axes; do not port fs/db into QPU_PORTS',
+    holds,
+  }
+}
 
 /**
  * A combination's canonical key: the axes in order, plugins sorted — what its content UUID is taken over.
@@ -146,7 +258,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     `/// <reference types="@cloudflare/workers-types" />`,
     ...(app?.preload ?? []).map((p, i) => `import { install as preload${i} } from '${p}'`),
     `import { buildConfig } from 'payload'`,
-    `import type { CollectionConfig } from 'payload'`,
+    `import type { CollectionConfig, Plugin } from 'payload'`,
     `import { lexicalEditor } from '@payloadcms/richtext-lexical'`,
     c.runtime === 'vinext' ? `import { env } from 'cloudflare:workers'` : `import { getCloudflareContext } from '@opennextjs/cloudflare'`,
     c.db === 'd1' ? `import { sqliteD1Adapter } from '@payloadcms/db-d1-sqlite'` : '',
@@ -157,7 +269,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     c.storage === 's3' ? `import { s3Storage } from '@payloadcms/storage-s3'` : '',
     c.email === 'resend' ? `import { resendAdapter } from '@payloadcms/email-resend'` : '',
     plugins.includes('sentry') ? `import * as Sentry from '@sentry/nextjs'` : '',
-    `import { adminPlugin, billingPlugin, collectionPlugin, corsPlugin, domainsPlugin, editorPlugin, globalPlugin, permaculturePlugin, seedPlugin, typescriptPlugin, upgradePlugin, videoPlugin } from '@uuidna/qpu/payload/plugins'`,
+    `import { adminPlugin, billingPlugin, collectionPlugin, corsPlugin, domainsPlugin, editorPlugin, globalPlugin, permaculturePlugin, publicPlugin, seedPlugin, typescriptPlugin, upgradePlugin, videoPlugin } from '@uuidna/qpu/payload/plugins'`,
     ...plugins.map((p) => `import { ${PLUGIN_CODE[p].name} } from '${PLUGIN_CODE[p].from}'`),
     ...[...(app?.collections ?? []), ...(app?.globals ?? [])].map((x) => `import { ${x.name} } from '${x.from}'`),
     ...(app?.imports ?? []).map((x) => `import { ${x.name} } from '${x.from}'`),
@@ -197,7 +309,9 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
   const admin = app
     ? `{ user: '${app.adminUser ?? 'users'}'${app.title ? `, meta: { titleSuffix: ' — ${app.title}' }` : ''}${app.dashboard ? `, components: { views: { dashboard: { Component: '${app.dashboard}' } } }` : ''} }`
     : ''
-  const qpuPlugins = [
+  // the qpu surface/feature plugins are typed loosely in the library (payload's shape stays a lead); cast the group
+  // to payload's Plugin so the emitted config typechecks, leaving payload's own plugins checked as themselves
+  const qpuSurface = [
     'editorPlugin(lexicalEditor())',
     admin ? `adminPlugin(${admin})` : '',
     ...collectionNames.map((name) => `collectionPlugin(${name})`),
@@ -210,6 +324,10 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     'videoPlugin()',
     'domainsPlugin()',
     'permaculturePlugin()',
+    'publicPlugin()',
+  ].filter(Boolean)
+  const qpuPlugins = [
+    `...([${qpuSurface.join(', ')}] as unknown as Plugin[])`,
     ...plugins.map((p) => withOptions(PLUGIN_CODE[p].call(targetsOf(p)), app?.pluginOptions?.[p])),
   ].filter(Boolean)
   return [

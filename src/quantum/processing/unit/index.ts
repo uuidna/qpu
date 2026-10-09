@@ -2586,7 +2586,7 @@ export const qpuCiteHolds = (c = qpuCiteOf()): boolean =>
   c.right.includes(`${c.author.first} ${c.author.last}`) &&
   c.right.includes('commercial licence') &&
   c.grant.licence === 'CC-BY-NC-ND-4.0' &&
-  c.grant.priceInUSDEnabled === false &&
+  c.grant.price === 'relation' &&
   c.grant.holds === false &&
   c.grant.lead === true &&
   c.grant.organisation.lead === true &&
@@ -9324,12 +9324,12 @@ export const qpuMcpDiscoverOf = (requested?: unknown) => {
   const hosts = qpuHostsOf()
   const versions = MCP_VERSIONS
   const right = qpuCiteOf().right
-  const instructions = `tools/list then tools/call. prompts/list then prompts/get: each prompt is a boolean chain, a step holds or it is a lead. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. Reads need no auth; storage writes need a Bearer token. Token-free: a reply is the free energy of the document, recognition first; { full: true } spends the enthalpy. ${right}`
-  const holds = qpuHostsHolds(hosts) && versions.length === n && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto') && instructions.includes('free energy') && instructions.includes('{ full: true }') && instructions.includes(right)
+  const instructions = `tools/list then tools/call. prompts/list then prompts/get: each prompt is a boolean chain, a step holds or it is a lead. Sixteen tools: Eight doors. Eight cybersecurity. crypto_rsa ${shorFactorOf()}. crypto_split theorem crypto. Fused (not on tools/list): tools/call connector { use: true } for seal/goal/adapters/court/access/point/exam/observe — not legal-doc or Drive. Reads need no auth; storage writes need a Bearer token. Token-free: a reply is the free energy of the document, recognition first; { full: true } spends the enthalpy. ${right}`
+  const holds = qpuHostsHolds(hosts) && versions.length === n && instructions.includes('crypto_rsa') && instructions.includes(`${shorFactorOf()}`) && instructions.includes('crypto_split') && instructions.includes('theorem crypto') && instructions.includes('free energy') && instructions.includes('{ full: true }') && instructions.includes('connector { use: true }') && instructions.includes(right)
   return {
     protocolVersion: qpuMcpVersionOf(requested),
     install: qpuHarnessesOf(),
-    capabilities: Object.assign({ tools: { listChanged: false as const } }, ...[...MCP_EXTENSIONS.values()].map((x) => x.capability ?? {})) as { tools: { listChanged: false } } & Record<string, unknown>,
+    capabilities: Object.assign({ tools: { listChanged: false as const }, prompts: { listChanged: false as const } }, ...[...MCP_EXTENSIONS.values()].map((x) => x.capability ?? {})) as { tools: { listChanged: false }; prompts: { listChanged: false } } & Record<string, unknown>,
     serverInfo: { name: `@uuidna/${unit.kind}`, title: 'QPU', version: packageVersion },
     instructions,
     versions,
@@ -10676,11 +10676,29 @@ export const qpuHexDecodeOf = (uuid: string) => {
  * @kind builder
  * @evidence qpuHexHolds
  */
+const qpuFamilyAskedOf = (relative: string): string => {
+  const asked = new URL(relative, import.meta.url).href
+  return typeof import.meta.resolve === 'function' ? import.meta.resolve(asked) : asked
+}
+
+/** The tree this module is running from. Source is `…/src`. The build is `…/dist`. One process reads one of those. */
+export const qpuFamilyRootOf = (): string => new URL('../../..', import.meta.url).pathname
+
+/** The one registry: `mcp/families` beside this module. The other tree is not opened. */
+export const qpuFamilyRegistryUrlOf = (): string => qpuFamilyAskedOf('../../../mcp/families.js')
+
+/** One family module under that same root. A name with no module there is one miss. */
+export const qpuFamilyModuleUrlOf = (family: string): string => {
+  if (!/^[a-z][a-z0-9-]*$/.test(family)) throw new Error(`hex: no formula family ${family}`)
+  return qpuFamilyAskedOf(`../../../families/${family}/index.js`)
+}
+
 /** The shared registry imports every family module that exists. Each module registers through qpuHexRegisterOf.
- *  One load. Law is its own family module on that list, not an import from mcp.ts. */
+ *  One load, from qpuFamilyRootOf. Law is its own family module on that list, not an import from mcp.ts. */
 let hexRegistry: Promise<void> | undefined
 const qpuHexRegistryOf = (): Promise<void> => {
   // perma has a module and calls qpuHexRegisterOf. The generated registry does not name it.
+  // These specifiers are qpuFamilyRegistryUrlOf and qpuFamilyModuleUrlOf('perma'): this module's tree only.
   if (!hexRegistry) hexRegistry = import('../../../mcp/families.js').then(() => import('../../../families/perma/index.js')).then(() => undefined)
   return hexRegistry
 }

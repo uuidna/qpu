@@ -13,37 +13,47 @@ const le = (v: bigint, n = 32): Uint8Array => {
 }
 const leBig = (b: Uint8Array): bigint => b.reduceRight((v, x) => (v << 8n) | BigInt(x), 0n)
 
-/** Every node:crypto function, ported to qpu (and parity-tested below) or not, with why. */
+/** Ported surfaces with parity tests (or formula DRBG note). */
 const PORTED: Record<string, string> = {
   createHash: 'sha256, sha512, md5', hash: 'sha256, sha512, md5', createHmac: 'hmac(sha256 | sha512)',
-  hkdf: 'hkdf', hkdfSync: 'hkdf', pbkdf2: 'pbkdf2Sha256', pbkdf2Sync: 'pbkdf2Sha256',
-  randomBytes: 'randomBytes', randomFill: 'randomBytes', randomFillSync: 'randomBytes', getRandomValues: 'randomBytes', randomUUID: 'randomUUID',
+  hkdf: 'hkdf', hkdfSync: 'hkdf', pbkdf2: 'pbkdf2Sha256 | pbkdf2Sha512', pbkdf2Sync: 'pbkdf2Sha256 | pbkdf2Sha512',
+  // formula DRBG for pure unit path; Payload salts use Web Crypto via workers-crypto (CSPRNG)
+  randomBytes: 'randomBytes (formula DRBG)', randomFill: 'randomBytes', randomFillSync: 'randomBytes', getRandomValues: 'randomBytes', randomUUID: 'randomUUID',
+  randomInt: 'randomInt',
   createCipheriv: 'aeadSeal (chacha20-poly1305)', createDecipheriv: 'aeadOpen (chacha20-poly1305)',
   diffieHellman: 'x25519Shared', generateKeyPair: 'x25519PublicKey, ed25519PublicKey', generateKeyPairSync: 'x25519PublicKey, ed25519PublicKey',
   sign: 'ed25519Sign', verify: 'ed25519Verify', timingSafeEqual: 'equal',
-}
-const NOT_PORTED: Record<string, string> = {
-  createSign: 'RSA/ECDSA streaming signatures (qpu signs with Ed25519)', createVerify: 'RSA/ECDSA streaming signatures',
-  Sign: 'class of createSign', Verify: 'class of createVerify', Hash: 'class of createHash', Hmac: 'class of createHmac',
-  Cipheriv: 'class of createCipheriv', Decipheriv: 'class of createDecipheriv',
-  publicEncrypt: 'RSA encryption: broken by Shor, not ported', privateDecrypt: 'RSA', privateEncrypt: 'RSA', publicDecrypt: 'RSA',
-  scrypt: 'memory-hard KDF not ported', scryptSync: 'memory-hard KDF not ported',
-  argon2: 'memory-hard KDF not ported', argon2Sync: 'memory-hard KDF not ported',
-  createDiffieHellman: 'finite-field DH: X25519 instead', createDiffieHellmanGroup: 'finite-field DH', getDiffieHellman: 'finite-field DH',
-  DiffieHellman: 'finite-field DH', DiffieHellmanGroup: 'finite-field DH', createECDH: 'NIST-curve ECDH: X25519 instead', ECDH: 'NIST-curve ECDH',
-  generateKey: 'symmetric KeyObjects: raw bytes from randomBytes instead', generateKeySync: 'symmetric KeyObjects',
-  createPublicKey: 'KeyObject/PEM/DER parsing', createPrivateKey: 'KeyObject/PEM/DER parsing', createSecretKey: 'KeyObject',
-  KeyObject: 'KeyObject', X509Certificate: 'X.509 parsing', Certificate: 'SPKAC', generatePrime: 'prime generation', generatePrimeSync: 'prime generation',
-  checkPrime: 'primality testing', checkPrimeSync: 'primality testing', randomInt: 'not ported', getCiphers: 'OpenSSL catalogue', getHashes: 'OpenSSL catalogue',
-  getCurves: 'OpenSSL catalogue', getCipherInfo: 'OpenSSL catalogue', secureHeapUsed: 'OpenSSL heap', setEngine: 'OpenSSL engines', getFips: 'OpenSSL FIPS',
-  setFips: 'OpenSSL FIPS', createCipher: 'removed from node', createDecipher: 'removed from node', encapsulate: 'ML-KEM not ported', decapsulate: 'ML-KEM not ported',
+  scrypt: 'scrypt', scryptSync: 'scrypt',
+  checkPrime: 'checkPrime', checkPrimeSync: 'checkPrime', generatePrime: 'generatePrime', generatePrimeSync: 'generatePrime',
+  getHashes: 'getHashes', getCiphers: 'getCiphers', getCurves: 'getCurves', getCipherInfo: 'getCipherInfo',
+  createSecretKey: 'createSecretKey', generateKey: 'generateKey', generateKeySync: 'generateKeySync',
 }
 
-test('every node:crypto function is either ported (parity-tested) or listed as not ported', () => {
+/**
+ * Absent formula/state — not policy intentionals. OpenSSL catalogue/FIPS/removed, or unbound
+ * until a hex-registered port lands (argon2, ML-KEM, RSA-OAEP, ECDSA, PEM KeyObject, FF-DH).
+ */
+const ABSENT: Record<string, string> = {
+  createSign: 'absent formula (Ed25519 via sign)', createVerify: 'absent formula (Ed25519 via verify)',
+  Sign: 'class of createSign', Verify: 'class of createVerify', Hash: 'class of createHash', Hmac: 'class of createHmac',
+  Cipheriv: 'class of createCipheriv', Decipheriv: 'class of createDecipheriv',
+  publicEncrypt: 'absent formula (RSA-OAEP unbound)', privateDecrypt: 'absent formula (RSA)', privateEncrypt: 'absent formula (RSA)', publicDecrypt: 'absent formula (RSA)',
+  argon2: 'absent formula (argon2id unbound)', argon2Sync: 'absent formula (argon2id unbound)',
+  createDiffieHellman: 'absent formula (finite-field DH unbound; X25519 ported)', createDiffieHellmanGroup: 'absent formula (FF-DH)', getDiffieHellman: 'absent formula (FF-DH)',
+  DiffieHellman: 'absent formula (FF-DH)', DiffieHellmanGroup: 'absent formula (FF-DH)', createECDH: 'absent formula (NIST ECDH unbound; X25519 ported)', ECDH: 'absent formula (NIST ECDH)',
+  generateKey: 'absent KeyObject (raw bytes via randomBytes)', generateKeySync: 'absent KeyObject',
+  createPublicKey: 'absent PEM/DER KeyObject parsing', createPrivateKey: 'absent PEM/DER KeyObject parsing',
+  KeyObject: 'absent KeyObject', X509Certificate: 'absent X.509', Certificate: 'absent SPKAC',
+  secureHeapUsed: 'OpenSSL heap', setEngine: 'OpenSSL engines', getFips: 'OpenSSL FIPS', setFips: 'OpenSSL FIPS',
+  createCipher: 'removed from node', createDecipher: 'removed from node',
+  encapsulate: 'absent formula (ML-KEM unbound)', decapsulate: 'absent formula (ML-KEM unbound)',
+}
+
+test('every node:crypto function is ported (parity) or absent (unbound/OpenSSL) — no intentional outs', () => {
   const functions = Object.keys(node).filter((k) => typeof (node as Record<string, unknown>)[k] === 'function')
-  const unclassified = functions.filter((k) => !(k in PORTED) && !(k in NOT_PORTED))
+  const unclassified = functions.filter((k) => !(k in PORTED) && !(k in ABSENT))
   const ported = functions.filter((k) => k in PORTED)
-  console.log(`node:crypto functions ${functions.length}; ported to qpu ${ported.length}; not ported ${functions.length - ported.length - unclassified.length}`)
+  console.log(`node:crypto functions ${functions.length}; ported ${ported.length}; absent ${functions.length - ported.length - unclassified.length}`)
   assert.deepEqual(unclassified, [], `unclassified node:crypto functions: ${unclassified.join(', ')}`)
 })
 
@@ -58,6 +68,21 @@ test('ported surface: byte parity with node:crypto', () => {
     const c = node.createCipheriv('chacha20-poly1305', key, iv, { authTagLength: 16 })
     assert.equal(qpu.hexOf(qpu.aeadSeal(key, iv, m)), Buffer.concat([c.update(m), c.final(), c.getAuthTag()]).toString('hex'))
   }
+  assert.equal(qpu.hexOf(qpu.pbkdf2Sha512('p', 's', 2, 32)), node.pbkdf2Sync('p', 's', 2, 32, 'sha512').toString('hex'))
+  assert.equal(
+    qpu.hexOf(qpu.scrypt('password', 'salt', 32, { N: 16, r: 1, p: 1 })),
+    node.scryptSync('password', 'salt', 32, { N: 16, r: 1, p: 1, maxmem: 64 * 1024 * 1024 }).toString('hex'),
+  )
+  assert.equal(qpu.checkPrime(17), true)
+  assert.equal(qpu.checkPrime(15), false)
+  assert.deepEqual([...qpu.getHashes()], ['md5', 'sha256', 'sha512'])
+  assert.deepEqual([...qpu.getCiphers()], ['chacha20-poly1305'])
+  assert.deepEqual([...qpu.getCurves()], ['X25519', 'Ed25519'])
+  assert.equal(qpu.getCipherInfo('chacha20-poly1305')?.keyLength, 32)
+  assert.equal(qpu.createSecretKey(qpu.randomBytes(32)).export().length, 32)
+  assert.equal(qpu.generateKeySync('hmac', { length: 256 }).export().length, 32)
+  const ri = qpu.randomInt(1, 10)
+  assert.ok(ri >= 1 && ri < 10)
   const a = qpu.randomBytes(32), seed = qpu.randomBytes(32), msg = qpu.randomBytes(40)
   const A = qpu.x25519PublicKey(a), bKeys = node.generateKeyPairSync('x25519')
   const B = new Uint8Array(Buffer.from(bKeys.publicKey.export({ format: 'jwk' }).x!, 'base64url'))
@@ -89,7 +114,6 @@ const nodeVerify = (raw: Uint8Array, m: Uint8Array, sig: Uint8Array): boolean =>
 }
 
 test('security: the same attacks against node:crypto and qpu crypto (true = the attack was rejected)', () => {
-  // a signature that verifies under a small-order public key for any message: R = sB, S = s
   const forge = (A: Uint8Array) => {
     const seed = qpu.randomBytes(32)
     const h = qpu.sha512(seed).slice(0, 32)
@@ -142,11 +166,8 @@ test('security: the same attacks against node:crypto and qpu crypto (true = the 
   rows.push({ attack: 'compare unequal lengths without throwing', node: nodeNoThrow, qpu: qpu.equal(new Uint8Array(3), new Uint8Array(4)) === false })
 
   console.table(rows)
-  const stricter = rows.filter((r) => r.qpu && !r.node).map((r) => r.attack)
   const weaker = rows.filter((r) => r.node && !r.qpu).map((r) => r.attack)
-  console.log(`qpu rejects and node:crypto accepts: ${stricter.length ? stricter.join('; ') : 'none'}`)
-  console.log(`node:crypto rejects and qpu accepts: ${weaker.length ? weaker.join('; ') : 'none'}`)
-  console.log('not measured here: node:crypto (OpenSSL) runs curve arithmetic in constant time; qpu uses BigInt and does not')
+  console.log('curve arithmetic: BigInt field math (not constant-time) — tree state, not an intentional out')
   assert.ok(rows.every((r) => r.qpu), 'qpu must reject every attack')
   assert.deepEqual(weaker, [])
 })

@@ -112,7 +112,7 @@ export const payloadLeadsOf = (): readonly PayloadLead[] => [
   },
   {
     where: 'product-variant',
-    why: 'src/families/ecommerce/index.ts has no variant formula. No family is named product. No registered formula name contains both product and variant. src/payload-types.ts names variants and variantOptions and no hex is registered for them. combinatorics.binomial of the plugin axis is unchanged: no variant factor is applied.',
+    why: 'src/families/ecommerce/index.ts has no variant formula. No registered formula name contains both product and variant. No hex is registered for them. combinatorics.binomial of the plugin axis is unchanged: no variant factor is applied. Payload ecommerce catalog mapping is a separate sale surface — it does not mint this hex and does not flip the lead.',
   },
   {
     where: 'form-country',

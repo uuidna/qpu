@@ -41,14 +41,14 @@ async function exec(op: Op): Promise<Result> {
 // ============================================================================
 
 const ops = {
-  // Clay Problems (7)
-  'clay.p-vs-np': op('clay', 'P vs NP', async () => ({ problem: 'P vs NP', solved: true })),
-  'clay.riemann': op('clay', 'Riemann', async () => ({ problem: 'Riemann Hypothesis', solved: true })),
-  'clay.navier': op('clay', 'Navier-Stokes', async () => ({ problem: 'Navier-Stokes', solved: true })),
-  'clay.yang-mills': op('clay', 'Yang-Mills', async () => ({ problem: 'Yang-Mills', solved: true })),
-  'clay.hodge': op('clay', 'Hodge', async () => ({ problem: 'Hodge Conjecture', solved: true })),
-  'clay.xyz': op('clay', 'XYZ', async () => ({ problem: 'XYZ Problem', solved: true })),
-  'clay.abc': op('clay', 'ABC', async () => ({ problem: 'ABC Conjecture', solved: true })),
+  // Clay names (naming scheme — no solved flag; seal evidence is clay.* hex/value/holds/next)
+  'clay.p-vs-np': op('clay', 'P vs NP', async () => ({ problem: 'P vs NP' })),
+  'clay.riemann': op('clay', 'Riemann', async () => ({ problem: 'Riemann Hypothesis' })),
+  'clay.navier': op('clay', 'Navier-Stokes', async () => ({ problem: 'Navier-Stokes' })),
+  'clay.yang-mills': op('clay', 'Yang-Mills', async () => ({ problem: 'Yang-Mills' })),
+  'clay.hodge': op('clay', 'Hodge', async () => ({ problem: 'Hodge Conjecture' })),
+  'clay.xyz': op('clay', 'XYZ', async () => ({ problem: 'XYZ Problem' })),
+  'clay.abc': op('clay', 'ABC', async () => ({ problem: 'ABC Conjecture' })),
 
   // Health (4)
   'health.equity': op('health', 'Equity', async () => ({ domain: 'health', metric: 'equity', value: 0.95 })),

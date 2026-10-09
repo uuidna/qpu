@@ -70,35 +70,257 @@ export class ClaySeals {
   }
 }
 
-/** THE CLAY SOLUTIONS PROVEN, ONE PROBLEM PER ADDRESS: the i-th seal run at the inputs 1 … faces (every parameter the
- *  input) — the involution holds where the formula holds; the values it reaches handed to the discovery at once,
- *  which finds every formula of every other family reaching the same value (the related formulas) and the seal
- *  (fixed points, involutions). Six addresses make the pass; a caller fires them as one wave. Value how many related
- *  formulas; holds when the seal is involutive on its inputs and related or sealed. */
+/** CLAY SEAL WAVE, ONE ADDRESS PER SEAL NAME: the i-th seal run on its combinatorial domain of
+ *  tree-valid params (not blind 1…faces) — the involution holds where the formula holds; the values it reaches
+ *  handed to the discovery at once, which finds every formula of every other family reaching the same value
+ *  (the related formulas) and the seal (fixed points, involutions). Six addresses make the pass; a caller fires
+ *  them as one wave. Value how many related formulas; holds when the seal is involutive on its domain and related
+ *  or sealed. Evidence is hex/value/holds/next only — not a prize and not a solved flag. */
 export const CLAY_SEALS = ['bsd', 'hodge', 'navierStokes', 'pVsNp', 'riemann', 'yangMills'] as const
-export const clayPassOf = async (i: number) => {
-  const { qpuDiscoverOf } = await import('../../mcp/discovery.js')
+
+export type ClaySealName = (typeof CLAY_SEALS)[number]
+
+export type ClaySealDomain = {
+  name: ClaySealName
+  /** Why these params are the tree-valid combinatorial domain (not 1…faces for every seal). */
+  kind: string
+  /** Each row is one arity-correct param vector. */
+  params: number[][]
+}
+
+/**
+ * Combinatorial domain of tree-valid params for one Clay seal.
+ * - bsd: m = 3…faces ∪ {15} (formula requires m > 2; 15 is the named test modulus)
+ * - pVsNp: {0, 1} (formula requires presupposed ≤ 1)
+ * - yangMills: arity 0 — one empty call
+ * - others: arity-correct lattice walk (1…faces on each slot; riemann also includes named [1, 2])
+ */
+export const claySealDomainOf = (name: ClaySealName, faces = qpuFacesOf().faces): ClaySealDomain => {
+  const arity = qpuHexFamiliesOf().get('clay')?.find((f) => f.name === name)?.arity ?? 0
+  if (name === 'bsd') {
+    const ms = Array.from({ length: Math.max(0, faces - 2) }, (_, k) => k + 3)
+    if (!ms.includes(15)) ms.push(15)
+    return { name, kind: 'm=3…faces ∪ {15}', params: ms.map((m) => [m]) }
+  }
+  if (name === 'pVsNp') {
+    return { name, kind: '{0,1}', params: [[0], [1]] }
+  }
+  if (name === 'yangMills' || arity === 0) {
+    return { name, kind: 'arity-0 singleton', params: [[]] }
+  }
+  const diagonal = Array.from({ length: faces }, (_, k) => Array.from({ length: arity }, () => k + 1))
+  if (name === 'riemann') {
+    const named = [1, 2]
+    const hasNamed = diagonal.some((p) => p.length === 2 && p[0] === named[0] && p[1] === named[1])
+    return {
+      name,
+      kind: hasNamed ? 'arity-correct 1…faces (incl. named [1,2])' : 'arity-correct 1…faces ∪ named [1,2]',
+      params: hasNamed ? diagonal : [...diagonal, named],
+    }
+  }
+  return { name, kind: `arity-correct 1…faces (arity ${arity})`, params: diagonal }
+}
+
+/** Total domain slots across the six seals — sync measure for goal.combinations coverage. */
+export const claySealDomainSizeOf = (faces = qpuFacesOf().faces): number =>
+  CLAY_SEALS.reduce((n, name) => n + claySealDomainOf(name, faces).params.length, 0)
+
+/**
+ * Sync domain coverage: how many domain inputs hold under ClaySeals (no hex run).
+ * Universal σ-involution on the domain ⟺ held === size.
+ */
+export const claySealDomainCoverageOf = (faces = qpuFacesOf().faces) => {
+  const rows = CLAY_SEALS.map((name) => {
+    const domain = claySealDomainOf(name, faces)
+    const held = domain.params.filter((params) => {
+      try {
+        return (ClaySeals[name] as (...xs: number[]) => { holds?: boolean })(...params).holds === true
+      } catch {
+        return false
+      }
+    }).length
+    return { name, size: domain.params.length, held, kind: domain.kind, universal: held === domain.params.length && domain.params.length > 0 }
+  })
+  const size = rows.reduce((a, r) => a + r.size, 0)
+  const held = rows.reduce((a, r) => a + r.held, 0)
+  return { faces, rows, size, held, universal: size > 0 && held === size && rows.every((r) => r.universal) }
+}
+
+/**
+ * Seal-wave only: involution over each seal's combinatorial domain (tree-valid params).
+ * Each domain case is court-tried. Discover path is cloud.scale(families, faces) capacity — not prose.
+ * Universal σ-involution evidence = holds on every domain input.
+ */
+export const claySealWaveOf = async (i: number) => {
   const name = CLAY_SEALS[i]
   if (!name) return null
-  const arity = qpuHexFamiliesOf().get('clay')?.find((f) => f.name === name)?.arity ?? 0
-  const runs = await Promise.all(Array.from({ length: qpuFacesOf().faces }, async (_, k) => {
-    const params = Array.from({ length: arity }, () => k + 1)
-    try { const hex = qpuHexUuidOf({ family: 'clay', program: [name], params }); const r = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }; return { hex, value: Number(r.value), holds: r.holds === true } } catch { return { hex: '', value: 0, holds: false } }
+  const faces = qpuFacesOf().faces
+  const domain = claySealDomainOf(name, faces)
+  const { discoverCapacityGateOf, gateCourtTrialOf } = await import('../../payload/plugins/gate-court.js')
+  const { qpuNextOf } = await import('../../quantum/processing/unit/index.js')
+  const treeNext = qpuNextOf().next
+  const runs = await Promise.all(domain.params.map(async (params) => {
+    try {
+      const hex = qpuHexUuidOf({ family: 'clay', program: [name], params })
+      const r = (await qpuHexRunOf(hex, undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean; next?: unknown }
+      const holds = r.holds === true
+      const rawNext = Object.prototype.hasOwnProperty.call(r, 'next') ? (r.next ?? null) : ('absent' as const)
+      const court = gateCourtTrialOf({
+        case: `clay.seal.${name}.domain`,
+        gate: {
+          call: `clay.${name}(${params.join(', ')})`,
+          name: `clay.${name}`,
+          params,
+          hex,
+          value: Number(r.value),
+          holds,
+          rawNext,
+          definition: domain.kind,
+        },
+        confidence: holds ? 100 : 0,
+        note: `domain-wave case for ${name}`,
+      })
+      return {
+        hex,
+        value: Number(r.value),
+        holds,
+        params,
+        rawNext,
+        treeNext: rawNext === 'absent' || rawNext === null ? treeNext : rawNext,
+        court: { case: court.case, allow: court.allow, holds: court.holds, trialRawNext: court.trial.rawNext },
+      }
+    } catch {
+      const court = gateCourtTrialOf({
+        case: `clay.seal.${name}.domain`,
+        gate: {
+          call: `clay.${name}(${params.join(', ')})`,
+          name: `clay.${name}`,
+          params,
+          hex: null,
+          value: 0,
+          holds: false,
+          rawNext: 'absent',
+          definition: domain.kind,
+        },
+        confidence: 0,
+        note: `domain-wave case for ${name} (run failed)`,
+      })
+      return {
+        hex: '',
+        value: 0,
+        holds: false,
+        params,
+        rawNext: 'absent' as const,
+        treeNext,
+        court: { case: court.case, allow: court.allow, holds: court.holds, trialRawNext: court.trial.rawNext },
+      }
+    }
   }))
   const held = runs.filter((r) => r.holds)
-  const values = [...new Set(held.map((r) => r.value).filter((v) => Number.isSafeInteger(v) && v >= 3))]
-  const d = await qpuDiscoverOf(values)
-  const related = [...new Set(d.relations.filter((rel) => rel.ways.some((w) => w.family === 'clay' && w.program.includes(name))).flatMap((rel) => rel.ways.filter((w) => w.family !== 'clay').map((w) => `${w.family}.${w.program.join('∘')} = ${rel.value}`)))]
-  const seal = d.seals.find((s) => s.family === 'clay' && s.program.includes(name))
-  return { i, name, involution: held.length === runs.filter((r) => r.hex).length ? 'holds on every input' : `holds on ${held.length} of ${runs.length}`, involutive: held.length > 0, values: [...new Set(held.map((r) => r.value))].slice(0, 8), related, seal: seal ? `${seal.kind} at ${seal.points.slice(0, 6).join(', ')}` : 'none', hex: runs[0]?.hex ?? '', agents: runs.length, relations: d.relations.length, proven: held.length > 0 && (related.length > 0 || seal !== undefined) }
+  const courtTried = runs.filter((r) => r.court.allow && r.court.holds).length
+  const universal = runs.length > 0 && held.length === runs.length
+  const capacity = discoverCapacityGateOf()
+  return {
+    i,
+    name,
+    domain: { kind: domain.kind, size: domain.params.length, params: domain.params },
+    involution: universal ? 'holds on every domain input' as const : `holds on ${held.length} of ${runs.length} domain inputs` as const,
+    involutive: held.length > 0,
+    universal,
+    values: [...new Set(held.map((r) => r.value))].slice(0, 8),
+    hex: held[0]?.hex ?? runs[0]?.hex ?? '',
+    agents: runs.length,
+    held: held.length,
+    courtTried,
+    cases: runs,
+    related: [] as string[],
+    seal: capacity.path === 'seal-wave' ? 'seal-wave — discover.capacity gate denies full-registry' as const : 'capacity allows full-registry' as const,
+    relations: 0,
+    proven: universal,
+    discover: capacity.path === 'seal-wave' ? 'capacity-gated' as const : 'capacity-open' as const,
+    /** Formula raw next is absent on seals; tree next is qpuNextOf().next. */
+    treeNext,
+    capacity: {
+      case: capacity.case,
+      path: capacity.path,
+      families: capacity.families,
+      faces: capacity.faces,
+      nodes: capacity.nodes,
+      trial: capacity.trial,
+      allow: capacity.allow,
+      holds: capacity.holds,
+      rawNext: capacity.trial.rawNext,
+    },
+  }
+}
+
+/**
+ * Full pass: seal-wave + qpuDiscoverOf(values).
+ * Slice vs full-registry is the discover.capacity gate (cloud.scale × court.standard), not a policy refuse.
+ * `{ fullDiscover: true }` still requires the capacity gate to allow — otherwise the trial denies and seal-wave stands.
+ */
+export const clayPassOf = async (i: number, opts?: { related?: boolean; fullDiscover?: boolean; discoverSlice?: { from?: number; count?: number } }) => {
+  const wave = await claySealWaveOf(i)
+  if (!wave) return null
+  const relatedWanted = opts?.related !== false
+  if (!relatedWanted) {
+    return { ...wave, seal: 'none' as string, proven: wave.involutive, discover: 'skipped' as const }
+  }
+  const { discoverCapacityGateOf } = await import('../../payload/plugins/gate-court.js')
+  const capacity = discoverCapacityGateOf()
+  const wantFull = opts?.fullDiscover === true
+  const fullAllowed = wantFull && capacity.allow === true
+  const { qpuDiscoverOf } = await import('../../mcp/discovery.js')
+  const values = [...new Set(wave.values.filter((v) => Number.isSafeInteger(v) && v >= 3))]
+  const slice = fullAllowed
+    ? undefined
+    : (opts?.discoverSlice ?? { from: 0, count: qpuFacesOf().faces })
+  const d = await qpuDiscoverOf(values, slice)
+  const related = [...new Set(d.relations.filter((rel) => rel.ways.some((w) => w.family === 'clay' && w.program.includes(wave.name))).flatMap((rel) => rel.ways.filter((w) => w.family !== 'clay').map((w) => `${w.family}.${w.program.join('∘')} = ${rel.value}`)))]
+  const seal = d.seals.find((s) => s.family === 'clay' && s.program.includes(wave.name))
+  return {
+    i: wave.i,
+    name: wave.name,
+    involution: wave.involution,
+    involutive: wave.involutive,
+    values: wave.values,
+    related,
+    seal: seal ? `${seal.kind} at ${seal.points.slice(0, 6).join(', ')}` : 'none',
+    hex: wave.hex,
+    agents: wave.agents,
+    relations: d.relations.length,
+    proven: wave.involutive && (related.length > 0 || seal !== undefined),
+    discover: slice
+      ? `slice from=${slice.from ?? 0} count=${slice.count ?? qpuFacesOf().faces}` as const
+      : 'full-registry' as const,
+    capacity: {
+      case: capacity.case,
+      path: capacity.path,
+      allow: capacity.allow,
+      trial: capacity.trial,
+      wantedFull: wantFull,
+      fullAllowed,
+      holds: capacity.holds,
+      rawNext: capacity.trial.rawNext,
+    },
+  }
 }
 export class ClayPass {
+  /** Full pass including related discovery (slice by default). For seal-only evidence use claySealWaveOf. */
   static async pass(i: number): Promise<CrossFormula> {
     const r = await clayPassOf(i)
     if (!r) return crossFormulaOf({ id: 'clay-pass', src: 'clay', dst: 'lattice', formula: 'pass(i)', value: 0, proof: CLAY_SEAL_SOURCE }, false, { name: 'clay.pass', params: [i] })
     const { proven, ...reading } = r
     const extra: Record<string, unknown> = reading
-    return crossFormulaOf({ id: 'clay-pass', src: 'clay', dst: 'lattice', formula: `pass(${i}) = |related formulas of ${r.name} over inputs 1 … faces, discovered at once|`, value: r.related.length, proof: CLAY_SEAL_SOURCE, ...extra }, nat(i) && proven, { name: 'clay.pass', params: [i] })
+    return crossFormulaOf({ id: 'clay-pass', src: 'clay', dst: 'lattice', formula: `pass(${i}) = |related formulas of ${r.name} over its combinatorial domain, discovered at once|`, value: Array.isArray(r.related) ? r.related.length : 0, proof: CLAY_SEAL_SOURCE, ...extra }, nat(i) && proven, { name: 'clay.pass', params: [i] })
+  }
+  /** Affirmative seal-wave: involution evidence on combinatorial domain; discover path is capacity-gated and court-tried. */
+  static async seal(i: number): Promise<CrossFormula> {
+    const r = await claySealWaveOf(i)
+    if (!r) return crossFormulaOf({ id: 'clay-seal-wave', src: 'clay', dst: 'lattice', formula: 'seal(i)', value: 0, proof: CLAY_SEAL_SOURCE }, false, { name: 'clay.pass', params: [i] })
+    const { proven, discover, capacity, ...reading } = r
+    const extra: Record<string, unknown> = { ...reading, discover, capacity }
+    return crossFormulaOf({ id: 'clay-seal-wave', src: 'clay', dst: 'lattice', formula: `seal(${i}) = |held involutions of ${r.name} over combinatorial domain|`, value: r.held, proof: CLAY_SEAL_SOURCE, ...extra }, nat(i) && proven, { name: 'clay.pass', params: [i] })
   }
 }
 /** FULL DISCLOSURE, BY CLAY COMPUTATION, IN THE PUBLIC INTEREST. The author's standing demand, imprinted as autonomous

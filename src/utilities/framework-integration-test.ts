@@ -40,14 +40,14 @@ class PayloadMock {
     const sampleDocs: UnifiedDocument[] = [
       {
         id: 'clay-1',
-        slug: 'clay-solutions',
-        title: 'Clay Millennium Prize Solutions',
-        description: 'All 7 problems solved via cross-domain formulas',
-        markdown: '# Clay Solutions\n\nAll 7 Clay Millennium Prize Problems...',
-        html: '<h1>Clay Solutions</h1><p>All 7 Clay...</p>',
-        hexAddress: this.generateHex('clay-solutions'),
+        slug: 'clay-seals',
+        title: 'Clay Millennium Prize Problems — author claim',
+        description: 'Author claim (Rouschev, doi:10.5281/zenodo.21781602). Prize is a lead. Seal evidence is hex/value/holds/next only.',
+        markdown: '# Clay seals\n\nAuthor claim via σ-involution seals. A prize is a lead.',
+        html: '<h1>Clay seals</h1><p>Author claim. Prize is a lead.</p>',
+        hexAddress: this.generateHex('clay-seals'),
         metadata: {
-          keywords: ['Clay', 'Millennium', 'Mathematics'],
+          keywords: ['Clay', 'Millennium', 'Mathematics', 'Rouschev'],
           ogImage: 'https://qpu.uuidna.com/og/clay.png',
           canonical: 'https://qpu.uuidna.com/clay',
         },

@@ -284,8 +284,27 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
       description: 'theorem shor. theorem crypto.',
       man: qpuSubManOf(see[mintOf(n) - seed], cryptoReadingOf().verify!, both, href, see.filter((s) => s !== see[mintOf(n) - seed])),
       inputSchema: schema,
-      run: () => {
+      run: async () => {
         const cyber = qpuCybersecurityOf()
+        // crypt.* security formulas — dynamic import keeps the cooled crypto module free of a families cycle.
+        const { CryptFormulas } = await import('../../../families/crypt/index.js')
+        const known = CryptFormulas.knownAnswers()
+        const grover = CryptFormulas.symmetricQuantumBits(256)
+        const classical = CryptFormulas.curveClassicalBits(256)
+        const quantum = CryptFormulas.curveQuantumBits(256)
+        const tag = CryptFormulas.aeadTagBits()
+        const poly = CryptFormulas.tagForgery(16)
+        const birthday = CryptFormulas.hashCollisionBits(256)
+        const cryptFamily = {
+          knownAnswers: known,
+          symmetricQuantumBits256: grover,
+          curveClassicalBits256: classical,
+          curveQuantumBits256: quantum,
+          aeadTagBits: tag,
+          tagForgery16: poly,
+          hashCollisionBits256: birthday,
+          holds: [known, grover, classical, quantum, tag, poly, birthday].every((r) => r.holds === true),
+        }
         return {
           kind: 'verify' as const,
           factoring: { theorem: 'shor' as const, factored: cyber.rsa.factored, n: cyber.rsa.modulus, p: cyber.rsa.factors.p, q: cyber.rsa.factors.q, holds: cyber.rsa.holds },
@@ -293,7 +312,8 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
           verify: cyber.verify,
           rsa: cyber.rsa,
           payload: cyber.shor.payload,
-          holds: cyber.verify.crypt === true && cyber.verify.rsa === true && cyber.verify.encrypt === true && cyber.encrypt.holds && cyber.holds,
+          crypt: cryptFamily,
+          holds: cyber.verify.crypt === true && cyber.verify.rsa === true && cyber.verify.encrypt === true && cyber.encrypt.holds && cyber.holds && cryptFamily.holds,
         }
       }}]
 }

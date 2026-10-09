@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** ORBIT — A BODY AROUND A PRIMARY, AS ARITHMETIC. A trajectory is numbers: the period to come round, the semi-major
  *  axis of the ellipse, how eccentric it is, the far and near points, the speed along the path, the plane's tilt, and how
@@ -26,7 +28,7 @@ export class OrbitFormulas {
   /** INCLINATION: the plane's tilt in degrees from rise over run. value ⌊rise · 90 / run⌋. */
   static inclination(rise: number, run: number): CrossFormula { return c('orbit-inclination', 'inclination(rise, run) = ⌊rise · 90 / run⌋', run > 0 ? Math.floor((rise * 90) / run) : 0, nat(rise, run) && run > 0, 'inclination', [rise, run]) }
   /** MEAN ANOMALY: the swept angle at a mean motion over time, modulo a full turn. value (motion · time) mod 360. */
-  static meananomaly(motion: number, time: number): CrossFormula { return c('orbit-meananomaly', 'meananomaly(motion, time) = (motion · time) mod 360', (motion * time) % 360, nat(motion, time), 'meananomaly', [motion, time]) }
+  static meananomaly(motion: number, time: number): CrossFormula { return c('orbit-meananomaly', 'meananomaly(motion, time) = (motion · time) mod 360', (motion * time) % fullTurn, nat(motion, time), 'meananomaly', [motion, time]) }
 }
 
 for (const name of ['apoapsis', 'eccentricity', 'inclination', 'meananomaly', 'periapsis', 'period', 'semimajoraxis', 'velocity'] as const)

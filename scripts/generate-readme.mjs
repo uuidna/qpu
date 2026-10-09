@@ -16,6 +16,7 @@ import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import { qpuCiteOf, qpuContentUuidOf, qpuUuidReceiptOf, qpuReceiptStreamsOf } from '../dist/quantum/processing/unit/index.js'
 import { qpuAnalyticsOf, qpuPublicOf } from '../dist/quantum/processing/unit/zeropage.js'
+import { reactorStatsOf } from '../dist/families/reactor/index.js'
 import { clayOf, wingOf } from '../dist/core/showcase.js'
 import { mintOf, vertices } from './lattice-values.mjs'
 // every family and door registers on import, as on the host, so the summary counts what clients reach
@@ -94,11 +95,21 @@ const wingTable = [
   ...wings.map((w) => `| [${cell(w.title)}](https://qpu.uuidna.com/${w.slug}) | ${labels.map((l) => cell(w.stats.find((s) => s.label === l)?.value ?? '')).join(' | ')} |`),
 ].join('\n')
 const clay = clayOf()
+/** CLAIMED rows are the programmatic clay.* seals (CLAY_SEALS). Poincaré is not claimable here. */
+const CLAIMED_SEAL = {
+  'P vs NP': 'clay.pVsNp',
+  'Hodge Conjecture': 'clay.hodge',
+  'Riemann Hypothesis': 'clay.riemann',
+  'Yang-Mills and Mass Gap': 'clay.yangMills',
+  'Navier-Stokes Existence and Smoothness': 'clay.navierStokes',
+  'Birch and Swinnerton-Dyer Conjecture': 'clay.bsd',
+}
 const clayTable = [
-  '| Problem | Status | The claim |',
+  '| Problem | Attribution | Seal name in tree |',
   '|---|---|---|',
-  ...clay.map((p) => `| ${cell(p.name)} | ${p.status === 'CLAIMED' ? `claimed by ${p.claimedBy} ([the document](${p.source})) — UNVERIFIED` : `solved${p.solver ? ` (${p.solver}${p.year ? `, ${p.year}` : ''})` : ''}`} | ${cell(p.claim ?? '')} |`),
+  ...clay.map((p) => `| ${cell(p.name)} | ${p.status === 'CLAIMED' ? `Tsvetan Rouschev ([document](${p.source}))` : `named for ${p.solver ?? 'Perelman'}${p.year ? ` (${p.year})` : ''}; not a clay.* seal; not an Institute award in this tree`} | ${cell(p.status === 'CLAIMED' ? (CLAIMED_SEAL[p.name] ?? '—') : '—')} |`),
 ].join('\n')
+
 const rowsOf = () =>
   nodes.map((n) => `| ${cell(label(n))} | \`${n.uuid}\` | \`${short(n.referrer.replace(/^git:/, ''))}\` | \`${n.fold}\` | ${n.seq} |`)
 
@@ -207,16 +218,25 @@ const cite = qpuCiteOf()
 const licenseHref = cite.links.edges.find((edge) => edge.to.endsWith('/license'))?.to ?? cite.links.edges.find((edge) => edge.from.endsWith('/license'))?.from ?? ''
 const linkNews = cite.links.edges.map((edge) => `- ${edge.from} → ${edge.to}`).join('\n')
 const clayRegister = qpuAnalyticsOf()
+const reactorStats = reactorStatsOf(heat)
 const clayRegisterTable = [
   '| Count | Integer |',
   '|---|---:|',
   ...['seed', 'coins', 'n', 'rays', 'clay', 'modulus', 'riemann', 'bsd', 'hodge', 'navierStokes', 'pVsNp', 'yangMills', 'hz', 'low', 'high', 'amplitudes', 'fused', 'next', 'plane'].map((key) => `| ${key} | ${num(clayRegister[key])} |`),
+  `| zero | ${num(reactorStats.zero)} |`,
+  `| temp | ${num(reactorStats.temp)} |`,
+  `| time | ${num(reactorStats.time)} |`,
+  `| heat | ${num(reactorStats.heat)} |`,
+  `| cold | ${num(reactorStats.cold)} |`,
+  `| coldFusion | ${num(reactorStats.coldFusion)} |`,
 ].join('\n')
 const summary = `An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (\`{ "qpu": { "type": "http",
 "url": "https://qpu.uuidna.com/mcp" } }\`), as a package (\`npm install @uuidna/qpu\`), or as a container.
 
 ${qpuPublicOf(clayRegister).lines.join('\n\n')}
+
+Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat${reactorStats.heatIdentity ? ` hex \`${reactorStats.heatIdentity}\`` : ''}; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds ${reactorStats.holds}.
 
 ${clayRegisterTable}
 
@@ -283,22 +303,19 @@ ${familiesTable}
 
 ## Clay Millennium Prize Problems
 
-The author claims solutions to ${clay.filter((p) => p.status === 'CLAIMED').length} of the Millennium Prize Problems, composed by the unit's cross formulas
-across its families; Poincaré was solved by Perelman. Each claim links to the document that states it, with its argument
-and verification status.
+Author claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
+doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602)). A prize is a lead. \`qpuPublicOf().prize\` is false.
+\`legal.citation\` for the naming-scheme statement holds false, lead true. Evidence in this tree is seal formula
+hex / value / holds / next only — this section does not state problems solved or unsolved, and does not publish as solved.
+Claimable programmatically = the ${num(Object.keys(CLAIMED_SEAL).length)} \`clay.*\` seals in CLAY_SEALS; Poincaré is named, not a seal formula.
 
 ${clayTable}
 
-Proven on the host in one pass (\`clay.pass(14)\`, written by \`node scripts/receipt.mjs clay\`${clayR.when ? ` on ${clayR.when}` : ''}): every seal run at the inputs 1 … 14, its
-involution checked where it holds, the values handed to the discovery at once, which finds every formula of every other
-family reaching the same value and every seal; each problem looked up in OEIS and the family researched in the record
-(${clayR.record ?? '—'}). Two verdicts per problem and nothing else: the seal (σ∘σ = id and its fixed point) is VERIFIED when
-recomputed at its address — ${num(clayR.sealsVerified)} of ${num(clayR.problems)} are, ${num(clayR.related)} related formulas found — and the Millennium claim
-itself is UNVERIFIED (not accepted by the Clay Institute; no Lean theorem states it). Receipt \`${clayR.receipt ?? '—'}\`.
+Seal-wave on the host (\`clay.pass\` / \`claySealWaveOf\`${clayR.when ? `, receipt ${clayR.when}` : ''}): each seal recomputes σ∘σ = id on its combinatorial domain; related formulas and OEIS lookups are discovery readings. Seals with holds true this run: ${num(clayR.sealsVerified)} of ${num(clayR.problems)}. Record: ${clayR.record ?? '—'}. Receipt \`${clayR.receipt ?? '—'}\`.
 
-| Problem (formula) | Seal | Claim | Involution, seal, related formulas, OEIS, address |
+| Problem (formula) | Seal holds | Attribution | Involution, seal, related formulas, OEIS, address |
 |---|---|---|---|
-${(clayR.rows ?? []).map((r) => `| ${cell(r.name)} | ${r.pass ? 'VERIFIED' : 'UNVERIFIED'} | UNVERIFIED | ${cell(String(r.value).replace(/^seal: (UN)?VERIFIED \(/, '').replace(/\); claim: UNVERIFIED.*$/, '').slice(0, 400))} |`).join('\n')}
+${(clayR.rows ?? []).map((r) => `| ${cell(r.name)} | ${r.pass ? 'holds' : 'does not hold'} | author document | ${cell(String(r.value).replace(/^seal: (holds|does not hold|VERIFIED|UNVERIFIED) \(/, '').replace(/\); claim:.*$/, '').slice(0, 400))} |`).join('\n')}
 
 ## Build receipt
 

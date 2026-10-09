@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** NAVIGATION — FINDING THE WAY, AS ARITHMETIC (chosen by the public-API registry, not by hand). Getting there is numbers:
  *  the bearing to steer, the distance covered, the time still to run, how far off the planned line, the geometry of the fix,
@@ -13,7 +15,7 @@ const c = (id: string, formula: string, value: number, holds: boolean, name: str
 
 export class NavigationFormulas {
   /** BEARING normalised to a compass circle. value ((degrees mod 360) + 360) mod 360. */
-  static bearing(degrees: number): CrossFormula { return c('navigation-bearing', 'bearing(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % 360) + 360) % 360, nat(degrees), 'bearing', [degrees]) }
+  static bearing(degrees: number): CrossFormula { return c('navigation-bearing', 'bearing(degrees) = ((degrees mod 360) + 360) mod 360', ((degrees % fullTurn) + fullTurn) % fullTurn, nat(degrees), 'bearing', [degrees]) }
   /** DISTANCE covered at a speed over a time. value speed · time. */
   static distance(speed: number, time: number): CrossFormula { return c('navigation-distance', 'distance(speed, time) = speed · time', speed * time, nat(speed, time), 'distance', [speed, time]) }
   /** ETA: the time still to run at a speed. value ⌊distance / speed⌋. */
@@ -25,7 +27,7 @@ export class NavigationFormulas {
   /** WAYPOINT: the fraction of the route done. value ⌊completed · 100 / total⌋. */
   static waypoint(completed: number, total: number): CrossFormula { return c('navigation-waypoint', 'waypoint(completed, total) = ⌊completed · 100 / total⌋', total > 0 ? Math.floor((completed * 100) / total) : 0, nat(completed, total) && total > 0 && completed <= total, 'waypoint', [completed, total]) }
   /** HEADING: the course once drift is taken out, normalised. value ((course + drift) mod 360 + 360) mod 360. */
-  static heading(course: number, drift: number): CrossFormula { return c('navigation-heading', 'heading(course, drift) = ((course + drift) mod 360 + 360) mod 360', (((course + drift) % 360) + 360) % 360, nat(course, drift), 'heading', [course, drift]) }
+  static heading(course: number, drift: number): CrossFormula { return c('navigation-heading', 'heading(course, drift) = ((course + drift) mod 360 + 360) mod 360', (((course + drift) % fullTurn) + fullTurn) % fullTurn, nat(course, drift), 'heading', [course, drift]) }
   /** ACCURACY: how often a fix holds. value ⌊fixes · 100 / attempts⌋. */
   static accuracy(fixes: number, attempts: number): CrossFormula { return c('navigation-accuracy', 'accuracy(fixes, attempts) = ⌊fixes · 100 / attempts⌋', attempts > 0 ? Math.floor((fixes * 100) / attempts) : 0, nat(fixes, attempts) && attempts > 0 && fixes <= attempts, 'accuracy', [fixes, attempts]) }
 }

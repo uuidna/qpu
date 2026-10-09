@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: { siteName: SITE.name, type: 'website' },
 }
 
-// the site's JSON-LD, read from the citation the unit serves at /cite: nothing restated by hand
+// the site's JSON-LD, read from the citation Payload serves at /cite: nothing restated by hand
 const jsonLd = () => {
   const c = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; href: string; doi: string; identifier: string }
   return {
@@ -33,7 +33,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <InitTheme />
-        {/* structured data for every page: the site, its author and licence, as the unit's own citation states them */}
+        {/* lattice sheet Payload serves at /qpu.css: --qpu-faces, --qpu-period, @keyframes qpu for border walk */}
+        <link rel="stylesheet" href="/qpu.css" />
+        {/* structured data for every page: the site, its author and licence, as the citation door states them */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd()) }} />
       </head>
       <body className="min-h-screen font-sans">

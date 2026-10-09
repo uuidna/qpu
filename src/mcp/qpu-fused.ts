@@ -1294,10 +1294,37 @@ const CRYPT_OPS: Record<string, (a: Args) => unknown> = {
   ed25519_public: (a) => hexOf(ed25519PublicKey(fromHex(str(a.seed)))),
   ed25519_sign: (a) => hexOf(ed25519Sign(fromHex(str(a.seed)), bytesArg(a, 'message'))),
   ed25519_verify: (a) => ed25519Verify(fromHex(str(a.publicKey)), bytesArg(a, 'message'), fromHex(str(a.signature))),
+  // Security formulas (hex family crypt.*) — MCP-readable, same as crypto_verify morph.
+  symmetric_quantum: (a) => CryptFormulas.symmetricQuantumBits(num(a.keyBits, 256)),
+  curve_classical: (a) => CryptFormulas.curveClassicalBits(num(a.curveBits, 256)),
+  curve_quantum: (a) => CryptFormulas.curveQuantumBits(num(a.curveBits, 256)),
+  tag_forgery: (a) => CryptFormulas.tagForgery(num(a.bytes, 16)),
+  nonce_collision: (a) => CryptFormulas.nonceCollision(num(a.messages, 0)),
+  aead_tag_bits: () => CryptFormulas.aeadTagBits(),
+  hash_collision: (a) => CryptFormulas.hashCollisionBits(num(a.hashBits, 256)),
+  security: () => {
+    const known = CryptFormulas.knownAnswers()
+    const grover = CryptFormulas.symmetricQuantumBits(256)
+    const classical = CryptFormulas.curveClassicalBits(256)
+    const quantum = CryptFormulas.curveQuantumBits(256)
+    const tag = CryptFormulas.aeadTagBits()
+    const poly = CryptFormulas.tagForgery(16)
+    const birthday = CryptFormulas.hashCollisionBits(256)
+    return {
+      knownAnswers: known,
+      symmetricQuantumBits256: grover,
+      curveClassicalBits256: classical,
+      curveQuantumBits256: quantum,
+      aeadTagBits: tag,
+      tagForgery16: poly,
+      hashCollisionBits256: birthday,
+      holds: [known, grover, classical, quantum, tag, poly, birthday].every((r) => r.holds === true),
+    }
+  },
 }
 
 qpuMcpFuseOf('crypt', {
-  description: 'The unit\'s own crypto (FIPS 180-4, RFC 1321/2104/5869/8439/7748/8032), no external library: { op: known | sha256 | sha512 | md5 | hmac | hkdf | aead_seal | aead_open | x25519 | ed25519_public | ed25519_sign | ed25519_verify, ... }. Byte inputs are hex; text, key, message and plaintext also take <name>Hex.',
+  description: 'The unit\'s own crypto (FIPS 180-4, RFC 1321/2104/5869/8439/7748/8032), no external library: { op: known | sha256 | sha512 | md5 | hmac | hkdf | aead_seal | aead_open | x25519 | ed25519_public | ed25519_sign | ed25519_verify | security | symmetric_quantum | curve_classical | curve_quantum | tag_forgery | nonce_collision | aead_tag_bits | hash_collision, ... }. Byte inputs are hex; text, key, message and plaintext also take <name>Hex.',
   inputSchema: { type: 'object', properties: { op: { type: 'string', enum: Object.keys(CRYPT_OPS) } }, required: ['op'] },
   run: (a) => {
     const op = CRYPT_OPS[str(a.op)]
@@ -1387,7 +1414,7 @@ qpuMcpFuseOf('upgrade', {
 })
 
 qpuMcpFuseOf('video', {
-  description: 'The cinema and media video path, then every Clay video the tree names. {} No address is passed and no host is called. A lecture is not a prize. legal.citation stays false.',
+  description: 'The cinema and media video path, then every Clay video the tree names. {} No address is passed and no host is called. A lecture is not a prize; citation holds as clayPrizeOf reports.',
   inputSchema: { type: 'object', properties: {} },
   run: async () => {
     const { clayVideosOf, videoParserOf } = await import('../payload/plugins/index.js')
@@ -1409,16 +1436,57 @@ qpuMcpFuseOf('domains', {
 })
 
 qpuMcpFuseOf('connector', {
-  description: 'The one public connector. Every harness qpuHarnessesOf names is this same MCP url. {} is the recognition. { full: true } is the document. { man: true } is the schema. A secured API stays outside. No price is passed.',
+  description: 'The one public connector (tools/call by name — not on tools/list). {} recognition. { use: true } agent map. { observe: true } / { verbosity: 0..3 }. { chips: true } / { print: true } ray-layered chip prints with crypto-imprinted SPDX (ed25519+HMAC; Unix x). { adapters: true } foreign→QPU. { vendor, gates|qasm|instructions, shots? } native jobs. { access: true, mode, who } Unix rwx×ugo. { enums: true }. { point: true }. { tenant }. { ecommerce: true }. { exam: true }. { seal: true } / { pass: i }. { court|trial: true }. { goal: true }. { from, width?, passes? } wave.sweep.',
   inputSchema: { type: 'object', properties: {
-    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list stays lean; the man page is one call away.' },
-    full: { type: 'boolean', description: '{ full: true } expands the recognition into the document.' },
+    man: { type: 'boolean', description: 'Return the man page: call with { man: true }. tools/list is the measured connect bill; the man page is one call away.' },
+    use: { type: 'boolean', description: '{ use: true } | { routes: true } | { diagnose: true } — agent discovery: tools/list bill vs fused connector routes, Perplexity Streamable HTTP first_calls, what this door is not.' },
+    routes: { type: 'boolean', description: 'Alias of use: true.' },
+    diagnose: { type: 'boolean', description: 'Alias of use: true.' },
+    observe: { type: 'boolean', description: '{ observe: true } — observability on each committed receipt (ms/door/tool/holds/value/verbosity/errors); formulated via observability.sampling/signal/slo + logging.errorratio.' },
+    observability: { type: 'boolean', description: 'Alias of observe: true.' },
+    verbosity: { type: 'integer', description: '0 silent · 1 holds/value · 2 +ms/door/tool · 3 full errors+formulas. Cap 3 (= observability.sampling level). With observe or alone.' },
+    level: { type: 'integer', description: 'Alias of verbosity.' },
+    receipt: { type: 'string', description: 'With observe: select one receipt by file/name (e.g. gate-receipt, heat-receipt.json).' },
+    chips: { type: 'boolean', description: '{ chips: true } — print ray-layered chip blueprints with crypto-imprinted SPDX license (ed25519+HMAC); Unix x required.' },
+    chip: { type: 'boolean', description: 'Alias of chips: true.' },
+    print: { type: 'boolean', description: '{ print: true } — printable×printer matrix including licensed chips; Unix x required.' },
+    printAll: { type: 'boolean', description: 'Alias of print: true.' },
+    full: { type: 'boolean', description: '{ full: true } expands the recognition into the document (includes point reading).' },
+    point: { type: 'boolean', description: '{ point: true } returns the affirmative named-scale calls that hold (seals, perma, cloud.scale, law). Formulated readings — not document drafting.' },
+    adapters: { type: 'boolean', description: '{ adapters: true } formulated nativeAdaptersOf — every foreign quantum/compute surface → QPU door/hex. Connect bill measured on tools/list.' },
+    native: { type: 'boolean', description: 'Alias of adapters catalogue, or with vendor/gates submit a native job.' },
+    vendor: { type: 'string', description: 'Foreign surface: qiskit|braket|cirq|openqasm|azure|ionq|rigetti|pennylane|dwave|server|api-door|… — maps to QPU, does not call the vendor.' },
+    gates: { type: 'array', description: 'Foreign circuit gates ({ name|gate|type, qubits|q|c|t }) → QPU exact ops via nativeGateOf.' },
+    instructions: { type: 'array', description: 'Braket-style instructions alias of gates.' },
+    qasm: { type: 'string', description: 'OpenQASM 2.0 text → QPU gates (measure/rx/ry/rz dropped).' },
+    shots: { type: 'integer', description: 'Foreign shots reading via quantum.shots; QPU computer uses mintOf(n).' },
+    access: { type: 'boolean', description: '{ access: true } Unix mode access: rwx×ugo → access.read/write/grant/screen hex. Pair with mode (0..7) and who (other|user|group|owner).' },
+    mode: { type: 'integer', description: 'chmod triad 0..7 (combinatorics.binomial(3)=8 states). With access or alone via connector.' },
+    who: { type: 'string', description: 'Unix ugo subject: other|user|group|owner. Maps to access.role lattice.' },
+    enums: { type: 'boolean', description: '{ enums: true } formulatedEnumsOf — security/combinatorics/unix-mode/tenant/nativeAdapter selects as MCP addresses.' },
+    tenants: { type: 'boolean', description: '{ tenants: true } lists formulated tenants with their model doors and needs (tenants.ts).' },
+    tenant: { type: 'string', description: '{ tenant } resolves one tenant slug/host/domain and returns its models + needs.' },
+    model: { type: 'string', description: 'With { tenant }, select one model door from that tenant\'s models.' },
+    host: { type: 'string', description: 'Alias resolve key for tenant by host.' },
+    domain: { type: 'string', description: 'Alias resolve key for tenant by domain.' },
+    ecommerce: { type: 'boolean', description: '{ ecommerce: true } formulatedCatalogOf — products/services/variations keyed by tenant/model/need. price = court-tried priceRelationOf (no priceInUSD).' },
+    catalog: { type: 'boolean', description: 'Alias of ecommerce: true.' },
+    exam: { type: 'boolean', description: '{ exam: true } walks formula→hex→wave→claySealWaveOf→unit→fused→tools/list→harness; hops report ms/timeout/OOM notes.' },
+    seal: { type: 'boolean', description: '{ seal: true } claySealWaveOf 0…5; full discover only when discover.capacity court-allows.' },
+    court: { type: 'boolean', description: '{ court: true } | { trial: true } — each gate case tried (standard+fidelity+standing+ms).' },
+    trial: { type: 'boolean', description: 'Alias of court: true.' },
+    goal: { type: 'boolean', description: '{ goal: true } state OPEN|LEAD from combinatorics.combinations / binomial / wave cells; court-tried. Not prose document-variant combinations.' },
+    k: { type: 'number', description: 'goal: C(faces, k) pick size (default 1).' },
+    pass: { type: 'integer', description: '{ pass: i } one claySealWaveOf(i) — involution evidence on the seal-wave path.' },
+    constraints: { type: 'boolean', description: 'Alias of point: true (legacy name).' },
+    laws: { type: 'boolean', description: 'Alias of point: true.' },
+    from: { type: 'integer', description: 'Combinatorial wave.sweep grid start index (caller-supplied frontier; stride = faces).' },
+    width: { type: 'integer', description: 'Concurrent from-indices this pass (default faces·2); doubles each subsequent pass.' },
+    passes: { type: 'integer', description: 'How many doubling passes to run from `from` (default 1).' },
   } },
   run: async (a) => {
-    const { publicConnectorOf } = await import('../payload/plugins/index.js')
-    const { qpuManOf } = await import('../quantum/processing/unit/index.js')
-    if (a.man === true) return qpuManOf('connector', 'The one public connector. Every harness is this MCP url.', 'The reply is the recognition. { full: true } is the document. { man: true } is this page. A read needs no credential. A secured API stays outside.', 'https://qpu.uuidna.com/mcp', ['hex', 'law', 'clay'])
-    return publicConnectorOf()
+    const { connectorAnswerOf } = await import('../payload/plugins/index.js')
+    return connectorAnswerOf(a)
   },
 })
 
@@ -1447,10 +1515,15 @@ qpuMcpFuseOf('hologram', {
 })
 
 qpuMcpFuseOf('papers', {
-  description: 'Every blueprint and white-paper generator the tree names. {} runs each one. A script that imports dist waits while dist is held.',
-  inputSchema: { type: 'object', properties: {} },
-  run: async () => {
+  description: 'Every blueprint and white-paper generator the tree names. {} runs each one. { chips: true } prints ray-layered chip blueprints (UUID rays = layers; coins·rays=faces). { print: true } printable×printer matrix. A script that imports dist waits while dist is held.',
+  inputSchema: { type: 'object', properties: {
+    chips: { type: 'boolean', description: '{ chips: true } — print semiconductor/hardware/firmware chip blueprints with multidimensional layers managed by UUID rays (qpuFacesOf.rays).' },
+    chip: { type: 'boolean', description: 'Alias of chips: true.' },
+    print: { type: 'boolean', description: '{ print: true } — print all tree printables and test each on publishing.print / printmaking / optics.dpi / raster.dpi / driver.dmaPages.' },
+    printAll: { type: 'boolean', description: 'Alias of print: true.' },
+  } },
+  run: async (a) => {
     const { papersOf } = await import('./papers.js')
-    return papersOf()
+    return papersOf(a)
   },
 })

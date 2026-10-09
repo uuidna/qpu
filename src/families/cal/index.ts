@@ -1,6 +1,8 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { designJdOf, sunLongitudeOf } from '../hd/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** THE CALENDAR'S DRIFT, CROSSED INTO THE WHEEL. A Human Design chart is read off the tropical ecliptic at an instant;
  *  the instant comes from a calendar, and calendars drift. The Julian year (365.25 d) runs 11 min 14 s a year ahead of
@@ -36,7 +38,7 @@ export class CalFormulas {
   static sunSpeed(jdm: number): CrossFormula {
     const jd = jdm / MINUTES
     const a = sunLongitudeOf(jd - 0.5), b = sunLongitudeOf(jd + 0.5)
-    return f('cal-sun-speed', 'v(jdm) = λ(jd + ½) − λ(jd − ½), in 0.001°/day', Math.round((((b - a) % 360) + 360) % 360 * 1000), nat(jdm) && jdm > 0, 'sunSpeed', [jdm])
+    return f('cal-sun-speed', 'v(jdm) = λ(jd + ½) − λ(jd − ½), in 0.001°/day', Math.round((((b - a) % fullTurn) + fullTurn) % fullTurn * 1000), nat(jdm) && jdm > 0, 'sunSpeed', [jdm])
   }
   /** The days between a birth minute and its design minute (88° of solar arc): 86 to 93, by the Sun's speed. */
   static designDays(jdm: number): CrossFormula {
@@ -49,7 +51,7 @@ export class CalFormulas {
   /** The lunar year's drift against the tropical year after n years, in days (10.875 a year: the Islamic year walks the seasons in ~33.6 years). */
   static lunarDrift(years: number): CrossFormula { return f('cal-lunar-drift', 'drift_L(n) = ⌊n · (365.24219 − 12 · 29.530589)⌋ d', Math.floor(years * (365.24219 - 12 * 29.530589)), nat(years), 'lunarDrift', [years]) }
   /** The Saros' remainder: 6585.32 days is a third of a day past whole days, so each return is 120° farther west; after n returns, in degrees mod 360. */
-  static sarosShift(returns: number): CrossFormula { return f('cal-saros-shift', 'shift(n) = 120 · n mod 360', (120 * returns) % 360, nat(returns), 'sarosShift', [returns]) }
+  static sarosShift(returns: number): CrossFormula { return f('cal-saros-shift', 'shift(n) = 120 · n mod 360', (120 * returns) % fullTurn, nat(returns), 'sarosShift', [returns]) }
   /** THE DAY OUT OF TIME IS A COIN. The Dreamspell leaves two days out of its count: the Day Out of Time, 25 July every
    *  year, and the leap day, 29 February, which it does not count at all. A leap year holds both — the two faces at
    *  once, a pair — and every pair is one kin the Dreamspell has lost against the count that keeps every day. */

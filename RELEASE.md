@@ -8,6 +8,8 @@ Summarised analytics hold a Pravets 8M clay register: seed 1, coins 2, n 3, rays
 
 Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the author, do not distribute a derivative, and do not use it commercially unless a commercial licence was granted on request.
 
+Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat hex `0a8f02cc-4000-8000-9000-00000000174e`; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds true.
+
 | Count | Integer |
 |---|---:|
 | seed | 1 |
@@ -29,15 +31,21 @@ Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the au
 | fused | 120,259,084,288 |
 | next | 240,518,168,576 |
 | plane | 28 |
+| zero | 0 |
+| temp | 5,966 |
+| time | 6 |
+| heat | 25 |
+| cold | 2,597 |
+| coldFusion | 100 |
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 56 doors and 9,095 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,107 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 124 Lean theorems served, 124 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
 | Public APIs | 2,529 of 2,529 APIs walked live, 123,136 methods, 438,299 cross formulas; 2,529 fused and 808 used as hex addresses api.call(i, j, s) | the APIs.guru registry, against the Lean theorem fuse |
-| Cross formulas | 78 of 79 rows hold across 37 formulas | their own hex programs (36 agree) |
+| Cross formulas | 78 of 124 rows hold across 37 formulas | their own hex programs (36 agree) |
 | Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
 | Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
 | Payload on Cloudflare | 1,376,256 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
@@ -45,5 +53,76 @@ Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the au
 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).
+
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/quantum/processing/unit
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/cite
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/license
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/mcp
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/quantum/processing/unit
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/cite → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/cite → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/cite → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/license → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/license → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/license → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/mcp → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/mcp → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/mcp → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/quantum/processing/unit → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/23156998
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/cite
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/license
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/mcp
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/quantum/processing/unit
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/cite
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/license
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/mcp
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/quantum/processing/unit
 
 Every figure above is read from a committed receipt; the README carries the final build receipt that accounts for them.

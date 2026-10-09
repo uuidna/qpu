@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** COLORTHEORY — COLOR AS ARITHMETIC (chosen by the registry, not by hand). A color is numbers: the complement of a hue,
  *  the luminance of a channel triple, the contrast between two tones, the gray of a pixel, a blend of two values, a hue
@@ -23,7 +25,7 @@ export class ColortheoryFormulas {
   /** BLEND: a linear mix of two values at t percent. value ⌊(a · (100 − t) + b · t) / 100⌋. */
   static blend(a: number, b: number, t: number): CrossFormula { return c('colortheory-blend', 'blend(a, b, t) = ⌊(a · (100 − t) + b · t) / 100⌋', Math.floor((a * Math.max(0, 100 - t) + b * t) / 100), nat(a, b, t) && t <= 100, 'blend', [a, b, t]) }
   /** HUE SHIFT: rotate a hue by some degrees around the wheel. value (hue + deg) mod 360. */
-  static hueshift(hue: number, deg: number): CrossFormula { return c('colortheory-hueshift', 'hueshift(hue, deg) = (hue + deg) mod 360', (hue + deg) % 360, nat(hue, deg), 'hueshift', [hue, deg]) }
+  static hueshift(hue: number, deg: number): CrossFormula { return c('colortheory-hueshift', 'hueshift(hue, deg) = (hue + deg) mod 360', (hue + deg) % fullTurn, nat(hue, deg), 'hueshift', [hue, deg]) }
   /** SATURATION: the chroma of a swatch as a percentage. value ⌊(max − min) · 100 / max⌋. */
   static saturation(max: number, min: number): CrossFormula { return c('colortheory-saturation', 'saturation(max, min) = ⌊(max − min) · 100 / max⌋', max > 0 ? Math.floor((Math.max(0, max - min) * 100) / max) : 0, nat(max, min) && min <= max && max <= 255, 'saturation', [max, min]) }
   /** TINT: lighten a channel toward white by t percent. value c + ⌊(255 − c) · t / 100⌋. */

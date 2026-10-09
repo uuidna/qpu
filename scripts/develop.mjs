@@ -16,10 +16,11 @@
  *   node scripts/develop.mjs --from N   start the walk at family N
  */
 import { readFileSync } from 'node:fs'
+import { faces, tenOf } from './lattice-values.mjs'
 const HOST = process.env.QPU_HOST ? `https://${process.env.QPU_HOST}` : 'https://qpu.uuidna.com'
 const MCP = `${HOST}/mcp`
-const FACES = 14 // the slice width and the team span: 2 and 3 compose it
-const DEADLINE = 10_000 // the unit's own deadline; a lead slower than this is hot, left for next run
+const FACES = faces // the slice width and the team span: 2 and 3 compose it
+const DEADLINE = tenOf(4) // the unit's own deadline; a lead slower than this is hot, left for next run
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined }
 
 const call = async (tool, args = {}) => {

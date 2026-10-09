@@ -296,5 +296,10 @@ export const qpuSpeedOf = onceOf(() => {
 export const qpuLatticeNamesOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
-  return { n, seed, coins, hexbit: cube.hexbit, vertices: cube.vertices, bits: cube.bits, rays: faces.rays, faces: faces.faces, plane: faces.faces * coins }
+  const plane = faces.faces * coins
+  // the turns in degrees, as the Lean theorems Qpu.Pi.pi_half_turn / pi_turn_degrees write them (180, 360) — so an angle
+  // in a family is never a hardcoded 180 or 360 but the theorem's expression over the lattice.
+  const halfTurn = (faces.faces - coins) * (faces.faces + seed)
+  const fullTurn = (faces.faces - coins) * (plane + coins)
+  return { n, seed, coins, hexbit: cube.hexbit, vertices: cube.vertices, bits: cube.bits, rays: faces.rays, faces: faces.faces, plane, halfTurn, fullTurn }
 })

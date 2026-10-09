@@ -42,16 +42,52 @@ test('qpu crypto is its own: node:crypto is never imported in the runtime', () =
   assert.deepEqual(offenders, [], `node:crypto imported by ${offenders.join(', ')} — crypto is crypt / Web Crypto, no node`)
 })
 
-test('port all like node: every node builtin has a qpu port or a declared lead', async (t) => {
+test('port all like node: every node builtin is ported (how set, zero leads)', async (t) => {
   const { QPU_PORTS } = await import('../dist/quantum/processing/unit/porting.js')
   const bare = (m) => m.replace(/^node:/, '')
   const surface = [...new Set(builtinModules.filter((m) => !m.startsWith('_') && !bare(m).includes('/')).map(bare))]
   const missing = surface.filter((m) => !(m in QPU_PORTS))
-  assert.deepEqual(missing, [], `node builtins with no qpu port and no lead: ${missing.join(', ')} — add to QPU_PORTS (a door) or mark a lead (port all like node)`)
-  const ported = surface.filter((m) => !QPU_PORTS[m].lead)
-  const leads = surface.filter((m) => QPU_PORTS[m].lead)
+  assert.deepEqual(missing, [], `node builtins with no qpu port: ${missing.join(', ')} — add to QPU_PORTS (domain + relates + how)`)
+  const ported = surface.filter((m) => QPU_PORTS[m] && !QPU_PORTS[m].lead && typeof QPU_PORTS[m].how === 'string' && QPU_PORTS[m].how.trim().length > 0)
+  const leads = surface.filter((m) => QPU_PORTS[m]?.lead)
+  const noHow = surface.filter((m) => QPU_PORTS[m] && !QPU_PORTS[m].lead && !(typeof QPU_PORTS[m].how === 'string' && QPU_PORTS[m].how.trim()))
+  assert.deepEqual(leads, [], `node builtins still leads (port without exception): ${leads.join(', ')}`)
+  assert.deepEqual(noHow, [], `ported builtins missing how: ${noHow.join(', ')}`)
+  assert.equal(ported.length, surface.length, `every builtin ported: ${ported.length}/${surface.length}`)
   const byDomain = [...new Set(surface.map((m) => QPU_PORTS[m].domain))].sort()
-  t.diagnostic(`${surface.length} node builtins across ${byDomain.length} domains (${byDomain.join(', ')}): ${ported.length} ported, ${leads.length} leads (${leads.join(', ')})`)
+  t.diagnostic(`${surface.length} node builtins across ${byDomain.length} domains (${byDomain.join(', ')}): ${ported.length} ported, 0 leads`)
+})
+
+test('combinatorial port wave: faces stride, Promise.all batches, full surface holds', async (t) => {
+  const { QPU_PORTS } = await import('../dist/quantum/processing/unit/porting.js')
+  const { qpuFacesOf } = await import('../dist/quantum/processing/unit/index.js')
+  const { CombinatoricsFormulas } = await import('../dist/families/combinatorics/index.js')
+  const bare = (m) => m.replace(/^node:/, '')
+  const surface = [...new Set(builtinModules.filter((m) => !m.startsWith('_') && !bare(m).includes('/')).map(bare))].sort()
+  const faces = qpuFacesOf().faces
+  const width0 = faces * 2
+  const bin = CombinatoricsFormulas.binomial(faces)
+  assert.equal(faces, 14, 'stride is faces')
+  assert.equal(bin.holds, true)
+  assert.equal(bin.value, 16384)
+  // pass 1: width concurrent indices, stride faces — Promise.all
+  const fromIndices = Array.from({ length: width0 }, (_, k) => k * faces)
+  const rows = await Promise.all(fromIndices.map(async (index) => {
+    const name = surface[index % surface.length]
+    const port = QPU_PORTS[name]
+    return { name, holds: Boolean(port) && !port.lead && typeof port.how === 'string' && port.how.trim().length > 0 }
+  }))
+  assert.equal(rows.every((r) => r.holds), true, `wave pass cells hold (${rows.filter((r) => !r.holds).map((r) => r.name).join(', ')})`)
+  // full cover in faces-sized batches
+  const batches = []
+  for (let i = 0; i < surface.length; i += faces) batches.push(surface.slice(i, i + faces))
+  const cover = (await Promise.all(batches.map((batch) => Promise.all(batch.map((name) => {
+    const port = QPU_PORTS[name]
+    return { name, holds: Boolean(port) && !port.lead && typeof port.how === 'string' && port.how.trim().length > 0 }
+  }))))).flat()
+  assert.equal(cover.length, surface.length)
+  assert.equal(cover.every((r) => r.holds), true)
+  t.diagnostic(`combinatorial port wave: stride=${faces} width0=${width0} binomial(faces)=${bin.value} cover=${cover.length} batches=${batches.length}`)
 })
 
 test('port all dependencies: every package.json dependency is a family in the port graph (ported or lead)', async (t) => {

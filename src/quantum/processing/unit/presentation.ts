@@ -502,17 +502,16 @@ export const qpuCiteOf = onceOf(() => {
         r.works.includes(`doi:${doi}`) &&
         r.url.startsWith(unit.origin) &&
         !r.url.includes('*'))
-  // The commercial-license form names organisation and intended use, and leaves priceInUSDEnabled false.
-  // No price was set. A sale on this uuidna.com host pays publishing.royalty. The rate integer is unset, so the
-  // address carries no params. The grant stays a lead. It is not a 16th law or court formula.
+  // The commercial-license form names organisation and intended use. Price is a court-tried relation
+  // (priceRelationOf / publishing.royalty) — not priceInUSD. Missing royalty rate → holds false.
+  // The grant stays a lead until law.reviewed. It is not a 16th law or court formula beyond that gate.
   const grantOf = () => {
     const licence = 'CC-BY-NC-ND-4.0' as const
-    const priceInUSDEnabled = false
     const grant: {
       licence: 'CC-BY-NC-ND-4.0'
       organisation: { lead: true }
       use: { lead: true }
-      priceInUSDEnabled: false
+      price: 'relation'
       holds: false
       lead: true
       next?: { handle: string; uuid: string }
@@ -520,7 +519,7 @@ export const qpuCiteOf = onceOf(() => {
       licence,
       organisation: { lead: true as const },
       use: { lead: true as const },
-      priceInUSDEnabled,
+      price: 'relation',
       holds: false as const,
       lead: true as const,
     }

@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** INTERFERENCE — SUPERPOSITION OF WAVES, AS ARITHMETIC. When two waves overlap, the result is numbers: amplitudes that add
  *  in phase or cancel out of phase, the visibility of the fringes, optical path through a medium, the phase difference a path
@@ -23,7 +25,7 @@ export class InterferenceFormulas {
   /** OPTICAL PATH: refractive index times the geometric path. value n · d. */
   static opticalpath(n: number, d: number): CrossFormula { return c('interference-opticalpath', 'opticalpath(n, d) = n · d', n * d, nat(n, d), 'opticalpath', [n, d]) }
   /** PHASE DIFFERENCE: the degrees a path difference buys at a wavelength. value ⌊path · 360 / wavelength⌋. */
-  static phasedifference(path: number, wavelength: number): CrossFormula { return c('interference-phasedifference', 'phasedifference(path, wavelength) = ⌊path · 360 / wavelength⌋', wavelength > 0 ? Math.floor((path * 360) / wavelength) : 0, nat(path, wavelength) && wavelength > 0, 'phasedifference', [path, wavelength]) }
+  static phasedifference(path: number, wavelength: number): CrossFormula { return c('interference-phasedifference', 'phasedifference(path, wavelength) = ⌊path · 360 / wavelength⌋', wavelength > 0 ? Math.floor((path * fullTurn) / wavelength) : 0, nat(path, wavelength) && wavelength > 0, 'phasedifference', [path, wavelength]) }
   /** THIN FILM: the path difference doubled through a film of index n. value 2 · n · thickness. */
   static thinfilm(n: number, thickness: number): CrossFormula { return c('interference-thinfilm', 'thinfilm(n, thickness) = 2 · n · thickness', 2 * n * thickness, nat(n, thickness), 'thinfilm', [n, thickness]) }
   /** VISIBILITY: Michelson fringe visibility as a percentage. value ⌊(imax − imin) · 100 / (imax + imin)⌋. */

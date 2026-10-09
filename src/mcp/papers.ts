@@ -66,9 +66,62 @@ const rowOf = (partial: Partial<PaperRow> & Pick<PaperRow, 'generator'>): PaperR
  * @wing agents
  * @kind function
  */
-export const papersOf = async (): Promise<{ kind: 'papers'; wrote: string[]; rows: PaperRow[]; holds: boolean }> => {
+export const papersOf = async (args: Record<string, unknown> = {}): Promise<{
+  kind: 'papers'
+  wrote: string[]
+  rows: PaperRow[]
+  holds: boolean
+  chips?: Awaited<ReturnType<typeof import('./print-chips.js').printChipsOf>>
+  print?: Awaited<ReturnType<typeof import('./print-all.js').printAllOf>>
+}> => {
   const rows: PaperRow[] = []
   const wrote: string[] = []
+
+  // Layered chip print / full printable×printer matrix — fused args, not a tools/list door.
+  if (args.print === true || args.printAll === true) {
+    const { printAllOf } = await import('./print-all.js')
+    const print = await printAllOf()
+    return {
+      kind: 'papers',
+      wrote: print.wrote,
+      rows: print.matrix.map((c) =>
+        rowOf({
+          generator: `${c.printable}→${c.printer}`,
+          path: null,
+          hex: c.hex,
+          value: c.value,
+          holds: c.pass,
+        }),
+      ),
+      holds: print.holds,
+      print,
+      chips: print.chips,
+    }
+  }
+  if (args.chips === true || args.chip === true) {
+    const { printChipsOf } = await import('./print-chips.js')
+    const chips = await printChipsOf()
+    return {
+      kind: 'papers',
+      wrote: chips.wrote,
+      rows: [
+        rowOf({
+          generator: 'src/mcp/print-chips.ts#printChipsOf',
+          value: chips.rays.layerCount,
+          holds: chips.holds,
+          path: 'docs/chips',
+        }),
+        ...chips.chips.map((c) =>
+          rowOf({ generator: c.chip, path: c.blueprint, value: c.layers, holds: c.holds }),
+        ),
+        ...chips.printers.map((p) =>
+          rowOf({ generator: p.address, hex: p.hex, value: p.value, holds: p.pass }),
+        ),
+      ],
+      holds: chips.holds,
+      chips,
+    }
+  }
 
   const blueprints = await generateAllBlueprints()
   rows.push(rowOf({

@@ -20,6 +20,58 @@
     "uuidna": "https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/uuidna",
     "payload": "https://deploy.workers.cloudflare.com/?url=https://github.com/uuidna/payload"
   },
+  "distro": {
+    "kind": "agnostic-combinatorial",
+    "path": [
+      "idea",
+      "chat",
+      "search",
+      "blueprint",
+      "docs",
+      "app",
+      "cure"
+    ],
+    "call": "tools/call connector { distro: true }",
+    "chatSearch": "tools/call connector { about } · GET /api/qpu/chat",
+    "papers": "tools/call connector { papers: true } | { chips: true } | { print: true }",
+    "apps": "/api/qpu/public · Public panels",
+    "manifold": "merkaba.torus + merkaba.rosetta + merkaba.coil (double torus / rosetta — tree geometry)",
+    "cover": "combinatorics.binomial(faces) × C(faces,k) × doubled-width wave passes",
+    "maps": {
+      "insideOut": "formula → torus/rosetta → fuse → distro path → apps",
+      "outsideIn": "harness → /mcp → connector chat/search → formula"
+    },
+    "frameworks": [
+      "mcp",
+      "payload",
+      "next",
+      "stdio",
+      "boot",
+      "worker",
+      "native",
+      "raid"
+    ],
+    "bins": {
+      "qpu-boot": "prove-then-serve (standalone / docker)",
+      "qpu": "MCP stdio / CLI",
+      "qpu-mcp": "MCP stdio alias",
+      "qpu-standalone": "alias of qpu-boot (SEA delivery shell → boot.js)"
+    },
+    "quality": {
+      "note": "AI-at-human-intelligence communication demand is formulated — not AGI marketing",
+      "formulas": [
+        "quality.firstpass",
+        "quality.satisfaction",
+        "heat.quality",
+        "search.f1",
+        "creed.consensusratio",
+        "contract.cure"
+      ]
+    },
+    "tokenSeal": true,
+    "goal": "OPEN",
+    "holds": true
+  },
   "hardware": {
     "kind": "boot",
     "port": 8787,

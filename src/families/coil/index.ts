@@ -1,5 +1,7 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
+
+const { fullTurn } = qpuLatticeNamesOf()
 
 /** COIL — THE 7-STAR ROSETTA AND THE DOUBLE TORUS, AS ARITHMETIC. Clay is a rosetta of seven: six rays around one
  *  centre (6 + 1). The zero is that star laid flat — a 6×7 matrix, forty-two either way it is read (6×7 = 7×6). Fold the
@@ -28,7 +30,7 @@ export class CoilFormulas {
   /** THE TWO LOBES: the double torus doubles — dual(x) = 2x (coins = 2), the double-earth. */
   static dual(x: number): CrossFormula { return c('coil-dual', 'dual(x) = 2 · x', 2 * x, nat(x), 'dual', [x]) }
   /** THE WRAP: a coil’s angle folded into one full turn of 360°. */
-  static spin(k: number): CrossFormula { return c('coil-spin', 'spin(k) = 60 · k mod 360', (60 * k) % 360, nat(k), 'spin', [k]) }
+  static spin(k: number): CrossFormula { return c('coil-spin', 'spin(k) = 60 · k mod 360', (60 * k) % fullTurn, nat(k), 'spin', [k]) }
   /** THE GENUS: the double torus has two holes. */
   static genus(): CrossFormula { return c('coil-genus', 'genus = 2', 2, true, 'genus', []) }
   /** THE DIMENSIONS: the eight RFC versions a quantum UUID wears, computed at once (uuidVersionsOf). */

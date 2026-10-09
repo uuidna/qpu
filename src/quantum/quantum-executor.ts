@@ -1,13 +1,14 @@
 /**
  * Unified Quantum Executor
- * Routes circuits to best available hardware provider
- * Supports IBM Qiskit, IonQ, AWS Braket
+ * Prefer QPU native (connector / server_submit / hex). Foreign vendor connectors remain
+ * as compatibility shims — they do not mint hardware tickets or invent prices.
  */
 
 import { IBMQiskitConnector, QuantumCircuit as QiskitCircuit, Gate as QiskitGate } from './ibm-qiskit.js'
 import { IonQConnector } from './ionq-connector.js'
 import { AWSBraketConnector } from './aws-braket.js'
 import { CircuitCompiler, Circuit, CompilationOptions } from './circuit-compiler.js'
+import { nativeJobOf } from '../payload/plugins/native-adapters.js'
 
 export interface QuantumCircuit {
   gates: Array<{ type: string; qubits: number[]; params?: number[] }>
@@ -113,7 +114,8 @@ export class QuantumExecutor {
   }
 
   /**
-   * Execute circuit on best available hardware
+   * Execute circuit — default path is QPU native (exact amplitudes).
+   * Pass provider ibm|ionq|aws only to exercise legacy foreign shims.
    */
   async execute(
     circuit: QuantumCircuit,
@@ -128,6 +130,30 @@ export class QuantumExecutor {
     const shots = options.shots || 100
 
     try {
+      // Default / explicit qpu: native adapter (seal-wave safe).
+      if (!options.provider || options.provider === 'qpu' || options.provider === 'native') {
+        const run = await nativeJobOf({
+          vendor: 'server',
+          gates: circuit.gates,
+          shots,
+          seal: true,
+          pass: 0,
+          mode: 5,
+          who: 'other',
+        })
+        const counts: Record<string, number> = {}
+        for (const row of ((run as { result?: { counts?: { i: number; w: number }[] } }).result?.counts ?? [])) {
+          counts[String(row.i)] = row.w
+        }
+        return {
+          provider: 'qpu',
+          jobId: `qpu-native-${(run as { foreign?: { id?: string | number } }).foreign?.id ?? startTime}`,
+          measurements: counts,
+          duration: Date.now() - startTime,
+          success: (run as { holds?: boolean }).holds === true,
+        }
+      }
+
       // Compile circuit
       const compiled = this.compileCircuit(circuit, {
         optimize: options.optimize !== false,
@@ -181,9 +207,13 @@ export class QuantumExecutor {
 
     const job = await this.ibmConnector.submitJob(qiskitCircuit, backend, shots)
 
-    // Poll for results (simplified for demo)
-    await new Promise(resolve => setTimeout(resolve, 5000))
-    const result = await this.ibmConnector.getJobResult(job.jobId)
+    // Poll until completed — no fixed 5s sleep (wait audit: ad-hoc hot)
+    const result = await this.pollUntil(
+      10_000,
+      100,
+      () => this.ibmConnector.getJobResult(job.jobId),
+      (j) => j?.status === 'completed' || j?.status === 'failed',
+    )
 
     return {
       provider: 'ibm',
@@ -214,16 +244,20 @@ export class QuantumExecutor {
 
     const job = await this.ionqConnector.submitCircuit(ionqCircuit, backend, shots)
 
-    // Poll for results
-    await new Promise(resolve => setTimeout(resolve, 4000))
-    const results = await this.ionqConnector.getResults(job.id)
+    const done = await this.pollUntil(
+      10_000,
+      100,
+      async () => this.ionqConnector.getJobStatus(job.id),
+      (j) => j?.status === 'completed' || j?.status === 'failed',
+    )
+    const results = done?.status === 'completed' ? await this.ionqConnector.getResults(job.id) : null
 
     return {
       provider: 'ionq',
       jobId: job.id,
       measurements: results || {},
       duration: Date.now() - startTime,
-      success: job.status === 'completed'
+      success: done?.status === 'completed'
     }
   }
 
@@ -248,9 +282,12 @@ export class QuantumExecutor {
 
     const task = await this.braketConnector.runCircuit(braketCircuit, backend, shots)
 
-    // Poll for results
-    await new Promise(resolve => setTimeout(resolve, 4500))
-    const result = await this.braketConnector.getTaskResult(task.taskArn)
+    const result = await this.pollUntil(
+      10_000,
+      100,
+      () => this.braketConnector.getTaskResult(task.taskArn),
+      (t) => t?.status === 'COMPLETED' || t?.status === 'FAILED',
+    )
 
     const measurements: Record<string, number> = {}
     if (result?.result?.measurements) {
@@ -267,6 +304,22 @@ export class QuantumExecutor {
       duration: Date.now() - startTime,
       success: result?.status === 'COMPLETED'
     }
+  }
+
+  /** Short-interval poll until done or deadline — replaces fixed sleeps (heat: fail at rising temp). */
+  private async pollUntil<T>(
+    deadlineMs: number,
+    everyMs: number,
+    read: () => Promise<T | null | undefined>,
+    done: (v: T) => boolean,
+  ): Promise<T | null> {
+    const t0 = Date.now()
+    while (Date.now() - t0 < deadlineMs) {
+      const v = await read()
+      if (v != null && done(v)) return v
+      await new Promise((r) => setTimeout(r, everyMs))
+    }
+    return (await read()) ?? null
   }
 
   /**
