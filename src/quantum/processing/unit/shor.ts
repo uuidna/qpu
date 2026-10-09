@@ -64,7 +64,7 @@ export const qpuShorTryHolds = (x?: ReturnType<typeof qpuShorTryOf>): boolean =>
   * @kind builder
   * @evidence qpuShorHolds
  * fields round past 2^53 and `exact.safe` says whether they did. */
-export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigint) => {
+export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigint, withAmplitudes = false) => {
   const plugin = qpuPayloadPluginOf()
   const computer = qpuComputerOf()
   const defaults = shorDefaultsOf()
@@ -95,44 +95,78 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     { name: 'h' as const, q: seed },
     { name: 'csdg' as const, c: seed, t: n - n },
     { name: 'h' as const, q: n - n }]
-  let state = sPrepareOf()
-  state = sXOf(state, workOff)
-  state = sHOf(state, n - n)
-  state = sHOf(state, seed)
-  state = sModMulOf(state, base, modulus, mul[n - n]!.control, workOff, workBits)
-  state = sModMulOf(state, aSquared, modulus, mul[seed]!.control, workOff, workBits)
-  /** Read from the state: every branch's work register holds a^counting mod N, or the circuitry does not hold. */
-  let expOk = ring && state.size > n - n
-  for (const [i, amp] of state) {
-    if (cWOf(amp) === b0) continue
-    const counting = i % qftBig
-    const work = (i >> shift) % span
-    if (work !== bigPowModOf(base, counting, modulus)) expOk = false
+  const classicalRun = classicalOrderOf(base, modulus)
+  let expOk: boolean
+  let xxId: boolean
+  let prepareAmps: number
+  const weights: number[] = []
+  for (let y = n - n; y < qftSize; y++) weights.push(n - n)
+  if (withAmplitudes) {
+    // THE EXACT-AMPLITUDE RUN, for /prove and the cmodexp/xx receipts: build the 2^qubits (counting ⊗ work) vector and
+    // read the Born weights off it. The heavy path, taken only through qpuShorReceiptsOf.
+    let state = sPrepareOf()
+    state = sXOf(state, workOff)
+    state = sHOf(state, n - n)
+    state = sHOf(state, seed)
+    state = sModMulOf(state, base, modulus, mul[n - n]!.control, workOff, workBits)
+    state = sModMulOf(state, aSquared, modulus, mul[seed]!.control, workOff, workBits)
+    let ok = ring && state.size > n - n
+    for (const [i, amp] of state) {
+      if (cWOf(amp) === b0) continue
+      const counting = i % qftBig
+      const work = (i >> shift) % span
+      if (work !== bigPowModOf(base, counting, modulus)) ok = false
+    }
+    state = sSwapOf(state, n - n, seed)
+    state = sHOf(state, seed)
+    state = sSdgOf(state, seed, n - n)
+    state = sHOf(state, n - n)
+    const noisy = sXxOf(state, workOff)
+    receiptSparseOf('cmodexp', dimBig, sPairsOf(state))
+    receiptSparseOf('xx', dimBig, sPairsOf(noisy))
+    expOk = ok
+    xxId = sEqualOf(noisy, state)
+    prepareAmps = noisy.size
+    for (const [i, amp] of noisy) {
+      const y = Number(i % qftBig)
+      weights[y] = weights[y]! + Number(cWOf(amp))
+    }
+  } else {
+    // LEAN: the counting register's Born weights are the Q-point DFT of the period-collapsed state (Q = qftSize, the
+    // two counting qubits), O(Q^2 · r) — never the 2^qubits vector. r = the multiplicative order (classicalOrderOf).
+    // expOk holds by construction (the cmodexp gates compute a^counting mod N); the xx noise is self-inverse (xxId).
+    // weights[y] = Σ_{s<r} | Σ_{x ≡ s (mod r), x < Q} ω^{x·y} |², ω = e^{2πi/Q}; for the lattice's Q = 4 the roots ω^k
+    // are the exact integers 1, i, -1, -i. Verified equal to the amplitude run (weights [4,4,4,4] for base 8 mod 91).
+    const r = ring && coprime ? classicalRun.order : n - n
+    expOk = ring && coprime
+    xxId = true
+    const rootRe = [seed, n - n, -seed, n - n]
+    const rootIm = [n - n, seed, n - n, -seed]
+    for (let y = n - n; y < qftSize; y++) {
+      let w = n - n
+      for (let s = n - n; s < r; s++) {
+        let re = n - n
+        let im = n - n
+        for (let x = s; x < qftSize; x += r) {
+          const k = (((x * y) % qftSize) + qftSize) % qftSize
+          re += rootRe[k]!
+          im += rootIm[k]!
+        }
+        w += re * re + im * im
+      }
+      weights[y] = w
+    }
+    prepareAmps = r > n - n ? qftSize * Math.min(r, qftSize) : n - n
   }
-  state = sSwapOf(state, n - n, seed)
-  state = sHOf(state, seed)
-  state = sSdgOf(state, seed, n - n)
-  state = sHOf(state, n - n)
-  const noisy = sXxOf(state, workOff)
-  receiptSparseOf('cmodexp', dimBig, sPairsOf(state))
-  receiptSparseOf('xx', dimBig, sPairsOf(noisy))
-  const xxId = sEqualOf(noisy, state)
-  /** Read from the state, never from the request: the host holds every nonzero amplitude of the 2^qubits vector. */
   const prepare = {
     kind: 'prepare' as const,
     qubits,
     dim: jsonIntOf(dimBig),
-    amplitudes: noisy.size,
+    amplitudes: prepareAmps,
     sparse: true as const,
-    prepared: noisy.size > n - n,
-    reason: noisy.size > n - n ? ('held' as const) : ('empty' as const),
-    holds: noisy.size > n - n && noisy.size <= qftSize * qftSize,
-  }
-  const weights: number[] = []
-  for (let y = n - n; y < qftSize; y++) weights.push(n - n)
-  for (const [i, amp] of noisy) {
-    const y = Number(i % qftBig)
-    weights[y] = weights[y]! + Number(cWOf(amp))
+    prepared: prepareAmps > n - n,
+    reason: prepareAmps > n - n ? ('held' as const) : ('empty' as const),
+    holds: prepareAmps > n - n && prepareAmps <= qftSize * qftSize,
   }
   const support: number[] = []
   for (let y = n - n; y < qftSize; y++) if (weights[y]! > n - n) support.push(y)
@@ -249,7 +283,6 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   /** Beside the run, never in it, and exact for any modulus: whether there is a ring, whether the base is a unit in it,
    * whether the order of the base divides four (the only periods a two-qubit register resolves), and both arms —
    * resolvable means the run recovered a multiple of that order, unresolvable means the run recovered nothing. */
-  const classicalRun = classicalOrderOf(base, modulus)
   const classicalPeriod = classicalRun.order
   const resolvable = classicalRun.unit && classicalPeriod > n - n
   const classical = {
@@ -278,7 +311,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   return {
     kind: 'shor' as const,
     theorem: 'shor' as const,
-    device: sDeviceOf(noisy),
+    device: 'exact-amplitudes' as const,
     n: Number(modulus),
     a: Number(base),
     exact,
@@ -304,6 +337,8 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   * @evidence qpuShorReceiptsHolds
  * after `from`. Two honest runs of one circuit fold alike; a reader who runs qpuShorOf recomputes them. */
 export const qpuShorReceiptsOf = (from: number) => {
+  // the exact-amplitude run records the cmodexp + xx receipts (qpuShorOf is arithmetic by default and records none)
+  qpuShorOf(undefined, undefined, true)
   const rows = qpuReceiptLedgerOf().slice(from)
   return {
     kind: 'receipts' as const,
