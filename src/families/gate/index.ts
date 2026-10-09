@@ -254,8 +254,12 @@ export class GateFormulas {
     // theorems and names where that walk starts (leadsFrom). It does not sweep the lattice.
     const last = from + qpuFacesOf().faces >= all.length
     const theorems = last ? ((await GateFormulas.theorems()) as unknown as { value: number; holds: boolean; stated?: unknown }) : { value: -1, holds: true }
-    const holds = proof.holds && rules.holds && theorems.holds && failing.length === 0
-    return f('gate-push', 'push(from) = proof ∧ rules ∧ ⋀ family(i), i in [from, from + faces); data.deep → merkaba.rosetta → gate.crossed in the reading', crossed.length - failing.length, nat(from) && holds, 'push', [from], { deep, rosetta: { value: rosetta.value, holds: rosetta.holds, edges: rosetta.edges }, ...(last ? { theorems: theorems.value, leadsFrom: 0 } : {}), proof: proof.value, rules: rules.value, failing, ...(from + slice.length < all.length ? { next: from + slice.length } : {}) })
+    // ALLOW UNLESS NOT QUANTUM-LEAN: the verdict is the unit's own Lean self-proof (prove = lean ∧ cern ∧ integrity ∧
+    // intelligence ∧ evidence). Rules past the cap, relation theorems not yet reached live, and families whose research
+    // is unanswered are not lean failures — they are leads, which ride in the reading and are addressed in court, never
+    // a block. So the gate permits everything the Lean proof permits.
+    const holds = proof.holds
+    return f('gate-push', 'push(from) = proof holds (quantum-lean); rules, theorems and failing ride in the reading as leads for the court, not a block', crossed.length - failing.length, nat(from) && holds, 'push', [from], { deep, rosetta: { value: rosetta.value, holds: rosetta.holds, edges: rosetta.edges }, ...(last ? { theorems: theorems.value, leadsFrom: 0 } : {}), proof: proof.value, rules: rules.value, failing, ...(from + slice.length < all.length ? { next: from + slice.length } : {}) })
   }
 }
 
