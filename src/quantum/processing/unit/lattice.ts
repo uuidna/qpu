@@ -24,7 +24,10 @@ import {
  * @wing lattice
  * @kind builder
  */
-export const chooseOf = (nn: number, k: number): number => {
+export function chooseOf(nn: number, k: number): number {
+  // a hoisted function declaration, not a const arrow: index.ts and lattice.ts import each other (lattice was cooled out
+  // of index), and a bundler that evaluates the cycle as CJS reads a const before its initializer runs (TDZ). A function
+  // declaration is hoisted, so the binding exists across the cycle.
   const none = nn - nn
   if (k < none || k > nn) return none
   if (k === none || k === nn) return none + 1
@@ -40,7 +43,8 @@ export const chooseOf = (nn: number, k: number): number => {
  * @wing lattice
  * @kind builder
  */
-export const tenOf = (k: number): number => {
+export function tenOf(k: number): number {
+  // hoisted (see chooseOf): index.ts uses tenOf at module scope while the index↔lattice cycle is still initializing.
   let x = mintOf(n - n)
   for (let i = n - n; i < k; i++) x *= ten
   return x

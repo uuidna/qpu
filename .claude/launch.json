@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     { "name": "qpu", "runtimeExecutable": "node", "runtimeArgs": ["dist/quantum/processing/unit/boot.js"], "port": 8787 },
-    { "name": "payload", "runtimeExecutable": "sh", "runtimeArgs": ["-c", "set -a; . ./.dev.vars; exec npx next dev -p 3001"], "port": 3001 },
+    { "name": "payload", "runtimeExecutable": "sh", "runtimeArgs": ["-c", "set -a; . ./.dev.vars; exec npx next dev --webpack -p 3001"], "port": 3001 },
     { "name": "combinatorics-visualizer", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3000, "cwd": "web" }
   ]
 }

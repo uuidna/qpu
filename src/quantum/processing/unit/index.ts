@@ -10681,8 +10681,10 @@ const qpuFamilyAskedOf = (relative: string): string => {
   return typeof import.meta.resolve === 'function' ? import.meta.resolve(asked) : asked
 }
 
-/** The tree this module is running from. Source is `…/src`. The build is `…/dist`. One process reads one of those. */
-export const qpuFamilyRootOf = (): string => new URL('../../..', import.meta.url).pathname
+/** The tree this module is running from. Source is `…/src`. The build is `…/dist`. One process reads one of those.
+ *  The relative is built at runtime, not written as a string literal, so a bundler (Turbopack) does not read
+ *  `new URL('<literal>', import.meta.url)` as an asset reference and try to resolve a bare directory at build time. */
+export const qpuFamilyRootOf = (): string => new URL(['..', '..', '..'].join('/'), import.meta.url).pathname
 
 /** The one registry: `mcp/families` beside this module. The other tree is not opened. */
 export const qpuFamilyRegistryUrlOf = (): string => qpuFamilyAskedOf('../../../mcp/families.js')
