@@ -33,6 +33,23 @@ import {
 } from './index.js'
 
 /**
+ * The door TABLE — method, path, name, href only, no theorem readings. CHEAP: the router reads the door PATHS from
+ * this without building the full qpuDocsOf (which evaluates qpuLeanOf and, through it, the Shor/circuit computation).
+ * Single source of the door list; qpuDocsOf attaches the readings on top so the two cannot drift.
+ * @wing agents
+ * @kind function
+ */
+export const qpuApiDoorsOf = (): { method: 'GET' | 'POST'; path: string; name: string; href: string }[] => [
+  { method: 'GET', path: '/', name: 'quantum', href: unit.origin },
+  { method: 'GET', path: `/${unit.path}`, name: 'lean', href: unit.href },
+  { method: 'GET', path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp` },
+  { method: 'POST', path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp` },
+  { method: 'GET', path: '/cite', name: 'cite', href: `${unit.origin}/cite` },
+  { method: 'GET', path: '/message', name: 'message', href: `${unit.origin}/message` },
+  { method: 'POST', path: '/message', name: 'message', href: `${unit.origin}/message` },
+]
+
+/**
  * The unit's inline guide: abstract, API rows, formulas and the learning ladder, as one document.
  * @wing agents
  * @kind builder
@@ -45,14 +62,15 @@ export const qpuDocsOf = onceOf(() => {
   const faces = qpuFacesOf()
   const fused = faces.faces * handle.kv.amplitudes
   const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} quantum. GET ${unit.href} lean. POST ${unit.origin}/mcp tools/list. tools/call prove. Reads need no auth; storage writes need a Bearer token. JSON-LD.`
-  const api = [
-    { method: 'GET' as const, path: '/', name: 'quantum', href: unit.origin, reading: `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.` },
-    { method: 'GET' as const, path: `/${unit.path}`, name: 'lean', href: unit.href, reading: `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.` },
-    { method: 'GET' as const, path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp`, reading: `tools ${mintOf(n) + mintOf(n)} in tools/list: ${mintOf(n)} doors and ${mintOf(n)} cybersecurity. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.` },
-    { method: 'POST' as const, path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp`, reading: 'JSON-RPC tools/list tools/call prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.' },
-    { method: 'GET' as const, path: '/cite', name: 'cite', href: `${unit.origin}/cite`, reading: 'MLA 8. when never. JSON-LD. No auth.' },
-    { method: 'GET' as const, path: '/message', name: 'message', href: `${unit.origin}/message`, reading: 'lanes = faces. hop involution. JSON-LD. No auth.' },
-    { method: 'POST' as const, path: '/message', name: 'message', href: `${unit.origin}/message`, reading: '202. hop involution. JSON-LD. No auth.' }]
+  const readingOf = (d: { method: string; path: string }): string =>
+    d.method === 'GET' && d.path === '/' ? `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.`
+    : d.method === 'GET' && d.path === `/${unit.path}` ? `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.`
+    : d.method === 'GET' && d.path === '/mcp' ? `tools ${mintOf(n) + mintOf(n)} in tools/list: ${mintOf(n)} doors and ${mintOf(n)} cybersecurity. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.`
+    : d.method === 'POST' && d.path === '/mcp' ? 'JSON-RPC tools/list tools/call prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.'
+    : d.method === 'GET' && d.path === '/cite' ? 'MLA 8. when never. JSON-LD. No auth.'
+    : d.method === 'GET' && d.path === '/message' ? 'lanes = faces. hop involution. JSON-LD. No auth.'
+    : '202. hop involution. JSON-LD. No auth.'
+  const api = qpuApiDoorsOf().map((d) => ({ ...d, reading: readingOf(d) }))
   const formulas = [...lean.rows, ...lean.cover, lean.climb].map((r) => ({
     identity: r.heading,
     formula: r.formula,

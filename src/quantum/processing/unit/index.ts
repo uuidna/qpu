@@ -17,7 +17,7 @@ export * from './docdb.js'
 export { worker as default } from './router.js'
 import { qpuCircuitOf, qpuCircuitHolds } from './circuit.js'
 export { qpuCircuitOf, qpuCircuitHolds } from './circuit.js'
-import { qpuDocsOf, qpuDocsHolds } from './readme.js'
+import { qpuApiDoorsOf, qpuDocsOf, qpuDocsHolds } from './readme.js'
 export { qpuDocsOf, qpuDocsHolds, qpuReadmeOf, qpuReadmeHolds } from './readme.js'
 import { qpuImproveOf, qpuImproveHolds, qpuTrainOf, qpuTrainHolds, qpuProveOf, qpuProveHolds } from './doors.js'
 export { qpuImproveOf, qpuImproveHolds, qpuTrainOf, qpuTrainHolds, qpuProveOf, qpuProveHolds } from './doors.js'
@@ -5393,7 +5393,7 @@ export const qpuNetworkToolsOf = (): QpuSubTool[] => {
   }
   // the named doors are the router's table (docs.api, one row per ray) and the ladder's extras — never a second list
   // of them; read when a fetch asks, so a ladder that lists these tools cannot recurse into them
-  const allowed = (): readonly string[] => [...new Set([...qpuDocsOf().api.map((a) => a.path), ...qpuSequenceOf().extras.map((row) => row.path)])]
+  const allowed = (): readonly string[] => [...new Set([...qpuApiDoorsOf().map((d) => d.path), ...qpuSequenceOf().extras.map((row) => row.path)])]
   return [
     {
       name: see[n - n],
@@ -9501,7 +9501,7 @@ const routerChecksOf = (r: {
   r.seats.reference === true && r.seats.device === false &&
   (r.seat === 'reference' || r.seat === 'vector') &&
   (r.seat === 'vector') === r.seats.vector &&
-  qpuDocsOf().api.map((a) => a.path).includes(r.door) &&
+  qpuApiDoorsOf().map((d) => d.path).includes(r.door) &&
   (r.known ? r.door === r.path : r.door === '/') &&
   (r.origin === 'none') === (r.referrer === '')
 /**
@@ -9512,7 +9512,7 @@ const routerChecksOf = (r: {
  */
 export const qpuRouterOf = (referrer = '', path = '/') => {
   const seats = qpuSeatsAvailableOf()
-  const doors = qpuDocsOf().api.map((a) => a.path)
+  const doors = qpuApiDoorsOf().map((d) => d.path)
   const known = doors.includes(path)
   const from = ((): string => {
     try { return new URL(referrer).host } catch { return '' }
