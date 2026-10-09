@@ -123,7 +123,7 @@ export type Reading = { api: string; index: number; operation: number; verb: str
 
 /** The request, made: a GET through the address, its answer read (an excerpt), minted into a receipt. Other verbs
  *  are resolved to their URL but not made: reads need no auth, writes are not the unit's to make. */
-export const apiCallOf = async (which: number | string, operation: number, params: Record<string, unknown> = {}): Promise<Reading> => {
+export const apiCallOf = async (which: number | string, operation: number, params: Record<string, unknown> = {}, readOnly = false): Promise<Reading> => {
   const api = await apiOf(which)
   const op = api.operations[operation]
   const seed = apiSeedOf(params)
@@ -142,11 +142,11 @@ export const apiCallOf = async (which: number | string, operation: number, param
   // credential, stays a read and stays reproducible. The write is the caller's, authorised by the caller, proxied once.
   const credential = typeof params.authorization === 'string' ? params.authorization : ''
   const body = op.verb === 'get' || params.body === undefined ? undefined : typeof params.body === 'string' ? params.body : JSON.stringify(params.body)
-  // A write is MADE on any explicit write intent — the caller's { authorization }, a { body }, or { make: true }. With
-  // none (a bare call, and every pure api.call(i, j, s) formula replay) a write is resolved, not made, so a formula
-  // stays reproducible and no external write ever fires by accident. QPU injects none of its own credentials.
-  const writeIntent = credential.length > 0 || body !== undefined || params.make === true
-  if (op.verb !== 'get' && !writeIntent) return sealed({ ...base, url, why: `${op.verb} is a write: resolved, not made — pass { authorization }, { body } or { make: true } to make it (QPU adds no credential of its own)` })
+  // Every verb the caller names is MADE. The only path that does not is the pure api.call(i, j, s) FORMULA (readOnly):
+  // a content-addressed computation must stay reproducible — it cannot fire an external write on replay or the receipt
+  // model breaks. The tool fires any verb. QPU sends only the caller's own { authorization } (none of its own secrets),
+  // to the spec's resolved server+path (no host injection), within the deadline; the credential is never receipted.
+  if (op.verb !== 'get' && readOnly) return sealed({ ...base, url, why: `${op.verb} is a write: not made from the reproducible api.call(i, j, s) formula — call the api tool { api, operation, params } to make it` })
   const headers: Record<string, string> = { accept: 'application/json, */*;q=0.5', ...ua, ...(credential ? { authorization: credential } : {}), ...(body !== undefined ? { 'content-type': 'application/json' } : {}) }
   const t0 = Date.now()
   const once = () => fetch(url, { method: op.verb.toUpperCase(), headers, ...(body !== undefined ? { body } : {}), signal: AbortSignal.timeout(DEADLINE) })
@@ -168,7 +168,7 @@ qpuHexRegisterOf('api', 'operations', (async (i: number) => {
   return crossFormulaOf({ id: 'api-operations', src: 'api', dst: 'fusion', formula: 'operations(i) = |paths × verbs| of the i-th API', value: api.operations.length, proof: api.spec || REGISTRY }, api.why === undefined, { name: 'api.operations', params: [i] })
 }) as (...x: unknown[]) => unknown)
 qpuHexRegisterOf('api', 'call', (async (i: number, j: number, s: number) => {
-  const r = await apiCallOf(i, j, s === 0 ? {} : { seed: s })
+  const r = await apiCallOf(i, j, s === 0 ? {} : { seed: s }, true)
   return crossFormulaOf({ id: 'api-call', src: 'api', dst: 'fusion', formula: 'call(i, j, s): the s-th request of the j-th operation of the i-th API; value its HTTP status', value: r.status, proof: r.url || REGISTRY }, r.why === undefined, { name: 'api.call', params: [i, j, s] })
 }) as (...x: unknown[]) => unknown)
 
