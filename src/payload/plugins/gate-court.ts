@@ -22,7 +22,9 @@ import {
   qpuFacesOf,
   qpuHexFamiliesOf,
   qpuHexUuidOf,
+  qpuLeanOf,
   qpuMcpToolsListOf,
+  qpuStatementUuidOf,
 } from '../../quantum/processing/unit/index.js'
 import { modeAccessOf, modeBitsOf } from './access-mode.js'
 import type { QpuPlugin } from './surface.js'
@@ -335,6 +337,31 @@ export type GateCourtArgs = {
 }
 
 /** All standing gate cases tried in court — diagnostics / connector { court|trial: true }. */
+type LeanRow = { heading: string; theorem: string; formula: string; holds: boolean }
+/**
+ * THE COURT USES THE TOOLS — tried as their own theorems. Only lean evidence is accepted, and a tool's evidence is the
+ * Lean theorem that bears its name (the `computer`, `circuit`, `quantum`, `integrity`, … rows the unit proves). Each is
+ * hex-addressed by its statement UUID (qpuStatementUuidOf — a real UUID program, so standing > 0) and tried in court on
+ * its holds bit. Nothing heavy runs here: the theorems are read from qpuLeanOf, already recomputed and memoised.
+ */
+export const toolCourtCasesOf = (): GateCourtCase[] => {
+  // A tool is tried in court only where a theorem answers for it: its name, or the domain suffix of its name
+  // (crypto_shor → shor), must be a Lean heading. The tools with no theorem yet are leads, not cases — the theorems
+  // decide which tools the court can use, and more appear as more are proven. No hand list.
+  const want = new Set(qpuMcpToolsListOf().flatMap((t) => { const nm = t.name.replace(/^qpu_/, ''); return [nm, nm.slice(nm.lastIndexOf('_') + 1)] }))
+  const lean = qpuLeanOf() as unknown as { rows: readonly LeanRow[]; cover: readonly LeanRow[]; climb: LeanRow }
+  const seen = new Set<string>()
+  const rows = [...lean.rows, ...lean.cover, lean.climb].filter((r) => want.has(r.heading) && !seen.has(r.heading) && seen.add(r.heading))
+  return rows.map((r) =>
+    gateCourtTrialOf({
+      case: `tool.${r.heading}`,
+      gate: callOf('lean.' + r.heading, [], { hex: qpuStatementUuidOf(r.theorem), value: r.holds ? 1 : 0, holds: r.holds, formula: r.formula }, 'lean'),
+      confidence: r.holds ? 100 : 0,
+      note: `court tries the ${r.heading} tool as its lean theorem — only lean evidence`,
+    }),
+  )
+}
+
 export const gateCourtOf = (args: GateCourtArgs = {}) => {
   const t0 = Date.now()
   const discover = discoverCapacityGateOf()
@@ -344,7 +371,7 @@ export const gateCourtOf = (args: GateCourtArgs = {}) => {
   const mode = typeof args.mode === 'number' && Number.isSafeInteger(args.mode) ? args.mode & 7 : 5
   const who = args.who ?? 'other'
   const execute = accessExecuteGateOf(mode, who)
-  const cases = [discover, bill, screen, execute, digest]
+  const cases = [discover, bill, screen, execute, digest, ...toolCourtCasesOf()]
   const wanted = typeof args.case === 'string' ? args.case : undefined
   const selected = wanted
     ? cases.filter((c) => c.case === wanted || c.case.startsWith(wanted) || c.case.includes(wanted))
