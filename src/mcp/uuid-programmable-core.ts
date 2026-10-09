@@ -2,7 +2,7 @@
 import { Operation, Result } from './types.js'
 import { uuid as registry } from '../core/uuid.js'
 import { uuidBridge } from '../core/uuid-bridge.js'
-import { qpuUuidReceiptOf, qpuProveOf, qpuProveHolds, qpuEmbedDriftOf, qpuMcpFailuresOf } from '../quantum/processing/unit/index.js'
+import { qpuUuidReceiptOf, qpuProveOf, qpuProveHolds, qpuEmbedDriftOf, qpuMcpFailuresOf, qpuHexRegistryOf } from '../quantum/processing/unit/index.js'
 
 interface DeploymentGateStatus {
   ok: boolean
@@ -57,6 +57,9 @@ export class ConsolidatedMCP {
     const verified = await this.verifyAllOperations()
     // the MCP contract (every tool, hint, schema and byte budget) and the drift-guard (embed == live recompute) are
     // leads too: a broken clause or a stale cool names itself here and blocks the push, instead of surfacing only in CI.
+    // The registry loads lazily in-handler (cold-init budget), so the gate loads it first to check the real serving
+    // state — otherwise cite/clause checks that read the families see an empty registry and report a false failure.
+    await qpuHexRegistryOf()
     const mcpFailures = qpuMcpFailuresOf().map((c) => `mcp:${c}`)
     const embedDrift = qpuEmbedDriftOf().map((k) => `embed:${k}`)
     const unresolved = [...[...verified].filter(([, ok]) => !ok).map(([uuid]) => uuid), ...mcpFailures, ...embedDrift]
