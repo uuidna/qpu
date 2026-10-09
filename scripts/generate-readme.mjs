@@ -170,9 +170,8 @@ const usesTable = [
   '|---|---|',
   ...(uses.rows ?? []).map((r) => `| ${cell(r.name)} | ${cell(String(r.value).replace(/^\d+ APIs read · [^:]*: /, '').slice(0, 300))} |`),
 ].join('\n')
-const proof = `## Proof by MCP
-
-Every figure in this README is read from a receipt a run of the unit wrote; no figure is typed. The tests call the
+// The white-paper section bodies, each a pure function of the receipts (no prose claims beyond what the figures state).
+const verification = `Every figure in this paper is read from a receipt a run of the unit wrote; no figure is typed. The tests call the
 unit through its own \`tools/call\` (\`{ hex }\` addresses, the live host for the release tests), the gate is the \`gate\`
 family's formulas run through the MCP in-process, the API walk is the \`api\` family's addresses, the discovery is the
 \`data\` family's. Each receipt below is a node of the final build receipt; its uuid moves with its bytes.
@@ -180,22 +179,18 @@ family's formulas run through the MCP in-process, the API walk is the \`api\` fa
 ${analytics}
 
 Tests: ${num(test.tests)} top-level, ${num(test.pass)} pass, ${num(test.fail)} fail; ${num(computations)} computations folded (${kindsLine || '—'}); ${num(test.dim)}-dimensional state, ${num(test.qubits)} qubits; test receipt \`${test.receipt ?? '—'}\`.
-Gate: ${gate.mode ?? '—'} on ${gate.when ?? '—'}, ${gate.holds === undefined ? '—' : gate.holds ? 'holds' : 'does not hold'}${gate.rows?.length ? ` — ${gate.rows.map((r) => `${r.name.startsWith('gate.crossed') ? '~' : r.pass ? '✓' : '✗'} ${cell(r.name)} = ${cell(String(r.value).slice(0, 120))}`).join('; ')}` : ''}.
+Gate: ${gate.mode ?? '—'} on ${gate.when ?? '—'}, ${gate.holds === undefined ? '—' : gate.holds ? 'holds' : 'does not hold'}${gate.rows?.length ? ` — ${gate.rows.map((r) => `${r.name.startsWith('gate.crossed') ? '~' : r.pass ? '✓' : '✗'} ${cell(r.name)} = ${cell(String(r.value).slice(0, 120))}`).join('; ')}` : ''}.`
 
-### What QPU may be
-
-Imagined by the MCP, not claimed: for every category of the APIs.guru registry, \`data.imagine(c)\` reads that world's
+const applications = `Imagined by the MCP, not claimed: for every category of the APIs.guru registry, \`data.imagine(c)\` reads that world's
 APIs and crosses the words of their titles and operations with the words of every family's formulas; the families
 reached are what the unit is for that world (${num(uses.reached)} of ${num(uses.categories)} categories reach a family; ${num(uses.toImagine)} name a family to imagine).
 A request in words — a law firm, an auditor, a forensic expert — is imagined the same way by the cross formula
 \`data { source: 'imagine', about }\` (\`data.imagine\` at its hex address). The chat answers any question from the
 formula its words name: \`data { source: 'ask', about }\`.
 
-${usesTable}
+${usesTable}`
 
-### Next
-
-The base for the next development, discovered by the MCP: every family researched in the public record
+const openProblems = `The base for the next development, discovered by the MCP: every family researched in the public record
 (${num(nextR.researched)} of ${num(nextR.families)} families found APIs their formulas name, ${num(nextR.read)} read live), one discovery over every reading
 (${num(nextR.liveInputs)} live inputs, ${num(nextR.relations)} superpositions — values reached by two or more families, ${num(nextR.live)} reached by a live reading),
 each superposition run from every other way's referrer perspective (${num(nextR.invariant)} of ${num(nextR.perspectives)} perspectives answer the same value);
@@ -275,33 +270,59 @@ fs.writeFileSync(zenodoPath, JSON.stringify(zenodo, null, 2) + '\n')
 
 fs.writeFileSync(path.join(ROOT, 'RELEASE.md'), `${summary}\n\nEvery figure above is read from a committed receipt; the README carries the final build receipt that accounts for them.\n`)
 
-const md = `# UUIDNA QPU
+// one generated line of the headline figures, for the abstract — read from the same receipts, never typed
+const abstractLine = `This paper reports, entirely from machine receipts: ${num(lean.theorems)} Lean 4 theorems (${num(lean.recomputed)} recomputed in TypeScript), ${num(doors.formulas.length)} formulas across ${num(famCounts.length)} families addressed as hex-program UUIDs (RFC 9562 v8), ${num(listed)} MCP tools over ${num(doors.doors.length)} doors, and ${num(discovery.relationsTotal)} cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.`
+const reactorLine = `Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat${reactorStats.heatIdentity ? ` hex \`${reactorStats.heatIdentity}\`` : ''}; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds ${reactorStats.holds}.`
 
-${summary}
+// README = a white paper about the quantum computer, every section a pure function of the receipts (generated, not written).
+const md = `# UUIDNA QPU — an exact, formally verified quantum processing unit served over MCP
 
-**Final build receipt** \`${final.uuid}\`
+*${cite.author.first} ${cite.author.last}* · v${pkg.version} · doi:[${cite.doi}](${cite.identifier}) · CC-BY-NC-ND-4.0 · https://qpu.uuidna.com
 
-| | |
-|---|---|
-| git tag | v${pkg.version} |
-| receipts | ${files.length} files, ${nodes.length} nodes |
-| build stream | length ${stream?.length}, head \`${stream?.head}\`, chain \`${stream?.chain}\`, holds **${stream?.holds}** |
+## Abstract
 
-${proof}
+${intro}
 
-## What QPU does
+${abstractLine}
+
+## 1. Introduction
 
 An exact quantum processing unit served over MCP at https://qpu.uuidna.com: integer state vectors, Lean-checked theorems,
 formula families addressed by hex-program UUIDs, quantum receipts, its own cryptography, and live checks against public
-data. Each wing reports itself:
+data. The unit, its site, admin and API are one Worker; reads need no auth, storage writes need a Bearer token.
+
+${qpuPublicOf(clayRegister).lines.join('\n\n')}
+
+## 2. Architecture
+
+The unit is a lattice of formula families; each formula is a hex-program UUID (RFC 9562) that recomputes exactly at its
+address and crosses to other families. Each wing reports itself:
 
 ${wingTable}
 
-### Formula families
+### 2.1 Formula families
 
 ${familiesTable}
 
-## Clay Millennium Prize Problems
+### 2.2 Lattice register
+
+${reactorLine}
+
+${clayRegisterTable}
+
+## 3. Methods — formal verification and discovery
+
+${verification}
+
+## 4. Results
+
+${glance}
+
+## 5. Applications
+
+${applications}
+
+## 6. Clay Millennium Prize Problems
 
 Author claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
 doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602)). A prize is a lead. \`qpuPublicOf().prize\` is false.
@@ -317,7 +338,19 @@ Seal-wave on the host (\`clay.pass\` / \`claySealWaveOf\`${clayR.when ? `, recei
 |---|---|---|---|
 ${(clayR.rows ?? []).map((r) => `| ${cell(r.name)} | ${r.pass ? 'holds' : 'does not hold'} | author document | ${cell(String(r.value).replace(/^seal: (holds|does not hold|VERIFIED|UNVERIFIED) \(/, '').replace(/\); claim:.*$/, '').slice(0, 400))} |`).join('\n')}
 
-## Build receipt
+## 7. Open problems and next work
+
+${openProblems}
+
+## 8. Reproducibility — the build receipt
+
+**Final build receipt** \`${final.uuid}\`
+
+| | |
+|---|---|
+| git tag | v${pkg.version} |
+| receipts | ${files.length} files, ${nodes.length} nodes |
+| build stream | length ${stream?.length}, head \`${stream?.head}\`, chain \`${stream?.chain}\`, holds **${stream?.holds}** |
 
 <details>
 <summary>${nodes.length} receipts, chained in the build stream</summary>
@@ -335,6 +368,13 @@ ${graph}
 ${rowsOf().join('\n')}
 
 </details>
+
+## References
+
+Cite: ${cite.author.last}, ${cite.author.first}. "qpu." doi:[${cite.doi}](${cite.identifier}). License: CC-BY-NC-ND-4.0
+(commercial use by license: ${licenseHref}).
+
+${linkNews}
 
 Regenerate with \`npm run readme\` after \`npm run build\` and the receipt-producing runs; \`node scripts/generate-readme.mjs --check\`
 compares. Documentation: [docs/README.md](docs/README.md). License: CC-BY-NC-ND-4.0.

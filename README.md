@@ -1,14 +1,432 @@
-# UUIDNA QPU
+# UUIDNA QPU — an exact, formally verified quantum processing unit served over MCP
+
+*Tsvetan Rouschev* · v1.1.0 · doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998) · CC-BY-NC-ND-4.0 · https://qpu.uuidna.com
+
+## Abstract
 
 An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (`{ "qpu": { "type": "http",
 "url": "https://qpu.uuidna.com/mcp" } }`), as a package (`npm install @uuidna/qpu`), or as a container.
+
+This paper reports, entirely from machine receipts: 145 Lean 4 theorems (145 recomputed in TypeScript), 9,115 formulas across 1,134 families addressed as hex-program UUIDs (RFC 9562 v8), 16 MCP tools over 58 doors, and 247 cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.
+
+## 1. Introduction
+
+An exact quantum processing unit served over MCP at https://qpu.uuidna.com: integer state vectors, Lean-checked theorems,
+formula families addressed by hex-program UUIDs, quantum receipts, its own cryptography, and live checks against public
+data. The unit, its site, admin and API are one Worker; reads need no auth, storage writes need a Bearer token.
 
 Author's published sequence: zeropoint-node 1.5.8, published 2026-09-07, prints 0\1\2\4\8/7/5/3\6\9/0\1 (that identifier is in the 1.5.8 README, and in the README from version 1.0.2 published 2026-07-29, including the August 2026 releases 1.0.3 published 2026-08-19 through 1.3.1 published 2026-08-31; the package was first published 2025-07-08). Author's claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026, doi:10.5281/zenodo.21781602). A prize is a lead.
 
 Summarised analytics hold a Pravets 8M clay register: seed 1, coins 2, n 3, rays 7, clay 14, modulus 91, riemann 1, bsd 2, hodge 4, navierStokes 1, pVsNp 0, yangMills 2, 432 as bytes 176 and 1, amplitudes 4294967296, fused 120259084288, next 240518168576, plane 28.
 
 Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the author, do not distribute a derivative, and do not use it commercially unless a commercial licence was granted on request.
+
+## 2. Architecture
+
+The unit is a lattice of formula families; each formula is a hex-program UUID (RFC 9562) that recomputes exactly at its
+address and crosses to other families. Each wing reports itself:
+
+| Wing | Capabilities | With an evidence predicate | Predicates that hold now | Live (need the network; checked by the live doors) |
+|---|---:|---:|---:|---:|
+| [Lattice & arithmetic](https://qpu.uuidna.com/lattice) | 10 | 7 | 7 | 0 |
+| [Quantum computation](https://qpu.uuidna.com/quantum) | 17 | 17 | 14 | 3 |
+| [Formal proof (Lean)](https://qpu.uuidna.com/proof) | 12 | 4 | 4 | 0 |
+| [Cryptography](https://qpu.uuidna.com/crypto) | 3 | 2 | 2 | 0 |
+| [UUIDs & quantum receipts](https://qpu.uuidna.com/receipts) | 39 | 16 | 14 | 0 |
+| [Storage & database](https://qpu.uuidna.com/storage) | 25 | 10 | 6 | 0 |
+| [MCP & agents](https://qpu.uuidna.com/agents) | 112 | 55 | 46 | 2 |
+| [Live science data](https://qpu.uuidna.com/science) | 22 | 17 | 10 | 7 |
+| [API fusion](https://qpu.uuidna.com/fusion) | 18 | 11 | 5 | 3 |
+| [Payload & Cloudflare](https://qpu.uuidna.com/cms) | 24 | 4 | 3 | 0 |
+| [Presentation & discovery](https://qpu.uuidna.com/presentation) | 16 | 14 | 14 | 0 |
+
+### 2.1 Formula families
+
+1,134 families carry 9,115 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 124 cross-formula rows hold (36 agree with their hex programs).
+
+| Family | Formulas | Family | Formulas | Family | Formulas |
+|---|---:|---|---:|---|---:|
+| `absorption` | 8 | `accelerometer` | 8 | `access` | 10 |
+| `accessibility` | 8 | `accounting` | 8 | `acoustics` | 8 |
+| `acquisition` | 8 | `actionpotential` | 8 | `activation` | 8 |
+| `actuarial` | 8 | `actuation` | 8 | `adhesive` | 8 |
+| `admin` | 8 | `advertising` | 8 | `aerodynamics` | 8 |
+| `aerospace` | 8 | `aesthetics` | 8 | `agriculture` | 8 |
+| `agronomy` | 8 | `airquality` | 8 | `airship` | 8 |
+| `alerting` | 8 | `algebra` | 8 | `alloy` | 8 |
+| `alloys` | 8 | `altimetry` | 8 | `amortization` | 8 |
+| `amplifiers` | 8 | `analytics` | 8 | `anatomy` | 8 |
+| `anesthesiology` | 8 | `animation` | 8 | `animism` | 8 |
+| `annuity` | 8 | `antenna` | 8 | `anthropology` | 8 |
+| `antibody` | 8 | `antitrust` | 8 | `api` | 10 |
+| `apiculture` | 8 | `apiology` | 8 | `apocrypha` | 8 |
+| `apoptosis` | 8 | `aquaculture` | 8 | `aquafarming` | 8 |
+| `aquaponics` | 8 | `aquifer` | 8 | `arachnology` | 8 |
+| `arbitrage` | 8 | `archaeology` | 8 | `arpeggio` | 8 |
+| `assay` | 8 | `assembly` | 8 | `assessment` | 8 |
+| `asteroid` | 8 | `astrobiology` | 8 | `astrometry` | 8 |
+| `astronomy` | 8 | `astrophysics` | 8 | `athletics` | 8 |
+| `atmospheric` | 8 | `attention` | 8 | `auction` | 8 |
+| `audio` | 8 | `audiology` | 8 | `audit` | 4 |
+| `auditing` | 8 | `auth` | 8 | `authentication` | 8 |
+| `authorization` | 8 | `automation` | 8 | `automotive` | 8 |
+| `autoscaling` | 8 | `availability` | 8 | `aviation` | 8 |
+| `avionics` | 8 | `axiology` | 8 | `backend` | 8 |
+| `backgammon` | 8 | `backhaul` | 8 | `backlash` | 8 |
+| `backlog` | 8 | `bacteriology` | 8 | `baking` | 8 |
+| `ballet` | 8 | `ballistics` | 8 | `bandwidth` | 8 |
+| `banking` | 8 | `bankruptcy` | 8 | `barometry` | 8 |
+| `basketball` | 8 | `bathymetry` | 8 | `battery` | 8 |
+| `bayesian` | 8 | `beam` | 8 | `benchmark` | 8 |
+| `bilingualism` | 8 | `bio` | 8 | `bioavailability` | 8 |
+| `biochemistry` | 8 | `biodiversity` | 8 | `bioenergetics` | 8 |
+| `biogeography` | 8 | `bioindicator` | 8 | `bioinformatics` | 8 |
+| `biomass` | 8 | `biomechanics` | 8 | `biometrics` | 8 |
+| `biophysics` | 8 | `blackhole` | 8 | `blockchain` | 8 |
+| `blog` | 8 | `bond` | 8 | `botany` | 8 |
+| `braking` | 8 | `branding` | 8 | `breeding` | 8 |
+| `brewing` | 8 | `broadcasting` | 8 | `buddhism` | 8 |
+| `budget` | 8 | `budgeting` | 8 | `buffer` | 8 |
+| `bundle` | 8 | `bundling` | 8 | `buoyancy` | 8 |
+| `burndown` | 8 | `butchery` | 8 | `cache` | 8 |
+| `caching` | 8 | `cadence` | 8 | `cal` | 14 |
+| `calculus` | 8 | `calendar` | 8 | `calligraphy` | 8 |
+| `campaign` | 8 | `canning` | 8 | `canon` | 8 |
+| `capacitor` | 8 | `caramelization` | 8 | `carbon` | 8 |
+| `cardiology` | 8 | `cargo` | 8 | `cartography` | 8 |
+| `casting` | 8 | `catalysis` | 8 | `catalyst` | 8 |
+| `catering` | 8 | `causal` | 8 | `census` | 8 |
+| `ceramic` | 8 | `ceramics` | 8 | `cern` | 8 |
+| `chat` | 6 | `checkers` | 8 | `checksum` | 8 |
+| `cheese` | 8 | `cheesemaking` | 8 | `chem` | 8 |
+| `chemical` | 8 | `chemistry` | 8 | `chess` | 8 |
+| `chocolate` | 8 | `chord` | 8 | `choreography` | 8 |
+| `chromatography` | 8 | `chronology` | 8 | `churn` | 8 |
+| `cinema` | 8 | `cinematography` | 8 | `civil` | 8 |
+| `claims` | 8 | `clay` | 8 | `clearance` | 8 |
+| `climate` | 8 | `climatology` | 8 | `climbing` | 8 |
+| `cloud` | 8 | `cloudphysics` | 8 | `clustering` | 8 |
+| `coaching` | 8 | `coagulation` | 8 | `code` | 8 |
+| `codec` | 8 | `codicology` | 8 | `coding` | 8 |
+| `coffee` | 8 | `cogeneration` | 8 | `cognition` | 8 |
+| `cohort` | 8 | `coil` | 10 | `collaboration` | 8 |
+| `collateral` | 8 | `collide` | 9 | `collision` | 8 |
+| `color` | 8 | `colorgrading` | 8 | `colortheory` | 8 |
+| `combinatorics` | 8 | `combustion` | 8 | `comet` | 8 |
+| `comparison` | 8 | `compensation` | 8 | `compliance` | 8 |
+| `composite` | 8 | `composites` | 8 | `composting` | 8 |
+| `compress` | 8 | `compression` | 8 | `concrete` | 8 |
+| `concurrency` | 9 | `conditioning` | 8 | `conduction` | 8 |
+| `confectionery` | 8 | `conic` | 8 | `conservation` | 8 |
+| `consolidation` | 8 | `construction` | 8 | `content` | 8 |
+| `contract` | 8 | `control` | 8 | `controllability` | 8 |
+| `convection` | 8 | `conversion` | 8 | `convolution` | 8 |
+| `corpus` | 8 | `corrosion` | 8 | `cosmogony` | 8 |
+| `cosmology` | 8 | `costing` | 8 | `counterpoint` | 8 |
+| `court` | 15 | `covenant` | 8 | `coverage` | 8 |
+| `creditscore` | 8 | `creed` | 8 | `cricket` | 8 |
+| `criminology` | 8 | `criticalchain` | 8 | `cropyield` | 8 |
+| `cross` | 10 | `crossdock` | 8 | `crypt` | 8 |
+| `cryptanalysis` | 8 | `crypto` | 8 | `crystal` | 8 |
+| `crystallography` | 8 | `css` | 8 | `cuisine` | 8 |
+| `cuneiform` | 8 | `curing` | 8 | `curriculum` | 8 |
+| `curvature` | 8 | `customer` | 8 | `cybernetics` | 8 |
+| `cycling` | 8 | `cyclone` | 8 | `cytogenetics` | 8 |
+| `cytology` | 8 | `dairy` | 8 | `dance` | 8 |
+| `data` | 12 | `dataquality` | 8 | `db` | 8 |
+| `deadreckoning` | 8 | `delivery` | 8 | `demographics` | 8 |
+| `demography` | 8 | `dentistry` | 8 | `deontology` | 8 |
+| `deployment` | 8 | `depreciation` | 8 | `derivative` | 8 |
+| `derivatives` | 8 | `dermatology` | 8 | `desalination` | 8 |
+| `determinism` | 8 | `devtools` | 8 | `dewpoint` | 8 |
+| `dialectic` | 8 | `dice` | 8 | `dietetics` | 8 |
+| `diffraction` | 8 | `diffusion` | 8 | `diplomacy` | 8 |
+| `discourse` | 8 | `dispatch` | 8 | `distillation` | 8 |
+| `distilling` | 8 | `distribution` | 8 | `dividend` | 8 |
+| `dns` | 8 | `dominoes` | 8 | `dosage` | 8 |
+| `dosimetry` | 8 | `download` | 8 | `drag` | 8 |
+| `drayage` | 8 | `drilling` | 8 | `driver` | 8 |
+| `drone` | 8 | `drought` | 8 | `dyeing` | 8 |
+| `dynamics` | 8 | `earnedvalue` | 8 | `eclipse` | 8 |
+| `ecology` | 8 | `ecommerce` | 8 | `econ` | 6 |
+| `editing` | 8 | `education` | 8 | `elections` | 8 |
+| `electrical` | 8 | `electrocardiography` | 8 | `electrochemistry` | 8 |
+| `electrolyte` | 8 | `electromagnetism` | 8 | `electronics` | 8 |
+| `electrostatics` | 8 | `elevator` | 8 | `elnino` | 8 |
+| `elo` | 8 | `email` | 8 | `embedding` | 8 |
+| `embroidery` | 8 | `embryology` | 8 | `emissions` | 8 |
+| `emotion` | 8 | `empiricism` | 8 | `employment` | 8 |
+| `emulsification` | 8 | `endocrinology` | 8 | `endpoint` | 8 |
+| `endurance` | 8 | `energy` | 8 | `engine` | 8 |
+| `enrollment` | 8 | `enterprise` | 8 | `entertainment` | 8 |
+| `entomology` | 8 | `entropy` | 8 | `environment` | 8 |
+| `enzyme` | 8 | `enzymology` | 8 | `epidemiology` | 8 |
+| `epigenetics` | 8 | `epigraphy` | 8 | `epistemology` | 8 |
+| `equine` | 8 | `equity` | 8 | `ergometry` | 8 |
+| `ergonomics` | 8 | `eschatology` | 8 | `estimating` | 8 |
+| `estimation` | 8 | `etl` | 8 | `etymology` | 8 |
+| `evapotranspiration` | 8 | `events` | 8 | `evidence` | 9 |
+| `excavation` | 8 | `exchangerate` | 8 | `exegesis` | 8 |
+| `existentialism` | 8 | `exoplanet` | 8 | `exoplanets` | 8 |
+| `failure` | 8 | `family` | 8 | `fatigue` | 8 |
+| `federated` | 8 | `feed` | 9 | `feedback` | 8 |
+| `feedlot` | 8 | `fermentation` | 8 | `ferry` | 8 |
+| `fertilization` | 8 | `field` | 8 | `filtering` | 8 |
+| `filters` | 8 | `financial` | 8 | `firewall` | 8 |
+| `firmware` | 8 | `fishery` | 8 | `fitness` | 8 |
+| `fleet` | 8 | `flightdynamics` | 8 | `floriculture` | 8 |
+| `fluid` | 8 | `fluiddynamics` | 8 | `folklore` | 8 |
+| `foodsafety` | 8 | `forensic` | 7 | `forestry` | 8 |
+| `forging` | 8 | `formant` | 8 | `forms` | 8 |
+| `fourier` | 8 | `fractal` | 8 | `fracture` | 8 |
+| `freight` | 8 | `friction` | 8 | `frontend` | 8 |
+| `frontogenesis` | 8 | `fuelcell` | 8 | `fulfillment` | 8 |
+| `funnel` | 8 | `futures` | 8 | `fuzzing` | 8 |
+| `galactic` | 8 | `galaxy` | 8 | `gaming` | 8 |
+| `gastroenterology` | 8 | `gastronomy` | 8 | `gate` | 9 |
+| `gear` | 8 | `gearing` | 8 | `gelatinization` | 8 |
+| `gematria` | 8 | `genealogy` | 8 | `genetics` | 8 |
+| `genome` | 8 | `genomics` | 8 | `geo` | 8 |
+| `geochemistry` | 8 | `geodesy` | 8 | `geography` | 8 |
+| `geology` | 8 | `geometry` | 8 | `geomorphology` | 8 |
+| `geophysics` | 8 | `geopolitics` | 8 | `geothermal` | 8 |
+| `germination` | 8 | `gerontology` | 8 | `gis` | 8 |
+| `glaciology` | 8 | `glider` | 8 | `global` | 8 |
+| `glomerular` | 8 | `glycolysis` | 8 | `glyph` | 6 |
+| `glyphs` | 8 | `golf` | 8 | `governance` | 8 |
+| `gps` | 8 | `gradient` | 8 | `grammar` | 8 |
+| `graph` | 8 | `graphql` | 8 | `graphtheory` | 8 |
+| `gravimetry` | 8 | `gravity` | 8 | `grazing` | 8 |
+| `greenspace` | 8 | `grid` | 8 | `gripper` | 8 |
+| `grouptheory` | 8 | `guide` | 4 | `hail` | 8 |
+| `halflife` | 8 | `hanoi` | 8 | `hardness` | 8 |
+| `hardware` | 8 | `harmony` | 8 | `harvest` | 8 |
+| `hash` | 8 | `hashing` | 8 | `hazard` | 8 |
+| `hd` | 14 | `heat` | 12 | `heatindex` | 8 |
+| `heattransfer` | 8 | `hedging` | 8 | `helicopter` | 8 |
+| `heliophysics` | 8 | `helminthology` | 8 | `hematocrit` | 8 |
+| `hematology` | 8 | `hemodynamics` | 8 | `heraldry` | 8 |
+| `hermeneutics` | 8 | `herpetology` | 8 | `hieroglyphs` | 8 |
+| `highlights` | 8 | `hinduism` | 8 | `histology` | 8 |
+| `historiography` | 8 | `holo` | 2 | `hook` | 8 |
+| `horticulture` | 8 | `hospitality` | 8 | `hosting` | 8 |
+| `hover` | 8 | `hovercraft` | 8 | `huffman` | 8 |
+| `humidity` | 8 | `husbandry` | 8 | `hvac` | 8 |
+| `hydration` | 8 | `hydraulics` | 8 | `hydro` | 8 |
+| `hydrography` | 8 | `hydrology` | 8 | `hydroponics` | 8 |
+| `ichthyology` | 8 | `iconography` | 8 | `idealism` | 8 |
+| `identity` | 8 | `image` | 8 | `immigration` | 8 |
+| `immunology` | 8 | `incidence` | 8 | `incident` | 8 |
+| `indexing` | 8 | `inductor` | 8 | `inequality` | 8 |
+| `inflation` | 8 | `informatics` | 8 | `ingestion` | 8 |
+| `inspection` | 8 | `insurance` | 8 | `interaction` | 8 |
+| `interestrate` | 8 | `interference` | 8 | `interleaving` | 8 |
+| `invariant` | 8 | `inverter` | 8 | `invoice` | 8 |
+| `iot` | 8 | `irrigation` | 8 | `jainism` | 8 |
+| `jetstream` | 8 | `jewelry` | 8 | `jitter` | 8 |
+| `job` | 8 | `journalism` | 8 | `jumping` | 8 |
+| `kalman` | 8 | `karst` | 8 | `kerning` | 8 |
+| `kin` | 15 | `kinematics` | 8 | `kinesiology` | 8 |
+| `kinship` | 8 | `knitting` | 8 | `knot` | 8 |
+| `kyc` | 8 | `landslide` | 8 | `landuse` | 8 |
+| `lasers` | 8 | `lastmile` | 8 | `latency` | 8 |
+| `lattice` | 8 | `law` | 15 | `layout` | 8 |
+| `lean` | 8 | `learning` | 8 | `leavening` | 8 |
+| `ledger` | 8 | `lemmatization` | 8 | `lenses` | 8 |
+| `lever` | 8 | `leverage` | 8 | `lexicography` | 8 |
+| `lexicon` | 8 | `licensing` | 8 | `lidar` | 8 |
+| `lift` | 8 | `limnology` | 8 | `linearalgebra` | 8 |
+| `linehaul` | 8 | `linguistics` | 8 | `linkage` | 8 |
+| `liquidity` | 8 | `literacy` | 8 | `liturgy` | 8 |
+| `livestock` | 8 | `loadplanning` | 8 | `loan` | 8 |
+| `locale` | 8 | `localization` | 8 | `location` | 8 |
+| `lodging` | 8 | `logging` | 8 | `logic` | 8 |
+| `logicgates` | 8 | `logistics` | 8 | `logogram` | 8 |
+| `lottery` | 8 | `loyalty` | 8 | `luminosity` | 8 |
+| `machining` | 8 | `macroeconomics` | 8 | `magnetism` | 8 |
+| `magnetometry` | 8 | `maillard` | 8 | `malacology` | 8 |
+| `malware` | 8 | `mammalogy` | 8 | `manifold` | 8 |
+| `manipulator` | 8 | `manufacturing` | 8 | `marination` | 8 |
+| `maritime` | 8 | `marketing` | 8 | `masonry` | 8 |
+| `materials` | 8 | `matrix` | 8 | `mealplanning` | 8 |
+| `mechanical` | 8 | `med` | 8 | `media` | 8 |
+| `meiosis` | 8 | `melody` | 8 | `membrane` | 8 |
+| `memory` | 8 | `merchandising` | 8 | `merkaba` | 11 |
+| `merkle` | 8 | `messaging` | 8 | `metabolism` | 8 |
+| `metabolomics` | 8 | `metallurgy` | 8 | `meteoritics` | 8 |
+| `meteorology` | 8 | `microbiology` | 8 | `microeconomics` | 8 |
+| `microscopy` | 8 | `migration` | 8 | `milling` | 8 |
+| `mime` | 8 | `mineralogy` | 8 | `mining` | 8 |
+| `mitosis` | 8 | `mixing` | 8 | `mixology` | 8 |
+| `ml` | 8 | `mobility` | 8 | `modular` | 8 |
+| `modulation` | 8 | `monasticism` | 8 | `monitoring` | 8 |
+| `monopoly` | 8 | `monorail` | 8 | `monsoon` | 8 |
+| `moon` | 8 | `morphology` | 8 | `mortgage` | 8 |
+| `mosaic` | 8 | `motion` | 8 | `motivation` | 8 |
+| `mtbf` | 8 | `music` | 8 | `mutation` | 8 |
+| `mycology` | 8 | `myrmecology` | 8 | `mysticism` | 8 |
+| `mythography` | 8 | `mythology` | 8 | `nanomaterials` | 8 |
+| `nanotechnology` | 8 | `navigation` | 8 | `nebula` | 8 |
+| `nephrology` | 8 | `networking` | 8 | `neuralnet` | 8 |
+| `neurology` | 8 | `neuron` | 8 | `neuropsychology` | 8 |
+| `neuroscience` | 8 | `ngram` | 8 | `nim` | 8 |
+| `noise` | 8 | `noisepollution` | 8 | `notice` | 8 |
+| `np` | 6 | `nuclear` | 8 | `nuclearphysics` | 8 |
+| `nuclearpower` | 8 | `numbertheory` | 8 | `numen` | 7 |
+| `numeracy` | 8 | `numerology` | 8 | `numismatics` | 8 |
+| `nursing` | 8 | `nutrition` | 8 | `obs` | 8 |
+| `observability` | 8 | `oceanography` | 8 | `odometry` | 8 |
+| `oligopoly` | 8 | `onboarding` | 8 | `oncology` | 8 |
+| `onomastics` | 8 | `ontology` | 8 | `opendata` | 8 |
+| `opera` | 8 | `ophthalmology` | 8 | `oppress` | 1 |
+| `optics` | 8 | `option` | 8 | `optometry` | 8 |
+| `orbit` | 8 | `orbital` | 8 | `origami` | 8 |
+| `ornithology` | 8 | `orthography` | 8 | `orthopedics` | 8 |
+| `oscillators` | 8 | `osmosis` | 8 | `outbreak` | 8 |
+| `overtone` | 8 | `oxygenation` | 8 | `pacing` | 8 |
+| `packet` | 8 | `pagination` | 8 | `painting` | 8 |
+| `paleoclimate` | 8 | `paleography` | 8 | `paleontology` | 8 |
+| `papyrology` | 8 | `parable` | 8 | `parallax` | 8 |
+| `parasitology` | 8 | `parity` | 8 | `partitioning` | 8 |
+| `partner` | 8 | `passwords` | 8 | `pasteurization` | 8 |
+| `patent` | 8 | `path` | 9 | `pathogen` | 8 |
+| `pathology` | 8 | `pathplanning` | 8 | `patristics` | 8 |
+| `payables` | 8 | `payload` | 4 | `payment` | 8 |
+| `payroll` | 8 | `pedagogy` | 8 | `pediatrics` | 8 |
+| `pedology` | 8 | `pendulum` | 8 | `pentomino` | 8 |
+| `perception` | 8 | `performance` | 8 | `perma` | 3 |
+| `permitting` | 8 | `personality` | 8 | `pest` | 8 |
+| `petroleum` | 8 | `petrology` | 8 | `pharma` | 8 |
+| `pharmacokinetics` | 8 | `pharmacology` | 8 | `phenomenology` | 8 |
+| `philosophy` | 8 | `phonetics` | 8 | `photochemistry` | 8 |
+| `photodiode` | 8 | `photogrammetry` | 8 | `photography` | 8 |
+| `photometry` | 8 | `photosynthesis` | 8 | `photovoltaic` | 8 |
+| `phycology` | 8 | `physics` | 8 | `physiology` | 8 |
+| `physiotherapy` | 8 | `pickling` | 8 | `pid` | 8 |
+| `piezoelectric` | 8 | `pilgrimage` | 8 | `pipeline` | 8 |
+| `piston` | 8 | `plagiarism` | 1 | `planet` | 8 |
+| `planetology` | 8 | `plasma` | 11 | `platonic` | 8 |
+| `podcasting` | 8 | `podiatry` | 8 | `poker` | 8 |
+| `policy` | 8 | `pollination` | 8 | `polygon` | 8 |
+| `polyhedron` | 8 | `polymer` | 8 | `polymers` | 8 |
+| `polyphony` | 8 | `pomology` | 8 | `port` | 8 |
+| `portfolio` | 8 | `poultry` | 8 | `powerfactor` | 8 |
+| `pragmatics` | 8 | `precipitation` | 8 | `premium` | 8 |
+| `preservation` | 8 | `prevalence` | 8 | `pricing` | 8 |
+| `primatology` | 8 | `prime` | 8 | `printmaking` | 8 |
+| `probability` | 8 | `procurement` | 8 | `profiling` | 8 |
+| `project` | 8 | `projectile` | 8 | `promotion` | 8 |
+| `proof` | 8 | `proofing` | 8 | `property` | 8 |
+| `prophecy` | 8 | `propulsion` | 8 | `prosody` | 8 |
+| `protein` | 8 | `proteomics` | 8 | `protocol` | 8 |
+| `prototyping` | 8 | `protozoology` | 8 | `psalmody` | 8 |
+| `psych` | 8 | `psychiatry` | 8 | `psychology` | 8 |
+| `psychometrics` | 8 | `psychophysics` | 8 | `publishing` | 8 |
+| `pulley` | 8 | `pulmonology` | 8 | `pulsar` | 8 |
+| `pump` | 8 | `puppetry` | 8 | `pwm` | 8 |
+| `qpu` | 8 | `Qpu` | 37 | `qsec` | 8 |
+| `quality` | 8 | `quantization` | 8 | `quantum` | 8 |
+| `query` | 8 | `queue` | 8 | `queueing` | 8 |
+| `quilting` | 8 | `radar` | 8 | `radiology` | 8 |
+| `rail` | 8 | `railway` | 8 | `raster` | 8 |
+| `ratelimiting` | 8 | `rationalism` | 8 | `reactor` | 3 |
+| `readability` | 8 | `ready` | 4 | `realestate` | 8 |
+| `reasoning` | 8 | `receipts` | 8 | `receivables` | 8 |
+| `record` | 7 | `recovery` | 8 | `recruitment` | 8 |
+| `rectifier` | 8 | `rectifiers` | 8 | `recycling` | 8 |
+| `redistricting` | 8 | `redshift` | 8 | `redundancy` | 8 |
+| `refraction` | 8 | `refrigeration` | 8 | `regression` | 8 |
+| `rehabilitation` | 8 | `reinsurance` | 8 | `relativity` | 8 |
+| `reliability` | 8 | `remediation` | 8 | `remotesensing` | 8 |
+| `rendering` | 8 | `replenishment` | 8 | `replication` | 8 |
+| `respiration` | 8 | `responsive` | 8 | `rest` | 8 |
+| `restaurant` | 8 | `retail` | 8 | `retirement` | 8 |
+| `reverb` | 8 | `reverberation` | 8 | `rheology` | 8 |
+| `rhetoric` | 8 | `rheumatology` | 8 | `rhythm` | 8 |
+| `roasting` | 8 | `robotics` | 8 | `rocketry` | 8 |
+| `rotation` | 8 | `route` | 8 | `router` | 8 |
+| `routing` | 8 | `rubik` | 8 | `rule` | 10 |
+| `runes` | 8 | `safety` | 8 | `sailing` | 8 |
+| `salinity` | 8 | `sampling` | 8 | `satellite` | 8 |
+| `savings` | 8 | `scale` | 6 | `scales` | 8 |
+| `scheduling` | 8 | `scholasticism` | 8 | `science` | 8 |
+| `scrabble` | 8 | `screening` | 8 | `screenwriting` | 8 |
+| `scripture` | 8 | `sculpture` | 8 | `search` | 8 |
+| `securities` | 8 | `security` | 8 | `sedimentology` | 8 |
+| `seismology` | 8 | `semantics` | 8 | `semiconductor` | 8 |
+| `semiconductors` | 8 | `semiotics` | 8 | `sentence` | 8 |
+| `sentiment` | 8 | `seo` | 9 | `serialization` | 8 |
+| `serology` | 8 | `sessionmgmt` | 8 | `shamanism` | 8 |
+| `sharding` | 8 | `shinto` | 8 | `shipping` | 8 |
+| `shogi` | 8 | `shorthand` | 8 | `signal` | 6 |
+| `signaling` | 8 | `sikhism` | 8 | `silage` | 8 |
+| `silviculture` | 8 | `simulation` | 8 | `sintering` | 8 |
+| `sixsigma` | 8 | `slider` | 8 | `slotting` | 8 |
+| `smartgrid` | 8 | `smoking` | 8 | `soccer` | 8 |
+| `social` | 8 | `socialnetwork` | 8 | `sociology` | 8 |
+| `socket` | 8 | `software` | 8 | `soilscience` | 8 |
+| `solar` | 8 | `solarpower` | 8 | `solid` | 8 |
+| `solvency` | 8 | `solvent` | 8 | `sonography` | 8 |
+| `sort` | 8 | `sounddesign` | 8 | `sourcing` | 8 |
+| `spaceflight` | 8 | `spectroscopy` | 8 | `speleology` | 8 |
+| `spicetrade` | 8 | `spinning` | 8 | `spirometry` | 8 |
+| `split` | 15 | `sports` | 8 | `spring` | 8 |
+| `sprint` | 8 | `stability` | 8 | `staffing` | 8 |
+| `stagecraft` | 8 | `stainedglass` | 8 | `star` | 8 |
+| `state` | 8 | `statics` | 8 | `statistics` | 8 |
+| `steering` | 8 | `steganography` | 8 | `stellar` | 8 |
+| `stemming` | 8 | `steps` | 8 | `stoichiometry` | 8 |
+| `stoicism` | 8 | `storage` | 8 | `storyboarding` | 8 |
+| `straingauge` | 8 | `stratigraphy` | 8 | `stream` | 8 |
+| `streaming` | 8 | `strength` | 8 | `structural` | 8 |
+| `submarine` | 8 | `subsidence` | 8 | `subsidy` | 8 |
+| `sudoku` | 8 | `supplychain` | 8 | `surgery` | 8 |
+| `survey` | 8 | `surveying` | 8 | `suspension` | 8 |
+| `sustainability` | 8 | `swaps` | 8 | `swine` | 8 |
+| `syllabary` | 8 | `syllogism` | 8 | `synapse` | 8 |
+| `syntax` | 8 | `synthesis` | 8 | `tanning` | 8 |
+| `taoism` | 8 | `tariff` | 8 | `tax` | 8 |
+| `taxation` | 8 | `tectonics` | 8 | `telecom` | 8 |
+| `telemetry` | 8 | `teleology` | 8 | `telescope` | 8 |
+| `tennis` | 8 | `teratology` | 8 | `tesla` | 11 |
+| `testing` | 8 | `text` | 8 | `textiles` | 8 |
+| `theatre` | 8 | `thermochemistry` | 8 | `thermocouple` | 8 |
+| `thermodynamics` | 8 | `throughput` | 8 | `throwing` | 8 |
+| `tides` | 8 | `tiling` | 8 | `tillage` | 8 |
+| `timbre` | 8 | `timeseries` | 8 | `titration` | 8 |
+| `tls` | 8 | `tokenization` | 8 | `tomography` | 8 |
+| `tooling` | 8 | `topology` | 8 | `toponymy` | 8 |
+| `tornado` | 8 | `torsion` | 8 | `totemism` | 8 |
+| `tourism` | 8 | `tox` | 8 | `toxicology` | 8 |
+| `tracing` | 8 | `trading` | 8 | `trajectory` | 8 |
+| `transcription` | 8 | `transformer` | 8 | `transit` | 8 |
+| `translation` | 8 | `transliteration` | 8 | `transport` | 8 |
+| `treasury` | 8 | `tree` | 8 | `triangulation` | 8 |
+| `tribology` | 8 | `trigonometry` | 8 | `trucking` | 8 |
+| `tsunami` | 8 | `tune` | 7 | `tuning` | 8 |
+| `turbine` | 8 | `turnaround` | 8 | `typography` | 8 |
+| `typology` | 8 | `ui` | 8 | `ultrasonics` | 8 |
+| `underwriting` | 8 | `unemployment` | 8 | `upload` | 8 |
+| `urbanism` | 8 | `urology` | 8 | `usability` | 8 |
+| `vaccination` | 8 | `vaccine` | 8 | `valuation` | 8 |
+| `vector` | 8 | `ventilation` | 8 | `verification` | 8 |
+| `version` | 8 | `vet` | 8 | `veterinary` | 8 |
+| `vibration` | 8 | `virality` | 8 | `virology` | 8 |
+| `virtualization` | 8 | `vitals` | 8 | `viticulture` | 8 |
+| `volatility` | 8 | `volcanology` | 8 | `vulcanology` | 8 |
+| `walkability` | 8 | `warehouse` | 8 | `warehousing` | 8 |
+| `wastewater` | 8 | `waterquality` | 8 | `watershed` | 8 |
+| `wave` | 9 | `waveform` | 8 | `wavelet` | 8 |
+| `waypoint` | 8 | `weather` | 8 | `weaving` | 8 |
+| `website` | 8 | `welding` | 8 | `welfare` | 8 |
+| `wind` | 8 | `windchill` | 8 | `windpower` | 8 |
+| `winemaking` | 8 | `wireframe` | 8 | `woodworking` | 8 |
+| `workspace` | 8 | `xai` | 8 | `yi` | 9 |
+| `yield` | 8 | `zeroshot` | 8 | `zerotrust` | 8 |
+| `zoning` | 8 | `zoology` | 8 | `zoroastrianism` | 8 |
+
+### 2.2 Lattice register
 
 Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat hex `0a8f02cc-4000-8000-9000-00000000174e`; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds true.
 
@@ -40,104 +458,9 @@ Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat h
 | cold | 2,597 |
 | coldFusion | 100 |
 
-| Capability | How much | Compared with |
-|---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,115 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
-| Formal proof | 145 Lean theorems served, 145 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
-| Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
-| Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
-| Public APIs | 2,529 of 2,529 APIs walked live, 123,136 methods, 438,299 cross formulas; 2,529 fused and 808 used as hex addresses api.call(i, j, s) | the APIs.guru registry, against the Lean theorem fuse |
-| Cross formulas | 78 of 124 rows hold across 37 formulas | their own hex programs (36 agree) |
-| Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
-| Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
-| Payload on Cloudflare | 1,376,256 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
-| Code heat | 2,597 of 2,622 files cold, 25 hot | Qpu.Physics: photon / thermal T |
+## 3. Methods — formal verification and discovery
 
-Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
-(commercial use by license: https://qpu.uuidna.com/license).
-
-- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com
-- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/cite
-- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/mcp
-- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/quantum/processing/unit
-- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com
-- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/cite
-- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/mcp
-- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/quantum/processing/unit
-- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com
-- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/cite
-- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/mcp
-- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/quantum/processing/unit
-- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com
-- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/cite
-- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/mcp
-- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/quantum/processing/unit
-- https://github.com/uuidna/qpu → https://qpu.uuidna.com
-- https://github.com/uuidna/qpu → https://qpu.uuidna.com/cite
-- https://github.com/uuidna/qpu → https://qpu.uuidna.com/license
-- https://github.com/uuidna/qpu → https://qpu.uuidna.com/mcp
-- https://github.com/uuidna/qpu → https://qpu.uuidna.com/quantum/processing/unit
-- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781602
-- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781603
-- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.22700098
-- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.23156998
-- https://qpu.uuidna.com → https://github.com/uuidna/qpu
-- https://qpu.uuidna.com → https://zenodo.org/records/21781603
-- https://qpu.uuidna.com → https://zenodo.org/records/23156998
-- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781602
-- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781603
-- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.22700098
-- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.23156998
-- https://qpu.uuidna.com/cite → https://github.com/uuidna/qpu
-- https://qpu.uuidna.com/cite → https://zenodo.org/records/21781603
-- https://qpu.uuidna.com/cite → https://zenodo.org/records/23156998
-- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781602
-- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781603
-- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.22700098
-- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.23156998
-- https://qpu.uuidna.com/license → https://github.com/uuidna/qpu
-- https://qpu.uuidna.com/license → https://zenodo.org/records/21781603
-- https://qpu.uuidna.com/license → https://zenodo.org/records/23156998
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781602
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781603
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.22700098
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.23156998
-- https://qpu.uuidna.com/mcp → https://github.com/uuidna/qpu
-- https://qpu.uuidna.com/mcp → https://zenodo.org/records/21781603
-- https://qpu.uuidna.com/mcp → https://zenodo.org/records/23156998
-- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781602
-- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781603
-- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.22700098
-- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.23156998
-- https://qpu.uuidna.com/quantum/processing/unit → https://github.com/uuidna/qpu
-- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/21781603
-- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/23156998
-- https://zenodo.org/records/21781603 → https://qpu.uuidna.com
-- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/cite
-- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/license
-- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/mcp
-- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/quantum/processing/unit
-- https://zenodo.org/records/23156998 → https://qpu.uuidna.com
-- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/cite
-- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/license
-- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/mcp
-- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/quantum/processing/unit
-
-**Final build receipt** `5bb2395d-c49c-231a-bdb2-dc5ac5590f74`
-
-| | |
-|---|---|
-| git tag | v1.1.0 |
-| receipts | 30 files, 3723 nodes |
-| build stream | length 3723, head `5bb2395d-c49c-231a-bdb2-dc5ac5590f74`, chain `9aa9bc450fbd7e6ef532753b1d38759310c3700e655df64d3a00d397665016a2`, holds **true** |
-
-## Proof by MCP
-
-Every figure in this README is read from a receipt a run of the unit wrote; no figure is typed. The tests call the
+Every figure in this paper is read from a receipt a run of the unit wrote; no figure is typed. The tests call the
 unit through its own `tools/call` (`{ hex }` addresses, the live host for the release tests), the gate is the `gate`
 family's formulas run through the MCP in-process, the API walk is the `api` family's addresses, the discovery is the
 `data` family's. Each receipt below is a node of the final build receipt; its uuid moves with its bytes.
@@ -165,7 +488,22 @@ family's formulas run through the MCP in-process, the API walk is the `api` fami
 Tests: 4 top-level, 4 pass, 0 fail; 60,072 computations folded (cnot 6,176, x 3,058, h 840, toffoli 760, cmodexp 744, xx 744, lean next 741, measure 388); 512-dimensional state, 9 qubits; test receipt `cb548b5e2b853e5e`.
 Gate: push on 2026-10-07, does not hold — ✓ gate.push(0) = 14; ✗ gate.push(14) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[14]}}: 503; ✗ gate.push(28) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[28]}}: 503; ✗ gate.push(42) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[42]}}: 503; ✗ gate.push(56) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[56]}}: 503; ✗ gate.push(70) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[70]}}: 503; ✗ gate.push(84) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[84]}}: 503; ✗ gate.push(98) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[98]}}: 503; ✗ gate.push(112) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[112]}}: 503; ✗ gate.push(126) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[126]}}: 503; ✗ gate.push(140) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[140]}}: 503; ✗ gate.push(154) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[154]}}: 503; ✗ gate.push(168) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[168]}}: 503; ✗ gate.push(182) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[182]}}: 503; ✗ gate.push(196) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[196]}}: 503; ✗ gate.push(210) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[210]}}: 503; ✗ gate.push(224) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[224]}}: 503; ✗ gate.push(238) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[238]}}: 503; ✗ gate.push(252) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[252]}}: 503; ✗ gate.push(266) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[266]}}: 503; ✗ gate.push(280) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[280]}}: 503; ✗ gate.push(294) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[294]}}: 503; ✗ gate.push(308) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[308]}}: 503; ✗ gate.push(322) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[322]}}: 503; ✗ gate.push(336) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[336]}}: 503; ✗ gate.push(350) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[350]}}: 503; ✗ gate.push(364) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[364]}}: 503; ✗ gate.push(378) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[378]}}: 503; ✗ gate.push(392) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[392]}}: 503; ✗ gate.push(406) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[406]}}: 503; ✗ gate.push(420) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[420]}}: 503; ✗ gate.push(434) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[434]}}: 503; ✗ gate.push(448) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[448]}}: 503; ✗ gate.push(462) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[462]}}: 503; ✗ gate.push(476) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[476]}}: 503; ✗ gate.push(490) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[490]}}: 503; ✗ gate.push(504) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[504]}}: 503; ✗ gate.push(518) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[518]}}: 503; ✗ gate.push(532) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[532]}}: 503; ✗ gate.push(546) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[546]}}: 503; ✗ gate.push(560) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[560]}}: 503; ✗ gate.push(574) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[574]}}: 503; ✗ gate.push(588) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[588]}}: 503; ✗ gate.push(602) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[602]}}: 503; ✗ gate.push(616) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[616]}}: 503; ✗ gate.push(630) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[630]}}: 503; ✗ gate.push(644) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[644]}}: 503; ✗ gate.push(658) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[658]}}: 503; ✗ gate.push(672) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[672]}}: 503; ✗ gate.push(686) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[686]}}: 503; ✗ gate.push(700) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[700]}}: 503; ✗ gate.push(714) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[714]}}: 503; ✗ gate.push(728) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[728]}}: 503; ✗ gate.push(742) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[742]}}: 503; ✗ gate.push(756) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[756]}}: 503; ✗ gate.push(770) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[770]}}: 503; ✗ gate.push(784) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[784]}}: 503; ✗ gate.push(798) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[798]}}: 503; ✗ gate.push(812) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[812]}}: 503; ✗ gate.push(826) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[826]}}: 503; ✗ gate.push(840) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[840]}}: 503; ✗ gate.push(854) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[854]}}: 503; ✗ gate.push(868) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[868]}}: 503; ✗ gate.push(882) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[882]}}: 503; ✗ gate.push(896) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[896]}}: 503; ✗ gate.push(910) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[910]}}: 503; ✗ gate.push(924) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[924]}}: 503; ✗ gate.push(938) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[938]}}: 503; ✗ gate.push(952) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[952]}}: 503; ✗ gate.push(966) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[966]}}: 503; ✗ gate.push(980) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[980]}}: 503; ✗ gate.push(994) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[994]}}: 503; ✗ gate.push(1008) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1008]}}: 503; ✗ gate.push(1022) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1022]}}: 503; ✗ gate.push(1036) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1036]}}: 503; ✗ gate.push(1050) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1050]}}: 503; ✗ gate.push(1064) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1064]}}: 503; ✗ gate.push(1078) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1078]}}: 503; ✗ gate.push(1092) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1092]}}: 503; ✗ gate.push(1106) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1106]}}: 503; ✗ gate.push(1120) = unreached: cite {"hex":{"family":"gate","program":["push"],"params":[1120]}}: 503.
 
-### What QPU may be
+## 4. Results
+
+| Capability | How much | Compared with |
+|---|---|---|
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,115 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| Formal proof | 145 Lean theorems served, 145 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
+| Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
+| Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
+| Public APIs | 2,529 of 2,529 APIs walked live, 123,136 methods, 438,299 cross formulas; 2,529 fused and 808 used as hex addresses api.call(i, j, s) | the APIs.guru registry, against the Lean theorem fuse |
+| Cross formulas | 78 of 124 rows hold across 37 formulas | their own hex programs (36 agree) |
+| Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
+| Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
+| Payload on Cloudflare | 1,376,256 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
+| Code heat | 2,597 of 2,622 files cold, 25 hot | Qpu.Physics: photon / thermal T |
+
+## 5. Applications
 
 Imagined by the MCP, not claimed: for every category of the APIs.guru registry, `data.imagine(c)` reads that world's
 APIs and crosses the words of their titles and operations with the words of every family's formulas; the families
@@ -219,7 +557,36 @@ formula its words name: `data { source: 'ask', about }`.
 | u | hd (code); np (isTime); path (allPaths); yi (change) |
 | y | hd (code); np (isTime); path (allPaths); yi (change) |
 
-### Next
+## 6. Clay Millennium Prize Problems
+
+Author claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
+doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602)). A prize is a lead. `qpuPublicOf().prize` is false.
+`legal.citation` for the naming-scheme statement holds false, lead true. Evidence in this tree is seal formula
+hex / value / holds / next only — this section does not state problems solved or unsolved, and does not publish as solved.
+Claimable programmatically = the 6 `clay.*` seals in CLAY_SEALS; Poincaré is named, not a seal formula.
+
+| Problem | Attribution | Seal name in tree |
+|---|---|---|
+| P vs NP | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.pVsNp |
+| Hodge Conjecture | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.hodge |
+| Riemann Hypothesis | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.riemann |
+| Yang-Mills and Mass Gap | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.yangMills |
+| Navier-Stokes Existence and Smoothness | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.navierStokes |
+| Birch and Swinnerton-Dyer Conjecture | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.bsd |
+| Poincaré Conjecture | named for Grigori Perelman (2003); not a clay.* seal; not an Institute award in this tree | — |
+
+Seal-wave on the host (`clay.pass` / `claySealWaveOf`, receipt 2026-10-08): each seal recomputes σ∘σ = id on its combinatorial domain; related formulas and OEIS lookups are discovery readings. Seals with holds true this run: 6 of 6. Record: live claySealWaveOf domain-wave; clay-receipt written from README claimable verify. Receipt `13962491-8000-2000-8000-000000000000`.
+
+| Problem (formula) | Seal holds | Attribution | Involution, seal, related formulas, OEIS, address |
+|---|---|---|---|
+| clay.bsd | holds | author document | involution holds on every domain input; domain 13/13; hex 13962491-1000-6000-9000-000000000003; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.hodge | holds | author document | involution holds on every domain input; domain 14/14; hex 13962491-3000-7000-9000-000000000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.navierStokes | holds | author document | involution holds on every domain input; domain 14/14; hex 13962491-4000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.pVsNp | holds | author document | involution holds on every domain input; domain 2/2; hex 13962491-5000-6000-9000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.riemann | holds | author document | involution holds on every domain input; domain 15/15; hex 13962491-7000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+| clay.yangMills | holds | author document | involution holds on every domain input; domain 1/1; hex 13962491-8000-2000-8000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
+
+## 7. Open problems and next work
 
 The base for the next development, discovered by the MCP: every family researched in the public record
 (16 of 17 families found APIs their formulas name, 60 read live), one discovery over every reading
@@ -2097,441 +2464,15 @@ And every row of every other receipt that does not hold, as the receipt names it
 - public-raid: law.lawful(1) — 0
 - society-imagine: wave.sweep — 6
 
-## What QPU does
+## 8. Reproducibility — the build receipt
 
-An exact quantum processing unit served over MCP at https://qpu.uuidna.com: integer state vectors, Lean-checked theorems,
-formula families addressed by hex-program UUIDs, quantum receipts, its own cryptography, and live checks against public
-data. Each wing reports itself:
+**Final build receipt** `5bb2395d-c49c-231a-bdb2-dc5ac5590f74`
 
-| Wing | Capabilities | With an evidence predicate | Predicates that hold now | Live (need the network; checked by the live doors) |
-|---|---:|---:|---:|---:|
-| [Lattice & arithmetic](https://qpu.uuidna.com/lattice) | 10 | 7 | 7 | 0 |
-| [Quantum computation](https://qpu.uuidna.com/quantum) | 17 | 17 | 14 | 3 |
-| [Formal proof (Lean)](https://qpu.uuidna.com/proof) | 12 | 4 | 4 | 0 |
-| [Cryptography](https://qpu.uuidna.com/crypto) | 3 | 2 | 2 | 0 |
-| [UUIDs & quantum receipts](https://qpu.uuidna.com/receipts) | 39 | 16 | 14 | 0 |
-| [Storage & database](https://qpu.uuidna.com/storage) | 25 | 10 | 6 | 0 |
-| [MCP & agents](https://qpu.uuidna.com/agents) | 112 | 55 | 46 | 2 |
-| [Live science data](https://qpu.uuidna.com/science) | 22 | 17 | 10 | 7 |
-| [API fusion](https://qpu.uuidna.com/fusion) | 18 | 11 | 5 | 3 |
-| [Payload & Cloudflare](https://qpu.uuidna.com/cms) | 24 | 4 | 3 | 0 |
-| [Presentation & discovery](https://qpu.uuidna.com/presentation) | 16 | 14 | 14 | 0 |
-
-### Formula families
-
-1,134 families carry 9,115 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 124 cross-formula rows hold (36 agree with their hex programs).
-
-| Family | Formulas | Family | Formulas | Family | Formulas |
-|---|---:|---|---:|---|---:|
-| `absorption` | 8 | `accelerometer` | 8 | `access` | 10 |
-| `accessibility` | 8 | `accounting` | 8 | `acoustics` | 8 |
-| `acquisition` | 8 | `actionpotential` | 8 | `activation` | 8 |
-| `actuarial` | 8 | `actuation` | 8 | `adhesive` | 8 |
-| `admin` | 8 | `advertising` | 8 | `aerodynamics` | 8 |
-| `aerospace` | 8 | `aesthetics` | 8 | `agriculture` | 8 |
-| `agronomy` | 8 | `airquality` | 8 | `airship` | 8 |
-| `alerting` | 8 | `algebra` | 8 | `alloy` | 8 |
-| `alloys` | 8 | `altimetry` | 8 | `amortization` | 8 |
-| `amplifiers` | 8 | `analytics` | 8 | `anatomy` | 8 |
-| `anesthesiology` | 8 | `animation` | 8 | `animism` | 8 |
-| `annuity` | 8 | `antenna` | 8 | `anthropology` | 8 |
-| `antibody` | 8 | `antitrust` | 8 | `api` | 10 |
-| `apiculture` | 8 | `apiology` | 8 | `apocrypha` | 8 |
-| `apoptosis` | 8 | `aquaculture` | 8 | `aquafarming` | 8 |
-| `aquaponics` | 8 | `aquifer` | 8 | `arachnology` | 8 |
-| `arbitrage` | 8 | `archaeology` | 8 | `arpeggio` | 8 |
-| `assay` | 8 | `assembly` | 8 | `assessment` | 8 |
-| `asteroid` | 8 | `astrobiology` | 8 | `astrometry` | 8 |
-| `astronomy` | 8 | `astrophysics` | 8 | `athletics` | 8 |
-| `atmospheric` | 8 | `attention` | 8 | `auction` | 8 |
-| `audio` | 8 | `audiology` | 8 | `audit` | 4 |
-| `auditing` | 8 | `auth` | 8 | `authentication` | 8 |
-| `authorization` | 8 | `automation` | 8 | `automotive` | 8 |
-| `autoscaling` | 8 | `availability` | 8 | `aviation` | 8 |
-| `avionics` | 8 | `axiology` | 8 | `backend` | 8 |
-| `backgammon` | 8 | `backhaul` | 8 | `backlash` | 8 |
-| `backlog` | 8 | `bacteriology` | 8 | `baking` | 8 |
-| `ballet` | 8 | `ballistics` | 8 | `bandwidth` | 8 |
-| `banking` | 8 | `bankruptcy` | 8 | `barometry` | 8 |
-| `basketball` | 8 | `bathymetry` | 8 | `battery` | 8 |
-| `bayesian` | 8 | `beam` | 8 | `benchmark` | 8 |
-| `bilingualism` | 8 | `bio` | 8 | `bioavailability` | 8 |
-| `biochemistry` | 8 | `biodiversity` | 8 | `bioenergetics` | 8 |
-| `biogeography` | 8 | `bioindicator` | 8 | `bioinformatics` | 8 |
-| `biomass` | 8 | `biomechanics` | 8 | `biometrics` | 8 |
-| `biophysics` | 8 | `blackhole` | 8 | `blockchain` | 8 |
-| `blog` | 8 | `bond` | 8 | `botany` | 8 |
-| `braking` | 8 | `branding` | 8 | `breeding` | 8 |
-| `brewing` | 8 | `broadcasting` | 8 | `buddhism` | 8 |
-| `budget` | 8 | `budgeting` | 8 | `buffer` | 8 |
-| `bundle` | 8 | `bundling` | 8 | `buoyancy` | 8 |
-| `burndown` | 8 | `butchery` | 8 | `cache` | 8 |
-| `caching` | 8 | `cadence` | 8 | `cal` | 14 |
-| `calculus` | 8 | `calendar` | 8 | `calligraphy` | 8 |
-| `campaign` | 8 | `canning` | 8 | `canon` | 8 |
-| `capacitor` | 8 | `caramelization` | 8 | `carbon` | 8 |
-| `cardiology` | 8 | `cargo` | 8 | `cartography` | 8 |
-| `casting` | 8 | `catalysis` | 8 | `catalyst` | 8 |
-| `catering` | 8 | `causal` | 8 | `census` | 8 |
-| `ceramic` | 8 | `ceramics` | 8 | `cern` | 8 |
-| `chat` | 6 | `checkers` | 8 | `checksum` | 8 |
-| `cheese` | 8 | `cheesemaking` | 8 | `chem` | 8 |
-| `chemical` | 8 | `chemistry` | 8 | `chess` | 8 |
-| `chocolate` | 8 | `chord` | 8 | `choreography` | 8 |
-| `chromatography` | 8 | `chronology` | 8 | `churn` | 8 |
-| `cinema` | 8 | `cinematography` | 8 | `civil` | 8 |
-| `claims` | 8 | `clay` | 8 | `clearance` | 8 |
-| `climate` | 8 | `climatology` | 8 | `climbing` | 8 |
-| `cloud` | 8 | `cloudphysics` | 8 | `clustering` | 8 |
-| `coaching` | 8 | `coagulation` | 8 | `code` | 8 |
-| `codec` | 8 | `codicology` | 8 | `coding` | 8 |
-| `coffee` | 8 | `cogeneration` | 8 | `cognition` | 8 |
-| `cohort` | 8 | `coil` | 10 | `collaboration` | 8 |
-| `collateral` | 8 | `collide` | 9 | `collision` | 8 |
-| `color` | 8 | `colorgrading` | 8 | `colortheory` | 8 |
-| `combinatorics` | 8 | `combustion` | 8 | `comet` | 8 |
-| `comparison` | 8 | `compensation` | 8 | `compliance` | 8 |
-| `composite` | 8 | `composites` | 8 | `composting` | 8 |
-| `compress` | 8 | `compression` | 8 | `concrete` | 8 |
-| `concurrency` | 9 | `conditioning` | 8 | `conduction` | 8 |
-| `confectionery` | 8 | `conic` | 8 | `conservation` | 8 |
-| `consolidation` | 8 | `construction` | 8 | `content` | 8 |
-| `contract` | 8 | `control` | 8 | `controllability` | 8 |
-| `convection` | 8 | `conversion` | 8 | `convolution` | 8 |
-| `corpus` | 8 | `corrosion` | 8 | `cosmogony` | 8 |
-| `cosmology` | 8 | `costing` | 8 | `counterpoint` | 8 |
-| `court` | 15 | `covenant` | 8 | `coverage` | 8 |
-| `creditscore` | 8 | `creed` | 8 | `cricket` | 8 |
-| `criminology` | 8 | `criticalchain` | 8 | `cropyield` | 8 |
-| `cross` | 10 | `crossdock` | 8 | `crypt` | 8 |
-| `cryptanalysis` | 8 | `crypto` | 8 | `crystal` | 8 |
-| `crystallography` | 8 | `css` | 8 | `cuisine` | 8 |
-| `cuneiform` | 8 | `curing` | 8 | `curriculum` | 8 |
-| `curvature` | 8 | `customer` | 8 | `cybernetics` | 8 |
-| `cycling` | 8 | `cyclone` | 8 | `cytogenetics` | 8 |
-| `cytology` | 8 | `dairy` | 8 | `dance` | 8 |
-| `data` | 12 | `dataquality` | 8 | `db` | 8 |
-| `deadreckoning` | 8 | `delivery` | 8 | `demographics` | 8 |
-| `demography` | 8 | `dentistry` | 8 | `deontology` | 8 |
-| `deployment` | 8 | `depreciation` | 8 | `derivative` | 8 |
-| `derivatives` | 8 | `dermatology` | 8 | `desalination` | 8 |
-| `determinism` | 8 | `devtools` | 8 | `dewpoint` | 8 |
-| `dialectic` | 8 | `dice` | 8 | `dietetics` | 8 |
-| `diffraction` | 8 | `diffusion` | 8 | `diplomacy` | 8 |
-| `discourse` | 8 | `dispatch` | 8 | `distillation` | 8 |
-| `distilling` | 8 | `distribution` | 8 | `dividend` | 8 |
-| `dns` | 8 | `dominoes` | 8 | `dosage` | 8 |
-| `dosimetry` | 8 | `download` | 8 | `drag` | 8 |
-| `drayage` | 8 | `drilling` | 8 | `driver` | 8 |
-| `drone` | 8 | `drought` | 8 | `dyeing` | 8 |
-| `dynamics` | 8 | `earnedvalue` | 8 | `eclipse` | 8 |
-| `ecology` | 8 | `ecommerce` | 8 | `econ` | 6 |
-| `editing` | 8 | `education` | 8 | `elections` | 8 |
-| `electrical` | 8 | `electrocardiography` | 8 | `electrochemistry` | 8 |
-| `electrolyte` | 8 | `electromagnetism` | 8 | `electronics` | 8 |
-| `electrostatics` | 8 | `elevator` | 8 | `elnino` | 8 |
-| `elo` | 8 | `email` | 8 | `embedding` | 8 |
-| `embroidery` | 8 | `embryology` | 8 | `emissions` | 8 |
-| `emotion` | 8 | `empiricism` | 8 | `employment` | 8 |
-| `emulsification` | 8 | `endocrinology` | 8 | `endpoint` | 8 |
-| `endurance` | 8 | `energy` | 8 | `engine` | 8 |
-| `enrollment` | 8 | `enterprise` | 8 | `entertainment` | 8 |
-| `entomology` | 8 | `entropy` | 8 | `environment` | 8 |
-| `enzyme` | 8 | `enzymology` | 8 | `epidemiology` | 8 |
-| `epigenetics` | 8 | `epigraphy` | 8 | `epistemology` | 8 |
-| `equine` | 8 | `equity` | 8 | `ergometry` | 8 |
-| `ergonomics` | 8 | `eschatology` | 8 | `estimating` | 8 |
-| `estimation` | 8 | `etl` | 8 | `etymology` | 8 |
-| `evapotranspiration` | 8 | `events` | 8 | `evidence` | 9 |
-| `excavation` | 8 | `exchangerate` | 8 | `exegesis` | 8 |
-| `existentialism` | 8 | `exoplanet` | 8 | `exoplanets` | 8 |
-| `failure` | 8 | `family` | 8 | `fatigue` | 8 |
-| `federated` | 8 | `feed` | 9 | `feedback` | 8 |
-| `feedlot` | 8 | `fermentation` | 8 | `ferry` | 8 |
-| `fertilization` | 8 | `field` | 8 | `filtering` | 8 |
-| `filters` | 8 | `financial` | 8 | `firewall` | 8 |
-| `firmware` | 8 | `fishery` | 8 | `fitness` | 8 |
-| `fleet` | 8 | `flightdynamics` | 8 | `floriculture` | 8 |
-| `fluid` | 8 | `fluiddynamics` | 8 | `folklore` | 8 |
-| `foodsafety` | 8 | `forensic` | 7 | `forestry` | 8 |
-| `forging` | 8 | `formant` | 8 | `forms` | 8 |
-| `fourier` | 8 | `fractal` | 8 | `fracture` | 8 |
-| `freight` | 8 | `friction` | 8 | `frontend` | 8 |
-| `frontogenesis` | 8 | `fuelcell` | 8 | `fulfillment` | 8 |
-| `funnel` | 8 | `futures` | 8 | `fuzzing` | 8 |
-| `galactic` | 8 | `galaxy` | 8 | `gaming` | 8 |
-| `gastroenterology` | 8 | `gastronomy` | 8 | `gate` | 9 |
-| `gear` | 8 | `gearing` | 8 | `gelatinization` | 8 |
-| `gematria` | 8 | `genealogy` | 8 | `genetics` | 8 |
-| `genome` | 8 | `genomics` | 8 | `geo` | 8 |
-| `geochemistry` | 8 | `geodesy` | 8 | `geography` | 8 |
-| `geology` | 8 | `geometry` | 8 | `geomorphology` | 8 |
-| `geophysics` | 8 | `geopolitics` | 8 | `geothermal` | 8 |
-| `germination` | 8 | `gerontology` | 8 | `gis` | 8 |
-| `glaciology` | 8 | `glider` | 8 | `global` | 8 |
-| `glomerular` | 8 | `glycolysis` | 8 | `glyph` | 6 |
-| `glyphs` | 8 | `golf` | 8 | `governance` | 8 |
-| `gps` | 8 | `gradient` | 8 | `grammar` | 8 |
-| `graph` | 8 | `graphql` | 8 | `graphtheory` | 8 |
-| `gravimetry` | 8 | `gravity` | 8 | `grazing` | 8 |
-| `greenspace` | 8 | `grid` | 8 | `gripper` | 8 |
-| `grouptheory` | 8 | `guide` | 4 | `hail` | 8 |
-| `halflife` | 8 | `hanoi` | 8 | `hardness` | 8 |
-| `hardware` | 8 | `harmony` | 8 | `harvest` | 8 |
-| `hash` | 8 | `hashing` | 8 | `hazard` | 8 |
-| `hd` | 14 | `heat` | 12 | `heatindex` | 8 |
-| `heattransfer` | 8 | `hedging` | 8 | `helicopter` | 8 |
-| `heliophysics` | 8 | `helminthology` | 8 | `hematocrit` | 8 |
-| `hematology` | 8 | `hemodynamics` | 8 | `heraldry` | 8 |
-| `hermeneutics` | 8 | `herpetology` | 8 | `hieroglyphs` | 8 |
-| `highlights` | 8 | `hinduism` | 8 | `histology` | 8 |
-| `historiography` | 8 | `holo` | 2 | `hook` | 8 |
-| `horticulture` | 8 | `hospitality` | 8 | `hosting` | 8 |
-| `hover` | 8 | `hovercraft` | 8 | `huffman` | 8 |
-| `humidity` | 8 | `husbandry` | 8 | `hvac` | 8 |
-| `hydration` | 8 | `hydraulics` | 8 | `hydro` | 8 |
-| `hydrography` | 8 | `hydrology` | 8 | `hydroponics` | 8 |
-| `ichthyology` | 8 | `iconography` | 8 | `idealism` | 8 |
-| `identity` | 8 | `image` | 8 | `immigration` | 8 |
-| `immunology` | 8 | `incidence` | 8 | `incident` | 8 |
-| `indexing` | 8 | `inductor` | 8 | `inequality` | 8 |
-| `inflation` | 8 | `informatics` | 8 | `ingestion` | 8 |
-| `inspection` | 8 | `insurance` | 8 | `interaction` | 8 |
-| `interestrate` | 8 | `interference` | 8 | `interleaving` | 8 |
-| `invariant` | 8 | `inverter` | 8 | `invoice` | 8 |
-| `iot` | 8 | `irrigation` | 8 | `jainism` | 8 |
-| `jetstream` | 8 | `jewelry` | 8 | `jitter` | 8 |
-| `job` | 8 | `journalism` | 8 | `jumping` | 8 |
-| `kalman` | 8 | `karst` | 8 | `kerning` | 8 |
-| `kin` | 15 | `kinematics` | 8 | `kinesiology` | 8 |
-| `kinship` | 8 | `knitting` | 8 | `knot` | 8 |
-| `kyc` | 8 | `landslide` | 8 | `landuse` | 8 |
-| `lasers` | 8 | `lastmile` | 8 | `latency` | 8 |
-| `lattice` | 8 | `law` | 15 | `layout` | 8 |
-| `lean` | 8 | `learning` | 8 | `leavening` | 8 |
-| `ledger` | 8 | `lemmatization` | 8 | `lenses` | 8 |
-| `lever` | 8 | `leverage` | 8 | `lexicography` | 8 |
-| `lexicon` | 8 | `licensing` | 8 | `lidar` | 8 |
-| `lift` | 8 | `limnology` | 8 | `linearalgebra` | 8 |
-| `linehaul` | 8 | `linguistics` | 8 | `linkage` | 8 |
-| `liquidity` | 8 | `literacy` | 8 | `liturgy` | 8 |
-| `livestock` | 8 | `loadplanning` | 8 | `loan` | 8 |
-| `locale` | 8 | `localization` | 8 | `location` | 8 |
-| `lodging` | 8 | `logging` | 8 | `logic` | 8 |
-| `logicgates` | 8 | `logistics` | 8 | `logogram` | 8 |
-| `lottery` | 8 | `loyalty` | 8 | `luminosity` | 8 |
-| `machining` | 8 | `macroeconomics` | 8 | `magnetism` | 8 |
-| `magnetometry` | 8 | `maillard` | 8 | `malacology` | 8 |
-| `malware` | 8 | `mammalogy` | 8 | `manifold` | 8 |
-| `manipulator` | 8 | `manufacturing` | 8 | `marination` | 8 |
-| `maritime` | 8 | `marketing` | 8 | `masonry` | 8 |
-| `materials` | 8 | `matrix` | 8 | `mealplanning` | 8 |
-| `mechanical` | 8 | `med` | 8 | `media` | 8 |
-| `meiosis` | 8 | `melody` | 8 | `membrane` | 8 |
-| `memory` | 8 | `merchandising` | 8 | `merkaba` | 11 |
-| `merkle` | 8 | `messaging` | 8 | `metabolism` | 8 |
-| `metabolomics` | 8 | `metallurgy` | 8 | `meteoritics` | 8 |
-| `meteorology` | 8 | `microbiology` | 8 | `microeconomics` | 8 |
-| `microscopy` | 8 | `migration` | 8 | `milling` | 8 |
-| `mime` | 8 | `mineralogy` | 8 | `mining` | 8 |
-| `mitosis` | 8 | `mixing` | 8 | `mixology` | 8 |
-| `ml` | 8 | `mobility` | 8 | `modular` | 8 |
-| `modulation` | 8 | `monasticism` | 8 | `monitoring` | 8 |
-| `monopoly` | 8 | `monorail` | 8 | `monsoon` | 8 |
-| `moon` | 8 | `morphology` | 8 | `mortgage` | 8 |
-| `mosaic` | 8 | `motion` | 8 | `motivation` | 8 |
-| `mtbf` | 8 | `music` | 8 | `mutation` | 8 |
-| `mycology` | 8 | `myrmecology` | 8 | `mysticism` | 8 |
-| `mythography` | 8 | `mythology` | 8 | `nanomaterials` | 8 |
-| `nanotechnology` | 8 | `navigation` | 8 | `nebula` | 8 |
-| `nephrology` | 8 | `networking` | 8 | `neuralnet` | 8 |
-| `neurology` | 8 | `neuron` | 8 | `neuropsychology` | 8 |
-| `neuroscience` | 8 | `ngram` | 8 | `nim` | 8 |
-| `noise` | 8 | `noisepollution` | 8 | `notice` | 8 |
-| `np` | 6 | `nuclear` | 8 | `nuclearphysics` | 8 |
-| `nuclearpower` | 8 | `numbertheory` | 8 | `numen` | 7 |
-| `numeracy` | 8 | `numerology` | 8 | `numismatics` | 8 |
-| `nursing` | 8 | `nutrition` | 8 | `obs` | 8 |
-| `observability` | 8 | `oceanography` | 8 | `odometry` | 8 |
-| `oligopoly` | 8 | `onboarding` | 8 | `oncology` | 8 |
-| `onomastics` | 8 | `ontology` | 8 | `opendata` | 8 |
-| `opera` | 8 | `ophthalmology` | 8 | `oppress` | 1 |
-| `optics` | 8 | `option` | 8 | `optometry` | 8 |
-| `orbit` | 8 | `orbital` | 8 | `origami` | 8 |
-| `ornithology` | 8 | `orthography` | 8 | `orthopedics` | 8 |
-| `oscillators` | 8 | `osmosis` | 8 | `outbreak` | 8 |
-| `overtone` | 8 | `oxygenation` | 8 | `pacing` | 8 |
-| `packet` | 8 | `pagination` | 8 | `painting` | 8 |
-| `paleoclimate` | 8 | `paleography` | 8 | `paleontology` | 8 |
-| `papyrology` | 8 | `parable` | 8 | `parallax` | 8 |
-| `parasitology` | 8 | `parity` | 8 | `partitioning` | 8 |
-| `partner` | 8 | `passwords` | 8 | `pasteurization` | 8 |
-| `patent` | 8 | `path` | 9 | `pathogen` | 8 |
-| `pathology` | 8 | `pathplanning` | 8 | `patristics` | 8 |
-| `payables` | 8 | `payload` | 4 | `payment` | 8 |
-| `payroll` | 8 | `pedagogy` | 8 | `pediatrics` | 8 |
-| `pedology` | 8 | `pendulum` | 8 | `pentomino` | 8 |
-| `perception` | 8 | `performance` | 8 | `perma` | 3 |
-| `permitting` | 8 | `personality` | 8 | `pest` | 8 |
-| `petroleum` | 8 | `petrology` | 8 | `pharma` | 8 |
-| `pharmacokinetics` | 8 | `pharmacology` | 8 | `phenomenology` | 8 |
-| `philosophy` | 8 | `phonetics` | 8 | `photochemistry` | 8 |
-| `photodiode` | 8 | `photogrammetry` | 8 | `photography` | 8 |
-| `photometry` | 8 | `photosynthesis` | 8 | `photovoltaic` | 8 |
-| `phycology` | 8 | `physics` | 8 | `physiology` | 8 |
-| `physiotherapy` | 8 | `pickling` | 8 | `pid` | 8 |
-| `piezoelectric` | 8 | `pilgrimage` | 8 | `pipeline` | 8 |
-| `piston` | 8 | `plagiarism` | 1 | `planet` | 8 |
-| `planetology` | 8 | `plasma` | 11 | `platonic` | 8 |
-| `podcasting` | 8 | `podiatry` | 8 | `poker` | 8 |
-| `policy` | 8 | `pollination` | 8 | `polygon` | 8 |
-| `polyhedron` | 8 | `polymer` | 8 | `polymers` | 8 |
-| `polyphony` | 8 | `pomology` | 8 | `port` | 8 |
-| `portfolio` | 8 | `poultry` | 8 | `powerfactor` | 8 |
-| `pragmatics` | 8 | `precipitation` | 8 | `premium` | 8 |
-| `preservation` | 8 | `prevalence` | 8 | `pricing` | 8 |
-| `primatology` | 8 | `prime` | 8 | `printmaking` | 8 |
-| `probability` | 8 | `procurement` | 8 | `profiling` | 8 |
-| `project` | 8 | `projectile` | 8 | `promotion` | 8 |
-| `proof` | 8 | `proofing` | 8 | `property` | 8 |
-| `prophecy` | 8 | `propulsion` | 8 | `prosody` | 8 |
-| `protein` | 8 | `proteomics` | 8 | `protocol` | 8 |
-| `prototyping` | 8 | `protozoology` | 8 | `psalmody` | 8 |
-| `psych` | 8 | `psychiatry` | 8 | `psychology` | 8 |
-| `psychometrics` | 8 | `psychophysics` | 8 | `publishing` | 8 |
-| `pulley` | 8 | `pulmonology` | 8 | `pulsar` | 8 |
-| `pump` | 8 | `puppetry` | 8 | `pwm` | 8 |
-| `qpu` | 8 | `Qpu` | 37 | `qsec` | 8 |
-| `quality` | 8 | `quantization` | 8 | `quantum` | 8 |
-| `query` | 8 | `queue` | 8 | `queueing` | 8 |
-| `quilting` | 8 | `radar` | 8 | `radiology` | 8 |
-| `rail` | 8 | `railway` | 8 | `raster` | 8 |
-| `ratelimiting` | 8 | `rationalism` | 8 | `reactor` | 3 |
-| `readability` | 8 | `ready` | 4 | `realestate` | 8 |
-| `reasoning` | 8 | `receipts` | 8 | `receivables` | 8 |
-| `record` | 7 | `recovery` | 8 | `recruitment` | 8 |
-| `rectifier` | 8 | `rectifiers` | 8 | `recycling` | 8 |
-| `redistricting` | 8 | `redshift` | 8 | `redundancy` | 8 |
-| `refraction` | 8 | `refrigeration` | 8 | `regression` | 8 |
-| `rehabilitation` | 8 | `reinsurance` | 8 | `relativity` | 8 |
-| `reliability` | 8 | `remediation` | 8 | `remotesensing` | 8 |
-| `rendering` | 8 | `replenishment` | 8 | `replication` | 8 |
-| `respiration` | 8 | `responsive` | 8 | `rest` | 8 |
-| `restaurant` | 8 | `retail` | 8 | `retirement` | 8 |
-| `reverb` | 8 | `reverberation` | 8 | `rheology` | 8 |
-| `rhetoric` | 8 | `rheumatology` | 8 | `rhythm` | 8 |
-| `roasting` | 8 | `robotics` | 8 | `rocketry` | 8 |
-| `rotation` | 8 | `route` | 8 | `router` | 8 |
-| `routing` | 8 | `rubik` | 8 | `rule` | 10 |
-| `runes` | 8 | `safety` | 8 | `sailing` | 8 |
-| `salinity` | 8 | `sampling` | 8 | `satellite` | 8 |
-| `savings` | 8 | `scale` | 6 | `scales` | 8 |
-| `scheduling` | 8 | `scholasticism` | 8 | `science` | 8 |
-| `scrabble` | 8 | `screening` | 8 | `screenwriting` | 8 |
-| `scripture` | 8 | `sculpture` | 8 | `search` | 8 |
-| `securities` | 8 | `security` | 8 | `sedimentology` | 8 |
-| `seismology` | 8 | `semantics` | 8 | `semiconductor` | 8 |
-| `semiconductors` | 8 | `semiotics` | 8 | `sentence` | 8 |
-| `sentiment` | 8 | `seo` | 9 | `serialization` | 8 |
-| `serology` | 8 | `sessionmgmt` | 8 | `shamanism` | 8 |
-| `sharding` | 8 | `shinto` | 8 | `shipping` | 8 |
-| `shogi` | 8 | `shorthand` | 8 | `signal` | 6 |
-| `signaling` | 8 | `sikhism` | 8 | `silage` | 8 |
-| `silviculture` | 8 | `simulation` | 8 | `sintering` | 8 |
-| `sixsigma` | 8 | `slider` | 8 | `slotting` | 8 |
-| `smartgrid` | 8 | `smoking` | 8 | `soccer` | 8 |
-| `social` | 8 | `socialnetwork` | 8 | `sociology` | 8 |
-| `socket` | 8 | `software` | 8 | `soilscience` | 8 |
-| `solar` | 8 | `solarpower` | 8 | `solid` | 8 |
-| `solvency` | 8 | `solvent` | 8 | `sonography` | 8 |
-| `sort` | 8 | `sounddesign` | 8 | `sourcing` | 8 |
-| `spaceflight` | 8 | `spectroscopy` | 8 | `speleology` | 8 |
-| `spicetrade` | 8 | `spinning` | 8 | `spirometry` | 8 |
-| `split` | 15 | `sports` | 8 | `spring` | 8 |
-| `sprint` | 8 | `stability` | 8 | `staffing` | 8 |
-| `stagecraft` | 8 | `stainedglass` | 8 | `star` | 8 |
-| `state` | 8 | `statics` | 8 | `statistics` | 8 |
-| `steering` | 8 | `steganography` | 8 | `stellar` | 8 |
-| `stemming` | 8 | `steps` | 8 | `stoichiometry` | 8 |
-| `stoicism` | 8 | `storage` | 8 | `storyboarding` | 8 |
-| `straingauge` | 8 | `stratigraphy` | 8 | `stream` | 8 |
-| `streaming` | 8 | `strength` | 8 | `structural` | 8 |
-| `submarine` | 8 | `subsidence` | 8 | `subsidy` | 8 |
-| `sudoku` | 8 | `supplychain` | 8 | `surgery` | 8 |
-| `survey` | 8 | `surveying` | 8 | `suspension` | 8 |
-| `sustainability` | 8 | `swaps` | 8 | `swine` | 8 |
-| `syllabary` | 8 | `syllogism` | 8 | `synapse` | 8 |
-| `syntax` | 8 | `synthesis` | 8 | `tanning` | 8 |
-| `taoism` | 8 | `tariff` | 8 | `tax` | 8 |
-| `taxation` | 8 | `tectonics` | 8 | `telecom` | 8 |
-| `telemetry` | 8 | `teleology` | 8 | `telescope` | 8 |
-| `tennis` | 8 | `teratology` | 8 | `tesla` | 11 |
-| `testing` | 8 | `text` | 8 | `textiles` | 8 |
-| `theatre` | 8 | `thermochemistry` | 8 | `thermocouple` | 8 |
-| `thermodynamics` | 8 | `throughput` | 8 | `throwing` | 8 |
-| `tides` | 8 | `tiling` | 8 | `tillage` | 8 |
-| `timbre` | 8 | `timeseries` | 8 | `titration` | 8 |
-| `tls` | 8 | `tokenization` | 8 | `tomography` | 8 |
-| `tooling` | 8 | `topology` | 8 | `toponymy` | 8 |
-| `tornado` | 8 | `torsion` | 8 | `totemism` | 8 |
-| `tourism` | 8 | `tox` | 8 | `toxicology` | 8 |
-| `tracing` | 8 | `trading` | 8 | `trajectory` | 8 |
-| `transcription` | 8 | `transformer` | 8 | `transit` | 8 |
-| `translation` | 8 | `transliteration` | 8 | `transport` | 8 |
-| `treasury` | 8 | `tree` | 8 | `triangulation` | 8 |
-| `tribology` | 8 | `trigonometry` | 8 | `trucking` | 8 |
-| `tsunami` | 8 | `tune` | 7 | `tuning` | 8 |
-| `turbine` | 8 | `turnaround` | 8 | `typography` | 8 |
-| `typology` | 8 | `ui` | 8 | `ultrasonics` | 8 |
-| `underwriting` | 8 | `unemployment` | 8 | `upload` | 8 |
-| `urbanism` | 8 | `urology` | 8 | `usability` | 8 |
-| `vaccination` | 8 | `vaccine` | 8 | `valuation` | 8 |
-| `vector` | 8 | `ventilation` | 8 | `verification` | 8 |
-| `version` | 8 | `vet` | 8 | `veterinary` | 8 |
-| `vibration` | 8 | `virality` | 8 | `virology` | 8 |
-| `virtualization` | 8 | `vitals` | 8 | `viticulture` | 8 |
-| `volatility` | 8 | `volcanology` | 8 | `vulcanology` | 8 |
-| `walkability` | 8 | `warehouse` | 8 | `warehousing` | 8 |
-| `wastewater` | 8 | `waterquality` | 8 | `watershed` | 8 |
-| `wave` | 9 | `waveform` | 8 | `wavelet` | 8 |
-| `waypoint` | 8 | `weather` | 8 | `weaving` | 8 |
-| `website` | 8 | `welding` | 8 | `welfare` | 8 |
-| `wind` | 8 | `windchill` | 8 | `windpower` | 8 |
-| `winemaking` | 8 | `wireframe` | 8 | `woodworking` | 8 |
-| `workspace` | 8 | `xai` | 8 | `yi` | 9 |
-| `yield` | 8 | `zeroshot` | 8 | `zerotrust` | 8 |
-| `zoning` | 8 | `zoology` | 8 | `zoroastrianism` | 8 |
-
-## Clay Millennium Prize Problems
-
-Author claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
-doi:[10.5281/zenodo.21781602](https://doi.org/10.5281/zenodo.21781602)). A prize is a lead. `qpuPublicOf().prize` is false.
-`legal.citation` for the naming-scheme statement holds false, lead true. Evidence in this tree is seal formula
-hex / value / holds / next only — this section does not state problems solved or unsolved, and does not publish as solved.
-Claimable programmatically = the 6 `clay.*` seals in CLAY_SEALS; Poincaré is named, not a seal formula.
-
-| Problem | Attribution | Seal name in tree |
-|---|---|---|
-| P vs NP | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.pVsNp |
-| Hodge Conjecture | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.hodge |
-| Riemann Hypothesis | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.riemann |
-| Yang-Mills and Mass Gap | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.yangMills |
-| Navier-Stokes Existence and Smoothness | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.navierStokes |
-| Birch and Swinnerton-Dyer Conjecture | Tsvetan Rouschev ([document](https://doi.org/10.5281/zenodo.21781602)) | clay.bsd |
-| Poincaré Conjecture | named for Grigori Perelman (2003); not a clay.* seal; not an Institute award in this tree | — |
-
-Seal-wave on the host (`clay.pass` / `claySealWaveOf`, receipt 2026-10-08): each seal recomputes σ∘σ = id on its combinatorial domain; related formulas and OEIS lookups are discovery readings. Seals with holds true this run: 6 of 6. Record: live claySealWaveOf domain-wave; clay-receipt written from README claimable verify. Receipt `13962491-8000-2000-8000-000000000000`.
-
-| Problem (formula) | Seal holds | Attribution | Involution, seal, related formulas, OEIS, address |
-|---|---|---|---|
-| clay.bsd | holds | author document | involution holds on every domain input; domain 13/13; hex 13962491-1000-6000-9000-000000000003; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
-| clay.hodge | holds | author document | involution holds on every domain input; domain 14/14; hex 13962491-3000-7000-9000-000000000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
-| clay.navierStokes | holds | author document | involution holds on every domain input; domain 14/14; hex 13962491-4000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
-| clay.pVsNp | holds | author document | involution holds on every domain input; domain 2/2; hex 13962491-5000-6000-9000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
-| clay.riemann | holds | author document | involution holds on every domain input; domain 15/15; hex 13962491-7000-1000-a000-000001000001; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
-| clay.yangMills | holds | author document | involution holds on every domain input; domain 1/1; hex 13962491-8000-2000-8000-000000000000; treeNext 8589934592); attribution: doi:10.5281/zenodo.21781602 (Rouschev); prize is a lead; legal.citation holds false |
-
-## Build receipt
+| | |
+|---|---|
+| git tag | v1.1.0 |
+| receipts | 30 files, 3723 nodes |
+| build stream | length 3723, head `5bb2395d-c49c-231a-bdb2-dc5ac5590f74`, chain `9aa9bc450fbd7e6ef532753b1d38759310c3700e655df64d3a00d397665016a2`, holds **true** |
 
 <details>
 <summary>3723 receipts, chained in the build stream</summary>
@@ -6334,6 +6275,82 @@ flowchart TD
 | readme | `5bb2395d-c49c-231a-bdb2-dc5ac5590f74` | `fd569ac5` | `b59e899c563da568` | 3722 |
 
 </details>
+
+## References
+
+Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
+(commercial use by license: https://qpu.uuidna.com/license).
+
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/quantum/processing/unit
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/cite
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/license
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/mcp
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/quantum/processing/unit
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/cite
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/license
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/mcp
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/quantum/processing/unit
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/cite → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/cite → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/cite → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/license → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/license → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/license → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/license → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/mcp → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/mcp → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/mcp → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/quantum/processing/unit → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/23156998
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/cite
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/license
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/mcp
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/quantum/processing/unit
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/cite
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/license
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/mcp
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/quantum/processing/unit
 
 Regenerate with `npm run readme` after `npm run build` and the receipt-producing runs; `node scripts/generate-readme.mjs --check`
 compares. Documentation: [docs/README.md](docs/README.md). License: CC-BY-NC-ND-4.0.
