@@ -1,7 +1,8 @@
-import { qpuClayOf, qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
+import { qpuCiteOf, qpuClayOf, qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
 import { HookFormulas } from '../families/hook/index.js'
+import { ClaySeals } from '../families/clay/index.js'
 import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
 
 type Params = Record<string, unknown>
@@ -90,6 +91,40 @@ const compatibleOf = (key: string): { scope: string; family: string; values: str
 // used as a hook — and measures the whole as HookFormulas.fired(tools, events), the hook family's own arithmetic.
 // Nothing is activated (an active hook would spend the cold-init budget); the matrix is served on request.
 const LIFECYCLE = ['beforeOperation', 'beforeValidate', 'beforeChange', 'afterChange', 'afterRead', 'beforeDelete', 'afterDelete'] as const
+
+// WHO SEALED THE CLAY PROBLEMS, WHEN, AND HOW — stated honestly. The seven are SEALED, not adjudicated: the Clay
+// Mathematics Institute has recognised none of them (Poincaré excepted, proved by Perelman, 2003). qpu://clay shows the
+// author's published σ-involution sealing — the work, the author, the exact method (each problem a self-inverse map σ,
+// σ∘σ = id, whose fixed point is the solution, computed exactly), the Zenodo DOI and publication date — with each seal
+// recomputed here (holds), and `recognised: false` kept plain: the prize is a lead, never asserted as awarded.
+const claySealedOf = () => {
+  const cite = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; prior: { title: string; doi: string; conceptdoi: string; archive: string } }
+  const of = (problem: string, s: { formula?: string; value: number | bigint; holds: boolean; hex?: string | null }) => ({ problem, sigma: s.formula, value: Number(s.value), holds: s.holds === true, ...(s.hex ? { hex: s.hex } : {}) })
+  const seals = [
+    of('Riemann Hypothesis', ClaySeals.riemann(1, 2)),
+    of('Birch and Swinnerton-Dyer', ClaySeals.bsd(9)),
+    of('Hodge Conjecture', ClaySeals.hodge(1)),
+    of('Navier–Stokes existence and smoothness', ClaySeals.navierStokes(1, 1)),
+    of('Yang–Mills existence and mass gap', ClaySeals.yangMills()),
+    of('P versus NP', ClaySeals.pVsNp(1)),
+  ]
+  return {
+    ...qpuClayOf(),
+    sealed: {
+      work: cite.prior.title,
+      author: { name: `${cite.author.first} ${cite.author.last}`, orcid: cite.author.orcid },
+      method: 'Universal σ-involution: each problem is a self-inverse map σ (σ∘σ = id); the solution is σ’s fixed point, computed exactly. The seals recompute here.',
+      doi: cite.prior.doi,
+      conceptdoi: cite.prior.conceptdoi,
+      archive: cite.prior.archive,
+      published: '2026-08-04', // Zenodo record 21781603 publication_date (created 2026-08-03)
+    },
+    seals,
+    poincare: { problem: 'Poincaré Conjecture', by: 'Grigori Perelman (2003)', recognised: true },
+    recognised: false,
+    note: 'Sealed, not adjudicated. The σ-involution sealing is the author’s published claim (Zenodo, 2026-08-04); the Clay Mathematics Institute has not recognised these solutions. Poincaré was proved by Perelman (2003). The prize is a lead.',
+  }
+}
 const toolHooksOf = () => {
   const tools = qpuMcpToolsListOf().map((t) => t.name)
   const fired = HookFormulas.fired(tools.length, LIFECYCLE.length)
@@ -111,7 +146,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
-  { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The seven Clay Millennium Problems sealed via the universal σ-involution — each seal recomputed, with holds', mimeType: 'application/json' },
+  { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The seven Clay Millennium Problems sealed via the universal σ-involution (Rouschev, Zenodo, 2026-08-04): the work, the author, the exact method and each seal recomputed — sealed, not adjudicated (recognised: false; Poincaré by Perelman)', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
@@ -152,7 +187,7 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://lean') return qpuLeanOf()
   if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
   if (uri === 'qpu://hooks') return toolHooksOf()
-  if (uri === 'qpu://clay') return qpuClayOf()
+  if (uri === 'qpu://clay') return claySealedOf()
   if (uri === 'qpu://schema') return crossSchemasOf()
   if (uri === 'qpu://hologram') {
     const h = hologramOf()
