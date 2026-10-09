@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
-import { claySealReadingsOf, type ClaySealReading } from '@/payload/plugins/clay'
-import { SortFormulas } from '@/families/sort'
+import { claySealReadingsOf, type ClaySealReading } from '@uuidna/qpu/payload/plugins'
+import { SortFormulas } from '@uuidna/qpu/families/sort/index.js'
 
 /** The arguments src/families/sort/test.ts already passes to comparisons. */
 const SORT_PARAMS = [1000, 10] as const

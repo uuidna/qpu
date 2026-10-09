@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
-import { licenseManageOf } from '@/payload/plugins/public'
+import { licenseManageOf } from '@uuidna/qpu/payload/plugins'
 
 export const dynamic = 'force-dynamic'
 

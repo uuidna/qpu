@@ -1,7 +1,7 @@
 export { adminPlugin, collectionPlugin, corsPlugin, editorPlugin, globalPlugin, seedPlugin, typescriptPlugin } from './surface.js'
 export { billingPlugin, usageBillOf } from './billing.js'
 export { postQuantumUpgradeOf, upgradePlugin } from './upgrade.js'
-export { clayPrizeOf, claySealReadingsOf, openMathScaleOf } from './clay.js'
+export { clayPrizeOf, claySealReadingsOf, openMathScaleOf, type ClaySealReading } from './clay.js'
 export { clayVideosOf, videoParseOf, videoParserOf, videoPlugin } from './video.js'
 export { domainReadingsOf, domainsPlugin } from './domains.js'
 export { connectorAnswerOf, connectorExamOf, connectorUseOf, permaAnswerOf, permaManOf, permaTenantOf, permaculturePlugin, permacultureVisionOf, publicConnectorOf, valueForMoneyOf } from './permaculture.js'
@@ -153,6 +153,7 @@ export {
   publicMcpOf,
   publicPlugin,
   publicSurfaceOf,
+  saleRoyaltyOf,
   variantLeadOf,
 } from './public.js'
 export {

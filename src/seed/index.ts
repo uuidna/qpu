@@ -1,7 +1,8 @@
 import type { Payload } from 'payload'
 import { qpuCiteOf, qpuContentUuidOf, qpuFacesOf, qpuInstallOf, qpuPurposeOf } from '@uuidna/qpu'
-import { formulatedCatalogOf } from '../payload/plugins/ecommerce'
-import { saleRoyaltyOf } from '../payload/plugins/public'
+// the app consumes QPU through the package (its built dist), not src internals — so a bundler never recompiles the
+// index<->lattice core and the Payload-default app stays close to the template.
+import { formulatedCatalogOf, saleRoyaltyOf } from '@uuidna/qpu/payload/plugins'
 import { receipts } from '../receipts/index'
 import { docs as generated } from './docs'
 

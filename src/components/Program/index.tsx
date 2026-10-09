@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { qpuHarnessesOf } from '@uuidna/qpu'
-import { usageBillOf } from '@/payload/plugins/billing'
+import { usageBillOf } from '@uuidna/qpu/payload/plugins'
 import { Fragment } from 'react'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import { Badge } from '@/components/ui/badge'
