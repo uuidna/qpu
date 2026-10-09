@@ -52,6 +52,15 @@ export type GateCourtCase = {
   reviewed: GateCall
   fidelity: GateCall
   standing: GateCall
+  /** The full legal framework, each a lean formula (only lean evidence is accepted): law.lawful is the safety floor
+   *  (genuine harm/illegality/fabrication, upheld against the author too), law.violation is work against the order,
+   *  law.redirected is the measure the order lost to the required bar, law.remedy is what a lead is owed. */
+  lawful: GateCall
+  violation: GateCall
+  redirected: GateCall
+  remedy: GateCall
+  /** Where the matter is heard. Every case gets a forum and a remedy — none is refused; a floor failure is a LEAD. */
+  forum: string
   /** Wall-clock ms for this trial (recomputed each call). */
   ms: number
   allow: boolean
@@ -100,6 +109,8 @@ export const gateCourtTrialOf = (input: {
   gate: GateCall
   confidence?: number
   required?: number
+  harm?: number
+  against?: number
   note?: string
 }): GateCourtCase => {
   const t0 = Date.now()
@@ -123,11 +134,29 @@ export const gateCourtTrialOf = (input: {
   const receipts = receiptsOf(input.gate, trialCall, fidelityCall)
   const standing = LawFormulas.standing(receipts)
   const standingCall = callOf('law.standing', [receipts], standing, 'law')
+  // THE FULL LEGAL FRAMEWORK, every measure a lean formula — only lean evidence is accepted. law.lawful(harm) is the
+  // safety floor, upheld against the author too; law.violation(against) is work against the order; law.redirected is
+  // the measure the order lost to the required bar; law.remedy is what a lead is owed. Nothing is refused: a floor or
+  // framework failure routes the matter to a LEAD in its forum, with its remedy owed — the court handles it, legally.
+  const harm = typeof input.harm === 'number' && Number.isSafeInteger(input.harm) ? Math.max(0, input.harm) : 0
+  const against = typeof input.against === 'number' && Number.isSafeInteger(input.against) ? Math.max(0, input.against) : 0
+  const lawful = LawFormulas.lawful(harm)
+  const violation = LawFormulas.violation(against)
+  const redirected = LawFormulas.redirected(required, confidence)
+  const lawfulCall = callOf('law.lawful', [harm], lawful, 'law')
+  const violationCall = callOf('law.violation', [against], violation, 'law')
+  const redirectedCall = callOf('law.redirected', [required, confidence], redirected, 'law')
+  const forum = `${input.gate.name.split('.')[0]} · /qpu/court`
   const allow =
     input.gate.holds === true &&
     trial.value === 1 &&
     fidelity.value === 1 &&
-    standing.value > 0
+    standing.value > 0 &&
+    lawful.value === 1 &&
+    violation.holds === true
+  const leads = allow ? 0 : 1
+  const remedy = LawFormulas.remedy(0, leads)
+  const remedyCall = callOf('law.remedy', [0, leads], remedy, 'law')
   return {
     case: input.case,
     gate: input.gate,
@@ -137,9 +166,14 @@ export const gateCourtTrialOf = (input: {
     reviewed: reviewedCall,
     fidelity: fidelityCall,
     standing: standingCall,
+    lawful: lawfulCall,
+    violation: violationCall,
+    redirected: redirectedCall,
+    remedy: remedyCall,
+    forum,
     ms: Math.max(0, Date.now() - t0),
     allow,
-    holds: allow && fidelity.holds === true && standing.holds === true,
+    holds: allow && fidelity.holds === true && standing.holds === true && lawful.holds === true,
     goal: allow ? 'OPEN' : 'LEAD',
     note:
       input.note ??
