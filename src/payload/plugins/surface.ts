@@ -45,5 +45,7 @@ export const typescriptPlugin = (outputFile: string): QpuPlugin => (config) => (
 
 export const seedPlugin = <P>(seed: (payload: P) => Promise<unknown>): QpuPlugin => (config) => ({
   ...config,
-  onInit: async (payload: unknown) => { await seed(payload as P) },
+  // seeding is best-effort and must never crash init: a seed error here would 500 every page. The request path
+  // (src/app/_data) advances the seed per request with the same tolerance, so a failed slice is retried, not fatal.
+  onInit: async (payload: unknown) => { await seed(payload as P).catch(() => undefined) },
 })
