@@ -15,18 +15,19 @@ import { sha256Hex } from '../../../core/crypt.js'
 export * from './docdb.js'
 // the front door lives in router.ts (cooled by the heat family); it stays this module's default export
 export { worker as default } from './router.js'
-import { qpuCircuitOf, qpuCircuitHolds } from './circuit.js'
-export { qpuCircuitOf, qpuCircuitHolds } from './circuit.js'
+import { qpuCircuitOf, qpuCircuitHolds, qpuCircuitLiveOf } from './circuit.js'
+export { qpuCircuitOf, qpuCircuitHolds, qpuCircuitLiveOf } from './circuit.js'
 import { qpuApiDoorsOf, qpuDocsOf, qpuDocsHolds } from './readme.js'
 export { qpuDocsOf, qpuDocsHolds, qpuReadmeOf, qpuReadmeHolds } from './readme.js'
 import { qpuImproveOf, qpuImproveHolds, qpuTrainOf, qpuTrainHolds, qpuProveOf, qpuProveHolds } from './doors.js'
 export { qpuImproveOf, qpuImproveHolds, qpuTrainOf, qpuTrainHolds, qpuProveOf, qpuProveHolds } from './doors.js'
 import { qpuLeanOf, qpuLeanHolds } from './proof.js'
 export { qpuLeanOf, qpuLeanHolds } from './proof.js'
-import { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
-export { qpuQuantumOf, qpuQuantumHolds } from './quantum.js'
+import { embeddedConstants } from './embedded.js'
+import { qpuQuantumOf, qpuQuantumHolds, qpuQuantumLiveOf } from './quantum.js'
+export { qpuQuantumOf, qpuQuantumHolds, qpuQuantumLiveOf } from './quantum.js'
 import { qpuToolsOf, qpuMcpOf, qpuThroughSchemaOf } from './mcp.js'
-export { qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds, qpuThroughSchemaOf, qpuMcpDoorsOf, qpuMcpErrorsOf, qpuFailureOf } from './mcp.js'
+export { qpuToolsOf, qpuMcpOf, qpuMcpCallOf, qpuMcpHolds, qpuMcpFailuresOf, qpuMcpChecksOf, qpuThroughSchemaOf, qpuMcpDoorsOf, qpuMcpErrorsOf, qpuFailureOf } from './mcp.js'
 import { qpuShorTryOf, qpuShorOf, qpuShorHolds } from './shor.js'
 export { qpuShorTryOf, qpuShorTryHolds, qpuShorOf, qpuShorReceiptsOf, qpuShorReceiptsHolds, qpuShorHolds } from './shor.js'
 import { qpuSandboxOf, qpuSandboxRunOf } from './sandbox.js'
@@ -1750,7 +1751,30 @@ const weightOf = (amps: bigint[], q: number): { off: bigint; on: bigint } => {
  * @kind builder
  * @evidence qpuComputerHolds
  */
-export const qpuComputerOf = onceOf(() => {
+/** Runtime reads the drift-checked embed so a cold Worker isolate never JIT-compiles qpuComputerLiveOf (~2.8s shared
+ *  graph); falls back to live when the embed is absent. The gate recomputes live at push via qpuComputerLiveOf
+ *  (embed-lean regenerates + the drift-guard asserts embed == regen), so "verify all it computes alone" holds. */
+export const qpuComputerOf = onceOf((): ReturnType<typeof qpuComputerLiveOf> => (embeddedConstants.computer as ReturnType<typeof qpuComputerLiveOf> | undefined) ?? qpuComputerLiveOf())
+
+/** THE COOL IS FRESH, AT THE GATE, FROM ONE PLACE. The runtime READS embeddedConstants (never JIT-compiles the heavy
+ *  graph); this is the single predicate that recomputes all four LIVE — bypassing the embed via the *LiveOf — and
+ *  asserts the embed equals the live recompute. embed-lean regenerates the embed from the same *LiveOf, so a changed
+ *  heavy function makes this fail rather than ship a stale cool. The deployment gate and scripts/embedded.test.mjs both
+ *  call this, so "verify all it computes alone" is checked live at every push, not merely in CI. Returns the drifted
+ *  keys (empty when fresh) so the gate names what went stale instead of a bare false. */
+export const qpuEmbedDriftOf = (): string[] => {
+  const safe = (v: unknown) => JSON.stringify(v, (_k, x) => (typeof x === 'bigint' ? x.toString() : x))
+  const live: Record<'computer' | 'quantum' | 'circuit' | 'lean', unknown> = {
+    computer: qpuComputerLiveOf(),
+    quantum: qpuQuantumLiveOf(),
+    circuit: qpuCircuitLiveOf(),
+    lean: qpuLeanOf(),
+  }
+  return (['computer', 'quantum', 'circuit', 'lean'] as const).filter((k) => safe(embeddedConstants[k]) !== safe(live[k]))
+}
+export const qpuEmbedFreshHolds = (): boolean => qpuEmbedDriftOf().length === n - n
+
+export const qpuComputerLiveOf = onceOf(() => {
   const faces = qpuFacesOf()
   const dim = mintOf(n)
   const prepare = ampsOf(dim)
@@ -10290,10 +10314,12 @@ const qpuOutputSchemasOf = (): Record<string, QpuOutputSchema> => {
 export const qpuMcpToolsListOf = onceOf(() => {
   // every listed door reaches everything, said in one line: tools/list stays under a KiB per door (the connect bill),
   // and the through-schema itself travels with the man page, one call away
-  const sealed = qpuToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, `${description} ${THROUGH_LINE}`, inputSchema, { sealed: true as const, morph: false as const }))
-  const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema }) =>
-    qpuMcpToolShapeOf(name, `${description} ${THROUGH_LINE}`, inputSchema, { sealed: false as const, morph: true as const }))
+  // sealed/morph are NOT carried per row: a tool's category is already its name prefix (`crypto_` morphs, the rest are
+  // sealed doors), and the method-category source (qpuMethodCategoriesOf) is the one place that discriminates them.
+  // Repeating the pair on every tools/list row was ~a KiB of non-spec bytes paid on every connect, for nothing read —
+  // tools/list now carries only the MCP-spec fields and stays under a KiB per door (the connect bill, theorem-checked).
+  const sealed = qpuToolsOf().map(({ name, description, inputSchema }) => qpuMcpToolShapeOf(name, `${description} ${THROUGH_LINE}`, inputSchema))
+  const cybersecurity = qpuCybersecurityToolsOf().map(({ name, description, inputSchema }) => qpuMcpToolShapeOf(name, `${description} ${THROUGH_LINE}`, inputSchema))
   return [...sealed, ...cybersecurity]
 })
 

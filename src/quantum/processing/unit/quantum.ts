@@ -37,6 +37,7 @@ import {
 } from './index.js'
 import { qpuCircuitOf, qpuCircuitHolds } from './circuit.js'
 import { qpuDocsOf, qpuDocsHolds } from './readme.js'
+import { embeddedConstants } from './embedded.js'
 
 /**
  * The quantum document: circuit, lattice, Shor run, sequence, purpose, evidence, network and design readings in one JSON-LD document.
@@ -44,7 +45,10 @@ import { qpuDocsOf, qpuDocsHolds } from './readme.js'
  * @kind builder
  * @evidence qpuQuantumHolds
  */
-export const qpuQuantumOf = onceOf(() => {
+/** Runtime reads the drift-checked embed so a cold isolate never JIT-compiles qpuQuantumLiveOf; falls back to live.
+ *  The gate recomputes live at push via qpuQuantumLiveOf (embed-lean regenerates + the drift-guard asserts equality). */
+export const qpuQuantumOf = onceOf((): ReturnType<typeof qpuQuantumLiveOf> => (embeddedConstants.quantum as ReturnType<typeof qpuQuantumLiveOf> | undefined) ?? qpuQuantumLiveOf())
+export const qpuQuantumLiveOf = onceOf(() => {
   const cube = qpuCubeOf()
   const handle = qpuHandleOf()
   const faces = qpuFacesOf()

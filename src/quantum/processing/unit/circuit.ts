@@ -45,6 +45,7 @@ import {
   xorOf,
   zGateOf,
 } from './index.js'
+import { embeddedConstants } from './embedded.js'
 
 /**
  * The running 3-qubit circuit on exact integer amplitudes: split, Bell, GHZ, interference, no-clone, teleport, kickback, Deutsch, superdense coding, monogamy; each with its Born weights.
@@ -52,7 +53,10 @@ import {
  * @kind builder
  * @evidence qpuCircuitHolds
  */
-export const qpuCircuitOf = onceOf(() => {
+/** Runtime reads the drift-checked embed so a cold isolate never JIT-compiles qpuCircuitLiveOf; falls back to live.
+ *  The gate recomputes live at push via qpuCircuitLiveOf (embed-lean regenerates + the drift-guard asserts equality). */
+export const qpuCircuitOf = onceOf((): ReturnType<typeof qpuCircuitLiveOf> => (embeddedConstants.circuit as ReturnType<typeof qpuCircuitLiveOf> | undefined) ?? qpuCircuitLiveOf())
+export const qpuCircuitLiveOf = onceOf(() => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
   const coil = qpuCoilOf()

@@ -8,16 +8,10 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 const idx = await import('../dist/quantum/processing/unit/index.js')
-const prf = await import('../dist/quantum/processing/unit/proof.js')
-const emb = await import('../dist/quantum/processing/unit/embedded.js')
-const bigintSafe = (v) => JSON.parse(JSON.stringify(v, (_k, x) => (typeof x === 'bigint' ? x.toString() : x)))
 
+// ONE PREDICATE, TWO CALLERS. qpuEmbedDriftOf (in the unit) recomputes all four heavy constants LIVE via the *LiveOf —
+// bypassing the embed the runtime reads — and names the keys that drifted. The deployment gate calls the same predicate,
+// so the cool is proved fresh at every push, not merely here in CI. A non-empty result means embedded.ts is stale.
 test('the embedded heavy constants are fresh — no drift from the live computation (rerun npm run lean:embed on failure)', () => {
-  const fresh = {
-    computer: bigintSafe(idx.qpuComputerOf()),
-    quantum: bigintSafe(idx.qpuQuantumOf()),
-    circuit: bigintSafe(idx.qpuCircuitOf()),
-    lean: bigintSafe(prf.qpuLeanOf()),
-  }
-  for (const k of ['computer', 'quantum', 'circuit', 'lean']) assert.deepEqual(emb.embeddedConstants[k], fresh[k], `embedded.ts "${k}" is stale — run \`npm run lean:embed\``)
+  assert.deepEqual(idx.qpuEmbedDriftOf(), [], 'embedded.ts is stale for these keys — run `npm run lean:embed`')
 })

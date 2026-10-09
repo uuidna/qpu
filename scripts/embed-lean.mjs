@@ -35,10 +35,14 @@ for (const [name, theorem] of ev.leanTheoremBlocksOf(source)) {
 const idx = await import(pathToFileURL(join(root, 'dist/quantum/processing/unit/index.js')).href)
 const prf = await import(pathToFileURL(join(root, 'dist/quantum/processing/unit/proof.js')).href)
 const bigintSafe = (v) => JSON.parse(JSON.stringify(v, (_k, x) => (typeof x === 'bigint' ? x.toString() : x)))
+// REGENERATE FROM LIVE, NOT FROM THE EMBED. qpuComputerOf/qpuQuantumOf/qpuCircuitOf now READ embeddedConstants at
+// runtime (the cool), so calling them here would read this file's own prior output — a circular regeneration that can
+// never correct a drift. The *LiveOf variants bypass the embed and compute from the lattice, so the embed is always a
+// fresh function of the source. qpuLeanOf stays live (it reads no embed; its heavy deps are the cooled three).
 const embeddedConstants = {
-  computer: bigintSafe(idx.qpuComputerOf()),
-  quantum: bigintSafe(idx.qpuQuantumOf()),
-  circuit: bigintSafe(idx.qpuCircuitOf()),
+  computer: bigintSafe(idx.qpuComputerLiveOf()),
+  quantum: bigintSafe(idx.qpuQuantumLiveOf()),
+  circuit: bigintSafe(idx.qpuCircuitLiveOf()),
   lean: bigintSafe(prf.qpuLeanOf()),
 }
 
