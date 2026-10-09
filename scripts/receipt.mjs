@@ -32,7 +32,9 @@ const call = async (name, args, again = 0) => {
 }
 /** A hex program at its address on the host; the formula's own reading rides with the last step. */
 const hex = async (family, program, params = []) => { const sc = await call('cite', { hex: { family, program: [program], params } }); return { ...sc, ...(sc.steps?.at?.(-1)?.reading ?? {}) } }
-const families = async () => (await call('cite', { doors: true })).formulas?.map((f) => f.name.split('.')[0]).filter((f, i, a) => a.indexOf(f) === i && !['qpu', 'crypto', 'api', 'data', 'gate'].includes(f)).sort() ?? []
+// full: the doors listing folds its ~9k-formula array into a recognition stub by default (token-minimal wire); the gate
+// needs the names themselves, so it spends the enthalpy and reads the whole document
+const families = async () => (await call('cite', { doors: true, full: true })).formulas?.map((f) => f.name.split('.')[0]).filter((f, i, a) => a.indexOf(f) === i && !['qpu', 'crypto', 'api', 'data', 'gate'].includes(f)).sort() ?? []
 const faces = 14
 /** SPLIT, NOT SEQUENCE — one primitive for every family walk. The items are run through a coordinated pool of `faces`
  *  workers, so the wall time is the slowest item, not their sum; results keep input order, so a receipt is the same
