@@ -5,7 +5,6 @@ import {
   found,
   headers,
   hexHref,
-  integrityOnceOf,
   isUnknownTool,
   lost,
   mintOf,
@@ -106,11 +105,14 @@ export const worker = {
       if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: emptyHeaders({ etag: row.etag, ...deployed }) })
       return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag, ...deployed } })
     }
-    if (host !== unit.host || host.includes('*') || !unit.holds || !integrityOnceOf()) {
-      return jsonOf(JSON.parse(dead), lost)
-    }
-    const evidence = qpuQuantumOf().evidence
-    if (evidence.provenance.device !== 'exact-amplitudes' || evidence.scaling.advantage !== false) {
+    // THE SELF-PROOF IS A BUILD/BOOT INVARIANT, NOT A PER-REQUEST COST. qpuIntegrityOf runs qpuQuantumOf (the Shor
+    // state-vector simulation) and qpuLeanOf (all 145 theorem holds) — together ~5.6s on a cold isolate. Running them in
+    // this gate on every isolate's FIRST request blew the Worker's CPU budget before any route resolved: 1102 on every
+    // door (even static /qpu.css), the response never completed, nothing cached, so every isolate stayed cold — a death
+    // spiral. The unit still proves itself end to end — at /, /prove, /ready, /lean, and in CI (boot --prove gates the
+    // ship, so a build that does not prove never deploys). The per-request gate keeps only the cheap structural
+    // invariant (host + unit.holds, ~0ms), which is all a live isolate needs before it routes.
+    if (host !== unit.host || host.includes('*') || !unit.holds) {
       return jsonOf(JSON.parse(dead), lost)
     }
     const url = new URL(request.url)
