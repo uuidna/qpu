@@ -1,6 +1,6 @@
 import { qpuContentUuidOf, qpuUuidReceiptOf, qpuHexRegisterOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
 import { chooseOf, mintOf, qpuHexParamMaxOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
-import { qpuContextOf, qpuHexDecodeOf, qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
+import { qpuContextOf, qpuHexDecodeOf, qpuHexFamiliesOf, qpuHexDiscoverOf } from '../../quantum/processing/unit/index.js'
 // the lattice names and the three formulas every number here is written in
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
@@ -267,5 +267,55 @@ export const crossSchemasHolds = (): boolean => {
     c['@id'] === `urn:uuid:${c.identifier}` &&
     c.hasPart.length > 0 &&
     c.hasPart.every((s) => s['@type'] === 'DefinedTermSet' && crossSchemaHolds(s.name))
+  )
+}
+
+/**
+ * ORGANISE THE DISCOVERED RELATIONS AS ONE SCHEMA.ORG SCHEMA.
+ *
+ * The formulas discover each other (qpuHexDiscoverOf): no list is kept, every family's formulas are evaluated over the
+ * lattice's own constants and each value two or more families reach is a relation. schema.org already has the type for a
+ * vocabulary of addressed terms — a DefinedTermSet whose DefinedTerms are the relations. Each term is addressed by the
+ * hex-program UUID of a way that reaches it, so the schema is not written beside the discovery but is the discovery's own
+ * addresses under one @context. The set's @id is the content UUID of the values, so the same lattice yields the same
+ * schema everywhere, and nothing here is enumerated by hand.
+ * @wing fusion
+ * @kind builder
+ * @evidence crossDiscoverSchemaHolds
+ */
+export const crossDiscoverSchemaOf = () => {
+  // the discoverer covers every hex family (a split walk under the hood when they outgrow one window); here the whole
+  // discovery is consolidated as one schema.org set, so the lattice's relations are a standard-schema document too.
+  const relations = qpuHexDiscoverOf().relations
+  const id = qpuContentUuidOf({ schema: 'discover', values: relations.map((r) => r.value) })
+  return {
+    '@context': qpuContextOf(),
+    '@type': 'DefinedTermSet' as const,
+    '@id': `urn:uuid:${id}`,
+    name: 'discovered relations',
+    identifier: id,
+    hasDefinedTerm: relations.map((r) => ({
+      '@type': 'DefinedTerm' as const,
+      '@id': `urn:uuid:${r.ways[0]!.hex}`,
+      name: `${r.families.map((f) => f.replace('Qpu.', '')).join(' = ')} at ${r.value}`,
+      termCode: r.value,
+      identifier: r.ways[0]!.hex,
+    })),
+  }
+}
+
+/** The schema is schema.org-shaped and each term's address decodes to a way whose family is one the relation joins. */
+export const crossDiscoverSchemaHolds = (): boolean => {
+  const s = crossDiscoverSchemaOf()
+  const byValue = new Map(qpuHexDiscoverOf().relations.map((r) => [r.value, r.families]))
+  return (
+    s['@context'][0] === 'https://schema.org' &&
+    s['@type'] === 'DefinedTermSet' &&
+    s['@id'] === `urn:uuid:${s.identifier}` &&
+    s.hasDefinedTerm.length > 0 &&
+    s.hasDefinedTerm.every((t) => {
+      const d = qpuHexDecodeOf(t.identifier) as { family?: string | null; holds?: boolean }
+      return d.holds === true && d.family != null && (byValue.get(t.termCode) ?? []).includes(d.family)
+    })
   )
 }
