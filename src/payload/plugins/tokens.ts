@@ -30,7 +30,8 @@ const L = { ...qpuLatticeNamesOf(), tenOf }
 const REDACTED = '[redacted]' as const
 /** Four bytes per LLM token — presentation.ts tokens: 'four bytes'. */
 const BYTES_PER_TOKEN = 4
-/** Cap related/array dumps so seal-wave-style OOM cannot recur. Depth is walk depth, not coins. */
+/** Cap related/array dumps so seal-wave-style OOM cannot recur. Depth is walk depth, not coins.
+ *  MAX_ARRAY is compactOf's cap (sealPayloadOf); the redact-only pass never truncates (fold equality, full: true). */
 const MAX_ARRAY = L.faces
 const MAX_STRING = tenOf(L.hexbit) // 10000 chars
 const MAX_DEPTH = L.faces // 14 — deep enough for usage/matrix trees; related arrays still sliced to faces
@@ -78,7 +79,10 @@ export const redactSecretsOf = (value: unknown, depth = 0): unknown => {
     return value.length > MAX_STRING ? `${value.slice(0, MAX_STRING)}…` : value
   }
   if (typeof value !== 'object' || value === null) return value
-  if (Array.isArray(value)) return value.slice(0, MAX_ARRAY).map((v) => redactSecretsOf(v, depth + 1))
+  // redact-only: never truncate here (the caller relies on fold equality and on full: true meaning the whole
+  // document — array capping for OOM is compactOf's job, applied by sealPayloadOf). Depth/string caps below stay
+  // as cycle- and blast-radius guards.
+  if (Array.isArray(value)) return value.map((v) => redactSecretsOf(v, depth + 1))
   const out: Record<string, unknown> = {}
   for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
     if (SECRET_KEY.test(k)) {
