@@ -1,4 +1,4 @@
-import { qpuDocsOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
+import { qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
 import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
@@ -64,29 +64,62 @@ const leanHandles = (): readonly { heading: string; handle: string; uuid: string
   return [...seen.values()]
 }
 
-// SERVE FAST, STABLE OFFSETS. The catalogue is a memoized deterministic spine — the fixed aggregates, then every
-// family (formulas and schema), every lean UUID program and every hologram scale — computed once, not folded afresh
-// on each list. The one collection that grows as the unit runs (the per-stream receipt folders) is appended at the
-// TAIL, so append-growth never shifts an offset into the spine: a hexbit-folder cursor stays valid for the whole run.
-let spine: Resource[] | undefined
-const stableSpineOf = (): Resource[] => (spine ??= [
+// SPECIAL CRAFTED QUERY → A SCOPED COLLECTION OF COMPATIBLE PROGRAMS. qpu://compatible/{program} takes a family name or
+// a hex-program UUID and returns only the programs that CROSS with it — the ways that reach a value it also reaches,
+// found by the theorem-anchored discovery over the scope's own window. A client loads this scoped set, not the whole
+// catalogue, so it asks for exactly the programs compatible with where it is and spends far less.
+type CompatProgram = { family: string; formula: string; params: number[]; hex: string; value: string }
+const compatibleOf = (key: string): { scope: string; family: string; values: string[]; programs: CompatProgram[] } | undefined => {
+  const fams = [...qpuHexFamiliesOf().keys()]
+  let family: string | undefined
+  if (qpuHexFamiliesOf().has(key)) family = key
+  else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(key)) {
+    const d = qpuHexDecodeOf(key) as { family?: string | null }
+    family = typeof d.family === 'string' ? d.family : undefined
+  }
+  if (!family || !qpuHexFamiliesOf().has(family)) return undefined
+  const from = Math.max(0, fams.indexOf(family))
+  const relations = qpuHexDiscoverOf(from).relations.filter((r) => r.families.includes(family!))
+  const programs = relations.flatMap((r) => r.ways.map((w) => ({ family: w.family, formula: w.formula, params: w.params, hex: w.hex, value: r.value })))
+  return { scope: key, family, values: relations.map((r) => r.value), programs }
+}
+
+// BY DEFAULT, THE QUANTUM COMPUTER — THE REST ON REQUEST. A bare resources/list serves only the core: the aggregates
+// that describe the quantum computer itself (its receipts, its hex catalogue, its hologram, its fused tools, its Lean
+// proof, its schema, its paper and its docs). Each of these is an index that, read, names the rest — so nothing is
+// hidden, only not spilled. The 1149 families, their schemas, every lean UUID program and every hologram scale load
+// ON REQUEST: resources/list { scope: 'Qpu.Mint' } returns that family's scoped collection, { scope: 'all' } the whole
+// catalogue (paged into hexbit folders). A client that only computes loads eight resources, not two thousand.
+let core: Resource[] | undefined
+const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://receipts', name: 'receipts', title: 'Receipt streams', description: 'Every quantum-receipt stream: head, length, chain, holds', mimeType: 'application/json' },
-  { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles', mimeType: 'application/json' },
+  { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles — the index of the rest', mimeType: 'application/json' },
   { uri: 'qpu://hologram', name: 'hologram', title: 'Hologram streams', description: 'One signed SHA-256 UUID stream per hologram scale and the Merkle root of all of them', mimeType: 'application/json' },
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
-  { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed', mimeType: 'application/json' },
+  { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
+])
+let rest: Resource[] | undefined
+const restOf = (): Resource[] => (rest ??= [
   ...families().map((f) => ({ uri: `qpu://formulas/${f}`, name: `formulas-${f}`, title: `Family ${f}`, description: `The formulas of the ${f} hex family`, mimeType: 'application/json' as const })),
   ...families().map((f) => ({ uri: `qpu://schema/${f}`, name: `schema-${f}`, title: `Schema ${f}`, description: `The ${f} family as a schema.org DefinedTermSet of hex-program UUIDs`, mimeType: 'application/json' as const })),
   ...leanHandles().map((h) => ({ uri: `qpu://lean/${h.handle}`, name: `lean-${h.handle}`, title: `Theorem ${h.heading}`, description: `The ${h.heading} lean computation — a UUID program ${h.uuid}, addressed by its hexbit handle ${h.handle}; recomputed, with holds`, mimeType: 'application/json' as const })),
   ...Object.keys(hologramOf().streams).map((s) => ({ uri: `qpu://hologram/${s}`, name: `hologram-${s}`, title: `Scale ${s}`, description: `Signed fragments of the ${s} scale`, mimeType: 'application/json' as const })),
 ])
-const resourcesOf = (): Resource[] => [
-  ...stableSpineOf(),
-  ...streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const })),
+// One family's scoped collection: its formulas, its schema, and the crafted query for the programs it is compatible with.
+const familyScopeOf = (f: string): Resource[] => [
+  { uri: `qpu://formulas/${f}`, name: `formulas-${f}`, title: `Family ${f}`, description: `The formulas of the ${f} hex family`, mimeType: 'application/json' },
+  { uri: `qpu://schema/${f}`, name: `schema-${f}`, title: `Schema ${f}`, description: `The ${f} family as a schema.org DefinedTermSet of hex-program UUIDs`, mimeType: 'application/json' },
+  { uri: `qpu://compatible/${f}`, name: `compatible-${f}`, title: `Compatible with ${f}`, description: `The scoped collection of programs that cross with ${f}`, mimeType: 'application/json' },
 ]
+const streamFolders = (): Resource[] => streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const }))
+const resourcesOf = (scope?: string): Resource[] => {
+  if (scope === 'all') return [...coreOf(), ...restOf(), ...streamFolders()]
+  if (scope && qpuHexFamiliesOf().has(scope)) return [...coreOf(), ...familyScopeOf(scope)]
+  return coreOf()
+}
 
 const TEMPLATES: Template[] = [
   { uriTemplate: 'qpu://receipts/{stream}', name: 'receipt-stream', title: 'Receipt stream', description: 'One receipt stream by name', mimeType: 'application/json' },
@@ -94,6 +127,7 @@ const TEMPLATES: Template[] = [
   { uriTemplate: 'qpu://schema/{family}', name: 'schema-family', title: 'Family schema', description: 'One hex family as a schema.org DefinedTermSet; each term is its formula’s hex-program UUID', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hex/{uuid}', name: 'hex-run', title: 'Hex program run', description: 'Run the hex program a UUID encodes; the run is a quantum receipt', mimeType: 'application/json' },
   { uriTemplate: 'qpu://lean/{handle}', name: 'lean-theorem', title: 'Lean theorem', description: 'One lean computation by its hexbit handle (the 8 hex of its statement UUID); recomputed, with holds', mimeType: 'application/json' },
+  { uriTemplate: 'qpu://compatible/{program}', name: 'compatible-programs', title: 'Compatible programs', description: 'A crafted query — a family name or a hex-program UUID — returns the scoped collection of programs that cross with it (reach a value it also reaches), so a client loads only what is compatible with where it is', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hologram/{scale}', name: 'hologram-scale', title: 'Hologram scale', description: 'Signed, chained fragments of one hologram scale with their Merkle proofs', mimeType: 'application/json' },
 ]
 
@@ -107,8 +141,9 @@ const readOf = async (uri: string): Promise<unknown> => {
     const h = hologramOf()
     return { kind: h.kind, root: h.root, publicKeys: h.publicKeys, entries: h.entries, scales: Object.fromEntries(Object.entries(h.streams).map(([k, v]) => [k, { length: v.length, head: v.at(-1)?.uuid }])), holds: h.holds }
   }
-  const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram|lean)\/(.+)$/.exec(uri) ?? []
+  const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram|lean|compatible)\/(.+)$/.exec(uri) ?? []
   const name = key ? decodeURIComponent(key) : ''
+  if (kind === 'compatible') return compatibleOf(name)
   // HARD FAIL FAST ON A HEX VIOLATION. A hex address is self-verifying: a lean UUID program that does not hold, or an
   // ill-formed hex UUID, is not a soft miss but a violation of the unit's own math — it throws at once (an RPC error),
   // never served as if sound. An address that simply names nothing (unknown handle/family/stream) is still a plain
@@ -403,7 +438,10 @@ const completeOf = (ref: { type?: unknown; name?: unknown; uri?: unknown }, arg:
 }
 
 qpuMcpRegisterOf('resources/list', (p) => {
-  const { page, ...rest } = paged('resources', resourcesOf(), (r) => r.uri, p)
+  // The crafted query is `scope`: absent → the quantum computer core; a family name → that family's scoped collection;
+  // 'all' → the whole catalogue in hexbit folders. The referer-driven default a client wants is just this param.
+  const scope = typeof p.scope === 'string' ? p.scope : undefined
+  const { page, ...rest } = paged('resources', resourcesOf(scope), (r) => r.uri, p)
   return { resources: page, ...rest }
 }, { resources: { subscribe: false, listChanged: false } })
 

@@ -26,14 +26,15 @@ test('initialize advertises every server capability — tools, prompts, resource
   for (const c of ['tools', 'prompts', 'resources', 'completions', 'logging']) assert.ok(caps[c], `capability ${c} not advertised`)
 })
 
-// Walk every hexbit folder to the end — the listing is hex-addressed and stable, so following nextCursor terminates;
-// the bound is only a runaway guard, never a cap on what is served.
-const allResources = async () => {
+// Walk every hexbit folder of a scope to the end — the listing is hex-addressed and stable, so following nextCursor
+// terminates; the bound is only a runaway guard, never a cap on what is served. No scope → the quantum computer core.
+const allResources = async (scope) => {
   const uris = []
   let cursor
   let pages = 0
   do {
-    const list = (await rpc('resources/list', cursor ? { cursor } : {})).result
+    const params = { ...(scope ? { scope } : {}), ...(cursor ? { cursor } : {}) }
+    const list = (await rpc('resources/list', params)).result
     for (const r of list.resources) uris.push(r.uri)
     cursor = list.nextCursor
     pages += 1
@@ -42,16 +43,27 @@ const allResources = async () => {
   return uris
 }
 
-test('resources/list covers all combinations across pages — the hex catalogue, every family, the README and docs', async () => {
-  const uris = await allResources()
-  assert.ok(uris.includes('qpu://hex'), 'qpu://hex catalogue not listed')
-  assert.ok(uris.some((u) => u.startsWith('qpu://formulas/')), 'no family-formula resource reachable across pages')
-  assert.ok(uris.includes('qpu://readme'), 'qpu://readme (the paper) not listed')
-  assert.ok(uris.includes('qpu://docs'), 'qpu://docs not listed')
+test('by default resources/list is the quantum computer core — the aggregates only, one page, the rest not spilled', async () => {
+  const core = await allResources()
+  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram']) {
+    assert.ok(core.includes(u), `core aggregate ${u} missing from the default listing`)
+  }
+  assert.ok(!core.some((u) => u.startsWith('qpu://formulas/')), 'the default listing spilled the families — they belong on request')
+  assert.ok(core.length <= 12, `the default listing is not lean: ${core.length} resources`)
+})
+
+test('the rest on request: scope "all" reaches every family, scope "Qpu.Mint" is its scoped collection', async () => {
+  const all = await allResources('all')
+  assert.ok(all.some((u) => u.startsWith('qpu://formulas/')), 'scope=all did not reach the family formulas')
+  assert.ok(all.includes('qpu://hex') && all.includes('qpu://readme'), 'scope=all dropped the core aggregates')
+  const scoped = await allResources('Qpu.Mint')
+  assert.ok(scoped.includes('qpu://formulas/Qpu.Mint'), 'the family scope did not include its formulas')
+  assert.ok(scoped.includes('qpu://compatible/Qpu.Mint'), 'the family scope did not include its compatible-programs query')
+  assert.ok(scoped.length < all.length, 'a family scope is not smaller than the whole catalogue')
 })
 
 test('resources/read returns a family’s formulas, the README as markdown, and qpu://hex/{uuid} runs a combination', async () => {
-  const family = (await allResources()).find((u) => u.startsWith('qpu://formulas/'))
+  const family = (await allResources('all')).find((u) => u.startsWith('qpu://formulas/'))
   const read = JSON.parse((await rpc('resources/read', { uri: family })).result.contents[0].text)
   assert.ok(Array.isArray(read.formulas) && read.formulas.length > 0, 'family resource carried no formulas')
   const uuid = idx.qpuHexUuidOf({ family: 'Qpu.Mint', program: ['chooseOf'], params: [14, 2] })
@@ -63,7 +75,7 @@ test('resources/read returns a family’s formulas, the README as markdown, and 
 })
 
 test('lean computations are UUID programs: addressed by hexbit handle or full uuid, each recomputed and holding', async () => {
-  const lean = (await allResources()).filter((u) => u.startsWith('qpu://lean/'))
+  const lean = (await allResources('all')).filter((u) => u.startsWith('qpu://lean/'))
   assert.ok(lean.length > 0, 'no lean computations distributed as hex-addressed resources')
   const handle = lean[0].split('/').pop()
   const body = JSON.parse((await rpc('resources/read', { uri: `qpu://lean/${handle}` })).result.contents[0].text)
