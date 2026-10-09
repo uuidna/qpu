@@ -166,23 +166,34 @@ export const worker = {
       const { publicDoorFetchOf } = await import('../../../payload/plugins/public.js')
       return publicDoorFetchOf(to, env)
     }
-    const handPublic = (apiPath: string) => {
-      const next = new URL(request.url)
-      next.pathname = apiPath
-      return handToPayload(new Request(next, request))
+    // THE UNIT'S OWN PUBLIC DOORS ARE SERVED DIRECTLY, not through the heavy Payload/opennext app (which pays ~44s of
+    // cold server init per isolate — measured). publicDoorFetchOf is the SAME handler the publicPlugin mounts at
+    // /api/qpu/* (publicMcpOf/publicCiteOf/publicCssOf/publicChatSearchOf/…); it 404s with denied:'payload' the
+    // /api/qpu paths it does NOT own (Payload's own endpoints, e.g. permaculture), which then fall through to Payload.
+    // So the unit doors (/mcp,/cite,/qpu.css,/api/qpu/chat ask-in-chat,…) answer at unit speed, no Payload cold start.
+    const publicDoorOf = async (to: Request = request): Promise<Response> => {
+      const { publicDoorFetchOf } = await import('../../../payload/plugins/public.js')
+      const r = await publicDoorFetchOf(to, env)
+      if (r.status === lost) {
+        const sentinel = (await r.clone().json().catch(() => null)) as { denied?: unknown } | null
+        if (sentinel && sentinel.denied === 'payload') return handToPayload(to)
+      }
+      return r
     }
     if (url.protocol === 'https:' && (underZone || ownDomain)) return handToPayload()
     const named = url.protocol === 'https:' && url.hostname === unit.host
     if (!named) return jsonOf(JSON.parse(dead), lost)
+    // The unit's own public doors under /api/qpu/* answer directly (not through the heavy Payload app); OPTIONS
+    // preflight still goes to Payload below so CORS is unchanged.
+    if (request.method !== 'OPTIONS' && path.startsWith('/api/qpu')) return publicDoorOf()
     // Payload answers its own preflight, so /admin and /api precede OPTIONS.
     if (path === '/admin' || path.startsWith('/admin/') || path === '/api' || path.startsWith('/api/')) return handToPayload()
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
     // Website HTML is Payload's Next frontend — never qpuPageOf beside it.
     const wantsHtml = request.method === 'GET' && /text\/html/.test(request.headers.get('accept') ?? '')
     if (wantsHtml) return handToPayload()
-    // Public doors: rewrite to the Payload plugin endpoints and hand off. One server per door.
-    const publicApi = PUBLIC_DOORS[path as keyof typeof PUBLIC_DOORS]
-    if (publicApi) return handPublic(publicApi)
+    // The public-door aliases (/mcp, /cite, /qpu.css) — served directly by the unit, not through Payload.
+    if (PUBLIC_DOORS[path as keyof typeof PUBLIC_DOORS]) return publicDoorOf()
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
     if (path === '/ready') return jsonOf({ status: 'ready', version: packageVersion, holds: qpuProveHolds() })
     if (path === '/receipts' || path.startsWith('/receipts/')) {
@@ -206,7 +217,7 @@ export const worker = {
     if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
     // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed).
     if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
-    if (path === '/mcp.json') return handPublic('/api/qpu/mcp')
+    if (path === '/mcp.json') { const to = new URL(request.url); to.pathname = '/api/qpu/mcp'; return publicDoorOf(new Request(to, request)) }
     if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
     if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
     const rpcBodyOf = async <X extends object>() =>
