@@ -247,7 +247,7 @@ export async function PublicSurface({ breadcrumbs }: { breadcrumbs?: Page['bread
 
       <section id="forms" className="space-y-3">
         <h2 className="text-xl font-semibold">Forms</h2>
-        <p className="text-sm text-muted-foreground">The commercial-license form is on <Link href="/license" className="text-primary hover:underline">/license</Link>. Field types are the form-builder blocks in src/payload-types.ts.</p>
+        <p className="text-sm text-muted-foreground">The licence is on the <Link href="/#license" className="text-primary hover:underline">home surface</Link>. Field types are the form-builder blocks in src/payload-types.ts.</p>
         <ul className="space-y-1 text-sm">
           {surface.forms.map((row) => (
             <li key={row.blockType}>
