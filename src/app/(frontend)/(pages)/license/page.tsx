@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: { absolute: 'License and billing' },
-  description: 'Reads are free and non-commercial use is open under CC-BY-NC-ND-4.0; commercial use and storage writes are licensed. Every term is a verified formula.',
+  description: 'One licence, CC-BY-NC-ND-4.0: reads are free and non-commercial use is open; commercial use and storage writes need the author’s permission under it. Every term is a verified formula.',
   alternates: { canonical: '/license' },
   robots: { index: true, follow: true },
 }
@@ -25,8 +25,9 @@ export default function License() {
           <Link href={l.deed} className="text-primary hover:underline">the deed</Link>
         </p>
         <p className="text-sm text-muted-foreground">
-          Reads of this host are free and non-commercial use is open. Commercial use and writes to the document store are
-          licensed — request one at <Link href={l.commercial} className="text-primary hover:underline">{l.commercial}</Link>.
+          There is one licence, {l.spdx}. Reads are free and non-commercial use is open under it; commercial use and
+          writes to the document store need the author's permission (priced on request), which does not add a second
+          licence — the licence stays the same. Enquire at <Link href={l.commercial} className="text-primary hover:underline">{l.commercial}</Link>.
         </p>
       </section>
 
