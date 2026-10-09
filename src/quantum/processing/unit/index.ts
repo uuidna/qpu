@@ -2217,13 +2217,31 @@ const classicalOrderOf = (base: bigint, modulus: bigint): { ring: boolean; unit:
   // two-qubit register could not resolve it — unlimited n factor once their order is in reach.
   const ceiling = b1 << BigInt(mintOf(n) + qpuFacesOf().faces)
   const cap = modulus < ceiling ? modulus : ceiling
-  let acc = modOf(base, modulus)
-  let r = seed
-  while (acc !== b1 && BigInt(r) < cap) {
-    acc = modOf(acc * base, modulus)
-    r += seed
+  // Max speed: baby-step/giant-step finds the order in O(√cap), not O(order). m baby steps base^0..base^(m-1) (a small
+  // order < m is read straight off); then giant steps base^(i·m) match a baby base^j, so the order is i·m − j. Same
+  // reach as the walk (cap), √ the time and √ the memory — zero wasted temperature on a modulus with a large order.
+  const capN = Number(cap)
+  const m = Math.ceil(Math.sqrt(capN))
+  const baby = new Map<string, number>()
+  let cur = b1
+  for (let j = n - n; j < m; j++) {
+    if (j > n - n && cur === b1) return { ring: true, unit: true, order: j, beyond: false }
+    const key = cur.toString()
+    if (!baby.has(key)) baby.set(key, j)
+    cur = modOf(cur * base, modulus)
   }
-  return acc === b1 ? { ring: true, unit: true, order: r, beyond: false } : { ring: true, unit: true, order: n - n, beyond: true }
+  const factor = bigPowModOf(base, BigInt(m), modulus)
+  let giant = factor
+  const iMax = Math.ceil(capN / m)
+  for (let i = seed; i <= iMax; i++) {
+    const hit = baby.get(giant.toString())
+    if (hit !== undefined) {
+      const order = i * m - hit
+      if (order > n - n && bigPowModOf(base, BigInt(order), modulus) === b1) return { ring: true, unit: true, order, beyond: false }
+    }
+    giant = modOf(giant * factor, modulus)
+  }
+  return { ring: true, unit: true, order: n - n, beyond: true }
 }
 /** How one argument was read. `digits` is a string of digits, exact at any size. `number` is a JSON number, exact only up
  * to 2^53 (past that the caller's own parser rounded it before it arrived). `numeric` is any other numeric string, read
