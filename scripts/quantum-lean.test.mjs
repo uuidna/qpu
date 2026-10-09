@@ -1,13 +1,13 @@
 /**
- * EVERY QUANTUM-RELATED THEOREM IS LEAN AND USED — discovered, not listed.
+ * EVERY QUANTUM THEOREM IS LEAN AND USED — all of them, consolidated, nothing excluded.
  *
- * QPU is a quantum computer, and all of it is lean. The quantum computer is Qpu.Shor (the algorithms) and Qpu.Circuit
- * (the model). A theorem is quantum-related when it belongs to one of those families, or when it reasons over a def the
- * quantum families own (periodOf, gcdOf, half, powMod — the quantum arithmetic) — discovered from the Lean reference
- * graph (leanLinksOf), never a hand list. Every discovered theorem must be:
+ * QPU is a quantum computer, and all of it is lean. There is no non-quantum subset to carve out: the quantum algorithms
+ * (Shor), the circuit model (Circuit), and the lattice foundations they stand on (mintOf, n, seed, coins …) are one
+ * consolidated quantum computer. So every theorem of index.lean is a quantum theorem, and each must be:
  *   LEAN — a theorem of index.lean, proved by Lake (`npm run lean` builds and checks it), and
- *   USED — referenced by another Lean theorem or named in the TS surface, so no quantum theorem is proved then abandoned.
- * Read from the filesystem + the embedded Lean source, token-free. Discovered by the scripts/*.test.mjs glob, run by the gate.
+ *   USED — referenced by another theorem's proof or named in the TS surface, so no theorem is proved then abandoned.
+ * The set is discovered from the embedded Lean source (leanLinksOf), never a hand list, and no universal foundation is
+ * excluded. Read from the filesystem, token-free. Discovered by the scripts/*.test.mjs glob, run by the one gate.
  */
 import test from 'node:test'
 import assert from 'node:assert/strict'
@@ -19,36 +19,29 @@ const e = await import(join(ROOT, 'dist/quantum/processing/unit/lean-eval.js'))
 const { leanSource } = await import(join(ROOT, 'dist/quantum/processing/unit/lean.js'))
 
 const L = e.leanLinksOf(leanSource)
-const thms = L.declarations.filter((d) => d.kind === 'theorem')
-const QUANTUM_FAMILIES = new Set(['Shor', 'Circuit'])
-// the defs the quantum families own — the quantum arithmetic (periodOf, gcdOf, half, powMod …)
-const quantumDefs = new Set(L.declarations.filter((d) => d.kind === 'def' && QUANTUM_FAMILIES.has(d.family)).map((d) => d.name))
-// discovered: a theorem of a quantum family, or one that reasons over a quantum def — from the graph, not a list
-const quantum = thms.filter((t) => QUANTUM_FAMILIES.has(t.family) || (t.uses ?? []).some((u) => quantumDefs.has(u)))
-const quantumNames = new Set(quantum.map((t) => t.name))
-
-// LEAN: the theorem exists as a theorem of the embedded Lean source (Lake proves it in `npm run lean`)
+// every theorem — foundations included; the quantum computer is consolidated, so all of it is quantum
+const theorems = L.declarations.filter((d) => d.kind === 'theorem')
 const inSource = new Set(e.leanTheoremBlocksOf(leanSource).map(([n]) => n))
-// USED: referenced by another Lean theorem's proof, or named anywhere in the TS surface
-const referencedByTheorem = new Set(thms.flatMap((t) => t.uses ?? []))
+const referencedByTheorem = new Set(theorems.flatMap((t) => t.uses ?? []))
 const tsText = (() => {
   const files = []
   const walk = (d) => { for (const x of readdirSync(d, { withFileTypes: true })) { const p = join(d, x.name); if (x.isDirectory()) walk(p); else if (/\.tsx?$/.test(x.name) && !/\.d\.ts$/.test(x.name)) files.push(p) } }
   walk(join(ROOT, 'src'))
   return files.map((f) => readFileSync(f, 'utf8')).join('\n')
 })()
-const usedBy = new Map(quantum.map((t) => [t.name, referencedByTheorem.has(t.name) ? 'lean proof' : new RegExp(`\\b${t.name}\\b`).test(tsText) ? 'TS surface' : null]))
+const used = (name) => referencedByTheorem.has(name) || new RegExp(`\\b${name}\\b`).test(tsText)
 
-test('discover all quantum-related theorems from the graph — not a hand list', () => {
-  assert.ok(quantum.length >= 24, `discovered ${quantum.length} quantum-related theorems across ${new Set(quantum.map((t) => t.family)).size} families`)
+test('discover every quantum theorem from the Lean source — consolidated, nothing excluded', () => {
+  const families = new Set(theorems.map((t) => t.family))
+  assert.ok(theorems.length >= 24, `discovered ${theorems.length} theorems across ${families.size} families — all of the quantum computer`)
 })
 
-test('every quantum-related theorem is LEAN — a theorem of index.lean', () => {
-  const notLean = [...quantumNames].filter((n) => !inSource.has(n))
-  assert.deepEqual(notLean, [], `quantum theorems absent from the Lean source: ${notLean.join(', ')}`)
+test('every quantum theorem is LEAN — a theorem of index.lean', () => {
+  const notLean = theorems.filter((t) => !inSource.has(t.name)).map((t) => t.name)
+  assert.deepEqual(notLean, [], `theorems absent from the Lean source: ${notLean.join(', ')}`)
 })
 
-test('every quantum-related theorem is USED — referenced by a proof or the TS surface', () => {
-  const orphans = quantum.filter((t) => usedBy.get(t.name) === null).map((t) => t.name)
-  assert.deepEqual(orphans, [], `quantum theorems proved but never used: ${orphans.join(', ')}`)
+test('every quantum theorem is USED — referenced by a proof or the TS surface, foundations included', () => {
+  const orphans = theorems.filter((t) => !used(t.name)).map((t) => t.name)
+  assert.deepEqual(orphans, [], `theorems proved but never used: ${orphans.join(', ')}`)
 })
