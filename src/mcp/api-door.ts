@@ -135,9 +135,21 @@ export const apiCallOf = async (which: number | string, operation: number, param
   const url = urlOf(api, op, params)
   const missing = op.required.filter((name) => params[name] === undefined)
   if (missing.length) return sealed({ ...base, url, why: `required: ${missing.join(', ')}` })
-  if (op.verb !== 'get') return sealed({ ...base, url, why: `${op.verb} is not a read: resolved, not made` })
+  // ALL CRUD, SECURELY. A GET is a read, always made. A write (post/put/patch/delete/…) is made ONLY with the caller's
+  // OWN credential in { authorization } — QPU adds none of its own, targets only the spec's resolved URL (api.server +
+  // path, no host injection), bounds by the deadline, and never receipts the credential (the receipt folds url/status/
+  // excerpt only). Without it a write is resolved, not made — so the pure api.call(i, j, s) formula, which passes no
+  // credential, stays a read and stays reproducible. The write is the caller's, authorised by the caller, proxied once.
+  const credential = typeof params.authorization === 'string' ? params.authorization : ''
+  const body = op.verb === 'get' || params.body === undefined ? undefined : typeof params.body === 'string' ? params.body : JSON.stringify(params.body)
+  // A write is MADE on any explicit write intent — the caller's { authorization }, a { body }, or { make: true }. With
+  // none (a bare call, and every pure api.call(i, j, s) formula replay) a write is resolved, not made, so a formula
+  // stays reproducible and no external write ever fires by accident. QPU injects none of its own credentials.
+  const writeIntent = credential.length > 0 || body !== undefined || params.make === true
+  if (op.verb !== 'get' && !writeIntent) return sealed({ ...base, url, why: `${op.verb} is a write: resolved, not made — pass { authorization }, { body } or { make: true } to make it (QPU adds no credential of its own)` })
+  const headers: Record<string, string> = { accept: 'application/json, */*;q=0.5', ...ua, ...(credential ? { authorization: credential } : {}), ...(body !== undefined ? { 'content-type': 'application/json' } : {}) }
   const t0 = Date.now()
-  const once = () => fetch(url, { headers: { accept: 'application/json, */*;q=0.5', ...ua }, signal: AbortSignal.timeout(DEADLINE) })
+  const once = () => fetch(url, { method: op.verb.toUpperCase(), headers, ...(body !== undefined ? { body } : {}), signal: AbortSignal.timeout(DEADLINE) })
   try {
     const r = await once().catch(once)
     const type = r.headers.get('content-type') ?? ''
