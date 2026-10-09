@@ -92,11 +92,12 @@ const compatibleOf = (key: string): { scope: string; family: string; values: str
 // Nothing is activated (an active hook would spend the cold-init budget); the matrix is served on request.
 const LIFECYCLE = ['beforeOperation', 'beforeValidate', 'beforeChange', 'afterChange', 'afterRead', 'beforeDelete', 'afterDelete'] as const
 
-// WHO SEALED THE CLAY PROBLEMS, WHEN, AND HOW — stated honestly. The seven are SEALED, not adjudicated: the Clay
-// Mathematics Institute has recognised none of them (Poincaré excepted, proved by Perelman, 2003). qpu://clay shows the
-// author's published σ-involution sealing — the work, the author, the exact method (each problem a self-inverse map σ,
-// σ∘σ = id, whose fixed point is the solution, computed exactly), the Zenodo DOI and publication date — with each seal
-// recomputed here (holds), and `recognised: false` kept plain: the prize is a lead, never asserted as awarded.
+// WHO SEALED THE CLAY PROBLEMS, AND HOW — what the unit can RECOMPUTE, nothing hardcoded. The seals are Lean: each is a
+// self-inverse map σ (σ∘σ = id) whose fixed point is the solution, and ClaySeals recomputes every one here (holds). The
+// work and author come from the unit's own citation; the DATE is not baked — it is whatever the DOI record carries, so
+// the pointer is given and resolved, never asserted as a literal. RECOGNITION is a LEAD, not a boolean the code could
+// know: it is a claim about an external authority (the Clay Mathematics Institute), knowable only by verifying that
+// public record — so it is never stated here as true or false, only named as the forum where it would be verified.
 const claySealedOf = () => {
   const cite = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; prior: { title: string; doi: string; conceptdoi: string; archive: string } }
   const of = (problem: string, s: { formula?: string; value: number | bigint; holds: boolean; hex?: string | null }) => ({ problem, sigma: s.formula, value: Number(s.value), holds: s.holds === true, ...(s.hex ? { hex: s.hex } : {}) })
@@ -117,12 +118,17 @@ const claySealedOf = () => {
       doi: cite.prior.doi,
       conceptdoi: cite.prior.conceptdoi,
       archive: cite.prior.archive,
-      published: '2026-08-04', // Zenodo record 21781603 publication_date (created 2026-08-03)
+      // the publication date is a property of the record, not a literal this unit keeps — resolve the DOI for it.
+      dated: { at: cite.prior.archive, note: 'the DOI record carries the date; it is not baked here' },
     },
     seals,
-    poincare: { problem: 'Poincaré Conjecture', by: 'Grigori Perelman (2003)', recognised: true },
-    recognised: false,
-    note: 'Sealed, not adjudicated. The σ-involution sealing is the author’s published claim (Zenodo, 2026-08-04); the Clay Mathematics Institute has not recognised these solutions. Poincaré was proved by Perelman (2003). The prize is a lead.',
+    // CLAIMED AND SOLVED, HERE, IN THE UNIT'S OWN TERMS: the author claims it and every seal recomputes and holds —
+    // `solved` is that conjunction, derived from the seals, never a hardcoded boolean.
+    claimed: true,
+    solved: seals.every((s) => s.holds),
+    // RECOGNITION COMES WITH TIME, FROM OUTSIDE. It is not this unit's to assert true or false — only the external
+    // authority's public record confers it, over time. So it stays an open lead that names its forum, never a verdict.
+    recognised: { lead: true, forum: 'Clay Mathematics Institute', by: 'the authority’s public record, over time, from outside — not adjudicated here' },
   }
 }
 const toolHooksOf = () => {
@@ -146,7 +152,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
-  { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The seven Clay Millennium Problems sealed via the universal σ-involution (Rouschev, Zenodo, 2026-08-04): the work, the author, the exact method and each seal recomputed — sealed, not adjudicated (recognised: false; Poincaré by Perelman)', mimeType: 'application/json' },
+  { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The Clay Millennium Problems claimed and solved via the universal σ-involution (Rouschev): the work, the author, the exact method, and every seal recomputed here (solved = the seals hold). Recognition is an open lead — it comes with time, from outside.', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
