@@ -2,7 +2,7 @@
 import { Operation, Result } from './types.js'
 import { uuid as registry } from '../core/uuid.js'
 import { uuidBridge } from '../core/uuid-bridge.js'
-import { qpuUuidReceiptOf, qpuProveOf, qpuProveHolds } from '../quantum/processing/unit/index.js'
+import { qpuUuidReceiptOf, qpuProveOf, qpuProveHolds, qpuEmbedDriftOf, qpuMcpFailuresOf } from '../quantum/processing/unit/index.js'
 
 interface DeploymentGateStatus {
   ok: boolean
@@ -55,7 +55,11 @@ export class ConsolidatedMCP {
   async runDeploymentGate(): Promise<DeploymentGateStatus & { proved: boolean; unresolved: string[] }> {
     // counted, not declared: every registered operation and workflow, each resolved by its UUID, and the unit's proof
     const verified = await this.verifyAllOperations()
-    const unresolved = [...verified].filter(([, ok]) => !ok).map(([uuid]) => uuid)
+    // the MCP contract (every tool, hint, schema and byte budget) and the drift-guard (embed == live recompute) are
+    // leads too: a broken clause or a stale cool names itself here and blocks the push, instead of surfacing only in CI.
+    const mcpFailures = qpuMcpFailuresOf().map((c) => `mcp:${c}`)
+    const embedDrift = qpuEmbedDriftOf().map((k) => `embed:${k}`)
+    const unresolved = [...[...verified].filter(([, ok]) => !ok).map(([uuid]) => uuid), ...mcpFailures, ...embedDrift]
     const categoryCount = new Set([...uuidBridge.listAll().map((e) => e.domain), ...this.getAllOperations().map((o) => o.domain)]).size
     const proved = qpuProveHolds(qpuProveOf())
     const allVerified = unresolved.length === 0

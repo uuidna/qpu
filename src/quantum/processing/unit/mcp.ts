@@ -610,7 +610,12 @@ const recognisedReplyOf = (name: string, raw: unknown): boolean => {
   )
 }
 
-export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
+/**
+ * THE MCP SELF-CHECK AS NAMED CLAUSES, NOT ONE OPAQUE BOOLEAN. Every conjunct is a `[name, ok]` pair, so when the
+ * contract breaks the gate and the test name the failing clause instead of reporting a bare `false` that has to be
+ * bisected by hand (put manual work in automation only). qpuMcpHolds folds it; qpuMcpFailuresOf reports the broken ones.
+ */
+export const qpuMcpChecksOf = (m = qpuMcpOf()): Array<[string, boolean]> => {
   const capacity = qpuCapacityOf()
   const circuit = qpuCircuitOf()
   const proved = qpuProveOf()
@@ -620,113 +625,121 @@ export const qpuMcpHolds = (m = qpuMcpOf()): boolean => {
   const reading = qpuReadingOf()
   const recognisedReading = qpuRecognizeOf(reading) as { holds?: boolean; fused?: number; next?: number; docs?: unknown; circuit?: { only?: { holds?: boolean } } }
   const listed = [...qpuToolsOf(), ...qpuCybersecurityToolsOf()]
-  return (
-    qpuQuantumHolds() &&
-    qpuLeanHolds() &&
-    qpuCiteHolds() &&
-    qpuEfficiencyHolds() &&
-    qpuSandboxHolds() &&
-    qpuTrainHolds() &&
-    qpuImproveHolds() &&
-    qpuCompeteHolds() &&
-    qpuProveHolds() &&
-    qpuCybersecurityHolds() &&
-    qpuMessageHolds() &&
-    m.holds === true &&
-    m.kind === 'quantum' &&
-    m.only.holds === true &&
-    circuit.lattice.holds === true &&
-    m.capacity.holds === true &&
-    theorem.next_fused(m.capacity.next, m.capacity.fused) &&
-    m.capacity.crypt.holds === true &&
-    m.cors === cors &&
-    m.origin === unit.origin &&
-    m.href === `${unit.origin}/mcp` &&
-    qpuSandboxDurabilityHolds() &&
-    m.tools.length === mintOf(n) &&
-    m.tools[n - n]?.name === 'quantum' &&
-    m.tools[seed]?.name === 'lean' &&
-    m.tools[coins]?.name === 'cite' &&
-    m.tools[n]?.name === 'train' &&
-    m.tools[n + seed]?.name === 'forge' &&
-    m.tools[n + coins]?.name === 'improve' &&
-    m.tools[n + n]?.name === 'compete' &&
-    m.tools[mintOf(n) - seed]?.name === 'prove' &&
-    m.tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name) &&
-    m.cybersecurity.listed === true &&
-    m.cybersecurity.sealed === false &&
-    m.cybersecurity.morph === true &&
-    m.cybersecurity.tools.length === mintOf(n) &&
-    m.cybersecurity.tools[n - n]?.name === 'crypto_catalog' &&
-    m.cybersecurity.tools[n + coins]?.name === 'crypto_rsa' &&
-    m.cybersecurity.tools[mintOf(n) - seed]?.name === 'crypto_verify' &&
-    m.cybersecurity.rsa.kind === 'rsa' &&
-    m.cybersecurity.rsa.factored === true &&
-    m.cybersecurity.rsa.unlocked === true &&
-    m.cybersecurity.rsa.modulus === qpuFacesOf().rays * (n * n + n + seed) &&
-    m.cybersecurity.rsa.p * m.cybersecurity.rsa.q === m.cybersecurity.rsa.modulus &&
-    m.cybersecurity.encrypt.kind === 'encrypt' &&
-    m.cybersecurity.encrypt.theorem === 'crypto' &&
-    m.cybersecurity.encrypt.identity === true &&
-    m.cybersecurity.encrypt.holds === true &&
-    qpuMcpToolsListOf().length === mintOf(n) + mintOf(n) &&
+  return [
+    ['quantum', qpuQuantumHolds()],
+    ['lean', qpuLeanHolds()],
+    ['cite', qpuCiteHolds()],
+    ['efficiency', qpuEfficiencyHolds()],
+    ['sandbox', qpuSandboxHolds()],
+    ['train', qpuTrainHolds()],
+    ['improve', qpuImproveHolds()],
+    ['compete', qpuCompeteHolds()],
+    ['prove', qpuProveHolds()],
+    ['cybersecurity', qpuCybersecurityHolds()],
+    ['message', qpuMessageHolds()],
+    ['m.holds', m.holds === true],
+    ['m.kind', m.kind === 'quantum'],
+    ['m.only.holds', m.only.holds === true],
+    ['circuit.lattice.holds', circuit.lattice.holds === true],
+    ['m.capacity.holds', m.capacity.holds === true],
+    ['capacity.next_fused', theorem.next_fused(m.capacity.next, m.capacity.fused)],
+    ['m.capacity.crypt.holds', m.capacity.crypt.holds === true],
+    ['m.cors', m.cors === cors],
+    ['m.origin', m.origin === unit.origin],
+    ['m.href', m.href === `${unit.origin}/mcp`],
+    ['sandbox.durability', qpuSandboxDurabilityHolds()],
+    ['m.tools.length', m.tools.length === mintOf(n)],
+    ['tool.quantum', m.tools[n - n]?.name === 'quantum'],
+    ['tool.lean', m.tools[seed]?.name === 'lean'],
+    ['tool.cite', m.tools[coins]?.name === 'cite'],
+    ['tool.train', m.tools[n]?.name === 'train'],
+    ['tool.forge', m.tools[n + seed]?.name === 'forge'],
+    ['tool.improve', m.tools[n + coins]?.name === 'improve'],
+    ['tool.compete', m.tools[n + n]?.name === 'compete'],
+    ['tool.prove', m.tools[mintOf(n) - seed]?.name === 'prove'],
+    ['tools.man', m.tools.every((t) => qpuManHolds(t.man) && t.man.name === t.name)],
+    ['cyber.listed', m.cybersecurity.listed === true],
+    ['cyber.sealed', m.cybersecurity.sealed === false],
+    ['cyber.morph', m.cybersecurity.morph === true],
+    ['cyber.tools.length', m.cybersecurity.tools.length === mintOf(n)],
+    ['cyber.tool.catalog', m.cybersecurity.tools[n - n]?.name === 'crypto_catalog'],
+    ['cyber.tool.rsa', m.cybersecurity.tools[n + coins]?.name === 'crypto_rsa'],
+    ['cyber.tool.verify', m.cybersecurity.tools[mintOf(n) - seed]?.name === 'crypto_verify'],
+    ['rsa.kind', m.cybersecurity.rsa.kind === 'rsa'],
+    ['rsa.factored', m.cybersecurity.rsa.factored === true],
+    ['rsa.unlocked', m.cybersecurity.rsa.unlocked === true],
+    ['rsa.modulus', m.cybersecurity.rsa.modulus === qpuFacesOf().rays * (n * n + n + seed)],
+    ['rsa.p*q', m.cybersecurity.rsa.p * m.cybersecurity.rsa.q === m.cybersecurity.rsa.modulus],
+    ['encrypt.kind', m.cybersecurity.encrypt.kind === 'encrypt'],
+    ['encrypt.theorem', m.cybersecurity.encrypt.theorem === 'crypto'],
+    ['encrypt.identity', m.cybersecurity.encrypt.identity === true],
+    ['encrypt.holds', m.cybersecurity.encrypt.holds === true],
+    ['toolsList.length', qpuMcpToolsListOf().length === mintOf(n) + mintOf(n)],
     // THE CONNECT BILL, the same bytes examine measures: id 2, compact JSON, under a KiB per door.
-    `{"jsonrpc":"2.0","id":2,"result":${JSON.stringify({ resultType: 'complete', tools: qpuMcpToolsListOf() })}}`.length < qpuMcpToolsListOf().length * mintOf(tenOf(seed)) &&
-    qpuMcpToolsListOf().slice(n - n, mintOf(n)).every((t, i) => t.name === toolNames[i]) &&
-    qpuMcpToolsListOf().slice(mintOf(n)).every((t, i) => t.name === cryptoToolNames[i]) &&
+    ['toolsList.bill', `{"jsonrpc":"2.0","id":2,"result":${JSON.stringify({ resultType: 'complete', tools: qpuMcpToolsListOf() })}}`.length < qpuMcpToolsListOf().length * mintOf(tenOf(seed))],
+    ['toolsList.names', qpuMcpToolsListOf().slice(n - n, mintOf(n)).every((t, i) => t.name === toolNames[i])],
+    ['toolsList.cryptoNames', qpuMcpToolsListOf().slice(mintOf(n)).every((t, i) => t.name === cryptoToolNames[i])],
     // the GitHub/Cloudflare tool hints, proved and not merely set, so the conformance is automated and cannot drift:
     // forge is the one write, nothing is destructive, a tool is open-world only when its input reads the live
     // occupancy, and it is idempotent exactly when it is a read-only closed-world call — a repeat returns the same
     // document. Every tool carries a display title distinct from its machine name.
-    qpuMcpToolsListOf().every((raw) => {
-      const t = raw as { name: string; title?: unknown; inputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean; idempotentHint?: boolean; openWorldHint?: boolean } }
-      const a = t.annotations ?? {}
-      const live = t.inputSchema?.properties?.live !== undefined
-      return a.destructiveHint === false && a.readOnlyHint === (t.name !== 'forge') && a.openWorldHint === live && a.idempotentHint === (a.readOnlyHint === true && live === false) && typeof t.title === 'string' && t.title.length > n - n && t.title !== t.name
-    }) &&
-    jsonldHoldsOf(m) &&
-    m['@type'] === 'WebAPI' &&
-    m['@id'] === m.href &&
-    m.hasPart['@type'] === 'ItemList' &&
-    m.hasPart.numberOfItems === mintOf(n) &&
-    m.hasPart.itemListElement.length === mintOf(n) &&
-    m.capacity.schemas.mounted === qpuFacesOf().faces &&
-    m.capacity.schemas.vacant === n - n &&
-    capacity.raid.holds === true &&
-    capacity.raid.start === 'cheapest' &&
-    capacity.raid.cover.length === qpuFacesOf().faces &&
-    capacity.raid.cheapest === capacity.raid.cover[n - n] &&
-    m.prove.cern.faces === qpuFacesOf().faces &&
-    m.prove.coil.theorem === 'two_coins_make_a_coil' &&
-    m.prove.coil.faces === qpuFacesOf().faces &&
-    m.prove.entangle.product === false &&
-    m.prove.entangle.pairs === qpuFacesOf().rays &&
-    m.prove.next.theorem === 'next_coil' &&
-    m.prove.shor.n === qpuFacesOf().rays * (n * n + n + seed) &&
-    m.prove.shor.a === mintOf(n) &&
-    m.prove.shor.qft === 'iqft' &&
-    m.prove.shor.product === qpuFacesOf().rays * (n * n + n + seed) &&
-    m.prove.shor.rsa === true &&
-    m.prove.shor.unlocked === true &&
-    m.prove.shor.p * m.prove.shor.q === m.prove.shor.n &&
-    m.prove.src === unit.fuse.lean &&
-    qpuHostsHolds() &&
-    qpuDevelopHolds() &&
-    qpuRecognizeHolds() &&
-    listed.length === mintOf(n) + mintOf(n) &&
-    listed.every((t) => recognisedReplyOf(t.name, t.run({}))) &&
-    recognisedReplyOf('prove', { kind: 'failure' as const, denied: 'program' as const, holds: false as const, blob: 'z'.repeat(mintOf(tenOf(seed)) * mintOf(n)) }) &&
-    qpuMcpShownHolds(proveShown) &&
-    qpuMcpShownHolds(proveFull) &&
-    proveLed.holds === true &&
-    proveLed.recognition?.device === 'exact-amplitudes' &&
-    (proveLed.recognition?.free ?? n - n) > n - n &&
-    proveLed.recognition?.free === ((proveLed.recognition?.heat ?? n) < (proveLed.recognition?.enthalpy ?? n - n) ? (proveLed.recognition?.enthalpy ?? n - n) - (proveLed.recognition?.heat ?? n) : n - n) &&
-    JSON.stringify(proveFull.structuredContent) === JSON.stringify(proved) &&
-    recognisedReading.holds === true &&
-    recognisedReading.fused === reading.fused &&
-    recognisedReading.next === reading.next &&
-    recognisedReading.circuit?.only?.holds === true &&
-    recognisedReading.docs === undefined
-  )
+    [
+      'toolsList.hints',
+      qpuMcpToolsListOf().every((raw) => {
+        const t = raw as { name: string; title?: unknown; inputSchema?: { properties?: Record<string, unknown> }; annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean; idempotentHint?: boolean; openWorldHint?: boolean } }
+        const a = t.annotations ?? {}
+        const live = t.inputSchema?.properties?.live !== undefined
+        return a.destructiveHint === false && a.readOnlyHint === (t.name !== 'forge') && a.openWorldHint === live && a.idempotentHint === (a.readOnlyHint === true && live === false) && typeof t.title === 'string' && t.title.length > n - n && t.title !== t.name
+      }),
+    ],
+    ['jsonld', jsonldHoldsOf(m)],
+    ['@type', m['@type'] === 'WebAPI'],
+    ['@id', m['@id'] === m.href],
+    ['hasPart.@type', m.hasPart['@type'] === 'ItemList'],
+    ['hasPart.numberOfItems', m.hasPart.numberOfItems === mintOf(n)],
+    ['hasPart.itemListElement', m.hasPart.itemListElement.length === mintOf(n)],
+    ['schemas.mounted', m.capacity.schemas.mounted === qpuFacesOf().faces],
+    ['schemas.vacant', m.capacity.schemas.vacant === n - n],
+    ['raid.holds', capacity.raid.holds === true],
+    ['raid.start', capacity.raid.start === 'cheapest'],
+    ['raid.cover', capacity.raid.cover.length === qpuFacesOf().faces],
+    ['raid.cheapest', capacity.raid.cheapest === capacity.raid.cover[n - n]],
+    ['prove.cern.faces', m.prove.cern.faces === qpuFacesOf().faces],
+    ['prove.coil.theorem', m.prove.coil.theorem === 'two_coins_make_a_coil'],
+    ['prove.coil.faces', m.prove.coil.faces === qpuFacesOf().faces],
+    ['prove.entangle.product', m.prove.entangle.product === false],
+    ['prove.entangle.pairs', m.prove.entangle.pairs === qpuFacesOf().rays],
+    ['prove.next.theorem', m.prove.next.theorem === 'next_coil'],
+    ['prove.shor.n', m.prove.shor.n === qpuFacesOf().rays * (n * n + n + seed)],
+    ['prove.shor.a', m.prove.shor.a === mintOf(n)],
+    ['prove.shor.qft', m.prove.shor.qft === 'iqft'],
+    ['prove.shor.product', m.prove.shor.product === qpuFacesOf().rays * (n * n + n + seed)],
+    ['prove.shor.rsa', m.prove.shor.rsa === true],
+    ['prove.shor.unlocked', m.prove.shor.unlocked === true],
+    ['prove.shor.p*q', m.prove.shor.p * m.prove.shor.q === m.prove.shor.n],
+    ['prove.src', m.prove.src === unit.fuse.lean],
+    ['hosts', qpuHostsHolds()],
+    ['develop', qpuDevelopHolds()],
+    ['recognize', qpuRecognizeHolds()],
+    ['listed.length', listed.length === mintOf(n) + mintOf(n)],
+    ['listed.recognised', listed.every((t) => recognisedReplyOf(t.name, t.run({})))],
+    ['prove.recognised.failure', recognisedReplyOf('prove', { kind: 'failure' as const, denied: 'program' as const, holds: false as const, blob: 'z'.repeat(mintOf(tenOf(seed)) * mintOf(n)) })],
+    ['proveShown', qpuMcpShownHolds(proveShown)],
+    ['proveFull', qpuMcpShownHolds(proveFull)],
+    ['proveLed.holds', proveLed.holds === true],
+    ['proveLed.device', proveLed.recognition?.device === 'exact-amplitudes'],
+    ['proveLed.free>0', (proveLed.recognition?.free ?? n - n) > n - n],
+    ['proveLed.free', proveLed.recognition?.free === ((proveLed.recognition?.heat ?? n) < (proveLed.recognition?.enthalpy ?? n - n) ? (proveLed.recognition?.enthalpy ?? n - n) - (proveLed.recognition?.heat ?? n) : n - n)],
+    ['proveFull.structured', JSON.stringify(proveFull.structuredContent) === JSON.stringify(proved)],
+    ['reading.holds', recognisedReading.holds === true],
+    ['reading.fused', recognisedReading.fused === reading.fused],
+    ['reading.next', recognisedReading.next === reading.next],
+    ['reading.circuit.only', recognisedReading.circuit?.only?.holds === true],
+    ['reading.docs', recognisedReading.docs === undefined],
+  ]
 }
+
+/** The names of the clauses that are currently false — empty when the MCP contract holds. Read by the gate and the test. */
+export const qpuMcpFailuresOf = (m = qpuMcpOf()): string[] => qpuMcpChecksOf(m).filter(([, ok]) => !ok).map(([name]) => name)
+
+export const qpuMcpHolds = (m = qpuMcpOf()): boolean => qpuMcpChecksOf(m).every(([, ok]) => ok)

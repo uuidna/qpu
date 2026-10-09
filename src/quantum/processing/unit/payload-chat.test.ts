@@ -57,16 +57,16 @@ test('chat: ask calls Payload MCP findDocuments and exposes formula, integer, fo
   assert.equal(JSON.stringify(qpuMcpToolsListOf()).length < 16384, true)
 })
 
-/** qpu.uuidna.com /mcp enters Payload at /api/qpu/mcp. User auth is not consulted for a public ping. */
-test('chat: an unauthenticated qpu.uuidna.com /mcp call is a public read', async () => {
-  let me = ''
+/** qpu.uuidna.com /mcp is served DIRECTLY by the unit (eda8c77: the public doors answer at unit speed, no Payload cold
+ *  start), so a public ping never enters the Payload app and user auth is not consulted. */
+test('chat: an unauthenticated qpu.uuidna.com /mcp call is a public read, served by the unit not Payload', async () => {
+  let payloadHit = ''
   const env = {
     PAYLOAD: {
+      // the unit must NOT reach Payload for /mcp; if it did, this records the path and the assertion below fails
       fetch: async (request: Request) => {
-        me = new URL(request.url).pathname
-        assert.equal(me, '/api/qpu/mcp')
-        const { publicMcpOf } = await import('../../../payload/plugins/public.js')
-        return publicMcpOf(request)
+        payloadHit = new URL(request.url).pathname
+        return new Response('{}', { status: 200, headers: { 'content-type': 'application/json' } })
       },
     },
   }
@@ -78,6 +78,6 @@ test('chat: an unauthenticated qpu.uuidna.com /mcp call is a public read', async
   const body = (await res.json()) as { result?: unknown; holds?: boolean; denied?: string; email?: string }
   assert.equal(res.status, 200)
   assert.deepEqual(body.result, {})
-  assert.equal(me, '/api/qpu/mcp')
+  assert.equal(payloadHit, '', 'the unit serves /mcp directly — the Payload app is not consulted')
   assert.equal(JSON.stringify(body).includes('ada@example.com'), false)
 })
