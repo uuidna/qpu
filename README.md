@@ -8,7 +8,7 @@ An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (`{ "qpu": { "type": "http",
 "url": "https://qpu.uuidna.com/mcp" } }`), as a package (`npm install @uuidna/qpu`), or as a container.
 
-This paper reports, entirely from machine receipts: 145 Lean 4 theorems (145 recomputed in TypeScript), 9,115 formulas across 1,134 families addressed as hex-program UUIDs (RFC 9562 v8), 16 MCP tools over 58 doors, and 247 cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.
+This paper reports, entirely from machine receipts: 145 Lean 4 theorems (145 recomputed in TypeScript), 9,144 formulas across 1,134 families addressed as hex-program UUIDs (RFC 9562 v8), 16 MCP tools over 58 doors, and 247 cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.
 
 ## 1. Introduction
 
@@ -35,7 +35,7 @@ address and crosses to other families. Each wing reports itself:
 | [Cryptography](https://qpu.uuidna.com/crypto) | 3 | 2 | 2 | 0 |
 | [UUIDs & quantum receipts](https://qpu.uuidna.com/receipts) | 39 | 16 | 14 | 0 |
 | [Storage & database](https://qpu.uuidna.com/storage) | 25 | 10 | 6 | 0 |
-| [MCP & agents](https://qpu.uuidna.com/agents) | 112 | 55 | 46 | 2 |
+| [MCP & agents](https://qpu.uuidna.com/agents) | 112 | 55 | 45 | 2 |
 | [Live science data](https://qpu.uuidna.com/science) | 22 | 17 | 10 | 7 |
 | [API fusion](https://qpu.uuidna.com/fusion) | 18 | 11 | 5 | 3 |
 | [Payload & Cloudflare](https://qpu.uuidna.com/cms) | 24 | 4 | 3 | 0 |
@@ -43,7 +43,7 @@ address and crosses to other families. Each wing reports itself:
 
 ### 2.1 Formula families
 
-1,134 families carry 9,115 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 124 cross-formula rows hold (36 agree with their hex programs).
+1,134 families carry 9,144 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 124 cross-formula rows hold (36 agree with their hex programs).
 
 | Family | Formulas | Family | Formulas | Family | Formulas |
 |---|---:|---|---:|---|---:|
@@ -325,7 +325,7 @@ address and crosses to other families. Each wing reports itself:
 | `psychometrics` | 8 | `psychophysics` | 8 | `publishing` | 8 |
 | `pulley` | 8 | `pulmonology` | 8 | `pulsar` | 8 |
 | `pump` | 8 | `puppetry` | 8 | `pwm` | 8 |
-| `qpu` | 8 | `Qpu` | 37 | `qsec` | 8 |
+| `qpu` | 8 | `Qpu` | 66 | `qsec` | 8 |
 | `quality` | 8 | `quantization` | 8 | `quantum` | 8 |
 | `query` | 8 | `queue` | 8 | `queueing` | 8 |
 | `quilting` | 8 | `radar` | 8 | `radiology` | 8 |
@@ -492,7 +492,7 @@ Gate: push on 2026-10-07, does not hold — ✓ gate.push(0) = 14; ✗ gate.push
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,115 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,144 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | Formal proof | 145 Lean theorems served, 145 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |

@@ -26,27 +26,27 @@ CERN Open Data, research APIs and citations read live with deadlines.
 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
-| [`qpuCernCatalogsOf`](../src/quantum/processing/unit/index.ts#L8233) | builder | The CERN catalogues the unit reads (Open Data, LHC experiments), with their hosts and paths. | `qpuCernCatalogsHolds` | holds |
-| [`qpuCernExperienceOf`](../src/quantum/processing/unit/index.ts#L8956) | builder | The live CERN reading, kept for one deadline window so a miss is not re-paid on every call. | `qpuCernExperienceHolds` | live (network) |
-| [`qpuCernExperimentsOf`](../src/quantum/processing/unit/index.ts#L8256) | builder | LHC experiments seated on faces, with the views (LHC, Open Data) they share. | `qpuCernExperimentsHolds` | holds |
-| [`qpuCernFetchOf`](../src/quantum/processing/unit/index.ts#L8526) | builder | Fetch one CMS Open Data record live and compare events, files, DOI and dates with the cern theorem. | `qpuCernFetchHolds` | live (network) |
-| [`qpuCernLearnLiveOf`](../src/quantum/processing/unit/index.ts#L8827) | builder | The live CERN reading: every LHC and Open Data experiment's record total fetched under one deadline. | `qpuCernLearnLiveHolds` | live (network) |
-| [`qpuCernLearnOf`](../src/quantum/processing/unit/index.ts#L8424) | builder | The offline CERN reading: experiments and catalogues as an occupancy lattice. | `qpuCernLearnHolds` | holds |
-| [`qpuCernLiveOf`](../src/quantum/processing/unit/index.ts#L8875) | builder | The live CERN document: quoted records, projects and search, fetched under one deadline. | `qpuCernLiveHolds` | live (network) |
-| [`qpuCernOf`](../src/quantum/processing/unit/index.ts#L8712) | builder | The CERN document: quoted records, catalogues, experiments and the occupancy lattice. | `qpuCernHolds` | holds |
-| [`qpuCernProjectFetchOf`](../src/quantum/processing/unit/index.ts#L8635) | builder | Fetch one experiment's record total live from CERN Open Data. | `qpuCernProjectFetchHolds` | live (network) |
-| [`qpuCernRecordsOf`](../src/quantum/processing/unit/index.ts#L8139) | builder | — | — | — |
-| [`qpuCitationsLiveOf`](../src/quantum/processing/unit/index.ts#L7500) | builder | Resolve the corpus's DOIs through Crossref and check each title matches. | `qpuCitationsLiveHolds` | live (network) |
-| [`qpuCitationsOf`](../src/quantum/processing/unit/index.ts#L7446) | builder | THE CITATIONS, AS IDENTIFIERS A MACHINE CAN RESOLVE RATHER THAN STRINGS A READER MIGHT. | `qpuCitationsHolds` | holds |
+| [`qpuCernCatalogsOf`](../src/quantum/processing/unit/index.ts#L8261) | builder | The CERN catalogues the unit reads (Open Data, LHC experiments), with their hosts and paths. | `qpuCernCatalogsHolds` | holds |
+| [`qpuCernExperienceOf`](../src/quantum/processing/unit/index.ts#L8984) | builder | The live CERN reading, kept for one deadline window so a miss is not re-paid on every call. | `qpuCernExperienceHolds` | live (network) |
+| [`qpuCernExperimentsOf`](../src/quantum/processing/unit/index.ts#L8284) | builder | LHC experiments seated on faces, with the views (LHC, Open Data) they share. | `qpuCernExperimentsHolds` | holds |
+| [`qpuCernFetchOf`](../src/quantum/processing/unit/index.ts#L8554) | builder | Fetch one CMS Open Data record live and compare events, files, DOI and dates with the cern theorem. | `qpuCernFetchHolds` | live (network) |
+| [`qpuCernLearnLiveOf`](../src/quantum/processing/unit/index.ts#L8855) | builder | The live CERN reading: every LHC and Open Data experiment's record total fetched under one deadline. | `qpuCernLearnLiveHolds` | live (network) |
+| [`qpuCernLearnOf`](../src/quantum/processing/unit/index.ts#L8452) | builder | The offline CERN reading: experiments and catalogues as an occupancy lattice. | `qpuCernLearnHolds` | holds |
+| [`qpuCernLiveOf`](../src/quantum/processing/unit/index.ts#L8903) | builder | The live CERN document: quoted records, projects and search, fetched under one deadline. | `qpuCernLiveHolds` | live (network) |
+| [`qpuCernOf`](../src/quantum/processing/unit/index.ts#L8740) | builder | The CERN document: quoted records, catalogues, experiments and the occupancy lattice. | `qpuCernHolds` | holds |
+| [`qpuCernProjectFetchOf`](../src/quantum/processing/unit/index.ts#L8663) | builder | Fetch one experiment's record total live from CERN Open Data. | `qpuCernProjectFetchHolds` | live (network) |
+| [`qpuCernRecordsOf`](../src/quantum/processing/unit/index.ts#L8167) | builder | — | — | — |
+| [`qpuCitationsLiveOf`](../src/quantum/processing/unit/index.ts#L7528) | builder | Resolve the corpus's DOIs through Crossref and check each title matches. | `qpuCitationsLiveHolds` | live (network) |
+| [`qpuCitationsOf`](../src/quantum/processing/unit/index.ts#L7474) | builder | THE CITATIONS, AS IDENTIFIERS A MACHINE CAN RESOLVE RATHER THAN STRINGS A READER MIGHT. | `qpuCitationsHolds` | holds |
 | [`qpuForeignReadsOf`](../src/quantum/processing/unit/index.ts#L175) | builder | How many times this process has read a host it does not own (CERN, Crossref, registries). | `qpuForeignReadsHolds` | holds |
-| [`qpuResearchFetchOf`](../src/quantum/processing/unit/index.ts#L9152) | builder | Fetch a research API (INSPIRE, HEPData, Zenodo) live and count its hits. | `qpuResearchFetchHolds` | live (network) |
-| [`qpuTeachingCensusOf`](../src/quantum/processing/unit/index.ts#L7875) | builder | THE WHOLE CENSUS, so "all entanglements" is a number and not a gesture. | `qpuTeachingCensusHolds` | holds |
-| [`qpuTeachingPairsOf`](../src/quantum/processing/unit/index.ts#L6938) | builder | Teaching corpus crossed: subjects against domains, each pair entangled, application or undecided, with citations. | `qpuTeachingPairsHolds` | holds |
-| [`qpuTeachingReadingOf`](../src/quantum/processing/unit/index.ts#L7922) | builder | THE EXPLANATION, GENERATED FROM THE EVIDENCE RATHER THAN WRITTEN BESIDE IT. | `qpuTeachingReadingHolds` | holds |
-| [`qpuTeachingSeatingOf`](../src/quantum/processing/unit/index.ts#L7761) | builder | SEATED BY THE EVIDENCE, NOT BY THE AUTHOR'S ORDERING. | `qpuTeachingSeatingHolds` | holds |
-| [`qpuCernCatalogsHold`](../src/quantum/processing/unit/index.ts#L8216) | function | THE CATALOGS ARE NOT THE FACES. | — | — |
-| [`QPU_TEACHING_DOMAINS`](../src/quantum/processing/unit/index.ts#L6930) | constant | The distinct domains of the teaching corpus, sorted; the axis the corpus is crossed on. | — | — |
-| [`QPU_TEACHING_SUBJECTS`](../src/quantum/processing/unit/index.ts#L6924) | constant | The corpus's own axes, named once: the combinatorial surface is built on these and the reading checks them. | — | — |
-| [`QPU_TEACHINGS`](../src/quantum/processing/unit/index.ts#L6557) | constant | THE EVIDENCE. | — | — |
+| [`qpuResearchFetchOf`](../src/quantum/processing/unit/index.ts#L9180) | builder | Fetch a research API (INSPIRE, HEPData, Zenodo) live and count its hits. | `qpuResearchFetchHolds` | live (network) |
+| [`qpuTeachingCensusOf`](../src/quantum/processing/unit/index.ts#L7903) | builder | THE WHOLE CENSUS, so "all entanglements" is a number and not a gesture. | `qpuTeachingCensusHolds` | holds |
+| [`qpuTeachingPairsOf`](../src/quantum/processing/unit/index.ts#L6966) | builder | Teaching corpus crossed: subjects against domains, each pair entangled, application or undecided, with citations. | `qpuTeachingPairsHolds` | holds |
+| [`qpuTeachingReadingOf`](../src/quantum/processing/unit/index.ts#L7950) | builder | THE EXPLANATION, GENERATED FROM THE EVIDENCE RATHER THAN WRITTEN BESIDE IT. | `qpuTeachingReadingHolds` | holds |
+| [`qpuTeachingSeatingOf`](../src/quantum/processing/unit/index.ts#L7789) | builder | SEATED BY THE EVIDENCE, NOT BY THE AUTHOR'S ORDERING. | `qpuTeachingSeatingHolds` | holds |
+| [`qpuCernCatalogsHold`](../src/quantum/processing/unit/index.ts#L8244) | function | THE CATALOGS ARE NOT THE FACES. | — | — |
+| [`QPU_TEACHING_DOMAINS`](../src/quantum/processing/unit/index.ts#L6958) | constant | The distinct domains of the teaching corpus, sorted; the axis the corpus is crossed on. | — | — |
+| [`QPU_TEACHING_SUBJECTS`](../src/quantum/processing/unit/index.ts#L6952) | constant | The corpus's own axes, named once: the combinatorial surface is built on these and the reading checks them. | — | — |
+| [`QPU_TEACHINGS`](../src/quantum/processing/unit/index.ts#L6585) | constant | THE EVIDENCE. | — | — |
 
 Generated from the inline docs by `npm run docs`. Index: [docs](README.md).

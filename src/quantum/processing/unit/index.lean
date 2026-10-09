@@ -8,20 +8,6 @@ theorem mintOf_succ (k : Nat) : mintOf (k + 1) = mintOf k + mintOf k := rfl
 theorem mintOf_add (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := by induction b with | zero => rw [Nat.add_zero, mintOf_zero, Nat.mul_one] | succ b ih => rw [Nat.add_succ, mintOf_succ, ih, mintOf_succ, Nat.mul_add]
 theorem multiply (a b : Nat) : mintOf (a + b) = mintOf a * mintOf b := mintOf_add a b
 
-/-! # Qpu.Shor
-Modular exponentiation, period finding by fuel recursion, gcd, and Shor on 91. -/
-
-def powModAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, acc => acc | k + 1, a, m, acc => powModAux k a m (acc * a % m)
-def powMod (a e m : Nat) : Nat := powModAux e a m (1 % m)
-def periodAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, _ => 0 | fuel + 1, a, m, r => if powMod a r m = 1 then r else periodAux fuel a m (r + 1)
-def periodOf (a m : Nat) : Nat := periodAux m a m 1
-def gcdAux : Nat → Nat → Nat → Nat | 0, a, _ => a | fuel + 1, a, b => if b = 0 then a else gcdAux fuel b (a % b)
-def gcdOf (a b : Nat) : Nat := gcdAux (a + b) a b
-def half (a m : Nat) : Nat := powMod a (periodOf a m / 2) m
-theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
--- 6 theorem complete landscape
-theorem all_shor : periodOf 8 91 % 2 = 0 := rfl
-
 /-! # Qpu.Lattice
 The register geometry: n, seed, coins, rays, vertices, hexbit, bits, faces, amplitudes, fused, plane, and every identity between them. -/
 
@@ -78,6 +64,29 @@ theorem raid : faces = coins * rays ∧ faces = rays + rays := ⟨around, harmon
 def plane : Nat := coins * coins * rays
 theorem planes : plane < mintOf (rays + seed) ∧ coins * rays = faces := ⟨Nat.le_of_ble_eq_true rfl, around⟩
 
+/-! # Qpu.Annealing
+Quantum-annealer topology qubit counts over the unit-cell size m, exact Nat grounded in the lattice constants: the
+Chimera count (vertices qubits per cell) and the Pegasus count. The kernel proves the values; there is no holds. -/
+
+def chimera (m : Nat) : Nat := vertices * m ^ 2
+def pegasus (m : Nat) : Nat := vertices * n * m * (m - 1)
+theorem annealing_all : chimera 16 = 2048 ∧ pegasus 16 = 5760 := ⟨rfl, rfl⟩
+
+/-! # Qpu.Anyon
+Topological-quantum-computation fusion-space dimensions, exact Nat: the dimension for n Fibonacci (τ) anyons is the nth
+Fibonacci number (seeded from the lattice seed), and the dimension for m Ising-anyon pairs is a power of two on the
+doubling mintOf. The kernel proves the values; there is no holds. -/
+
+def fibAux : Nat → Nat → Nat → Nat | 0, a, _ => a | k + 1, a, b => fibAux k b (a + b)
+def fibFusion (nn : Nat) : Nat := fibAux nn (seed - seed) seed
+def isingFusion (m : Nat) : Nat := mintOf (m - seed)
+theorem anyon_all : fibFusion 5 = 5 ∧ fibFusion 10 = 55 ∧ isingFusion 3 = 4 := ⟨rfl, rfl, rfl⟩
+
+/-! # Qpu.Cern
+CMS Open Data record integers (events = files x q + r). -/
+
+theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
 /-! # Qpu.Circuit
 The running circuit on exact amplitudes: gates, noise, Bell, GHZ, no-clone, teleport, kickback, Deutsch, superdense, monogamy. -/
 
@@ -104,19 +113,6 @@ theorem neuro : faces = coins * rays ∧ mintOf n = 8 ∧ (0 ^^^ 4) ^^^ 4 = 0 :=
 theorem all_entangle : 1 * 1 ≠ 0 * 0 := entangle
 theorem all_noclone : coins ≠ mintOf coins := noclone
 
-/-! # Qpu.Hybrid
-Hybrid storage: KV and R2 cost and speed, and their sums. -/
-
-def kvCost : Nat := coins
-def r2Cost : Nat := seed
-def hybridCost : Nat := kvCost + r2Cost
-def kvSpeed : Nat := rays
-def r2Speed : Nat := seed
-def hybridSpeed : Nat := kvSpeed + r2Speed
-theorem hybrid_cost : coins + seed = n := by rw [coins_two, seed_eq, n_eq]
-theorem hybrid_speed : rays + seed = mintOf n := by rw [rays, n_eq, coins_two, seed_eq]; rw [show mintOf 3 = 8 from rfl]
-theorem hybrid : coins + seed = n ∧ rays + seed = mintOf n ∧ coins = seed + seed := ⟨hybrid_cost, hybrid_speed, coins_two⟩
-
 /-! # Qpu.Coil
 Theory, practice and the coil: two coins make a coil, one plus six, clay, fusion. -/
 
@@ -132,6 +128,19 @@ theorem one_plus_six : seed + (mintOf n - coins) = rays := by rw [rays, n_eq, co
 theorem two_x_seven_coins : coins * rays = (seed + (mintOf n - coins)) * coins := by rw [one_plus_six, Nat.mul_comm]
 theorem clay : coins * rays = (seed + (mintOf n - coins)) * coins ∧ (seed + (mintOf n - coins)) * coins = coil := ⟨two_x_seven_coins, by rw [← two_x_seven_coins]; rfl⟩
 theorem fusion : fused = faces * mintOf (bits + seed) ∧ faces = rays + rays := ⟨quantum, harmonic⟩
+
+/-! # Qpu.Hybrid
+Hybrid storage: KV and R2 cost and speed, and their sums. -/
+
+def kvCost : Nat := coins
+def r2Cost : Nat := seed
+def hybridCost : Nat := kvCost + r2Cost
+def kvSpeed : Nat := rays
+def r2Speed : Nat := seed
+def hybridSpeed : Nat := kvSpeed + r2Speed
+theorem hybrid_cost : coins + seed = n := by rw [coins_two, seed_eq, n_eq]
+theorem hybrid_speed : rays + seed = mintOf n := by rw [rays, n_eq, coins_two, seed_eq]; rw [show mintOf 3 = 8 from rfl]
+theorem hybrid : coins + seed = n ∧ rays + seed = mintOf n ∧ coins = seed + seed := ⟨hybrid_cost, hybrid_speed, coins_two⟩
 
 /-! # Qpu.Physics
 Planck and Boltzmann (SI exact digits), transmon temperature, BCS gaps of aluminium and niobium, cooling. -/
@@ -153,18 +162,50 @@ theorem cooling_stays_positive (t a n : Nat) (ht : 0 < t) (ha : 0 < a) : 0 < t *
 theorem cooling_strictly_decreases (t a b n : Nat) (ht : 0 < t) (ha : 0 < a) (hab : a < b) : t * a ^ n * a < t * a ^ n * b :=
   Nat.mul_lt_mul_of_pos_left hab (Nat.mul_pos ht (Nat.pow_pos ha))
 
-/-! # Qpu.Cern
-CMS Open Data record integers (events = files x q + r). -/
+/-! # Qpu.Shor
+Modular exponentiation, period finding by fuel recursion, gcd, and Shor on 91. -/
 
-theorem cern : 116 * 17922 + 54 = 2079006 ∧ 184 * 12509 + 12 = 2301668 ∧ 72 * 26572 + 6 = 1913190 ∧ 130 * 21121 + 21 = 2745751 ∧ 8 - 7 = 1 ∧ 8000 - 7000 = 1000 ∧ 7000 / 2 = 3500 ∧ 8000 / 2 = 4000 ∧ 4000 - 3500 = 500 ∧ 2019 - 2011 = 8 ∧ 2019 - 2012 = 7 ∧ 2017 - 2011 = 6 ∧ 2301668 + 2745751 = 5047419 ∧ 2079006 + 1913190 + 2301668 + 2745751 = 9039615 := ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+def powModAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, acc => acc | k + 1, a, m, acc => powModAux k a m (acc * a % m)
+def powMod (a e m : Nat) : Nat := powModAux e a m (1 % m)
+def periodAux : Nat → Nat → Nat → Nat → Nat | 0, _, _, _ => 0 | fuel + 1, a, m, r => if powMod a r m = 1 then r else periodAux fuel a m (r + 1)
+def periodOf (a m : Nat) : Nat := periodAux m a m 1
+def gcdAux : Nat → Nat → Nat → Nat | 0, a, _ => a | fuel + 1, a, b => if b = 0 then a else gcdAux fuel b (a % b)
+def gcdOf (a b : Nat) : Nat := gcdAux (a + b) a b
+def half (a m : Nat) : Nat := powMod a (periodOf a m / 2) m
+theorem shor : periodOf 8 91 % 2 = 0 ∧ half 8 91 < 91 - 1 ∧ 1 < gcdOf (half 8 91 - 1) 91 ∧ gcdOf (half 8 91 - 1) 91 < 91 ∧ gcdOf (half 8 91 - 1) 91 * gcdOf (half 8 91 + 1) 91 = 91 := ⟨rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
+-- 6 theorem complete landscape
+theorem all_shor : periodOf 8 91 % 2 = 0 := rfl
 
-/-! # Qpu.Fuse
-The fused API registry: qubits, composing pairs, specificity buckets, cut entanglement within bounds. -/
+/-! # Qpu.Clay
+Discovered, not written (scripts/lean-clay.mjs): the formulas discover each other — every value two or more families of formulas reach, stated over the lattice's own constant names. No list is kept. clay_wings is their conjunction, and crossDiscoverSchemaOf consolidates the same relations as one schema.org DefinedTermSet. -/
 
--- The API registry fused (scripts/fuse-apis.mjs, fuse-receipt.json): qubits = connected + isolated; composing pairs =
--- entangled + one-way; the specificity buckets partition the pairs; each cut's ebits within its bound; receipts =
--- qubits + formulas. Snapshot integers, as theorem cern holds CMS counts.
-theorem fuse : 2247 + 282 = 2529 ∧ 94598 + 343701 = 438299 ∧ 406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧ 448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828 := ⟨rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
+/-- Hybrid, Lattice, Mint, Shor meet at 8. -/
+theorem relation_8 : vertices = hybridSpeed ∧ vertices = mintOf n := ⟨rfl, rfl⟩
+/-- Coil, Lattice meet at 14. -/
+theorem relation_14 : faces = coil := rfl
+/-- Mint, Shor meet at 16. -/
+theorem relation_16 : mintOf hexbit = powMod coins rays plane ∧ mintOf hexbit = powMod coins hexbit bits := ⟨rfl, rfl⟩
+/-- Mint, Shor meet at 21. -/
+theorem relation_21 : chooseOf rays coins = powMod rays coins plane ∧ chooseOf rays coins = powMod rays vertices plane := ⟨rfl, rfl⟩
+/-- Physics, Shor meet at 25. -/
+theorem relation_25 : powMod n hexbit plane = powMod n faces bits ∧ powMod n hexbit plane = powMod n plane plane := ⟨rfl, rfl⟩
+/-- Lattice, Mint meet at 28. -/
+theorem relation_28 : plane = chooseOf vertices coins := rfl
+/-- Lattice, Mint meet at 4294967296. -/
+theorem relation_4294967296 : amplitudes = mintOf bits := rfl
+
+/-- Every discovered relation at once: the families of formulas that meet. -/
+theorem clay_wings : (vertices = hybridSpeed ∧ vertices = mintOf n) ∧ faces = coil ∧ (mintOf hexbit = powMod coins rays plane ∧ mintOf hexbit = powMod coins hexbit bits) ∧ (chooseOf rays coins = powMod rays coins plane ∧ chooseOf rays coins = powMod rays vertices plane) ∧ (powMod n hexbit plane = powMod n faces bits ∧ powMod n hexbit plane = powMod n plane plane) ∧ plane = chooseOf vertices coins ∧ amplitudes = mintOf bits := ⟨relation_8, relation_14, relation_16, relation_21, relation_25, relation_28, relation_4294967296⟩
+
+/-! # Qpu.Clifford
+Clifford-group and symplectic-group orders for gate synthesis and randomized benchmarking, exact Nat on the doubling
+mintOf: the order of the symplectic group Sp(2n, 2) — 2^(n^2) times the product of 4^j − 1 for j up to n — and the
+n-qubit Clifford group order. The kernel proves the values; there is no holds. -/
+
+def sympProd : Nat → Nat | 0 => 1 | j + 1 => (mintOf (2 * (j + 1)) - 1) * sympProd j
+def symplectic (nn : Nat) : Nat := mintOf (nn * nn) * sympProd nn
+def cliffordOrder (nn : Nat) : Nat := mintOf (2 * nn) * symplectic nn
+theorem clifford_all : symplectic 1 = 6 ∧ symplectic 2 = 720 ∧ symplectic 3 = 1451520 ∧ cliffordOrder 2 = 11520 := ⟨rfl, rfl, rfl, rfl⟩
 
 /-! # Qpu.Cross
 Cross forms: every quantity stated as a sum of like terms and as a product of unlike ones, and the bridges between. -/
@@ -196,6 +237,68 @@ theorem all_complete :
   coil = faces ∧ amplitudes = mintOf bits ∧ 
   fused = faces * mintOf (bits + seed) := 
   ⟨around, harmonic, two_coins_make_a_coil, rfl, quantum⟩
+
+/-! # Qpu.Fuse
+The fused API registry: qubits, composing pairs, specificity buckets, cut entanglement within bounds. -/
+
+-- The API registry fused (scripts/fuse-apis.mjs, fuse-receipt.json): qubits = connected + isolated; composing pairs =
+-- entangled + one-way; the specificity buckets partition the pairs; each cut's ebits within its bound; receipts =
+-- qubits + formulas. Snapshot integers, as theorem cern holds CMS counts.
+theorem fuse : 2247 + 282 = 2529 ∧ 94598 + 343701 = 438299 ∧ 406 + 1565 + 3389 + 6011 + 12801 + 414127 = 438299 ∧ 448 ≤ 1264 ∧ 362 ≤ 955 ∧ 301 ≤ 340 ∧ 252 ≤ 284 ∧ 144 ≤ 166 ∧ 2529 + 438299 = 440828 := ⟨rfl, rfl, rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, Nat.le_of_ble_eq_true rfl, rfl⟩
+
+/-! # Qpu.Galois
+GF(2) linear-algebra counts underpinning CSS and stabilizer code construction, exact Nat on the doubling mintOf: the
+order of the general linear group GL(n, 2), the product of 2^n − 2^i for i below n. The kernel proves the values; there
+is no holds. -/
+
+def glProd : Nat → Nat → Nat | _, 0 => 1 | nn, i + 1 => (mintOf nn - mintOf i) * glProd nn i
+def gl2 (nn : Nat) : Nat := glProd nn nn
+theorem galois_all : gl2 2 = 6 ∧ gl2 3 = 168 ∧ gl2 4 = 20160 := ⟨rfl, rfl, rfl⟩
+
+/-! # Qpu.Grover
+Grover quantum-search iteration counts, exact Nat with no π literal and no float: the optimal number of iterations over a
+2^(2k)-item database is ⌊(π/4)·2^k⌋, where π is carried by the proven Zu Chongzhi rational pi_zu (355/113) written over
+the lattice constants — 355 = plane·(faces−seed) − n·n, 113 = plane·hexbit + seed. The kernel proves the values; there
+is no holds. -/
+
+def groverIters (k : Nat) : Nat := (plane * (faces - seed) - n * n) * mintOf k / (coins * coins * (plane * hexbit + seed))
+def groverSize (k : Nat) : Nat := mintOf (2 * k)
+theorem grover_all : groverIters 2 = 3 ∧ groverIters 5 = 25 ∧ groverSize 5 = 1024 := ⟨rfl, rfl, rfl⟩
+
+/-! # Qpu.Magic
+Magic-state distillation parameters of the [[15, 1, 3]] Reed–Muller code (15-to-1), as exact Nat over the lattice
+constants: the block length, the logical qubits, the code distance, and the cubic suppression factor. The kernel proves
+the values from the proven constants; there is no holds. -/
+
+def magicBlock : Nat := faces + seed
+def magicLogical : Nat := seed
+def magicDistance : Nat := n
+def magicCubic : Nat := plane + rays
+theorem magic_all : magicBlock = 15 ∧ magicLogical = 1 ∧ magicDistance = 3 ∧ magicCubic = 35 := ⟨rfl, rfl, rfl, rfl⟩
+
+/-! # Qpu.Pi
+π as exact rational convergents over the lattice constants — its integer floor and the classical best rational
+approximations. These are checked identities about the numerators and denominators of π's convergents, not a closed form
+for π (π is irrational); they are the exact ingredients the clay family's analytic wing reads. -/
+
+/-- the integer floor of π (3) equals mintOf coins − seed. -/
+theorem pi_floor : mintOf coins - seed = 3 := rfl
+/-- Archimedes' upper bound 22/7: the numerator (22) equals faces + vertices. -/
+theorem pi_archimedes_num : faces + vertices = 22 := rfl
+/-- Archimedes' upper bound 22/7: the denominator (7) equals rays. -/
+theorem pi_archimedes_den : rays = 7 := rfl
+/-- Zu Chongzhi's milü 355/113: the numerator (355) equals plane · (faces − seed) − n · n. -/
+theorem pi_zu_num : plane * (faces - seed) - n * n = 355 := rfl
+/-- Zu Chongzhi's milü 355/113: the denominator (113, prime) equals plane · hexbit + seed. -/
+theorem pi_zu_den : plane * hexbit + seed = 113 := rfl
+/-- a full turn in degrees (360) equals (faces − coins) · (plane + coins). -/
+theorem pi_turn_degrees : (faces - coins) * (plane + coins) = 360 := rfl
+/-- a half turn in degrees (180), π radians, equals (faces − coins) · (faces + seed). -/
+theorem pi_half_turn : (faces - coins) * (faces + seed) = 180 := rfl
+
+/-- Every convergent at once: π's floor and its classical rational approximations, the analytic-wing ingredients. -/
+theorem pi_all : mintOf coins - seed = 3 ∧ faces + vertices = 22 ∧ rays = 7 ∧ plane * (faces - seed) - n * n = 355 ∧ plane * hexbit + seed = 113 ∧ (faces - coins) * (plane + coins) = 360 ∧ (faces - coins) * (faces + seed) = 180 :=
+  ⟨pi_floor, pi_archimedes_num, pi_archimedes_den, pi_zu_num, pi_zu_den, pi_turn_degrees, pi_half_turn⟩
 
 /-! # Qpu.Primes
 The primes the register geometry already exhibits, written as exact identities over the lattice constants — the
@@ -231,47 +334,43 @@ theorem primorial_210 : coins * n * (n + coins) * rays = 210 := rfl
 theorem primes_all : coins = 2 ∧ n = 3 ∧ mintOf coins - seed = 3 ∧ mintOf n - seed = 7 ∧ bits - seed = 31 ∧ mintOf rays - seed = 127 ∧ rays * (faces - seed) = 91 ∧ rays * (faces - seed) = chooseOf faces coins ∧ faces - n = 11 ∧ faces - seed = 13 ∧ (faces - seed) - (faces - n) = coins ∧ coins * n * (n + coins) * rays = 210 :=
   ⟨prime_two, prime_three, mersenne_3, mersenne_7, mersenne_31, mersenne_127, shor_factored, shor_modulus_binomial, twin_lower, twin_upper, twin_gap, primorial_210⟩
 
-/-! # Qpu.Pi
-π as exact rational convergents over the lattice constants — its integer floor and the classical best rational
-approximations. These are checked identities about the numerators and denominators of π's convergents, not a closed form
-for π (π is irrational); they are the exact ingredients the clay family's analytic wing reads. -/
+/-! # Qpu.Qaoa
+QAOA circuit resource counts over p layers, exact Nat grounded in the lattice constants: the variational parameter
+count (two per layer, from coins), the cost-layer ZZ gates over e edges, and the mixer X gates over q qubits. The kernel
+proves the values; there is no holds. -/
 
-/-- the integer floor of π (3) equals mintOf coins − seed. -/
-theorem pi_floor : mintOf coins - seed = 3 := rfl
-/-- Archimedes' upper bound 22/7: the numerator (22) equals faces + vertices. -/
-theorem pi_archimedes_num : faces + vertices = 22 := rfl
-/-- Archimedes' upper bound 22/7: the denominator (7) equals rays. -/
-theorem pi_archimedes_den : rays = 7 := rfl
-/-- Zu Chongzhi's milü 355/113: the numerator (355) equals plane · (faces − seed) − n · n. -/
-theorem pi_zu_num : plane * (faces - seed) - n * n = 355 := rfl
-/-- Zu Chongzhi's milü 355/113: the denominator (113, prime) equals plane · hexbit + seed. -/
-theorem pi_zu_den : plane * hexbit + seed = 113 := rfl
-/-- a full turn in degrees (360) equals (faces − coins) · (plane + coins). -/
-theorem pi_turn_degrees : (faces - coins) * (plane + coins) = 360 := rfl
-/-- a half turn in degrees (180), π radians, equals (faces − coins) · (faces + seed). -/
-theorem pi_half_turn : (faces - coins) * (faces + seed) = 180 := rfl
+def qaoaParams (p : Nat) : Nat := coins * p
+def qaoaZz (p e : Nat) : Nat := p * e
+def qaoaX (p q : Nat) : Nat := p * q
+theorem qaoa_all : qaoaParams 3 = 6 ∧ qaoaZz 2 5 = 10 ∧ qaoaX 3 4 = 12 := ⟨rfl, rfl, rfl⟩
 
-/-- Every convergent at once: π's floor and its classical rational approximations, the analytic-wing ingredients. -/
-theorem pi_all : mintOf coins - seed = 3 ∧ faces + vertices = 22 ∧ rays = 7 ∧ plane * (faces - seed) - n * n = 355 ∧ plane * hexbit + seed = 113 ∧ (faces - coins) * (plane + coins) = 360 ∧ (faces - coins) * (faces + seed) = 180 :=
-  ⟨pi_floor, pi_archimedes_num, pi_archimedes_den, pi_zu_num, pi_zu_den, pi_turn_degrees, pi_half_turn⟩
+/-! # Qpu.Qft
+Quantum Fourier transform resource counts over the qubit count q, exact Nat: the gate count (a triangular number), the
+swap count, the circuit depth and the output dimension. The kernel proves the values; there is no holds. -/
 
-/-! # Qpu.Clay
-Discovered, not written (scripts/lean-clay.mjs): the formulas discover each other — every value two or more families of formulas reach, stated over the lattice's own constant names. No list is kept. clay_wings is their conjunction, and crossDiscoverSchemaOf consolidates the same relations as one schema.org DefinedTermSet. -/
+def qftGates (q : Nat) : Nat := q * (q + 1) / 2
+def qftSwaps (q : Nat) : Nat := q / 2
+def qftDepth (q : Nat) : Nat := 2 * q - 1
+def qftStates (q : Nat) : Nat := 2 ^ q
+theorem qft_all : qftGates 3 = 6 ∧ qftGates 4 = 10 ∧ qftSwaps 4 = 2 ∧ qftDepth 4 = 7 ∧ qftStates 4 = 16 := ⟨rfl, rfl, rfl, rfl, rfl⟩
 
-/-- Hybrid, Lattice, Mint, Shor meet at 8. -/
-theorem relation_8 : vertices = hybridSpeed ∧ vertices = mintOf n := ⟨rfl, rfl⟩
-/-- Coil, Lattice meet at 14. -/
-theorem relation_14 : faces = coil := rfl
-/-- Mint, Shor meet at 16. -/
-theorem relation_16 : mintOf hexbit = powMod coins rays plane ∧ mintOf hexbit = powMod coins hexbit bits := ⟨rfl, rfl⟩
-/-- Mint, Shor meet at 21. -/
-theorem relation_21 : chooseOf rays coins = powMod rays coins plane ∧ chooseOf rays coins = powMod rays vertices plane := ⟨rfl, rfl⟩
-/-- Physics, Shor meet at 25. -/
-theorem relation_25 : powMod n hexbit plane = powMod n faces bits ∧ powMod n hexbit plane = powMod n plane plane := ⟨rfl, rfl⟩
-/-- Lattice, Mint meet at 28. -/
-theorem relation_28 : plane = chooseOf vertices coins := rfl
-/-- Lattice, Mint meet at 4294967296. -/
-theorem relation_4294967296 : amplitudes = mintOf bits := rfl
+/-! # Qpu.Stabilizer
+Stabilizer-formalism counts for Clifford-circuit simulation, exact Nat built on the doubling mintOf: the number of
+n-qubit stabilizer states (2^n times the product of 2^i+1 for i up to n), the order of the n-qubit Pauli group with
+phases, and the order of a stabilizer subgroup. The kernel proves the values; there is no holds. -/
 
-/-- Every discovered relation at once: the families of formulas that meet. -/
-theorem clay_wings : (vertices = hybridSpeed ∧ vertices = mintOf n) ∧ faces = coil ∧ (mintOf hexbit = powMod coins rays plane ∧ mintOf hexbit = powMod coins hexbit bits) ∧ (chooseOf rays coins = powMod rays coins plane ∧ chooseOf rays coins = powMod rays vertices plane) ∧ (powMod n hexbit plane = powMod n faces bits ∧ powMod n hexbit plane = powMod n plane plane) ∧ plane = chooseOf vertices coins ∧ amplitudes = mintOf bits := ⟨relation_8, relation_14, relation_16, relation_21, relation_25, relation_28, relation_4294967296⟩
+def stabProd : Nat → Nat | 0 => 1 | k + 1 => (mintOf (k + 1) + 1) * stabProd k
+def stabStates (nn : Nat) : Nat := mintOf nn * stabProd nn
+def paulis (nn : Nat) : Nat := mintOf (2 * nn + 2)
+def stabSubgroup (nn : Nat) : Nat := mintOf nn
+theorem stabilizer_all : stabStates 1 = 6 ∧ stabStates 2 = 60 ∧ stabStates 3 = 1080 ∧ paulis 1 = 16 := ⟨rfl, rfl, rfl, rfl⟩
+
+/-! # Qpu.Surfacecode
+Rotated surface-code parameters over the code distance d, exact Nat grounded in the lattice constants: the physical
+qubit count, the number of correctable errors, and the logical qubits per patch. The kernel proves the values; there is
+no holds. -/
+
+def surfacePhysical (d : Nat) : Nat := coins * d ^ 2 - coins * d + seed
+def surfaceCorrectable (d : Nat) : Nat := (d - seed) / coins
+def surfaceLogical : Nat := coins
+theorem surfacecode_all : surfacePhysical 3 = 13 ∧ surfaceCorrectable 5 = 2 ∧ surfaceLogical = 2 := ⟨rfl, rfl, rfl⟩

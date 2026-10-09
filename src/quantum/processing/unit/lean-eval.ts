@@ -125,6 +125,12 @@ const BUILTIN: Record<string, (...x: bigint[]) => bigint> = {
 }
 BUILTIN.periodOf = (a, m) => BUILTIN.periodAux!(m, a, m, ONE)
 BUILTIN.gcdOf = (a, b) => BUILTIN.gcdAux!(a + b, a, b)
+// the quantum-application families' recursive defs, mirroring their Lean (Qpu/Stabilizer, Clifford, Galois, Anyon) so the
+// served value equals the kernel-proved one: a product over a range, or the Fibonacci fold.
+BUILTIN.stabProd = (k) => { let acc = ONE; for (let i = ONE; i <= k; i++) acc *= (ONE << i) + ONE; return acc }
+BUILTIN.sympProd = (j) => { let acc = ONE; for (let x = ONE; x <= j; x++) acc *= (ONE << (x << ONE)) - ONE; return acc }
+BUILTIN.glProd = (nn, i) => { let acc = ONE; for (let x = ZERO; x < i; x++) acc *= (ONE << nn) - (ONE << x); return acc }
+BUILTIN.fibAux = (k, a, b) => { for (let f = k; f > ZERO; f--) [a, b] = [b, a + b]; return a }
 
 type Def = { params: string[]; body: Ast }
 export type LeanModel = { defs: Map<string, Def>; constant: (name: string) => bigint; arity: (f: string) => number; order: string[] }
