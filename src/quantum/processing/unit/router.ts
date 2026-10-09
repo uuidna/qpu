@@ -41,6 +41,7 @@ import {
   qpuStorageToolsOf,
   qpuSubRpcOf,
   qpuTenantZoneOf,
+  qpuPageOf,
   qpuWellKnownOf,
   qpuZoneHostOf,
   rpcCodes,
@@ -189,9 +190,17 @@ export const worker = {
     // Payload answers its own preflight, so /admin and /api precede OPTIONS.
     if (path === '/admin' || path.startsWith('/admin/') || path === '/api' || path.startsWith('/api/')) return handToPayload()
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
-    // Website HTML is Payload's Next frontend — never qpuPageOf beside it.
+    // THE UNIT ANSWERS ITS OWN DOORS FIRST, EACH ANSWERING WHO ASKED: a browser or crawler (GET, text/html) gets the
+    // door's reading as one SEO-complete HTML document (qpuPageOf); every other client keeps the JSON-LD on the same
+    // path. Only a path no door answers is the frontend's, probed under a short deadline at the end — so the unit's
+    // content is never held waiting on the ~44s cold HTML frontend. (The regression handed ALL html to Payload
+    // unbounded, so every crawl and every page hung > 25s; restored to the bounded qpuPageOf path.)
     const wantsHtml = request.method === 'GET' && /text\/html/.test(request.headers.get('accept') ?? '')
-    if (wantsHtml) return handToPayload()
+    const canonicalOf = (p: string) => `https://${host}${p === '/' ? '' : p}`
+    const pageOrServed = (p: string, build: () => object, meta?: { title?: string; description?: string }) =>
+      wantsHtml
+        ? new Response(qpuPageOf(build() as Record<string, unknown>, canonicalOf(p), meta), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8', ...deployed } })
+        : servedResponse(servedOf(p, build))
     // The public-door aliases (/mcp, /cite, /qpu.css) — served directly by the unit, not through Payload.
     if (PUBLIC_DOORS[path as keyof typeof PUBLIC_DOORS]) return publicDoorOf()
     if (path === '/health') return jsonOf({ status: 'healthy', holds: true })
@@ -206,15 +215,18 @@ export const worker = {
       return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
     }
     if (path === '/') {
-      // API client: quantum JSON. HTML already left through handToPayload.
+      // A crawler or browser gets the landing page as crawlable HTML (qpuPageOf); an API client keeps the quantum JSON.
       const { qpuAnalyticsOf, qpuPublicOf } = await import('./zeropage.js')
       const { qpuCombinatoricsWindowOf } = await import('./presentation.js')
       const analytics = qpuAnalyticsOf()
       const face = qpuPublicOf(analytics)
       const readings = await qpuCombinatoricsWindowOf()
-      return servedResponse(servedOf('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize, links: qpuCiteOf().links, readings })))
+      return pageOrServed('/', () => ({ ...qpuQuantumOf(), analytics, public: face.lines, prize: face.prize, links: qpuCiteOf().links, readings }), {
+        title: '@uuidna/qpu — an exact quantum processing unit',
+        description: 'Lean-checked theorems, formula families as hex-program UUIDs, live public-data checks and quantum receipts, served over MCP.',
+      })
     }
-    if (path === `/${unit.path}`) return servedResponse(servedOf(`/${unit.path}`, () => qpuLeanOf()))
+    if (path === `/${unit.path}`) return pageOrServed(`/${unit.path}`, () => qpuLeanOf(), { title: '@uuidna/qpu — the Lean proof', description: 'Every theorem recomputed and typeset, each a hex-program UUID.' })
     // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed).
     if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
     if (path === '/mcp.json') { const to = new URL(request.url); to.pathname = '/api/qpu/mcp'; return publicDoorOf(new Request(to, request)) }
@@ -318,6 +330,18 @@ export const worker = {
       }
       return servedResponse(servedOf('/message', () => qpuMessageOf()))
     }
-    // A path the unit does not answer is Payload's (CMS page or plugin). HTML already left earlier.
+    // A path the unit does not answer is the CMS frontend's. Probe it under a short deadline (2s) so a slow or cold
+    // frontend never holds the request; on the deadline the unit's own answer stands. Without a Payload binding
+    // (standalone) the handoff resolves the door the publicPlugin mounts, same as before.
+    if (env?.PAYLOAD) {
+      const page = await Promise.race([
+        env.PAYLOAD.fetch(request).catch(() => undefined),
+        new Promise<undefined>((resolve) => setTimeout(() => resolve(undefined), ten * ten * ten * coins)),
+      ])
+      if (page) return page
+      return wantsHtml
+        ? new Response(qpuPageOf(JSON.parse(dead) as Record<string, unknown>, canonicalOf(path), { title: '@uuidna/qpu', description: 'No door and no page answer this address.' }), { status: lost, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8' } })
+        : jsonOf(JSON.parse(dead), lost)
+    }
     return handToPayload()
   }}
