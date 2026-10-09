@@ -39,7 +39,7 @@ import {
   xorOf,
 } from './index.js'
 import type { QpuLeanRow } from './index.js'
-import { leanSource } from './lean.js'
+import { leanSource, leanRecomputed } from './lean.js'
 import { leanModelOf, leanRecomputeOf, leanTheoremBlocksOf, leanLinksOf } from './lean-eval.js'
 import { qpuCircuitOf } from './circuit.js'
 
@@ -650,7 +650,8 @@ export const qpuLeanOf = onceOf(() => {
   const rest = blocks
     .filter(([name]) => !servedNames.has(name))
     .map(([name, theorem]) => {
-      const r = leanRecomputeOf(theorem, leanModel)
+      // read the build-time recompute (embed-lean.mjs); fall back to a live recompute only if a theorem is missing
+      const r = leanRecomputed[name] ?? leanRecomputeOf(theorem, leanModel)
       const same = sameAs(name)
       return crossed({
         heading: name,
@@ -660,7 +661,7 @@ export const qpuLeanOf = onceOf(() => {
         holds: r.holds,
       })
     })
-  const recomputed = [...curated, ...rest].map((r) => leanRecomputeOf(r.theorem, leanModel).holds)
+  const recomputed = [...curated, ...rest].map((r) => (leanRecomputed[nameOf(r)] ?? leanRecomputeOf(r.theorem, leanModel)).holds)
   const served = [...cover, ...rest]
   const src = unit.fuse.lean
   const source = { ...qpuLeanSourceOf(rows, served, climb), recomputed: recomputed.filter(Boolean).length }
