@@ -10831,13 +10831,11 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv,
  * @kind builder
  * @evidence qpuHexDiscoverHolds
  */
-export const qpuHexDiscoverOf = (from = n - n) => {
-  // EVERY family discovers, not only the Lean ones — automatic discovery at scale. A formula's value is taken as a
-  // natural: a Lean formula returns a bigint, a registered family returns a number, and a non-integer (or NaN, or a
-  // throw out of the formula's domain) is not a lattice value and is skipped. The 0-arity constants of ALL families
-  // populate the value map (cheap), so a value two families both reach is found. The heavy arity-expansion is WINDOWED
-  // to the slice [from, from + window): one call stays bounded, `next` walks the windows, the whole registry covered
-  // across them — a split, never a raised limit.
+/** The window-independent base of the discovery — every family's arity-0 constants, and the small ones that seed the
+ *  arity-expansion — computed ONCE per isolate (lean). The discover door and lean-clay's window walk both reuse it
+ *  instead of re-running every family's constants on each call; only the windowed arity-expansion stays per-call. The
+ *  registry is stable once loaded, so one memoised base covers every window and every door call in the isolate. */
+const qpuHexDiscoverBaseOf = onceOf(() => {
   const bigOf = (v: unknown): bigint | undefined => (typeof v === 'bigint' ? v : typeof v === 'number' && Number.isSafeInteger(v) ? BigInt(v) : undefined)
   const runOf = (f: { run: (a: readonly bigint[]) => unknown }, args: readonly bigint[]): bigint | undefined => {
     try { return bigOf(f.run(args)) } catch { return undefined }
@@ -10847,6 +10845,15 @@ export const qpuHexDiscoverOf = (from = n - n) => {
     .flatMap(([family, fs]) => fs.filter((f) => f.arity === n - n).map((f) => ({ family, name: f.name, value: runOf(f, []) })))
     .filter((c): c is { family: string; name: string; value: bigint } => c.value !== undefined)
   const small = constants.filter((c) => c.value <= BigInt(tenOf(n)))
+  return { runOf, all, constants, small }
+})
+const hexDiscoverComputeOf = (from: number) => {
+  // EVERY family discovers, not only the Lean ones — automatic discovery at scale. A formula's value is a natural (a
+  // non-integer/NaN/throw is skipped). The 0-arity constants of ALL families populate the value map, so a value two
+  // families reach is found. The heavy arity-expansion is WINDOWED to [from, …budget); `next` walks the windows — a
+  // split, never a raised limit. The base (all/constants/small) is memoised (qpuHexDiscoverBaseOf), so the constants
+  // are computed once, not per window.
+  const { runOf, all, constants, small } = qpuHexDiscoverBaseOf()
   const reached = new Map<string, { family: string; formula: string; params: number[]; hex: string }[]>()
   const add = (value: bigint, family: string, formula: string, params: bigint[]) => {
     // a value equal to one of its own arguments relates a formula to its input, not to another formula
@@ -10885,6 +10892,16 @@ export const qpuHexDiscoverOf = (from = n - n) => {
     .sort((a, b) => b.families.length - a.families.length || Number(BigInt(a.value) - BigInt(b.value)))
   const next = at < all.length ? at : undefined
   return { kind: 'hex-discover' as const, from, families: all.length, constants: constants.length, evaluated: [...reached.values()].reduce((a, w) => a + w.length, n - n), relations, ...(next !== undefined ? { next } : {}), holds: relations.length > n - n }
+}
+/** The discovery of a window is a pure function of the (stable) registry and `from`, so each window is memoised: the
+ *  discover door answers a repeat from the cache, and lean-clay's walk pays each window once. */
+const hexDiscoverCache = new Map<number, ReturnType<typeof hexDiscoverComputeOf>>()
+export const qpuHexDiscoverOf = (from = n - n) => {
+  const hit = hexDiscoverCache.get(from)
+  if (hit) return hit
+  const out = hexDiscoverComputeOf(from)
+  hexDiscoverCache.set(from, out)
+  return out
 }
 /** A discovered relation re-runs: its first two hex programs evaluate to the value they were grouped under. */
 export const qpuHexDiscoverHolds = (d = qpuHexDiscoverOf()): boolean =>
