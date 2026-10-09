@@ -1,33 +1,43 @@
-import { qpuFoldOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReceiptStreamsOf } from '../quantum/processing/unit/index.js'
+import { qpuDocsOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
 import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
 
 type Params = Record<string, unknown>
-type Resource = { uri: string; name: string; title: string; description: string; mimeType: 'application/json' }
+type Resource = { uri: string; name: string; title: string; description: string; mimeType: 'application/json' | 'text/markdown' }
 type Template = { uriTemplate: string; name: string; title: string; description: string; mimeType: 'application/json' }
 type PromptArg = { name: string; description: string; required?: boolean }
 type Prompt = { name: string; title: string; description: string; arguments: PromptArg[]; messages: (args: Record<string, string>) => string }
 
-const PAGE = 8
 const rpcError = (code: number, message: string, data?: unknown) => Object.assign(new Error(message), { code, data })
 const invalid = (message: string, data?: unknown) => rpcError(-32602, message, data)
+/** FAIL FAST WITH A GUIDE. A hex violation throws at once, and the error carries the chain of steps to follow to make
+ *  it hold — a guide, not a dead end: the caller reads `data.guide` and acts on it, step by step. */
+const hexViolation = (why: string, data: Record<string, unknown>, guide: readonly string[]): never => {
+  throw invalid(`hex violation: ${why}`, { ...data, guide })
+}
 
-/** Continuation: an opaque cursor carries the next offset and a fold of the listing, so a cursor into a list that has changed since is refused. */
-const paged = <T>(kind: string, items: readonly T[], idOf: (x: T) => string, params: Params) => {
-  const print = qpuFoldOf(`${kind}|${items.map(idOf).join('|')}`)
+/** HEXBIT FOLDERS, HEX-ADDRESSED — no pagination state to drift. The listing is a stack of folders of `hexbit`
+ *  resources each (the lattice's own count, 2^(n-1), never a literal), and a cursor is nothing but the next folder's
+ *  HEX address — a folder boundary written in base 16. There is deliberately NO fold of the list in the cursor: the
+ *  listing grows as the unit computes (new receipt streams land), and a folder address stays valid under that
+ *  append-growth, so a cursor this server issued can never be rejected later — the bug where every page past the first
+ *  vanished the moment a receipt arrived is now impossible by construction. */
+const folderOf = () => qpuLatticeNamesOf().hexbit
+const paged = <T>(kind: string, items: readonly T[], _idOf: (x: T) => string, params: Params) => {
+  const folder = folderOf()
   let at = 0
   if (params.cursor !== undefined) {
-    try {
-      const c = JSON.parse(atob(String(params.cursor).replace(/-/g, '+').replace(/_/g, '/'))) as { k?: string; o?: number; f?: string }
-      if (c.k !== kind || c.f !== print || !Number.isSafeInteger(c.o) || c.o! < 0 || c.o! > items.length) throw new Error()
-      at = c.o!
-    } catch {
-      throw invalid('Invalid cursor: the listing changed or the cursor is not one this server issued', { kind })
-    }
+    const c = ((): { k?: string; o?: string } => {
+      try { return JSON.parse(atob(String(params.cursor).replace(/-/g, '+').replace(/_/g, '/'))) } catch { throw invalid('Invalid cursor: not one this server issued', { kind }) }
+    })()
+    const at16 = typeof c.o === 'string' ? Number.parseInt(c.o, 16) : NaN
+    if (c.k !== kind || !Number.isSafeInteger(at16) || at16 < 0) throw invalid('Invalid cursor: not one this server issued', { kind })
+    at = Math.min(at16, items.length)
   }
-  const next = at + PAGE
-  const nextCursor = next < items.length ? btoa(JSON.stringify({ k: kind, o: next, f: print })).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') : undefined
+  const next = at + folder
+  const address = (o: number) => btoa(JSON.stringify({ k: kind, o: o.toString(16) })).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+  const nextCursor = next < items.length ? address(next) : undefined
   return { page: items.slice(at, next), ...(nextCursor ? { nextCursor } : {}) }
 }
 
@@ -38,6 +48,22 @@ const json = (uri: string, value: unknown) => ({ contents: [{ uri, mimeType: 'ap
 const families = () => [...qpuHexFamiliesOf().keys()].sort()
 const streams = () => qpuReceiptStreamsOf().streams.map((s) => s.stream).sort()
 
+// Every lean computation is a UUID PROGRAM: qpuStatementUuidOf folds its statement to a full content UUID, and the
+// hexbit handle is that UUID's first 8 hex. So the proof is not a text monolith read whole at qpu://lean — each
+// theorem is addressable at qpu://lean/{handle} (the short hexbit address) or qpu://lean/{uuid} (the full program),
+// recomputed on read, naturally distributed in computable hex. Two theorems that state the same thing share a uuid.
+type LeanRaw = { heading: string; theorem: string; formula: string; reading: string; handle: string; holds: boolean }
+type LeanRow = LeanRaw & { uuid: string }
+const leanRows = (): readonly LeanRow[] => {
+  const l = qpuLeanOf() as unknown as { rows: LeanRaw[]; cover: LeanRaw[]; climb: LeanRaw }
+  return [...l.rows, ...l.cover, l.climb].map((r) => ({ ...r, uuid: qpuStatementUuidOf(r.theorem) }))
+}
+const leanHandles = (): readonly { heading: string; handle: string; uuid: string }[] => {
+  const seen = new Map<string, { heading: string; handle: string; uuid: string }>()
+  for (const r of leanRows()) if (!seen.has(r.handle)) seen.set(r.handle, { heading: r.heading, handle: r.handle, uuid: r.uuid })
+  return [...seen.values()]
+}
+
 const resourcesOf = (): Resource[] => [
   { uri: 'qpu://receipts', name: 'receipts', title: 'Receipt streams', description: 'Every quantum-receipt stream: head, length, chain, holds', mimeType: 'application/json' },
   { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles', mimeType: 'application/json' },
@@ -45,9 +71,12 @@ const resourcesOf = (): Resource[] => [
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
+  { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
+  { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
   ...streams().map((s) => ({ uri: `qpu://receipts/${s}`, name: `receipts-${s}`, title: `Stream ${s}`, description: `The ${s} receipt stream with its recent receipts`, mimeType: 'application/json' as const })),
   ...families().map((f) => ({ uri: `qpu://formulas/${f}`, name: `formulas-${f}`, title: `Family ${f}`, description: `The formulas of the ${f} hex family`, mimeType: 'application/json' as const })),
   ...families().map((f) => ({ uri: `qpu://schema/${f}`, name: `schema-${f}`, title: `Schema ${f}`, description: `The ${f} family as a schema.org DefinedTermSet of hex-program UUIDs`, mimeType: 'application/json' as const })),
+  ...leanHandles().map((h) => ({ uri: `qpu://lean/${h.handle}`, name: `lean-${h.handle}`, title: `Theorem ${h.heading}`, description: `The ${h.heading} lean computation — a UUID program ${h.uuid}, addressed by its hexbit handle ${h.handle}; recomputed, with holds`, mimeType: 'application/json' as const })),
   ...Object.keys(hologramOf().streams).map((s) => ({ uri: `qpu://hologram/${s}`, name: `hologram-${s}`, title: `Scale ${s}`, description: `Signed fragments of the ${s} scale`, mimeType: 'application/json' as const })),
 ]
 
@@ -56,6 +85,7 @@ const TEMPLATES: Template[] = [
   { uriTemplate: 'qpu://formulas/{family}', name: 'formula-family', title: 'Formula family', description: 'The formulas of one hex family: name, nibble, arity', mimeType: 'application/json' },
   { uriTemplate: 'qpu://schema/{family}', name: 'schema-family', title: 'Family schema', description: 'One hex family as a schema.org DefinedTermSet; each term is its formula’s hex-program UUID', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hex/{uuid}', name: 'hex-run', title: 'Hex program run', description: 'Run the hex program a UUID encodes; the run is a quantum receipt', mimeType: 'application/json' },
+  { uriTemplate: 'qpu://lean/{handle}', name: 'lean-theorem', title: 'Lean theorem', description: 'One lean computation by its hexbit handle (the 8 hex of its statement UUID); recomputed, with holds', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hologram/{scale}', name: 'hologram-scale', title: 'Hologram scale', description: 'Signed, chained fragments of one hologram scale with their Merkle proofs', mimeType: 'application/json' },
 ]
 
@@ -69,12 +99,40 @@ const readOf = async (uri: string): Promise<unknown> => {
     const h = hologramOf()
     return { kind: h.kind, root: h.root, publicKeys: h.publicKeys, entries: h.entries, scales: Object.fromEntries(Object.entries(h.streams).map(([k, v]) => [k, { length: v.length, head: v.at(-1)?.uuid }])), holds: h.holds }
   }
-  const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram)\/(.+)$/.exec(uri) ?? []
+  const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram|lean)\/(.+)$/.exec(uri) ?? []
   const name = key ? decodeURIComponent(key) : ''
+  // HARD FAIL FAST ON A HEX VIOLATION. A hex address is self-verifying: a lean UUID program that does not hold, or an
+  // ill-formed hex UUID, is not a soft miss but a violation of the unit's own math — it throws at once (an RPC error),
+  // never served as if sound. An address that simply names nothing (unknown handle/family/stream) is still a plain
+  // not-found (undefined), not a violation.
+  if (kind === 'lean') {
+    const rows = leanRows().filter((r) => r.handle === name || r.uuid === name)
+    if (!rows.length) return undefined
+    const broken = rows.filter((r) => r.holds !== true)
+    if (broken.length) hexViolation(`lean computation ${name} does not hold`, { handles: broken.map((r) => r.handle), uuids: broken.map((r) => r.uuid), formulas: broken.map((r) => r.formula) }, [
+      '1. read qpu://lean for every theorem with its hexbit handle, its UUID program and whether it holds.',
+      '2. a computation that does not hold is a LEAD, not a result: develop the formula, do not assert it.',
+      '3. cross the family it belongs to: tools/call quantum { door: "gate.crossed" } — an uncrossed formula is a lead.',
+    ])
+    return { handle: rows[0]!.handle, uuid: rows[0]!.uuid, theorems: rows }
+  }
   if (kind === 'receipts') return qpuReceiptStreamsOf().streams.find((s) => s.stream === name)
   if (kind === 'formulas') return qpuHexFamiliesOf().has(name) ? { family: name, formulas: qpuHexFamiliesOf().get(name)!.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })) } : undefined
   if (kind === 'schema') return qpuHexFamiliesOf().has(name) ? crossSchemaOf(name) : undefined
-  if (kind === 'hex') return qpuHexRunOf(name)
+  if (kind === 'hex') {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(name)) hexViolation('not a UUID program address', { uuid: name }, [
+      '1. a hex program address is a UUID — 8-4-4-4-12 hex; its first 8 hex are the hexbit handle.',
+      '2. mint one: tools/call quantum { hex: { family, program, params } } → its uuid, then read qpu://hex/{uuid}.',
+      '3. read qpu://hex for the catalogue of families a UUID can program, with handles and nibbles.',
+    ])
+    const run = qpuHexRunOf(name)
+    if (run && typeof run === 'object' && (run as { holds?: unknown }).holds === false) hexViolation(`program ${name} does not hold`, { uuid: name }, [
+      '1. a program that does not hold is a LEAD, not a result: develop it, do not assert it.',
+      '2. read qpu://hex to confirm the family, the nibbles and the arity the program addresses.',
+      '3. cross it: tools/call quantum { door: "gate.crossed" } — an uncrossed formula is a lead.',
+    ])
+    return run
+  }
   if (kind === 'hologram') return hologramOf().streams[name] ? { scale: name, root: hologramOf().root, publicKey: hologramOf().publicKeys[name], fragments: hologramOf().streams[name] } : undefined
   return undefined
 }
@@ -348,7 +406,9 @@ qpuMcpRegisterOf('resources/templates/list', (p) => {
 
 qpuMcpRegisterOf('resources/read', async (p) => {
   const uri = String(p.uri ?? '')
-  const value = await readOf(uri)
+  // the README is the generated paper — served as markdown, not folded into JSON, so a client reads it as the page
+  if (uri === 'qpu://readme') return { contents: [{ uri, mimeType: 'text/markdown' as const, text: qpuReadmeOf() }] }
+  const value = uri === 'qpu://docs' ? qpuDocsOf() : await readOf(uri)
   if (value === undefined) throw rpcError(-32002, `Resource not found: ${uri || '(none)'}`, { uri })
   return json(uri, value)
 })
