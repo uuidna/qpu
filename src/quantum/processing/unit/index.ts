@@ -2759,7 +2759,9 @@ const recognitionStubOf = (value: unknown, text = JSON.stringify(value)): Record
   }
 }
 const recognitionWalkOf = (value: unknown, span: number): unknown => {
-  if (value === null || typeof value === 'boolean' || typeof value === 'number') return value
+  // undefined has no JSON (JSON.stringify(undefined) is undefined, not a string): pass it through rather than read
+  // .length off it. A reply with an undefined-valued key omits that key in the end, so recognition must not crash on it.
+  if (value === undefined || value === null || typeof value === 'boolean' || typeof value === 'number') return value
   const text = JSON.stringify(value)
   if (text.length <= span) return value
   if (typeof value === 'string' || Array.isArray(value)) return recognitionStubOf(value, text)
@@ -10775,9 +10777,21 @@ export const qpuHexRunOf = async (uuid: string, referrer?: string, env?: QpuEnv,
  * @kind builder
  * @evidence qpuHexDiscoverHolds
  */
-export const qpuHexDiscoverOf = onceOf(() => {
-  const families = [...qpuHexFamiliesOf()].filter(([f]) => f.startsWith('Qpu.'))
-  const constants = families.flatMap(([family, fs]) => fs.filter((f) => f.arity === n - n).map((f) => ({ family, name: f.name, value: f.run([]) as bigint })))
+export const qpuHexDiscoverOf = (from = n - n) => {
+  // EVERY family discovers, not only the Lean ones — automatic discovery at scale. A formula's value is taken as a
+  // natural: a Lean formula returns a bigint, a registered family returns a number, and a non-integer (or NaN, or a
+  // throw out of the formula's domain) is not a lattice value and is skipped. The 0-arity constants of ALL families
+  // populate the value map (cheap), so a value two families both reach is found. The heavy arity-expansion is WINDOWED
+  // to the slice [from, from + window): one call stays bounded, `next` walks the windows, the whole registry covered
+  // across them — a split, never a raised limit.
+  const bigOf = (v: unknown): bigint | undefined => (typeof v === 'bigint' ? v : typeof v === 'number' && Number.isSafeInteger(v) ? BigInt(v) : undefined)
+  const runOf = (f: { run: (a: readonly bigint[]) => unknown }, args: readonly bigint[]): bigint | undefined => {
+    try { return bigOf(f.run(args)) } catch { return undefined }
+  }
+  const all = [...qpuHexFamiliesOf()]
+  const constants = all
+    .flatMap(([family, fs]) => fs.filter((f) => f.arity === n - n).map((f) => ({ family, name: f.name, value: runOf(f, []) })))
+    .filter((c): c is { family: string; name: string; value: bigint } => c.value !== undefined)
   const small = constants.filter((c) => c.value <= BigInt(tenOf(n)))
   const reached = new Map<string, { family: string; formula: string; params: number[]; hex: string }[]>()
   const add = (value: bigint, family: string, formula: string, params: bigint[]) => {
@@ -10791,19 +10805,33 @@ export const qpuHexDiscoverOf = onceOf(() => {
     if (!list.some((x) => x.hex === hex)) list.push({ family, formula, params: ps, hex })
   }
   for (const c of constants) add(c.value, c.family, c.name, [])
-  for (const [family, fs] of families)
-    for (const f of fs.filter((x) => x.arity > n - n && x.arity <= n)) {
+  // Window the arity-expansion by an EVALUATION BUDGET, not a family count: a family with arity-3 formulas costs
+  // |small|^3 each, so a fixed family window would be wildly uneven (seconds for an arity-3-heavy slice). Accumulate
+  // families from `from`, spending the budget of |small|^arity evaluations, and stop before the next family would
+  // overshoot (always taking at least one). `next` resumes at the first family not covered — the whole registry is
+  // walked across calls, each one bounded.
+  const budget = tenOf(coins) * tenOf(coins) * (n + coins)
+  let at = from
+  for (let spent = n - n; at < all.length; at++) {
+    const fs = all[at]![1].filter((x) => x.arity > n - n && x.arity <= n)
+    const cost = fs.reduce((a, f) => a + small.length ** f.arity, n - n)
+    if (at > from && spent + cost > budget) break
+    spent += cost
+    for (const f of fs) {
       const tuples = f.arity === seed ? small.map((a) => [a.value]) : f.arity === coins ? small.flatMap((a) => small.map((b) => [a.value, b.value])) : small.flatMap((a) => small.flatMap((b) => small.map((c) => [a.value, b.value, c.value])))
       for (const t of tuples) {
-        try { add(f.run(t) as bigint, family, f.name, t) } catch { /* a formula outside its domain reaches nothing */ }
+        const v = runOf(f, t)
+        if (v !== undefined) add(v, all[at]![0], f.name, t)
       }
     }
+  }
   const relations = [...reached]
     .map(([value, ways]) => ({ value, families: [...new Set(ways.map((w) => w.family))].sort(), ways }))
     .filter((r) => r.families.length > seed)
     .sort((a, b) => b.families.length - a.families.length || Number(BigInt(a.value) - BigInt(b.value)))
-  return { kind: 'hex-discover' as const, constants: constants.length, evaluated: [...reached.values()].reduce((a, w) => a + w.length, n - n), relations, holds: relations.length > n - n }
-})
+  const next = at < all.length ? at : undefined
+  return { kind: 'hex-discover' as const, from, families: all.length, constants: constants.length, evaluated: [...reached.values()].reduce((a, w) => a + w.length, n - n), relations, ...(next !== undefined ? { next } : {}), holds: relations.length > n - n }
+}
 /** A discovered relation re-runs: its first two hex programs evaluate to the value they were grouped under. */
 export const qpuHexDiscoverHolds = (d = qpuHexDiscoverOf()): boolean =>
   d.holds && d.relations.slice(n - n, coins).every((r) => r.ways.slice(n - n, coins).every((w) => {
@@ -10863,7 +10891,7 @@ const qpuHexToolsOf = (hexEnv?: QpuEnv): QpuSubTool[] => {
         }
       } },
     { name: see[2], description: 'Decode a hex-program UUID.', man: qpuSubManOf(see[2], 'Decode a hex program.', 'Family, formulas and params of a UUID.', hexHref, others(2)), inputSchema: schema, run: (a) => qpuHexDecodeOf(String(a.uuid ?? '')) },
-    { name: see[4], description: 'Formulas discover each other: values reached by formulas of two or more families, each as a hex program.', man: qpuSubManOf(see[4], 'Discover relations.', 'Every formula over the lattice constants, grouped by value across families.', hexHref, others(4)), inputSchema: schema, run: () => qpuHexDiscoverOf() },
+    { name: see[4], description: 'Formulas discover each other: values reached by formulas of two or more families, each as a hex program.', man: qpuSubManOf(see[4], 'Discover relations.', 'Every formula over the lattice constants, grouped by value across families.', hexHref, others(4)), inputSchema: schema, run: (a) => qpuHexDiscoverOf(Array.isArray(a.params) && a.params.length > n - n ? Number(a.params[n - n]) : n - n) },
     { name: see[3], description: 'Run a hex-program UUID.', man: qpuSubManOf(see[3], 'Run a hex program.', 'Apply the formulas, receipt and store the run.', hexHref, others(3)), inputSchema: schema, run: (a) => {
       const referrer = typeof a.referrer === 'string' ? a.referrer : undefined
       const uuid = typeof a.uuid === 'string' ? a.uuid : ''
