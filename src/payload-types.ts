@@ -391,7 +391,6 @@ export interface DocsFeedback {
   path: string;
   helpful?: boolean | null;
   comment?: string | null;
-  uuid?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1540,7 +1539,6 @@ export interface DocsFeedbackSelect<T extends boolean = true> {
   path?: T;
   helpful?: T;
   comment?: T;
-  uuid?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2555,199 +2553,6 @@ export interface TaskCreateCollectionImport {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BodygraphBlock".
- */
-export interface BodygraphBlock {
-  id: string;
-  blockType: 'bodygraph';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  /**
-   * a birth Julian day (empty: ?jd= on the page, else J2000 = 2451545)
-   */
-  jd?: number | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ClayBlock".
- */
-export interface ClayBlock {
-  id: string;
-  blockType: 'clay';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "DiscoveryBlock".
- */
-export interface DiscoveryBlock {
-  id: string;
-  blockType: 'discovery';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  /**
-   * empty: every solution
-   */
-  limit?: number | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "DocsBlock".
- */
-export interface DocsBlock {
-  id: string;
-  blockType: 'docs';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  limit?: number | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FamiliesBlock".
- */
-export interface FamiliesBlock {
-  id: string;
-  blockType: 'families';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "LiveBlock".
- */
-export interface LiveBlock {
-  id: string;
-  blockType: 'live';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  /**
-   * only sources whose label contains this
-   */
-  match?: string | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ProgramBlock".
- */
-export interface ProgramBlock {
-  id: string;
-  blockType: 'program';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  family: string;
-  /**
-   * formulas joined by +
-   */
-  program: string;
-  /**
-   * up to three naturals, comma-separated
-   */
-  params?: string | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ReceiptBlock".
- */
-export interface ReceiptBlock {
-  id: string;
-  blockType: 'receipt';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  /**
-   * a *-receipt.json at the repository root
-   */
-  file: string;
-  limit?: number | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ReceiptsBlock".
- */
-export interface ReceiptsBlock {
-  id: string;
-  blockType: 'receipts';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  facts?: number | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "StatsBlock".
- */
-export interface StatsBlock {
-  id: string;
-  blockType: 'stats';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "WingsBlock".
- */
-export interface WingsBlock {
-  id: string;
-  blockType: 'wings';
-  heading?: string | null;
-  /**
-   * id for in-page links (#families)
-   */
-  anchor?: string | null;
-  intro?: string | null;
-  blockName?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
@@ -2800,18 +2605,6 @@ export interface SerializedParagraphNode<TChildren> extends SerializedLexicalEle
   textFormat: number;
   textStyle: string;
 }
-
-export type SerializedBlockNode<TFields extends { blockType: string }> = TFields extends unknown ? {
-  type: 'block';
-  format: LexicalElementFormat;
-  version: number;
-  fields: { id: string; blockName?: string | null } & Omit<TFields, 'id' | 'blockName'>;
-} : never;
-export type SerializedInlineBlockNode<TFields extends { blockType: string }> = TFields extends unknown ? {
-  type: 'inlineBlock';
-  version: number;
-  fields: { id: string } & Omit<TFields, 'id'>;
-} : never;
 
 export interface SerializedHorizontalRuleNode {
   type: 'horizontalrule';

@@ -58,6 +58,7 @@ import {
 import type { QpuEnv, Served } from './index.js'
 import { leanSource } from './lean.js'
 import { packageVersion } from './version.js'
+import { qpuRaySvgOf } from '../../../mcp/ray-animation.js'
 
 /** Public doors Payload owns. Paths only — handlers load from the plugin so this module does not cycle with it. */
 const PUBLIC_DOORS = {
@@ -328,6 +329,25 @@ export const worker = {
         return jsonOf(sent, 'accepted' in sent && sent.accepted === true ? found + coins : found)
       }
       return servedResponse(servedOf('/message', () => qpuMessageOf()))
+    }
+    // THE UNIT RECOGNISES ANYTHING: a hex-program UUID pattern ANYWHERE in the path is the program, routing itself —
+    // no family prefix (not /hex, not /ray). One UUID runs; several in the path are a stream, run in order; a `.svg`
+    // (or an image Accept) asks for the animation representation of the same address — the picture an Open Graph crawler
+    // and the UI read. The representation is chosen by content type, never by a prefix on the address.
+    {
+      const wantsSvg = path.endsWith('.svg') || /image\/svg/.test(request.headers.get('accept') ?? '')
+      const programs = path.replace(/\.svg$/, '').match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi) ?? []
+      if (programs.length) {
+        await qpuHexRegistryOf()
+        if (wantsSvg) {
+          const run = (await qpuHexRunOf(programs[0]!, undefined, env).catch(() => undefined)) as { holds?: unknown } | undefined
+          const holds = !(run && typeof run === 'object' && run.holds === false)
+          return new Response(qpuRaySvgOf(programs[0]!, { title: unit.host, holds }), { status: found, headers: { ...headers, ...routeHeaders, ...deployed, 'content-type': 'image/svg+xml; charset=utf-8' } })
+        }
+        const runs = await Promise.all(programs.map((p) => qpuHexRunOf(p, undefined, env)))
+        const held = (r: unknown) => !(r && typeof r === 'object' && (r as { holds?: unknown }).holds === false)
+        return jsonOf(programs.length === 1 ? runs[0] : { kind: 'stream' as const, programs, runs, holds: runs.every(held) })
+      }
     }
     // A path no door answers is the CMS frontend's — probed under a 2s deadline; on the deadline the unit's answer stands.
     if (env?.PAYLOAD) {

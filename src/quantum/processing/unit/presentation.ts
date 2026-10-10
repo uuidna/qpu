@@ -1011,6 +1011,10 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
     .map((row) => `<li><code>${esc(row.formula)}</code> ${esc(row.value)} <a href="${esc(`${unit.origin}/hex/${row.uuid}`)}"><code>${esc(row.uuid)}</code></a></li>`)
     .join('')
   const next = graph.next?.uuid ? `<p>next <a href="${esc(`${unit.origin}/hex/${graph.next.uuid}`)}">${esc(graph.next.uuid)}</a></p>` : ''
+  // The page's own animation: the first reading's program, or the next lead — the UUID routing itself to its picture
+  // (.svg representation, no prefix). A stable Open Graph image, computed from the address, never drawn by hand.
+  const rayUuid = readings[0]?.uuid || graph.next?.uuid || ''
+  const rayImage = rayUuid ? `${unit.origin}/${rayUuid}.svg` : ''
   const tag = (p: string, c: string) => `<meta property="${p}" content="${esc(c)}">`
   const meta2 = (nm: string, c: string) => `<meta name="${nm}" content="${esc(c)}">`
   return [
@@ -1028,9 +1032,12 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
     tag('og:title', title),
     tag('og:description', description),
     tag('og:url', url),
-    meta2('twitter:card', 'summary'),
+    rayImage ? tag('og:image', rayImage) : '',
+    rayImage ? tag('og:image:type', 'image/svg+xml') : '',
+    meta2('twitter:card', rayImage ? 'summary_large_image' : 'summary'),
     meta2('twitter:title', title),
     meta2('twitter:description', description),
+    rayImage ? meta2('twitter:image', rayImage) : '',
     css ? `<style>${css}</style>` : '',
     // escape only the one sequence that could close the script element early; the reading is otherwise verbatim JSON
     `<script type="application/ld+json">${JSON.stringify(doc).replace(/<\//g, '<\\/')}</script>`,

@@ -256,7 +256,9 @@ const readOf = async (uri: string): Promise<unknown> => {
       '2. a computation that does not hold is a LEAD, not a result: develop the formula, do not assert it.',
       '3. cross the family it belongs to: tools/call quantum { door: "gate.crossed" } — an uncrossed formula is a lead.',
     ])
-    return { handle: rows[0]!.handle, uuid: rows[0]!.uuid, theorems: rows }
+    // the theorem's own animation surfaces with it — the UUID routing itself to its picture, no prefix (resolve the
+    // relative address against the server origin); an Open-Graph crawler and the UI read the same self-routing address.
+    return { handle: rows[0]!.handle, uuid: rows[0]!.uuid, animation: `/${rows[0]!.uuid}.svg`, theorems: rows }
   }
   if (kind === 'receipts') return qpuReceiptStreamsOf().streams.find((s) => s.stream === name)
   if (kind === 'formulas') return qpuHexFamiliesOf().has(name) ? { family: name, formulas: qpuHexFamiliesOf().get(name)!.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })) } : undefined
@@ -267,13 +269,13 @@ const readOf = async (uri: string): Promise<unknown> => {
       '2. mint one: tools/call quantum { hex: { family, program, params } } → its uuid, then read qpu://hex/{uuid}.',
       '3. read qpu://hex for the catalogue of families a UUID can program, with handles and nibbles.',
     ])
-    const run = qpuHexRunOf(name)
+    const run = await qpuHexRunOf(name)
     if (run && typeof run === 'object' && (run as { holds?: unknown }).holds === false) hexViolation(`program ${name} does not hold`, { uuid: name }, [
       '1. a program that does not hold is a LEAD, not a result: develop it, do not assert it.',
       '2. read qpu://hex to confirm the family, the nibbles and the arity the program addresses.',
       '3. cross it: tools/call quantum { door: "gate.crossed" } — an uncrossed formula is a lead.',
     ])
-    return run
+    return run && typeof run === 'object' && !Array.isArray(run) ? { ...(run as Record<string, unknown>), animation: `/${name}.svg` } : run
   }
   if (kind === 'hologram') return hologramOf().streams[name] ? { scale: name, root: hologramOf().root, publicKey: hologramOf().publicKeys[name], fragments: hologramOf().streams[name] } : undefined
   return undefined

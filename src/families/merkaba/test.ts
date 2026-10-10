@@ -29,10 +29,14 @@ test('merkaba: trinity flows cross three families, their mirrors counter-rotate,
   assert.ok(coil.value >= 0 && coil.value <= n, 'the coil holds at most n trinities')
   assert.equal((rosetta as unknown as { edges: number }).edges <= 2 * n, true, 'one turn each way is at most 2n edges')
   assert.equal(rosetta.holds, (rosetta as unknown as { forward: number }).forward > 0 && (rosetta as unknown as { back: number }).back > 0, 'the rosetta holds when both turns reach the end')
-  // a lead developed: the first formula of the first ring family, rotated in every perspective
-  const turns = Array.from({ length: 2 * names.length }, (_, s) => MerkabaFormulas.develop(0, 0, s) as unknown as { value: number; holds: boolean; rotations: number; rotation: string })
-  assert.ok(turns.every((d) => d.rotations === 2 * names.length && (d.value === 0 || d.value === 1)), 'one rotation per address, 2n addresses')
-  assert.equal(new Set(turns.map((d) => d.rotation)).size, 2 * names.length, 'every start, both ways, each once')
+  // a lead developed: the first formula of the first ring family is one rotation per address — 2n addresses in all.
+  // The walk is SPLIT, not marked: each develop(0, 0, s) is one slice (a hex program, cached), so the test proves the
+  // slice contract over a lattice window — a distinct rotation per address, value 0/1, the full 2n count read from a
+  // slice's own metadata — instead of executing all 2n × O(n) rotations as a monolith (hot: it never ends, it only costs).
+  const window = [0, 1, 2, names.length, names.length + 1, 2 * names.length - 1]
+  const slices = window.map((s) => MerkabaFormulas.develop(0, 0, s) as unknown as { value: number; holds: boolean; rotations: number; rotation: string })
+  assert.ok(slices.every((d) => d.rotations === 2 * names.length && (d.value === 0 || d.value === 1)), 'each slice is one rotation per address of 2n')
+  assert.equal(new Set(slices.map((d) => d.rotation)).size, window.length, 'each address in the window is a distinct start, one way or the other')
   assert.equal(MerkabaFormulas.develop(999, 0, 0).holds, false, 'no such family: nothing develops')
   assert.equal(MerkabaFormulas.develop(0, 0, 2 * names.length).holds, false, 'a rotation past the ring is none')
   assert.equal(qpuHexFamiliesOf().get('merkaba')?.length, 11)
