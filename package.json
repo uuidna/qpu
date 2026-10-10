@@ -574,6 +574,7 @@
     "./dist/families/guide/index.js",
     "./dist/families/hail/index.js",
     "./dist/families/halflife/index.js",
+    "./dist/families/handle/index.js",
     "./dist/families/hanoi/index.js",
     "./dist/families/hardness/index.js",
     "./dist/families/hardware/index.js",
