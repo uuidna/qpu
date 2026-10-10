@@ -28,7 +28,14 @@ export class VolatilityFormulas {
   static zscore(x: number, mean: number, sigma: number): CrossFormula { return c('volatility-zscore', 'zscore(x, mean, sigma) = ⌊max(0, x − mean) / sigma⌋', sigma > 0 ? Math.floor(Math.max(0, x - mean) / sigma) : 0, nat(x, mean, sigma) && sigma > 0, 'zscore', [x, mean, sigma]) }
   /** DRAWDOWN: the fall from peak to trough, as a percentage. value ⌊max(0, peak − trough) · 100 / peak⌋. */
   static drawdown(peak: number, trough: number): CrossFormula { return c('volatility-drawdown', 'drawdown(peak, trough) = ⌊max(0, peak − trough) · 100 / peak⌋', peak > 0 ? Math.floor((Math.max(0, peak - trough) * 100) / peak) : 0, nat(peak, trough) && peak > 0, 'drawdown', [peak, trough]) }
+  static range2(hi: number, lo: number): CrossFormula { return c('volatility-range2', 'range(hi, lo) = max(0, hi − lo)', Math.max(0, hi - lo), nat(hi, lo), 'range2', [hi, lo]) }
+  static drawdown2(peak: number, trough: number): CrossFormula { return c('volatility-drawdown2', 'drawdown(peak, trough) = max(0, peak − trough)', Math.max(0, peak - trough), nat(peak, trough), 'drawdown2', [peak, trough]) }
+  static valueatrisk(loss: number, confidence: number): CrossFormula { return c('volatility-valueatrisk', 'valueatrisk(loss, confidence) = ⌊loss·confidence/100⌋', Math.floor((loss * confidence) / 100), nat(loss, confidence), 'valueatrisk', [loss, confidence]) }
+  static sumsquares(a: number, b: number): CrossFormula { return c('volatility-sumsquares', 'sumsquares(a, b) = a² + b²', a * a + b * b, nat(a, b), 'sumsquares', [a, b]) }
+  static meandeviation(total: number, k: number): CrossFormula { return c('volatility-meandeviation', 'meandeviation(total, n) = ⌊total/n⌋', k > 0 ? Math.floor(total / k) : 0, nat(total, k) && k > 0, 'meandeviation', [total, k]) }
+  static excessreturn(ret: number, riskfree: number): CrossFormula { return c('volatility-excessreturn', 'excessreturn(ret, riskfree) = max(0, ret − riskfree)', Math.max(0, ret - riskfree), nat(ret, riskfree), 'excessreturn', [ret, riskfree]) }
+  static beta2(cov: number, mktvar: number): CrossFormula { return c('volatility-beta2', 'beta(cov, mktvar) = ⌊cov/mktvar⌋', mktvar > 0 ? Math.floor(cov / mktvar) : 0, nat(cov, mktvar) && mktvar > 0, 'beta2', [cov, mktvar]) }
 }
 
-for (const name of ['annualized', 'beta', 'drawdown', 'historicalband', 'impliedmove', 'range', 'variance', 'zscore'] as const)
+for (const name of ['annualized', 'beta', 'beta2', 'drawdown', 'drawdown2', 'excessreturn', 'historicalband', 'impliedmove', 'meandeviation', 'range', 'range2', 'sumsquares', 'valueatrisk', 'variance', 'zscore'] as const)
   qpuHexRegisterOf('volatility', name, (VolatilityFormulas[name] as (...x: unknown[]) => unknown).bind(VolatilityFormulas))

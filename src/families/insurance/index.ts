@@ -29,7 +29,21 @@ export class InsuranceFormulas {
   static subrogation(paid: number, recovered: number): CrossFormula { return i('insurance-subrogation', 'subrogation(paid, recovered) = min(paid, recovered)', Math.min(paid, recovered), nat(paid, recovered), 'subrogation', [paid, recovered]) }
   /** THE CO-PAYMENT: the insured's `pct`% share of the claim. value ⌊claim · pct / 100⌋. */
   static copay(claim: number, pct: number): CrossFormula { return i('insurance-copay', 'copay(claim, pct) = ⌊claim · pct / 100⌋', Math.floor((claim * pct) / 100), nat(claim, pct) && pct <= 100, 'copay', [claim, pct]) }
+  /** PREMIUM at `rate`% of the sum. value ⌊rate·sum/100⌋. */
+  static premium2(rate: number, sum: number): CrossFormula { return i('insurance-premium2', 'premium(rate, sum) = ⌊rate·sum/100⌋', Math.floor((rate * sum) / 100), nat(rate, sum), 'premium2', [rate, sum]) }
+  /** CLAIM RATIO: claims over policies, as a percentage. value ⌊claims·100/policies⌋. */
+  static claimratio(claims: number, policies: number): CrossFormula { return i('insurance-claimratio', 'claimratio(claims, policies) = ⌊claims·100/policies⌋', policies > 0 ? Math.floor((claims * 100) / policies) : 0, nat(claims, policies) && policies > 0, 'claimratio', [claims, policies]) }
+  /** RETAINED: loss net of the deductible. value max(0, loss − deductible). */
+  static retained(loss: number, deductible: number): CrossFormula { return i('insurance-retained', 'retained(loss, deductible) = max(0, loss − deductible)', Math.max(0, loss - deductible), nat(loss, deductible), 'retained', [loss, deductible]) }
+  /** COINSURANCE: the insured's `share`% of the loss. value ⌊loss·share/100⌋. */
+  static coinsurance2(loss: number, share: number): CrossFormula { return i('insurance-coinsurance2', 'coinsurance(loss, share) = ⌊loss·share/100⌋', Math.floor((loss * share) / 100), nat(loss, share), 'coinsurance2', [loss, share]) }
+  /** CEDED: portfolio net of retention. value max(0, portfolio − retention). */
+  static ceded(portfolio: number, retention: number): CrossFormula { return i('insurance-ceded', 'ceded(portfolio, retention) = max(0, portfolio − retention)', Math.max(0, portfolio - retention), nat(portfolio, retention), 'ceded', [portfolio, retention]) }
+  /** FREQUENCY · SEVERITY: the pure loss cost. value freq · sev. */
+  static frequencyseverity(freq: number, sev: number): CrossFormula { return i('insurance-frequencyseverity', 'frequencyseverity(freq, sev) = freq · sev', freq * sev, nat(freq, sev), 'frequencyseverity', [freq, sev]) }
+  /** SOLVENCY MARGIN: assets net of liabilities. value max(0, assets − liabilities). */
+  static solvencymargin(assets: number, liabilities: number): CrossFormula { return i('insurance-solvencymargin', 'solvencymargin(assets, liabilities) = max(0, assets − liabilities)', Math.max(0, assets - liabilities), nat(assets, liabilities), 'solvencymargin', [assets, liabilities]) }
 }
 
-for (const name of ['claim', 'coinsurance', 'copay', 'indemnity', 'lossratio', 'premium', 'reserve', 'subrogation'] as const)
+for (const name of ['ceded', 'claim', 'claimratio', 'coinsurance', 'coinsurance2', 'copay', 'frequencyseverity', 'indemnity', 'lossratio', 'premium', 'premium2', 'reserve', 'retained', 'solvencymargin', 'subrogation'] as const)
   qpuHexRegisterOf('insurance', name, (InsuranceFormulas[name] as (...x: unknown[]) => unknown).bind(InsuranceFormulas))

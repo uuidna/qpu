@@ -27,7 +27,21 @@ export class ActuarialFormulas {
   static discount(future: number, rate: number): CrossFormula { return c('actuarial-discount', 'discount(future, rate) = ⌊future · 100 / (100 + rate)⌋', (100 + rate) > 0 ? Math.floor((future * 100) / (100 + rate)) : 0, nat(future, rate), 'discount', [future, rate]) }
   /** SOLVENCY: assets over liabilities, as a percentage. value ⌊assets · 100 / liabilities⌋. */
   static solvency(assets: number, liabilities: number): CrossFormula { return c('actuarial-solvency', 'solvency(assets, liabilities) = ⌊assets · 100 / liabilities⌋', liabilities > 0 ? Math.floor((assets * 100) / liabilities) : 0, nat(assets, liabilities) && liabilities > 0, 'solvency', [assets, liabilities]) }
+  /** EXPECTED CLAIMS: frequency times severity. value freq · severity. */
+  static expectedclaims(freq: number, severity: number): CrossFormula { return c('actuarial-expectedclaims', 'expectedclaims(freq, severity) = freq · severity', freq * severity, nat(freq, severity), 'expectedclaims', [freq, severity]) }
+  /** LOSS RATIO (losses over premiums): a percentage. value ⌊losses·100/premiums⌋. */
+  static lossratio2(losses: number, premiums: number): CrossFormula { return c('actuarial-lossratio2', 'lossratio(losses, premiums) = ⌊losses·100/premiums⌋', premiums > 0 ? Math.floor((losses * 100) / premiums) : 0, nat(losses, premiums) && premiums > 0, 'lossratio2', [losses, premiums]) }
+  /** RESERVE (incurred net of paid). value max(0, incurred − paid). */
+  static reserve2(incurred: number, paid: number): CrossFormula { return c('actuarial-reserve2', 'reserve(incurred, paid) = max(0, incurred − paid)', Math.max(0, incurred - paid), nat(incurred, paid), 'reserve2', [incurred, paid]) }
+  /** EXPOSURE: policies times years. value policies · years. */
+  static exposure(policies: number, years: number): CrossFormula { return c('actuarial-exposure', 'exposure(policies, years) = policies · years', policies * years, nat(policies, years), 'exposure', [policies, years]) }
+  /** PURE PREMIUM: losses over exposure. value ⌊losses/exposure⌋. */
+  static purepremium(losses: number, exposure: number): CrossFormula { return c('actuarial-purepremium', 'purepremium(losses, exposure) = ⌊losses/exposure⌋', exposure > 0 ? Math.floor(losses / exposure) : 0, nat(losses, exposure) && exposure > 0, 'purepremium', [losses, exposure]) }
+  /** COMBINED RATIO: losses plus expenses over premium, as a percentage. value ⌊(losses+expenses)·100/premium⌋. */
+  static combinedratio(losses: number, expenses: number, premium: number): CrossFormula { return c('actuarial-combinedratio', 'combinedratio(losses, expenses, premium) = ⌊(losses+expenses)·100/premium⌋', premium > 0 ? Math.floor(((losses + expenses) * 100) / premium) : 0, nat(losses, expenses, premium) && premium > 0, 'combinedratio', [losses, expenses, premium]) }
+  /** SURVIVAL: lives net of deaths. value max(0, lives − deaths). */
+  static survival(lives: number, deaths: number): CrossFormula { return c('actuarial-survival', 'survival(lives, deaths) = max(0, lives − deaths)', Math.max(0, lives - deaths), nat(lives, deaths), 'survival', [lives, deaths]) }
 }
 
-for (const name of ['annuity', 'discount', 'lifeexpectancy', 'lossratio', 'mortality', 'premium', 'reserve', 'solvency'] as const)
+for (const name of ['annuity', 'combinedratio', 'discount', 'expectedclaims', 'exposure', 'lifeexpectancy', 'lossratio', 'lossratio2', 'mortality', 'premium', 'purepremium', 'reserve', 'reserve2', 'solvency', 'survival'] as const)
   qpuHexRegisterOf('actuarial', name, (ActuarialFormulas[name] as (...x: unknown[]) => unknown).bind(ActuarialFormulas))
