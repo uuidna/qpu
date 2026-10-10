@@ -131,6 +131,11 @@ BUILTIN.stabProd = (k) => { let acc = ONE; for (let i = ONE; i <= k; i++) acc *=
 BUILTIN.sympProd = (j) => { let acc = ONE; for (let x = ONE; x <= j; x++) acc *= (ONE << (x << ONE)) - ONE; return acc }
 BUILTIN.glProd = (nn, i) => { let acc = ONE; for (let x = ZERO; x < i; x++) acc *= (ONE << nn) - (ONE << x); return acc }
 BUILTIN.fibAux = (k, a, b) => { for (let f = k; f > ZERO; f--) [a, b] = [b, a + b]; return a }
+// Qpu.Combinatorics: the match-defs the evaluator cannot read from the bundle, hand-implemented so it can recompute them.
+BUILTIN.factorial = (n) => { let acc = ONE; for (let i = ONE; i <= n; i++) acc *= i; return acc }
+BUILTIN.choose = (n, k) => BUILTIN.chooseOf!(n, k)
+BUILTIN.triangular = (n) => (n * (n + ONE)) / (ONE + ONE)
+BUILTIN.ramsey22 = (n) => n
 
 type Def = { params: string[]; body: Ast }
 export type LeanModel = { defs: Map<string, Def>; constant: (name: string) => bigint; arity: (f: string) => number; order: string[] }
