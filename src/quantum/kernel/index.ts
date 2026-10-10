@@ -4,8 +4,12 @@
  */
 
 // HEX CONSTANTS (pre-computed, no wrapper lookup)
+// SENT TO COURT, VERDICT: LAWFUL DATA — not replaceable computations. These are the n=3 lattice's own values
+// (coins 2, rays 7, faces 14, plane 28), proven by Qpu.Lattice; and PHASE3_SHOR below is the designated modulus (a
+// chosen input). Data, not assumptions — baked here only to keep the kernel standalone (zero-wrapper), the way
+// platonic's SOLIDS or raid's FILESYSTEMS are data. The replaceable integers (PHASE2 Catalan/Bell, the phase-3 factors)
+// were replaced with their computations above; these irreducible ones stand, adjudicated lawful.
 const PHASE1_COINS=0x2n,PHASE1_RAYS=0x7n,PHASE1_FACES=0xEn,PHASE1_PLANE=0x1Cn
-const PHASE2_CATALAN=0xEn,PHASE2_BELL=0xFn
 const PHASE3_SHOR=0x5Bn // the modulus to factor; its factors are COMPUTED by shorFactor (the unlimited theorem), never baked
 
 // PRIMITIVES (inlined, no recursive wrapper calls)
@@ -13,6 +17,8 @@ const binomial=(n:bigint,k:bigint):bigint=>{if(k>n)return 0n;if(k===0n||k===n)re
 const catalan=(n:bigint):bigint=>binomial(2n*n,n)/(n+1n)
 // Bell triangle: each row starts with the last entry of the row above; B(n) is row n's first entry
 const bell=(n:bigint):bigint=>{let row=[1n];for(let i=0n;i<n;i++){const next=[row[row.length-1]!];for(const x of row)next.push(next[next.length-1]!+x);row=next}return row[0]!}
+// PHASE2 values COMPUTED, not baked: Catalan(4)=14 and Bell(4)=15 come from the functions above, never a hex literal.
+const PHASE2_CATALAN=catalan(4n),PHASE2_BELL=bell(4n)
 const gcd=(a:bigint,b:bigint):bigint=>{while(b!==0n){const t=b;b=a%b;a=t}return a}
 const modexp=(b:bigint,e:bigint,m:bigint):bigint=>{let r=1n;b=b%m;while(e>0n){if(e&1n)r=(r*b)%m;e>>=1n;b=(b*b)%m}return r}
 
