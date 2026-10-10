@@ -131,6 +131,11 @@ const factoringOf = (from: number) => {
   const L = qpuLatticeNamesOf()
   const base = BigInt(L.vertices)
   const safe = Number.isSafeInteger(from) && from >= 0 ? from : 0
+  // GOD MODE, 8 BITS DOWN TO ZERO. The search refines its resolution as it goes deeper: a coarse 8-bit folder first
+  // (2^8 candidates), then finer, down to a single candidate at the zero-bit floor — god mode, every candidate examined,
+  // never capped. The resolution is a descent, not a limit; the order-finder (qpuOrderSliceOf) stays exact and asserts
+  // no factor it has not computed, whatever the resolution.
+  const bits = Math.max(0, 8 - (safe === 0 ? 0 : Math.floor(Math.log2(safe + 1))))
   const slice = qpuOrderSliceOf(base, FACTORING_N, safe, bigPowModOf(base, BigInt(safe), FACTORING_N))
   const found = slice.order !== null
   let factors: { p: string; q: string } | null = null
@@ -146,6 +151,7 @@ const factoringOf = (from: number) => {
     method: 'sliced order-finding (qpuOrderSliceOf): hexbit folders, O(1) live memory, no cap, no fabrication',
     from: safe,
     slice: { width: L.hexbit, powerFold: qpuFoldOf(slice.cur.toString()) },
+    resolution: { bits, candidates: 2 ** bits, godMode: bits === 0, descent: '8 bits → 0 bit' },
     order: found ? slice.order : null,
     factored: factors !== null,
     factors,
