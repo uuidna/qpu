@@ -53,7 +53,9 @@ const nonDoors = () => [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f
 test('release: every door and every formula is reachable through a sealed door', async (t) => {
   // COLD SPLITS HOT, ONE CATALOGUE: the doors come back cold and in full (name + kind, unfolded); the formulas are not
   // duplicated here — the door carries their count and points to the one hex catalogue, each formula reachable in hex.
-  const d = out(await call({ doors: true })) as { doors?: { name: string; kind: string }[]; formulas?: number; families?: number; catalogue?: string; lean?: { theorems: number; held: number; axioms: number; defs: number; proven: number }; holds?: boolean }
+  // { doors: true } is recognition-first: the cold summary (counts, lean, a folded doors stub). The full doors array is
+  // over the span, so reading it spends the enthalpy — { full: true } — the one place this contract is exercised live.
+  const d = out(await call({ doors: true, full: true })) as { doors?: { name: string; kind: string }[]; formulas?: number; families?: number; catalogue?: string; lean?: { theorems: number; held: number; axioms: number; defs: number; proven: number }; holds?: boolean }
   assert.ok(Array.isArray(d.doors), 'the sealed door answers { doors: true } with the cold doors as an array, unfolded')
   assert.ok(typeof d.formulas === 'number' && d.formulas > 0, 'the formula count stands for the whole; the list is the one hex catalogue, not duplicated here')
   assert.ok(typeof d.families === 'number' && d.families > 0, 'every family is counted')
