@@ -292,6 +292,7 @@
     "./dist/families/climatology/index.js",
     "./dist/families/climbing/index.js",
     "./dist/families/cloud/index.js",
+    "./dist/families/cloudflare/index.js",
     "./dist/families/cloudphysics/index.js",
     "./dist/families/clustering/index.js",
     "./dist/families/coaching/index.js",
