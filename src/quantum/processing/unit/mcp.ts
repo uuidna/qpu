@@ -406,7 +406,9 @@ export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
   const held = theorems.filter((name) => leanRecomputed[name]!.holds).length
   const proven = [...fams.values()].reduce((a, fs) => a + fs.filter((f) => leanDefs.has(f.name)).length, n - n)
   const lean = { theorems: theorems.length, held, axioms: n - n, defs: leanDefs.size, proven }
-  return { kind: 'doors' as const, doors, formulas, families: fams.size, lean, catalogue: `${unit.origin}/mcp { hex: {} } — every formula, addressed in hex, one catalogue; the proof is ${unit.origin}/mcp { door: "lean" }`, reachable: doors.length + formulas, holds: doors.length > n - n && formulas > n - n && held === theorems.length && lean.axioms === n - n }
+  // the one catalogue, served COLD: GET /hex is the whole list (ETag, 304 on repeat — never re-sent), so the pointer
+  // leads to the cold route, not the recognition-first { hex: {} } door that folds the list past the span.
+  return { kind: 'doors' as const, doors, formulas, families: fams.size, lean, catalogue: `GET ${unit.origin}/hex — every formula addressed in hex, one catalogue, served cold (ETag/304); recognition-first via { hex: {} }, the proof via { door: "lean" }`, reachable: doors.length + formulas, holds: doors.length > n - n && formulas > n - n && held === theorems.length && lean.axioms === n - n }
 }
 
 /**
