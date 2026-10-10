@@ -378,6 +378,7 @@
     "./dist/families/dataquality/index.js",
     "./dist/families/db/index.js",
     "./dist/families/deadreckoning/index.js",
+    "./dist/families/dedup/index.js",
     "./dist/families/delivery/index.js",
     "./dist/families/demographics/index.js",
     "./dist/families/demography/index.js",
