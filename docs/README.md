@@ -20,12 +20,12 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 | Wing | Capabilities | Evidence holds |
 |---|---|---|
 | [Lattice & arithmetic](lattice.md) | 10 | 7 of 7 |
-| [Quantum computation](quantum.md) | 17 | 14 of 17 |
-| [Formal proof (Lean)](proof.md) | 12 | 4 of 4 |
+| [Quantum computation](quantum.md) | 20 | 11 of 14 |
+| [Formal proof (Lean)](proof.md) | 11 | 3 of 3 |
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
 | [UUIDs & quantum receipts](receipts.md) | 39 | 14 of 16 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |
-| [MCP & agents](agents.md) | 112 | 45 of 55 |
+| [MCP & agents](agents.md) | 117 | 46 of 55 |
 | [Live science data](science.md) | 22 | 10 of 17 |
 | [API fusion](fusion.md) | 18 | 5 of 11 |
 | [Payload & Cloudflare](cms.md) | 24 | 3 of 4 |

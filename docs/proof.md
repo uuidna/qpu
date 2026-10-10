@@ -1,16 +1,16 @@
 ---
-uuid: "f734ef57-4203-70ff-b29d-db6e9b93b0b1"
+uuid: "cc0eab1a-fb6f-87e5-b9b7-be0ead52b57a"
 title: "Formal proof (Lean)"
-description: "index.lean served theorem by theorem, recomputed and typeset. 12 capabilities; 4 of 4 evidence predicates hold."
+description: "index.lean served theorem by theorem, recomputed and typeset. 11 capabilities; 3 of 3 evidence predicates hold."
 og:title: "Formal proof (Lean) — @uuidna/qpu"
-og:description: "index.lean served theorem by theorem, recomputed and typeset. 12 capabilities; 4 of 4 evidence predicates hold."
+og:description: "index.lean served theorem by theorem, recomputed and typeset. 11 capabilities; 3 of 3 evidence predicates hold."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/proof.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Formal proof (Lean)"
-twitter:description: "index.lean served theorem by theorem, recomputed and typeset. 12 capabilities; 4 of 4 evidence predicates hold."
+twitter:description: "index.lean served theorem by theorem, recomputed and typeset. 11 capabilities; 3 of 3 evidence predicates hold."
 version: "1.1.0"
 ---
 # Formal proof (Lean)
@@ -19,9 +19,9 @@ index.lean served theorem by theorem, recomputed and typeset.
 
 | | |
 |---|---|
-| Capabilities | 12 |
-| With an evidence predicate | 4 |
-| Predicates that hold now | 4 |
+| Capabilities | 11 |
+| With an evidence predicate | 3 |
+| Predicates that hold now | 3 |
 | Live (need the network; checked by the live doors) | 0 |
 
 | Capability | Kind | What it does | Evidence | Status |
@@ -30,14 +30,13 @@ index.lean served theorem by theorem, recomputed and typeset.
 | [`leanModelOf`](../src/quantum/processing/unit/lean-eval.ts#L143) | builder | The defs of the Lean source: `def x : Nat := e` and `def f (p q : Nat) : Nat := e`. | — | — |
 | [`leanRecomputeOf`](../src/quantum/processing/unit/lean-eval.ts#L280) | builder | Decide one theorem statement exactly, over the stated range when it binds variables, and typeset it. | — | — |
 | [`leanTheoremBlocksOf`](../src/quantum/processing/unit/lean-eval.ts#L322) | builder | Every theorem of the source as [name, text]: the `theorem` line and its continuation lines, whitespace folded. | — | — |
-| [`qpuCrossReadingOf`](../src/quantum/processing/unit/index.ts#L2542) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `qpuCrossReadingHolds` | holds |
-| [`qpuHexDiscoverOf`](../src/quantum/processing/unit/index.ts#L10808) | builder | The formulas discover each other: every Lean formula is evaluated over the lattice's own constants (each 0-arity formula's value, bounded so loops stay small), results are grouped by value, and a value reached by formulas of two or more families is a discovered relation. | `qpuHexDiscoverHolds` | holds |
+| [`qpuCrossReadingOf`](../src/quantum/processing/unit/index.ts#L2578) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `qpuCrossReadingHolds` | holds |
 | [`qpuLeanOf`](../src/quantum/processing/unit/proof.ts#L52) | builder | Every theorem of index.lean as a row: statement verbatim, LaTeX, reading, cross reading, statement UUID and holds recomputed by lean-eval. | `qpuLeanHolds` | holds |
-| [`qpuLeanSourceOf`](../src/quantum/processing/unit/index.ts#L2459) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `qpuLeanSourceHolds` | holds |
-| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8071) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
+| [`qpuLeanSourceOf`](../src/quantum/processing/unit/index.ts#L2495) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `qpuLeanSourceHolds` | holds |
+| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8107) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
 | [`leanCallOf`](../src/quantum/processing/unit/lean-eval.ts#L340) | function | Call one definition of the Lean source by name with natural-number arguments, under Lean's Nat semantics. | — | — |
 | [`leanLinksOf`](../src/quantum/processing/unit/lean-eval.ts#L358) | function | The formulas discover each other: every declaration's statement and proof are read for the other declarations they name. | — | — |
-| [`qpuStatementUuidOf`](../src/quantum/processing/unit/index.ts#L2446) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
+| [`qpuStatementUuidOf`](../src/quantum/processing/unit/index.ts#L2482) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
 
 ## Lean families
 
