@@ -1,7 +1,7 @@
 import { qpuCiteOf, qpuClayOf, qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
-import { HookFormulas } from '../families/hook/index.js'
+import { HOOK_LIFECYCLE, HookFormulas } from '../families/hook/index.js'
 import { ClayDisclosure, ClaySeals } from '../families/clay/index.js'
 import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
 
@@ -76,7 +76,8 @@ const compatibleOf = (key: string): { scope: string; family: string; values: str
 }
 
 // qpu://hooks: every tool × every lifecycle event, measured by HookFormulas.fired(tools, events). Nothing activated.
-const LIFECYCLE = ['beforeOperation', 'beforeValidate', 'beforeChange', 'afterChange', 'afterRead', 'beforeDelete', 'afterDelete'] as const
+// The events are the hook family's own canonical list, not a second copy here.
+const LIFECYCLE = HOOK_LIFECYCLE
 
 // qpu://clay: the σ-involution seals recomputed (ClaySeals), the work/author from the citation, the date a DOI pointer
 // (not baked), solved = the seals' conjunction, used = clay.disclosure, recognition an open external lead.

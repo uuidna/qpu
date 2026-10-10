@@ -11,6 +11,9 @@ const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >=
 const c = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
   crossFormulaOf({ id, src: 'hook', dst: 'payload', formula, value, proof: PROOF, ...extra }, holds, { name: `hook.${name}`, params })
 
+/** The Payload lifecycle hooks this family is the arithmetic of — the single canonical list, read wherever hooks are enumerated. */
+export const HOOK_LIFECYCLE = ['beforeOperation', 'beforeValidate', 'beforeChange', 'afterRead', 'beforeDelete', 'afterDelete'] as const
+
 export class HookFormulas {
   /** CHAIN: hooks fired per document across a save. value hooks · perDoc. */
   static chain(hooks: number, perDoc: number): CrossFormula { return c('hook-chain', 'chain(hooks, perDoc) = hooks · perDoc', hooks * perDoc, nat(hooks, perDoc), 'chain', [hooks, perDoc]) }
