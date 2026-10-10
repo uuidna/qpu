@@ -22,6 +22,7 @@ import { mintOf, vertices } from './lattice-values.mjs'
 // every family and door registers on import, as on the host, so the summary counts what clients reach
 await import('../dist/mcp/families.js')
 const { qpuMcpDoorsOf, qpuMcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
+const { qpuHexFamiliesOf } = await import("../dist/quantum/processing/unit/index.js")
 
 // the MCP resource surface, counted the way a client reaches it (resources/list + templates), not a hand list
 const { publicMcpOf } = await import('../dist/payload/plugins/public.js')
@@ -147,15 +148,18 @@ const receiptOf = (f) => (fs.existsSync(path.join(ROOT, f)) ? read(f) : {})
 const lean = receiptOf('lean-receipt.json'), formulas = receiptOf('formulas-receipt.json'), fuse = receiptOf('fuse-receipt.json')
 const discovery = receiptOf('discovery-receipt.json'), heat = receiptOf('heat-receipt.json'), payloadCf = receiptOf('payload-cf-receipt.json'), cross = receiptOf('cross-receipt.json'), apis = receiptOf('api-receipt.json')
 const doors = qpuMcpDoorsOf()
+// { doors: true } carries the formula COUNT (one catalogue, in hex — not a duplicated list). The README needs the full
+// list to build the families table, so it reads it from the one catalogue, qpuHexFamiliesOf, the same registry.
+const formulaRows = [...qpuHexFamiliesOf()].flatMap(([family, fs]) => fs.map((f) => ({ name: `${family}.${f.name}`, arity: f.arity })))
 const listed = qpuMcpToolsListOf().length
 const num = (x) => (typeof x === 'number' ? x.toLocaleString('en') : String(x ?? '—'))
 // THE FULL FAMILY CATALOG, the main lead a reader develops: every registered family and how many formulas it carries,
 // read from the live registry (qpuMcpDoorsOf), not a hand-kept list. The glance counts the Lean families discovery runs;
 // this is the whole registered set, so a reader sees the breadth — every family a hex-program UUID crossing to another
 // (the cross formulations), each holding when its formulas recompute at their addresses (the cross-formula rows).
-const famCounts = (() => { const by = new Map(); for (const fm of doors.formulas) { const k = fm.name.split('.')[0]; by.set(k, (by.get(k) ?? 0) + 1) } return [...by.entries()].sort((a, b) => a[0].localeCompare(b[0])) })()
+const famCounts = (() => { const by = new Map(); for (const fm of formulaRows) { const k = fm.name.split('.')[0]; by.set(k, (by.get(k) ?? 0) + 1) } return [...by.entries()].sort((a, b) => a[0].localeCompare(b[0])) })()
 const familiesTable = [
-  `${num(famCounts.length)} families carry ${num(doors.formulas.length)} formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; ${num(formulas.pass)} of ${num(formulas.rowsTotal)} cross-formula rows hold (${num(formulas.hexAgrees)} agree with their hex programs).`,
+  `${num(famCounts.length)} families carry ${num(formulaRows.length)} formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; ${num(formulas.pass)} of ${num(formulas.rowsTotal)} cross-formula rows hold (${num(formulas.hexAgrees)} agree with their hex programs).`,
   '',
   '| Family | Formulas | Family | Formulas | Family | Formulas |',
   '|---|---:|---|---:|---|---:|',
@@ -164,7 +168,7 @@ const familiesTable = [
 const glance = [
   '| Capability | How much | Compared with |',
   '|---|---|---|',
-  `| MCP door (https://qpu.uuidna.com/mcp) | ${listed} listed tools; through any of them ${num(doors.doors.length)} doors and ${num(doors.formulas.length)} formulas (\`{ doors: true }\`, \`{ door }\`, \`{ hex }\`, \`{ errors: true }\`) | the Model Context Protocol: \`tools/list\` sealed by the Lean theorem agents_mcp_tools |`,
+  `| MCP door (https://qpu.uuidna.com/mcp) | ${listed} listed tools; through any of them ${num(doors.doors.length)} doors and ${num(formulaRows.length)} formulas (\`{ doors: true }\`, \`{ door }\`, \`{ hex }\`, \`{ errors: true }\`) | the Model Context Protocol: \`tools/list\` sealed by the Lean theorem agents_mcp_tools |`,
   `| MCP resources | ${num(mcpCore)} core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); \`{ scope: 'all' }\` reaches ${num(mcpAll)}, \`{ scope: family }\` a scoped set, over ${num(mcpTemplates)} \`qpu://…\` templates (each lean theorem and hex program a UUID) | the Model Context Protocol \`resources/list\` + \`resources/read\` |`,
   `| Formal proof | ${num(lean.theorems)} Lean theorems served, ${num(lean.recomputed)} recomputed in TypeScript | the Lean 4 kernel (${lean.toolchain ?? 'toolchain'}) |`,
   `| Formula families | ${num(discovery.families)} families run as hex-program UUIDs (RFC 9562 v8); ${num(discovery.runs)} programs in the last discovery | each other: ${num(discovery.relationsTotal)} values reached by two or more families, ${num(discovery.seals)} seals (fixed points, involutions) |`,
@@ -283,7 +287,7 @@ zenodo.description = `<p>${inline(intro.replace(/\n/g, ' '))}</p><table>${rowsHt
 // The version field names the published Zenodo archive. package.json's version is the git tag and is not copied here.
 // SEO: the keywords, notes and language are generated, never hand-kept — every registered family and wing is a term a
 // searcher might use, so the archive is found by what the unit actually is, read from the registry and the docs.
-const famKeys = [...new Set(doors.formulas.map((f) => f.name.split('.')[0]))].sort()
+const famKeys = [...new Set(formulaRows.map((f) => f.name.split('.')[0]))].sort()
 zenodo.keywords = [...new Set([
   ...pkg.keywords,
   'quantum computing', 'quantum processing unit', 'Model Context Protocol', 'MCP server',
@@ -292,7 +296,7 @@ zenodo.keywords = [...new Set([
   'Cloudflare Workers', 'Payload CMS', 'open data', 'OEIS',
   ...famKeys, ...wings.map((w) => w.slug),
 ])].filter(Boolean)
-zenodo.notes = `${num(doors.formulas.length)} formulas across ${famKeys.length} families as hex-program UUIDs (RFC 9562 v8); ${num(lean.theorems)} Lean theorems recomputed in TypeScript; ${num(listed)} MCP tools over ${num(doors.doors.length)} doors; served, recomputable, at https://qpu.uuidna.com.`
+zenodo.notes = `${num(formulaRows.length)} formulas across ${famKeys.length} families as hex-program UUIDs (RFC 9562 v8); ${num(lean.theorems)} Lean theorems recomputed in TypeScript; ${num(listed)} MCP tools over ${num(doors.doors.length)} doors; served, recomputable, at https://qpu.uuidna.com.`
 zenodo.language = 'eng'
 fs.writeFileSync(zenodoPath, JSON.stringify(zenodo, null, 2) + '\n')
 // the site's SEO keywords, generated from the same metadata (families + their domains), for Metadata.keywords
@@ -302,7 +306,7 @@ fs.writeFileSync(path.join(ROOT, 'src/seed/seo-keywords.ts'), `// Generated by s
 fs.writeFileSync(path.join(ROOT, 'RELEASE.md'), `${summary}\n\nEvery figure above is read from a committed receipt; the README carries the final build receipt that accounts for them.\n`)
 
 // one generated line of the headline figures, for the abstract — read from the same receipts, never typed
-const abstractLine = `This paper reports, entirely from machine receipts: ${num(lean.theorems)} Lean 4 theorems (${num(lean.recomputed)} recomputed in TypeScript), ${num(doors.formulas.length)} formulas across ${num(famCounts.length)} families addressed as hex-program UUIDs (RFC 9562 v8), ${num(listed)} MCP tools over ${num(doors.doors.length)} doors, and ${num(discovery.relationsTotal)} cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.`
+const abstractLine = `This paper reports, entirely from machine receipts: ${num(lean.theorems)} Lean 4 theorems (${num(lean.recomputed)} recomputed in TypeScript), ${num(formulaRows.length)} formulas across ${num(famCounts.length)} families addressed as hex-program UUIDs (RFC 9562 v8), ${num(listed)} MCP tools over ${num(doors.doors.length)} doors, and ${num(discovery.relationsTotal)} cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.`
 const reactorLine = `Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat${reactorStats.heatIdentity ? ` hex \`${reactorStats.heatIdentity}\`` : ''}; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds ${reactorStats.holds}.`
 
 // README = a white paper about the quantum computer, every section a pure function of the receipts (generated, not written).
