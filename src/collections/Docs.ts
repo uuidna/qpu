@@ -1,6 +1,9 @@
 import type { CollectionConfig } from 'payload'
 import { qpuCiteOf } from '@uuidna/qpu'
 import { HOME } from '../fields/link'
+import { CrossDomain } from '../blocks/CrossDomain/index.js'
+import { Family } from '../blocks/Family/index.js'
+import { HexProgram } from '../blocks/HexProgram/index.js'
 
 // the site is the unit's citation: its origin and its name are what the citation serves, not a string here
 const cite = qpuCiteOf() as unknown as { href: string; website: string }
@@ -36,5 +39,16 @@ export const Docs: CollectionConfig = {
     { name: 'markdown', type: 'code', admin: { language: 'markdown' } },
     { name: 'html', type: 'code', admin: { language: 'html' } },
     { name: 'uuid', type: 'text', index: true },
+    // The node's place in the cross graph: its family and cross domain. nestedDocsPlugin adds `parent`/`breadcrumbs`,
+    // so a doc is a node in the domain → family → formula tree.
+    { name: 'family', type: 'text', index: true },
+    { name: 'domain', type: 'text', index: true },
+    // DOCS AS NEURONS: synapses are the doc's edges to its related docs (its siblings in its cross domain, and its
+    // cross-formula targets) — filled from the sealed bridges. The axon is `parent` up the tree; the dendrites are these.
+    { name: 'synapses', type: 'relationship', relationTo: 'docs', hasMany: true },
+    // The doc references all related from within itself via lexical/combinatoric blocks: HexProgram (its own query, the
+    // hex-UUID combination), Family (its formulas and experts), CrossDomain (its neighbourhood). Each renders by
+    // addressing a hex-program UUID — the doc is a neuron that states its own connections.
+    { name: 'content', type: 'blocks', blocks: [HexProgram, Family, CrossDomain] },
   ],
 }
