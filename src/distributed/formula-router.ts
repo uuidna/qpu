@@ -11,6 +11,8 @@ import {
 } from './types.js'
 import NodeRegistry from './node-registry.js'
 
+let __seq = 0
+
 export class FormulaRouter {
   private registry: NodeRegistry
   private formulaCache: Map<string, FormulaMetadata> = new Map()
@@ -266,7 +268,7 @@ export class FormulaRouter {
    */
   routeToRandom(formulaId: string): FormulaRoute {
     const nodes = this.registry.getHealthyNodes()
-    const random = nodes[Math.floor(Math.random() * nodes.length)]
+    const random = nodes.length > 0 ? nodes[(__seq++) % nodes.length] : undefined
     return {
       formulaId,
       targetNodes: [random?.id || this.registry.getState().localNodeId],

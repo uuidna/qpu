@@ -4,6 +4,10 @@
  * Phase 9: Neural orchestration, self-scaling, self-tuning
  */
 
+let __seq = 0
+const __det = (): number => ((__seq = (__seq * 1103515245 + 12345) >>> 0))   // LCG, deterministic
+const __hex = (len: number): string => Array.from({ length: len }, () => (__det() & 15).toString(16)).join('')
+
 // ============================================================================
 // CLUSTER ARCHITECTURE: 8 CLUSTERS × 6-8 FORMULAS
 // ============================================================================
@@ -359,7 +363,7 @@ export class HarmonyOrchestrator {
     const start = Date.now()
     try {
       // Simulate node execution with latency
-      await new Promise(r => setTimeout(r, Math.random() * 10))
+      await new Promise(r => setTimeout(r, 0))
       node.metrics.callCount++
       node.metrics.avgLatency = (node.metrics.avgLatency * (node.metrics.callCount - 1) + (Date.now() - start)) / node.metrics.callCount
       return data // Pass through for now

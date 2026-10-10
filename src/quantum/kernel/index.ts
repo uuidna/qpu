@@ -30,7 +30,7 @@ const groverSearch=(t:bigint,s:bigint)=>{const N=Number(s),k=Math.floor(Math.PI/
 const tspSolver=(c:number[])=>{const n=c.length;let tours=1;for(let i=3;i<n;i++)tours*=i;return{cities:n,totalPaths:n<3?1:tours,optimalCost:n<2?0:2*(Math.max(...c)-Math.min(...c)),algorithm:'line_span'}}
 const discreteLog=(base:bigint,target:bigint,prime:bigint):bigint=>{for(let x=1n;x<prime;x++)if(modexp(base,x,prime)===target)return x;return 0n}
 const knapsack=(items:number[],cap:number)=>{let max=0,cnt=0;for(let m=0;m<(1<<items.length);m++){let v=0;for(let i=0;i<items.length;i++)if(m&(1<<i))v+=items[i];if(v<=cap&&v>max){max=v;cnt++}}return{capacity:cap,maxValue:max,itemCount:cnt,efficiency:max/cap}}
-const hashCollision=(s:number)=>{const t=Math.floor(Math.random()*s),g=groverSearch(BigInt(t),BigInt(s));return{target:t,foundAt:Number(g.target),collisionProof:g.found,speedup:`√${s}=${Math.sqrt(s).toFixed(1)}`}}
+const hashCollision=(s:number)=>{const t=(((s*1103515245+12345)>>>0)%Math.max(1,s)),g=groverSearch(BigInt(t),BigInt(s));return{target:t,foundAt:Number(g.target),collisionProof:g.found,speedup:`√${s}=${Math.sqrt(s).toFixed(1)}`}}
 const ghzState=()=>({type:'GHZ',qubits:3,entanglement:PHASE2_BELL,states:[{amplitude:'1/√2',basis:'|000⟩'},{amplitude:'1/√2',basis:'|111⟩'}]})
 const bellPairs=(cnt:number)=>({count:cnt,pairs:Number(bell(BigInt(cnt))),maxEntanglement:true,correlations:'100%'})
 const surfaceCode=(q:number)=>{const d=3+2*q;return{type:'surface_code',logicalQubits:q,distance:d,dataQubits:2*d*d-d,threshold:0.01,implementation:'topological'}}

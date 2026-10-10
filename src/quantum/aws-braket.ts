@@ -3,6 +3,10 @@
  * Circuit transpilation, device selection, execution, result retrieval
  */
 
+let __seq = 0
+const __det = (): number => ((__seq = (__seq * 1103515245 + 12345) >>> 0))
+const __suffix = (): string => (__det()).toString(36).padStart(9, '0').slice(0, 9)
+
 export interface BraketCircuit {
   instructions: BraketInstruction[]
   qubitCount: number
@@ -141,7 +145,7 @@ export class AWSBraketConnector {
     }
 
     const transpiled = this.transpileForDevice(circuit, device.deviceId)
-    const taskArn = `arn:aws:braket:${this.region}:123456789012:task/${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    const taskArn = `arn:aws:braket:${this.region}:123456789012:task/${Date.now()}-${__suffix()}`
 
     const task: BraketTask = {
       taskArn,
@@ -206,7 +210,7 @@ export class AWSBraketConnector {
     for (let i = 0; i < shots; i++) {
       const measurement = Array(qubits)
         .fill(0)
-        .map(() => Math.random() > 0.5 ? 1 : 0)
+        .map((_, i) => (i & 1))
       measurements.push(measurement)
     }
 
@@ -216,7 +220,7 @@ export class AWSBraketConnector {
   private generateResultString(qubits: number): string {
     return Array(qubits)
       .fill(0)
-      .map(() => Math.random() > 0.5 ? '1' : '0')
+      .map((_, i) => ((i & 1) ? '1' : '0'))
       .join('')
   }
 }

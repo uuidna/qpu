@@ -5,6 +5,9 @@
 
 import { EventEmitter } from 'events'
 
+let __seq = 0
+const __det = (): number => ((__seq = (__seq * 1103515245 + 12345) >>> 0))
+
 export interface KafkaConfig {
   brokers: string[]
   clientId: string
@@ -76,7 +79,7 @@ export class KafkaProducer extends EventEmitter {
       results.push({
         topic,
         partition: msg.partition || 0,
-        offset: Math.floor(Math.random() * 1000000),
+        offset: __det() % 1000000,
         timestamp: Date.now()
       })
       this.emit('produced', { topic, message: msg })

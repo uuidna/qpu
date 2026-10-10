@@ -12,6 +12,8 @@ import {
 import NodeRegistry from './node-registry.js'
 import FormulaRouter from './formula-router.js'
 
+let __seq = 0
+
 export class DistributedExecutor {
   private registry: NodeRegistry
   private router: FormulaRouter
@@ -116,7 +118,8 @@ export class DistributedExecutor {
    */
   private async simulateExecution(formulaId: string, input: any, timeout: number): Promise<any> {
     return new Promise((resolve, reject) => {
-      const executionTime = Math.random() * timeout * 0.8
+      const h = [...String(formulaId)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7)
+      const executionTime = h % Math.max(1, Math.floor(timeout * 0.8))
 
       const timer = setTimeout(() => {
         reject(new Error(`Execution timeout after ${timeout}ms`))
@@ -127,7 +130,7 @@ export class DistributedExecutor {
         resolve({
           formulaId,
           input,
-          output: `result-${Math.random().toString(36).slice(2, 8)}`,
+          output: `result-${(__seq++).toString(36).padStart(6, '0')}`,
           timestamp: Date.now()
         })
       }, executionTime)

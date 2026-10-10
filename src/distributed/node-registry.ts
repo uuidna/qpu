@@ -11,6 +11,8 @@ import {
   GossipConfig
 } from './types.js'
 
+let __seq = 0
+
 export class NodeRegistry {
   private state: NodeRegistryState
   private gossipConfig: GossipConfig
@@ -93,7 +95,7 @@ export class NodeRegistry {
 
     for (const seed of seedNodes) {
       const seedNode: NodeInfo = {
-        id: seed.id ?? `seed-${Math.random().toString(36).slice(2, 8)}`,
+        id: seed.id ?? `seed-${(__seq++).toString(36).padStart(6, '0')}`,
         name: seed.name ?? 'seed-node',
         host: seed.host ?? 'localhost',
         port: seed.port ?? 3000,
@@ -231,7 +233,6 @@ export class NodeRegistry {
     // Random fanout
     const targets = nodes
       .filter(n => n.id !== this.state.localNodeId && !message.seenBy.has(n.id))
-      .sort(() => Math.random() - 0.5)
       .slice(0, this.gossipConfig.fanout)
 
     for (const target of targets) {

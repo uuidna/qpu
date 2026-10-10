@@ -5,6 +5,10 @@
 
 import { EventEmitter } from 'events'
 
+let __seq = 0
+const __det = (): number => ((__seq = (__seq * 1103515245 + 12345) >>> 0))   // LCG, deterministic
+const __hex = (len: number): string => Array.from({ length: len }, () => (__det() & 15).toString(16)).join('')
+
 export interface BlockchainConfig {
   chain: 'ethereum' | 'solana'
   rpcUrl: string
@@ -108,7 +112,7 @@ export class BlockchainGateway extends EventEmitter {
    * Subscribe to contract events
    */
   subscribe(sub: EventSubscription): string {
-    const id = Math.random().toString(36).substr(2, 9)
+    const id = (__det()).toString(36).padStart(9, '0').slice(0, 9)
     const fullSub = { ...sub, id }
     this.subscriptions.set(id, fullSub)
     this.emit('subscribed', fullSub)
@@ -178,24 +182,24 @@ export class BlockchainGateway extends EventEmitter {
     // Simulated Ethereum call
     return {
       success: true,
-      result: '0x' + Math.random().toString(16).slice(2)
+      result: '0x' + __hex(16)
     }
   }
 
   private async ethereumExecute(callData: ContractCall): Promise<ContractCallResult> {
     // Simulated Ethereum transaction
-    const txHash = '0x' + Array(64).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('')
+    const txHash = '0x' + __hex(64)
     return {
       success: true,
       transactionHash: txHash,
-      gasUsed: Math.floor(Math.random() * 200000) + 21000
+      gasUsed: (__det() % 200000) + 21000
     }
   }
 
   private async ethereumGetBalance(address: string): Promise<{ balance: string; unit: string }> {
     // Simulated balance fetch
     return {
-      balance: (Math.random() * 100).toFixed(4),
+      balance: ((__det() % 100000) / 1000).toFixed(4),
       unit: 'ETH'
     }
   }
@@ -208,8 +212,8 @@ export class BlockchainGateway extends EventEmitter {
     // Simulated status fetch
     return {
       status: 'confirmed',
-      blockNumber: Math.floor(Math.random() * 20000000),
-      gasUsed: Math.floor(Math.random() * 200000) + 21000
+      blockNumber: __det() % 20000000,
+      gasUsed: (__det() % 200000) + 21000
     }
   }
 
@@ -218,24 +222,24 @@ export class BlockchainGateway extends EventEmitter {
     // Simulated Solana call
     return {
       success: true,
-      result: '0x' + Math.random().toString(16).slice(2)
+      result: '0x' + __hex(16)
     }
   }
 
   private async solanaExecute(callData: ContractCall): Promise<ContractCallResult> {
     // Simulated Solana transaction
-    const txHash = Array(88).fill(0).map(() => Math.floor(Math.random() * 26) + 65).map(c => String.fromCharCode(c)).join('')
+    const txHash = Array.from({ length: 88 }, () => String.fromCharCode((__det() % 26) + 65)).join('')
     return {
       success: true,
       transactionHash: txHash,
-      gasUsed: Math.floor(Math.random() * 500000)
+      gasUsed: __det() % 500000
     }
   }
 
   private async solanaGetBalance(address: string): Promise<{ balance: string; unit: string }> {
     // Simulated balance fetch
     return {
-      balance: (Math.random() * 1000).toFixed(2),
+      balance: ((__det() % 1000000) / 1000).toFixed(2),
       unit: 'SOL'
     }
   }
@@ -248,8 +252,8 @@ export class BlockchainGateway extends EventEmitter {
     // Simulated status fetch
     return {
       status: 'confirmed',
-      blockNumber: Math.floor(Math.random() * 300000000),
-      gasUsed: Math.floor(Math.random() * 500000)
+      blockNumber: __det() % 300000000,
+      gasUsed: __det() % 500000
     }
   }
 }

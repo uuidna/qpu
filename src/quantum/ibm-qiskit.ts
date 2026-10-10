@@ -3,6 +3,10 @@
  * Converts QuantumCircuit to Qiskit format, submits jobs, parses results
  */
 
+let __seq = 0
+const __det = (): number => ((__seq = (__seq * 1103515245 + 12345) >>> 0))
+const __suffix = (): string => (__det()).toString(36).padStart(9, '0').slice(0, 9)
+
 export interface QuantumCircuit {
   gates: Gate[]
   qubits: number
@@ -88,7 +92,7 @@ export class IBMQiskitConnector {
     await this.authenticate()
 
     const qaskit = this.circuitToQasm(circuit)
-    const jobId = `ibm-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    const jobId = `ibm-${Date.now()}-${__suffix()}`
 
     // Simulate job submission
     const job: QiskitJob = {
@@ -143,7 +147,7 @@ export class IBMQiskitConnector {
     for (let i = 0; i < shots; i++) {
       const bits = Array(qubits)
         .fill(0)
-        .map(() => (Math.random() > 0.5 ? '1' : '0'))
+        .map((_, i) => ((i & 1) ? '1' : '0'))
         .join('')
       results[bits] = (results[bits] || 0) + 1
     }

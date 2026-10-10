@@ -3,6 +3,10 @@
  * Authenticates, submits circuits, polls results, handles IonQ-specific formats
  */
 
+let __seq = 0
+const __det = (): number => ((__seq = (__seq * 1103515245 + 12345) >>> 0))
+const __suffix = (): string => (__det()).toString(36).padStart(9, '0').slice(0, 9)
+
 export interface IonQCircuit {
   gateSets: string[]
   qubits: number
@@ -85,7 +89,7 @@ export class IonQConnector {
   ): Promise<IonQJob> {
     await this.authenticate()
 
-    const jobId = `ionq_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    const jobId = `ionq_${Date.now()}_${__suffix()}`
 
     const job: IonQJob = {
       id: jobId,
@@ -166,7 +170,7 @@ export class IonQConnector {
     for (let i = 0; i < shots; i++) {
       const measurement = Array(qubits)
         .fill(0)
-        .map(() => Math.random() > 0.5 ? 1 : 0)
+        .map((_, i) => (i & 1))
       measurements.push(measurement)
     }
 

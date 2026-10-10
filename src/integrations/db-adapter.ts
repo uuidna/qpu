@@ -3,6 +3,10 @@
  * PostgreSQL, MongoDB, DynamoDB with connection pooling and transaction support
  */
 
+let __seq = 0
+const __det = (): number => ((__seq = (__seq * 1103515245 + 12345) >>> 0))   // LCG, deterministic
+const __hex = (len: number): string => Array.from({ length: len }, () => (__det() & 15).toString(16)).join('')
+
 export interface DBConfig {
   adapter: 'postgresql' | 'mongodb' | 'dynamodb'
   connectionString?: string
@@ -179,7 +183,7 @@ export class DBAdapter {
     // Simulated PostgreSQL insert
     return {
       rowCount: 1,
-      lastInsertId: Math.random() * 1000000
+      lastInsertId: __det() % 1000000
     }
   }
 
@@ -205,7 +209,7 @@ export class DBAdapter {
     // Simulated MongoDB insert
     return {
       rowCount: 1,
-      id: Math.random().toString(36).substr(2, 9)
+      id: (__det()).toString(36).padStart(9, '0').slice(0, 9)
     }
   }
 
@@ -231,7 +235,7 @@ export class DBAdapter {
     // Simulated DynamoDB insert
     return {
       rowCount: 1,
-      id: Math.random().toString(36).substr(2, 9)
+      id: (__det()).toString(36).padStart(9, '0').slice(0, 9)
     }
   }
 
