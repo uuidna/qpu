@@ -8,9 +8,30 @@ import QUANTUM from '../quantum/kernel/index.js'
 // its 19-test verify, and its capability catalogue. Served here so the plugin connects all through the kernel; the hot
 // dynamics (families, fusion, churn) orbit this cold, stable centre. JSON-safe: only verify, benchmark and capability
 // names are surfaced — never the bigint phase outputs.
+// bigint-safe: the kernel returns bigints (factors, Bell numbers); stringify them deeply so the wire JSON never throws.
+const safe = (x: unknown): unknown => JSON.parse(JSON.stringify(x, (_k, v) => (typeof v === 'bigint' ? v.toString() : v)))
 const kernelOf = () => {
   const v = QUANTUM.verify()
-  return { kind: 'kernel' as const, status: v.status, verify: v, benchmark: QUANTUM.benchmark(), capabilities: { cryptography: Object.keys(QUANTUM.cryptography), optimization: Object.keys(QUANTUM.optimization), simulation: Object.keys(QUANTUM.simulation), entanglement: Object.keys(QUANTUM.entanglement), errorCorrection: Object.keys(QUANTUM.errorCorrection), primitives: Object.keys(QUANTUM.primitives) }, tools: Object.keys(QUANTUM.tools), holds: v.success === true }
+  // UNLOCK ALL, STARTING WITH SHOR: every capability actually run on a canonical input, not just listed — the kernel
+  // served live through the plugin, shor first.
+  const runs = safe({
+    shor: QUANTUM.cryptography.shorFactor(91n),
+    discreteLog: QUANTUM.cryptography.discreteLog(3n, 5n, 7n),
+    grover: QUANTUM.optimization.groverSearch(5n, 32n),
+    tsp: QUANTUM.optimization.tspSolver([1, 2, 3, 4]),
+    knapsack: QUANTUM.optimization.knapsack([1, 2, 3, 4], 5),
+    graphColoring: QUANTUM.optimization.graphColoring(4),
+    hamiltonian: QUANTUM.simulation.hamiltonianSim(1, 0.5),
+    hashCollision: QUANTUM.simulation.hashCollision(16),
+    ghz: QUANTUM.entanglement.ghzState(),
+    bellPairs: QUANTUM.entanglement.bellPairs(2),
+    surfaceCode: QUANTUM.errorCorrection.surfaceCode(1),
+    stabilizerCode: QUANTUM.errorCorrection.stabilizerCode(7, 4),
+    binomial: QUANTUM.primitives.binomial(8n, 2n),
+    catalan: QUANTUM.primitives.catalan(4n),
+    bell: QUANTUM.primitives.bell(4n),
+  })
+  return { kind: 'kernel' as const, status: v.status, verify: v, benchmark: QUANTUM.benchmark(), runs, capabilities: { cryptography: Object.keys(QUANTUM.cryptography), optimization: Object.keys(QUANTUM.optimization), simulation: Object.keys(QUANTUM.simulation), entanglement: Object.keys(QUANTUM.entanglement), errorCorrection: Object.keys(QUANTUM.errorCorrection), primitives: Object.keys(QUANTUM.primitives) }, tools: Object.keys(QUANTUM.tools), holds: v.success === true }
 }
 // The autonomous optimisation map, measured over git time by the heat family and embedded as a committed receipt:
 // each file's temperature (mK), the hottest, and how many ways to split it to cool. Read here so a client — or the
