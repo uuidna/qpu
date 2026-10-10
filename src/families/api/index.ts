@@ -37,13 +37,11 @@ export class ApiFormulas {
   static pagesize(total: number, perPage: number): CrossFormula { return f('api-pagesize', 'pagesize(total, perPage) = ceil(total / perPage)', ceilDiv(total, perPage), nat(total, perPage) && perPage > 0, 'pagesize', [total, perPage]) }
   /** The latency across `hops` hops of `perHop` each: hops · perHop. */
   static latency(hops: number, perHop: number): CrossFormula { return f('api-latency', 'latency(hops, perHop) = hops · perHop', hops * perHop, nat(hops, perHop), 'latency', [hops, perHop]) }
-  /** The bytes/s of `rps` requests of `payload` bytes each: rps · payload. */
-  static throughput(rps: number, payload: number): CrossFormula { return f('api-throughput', 'throughput(rps, payload) = rps · payload', rps * payload, nat(rps, payload), 'throughput', [rps, payload]) }
   /** The retries left after `attempts` total tries: attempts − 1 (attempts ≥ 1). */
   static retries(attempts: number): CrossFormula { return f('api-retries', 'retries(attempts) = attempts − 1', attempts - 1, nat(attempts) && attempts >= 1, 'retries', [attempts]) }
-  /** A packed major/minor API version: major·100 + minor (minor ≤ 99). */
-  static versions(major: number, minor: number): CrossFormula { return f('api-versions', 'versions(major, minor) = major·100 + minor', major * 100 + minor, nat(major, minor) && minor < 100, 'versions', [major, minor]) }
 }
 
-for (const name of ['backoff', 'latency', 'methods', 'offset', 'pages', 'pagesize', 'payload', 'quota', 'ratelimit', 'remaining', 'retries', 'statusClass', 'throughput', 'versions', 'window'] as const)
+// 13 formulas, not 15: `api` is a contested family — the api-door registers two more (call, operations) to the same
+// nibble, so api's own set leaves room (13 + 2 = 15). throughput and versions were the two most generic additions, dropped.
+for (const name of ['backoff', 'latency', 'methods', 'offset', 'pages', 'pagesize', 'payload', 'quota', 'ratelimit', 'remaining', 'retries', 'statusClass', 'window'] as const)
   qpuHexRegisterOf('api', name, (ApiFormulas[name] as (...x: unknown[]) => unknown).bind(ApiFormulas))

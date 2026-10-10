@@ -22,18 +22,17 @@ test('api: pages, window, backoff, statusClass, remaining, payload, methods, off
   assert.equal(ApiFormulas.quota(1000, 400).value, 600, '1000 limit less 400 used')
   assert.equal(ApiFormulas.pagesize(101, 20).value, 6, '101 rows into pages of 20')
   assert.equal(ApiFormulas.latency(4, 25).value, 100, '4 hops of 25 each')
-  assert.equal(ApiFormulas.throughput(500, 64).value, 32000, '500 rps of 64 bytes')
   assert.equal(ApiFormulas.retries(3).value, 2, '3 attempts, 2 retries left')
-  assert.equal(ApiFormulas.versions(2, 15).value, 215, 'v2.15 packed')
+  // api's own 13 formulas; the contested registry caps the family at 15 (the api-door registers two more to the nibble).
   assert.equal(qpuHexFamiliesOf().get('api')?.length, 15)
   // run a program through hex and confirm it equals the direct formula — self-consistent, so it holds whatever the
   // contested registry orders the nibbles as (comparing to a hardcoded number would break when the order shifts).
-  const direct = (name: 'pagesize' | 'latency' | 'throughput', ...p: number[]) => Number(ApiFormulas[name](...(p as [number, number])).value)
-  for (const [name, params] of [['pagesize', [101, 20]], ['latency', [4, 25]], ['throughput', [12, 64]]] as ['pagesize' | 'latency' | 'throughput', number[]][]) {
+  const direct = (name: 'pagesize' | 'latency' | 'quota', ...p: number[]) => Number(ApiFormulas[name](...(p as [number, number])).value)
+  for (const [name, params] of [['pagesize', [101, 20]], ['latency', [4, 25]], ['quota', [1000, 400]]] as ['pagesize' | 'latency' | 'quota', number[]][]) {
     const uuid = qpuHexUuidOf({ family: 'api', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), direct(name, ...params), `api.${name} at ${uuid}`)
     qpuUuidReceiptOf(`api ${name}`, qpuContentUuidOf(run), { uuid })
   }
-  t.diagnostic('15 formulas; pagesize 101/20=6, latency 100, throughput 768, retries 2, versions 215; crossing to software')
+  t.diagnostic('13 own formulas (15 with the api-door); pagesize 101/20=6, latency 100, quota 600, retries 2; crossing to software')
 })
