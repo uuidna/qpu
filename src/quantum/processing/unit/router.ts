@@ -274,7 +274,8 @@ export const worker = {
         // grounded: theorem false with theorem only: nothing was supplied, so nothing is computed, and what is not computed is not claimed
         return jsonOf({ kind: 'result' as const, id, holds: false as const, denied: 'job' as const, why: 'jobs are not stored; the result is returned inline with the submit, and an id lives only as long as the isolate that ran it' }, lost)
       }
-      return jsonOf(qpuServerMcpOf())
+      // the job-server catalog is static per deploy: ETag + 304 so a free wave re-reading it revalidates instead of re-sending.
+      return servedResponse(servedOf('/server', () => qpuServerMcpOf()))
     }
     if (path === '/hex' || path.startsWith('/hex/')) {
       // the hex catalogue and the hex tools enumerate every family, so the registry loads here (lazily, memoized)
@@ -287,7 +288,10 @@ export const worker = {
         if (rpc) return jsonOf(rpc)
       }
       const program = path.slice('/hex/'.length)
-      return jsonOf(program ? await qpuHexRunOf(program, undefined, env) : qpuHexCatalogOf())
+      if (program) return jsonOf(await qpuHexRunOf(program, undefined, env))
+      // the hex catalogue enumerates every family and is static per deploy: ETag + 304 so a free wave re-reading the whole
+      // catalogue (the biggest static reply) revalidates instead of recomputing and re-sending it every request.
+      return servedResponse(servedOf('/hex', () => qpuHexCatalogOf()))
     }
     if (path === '/network' || path.startsWith('/network/')) {
       if (request.method === 'POST') {
