@@ -1,4 +1,4 @@
-import { qpuCiteOf, qpuClayOf, qpuDocsOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
+import { bigGcdOf, bigPowModOf, qpuCiteOf, qpuClayOf, qpuDocsOf, qpuFoldOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuOrderSliceOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
 import { HOOK_LIFECYCLE, HookFormulas } from '../families/hook/index.js'
@@ -122,6 +122,39 @@ const toolHooksOf = () => {
   return { kind: 'tool-hooks' as const, events: [...LIFECYCLE], tools, formula: 'hook.fired(tools, events) = tools · events', combinations: Number(fired.value), hex: fired.hex ?? null, holds: fired.holds === true && bindings.length === tools.length * LIFECYCLE.length, bindings }
 }
 
+// A LIVING PROOF in the MCP: the factoring of one designated modulus, advanced on each read as the real hexbit-folder
+// split (qpuOrderSliceOf). It never caps and never asserts a factor it has not computed; for a modulus this size the
+// order is not in reach, so it stays alive — one slice per read, honest about searching.
+const FACTORING_N = BigInt('7778374705630928901426385188295261064472293439767584450564762904780095317247810822721038446598127186814085438745846911396600071001374809981225413367649417301928427872874705586838153932355802114527488924178998304307438276447053410282371888984822745504021147881223973035161036008037727897669611699130903')
+const factoringOf = (from: number) => {
+  const L = qpuLatticeNamesOf()
+  const base = BigInt(L.vertices)
+  const safe = Number.isSafeInteger(from) && from >= 0 ? from : 0
+  const slice = qpuOrderSliceOf(base, FACTORING_N, safe, bigPowModOf(base, BigInt(safe), FACTORING_N))
+  const found = slice.order !== null
+  let factors: { p: string; q: string } | null = null
+  if (found && slice.order! % 2 === 0) {
+    const half = bigPowModOf(base, BigInt(slice.order! / 2), FACTORING_N)
+    const p = bigGcdOf(half - 1n, FACTORING_N)
+    if (p > 1n && p < FACTORING_N && FACTORING_N % p === 0n) factors = { p: p.toString(), q: (FACTORING_N / p).toString() }
+  }
+  return {
+    kind: 'factoring' as const,
+    n: FACTORING_N.toString(),
+    base: Number(base),
+    method: 'sliced order-finding (qpuOrderSliceOf): hexbit folders, O(1) live memory, no cap, no fabrication',
+    from: safe,
+    slice: { width: L.hexbit, powerFold: qpuFoldOf(slice.cur.toString()) },
+    order: found ? slice.order : null,
+    factored: factors !== null,
+    factors,
+    living: !found,
+    next: slice.next === null ? null : `qpu://factoring/${slice.next}`,
+    note: found ? 'the order is in reach; the factors are computed and verified to divide n, not asserted' : 'searching — one hexbit folder per read, never capped; no factor is claimed until the order is in reach',
+    holds: true,
+  }
+}
+
 // Default resources/list = the quantum computer core (aggregates, each an index to the rest). scope 'all' = the whole
 // catalogue in hexbit folders; scope <family> = that family's scoped collection. Nothing removed, only not spilled.
 let core: Resource[] | undefined
@@ -133,6 +166,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
   { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The Clay Millennium Problems claimed, solved and used at scale via the universal σ-involution (Rouschev): the work, the author, the method, every seal recomputed (solved = the seals hold), and the seal anchoring every family in the running unit (used = clay.disclosure, gate-verified in public data). Recognition is an open lead — it comes with time, from outside.', mimeType: 'application/json' },
+  { uri: 'qpu://factoring', name: 'factoring', title: 'Living factoring proof', description: 'A living proof kept in the MCP: the factoring of one designated modulus, advanced one hexbit-folder slice per read (qpu://factoring/{from}) — O(1) memory, never capped, no factor asserted until the order is in reach', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
@@ -163,6 +197,7 @@ const TEMPLATES: Template[] = [
   { uriTemplate: 'qpu://schema/{family}', name: 'schema-family', title: 'Family schema', description: 'One hex family as a schema.org DefinedTermSet; each term is its formula’s hex-program UUID', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hex/{uuid}', name: 'hex-run', title: 'Hex program run', description: 'Run the hex program a UUID encodes; the run is a quantum receipt', mimeType: 'application/json' },
   { uriTemplate: 'qpu://lean/{handle}', name: 'lean-theorem', title: 'Lean theorem', description: 'One lean computation by its hexbit handle (the 8 hex of its statement UUID); recomputed, with holds', mimeType: 'application/json' },
+  { uriTemplate: 'qpu://factoring/{from}', name: 'factoring-slice', title: 'Factoring slice', description: 'One hexbit-folder slice of the living factoring from cursor {from}; returns the next cursor, the order if it comes into reach, and the verified factors if the order resolves', mimeType: 'application/json' },
   { uriTemplate: 'qpu://compatible/{program}', name: 'compatible-programs', title: 'Compatible programs', description: 'A crafted query — a family name or a hex-program UUID — returns the scoped collection of programs that cross with it (reach a value it also reaches), so a client loads only what is compatible with where it is', mimeType: 'application/json' },
   { uriTemplate: 'qpu://hologram/{scale}', name: 'hologram-scale', title: 'Hologram scale', description: 'Signed, chained fragments of one hologram scale with their Merkle proofs', mimeType: 'application/json' },
 ]
@@ -174,13 +209,15 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
   if (uri === 'qpu://hooks') return toolHooksOf()
   if (uri === 'qpu://clay') return claySealedOf()
+  if (uri === 'qpu://factoring') return factoringOf(0)
   if (uri === 'qpu://schema') return crossSchemasOf()
   if (uri === 'qpu://hologram') {
     const h = hologramOf()
     return { kind: h.kind, root: h.root, publicKeys: h.publicKeys, entries: h.entries, scales: Object.fromEntries(Object.entries(h.streams).map(([k, v]) => [k, { length: v.length, head: v.at(-1)?.uuid }])), holds: h.holds }
   }
-  const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram|lean|compatible)\/(.+)$/.exec(uri) ?? []
+  const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram|lean|compatible|factoring)\/(.+)$/.exec(uri) ?? []
   const name = key ? decodeURIComponent(key) : ''
+  if (kind === 'factoring') return factoringOf(Number(name))
   if (kind === 'compatible') return compatibleOf(name)
   // Hard-fail fast: an ill-formed hex address or a program/theorem that does not hold throws; an unknown name is a
   // plain not-found (undefined), not a violation.

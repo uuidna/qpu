@@ -95,6 +95,17 @@ test('tools are also hooks: qpu://hooks is the full combinatorics of tools × li
   assert.ok(h.holds, 'the hook combinatorics does not hold')
 })
 
+test('qpu://factoring is a living proof: it advances by hexbit slices and never fabricates a factor', async () => {
+  const f0 = JSON.parse((await rpc('resources/read', { uri: 'qpu://factoring' })).result.contents[0].text)
+  assert.match(f0.n, /^\d{200,}$/, 'the designated modulus is kept in full')
+  assert.equal(f0.factored, false, 'no factor is asserted')
+  assert.equal(f0.order, null, 'the order is not in reach for a modulus this size')
+  assert.ok(f0.living === true && typeof f0.next === 'string', 'the proof is alive and resumable by its next cursor')
+  const f1 = JSON.parse((await rpc('resources/read', { uri: f0.next })).result.contents[0].text)
+  assert.ok(f1.from > f0.from, 'the next slice advanced the cursor — a real split, one hexbit folder on')
+  assert.equal(f1.factored, false, 'still no fabricated factor')
+})
+
 test('hard fail on poison: the Clay surface states only what it recomputes — no baked fact, no hardcoded verdict', async () => {
   const c = JSON.parse((await rpc('resources/read', { uri: 'qpu://clay' })).result.contents[0].text)
   // a hardcoded ISO date is a baked external fact, not a theorem or a receipt — never in the served surface
