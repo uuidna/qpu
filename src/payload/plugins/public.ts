@@ -244,7 +244,7 @@ export const doorsOf = async () => {
     const d = qpuMcpDoorsOf()
     return {
       doors: d.doors.map((row) => ({ name: row.name, kind: row.kind })),
-      formulas: d.formulas.length,
+      formulas: d.formulas,
       holds: d.holds === true,
       absent: null as string | null,
     }

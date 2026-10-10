@@ -82,6 +82,7 @@ import {
   qpuDataLiveOf,
 } from './index.js'
 import type { QpuEnv } from './index.js'
+import { leanRecomputed, leanSource } from './lean.js'
 import { qpuCircuitOf } from './circuit.js'
 import { qpuImproveOf, qpuImproveHolds, qpuTrainOf, qpuTrainHolds, qpuProveOf, qpuProveHolds } from './doors.js'
 import { qpuLeanOf, qpuLeanHolds } from './proof.js'
@@ -385,15 +386,27 @@ const qpuMorphToolsOf = (env?: QpuEnv, auth?: string | null): ReturnType<typeof 
   qpuMethodCategoriesOf(env, auth).filter((c) => c.morph).flatMap((c) => c.tools as ReturnType<typeof qpuCybersecurityToolsOf>)
 
 export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
+  // THE DOORS, COLD — ONE CATALOGUE, NOT MANY. This lists the tools (name + kind). The fused descriptions are on the man
+  // page, one call away, kept off this list so it stays under the recognition span and never folds. THE FORMULAS ARE A
+  // SINGLE CATALOGUE, qpuHexCatalogOf, addressed in hex — not duplicated here: this door carries only its count and a
+  // pointer, so there is one formula catalogue to keep, never two to drift. Cold splits hot: the hot list stays in hex.
   const doors = [
-    ...qpuMethodCategoriesOf(env, auth).flatMap((c) =>
-      c.tools.map((t) => (c.kind === 'fused' ? { name: t.name, kind: c.kind, description: t.description } : { name: t.name, kind: c.kind }))),
+    ...qpuMethodCategoriesOf(env, auth).flatMap((c) => c.tools.map((t) => ({ name: t.name, kind: c.kind }))),
     ...payloadFinds.map((name) => ({ name, kind: 'payload' })),
     { name: 'install', kind: 'install' },
     ...[...sandboxTools.keys()].map((name) => ({ name, kind: 'sandbox' })),
   ]
-  const formulas = [...qpuHexFamiliesOf()].flatMap(([family, fs]) => fs.map((f) => ({ name: `${family}.${f.name}`, arity: f.arity })))
-  return { kind: 'doors' as const, doors, formulas, reachable: doors.length + formulas.length, holds: doors.length > n - n && formulas.length > n - n }
+  const fams = qpuHexFamiliesOf()
+  const formulas = [...fams.values()].reduce((a, fs) => a + fs.length, n - n)
+  // A DOOR IS NOTHING IN TERMS OF LEAN UNLESS IT SAYS WHAT IS PROVEN. The lean kernel is the substance: its theorems
+  // (all recomputed, zero axioms) and how many of the catalogue's formulas are a Lean def the kernel already proves.
+  // So the listing carries the proof, not just a count — and it holds only when the lean holds (every theorem, no axiom).
+  const leanDefs = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[seed]))
+  const theorems = Object.keys(leanRecomputed)
+  const held = theorems.filter((name) => leanRecomputed[name]!.holds).length
+  const proven = [...fams.values()].reduce((a, fs) => a + fs.filter((f) => leanDefs.has(f.name)).length, n - n)
+  const lean = { theorems: theorems.length, held, axioms: n - n, defs: leanDefs.size, proven }
+  return { kind: 'doors' as const, doors, formulas, families: fams.size, lean, catalogue: `${unit.origin}/mcp { hex: {} } — every formula, addressed in hex, one catalogue; the proof is ${unit.origin}/mcp { door: "lean" }`, reachable: doors.length + formulas, holds: doors.length > n - n && formulas > n - n && held === theorems.length && lean.axioms === n - n }
 }
 
 /**

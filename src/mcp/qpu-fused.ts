@@ -579,7 +579,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     }
     if (numbers.length === 0 && has('tools', 'tool', 'doors', 'door', 'capabilities', 'capability', 'offer', 'use')) {
       const doors = qpuMcpDoorsOf()
-      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { answer: `${qpuMcpToolsListOf().length} tools; through them ${doors.doors.length} doors and ${doors.formulas.length} formulas`, tools: qpuMcpToolsListOf().length, doors: doors.doors.map((d) => d.name), formulas: doors.formulas.length }, expected: { tools: '>= 1' }, agrees: true }
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { answer: `${qpuMcpToolsListOf().length} tools; through them ${doors.doors.length} doors and ${doors.formulas} formulas`, tools: qpuMcpToolsListOf().length, doors: doors.doors.map((d) => d.name), formulas: doors.formulas }, expected: { tools: '>= 1' }, agrees: true }
     }
     if (numbers.length === 0 && has('families', 'family', 'formulas')) {
       const fams = [...qpuHexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([f, fs]) => ({ family: f, formulas: fs.map((x) => x.name) }))

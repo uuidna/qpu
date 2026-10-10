@@ -51,16 +51,25 @@ const hex = async (family: string, program: string[], params: number[] = []): Pr
 const nonDoors = () => [...qpuHexFamiliesOf().keys()].filter((f) => !DOORS.has(f)).sort()
 
 test('release: every door and every formula is reachable through a sealed door', async (t) => {
-  const d = out(await call({ doors: true })) as { doors?: { name: string; kind: string }[]; formulas?: { name: string }[] }
-  assert.ok(d.doors && d.formulas, 'the sealed door answers { doors: true }')
+  // COLD SPLITS HOT, ONE CATALOGUE: the doors come back cold and in full (name + kind, unfolded); the formulas are not
+  // duplicated here — the door carries their count and points to the one hex catalogue, each formula reachable in hex.
+  const d = out(await call({ doors: true })) as { doors?: { name: string; kind: string }[]; formulas?: number; families?: number; catalogue?: string; lean?: { theorems: number; held: number; axioms: number; defs: number; proven: number }; holds?: boolean }
+  assert.ok(Array.isArray(d.doors), 'the sealed door answers { doors: true } with the cold doors as an array, unfolded')
+  assert.ok(typeof d.formulas === 'number' && d.formulas > 0, 'the formula count stands for the whole; the list is the one hex catalogue, not duplicated here')
+  assert.ok(typeof d.families === 'number' && d.families > 0, 'every family is counted')
+  assert.ok(typeof d.catalogue === 'string' && d.catalogue.includes('hex'), 'the door points to the one catalogue in hex')
+  // a door is meaningful in terms of lean: it carries the proof — every theorem recomputed, zero axioms, formulas proven
+  assert.ok(d.lean && d.lean.held === d.lean.theorems && d.lean.theorems > 0 && d.lean.axioms === 0, 'the door carries the lean proof: every theorem holds, zero axioms')
+  assert.ok(d.lean.proven > 0 && d.lean.defs > 0, 'the catalogue names how many formulas are a Lean def the kernel proves')
+  assert.equal(d.holds, true, 'the doors hold only when the lean holds')
   for (const f of FUSED) assert.ok(d.doors.some((x) => x.name === f && x.kind === 'fused'), `fused door ${f} is listed`)
-  const families = new Set(d.formulas.map((f) => f.name.split('.').slice(0, -1).join('.')))
-  for (const f of ['Qpu.Mint', 'Qpu.Physics', 'cross', 'np', 'clay', 'heat']) assert.ok(families.has(f), `family ${f} is reachable`)
-  t.diagnostic(`${d.doors.length} doors, ${d.formulas.length} formulas`)
-  // a formula runs at its address
-  const run = await hex('heat', ['temperature'], [16, 1])
-  assert.equal(Number(run.value), 16000, 'heat.temperature(16, 1) = 16000 mK at its hex address')
-  assert.equal(run.holds, true)
+  // every family is reachable IN HEX, at its address — proven by running one formula of each, not by a giant inline list
+  for (const [family, program, params, expected] of [['Qpu.Mint', ['mintOf'], [3], 8], ['Qpu.Physics', ['planck'], [], undefined], ['clay', ['hodge'], [2], 4], ['heat', ['temperature'], [16, 1], 16000]] as [string, string[], number[], number | undefined][]) {
+    const run = await hex(family, program, params)
+    assert.equal(run.holds, true, `family ${family} is reachable in hex (${family}.${program.join('∘')})`)
+    if (expected !== undefined) assert.equal(Number(run.value), expected, `${family}.${program[0]}(${params.join(',')}) = ${expected} at its hex address`)
+  }
+  t.diagnostic(`${d.doors.length} doors, cold; ${d.formulas} formulas in ${d.families} families — one catalogue in hex (${d.catalogue})`)
 })
 
 test('release: every external API and dataset is read, the theorems among them agree', async (t) => {

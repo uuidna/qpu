@@ -161,7 +161,7 @@ export const examOf = async (env?: QpuEnv) => {
     hops.push(hopOk({
       dir: 'inside-out', layer: 'unit', door: 'boot/stdio/router',
       ms: Date.now() - t0, holds: doors.holds === true, value: doors.reachable,
-      note: `doors=${doors.doors.length}; formulas=${doors.formulas.length}; fused rides on the same /mcp router`,
+      note: `doors=${doors.doors.length}; formulas=${doors.formulas}; fused rides on the same /mcp router`,
     }))
   }
 
