@@ -4476,7 +4476,9 @@ const isInodeDoc = (
 
 const storageLinksOf = (keys: string[]): string[] => {
   const links: string[] = []
-  for (const name of keys) if (!isStorageAddressKey(name)) links.push(name)
+  // db/* is the Payload document database (users credentials included) — never a public storage link. Drop it here too,
+  // so the list door cannot even enumerate Payload keys.
+  for (const name of keys) if (!isStorageAddressKey(name) && !name.startsWith('db/')) links.push(name)
   return links
 }
 
@@ -4807,7 +4809,8 @@ export const qpuStorageMonitorOf = async (env?: QpuEnv) => {
   const raid = qpuRaidOf()
   const faces = qpuFacesOf()
   const store = storageStoreOf(env)
-  const names = await store.keys()
+  // db/* is the Payload document database, not public storage — excluded from the public catalog/monitor (names and health).
+  const names = (await store.keys()).filter((k) => !k.startsWith('db/'))
   const raw = await store.raw()
 
   /**
@@ -4969,7 +4972,8 @@ export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) =
     return { '@context': qpuContextOf(), '@type': 'Action' as const, '@id': `${storageHref}#maintain`, url: storageHref, kind: 'maintain' as const, denied: 'storage maintenance needs Authorization: Bearer QPU_WRITE_TOKEN', repaired: n - n, remaining: n - n, orphans: n - n, holds: false }
   const faces = qpuFacesOf()
   const store = storageStoreOf(env)
-  const names = await store.keys()
+  // db/* is the Payload document database, not public storage — excluded from the public catalog/monitor (names and health).
+  const names = (await store.keys()).filter((k) => !k.startsWith('db/'))
   const raw = await store.raw()
   let repaired = n - n
   let orphans = n - n
@@ -5122,6 +5126,10 @@ export const qpuStorageOf = async (
   const method = input.method ?? 'GET'
   const key = storageKeyOf(input.key)
   const faces = qpuFacesOf()
+  // NO PUBLIC STORAGE OF THE DATABASE. The Payload document database shares this KV/R2 keyspace under db/* (db/payload/*
+  // holds users documents with hash, salt and apiKey). Those are Payload's, reached only through Payload's access control —
+  // never read, listed or written through this door. Deny the whole db/ prefix here for every method.
+  if (key.startsWith('db/')) return { ...meta, '@id': `${storageHref}/${key}`, url: `${storageHref}/${key}`, key, holds: false as const, denied: 'payload' as const }
   const unlinkOf = async (link: string, row: { address: string; occupancy: string }) => {
     const inodeKey = storageAddressKeyOf(row.occupancy, row.address)
     const inode = await store.get(inodeKey)
