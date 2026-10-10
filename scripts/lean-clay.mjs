@@ -52,7 +52,11 @@ for (const r of rel) {
 }
 
 const clay = `theorem clay_wings : ${relThms.map((t) => /^theorem \w+ : (.+) := /.exec(t.text)[1]).map((s) => (s.includes('∧') ? `(${s})` : s)).join(' ∧ ')} := ⟨${relThms.map((t) => t.name).join(', ')}⟩`
-const imports = ['Mint', 'Shor', 'Lattice', 'Hybrid', 'Coil', 'Physics']
+// imports are DISCOVERED too, not hand-listed: every module whose def a discovered relation names must be in scope, or
+// the massive pass that reaches across all families (qaoaZz, triangular, qftGates …) names identifiers Lean cannot see.
+const referenced = new Set()
+for (const text of [...relThms.map((t) => t.text), clay]) for (const w of text.matchAll(/[A-Za-z]\w*/g)) { const f = familyOf.get(w[0]); if (f) referenced.add(f.replace('Qpu.', '')) }
+const imports = [...referenced].filter((m) => m !== 'Clay').sort()
 const text = [...imports.map((x) => `import Qpu.${x}`), '', `/-! # Qpu.Clay`, `Discovered, not written (scripts/lean-clay.mjs): the formulas discover each other — every value two or more families of formulas reach, stated over the lattice's own constant names. No list is kept. clay_wings is their conjunction, and crossDiscoverSchemaOf consolidates the same relations as one schema.org DefinedTermSet. -/`, '',
   ...relThms.flatMap((t) => [`/-- ${t.about}. -/`, t.text]), '', `/-- Every discovered relation at once: the families of formulas that meet. -/`, clay, ''].join('\n')
 console.log(JSON.stringify({ discovered: relThms.map((t) => t.name), relations: relThms.length }, null, 1))

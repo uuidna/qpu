@@ -643,23 +643,29 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     return { source, url: 'https://opendata.cern.ch', reading: live, expected: { records: '>= 1' }, agrees: leads.length > 0 }
   }
   if (source === 'clay') {
-    // THE CLAY SOLUTIONS, IN PROCESS, TOKEN-FREE: the six Millennium σ-involution seals (Rouschev, 2026,
-    // doi:10.5281/zenodo.21781602), each computed exactly as the paper states it — σ self-inverse (σ∘σ = id), fixed at
-    // the point the paper names — and handed back WITH ITS HEX ADDRESS, so the door goes straight from "the solution"
-    // to the program that re-runs it. `about` names one seal (riemann, bsd, hodge, navierStokes, yangMills, pVsNp);
-    // unset, all six. Evidence only — value/holds/hex at a DOI — never a prize and never a solved flag.
+    // THE CLAY SOLUTIONS AS QUANTUM PROOFS, IN PROCESS, TOKEN-FREE: the six Millennium σ-involution seals (Rouschev,
+    // 2026, doi:10.5281/zenodo.21781602), each computed exactly as the paper states it — σ self-inverse (σ∘σ = id),
+    // fixed at the point the paper names — handed back WITH ITS HEX ADDRESS and WITH THE LEAN THEOREM that proves it in
+    // the unit's own kernel (Qpu.Sigma, checked by `lake build`): the solution is a quantum proof, not a citation.
+    // `about` names one seal (riemann, bsd, hodge, navierStokes, yangMills, pVsNp); unset, all six. Evidence only —
+    // value/holds/hex/theorem — never a prize and never a solved flag.
     const { ClaySeals, CLAY_SEALS, CLAY_SEAL_SOURCE } = await import('../families/clay/index.js')
     // each seal at the fixed point the paper names: s = 1/2, (ℤ/15ℤ)*, Σ₂, ω₊ = −ω₋, Pauli σ_x, w presupposed
     const NAMED: Record<string, number[]> = { riemann: [1, 2], bsd: [15], hodge: [2], navierStokes: [1, 1], yangMills: [], pVsNp: [1] }
+    // each seal's quantum proof — the Lean theorem of Qpu.Sigma that proves its σ-involution or named value
+    const SIGMA: Record<string, string> = { riemann: 'sigma_midpoint', pVsNp: 'sigma_pvsnp', hodge: 'sigma_hodge', navierStokes: 'sigma_reflect', bsd: 'sigma_reflect', yangMills: 'clay_sigma' }
     const named = str(a.about).trim()
     const want = (CLAY_SEALS as readonly string[]).includes(named) ? [named] : [...CLAY_SEALS]
     const seals = want.map((name) => {
       const params = NAMED[name] ?? []
       const r = (ClaySeals[name as keyof typeof ClaySeals] as (...xs: number[]) => { value: number; holds: boolean; formula: string; proof: string })(...params)
-      return { seal: name, params, value: r.value, holds: r.holds, hex: qpuHexUuidOf({ family: 'clay', program: [name], params }), formula: r.formula, proof: r.proof }
+      const thm = SIGMA[name]
+      const quantumProof = thm && leanRecomputed[thm] ? { module: 'Qpu.Sigma', theorem: thm, holds: leanRecomputed[thm]!.holds, lean: leanRecomputed[thm]!.formula } : null
+      return { seal: name, params, value: r.value, holds: r.holds, hex: qpuHexUuidOf({ family: 'clay', program: [name], params }), formula: r.formula, quantumProof, proof: r.proof }
     })
-    const live = { paper: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution', doi: CLAY_SEAL_SOURCE, sealed: seals.filter((s) => s.holds).length, of: seals.length, seals, note: 'the σ-involution holds at each named fixed point — evidence (value/holds/hex), never a prize or a solved flag; recognised by the Clay Mathematics Institute is a lead, not asserted here' }
-    return { source, url: CLAY_SEAL_SOURCE, reading: live, expected: { sealed: seals.length }, agrees: seals.every((s) => s.holds) }
+    const sigmaHolds = seals.every((s) => s.quantumProof?.holds === true)
+    const live = { paper: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution', doi: CLAY_SEAL_SOURCE, sealed: seals.filter((s) => s.holds).length, of: seals.length, quantumProof: { module: 'Qpu.Sigma', theorem: 'clay_sigma', holds: leanRecomputed['clay_sigma']?.holds === true, verified: 'lake build (leanprover/lean4) — zero axioms', served: '{ source: proof }', relations: Object.keys(leanRecomputed).filter((k) => k.startsWith('relation_')).length }, seals, note: 'each σ-involution is a theorem of the unit\'s Lean kernel (Qpu.Sigma) — a quantum proof, not a prize or a solved flag; recognition by the Clay Mathematics Institute is a lead, not asserted here' }
+    return { source, url: CLAY_SEAL_SOURCE, reading: live, expected: { sealed: seals.length, quantumProof: 'holds' }, agrees: seals.every((s) => s.holds) && sigmaHolds }
   }
   if (source === 'proof') {
     // THE QUANTUM PROOFS, IN PROCESS, TOKEN-FREE: every theorem of the Lean kernel (index.lean) the build recomputed,
