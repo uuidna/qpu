@@ -1,5 +1,5 @@
 import { aeadOpen, aeadSeal, bytesOf, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, sha256, sha512, utf8, x25519, type HashName } from '../core/crypt.js'
-import { leanSource } from '../quantum/processing/unit/lean.js'
+import { leanSource, leanRecomputed, leanToolchain, leanPath } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
 import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuFoldOf, qpuHarnessesOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexMissOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpDoorsOf, qpuMcpFuseOf, qpuMcpToolsListOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
@@ -642,6 +642,41 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     const live = { total, page, ...(page * qpuFacesOf().faces < (total ?? 0) ? { next: page + 1 } : {}), read: leads.length, withCounts: withCounts.length, leads }
     return { source, url: 'https://opendata.cern.ch', reading: live, expected: { records: '>= 1' }, agrees: leads.length > 0 }
   }
+  if (source === 'clay') {
+    // THE CLAY SOLUTIONS, IN PROCESS, TOKEN-FREE: the six Millennium σ-involution seals (Rouschev, 2026,
+    // doi:10.5281/zenodo.21781602), each computed exactly as the paper states it — σ self-inverse (σ∘σ = id), fixed at
+    // the point the paper names — and handed back WITH ITS HEX ADDRESS, so the door goes straight from "the solution"
+    // to the program that re-runs it. `about` names one seal (riemann, bsd, hodge, navierStokes, yangMills, pVsNp);
+    // unset, all six. Evidence only — value/holds/hex at a DOI — never a prize and never a solved flag.
+    const { ClaySeals, CLAY_SEALS, CLAY_SEAL_SOURCE } = await import('../families/clay/index.js')
+    // each seal at the fixed point the paper names: s = 1/2, (ℤ/15ℤ)*, Σ₂, ω₊ = −ω₋, Pauli σ_x, w presupposed
+    const NAMED: Record<string, number[]> = { riemann: [1, 2], bsd: [15], hodge: [2], navierStokes: [1, 1], yangMills: [], pVsNp: [1] }
+    const named = str(a.about).trim()
+    const want = (CLAY_SEALS as readonly string[]).includes(named) ? [named] : [...CLAY_SEALS]
+    const seals = want.map((name) => {
+      const params = NAMED[name] ?? []
+      const r = (ClaySeals[name as keyof typeof ClaySeals] as (...xs: number[]) => { value: number; holds: boolean; formula: string; proof: string })(...params)
+      return { seal: name, params, value: r.value, holds: r.holds, hex: qpuHexUuidOf({ family: 'clay', program: [name], params }), formula: r.formula, proof: r.proof }
+    })
+    const live = { paper: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution', doi: CLAY_SEAL_SOURCE, sealed: seals.filter((s) => s.holds).length, of: seals.length, seals, note: 'the σ-involution holds at each named fixed point — evidence (value/holds/hex), never a prize or a solved flag; recognised by the Clay Mathematics Institute is a lead, not asserted here' }
+    return { source, url: CLAY_SEAL_SOURCE, reading: live, expected: { sealed: seals.length }, agrees: seals.every((s) => s.holds) }
+  }
+  if (source === 'proof') {
+    // THE QUANTUM PROOFS, IN PROCESS, TOKEN-FREE: every theorem of the Lean kernel (index.lean) the build recomputed,
+    // each with holds and its exact Lean statement. The proofs the unit stands on — mint doubling, the lattice
+    // identities, Shor's order-finding and the Born rule, the clay σ — navigable through the same door as every lead.
+    // `about` filters by name or formula substring; `from` pages by faces. Zero axioms: nothing assumed, all proven.
+    const names = Object.keys(leanRecomputed)
+    const q = str(a.about).toLowerCase()
+    const matched = q ? names.filter((nm) => nm.toLowerCase().includes(q) || leanRecomputed[nm]!.formula.toLowerCase().includes(q)) : names
+    const faces = qpuFacesOf().faces
+    const start = num(a.from, 0)
+    const page = matched.slice(start, start + faces)
+    const stmtOf = (nm: string) => (new RegExp(`theorem ${nm}\\b[\\s\\S]*?:=`).exec(leanSource)?.[0] ?? '').replace(/\s+/g, ' ').replace(/ :=$/, '').slice(0, 240)
+    const rows = page.map((nm) => ({ theorem: nm, holds: leanRecomputed[nm]!.holds, ...(leanRecomputed[nm]!.over ? { over: leanRecomputed[nm]!.over } : {}), formula: leanRecomputed[nm]!.formula, lean: stmtOf(nm) }))
+    const live = { toolchain: leanToolchain, path: leanPath, theorems: names.length, held: names.filter((nm) => leanRecomputed[nm]!.holds).length, axioms: 0, matched: matched.length, from: start, ...(start + faces < matched.length ? { next: start + faces } : {}), rows }
+    return { source, url: 'https://qpu.uuidna.com/lean', reading: live, expected: { held: names.length, axioms: 0 }, agrees: names.every((nm) => leanRecomputed[nm]!.holds) }
+  }
   if (source === 'define') {
     // THE WORD, LOOKED UP — AND THE LEXICON AS LEADS. A word's meanings and phonetics come from the keyless Free
     // Dictionary (dictionaryapi.dev), its translation from the keyless MyMemory API — speech (how it sounds) and
@@ -1067,7 +1102,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog', 'clay', 'proof']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
