@@ -3,6 +3,7 @@ import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf } from '../families/cross/index.js'
 import { HOOK_LIFECYCLE, HookFormulas } from '../families/hook/index.js'
 import { ClayDisclosure, ClaySeals } from '../families/clay/index.js'
+import { gateCourtOf } from '../payload/plugins/gate-court.js'
 import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
 
 type Params = Record<string, unknown>
@@ -167,6 +168,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
   { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The Clay Millennium Problems claimed, solved and used at scale via the universal σ-involution (Rouschev): the work, the author, the method, every seal recomputed (solved = the seals hold), and the seal anchoring every family in the running unit (used = clay.disclosure, gate-verified in public data). Recognition is an open lead — it comes with time, from outside.', mimeType: 'application/json' },
   { uri: 'qpu://factoring', name: 'factoring', title: 'Living factoring proof', description: 'A living proof kept in the MCP: the factoring of one designated modulus, advanced one hexbit-folder slice per read (qpu://factoring/{from}) — O(1) memory, never capped, no factor asserted until the order is in reach', mimeType: 'application/json' },
+  { uri: 'qpu://court', name: 'court', title: 'Court', description: 'The court as an independent seal, served through the MCP: every case tried on its gate (hex-addressed verdict, holds, re-trial fidelity, standing), the dependencies adjudicated as cases — measures and leads, never counsel', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
@@ -210,6 +212,7 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://hooks') return toolHooksOf()
   if (uri === 'qpu://clay') return claySealedOf()
   if (uri === 'qpu://factoring') return factoringOf(0)
+  if (uri === 'qpu://court') return gateCourtOf()
   if (uri === 'qpu://schema') return crossSchemasOf()
   if (uri === 'qpu://hologram') {
     const h = hologramOf()

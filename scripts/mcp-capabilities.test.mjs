@@ -45,11 +45,11 @@ const allResources = async (scope) => {
 
 test('by default resources/list is the quantum computer core — the aggregates only, one page, the rest not spilled', async () => {
   const core = await allResources()
-  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://clay', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram', 'qpu://hooks']) {
+  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://clay', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram', 'qpu://hooks', 'qpu://court']) {
     assert.ok(core.includes(u), `core aggregate ${u} missing from the default listing`)
   }
   assert.ok(!core.some((u) => u.startsWith('qpu://formulas/')), 'the default listing spilled the families — they belong on request')
-  assert.ok(core.length <= 12, `the default listing is not lean: ${core.length} resources`)
+  assert.ok(core.length <= 16, `the default listing is not lean: ${core.length} resources`)
 })
 
 test('the rest on request: scope "all" reaches every family, scope "Qpu.Mint" is its scoped collection', async () => {
@@ -93,6 +93,15 @@ test('tools are also hooks: qpu://hooks is the full combinatorics of tools × li
   assert.equal(h.combinations, h.tools.length * h.events.length, 'combinations is not the full tool × event product')
   assert.equal(h.bindings.length, h.combinations, 'not every tool × event binding is enumerated')
   assert.ok(h.holds, 'the hook combinatorics does not hold')
+})
+
+test('qpu://court is the court as an independent seal: each case a hex verdict with holds, fidelity and standing', async () => {
+  const c = JSON.parse((await rpc('resources/read', { uri: 'qpu://court' })).result.contents[0].text)
+  assert.ok(Array.isArray(c.cases) && c.cases.length > 0, 'no court cases served')
+  for (const k of c.cases) {
+    assert.ok(k.gate && typeof k.gate.holds === 'boolean', `case ${k.case} has no sealed gate verdict`)
+    assert.ok(k.fidelity && typeof k.fidelity.holds === 'boolean' && k.standing, `case ${k.case} missing the fidelity/standing seal`)
+  }
 })
 
 test('qpu://factoring is a living proof: it advances by hexbit slices and never fabricates a factor', async () => {
