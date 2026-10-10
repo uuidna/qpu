@@ -2,7 +2,8 @@ import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
 import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import '../../mcp/families.js'
-import { RuleFormulas } from './index.js'
+import { RuleFormulas, ruleIndexOf as ix } from './index.js'
+import { flowIndexOf as fx } from '../merkaba/index.js'
 
 /** THE RULES, RUN. Each rule is a formula; the ones that count what breaks a rule must be zero. */
 test('rule: no family is past its nibble, none is truncated, and every rule runs as a hex program', async (t) => {
@@ -53,7 +54,7 @@ test('rule: compositions agrees with the superpositions that still meet', async 
     ['cross', ['medSecureWithQSec'], [8, 3]],
     ['clay', ['bsd'], [268]],
     ['signal', ['keyspace'], [6]],
-    ['rule', ['compositions'], [23]],
+    ['rule', ['compositions'], [ix('acquisition')]],
     ['kin', ['combinations'], [1]],
     ['kin', ['crossed', 'combinations'], [1, 1]],
     ['kin', ['crossed', 'combinations'], [2, 2]],
@@ -63,7 +64,7 @@ test('rule: compositions agrees with the superpositions that still meet', async 
     ['yi', ['figures'], [6]],
     ['yi', ['withYang', 'figures'], [1]],
   ])
-  assert.equal(String(RuleFormulas.compositions(23).value), sixtyFour)
+  assert.equal(String(RuleFormulas.compositions(ix('acquisition')).value), sixtyFour)
   const fifteen = await agree([
     ['Qpu.Mint', ['chooseOf'], [6, 2]],
     ['Qpu.Mint', ['chooseOf'], [6, 4]],
@@ -85,10 +86,13 @@ test('rule: compositions agrees with the superpositions that still meet', async 
   ])
   const eightyOne = await agree([
     ['cal', ['gregorianDrift'], [3]],
-    ['rule', ['compositions'], [11]],
-    ['rule', ['nibbles', 'compositions'], [645]],
+    ['rule', ['compositions'], [ix('Qpu.Physics')]],
   ])
-  assert.equal(String(RuleFormulas.compositions(11).value), eightyOne)
+  assert.equal(String(RuleFormulas.compositions(ix('Qpu.Physics')).value), eightyOne)
+  // nibbles∘compositions reads the formulas one family serves as the index of the next: the family it lands on is the
+  // registry's, so the chain is held to the two rules called one after the other, not to an integer written down
+  const fed = ix('merkaba')
+  assert.equal(await at('rule', ['nibbles', 'compositions'], [fed]), String(RuleFormulas.compositions(Number(RuleFormulas.nibbles(fed).value)).value))
   t.diagnostic(`compositions meets ${sixtyFour}, ${fifteen}, ${eightyOne}`)
 })
 
@@ -144,8 +148,8 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
     ['signal', ['siftedBits'], [8]],
     ['signal', ['hops', 'keyspace'], [2, 1, 2]],
     ['signal', ['hops', 'keyspace'], [2, 2, 1]],
-    ['merkaba', ['mirror'], [10, 7, 8]],
-    ['merkaba', ['torus'], [8, 7, 10]],
+    ['merkaba', ['mirror'], [fx('Qpu.Mint'), fx('Qpu.Hybrid'), fx('Qpu.Lattice')]],
+    ['merkaba', ['torus'], [fx('Qpu.Lattice'), fx('Qpu.Hybrid'), fx('Qpu.Mint')]],
     ['holo', ['proofDepth'], [9]],
     ['holo', ['proofDepth'], [10]],
     ['holo', ['proofDepth'], [11]],
@@ -154,8 +158,8 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
     ['np', ['isSpace'], [9]],
     ['np', ['isSpace'], [10]],
     ['np', ['isSpace'], [11]],
-    ['rule', ['compositions'], [10]],
-    ['rule', ['nibbles'], [14]],
+    ['rule', ['compositions'], [ix('Qpu.Mint')]],
+    ['rule', ['nibbles'], [ix('Qpu.Shor')]],
     ['heat', ['coherence'], [8, 1]],
     ['heat', ['cooling'], [7, 2]],
     ['heat', ['cooling'], [8, 2]],
@@ -247,7 +251,7 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
     ['clay', ['hodge', 'hodge'], [4]],
     ['signal', ['keyspace'], [4]],
     ['signal', ['keyspace', 'keyspace'], [2]],
-    ['rule', ['compositions'], [14]],
+    ['rule', ['compositions'], [ix('Qpu.Shor')]],
     ['kin', ['seal'], [56]],
     ['kin', ['bits', 'dootKin'], [2, 2, 1]],
     ['kin', ['combinations', 'dreamspellDrift'], [1]],
@@ -277,7 +281,7 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
   ])
   // rule × kin × tesla × yi = 36. rule.compositions(9), rule.compositions(11) and rule.compositions(14) are 64. rule.compositions(1) is 36. They stay at the integer they return.
   await named('36', [
-    ['rule', ['compositions'], [7]],
+    ['rule', ['compositions'], [ix('Qpu.Hybrid')]],
     ['kin', ['dreamspellDrift'], [144]],
     ['kin', ['dreamspellDrift'], [146]],
     ['tesla', ['field'], [6, 6]],
@@ -302,8 +306,8 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
     ['kin', ['dootKin'], [2, 5, 3]],
   ])
   const leadWays: readonly (readonly [string, string[], number[]])[] = [
-    ['rule', ['compositions'], [8]],
-    ['rule', ['compositions'], [15]],
+    ['rule', ['compositions'], [ix('Qpu.Lattice')]],
+    ['rule', ['compositions'], [ix('Qpu.Stabilizer')]],
     ['rule', ['cap', 'compositions'], [1]],
     ['rule', ['cap', 'compositions'], [2]],
     ['kin', ['combinations', 'dootKin'], [2, 1, 1]],
@@ -318,18 +322,21 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
   const holds = meets.size >= 2
   const next = returned.find((row) => row.value !== '196')!.uuid
   assert.equal(holds, false)
+  // cap∘compositions hands the cap on as the family index, so the family it lands on is the registry's: derived, not written
+  const landed = String(RuleFormulas.compositions(Number(RuleFormulas.cap().value)).value)
   assert.deepEqual(returned.map((row) => [row.call, row.value]), [
-    ['rule.compositions(8)', '169'],
-    ['rule.compositions(15)', '16'],
-    ['rule.cap∘compositions(1)', '16'],
-    ['rule.cap∘compositions(2)', '16'],
+    [`rule.compositions(${ix('Qpu.Lattice')})`, '169'],
+    [`rule.compositions(${ix('Qpu.Stabilizer')})`, '16'],
+    ['rule.cap∘compositions(1)', landed],
+    ['rule.cap∘compositions(2)', landed],
     ['kin.combinations∘dootKin(2, 1, 1)', '196'],
   ])
-  assert.equal(next, 'bfe6be1f-2000-1000-9000-000000000008')
+  // handle, program nibble, variant and param are the address; the version nibble is the crypto family's fold of all of it
+  assert.match(next, new RegExp(`^bfe6be1f-2000-[1-8]000-9000-${ix('Qpu.Lattice').toString(16).padStart(12, '0')}$`))
   assert.equal(returned.filter((row) => row.uuid === next).length, 1)
   const kin = returned.find((row) => row.call === 'kin.combinations∘dootKin(2, 1, 1)')!
-  const compositions = returned.find((row) => row.call === 'rule.compositions(8)')!
+  const compositions = returned.find((row) => row.call === `rule.compositions(${ix('Qpu.Lattice')})`)!
   const sentence = `${kin.call} is ${kin.value} (${kin.call.split('.')[0]}); ${compositions.call} is ${compositions.value} (compositions)`
-  assert.equal(sentence, 'kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(8) is 169 (compositions)')
+  assert.equal(sentence, `kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(${ix('Qpu.Lattice')}) is 169 (compositions)`)
   t.diagnostic(`4, 5, 10, 16, 27, 36, 100 and 208 meet; 196 holds false; ${sentence}; next ${next}`)
 })

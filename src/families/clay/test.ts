@@ -1,7 +1,7 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
 import { qpuHexFamiliesOf } from '../../quantum/processing/unit/index.js'
-import { leanSource } from '../../quantum/processing/unit/lean.js'
+import { leanSource, leanRecomputed } from '../../quantum/processing/unit/lean.js'
 import { verifyHex } from '../verify.js'
 import { ClaySeals, CLAY_SEALS, claySealDomainOf, claySealDomainCoverageOf } from './index.js'
 import { qpuFacesOf } from '../../quantum/processing/unit/index.js'
@@ -13,14 +13,18 @@ import '../../mcp/families.js'
  *  formulas, counted by how many are a Lean def the kernel already proves. The clay cluster is held to its seals,
  *  exact, at their hex addresses. The live cross-development — a value two families reach, answering alike from every
  *  perspective — is verified where it is generated, by `receipt.mjs next` and the discovery receipt, not here. */
-test('clusters: 152 theorems, 0 axioms, the def cluster, each family, and the clay seals — offline and exact', async (t) => {
+test('clusters: every theorem, 0 axioms, the def cluster, each family, and the clay seals — offline and exact', async (t) => {
   const families = qpuHexFamiliesOf()
   const leanDefs = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[1]))
   const theorems = [...leanSource.matchAll(/^[ \t]*theorem ([A-Za-z]\w*)/gm)].map((m) => m[1])
   const axioms = [...leanSource.matchAll(/^[ \t]*axiom ([A-Za-z]\w*)/gm)].map((m) => m[1])
 
   // the Lean clusters, from the source the kernel checks
-  assert.equal(theorems.length, 152, 'the theorem cluster: 152, each recomputed by the kernel')
+  // the cluster is the set of theorems in the source, and each is one the kernel recomputed and holds: two readings of
+  // the one Lean file (the source's own theorem lines, the build's recompute table) that must name the same theorems
+  assert.equal(new Set(theorems).size, theorems.length, 'no theorem is stated twice')
+  assert.deepEqual([...theorems].sort(), Object.keys(leanRecomputed).sort(), 'the theorem cluster: each theorem of the source recomputed by the kernel, and nothing recomputed that the source does not state')
+  assert.ok(Object.values(leanRecomputed).every((r) => r.holds), 'each recomputed theorem holds')
   assert.equal(axioms.length, 0, 'no axioms: nothing assumed, everything proven')
   assert.ok(leanDefs.size >= 40, 'the def cluster the theorems are built from')
 

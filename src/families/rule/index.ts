@@ -11,6 +11,9 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 const PROOF = 'the hex UUID: one nibble per formula, three sections of four; the lattice: faces per slice'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 const families = () => [...qpuHexFamiliesOf().keys()].sort()
+/** A family's index in the sorted registry the rules count by (nibbles(i), free(i), compositions(i)): a name resolves to
+ *  the index it has now, so a caller that addresses a family never holds an integer a new family shifts. */
+export const ruleIndexOf = (name: string): number => { const i = families().indexOf(name); if (i < 0) throw new Error(`rule: no family ${name}`); return i }
 const f = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
   crossFormulaOf({ id, src: 'rule', dst: 'lattice', formula, value, proof: PROOF, ...extra }, holds, { name: `rule.${name}`, params })
 

@@ -19,6 +19,9 @@ import {
   qpuHexFamiliesOf,
   qpuHexUuidOf,
   qpuMixedOf,
+  QPU_EXPERIMENTS,
+  QPU_TEACHING_DOMAINS,
+  QPU_TEACHING_SUBJECTS,
   qpuShapeUuidHolds,
   qpuShapeUuidSealHolds,
   qpuTeachingPairsOf,
@@ -132,7 +135,7 @@ test('the readings carry the addresses, so the codec has consumers and not only 
   // Next door: 251 doors, a collision-free hex each, an encode/decode pair — and zero callers, because the
   // resolver meant to use it reimplemented its three lines inline. A codec only its own suite calls is dead.
   const teaching = qpuTeachingPairsOf()
-  assert.equal(teaching.pairs.length, 342)
+  assert.equal(teaching.pairs.length, QPU_TEACHING_SUBJECTS.length * QPU_TEACHING_DOMAINS.length, 'every subject against every domain')
   for (const pair of teaching.pairs) {
     assert.equal(pair.uuid, qpuCallUuidOf('teaching', pair.subject, pair.domain), 'the row carries the address the codec mints')
     const back = qpuCallOfUuid(pair.uuid!)
@@ -142,7 +145,8 @@ test('the readings carry the addresses, so the codec has consumers and not only 
   }
 
   const mixed = qpuMixedOf()
-  assert.equal(mixed.pairs.length, 36)
+  const fields = new Set(QPU_EXPERIMENTS.flatMap((row) => [row.left, row.right]))
+  assert.equal(mixed.pairs.length, (fields.size * (fields.size - 1)) / 2, 'every field against every other, once')
   for (const pair of mixed.pairs) {
     assert.equal(pair.uuid, qpuCallUuidOf('mixed', pair.left, pair.right))
     assert.equal(qpuCallOfUuid(pair.uuid!).verified, true)

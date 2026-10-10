@@ -18,6 +18,8 @@ const f = (id: string, formula: string, value: number, holds: boolean, name: str
 
 /** The families a flow may pass through: every registered family that is not a door and not this one, sorted. */
 export const flowFamiliesOf = (): string[] => [...qpuHexFamiliesOf().keys()].filter((x) => !DOORS.has(x) && x !== 'merkaba').sort()
+/** A flow family's index in that ring, by name: the integer a flow takes (mirror(a, b, c), trinity, torus) for the family. */
+export const flowIndexOf = (name: string): number => { const i = flowFamiliesOf().indexOf(name); if (i < 0) throw new Error(`merkaba: no flow family ${name}`); return i }
 const numberOf = (r: unknown): number => (typeof r === 'object' && r !== null && 'value' in r ? Number((r as { value: unknown }).value) : typeof r === 'bigint' ? Number(r) : Number(r))
 const holdsOf = (r: unknown): boolean => (typeof r === 'object' && r !== null && 'holds' in r ? (r as { holds: unknown }).holds !== false : true)
 /** One edge: the family's first formula, called on its own signature. One carried value fills arity 0 or 1.

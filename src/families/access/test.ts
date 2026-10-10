@@ -28,7 +28,8 @@ test('access: read/write/role/tenant formulated, and the security screen names e
   assert.deepEqual((AccessFormulas.screen(0b10111) as unknown as { failed: string[] }).failed, ['input-clean'])
   assert.equal(AccessFormulas.token(256).holds, true, '256-bit token is strong')
   assert.equal(AccessFormulas.token(128).holds, false, '128-bit token is below the floor')
-  assert.equal(qpuHexFamiliesOf().get('access')?.length, 10)
+  // the registry serves exactly the formulas the class states: none implemented and left unaddressable, none addressed that is not stated
+  assert.deepEqual((qpuHexFamiliesOf().get('access') ?? []).map((f) => f.name).sort(), Object.getOwnPropertyNames(AccessFormulas).filter((k) => typeof (AccessFormulas as unknown as Record<string, unknown>)[k] === 'function').sort())
   for (const [name, params, expected] of [['read', [2, 0], 1], ['screen', [0b11111], 5], ['tenant', [5, 6, 1], 0]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'access', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
