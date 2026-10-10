@@ -677,6 +677,46 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     const live = { category: cat, from: start, ...(entries.length === qpuFacesOf().faces ? { next: start + qpuFacesOf().faces } : {}), count: leads.length, numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, qpuFacesOf().faces), leads }
     return { source, url: 'https://arxiv.org', reading: live, expected: { open: '>= 1 preprint' }, agrees: leads.length > 0 }
   }
+  if (source === 'news') {
+    // ALL NEWS FROM EVERYWHERE, ANYTIME, AS LEADS: the newest stories across many keyless sources — Hacker News, Reddit,
+    // Lobsters, Dev.to, and GDELT (global news in every language and country). Each story is a lead: its title's words and
+    // numbers feed the discovery. `site` picks the source (default hn), `about` is the query (ANYTIME — searched across all
+    // time, not just the latest page), `from` the 0-based page. The freshest and widest signal there is.
+    const q = str(a.about)
+    const start = typeof a.from === 'number' && a.from >= 0 ? a.from : 0
+    const n = qpuFacesOf().faces
+    const SITES = ['hn', 'reddit', 'lobsters', 'devto', 'gdelt'] as const
+    const site = (SITES as readonly string[]).includes(str(a.site)) ? str(a.site) : 'hn'
+    const numsOf = (t: string) => (t.match(/\d+/g) ?? []).map(Number).filter((x) => Number.isSafeInteger(x) && x >= 3)
+    type Lead = { id?: string; title: string; points: number; link?: string; source: string; numbers: number[] }
+    const j = async (url: string) => (await get(url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | unknown[] | null
+    let leads: Lead[] = []
+    let origin = 'https://news.ycombinator.com'
+    try {
+      if (site === 'hn') {
+        const b = (await j(`https://hn.algolia.com/api/v1/${q ? 'search' : 'search_by_date'}?tags=story&hitsPerPage=${n}&page=${start}${q ? `&query=${encodeURIComponent(q)}` : ''}`)) as { hits?: { objectID?: string; title?: string | null; points?: number; url?: string | null }[] } | null
+        leads = (b?.hits ?? []).filter((h) => h.title).map((h) => ({ id: h.objectID, title: (h.title ?? '').slice(0, 120), points: h.points ?? 0, link: h.url ?? undefined, source: 'hn', numbers: numsOf(h.title ?? '') }))
+      } else if (site === 'reddit') {
+        origin = 'https://www.reddit.com'
+        const b = (await j(q ? `https://www.reddit.com/search.json?q=${encodeURIComponent(q)}&sort=new&limit=${n}` : `https://www.reddit.com/r/all/new.json?limit=${n}`)) as { data?: { children?: { data?: { id?: string; title?: string; score?: number; permalink?: string } }[] } } | null
+        leads = (b?.data?.children ?? []).map((c) => c.data).filter((d): d is NonNullable<typeof d> => !!d?.title).map((d) => ({ id: d.id, title: (d.title ?? '').slice(0, 120), points: d.score ?? 0, link: d.permalink ? `https://reddit.com${d.permalink}` : undefined, source: 'reddit', numbers: numsOf(d.title ?? '') }))
+      } else if (site === 'lobsters') {
+        origin = 'https://lobste.rs'
+        const b = (await j('https://lobste.rs/newest.json')) as { short_id?: string; title?: string; score?: number; url?: string }[] | null
+        leads = (Array.isArray(b) ? b : []).slice(start * n, start * n + n).map((s) => ({ id: s.short_id, title: (s.title ?? '').slice(0, 120), points: s.score ?? 0, link: s.url ?? undefined, source: 'lobsters', numbers: numsOf(s.title ?? '') }))
+      } else if (site === 'devto') {
+        origin = 'https://dev.to'
+        const b = (await j(`https://dev.to/api/articles?per_page=${n}&page=${start + 1}${q ? `&tag=${encodeURIComponent(q)}` : ''}`)) as { id?: number; title?: string; positive_reactions_count?: number; url?: string }[] | null
+        leads = (Array.isArray(b) ? b : []).filter((x) => x?.title).map((x) => ({ id: String(x.id), title: (x.title ?? '').slice(0, 120), points: x.positive_reactions_count ?? 0, link: x.url, source: 'devto', numbers: numsOf(x.title ?? '') }))
+      } else {
+        origin = 'https://www.gdeltproject.org'
+        const b = (await j(`https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(q || 'technology')}&mode=ArtList&format=json&maxrecords=${n}&sort=datedesc`)) as { articles?: { url?: string; title?: string; domain?: string }[] } | null
+        leads = (b?.articles ?? []).filter((x) => x?.title).map((x) => ({ id: x.url, title: (x.title ?? '').slice(0, 120), points: 0, link: x.url, source: `gdelt:${x.domain ?? ''}`, numbers: numsOf(x.title ?? '') }))
+      }
+    } catch { leads = [] }
+    const live = { site, sites: SITES, about: q || 'latest', from: start, next: start + 1, count: leads.length, numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, n), leads }
+    return { source, url: origin, reading: live, expected: { open: '>= 1 story' }, agrees: leads.length > 0 }
+  }
   if (source === 'unanswered') {
     // OPEN PROBLEMS AS LEADS: MathOverflow's unanswered questions, read over the keyless Stack Exchange API — research
     // mathematics nobody has answered. Each is a lead: its title's words and any numbers in it go to the discovery,
@@ -684,7 +724,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     // claims to answer them — it feeds them in and sees what the lattice meets. `from` is the 1-based page, `about` a tag.
     // like mathoverflow: every research Stack Exchange site serves an unanswered feed over the same keyless API —
     // theoretical CS, physics, statistics, quantum computing, economics, astronomy, scientific computing, and more
-    const SITES = ['mathoverflow', 'cstheory', 'physics', 'stats', 'math', 'quantumcomputing', 'economics', 'astronomy', 'scicomp', 'cs', 'hsm', 'mathematica']
+    const SITES = ['mathoverflow', 'cstheory', 'physics', 'stats', 'math', 'quantumcomputing', 'economics', 'astronomy', 'scicomp', 'cs', 'hsm', 'mathematica', 'stackoverflow', 'softwareengineering', 'ux', 'webmasters', 'codereview', 'graphicdesign', 'security', 'gamedev', 'dba', 'devops', 'ai']
     const site = SITES.includes(str(a.site)) ? str(a.site) : 'mathoverflow'
     const from = typeof a.from === 'number' && a.from > 0 ? a.from : 1
     const tag = str(a.about) ? `&tagged=${encodeURIComponent(str(a.about))}` : ''
@@ -697,28 +737,44 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     return { source, url: 'https://mathoverflow.net/unanswered', reading: live, expected: { open: '>= 1 unanswered question' }, agrees: leads.length > 0 }
   }
   if (source === 'law') {
-    // THE COURT-ADMISSIBLE RECORD: the official legal sources a court accepts as authoritative, read live and keyless —
-    // the US Federal Register (federalregister.gov), UK legislation (legislation.gov.uk), EU law (EUR-Lex via the EU
-    // Open Data Portal) — plus the registry's legal APIs. This is the review layer for the `law` family: a computed
-    // legal conclusion becomes advice only when confirmed TRUE against one of these documents; `about` searches them,
-    // `from` walks the registry. Any jurisdiction the sources cover; the arithmetic is jurisdiction-agnostic.
-    const terms = ['law', 'legal', 'legislation', 'statute', 'statutes', 'regulation', 'regulations', 'court', 'case', 'judicial', 'jurisdiction']
+    // THE COURT-ADMISSIBLE RECORD + THE CASE LAW: the official sources a court accepts as authoritative, read live and
+    // keyless — US Federal Register, UK legislation, EU law (EUR-Lex) — and the CourtListener corpus (the Free Law
+    // Project), walked by citation so the biggest cases and the firms of record surface as leads — plus the registry's
+    // legal APIs. The search TERMS ARE FORMULATED from the law family's own formula names (no hand list): add a law
+    // formula and the record researches its word. The review layer for the `law` family: a computed conclusion becomes
+    // advice only when confirmed TRUE against one of these documents; `about` searches them, `from` walks the registry.
+    // One irreducible anchor word set (the domain word a formula cannot name); the rest is the family, split to words.
+    const seed = ['law', 'legal', 'court', 'case', 'jurisdiction']
+    const terms = [...new Set([...seed, ...(qpuHexFamiliesOf().get('law') ?? []).flatMap((x) => x.name.replace(/[A-Z]/g, (c) => ` ${c.toLowerCase()}`).split(/[^a-z]+/)).filter((w) => w.length > 2)])]
     const ask = str(a.about) ? str(a.about).toLowerCase().split(/[\s,]+/).filter(Boolean) : []
     const from = typeof a.from === 'number' ? a.from : 0
+    const nums = (t: string) => (t.match(/\d+/g) ?? []).map(Number).filter((n) => Number.isSafeInteger(n) && n >= 3)
     type Src = { source: string; title: string; jurisdiction: string; secured: boolean; operation: string; status: number; url: string; records?: number; keyless: boolean }
     const anchor: Src[] = []
+    let cases: { case: string; court: string; citeCount: number; dateFiled?: string; firms: string[]; numbers: number[] }[] = []
     if (from === 0) {
-      const q = ask.length ? encodeURIComponent(ask.join(' ')) : ''
+      const terml = ask.length ? ask.join(' ') : terms.join(' ')
+      const q = encodeURIComponent(terml)
+      const clUrl = `https://www.courtlistener.com/api/rest/v4/search/?type=o&order_by=${encodeURIComponent('citeCount desc')}&q=${q}`
       const official = [
-        { source: 'federalregister.gov', title: 'US Federal Register', jurisdiction: 'US', url: `https://www.federalregister.gov/api/v1/documents.json?per_page=1${q ? `&conditions[term]=${q}` : ''}`, count: (b: Record<string, unknown>) => b.count as number | undefined },
-        { source: 'legislation.gov.uk', title: 'UK legislation', jurisdiction: 'UK', url: `https://www.legislation.gov.uk/${q ? `all?text=${q}&` : 'ukpga?'}results-count=1&format=json`, count: () => undefined },
-        { source: 'data.europa.eu:eur-lex', title: 'EU law (EUR-Lex)', jurisdiction: 'EU', url: `https://data.europa.eu/api/hub/search/search?limit=1&q=${q || 'eur-lex'}`, count: (b: Record<string, unknown>) => (b.result as { count?: number } | undefined)?.count },
+        { source: 'federalregister.gov', title: 'US Federal Register', jurisdiction: 'US', url: `https://www.federalregister.gov/api/v1/documents.json?per_page=1${ask.length ? `&conditions[term]=${q}` : ''}`, count: (b: Record<string, unknown>) => b.count as number | undefined },
+        { source: 'legislation.gov.uk', title: 'UK legislation', jurisdiction: 'UK', url: `https://www.legislation.gov.uk/${ask.length ? `all?text=${q}&` : 'ukpga?'}results-count=1&format=json`, count: () => undefined },
+        { source: 'data.europa.eu:eur-lex', title: 'EU law (EUR-Lex)', jurisdiction: 'EU', url: `https://data.europa.eu/api/hub/search/search?limit=1&q=${ask.length ? q : 'eur-lex'}`, count: (b: Record<string, unknown>) => (b.result as { count?: number } | undefined)?.count },
+        { source: 'courtlistener.com', title: 'US case law (CourtListener / Free Law Project)', jurisdiction: 'US', url: clUrl, count: (b: Record<string, unknown>) => b.count as number | undefined },
       ]
       for (const o of official) {
         const b = (await get(o.url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | null
         const records = b ? o.count(b) : undefined
         anchor.push({ source: o.source, title: o.title, jurisdiction: o.jurisdiction, secured: false, operation: new URL(o.url).pathname, status: b ? 200 : 0, url: o.url, ...(typeof records === 'number' ? { records } : {}), keyless: b !== null })
       }
+      // THE BIGGEST CASES AND THEIR FIRMS AS LEADS — ranked by the record's own citation count, not by hand
+      const cl = (await get(clUrl).then((x) => x.json()).catch(() => null)) as { results?: Record<string, unknown>[] } | null
+      cases = (cl?.results ?? []).slice(0, qpuFacesOf().faces).map((r) => {
+        const name = str(r.caseName).replace(/\s+/g, ' ').slice(0, 120)
+        const citeCount = num(r.citeCount, 0)
+        const firms = [...new Set([str(r.attorney)].flatMap((s) => s.split(/[,;]| and /).map((w) => w.trim()).filter((w) => w.length > 3)))].slice(0, qpuFacesOf().faces)
+        return { case: name, court: str(r.court) || str(r.court_id), citeCount, dateFiled: str(r.dateFiled) || undefined, firms, numbers: [...new Set([citeCount, ...nums(`${name} ${str(r.dateFiled)}`)])].filter((n) => n >= 3) }
+      })
     }
     const found = await apiSearchOf([...terms, ...ask], qpuFacesOf().faces, from)
     const tokened = (s: string) => s.toLowerCase().split(/[^a-z]+/).some((w) => terms.includes(w))

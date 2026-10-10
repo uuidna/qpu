@@ -39,6 +39,8 @@ import { Header } from './globals/Header'
 import { seoTitleOf } from './collections/Docs'
 import { seoDescriptionOf } from './collections/Docs'
 import { seoURLOf } from './collections/Docs'
+import { BlocksFeature } from '@payloadcms/richtext-lexical'
+import { blocks } from './blocks'
 import { seed } from './seed'
 preload0()
 type CloudflareEnv = { STORAGE: KVNamespace; BLOBS: R2Bucket; MEDIA: R2Bucket }

@@ -221,8 +221,11 @@ export class GateFormulas {
     const reads = await Promise.all(found.apis.filter((y) => y.free !== undefined).slice(0, qpuFacesOf().faces).map((y) => apiCallOf(y.index, y.free!).catch(() => null)))
     const answered = reads.filter((r): r is NonNullable<typeof r> => r !== null && r.status > 0)
     const inputs = x.arity === 0 ? [[]] : x.arity === 1 ? Array.from({ length: 16 }, (_, k) => [k + 1]) : Array.from({ length: 8 }, (_, k) => k + 1).flatMap((a) => Array.from({ length: 8 }, (_, b) => [a, b + 1]))
+    // SPLIT SLOW IN MANY FAST: every input of this one formula run at once (store:false, a single eval each — not the
+    // whole-lattice discovery, so the memory stays bounded), its reached values gathered from the parallel answers
+    const ran = await Promise.all(inputs.map((ps) => (qpuHexRunOf(qpuHexUuidOf({ family: x.family, program: [x.name], params: ps }), undefined, undefined, { store: false }) as Promise<{ value?: unknown; holds?: boolean }>).catch(() => null)))
     const values = new Set<number>()
-    for (const ps of inputs) { try { const r = (await qpuHexRunOf(qpuHexUuidOf({ family: x.family, program: [x.name], params: ps }), undefined, undefined, { store: false })) as { value?: unknown; holds?: boolean }; const v = Number(r.value); if (r.holds === true && Number.isSafeInteger(v) && v >= 3) values.add(v) } catch { /* an input the address cannot take */ } }
+    for (const r of ran) { if (!r) continue; const v = Number(r.value); if (r.holds === true && Number.isSafeInteger(v) && v >= 3) values.add(v) }
     const byApi = answered.map((r) => ({ api: r.api, hit: numbersOf(r.excerpt).find((v) => values.has(v)) })).find((r) => r.hit !== undefined)
     // the rosetta in every rotation: 2n addresses, fired at once
     const ring = (await import('../merkaba/index.js')).flowFamiliesOf()

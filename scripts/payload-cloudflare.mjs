@@ -92,7 +92,15 @@ const REPO = {
       ecommerce: "products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, { name: 'organisation', type: 'text' }, { name: 'use', type: 'textarea' }, { name: 'licence', type: 'text', defaultValue: 'CC-BY-NC-ND-4.0' }, { name: 'billedAccount', type: 'text' }, { name: 'cloudflareAccountId', type: 'text' }, { name: 'royalty', type: 'json' }, ...defaultCollection.fields] }) }",
       seo: "uploadsCollection: 'media', generateTitle: ({ doc }) => seoTitleOf(doc), generateDescription: ({ doc }) => seoDescriptionOf(doc), generateURL: ({ doc }) => seoURLOf(doc)",
     },
-    imports: ['seoTitleOf', 'seoDescriptionOf', 'seoURLOf'].map((name) => ({ name, from: './collections/Docs' })),
+    // Lexical is the app-building surface, and the registry configures it: rich-text fields offer the compatible formula
+    // blocks — those the families categorise QPU, minus any with a rich-text field (which would recurse in schema
+    // generation). A formula doc composes formulas and they nest safely: compatible formulas in formulas. No hand list.
+    editor: "lexicalEditor({ features: ({ defaultFeatures }) => [...defaultFeatures, BlocksFeature({ blocks: blocks.filter((b) => b.admin?.group === 'QPU' && !b.fields?.some((f) => f.type === 'richText')) })] })",
+    imports: [
+      ...['seoTitleOf', 'seoDescriptionOf', 'seoURLOf'].map((name) => ({ name, from: './collections/Docs' })),
+      { name: 'BlocksFeature', from: '@payloadcms/richtext-lexical' },
+      { name: 'blocks', from: './blocks' },
+    ],
     // the frontend is the app's: its layout, the (pages) group and the blocks; the template's sample routes are not written
     own: ['page.tsx', 'layout.tsx', 'site.ts', 'docs/[slug]/page.tsx'].map((f) => `${SRC}/app/(frontend)/${f}`),
     origins: ['https://qpu.uuidna.com'],

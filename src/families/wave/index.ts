@@ -77,7 +77,12 @@ export class WaveFormulas {
     const family = waveFamiliesOf()[fam]
     if (!family) return f('wave-massive', 'massive(f)', 0, false, 'massive', [fam])
     const at = Date.now()
-    const formulas = qpuHexFamiliesOf().get(family) ?? []
+    // NO SKIPS, SPLITS: the family's formulas split into the unit's own compute (sync) and its readings (live). The sync
+    // programs are the massive wave, timed clean; the live formulas run as their own split, timed apart — nothing dropped,
+    // so a slow API (gravity flagged seo.google) is isolated in its split instead of dominating the wall time.
+    const all = qpuHexFamiliesOf().get(family) ?? []
+    const formulas = all.filter((x) => !x.live)
+    const liveFormulas = all.filter((x) => x.live)
     const programs = [...formulas.map((x) => [x]), ...formulas.flatMap((x) => formulas.map((y) => [x, y]))]
     const hexbit = 4
     const launched = programs.flatMap((p) => Array.from({ length: hexbit }, (_, i) => {
@@ -87,9 +92,13 @@ export class WaveFormulas {
     const timed = await Promise.all(launched.map(async (l) => { const t = Date.now(); const a = await agentOf(family, l.program, l.params); return a ? { ...a, ms: Date.now() - t } : null }))
     const agents = timed.filter((a): a is Agent & { ms: number } => a !== null)
     const ms = Math.max(1, Date.now() - at)
+    // the live split: each reading run once at the seed, timed apart — counted, never skipped
+    const liveAt = Date.now()
+    const liveAgents = (await Promise.all(liveFormulas.map((x) => agentOf(family, [x.name], Array.from({ length: x.arity }, () => 3))))).filter((a): a is Agent => a !== null)
+    const liveMs = Math.max(0, Date.now() - liveAt)
     const slowest = agents.reduce((s, a) => (a.ms > s.ms ? a : s), agents[0] ?? { program: [] as string[], ms: 0 })
     const held = agents.filter((a) => a.holds)
-    return f('wave-massive', 'massive(f) = |agents of family f over every program of one or two formulas, inputs 1 … hexbit, launched at once, that hold|', held.length, nat(fam) && held.length > 0, 'massive', [fam], { family, programs: programs.length, agents: agents.length, ms, perSecond: Math.round((agents.length * 1000) / ms), slowest: `${slowest.program.join('∘')} ${slowest.ms} ms`, calls: 1, saved: Math.max(0, agents.length - 1), receipt: receiptOf(`massive ${family}`, agents), signals: held.slice(0, qpuFacesOf().faces).map((a) => a.hex) })
+    return f('wave-massive', 'massive(f) = |agents of family f over every program of one or two SYNC formulas, inputs 1 … hexbit, launched at once, that hold|; live readings run in their own split', held.length, nat(fam) && held.length > 0, 'massive', [fam], { family, programs: programs.length, agents: agents.length, ms, perSecond: Math.round((agents.length * 1000) / ms), slowest: `${slowest.program.join('∘')} ${slowest.ms} ms`, calls: 1, saved: Math.max(0, agents.length - 1), receipt: receiptOf(`massive ${family}`, agents), signals: held.slice(0, qpuFacesOf().faces).map((a) => a.hex), ...(liveFormulas.length ? { split: { live: liveFormulas.length, held: liveAgents.filter((a) => a.holds).length, ms: liveMs, signals: liveAgents.filter((a) => a.holds).map((a) => a.hex).slice(0, qpuFacesOf().faces) } } : {}) })
   }
   /** A PROGRAM HANDLED AS A HEX COMBINATION: p's hexadecimal digits are the nibbles of the program (each digit the
    *  1-based index of a formula of the f-th family, up to four), launched over the inputs from + 1 … from + faces at
