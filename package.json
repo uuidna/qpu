@@ -113,7 +113,6 @@
   "sideEffects": [
     "./src/utilities/workers-crypto.ts",
     "./dist/mcp/families.js",
-    "./dist/families/a11y/index.js",
     "./dist/families/absorption/index.js",
     "./dist/families/accelerometer/index.js",
     "./dist/families/access/index.js",
@@ -1217,7 +1216,6 @@
     "./dist/families/virtualization/index.js",
     "./dist/families/vitals/index.js",
     "./dist/families/viticulture/index.js",
-    "./dist/families/vo2max/index.js",
     "./dist/families/volatility/index.js",
     "./dist/families/volcanology/index.js",
     "./dist/families/vulcanology/index.js",
