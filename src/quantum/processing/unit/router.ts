@@ -99,14 +99,21 @@ export const worker = {
       delete out['content-type']
       return out
     }
-    // public discovery GETs: browser revalidates (max-age), Workers Cache API / edge use s-maxage (quintessay middleware)
-    const deployed = { 'cache-control': 'public, max-age=0, s-maxage=3600, stale-while-revalidate=86400' } as const
+    // ALWAYS INVALIDATE WHEN THE ASSET CHANGES. Two policies, chosen by whether the URL is content-addressed.
+    // A mutable-URL doc (/, /qpu.css, discovery, robots, sitemap) keeps its URL while its bytes change on a deploy, so
+    // `no-cache` makes every browser and the edge revalidate the content-fold ETag before serving: an unchanged asset
+    // 304s cheaply (no body), a changed one is served fresh the instant it ships — never the stale copy an s-maxage
+    // window would have held for up to an hour. The ETag below is qpuFoldOf of the body, so it moves iff the asset does.
+    const revalidated = { 'cache-control': 'public, no-cache' } as const
+    // A content-addressed URL (a hex-program UUID in the path → its .svg/og picture) names bytes that cannot change under
+    // that URL — a changed program is a different URL — so it is safe to cache immutably and never revalidate.
+    const immutable = { 'cache-control': 'public, max-age=31536000, immutable' } as const
     const jsonOf = (body: unknown, status = found) =>
       new Response(JSON.stringify(body), { status, headers: { ...headers, ...routeHeaders, ...(isRpc(body) ? rpcMedia : {}) } })
     /** A memoized document: 304 with no body when the client's If-None-Match is its ETag, else the bytes with the ETag. */
     const servedResponse = (row: Served) => {
-      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: emptyHeaders({ etag: row.etag, ...deployed }) })
-      return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag, ...deployed } })
+      if (request.headers.get('if-none-match') === row.etag) return new Response(null, { status: found + ten * ten + mintOf(coins), headers: emptyHeaders({ etag: row.etag, ...revalidated }) })
+      return new Response(row.body, { status: found, headers: { ...headers, ...routeHeaders, etag: row.etag, ...revalidated } })
     }
     // THE SELF-PROOF IS A BUILD/BOOT INVARIANT, NOT A PER-REQUEST COST. qpuIntegrityOf runs qpuQuantumOf (the Shor
     // state-vector simulation) and qpuLeanOf (all 145 theorem holds) — together ~5.6s on a cold isolate. Running them in
@@ -141,9 +148,9 @@ export const worker = {
     const zoneHost = qpuZoneHostOf(url.hostname)
     if (url.protocol === 'https:' && zoneHost !== undefined) {
       if (path === '/robots.txt')
-        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
+        return new Response(qpuRobotsOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...revalidated, 'content-type': 'text/plain; charset=utf-8' } })
       if (path === '/sitemap.xml')
-        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...deployed, 'content-type': 'application/xml; charset=utf-8' } })
+        return new Response(qpuSitemapOf(zoneHost.host), { status: found, headers: { ...headers, ...routeHeaders, ...revalidated, 'content-type': 'application/xml; charset=utf-8' } })
       // THE DISCOVERY RECORD IS THE SAME DOCUMENT ON EVERY NAME, because it describes ONE endpoint and that
       // endpoint is this unit's. A sibling serving a copy that named itself would be the duplicate this whole
       // surface exists to avoid; a sibling serving nothing would leave the <loc> its own sitemap carries
@@ -198,7 +205,7 @@ export const worker = {
     const canonicalOf = (p: string) => `https://${host}${p === '/' ? '' : p}`
     const pageOrServed = (p: string, build: () => object, meta?: { title?: string; description?: string }) =>
       wantsHtml
-        ? new Response(qpuPageOf(build() as Record<string, unknown>, canonicalOf(p), meta), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8', ...deployed } })
+        ? new Response(qpuPageOf(build() as Record<string, unknown>, canonicalOf(p), meta), { status: found, headers: { ...headers, ...routeHeaders, 'content-type': 'text/html; charset=utf-8', ...revalidated } })
         : servedResponse(servedOf(p, build))
     // The public-door aliases (/mcp, /cite, /qpu.css) — served directly by the unit, not through Payload.
     if (PUBLIC_DOORS[path as keyof typeof PUBLIC_DOORS]) return publicDoorOf()
@@ -213,7 +220,7 @@ export const worker = {
     }
     if (path === '/metrics') return pageOrServed('/metrics', () => ({ mint: qpuMintReceiptOf(), foreign: qpuForeignReadsOf(), receipts: RECEIPTS.length, served: qpuServedLedgerOf().length }), { title: '@uuidna/qpu — metrics', description: 'Mint receipt, foreign reads, and the receipt and served-ledger counts.' })
     if (path === `/${unit.fuse.lean}`) {
-      return new Response(leanSource, { status: found, headers: { ...headers, ...deployed, 'content-type': 'text/plain; charset=utf-8' } })
+      return new Response(leanSource, { status: found, headers: { ...headers, ...revalidated, 'content-type': 'text/plain; charset=utf-8' } })
     }
     if (path === '/') {
       // A crawler or browser gets the landing page as crawlable HTML (qpuPageOf); an API client keeps the quantum JSON.
@@ -358,7 +365,7 @@ export const worker = {
         if (wantsSvg) {
           const run = (await qpuHexRunOf(programs[0]!, undefined, env).catch(() => undefined)) as { holds?: unknown } | undefined
           const holds = !(run && typeof run === 'object' && run.holds === false)
-          return new Response(qpuRaySvgOf(programs[0]!, { title: unit.host, holds }), { status: found, headers: { ...headers, ...routeHeaders, ...deployed, 'content-type': 'image/svg+xml; charset=utf-8' } })
+          return new Response(qpuRaySvgOf(programs[0]!, { title: unit.host, holds }), { status: found, headers: { ...headers, ...routeHeaders, ...immutable, 'content-type': 'image/svg+xml; charset=utf-8' } })
         }
         const runs = await Promise.all(programs.map((p) => qpuHexRunOf(p, undefined, env)))
         const held = (r: unknown) => !(r && typeof r === 'object' && (r as { holds?: unknown }).holds === false)
