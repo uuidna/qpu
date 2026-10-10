@@ -60,16 +60,9 @@ const sealAll = (): void => {
     try { f.run(args) } catch { /* a family that cannot seal on these seeds is simply not bridged yet — a lead, not a block */ }
   }
 }
-/** Every family whose sealed domain is `domain`, sorted — derived from the bridges, no hand list. */
-export const qpuDomainOf = (domain: string): string[] => { sealAll(); return [...BRIDGES].filter(([, d]) => d === domain).map(([s]) => s).sort() }
-/** The whole domain map: each domain with the families that cross to it — the self-filling graph, read token-free. */
+/** The whole family → domain graph in one reading: each domain with the families that cross to it (and so, for any
+ *  family, its siblings in its own domain — its experts). The self-filling graph, read token-free, no per-item prefix. */
 export const qpuDomainsOf = (): Record<string, string[]> => { sealAll(); const m: Record<string, string[]> = {}; for (const [s, d] of BRIDGES) (m[d] ??= []).push(s); for (const d in m) m[d]!.sort(); return m }
-/** A family's related families — its siblings in the same domain (itself excluded): the experts of its field. */
-export const qpuRelatedOf = (family: string): { family: string; domain: string | undefined; experts: string[] } => {
-  sealAll()
-  const domain = BRIDGES.get(family)
-  return { family, domain, experts: domain ? [...BRIDGES].filter(([s, d]) => d === domain && s !== family).map(([s]) => s).sort() : [] }
-}
 
 export const crossFormulaOf = (f: Omit<CrossFormula, 'uuid' | 'receipt' | 'holds' | 'hex' | 'hexExact'>, domain = true, call?: { name: string; params: number[] }): CrossFormula => {
   if (f.src && f.dst) BRIDGES.set(f.src, f.dst)
