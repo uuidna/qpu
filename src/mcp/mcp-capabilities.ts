@@ -84,13 +84,15 @@ const LIFECYCLE = HOOK_LIFECYCLE
 const claySealedOf = () => {
   const cite = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; prior: { title: string; doi: string; conceptdoi: string; archive: string } }
   const of = (problem: string, s: { formula?: string; value: number | bigint; holds: boolean; hex?: string | null }) => ({ problem, sigma: s.formula, value: Number(s.value), holds: s.holds === true, ...(s.hex ? { hex: s.hex } : {}) })
+  // the σ fixed points are the lattice's, computed, not quoted: s = 1/2 = seed/coins, m = n·n, genus/presupposed = seed.
+  const L = qpuLatticeNamesOf()
   const seals = [
-    of('Riemann Hypothesis', ClaySeals.riemann(1, 2)),
-    of('Birch and Swinnerton-Dyer', ClaySeals.bsd(9)),
-    of('Hodge Conjecture', ClaySeals.hodge(1)),
-    of('Navier–Stokes existence and smoothness', ClaySeals.navierStokes(1, 1)),
+    of('Riemann Hypothesis', ClaySeals.riemann(L.seed, L.coins)),
+    of('Birch and Swinnerton-Dyer', ClaySeals.bsd(L.n * L.n)),
+    of('Hodge Conjecture', ClaySeals.hodge(L.seed)),
+    of('Navier–Stokes existence and smoothness', ClaySeals.navierStokes(L.seed, L.seed)),
     of('Yang–Mills existence and mass gap', ClaySeals.yangMills()),
-    of('P versus NP', ClaySeals.pVsNp(1)),
+    of('P versus NP', ClaySeals.pVsNp(L.seed)),
   ]
   return {
     ...qpuClayOf(),
