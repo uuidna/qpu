@@ -45,7 +45,7 @@ const allResources = async (scope) => {
 
 test('by default resources/list is the quantum computer core — the aggregates only, one page, the rest not spilled', async () => {
   const core = await allResources()
-  for (const u of ['qpu://hex', 'qpu://lean', 'qpu://clay', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram', 'qpu://hooks', 'qpu://court']) {
+  for (const u of ['qpu://hex', 'qpu://code', 'qpu://lean', 'qpu://clay', 'qpu://schema', 'qpu://readme', 'qpu://docs', 'qpu://receipts', 'qpu://fused', 'qpu://hologram', 'qpu://hooks', 'qpu://court']) {
     assert.ok(core.includes(u), `core aggregate ${u} missing from the default listing`)
   }
   assert.ok(!core.some((u) => u.startsWith('qpu://formulas/')), 'the default listing spilled the families — they belong on request')
@@ -93,6 +93,14 @@ test('tools are also hooks: qpu://hooks is the full combinatorics of tools × li
   assert.equal(h.combinations, h.tools.length * h.events.length, 'combinations is not the full tool × event product')
   assert.equal(h.bindings.length, h.combinations, 'not every tool × event binding is enumerated')
   assert.ok(h.holds, 'the hook combinatorics does not hold')
+})
+
+test('qpu://code states the unlimited code space as measured figures a fusing MCP can read', async () => {
+  const c = JSON.parse((await rpc('resources/read', { uri: 'qpu://code' })).result.contents[0].text)
+  assert.equal(c.addressBits, 122, 'the v8 UUID free-bit address space')
+  assert.match(c.addresses, /^\d{36,}$/, 'the address count is 2^122, an astronomically large figure')
+  assert.equal(c.families, idx.qpuHexFamiliesOf().size, 'families derived from the live registry')
+  assert.ok(c.formulas > 0 && c.holds === true, 'formulas counted and the reading holds')
 })
 
 test('qpu://court is the court as an independent seal: each case a hex verdict with holds, fidelity and standing', async () => {

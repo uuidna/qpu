@@ -156,12 +156,34 @@ const factoringOf = (from: number) => {
   }
 }
 
+// UNLIMITED CODE, MEASURED. Every computation is a hex-program UUID: { family, program, params } minted by qpuHexUuidOf
+// and run at qpu://hex/{uuid}. The address space is the v8 UUID's 122 free bits; the program space over it — families ×
+// formulas × params, times every composition — is unbounded. qpu://code states this as figures, so a fusing MCP reads
+// the capacity rather than a word. Only a single run is bounded (CPU/memory/time), reported honestly as classical.beyond.
+const codeOf = () => {
+  const fams = qpuHexFamiliesOf()
+  let formulas = 0
+  for (const fs of fams.values()) formulas += fs.length
+  return {
+    kind: 'code' as const,
+    addressBits: 122,
+    addresses: (2n ** 122n).toString(),
+    families: fams.size,
+    formulas,
+    program: '{ family, program: [formulas], params } → a UUID (qpuHexUuidOf), run at qpu://hex/{uuid}; compositions and params are unbounded',
+    bounded: 'per run only (CPU, memory, time), reported as classical.beyond — never the code space',
+    fuse: 'any MCP fuses this at https://qpu.uuidna.com/mcp; resources/templates/list gives the hex addresses',
+    holds: fams.size > 0 && formulas > 0,
+  }
+}
+
 // Default resources/list = the quantum computer core (aggregates, each an index to the rest). scope 'all' = the whole
 // catalogue in hexbit folders; scope <family> = that family's scoped collection. Nothing removed, only not spilled.
 let core: Resource[] | undefined
 const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://receipts', name: 'receipts', title: 'Receipt streams', description: 'Every quantum-receipt stream: head, length, chain, holds', mimeType: 'application/json' },
   { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles — the index of the rest', mimeType: 'application/json' },
+  { uri: 'qpu://code', name: 'code', title: 'Unlimited code', description: 'The measured program space: v8 UUID address bits, families, formulas — every { family, program, params } a UUID run at qpu://hex/{uuid}; the code space is unbounded, only a single run is, and any MCP fuses it', mimeType: 'application/json' },
   { uri: 'qpu://hologram', name: 'hologram', title: 'Hologram streams', description: 'One signed SHA-256 UUID stream per hologram scale and the Merkle root of all of them', mimeType: 'application/json' },
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
@@ -207,6 +229,7 @@ const TEMPLATES: Template[] = [
 const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://receipts') return { ...qpuReceiptStreamsOf(), streams: qpuReceiptStreamsOf().streams.map(({ recent, ...head }) => head) }
   if (uri === 'qpu://hex') return qpuHexCatalogOf()
+  if (uri === 'qpu://code') return codeOf()
   if (uri === 'qpu://lean') return qpuLeanOf()
   if (uri === 'qpu://fused') return { kind: 'fused', tools: qpuMcpFusedOf(), call: 'tools/call { name, arguments }' }
   if (uri === 'qpu://hooks') return toolHooksOf()
