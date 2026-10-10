@@ -45,8 +45,14 @@ export class JobFormulas {
    *  across the optimal agent count for that work, with the makespan and reduce rounds it would take. The first `n`
    *  relations ride in the reading. The discovery is the one job every agent can start from. */
   static async discover(n: number): Promise<CrossFormula> {
-    const { qpuDiscoverOf } = await import('../../mcp/discovery.js')
-    const d = await qpuDiscoverOf([])
+    const { qpuDiscoverOf, qpuDiscoverMergeOf, DOORS } = await import('../../mcp/discovery.js')
+    const { qpuHexFamiliesOf, qpuFacesOf } = await import('../../quantum/processing/unit/index.js')
+    // BOUNDED: one slice per family over the first `faces` domain families (the Lean Qpu.* families cross in their own domain and the
+    // doors run whole readings — Clifford, Galois and Stabilizer alone take minutes), merged back into one discovery.
+    const registry = [...qpuHexFamiliesOf()].map(([family], at) => ({ family, at })).filter((x) => !x.family.startsWith('Qpu.') && !DOORS.has(x.family)).slice(0, qpuFacesOf().faces)
+    const parts = []
+    for (const x of registry) parts.push(await qpuDiscoverOf([], { from: x.at, count: 1 }))
+    const d = qpuDiscoverMergeOf(parts)
     const work = d.relations.length
     let best = 1, bestS = 0
     for (let a = 1; a <= Math.min(work, 4096); a++) { const s = speedup(work, a); if (s > bestS) { bestS = s; best = a } }

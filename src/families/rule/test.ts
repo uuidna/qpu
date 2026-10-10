@@ -53,7 +53,7 @@ test('rule: compositions agrees with the superpositions that still meet', async 
     ['cross', ['medSecureWithQSec'], [8, 3]],
     ['clay', ['bsd'], [268]],
     ['signal', ['keyspace'], [6]],
-    ['rule', ['compositions'], [12]],
+    ['rule', ['compositions'], [23]],
     ['kin', ['combinations'], [1]],
     ['kin', ['crossed', 'combinations'], [1, 1]],
     ['kin', ['crossed', 'combinations'], [2, 2]],
@@ -63,7 +63,7 @@ test('rule: compositions agrees with the superpositions that still meet', async 
     ['yi', ['figures'], [6]],
     ['yi', ['withYang', 'figures'], [1]],
   ])
-  assert.equal(String(RuleFormulas.compositions(12).value), sixtyFour)
+  assert.equal(String(RuleFormulas.compositions(23).value), sixtyFour)
   const fifteen = await agree([
     ['Qpu.Mint', ['chooseOf'], [6, 2]],
     ['Qpu.Mint', ['chooseOf'], [6, 4]],
@@ -85,10 +85,10 @@ test('rule: compositions agrees with the superpositions that still meet', async 
   ])
   const eightyOne = await agree([
     ['cal', ['gregorianDrift'], [3]],
-    ['rule', ['compositions'], [4]],
-    ['rule', ['compositions', 'compositions'], [3]],
+    ['rule', ['compositions'], [11]],
+    ['rule', ['nibbles', 'compositions'], [645]],
   ])
-  assert.equal(String(RuleFormulas.compositions(4).value), eightyOne)
+  assert.equal(String(RuleFormulas.compositions(11).value), eightyOne)
   t.diagnostic(`compositions meets ${sixtyFour}, ${fifteen}, ${eightyOne}`)
 })
 
@@ -144,8 +144,8 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
     ['signal', ['siftedBits'], [8]],
     ['signal', ['hops', 'keyspace'], [2, 1, 2]],
     ['signal', ['hops', 'keyspace'], [2, 2, 1]],
-    ['merkaba', ['mirror'], [3, 1, 2]],
-    ['merkaba', ['torus'], [2, 1, 3]],
+    ['merkaba', ['mirror'], [10, 7, 8]],
+    ['merkaba', ['torus'], [8, 7, 10]],
     ['holo', ['proofDepth'], [9]],
     ['holo', ['proofDepth'], [10]],
     ['holo', ['proofDepth'], [11]],
@@ -154,8 +154,8 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
     ['np', ['isSpace'], [9]],
     ['np', ['isSpace'], [10]],
     ['np', ['isSpace'], [11]],
-    ['rule', ['compositions'], [3]],
-    ['rule', ['nibbles'], [5]],
+    ['rule', ['compositions'], [10]],
+    ['rule', ['nibbles'], [14]],
     ['heat', ['coherence'], [8, 1]],
     ['heat', ['cooling'], [7, 2]],
     ['heat', ['cooling'], [8, 2]],
@@ -247,7 +247,7 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
     ['clay', ['hodge', 'hodge'], [4]],
     ['signal', ['keyspace'], [4]],
     ['signal', ['keyspace', 'keyspace'], [2]],
-    ['rule', ['compositions'], [5]],
+    ['rule', ['compositions'], [14]],
     ['kin', ['seal'], [56]],
     ['kin', ['bits', 'dootKin'], [2, 2, 1]],
     ['kin', ['combinations', 'dreamspellDrift'], [1]],
@@ -277,7 +277,7 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
   ])
   // rule × kin × tesla × yi = 36. rule.compositions(9), rule.compositions(11) and rule.compositions(14) are 64. rule.compositions(1) is 36. They stay at the integer they return.
   await named('36', [
-    ['rule', ['compositions'], [1]],
+    ['rule', ['compositions'], [7]],
     ['kin', ['dreamspellDrift'], [144]],
     ['kin', ['dreamspellDrift'], [146]],
     ['tesla', ['field'], [6, 6]],
@@ -319,10 +319,10 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
   const next = returned.find((row) => row.value !== '196')!.uuid
   assert.equal(holds, false)
   assert.deepEqual(returned.map((row) => [row.call, row.value]), [
-    ['rule.compositions(8)', '100'],
-    ['rule.compositions(15)', '64'],
-    ['rule.cap∘compositions(1)', '64'],
-    ['rule.cap∘compositions(2)', '64'],
+    ['rule.compositions(8)', '169'],
+    ['rule.compositions(15)', '16'],
+    ['rule.cap∘compositions(1)', '16'],
+    ['rule.cap∘compositions(2)', '16'],
     ['kin.combinations∘dootKin(2, 1, 1)', '196'],
   ])
   assert.equal(next, 'bfe6be1f-2000-1000-9000-000000000008')
@@ -330,6 +330,6 @@ test('rule: eight README integers still meet, and kin × rule = 196 holds false'
   const kin = returned.find((row) => row.call === 'kin.combinations∘dootKin(2, 1, 1)')!
   const compositions = returned.find((row) => row.call === 'rule.compositions(8)')!
   const sentence = `${kin.call} is ${kin.value} (${kin.call.split('.')[0]}); ${compositions.call} is ${compositions.value} (compositions)`
-  assert.equal(sentence, 'kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(8) is 100 (compositions)')
+  assert.equal(sentence, 'kin.combinations∘dootKin(2, 1, 1) is 196 (kin); rule.compositions(8) is 169 (compositions)')
   t.diagnostic(`4, 5, 10, 16, 27, 36, 100 and 208 meet; 196 holds false; ${sentence}; next ${next}`)
 })

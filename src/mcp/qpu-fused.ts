@@ -401,7 +401,10 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     const ask = async (path: string, accept: string, within = DEADLINE): Promise<Response> => {
       const request = new Request(`${origin}${path}`, { headers: { accept, 'user-agent': 'qpu.uuidna.com (+https://qpu.uuidna.com)' } })
       const door = env?.PAYLOAD ? env.PAYLOAD.fetch(request) : fetch(request)
-      return Promise.race([door, new Promise<Response>((_, reject) => setTimeout(() => reject(new Error(`${path} did not answer within ${within === DEADLINE ? 'the deadline' : 'the window'}`)), within))])
+      let timer: ReturnType<typeof setTimeout> | undefined
+      try {
+        return await Promise.race([door, new Promise<Response>((_, reject) => { timer = setTimeout(() => reject(new Error(`${path} did not answer within ${within === DEADLINE ? 'the deadline' : 'the window'}`)), within) })])
+      } finally { clearTimeout(timer) }
     }
     // the sitemap is one read that gathers the whole site, and a cold isolate's first answer is Payload's initialisation:
     // it gets the window; every page then gets the deadline

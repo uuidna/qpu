@@ -125,7 +125,7 @@ export const qpuDiscoverOf = async (live: number[] = [], slice?: { from?: number
         // a composition is b at the value a reached. The singles' table answers it when b was already run at that
         // value. Otherwise it is run only when that value is below mintOf(hexbit²): split.primes of a photon-scale
         // kelvin does not finish, and gap(bcs) = 25 does.
-        const bounded = fed !== undefined && fed.every((p) => Number.isSafeInteger(p) && p >= 0 && p < L.mintOf(L.hexbit * L.hexbit))
+        const bounded = fed !== undefined && fed.every((p) => Number.isSafeInteger(p) && p >= 0 && p < (lean ? L.mintOf(L.hexbit) + L.seed : L.mintOf(L.hexbit * L.hexbit)))
         if (program.length === 2 && !(inner && outer) && !(inner?.holds && bounded)) continue
         if (program.length === 2 && inner && outer) {
           run = { value: outer.value ?? undefined, holds: inner.holds && outer.holds, receipt: qpuUuidReceiptOf(`hex ${family}`, hex, { value: outer.value, holds: inner.holds && outer.holds }).uuid }

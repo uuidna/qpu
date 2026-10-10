@@ -46,7 +46,7 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['np', ['isSpace'], [93]],
     ['np', ['isSpace'], [104]],
     ['np', ['isSpace'], [119]],
-    ['rule', ['free'], [12]],
+    ['rule', ['free'], [23]],
     ['kin', ['digitalRoot'], [16]],
     ['kin', ['digitalRoot'], [142]],
     ['kin', ['digitalRoot'], [268]],
@@ -70,7 +70,7 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['np', ['isSpace'], [265]],
     ['np', ['isSpace'], [268]],
     ['np', ['isSpace'], [272]],
-    ['rule', ['free'], [1]],
+    ['rule', ['free'], [7]],
     ['heat', ['signal'], [24]],
     ['kin', ['bits'], [1]],
     ['kin', ['digitalRoot'], [144]],
@@ -84,9 +84,9 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['yi', ['change'], [8, 1]],
     ['yi', ['figures', 'change'], [3, 1]],
   ])
-  assert.equal(await at('rule', ['free'], [11]), '7')
-  assert.equal(await at('rule', ['free'], [14]), '7')
-  assert.equal(await at('rule', ['free'], [16]), '7')
+  assert.equal(await at('rule', ['free'], [22]), '7')
+  assert.equal(await at('rule', ['free'], [25]), '7')
+  assert.equal(await at('rule', ['free'], [27]), '7')
 
   // clay × cross × crypt × kin × np × rule × signal × tesla × yi = 12. Every listed way returns it.
   await named('12', [
@@ -99,10 +99,8 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['crypt', ['symmetricQuantumBits'], [24]],
     ['signal', ['siftedBits'], [24]],
     ['np', ['sparseWidth'], [610]],
-    ['rule', ['over', 'free'], [1]],
-    ['rule', ['over', 'free'], [2]],
-    ['rule', ['over', 'free'], [3]],
-    ['rule', ['over', 'free'], [4]],
+    ['rule', ['free'], [3]],
+    ['rule', ['nibbles', 'free'], [3]],
     ['kin', ['dreamspellDrift'], [50]],
     ['kin', ['seal'], [252]],
     ['kin', ['tone'], [142]],
@@ -209,8 +207,6 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['hd', ['gate'], [429]],
     ['clay', ['bsd'], [240]],
     ['clay', ['hodge'], [12]],
-    ['merkaba', ['flows'], [4]],
-    ['merkaba', ['coil', 'flows'], [4]],
     ['kin', ['pillar', 'pillar'], [2, 1]],
     ['tesla', ['field'], [3, 8]],
     ['tesla', ['field'], [4, 6]],
@@ -219,6 +215,7 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['yi', ['inverse'], [6]],
     ['yi', ['withYang', 'inverse'], [1]],
   ])
+  assert.equal(await at('merkaba', ['flows'], [4]), '16')
 
   // Qpu.Mint × clay × hd × kin × tesla × yi = 35. Every listed way returns it.
   await named('35', [
@@ -262,13 +259,13 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['cal', ['lunarDrift'], [5]],
     ['cal', ['coin', 'gregorianDrift'], [4]],
     ['signal', ['keyBits'], [144]],
-    ['merkaba', ['flows'], [5]],
     ['kin', ['dootKin'], [1, 3, 4]],
     ['kin', ['dootKin'], [2, 4, 4]],
     ['kin', ['dootKin'], [3, 5, 4]],
     ['kin', ['pillar'], [1, 7]],
     ['yi', ['complement'], [9]],
   ])
+  assert.equal(await at('merkaba', ['flows'], [5]), '35')
 
   // cal × crypt × heat × kin × signal × tesla = 120. Every listed way returns it.
   await named('120', [
@@ -310,7 +307,7 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['np', ['sparseWidth'], [265]],
     ['np', ['sparseWidth'], [268]],
     ['np', ['sparseWidth'], [272]],
-    ['rule', ['free'], [5]],
+    ['rule', ['free'], [14]],
     ['kin', ['tone'], [24]],
     ['kin', ['tone'], [50]],
     ['kin', ['tone'], [141]],
@@ -323,7 +320,7 @@ test('next: fourteen superpositions recompute the integer their families return'
     ['yi', ['nuclear'], [6]],
     ['yi', ['nuclear'], [7]],
   ])
-  assert.equal(await at('rule', ['free'], [7]), '7')
+  assert.equal(await at('rule', ['free'], [18]), '7')
   t.diagnostic('7, 9, 12, 21, 28, 18, 20, 24, 35, 42, 54, 120, 128 and 11 recompute; next is kin × np × rule × tesla × yi = 13')
 })
 
@@ -344,8 +341,8 @@ test('next: the window at 13 recomputes the integer its families return', async 
   // kin × np × rule × tesla × yi = 13. rule.free(6) and rule.free∘free(4) are 7. They stay at the integer they return. The line is named 13. That part holds false. One next address.
   await named('13', [
     ['np', ['isTime', 'sparseWidth'], [4]],
-    ['rule', ['free'], [3]],
-    ['rule', ['nibbles'], [2]],
+    ['rule', ['free'], [10]],
+    ['rule', ['nibbles'], [8]],
     ['kin', ['pillar'], [2, 1]],
     ['kin', ['pillar'], [3, 2]],
     ['kin', ['pillar'], [4, 3]],
@@ -360,8 +357,7 @@ test('next: the window at 13 recomputes the integer its families return', async 
   ])
 
   const off13: readonly (readonly [string, string[], number[]])[] = [
-    ['rule', ['free'], [6]],
-    ['rule', ['free', 'free'], [4]],
+    ['rule', ['free'], [17]],
   ]
   const offReturned = []
   for (const [family, program, params] of off13) {
@@ -369,17 +365,16 @@ test('next: the window at 13 recomputes the integer its families return', async 
     offReturned.push({ call: `${family}.${program.join('∘')}(${params.join(', ')})`, value: await at(family, program, params), uuid })
   }
   assert.deepEqual(offReturned.map((row) => [row.call, row.value]), [
-    ['rule.free(6)', '7'],
-    ['rule.free∘free(4)', '7'],
+    ['rule.free(17)', '7'],
   ])
   const holds13 = offReturned.some((row) => row.value === '13')
   const next13 = offReturned.find((row) => row.value !== '13')!.uuid
   assert.equal(holds13, false)
-  assert.equal(next13, 'bfe6be1f-5000-1000-9000-000000000006')
+  assert.equal(next13, 'bfe6be1f-5000-1000-9000-000000000011')
   assert.equal(offReturned.filter((row) => row.uuid === next13).length, 1)
   assert.equal(
     `the line is named 13; ${offReturned.map((row) => `${row.call} is ${row.value}`).join('; ')}`,
-    'the line is named 13; rule.free(6) is 7; rule.free∘free(4) is 7',
+    'the line is named 13; rule.free(17) is 7',
   )
 
   // hd × heat × kin × tesla × yi = 17. Every listed way returns it.
@@ -860,10 +855,10 @@ test('next: the window at 72 recomputes the integer its families return', async 
     offReturned.push({ call: `${family}.${program.join('∘')}(${params.join(', ')})`, value: await at(family, program, params), uuid })
   }
   assert.deepEqual(offReturned.map((row) => [row.call, row.value]), [
-    ['rule.formulas()', '9099'],
-    ['rule.cap∘formulas()', '9099'],
-    ['rule.compositions∘formulas(1)', '9099'],
-    ['rule.compositions∘formulas(2)', '9099'],
+    ['rule.formulas()', '9489'],
+    ['rule.cap∘formulas()', '9489'],
+    ['rule.compositions∘formulas(1)', '9489'],
+    ['rule.compositions∘formulas(2)', '9489'],
   ])
   const holds208 = offReturned.some((row) => row.value === '208')
   const next208 = offReturned.find((row) => row.value !== '208')!.uuid
@@ -872,7 +867,7 @@ test('next: the window at 72 recomputes the integer its families return', async 
   assert.equal(offReturned.filter((row) => row.uuid === next208).length, 1)
   assert.equal(
     `the line is named 208; ${offReturned.map((row) => `${row.call} is ${row.value}`).join('; ')}`,
-    'the line is named 208; rule.formulas() is 9099; rule.cap∘formulas() is 9099; rule.compositions∘formulas(1) is 9099; rule.compositions∘formulas(2) is 9099',
+    'the line is named 208; rule.formulas() is 9489; rule.cap∘formulas() is 9489; rule.compositions∘formulas(1) is 9489; rule.compositions∘formulas(2) is 9489',
   )
 
   // cal × heat × tesla = 250. Every listed way returns it.
@@ -1062,8 +1057,8 @@ test('next: the window at 81 recomputes the integer its families return', async 
   // cal × rule = 81. Every listed way returns it.
   await named('81', [
     ['cal', ['gregorianDrift'], [3]],
-    ['rule', ['compositions'], [4]],
-    ['rule', ['compositions', 'compositions'], [3]],
+    ['rule', ['compositions'], [11]],
+    ['rule', ['nibbles', 'compositions'], [645]],
   ])
 
   // clay × kin = 82. Every listed way returns it.
@@ -1184,7 +1179,7 @@ test('next: the window at 199 recomputes the integer its families return', async
     offReturned.push({ call: `${family}.${program.join('∘')}(${params.join(', ')})`, value: await at(family, program, params), uuid })
   }
   assert.deepEqual(offReturned.map((row) => [row.call, row.value]), [
-    ['merkaba.flows(7)', '54'],
+    ['merkaba.flows(7)', '69'],
   ])
   const holds199 = offReturned.some((row) => row.value === '199')
   const next199 = offReturned.find((row) => row.value !== '199')!.uuid
@@ -1193,7 +1188,7 @@ test('next: the window at 199 recomputes the integer its families return', async
   assert.equal(offReturned.filter((row) => row.uuid === next199).length, 1)
   assert.equal(
     `the line is named 199; ${offReturned.map((row) => `${row.call} is ${row.value}`).join('; ')}`,
-    'the line is named 199; merkaba.flows(7) is 54',
+    'the line is named 199; merkaba.flows(7) is 69',
   )
 
   // crypt × signal = 202. Every listed way returns it.
@@ -1402,12 +1397,12 @@ test('next: the window at 679 recomputes the integer its families return', async
     ['Qpu.Physics', ['planck', 'planck'], []],
     ['Qpu.Physics', ['boltzmann', 'planck'], []],
     ['Qpu.Physics', ['transmon', 'planck'], []],
-    ['merkaba', ['mirror'], [4, 1, 2]],
-    ['merkaba', ['mirror'], [4, 1, 3]],
-    ['merkaba', ['mirror'], [4, 2, 1]],
+    ['merkaba', ['mirror'], [11, 7, 8]],
+    ['merkaba', ['mirror'], [11, 7, 10]],
+    ['merkaba', ['mirror'], [11, 8, 7]],
   ])
   const off662: readonly (readonly [string, string[], number[]])[] = [
-    ['merkaba', ['mirror'], [4, 1, 5]],
+    ['merkaba', ['mirror'], [11, 7, 14]],
   ]
   const offReturned = []
   for (const [family, program, params] of off662) {
@@ -1417,16 +1412,16 @@ test('next: the window at 679 recomputes the integer its families return', async
     offReturned.push({ call: `${family}.${program.join('∘')}(${params.join(', ')})`, value: String(run.value), uuid })
   }
   assert.deepEqual(offReturned.map((row) => [row.call, row.value]), [
-    ['merkaba.mirror(4, 1, 5)', '0'],
+    ['merkaba.mirror(11, 7, 14)', '0'],
   ])
   const holds662 = offReturned.some((row) => row.value === '662607015')
   const next662 = offReturned.find((row) => row.value !== '662607015')!.uuid
   assert.equal(holds662, false)
-  assert.equal(next662, '89c984c4-5000-5000-b000-000400010005')
+  assert.equal(next662, '89c984c4-5000-2000-b000-000b0007000e')
   assert.equal(offReturned.filter((row) => row.uuid === next662).length, 1)
   assert.equal(
     `the line is named 662607015; ${offReturned.map((row) => `${row.call} is ${row.value}`).join('; ')}`,
-    'the line is named 662607015; merkaba.mirror(4, 1, 5) is 0',
+    'the line is named 662607015; merkaba.mirror(11, 7, 14) is 0',
   )
 
   // np × signal = 1125899906842624. Every listed way returns it.

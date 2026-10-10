@@ -1,4 +1,5 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
+import type { TestContext } from 'node:test'
 import assert from 'node:assert/strict'
 import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { CENTERS, CENTER_GATES, CHANNELS, HdFormulas, chartOf, gateLineOf, designJdOf } from './index.js'
@@ -12,6 +13,12 @@ import '../../mcp/families.js'
  *  before birth; and every hex program of the family runs. Through the MCP on the live host, the same formulas answer
  *  at their addresses. Structure only: no type, profile or authority is computed, by the author's own finding. */
 const host = (process.env.QPU_LIVE ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
+// The live host is probed once with a short deadline: when it is unreachable the live test skips, it never waits minutes.
+const DEADLINE = 20000
+let up: Promise<boolean> | undefined
+const reachable = (): Promise<boolean> => (up ??= fetch(`${host}/health`, { signal: AbortSignal.timeout(DEADLINE) }).then((r) => r.ok).catch(() => false))
+const live = (name: string, fn: (t: TestContext) => void | Promise<void>): Promise<void> =>
+  test(name, async (t) => { if (!(await reachable())) { t.skip(`${host} unreachable — offline or down; set QPU_LIVE or start the host`); return } await fn(t) })
 
 test('hd: the wheel is a partition — every tenth of a degree lands on one gate and one line, 64 × 6 equally', () => {
   const gates = new Map<number, number>()
@@ -92,7 +99,7 @@ test("cal: the calendar's drift explains the wheel — a day per 128 Julian or 3
   assert.equal(qpuHexFamiliesOf().get('kin')?.length, 15, 'a family holds fifteen formulas: one nibble')
 })
 
-test('hd: every formula of the family runs as a hex program, and the live host answers the same at the address', async (t) => {
+test('hd: every formula of the family runs as a hex program', async () => {
   const family = qpuHexFamiliesOf().get('hd')
   assert.ok(family && family.length === 14, `hd registers 14 formulas: ${family?.map((f) => f.name).join(', ')}`)
   const probes: [string, number[], number][] = [['gate', [3020], 41], ['line', [3020], 1], ['center', [41], 9], ['channel', [30, 41], 1], ['channel', [30, 42], 0], ['channels', [10], 3], ['definition', [7], 4], ['cells', [], 768], ['ut', [1200, 720], 2160], ['mean', [0], 720], ['mean', [3450], 660], ['code', [20000101], 2000 * 372], ['jdm', [2000 * 372, 2160], 2451545 * 1440], ['chart', [2451545 * 1440], chartOf(2451545).defined.length]]
@@ -102,9 +109,12 @@ test('hd: every formula of the family runs as a hex program, and the live host a
     assert.equal(Number(run.value), expected, `hd.${name}(${params.join(', ')}) = ${expected} at ${uuid}`)
     assert.equal(run.holds, true)
   }
+})
+
+live('hd: the live host answers the same at the address', async (t) => {
   // the live host, through a sealed door: the same program at the same address
   const uuid = qpuHexUuidOf({ family: 'hd', program: ['gate'], params: [3020] })
-  const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'cite', arguments: { hex: uuid } } }), signal: AbortSignal.timeout(120000) })
+  const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'cite', arguments: { hex: uuid } } }), signal: AbortSignal.timeout(DEADLINE) })
   const body = (await r.json()) as { result?: { structuredContent?: { value?: unknown; holds?: boolean; denied?: string } } }
   const live = body.result?.structuredContent
   qpuUuidReceiptOf('hd live', qpuContentUuidOf(live ?? {}), { host })
