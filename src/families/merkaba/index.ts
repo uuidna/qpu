@@ -1,4 +1,4 @@
-import { qpuHexFamiliesOf, qpuHexRegisterOf, qpuHexRunOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexFamiliesOf, qpuHexRegisterOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf } from '../../quantum/processing/unit/index.js'
 import { DOORS } from '../../mcp/discovery.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -23,10 +23,15 @@ const holdsOf = (r: unknown): boolean => (typeof r === 'object' && r !== null &&
 /** One edge: the family's first formula, called on its own signature. One carried value fills arity 0 or 1.
  *  A wider signature has the other amounts absent, so the formula is not called. */
 const edges = new Map<string, { value: number; holds: boolean; formula: string }>() // an edge computed once per family and value: the star walks the same edges many times
+// A flowed value is bounded to a hexbit window (16 bits, four hex). A step can produce a huge number — fibFusion(72) is
+// ~5·10^14 — and feeding that to the next formula, which may do O(value) work, is a heat the flow must not pay. Beyond
+// the window the flow stops (the step does not hold) instead of handing the next family an explosive input: cool by
+// construction, split not swept. An arity-0 formula ignores the value, so it is never capped — it resets the flow.
+const FLOWCAP = 2 ** 16
 const callArgs = (arity: number, value: number): bigint[] | null => {
   if (!Number.isSafeInteger(value) || value < 0) return null
   if (arity <= 0) return []
-  if (arity === 1) return [BigInt(value)]
+  if (arity === 1) return value > FLOWCAP ? null : [BigInt(value)]
   return null
 }
 const stepOf = (family: string, value: number): { value: number; holds: boolean; formula: string } => {
@@ -120,14 +125,21 @@ export class MerkabaFormulas {
       try { const r = formula.run(args); const v = numberOf(r); return { value: Number.isSafeInteger(v) && v >= 0 ? v : 0, holds: holdsOf(r) && Number.isSafeInteger(v) && v >= 0, formula: formula.name } } catch { return { value: 0, holds: false, formula: formula.name } }
     }
     const dir = s < n ? 1 : -1, start = s % n
-    const order = Array.from({ length: n }, (_, k) => names[(start + dir * k + n * n) % n]!)
+    // SPLIT, NOT A SWEEP: a rotation of the rosetta is walked over a bounded hexbit window of the ring (hexbit^n = 64),
+    // not all n families — a lead composes with its neighbours locally, so its slice is a window and the cost stays cool
+    // (O(window), never O(families)). The 2n addresses are unchanged; only the walk inside each one is sliced.
+    const L = qpuLatticeNamesOf()
+    const window = Math.min(n, L.hexbit ** L.n)
+    const order = Array.from({ length: window }, (_, k) => names[(start + dir * k + n * n) % n]!)
+    const familyAt = order.indexOf(family) // precomputed once, not an O(n) scan per step
     let value = SEED, before: { holds: boolean } | undefined, given: number | undefined, composed = false
     const meets: string[] = []
     const edges: string[] = []
-    for (const fam of order) {
+    for (let i = 0; i < order.length; i++) {
+      const fam = order[i]!
       const step = at(fam, value)
       edges.push(`${fam}.${step.formula}(${value}) = ${step.holds ? step.value : '∅'}`)
-      if (fam === family) { if (before?.holds && step.holds) given = step.value } else if (given !== undefined && step.holds && order.indexOf(fam) === order.indexOf(family) + 1) composed = true
+      if (fam === family) { if (before?.holds && step.holds) given = step.value } else if (given !== undefined && step.holds && i === familyAt + 1) composed = true
       if (given !== undefined && step.holds && fam !== family && step.value === given && step.value >= 3) meets.push(`${fam} at ${step.value}`)
       before = { holds: step.holds }
       value = step.holds ? step.value : SEED

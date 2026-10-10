@@ -1,12 +1,15 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexFamiliesOf, qpuHexRegistryOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { MerkabaFormulas, flowFamiliesOf } from './index.js'
 
 /** A flow passes 3 through three distinct families; mirror(c, b, a) is the flow a → b → c and mirror(a, b, c) its
  *  counter-rotation; a formation is counted by the star when the two meet; the torus runs each from the other's
  *  referrer. */
 test('merkaba: trinity flows cross three families, their mirrors counter-rotate, the formations are counted', async (t) => {
+  // complete the registry first: qpuHexRunOf (torus, the final loop) lazily loads families beyond families.js, so the
+  // ring must be whole before names is captured, or develop's n would outgrow names.length mid-test.
+  await qpuHexRegistryOf()
   const names = flowFamiliesOf()
   assert.ok(names.length >= 3, 'at least three families flow')
   assert.ok(!names.includes('merkaba') && !names.includes('data') && !names.includes('gate'), 'no door and not itself: no flow recurses')
