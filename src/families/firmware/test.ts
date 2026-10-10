@@ -15,7 +15,14 @@ test('firmware: sectors, words, pages, checksumWords, bootBlocks, slots, version
   assert.equal(FirmwareFormulas.version(2, 1, 0).value, 2001000, 'packed version 2.1.0')
   assert.equal(FirmwareFormulas.otaDelta(5000, 4000).value, 1000, 'update grew by 1000')
   assert.equal(FirmwareFormulas.otaDelta(100, 200).value, 0, 'update shrank, floored')
-  assert.equal(qpuHexFamiliesOf().get('firmware')?.length, 8)
+  assert.equal(FirmwareFormulas.image(32, 4096).value, 131072, '32 blocks of 4096 bytes')
+  assert.equal(FirmwareFormulas.freespace(8192, 5000).value, 3192, '8192 less 5000 used')
+  assert.equal(FirmwareFormulas.crc(64, 4).value, 256, '64 words of 4 bytes')
+  assert.equal(FirmwareFormulas.stack(8, 256).value, 2048, '8 frames of 256 bytes')
+  assert.equal(FirmwareFormulas.isr(64, 4).value, 256, '64 vectors of 4 bytes')
+  assert.equal(FirmwareFormulas.watchdog(1000, 10).value, 100, '1000ms at 10ms ticks')
+  assert.equal(FirmwareFormulas.flashcycles(5000, 100000).value, 5, '5000 writes of 100000 endurance')
+  assert.equal(qpuHexFamiliesOf().get('firmware')?.length, 15)
   for (const [name, params, expected] of [['sectors', [1024, 512], 2], ['version', [2, 1, 0], 2001000], ['otaDelta', [5000, 4000], 1000]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'firmware', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }

@@ -1,10 +1,13 @@
 import { test } from '../../quantum/processing/unit/receipted.js'
 import assert from 'node:assert/strict'
-import { qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexFamiliesOf, qpuHexRegistryOf, qpuHexRunOf, qpuHexUuidOf, qpuContentUuidOf, qpuUuidReceiptOf } from '../../quantum/processing/unit/index.js'
 import { ApiFormulas } from './index.js'
 
 /** The web interface's arithmetic — pagination, rate windows, backoff, status class, quota, payload, methods, offset. */
 test('api: pages, window, backoff, statusClass, remaining, payload, methods, offset', async (t) => {
+  // `api` is a contested family (the api-door registers to it too); complete the registry before minting so the hex
+  // nibbles are stable and a minted program decodes to the same formula it was minted from.
+  await qpuHexRegistryOf()
   assert.equal(ApiFormulas.pages(101, 20).value, 6, '101 rows, 20 a page')
   assert.equal(ApiFormulas.pages(100, 0).value, 0, 'no page size, no divide')
   assert.equal(ApiFormulas.window(600, 60).value, 10, '600 a minute is 10 a second')
@@ -15,12 +18,22 @@ test('api: pages, window, backoff, statusClass, remaining, payload, methods, off
   assert.equal(ApiFormulas.payload(12, 64).value, 768, '12 fields of 64 bytes')
   assert.equal(ApiFormulas.methods(4).value, 16, '2^4 method subsets')
   assert.equal(ApiFormulas.offset(5, 20).value, 100, 'page 5 at 20 a page')
-  assert.equal(qpuHexFamiliesOf().get('api')?.length, 8)
-  for (const [name, params, expected] of [['pages', [101, 20], 6], ['backoff', [100, 4], 1600], ['offset', [5, 20], 100]] as [string, number[], number][]) {
+  assert.equal(ApiFormulas.ratelimit(600, 60).value, 10, '600 requests over 60s')
+  assert.equal(ApiFormulas.quota(1000, 400).value, 600, '1000 limit less 400 used')
+  assert.equal(ApiFormulas.pagesize(101, 20).value, 6, '101 rows into pages of 20')
+  assert.equal(ApiFormulas.latency(4, 25).value, 100, '4 hops of 25 each')
+  assert.equal(ApiFormulas.throughput(500, 64).value, 32000, '500 rps of 64 bytes')
+  assert.equal(ApiFormulas.retries(3).value, 2, '3 attempts, 2 retries left')
+  assert.equal(ApiFormulas.versions(2, 15).value, 215, 'v2.15 packed')
+  assert.equal(qpuHexFamiliesOf().get('api')?.length, 15)
+  // run a program through hex and confirm it equals the direct formula — self-consistent, so it holds whatever the
+  // contested registry orders the nibbles as (comparing to a hardcoded number would break when the order shifts).
+  const direct = (name: 'pagesize' | 'latency' | 'throughput', ...p: number[]) => Number(ApiFormulas[name](...(p as [number, number])).value)
+  for (const [name, params] of [['pagesize', [101, 20]], ['latency', [4, 25]], ['throughput', [12, 64]]] as ['pagesize' | 'latency' | 'throughput', number[]][]) {
     const uuid = qpuHexUuidOf({ family: 'api', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
-    assert.equal(Number(run.value), expected, `api.${name} at ${uuid}`)
+    assert.equal(Number(run.value), direct(name, ...params), `api.${name} at ${uuid}`)
     qpuUuidReceiptOf(`api ${name}`, qpuContentUuidOf(run), { uuid })
   }
-  t.diagnostic('8 formulas; 101/20=6 pages, window 10/s, backoff 100·2^4=1600, 2^4 methods')
+  t.diagnostic('15 formulas; pagesize 101/20=6, latency 100, throughput 768, retries 2, versions 215; crossing to software')
 })

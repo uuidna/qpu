@@ -15,7 +15,14 @@ test('software: kloc, coverage, cyclomatic, defects, flags, hours, velocity, sem
   assert.equal(SoftwareFormulas.hours(5).value, 20, '5 points, 4h each')
   assert.equal(SoftwareFormulas.velocity(40, 10).value, 4, '40 items over 10 days')
   assert.equal(SoftwareFormulas.semver(1, 2, 3).value, 1002003, 'packed semver')
-  assert.equal(qpuHexFamiliesOf().get('software')?.length, 8)
+  assert.equal(SoftwareFormulas.density(60, 12).value, 5, '60 defects over 12 kloc')
+  assert.equal(SoftwareFormulas.throughput(4, 6).value, 24, '4 velocity over 6 sprints')
+  assert.equal(SoftwareFormulas.debt(40, 150).value, 6000, '40 hours at 150 each')
+  assert.equal(SoftwareFormulas.effort(12, 20).value, 240, '12 kloc at 20 each')
+  assert.equal(SoftwareFormulas.teamsize(100, 40).value, 3, '100 hours at 40 each')
+  assert.equal(SoftwareFormulas.builds(50, 3).value, 150, '50 commits of 3 builds')
+  assert.equal(SoftwareFormulas.mttr(600, 8).value, 75, '600 downtime over 8 incidents')
+  assert.equal(qpuHexFamiliesOf().get('software')?.length, 15)
   for (const [name, params, expected] of [['kloc', [12345], 12], ['flags', [10], 1024], ['semver', [1, 2, 3], 1002003]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'software', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }

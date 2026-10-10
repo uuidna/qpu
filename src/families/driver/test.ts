@@ -15,7 +15,14 @@ test('driver: ring, dmaPages, payload, pps, queues, irq, mmio, descBytes', async
   assert.equal(DriverFormulas.irq(256).value, 64, '256 bytes of 32-bit vectors')
   assert.equal(DriverFormulas.mmio(4).value, 16384, '4 pages mapped')
   assert.equal(DriverFormulas.descBytes(256, 16).value, 4096, '256 × 16-byte descriptors')
-  assert.equal(qpuHexFamiliesOf().get('driver')?.length, 8)
+  assert.equal(DriverFormulas.throughput(1000, 1458).value, 1458000, '1000 pps of 1458-byte payloads')
+  assert.equal(DriverFormulas.latency(50).value, 50, '50us round trip')
+  assert.equal(DriverFormulas.buffers(256, 16).value, 4096, '256 entries of 16-byte descriptors')
+  assert.equal(DriverFormulas.coalesce(100, 8).value, 13, '100 packets coalesced 8 at a time')
+  assert.equal(DriverFormulas.bandwidth(16, 1000).value, 16000, '16 lanes at 1000 each')
+  assert.equal(DriverFormulas.completion(256, 100).value, 156, '256-entry ring with 100 inflight')
+  assert.equal(DriverFormulas.doorbell(8, 4).value, 32, '8 queues of 4 doorbells')
+  assert.equal(qpuHexFamiliesOf().get('driver')?.length, 15)
   for (const [name, params, expected] of [['ring', [4096, 16], 256], ['queues', [8], 16], ['mmio', [4], 16384]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'driver', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
