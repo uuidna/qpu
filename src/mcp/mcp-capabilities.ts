@@ -1,6 +1,11 @@
 import { bigGcdOf, bigPowModOf, qpuCiteOf, qpuClayOf, qpuDocsOf, qpuFoldOf, qpuHexCatalogOf, qpuHexDecodeOf, qpuHexDiscoverOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf, qpuLatticeNamesOf, qpuLeanOf, qpuMcpFusedOf, qpuMcpRegisterOf, qpuMcpToolsListOf, qpuOrderSliceOf, qpuReadmeOf, qpuReceiptStreamsOf, qpuStatementUuidOf } from '../quantum/processing/unit/index.js'
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf, qpuDomainsOf } from '../families/cross/index.js'
+import { receipts } from '../receipts/index.js'
+// The autonomous optimisation map, measured over git time by the heat family and embedded as a committed receipt:
+// each file's temperature (mK), the hottest, and how many ways to split it to cool. Read here so a client — or the
+// cooling loop — drives optimisation from the MCP plugin, not from a shell.
+const heatOf = () => (receipts.find((r) => r.name === 'heat-receipt')?.doc as Record<string, unknown> | undefined) ?? { kind: 'heat' as const, holds: false as const }
 import { HOOK_LIFECYCLE, HookFormulas } from '../families/hook/index.js'
 import { ClayDisclosure, ClaySeals } from '../families/clay/index.js'
 import { gateCourtOf } from '../payload/plugins/gate-court.js'
@@ -198,6 +203,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://factoring', name: 'factoring', title: 'Living factoring proof', description: 'A living proof kept in the MCP: the factoring of one designated modulus, advanced one hexbit-folder slice per read (qpu://factoring/{from}) — O(1) memory, never capped, no factor asserted until the order is in reach', mimeType: 'application/json' },
   { uri: 'qpu://court', name: 'court', title: 'Court', description: 'The court as an independent seal, served through the MCP: every case tried on its gate (hex-addressed verdict, holds, re-trial fidelity, standing), the dependencies adjudicated as cases — measures and leads, never counsel', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },
+  { uri: 'qpu://heat', name: 'heat', title: 'Optimisation heat', description: 'The optimisation map, measured over git time and never failing: each tracked file’s temperature in milliKelvin, the hottest, and how many ways to split it to cool — the autonomous cooling loop reads this to pick its next extraction', mimeType: 'application/json' },
   { uri: 'qpu://domains', name: 'domains', title: 'Cross relationships', description: 'The whole family → domain cross-relationship graph in one reading, derived token-free from the sealed bridges (no hand list, no per-item prefix): look up any domain for all its families — e.g. hardware — and a family\\u2019s siblings in its own domain are its experts', mimeType: 'application/json' },
   { uri: 'qpu://readme', name: 'readme', title: 'README', description: 'The generated paper: the whole public API, every family and dimension, the proofs, and how to address them — read as markdown', mimeType: 'text/markdown' },
   { uri: 'qpu://docs', name: 'docs', title: 'Docs', description: 'The door list with its readings — every door, its method, path and what it answers', mimeType: 'application/json' },
@@ -244,6 +250,7 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://factoring') return factoringOf(0)
   if (uri === 'qpu://court') return gateCourtOf()
   if (uri === 'qpu://schema') return crossSchemasOf()
+  if (uri === 'qpu://heat') return heatOf()
   if (uri === 'qpu://domains') return qpuDomainsOf()
   if (uri === 'qpu://hologram') {
     const h = hologramOf()
