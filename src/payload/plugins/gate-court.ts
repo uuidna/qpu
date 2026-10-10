@@ -62,9 +62,9 @@ export type GateCourtCase = {
   violation: GateCall
   redirected: GateCall
   remedy: GateCall
-  /** Standardised expert panel: the families related to the case's subject (its siblings in the same cross domain),
-   *  convened as the experts of the field — derived token-free from the bridges, never a hand-picked list. */
-  experts: { subject: string; domain: string | undefined; count: number; panel: string[] }
+  /** The court involves ALL families: the jury is the whole registry, not only the subject's domain siblings. `count`
+   *  is every registered family; `siblings` is how many share the subject's cross domain; `panel` shows a lattice slice. */
+  experts: { subject: string; domain: string | undefined; count: number; siblings?: number; all?: boolean; panel: string[] }
   /** Where the matter is heard. Every case gets a forum and a remedy — none is refused; a floor failure is a LEAD. */
   forum: string
   /** Wall-clock ms for this trial (recomputed each call). */
@@ -152,16 +152,16 @@ export const gateCourtTrialOf = (input: {
   const lawfulCall = callOf('law.lawful', [harm], lawful, 'law')
   const violationCall = callOf('law.violation', [against], violation, 'law')
   const redirectedCall = callOf('law.redirected', [required, confidence], redirected, 'law')
-  // STANDARDISED PROCEEDINGS: convene the experts of the field — the families related to this case's subject (its
-  // siblings in the same cross domain), derived token-free from the bridges, bounded to a lattice panel. Same panel for
-  // every case of the same subject: a standard, not a hand-picked bench.
+  // THE COURT INVOLVES ALL FAMILIES. The jury is the whole registry — every registered family, not only the subject's
+  // domain siblings — so no case is tried by a hand-picked bench. This lists family NAMES only (qpuHexFamiliesOf keys);
+  // it never runs a family's formula, so the re-entrant trial cannot deadlock. The domain still names the subject's own
+  // field and its siblings, but the panel is the full court; a lattice slice is shown, the whole count stands behind it.
   const subject = input.gate.name.split('.')[0]!
-  // Read the already-sealed bridges (never force a full seal-walk inside a trial — the court is re-entrant, and running
-  // every family's first formula here deadlocks the proceeding). The panel fills as the families are exercised.
   const bridges = qpuCrossBridgesOf()
   const domain = bridges.get(subject)
-  const panel = domain ? [...bridges].filter(([s, d]) => d === domain && s !== subject).map(([s]) => s).sort() : []
-  const experts = { subject, domain, count: panel.length, panel: panel.slice(0, qpuFacesOf().faces) }
+  const siblings = domain ? [...bridges].filter(([s, d]) => d === domain && s !== subject).map(([s]) => s).sort() : []
+  const jury = [...qpuHexFamiliesOf().keys()].filter((s) => s !== subject).sort()
+  const experts = { subject, domain, siblings: siblings.length, count: jury.length, all: true as const, panel: jury.slice(0, qpuFacesOf().faces) }
   const forum = `${subject} · /qpu/court`
   const allow =
     input.gate.holds === true &&
