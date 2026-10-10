@@ -67,6 +67,16 @@ const inScheme = previous !== undefined && VERSION.test(previous)
 // Forward is code-point order of the whole string, not major, minor, and patch as integers.
 if (inScheme && !(previous < version)) fail(`${version} does not move forward from ${previous}`)
 
+// version.ts is the one place the served version is read (the Worker has no filesystem). version-lock runs first in
+// `build`, so writing it here from package.json means the served version can NEVER drift behind the bump — the bug
+// that kept the host serving 1.1.0 while package.json said 1.3.0. embed-lean writes the identical file on lean:embed.
+if (!args.includes('--dist-tag')) {
+  fs.writeFileSync(
+    'src/quantum/processing/unit/version.ts',
+    `/** GENERATED from package.json by scripts/version-lock.mjs (build) and scripts/embed-lean.mjs. Do not edit; bump package.json. */\nexport const packageVersion: string = ${JSON.stringify(version)}\n`,
+  )
+}
+
 console.log(
   `version-lock: ${version} holds (${stateDigit === '0' ? 'LTS' : `state ${stateDigit}`}; previous ${previous ?? 'none'}${
     inScheme ? '' : ', first of the scheme'
