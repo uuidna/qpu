@@ -8,7 +8,7 @@ An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (`{ "qpu": { "type": "http",
 "url": "https://qpu.uuidna.com/mcp" } }`), as a package (`npm install @uuidna/qpu`), or as a container.
 
-This paper reports, entirely from machine receipts: 145 Lean 4 theorems (145 recomputed in TypeScript), 9,144 formulas across 1,134 families addressed as hex-program UUIDs (RFC 9562 v8), 16 MCP tools over 58 doors, and 247 cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.
+This paper reports, entirely from machine receipts: 145 Lean 4 theorems (145 recomputed in TypeScript), 9,165 formulas across 1,134 families addressed as hex-program UUIDs (RFC 9562 v8), 16 MCP tools over 58 doors, and 247 cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.
 
 ## 1. Introduction
 
@@ -43,7 +43,7 @@ address and crosses to other families. Each wing reports itself:
 
 ### 2.1 Formula families
 
-1,134 families carry 9,144 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 124 cross-formula rows hold (36 agree with their hex programs).
+1,134 families carry 9,165 formulas, every one a hex-program UUID (RFC 9562) that crosses to another family — the cross formulations. A family holds when each of its formulas recomputes at its address; 78 of 124 cross-formula rows hold (36 agree with their hex programs).
 
 | Family | Formulas | Family | Formulas | Family | Formulas |
 |---|---:|---|---:|---|---:|
@@ -236,7 +236,7 @@ address and crosses to other families. Each wing reports itself:
 | `ledger` | 8 | `lemmatization` | 8 | `lenses` | 8 |
 | `lever` | 8 | `leverage` | 8 | `lexicography` | 8 |
 | `lexicon` | 8 | `licensing` | 8 | `lidar` | 8 |
-| `lift` | 8 | `limnology` | 8 | `linearalgebra` | 8 |
+| `lift` | 8 | `limnology` | 8 | `linearalgebra` | 15 |
 | `linehaul` | 8 | `linguistics` | 8 | `linkage` | 8 |
 | `liquidity` | 8 | `literacy` | 8 | `liturgy` | 8 |
 | `livestock` | 8 | `loadplanning` | 8 | `loan` | 8 |
@@ -249,7 +249,7 @@ address and crosses to other families. Each wing reports itself:
 | `malware` | 8 | `mammalogy` | 8 | `manifold` | 8 |
 | `manipulator` | 8 | `manufacturing` | 8 | `marination` | 8 |
 | `maritime` | 8 | `marketing` | 8 | `masonry` | 8 |
-| `materials` | 8 | `matrix` | 8 | `mealplanning` | 8 |
+| `materials` | 8 | `matrix` | 15 | `mealplanning` | 8 |
 | `mechanical` | 8 | `med` | 8 | `media` | 8 |
 | `meiosis` | 8 | `melody` | 8 | `membrane` | 8 |
 | `memory` | 8 | `merchandising` | 8 | `merkaba` | 11 |
@@ -410,7 +410,7 @@ address and crosses to other families. Each wing reports itself:
 | `underwriting` | 8 | `unemployment` | 8 | `upload` | 8 |
 | `urbanism` | 8 | `urology` | 8 | `usability` | 8 |
 | `vaccination` | 8 | `vaccine` | 8 | `valuation` | 8 |
-| `vector` | 8 | `ventilation` | 8 | `verification` | 8 |
+| `vector` | 15 | `ventilation` | 8 | `verification` | 8 |
 | `version` | 8 | `vet` | 8 | `veterinary` | 8 |
 | `vibration` | 8 | `virality` | 8 | `virology` | 8 |
 | `virtualization` | 8 | `vitals` | 8 | `viticulture` | 8 |
@@ -492,8 +492,8 @@ Gate: push on 2026-10-07, does not hold — ✓ gate.push(0) = 14; ✗ gate.push
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,144 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
-| MCP resources | 11 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,437, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,165 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP resources | 12 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,438, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
 | Formal proof | 145 Lean theorems served, 145 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |

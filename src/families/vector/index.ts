@@ -28,7 +28,21 @@ export class VectorFormulas {
   static norm(x: number, y: number): CrossFormula { return f('vector-norm', 'norm(x, y) = max(0, x − y)', Math.max(0, x - y), nat(x, y), 'norm', [x, y]) }
   /** combos(x, y) = C(x, y). */
   static combos(x: number, y: number): CrossFormula { return f('vector-combos', 'combos(x, y) = C(x, y)', combOf(x, y), nat(x, y) && y <= x, 'combos', [x, y]) }
+  /** chebyshev(a, b) = max(|a|, |b|) (L∞ norm). */
+  static chebyshev(a: number, b: number): CrossFormula { return f('vector-chebyshev', 'chebyshev(a, b) = max(|a|, |b|) (L∞ norm)', Math.max(Math.abs(a), Math.abs(b)), nat(a, b), 'chebyshev', [a, b]) }
+  /** squaredmagnitude(a, b) = a² + b² = ‖v‖². */
+  static squaredmagnitude(a: number, b: number): CrossFormula { return f('vector-squaredmagnitude', 'squaredmagnitude(a, b) = a² + b² = ‖v‖²', a * a + b * b, nat(a, b), 'squaredmagnitude', [a, b]) }
+  /** parallelogram(a, b) = 2(a²+b²) = ‖u+v‖²+‖u−v‖² for axis vectors. */
+  static parallelogram(a: number, b: number): CrossFormula { return f('vector-parallelogram', 'parallelogram(a, b) = 2(a²+b²) = ‖u+v‖²+‖u−v‖² for axis vectors', 2 * (a * a + b * b), nat(a, b), 'parallelogram', [a, b]) }
+  /** unit(a, b) = [a²+b² = 1]. */
+  static unit(a: number, b: number): CrossFormula { return f('vector-unit', 'unit(a, b) = [a²+b² = 1]', a * a + b * b === 1 ? 1 : 0, nat(a, b), 'unit', [a, b]) }
+  /** span(dim, indep) = min(dim, indep). */
+  static span(dim: number, indep: number): CrossFormula { return f('vector-span', 'span(dim, indep) = min(dim, indep)', Math.min(dim, indep), nat(dim, indep), 'span', [dim, indep]) }
+  /** anglecosnum(a, b, c, d) = a·c + b·d (numerator of cos∠). */
+  static anglecosnum(a: number, b: number, cc: number, d: number): CrossFormula { return f('vector-anglecosnum', 'anglecosnum(a, b, c, d) = a·c + b·d (numerator of cos∠)', a * cc + b * d, nat(a, b, cc, d), 'anglecosnum', [a, b, cc, d]) }
+  /** distance1(a, b, c, d) = |a−c| + |b−d| (L1 distance). */
+  static distance1(a: number, b: number, cc: number, d: number): CrossFormula { return f('vector-distance1', 'distance1(a, b, c, d) = |a−c| + |b−d| (L1 distance)', Math.abs(a - cc) + Math.abs(b - d), nat(a, b, cc, d), 'distance1', [a, b, cc, d]) }
 }
 
-for (const name of ['combos', 'components', 'crossprod', 'dims', 'dot', 'magnitude', 'norm', 'scale'] as const)
+for (const name of ['anglecosnum', 'chebyshev', 'combos', 'components', 'crossprod', 'dims', 'distance1', 'dot', 'magnitude', 'norm', 'parallelogram', 'scale', 'span', 'squaredmagnitude', 'unit'] as const)
   qpuHexRegisterOf('vector', name, (VectorFormulas[name] as (...x: unknown[]) => unknown).bind(VectorFormulas))

@@ -13,7 +13,15 @@ test('vector: dot, magnitude, dims, scale, components, crossprod, norm, combos',
   assert.equal(VectorFormulas.crossprod(3, 4, 1).value, 12, 'crossprod(3, 4, 1)')
   assert.equal(VectorFormulas.norm(100, 20).value, 80, 'norm(100, 20)')
   assert.equal(VectorFormulas.combos(6, 2).value, 15, 'combos(6, 2)')
-  assert.equal(qpuHexFamiliesOf().get('vector')?.length, 8)
+  assert.equal(VectorFormulas.chebyshev(3, -7).value, 7, 'chebyshev(3, -7)')
+  assert.equal(VectorFormulas.squaredmagnitude(3, 4).value, 25, 'squaredmagnitude(3, 4)')
+  assert.equal(VectorFormulas.parallelogram(3, 4).value, 50, 'parallelogram(3, 4)')
+  assert.equal(VectorFormulas.unit(1, 0).value, 1, 'unit(1, 0)')
+  assert.equal(VectorFormulas.unit(2, 2).value, 0, 'unit(2, 2)')
+  assert.equal(VectorFormulas.span(3, 5).value, 3, 'span(3, 5)')
+  assert.equal(VectorFormulas.anglecosnum(1, 2, 3, 4).value, 11, 'anglecosnum(1, 2, 3, 4)')
+  assert.equal(VectorFormulas.distance1(1, 2, 4, 6).value, 7, 'distance1(1, 2, 4, 6)')
+  assert.equal(qpuHexFamiliesOf().get('vector')?.length, 15)
   for (const [name, params, expected] of [["dot",[3,4],12],["magnitude",[500,10],50],["dims",[3,0],3]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'vector', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
