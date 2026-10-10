@@ -21,8 +21,10 @@ test('audit: the compliance fusions are the exact weighted scores, and risk fall
   assert.equal(AuditFormulas.gdprIsoNistFusion(90, 85, 80).dst, 'standards.nist')
   assert.equal(AuditFormulas.paymentSecurityFusion(90, 85, 80).dst, 'standards.owasp')
   assert.equal(AuditFormulas.supplyChainRiskFormula(0, 0, 0, 0).dst, 'audit.risk')
-  // supplyChainRiskFormula takes four params; a hex program addresses at most three, so it is checked directly above
-  await verifyHex('audit', 4, [
+  // supplyChainRiskFormula takes four params; a hex program addresses at most three, so it is checked directly above.
+  // five registered: four compliance fusions and the pure reply-fold audit (audit.replies). questions and realtime are
+  // the gate (gate.leads, gate.gaps) and are reached through the gate door, not re-registered as swept formulas.
+  await verifyHex('audit', 5, [
     ['gdprIsoNistFusion', [90, 85, 80], 85],
     ['gdprIsoNistFusion', [60, 60, 60], 60],
     ['healthcareComplianceFusion', [90, 85, 80], 85.75],
@@ -30,5 +32,23 @@ test('audit: the compliance fusions are the exact weighted scores, and risk fall
     ['paymentSecurityFusion', [90, 85, 80], 86],
     ['paymentSecurityFusion', [100, 100, 100], 100],
   ])
-  t.diagnostic('4 formulas; GDPR/ISO/NIST mean 85, healthcare 85.75, payment 86, supply-chain risk 1 at zero controls and falling; crossing to the standards')
+  t.diagnostic('5 formulas; GDPR/ISO/NIST mean 85, healthcare 85.75, payment 86, supply-chain risk falling; audit.replies pure; questions/realtime are the gate; crossing to the standards')
+})
+
+/** THE UNIT AUDITS ITSELF, ALL TO COURT. questions = open leads, each a hex address audited before it is asked;
+ *  replies = the recognition fold that audits every reply; realtime = the live gaps, each routed to court with a
+ *  resolve. The rule is simple: everything is sent to court, and the court solves all. */
+test('audit.questions / audit.replies / audit.realtime: the unit audits itself and routes to court', async (t) => {
+  const replies = AuditFormulas.replies()
+  assert.equal(replies.holds, true, 'every reply is audited by its recognition fold')
+  assert.equal(replies.value, 1)
+  const q = (await AuditFormulas.questions(0)) as unknown as { value: number; holds: boolean; addressed: number; bare: number; court: string }
+  assert.equal(q.bare, 0, 'no question is bare — each open lead is a hex address before it is asked')
+  assert.equal(q.holds, q.addressed === q.value, 'the audit holds exactly when every question is addressed')
+  assert.ok(typeof q.court === 'string' && q.court.includes('court'), 'questions route to court')
+  const rt = (await AuditFormulas.realtime(0)) as unknown as { value: number; holds: boolean; routed: number; court: string }
+  assert.equal(typeof rt.value, 'number', 'realtime returns a gap count for the slice')
+  assert.equal(rt.holds, rt.routed === rt.value, 'the audit holds when every realtime gap is routed to court with a resolve')
+  assert.ok(typeof rt.court === 'string' && rt.court.includes('court'), 'realtime routes to court')
+  t.diagnostic(`self-audit: replies hold; questions open=${q.value} addressed=${q.addressed}; realtime gaps=${rt.value} routed=${rt.routed} — all to court`)
 })

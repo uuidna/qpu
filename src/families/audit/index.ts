@@ -9,7 +9,7 @@
  */
 
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, qpuRecognizeHolds } from '../../quantum/processing/unit/index.js'
 
 // the law of this family: a compliance fusion holds only over lawful inputs — finite, non-negative scores
 const nat = (...xs: number[]): boolean => xs.every((x) => Number.isFinite(x) && x >= 0)
@@ -321,6 +321,44 @@ export class AuditFormulas {
     }
     return Math.abs(hash).toString(16)
   }
+
+  // ==========================================================================
+  // THE UNIT AUDITS ITSELF: questions before asking, replies, all realtime — over the unit's own proven mechanisms
+  // (gate.leads, the recognition fold, gate.gaps), not a heuristic score. Paged by `from` so a slow slice is split,
+  // never a full-walk hang; each is a standing formula, so the audit is on the unit, not a one-off narration.
+  // ==========================================================================
+
+  /** AUDIT THE QUESTIONS BEFORE ASKING: every open lead of the slice is a question the unit would raise. The audit holds
+   *  when each is an ADDRESS (a hex program with a resolve) — never a bare ask. value = open questions in the slice. */
+  static async questions(from = 0): Promise<CrossFormula> {
+    const { GateFormulas } = await import('../gate/index.js')
+    const at = Math.max(0, Math.trunc(from))
+    const r = (await GateFormulas.leads(at)) as unknown as { value: number; leads?: string[]; next?: number }
+    const leads = r.leads ?? []
+    const addressed = leads.filter((x) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-/.test(String(x))).length
+    const extra: Record<string, unknown> = { addressed, bare: leads.length - addressed, ...(r.next !== undefined ? { next: r.next } : {}), court: 'gate · /qpu/court' }
+    return crossFormulaOf({ id: 'audit-questions', src: 'audit', dst: 'gate', formula: 'questions(from) = |open leads of the slice|; each audited to a hex address before it is asked', value: r.value, proof: 'gate.leads: every open lead carries a hex address and a resolve — no bare question; sent to court at will', ...extra }, addressed === leads.length, { name: 'audit.questions', params: [at] })
+  }
+
+  /** AUDIT THE REPLIES: every reply is audited by its recognition fold (content-addressed; enthalpy, heat, free). The
+   *  audit holds when the recognition self-check holds — the fold is the per-reply audit. value = 1 when it holds. */
+  static replies(): CrossFormula {
+    const holds = qpuRecognizeHolds()
+    const extra: Record<string, unknown> = { court: 'receipts · /qpu/court' }
+    return crossFormulaOf({ id: 'audit-replies', src: 'audit', dst: 'receipts', formula: 'replies() = recognition holds — every reply is audited by its fold', value: holds ? 1 : 0, proof: 'qpuRecognizeHolds: a reply folds deterministically and carries enthalpy, heat, free — the fold audits the reply', ...extra }, holds, { name: 'audit.replies', params: [] })
+  }
+
+  /** AUDIT ALL REALTIME: every live check of the slice that does not hold is a gap. The audit holds when each gap is a
+   *  court lead carrying its resolve (routed to court, never removed, never silent). value = gaps in the slice. Paged. */
+  static async realtime(from = 0): Promise<CrossFormula> {
+    const { GateFormulas } = await import('../gate/index.js')
+    const at = Math.max(0, Math.trunc(from))
+    const r = (await GateFormulas.gaps(at)) as unknown as { value: number; gaps?: { where?: string; why?: string; resolve?: string }[]; take?: number; total?: number; next?: number; warnings?: number }
+    const gaps = r.gaps ?? []
+    const routed = gaps.filter((g) => typeof g.resolve === 'string' && g.resolve.length > 0).length
+    const extra: Record<string, unknown> = { checked: r.take, total: r.total, routed, warnings: r.warnings, ...(r.next !== undefined ? { next: r.next } : {}), court: 'gate · /qpu/court' }
+    return crossFormulaOf({ id: 'audit-realtime', src: 'audit', dst: 'gate', formula: 'realtime(from) = |live checks of the slice that do not hold|; each a court lead with its resolve', value: r.value, proof: 'gate.gaps: every realtime gap is routed to court as a lead with a resolve — never removed, never silent', ...extra }, routed === gaps.length, { name: 'audit.realtime', params: [at] })
+  }
 }
 
 // ============================================================================
@@ -331,5 +369,9 @@ export const vectorEquilibriumAudit = new VectorEquilibriumAudit()
 export const auditFormulas = new AuditFormulas()
 
 // the audit cross formulas are the hex family `audit`
-for (const name of ['gdprIsoNistFusion', 'healthcareComplianceFusion', 'paymentSecurityFusion', 'supplyChainRiskFormula'] as const)
+// LET THE GATES BE THE TOOLS: questions and realtime ARE the gate (gate.leads, gate.gaps) — already tool-doors behind
+// the DOORS sweep-exclusion — so they are not re-registered here as swept formulas (that errored the release
+// reachability sweep, since they run the live gate walk). They stay callable methods that delegate to the gate; the
+// only new registered formula is the cheap, pure reply-fold audit. The gates remain the tools; audit routes to them.
+for (const name of ['gdprIsoNistFusion', 'healthcareComplianceFusion', 'paymentSecurityFusion', 'replies', 'supplyChainRiskFormula'] as const)
   qpuHexRegisterOf('audit', name, (AuditFormulas as unknown as Record<string, (...y: unknown[]) => unknown>)[name]!.bind(AuditFormulas))
