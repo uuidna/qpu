@@ -338,6 +338,10 @@ export interface Doc {
   markdown?: string | null;
   html?: string | null;
   uuid?: string | null;
+  family?: string | null;
+  domain?: string | null;
+  synapses?: (string | Doc)[] | null;
+  content?: (HexProgramBlock | FamilyBlock | CrossDomainBlock)[] | null;
   parent?: (string | null) | Doc;
   breadcrumbs?:
     | {
@@ -357,6 +361,74 @@ export interface Doc {
   };
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HexProgramBlock".
+ */
+export interface HexProgramBlock {
+  /**
+   * The hex family, e.g. gpu, crypto_rsa, merkaba
+   */
+  family: string;
+  /**
+   * The formulas composed, in order
+   */
+  program: {
+    formula: string;
+    id?: string | null;
+  }[];
+  params?:
+    | {
+        value: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Render the run value, the rays-and-streams .svg, or the quantum receipt
+   */
+  show?: ('value' | 'animation' | 'receipt') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hexProgram';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FamilyBlock".
+ */
+export interface FamilyBlock {
+  /**
+   * The family whose formulas and domain to render
+   */
+  family: string;
+  /**
+   * k: render the C(formulas, k) k-subset combinations
+   */
+  combine?: number | null;
+  /**
+   * Also list the family’s siblings in its cross domain
+   */
+  showExperts?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'familyBlock';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CrossDomainBlock".
+ */
+export interface CrossDomainBlock {
+  /**
+   * A domain (e.g. hardware) for its families; empty for the whole graph
+   */
+  domain?: string | null;
+  /**
+   * Also count the C(n, 2) binding pairs that compose within the domain
+   */
+  pairs?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'crossDomain';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1511,6 +1583,16 @@ export interface DocsSelect<T extends boolean = true> {
   markdown?: T;
   html?: T;
   uuid?: T;
+  family?: T;
+  domain?: T;
+  synapses?: T;
+  content?:
+    | T
+    | {
+        hexProgram?: T | HexProgramBlockSelect<T>;
+        familyBlock?: T | FamilyBlockSelect<T>;
+        crossDomain?: T | CrossDomainBlockSelect<T>;
+      };
   parent?: T;
   breadcrumbs?:
     | T
@@ -1529,6 +1611,49 @@ export interface DocsSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HexProgramBlock_select".
+ */
+export interface HexProgramBlockSelect<T extends boolean = true> {
+  family?: T;
+  program?:
+    | T
+    | {
+        formula?: T;
+        id?: T;
+      };
+  params?:
+    | T
+    | {
+        value?: T;
+        id?: T;
+      };
+  show?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FamilyBlock_select".
+ */
+export interface FamilyBlockSelect<T extends boolean = true> {
+  family?: T;
+  combine?: T;
+  showExperts?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CrossDomainBlock_select".
+ */
+export interface CrossDomainBlockSelect<T extends boolean = true> {
+  domain?: T;
+  pairs?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

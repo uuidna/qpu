@@ -10,6 +10,7 @@ import Qpu.Physics
 import Qpu.Shor
 import Qpu.Clay
 import Qpu.Clifford
+import Qpu.Combinatorics
 import Qpu.Cross
 import Qpu.Fuse
 import Qpu.Galois
