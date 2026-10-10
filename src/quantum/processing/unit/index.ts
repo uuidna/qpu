@@ -6924,6 +6924,18 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
   { subject: 'brewing', domain: 'biochemistry', direction: 'practice to theory', year: -1800,
     what: 'the Hymn to Ninkasi records a complete grain-to-beer fermentation recipe millennia before Buchner fermented sugar with a cell-free yeast extract and showed the sugar-to-alcohol step is catalysed by enzymes, not performed by the living cell',
     source: 'Buchner, Über alkoholische Gärung ohne Hefezellen, Berichte der deutschen chemischen Gesellschaft 30 (1897)' },
+  { subject: 'brewing', domain: 'statistics', direction: 'practice to theory', year: 1908,
+    what: 'W. S. Gosset, judging batches at the Guinness brewery from a handful of samples, derived the small-sample distribution of the mean — now Student’s t — to do it, carrying the brewery’s problem into statistics',
+    source: 'Student [W. S. Gosset], The probable error of a mean, Biometrika 6(1) 1908' },
+  { subject: 'navigation', domain: 'geometry', direction: 'practice to theory', year: 1537,
+    what: 'sailors held a constant compass bearing, and Pedro Nunes showed that such a course is neither a straight line nor a great circle but a spiral — the loxodrome — winding to the pole, the first geometry of the rhumb line',
+    source: 'Nunes, Tratado da Sphera (1537), with the treatises on the nautical chart' },
+  { subject: 'cooking', domain: 'microbiology', direction: 'practice to theory', year: 1810,
+    what: 'Nicolas Appert preserved food by sealing it in glass and heating it in a water bath, a method that works by killing the microbes Pasteur would name only decades later, and he could give no account of why it worked',
+    source: 'Appert, L’Art de conserver les substances animales et végétales (Paris: Patris, 1810)' },
+  { subject: 'music', domain: 'probability', direction: 'theory to practice', year: 1963,
+    what: 'Xenakis took probability — Poisson arrivals, Markov chains, the law of large numbers — and made it a method of composition, writing both the stochastic works and the formal principles behind them',
+    source: 'Xenakis, Musiques formelles (La Revue musicale 253–254, 1963); English Formalized Music (Indiana University Press, 1971)' },
 ]
 
 /** Three states, and the third is not silence: not decidable from the evidence held here. */
