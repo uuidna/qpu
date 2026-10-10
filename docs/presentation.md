@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Presentation & discovery"
 twitter:description: "Stylesheets, schemas, SEO zones, citation and the documents a reader or crawler sees. 16 capabilities; 14 of 14 evidence predicates hold."
-version: "1.1.0"
+version: "1.3.0"
 ---
 # Presentation & discovery
 

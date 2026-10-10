@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Lattice & arithmetic"
 twitter:description: "The register geometry and the exact integer arithmetic every other wing is built on. 10 capabilities; 7 of 7 evidence predicates hold."
-version: "1.1.0"
+version: "1.3.0"
 ---
 # Lattice & arithmetic
 

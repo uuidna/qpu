@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Payload & Cloudflare"
 twitter:description: "Payload CMS on Workers in every combination, and the Payload readings the unit serves. 24 capabilities; 3 of 4 evidence predicates hold."
-version: "1.1.0"
+version: "1.3.0"
 ---
 # Payload & Cloudflare
 

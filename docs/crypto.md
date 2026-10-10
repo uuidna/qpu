@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Cryptography"
 twitter:description: "Shor on 91, RSA factoring and the crypt split identity as callable doors. 3 capabilities; 2 of 2 evidence predicates hold."
-version: "1.1.0"
+version: "1.3.0"
 ---
 # Cryptography
 

@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "API fusion"
 twitter:description: "Every API in a registry crossed on field UUIDs into compositions, formulas and a graph state. 18 capabilities; 5 of 11 evidence predicates hold."
-version: "1.1.0"
+version: "1.3.0"
 ---
 # API fusion
 

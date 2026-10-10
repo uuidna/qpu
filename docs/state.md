@@ -1,21 +1,21 @@
 ---
-uuid: "80523816-f6e3-1913-8441-34071c72b304"
+uuid: "116644b2-76c6-634f-b232-4d53694d0172"
 title: "State"
-description: "Current state of @uuidna/qpu 1.1.0: what is built, what is verified, and what is open."
+description: "Current state of @uuidna/qpu 1.3.0: what is built, what is verified, and what is open."
 og:title: "State — @uuidna/qpu"
-og:description: "Current state of @uuidna/qpu 1.1.0: what is built, what is verified, and what is open."
+og:description: "Current state of @uuidna/qpu 1.3.0: what is built, what is verified, and what is open."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/state.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "State"
-twitter:description: "Current state of @uuidna/qpu 1.1.0: what is built, what is verified, and what is open."
-version: "1.1.0"
+twitter:description: "Current state of @uuidna/qpu 1.3.0: what is built, what is verified, and what is open."
+version: "1.3.0"
 ---
 # State
 
-Version **1.1.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version-lock.mjs](../scripts/version-lock.mjs)).
+Version **1.3.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version-lock.mjs](../scripts/version-lock.mjs)).
 
 | Measure | Value | Source |
 |---|---|---|
