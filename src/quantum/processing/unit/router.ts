@@ -336,7 +336,18 @@ export const worker = {
     // and the UI read. The representation is chosen by content type, never by a prefix on the address.
     {
       const wantsSvg = path.endsWith('.svg') || /image\/svg/.test(request.headers.get('accept') ?? '')
-      const programs = path.replace(/\.svg$/, '').match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi) ?? []
+      const bare = path.replace(/\.svg$/, '')
+      const programs: string[] = bare.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi) ?? []
+      // A UUID is the product of four 8-hex handles handling each other: four handles in the path compose the UUID they
+      // address (8-4-4-4-12), eight compose two — a stream. The composed seal costs 2^128 to forge (infinite in practice),
+      // verify stays O(1) — cool bills. Handles are recognised only when no full UUID already is, so a real UUID wins.
+      if (!programs.length) {
+        const handles = bare.match(/[0-9a-f]{8}/gi) ?? []
+        for (let i = 0; i + 4 <= handles.length; i += 4) {
+          const x = handles.slice(i, i + 4).join('').toLowerCase()
+          programs.push(`${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20, 32)}`)
+        }
+      }
       if (programs.length) {
         await qpuHexRegistryOf()
         if (wantsSvg) {
