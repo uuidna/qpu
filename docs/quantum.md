@@ -33,17 +33,17 @@ Exact integer-amplitude state vectors, the running circuit, Shor and the end-to-
 | [`qpuDesignOf`](../src/quantum/processing/unit/index.ts#L1499) | builder | Fourteen named design nodes, one per face, each with a synapse fold; vacant must be zero. | `qpuDesignHolds` | holds |
 | [`qpuEvidenceOf`](../src/quantum/processing/unit/index.ts#L3831) | builder | Provenance and verification evidence: provider and device (exact-amplitudes), noise, volume, cross-checks, scaling and fault readings. | `qpuEvidenceHolds` | holds |
 | [`qpuIdeasOf`](../src/quantum/processing/unit/index.ts#L5821) | builder | The seven ideas the sandbox teams compete on, each as a sealed op tree with its left and right sides. | `qpuIdeasHolds` | holds |
-| [`qpuImproveLiveOf`](../src/quantum/processing/unit/index.ts#L9110) | builder | improve with live CERN occupancy. | `qpuImproveLiveHolds` | live (network) |
+| [`qpuImproveLiveOf`](../src/quantum/processing/unit/index.ts#L9128) | builder | improve with live CERN occupancy. | `qpuImproveLiveHolds` | live (network) |
 | [`qpuImproveOf`](../src/quantum/processing/unit/doors.ts#L89) | builder | Improve by doubling: before and after readings of quality, speed, security and throughoutput, with the unlocked quantum door. | `qpuImproveHolds` | holds |
-| [`qpuIntegrityOf`](../src/quantum/processing/unit/index.ts#L8186) | builder | Three integrity tests (quantum, cube, around) plus the CERN records the cern theorem quotes. | `qpuIntegrityHolds` | holds |
+| [`qpuIntegrityOf`](../src/quantum/processing/unit/index.ts#L8204) | builder | Three integrity tests (quantum, cube, around) plus the CERN records the cern theorem quotes. | `qpuIntegrityHolds` | holds |
 | [`qpuNeuroOf`](../src/quantum/processing/unit/index.ts#L1548) | builder | A fixed integer network: depth n, width faces, weights from the lattice, one exact forward pass. | `qpuNeuroHolds` | holds |
-| [`qpuProveLiveOf`](../src/quantum/processing/unit/index.ts#L9186) | builder | prove after the live sequence. | `qpuProveLiveHolds` | live (network) |
+| [`qpuProveLiveOf`](../src/quantum/processing/unit/index.ts#L9204) | builder | prove after the live sequence. | `qpuProveLiveHolds` | live (network) |
 | [`qpuProveOf`](../src/quantum/processing/unit/doors.ts#L481) | builder | Prove the unit end to end: every Lean row, the Shor run, the circuit steps, the source fold and the evidence block; holds is their conjunction. | `qpuProveHolds` | holds |
 | [`qpuPurposeOf`](../src/quantum/processing/unit/index.ts#L3694) | builder | What the unit is for, read from its own state: exact-amplitude platform, n qubits, and its cybersecurity, optimisation, science and sensing readings. | `qpuPurposeHolds` | holds |
 | [`qpuQuantumLiveOf`](../src/quantum/processing/unit/quantum.ts#L51) | builder | — | — | — |
 | [`qpuQuantumOf`](../src/quantum/processing/unit/quantum.ts#L50) | builder | Runtime reads the drift-checked embed so a cold isolate never JIT-compiles qpuQuantumLiveOf; falls back to live. | — | — |
 | [`qpuReadingOf`](../src/quantum/processing/unit/index.ts#L3319) | builder | A compact reading of the quantum document (circuit, lattice, Shor, sequence, purpose, evidence) for agents. | `qpuReadingHolds` | holds |
-| [`qpuSequenceLiveOf`](../src/quantum/processing/unit/index.ts#L9213) | builder | The live sequence: train, improve, compete and prove, each live. | `qpuSequenceLiveHolds` | live (network) |
+| [`qpuSequenceLiveOf`](../src/quantum/processing/unit/index.ts#L9231) | builder | The live sequence: train, improve, compete and prove, each live. | `qpuSequenceLiveHolds` | live (network) |
 | [`qpuSequenceOf`](../src/quantum/processing/unit/index.ts#L3475) | builder | The learning sequence: rungs, API rows and climb over storage, network and server tools. | `qpuSequenceHolds` | holds |
 | [`qpuVmOf`](../src/quantum/processing/unit/index.ts#L6508) | builder | The VM reading: isolate rungs and replicas doubling to next, agents per face. | `qpuVmHolds` | holds |
 
