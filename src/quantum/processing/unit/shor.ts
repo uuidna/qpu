@@ -138,27 +138,56 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     // weights[y] = Σ_{s<r} | Σ_{x ≡ s (mod r), x < Q} ω^{x·y} |², ω = e^{2πi/Q}; for the lattice's Q = 4 the roots ω^k
     // are the exact integers 1, i, -1, -i. Verified equal to the amplitude run (weights [4,4,4,4] for base 8 mod 91).
     const r = ring && coprime ? classicalRun.order : n - n
-    expOk = ring && coprime
+    expOk = ring
     xxId = true
     const rootRe = [seed, n - n, -seed, n - n]
     const rootIm = [n - n, seed, n - n, -seed]
-    for (let y = n - n; y < qftSize; y++) {
-      let w = n - n
-      // s only contributes while s < qftSize (a term needs x ≡ s mod r with x < qftSize, i.e. x = s): capping the walk
-      // at qftSize keeps the Born weights exact and the cost O(qftSize²) for any order r, however large (the split).
-      for (let s = n - n; s < r && s < qftSize; s++) {
-        let re = n - n
-        let im = n - n
-        for (let x = s; x < qftSize; x += r) {
-          const k = (((x * y) % qftSize) + qftSize) % qftSize
-          re += rootRe[k]!
-          im += rootIm[k]!
+    if (r > n - n || !ring) {
+      for (let y = n - n; y < qftSize; y++) {
+        let w = n - n
+        // s only contributes while s < qftSize (a term needs x ≡ s mod r with x < qftSize, i.e. x = s): capping the walk
+        // at qftSize keeps the Born weights exact and the cost O(qftSize²) for any order r, however large (the split).
+        for (let s = n - n; s < r && s < qftSize; s++) {
+          let re = n - n
+          let im = n - n
+          for (let x = s; x < qftSize; x += r) {
+            const k = (((x * y) % qftSize) + qftSize) % qftSize
+            re += rootRe[k]!
+            im += rootIm[k]!
+          }
+          w += re * re + im * im
         }
-        w += re * re + im * im
+        weights[y] = w
       }
-      weights[y] = w
+      prepareAmps = r > n - n ? qftSize * Math.min(r, qftSize) : n - n
+    } else {
+      // A base sharing a factor with the modulus has no order, but the work register still holds a^x mod N for x < qftSize,
+      // so the counting register splits into one class per distinct value (x and x' are one class iff a^x ≡ a^x' mod N —
+      // for a unit exactly x ≡ x' mod r, the branch above). Each class's Born weight is the same |Σ ω^{xy}|², and every
+      // (class, y) with a non-zero sum is one exact amplitude of the prepared state, so the count is read off the walk.
+      const classes = new Map<bigint, number[]>()
+      for (let x = n - n; x < qftSize; x++) {
+        const v = bigPowModOf(base, BigInt(x), modulus)
+        classes.set(v, [...(classes.get(v) ?? []), x])
+      }
+      prepareAmps = n - n
+      for (let y = n - n; y < qftSize; y++) {
+        let w = n - n
+        for (const xs of classes.values()) {
+          let re = n - n
+          let im = n - n
+          for (const x of xs) {
+            const k = (((x * y) % qftSize) + qftSize) % qftSize
+            re += rootRe[k]!
+            im += rootIm[k]!
+          }
+          const c = re * re + im * im
+          w += c
+          if (c > n - n) prepareAmps++
+        }
+        weights[y] = w
+      }
     }
-    prepareAmps = r > n - n ? qftSize * Math.min(r, qftSize) : n - n
   }
   const prepare = {
     kind: 'prepare' as const,

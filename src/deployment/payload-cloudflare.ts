@@ -346,7 +346,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
     'export default buildConfig({',
     `  secret: process.env.PAYLOAD_SECRET ?? '',`,
     `  db: ${db},`,
-    c.email === 'resend' ? `  email: resendAdapter({ apiKey: process.env.RESEND_API_KEY ?? '', defaultFromAddress: process.env.EMAIL_FROM ?? 'noreply@example.com', defaultFromName: 'Payload' }),` : '',
+    c.email === 'resend' ? `  email: process.env.RESEND_API_KEY ? resendAdapter({ apiKey: process.env.RESEND_API_KEY, defaultFromAddress: process.env.EMAIL_FROM ?? 'noreply@uuidna.com', defaultFromName: 'UUIDNA QPU' }) : undefined,` : '',
     // Payload 4 takes storage adapters in `storage`, not in `plugins` — a lead, not a second path
     storage ? `  storage: [${storage}],` : '',
     `  plugins: [${qpuPlugins.join(', ')}],`,
