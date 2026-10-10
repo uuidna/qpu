@@ -6,7 +6,7 @@
 // HEX CONSTANTS (pre-computed, no wrapper lookup)
 const PHASE1_COINS=0x2n,PHASE1_RAYS=0x7n,PHASE1_FACES=0xEn,PHASE1_PLANE=0x1Cn
 const PHASE2_CATALAN=0xEn,PHASE2_BELL=0xFn
-const PHASE3_SHOR=0x5Bn,PHASE3_F1=0x7n,PHASE3_F2=0xDn
+const PHASE3_SHOR=0x5Bn // the modulus to factor; its factors are COMPUTED by shorFactor (the unlimited theorem), never baked
 
 // PRIMITIVES (inlined, no recursive wrapper calls)
 const binomial=(n:bigint,k:bigint):bigint=>{if(k>n)return 0n;if(k===0n||k===n)return 1n;if(k>n-k)k=n-k;let r=1n;for(let i=0n;i<k;i++)r=r*(n-i)/(i+1n);return r}
@@ -19,7 +19,7 @@ const modexp=(b:bigint,e:bigint,m:bigint):bigint=>{let r=1n;b=b%m;while(e>0n){if
 // PHASES (hex constants, direct computation)
 const phase1=()=>({autonomy:33n,coins:PHASE1_COINS,rays:PHASE1_RAYS,faces:PHASE1_FACES,plane:PHASE1_PLANE,verified:true})
 const phase2=()=>({autonomy:50n,catalan:PHASE2_CATALAN,bell:PHASE2_BELL,healed:true,verified:true})
-const phase3=()=>({autonomy:100n,shor:PHASE3_SHOR,factors:[PHASE3_F1,PHASE3_F2],yangBaxter:true,verified:true})
+const phase3=()=>{const factors=shorFactor(PHASE3_SHOR);const ok=factors.length===2&&(factors[0] ?? 0n)*(factors[1] ?? 0n)===PHASE3_SHOR;return{autonomy:100n,shor:PHASE3_SHOR,factors,yangBaxter:true,verified:ok}} // factors computed, verified = they multiply to the modulus — a theorem, not a constant
 const unified=()=>({autonomy:100n,phases:3n,manualGates:0n,verified:true,ready:true})
 
 // ALGORITHMS (inlined, no wrapper overhead)
