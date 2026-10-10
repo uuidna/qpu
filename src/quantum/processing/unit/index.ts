@@ -6936,6 +6936,12 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
   { subject: 'music', domain: 'probability', direction: 'theory to practice', year: 1963,
     what: 'Xenakis took probability — Poisson arrivals, Markov chains, the law of large numbers — and made it a method of composition, writing both the stochastic works and the formal principles behind them',
     source: 'Xenakis, Musiques formelles (La Revue musicale 253–254, 1963); English Formalized Music (Indiana University Press, 1971)' },
+  { subject: 'bell ringing', domain: 'computation', direction: 'practice to theory', year: 1677,
+    what: 'change ringers rang every permutation of the bells once by adjacent swaps — the plain changes — centuries before the same ordering was named the Steinhaus–Johnson–Trotter algorithm in computing',
+    source: 'Stedman, Campanalogia: or the Art of Ringing Improved (London, 1677)' },
+  { subject: 'crochet', domain: 'topology', direction: 'theory to practice', year: 2004,
+    what: 'Osinga and Krauskopf turned the computed two-dimensional stable manifold of the Lorenz system into 25,511 crochet stitches, a model of the surface you can hold, taught from the mathematics to the hook',
+    source: 'Osinga and Krauskopf, Crocheting the Lorenz manifold, The Mathematical Intelligencer 26(4) 2004' },
 ]
 
 /** Three states, and the third is not silence: not decidable from the evidence held here. */
