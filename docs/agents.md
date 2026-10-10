@@ -1,16 +1,16 @@
 ---
-uuid: "8b1a8c14-0345-7555-b064-5dfde943eae9"
+uuid: "759ac108-ee92-3f11-94e0-49443da94390"
 title: "MCP & agents"
-description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 117 capabilities; 46 of 55 evidence predicates hold."
+description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 118 capabilities; 46 of 55 evidence predicates hold."
 og:title: "MCP & agents — @uuidna/qpu"
-og:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 117 capabilities; 46 of 55 evidence predicates hold."
+og:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 118 capabilities; 46 of 55 evidence predicates hold."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/agents.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "MCP & agents"
-twitter:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 117 capabilities; 46 of 55 evidence predicates hold."
+twitter:description: "The MCP server, its tools and man pages, the sandbox, training and competition doors. 118 capabilities; 46 of 55 evidence predicates hold."
 version: "1.1.0"
 ---
 # MCP & agents
@@ -19,14 +19,14 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 
 | | |
 |---|---|
-| Capabilities | 117 |
+| Capabilities | 118 |
 | With an evidence predicate | 55 |
 | Predicates that hold now | 46 |
 | Live (need the network; checked by the live doors) | 2 |
 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
-| [`crossFormulaOf`](../src/families/cross/index.ts#L47) | builder | — | — | — |
+| [`crossFormulaOf`](../src/families/cross/index.ts#L67) | builder | — | — | — |
 | [`cryptoClaimOf`](../src/quantum/processing/unit/index.ts#L2414) | builder | The crypto claim READ from the run: the split identity holds and secrecy does not. | — | — |
 | [`documentOf`](../src/deployment/payload-cloudflare.ts#L482) | builder | — | — | — |
 | [`mintOf`](../src/quantum/processing/unit/index.ts#L322) | builder | The lattice's doubling, exported so nothing has to re-implement it. | — | — |
@@ -44,6 +44,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`qpuDataLiveOf`](../src/quantum/processing/unit/index.ts#L543) | builder | Every live public dataset the fused data door checks, read now and carried by prove { live: true }: the proof's live block names what agrees with the unit, what differs and what could not be reached. | — | — |
 | [`qpuDevelopOf`](../src/quantum/processing/unit/index.ts#L10369) | builder | The develop reading: source, host, tools, API and integrity, for contributors. | `qpuDevelopHolds` | holds |
 | [`qpuDocsOf`](../src/quantum/processing/unit/readme.ts#L58) | builder | The unit's inline guide: abstract, API rows, formulas and the learning ladder, as one document. | `qpuDocsHolds` | holds |
+| [`qpuDomainsOf`](../src/families/cross/index.ts#L65) | builder | The whole family → domain graph in one reading: each domain with the families that cross to it (and so, for any family, its siblings in its own domain — its experts). | — | — |
 | [`qpuDryOf`](../src/quantum/processing/unit/index.ts#L860) | builder | Coordinated dry-clean: two teams, occupancy pentagram, genesis coins. | `qpuDryHolds` | holds |
 | [`qpuEfficiencyOf`](../src/quantum/processing/unit/index.ts#L3395) | builder | Token efficiency of each door: bytes and tokens to read the tree versus to call the tool. | `qpuEfficiencyHolds` | holds |
 | [`qpuEmbedDriftOf`](../src/quantum/processing/unit/index.ts#L1765) | builder | THE COOL IS FRESH, AT THE GATE, FROM ONE PLACE. | — | — |

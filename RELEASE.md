@@ -40,8 +40,8 @@ Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat h
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,253 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
-| MCP resources | 13 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,447, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,488 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP resources | 16 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,499, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
 | Formal proof | 145 Lean theorems served, 145 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
