@@ -16,6 +16,7 @@ import {
   qpuHexRegistryOf,
   qpuHexRunOf,
   qpuHexToolsOf,
+  qpuHarnessesOf,
   qpuInstallManifestOf,
   qpuLeanOf,
   qpuMcpCallOf,
@@ -231,6 +232,10 @@ export const worker = {
     if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => qpuWellKnownOf()))
     if (path === '/mcp.json') { const to = new URL(request.url); to.pathname = '/api/qpu/mcp'; return publicDoorOf(new Request(to, request)) }
     if (path === '/install.json') return servedResponse(servedOf(path, () => qpuInstallManifestOf()))
+    // THE UNIVERSAL CONNECTOR: mount QPU in ANY app, not only Claude — one GET returns the ready-to-paste config for
+    // every harness (Claude Code, Cursor, VS Code, Codex, Gemini, the Anthropic/OpenAI APIs, raw HTTP), from the one
+    // generated source (qpuHarnessesOf), so the wire and the README cannot disagree and nothing is a hand list.
+    if (path === '/connector' || path === '/connector.json' || path === '/mount' || path === '/mount.json') return servedResponse(servedOf('/connector', () => qpuHarnessesOf()))
     if (path === '/openapi.json') return servedResponse(servedOf(path, () => qpuOpenApiOf()))
     const rpcBodyOf = async <X extends object>() =>
       (await request.json().catch(() => ({}))) as { method?: string; params?: { name?: string; arguments?: Record<string, unknown> }; id?: unknown } & X

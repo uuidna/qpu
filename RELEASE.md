@@ -8,7 +8,7 @@ Summarised analytics hold a Pravets 8M clay register: seed 1, coins 2, n 3, rays
 
 Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the author, do not distribute a derivative, and do not use it commercially unless a commercial licence was granted on request.
 
-Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat hex `0a8f02cc-4000-8000-9000-00000000174e`; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds true.
+Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat hex `0a8f02cc-4000-1000-9000-000000001921`; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds true.
 
 | Count | Integer |
 |---|---:|
@@ -32,16 +32,16 @@ Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat h
 | next | 240,518,168,576 |
 | plane | 28 |
 | zero | 0 |
-| temp | 5,966 |
-| time | 6 |
-| heat | 25 |
-| cold | 2,597 |
+| temp | 6,433 |
+| time | 0 |
+| heat | 35 |
+| cold | 2,588 |
 | coldFusion | 100 |
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,193 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
-| MCP resources | 13 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,439, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
+| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 58 doors and 9,253 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP resources | 13 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,447, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
 | Formal proof | 145 Lean theorems served, 145 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
 | Live public data | 38 of 57 sources agree | CERN Open Data, NIST CODATA, OEIS (11 formulas identified as sequences), Zenodo, DataCite, ORCID, GitHub, npm, INSPIRE catalogues |
@@ -50,7 +50,7 @@ Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat h
 | Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
 | Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
 | Payload on Cloudflare | 1,376,256 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
-| Code heat | 2,597 of 2,622 files cold, 25 hot | Qpu.Physics: photon / thermal T |
+| Code heat | 2,588 of 2,623 files cold, 35 hot | Qpu.Physics: photon / thermal T |
 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).

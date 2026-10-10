@@ -9750,7 +9750,10 @@ const wellKnownFieldsOf = () => {
     batch: true as const,
     protocolVersions: MCP_VERSIONS,
     tools: mcp.tools.length + mcp.cybersecurity.tools.length,
-    install: qpuHarnessesOf().rows.map((r) => ({ harness: r.harness, how: r.how })),
+    // the full, ready-to-paste mount config per harness — so a registry or client mounts QPU without a round-trip; the
+    // same rows are served whole at /connector (the universal connector: any app, not only Claude).
+    install: qpuHarnessesOf().rows.map((r) => ({ harness: r.harness, how: r.how, file: r.file, config: r.config })),
+    connector: `${unit.origin}/connector`,
     openapi: `${unit.origin}/openapi.json`,
     catalog: `${unit.origin}/mcp.json`,
     cite: `${unit.origin}/cite`,
