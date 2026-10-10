@@ -1,4 +1,4 @@
-import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf, gibbsFreeOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** THERMODYNAMICS — RUNNING HEAT AS ARITHMETIC. The physics of engines and flow is numbers: Carnot efficiency from the two
@@ -6,7 +6,7 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
  *  flow by conductivity and gradient, a heat pump's coefficient of performance, thermal expansion, and the first law's
  *  change in internal energy. Crosses to `heat` — the unit that prices erasure by Landauer at the core temperature. A measure. */
 
-const PROOF = 'thermodynamics arithmetic (carnot efficiency, pv work, efficiency, entropy, heat flow, cop, expansion, first-law internal energy); a measure crossed to heat'
+const PROOF = 'thermodynamics arithmetic (carnot efficiency, pv work, efficiency, entropy, heat flow, cop, expansion, first-law internal energy, gibbs free energy); a measure crossed to heat'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
 const c = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
   crossFormulaOf({ id, src: 'thermodynamics', dst: 'heat', formula, value, proof: PROOF, ...extra }, holds, { name: `thermodynamics.${name}`, params })
@@ -28,7 +28,10 @@ export class ThermodynamicsFormulas {
   static expansion(initial: number, delta: number): CrossFormula { return c('thermodynamics-expansion', 'expansion(initial, delta) = initial + delta', initial + delta, nat(initial, delta), 'expansion', [initial, delta]) }
   /** FIRST LAW: the change in internal energy, ΔU = Q − W, floored at zero. value max(0, heat − work). */
   static internal(heat: number, work_: number): CrossFormula { return c('thermodynamics-internal', 'internal(heat, work) = max(0, heat − work)', Math.max(0, heat - work_), nat(heat, work_), 'internal', [heat, work_]) }
+  /** GIBBS FREE ENERGY: the work left once the bound heat is taken from the enthalpy, max(0, enthalpy − heat) — the same
+   *  ledger the recognition keeps, where the enthalpy is the document and the heat is the reply it dissipates (gibbsFreeOf). */
+  static gibbs(enthalpy: number, heat: number): CrossFormula { return c('thermodynamics-gibbs', 'gibbs(enthalpy, heat) = max(0, enthalpy − heat)', gibbsFreeOf(enthalpy, heat), nat(enthalpy, heat), 'gibbs', [enthalpy, heat]) }
 }
 
-for (const name of ['carnot', 'cop', 'efficiency', 'entropy', 'expansion', 'heatflow', 'internal', 'work'] as const)
+for (const name of ['carnot', 'cop', 'efficiency', 'entropy', 'expansion', 'gibbs', 'heatflow', 'internal', 'work'] as const)
   qpuHexRegisterOf('thermodynamics', name, (ThermodynamicsFormulas[name] as (...x: unknown[]) => unknown).bind(ThermodynamicsFormulas))

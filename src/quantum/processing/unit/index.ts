@@ -2860,20 +2860,25 @@ const recognitionShrinkOf = (out: Record<string, unknown>, src: Record<string, u
     else break
   }
 }
+/** GIBBS FREE ENERGY, the one definition the thermodynamics family and this recognition share: the work left once the
+ *  bound heat is taken from the enthalpy, max(0, enthalpy − heat). `thermodynamics.gibbs` seals this same function as a
+ *  nested hex-program crossed to `heat`; the recognition reads it here instead of keeping a rule of its own, so the
+ *  energy is a family formula like everything else, not a constant hardcoded at the core. */
+export const gibbsFreeOf = (enthalpy: number, heat: number): number => (heat < enthalpy ? enthalpy - heat : n - n)
 /** Gibbs at one temperature: the document is the enthalpy, the reply is the heat this call dissipates, and the
  * difference is the free energy — the work left because the document was not sent. A call claims no energy out of
- * the erasure; the free energy is only what was not spent. */
+ * the erasure; the free energy is only what was not spent. The difference is gibbsFreeOf, i.e. thermodynamics.gibbs. */
 const recognitionFreeOf = (led: Record<string, unknown>, text: string): Record<string, unknown> => {
   const recognition = led.recognition as Record<string, unknown> | undefined
   if (!recognition || recognition.kind !== 'recognition') return led
   const enthalpy = tokensOf(text.length)
   recognition.enthalpy = enthalpy
   recognition.heat = tokensOf(JSON.stringify(led).length)
-  recognition.free = (recognition.heat as number) < enthalpy ? enthalpy - (recognition.heat as number) : n - n
+  recognition.free = gibbsFreeOf(enthalpy, recognition.heat as number)
   const heat = tokensOf(JSON.stringify(led).length)
   if (heat !== recognition.heat) {
     recognition.heat = heat
-    recognition.free = heat < enthalpy ? enthalpy - heat : n - n
+    recognition.free = gibbsFreeOf(enthalpy, heat)
   }
   return led
 }
@@ -3118,7 +3123,7 @@ export const qpuRecognizeHolds = (value?: unknown): boolean => {
     recognition.device === 'exact-amplitudes' &&
     recognition.bytes === text.length &&
     recognition.enthalpy === tokensOf(text.length) &&
-    recognition.free === ((recognition.heat as number) < (recognition.enthalpy as number) ? (recognition.enthalpy as number) - (recognition.heat as number) : n - n) &&
+    recognition.free === gibbsFreeOf(recognition.enthalpy as number, recognition.heat as number) &&
     (recognition.free as number) > n - n &&
     nested?.holds === true &&
     (circuit?.only?.holds === true || circuit?.holds === true) &&
