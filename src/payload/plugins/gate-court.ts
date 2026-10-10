@@ -338,16 +338,10 @@ export type GateCourtArgs = {
 
 /** All standing gate cases tried in court — diagnostics / connector { court|trial: true }. */
 type LeanRow = { heading: string; theorem: string; formula: string; holds: boolean }
-/**
- * THE COURT USES THE TOOLS — tried as their own theorems. Only lean evidence is accepted, and a tool's evidence is the
- * Lean theorem that bears its name (the `computer`, `circuit`, `quantum`, `integrity`, … rows the unit proves). Each is
- * hex-addressed by its statement UUID (qpuStatementUuidOf — a real UUID program, so standing > 0) and tried in court on
- * its holds bit. Nothing heavy runs here: the theorems are read from qpuLeanOf, already recomputed and memoised.
- */
+/** The court tries each tool as the Lean theorem that bears its name, hex-addressed by its statement UUID; only lean evidence. */
 export const toolCourtCasesOf = (): GateCourtCase[] => {
-  // A tool is tried in court only where a theorem answers for it: its name, or the domain suffix of its name
-  // (crypto_shor → shor), must be a Lean heading. The tools with no theorem yet are leads, not cases — the theorems
-  // decide which tools the court can use, and more appear as more are proven. No hand list.
+  // A tool is a case only where a theorem answers for it: its name or its domain suffix (crypto_shor → shor) is a Lean
+  // heading. Tools with no theorem yet are leads, not cases. No hand list.
   const want = new Set(qpuMcpToolsListOf().flatMap((t) => { const nm = t.name.replace(/^qpu_/, ''); return [nm, nm.slice(nm.lastIndexOf('_') + 1)] }))
   const lean = qpuLeanOf() as unknown as { rows: readonly LeanRow[]; cover: readonly LeanRow[]; climb: LeanRow }
   const seen = new Set<string>()

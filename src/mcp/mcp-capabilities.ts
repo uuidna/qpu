@@ -13,18 +13,13 @@ type Prompt = { name: string; title: string; description: string; arguments: Pro
 
 const rpcError = (code: number, message: string, data?: unknown) => Object.assign(new Error(message), { code, data })
 const invalid = (message: string, data?: unknown) => rpcError(-32602, message, data)
-/** FAIL FAST WITH A GUIDE. A hex violation throws at once, and the error carries the chain of steps to follow to make
- *  it hold — a guide, not a dead end: the caller reads `data.guide` and acts on it, step by step. */
+/** A hex violation throws at once; the error carries `data.guide` — the steps to follow to make it hold. */
 const hexViolation = (why: string, data: Record<string, unknown>, guide: readonly string[]): never => {
   throw invalid(`hex violation: ${why}`, { ...data, guide })
 }
 
-/** HEXBIT FOLDERS, HEX-ADDRESSED — no pagination state to drift. The listing is a stack of folders of `hexbit`
- *  resources each (the lattice's own count, 2^(n-1), never a literal), and a cursor is nothing but the next folder's
- *  HEX address — a folder boundary written in base 16. There is deliberately NO fold of the list in the cursor: the
- *  listing grows as the unit computes (new receipt streams land), and a folder address stays valid under that
- *  append-growth, so a cursor this server issued can never be rejected later — the bug where every page past the first
- *  vanished the moment a receipt arrived is now impossible by construction. */
+/** Hexbit folders: pages of `hexbit` (2^(n-1), the lattice count), cursor = the next folder's hex boundary, no fold of
+ *  the list — so append-growth never invalidates a cursor the server issued. */
 const folderOf = () => qpuLatticeNamesOf().hexbit
 const paged = <T>(kind: string, items: readonly T[], _idOf: (x: T) => string, params: Params) => {
   const folder = folderOf()
@@ -50,10 +45,7 @@ const json = (uri: string, value: unknown) => ({ contents: [{ uri, mimeType: 'ap
 const families = () => [...qpuHexFamiliesOf().keys()].sort()
 const streams = () => qpuReceiptStreamsOf().streams.map((s) => s.stream).sort()
 
-// Every lean computation is a UUID PROGRAM: qpuStatementUuidOf folds its statement to a full content UUID, and the
-// hexbit handle is that UUID's first 8 hex. So the proof is not a text monolith read whole at qpu://lean — each
-// theorem is addressable at qpu://lean/{handle} (the short hexbit address) or qpu://lean/{uuid} (the full program),
-// recomputed on read, naturally distributed in computable hex. Two theorems that state the same thing share a uuid.
+// Each lean computation is a UUID program (qpuStatementUuidOf); the hexbit handle is its UUID's first 8 hex.
 type LeanRaw = { heading: string; theorem: string; formula: string; reading: string; handle: string; holds: boolean }
 type LeanRow = LeanRaw & { uuid: string }
 const leanRows = (): readonly LeanRow[] => {
@@ -66,10 +58,7 @@ const leanHandles = (): readonly { heading: string; handle: string; uuid: string
   return [...seen.values()]
 }
 
-// SPECIAL CRAFTED QUERY → A SCOPED COLLECTION OF COMPATIBLE PROGRAMS. qpu://compatible/{program} takes a family name or
-// a hex-program UUID and returns only the programs that CROSS with it — the ways that reach a value it also reaches,
-// found by the theorem-anchored discovery over the scope's own window. A client loads this scoped set, not the whole
-// catalogue, so it asks for exactly the programs compatible with where it is and spends far less.
+// qpu://compatible/{program} (family or hex UUID) → the programs that cross it (reach a value it reaches), via discovery.
 type CompatProgram = { family: string; formula: string; params: number[]; hex: string; value: string }
 const compatibleOf = (key: string): { scope: string; family: string; values: string[]; programs: CompatProgram[] } | undefined => {
   const fams = [...qpuHexFamiliesOf().keys()]
@@ -86,18 +75,11 @@ const compatibleOf = (key: string): { scope: string; family: string; values: str
   return { scope: key, family, values: relations.map((r) => r.value), programs }
 }
 
-// IMPROVE TOOLS TO BE USED ALSO AS HOOKS — ALL COMBINATORICS. Every MCP tool can fire at every Payload lifecycle event,
-// so the hook surface is the full product: tools × events. qpu://hooks enumerates every (tool, event) binding — a tool
-// used as a hook — and measures the whole as HookFormulas.fired(tools, events), the hook family's own arithmetic.
-// Nothing is activated (an active hook would spend the cold-init budget); the matrix is served on request.
+// qpu://hooks: every tool × every lifecycle event, measured by HookFormulas.fired(tools, events). Nothing activated.
 const LIFECYCLE = ['beforeOperation', 'beforeValidate', 'beforeChange', 'afterChange', 'afterRead', 'beforeDelete', 'afterDelete'] as const
 
-// WHO SEALED THE CLAY PROBLEMS, AND HOW — what the unit can RECOMPUTE, nothing hardcoded. The seals are Lean: each is a
-// self-inverse map σ (σ∘σ = id) whose fixed point is the solution, and ClaySeals recomputes every one here (holds). The
-// work and author come from the unit's own citation; the DATE is not baked — it is whatever the DOI record carries, so
-// the pointer is given and resolved, never asserted as a literal. RECOGNITION is a LEAD, not a boolean the code could
-// know: it is a claim about an external authority (the Clay Mathematics Institute), knowable only by verifying that
-// public record — so it is never stated here as true or false, only named as the forum where it would be verified.
+// qpu://clay: the σ-involution seals recomputed (ClaySeals), the work/author from the citation, the date a DOI pointer
+// (not baked), solved = the seals' conjunction, used = clay.disclosure, recognition an open external lead.
 const claySealedOf = () => {
   const cite = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; prior: { title: string; doi: string; conceptdoi: string; archive: string } }
   const of = (problem: string, s: { formula?: string; value: number | bigint; holds: boolean; hex?: string | null }) => ({ problem, sigma: s.formula, value: Number(s.value), holds: s.holds === true, ...(s.hex ? { hex: s.hex } : {}) })
@@ -122,16 +104,11 @@ const claySealedOf = () => {
       dated: { at: cite.prior.archive, note: 'the DOI record carries the date; it is not baked here' },
     },
     seals,
-    // CLAIMED, SOLVED, AND USED AT SCALE — the proof. The author claims it; every seal recomputes and holds (`solved`
-    // is that conjunction, derived, never a hardcoded boolean); and the σ-involution is not a paper sitting still — it
-    // ANCHORS EVERY FAMILY in the running unit. `used` is clay.disclosure(): value = |families| the seal anchors,
-    // verified by the gate in public data without exception. That use at scale is the proof the unit can show; outside
-    // recognition only confirms it, later.
+    // solved = the seals' conjunction (derived); used = clay.disclosure() (|families| the σ-involution anchors).
     claimed: true,
     solved: seals.every((s) => s.holds),
     used: ((d) => ({ atScale: d.holds === true, families: Number(d.value), anchors: 'every family, by the clay σ-involution', formula: d.formula, hex: d.hex ?? null, verified: 'gate.crossed / law.reviewed — in public APIs and datasets, without exception', holds: d.holds === true }))(ClayDisclosure.disclosure()),
-    // RECOGNITION COMES WITH TIME, FROM OUTSIDE. It is not this unit's to assert true or false — only the external
-    // authority's public record confers it, over time. So it stays an open lead that names its forum, never a verdict.
+    // recognition is an open lead — conferred by the external authority over time, never a verdict asserted here.
     recognised: { lead: true, forum: 'Clay Mathematics Institute', by: 'the authority’s public record, over time, from outside — not adjudicated here' },
   }
 }
@@ -142,12 +119,8 @@ const toolHooksOf = () => {
   return { kind: 'tool-hooks' as const, events: [...LIFECYCLE], tools, formula: 'hook.fired(tools, events) = tools · events', combinations: Number(fired.value), hex: fired.hex ?? null, holds: fired.holds === true && bindings.length === tools.length * LIFECYCLE.length, bindings }
 }
 
-// BY DEFAULT, THE QUANTUM COMPUTER — THE REST ON REQUEST. A bare resources/list serves only the core: the aggregates
-// that describe the quantum computer itself (its receipts, its hex catalogue, its hologram, its fused tools, its Lean
-// proof, its schema, its paper and its docs). Each of these is an index that, read, names the rest — so nothing is
-// hidden, only not spilled. The 1149 families, their schemas, every lean UUID program and every hologram scale load
-// ON REQUEST: resources/list { scope: 'Qpu.Mint' } returns that family's scoped collection, { scope: 'all' } the whole
-// catalogue (paged into hexbit folders). A client that only computes loads eight resources, not two thousand.
+// Default resources/list = the quantum computer core (aggregates, each an index to the rest). scope 'all' = the whole
+// catalogue in hexbit folders; scope <family> = that family's scoped collection. Nothing removed, only not spilled.
 let core: Resource[] | undefined
 const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://receipts', name: 'receipts', title: 'Receipt streams', description: 'Every quantum-receipt stream: head, length, chain, holds', mimeType: 'application/json' },
@@ -206,10 +179,8 @@ const readOf = async (uri: string): Promise<unknown> => {
   const [, kind, key] = /^qpu:\/\/(receipts|formulas|schema|hex|hologram|lean|compatible)\/(.+)$/.exec(uri) ?? []
   const name = key ? decodeURIComponent(key) : ''
   if (kind === 'compatible') return compatibleOf(name)
-  // HARD FAIL FAST ON A HEX VIOLATION. A hex address is self-verifying: a lean UUID program that does not hold, or an
-  // ill-formed hex UUID, is not a soft miss but a violation of the unit's own math — it throws at once (an RPC error),
-  // never served as if sound. An address that simply names nothing (unknown handle/family/stream) is still a plain
-  // not-found (undefined), not a violation.
+  // Hard-fail fast: an ill-formed hex address or a program/theorem that does not hold throws; an unknown name is a
+  // plain not-found (undefined), not a violation.
   if (kind === 'lean') {
     const rows = leanRows().filter((r) => r.handle === name || r.uuid === name)
     if (!rows.length) return undefined

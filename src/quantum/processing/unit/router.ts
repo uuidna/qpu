@@ -190,11 +190,8 @@ export const worker = {
     // Payload answers its own preflight, so /admin and /api precede OPTIONS.
     if (path === '/admin' || path.startsWith('/admin/') || path === '/api' || path.startsWith('/api/')) return handToPayload()
     if (request.method === 'OPTIONS') return new Response(null, { status: found + coins + coins, headers: emptyHeaders() })
-    // THE UNIT ANSWERS ITS OWN DOORS FIRST, EACH ANSWERING WHO ASKED: a browser or crawler (GET, text/html) gets the
-    // door's reading as one SEO-complete HTML document (qpuPageOf); every other client keeps the JSON-LD on the same
-    // path. Only a path no door answers is the frontend's, probed under a short deadline at the end — so the unit's
-    // content is never held waiting on the ~44s cold HTML frontend. (The regression handed ALL html to Payload
-    // unbounded, so every crawl and every page hung > 25s; restored to the bounded qpuPageOf path.)
+    // A crawler (GET text/html) gets the door's reading as qpuPageOf HTML; every other client keeps the JSON-LD on the
+    // same path. A path no door answers is the frontend's, probed under a deadline at the end (never handed unbounded).
     const wantsHtml = request.method === 'GET' && /text\/html/.test(request.headers.get('accept') ?? '')
     const canonicalOf = (p: string) => `https://${host}${p === '/' ? '' : p}`
     const pageOrServed = (p: string, build: () => object, meta?: { title?: string; description?: string }) =>
@@ -332,9 +329,7 @@ export const worker = {
       }
       return servedResponse(servedOf('/message', () => qpuMessageOf()))
     }
-    // A path the unit does not answer is the CMS frontend's. Probe it under a short deadline (2s) so a slow or cold
-    // frontend never holds the request; on the deadline the unit's own answer stands. Without a Payload binding
-    // (standalone) the handoff resolves the door the publicPlugin mounts, same as before.
+    // A path no door answers is the CMS frontend's — probed under a 2s deadline; on the deadline the unit's answer stands.
     if (env?.PAYLOAD) {
       const page = await Promise.race([
         env.PAYLOAD.fetch(request).catch(() => undefined),

@@ -23,9 +23,7 @@ import { mintOf, vertices } from './lattice-values.mjs'
 await import('../dist/mcp/families.js')
 const { qpuMcpDoorsOf, qpuMcpToolsListOf } = await import('../dist/quantum/processing/unit/index.js')
 
-// the MCP resource surface, counted the way a client reaches it (resources/list + templates) — not a hand list. The
-// default listing is the quantum computer core; `scope` loads the rest (every family, every lean UUID program, the
-// compatible-programs query) on request, paged into hexbit folders.
+// the MCP resource surface, counted the way a client reaches it (resources/list + templates), not a hand list
 const { publicMcpOf } = await import('../dist/payload/plugins/public.js')
 const mcpRpc = async (method, params) =>
   (await publicMcpOf(new Request('https://qpu.uuidna.com/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }), {})).json()

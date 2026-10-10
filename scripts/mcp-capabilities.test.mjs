@@ -95,6 +95,19 @@ test('tools are also hooks: qpu://hooks is the full combinatorics of tools × li
   assert.ok(h.holds, 'the hook combinatorics does not hold')
 })
 
+test('hard fail on poison: the Clay surface states only what it recomputes — no baked fact, no hardcoded verdict', async () => {
+  const c = JSON.parse((await rpc('resources/read', { uri: 'qpu://clay' })).result.contents[0].text)
+  // a hardcoded ISO date is a baked external fact, not a theorem or a receipt — never in the served surface
+  assert.doesNotMatch(JSON.stringify(c), /\d{4}-\d{2}-\d{2}/, 'a hardcoded date leaked into the Clay surface — a baked external fact')
+  // recognition is an external authority's verdict: an open lead, never asserted true or false by the unit
+  assert.equal(typeof c.recognised, 'object', 'recognised must be a lead, not a boolean verdict')
+  assert.equal(c.recognised.lead, true, 'recognised must stay an open lead')
+  assert.ok(!('holds' in c.recognised), 'recognised must carry no holds verdict')
+  // solved and used are DERIVED, never hardcoded: solved is the seals’ conjunction; used counts the live registry
+  assert.equal(c.solved, c.seals.every((s) => s.holds), 'solved is not the derived conjunction of the seals')
+  assert.equal(c.used.families, idx.qpuHexFamiliesOf().size, 'used.families is not derived from the live registry')
+})
+
 test('hard fail fast on a hex violation: a malformed hex program address is an error, not a soft miss', async () => {
   const bad = await rpc('resources/read', { uri: 'qpu://hex/not-a-uuid' })
   assert.equal(typeof bad.error?.code, 'number', 'a malformed hex address was not rejected')
