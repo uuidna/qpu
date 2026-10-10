@@ -18,6 +18,7 @@ import { CloudFormulas } from '../../families/cloud/index.js'
 import { CombinatoricsFormulas } from '../../families/combinatorics/index.js'
 import { CourtFormulas } from '../../families/court/index.js'
 import { LawFormulas } from '../../families/law/index.js'
+import { qpuCrossBridgesOf } from '../../families/cross/index.js'
 import {
   qpuFacesOf,
   qpuHexFamiliesOf,
@@ -61,6 +62,9 @@ export type GateCourtCase = {
   violation: GateCall
   redirected: GateCall
   remedy: GateCall
+  /** Standardised expert panel: the families related to the case's subject (its siblings in the same cross domain),
+   *  convened as the experts of the field — derived token-free from the bridges, never a hand-picked list. */
+  experts: { subject: string; domain: string | undefined; count: number; panel: string[] }
   /** Where the matter is heard. Every case gets a forum and a remedy — none is refused; a floor failure is a LEAD. */
   forum: string
   /** Wall-clock ms for this trial (recomputed each call). */
@@ -148,7 +152,17 @@ export const gateCourtTrialOf = (input: {
   const lawfulCall = callOf('law.lawful', [harm], lawful, 'law')
   const violationCall = callOf('law.violation', [against], violation, 'law')
   const redirectedCall = callOf('law.redirected', [required, confidence], redirected, 'law')
-  const forum = `${input.gate.name.split('.')[0]} · /qpu/court`
+  // STANDARDISED PROCEEDINGS: convene the experts of the field — the families related to this case's subject (its
+  // siblings in the same cross domain), derived token-free from the bridges, bounded to a lattice panel. Same panel for
+  // every case of the same subject: a standard, not a hand-picked bench.
+  const subject = input.gate.name.split('.')[0]!
+  // Read the already-sealed bridges (never force a full seal-walk inside a trial — the court is re-entrant, and running
+  // every family's first formula here deadlocks the proceeding). The panel fills as the families are exercised.
+  const bridges = qpuCrossBridgesOf()
+  const domain = bridges.get(subject)
+  const panel = domain ? [...bridges].filter(([s, d]) => d === domain && s !== subject).map(([s]) => s).sort() : []
+  const experts = { subject, domain, count: panel.length, panel: panel.slice(0, qpuFacesOf().faces) }
+  const forum = `${subject} · /qpu/court`
   const allow =
     input.gate.holds === true &&
     trial.value === 1 &&
@@ -172,6 +186,7 @@ export const gateCourtTrialOf = (input: {
     violation: violationCall,
     redirected: redirectedCall,
     remedy: remedyCall,
+    experts,
     forum,
     ms: Math.max(0, Date.now() - t0),
     allow,

@@ -44,6 +44,33 @@ const BRIDGES = new Map<string, string>()
 /** Each family's domain, as far as the families have sealed a formula — src → dst. A copy, so a caller cannot mutate it. */
 export const qpuCrossBridgesOf = (): Map<string, string> => new Map(BRIDGES)
 
+// FIND ALL OF A DOMAIN, AUTOMATICALLY AND TOKEN-FREE. The bridges fill only as a formula seals, so this seals every
+// family's first formula once (memoised — a local read on the seed, no MCP tokens, no hand list) then reads the graph.
+// qpuDomainOf('hardware') is every family that crosses to hardware; qpuRelatedOf(f) is f's siblings in its own domain —
+// the experts a standardised court convenes from related families.
+let sealed = false
+const sealAll = (): void => {
+  if (sealed) return
+  sealed = true
+  for (const fs of qpuHexFamiliesOf().values()) {
+    const f = fs[0]
+    if (!f) continue
+    const a = f.arity
+    const args = a <= 0 ? [] : a === 1 ? [3n] : a === 2 ? [6n, 3n] : Array.from({ length: a }, () => 3n)
+    try { f.run(args) } catch { /* a family that cannot seal on these seeds is simply not bridged yet — a lead, not a block */ }
+  }
+}
+/** Every family whose sealed domain is `domain`, sorted — derived from the bridges, no hand list. */
+export const qpuDomainOf = (domain: string): string[] => { sealAll(); return [...BRIDGES].filter(([, d]) => d === domain).map(([s]) => s).sort() }
+/** The whole domain map: each domain with the families that cross to it — the self-filling graph, read token-free. */
+export const qpuDomainsOf = (): Record<string, string[]> => { sealAll(); const m: Record<string, string[]> = {}; for (const [s, d] of BRIDGES) (m[d] ??= []).push(s); for (const d in m) m[d]!.sort(); return m }
+/** A family's related families — its siblings in the same domain (itself excluded): the experts of its field. */
+export const qpuRelatedOf = (family: string): { family: string; domain: string | undefined; experts: string[] } => {
+  sealAll()
+  const domain = BRIDGES.get(family)
+  return { family, domain, experts: domain ? [...BRIDGES].filter(([s, d]) => d === domain && s !== family).map(([s]) => s).sort() : [] }
+}
+
 export const crossFormulaOf = (f: Omit<CrossFormula, 'uuid' | 'receipt' | 'holds' | 'hex' | 'hexExact'>, domain = true, call?: { name: string; params: number[] }): CrossFormula => {
   if (f.src && f.dst) BRIDGES.set(f.src, f.dst)
   const uuid = qpuContentUuidOf({ src: f.src, dst: f.dst, formula: f.formula })
