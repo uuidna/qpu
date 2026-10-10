@@ -1294,6 +1294,7 @@
     "k8s:scale": "kubectl scale deployment qpu -n quantum --replicas",
     "k8s:logs": "kubectl logs -n quantum -l app=uuidna-qpu -f",
     "cf:dev": "wrangler dev",
+    "cf:build": "npm run build && npm run seed && opennextjs-cloudflare build --noMinify",
     "cf:deploy": "wrangler deploy",
     "cf:tail": "wrangler tail",
     "cf:kv:list": "wrangler kv:key list STORAGE",
