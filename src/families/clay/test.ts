@@ -13,14 +13,14 @@ import '../../mcp/families.js'
  *  formulas, counted by how many are a Lean def the kernel already proves. The clay cluster is held to its seals,
  *  exact, at their hex addresses. The live cross-development — a value two families reach, answering alike from every
  *  perspective — is verified where it is generated, by `receipt.mjs next` and the discovery receipt, not here. */
-test('clusters: 124 theorems, 0 axioms, the def cluster, each family, and the clay seals — offline and exact', async (t) => {
+test('clusters: 152 theorems, 0 axioms, the def cluster, each family, and the clay seals — offline and exact', async (t) => {
   const families = qpuHexFamiliesOf()
   const leanDefs = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[1]))
   const theorems = [...leanSource.matchAll(/^[ \t]*theorem ([A-Za-z]\w*)/gm)].map((m) => m[1])
   const axioms = [...leanSource.matchAll(/^[ \t]*axiom ([A-Za-z]\w*)/gm)].map((m) => m[1])
 
   // the Lean clusters, from the source the kernel checks
-  assert.equal(theorems.length, 124, 'the theorem cluster: 124, each recomputed by the kernel')
+  assert.equal(theorems.length, 152, 'the theorem cluster: 152, each recomputed by the kernel')
   assert.equal(axioms.length, 0, 'no axioms: nothing assumed, everything proven')
   assert.ok(leanDefs.size >= 40, 'the def cluster the theorems are built from')
 

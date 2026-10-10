@@ -28,12 +28,12 @@ test('access: read/write/role/tenant formulated, and the security screen names e
   assert.deepEqual((AccessFormulas.screen(0b10111) as unknown as { failed: string[] }).failed, ['input-clean'])
   assert.equal(AccessFormulas.token(256).holds, true, '256-bit token is strong')
   assert.equal(AccessFormulas.token(128).holds, false, '128-bit token is below the floor')
-  assert.equal(qpuHexFamiliesOf().get('access')?.length, 6)
+  assert.equal(qpuHexFamiliesOf().get('access')?.length, 10)
   for (const [name, params, expected] of [['read', [2, 0], 1], ['screen', [0b11111], 5], ['tenant', [5, 6, 1], 0]] as [string, number[], number][]) {
     const uuid = qpuHexUuidOf({ family: 'access', program: [name], params })
     const run = (await qpuHexRunOf(uuid)) as { value?: unknown }
     assert.equal(Number(run.value), expected, `access.${name} at ${uuid}`)
     qpuUuidReceiptOf(`access ${name}`, qpuContentUuidOf(run), { uuid })
   }
-  t.diagnostic('6 formulas; published reads to all, drafts to users; admin or owner writes; super crosses tenants; the screen names every failed check')
+  t.diagnostic('10 formulas; published reads to all, drafts to users; admin or owner writes; super crosses tenants; the screen names every failed check; root, rank, grant, sudo')
 })

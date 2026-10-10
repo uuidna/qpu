@@ -1,14 +1,27 @@
-import type { CollectionConfig } from 'payload'
+import type { Access, CollectionConfig, FieldAccess } from 'payload'
 import { hostOf } from './Tenants'
 
 // shown only to a signed-in admin: the first-user screen asks for an email and a password and nothing else
 const signedIn = (_: unknown, __: unknown, { user }: { user?: unknown }) => Boolean(user)
+// A privileged field (role, active, tenants) is writable ONLY by a super-admin. Without this, Payload enforces no field
+// access and any signed-in user could PATCH its own role to super-admin and cross every tenant. The first user is still
+// created by first-register with overrideAccess, so that bootstrap is unaffected; a normal user keeps read + self-profile.
+const roleOf = (req: { user?: unknown } | undefined) => (req?.user as { role?: string } | null | undefined)?.role
+const isSuperAdmin: Access = ({ req }) => roleOf(req) === 'super-admin'
+const superAdminField: FieldAccess = ({ req }) => roleOf(req) === 'super-admin'
+const signedInField: FieldAccess = ({ req }) => Boolean(req.user)
 
 /** The first user is the super admin, with access to every tenant; creating it creates the first tenant on the request's host.
  *  It gives only an email and a password: the role, the state, the tenant and the name are known. */
 export const Users: CollectionConfig = {
   slug: 'users',
   auth: true,
+  // Only a super-admin creates or deletes accounts (first-register bootstraps with overrideAccess). Read and update are
+  // left to the multi-tenant default (self + own tenants); the privileged fields below are locked to super-admin.
+  access: {
+    create: isSuperAdmin,
+    delete: isSuperAdmin,
+  },
   admin: {
     useAsTitle: 'email',
   },
@@ -51,19 +64,21 @@ export const Users: CollectionConfig = {
       type: 'select',
       options: ['super-admin', 'admin', 'user'],
       defaultValue: 'user',
+      access: { update: superAdminField, create: superAdminField },
       admin: { condition: signedIn },
     },
     {
       name: 'active',
       type: 'checkbox',
       defaultValue: true,
+      access: { update: superAdminField, create: superAdminField },
       admin: { condition: signedIn },
     },
     {
       name: 'tenants',
       type: 'array',
       admin: { condition: signedIn },
-      access: { read: ({ req }) => Boolean(req.user), create: ({ req }) => Boolean(req.user) },
+      access: { read: signedInField, update: superAdminField, create: superAdminField },
       fields: [{ name: 'tenant', type: 'relationship', relationTo: 'tenants', required: true, index: true }],
     },
   ],

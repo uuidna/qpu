@@ -25,6 +25,7 @@ import {
   qpuMcpOf,
   qpuMcpToolsListOf,
   qpuNetworkToolsOf,
+  qpuStorageWriteAllowedOf,
   qpuStepsOf,
   rpcCodes,
   rpcErrorOf,
@@ -575,6 +576,9 @@ export const publicDoorFetchOf = async (request: Request, env?: QpuEnv): Promise
     return publicChatSearchOf(request, env)
   }
   if (path === '/api/qpu/cloudflare') {
+    // Account inventory + wrangler subprocesses: gate on the write bearer and never answer an anonymous caller.
+    if (!qpuStorageWriteAllowedOf(env, request.headers.get('authorization')))
+      return jsonOf({ holds: false, denied: 'cloudflare account inventory needs Authorization: Bearer QPU_WRITE_TOKEN' }, lost)
     const { publicCloudflareOf } = await import('./cloudflare-account.js')
     return publicCloudflareOf(request)
   }

@@ -198,7 +198,7 @@ const withOptions = (call: string, options?: string): string =>
 const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: string; name: string; call: (t: PluginTargets) => string }> = {
   ecommerce: {
     from: '@payloadcms/plugin-ecommerce', name: 'ecommercePlugin',
-    call: () => `ecommercePlugin({ products: true, customers: { slug: 'users' }, access: { isAdmin: ({ req }) => Boolean(req.user), adminOnlyFieldAccess: ({ req }) => Boolean(req.user), adminOrPublishedStatus: ({ req }) => (req.user ? true : { _status: { equals: 'published' } }), isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) } })`,
+    call: () => `ecommercePlugin({ products: true, customers: { slug: 'users' }, access: { isAdmin: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' }, adminOnlyFieldAccess: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' }, adminOrPublishedStatus: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' ? true : { _status: { equals: 'published' } } }, isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) } })`,
   },
   'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: () => 'formBuilderPlugin({})' },
   'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}] })` },

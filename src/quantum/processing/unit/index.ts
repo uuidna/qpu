@@ -4963,6 +4963,10 @@ export const qpuStorageRedundancyHolds = (): boolean => {
  * @evidence qpuStorageMaintainHolds
  */
 export const qpuStorageMaintainOf = async (env?: QpuEnv, auth?: string | null) => {
+  // A WRITE PATH: maintain repairs and drops storage. Without this gate it rewrote and deleted for any caller. Fail closed,
+  // the same bearer the other writes require.
+  if (!qpuStorageWriteAllowedOf(env, auth))
+    return { '@context': qpuContextOf(), '@type': 'Action' as const, '@id': `${storageHref}#maintain`, url: storageHref, kind: 'maintain' as const, denied: 'storage maintenance needs Authorization: Bearer QPU_WRITE_TOKEN', repaired: n - n, remaining: n - n, orphans: n - n, holds: false }
   const faces = qpuFacesOf()
   const store = storageStoreOf(env)
   const names = await store.keys()
