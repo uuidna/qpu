@@ -2,6 +2,16 @@ import { bigGcdOf, bigPowModOf, qpuCiteOf, qpuClayOf, qpuDocsOf, qpuFoldOf, qpuH
 import { hologramStreamsOf } from '../families/holo/index.js'
 import { crossSchemaOf, crossSchemasOf, qpuDomainsOf } from '../families/cross/index.js'
 import { receipts } from '../receipts/index.js'
+import QUANTUM from '../quantum/kernel/index.js'
+// THE COOL KERNEL CORE, UNLOCKED. The kernel is direct, zero-wrapper quantum algorithms (Shor, Grover, TSP, knapsack,
+// discrete log, GHZ/Bell, surface/stabilizer codes, Hamiltonian) — a benchmark near zero microseconds (the cold core),
+// its 19-test verify, and its capability catalogue. Served here so the plugin connects all through the kernel; the hot
+// dynamics (families, fusion, churn) orbit this cold, stable centre. JSON-safe: only verify, benchmark and capability
+// names are surfaced — never the bigint phase outputs.
+const kernelOf = () => {
+  const v = QUANTUM.verify()
+  return { kind: 'kernel' as const, status: v.status, verify: v, benchmark: QUANTUM.benchmark(), capabilities: { cryptography: Object.keys(QUANTUM.cryptography), optimization: Object.keys(QUANTUM.optimization), simulation: Object.keys(QUANTUM.simulation), entanglement: Object.keys(QUANTUM.entanglement), errorCorrection: Object.keys(QUANTUM.errorCorrection), primitives: Object.keys(QUANTUM.primitives) }, tools: Object.keys(QUANTUM.tools), holds: v.success === true }
+}
 // The autonomous optimisation map, measured over git time by the heat family and embedded as a committed receipt:
 // each file's temperature (mK), the hottest, and how many ways to split it to cool. Read here so a client — or the
 // cooling loop — drives optimisation from the MCP plugin, not from a shell.
@@ -195,6 +205,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://receipts', name: 'receipts', title: 'Receipt streams', description: 'Every quantum-receipt stream: head, length, chain, holds', mimeType: 'application/json' },
   { uri: 'qpu://hex', name: 'hex', title: 'Hex catalogue', description: 'Every formula family a hex UUID can program, with handles and nibbles — the index of the rest', mimeType: 'application/json' },
   { uri: 'qpu://code', name: 'code', title: 'Unlimited code', description: 'The measured program space: v8 UUID address bits, families, formulas — every { family, program, params } a UUID run at qpu://hex/{uuid}; the code space is unbounded, only a single run is, and any MCP fuses it', mimeType: 'application/json' },
+  { uri: 'qpu://kernel', name: 'kernel', title: 'Quantum kernel', description: 'The cool kernel core — direct, zero-wrapper quantum algorithms (Shor, Grover, TSP, knapsack, discrete log, GHZ/Bell, surface/stabilizer codes, Hamiltonian): its 19-test verify, its microsecond benchmark (the near-zero-temperature core), and its capability catalogue, connected through the plugin', mimeType: 'application/json' },
   { uri: 'qpu://hologram', name: 'hologram', title: 'Hologram streams', description: 'One signed SHA-256 UUID stream per hologram scale and the Merkle root of all of them', mimeType: 'application/json' },
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
@@ -250,6 +261,7 @@ const readOf = async (uri: string): Promise<unknown> => {
   if (uri === 'qpu://factoring') return factoringOf(0)
   if (uri === 'qpu://court') return gateCourtOf()
   if (uri === 'qpu://schema') return crossSchemasOf()
+  if (uri === 'qpu://kernel') return kernelOf()
   if (uri === 'qpu://heat') return heatOf()
   if (uri === 'qpu://domains') return qpuDomainsOf()
   if (uri === 'qpu://hologram') {
