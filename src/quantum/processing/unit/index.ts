@@ -6917,6 +6917,13 @@ export const QPU_TEACHINGS: readonly QpuTeaching[] = [
   { subject: 'arts and crafts', domain: 'topology', direction: 'practice to theory', year: 1877,
     what: 'Tait tabulated knots by working from knots people tied, and the tables long preceded any account that could be taught back to a maker',
     source: 'Tait, On knots, Trans. Roy. Soc. Edinburgh 28 (1877)' },
+
+  { subject: 'music', domain: 'group theory', direction: 'practice to theory', year: 1859,
+    what: 'the parsimonious triadic moves of late-Romantic harmony — the hexatonic voice-leadings of Tristan — were composed before they were read as a simply transitive group acting on the consonant triads',
+    source: 'Lewin, Generalized Musical Intervals and Transformations (Yale University Press, 1987)' },
+  { subject: 'brewing', domain: 'biochemistry', direction: 'practice to theory', year: -1800,
+    what: 'the Hymn to Ninkasi records a complete grain-to-beer fermentation recipe millennia before Buchner fermented sugar with a cell-free yeast extract and showed the sugar-to-alcohol step is catalysed by enzymes, not performed by the living cell',
+    source: 'Buchner, Über alkoholische Gärung ohne Hefezellen, Berichte der deutschen chemischen Gesellschaft 30 (1897)' },
 ]
 
 /** Three states, and the third is not silence: not decidable from the evidence held here. */
