@@ -2267,6 +2267,18 @@ const classicalOrderOf = (base: bigint, modulus: bigint): { ring: boolean; unit:
   }
   return { ring: true, unit: true, order: n - n, beyond: true }
 }
+/** Order-finding as a SPLIT, not a cap: one hexbit-wide slice of the exact walk from `cur = base^from`. It carries the
+ *  running power out so the caller caches it in that slice's hex folder and resumes at `next` — O(1) live memory, reach
+ *  unbounded across slices (no ceiling), and the cache is dropped when `order` is found or the walk is abandoned. */
+export const qpuOrderSliceOf = (base: bigint, modulus: bigint, from: number, cur: bigint): { order: number | null; next: number | null; cur: bigint } => {
+  const folder = mintOf(coins)
+  let power = from === n - n ? b1 : cur
+  for (let k = seed; k <= folder; k++) {
+    power = modOf(power * base, modulus)
+    if (power === b1) return { order: from + k, next: null, cur: power }
+  }
+  return { order: null, next: from + folder, cur: power }
+}
 /** How one argument was read. `digits` is a string of digits, exact at any size. `number` is a JSON number, exact only up
  * to 2^53 (past that the caller's own parser rounded it before it arrived). `numeric` is any other numeric string, read
  * through a double, exact only when the double is an integer under 2^53. `absent` means the caller named nothing and the
