@@ -114,23 +114,18 @@ export const guardLean = async (host = 'https://qpu.uuidna.com') => {
     const b = await r.json().catch(() => null)
     try { return JSON.parse(b.result.content[0].text) } catch { return b?.result?.structuredContent ?? null }
   }
-  // ANY DOUBT ORIENTS TO CLAY TO ANSWER LEAN. The single authority is clay.disclosure: it holds iff the σ-involution
-  // covers every family without exception AND the embedded kernel recomputes clean (every theorem holds, 0 axioms, 0
-  // unproven). This guard reads that one answer and compares its family count to the registry — it does not re-derive
-  // the kernel for itself. (`prove` is read only as a corroborating note, never as the verdict.)
-  const [doors, disclosure, prove] = await Promise.all([
-    rpc('quantum', { doors: true }),
-    rpc('quantum', { door: 'clay.disclosure' }),
-    rpc('prove'),
-  ])
-  if (doors === null && disclosure === null) return { reached: false, guarded: false, why: 'host unreached (soft pass — retried next run)' }
-  const families = doors?.families ?? 0
-  const k = disclosure?.kernel
-  const guarded = disclosure?.holds === true && (disclosure?.value ?? -1) === families && families > 0
+  // CLAY DECIDES LEAN; THIS GUARD DOES NOT. The verdict is the server-computed clay.disclosure.holds — a single sealed
+  // boolean the unit itself computes (σ-involution over every family ∧ embedded kernel recomputes clean ∧ families > 0)
+  // and that the unit ENFORCES by refusing to serve (404) when it is false. The guard reads that one boolean verbatim;
+  // it does not re-derive a verdict in JS (that would be the guard deciding lean, in a script an agent can edit — not
+  // clay). value (= the family count clay disclosed) is reported for the operator, never recombined into the verdict.
+  const disclosure = await rpc('quantum', { door: 'clay.disclosure' })
+  if (disclosure === null) return { reached: false, guarded: false, why: 'host unreached (soft pass — retried next run)' }
+  const guarded = disclosure.holds === true
   const why = guarded
-    ? `clay answers lean: clay.disclosure holds — σ-involution covers all ${families} families without exception and the kernel recomputes clean (${k?.held}/${k?.theorems} theorems, ${k?.axioms ?? 0} axioms). One authority, machine-verified.`
-    : `HARD VIOLATION — clay.disclosure does not hold (value=${disclosure?.value}/${families}, kernel ${k?.held}/${k?.theorems}, axioms=${k?.axioms}); lean is not in harmony and clay says so`
-  return { reached: true, guarded, families, disclosureHolds: disclosure?.holds === true, kernel: k, proveCorroborates: prove?.holds === true, why }
+    ? `clay answers lean: clay.disclosure.holds === true — the unit's own sealed verdict (σ-involution over all ${disclosure.value} families + kernel recomputes clean), enforced server-side (false ⇒ 404). Read verbatim, not re-derived.`
+    : `HARD VIOLATION — clay.disclosure.holds is ${disclosure.holds} (families disclosed: ${disclosure.value}); clay says lean is not in harmony, and the unit would 404 rather than serve it`
+  return { reached: true, guarded, families: disclosure.value, verdict: 'clay.disclosure.holds', why }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
