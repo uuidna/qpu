@@ -334,9 +334,9 @@ const readOf = async (uri: string): Promise<unknown> => {
 type Link = { call: string; holds: string; lead: string }
 const booleanChain = (links: readonly Link[], product: string) =>
   [
-    'Think in a boolean chain. Each step HOLDS (true) → chain to the next; NOT (false) → it is a lead: develop it, do not assert it. The chain holds if and only if every step holds.',
-    ...links.map((l, i) => `${i + 1}. ${l.call} → HOLDS when ${l.holds}; NOT → lead: ${l.lead}.`),
-    `Product: ${product}.`,
+    'This is a court session (qpu://court), sealed in hex. Think in a boolean chain: each step HOLDS (true) → chain to the next; NOT (false) → it is a LEAD with a forum and a remedy — develop it, never assert it. The chain holds iff every step holds; the Product is the verdict, a measure with reviewed = 0 (deferred to you), never counsel until you confirm it TRUE.',
+    ...links.map((l, i) => `${i + 1}. ${l.call} → HOLDS when ${l.holds}; NOT → lead (remedy): ${l.lead}.`),
+    `Product (verdict): ${product}. reviewed = 0 — leads and a measure, not counsel.`,
   ].join('\n')
 
 const orOf = (xs: readonly string[]) => xs.join(' ∨ ')
@@ -550,7 +550,10 @@ const PROMPTS: Prompt[] = [
 for (const prompt of PROMPTS) {
   if (prompt.arguments.some((a) => a.required)) continue
   const text = prompt.messages({})
-  if (!text.includes('HOLDS') || !text.includes('Product:')) throw new Error(`prompt ${prompt.name} is not a boolean chain`)
+  // STRICT: every prompt is a SEALED COURT SESSION — a boolean chain of holds/leads, a verdict, deferred to review. No
+  // prompt may be defined that is not tried this way (ensures all prompts are hex-sealed court sessions).
+  if (!text.includes('HOLDS') || !text.includes('Product (verdict)') || !text.includes('court session') || !text.includes('reviewed = 0'))
+    throw new Error(`prompt ${prompt.name} is not a sealed court-session boolean chain`)
 }
 if (new Set(PROMPTS.map((p) => p.name)).size !== PROMPTS.length) throw new Error('prompt names collide')
 const composeOf = PROMPTS.find((p) => p.name === 'compose')!
@@ -611,7 +614,8 @@ qpuMcpRegisterOf('resources/read', async (p) => {
 
 qpuMcpRegisterOf('prompts/list', (p) => {
   const { page, ...rest } = paged('prompts', PROMPTS, (x) => x.name, p)
-  return { prompts: page.map(({ messages, ...x }) => x), ...rest }
+  // each prompt carries its hex seal (the fold of its name) — a sealed court session, not a loose literal
+  return { prompts: page.map(({ messages, ...x }) => ({ ...x, _meta: { seal: qpuFoldOf(x.name), sealed: true, session: 'qpu://court' } })), ...rest }
 }, { prompts: { listChanged: false } })
 
 qpuMcpRegisterOf('prompts/get', (p) => {
@@ -620,7 +624,7 @@ qpuMcpRegisterOf('prompts/get', (p) => {
   const args = Object.fromEntries(Object.entries((p.arguments ?? {}) as Params).map(([k, v]) => [k, String(v)]))
   const missing = prompt.arguments.filter((a) => a.required && !args[a.name]).map((a) => a.name)
   if (missing.length) throw invalid(`Missing required arguments: ${missing.join(', ')}`)
-  return { description: prompt.description, messages: [{ role: 'user', content: { type: 'text', text: prompt.messages(args) } }] }
+  return { description: prompt.description, _meta: { seal: qpuFoldOf(prompt.name), sealed: true, session: 'qpu://court' }, messages: [{ role: 'user', content: { type: 'text', text: prompt.messages(args) } }] }
 })
 
 qpuMcpRegisterOf('completion/complete', (p) => {
