@@ -140,7 +140,16 @@ export const apiCallOf = async (which: number | string, operation: number, param
   // path, no host injection), bounds by the deadline, and never receipts the credential (the receipt folds url/status/
   // excerpt only). Without it a write is resolved, not made — so the pure api.call(i, j, s) formula, which passes no
   // credential, stays a read and stays reproducible. The write is the caller's, authorised by the caller, proxied once.
-  const credential = typeof params.authorization === 'string' ? params.authorization : ''
+  // PIN THE CREDENTIAL TO THE API'S OWN HOST (Wave XIII). serverOf trusts the URL the fetched spec names, so a spec
+  // could point the server at another host and the caller's authorization would follow it. The credential is sent ONLY
+  // when the resolved URL's host is the API's own registered domain (or a subdomain of it); otherwise it is withheld and
+  // the reading says so — the call still goes (likely 401), the token never leaks to a host the API did not claim.
+  const expectedHost = api.api.split('/')[0]!.split(':')[0]!.toLowerCase()
+  const urlHost = (() => { try { return new URL(url).host.toLowerCase() } catch { return '' } })()
+  const sameHost = urlHost !== '' && (urlHost === expectedHost || urlHost.endsWith('.' + expectedHost))
+  const offered = typeof params.authorization === 'string' ? params.authorization : ''
+  const credential = sameHost ? offered : ''
+  const credentialWithheld = offered && !sameHost ? { credentialWithheld: urlHost, expected: expectedHost } : {}
   const body = op.verb === 'get' || params.body === undefined ? undefined : typeof params.body === 'string' ? params.body : JSON.stringify(params.body)
   // Every verb the caller names is MADE. The only path that does not is the pure api.call(i, j, s) FORMULA (readOnly):
   // a content-addressed computation must stay reproducible — it cannot fire an external write on replay or the receipt
@@ -156,7 +165,7 @@ export const apiCallOf = async (which: number | string, operation: number, param
     const text = await r.text()
     let excerpt: unknown = text.slice(0, EXCERPT)
     if (/json/.test(type)) { try { excerpt = JSON.parse(text.length > EXCERPT * 8 ? text.slice(0, EXCERPT * 8) : text) } catch { /* an excerpt of the text stands */ } }
-    return sealed({ ...base, url, status: r.status, type, bytes: text.length, excerpt, seconds: (Date.now() - t0) / 1000 })
+    return sealed({ ...base, url, status: r.status, type, bytes: text.length, excerpt, seconds: (Date.now() - t0) / 1000, ...credentialWithheld })
   } catch (e) {
     return sealed({ ...base, url, seconds: (Date.now() - t0) / 1000, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message })
   }

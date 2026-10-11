@@ -288,7 +288,10 @@ export const worker = {
         if (rpc) return jsonOf(rpc)
       }
       const program = path.slice('/hex/'.length)
-      if (program) return jsonOf(await qpuHexRunOf(program, undefined, env))
+      // a GET is a read: it never persists (store: false), so an unauthenticated GET /hex/<uuid> cannot write a db/hex
+      // row and bypass the storage write bearer (Wave XIII). The value is a deterministic function of the uuid, so a
+      // re-read recomputes it; persistence belongs to the authorized write paths, not an anonymous read.
+      if (program) return jsonOf(await qpuHexRunOf(program, undefined, env, { store: false }))
       // the hex catalogue enumerates every family and is static per deploy: ETag + 304 so a free wave re-reading the whole
       // catalogue (the biggest static reply) revalidates instead of recomputing and re-sending it every request.
       return servedResponse(servedOf('/hex', () => qpuHexCatalogOf()))
