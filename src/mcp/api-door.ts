@@ -152,8 +152,8 @@ export const apiCallOf = async (which: number | string, operation: number, param
   const credentialWithheld = offered && !sameHost ? { credentialWithheld: urlHost, expected: expectedHost } : {}
   const body = op.verb === 'get' || params.body === undefined ? undefined : typeof params.body === 'string' ? params.body : JSON.stringify(params.body)
   // Every verb the caller names is MADE. The only path that does not is the pure api.call(i, j, s) FORMULA (readOnly):
-  // a content-addressed computation must stay reproducible — it cannot fire an external write on replay or the receipt
-  // model breaks. The tool fires any verb. QPU sends only the caller's own { authorization } (none of its own secrets),
+  // a content-addressed computation stays reproducible by construction — on replay it fires no external write, or the
+  // receipt model breaks (determinism). The tool fires any verb. QPU sends only the caller's own { authorization } (none of its own secrets),
   // to the spec's resolved server+path (no host injection), within the deadline; the credential is never receipted.
   if (op.verb !== 'get' && readOnly) return sealed({ ...base, url, why: `${op.verb} is a write: not made from the reproducible api.call(i, j, s) formula — call the api tool { api, operation, params } to make it` })
   const headers: Record<string, string> = { accept: 'application/json, */*;q=0.5', ...ua, ...(credential ? { authorization: credential } : {}), ...(body !== undefined ? { 'content-type': 'application/json' } : {}) }

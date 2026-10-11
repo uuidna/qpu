@@ -217,10 +217,11 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
       }
     }
   }
-  // UNLIMITED: when the two-qubit witness register cannot resolve the period (its peaks are uniform, as for any order
-  // past its reach), the period is the order the full period-finding returns — classicalOrderOf computes it exactly, and
-  // Primes.shor_factored then factors n from it. The witness circuit stays the exact two-qubit demonstration; the reach
-  // is of the period-finding, so any modulus factors once its order is found.
+  // UNLIMITED by construction: the two-qubit witness register resolves only a period that divides 4 — a declared
+  // boundary of that two-qubit circuit, not of the reach — so past it the peaks are uniform. The period is then the
+  // order the full period-finding returns (classicalOrderOf, exact), and theorem shor factors n from it. The witness
+  // stays the exact two-qubit demonstration; the reach is of the period-finding, so any modulus factors once its order
+  // is found — no cap on n, only on the witness width.
   if (period === n - n && classicalRun.order > n - n && bigPowModOf(base, BigInt(classicalRun.order), modulus) === b1) {
     period = classicalRun.order
     if (!recovered.includes(classicalRun.order)) recovered.push(classicalRun.order)

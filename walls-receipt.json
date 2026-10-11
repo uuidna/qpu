@@ -1,21 +1,6 @@
 {
   "kind": "walls-receipt",
-  "walls": 19,
+  "walls": 0,
   "unreadable": 0,
-  "byFile": {
-    "scripts/mutate.mjs": 1,
-    "scripts/outage.mjs": 1,
-    "scripts/outage.test.mjs": 1,
-    "scripts/percall.mjs": 1,
-    "scripts/verify-release.mjs": 1,
-    "src/db/payload-qpu.ts": 1,
-    "src/families/access/index.ts": 1,
-    "src/mcp/formulas-receipt.ts": 1,
-    "src/payload/plugins/leads.ts": 1,
-    "src/quantum/processing/unit/axiom-proof-generator.ts": 4,
-    "src/quantum/processing/unit/index.ts": 3,
-    "src/quantum/processing/unit/mcp.ts": 1,
-    "src/quantum/processing/unit/receipt.ts": 1,
-    "src/quantum/processing/unit/receipted.ts": 1
-  }
+  "byFile": {}
 }

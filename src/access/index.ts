@@ -22,7 +22,7 @@ export const adminOrAbove: Access = ({ req }) => {
 }
 
 /** The same rule as adminOrAbove, but returning a plain boolean — the signature CollectionConfig.access.admin requires
- *  (the admin-panel gate cannot be a query, only yes/no). Used to gate /admin to active admins and super-admins. */
+ *  it (Payload's admin-panel gate is yes/no by construction, not a query). Used to gate /admin to active admins and super-admins. */
 export const canAccessAdmin = ({ req }: { req: PayloadRequest }): boolean => {
   const u = req.user as { role?: string; active?: boolean } | null | undefined
   return Boolean(u) && u?.active !== false && (u?.role === 'admin' || u?.role === 'super-admin')

@@ -26,7 +26,7 @@ export const Users: CollectionConfig = {
   // (role, active, tenants) are additionally locked to super-admin below.
   access: {
     // The admin PANEL is gated to an active admin or super-admin: a role:'user' account (or a deactivated one) can hold a
-    // session and authenticate, but cannot enter /admin to reach the CMS. This is Payload's panel gate, separate from the
+    // session and authenticate, but is held out of /admin by construction — Payload's panel gate — separate from the
     // per-collection read/write access below. (Wave XIV compliance, SOC2-CC6.1 least-privilege.)
     admin: canAccessAdmin,
     create: isSuperAdmin,

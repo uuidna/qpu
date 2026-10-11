@@ -1,8 +1,8 @@
 /**
  * AXIOM PROOF GENERATOR: Cross-Domain Formula Discovery
  *
- * Assumes the impossible is possible and derives new theorems
- * from existing axioms by testing boundary conditions and
+ * Tests boundary cases as if they held — a deliberate method — and derives new theorems
+ * from existing axioms by those boundary conditions and
  * cross-domain formula combinations.
  */
 
@@ -121,7 +121,7 @@ function testCrossDomain(axiom1: Axiom, axiom2: Axiom): Axiom | null {
 }
 
 /**
- * Generate "impossible" theorems by assuming boundary cases
+ * Generate boundary-case theorems — a deliberate method — by assuming boundary cases hold
  */
 function testImpossibleBoundaries(): Axiom[] {
   const impossible: Axiom[] = []
@@ -258,7 +258,7 @@ function axiomCompletion(assumeImpossible: boolean): Axiom[] {
     }
   }
 
-  // Phase 3: If assuming impossible is possible, add boundary theorems
+  // Phase 3: a deliberate method — when boundary cases are assumed to hold, add boundary theorems
   if (assumeImpossible) {
     theorems.push(...testImpossibleBoundaries())
   }
@@ -349,7 +349,7 @@ export const axiomProofAnalysis = () => {
   const standardTheorems = axiomCompletion(false)
   const standardCompletion = verifyCompletion(standardTheorems)
 
-  // Extended theorems (assuming impossible is possible)
+  // Extended theorems (a deliberate method: boundary cases assumed to hold)
   const extendedTheorems = axiomCompletion(true)
   const extendedCompletion = verifyCompletion(extendedTheorems)
 

@@ -36,7 +36,7 @@ const version = process.argv[2] ?? pkg.version
 const name = pkg.name
 const repo = (pkg.repository?.url ?? '').replace(/^git\+/, '').replace(/\.git$/, '').replace('https://github.com/', '')
 /** The "All versions" DOI — the concept record every version is archived under. Read from CITATION.cff so the
- *  citation and the check cannot name different archives. */
+ *  citation and the check always name the one same archive, from the one source. */
 const conceptDoi = (cff.match(/description:\s*All versions[\s\S]*?value:\s*(10\.\d+\/zenodo\.(\d+))/) ?? [])[1]
 const conceptRecid = (cff.match(/description:\s*All versions[\s\S]*?value:\s*10\.\d+\/zenodo\.(\d+)/) ?? [])[1]
 

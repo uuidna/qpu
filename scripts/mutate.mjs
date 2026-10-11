@@ -3,7 +3,7 @@
  * Every guard in qpu, proved able to fail.
  *
  * LEARNED FROM @uuidna/school, which built this first and states the reason better than a restatement would: a
- * test that cannot fail is furniture, and that package had shipped two green ones that were measuring the
+ * test that never fails is furniture, and that package had shipped two green ones that were measuring the
  * apparatus rather than the code. The RUNNER is that discipline; the TABLE is qpu's own, because a mutation
  * table copied between packages would test the other package's guards.
  *

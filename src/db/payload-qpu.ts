@@ -154,7 +154,7 @@ export function qpuAdapter(args: QpuAdapterArgs = {}): DatabaseAdapterObj {
   function adapter({ payload }: { payload: Payload }) {
     const migrationDir = findMigrationDir(args.migrationDir)
     // only what the collection defines is stored, as a strict schema would: a form's confirm-password is the password
-    // in clear and must never reach the store
+    // in clear, so by construction the strict schema excludes it — a plaintext secret is kept out of the store
     const system = new Set(['id', '_id', 'createdAt', 'updatedAt', 'hash', 'salt', 'loginAttempts', 'lockUntil', 'resetPasswordToken', 'resetPasswordExpiration', '_verified', '_verificationToken', 'sessions', 'apiKey', 'apiKeyIndex', 'enableAPIKey', '_status'])
     const keep = (collection: string, data: Row): Row => {
       const fields = (payload.collections as unknown as Record<string, { config?: { flattenedFields?: { name?: string }[] } } | undefined>)[collection]?.config?.flattenedFields

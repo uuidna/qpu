@@ -926,7 +926,7 @@ const STORE_SCAN_PAGES = mintOf(coins)
  *  total is a reading and not a gate, so it is sampled and labelled rather than paid for per key. */
 const STORE_BYTES_SAMPLE = mintOf(mintOf(coins))
 /** How many links one maintain call will repair, and how many orphans it will drop. A repair is a read and two
- *  writes; unbounded, the call runs out of subrequests mid-store and cannot say what it did.
+ *  writes; unbounded, the call runs out of the host's subrequests mid-store and so cannot report what it did — an edge limit, bounded here deliberately.
  *
  *  LOW, because one repair is not one write. A RAID rewrite puts the value and all fourteen shares, across KV and
  *  R2 — measured at 30 subrequests for a single link. Cloudflare allows 50 per request on the free plan, so a
@@ -2541,7 +2541,7 @@ export const qpuLeanSourceHolds = (x?: ReturnType<typeof qpuLeanSourceOf>): bool
  */
 export type QpuCross = 'asymmetric' | 'bridge' | 'cross' | 'neither' | 'symmetric'
 /** The statement's type: what follows the first ` : ` outside any bracket, so binders like `(a b : Nat)` and
- *  `∀ x : Nat,` cannot be mistaken for it. */
+ *  `∀ x : Nat,` are not mistaken for it, by construction (the first colon outside any bracket). */
 const statedTypeOf = (statement: string): string => {
   const stated = spaceOf(statement.split(':=')[n - n] ?? '')
   let depth = n - n
@@ -4921,7 +4921,7 @@ export const qpuStorageMonitorHolds = (x?: Awaited<ReturnType<typeof qpuStorageM
  *   DETERMINED — a referrer carries no information its inode does not. The inode's `links` holds the very key
  *   the referrer belongs to, and its address and occupancy are the inode's own, so the pointer is a function of
  *   the payload. Striping it stores fourteen shares of something already reconstructible, which is why removing
- *   them loses nothing: you cannot lose what is derivable.
+ *   them loses nothing: what is derivable is never lost — it recomputes, by construction.
  *
  *   MIRRORED — the two RAID teams are the same stripes dealt twice. Seven shares determine the value, so reading
  *   fourteen reads twice what the answer needs. raidJoinOf over either team returns the text.

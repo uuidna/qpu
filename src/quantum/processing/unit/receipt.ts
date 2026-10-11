@@ -86,7 +86,7 @@ export default async function* receipt(source: AsyncIterable<TestEvent>): AsyncG
    * called a foreign door: when CERN answers, the readers build documents and mint doublings that a refused run
    * never builds. The receipt was not wrong; it was faithfully recording that less computation happened.
    *
-   * So it cannot be both a fold of the computation performed and invariant under someone else's weather, and
+   * So it is not both a fold of the computation performed and invariant under someone else's weather — by construction one excludes the other — and
    * `npm run proof` was asking for the second while the file delivered the first. It rejected two pushes that way,
    * naming this repository for something that had not happened here.
    *

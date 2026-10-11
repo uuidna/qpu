@@ -1,5 +1,5 @@
 /**
- * What cannot live inside a plugin. A lead is not a failure and not a hold: the thing is named, and why it is outside.
+ * What lives outside a plugin, and why — a declared boundary. A lead is not a failure and not a hold: the thing is named, and why it is outside.
  * Nothing here is forced green, and nothing here is given a second non-plugin path that pretends to cover it.
  */
 

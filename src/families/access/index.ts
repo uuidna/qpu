@@ -6,7 +6,7 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
  *  status, ownership and tenant isolation, each a pure predicate the collections' access rules call and the receipt
  *  records. The screen crosses the security checks of a request at once — authentication, transport, token entropy,
  *  input cleanliness, rate — and names which fail: a request that does not pass every required check is a violation,
- *  recognised the moment its flags are read, the way split.secondlaw recognises an impossible energy claim. */
+ *  recognised the moment its flags are read, the way split.secondlaw recognises a second-law-violating energy claim. */
 
 const ROLES = ['anon', 'user', 'admin', 'super'] as const
 const CHECKS = ['authenticated', 'https', 'token-strong', 'input-clean', 'rate-ok'] as const

@@ -102,12 +102,18 @@ test('A FILE THAT CANNOT BE READ IS UNMEASURED, never folded into clean', () => 
 })
 
 test('THE CONTROL — the two answers are distinguishable, so the third is load-bearing', () => {
-  // without this arm, the test above also passes against a reader that calls EVERYTHING unreadable
+  // without this arm, the unreadable test also passes against a reader that calls EVERYTHING unreadable. The
+  // positive sample is a planted bare wall in a READABLE throwaway tree, NOT the package's own tree: every limit
+  // here now names its cause (walls-receipt.json reads 0), and a clean tree must not be forced dirty to prove the
+  // finder still fires. So the finder is shown distinguishing a readable wall from an unreadable file on demand.
   const r = wallsOf(sourcesOf())
   assert.deepEqual(r.unreadable, [], 'this package\'s own sources are all readable')
-  assert.ok(r.walls.length > 0,
-    'and the tree carries real walls — a reading of zero here would mean the finder stopped finding, not that '
-    + 'every limit in this package names its cause')
+  const t = inTree({ 'planted.mjs': '// this cannot be done here\nexport const x = 1\n' })
+  const planted = wallsOf(['planted.mjs'], t.dir)
+  t.done()
+  assert.ok(planted.walls.length > 0 && planted.unreadable.length === 0,
+    'a readable file with a bare wall reads as a wall, not as unreadable — the finder distinguishes the two, so '
+    + 'the unreadable answer is load-bearing rather than a collapse, and a reading of zero on a clean tree is real')
 })
 
 test('the finder exempts only itself, and code is not exempt', () => {

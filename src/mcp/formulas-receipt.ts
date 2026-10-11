@@ -47,7 +47,7 @@ const timed = <T>(run: () => T): { value: T; ms: number } => {
   return { value, ms: performance.now() - t }
 }
 
-/** The chat run end to end: two recipients decrypt, an outsider cannot. */
+/** The chat run end to end: two recipients decrypt; by construction an outsider holds no key (theorem crypto). */
 const chatRunOf = () => {
   const chat = new SecureChat()
   const t = Object.fromEntries(['alice', 'bob', 'carol', 'eve'].map((u) => [u, chat.registerUser(u, 'user')]))

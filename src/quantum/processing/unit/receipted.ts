@@ -83,8 +83,8 @@ export const monitorFaultsOf = (monitor: QpuMonitorReading, holds: boolean | und
 
 export const receiptsFileOf = (run: number): string => `test-receipts.${run}.jsonl`
 export const RECEIPTS_FILE = receiptsFileOf(process.ppid)
-/** THE INSTRUMENT IS NAMED (2026-09-12). A number without its instrument cannot be doubted. QPU_TEMPERATURE_SOURCE
- *  names the sensor and is carried beside the millikelvin as a reading; when it is absent the source says so. */
+/** THE INSTRUMENT IS NAMED (2026-09-12). A number without its instrument is unfalsifiable; so by construction
+ *  QPU_TEMPERATURE_SOURCE names the sensor and is carried beside the millikelvin as a reading; when it is absent the source says so. */
 export type Temperature = { measured: true; millikelvin: number; source: string } | { measured: false; why: string }
 export type TestReceipt = {
   name: string

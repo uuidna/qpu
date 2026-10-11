@@ -53,7 +53,8 @@ for (const r of rel) {
 
 const clay = `theorem clay_wings : ${relThms.map((t) => /^theorem \w+ : (.+) := /.exec(t.text)[1]).map((s) => (s.includes('∧') ? `(${s})` : s)).join(' ∧ ')} := ⟨${relThms.map((t) => t.name).join(', ')}⟩`
 // imports are DISCOVERED too, not hand-listed: every module whose def a discovered relation names must be in scope, or
-// the massive pass that reaches across all families (qaoaZz, triangular, qftGates …) names identifiers Lean cannot see.
+// the massive pass that reaches across all families (qaoaZz, triangular, qftGates …) names identifiers out of scope —
+// by construction a Lean module sees only what it imports, so the scope is computed here from the names the pass uses.
 const referenced = new Set()
 for (const text of [...relThms.map((t) => t.text), clay]) for (const w of text.matchAll(/[A-Za-z]\w*/g)) { const f = familyOf.get(w[0]); if (f) referenced.add(f.replace('Qpu.', '')) }
 const imports = [...referenced].filter((m) => m !== 'Clay').sort()

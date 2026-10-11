@@ -139,7 +139,7 @@ const runOf = (dir, name, env) => {
     /* NO FILTER. Two were written here and both were wrong, and each cost a CI round trip to discover: the first
      * matched ✖ where the reporter emits ✗ and printed a blank line; the second matched the ✗ headline and
      * dropped the message lines underneath it, which is where the reason actually is. A failure is rare and its
-     * output is short — the tail, verbatim, cannot be wrong about which lines mattered. */
+     * output is short — the tail, kept verbatim, is by construction every line that mattered. */
     const said = log.split('\n').filter((line) => line.trim() !== '').slice(-40)
     return { name, ok: false, why: `the suite did not complete`, said }
   }

@@ -2,7 +2,7 @@
  * THE OUTAGE GUARD, PROVED ABLE TO FAIL.
  *
  * outage.mjs runs the suite five ways and passes when one proof fold comes back from all of them. A comparison
- * that cannot come out unequal proves nothing, and this one has three ways to be vacuously true: every run could
+ * that can only come out equal proves nothing, and this one has three ways to be vacuously true: every run could
  * be excluded, a single run could compare with itself, or a failure could be counted as agreement. leads.mjs went
  * a whole commit untested and that is the shape it was written to hunt, so its sibling does not.
  *

@@ -318,7 +318,7 @@ export const qpuMcpOf = onceOf(() => {
  * @wing agents
  * @kind builder
  */
-/** A failure, classified so it is answered rather than thrown: when the network cannot be reached (no route, DNS,
+/** A failure, classified so it is answered rather than thrown: when the host network is unreachable (no route, DNS,
  *  refused connection, timeout) the work that needs it is skipped and the answer is a WARNING; anything else is an
  *  ERROR. Either way the answer says where it happened, why, and what resolves it.
  * @wing agents

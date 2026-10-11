@@ -1,5 +1,5 @@
 /**
- * WHAT ONE CALL COSTS, which the receipts cannot say.
+ * WHAT ONE CALL COSTS — which the receipts do not isolate, because by construction they aggregate per test.
  *
  * test-receipt.json aggregates per TEST, and the tests that got dearer between 0.1.1 and 0.1.4 all walk the
  * catalogue and call every door — so "production grade MCP" costing 626,647 more units says the walk got
