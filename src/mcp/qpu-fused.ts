@@ -709,7 +709,10 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     // the lexicon as leads: the registry's dictionary and translation APIs
     const found = await apiSearchOf(['dictionary', 'translate', 'translation', 'language', 'lexical', 'word', 'define', 'speech', 'phonetic'], qpuFacesOf().faces)
     const leads = found.apis.filter((x) => ['dictionary', 'translate', 'translation', 'language', 'lexical', 'speech'].some((w) => `${x.api} ${x.title}`.toLowerCase().includes(w))).map((x) => x.api)
-    const live = { word, phonetic, audio, speech: Boolean(audio), meanings, translation: { to, text: tr?.responseData?.translatedText }, lexiconLeads: leads, matched: found.matched }
+    // attribution carried with the returned definitions: the Free Dictionary and the Wiktionary fallback are derived from
+    // Wiktionary (CC BY-SA 3.0, share-alike), and the translation is MyMemory — the verbatim lexical content is credited.
+    const attribution = { definitions: 'Free Dictionary (dictionaryapi.dev), derived from Wiktionary — CC BY-SA 3.0', translation: 'MyMemory (mymemory.translated.net)' }
+    const live = { word, phonetic, audio, speech: Boolean(audio), meanings, translation: { to, text: tr?.responseData?.translatedText }, attribution, lexiconLeads: leads, matched: found.matched }
     return { source, url: 'https://dictionaryapi.dev + https://mymemory.translated.net', reading: live, expected: { meanings: '>= 1' }, agrees: meanings.length > 0 }
   }
   if (source === 'arxiv') {
