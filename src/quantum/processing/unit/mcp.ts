@@ -385,6 +385,13 @@ const qpuMethodCategoriesOf = (env?: QpuEnv, auth?: string | null): { kind: stri
 const qpuMorphToolsOf = (env?: QpuEnv, auth?: string | null): ReturnType<typeof qpuCybersecurityToolsOf> =>
   qpuMethodCategoriesOf(env, auth).filter((c) => c.morph).flatMap((c) => c.tools as ReturnType<typeof qpuCybersecurityToolsOf>)
 
+// Parsed ONCE at module load, not on every { doors: true } call: the embedded Lean source is static, so its def count
+// and its axiom / incompleteness (sorry|admit) counts are module constants — qpuMcpDoorsOf was re-scanning ~80KB with
+// several matchAll on every call. Correctness is unchanged (same scans of the same source); only the repetition is gone.
+const LEAN_DEFS = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[1]))
+const LEAN_AXIOMS = [...leanSource.matchAll(/^[ \t]*axiom\b/gm)].length
+const LEAN_UNPROVEN = [...leanSource.matchAll(/\b(?:sorry|admit)\b/g)].length
+
 export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
   // THE DOORS, COLD — ONE CATALOGUE, NOT MANY. This lists the tools (name + kind). The fused descriptions are on the man
   // page, one call away, kept off this list so it stays under the recognition span and never folds. THE FORMULAS ARE A
@@ -401,15 +408,14 @@ export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
   // A DOOR IS NOTHING IN TERMS OF LEAN UNLESS IT SAYS WHAT IS PROVEN. The lean kernel is the substance: its theorems
   // (all recomputed, zero axioms) and how many of the catalogue's formulas are a Lean def the kernel already proves.
   // So the listing carries the proof, not just a count — and it holds only when the lean holds (every theorem, no axiom).
-  const leanDefs = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[seed]))
+  const leanDefs = LEAN_DEFS
   const theorems = Object.keys(leanRecomputed)
   const held = theorems.filter((name) => leanRecomputed[name]!.holds).length
   const proven = [...fams.values()].reduce((a, fs) => a + fs.filter((f) => leanDefs.has(f.name)).length, n - n)
-  // MEASURED, not asserted: count axiom declarations and incompleteness markers in the embedded source (the same way
-  // leanDefs counts `def` above), so "zero axioms" is a falsifiable reading of the kernel — if an axiom, `sorry` or
-  // `admit` ever enters leanSource, this reports it and `holds` drops, instead of silently staying 0 (law.lawful).
-  const axioms = [...leanSource.matchAll(/^[ \t]*axiom\b/gm)].length
-  const unproven = [...leanSource.matchAll(/\b(?:sorry|admit)\b/g)].length
+  // MEASURED, not asserted (the counts are module constants above): "zero axioms" is a falsifiable reading of the kernel
+  // — if an axiom, `sorry` or `admit` ever enters leanSource, LEAN_AXIOMS/LEAN_UNPROVEN report it and `holds` drops.
+  const axioms = LEAN_AXIOMS
+  const unproven = LEAN_UNPROVEN
   const lean = { theorems: theorems.length, held, axioms, unproven, defs: leanDefs.size, proven }
   // the one catalogue, served COLD: GET /hex is the whole list (ETag, 304 on repeat — never re-sent), so the pointer
   // leads to the cold route, not the recognition-first { hex: {} } door that folds the list past the span.

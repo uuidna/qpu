@@ -84,6 +84,9 @@ const get = async (url: string, accept = 'application/json'): Promise<Response> 
 /** The deadline-bounded, transient-retrying fetch the data door uses, exported so its retry contract can be tested. */
 export const qpuGetOf = get
 const leanNat = (name: string): string | undefined => new RegExp(`def ${name} : Nat := (\\d+)`).exec(leanSource)?.[1]
+// the embedded kernel's axiom count, MEASURED once from the source (not a literal 0): the proof and clay doors report
+// "zero axioms" only when this is 0, so the claim is falsifiable — an axiom entering leanSource would show here.
+const LEAN_AXIOMS = [...leanSource.matchAll(/^[ \t]*axiom\b/gm)].length
 const bellOf = (count: number): bigint[] => {
   const out: bigint[] = []
   let row = [1n]
@@ -664,8 +667,8 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
       return { seal: name, params, value: r.value, holds: r.holds, hex: qpuHexUuidOf({ family: 'clay', program: [name], params }), formula: r.formula, quantumProof, proof: r.proof }
     })
     const sigmaHolds = seals.every((s) => s.quantumProof?.holds === true)
-    const live = { paper: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution', doi: CLAY_SEAL_SOURCE, sealed: seals.filter((s) => s.holds).length, of: seals.length, quantumProof: { module: 'Qpu.Sigma', theorem: 'clay_sigma', holds: leanRecomputed['clay_sigma']?.holds === true, verified: 'lake build (leanprover/lean4) — zero axioms', served: '{ source: proof }', relations: Object.keys(leanRecomputed).filter((k) => k.startsWith('relation_')).length }, seals, note: 'each σ-involution is a theorem of the unit\'s Lean kernel (Qpu.Sigma) — a quantum proof, not a prize or a solved flag; recognition by the Clay Mathematics Institute is a lead, not asserted here' }
-    return { source, url: CLAY_SEAL_SOURCE, reading: live, expected: { sealed: seals.length, quantumProof: 'holds' }, agrees: seals.every((s) => s.holds) && sigmaHolds }
+    const live = { paper: 'All Seven Clay Millennium Problems Sealed via Universal σ-Involution', doi: CLAY_SEAL_SOURCE, sealed: seals.filter((s) => s.holds).length, of: seals.length, quantumProof: { module: 'Qpu.Sigma', theorem: 'clay_sigma', holds: leanRecomputed['clay_sigma']?.holds === true, verified: `lake build (leanprover/lean4) — ${LEAN_AXIOMS} axioms`, served: '{ source: proof }', relations: Object.keys(leanRecomputed).filter((k) => k.startsWith('relation_')).length }, seals, note: 'each σ-involution is a theorem of the unit\'s Lean kernel (Qpu.Sigma) — a quantum proof, not a prize or a solved flag; recognition by the Clay Mathematics Institute is a lead, not asserted here' }
+    return { source, url: CLAY_SEAL_SOURCE, reading: live, expected: { sealed: seals.length, quantumProof: 'holds' }, agrees: seals.every((s) => s.holds) && sigmaHolds && LEAN_AXIOMS === 0 }
   }
   if (source === 'proof') {
     // THE QUANTUM PROOFS, IN PROCESS, TOKEN-FREE: every theorem of the Lean kernel (index.lean) the build recomputed,
@@ -681,7 +684,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     const stmtOf = (nm: string) => (new RegExp(`theorem ${nm}\\b[\\s\\S]*?:=`).exec(leanSource)?.[0] ?? '').replace(/\s+/g, ' ').replace(/ :=$/, '').slice(0, 240)
     const rows = page.map((nm) => ({ theorem: nm, holds: leanRecomputed[nm]!.holds, ...(leanRecomputed[nm]!.over ? { over: leanRecomputed[nm]!.over } : {}), formula: leanRecomputed[nm]!.formula, lean: stmtOf(nm) }))
     // axioms MEASURED from the embedded source (not a literal 0): if an axiom ever enters leanSource, this reports it and agrees drops.
-    const axioms = [...leanSource.matchAll(/^[ \t]*axiom\b/gm)].length
+    const axioms = LEAN_AXIOMS
     const live = { toolchain: leanToolchain, path: leanPath, theorems: names.length, held: names.filter((nm) => leanRecomputed[nm]!.holds).length, axioms, matched: matched.length, from: start, ...(start + faces < matched.length ? { next: start + faces } : {}), rows }
     return { source, url: 'https://qpu.uuidna.com/lean', reading: live, expected: { held: names.length, axioms: 0 }, agrees: names.every((nm) => leanRecomputed[nm]!.holds) && axioms === 0 }
   }

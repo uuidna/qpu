@@ -1099,7 +1099,7 @@ export const qpuRaidOf = (input: { safe?: boolean; traffic?: number } = {}) => {
     stripes,
     teams,
     faces: faces.faces,
-    vacant: n - n,
+    vacant: faces.faces - cover.length,
     start: 'cheapest' as const,
     cheapest: cheapest.name,
     cover,
@@ -1525,7 +1525,7 @@ export const qpuDesignOf = onceOf(() => {
     theorem: 'design' as const,
     names,
     nodes,
-    vacant: n - n,
+    vacant: faces.faces - nodes.length,
     holds,
   }
 })
