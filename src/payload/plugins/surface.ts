@@ -47,5 +47,11 @@ export const seedPlugin = <P>(seed: (payload: P) => Promise<unknown>): QpuPlugin
   ...config,
   // seeding is best-effort and must never crash init: a seed error here would 500 every page. The request path
   // (src/app/_data) advances the seed per request with the same tolerance, so a failed slice is retried, not fatal.
-  onInit: async (payload: unknown) => { await seed(payload as P).catch(() => undefined) },
+  // best-effort, but the error is SURFACED, not swallowed (Wave XIV, SOC2-CC7.3): a failed seed must reach the logs for
+  // incident response — it just does not crash init (a seed error here would 500 every page).
+  onInit: async (payload: unknown) => {
+    await seed(payload as P).catch((e) => {
+      try { (payload as { logger?: { error?: (o: unknown) => void } }).logger?.error?.({ msg: 'seed failed on init (non-fatal; request path retries)', err: e instanceof Error ? e.message : String(e) }) } catch { /* logger unavailable */ }
+    })
+  },
 })

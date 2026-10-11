@@ -209,7 +209,7 @@ const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: stri
   search: { from: '@payloadcms/plugin-search', name: 'searchPlugin', call: (t) => `searchPlugin({ collections: ${slugs(t)}, beforeSync: ({ originalDoc, searchDoc }) => ({ ...searchDoc, title: String(originalDoc.formulaId ?? originalDoc.title ?? originalDoc.name ?? searchDoc.title ?? '') + (originalDoc.src && originalDoc.dst ? ' · ' + originalDoc.src + ' → ' + originalDoc.dst : '') + (originalDoc.formula ? ' · ' + originalDoc.formula : '') }) })` },
   sentry: { from: '@payloadcms/plugin-sentry', name: 'sentryPlugin', call: () => `sentryPlugin({ Sentry, enabled: Boolean(process.env.SENTRY_DSN) })` },
   seo: { from: '@payloadcms/plugin-seo', name: 'seoPlugin', call: (t) => `seoPlugin({ collections: ${slugs(t)} })` },
-  stripe: { from: '@payloadcms/plugin-stripe', name: 'stripePlugin', call: () => `stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '' })` },
+  stripe: { from: '@payloadcms/plugin-stripe', name: 'stripePlugin', call: () => `stripePlugin({ stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? '', stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_ENDPOINT_SECRET, webhooks: {} })` },
 }
 
 /** An application's own content, carried into the generated config: its collections replace the template's Users and

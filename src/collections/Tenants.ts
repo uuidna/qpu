@@ -9,7 +9,10 @@ export const Tenants: CollectionConfig = {
   admin: { useAsTitle: 'name' },
   // deleting a tenant cascades deletes across every tenant-scoped collection, so only a super-admin may update or
   // delete one; an ordinary signed-in user must not be able to drop a tenant and its data (Wave XIII HIGH).
-  access: { read: authenticated, create: authenticated, update: superAdmin, delete: superAdmin },
+  // create is super-admin only: a tenant's domain routes a host to it, so letting any signed-in user create a tenant
+  // with any domain is a routing/host hijack (Wave XIV compliance, SOC2-CC8.1). The first tenant is still bootstrapped
+  // by the first super-admin's afterChange hook with overrideAccess, so that path is unaffected.
+  access: { read: authenticated, create: superAdmin, update: superAdmin, delete: superAdmin },
   hooks: {
     beforeChange: [
       async ({ data, operation, req }) => {
