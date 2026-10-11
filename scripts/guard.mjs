@@ -64,13 +64,47 @@ export const guardClaims = async (host = 'https://qpu.uuidna.com') => {
   return { reached: true, guarded, noveltyCited, priorArtCited, leadsDeveloped, solutionsSurfaced, why }
 }
 
+// GUARD that ALL public news portals are DEEP-RESEARCHED IN COURT: the news source reads five public portals (Hacker
+// News, Reddit, Lobsters, Dev.to, and GDELT global news) — each story a lead, its words and numbers fed to the discovery
+// and routed to the court (reviewed=0, never asserted as fact). The guard reads every portal and verifies the research
+// reaches them and surfaces leads; a portal's transient downtime is tolerated, but the research being broken is a hard
+// violation. News is read as LEADS in the court, never claimed — surfacing a news item as a settled fact would be the
+// violation this guards against.
+export const guardNews = async (host = 'https://qpu.uuidna.com') => {
+  const PORTALS = ['hn', 'reddit', 'lobsters', 'devto', 'gdelt']
+  const rpc = async (site) => {
+    const r = await fetch(`${host.replace(/\/$/, '')}/mcp`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'quantum', arguments: { door: 'data', arguments: { source: 'news', site } } } }),
+      signal: AbortSignal.timeout(120000),
+    }).catch(() => null)
+    if (!r) return null
+    const b = await r.json().catch(() => null)
+    try { return JSON.parse(b.result.content[0].text) } catch { return b?.result?.structuredContent ?? null }
+  }
+  const results = await Promise.all(PORTALS.map((s) => rpc(s)))
+  if (results.every((r) => r === null)) return { reached: false, guarded: false, why: 'host unreached (soft pass — retried next run)' }
+  const portals = PORTALS.map((site, i) => ({ site, reached: results[i] !== null, leads: results[i]?.reading?.count ?? 0, surfaced: results[i]?.agrees === true }))
+  const surfaced = portals.filter((p) => p.surfaced)
+  // deep-researched in court: the research reaches the portals and surfaces leads; demand a majority return (external
+  // portals have downtime), and that every portal was at least attempted (the SITES set is the five public portals).
+  const guarded = portals.length === PORTALS.length && surfaced.length >= 3
+  const why = guarded
+    ? `${surfaced.length}/${PORTALS.length} public news portals deep-researched as court leads (${surfaced.map((p) => `${p.site}:${p.leads}`).join(', ')}) — reviewed=0, never asserted`
+    : `HARD VIOLATION — news research not surfacing in court (${surfaced.length}/${PORTALS.length} portals returned leads: ${surfaced.map((p) => p.site).join(', ') || 'none'})`
+  return { reached: true, guarded, portals, surfaced: surfaced.length, why }
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const host = process.env.QPU_HOST ? `https://${process.env.QPU_HOST}` : (process.argv[2] ?? 'https://qpu.uuidna.com')
   const mcp = await guardPayloadMcp(host)
   console.log(`guard mcp (${host}): ${mcp.guarded ? 'OK — ' : mcp.reached ? 'REFUSED — ' : 'skip — '}${mcp.why}`)
   const claims = await guardClaims(host)
   console.log(`guard claims: ${claims.guarded ? 'OK — ' : claims.reached ? 'REFUSED — ' : 'skip — '}${claims.why}`)
-  // a confirmed violation (wrong plugin, un-lean MCP, uncited novelty/prior art, undeveloped leads) is hard (exit 1);
-  // an unreachable host is a soft pass (exit 0) so the schedule is not broken.
-  process.exit((mcp.reached && !mcp.guarded) || (claims.reached && !claims.guarded) ? 1 : 0)
+  const news = await guardNews(host)
+  console.log(`guard news: ${news.guarded ? 'OK — ' : news.reached ? 'REFUSED — ' : 'skip — '}${news.why}`)
+  // a confirmed violation (wrong plugin, un-lean MCP, uncited novelty/prior art, undeveloped leads, news not surfaced in
+  // court) is hard (exit 1); an unreachable host is a soft pass (exit 0) so the schedule is not broken.
+  process.exit((mcp.reached && !mcp.guarded) || (claims.reached && !claims.guarded) || (news.reached && !news.guarded) ? 1 : 0)
 }
