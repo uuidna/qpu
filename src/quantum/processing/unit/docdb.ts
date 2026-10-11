@@ -323,20 +323,36 @@ export class DocCollection {
     for (const d of docs) out.push(await this.insertOne(d))
     return out
   }
-  async find(filter: Filter = {}, options: FindOptions = {}): Promise<Record<string, unknown>[]> {
+  // the matching documents for a filter (unsorted): by _id, by an indexed equality (addressed), else every doc —
+  // the one store scan that find, countDocuments and findAndCount all build on, so none of them re-reads the shard set.
+  private async matchingOf(filter: Filter): Promise<Doc[]> {
     const id = filter._id
     const eq = equalityOf(filter)
     const pool = typeof id === 'string' ? ([(await this.readDoc(id)) as Doc].filter(isObj) as Doc[]) : eq ? await this.addressed(...eq) : await this.all()
-    const hit = sortDocs(pool.filter((d) => matches(d, filter)), options.sort)
+    return pool.filter((d) => matches(d, filter))
+  }
+  private pageOf(hit: Doc[], options: FindOptions): Record<string, unknown>[] {
+    const sorted = sortDocs(hit, options.sort)
     const from = options.skip ?? 0
-    const page = options.limit && options.limit > 0 ? hit.slice(from, from + options.limit) : hit.slice(from)
+    const page = options.limit && options.limit > 0 ? sorted.slice(from, from + options.limit) : sorted.slice(from)
     return page.map((d) => project(d, options.projection))
+  }
+  async find(filter: Filter = {}, options: FindOptions = {}): Promise<Record<string, unknown>[]> {
+    return this.pageOf(await this.matchingOf(filter), options)
   }
   async findOne(filter: Filter = {}, options: FindOptions = {}): Promise<Record<string, unknown> | null> {
     return (await this.find(filter, { ...options, limit: 1 }))[0] ?? null
   }
+  // count the matches only — no sort, no projection, no slice (it used to re-run find(), sorting and projecting the whole
+  // set just to take .length).
   async countDocuments(filter: Filter = {}): Promise<number> {
-    return (await this.find(filter)).length
+    return (await this.matchingOf(filter)).length
+  }
+  // a page AND its total from ONE scan, so a paginated read does not materialise the matching set twice (the page via
+  // find plus the count via countDocuments were two independent shard scans).
+  async findAndCount(filter: Filter = {}, options: FindOptions = {}): Promise<{ docs: Record<string, unknown>[]; total: number }> {
+    const hit = await this.matchingOf(filter)
+    return { docs: this.pageOf(hit, options), total: hit.length }
   }
   async distinct(path: string, filter: Filter = {}): Promise<unknown[]> {
     const out: unknown[] = []

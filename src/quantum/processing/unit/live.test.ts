@@ -5,7 +5,8 @@ import worker, { qpuQuantumOf, qpuShorOf } from './index.js'
 /** LIVE WHEN ASKED. QPU_LIVE names the host to test (https://qpu.uuidna.com). Unset, the same requests go to the worker
  * in this process: the gate that runs before a deploy must not measure the host it is about to replace, or a change
  * to any shape these tests assert could never ship — the old host fails the new assertion and blocks the push that
- * would fix it. CI sets QPU_LIVE after the deploy, on the host it just made. */
+ * would fix it. CI sets QPU_LIVE on scheduled runs (against the deployed host); on a push the deploy is manual, so the
+ * suite runs the new code in-process and never asserts against a host it has not yet deployed to. */
 const target = process.env.QPU_LIVE?.replace(/\/$/, '')
 const pageOf = (names: string[], o: { prefix?: string; limit?: number; cursor?: string } = {}) => {
   const all = names.filter((k) => k.startsWith(o.prefix ?? '')).sort()

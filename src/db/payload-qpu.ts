@@ -114,10 +114,14 @@ const paginate = async (db: Db, collection: string, where: Filter, a: { limit?: 
   const limit = a.limit && a.limit > 0 ? a.limit : a.limit === 0 || a.pagination === false ? 0 : 10
   const page = Math.max(1, a.page ?? 1)
   const skip = a.skip ?? (limit ? (page - 1) * limit : 0)
-  const docs = (await c.find(where, { sort: sortOf(a.sort), skip, limit: limit || undefined, projection: projectionOf(a.select) })).map((d) => out(d)!)
-  if (a.pagination === false || limit === 0)
+  const opts = { sort: sortOf(a.sort), skip, limit: limit || undefined, projection: projectionOf(a.select) }
+  if (a.pagination === false || limit === 0) {
+    const docs = (await c.find(where, opts)).map((d) => out(d)!)
     return { docs, totalDocs: docs.length, limit: limit || docs.length, page, totalPages: 1, pagingCounter: skip + 1, hasPrevPage: false, hasNextPage: false, prevPage: null, nextPage: null }
-  const totalDocs = await c.countDocuments(where)
+  }
+  // one scan for both the page and the total (was a find + a separate countDocuments, scanning the shards twice)
+  const { docs: rawDocs, total: totalDocs } = await c.findAndCount(where, opts)
+  const docs = rawDocs.map((d) => out(d)!)
   const totalPages = Math.max(1, Math.ceil(totalDocs / limit))
   return {
     docs,
