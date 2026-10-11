@@ -67,10 +67,10 @@ index.lean is the bundle of these modules (scripts/lean-bundle.mjs); `npm run le
 | [Qpu.Physics](../src/quantum/processing/unit/lean/Qpu/Physics.lean) | `cf1194df` | 1: planck, 2: boltzmann, 3: transmon, 4: photon, 5: thermal, 6: bcs, 7: aluminium, 8: niobium, 9: gap | 4 | — |
 | [Qpu.Pi](../src/quantum/processing/unit/lean/Qpu/Pi.lean) | — | — | 8 | Lattice (26), Mint (2) |
 | [Qpu.Primes](../src/quantum/processing/unit/lean/Qpu/Primes.lean) | — | — | 13 | Lattice (36), Mint (6) |
-| [Qpu.Sigma](../src/quantum/processing/unit/lean/Qpu/Sigma.lean) | — | — | 7 | Shor (3), Physics (3) |
+| [Qpu.Sigma](../src/quantum/processing/unit/lean/Qpu/Sigma.lean) | — | — | 13 | Shor (4), Physics (4), Combinatorics (2), Lattice (14), Qft (2), Grover (2) |
 | [Qpu.Surfacecode](../src/quantum/processing/unit/lean/Qpu/Surfacecode.lean) | `d7d3f93e` | 1: surfacePhysical, 2: surfaceCorrectable, 3: surfaceLogical | 1 | Lattice (5) |
 
-640 pairs of definitions are related by at least one theorem. Strongest: mintOf ~ seed (40), faces ~ rays (33), coins ~ mintOf (32), coins ~ faces (30), coins ~ rays (28), bits ~ mintOf (26).
+657 pairs of definitions are related by at least one theorem. Strongest: mintOf ~ seed (40), faces ~ rays (34), coins ~ mintOf (32), coins ~ faces (31), coins ~ rays (30), bits ~ mintOf (26).
 
 ## Discovered relations
 

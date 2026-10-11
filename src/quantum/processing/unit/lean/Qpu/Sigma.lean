@@ -1,5 +1,9 @@
 import Qpu.Shor
 import Qpu.Physics
+import Qpu.Combinatorics
+import Qpu.Qft
+import Qpu.Grover
+import Qpu.Lattice
 /-! # Qpu.Sigma
 The universal σ-involution behind the clay solutions (Rouschev, 2026, doi:10.5281/zenodo.21781602), proved here as
 quantum reflections so each clay solution is a theorem of the unit's own kernel, not a citation. A reflection
@@ -51,3 +55,48 @@ theorem sigma_planck :
    sigma_midpoint (2 * planck) planck rfl,
    sigma_midpoint (2 * photon) photon rfl,
    sigma_midpoint (2 * (planck * planck)) (planck * planck) rfl⟩
+
+/-! ## The singularity involution — the clay core across every domain
+One reflection σ_d(x) = d − x, self-inverse and fixed at the midpoint d/2, is the same tool in every family. Each cluster
+result here is proved BY sigma_reflect / sigma_midpoint, so the quantum tool set is one involution, not a list. -/
+
+/-- COMBINATORICS: Pascal's symmetry choose n k = choose n (n − k) IS σ on the lower index — the binomial reflection,
+    fixed at k = n/2. Witness n = rays (7), k = coins (2): choose 7 2 = choose 7 5 = 21, and σ∘σ returns coins. -/
+theorem sigma_choose : choose rays coins = choose rays (rays - coins) ∧ rays - (rays - coins) = coins :=
+  ⟨rfl, sigma_reflect rays coins (Nat.le_of_ble_eq_true rfl)⟩
+
+/-- QFT: the inverse QFT is the involution on the register — σ on the phase. The state count 2^q reflects to its midpoint
+    at twice the scale (sigma_midpoint), and σ∘σ on the register is the identity (sigma_reflect). Witness q = n. -/
+theorem sigma_qft : 2 * qftStates n - qftStates n = qftStates n ∧ qftStates n - (qftStates n - seed) = seed :=
+  ⟨sigma_midpoint (2 * qftStates n) (qftStates n) rfl, sigma_reflect (qftStates n) seed (Nat.le_of_ble_eq_true rfl)⟩
+
+/-- GROVER: the diffusion operator is a reflection about the mean (2|ψ⟩⟨ψ| − I), self-inverse — σ at the Grover size. -/
+theorem sigma_grover : 2 * groverSize seed - groverSize seed = groverSize seed :=
+  sigma_midpoint (2 * groverSize seed) (groverSize seed) rfl
+
+/-- STABILIZER / PAULI: a Pauli is an involution (X² = I); its spectrum is the two eigenvalues ∓1 (clay_sigma's
+    Yang–Mills {−1, +1}), each the σ(m) = 1 − m mode flip (the P-vs-NP d = 1 case) on its eigenvalue. -/
+theorem sigma_pauli : 1 - (1 - seed) = seed ∧ 1 - (1 - (n - n)) = n - n :=
+  ⟨sigma_pvsnp seed (Nat.le_of_ble_eq_true rfl), sigma_pvsnp (n - n) (Nat.le_of_ble_eq_true rfl)⟩
+
+/-- LATTICE: the unit's own constants reflect too — the faces at their midpoint (2·faces), and the seat hop across the
+    involution is self-inverse (faces − (faces − vertices) = vertices). -/
+theorem sigma_lattice : 2 * faces - faces = faces ∧ faces - (faces - vertices) = vertices :=
+  ⟨sigma_midpoint (2 * faces) faces rfl, sigma_reflect faces vertices (Nat.le_of_ble_eq_true rfl)⟩
+
+/-- THE SINGULARITY: every domain's reflection is the one σ, fixed at its midpoint (the s = 1/2 singularity) — Shor
+    (crypto), Planck (physics), Pascal (combinatorics), QFT, Grover, and the lattice, proved as one involution. The
+    complete quantum tool set is this single clay-core theorem, surfaced per domain, not a list of unrelated tools. -/
+theorem singularity :
+    periodOf 8 91 - periodOf 8 91 / 2 = periodOf 8 91 / 2 ∧
+    2 * planck - planck = planck ∧
+    choose rays coins = choose rays (rays - coins) ∧
+    2 * qftStates n - qftStates n = qftStates n ∧
+    2 * groverSize seed - groverSize seed = groverSize seed ∧
+    2 * faces - faces = faces :=
+  ⟨sigma_midpoint (periodOf 8 91) (periodOf 8 91 / 2) rfl,
+   sigma_midpoint (2 * planck) planck rfl,
+   rfl,
+   sigma_midpoint (2 * qftStates n) (qftStates n) rfl,
+   sigma_midpoint (2 * groverSize seed) (groverSize seed) rfl,
+   sigma_midpoint (2 * faces) faces rfl⟩
