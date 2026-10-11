@@ -121,12 +121,13 @@ const LIFECYCLE = HOOK_LIFECYCLE
 const claySealedOf = () => {
   const cite = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; prior: { title: string; doi: string; conceptdoi: string; archive: string } }
   const of = (problem: string, s: { formula?: string; value: number | bigint; holds: boolean; hex?: string | null }) => ({ problem, sigma: s.formula, value: Number(s.value), holds: s.holds === true, ...(s.hex ? { hex: s.hex } : {}) })
-  // the σ fixed points are the lattice's, computed, not quoted: s = 1/2 = seed/coins, m = n·n, genus/presupposed = seed.
+  // the σ fixed points are the lattice's, computed, not quoted: s = 1/2 = seed/coins, m = n·n, presupposed = seed. Hodge
+  // is genus = coins (Σ₂, rank 4) to agree with the clay family's own tests and the { source: clay } reading, not seed.
   const L = qpuLatticeNamesOf()
   const seals = [
     of('Riemann Hypothesis', ClaySeals.riemann(L.seed, L.coins)),
     of('Birch and Swinnerton-Dyer', ClaySeals.bsd(L.n * L.n)),
-    of('Hodge Conjecture', ClaySeals.hodge(L.seed)),
+    of('Hodge Conjecture', ClaySeals.hodge(L.coins)),
     of('Navier–Stokes existence and smoothness', ClaySeals.navierStokes(L.seed, L.seed)),
     of('Yang–Mills existence and mass gap', ClaySeals.yangMills()),
     of('P versus NP', ClaySeals.pVsNp(L.seed)),

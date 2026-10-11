@@ -162,7 +162,11 @@ export const apiCallOf = async (which: number | string, operation: number, param
   try {
     const r = await once().catch(once)
     const type = r.headers.get('content-type') ?? ''
-    const text = await r.text()
+    // bound the body read: a reply that declares more than the cap is not read whole into the isolate (Wave XIII) — only
+    // an excerpt is kept anyway, so a 3 MB reply cannot exhaust memory. The deadline already bounds the time.
+    const declared = Number(r.headers.get('content-length') ?? 0)
+    if (declared > EXCERPT * 64) return sealed({ ...base, url, status: r.status, type, bytes: declared, excerpt: `body ${declared} bytes exceeds the ${EXCERPT * 64}-byte read cap: not read whole`, seconds: (Date.now() - t0) / 1000, ...credentialWithheld })
+    const text = (await r.text()).slice(0, EXCERPT * 64)
     let excerpt: unknown = text.slice(0, EXCERPT)
     if (/json/.test(type)) { try { excerpt = JSON.parse(text.length > EXCERPT * 8 ? text.slice(0, EXCERPT * 8) : text) } catch { /* an excerpt of the text stands */ } }
     return sealed({ ...base, url, status: r.status, type, bytes: text.length, excerpt, seconds: (Date.now() - t0) / 1000, ...credentialWithheld })
