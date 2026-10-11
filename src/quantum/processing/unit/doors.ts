@@ -573,7 +573,7 @@ export const qpuProveOf = onceOf(() => {
       shots: shor.measure.shots,
       noise: shor.measure.noise,
       period: shor.post.period,
-      factors: [shor.factors.p, shor.factors.q],
+      factors: shor.factors.terms,
       product: shor.factors.product,
       rsa: shor.rsa,
       unlocked: shor.unlocked,
@@ -641,7 +641,7 @@ export const qpuProveHolds = (p = qpuProveOf()): boolean =>
   p.shor.qft === 'iqft' &&
   p.shor.shots === mintOf(n) &&
   p.shor.noise === 'xx' &&
-  p.shor.factors[n - n]! * p.shor.factors[seed]! === p.shor.n &&
+  p.shor.factors[n - n]!.value * p.shor.factors[seed]!.value === p.shor.n &&
   p.shor.product === p.shor.n &&
   p.shor.rsa.kind === 'rsa' &&
   p.shor.rsa.modulus === p.shor.n &&

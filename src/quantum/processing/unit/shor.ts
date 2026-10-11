@@ -228,6 +228,9 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
   let p = b0
   let q = b0
   let by: 'period' | 'gcd' | 'none' = 'none'
+  // The formula that produced p, carried beside the value — a factor is the output of a formula, never a bare integer in
+  // an array. q is always n / p, so the pair is {the formula for p, n / p}, not [7, 13].
+  let pFormula = 'none'
   if (period > n - n && period % coins === n - n) {
     const half = bigPowModOf(base, BigInt(period / coins), modulus)
     if (half !== modulus - b1) {
@@ -237,10 +240,12 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
         p = g1
         q = modulus / g1
         by = 'period'
+        pFormula = 'gcd(a^(r/2) - 1, n)'
       } else if (g2 > b1 && g2 < modulus) {
         p = g2
         q = modulus / g2
         by = 'period'
+        pFormula = 'gcd(a^(r/2) + 1, n)'
       }
     }
   }
@@ -250,6 +255,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     p = shared
     q = modulus / shared
     by = 'gcd'
+    pFormula = 'gcd(a, n)'
   }
   const product = p * q
   const factoredBig = p > b1 && q > b1 && product === modulus
@@ -307,6 +313,13 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     q: Number(q),
     product: Number(product),
     by,
+    formula: pFormula,
+    // formula-native: each factor is the formula that produced it carrying its value, so the result reads
+    // [gcd(a^(r/2) - 1, n) = 7, n / p = 13], never the bare integer array [7, 13].
+    terms: [
+      { factor: 'p', formula: pFormula, value: Number(p) },
+      { factor: 'q', formula: by === 'none' ? 'none' : 'n / p', value: Number(q) },
+    ],
     holds: factoredBig,
   }
   const rsa = {

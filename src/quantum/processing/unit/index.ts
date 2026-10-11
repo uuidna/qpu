@@ -3724,7 +3724,7 @@ export const qpuPurposeOf = (
     kind: 'cybersecurity' as const,
     n: shor.n,
     a: shor.a,
-    factors: [shor.factors.p, shor.factors.q] as const,
+    factors: shor.factors.terms,
     product: shor.factors.product,
     circuitry: shor.circuitry.kind,
     qft: shor.qft.kind,
@@ -3808,7 +3808,7 @@ export const qpuPurposeHolds = (p = qpuPurposeOf()): boolean =>
   p.nature.qubits === n &&
   p.cybersecurity.n === qpuFacesOf().rays * (n * n + n + seed) &&
   p.cybersecurity.product === p.cybersecurity.n &&
-  p.cybersecurity.factors[n - n]! * p.cybersecurity.factors[seed]! === p.cybersecurity.n &&
+  p.cybersecurity.factors[n - n]!.value * p.cybersecurity.factors[seed]!.value === p.cybersecurity.n &&
   p.cybersecurity.circuitry === 'cmodexp' &&
   p.cybersecurity.qft === 'iqft' &&
   p.cybersecurity.raid === 'crypt' &&
