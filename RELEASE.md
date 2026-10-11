@@ -8,7 +8,7 @@ Summarised analytics hold a Pravets 8M clay register: seed 1, coins 2, n 3, rays
 
 Tsvetan Rouschev explores this knowledge under CC-BY-NC-ND-4.0: attribute the author, do not distribute a derivative, and do not use it commercially unless a commercial licence was granted on request.
 
-Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat hex `0a8f02cc-4000-1000-9000-000000001921`; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds true.
+Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat hex `0a8f02cc-4000-1000-9000-0000000018de`; reactor.coldfusion → plasma.fusion of cooled signal (receipt heat when present). Holds true.
 
 | Count | Integer |
 |---|---:|
@@ -32,10 +32,10 @@ Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat h
 | next | 240,518,168,576 |
 | plane | 28 |
 | zero | 0 |
-| temp | 6,433 |
+| temp | 6,366 |
 | time | 0 |
-| heat | 35 |
-| cold | 2,588 |
+| heat | 39 |
+| cold | 2,638 |
 | coldFusion | 100 |
 
 | Capability | How much | Compared with |
@@ -50,7 +50,7 @@ Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat h
 | Cryptography | 27/27 attacks resisted, no node:crypto | Node's crypto (parity), its own attacks |
 | Live cross-proof | 27 of 30 claims agree | the hosts the claims name |
 | Payload on Cloudflare | 1,376,256 combinations generated; the site is one Worker | Payload's documented plugins and adapters |
-| Code heat | 2,588 of 2,623 files cold, 35 hot | Qpu.Physics: photon / thermal T |
+| Code heat | 2,638 of 2,677 files cold, 39 hot | Qpu.Physics: photon / thermal T |
 
 Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10.5281/zenodo.23156998). License: CC-BY-NC-ND-4.0
 (commercial use by license: https://qpu.uuidna.com/license).
