@@ -539,8 +539,11 @@ export const checkPrime = (n: bigint | number, rounds = 16): boolean => {
   if ((N & 1n) === 0n) return false
   let d = N - 1n, s = 0n
   while ((d & 1n) === 0n) { d >>= 1n; s++ }
+  // Below 2^64 the witnesses are a PROVEN-complete deterministic set (Sinclair): these seven bases decide primality
+  // exactly for every n < 2^64, so no composite slips through. The old {2,3,5,7,11,13,23} is only reliable to ~3.47e12
+  // (e.g. 3825123056546413051 = 747451 × 5117556945601 is a strong pseudoprime to it). Above 2^64, random witnesses.
   const witnesses = N < 0x1_0000_0000_0000_0000n
-    ? [2n, 3n, 5n, 7n, 11n, 13n, 23n]
+    ? [2n, 325n, 9375n, 28178n, 450775n, 9780504n, 1795265022n]
     : Array.from({ length: rounds }, () => 2n + (leToBig(randomBytes(8)) % (N - 3n)))
   for (const a of witnesses) {
     if (a % N === 0n) continue
@@ -558,12 +561,13 @@ export const checkPrime = (n: bigint | number, rounds = 16): boolean => {
 
 export const generatePrime = (bits: number): bigint => {
   if (!Number.isSafeInteger(bits) || bits < 8) throw new Error('generatePrime: bits >= 8')
+  // set the HIGH bit and the low bit on the VALUE after masking — not on a byte, which under little-endian (leToBig)
+  // lands on the wrong end and does not guarantee the requested bit length. `top` forces bit (bits-1), so n has exactly
+  // `bits` bits; `| 1n` forces odd.
+  const top = 1n << BigInt(bits - 1)
+  const mask = (1n << BigInt(bits)) - 1n
   for (;;) {
-    const b = randomBytes(Math.ceil(bits / 8))
-    b[0]! |= 0x80
-    b[b.length - 1]! |= 1
-    let n = leToBig(b) & ((1n << BigInt(bits)) - 1n)
-    if ((n & 1n) === 0n) n += 1n
+    const n = ((leToBig(randomBytes(Math.ceil(bits / 8))) & mask) | top) | 1n
     if (checkPrime(n)) return n
   }
 }

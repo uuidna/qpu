@@ -75,6 +75,11 @@ test('ported surface: byte parity with node:crypto', () => {
   )
   assert.equal(qpu.checkPrime(17), true)
   assert.equal(qpu.checkPrime(15), false)
+  // deterministic below 2^64: a strong pseudoprime to the old base set must be rejected (3825123056546413051 = 747451 × 5117556945601)
+  assert.equal(qpu.checkPrime(3825123056546413051n), false)
+  assert.equal(qpu.checkPrime(2152302898747n), false)
+  // generatePrime returns a prime of EXACTLY the requested bit length (high bit forced on the value, not a byte)
+  for (const bits of [64, 128]) { const p = qpu.generatePrime(bits); assert.equal(p.toString(2).length, bits); assert.equal(qpu.checkPrime(p), true) }
   assert.deepEqual([...qpu.getHashes()], ['md5', 'sha256', 'sha512'])
   assert.deepEqual([...qpu.getCiphers()], ['chacha20-poly1305'])
   assert.deepEqual([...qpu.getCurves()], ['X25519', 'Ed25519'])
