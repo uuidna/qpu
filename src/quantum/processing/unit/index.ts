@@ -4298,7 +4298,7 @@ export const qpuMessageOf = (send?: { lane?: unknown; body?: unknown }) => {
     clock_seq: { bits: lanes, rfc: '9562' as const },
     imprint: 'uuid' as const,
     routes,
-    await: 'never' !== 'never',
+    await: false,
     proxy: cors === '*',
     secure: unit.origin.startsWith('https'),
     auth: cors !== '*',

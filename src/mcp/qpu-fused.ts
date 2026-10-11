@@ -1108,7 +1108,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog', 'clay', 'proof']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog', 'clay', 'proof', 'news']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
