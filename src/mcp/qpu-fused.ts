@@ -721,6 +721,32 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     const live = { category: cat, from: start, ...(entries.length === qpuFacesOf().faces ? { next: start + qpuFacesOf().faces } : {}), count: leads.length, numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, qpuFacesOf().faces), leads }
     return { source, url: 'https://arxiv.org', reading: live, expected: { open: '>= 1 preprint' }, agrees: leads.length > 0 }
   }
+  if (source === 'books') {
+    // OPEN BIBLIOGRAPHY AS LEADS: Open Library's keyless search — public, FACTUAL book metadata and its subject taxonomy,
+    // never the text. `about` is the theme or title (e.g. 'artificial intelligence', 'hello world hannah fry'); the unit
+    // learns what books are ABOUT — the subjects feed the discovery, and the years, editions and page counts are the
+    // numbers the lattice meets. A book in copyright contributes only its facts; its words are never read. Learn, freely.
+    const q = str(a.about) || 'algorithms'
+    const faces = qpuFacesOf().faces
+    const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&fields=title,author_name,first_publish_year,subject,edition_count,number_of_pages_median&limit=${faces}`
+    const json = (await get(url, 'application/json').then((x) => x.json()).catch(() => null)) as { docs?: Array<Record<string, unknown>> } | null
+    const docs = json && Array.isArray(json.docs) ? json.docs : []
+    const num = (x: unknown): number | undefined => (typeof x === 'number' && Number.isSafeInteger(x) && x >= 3 ? x : undefined)
+    const leads = docs.map((d) => {
+      const subjects = Array.isArray(d.subject) ? (d.subject as unknown[]).map(String).slice(0, faces) : []
+      return {
+        title: str(d.title).slice(0, 120),
+        author: Array.isArray(d.author_name) ? str((d.author_name as unknown[])[0]) : '',
+        year: num(d.first_publish_year),
+        editions: num(d.edition_count),
+        pages: num(d.number_of_pages_median),
+        subjects,
+        numbers: [num(d.first_publish_year), num(d.edition_count), num(d.number_of_pages_median)].filter((x): x is number => typeof x === 'number'),
+      }
+    })
+    const live = { query: q, count: leads.length, subjects: [...new Set(leads.flatMap((l) => l.subjects))].slice(0, faces), numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, faces), leads }
+    return { source, url: 'https://openlibrary.org', reading: live, expected: { open: '>= 1 book' }, agrees: leads.length > 0 }
+  }
   if (source === 'news') {
     // ALL NEWS FROM EVERYWHERE, ANYTIME, AS LEADS: the newest stories across many keyless sources — Hacker News, Reddit,
     // Lobsters, Dev.to, and GDELT (global news in every language and country). Each story is a lead: its title's words and
@@ -1108,7 +1134,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog', 'clay', 'proof', 'news']
+const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog', 'clay', 'proof', 'news', 'books']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
@@ -1135,6 +1161,7 @@ export const qpuDataSourcesOf = async () => [
   { source: 'authors', args: {}, label: 'cited authors · DataCite, ORCID, Crossref', checks: 'the work around the authors the unit cites: works, years, citations' },
   ...['cal', 'hd', 'yi'].map((family) => ({ source: 'research', args: { family }, label: `research · ${family}`, checks: "the APIs the family's formulas name, read live; their numbers go to discovery" })),
   ...qpuCernCatalogsOf().catalogs.map((c) => ({ source: 'catalog', args: { name: c.name } as Args, label: `catalog · ${c.name}`, checks: 'answers with records' })),
+  { source: 'books', args: { about: 'artificial intelligence' } as Args, label: 'Open Library · books on a theme (facts and subjects, never the text)', checks: "the subjects and numbers of books about a theme; their numbers go to discovery" },
 ]
 
 // a reading is the same for ten minutes in one isolate: the public sources are read once per window, not once per view
