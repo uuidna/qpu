@@ -26,22 +26,26 @@ line('train', train ? `holds=${train.holds}, next=${train.steps?.next?.door?.too
 const improve = await rpc('improve')
 line('improve', improve ? `holds=${improve.quantum?.holds}, next=${improve.quantum?.next}` : 'unreached')
 
-// learn from books, RANGING ACROSS THE WHOLE SUBJECT GRAPH: with no theme the books source walks the subject roots —
-// each root's books give its neighbour subjects (the graph's edges) — advancing via next until the walk wraps, once per
-// wave. Open Library's public, FACTUAL bibliography only: subjects and numbers fuse into discovery, never the text.
+// learn from books, over the UNIT'S OWN SUBJECT GRAPH: the books lookup is the hex formula record.books(from), a program
+// over the family cursor (no typed list) addressing the from-th family and advancing via next — run here through the data
+// door (the same computation, clean reading), and addressable on demand at qpu://hex. The wave samples a bounded slice.
+// Open Library's public, FACTUAL bibliography only: the books' subjects and numbers fuse into discovery, never the text.
 let from = 0
 let steps = 0
-let firstRoot = null
+let firstFamily = null
+let familiesTotal = 0
 const subjectsAll = new Set()
 do {
   const b = await rpc('quantum', { door: 'data', arguments: { source: 'books', from } })
-  if (!b || !b.reading || typeof b.reading.next !== 'number') break
-  if (firstRoot === null) firstRoot = b.reading.root
-  for (const s of b.reading.subjects ?? []) subjectsAll.add(s)
-  from = b.reading.next
+  const reading = b && b.reading
+  if (!reading || typeof reading.next !== 'number') break
+  if (firstFamily === null) firstFamily = reading.family
+  familiesTotal = reading.families ?? familiesTotal
+  for (const s of reading.subjects ?? []) subjectsAll.add(s)
+  from = reading.next
   steps++
 } while (from !== 0 && steps < 40)
-line('books', steps ? `ranged ${steps} subject roots from '${firstRoot}', ${subjectsAll.size} subjects fused across the graph` : 'unreached')
+line('books', steps ? `sampled ${steps} of ${familiesTotal} families from '${firstFamily}', ${subjectsAll.size} book subjects fused into the graph` : 'unreached')
 
 // discover new cross-family relations, in hex: data.discover(n) = values two or more families reach
 const discover = await rpc('quantum', { door: 'hex', arguments: { hex: { family: 'data', program: ['discover'], params: [5] } } })

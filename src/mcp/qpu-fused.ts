@@ -725,17 +725,20 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     // OPEN BIBLIOGRAPHY AS LEADS: Open Library's keyless search — public, FACTUAL book metadata and its subject taxonomy,
     // never the text. The unit learns what books are ABOUT — the subjects feed the discovery, the years, editions and page
     // counts are the numbers the lattice meets. A book in copyright contributes only its facts; its words are never read.
-    //   { about } learns one theme or title ('hello world hannah fry').
-    //   no theme = RANGE ACROSS THE WHOLE SUBJECT GRAPH: `from` picks a root, its books' subjects are the neighbourhood
-    //   (the graph's edges), and `next` advances to the following root, so successive reads cover the whole graph. The
-    //   frontier (the neighbour subjects just found) is returned so a wave can keep walking outward. Learn, freely.
+    //   { about } learns one theme or title the caller names ('hello world hannah fry').
+    //   no theme = RANGE THE UNIT'S OWN SUBJECT GRAPH: the roots are the unit's families (its authored subjects, NOT a
+    //   typed list), so `from` addresses a family and `next` advances to the next — a hex program over a param that ranges
+    //   the whole family graph. The books about a family are its neighbourhood; their subjects and numbers fuse into the
+    //   discovery. (The law source derives its terms from the families the same way; books is no different.) Learn, freely.
     const faces = qpuFacesOf().faces
-    // the roots of the subject graph: the breadth of recorded knowledge, sciences through the humanities and the arts.
-    const ROOTS = ['science', 'mathematics', 'technology', 'computer science', 'artificial intelligence', 'engineering', 'medicine', 'biology', 'physics', 'chemistry', 'astronomy', 'philosophy', 'psychology', 'history', 'geography', 'literature', 'art', 'music', 'economics', 'business', 'law', 'political science', 'sociology', 'education', 'religion', 'language']
+    const fams = [...qpuHexFamiliesOf().keys()]
     const ranging = str(a.about) === ''
     const from = typeof a.from === 'number' && a.from >= 0 ? a.from : 0
-    const root = ROOTS[from % ROOTS.length]!
-    const q = ranging ? `subject:${root}` : str(a.about)
+    const family = ranging ? (fams[from % fams.length] ?? '') : ''
+    // the family name split to its words (Qpu.Mint -> "mint"), a derived transform like the law source's wordsOf, so the
+    // query is a word Open Library can match rather than the module's internal spelling — still the unit's own subject.
+    const subjectOf = (f: string) => f.replace(/^Qpu\./, '').replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase().trim()
+    const q = ranging ? subjectOf(family) : str(a.about)
     const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&fields=title,author_name,first_publish_year,subject,edition_count,number_of_pages_median&limit=${faces}`
     const json = (await get(url, 'application/json').then((x) => x.json()).catch(() => null)) as { docs?: Array<Record<string, unknown>> } | null
     const docs = json && Array.isArray(json.docs) ? json.docs : []
@@ -754,7 +757,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     })
     const frontier = [...new Set(leads.flatMap((l) => l.subjects))]
     const live = {
-      ...(ranging ? { root, from, next: (from + 1) % ROOTS.length, roots: ROOTS.length } : { query: q }),
+      ...(ranging ? { family, from, next: (from + 1) % Math.max(fams.length, 1), families: fams.length } : { query: q }),
       count: leads.length,
       subjects: frontier.slice(0, faces * 2),
       numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, faces),
@@ -1176,7 +1179,7 @@ export const qpuDataSourcesOf = async () => [
   { source: 'authors', args: {}, label: 'cited authors · DataCite, ORCID, Crossref', checks: 'the work around the authors the unit cites: works, years, citations' },
   ...['cal', 'hd', 'yi'].map((family) => ({ source: 'research', args: { family }, label: `research · ${family}`, checks: "the APIs the family's formulas name, read live; their numbers go to discovery" })),
   ...qpuCernCatalogsOf().catalogs.map((c) => ({ source: 'catalog', args: { name: c.name } as Args, label: `catalog · ${c.name}`, checks: 'answers with records' })),
-  { source: 'books', args: {} as Args, label: 'Open Library · ranges the whole subject graph (facts and subjects, never the text)', checks: "with no theme, walks the subject roots (books' subjects are the graph's edges) and advances via next; their numbers go to discovery" },
+  { source: 'books', args: {} as Args, label: "Open Library · ranges the unit's family subject graph (facts and subjects, never the text)", checks: "with no theme, addresses the from-th family (the unit's own subjects, derived) and advances via next; the books' subjects and numbers go to discovery" },
 ]
 
 // a reading is the same for ten minutes in one isolate: the public sources are read once per window, not once per view
@@ -1305,6 +1308,13 @@ export class DataFormulas {
     const r = (await qpuDataOf('arxiv', { from })) as { agrees?: boolean; reading?: { count?: number; numbers?: number[]; next?: number; leads?: unknown[] } }
     return dataFormula('data-arxiv', 'arxiv', [from], `arxiv(${from}) = |open preprints read as leads|`, r.reading?.count ?? 0, r.agrees === true, 'https://arxiv.org', { reading: r.reading })
   }
+  /** Open Library's books about the from-th family (the unit's own subjects, derived — no typed list) as leads: value how
+   *  many read, holds when one was. A hex program over the family cursor, so it ranges the whole subject graph to infinity;
+   *  the books' subjects and numbers feed the discovery. For a theme in words, data { source: 'books', about }. */
+  static async books(from: number): Promise<unknown> {
+    const r = (await qpuDataOf('books', { from })) as { agrees?: boolean; reading?: { family?: string; count?: number; subjects?: string[]; numbers?: number[]; next?: number; leads?: unknown[] } }
+    return dataFormula('data-books', 'books', [from], `books(${from}) = |books about ${r.reading?.family ?? 'the family'} read as leads|`, r.reading?.count ?? 0, r.agrees === true, 'https://openlibrary.org', { reading: r.reading })
+  }
   /** MathOverflow's unanswered questions as leads: value how many open problems read; holds when one was. Their numbers
    *  feed the discovery — an open problem a family's value reaches is a cross worth a human's look. */
   static async unanswered(from: number): Promise<unknown> {
@@ -1391,7 +1401,7 @@ export class DataFormulas {
 // still a hex program at its own address, none of them called by name elsewhere so the move breaks nothing.
 for (const name of ['ai', 'deep', 'define', 'discover', 'errors', 'imagine', 'payload', 'perspectives', 'read', 'research', 'sources', 'unanswered'] as const)
   qpuHexRegisterOf('data', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
-for (const name of ['arxiv', 'collisions', 'funding', 'jobs', 'law', 'prior', 'site'] as const)
+for (const name of ['arxiv', 'books', 'collisions', 'funding', 'jobs', 'law', 'prior', 'site'] as const)
   qpuHexRegisterOf('record', name, (DataFormulas[name] as (...x: unknown[]) => unknown).bind(DataFormulas))
 
 qpuMcpFuseOf('data', {
