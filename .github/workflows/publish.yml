@@ -389,6 +389,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: *channel_scan
+      - name: Free waves (improve + discover) against the live host — the audit loop runs itself
+        if: github.event_name == 'schedule'
+        run: node scripts/waves.mjs https://qpu.uuidna.com
       - run: npm ci
       - name: Every test, against the live host
         id: live
