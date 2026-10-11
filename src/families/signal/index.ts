@@ -93,6 +93,9 @@ export class QuantumSecureSignalling {
     return { id: `sig-${hash}`, payload: data, dims: key.bits.length, hash, verified: false, timestamp: Date.now() }
   }
 
+  // INTEGRITY, NOT A CRYPTOGRAPHIC SIGNATURE (Wave XIII): this recomputes the 64-bit FNV-1a fold and compares it, so it
+  // detects an accidental change to payload or key id — it is NOT unforgeable (no secret key, a 64-bit fold is not
+  // collision-resistant). For an unforgeable signature use the ed25519 path in core/crypt (ed25519Sign/Verify).
   static verify(sig: SecureSignal, key: QuantumKey): boolean {
     return qpuFoldOf(JSON.stringify({ payload: sig.payload, key: key.hash })) === sig.hash
   }

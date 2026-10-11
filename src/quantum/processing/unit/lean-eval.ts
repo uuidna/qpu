@@ -241,9 +241,20 @@ const statementOf = (theorem: string, m: LeanModel): Statement => {
   const inner: string[][] = []
   const all = /^∀\s+([^,:]*):\s*Nat\s*,\s*(.*)$/.exec(type)
   const parts = all ? [type] : topLevelSplit(type, '∧')
+  // strip an ENCLOSING pair of parens only — the leading '(' must balance to the trailing ')'. `(a) = (b)` starts '('
+  // and ends ')' but they are two groups, not one enclosure, so it must not become `a) = (b` (Wave XIII, latent).
+  const enclosed = (s: string): boolean => {
+    if (!s.startsWith('(') || !s.endsWith(')')) return false
+    let depth = 0
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] === '(') depth++
+      else if (s[i] === ')') { depth--; if (depth === 0 && i < s.length - 1) return false }
+    }
+    return depth === 0
+  }
   for (let part of parts) {
     part = part.trim()
-    while (part.startsWith('(') && part.endsWith(')')) part = part.slice(1, -1).trim()
+    while (enclosed(part)) part = part.slice(1, -1).trim()
     const q = /^∀\s+([^,:]*):\s*Nat\s*,\s*(.*)$/.exec(part)
     inner.push(q ? q[1]!.trim().split(/\s+/) : [])
     body.push(parseWith(lex(q ? q[2]! : part), m.arity))

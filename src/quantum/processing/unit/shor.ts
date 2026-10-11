@@ -424,9 +424,10 @@ export const qpuShorHolds = (s = qpuShorOf()): boolean =>
   s.rsa.factored === true &&
   s.rsa.holds === true &&
   s.payload === `${storageHref}/${payloadDbKey}` &&
-  // HARDWARE CERTIFIED: All four tiers of quantum proof
-  // Tier 1: Superconductor specs (gap > transmon frequency)
-  88 > 5 && // gap aluminium mV > transmon GHz equivalent
+  // THE UNIT'S OWN STRUCTURAL CHECKS — not an external hardware certification (Wave XIII: the tiers below are the
+  // unit's assertions; `88 > 5` is a constant placeholder comparing values in different units, so it always holds and
+  // certifies nothing by itself — the real evidence is the exact-amplitude circuit and the Lean theorems).
+  88 > 5 && // placeholder constant (always true); not a mV-vs-GHz comparison
   // Tier 2: Coherence proves T1 > circuit depth
   s.circuitry.gates.length > n - n && s.circuitry.gates.length < mintOf(n + coins) && // depth within coherence window
   // Tier 2: Noise model (noisy == ideal on period output)
