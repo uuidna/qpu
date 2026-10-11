@@ -80,9 +80,9 @@ export const publicConnectorOf = () => {
       note: 'Unix rwx×ugo mode enum → access.* hex; not an ACL graph' as const,
     },
     court: {
-      via: 'tools/call connector { court: true } | { trial: true }' as const,
-      endpoint: '/api/qpu/court' as const,
-      note: 'each gate case tried: standard+fidelity+standing+ms; discover.capacity → seal-wave path' as const,
+      via: 'quantum { door: "court" } — reached only in hex quantum, through the quantum door' as const,
+      measures: 'quantum { door: "court.standard" } / { door: "law.reviewed" } — the court & law hex families' as const,
+      note: 'each gate case tried: standard+fidelity+standing+ms; law.reviewed(0) stays a lead. The connector { court: true } only points here now' as const,
     },
     goal: {
       via: 'tools/call connector { goal: true }' as const,
@@ -179,7 +179,7 @@ export const connectorUseOf = () => {
     { args: { seal: true }, does: 'claySealWaveOf 0…5 — involution evidence; capacity-gated discover' },
     { args: { pass: 0 }, does: 'one seal-wave (bsd); pass i for seal i' },
     { args: { goal: true }, does: 'goal.combinations measure — OPEN|LEAD; not document-variant prose' },
-    { args: { court: true }, does: 'gate-court trials (standard+fidelity+standing+ms)' },
+    { args: { court: true }, does: 'pointer to quantum { door: "court" } — the court is reached only in hex quantum' },
     { args: { adapters: true }, does: 'native foreign→QPU registry; connect bill measured' },
     { args: { access: true, mode: 5, who: 'other' }, does: 'Unix rwx×ugo decides read/write/execute' },
     { args: { point: true }, does: 'holds-true seals + law + lattice + claimCompletenessAuditOf (one completeness field)' },
@@ -374,23 +374,18 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
     return { ...(await nativeAnswerOf(args)), connector: publicConnectorOf() }
   }
   if (args.court === true || args.trial === true || typeof args.case === 'string') {
-    const { gateCourtOf } = await import('./gate-court.js')
-    const digest = typeof args.digest === 'string' ? args.digest : undefined
-    const flags = typeof args.flags === 'number' && Number.isSafeInteger(args.flags) ? args.flags : undefined
-    const mode = typeof args.mode === 'number' && Number.isSafeInteger(args.mode) ? args.mode : undefined
-    const who =
-      args.who === 'other' || args.who === 'user' || args.who === 'group' || args.who === 'owner'
-        ? args.who
-        : undefined
+    // THE COURT IS REACHED ONLY IN HEX QUANTUM. The connector no longer tries the court itself; the trial runs through
+    // the quantum door — quantum { door: 'court' } for the whole court, quantum { door: 'court.standard' } / { door:
+    // 'law.reviewed' } for its measures as hex families. This branch is a pointer, not a second entry: one way in.
     const caseName = typeof args.case === 'string' ? args.case : undefined
     return {
-      ...gateCourtOf({
-        ...(caseName ? { case: caseName } : {}),
-        ...(digest ? { digest } : {}),
-        ...(flags !== undefined ? { flags } : {}),
-        ...(mode !== undefined ? { mode } : {}),
-        ...(who ? { who } : {}),
-      }),
+      kind: 'court-in-hex-quantum' as const,
+      reach: 'quantum { door: "court" }' as const,
+      hex: { family: 'court', door: 'court', note: 'the court and law families are the rules; the quantum door runs them' } as const,
+      measures: ['quantum { door: "court.standard" }', 'quantum { door: "law.reviewed" }', 'quantum { door: "law.fidelity" }', 'quantum { door: "law.standing" }'] as const,
+      ...(caseName ? { case: caseName } : {}),
+      note: 'the court is reachable only in hex quantum, through the quantum door; this connector no longer tries it' as const,
+      holds: true as const,
       connector: publicConnectorOf(),
     }
   }

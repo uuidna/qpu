@@ -1640,8 +1640,8 @@ qpuMcpFuseOf('connector', {
     catalog: { type: 'boolean', description: 'Alias of ecommerce: true.' },
     exam: { type: 'boolean', description: '{ exam: true } walks formula→hex→wave→claySealWaveOf→unit→fused→tools/list→harness; hops report ms/timeout/OOM notes.' },
     seal: { type: 'boolean', description: '{ seal: true } claySealWaveOf 0…5; full discover only when discover.capacity court-allows.' },
-    court: { type: 'boolean', description: '{ court: true } | { trial: true } — each gate case tried (standard+fidelity+standing+ms).' },
-    trial: { type: 'boolean', description: 'Alias of court: true.' },
+    court: { type: 'boolean', description: '{ court: true } | { trial: true } — a pointer only: the court is reached ONLY in hex quantum, quantum { door: "court" } (whole trial) / { door: "court.standard" } | { door: "law.reviewed" } (its measures as hex families).' },
+    trial: { type: 'boolean', description: 'Alias of court: true — the same pointer to quantum { door: "court" }.' },
     goal: { type: 'boolean', description: '{ goal: true } state OPEN|LEAD from combinatorics.combinations / binomial / wave cells; court-tried. Not prose document-variant combinations.' },
     k: { type: 'number', description: 'goal: C(faces, k) pick size (default 1).' },
     pass: { type: 'integer', description: '{ pass: i } one claySealWaveOf(i) — involution evidence on the seal-wave path.' },
@@ -1678,6 +1678,32 @@ qpuMcpFuseOf('hologram', {
     const scale = str(a.scale)
     if (scale) return h.streams[scale] ? { kind: 'hologram-scale', scale, root: h.root, publicKey: h.publicKeys[scale], fragments: h.streams[scale], holds: h.holds } : fail('scale', { scales: Object.keys(h.streams) })
     return { kind: h.kind, root: h.root, publicKeys: h.publicKeys, entries: h.entries, scales: Object.fromEntries(Object.entries(h.streams).map(([k, v]) => [k, { length: v.length, head: v.at(-1)?.uuid }])), holds: h.holds }
+  },
+})
+
+qpuMcpFuseOf('court', {
+  description: "THE COURT, REACHED ONLY IN HEX QUANTUM: quantum { door: 'court' }. Every tightened gate tried (standard + law.fidelity re-trial + law.standing hex receipts + law.reviewed(0) lead), jury = all families; allow/deny is hex/value/holds/ms, never advice until reviewed. { case } tries one case; { digest, flags, mode, who } set the trial's gates. The court's measures are the court.* and law.* hex families — quantum { door: 'court.standard' }, quantum { door: 'law.reviewed' } — so the whole court is hex through the quantum door and nowhere else.",
+  inputSchema: { type: 'object', properties: {
+    case: { type: 'string', description: 'Try one case by name (e.g. tool.shor, access.execute); omitted tries every standing case.' },
+    digest: { type: 'string', description: 'The digest gate tried (default sha256).' },
+    flags: { type: 'integer', description: 'The access-screen flags tried (default 0b11111).' },
+    mode: { type: 'integer', description: 'The chmod triad for the access.execute trial (default 5 = r-x).' },
+    who: { type: 'string', description: 'other | user | group | owner for the access.execute trial.' },
+  } },
+  run: async (a) => {
+    const { gateCourtOf } = await import('../payload/plugins/gate-court.js')
+    const digest = typeof a.digest === 'string' ? a.digest : undefined
+    const flags = typeof a.flags === 'number' && Number.isSafeInteger(a.flags) ? a.flags : undefined
+    const mode = typeof a.mode === 'number' && Number.isSafeInteger(a.mode) ? a.mode : undefined
+    const who = a.who === 'other' || a.who === 'user' || a.who === 'group' || a.who === 'owner' ? a.who : undefined
+    const caseName = typeof a.case === 'string' ? a.case : undefined
+    return gateCourtOf({
+      ...(caseName ? { case: caseName } : {}),
+      ...(digest ? { digest } : {}),
+      ...(flags !== undefined ? { flags } : {}),
+      ...(mode !== undefined ? { mode } : {}),
+      ...(who ? { who } : {}),
+    })
   },
 })
 
