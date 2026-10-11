@@ -680,8 +680,10 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     const page = matched.slice(start, start + faces)
     const stmtOf = (nm: string) => (new RegExp(`theorem ${nm}\\b[\\s\\S]*?:=`).exec(leanSource)?.[0] ?? '').replace(/\s+/g, ' ').replace(/ :=$/, '').slice(0, 240)
     const rows = page.map((nm) => ({ theorem: nm, holds: leanRecomputed[nm]!.holds, ...(leanRecomputed[nm]!.over ? { over: leanRecomputed[nm]!.over } : {}), formula: leanRecomputed[nm]!.formula, lean: stmtOf(nm) }))
-    const live = { toolchain: leanToolchain, path: leanPath, theorems: names.length, held: names.filter((nm) => leanRecomputed[nm]!.holds).length, axioms: 0, matched: matched.length, from: start, ...(start + faces < matched.length ? { next: start + faces } : {}), rows }
-    return { source, url: 'https://qpu.uuidna.com/lean', reading: live, expected: { held: names.length, axioms: 0 }, agrees: names.every((nm) => leanRecomputed[nm]!.holds) }
+    // axioms MEASURED from the embedded source (not a literal 0): if an axiom ever enters leanSource, this reports it and agrees drops.
+    const axioms = [...leanSource.matchAll(/^[ \t]*axiom\b/gm)].length
+    const live = { toolchain: leanToolchain, path: leanPath, theorems: names.length, held: names.filter((nm) => leanRecomputed[nm]!.holds).length, axioms, matched: matched.length, from: start, ...(start + faces < matched.length ? { next: start + faces } : {}), rows }
+    return { source, url: 'https://qpu.uuidna.com/lean', reading: live, expected: { held: names.length, axioms: 0 }, agrees: names.every((nm) => leanRecomputed[nm]!.holds) && axioms === 0 }
   }
   if (source === 'define') {
     // THE WORD, LOOKED UP — AND THE LEXICON AS LEADS. A word's meanings and phonetics come from the keyless Free

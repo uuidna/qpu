@@ -1,11 +1,11 @@
 import type { CollectionConfig } from 'payload'
-import { anyone, authenticated } from '../access'
+import { anyone, adminOrAbove } from '../access'
 
 /** One cross formula of the fusion: a composing pair, its rarest field per direction, its specificity and receipt. */
 export const FuseFormulas: CollectionConfig = {
   slug: 'fuse-formulas',
   admin: { useAsTitle: 'formulaId' },
-  access: { read: anyone, create: authenticated, update: authenticated, delete: authenticated },
+  access: { read: anyone, create: adminOrAbove, update: adminOrAbove, delete: adminOrAbove },
   fields: [
     { name: 'uuid', type: 'text', required: true, unique: true },
     { name: 'formulaId', type: 'text', required: true },

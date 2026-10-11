@@ -1,11 +1,11 @@
 import type { CollectionConfig } from 'payload'
-import { anyone, authenticated } from '../access'
+import { anyone, adminOrAbove } from '../access'
 
 /** One API of the fused registry: one qubit of the graph state, reached or unreached with why. */
 export const FuseApis: CollectionConfig = {
   slug: 'fuse-apis',
   admin: { useAsTitle: 'api' },
-  access: { read: anyone, create: authenticated, update: authenticated, delete: authenticated },
+  access: { read: anyone, create: adminOrAbove, update: adminOrAbove, delete: adminOrAbove },
   fields: [
     { name: 'api', type: 'text', required: true, unique: true },
     { name: 'qubit', type: 'number', required: true },

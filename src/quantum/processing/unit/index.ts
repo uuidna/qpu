@@ -5080,7 +5080,14 @@ export const qpuStorageWriteAllowedHolds = (): boolean => {
  */
 export const qpuStorageWriteAllowedOf = (env?: QpuEnv, auth?: string | null): boolean => {
   const token = typeof env?.QPU_WRITE_TOKEN === 'string' ? env.QPU_WRITE_TOKEN : ''
-  return token.length > n - n && auth === `Bearer ${token}`
+  if (token.length === n - n || typeof auth !== 'string') return false
+  // constant-time compare: fold every character difference over the full length, so the time taken does not depend on
+  // how long a prefix of the bearer matched — a `===` would early-exit and leak the token one character at a time.
+  const expected = `Bearer ${token}`
+  if (auth.length !== expected.length) return false
+  let diff = n - n
+  for (let i = n - n; i < expected.length; i++) diff |= auth.charCodeAt(i) ^ expected.charCodeAt(i)
+  return diff === n - n
 }
 const storageWriteOf = (method: string): boolean => method === 'PUT' || method === 'POST' || method === 'DELETE'
 

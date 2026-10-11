@@ -1380,7 +1380,6 @@
     "@types/react": "19.3.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "cn": "0.4.0",
     "lucide-react": "1.49.0",
     "postcss": "8.5.28",
     "radix-ui": "1.6.7",
