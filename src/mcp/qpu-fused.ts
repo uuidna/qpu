@@ -1,5 +1,5 @@
 import { aeadOpen, aeadSeal, bytesOf, ed25519PublicKey, ed25519Sign, ed25519Verify, fromHex, hexOf, hkdf, hmac, md5, sha256, sha512, utf8, x25519, type HashName } from '../core/crypt.js'
-import { leanSource, leanRecomputed, leanToolchain, leanPath } from '../quantum/processing/unit/lean.js'
+import { leanSource, leanRecomputed, leanToolchain, leanPath, leanAxioms } from '../quantum/processing/unit/lean.js'
 import { packageVersion } from '../quantum/processing/unit/version.js'
 import { qpuCernCatalogsOf, qpuCernRecordsOf, qpuCiteOf, qpuFacesOf, qpuFailureOf, qpuFoldOf, qpuHarnessesOf, qpuHexRegisterOf, qpuContentUuidOf, qpuHexCatalogOf, qpuHexFamiliesOf, qpuHexMissOf, qpuHexRunOf, qpuHexUuidOf, qpuInstallOf, qpuMcpDoorsOf, qpuMcpFuseOf, qpuMcpToolsListOf, qpuUuidReceiptOf } from '../quantum/processing/unit/index.js'
 import { DOORS } from './discovery.js'
@@ -84,9 +84,9 @@ const get = async (url: string, accept = 'application/json'): Promise<Response> 
 /** The deadline-bounded, transient-retrying fetch the data door uses, exported so its retry contract can be tested. */
 export const qpuGetOf = get
 const leanNat = (name: string): string | undefined => new RegExp(`def ${name} : Nat := (\\d+)`).exec(leanSource)?.[1]
-// the embedded kernel's axiom count, MEASURED once from the source (not a literal 0): the proof and clay doors report
-// "zero axioms" only when this is 0, so the claim is falsifiable — an axiom entering leanSource would show here.
-const LEAN_AXIOMS = [...leanSource.matchAll(/^[ \t]*axiom\b/gm)].length
+// the embedded kernel's axiom count, hooked from the build-time embed (scripts/embed-lean.mjs, gated by `lake build` as
+// ground truth) — NOT re-scanned here. The proof and clay doors report "zero axioms" only when this is 0, falsifiable.
+const LEAN_AXIOMS = leanAxioms
 const bellOf = (count: number): bigint[] => {
   const out: bigint[] = []
   let row = [1n]

@@ -82,7 +82,7 @@ import {
   qpuDataLiveOf,
 } from './index.js'
 import type { QpuEnv } from './index.js'
-import { leanRecomputed, leanSource } from './lean.js'
+import { leanRecomputed, leanSource, leanAxioms, leanUnproven } from './lean.js'
 import { qpuCircuitOf } from './circuit.js'
 import { qpuImproveOf, qpuImproveHolds, qpuTrainOf, qpuTrainHolds, qpuProveOf, qpuProveHolds } from './doors.js'
 import { qpuLeanOf, qpuLeanHolds } from './proof.js'
@@ -389,8 +389,8 @@ const qpuMorphToolsOf = (env?: QpuEnv, auth?: string | null): ReturnType<typeof 
 // and its axiom / incompleteness (sorry|admit) counts are module constants — qpuMcpDoorsOf was re-scanning ~80KB with
 // several matchAll on every call. Correctness is unchanged (same scans of the same source); only the repetition is gone.
 const LEAN_DEFS = new Set([...leanSource.matchAll(/^[ \t]*def ([A-Za-z]\w*)/gm)].map((m) => m[1]))
-const LEAN_AXIOMS = [...leanSource.matchAll(/^[ \t]*axiom\b/gm)].length
-const LEAN_UNPROVEN = [...leanSource.matchAll(/\b(?:sorry|admit)\b/g)].length
+const LEAN_AXIOMS = leanAxioms // hooked from the build-time embed (lake build is the ground truth), not re-scanned here
+const LEAN_UNPROVEN = leanUnproven
 
 export const qpuMcpDoorsOf = (env?: QpuEnv, auth?: string | null) => {
   // THE DOORS, COLD — ONE CATALOGUE, NOT MANY. This lists the tools (name + kind). The fused descriptions are on the man
