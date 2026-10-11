@@ -10,16 +10,22 @@ const roleOf = (req: { user?: unknown } | undefined) => (req?.user as { role?: s
 const isSuperAdmin: Access = ({ req }) => roleOf(req) === 'super-admin'
 const superAdminField: FieldAccess = ({ req }) => roleOf(req) === 'super-admin'
 const signedInField: FieldAccess = ({ req }) => Boolean(req.user)
+// UPDATE IS SELF-ONLY (or super-admin). The multi-tenant default would let any signed-in user update PEERS in their
+// tenant — and email/password are auth fields with no field-level lock, so that was a same-tenant password reset =
+// account takeover (Wave XIV compliance, SOC2-CC6.1). A user may edit only their own record; a super-admin, anyone.
+const selfOrSuperAdmin: Access = ({ req }) => (roleOf(req) === 'super-admin' ? true : req.user ? { id: { equals: req.user.id } } : false)
 
 /** The first user is the super admin, with access to every tenant; creating it creates the first tenant on the request's host.
  *  It gives only an email and a password: the role, the state, the tenant and the name are known. */
 export const Users: CollectionConfig = {
   slug: 'users',
   auth: true,
-  // Only a super-admin creates or deletes accounts (first-register bootstraps with overrideAccess). Read and update are
-  // left to the multi-tenant default (self + own tenants); the privileged fields below are locked to super-admin.
+  // Only a super-admin creates or deletes accounts (first-register bootstraps with overrideAccess). Update is self-only
+  // (or super-admin) — never a same-tenant peer, so no one can reset another account's password. The privileged fields
+  // (role, active, tenants) are additionally locked to super-admin below.
   access: {
     create: isSuperAdmin,
+    update: selfOrSuperAdmin,
     delete: isSuperAdmin,
   },
   admin: {
