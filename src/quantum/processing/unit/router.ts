@@ -306,7 +306,11 @@ export const worker = {
       return jsonOf(qpuNetworkMcpOf())
     }
     if (path === '/storage' || path.startsWith('/storage/')) {
-      const key = path === '/storage' ? '' : decodeURIComponent(path.slice('/storage/'.length))
+      // a malformed percent-escape (e.g. /storage/%) makes decodeURIComponent throw URIError; take the raw slice then
+      // rather than let the throw escape worker.fetch and answer nothing (Wave XIII) — a bad key simply misses.
+      const raw = path.slice('/storage/'.length)
+      let key = ''
+      try { key = path === '/storage' ? '' : decodeURIComponent(raw) } catch { key = raw }
       if (request.method === 'POST' && path === '/storage') {
         const body = await rpcBodyOf<{ maintain?: unknown; key?: unknown; value?: unknown }>()
         const via = await throughOf(body)

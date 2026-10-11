@@ -1,5 +1,5 @@
 import type { CollectionConfig, PayloadRequest } from 'payload'
-import { authenticated } from '../access'
+import { authenticated, superAdmin } from '../access'
 
 export const hostOf = (req: PayloadRequest): string | undefined => req.headers?.get('x-forwarded-host') ?? req.headers?.get('host') ?? undefined
 
@@ -7,7 +7,9 @@ export const hostOf = (req: PayloadRequest): string | undefined => req.headers?.
 export const Tenants: CollectionConfig = {
   slug: 'tenants',
   admin: { useAsTitle: 'name' },
-  access: { read: authenticated, create: authenticated, update: authenticated, delete: authenticated },
+  // deleting a tenant cascades deletes across every tenant-scoped collection, so only a super-admin may update or
+  // delete one; an ordinary signed-in user must not be able to drop a tenant and its data (Wave XIII HIGH).
+  access: { read: authenticated, create: authenticated, update: superAdmin, delete: superAdmin },
   hooks: {
     beforeChange: [
       async ({ data, operation, req }) => {

@@ -1149,7 +1149,9 @@ export const qpuDiscoverLiveOf = async (): Promise<number[]> => {
 
 /** A live public dataset checked against the unit: the reading, what the unit holds, whether they agree, and a receipt. */
 export const qpuDataOf = async (source: string, a: Args = {}, env?: QpuEnv, auth?: string | null) => {
-  const key = source === 'ask' ? JSON.stringify([source, a, Boolean(auth), Boolean(env?.PAYLOAD)]) : JSON.stringify([source, a])
+  // the ask cache is scoped to the EXACT credential, not merely whether one was sent: a folded token id, so one
+  // bearer never serves another bearer's Payload reply from the window (Wave XIII HIGH — was Boolean(auth)).
+  const key = source === 'ask' ? JSON.stringify([source, a, auth ? qpuFoldOf(auth) : false, Boolean(env?.PAYLOAD)]) : JSON.stringify([source, a])
   const hit = cache.get(key)
   if (hit && Date.now() - hit.at < WINDOW) return hit.value as ReturnType<typeof readOf>
   const value = readOf(source, a, env, auth)
