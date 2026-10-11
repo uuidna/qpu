@@ -1,5 +1,6 @@
 import type { Access, CollectionConfig, FieldAccess } from 'payload'
 import { hostOf } from './Tenants'
+import { canAccessAdmin } from '../access'
 
 // shown only to a signed-in admin: the first-user screen asks for an email and a password and nothing else
 const signedIn = (_: unknown, __: unknown, { user }: { user?: unknown }) => Boolean(user)
@@ -24,6 +25,10 @@ export const Users: CollectionConfig = {
   // (or super-admin) — never a same-tenant peer, so no one can reset another account's password. The privileged fields
   // (role, active, tenants) are additionally locked to super-admin below.
   access: {
+    // The admin PANEL is gated to an active admin or super-admin: a role:'user' account (or a deactivated one) can hold a
+    // session and authenticate, but cannot enter /admin to reach the CMS. This is Payload's panel gate, separate from the
+    // per-collection read/write access below. (Wave XIV compliance, SOC2-CC6.1 least-privilege.)
+    admin: canAccessAdmin,
     create: isSuperAdmin,
     update: selfOrSuperAdmin,
     delete: isSuperAdmin,

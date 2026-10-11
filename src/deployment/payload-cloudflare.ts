@@ -195,13 +195,25 @@ const slugs = (t: PluginTargets) => `[${t.map((x) => `'${x}'`).join(', ')}]`
 const withOptions = (call: string, options?: string): string =>
   !options ? call : options.includes('products:') && call.includes('products: true, ') ? withOptions(call.replace('products: true, ', ''), options) : call.endsWith('({})') ? `${call.slice(0, -3)}{ ${options} })` : call.replace(/\s*\}\)$/, `, ${options} })`)
 
+// The RBAC predicate, as source, shared by the generated Media collection and the form-builder overrides below: an ACTIVE
+// admin or super-admin (the same rule as src/access.adminOrAbove). Inlined because payload.config.ts is generated as a
+// standalone file that does not import ../access; type inference gives these the Access signature from their context.
+const ADMIN_SRC = `({ req }) => { const u = req.user as { role?: string; active?: boolean } | null; return Boolean(u) && u?.active !== false && (u?.role === 'admin' || u?.role === 'super-admin') }`
+
 const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: string; name: string; call: (t: PluginTargets) => string }> = {
   ecommerce: {
     from: '@payloadcms/plugin-ecommerce', name: 'ecommercePlugin',
     call: () => `ecommercePlugin({ products: true, customers: { slug: 'users' }, access: { isAdmin: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' }, adminOnlyFieldAccess: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' }, adminOrPublishedStatus: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' ? true : { _status: { equals: 'published' } } }, isDocumentOwner: ({ req }) => (req.user ? { customer: { equals: req.user.id } } : false) } })`,
   },
-  'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: () => 'formBuilderPlugin({})' },
-  'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}] })` },
+  // Forms are authored only by admins; submissions are the public's data: anyone may create one (that is a contact form),
+  // but they are read only by an admin (PII, GDPR/SOC2), never updated, and deleted only by an admin. Without these the
+  // plugin's default would let any signed-in user read every submission and edit every form (Wave XIV compliance).
+  'form-builder': { from: '@payloadcms/plugin-form-builder', name: 'formBuilderPlugin', call: () => `formBuilderPlugin({ formOverrides: { access: { read: () => true, create: ${ADMIN_SRC}, update: ${ADMIN_SRC}, delete: ${ADMIN_SRC} } }, formSubmissionOverrides: { access: { read: ${ADMIN_SRC}, create: () => true, update: () => false, delete: ${ADMIN_SRC} } } })` },
+  // The exports and imports collections default read/create/delete to any signed-in user, and the job itself reads and
+  // writes with overrideAccess:true — so without these overrides a role:'user' account could export every collection's
+  // rows (users, form submissions, receipts) or import arbitrary docs, bypassing per-collection access. Gate both to an
+  // admin: only an admin may run an export or an import (Wave XIV compliance, SOC2-CC6.1 / GDPR data-access control).
+  'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}], overrideExportCollection: ({ collection }) => ({ ...collection, access: { ...collection.access, read: ${ADMIN_SRC}, create: ${ADMIN_SRC}, delete: ${ADMIN_SRC} } }), overrideImportCollection: ({ collection }) => ({ ...collection, access: { ...collection.access, read: ${ADMIN_SRC}, create: ${ADMIN_SRC}, delete: ${ADMIN_SRC} } }) })` },
   mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { description: '${x}' }`).join(', ')} } })` },
   'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} } })` },
   'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: (t) => `nestedDocsPlugin({ collections: ${slugs(t)} })` },
@@ -304,7 +316,7 @@ const cloudflareConfigOf = (c: CloudflareCombination, app?: CloudflareApp): stri
   const ownTenants = app?.collections.some((x) => x.slug === 'tenants') ?? false
   const collections = [
     app ? '' : `const Users: CollectionConfig = { slug: 'users', auth: true, fields: [] }`,
-    media ? `const Media: CollectionConfig = { slug: 'media', access: { read: () => true, create: ({ req }) => Boolean(req.user), update: ({ req }) => Boolean(req.user), delete: ({ req }) => Boolean(req.user) }, defaultPopulate: { alt: true, darkModeFallback: true, filename: true, height: true, mimeType: true, url: true, width: true }, fields: [{ name: 'alt', type: 'text', required: true }, { name: 'darkModeFallback', type: 'upload', relationTo: 'media', admin: { description: 'Choose an upload to render if the visitor is using dark mode.' } }], upload: true }` : '',
+    media ? `const Media: CollectionConfig = { slug: 'media', access: { read: () => true, create: ${ADMIN_SRC}, update: ${ADMIN_SRC}, delete: ${ADMIN_SRC} }, defaultPopulate: { alt: true, darkModeFallback: true, filename: true, height: true, mimeType: true, url: true, width: true }, fields: [{ name: 'alt', type: 'text', required: true }, { name: 'darkModeFallback', type: 'upload', relationTo: 'media', admin: { description: 'Choose an upload to render if the visitor is using dark mode.' } }], upload: true }` : '',
     app ? '' : `const Pages: CollectionConfig = { slug: 'pages', versions: { drafts: true }, fields: [{ name: 'title', type: 'text', required: true }] }`,
     plugins.includes('multi-tenant') && !ownTenants ? `const Tenants: CollectionConfig = { slug: 'tenants', fields: [{ name: 'name', type: 'text', required: true }] }` : '',
   ].filter(Boolean)

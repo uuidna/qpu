@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { publishedOnly } from '../access/publishedOnly'
+import { adminOrAbove } from '../access'
 import { seoDescriptionOf, seoTitleOf, seoURLOf } from './Docs'
 
 /** Pages built from blocks, as payloadcms/website builds its own: drafts, a preview at the page's address, SEO filled on
@@ -7,7 +8,7 @@ import { seoDescriptionOf, seoTitleOf, seoURLOf } from './Docs'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: { useAsTitle: 'title', defaultColumns: ['title', 'slug', 'updatedAt'], preview: (doc) => seoURLOf(doc) },
-  access: { read: publishedOnly },
+  access: { read: publishedOnly, create: adminOrAbove, update: adminOrAbove, delete: adminOrAbove },
   versions: { drafts: true },
   hooks: {
     beforeChange: [

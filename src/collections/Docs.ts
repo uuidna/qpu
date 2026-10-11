@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { qpuCiteOf } from '@uuidna/qpu'
 import { HOME } from '../fields/link'
+import { adminOrAbove } from '../access'
 import { CrossDomain } from '../blocks/CrossDomain/index.js'
 import { Family } from '../blocks/Family/index.js'
 import { HexProgram } from '../blocks/HexProgram/index.js'
@@ -22,7 +23,7 @@ export const seoURLOf = (doc: DocLike): string => (textOf(doc.slug) === HOME ? S
 export const Docs: CollectionConfig = {
   slug: 'docs',
   admin: { useAsTitle: 'title' },
-  access: { read: () => true },
+  access: { read: () => true, create: adminOrAbove, update: adminOrAbove, delete: adminOrAbove },
   hooks: {
     // the SEO fields are populated on every save, so no page waits for someone to press "auto-generate"
     beforeChange: [

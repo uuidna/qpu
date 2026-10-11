@@ -5,8 +5,10 @@ import { anyone, authenticated, never } from '../access'
 export const QuantumReceipts: CollectionConfig = {
   slug: 'quantum-receipts',
   admin: { useAsTitle: 'uuid' },
-  // the receipt ledger is append-only and content-addressed: a receipt's UUID is a fold of its payload, so changing it
-  // would break its own address. No update, no delete — tamper-evident by construction (Wave XIII HIGH).
+  // The receipt ledger is append-only and content-addressed: a row's `fold` is qpuContentUuidOf of the committed
+  // *-receipt.json it mirrors (the content itself stays git-committed, not copied into the row), and the row is never
+  // updated or deleted. Immutability is the tamper-evidence — a stored row cannot be re-derived here because it carries a
+  // pointer + fold, not the content, so the honest guarantee is append-only, not a create-time re-fold (Wave XIII HIGH).
   access: { read: anyone, create: authenticated, update: never, delete: never },
   fields: [
     { name: 'uuid', type: 'text', required: true, unique: true },
