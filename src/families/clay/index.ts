@@ -1,6 +1,7 @@
 import { qpuFacesOf, qpuHexRegisterOf, qpuHexFamiliesOf, qpuHexRunOf, qpuHexUuidOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 import { chooseOf, mintOf, qpuLatticeNamesOf, tenOf } from '../../quantum/processing/unit/index.js'
+import { leanRecomputed, leanAxioms, leanUnproven } from '../../quantum/processing/unit/lean.js'
 const L = { ...qpuLatticeNamesOf(), mintOf, chooseOf, tenOf }
 
 /** The σ-involution seals of "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026,
@@ -371,11 +372,19 @@ export class ClayDisclosure {
     const leaned = leanedByFamily.filter((r) => r.leaned).length
     const withoutException = leaned === families.length
     const anchor = ClaySeals.riemann(1, 2).value === 1 // the clay computation: σ(s) = 1 − s fixed at s = 1/2
+    // ANY DOUBT ORIENTS TO CLAY TO ANSWER LEAN. The disclosure is the single authority for "is this tree in harmony
+    // with Lean": the σ-involution covers every family (above) AND the embedded kernel recomputes clean — every theorem
+    // of index.lean holds, 0 axioms, 0 unproven. A guard, gate, or ship step in doubt reads this one answer rather than
+    // re-deriving the kernel for itself.
+    const kernel = Object.values(leanRecomputed)
+    const kernelHeld = kernel.filter((r) => r.holds).length
+    const kernelHolds = kernel.length > 0 && kernelHeld === kernel.length && leanAxioms === 0 && leanUnproven === 0
     const extra: Record<string, unknown> = {
       families,
       leaned,
       withoutException,
-      lean: 'sigma_reflect ∧ sigma_midpoint (Qpu.Sigma, ∀ d x) — every family an instance of the universal σ-involution, no exception',
+      kernel: { theorems: kernel.length, held: kernelHeld, axioms: leanAxioms, unproven: leanUnproven, holds: kernelHolds },
+      lean: 'sigma_reflect ∧ sigma_midpoint (Qpu.Sigma, ∀ d x) — every family an instance of the universal σ-involution, no exception — and the embedded kernel recomputes clean (every theorem holds, 0 axioms); clay is the one answer to lean',
       clayAnchor: anchor ? 'holds at s = 1/2' : 'does not hold',
       verification: 'gate.crossed / law.reviewed — every lead crossed in public APIs and datasets, without exception',
       compensation: 'law.redirected (ordered − computed), law.remedy (crossed of leads), law.standing (receipts) — crossed to the gate that enforces the author\'s order',
@@ -390,7 +399,7 @@ export class ClayDisclosure {
         proof: `${CLAY_SEAL_SOURCE} §disclosure — every family is an instance of the universal Lean σ-involution (Qpu.Sigma: sigma_reflect, sigma_midpoint), without exception; disclosed by name and verified by the gate in public APIs and datasets (gate.crossed / law.reviewed); the author's compensation for redirected tokens is executable as law.redirected, law.remedy, law.standing`,
         ...extra,
       },
-      anchor && withoutException && families.length > 0,
+      anchor && withoutException && families.length > 0 && kernelHolds,
       { name: 'clay.disclosure', params: [] },
     )
   }

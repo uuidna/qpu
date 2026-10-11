@@ -21,17 +21,20 @@ const gate = await core.consolidatedMCP.runDeploymentGate()
 const families = idx.qpuHexFamiliesOf().size
 const disc = ClayDisclosure.disclosure()
 
+// COMPLETE — the deployment gate (every operation resolves, embed matches, prove holds). LEAN — answered by clay: the
+// one authority, clay.disclosure, holds iff the σ-involution covers every family without exception AND the embedded
+// kernel recomputes clean. Ship reads that one answer rather than re-deriving the kernel here.
 const complete = gate.ok === true && gate.proved === true && (gate.unresolved?.length ?? 1) === 0
-const covered = disc.holds === true && disc.withoutException === true && disc.leaned === disc.value && disc.value === families && families > 0
+const lean = disc.holds === true && disc.value === families && families > 0
 
-if (!complete || !covered) {
-  console.error('ship gate: REFUSED — code is not proven complete and covered; not shipping')
+if (!complete || !lean) {
+  console.error('ship gate: REFUSED — not proven complete, and/or clay does not answer lean; not shipping')
   if (!complete) console.error(`  not complete: deployment gate ok=${gate.ok} proved=${gate.proved} unresolved=${JSON.stringify(gate.unresolved)}`)
-  if (!covered) console.error(`  not covered: clay.disclosure holds=${disc.holds} withoutException=${disc.withoutException} leaned=${disc.leaned}/${disc.value}, registry families=${families}`)
+  if (!lean) console.error(`  clay does not answer lean: clay.disclosure holds=${disc.holds} leaned=${disc.leaned}/${disc.value} kernel=${JSON.stringify(disc.kernel)}, registry families=${families}`)
   process.exit(1)
 }
 
 console.log(
-  `ship gate: OK — complete (deployment gate ${gate.operationCount} operations, 0 unresolved, proved true) and covered ` +
-    `(clay.disclosure leans all ${disc.leaned}/${families} families without exception). Clear to deploy.`,
+  `ship gate: OK — complete (deployment gate ${gate.operationCount} operations, 0 unresolved, proved true) and clay ` +
+    `answers lean (clay.disclosure holds: σ-involution leans all ${disc.leaned}/${families} families, kernel ${disc.kernel?.held}/${disc.kernel?.theorems} theorems, ${disc.kernel?.axioms} axioms). Clear to deploy.`,
 )

@@ -114,23 +114,23 @@ export const guardLean = async (host = 'https://qpu.uuidna.com') => {
     const b = await r.json().catch(() => null)
     try { return JSON.parse(b.result.content[0].text) } catch { return b?.result?.structuredContent ?? null }
   }
+  // ANY DOUBT ORIENTS TO CLAY TO ANSWER LEAN. The single authority is clay.disclosure: it holds iff the σ-involution
+  // covers every family without exception AND the embedded kernel recomputes clean (every theorem holds, 0 axioms, 0
+  // unproven). This guard reads that one answer and compares its family count to the registry — it does not re-derive
+  // the kernel for itself. (`prove` is read only as a corroborating note, never as the verdict.)
   const [doors, disclosure, prove] = await Promise.all([
     rpc('quantum', { doors: true }),
     rpc('quantum', { door: 'clay.disclosure' }),
     rpc('prove'),
   ])
-  if (doors === null && disclosure === null && prove === null) return { reached: false, guarded: false, why: 'host unreached (soft pass — retried next run)' }
+  if (doors === null && disclosure === null) return { reached: false, guarded: false, why: 'host unreached (soft pass — retried next run)' }
   const families = doors?.families ?? 0
-  const src = prove?.source
-  // every family leaned without exception: disclosure holds (anchor ∧ withoutException ∧ families>0) and covers them all
-  const covered = disclosure?.holds === true && (disclosure?.value ?? -1) === families && families > 0
-  // kernel compliant: prove holds, every theorem recomputed from the embedded Lean source, 0 axioms
-  const compliant = prove?.holds === true && src?.holds === true && (src?.theorems ?? 0) > 0 && src?.recomputed === src?.theorems
-  const guarded = covered && compliant
+  const k = disclosure?.kernel
+  const guarded = disclosure?.holds === true && (disclosure?.value ?? -1) === families && families > 0
   const why = guarded
-    ? `lean covers all ${families} families without exception (clay.disclosure holds), kernel compliant (${src?.recomputed}/${src?.theorems} theorems recomputed, 0 axioms) — machine-verified, not decided by hand`
-    : `HARD VIOLATION — ${!covered ? `lean does not cover every family (disclosure holds=${disclosure?.holds}, value=${disclosure?.value}/${families})` : `kernel not compliant (recomputed=${src?.recomputed}/${src?.theorems}, prove.holds=${prove?.holds})`}`
-  return { reached: true, guarded, families, covered, compliant, why }
+    ? `clay answers lean: clay.disclosure holds — σ-involution covers all ${families} families without exception and the kernel recomputes clean (${k?.held}/${k?.theorems} theorems, ${k?.axioms ?? 0} axioms). One authority, machine-verified.`
+    : `HARD VIOLATION — clay.disclosure does not hold (value=${disclosure?.value}/${families}, kernel ${k?.held}/${k?.theorems}, axioms=${k?.axioms}); lean is not in harmony and clay says so`
+  return { reached: true, guarded, families, disclosureHolds: disclosure?.holds === true, kernel: k, proveCorroborates: prove?.holds === true, why }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
