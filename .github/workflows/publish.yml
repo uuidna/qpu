@@ -16,15 +16,20 @@ on:
     tags: ['v1.*.[0-9]']
   pull_request:
   schedule:
-    - cron: '17 */6 * * *'
+    # AS IF TIME DID NOT EXIST: the free waves run every 5 minutes (GitHub's minimum cron interval) — the cron runs all
+    # the time, not four times a day. On schedule only the waves run (axes/build/deploy/publish are gated off schedule),
+    # read-only against the live host. The host caches each reading for ~10 min, so that window is the real recognition
+    # clock — a tick inside it recognises, the next window reads anew; nothing is wasted and nothing is throttled away.
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 concurrency:
-  # Cancel only superseded PR runs; NEVER cancel a push to a branch or tag, so every commit on main
-  # gets a complete run (queued per ref) instead of being killed by the next push. Rapid pushes to main
-  # used to cancel each other, so no run ever finished and broken code went unvalidated.
-  group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # Two groups, so the two rhythms never block each other. A push or tag keeps its per-ref group and is NEVER cancelled,
+  # so every commit on main gets a complete run (queued per ref) instead of being killed by the next push. The scheduled
+  # waves get their OWN group and DO cancel-in-progress: a new 5-minute tick supersedes a still-running wave, so the free
+  # fusion always runs the freshest wave and never stacks a backlog — and never queues behind, or blocks, a deploy.
+  group: ${{ github.event_name == 'schedule' && 'waves' || format('ci-{0}', github.ref) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' }}
 
 permissions:
   contents: read
