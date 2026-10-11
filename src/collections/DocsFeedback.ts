@@ -8,5 +8,7 @@ export const DocsFeedback: CollectionConfig = {
   slug: 'docs-feedback',
   admin: { useAsTitle: 'path' },
   access: { read: authenticated, create: anyone, update: authenticated, delete: authenticated },
-  fields: [{ name: 'path', type: 'text', required: true }, { name: 'helpful', type: 'checkbox' }, { name: 'comment', type: 'textarea' }],
+  // create is anyone (a public docs feedback form), so the anonymous inputs are length-bounded — an unauthenticated
+  // caller cannot store an unbounded blob (Wave XIII). path a URL path, comment a short note.
+  fields: [{ name: 'path', type: 'text', required: true, maxLength: 1024 }, { name: 'helpful', type: 'checkbox' }, { name: 'comment', type: 'textarea', maxLength: 4096 }],
 }
