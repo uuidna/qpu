@@ -1,17 +1,17 @@
 ---
-uuid: "7fe0565f-4c00-11d4-bcc6-d795763089c2"
+uuid: "e8d4632e-9b78-2c4a-929a-84770c30ae61"
 title: "Documentation"
-description: "@uuidna/qpu 1.3.2: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
+description: "@uuidna/qpu 1.4.0: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
 og:title: "Documentation — @uuidna/qpu"
-og:description: "@uuidna/qpu 1.3.2: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
+og:description: "@uuidna/qpu 1.4.0: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/README.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Documentation"
-twitter:description: "@uuidna/qpu 1.3.2: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
-version: "1.3.2"
+twitter:description: "@uuidna/qpu 1.4.0: an exact quantum processing unit served over MCP, with formal proofs, content-addressed receipts, a document database on Cloudflare and Payload CMS integration."
+version: "1.4.0"
 ---
 # @uuidna/qpu documentation
 

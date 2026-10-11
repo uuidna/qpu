@@ -11,7 +11,7 @@ og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Formal proof (Lean)"
 twitter:description: "index.lean served theorem by theorem, recomputed and typeset. 11 capabilities; 3 of 3 evidence predicates hold."
-version: "1.3.2"
+version: "1.4.0"
 ---
 # Formal proof (Lean)
 
@@ -33,7 +33,7 @@ index.lean served theorem by theorem, recomputed and typeset.
 | [`qpuCrossReadingOf`](../src/quantum/processing/unit/index.ts#L2580) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `qpuCrossReadingHolds` | holds |
 | [`qpuLeanOf`](../src/quantum/processing/unit/proof.ts#L52) | builder | Every theorem of index.lean as a row: statement verbatim, LaTeX, reading, cross reading, statement UUID and holds recomputed by lean-eval. | `qpuLeanHolds` | holds |
 | [`qpuLeanSourceOf`](../src/quantum/processing/unit/index.ts#L2497) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `qpuLeanSourceHolds` | holds |
-| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8199) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
+| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8206) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
 | [`leanCallOf`](../src/quantum/processing/unit/lean-eval.ts#L356) | function | Call one definition of the Lean source by name with natural-number arguments, under Lean's Nat semantics. | — | — |
 | [`leanLinksOf`](../src/quantum/processing/unit/lean-eval.ts#L374) | function | The formulas discover each other: every declaration's statement and proof are read for the other declarations they name. | — | — |
 | [`qpuStatementUuidOf`](../src/quantum/processing/unit/index.ts#L2484) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
@@ -67,10 +67,10 @@ index.lean is the bundle of these modules (scripts/lean-bundle.mjs); `npm run le
 | [Qpu.Physics](../src/quantum/processing/unit/lean/Qpu/Physics.lean) | `cf1194df` | 1: planck, 2: boltzmann, 3: transmon, 4: photon, 5: thermal, 6: bcs, 7: aluminium, 8: niobium, 9: gap | 4 | — |
 | [Qpu.Pi](../src/quantum/processing/unit/lean/Qpu/Pi.lean) | — | — | 8 | Lattice (26), Mint (2) |
 | [Qpu.Primes](../src/quantum/processing/unit/lean/Qpu/Primes.lean) | — | — | 13 | Lattice (36), Mint (6) |
-| [Qpu.Sigma](../src/quantum/processing/unit/lean/Qpu/Sigma.lean) | — | — | 5 | — |
+| [Qpu.Sigma](../src/quantum/processing/unit/lean/Qpu/Sigma.lean) | — | — | 7 | Shor (3), Physics (3) |
 | [Qpu.Surfacecode](../src/quantum/processing/unit/lean/Qpu/Surfacecode.lean) | `d7d3f93e` | 1: surfacePhysical, 2: surfaceCorrectable, 3: surfaceLogical | 1 | Lattice (5) |
 
-637 pairs of definitions are related by at least one theorem. Strongest: mintOf ~ seed (40), faces ~ rays (33), coins ~ mintOf (32), coins ~ faces (30), coins ~ rays (28), bits ~ mintOf (26).
+640 pairs of definitions are related by at least one theorem. Strongest: mintOf ~ seed (40), faces ~ rays (33), coins ~ mintOf (32), coins ~ faces (30), coins ~ rays (28), bits ~ mintOf (26).
 
 ## Discovered relations
 

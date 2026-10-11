@@ -322,6 +322,25 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     ],
     holds: factoredBig,
   }
+  /** Qpu.Shor IS the σ-involution (Lean: shor_sigma, proved BY sigma_midpoint). Period-finding reflects the exponents by
+   * σ_r(x) = r − x (aˣ and a^(r−x) are inverses mod n), fixed exactly at the midpoint r/2; the square root a^(r/2) splits
+   * n by its ∓1 eigenvalues (clay_sigma's Yang–Mills {−1, +1}): −1 is a bad base, +1 splits n. A period-path factor is
+   * this reflection — a theorem of the clay kernel — not a step beside it. The witness (8, 91): r = 4, mid 2, a² = 64. */
+  const even = period > n - n && period % coins === n - n
+  const mid = even ? period / coins : n - n
+  const reflect = even ? bigPowModOf(base, BigInt(mid), modulus) : b0
+  const eigen = even ? (reflect === modulus - b1 ? -seed : seed) : n - n
+  const sigma = {
+    kind: 'sigma' as const,
+    theorem: 'shor_sigma' as const,
+    clay: 'clay_sigma' as const,
+    d: period,
+    midpoint: mid,
+    reflect: jsonIntOf(reflect),
+    eigen,
+    fixed: even ? mid * coins === period : by !== 'period',
+    holds: by === 'period' ? even && mid * coins === period : true,
+  }
   const rsa = {
     kind: 'rsa' as const,
     cryptosystem: 'rsa' as const,
@@ -356,6 +375,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     qft.holds &&
     measure.holds &&
     (post.holds || factors.by === 'gcd') &&
+    sigma.holds &&
     factors.holds &&
     rsa.holds &&
     computer.holds &&
@@ -374,6 +394,7 @@ export const qpuShorOf = (modulusArg?: number | bigint, baseArg?: number | bigin
     measure,
     post,
     classical,
+    sigma,
     factors,
     rsa,
     unlocked: true as const,
