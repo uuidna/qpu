@@ -4315,12 +4315,13 @@ export const qpuMessageOf = (send?: { lane?: unknown; body?: unknown }) => {
   const isBinary = send.body && typeof send.body === 'object' && !Array.isArray(send.body) && 'amplitudes' in send.body
   const amplitudeCount = isBinary ? (send.body as any).amplitudes?.length || 0 : 0
 
-  if (!isBinary && jsonBytesOf(stored) > found * lanes) {
-    // JSON fallback: theorem cube with theorem clay enforces geometry bound
+  // the heap byte cap applies to EVERY body, binary or not: an "amplitudes" key must not let a 20 KB body skip it
+  // (Wave XIII — the cap used to be gated on !isBinary, so any body with that key bypassed it unauthenticated).
+  if (jsonBytesOf(stored) > found * lanes) {
     return { ...catalog, accepted: false as const, denied: 'heap' as const, lane, hop, holds: false as const }
   }
   if (isBinary && amplitudeCount > Math.pow(2, 33)) {
-    // Binary limit: theorem quantum bounds by mintOf(bits + seed) = 2^8 = 256 amplitudes per lane max
+    // Binary limit: theorem quantum bounds the amplitude count by mintOf(bits + seed) = 2^(32+1) = 2^33
     return { ...catalog, accepted: false as const, denied: 'amplitude' as const, lane, hop, holds: false as const }
   }
   const uuid = uuidImprintOf(lane, fused, lanes, messageLanes[hop]!.length)
