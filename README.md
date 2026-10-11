@@ -2486,13 +2486,13 @@ And every row of every other receipt that does not hold, as the receipt names it
 
 ## 8. Reproducibility — the build receipt
 
-**Final build receipt** `2129e5c3-8c2e-8702-823e-b2c08cfa229d`
+**Final build receipt** `71c7c548-f001-6ffa-bbdd-50145924357a`
 
 | | |
 |---|---|
 | git tag | v1.4.0 |
 | receipts | 30 files, 3721 nodes |
-| build stream | length 3721, head `2129e5c3-8c2e-8702-823e-b2c08cfa229d`, chain `396f725a3f311c2d09a7228a563e70e2115a92f21a8d877f109c2db7433774f1`, holds **true** |
+| build stream | length 3721, head `71c7c548-f001-6ffa-bbdd-50145924357a`, chain `767a75457c7d0d1411157e4ab84dfd96788274662388cea2e34ed4bc4f0e077f`, holds **true** |
 
 <details>
 <summary>3721 receipts, chained in the build stream</summary>
@@ -2533,8 +2533,8 @@ flowchart TD
   ndff482d8["society-imagine-receipt.json<br/>33 rows<br/><code>dff482d8</code>"]
   n6f5cb5f1["test-receipt.json<br/>4 rows<br/><code>6f5cb5f1</code>"]
   ned567b53["uses-receipt.json<br/>42 rows<br/><code>ed567b53</code>"]
-  nc63788fe["walls-receipt.json<br/><code>c63788fe</code>"]
-  n2129e5c3["readme<br/><code>2129e5c3</code>"]
+  n0a0f098d["walls-receipt.json<br/><code>0a0f098d</code>"]
+  n71c7c548["readme<br/><code>71c7c548</code>"]
   n9143c628 --> n7f36f7e4
   n9143c628 --> n1c7ee73a
   n9143c628 --> n5c2251de
@@ -2564,8 +2564,8 @@ flowchart TD
   n9143c628 --> ndff482d8
   n9143c628 --> n6f5cb5f1
   n9143c628 --> ned567b53
-  n9143c628 --> nc63788fe
-  n9143c628 --> n2129e5c3
+  n9143c628 --> n0a0f098d
+  n9143c628 --> n71c7c548
 ```
 
 | node | receipt uuid | referrer | payload fold | seq |
@@ -6289,8 +6289,8 @@ flowchart TD
 | uses-receipt.json#39 | `96627fc9-f858-828b-be55-5bef0aada03e` | `ed567b53` | `5e8ccfdc561e39d3` | 3716 |
 | uses-receipt.json#40 | `e0b8b52e-13bc-1e4f-b9e2-cfcfacfd8f81` | `ed567b53` | `a1bacec066656c45` | 3717 |
 | uses-receipt.json#41 | `3b182c49-a503-3ace-8c0c-b55a469a010c` | `ed567b53` | `e43f843d6380eb30` | 3718 |
-| walls-receipt.json | `c63788fe-6153-7130-9d5b-70bcff1afc72` | `9143c628` | `45649925346aa78d` | 3719 |
-| readme | `2129e5c3-8c2e-8702-823e-b2c08cfa229d` | `9143c628` | `77ed2860e0d79b6a` | 3720 |
+| walls-receipt.json | `0a0f098d-5467-143b-b2cb-4e8c876aeb2f` | `9143c628` | `99a5ea3b2f73a21b` | 3719 |
+| readme | `71c7c548-f001-6ffa-bbdd-50145924357a` | `9143c628` | `84b100b57707bb88` | 3720 |
 
 </details>
 

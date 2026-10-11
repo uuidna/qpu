@@ -49,7 +49,7 @@ The MCP server, its tools and man pages, the sandbox, training and competition d
 | [`qpuDryOf`](../src/quantum/processing/unit/index.ts#L860) | builder | Coordinated dry-clean: two teams, occupancy pentagram, genesis coins. | `qpuDryHolds` | holds |
 | [`qpuEfficiencyOf`](../src/quantum/processing/unit/index.ts#L3402) | builder | Token efficiency of each door: bytes and tokens to read the tree versus to call the tool. | `qpuEfficiencyHolds` | holds |
 | [`qpuEmbedDriftOf`](../src/quantum/processing/unit/index.ts#L1767) | builder | THE COOL IS FRESH, AT THE GATE, FROM ONE PLACE. | — | — |
-| [`qpuFailureOf`](../src/quantum/processing/unit/mcp.ts#L327) | builder | A failure, classified so it is answered rather than thrown: when the network cannot be reached (no route, DNS, refused connection, timeout) the work that needs it is skipped and the answer is a WARNING; anything else is an ERROR. | — | — |
+| [`qpuFailureOf`](../src/quantum/processing/unit/mcp.ts#L327) | builder | A failure, classified so it is answered rather than thrown: when the host network is unreachable (no route, DNS, refused connection, timeout) the work that needs it is skipped and the answer is a WARNING; anything else is an ERROR. | — | — |
 | [`qpuFamilyModuleUrlOf`](../src/quantum/processing/unit/index.ts#L10863) | builder | One family module under that same root. | — | — |
 | [`qpuFamilyRegistryUrlOf`](../src/quantum/processing/unit/index.ts#L10860) | builder | The one registry: `mcp/families` beside this module. | — | — |
 | [`qpuFamilyRootOf`](../src/quantum/processing/unit/index.ts#L10857) | builder | The tree this module is running from. | — | — |
