@@ -12,6 +12,7 @@ import {
   qpuStandardsOf,
 } from '../../quantum/processing/unit/index.js'
 import { qpuTenantZoneOf } from '../../quantum/processing/unit/presentation.js'
+import type { QpuEnv } from '../../quantum/processing/unit/index.js'
 import { usageBillOf } from './billing.js'
 import { openMathScaleOf } from './clay.js'
 import { domainReadingsOf } from './domains.js'
@@ -261,9 +262,13 @@ export const connectorUseOf = () => {
  * Connector answer: man page, recognition, full document, or a combinatorial wave.sweep grid.
  * Grid args go through this door — not a parallel private CLI path.
  */
-export const connectorAnswerOf = async (args: Record<string, unknown> = {}) => {
-  const { qpuManOf: manOf } = await import('../../quantum/processing/unit/index.js')
+export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?: QpuEnv, auth?: string | null) => {
+  const { qpuManOf: manOf, qpuStorageWriteAllowedOf } = await import('../../quantum/processing/unit/index.js')
   if (args.cloudflare === true || args.cf === true || args.wrangler === true) {
+    // The Cloudflare account inventory (KV/R2/D1/Pages ids, secret NAMES) is operator reconnaissance, not a public read:
+    // gate it behind the operator write token, the same credential storage writes require, so the fused connector tool
+    // cannot expose it unauthenticated (it is reachable with auth via its own HTTP transport). Returns a lead, not data.
+    if (!qpuStorageWriteAllowedOf(env, auth)) return { denied: 'cloudflare account inventory requires the operator token (Bearer QPU_WRITE_TOKEN)', connector: publicConnectorOf() }
     const { cloudflareAccountOf } = await import('./cloudflare-account.js')
     return { ...(await cloudflareAccountOf(args)), connector: publicConnectorOf() }
   }

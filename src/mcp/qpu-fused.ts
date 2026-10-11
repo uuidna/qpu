@@ -1648,9 +1648,9 @@ qpuMcpFuseOf('connector', {
     width: { type: 'integer', description: 'Concurrent from-indices this pass (default faces·2); doubles each subsequent pass.' },
     passes: { type: 'integer', description: 'How many doubling passes to run from `from` (default 1).' },
   } },
-  run: async (a) => {
+  run: async (a, env, auth) => {
     const { connectorAnswerOf } = await import('../payload/plugins/index.js')
-    return connectorAnswerOf(a)
+    return connectorAnswerOf(a, env, auth)
   },
 })
 
