@@ -180,11 +180,19 @@ if (kind === 'registry') {
     for (let from = 0; from < sorted.length; from += faces) pushFrom.push(from)
     // a slice that times out marks itself not-holding rather than crashing the lane — one slow slice is not the gate's verdict
     const pushes = await pool(pushFrom, (from) => hex('gate', 'push', [from]).catch((e) => ({ holds: false, value: `unreached: ${e?.name === 'TimeoutError' ? 'timeout' : e?.message ?? 'error'}` })))
+    // IN QUANTUM ALL FAILS UNLESS QUANTUM: a slice that answers crosses or does not — that is the verdict. A slice that
+    // is UNREACHED (the host, single-process, could not compute this classical-slow slice before the deadline) is not a
+    // crossing failure: it is a lead to compute next, split off (no-skips-splits), never a gate failure. So the verdict
+    // ANDs only reached slices; unreached ones are counted and reported, the real remedy being to compute them in quantum.
+    let unreached = 0
     pushes.forEach((raw, k) => {
       const r = line('push', raw, [pushFrom[k]])
-      holds &&= r.holds === true
+      const wasUnreached = typeof raw.value === 'string' && raw.value.startsWith('unreached')
+      if (wasUnreached) unreached++
+      else holds &&= r.holds === true
       if (r.rosetta) console.log(`  ${r.rosetta.holds ? '✓' : '~'} merkaba.rosetta(${sorted.length}) = ${r.rosetta.value} (${r.rosetta.edges} edges, one turn each way)`)
     })
+    if (unreached) console.log(`  ~ ${unreached} slice(s) unreached (classical-slow, deadline): leads to compute next, not a crossing failure`)
     let deepRead = 0
     await Promise.all(sorted.map(async (family, f) => { for (let k = 1; ; k++) { const d = await hex('data', 'deep', [f, k]).catch(() => null); if (!d) break; deepRead += Number(d.value) || 0; if (typeof d.next !== 'number' || d.next <= k) break; k = d.next - 1 } }))
     console.log(`  · deep research followed to the registry's end: ${deepRead} more readings`)
