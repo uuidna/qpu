@@ -54,7 +54,10 @@ const develop = async (family) => {
   try {
     const r = await dataDoor('research', { family })
     const reading = r?.reading ?? {}
-    return { family, matched: reading.matched ?? 0, read: reading.read ?? 0, ms: Date.now() - at, agrees: r?.agrees === true }
+    // always research for novelty funding WHILE researching: the keyless funding a family's novel work can draw (the
+    // funder's own criterion is novelty, so the novel and its funding are researched together), surfaced beside the research.
+    const fund = await dataDoor('funding', { about: family }).catch(() => null)
+    return { family, matched: reading.matched ?? 0, read: reading.read ?? 0, funding: fund?.reading?.keyless ?? 0, ms: Date.now() - at, agrees: r?.agrees === true }
   } catch (e) {
     return { family, hot: true, ms: Date.now() - at, why: e.message } // hot: left for the next run (fail at rising temp)
   }

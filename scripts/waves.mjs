@@ -51,6 +51,17 @@ line('books', steps ? `sampled ${steps} of ${familiesTotal} families from '${fir
 const discover = await rpc('quantum', { door: 'hex', arguments: { hex: { family: 'data', program: ['discover'], params: [5] } } })
 line('discover', discover ? `holds=${discover.holds}, cross-family relations=${discover.value ?? '?'}` : 'unreached')
 
+// always research for novelty funding while researching: the project's registered priority (its novelty) and the keyless
+// funding sources for that novel work, researched every wave alongside the discovery.
+const novelty = await rpc('quantum', { door: 'data', arguments: { source: 'novelty' } })
+const funding = await rpc('quantum', { door: 'data', arguments: { source: 'funding', about: 'novel quantum research' } })
+line('novelty-funding', novelty || funding ? `novelty priority=${novelty?.agrees ? 'registered' : '?'}, keyless funding sources=${funding?.reading?.keyless ?? '?'}` : 'unreached')
+
+// learn from attacks to use as healing waves: the walls the unit refuses (the attacks it rejects) are confirmed holding
+// every wave — none crossed is a healing wave; a crossing is a lead to heal. The standards the train returns are the posture.
+const std = train && train.standards
+line('heal', std ? `walls=${std.walls}, refusals held=${std.refusals?.notCrossed ?? '?'}/${std.refusals?.total ?? '?'}, crossed=${std.refusals?.crossed ?? '?'} — ${(std.refusals?.crossed ?? 1) === 0 ? 'defenses hold, healed' : 'a wall is crossed, heal'}` : 'unreached')
+
 // the live audit of all realtime checks: each gap is a court lead with its resolve (gate.gaps, paged)
 const gaps = await rpc('quantum', { door: 'data', arguments: { source: 'proof' } })
 line('audit', gaps ? `proof held=${gaps.reading?.held ?? '?'}/${gaps.reading?.theorems ?? '?'}, axioms=${gaps.reading?.axioms ?? '?'}` : 'unreached')
