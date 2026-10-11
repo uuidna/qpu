@@ -6132,15 +6132,20 @@ const mintKOf = (value: unknown): number | undefined =>
 const safeNatOf = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isInteger(value) && value >= n - n && Number.isSafeInteger(value) ? value : undefined
 
-const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: number): unknown => {
+const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: number, budget?: { n: number }): unknown => {
   const cube = qpuCubeOf()
   const faces = qpuFacesOf()
   // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
   if (depth > mintOf(n)) return { holds: false as const, denied: 'depth' as const }
+  // THE PRODUCT, NOT JUST EACH LEVEL. depth and repeat-times are each bounded, but nested repeats multiply (8^8), so one
+  // total-operation budget — mintOf(faces), a lattice value — is shared across the whole recursion and bounds the
+  // product. Without it an unauthenticated forge spec spins for ~10s (Wave XIII DoS). A legit program is far under it.
+  const b = budget ?? { n: mintOf(faces.faces) }
+  if (b.n-- <= n - n) return { holds: false as const, denied: 'budget' as const }
   const valueOf = (inner: unknown): unknown => {
     if (typeof inner === 'number') return inner
     const nested = opOf(inner)
-    if (nested) return runOpOf(nested, heap, args, depth + seed)
+    if (nested) return runOpOf(nested, heap, args, depth + seed, b)
     return inner === undefined ? null : jsonOf(inner)
   }
   if (op.op === 'unlocked' || (sandboxHost as readonly string[]).includes(op.op)) {
@@ -6184,20 +6189,20 @@ const runOpOf = (op: QpuOp, heap: Map<string, unknown>, args: unknown, depth: nu
     // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
     if (body.length > faces.faces) return { holds: false as const, denied: 'seq' as const }
     let last: unknown = null
-    for (const step of body) last = runOpOf(step, heap, args, depth + seed)
+    for (const step of body) last = runOpOf(step, heap, args, depth + seed, b)
     return last
   }
   if (op.op === 'if') {
     const test = valueOf(op.test)
     const branch = test ? op.then : op.else
-    return branch ? runOpOf(branch, heap, args, depth + seed) : test
+    return branch ? runOpOf(branch, heap, args, depth + seed, b) : test
   }
   if (op.op === 'repeat') {
     const times = mintKOf(valueOf(op.n))
     // grounded: theorem cube with theorem clay: the width is fixed by the geometry and the seats by 2x7 coins making 1+6 coils, so the bound is derivable and not chosen
     if (times === undefined || times > mintOf(n) || !op.body || Array.isArray(op.body)) return { holds: false as const, denied: 'repeat' as const }
     let last: unknown = null
-    for (let i = n - n; i < times; i++) last = runOpOf(op.body, heap, args, depth + seed)
+    for (let i = n - n; i < times; i++) last = runOpOf(op.body, heap, args, depth + seed, b)
     return last
   }
   const keyValue = typeof op.key === 'string' ? op.key : valueOf(op.key)
