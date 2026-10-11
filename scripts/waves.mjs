@@ -26,10 +26,22 @@ line('train', train ? `holds=${train.holds}, next=${train.steps?.next?.door?.too
 const improve = await rpc('improve')
 line('improve', improve ? `holds=${improve.quantum?.holds}, next=${improve.quantum?.next}` : 'unreached')
 
-// learn from books: Open Library's public, FACTUAL bibliography — subjects and numbers fuse into discovery, never the
-// text. A copyrighted book contributes only its facts; its words are never read. Knowledge fusion from books, freely.
-const books = await rpc('quantum', { door: 'data', arguments: { source: 'books', about: 'artificial intelligence ethics algorithms' } })
-line('books', books ? `learned=${books.reading?.count ?? 0}, subjects=${(books.reading?.subjects ?? []).slice(0, 6).join('/') || '?'}` : 'unreached')
+// learn from books, RANGING ACROSS THE WHOLE SUBJECT GRAPH: with no theme the books source walks the subject roots —
+// each root's books give its neighbour subjects (the graph's edges) — advancing via next until the walk wraps, once per
+// wave. Open Library's public, FACTUAL bibliography only: subjects and numbers fuse into discovery, never the text.
+let from = 0
+let steps = 0
+let firstRoot = null
+const subjectsAll = new Set()
+do {
+  const b = await rpc('quantum', { door: 'data', arguments: { source: 'books', from } })
+  if (!b || !b.reading || typeof b.reading.next !== 'number') break
+  if (firstRoot === null) firstRoot = b.reading.root
+  for (const s of b.reading.subjects ?? []) subjectsAll.add(s)
+  from = b.reading.next
+  steps++
+} while (from !== 0 && steps < 40)
+line('books', steps ? `ranged ${steps} subject roots from '${firstRoot}', ${subjectsAll.size} subjects fused across the graph` : 'unreached')
 
 // discover new cross-family relations, in hex: data.discover(n) = values two or more families reach
 const discover = await rpc('quantum', { door: 'hex', arguments: { hex: { family: 'data', program: ['discover'], params: [5] } } })

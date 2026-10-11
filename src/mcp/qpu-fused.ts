@@ -723,11 +723,19 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
   }
   if (source === 'books') {
     // OPEN BIBLIOGRAPHY AS LEADS: Open Library's keyless search — public, FACTUAL book metadata and its subject taxonomy,
-    // never the text. `about` is the theme or title (e.g. 'artificial intelligence', 'hello world hannah fry'); the unit
-    // learns what books are ABOUT — the subjects feed the discovery, and the years, editions and page counts are the
-    // numbers the lattice meets. A book in copyright contributes only its facts; its words are never read. Learn, freely.
-    const q = str(a.about) || 'algorithms'
+    // never the text. The unit learns what books are ABOUT — the subjects feed the discovery, the years, editions and page
+    // counts are the numbers the lattice meets. A book in copyright contributes only its facts; its words are never read.
+    //   { about } learns one theme or title ('hello world hannah fry').
+    //   no theme = RANGE ACROSS THE WHOLE SUBJECT GRAPH: `from` picks a root, its books' subjects are the neighbourhood
+    //   (the graph's edges), and `next` advances to the following root, so successive reads cover the whole graph. The
+    //   frontier (the neighbour subjects just found) is returned so a wave can keep walking outward. Learn, freely.
     const faces = qpuFacesOf().faces
+    // the roots of the subject graph: the breadth of recorded knowledge, sciences through the humanities and the arts.
+    const ROOTS = ['science', 'mathematics', 'technology', 'computer science', 'artificial intelligence', 'engineering', 'medicine', 'biology', 'physics', 'chemistry', 'astronomy', 'philosophy', 'psychology', 'history', 'geography', 'literature', 'art', 'music', 'economics', 'business', 'law', 'political science', 'sociology', 'education', 'religion', 'language']
+    const ranging = str(a.about) === ''
+    const from = typeof a.from === 'number' && a.from >= 0 ? a.from : 0
+    const root = ROOTS[from % ROOTS.length]!
+    const q = ranging ? `subject:${root}` : str(a.about)
     const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&fields=title,author_name,first_publish_year,subject,edition_count,number_of_pages_median&limit=${faces}`
     const json = (await get(url, 'application/json').then((x) => x.json()).catch(() => null)) as { docs?: Array<Record<string, unknown>> } | null
     const docs = json && Array.isArray(json.docs) ? json.docs : []
@@ -744,7 +752,14 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
         numbers: [num(d.first_publish_year), num(d.edition_count), num(d.number_of_pages_median)].filter((x): x is number => typeof x === 'number'),
       }
     })
-    const live = { query: q, count: leads.length, subjects: [...new Set(leads.flatMap((l) => l.subjects))].slice(0, faces), numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, faces), leads }
+    const frontier = [...new Set(leads.flatMap((l) => l.subjects))]
+    const live = {
+      ...(ranging ? { root, from, next: (from + 1) % ROOTS.length, roots: ROOTS.length } : { query: q }),
+      count: leads.length,
+      subjects: frontier.slice(0, faces * 2),
+      numbers: [...new Set(leads.flatMap((l) => l.numbers))].slice(0, faces),
+      leads,
+    }
     return { source, url: 'https://openlibrary.org', reading: live, expected: { open: '>= 1 book' }, agrees: leads.length > 0 }
   }
   if (source === 'news') {
@@ -1161,7 +1176,7 @@ export const qpuDataSourcesOf = async () => [
   { source: 'authors', args: {}, label: 'cited authors · DataCite, ORCID, Crossref', checks: 'the work around the authors the unit cites: works, years, citations' },
   ...['cal', 'hd', 'yi'].map((family) => ({ source: 'research', args: { family }, label: `research · ${family}`, checks: "the APIs the family's formulas name, read live; their numbers go to discovery" })),
   ...qpuCernCatalogsOf().catalogs.map((c) => ({ source: 'catalog', args: { name: c.name } as Args, label: `catalog · ${c.name}`, checks: 'answers with records' })),
-  { source: 'books', args: { about: 'artificial intelligence' } as Args, label: 'Open Library · books on a theme (facts and subjects, never the text)', checks: "the subjects and numbers of books about a theme; their numbers go to discovery" },
+  { source: 'books', args: {} as Args, label: 'Open Library · ranges the whole subject graph (facts and subjects, never the text)', checks: "with no theme, walks the subject roots (books' subjects are the graph's edges) and advances via next; their numbers go to discovery" },
 ]
 
 // a reading is the same for ten minutes in one isolate: the public sources are read once per window, not once per view
