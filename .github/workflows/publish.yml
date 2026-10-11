@@ -355,18 +355,20 @@ jobs:
           node-version: '26'
           cache: npm
       - run: npm ci
-      - name: Build and deploy the one Worker (named when the token is missing)
+      - name: Ship the one Worker by default (the token is the only gate)
         env:
           # the build reads the config; the Worker's own secret is set on Cloudflare and never leaves it
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET || 'build-only' }}
         run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            # deploys are manual by design: the token is the one credential the tree cannot supply itself, deliberately
-            # kept out of CI. A push does not ship; it is released by `npm run ship` run locally with the token. So the
-            # missing token is expected, a warning, never a failed workflow — the tests below run against the live host.
-            echo "::warning::not deployed: no CLOUDFLARE_API_TOKEN secret — deploys are manual ('npm run ship' with the token). To ship on push instead, add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in Settings → Secrets and variables → Actions. The tests below run against the live host as it stands."
-          else
+          # SHIP BY DEFAULT. A push ships — the deploy is the default, not a manual step. The only gate is the credential
+          # the tree cannot supply itself: CLOUDFLARE_API_TOKEN. When it is defined the Worker is deployed; when it is not,
+          # the ship cannot reach Cloudflare, so it degrades to a warning (never a failed workflow) and the live host stands
+          # as it is. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in Settings → Secrets and variables → Actions, or
+          # ship locally with `npm run ship`. deploy still needs a green build, so a broken push never ships.
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
             npm run ship
+          else
+            npm run ship || echo "::warning::not shipped: no CLOUDFLARE_API_TOKEN secret (the only gate). Ship is the default on push — add the token in Settings → Secrets to deploy automatically, or run 'npm run ship' locally. The live host stands as it is."
           fi
 
   # THE LIVE HOST: every test runs against https://qpu.uuidna.com — after the deploy on a push, as it stands on a pull

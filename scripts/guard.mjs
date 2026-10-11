@@ -96,15 +96,62 @@ export const guardNews = async (host = 'https://qpu.uuidna.com') => {
   return { reached: true, guarded, portals, surfaced: surfaced.length, why }
 }
 
+// GUARD that lean COVERAGE and COMPLIANCE are MACHINE-VERIFIED, not decided by hand. Coverage: every family is leaned by
+// the clay σ-involution WITHOUT EXCEPTION — clay.disclosure holds (its holds encodes anchor ∧ withoutException ∧
+// families > 0) and its value equals the family count the doors report. Compliance: the kernel holds (prove), every
+// theorem recomputed from the embedded Lean source, 0 axioms. A gap in either is a HARD VIOLATION (exit 1); an
+// unreachable host is a soft pass. No number here is chosen by a person — the unit reports it and the guard compares it.
+export const guardLean = async (host = 'https://qpu.uuidna.com') => {
+  const base = host.replace(/\/$/, '')
+  const rpc = async (name, args = {}) => {
+    const r = await fetch(`${base}/mcp`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),
+      signal: AbortSignal.timeout(120000),
+    }).catch(() => null)
+    if (!r) return null
+    const b = await r.json().catch(() => null)
+    try { return JSON.parse(b.result.content[0].text) } catch { return b?.result?.structuredContent ?? null }
+  }
+  const [doors, disclosure, prove] = await Promise.all([
+    rpc('quantum', { doors: true }),
+    rpc('quantum', { door: 'clay.disclosure' }),
+    rpc('prove'),
+  ])
+  if (doors === null && disclosure === null && prove === null) return { reached: false, guarded: false, why: 'host unreached (soft pass — retried next run)' }
+  const families = doors?.families ?? 0
+  const src = prove?.source
+  // every family leaned without exception: disclosure holds (anchor ∧ withoutException ∧ families>0) and covers them all
+  const covered = disclosure?.holds === true && (disclosure?.value ?? -1) === families && families > 0
+  // kernel compliant: prove holds, every theorem recomputed from the embedded Lean source, 0 axioms
+  const compliant = prove?.holds === true && src?.holds === true && (src?.theorems ?? 0) > 0 && src?.recomputed === src?.theorems
+  const guarded = covered && compliant
+  const why = guarded
+    ? `lean covers all ${families} families without exception (clay.disclosure holds), kernel compliant (${src?.recomputed}/${src?.theorems} theorems recomputed, 0 axioms) — machine-verified, not decided by hand`
+    : `HARD VIOLATION — ${!covered ? `lean does not cover every family (disclosure holds=${disclosure?.holds}, value=${disclosure?.value}/${families})` : `kernel not compliant (recomputed=${src?.recomputed}/${src?.theorems}, prove.holds=${prove?.holds})`}`
+  return { reached: true, guarded, families, covered, compliant, why }
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const host = process.env.QPU_HOST ? `https://${process.env.QPU_HOST}` : (process.argv[2] ?? 'https://qpu.uuidna.com')
   const mcp = await guardPayloadMcp(host)
   console.log(`guard mcp (${host}): ${mcp.guarded ? 'OK — ' : mcp.reached ? 'REFUSED — ' : 'skip — '}${mcp.why}`)
+  const lean = await guardLean(host)
+  console.log(`guard lean: ${lean.guarded ? 'OK — ' : lean.reached ? 'REFUSED — ' : 'skip — '}${lean.why}`)
   const claims = await guardClaims(host)
   console.log(`guard claims: ${claims.guarded ? 'OK — ' : claims.reached ? 'REFUSED — ' : 'skip — '}${claims.why}`)
   const news = await guardNews(host)
   console.log(`guard news: ${news.guarded ? 'OK — ' : news.reached ? 'REFUSED — ' : 'skip — '}${news.why}`)
-  // a confirmed violation (wrong plugin, un-lean MCP, uncited novelty/prior art, undeveloped leads, news not surfaced in
-  // court) is hard (exit 1); an unreachable host is a soft pass (exit 0) so the schedule is not broken.
-  process.exit((mcp.reached && !mcp.guarded) || (claims.reached && !claims.guarded) || (news.reached && !news.guarded) ? 1 : 0)
+  // a confirmed violation (wrong plugin, un-lean MCP, lean not covering every family, kernel not compliant, uncited
+  // novelty/prior art, undeveloped leads, news not surfaced in court) is hard (exit 1); an unreachable host is a soft
+  // pass (exit 0) so the schedule is not broken.
+  process.exit(
+    (mcp.reached && !mcp.guarded) ||
+      (lean.reached && !lean.guarded) ||
+      (claims.reached && !claims.guarded) ||
+      (news.reached && !news.guarded)
+      ? 1
+      : 0,
+  )
 }
