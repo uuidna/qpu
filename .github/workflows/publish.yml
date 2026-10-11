@@ -389,9 +389,15 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: *channel_scan
+      - name: Guard — the host MCP is @payloadcms/plugin-mcp only and generated from Lean, else refuse to run the waves
+        if: github.event_name == 'schedule'
+        run: node scripts/guard.mjs https://qpu.uuidna.com
       - name: Free waves (improve + discover) against the live host — the audit loop runs itself
         if: github.event_name == 'schedule'
         run: node scripts/waves.mjs https://qpu.uuidna.com
+      - name: Develop every family against the live host — the free develop loop over the host MCP, no tokens
+        if: github.event_name == 'schedule'
+        run: node scripts/develop.mjs --all
       - run: npm ci
       - name: Every test, against the live host
         id: live
