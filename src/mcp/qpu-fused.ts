@@ -844,14 +844,19 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
       const terml = ask.length ? ask.join(' ') : terms.join(' ')
       const q = encodeURIComponent(terml)
       const clUrl = `https://www.courtlistener.com/api/rest/v4/search/?type=o&order_by=${encodeURIComponent('citeCount desc')}&q=${q}`
+      // Each official source is read at its own keyless endpoint and in its own format: legislation.gov.uk serves no JSON
+      // (a `format=json` request returns HTML, so .json() would silently fail and the UK source would never answer) — it
+      // serves Atom, so it is read as a `.feed` and parsed as text. The rest answer JSON. `feed` picks the reader.
       const official = [
-        { source: 'federalregister.gov', title: 'US Federal Register', jurisdiction: 'US', url: `https://www.federalregister.gov/api/v1/documents.json?per_page=1${ask.length ? `&conditions[term]=${q}` : ''}`, count: (b: Record<string, unknown>) => b.count as number | undefined },
-        { source: 'legislation.gov.uk', title: 'UK legislation', jurisdiction: 'UK', url: `https://www.legislation.gov.uk/${ask.length ? `all?text=${q}&` : 'ukpga?'}results-count=1&format=json`, count: () => undefined },
-        { source: 'data.europa.eu:eur-lex', title: 'EU law (EUR-Lex)', jurisdiction: 'EU', url: `https://data.europa.eu/api/hub/search/search?limit=1&q=${ask.length ? q : 'eur-lex'}`, count: (b: Record<string, unknown>) => (b.result as { count?: number } | undefined)?.count },
-        { source: 'courtlistener.com', title: 'US case law (CourtListener / Free Law Project)', jurisdiction: 'US', url: clUrl, count: (b: Record<string, unknown>) => b.count as number | undefined },
+        { source: 'federalregister.gov', title: 'US Federal Register', jurisdiction: 'US', feed: false, url: `https://www.federalregister.gov/api/v1/documents.json?per_page=1${ask.length ? `&conditions[term]=${q}` : ''}`, count: (b: Record<string, unknown>) => b.count as number | undefined },
+        { source: 'legislation.gov.uk', title: 'UK legislation', jurisdiction: 'UK', feed: true, url: `https://www.legislation.gov.uk/${ask.length ? `all/data.feed?text=${q}` : 'ukpga/data.feed'}`, count: (b: Record<string, unknown>) => { const m = str(b.text).match(/totalResults[^>]*>\s*(\d+)/); return m ? Number(m[1]) : undefined } },
+        { source: 'data.europa.eu:eur-lex', title: 'EU law (EUR-Lex)', jurisdiction: 'EU', feed: false, url: `https://data.europa.eu/api/hub/search/search?limit=1&q=${ask.length ? q : 'eur-lex'}`, count: (b: Record<string, unknown>) => (b.result as { count?: number } | undefined)?.count },
+        { source: 'courtlistener.com', title: 'US case law (CourtListener / Free Law Project)', jurisdiction: 'US', feed: false, url: clUrl, count: (b: Record<string, unknown>) => b.count as number | undefined },
       ]
       for (const o of official) {
-        const b = (await get(o.url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | null
+        const b = o.feed
+          ? await get(o.url, 'application/atom+xml').then((x) => x.text()).then((text) => (text ? { text } : null)).catch(() => null)
+          : ((await get(o.url).then((x) => x.json()).catch(() => null)) as Record<string, unknown> | null)
         const records = b ? o.count(b) : undefined
         anchor.push({ source: o.source, title: o.title, jurisdiction: o.jurisdiction, secured: false, operation: new URL(o.url).pathname, status: b ? 200 : 0, url: o.url, ...(typeof records === 'number' ? { records } : {}), keyless: b !== null })
       }
