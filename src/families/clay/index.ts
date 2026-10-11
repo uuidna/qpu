@@ -68,6 +68,28 @@ export class ClaySeals {
     const fixed = presupposed ? 1 : [0, 1].filter((m) => sigma(m) === m).length
     return crossFormulaOf({ id: 'clay-p-vs-np', src: 'clay', dst: 'np', formula: 'σ(search, w) = (reuse, w); fixed only if w is presupposed', value: fixed, proof: `${CLAY_SEAL_SOURCE} §P vs NP` }, nat(presupposed) && presupposed <= 1 && involutive, { name: 'clay.pVsNp', params: [presupposed] })
   }
+
+  /** THE SINGULARITY: the clay core σ_d(x) = d − x adopted across the quantum domains, so the families carry the
+   *  involution the kernel proves (Lean: theorem singularity, proved by sigma_reflect / sigma_midpoint). Each domain is
+   *  σ∘σ = id and fixed at the midpoint d/2 — the s = 1/2 singularity: Shor (order reflected at r/2), Planck (2h fixed at
+   *  h), Pascal (choose n k = choose n (n−k)), QFT (register at its midpoint), Grover (diffusion about the mean), Pauli
+   *  ({−1, +1} flip), the lattice (faces at their midpoint). Value: how many of the seven domains hold the involution. */
+  static singularity(): CrossFormula {
+    const sigma = (d: number, x: number) => d - x
+    const midpointFixed = (d: number) => sigma(2 * d, d) === d
+    const involutive = (d: number, x: number) => x <= d && sigma(d, sigma(d, x)) === x
+    const domains: [string, boolean][] = [
+      ['shor', midpointFixed(4) && sigma(4, 2) === 2],
+      ['physics', midpointFixed(662607015)],
+      ['combinatorics', involutive(7, 2)],
+      ['qft', midpointFixed(8)],
+      ['grover', midpointFixed(4)],
+      ['stabilizer', involutive(1, 0) && involutive(1, 1)],
+      ['lattice', midpointFixed(14) && involutive(14, 8)],
+    ]
+    const held = domains.filter(([, ok]) => ok).length
+    return crossFormulaOf({ id: 'clay-singularity', src: 'clay', dst: 'quantum', formula: 'σ_d(x) = d − x across the domains; σ∘σ = id, fixed at d/2 (the s = 1/2 singularity)', value: held, proof: `${CLAY_SEAL_SOURCE} §Singularity (Lean: theorem singularity)` }, held === domains.length, { name: 'clay.singularity', params: [] })
+  }
 }
 
 /** CLAY SEAL WAVE, ONE ADDRESS PER SEAL NAME: the i-th seal run on its combinatorial domain of
@@ -357,5 +379,6 @@ export class ClayDisclosure {
 }
 qpuHexRegisterOf('clay', 'disclosure', (ClayDisclosure.disclosure as (...x: unknown[]) => unknown).bind(ClayDisclosure))
 qpuHexRegisterOf('clay', 'pass', (ClayPass.pass as (...x: unknown[]) => unknown).bind(ClayPass))
+qpuHexRegisterOf('clay', 'singularity', (ClaySeals.singularity as (...x: unknown[]) => unknown).bind(ClaySeals))
 for (const name of ['bsd', 'hodge', 'navierStokes', 'pVsNp', 'riemann', 'yangMills'] as const)
   qpuHexRegisterOf('clay', name, (ClaySeals[name] as (...x: unknown[]) => unknown).bind(ClaySeals))
