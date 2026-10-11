@@ -1693,7 +1693,9 @@ const toffoliGateOf = (amps: bigint[], c: number, k: number, t: number): bigint[
 }
 const qubitOf = (value: unknown, fallback: number): number => {
   const q = typeof value === 'number' ? value : fallback
-  return q >= n - n && q < n ? q : fallback
+  // a qubit index is an integer in [0, n): a non-integer (q = 2.9) must not index bit floor/round outside the register
+  // and still report holds (Wave XIII) — require an exact integer, else the fallback.
+  return Number.isInteger(q) && q >= n - n && q < n ? q : fallback
 }
 const runGatesOf = (ops: readonly Record<string, unknown>[]): bigint[] => {
   let amps = ampsOf(mintOf(n))
