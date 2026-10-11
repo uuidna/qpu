@@ -1,0 +1,38 @@
+# GitHub's native security audit, now part of the workflow: CodeQL code scanning for the TypeScript/JavaScript sources.
+# Free on this public repo. Findings land in the repo's Security → Code scanning tab, on every push to main, every PR,
+# and weekly. This is the standing automated counterpart to the manual court audit waves.
+name: codeql
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '23 5 * * 1'
+
+permissions:
+  contents: read
+  security-events: write
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  analyze:
+    name: analyze (javascript-typescript)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          # security-and-quality adds maintainability queries to the default security set
+          queries: security-and-quality
+      - name: Analyse
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: /language:javascript-typescript

@@ -80,6 +80,26 @@ jobs:
 
   # ONE CELL PER NAMED TUPLE. The generator in `build` is what enumerates the full product; a cell checks that this
   # tuple is one the tree names, on the runner OS that tuple selected.
+  # THE GITHUB AUDIT, part of the workflow: the dependency tree is audited on every run, and a PR's new dependencies are
+  # reviewed against the advisory database before merge. CodeQL code scanning runs in its own workflow (codeql.yml).
+  audit:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+      - name: npm audit (fails on a critical advisory; high and below are reported)
+        run: npm audit --audit-level=critical --omit=dev || (npm audit --omit=dev; exit 1)
+      - name: Dependency review (PRs only — blocks a PR that adds a vulnerable or disallowed-licence dependency)
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
   combinatorial:
     needs: axes
     if: github.event_name != 'schedule'
