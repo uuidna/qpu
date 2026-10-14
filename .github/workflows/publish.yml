@@ -96,7 +96,7 @@ jobs:
         run: npm audit --audit-level=critical --omit=dev || (npm audit --omit=dev; exit 1)
       - name: Dependency review (PRs only — blocks a PR that adds a vulnerable or disallowed-licence dependency)
         if: github.event_name == 'pull_request'
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
         with:
           fail-on-severity: high
 
