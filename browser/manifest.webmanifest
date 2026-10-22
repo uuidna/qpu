@@ -1,0 +1,13 @@
+{
+  "name": "UUIDNA QPU",
+  "short_name": "QPU",
+  "description": "The exact quantum processing unit in the browser, usable offline for its shell.",
+  "start_url": "./qpu.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

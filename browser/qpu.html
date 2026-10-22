@@ -146,6 +146,8 @@
             opacity: 0.9;
         }
     </style>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0a0a0a">
 </head>
 <body>
 <div class="container">
@@ -517,6 +519,11 @@ function clearOutput() {
 
 // Initialize
 document.getElementById('status').textContent = '✓ Ready';
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch((e) => console.warn('QPU offline shell not registered:', e));
+}
 </script>
 </body>
 </html>
