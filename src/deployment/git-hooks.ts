@@ -150,6 +150,23 @@ export const preCommit = async (): Promise<void> => {
     console.log(`  ✗ qpu_ prefix in the MCP: ${prefixed.join(', ')} — commit blocked (the qpu mcp is bare-only)`)
     process.exit(1)
   }
+  // PREFIX CHECK: a name that repeats the repository it lives in (qpu_) is a second, longer name for the same thing, and
+  // a served name with it breaks the bare-only rule. Each staged TypeScript file is read from the index, so the check judges
+  // exactly what is about to be committed, and comments are removed first. A name must follow the prefix: the bare prefix
+  // in a message or a pattern is not a name.
+  const repeated: string[] = []
+  for (const f of staged.filter((x) => /\.tsx?$/.test(x))) {
+    const src = execFileSync('git', ['show', `:${f}`], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
+    const code = src.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' ')).replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length))
+    code.split('\n').forEach((line, i) => {
+      for (const m of line.matchAll(/(?<![A-Za-z0-9_])qpu_[A-Za-z0-9][A-Za-z0-9_]*/g)) repeated.push(`${f}:${i + 1} ${m[0]}`)
+    })
+  }
+  if (repeated.length) {
+    console.log(`  ✗ ${repeated.length} staged name(s) repeat the prefix qpu_ — commit blocked (drop the repeated prefix):`)
+    for (const r of repeated.slice(0, 30)) console.log(`      ${r}`)
+    process.exit(1)
+  }
 }
 
 /** Report-only: both TypeScript projects, every script, the deployment gate and dist freshness, as cross formulas. */

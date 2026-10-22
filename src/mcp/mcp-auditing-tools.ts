@@ -1,413 +1,342 @@
 /**
- * MCP Auditing Tools: Complete System Verification
- *
- * Audits:
- * - Theorem coverage and correctness
- * - MCP tool discovery and registration
- * - Blueprint generation and composition
- * - API integration accuracy
- * - Hex consolidation integrity
- * - Autonomous operation readiness
- * - Cross-domain invariants
+ * MCP Auditing Tools: each audit computes its figures from the sources the unit already serves:
+ * the Lean source and its per-theorem recomputation, the MCP tool catalogue and its checks, the
+ * blueprint tables, the family list, and the API registry. A figure that needs something this code
+ * cannot reach (a live API call, runtime telemetry, a scheduler) is returned as null with
+ * `measured: false`. Nothing here is a constant.
  */
+import { leanSource, leanRecomputed } from '../quantum/processing/unit/lean.js'
+import { qpuMcpOf, qpuMcpChecksOf } from '../quantum/processing/unit/mcp.js'
+// families.js must stay imported here: its side effects register the hex families, and cite's
+// grant.next (checked by qpuMcpChecksOf) reads the 'graph' family. Without it the cite check fails
+// depending only on load order, so the audit would report a defect the served unit does not have.
+import { families } from './families.js'
+import { REGISTRY_SNAPSHOT } from './registry.js'
+import { ALL_BLUEPRINTS } from './blueprint-template.js'
+import { ENTANGLED_BLUEPRINTS } from './blueprint-entanglement.js'
+
+type Args = Record<string, unknown>
+
+// ============================================================================
+// SHARED READINGS
+// ============================================================================
+
+type Theorem = { name: string; domain: string; holds: boolean; sorry: boolean }
+
+/** Every theorem declared in index.lean, with its section heading, its recomputed verdict, and whether its block says sorry. */
+const theoremsOf = (): Theorem[] => {
+  const out: Theorem[] = []
+  let domain = 'unsectioned'
+  let current: Theorem | undefined
+  for (const line of leanSource.split('\n')) {
+    const heading = /^\/-!\s*#\s*(.+?)\s*$/.exec(line)
+    if (heading) {
+      domain = heading[1]!.slice(0, 60)
+      current = undefined
+      continue
+    }
+    const decl = /^theorem\s+(\S+)/.exec(line)
+    if (decl) {
+      current = { name: decl[1]!, domain, holds: leanRecomputed[decl[1]!]?.holds === true, sorry: false }
+      out.push(current)
+    }
+    if (current && /\bsorry\b/.test(line)) current.sorry = true
+  }
+  return out
+}
+
+const isProven = (t: Theorem): boolean => t.holds && !t.sorry
+
+type Blueprint = { id: string; domain: string; theorem_tools: string[]; apis?: Array<{ name: string }> }
+type Entangled = { id: string; blueprints: string[]; domains: string[]; composed_theorems: string[] }
+
+const singleBlueprintsOf = (): Blueprint[] => Object.values(ALL_BLUEPRINTS).flat() as Blueprint[]
+const entangledOf = (): Entangled[] => ENTANGLED_BLUEPRINTS as Entangled[]
+
+// ============================================================================
+// AUDITS
+// ============================================================================
+
+/** Theorem coverage: every theorem in index.lean, recomputed in TypeScript. The Lean kernel is not run here. */
+const theoremCoverage = (_args: Args = {}) => {
+  const theorems = theoremsOf()
+  const proven = theorems.filter(isProven)
+  const domains = new Map<string, { count: number; proven: number }>()
+  for (const t of theorems) {
+    const d = domains.get(t.domain) ?? { count: 0, proven: 0 }
+    d.count++
+    if (isProven(t)) d.proven++
+    domains.set(t.domain, d)
+  }
+  const axioms = (leanSource.match(/^axiom\s/gm) ?? []).length
+  const sorries = theorems.filter((t) => t.sorry).length
+  return {
+    total_theorems: theorems.length,
+    proven_count: proven.length,
+    coverage_percent: theorems.length === 0 ? 0 : Math.round((1000 * proven.length) / theorems.length) / 10,
+    by_domain: Object.fromEntries(
+      [...domains].map(([d, v]) => [d, { count: v.count, proven: v.proven, status: v.proven === v.count ? 'RECOMPUTED' : 'INCOMPLETE' }]),
+    ),
+    missing_proofs: theorems.filter((t) => !isProven(t)).map((t) => t.name),
+    sorry_count: sorries,
+    axiom_count: axioms,
+    lean_kernel_checked: false,
+    soundness_check: `${proven.length} of ${theorems.length} theorems recompute to true with no sorry and ${axioms} axioms; the Lean kernel is not run in the worker`,
+  }
+}
+
+/** MCP tool catalogue: every served tool, its schema, its man page, and the catalogue's own checks. */
+const toolAudit = (_args: Args = {}) => {
+  const m = qpuMcpOf()
+  const doors = m.tools as unknown as Array<{ name: string; inputSchema?: { type?: string } }>
+  const cyber = m.cybersecurity.tools as unknown as Array<{ name: string; man?: { holds?: boolean } }>
+  const names = [...doors.map((t) => t.name), ...cyber.map((t) => t.name)]
+  const schemaIssues = doors.filter((t) => t.inputSchema?.type !== 'object').map((t) => t.name)
+  const issues = qpuMcpChecksOf(m).filter(([, ok]) => !ok).map(([name]) => name)
+  return {
+    total_tools: names.length,
+    registered_count: names.filter((n) => n.length > 0).length,
+    discoverable_count: new Set(names).size,
+    schema_validity: schemaIssues.length === 0 ? 'ALL_VALID' : `INVALID: ${schemaIssues.join(', ')}`,
+    handler_binding_status: issues.length === 0 ? 'COMPLETE' : `FAILING: ${issues.join(', ')}`,
+    issues,
+  }
+}
+
+/** Blueprint composition: references from each blueprint into index.lean and between blueprints. */
+const blueprintAudit = (_args: Args = {}) => {
+  const single = singleBlueprintsOf()
+  const entangled = entangledOf()
+  const ids = new Set(single.map((b) => b.id))
+  const leanNames = new Set(theoremsOf().map((t) => t.name))
+  const refs = single.flatMap((b) => b.theorem_tools)
+  const unresolved = [...new Set(refs.filter((r) => !leanNames.has(r)))]
+  const dangling = entangled.flatMap((e) => e.blueprints.filter((id) => !ids.has(id)).map((id) => `${e.id} -> ${id}`))
+  const withApis = single.filter((b) => (b.apis ?? []).length > 0)
+  return {
+    total_blueprints: single.length + entangled.length,
+    single_domain: single.length,
+    multi_domain: entangled.length,
+    api_mapped: withApis.length,
+    deployment_ready: withApis.filter((b) => b.theorem_tools.every((r) => leanNames.has(r))).length,
+    theorem_refs_total: refs.length,
+    theorem_refs_unresolved: unresolved,
+    dangling_refs: dangling,
+    composition_integrity:
+      dangling.length === 0 && unresolved.length === 0
+        ? 'VERIFIED'
+        : `NOT_VERIFIED: ${dangling.length} dangling blueprint refs, ${unresolved.length} theorem names not in index.lean`,
+  }
+}
+
+/** API integration: what the blueprints declare and what the registry lists. Accuracy needs live calls, so it is not measured. */
+const apiAudit = (_args: Args = {}) => {
+  const apiNames = new Set(singleBlueprintsOf().flatMap((b) => (b.apis ?? []).map((a) => a.name)))
+  const registry = Object.values(REGISTRY_SNAPSHOT) as Array<{ versions?: Record<string, unknown> }>
+  return {
+    domains: Object.keys(ALL_BLUEPRINTS).length,
+    apis_declared: apiNames.size,
+    registry_apis: registry.length,
+    registry_specs: registry.reduce((s, e) => s + Object.keys(e.versions ?? {}).length, 0),
+    accuracy_measured: false,
+    average_accuracy: null,
+    accuracy_by_domain: null,
+    cross_domain_accuracy: null,
+    integration_status: 'NOT_MEASURED: accuracy needs live calls to each API, which this code does not make',
+  }
+}
+
+/** Hex consolidation: duplicate entries in the family list. Code-size and lookup-cost figures are not computed here. */
+const hexAudit = (_args: Args = {}) => {
+  const list: readonly string[] = families
+  const duplicates = list.length - new Set(list).size
+  return {
+    families: list.length,
+    duplication_eliminated: duplicates,
+    total_operations_consolidated: null,
+    code_reduction_percent: null,
+    indexing_levels: null,
+    lookup_complexity: null,
+    consolidation_integrity: duplicates === 0 ? 'VERIFIED' : `DUPLICATES: ${duplicates}`,
+  }
+}
+
+/** Autonomy needs runtime telemetry the unit does not record, so none of its figures are claimed. */
+const autonomyAudit = (_args: Args = {}) => ({
+  autonomy_score: null,
+  manual_operations: null,
+  systems_autonomous: null,
+  deployment_readiness: 'NOT_MEASURED',
+  operational_status: 'NOT_MEASURED: no runtime telemetry is recorded by the unit',
+})
+
+/** Cross-domain compositions: pair counts from the blueprint domains, and whether each composition's references resolve. */
+const crossDomainAudit = (_args: Args = {}) => {
+  const domains = Object.keys(ALL_BLUEPRINTS)
+  const entangled = entangledOf()
+  const ids = new Set(singleBlueprintsOf().map((b) => b.id))
+  const leanNames = new Set(theoremsOf().map((t) => t.name))
+  const byDomains: Record<string, number> = {}
+  for (const e of entangled) {
+    const key = e.domains.length === domains.length ? 'all_domains' : [...e.domains].sort().join('_')
+    byDomains[key] = (byDomains[key] ?? 0) + 1
+  }
+  const verified = entangled.filter(
+    (e) => e.blueprints.every((id) => ids.has(id)) && e.composed_theorems.every((t) => leanNames.has(t)),
+  ).length
+  const status = verified === entangled.length ? 'VERIFIED' : `NOT_VERIFIED: ${entangled.length - verified} compositions cite unresolved theorems`
+  return {
+    domains: domains.length,
+    domain_pairs: (domains.length * (domains.length - 1)) / 2,
+    compositions_total: entangled.length,
+    compositions_verified: verified,
+    compositions_by_domains: byDomains,
+    composition_safety: status,
+    invariant_status: status,
+  }
+}
+
+/** Involute closure: the theorems whose names carry "involut", recomputed. Spiral counts are not in the source, so they are null. */
+const involuteAudit = (_args: Args = {}) => {
+  const inv = theoremsOf().filter((t) => /involut/i.test(t.name))
+  const held = inv.filter(isProven)
+  return {
+    involution_theorems: inv.length,
+    recomputed_holding: held.length,
+    involute_closure_complete: inv.length > 0 && held.length === inv.length,
+    names: inv.map((t) => t.name),
+    involute_spirals: null,
+    scope: 'theorems whose names contain "involut" in index.lean; spiral counts are not computed by this code',
+  }
+}
+
+/** End to end: every computed audit above, with issues counted from their own figures. */
+const endToEndAudit = (args: Args = {}) => {
+  const depth = typeof args.audit_depth === 'string' ? args.audit_depth : 'standard'
+  const theorem = theoremCoverage()
+  const tool = toolAudit()
+  const blueprint = blueprintAudit()
+  const hex = hexAudit()
+  const cross = crossDomainAudit()
+  const critical = theorem.missing_proofs.length + theorem.sorry_count + tool.issues.length
+  const issues =
+    critical +
+    blueprint.theorem_refs_unresolved.length +
+    blueprint.dangling_refs.length +
+    hex.duplication_eliminated +
+    (cross.compositions_total - cross.compositions_verified)
+  const overall = critical > 0 ? 'FAILING' : issues > 0 ? 'ISSUES_FOUND' : 'HEALTHY'
+  const recommendation = [
+    theorem.missing_proofs.length > 0 ? `Theorems that do not recompute: ${theorem.missing_proofs.join(', ')}.` : null,
+    tool.issues.length > 0 ? `MCP checks failing: ${tool.issues.join(', ')}.` : null,
+    blueprint.theorem_refs_unresolved.length > 0
+      ? `${blueprint.theorem_refs_unresolved.length} blueprint theorem names are not in index.lean.`
+      : null,
+    cross.compositions_verified < cross.compositions_total
+      ? `${cross.compositions_total - cross.compositions_verified} cross-domain compositions do not resolve.`
+      : null,
+    'Not measured by this code: API accuracy, autonomy, involute spirals.',
+  ]
+    .filter((s): s is string => s !== null)
+    .join(' ')
+  return {
+    audit_type: depth,
+    components_audited: 7,
+    issues_found: issues,
+    critical_issues: critical,
+    overall_status: overall,
+    readiness_level: overall === 'HEALTHY' ? 'CLEAN_ON_MEASURED_CHECKS' : 'NOT_READY',
+    recommendation,
+  }
+}
 
 // ============================================================================
 // MCP AUDIT TOOLS
 // ============================================================================
 
+const NO_INPUT = { type: 'object', properties: {} } as const
+
 export const MCP_AUDITING_TOOLS = {
-  // =========================================================================
-  // TOOL 1: Complete Theorem Coverage Audit
-  // =========================================================================
-
   theorem_coverage_audit: {
-    name: "theorem_coverage_audit",
-    description: "Audit all 108 theorems for coverage, correctness, and completeness",
-    inputSchema: {
-      type: "object",
-      properties: {
-        include_proofs: { type: "boolean" },
-        include_cross_references: { type: "boolean" },
-        verify_against_lean: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        total_theorems: { type: "number" },
-        proven_count: { type: "number" },
-        coverage_percent: { type: "number" },
-        by_domain: { type: "object" },
-        missing_proofs: { type: "array" },
-        soundness_check: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      total_theorems: 108,
-      proven_count: 108,
-      coverage_percent: 100,
-      by_domain: {
-        causal: { count: 27, status: "VERIFIED" },
-        xai: { count: 21, status: "VERIFIED" },
-        federated: { count: 18, status: "VERIFIED" },
-        synthesis: { count: 20, status: "VERIFIED" },
-        zero_shot: { count: 21, status: "VERIFIED" },
-        harmonic_closure: { count: 1, status: "VERIFIED_RIGOROUS" }
-      },
-      missing_proofs: [],
-      soundness_check: "All theorems Lean-verified. 108th theorem algebraically sound."
-    })
+    name: 'theorem_coverage_audit',
+    description: 'Recompute every theorem in index.lean: count, proofs, sorry, axioms, and coverage by section',
+    inputSchema: NO_INPUT,
+    measured: true,
+    handler: theoremCoverage,
   },
-
-  // =========================================================================
-  // TOOL 2: MCP Tool Discovery & Registration Audit
-  // =========================================================================
-
   mcp_tool_audit: {
-    name: "mcp_tool_audit",
-    description: "Audit MCP tool registration, discovery, and theorem mapping",
-    inputSchema: {
-      type: "object",
-      properties: {
-        audit_completeness: { type: "boolean" },
-        check_schemas: { type: "boolean" },
-        verify_handler_binding: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        total_tools: { type: "number" },
-        registered_count: { type: "number" },
-        discoverable_count: { type: "number" },
-        schema_validity: { type: "string" },
-        handler_binding_status: { type: "string" },
-        issues: { type: "array" }
-      }
-    },
-    handler: async (args: any) => ({
-      total_tools: 50,
-      registered_count: 50,
-      discoverable_count: 50,
-      schema_validity: "ALL_VALID",
-      handler_binding_status: "COMPLETE",
-      issues: []
-    })
+    name: 'mcp_tool_audit',
+    description: 'Audit the served MCP tool catalogue: schemas, discoverability, and the catalogue checks',
+    inputSchema: NO_INPUT,
+    measured: true,
+    handler: toolAudit,
   },
-
-  // =========================================================================
-  // TOOL 3: Blueprint Composition Audit
-  // =========================================================================
-
   blueprint_composition_audit: {
-    name: "blueprint_composition_audit",
-    description: "Audit blueprint generation, composition, and entanglement",
-    inputSchema: {
-      type: "object",
-      properties: {
-        check_entanglement: { type: "boolean" },
-        verify_api_mapping: { type: "boolean" },
-        check_deployment_readiness: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        total_blueprints: { type: "number" },
-        single_domain: { type: "number" },
-        multi_domain: { type: "number" },
-        api_mapped: { type: "number" },
-        deployment_ready: { type: "number" },
-        composition_integrity: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      total_blueprints: 25,
-      single_domain: 13,
-      multi_domain: 6,
-      api_mapped: 25,
-      deployment_ready: 25,
-      composition_integrity: "VERIFIED"
-    })
+    name: 'blueprint_composition_audit',
+    description: 'Audit blueprint counts, API mapping, and whether blueprint theorem references resolve in index.lean',
+    inputSchema: NO_INPUT,
+    measured: true,
+    handler: blueprintAudit,
   },
-
-  // =========================================================================
-  // TOOL 4: API Integration Accuracy Audit
-  // =========================================================================
-
   api_integration_audit: {
-    name: "api_integration_audit",
-    description: "Audit real API integration accuracy and test coverage",
-    inputSchema: {
-      type: "object",
-      properties: {
-        test_all_domains: { type: "boolean" },
-        check_accuracy: { type: "boolean" },
-        verify_cross_domain: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        domains_tested: { type: "number" },
-        apis_integrated: { type: "number" },
-        average_accuracy: { type: "number" },
-        accuracy_by_domain: { type: "object" },
-        cross_domain_accuracy: { type: "number" },
-        integration_status: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      domains_tested: 5,
-      apis_integrated: 5,
-      average_accuracy: 0.99,
-      accuracy_by_domain: {
-        causal: 0.99,
-        xai: 0.99,
-        federated: 0.99,
-        synthesis: 0.99,
-        zero_shot: 0.99
-      },
-      cross_domain_accuracy: 0.99,
-      integration_status: "PRODUCTION_READY"
-    })
+    name: 'api_integration_audit',
+    description: 'Count declared and registered APIs; accuracy is reported as not measured',
+    inputSchema: NO_INPUT,
+    measured: false,
+    handler: apiAudit,
   },
-
-  // =========================================================================
-  // TOOL 5: Hex Consolidation Integrity Audit
-  // =========================================================================
-
   hex_consolidation_audit: {
-    name: "hex_consolidation_audit",
-    description: "Audit hex consolidation for DRY principle, O(1) lookup, and integrity",
-    inputSchema: {
-      type: "object",
-      properties: {
-        check_deduplication: { type: "boolean" },
-        verify_indexing: { type: "boolean" },
-        check_lookup_performance: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        total_operations_consolidated: { type: "number" },
-        duplication_eliminated: { type: "number" },
-        code_reduction_percent: { type: "number" },
-        indexing_levels: { type: "number" },
-        lookup_complexity: { type: "string" },
-        consolidation_integrity: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      total_operations_consolidated: 47,
-      duplication_eliminated: 40,
-      code_reduction_percent: 87,
-      indexing_levels: 3,
-      lookup_complexity: "O(1)",
-      consolidation_integrity: "VERIFIED"
-    })
+    name: 'hex_consolidation_audit',
+    description: 'Check the family list for duplicate entries',
+    inputSchema: NO_INPUT,
+    measured: true,
+    handler: hexAudit,
   },
-
-  // =========================================================================
-  // TOOL 6: Autonomous Validation Audit
-  // =========================================================================
-
   autonomous_validation_audit: {
-    name: "autonomous_validation_audit",
-    description: "Audit autonomous operation validation and autonomy score",
-    inputSchema: {
-      type: "object",
-      properties: {
-        check_all_systems: { type: "boolean" },
-        verify_no_manual_ops: { type: "boolean" },
-        check_24_7_readiness: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        autonomy_score: { type: "number" },
-        systems_autonomous: { type: "array" },
-        manual_operations: { type: "number" },
-        deployment_readiness: { type: "string" },
-        operational_status: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      autonomy_score: 100,
-      systems_autonomous: [
-        "theorem_verification",
-        "blueprint_generation",
-        "white_paper_creation",
-        "api_integration",
-        "hex_consolidation",
-        "deployment_orchestration",
-        "validation_testing",
-        "self_improvement"
-      ],
-      manual_operations: 0,
-      deployment_readiness: "PRODUCTION_READY",
-      operational_status: "24_7_AUTONOMOUS"
-    })
+    name: 'autonomous_validation_audit',
+    description: 'Report autonomy; not measured, because the unit records no runtime telemetry',
+    inputSchema: NO_INPUT,
+    measured: false,
+    handler: autonomyAudit,
   },
-
-  // =========================================================================
-  // TOOL 7: Cross-Domain Invariant Audit
-  // =========================================================================
-
   cross_domain_invariants_audit: {
-    name: "cross_domain_invariants_audit",
-    description: "Audit cross-domain composition invariants and entanglement correctness",
-    inputSchema: {
-      type: "object",
-      properties: {
-        check_all_pairs: { type: "boolean" },
-        verify_theorem_sharing: { type: "boolean" },
-        check_composition_safety: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        domains: { type: "number" },
-        domain_pairs_tested: { type: "number" },
-        compositions_verified: { type: "number" },
-        shared_theorems: { type: "object" },
-        composition_safety: { type: "string" },
-        invariant_status: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      domains: 5,
-      domain_pairs_tested: 10,
-      compositions_verified: 6,
-      shared_theorems: {
-        causal_xai: 5,
-        causal_federated: 4,
-        xai_synthesis: 3,
-        federated_synthesis: 3,
-        all_domains: 2
-      },
-      composition_safety: "VERIFIED",
-      invariant_status: "ALL_HOLD"
-    })
+    name: 'cross_domain_invariants_audit',
+    description: 'Count cross-domain compositions and check that their references resolve',
+    inputSchema: NO_INPUT,
+    measured: true,
+    handler: crossDomainAudit,
   },
-
-  // =========================================================================
-  // TOOL 8: Involute Closure Audit
-  // =========================================================================
-
   involute_closure_audit: {
-    name: "involute_closure_audit",
-    description: "Audit 108th theorem involute closure and algebraic soundness (for our system structure)",
-    inputSchema: {
-      type: "object",
-      properties: {
-        verify_all_spirals: { type: "boolean" },
-        check_algebraic_soundness: { type: "boolean" },
-        audit_lean_proofs: { type: "boolean" }
-      }
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        involute_spirals: { type: "number" },
-        spirals_verified: { type: "number" },
-        closure_complete: { type: "boolean" },
-        algebraic_soundness: { type: "string" },
-        lean_proof_status: { type: "string" },
-        algebraic_rigor: { type: "string" },
-        clay_prize_relevance: { type: "string" },
-        scope: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      involute_spirals: 7,
-      spirals_verified: 7,
-      closure_complete: true,
-      algebraic_soundness: "PROVEN_RIGOROUSLY_FOR_OUR_SYSTEM",
-      lean_proof_status: "108TH_THEOREM_VERIFIED",
-      algebraic_rigor: "SIMILAR_TO_CLAY_STANDARDS",
-      clay_prize_relevance: "NONE_NOT_APPLICABLE",
-      scope: "OUR_INVOLUTE_SYSTEM_STRUCTURE_NOT_MILLENNIUM_PROBLEMS"
-    })
+    name: 'involute_closure_audit',
+    description: 'Recompute the involution theorems in index.lean',
+    inputSchema: NO_INPUT,
+    measured: true,
+    handler: involuteAudit,
   },
-
-  // =========================================================================
-  // TOOL 9: End-to-End System Audit
-  // =========================================================================
-
   end_to_end_audit: {
-    name: "end_to_end_audit",
-    description: "Complete end-to-end system audit (all components)",
+    name: 'end_to_end_audit',
+    description: 'Run the computed audits and count their issues; overall status follows the figures',
     inputSchema: {
-      type: "object",
-      properties: {
-        audit_depth: { type: "string", enum: ["quick", "standard", "comprehensive"] },
-        generate_report: { type: "boolean" }
-      }
+      type: 'object',
+      properties: { audit_depth: { type: 'string', enum: ['quick', 'standard', 'comprehensive'] } },
     },
-    outputSchema: {
-      type: "object",
-      properties: {
-        audit_type: { type: "string" },
-        components_audited: { type: "number" },
-        issues_found: { type: "number" },
-        critical_issues: { type: "number" },
-        overall_status: { type: "string" },
-        readiness_level: { type: "string" },
-        recommendation: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      audit_type: args.audit_depth || "standard",
-      components_audited: 9,
-      issues_found: 0,
-      critical_issues: 0,
-      overall_status: "HEALTHY",
-      readiness_level: "PRODUCTION_READY",
-      recommendation: "System approved for immediate deployment"
-    })
+    measured: true,
+    handler: endToEndAudit,
   },
-
-  // =========================================================================
-  // TOOL 10: Continuous Audit Schedule
-  // =========================================================================
-
   schedule_continuous_audit: {
-    name: "schedule_continuous_audit",
-    description: "Schedule continuous system audits (24/7 monitoring)",
+    name: 'schedule_continuous_audit',
+    description: 'Scheduling is not implemented: the worker keeps no state and no scheduler is configured',
     inputSchema: {
-      type: "object",
-      properties: {
-        audit_interval_minutes: { type: "number" },
-        include_domains: { type: "array", items: { type: "string" } },
-        alert_on_issues: { type: "boolean" }
-      }
+      type: 'object',
+      properties: { audit_interval_minutes: { type: 'number' } },
     },
-    outputSchema: {
-      type: "object",
-      properties: {
-        audit_scheduled: { type: "boolean" },
-        interval_minutes: { type: "number" },
-        domains_monitored: { type: "array" },
-        alert_enabled: { type: "boolean" },
-        next_audit: { type: "string" },
-        audit_job_id: { type: "string" }
-      }
-    },
-    handler: async (args: any) => ({
-      audit_scheduled: true,
-      interval_minutes: args.audit_interval_minutes || 60,
-      domains_monitored: args.include_domains || [
-        "causal", "xai", "federated", "synthesis", "zero_shot"
-      ],
-      alert_enabled: args.alert_on_issues !== false,
-      next_audit: new Date(Date.now() + 3600000).toISOString(),
-      audit_job_id: "audit_" + Date.now()
-    })
-  }
+    measured: false,
+    handler: async (args: Args = {}) => ({
+      audit_scheduled: false,
+      requested_interval_minutes: typeof args.audit_interval_minutes === 'number' ? args.audit_interval_minutes : null,
+      reason: 'Not implemented: nothing was scheduled and no job id was issued.',
+    }),
+  },
 }
 
 // ============================================================================
@@ -418,13 +347,16 @@ export const AUDITING_TOOLS = Object.values(MCP_AUDITING_TOOLS)
 
 export async function initializeAuditingTools(): Promise<{
   tools_registered: number
-  audit_coverage: string
+  measured: number
+  not_measured: number
   continuous_monitoring: boolean
 }> {
+  const measured = AUDITING_TOOLS.filter((t) => t.measured).length
   return {
     tools_registered: AUDITING_TOOLS.length,
-    audit_coverage: "COMPLETE_SYSTEM",
-    continuous_monitoring: true
+    measured,
+    not_measured: AUDITING_TOOLS.length - measured,
+    continuous_monitoring: false,
   }
 }
 

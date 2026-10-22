@@ -31,6 +31,7 @@ import type { QpuSubTool } from './index.js'
 import { qpuLeanOf, qpuLeanHolds } from './proof.js'
 import { qpuShorTryOf, qpuShorOf, qpuShorHolds } from './shor.js'
 import { qpuFacesOf, qpuCapacityOf } from './lattice.js'
+import { witnessOf, constructedSemiprimeOf } from './witness.js'
 
 /**
  * The split identity of theorem crypto: fused = split x share, recomputed; secrecy is reported false (it is an identity, not a cipher).
@@ -228,6 +229,10 @@ export const qpuCybersecurityToolsOf = (): QpuSubTool[] => {
           classical: shor.classical,
           factors: shown.factors,
           rsa: shown.rsa,
+          witness: shor.exact.safe && shor.factors.by !== 'none'
+            ? witnessOf(BigInt(shor.exact.n), BigInt(shor.exact.p), BigInt(shor.exact.q))
+            : null,
+          constructed: constructedSemiprimeOf(),
           holds: shor.holds,
         }
       }},
