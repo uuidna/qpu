@@ -1,7 +1,8 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import '../../mcp/families.js'
-import { gateCourtTrialOf } from './gate-court.js'
+import { gateCourtOf, gateCourtTrialOf } from './gate-court.js'
+import { goalStateOf } from './goal.js'
 
 // The trial engine had no unit test (only the circular registry sweep in scripts/court.test.mjs). These pin what the
 // court actually is: a non-adversarial router that gives every matter a forum and a remedy and NEVER refuses, with the
@@ -35,4 +36,13 @@ test('gate-court: a verdict is a measure/lead, never legal counsel asserted auto
   assert.ok(t.reviewed, 'the trial records the law.reviewed gate')
   assert.ok('remedy' in t && 'standing' in t && 'fidelity' in t, 'the output is a measure (remedy/standing/fidelity), not counsel')
   assert.equal(typeof t.allow, 'boolean', 'allow is a measure of the gate clearing a bar, not a legal ruling')
+})
+
+// The court door's goal is the goal module's state (combinatorics legs, its court trial, the connect bill) — not only a
+// count of held cases. The door can be no more OPEN than the goal it is named for.
+test('gate-court: the court goal is the combinatorics goal from goal.ts', () => {
+  const court = gateCourtOf()
+  assert.equal(court.goal, goalStateOf(), 'the court door reads goalOf, not a case-count proxy')
+  assert.ok(court.goal === 'OPEN' || court.goal === 'LEAD')
+  assert.ok(!(court.goal === 'OPEN' && court.holds !== true), 'OPEN is never reported without the court holding')
 })

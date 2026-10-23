@@ -28,6 +28,7 @@ import {
   qpuStatementUuidOf,
 } from '../../quantum/processing/unit/index.js'
 import { modeAccessOf, modeBitsOf } from './access-mode.js'
+import { goalStateOf } from './goal.js'
 import type { QpuPlugin } from './surface.js'
 
 const BALANCE = 51
@@ -418,15 +419,9 @@ export const gateCourtOf = (args: GateCourtArgs = {}) => {
     /** Stability: every case fidelity re-trial + standing receipts hold. */
     stable,
     holds: n > 0 && stable && held.length > 0,
-    goal: (() => {
-      try {
-        // Lazy — goal.ts imports gate-court; avoid cycle at load by dynamic sync via require pattern.
-        // State recomputed from combinations when the goal module is available.
-        return held.length === n && stable ? ('OPEN' as const) : ('LEAD' as const)
-      } catch {
-        return 'LEAD' as const
-      }
-    })(),
+    /** OPEN only when every case holds and is stable AND the goal is OPEN from its combinatorics (goal.ts goalOf: the
+     *  faces/seals/modes/wave/domain legs, its own court trial and the connect bill). It can only tighten, never loosen. */
+    goal: held.length === n && stable && goalStateOf() === 'OPEN' ? ('OPEN' as const) : ('LEAD' as const),
   }
 }
 
