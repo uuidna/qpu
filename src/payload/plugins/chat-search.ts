@@ -9,6 +9,7 @@
 import { qpuFacesOf, qpuHarnessesOf, type QpuEnv } from '../../quantum/processing/unit/index.js'
 import { SearchFormulas } from '../../families/search/index.js'
 import { ContractFormulas } from '../../families/contract/index.js'
+import { goalStateOf } from './goal.js'
 import type { QpuPlugin } from './surface.js'
 
 export const CHAT_SEARCH_FRAMEWORKS = [
@@ -236,7 +237,7 @@ export const chatSearchOf = async (
       raid: 'tools/call connector { raid: true }' as const,
       ports: 'npm run port -- --all | --dependencies' as const,
     },
-    goal: 'OPEN' as const,
+    goal: goalStateOf(),
     holds,
     note: 'agnostic distro · idea→chat/search→blueprint/docs→app · secrets sealed · no Clay prize flip' as const,
   }
@@ -620,7 +621,7 @@ export const distroOf = async (
       blind: hops.length - healthy.length,
     },
     frameworks: [...CHAT_SEARCH_FRAMEWORKS],
-    goal: 'OPEN' as const,
+    goal: goalStateOf(),
     holds,
     note: 'combinatorial cover on double-torus/rosetta · outside-in + inside-out · token-sealed · no invented geometry' as const,
   }

@@ -35,6 +35,7 @@ import { usageBillOf } from './billing.js'
 import { clayPrizeOf, openMathScaleOf } from './clay.js'
 import { nativeAdapterEnumOf } from './native-adapters.js'
 import { catalogPriceRelationOf, type PriceRelation } from './price-relation.js'
+import { goalStateOf } from './goal.js'
 import type { QpuPlugin } from './surface.js'
 import { qpuPublicOf } from '../../quantum/processing/unit/zeropage.js'
 
@@ -1112,7 +1113,7 @@ export const formulatedCatalogOf = () => {
       offers.every((o) => o.price.holds === true && o.price.court.holds === true) &&
       connectBill.holds === true &&
       bill.margin === null,
-    goal: 'OPEN' as const,
+    goal: goalStateOf(),
   }
 }
 

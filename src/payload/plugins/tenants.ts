@@ -16,6 +16,7 @@ import {
 } from '../../quantum/processing/unit/index.js'
 import { qpuTenantZoneOf, qpuZoneOf } from '../../quantum/processing/unit/presentation.js'
 import { domainReadingsOf } from './domains.js'
+import { goalStateOf } from './goal.js'
 import type { QpuPlugin } from './surface.js'
 
 export type TenantModel = {
@@ -259,7 +260,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
       },
       harness: harnesses.url,
       holds: rows.length > 0 && tools.length <= 16 && listBytes < 16384,
-      goal: 'OPEN' as const,
+      goal: goalStateOf(),
     }
   }
 
@@ -277,7 +278,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
       resolve: `use connector { tenant } with one of: ${rows.map((t) => t.slug).join(', ')}`,
       served: { tenant: null, model: null, needs: [] as string[], ms: Date.now() - t0 },
       holds: false as const,
-      goal: 'OPEN' as const,
+      goal: goalStateOf(),
     }
   }
 
@@ -329,7 +330,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
     },
     harness: harnesses.url,
     holds: tenant.models.length > 0 && tenant.needs.some((n) => n.holds === true),
-    goal: 'OPEN' as const,
+    goal: goalStateOf(),
   }
 }
 
