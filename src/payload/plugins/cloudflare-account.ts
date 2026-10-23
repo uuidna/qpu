@@ -15,7 +15,9 @@ import { fileURLToPath } from 'node:url'
 import { qpuFacesOf } from '../../quantum/processing/unit/index.js'
 import type { QpuPlugin } from './surface.js'
 
-const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
+// Computed on use, not at module load: a top-level import.meta.url URL throws when the plugin index is imported in a
+// Worker, which breaks every connector call. Only the Node-side wrangler reads below need the root.
+const rootOf = (): string => join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
 
 const stripAnsi = (s: string) => s.replace(/\u001b\[[0-9;]*m/g, '')
 
@@ -23,7 +25,7 @@ const runWrangler = (args: string[]): { ok: boolean; stdout: string; stderr: str
   const t0 = Date.now()
   try {
     const stdout = execFileSync('npx', ['wrangler', ...args], {
-      cwd: ROOT,
+      cwd: rootOf(),
       encoding: 'utf8',
       timeout: 60_000,
       maxBuffer: 8 * 1024 * 1024,
@@ -99,7 +101,7 @@ const parsePages = (text: string): { name: string; domains: string }[] => {
 
 /** Tree RAID / Worker bindings from committed wrangler.jsonc — no live API. */
 export const cloudflareTreeBindingsOf = () => {
-  const path = join(ROOT, 'wrangler.jsonc')
+  const path = join(rootOf(), 'wrangler.jsonc')
   if (!existsSync(path)) {
     return { kind: 'tree-bindings' as const, path: null, worker: null, main: null, kv: [], r2: [], d1: [], routes: [], vars: [], raid: { storage: 'STORAGE→KV' as const, blobs: 'BLOBS→R2' as const, media: 'MEDIA→R2' as const, note: 'qpu-raid: MongoDB-semantics DocStore on KV+R2' as const }, holds: false as const, note: 'wrangler.jsonc absent' as const }
   }
