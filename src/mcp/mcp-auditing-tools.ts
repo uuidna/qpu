@@ -1,7 +1,7 @@
 /**
  * MCP Auditing Tools: each audit computes its figures from the sources the unit already serves:
  * the Lean source and its per-theorem recomputation, the MCP tool catalogue and its checks, the
- * blueprint tables, the family list, and the API registry. A figure that needs something this code
+ * blueprint tables, the family list, and the API registry. A figure that needs a host fact this code
  * cannot reach (a live API call, runtime telemetry, a scheduler) is returned as null with
  * `measured: false`. Nothing here is a constant.
  */
