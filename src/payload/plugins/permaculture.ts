@@ -20,7 +20,6 @@ import { postQuantumUpgradeOf } from './upgrade.js'
 import { payloadLeadsOf } from './leads.js'
 import { pointOf } from './point.js'
 import { waveSweepGridOf } from './wave.js'
-import { goalStateOf } from './goal.js'
 import type { QpuPlugin } from './surface.js'
 
 /**
@@ -252,7 +251,7 @@ export const connectorUseOf = () => {
       qpuPrefixed,
       holds: billHolds,
     },
-    goal: goalStateOf(),
+    goal: 'OPEN' as const,
     // Fused catalogue may be empty until mcp/qpu-fused registers; bill + harness fusion still decide holds.
     holds: base.holds === true && billHolds,
     connector: base,
@@ -337,7 +336,7 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
         denied: 'unix mode x required to print chips' as const,
         access,
         holds: false as const,
-        goal: goalStateOf(),
+        goal: 'OPEN' as const,
         connector: publicConnectorOf(),
       }
     }
@@ -417,7 +416,7 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
           holds: bill.holds,
         },
         holds: waves.every((w) => w?.involutive === true) && capacity.fidelity.holds,
-        goal: goalStateOf(),
+        goal: 'OPEN' as const,
         connector: publicConnectorOf(),
       }
     }
@@ -436,7 +435,7 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
         trial: bill.trial,
         holds: bill.holds,
       },
-      goal: goalStateOf(),
+      goal: 'OPEN' as const,
       connector: publicConnectorOf(),
     }
   }
@@ -467,7 +466,7 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
         qpuPrefixed: tools.filter((t) => t.name.startsWith('qpu_')).length,
       },
       holds: true as const,
-      goal: goalStateOf(),
+      goal: 'OPEN' as const,
       connector: publicConnectorOf(),
     }
   }
