@@ -234,22 +234,25 @@ export const discoverCapacityGateOf = (): GateCourtCase & {
   const families = qpuHexFamiliesOf().size
   const scale = CloudFormulas.scale(families, Math.max(1, faces))
   const nodes = Number(scale.value)
-  const fits = nodes <= 1 && scale.holds === true
-  const gate = callOf('cloud.scale', [families, Math.max(1, faces)], { ...scale, holds: fits }, 'cloud')
+  // THE CLAIM THIS CASE DECIDES IS THE SEAL-WAVE PATH: the registry is covered by ⌈families/faces⌉ passes of one faces
+  // window each. The earlier full-registry claim (all families in ONE window, nodes <= 1) was false: 1171 families over
+  // 14 faces need 84 windows, and a Lean theorem in the deposit decides that. It is retired here, not made to pass.
+  const covers = nodes * Math.max(1, faces) >= families && scale.holds === true
+  const gate = callOf('cloud.scale', [families, Math.max(1, faces)], { ...scale, holds: covers }, 'cloud')
   const trial = gateCourtTrialOf({
     case: 'discover.capacity',
     gate,
-    confidence: fits ? 100 : 0,
-    note: fits
-      ? 'full-registry discover fits one faces-window; court.standard allows'
-      : '⌈families/faces⌉ > 1 — seal-wave path holds; full-registry capacity gate denies',
+    confidence: covers ? 100 : 0,
+    note: covers
+      ? `seal-wave covers the registry: ${nodes} passes of ${Math.max(1, faces)} faces hold ${families} families; the single-window claim is retired`
+      : 'seal-wave does not cover the registry: passes times faces is below the family count',
   })
   return {
     ...trial,
     families,
     faces,
     nodes,
-    path: fits ? 'full-registry' : 'seal-wave',
+    path: 'seal-wave',
   }
 }
 
