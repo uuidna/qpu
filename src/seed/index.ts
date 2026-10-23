@@ -130,7 +130,7 @@ export async function seedStateOf(payload: Payload) {
 export async function seed(payload: Payload) {
   try { await seedSliceOf(payload) } catch (e) {
     const fingerprint = qpuContentUuidOf({ ...CONTENT, applier: [ensure, upsertDocs, seedSite, seedReceipts, indexDocs].map(String) })
-    await payload.kv.set(`seed:error:${fingerprint}`, { message: String((e as { message?: string })?.message ?? e).slice(0, 500), when: new Date().toISOString() }).catch(() => undefined)
+    await payload.kv.set(`seed:error:${fingerprint}`, { message: String((e as { message?: string })?.message ?? e).slice(0, 500) }).catch(() => undefined)
     throw e
   }
 }

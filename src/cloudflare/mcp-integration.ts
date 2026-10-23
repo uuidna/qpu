@@ -42,7 +42,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
       // POST /accounts/{accountId}/workers/scripts/{scriptName}
       return {
         success: true,
-        deployedAt: new Date().toISOString(),
         scriptName,
         bindings: Object.keys(bindings || {})
       }
@@ -63,7 +62,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
         workerResponse: {
           method,
           path,
-          timestamp: Date.now()
         }
       }
     },
@@ -106,10 +104,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
         namespace: namespaceId,
         key,
         value: 'encrypted-message-data',
-        metadata: {
-          createdAt: Date.now(),
-          expiresAt: Date.now() + 24 * 60 * 60 * 1000
-        }
       }
     },
     rateLimit: 100000
@@ -154,7 +148,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
         objectId,
         key,
         stored: true,
-        timestamp: Date.now()
       }
     },
     rateLimit: 10000
@@ -172,7 +165,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
         objectId,
         key,
         value: { direction: 'forward', recipients: [] },
-        timestamp: Date.now()
       }
     },
     rateLimit: 100000
@@ -238,8 +230,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
         database: databaseId,
         table,
         inserted: 1,
-        lastRowId: Date.now(),
-        timestamp: new Date().toISOString()
       }
     },
     rateLimit: 5000
@@ -257,7 +247,7 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
         success: true,
         database: databaseId,
         results: [
-          { messageId: 'msg-1', recipient: 'user1', receivedAt: Date.now() }
+          { messageId: 'msg-1', recipient: 'user1' }
         ],
         meta: { count: 1, duration: 25 }
       }
@@ -286,7 +276,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
           p99LatencyMs: 156,
           failureCount: 22
         },
-        timestamp: Date.now()
       }
     },
     rateLimit: 100
@@ -309,7 +298,6 @@ export const cflareMCPOps: CloudflareMCPOp[] = [
           signatureFailures: 0,
           unauthorizedAccess: 5
         },
-        timestamp: Date.now()
       }
     },
     rateLimit: 100
@@ -404,7 +392,6 @@ export class CloudflareQuantumMessengerWithMCP extends CloudflareQuantumMessenge
         sender: message.sender,
         direction: message.direction,
         priority: message.metadata.priority,
-        createdAt: new Date().toISOString()
       }
     })
   }

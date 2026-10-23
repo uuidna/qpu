@@ -15,6 +15,8 @@ import {
 export class StateSynchronizer {
   private syncState: SyncState
   private stateData: Map<string, any> = new Map()
+  /** the node whose write holds each key: a conflict is settled by node id, the same on every node (no clock) */
+  private stateWriter: Map<string, string> = new Map()
   private eventHistory: StateSyncEvent[] = []
   private merkleCache: Map<string, MerkleNode> = new Map()
   private localNodeId: string
@@ -36,6 +38,7 @@ export class StateSynchronizer {
    */
   updateState(key: string, value: any): void {
     this.stateData.set(key, value)
+    this.stateWriter.set(key, this.localNodeId)
 
     // Increment local clock
     this.syncState.vectorClock[this.localNodeId] =
@@ -46,7 +49,6 @@ export class StateSynchronizer {
       type: 'update',
       key,
       value,
-      timestamp: Date.now(),
       sourceNode: this.localNodeId,
       vectorClock: { ...this.syncState.vectorClock }
     }
@@ -67,6 +69,7 @@ export class StateSynchronizer {
     if (!this.stateData.has(key)) return
 
     this.stateData.delete(key)
+    this.stateWriter.delete(key)
 
     // Increment local clock
     this.syncState.vectorClock[this.localNodeId] =
@@ -76,7 +79,6 @@ export class StateSynchronizer {
     const event: StateSyncEvent = {
       type: 'delete',
       key,
-      timestamp: Date.now(),
       sourceNode: this.localNodeId,
       vectorClock: { ...this.syncState.vectorClock }
     }
@@ -127,18 +129,21 @@ export class StateSynchronizer {
         const conflict = this.hasConflict(event)
         if (conflict) {
           console.log(`[Sync] Conflict detected for key: ${event.key}`)
-          // Use wall-clock timestamp as tiebreaker
-          const existing = this.stateData.get(event.key) as any
-          if (event.timestamp > existing?.timestamp) {
+          // deterministic tiebreak: the larger node id wins, so every node settles the conflict the same way
+          const writer = this.stateWriter.get(event.key)
+          if (writer === undefined || event.sourceNode > writer) {
             this.stateData.set(event.key, event.value)
+            this.stateWriter.set(event.key, event.sourceNode)
           }
         } else {
           this.stateData.set(event.key, event.value)
+          this.stateWriter.set(event.key, event.sourceNode)
         }
         break
 
       case 'delete':
         this.stateData.delete(event.key)
+        this.stateWriter.delete(event.key)
         break
 
       case 'merge':
@@ -166,7 +171,6 @@ export class StateSynchronizer {
   createSnapshot(): StateSnapshot {
     const snapshot: StateSnapshot = {
       version: this.syncState.localVersion,
-      timestamp: Date.now(),
       nodeId: this.localNodeId,
       vectorClock: { ...this.syncState.vectorClock },
       merkleRoot: this.computeMerkleRoot(),

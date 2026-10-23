@@ -17,7 +17,7 @@ interface UUIDIndexEntry {
   uuid: string
   domain: string
   operation: string
-  registered: Date
+  registered?: Date
 }
 
 const referrerOf = (inputs?: Record<string, unknown>): string | undefined =>
@@ -117,8 +117,7 @@ export class UUIDBridge {
         entries.push({
           uuid,
           domain: operation.domain,
-          operation: operationName,
-          registered: new Date()
+          operation: operationName
         })
       }
     }

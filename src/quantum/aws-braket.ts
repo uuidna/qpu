@@ -36,7 +36,7 @@ export interface BraketTask {
     resultString: string
     measurements: number[][]
   }
-  createdAt: number
+  createdAt?: number
   completedAt?: number
 }
 
@@ -145,12 +145,11 @@ export class AWSBraketConnector {
     }
 
     const transpiled = this.transpileForDevice(circuit, device.deviceId)
-    const taskArn = `arn:aws:braket:${this.region}:123456789012:task/${Date.now()}-${__suffix()}`
+    const taskArn = `arn:aws:braket:${this.region}:123456789012:task/${__suffix()}`
 
     const task: BraketTask = {
       taskArn,
       status: 'CREATED',
-      createdAt: Date.now()
     }
 
     this.tasks.set(taskArn, task)
@@ -169,7 +168,6 @@ export class AWSBraketConnector {
               resultString: this.generateResultString(circuit.qubitCount),
               measurements: this.simulateMeasurements(circuit.qubitCount, shots)
             }
-            t.completedAt = Date.now()
           }, 2000)
         }, 1000)
       }

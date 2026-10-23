@@ -373,7 +373,6 @@ export const slowChainOf = async (args: Record<string, unknown> = {}) => {
     hex: string | null
     next?: [number, number]
   }[] = []
-  const t0 = performance.now()
   for (let n = 0; n < take; n++) {
     const family = ring[f]
     const formulas = family ? qpuHexFamiliesOf().get(family) : undefined
@@ -401,7 +400,6 @@ export const slowChainOf = async (args: Record<string, unknown> = {}) => {
     f = r.next[0]
     j = r.next[1]
   }
-  const wallMs = Math.round(performance.now() - t0)
   const hot = steps.filter((s) => s.hot).length
   const usage = tokenUsageOf(
     {
@@ -413,7 +411,7 @@ export const slowChainOf = async (args: Record<string, unknown> = {}) => {
       hex: steps[0]?.hex ?? null,
       panel: 'slow',
     },
-    { steps: steps.length, wallMs },
+    { steps: steps.length },
   )
   return sealPayloadOf({
     kind: 'slow-chain' as const,
@@ -422,7 +420,6 @@ export const slowChainOf = async (args: Record<string, unknown> = {}) => {
     steps,
     hot,
     cool: steps.length - hot,
-    wallMs,
     next: steps.at(-1)?.next ?? null,
     usage,
     connectBill: connectBillOf(),
@@ -582,7 +579,6 @@ export const onlineModeOf = async (args: Record<string, unknown> = {}) => {
   // ── MCP/connector online: host tools/list (optional) ──
   if (wantOnline) {
     const target: TokenTarget = { who: 'host.mcp.tools/list', door: 'mcp', tool: 'tools/list', panel: 'host' }
-    const t0 = Date.now()
     try {
       const r = await fetch(`${host}/mcp`, {
         method: 'POST',
@@ -599,9 +595,9 @@ export const onlineModeOf = async (args: Record<string, unknown> = {}) => {
         mode: 'online',
         pass: pass && !secretsInOf(raw),
         holds: pass,
-        note: `host tools/list ${Array.isArray(tools) ? tools.length : 0} doors in ${Date.now() - t0}ms; sealed=${!secretsInOf(raw)}`,
+        note: `host tools/list ${Array.isArray(tools) ? tools.length : 0} doors; sealed=${!secretsInOf(raw)}`,
         target,
-        usage: tokenUsageOf(target, { doors: Array.isArray(tools) ? tools.length : 0, ms: Date.now() - t0 }),
+        usage: tokenUsageOf(target, { doors: Array.isArray(tools) ? tools.length : 0 }),
       })
     } catch (e) {
       const why = (e as { name?: string; message?: string })?.name === 'TimeoutError' ? 'timeout' : 'offline'

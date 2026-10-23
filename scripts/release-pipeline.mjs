@@ -9,6 +9,7 @@ import { tenOf, vertices } from './lattice-values.mjs'
 
 const __dir = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.join(__dir, '..')
+const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8'))
 
 class ReleasePipeline {
   constructor() {
@@ -127,16 +128,10 @@ class ReleasePipeline {
       },
     ]
 
+    // no runner is wired for these capabilities here: each outcome is unmeasured, so none counts as a pass
     let passed = 0
     for (const test of mcpTests) {
-      // Simulate MCP capability invocation
-      const success = Math.random() > 0.05
-      if (success) {
-        console.log(`  ✓ ${test.name} (${test.capability})`)
-        passed++
-      } else {
-        console.log(`  ✗ ${test.name} (${test.capability})`)
-      }
+      console.log(`  ? ${test.name} (${test.capability}): not run`)
     }
 
     console.log(`\n  ${passed}/${mcpTests.length} e2e tests passed\n`)
@@ -147,16 +142,10 @@ class ReleasePipeline {
   async runLintCheck() {
     console.log('🔍 Lint Check\n')
 
-    const lintPasses = Math.random() > 0.1
-    if (lintPasses) {
-      console.log('  ✓ Code style verified')
-      this.checks.push({ name: 'lint', status: 'pass' })
-      return true
-    } else {
-      console.log('  ⚠️  Minor style issues (auto-fixable)')
-      this.checks.push({ name: 'lint', status: 'warn' })
-      return true
-    }
+    // no linter is wired here: the style check is recorded as not run, not as a pass or a warning
+    console.log('  ? Style check not run: no linter is wired here')
+    this.checks.push({ name: 'lint', status: 'not-run' })
+    return true
   }
 
   async runSecurityCheck() {
@@ -244,8 +233,7 @@ class ReleasePipeline {
     console.log('📝 Generating Release Notes\n')
 
     const releaseNotes = {
-      version: '1.0.' + Math.floor(Date.now() / tenOf(3)).toString().slice(-3),
-      timestamp: new Date().toISOString(),
+      version: pkg.version,
       checksPassed: this.checks.filter(c => c.status === 'pass').length,
       testsPassed: this.tests.filter(t => t.status === 'pass').length,
       artifacts: this.artifacts.length,
@@ -321,7 +309,6 @@ class ReleasePipeline {
 
       // Save release info
       const releaseInfo = {
-        timestamp: new Date().toISOString(),
         pipeline: {
           checks: this.checks,
           tests: this.tests,
@@ -332,7 +319,7 @@ class ReleasePipeline {
 
       const releaseFile = path.join(
         ROOT,
-        `.release-${Math.floor(Date.now() / 1000)}.json`
+        `.release-${pkg.version}.json`
       )
       fs.writeFileSync(releaseFile, JSON.stringify(releaseInfo, null, 2))
 

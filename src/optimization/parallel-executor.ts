@@ -14,9 +14,6 @@ export interface WorkItem {
 
 export interface ExecutionMetrics {
   itemsProcessed: number
-  totalTimeMs: number
-  avgTimePerItemMs: number
-  maxTimePerItemMs: number
   coresUtilized: number
   loadBalance: number // 0-1, 1 = perfect balance
 }
@@ -34,8 +31,6 @@ export interface WorkerPool {
 export class OptimizationWorker {
   workerId: number
   processed = 0
-  totalTimeMs = 0
-  lastTaskTimeMs = 0
   idle = true
 
   constructor(id: number) {
@@ -44,11 +39,7 @@ export class OptimizationWorker {
 
   async execute(item: WorkItem, op: (v: number) => number): Promise<number> {
     this.idle = false
-    const start = performance.now()
     const result = op(item.input[0]) // Simplified: process first element
-    const elapsed = performance.now() - start
-    this.lastTaskTimeMs = elapsed
-    this.totalTimeMs += elapsed
     this.processed++
     this.idle = true
     return result
@@ -66,9 +57,6 @@ export class ParallelExecutor {
   stolen = 0
   private metrics: ExecutionMetrics = {
     itemsProcessed: 0,
-    totalTimeMs: 0,
-    avgTimePerItemMs: 0,
-    maxTimePerItemMs: 0,
     coresUtilized: 0,
     loadBalance: 1.0
   }
@@ -132,7 +120,6 @@ export class ParallelExecutor {
    */
   async executeAll(op: (v: number) => number): Promise<number[]> {
     const results: number[] = []
-    const startTime = performance.now()
 
     while (this.queue.length > 0 || this.workers.some(w => !w.idle)) {
       const steal = this.steal()
@@ -145,18 +132,13 @@ export class ParallelExecutor {
       }
     }
 
-    const totalTime = performance.now() - startTime
-
-    // Calculate metrics
-    const maxTime = Math.max(...this.workers.map(w => w.lastTaskTimeMs), 0)
-    const avgTime = this.workers.reduce((s, w) => s + w.totalTimeMs, 0) / this.coreCount
-    const loadBalance = avgTime > 0 ? 1.0 - (maxTime / avgTime - 1.0) * 0.5 : 1.0
+    // load balance from items per worker, a count the schedule fixes: no clock is read
+    const maxLoad = Math.max(...this.workers.map(w => w.processed), 0)
+    const avgLoad = this.workers.reduce((s, w) => s + w.processed, 0) / this.coreCount
+    const loadBalance = avgLoad > 0 ? 1.0 - (maxLoad / avgLoad - 1.0) * 0.5 : 1.0
 
     this.metrics = {
       itemsProcessed: results.length,
-      totalTimeMs: totalTime,
-      avgTimePerItemMs: totalTime / (results.length || 1),
-      maxTimePerItemMs: maxTime,
       coresUtilized: this.workers.filter(w => w.processed > 0).length,
       loadBalance: Math.max(0, Math.min(1, loadBalance))
     }
@@ -186,15 +168,10 @@ export class ParallelExecutor {
     this.stolen = 0
     this.workers.forEach(w => {
       w.processed = 0
-      w.totalTimeMs = 0
-      w.lastTaskTimeMs = 0
       w.idle = true
     })
     this.metrics = {
       itemsProcessed: 0,
-      totalTimeMs: 0,
-      avgTimePerItemMs: 0,
-      maxTimePerItemMs: 0,
       coresUtilized: 0,
       loadBalance: 1.0
     }

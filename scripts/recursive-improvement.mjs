@@ -133,17 +133,16 @@ class RecursiveImprovement {
 
     for (const phase of Object.values(plan)) {
       for (const improvement of phase.improvements) {
-        const success = Math.random() > 0.2
+        // no executor is wired here, so no outcome is measured: success and impact stay null, never drawn
         executed.push({
           improvement: improvement.metric,
           strategy: improvement.strategy,
-          success,
-          impact: Math.random() * 0.2,
+          success: null,
+          impact: null,
         })
 
-        console.log(`  ${success ? '✓' : '⚠️'} ${improvement.metric}`)
+        console.log(`  ? ${improvement.metric} (not executed: no outcome measured)`)
         console.log(`     ${improvement.strategy}`)
-        console.log(`     Impact: ${(success ? Math.random() * 20 : 0).toFixed(1)}%\n`)
 
         this.improvements.push(executed[executed.length - 1])
       }
@@ -155,10 +154,12 @@ class RecursiveImprovement {
   async measureImprovementEfficiency() {
     console.log('📈 Measuring improvement efficiency...\n')
 
-    if (this.improvements.length === 0) return 0
+    // only measured outcomes count: an unmeasured improvement is neither a success nor a zero impact
+    const measured = this.improvements.filter(i => i.success !== null)
+    if (measured.length === 0) return 0
 
-    const successRate = this.improvements.filter(i => i.success).length / this.improvements.length
-    const avgImpact = this.improvements.reduce((sum, i) => sum + i.impact, 0) / this.improvements.length
+    const successRate = measured.filter(i => i.success).length / measured.length
+    const avgImpact = measured.reduce((sum, i) => sum + i.impact, 0) / measured.length
     const efficiency = (successRate * avgImpact * tenOf(2)).toFixed(1)
 
     console.log(`  Success Rate: ${(successRate * 100).toFixed(1)}%`)
@@ -212,7 +213,6 @@ class RecursiveImprovement {
 
   async generateReport() {
     const report = {
-      timestamp: new Date().toISOString(),
       cycle: this.cycles,
       improvements: this.improvements.length,
       efficiency: this.efficiency.slice(-1)[0] || 0,

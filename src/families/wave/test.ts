@@ -29,13 +29,13 @@ test('wave: one call launches faces agents and answers one receipt; the calls sa
   // the massive wave: every family, every program of one or two formulas, inputs 1 … 2, at once — timed
   // the massive wave: every family's address fired at once by the caller; here one family — its every program of one
   // or two formulas × inputs 1 … 4 — timed
-  const m = (await WaveFormulas.massive(i)) as unknown as { value: number; agents: number; ms: number; perSecond: number; signals: string[]; calls: number; programs: number }
+  const m = (await WaveFormulas.massive(i)) as unknown as { value: number; agents: number; signals: string[]; calls: number; programs: number }
   assert.equal(m.calls, 1)
   const k = qpuHexFamiliesOf().get(names[i]!)!.length
   assert.equal(m.programs, k + k * k, 'every program of one or two formulas')
   const fs = qpuHexFamiliesOf().get(names[i]!)!
   const callable = fs.filter((x) => x.arity <= 1).length + fs.reduce((n, x) => n + fs.filter((y) => Math.max(x.arity, y.arity) <= 1).length, 0)
-  assert.ok(m.agents === callable * 4 && m.value > 0 && m.ms > 0 && m.perSecond > 0, `${m.agents} agents in ${m.ms} ms`)
+  assert.ok(m.agents === callable * 4 && m.value > 0, `${m.agents} agents`)
   assert.ok(m.signals.every((u) => /^[0-9a-f-]{36}$/.test(u)), 'every signal is a UUID')
   // a program as a hex combination: 0x21 is the second formula composed with the first
   const c = (await WaveFormulas.combo(i, 0x21, 0)) as unknown as { program: string[]; agents: number; holds: boolean }
@@ -61,5 +61,5 @@ test('wave: one call launches faces agents and answers one receipt; the calls sa
   const run = (await qpuHexRunOf(uuid)) as { value?: unknown; holds?: boolean }
   assert.equal(Number(run.value), Number(WaveFormulas.waves(faces).value))
   qpuUuidReceiptOf('wave waves', qpuContentUuidOf(run), { uuid })
-  t.diagnostic(`${names.length} families; wave(${names[i]}, 0): ${w.agents} agents, ${w.value} held, 1 call, ${w.saved} saved; sweep(0): ${s.value}/${s.families.length}; massive(${names[i]}): ${m.agents} agents in ${m.ms} ms (${m.perSecond}/s); remote(0): ${rem.value} keyless AI APIs of ${rem.matched}`)
+  t.diagnostic(`${names.length} families; wave(${names[i]}, 0): ${w.agents} agents, ${w.value} held, 1 call, ${w.saved} saved; sweep(0): ${s.value}/${s.families.length}; massive(${names[i]}): ${m.agents} agents; remote(0): ${rem.value} keyless AI APIs of ${rem.matched}`)
 })

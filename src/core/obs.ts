@@ -27,7 +27,7 @@ interface Stats {
 }
 
 interface System {
-  ts: number
+  ts?: number
   reqs: number
   errs: number
   lat: number
@@ -145,7 +145,6 @@ export class Obs {
     const tps = all.reduce((a, s) => a + s.tps, 0)
 
     return {
-      ts: Date.now(),
       reqs,
       errs,
       lat,

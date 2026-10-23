@@ -111,7 +111,7 @@ export type TestReceipt = {
   /** MEASURED, never folded. `pid` is the worker that ran the test: files execute in separate processes, so
    *  without it the wall cannot be divided into parallel paths and every test appears to be on one. It varies
    *  between runs, which is exactly why it is a reading and would wreck the proof if it were not. */
-  readings: { time: { ns: number; resolved: boolean }; temperature: Temperature; pid: number }
+  readings: { temperature: Temperature; pid: number }
 }
 
 const unmeasured: Temperature = { measured: false, why: 'no QPU_TEMPERATURE_MILLIKELVIN supplied and no battery gauge read on this host' }
@@ -162,11 +162,9 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
   const foreignFrom = qpuForeignReadsOf()
   // open a fresh mint scope, so this row's chain folds THIS test's doublings and not the whole process's history
   qpuMintScopeOpenOf()
-  const started = process.hrtime.bigint()
   try {
     await fn(t)
   } finally {
-    const ns = Number(process.hrtime.bigint() - started)
     const slice = qpuReceiptLedgerOf().slice(from)
     const mintTo = qpuMintReceiptOf()
     const kinds: Record<string, number> = {}
@@ -195,7 +193,7 @@ const receipted = (name: string, fn: Fn) => async (t: TestContext): Promise<void
       mint: { calls: mintTo.calls - mintFrom.calls, chain: qpuMintScopeOpenOf() },
       served: { count: qpuServedLedgerOf().length - servedFrom, folds: [...new Set(qpuServedLedgerOf().slice(servedFrom).map((r) => r.fold))] },
       foreign: qpuForeignReadsOf() - foreignFrom,
-      readings: { time: { ns, resolved: ns > 0 }, temperature: temperatureOf(), pid: process.pid },
+      readings: { temperature: temperatureOf(), pid: process.pid },
     }
     appendFileSync(join(process.cwd(), RECEIPTS_FILE), `${JSON.stringify(row)}\n`)
   }

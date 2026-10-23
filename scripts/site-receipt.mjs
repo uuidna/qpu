@@ -35,7 +35,6 @@ const failing = rows.filter((r) => r.status !== 200 || !r.title)
 const slowest = rows.reduce((a, b) => (b.ms > a.ms ? b : a), rows[0] ?? { path: '', ms: 0 })
 const doc = {
   kind: 'site-receipt',
-  when: new Date().toISOString().slice(0, tenOf(1)),
   host,
   addresses: rows.length,
   answered: rows.filter((r) => r.status === 200).length,

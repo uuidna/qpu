@@ -20,7 +20,6 @@ export interface ExecutionResult {
   provider: string
   jobId: string
   measurements: Record<string, number>
-  duration: number
   success: boolean
   error?: string
 }
@@ -126,7 +125,6 @@ export class QuantumExecutor {
       optimize?: boolean
     } = {}
   ): Promise<ExecutionResult> {
-    const startTime = Date.now()
     const shots = options.shots || 100
 
     try {
@@ -147,9 +145,8 @@ export class QuantumExecutor {
         }
         return {
           provider: 'qpu',
-          jobId: `qpu-native-${(run as { foreign?: { id?: string | number } }).foreign?.id ?? startTime}`,
+          jobId: `qpu-native-${(run as { foreign?: { id?: string | number } }).foreign?.id ?? 'local'}`,
           measurements: counts,
-          duration: Date.now() - startTime,
           success: (run as { holds?: boolean }).holds === true,
         }
       }
@@ -164,22 +161,21 @@ export class QuantumExecutor {
 
       // Select provider
       if (options.provider === 'ibm') {
-        return await this.executeIBM(compiledCircuit, options.backend, shots, startTime)
+        return await this.executeIBM(compiledCircuit, options.backend, shots)
       } else if (options.provider === 'ionq') {
-        return await this.executeIonQ(compiledCircuit, options.backend, shots, startTime)
+        return await this.executeIonQ(compiledCircuit, options.backend, shots)
       } else if (options.provider === 'aws') {
-        return await this.executeAWS(compiledCircuit, options.backend, shots, startTime)
+        return await this.executeAWS(compiledCircuit, options.backend, shots)
       }
 
       // Auto-select best provider
-      return await this.executeBest(compiledCircuit, shots, startTime)
+      return await this.executeBest(compiledCircuit, shots)
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : String(error)
       return {
         provider: 'unknown',
         jobId: '',
         measurements: {},
-        duration: Date.now() - startTime,
         success: false,
         error: errorMsg
       }
@@ -193,7 +189,6 @@ export class QuantumExecutor {
     circuit: Circuit,
     backend: string = 'simulator_qasm',
     shots: number,
-    startTime: number
   ): Promise<ExecutionResult> {
     const qiskitCircuit: QiskitCircuit = {
       gates: circuit.gates.map(g => ({
@@ -219,7 +214,6 @@ export class QuantumExecutor {
       provider: 'ibm',
       jobId: job.jobId,
       measurements: result?.resultCounts || {},
-      duration: Date.now() - startTime,
       success: result?.status === 'completed'
     }
   }
@@ -231,7 +225,6 @@ export class QuantumExecutor {
     circuit: Circuit,
     backend: string = 'qpu.harmony',
     shots: number,
-    startTime: number
   ): Promise<ExecutionResult> {
     const ionqCircuit = this.ionqConnector.toIonQFormat(
       circuit.qubits,
@@ -256,7 +249,6 @@ export class QuantumExecutor {
       provider: 'ionq',
       jobId: job.id,
       measurements: results || {},
-      duration: Date.now() - startTime,
       success: done?.status === 'completed'
     }
   }
@@ -268,7 +260,6 @@ export class QuantumExecutor {
     circuit: Circuit,
     backend?: string,
     shots: number = 100,
-    startTime: number = Date.now()
   ): Promise<ExecutionResult> {
     const braketCircuit = {
       instructions: circuit.gates.map(g => ({
@@ -301,7 +292,6 @@ export class QuantumExecutor {
       provider: 'aws',
       jobId: task.taskArn,
       measurements,
-      duration: Date.now() - startTime,
       success: result?.status === 'COMPLETED'
     }
   }
@@ -328,7 +318,6 @@ export class QuantumExecutor {
   private async executeBest(
     circuit: Circuit,
     shots: number,
-    startTime: number
   ): Promise<ExecutionResult> {
     const hardware = await this.detectHardware()
 
@@ -336,22 +325,22 @@ export class QuantumExecutor {
     if (circuit.qubits <= 11) {
       const ionq = hardware.find(h => h.provider === 'ionq')
       if (ionq?.available) {
-        return this.executeIonQ(circuit, ionq.backend, shots, startTime)
+        return this.executeIonQ(circuit, ionq.backend, shots)
       }
     }
 
     // Prefer simulator for testing
     const simulator = hardware.find(h => h.backend.includes('simulator'))
     if (simulator?.available) {
-      return this.executeIBM(circuit, simulator.backend, shots, startTime)
+      return this.executeIBM(circuit, simulator.backend, shots)
     }
 
     // Fallback to first available
     if (hardware.length > 0 && hardware[0].available) {
       if (hardware[0].provider === 'ibm') {
-        return this.executeIBM(circuit, hardware[0].backend, shots, startTime)
+        return this.executeIBM(circuit, hardware[0].backend, shots)
       } else if (hardware[0].provider === 'ionq') {
-        return this.executeIonQ(circuit, hardware[0].backend, shots, startTime)
+        return this.executeIonQ(circuit, hardware[0].backend, shots)
       }
     }
 

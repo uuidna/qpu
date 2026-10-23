@@ -119,7 +119,7 @@ const urlOf = (api: Api, op: Operation, params: Record<string, unknown>): string
   return `${api.server}${path}${q ? `?${q}` : ''}`
 }
 
-export type Reading = { api: string; index: number; operation: number; verb: string; url: string; status: number; type: string; bytes: number; excerpt: unknown; seconds: number; receipt: string; hex?: string; why?: string }
+export type Reading = { api: string; index: number; operation: number; verb: string; url: string; status: number; type: string; bytes: number; excerpt: unknown; receipt: string; hex?: string; why?: string }
 
 /** The request, made: a GET through the address, its answer read (an excerpt), minted into a receipt. Other verbs
  *  are resolved to their URL but not made: reads need no auth, writes are not the unit's to make. */
@@ -128,7 +128,7 @@ export const apiCallOf = async (which: number | string, operation: number, param
   const op = api.operations[operation]
   const seed = apiSeedOf(params)
   const hex = (() => { try { return qpuHexUuidOf({ family: 'api', program: ['call'], params: [api.index, operation, seed] }) } catch { return undefined } })()
-  const base = { api: api.api, index: api.index, operation, verb: op?.verb ?? '', url: '', status: 0, type: '', bytes: 0, excerpt: null as unknown, seconds: 0, ...(hex ? { hex } : {}) }
+  const base = { api: api.api, index: api.index, operation, verb: op?.verb ?? '', url: '', status: 0, type: '', bytes: 0, excerpt: null as unknown, ...(hex ? { hex } : {}) }
   const sealed = (r: Omit<Reading, 'receipt'>): Reading => ({ ...r, receipt: qpuUuidReceiptOf(`api ${r.api}`, qpuContentUuidOf({ url: r.url, status: r.status, excerpt: r.excerpt }), { status: r.status }, r.url).uuid })
   if (!op) return sealed({ ...base, why: api.why ?? `no operation ${operation} of ${api.operations.length}` })
   if (!api.server) return sealed({ ...base, why: 'the document names no server: resolved to a path, not an address' })
@@ -157,7 +157,6 @@ export const apiCallOf = async (which: number | string, operation: number, param
   // to the spec's resolved server+path (no host injection), within the deadline; the credential is never receipted.
   if (op.verb !== 'get' && readOnly) return sealed({ ...base, url, why: `${op.verb} is a write: not made from the reproducible api.call(i, j, s) formula — call the api tool { api, operation, params } to make it` })
   const headers: Record<string, string> = { accept: 'application/json, */*;q=0.5', ...ua, ...(credential ? { authorization: credential } : {}), ...(body !== undefined ? { 'content-type': 'application/json' } : {}) }
-  const t0 = Date.now()
   const once = () => fetch(url, { method: op.verb.toUpperCase(), headers, ...(body !== undefined ? { body } : {}), signal: AbortSignal.timeout(DEADLINE) })
   try {
     const r = await once().catch(once)
@@ -165,13 +164,13 @@ export const apiCallOf = async (which: number | string, operation: number, param
     // bound the body read: a reply that declares more than the cap is not read whole into the isolate (Wave XIII) — only
     // an excerpt is kept anyway, so a 3 MB reply cannot exhaust memory. The deadline already bounds the time.
     const declared = Number(r.headers.get('content-length') ?? 0)
-    if (declared > EXCERPT * 64) return sealed({ ...base, url, status: r.status, type, bytes: declared, excerpt: `body ${declared} bytes exceeds the ${EXCERPT * 64}-byte read cap: not read whole`, seconds: (Date.now() - t0) / 1000, ...credentialWithheld })
+    if (declared > EXCERPT * 64) return sealed({ ...base, url, status: r.status, type, bytes: declared, excerpt: `body ${declared} bytes exceeds the ${EXCERPT * 64}-byte read cap: not read whole`, ...credentialWithheld })
     const text = (await r.text()).slice(0, EXCERPT * 64)
     let excerpt: unknown = text.slice(0, EXCERPT)
     if (/json/.test(type)) { try { excerpt = JSON.parse(text.length > EXCERPT * 8 ? text.slice(0, EXCERPT * 8) : text) } catch { /* an excerpt of the text stands */ } }
-    return sealed({ ...base, url, status: r.status, type, bytes: text.length, excerpt, seconds: (Date.now() - t0) / 1000, ...credentialWithheld })
+    return sealed({ ...base, url, status: r.status, type, bytes: text.length, excerpt, ...credentialWithheld })
   } catch (e) {
-    return sealed({ ...base, url, seconds: (Date.now() - t0) / 1000, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message })
+    return sealed({ ...base, url, why: (e as Error).name === 'TimeoutError' ? 'timeout' : (e as Error).message })
   }
 }
 

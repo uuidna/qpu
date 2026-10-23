@@ -13,7 +13,6 @@ import { qpuContentUuidOf, qpuUuidReceiptOf } from '../dist/quantum/processing/u
 import { qpuDiscoverOf } from '../dist/mcp/discovery.js'
 import { qpuDataOf, qpuSequencesOf } from '../dist/mcp/qpu-fused.js'
 
-const t0 = Date.now()
 const numbersOf = (x) => (typeof x === 'number' ? (Number.isSafeInteger(x) && x >= 3 ? [x] : []) : typeof x === 'string' ? (/^\d+$/.test(x) && Number.isSafeInteger(Number(x)) && Number(x) >= 3 ? [Number(x)] : []) : x && typeof x === 'object' ? Object.values(x).flatMap(numbersOf) : [])
 // the live window: every public source read now, its numbers the discovery's inputs
 const sources = ['cern', 'nist', 'oeis', 'zenodo', 'datacite', 'orcid', 'github', 'npm', 'alpine', 'apis']
@@ -30,7 +29,6 @@ const rows = d.relations.map((r) => ({ name: `${r.live ? 'live ' : ''}${r.famili
   .concat(d.seals.map((s) => ({ name: `seal ${s.family}.${s.program.join('∘')}`, pass: true, value: `${s.kind} at ${s.points.slice(0, 8).join(', ')}`, receipt: '' })))
 const doc = {
   kind: 'discovery-receipt',
-  when: new Date().toISOString().slice(0, tenOf(1)),
   sources: sources.length,
   sourcesAgree,
   liveNumbers: live.size,
@@ -51,4 +49,4 @@ const doc = {
 doc.uuid = qpuContentUuidOf(doc.rows)
 doc.receipt = qpuUuidReceiptOf('discovery', doc.uuid, `${doc.relationsTotal} relations over ${doc.families} families`, 'scripts/discover.mjs').uuid
 fs.writeFileSync('discovery-receipt.json', JSON.stringify(doc, null, 1) + '\n')
-console.log(JSON.stringify({ families: doc.families, runs: doc.runs, relations: doc.relationsTotal, live: doc.liveRelations, seals: doc.seals, sequences: doc.sequences, unrelated: doc.unrelated, seconds: Math.round((Date.now() - t0) / tenOf(3)) }))
+console.log(JSON.stringify({ families: doc.families, runs: doc.runs, relations: doc.relationsTotal, live: doc.liveRelations, seals: doc.seals, sequences: doc.sequences, unrelated: doc.unrelated }))

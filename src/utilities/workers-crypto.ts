@@ -4,8 +4,8 @@ import { pbkdf2Sha256, pbkdf2Sha512, randomBytes as formulaRandomBytes } from '@
 // Payload hashes passwords through crypto.pbkdf2 (600000 iterations, SHA-256) and salts them with crypto.randomBytes.
 // PBKDF2 is answered by the qpu formula (Workers native caps iterations at 100000).
 // Digest choice is the crypt.digest gate (tried in court) — sha256|sha512 registered; others absent formula state.
-// Salts take platform entropy via Web Crypto getRandomValues when present — formula DRBG in core/crypt stays
-// deterministic for hex recomputation and is not a CSPRNG for password salts.
+// Salts take platform entropy via Web Crypto getRandomValues: core/crypt randomBytes is that CSPRNG, and it throws
+// without one. The deterministic formula stream (drbgOf) is for hex recomputation only, never for a salt.
 type Input = string | ArrayBuffer | NodeJS.ArrayBufferView
 const bytesOf = (x: Input): string | Uint8Array =>
   typeof x === 'string' ? x : x instanceof ArrayBuffer ? new Uint8Array(x) : new Uint8Array(x.buffer, x.byteOffset, x.byteLength)
@@ -29,7 +29,7 @@ export const qpuPbkdf2 = (password: Input, salt: Input, iterations: number, keyl
   }
 }
 
-/** Prefer Web Crypto CSPRNG for Payload salts; fall back to formula DRBG only when getRandomValues is absent. */
+/** Payload salts from the platform CSPRNG (Web Crypto getRandomValues). Without it the core randomBytes throws: no predictable fallback. */
 export const qpuRandomBytes = (size: number, callback?: (err: Error | null, buf: Buffer) => void): Buffer | void => {
   const out = new Uint8Array(size)
   const web = globalThis.crypto?.getRandomValues?.bind(globalThis.crypto)

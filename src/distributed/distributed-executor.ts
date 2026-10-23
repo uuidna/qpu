@@ -83,32 +83,22 @@ export class DistributedExecutor {
     input: any,
     timeout: number
   ): Promise<NodeExecutionResult> {
-    const startTime = Date.now()
-
     try {
       // Simulate execution (in real impl: send via WebSocket/gRPC)
       const result = await this.simulateExecution(formulaId, input, timeout)
-
-      const duration = Date.now() - startTime
 
       return {
         nodeId: node.id,
         formulaId,
         success: true,
         result,
-        duration,
-        timestamp: Date.now()
       }
     } catch (error) {
-      const duration = Date.now() - startTime
-
       return {
         nodeId: node.id,
         formulaId,
         success: false,
         error: String(error),
-        duration,
-        timestamp: Date.now()
       }
     }
   }
@@ -131,7 +121,6 @@ export class DistributedExecutor {
           formulaId,
           input,
           output: `result-${(__seq++).toString(36).padStart(6, '0')}`,
-          timestamp: Date.now()
         })
       }, executionTime)
     })
@@ -324,15 +313,12 @@ export class DistributedExecutor {
     const successful = results.filter(r => r.success).length
     const failed = results.filter(r => !r.success).length
 
-    const avgDuration = results.length > 0 ?
-      results.reduce((sum, r) => sum + r.results.reduce((s, res) => s + res.duration, 0), 0) / results.length : 0
 
     return {
       executionsCount: results.length,
       successful,
       failed,
       successRate: results.length > 0 ? (successful / results.length * 100).toFixed(1) : 0,
-      avgDuration: Math.round(avgDuration),
       avgConfidence: results.length > 0 ?
         (results.reduce((sum, r) => sum + r.confidence, 0) / results.length * 100).toFixed(1) : 0
     }

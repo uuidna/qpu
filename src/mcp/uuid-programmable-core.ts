@@ -9,7 +9,7 @@ interface DeploymentGateStatus {
   operationCount: number
   categoryCount: number
   allVerified: boolean
-  timestamp: string
+  timestamp?: string
 }
 
 /**
@@ -73,7 +73,6 @@ export class ConsolidatedMCP {
       allVerified,
       proved,
       unresolved,
-      timestamp: new Date().toISOString()
     }
   }
 
@@ -93,7 +92,6 @@ export class ConsolidatedMCP {
       status: 'operational',
       deploymentGate: gate,
       operationsAvailable: 61,
-      timestamp: new Date().toISOString()
     }
   }
 

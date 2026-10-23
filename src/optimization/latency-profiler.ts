@@ -36,7 +36,7 @@ export interface HotspotAnalysis {
 }
 
 export interface ProfileSnapshot {
-  timestamp: number
+  timestamp?: number
   sampleCount: number
   totalTimeMs: number
   avgLatencyMs: number
@@ -54,7 +54,6 @@ export class LatencyProfiler {
   private samples: ExecutionSample[] = []
   private formulaStats = new Map<string, { count: number; totalTime: number }>()
   private buckets = new Map<string, LatencyBucket[]>()
-  private startTime = Date.now()
   private isEnabled = true
   private windowSizeMs = 60000 // 60 second rolling window
 
@@ -168,7 +167,6 @@ export class LatencyProfiler {
       (this.samples.length * 64 + Array.from(this.formulaStats.values()).length * 32) / 1024 / 1024
 
     return {
-      timestamp: Date.now(),
       sampleCount: this.samples.length,
       totalTimeMs: allSamples.reduce((a, b) => a + b, 0),
       avgLatencyMs: avgLatency,
@@ -219,10 +217,10 @@ export class LatencyProfiler {
   }
 
   /**
-   * Clear old samples (rolling window)
+   * Clear old samples (rolling window), measured back from `now`: the caller's clock, so the window is reproducible
    */
-  pruneOldSamples(windowMs: number = this.windowSizeMs): void {
-    const cutoff = Date.now() - windowMs
+  pruneOldSamples(now: number, windowMs: number = this.windowSizeMs): void {
+    const cutoff = now - windowMs
     this.samples = this.samples.filter(s => s.startTime > cutoff)
   }
 
@@ -240,7 +238,6 @@ export class LatencyProfiler {
     this.samples = []
     this.formulaStats.clear()
     this.buckets.clear()
-    this.startTime = Date.now()
   }
 
   /**
@@ -249,8 +246,6 @@ export class LatencyProfiler {
   export(): string {
     return JSON.stringify(
       {
-        timestamp: Date.now(),
-        uptime: Date.now() - this.startTime,
         samples: this.samples.length,
         snapshot: this.getSnapshot()
       },

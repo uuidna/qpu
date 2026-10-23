@@ -19,7 +19,7 @@ interface Entry {
   domain: string
   resource: string
   metadata: Record<string, any>
-  createdAt: Date
+  createdAt?: Date
   verified: boolean
 }
 
@@ -87,7 +87,6 @@ export class UUID {
       domain,
       resource,
       metadata,
-      createdAt: new Date(),
       verified: false
     }
 
@@ -153,7 +152,7 @@ export class UUID {
     return JSON.stringify(
       Array.from(this.index.uuid.values()).map(e => ({
         ...e,
-        createdAt: e.createdAt.toISOString()
+        createdAt: e.createdAt?.toISOString()
       })),
       null,
       2

@@ -39,7 +39,6 @@ export type WavePassSummary = {
   holdsFalse: number
   sumValue: number
   furthestNext: number | null
-  wallMs: number
   clayHits: { from: number; families: string[]; heldFormulas: WaveSweepRow['heldFormulas'] }[]
   rows: WaveSweepRow[]
 }
@@ -140,9 +139,7 @@ const sweepOne = async (from: number, faces: number, names: string[]): Promise<W
 
 const passOf = async (pass: number, fromStart: number, width: number, faces: number, names: string[]): Promise<WavePassSummary> => {
   const fromIndices = Array.from({ length: width }, (_, k) => fromStart + k * faces)
-  const t0 = Date.now()
   const rows = await Promise.all(fromIndices.map((from) => sweepOne(from, faces, names)))
-  const wallMs = Date.now() - t0
   const clayHits = rows
     .filter((row) => row.clayRelevant.length > 0)
     .map((row) => ({
@@ -161,7 +158,6 @@ const passOf = async (pass: number, fromStart: number, width: number, faces: num
     holdsFalse: rows.filter((r) => !r.holds).length,
     sumValue: rows.reduce((s, r) => s + (Number.isFinite(r.value) ? r.value : 0), 0),
     furthestNext: nexts.length ? Math.max(...nexts) : null,
-    wallMs,
     clayHits,
     rows,
   }
@@ -211,7 +207,6 @@ export const waveSweepGridOf = async (args: { from: number; width?: number; pass
       holdsFalse: p.holdsFalse,
       sumValue: p.sumValue,
       furthestNext: p.furthestNext,
-      wallMs: p.wallMs,
       clayHits: p.clayHits,
       table: p.rows.map((r) => ({
         from: r.from,

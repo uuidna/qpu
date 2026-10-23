@@ -22,7 +22,6 @@ export type ExamHop = {
   family?: string
   formula?: string
   hex?: string | null
-  ms: number
   holds?: boolean
   value?: unknown
   error?: string
@@ -31,8 +30,7 @@ export type ExamHop = {
   note?: string
 }
 
-const withTimeout = async <T>(ms: number, work: () => Promise<T>): Promise<{ ok: true; value: T; ms: number } | { ok: false; ms: number; timeout: boolean; error: string }> => {
-  const t0 = Date.now()
+const withTimeout = async <T>(ms: number, work: () => Promise<T>): Promise<{ ok: true; value: T } | { ok: false; timeout: boolean; error: string }> => {
   let timer: ReturnType<typeof setTimeout> | undefined
   try {
     const value = await Promise.race([
@@ -41,22 +39,22 @@ const withTimeout = async <T>(ms: number, work: () => Promise<T>): Promise<{ ok:
         timer = setTimeout(() => reject(Object.assign(new Error(`timeout ${ms}ms`), { name: 'TimeoutError' })), ms)
       }),
     ])
-    return { ok: true, value, ms: Date.now() - t0 }
+    return { ok: true, value }
   } catch (e) {
     const err = e as { name?: string; message?: string }
     const timeout = err?.name === 'TimeoutError' || /timeout/i.test(String(err?.message ?? e))
-    return { ok: false, ms: Date.now() - t0, timeout, error: String(err?.message ?? e) }
+    return { ok: false, timeout, error: String(err?.message ?? e) }
   } finally {
     if (timer) clearTimeout(timer)
   }
 }
 
-const hopOk = (partial: Omit<ExamHop, 'ms' | 'error' | 'timeout'> & { ms: number; holds?: boolean; value?: unknown }): ExamHop => ({
+const hopOk = (partial: Omit<ExamHop, 'error' | 'timeout'> & { holds?: boolean; value?: unknown }): ExamHop => ({
   ...partial,
   silent: false,
 })
 
-const hopFail = (partial: Omit<ExamHop, 'ms' | 'holds'> & { ms: number; timeout?: boolean; error: string }): ExamHop => ({
+const hopFail = (partial: Omit<ExamHop, 'holds'> & { timeout?: boolean; error: string }): ExamHop => ({
   ...partial,
   silent: partial.timeout === true,
   holds: false,
@@ -76,20 +74,18 @@ export const examOf = async (env?: QpuEnv) => {
 
   // ─── INSIDE-OUT ─────────────────────────────────────────────
   {
-    const t0 = Date.now()
     const r = ClaySeals.riemann(1, 2)
     hops.push(hopOk({
       dir: 'inside-out', layer: 'formula', family: 'clay', formula: 'riemann',
-      hex: r.hex ?? null, ms: Date.now() - t0, holds: r.holds === true, value: r.value,
+      hex: r.hex ?? null, holds: r.holds === true, value: r.value,
       note: 'CrossFormula direct',
     }))
   }
 
   {
-    const t0 = Date.now()
     let hex = ''
     try { hex = qpuHexUuidOf({ family: 'clay', program: ['riemann'], params: [1, 2] }) } catch (e) {
-      hops.push(hopFail({ dir: 'inside-out', layer: 'hex-mint', family: 'clay', formula: 'riemann', ms: Date.now() - t0, error: String(e) }))
+      hops.push(hopFail({ dir: 'inside-out', layer: 'hex-mint', family: 'clay', formula: 'riemann', error: String(e) }))
       hex = ''
     }
     if (hex) {
@@ -97,10 +93,10 @@ export const examOf = async (env?: QpuEnv) => {
       if (run.ok) {
         hops.push(hopOk({
           dir: 'inside-out', layer: 'hex-run', family: 'clay', formula: 'riemann', door: 'hex',
-          hex, ms: run.ms, holds: run.value.holds === true, value: run.value.value,
+          hex, holds: run.value.holds === true, value: run.value.value,
         }))
       } else {
-        hops.push(hopFail({ dir: 'inside-out', layer: 'hex-run', family: 'clay', formula: 'riemann', door: 'hex', hex, ms: run.ms, timeout: run.timeout, error: run.error }))
+        hops.push(hopFail({ dir: 'inside-out', layer: 'hex-run', family: 'clay', formula: 'riemann', door: 'hex', hex, timeout: run.timeout, error: run.error }))
       }
     }
   }
@@ -110,12 +106,11 @@ export const examOf = async (env?: QpuEnv) => {
     if (run.ok) {
       hops.push(hopOk({
         dir: 'inside-out', layer: 'wave', family: 'wave', formula: 'sweep',
-        hex: typeof run.value.hex === 'string' ? run.value.hex : null,
-        ms: run.ms, holds: run.value.holds === true, value: run.value.value,
+        hex: typeof run.value.hex === 'string' ? run.value.hex : null, holds: run.value.holds === true, value: run.value.value,
         note: `families=${waveFamiliesOf().length}; next=${'next' in run.value ? run.value.next : 'absent'}`,
       }))
     } else {
-      hops.push(hopFail({ dir: 'inside-out', layer: 'wave', family: 'wave', formula: 'sweep', ms: run.ms, timeout: run.timeout, error: run.error }))
+      hops.push(hopFail({ dir: 'inside-out', layer: 'wave', family: 'wave', formula: 'sweep', timeout: run.timeout, error: run.error }))
     }
   }
 
@@ -127,13 +122,12 @@ export const examOf = async (env?: QpuEnv) => {
       const r = sealRun.value
       hops.push(hopOk({
         dir: 'inside-out', layer: 'clay.seal-wave', family: 'clay', formula: 'pass', tool: 'hex',
-        hex: r.hex || null, ms: sealRun.ms, holds: r.involutive === true, value: r.held,
+        hex: r.hex || null, holds: r.involutive === true, value: r.held,
         note: `seal=${r.name}; discover=skipped; fullDiscover OOM/SIGABRT 134`,
       }))
     } else {
       hops.push(hopFail({
-        dir: 'inside-out', layer: 'clay.seal-wave', family: 'clay', formula: 'pass', tool: 'hex',
-        ms: sealRun.ms, timeout: !sealRun.ok && sealRun.timeout, error: !sealRun.ok ? sealRun.error : 'null',
+        dir: 'inside-out', layer: 'clay.seal-wave', family: 'clay', formula: 'pass', tool: 'hex', timeout: !sealRun.ok && sealRun.timeout, error: !sealRun.ok ? sealRun.error : 'null',
         note: `seal=${CLAY_SEALS[0]}`,
       }))
     }
@@ -143,56 +137,51 @@ export const examOf = async (env?: QpuEnv) => {
       const r = run.value as { hex?: string; value?: number; holds?: boolean }
       hops.push(hopOk({
         dir: 'inside-out', layer: 'clay.pass', family: 'clay', formula: 'pass', tool: 'hex',
-        hex: r.hex ?? null, ms: run.ms, holds: r.holds === true, value: r.value,
+        hex: r.hex ?? null, holds: r.holds === true, value: r.value,
         note: `seal=${CLAY_SEALS[0]}; sliced discover; budgetMs=${passBudgetMs}; fullDiscover=OOM`,
       }))
     } else {
       hops.push(hopFail({
-        dir: 'inside-out', layer: 'clay.pass', family: 'clay', formula: 'pass', tool: 'hex',
-        ms: run.ms, timeout: run.timeout, error: run.error,
+        dir: 'inside-out', layer: 'clay.pass', family: 'clay', formula: 'pass', tool: 'hex', timeout: run.timeout, error: run.error,
         note: `seal=${CLAY_SEALS[0]}; timeout/OOM risk on discover; budgetMs=${passBudgetMs}; use claySealWaveOf`,
       }))
     }
   }
 
   {
-    const t0 = Date.now()
     const doors = qpuMcpDoorsOf()
     hops.push(hopOk({
       dir: 'inside-out', layer: 'unit', door: 'boot/stdio/router',
-      ms: Date.now() - t0, holds: doors.holds === true, value: doors.reachable,
+      holds: doors.holds === true, value: doors.reachable,
       note: `doors=${doors.doors.length}; formulas=${doors.formulas}; fused rides on the same /mcp router`,
     }))
   }
 
   {
-    const t0 = Date.now()
     const fused = qpuMcpFusedOf()
     hops.push(hopOk({
       dir: 'inside-out', layer: 'fused-mcp', door: 'qpu-fused',
-      ms: Date.now() - t0, holds: fused.length > 0, value: fused.length,
+      holds: fused.length > 0, value: fused.length,
       note: fused.map((t) => t.name).join(','),
     }))
   }
 
   {
-    const t0 = Date.now()
     const tools = qpuMcpToolsListOf()
     const bytes = JSON.stringify({ resultType: 'complete', tools }).length
     hops.push(hopOk({
       dir: 'inside-out', layer: 'tools/list', door: '/mcp',
-      ms: Date.now() - t0, holds: tools.length <= 16 && bytes < 16384 && tools.every((t) => !t.name.startsWith('qpu_')),
+      holds: tools.length <= 16 && bytes < 16384 && tools.every((t) => !t.name.startsWith('qpu_')),
       value: { doors: tools.length, bytes },
       note: tools.map((t) => t.name).join(','),
     }))
   }
 
   {
-    const t0 = Date.now()
     const h = qpuHarnessesOf()
     hops.push(hopOk({
       dir: 'inside-out', layer: 'harnesses', door: 'connector',
-      ms: Date.now() - t0, holds: h.holds === true, value: h.rows.length,
+      holds: h.holds === true, value: h.rows.length,
       note: h.url,
     }))
   }
@@ -201,11 +190,10 @@ export const examOf = async (env?: QpuEnv) => {
   const { publicMcpOf } = await import('./public.js')
 
   {
-    const t0 = Date.now()
     const h = qpuHarnessesOf()
     hops.push(hopOk({
       dir: 'outside-in', layer: 'harness→url', door: h.url, tool: 'connector',
-      ms: Date.now() - t0, holds: h.holds === true, value: h.rows.length,
+      holds: h.holds === true, value: h.rows.length,
       note: 'all 8 harnesses → one /mcp URL',
     }))
   }
@@ -222,11 +210,10 @@ export const examOf = async (env?: QpuEnv) => {
     if (run.ok) {
       const tools = run.value.body.result?.tools ?? []
       hops.push(hopOk({
-        dir: 'outside-in', layer: 'tools/list', door: '/mcp', tool: 'tools/list',
-        ms: run.ms, holds: run.value.status === 200 && tools.length === 16, value: tools.length,
+        dir: 'outside-in', layer: 'tools/list', door: '/mcp', tool: 'tools/list', holds: run.value.status === 200 && tools.length === 16, value: tools.length,
       }))
     } else {
-      hops.push(hopFail({ dir: 'outside-in', layer: 'tools/list', door: '/mcp', tool: 'tools/list', ms: run.ms, timeout: run.timeout, error: run.error }))
+      hops.push(hopFail({ dir: 'outside-in', layer: 'tools/list', door: '/mcp', tool: 'tools/list', timeout: run.timeout, error: run.error }))
     }
   }
 
@@ -248,13 +235,12 @@ export const examOf = async (env?: QpuEnv) => {
       const sc = run.value.sc as { holds?: boolean; value?: unknown; uuid?: string }
       hops.push(hopOk({
         dir: 'outside-in', layer: 'tools/call→hex→formula', door: '/mcp', tool: 'hex',
-        family: 'clay', formula: 'riemann', hex: sc.uuid ?? null,
-        ms: run.ms, holds: run.value.status === 200 && !run.value.error && sc.holds === true, value: sc.value,
+        family: 'clay', formula: 'riemann', hex: sc.uuid ?? null, holds: run.value.status === 200 && !run.value.error && sc.holds === true, value: sc.value,
       }))
     } else {
       hops.push(hopFail({
         dir: 'outside-in', layer: 'tools/call→hex→formula', door: '/mcp', tool: 'hex',
-        family: 'clay', formula: 'riemann', ms: run.ms, timeout: run.timeout, error: run.error,
+        family: 'clay', formula: 'riemann', timeout: run.timeout, error: run.error,
       }))
     }
   }
@@ -276,14 +262,12 @@ export const examOf = async (env?: QpuEnv) => {
     if (run.ok) {
       const sc = run.value.sc as { kind?: string; holds?: boolean; held?: number }
       hops.push(hopOk({
-        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/mcp', tool: 'connector',
-        ms: run.ms, holds: run.value.status === 200 && !run.value.error && (sc.kind === 'point' || sc.holds === true),
+        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/mcp', tool: 'connector', holds: run.value.status === 200 && !run.value.error && (sc.kind === 'point' || sc.holds === true),
         value: { kind: sc.kind, held: sc.held },
       }))
     } else {
       hops.push(hopFail({
-        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/mcp', tool: 'connector',
-        ms: run.ms, timeout: run.timeout, error: run.error,
+        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/mcp', tool: 'connector', timeout: run.timeout, error: run.error,
       }))
     }
   }
@@ -307,8 +291,8 @@ export const examOf = async (env?: QpuEnv) => {
     },
     passBudgetMs,
     hops,
-    healthy: healthy.map((h) => ({ layer: h.layer, dir: h.dir, ms: h.ms, family: h.family, formula: h.formula, value: h.value })),
-    blindSpots: blind.map((h) => ({ layer: h.layer, dir: h.dir, ms: h.ms, timeout: h.timeout, error: h.error, note: h.note })),
+    healthy: healthy.map((h) => ({ layer: h.layer, dir: h.dir, family: h.family, formula: h.formula, value: h.value })),
+    blindSpots: blind.map((h) => ({ layer: h.layer, dir: h.dir, timeout: h.timeout, error: h.error, note: h.note })),
     counts: {
       hops: hops.length,
       inside: inside.length,

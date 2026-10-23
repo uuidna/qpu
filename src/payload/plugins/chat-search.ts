@@ -408,7 +408,7 @@ export const distroOf = async (
     dir: 'inside-out' | 'outside-in'
     layer: string
     holds: boolean
-    ms: number
+    ms?: number
     value?: unknown
     note?: string
     hex?: string | null
@@ -417,73 +417,61 @@ export const distroOf = async (
 
   // ─── INSIDE-OUT: formula → fuse → distro ───
   {
-    const t0 = Date.now()
     hops.push({
       dir: 'inside-out',
       layer: 'merkaba.torus',
       holds: manifold.torus.holds,
-      ms: Date.now() - t0,
       value: manifold.torus.value,
       hex: manifold.torus.hex,
       note: 'double torus closes when flow|mirror agree',
     })
   }
   {
-    const t0 = Date.now()
     hops.push({
       dir: 'inside-out',
       layer: 'merkaba.rosetta',
       holds: manifold.rosetta.holds || manifold.rosetta.edges !== null,
-      ms: Date.now() - t0,
       value: { value: manifold.rosetta.value, edges: manifold.rosetta.edges, forward: manifold.rosetta.forward, back: manifold.rosetta.back },
       hex: manifold.rosetta.hex,
       note: '2n edges both ways around the ring',
     })
   }
   {
-    const t0 = Date.now()
     hops.push({
       dir: 'inside-out',
       layer: 'merkaba.coil',
       holds: typeof manifold.coil.value === 'number',
-      ms: Date.now() - t0,
       value: manifold.coil.value,
       hex: manifold.coil.hex,
       note: 'n trinities on the rosetta ring',
     })
   }
   {
-    const t0 = Date.now()
     const path = distroPathOf('combinatorial distro')
     hops.push({
       dir: 'inside-out',
       layer: 'distro-path',
       holds: path.stages.length >= 6 && path.cure.holds === true,
-      ms: Date.now() - t0,
       value: path.stages.map((s) => s.stage),
       note: 'idea→chat→search→blueprint→docs→app→cure',
     })
   }
   {
-    const t0 = Date.now()
     const surface = await chatSearchOf({ about: 'search precision 8 10', chat: true, search: true }, env)
     hops.push({
       dir: 'inside-out',
       layer: 'chat-search-fuse',
       holds: surface.kind === 'chat-search' && surface.tokenSeal !== undefined,
-      ms: Date.now() - t0,
       value: { kind: surface.kind, holds: surface.holds, sealed: (surface.tokenSeal as { sealed?: boolean } | undefined)?.sealed },
       note: 'formula/ask + api search sealed',
     })
   }
   {
-    const t0 = Date.now()
     const h = qpuHarnessesOf()
     hops.push({
       dir: 'inside-out',
       layer: 'harnesses',
       holds: h.holds === true,
-      ms: Date.now() - t0,
       value: h.rows.length,
       note: h.url,
     })
@@ -491,19 +479,16 @@ export const distroOf = async (
 
   // ─── OUTSIDE-IN: harness → MCP → connector → formula ───
   {
-    const t0 = Date.now()
     const h = qpuHarnessesOf()
     hops.push({
       dir: 'outside-in',
       layer: 'harness→url',
       holds: h.holds === true && h.rows.length >= 8,
-      ms: Date.now() - t0,
       value: h.rows.map((r) => r.harness),
       note: '8 connector harnesses → one /mcp',
     })
   }
   {
-    const t0 = Date.now()
     try {
       const { publicMcpOf } = await import('./public.js')
       const res = await publicMcpOf(
@@ -520,16 +505,14 @@ export const distroOf = async (
         dir: 'outside-in',
         layer: 'tools/list',
         holds: res.status === 200 && tools.length <= 16,
-        ms: Date.now() - t0,
         value: tools.length,
         note: tools.map((t) => t.name).join(','),
       })
     } catch (e) {
-      hops.push({ dir: 'outside-in', layer: 'tools/list', holds: false, ms: Date.now() - t0, note: String(e) })
+      hops.push({ dir: 'outside-in', layer: 'tools/list', holds: false, note: String(e) })
     }
   }
   {
-    const t0 = Date.now()
     try {
       const { publicMcpOf } = await import('./public.js')
       const res = await publicMcpOf(
@@ -554,7 +537,6 @@ export const distroOf = async (
         dir: 'outside-in',
         layer: 'tools/call→connector→chat-search',
         holds: res.status === 200 && !body.error && (sc.kind === 'chat-search' || sc.holds === true),
-        ms: Date.now() - t0,
         value: { kind: sc.kind, holds: sc.holds },
         note: 'harness→MCP→connector { about } → chat-search',
       })
@@ -563,13 +545,11 @@ export const distroOf = async (
         dir: 'outside-in',
         layer: 'tools/call→connector→chat-search',
         holds: false,
-        ms: Date.now() - t0,
         note: String(e),
       })
     }
   }
   {
-    const t0 = Date.now()
     try {
       const res = await publicChatSearchOf(
         new Request('https://qpu.uuidna.com/api/qpu/chat?about=search%20precision%208%2010&chat=true&search=true'),
@@ -580,12 +560,11 @@ export const distroOf = async (
         dir: 'outside-in',
         layer: 'GET /api/qpu/chat',
         holds: res.status === 200 && body.kind === 'chat-search',
-        ms: Date.now() - t0,
         value: { kind: body.kind, sealed: body.tokenSeal?.sealed },
         note: 'Payload/Next public door — same reading',
       })
     } catch (e) {
-      hops.push({ dir: 'outside-in', layer: 'GET /api/qpu/chat', holds: false, ms: Date.now() - t0, note: String(e) })
+      hops.push({ dir: 'outside-in', layer: 'GET /api/qpu/chat', holds: false, note: String(e) })
     }
   }
 

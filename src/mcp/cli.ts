@@ -11,7 +11,7 @@
  *   --local        the same call in-process over dist, labelled "computed locally"
  *   batch '[["tool", args], …]'  many calls over one connection at once
  *   --pick=a.b,c   print only these fields (fewer bytes into the caller's context)
- * Every run ends with its cost on stderr: calls, ms (hot above faces ms), bytes ≈ tokens.
+ * Every run ends with its cost on stderr: calls, bytes ≈ tokens.
  */
 import fs from 'node:fs'
 import { pathToFileURL } from 'node:url'
@@ -46,16 +46,15 @@ export const main = async (): Promise<void> => {
   const door = await (local ? inProcess() : remote())
   const via = local ? 'computed locally' : `via ${new URL(url).host}`
   const pick = argv.find((a) => a.startsWith('--pick='))?.slice('--pick='.length).split(',')
-  // every call is measured: wall time and the bytes its answer puts into the caller's context (≈ tokens at 4 bytes each)
-  const spent = { calls: 0, ms: 0, bytes: 0, slowest: 0 }
+  // every call is counted: the bytes its answer puts into the caller's context (≈ tokens at 4 bytes each)
+  const spent = { calls: 0, bytes: 0 }
   const callOf = async (name: string, args: Record<string, unknown>) => {
-    const t = performance.now()
     const r = await door.call(name, args)
-    const ms = performance.now() - t, out = r.structuredContent ?? r.content
+    const out = r.structuredContent ?? r.content
     const shown = pick ? Object.fromEntries(pick.map((p) => [p, p.split('.').reduce<unknown>((o, k) => (o as Record<string, unknown> | undefined)?.[k], out)])) : out
     const text = JSON.stringify(shown, null, 1)
     console.log(text)
-    spent.calls++; spent.ms += ms; spent.bytes += text.length; spent.slowest = Math.max(spent.slowest, ms)
+    spent.calls++; spent.bytes += text.length
     if (r.isError) process.exitCode = 1
     return r
   }
@@ -86,9 +85,7 @@ export const main = async (): Promise<void> => {
         else break
       }
     }
-    // hot by the heat family's own rule: slower than faces ms (rule.slice answers faces)
-    const faces = spent.calls ? Number(((await door.call(...asked('rule.slice'))).structuredContent as { value?: unknown } | undefined)?.value) : NaN
-    console.error(`${via} → ${first ?? 'list'} · ${spent.calls} call${spent.calls === 1 ? '' : 's'} · ${Math.round(spent.ms)} ms (slowest ${Math.round(spent.slowest)} ms${spent.slowest > faces ? ', hot' : ''}) · ${spent.bytes} bytes ≈ ${Math.round(spent.bytes / 4)} tokens`)
+    console.error(`${via} → ${first ?? 'list'} · ${spent.calls} call${spent.calls === 1 ? '' : 's'} · ${spent.bytes} bytes ≈ ${Math.round(spent.bytes / 4)} tokens`)
   } catch (e) {
     console.error(`${via} → ${first ?? 'list'}: ${(e as Error).message}`)
     process.exitCode = 1

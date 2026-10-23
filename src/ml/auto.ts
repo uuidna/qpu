@@ -5,11 +5,10 @@
 
 interface Point {
   val: number
-  ts: number
 }
 
 interface Anomaly {
-  ts: number
+  ts?: number
   val: number
   z: number
   anomalous: boolean
@@ -31,7 +30,7 @@ export class Anomaly_ {
   private threshold = 3
 
   record(val: number): void {
-    this.window.push({ val, ts: Date.now() })
+    this.window.push({ val })
     if (this.window.length > this.size) {
       this.window.shift()
     }
@@ -67,7 +66,6 @@ export class Anomaly_ {
   analyze(val: number): Anomaly {
     const z = this.zscore(val)
     return {
-      ts: Date.now(),
       val,
       z,
       anomalous: Math.abs(z) > this.threshold
@@ -159,7 +157,7 @@ export class CostOpt {
   private costs: Point[] = []
 
   record(cost: number): void {
-    this.costs.push({ val: cost, ts: Date.now() })
+    this.costs.push({ val: cost })
   }
 
   // BOOLEAN QUESTIONS

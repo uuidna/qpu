@@ -1,6 +1,6 @@
 import { qpuFoldOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
-import { randomBytes as qpuRandomBytes } from '../../core/crypt.js'
+import { drbgOf, randomBytes, sha256, utf8 } from '../../core/crypt.js'
 
 export interface SecureSignal {
   id: string
@@ -8,7 +8,7 @@ export interface SecureSignal {
   dims: number
   hash: string
   verified: boolean
-  timestamp: number
+  timestamp?: number
 }
 
 export interface QuantumKey {
@@ -38,9 +38,10 @@ export interface SiftedKey {
 
 export const QBER_LIMIT = 0.11
 
-const randomBits = (n: number): number[] => {
-  // the unit's own DRBG (core/crypt), never a platform CSPRNG — no external crypto
-  const bytes = qpuRandomBytes(Math.ceil(n / 8))
+/** The seed of a formula reading: a reading passes it, so its value reproduces. A key never does: a key draws from the CSPRNG. */
+export const SIGNAL_READING_SEED = sha256(utf8('qpu signal family: reading seed'))
+const randomBits = (n: number, draw: (k: number) => Uint8Array): number[] => {
+  const bytes = draw(Math.ceil(n / 8))
   return Array.from({ length: n }, (_, i) => (bytes[i >> 3]! >> (i & 7)) & 1)
 }
 
@@ -59,19 +60,22 @@ export const bitsToBytes = (bits: readonly number[]): Uint8Array => {
 }
 
 export class QuantumSecureSignalling {
-  static BB84KeyGen(n: number): QuantumKey {
-    const bits = randomBits(n)
-    const basis = randomBits(n)
+  /** A BB84 key of n bits. Without a seed the bits are the CSPRNG's: a key. With a seed the bits are reproducible: a reading. */
+  static BB84KeyGen(n: number, seed?: Uint8Array): QuantumKey {
+    const draw = seed ? drbgOf(seed) : randomBytes
+    const bits = randomBits(n, draw)
+    const basis = randomBits(n, draw)
     const hash = qpuFoldOf(JSON.stringify({ bits, basis }))
     return { id: `key-${hash}`, bits, basis, hash }
   }
 
   /** Bob measures every qubit in a random basis; an intercept-resend Eve measures first in hers. Matching bases are kept, a quarter of them is disclosed to estimate the error rate, the rest is the key. */
-  static sift(alice: QuantumKey, eve = false): SiftedKey {
+  static sift(alice: QuantumKey, eve = false, seed?: Uint8Array): SiftedKey {
     const n = alice.bits.length
-    const bob = randomBits(n)
-    const eveBasis = eve ? randomBits(n) : []
-    const coin = randomBits(2 * n)
+    const draw = seed ? drbgOf(seed) : randomBytes
+    const bob = randomBits(n, draw)
+    const eveBasis = eve ? randomBits(n, draw) : []
+    const coin = randomBits(2 * n, draw)
     const received = alice.bits.map((bit, i) => {
       let b = bit
       let basis = alice.basis[i]
@@ -90,7 +94,7 @@ export class QuantumSecureSignalling {
 
   static sign(data: unknown, key: QuantumKey): SecureSignal {
     const hash = qpuFoldOf(JSON.stringify({ payload: data, key: key.hash }))
-    return { id: `sig-${hash}`, payload: data, dims: key.bits.length, hash, verified: false, timestamp: Date.now() }
+    return { id: `sig-${hash}`, payload: data, dims: key.bits.length, hash, verified: false }
   }
 
   // INTEGRITY, NOT A CRYPTOGRAPHIC SIGNATURE (Wave XIII): this recomputes the 64-bit FNV-1a fold and compares it, so it

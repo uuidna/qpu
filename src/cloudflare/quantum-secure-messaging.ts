@@ -5,7 +5,7 @@
  */
 
 import { QuantumSignaller } from '../mcp/secure-chat-rbac.js'
-import { randomUUID, sha256Hex } from '../core/crypt.js'
+import { sha256Hex } from '../core/crypt.js'
 
 // ============================================================================
 // Cloudflare Bindings Interface
@@ -107,11 +107,11 @@ export class CloudflareQuantumMessenger {
       ttl?: number
       priority?: 'low' | 'normal' | 'high' | 'critical'
       requiresReceipt?: boolean
+      /** caller-supplied timestamp (ms); the message is unstamped (0) when absent */
+      at?: number
     } = {}
   ): Promise<DirectionalQuantumMessage | null> {
-    const now = Date.now()
     if (recipients.length === 0) return null
-    const messageId = `msg_${randomUUID()}`
     const senderKeyId = this.keyIdOf(sender)
     const senderKey = this.quantumSignaller.getKey(senderKeyId)!
     const envelopes = Object.fromEntries(recipients.map((r) => {
@@ -120,11 +120,13 @@ export class CloudflareQuantumMessenger {
       return [r, { id: s.id, senderKeyId, recipientKeyId, ciphertext: this.uint8ToBase64(s.signal), nonce: this.uint8ToBase64(s.nonce), signature: this.uint8ToBase64(s.signature) }]
     }))
     const first = envelopes[recipients[0]!]!
+    // the id is a hash of the sealed envelope, which carries this send's fresh nonce: unique per send, reproducible from the record
+    const messageId = `msg_${sha256Hex(`${sender}|${direction}|${recipients.join(',')}|${first.signature}`)}`
 
     // Create directional message
     const message: DirectionalQuantumMessage = {
       id: messageId,
-      timestamp: now,
+      timestamp: metadata.at ?? 0,
       sender,
       direction,
       recipients,
@@ -190,7 +192,7 @@ export class CloudflareQuantumMessenger {
       const recipientKey = `forward:recipient:${recipient}:${message.id}`
       await this.bindings.QUANTUM_MESSAGES.put(
         recipientKey,
-        JSON.stringify({ messageId: message.id, deliveredAt: Date.now() }),
+        JSON.stringify({ messageId: message.id }),
         { expirationTtl: message.metadata.ttl }
       )
     }
@@ -247,8 +249,7 @@ export class CloudflareQuantumMessenger {
     const key = `broadcast:${message.id}`
     const broadcastPayload = {
       ...message,
-      sentTo: message.recipients,
-      timestamp: Date.now()
+      sentTo: message.recipients
     }
 
     await this.bindings.QUANTUM_MESSAGES.put(
@@ -373,7 +374,6 @@ export class CloudflareQuantumMessenger {
       JSON.stringify({
         messageId,
         recipient,
-        receivedAt: Date.now(),
         signature
       }),
       { expirationTtl: 30 * 24 * 60 * 60 } // 30 days
@@ -486,8 +486,7 @@ export class QuantumRouter {
       `route:${message.id}`,
       JSON.stringify({
         direction: message.direction,
-        recipients: message.recipients,
-        timestamp: Date.now()
+        recipients: message.recipients
       })
     )
 
@@ -529,7 +528,6 @@ export class QuantumRouter {
       JSON.stringify({
         direction,
         recipients,
-        propagatedAt: Date.now(),
         status: 'in-progress'
       })
     )

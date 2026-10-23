@@ -52,6 +52,7 @@ export class HologramStreams {
   private heads: Map<string, string>
   private lengths: Map<string, number>
 
+  /** the signing seeds are secret keys: the default draws 32 bytes from the CSPRNG. A reading passes a fixed seed instead. */
   constructor(scales: readonly string[], seed: Bytes = randomBytes(32)) {
     this.scales = scales
     this.seeds = new Map(scales.map((s) => [s, hkdf('sha256', seed, utf8('qpu-hologram'), s, 32)]))

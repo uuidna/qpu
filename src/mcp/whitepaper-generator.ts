@@ -38,7 +38,7 @@ export interface WhitePaper {
 
   metadata: {
     version: string
-    date: string
+    date?: string
     audience: "technical" | "business" | "mixed"
     pages: number
     status: "draft" | "published"
@@ -87,7 +87,6 @@ export class WhitePaperGenerator {
 
       metadata: {
         version: "1.0.0",
-        date: new Date().toISOString(),
         audience: "technical",
         pages: 25,
         status: "published"
@@ -134,7 +133,6 @@ export class WhitePaperGenerator {
 
       metadata: {
         version: "1.0.0",
-        date: new Date().toISOString(),
         audience: "technical",
         pages: 40,
         status: "published"

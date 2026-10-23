@@ -19,12 +19,6 @@ import { cloudflareRaidAdaptersOf, PAYLOAD_WEBSITE_CLONE } from '../../deploymen
 import { catalogPriceRelationOf } from './price-relation.js'
 import { modeAccessOf } from './access-mode.js'
 
-const timed = <T>(fn: () => T): { value: T; ms: number } => {
-  const t0 = performance.now()
-  const value = fn()
-  return { value, ms: Math.round((performance.now() - t0) * 1000) / 1000 }
-}
-
 const subrequestsOf = (): { budget: number; putPopulated: number; getPopulated: number; getEmpty: number } => {
   try {
     const doc = JSON.parse(readFileSync(join(process.cwd(), 'storage-subrequests.json'), 'utf8')) as {
@@ -59,10 +53,8 @@ export type RaidClaimRow = {
  * Does not invent 10×/100× — reports the measured ratio, and refuses "magnitudes" unless ratio ≥ mintOf(n).
  */
 export const raidCompareOf = () => {
-  const hybridTimed = timed(() => qpuHybridOf())
-  const raidTimed = timed(() => qpuRaidOf())
-  const hybrid = hybridTimed.value
-  const raid = raidTimed.value
+  const hybrid = qpuHybridOf()
+  const raid = qpuRaidOf()
   const lattice = qpuLatticeNamesOf()
   const adapters = cloudflareRaidAdaptersOf({ db: 'qpu-raid', storage: 'r2' })
   const ops = subrequestsOf()
@@ -245,7 +237,6 @@ export const raidCompareOf = () => {
       r2Speed: r2.speed,
       hybridSpeed: raidSpeed,
       holds: hybrid.holds,
-      ms: hybridTimed.ms,
     },
     raid: {
       level: raid.level,
@@ -254,7 +245,6 @@ export const raidCompareOf = () => {
       cheapest: raid.cheapest,
       faces: raid.faces,
       holds: raid.holds,
-      ms: raidTimed.ms,
     },
     ops,
     price: { slug: 'qpu-raid', holds: price.holds, goal: price.goal },

@@ -15,12 +15,6 @@ const PROJECTS: [string, (f: string) => boolean][] = [
 const run = (cmd: string, args: string[]): Promise<{ ok: boolean; out: string }> =>
   new Promise((resolve) => execFile(cmd, args, { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 }, (e, stdout, stderr) => resolve({ ok: !e, out: `${stdout}${stderr}` })))
 
-const timed = async <T>(start: () => Promise<T>): Promise<{ value: T; seconds: number }> => {
-  const t = performance.now()
-  const value = await start()
-  return { value, seconds: Math.round((performance.now() - t) / 100) / 10 }
-}
-
 const pool = async <T, R>(items: T[], n: number, fn: (x: T) => Promise<R>): Promise<R[]> => {
   const out: R[] = []
   let i = 0
@@ -113,22 +107,21 @@ export const preCommit = async (): Promise<void> => {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'qpu-hook-'))
   // every dependency must be ported in full compatibility — checked on every commit, not only when package.json is staged
   const depFindings = await dependencyFindings()
-  const { value: findings, seconds } = await timed(async () => {
+  const findings = await (async () => {
     const perFile = await Promise.all(staged.map(async (f) => (await stagedFindings(f, tmp)).map((why) => `${f}: ${why}`)))
     const ts = staged.filter((f) => /\.tsx?$/.test(f))
     const typed = await Promise.all(PROJECTS.filter(([, owns]) => ts.some(owns)).map(([p]) => tscErrors(p)))
     return [...perFile.flat(), ...typed.flat().filter((l) => staged.includes(fileOfTscError(l))), ...depFindings]
-  })
+  })()
   fs.rmSync(tmp, { recursive: true, force: true })
   const bad = new Set(findings.map((f) => (f.includes('): error') ? fileOfTscError(f) : f.slice(0, f.indexOf(': ')))))
   const passed = staged.length - bad.size
-  console.log(`pre-commit: ${staged.length} staged, ${passed} clean, ${findings.length} findings (${seconds}s)`)
+  console.log(`pre-commit: ${staged.length} staged, ${passed} clean, ${findings.length} findings`)
   findingsOut(findings)
   const X = await bridges
   if (X) {
     show(X.testCoverageToQuality!(passed, staged.length))
     show(X.observabilityToUI!(findings.length, staged.length))
-    show(X.deploymentToObs!(seconds, 0))
   } else console.log('  cross formulas need dist/ — npm run build')
   // a port that did not succeed BLOCKS the commit — the rest of the pre-commit stays report-only
   if (depFindings.length) {
@@ -174,11 +167,11 @@ export const prePush = async (): Promise<void> => {
   const bridges = bridgesOf()
   const scripts = listed('scripts/*.mjs', 'scripts/*.js', 'tests/*.mjs')
   const [typed, syntax] = await Promise.all([
-    timed(() => Promise.all(PROJECTS.map(([p]) => tscErrors(p)))),
-    timed(async () => (await pool(scripts, 4, async (f) => {
+    Promise.all(PROJECTS.map(([p]) => tscErrors(p))).then((value) => ({ value })),
+    (async () => ({ value: (await pool(scripts, 4, async (f) => {
       const err = await syntaxError(path.join(ROOT, f))
       return err && `${f}: ${err}`
-    })).filter((x): x is string => Boolean(x))),
+    })).filter((x): x is string => Boolean(x)) }))(),
   ])
   const stale = distStale()
   type Gate = { ok: boolean; operationCount: number; unresolved: string[]; proved: boolean; error?: string }
@@ -199,13 +192,12 @@ export const prePush = async (): Promise<void> => {
   ]
   const passed = checks.filter(([, ok]) => ok).length
   const unresolved = gate?.unresolved.length ?? 0
-  console.log(`pre-push: ${passed}/${checks.length} checks clean (typecheck ${typed.seconds}s, scripts ${syntax.seconds}s)`)
+  console.log(`pre-push: ${passed}/${checks.length} checks clean`)
   for (const [name, ok] of checks) console.log(`  ${ok ? '✓' : '✗'} ${name}`)
   if (gate) console.log(`  gate: ${gate.operationCount} operations, ${unresolved} unresolved, proved ${gate.proved}${gate.error ? `, ${gate.error}` : ''}`)
   findingsOut([...mainErrors, ...appErrors, ...syntax.value])
   const X = await bridges
   if (!X) return console.log('  cross formulas need dist/ — npm run build')
-  show(X.deploymentToObs!(typed.seconds, syntax.seconds))
   show(X.testCoverageToQuality!(passed, checks.length))
   show(X.observabilityToUI!(mainErrors.length + appErrors.length + syntax.value.length + unresolved, scripts.length + (gate?.operationCount ?? 0) + PROJECTS.length))
   show(X.quantumToEnterprise!((gate?.operationCount ?? 0) - unresolved + (gate?.proved ? 1 : 0)))

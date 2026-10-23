@@ -99,31 +99,14 @@ export class HeatFormulas {
     return heatCross('heat-landauer', 'physics', 'E ≥ bits · k_B · T · ln 2 (10⁻³² J, T in mK)', Math.floor(bits * BOLTZMANN * millikelvin * Math.LN2), nat(bits, millikelvin), 'landauer', [bits, millikelvin], { proof: 'Landauer 1961; k_B from index.lean def boltzmann' })
   }
 
-  /** SLOW IS A WRAP: an address that answers slowly wraps a computation instead of reaching a value. One job per formula:
-   *  the j-th formula of the f-th flow family is timed on its first faces inputs and in every rotation of the rosetta
-   *  (merkaba.develop feeds it its neighbours' values, the route that once fed it planck), each run twice and the faster
-   *  counted, so a warm-up is not a slow address. Value its slowest run in ms; the statement: its slowest
-   *  run is at most faces ms, on a clock that advances during work — false when hot or when the clock stood still (a Worker).
+  /** SLOW IS A WRAP: an address that answers slowly wraps a computation instead of reaching a value. A speed claim is not a
+   *  theorem, and no clock is read here: the statement "slow" is never established, so it is false with its reason stated.
    *  `next` is the following formula's [f, j], so `--all` walks every formula of the ring. */
   static async slow(f: number, j: number): Promise<CrossFormula> {
-    const ring = flowFamiliesOf(), faces = qpuFacesOf().faces, family = ring[f], formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
+    const ring = flowFamiliesOf(), family = ring[f], formula = family ? qpuHexFamiliesOf().get(family)?.[j] : undefined
     const after = family && j + 1 < (qpuHexFamiliesOf().get(family) ?? []).length ? [f, j + 1] : f + 1 < ring.length ? [f + 1, 0] : undefined
     if (!formula) return heatCross('heat-slow', 'physics', 'slow(f, j): a formula is registered at (f, j)', 0, false, 'slow', [f, j], { proof: 'the registry', ...(after ? { next: after } : {}) })
-    const { MerkabaFormulas } = await import('../merkaba/index.js')
-    let worst = { ms: 0, input: '' }, timed = 0
-    const once = async (run: () => unknown) => { const t = performance.now(); try { await run() } catch { /* an input it does not take */ } return performance.now() - t }
-    const time = async (input: string, run: () => unknown) => { const ms = Math.min(await once(run), await once(run)); timed++; if (ms > worst.ms) worst = { ms, input } }
-    const start = performance.now()
-    for (let i = 0; i < faces; i++) await time(`(${Array(formula.arity).fill(i).join(',')})`, () => formula.run(Array.from({ length: formula.arity }, () => BigInt(i))))
-    // Already hot on the faces inputs: the statement fails. Do not walk 2·|ring| develop rotations (each O(|ring|)) —
-    // that product hangs the suite once the registry has hundreds of families.
-    if (worst.ms <= faces) {
-      const rotations = Math.min(2 * ring.length, 2 * faces)
-      for (let s = 0; s < rotations; s++) await time(`rotation ${s}`, () => MerkabaFormulas.develop(f, j, s))
-    }
-    const frozen = performance.now() - start === 0
-    const ms = Math.round(worst.ms)
-    return heatCross('heat-slow', 'physics', `slow(${family}.${formula.name}) = its slowest steady-state run in ms ≤ faces ms, timed by a clock that advances`, ms, nat(f, j) && !frozen && ms <= faces, 'slow', [f, j], { proof: 'device readings: performance.now() around each run', timed, input: worst.input, hot: ms > faces, clockAdvanced: !frozen, ...(after ? { next: after } : {}) })
+    return heatCross('heat-slow', 'physics', `slow(${family}.${formula.name}) = a speed claim: not a theorem, no clock is read, so not established`, 0, false, 'slow', [f, j], { proof: 'no theorem: a wall-clock speed bound is not a proof', ...(after ? { next: after } : {}) })
   }
 
   /** One job of a split: 2ᵏ mod p by squaring — independent of every other prime, so any node or agent computes it at

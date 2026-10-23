@@ -95,11 +95,7 @@ export async function executeOptimized(
   op: (x: number) => number,
   plan: OptimizationPlan = defaultOptimizationPlan
 ): Promise<number[]> {
-  const startTime = performance.now()
   let results: number[] = []
-
-  // Profile the execution
-  const sampleStartTime = startTime
 
   // Step 1: Check if JIT should compile
   const jitFn = plan.useJIT ? jitCompiler.registerFormula(formulaId, 'x', op) : op
@@ -131,17 +127,7 @@ export async function executeOptimized(
     results = inputs.map(inp => jitFn(inp[0]))
   }
 
-  // Profile: Record execution
-  const sampleEndTime = performance.now()
-  latencyProfiler.recordSample({
-    formulaId,
-    startTime: sampleStartTime,
-    duration: sampleEndTime - sampleStartTime,
-    inputSize: inputs.length,
-    outputSize: results.length,
-    gcPauses: 0
-  })
-
+  // No timing sample is recorded: a duration is a clock reading, and the profile reports none from this path.
   return results
 }
 

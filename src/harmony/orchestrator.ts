@@ -45,7 +45,6 @@ export class HarmonyOrchestrator {
     throughput: 0,
     latency: 0,
     errorRate: 0,
-    timestamp: Date.now()
   }
 
   constructor() {
@@ -360,12 +359,10 @@ export class HarmonyOrchestrator {
   }
 
   private async executeNode(node: FormulaNode, data: unknown): Promise<unknown> {
-    const start = Date.now()
     try {
-      // Simulate node execution with latency
+      // Simulate node execution: avgLatency is not measured here (a clock reading is not a result)
       await new Promise(r => setTimeout(r, 0))
       node.metrics.callCount++
-      node.metrics.avgLatency = (node.metrics.avgLatency * (node.metrics.callCount - 1) + (Date.now() - start)) / node.metrics.callCount
       return data // Pass through for now
     } catch (e) {
       node.metrics.errorRate = Math.min(1, node.metrics.errorRate + 0.01)

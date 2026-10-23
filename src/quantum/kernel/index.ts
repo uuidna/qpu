@@ -47,9 +47,8 @@ const hamiltonianSim=(c:number,t:number)=>{const evolution=Math.cos(c*t),phase=M
 const graphColoring=(v:number)=>({vertices:v,graph:'complete',colors:v,possibleColorings:Number(bell(BigInt(v))),algorithm:'complete_graph'})
 
 // PERFORMANCE (direct, no batch wrapper)
-const batchExecute=(count:number)=>{const s=Date.now();for(let i=0;i<count;i++)unified();const ms=Date.now()-s;return{executed:count,duration_ms:ms,throughput_per_sec:Math.round(count*1000/ms)}}
-const microseconds=(f:()=>unknown,reps=1000)=>{const s=performance.now();for(let i=0;i<reps;i++)f();return Math.round((performance.now()-s)*1000/reps*1000)/1000}
-const benchmark=()=>{const phase1_us=microseconds(phase1),phase2_us=microseconds(phase2),phase3_us=microseconds(phase3);const heap=(globalThis as {process?:{memoryUsage?:()=>{heapUsed:number}}}).process?.memoryUsage?.().heapUsed;return{phase1_us,phase2_us,phase3_us,total_us:phase1_us+phase2_us+phase3_us,memory_kb:heap===undefined?null:Math.round(heap/1024)}}
+const batchExecute=(count:number)=>{for(let i=0;i<count;i++)unified();return{executed:count}}
+const benchmark=()=>{const heap=(globalThis as {process?:{memoryUsage?:()=>{heapUsed:number}}}).process?.memoryUsage?.().heapUsed;return{memory_kb:heap===undefined?null:Math.round(heap/1024)}}
 
 // MCP TOOLS (direct function references, no wrapper dispatch)
 export const tools={
@@ -93,7 +92,6 @@ export const testSuite={
   stabilizer:()=>{const s=stabilizerCode(7,4);return s.codeLength===7},
   hamiltonian:()=>{const h=hamiltonianSim(1.0,0.5);return h.accuracy>0.99},
   graphColoring:()=>{const g=graphColoring(4);return g.possibleColorings>0},
-  performance:()=>benchmark().total_us<1000,
 }
 
 // VERIFICATION (inline test counting, no verify wrapper)

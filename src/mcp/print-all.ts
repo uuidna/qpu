@@ -188,7 +188,6 @@ export const printAllOf = async (): Promise<{
   const matrixPath = path.join(ROOT, 'docs', 'chips', 'print-matrix.json')
   const receipt = {
     kind: 'print-matrix',
-    when: new Date().toISOString().slice(0, 10),
     printables: printables.map((p) => ({ id: p.id, kind: p.kind, path: p.path, bytes: p.bytes, pages: p.pages, holds: p.holds })),
     printers: printerNames,
     matrix,

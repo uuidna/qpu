@@ -21,7 +21,8 @@ const DAY = 86400 // SI: seconds in a day, not a lattice quantity
 const SOURCE = /\.(ts|tsx|mjs|lean)$/
 const FIX = /\b(fix|fixes|fixed|repair|broke|broken|revert|restore|hotfix)\b/i
 const git = (args) => execSync(`git ${args}`, { encoding: 'utf8', maxBuffer: 1 << faces * coins })
-const now = Math.floor(Date.now() / tenOf(3))
+// the age reference is HEAD's commit time, not the clock: the same history always gives the same ages
+const now = Number(git('log -1 --format=%ct').trim())
 
 // one pass over history, oldest first: each commit's time and subject, then the files it touched; a rename carries the
 // file's history to its new path, so moving a file does not make it young
@@ -139,7 +140,6 @@ if (process.argv.includes('--report')) {
 const top = heat.rows.slice(0, L.hexbit * L.tenOf(L.seed))
 const doc = {
   kind: 'heat-receipt',
-  when: new Date().toISOString().slice(0, tenOf(1)),
   window: WINDOW,
   threshold: heat.threshold,
   files: heat.files,

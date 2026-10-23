@@ -173,7 +173,7 @@ export class RBACEngine {
 
 export interface QuantumSignal {
   id: string
-  timestamp: number
+  timestamp?: number
   sender: string
   path: string[]
   signal: Uint8Array // Quantum-encoded
@@ -252,7 +252,6 @@ export class QuantumSignaller {
 
     const signal: QuantumSignal = {
       id,
-      timestamp: Date.now(),
       sender: senderKeyId,
       path: [senderKeyId, recipientKeyId],
       signal: encrypted,
@@ -303,7 +302,7 @@ export class QuantumSignaller {
 
 export interface SecureMessage {
   id: string
-  timestamp: number
+  timestamp?: number
   sender: string
   recipients: string[]
   classification: PayloadClassification
@@ -326,7 +325,7 @@ export interface PayloadManifest {
 
 export interface PayloadAccessLog {
   userId: string
-  timestamp: number
+  timestamp?: number
   action: 'read' | 'write' | 'delete'
   success: boolean
 }
@@ -413,8 +412,8 @@ export class SecureChat extends EventEmitter {
     this.chain = sha256Hex(concat(utf8(this.chain), quantumSignal.signature))
 
     const message: SecureMessage = {
-      id: `msg_${randomUUID()}`,
-      timestamp: Date.now(),
+      // the id is the chain value after this message: unique per message and reproducible from the history
+      id: `msg_${this.chain}`,
       sender: context.userId,
       recipients,
       classification,
@@ -443,7 +442,6 @@ export class SecureChat extends EventEmitter {
       accessLog: [
         {
           userId: context.userId,
-          timestamp: Date.now(),
           action: 'write',
           success: true
         }
@@ -480,7 +478,6 @@ export class SecureChat extends EventEmitter {
     if (payload) {
       payload.accessLog.push({
         userId: context.userId,
-        timestamp: Date.now(),
         action: 'read',
         success: true
       })

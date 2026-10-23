@@ -2,11 +2,9 @@
  * Operate the public surface once — print friction, exit non-zero on hard fails.
  * node --import tsx scripts/use-surface.mts
  */
-import { performance } from 'node:perf_hooks'
 import * as node from 'node:crypto'
 import '../src/mcp/families.js'
 
-const t0 = performance.now()
 const log = (label: string, obj: unknown) => {
   const s = typeof obj === 'string' ? obj : JSON.stringify(obj, (_, v) => (typeof v === 'bigint' ? v.toString() : v))
   console.log(`\n== ${label} ==\n${s.length > 1400 ? `${s.slice(0, 1400)}…` : s}`)
@@ -20,7 +18,7 @@ const main = async () => {
   const { priceRelationOf } = await import('../src/payload/plugins/price-relation.ts')
   const { modeAccessOf } = await import('../src/payload/plugins/access-mode.ts')
   const { qpuMcpToolsListOf } = await import('../src/quantum/processing/unit/index.ts')
-  const { scrypt, pbkdf2Sha512, checkPrime, randomInt, hexOf, ed25519Sign, ed25519Verify, ed25519PublicKey, randomBytes } =
+  const { scrypt, pbkdf2Sha512, checkPrime, hexOf, ed25519Sign, ed25519Verify, ed25519PublicKey } =
     await import('../src/core/crypt.ts')
 
   const gaps: string[] = []
@@ -59,11 +57,8 @@ const main = async () => {
     gaps.push('use:true fused.connector false — families/fuse not registered')
   }
 
-  const courtT0 = performance.now()
   const court = gateCourtOf()
-  const courtMs = Math.round(performance.now() - courtT0)
   log('gateCourtOf', {
-    ms: courtMs,
     held: court.held,
     of: court.of,
     stable: court.stable,
@@ -77,7 +72,6 @@ const main = async () => {
       hex: c.trial.hex,
       fidelity: c.fidelity.value,
       standing: (c as { standing?: { value: number } }).standing?.value,
-      ms: (c as { ms?: number }).ms,
     })),
   })
   if (!court.stable) gaps.push('court not stable (fidelity re-trial)')
@@ -113,10 +107,8 @@ const main = async () => {
     legs: price.legs.map((l) => `${l.address}=${l.value}${l.holds ? '✓' : '✗'}`),
   })
 
-  const sealT0 = performance.now()
   const seal = (await connectorAnswerOf({ pass: 0 })) as Record<string, unknown>
   log('seal pass 0', {
-    ms: Math.round(performance.now() - sealT0),
     kind: seal.kind,
     name: seal.name,
     held: seal.held,
@@ -186,11 +178,12 @@ const main = async () => {
   } catch (e) {
     gaps.push(`pbkdf2Sha512 threw: ${(e as Error).message}`)
   }
-  const seed = randomBytes(32)
+  // a fixed fixture seed: the check is the sign/verify round trip, not the seed's randomness
+  const seed = Uint8Array.from({ length: 32 }, (_, i) => i + 1)
   const pub = ed25519PublicKey(seed)
   const sig = ed25519Sign(seed, new Uint8Array([1, 2, 3]))
   if (!ed25519Verify(pub, new Uint8Array([1, 2, 3]), sig)) gaps.push('ed25519 verify fail')
-  log('primes/randomInt', { p17: checkPrime(17), r: randomInt(1, 10) })
+  log('primes', { p17: checkPrime(17) })
 
   // empty gate trial experience
   const empty = gateCourtTrialOf({
@@ -201,7 +194,6 @@ const main = async () => {
 
   console.log('\n== GAPS ==')
   for (const g of gaps) console.log('-', g)
-  console.log('ELAPSED_MS', Math.round(performance.now() - t0))
   console.log('GAP_COUNT', gaps.length)
   if (gaps.length) process.exitCode = 1
 }

@@ -206,7 +206,6 @@ function generatePageHTML(combination, index, metadata) {
 function generateRoutingIndex() {
   const routingData = {
     version: '1.0',
-    timestamp: new Date().toISOString(),
     systemInfo: {
       totalFormulas: Object.values(domains).reduce((sum, d) => sum + d.formulas.length, 0),
       totalDomains: Object.keys(domains).length,
