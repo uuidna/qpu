@@ -354,6 +354,49 @@ export const qpuCircuitLiveOf = onceOf(() => {
       dense.holds &&
       monogamy.holds &&
       product === false}
+  // THE X-BASIS READING. The Hadamard on each of the three qubits (hGateOf, unnormalised, so the 2^(-3/2) factor is
+  // dropped and every value is an exact integer) applied to the two branches |000> and |111>. A branch sends |x> to
+  // sum_s (-1)^(x·s) |s>, so its sign on outcome s is +1 for |000> and (-1)^parity(s) for |111>. The GHZ amplitude is
+  // the sum of the two signs (a superposition adds); the coin weight is the sum of their squares (a mixture adds).
+  // Labelled apart on purpose: a weight is never an amplitude. This block does not feed holds, which stays the
+  // self-consistency of the document; xbasis.holds is its own check, pinned by xbasis.test.ts.
+  const hadamardAll = (amps: bigint[]): bigint[] => hGateOf(hGateOf(hGateOf(amps, 0), seed), coins)
+  const sign000 = hadamardAll(prepare)
+  const sign111 = hadamardAll(xGateOf(xGateOf(xGateOf(prepare, 0), seed), coins))
+  const xsigns = sign000.map((a, s) => ({ s, a, b: sign111[s]! }))
+  const xparity = (s: number): number => [0, seed, coins].map((q) => Number((BigInt(s) / BigInt(bitOf(q))) % 2n)).reduce((acc, bit) => xorOf(acc, bit), 0)
+  const xisSign = (v: bigint): boolean => v === BigInt(seed) || v === -BigInt(seed)
+  const xghzOutcomes = xsigns.map(({ s, a, b }) => ({
+    s,
+    bits: s.toString(coins).padStart(n, '0'),
+    parity: xparity(s),
+    sign000: Number(a),
+    sign111: Number(b),
+    amplitude: Number(a + b)}))
+  const xcoinOutcomes = xsigns.map(({ s, a, b }) => ({
+    s,
+    bits: s.toString(coins).padStart(n, '0'),
+    parity: xparity(s),
+    sign000: Number(a),
+    sign111: Number(b),
+    weight: Number(a * a + b * b)}))
+  const xghzHolds = xghzOutcomes.length === mintOf(n) && xghzOutcomes.every((row) => (row.amplitude === 0) === (row.parity === seed) && xisSign(BigInt(row.sign000)) && xisSign(BigInt(row.sign111)))
+  const xcoinHolds = xcoinOutcomes.length === mintOf(n) && xcoinOutcomes.every((row) => row.weight === coins && row.weight > 0)
+  const xbasis = {
+    kind: 'xbasis' as const,
+    basis: 'x' as const,
+    scale: 'unnormalised: the 2^(-3/2) factor of the Hadamard is dropped' as const,
+    ghz: {
+      kind: 'amplitude' as const,
+      state: '(|000> + |111>) / sqrt(2)' as const,
+      outcomes: xghzOutcomes,
+      holds: xghzHolds},
+    coin: {
+      kind: 'weight' as const,
+      state: 'mixture: 1/2 |000><000| + 1/2 |111><111|' as const,
+      outcomes: xcoinOutcomes,
+      holds: xcoinHolds},
+    holds: dim === mintOf(n) && xghzHolds && xcoinHolds}
   const electronics = qpuElectronicsOf()
   const follow = qpuFollowOf()
   const efficiency = qpuCoilEfficiencyOf()
@@ -566,6 +609,7 @@ export const qpuCircuitLiveOf = onceOf(() => {
     entangle,
     interfere,
     ghz,
+    xbasis,
     noclone,
     teleport,
     kickback,
