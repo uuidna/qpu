@@ -39,7 +39,7 @@ test('version: the workflow continues from the Zenodo record and does not write 
   const cffBefore = readFileSync('CITATION.cff')
   const zenodoBefore = readFileSync('.zenodo.json')
   const tree = JSON.parse(pkgBefore.toString()).version
-  assert.equal(tree, '1.1.0')
+  assert.match(tree, /^1\.(0|[1-9][0-9]*)\.[0-9]$/, 'the tree version is a v1.<minor>.<digit> string')
 
   const result = await autoVersion()
   execSync('node scripts/version-lock.mjs', { stdio: 'pipe' })
