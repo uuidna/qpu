@@ -360,11 +360,11 @@ export const qpuCircuitLiveOf = onceOf(() => {
   // the sum of the two signs (a superposition adds); the coin weight is the sum of their squares (a mixture adds).
   // Labelled apart on purpose: a weight is never an amplitude. This block does not feed holds, which stays the
   // self-consistency of the document; xbasis.holds is its own check, pinned by xbasis.test.ts.
-  const hadamardAll = (amps: bigint[]): bigint[] => hGateOf(hGateOf(hGateOf(amps, n - n), seed), coins)
+  const hadamardAll = (amps: bigint[]): bigint[] => hGateOf(hGateOf(hGateOf(amps, 0), seed), coins)
   const sign000 = hadamardAll(prepare)
-  const sign111 = hadamardAll(xGateOf(xGateOf(xGateOf(prepare, n - n), seed), coins))
+  const sign111 = hadamardAll(xGateOf(xGateOf(xGateOf(prepare, 0), seed), coins))
   const xsigns = sign000.map((a, s) => ({ s, a, b: sign111[s]! }))
-  const xparity = (s: number): number => [n - n, seed, coins].map((q) => Number((BigInt(s) / BigInt(bitOf(q))) % 2n)).reduce((acc, bit) => xorOf(acc, bit), n - n)
+  const xparity = (s: number): number => [0, seed, coins].map((q) => Number((BigInt(s) / BigInt(bitOf(q))) % 2n)).reduce((acc, bit) => xorOf(acc, bit), 0)
   const xisSign = (v: bigint): boolean => v === BigInt(seed) || v === -BigInt(seed)
   const xghzOutcomes = xsigns.map(({ s, a, b }) => ({
     s,
@@ -380,8 +380,8 @@ export const qpuCircuitLiveOf = onceOf(() => {
     sign000: Number(a),
     sign111: Number(b),
     weight: Number(a * a + b * b)}))
-  const xghzHolds = xghzOutcomes.length === mintOf(n) && xghzOutcomes.every((row) => (row.amplitude === n - n) === (row.parity === seed) && xisSign(BigInt(row.sign000)) && xisSign(BigInt(row.sign111)))
-  const xcoinHolds = xcoinOutcomes.length === mintOf(n) && xcoinOutcomes.every((row) => row.weight === coins && row.weight > n - n)
+  const xghzHolds = xghzOutcomes.length === mintOf(n) && xghzOutcomes.every((row) => (row.amplitude === 0) === (row.parity === seed) && xisSign(BigInt(row.sign000)) && xisSign(BigInt(row.sign111)))
+  const xcoinHolds = xcoinOutcomes.length === mintOf(n) && xcoinOutcomes.every((row) => row.weight === coins && row.weight > 0)
   const xbasis = {
     kind: 'xbasis' as const,
     basis: 'x' as const,
