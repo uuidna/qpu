@@ -41,8 +41,8 @@ test('heat: temperature, coherence, cooling and the Landauer floor — exact, cr
 
 test('heat.slow is never established: a speed claim is not a theorem and reads no clock', async () => {
   qpuHexRegisterOf('zzslow', 'spin', () => 1)
-  const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'), 0)) as unknown as { value: number; holds: boolean; statement: string }
+  const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'), 0)) as unknown as { value: number; holds: boolean; formula: string }
   assert.equal(r.holds, false, 'the statement is not established')
   assert.equal(r.value, 0)
-  assert.match(r.statement, /not a theorem/)
+  assert.match(r.formula, /not a theorem/)
 })
