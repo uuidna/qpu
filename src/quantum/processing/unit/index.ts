@@ -2610,6 +2610,8 @@ export const qpuGlossaryOf = onceOf(() => ({
   read: 'how each argument was taken (digits, number, numeric, absent, default) and whether exactly',
   beyond: 'the order of the base exists and does not divide four, so a two-qubit register cannot resolve it',
   device: 'exact-amplitudes when every amplitude held is an exact integer; unmeasured otherwise',
+  amplitude: 'the exact integer X-basis value of a superposition: the sum of the branch signs, so zero means the branches cancel; never a probability',
+  weight: 'the X-basis value of a mixture: the sum of the squared branch signs; a weight, never an amplitude, and never a probability',
   QPU: 'quantum processing unit — this unit. The VideoCore QPU (Quad Processing Unit, Broadcom; QPULib by Matthew Naylor, MIT, 2016) is prior use of the acronym, a classical SIMD vector core, unrelated and credited',
   seat: 'reference, vector or device: the router computes on the reference (the exact integer state-vector computation) unless the runtime exposes a vector binding; the device seat is empty, no device is dispatched, and a device that disagrees with the reference is a driver bug, never a physics claim',
 }))
