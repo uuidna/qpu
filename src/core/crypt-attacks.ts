@@ -1,4 +1,4 @@
-import { aeadOpen, aeadSeal, concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, randomBytes, randomUUID, sha512, utf8, x25519PublicKey, x25519Shared } from './crypt.js'
+import { aeadOpen, aeadSeal, concat, drbgOf, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, sha256, sha512, utf8, uuidOfBytes, x25519PublicKey, x25519Shared } from './crypt.js'
 import { QuantumSecureSignalling } from '../families/signal/index.js'
 import { BB84_RAW, SecureChat } from '../mcp/secure-chat-rbac.js'
 import { HologramStreams, holoEntryHolds, holoStreamHolds } from '../families/holo/index.js'
@@ -28,9 +28,13 @@ const attack = (name: string, target: string, trials: number, breached: (i: numb
   return { name, target, trials, breaches, resisted: breaches === 0, detail }
 }
 
+/** The attack inputs: a fixed seed, so every attack draws the same bytes on every run and in any order. */
+const FIXTURE = sha256(utf8('qpu crypt-attacks fixture'))
+const fixture = (n: number): Uint8Array => drbgOf(FIXTURE)(n)
+
 /** A signature that verifies under a small-order public key for any message: S = s, R = sB. */
 const smallOrderForgery = (A: Uint8Array, message: Uint8Array): boolean => {
-  const seed = randomBytes(32)
+  const seed = fixture(32)
   const h = sha512(seed).slice(0, 32)
   h[0]! &= 248
   h[31]! &= 127
@@ -50,7 +54,7 @@ const chatOf = () => {
 
 export const attacksOf = (): Attack[] => {
   const m = utf8('transfer 100 to bob')
-  const seed = randomBytes(32)
+  const seed = fixture(32)
   const pub = ed25519PublicKey(seed)
   const sig = ed25519Sign(seed, m)
   const { chat, tokens, signaller, key } = chatOf()
@@ -64,7 +68,7 @@ export const attacksOf = (): Attack[] => {
       return false
     }
   }
-  const key32 = randomBytes(32), nonce = randomBytes(12), aad = utf8('header')
+  const key32 = fixture(32), nonce = fixture(12), aad = utf8('header')
   const sealed = aeadSeal(key32, nonce, body, aad)
   const flip = (b: Uint8Array, at: number) => {
     const c = b.slice()
@@ -86,20 +90,20 @@ export const attacksOf = (): Attack[] => {
     attack('hologram root swap', 'hologram', 1, () => holoEntryHolds({ ...stream[2]!, root: foreign[1]!.root }, keys), 'fragment claims another whole'),
     attack('hologram prev rewrite', 'hologram', 1, () => holoEntryHolds({ ...stream[2]!, prev: stream[0]!.uuid }, keys), 'history rewritten'),
     attack('hologram signature forgery', 'hologram', 1, () => holoEntryHolds({ ...stream[3]!, signature: foreign[1]!.signature }, keys), 'signature lifted from another fragment'),
-    attack('ed25519 identity public key', 'ed25519', 16, () => smallOrderForgery(le(1n), randomBytes(32)), 'forge for any message under A = identity'),
-    attack('ed25519 order-2 public key', 'ed25519', 16, () => smallOrderForgery(le(P - 1n), randomBytes(32)), 'forge under A = (0, -1); succeeds whenever k is even'),
+    attack('ed25519 identity public key', 'ed25519', 16, () => smallOrderForgery(le(1n), fixture(32)), 'forge for any message under A = identity'),
+    attack('ed25519 order-2 public key', 'ed25519', 16, () => smallOrderForgery(le(P - 1n), fixture(32)), 'forge under A = (0, -1); succeeds whenever k is even'),
     attack('ed25519 malleability S + L', 'ed25519', 1, () => ed25519Verify(pub, m, concat(sig.subarray(0, 32), le(leBig(sig.subarray(32)) + L))), 'second valid signature from the first'),
     attack('ed25519 non-canonical R', 'ed25519', 1, () => ed25519Verify(pub, m, concat(le(P + 1n), sig.subarray(32))), 'R with y = p + 1'),
     attack('ed25519 bit-flip forgery', 'ed25519', 64, (i) => ed25519Verify(pub, m, flip(sig, i)), 'every bit position of the signature'),
     attack('ed25519 message substitution', 'ed25519', 1, () => ed25519Verify(pub, utf8('transfer 900 to eve'), sig), 'same signature, other message'),
-    attack('x25519 low-order points', 'x25519', LOW_ORDER_U.length, (i) => x25519Shared(randomBytes(32), LOW_ORDER_U[i]!) !== null, 'u in {0, 1, p-1, p, p+1} and the two order-8 points'),
-    attack('x25519 contributory', 'x25519', 4, () => equal(x25519Shared(randomBytes(32), x25519PublicKey(randomBytes(32)))!, new Uint8Array(32)), 'honest exchange yields zero'),
+    attack('x25519 low-order points', 'x25519', LOW_ORDER_U.length, (i) => x25519Shared(fixture(32), LOW_ORDER_U[i]!) !== null, 'u in {0, 1, p-1, p, p+1} and the two order-8 points'),
+    attack('x25519 contributory', 'x25519', 4, () => equal(x25519Shared(fixture(32), x25519PublicKey(fixture(32)))!, new Uint8Array(32)), 'honest exchange yields zero'),
     attack('aead ciphertext tamper', 'chacha20-poly1305', sealed.length, (i) => aeadOpen(key32, nonce, flip(sealed, i), aad) !== null, 'every byte of ciphertext and tag'),
     attack('aead header tamper', 'chacha20-poly1305', 1, () => aeadOpen(key32, nonce, sealed, utf8('Header')) !== null, 'associated data changed'),
     attack('aead truncation', 'chacha20-poly1305', 1, () => aeadOpen(key32, nonce, sealed.subarray(0, sealed.length - 1), aad) !== null, 'tag shortened'),
-    attack('aead wrong nonce', 'chacha20-poly1305', 1, () => aeadOpen(key32, randomBytes(12), sealed, aad) !== null, 'nonce replaced'),
+    attack('aead wrong nonce', 'chacha20-poly1305', 1, () => aeadOpen(key32, fixture(12), sealed, aad) !== null, 'nonce replaced'),
     attack('bb84 intercept-resend', 'bb84', 200, () => QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW), true).holds, `Eve measures every qubit; QBER must exceed the bound (raw ${BB84_RAW})`),
-    attack('chat impersonation', 'chat', 1, () => decrypts({ ...toBob, signature: ed25519Sign(randomBytes(32), concat(utf8(`${toBob.id}|${key('alice')}|${key('bob')}`), toBob.nonce, toBob.signal)) }, 'bob'), 'Eve re-signs a signal as Alice'),
+    attack('chat impersonation', 'chat', 1, () => decrypts({ ...toBob, signature: ed25519Sign(fixture(32), concat(utf8(`${toBob.id}|${key('alice')}|${key('bob')}`), toBob.nonce, toBob.signal)) }, 'bob'), 'Eve re-signs a signal as Alice'),
     attack('chat redirect', 'chat', 1, () => decrypts(toBob, 'carol'), "Bob's signal presented to Carol"),
     attack('chat envelope swap', 'chat', 1, () => chat.decryptMessageBody({ ...msg, signals: { ...msg.signals, carol: toBob } }, tokens.carol!) !== null, "Carol's envelope replaced by Bob's"),
     attack('chat outsider read', 'chat', 1, () => chat.decryptMessageBody(msg, tokens.eve!) !== null, 'Eve is not a recipient'),
@@ -108,9 +112,9 @@ export const attacksOf = (): Attack[] => {
       const again = chat.sendMessage(tokens.alice!, ['bob'], 'plan', body)!.signals.bob!
       return equal(again.signal.subarray(0, body.length), toBob.signal.subarray(0, body.length))
     }, 'same plaintext twice must not give the same keystream'),
-    attack('drbg repetition', 'drbg', 1, () => new Set(Array.from({ length: 4096 }, () => randomUUID())).size !== 4096, '4096 UUIDs'),
+    attack('drbg repetition', 'drbg', 1, () => { const draw = drbgOf(FIXTURE); return new Set(Array.from({ length: 4096 }, () => uuidOfBytes(draw(16)))).size !== 4096 }, 'the first 4096 UUIDs of the fixed stream'),
     attack('drbg monobit', 'drbg', 1, () => {
-      const bytes = randomBytes(1 << 17)
+      const bytes = fixture(1 << 17)
       let ones = 0
       for (const b of bytes) for (let x = b; x; x &= x - 1) ones++
       const n = bytes.length * 8
