@@ -5,8 +5,9 @@
  * this check passes.
  *
  * The constructed instance is a semiprime N = p·q with p and q each 500 bits, both at least 1.5·2^499 so that N
- * has 1000 bits, both found by a fixed deterministic search so the instance is reproducible. Primality of p and q is Miller–Rabin with
- * fixed bases: a strong probable-prime test, not a proof. The witness check on N = p·q is exact.
+ * has 1000 bits. It is a demonstration of the check, not a secret challenge: p and q come from fixed public starts
+ * in this file, so anyone can recompute them, and the served output returns them. The check is exact either way.
+ * Primality of p and q is Miller–Rabin with fixed bases: a strong probable-prime test, not a proof.
  */
 
 /** Modular exponentiation on BigInt. */
@@ -76,7 +77,8 @@ export const witnessOf = (n: bigint, p: bigint, q: bigint) => {
   }
 }
 
-/** The constructed 1000-bit instance: N = p·q with p and q each 500 bits, both primes from a fixed start. */
+/** The constructed 1000-bit demonstration instance: N = p·q with p and q each 500 bits, both primes from public fixed starts.
+ *  Not a secret: the factors are derivable from this source and are returned in the output. */
 export const constructedSemiprimeOf = () => {
   const p = nextPrimeOf((3n << 498n) + 0x5a17c0ffeen)
   const q = nextPrimeOf((3n << 498n) + 0x9e3779b97fn)
