@@ -102,8 +102,7 @@ export const QPU_DEPS: Record<string, Port> = {
   '@tailwindcss/typography': { domain: 'css', relates: ['tailwindcss'], lead: true },
   'tw-animate-css': { domain: 'css', relates: ['tailwindcss'], lead: true },
   postcss: { domain: 'css', relates: ['tailwindcss'], lead: true },
-  clsx: { domain: 'css', relates: ['cn', 'tailwind-merge'], lead: true },
-  cn: { domain: 'css', relates: ['clsx', 'tailwind-merge'], lead: true },
+  clsx: { domain: 'css', relates: ['tailwind-merge'], lead: true },
   'tailwind-merge': { domain: 'css', relates: ['clsx', 'tailwindcss'], lead: true },
   'class-variance-authority': { domain: 'css', relates: ['clsx', 'tailwind-merge'], lead: true },
   // cms — Payload and its core (content), a lead; the aura/css families generate qpu’s own colours
