@@ -414,11 +414,11 @@ const jsonOf = (body: unknown, status = found, extra: Record<string, string> = {
 
 /** Cite as Payload serves it: the unit's citation document, JSON-LD. */
 export const publicCiteOf = (): Response =>
-  new Response(JSON.stringify(qpuCiteOf()), { status: found, headers: { ...headers, 'content-type': 'application/ld+json; charset=utf-8', 'cache-control': 'public, no-cache' } })
+  new Response(JSON.stringify(qpuCiteOf()), { status: found, headers: { ...headers, 'content-type': 'application/ld+json; charset=utf-8', 'cache-control': 'public, max-age=60, stale-while-revalidate=60' } })
 
 /** The lattice stylesheet Payload serves at /api/qpu/css (public URL /qpu.css). */
 export const publicCssOf = (): Response =>
-  new Response(qpuCssOf().css, { status: found, headers: { ...headers, 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, no-cache' } })
+  new Response(qpuCssOf().css, { status: found, headers: { ...headers, 'content-type': 'text/css; charset=utf-8', 'cache-control': 'public, max-age=60, stale-while-revalidate=60' } })
 
 /**
  * Fused MCP over Streamable HTTP. tools/list is the measured connect bill (sealed + cybersecurity morph doors).
@@ -507,7 +507,7 @@ export const publicMcpOf = async (request: Request, env?: QpuEnv): Promise<Respo
     }
     return jsonOf(rpcErrorOf(body.id, rpcCodes.method, `Method not found: ${body.method}`, { methods: [...rpcMethods, ...MCP_EXTENSIONS.keys()] }))
   }
-  return new Response(JSON.stringify(qpuMcpOf()), { status: found, headers: { ...headers, 'content-type': 'application/ld+json; charset=utf-8', 'cache-control': 'public, no-cache' } })
+  return new Response(JSON.stringify(qpuMcpOf()), { status: found, headers: { ...headers, 'content-type': 'application/ld+json; charset=utf-8', 'cache-control': 'public, max-age=60, stale-while-revalidate=60' } })
 }
 
 /**
