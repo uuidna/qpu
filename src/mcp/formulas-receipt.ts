@@ -15,7 +15,7 @@ import '../families/path/index.js'
 import '../families/audit/index.js'
 import { qpuDataOf, qpuDataSourcesOf } from './qpu-fused.js'
 import { NpFormulas, certifyUnreachable, disjointUnion, findAssignment, findColoring, findHamCycle, generalizedPetersen, pigeonhole, reachCounts, verifyColoring, verifyHamCycle, verifySubsetSum } from '../families/np/index.js'
-import { QuantumSecureSignalling, SignalFormulas } from '../families/signal/index.js'
+import { QuantumSecureSignalling, SIGNAL_READING_SEED, SignalFormulas } from '../families/signal/index.js'
 import { BB84_RAW, SecureChat } from './secure-chat-rbac.js'
 
 export interface FormulaRow {
@@ -72,9 +72,9 @@ export const formulasReceiptOf = async (root = process.cwd()) => {
   const attacks = timed(() => attacksOf())
   const breaches = attacks.value.filter((a) => !a.resisted).length
   const trials = attacks.value.reduce((s, a) => s + a.trials, 0)
-  const bb84 = QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW))
-  const eve = QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW), true)
-  const hologram = hologramStreamsOf()
+  const bb84 = QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW, SIGNAL_READING_SEED), false, SIGNAL_READING_SEED)
+  const eve = QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW, SIGNAL_READING_SEED), true, SIGNAL_READING_SEED)
+  const hologram = hologramStreamsOf(sha256(utf8('qpu hologram: reading seed')))
   const corner = (s: string) => parseInt(Array.from(sha256(s).subarray(0, 2), (b) => b.toString(16).padStart(2, '0')).join(''), 16)
   const petersen = generalizedPetersen(5, 2)
   const dodecahedron = generalizedPetersen(10, 2)

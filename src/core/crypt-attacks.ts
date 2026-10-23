@@ -77,8 +77,8 @@ export const attacksOf = (): Attack[] => {
   }
 
   const scales = ['occupancy', 'skill', 'access', 'mcp', 'faces']
-  const holo = new HologramStreams(scales)
-  const other = new HologramStreams(scales)
+  const holo = new HologramStreams(scales, FIXTURE)
+  const other = new HologramStreams(scales, sha256(utf8('crypt-attacks other hologram')))
   const stream = [0, 1, 2, 3].map((i) => holo.append('skill', { part: i }))
   const foreign = [0, 1].map((i) => other.append('skill', { part: i }))
   const keys = holo.publicKeys()
@@ -102,7 +102,7 @@ export const attacksOf = (): Attack[] => {
     attack('aead header tamper', 'chacha20-poly1305', 1, () => aeadOpen(key32, nonce, sealed, utf8('Header')) !== null, 'associated data changed'),
     attack('aead truncation', 'chacha20-poly1305', 1, () => aeadOpen(key32, nonce, sealed.subarray(0, sealed.length - 1), aad) !== null, 'tag shortened'),
     attack('aead wrong nonce', 'chacha20-poly1305', 1, () => aeadOpen(key32, fixture(12), sealed, aad) !== null, 'nonce replaced'),
-    attack('bb84 intercept-resend', 'bb84', 200, () => QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW), true).holds, `Eve measures every qubit; QBER must exceed the bound (raw ${BB84_RAW})`),
+    attack('bb84 intercept-resend', 'bb84', 200, () => QuantumSecureSignalling.sift(QuantumSecureSignalling.BB84KeyGen(BB84_RAW, FIXTURE), true, FIXTURE).holds, `Eve measures every qubit; QBER must exceed the bound (raw ${BB84_RAW})`),
     attack('chat impersonation', 'chat', 1, () => decrypts({ ...toBob, signature: ed25519Sign(fixture(32), concat(utf8(`${toBob.id}|${key('alice')}|${key('bob')}`), toBob.nonce, toBob.signal)) }, 'bob'), 'Eve re-signs a signal as Alice'),
     attack('chat redirect', 'chat', 1, () => decrypts(toBob, 'carol'), "Bob's signal presented to Carol"),
     attack('chat envelope swap', 'chat', 1, () => chat.decryptMessageBody({ ...msg, signals: { ...msg.signals, carol: toBob } }, tokens.carol!) !== null, "Carol's envelope replaced by Bob's"),

@@ -23,16 +23,19 @@ export const equal = (a: Bytes, b: Bytes): boolean => {
   return d === 0
 }
 
-// ChaCha20 generator with fast key erasure: each call rekeys from its own keystream, so earlier outputs cannot be
-// recomputed from the current state. NO EXTERNAL CRYPTO AND NO CLOCK: the 32-byte seed is a formula, the crypto folded
-// on itself — sha256 of sha256 of the empty message — never the platform CSPRNG, never Date.now, never a counter. This
-// is deliberate and total: the seed takes nothing from outside, not even the time, so the stream is the same on every
-// run from the first call. The key-erasure chaining still advances the key every call, so two draws in one run differ
-// and an earlier output cannot be recomputed once advanced; it does not make the seed secret. Determinism over entropy:
-// keys, tokens and nonces built on this are predictable to anyone, the price of a unit that is a pure function of itself.
-/** A generator of its own: the same seed gives the same stream, and no other call can change it. The seed is an explicit
- *  input; its fixed default is the formula seed, sha256 of sha256 of the empty message, so a caller that passes a seed
- *  owns its outputs completely and a caller that does not gets the same stream as every other one. */
+// Secret randomness is the platform CSPRNG: Web Crypto getRandomValues, present in Node and on Workers. There is no
+// fallback. A missing CSPRNG is an error, never a predictable stream, so every key, token, nonce and salt drawn through
+// randomBytes is unpredictable. Deterministic consumers say so with an explicit seed: drbgOf(seed) below.
+export const randomBytes = (n: number): Bytes => {
+  const web = globalThis.crypto
+  if (typeof web?.getRandomValues !== 'function') throw new Error('randomBytes: no platform CSPRNG (Web Crypto getRandomValues) is available')
+  const out = new Uint8Array(n)
+  for (let off = 0; off < n; off += 65536) web.getRandomValues(out.subarray(off, Math.min(n, off + 65536)))
+  return out
+}
+/** A deterministic generator with an explicit seed: the ChaCha20 stream with fast key erasure. The same seed gives the same
+ *  stream, and no other call can change it. Its fixed default is the formula seed, sha256 of sha256 of the empty message.
+ *  Use it only where a result must reproduce from its seed, never for a secret: its outputs are predictable from the seed. */
 export const drbgOf = (seed: Bytes = sha256(sha256(new Uint8Array(0)))): ((n: number) => Bytes) => {
   let key = seed
   return (n: number): Bytes => {
@@ -41,9 +44,6 @@ export const drbgOf = (seed: Bytes = sha256(sha256(new Uint8Array(0)))): ((n: nu
     return stream.slice(32)
   }
 }
-// the process-wide default stream: the same values as before, drawn in call order
-let processDrbg: ((n: number) => Bytes) | undefined
-export const randomBytes = (n: number): Bytes => (processDrbg ??= drbgOf())(n)
 /** A v4-shaped UUID from 16 bytes. */
 export const uuidOfBytes = (bytes: Bytes): string => {
   const b = bytes.slice(0, 16)

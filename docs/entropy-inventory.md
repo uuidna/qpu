@@ -24,19 +24,19 @@ Across 83 files; 361 runtime sites excluding `ref`.
 
 | final status | sites |
 |---|---:|
-| replaced | 296 |
+| replaced | 294 |
 | kept (d) | 48 |
-| residual (a) | 14 |
+| secret entropy (a) | 16 |
 | residual (c) | 2 |
 | ref | 14 |
 | removed with its line | 0 |
 | **total** | **374** |
 
-`kept (d)` is the operational list, `residual (a)` and `residual (c)` are the sites the refactor could not make deterministic without a decision (see the report and the section below). Each `replaced` site has no clock or random value left in its file at that line; the replacement is described per file below.
+`kept (d)` is the operational list. `secret entropy (a)` is the platform CSPRNG, the intended source for keys, tokens, nonces and salts (a decision, see below). `residual (c)` is the storage contract. `replaced` sites no longer read the clock or draw from a predictable stream.
 
 ## Residual sites that need a decision
 
-- **residual (a), 14 sites**: secret material (keys, tokens, nonces, session ids). `src/core/crypt.ts` `randomBytes` is a ChaCha20 stream from a fixed formula seed, shared by the whole process: it reads no clock, but it is deterministic, so a token or key drawn from it is predictable. `src/utilities/workers-crypto.ts` line 35 is the one non-deterministic source left, the platform CSPRNG for Payload password salts, kept because a fixed salt would make hashes precomputable. The decision is whether secrets take real entropy at the boundary (recommended) or stay on the formula stream.
+- **secret entropy (a), 14 sites**: keys, tokens, nonces and salts. They draw from `core/crypt` `randomBytes`, which is Web Crypto `getRandomValues` and throws without it. Deterministic consumers use `drbgOf(seed)` with an explicit seed; secrets never do.
 - **residual (c), 2 sites**: record timestamps required by the storage contract: `src/db/payload-qpu.ts` `now()` (Payload `createdAt`/`updatedAt`) and `src/quantum/processing/unit/docdb.ts` `$currentDate` (a MongoDB operator whose contract is the current time). Removing them breaks the Payload and MongoDB-compatible contracts.
 - **kept (d)**: every remaining clock read is a timeout, a TTL, a rate-limit window, a liveness check, a circuit breaker, or a console progress line. Several of these decide an output in the gray sense (a cache hit, a rate-limit rejection, a node marked unhealthy); they are listed in the per-site table with that note.
 
@@ -69,7 +69,7 @@ Across 83 files; 361 runtime sites excluding `ref`.
 - `src/cloudflare/quantum-secure-messaging.ts`: ref 1, replaced 7. message id is a hash of the sealed envelope (fresh nonce); timestamps are a caller-supplied `at`, default 0 (unstamped)
 - `src/core/cache.ts`: kept (d) 6.
 - `src/core/crypt-attacks.ts`: ref 1, replaced 11. all inputs are fixed fixtures from `drbgOf`; the DRBG repetition check enumerates its own fixed stream
-- `src/core/crypt.ts`: replaced 4, residual (a) 5. `checkPrime` above 2^64 uses fixed witnesses (the first 13 primes), exact below psi13, a fixed-base test above; `drbgOf(seed)` gives an explicit-seed stream
+- `src/core/crypt.ts`: secret entropy (a) 6, replaced 3. `checkPrime` above 2^64 uses fixed witnesses (the first 13 primes), exact below psi13, a fixed-base test above; `drbgOf(seed)` gives an explicit-seed stream
 - `src/core/health.ts`: kept (d) 1, replaced 3. `response-time` probe answers without a latency budget
 - `src/core/limit.ts`: kept (d) 2.
 - `src/core/manager.ts`: replaced 8. execution durations and average removed from history and stats
@@ -86,7 +86,7 @@ Across 83 files; 361 runtime sites excluding `ref`.
 - `src/distributed/state-sync.ts`: replaced 3. conflict tiebreak is the larger node id (was the wall clock)
 - `src/families/heat/index.ts`: replaced 4. `slow` is never established: a speed claim is not a theorem; `test.ts` asserts that
 - `src/families/heat/test.ts`: replaced 1.
-- `src/families/holo/index.ts`: ref 1, replaced 1. default seed is the formula stream (fixed), not the process stream
+- `src/families/holo/index.ts`: ref 1, secret entropy (a) 1. default seed is the formula stream (fixed), not the process stream
 - `src/families/signal/index.ts`: ref 1, replaced 1. timestamp removed; BB84 seeded
 - `src/families/wave/index.ts`: replaced 5. live timings and slowest-program reports removed
 - `src/harmony/orchestrator.ts`: replaced 3. avgLatency is not measured here
@@ -96,7 +96,7 @@ Across 83 files; 361 runtime sites excluding `ref`.
 - `src/mcp/formulas-receipt.ts`: replaced 5. two timing rows removed; `when` stamps removed
 - `src/mcp/print-all.ts`: replaced 1. `when` stamp removed
 - `src/mcp/qpu-fused.ts`: replaced 7, kept (d) 4. the alpine walk has no clock bound (fail-fast on error); site walk drops its timings
-- `src/mcp/secure-chat-rbac.ts`: ref 1, residual (a) 8, kept (d) 3, replaced 5. message id is the chain value after the message; `timestamp` fields optional
+- `src/mcp/secure-chat-rbac.ts`: ref 1, secret entropy (a) 8, kept (d) 3, replaced 5. message id is the chain value after the message; `timestamp` fields optional
 - `src/mcp/uuid-programmable-core.ts`: replaced 2.
 - `src/mcp/whitepaper-generator.ts`: replaced 2.
 - `src/ml/auto.ts`: replaced 3. window entries carry no stamp
@@ -127,7 +127,7 @@ Across 83 files; 361 runtime sites excluding `ref`.
 - `src/quantum/quantum-executor.ts`: replaced 7, kept (d) 2. durations and start-time threading removed; job id uses the foreign id or `local`
 - `src/seed/index.ts`: replaced 1. error record has no stamp
 - `src/utilities/formula-routing.ts`: replaced 1. sitemap `lastmod` removed
-- `src/utilities/workers-crypto.ts`: ref 6, residual (a) 1.
+- `src/utilities/workers-crypto.ts`: ref 6, secret entropy (a) 1.
 
 ## Sites by file
 
@@ -366,15 +366,15 @@ Across 83 files; 361 runtime sites excluding `ref`.
 
 | line | category | status | site (at the commit before the change) | note |
 |---:|---|---|---|---|
-| 34 | A-key | replaced | `export const randomBytes = (n: number): Bytes => {` |  |
+| 34 | A-key | secret entropy (a) | `export const randomBytes = (n: number): Bytes => {` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 | 40 | A-key | replaced | `export const randomUUID = (): string => {` |  |
 | 41 | A-key | replaced | `const b = randomBytes(16)` |  |
-| 516 | A-key | residual (a) | `export const randomInt = (min: number, max: number): number => {` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 517 | A-key | residual (a) | `if (!Number.isSafeInteger(min) \|\| !Number.isSafeInteger(max) \|\| max <= min) throw new Error('ran` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 522 | A-key | residual (a) | `const r = leToBig(randomBytes(bytes))` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
+| 516 | A-key | secret entropy (a) | `export const randomInt = (min: number, max: number): number => {` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 517 | A-key | secret entropy (a) | `if (!Number.isSafeInteger(min) \|\| !Number.isSafeInteger(max) \|\| max <= min) throw new Error('ran` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 522 | A-key | secret entropy (a) | `const r = leToBig(randomBytes(bytes))` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 | 547 | A-decide | replaced | `: Array.from({ length: rounds }, () => 2n + (leToBig(randomBytes(8)) % (N - 3n)))` |  |
-| 570 | A-key | residual (a) | `const n = ((leToBig(randomBytes(Math.ceil(bits / 8))) & mask) \| top) \| 1n` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 667 | A-key | residual (a) | `return createSecretKey(randomBytes(options.length / 8))` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
+| 570 | A-key | secret entropy (a) | `const n = ((leToBig(randomBytes(Math.ceil(bits / 8))) & mask) \| top) \| 1n` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 667 | A-key | secret entropy (a) | `return createSecretKey(randomBytes(options.length / 8))` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 
 ### `src/core/health.ts`
 
@@ -529,8 +529,8 @@ Across 83 files; 361 runtime sites excluding `ref`.
 
 | line | category | status | site (at the commit before the change) | note |
 |---:|---|---|---|---|
-| 1 | ref | ref | `import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBy` | removed with its line |
-| 55 | A-key | replaced | `constructor(scales: readonly string[], seed: Bytes = randomBytes(32)) {` |  |
+| 1 | ref | ref | `import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBy` | import or comment; no draw or read |
+| 55 | A-key | secret entropy (a) | `constructor(scales: readonly string[], seed: Bytes = randomBytes(32)) {` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 
 ### `src/families/signal/index.ts`
 
@@ -622,17 +622,17 @@ Across 83 files; 361 runtime sites excluding `ref`.
 | line | category | status | site (at the commit before the change) | note |
 |---:|---|---|---|---|
 | 10 | ref | ref | `import { aeadOpen, aeadSeal, concat, ed25519PublicKey, ed25519Sign, ed25519Verify, hexOf, hkdf, rand` | import or comment; no draw or read |
-| 120 | A-key | residual (a) | `const tokenId = ˋtoken_${hexOf(randomBytes(24))}ˋ` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
+| 120 | A-key | secret entropy (a) | `const tokenId = ˋtoken_${hexOf(randomBytes(24))}ˋ` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 | 121 | C-stamp | kept (d) | `const now = Date.now()` | token issue time, used only for the expiry check |
 | 141 | D | kept (d) | `if (Date.now() > context.expiresAt) {` | token and key lifetime (operational; decides expiry) |
-| 205 | A-key | residual (a) | `const agree = randomBytes(32)` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 206 | A-key | residual (a) | `const sign = randomBytes(32)` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 207 | A-key | residual (a) | `const phase = randomBytes(4)` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 209 | A-key | residual (a) | `id: ˋqk_${randomUUID()}ˋ,` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 212 | A-key | residual (a) | `quantumEntanglement: ˋentangle_${userId}_${randomUUID()}ˋ,` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
+| 205 | A-key | secret entropy (a) | `const agree = randomBytes(32)` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 206 | A-key | secret entropy (a) | `const sign = randomBytes(32)` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 207 | A-key | secret entropy (a) | `const phase = randomBytes(4)` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 209 | A-key | secret entropy (a) | `id: ˋqk_${randomUUID()}ˋ,` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 212 | A-key | secret entropy (a) | `quantumEntanglement: ˋentangle_${userId}_${randomUUID()}ˋ,` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 | 214 | D | kept (d) | `expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours` | token and key lifetime (operational; decides expiry) |
-| 248 | A-key | residual (a) | `const id = ˋqs_${randomUUID()}ˋ` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
-| 249 | A-key | residual (a) | `const nonce = randomBytes(12)` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
+| 248 | A-key | secret entropy (a) | `const id = ˋqs_${randomUUID()}ˋ` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
+| 249 | A-key | secret entropy (a) | `const nonce = randomBytes(12)` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 | 255 | C-stamp | replaced | `timestamp: Date.now(),` |  |
 | 416 | A-key | replaced | `id: ˋmsg_${randomUUID()}ˋ,` |  |
 | 417 | C-stamp | replaced | `timestamp: Date.now(),` |  |
@@ -914,9 +914,9 @@ Across 83 files; 361 runtime sites excluding `ref`.
 |---:|---|---|---|---|
 | 2 | ref | ref | `import { pbkdf2Sha256, pbkdf2Sha512, randomBytes as formulaRandomBytes } from '@uuidna/qpu/core/cryp` | import or comment; no draw or read |
 | 4 | ref | ref | `// Payload hashes passwords through crypto.pbkdf2 (600000 iterations, SHA-256) and salts them with c` | import or comment; no draw or read |
-| 7 | ref | ref | `// Salts take platform entropy via Web Crypto getRandomValues when present — formula DRBG in core/cr` | import or comment; no draw or read |
-| 32 | ref | ref | `/** Prefer Web Crypto CSPRNG for Payload salts; fall back to formula DRBG only when getRandomValues ` | import or comment; no draw or read |
-| 35 | A-key | residual (a) | `const web = globalThis.crypto?.getRandomValues?.bind(globalThis.crypto)` | secret material drawn from the process-wide formula stream (src/core/crypt.ts randomBytes): deterministic from a fixed seed and call order, so a key or token is predictable; decision needed |
+| 7 | ref | ref | `// Salts take platform entropy via Web Crypto getRandomValues when present — formula DRBG in core/cr` | removed with its line |
+| 32 | ref | ref | `/** Prefer Web Crypto CSPRNG for Payload salts; fall back to formula DRBG only when getRandomValues ` | removed with its line |
+| 35 | A-key | secret entropy (a) | `const web = globalThis.crypto?.getRandomValues?.bind(globalThis.crypto)` | secret material from the platform CSPRNG (core/crypt randomBytes, Web Crypto getRandomValues), by decision: keys, tokens, nonces and salts must not be predictable |
 | 43 | ref | ref | `type Patchable = { pbkdf2: typeof qpuPbkdf2; randomBytes: typeof qpuRandomBytes }` | import or comment; no draw or read |
 | 51 | ref | ref | `target.randomBytes = qpuRandomBytes` | import or comment; no draw or read |
 
