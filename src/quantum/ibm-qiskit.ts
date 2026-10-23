@@ -23,7 +23,7 @@ export interface QiskitJob {
   jobId: string
   status: 'queued' | 'running' | 'completed' | 'failed'
   resultCounts?: Record<string, number>
-  createdAt: number
+  createdAt?: number
   completedAt?: number
 }
 
@@ -92,13 +92,12 @@ export class IBMQiskitConnector {
     await this.authenticate()
 
     const qaskit = this.circuitToQasm(circuit)
-    const jobId = `ibm-${Date.now()}-${__suffix()}`
+    const jobId = `ibm-${__suffix()}`
 
     // Simulate job submission
     const job: QiskitJob = {
       jobId,
       status: 'queued',
-      createdAt: Date.now()
     }
 
     this.jobs.set(jobId, job)
@@ -113,7 +112,6 @@ export class IBMQiskitConnector {
         setTimeout(() => {
           j.status = 'completed'
           j.resultCounts = this.simulateQuantumMeasurement(circuit.classicalBits || circuit.qubits, shots)
-          j.completedAt = Date.now()
         }, 2000)
       }
     }, 1000)

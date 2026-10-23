@@ -396,7 +396,6 @@ class GapDiscovery {
 
     // Save detailed report
     const report = {
-      timestamp: new Date().toISOString(),
       version: 'v0.2.1',
       framework: 'Double Torus Topology',
       totalGaps: this.gaps.length,
@@ -405,10 +404,10 @@ class GapDiscovery {
       leads: this.leads
     }
 
-    const resultsPath = path.join(ROOT, 'experiments-results', `gap-discovery-${new Date().toISOString().split('T')[0]}.json`)
+    const resultsPath = path.join(ROOT, 'experiments-results', 'gap-discovery.json')
     fs.writeFileSync(resultsPath, JSON.stringify(report, null, 2))
 
-    console.log(`📁 Detailed report saved to: experiments-results/gap-discovery-*.json\n`)
+    console.log(`📁 Detailed report saved to: experiments-results/gap-discovery.json\n`)
     console.log('✅ Gap discovery complete. Leads identified for infinite development.\n')
   }
 }

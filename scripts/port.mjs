@@ -77,7 +77,6 @@ const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
   const proveOne = async (index) => {
     const name = surface[index % n]
     const port = QPU_PORTS[name]
-    const t0 = performance.now()
     const how = typeof port?.how === 'string' ? port.how.trim() : ''
     const holds = Boolean(port) && port.lead !== true && how.length > 0 && typeof port.domain === 'string'
     return {
@@ -87,7 +86,6 @@ const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
       lead: port?.lead === true,
       howLen: how.length,
       holds,
-      ms: Math.round((performance.now() - t0) * tenOf(3)) / tenOf(3),
     }
   }
 
@@ -96,9 +94,7 @@ const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
   let width = width0
   for (let p = 1; p <= passesN; p++) {
     const fromIndices = Array.from({ length: width }, (_, k) => from + k * faces)
-    const t0 = Date.now()
     const rows = await Promise.all(fromIndices.map((i) => proveOne(i)))
-    const wallMs = Date.now() - t0
     const covered = new Set(rows.map((r) => r.name))
     passes.push({
       pass: p,
@@ -109,7 +105,6 @@ const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
       holdsTrue: rows.filter((r) => r.holds).length,
       holdsFalse: rows.filter((r) => !r.holds).length,
       covered: covered.size,
-      wallMs,
       rows,
     })
     from = from + width * faces
@@ -121,12 +116,10 @@ const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
   for (let i = 0; i < n; i += faces) {
     batches.push(surface.slice(i, i + faces))
   }
-  const tCover = Date.now()
   const coverRows = (await Promise.all(batches.map((batch) => Promise.all(batch.map(async (name, j) => {
     const index = surface.indexOf(name)
     return proveOne(index >= 0 ? index : j)
   }))))).flat()
-  const coverMs = Date.now() - tCover
   const coverHolds = coverRows.every((r) => r.holds)
   const stillLead = coverRows.filter((r) => r.lead).map((r) => r.name)
 
@@ -154,7 +147,6 @@ const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
       holdsTrue: p.holdsTrue,
       holdsFalse: p.holdsFalse,
       covered: p.covered,
-      wallMs: p.wallMs,
       fail: p.rows.filter((r) => !r.holds).map((r) => r.name),
     })),
     cover: {
@@ -163,7 +155,6 @@ const portWaveOf = async (porting, unit, combinatorics, opts = {}) => {
       holdsTrue: coverRows.filter((r) => r.holds).length,
       holdsFalse: coverRows.filter((r) => !r.holds).length,
       stillLead,
-      wallMs: coverMs,
       holds: coverHolds,
     },
     holds: coverHolds && stillLead.length === 0 && passes.every((p) => p.holdsFalse === 0),
@@ -202,9 +193,9 @@ const main = async () => {
     console.log('\ncombinatorial port wave')
     console.log(`  stride=${wave.stride} width0=${wave.scheme.width0} passes=${wave.scheme.passes} binomial(faces)=${wave.scheme.binomialFaces.value} C(n,2)=${wave.scheme.combinationsN2.value}`)
     for (const p of wave.passes) {
-      console.log(`  pass ${p.pass}: width=${p.width} sweeps=${p.sweeps} holdsTrue=${p.holdsTrue} holdsFalse=${p.holdsFalse} covered=${p.covered} wallMs=${p.wallMs}${p.fail.length ? ` fail=[${p.fail.join(',')}]` : ''}`)
+      console.log(`  pass ${p.pass}: width=${p.width} sweeps=${p.sweeps} holdsTrue=${p.holdsTrue} holdsFalse=${p.holdsFalse} covered=${p.covered}${p.fail.length ? ` fail=[${p.fail.join(',')}]` : ''}`)
     }
-    console.log(`  cover: batches=${wave.cover.batches} rows=${wave.cover.rows} holds=${wave.cover.holds} stillLead=${wave.cover.stillLead.length ? wave.cover.stillLead.join(',') : '∅'} wallMs=${wave.cover.wallMs}`)
+    console.log(`  cover: batches=${wave.cover.batches} rows=${wave.cover.rows} holds=${wave.cover.holds} stillLead=${wave.cover.stillLead.length ? wave.cover.stillLead.join(',') : '∅'}`)
     results.push({ holds: wave.holds, ported: wave.cover.holdsTrue, leads: wave.cover.stillLead })
   }
 
@@ -215,7 +206,7 @@ const main = async () => {
   }
   console.log('\n✓ port gate holds (0 node leads; combinatorial wave holds)')
   if (wave) {
-    console.log(JSON.stringify({ before: { ported: bits, leads: 13 }, after: { ported: wave.cover.holdsTrue, leads: wave.cover.stillLead.length }, wave: { holds: wave.holds, stride: wave.stride, scheme: wave.scheme, passes: wave.passes.map((p) => ({ pass: p.pass, width: p.width, holdsTrue: p.holdsTrue, wallMs: p.wallMs })), cover: wave.cover } }, null, 2))
+    console.log(JSON.stringify({ before: { ported: bits, leads: 13 }, after: { ported: wave.cover.holdsTrue, leads: wave.cover.stillLead.length }, wave: { holds: wave.holds, stride: wave.stride, scheme: wave.scheme, passes: wave.passes.map((p) => ({ pass: p.pass, width: p.width, holdsTrue: p.holdsTrue })), cover: wave.cover } }, null, 2))
   }
   process.exit(0)
 }

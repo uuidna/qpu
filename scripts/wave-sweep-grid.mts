@@ -55,7 +55,6 @@ const bill = {
   qpuPrefixed: tools.filter((t) => t.name.startsWith('qpu_')).map((t) => t.name),
 }
 
-const t0 = Date.now()
 // MCP tools/call connector (recognition may compress large pass tables — see expand note).
 const mcpResult = await connectorCallOf({ from: FROM0, width: WIDTH0, passes: PASSES })
 // Full pass tables through the same publicDoorFetchOf Payload wave endpoint (not a parallel stack).
@@ -64,13 +63,11 @@ const waveRes = await publicDoorFetchOf(
   env,
 )
 const grid = await waveRes.json()
-const wallMs = Date.now() - t0
 
 const report = {
   via: 'publicDoorFetchOf → publicMcpOf → tools/call connector (+ GET /api/qpu/wave for full tables)' as const,
   invoke: `node --import tsx scripts/wave-sweep-grid.mts --from ${FROM0} --width ${WIDTH0} --passes ${PASSES}`,
   connectBill: bill,
-  wallMs,
   mcp: mcpResult,
   grid,
   goal: 'OPEN' as const,

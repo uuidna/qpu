@@ -34,7 +34,6 @@ if (!families.length) {
 }
 
 // the live readings the theorems are checked against, as discovery's inputs, plus every research reading's numbers
-const t0 = Date.now()
 const live = new Set()
 for (const source of ['cern', 'nist', 'oeis', 'zenodo', 'apis']) {
   const r = await qpuDataOf(source, {})
@@ -62,10 +61,8 @@ for (const row of rows) {
 }
 const doc = {
   kind: 'cross-check-receipt',
-  when: new Date().toISOString().slice(0, tenOf(1)),
   families: rows.map((r) => r.family),
   liveNumbers: live.size,
-  seconds: Math.round((Date.now() - t0) / tenOf(3)),
   holds: rows.every((r) => r.pass),
   rows: rows.map((r) => ({ name: `family ${r.family}`, pass: r.pass, value: `${r.matched} APIs named, ${r.answered.length} answered (${r.answered.slice(0, 4).join(', ')}); ${r.relations} cross-family values, ${r.liveRelations} with live readings, crossing ${r.crossed.slice(0, 8).join(' ')}`, receipt: r.research.receipt ?? '' })),
 }
@@ -73,7 +70,7 @@ doc.uuid = qpuContentUuidOf(doc.rows)
 doc.receipt = qpuUuidReceiptOf('cross-check', doc.uuid, `${rows.filter((r) => r.pass).length}/${rows.length}`, 'scripts/cross-check.mjs').uuid
 fs.writeFileSync('cross-check-receipt.json', JSON.stringify(doc, null, 1) + '\n')
 for (const r of doc.rows) console.log(`  ${r.pass ? '✓' : '✗'} ${r.name}: ${r.value}`)
-console.log(`cross-check: ${rows.filter((r) => r.pass).length}/${rows.length} families crossed with the public record in ${doc.seconds}s (${live.size} live numbers)`)
+console.log(`cross-check: ${rows.filter((r) => r.pass).length}/${rows.length} families crossed with the public record (${live.size} live numbers)`)
 if (!doc.holds) {
   console.error('cross-check: a staged family has neither an answered research read nor a live cross-family relation — it is untested by anything outside itself. Commit BLOCKED.')
   process.exit(1)

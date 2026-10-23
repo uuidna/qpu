@@ -27,7 +27,7 @@ export interface IonQJob {
     measurement: number[][]
     measurements: Record<string, number>
   }
-  submittedAt: number
+  submittedAt?: number
   completedAt?: number
 }
 
@@ -89,12 +89,11 @@ export class IonQConnector {
   ): Promise<IonQJob> {
     await this.authenticate()
 
-    const jobId = `ionq_${Date.now()}_${__suffix()}`
+    const jobId = `ionq_${__suffix()}`
 
     const job: IonQJob = {
       id: jobId,
       status: 'submitted',
-      submittedAt: Date.now()
     }
 
     this.jobs.set(jobId, job)
@@ -110,7 +109,6 @@ export class IonQConnector {
             measurement: this.simulateMeasurements(circuit.qubits, shots),
             measurements: this.aggregateMeasurements(circuit.qubits, shots)
           }
-          j.completedAt = Date.now()
         }, 1500)
       }
     }, 500)
@@ -157,7 +155,6 @@ export class IonQConnector {
     return {
       status: 'operational',
       backends: await this.getAvailableBackends(),
-      timestamp: Date.now()
     }
   }
 

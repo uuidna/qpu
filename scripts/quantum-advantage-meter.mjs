@@ -183,7 +183,6 @@ class QuantumAdvantage {
     this.estimateTimeline()
 
     const report = {
-      timestamp: new Date().toISOString(),
       algorithms: this.measurements,
       keyFindings: [
         'Exponential speedup available for factorization and simulation',

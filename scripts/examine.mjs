@@ -119,8 +119,8 @@ let tools = []
   check('crypto_shor reads 2^61 digits exactly, sparse, beyond', digits?.exact?.n === '2305843009213693952' && digits.read?.n?.exact === true && digits.prepare?.sparse === true && digits.classical?.beyond === true && !('iterated' in (digits.classical ?? {})), JSON.stringify({ read: digits?.read?.n, classical: digits?.classical }))
   const rounded = (await call('crypto_shor', { n: 2 ** 61, a: 3 })).sc
   check('crypto_shor marks a JSON number past 2^53 inexact', rounded?.read?.n?.exact === false && rounded.holds === false, JSON.stringify(rounded?.read?.n))
-  const t0 = Date.now(); const wide = (await call('crypto_shor', { n: '7'.repeat(30000), a: 2 })).sc; const ms = Date.now() - t0
-  check('crypto_shor 30000-digit coprime answers in under 10 s with an exact classical verdict', wide?.classical?.beyond === true && wide.classical.unit === true && ms < tenOf(4), `${ms} ms, ${JSON.stringify(wide?.classical)}`)
+  const wide = (await call('crypto_shor', { n: '7'.repeat(30000), a: 2 })).sc
+  check('crypto_shor 30000-digit coprime answers with an exact classical verdict (no timing claim)', wide?.classical?.beyond === true && wide.classical.unit === true, `${JSON.stringify(wide?.classical)}`)
   const shots = (await call('crypto_shor')).sc?.measure
   check('shots say they are enumerated, not sampled', shots?.sampled === false && shots.enumerated === true && shots.measured === true, JSON.stringify(shots && { sampled: shots.sampled, enumerated: shots.enumerated }))
 }

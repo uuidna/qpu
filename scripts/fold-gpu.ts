@@ -56,7 +56,6 @@ console.log(`folds ${N} | ${chunks.length} chunk(s) of at most ${perChunk}, each
 
 device.pushErrorScope('validation')
 const got = new Uint32Array(N * 2)
-const t0 = performance.now()
 for (const [from, to] of chunks) {
   const n = to - from
   const base = offs[from * 2]
@@ -76,14 +75,12 @@ for (const [from, to] of chunks) {
   got.set(new Uint32Array(readB.getMappedRange().slice(0)), from * 2)
   readB.unmap(); charsB.destroy(); offsB.destroy(); outB.destroy(); readB.destroy()
 }
-const gpuMs = performance.now() - t0
 const err = await device.popErrorScope()
 if (err) console.log('VALIDATION:', String(err.message).slice(0, 200))
-const t1 = performance.now(); const want = strings.map(cpuFold); const cpuMs = performance.now() - t1
+const want = strings.map(cpuFold)
 let bad = 0, first = ''
 for (let i = 0; i < N; i++) {
   const hex = (BigInt(got[i * 2 + 1]) * 4294967296n + BigInt(got[i * 2])).toString(mintOf(4)).padStart(mintOf(4), '0')
   if (hex !== want[i]) { if (!bad) first = `#${i} gpu ${hex} cpu ${want[i]}`; bad++ }
 }
 console.log(`exact ${N - bad} | mismatched ${bad}${first ? ' | first ' + first : ''}`)
-console.log(`gpu ${gpuMs.toFixed(1)} ms | cpu ${cpuMs.toFixed(1)} ms | ratio ${(cpuMs / gpuMs).toFixed(2)}x`)

@@ -13,8 +13,6 @@ import { ExecutionResult, CompositionRequest } from './types.js'
 export class OperationManager {
   private executionHistory: Array<{
     operation: string
-    timestamp: number
-    duration: number
     success: boolean
   }> = []
 
@@ -32,7 +30,6 @@ export class OperationManager {
     operation: string,
     inputs?: Record<string, unknown>
   ): Promise<ExecutionResult> {
-    const start = performance.now()
     const cacheKey = `${operation}:${JSON.stringify(inputs || {})}`
 
     // Check cache
@@ -42,13 +39,10 @@ export class OperationManager {
 
     try {
       const result = await executeOperation(operation, inputs)
-      const duration = performance.now() - start
 
       // Log to history
       this.executionHistory.push({
         operation,
-        timestamp: Date.now(),
-        duration,
         success: result.success
       })
 
@@ -59,12 +53,8 @@ export class OperationManager {
 
       return result
     } catch (error) {
-      const duration = performance.now() - start
-
       this.executionHistory.push({
         operation,
-        timestamp: Date.now(),
-        duration,
         success: false
       })
 
@@ -79,18 +69,13 @@ export class OperationManager {
    * Execute composition (sequence of operations)
    */
   async executeComposition(request: CompositionRequest): Promise<ExecutionResult> {
-    const start = performance.now()
-
     try {
       const result = await executeComposition(request.operations, request.inputs)
-      const duration = performance.now() - start
 
       // Log each operation
       for (const op of request.operations) {
         this.executionHistory.push({
           operation: op,
-          timestamp: Date.now(),
-          duration: duration / request.operations.length,
           success: result.success
         })
       }
@@ -119,14 +104,12 @@ export class OperationManager {
     const total = history.length
     const successful = history.filter(h => h.success).length
     const failed = total - successful
-    const avgDuration = history.reduce((sum, h) => sum + h.duration, 0) / (total || 1)
 
     return {
       totalExecutions: total,
       successful,
       failed,
       successRate: total > 0 ? (successful / total) * 100 : 0,
-      avgDuration,
       operationCount: new Set(history.map(h => h.operation)).size
     }
   }

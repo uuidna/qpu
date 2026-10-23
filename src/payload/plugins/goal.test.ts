@@ -27,7 +27,6 @@ test('goal computes from combinatorics and is court-tried', () => {
   assert.equal(g.court.allow, true)
   assert.equal(g.court.fidelity.value, 1)
   assert.ok(g.court.standing.value > 0)
-  assert.equal(typeof g.court.ms, 'number')
   assert.equal(g.connectBill.holds, true)
   assert.equal(goalStateOf(), 'OPEN')
 })

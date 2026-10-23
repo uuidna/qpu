@@ -44,7 +44,7 @@ export interface ProduceResult {
   topic: string
   partition: number
   offset: number
-  timestamp: number
+  timestamp?: number
 }
 
 export interface ConsumeOptions {
@@ -80,7 +80,6 @@ export class KafkaProducer extends EventEmitter {
         topic,
         partition: msg.partition || 0,
         offset: __det() % 1000000,
-        timestamp: Date.now()
       })
       this.emit('produced', { topic, message: msg })
     }

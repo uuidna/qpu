@@ -34,7 +34,7 @@ export interface NodeRegistryState {
   nodes: Map<string, NodeInfo>
   localNodeId: string
   clusterSize: number
-  lastSync: number
+  lastSync?: number
 }
 
 // ============================================================================
@@ -82,7 +82,7 @@ export interface ConsensusMessage {
   sequenceNumber: number
   senderId: string
   digest: string // hash of state
-  timestamp: number
+  timestamp?: number
   data?: any
 }
 
@@ -94,7 +94,7 @@ export interface ConsensusState {
   commitQuorum: Set<string>
   decision?: ConsensusDecision
   finalDigest?: string
-  timestamp: number
+  timestamp?: number
 }
 
 export interface ConsensusConfig {
@@ -121,7 +121,7 @@ export interface MerkleNode {
 
 export interface StateSnapshot {
   version: number
-  timestamp: number
+  timestamp?: number
   nodeId: string
   vectorClock: VectorClock
   merkleRoot: string
@@ -132,7 +132,7 @@ export interface StateSyncEvent {
   type: 'update' | 'delete' | 'merge'
   key: string
   value?: any
-  timestamp: number
+  timestamp?: number
   sourceNode: string
   vectorClock: VectorClock
 }
@@ -163,8 +163,6 @@ export interface NodeExecutionResult {
   success: boolean
   result?: any
   error?: string
-  duration: number
-  timestamp: number
 }
 
 export interface AggregatedResult {
@@ -197,7 +195,7 @@ export interface GossipMessage {
   id: string
   type: 'state-update' | 'node-join' | 'node-leave' | 'heartbeat'
   sourceNode: string
-  timestamp: number
+  timestamp?: number
   data: any
   seenBy: Set<string>
 }

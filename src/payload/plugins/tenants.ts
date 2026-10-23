@@ -222,7 +222,6 @@ export const tenantResolveOf = (ask: { tenant?: string; host?: string; domain?: 
 }
 
 export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: QpuEnv) => {
-  const t0 = Date.now()
   const tools = qpuMcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete', tools }).length
   const harnesses = qpuHarnessesOf()
@@ -250,7 +249,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
         mcp: t.mcp,
         source: t.source,
       })),
-      served: { tenant: null as string | null, model: 'catalog' as string | null, needs: rows.length, ms: Date.now() - t0 },
+      served: { tenant: null as string | null, model: 'catalog' as string | null, needs: rows.length },
       connectBill: {
         doors: tools.length,
         bytes: listBytes,
@@ -275,7 +274,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
       ask,
       choices: rows.map((t) => t.slug),
       resolve: `use connector { tenant } with one of: ${rows.map((t) => t.slug).join(', ')}`,
-      served: { tenant: null, model: null, needs: [] as string[], ms: Date.now() - t0 },
+      served: { tenant: null, model: null, needs: [] as string[] },
       holds: false as const,
       goal: 'OPEN' as const,
     }
@@ -319,8 +318,7 @@ export const tenantServeOf = async (args: Record<string, unknown> = {}, _env?: Q
       tenant: tenant.slug,
       model: model?.door ?? null,
       needs: tenant.needs.map((n) => `${n.family}${n.formula ? `.${n.formula}` : ''}`),
-      ms: Date.now() - t0,
-    },
+      },
     connectBill: {
       doors: tools.length,
       bytes: listBytes,

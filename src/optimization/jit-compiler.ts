@@ -16,7 +16,7 @@ export interface FormulaAST {
 
 export interface CompiledFormula {
   id: string
-  compiledAt: number
+  compiledAt?: number
   callCount: number
   estimatedSpeedup: number
   bytecode: Uint8Array
@@ -160,7 +160,6 @@ export class JITCompiler {
 
       const compiled: CompiledFormula = {
         id,
-        compiledAt: Date.now(),
         callCount: this.formulaCallCounts.get(id) || 0,
         estimatedSpeedup: 3.5, // Conservative estimate
         bytecode,

@@ -50,16 +50,15 @@ const familiesOf = async () => {
 
 /** Develop one family: research the free public APIs/datasets its words name. Returns what the free data crossed. */
 const develop = async (family) => {
-  const at = Date.now()
   try {
     const r = await dataDoor('research', { family })
     const reading = r?.reading ?? {}
     // always research for novelty funding WHILE researching: the keyless funding a family's novel work can draw (the
     // funder's own criterion is novelty, so the novel and its funding are researched together), surfaced beside the research.
     const fund = await dataDoor('funding', { about: family }).catch(() => null)
-    return { family, matched: reading.matched ?? 0, read: reading.read ?? 0, funding: fund?.reading?.keyless ?? 0, ms: Date.now() - at, agrees: r?.agrees === true }
+    return { family, matched: reading.matched ?? 0, read: reading.read ?? 0, funding: fund?.reading?.keyless ?? 0, agrees: r?.agrees === true }
   } catch (e) {
-    return { family, hot: true, ms: Date.now() - at, why: e.message } // hot: left for the next run (fail at rising temp)
+    return { family, hot: true, why: e.message } // hot: left for the next run (fail at rising temp)
   }
 }
 
@@ -102,7 +101,7 @@ const main = async () => {
     for (let w = 0; w < span; w += FACES) {
       const wave = trinities.slice(w, w + FACES) // a wave of trinities developed at once — full bandwidth
       const results = await Promise.all(wave.map((tri) => Promise.all(tri.map(develop))))
-      for (const tri of results) for (const r of tri) { if (r.hot) { hot++; console.log(`  hot  ${r.family} (${r.ms}ms) — left for next run`) } else done++ }
+      for (const tri of results) for (const r of tri) { if (r.hot) { hot++; console.log(`  hot  ${r.family} — left for next run`) } else done++ }
     }
     console.log(`\n✓ developed ${done} families free in trinities; ${hot} hot, left for next run (zero temp: the slow are not waited on)`)
   } else console.log('the host served no families this run — develop them once the build is live')

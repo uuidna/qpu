@@ -53,7 +53,6 @@ export class ConsensusEngine {
       currentPhase: 'pre-prepare',
       prepareQuorum: new Set(),
       commitQuorum: new Set(),
-      timestamp: Date.now()
     }
 
     this.states.set(sequenceNumber, consensusState)
@@ -65,7 +64,6 @@ export class ConsensusEngine {
       sequenceNumber,
       senderId: this.localNodeId,
       digest,
-      timestamp: Date.now(),
       data
     }
 
@@ -86,7 +84,6 @@ export class ConsensusEngine {
       sequenceNumber,
       senderId: this.localNodeId,
       digest,
-      timestamp: Date.now()
     }
 
     this.messageLog.push(prepareMsg)
@@ -109,7 +106,6 @@ export class ConsensusEngine {
       sequenceNumber,
       senderId: this.localNodeId,
       digest,
-      timestamp: Date.now()
     }
 
     this.messageLog.push(commitMsg)
@@ -175,7 +171,6 @@ export class ConsensusEngine {
       sequenceNumber: msg.sequenceNumber,
       senderId: this.localNodeId,
       digest: msg.digest,
-      timestamp: Date.now()
     }
 
     state.prepareQuorum.add(msg.senderId)
@@ -202,7 +197,6 @@ export class ConsensusEngine {
         sequenceNumber: msg.sequenceNumber,
         senderId: this.localNodeId,
         digest: msg.digest,
-        timestamp: Date.now()
       }
 
       console.log(`[Consensus] Prepare quorum reached: seq=${msg.sequenceNumber}, quorum=${state.prepareQuorum.size}`)
@@ -316,7 +310,6 @@ export class ConsensusEngine {
       currentPhase: 'pre-prepare',
       prepareQuorum: new Set(),
       commitQuorum: new Set(),
-      timestamp: Date.now()
     }
     this.states.set(sequenceNumber, state)
     return state

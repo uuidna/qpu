@@ -203,7 +203,7 @@ const analyticsOperations = {
     operation: 'record-lead',
     handler: async (): Promise<ExecutionResult> => ({
       success: true,
-      data: { recorded: true, leadId: 'lead-' + Date.now() }
+      data: { recorded: true }
     })
   },
   'get-analytics': {

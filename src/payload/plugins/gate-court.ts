@@ -6,7 +6,6 @@
  *   law.fidelity(first, second) — re-trial stability (same params, same boolean)
  *   law.standing(receipts) — hex-backed gate+trial calls are the receipt record
  *   law.reviewed(0) — advice stays a lead
- *   ms — wall time of the trial (diagnostics)
  *
  * Cases: discover.capacity, connect.bill, access.screen, access.execute (unix x),
  * crypt.digest.*, price.relation. Combinatorics.combinations(n,1) indexes the set.
@@ -67,8 +66,6 @@ export type GateCourtCase = {
   experts: { subject: string; domain: string | undefined; count: number; siblings?: number; all?: boolean; panel: string[] }
   /** Where the matter is heard. Every case gets a forum and a remedy — none is refused; a floor failure is a LEAD. */
   forum: string
-  /** Wall-clock ms for this trial (recomputed each call). */
-  ms: number
   allow: boolean
   holds: boolean
   /** Filled by caller or goalOf — OPEN|LEAD from combinatorics when attached. */
@@ -108,7 +105,7 @@ const receiptsOf = (...calls: GateCall[]): number =>
   calls.filter((c) => typeof c.hex === 'string' && c.hex.length > 0).length
 
 /**
- * Try one gate case: standard + fidelity re-trial + standing(hex receipts) + reviewed lead + ms.
+ * Try one gate case: standard + fidelity re-trial + standing(hex receipts) + reviewed lead.
  */
 export const gateCourtTrialOf = (input: {
   case: string
@@ -119,7 +116,6 @@ export const gateCourtTrialOf = (input: {
   against?: number
   note?: string
 }): GateCourtCase => {
-  const t0 = Date.now()
   const confidence =
     typeof input.confidence === 'number' && Number.isSafeInteger(input.confidence)
       ? Math.max(0, Math.min(100, input.confidence))
@@ -188,7 +184,6 @@ export const gateCourtTrialOf = (input: {
     remedy: remedyCall,
     experts,
     forum,
-    ms: Math.max(0, Date.now() - t0),
     allow,
     holds: allow && fidelity.holds === true && standing.holds === true && lawful.holds === true,
     goal: allow ? 'OPEN' : 'LEAD',
@@ -372,7 +367,6 @@ export const toolCourtCasesOf = (): GateCourtCase[] => {
 }
 
 export const gateCourtOf = (args: GateCourtArgs = {}) => {
-  const t0 = Date.now()
   const discover = discoverCapacityGateOf()
   const bill = connectBillGateOf()
   const screen = accessScreenGateOf(typeof args.flags === 'number' ? args.flags : 0b11111)
@@ -389,16 +383,14 @@ export const gateCourtOf = (args: GateCourtArgs = {}) => {
   const n = selected.length
   const comb = CombinatoricsFormulas.combinations(Math.max(1, n), 1)
   const bin = CombinatoricsFormulas.binomial(Math.min(4, Math.max(1, n)))
-  const ms = Math.max(0, Date.now() - t0)
   const stable = selected.every((c) => c.fidelity.holds === true && c.fidelity.value === 1 && c.standing.holds === true)
   return {
     kind: 'gate-court' as const,
     call: 'tools/call connector { court: true } | { trial: true }' as const,
     endpoint: '/api/qpu/court' as const,
     thesis:
-      'every tightened gate is tried in court on each case; allow/deny is hex/value/holds/rawNext/ms' as const,
+      'every tightened gate is tried in court on each case; allow/deny is hex/value/holds/rawNext' as const,
     balance: BALANCE,
-    ms,
     cases: selected,
     held: held.length,
     of: n,

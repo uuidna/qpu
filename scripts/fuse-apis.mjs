@@ -153,7 +153,6 @@ const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'fuse')
 const why = rows.filter((r) => !r.reached).reduce((m, r) => ({ ...m, [r.why]: (m[r.why] ?? 0) + 1 }), {})
 const receipt = {
   kind: 'fuse-receipt',
-  when: new Date().toISOString().slice(0, tenOf(1)),
   registry: REGISTRY,
   listed: Object.keys(catalogue).length,
   walked: names.length,
@@ -177,7 +176,6 @@ const receipt = {
     stream: crossStream && { length: crossStream.length, head: crossStream.head, chain: crossStream.chain, holds: crossStream.holds },
   },
   stream: stream && { length: stream.length, head: stream.head, chain: stream.chain, holds: stream.holds },
-  seconds: Math.round((Date.now() - t0) / tenOf(3)),
 }
 fs.writeFileSync('fuse-receipt.json', JSON.stringify(receipt, null, 1) + '\n')
 fs.writeFileSync(

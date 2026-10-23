@@ -19,8 +19,7 @@ const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '../../..')
 
 const stripAnsi = (s: string) => s.replace(/\u001b\[[0-9;]*m/g, '')
 
-const runWrangler = (args: string[]): { ok: boolean; stdout: string; stderr: string; ms: number } => {
-  const t0 = Date.now()
+const runWrangler = (args: string[]): { ok: boolean; stdout: string; stderr: string } => {
   try {
     const stdout = execFileSync('npx', ['wrangler', ...args], {
       cwd: ROOT,
@@ -29,15 +28,14 @@ const runWrangler = (args: string[]): { ok: boolean; stdout: string; stderr: str
       maxBuffer: 8 * 1024 * 1024,
       env: { ...process.env, CI: '1', WRANGLER_SEND_METRICS: 'false' },
     })
-    return { ok: true, stdout: stripAnsi(stdout), stderr: '', ms: Date.now() - t0 }
+    return { ok: true, stdout: stripAnsi(stdout), stderr: '' }
   } catch (e) {
     const err = e as { stdout?: string; stderr?: string; message?: string }
     return {
       ok: false,
       stdout: stripAnsi(err.stdout ?? ''),
       stderr: stripAnsi(err.stderr ?? err.message ?? String(e)),
-      ms: Date.now() - t0,
-    }
+      }
   }
 }
 
@@ -147,36 +145,29 @@ export const cloudflareAccountOf = async (args: Record<string, unknown> = {}) =>
   let d1: { uuid: string; name: string }[] = []
   let pages: { name: string; domains: string }[] = []
   let secretNames: string[] = []
-  let ms = { whoami: 0, kv: 0, r2: 0, d1: 0, pages: 0, secrets: 0 }
   let errors: string[] = []
 
   if (live) {
     const w = runWrangler(['whoami'])
-    ms.whoami = w.ms
     if (w.ok || w.stdout.includes('logged in')) whoami = parseWhoami(w.stdout + '\n' + w.stderr)
     else errors.push(`whoami: ${w.stderr.slice(0, 200)}`)
 
     const kvRun = runWrangler(['kv', 'namespace', 'list'])
-    ms.kv = kvRun.ms
     kv = parseJsonArray(kvRun.stdout).map((x) => {
       const o = x as { id?: string; title?: string }
       return { id: o.id ?? '', title: o.title ?? '' }
     }).filter((x) => x.id)
 
     const r2Run = runWrangler(['r2', 'bucket', 'list'])
-    ms.r2 = r2Run.ms
     r2 = parseR2Names(r2Run.stdout)
 
     const d1Run = runWrangler(['d1', 'list'])
-    ms.d1 = d1Run.ms
     d1 = parseD1Table(d1Run.stdout)
 
     const pagesRun = runWrangler(['pages', 'project', 'list'])
-    ms.pages = pagesRun.ms
     pages = parsePages(pagesRun.stdout)
 
     const secRun = runWrangler(['secret', 'list'])
-    ms.secrets = secRun.ms
     secretNames = parseJsonArray(secRun.stdout)
       .map((x) => (x as { name?: string }).name)
       .filter((n): n is string => typeof n === 'string')
@@ -234,7 +225,6 @@ export const cloudflareAccountOf = async (args: Record<string, unknown> = {}) =>
       holds: (raid as { holds?: boolean })?.holds === true,
       note: 'RAID vs direct — measured Qpu.Hybrid; see connector { raid: true }' as const,
     },
-    ms,
     errors: errors.slice(0, qpuFacesOf().faces),
     goal: 'OPEN' as const,
     holds,

@@ -18,8 +18,6 @@ import { NpFormulas, certifyUnreachable, disjointUnion, findAssignment, findColo
 import { QuantumSecureSignalling, SignalFormulas } from '../families/signal/index.js'
 import { BB84_RAW, SecureChat } from './secure-chat-rbac.js'
 
-const loadSeconds = Math.round(performance.now() / 100) / 10
-
 export interface FormulaRow {
   name: string
   family: string
@@ -41,11 +39,7 @@ const readJson = (root: string, file: string): Record<string, unknown> | null =>
   }
 }
 
-const timed = <T>(run: () => T): { value: T; ms: number } => {
-  const t = performance.now()
-  const value = run()
-  return { value, ms: performance.now() - t }
-}
+const timed = <T>(run: () => T): { value: T } => ({ value: run() })
 
 /** The chat run end to end: two recipients decrypt; by construction an outsider holds no key (theorem crypto). */
 const chatRunOf = () => {
@@ -84,18 +78,15 @@ export const formulasReceiptOf = async (root = process.cwd()) => {
   const corner = (s: string) => parseInt(Array.from(sha256(s).subarray(0, 2), (b) => b.toString(16).padStart(2, '0')).join(''), 16)
   const petersen = generalizedPetersen(5, 2)
   const dodecahedron = generalizedPetersen(10, 2)
-  const testSeconds = Math.round((chat.ms + attacks.ms) / 100) / 10
 
   const evaluated: [string, CrossFormula, string, boolean?][] = [
     ['cross', CrossDomainFormulas.bb84ToCompress(bb84.bits.length), 'sifted BB84 key bits'],
     ['cross', CrossDomainFormulas.observabilityToML(receiptRows), 'rows across the committed receipts'],
-    ['cross', CrossDomainFormulas.deploymentToObs(loadSeconds, testSeconds), 'seconds to load the unit, seconds to run chat and attacks'],
     ['cross', CrossDomainFormulas.quantumToEnterprise(lean?.theorems ?? 0), 'Lean theorems in lean-receipt.json'],
     ['cross', CrossDomainFormulas.medSecureWithQSec(chat.value.users, 256), 'chat users, session key bits'],
     ['cross', CrossDomainFormulas.observabilityToUI(breaches, trials), 'attacks that got through, attack trials'],
     ['cross', CrossDomainFormulas.compressQSecSignals(chat.value.ciphertext, bb84.bits.length), 'sealed body bytes, BB84 key bits'],
     ['cross', CrossDomainFormulas.mlOnObsForPrediction(attacks.value.length, breaches), 'attacks, breaches'],
-    ['cross', CrossDomainFormulas.enterpriseMetricsViaObs((attacks.value.length - breaches) / attacks.value.length, Math.round(chat.ms)), 'share of attacks resisted, chat milliseconds'],
     ['cross', CrossDomainFormulas.testCoverageToQuality(test?.pass ?? 0, test?.tests ?? 0), 'test-receipt.json pass / tests'],
     ['signal', SignalFormulas.siftedBits(BB84_RAW), 'raw qubits per chat pair'],
     ['signal', SignalFormulas.keyBits(BB84_RAW), 'raw qubits per chat pair'],
@@ -158,7 +149,6 @@ export const formulasReceiptOf = async (root = process.cwd()) => {
   const pass = rows.filter((r) => r.pass).length
   return {
     kind: 'formulas-receipt' as const,
-    when: new Date().toISOString().slice(0, 10),
     formulas: evaluated.length,
     rowsTotal: rows.length,
     pass,
@@ -201,7 +191,6 @@ export const discoveryReceiptOf = async () => {
   ]
   return {
     kind: 'discovery-receipt' as const,
-    when: new Date().toISOString().slice(0, 10),
     sources: sources.length,
     sourcesAgree: sources.filter((s) => s.result.agrees).length,
     liveNumbers: live.length,

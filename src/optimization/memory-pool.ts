@@ -9,8 +9,8 @@ export interface PoolStats {
   totalAllocated: number
   inUse: number
   available: number
-  gcPausesMs: number
-  allocationRate: number // items/sec
+  /** operations on the pool so far: a count, not a rate (no clock is read) */
+  operations: number
 }
 
 export interface PoolableObject {
@@ -27,10 +27,8 @@ export class ObjectPool<T extends PoolableObject> {
   private name: string
   private stats = {
     allocations: 0,
-    deallocations: 0,
-    gcPauses: 0
+    deallocations: 0
   }
-  private lastGCTime = 0
 
   constructor(factory: () => T, initialSize: number, name: string) {
     this.factory = factory
@@ -46,7 +44,6 @@ export class ObjectPool<T extends PoolableObject> {
    * Returns a fresh or recycled object
    */
   acquire(): T {
-    const gcStart = performance.now()
     let obj: T
     if (this.available.length > 0) {
       obj = this.available.pop()!
@@ -56,12 +53,6 @@ export class ObjectPool<T extends PoolableObject> {
     }
     this.inUse.add(obj)
     this.stats.allocations++
-
-    const gcTime = performance.now() - gcStart
-    if (gcTime > 0.5) {
-      this.stats.gcPauses++
-      this.lastGCTime = gcTime
-    }
 
     return obj
   }
@@ -87,9 +78,7 @@ export class ObjectPool<T extends PoolableObject> {
       totalAllocated: this.available.length + this.inUse.size,
       inUse: this.inUse.size,
       available: this.available.length,
-      gcPausesMs: this.lastGCTime,
-      allocationRate:
-        (this.stats.allocations + this.stats.deallocations) / (Date.now() / 1000 + 0.001)
+      operations: this.stats.allocations + this.stats.deallocations,
     }
   }
 

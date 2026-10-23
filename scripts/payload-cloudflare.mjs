@@ -271,7 +271,6 @@ const frontends = CLOUDFLARE_FRONTENDS.map((frontend) => {
 const stream = qpuReceiptStreamsOf(0).streams.find((s) => s.stream === 'payload-cf')
 const receipt = {
   kind: 'payload-cf-receipt',
-  when: new Date().toISOString().slice(0, tenOf(1)),
   axes: Object.fromEntries(Object.entries(axes).map(([k, v]) => [k, [...v]])),
   plugins: [...CLOUDFLARE_PLUGINS],
   combinations: total,

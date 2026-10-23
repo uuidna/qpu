@@ -273,7 +273,6 @@ export function generateSitemapIndex() {
     count: sitemaps,
     entries: Array.from({ length: sitemaps }, (_, i) => ({
       url: `https://qpu.uuidna.com/sitemap-formulas-${i}.xml`,
-      lastmod: new Date().toISOString().split('T')[0],
     })),
   }
 }

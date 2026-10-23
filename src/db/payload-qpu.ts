@@ -277,7 +277,9 @@ export function qpuAdapter(args: QpuAdapterArgs = {}): DatabaseAdapterObj {
       createMigration: async ({ migrationName, payload: p }) => {
         const dir = findMigrationDir(args.migrationDir)
         fs.mkdirSync(dir, { recursive: true })
-        const stamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14)
+        // the next number in sequence after the migrations already on disk: a count, not the clock
+        const taken = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => /^\d+_/.test(f)).length : 0
+        const stamp = String(taken + 1).padStart(14, '0')
         const file = path.join(dir, `${stamp}_${(migrationName ?? 'migration').replace(/\W+/g, '_')}.ts`)
         fs.writeFileSync(file, QPU_MIGRATION)
         p.logger.info({ msg: `Migration created at ${file}` })

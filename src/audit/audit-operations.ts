@@ -8,6 +8,7 @@
 import type { AuditResult } from '../families/audit/index.js'
 import { VectorEquilibriumAudit, AuditFormulas, vectorEquilibriumAudit, auditFormulas } from '../families/audit/index.js'
 import { legalAPI, standardsAPI } from './legal-standards-apis.js'
+import { sha256Hex, utf8 } from '../core/crypt.js'
 
 export interface AuditOperation {
   id: string
@@ -40,7 +41,8 @@ export const auditOperations: Record<string, AuditOperation> = {
       const standards = standardsAPI.listStandards()
 
       return {
-        auditId: `audit-${Date.now()}`,
+        // the id is the hash of what was asked, so the same request always has the same id
+        auditId: `audit-${sha256Hex(utf8(JSON.stringify(input)))}`,
         organization: input.organization,
         scope: input.scope || frameworks.map(f => f.id),
         frameworks: frameworks.map(f => ({
@@ -54,7 +56,6 @@ export const auditOperations: Record<string, AuditOperation> = {
           name: s.name,
           controlCount: s.controls.length
         })),
-        startTime: Date.now(),
         estimatedDurationMs: 3600000 // 1 hour
       }
     }
@@ -94,7 +95,6 @@ export const auditOperations: Record<string, AuditOperation> = {
         totalRequirements: results.length,
         gaps,
         recommendations,
-        assessmentTime: Date.now()
       }
     }
   },
@@ -133,7 +133,6 @@ export const auditOperations: Record<string, AuditOperation> = {
         totalRequirements: results.length,
         gaps,
         risks,
-        assessmentTime: Date.now()
       }
     }
   },
@@ -175,7 +174,6 @@ export const auditOperations: Record<string, AuditOperation> = {
           'Audit test results',
           'Management assertions'
         ],
-        assessmentTime: Date.now()
       }
     }
   },
@@ -212,7 +210,6 @@ export const auditOperations: Record<string, AuditOperation> = {
         readiness: maturityLevel >= 4 ? 'certification-ready' : 'needs-improvement',
         controlsCovered: results.filter(r => r.compliant).length,
         totalControls: results.length,
-        assessmentTime: Date.now()
       }
     }
   },
@@ -249,7 +246,6 @@ export const auditOperations: Record<string, AuditOperation> = {
         requirementsMet: results.filter(r => r.compliant).length,
         totalRequirements: results.length,
         criticalFindings,
-        assessmentTime: Date.now()
       }
     }
   },
@@ -282,7 +278,6 @@ export const auditOperations: Record<string, AuditOperation> = {
           score: Math.round((score as number) * 100),
           bar: '█'.repeat(Math.round((score as number) * 10))
         })),
-        assessmentTime: Date.now()
       }
     }
   },
@@ -320,7 +315,6 @@ export const auditOperations: Record<string, AuditOperation> = {
           depVulnScore < 0.8 ? 'Remediate vulnerable dependencies' : null,
           codeQuality < 0.75 ? 'Improve code quality through SAST/linting' : null
         ].filter(Boolean),
-        assessmentTime: Date.now()
       }
     }
   },
@@ -360,7 +354,6 @@ export const auditOperations: Record<string, AuditOperation> = {
         dlpEnabled: input.dlpEnabled,
         breachResponseHours: input.breachResponseHours,
         gaps,
-        assessmentTime: Date.now()
       }
     }
   },
@@ -401,7 +394,6 @@ export const auditOperations: Record<string, AuditOperation> = {
         pamEnabled: input.pamEnabled,
         zeroTrustScore: Math.round((input.zeroTrustControls || 0.5) * 100),
         recommendations,
-        assessmentTime: Date.now()
       }
     }
   },
@@ -442,7 +434,6 @@ export const auditOperations: Record<string, AuditOperation> = {
         trainingScore: Math.round((input.trainingScore || 0.6) * 100),
         drillsPerYear: input.testsPerYear,
         gaps,
-        assessmentTime: Date.now()
       }
     }
   },
@@ -489,15 +480,15 @@ export const auditOperations: Record<string, AuditOperation> = {
         riskScore / 100
       ) * 100
 
+      // the stamp is the caller's: 0 when none is given, so the proof does not read the clock
       const proof = AuditFormulas.generateAuditProof(
-        Date.now(),
+        0,
         equilibrium.octants || {},
         { compliance: complianceScore, standards: standardsScore, risk: riskScore }
       )
 
       return {
         organization: input.organization,
-        auditDate: new Date().toISOString(),
         scope: input.scope || [],
         summary: {
           overallScore: Math.round(overallScore),
@@ -514,7 +505,6 @@ export const auditOperations: Record<string, AuditOperation> = {
           status: (val.score || 0) > 80 ? 'pass' : 'review'
         })),
         signatureProof: proof,
-        timestamp: Date.now(),
         recommendations: [
           'Regular training on security practices',
           'Quarterly compliance assessments',
