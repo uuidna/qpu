@@ -18,6 +18,9 @@ export class FormulaRouter {
   private formulaCache: Map<string, FormulaMetadata> = new Map()
   private routeCache: Map<string, FormulaRoute> = new Map()
   private affinityWeights: Map<string, number> = new Map()
+  private routeSeq = 0
+  /** wall-clock ms each route entered the cache: its expiry only, never reported or used to choose a route (operational) */
+  private routeCachedAt: Map<string, number> = new Map()
 
   constructor(registry: NodeRegistry) {
     this.registry = registry
@@ -60,7 +63,7 @@ export class FormulaRouter {
 
     // Check cache
     const cached = this.routeCache.get(formulaId)
-    if (cached && Date.now() - cached.priority < 10000) {
+    if (cached && Date.now() - (this.routeCachedAt.get(formulaId) ?? 0) < 10000) {
       const nodes = cached.targetNodes
         .map(nodeId => this.registry.getNodeInfo(nodeId))
         .filter((n): n is NodeInfo => n !== undefined)
@@ -87,7 +90,8 @@ export class FormulaRouter {
     }
 
     // Cache route
-    route.priority = Date.now()
+    route.priority = ++this.routeSeq
+    this.routeCachedAt.set(formulaId, Date.now())
     this.routeCache.set(formulaId, route)
 
     const selectedNodes = route.targetNodes
@@ -124,7 +128,7 @@ export class FormulaRouter {
       formulaId: metadata.id,
       targetNodes: [bestNode.id],
       strategy: 'load-balanced',
-      priority: Date.now(),
+      priority: 0,
       timeout: metadata.estimatedDuration ? metadata.estimatedDuration * 2 : 30000
     }
   }
@@ -147,7 +151,7 @@ export class FormulaRouter {
       formulaId: metadata.id,
       targetNodes: sorted.map(s => s.node.id),
       strategy: 'broadcast',
-      priority: Date.now(),
+      priority: 0,
       timeout: metadata.estimatedDuration ? metadata.estimatedDuration * 3 : 60000
     }
   }
@@ -173,7 +177,7 @@ export class FormulaRouter {
       formulaId: metadata.id,
       targetNodes: [best.id],
       strategy: 'affinity',
-      priority: Date.now(),
+      priority: 0,
       timeout: metadata.estimatedDuration ? metadata.estimatedDuration * 2 : 30000
     }
   }
@@ -258,7 +262,7 @@ export class FormulaRouter {
       formulaId,
       targetNodes: nodes.map(n => n.id),
       strategy: 'broadcast',
-      priority: Date.now(),
+      priority: 0,
       timeout: 60000
     }
   }
@@ -273,7 +277,7 @@ export class FormulaRouter {
       formulaId,
       targetNodes: [random?.id || this.registry.getState().localNodeId],
       strategy: 'load-balanced',
-      priority: Date.now(),
+      priority: 0,
       timeout: 30000
     }
   }

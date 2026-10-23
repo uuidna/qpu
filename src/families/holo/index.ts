@@ -1,4 +1,4 @@
-import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBytes, sha256, utf8, type Bytes } from '../../core/crypt.js'
+import { concat, drbgOf, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, sha256, utf8, type Bytes } from '../../core/crypt.js'
 import { qpuHexRegisterOf, qpuHologramOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -52,7 +52,8 @@ export class HologramStreams {
   private heads: Map<string, string>
   private lengths: Map<string, number>
 
-  constructor(scales: readonly string[], seed: Bytes = randomBytes(32)) {
+  /** the default seed is the formula stream's first 32 bytes: a fixed default, part of every output */
+  constructor(scales: readonly string[], seed: Bytes = drbgOf()(32)) {
     this.scales = scales
     this.seeds = new Map(scales.map((s) => [s, hkdf('sha256', seed, utf8('qpu-hologram'), s, 32)]))
     this.heads = new Map(scales.map((s) => [s, uuidV8Of(sha256(`genesis|${s}`))]))

@@ -365,17 +365,16 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
   }
   if (source === 'alpine') {
     // Alpine Linux community apps: one directory per package in aports/community (GitLab, keyless). The count (x-total on
-    // page 1) is always the lead; the full enumeration is attempted page by page but DEADLINE-BOUNDED and fail-fast — a
-    // slow or throttled page stops the walk (HOT, continued next run), never a long wait. The reading stays small: a
+    // page 1) is always the lead; the full enumeration is attempted page by page and fail-fast — a page that errors
+    // stops the walk (HOT, continued next run). No clock bounds the walk: the count it reaches is a function of the pages read. The reading stays small: a
     // count and a content digest over the sorted names so far (the address that recomputes), never the names inlined.
     const base = 'https://gitlab.alpinelinux.org/api/v4/projects/alpine%2Faports/repository/tree?path=community&per_page=100'
-    const t0 = Date.now()
     const first = await get(`${base}&page=1`)
     const apps = Number(first.headers.get('x-total'))
     const pages = Number(first.headers.get('x-total-pages'))
     const names = ((await first.json()) as { name?: string }[]).map((e) => e.name ?? '')
     let page = 1
-    for (let p = 2; p <= pages && Date.now() - t0 < DEADLINE; p++) {
+    for (let p = 2; p <= pages; p++) {
       try {
         for (const e of (await get(`${base}&page=${p}`).then((r) => r.json())) as { name?: string }[]) if (e.name) names.push(e.name)
         page = p
@@ -411,21 +410,18 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     }
     // the sitemap is one read that gathers the whole site, and a cold isolate's first answer is Payload's initialisation:
     // it gets the window; every page then gets the deadline
-    const sitemapAt = Date.now()
     const xml = await (await ask('/sitemap.xml', 'application/xml', OFFLINE_WINDOW)).text()
-    const sitemapMs = Date.now() - sitemapAt
     const paths = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]!.replace(origin, '') || '/')
     // n addresses at a time: every page is rendered in this isolate, and sixty at once starve each other of the deadline
     const one = async (path: string) => {
-      const at = Date.now()
       try {
         const r = await ask(path, 'text/html')
         const html = r.status === 200 ? await r.text() : ''
         const page = (r.headers.get('content-type') ?? '').includes('text/html')
         const title = page ? (/<title>([^<]*)<\/title>/.exec(html)?.[1]?.trim() ?? '') : ''
-        return { path, status: r.status, title, page, ms: Date.now() - at }
+        return { path, status: r.status, title, page }
       } catch (e) {
-        return { path, status: 0, title: '', page: false, ms: Date.now() - at, error: (e as Error).message }
+        return { path, status: 0, title: '', page: false, error: (e as Error).message }
       }
     }
     // a slice per call: { from, take } with next, so no one call renders the whole site
@@ -436,7 +432,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     for (let i = 0; i < slice.length; i += L.n) rows.push(...(await Promise.all(slice.slice(i, i + L.n).map(one))))
     const failing = rows.filter((r) => r.status !== 200 || (r.page && !r.title))
     const pages = rows.filter((r) => r.page).length
-    const live = { sitemapMs, total, from, take: slice.length, ...(from + slice.length < total ? { next: from + slice.length } : {}), addresses: rows.length, answered: rows.filter((r) => r.status === 200).length, titled: rows.filter((r) => r.title).length, slowest: rows.reduce((a, b) => (b.ms > a.ms ? b : a), rows[0] ?? { path: '', ms: 0 }).path, failing: failing.map((r) => `${r.path} ${r.status}${r.error ? ` ${r.error}` : ''}`) }
+    const live = { total, from, take: slice.length, ...(from + slice.length < total ? { next: from + slice.length } : {}), addresses: rows.length, answered: rows.filter((r) => r.status === 200).length, titled: rows.filter((r) => r.title).length, failing: failing.map((r) => `${r.path} ${r.status}${r.error ? ` ${r.error}` : ''}`) }
     return { source, url: `${origin}/sitemap.xml`, reading: live, expected: { answered: rows.length, titled: pages }, agrees: rows.length > L.n - L.n && failing.length === L.n - L.n, rows }
   }
   if (source === 'release') {

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { verifyHex } from '../verify.js'
 import { HeatFormulas } from './index.js'
 import '../../mcp/families.js'
-import { qpuFacesOf, qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { qpuHexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { flowFamiliesOf } from '../merkaba/index.js'
 
 /** CODE QUALITY AS PHYSICS. A file's temperature is its commits over its days; its coherence the days it holds per fix;
@@ -39,11 +39,10 @@ test('heat: temperature, coherence, cooling and the Landauer floor — exact, cr
   t.diagnostic('12 formulas; identity kind heat; T 100, T₂ 25, cooling 25, ways 4, residue 2, split 5 jobs, landauer(0) = 0 reversible; crossing to physics')
 })
 
-test('heat.slow names a formula that answers slowly: its statement is false', async () => {
-  const faces = qpuFacesOf().faces
-  qpuHexRegisterOf('zzslow', 'spin', () => { const t = performance.now(); while (performance.now() - t < 3 * faces); return 1 })
-  const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'), 0)) as unknown as { value: number; holds: boolean; hot: boolean; }
-  assert.ok(r.value >= 3 * faces, 'the control runs slow')
-  assert.equal(r.hot, true)
-  assert.equal(r.holds, false, 'its statement is false: a lead')
+test('heat.slow is never established: a speed claim is not a theorem and reads no clock', async () => {
+  qpuHexRegisterOf('zzslow', 'spin', () => 1)
+  const r = (await HeatFormulas.slow(flowFamiliesOf().indexOf('zzslow'), 0)) as unknown as { value: number; holds: boolean; statement: string }
+  assert.equal(r.holds, false, 'the statement is not established')
+  assert.equal(r.value, 0)
+  assert.match(r.statement, /not a theorem/)
 })

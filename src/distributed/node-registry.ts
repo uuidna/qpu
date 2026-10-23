@@ -17,9 +17,13 @@ export class NodeRegistry {
   private state: NodeRegistryState
   private gossipConfig: GossipConfig
   private gossipMessages: Map<string, GossipMessage> = new Map()
+  /** wall-clock ms each gossip message arrived: its expiry only, never reported (operational) */
+  private gossipSeenAt: Map<string, number> = new Map()
   private heartbeatIntervals: Map<string, NodeJS.Timeout> = new Map()
   private gossipInterval: NodeJS.Timeout | null = null
   private messageHandlers: Map<string, Function> = new Map()
+  /** sequence for event ids: a counter, not the clock, so the ids a run produces are reproducible */
+  private eventSeq = 0
 
   constructor(
     localNodeId: string,
@@ -29,7 +33,6 @@ export class NodeRegistry {
       nodes: new Map(),
       localNodeId,
       clusterSize: 1,
-      lastSync: Date.now()
     }
 
     this.gossipConfig = {
@@ -141,10 +144,9 @@ export class NodeRegistry {
 
     // Broadcast via gossip
     this.gossip({
-      id: `node-join-${Date.now()}`,
+      id: `node-join-${++this.eventSeq}`,
       type: 'node-join',
       sourceNode: this.state.localNodeId,
-      timestamp: Date.now(),
       data: node,
       seenBy: new Set([this.state.localNodeId])
     })
@@ -166,10 +168,9 @@ export class NodeRegistry {
 
     // Broadcast via gossip
     this.gossip({
-      id: `node-leave-${Date.now()}`,
+      id: `node-leave-${++this.eventSeq}`,
       type: 'node-leave',
       sourceNode: this.state.localNodeId,
-      timestamp: Date.now(),
       data: { nodeId },
       seenBy: new Set([this.state.localNodeId])
     })
@@ -242,6 +243,7 @@ export class NodeRegistry {
     }
 
     this.gossipMessages.set(message.id, message)
+    this.gossipSeenAt.set(message.id, Date.now())
   }
 
   /**
@@ -317,18 +319,18 @@ export class NodeRegistry {
       const maxAge = this.gossipConfig.maxAge
       const now = Date.now()
 
-      for (const [id, msg] of this.gossipMessages.entries()) {
-        if (now - msg.timestamp > maxAge) {
+      for (const [id] of this.gossipMessages.entries()) {
+        if (now - (this.gossipSeenAt.get(id) ?? now) > maxAge) {
           this.gossipMessages.delete(id)
+          this.gossipSeenAt.delete(id)
         }
       }
 
       // Periodically send heartbeat
       this.gossip({
-        id: `heartbeat-${Date.now()}`,
+        id: `heartbeat-${++this.eventSeq}`,
         type: 'heartbeat',
         sourceNode: this.state.localNodeId,
-        timestamp: Date.now(),
         data: this.state.nodes.get(this.state.localNodeId),
         seenBy: new Set([this.state.localNodeId])
       })

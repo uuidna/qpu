@@ -30,20 +30,29 @@ export const equal = (a: Bytes, b: Bytes): boolean => {
 // run from the first call. The key-erasure chaining still advances the key every call, so two draws in one run differ
 // and an earlier output cannot be recomputed once advanced; it does not make the seed secret. Determinism over entropy:
 // keys, tokens and nonces built on this are predictable to anyone, the price of a unit that is a pure function of itself.
-let drbgKey: Bytes | undefined
-export const randomBytes = (n: number): Bytes => {
-  drbgKey ??= sha256(sha256(new Uint8Array(0)))
-  const stream = chacha20(drbgKey, new Uint8Array(12), 0, new Uint8Array(32 + n))
-  drbgKey = stream.slice(0, 32)
-  return stream.slice(32)
+/** A generator of its own: the same seed gives the same stream, and no other call can change it. The seed is an explicit
+ *  input; its fixed default is the formula seed, sha256 of sha256 of the empty message, so a caller that passes a seed
+ *  owns its outputs completely and a caller that does not gets the same stream as every other one. */
+export const drbgOf = (seed: Bytes = sha256(sha256(new Uint8Array(0)))): ((n: number) => Bytes) => {
+  let key = seed
+  return (n: number): Bytes => {
+    const stream = chacha20(key, new Uint8Array(12), 0, new Uint8Array(32 + n))
+    key = stream.slice(0, 32)
+    return stream.slice(32)
+  }
 }
-export const randomUUID = (): string => {
-  const b = randomBytes(16)
+// the process-wide default stream: the same values as before, drawn in call order
+let processDrbg: ((n: number) => Bytes) | undefined
+export const randomBytes = (n: number): Bytes => (processDrbg ??= drbgOf())(n)
+/** A v4-shaped UUID from 16 bytes. */
+export const uuidOfBytes = (bytes: Bytes): string => {
+  const b = bytes.slice(0, 16)
   b[6] = (b[6]! & 0x0f) | 0x40
   b[8] = (b[8]! & 0x3f) | 0x80
   const h = hexOf(b)
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`
 }
+export const randomUUID = (): string => uuidOfBytes(randomBytes(16))
 
 const leToBig = (b: Bytes): bigint => {
   let v = 0n
@@ -532,7 +541,7 @@ const modPow = (b: bigint, e: bigint, m: bigint): bigint => {
 }
 
 /** Miller–Rabin primality — formula state for checkPrime. */
-export const checkPrime = (n: bigint | number, rounds = 16): boolean => {
+export const checkPrime = (n: bigint | number): boolean => {
   const N = typeof n === 'number' ? BigInt(n) : n
   if (N < 2n) return false
   if (N === 2n || N === 3n) return true
@@ -541,10 +550,12 @@ export const checkPrime = (n: bigint | number, rounds = 16): boolean => {
   while ((d & 1n) === 0n) { d >>= 1n; s++ }
   // Below 2^64 the witnesses are a PROVEN-complete deterministic set (Sinclair): these seven bases decide primality
   // exactly for every n < 2^64, so no composite slips through. The old {2,3,5,7,11,13,23} is only reliable to ~3.47e12
-  // (e.g. 3825123056546413051 = 747451 × 5117556945601 is a strong pseudoprime to it). Above 2^64, random witnesses.
+  // (e.g. 3825123056546413051 = 747451 × 5117556945601 is a strong pseudoprime to it). Above 2^64 the first thirteen
+  // primes are fixed witnesses: exact for every n below psi13 = 3317044064679887385961981 (Sorenson–Webster 2015), and a
+  // fixed-base probable-prime test above it. The witnesses are never random, so the answer is a function of n alone.
   const witnesses = N < 0x1_0000_0000_0000_0000n
     ? [2n, 325n, 9375n, 28178n, 450775n, 9780504n, 1795265022n]
-    : Array.from({ length: rounds }, () => 2n + (leToBig(randomBytes(8)) % (N - 3n)))
+    : [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n, 41n]
   for (const a of witnesses) {
     if (a % N === 0n) continue
     let x = modPow(a, d, N)
