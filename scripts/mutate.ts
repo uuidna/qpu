@@ -1,0 +1,135 @@
+#!/usr/bin/env node
+/**
+ * Every guard in qpu, proved able to fail.
+ *
+ * LEARNED FROM @uuidna/school, which built this first and states the reason better than a restatement would: a
+ * test that never fails is furniture, and that package had shipped two green ones that were measuring the
+ * apparatus rather than the code. The RUNNER is that discipline; the TABLE is qpu's own, because a mutation
+ * table copied between packages would test the other package's guards.
+ *
+ * qpu had 26 test files and nothing establishing that any of them could fail. `npm run ci` runs lean, test and
+ * proof — three ways of checking the suite agrees with itself, and no way of checking the suite disagrees with
+ * a broken build.
+ *
+ *   npx tsx scripts/mutate.ts            every mutation
+ *   npx tsx scripts/mutate.ts gate       only those whose label matches
+ */
+import { execSync } from 'node:child_process'
+import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { join } from 'node:path'
+
+const ROOT = process.cwd()
+
+/**
+ * Each row: the file, the exact text to replace, what to replace it with, and what breaking it should mean.
+ * `from` must occur EXACTLY ONCE — an anchor that stops matching is how a mutation silently becomes a no-op and
+ * reports a guard as passing when nothing was tested. Counted below rather than hoped for.
+ */
+const MUTATIONS = [
+]
+
+const filter = process.argv[2]
+const rows = filter ? MUTATIONS.filter((m) => m.label.includes(filter)) : MUTATIONS
+if (rows.length === 0) {
+  if (filter) {
+    console.error(`no mutation matches "${filter}"`)
+    process.exit(1)
+  }
+  console.log('\nMUTATION TESTING — no mutations defined, skipping')
+  process.exit(0)
+}
+
+/**
+ * A MUTANT THAT HANGS IS A MUTANT THAT WAS KILLED, and without a bound it looks like a run that never finishes.
+ * Worse, a run stopped from outside never reaches its restore and leaves the tree MUTATED — which has happened
+ * in the sibling package twice, once on a file git could not restore. The timeout keeps the decision inside this
+ * runner, which always puts the file back.
+ */
+const SUITE_TIMEOUT_MS = 180_000
+
+/**
+ * THE ROLLCALL, NOT `npm test`, AND THE REASON IS THE PROOF.
+ *
+ * `npm test` runs the receipted reporter, which writes test-receipt.json on every invocation. `npm run proof` is
+ * `git diff --exit-code -- test-receipt.json`, so a receipt that moved is a failed gate. This runner invokes the
+ * suite once per mutant and ends with `npm run build` — which regenerates the README and never re-runs the
+ * suite — so the LAST MUTANT'S receipt was what stayed on disk. Measured: a clean tree before one mutant,
+ * `M test-receipt.json` after it.
+ *
+ * That made the runner unwireable into CI, where it would have to run before the proof step and would fail it,
+ * and it quietly broke the proof for anyone who ran a mutation locally and then committed. `test:rollcall` is the
+ * same suite over the same built output with no reporter attached, so nothing is written and the proof is a
+ * question about the build rather than about who last ran a mutation.
+ */
+const suitePasses = () => {
+  try {
+    execSync('npm run test:rollcall', { cwd: ROOT, encoding: 'utf8', stdio: 'pipe', timeout: SUITE_TIMEOUT_MS })
+    return true
+  } catch (error) {
+    if (error?.code === 'ETIMEDOUT') console.log('     (the mutant hung the suite — killed by timeout)')
+    return false
+  }
+}
+
+/**
+ * THE BASELINE MUST BE GREEN OR EVERY MUTANT IS A FALSE KILL.
+ *
+ * A mutant is "killed" when the suite fails with it applied. If the suite ALREADY fails — a broken build, a
+ * peer's half-finished edit, a genuinely failing test — then it fails for every mutant too, and the runner
+ * reports a perfect score while testing nothing. That is the apparatus failing toward green, which is the exact
+ * fault mutation testing exists to catch, and this runner shipped without a guard against it in itself.
+ *
+ * Checked once, before anything is touched, and refused rather than reported.
+ */
+if (!suitePasses()) {
+  console.error(
+    '\nMUTATION TESTING REFUSED — the suite does not pass before any mutation is applied.\n'
+    + 'Every mutant would be recorded as killed and the score would be meaningless. Fix the suite first.\n',
+  )
+  process.exit(1)
+}
+
+console.log(`\nMUTATION TESTING — ${rows.length} mutant(s), baseline green\n`)
+
+const survived = []
+const noop = []
+
+for (const m of rows) {
+  const path = join(ROOT, m.file)
+  if (!existsSync(path)) {
+    noop.push({ ...m, hits: 0 })
+    console.log(`  ?  ${m.label}\n     file not found: ${m.file} — NOT APPLIED`)
+    continue
+  }
+  const original = readFileSync(path, 'utf8')
+
+  const hits = original.split(m.from).length - 1
+  if (hits !== 1) {
+    noop.push({ ...m, hits })
+    console.log(`  ?  ${m.label}\n     anchor occurs ${hits} time(s), expected exactly 1 — NOT APPLIED`)
+    continue
+  }
+
+  writeFileSync(path, original.replace(m.from, m.to))
+  const passed = suitePasses()
+  writeFileSync(path, original)
+
+  if (passed) {
+    survived.push(m)
+    console.log(`  ✗  ${m.label}\n     SURVIVED — the suite still passed, so nothing checks that ${m.breaks}`)
+  } else {
+    console.log(`  ✓  ${m.label}`)
+  }
+}
+
+// leave the tree as it was found, built
+execSync('npm run build', { cwd: ROOT, stdio: 'pipe' })
+
+console.log(`\nmutation score: ${rows.length - survived.length - noop.length}/${rows.length} killed`)
+if (noop.length) console.log(`${noop.length} not applied — the anchor moved`)
+if (survived.length) {
+  console.log('\nSURVIVING MUTANTS:')
+  for (const m of survived) console.log(`  ${m.label} — ${m.breaks}`)
+}
+
+process.exit(survived.length || noop.length ? 1 : 0)

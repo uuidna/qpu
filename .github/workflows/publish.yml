@@ -309,8 +309,8 @@ jobs:
             sleep 1
           done
           grep -q 'serving https://qpu.uuidna.com' boot.log
-          QPU_HOST=http://localhost:8787 node scripts/receipt.mjs gate push
-      - name: The scripts suites (every scripts/*.test.mjs, discovered by glob)
+          QPU_HOST=http://localhost:8787 npx tsx scripts/receipt.ts gate push
+      - name: The scripts suites (every scripts/*.test.ts, discovered by glob)
         run: npm run test:scripts
       # EVERY SCALE PROVES QUANTUM: standalone here (the booted unit proves itself), the container in `image`, the
       # Worker in `test` against the live host; all three run the same qpu_prove on the same bytes
@@ -320,7 +320,7 @@ jobs:
       # so the README is accountable to the commit before it by design and would always differ here.
       - name: The generated files are what the spec and the receipts generate (deployment, configs, registries, release notes)
         run: |
-          node scripts/payload-cloudflare.mjs --repo > /dev/null
+          npx tsx scripts/payload-cloudflare.ts --repo > /dev/null
           npm run readme
           git diff --exit-code -- wrangler.jsonc Dockerfile docker-compose.yml k8s src/payload.config.ts src/mcp/families.ts src/receipts/index.ts package.json src/blocks/index.ts src/components/blocks/index.ts tsconfig.json tsconfig.payload.json RELEASE.md .zenodo.json
       - name: The generator enumerates every combination (runtime, db, storage, email, frontend, plugin subset)
@@ -393,13 +393,13 @@ jobs:
         run: *channel_scan
       - name: Guard — the host MCP is @payloadcms/plugin-mcp only and generated from Lean, else refuse to run the waves
         if: github.event_name == 'schedule'
-        run: node scripts/guard.mjs https://qpu.uuidna.com
+        run: npx tsx scripts/guard.ts https://qpu.uuidna.com
       - name: Free waves (improve + discover) against the live host — the audit loop runs itself
         if: github.event_name == 'schedule'
-        run: node scripts/waves.mjs https://qpu.uuidna.com
+        run: npx tsx scripts/waves.ts https://qpu.uuidna.com
       - name: Develop every family against the live host — the free develop loop over the host MCP, no tokens
         if: github.event_name == 'schedule'
-        run: node scripts/develop.mjs --all
+        run: npx tsx scripts/develop.ts --all
       - run: npm ci
       - name: Every test, against the live host
         id: live
@@ -411,7 +411,7 @@ jobs:
           set +e
           npm test 2>&1 | tee test.log
           status=${PIPESTATUS[0]}
-          node scripts/examine.mjs https://qpu.uuidna.com 2>&1 | tee -a test.log
+          npx tsx scripts/examine.ts https://qpu.uuidna.com 2>&1 | tee -a test.log
           status=$(( status | PIPESTATUS[0] ))
           echo "status=$status" >> "$GITHUB_OUTPUT"
           exit $status
@@ -501,7 +501,7 @@ jobs:
             exit 0
           fi
           set +e
-          npm publish --provenance --access public --tag "$(node scripts/version-lock.mjs --dist-tag)" 2>&1 | tee publish.log
+          npm publish --provenance --access public --tag "$(npx tsx scripts/version-lock.ts --dist-tag)" 2>&1 | tee publish.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ] && grep -q "E404" publish.log; then
             echo "::error::npm refused the PUT with 404: npmjs.com has no trusted publisher for uuidna/qpu + publish.yml. Set one under the package's Settings → Trusted publishers (GitHub Actions, repository uuidna/qpu, workflow publish.yml), then rerun this job. The GitHub Release and the Zenodo archive are already made."
@@ -512,4 +512,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERIFY_ATTEMPTS: '30'
           VERIFY_EVERY_MS: '10000'
-        run: node scripts/verify-release.mjs "${GITHUB_REF_NAME#v}"
+        run: npx tsx scripts/verify-release.ts "${GITHUB_REF_NAME#v}"
