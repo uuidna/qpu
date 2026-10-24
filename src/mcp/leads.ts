@@ -6,11 +6,13 @@
 //   external  it needs a credential or a host the unit does not hold: it names what it needs
 // holds is true when every open lead has a route: the check that no lead is left unrouted.
 import { existsSync, readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { mcpFuseOf } from '../quantum/processing/unit/index.js'
 
 type Lead = { name: string; state: string; lead: string }
 
-const MEMORY = new URL('../../scripts/leads.memory.json', import.meta.url)
+// the memory is read from the repository when there is one; a host with no file system (a Worker) has no memory, and says so
+const MEMORY = (() => { try { return fileURLToPath(new URL('../../scripts/leads.memory.json', import.meta.url)) } catch { return undefined } })()
 
 const ROUTES = [
   { route: 'blocked', test: /in-flight|uncommitted/i, owes: 'the owner of the in-flight change says what to do with it' },
@@ -28,7 +30,7 @@ export const routeOf = (lead: Lead) => {
 
 /** Every lead in the memory, routed. Crossed and standing leads are not open, so they carry no route. */
 export const leadsOf = () => {
-  if (!existsSync(MEMORY)) return { source: 'scripts/leads.memory.json', reached: false, leads: [] as Routed[], holds: false }
+  if (MEMORY === undefined || !existsSync(MEMORY)) return { source: 'scripts/leads.memory.json', reached: false, leads: [] as Routed[], holds: false }
   const memory = JSON.parse(readFileSync(MEMORY, 'utf8')) as { leads: Lead[] }
   const open: Routed[] = memory.leads.filter((l) => l.state === 'open').map((l) => ({ name: l.name, ...routeOf(l), lead: l.lead }))
   const counts = open.reduce<Record<string, number>>((acc, row) => ({ ...acc, [row.route]: (acc[row.route] ?? 0) + 1 }), {})

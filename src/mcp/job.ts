@@ -9,11 +9,12 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { mcpFuseOf } from '../quantum/processing/unit/index.js'
 
-const DIR = join(tmpdir(), 'qpu-jobs')
-mkdirSync(DIR, { recursive: true })
+// the job directory and the unit's module paths are read when a job starts, not when the module loads: a host with no file system
+// (a Worker) must still load the other doors, and this one answers that it cannot run jobs there
+const DIR = (() => { try { const d = join(tmpdir(), 'qpu-jobs'); mkdirSync(d, { recursive: true }); return d } catch { return join(tmpdir(), 'qpu-jobs') } })()
 
-const MCP = new URL('../quantum/processing/unit/mcp.js', import.meta.url).href
-const FUSED = new URL('./qpu-fused.js', import.meta.url).href
+const MCP = (() => { try { return new URL('../quantum/processing/unit/mcp.js', import.meta.url).href } catch { return '' } })()
+const FUSED = (() => { try { return new URL('./qpu-fused.js', import.meta.url).href } catch { return '' } })()
 
 const pathOf = (id: string, ext: string) => join(DIR, `${id}.${ext}`)
 const readOf = (id: string, ext: string) => (existsSync(pathOf(id, ext)) ? readFileSync(pathOf(id, ext), 'utf8') : '')
