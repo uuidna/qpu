@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
     webpackConfig.resolve.extensionAlias = { '.cjs': ['.cts', '.cjs'], '.js': ['.ts', '.tsx', '.js', '.jsx'], '.mjs': ['.mts', '.mjs'] }
     return webpackConfig
   },
+  // the public MCP endpoint is Payload's own plugin endpoint: /mcp is the same route under the Payload api base
+  async rewrites() {
+    return [{ source: '/mcp', destination: '/api/qpu/mcp' }]
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
