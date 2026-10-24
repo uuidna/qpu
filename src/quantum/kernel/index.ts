@@ -39,7 +39,7 @@ const knapsack=(items:number[],cap:number)=>{let max=0,cnt=0;for(let m=0;m<(1<<i
 const hashCollision=(s:number)=>{const t=(((s*1103515245+12345)>>>0)%Math.max(1,s)),g=groverSearch(BigInt(t),BigInt(s));return{target:t,foundAt:Number(g.target),collisionProof:g.found,speedup:`√${s}=${Math.sqrt(s).toFixed(1)}`}}
 const ghzState=()=>({type:'GHZ',qubits:3,entanglement:PHASE2_BELL,states:[{amplitude:'1/√2',basis:'|000⟩'},{amplitude:'1/√2',basis:'|111⟩'}]})
 const bellPairs=(cnt:number)=>({count:cnt,pairs:Number(bell(BigInt(cnt))),maxEntanglement:true,correlations:'100%'})
-const surfaceCode=(q:number)=>{const d=3+2*q;return{type:'surface_code',logicalQubits:q,distance:d,dataQubits:2*d*d-d,threshold:0.01,implementation:'topological'}}
+const surfaceCode=(q:number)=>{const d=3+2*q;return{type:'surface_code',logicalQubits:q,distance:d,dataQubits:2*d*d-2*d+1,correctable:(d-1)/2,threshold:0.01,implementation:'topological'}}
 const stabilizerCode=(n:number,k:number)=>({type:'stabilizer',codeLength:n,dimension:k,stabilizers:Number(1n<<BigInt(n-k)),minDistance:1})
 // H = c·σx on |0⟩: exp(-iHt)|0⟩ = cos(ct)|0⟩ - i·sin(ct)|1⟩; accuracy is how well the state stays normalised
 const hamiltonianSim=(c:number,t:number)=>{const evolution=Math.cos(c*t),phase=Math.sin(c*t);return{coupling:c,time:t,evolution,phase,accuracy:1-Math.abs(1-(evolution*evolution+phase*phase))}}

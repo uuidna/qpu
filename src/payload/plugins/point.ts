@@ -1,4 +1,4 @@
-import { ClaySeals, CLAY_SEALS, ClayDisclosure } from '../../families/clay/index.js'
+import { ClaySeals, CLAY_SEALS } from '../../families/clay/index.js'
 import { CloudFormulas } from '../../families/cloud/index.js'
 import { LawFormulas } from '../../families/law/index.js'
 import { PermaFormulas, permaTrinityOf } from '../../families/perma/index.js'
@@ -66,7 +66,6 @@ export const pointOf = async () => {
   }))
 
   const trinity = permaTrinityOf()
-  const disclosure = ClayDisclosure.disclosure()
   const scale = CloudFormulas.scale(100, 30)
   const tools = mcpToolsListOf()
   const listBytes = JSON.stringify({ resultType: 'complete' as const, tools }).length
@@ -88,7 +87,6 @@ export const pointOf = async () => {
   const problemCount = Object.keys(CLAY_PROBLEMS).length
   const attracts = [
     ...seals,
-    callOf('clay.disclosure', [], disclosure),
     callOf('perma.coins', [coins], PermaFormulas.coins(coins)),
     callOf('perma.rays', [rays], PermaFormulas.rays(rays)),
     callOf('perma.faces', [coins, rays], PermaFormulas.faces(coins, rays)),

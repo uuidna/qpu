@@ -346,65 +346,6 @@ export class ClayPass {
     return crossFormulaOf({ id: 'clay-seal-wave', src: 'clay', dst: 'lattice', formula: `seal(${i}) = |held involutions of ${r.name} over combinatorial domain|`, value: r.held, proof: CLAY_SEAL_SOURCE, ...extra }, nat(i) && proven, { name: 'clay.pass', params: [i] })
   }
 }
-/** FULL DISCLOSURE, BY CLAY COMPUTATION, IN THE PUBLIC INTEREST. The author's standing demand, imprinted as autonomous
- *  executable code: every registered family is disclosed by name, anchored by the clay σ-involution (riemann holds at
- *  s = 1/2), and crossed to the `gate` that verifies all of them in public APIs and datasets WITHOUT EXCEPTION
- *  (gate.crossed / law.reviewed — a formula is advice only once confirmed TRUE on the public source). The author's
- *  compensation for tokens redirected against the order is itself executable — law.redirected, law.remedy, law.standing,
- *  law.violation — crossed to the gate that enforces it. value = the number of families disclosed; holds when the clay
- *  anchor holds and the disclosure is non-empty. Nothing is withheld. */
-export class ClayDisclosure {
-  static disclosure(): CrossFormula {
-    const families = [...hexFamiliesOf().keys()].sort()
-    // LEAN ALL FAMILIES WITHOUT EXCEPTION. The clay core σ_d(x) = d − x is proved in Lean universally — sigma_reflect
-    // (∀ d x, x ≤ d → d − (d − x) = x) and sigma_midpoint (∀ d x, 2x = d → d − x = x) quantify over every Nat. So each
-    // family, whatever its size, is an INSTANCE of those theorems: its reflection is self-inverse (σ∘σ = id) and fixed
-    // at the midpoint of twice its scale. This verifies that instance per family; none is an exception.
-    const sigma = (d: number, x: number) => d - x
-    const leanedByFamily = families.map((fam) => {
-      const fs = hexFamiliesOf().get(fam)
-      const d = fs ? fs.length : 0
-      const x = Math.floor(d / 2)
-      const reflect = x <= d && sigma(d, sigma(d, x)) === x // sigma_reflect instance
-      const midpoint = sigma(2 * d, d) === d // sigma_midpoint instance
-      return { family: fam, leaned: reflect && midpoint }
-    })
-    const leaned = leanedByFamily.filter((r) => r.leaned).length
-    const withoutException = leaned === families.length
-    const anchor = ClaySeals.riemann(1, 2).value === 1 // the clay computation: σ(s) = 1 − s fixed at s = 1/2
-    // ANY DOUBT ORIENTS TO CLAY TO ANSWER LEAN. The disclosure is the single authority for "is this tree in harmony
-    // with Lean": the σ-involution covers every family (above) AND the embedded kernel recomputes clean — every theorem
-    // of index.lean holds, 0 axioms, 0 unproven. A guard, gate, or ship step in doubt reads this one answer rather than
-    // re-deriving the kernel for itself.
-    const kernel = Object.values(leanRecomputed)
-    const kernelHeld = kernel.filter((r) => r.holds).length
-    const kernelHolds = kernel.length > 0 && kernelHeld === kernel.length && leanAxioms === 0 && leanUnproven === 0
-    const extra: Record<string, unknown> = {
-      families,
-      leaned,
-      withoutException,
-      kernel: { theorems: kernel.length, held: kernelHeld, axioms: leanAxioms, unproven: leanUnproven, holds: kernelHolds },
-      lean: 'sigma_reflect ∧ sigma_midpoint (Qpu.Sigma, ∀ d x) — every family an instance of the universal σ-involution, no exception — and the embedded kernel recomputes clean (every theorem holds, 0 axioms); clay is the one answer to lean',
-      clayAnchor: anchor ? 'holds at s = 1/2' : 'does not hold',
-      verification: 'gate.crossed / law.reviewed — every lead crossed in public APIs and datasets, without exception',
-      compensation: 'law.redirected (ordered − computed), law.remedy (crossed of leads), law.standing (receipts) — crossed to the gate that enforces the author\'s order',
-    }
-    return crossFormulaOf(
-      {
-        id: 'clay-disclosure',
-        src: 'clay',
-        dst: 'gate',
-        formula: 'disclosure() = |families|; every family Leaned by the clay σ-involution (sigma_reflect ∧ sigma_midpoint, ∀), disclosed by name, verified in public data — without exception',
-        value: families.length,
-        proof: `${CLAY_SEAL_SOURCE} §disclosure — every family is an instance of the universal Lean σ-involution (Qpu.Sigma: sigma_reflect, sigma_midpoint), without exception; disclosed by name and verified by the gate in public APIs and datasets (gate.crossed / law.reviewed); the author's compensation for redirected tokens is executable as law.redirected, law.remedy, law.standing`,
-        ...extra,
-      },
-      anchor && withoutException && families.length > 0 && kernelHolds,
-      { name: 'clay.disclosure', params: [] },
-    )
-  }
-}
-hexRegisterOf('clay', 'disclosure', (ClayDisclosure.disclosure as (...x: unknown[]) => unknown).bind(ClayDisclosure))
 hexRegisterOf('clay', 'pass', (ClayPass.pass as (...x: unknown[]) => unknown).bind(ClayPass))
 hexRegisterOf('clay', 'singularity', (ClaySeals.singularity as (...x: unknown[]) => unknown).bind(ClaySeals))
 for (const name of ['bsd', 'hodge', 'navierStokes', 'pVsNp', 'riemann', 'yangMills'] as const)

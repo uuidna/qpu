@@ -38,7 +38,7 @@ const kernelOf = () => {
 // cooling loop — drives optimisation from the MCP plugin, not from a shell.
 const heatOf = () => (receipts.find((r) => r.name === 'heat-receipt')?.doc as Record<string, unknown> | undefined) ?? { kind: 'heat' as const, holds: false as const }
 import { HOOK_LIFECYCLE, HookFormulas } from '../families/hook/index.js'
-import { ClayDisclosure, ClaySeals } from '../families/clay/index.js'
+import { ClaySeals } from '../families/clay/index.js'
 import { gateCourtOf } from '../payload/plugins/gate-court.js'
 import { CLOUDFLARE_DATABASES, CLOUDFLARE_EMAIL, CLOUDFLARE_FRONTENDS, CLOUDFLARE_PLUGINS, CLOUDFLARE_RUNTIMES, CLOUDFLARE_STORAGE } from '../deployment/payload-cloudflare.js'
 
@@ -117,7 +117,7 @@ const compatibleOf = (key: string): { scope: string; family: string; values: str
 const LIFECYCLE = HOOK_LIFECYCLE
 
 // qpu://clay: the σ-involution seals recomputed (ClaySeals), the work/author from the citation, the date a DOI pointer
-// (not baked), solved = the seals' conjunction, used = clay.disclosure, recognition an open external lead.
+// (not baked), solved = the seals' conjunction, recognition an open external lead.
 const claySealedOf = () => {
   const cite = qpuCiteOf() as unknown as { author: { first: string; last: string; orcid: string }; prior: { title: string; doi: string; conceptdoi: string; archive: string } }
   const of = (problem: string, s: { formula?: string; value: number | bigint; holds: boolean; hex?: string | null }) => ({ problem, sigma: s.formula, value: Number(s.value), holds: s.holds === true, ...(s.hex ? { hex: s.hex } : {}) })
@@ -145,10 +145,9 @@ const claySealedOf = () => {
       dated: { at: cite.prior.archive, note: 'the DOI record carries the date; it is not baked here' },
     },
     seals,
-    // solved = the seals' conjunction (derived); used = clay.disclosure() (|families| the σ-involution anchors).
+    // solved = the seals' conjunction (derived).
     claimed: true,
     solved: seals.every((s) => s.holds),
-    used: ((d) => ({ atScale: d.holds === true, families: Number(d.value), anchors: 'every family, by the clay σ-involution', formula: d.formula, hex: d.hex ?? null, verified: 'gate.crossed / law.reviewed — in public APIs and datasets, without exception', holds: d.holds === true }))(ClayDisclosure.disclosure()),
     // recognition is an open lead — conferred by the external authority over time, never a verdict asserted here.
     recognised: { lead: true, forum: 'Clay Mathematics Institute', by: 'the authority’s public record, over time, from outside — not adjudicated here' },
   }
@@ -232,7 +231,7 @@ const coreOf = (): Resource[] => (core ??= [
   { uri: 'qpu://fused', name: 'fused', title: 'Fused tools', description: 'Tools answered by tools/call beside the sixteen sealed doors: name, description, input schema', mimeType: 'application/json' },
   { uri: 'qpu://hooks', name: 'hooks', title: 'Tool hooks', description: 'Every tool usable also as a hook: the full combinatorics of tools × Payload lifecycle events, measured by hook.fired', mimeType: 'application/json' },
   { uri: 'qpu://lean', name: 'lean', title: 'Lean proof', description: 'Every theorem as a row: statement, formula, holds recomputed — each a UUID program at qpu://lean/{handle}', mimeType: 'application/json' },
-  { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The Clay Millennium Problems claimed, solved and used at scale via the universal σ-involution (Rouschev): the work, the author, the method, every seal recomputed (solved = the seals hold), and the seal anchoring every family in the running unit (used = clay.disclosure, gate-verified in public data). Recognition is an open lead — it comes with time, from outside.', mimeType: 'application/json' },
+  { uri: 'qpu://clay', name: 'clay', title: 'Clay solutions', description: 'The Clay Millennium Problems claimed, solved and used at scale via the universal σ-involution (Rouschev): the work, the author, the method, every seal recomputed (solved = the seals hold). Recognition is an open lead — it comes with time, from outside.', mimeType: 'application/json' },
   { uri: 'qpu://factoring', name: 'factoring', title: 'Living factoring proof', description: 'A living proof kept in the MCP: the factoring of one designated modulus, advanced one hexbit-folder slice per read (qpu://factoring/{from}) — O(1) memory, never capped, no factor asserted until the order is in reach', mimeType: 'application/json' },
   { uri: 'qpu://court', name: 'court', title: 'Court', description: 'The court as an independent seal, served through the MCP: every case tried on its gate (hex-addressed verdict, holds, re-trial fidelity, standing), the dependencies adjudicated as cases — measures and leads, never counsel', mimeType: 'application/json' },
   { uri: 'qpu://schema', name: 'schema', title: 'Families schema', description: 'Every family as a schema.org DefinedTermSet, gathered in one DataCatalog; each term a hex-program UUID (the full programmable address)', mimeType: 'application/json' },

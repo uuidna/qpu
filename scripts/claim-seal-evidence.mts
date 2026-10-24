@@ -11,7 +11,6 @@ import {
   claySealWaveOf,
   claySealDomainCoverageOf,
   claySealDomainOf,
-  ClayDisclosure,
 } from '../src/families/clay/index.js'
 import { CLAY_PROBLEMS } from '../src/mcp/clay-automated-solver.js'
 import { clayOf } from '../src/core/showcase.js'
@@ -235,12 +234,10 @@ const combinationsMeasure = {
 const handleNext = qpuHandleOf().next
 const merkabaCoilFaces = MerkabaFormulas.coil(faces)
 const merkabaCoilN = MerkabaFormulas.coil(n) // lattice n — holds; faces=14 does not
-const disclosure = ClayDisclosure.disclosure()
 const involutionLeanHex = statementUuidOf('involution')
 const namedCalls = {
   merkabaCoilFaces: rowOf('merkaba.coil', [faces], merkabaCoilFaces),
   merkabaCoilN: rowOf('merkaba.coil', [n], merkabaCoilN),
-  clayDisclosure: rowOf('clay.disclosure', [], disclosure),
   around: lattice.theorem.around,
   harmonic: lattice.theorem.harmonic,
   leanInvolutionHex: involutionLeanHex,

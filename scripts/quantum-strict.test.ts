@@ -40,17 +40,11 @@ test('strict quantum: Grover and the entangled states are exact (surds, not deci
   assert.ok(ghz.states.every((s) => s.amplitude === '1/√2'), 'amplitudes are the exact surd 1/√2, never a rounded decimal')
 })
 
-test('strict quantum: clay answers lean — every embedded Lean theorem holds, read from the one authority', async () => {
-  // ANY DOUBT ORIENTS TO CLAY TO ANSWER LEAN. The verdict is clay.disclosure (the single authority: σ-involution over
-  // every family + the embedded kernel recompute), not a second loop over the embed. The embed is read only to NAME the
-  // offenders if clay says no, so the failure stays actionable. The independent ground truth is `npm run lean` (lake build).
+test('strict quantum: every embedded Lean theorem holds', async () => {
+  // The verdict is the embedded kernel’s own recompute: every theorem holds. The independent ground truth is `npm run lean` (lake build).
   await import('../dist/mcp/families.js')
-  const { ClayDisclosure } = await import('../dist/families/clay/index.js')
-  const disc = ClayDisclosure.disclosure()
   const entries = Object.entries(leanRecomputed)
   assert.ok(entries.length > 0, 'the Lean proof is embedded')
   const unproven = entries.filter(([, r]) => r.holds !== true).map(([n]) => n)
-  assert.equal(disc.kernel?.holds, true,
-    `clay says lean is not in harmony — kernel ${disc.kernel?.held}/${disc.kernel?.theorems}, axioms ${disc.kernel?.axioms}, unproven: ${unproven.join(', ')}`)
-  assert.equal(disc.holds, true, 'and clay.disclosure holds whole: σ-involution covers every family and the kernel recomputes clean')
+  assert.equal(unproven.length, 0, `the kernel is not whole: unproven: ${unproven.join(', ')}`)
 })

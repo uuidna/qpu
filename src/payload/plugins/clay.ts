@@ -43,7 +43,7 @@ const OPEN = [
   { seal: 'hodge' as const, name: 'Hodge Conjecture', params: [2] as readonly number[], by: 'src/families/clay/test.ts' },
   { seal: 'navierStokes' as const, name: 'Navier-Stokes Existence and Smoothness', params: null, by: 'claySealWaveOf walks arity-correct domain 1…faces on each slot; the test does not pin a pair' },
   { seal: 'pVsNp' as const, name: 'P vs NP', params: null, by: 'claySealWaveOf walks domain {0,1}; the test does not pin a witness' },
-  { seal: 'riemann' as const, name: 'Riemann Hypothesis', params: [1, 2] as readonly number[], by: 'ClayDisclosure anchors riemann(1, 2)' },
+  { seal: 'riemann' as const, name: 'Riemann Hypothesis', params: [1, 2] as readonly number[], by: 'ClaySeals.riemann anchors riemann(1, 2)' },
   { seal: 'yangMills' as const, name: 'Yang-Mills and Mass Gap', params: [] as readonly number[], by: 'src/families/clay/test.ts' },
 ] as const
 
