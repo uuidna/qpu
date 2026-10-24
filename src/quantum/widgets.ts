@@ -50,9 +50,21 @@ export const processorWidget = (p: ProcessorView): string => {
 }
 
 type Amplitude = { re: number; im: number }
-type CircuitView = { qubits: string[]; amplitudes: Amplitude[] } | { key: string; bitstrings: string[]; histogram: Record<string, number> }
+type CircuitView =
+  | { qubits: string[]; amplitudes: Amplitude[] }
+  | { key: string; bitstrings: string[]; histogram: Record<string, number> }
+  | { qubits: string[]; probabilities: number[]; trace: number; purity: number; expectations: number[] }
 
 export const circuitWidget = (d: CircuitView): string => {
+  if ('probabilities' in d) {
+    const width = Math.max(1, Math.round(Math.log2(d.probabilities.length)))
+    const rows = d.probabilities.map((p, k) => ({ k, p })).filter((r) => r.p > 1e-12)
+    return stack([
+      cards([['Trace', d.trace.toFixed(6)], ['Purity', d.purity.toFixed(6)], ['Basis states with weight', String(rows.length)]]),
+      table(['State', 'Probability'], rows.map((r) => [`|${r.k.toString(2).padStart(width, '0')}⟩`, `${(r.p * 100).toFixed(2)}%`])),
+      ...(d.expectations.length ? [table(['Observable', 'Expectation'], d.expectations.map((e, i) => [`observable ${i + 1}`, e.toFixed(6)]))] : []),
+    ])
+  }
   if ('amplitudes' in d) {
     const width = Math.max(1, Math.round(Math.log2(d.amplitudes.length)))
     const rows = d.amplitudes.map((a, k) => ({ k, p: a.re * a.re + a.im * a.im })).filter((r) => r.p > 1e-12)
@@ -105,4 +117,31 @@ export const roadmapWidget = (d: {
     ])),
     ...d.milestones.map((m) => bar((m.physicalQubits / 1000000) * 100)),
     table(['Physical qubits needed', 'Predicted applications'], d.applications.map((a) => [a.band, a.applications.join('; ')])),
+  ])
+
+export const algorithmWidget = (d: { name: string; summary: readonly (readonly string[])[]; header: readonly string[]; rows: readonly (readonly string[])[] }): string =>
+  stack([
+    cards(d.summary.map((row) => [row[0] ?? '', row[1] ?? ''] as [string, string])),
+    table([...d.header], d.rows.map((r) => [...r])),
+  ])
+
+export const softwareWidget = (d: { tools: readonly { name: string; description: string; implemented: boolean }[] }): string =>
+  stack([
+    cards([['Tools', String(d.tools.length)], ['Implemented here', String(d.tools.filter((t) => t.implemented).length)]]),
+    table(['Tool', 'What it is', 'In this repository'], d.tools.map((t) => [t.name, t.description, t.implemented ? 'yes' : 'no'])),
+  ])
+
+export const statementsWidget = (d: { statements: readonly { topic: string; text: string }[] }): string =>
+  stack([table(['Topic', 'Statement'], d.statements.map((s) => [s.topic, s.text]))])
+
+export const leadsWidget = (d: { leads: readonly { id: string; status: string; tool?: string; statement: string }[]; counts: Record<string, number>; total: number }): string =>
+  stack([
+    cards([
+      ['Leads', String(d.total)],
+      ['Served', String(d.counts.served ?? 0)],
+      ['Partial', String(d.counts.partial ?? 0)],
+      ['Blocked', String(d.counts.blocked ?? 0)],
+      ['Out of scope', String(d.counts.out_of_scope ?? 0)],
+    ]),
+    table(['Lead', 'Status', 'Tool', 'Statement'], d.leads.map((l) => [l.id, l.status, l.tool ?? '—', l.statement])),
   ])

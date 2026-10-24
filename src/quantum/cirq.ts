@@ -36,6 +36,19 @@ export const H: Gate = { name: 'H', arity: 1, matrix: [c(s2), c(s2), c(s2), c(-s
 export const CZ: Gate = { name: 'CZ', arity: 2, matrix: [c(1), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(0), c(0), c(-1)] }
 export const CNOT: Gate = { name: 'CNOT', arity: 2, matrix: [c(1), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(1), c(0)] }
 export const SWAP: Gate = { name: 'SWAP', arity: 2, matrix: [c(1), c(0), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(1), c(0), c(0), c(0), c(0), c(0), c(1)] }
+/** Cirq's ZZ: Z on each of two qubits. Its eigenvalues are ±1, so ZZ**t is powerOf(ZZ, t), the gate QAOA's cost layer uses. */
+export const ZZ: Gate = { name: 'ZZ', arity: 2, matrix: [c(1), c(0), c(0), c(0), c(0), c(-1), c(0), c(0), c(0), c(0), c(-1), c(0), c(0), c(0), c(0), c(1)] }
+
+/** Cirq's TOFFOLI (CCX): flips the third qubit when the first two are both 1. Identity except rows 6 and 7 swapped. */
+export const TOFFOLI: Gate = {
+  name: 'TOFFOLI',
+  arity: 3,
+  matrix: Array.from({ length: 64 }, (_, k) => {
+    const r = Math.floor(k / 8), col = k % 8
+    const swapped = (r === 6 && col === 7) || (r === 7 && col === 6)
+    return c(r === col && r < 6 || swapped ? 1 : 0)
+  }),
+}
 
 /** Cirq's gate power, G**t: the +1 eigenspace keeps its phase and the −1 eigenspace takes e^{iπt}, so X**0.5 is the square
  *  root of NOT, as Cirq documents. Exact for the involutions here (G·G = I); any other gate is refused, not approximated. */
@@ -102,8 +115,12 @@ export class Moment {
 }
 
 /** Cirq's InsertStrategy: EARLIEST slides an operation to the earliest moment after its last conflict (the default); NEW
- *  gives it a moment of its own, at the end of the circuit. */
-export type InsertStrategy = 'EARLIEST' | 'NEW'
+ *  gives it a moment of its own; INLINE puts it in the moment just before the insert location when it does not conflict
+ *  there, else in a new moment; NEW_THEN_INLINE gives the first operation a new moment and inserts the rest INLINE. */
+export type InsertStrategy = 'EARLIEST' | 'NEW' | 'INLINE' | 'NEW_THEN_INLINE'
+
+const flattenOps = (op: Operation | Iterable<Operation>): Operation[] =>
+  Symbol.iterator in Object(op) && !('kind' in (op as object)) ? [...(op as Iterable<Operation>)].flatMap(flattenOps) : [op as Operation]
 
 /** Cirq's Circuit: a list of moments. Appended operations are placed by an InsertStrategy, EARLIEST by default. */
 export class Circuit {
@@ -114,22 +131,33 @@ export class Circuit {
   }
 
   append(op: Operation | Iterable<Operation>, strategy: InsertStrategy = 'EARLIEST'): this {
-    if (Symbol.iterator in Object(op) && !('kind' in (op as object))) {
-      for (const each of op as Iterable<Operation>) this.append(each, strategy)
-      return this
-    }
-    const single = op as Operation
+    flattenOps(op).forEach((single, i) => {
+      const placed: Exclude<InsertStrategy, 'NEW_THEN_INLINE'> = strategy === 'NEW_THEN_INLINE' ? (i === 0 ? 'NEW' : 'INLINE') : strategy
+      this.place(single, placed)
+    })
+    return this
+  }
+
+  private place(single: Operation, strategy: Exclude<InsertStrategy, 'NEW_THEN_INLINE'>): void {
+    const mine = new Set(single.qubits.map(keyOf))
     if (strategy === 'NEW') {
       this.moments.push(new Moment([single]))
-      return this
+      return
     }
-    const mine = new Set(single.qubits.map(keyOf))
+    if (strategy === 'INLINE') {
+      const last = this.moments.length - 1
+      if (last >= 0 && !this.moments[last]!.operations.some((o) => touches(o, mine))) {
+        this.moments[last] = new Moment([...this.moments[last]!.operations, single])
+      } else {
+        this.moments.push(new Moment([single]))
+      }
+      return
+    }
     let last = -1
     this.moments.forEach((m, i) => { if (m.operations.some((o) => touches(o, mine))) last = i })
     const at = last + 1
     if (at === this.moments.length) this.moments.push(new Moment([single]))
     else this.moments[at] = new Moment([...this.moments[at]!.operations, single])
-    return this
   }
 
   /** The qubits the circuit acts on, in key order: the basis order of the simulator. */
@@ -345,37 +373,79 @@ const dagger = (m: Matrix, dim: number): Matrix => {
 /** U ρ U†: a unitary acting on a density matrix. */
 const conjugate = (u: Matrix, rho: Matrix, dim: number): Matrix => multiply(multiply(u, rho, dim), dagger(u, dim), dim)
 
-/** Cirq's depolarizing channel on one qubit: E(ρ) = (1 − p)ρ + p/3 (XρX + YρY + ZρZ). */
-const depolarizeOn = (rho: Matrix, index: number, p: number, n: number): Matrix => {
+/** A noise channel, named as Cirq names it, with the parameters Cirq takes. */
+export type Channel =
+  | { name: 'bit_flip' | 'phase_flip' | 'depolarize'; p: number }
+  | { name: 'asymmetric_depolarize'; p_x: number; p_y: number; p_z: number }
+  | { name: 'amplitude_damp' | 'phase_damp'; gamma: number }
+  | { name: 'generalized_amplitude_damp'; p: number; gamma: number }
+  | { name: 'reset' }
+
+const ONE: Gate = { name: 'I', arity: 1, matrix: [c(1), c(0), c(0), c(1)] }
+const operator = (matrix: [number, number][]): Gate => ({ name: 'K', arity: 1, matrix })
+/** A Pauli (or identity) scaled by the square root of a weight, so that its square carries the weight. */
+const weighted = (gate: Gate, weight: number): Gate => ({
+  name: gate.name,
+  arity: 1,
+  matrix: gate.matrix.map(([r, i]): [number, number] => [r * Math.sqrt(weight), i * Math.sqrt(weight)]),
+})
+
+const probability = (p: number, name: string): void => {
+  if (p < 0 || p > 1) throw new Error(`the ${name} probability ${p} is between 0 and 1`)
+}
+
+/** Cirq's channels as Kraus operators: E(ρ) = Σ K ρ K†. The definitions are Cirq's own. */
+const krausOf = (channel: Channel): Gate[] => {
+  switch (channel.name) {
+    case 'bit_flip':
+      probability(channel.p, 'bit-flip')
+      return [weighted(ONE, 1 - channel.p), weighted(X, channel.p)]
+    case 'phase_flip':
+      probability(channel.p, 'phase-flip')
+      return [weighted(ONE, 1 - channel.p), weighted(Z, channel.p)]
+    case 'depolarize':
+      probability(channel.p, 'depolarizing')
+      return [weighted(ONE, 1 - channel.p), weighted(X, channel.p / 3), weighted(Y, channel.p / 3), weighted(Z, channel.p / 3)]
+    case 'asymmetric_depolarize': {
+      const { p_x: px, p_y: py, p_z: pz } = channel
+      probability(px, 'x'), probability(py, 'y'), probability(pz, 'z')
+      if (px + py + pz > 1) throw new Error('the asymmetric depolarizing probabilities sum to more than 1')
+      return [weighted(ONE, 1 - px - py - pz), weighted(X, px), weighted(Y, py), weighted(Z, pz)]
+    }
+    case 'amplitude_damp':
+      probability(channel.gamma, 'damping')
+      return [operator([c(1), c(0), c(0), c(Math.sqrt(1 - channel.gamma))]), operator([c(0), c(Math.sqrt(channel.gamma)), c(0), c(0)])]
+    case 'phase_damp':
+      probability(channel.gamma, 'damping')
+      return [operator([c(1), c(0), c(0), c(Math.sqrt(1 - channel.gamma))]), operator([c(0), c(0), c(0), c(Math.sqrt(channel.gamma))])]
+    case 'generalized_amplitude_damp': {
+      const { p, gamma } = channel
+      probability(p, 'generalized amplitude'), probability(gamma, 'damping')
+      return [
+        operator([c(Math.sqrt(p)), c(0), c(0), c(Math.sqrt(p * (1 - gamma)))]),
+        operator([c(0), c(Math.sqrt(p * gamma)), c(0), c(0)]),
+        operator([c(Math.sqrt((1 - p) * (1 - gamma))), c(0), c(0), c(Math.sqrt(1 - p))]),
+        operator([c(0), c(0), c(Math.sqrt((1 - p) * gamma)), c(0)]),
+      ]
+    }
+    case 'reset':
+      return [operator([c(1), c(0), c(0), c(0)]), operator([c(0), c(1), c(0), c(0)])]
+  }
+}
+
+/** A channel acting on one qubit of the density matrix: the sum of its Kraus operators conjugating ρ. */
+const channelOn = (rho: Matrix, index: number, channel: Channel, n: number): Matrix => {
   const dim = 1 << n
   const out: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
-  for (let k = 0; k < dim * dim; k++) {
-    out.re[k] = (1 - p) * rho.re[k]!
-    out.im[k] = (1 - p) * rho.im[k]!
-  }
-  for (const pauli of [X, Y, Z]) {
-    const term = conjugate(unitaryOf(pauli, [index], n), rho, dim)
+  for (const kraus of krausOf(channel)) {
+    const term = conjugate(unitaryOf(kraus, [index], n), rho, dim)
     for (let k = 0; k < dim * dim; k++) {
-      out.re[k]! += (p / 3) * term.re[k]!
-      out.im[k]! += (p / 3) * term.im[k]!
+      out.re[k]! += term.re[k]!
+      out.im[k]! += term.im[k]!
     }
   }
   return out
 }
-
-/** Cirq's amplitude damping: E(ρ) = K0 ρ K0† + K1 ρ K1†, with K0 = diag(1, √(1−γ)) and K1 = √γ |0><1|; it takes |1> to |0>
- *  with probability γ. */
-const amplitudeDampOn = (rho: Matrix, index: number, gamma: number, n: number): Matrix => {
-  const dim = 1 << n
-  const keep: Gate = { name: 'K0', arity: 1, matrix: [c(1), c(0), c(0), c(Math.sqrt(1 - gamma))] }
-  const jump: Gate = { name: 'K1', arity: 1, matrix: [c(0), c(Math.sqrt(gamma)), c(0), c(0)] }
-  const a = conjugate(unitaryOf(keep, [index], n), rho, dim)
-  const b = conjugate(unitaryOf(jump, [index], n), rho, dim)
-  return { re: a.re.map((v, k) => v + b.re[k]!), im: a.im.map((v, k) => v + b.im[k]!) }
-}
-
-/** The noise a density-matrix run applies after every gate, on each of the gate's qubits. */
-export type Noise = { depolarize?: number; amplitudeDamp?: number }
 
 /** The result of a density-matrix run: the density matrix, its diagonal (the basis probabilities), its trace and purity. */
 export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: number[]; trace: number; purity: number }
@@ -384,10 +454,8 @@ export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: n
  *  A gate acts as U ρ U†; with a depolarizing probability p, each gate is followed by the depolarizing channel on each of
  *  its qubits. A pure state has purity 1; noise lowers it. Exact for up to 8 qubits. */
 export class DensityMatrixSimulator {
-  simulate(circuit: Circuit, noise: Noise = {}): DensityResult {
-    const { depolarize = 0, amplitudeDamp = 0 } = noise
-    if (depolarize < 0 || depolarize > 1) throw new Error('the depolarizing probability is between 0 and 1')
-    if (amplitudeDamp < 0 || amplitudeDamp > 1) throw new Error('the amplitude damping probability is between 0 and 1')
+  simulate(circuit: Circuit, channels: readonly Channel[] = []): DensityResult {
+    channels.forEach(krausOf)
     const order = circuit.qubits
     if (order.length > MAX_DENSITY_QUBITS) throw new Error(`the density-matrix simulator handles up to ${MAX_DENSITY_QUBITS} qubits, the circuit has ${order.length}`)
     const n = order.length
@@ -399,10 +467,7 @@ export class DensityMatrixSimulator {
       if (op.kind !== 'gate') continue
       const indices = op.qubits.map((q) => pos.get(keyOf(q))!)
       rho = conjugate(unitaryOf(op.gate, indices, n), rho, dim)
-      for (const i of indices) {
-        if (depolarize > 0) rho = depolarizeOn(rho, i, depolarize, n)
-        if (amplitudeDamp > 0) rho = amplitudeDampOn(rho, i, amplitudeDamp, n)
-      }
+      for (const i of indices) for (const channel of channels) rho = channelOn(rho, i, channel, n)
     }
     const probabilities = Array.from({ length: dim }, (_, k) => rho.re[k * dim + k]!)
     const trace = probabilities.reduce((sum, p) => sum + p, 0)
@@ -438,10 +503,10 @@ export const expectationOf = (result: DensityResult, observable: Record<string, 
 export class QuantumVirtualMachine {
   private readonly simulator = new DensityMatrixSimulator()
 
-  constructor(private readonly device: Device, private readonly noise: Noise) {}
+  constructor(private readonly device: Device, private readonly channels: readonly Channel[]) {}
 
   simulate(circuit: Circuit): DensityResult {
     this.device.validateCircuit(circuit)
-    return this.simulator.simulate(circuit, this.noise)
+    return this.simulator.simulate(circuit, this.channels)
   }
 }

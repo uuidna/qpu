@@ -5,13 +5,13 @@ import { handle } from './mcp.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
-test('tools/list serves the four tools with input schemas, and initialize names the server', () => {
+test('tools/list serves the nine tools with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   assert.ok('result' in list)
   const tools = (list.result as { tools: { name: string; inputSchema: object }[] }).tools
-  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap'])
+  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'leads'])
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 
@@ -122,4 +122,90 @@ test('the roadmap tool also serves the four application bands of the figure, eac
   assert.deepEqual(apps.map((a) => a.band), ['50k–100k', '100k–500k', '500k–5M', '5M–50M'])
   assert.equal(apps[0]!.low, 50000)
   assert.equal(apps[3]!.high, 50000000)
+})
+
+test('the circuit tool runs noise channels on the density matrix and returns expectations for Pauli observables', () => {
+  const r = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'amplitude_damp', gamma: 0.2 }] })
+  assert.ok('result' in r)
+  const data = (r.result as { structuredContent: { probabilities: number[]; trace: number } }).structuredContent
+  assert.ok(Math.abs(data.probabilities[1]! - 0.8) < 1e-12 && Math.abs(data.trace - 1) < 1e-12)
+  const bell = call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }, { gate: 'CNOT', qubits: [{ kind: 'line', x: 0 }, { kind: 'line', x: 1 }] }], observables: [{ 'line:0': 'Z', 'line:1': 'Z' }, { 'line:0': 'X', 'line:1': 'X' }] })
+  assert.ok('result' in bell)
+  assert.deepEqual((bell.result as { structuredContent: { expectations: number[] } }).structuredContent.expectations.map((e) => Math.round(e)), [1, 1])
+})
+
+test('the circuit tool refuses a noisy run that also measures, an unknown channel, and a circuit that does not fit its device', () => {
+  const both = call('circuit', { operations: [], noise: [{ name: 'reset' }], measure: { key: 'm', qubits: [{ kind: 'line', x: 0 }] } })
+  assert.ok('error' in both && both.error.code === -32602)
+  const unknown = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'thermal' }] })
+  assert.ok('error' in unknown && unknown.error.code === -32602)
+  const off = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], device: 'Willow' })
+  assert.ok('error' in off && off.error.code === -32602)
+})
+
+test('the circuit tool places operations by the insert strategy and the Toffoli gate is served', () => {
+  const r = call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }, { gate: 'X', qubits: [{ kind: 'line', x: 1 }] }, { gate: 'TOFFOLI', qubits: [{ kind: 'line', x: 0 }, { kind: 'line', x: 1 }, { kind: 'line', x: 2 }] }], insert: 'NEW' })
+  assert.ok('result' in r)
+  const amps = (r.result as { structuredContent: { amplitudes: { re: number }[] } }).structuredContent.amplitudes
+  assert.ok(Math.abs(amps[7]!.re - 1) < 1e-12)
+})
+
+test('every lead that is served or partial names a tool the server serves, and every other lead says why', async () => {
+  const { LEADS } = await import('./leads.js')
+  const served = new Set(((handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) as { result: { tools: { name: string }[] } }).result).tools.map((t) => t.name))
+  for (const lead of LEADS) {
+    if (lead.status === 'served' || lead.status === 'partial') assert.ok(lead.tool && served.has(lead.tool), `${lead.id} names no served tool`)
+    else assert.ok(lead.reason && lead.reason.length > 0, `${lead.id} has no reason`)
+  }
+})
+
+test('the algorithm tool answers each textbook algorithm: the QFT rows, the phase estimate, Grover and teleportation', () => {
+  const qft = call('algorithm', { name: 'qft', qubits: 3, input: 5 })
+  assert.ok('result' in qft && (qft.result as { structuredContent: { rows: string[][] } }).structuredContent.rows.length === 8)
+  const pe = call('algorithm', { name: 'phase_estimation', theta: 0.234, bits: 3 })
+  assert.ok('result' in pe)
+  const peRows = (pe.result as { structuredContent: { rows: string[][] } }).structuredContent.rows
+  assert.equal(Number(peRows[0]![0]), 0.25)
+  const grover = call('algorithm', { name: 'grover', repetitions: 10 })
+  assert.ok('result' in grover && (grover.result as { structuredContent: { rows: string[][] } }).structuredContent.rows.every((r) => r[0] === '|00>'))
+  const tele = call('algorithm', { name: 'teleportation' })
+  assert.ok('result' in tele && (tele.result as { structuredContent: { rows: string[][] } }).structuredContent.rows.every((r) => r[1] === r[2]))
+  const qaoa = call('algorithm', { name: 'qaoa', nodes: 6 })
+  assert.ok('result' in qaoa)
+  const summary = (qaoa.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
+  assert.equal(summary[0]![1], '6')
+  assert.ok('error' in call('algorithm', { name: 'shor' }))
+})
+
+test('the software and statements and leads tools serve the stated lists, and an unknown topic is refused', () => {
+  const sw = call('software', {})
+  assert.ok('result' in sw && (sw.result as { structuredContent: { tools: { name: string; implemented: boolean }[] } }).structuredContent.tools.length === 5)
+  const impl = (sw.result as { structuredContent: { tools: { name: string; implemented: boolean }[] } }).structuredContent.tools.filter((t) => t.implemented).map((t) => t.name)
+  assert.deepEqual(impl, ['Cirq'])
+  const st = call('statements', { topic: 'hardware' })
+  assert.ok('result' in st && (st.result as { structuredContent: { statements: unknown[] } }).structuredContent.statements.length === 1)
+  assert.ok('error' in call('statements', { topic: 'rumour' }))
+  const lead = call('leads', { status: 'blocked' })
+  assert.ok('result' in lead)
+  const counts = (lead.result as { structuredContent: { counts: Record<string, number>; total: number } }).structuredContent
+  assert.equal(counts.counts.served! + counts.counts.partial! + counts.counts.blocked! + counts.counts.out_of_scope!, counts.total)
+})
+
+test('every new tool returns a widget that uses only the host tokens', () => {
+  const widgets = [
+    widgetOf(call('algorithm', { name: 'qft' })),
+    widgetOf(call('algorithm', { name: 'phase_estimation' })),
+    widgetOf(call('algorithm', { name: 'grover', repetitions: 5 })),
+    widgetOf(call('algorithm', { name: 'teleportation' })),
+    widgetOf(call('algorithm', { name: 'qaoa', nodes: 4 })),
+    widgetOf(call('software', {})),
+    widgetOf(call('statements', {})),
+    widgetOf(call('leads', {})),
+    widgetOf(call('circuit', { operations: [{ gate: 'X', qubits: [{ kind: 'line', x: 0 }] }], noise: [{ name: 'depolarize', p: 0.1 }] })),
+  ]
+  for (const widget of widgets) {
+    assert.ok(widget.includes('var(--'))
+    assert.doesNotMatch(widget, /#[0-9a-f]{3,6}\b/i)
+    assert.doesNotMatch(widget, /<(script|style)\b/i)
+  }
 })

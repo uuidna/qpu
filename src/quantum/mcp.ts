@@ -2,11 +2,14 @@
 // call. The handler does no I/O and imports nothing from Node, so the same code runs in a browser OS, where a caller
 // compiles whatever it needs by calling a tool. Tool names and figures follow Google Quantum AI (quantumai.google).
 
-import { CNOT, CZ, GridQubit, H, LineQubit, NamedQubit, Simulator, SWAP, X, Y, Z, Circuit, applied, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
+import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
-import { PROCESSORS } from './processor.js'
-import { circuitWidget, echoBenchmarkWidget, echoWidget, processorWidget, roadmapWidget } from './widgets.js'
+import { PROCESSORS, WILLOW, deviceOf } from './processor.js'
+import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qftOperations, teleportationCircuit, type Graph } from './algorithms.js'
+import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.js'
+import { LEADS, type LeadStatus } from './leads.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
@@ -19,7 +22,7 @@ const METHOD_NOT_FOUND = -32601
 
 class ParamError extends Error {}
 
-const GATES: Record<string, Gate> = { X, Y, Z, H, CZ, CNOT, SWAP }
+const GATES: Record<string, Gate> = { X, Y, Z, H, CZ, CNOT, SWAP, TOFFOLI }
 
 type QubitJson = { kind: 'grid'; row: number; col: number } | { kind: 'line'; x: number } | { kind: 'named'; name: string }
 type OperationJson = { gate: string; qubits: QubitJson[]; exponent?: number }
@@ -39,12 +42,49 @@ const operationOf = (op: OperationJson): Operation => {
   return applied(powered, ...op.qubits.map(qubitOf))
 }
 
-/** The circuit a call describes: its operations in order, then an optional measurement. */
-const circuitOf = (operations: OperationJson[], measurement?: MeasureJson): Circuit => {
-  const ops = operations.map(operationOf)
-  if (measurement) ops.push(measure(measurement.qubits.map(qubitOf), measurement.key))
-  return new Circuit(ops)
+/** The circuit a call describes: its operations placed by the insert strategy, then an optional measurement. */
+const circuitOf = (operations: OperationJson[], insert: InsertStrategy, measurement?: MeasureJson): Circuit => {
+  const circuit = new Circuit().append(operations.map(operationOf), insert)
+  if (measurement) circuit.append(measure(measurement.qubits.map(qubitOf), measurement.key))
+  return circuit
 }
+
+type ChannelJson = { name: string; p?: number; p_x?: number; p_y?: number; p_z?: number; gamma?: number }
+
+/** A noise channel as a call names it: its name and the parameters that name takes. */
+const channelOf = (j: ChannelJson): Channel => {
+  const need = (v: number | undefined, key: string): number => v ?? reject(`${j.name} needs ${key}`)
+  switch (j.name) {
+    case 'bit_flip': return { name: 'bit_flip', p: need(j.p, 'p') }
+    case 'phase_flip': return { name: 'phase_flip', p: need(j.p, 'p') }
+    case 'depolarize': return { name: 'depolarize', p: need(j.p, 'p') }
+    case 'asymmetric_depolarize': return { name: 'asymmetric_depolarize', p_x: need(j.p_x, 'p_x'), p_y: need(j.p_y, 'p_y'), p_z: need(j.p_z, 'p_z') }
+    case 'amplitude_damp': return { name: 'amplitude_damp', gamma: need(j.gamma, 'gamma') }
+    case 'phase_damp': return { name: 'phase_damp', gamma: need(j.gamma, 'gamma') }
+    case 'generalized_amplitude_damp': return { name: 'generalized_amplitude_damp', p: need(j.p, 'p'), gamma: need(j.gamma, 'gamma') }
+    case 'reset': return { name: 'reset' }
+    default: return reject(`channel ${j.name} is not one of the channels Cirq names: bit_flip, phase_flip, depolarize, asymmetric_depolarize, amplitude_damp, phase_damp, generalized_amplitude_damp, reset`)
+  }
+}
+
+const CHANNEL_SCHEMA = {
+  type: 'object',
+  required: ['name'],
+  properties: {
+    name: { enum: ['bit_flip', 'phase_flip', 'depolarize', 'asymmetric_depolarize', 'amplitude_damp', 'phase_damp', 'generalized_amplitude_damp', 'reset'] },
+    p: { type: 'number', minimum: 0, maximum: 1 },
+    p_x: { type: 'number', minimum: 0, maximum: 1 },
+    p_y: { type: 'number', minimum: 0, maximum: 1 },
+    p_z: { type: 'number', minimum: 0, maximum: 1 },
+    gamma: { type: 'number', minimum: 0, maximum: 1 },
+  },
+}
+const OBSERVABLE_SCHEMA = {
+  type: 'object',
+  description: 'A Pauli string: each qubit key (line:x, grid:row,col or named:name) mapped to X, Y or Z; unlisted qubits take the identity',
+  additionalProperties: { enum: ['X', 'Y', 'Z'] },
+}
+const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
 
@@ -96,20 +136,42 @@ const TOOLS: Tool[] = [
   }),
   tool({
     name: 'circuit',
-    description: 'Compile a circuit from its operations and simulate it: the final amplitudes when there is no measurement, or sampled bitstrings and their histogram when there is one.',
+    description: 'Compile a circuit from its operations, placed by an insert strategy, and simulate it. Without noise or observables: the final amplitudes, or sampled bitstrings and their histogram when there is a measurement. With noise channels (as Cirq names them) or Pauli observables: the density matrix, its basis probabilities, trace, purity and the expectation values. A device validates the circuit first.',
     inputSchema: {
       type: 'object',
       required: ['operations'],
       properties: {
         operations: { type: 'array', items: OPERATION_SCHEMA },
+        insert: INSERT_SCHEMA,
+        device: { enum: Object.keys(PROCESSORS), description: 'validate the circuit against this processor first' },
         measure: MEASURE_SCHEMA,
         repetitions: { type: 'integer', minimum: 1, maximum: 10000, default: 100 },
+        noise: { type: 'array', items: CHANNEL_SCHEMA, description: 'channels applied after every gate, on each of its qubits' },
+        observables: { type: 'array', items: OBSERVABLE_SCHEMA },
       },
     },
     run: (args) => {
       const operations = args.operations as OperationJson[]
       const measurement = args.measure as MeasureJson | undefined
-      const circuit = circuitOf(operations, measurement)
+      const insert = (args.insert ?? 'EARLIEST') as InsertStrategy
+      const circuit = circuitOf(operations, insert, measurement)
+      if (typeof args.device === 'string') {
+        const processor = PROCESSORS[args.device as keyof typeof PROCESSORS] ?? reject(`device ${args.device} is not described here`)
+        deviceOf(processor).validateCircuit(circuit)
+      }
+      const channels = ((args.noise ?? []) as ChannelJson[]).map(channelOf)
+      const observables = (args.observables ?? []) as Record<string, 'X' | 'Y' | 'Z'>[]
+      if (channels.length || observables.length) {
+        if (measurement) reject('noise and observables run on the density matrix, which does not sample; remove measure, or run the measurement without noise')
+        const result = new DensityMatrixSimulator().simulate(circuit, channels)
+        return {
+          qubits: result.qubits.map(keyOfQubit),
+          probabilities: result.probabilities,
+          trace: result.trace,
+          purity: result.purity,
+          expectations: observables.map((o) => expectationOf(result, o)),
+        }
+      }
       if (!measurement) {
         const { amplitudes, qubits } = new Simulator().simulate(circuit)
         return { qubits: qubits.map(keyOfQubit), amplitudes: amplitudes.map(complex) }
@@ -152,6 +214,140 @@ const TOOLS: Tool[] = [
       return found.length ? { milestones: found, applications: APPLICATIONS } : reject(`milestone ${String(args.milestone)} is not on the roadmap; the milestones are 1 to 6`)
     },
     widget: roadmapWidget,
+  }),
+  tool({
+    name: 'algorithm',
+    description: 'The textbook algorithms of the Cirq page: qft and inverse_qft (on n qubits, from input x), phase_estimation (of θ with bits bits), grover (two qubits, marked |00>), teleportation (the message state, sent and received), and qaoa (depth 1 on the first nodes of the Willow device, with the expected cut). Each returns its summary and a table.',
+    inputSchema: {
+      type: 'object',
+      required: ['name'],
+      properties: {
+        name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa'] },
+        qubits: { type: 'integer', minimum: 1, maximum: 6, default: 3 },
+        input: { type: 'integer', minimum: 0, default: 0 },
+        theta: { type: 'number', default: 0.234 },
+        bits: { type: 'integer', minimum: 1, maximum: 8, default: 3 },
+        repetitions: { type: 'integer', minimum: 1, maximum: 10000, default: 2000 },
+        nodes: { type: 'integer', minimum: 2, maximum: 12, default: 12 },
+        weights: { type: 'array', items: { type: 'number' }, description: 'one weight per edge of the QAOA graph; all 1 by default' },
+        alpha: { type: 'number', default: 0 },
+        beta: { type: 'number', default: 0 },
+      },
+    },
+    run: (args) => {
+      const name = String(args.name)
+      if (name === 'qft' || name === 'inverse_qft') {
+        const n = Number(args.qubits ?? 3)
+        const x = Number(args.input ?? 0)
+        if (!Number.isInteger(n) || n < 1 || n > 6) reject('qubits is an integer from 1 to 6')
+        if (!Number.isInteger(x) || x < 0 || x >= 1 << n) reject(`input is an integer from 0 to ${(1 << n) - 1}`)
+        const qs = LineQubit.range(n)
+        const prep = qs.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))
+        const transform = name === 'qft' ? qftOperations(qs) : inverseOperations(qftOperations(qs))
+        const { amplitudes } = new Simulator().simulate(new Circuit().append([...prep, ...transform]))
+        return {
+          name,
+          summary: [['Qubits', String(n)], ['Input |x>', String(x)], ['Transform', name === 'qft' ? 'QFT' : 'inverse QFT']],
+          header: ['State', 'Amplitude', 'Probability'],
+          rows: amplitudes.map(([re, im], k) => [String(k), `${re.toFixed(4)} ${im < 0 ? '−' : '+'} ${Math.abs(im).toFixed(4)}i`, `${((re * re + im * im) * 100).toFixed(2)}%`]),
+        }
+      }
+      if (name === 'phase_estimation') {
+        const theta = Number(args.theta ?? 0.234)
+        const bits = Number(args.bits ?? 3)
+        const repetitions = Number(args.repetitions ?? 2000)
+        if (!Number.isInteger(bits) || bits < 1 || bits > 8) reject('bits is an integer from 1 to 8')
+        const run = new Simulator().run(phaseEstimationCircuit(theta, bits), repetitions)
+        const counts = new Map<number, number>()
+        for (const b of run.measurements('m')) {
+          const estimate = [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** k, 0) / 2 ** bits
+          counts.set(estimate, (counts.get(estimate) ?? 0) + 1)
+        }
+        const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])
+        return {
+          name,
+          summary: [['Eigenphase θ', String(theta)], ['Estimation bits', String(bits)], ['Most frequent estimate', String(ranked[0]?.[0] ?? '—')]],
+          header: ['Estimate', 'Count', 'Share'],
+          rows: ranked.map(([e, c]) => [e.toFixed(6), String(c), `${((c / repetitions) * 100).toFixed(1)}%`]),
+        }
+      }
+      if (name === 'grover') {
+        const repetitions = Number(args.repetitions ?? 100)
+        const run = new Simulator().run(groverCircuit(), repetitions)
+        const counts = new Map<string, number>()
+        for (const b of run.measurements('result')) counts.set(b, (counts.get(b) ?? 0) + 1)
+        return {
+          name,
+          summary: [['Marked state', '|00>'], ['Repetitions', String(repetitions)]],
+          header: ['Measured', 'Count', 'Share'],
+          rows: [...counts.entries()].map(([b, c]) => [`|${b}>`, String(c), `${((c / repetitions) * 100).toFixed(1)}%`]),
+        }
+      }
+      if (name === 'teleportation') {
+        const sent = new DensityMatrixSimulator().simulate(messageCircuit())
+        const received = new DensityMatrixSimulator().simulate(teleportationCircuit())
+        return {
+          name,
+          summary: [['Message', 'X**0.25 on |0>'], ['Received on', 'Bob']],
+          header: ['Pauli', 'Sent', 'Received'],
+          rows: (['X', 'Y', 'Z'] as const).map((p) => [p, expectationOf(sent, { 'line:0': p }).toFixed(6), expectationOf(received, { 'line:2': p }).toFixed(6)]),
+        }
+      }
+      if (name === 'qaoa') {
+        const count = Number(args.nodes ?? 12)
+        const sorted = [...WILLOW.sites].sort((a, b) => (a.kind === 'grid' && b.kind === 'grid' ? a.row - b.row || a.col - b.col : 0))
+        const nodes = sorted.slice(0, count)
+        const keys = new Set(nodes.map(keyOf))
+        const couplers = WILLOW.couplers.filter(([a, b]) => keys.has(keyOf(a)) && keys.has(keyOf(b)))
+        const weights = (args.weights as number[] | undefined) ?? couplers.map(() => 1)
+        if (weights.length !== couplers.length) reject(`weights needs one value per edge: ${couplers.length} edges`)
+        const graph: Graph = { nodes, edges: couplers.map(([a, b], i) => ({ a, b, weight: weights[i]! })) }
+        const alpha = Number(args.alpha ?? 0)
+        const beta = Number(args.beta ?? 0)
+        const expected = qaoaExpectedCut(graph, alpha, beta)
+        const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
+        return {
+          name,
+          summary: [['Nodes', String(nodes.length)], ['Edges', String(couplers.length)], ['Expected cut', expected.toFixed(4)], ['Random baseline', (total / 2).toFixed(4)]],
+          header: ['Edge', 'Weight'],
+          rows: graph.edges.map((e) => [`${keyOf(e.a)} – ${keyOf(e.b)}`, e.weight.toFixed(2)]),
+        }
+      }
+      return reject(`algorithm ${name} is not one of qft, inverse_qft, phase_estimation, grover, teleportation, qaoa`)
+    },
+    widget: algorithmWidget,
+  }),
+  tool({
+    name: 'software',
+    description: 'The open-source tools of the Google Quantum AI Software page, as the page describes them. Only Cirq is implemented in this repository.',
+    inputSchema: { type: 'object', properties: {} },
+    run: () => ({ tools: SOFTWARE }),
+    widget: softwareWidget,
+  }),
+  tool({
+    name: 'statements',
+    description: 'The statements quantumai.google and its PDF make: the Cirq description, the definition of quantum computing, progress, responsibility, the vision, the hardware, the Willow Early Access Program and neutral atoms. With a topic, only that one.',
+    inputSchema: { type: 'object', properties: { topic: { enum: Object.keys(STATEMENTS) } } },
+    run: (args) => {
+      const topic = args.topic as StatementTopic | undefined
+      if (topic !== undefined && !(topic in STATEMENTS)) reject(`topic ${String(topic)} is not one of ${Object.keys(STATEMENTS).join(', ')}`)
+      const entries = (Object.keys(STATEMENTS) as StatementTopic[]).filter((t) => topic === undefined || t === topic)
+      return { statements: entries.map((t) => ({ topic: t, text: STATEMENTS[t] })) }
+    },
+    widget: statementsWidget,
+  }),
+  tool({
+    name: 'leads',
+    description: 'Every lead on quantumai.google and its PDF, with its status (served, partial, blocked or out of scope), the tool that serves it, and the reason where it is partial, blocked or out of scope.',
+    inputSchema: { type: 'object', properties: { status: { enum: ['served', 'partial', 'blocked', 'out_of_scope'] } } },
+    run: (args) => {
+      const status = args.status as LeadStatus | undefined
+      const leads = LEADS.filter((l) => status === undefined || l.status === status)
+      const counts = { served: 0, partial: 0, blocked: 0, out_of_scope: 0 }
+      for (const l of LEADS) counts[l.status] += 1
+      return { leads, counts, total: LEADS.length }
+    },
+    widget: leadsWidget,
   }),
 ]
 

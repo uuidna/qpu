@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, X, Z, applied, expectationOf, measure, powerOf } from './cirq.js'
+import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, expectationOf, measure, powerOf } from './cirq.js'
 
 const [q0, q1] = LineQubit.range(2)
 
@@ -87,27 +87,27 @@ test('the density-matrix simulator agrees with the state vector on a noiseless B
 
 test('the depolarizing channel after an X leaves |1> with probability 1 − 2p/3, and the state is no longer pure', () => {
   const p = 0.3
-  const result = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), { depolarize: p })
+  const result = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), [{ name: 'depolarize', p }])
   assert.ok(Math.abs(result.trace - 1) < 1e-12, 'a channel keeps the trace at 1')
   assert.ok(Math.abs(result.probabilities[1]! - (1 - (2 * p) / 3)) < 1e-12, `P(|1>) should be 1 - 2p/3, got ${result.probabilities[1]}`)
   assert.ok(result.purity < 1 - 1e-6, 'noise lowers the purity')
 })
 
 test('a probability outside 0 to 1 is refused, and the density simulator bounds its size', () => {
-  assert.throws(() => new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), { depolarize: 1.5 }), /between 0 and 1/)
+  assert.throws(() => new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), [{ name: 'depolarize', p: 1.5 }]), /between 0 and 1/)
   const wide = LineQubit.range(9).map((q) => applied(X, q))
   assert.throws(() => new DensityMatrixSimulator().simulate(new Circuit(wide)), /up to 8 qubits/)
 })
 
 test('the Quantum Virtual Machine runs a circuit that fits its device, with the noise it is given, and refuses one that does not fit', () => {
-  const machine = new QuantumVirtualMachine(new Device(LineQubit.range(2), [[q0!, q1!]]), { depolarize: 0.3 })
+  const machine = new QuantumVirtualMachine(new Device(LineQubit.range(2), [[q0!, q1!]]), [{ name: 'depolarize', p: 0.3 }])
   const result = machine.simulate(new Circuit([applied(X, q0!)]))
   assert.ok(Math.abs(result.probabilities[1]! - (1 - 0.2)) < 1e-12)
   assert.throws(() => machine.simulate(new Circuit([applied(H, LineQubit.of(5))])), /not a qubit of this device/)
 })
 
 test('amplitude damping takes |1> to |0> with probability gamma, as Cirq\'s amplitude_damp(0.2) states', () => {
-  const result = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), { amplitudeDamp: 0.2 })
+  const result = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), [{ name: 'amplitude_damp', gamma: 0.2 }])
   assert.ok(Math.abs(result.trace - 1) < 1e-12)
   assert.ok(Math.abs(result.probabilities[1]! - 0.8) < 1e-12, `P(|1>) should be 0.8, got ${result.probabilities[1]}`)
   assert.ok(Math.abs(result.probabilities[0]! - 0.2) < 1e-12)
@@ -129,4 +129,60 @@ test('the device exposes its qubit set and its couplers, and validates a moment 
   assert.equal(device.edges.length, 1)
   device.validateMoment(new Moment([applied(CZ, q0!, q1!), applied(H, LineQubit.of(2))]))
   assert.throws(() => device.validateMoment(new Moment([applied(CZ, q0!, LineQubit.of(2))])), /does not couple/)
+})
+
+const one = (channel: Parameters<DensityMatrixSimulator['simulate']>[1]) => new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), channel)
+
+test('bit flip with probability p takes |1> to |0> with probability p, once per gate, and the trace stays 1', () => {
+  const r = one([{ name: 'bit_flip', p: 0.2 }])
+  assert.ok(Math.abs(r.probabilities[0]! - 0.2) < 1e-12 && Math.abs(r.trace - 1) < 1e-12)
+})
+
+test('reset sends any state to |0>, and phase damping leaves the populations of |+> unchanged', () => {
+  assert.ok(Math.abs(one([{ name: 'reset' }]).probabilities[0]! - 1) < 1e-12)
+  const plus = new DensityMatrixSimulator().simulate(new Circuit([applied(H, q0!)]), [{ name: 'phase_damp', gamma: 0.6 }])
+  assert.ok(Math.abs(plus.probabilities[0]! - 0.5) < 1e-12 && Math.abs(plus.probabilities[1]! - 0.5) < 1e-12)
+  assert.ok(plus.purity < 1 - 1e-6)
+})
+
+test('asymmetric depolarizing noise flips |1> to |0> with px + py, as the channel defines it', () => {
+  const r = one([{ name: 'asymmetric_depolarize', p_x: 0.1, p_y: 0.05, p_z: 0.15 }])
+  assert.ok(Math.abs(r.probabilities[0]! - 0.15) < 1e-12 && Math.abs(r.trace - 1) < 1e-12)
+})
+
+test('generalized amplitude damping with p = 1 is amplitude damping: |1> decays to |0> with probability gamma', () => {
+  const r = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), [{ name: 'generalized_amplitude_damp', p: 1, gamma: 0.5 }])
+  assert.ok(Math.abs(r.probabilities[1]! - 0.5) < 1e-12)
+})
+
+test('every named channel is trace-preserving on an entangled pair', () => {
+  const bell = new Circuit([applied(H, q0!), applied(CNOT, q0!, q1!)])
+  const channels: Parameters<DensityMatrixSimulator['simulate']>[1][] = [
+    [{ name: 'bit_flip', p: 0.3 }], [{ name: 'phase_flip', p: 0.3 }], [{ name: 'depolarize', p: 0.3 }],
+    [{ name: 'asymmetric_depolarize', p_x: 0.1, p_y: 0.2, p_z: 0.3 }], [{ name: 'amplitude_damp', gamma: 0.4 }],
+    [{ name: 'phase_damp', gamma: 0.4 }], [{ name: 'generalized_amplitude_damp', p: 0.7, gamma: 0.4 }], [{ name: 'reset' }],
+  ]
+  for (const ch of channels) assert.ok(Math.abs(new DensityMatrixSimulator().simulate(bell, ch).trace - 1) < 1e-12, JSON.stringify(ch))
+})
+
+test('Toffoli flips the third qubit only when both controls are 1', () => {
+  const [a, b, c3] = LineQubit.range(3)
+  const r = new Simulator().simulate(new Circuit([applied(X, a!), applied(X, b!), applied(TOFFOLI, a!, b!, c3!)]))
+  assert.ok(Math.abs(r.amplitudes[7]![0] - 1) < 1e-12)
+  const none = new Simulator().simulate(new Circuit([applied(X, a!), applied(TOFFOLI, a!, b!, c3!)]))
+  assert.ok(Math.abs(none.amplitudes[1]![0] - 1) < 1e-12)
+})
+
+test('INLINE puts an operation in the moment before the insert location when it does not conflict, else in a new moment', () => {
+  const inline = new Circuit().append(applied(H, q0!)).append(applied(H, q1!), 'INLINE')
+  assert.equal(inline.moments.length, 1)
+  const conflict = new Circuit().append(applied(H, q0!)).append(applied(X, q0!), 'INLINE')
+  assert.equal(conflict.moments.length, 2)
+})
+
+test('NEW_THEN_INLINE gives the first operation a new moment and inserts the rest inline', () => {
+  const c2 = new Circuit().append([applied(H, q0!), applied(H, q1!)], 'NEW_THEN_INLINE')
+  assert.equal(c2.moments.length, 1)
+  const c3 = new Circuit().append([applied(H, q0!), applied(H, q0!)], 'NEW_THEN_INLINE')
+  assert.equal(c3.moments.length, 2)
 })

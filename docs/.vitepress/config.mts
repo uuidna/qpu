@@ -28,8 +28,16 @@ export default defineConfig({
         "link": "/echo"
       },
       {
+        "text": "Responsibility",
+        "link": "/responsibility"
+      },
+      {
         "text": "MCP",
         "link": "/mcp"
+      },
+      {
+        "text": "Leads",
+        "link": "/leads"
       },
       {
         "text": "Playground",
@@ -61,8 +69,16 @@ export default defineConfig({
             "link": "/echo"
           },
           {
+            "text": "Responsibility",
+            "link": "/responsibility"
+          },
+          {
             "text": "MCP",
             "link": "/mcp"
+          },
+          {
+            "text": "Leads",
+            "link": "/leads"
           },
           {
             "text": "Playground",
@@ -92,6 +108,22 @@ export default defineConfig({
           {
             "text": "roadmap",
             "link": "/mcp#roadmap"
+          },
+          {
+            "text": "algorithm",
+            "link": "/mcp#algorithm"
+          },
+          {
+            "text": "software",
+            "link": "/mcp#software"
+          },
+          {
+            "text": "statements",
+            "link": "/mcp#statements"
+          },
+          {
+            "text": "leads",
+            "link": "/mcp#leads"
           }
         ]
       }

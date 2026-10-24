@@ -4,6 +4,7 @@
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { handle } from '../src/quantum/mcp.js'
+import { LEADS } from '../src/quantum/leads.js'
 
 const ROOT = process.cwd()
 const DOCS = join(ROOT, 'docs')
@@ -42,6 +43,24 @@ writeFileSync(join(DOCS, 'mcp.md'), mcpPage)
 
 mkdirSync(join(DOCS, 'public'), { recursive: true })
 writeFileSync(join(DOCS, 'public', 'mcp.json'), JSON.stringify({ name: pkg.name, protocol: 'JSON-RPC 2.0', tools }, null, 2) + '\n')
+
+/** The leads page: every lead on quantumai.google with its status and the tool that serves it, from the lead registry. */
+const leadsPage = [
+  '---',
+  'title: Leads',
+  'order: 45',
+  '---',
+  '',
+  '# Leads',
+  '',
+  'Every lead on quantumai.google and its linked PDF, with its status and the MCP tool that serves it. The `leads` tool returns the same registry.',
+  '',
+  '| Lead | Status | Tool | Statement | Reason |',
+  '| --- | --- | --- | --- | --- |',
+  ...LEADS.map((l) => `| \`${l.id}\` | ${l.status} | ${l.tool ?? '—'} | ${l.statement} | ${l.reason ?? ''} |`),
+  '',
+].join('\n')
+writeFileSync(join(DOCS, 'leads.md'), leadsPage)
 
 /** A page's frontmatter: `key: value` lines between two `---` fences. */
 const frontmatterOf = (text: string): Record<string, string> => {
