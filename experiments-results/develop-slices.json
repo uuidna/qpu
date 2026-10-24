@@ -1,9 +1,12 @@
 {
  "families": 41,
  "complete": [
+  "api",
   "petroleum",
   "query",
+  "queue",
   "queueing",
+  "rail",
   "railway",
   "ratelimiting",
   "ready",
@@ -15,6 +18,7 @@
   "roasting",
   "rule",
   "screening",
+  "search",
   "security",
   "seo",
   "social",
@@ -26,23 +30,19 @@
   "supplychain",
   "sustainability",
   "tracing",
+  "transit",
+  "translation",
   "transport",
+  "urbanism",
   "valuation",
   "version",
   "vitals",
+  "waterquality",
   "waypoint",
   "website",
   "zerotrust",
   "zoning"
  ],
- "partial": [
-  "api",
-  "queue",
-  "rail",
-  "search",
-  "transit",
-  "translation",
-  "urbanism",
-  "waterquality"
- ]
+ "partial": [],
+ "note": "every slice is one API slice of 14, read through the job door"
 }
