@@ -276,3 +276,112 @@ export class Simulator {
     return new Result(records)
   }
 }
+
+/** A square complex matrix, row-major: entry (r, c) is re[r * dim + c] + i·im[r * dim + c]. */
+type Matrix = { re: Float64Array; im: Float64Array }
+
+const MAX_DENSITY_QUBITS = 8
+
+/** The unitary a gate acts as on n qubits: column c is the state the gate makes of basis state |c>. */
+const unitaryOf = (gate: Gate, indices: number[], n: number): Matrix => {
+  const dim = 1 << n
+  const u: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  for (let c = 0; c < dim; c++) {
+    const column: State = { re: new Float64Array(dim), im: new Float64Array(dim) }
+    column.re[c] = 1
+    applyGate(column, gate, indices)
+    for (let r = 0; r < dim; r++) {
+      u.re[r * dim + c] = column.re[r]!
+      u.im[r * dim + c] = column.im[r]!
+    }
+  }
+  return u
+}
+
+const multiply = (a: Matrix, b: Matrix, dim: number): Matrix => {
+  const out: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  for (let r = 0; r < dim; r++)
+    for (let k = 0; k < dim; k++) {
+      const ar = a.re[r * dim + k]!, ai = a.im[r * dim + k]!
+      if (ar === 0 && ai === 0) continue
+      for (let c = 0; c < dim; c++) {
+        out.re[r * dim + c]! += ar * b.re[k * dim + c]! - ai * b.im[k * dim + c]!
+        out.im[r * dim + c]! += ar * b.im[k * dim + c]! + ai * b.re[k * dim + c]!
+      }
+    }
+  return out
+}
+
+/** The adjoint of a matrix: the conjugate transpose. */
+const dagger = (m: Matrix, dim: number): Matrix => {
+  const out: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  for (let r = 0; r < dim; r++) for (let c = 0; c < dim; c++) {
+    out.re[r * dim + c] = m.re[c * dim + r]!
+    out.im[r * dim + c] = -m.im[c * dim + r]!
+  }
+  return out
+}
+
+/** U ρ U†: a unitary acting on a density matrix. */
+const conjugate = (u: Matrix, rho: Matrix, dim: number): Matrix => multiply(multiply(u, rho, dim), dagger(u, dim), dim)
+
+/** Cirq's depolarizing channel on one qubit: E(ρ) = (1 − p)ρ + p/3 (XρX + YρY + ZρZ). */
+const depolarizeOn = (rho: Matrix, index: number, p: number, n: number): Matrix => {
+  const dim = 1 << n
+  const out: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  for (let k = 0; k < dim * dim; k++) {
+    out.re[k] = (1 - p) * rho.re[k]!
+    out.im[k] = (1 - p) * rho.im[k]!
+  }
+  for (const pauli of [X, Y, Z]) {
+    const term = conjugate(unitaryOf(pauli, [index], n), rho, dim)
+    for (let k = 0; k < dim * dim; k++) {
+      out.re[k]! += (p / 3) * term.re[k]!
+      out.im[k]! += (p / 3) * term.im[k]!
+    }
+  }
+  return out
+}
+
+/** The result of a density-matrix run: the density matrix, its diagonal (the basis probabilities), its trace and purity. */
+export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: number[]; trace: number; purity: number }
+
+/** Cirq's DensityMatrixSimulator: the state as a density matrix, so a noisy channel acts exactly rather than by sampling.
+ *  A gate acts as U ρ U†; with a depolarizing probability p, each gate is followed by the depolarizing channel on each of
+ *  its qubits. A pure state has purity 1; noise lowers it. Exact for up to 8 qubits. */
+export class DensityMatrixSimulator {
+  simulate(circuit: Circuit, depolarize = 0): DensityResult {
+    if (depolarize < 0 || depolarize > 1) throw new Error('the depolarizing probability is between 0 and 1')
+    const order = circuit.qubits
+    if (order.length > MAX_DENSITY_QUBITS) throw new Error(`the density-matrix simulator handles up to ${MAX_DENSITY_QUBITS} qubits, the circuit has ${order.length}`)
+    const n = order.length
+    const dim = 1 << n
+    const pos = new Map(order.map((q, i) => [keyOf(q), i]))
+    let rho: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+    rho.re[0] = 1
+    for (const op of circuit.operations) {
+      if (op.kind !== 'gate') continue
+      const indices = op.qubits.map((q) => pos.get(keyOf(q))!)
+      rho = conjugate(unitaryOf(op.gate, indices, n), rho, dim)
+      if (depolarize > 0) for (const i of indices) rho = depolarizeOn(rho, i, depolarize, n)
+    }
+    const probabilities = Array.from({ length: dim }, (_, k) => rho.re[k * dim + k]!)
+    const trace = probabilities.reduce((sum, p) => sum + p, 0)
+    let purity = 0
+    for (let k = 0; k < dim * dim; k++) purity += rho.re[k]! ** 2 + rho.im[k]! ** 2
+    return { qubits: order, density: rho, probabilities, trace, purity }
+  }
+}
+
+/** The Quantum Virtual Machine, as the Cirq page describes it: simulated hardware that mimics a device's constraints and
+ *  its noise. A circuit runs only if it fits the device, and it runs with the depolarizing noise the machine is given. */
+export class QuantumVirtualMachine {
+  private readonly simulator = new DensityMatrixSimulator()
+
+  constructor(private readonly device: Device, private readonly depolarize: number) {}
+
+  simulate(circuit: Circuit): DensityResult {
+    this.device.validateCircuit(circuit)
+    return this.simulator.simulate(circuit, this.depolarize)
+  }
+}
