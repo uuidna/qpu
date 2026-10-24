@@ -32,3 +32,21 @@ for (const tool of [...new Set([door, ...climb].filter(Boolean))]) {
   console.log(`  ${tool}: holds=${holdsOf(r)}${r && r.next !== undefined ? `, next=${JSON.stringify(r.next).slice(0, 60)}` : ''}`)
 }
 console.log('next ran; anything it surfaces routes to the court (qpu://court) — development is reviewed, not auto-applied.')
+
+// THE OPEN ITEMS, EVERY RUN. Each open item is read from the repository or the host and named with what it owes. Nothing
+// here commits, pushes, deploys or publishes: an item that needs a person says so, and the release gate refuses until it
+// is settled.
+import { execSync } from 'node:child_process'
+const sh = (cmd: string): string => { try { return execSync(cmd, { stdio: 'pipe' }).toString().trim() } catch { return '' } }
+const dirty = sh('git status --porcelain').split('\n').filter(Boolean)
+const unpushed = sh('git log origin/main..HEAD --oneline').split('\n').filter(Boolean)
+const shipOut = sh('./node_modules/.bin/tsx scripts/ship-gate.ts 2>&1')
+const localTheorems = /(\d+)\/\d+ theorems/.exec(shipOut)?.[1]
+const hostedTheorems = (await rpc('prove'))?.lean?.source?.theorems ?? (await rpc('prove'))?.source?.theorems
+console.log('open items:')
+console.log(`  uncommitted: ${dirty.length} entr${dirty.length === 1 ? 'y' : 'ies'}${dirty.length ? ` — owed: the owner of each change commits or reverts it (${dirty.slice(0, 3).map((l) => l.replace(/^\s*\S+\s+/, '')).join(', ')}${dirty.length > 3 ? ', …' : ''})` : ' — none'}`)
+console.log(`  not on origin: ${unpushed.length} commit(s)${unpushed.length ? ' — owed: a push, which is a person\'s command' : ' — none'}`)
+console.log(`  host theorems: ${hostedTheorems ?? '?'} hosted, ${localTheorems ?? '?'} local${hostedTheorems !== undefined && hostedTheorems === localTheorems ? ' — none' : ' — owed: a deploy, which is a person\'s command'}`)
+const gate = (() => { try { return execSync('node --import tsx --test scripts/*.test.ts 2>&1', { stdio: 'pipe' }).toString() } catch (e) { return String((e as { stdout?: Buffer }).stdout ?? '') } })()
+const failing = [...gate.matchAll(/^✖ (.+?) \(/gm)].map((m) => m[1]).filter((v, i, a) => a.indexOf(v) === i)
+console.log(`  scripts gate: ${failing.length ? `${failing.length} failing — owed: ${failing.slice(0, 2).join('; ')}` : 'green'}`)
