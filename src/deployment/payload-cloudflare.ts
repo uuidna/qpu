@@ -214,7 +214,7 @@ const PLUGIN_CODE: Record<CloudflareCombination['plugins'][number], { from: stri
   // rows (users, form submissions, receipts) or import arbitrary docs, bypassing per-collection access. Gate both to an
   // admin: only an admin may run an export or an import (Wave XIV compliance, SOC2-CC6.1 / GDPR data-access control).
   'import-export': { from: '@payloadcms/plugin-import-export', name: 'importExportPlugin', call: (t) => `importExportPlugin({ collections: [${t.map((x) => `{ slug: '${x}' }`).join(', ')}], overrideExportCollection: ({ collection }) => ({ ...collection, access: { ...collection.access, read: ${ADMIN_SRC}, create: ${ADMIN_SRC}, delete: ${ADMIN_SRC} } }), overrideImportCollection: ({ collection }) => ({ ...collection, access: { ...collection.access, read: ${ADMIN_SRC}, create: ${ADMIN_SRC}, delete: ${ADMIN_SRC} } }) })` },
-  mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { enabled: true, description: '${x}' }`).join(', ')} } })` },
+  mcp: { from: '@payloadcms/plugin-mcp', name: 'mcpPlugin', call: (t) => `mcpPlugin({ collections: { ${t.map((x) => `'${x}': { description: '${x}' }`).join(', ')} } })` },
   'multi-tenant': { from: '@payloadcms/plugin-multi-tenant', name: 'multiTenantPlugin', call: (t) => `multiTenantPlugin({ collections: { ${t.map((x) => `'${x}': {}`).join(', ')} } })` },
   'nested-docs': { from: '@payloadcms/plugin-nested-docs', name: 'nestedDocsPlugin', call: (t) => `nestedDocsPlugin({ collections: ${slugs(t)} })` },
   redirects: { from: '@payloadcms/plugin-redirects', name: 'redirectsPlugin', call: (t) => `redirectsPlugin({ collections: ${slugs(t)} })` },
