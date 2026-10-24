@@ -149,7 +149,7 @@ pages.comparison = frontmatter('comparison', 'Comparison', 'What @uuidna/qpu doe
   `| Physical hardware | none | IBM Quantum | Google Quantum AI (by access) | IonQ, Rigetti, IQM, QuEra and others | via plugins | none |`,
   `| Formal proof | ${lean ? `${lean.theorems} Lean 4 theorems, all served and recomputed (${lean.recomputed}/${lean.theorems})` : '—'} | none | none | none | none | none |`,
   `| Content-addressed results | RFC 9562 v8 UUIDs and chained quantum receipts on every computation | job ids | none | task ARNs | none | none |`,
-  `| Agent interface | MCP server (/mcp), ${unit.mcpToolsListOf ? unit.mcpToolsListOf().length : '—'} tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |`,
+  `| Agent interface | MCP server (/api), ${unit.mcpToolsListOf ? unit.mcpToolsListOf().length : '—'} tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |`,
   `| Document database | MongoDB query/update semantics on Cloudflare KV+R2 or D1, Payload adapter | — | — | — | — | — |`,
   `| API fusion | ${fuse ? `${fuse.reached} APIs, ${fuse.edges} composing pairs, ${fuse.formulas?.produced ?? '—'} cross formulas` : '—'} | — | — | — | — | — |`,
   `| CMS on the edge | ${pcf ? `${pcf.combinations} Next.js + Payload configurations on Workers` : '—'} | — | — | — | — | — |`,

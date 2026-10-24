@@ -1,6 +1,6 @@
 An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (`{ "qpu": { "type": "http",
-"url": "https://qpu.uuidna.com/mcp" } }`), as a package (`npm install @uuidna/qpu`), or as a container.
+"url": "https://qpu.uuidna.com/api" } }`), as a package (`npm install @uuidna/qpu`), or as a container.
 
 Author's published sequence: zeropoint-node 1.5.8, published 2026-09-07, prints 0\1\2\4\8/7/5/3\6\9/0\1 (that identifier is in the 1.5.8 README, and in the README from version 1.0.2 published 2026-07-29, including the August 2026 releases 1.0.3 published 2026-08-19 through 1.3.1 published 2026-08-31; the package was first published 2025-07-08). Author's claim: "All Seven Clay Millennium Problems Sealed via Universal σ-Involution" (Rouschev, 2026, doi:10.5281/zenodo.21781602). A prize is a lead.
 
@@ -40,7 +40,7 @@ Zero / temp / time / heat / cold-fusion from the tree: heat.identity kind heat h
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 63 doors and 9,501 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/api) | 16 listed tools; through any of them 63 doors and 9,501 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | MCP resources | 16 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,565, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
 | Formal proof | 215 Lean theorems served, 215 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
@@ -56,29 +56,29 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 (commercial use by license: https://qpu.uuidna.com/license).
 
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/quantum/processing/unit
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/quantum/processing/unit
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/quantum/processing/unit
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/quantum/processing/unit
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/api
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com/cite
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com/license
-- https://github.com/uuidna/qpu → https://qpu.uuidna.com/mcp
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com/quantum/processing/unit
 - https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781602
 - https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781603
@@ -87,6 +87,13 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 - https://qpu.uuidna.com → https://github.com/uuidna/qpu
 - https://qpu.uuidna.com → https://zenodo.org/records/21781603
 - https://qpu.uuidna.com → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/api → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/api → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/api → https://zenodo.org/records/23156998
 - https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781602
 - https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781603
 - https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.22700098
@@ -101,13 +108,6 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 - https://qpu.uuidna.com/license → https://github.com/uuidna/qpu
 - https://qpu.uuidna.com/license → https://zenodo.org/records/21781603
 - https://qpu.uuidna.com/license → https://zenodo.org/records/23156998
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781602
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781603
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.22700098
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.23156998
-- https://qpu.uuidna.com/mcp → https://github.com/uuidna/qpu
-- https://qpu.uuidna.com/mcp → https://zenodo.org/records/21781603
-- https://qpu.uuidna.com/mcp → https://zenodo.org/records/23156998
 - https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781602
 - https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781603
 - https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.22700098
@@ -116,14 +116,14 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 - https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/21781603
 - https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/23156998
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/api
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com/cite
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com/license
-- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/mcp
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com/quantum/processing/unit
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/api
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com/cite
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com/license
-- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/mcp
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com/quantum/processing/unit
 
 Every figure above is read from a committed receipt; the README carries the final build receipt that accounts for them.

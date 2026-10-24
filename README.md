@@ -6,7 +6,7 @@
 
 An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (`{ "qpu": { "type": "http",
-"url": "https://qpu.uuidna.com/mcp" } }`), as a package (`npm install @uuidna/qpu`), or as a container.
+"url": "https://qpu.uuidna.com/api" } }`), as a package (`npm install @uuidna/qpu`), or as a container.
 
 This paper reports, entirely from machine receipts: 215 Lean 4 theorems (215 recomputed in TypeScript), 9,501 formulas across 1,155 families addressed as hex-program UUIDs (RFC 9562 v8), 16 MCP tools over 63 doors, and 247 cross-family relations discovered over lattice and public data. Every figure is read from a committed quantum receipt; none is typed.
 
@@ -35,7 +35,7 @@ address and crosses to other families. Each wing reports itself:
 | [Cryptography](https://qpu.uuidna.com/crypto) | 3 | 2 | 2 | 0 |
 | [UUIDs & quantum receipts](https://qpu.uuidna.com/receipts) | 38 | 15 | 13 | 0 |
 | [Storage & database](https://qpu.uuidna.com/storage) | 25 | 10 | 6 | 3 |
-| [MCP & agents](https://qpu.uuidna.com/agents) | 124 | 53 | 34 | 2 |
+| [MCP & agents](https://qpu.uuidna.com/agents) | 124 | 53 | 33 | 2 |
 | [Live science data](https://qpu.uuidna.com/science) | 21 | 17 | 8 | 7 |
 | [API fusion](https://qpu.uuidna.com/fusion) | 18 | 11 | 5 | 3 |
 | [Payload & Cloudflare](https://qpu.uuidna.com/cms) | 24 | 4 | 2 | 0 |
@@ -499,7 +499,7 @@ Gate: push on 2026-10-07, does not hold — ✓ gate.push(0) = 14; ✗ gate.push
 
 | Capability | How much | Compared with |
 |---|---|---|
-| MCP door (https://qpu.uuidna.com/mcp) | 16 listed tools; through any of them 63 doors and 9,501 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
+| MCP door (https://qpu.uuidna.com/api) | 16 listed tools; through any of them 63 doors and 9,501 formulas (`{ doors: true }`, `{ door }`, `{ hex }`, `{ errors: true }`) | the Model Context Protocol: `tools/list` sealed by the Lean theorem agents_mcp_tools |
 | MCP resources | 16 core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); `{ scope: 'all' }` reaches 2,565, `{ scope: family }` a scoped set, over 8 `qpu://…` templates (each lean theorem and hex program a UUID) | the Model Context Protocol `resources/list` + `resources/read` |
 | Formal proof | 215 Lean theorems served, 215 recomputed in TypeScript | the Lean 4 kernel (leanprover/lean4:v4.33.0) |
 | Formula families | 18 families run as hex-program UUIDs (RFC 9562 v8); 17,473 programs in the last discovery | each other: 247 values reached by two or more families, 13 seals (fixed points, involutions) |
@@ -2493,13 +2493,13 @@ And every row of every other receipt that does not hold, as the receipt names it
 
 ## 8. Reproducibility — the build receipt
 
-**Final build receipt** `24671485-223d-8f33-ae18-df97484a2936`
+**Final build receipt** `4da60389-fdb1-6933-b920-07e72edffe1a`
 
 | | |
 |---|---|
 | git tag | v1.4.0 |
 | receipts | 30 files, 5012 nodes |
-| build stream | length 5012, head `24671485-223d-8f33-ae18-df97484a2936`, chain `e839f0cf13ebed20a3687078438fa910743ff6b19f99de495071fb5f1c2d96ca`, holds **true** |
+| build stream | length 5012, head `4da60389-fdb1-6933-b920-07e72edffe1a`, chain `de990c4dc1f4e309ac4c0e5c18a943e345161afbe28dd1d52eecad1a460ef388`, holds **true** |
 
 <details>
 <summary>5012 receipts, chained in the build stream</summary>
@@ -2526,7 +2526,7 @@ flowchart TD
   nfce70259["heat-receipt.json<br/>40 rows<br/><code>fce70259</code>"]
   nac1547e5["involute-receipt.json<br/>13 rows<br/><code>ac1547e5</code>"]
   ne0544db5["lattice-receipt.json<br/><code>e0544db5</code>"]
-  ne49f41da["lead-waves-receipt.json<br/><code>e49f41da</code>"]
+  n0ef90db1["lead-waves-receipt.json<br/><code>0ef90db1</code>"]
   n63db47be["lean-receipt.json<br/>215 rows<br/><code>63db47be</code>"]
   n9cd60efb["linux-users-receipt.json<br/>12 rows<br/><code>9cd60efb</code>"]
   n314f2928["love-experience-receipt.json<br/>1 rows<br/><code>314f2928</code>"]
@@ -2541,7 +2541,7 @@ flowchart TD
   n09bbd7aa["test-receipt.json<br/>1225 rows<br/><code>09bbd7aa</code>"]
   ned567b53["uses-receipt.json<br/>42 rows<br/><code>ed567b53</code>"]
   n0a0f098d["walls-receipt.json<br/><code>0a0f098d</code>"]
-  n24671485["readme<br/><code>24671485</code>"]
+  n4da60389["readme<br/><code>4da60389</code>"]
   n9143c628 --> n7f36f7e4
   n9143c628 --> n1c7ee73a
   n9143c628 --> n5c2251de
@@ -2557,7 +2557,7 @@ flowchart TD
   n9143c628 --> nfce70259
   n9143c628 --> nac1547e5
   n9143c628 --> ne0544db5
-  n9143c628 --> ne49f41da
+  n9143c628 --> n0ef90db1
   n9143c628 --> n63db47be
   n9143c628 --> n9cd60efb
   n9143c628 --> n314f2928
@@ -2572,7 +2572,7 @@ flowchart TD
   n9143c628 --> n09bbd7aa
   n9143c628 --> ned567b53
   n9143c628 --> n0a0f098d
-  n9143c628 --> n24671485
+  n9143c628 --> n4da60389
 ```
 
 | node | receipt uuid | referrer | payload fold | seq |
@@ -5762,7 +5762,7 @@ flowchart TD
 | involute-receipt.json#11 | `82d940c1-99e6-3944-bafd-fdf60817800e` | `ac1547e5` | `2fa13464bc78f470` | 3182 |
 | involute-receipt.json#12 | `6e00087c-5ee1-7a3c-9fac-04bfd3e2d85b` | `ac1547e5` | `90838848b423fadc` | 3183 |
 | lattice-receipt.json | `e0544db5-b39f-5cd0-b255-168567c0c954` | `9143c628` | `30e4a006c6609dfb` | 3184 |
-| lead-waves-receipt.json | `e49f41da-62ac-4ace-83c6-d92a933f2a00` | `9143c628` | `77a564a445f38b17` | 3185 |
+| lead-waves-receipt.json | `0ef90db1-8479-5982-9307-0983c2b8ec72` | `9143c628` | `e66486bb444ca101` | 3185 |
 | lean-receipt.json | `63db47be-55e4-7467-860d-725f3674d45a` | `9143c628` | `edc16af7a04c298f` | 3186 |
 | lean-receipt.json#0 | `d46b6a82-3231-5355-8af2-055f297961f7` | `63db47be` | `e35f7f1e427951e6` | 3187 |
 | lean-receipt.json#1 | `63bdff4e-c19d-529b-9eba-90c0aa2ec452` | `63db47be` | `a379dd7cf0ce7fa4` | 3188 |
@@ -7588,7 +7588,7 @@ flowchart TD
 | uses-receipt.json#40 | `e0b8b52e-13bc-1e4f-b9e2-cfcfacfd8f81` | `ed567b53` | `a1bacec066656c45` | 5008 |
 | uses-receipt.json#41 | `3b182c49-a503-3ace-8c0c-b55a469a010c` | `ed567b53` | `e43f843d6380eb30` | 5009 |
 | walls-receipt.json | `0a0f098d-5467-143b-b2cb-4e8c876aeb2f` | `9143c628` | `99a5ea3b2f73a21b` | 5010 |
-| readme | `24671485-223d-8f33-ae18-df97484a2936` | `9143c628` | `7c6651940f81b64e` | 5011 |
+| readme | `4da60389-fdb1-6933-b920-07e72edffe1a` | `9143c628` | `578527e3a1d95a3b` | 5011 |
 
 </details>
 
@@ -7598,29 +7598,29 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 (commercial use by license: https://qpu.uuidna.com/license).
 
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.21781602 → https://qpu.uuidna.com/quantum/processing/unit
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.21781603 → https://qpu.uuidna.com/quantum/processing/unit
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.22700098 → https://qpu.uuidna.com/quantum/processing/unit
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com
+- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/api
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/cite
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/license
-- https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/mcp
 - https://doi.org/10.5281/zenodo.23156998 → https://qpu.uuidna.com/quantum/processing/unit
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com
+- https://github.com/uuidna/qpu → https://qpu.uuidna.com/api
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com/cite
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com/license
-- https://github.com/uuidna/qpu → https://qpu.uuidna.com/mcp
 - https://github.com/uuidna/qpu → https://qpu.uuidna.com/quantum/processing/unit
 - https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781602
 - https://qpu.uuidna.com → https://doi.org/10.5281/zenodo.21781603
@@ -7629,6 +7629,13 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 - https://qpu.uuidna.com → https://github.com/uuidna/qpu
 - https://qpu.uuidna.com → https://zenodo.org/records/21781603
 - https://qpu.uuidna.com → https://zenodo.org/records/23156998
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.21781602
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.21781603
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.22700098
+- https://qpu.uuidna.com/api → https://doi.org/10.5281/zenodo.23156998
+- https://qpu.uuidna.com/api → https://github.com/uuidna/qpu
+- https://qpu.uuidna.com/api → https://zenodo.org/records/21781603
+- https://qpu.uuidna.com/api → https://zenodo.org/records/23156998
 - https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781602
 - https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.21781603
 - https://qpu.uuidna.com/cite → https://doi.org/10.5281/zenodo.22700098
@@ -7643,13 +7650,6 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 - https://qpu.uuidna.com/license → https://github.com/uuidna/qpu
 - https://qpu.uuidna.com/license → https://zenodo.org/records/21781603
 - https://qpu.uuidna.com/license → https://zenodo.org/records/23156998
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781602
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.21781603
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.22700098
-- https://qpu.uuidna.com/mcp → https://doi.org/10.5281/zenodo.23156998
-- https://qpu.uuidna.com/mcp → https://github.com/uuidna/qpu
-- https://qpu.uuidna.com/mcp → https://zenodo.org/records/21781603
-- https://qpu.uuidna.com/mcp → https://zenodo.org/records/23156998
 - https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781602
 - https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.21781603
 - https://qpu.uuidna.com/quantum/processing/unit → https://doi.org/10.5281/zenodo.22700098
@@ -7658,14 +7658,14 @@ Cite: Rouschev, Tsvetan. "qpu." doi:[10.5281/zenodo.23156998](https://doi.org/10
 - https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/21781603
 - https://qpu.uuidna.com/quantum/processing/unit → https://zenodo.org/records/23156998
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com
+- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/api
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com/cite
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com/license
-- https://zenodo.org/records/21781603 → https://qpu.uuidna.com/mcp
 - https://zenodo.org/records/21781603 → https://qpu.uuidna.com/quantum/processing/unit
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com
+- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/api
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com/cite
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com/license
-- https://zenodo.org/records/23156998 → https://qpu.uuidna.com/mcp
 - https://zenodo.org/records/23156998 → https://qpu.uuidna.com/quantum/processing/unit
 
 Regenerate with `npm run readme` after `npm run build` and the receipt-producing runs; `npx tsx scripts/generate-readme.ts --check`

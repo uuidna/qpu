@@ -26,17 +26,17 @@ index.lean served theorem by theorem, recomputed and typeset.
 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
-| [`crossReadingOf`](../src/quantum/processing/unit/index.ts#L2547) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `crossReadingHolds` | holds |
+| [`crossReadingOf`](../src/quantum/processing/unit/index.ts#L2557) | builder | CROSS is the fifth reading: a statement whose two sides ARE the two readings — a sum of like terms equal to a product of unlike ones. `next_fused` (faces * mintOf (bits + coins) = fused + fused) is the asymmetric reading set equal to the symmetric one; reading only its right side called it symmetric, which is half of what it says. | `crossReadingHolds` | holds |
 | [`leanArityOf`](../src/quantum/processing/unit/lean-eval.ts#L365) | builder | The arity of a definition: its parameter count (pattern-matched builtins by their transcription). | — | — |
 | [`leanModelOf`](../src/quantum/processing/unit/lean-eval.ts#L148) | builder | The defs of the Lean source: `def x : Nat := e` and `def f (p q : Nat) : Nat := e`. | — | — |
 | [`leanOf`](../src/quantum/processing/unit/proof.ts#L52) | builder | Every theorem of index.lean as a row: statement verbatim, LaTeX, reading, cross reading, statement UUID and holds recomputed by lean-eval. | `leanHolds` | holds |
 | [`leanRecomputeOf`](../src/quantum/processing/unit/lean-eval.ts#L296) | builder | Decide one theorem statement exactly, over the stated range when it binds variables, and typeset it. | — | — |
-| [`leanSourceOf`](../src/quantum/processing/unit/index.ts#L2465) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `leanSourceOf` | **false** |
+| [`leanSourceOf`](../src/quantum/processing/unit/index.ts#L2475) | builder | The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin. | `leanSourceOf` | **false** |
 | [`leanTheoremBlocksOf`](../src/quantum/processing/unit/lean-eval.ts#L338) | builder | Every theorem of the source as [name, text]: the `theorem` line and its continuation lines, whitespace folded. | — | — |
-| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8141) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
+| [`quantumModeOf`](../src/quantum/processing/unit/index.ts#L8155) | builder | True when the served Lean rows include all_complete, coins_two, around or harmonic, involution, and entangle or monogamy, each holding. | — | — |
 | [`leanCallOf`](../src/quantum/processing/unit/lean-eval.ts#L356) | function | Call one definition of the Lean source by name with natural-number arguments, under Lean's Nat semantics. | — | — |
 | [`leanLinksOf`](../src/quantum/processing/unit/lean-eval.ts#L374) | function | The formulas discover each other: every declaration's statement and proof are read for the other declarations they name. | — | — |
-| [`statementUuidOf`](../src/quantum/processing/unit/index.ts#L2452) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
+| [`statementUuidOf`](../src/quantum/processing/unit/index.ts#L2462) | function | The content UUID of a theorem's statement (its type, binders excluded): the address every served row's handle is cut from. | — | — |
 
 ## Lean families
 

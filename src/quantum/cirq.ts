@@ -37,6 +37,46 @@ export const CZ: Gate = { name: 'CZ', arity: 2, matrix: [c(1), c(0), c(0), c(0),
 export const CNOT: Gate = { name: 'CNOT', arity: 2, matrix: [c(1), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(1), c(0)] }
 export const SWAP: Gate = { name: 'SWAP', arity: 2, matrix: [c(1), c(0), c(0), c(0), c(0), c(0), c(1), c(0), c(0), c(1), c(0), c(0), c(0), c(0), c(0), c(1)] }
 
+/** Cirq's gate power, G**t: the +1 eigenspace keeps its phase and the −1 eigenspace takes e^{iπt}, so X**0.5 is the square
+ *  root of NOT, as Cirq documents. Exact for the involutions here (G·G = I); any other gate is refused, not approximated. */
+export const powerOf = (gate: Gate, t: number): Gate => {
+  const dim = 1 << gate.arity
+  const at = (m: [number, number][], r: number, s: number) => m[r * dim + s]!
+  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
+    let sr = 0, si = 0
+    for (let k = 0; k < dim; k++) {
+      const [ar, ai] = at(gate.matrix, r, k), [br, bi] = at(gate.matrix, k, s)
+      sr += ar * br - ai * bi
+      si += ar * bi + ai * br
+    }
+    const id = r === s ? 1 : 0
+    if (Math.abs(sr - id) > 1e-12 || Math.abs(si) > 1e-12) throw new Error(`${gate.name} is not an involution, so its power is not defined here`)
+  }
+  const [cr, ci] = [Math.cos(Math.PI * t), Math.sin(Math.PI * t)]
+  const matrix: [number, number][] = []
+  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
+    const [gr, gi] = at(gate.matrix, r, s)
+    const id = r === s ? 1 : 0
+    // P+ = (I+G)/2 and P- = (I-G)/2 are the projectors; the result is P+ + e^{iπt}·P-
+    const pr = (id + gr) / 2, pi = gi / 2
+    const mr = (id - gr) / 2, mi = -gi / 2
+    matrix.push([pr + cr * mr - ci * mi, pi + cr * mi + ci * mr])
+  }
+  return { name: `${gate.name}**${t}`, arity: gate.arity, matrix }
+}
+
+/** The adjoint of a gate, G†: the conjugate transpose of its unitary. It is the inverse of any gate, so an echo can run
+ *  its backward half with the true inverse of each operation rather than the operation itself. */
+export const adjointOf = (gate: Gate): Gate => {
+  const dim = 1 << gate.arity
+  const matrix: [number, number][] = []
+  for (let r = 0; r < dim; r++) for (let s = 0; s < dim; s++) {
+    const [re, im] = gate.matrix[s * dim + r]!
+    matrix.push([re, -im])
+  }
+  return { name: `${gate.name}†`, arity: gate.arity, matrix }
+}
+
 export type Operation = { kind: 'gate'; gate: Gate; qubits: Qubit[] } | { kind: 'measure'; key: string; qubits: Qubit[] }
 
 /** Cirq's operation form: a gate applied to qubits. gate(...qubits) returns the operation. */

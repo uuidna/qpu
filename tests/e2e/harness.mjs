@@ -132,7 +132,7 @@ export const startHttp = async ({ timeout = 120_000, portAttempts = 5 } = {}) =>
         return stopped
       }
       const url = `http://127.0.0.1:${port}`
-      return { url, mcpUrl: `${url}/mcp`, port, script, pid: child.pid, proveMs: booted.proveMs, bootMs: booted.bootMs, servingLine: booted.servingLine, stdout: booted.stdout, stderr: booted.stderr, child, stop }
+      return { url, mcpUrl: `${url}/api`, port, script, pid: child.pid, proveMs: booted.proveMs, bootMs: booted.bootMs, servingLine: booted.servingLine, stdout: booted.stdout, stderr: booted.stderr, child, stop }
     }
     throw lastError
   } catch (error) {
@@ -155,7 +155,7 @@ export const startStdio = async () => {
 
 const endpointOf = (url) => {
   const target = new URL(String(url))
-  if (target.pathname === '/' || target.pathname === '') target.pathname = '/mcp'
+  if (target.pathname === '/' || target.pathname === '') target.pathname = '/api'
   return target
 }
 

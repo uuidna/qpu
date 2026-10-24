@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 type McpReply = { result?: unknown; error?: { message?: string } }
 
 const mcpCall = async (args: Record<string, unknown>): Promise<McpReply> => {
-  const r = await fetch('/mcp', {
+  const r = await fetch('/api', {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({

@@ -505,12 +505,12 @@ export const rpcErrorOf = (id: unknown, code: number, message: string, data?: un
   id: id === undefined ? null : id,
   error: data === undefined ? { code, message } : { code, message, data },
 })
-/** The methods this server answers on /mcp. */
+/** The methods this server answers on /api. */
 const rpcMethods = ['initialize', 'server/discover', 'ping', 'notifications/initialized', 'tools/list', 'tools/call'] as const
 type McpExtension = { handler: (params: Record<string, unknown>, env?: QpuEnv) => unknown; capability?: Record<string, unknown> }
 const MCP_EXTENSIONS = new Map<string, McpExtension>()
 /**
- * Register a JSON-RPC method on /mcp (resources, prompts, completion, logging) and the capability it adds to initialize.
+ * Register a JSON-RPC method on /api (resources, prompts, completion, logging) and the capability it adds to initialize.
  * A handler that throws { code, message } answers that JSON-RPC error.
  * @wing receipts
  * @kind function
@@ -2646,7 +2646,7 @@ export const citeHolds = (c = qpuCiteOf()): boolean =>
   c.links.edges.some((edge) => edge.from.includes(c.doi) || edge.to.includes(c.doi)) &&
   c.links.edges.some((edge) => edge.from.includes(c.conceptdoi) || edge.to.includes(c.conceptdoi)) &&
   c.links.edges.some((edge) => edge.from === 'https://github.com/uuidna/qpu' || edge.to === 'https://github.com/uuidna/qpu') &&
-  c.links.edges.some((edge) => edge.from === `${unit.origin}/mcp` || edge.to === `${unit.origin}/mcp`) &&
+  c.links.edges.some((edge) => edge.from === `${unit.origin}/api` || edge.to === `${unit.origin}/api`) &&
   c.links.edges.some((edge) => (edge.from === `${unit.origin}/license` || edge.to === `${unit.origin}/license`) && edge.lead === true) &&
   c.links.edges.some((edge) => edge.from === unit.origin && edge.to === `https://doi.org/${c.doi}`) &&
   c.links.edges.some((edge) => edge.from === `https://doi.org/${c.doi}` && edge.to === unit.origin) &&
@@ -2678,13 +2678,13 @@ const manAt = (endpoint: string, name: string, description: string, reading: str
   return { kind: 'man' as const, inline: true as const, name, section: n, synopsis, href, description, reading, documentation, holds }
 }
 /**
- * A tool's man page (NAME, SYNOPSIS, DESCRIPTION, SEE ALSO) for the /mcp door.
+ * A tool's man page (NAME, SYNOPSIS, DESCRIPTION, SEE ALSO) for the mcp door.
  * @wing agents
  * @kind builder
  * @evidence manHolds
  */
 export const qpuManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) =>
-  manAt(`${unit.origin}/mcp`, name, description, reading, href, see)
+  manAt(`${unit.origin}/api`, name, description, reading, href, see)
 
 export const manHolds = (m?: ReturnType<typeof qpuManOf>): boolean =>
   m !== undefined && (m.holds === true && m.kind === 'man' && m.inline === true && m.section === n && m.documentation.includes(m.name))
@@ -3125,7 +3125,7 @@ export const recognizeHolds = (value?: unknown): boolean => {
   * @kind builder
   * @evidence mcpShownHolds
  * `_meta.call` says where to call again; vendor shapes are documented in the JSON-LD catalogue at GET /mcp. */
-export const mcpShownOf = (name: string, shownPayload: unknown, href = `${unit.origin}/mcp`, full = false) => {
+export const mcpShownOf = (name: string, shownPayload: unknown, href = `${unit.origin}/api`, full = false) => {
   // A man page on the wire carries the tool's output schema (off tools/list since 2026-09-12), whichever door built it.
   // A man page is the document the caller asked to read. Every other reply leads with recognition unless { full: true }.
   const isMan = !!shownPayload && typeof shownPayload === 'object' && (shownPayload as { kind?: unknown }).kind === 'man'
@@ -3469,14 +3469,14 @@ export const qpuSequenceOf = onceOf(() => {
   const api = [
     { method: 'GET' as const, path: '/', door: toolNames[n - n], pattern: 'jsonld-get' as const, type: 'SoftwareApplication' as const, verb: 'read' as const },
     { method: 'GET' as const, path: `/${unit.path}`, door: toolNames[seed], pattern: 'jsonld-get' as const, type: 'Dataset' as const, verb: 'read' as const },
-    { method: 'GET' as const, path: '/mcp', door: 'catalog' as const, pattern: 'jsonld-get' as const, type: 'WebAPI' as const, verb: 'read' as const },
-    { method: 'POST' as const, path: '/mcp', door: 'tools/call' as const, pattern: 'jsonrpc-call' as const, type: 'JSON-RPC' as const, verb: 'call' as const },
+    { method: 'GET' as const, path: '/api', door: 'catalog' as const, pattern: 'jsonld-get' as const, type: 'WebAPI' as const, verb: 'read' as const },
+    { method: 'POST' as const, path: '/api', door: 'tools/call' as const, pattern: 'jsonrpc-call' as const, type: 'JSON-RPC' as const, verb: 'call' as const },
     { method: 'GET' as const, path: '/cite', door: toolNames[coins], pattern: 'jsonld-get' as const, type: 'CreativeWork' as const, verb: 'read' as const },
     { method: 'GET' as const, path: '/message', door: 'message' as const, pattern: 'jsonld-get' as const, type: 'EntryPoint' as const, verb: 'read' as const },
     { method: 'POST' as const, path: '/message', door: 'message' as const, pattern: 'jsonld-post' as const, type: 'EntryPoint' as const, verb: 'send' as const },
     { method: 'POST' as const, path: '/server', door: 'jobs' as const, pattern: 'jsonrpc-job' as const, type: 'WebAPI' as const, verb: 'submit' as const }] as const
   const pairs = [
-    { path: '/mcp', read: 'GET' as const, call: 'POST' as const },
+    { path: '/api', read: 'GET' as const, call: 'POST' as const },
     { path: '/message', read: 'GET' as const, call: 'POST' as const }] as const
   const extras = [
     { path: '/storage', pattern: 'rest' as const, door: 'qram' as const, lattice: 'qram' as const },
@@ -6272,7 +6272,7 @@ const putToolOf = (name: string, team: 'read' | 'call', ray: number, idea: strin
       name,
       description,
       `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`,
-      `${unit.origin}/mcp`,
+      `${unit.origin}/api`,
       ['forge', 'train'])})
 }
 
@@ -6333,7 +6333,7 @@ export const forgeOf = (args: Record<string, unknown> = {}) => {
       toolNames[n + seed],
       'Agents forge tools in an in-memory sandbox.',
       `All ops and host shims already exist in memory. ${sandboxOps.join(' ')}. Omit name to inspect. { name, run } forges more: up to ${cubeOf().bits * facesOf().faces} tools, each named [a-z][a-z0-9_]* in at most ${cubeOf().bits} characters. A name the unit seeded is reserved and the reply carries hop, the free seat across the involution.`,
-      `${unit.origin}/mcp`,
+      `${unit.origin}/api`,
       toolNames.filter((s) => s !== toolNames[n + seed])))
   }
   const addressed = typeof args.uuid === 'string' ? [...sandboxTools.values()].find((t) => contentUuidOf(t.run) === args.uuid) : undefined
@@ -6374,7 +6374,7 @@ export const forgeOf = (args: Record<string, unknown> = {}) => {
     idea,
     description,
     run,
-    man: qpuManOf(name, description, `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`, `${unit.origin}/mcp`, ['forge', 'train'])}
+    man: qpuManOf(name, description, `Unlocked in memory only. Ops ${sandboxOps.join(' ')}.`, `${unit.origin}/api`, ['forge', 'train'])}
   /* THE EPOCH FOLLOWS CONTENT, NOT WRITES. integrityOf forges a sandbox tool called `quantum` on every
    * prove — a deliberate probe showing that the sandbox namespace cannot reach the sealed door of the same
    * name — and it writes the identical definition each time. Advancing on the write made every prove invalidate
@@ -9390,7 +9390,7 @@ export const hostsHolds = (h = hostsOf()): boolean =>
   * @evidence harnessesHolds
  * HTTP for everything else. Reads need no header; storage writes carry Authorization: Bearer. */
 export const harnessesOf = onceOf(() => {
-  const url = `${unit.origin}/mcp`
+  const url = `${unit.origin}/api`
   const name = `uuidna-${unit.kind}`
   const rows = [
     { harness: 'Claude Code', kind: 'cli', how: `claude mcp add --transport http ${name} ${url}`, file: '.mcp.json', config: { mcpServers: { [name]: { type: 'http', url } } } },
@@ -9405,10 +9405,10 @@ export const harnessesOf = onceOf(() => {
   const holds = rows.length === mintOf(n) && rows.every((r) => JSON.stringify(r.config).includes(url) || r.how.includes(url)) && rows.every((r) => JSON.stringify(r).includes(name) || r.kind === 'raw')
   return { kind: 'harnesses' as const, url, name, auth: 'none for reads; Authorization: Bearer QPU_WRITE_TOKEN for storage writes' as const, rows, holds }
 })
-export const harnessesHolds = (h = harnessesOf()): boolean => h.holds === true && h.rows.length === mintOf(n) && h.url === `${unit.origin}/mcp`
+export const harnessesHolds = (h = harnessesOf()): boolean => h.holds === true && h.rows.length === mintOf(n) && h.url === `${unit.origin}/api`
 
 /**
- * MCP protocol versions the /mcp door negotiates.
+ * MCP protocol versions the mcp door negotiates.
  * @wing agents
  * @kind constant
  */
@@ -9713,7 +9713,7 @@ export const wellKnownHolds = (w?: ReturnType<typeof wellKnownFieldsOf>): boolea
   if (w === undefined) return false
   const mcp = mcpOf()
   const at = (href: string, path: string): boolean => URL.canParse(href) && new URL(href).protocol === 'https:' && new URL(href).host === unit.host && new URL(href).pathname === path
-  return at(w.url, '/mcp') && at(w.openapi, '/openapi.json') && at(w.catalog, '/mcp.json') && at(w.cite, '/cite') && at(w.sitemap, '/sitemap.xml') &&
+  return at(w.url, '/api') && at(w.openapi, '/openapi.json') && at(w.catalog, '/mcp.json') && at(w.cite, '/cite') && at(w.sitemap, '/sitemap.xml') &&
     w.tools === mcp.tools.length + mcp.cybersecurity.tools.length &&
     w.protocolVersions.length > n - n && w.protocolVersions.every((v) => (MCP_VERSIONS as readonly string[]).includes(v)) &&
     w.install.length > n - n && w.install.every((r) => r.harness.length > n - n && r.how.length > n - n)
@@ -9729,7 +9729,7 @@ export const wellKnownHolds = (w?: ReturnType<typeof wellKnownFieldsOf>): boolea
  * and the hologram lattice next door claims four MCP hosts when lean and unreal serve none.
  */
 const QPU_MOUNTS = [
-  { app: 'qpu', path: '/mcp', reach: 'unit' as const, serves: 'this unit — the circuit, the receipts, the sealed tools' },
+  { app: 'qpu', path: '/api', reach: 'unit' as const, serves: 'this unit — the circuit, the receipts, the sealed tools' },
   { app: 'payload', path: '/api/mcp', reach: 'binding' as const, serves: 'the Payload admin MCP, find-only, over the PAYLOAD service binding' },
 ]
 
@@ -9749,7 +9749,7 @@ export const mountsOf = (host: string = unit.host) => {
     rows,
     /* The apex runs its own worker and its own MCP; this unit has no route there, so it is named as a peer
      * rather than mounted. Naming it is the difference between a client finding it and a client guessing. */
-    peers: [{ app: 'uuidna', url: `https://${qpuZoneOf().zone}/mcp`, reach: 'worker' as const, serves: 'the sealed ledger — theorems, decide, verify' }],
+    peers: [{ app: 'uuidna', url: `https://${qpuZoneOf().zone}/api`, reach: 'worker' as const, serves: 'the sealed ledger — theorems, decide, verify' }],
     holds: mountsHolds(rows),
   }
 }
@@ -9774,7 +9774,7 @@ const wellKnownFieldsOf = () => {
     name: `@uuidna/${unit.kind}`,
     title: 'QPU',
     description: qpuDocsOf().abstract,
-    url: `${unit.origin}/mcp`,
+    url: `${unit.origin}/api`,
     transport: 'streamable-http' as const,
     methods: ['POST'] as const,
     batch: true as const,
@@ -9833,7 +9833,7 @@ const openApiFieldsOf = () => {
     const op = {
       operationId: `${a.method.toLowerCase()}_${a.name.replace(/[^a-z0-9]+/gi, '_')}`,
       summary: a.reading,
-      ...(a.method === 'POST' ? { requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', description: a.path === '/mcp' ? 'a JSON-RPC 2.0 request or a batch array of them' : 'the message body' } } } } } : {}),
+      ...(a.method === 'POST' ? { requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', description: a.path === '/api' ? 'a JSON-RPC 2.0 request or a batch array of them' : 'the message body' } } } } } : {}),
       responses: { '200': { description: 'JSON-LD', content: { 'application/ld+json': { schema: { type: 'object' } } } } },
     }
     paths[a.path] = { ...(paths[a.path] ?? {}), [a.method.toLowerCase()]: op }
@@ -9843,7 +9843,7 @@ const openApiFieldsOf = () => {
     info: { title: 'QPU', version: packageVersion, description: docs.abstract, license: { name: 'CC-BY-NC-ND-4.0' } },
     servers: [{ url: unit.origin }],
     paths,
-    'x-mcp': { endpoint: `${unit.origin}/mcp`, protocolVersions: MCP_VERSIONS, tools: [...mcp.tools, ...mcp.cybersecurity.tools].map((t) => ({ name: t.name, description: t.man.description })) },
+    'x-mcp': { endpoint: `${unit.origin}/api`, protocolVersions: MCP_VERSIONS, tools: [...mcp.tools, ...mcp.cybersecurity.tools].map((t) => ({ name: t.name, description: t.man.description })) },
   }
 }
 
@@ -9906,7 +9906,7 @@ export const robotsHolds = (): boolean => {
       z.hosts.filter((o) => o.host !== h.host).every((o) => !robots.includes(`Sitemap: ${o.origin}/sitemap.xml`)) &&
       robots.includes('Content-Signal: search=yes,ai-input=yes,ai-train=no') &&
       robots.includes('Allow: /') &&
-      robots.includes(`${unit.origin}/mcp`)
+      robots.includes(`${unit.origin}/api`)
   }) && robotsOf('example.org') === 'User-agent: *\nDisallow: /\n'
 }
 
@@ -9949,7 +9949,7 @@ const seoFieldsOf = (host: string = unit.host) => {
     host: h?.host ?? String(host),
     origin: h?.origin ?? '',
     served: h !== undefined,
-    canonical: `${unit.origin}/mcp`,
+    canonical: `${unit.origin}/api`,
     robots: `${h?.origin ?? ''}/robots.txt`,
     sitemap: `${h?.origin ?? ''}/sitemap.xml`,
     urls: seoDoorsOf(host),
@@ -9980,7 +9980,7 @@ export const seoHolds = (s?: ReturnType<typeof seoFieldsOf>): boolean => {
     on(s.robots) && on(s.sitemap) &&
     new URL(s.robots).pathname === '/robots.txt' &&
     new URL(s.sitemap).pathname === '/sitemap.xml' &&
-    s.canonical === `${unit.origin}/mcp` &&
+    s.canonical === `${unit.origin}/api` &&
     robotsOf(s.host).includes(`Sitemap: ${s.sitemap}`) &&
     sitemapOf(s.host).includes(`<loc>${s.urls[n - n]}</loc>`)
 }
@@ -9992,7 +9992,7 @@ const seoZoneFieldsOf = () => {
     kind: 'seo-zone' as const,
     zone: qpuZoneOf().zone,
     hosts,
-    canonical: `${unit.origin}/mcp`,
+    canonical: `${unit.origin}/api`,
     urls: hosts.reduce((sum, h) => sum + h.urls.length, n - n),
   }
 }
@@ -10008,7 +10008,7 @@ export const seoZoneHolds = (z?: ReturnType<typeof seoZoneFieldsOf>): boolean =>
   z.hosts.every((h) => h.holds) &&
   new Set(z.hosts.map((h) => h.host)).size === z.hosts.length &&
   new Set(z.hosts.map((h) => h.canonical)).size === seed &&
-  z.canonical === `${unit.origin}/mcp` &&
+  z.canonical === `${unit.origin}/api` &&
   z.urls === z.hosts.reduce((sum, h) => sum + h.urls.length, n - n))
 
 /** THE LEARNING LADDER, STANDARDISED (QPULib's shape: one construct per worked example, in order, each with the reference
@@ -10016,9 +10016,9 @@ export const seoZoneHolds = (z?: ReturnType<typeof seoZoneFieldsOf>): boolean =>
  *  reader climbs the same way every time and nothing is taught twice. Served in docs.inline and printed in the README. */
 const ladderOf = onceOf(() => [
   { step: 1, concept: 'one gate, exact amplitudes', request: { method: 'GET' as const, path: '/', tool: 'quantum' }, expect: 'Bell outcomes 00 and 11 at exactly 1/2 — Gaussian-integer amplitudes, no floats', invariant: 'H·H = I on |0⟩', theorem: 'qubits', next: 2 },
-  { step: 2, concept: 'entanglement is not correlation', request: { method: 'POST' as const, path: '/mcp', tool: 'prove' }, expect: 'GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing', invariant: 'no-cloning and monogamy hold on the served states', theorem: 'entangle', next: 3 },
-  { step: 3, concept: 'Shor: a period, then a gcd', request: { method: 'POST' as const, path: '/mcp', tool: 'crypto_shor' }, expect: `theorem shor ${shorFactorOf()} — a = 8, period 4, 7 · 13`, invariant: 'p · q = n, recomputed from the period', theorem: 'shor', next: 4 },
-  { step: 4, concept: 'a code corrects one flip', request: { method: 'POST' as const, path: '/mcp', tool: 'prove' }, expect: 'bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run', invariant: 'distance 3 corrects exactly one error', theorem: 'noise', next: 'climb: train → improve → compete → prove' },
+  { step: 2, concept: 'entanglement is not correlation', request: { method: 'POST' as const, path: '/api', tool: 'prove' }, expect: 'GHZ true; entangled true, product false — and a product state concentrates too, so concentration alone witnesses nothing', invariant: 'no-cloning and monogamy hold on the served states', theorem: 'entangle', next: 3 },
+  { step: 3, concept: 'Shor: a period, then a gcd', request: { method: 'POST' as const, path: '/api', tool: 'crypto_shor' }, expect: `theorem shor ${shorFactorOf()} — a = 8, period 4, 7 · 13`, invariant: 'p · q = n, recomputed from the period', theorem: 'shor', next: 4 },
+  { step: 4, concept: 'a code corrects one flip', request: { method: 'POST' as const, path: '/api', tool: 'prove' }, expect: 'bitflip distance 3, syndrome cnot cnot toffoli, logical < physical on this run', invariant: 'distance 3 corrects exactly one error', theorem: 'noise', next: 'climb: train → improve → compete → prove' },
 ])
 // not a hand list: the find tool of each Payload collection is `find` + the collection capitalised, computed from the
 // db's own collections (pages → findPages …), so a collection added to the db is found without editing this line
@@ -10095,10 +10095,10 @@ export const payloadPluginHolds = (p = payloadPluginOf()): boolean =>
 const installPackagesOf = onceOf(() => {
   const qpu = {
     key: installKeys[n - n],
-    href: `${unit.origin}/mcp`,
+    href: `${unit.origin}/api`,
     origin: unit.origin,
     sealed: mintOf(n),
-    prompt: `Install QPU MCP at ${unit.origin}/mcp? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress.`}
+    prompt: `Install QPU MCP at ${unit.origin}/api? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress.`}
   const payloadPkg = {
     key: installKeys[seed],
     href: '/api/mcp',
@@ -10232,7 +10232,7 @@ export const installOf = (args: Record<string, unknown> = {}) => {
     html: bag.qpu.href.endsWith('.html'),
     cloudflare: installCloudflare,
     client: {
-      qpu: { url: `${unit.origin}/mcp`, html: `${unit.origin}/mcp`.endsWith('.html') },
+      qpu: { url: `${unit.origin}/api`, html: `${unit.origin}/api`.endsWith('.html') },
       payload: { url: '/api/mcp', find: true as const,
     tools: payloadFinds },
       vitepress: { origin: bag.vitepress.href, plugin: bag.vitepress.plugin, concurrency: coins, qpu: false as const }},

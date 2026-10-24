@@ -27,25 +27,22 @@ class QPUMCPClient:
         with urllib.request.urlopen(req) as resp:
             return json.loads(resp.read().decode('utf-8'))
 
+    def _rpc(self, method: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Send one JSON-RPC 2.0 request to the MCP endpoint, POST /api"""
+        body = {"jsonrpc": "2.0", "id": 1, "method": method, "params": params}
+        return self._request("POST", "/api", body)
+
     def health(self) -> Dict[str, Any]:
         """Check MCP server health"""
         return self._request("GET", "/health")
 
     def list_tools(self) -> Dict[str, Any]:
         """List all available theorem tools"""
-        return self._request("GET", "/mcp/tools/list")
-
-    def get_stats(self) -> Dict[str, Any]:
-        """Get MCP deployment statistics"""
-        return self._request("GET", "/mcp/tools/stats")
+        return self._rpc("tools/list", {}).get("result", {})
 
     def call_tool(self, tool_name: str, arguments: Dict[str, Any] = None) -> Dict[str, Any]:
         """Call a specific MCP tool"""
-        payload = {
-            "name": tool_name,
-            "arguments": arguments or {}
-        }
-        return self._request("POST", "/mcp/tools/call", payload)
+        return self._rpc("tools/call", {"name": tool_name, "arguments": arguments or {}}).get("result", {})
 
     def coverage_report(self) -> Dict[str, Any]:
         """Get dynamic coverage report"""
@@ -79,14 +76,6 @@ def main():
         print(f"   Status: {health['status']}")
         print(f"   Theorem Tools: {health['theorem_tools']}")
         print(f"   Total Tools: {health['all_tools']}\n")
-
-        # Get statistics
-        print("📊 MCP Statistics")
-        stats = client.get_stats()
-        print(f"   Total Tools: {stats['total_tools']}")
-        print(f"   Proven Theorems: {stats['proven_theorems']}")
-        print(f"   Coverage: {stats['coverage_percentage']}%")
-        print(f"   Status: {stats['deployment_status']}\n")
 
         # List tools
         print("🔧 Available Tools")

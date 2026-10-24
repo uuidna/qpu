@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { CNOT, H, LineQubit, X, applied } from './cirq.js'
-import { echoCircuit, echoProbability } from './echo.js'
+import { CNOT, H, LineQubit, X, applied, powerOf } from './cirq.js'
+import { QUANTUM_ECHOES, echoCircuit, echoProbability } from './echo.js'
 
 const [q0, q1] = LineQubit.range(2)
 const forward = [applied(H, q0!), applied(CNOT, q0!, q1!)]
@@ -18,4 +18,13 @@ test('a perturbation on the measured qubits disturbs the echo', () => {
 test('the echo circuit runs forward, perturbs once, then runs backward', () => {
   assert.equal(echoCircuit(forward, applied(X, q1!)).operations.length, 2 + 1 + 2)
   assert.equal(echoCircuit(forward).operations.length, 2 + 2)
+})
+
+test('a forward run with a gate power still echoes back with certainty: the backward half applies the adjoint', () => {
+  const withPower = [applied(powerOf(X, 0.5), q0!), applied(CNOT, q0!, q1!)]
+  assert.ok(Math.abs(echoProbability(withPower) - 1) < 1e-12)
+})
+
+test('the echo benchmark is Google\'s stated figures: Willow, 105 qubits, 13,000x, molecules of 15 and 28 atoms', () => {
+  assert.deepEqual(QUANTUM_ECHOES, { processor: 'Willow', qubits: 105, speedup: 13000, molecules: [15, 28] })
 })

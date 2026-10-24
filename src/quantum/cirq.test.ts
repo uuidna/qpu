@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { Circuit, CNOT, GridQubit, H, LineQubit, Moment, Simulator, X, applied, measure } from './cirq.js'
+import { Circuit, CNOT, GridQubit, H, LineQubit, Moment, Simulator, X, applied, measure, powerOf } from './cirq.js'
 
 const [q0, q1] = LineQubit.range(2)
 
@@ -39,4 +39,24 @@ test('the qubit constructors match Cirq: LineQubit.range, GridQubit.square', () 
   assert.equal(LineQubit.range(3).length, 3)
   assert.equal(GridQubit.square(4).length, 16)
   assert.deepEqual(GridQubit.square(4)[5], GridQubit.of(1, 1))
+})
+
+test('X**0.5 is the square root of NOT, as Cirq documents: its square is X, and it takes |0> to (1+i)/2 |0> + (1-i)/2 |1>', () => {
+  const sqrtNot = powerOf(X, 0.5)
+  const [a, b, c, d] = sqrtNot.matrix
+  assert.ok(Math.abs(a![0] - 0.5) < 1e-12 && Math.abs(a![1] - 0.5) < 1e-12)
+  assert.ok(Math.abs(b![0] - 0.5) < 1e-12 && Math.abs(b![1] + 0.5) < 1e-12)
+  assert.ok(Math.abs(c![0] - 0.5) < 1e-12 && Math.abs(c![1] + 0.5) < 1e-12)
+  assert.ok(Math.abs(d![0] - 0.5) < 1e-12 && Math.abs(d![1] - 0.5) < 1e-12)
+  const circuit = new Circuit([applied(sqrtNot, q0!)])
+  const [amp0, amp1] = new Simulator().simulate(circuit).amplitudes
+  assert.ok(Math.abs(amp0![0] - 0.5) < 1e-12 && Math.abs(amp0![1] - 0.5) < 1e-12)
+  assert.ok(Math.abs(amp1![0] - 0.5) < 1e-12 && Math.abs(amp1![1] + 0.5) < 1e-12)
+})
+
+test('X**1 is X, and a gate that is not an involution has no power here', () => {
+  powerOf(X, 1).matrix.forEach(([r, i], k) => {
+    assert.ok(Math.abs(r - X.matrix[k]![0]) < 1e-12 && Math.abs(i - X.matrix[k]![1]) < 1e-12)
+  })
+  assert.throws(() => powerOf({ name: 'T', arity: 1, matrix: [[1, 0], [0, 0], [0, 0], [Math.SQRT1_2, Math.SQRT1_2]] }, 0.5))
 })

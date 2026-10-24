@@ -30,7 +30,7 @@ export const valuesOf = (text: string): string[] => {
 }
 
 const court = async (claim: string, expect: string): Promise<Verdict> => {
-  const r = await fetch(`${HOST.replace(/\/$/, '')}/mcp`, {
+  const r = await fetch(`${HOST.replace(/\/$/, '')}/api`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'court', arguments: { claim, expect } } }),

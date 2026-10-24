@@ -18,7 +18,7 @@ test('connector { use: true } maps tools/list bill vs fused routes; goal stays O
   assert.ok(use.not.some((n) => /legal document/i.test(n)))
   assert.ok(use.not.some((n) => /Google Drive/i.test(n)))
   assert.equal(use.perplexity.transport, 'streamable-http')
-  assert.ok(use.perplexity.server_url.includes('/mcp'))
+  assert.ok(use.perplexity.server_url.includes('/api'))
   assert.equal(use.perplexity.agent_api.type, 'mcp')
   assert.ok(use.perplexity.first_calls.some((c) => c.includes('{ use: true }')))
   assert.ok(publicConnectorOf().use.via.includes('{ use: true }'))

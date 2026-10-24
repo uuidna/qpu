@@ -30,7 +30,7 @@ const env = { QPU_HOST: 'qpu.uuidna.com', PAYLOAD: { fetch: (request: Request) =
 
 /** tools/call connector through publicDoorFetchOf — the same path boot/stdio install. */
 const connectorCallOf = async (arguments_: Record<string, unknown>) => {
-  const request = new Request('https://qpu.uuidna.com/api/qpu/mcp', {
+  const request = new Request('https://qpu.uuidna.com/api', {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({

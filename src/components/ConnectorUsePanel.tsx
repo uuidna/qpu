@@ -36,7 +36,7 @@ type ConnectorUse = {
 type McpReply = { result?: unknown; error?: { message?: string } }
 
 const mcpCall = async (args: Record<string, unknown>): Promise<McpReply> => {
-  const r = await fetch('/mcp', {
+  const r = await fetch('/api', {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({
@@ -146,7 +146,7 @@ export function ConnectorUsePanel({ canRead, canExecute, pendingAccess }: Props)
               {map.perplexity.server_url}
             </Link>
           ) : (
-            <Link href="/mcp" className="text-primary hover:underline">
+            <Link href="/api" className="text-primary hover:underline">
               /mcp
             </Link>
           )}

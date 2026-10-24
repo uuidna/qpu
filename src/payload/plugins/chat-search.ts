@@ -195,7 +195,7 @@ export const chatSearchOf = async (
       ] as const,
       endpoints: [
         '/api/qpu/chat',
-        '/api/qpu/mcp',
+        '/api',
         '/api/qpu/public',
         '/api/qpu/wave',
         '/api/qpu/observe',
@@ -492,7 +492,7 @@ export const distroOf = async (
     try {
       const { publicMcpOf } = await import('./public.js')
       const res = await publicMcpOf(
-        new Request('https://qpu.uuidna.com/mcp', {
+        new Request('https://qpu.uuidna.com/api', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
@@ -516,7 +516,7 @@ export const distroOf = async (
     try {
       const { publicMcpOf } = await import('./public.js')
       const res = await publicMcpOf(
-        new Request('https://qpu.uuidna.com/mcp', {
+        new Request('https://qpu.uuidna.com/api', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({

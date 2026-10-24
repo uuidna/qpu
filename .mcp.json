@@ -2,7 +2,7 @@
   "mcpServers": {
     "qpu": {
       "type": "http",
-      "url": "https://qpu.uuidna.com/mcp"
+      "url": "https://qpu.uuidna.com/api"
     },
     "shadcn": {
       "command": "npx",

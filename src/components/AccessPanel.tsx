@@ -59,7 +59,7 @@ type Props = {
 type McpReply = { result?: unknown; error?: { message?: string } }
 
 const mcpCall = async (name: string, args: Record<string, unknown>): Promise<McpReply> => {
-  const r = await fetch('/mcp', {
+  const r = await fetch('/api', {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({

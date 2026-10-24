@@ -76,7 +76,7 @@ const prove = (): Verdict => {
 
 /** One MCP call to the host: its parsed reply, or null when the host did not answer. */
 const remote = async (name: string, args: Record<string, unknown>): Promise<Record<string, unknown> | null> => {
-  const r = await fetch(`${HOST}/mcp`, {
+  const r = await fetch(`${HOST}/api`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),

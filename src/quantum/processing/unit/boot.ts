@@ -34,7 +34,7 @@ const toRequest = async (req: IncomingMessage): Promise<Request> => {
 }
 
 const prove = async (): Promise<boolean> => {
-  const r = await worker.fetch(new Request(`${ORIGIN}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'prove', arguments: {} } }) }), env)
+  const r = await worker.fetch(new Request(`${ORIGIN}/api`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'prove', arguments: {} } }) }), env)
   const j = (await r.json()) as { result?: { holds?: unknown; structuredContent?: { holds?: unknown } } }
   const holds = j.result?.structuredContent?.holds ?? j.result?.holds
   console.log(`qpu boot — ${holds === true ? '✓ prove holds' : '✗ prove does not hold'} on ${process.platform}/${process.arch}, node ${process.version}`)

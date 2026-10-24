@@ -180,15 +180,16 @@
 
 ```bash
 # Solve all 7 problems automatically
-curl -X POST http://localhost:3000/mcp/tools/call \
-  -d '{
+curl -X POST http://localhost:3000/api \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "clay_automated_solver",
     "arguments": {
       "target_problems": ["all"],
       "use_all_domains": true,
       "auto_compose": true
     }
-  }'
+  }}'
 ```
 
 **Output**:

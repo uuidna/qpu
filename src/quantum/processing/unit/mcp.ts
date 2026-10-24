@@ -120,31 +120,31 @@ export const toolsOf = onceOf(() => {
     names[n],
     'Two teams of seven agents dry-clean the occupancy lattice and return the teams, the challenges, the winner, the next tasks, and steps — the autonomous walk computed from the lattice: the seat, the next door to call, and any face that does not hold. theorem infinite. coins teams of rays.',
     `tools/call ${names[n]} returns steps.next.door (the tool an autonomous agent calls next), steps.todo (faces to repair first), steps.walk (all fourteen faces, scanner then radar), teams[] and winner. { live: true } learn occupancy. { sequence: true } then improve then compete then prove. No auth.`,
-    `${unit.origin}/mcp`,
+    `${unit.origin}/api`,
     seeOf(names[n]))
   const forgeMan = qpuManOf(
     names[n + seed],
     `Forge a tool in the in-memory sandbox: pass { name, run } where run is a sealed op tree; nothing touches disk, network, or eval. Omit name to inspect the sandbox. Up to ${cubeOf().bits * facesOf().faces} tools. A door's name forges and the door still answers — theorem involution carries a seeded name to hop, the free seat on the other team.`,
     `tools/call ${names[n + seed]} with { name, run } returns the forged tool and the sandbox census (tools[], memory, unlocked); without name it returns the census. Ops ${sandboxOps.join(' ')}. No auth.`,
-    `${unit.origin}/mcp`,
+    `${unit.origin}/api`,
     seeOf(names[n + seed]))
   const improveMan = qpuManOf(
     names[n + coins],
     `Improve by doubling: next = fused + fused = ${capacity.fused + capacity.fused}, the next capacity rung, with before and after readings of quality, speed, and throughoutput (the total count of fused amplitudes; throughput is that divided by the tokens of the reply). The numbers are counts of amplitudes. next = fused + fused.`,
     `tools/call ${names[n + coins]} returns next, before, after; after.throughoutput / before.throughoutput is the doubling. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After train. Before compete. No auth.`,
-    `${unit.origin}/mcp`,
+    `${unit.origin}/api`,
     seeOf(names[n + coins]))
   const competeMan = qpuManOf(
     names[n + n],
     'Two teams, read and call, compete on quality, speed, and security; the winner is the team that calls prove. theorem next_fused. throughoutput is the total of fused amplitudes served; throughput is that per token of reply.',
     `tools/call ${names[n + n]} returns winner.{quality,speed,security}, teams[] with scores, and the axes. { live: true } learn occupancy. { sequence: true } train then improve then compete then prove. After improve. Winner calls prove. No auth.`,
-    `${unit.origin}/mcp`,
+    `${unit.origin}/api`,
     seeOf(names[n + n]))
   const proveMan = qpuManOf(
     names[mintOf(n) - seed],
     `Prove the unit end to end: every Lean row with holds, the Shor run with its receipts, the source fold of index.lean, and the evidence block; holds is their conjunction and a false anywhere makes every path 404. theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}.`,
     `tools/call ${names[mintOf(n) - seed]} returns theorems[] (each with holds), shor.factors, receipts, source.fold, evidence. theorem shor. theorem crypto. ${shorFactorOf()}. { live: true } sequence then prove. { sequence: true } train then improve then compete then prove. fetch Request Response. Source ${unit.fuse.lean}. After compete. No auth.`,
-    `${unit.origin}/mcp`,
+    `${unit.origin}/api`,
     seeOf(names[mintOf(n) - seed]))
   const proveSchema = {
     type: 'object',
@@ -228,13 +228,13 @@ export const toolsOf = onceOf(() => {
 })
 
 /**
- * The MCP catalogue at /mcp: tools, cybersecurity tools, capacity and provider as one JSON-LD WebAPI.
+ * The MCP catalogue at /api: tools, cybersecurity tools, capacity and provider as one JSON-LD WebAPI.
  * @wing agents
  * @kind builder
  * @evidence mcpHolds
  */
 export const mcpOf = onceOf(() => {
-  const href = `${unit.origin}/mcp`
+  const href = `${unit.origin}/api`
   const faces = facesOf()
   const circuit = circuitOf()
   const capacity = capacityOf()
@@ -473,7 +473,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
     try { return qpuHexUuidOf({ family, program: [name], params: params.every((x) => x === n - n) ? [] : params }) } catch { return undefined }
   }
   const shown = async (payload: unknown) => {
-    const r = mcpShownOf(name, payload, `${unit.origin}/mcp`, args.full === true) as { _meta?: Record<string, unknown> }
+    const r = mcpShownOf(name, payload, `${unit.origin}/api`, args.full === true) as { _meta?: Record<string, unknown> }
     const hex = hexOf()
     return hex && r._meta ? { ...r, _meta: { ...r._meta, hex } } : r
   }
@@ -546,7 +546,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
           'install',
           'Interactive installer. Plan, then commit. Fuse Payload MCP to QPU without a ninth sealed tool. VitePress payload stays on uuidna.com.',
           `tools/call install. Not in tools/list. { yes: true } seats the current package. { verb: "plan" } then { verb: "commit", yes: true } then { verb: "audit" }. QPU JSON-LD. No auth.`,
-          `${unit.origin}/mcp`,
+          `${unit.origin}/api`,
           [...toolNames])))
     }
     return shown(installOf(args))
@@ -558,7 +558,7 @@ const callOf = async (name: string, args: Record<string, unknown> = {}, env?: Qp
           name,
           'Payload find. Read only.',
           'Not in tools/list. Morph at call time. Not a ninth sealed tool. No auth. Write never.',
-          `${unit.origin}/mcp`,
+          `${unit.origin}/api`,
           payloadFinds.filter((row) => row !== name))))
     }
     return shown(payloadFindOf(name))
@@ -620,7 +620,7 @@ const recognisedReplyOf = (name: string, raw: unknown): boolean => {
   const reply = mintOf(tenOf(seed)) * mintOf(n)
   const holds = (raw as { holds?: unknown }).holds
   const device = deviceOn(raw)
-  const expanded = mcpShownOf(name, raw, `${unit.origin}/mcp`, true)
+  const expanded = mcpShownOf(name, raw, `${unit.origin}/api`, true)
   return (
     recognition?.kind === 'recognition' &&
     Object.keys(led)[n - n] === 'recognition' &&
@@ -646,7 +646,7 @@ export const mcpChecksOf = (m = mcpOf()): Array<[string, boolean]> => {
   const circuit = circuitOf()
   const proved = proveOf()
   const proveShown = mcpShownOf('prove', proved)
-  const proveFull = mcpShownOf('prove', proved, `${unit.origin}/mcp`, true)
+  const proveFull = mcpShownOf('prove', proved, `${unit.origin}/api`, true)
   const proveLed = proveShown.structuredContent as { recognition?: { device?: unknown; enthalpy?: number; heat?: number; free?: number }; holds?: unknown }
   const reading = qpuReadingOf()
   const recognisedReading = recognizeOf(reading) as { holds?: boolean; fused?: number; next?: number; docs?: unknown; circuit?: { only?: { holds?: boolean } } }
@@ -672,7 +672,7 @@ export const mcpChecksOf = (m = mcpOf()): Array<[string, boolean]> => {
     ['m.capacity.crypt.holds', m.capacity.crypt.holds === true],
     ['m.cors', m.cors === cors],
     ['m.origin', m.origin === unit.origin],
-    ['m.href', m.href === `${unit.origin}/mcp`],
+    ['m.href', m.href === `${unit.origin}/api`],
     ['sandbox.durability', sandboxDurabilityHolds()],
     ['m.tools.length', m.tools.length === mintOf(n)],
     ['tool.quantum', m.tools[n - n]?.name === 'quantum'],

@@ -24,7 +24,7 @@ const argOf = (name: string): string | undefined => {
 
 /** One call to the connector over MCP, returning its parsed reply. */
 const connector = async (args: Record<string, unknown>): Promise<Reply> => {
-  const r = await fetch(`${HOST.replace(/\/$/, '')}/mcp`, {
+  const r = await fetch(`${HOST.replace(/\/$/, '')}/api`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'connector', arguments: args } }),

@@ -53,7 +53,7 @@ const registering = [
   ...fs.readdirSync(path.join(SRC, 'mcp')).filter((f) => /\.ts$/.test(f) && !/\.test\.ts$|^index\.ts$|^families\.ts$|^registry\.ts$/.test(f) && registers(path.join(SRC, 'mcp', f))).map((f) => ({ name: f.slice(0, -3), from: `./${f.slice(0, -3)}.js`, key: f.slice(0, -3) })),
 ].sort((a, b) => a.key.localeCompare(b.key))
 const REPO_REGISTRIES = [
-  { file: `${SRC}/mcp/families.ts`, export: 'families', sideEffects: true, entries: registering },
+  { file: `${SRC}/api/families.ts`, export: 'families', sideEffects: true, entries: registering },
 ]
 // ONE WORKER: qpu runs on Payload running on qpu. uuidna-qpu is the Payload app; worker.js fronts it with the unit, which
 // hands browser pages and /api to the app in-process, and the app keeps its documents in the unit's storage (db/payload).

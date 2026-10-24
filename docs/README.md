@@ -25,7 +25,7 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
 | [UUIDs & quantum receipts](receipts.md) | 38 | 13 of 15 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |
-| [MCP & agents](agents.md) | 124 | 34 of 53 |
+| [MCP & agents](agents.md) | 124 | 33 of 53 |
 | [Live science data](science.md) | 21 | 8 of 17 |
 | [API fusion](fusion.md) | 18 | 5 of 11 |
 | [Payload & Cloudflare](cms.md) | 24 | 2 of 4 |

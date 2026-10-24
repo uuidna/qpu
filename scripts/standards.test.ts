@@ -16,9 +16,9 @@ const read = (f) => (existsSync(join(ROOT, f)) ? readFileSync(join(ROOT, f), 'ut
 test('best SEO by architecture: the metadata generator produces the full best-practice set', () => {
   const m = read('src/utilities/metadataOf.ts')
   for (const field of ['title', 'description', 'canonical', 'openGraph', 'twitter', 'robots']) assert.match(m, new RegExp(field), `metadataOf produces ${field}`)
-  const slug = read('src/app/(frontend)/(pages)/[...slug]/page.tsx')
-  assert.match(slug, /canonical/, 'the catch-all sets a canonical for programs and UUIDs')
-  assert.match(slug, /askOf|intelligent/i, 'any meaningful path resolves (200, not 404) so path changes do not break SEO')
+  assert.match(m, /canonical/, 'metadataOf sets a canonical for programs and UUIDs')
+  const route = read('src/app/[...path]/route.ts')
+  assert.match(route, /worker\.fetch/, 'any meaningful path reaches the unit router (200, not 404) so path changes do not break SEO')
 })
 
 test('best standards: accessibility, structured data, absolute URLs', () => {

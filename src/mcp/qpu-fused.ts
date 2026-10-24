@@ -595,7 +595,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     }
     if (numbers.length === 0 && has('tools', 'tool', 'doors', 'door', 'capabilities', 'capability', 'offer', 'use')) {
       const doors = mcpDoorsOf()
-      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { answer: `${mcpToolsListOf().length} tools; through them ${doors.doors.length} doors and ${doors.formulas} formulas`, tools: mcpToolsListOf().length, doors: doors.doors.map((d) => d.name), formulas: doors.formulas }, expected: { tools: '>= 1' }, agrees: true }
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/api`, reading: { answer: `${mcpToolsListOf().length} tools; through them ${doors.doors.length} doors and ${doors.formulas} formulas`, tools: mcpToolsListOf().length, doors: doors.doors.map((d) => d.name), formulas: doors.formulas }, expected: { tools: '>= 1' }, agrees: true }
     }
     if (numbers.length === 0 && has('families', 'family', 'formulas')) {
       const fams = [...hexFamiliesOf()].filter(([f]) => !DOORS.has(f)).map(([f, fs]) => ({ family: f, formulas: fs.map((x) => x.name) }))
@@ -605,7 +605,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     // instead — the steps and the port map (src/quantum/processing/unit/porting.ts).
     if (numbers.length === 0 && has('port', 'porting', 'dependency', 'dependencies', 'external', 'depend')) {
       const p = portingOf()
-      return { source, url: `${(qpuCiteOf() as { href: string }).href}/mcp`, reading: { answer: p.rule, steps: p.steps, ports: p.ports, blocks: p.blocks }, expected: { steps: '>= 1' }, agrees: p.holds }
+      return { source, url: `${(qpuCiteOf() as { href: string }).href}/api`, reading: { answer: p.rule, steps: p.steps, ports: p.ports, blocks: p.blocks }, expected: { steps: '>= 1' }, agrees: p.holds }
     }
     // NEXT, THE INTELLIGENT STEP: let the families organise by domain and discover all around. The bridges (family → domain,
     // filled as the families seal) group into domains; the neighbourhood of a named family is the families sharing its

@@ -216,7 +216,7 @@ const codeOf = () => {
     formulas,
     program: '{ family, program: [formulas], params } → a UUID (qpuHexUuidOf), run at qpu://hex/{uuid}; compositions and params are unbounded',
     bounded: 'per run only (CPU, memory, time), reported as classical.beyond — never the code space',
-    fuse: 'any MCP fuses this at https://qpu.uuidna.com/mcp; resources/templates/list gives the hex addresses',
+    fuse: 'any MCP fuses this at https://qpu.uuidna.com/api; resources/templates/list gives the hex addresses',
     holds: fams.size > 0 && formulas > 0,
   }
 }

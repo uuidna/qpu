@@ -153,7 +153,7 @@ export const examOf = async (env?: QpuEnv) => {
     hops.push(hopOk({
       dir: 'inside-out', layer: 'unit', door: 'boot/stdio/router',
       holds: doors.holds === true, value: doors.reachable,
-      note: `doors=${doors.doors.length}; formulas=${doors.formulas}; fused rides on the same /mcp router`,
+      note: `doors=${doors.doors.length}; formulas=${doors.formulas}; fused rides on the same mcp router`,
     }))
   }
 
@@ -170,7 +170,7 @@ export const examOf = async (env?: QpuEnv) => {
     const tools = mcpToolsListOf()
     const bytes = JSON.stringify({ resultType: 'complete', tools }).length
     hops.push(hopOk({
-      dir: 'inside-out', layer: 'tools/list', door: '/mcp',
+      dir: 'inside-out', layer: 'tools/list', door: '/api',
       holds: tools.length <= 16 && bytes < 16384 && tools.every((t) => !t.name.startsWith('qpu_')),
       value: { doors: tools.length, bytes },
       note: tools.map((t) => t.name).join(','),
@@ -200,7 +200,7 @@ export const examOf = async (env?: QpuEnv) => {
 
   {
     const run = await withTimeout(passBudgetMs, async () => {
-      const res = await publicMcpOf(new Request('https://qpu.uuidna.com/mcp', {
+      const res = await publicMcpOf(new Request('https://qpu.uuidna.com/api', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
@@ -210,16 +210,16 @@ export const examOf = async (env?: QpuEnv) => {
     if (run.ok) {
       const tools = run.value.body.result?.tools ?? []
       hops.push(hopOk({
-        dir: 'outside-in', layer: 'tools/list', door: '/mcp', tool: 'tools/list', holds: run.value.status === 200 && tools.length === 16, value: tools.length,
+        dir: 'outside-in', layer: 'tools/list', door: '/api', tool: 'tools/list', holds: run.value.status === 200 && tools.length === 16, value: tools.length,
       }))
     } else {
-      hops.push(hopFail({ dir: 'outside-in', layer: 'tools/list', door: '/mcp', tool: 'tools/list', timeout: run.timeout, error: run.error }))
+      hops.push(hopFail({ dir: 'outside-in', layer: 'tools/list', door: '/api', tool: 'tools/list', timeout: run.timeout, error: run.error }))
     }
   }
 
   {
     const run = await withTimeout(passBudgetMs, async () => {
-      const res = await publicMcpOf(new Request('https://qpu.uuidna.com/mcp', {
+      const res = await publicMcpOf(new Request('https://qpu.uuidna.com/api', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -234,12 +234,12 @@ export const examOf = async (env?: QpuEnv) => {
     if (run.ok) {
       const sc = run.value.sc as { holds?: boolean; value?: unknown; uuid?: string }
       hops.push(hopOk({
-        dir: 'outside-in', layer: 'tools/call→hex→formula', door: '/mcp', tool: 'hex',
+        dir: 'outside-in', layer: 'tools/call→hex→formula', door: '/api', tool: 'hex',
         family: 'clay', formula: 'riemann', hex: sc.uuid ?? null, holds: run.value.status === 200 && !run.value.error && sc.holds === true, value: sc.value,
       }))
     } else {
       hops.push(hopFail({
-        dir: 'outside-in', layer: 'tools/call→hex→formula', door: '/mcp', tool: 'hex',
+        dir: 'outside-in', layer: 'tools/call→hex→formula', door: '/api', tool: 'hex',
         family: 'clay', formula: 'riemann', timeout: run.timeout, error: run.error,
       }))
     }
@@ -247,7 +247,7 @@ export const examOf = async (env?: QpuEnv) => {
 
   {
     const run = await withTimeout(passBudgetMs, async () => {
-      const res = await publicMcpOf(new Request('https://qpu.uuidna.com/mcp', {
+      const res = await publicMcpOf(new Request('https://qpu.uuidna.com/api', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
@@ -262,12 +262,12 @@ export const examOf = async (env?: QpuEnv) => {
     if (run.ok) {
       const sc = run.value.sc as { kind?: string; holds?: boolean; held?: number }
       hops.push(hopOk({
-        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/mcp', tool: 'connector', holds: run.value.status === 200 && !run.value.error && (sc.kind === 'point' || sc.holds === true),
+        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/api', tool: 'connector', holds: run.value.status === 200 && !run.value.error && (sc.kind === 'point' || sc.holds === true),
         value: { kind: sc.kind, held: sc.held },
       }))
     } else {
       hops.push(hopFail({
-        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/mcp', tool: 'connector', timeout: run.timeout, error: run.error,
+        dir: 'outside-in', layer: 'tools/call→connector→point', door: '/api', tool: 'connector', timeout: run.timeout, error: run.error,
       }))
     }
   }

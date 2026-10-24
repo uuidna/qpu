@@ -50,7 +50,7 @@ export const workBetween = (before, after) => after.computations - before.comput
 export const doorCostOf = async (unit, worker, name, env) => {
   const call = async () => {
     const res = await worker.fetch(
-      new Request('https://qpu.uuidna.com/mcp', {
+      new Request('https://qpu.uuidna.com/api', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: {} } }),

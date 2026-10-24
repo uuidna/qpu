@@ -41,7 +41,7 @@ const emit = (name: string, result: unknown) => {
 
 /** One connector call over MCP; the reading is the JSON text inside the tool's content envelope. */
 const connector = async (args: Record<string, unknown>) => {
-  const r = await fetch(`${ORIGIN}/mcp`, {
+  const r = await fetch(`${ORIGIN}/api`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json, text/event-stream' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'connector', arguments: args } }),

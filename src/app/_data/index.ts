@@ -55,13 +55,6 @@ export const familiesOf = (): Family[] =>
     .map(([name, formulas]) => ({ name, formulas: formulas.map((f, i) => ({ nibble: (i + 1).toString(16), name: f.name, arity: f.arity })) }))
     .sort((a, b) => a.name.localeCompare(b.name))
 
-/** The combinatorics of a family of n formulas: ordered programs of up to ten formulas, ordered pairs, unordered pairs. */
-export const countsOf = (n: number) => {
-  let programs = 0n
-  for (let k = 1n, p = 1n; k <= 10n; k++) programs += p *= BigInt(n)
-  return { formulas: n, programs, compositions: n * n, pairs: (n * (n - 1)) / 2 }
-}
-
 /** The page runs through the one public connector: tools/call cite { hex, full: true }. */
 export const citeFullOf = async (uuid: string) => {
   const shown = (await mcpCallOf('cite', { hex: uuid, full: true })) as { structuredContent?: { holds?: boolean; value?: unknown; receipt?: string; steps?: { formula: string; args: string[]; value: unknown }[]; error?: string } }

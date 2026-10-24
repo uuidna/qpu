@@ -168,7 +168,7 @@ jobs:
           if node --input-type=module <<'EOF'
           import { execSync } from 'node:child_process'
           import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
-          const MCP = 'https://qpu.uuidna.com/mcp'
+          const MCP = 'https://qpu.uuidna.com/api'
           const FACES = 14
           const call = async (args) => {
             let last = new Error('unreached')

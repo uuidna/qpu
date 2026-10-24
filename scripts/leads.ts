@@ -103,21 +103,21 @@ export const hostLeadsOf = ({ origin, holds, monitor = {} }) =>
  * had and nothing noticed.
  */
 export const teachingLeadsOf = ({ origin, school }) => {
-  if (!school) return [{ source: `${origin}/mcp`, what: 'train served no school reading', owes: 'a train door that carries the teaching classification, or a gatherer that stops asking for it' }]
+  if (!school) return [{ source: `${origin}/api`, what: 'train served no school reading', owes: 'a train door that carries the teaching classification, or a gatherer that stops asking for it' }]
   const leads = []
   /* THE CLASSIFICATION MUST AGREE WITH ITSELF. Everything else here is a count. */
   if (school.holds !== true)
-    leads.push({ source: `${origin}/mcp train`, what: 'the teaching reading does not hold — the classifier, the seating, the census or the prose disagree', owes: 'the disagreement found; the counts below are not decidable while it stands' })
+    leads.push({ source: `${origin}/api train`, what: 'the teaching reading does not hold — the classifier, the seating, the census or the prose disagree', owes: 'the disagreement found; the counts below are not decidable while it stands' })
   const seated = school.seating?.seated ?? []
   const crowded = school.seating?.crowded ?? []
   const names = seated.flatMap((row) => [row.subject, row.domain])
   if (new Set(names).size !== names.length)
-    leads.push({ source: `${origin}/mcp train`, what: 'a name holds two seats, so the board is a list rather than a seating', owes: 'one seat per name, which is what fourteen faces means' })
+    leads.push({ source: `${origin}/api train`, what: 'a name holds two seats, so the board is a list rather than a seating', owes: 'one seat per name, which is what fourteen faces means' })
   /* MAXIMAL: nothing may be turned away while both of its seats are free. Greedy failed exactly this. */
   const unseatable = crowded.filter((row) => !seated.some((held) => held.subject === row.subject || held.domain === row.domain))
   if (unseatable.length > 0 && seated.length < (school.seating?.rays ?? 7))
     leads.push({
-      source: `${origin}/mcp train`,
+      source: `${origin}/api train`,
       what: `${unseatable.length} entangled pair(s) turned away with both seats free while ${(school.seating?.rays ?? 7) - seated.length} ray(s) stand empty`,
       owes: 'a maximal seating — a rule that refuses a pair AND leaves a ray free has chosen badly, not run out of room',
     })
@@ -168,7 +168,7 @@ export const teachingNoteOf = ({ school }) => {
  */
 export const doorLeadsOf = ({ origin, doors }) => {
   if (!Array.isArray(doors) || doors.length === 0)
-    return [{ source: `${origin}/mcp`, what: 'the MCP listed no sealed doors', owes: 'a tools/list that answers, or a gatherer that stops asking' }]
+    return [{ source: `${origin}/api`, what: 'the MCP listed no sealed doors', owes: 'a tools/list that answers, or a gatherer that stops asking' }]
   const leads = []
   for (const door of doors) {
     if (door.ok !== true) {
@@ -449,7 +449,7 @@ if (invoked) {
    * teaches in one direction owes the other, and the door has been computing that owed direction all along
    * with nobody collecting it. */
   const origin = 'https://qpu.uuidna.com'
-  const callOf = async (name, catalog = '/mcp', args = {}) => {
+  const callOf = async (name, catalog = '/api', args = {}) => {
     const res = await get(`${origin}${catalog}`, {
       accept: 'application/json',
       method: 'POST',
@@ -473,7 +473,7 @@ if (invoked) {
    * between them — and the gatherer asked only the first. Sweeping the other three by hand found the answer
    * in one go, which is the definition of a gap that should not need a hand. */
   let school
-  for (const catalog of ['/mcp', '/storage', '/network', '/server']) {
+  for (const catalog of ['/api', '/storage', '/network', '/server']) {
     const listed = await get(`${origin}${catalog}`, { accept: 'application/json', method: 'POST', body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }) })
     if (!listed.ok) {
       add(`mcp:${origin}${catalog}`, false, `tools/list answered ${listed.status || listed.error}`)

@@ -16,7 +16,7 @@ const { publicMcpOf } = await import('../dist/payload/plugins/public.js')
 
 const rpc = async (method, params) => {
   const r = await publicMcpOf(
-    new Request('https://qpu.uuidna.com/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }),
+    new Request('https://qpu.uuidna.com/api', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }),
     {},
   )
   return r.json()

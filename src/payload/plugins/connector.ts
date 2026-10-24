@@ -320,7 +320,7 @@ export const connectorAnswerOf = async (args: Record<string, unknown> = {}, env?
       'connector',
       'The one public connector. { about|chat|search|idea } chat+search one surface. { use: true } agent map. { observe: true } / { verbosity } receipt + token usage. { waits|slow|cool } automation. { online|offline } level×mode. { adapters: true }. { seal|pass }. { papers|chips|print }. { court|goal|access|enums|point|tenant|ecommerce|exam|from }.',
       'Chat+search is framework-agnostic (MCP/Payload/Next/stdio/boot/Worker/native/RAID): idea → formula ask + api search → papers/blueprints/docs → Public apps. Native adapters map Qiskit/Braket/Cirq/… onto hex — not vendor clones. Secrets sealed. Not a legal-draft or Drive tool.',
-      'https://qpu.uuidna.com/mcp',
+      'https://qpu.uuidna.com/api',
       ['hex', 'law', 'court', 'clay', 'wave', 'ecommerce', 'access', 'api'],
     )
   }

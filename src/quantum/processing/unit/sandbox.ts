@@ -120,7 +120,7 @@ export const sandboxRunOf = (name: string, args: Record<string, unknown> = {}) =
   const bag = bagOf(args)
   const address = addressReferrerOf(typeof bag.referrer === 'string' ? bag.referrer : undefined)
   const argsFold = address ? bag : Object.fromEntries(Object.entries(bag).filter(([key]) => key !== 'referrer'))
-  const receipt = uuidReceiptOf(`sandbox ${name}`, contentUuidOf(tool.run), { args: argsFold, value }, address ?? `${unit.origin}/mcp`)
+  const receipt = uuidReceiptOf(`sandbox ${name}`, contentUuidOf(tool.run), { args: argsFold, value }, address ?? `${unit.origin}/api`)
   return {
     kind: 'sandbox' as const,
     receipt,

@@ -22,7 +22,7 @@ export const main = async (): Promise<void> => {
   const argv = process.argv.slice(2)
   const local = argv.includes('--local'), all = argv.includes('--all')
   const pkg = JSON.parse(fs.readFileSync(new URL('../../package.json', import.meta.url), 'utf8')) as { name: string; version: string; homepage: string }
-  const url = argv.find((a) => a.startsWith('--url='))?.slice('--url='.length) ?? `${pkg.homepage}/mcp`
+  const url = argv.find((a) => a.startsWith('--url='))?.slice('--url='.length) ?? `${pkg.homepage}/api`
   const [first, raw, ...rest] = argv.filter((a) => !a.startsWith('--'))
 
   type Called = { structuredContent?: Record<string, unknown>; content?: unknown; isError?: boolean }

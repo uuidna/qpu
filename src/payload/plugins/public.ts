@@ -367,8 +367,8 @@ export const publicSurfaceOf = async () => {
     access: await accessSurfaceOf(),
     forms: formFieldsOf(),
     components: componentsOf(),
-    document: '/mcp' as const,
-    schema: '/mcp' as const,
+    document: '/api' as const,
+    schema: '/api' as const,
     stats: {
       kind: 'register-stats' as const,
       register: {
@@ -399,7 +399,6 @@ export const publicSurfaceOf = async () => {
 
 /** Public doors this plugin owns: the paths a browser or MCP client asks for, and the Payload API paths they rewrite to. */
 export const PUBLIC_DOORS = {
-  '/mcp': '/api/qpu/mcp',
   '/cite': '/api/qpu/cite',
   '/qpu.css': '/api/qpu/css',
 } as const
@@ -517,7 +516,7 @@ export const publicMcpOf = async (request: Request, env?: QpuEnv): Promise<Respo
 export const publicDoorFetchOf = async (request: Request, env?: QpuEnv): Promise<Response> => {
   const url = new URL(request.url)
   const path = url.pathname.replace(/\/$/, '') || '/'
-  if (path === '/api/qpu/mcp' || path === '/mcp') return publicMcpOf(request, env)
+  if (path === '/api') return publicMcpOf(request, env)
   if (path === '/api/qpu/cite' || path === '/cite') return publicCiteOf()
   if (path === '/api/qpu/css' || path === '/qpu.css') return publicCssOf()
   if (path === '/api/qpu/public') return Response.json(await publicSurfaceOf())
@@ -618,16 +617,6 @@ export const publicPlugin = (): QpuPlugin => (config) => {
         path: '/qpu/public',
         method: 'get' as const,
         handler: async () => Response.json(await publicSurfaceOf()),
-      },
-      {
-        path: '/qpu/mcp',
-        method: 'get' as const,
-        handler: (req: Request) => publicMcpOf(req),
-      },
-      {
-        path: '/qpu/mcp',
-        method: 'post' as const,
-        handler: (req: Request) => publicMcpOf(req),
       },
     ],
   }

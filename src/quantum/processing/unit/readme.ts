@@ -42,8 +42,8 @@ import {
 export const apiDoorsOf = (): { method: 'GET' | 'POST'; path: string; name: string; href: string }[] => [
   { method: 'GET', path: '/', name: 'quantum', href: unit.origin },
   { method: 'GET', path: `/${unit.path}`, name: 'lean', href: unit.href },
-  { method: 'GET', path: '/mcp', name: 'catalog', href: `${unit.origin}/mcp` },
-  { method: 'POST', path: '/mcp', name: 'tools/call', href: `${unit.origin}/mcp` },
+  { method: 'GET', path: '/api', name: 'catalog', href: `${unit.origin}/api` },
+  { method: 'POST', path: '/api', name: 'tools/call', href: `${unit.origin}/api` },
   { method: 'GET', path: '/cite', name: 'cite', href: `${unit.origin}/cite` },
   { method: 'GET', path: '/message', name: 'message', href: `${unit.origin}/message` },
   { method: 'POST', path: '/message', name: 'message', href: `${unit.origin}/message` },
@@ -61,12 +61,12 @@ export const qpuDocsOf = onceOf(() => {
   const handle = qpuHandleOf()
   const faces = facesOf()
   const fused = faces.faces * handle.kv.amplitudes
-  const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} quantum. GET ${unit.href} lean. POST ${unit.origin}/mcp tools/list. tools/call prove. Reads need no auth; storage writes need a Bearer token. JSON-LD.`
+  const abstract = `theorem quantum : fused = faces * mintOf (bits + seed). vertices ${cube.vertices} hexbit ${cube.hexbit} bits ${cube.bits} faces ${faces.faces} fused ${fused}. Source ${lean.src}. GET ${unit.origin} quantum. GET ${unit.href} lean. POST ${unit.origin}/api tools/list. tools/call prove. Reads need no auth; storage writes need a Bearer token. JSON-LD.`
   const readingOf = (d: { method: string; path: string }): string =>
     d.method === 'GET' && d.path === '/' ? `theorem quantum. theorem shor. theorem crypto. ${shorFactorOf()}. JSON-LD. No auth.`
     : d.method === 'GET' && d.path === `/${unit.path}` ? `Lean proof. theorem infinite. theorem distribute. theorem shor. theorem crypto. ${lean.src}. JSON-LD. No auth.`
-    : d.method === 'GET' && d.path === '/mcp' ? `tools ${mintOf(n) + mintOf(n)} in tools/list: ${mintOf(n)} doors and ${mintOf(n)} cybersecurity. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.`
-    : d.method === 'POST' && d.path === '/mcp' ? 'JSON-RPC tools/list tools/call prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.'
+    : d.method === 'GET' && d.path === '/api' ? `tools ${mintOf(n) + mintOf(n)} in tools/list: ${mintOf(n)} doors and ${mintOf(n)} cybersecurity. cybersecurity theorem shor ${shorFactorOf()}. theorem crypto ${cryptoClaimOf()}. fourteen schemas. schema.org ItemList. JSON-LD. No auth.`
+    : d.method === 'POST' && d.path === '/api' ? 'JSON-RPC tools/list tools/call prove. theorem shor. theorem crypto. crypto_rsa crypto_split. { man: true }. No auth.'
     : d.method === 'GET' && d.path === '/cite' ? 'MLA 8. when never. JSON-LD. No auth.'
     : d.method === 'GET' && d.path === '/message' ? 'lanes = faces. hop involution. JSON-LD. No auth.'
     : '202. hop involution. JSON-LD. No auth.'

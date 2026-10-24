@@ -171,12 +171,12 @@ All auditing tools are automatically available via MCP:
 
 ```bash
 # List all auditing tools
-curl http://localhost:3000/mcp/tools/list | jq '.tools[] | select(.name | contains("audit"))'
+curl -X POST http://localhost:3000/api -H "Content-Type: application/json" -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}' | jq '.result.tools[] | select(.name | contains("audit"))'
 
 # Call a specific audit
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{"name": "end_to_end_audit", "arguments": {}}'
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "end_to_end_audit", "arguments": {}}}'
 ```
 
 ---

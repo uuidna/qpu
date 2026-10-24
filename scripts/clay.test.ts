@@ -10,7 +10,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 
-const HOST = process.env.QPU_HOST ? `https://${process.env.QPU_HOST}/mcp` : 'https://qpu.uuidna.com/mcp'
+const HOST = process.env.QPU_HOST ? `https://${process.env.QPU_HOST}/api` : 'https://qpu.uuidna.com/api'
 
 const prove = async () => {
   const r = await fetch(HOST, {

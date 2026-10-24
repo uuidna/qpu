@@ -21,7 +21,7 @@ const get = async (path, headers = {}) => {
 const json = (t) => {
   try { return JSON.parse(t) } catch { return undefined }
 }
-const rpc = async (body, path = '/mcp') => {
+const rpc = async (body, path = '/api') => {
   const res = await fetch(`${origin}${path}`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: typeof body === 'string' ? body : JSON.stringify(body) })
   const text = await res.text()
   return { status: res.status, text, json: json(text) }

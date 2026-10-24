@@ -6,7 +6,7 @@ import { contentUuidOf, hexFamiliesOf, uuidReceiptOf } from './index.js'
 import { DOORS } from '../../../mcp/discovery.js'
 import '../../../mcp/families.js'
 
-/** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/mcp (QPU_LIVE names
+/** THE RELEASE, AS EVERY CLIENT SEES IT. QPU is live: these tests call https://qpu.uuidna.com/api (QPU_LIVE names
  * another host) through the sealed doors, the one way any MCP client reaches it, and drive what a release must cover:
  * every door and formula listed, every external API and dataset read, formula discovery holding, and every error and
  * warning answered at once, each with what resolves it. */
@@ -25,14 +25,14 @@ const test = (name: string, fn: (t: TestContext) => void | Promise<void>): Promi
 let id = 0
 type Shown = { structuredContent?: Record<string, unknown>; isError?: boolean }
 const call = async (args: Record<string, unknown>, name = DOOR, again = 0): Promise<Shown> => {
-  const r = await fetch(`${host}/mcp`, {
+  const r = await fetch(`${host}/api`, {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method: 'tools/call', params: { name, arguments: args } }),
     signal: AbortSignal.timeout(DEADLINE),
   }).catch(() => null)
   // one retry, then give up fast with a clear error — never a cascade of two-minute waits
-  if (r === null) { if (again < 1) return call(args, name, again + 1); throw new Error(`${host}/mcp did not answer within ${DEADLINE}ms`) }
+  if (r === null) { if (again < 1) return call(args, name, again + 1); throw new Error(`${host}/api did not answer within ${DEADLINE}ms`) }
   if (r.status >= 500 && again < 1) { await new Promise((ok) => setTimeout(ok, 2000)); return call(args, name, again + 1) }
   const body = (await r.json()) as { result?: Shown; error?: { message: string } }
   assert.ok(body.result, `tools/call ${name} ${JSON.stringify(args)}: ${body.error?.message ?? r.status}`)
@@ -304,7 +304,7 @@ test('release: paste the URL into any agent and it develops an idea on the formu
   const wk = await (await fetch(`/.well-known/mcp.json`, { headers: { accept: "application/json" }, signal: AbortSignal.timeout(DEADLINE) })).json().catch(() => null) as { mcp?: unknown; url?: string } | null
   assert.ok(wk, '/.well-known/mcp.json answers')
   // 2. initialize + tools/list, as any MCP client makes them
-  const init = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {} }), signal: AbortSignal.timeout(DEADLINE) })
+  const init = await fetch(`${host}/api`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: {} }), signal: AbortSignal.timeout(DEADLINE) })
   assert.equal(init.status, 200, 'initialize answers 200')
   const doors = out(await call({ doors: true })) as { doors?: { name: string }[]; formulas?: { name: string }[] }
   assert.ok((doors.formulas?.length ?? 0) > 0, 'the agent sees the formulas to build on')

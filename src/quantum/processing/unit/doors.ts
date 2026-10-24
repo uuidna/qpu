@@ -497,7 +497,7 @@ export const proveOf = onceOf(() => {
   const theorems = [...lean.rows, ...lean.cover, lean.climb]
   const ui = {
     href: unit.origin,
-    mcp: `${unit.origin}/mcp`,
+    mcp: `${unit.origin}/api`,
     door: 'prove' as const,
     inline: lean.src.endsWith('/index.lean')}
   const entangle = {

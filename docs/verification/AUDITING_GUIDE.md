@@ -31,15 +31,15 @@ The MCP Auditing System provides **10 specialized auditing tools** that verify a
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "theorem_coverage_audit",
     "arguments": {
       "include_proofs": true,
       "verify_against_lean": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -68,15 +68,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "mcp_tool_audit",
     "arguments": {
       "check_schemas": true,
       "verify_handler_binding": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -106,15 +106,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "blueprint_composition_audit",
     "arguments": {
       "check_entanglement": true,
       "verify_api_mapping": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -144,15 +144,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "api_integration_audit",
     "arguments": {
       "test_all_domains": true,
       "check_accuracy": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -181,15 +181,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "hex_consolidation_audit",
     "arguments": {
       "check_deduplication": true,
       "verify_indexing": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -218,15 +218,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "autonomous_validation_audit",
     "arguments": {
       "check_all_systems": true,
       "verify_no_manual_ops": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -255,15 +255,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "cross_domain_invariants_audit",
     "arguments": {
       "check_all_pairs": true,
       "verify_theorem_sharing": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -292,15 +292,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "involute_closure_audit",
     "arguments": {
       "verify_all_spirals": true,
       "check_algebraic_soundness": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -329,15 +329,15 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "end_to_end_audit",
     "arguments": {
       "audit_depth": "comprehensive",
       "generate_report": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -366,16 +366,16 @@ curl -X POST http://localhost:3000/mcp/tools/call \
 
 **Usage**:
 ```bash
-curl -X POST http://localhost:3000/mcp/tools/call \
+curl -X POST http://localhost:3000/api \
   -H "Content-Type: application/json" \
-  -d '{
+  -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {
     "name": "schedule_continuous_audit",
     "arguments": {
       "audit_interval_minutes": 60,
       "include_domains": ["causal", "xai", "federated", "synthesis", "zero_shot"],
       "alert_on_issues": true
     }
-  }'
+  }}'
 ```
 
 **Expected Output**:
@@ -441,7 +441,7 @@ All auditing tools are automatically discoverable via MCP:
 
 ```bash
 # List all auditing tools
-curl http://localhost:3000/mcp/tools/list | jq '.tools[] | select(.name | contains("audit"))'
+curl -X POST http://localhost:3000/api -H "Content-Type: application/json" -d '{"jsonrpc": "2.0", "id": 1, "method": "tools/list"}' | jq '.result.tools[] | select(.name | contains("audit"))'
 ```
 
 Returns 10 tools:

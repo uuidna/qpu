@@ -19,7 +19,7 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { faces, tenOf } from './lattice-values.js'
 // QPU_HOST is a host name (https) or a full origin, e.g. http://localhost:8787 for a build running on this machine
 const HOST = process.env.QPU_HOST ? (/^https?:\/\//.test(process.env.QPU_HOST) ? process.env.QPU_HOST : `https://${process.env.QPU_HOST}`) : 'https://qpu.uuidna.com'
-const MCP = `${HOST}/mcp`
+const MCP = `${HOST}/api`
 const FACES = faces // the slice width and the team span: 2 and 3 compose it
 const DEADLINE = Number(process.env.QPU_DEADLINE_MS) || tenOf(4) // the unit's own deadline (10 s); a lead slower than this is hot, left for next run. QPU_DEADLINE_MS widens it for a retry
 const arg = (name) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : undefined }

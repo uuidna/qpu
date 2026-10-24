@@ -10,7 +10,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 const HOST = process.env.QPU_HOST ? `https://${process.env.QPU_HOST}` : 'https://qpu.uuidna.com'
-const MCP = `${HOST}/mcp`
+const MCP = `${HOST}/api`
 const DEADLINE = 10_000 // the unit's own deadline (tenOf(hexbit) ms); beyond it the host is hot
 const FACES = 14 // parallel slice width — a slice of faces at a time
 

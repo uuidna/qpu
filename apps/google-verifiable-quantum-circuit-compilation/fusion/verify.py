@@ -20,7 +20,7 @@ BATCH = 256  # x values per door call
 def door_of(items: list[dict]) -> dict:
     """One call to the fusion door; the reading is the JSON text inside the tool's content envelope."""
     body = {"jsonrpc": "2.0", "id": 1, "method": "tools/call", "params": {"name": "fusion", "arguments": {"items": items, "full": True}}}
-    req = urllib.request.Request(f"{HOST}/mcp", data=json.dumps(body).encode(), headers={"content-type": "application/json", "accept": "application/json, text/event-stream"})
+    req = urllib.request.Request(f"{HOST}/api", data=json.dumps(body).encode(), headers={"content-type": "application/json", "accept": "application/json, text/event-stream"})
     with urllib.request.urlopen(req) as r:
         reply = json.load(r)
     if "error" in reply:

@@ -565,7 +565,7 @@ export const onlineModeOf = async (args: Record<string, unknown> = {}) => {
   if (wantOnline) {
     const target: TokenTarget = { who: 'host.mcp.tools/list', door: 'mcp', tool: 'tools/list', panel: 'host' }
     try {
-      const r = await fetch(`${host}/mcp`, {
+      const r = await fetch(`${host}/api`, {
         method: 'POST',
         headers: { 'content-type': 'application/json', accept: 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }),
@@ -636,7 +636,7 @@ export const onlineModeOf = async (args: Record<string, unknown> = {}) => {
   if (wantOnline) {
     const target: TokenTarget = { who: 'worker.cache-control', door: 'mcp', tool: 'GET', panel: 'worker' }
     try {
-      const r = await fetch(`${host}/mcp`, {
+      const r = await fetch(`${host}/api`, {
         method: 'GET',
         headers: { accept: 'application/ld+json' },
         signal: AbortSignal.timeout(deadline),

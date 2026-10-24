@@ -2,7 +2,8 @@ import Link from 'next/link'
 import { qpuHexUuidOf } from '@uuidna/qpu'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { countsOf, type Family } from '@/app/_data'
+import { type Family } from '@/app/_data'
+import { countsOf } from '@/families/combinatorics/counts'
 import { FormulaReadings, listedOf } from '@/components/Readings'
 
 export const programHref = (family: string, program: string[]) => `/${encodeURIComponent(family)}/${program.map(encodeURIComponent).join('+')}`

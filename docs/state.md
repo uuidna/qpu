@@ -20,7 +20,7 @@ Version **1.4.0** (version lock: `v1.<minor>.<digit>`, 0 = LTS; [scripts/version
 | Measure | Value | Source |
 |---|---|---|
 | Capabilities documented inline | 267 of 294 exports | [scripts/generate-docs.ts](../scripts/generate-docs.ts) |
-| Evidence predicates that hold | 91 of 139 (live ones need the network) | evaluated by `npm run docs` |
+| Evidence predicates that hold | 90 of 139 (live ones need the network) | evaluated by `npm run docs` |
 | Lean theorems served / recomputed | 215 / 215 of 215 | [lean-receipt.json](../lean-receipt.json) |
 | API registry fused | 2529 of 2529 APIs, 438299 cross formulas | [fuse-receipt.json](../fuse-receipt.json) |
 | Payload on Cloudflare | 1376256 combinations, 96 of 96 bases type-check | [payload-cf-receipt.json](../payload-cf-receipt.json) |

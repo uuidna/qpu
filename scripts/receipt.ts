@@ -23,7 +23,7 @@ const [kind = 'gate', mode = 'push'] = process.argv.slice(2)
 let id = 0
 /** One tools/call; a 5xx or a timeout is asked again after a growing pause, three times — split in time, never given up at once. */
 const call = async (name, args, again = 0) => {
-  const r = await fetch(`${host}/mcp`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(120000) }).catch((e) => (again < 3 && e?.name === 'TimeoutError' ? null : Promise.reject(e)))
+  const r = await fetch(`${host}/api`, { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: ++id, method: 'tools/call', params: { name, arguments: args } }), signal: AbortSignal.timeout(120000) }).catch((e) => (again < 3 && e?.name === 'TimeoutError' ? null : Promise.reject(e)))
   if ((r === null || r.status >= 500) && again < 3) { await new Promise((ok) => setTimeout(ok, 5000 * (again + 1))); return call(name, args, again + 1) }
   const body = await r.json()
   if (!body.result) throw new Error(`${name} ${JSON.stringify(args).slice(0, 80)}: ${body.error?.message ?? r.status}`)

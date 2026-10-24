@@ -463,7 +463,7 @@ export const qpuCiteOf = onceOf(() => {
     ? `the archive is this version: v${served.version} at ${archived.commit}.`
     : `the archive is behind the host: it holds v${archived.version} at ${archived.commit}; the host serves v${served.version}. Cite the archive for what it holds; the concept DOI ${conceptdoi} resolves to the latest archived version.`
   const website = unit.host
-  const mcp = `${unit.origin}/mcp`
+  const mcp = `${unit.origin}/api`
   const worksOf = (title: string, url: string, workDoi = doi, container = website): string =>
     `${author.last}, ${author.first}. ORCID ${author.orcid}. "${title}." ${container}, ${url}. doi:${workDoi}.`
   const priorWorks = worksOf(prior.title, prior.archive, prior.doi, 'Zenodo')
@@ -1048,7 +1048,7 @@ export const qpuPageOf = (doc: Record<string, unknown>, url: string, meta: { tit
     lines.length > n - n ? lines.map((row) => `<p>${esc(row)}</p>`).join('\n') : `<p>${esc(description)}</p>`,
     links ? `<nav aria-label="Doors"><h2>Doors</h2><ul>${links}</ul></nav>` : '',
     cited || readingList ? `<nav aria-label="Links"><h2>Links</h2>${readingList ? `<ul>${readingList}</ul>` : ''}${cited ? `<ul>${cited}</ul>` : ''}${next}</nav>` : '',
-    `<footer><p>Content-addressed JSON-LD · <a href="/mcp">MCP</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/sitemap.xml">Sitemap</a></p></footer>`,
+    `<footer><p>Content-addressed JSON-LD · <a href="/api">MCP</a> · <a href="/openapi.json">OpenAPI</a> · <a href="/sitemap.xml">Sitemap</a></p></footer>`,
     '</main>',
     '</body>',
     '</html>',
@@ -1069,7 +1069,7 @@ export const robotsOf = (host: string = unit.host): string => {
   return [
     `# ${h.host} — ${h.serves}`,
     `#`,
-    `# AI AGENTS ARE WELCOME. The MCP endpoint for this whole zone is ${unit.origin}/mcp, described without a`,
+    `# AI AGENTS ARE WELCOME. The MCP endpoint for this whole zone is ${unit.origin}/api, described without a`,
     `# round-trip at ${unit.origin}/.well-known/mcp.json and as OpenAPI at ${unit.origin}/openapi.json.`,
     `# Every answer carries its own content address, so a reader can recompute it rather than trust it.`,
     `#`,

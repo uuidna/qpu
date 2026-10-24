@@ -77,7 +77,7 @@ const index = generated.find((d) => d.slug === 'index')
 const HEADER: NavItem[] = [...(index ? [{ ref: 'docs' as const, slug: 'index', label: 'Docs' }] : []), url('/license', 'License')]
 const FOOTER = {
   copyright: `© ${cite.author.first} ${cite.author.last} · ${licence.name}`,
-  navItems: [url('/license', PRODUCTS[0]!.title), url(`${cite.href}/mcp`, 'MCP'), url(repo, 'GitHub'), url(cite.identifier, 'DOI'), url(cite.author.orcid, 'ORCID')] as NavItem[],
+  navItems: [url('/license', PRODUCTS[0]!.title), url(`${cite.href}/api`, 'MCP'), url(repo, 'GitHub'), url(cite.identifier, 'DOI'), url(cite.author.orcid, 'ORCID')] as NavItem[],
 }
 
 const CONTENT = { tenant: ROOT_TENANT, tenants: SOLD_TENANTS, docs: generated.map((d) => d.uuid), receipts: receipts.map((r) => r.name), FORM, PRODUCTS, HEADER, FOOTER }

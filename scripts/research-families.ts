@@ -42,7 +42,7 @@ const post = (url: string, body: string): Promise<string | null> =>
 
 /** One wave, sent as one MCP call to the connector's send route, from one family position. */
 const sendWave = async (from: number, width = WIDTH): Promise<Sent | null> => {
-  const body = await post(`${HOST.replace(/\/$/, '')}/mcp`, JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'connector', arguments: { send: true, over: 'families', from, width, full: true } } }))
+  const body = await post(`${HOST.replace(/\/$/, '')}/api`, JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'connector', arguments: { send: true, over: 'families', from, width, full: true } } }))
   try {
     const text = (JSON.parse(body ?? 'null') as { result?: { content?: { text?: string }[] } } | null)?.result?.content?.[0]?.text
     return typeof text === 'string' ? (JSON.parse(text) as Sent) : null

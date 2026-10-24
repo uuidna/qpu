@@ -94,7 +94,7 @@ export const bundledCitationOf = (): string =>
     'https://zenodo.org/records/21781603',
     'https://zenodo.org/records/23156998',
     'https://qpu.uuidna.com/cite',
-    'https://qpu.uuidna.com/mcp',
+    'https://qpu.uuidna.com/api',
     'https://qpu.uuidna.com/quantum/processing/unit',
     'https://qpu.uuidna.com/license',
     'https://github.com/uuidna/qpu',

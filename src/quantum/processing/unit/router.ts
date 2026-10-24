@@ -63,7 +63,6 @@ import { raySvgOf } from '../../../mcp/ray-animation.js'
 
 /** Public doors Payload owns. Paths only — handlers load from the plugin so this module does not cycle with it. */
 const PUBLIC_DOORS = {
-  '/mcp': '/api/qpu/mcp',
   '/cite': '/api/qpu/cite',
   '/qpu.css': '/api/qpu/css',
 } as const
@@ -237,7 +236,7 @@ export const worker = {
     if (path === `/${unit.path}`) return pageOrServed(`/${unit.path}`, () => leanOf(), { title: '@uuidna/qpu — the Lean proof', description: 'Every theorem recomputed and typeset, each a hex-program UUID.' })
     // DISCOVERY DOORS — extras off the seven-path guide (the README names extras as allowed).
     if (path === '/.well-known/mcp.json') return servedResponse(servedOf(path, () => wellKnownOf()))
-    if (path === '/mcp.json') { const to = new URL(request.url); to.pathname = '/api/qpu/mcp'; return publicDoorOf(new Request(to, request)) }
+    if (path === '/mcp.json') { const to = new URL(request.url); to.pathname = '/api'; return publicDoorOf(new Request(to, request)) }
     if (path === '/install.json') return servedResponse(servedOf(path, () => installManifestOf()))
     // THE UNIVERSAL CONNECTOR: mount QPU in ANY app, not only Claude — one GET returns the ready-to-paste config for
     // every harness (Claude Code, Cursor, VS Code, Codex, Gemini, the Anthropic/OpenAI APIs, raw HTTP), from the one

@@ -126,7 +126,7 @@ export const quantumLiveOf = onceOf(() => {
     glossary: glossaryOf(),
     ui: {
       prove: 'prove' as const,
-      href: `${unit.origin}/mcp`},
+      href: `${unit.origin}/api`},
     cors,
     public: cors === '*',
     auth: cors !== '*',

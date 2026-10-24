@@ -50,7 +50,7 @@ export const payloadMcpOf = onceOf(() => {
     href: plugin.mcp,
     db: plugin.href,
     plugin,
-    path: '/mcp',
+    path: '/api',
     copies: plugin.copies,
     fused: plugin.fused,
     next: plugin.next,

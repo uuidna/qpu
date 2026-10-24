@@ -74,12 +74,12 @@ test('live qpu.uuidna.com', async (t) => {
     assert.equal(page.docs.guide, true)
   })
   await t.test('chat calls tools/call', async () => {
-    const listed = await liveFetch(`${live}/mcp`, {
+    const listed = await liveFetch(`${live}/api`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
     })
-    const called = await liveFetch(`${live}/mcp`, {
+    const called = await liveFetch(`${live}/api`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'quantum', arguments: {} } }),
@@ -111,7 +111,7 @@ test('live qpu.uuidna.com', async (t) => {
   await t.test('chat uses every sealed door', async () => {
     const names = ['quantum', 'lean', 'cite', 'train', 'forge', 'improve', 'compete', 'prove'] as const
     const crypto = ['crypto_catalog', 'crypto_shor', 'crypto_cmodexp', 'crypto_iqft', 'crypto_shots', 'crypto_rsa', 'crypto_split', 'crypto_verify'] as const
-    const discovered = await liveFetch(`${live}/mcp`, {
+    const discovered = await liveFetch(`${live}/api`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize' }),
@@ -121,7 +121,7 @@ test('live qpu.uuidna.com', async (t) => {
     const hello = (await discovered.json()) as { result: { holds?: boolean; instructions?: string; serverInfo?: { name: string } } }
     assert.equal(hello.result.holds, true)
     assert.equal(hello.result.serverInfo?.name, '@uuidna/qpu')
-    const listed = await liveFetch(`${live}/mcp`, {
+    const listed = await liveFetch(`${live}/api`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }),
@@ -134,7 +134,7 @@ test('live qpu.uuidna.com', async (t) => {
       assert.deepEqual(listedNames.slice(8), [...crypto])
     }
     for (const name of listedNames) {
-      const man = await liveFetch(`${live}/mcp`, {
+      const man = await liveFetch(`${live}/api`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: { man: true } } }),
@@ -144,7 +144,7 @@ test('live qpu.uuidna.com', async (t) => {
       const manShown = manBody.result.structuredContent ?? manBody.result
       assert.equal(manShown.kind, 'man', name)
       assert.equal(manShown.holds, true, name)
-      const called = await liveFetch(`${live}/mcp`, {
+      const called = await liveFetch(`${live}/api`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: {} } }),
@@ -302,7 +302,7 @@ test('live reach: qpu.uuidna.com is climbed under a time budget, and the run at 
   for (let work = 8; work <= widthCeiling; work *= 2) {
     const modulus = (1n << BigInt(work)) - 1n
     const t0 = process.hrtime.bigint()
-    const res = await liveFetch(`${live}/mcp`, {
+    const res = await liveFetch(`${live}/api`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'crypto_shor', arguments: { n: modulus.toString(), a: 3 } } }),

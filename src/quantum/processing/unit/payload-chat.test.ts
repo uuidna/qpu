@@ -70,7 +70,7 @@ test('chat: an unauthenticated qpu.uuidna.com /mcp call is a public read, served
       },
     },
   }
-  const res = await worker.fetch(new Request('https://qpu.uuidna.com/mcp', {
+  const res = await worker.fetch(new Request('https://qpu.uuidna.com/api', {
     method: 'POST',
     headers: { 'content-type': 'application/json', accept: 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping' }),

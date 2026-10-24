@@ -171,7 +171,7 @@ export const cybersecurityOf = onceOf(() => {
  * @kind builder
  */
 export const cybersecurityToolsOf = (): QpuSubTool[] => {
-  const href = `${unit.origin}/mcp`
+  const href = `${unit.origin}/api`
   const see = cryptoToolNames
   const schema = { type: 'object', properties: { man: { type: 'boolean' } } }
   const defaults = shorDefaultsOf()

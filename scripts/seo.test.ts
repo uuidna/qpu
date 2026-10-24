@@ -20,7 +20,8 @@ test('seo: Payload link API sends a page to /<slug> with no useless prefix', () 
   assert.ok(!/`\/(pages|docs|blog|content|posts)\/\$\{/.test(src), 'no dead prefix segment before the slug')
 })
 
-test('seo: the frontend route is a Payload/Next group (no URL segment) serving a catch-all slug', () => {
-  assert.ok(existsSync(join(ROOT, 'src/app/(frontend)/(pages)/[...slug]')), 'content is a grouped root catch-all')
+test('seo: the frontend is a Payload/Next group (no URL segment), and every other path is one root catch-all', () => {
+  assert.ok(existsSync(join(ROOT, 'src/app/(frontend)/(pages)/page.tsx')), 'the home page is the grouped root')
+  assert.ok(existsSync(join(ROOT, 'src/app/[...path]/route.ts')), 'every other path reaches the one root catch-all')
   assert.ok(!existsSync(join(ROOT, 'src/app/pages')) && !existsSync(join(ROOT, 'src/app/docs')), 'no literal /pages or /docs route prefix')
 })

@@ -25,7 +25,7 @@ Rows are capability classes; a cell says what the system documents, not a benchm
 | Physical hardware | none | IBM Quantum | Google Quantum AI (by access) | IonQ, Rigetti, IQM, QuEra and others | via plugins | none |
 | Formal proof | 215 Lean 4 theorems, all served and recomputed (215/215) | none | none | none | none | none |
 | Content-addressed results | RFC 9562 v8 UUIDs and chained quantum receipts on every computation | job ids | none | task ARNs | none | none |
-| Agent interface | MCP server (/mcp), 16 tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |
+| Agent interface | MCP server (/api), 16 tools | SDK (Python) | SDK (Python) | SDK and API | SDK (Python) | call tools through MCP or function calling |
 | Document database | MongoDB query/update semantics on Cloudflare KV+R2 or D1, Payload adapter | — | — | — | — | — |
 | API fusion | 2529 APIs, 438299 composing pairs, 438299 cross formulas | — | — | — | — | — |
 | CMS on the edge | 1376256 Next.js + Payload configurations on Workers | — | — | — | — | — |

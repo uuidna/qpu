@@ -22,11 +22,13 @@ test('ports the payloadcms/website deployment surface: globals, collections, plu
   for (const p of ['seoPlugin', 'nestedDocsPlugin', 'redirectsPlugin', 'searchPlugin', 'formBuilderPlugin']) assert.match(cfg, new RegExp(p), `the website plugin ${p} is configured`)
 })
 
-test('the frontend is the lean surface, not Payload blocks: the catch-all renders the families\' own views', () => {
-  const slug = read('src/app/(frontend)/(pages)/[...slug]/page.tsx')
-  assert.ok(slug, 'the [...slug] catch-all exists')
-  // the public content is served from the lean surface (docs, families, the unit's qpuPageOf), deliberately not RenderBlocks
-  for (const view of ['DocView', 'FamilyView', 'ProgramView']) assert.match(slug, new RegExp(view), `the catch-all renders ${view} (the lean surface)`)
-  assert.doesNotMatch(slug, /RenderBlocks/, 'the catch-all serves the lean surface, not the Payload block renderer')
-  for (const c of ['Doc', 'Family', 'Program']) assert.ok(has('src/components', c), `the lean-surface component ${c} is present`)
+test('the frontend is the lean surface, not Payload blocks: the catch-all hands every path to the unit router, which renders the families\' own views', () => {
+  const route = read('src/app/[...path]/route.ts')
+  assert.ok(route, 'the catch-all route exists')
+  assert.match(route, /worker\.fetch/, 'the catch-all delegates to the unit router')
+  assert.doesNotMatch(route, /RenderBlocks/, 'the catch-all serves the lean surface, not the Payload block renderer')
+  for (const view of ['Doc', 'Family', 'Program']) {
+    assert.match(read(`src/components/${view}/index.tsx`), new RegExp(`${view}View`), `the lean-surface view ${view}View is present`)
+    assert.ok(has('src/components', view), `the lean-surface component ${view} is present`)
+  }
 })

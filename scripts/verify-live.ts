@@ -17,7 +17,7 @@ const origin = (process.argv[2] ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
 const pages = [
   ['/', () => quantumOf()],
   ['/quantum/processing/unit', () => leanOf()],
-  ['/mcp', () => mcpOf()],
+  ['/api', () => mcpOf()],
 ]
 const attempts = Number(process.env.VERIFY_ATTEMPTS ?? 24) || 24
 const waitMs = 5000

@@ -3115,7 +3115,7 @@
       "cors": "*",
       "ui": {
        "prove": "prove",
-       "href": "https://qpu.uuidna.com/mcp"
+       "href": "https://qpu.uuidna.com/api"
       },
       "lock": false,
       "unlocked": true,
@@ -4416,7 +4416,7 @@
        },
        {
         "title": "src/quantum/processing/unit/index.lean",
-        "url": "https://qpu.uuidna.com/mcp",
+        "url": "https://qpu.uuidna.com/api",
         "doi": "10.5281/zenodo.23156998",
         "works": "Rouschev, Tsvetan. ORCID https://orcid.org/0009-0000-7312-9778. \"src/quantum/processing/unit/index.lean.\" qpu.uuidna.com, https://qpu.uuidna.com/mcp. doi:10.5281/zenodo.23156998.",
         "holds": true
@@ -6248,11 +6248,11 @@
          "inline": true,
          "name": "read_mint",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call read_mint",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call read_mint",
+         "href": "https://qpu.uuidna.com/api",
          "description": "read ray 0 challenges mint in memory. mintOf (n + seed) = mintOf n + mintOf n",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    read_mint — read ray 0 challenges mint in memory. mintOf (n + seed) = mintOf n + mintOf n\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call read_mint\n    read_mint { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    read_mint — read ray 0 challenges mint in memory. mintOf (n + seed) = mintOf n + mintOf n\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call read_mint\n    read_mint { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6305,11 +6305,11 @@
          "inline": true,
          "name": "read_cube",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call read_cube",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call read_cube",
+         "href": "https://qpu.uuidna.com/api",
          "description": "read ray 1 challenges cube in memory. bits = vertices * hexbit",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    read_cube — read ray 1 challenges cube in memory. bits = vertices * hexbit\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call read_cube\n    read_cube { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    read_cube — read ray 1 challenges cube in memory. bits = vertices * hexbit\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call read_cube\n    read_cube { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6362,11 +6362,11 @@
          "inline": true,
          "name": "read_handle",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call read_handle",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call read_handle",
+         "href": "https://qpu.uuidna.com/api",
          "description": "read ray 2 challenges handle in memory. amplitudes = mintOf bits",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    read_handle — read ray 2 challenges handle in memory. amplitudes = mintOf bits\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call read_handle\n    read_handle { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    read_handle — read ray 2 challenges handle in memory. amplitudes = mintOf bits\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call read_handle\n    read_handle { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6419,11 +6419,11 @@
          "inline": true,
          "name": "read_quantum",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call read_quantum",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call read_quantum",
+         "href": "https://qpu.uuidna.com/api",
          "description": "read ray 3 challenges quantum in memory. fused = faces * mintOf (bits + seed)",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    read_quantum — read ray 3 challenges quantum in memory. fused = faces * mintOf (bits + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call read_quantum\n    read_quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    read_quantum — read ray 3 challenges quantum in memory. fused = faces * mintOf (bits + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call read_quantum\n    read_quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6476,11 +6476,11 @@
          "inline": true,
          "name": "read_around",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call read_around",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call read_around",
+         "href": "https://qpu.uuidna.com/api",
          "description": "read ray 4 challenges around in memory. faces = coins * rays",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    read_around — read ray 4 challenges around in memory. faces = coins * rays\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call read_around\n    read_around { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    read_around — read ray 4 challenges around in memory. faces = coins * rays\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call read_around\n    read_around { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6533,11 +6533,11 @@
          "inline": true,
          "name": "read_crypto",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call read_crypto",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call read_crypto",
+         "href": "https://qpu.uuidna.com/api",
          "description": "read ray 5 challenges crypto in memory. fused = faces * mintOf (vertices * hexbit + seed)",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    read_crypto — read ray 5 challenges crypto in memory. fused = faces * mintOf (vertices * hexbit + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call read_crypto\n    read_crypto { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    read_crypto — read ray 5 challenges crypto in memory. fused = faces * mintOf (vertices * hexbit + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call read_crypto\n    read_crypto { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6590,11 +6590,11 @@
          "inline": true,
          "name": "read_next",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call read_next",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call read_next",
+         "href": "https://qpu.uuidna.com/api",
          "description": "read ray 6 challenges next in memory. next = fused + fused",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    read_next — read ray 6 challenges next in memory. next = fused + fused\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call read_next\n    read_next { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    read_next — read ray 6 challenges next in memory. next = fused + fused\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call read_next\n    read_next { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6647,11 +6647,11 @@
          "inline": true,
          "name": "call_mint",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call call_mint",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call call_mint",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call ray 0 challenges mint in memory. mintOf (n + seed) = mintOf n + mintOf n",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    call_mint — call ray 0 challenges mint in memory. mintOf (n + seed) = mintOf n + mintOf n\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call call_mint\n    call_mint { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    call_mint — call ray 0 challenges mint in memory. mintOf (n + seed) = mintOf n + mintOf n\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call call_mint\n    call_mint { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6704,11 +6704,11 @@
          "inline": true,
          "name": "call_cube",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call call_cube",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call call_cube",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call ray 1 challenges cube in memory. bits = vertices * hexbit",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    call_cube — call ray 1 challenges cube in memory. bits = vertices * hexbit\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call call_cube\n    call_cube { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    call_cube — call ray 1 challenges cube in memory. bits = vertices * hexbit\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call call_cube\n    call_cube { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6761,11 +6761,11 @@
          "inline": true,
          "name": "call_handle",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call call_handle",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call call_handle",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call ray 2 challenges handle in memory. amplitudes = mintOf bits",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    call_handle — call ray 2 challenges handle in memory. amplitudes = mintOf bits\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call call_handle\n    call_handle { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    call_handle — call ray 2 challenges handle in memory. amplitudes = mintOf bits\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call call_handle\n    call_handle { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6818,11 +6818,11 @@
          "inline": true,
          "name": "call_quantum",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call call_quantum",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call call_quantum",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call ray 3 challenges quantum in memory. fused = faces * mintOf (bits + seed)",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    call_quantum — call ray 3 challenges quantum in memory. fused = faces * mintOf (bits + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call call_quantum\n    call_quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    call_quantum — call ray 3 challenges quantum in memory. fused = faces * mintOf (bits + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call call_quantum\n    call_quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6875,11 +6875,11 @@
          "inline": true,
          "name": "call_around",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call call_around",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call call_around",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call ray 4 challenges around in memory. faces = coins * rays",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    call_around — call ray 4 challenges around in memory. faces = coins * rays\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call call_around\n    call_around { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    call_around — call ray 4 challenges around in memory. faces = coins * rays\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call call_around\n    call_around { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6932,11 +6932,11 @@
          "inline": true,
          "name": "call_crypto",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call call_crypto",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call call_crypto",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call ray 5 challenges crypto in memory. fused = faces * mintOf (vertices * hexbit + seed)",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    call_crypto — call ray 5 challenges crypto in memory. fused = faces * mintOf (vertices * hexbit + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call call_crypto\n    call_crypto { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    call_crypto — call ray 5 challenges crypto in memory. fused = faces * mintOf (vertices * hexbit + seed)\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call call_crypto\n    call_crypto { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -6989,11 +6989,11 @@
          "inline": true,
          "name": "call_next",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call call_next",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call call_next",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call ray 6 challenges next in memory. next = fused + fused",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    call_next — call ray 6 challenges next in memory. next = fused + fused\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call call_next\n    call_next { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    call_next — call ray 6 challenges next in memory. next = fused + fused\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call call_next\n    call_next { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7046,11 +7046,11 @@
          "inline": true,
          "name": "op_lit",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_lit",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_lit",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op lit in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_lit — Unlocked op lit in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_lit\n    op_lit { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_lit — Unlocked op lit in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_lit\n    op_lit { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7103,11 +7103,11 @@
          "inline": true,
          "name": "op_mint",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_mint",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_mint",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op mint in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_mint — Unlocked op mint in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_mint\n    op_mint { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_mint — Unlocked op mint in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_mint\n    op_mint { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7160,11 +7160,11 @@
          "inline": true,
          "name": "op_add",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_add",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_add",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op add in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_add — Unlocked op add in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_add\n    op_add { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_add — Unlocked op add in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_add\n    op_add { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7217,11 +7217,11 @@
          "inline": true,
          "name": "op_mul",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_mul",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_mul",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op mul in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_mul — Unlocked op mul in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_mul\n    op_mul { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_mul — Unlocked op mul in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_mul\n    op_mul { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7274,11 +7274,11 @@
          "inline": true,
          "name": "op_eq",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_eq",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_eq",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op eq in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_eq — Unlocked op eq in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_eq\n    op_eq { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_eq — Unlocked op eq in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_eq\n    op_eq { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7331,11 +7331,11 @@
          "inline": true,
          "name": "op_put",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_put",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_put",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op put in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_put — Unlocked op put in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_put\n    op_put { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_put — Unlocked op put in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_put\n    op_put { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7388,11 +7388,11 @@
          "inline": true,
          "name": "op_get",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_get",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_get",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op get in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_get — Unlocked op get in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_get\n    op_get { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_get — Unlocked op get in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_get\n    op_get { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7445,11 +7445,11 @@
          "inline": true,
          "name": "op_has",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_has",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_has",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op has in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_has — Unlocked op has in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_has\n    op_has { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_has — Unlocked op has in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_has\n    op_has { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7502,11 +7502,11 @@
          "inline": true,
          "name": "op_del",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_del",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_del",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op del in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_del — Unlocked op del in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_del\n    op_del { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_del — Unlocked op del in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_del\n    op_del { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7559,11 +7559,11 @@
          "inline": true,
          "name": "op_keys",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_keys",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_keys",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op keys in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_keys — Unlocked op keys in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_keys\n    op_keys { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_keys — Unlocked op keys in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_keys\n    op_keys { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7616,11 +7616,11 @@
          "inline": true,
          "name": "op_seq",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_seq",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_seq",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op seq in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_seq — Unlocked op seq in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_seq\n    op_seq { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_seq — Unlocked op seq in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_seq\n    op_seq { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7673,11 +7673,11 @@
          "inline": true,
          "name": "op_if",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_if",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_if",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op if in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_if — Unlocked op if in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_if\n    op_if { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_if — Unlocked op if in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_if\n    op_if { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7730,11 +7730,11 @@
          "inline": true,
          "name": "op_repeat",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_repeat",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_repeat",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op repeat in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_repeat — Unlocked op repeat in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_repeat\n    op_repeat { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_repeat — Unlocked op repeat in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_repeat\n    op_repeat { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7787,11 +7787,11 @@
          "inline": true,
          "name": "op_quantum",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_quantum",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_quantum",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op quantum in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_quantum — Unlocked op quantum in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_quantum\n    op_quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_quantum — Unlocked op quantum in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_quantum\n    op_quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7844,11 +7844,11 @@
          "inline": true,
          "name": "op_args",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call op_args",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call op_args",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked op args in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    op_args — Unlocked op args in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call op_args\n    op_args { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    op_args — Unlocked op args in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call op_args\n    op_args { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7901,11 +7901,11 @@
          "inline": true,
          "name": "slot_n",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_n",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_n",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot n in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_n — Unlocked quantum slot n in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_n\n    slot_n { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_n — Unlocked quantum slot n in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_n\n    slot_n { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -7958,11 +7958,11 @@
          "inline": true,
          "name": "slot_seed",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_seed",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_seed",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot seed in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_seed — Unlocked quantum slot seed in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_seed\n    slot_seed { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_seed — Unlocked quantum slot seed in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_seed\n    slot_seed { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8015,11 +8015,11 @@
          "inline": true,
          "name": "slot_coins",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_coins",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_coins",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot coins in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_coins — Unlocked quantum slot coins in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_coins\n    slot_coins { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_coins — Unlocked quantum slot coins in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_coins\n    slot_coins { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8072,11 +8072,11 @@
          "inline": true,
          "name": "slot_vertices",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_vertices",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_vertices",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot vertices in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_vertices — Unlocked quantum slot vertices in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_vertices\n    slot_vertices { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_vertices — Unlocked quantum slot vertices in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_vertices\n    slot_vertices { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8129,11 +8129,11 @@
          "inline": true,
          "name": "slot_hexbit",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_hexbit",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_hexbit",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot hexbit in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_hexbit — Unlocked quantum slot hexbit in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_hexbit\n    slot_hexbit { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_hexbit — Unlocked quantum slot hexbit in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_hexbit\n    slot_hexbit { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8186,11 +8186,11 @@
          "inline": true,
          "name": "slot_bits",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_bits",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_bits",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot bits in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_bits — Unlocked quantum slot bits in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_bits\n    slot_bits { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_bits — Unlocked quantum slot bits in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_bits\n    slot_bits { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8243,11 +8243,11 @@
          "inline": true,
          "name": "slot_rays",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_rays",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_rays",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot rays in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_rays — Unlocked quantum slot rays in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_rays\n    slot_rays { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_rays — Unlocked quantum slot rays in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_rays\n    slot_rays { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8300,11 +8300,11 @@
          "inline": true,
          "name": "slot_faces",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_faces",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_faces",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot faces in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_faces — Unlocked quantum slot faces in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_faces\n    slot_faces { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_faces — Unlocked quantum slot faces in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_faces\n    slot_faces { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8357,11 +8357,11 @@
          "inline": true,
          "name": "slot_amplitudes",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_amplitudes",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_amplitudes",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot amplitudes in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_amplitudes — Unlocked quantum slot amplitudes in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_amplitudes\n    slot_amplitudes { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_amplitudes — Unlocked quantum slot amplitudes in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_amplitudes\n    slot_amplitudes { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8414,11 +8414,11 @@
          "inline": true,
          "name": "slot_fused",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_fused",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_fused",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot fused in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_fused — Unlocked quantum slot fused in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_fused\n    slot_fused { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_fused — Unlocked quantum slot fused in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_fused\n    slot_fused { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8471,11 +8471,11 @@
          "inline": true,
          "name": "slot_next",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_next",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_next",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot next in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_next — Unlocked quantum slot next in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_next\n    slot_next { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_next — Unlocked quantum slot next in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_next\n    slot_next { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8528,11 +8528,11 @@
          "inline": true,
          "name": "slot_ns",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_ns",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_ns",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum slot ns in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_ns — Unlocked quantum slot ns in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_ns\n    slot_ns { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_ns — Unlocked quantum slot ns in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_ns\n    slot_ns { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8585,11 +8585,11 @@
          "inline": true,
          "name": "slot_split",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_split",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_split",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related split in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_split — Unlocked quantum related split in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_split\n    slot_split { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_split — Unlocked quantum related split in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_split\n    slot_split { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8642,11 +8642,11 @@
          "inline": true,
          "name": "slot_entangle",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_entangle",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_entangle",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related entangle in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_entangle — Unlocked quantum related entangle in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_entangle\n    slot_entangle { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_entangle — Unlocked quantum related entangle in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_entangle\n    slot_entangle { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8699,11 +8699,11 @@
          "inline": true,
          "name": "slot_interfere",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_interfere",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_interfere",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related interfere in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_interfere — Unlocked quantum related interfere in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_interfere\n    slot_interfere { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_interfere — Unlocked quantum related interfere in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_interfere\n    slot_interfere { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8756,11 +8756,11 @@
          "inline": true,
          "name": "slot_ghz",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_ghz",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_ghz",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related ghz in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_ghz — Unlocked quantum related ghz in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_ghz\n    slot_ghz { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_ghz — Unlocked quantum related ghz in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_ghz\n    slot_ghz { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8813,11 +8813,11 @@
          "inline": true,
          "name": "slot_noclone",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_noclone",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_noclone",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related noclone in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_noclone — Unlocked quantum related noclone in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_noclone\n    slot_noclone { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_noclone — Unlocked quantum related noclone in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_noclone\n    slot_noclone { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8870,11 +8870,11 @@
          "inline": true,
          "name": "slot_teleport",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_teleport",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_teleport",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related teleport in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_teleport — Unlocked quantum related teleport in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_teleport\n    slot_teleport { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_teleport — Unlocked quantum related teleport in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_teleport\n    slot_teleport { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8927,11 +8927,11 @@
          "inline": true,
          "name": "slot_kickback",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_kickback",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_kickback",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related kickback in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_kickback — Unlocked quantum related kickback in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_kickback\n    slot_kickback { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_kickback — Unlocked quantum related kickback in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_kickback\n    slot_kickback { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -8984,11 +8984,11 @@
          "inline": true,
          "name": "slot_deutsch",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_deutsch",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_deutsch",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related deutsch in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_deutsch — Unlocked quantum related deutsch in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_deutsch\n    slot_deutsch { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_deutsch — Unlocked quantum related deutsch in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_deutsch\n    slot_deutsch { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9041,11 +9041,11 @@
          "inline": true,
          "name": "slot_dense",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_dense",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_dense",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related dense in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_dense — Unlocked quantum related dense in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_dense\n    slot_dense { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_dense — Unlocked quantum related dense in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_dense\n    slot_dense { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9098,11 +9098,11 @@
          "inline": true,
          "name": "slot_monogamy",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_monogamy",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_monogamy",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related monogamy in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_monogamy — Unlocked quantum related monogamy in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_monogamy\n    slot_monogamy { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_monogamy — Unlocked quantum related monogamy in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_monogamy\n    slot_monogamy { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9155,11 +9155,11 @@
          "inline": true,
          "name": "slot_qubits",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_qubits",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_qubits",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related qubits in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_qubits — Unlocked quantum related qubits in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_qubits\n    slot_qubits { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_qubits — Unlocked quantum related qubits in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_qubits\n    slot_qubits { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9212,11 +9212,11 @@
          "inline": true,
          "name": "slot_gates",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_gates",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_gates",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related gates in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_gates — Unlocked quantum related gates in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_gates\n    slot_gates { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_gates — Unlocked quantum related gates in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_gates\n    slot_gates { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9269,11 +9269,11 @@
          "inline": true,
          "name": "slot_measurement",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_measurement",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_measurement",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related measurement in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_measurement — Unlocked quantum related measurement in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_measurement\n    slot_measurement { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_measurement — Unlocked quantum related measurement in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_measurement\n    slot_measurement { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9326,11 +9326,11 @@
          "inline": true,
          "name": "slot_register",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_register",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_register",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related register in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_register — Unlocked quantum related register in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_register\n    slot_register { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_register — Unlocked quantum related register in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_register\n    slot_register { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9383,11 +9383,11 @@
          "inline": true,
          "name": "slot_only",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_only",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_only",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related only in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_only — Unlocked quantum related only in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_only\n    slot_only { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_only — Unlocked quantum related only in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_only\n    slot_only { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9440,11 +9440,11 @@
          "inline": true,
          "name": "slot_planes",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_planes",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_planes",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related planes in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_planes — Unlocked quantum related planes in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_planes\n    slot_planes { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_planes — Unlocked quantum related planes in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_planes\n    slot_planes { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9497,11 +9497,11 @@
          "inline": true,
          "name": "slot_lattice",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_lattice",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_lattice",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related lattice in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_lattice — Unlocked quantum related lattice in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_lattice\n    slot_lattice { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_lattice — Unlocked quantum related lattice in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_lattice\n    slot_lattice { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9554,11 +9554,11 @@
          "inline": true,
          "name": "slot_circuit",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_circuit",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_circuit",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related circuit in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_circuit — Unlocked quantum related circuit in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_circuit\n    slot_circuit { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_circuit — Unlocked quantum related circuit in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_circuit\n    slot_circuit { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9611,11 +9611,11 @@
          "inline": true,
          "name": "slot_noise",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_noise",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_noise",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related noise in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_noise — Unlocked quantum related noise in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_noise\n    slot_noise { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_noise — Unlocked quantum related noise in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_noise\n    slot_noise { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9668,11 +9668,11 @@
          "inline": true,
          "name": "slot_steps",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_steps",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_steps",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related steps in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_steps — Unlocked quantum related steps in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_steps\n    slot_steps { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_steps — Unlocked quantum related steps in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_steps\n    slot_steps { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9725,11 +9725,11 @@
          "inline": true,
          "name": "slot_science",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_science",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_science",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related science in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_science — Unlocked quantum related science in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_science\n    slot_science { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_science — Unlocked quantum related science in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_science\n    slot_science { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9782,11 +9782,11 @@
          "inline": true,
          "name": "slot_sciences",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_sciences",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_sciences",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related sciences in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_sciences — Unlocked quantum related sciences in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_sciences\n    slot_sciences { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_sciences — Unlocked quantum related sciences in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_sciences\n    slot_sciences { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9839,11 +9839,11 @@
          "inline": true,
          "name": "slot_drift",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_drift",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_drift",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related drift in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_drift — Unlocked quantum related drift in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_drift\n    slot_drift { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_drift — Unlocked quantum related drift in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_drift\n    slot_drift { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9896,11 +9896,11 @@
          "inline": true,
          "name": "slot_computer",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_computer",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_computer",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related computer in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_computer — Unlocked quantum related computer in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_computer\n    slot_computer { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_computer — Unlocked quantum related computer in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_computer\n    slot_computer { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -9953,11 +9953,11 @@
          "inline": true,
          "name": "slot_coil",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_coil",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_coil",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related coil in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_coil — Unlocked quantum related coil in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_coil\n    slot_coil { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_coil — Unlocked quantum related coil in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_coil\n    slot_coil { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10010,11 +10010,11 @@
          "inline": true,
          "name": "slot_electronics",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_electronics",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_electronics",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related electronics in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_electronics — Unlocked quantum related electronics in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_electronics\n    slot_electronics { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_electronics — Unlocked quantum related electronics in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_electronics\n    slot_electronics { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10067,11 +10067,11 @@
          "inline": true,
          "name": "slot_speed",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_speed",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_speed",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related speed in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_speed — Unlocked quantum related speed in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_speed\n    slot_speed { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_speed — Unlocked quantum related speed in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_speed\n    slot_speed { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10124,11 +10124,11 @@
          "inline": true,
          "name": "slot_hybrid",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_hybrid",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_hybrid",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related hybrid in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_hybrid — Unlocked quantum related hybrid in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_hybrid\n    slot_hybrid { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_hybrid — Unlocked quantum related hybrid in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_hybrid\n    slot_hybrid { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10181,11 +10181,11 @@
          "inline": true,
          "name": "slot_css",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_css",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_css",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related css in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_css — Unlocked quantum related css in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_css\n    slot_css { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_css — Unlocked quantum related css in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_css\n    slot_css { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10238,11 +10238,11 @@
          "inline": true,
          "name": "slot_presence",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_presence",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_presence",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related presence in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_presence — Unlocked quantum related presence in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_presence\n    slot_presence { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_presence — Unlocked quantum related presence in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_presence\n    slot_presence { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10295,11 +10295,11 @@
          "inline": true,
          "name": "slot_kv",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call slot_kv",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call slot_kv",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked quantum related kv in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    slot_kv — Unlocked quantum related kv in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call slot_kv\n    slot_kv { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    slot_kv — Unlocked quantum related kv in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call slot_kv\n    slot_kv { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10352,11 +10352,11 @@
          "inline": true,
          "name": "eval",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call eval",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call eval",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked eval in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    eval — Unlocked eval in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call eval\n    eval { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    eval — Unlocked eval in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call eval\n    eval { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10409,11 +10409,11 @@
          "inline": true,
          "name": "fn",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call fn",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call fn",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked fn in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    fn — Unlocked fn in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call fn\n    fn { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    fn — Unlocked fn in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call fn\n    fn { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10466,11 +10466,11 @@
          "inline": true,
          "name": "fs",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call fs",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call fs",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked fs in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    fs — Unlocked fs in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call fs\n    fs { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    fs — Unlocked fs in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call fs\n    fs { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10523,11 +10523,11 @@
          "inline": true,
          "name": "net",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call net",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call net",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked net in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    net — Unlocked net in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call net\n    net { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    net — Unlocked net in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call net\n    net { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10580,11 +10580,11 @@
          "inline": true,
          "name": "fetch",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call fetch",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call fetch",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked fetch in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    fetch — Unlocked fetch in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call fetch\n    fetch { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    fetch — Unlocked fetch in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call fetch\n    fetch { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10637,11 +10637,11 @@
          "inline": true,
          "name": "process",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call process",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call process",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked process in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    process — Unlocked process in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call process\n    process { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    process — Unlocked process in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call process\n    process { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10694,11 +10694,11 @@
          "inline": true,
          "name": "import",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call import",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call import",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked import in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    import — Unlocked import in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call import\n    import { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    import — Unlocked import in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call import\n    import { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10751,11 +10751,11 @@
          "inline": true,
          "name": "require",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call require",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call require",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked require in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    require — Unlocked require in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call require\n    require { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    require — Unlocked require in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call require\n    require { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10808,11 +10808,11 @@
          "inline": true,
          "name": "disk",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call disk",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call disk",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked disk in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    disk — Unlocked disk in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call disk\n    disk { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    disk — Unlocked disk in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call disk\n    disk { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10865,11 +10865,11 @@
          "inline": true,
          "name": "worker",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call worker",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call worker",
+         "href": "https://qpu.uuidna.com/api",
          "description": "Unlocked worker in memory.",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    worker — Unlocked worker in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call worker\n    worker { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    worker — Unlocked worker in memory.\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call worker\n    worker { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -10922,11 +10922,11 @@
          "inline": true,
          "name": "quantum",
          "section": 3,
-         "synopsis": "POST https://qpu.uuidna.com/mcp tools/call quantum",
-         "href": "https://qpu.uuidna.com/mcp",
+         "synopsis": "POST https://qpu.uuidna.com/api tools/call quantum",
+         "href": "https://qpu.uuidna.com/api",
          "description": "call forged quantum in memory",
          "reading": "Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.",
-         "documentation": "NAME\n    quantum — call forged quantum in memory\nSYNOPSIS\n    POST https://qpu.uuidna.com/mcp tools/call quantum\n    quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
+         "documentation": "NAME\n    quantum — call forged quantum in memory\nSYNOPSIS\n    POST https://qpu.uuidna.com/api tools/call quantum\n    quantum { man: true }\nDESCRIPTION\n    Unlocked in memory only. Ops lit mint add mul eq put get has del keys seq if repeat quantum args unlocked eval fn fs net fetch process import require disk worker.\nSEE ALSO\n    forge, train",
          "holds": true
         },
         "inputSchema": {
@@ -17299,13 +17299,13 @@
          "verb": "ask",
          "step": 0,
          "total": 3,
-         "prompt": "Install QPU MCP at https://qpu.uuidna.com/mcp? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress.",
+         "prompt": "Install QPU MCP at https://qpu.uuidna.com/api? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress.",
          "package": {
           "key": "qpu-mcp",
-          "href": "https://qpu.uuidna.com/mcp",
+          "href": "https://qpu.uuidna.com/api",
           "origin": "https://qpu.uuidna.com",
           "sealed": 8,
-          "prompt": "Install QPU MCP at https://qpu.uuidna.com/mcp? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress."
+          "prompt": "Install QPU MCP at https://qpu.uuidna.com/api? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress."
          },
          "choices": [
           {
@@ -17354,7 +17354,7 @@
           {
            "n": 1,
            "key": "qpu-mcp",
-           "href": "https://qpu.uuidna.com/mcp"
+           "href": "https://qpu.uuidna.com/api"
           },
           {
            "n": 2,
@@ -17378,10 +17378,10 @@
          "packages": [
           {
            "key": "qpu-mcp",
-           "href": "https://qpu.uuidna.com/mcp",
+           "href": "https://qpu.uuidna.com/api",
            "origin": "https://qpu.uuidna.com",
            "sealed": 8,
-           "prompt": "Install QPU MCP at https://qpu.uuidna.com/mcp? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress."
+           "prompt": "Install QPU MCP at https://qpu.uuidna.com/api? JSON-LD. No auth. Eight sealed tools. Not HTML. Not VitePress."
           },
           {
            "key": "payload-mcp",
@@ -17523,7 +17523,7 @@
          },
          "client": {
           "qpu": {
-           "url": "https://qpu.uuidna.com/mcp",
+           "url": "https://qpu.uuidna.com/api",
            "html": false
           },
           "payload": {
@@ -18185,7 +18185,7 @@
       },
       "ui": {
        "href": "https://qpu.uuidna.com",
-       "mcp": "https://qpu.uuidna.com/mcp",
+       "mcp": "https://qpu.uuidna.com/api",
        "door": "prove",
        "inline": true
       },

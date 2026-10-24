@@ -184,7 +184,7 @@ after(async () => {
 
 test('boot proves before serving and serves on the free port it was given', async () => {
   assert.match(qpu.url, /^http:\/\/127\.0\.0\.1:\d+$/)
-  assert.equal(qpu.mcpUrl, `${qpu.url}/mcp`)
+  assert.equal(qpu.mcpUrl, `${qpu.url}/api`)
   assert.equal(new URL(qpu.url).port, String(qpu.port))
   assert.ok(qpu.port > 0 && qpu.port < 65536)
   assert.ok(qpu.servingLine.includes(`:${qpu.port}`), qpu.servingLine)

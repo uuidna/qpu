@@ -7,7 +7,7 @@
 //   npx tsx scripts/waves.ts [https://qpu.uuidna.com]
 const host = (process.argv[2] ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
 const rpc = async (name, args = {}) => {
-  const r = await fetch(`${host}/mcp`, {
+  const r = await fetch(`${host}/api`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }),

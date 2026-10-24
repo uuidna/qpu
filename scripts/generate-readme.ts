@@ -27,7 +27,7 @@ const { hexFamiliesOf } = await import("../dist/quantum/processing/unit/index.js
 // the MCP resource surface, counted the way a client reaches it (resources/list + templates), not a hand list
 const { publicMcpOf } = await import('../dist/payload/plugins/public.js')
 const mcpRpc = async (method, params) =>
-  (await publicMcpOf(new Request('https://qpu.uuidna.com/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }), {})).json()
+  (await publicMcpOf(new Request('https://qpu.uuidna.com/api', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }) }), {})).json()
 const mcpListLen = async (scope) => {
   let len = 0, cursor, pages = 0
   do {
@@ -168,7 +168,7 @@ const familiesTable = [
 const glance = [
   '| Capability | How much | Compared with |',
   '|---|---|---|',
-  `| MCP door (https://qpu.uuidna.com/mcp) | ${listed} listed tools; through any of them ${num(doors.doors.length)} doors and ${num(formulaRows.length)} formulas (\`{ doors: true }\`, \`{ door }\`, \`{ hex }\`, \`{ errors: true }\`) | the Model Context Protocol: \`tools/list\` sealed by the Lean theorem agents_mcp_tools |`,
+  `| MCP door (https://qpu.uuidna.com/api) | ${listed} listed tools; through any of them ${num(doors.doors.length)} doors and ${num(formulaRows.length)} formulas (\`{ doors: true }\`, \`{ door }\`, \`{ hex }\`, \`{ errors: true }\`) | the Model Context Protocol: \`tools/list\` sealed by the Lean theorem agents_mcp_tools |`,
   `| MCP resources | ${num(mcpCore)} core resources by default — the quantum computer (its proof, Clay solutions, hex catalogue, schema, hooks, receipts, paper); \`{ scope: 'all' }\` reaches ${num(mcpAll)}, \`{ scope: family }\` a scoped set, over ${num(mcpTemplates)} \`qpu://…\` templates (each lean theorem and hex program a UUID) | the Model Context Protocol \`resources/list\` + \`resources/read\` |`,
   `| Formal proof | ${num(lean.theorems)} Lean theorems served, ${num(lean.recomputed)} recomputed in TypeScript | the Lean 4 kernel (${lean.toolchain ?? 'toolchain'}) |`,
   `| Formula families | ${num(discovery.families)} families run as hex-program UUIDs (RFC 9562 v8); ${num(discovery.runs)} programs in the last discovery | each other: ${num(discovery.relationsTotal)} values reached by two or more families, ${num(discovery.seals)} seals (fixed points, involutions) |`,
@@ -259,7 +259,7 @@ const clayRegisterTable = [
 ].join('\n')
 const summary = `An exact quantum processing unit served over MCP at https://qpu.uuidna.com, with its site, admin and API on the
 same host. Reads need no auth; storage writes need a Bearer token. Use it as an MCP server (\`{ "qpu": { "type": "http",
-"url": "https://qpu.uuidna.com/mcp" } }\`), as a package (\`npm install @uuidna/qpu\`), or as a container.
+"url": "https://qpu.uuidna.com/api" } }\`), as a package (\`npm install @uuidna/qpu\`), or as a container.
 
 ${publicOf(clayRegister).lines.join('\n\n')}
 

@@ -26,7 +26,7 @@ test('external link graph: citation hrefs, both directions, one next address', (
   const concept = `https://doi.org/${cite.conceptdoi}`
   const github = 'https://github.com/uuidna/qpu'
   const host = cite.href
-  const mcp = `${host}/mcp`
+  const mcp = `${host}/api`
   const license = `${host}/license`
   const archive = cite.archive
   assert.equal(cite.doi.startsWith('10.5281/'), true)

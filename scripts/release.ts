@@ -59,7 +59,7 @@ if (auto) {
   step('publish', ACTIONS.publish)
   // after the deploy: the host must now serve the same theorem count the ship gate recomputed
   const local = /(\d+)\/\d+ theorems/.exec(execSync('./node_modules/.bin/tsx scripts/ship-gate.ts', { stdio: 'pipe' }).toString())?.[1]
-  const reply = execSync(`curl -s -m 60 -X POST https://qpu.uuidna.com/mcp -H 'content-type: application/json' -H 'accept: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"prove","arguments":{}}}'`).toString()
+  const reply = execSync(`curl -s -m 60 -X POST https://qpu.uuidna.com/api -H 'content-type: application/json' -H 'accept: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"prove","arguments":{}}}'`).toString()
   const hosted = /"theorems"\s*:\s*(\d+)|theorems=(\d+)/.exec(reply)?.slice(1).find(Boolean)
   console.log(`after deploy: host serves ${hosted ?? '?'} theorems, local ${local ?? '?'}${hosted === local ? ' — match' : ' — mismatch, investigate'}`)
   process.exit(0)
