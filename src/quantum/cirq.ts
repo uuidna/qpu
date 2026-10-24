@@ -147,23 +147,43 @@ export class Circuit {
 /** Cirq's Device: the qubits a processor has and the two-qubit operations it accepts. An operation fits when its qubits are
  *  the device's, and a two-qubit gate acts on a coupler, a pair the hardware connects. */
 export class Device {
-  private readonly qubits: Set<string>
-  private readonly couplers: Set<string>
+  private readonly keys: Set<string>
+  private readonly couplerKeys: Set<string>
+  private readonly qubitList: Qubit[]
+  private readonly edgeList: [Qubit, Qubit][]
 
   constructor(qubits: readonly Qubit[], couplers: readonly (readonly [Qubit, Qubit])[]) {
-    this.qubits = new Set(qubits.map(keyOf))
-    this.couplers = new Set(couplers.map(([a, b]) => pairKey(a, b)))
+    this.qubitList = [...qubits]
+    this.edgeList = couplers.map(([a, b]): [Qubit, Qubit] => [a, b])
+    this.keys = new Set(qubits.map(keyOf))
+    this.couplerKeys = new Set(couplers.map(([a, b]) => pairKey(a, b)))
+  }
+
+  /** Cirq's qubit_set: the qubits the device has. */
+  get qubitSet(): Qubit[] {
+    return [...this.qubitList]
+  }
+
+  /** Cirq's nx_graph edges: the couplers, each a pair of qubits the hardware connects. */
+  get edges(): [Qubit, Qubit][] {
+    return this.edgeList.map(([a, b]): [Qubit, Qubit] => [a, b])
   }
 
   validateOperation(op: Operation): void {
-    for (const q of op.qubits) if (!this.qubits.has(keyOf(q))) throw new Error(`${keyOf(q)} is not a qubit of this device`)
-    if (op.kind === 'gate' && op.qubits.length === 2 && !this.couplers.has(pairKey(op.qubits[0]!, op.qubits[1]!))) {
+    for (const q of op.qubits) if (!this.keys.has(keyOf(q))) throw new Error(`${keyOf(q)} is not a qubit of this device`)
+    if (op.kind === 'gate' && op.qubits.length === 2 && !this.couplerKeys.has(pairKey(op.qubits[0]!, op.qubits[1]!))) {
       throw new Error(`${op.gate.name} acts on ${keyOf(op.qubits[0]!)} and ${keyOf(op.qubits[1]!)}, which the device does not couple`)
     }
   }
 
+  /** Cirq's validate_moment: every operation of the moment fits the device. */
+  validateMoment(moment: Moment): void {
+    for (const op of moment.operations) this.validateOperation(op)
+  }
+
+  /** Cirq's validate_circuit, by default: every moment is validated. */
   validateCircuit(circuit: Circuit): void {
-    for (const op of circuit.operations) this.validateOperation(op)
+    for (const moment of circuit.moments) this.validateMoment(moment)
   }
 }
 
@@ -343,6 +363,20 @@ const depolarizeOn = (rho: Matrix, index: number, p: number, n: number): Matrix 
   return out
 }
 
+/** Cirq's amplitude damping: E(ρ) = K0 ρ K0† + K1 ρ K1†, with K0 = diag(1, √(1−γ)) and K1 = √γ |0><1|; it takes |1> to |0>
+ *  with probability γ. */
+const amplitudeDampOn = (rho: Matrix, index: number, gamma: number, n: number): Matrix => {
+  const dim = 1 << n
+  const keep: Gate = { name: 'K0', arity: 1, matrix: [c(1), c(0), c(0), c(Math.sqrt(1 - gamma))] }
+  const jump: Gate = { name: 'K1', arity: 1, matrix: [c(0), c(Math.sqrt(gamma)), c(0), c(0)] }
+  const a = conjugate(unitaryOf(keep, [index], n), rho, dim)
+  const b = conjugate(unitaryOf(jump, [index], n), rho, dim)
+  return { re: a.re.map((v, k) => v + b.re[k]!), im: a.im.map((v, k) => v + b.im[k]!) }
+}
+
+/** The noise a density-matrix run applies after every gate, on each of the gate's qubits. */
+export type Noise = { depolarize?: number; amplitudeDamp?: number }
+
 /** The result of a density-matrix run: the density matrix, its diagonal (the basis probabilities), its trace and purity. */
 export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: number[]; trace: number; purity: number }
 
@@ -350,8 +384,10 @@ export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: n
  *  A gate acts as U ρ U†; with a depolarizing probability p, each gate is followed by the depolarizing channel on each of
  *  its qubits. A pure state has purity 1; noise lowers it. Exact for up to 8 qubits. */
 export class DensityMatrixSimulator {
-  simulate(circuit: Circuit, depolarize = 0): DensityResult {
+  simulate(circuit: Circuit, noise: Noise = {}): DensityResult {
+    const { depolarize = 0, amplitudeDamp = 0 } = noise
     if (depolarize < 0 || depolarize > 1) throw new Error('the depolarizing probability is between 0 and 1')
+    if (amplitudeDamp < 0 || amplitudeDamp > 1) throw new Error('the amplitude damping probability is between 0 and 1')
     const order = circuit.qubits
     if (order.length > MAX_DENSITY_QUBITS) throw new Error(`the density-matrix simulator handles up to ${MAX_DENSITY_QUBITS} qubits, the circuit has ${order.length}`)
     const n = order.length
@@ -363,7 +399,10 @@ export class DensityMatrixSimulator {
       if (op.kind !== 'gate') continue
       const indices = op.qubits.map((q) => pos.get(keyOf(q))!)
       rho = conjugate(unitaryOf(op.gate, indices, n), rho, dim)
-      if (depolarize > 0) for (const i of indices) rho = depolarizeOn(rho, i, depolarize, n)
+      for (const i of indices) {
+        if (depolarize > 0) rho = depolarizeOn(rho, i, depolarize, n)
+        if (amplitudeDamp > 0) rho = amplitudeDampOn(rho, i, amplitudeDamp, n)
+      }
     }
     const probabilities = Array.from({ length: dim }, (_, k) => rho.re[k * dim + k]!)
     const trace = probabilities.reduce((sum, p) => sum + p, 0)
@@ -373,15 +412,36 @@ export class DensityMatrixSimulator {
   }
 }
 
+/** Cirq's simulate_expectation_values for a Pauli string: Tr(ρ O), where O is the tensor product of the Paulis named by
+ *  qubit, and the identity on every other qubit. For a Hermitian observable the trace is real. */
+export const expectationOf = (result: DensityResult, observable: Record<string, 'X' | 'Y' | 'Z'>): number => {
+  const n = result.qubits.length
+  const dim = 1 << n
+  const index = new Map(result.qubits.map((q, i) => [keyOf(q), i]))
+  const paulis: Record<'X' | 'Y' | 'Z', Gate> = { X, Y, Z }
+  let op: Matrix = { re: new Float64Array(dim * dim), im: new Float64Array(dim * dim) }
+  for (let k = 0; k < dim; k++) op.re[k * dim + k] = 1
+  for (const [key, pauli] of Object.entries(observable)) {
+    const i = index.get(key)
+    if (i === undefined) throw new Error(`${key} is not a qubit of this result`)
+    op = multiply(op, unitaryOf(paulis[pauli], [i], n), dim)
+  }
+  let trace = 0
+  for (let r = 0; r < dim; r++) for (let k = 0; k < dim; k++) {
+    trace += result.density.re[r * dim + k]! * op.re[k * dim + r]! - result.density.im[r * dim + k]! * op.im[k * dim + r]!
+  }
+  return trace
+}
+
 /** The Quantum Virtual Machine, as the Cirq page describes it: simulated hardware that mimics a device's constraints and
  *  its noise. A circuit runs only if it fits the device, and it runs with the depolarizing noise the machine is given. */
 export class QuantumVirtualMachine {
   private readonly simulator = new DensityMatrixSimulator()
 
-  constructor(private readonly device: Device, private readonly depolarize: number) {}
+  constructor(private readonly device: Device, private readonly noise: Noise) {}
 
   simulate(circuit: Circuit): DensityResult {
     this.device.validateCircuit(circuit)
-    return this.simulator.simulate(circuit, this.depolarize)
+    return this.simulator.simulate(circuit, this.noise)
   }
 }

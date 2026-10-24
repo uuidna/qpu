@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, X, applied, measure, powerOf } from './cirq.js'
+import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, X, Z, applied, expectationOf, measure, powerOf } from './cirq.js'
 
 const [q0, q1] = LineQubit.range(2)
 
@@ -87,21 +87,46 @@ test('the density-matrix simulator agrees with the state vector on a noiseless B
 
 test('the depolarizing channel after an X leaves |1> with probability 1 − 2p/3, and the state is no longer pure', () => {
   const p = 0.3
-  const result = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), p)
+  const result = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), { depolarize: p })
   assert.ok(Math.abs(result.trace - 1) < 1e-12, 'a channel keeps the trace at 1')
   assert.ok(Math.abs(result.probabilities[1]! - (1 - (2 * p) / 3)) < 1e-12, `P(|1>) should be 1 - 2p/3, got ${result.probabilities[1]}`)
   assert.ok(result.purity < 1 - 1e-6, 'noise lowers the purity')
 })
 
 test('a probability outside 0 to 1 is refused, and the density simulator bounds its size', () => {
-  assert.throws(() => new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), 1.5), /between 0 and 1/)
+  assert.throws(() => new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), { depolarize: 1.5 }), /between 0 and 1/)
   const wide = LineQubit.range(9).map((q) => applied(X, q))
   assert.throws(() => new DensityMatrixSimulator().simulate(new Circuit(wide)), /up to 8 qubits/)
 })
 
 test('the Quantum Virtual Machine runs a circuit that fits its device, with the noise it is given, and refuses one that does not fit', () => {
-  const machine = new QuantumVirtualMachine(new Device(LineQubit.range(2), [[q0!, q1!]]), 0.3)
+  const machine = new QuantumVirtualMachine(new Device(LineQubit.range(2), [[q0!, q1!]]), { depolarize: 0.3 })
   const result = machine.simulate(new Circuit([applied(X, q0!)]))
   assert.ok(Math.abs(result.probabilities[1]! - (1 - 0.2)) < 1e-12)
   assert.throws(() => machine.simulate(new Circuit([applied(H, LineQubit.of(5))])), /not a qubit of this device/)
+})
+
+test('amplitude damping takes |1> to |0> with probability gamma, as Cirq\'s amplitude_damp(0.2) states', () => {
+  const result = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), { amplitudeDamp: 0.2 })
+  assert.ok(Math.abs(result.trace - 1) < 1e-12)
+  assert.ok(Math.abs(result.probabilities[1]! - 0.8) < 1e-12, `P(|1>) should be 0.8, got ${result.probabilities[1]}`)
+  assert.ok(Math.abs(result.probabilities[0]! - 0.2) < 1e-12)
+})
+
+test('Pauli-string expectation values: Z on |0> is 1, on |1> is -1, and a Bell pair has ZZ and XX equal to 1', () => {
+  const zero = new DensityMatrixSimulator().simulate(new Circuit([applied(H, q0!), applied(H, q0!)]))
+  assert.ok(Math.abs(expectationOf(zero, { 'line:0': 'Z' }) - 1) < 1e-12)
+  const one = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]))
+  assert.ok(Math.abs(expectationOf(one, { 'line:0': 'Z' }) + 1) < 1e-12)
+  const bell = new DensityMatrixSimulator().simulate(new Circuit([applied(H, q0!), applied(CNOT, q0!, q1!)]))
+  assert.ok(Math.abs(expectationOf(bell, { 'line:0': 'Z', 'line:1': 'Z' }) - 1) < 1e-12)
+  assert.ok(Math.abs(expectationOf(bell, { 'line:0': 'X', 'line:1': 'X' }) - 1) < 1e-12)
+})
+
+test('the device exposes its qubit set and its couplers, and validates a moment as a whole', () => {
+  const device = new Device(LineQubit.range(3), [[q0!, q1!]])
+  assert.equal(device.qubitSet.length, 3)
+  assert.equal(device.edges.length, 1)
+  device.validateMoment(new Moment([applied(CZ, q0!, q1!), applied(H, LineQubit.of(2))]))
+  assert.throws(() => device.validateMoment(new Moment([applied(CZ, q0!, LineQubit.of(2))])), /does not couple/)
 })

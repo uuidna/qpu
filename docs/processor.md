@@ -43,3 +43,7 @@ The Google blog reports a 40-fold reduction in errors relative to un-cultivated 
 ## Willow Early Access Program
 
 Google Quantum AI selects research partners for exclusive access to Willow, which is not yet available to the public. The submission deadline the page states is May 15, 2026. Proposals must be designed for a Willow processor, and selected applicants are notified; the page gives no notification date.
+
+## Hardware
+
+Google's quantum computer page states that its hardware focuses on superconducting qubits. These require specialized cryogenic environments and custom control electronics, and the processor is built in Google's Santa Barbara facility.
