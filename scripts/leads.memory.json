@@ -245,6 +245,56 @@
       "name": "uncommitted-qpu-tree",
       "state": "open",
       "lead": "The qpu working tree has 2,467 modified and 32 untracked entries (319,284 insertions, 11,725 deletions). They mix this session's edits with in-flight work that was already in the tree, including a 305,000-line generated test-receipt.json. Committing needs the owner to name which changes are theirs. Owes: the owner's decision per file group; the unit does not commit or restore others' in-flight work."
+    },
+    {
+      "name": "quantumai-whatisqc",
+      "state": "open",
+      "lead": "quantumai.google/whatisqc: superposition lets a quantum computer explore an exponentially large solution space; scalable error correction is the necessary step to a useful machine. Owes: the court reads the page as a source."
+    },
+    {
+      "name": "quantumai-roadmap",
+      "state": "open",
+      "lead": "quantumai.google/roadmap: the roadmap is a large-scale error-corrected quantum computer. The page renders no text without scripts. Owes: the roadmap milestones from a readable source."
+    },
+    {
+      "name": "quantumai-cirq",
+      "state": "open",
+      "lead": "quantumai.google/cirq: Cirq writes, optimizes and runs quantum circuits (quantumlib/cirq). The QPU answers a cirq job natively (connector vendor cirq). Owes: the court checks the repetitions and the histogram against the asked shots."
+    },
+    {
+      "name": "quantumai-cirq-qaoa",
+      "state": "open",
+      "lead": "quantumai.google/cirq/experiments/qaoa/qaoa_maxcut: QAOA for max-cut on NISQ hardware. The QPU has a QAOA theorem (Qpu.Qaoa). Owes: a max-cut run through the connector."
+    },
+    {
+      "name": "quantumai-qualtran",
+      "state": "open",
+      "lead": "quantumai.google/qualtran: abstractions and a library of quantum algorithms for fault-tolerant research (quantumlib/qualtran). No QPU door reads it yet. Owes: a door that reads its algorithm list."
+    },
+    {
+      "name": "quantumai-openfermion",
+      "state": "open",
+      "lead": "quantumai.google/openfermion: translates chemistry and materials problems into quantum circuits (quantumlib/OpenFermion). No QPU door reads it yet. Owes: a door that reads its problem translations."
+    },
+    {
+      "name": "quantumai-qsim",
+      "state": "open",
+      "lead": "quantumai.google/qsim: a fast wave-function simulator that integrates with Cirq (quantumlib/qsim). No QPU door reads it yet. Owes: a comparison of the QPU simulation against qsim outputs."
+    },
+    {
+      "name": "quantumai-tensorflow-quantum",
+      "state": "open",
+      "lead": "quantumai.google/software: TensorFlow Quantum, hybrid quantum-classical machine learning (tensorflow/quantum). No QPU door reads it yet. Owes: a door that reads its models."
+    },
+    {
+      "name": "quantumai-effective-quantum-volume",
+      "state": "open",
+      "lead": "quantumai.google/whatisqc: a framework rates noisy NISQ circuits by an effective quantum volume. No QPU formula computes it. Owes: the definition from a readable source before any formula is written."
+    },
+    {
+      "name": "quantumai-error-correction",
+      "state": "open",
+      "lead": "quantumai.google/whatisqc: scalable error correction is necessary. The kernel has a surface-code formula. Owes: the court checks it against the page’s claim."
     }
   ]
 }

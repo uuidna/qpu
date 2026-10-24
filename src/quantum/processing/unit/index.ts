@@ -1700,22 +1700,32 @@ const runGatesOf = (ops: readonly Record<string, unknown>[]): bigint[] => {
   }
   return amps
 }
-const measureOf = (amps: bigint[], optional = quantumModeOf()) => {
+const measureOf = (amps: bigint[], optional = quantumModeOf(), shots = mintOf(n)) => {
   receiptOf('measure', amps)
   const support = amps.map((a, i) => ({ i, a })).filter((r) => r.a !== 0n)
   const index = support.length === seed ? support[n - n]!.i : support.length === coins ? support[seed]!.i : mintOf(n)
   const counts = support.map((r) => ({ i: r.i, w: Number(r.a * r.a) }))
-  const shots = mintOf(n)
   let weight = n - n
   for (const row of counts) weight += row.w
+  // the shots are tallied deterministically: each outcome takes its share of the shots, and the shares left over go to the
+  // largest remainders (ties by index), so the tally always sums to the shots asked
+  const exact = counts.map((row) => (weight > 0 ? (shots * row.w) / weight : 0))
+  const tally = counts.map((row, k) => ({ i: row.i, n: Math.floor(exact[k]!) }))
+  const left = shots - tally.reduce((sum, row) => sum + row.n, n - n)
+  counts
+    .map((row, k) => ({ k, rest: exact[k]! - Math.floor(exact[k]!), i: row.i }))
+    .sort((a, b) => b.rest - a.rest || a.i - b.i)
+    .slice(n - n, left)
+    .forEach((row) => { tally[row.k]!.n += 1 })
   return {
     index,
     shots,
     support: support.map((r) => r.i),
     counts,
+    tally,
     collapsed: !optional || support.length === seed,
     preserved: optional && quantumModeOf(),
-    holds: counts.length === support.length && shots === mintOf(n) && weight > n - n,
+    holds: counts.length === support.length && tally.reduce((sum, row) => sum + row.n, n - n) === shots && weight > n - n,
   }
 }
 const decodeOf = (amps: bigint[]): bigint[] => hGateOf(cnotGateOf(amps, n - n, seed), n - n)
@@ -5568,6 +5578,7 @@ type QpuServerJob = {
   index: number
   shots: number
   counts: { i: number; w: number }[]
+  tally: { i: number; n: number }[]
   support: number[]
   collapsed: boolean
   holds: boolean
@@ -5609,7 +5620,9 @@ export const serverSubmitOf = (input: Record<string, unknown> = {}) => {
   const payload = payloadMcpOf()
   const parsed = parseGatesOf(input.gates)
   const ops = parsed.ops
-  const measured = measureOf(runGatesOf(ops))
+  // the shots the caller asked are the shots the job runs; with none asked, the lattice's own count (mintOf(n)) stands
+  const asked = typeof input.shots === 'number' && Number.isSafeInteger(input.shots) && input.shots > 0 ? input.shots : mintOf(n)
+  const measured = measureOf(runGatesOf(ops), quantumModeOf(), asked)
   serverSeq += seed
   const holds = measured.holds && computer.holds && payloadPluginHolds(plugin) && payload.holds && parsed.read !== 'default'
   const job: QpuServerJob = {
@@ -5621,6 +5634,7 @@ export const serverSubmitOf = (input: Record<string, unknown> = {}) => {
     index: measured.index,
     shots: measured.shots,
     counts: measured.counts,
+    tally: measured.tally,
     support: measured.support,
     collapsed: measured.collapsed,
     holds,

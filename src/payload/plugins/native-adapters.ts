@@ -552,6 +552,7 @@ export const nativeJobOf = async (input: Record<string, unknown> = {}) => {
           { name: 'h', q: 0 },
           { name: 'cnot', c: 0, t: 1 },
         ],
+    shots: shotsAsked,
   })
 
   let seal: Awaited<ReturnType<typeof claySealWaveOf>> | null = null
@@ -561,9 +562,10 @@ export const nativeJobOf = async (input: Record<string, unknown> = {}) => {
 
   // Foreign-shaped result envelopes (compatibility, not vendor clones).
   const counts: Record<string, number> = {}
-  for (const row of job.counts as { i: number; w: number }[]) {
+  // the histogram is the shots tallied: each outcome counted as many times as the shots it took
+  for (const row of job.tally as { i: number; n: number }[]) {
     const bits = job.support?.length ? Number(row.i).toString(2).padStart(3, '0') : String(row.i)
-    counts[bits] = (counts[bits] ?? 0) + row.w
+    counts[bits] = (counts[bits] ?? 0) + row.n
   }
   const foreign = (() => {
     switch (vendor) {

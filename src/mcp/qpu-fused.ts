@@ -786,6 +786,20 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     }
     return { source, url: 'https://openlibrary.org', reading: live, expected: { open: '>= 1 book' }, agrees: leads.length > 0 }
   }
+  if (source === 'quantumai') {
+    // GOOGLE QUANTUM AI, AS LEADS: every section of quantumai.google is read live, and every framework repository the
+    // site links is read from GitHub. Each section and each repository is a lead for the court: its title and link, not a claim.
+    const PAGES = ['whatisqc', 'quantumcomputer', 'roadmap', 'lab', 'software', 'cirq', 'qsim', 'qualtran', 'openfermion', 'research', 'resources']
+    const pages = await Promise.all(PAGES.map(async (page) => ({ page, html: await get(`https://quantumai.google/${page}`).then((x) => (x.ok ? x.text() : null)).catch(() => null) })))
+    const sections = pages.map(({ page, html }) => ({ page, reached: html !== null, title: html?.match(/<title>([^<]*)<\/title>/i)?.[1]?.trim() ?? null }))
+    const repos = [...new Set(pages.flatMap(({ html }) => [...(html ?? '').matchAll(/https:\/\/github\.com\/([\w.-]+\/[\w.-]+)/g)].map((m) => m[1]!)))].sort()
+    const checked = await Promise.all(repos.map(async (repo) => {
+      const j = (await get(`https://api.github.com/repos/${repo}`).then((x) => (x.ok ? x.json() : null)).catch(() => null)) as { stargazers_count?: number; pushed_at?: string; archived?: boolean } | null
+      return { repo, reached: j !== null, stars: j?.stargazers_count ?? null, pushed: j?.pushed_at ?? null, archived: j?.archived ?? null }
+    }))
+    const live = { sections, repos: checked, leads: sections.filter((s) => s.reached).length + checked.filter((r) => r.reached).length }
+    return { source, url: 'https://quantumai.google', reading: live, expected: { answered: '>= 1' }, agrees: live.leads > 0, warning: live.leads === 0 ? 'no section or repository answered' : undefined }
+  }
   if (source === 'news') {
     // ALL NEWS FROM EVERYWHERE, ANYTIME, AS LEADS: the newest stories across many keyless sources — Hacker News, Reddit,
     // Lobsters, Dev.to, and GDELT (global news in every language and country). Each story is a lead: its title's words and
@@ -1178,7 +1192,7 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
   }
   return fail('source', { sources: SOURCES })
 }
-const SOURCES = ['cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog', 'clay', 'proof', 'news', 'books']
+const SOURCES = ['quantumai', 'cern', 'nist', 'oeis', 'sequence', 'zenodo', 'datacite', 'novelty', 'prior', 'orcid', 'github', 'npm', 'alpine', 'release', 'site', 'apis', 'patents', 'authors', 'research', 'imagine', 'payload', 'org', 'ai', 'ask', 'jobs', 'funding', 'law', 'unanswered', 'arxiv', 'define', 'collisions', 'catalog', 'clay', 'proof', 'news', 'books']
 
 /** Every live check there is, enumerated from the unit: each CERN record theorem cern counts, each registered sequence and
  *  every formula that is one, the physical constants, the release and its DOIs, author, repositories and package, and
@@ -1203,6 +1217,7 @@ export const dataSourcesOf = async () => [
   { source: 'apis', args: {}, label: 'APIs.guru · every public API', checks: 'theorem fuse: the registry the unit fused' },
   { source: 'patents', args: {}, label: 'patents · PatentsView, USPTO bulk data', checks: 'the patents of an inventor (Tesla), with a key the operator holds' },
   { source: 'authors', args: {}, label: 'cited authors · DataCite, ORCID, Crossref', checks: 'the work around the authors the unit cites: works, years, citations' },
+  { source: 'quantumai', args: {}, label: 'Google Quantum AI · its sections and framework repositories as leads', checks: 'each section and each linked repository, read live as a lead for the court' },
   ...['cal', 'hd', 'yi'].map((family) => ({ source: 'research', args: { family }, label: `research · ${family}`, checks: "the APIs the family's formulas name, read live; their numbers go to discovery" })),
   ...cernCatalogsOf().catalogs.map((c) => ({ source: 'catalog', args: { name: c.name } as Args, label: `catalog · ${c.name}`, checks: 'answers with records' })),
   { source: 'books', args: {} as Args, label: "Open Library · ranges the unit's family subject graph (facts and subjects, never the text)", checks: "with no theme, addresses the from-th family (the unit's own subjects, derived) and advances via next; the books' subjects and numbers go to discovery" },
