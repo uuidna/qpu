@@ -5,11 +5,12 @@
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
 import { DEVICES, PROCESSORS, WILLOW, deviceOf, willowNoiseOf } from './processor.js'
-import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
+import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, repositoriesWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
 import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, type Graph } from './algorithms.js'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.js'
 import { LEADS, type LeadStatus } from './leads.js'
+import { REPOSITORIES } from './repositories.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
@@ -370,6 +371,17 @@ const TOOLS: Tool[] = [
       return { statements: entries.map((t) => ({ topic: t, text: STATEMENTS[t] })) }
     },
     widget: statementsWidget,
+  }),
+  tool({
+    name: 'repositories',
+    description: 'The repositories of the quantumlib GitHub organization, as its list states them: name, description and primary language.',
+    inputSchema: { type: 'object', properties: { language: { type: 'string', description: 'only repositories whose primary language is this' } } },
+    run: (args) => {
+      const language = args.language === undefined ? undefined : String(args.language)
+      const repositories = REPOSITORIES.filter((r) => language === undefined || r.language === language)
+      return { repositories, total: REPOSITORIES.length }
+    },
+    widget: repositoriesWidget,
   }),
   tool({
     name: 'leads',

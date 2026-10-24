@@ -631,6 +631,22 @@ The statements quantumai.google and its PDF make: the Cirq description, the defi
 }
 ```
 
+## repositories
+
+The repositories of the quantumlib GitHub organization, as its list states them: name, description and primary language.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "language": {
+      "type": "string",
+      "description": "only repositories whose primary language is this"
+    }
+  }
+}
+```
+
 ## leads
 
 Every lead on quantumai.google and its PDF, with its status (served, partial, blocked or out of scope), the tool that serves it, and the reason where it is partial, blocked or out of scope.

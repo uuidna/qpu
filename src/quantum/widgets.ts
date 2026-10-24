@@ -146,3 +146,9 @@ export const leadsWidget = (d: { leads: readonly { id: string; status: string; t
     ]),
     table(['Lead', 'Status', 'Tool', 'Statement'], d.leads.map((l) => [l.id, l.status, l.tool ?? '—', l.statement])),
   ])
+
+export const repositoriesWidget = (d: { repositories: readonly { name: string; description: string; language: string }[]; total: number }): string =>
+  stack([
+    cards([['Repositories', String(d.total)], ['Shown', String(d.repositories.length)]]),
+    table(['Repository', 'Language', 'Description'], d.repositories.map((r) => [r.name, r.language, r.description])),
+  ])

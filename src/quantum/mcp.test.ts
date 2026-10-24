@@ -5,13 +5,13 @@ import { handle } from './mcp.js'
 
 const call = (name: string, args: unknown) => handle({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } })
 
-test('tools/list serves the nine tools with input schemas, and initialize names the server', () => {
+test('tools/list serves the ten tools with input schemas, and initialize names the server', () => {
   const init = handle({ jsonrpc: '2.0', id: 0, method: 'initialize' })
   assert.ok('result' in init && (init.result as { serverInfo: { name: string } }).serverInfo.name === 'qpu')
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   assert.ok('result' in list)
   const tools = (list.result as { tools: { name: string; inputSchema: object }[] }).tools
-  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'leads'])
+  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap', 'algorithm', 'software', 'statements', 'repositories', 'leads'])
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 
@@ -247,4 +247,11 @@ test('every device the processor tool names is served, and Sycamore23 has 23 qub
     const r = call('statements', { topic })
     assert.ok('result' in r && (r.result as { structuredContent: { statements: { text: string }[] } }).structuredContent.statements[0]!.text.length > 20, topic)
   }
+})
+
+test('the repositories tool serves the seventeen quantumlib repositories, and filters by language', () => {
+  const all = call('repositories', {})
+  assert.ok('result' in all && (all.result as { structuredContent: { repositories: unknown[]; total: number } }).structuredContent.total === 15)
+  const py = call('repositories', { language: 'Python' })
+  assert.ok('result' in py && (py.result as { structuredContent: { repositories: { language: string }[] } }).structuredContent.repositories.every((r) => r.language === 'Python'))
 })

@@ -130,6 +130,10 @@ export default defineConfig({
             "link": "/mcp#statements"
           },
           {
+            "text": "repositories",
+            "link": "/mcp#repositories"
+          },
+          {
             "text": "leads",
             "link": "/mcp#leads"
           }
