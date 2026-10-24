@@ -20,6 +20,10 @@ export default defineConfig({
         "link": "/cirq"
       },
       {
+        "text": "Software",
+        "link": "/software"
+      },
+      {
         "text": "Quantum Echoes",
         "link": "/echo"
       },
@@ -47,6 +51,10 @@ export default defineConfig({
           {
             "text": "Cirq",
             "link": "/cirq"
+          },
+          {
+            "text": "Software",
+            "link": "/software"
           },
           {
             "text": "Quantum Echoes",

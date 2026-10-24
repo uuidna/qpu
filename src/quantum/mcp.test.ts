@@ -114,3 +114,12 @@ test('the roadmap tool serves the six milestones of the Google figure, and one m
   assert.ok('result' in one && (one.result as { structuredContent: { milestones: { number: number }[] } }).structuredContent.milestones[0]!.number === 3)
   assert.ok('error' in call('roadmap', { milestone: 7 }) && (call('roadmap', { milestone: 7 }) as { error: { code: number } }).error.code === -32602)
 })
+
+test('the roadmap tool also serves the four application bands of the figure, each with its qubit range', () => {
+  const r = call('roadmap', {})
+  assert.ok('result' in r)
+  const apps = (r.result as { structuredContent: { applications: { band: string; low: number; high: number }[] } }).structuredContent.applications
+  assert.deepEqual(apps.map((a) => a.band), ['50k–100k', '100k–500k', '500k–5M', '5M–50M'])
+  assert.equal(apps[0]!.low, 50000)
+  assert.equal(apps[3]!.high, 50000000)
+})

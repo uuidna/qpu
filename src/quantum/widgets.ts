@@ -91,7 +91,10 @@ export const echoBenchmarkWidget = (d: typeof QUANTUM_ECHOES): string =>
     ]),
   ])
 
-export const roadmapWidget = (d: { milestones: readonly { number: number; title: string; year: string | null; physicalQubits: number; status: string }[] }): string =>
+export const roadmapWidget = (d: {
+  milestones: readonly { number: number; title: string; year: string | null; physicalQubits: number; status: string }[]
+  applications: readonly { band: string; applications: readonly string[] }[]
+}): string =>
   stack([
     table(['Milestone', 'Title', 'Year', 'Physical qubits', 'Status'], d.milestones.map((m) => [
       `M${m.number}`,
@@ -101,4 +104,5 @@ export const roadmapWidget = (d: { milestones: readonly { number: number; title:
       m.status,
     ])),
     ...d.milestones.map((m) => bar((m.physicalQubits / 1000000) * 100)),
+    table(['Physical qubits needed', 'Predicted applications'], d.applications.map((a) => [a.band, a.applications.join('; ')])),
   ])

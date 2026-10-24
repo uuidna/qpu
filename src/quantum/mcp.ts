@@ -6,7 +6,7 @@ import { CNOT, CZ, GridQubit, H, LineQubit, NamedQubit, Simulator, SWAP, X, Y, Z
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
 import { PROCESSORS } from './processor.js'
 import { circuitWidget, echoBenchmarkWidget, echoWidget, processorWidget, roadmapWidget } from './widgets.js'
-import { ROADMAP } from './roadmap.js'
+import { APPLICATIONS, ROADMAP } from './roadmap.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
@@ -147,9 +147,9 @@ const TOOLS: Tool[] = [
     description: 'The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, and which are achieved or in progress. With a milestone number, only that milestone.',
     inputSchema: { type: 'object', properties: { milestone: { type: 'integer', minimum: 1, maximum: 6 } } },
     run: (args) => {
-      if (args.milestone === undefined) return { milestones: ROADMAP }
+      if (args.milestone === undefined) return { milestones: ROADMAP, applications: APPLICATIONS }
       const found = ROADMAP.filter((m) => m.number === args.milestone)
-      return found.length ? { milestones: found } : reject(`milestone ${String(args.milestone)} is not on the roadmap; the milestones are 1 to 6`)
+      return found.length ? { milestones: found, applications: APPLICATIONS } : reject(`milestone ${String(args.milestone)} is not on the roadmap; the milestones are 1 to 6`)
     },
     widget: roadmapWidget,
   }),
