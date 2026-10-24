@@ -39,3 +39,7 @@ Willow is Google Quantum AI's superconducting processor. Every figure here is th
 ## Magic state cultivation
 
 The Google blog reports a 40-fold reduction in errors relative to un-cultivated states, T-states at a logical fidelity of 99.99%, and a distance-3 color code grafted to a distance-5 surface code.
+
+## Willow Early Access Program
+
+Google Quantum AI selects research partners for exclusive access to Willow, which is not yet available to the public. The submission deadline the page states is May 15, 2026. Proposals must be designed for a Willow processor, and selected applicants are notified; the page gives no notification date.

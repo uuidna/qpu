@@ -10,6 +10,8 @@ Cirq is Google Quantum AI's Python library for writing, manipulating and optimiz
 - **Qubits**: `LineQubit`, `GridQubit` and `NamedQubit`.
 - **Gates**: `X`, `Y`, `Z`, `H`, `CZ`, `CNOT`, `SWAP`. A gate takes a power, so `X**0.5` is the square root of NOT, as Cirq's documentation shows. `adjointOf` gives the inverse of any gate.
 - **Operations and moments**: `applied(gate, ...qubits)` and `measure(qubits, key)`. Appended operations slide to the earliest moment after their last conflict.
+- **Insert strategies**: `append(op, 'EARLIEST')` slides an operation to the earliest moment after its last conflict, the default; `'NEW'` gives it a moment of its own.
+- **Devices**: `Device` holds a processor's qubits and couplers. An operation fits when its qubits are the device's, and a two-qubit gate acts on a coupler. `deviceOf(WILLOW)` is Willow's device.
 - **Simulator**: `simulate` returns the amplitudes, and `run(circuit, repetitions)` samples bitstrings by measurement key.
 
 The simulator is exact for the sizes Cirq documents, about 20 qubits.

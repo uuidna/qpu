@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { Circuit, CNOT, GridQubit, H, LineQubit, Moment, Simulator, X, applied, measure, powerOf } from './cirq.js'
+import { Circuit, CNOT, CZ, Device, GridQubit, H, LineQubit, Moment, Simulator, X, applied, measure, powerOf } from './cirq.js'
 
 const [q0, q1] = LineQubit.range(2)
 
@@ -59,4 +59,20 @@ test('X**1 is X, and a gate that is not an involution has no power here', () => 
     assert.ok(Math.abs(r - X.matrix[k]![0]) < 1e-12 && Math.abs(i - X.matrix[k]![1]) < 1e-12)
   })
   assert.throws(() => powerOf({ name: 'T', arity: 1, matrix: [[1, 0], [0, 0], [0, 0], [Math.SQRT1_2, Math.SQRT1_2]] }, 0.5))
+})
+
+test('the NEW insert strategy gives each operation a moment of its own, where EARLIEST would have shared one', () => {
+  const earliest = new Circuit().append(applied(H, q0!)).append(applied(X, q1!))
+  assert.equal(earliest.moments.length, 1)
+  const newed = new Circuit().append(applied(H, q0!), 'NEW').append(applied(X, q1!), 'NEW')
+  assert.equal(newed.moments.length, 2)
+})
+
+test('a device accepts operations on its qubits and two-qubit gates on its couplers, in either order', () => {
+  const device = new Device(LineQubit.range(3), [[q0!, q1!]])
+  device.validateOperation(applied(CZ, q0!, q1!))
+  device.validateOperation(applied(CZ, q1!, q0!))
+  assert.throws(() => device.validateOperation(applied(CZ, q0!, LineQubit.of(2))), /does not couple/)
+  assert.throws(() => device.validateOperation(applied(H, LineQubit.of(9))), /not a qubit of this device/)
+  device.validateCircuit(new Circuit([applied(H, q0!), applied(CZ, q0!, q1!)]))
 })

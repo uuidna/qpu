@@ -101,7 +101,11 @@ export class Moment {
   }
 }
 
-/** Cirq's Circuit: a list of moments. Appended operations slide to the earliest moment after their last conflict. */
+/** Cirq's InsertStrategy: EARLIEST slides an operation to the earliest moment after its last conflict (the default); NEW
+ *  gives it a moment of its own, at the end of the circuit. */
+export type InsertStrategy = 'EARLIEST' | 'NEW'
+
+/** Cirq's Circuit: a list of moments. Appended operations are placed by an InsertStrategy, EARLIEST by default. */
 export class Circuit {
   readonly moments: Moment[] = []
 
@@ -109,12 +113,16 @@ export class Circuit {
     for (const item of operations) item instanceof Moment ? this.moments.push(item) : this.append(item)
   }
 
-  append(op: Operation | Iterable<Operation>): this {
+  append(op: Operation | Iterable<Operation>, strategy: InsertStrategy = 'EARLIEST'): this {
     if (Symbol.iterator in Object(op) && !('kind' in (op as object))) {
-      for (const each of op as Iterable<Operation>) this.append(each)
+      for (const each of op as Iterable<Operation>) this.append(each, strategy)
       return this
     }
     const single = op as Operation
+    if (strategy === 'NEW') {
+      this.moments.push(new Moment([single]))
+      return this
+    }
     const mine = new Set(single.qubits.map(keyOf))
     let last = -1
     this.moments.forEach((m, i) => { if (m.operations.some((o) => touches(o, mine))) last = i })
@@ -135,6 +143,31 @@ export class Circuit {
     return this.moments.flatMap((m) => m.operations)
   }
 }
+
+/** Cirq's Device: the qubits a processor has and the two-qubit operations it accepts. An operation fits when its qubits are
+ *  the device's, and a two-qubit gate acts on a coupler, a pair the hardware connects. */
+export class Device {
+  private readonly qubits: Set<string>
+  private readonly couplers: Set<string>
+
+  constructor(qubits: readonly Qubit[], couplers: readonly (readonly [Qubit, Qubit])[]) {
+    this.qubits = new Set(qubits.map(keyOf))
+    this.couplers = new Set(couplers.map(([a, b]) => pairKey(a, b)))
+  }
+
+  validateOperation(op: Operation): void {
+    for (const q of op.qubits) if (!this.qubits.has(keyOf(q))) throw new Error(`${keyOf(q)} is not a qubit of this device`)
+    if (op.kind === 'gate' && op.qubits.length === 2 && !this.couplers.has(pairKey(op.qubits[0]!, op.qubits[1]!))) {
+      throw new Error(`${op.gate.name} acts on ${keyOf(op.qubits[0]!)} and ${keyOf(op.qubits[1]!)}, which the device does not couple`)
+    }
+  }
+
+  validateCircuit(circuit: Circuit): void {
+    for (const op of circuit.operations) this.validateOperation(op)
+  }
+}
+
+const pairKey = (a: Qubit, b: Qubit): string => [keyOf(a), keyOf(b)].sort().join('|')
 
 /** The result of run(): the sampled bitstrings per measurement key. */
 export class Result {

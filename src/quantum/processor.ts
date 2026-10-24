@@ -2,7 +2,7 @@
 // Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
-import { CZ, GridQubit, keyOf, type Qubit } from './cirq.js'
+import { CZ, Device, GridQubit, keyOf, type Qubit } from './cirq.js'
 
 /** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: a Cirq grid qubit at its row and column. */
 export type Site = Qubit
@@ -78,6 +78,9 @@ export const WILLOW = {
 
 /** Error correction is below threshold when Λ is above 1: each step up in code distance then halves the error, as the sheet's Λ shows. */
 export const belowThresholdOf = (processor: typeof WILLOW): boolean => processor.chips.errorCorrection.errorSuppression.mean > 1
+
+/** The device a processor is: its sites and its couplers, so a circuit is checked against the hardware it runs on. */
+export const deviceOf = (processor: typeof WILLOW = WILLOW): Device => new Device(processor.sites, processor.couplers)
 
 /** The processors this repository describes, by their Google name. */
 export const PROCESSORS = { Willow: WILLOW } as const

@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { PROCESSORS, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, fitsProcessor } from './processor.js'
+import { PROCESSORS, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, deviceOf, fitsProcessor } from './processor.js'
+import { applied, CZ, GridQubit, H } from './cirq.js'
 import { keyOf } from './cirq.js'
 
 test('Willow has 105 sites on the spec sheet grid, all distinct', () => {
@@ -44,4 +45,12 @@ test('a circuit fits a processor only up to its qubit count', () => {
   assert.equal(fitsProcessor(WILLOW, 105), true)
   assert.equal(fitsProcessor(WILLOW, 106), false)
   assert.ok(PROCESSORS.Willow === WILLOW)
+})
+
+test('Willow as a device: a gate on a coupler fits, a gate across an uncoupled pair does not, and a site off the grid is refused', () => {
+  const device = deviceOf(WILLOW)
+  const [a, b] = WILLOW.couplers[0]!
+  device.validateOperation(applied(CZ, a, b))
+  assert.throws(() => device.validateOperation(applied(CZ, WILLOW.sites[0]!, WILLOW.sites[WILLOW.sites.length - 1]!)), /does not couple/)
+  assert.throws(() => device.validateOperation(applied(H, GridQubit.of(0, 0))), /not a qubit of this device/)
 })
