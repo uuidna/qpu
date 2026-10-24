@@ -61,7 +61,7 @@ const REPO_REGISTRIES = [
 const REPO_NAME = 'uuidna-qpu'
 const REPO_WRANGLER = 'wrangler.jsonc'
 const REPO_WORKER = {
-  main: 'worker.js',
+  main: '.open-next/worker.js',
   // no workers.dev or preview address: every request there was a scanner, billed as an invocation
   workers_dev: false,
   preview_urls: false,
