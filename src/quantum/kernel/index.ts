@@ -52,7 +52,7 @@ const benchmark=()=>{const heap=(globalThis as {process?:{memoryUsage?:()=>{heap
 
 // MCP TOOLS (direct function references, no wrapper dispatch)
 export const tools={
-  qpu_phase1:phase1,qpu_phase2:phase2,qpu_phase3:phase3,unified:unified,
+  phase1:phase1,phase2:phase2,phase3:phase3,unified:unified,
   batch:(c:string)=>batchExecute(parseInt(c)),
   benchmark:benchmark,
   binomial:(n:string,k:string)=>binomial(BigInt(n),BigInt(k)),
@@ -61,15 +61,15 @@ export const tools={
   shor:(n:string,b:string='8')=>shorFactor(BigInt(n),BigInt(b)),
   grover:(t:string,s:string)=>groverSearch(BigInt(t),BigInt(s)),
   tsp:(c:string)=>tspSolver(JSON.parse(c)),
-  qpu_discrete_log:(b:string,t:string,p:string)=>discreteLog(BigInt(b),BigInt(t),BigInt(p)),
+  discrete_log:(b:string,t:string,p:string)=>discreteLog(BigInt(b),BigInt(t),BigInt(p)),
   knapsack:(i:string,c:string)=>knapsack(JSON.parse(i),parseInt(c)),
-  qpu_hash_collision:(s:string)=>hashCollision(parseInt(s)),
-  qpu_ghz_state:ghzState,
-  qpu_bell_pairs:(c:string)=>bellPairs(parseInt(c)),
-  qpu_surface_code:(q:string)=>surfaceCode(parseInt(q)),
-  qpu_stabilizer_code:(n:string,k:string)=>stabilizerCode(parseInt(n),parseInt(k)),
+  hash_collision:(s:string)=>hashCollision(parseInt(s)),
+  ghz_state:ghzState,
+  bell_pairs:(c:string)=>bellPairs(parseInt(c)),
+  surface_code:(q:string)=>surfaceCode(parseInt(q)),
+  stabilizer_code:(n:string,k:string)=>stabilizerCode(parseInt(n),parseInt(k)),
   hamiltonian:(c:string,t:string)=>hamiltonianSim(parseFloat(c),parseFloat(t)),
-  qpu_graph_coloring:(v:string)=>graphColoring(parseInt(v)),
+  graph_coloring:(v:string)=>graphColoring(parseInt(v)),
 }
 
 // TESTS (direct execution, no testSuite wrapper)
