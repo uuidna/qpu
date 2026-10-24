@@ -94,13 +94,35 @@ export const WILLOW = {
 export const belowThresholdOf = (processor: typeof WILLOW): boolean => processor.chips.errorCorrection.errorSuppression.mean > 1
 
 /** The device a processor is: its sites and its couplers, so a circuit is checked against the hardware it runs on. */
-export const deviceOf = (processor: typeof WILLOW = WILLOW): Device => new Device(processor.sites, processor.couplers)
+export const deviceOf = (processor: { readonly sites: readonly Site[]; readonly couplers: readonly (readonly [Site, Site])[] } = WILLOW): Device => new Device(processor.sites, processor.couplers)
 
 /** The processors this repository describes, by their Google name. */
 export const PROCESSORS = { Willow: WILLOW } as const
 
-/** Sycamore, as the Cirq Devices page states its metadata: 54 qubits and 88 edges. The page gives no layout, so no device is built. */
-export const SYCAMORE = { name: 'Sycamore', qubits: 54, couplers: 88, layout: 'not stated on the page' } as const
+/** Sycamore's printed device diagram, from Google's devices page: each character cell is a qubit at its row and column, and
+ *  a dash is no qubit. The diagram's 54 filled cells are the stated 54 qubits, and their row and column neighbours are the 88
+ *  couplers the same page states. */
+const SYCAMORE_DIAGRAM: readonly string[] = [
+  '-----AB---', '----ABCD--', '---ABCDEF-', '--ABCDEFGH', '-ABCDEFGHI',
+  'ABCDEFGHI-', '-CDEFGHI--', '--EFGHI---', '---GHI----', '----I-----',
+]
+const SYCAMORE_SITES: readonly Site[] = SYCAMORE_DIAGRAM.flatMap((line, r) =>
+  [...line].flatMap((cell, c): Site[] => (cell === '-' ? [] : [GridQubit.of(r, c)])))
+
+/** Sycamore: 54 qubits on the printed diagram, with the couplers its row and column neighbours give. The page states 54 qubits
+ *  and 88 couplers, both checked in the tests. */
+export const SYCAMORE = {
+  name: 'Sycamore',
+  qubits: SYCAMORE_SITES.length,
+  sites: SYCAMORE_SITES,
+  couplers: couplersOf(SYCAMORE_SITES),
+  statedQubits: 54,
+  statedCouplers: 88,
+  layout: 'the printed device diagram on the Google devices page',
+} as const
+
+/** Every device this repository can build a circuit against, by its name. */
+export const DEVICES = { Willow: WILLOW, Sycamore: SYCAMORE } as const
 
 /** True when a circuit's qubit count fits the processor. */
 export const fitsProcessor = (processor: { qubits: number }, qubits: number): boolean => qubits <= processor.qubits

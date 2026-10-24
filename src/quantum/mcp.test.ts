@@ -221,9 +221,9 @@ test('the processor tool serves the Willow preprint figures and the Sycamore cou
   assert.equal(preprint.decoderLatencyMicroseconds, 63)
   const sycamore = call('processor', { name: 'Sycamore' })
   assert.ok('result' in sycamore)
-  const counts = (sycamore.result as { structuredContent: { qubits: number; couplers: number; layout: string } }).structuredContent
+  const counts = (sycamore.result as { structuredContent: { qubits: number; couplers: number; statedQubits: number; statedCouplers: number } }).structuredContent
+  assert.deepEqual([counts.qubits, counts.couplers], [counts.statedQubits, counts.statedCouplers])
   assert.deepEqual([counts.qubits, counts.couplers], [54, 88])
-  assert.equal(counts.layout, 'not stated on the page')
 })
 
 test('the algorithm tool factors N = 15 by Shor\'s order finding, and runs the QAOA sweep on request', () => {

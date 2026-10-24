@@ -135,9 +135,10 @@ Compile a circuit from its operations, placed by an insert strategy, and simulat
     },
     "device": {
       "enum": [
-        "Willow"
+        "Willow",
+        "Sycamore"
       ],
-      "description": "validate the circuit against this processor first"
+      "description": "validate the circuit against this device first"
     },
     "measure": {
       "type": "object",
@@ -606,7 +607,11 @@ The statements quantumai.google and its PDF make: the Cirq description, the defi
         "vision",
         "hardware",
         "early_access",
-        "neutral_atoms"
+        "neutral_atoms",
+        "sycamore_gates",
+        "echoes_preprint",
+        "campus",
+        "campus_announcement"
       ]
     }
   }

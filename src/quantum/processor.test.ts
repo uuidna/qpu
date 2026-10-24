@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { PROCESSORS, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, deviceOf, fitsProcessor } from './processor.js'
-import { applied, CZ, GridQubit, H } from './cirq.js'
+import { PROCESSORS, SYCAMORE, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, deviceOf, fitsProcessor } from './processor.js'
+import { Circuit, applied, CZ, GridQubit, H } from './cirq.js'
 import { keyOf } from './cirq.js'
 
 test('Willow has 105 sites on the spec sheet grid, all distinct', () => {
@@ -53,4 +53,13 @@ test('Willow as a device: a gate on a coupler fits, a gate across an uncoupled p
   device.validateOperation(applied(CZ, a, b))
   assert.throws(() => device.validateOperation(applied(CZ, WILLOW.sites[0]!, WILLOW.sites[WILLOW.sites.length - 1]!)), /does not couple/)
   assert.throws(() => device.validateOperation(applied(H, GridQubit.of(0, 0))), /not a qubit of this device/)
+})
+
+test('Sycamore, from its printed diagram: 54 qubits and 88 couplers, as the devices page states, with every coupler a row or column neighbour', () => {
+  assert.equal(SYCAMORE.qubits, SYCAMORE.statedQubits)
+  assert.equal(SYCAMORE.couplers.length, SYCAMORE.statedCouplers)
+  assert.equal(new Set(SYCAMORE.sites.map((q) => `${(q as { row: number }).row},${(q as { col: number }).col}`)).size, 54)
+  const device = deviceOf(SYCAMORE)
+  device.validateCircuit(new Circuit([applied(CZ, SYCAMORE.couplers[0]![0], SYCAMORE.couplers[0]![1])]))
+  assert.throws(() => device.validateOperation(applied(CZ, SYCAMORE.sites[0]!, SYCAMORE.sites[SYCAMORE.sites.length - 1]!)), /does not couple/)
 })

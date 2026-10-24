@@ -10,6 +10,10 @@ export const STATEMENTS = {
   hardware: 'Google Quantum AI\'s hardware focuses on superconducting qubits, which require specialized cryogenic environments and custom control electronics. It is built in the Santa Barbara facility.',
   early_access: 'The Willow Early Access Program selects a cohort of research partners for exclusive access to Willow, which is not yet available to the public. The submission deadline is May 15, 2026.',
   neutral_atoms: 'Google is expanding its quantum computing effort to include neutral atom quantum computing, which uses individual atoms as qubits. The page gives no Google device figures for it.',
+  sycamore_gates: 'Sycamore accepts two two-qubit gates: cirq.ISWAP**0.5 and cirq.ISWAP**-0.5, with a duration of 32 ns; and the Sycamore gate, equivalent to FSimGate(π/2, π/6), with a duration of 12 ns. The page states one-qubit rotations take 25 ns on most Google devices.',
+  echoes_preprint: 'Constructive interference at the edge of quantum ergodic dynamics (arXiv 2506.10191; published in Nature as "Observation of constructive interference at the edge of quantum ergodicity"). A 103-qubit superconducting processor measures second-order out-of-time-order correlators, OTOC(2). OTOC(2) is dominated by constructive interference between Pauli strings that form large loops in configuration space. The abstract states no quantitative speedup.',
+  campus: 'Google Quantum AI\'s Santa Barbara campus is the headquarters for its quantum data center, quantum hardware research labs and processor fabrication facility. The lab page states no dates, sizes, staff counts or budgets.',
+  campus_announcement: 'Announced May 18, 2021: the campus includes the first quantum data center, quantum hardware research laboratories and quantum processor chip fabrication facilities. The target is 1,000,000 physical qubits in a room-sized error-corrected quantum computer, with 1,000 physical qubits per logical qubit, against fewer than 100 qubits in systems of the time. Cryostats reach about 10 millikelvin.',
 } as const
 
 export type StatementTopic = keyof typeof STATEMENTS

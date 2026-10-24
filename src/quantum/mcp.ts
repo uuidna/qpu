@@ -4,7 +4,7 @@
 
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
-import { PROCESSORS, SYCAMORE, WILLOW, deviceOf } from './processor.js'
+import { DEVICES, PROCESSORS, SYCAMORE, WILLOW, deviceOf } from './processor.js'
 import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
 import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit, type Graph } from './algorithms.js'
@@ -128,9 +128,9 @@ const TOOLS: Tool[] = [
   tool({
     name: 'processor',
     description: 'A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.',
-    inputSchema: { type: 'object', required: ['name'], properties: { name: { enum: [...Object.keys(PROCESSORS), SYCAMORE.name] } } },
+    inputSchema: { type: 'object', required: ['name'], properties: { name: { enum: Object.keys(DEVICES) } } },
     run: (args) => {
-      if (args.name === SYCAMORE.name) return { name: SYCAMORE.name, qubits: SYCAMORE.qubits, couplers: SYCAMORE.couplers, layout: SYCAMORE.layout }
+      if (args.name === SYCAMORE.name) return { name: SYCAMORE.name, qubits: SYCAMORE.qubits, couplers: SYCAMORE.couplers.length, statedQubits: SYCAMORE.statedQubits, statedCouplers: SYCAMORE.statedCouplers, layout: SYCAMORE.layout }
       const processor = PROCESSORS[args.name as keyof typeof PROCESSORS] ?? reject(`processor ${String(args.name)} is not described here`)
       return { name: processor.name, technology: processor.technology, qubits: processor.qubits, statedAverageConnectivity: processor.statedAverageConnectivity, typicalConnectivity: processor.typicalConnectivity, chips: processor.chips, magicStateCultivation: processor.magicStateCultivation, errorCorrectionPreprint: processor.errorCorrectionPreprint }
     },
@@ -145,7 +145,7 @@ const TOOLS: Tool[] = [
       properties: {
         operations: { type: 'array', items: OPERATION_SCHEMA },
         insert: INSERT_SCHEMA,
-        device: { enum: Object.keys(PROCESSORS), description: 'validate the circuit against this processor first' },
+        device: { enum: Object.keys(DEVICES), description: 'validate the circuit against this device first' },
         measure: MEASURE_SCHEMA,
         repetitions: { type: 'integer', minimum: 1, maximum: 10000, default: 100 },
         noise: { type: 'array', items: CHANNEL_SCHEMA, description: 'channels applied after every gate, on each of its qubits' },
@@ -158,8 +158,8 @@ const TOOLS: Tool[] = [
       const insert = (args.insert ?? 'EARLIEST') as InsertStrategy
       const circuit = circuitOf(operations, insert, measurement)
       if (typeof args.device === 'string') {
-        const processor = PROCESSORS[args.device as keyof typeof PROCESSORS] ?? reject(`device ${args.device} is not described here`)
-        deviceOf(processor).validateCircuit(circuit)
+        const device = DEVICES[args.device as keyof typeof DEVICES] ?? reject(`device ${args.device} is not described here`)
+        deviceOf(device).validateCircuit(circuit)
       }
       const channels = ((args.noise ?? []) as ChannelJson[]).map(channelOf)
       const observables = (args.observables ?? []) as Record<string, 'X' | 'Y' | 'Z'>[]
