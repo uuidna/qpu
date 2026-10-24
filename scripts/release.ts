@@ -36,6 +36,7 @@ if (auto) {
   const checks: [string, boolean][] = [
     ['working tree is committed (no uncommitted edits)', dirty === ''],
     ['origin is reachable for the push', reachable],
+    ['npm is logged in, so the publish can run', run('npm whoami')],
     ['scripts gate passes', run('node --import tsx --test scripts/*.test.ts')],
     ['ship gate passes', run('./node_modules/.bin/tsx scripts/ship-gate.ts')],
   ]
@@ -46,9 +47,16 @@ if (auto) {
   }
   // every check is green: push the committed commits, then deploy, then publish. Nothing here commits anyone's edits.
   console.log('release: automatic on green — push, deploy, publish')
-  execSync('git push origin HEAD', { stdio: 'inherit' })
-  execSync(ACTIONS.deploy, { stdio: 'inherit' })
-  execSync(ACTIONS.publish, { stdio: 'inherit' })
+  const step = (name: string, cmd: string) => {
+    try { execSync(cmd, { stdio: 'inherit' }) } catch (e) {
+      console.log(`release failed at ${name}: ${(e as Error).message.split('\n')[0]}`)
+      process.exit(1)
+    }
+    console.log(`release: ${name} done`)
+  }
+  step('push', 'git push origin HEAD')
+  step('deploy', ACTIONS.deploy)
+  step('publish', ACTIONS.publish)
   // after the deploy: the host must now serve the same theorem count the ship gate recomputed
   const local = /(\d+)\/\d+ theorems/.exec(execSync('./node_modules/.bin/tsx scripts/ship-gate.ts', { stdio: 'pipe' }).toString())?.[1]
   const reply = execSync(`curl -s -m 60 -X POST https://qpu.uuidna.com/mcp -H 'content-type: application/json' -H 'accept: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"prove","arguments":{}}}'`).toString()
