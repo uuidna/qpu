@@ -1,0 +1,21 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { CNOT, H, LineQubit, X, applied } from './cirq.js'
+import { echoCircuit, echoProbability } from './echo.js'
+
+const [q0, q1] = LineQubit.range(2)
+const forward = [applied(H, q0!), applied(CNOT, q0!, q1!)]
+
+test('with no perturbation the echo returns to the start with certainty', () => {
+  assert.ok(Math.abs(echoProbability(forward) - 1) < 1e-12)
+})
+
+test('a perturbation on the measured qubits disturbs the echo', () => {
+  const p = echoProbability(forward, applied(X, q1!))
+  assert.ok(p < 1 - 1e-6, `the echo should be disturbed, probability ${p}`)
+})
+
+test('the echo circuit runs forward, perturbs once, then runs backward', () => {
+  assert.equal(echoCircuit(forward, applied(X, q1!)).operations.length, 2 + 1 + 2)
+  assert.equal(echoCircuit(forward).operations.length, 2 + 2)
+})
