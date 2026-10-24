@@ -8,11 +8,18 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "node --import tsx --test 'src/quantum/*.test.ts'"
+    "test": "node --import tsx --test 'src/quantum/*.test.ts'",
+    "docs:gen": "tsx scripts/gen-docs.ts",
+    "docs:dev": "npm run docs:gen && vitepress dev docs",
+    "docs:build": "npm run docs:gen && vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@types/node": "26.6.4",
     "tsx": "4.22.4",
-    "typescript": "7.0.2"
-  }
+    "typescript": "7.0.2",
+    "vitepress": "2.0.0-alpha.20"
+  },
+  "description": "The Google Quantum AI layer: the Willow processor as its spec sheet states it, Cirq gates and circuits, Quantum Echoes with the benchmark Google states, and one MCP surface that compiles them on request.",
+  "homepage": "https://github.com/uuidna/qpu"
 }

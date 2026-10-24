@@ -68,3 +68,36 @@ test('the handler runs in a browser: it imports nothing from Node', () => {
     assert.doesNotMatch(readFileSync(new URL(`./${file}`, import.meta.url), 'utf8'), /from ['"]node:/, `${file} imports a Node built-in`)
   }
 })
+
+const widgetOf = (reply: ReturnType<typeof handle>): string => {
+  assert.ok('result' in reply)
+  const widget = (reply.result as { _meta?: { widget?: unknown } })._meta?.widget
+  assert.equal(typeof widget, 'string')
+  return widget as string
+}
+
+test('every tool returns a widget that uses the host tokens and no literal colours', () => {
+  const widgets = [
+    widgetOf(call('processor', { name: 'Willow' })),
+    widgetOf(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
+    widgetOf(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }], measure: { key: 'm', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 50 })),
+    widgetOf(call('echo', { forward: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
+    widgetOf(call('echo_benchmark', {})),
+  ]
+  for (const widget of widgets) {
+    assert.ok(widget.length > 0 && widget.includes('var(--'))
+    assert.doesNotMatch(widget, /#[0-9a-f]{3,6}\b/i, 'a widget writes no literal hex colour')
+    assert.doesNotMatch(widget, /<(script|style)\b/i, 'a widget carries no script or style block')
+  }
+})
+
+test('the widget shows the result it was built from: the processor qubit count and the benchmark speedup', () => {
+  assert.match(widgetOf(call('processor', { name: 'Willow' })), />105</)
+  assert.match(widgetOf(call('echo_benchmark', {})), />13,000×</)
+})
+
+test('a widget escapes text from the caller, so a name cannot inject markup', () => {
+  const widget = widgetOf(call('circuit', { operations: [], measure: { key: '<img src=x onerror=1>', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 1 }))
+  assert.doesNotMatch(widget, /<img/)
+  assert.match(widget, /&lt;img/)
+})

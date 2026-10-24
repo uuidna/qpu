@@ -1,0 +1,92 @@
+// A widget for each qpu MCP tool: the tool's structured result as HTML that uses the host's design tokens (CSS variables),
+// so it follows the harness in light and dark mode. Each builder is a pure string function: no I/O, no Node, no colours
+// written out, so the same HTML renders in the harness, in the docs playground, and in any browser OS.
+
+import type { WILLOW } from './processor.js'
+import { QUANTUM_ECHOES } from './echo.js'
+
+const escape = (text: string): string => text.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
+
+const cards = (items: [label: string, value: string][]): string =>
+  `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--gap-md);">${items
+    .map(([label, value]) => `<div style="background: var(--surface-1); border-radius: var(--radius); padding: var(--pad-md);"><div style="font-size: var(--font-size-footnote); color: var(--text-muted);">${escape(label)}</div><div style="font-size: var(--font-size-title); font-weight: 500; color: var(--text-primary);">${escape(value)}</div></div>`)
+    .join('')}</div>`
+
+const bar = (percent: number): string =>
+  `<div style="height: 6px; background: var(--surface-1); border-radius: var(--radius); overflow: hidden;"><div style="width: ${Math.min(100, Math.max(0, percent)).toFixed(2)}%; height: 100%; background: var(--fill-accent);"></div></div>`
+
+const table = (head: string[], rows: string[][]): string =>
+  `<div style="background: var(--surface-2); border: 0.5px solid var(--border); border-radius: 12px; padding: var(--pad-sm) var(--pad-md); overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: var(--font-size-footnote);"><thead><tr>${head
+    .map((h) => `<th style="text-align: left; color: var(--text-secondary); font-weight: 500; padding: var(--gap-xs) var(--gap-sm); border-bottom: 0.5px solid var(--border);">${escape(h)}</th>`)
+    .join('')}</tr></thead><tbody>${rows
+    .map((r) => `<tr>${r.map((cell) => `<td style="color: var(--text-primary); padding: var(--gap-xs) var(--gap-sm); border-bottom: 0.5px solid var(--border);">${escape(cell)}</td>`).join('')}</tr>`)
+    .join('')}</tbody></table></div>`
+
+const stack = (parts: string[]): string => `<div style="font-family: var(--font-sans); color: var(--text-primary); display: grid; gap: var(--gap-md);">${parts.join('')}</div>`
+
+/** The figure as the sheet states it: a mean with its spread, both as percentages with three decimals. */
+const percent = ({ mean, spread }: { mean: number; spread: number }): string => `${(mean * 100).toFixed(3)}% ± ${(spread * 100).toFixed(3)}%`
+
+type ProcessorView = Pick<typeof WILLOW, 'qubits' | 'statedAverageConnectivity' | 'chips' | 'magicStateCultivation'>
+
+export const processorWidget = (p: ProcessorView): string => {
+  const one = p.chips.errorCorrection
+  const two = p.chips.randomCircuitSampling
+  return stack([
+    cards([
+      ['Qubits', String(p.qubits)],
+      ['Average connectivity', p.statedAverageConnectivity.toFixed(2)],
+      ['Λ for distances 3, 5, 7', one.errorSuppression.mean.toFixed(2)],
+      ['Magic state error reduction', `${p.magicStateCultivation.errorReductionFactor}×`],
+    ]),
+    table(['Figure', 'Chip 1: error correction', 'Chip 2: random circuit sampling'], [
+      ['Single-qubit gate error', percent(one.singleQubitGateError), percent(two.singleQubitGateError)],
+      [`Two-qubit gate error (${one.twoQubitGateError.gate} / ${two.twoQubitGateError.gate})`, percent(one.twoQubitGateError), percent(two.twoQubitGateError)],
+      ['Measurement error', percent(one.measurementError), percent(two.measurementError)],
+      ['T1', `${one.t1Microseconds.mean} µs ± ${one.t1Microseconds.spread} µs`, `${two.t1Microseconds.mean} µs ± ${two.t1Microseconds.spread} µs`],
+      ['Rate', `${one.errorCorrectionCyclesPerSecond.toLocaleString('en-US')} cycles per second`, `${two.circuitRepetitionsPerSecond.toLocaleString('en-US')} repetitions per second`],
+    ]),
+  ])
+}
+
+type Amplitude = { re: number; im: number }
+type CircuitView = { qubits: string[]; amplitudes: Amplitude[] } | { key: string; bitstrings: string[]; histogram: Record<string, number> }
+
+export const circuitWidget = (d: CircuitView): string => {
+  if ('amplitudes' in d) {
+    const width = Math.max(1, Math.round(Math.log2(d.amplitudes.length)))
+    const rows = d.amplitudes.map((a, k) => ({ k, p: a.re * a.re + a.im * a.im })).filter((r) => r.p > 1e-12)
+    return stack([
+      cards([['Qubits', String(width)], ['Basis states with weight', String(rows.length)]]),
+      table(['State', 'Probability'], rows.map((r) => [`|${r.k.toString(2).padStart(width, '0')}⟩`, `${(r.p * 100).toFixed(2)}%`])),
+      ...rows.map((r) => bar(r.p * 100)),
+    ])
+  }
+  const width = d.bitstrings[0]?.length ?? 1
+  const total = d.bitstrings.length
+  const rows = Object.entries(d.histogram).map(([value, count]) => ({ bits: Number(value).toString(2).padStart(width, '0'), count, share: (count / total) * 100 }))
+  return stack([
+    cards([['Repetitions', String(total)], ['Measurement key', d.key], ['Distinct outcomes', String(rows.length)]]),
+    table(['Bitstring', 'Count', 'Share'], rows.map((r) => [r.bits, String(r.count), `${r.share.toFixed(1)}%`])),
+    ...rows.map((r) => bar(r.share)),
+  ])
+}
+
+export const echoWidget = (d: { probability: number; operations: number }): string =>
+  stack([
+    cards([
+      ['Probability the echo returns', d.probability.toFixed(6)],
+      ['Operations in the echo circuit', String(d.operations)],
+    ]),
+    bar(d.probability * 100),
+  ])
+
+export const echoBenchmarkWidget = (d: typeof QUANTUM_ECHOES): string =>
+  stack([
+    cards([
+      ['Processor', d.processor],
+      ['Qubits in the array', String(d.qubits)],
+      ['Speedup over the fastest supercomputers', `${d.speedup.toLocaleString('en-US')}×`],
+      ['Molecules', d.molecules.map((m) => `${m} atoms`).join(', ')],
+    ]),
+  ])

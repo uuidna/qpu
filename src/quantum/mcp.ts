@@ -5,6 +5,7 @@
 import { CNOT, CZ, GridQubit, H, LineQubit, NamedQubit, Simulator, SWAP, X, Y, Z, Circuit, applied, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
 import { PROCESSORS } from './processor.js'
+import { circuitWidget, echoBenchmarkWidget, echoWidget, processorWidget } from './widgets.js'
 
 export type Rpc = { jsonrpc: '2.0'; id?: number | string | null; method: string; params?: unknown }
 export type Reply =
@@ -46,8 +47,20 @@ const circuitOf = (operations: OperationJson[], measurement?: MeasureJson): Circ
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
 
-/** One tool: its name, what it does, its input schema (JSON Schema 2020-12), and what it returns for valid arguments. */
-type Tool = { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>) => unknown }
+/** One tool: its name, what it does, its input schema (JSON Schema 2020-12), and the call that compiles or reads it: the
+ *  structured result and the widget that shows it. */
+type Tool = { name: string; description: string; inputSchema: object; call: (args: Record<string, unknown>) => { structured: unknown; widget: string } }
+
+/** A tool from its run and its widget: the widget takes exactly what the run returns, so the two cannot drift apart. */
+const tool = <T>(spec: { name: string; description: string; inputSchema: object; run: (args: Record<string, unknown>) => T; widget: (data: T) => string }): Tool => ({
+  name: spec.name,
+  description: spec.description,
+  inputSchema: spec.inputSchema,
+  call: (args) => {
+    const data = spec.run(args)
+    return { structured: data, widget: spec.widget(data) }
+  },
+})
 
 const QUBIT_SCHEMA = {
   oneOf: [
@@ -70,7 +83,7 @@ const MEASURE_SCHEMA = { type: 'object', required: ['key', 'qubits'], properties
 const reject = (what: string): never => { throw new ParamError(what) }
 
 const TOOLS: Tool[] = [
-  {
+  tool({
     name: 'processor',
     description: 'A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.',
     inputSchema: { type: 'object', required: ['name'], properties: { name: { enum: Object.keys(PROCESSORS) } } },
@@ -78,8 +91,9 @@ const TOOLS: Tool[] = [
       const processor = PROCESSORS[args.name as keyof typeof PROCESSORS] ?? reject(`processor ${String(args.name)} is not described here`)
       return { name: processor.name, technology: processor.technology, qubits: processor.qubits, statedAverageConnectivity: processor.statedAverageConnectivity, typicalConnectivity: processor.typicalConnectivity, chips: processor.chips, magicStateCultivation: processor.magicStateCultivation }
     },
-  },
-  {
+    widget: processorWidget,
+  }),
+  tool({
     name: 'circuit',
     description: 'Compile a circuit from its operations and simulate it: the final amplitudes when there is no measurement, or sampled bitstrings and their histogram when there is one.',
     inputSchema: {
@@ -103,8 +117,9 @@ const TOOLS: Tool[] = [
       const result = new Simulator().run(circuit, repetitions)
       return { key: measurement.key, bitstrings: result.measurements(measurement.key), histogram: Object.fromEntries(result.histogram(measurement.key)) }
     },
-  },
-  {
+    widget: circuitWidget,
+  }),
+  tool({
     name: 'echo',
     description: 'Quantum Echoes: run the operations forward, perturb once, run them back, and return the probability that every qubit returns to 0.',
     inputSchema: {
@@ -117,13 +132,15 @@ const TOOLS: Tool[] = [
       const perturbation = args.perturbation === undefined ? undefined : operationOf(args.perturbation as OperationJson)
       return { probability: echoProbability(forward, perturbation), operations: echoCircuit(forward, perturbation).operations.length }
     },
-  },
-  {
+    widget: echoWidget,
+  }),
+  tool({
     name: 'echo_benchmark',
     description: 'The Quantum Echoes result as Google states it: the processor, its qubits, the speedup, and the molecules.',
     inputSchema: { type: 'object', properties: {} },
     run: () => QUANTUM_ECHOES,
-  },
+    widget: echoBenchmarkWidget,
+  }),
 ]
 
 const keyOfQubit = (q: Qubit): string => (q.kind === 'grid' ? `grid:${q.row},${q.col}` : q.kind === 'line' ? `line:${q.x}` : `named:${q.name}`)
@@ -137,10 +154,10 @@ export const handle = (message: Rpc): Reply => {
     if (message.method === 'initialize') return { jsonrpc: '2.0', id, result: { protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'qpu', version: '1.4.0' } } }
     if (message.method === 'tools/list') return { jsonrpc: '2.0', id, result: { tools: TOOLS.map(({ name, description, inputSchema }) => ({ name, description, inputSchema })) } }
     if (message.method === 'tools/call') {
-      const tool = TOOLS.find((t) => t.name === params.name)
-      if (!tool) return fail(METHOD_NOT_FOUND, `no tool ${String(params.name)}; the tools are ${TOOLS.map((t) => t.name).join(', ')}`)
-      const structured = tool.run((params.arguments ?? {}) as Record<string, unknown>)
-      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false } }
+      const found = TOOLS.find((t) => t.name === params.name)
+      if (!found) return fail(METHOD_NOT_FOUND, `no tool ${String(params.name)}; the tools are ${TOOLS.map((t) => t.name).join(', ')}`)
+      const { structured, widget } = found.call((params.arguments ?? {}) as Record<string, unknown>)
+      return { jsonrpc: '2.0', id, result: { content: [{ type: 'text', text: JSON.stringify(structured) }], structuredContent: structured, isError: false, _meta: { widget } } }
     }
     return fail(METHOD_NOT_FOUND, `method ${message.method} is not served`)
   } catch (error) {
