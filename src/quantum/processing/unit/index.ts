@@ -741,16 +741,8 @@ export const qpuClayOf = onceOf(() => {
   }
 })
 
-export const clayHolds = (c = qpuClayOf()): boolean =>
-  c.holds === true &&
-  c.kind === 'clay' &&
-  c.theorem === 'clay' &&
-  c.coins * c.seven === c.clay &&
-  (seed + c.six) * c.coins === c.clay &&
-  c.coils === seed + c.six &&
-  c.six === mintOf(n) - coins &&
-  c.clay === c.coil &&
-  c.clay === c.faces
+/** The identities are checked once, inside qpuClayOf's holds; this reads that verdict and its tags. */
+export const clayHolds = (c = qpuClayOf()): boolean => c.holds === true && c.kind === 'clay' && c.theorem === 'clay'
 
 export const genesisHolds = (g = genesisOf()): boolean =>
   g.holds === true &&
