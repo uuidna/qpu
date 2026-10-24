@@ -4,26 +4,7 @@
 // walk reaches 1 at the order and stops there. The court judges the result: four checks, and the court's standard of proof
 // requires all four. The defaults are the unit's own Shor defaults, read from the lattice, not typed in here.
 import { CourtFormulas } from '../families/court/index.js'
-import { mcpFuseOf, shorDefaultsOf } from '../quantum/processing/unit/index.js'
-
-const gcdOf = (a: bigint, b: bigint): bigint => {
-  let x = a < 0n ? -a : a
-  let y = b < 0n ? -b : b
-  while (y !== 0n) [x, y] = [y, x % y]
-  return x
-}
-
-const powModOf = (base: bigint, exp: bigint, m: bigint): bigint => {
-  let r = 1n % m
-  let b = base % m
-  let e = exp
-  while (e > 0n) {
-    if (e & 1n) r = (r * b) % m
-    b = (b * b) % m
-    e >>= 1n
-  }
-  return r
-}
+import { bigGcdOf, bigPowModOf, mcpFuseOf, shorDefaultsOf } from '../quantum/processing/unit/index.js'
 
 /** Strong probable-prime test over fixed bases: a probable prime, not a proof. */
 const probablePrimeOf = (n: bigint): boolean => {
@@ -36,7 +17,7 @@ const probablePrimeOf = (n: bigint): boolean => {
   let s = 0
   while (d % 2n === 0n) { d /= 2n; s++ }
   return [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n].every((a) => {
-    let x = powModOf(a, d, n)
+    let x = bigPowModOf(a, d, n)
     if (x === 1n || x === n - 1n) return true
     for (let i = 1; i < s; i++) {
       x = (x * x) % n
@@ -77,15 +58,15 @@ mcpFuseOf('involute', {
     const n = integerOf(args.n) ?? BigInt(defaults.modulus)
     const a = integerOf(args.a) ?? BigInt(defaults.base)
     if (n < 4n) return { kind: 'involute', n: String(n), status: 'refused', holds: false, next: ['the modulus must be at least 4'] }
-    const g = gcdOf(a, n)
+    const g = bigGcdOf(a, n)
     if (g !== 1n) return { kind: 'involute', n: String(n), a: String(a), status: 'shared-factor', p: String(g), q: String(n / g), holds: g !== 1n && g !== n }
     const r = orderOf(a, n)
     const even = r % 2n === 0n
     const midpoint = even ? r / 2n : null
-    const reflect = midpoint === null ? null : powModOf(a, midpoint, n)
+    const reflect = midpoint === null ? null : bigPowModOf(a, midpoint, n)
     const bad = reflect === null ? 'odd order' : reflect === n - 1n ? 'a^(r/2) = -1' : null
-    const p = reflect !== null && bad === null ? gcdOf(reflect - 1n, n) : 1n
-    const q = reflect !== null && bad === null ? gcdOf(reflect + 1n, n) : 1n
+    const p = reflect !== null && bad === null ? bigGcdOf(reflect - 1n, n) : 1n
+    const q = reflect !== null && bad === null ? bigGcdOf(reflect + 1n, n) : 1n
     const checks = [p > 1n && p < n, q > 1n && q < n, p * q === n, probablePrimeOf(p) && probablePrimeOf(q)]
     const confidence = checks.filter(Boolean).length
     const court = CourtFormulas.standard(confidence, checks.length)
