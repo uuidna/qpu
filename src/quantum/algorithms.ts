@@ -111,17 +111,55 @@ export const seededWeights = (count: number, seed = 11): number[] => {
   })
 }
 
+/** The page's estimate_cost, sampled as the page does it: shots bitstrings drawn from the QAOA state's probabilities by a seeded
+ *  generator, then for each edge the mean of (−1)^u · (−1)^v over the shots, weighted, and negated. Its expectation is
+ *  −Σ w⟨Z_u Z_v⟩ = 2·cut − W, the value the page maximizes. */
+export const qaoaEstimate = (graph: Graph, alpha: number, beta: number, shots = 20000, seed = 11): number => {
+  const { amplitudes, qubits } = new Simulator().simulate(qaoaCircuit(graph, alpha, beta))
+  const position = (q: Qubit) => qubits.findIndex((r) => keyOf(r) === keyOf(q))
+  const cumulative: number[] = []
+  let total = 0
+  for (const [re, im] of amplitudes) {
+    total += re * re + im * im
+    cumulative.push(total)
+  }
+  let state = seed >>> 0
+  const draw = (): number => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0
+    return (state / 2 ** 32) * total
+  }
+  const sums = graph.edges.map(() => 0)
+  for (let shot = 0; shot < shots; shot++) {
+    const target = draw()
+    let lo = 0
+    let hi = cumulative.length - 1
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1
+      if (cumulative[mid]! < target) lo = mid + 1
+      else hi = mid
+    }
+    graph.edges.forEach((e, i) => {
+      const su = 1 - 2 * ((lo >> position(e.a)) & 1)
+      const sv = 1 - 2 * ((lo >> position(e.b)) & 1)
+      sums[i]! += su * sv
+    })
+  }
+  let cost = 0
+  graph.edges.forEach((e, i) => {
+    cost += (sums[i]! / shots) * e.weight
+  })
+  return -cost
+}
+
 /** The page's sweep: alpha and beta each over gridSize points of [0, 2π) (the page's comment states the half-open interval),
- *  with the objective the page's estimate_cost returns, −Σ w⟨Z_u Z_v⟩ = 2·cut − W, maximized by argmax. The expectation is
- *  exact from the amplitudes, where the page samples 20,000 shots per point. */
-export const qaoaSweep = (graph: Graph, gridSize = 5): { grid: number[]; best: { alpha: number; beta: number; value: number; expectedCut: number }; randomBaseline: number } => {
+ *  scored by qaoaEstimate with the page's 20,000 shots, and the best chosen by argmax (the page's np.argmax). */
+export const qaoaSweep = (graph: Graph, gridSize = 5, shots = 20000): { grid: number[]; best: { alpha: number; beta: number; value: number; expectedCut: number }; randomBaseline: number } => {
   const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
   const grid = Array.from({ length: gridSize }, (_, i) => (2 * Math.PI * i) / gridSize)
   let best = { alpha: 0, beta: 0, value: -Infinity, expectedCut: 0 }
   for (const alpha of grid) for (const beta of grid) {
-    const expectedCut = qaoaExpectedCut(graph, alpha, beta)
-    const value = 2 * expectedCut - total
-    if (value > best.value) best = { alpha, beta, value, expectedCut }
+    const value = qaoaEstimate(graph, alpha, beta, shots)
+    if (value > best.value) best = { alpha, beta, value, expectedCut: (value + total) / 2 }
   }
   return { grid, best, randomBaseline: total / 2 }
 }

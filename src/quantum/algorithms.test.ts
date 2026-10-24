@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { Circuit, DensityMatrixSimulator, LineQubit, Simulator, X, applied, expectationOf } from './cirq.js'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.js'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.js'
 
 const n = 3
 const N = 1 << n
@@ -99,4 +99,14 @@ test('the QAOA sweep finds angles whose expected cut beats the random baseline, 
   const sweep = qaoaSweep(graph)
   assert.ok(sweep.best.expectedCut > sweep.randomBaseline, `best ${sweep.best.expectedCut} vs random ${sweep.randomBaseline}`)
   assert.equal(sweep.grid.length, 5)
+})
+
+test('the page\'s sampled estimate with 20,000 seeded shots agrees with the exact expectation to within sampling noise', () => {
+  const [a, b, c3] = LineQubit.range(3)
+  const graph = { nodes: [a!, b!, c3!], edges: [{ a: a!, b: b!, weight: 1.5 }, { a: b!, b: c3!, weight: 2.2 }, { a: a!, b: c3!, weight: 0.7 }] }
+  const total = 4.4
+  for (const [alpha, beta] of [[0.3, 0.9], [1.1, 0.4]] as const) {
+    const exact = 2 * qaoaExpectedCut(graph, alpha, beta) - total
+    assert.ok(Math.abs(qaoaEstimate(graph, alpha, beta, 20000) - exact) < 0.1)
+  }
 })
