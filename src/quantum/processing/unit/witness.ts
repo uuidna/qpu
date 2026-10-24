@@ -1,3 +1,4 @@
+import { bigPowModOf } from './index.js'
 /**
  * Witnessed factoring. A factorization is a witness (N, p, q). Its check is exact integer arithmetic:
  * p·q = N with 1 < p < N and 1 < q < N. The check holds for any N, so the proof does not depend on how
@@ -11,17 +12,6 @@
  */
 
 /** Modular exponentiation on BigInt. */
-const powMod = (base: bigint, exp: bigint, mod: bigint): bigint => {
-  let result = 1n
-  let b = base % mod
-  let e = exp
-  while (e > 0n) {
-    if (e & 1n) result = (result * b) % mod
-    b = (b * b) % mod
-    e >>= 1n
-  }
-  return result
-}
 
 /** Miller–Rabin with fixed bases: deterministic for all n below 3.3·10^24, a strong probable-prime test above that. */
 export const isProbablePrime = (n: bigint): boolean => {
@@ -38,7 +28,7 @@ export const isProbablePrime = (n: bigint): boolean => {
     r++
   }
   for (const a of small) {
-    let x = powMod(a, d, n)
+    let x = bigPowModOf(a, d, n)
     if (x === 1n || x === n - 1n) continue
     let composite = true
     for (let i = 1; i < r; i++) {
