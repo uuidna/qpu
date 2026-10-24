@@ -67,7 +67,7 @@ export const payloadMcpOf = onceOf(() => {
  * One Payload collection's find tool, sealed against writes.
  * @wing cms
  * @kind builder
- * @evidence payloadFindHolds
+ * @evidence payloadFindOf
  */
 export const payloadFindOf = (name: string) => {
   const payload = payloadMcpOf()

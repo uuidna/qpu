@@ -161,7 +161,7 @@ export const qpuComposeOf = (methods: readonly QpuMethod[]) => {
  * unit's job with the unit's data, which is the shape of an API that has not decided what it is for.
   * @wing fusion
   * @kind builder
-  * @evidence composeLiveHolds
+  * @evidence composeLiveOf
  */
 export const composeLiveOf = async (from = n - n, howMany = facesOf().rays) => {
   const discovered = await apisLiveOf(from, howMany)
@@ -246,7 +246,7 @@ export const probeLiveOf = async (methods: readonly QpuMethod[], server: string 
  * The registry, the schemas and the methods, discovered live and bounded to `faces` schemas from an offset.
  * @wing fusion
  * @kind builder
- * @evidence apisLiveHolds
+ * @evidence apisLiveOf
  */
 export const apisLiveOf = async (from = n - n, howMany = facesOf().faces) => {
   const faces = facesOf()
