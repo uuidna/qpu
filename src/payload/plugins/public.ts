@@ -38,10 +38,6 @@ import {
   type QpuEnv,
 } from '../../quantum/processing/unit/index.js'
 import { machinesHolds, machinesOf } from '../../quantum/processing/unit/zeropage.js'
-import { openApiOf, wellKnownOf, installManifestOf, sitemapOf } from '../../quantum/processing/unit/index.js'
-import { robotsOf } from '../../quantum/processing/unit/presentation.js'
-import { proveHolds } from '../../quantum/processing/unit/doors.js'
-import { packageVersion } from '../../quantum/processing/unit/version.js'
 import { openMathScaleOf } from './clay.js'
 import { usageBillOf } from './billing.js'
 import { accessModePlugin } from './access-mode.js'
@@ -623,14 +619,6 @@ export const publicPlugin = (): QpuPlugin => (config) => {
         method: 'get' as const,
         handler: async () => Response.json(await publicSurfaceOf()),
       },
-      // the static and read-only paths, as Payload endpoints: the same content the unit's router served for them
-      { path: '/health', method: 'get' as const, handler: () => Response.json({ status: 'healthy', holds: true }) },
-      { path: '/ready', method: 'get' as const, handler: () => Response.json({ status: 'ready', version: packageVersion, holds: proveHolds() }) },
-      { path: '/robots.txt', method: 'get' as const, handler: () => new Response(robotsOf(), { headers: { 'content-type': 'text/plain; charset=utf-8' } }) },
-      { path: '/sitemap.xml', method: 'get' as const, handler: () => new Response(sitemapOf(), { headers: { 'content-type': 'application/xml; charset=utf-8' } }) },
-      { path: '/.well-known/mcp.json', method: 'get' as const, handler: () => Response.json(wellKnownOf()) },
-      { path: '/install.json', method: 'get' as const, handler: () => Response.json(installManifestOf()) },
-      { path: '/openapi.json', method: 'get' as const, handler: () => Response.json(openApiOf()) },
       {
         path: '/qpu/mcp',
         method: 'post' as const,
@@ -639,6 +627,11 @@ export const publicPlugin = (): QpuPlugin => (config) => {
       {
         path: '/qpu/mcp',
         method: 'get' as const,
+        handler: (req: Request) => publicMcpOf(req),
+      },
+      {
+        path: '/qpu/mcp',
+        method: 'post' as const,
         handler: (req: Request) => publicMcpOf(req),
       },
     ],
