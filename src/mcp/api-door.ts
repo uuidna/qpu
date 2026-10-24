@@ -11,6 +11,8 @@ import { crossFormulaOf } from '../families/cross/index.js'
 
 const REGISTRY = 'https://api.apis.guru/v2/list.json'
 const WINDOW = 600000
+// a spec, once read, stays for the run: a local walk sets QPU_SPEC_WINDOW_MS so a family does not re-read the specs a family before it read
+const SPEC_WINDOW = Number(globalThis.process?.env?.QPU_SPEC_WINDOW_MS) || WINDOW
 const ua = { 'user-agent': `qpu.uuidna.com/${packageVersion} (+https://qpu.uuidna.com)` }
 
 type Entry = { preferred?: string; versions?: Record<string, { swaggerUrl?: string; info?: { title?: string; 'x-apisguru-categories'?: string[] } }> }
@@ -73,7 +75,7 @@ export const apiOf = async (which: number | string): Promise<Api> => {
   const api = reg.names[index]
   if (api === undefined) throw new Error(`no API ${which} in the registry of ${reg.names.length}`)
   const hit = specs.get(api)
-  if (hit && Date.now() - hit.at < WINDOW) return hit.api
+  if (hit && Date.now() - hit.at < SPEC_WINDOW) return hit.api
   const promise = (async (): Promise<Api> => {
     const entry = reg.entries[api] ?? {}
     const version = entry.versions?.[entry.preferred ?? ''] ?? {}
