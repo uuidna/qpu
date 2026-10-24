@@ -29,7 +29,7 @@ import {
 } from './index.js'
 import type { QpuSubTool } from './index.js'
 import { leanOf, leanHolds } from './proof.js'
-import { shorTryOf, shorOf, shorHolds } from './shor.js'
+import { shorTryOf, shorOf, shorHolds } from '../../../families/crypt/shor.js'
 import { facesOf, capacityOf } from './lattice.js'
 import { witnessOf, constructedSemiprimeOf } from './witness.js'
 

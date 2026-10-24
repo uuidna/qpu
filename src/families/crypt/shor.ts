@@ -42,7 +42,7 @@ import {
   storageHref,
   theorem,
   unit,
-} from './index.js'
+} from '../../quantum/processing/unit/index.js'
 
 /** Shor as a caller asked for it: the run on their n and a, whatever they are. Never a denial; the run itself says what it
  * found (a period, a gcd factor, or nothing), the sparse state means no modulus is past the host's reach, and `read`
