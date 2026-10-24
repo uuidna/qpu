@@ -5,27 +5,8 @@
 // requires all four. The defaults are the unit's own Shor defaults, read from the lattice, not typed in here.
 import { CourtFormulas } from '../families/court/index.js'
 import { bigGcdOf, bigPowModOf, mcpFuseOf, shorDefaultsOf } from '../quantum/processing/unit/index.js'
+import { isProbablePrime } from '../quantum/processing/unit/witness.js'
 
-/** Strong probable-prime test over fixed bases: a probable prime, not a proof. */
-const probablePrimeOf = (n: bigint): boolean => {
-  if (n < 2n) return false
-  for (const p of [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n]) {
-    if (n === p) return true
-    if (n % p === 0n) return false
-  }
-  let d = n - 1n
-  let s = 0
-  while (d % 2n === 0n) { d /= 2n; s++ }
-  return [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n].every((a) => {
-    let x = bigPowModOf(a, d, n)
-    if (x === 1n || x === n - 1n) return true
-    for (let i = 1; i < s; i++) {
-      x = (x * x) % n
-      if (x === n - 1n) return true
-    }
-    return false
-  })
-}
 
 /** The multiplicative order of a modulo n: the least r ≥ 1 with a^r ≡ 1. Uncapped; a is coprime to n, so it terminates. */
 const orderOf = (a: bigint, n: bigint): bigint => {
@@ -67,7 +48,7 @@ mcpFuseOf('involute', {
     const bad = reflect === null ? 'odd order' : reflect === n - 1n ? 'a^(r/2) = -1' : null
     const p = reflect !== null && bad === null ? bigGcdOf(reflect - 1n, n) : 1n
     const q = reflect !== null && bad === null ? bigGcdOf(reflect + 1n, n) : 1n
-    const checks = [p > 1n && p < n, q > 1n && q < n, p * q === n, probablePrimeOf(p) && probablePrimeOf(q)]
+    const checks = [p > 1n && p < n, q > 1n && q < n, p * q === n, isProbablePrime(p) && isProbablePrime(q)]
     const confidence = checks.filter(Boolean).length
     const court = CourtFormulas.standard(confidence, checks.length)
     return {
