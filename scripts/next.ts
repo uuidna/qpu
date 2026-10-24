@@ -4,7 +4,7 @@
 // developer tokens and no waiting. Derived, not a hardcoded sequence: what runs is what train names. Informational
 // (exits 0); a real regression is caught by the gate and the tests, never here.
 //   npx tsx scripts/next.ts [https://qpu.uuidna.com]
-const host = (process.argv[2] ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
+const host = (process.argv.slice(2).find((a) => a.startsWith('http')) ?? 'https://qpu.uuidna.com').replace(/\/$/, '')
 const rpc = async (name, args = {}) => {
   const r = await fetch(`${host}/mcp`, {
     method: 'POST',
@@ -50,3 +50,13 @@ console.log(`  host theorems: ${hostedTheorems ?? '?'} hosted, ${localTheorems ?
 const gate = (() => { try { return execSync('node --import tsx --test scripts/*.test.ts 2>&1', { stdio: 'pipe' }).toString() } catch (e) { return String((e as { stdout?: Buffer }).stdout ?? '') } })()
 const failing = [...gate.matchAll(/^✖ (.+?) \(/gm)].map((m) => m[1]).filter((v, i, a) => a.indexOf(v) === i)
 console.log(`  scripts gate: ${failing.length ? `${failing.length} failing — owed: ${failing.slice(0, 2).join('; ')}` : 'green'}`)
+
+// next --all: when every open item is clear, the automatic release runs; until then it refuses and says which check failed.
+if (process.argv.includes('--all')) {
+  console.log('next --all: automatic release, refused unless every check is green')
+  try {
+    execSync('./node_modules/.bin/tsx scripts/release.ts --auto --action deploy', { stdio: 'inherit' })
+  } catch {
+    console.log('next --all: the release did not run; see the checks above')
+  }
+}
