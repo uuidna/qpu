@@ -2,8 +2,10 @@
 // Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
-/** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: its row and its column. */
-export type Site = readonly [row: number, col: number]
+import { CZ, GridQubit, keyOf, type Qubit } from './cirq.js'
+
+/** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: a Cirq grid qubit at its row and column. */
+export type Site = Qubit
 
 /** The qubit grid of Willow: for each row, the column range the spec sheet's figure shows. */
 const ROWS: readonly [row: number, from: number, to: number][] = [
@@ -13,16 +15,17 @@ const ROWS: readonly [row: number, from: number, to: number][] = [
 
 /** Willow's sites, row by row: 105 of them. */
 export const WILLOW_SITES: readonly Site[] = ROWS.flatMap(([row, from, to]) =>
-  Array.from({ length: to - from + 1 }, (_, i): Site => [row, from + i]))
+  Array.from({ length: to - from + 1 }, (_, i) => GridQubit.of(row, from + i)))
 
 /** The couplers: each pair of sites next to each other along a row or along a column of the grid. */
 export const couplersOf = (sites: readonly Site[]): [Site, Site][] => {
-  const key = (r: number, c: number) => `${r},${c}`
-  const present = new Set(sites.map(([r, c]) => key(r, c)))
-  return sites.flatMap(([r, c]): [Site, Site][] =>
-    ([[r, c + 1], [r + 1, c]] as const)
-      .filter(([nr, nc]) => present.has(key(nr, nc)))
-      .map((n): [Site, Site] => [[r, c], n]))
+  const present = new Set(sites.map(keyOf))
+  return sites.flatMap((site): [Site, Site][] => {
+    if (site.kind !== 'grid') return []
+    return [GridQubit.of(site.row, site.col + 1), GridQubit.of(site.row + 1, site.col)]
+      .filter((n) => present.has(keyOf(n)))
+      .map((n): [Site, Site] => [site, n])
+  })
 }
 
 /** Average connectivity: each coupler joins two sites, so the average over N sites is 2E/N. */
@@ -35,7 +38,7 @@ const RESET = ['multi-level reset (|1> and above)', 'leakage removal (|2> only)'
 /** Chip 1: the quantum error correction chip. */
 const ERROR_CORRECTION_CHIP = {
   singleQubitGateError: { mean: 0.00035, spread: 0.00029 },
-  twoQubitGateError: { gate: 'CZ', mean: 0.0033, spread: 0.0018 },
+  twoQubitGateError: { gate: CZ.name, mean: 0.0033, spread: 0.0018 },
   measurementError: { mean: 0.0077, spread: 0.0021, scope: 'repetitive, measure qubits' },
   t1Microseconds: { mean: 68, spread: 13 },
   reset: RESET,

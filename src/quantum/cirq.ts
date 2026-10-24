@@ -8,7 +8,7 @@ export type Qubit =
   | { kind: 'named'; name: string }
 
 /** The qubit's key: a stable text form, used for ordering and equality. */
-const keyOf = (q: Qubit): string => (q.kind === 'line' ? `line:${q.x}` : q.kind === 'grid' ? `grid:${q.row},${q.col}` : `named:${q.name}`)
+export const keyOf = (q: Qubit): string => (q.kind === 'line' ? `line:${q.x}` : q.kind === 'grid' ? `grid:${q.row},${q.col}` : `named:${q.name}`)
 
 export const LineQubit = {
   of: (x: number): Qubit => ({ kind: 'line', x }),

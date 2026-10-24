@@ -1,10 +1,11 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { PROCESSORS, WILLOW, averageConnectivityOf, belowThresholdOf, couplersOf, fitsProcessor } from './processor.js'
+import { keyOf } from './cirq.js'
 
 test('Willow has 105 sites on the spec sheet grid, all distinct', () => {
   assert.equal(WILLOW.qubits, 105)
-  assert.equal(new Set(WILLOW.sites.map(([r, c]) => `${r},${c}`)).size, 105)
+  assert.equal(new Set(WILLOW.sites.map(keyOf)).size, 105)
 })
 
 test('the couplers of the grid give the sheet\'s average connectivity, 3.47, to two places', () => {
@@ -14,7 +15,10 @@ test('the couplers of the grid give the sheet\'s average connectivity, 3.47, to 
 })
 
 test('a coupler joins two sites next to each other along a row or a column and nothing else', () => {
-  for (const [[r1, c1], [r2, c2]] of couplersOf(WILLOW.sites)) assert.ok((r1 === r2 && Math.abs(c1 - c2) === 1) || (c1 === c2 && Math.abs(r1 - r2) === 1))
+  for (const [a, b] of couplersOf(WILLOW.sites)) {
+    assert.ok(a.kind === 'grid' && b.kind === 'grid')
+    assert.ok((a.row === b.row && Math.abs(a.col - b.col) === 1) || (a.col === b.col && Math.abs(a.row - b.row) === 1))
+  }
 })
 
 test('the two chips carry the sheet\'s figures as stated', () => {
