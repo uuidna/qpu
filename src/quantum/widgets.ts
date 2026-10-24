@@ -90,3 +90,15 @@ export const echoBenchmarkWidget = (d: typeof QUANTUM_ECHOES): string =>
       ['Molecules', d.molecules.map((m) => `${m} atoms`).join(', ')],
     ]),
   ])
+
+export const roadmapWidget = (d: { milestones: readonly { number: number; title: string; year: string | null; physicalQubits: number; status: string }[] }): string =>
+  stack([
+    table(['Milestone', 'Title', 'Year', 'Physical qubits', 'Status'], d.milestones.map((m) => [
+      `M${m.number}`,
+      m.title,
+      m.year ?? '—',
+      m.physicalQubits.toLocaleString('en-US'),
+      m.status,
+    ])),
+    ...d.milestones.map((m) => bar((m.physicalQubits / 1000000) * 100)),
+  ])

@@ -370,6 +370,20 @@
         "type": "object",
         "properties": {}
       }
+    },
+    {
+      "name": "roadmap",
+      "description": "The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, and which are achieved or in progress. With a milestone number, only that milestone.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "milestone": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          }
+        }
+      }
     }
   ]
 }

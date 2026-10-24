@@ -388,3 +388,20 @@ The Quantum Echoes result as Google states it: the processor, its qubits, the sp
   "properties": {}
 }
 ```
+
+## roadmap
+
+The Google Quantum AI roadmap: its six milestones, their physical-qubit scale, and which are achieved or in progress. With a milestone number, only that milestone.
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "milestone": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 6
+    }
+  }
+}
+```

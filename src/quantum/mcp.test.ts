@@ -11,7 +11,7 @@ test('tools/list serves the four tools with input schemas, and initialize names 
   const list = handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })
   assert.ok('result' in list)
   const tools = (list.result as { tools: { name: string; inputSchema: object }[] }).tools
-  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark'])
+  assert.deepEqual(tools.map((t) => t.name), ['processor', 'circuit', 'echo', 'echo_benchmark', 'roadmap'])
   for (const t of tools) assert.equal(typeof t.inputSchema, 'object')
 })
 
@@ -83,6 +83,7 @@ test('every tool returns a widget that uses the host tokens and no literal colou
     widgetOf(call('circuit', { operations: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }], measure: { key: 'm', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 50 })),
     widgetOf(call('echo', { forward: [{ gate: 'H', qubits: [{ kind: 'line', x: 0 }] }] })),
     widgetOf(call('echo_benchmark', {})),
+    widgetOf(call('roadmap', {})),
   ]
   for (const widget of widgets) {
     assert.ok(widget.length > 0 && widget.includes('var(--'))
@@ -100,4 +101,16 @@ test('a widget escapes text from the caller, so a name cannot inject markup', ()
   const widget = widgetOf(call('circuit', { operations: [], measure: { key: '<img src=x onerror=1>', qubits: [{ kind: 'line', x: 0 }] }, repetitions: 1 }))
   assert.doesNotMatch(widget, /<img/)
   assert.match(widget, /&lt;img/)
+})
+
+test('the roadmap tool serves the six milestones of the Google figure, and one milestone on request', () => {
+  const all = call('roadmap', {})
+  assert.ok('result' in all)
+  const milestones = (all.result as { structuredContent: { milestones: { number: number; physicalQubits: number; status: string }[] } }).structuredContent.milestones
+  assert.deepEqual(milestones.map((m) => m.number), [1, 2, 3, 4, 5, 6])
+  assert.deepEqual(milestones.map((m) => m.physicalQubits), [54, 100, 1000, 10000, 100000, 1000000])
+  assert.deepEqual(milestones.filter((m) => m.status === 'achieved').map((m) => m.number), [1, 2])
+  const one = call('roadmap', { milestone: 3 })
+  assert.ok('result' in one && (one.result as { structuredContent: { milestones: { number: number }[] } }).structuredContent.milestones[0]!.number === 3)
+  assert.ok('error' in call('roadmap', { milestone: 7 }) && (call('roadmap', { milestone: 7 }) as { error: { code: number } }).error.code === -32602)
 })

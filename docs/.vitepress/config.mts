@@ -12,6 +12,10 @@ export default defineConfig({
         "link": "/processor"
       },
       {
+        "text": "Roadmap",
+        "link": "/roadmap"
+      },
+      {
         "text": "Cirq",
         "link": "/cirq"
       },
@@ -35,6 +39,10 @@ export default defineConfig({
           {
             "text": "Processor",
             "link": "/processor"
+          },
+          {
+            "text": "Roadmap",
+            "link": "/roadmap"
           },
           {
             "text": "Cirq",
@@ -72,6 +80,10 @@ export default defineConfig({
           {
             "text": "echo_benchmark",
             "link": "/mcp#echo_benchmark"
+          },
+          {
+            "text": "roadmap",
+            "link": "/mcp#roadmap"
           }
         ]
       }
