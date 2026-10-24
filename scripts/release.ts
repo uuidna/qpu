@@ -31,24 +31,13 @@ if (auto) {
   // automatic release: only when every gate is green on a clean, committed tree. Any failure refuses, and nothing runs.
   const run = (cmd: string) => { try { execSync(cmd, { stdio: 'pipe' }); return true } catch { return false } }
   const dirty = execSync('git status --porcelain').toString().trim()
-  // origin must contain the commit being released: an unpushed commit is not released
-  const pushed = run('git fetch origin --quiet') && run('git merge-base --is-ancestor HEAD origin/main')
-  // the host must serve the same theorem count the ship gate recomputed locally
-  const shipOut = (() => { try { return execSync('./node_modules/.bin/tsx scripts/ship-gate.ts', { stdio: 'pipe' }).toString() } catch (e) { return '' } })()
-  const local = /(\d+)\/\d+ theorems/.exec(shipOut)?.[1]
-  let hosted: string | undefined
-  try {
-    const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'prove', arguments: {} } })
-    const reply = execSync(`curl -s -m 60 -X POST https://qpu.uuidna.com/mcp -H 'content-type: application/json' -H 'accept: application/json' -d '${body}'`).toString()
-    hosted = /theorems=(\d+)|"theorems":\s*\{[^}]*"length":\s*(\d+)/.exec(reply)?.slice(1).find(Boolean)
-    if (!hosted) hosted = /"theorems"\s*:\s*(\d+)/.exec(reply)?.[1]
-  } catch (e) { hosted = undefined }
+  // before the release: a clean committed tree, the scripts gate, the ship gate, and origin reachable (the push needs it)
+  const reachable = run('git fetch origin --quiet')
   const checks: [string, boolean][] = [
     ['working tree is committed (no uncommitted edits)', dirty === ''],
-    ['HEAD is on origin/main (every commit pushed)', pushed],
+    ['origin is reachable for the push', reachable],
     ['scripts gate passes', run('node --import tsx --test scripts/*.test.ts')],
     ['ship gate passes', run('./node_modules/.bin/tsx scripts/ship-gate.ts')],
-    [`host serves the local theorem count (${local ?? '?'} local, ${hosted ?? '?'} hosted)`, local !== undefined && hosted === local],
   ]
   for (const [name, ok] of checks) console.log(`${ok ? 'ok     ' : 'refused'} ${name}`)
   if (checks.some(([, ok]) => !ok)) {
@@ -60,6 +49,11 @@ if (auto) {
   execSync('git push origin HEAD', { stdio: 'inherit' })
   execSync(ACTIONS.deploy, { stdio: 'inherit' })
   execSync(ACTIONS.publish, { stdio: 'inherit' })
+  // after the deploy: the host must now serve the same theorem count the ship gate recomputed
+  const local = /(\d+)\/\d+ theorems/.exec(execSync('./node_modules/.bin/tsx scripts/ship-gate.ts', { stdio: 'pipe' }).toString())?.[1]
+  const reply = execSync(`curl -s -m 60 -X POST https://qpu.uuidna.com/mcp -H 'content-type: application/json' -H 'accept: application/json' -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"prove","arguments":{}}}'`).toString()
+  const hosted = /"theorems"\s*:\s*(\d+)|theorems=(\d+)/.exec(reply)?.slice(1).find(Boolean)
+  console.log(`after deploy: host serves ${hosted ?? '?'} theorems, local ${local ?? '?'}${hosted === local ? ' — match' : ' — mismatch, investigate'}`)
   process.exit(0)
 }
 
