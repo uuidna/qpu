@@ -23,7 +23,7 @@ import { qpuHologramOf, schemasOf } from './presentation.js'
  * The Payload MCP the unit describes: collections, find-only tools, the database plugin and its write path.
  * @wing cms
  * @kind builder
- * @evidence payloadMcpHolds
+ * @evidence payloadMcpOf
  */
 export const payloadMcpOf = onceOf(() => {
   const faces = facesOf()

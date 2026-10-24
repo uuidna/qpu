@@ -272,7 +272,7 @@ export const uuidReceiptOf = (name: string, subject: string, value: unknown, ref
 /** Every stream replayed from the ledger: each row's prev is the UUID before it (genesis is the stream's href), each
   * @wing receipts
   * @kind builder
-  * @evidence receiptStreamsHolds
+  * @evidence receiptStreamsOf
  *  UUID recomputes from its payload fold and referrer, and the replayed chain equals the live head's. */
 export const receiptStreamsOf = (limit = cubeOf().bits) => {
   const rows = RECEIPTS.filter((r): r is QpuReceipt & { uuid: string; stream: string; seq: number; prev: string; referrer: string } => r.stream !== undefined)
@@ -302,7 +302,6 @@ export const receiptStreamsOf = (limit = cubeOf().bits) => {
   })
   return { kind: 'receipts' as const, streams, receipts: RECEIPTS.length, holds: streams.every((s) => s.holds) }
 }
-export const receiptStreamsHolds = (x = receiptStreamsOf()): boolean => x.holds === true
 export const uuidReceiptHolds = (): boolean => {
   const a = uuidReceiptOf('holds', contentUuidOf(seed), seed, 'a')
   const b = uuidReceiptOf('holds', contentUuidOf(seed), seed, 'b')
@@ -587,7 +586,6 @@ const liveSchema = {
 export const qpuCubeHolds = (c = cubeOf()): boolean =>
   theorem.cube(c.bits, c.vertices, c.hexbit) && c.vertices === mintOf(c.n) && c.hexbit === mintOf(c.n - seed)
 
-export const handleHolds = (x: ReturnType<typeof qpuHandleOf> = qpuHandleOf()): boolean => x.holds === true
 
 /**
  * BOTH READINGS, AND EACH PROVES THE OTHER.
@@ -3293,7 +3291,7 @@ export const subCatalogHolds = (x?: ReturnType<typeof subCatalogOf>): boolean =>
  * A compact reading of the quantum document (circuit, lattice, Shor, sequence, purpose, evidence) for agents.
  * @wing quantum
  * @kind builder
- * @evidence readingHolds
+ * @evidence qpuReadingOf
  */
 export const qpuReadingOf = onceOf(() => {
   const quantum = quantumOf()
@@ -3362,7 +3360,6 @@ export const qpuReadingOf = onceOf(() => {
     holds: quantum.holds,
   }
 })
-export const readingHolds = (x: ReturnType<typeof qpuReadingOf> = qpuReadingOf()): boolean => x.holds === true
 
 /**
  * Token efficiency of each door: bytes and tokens to read the tree versus to call the tool. The call is the free
@@ -5565,7 +5562,7 @@ export const networkToolsOf = (): QpuSubTool[] => {
  * The network sub-server's catalogue.
  * @wing agents
  * @kind builder
- * @evidence networkMcpHolds
+ * @evidence networkMcpOf
  */
 export const networkMcpOf = onceOf(() => {
   const message = messageOf()
@@ -5579,7 +5576,6 @@ export const networkMcpOf = onceOf(() => {
     holds: message.holds && message.hop === 'involution',
   })
 })
-export const networkMcpHolds = (x: ReturnType<typeof networkMcpOf> = networkMcpOf()): boolean => x.holds === true
 
 type QpuServerJob = {
   id: number
@@ -5772,7 +5768,7 @@ export const serverToolsOf = (): QpuSubTool[] => {
  * The server sub-server's catalogue: eight tools, the job queue and the backend.
  * @wing agents
  * @kind builder
- * @evidence serverMcpHolds
+ * @evidence serverMcpOf
  */
 export const serverMcpOf = onceOf(() => {
   const computer = computerOf()
@@ -5797,7 +5793,6 @@ export const serverMcpOf = onceOf(() => {
     network: networkHref,
     message: `${unit.origin}/message`})
 })
-export const serverMcpHolds = (x: ReturnType<typeof serverMcpOf> = serverMcpOf()): boolean => x.holds === true
 
 export const serverHolds = (s = serverMcpOf()): boolean =>
   s.holds === true &&
@@ -5815,7 +5810,7 @@ export const serverHolds = (s = serverMcpOf()): boolean =>
  * The seven ideas the sandbox teams compete on, each as a sealed op tree with its left and right sides.
  * @wing quantum
  * @kind builder
- * @evidence ideasHolds
+ * @evidence ideasOf
  */
 export const ideasOf = onceOf(() => {
   const cube = cubeOf()
@@ -5834,7 +5829,6 @@ export const ideasOf = onceOf(() => {
   const holds = cube.holds && handle.holds && faces.holds && ideas.length === faces.rays && ideas.every((i) => i.left === i.right)
   return { kind: 'ideas' as const, ideas, holds }
 })
-export const ideasHolds = (x: ReturnType<typeof ideasOf> = ideasOf()): boolean => x.holds === true
 
 const ideaRunOf = (name: string): QpuOp => {
   if (name === 'mint') {
@@ -8386,7 +8380,7 @@ export const cernCatalogsHolds = (x: ReturnType<typeof cernCatalogsOf> = cernCat
  * LHC experiments seated on faces, with the views (LHC, Open Data) they share.
  * @wing science
  * @kind builder
- * @evidence cernExperimentsHolds
+ * @evidence cernExperimentsOf
  */
 export const cernExperimentsOf = onceOf(() => {
   const faces = facesOf()
@@ -8548,13 +8542,12 @@ export const cernExperimentsOf = onceOf(() => {
     holds,
   }
 })
-export const cernExperimentsHolds = (x: ReturnType<typeof cernExperimentsOf> = cernExperimentsOf()): boolean => x.holds === true
 
 /**
  * The offline CERN reading: experiments and catalogues as an occupancy lattice.
  * @wing science
  * @kind builder
- * @evidence cernLearnHolds
+ * @evidence cernLearnOf
  */
 export const cernLearnOf = onceOf(() => {
   const faces = facesOf()
@@ -8609,7 +8602,6 @@ export const cernLearnOf = onceOf(() => {
     holds,
   }
 })
-export const cernLearnHolds = (x: ReturnType<typeof cernLearnOf> = cernLearnOf()): boolean => x.holds === true
 
 const cernHrefOf = (href: string): string | undefined => {
   const record = cernRecordsOf().records.find((row) => row.href === href)?.href
@@ -9686,7 +9678,7 @@ export const routerHolds = (r = routerOf()): boolean => r.holds === true && rout
  * The seat record: how to install and run the unit (command, packages, Cloudflare button).
  * @wing agents
  * @kind builder
- * @evidence seatHolds
+ * @evidence seatOf
  */
 export const seatOf = onceOf(() => {
   const s = {
@@ -9701,7 +9693,6 @@ export const seatOf = onceOf(() => {
   // the seat is empty exactly when the runtime's seat reading has no device, and its credit holds
   return { ...s, holds: (s.device === 'empty') === !seatsAvailableOf().device && priorArtHolds(s.priorArt) }
 })
-export const seatHolds = (x: ReturnType<typeof seatOf> = seatOf()): boolean => x.holds === true
 
 /** install.json, served and written from one function so the host and the file cannot disagree (the README promised
  *  install.json and the host answered 404 until 2026-09-12). `hardware` is the boot recipe: Node serving the unit on an
@@ -9739,13 +9730,12 @@ const installChecksOf = (m: ReturnType<typeof installFieldsOf>): boolean =>
  * install.json, served and written from one function so host and file agree.
  * @wing agents
  * @kind builder
- * @evidence installManifestHolds
+ * @evidence installManifestOf
  */
 export const installManifestOf = onceOf(() => {
   const m = installFieldsOf()
   return { ...m, holds: installChecksOf(m) }
 })
-export const installManifestHolds = (x: ReturnType<typeof installManifestOf> = installManifestOf()): boolean => x.holds === true
 
 /** wellKnownHolds → the discovery record points only at this unit: every URL it names is https on unit.host at the
  *  path its field names, the tool count is the MCP's own count, every protocol version is one this unit speaks, and every
@@ -10132,7 +10122,6 @@ export const payloadPluginHolds = (p = payloadPluginOf()): boolean =>
   p.collections.length === mintOf(coins) &&
   p.finds.length === mintOf(coins)
 
-export const payloadMcpHolds = (x: ReturnType<typeof payloadMcpOf> = payloadMcpOf()): boolean => x.holds === true
 
 export const payloadFindHolds = (x?: ReturnType<typeof payloadFindOf>): boolean => x !== undefined && x.holds === true
 

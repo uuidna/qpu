@@ -68,7 +68,7 @@ export const cubeOf = onceOf(() => {
  * Amplitude capacity: amplitudes = 2^bits, next = 2 x amplitudes, and the KV reading of both.
  * @wing lattice
  * @kind builder
- * @evidence handleHolds
+ * @evidence qpuHandleOf
  */
 export const qpuHandleOf = onceOf(() => {
   const cube = cubeOf()
