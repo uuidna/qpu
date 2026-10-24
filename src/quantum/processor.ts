@@ -1,19 +1,82 @@
-// Quantum processors, as Google Quantum AI describes them. Each figure is the one stated in Google's own publication, with
-// its source beside it; a figure Google does not state is left out, not estimated.
+// Quantum processors, as Google Quantum AI publishes them. Every figure is one the Willow Spec Sheet states (published
+// Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
+// not here. Errors are probabilities: 0.035% is 0.00035.
 
-/** Willow, Google's superconducting quantum processor (blog.google, "Quantum error correction below the surface code threshold"). */
+/** A figure the spec sheet gives as a mean with its spread (±). */
+export type Spread = { mean: number; spread: number }
+
+/** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: its row and its column. */
+export type Site = readonly [row: number, col: number]
+
+/** The qubit grid of Willow: for each row, the column range the spec sheet's figure shows. */
+const ROWS: readonly [row: number, from: number, to: number][] = [
+  [0, 6, 8], [1, 5, 8], [2, 4, 10], [3, 3, 10], [4, 2, 12], [5, 1, 12], [6, 0, 14],
+  [7, 2, 13], [8, 2, 12], [9, 4, 11], [10, 4, 10], [11, 6, 9], [12, 6, 8],
+]
+
+/** Willow's sites, row by row: 105 of them. */
+export const WILLOW_SITES: readonly Site[] = ROWS.flatMap(([row, from, to]) =>
+  Array.from({ length: to - from + 1 }, (_, i): Site => [row, from + i]))
+
+/** The couplers: each pair of sites next to each other along a row or along a column of the grid. */
+export const couplersOf = (sites: readonly Site[]): [Site, Site][] => {
+  const key = (r: number, c: number) => `${r},${c}`
+  const present = new Set(sites.map(([r, c]) => key(r, c)))
+  return sites.flatMap(([r, c]): [Site, Site][] =>
+    ([[r, c + 1], [r + 1, c]] as const)
+      .filter(([nr, nc]) => present.has(key(nr, nc)))
+      .map((n): [Site, Site] => [[r, c], n]))
+}
+
+/** Average connectivity: each coupler joins two sites, so the average over N sites is 2E/N. */
+export const averageConnectivityOf = (sites: readonly Site[], couplers: readonly [Site, Site][]): number =>
+  (2 * couplers.length) / sites.length
+
+const COUPLERS = couplersOf(WILLOW_SITES)
+
+/** The errors and coherence common to both chips' reset options, as the spec sheet lists them. */
+const RESET = ['multi-level reset (|1> and above)', 'leakage removal (|2> only)'] as const
+
+/** Chip 1: the quantum error correction chip. */
+const ERROR_CORRECTION_CHIP = {
+  singleQubitGateError: { mean: 0.00035, spread: 0.00029 },
+  twoQubitGateError: { gate: 'CZ', mean: 0.0033, spread: 0.0018 },
+  measurementError: { mean: 0.0077, spread: 0.0021, scope: 'repetitive, measure qubits' },
+  t1Microseconds: { mean: 68, spread: 13 },
+  reset: RESET,
+  errorCorrectionCyclesPerSecond: 909000,
+  surfaceCodeCycleMicroseconds: 1.1,
+  /** Λ for code distances 3, 5 and 7: the error suppression factor, as the sheet states it (Λ3,5,7 = 2.14 ± 0.02) */
+  errorSuppression: { distances: [3, 5, 7], mean: 2.14, spread: 0.02 },
+} as const
+
+/** Chip 2: the random circuit sampling chip. */
+const RANDOM_CIRCUIT_SAMPLING_CHIP = {
+  singleQubitGateError: { mean: 0.00036, spread: 0.00013 },
+  twoQubitGateError: { gate: 'iSWAP-like', mean: 0.0014, spread: 0.00052 },
+  measurementError: { mean: 0.0067, spread: 0.0051, scope: 'terminal, all qubits' },
+  t1Microseconds: { mean: 98, spread: 32 },
+  reset: RESET,
+  circuitRepetitionsPerSecond: 63000,
+  application: { qubits: 103, depth: 40, xebFidelity: 0.001 },
+  comparison: { onWillow: '5 minutes', onClassicalSupercomputer: '10^25 years' },
+} as const
+
+/** Willow: 105 superconducting qubits on the grid above, with the two chips the spec sheet gives. */
 export const WILLOW = {
   name: 'Willow',
   technology: 'superconducting',
-  qubits: 105,
-  /** the grids of encoded qubits on which error correction was shown to stay below threshold, each step halving the error */
-  errorCorrectionGrids: [3, 5, 7],
-  belowThreshold: true,
-  /** random circuit sampling: under five minutes on Willow, 10^25 years on Frontier (the source writes the exponent as 1025) */
-  randomCircuitSampling: { runtime: 'under five minutes', classical: 'Frontier', classicalYears: '10^25' },
-  /** average connectivity, from the "Willow System Metrics" table in the same publication */
-  averageConnectivity: 3.47,
+  qubits: WILLOW_SITES.length,
+  sites: WILLOW_SITES,
+  couplers: COUPLERS,
+  /** the sheet's stated average connectivity, 4-way typical; the grid's couplers give 2E/N, checked in the tests */
+  statedAverageConnectivity: 3.47,
+  typicalConnectivity: 4,
+  chips: { errorCorrection: ERROR_CORRECTION_CHIP, randomCircuitSampling: RANDOM_CIRCUIT_SAMPLING_CHIP },
 } as const
+
+/** Error correction is below threshold when Λ is above 1: each step up in code distance then halves the error, as the sheet's Λ shows. */
+export const belowThresholdOf = (processor: typeof WILLOW): boolean => processor.chips.errorCorrection.errorSuppression.mean > 1
 
 /** The processors this repository describes, by their Google name. */
 export const PROCESSORS = { Willow: WILLOW } as const
