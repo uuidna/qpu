@@ -624,7 +624,24 @@ The statements quantumai.google and its PDF make: the Cirq description, the defi
         "qsim",
         "qualtran",
         "openfermion",
-        "cirq_known_devices"
+        "cirq_known_devices",
+        "pauli_observables",
+        "noise_representation",
+        "histograms",
+        "transformers",
+        "custom_transformers",
+        "kpz_experiment",
+        "echoes_tutorial",
+        "qcqmc",
+        "hfvqe",
+        "hardware_changes",
+        "google_concepts",
+        "qsim_hardware",
+        "openfermion_projects",
+        "cirq_basics",
+        "qsimcirq",
+        "basis_change",
+        "sitemap"
       ]
     }
   }
