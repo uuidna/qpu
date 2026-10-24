@@ -1,4 +1,4 @@
-import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { bigPowModOf, hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 export type Graph = { n: number; edges: [number, number][] }
@@ -146,11 +146,6 @@ const nat = (...xs: number[]): boolean => xs.every((x) => Number.isSafeInteger(x
 const bitsOf = (x: number): number => (x > 0 ? Math.floor(Math.log2(x)) + 1 : 1)
 
 // square-and-multiply: 4^k mod 3 in O(log k), so a reach width of any size stays cheap
-const powMod = (base: bigint, exp: bigint, m: bigint): bigint => {
-  let r = 1n % m
-  for (let b = base % m, e = exp; e > 0n; e >>= 1n, b = (b * b) % m) if (e & 1n) r = (r * b) % m
-  return r
-}
 
 export class NpFormulas {
   /** set packed as base-16 digits, mask selects digits */
@@ -177,7 +172,7 @@ export class NpFormulas {
   }
 
   static reachGcd(k: number): CrossFormula {
-    return crossFormulaOf({ id: 'np-reach-gcd', src: 'np', dst: 'quantum', formula: '(2^(2k) - 1) mod 3', value: Number((powMod(4n, BigInt(k), 3n) + 2n) % 3n), proof: '4 ≡ 1 mod 3, so every reach width 2k gives N = 2^(2k) - 1 divisible by 3: the gcd step' }, nat(k), { name: 'np.reachGcd', params: [k] })
+    return crossFormulaOf({ id: 'np-reach-gcd', src: 'np', dst: 'quantum', formula: '(2^(2k) - 1) mod 3', value: Number((bigPowModOf(4n, BigInt(k), 3n) + 2n) % 3n), proof: '4 ≡ 1 mod 3, so every reach width 2k gives N = 2^(2k) - 1 divisible by 3: the gcd step' }, nat(k), { name: 'np.reachGcd', params: [k] })
   }
 }
 
