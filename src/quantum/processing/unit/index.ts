@@ -2460,7 +2460,7 @@ const crossed = (row: Omit<QpuLeanRow, 'cross' | 'handle'>): QpuLeanRow => {
  * The embedded index.lean: bytes, fold, theorem count, how many served rows are verbatim in it, toolchain pin.
  * @wing proof
  * @kind builder
- * @evidence leanSourceHolds
+ * @evidence leanSourceOf
  */
 export const leanSourceOf = (rows: readonly QpuLeanRow[] = [], cover: readonly QpuLeanRow[] = [], climb?: QpuLeanRow) => {
   const href = `${unit.origin}/${unit.fuse.lean}`
@@ -2490,7 +2490,6 @@ export const leanSourceOf = (rows: readonly QpuLeanRow[] = [], cover: readonly Q
     holds,
   }
 }
-export const leanSourceHolds = (x?: ReturnType<typeof leanSourceOf>): boolean => x !== undefined && x.holds === true
 
 /**
  * SYMMETRIC OR ASYMMETRIC, READ OFF THE STATEMENT AND NOT DECLARED BESIDE IT.
@@ -3190,11 +3189,10 @@ export const mcpShownHolds = (shown?: ReturnType<typeof mcpShownOf>): boolean =>
  * A man page for a sub-server tool (storage, network, server), synopsis on that server's href.
  * @wing agents
  * @kind builder
- * @evidence subManHolds
+ * @evidence subManOf
  */
 export const subManOf = (name: string, description: string, reading: string, href: string, see: readonly string[]) =>
   manAt(href, name, description, reading, href, see)
-export const subManHolds = (x?: ReturnType<typeof subManOf>): boolean => x !== undefined && x.holds === true
 
 type QpuSubTool = {
   name: string
@@ -3262,7 +3260,7 @@ const toolListOf = <T extends ReturnType<typeof toolItemOf>, I extends object = 
  * A sub-server's JSON-LD WebAPI catalogue: its tools as SoftwareApplication items and an ItemList.
  * @wing agents
  * @kind builder
- * @evidence subCatalogHolds
+ * @evidence subCatalogOf
  */
 export const subCatalogOf = (kind: string, href: string, tools: readonly QpuSubTool[], extra: Record<string, unknown>) => {
   const items = tools.map((t, i) => toolItemOf(href, t, i))
@@ -3285,7 +3283,6 @@ export const subCatalogOf = (kind: string, href: string, tools: readonly QpuSubT
     holds: holds && extra.holds !== false,
   }
 }
-export const subCatalogHolds = (x?: ReturnType<typeof subCatalogOf>): boolean => x !== undefined && x.holds === true
 
 /**
  * A compact reading of the quantum document (circuit, lattice, Shor, sequence, purpose, evidence) for agents.
@@ -3617,7 +3614,7 @@ export const stepsHolds = (s = stepsOf()): boolean =>
  * coins·rays = faces. Here a rays-qubit GHZ state is computed as one dense vector — H on the first qubit, CNOT along
   * @wing agents
   * @kind builder
-  * @evidence planesHolds
+  * @evidence planesOf
  * every ray — and written to the receipt ledger as a fold of dim mintOf(rays); `planes` is faces / rays. */
 export const planesOf = (circuit = circuitOf()) => {
   const faces = facesOf()
@@ -3650,16 +3647,6 @@ export const planesOf = (circuit = circuitOf()) => {
     plane < fold.dim
   return { kind: 'planes' as const, qubits, plane, needed, planes, bell, ghz, holds }
 }
-
-export const planesHolds = (p = planesOf()): boolean =>
-  p.holds === true &&
-  p.kind === 'planes' &&
-  p.plane < p.needed &&
-  p.planes === coins &&
-  p.bell.product === false &&
-  p.bell.entangled === true &&
-  p.ghz.entangled === true &&
-  p.ghz.dim > p.plane
 
 /**
  * What the unit is for, read from its own state: exact-amplitude platform, n qubits, and its cybersecurity, optimisation, science and sensing readings.
@@ -4188,7 +4175,7 @@ const hexOf = (value: number, width: number): string => {
  * A seat's handle on a face: its id, href, hop across the involution and the KV capacity it addresses.
  * @wing receipts
  * @kind builder
- * @evidence seatHandleHolds
+ * @evidence seatHandleOf
  */
 export const seatHandleOf = (face: number) => {
   const cube = cubeOf()
@@ -4216,7 +4203,6 @@ export const seatHandleOf = (face: number) => {
     holds,
   }
 }
-export const seatHandleHolds = (x?: ReturnType<typeof seatHandleOf>): boolean => x !== undefined && x.holds === true
 
 
 const messageLanes: unknown[][] = []
@@ -4726,7 +4712,7 @@ export const qpuDocDbOf = (env?: QpuEnv, name = 'payload', store: DocStore = doc
  * Storage description: memory or KV, RAID, hybrid layers, Payload database mapping, Alpine overlay and bindings.
  * @wing storage
  * @kind builder
- * @evidence storageMetaHolds
+ * @evidence storageMetaOf
  */
 export const storageMetaOf = (env?: QpuEnv) => {
   const raid = raidOf()
@@ -4769,13 +4755,12 @@ export const storageMetaOf = (env?: QpuEnv) => {
     holds,
   }
 }
-export const storageMetaHolds = (x?: ReturnType<typeof storageMetaOf>): boolean => x !== undefined && x.holds === true
 
 /**
  * Monitor RAID health: expected and missing shares, incomplete keys, sampled bytes and traffic.
  * @wing storage
  * @kind builder
- * @evidence storageMonitorHolds
+ * @evidence storageMonitorOf
  */
 export const storageMonitorOf = async (env?: QpuEnv) => {
   const raid = raidOf()
@@ -4865,7 +4850,6 @@ export const storageMonitorOf = async (env?: QpuEnv) => {
     holds,
   }
 }
-export const storageMonitorHolds = (x?: Awaited<ReturnType<typeof storageMonitorOf>>): boolean => x !== undefined && x.holds === true
 
 /** MAINTAIN WRITES, SO IT NEEDS WHAT WRITES NEED.
  *
@@ -4935,7 +4919,7 @@ export const storageRedundancyHolds = (): boolean => {
  * Repair broken RAID shares and delete orphans (a write; needs the write token).
  * @wing storage
  * @kind builder
- * @evidence storageMaintainHolds
+ * @evidence storageMaintainOf
  */
 export const storageMaintainOf = async (env?: QpuEnv, auth?: string | null) => {
   // A WRITE PATH: maintain repairs and drops storage. Without this gate it rewrote and deleted for any caller. Fail closed,
@@ -5013,7 +4997,6 @@ export const storageMaintainOf = async (env?: QpuEnv, auth?: string | null) => {
     holds,
   }
 }
-export const storageMaintainHolds = (x?: Awaited<ReturnType<typeof storageMaintainOf>>): boolean => x !== undefined && x.holds === true
 
 /** WRITE AUTH, FAIL CLOSED. Reads stay open. A public write is honoured only when QPU_WRITE_TOKEN is bound and the
  * request carries `Authorization: Bearer <token>`; unbound, every public write is refused. The QpuDeposit service binding
@@ -5399,7 +5382,7 @@ export const storageToolsOf = (env?: QpuEnv, auth?: string | null): QpuSubTool[]
  * The storage sub-server's catalogue and live store reading.
  * @wing storage
  * @kind builder
- * @evidence storageMcpHolds
+ * @evidence storageMcpOf
  */
 export const storageMcpOf = async (env?: QpuEnv) => {
   const meta = storageMetaOf(env)
@@ -5420,7 +5403,6 @@ export const storageMcpOf = async (env?: QpuEnv) => {
     holds: meta.holds && monitor.holds && meta.raid.holds,
   })
 }
-export const storageMcpHolds = (x?: Awaited<ReturnType<typeof storageMcpOf>>): boolean => x !== undefined && x.holds === true
 
 const networkChannels = new Map<string, unknown[]>()
 
@@ -5619,7 +5601,7 @@ const parseGatesOf = (value: unknown): { ops: Record<string, unknown>[]; read: Q
  * Submit a job to the server: runs it on the exact computer and returns the result inline (jobs are not stored).
  * @wing agents
  * @kind builder
- * @evidence serverSubmitHolds
+ * @evidence serverSubmitOf
  */
 export const serverSubmitOf = (input: Record<string, unknown> = {}) => {
   const computer = computerOf()
@@ -5656,7 +5638,6 @@ export const serverSubmitOf = (input: Record<string, unknown> = {}) => {
     plugin: plugin.name,computer: { holds: computer.holds, universal: computer.universal, lattice: computer.lattice },
     ...job}
 }
-export const serverSubmitHolds = (x?: ReturnType<typeof serverSubmitOf>): boolean => x !== undefined && x.holds === true
 
 /** serverQueueHolds → the queue is the jobs in submission order: its count is its length, every id is a positive
  *  integer larger than the one before it (ids count submissions), and every job is done. */
@@ -6329,7 +6310,7 @@ const opQuantumHolds = (u: OpQuantum): boolean =>
  * Forge a tool from a sealed op tree; { name, run, args } forges and evaluates in one call, { uuid, args } runs a forged tool by its content UUID.
  * @wing agents
  * @kind builder
- * @evidence forgeHolds
+ * @evidence forgeOf
  */
 export const forgeOf = (args: Record<string, unknown> = {}) => {
   seedSandboxOf()
@@ -6404,7 +6385,6 @@ export const forgeOf = (args: Record<string, unknown> = {}) => {
     holds: sandboxTools.has(name),
   }
 }
-export const forgeHolds = (x?: ReturnType<typeof forgeOf>): boolean => x !== undefined && x.holds === true
 
 export const sandboxHolds = (s = sandboxOf()): boolean =>
   s.holds === true &&
@@ -7493,13 +7473,8 @@ export const graphStateHolds = (): boolean => {
 
 export const composeHolds = (read?: ReturnType<typeof qpuComposeOf>): boolean => read !== undefined && (read.holds)
 
-export const composeLiveHolds = (read?: Awaited<ReturnType<typeof composeLiveOf>>): boolean =>
-  read !== undefined && (read.holds === true && read.entangled + read.oneWay + read.undecided === read.pairs)
-
 /** A discovery is sound when every sampled name is accounted for and every method is well formed — NOT when
  *  every schema was reached. A registry entry whose spec has gone is a fact about that entry. */
-export const apisLiveHolds = (read?: Awaited<ReturnType<typeof apisLiveOf>>): boolean =>
-  read !== undefined && (read.holds === true && read.sampled === read.rows.length && read.rows.every((row) => row.api.length > n - n))
 
 /**
  * PROVE THE DISCOVERED APIS BY CALLING THEM, WITH THE VERB THEIR SCHEMA DECLARES.
@@ -7613,18 +7588,12 @@ const titleWordsOf = (text: string): string[] =>
  * lands in test-readings rather than in the proof — a corpus whose citations could not be checked this morning
  * is still the same corpus.
  */
-export const citationsLiveHolds = (read?: Awaited<ReturnType<typeof citationsLiveOf>>): boolean =>
-  read !== undefined && (read.holds === true &&
-  read.sampled === read.rows.length &&
-  /* A run in which Crossref declined is SOUND and reports nothing resolved; only a row claiming to hold while
-   * its title disagreed would be unsound. The predicate is about the reading, never about the network. */
-  read.rows.every((row) => row.holds === (row.live === true && row.agrees === true)))
 
 /**
  * Resolve the corpus's DOIs through Crossref and check each title matches.
  * @wing science
  * @kind builder
- * @evidence citationsLiveHolds
+ * @evidence citationsLiveOf
  */
 export const citationsLiveOf = async (from = n - n, read = citationsOf()) => {
   const faces = facesOf()
@@ -8648,7 +8617,7 @@ const cernCasesOf = (cms38: CernInts, cms63: CernInts, cms35: CernInts, cms62: C
  * Fetch one CMS Open Data record live and compare events, files, DOI and dates with the cern theorem.
  * @wing science
  * @kind builder
- * @evidence cernFetchHolds
+ * @evidence cernFetchOf
  */
 export const cernFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const quoted = cernRecordsOf()
@@ -8751,13 +8720,12 @@ export const cernFetchOf = async (href: string, signal: AbortSignal = foreignDea
     holds,hostEscape: false as const,
     primitives}
 }
-export const cernFetchHolds = (x?: Awaited<ReturnType<typeof cernFetchOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * Fetch one experiment's record total live from CERN Open Data.
  * @wing science
  * @kind builder
- * @evidence cernProjectFetchHolds
+ * @evidence cernProjectFetchOf
  */
 export const cernProjectFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const tetra = cernProjectsOf()
@@ -8828,7 +8796,6 @@ export const cernProjectFetchOf = async (href: string, signal: AbortSignal = for
     holds,hostEscape: false as const,
     primitives}
 }
-export const cernProjectFetchHolds = (x?: Awaited<ReturnType<typeof cernProjectFetchOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * The CERN document: quoted records, catalogues, experiments and the occupancy lattice.
@@ -8949,7 +8916,7 @@ export const reflectHolds = (r = reflectOf()): boolean => {
  * The live CERN reading: every LHC and Open Data experiment's record total fetched under one deadline.
  * @wing science
  * @kind builder
- * @evidence cernLearnLiveHolds
+ * @evidence cernLearnLiveOf
  */
 export const cernLearnLiveOf = (
   quoted: ReturnType<typeof cernOf>,
@@ -8991,13 +8958,12 @@ export const cernLearnLiveOf = (
     holds,
   }
 }
-export const cernLearnLiveHolds = (x?: ReturnType<typeof cernLearnLiveOf>): boolean => x !== undefined && x.holds === true
 
 /**
  * The live CERN document: quoted records, projects and search, fetched under one deadline.
  * @wing science
  * @kind builder
- * @evidence cernLiveHolds
+ * @evidence cernLiveOf
  */
 export const cernLiveOf = onceOf(async () => {
   const quoted = cernOf()
@@ -9051,7 +9017,6 @@ export const cernLiveOf = onceOf(async () => {
     cases,
     holds,hostEscape: false as const}
 })
-export const cernLiveHolds = (x?: Awaited<ReturnType<typeof cernLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * ONE READING SHARED, AND A MISS IS A READING.
@@ -9078,7 +9043,7 @@ let cernExperience: { value: Awaited<ReturnType<typeof cernLiveOf>>; at: number 
  * The live CERN reading, kept for one deadline window so a miss is not re-paid on every call.
  * @wing science
  * @kind builder
- * @evidence cernExperienceHolds
+ * @evidence cernExperienceOf
  */
 export const cernExperienceOf = onceOf(async () => {
   const held = cernExperience?.value.holds === true && cernExperience.value.learn.holds === true
@@ -9092,13 +9057,12 @@ export const cernExperienceOf = onceOf(async () => {
   cernExperience = { value: await cernLiveOf(), at: FOREIGN.reads }
   return cernExperience.value
 })
-export const cernExperienceHolds = (x?: Awaited<ReturnType<typeof cernExperienceOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * train with live CERN occupancy and the live API composition.
  * @wing agents
  * @kind builder
- * @evidence trainLiveHolds
+ * @evidence trainLiveOf
  */
 export const trainLiveOf = onceOf(async () => {
   const train = trainOf()
@@ -9113,13 +9077,12 @@ export const trainLiveOf = onceOf(async () => {
   const holds = train.holds && live.holds && live.learn.holds && next === train.vm.next && live.learn.unique.occupied > n
   return { ...train, live: true as const, learn: live.learn, compose, holds }
 })
-export const trainLiveHolds = (x?: Awaited<ReturnType<typeof trainLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * improve with live CERN occupancy.
  * @wing quantum
  * @kind builder
- * @evidence improveLiveHolds
+ * @evidence improveLiveOf
  */
 export const improveLiveOf = onceOf(async () => {
   const improve = improveOf()
@@ -9147,13 +9110,12 @@ export const improveLiveOf = onceOf(async () => {
     delta.throughoutput === fused
   return { ...improve, live: true as const, learn: live.learn, after, delta, holds }
 })
-export const improveLiveHolds = (x?: Awaited<ReturnType<typeof improveLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * compete with live CERN occupancy.
  * @wing agents
  * @kind builder
- * @evidence competeLiveHolds
+ * @evidence competeLiveOf
  */
 export const competeLiveOf = async (team?: string) => {
   const compete = competeOf(team)
@@ -9189,13 +9151,12 @@ export const competeLiveOf = async (team?: string) => {
     holds,
   }
 }
-export const competeLiveHolds = (x?: Awaited<ReturnType<typeof competeLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * prove after the live sequence.
  * @wing quantum
  * @kind builder
- * @evidence proveLiveHolds
+ * @evidence proveLiveOf
  */
 export const proveLiveOf = onceOf(async () => {
   const prove = proveOf()
@@ -9216,13 +9177,12 @@ export const proveLiveOf = onceOf(async () => {
     holds,
   }
 })
-export const proveLiveHolds = (x?: Awaited<ReturnType<typeof proveLiveOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * The live sequence: train, improve, compete and prove, each live.
  * @wing quantum
  * @kind builder
- * @evidence sequenceLiveHolds
+ * @evidence sequenceLiveOf
  */
 export const sequenceLiveOf = onceOf(async () => {
   const train = await trainLiveOf()
@@ -9255,7 +9215,6 @@ export const sequenceLiveOf = onceOf(async () => {
       improve.next[seed] === 'prove'}
   return { ...prove, sequence, holds: prove.holds && sequence.holds }
 })
-export const sequenceLiveHolds = (x?: Awaited<ReturnType<typeof sequenceLiveOf>>): boolean => x !== undefined && x.holds === true
 
 const researchHitsOf = (body: unknown): number => {
   if (!body || typeof body !== 'object') return n - n
@@ -9274,7 +9233,7 @@ const researchHitsOf = (body: unknown): number => {
  * Fetch a research API (INSPIRE, HEPData, Zenodo) live and count its hits.
  * @wing science
  * @kind builder
- * @evidence researchFetchHolds
+ * @evidence researchFetchOf
  */
 export const researchFetchOf = async (href: string, signal: AbortSignal = foreignDeadlineOf()) => {
   const allowed = cernHrefOf(href)
@@ -9316,7 +9275,6 @@ export const researchFetchOf = async (href: string, signal: AbortSignal = foreig
     holds,hostEscape: false as const,
     primitives}
 }
-export const researchFetchHolds = (x?: Awaited<ReturnType<typeof researchFetchOf>>): boolean => x !== undefined && x.holds === true
 
 /**
  * MCP hosts the unit is reachable from: fourteen agent harnesses and fourteen LLM clients, one per face.
@@ -9447,7 +9405,7 @@ const mcpVersionOf = (requested?: unknown): (typeof MCP_VERSIONS)[number] =>
  * MCP discovery reply: protocol version, capabilities, tools, server info, instructions and install entries.
  * @wing agents
  * @kind builder
- * @evidence mcpDiscoverHolds
+ * @evidence mcpDiscoverOf
  */
 export const mcpDiscoverOf = (requested?: unknown) => {
   const hosts = hostsOf()
@@ -9466,7 +9424,6 @@ export const mcpDiscoverOf = (requested?: unknown) => {
     holds,
   }
 }
-export const mcpDiscoverHolds = (x?: ReturnType<typeof mcpDiscoverOf>): boolean => x !== undefined && x.holds === true
 
 const installKeys = ['qpu-mcp', 'payload-mcp', 'vitepress-payload'] as const
 const installVerbs = ['ask', 'plan', 'commit', 'audit'] as const
@@ -9614,14 +9571,13 @@ const occupantChecksOf = (o: ReturnType<typeof occupantFieldsOf>): boolean =>
  * Which seat occupies the unit for a referrer, and why.
  * @wing agents
  * @kind builder
- * @evidence occupantHolds
+ * @evidence occupantOf
  */
 export const occupantOf = onceOf(() => {
   const o = occupantFieldsOf()
   return { ...o, holds: occupantChecksOf(o) }
 })
 /** value + predicate (the dryclean law): every reading agreed exactly, and the refused one is recorded as refused */
-export const occupantHolds = (o = occupantOf()): boolean => o.holds === true && occupantChecksOf(o)
 
 const routerChecksOf = (r: {
   seats: { reference: boolean; vector: boolean; device: boolean }
@@ -9637,7 +9593,7 @@ const routerChecksOf = (r: {
  * Route a referrer and path to a seat and door.
  * @wing agents
  * @kind builder
- * @evidence routerHolds
+ * @evidence routerOf
  */
 export const routerOf = (referrer = '', path = '/') => {
   const seats = seatsAvailableOf()
@@ -9665,7 +9621,6 @@ export const routerOf = (referrer = '', path = '/') => {
   return { ...r, holds: routerChecksOf(r) }
 }
 /** value + predicate (the dryclean law): the routing decision recomputes to itself and never routes off the doors */
-export const routerHolds = (r = routerOf()): boolean => r.holds === true && routerChecksOf(r)
 
 // ── THE SEAT, THE ACRONYM, THE BOOT (the captain, 2026-09-12: "make hardware bootable with qpu") ────────────────
 // QPULib (Naylor, 2016) runs one kernel three ways — source interpreter, target emulator, VideoCore hardware — and
@@ -10122,8 +10077,6 @@ export const payloadPluginHolds = (p = payloadPluginOf()): boolean =>
   p.collections.length === mintOf(coins) &&
   p.finds.length === mintOf(coins)
 
-
-export const payloadFindHolds = (x?: ReturnType<typeof payloadFindOf>): boolean => x !== undefined && x.holds === true
 
 const installPackagesOf = onceOf(() => {
   const qpu = {
