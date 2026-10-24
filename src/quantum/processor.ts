@@ -2,7 +2,7 @@
 // Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
-import { CZ, Device, GridQubit, keyOf, type Qubit } from './cirq.js'
+import { CZ, Device, GridQubit, keyOf, type Channel, type Qubit } from './cirq.js'
 
 /** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: a Cirq grid qubit at its row and column. */
 export type Site = Qubit
@@ -134,6 +134,17 @@ export const SYCAMORE23 = {
   couplers: couplersOf(SYCAMORE23_SITES),
   layout: 'the Sycamore23 grid in Cirq\'s known_devices source',
 } as const
+
+/** The noise of a Willow chip, from its spec sheet's medians: a single-qubit depolarizing channel with p = 1.5 × the single-qubit
+ *  gate error, which makes the average gate error of an operation on one qubit equal to that figure; and, after each two-qubit
+ *  gate, a depolarizing channel with p = 0.75 × the two-qubit gate error on each of its qubits, which matches that error to first
+ *  order. The spec sheet's T1 and readout are not applied: gate durations and per-qubit readout are not on the sheet. */
+export const willowNoiseOf = (chip: 'errorCorrection' | 'randomCircuitSampling'): ((arity: number) => Channel[]) => {
+  const figures = WILLOW.chips[chip]
+  const single = figures.singleQubitGateError.mean
+  const two = figures.twoQubitGateError.mean
+  return (arity) => (arity === 1 ? [{ name: 'depolarize', p: 1.5 * single }] : [{ name: 'depolarize', p: 0.75 * two }])
+}
 
 /** Every device this repository can build a circuit against, by its name. */
 export const DEVICES = { Willow: WILLOW, Sycamore: SYCAMORE, Sycamore23: SYCAMORE23 } as const

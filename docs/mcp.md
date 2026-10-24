@@ -278,6 +278,13 @@ Compile a circuit from its operations, placed by an insert strategy, and simulat
           ]
         }
       }
+    },
+    "device_noise": {
+      "enum": [
+        "willow_error_correction",
+        "willow_random_circuit_sampling"
+      ],
+      "description": "the noise of a Willow chip, from its spec sheet medians, after every gate"
     }
   }
 }

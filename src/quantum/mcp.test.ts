@@ -175,7 +175,7 @@ test('the algorithm tool answers each textbook algorithm: the QFT rows, the phas
   const qaoa = call('algorithm', { name: 'qaoa', nodes: 6 })
   assert.ok('result' in qaoa)
   const summary = (qaoa.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
-  assert.equal(summary[0]![1], '6')
+  assert.equal(summary.find((r) => r[0] === 'Nodes')![1], '6')
   assert.ok('error' in call('algorithm', { name: 'grover_shor' }))
 })
 
@@ -236,7 +236,8 @@ test('the algorithm tool factors N = 15 by Shor\'s order finding, and runs the Q
   const sweep = call('algorithm', { name: 'qaoa', nodes: 6, sweep: true })
   assert.ok('result' in sweep)
   const sw = (sweep.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
-  assert.ok(Number(sw[4]![1]) > Number(sw[5]![1]), 'the expected cut at the best angles beats the random baseline')
+  const label = (l: string) => Number(sw.find((r) => r[0] === l)![1])
+  assert.ok(label('Expected cut at best') > label('Random baseline'), 'the expected cut at the best angles beats the random baseline')
 })
 
 test('every device the processor tool names is served, and Sycamore23 has 23 qubits', () => {

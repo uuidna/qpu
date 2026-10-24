@@ -29,3 +29,7 @@ The wave-function part of qsim is covered by the state-vector simulator. qsim it
 ## Checked against Cirq's source
 
 The noise channel definitions and the insert strategies are checked against Cirq's own source on GitHub (`cirq-core/cirq/ops/common_channels.py` and `cirq-core/cirq/circuits/insert_strategy.py`). The Kraus operators for amplitude damping, phase damping, generalized amplitude damping and reset agree with Cirq's, and so do the mixture weights of bit flip, phase flip, depolarize and asymmetric depolarize. The four insert strategies follow Cirq's docstrings, including EARLIEST's first-moment fall-back.
+
+## Willow's noise
+
+The Quantum Virtual Machine's Willow noise is completed from the spec sheet's medians. A single-qubit gate takes a depolarizing channel with p = 1.5 × its single-qubit gate error, which gives an average error equal to the sheet's figure. After a two-qubit gate, each qubit takes a depolarizing channel with p = 0.75 × the two-qubit gate error, matching it to first order. Google's per-qubit calibration, T1 and readout are not on any public page, so they are not applied.

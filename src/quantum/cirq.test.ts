@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { willowNoiseOf } from './processor.js'
 import { Circuit, CNOT, CZ, Device, DensityMatrixSimulator, GridQubit, H, LineQubit, Moment, QuantumVirtualMachine, Simulator, TOFFOLI, X, Z, applied, expectationOf, measure, powerOf } from './cirq.js'
 
 const [q0, q1] = LineQubit.range(2)
@@ -185,4 +186,10 @@ test('NEW_THEN_INLINE gives the first operation a new moment and inserts the res
   assert.equal(c2.moments.length, 1)
   const c3 = new Circuit().append([applied(H, q0!), applied(H, q0!)], 'NEW_THEN_INLINE')
   assert.equal(c3.moments.length, 2)
+})
+
+test('the Willow noise after an X on |0> leaves |0> with the spec sheet\'s single-qubit gate error, the average error of that gate', () => {
+  const r = new DensityMatrixSimulator().simulate(new Circuit([applied(X, q0!)]), willowNoiseOf('errorCorrection'))
+  assert.ok(Math.abs(r.probabilities[0]! - 0.00035) < 1e-12, `P(|0>) should be 0.035%, got ${r.probabilities[0]}`)
+  assert.ok(Math.abs(r.trace - 1) < 1e-12)
 })

@@ -4,10 +4,10 @@
 
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
-import { DEVICES, PROCESSORS, WILLOW, deviceOf } from './processor.js'
+import { DEVICES, PROCESSORS, WILLOW, deviceOf, willowNoiseOf } from './processor.js'
 import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit, type Graph } from './algorithms.js'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, pageInstance, qftOperations, shorCircuit, shorFactors, teleportationCircuit, type Graph } from './algorithms.js'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.js'
 import { LEADS, type LeadStatus } from './leads.js'
 
@@ -154,6 +154,7 @@ const TOOLS: Tool[] = [
         repetitions: { type: 'integer', minimum: 1, maximum: 10000, default: 100 },
         noise: { type: 'array', items: CHANNEL_SCHEMA, description: 'channels applied after every gate, on each of its qubits' },
         observables: { type: 'array', items: OBSERVABLE_SCHEMA },
+        device_noise: { enum: ['willow_error_correction', 'willow_random_circuit_sampling'], description: 'the noise of a Willow chip, from its spec sheet medians, after every gate' },
       },
     },
     run: (args) => {
@@ -167,9 +168,10 @@ const TOOLS: Tool[] = [
       }
       const channels = ((args.noise ?? []) as ChannelJson[]).map(channelOf)
       const observables = (args.observables ?? []) as Record<string, 'X' | 'Y' | 'Z'>[]
-      if (channels.length || observables.length) {
+      const chip = args.device_noise === 'willow_error_correction' ? 'errorCorrection' : args.device_noise === 'willow_random_circuit_sampling' ? 'randomCircuitSampling' : undefined
+      if (channels.length || observables.length || chip !== undefined) {
         if (measurement) reject('noise and observables run on the density matrix, which does not sample; remove measure, or run the measurement without noise')
-        const result = new DensityMatrixSimulator().simulate(circuit, channels)
+        const result = new DensityMatrixSimulator().simulate(circuit, chip !== undefined ? willowNoiseOf(chip) : channels)
         return {
           qubits: result.qubits.map(keyOfQubit),
           probabilities: result.probabilities,
@@ -303,20 +305,18 @@ const TOOLS: Tool[] = [
         }
       }
       if (name === 'qaoa') {
-        const count = Number(args.nodes ?? 12)
-        const sorted = [...WILLOW.sites].sort((a, b) => (a.kind === 'grid' && b.kind === 'grid' ? a.row - b.row || a.col - b.col : 0))
-        const nodes = sorted.slice(0, count)
-        const keys = new Set(nodes.map(keyOf))
-        const couplers = WILLOW.couplers.filter(([a, b]) => keys.has(keyOf(a)) && keys.has(keyOf(b)))
-        const weights = (args.weights as number[] | undefined) ?? seededWeights(couplers.length)
-        if (weights.length !== couplers.length) reject(`weights needs one value per edge: ${couplers.length} edges`)
-        const graph: Graph = { nodes, edges: couplers.map(([a, b], i) => ({ a, b, weight: weights[i]! })) }
+        const graph = pageInstance(DEVICES.Sycamore, Number(args.nodes ?? 12))
+        const weights = args.weights as number[] | undefined
+        if (weights !== undefined) {
+          if (weights.length !== graph.edges.length) reject(`weights needs one value per edge: ${graph.edges.length} edges`)
+          graph.edges.forEach((e, i) => { e.weight = weights[i]! })
+        }
         const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
         if (args.sweep === true) {
           const sweep = qaoaSweep(graph)
           return {
             name,
-            summary: [['Nodes', String(nodes.length)], ['Edges', String(couplers.length)], ['Best alpha', sweep.best.alpha.toFixed(4)], ['Best beta', sweep.best.beta.toFixed(4)], ['Expected cut at best', sweep.best.expectedCut.toFixed(4)], ['Random baseline', sweep.randomBaseline.toFixed(4)]],
+            summary: [['Device', 'Sycamore'], ['Nodes', String(graph.nodes.length)], ['Edges', String(graph.edges.length)], ['Best alpha', sweep.best.alpha.toFixed(4)], ['Best beta', sweep.best.beta.toFixed(4)], ['Expected cut at best', sweep.best.expectedCut.toFixed(4)], ['Random baseline', sweep.randomBaseline.toFixed(4)]],
             header: ['Edge', 'Weight'],
             rows: graph.edges.map((e) => [`${keyOf(e.a)} – ${keyOf(e.b)}`, e.weight.toFixed(2)]),
           }
@@ -326,7 +326,7 @@ const TOOLS: Tool[] = [
         const expected = qaoaExpectedCut(graph, alpha, beta)
         return {
           name,
-          summary: [['Nodes', String(nodes.length)], ['Edges', String(couplers.length)], ['Expected cut', expected.toFixed(4)], ['Random baseline', (total / 2).toFixed(4)]],
+          summary: [['Device', 'Sycamore'], ['Nodes', String(graph.nodes.length)], ['Edges', String(graph.edges.length)], ['Expected cut', expected.toFixed(4)], ['Random baseline', (total / 2).toFixed(4)]],
           header: ['Edge', 'Weight'],
           rows: graph.edges.map((e) => [`${keyOf(e.a)} – ${keyOf(e.b)}`, e.weight.toFixed(2)]),
         }

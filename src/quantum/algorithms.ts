@@ -4,6 +4,7 @@
 // with the corrections controlled by the qubits that would have been measured.
 
 import { Circuit, CNOT, CZ, H, LineQubit, Operation, Qubit, SWAP, Simulator, TOFFOLI, X, ZZ, adjointOf, applied, keyOf, powerOf, type Gate } from './cirq.js'
+import { numpyWeights } from './random.js'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
  *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps
@@ -101,14 +102,21 @@ export const qaoaExpectedCut = (graph: Graph, alpha: number, beta: number): numb
   return expected
 }
 
-/** The weights the Cirq page draws: two decimals in [0, 5). The page seeds numpy with 11 and takes randint(0, 500) / 100; this
- *  generator is a 32-bit linear congruential one with the same distribution, so the instance is not numpy's. */
-export const seededWeights = (count: number, seed = 11): number[] => {
-  let state = seed >>> 0
-  return Array.from({ length: count }, () => {
-    state = (Math.imul(state, 1664525) + 1013904223) >>> 0
-    return Math.floor((state / 2 ** 32) * 500) / 100
-  })
+/** The page's instance: its device's first twelve qubits in sorted order, the device's couplers among them in networkx's edge
+ *  order (the lower node first, nodes and neighbours in sorted order), and the weights numpy draws under seed 11 for those edges. */
+export const pageInstance = (device: { readonly sites: readonly Qubit[]; readonly couplers: readonly (readonly [Qubit, Qubit])[] }, count = 12, seed = 11): Graph => {
+  const row = (q: Qubit) => (q.kind === 'grid' ? q.row : 0)
+  const col = (q: Qubit) => (q.kind === 'grid' ? q.col : 0)
+  const sorted = [...device.sites].sort((a, b) => row(a) - row(b) || col(a) - col(b))
+  const nodes = sorted.slice(0, count)
+  const index = new Map(sorted.map((q, i) => [keyOf(q), i]))
+  const inside = new Set(nodes.map(keyOf))
+  const pairs = device.couplers
+    .filter(([a, b]) => inside.has(keyOf(a)) && inside.has(keyOf(b)))
+    .map(([a, b]): [Qubit, Qubit] => (index.get(keyOf(a))! < index.get(keyOf(b))! ? [a, b] : [b, a]))
+    .sort((x, y) => index.get(keyOf(x[0]))! - index.get(keyOf(y[0]))! || index.get(keyOf(x[1]))! - index.get(keyOf(y[1]))!)
+  const weights = numpyWeights(pairs.length, seed)
+  return { nodes, edges: pairs.map(([a, b], i) => ({ a, b, weight: weights[i]! })) }
 }
 
 /** The page's estimate_cost, sampled as the page does it: shots bitstrings drawn from the QAOA state's probabilities by a seeded

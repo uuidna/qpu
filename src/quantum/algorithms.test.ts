@@ -1,7 +1,9 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { Circuit, DensityMatrixSimulator, LineQubit, Simulator, X, applied, expectationOf } from './cirq.js'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.js'
+import { pageInstance, groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaEstimate, qaoaExpectedCut, qaoaSweep, qftOperations, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.js'
+import { numpyWeights } from './random.js'
+import { DEVICES } from './processor.js'
 
 const n = 3
 const N = 1 << n
@@ -88,8 +90,8 @@ test('Shor\'s order finding factors 15 into 3 and 5, from bases 7 and 2 (both of
 })
 
 test('the QAOA sweep finds angles whose expected cut beats the random baseline, on seeded weights in [0, 5) to two decimals', () => {
-  const weights = seededWeights(3)
-  assert.deepEqual(weights, seededWeights(3), 'the same seed gives the same weights')
+  const weights = numpyWeights(3)
+  assert.deepEqual(weights, numpyWeights(3), 'the same seed gives the same weights')
   for (const w of weights) {
     assert.ok(w >= 0 && w < 5)
     assert.ok(Math.abs(w * 100 - Math.round(w * 100)) < 1e-9, 'two decimals')
@@ -109,4 +111,11 @@ test('the page\'s sampled estimate with 20,000 seeded shots agrees with the exac
     const exact = 2 * qaoaExpectedCut(graph, alpha, beta) - total
     assert.ok(Math.abs(qaoaEstimate(graph, alpha, beta, 20000) - exact) < 0.1)
   }
+})
+
+test('the page\'s instance: the first twelve sorted Sycamore qubits, their 15 couplers in networkx order, and numpy\'s seed-11 weights', () => {
+  const graph = pageInstance(DEVICES.Sycamore)
+  assert.equal(graph.nodes.length, 12)
+  assert.equal(graph.edges.length, 15)
+  assert.deepEqual([graph.edges[0]!.weight, graph.edges[1]!.weight], [4.09, 1.91])
 })

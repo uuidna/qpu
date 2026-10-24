@@ -454,8 +454,9 @@ export type DensityResult = { qubits: Qubit[]; density: Matrix; probabilities: n
  *  A gate acts as U ρ U†; with a depolarizing probability p, each gate is followed by the depolarizing channel on each of
  *  its qubits. A pure state has purity 1; noise lowers it. Exact for up to 8 qubits. */
 export class DensityMatrixSimulator {
-  simulate(circuit: Circuit, channels: readonly Channel[] = []): DensityResult {
-    channels.forEach(krausOf)
+  simulate(circuit: Circuit, channels: readonly Channel[] | ((arity: number) => readonly Channel[]) = []): DensityResult {
+    if (typeof channels === 'function') [1, 2].forEach((arity) => channels(arity).forEach(krausOf))
+    else channels.forEach(krausOf)
     const order = circuit.qubits
     if (order.length > MAX_DENSITY_QUBITS) throw new Error(`the density-matrix simulator handles up to ${MAX_DENSITY_QUBITS} qubits, the circuit has ${order.length}`)
     const n = order.length
@@ -467,7 +468,8 @@ export class DensityMatrixSimulator {
       if (op.kind !== 'gate') continue
       const indices = op.qubits.map((q) => pos.get(keyOf(q))!)
       rho = conjugate(unitaryOf(op.gate, indices, n), rho, dim)
-      for (const i of indices) for (const channel of channels) rho = channelOn(rho, i, channel, n)
+      const noise = typeof channels === 'function' ? channels(op.gate.arity) : channels
+      for (const i of indices) for (const channel of noise) rho = channelOn(rho, i, channel, n)
     }
     const probabilities = Array.from({ length: dim }, (_, k) => rho.re[k * dim + k]!)
     const trace = probabilities.reduce((sum, p) => sum + p, 0)
@@ -503,7 +505,7 @@ export const expectationOf = (result: DensityResult, observable: Record<string, 
 export class QuantumVirtualMachine {
   private readonly simulator = new DensityMatrixSimulator()
 
-  constructor(private readonly device: Device, private readonly channels: readonly Channel[]) {}
+  constructor(private readonly device: Device, private readonly channels: readonly Channel[] | ((arity: number) => readonly Channel[])) {}
 
   simulate(circuit: Circuit): DensityResult {
     this.device.validateCircuit(circuit)
