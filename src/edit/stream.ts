@@ -10,7 +10,7 @@
  * operations render the same text, whatever order those operations arrived in. Merging is a set union, so it is
  * idempotent and needs no coordinator: any transport that delivers the operations is enough.
  */
-import { createHash } from 'node:crypto'
+import { sha256Hex } from '../core/crypt.js'
 
 export type Op =
   | { kind: 'insert'; stream: string; id: string; seq: number; author: string; after: string | null; ch: string }
@@ -19,7 +19,7 @@ export type Op =
 export type Replica = { stream: string; author: string; clock: number; ops: Map<string, Op> }
 
 const hashUuid = (payload: unknown): string => {
-  const hex = createHash('sha256').update(JSON.stringify(payload)).digest('hex')
+  const hex = sha256Hex(JSON.stringify(payload))
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-8${hex.slice(13, 16)}-8${hex.slice(17, 20)}-${hex.slice(20, 32)}`
 }
 

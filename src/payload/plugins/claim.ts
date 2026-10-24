@@ -39,7 +39,7 @@ const readingOf = (reply: Reply): Record<string, unknown> | null => {
 /** Rule on a claim: ask every source, decide only from the sources the claim names, and report the rest as weak. */
 export const verdictFromReplies = (claim: string, expect: string, sources: Source[], replies: Reply[]): Verdict => {
   const at = new Date().toISOString()
-  // every prompt is a claim: one with no expected value cannot be checked, so it is recorded as an open lead
+  // every prompt is a claim: a prompt with no expected value cannot be checked, because there is nothing to compare against, so it is recorded as an open lead
   if (expect.trim() === '') return { at, claim, verdict: 'unverified', reason: 'no expected value: recorded as an open lead, every claim stays open until a source verifies it', next: 'attach the value the claim expects, so a source can check it' }
   const lower = claim.toLowerCase()
   const words = wordsOf(claim, expect)

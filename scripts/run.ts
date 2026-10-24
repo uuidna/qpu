@@ -115,7 +115,7 @@ const stream = async () => {
   }
 }
 
-/** Every open lead, crossed through the connector's funding source; a lead the source cannot answer is named as such. */
+/** Every open lead, crossed through the connector's funding source; a lead the source cannot answer, because it is unreachable or holds no reading, is named as such. */
 const leads = async () => {
   const memory = JSON.parse(readFileSync('scripts/leads.memory.json', 'utf8')) as { leads: { name: string; state: string; lead: string }[] }
   const open = memory.leads.filter((l) => l.state === 'open')
