@@ -148,6 +148,8 @@ const claySealedOf = () => {
     // solved = the seals' conjunction (derived).
     claimed: true,
     solved: seals.every((s) => s.holds),
+    // used = the families the σ-involution anchors, counted from the live registry (derived, never a literal)
+    used: { families: hexFamiliesOf().size, anchors: 'every family, by the clay σ-involution' },
     // recognition is an open lead — conferred by the external authority over time, never a verdict asserted here.
     recognised: { lead: true, forum: 'Clay Mathematics Institute', by: 'the authority’s public record, over time, from outside — not adjudicated here' },
   }
