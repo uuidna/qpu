@@ -17,7 +17,7 @@ import {
   storageBindings,
   ten,
   theorem,
-} from './index.js'
+} from '../../quantum/processing/unit/index.js'
 
 /**
  * Binomial coefficient C(nn, k) by Pascal recursion, mirroring chooseOf in index.lean.

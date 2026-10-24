@@ -16,7 +16,7 @@ import {
   toolNames,
 } from './index.js'
 import { circuitOf } from './circuit.js'
-import { facesOf, capacityOf } from './lattice.js'
+import { facesOf, capacityOf } from '../../../families/lattice/lattice.js'
 import { qpuHologramOf, schemasOf } from './presentation.js'
 
 /**

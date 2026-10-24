@@ -34,7 +34,7 @@ import { packageVersion } from './version.js'
 import { circuitOf } from './circuit.js'
 import { leanOf, leanHolds } from './proof.js'
 import { quantumOf, qpuQuantumHolds } from './quantum.js'
-import { chooseOf, tenOf, cubeOf, qpuHandleOf, facesOf } from './lattice.js'
+import { chooseOf, tenOf, cubeOf, qpuHandleOf, facesOf } from '../../../families/lattice/lattice.js'
 import { linkGraphOf } from './links.js'
 
 /**

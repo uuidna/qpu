@@ -19,7 +19,7 @@ import {
   seed,
 } from './index.js'
 import type { QpuCrossRow, QpuField, QpuFuseEdge, QpuMethod, QpuProbe, QpuSwap } from './index.js'
-import { facesOf } from './lattice.js'
+import { facesOf } from '../../../families/lattice/lattice.js'
 
 /**
  * An OpenAPI document read as methods: what each one takes, and what it gives back. Pure; no network.
