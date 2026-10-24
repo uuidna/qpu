@@ -26,8 +26,8 @@ Shor on 91, RSA factoring and the crypt split identity as callable doors.
 
 | Capability | Kind | What it does | Evidence | Status |
 |---|---|---|---|---|
-| [`qpuCybersecurityOf`](../src/quantum/processing/unit/crypto.ts#L80) | builder | The cybersecurity door set: Shor on 91, RSA factoring, the encrypt identity, crypt split and RAID, with what each verifies. | `qpuCybersecurityHolds` | holds |
-| [`qpuCybersecurityToolsOf`](../src/quantum/processing/unit/crypto.ts#L173) | builder | The eight cybersecurity MCP tools (catalog, rsa, shor, cmodexp, iqft, shots, split, verify) with their man pages and handlers. | — | — |
-| [`qpuEncryptOf`](../src/quantum/processing/unit/crypto.ts#L42) | builder | The split identity of theorem crypto: fused = split x share, recomputed; secrecy is reported false (it is an identity, not a cipher). | `qpuEncryptHolds` | holds |
+| [`cybersecurityOf`](../src/quantum/processing/unit/crypto.ts#L80) | builder | The cybersecurity door set: Shor on 91, RSA factoring, the encrypt identity, crypt split and RAID, with what each verifies. | `cybersecurityHolds` | holds |
+| [`cybersecurityToolsOf`](../src/quantum/processing/unit/crypto.ts#L173) | builder | The eight cybersecurity MCP tools (catalog, rsa, shor, cmodexp, iqft, shots, split, verify) with their man pages and handlers. | — | — |
+| [`encryptOf`](../src/quantum/processing/unit/crypto.ts#L42) | builder | The split identity of theorem crypto: fused = split x share, recomputed; secrecy is reported false (it is an identity, not a cipher). | `encryptHolds` | holds |
 
 Generated from the inline docs by `npm run docs`. Index: [docs](README.md).

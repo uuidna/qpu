@@ -1,16 +1,16 @@
 ---
-uuid: "f600c607-276c-1485-a589-a22132a0f312"
+uuid: "c2b419f2-5dfd-63e1-8779-f005ca979ef3"
 title: "Payload & Cloudflare"
-description: "Payload CMS on Workers in every combination, and the Payload readings the unit serves. 24 capabilities; 3 of 4 evidence predicates hold."
+description: "Payload CMS on Workers in every combination, and the Payload readings the unit serves. 24 capabilities; 2 of 4 evidence predicates hold."
 og:title: "Payload & Cloudflare — @uuidna/qpu"
-og:description: "Payload CMS on Workers in every combination, and the Payload readings the unit serves. 24 capabilities; 3 of 4 evidence predicates hold."
+og:description: "Payload CMS on Workers in every combination, and the Payload readings the unit serves. 24 capabilities; 2 of 4 evidence predicates hold."
 og:type: article
 og:url: "https://github.com/uuidna/qpu/blob/main/docs/cms.md"
 og:image: "https://opengraph.githubassets.com/qpu/uuidna/qpu"
 og:site_name: "@uuidna/qpu"
 twitter:card: summary_large_image
 twitter:title: "Payload & Cloudflare"
-twitter:description: "Payload CMS on Workers in every combination, and the Payload readings the unit serves. 24 capabilities; 3 of 4 evidence predicates hold."
+twitter:description: "Payload CMS on Workers in every combination, and the Payload readings the unit serves. 24 capabilities; 2 of 4 evidence predicates hold."
 version: "1.4.0"
 ---
 # Payload & Cloudflare
@@ -21,7 +21,7 @@ Payload CMS on Workers in every combination, and the Payload readings the unit s
 |---|---|
 | Capabilities | 24 |
 | With an evidence predicate | 4 |
-| Predicates that hold now | 3 |
+| Predicates that hold now | 2 |
 | Live (need the network; checked by the live doors) | 0 |
 
 | Capability | Kind | What it does | Evidence | Status |
@@ -32,11 +32,11 @@ Payload CMS on Workers in every combination, and the Payload readings the unit s
 | [`cloudflareRaidAdaptersOf`](../src/deployment/payload-cloudflare.ts#L154) | builder | Replace checklist: which binding/package to swap for a combination's db + storage. | — | — |
 | [`composeOf`](../src/deployment/payload-templates.ts#L164) | builder | docker-compose: the one service, built from the Dockerfile beside it, its port published as the boot listens. | — | — |
 | [`dockerfileOf`](../src/deployment/payload-templates.ts#L123) | builder | The Dockerfile: a build stage that compiles (the version lock is the repository's gate, git and npm being outside the image), a runtime stage with only dist, production modules and what the package ships, run as its own user behind dumb-init at the path Alpine installs it, health being the boot's own answer. | — | — |
+| [`fusionOf`](../src/quantum/processing/unit/cms.ts#L112) | builder | Fusion of catalogues, hosts, schemas, Payload, install and hologram readings over the fused capacity. | `fusionHolds` | holds |
+| [`intelligenceOf`](../src/quantum/processing/unit/cms.ts#L168) | builder | The 'intelligence' reading: the fusion test over free online research. | `intelligenceHolds` | holds |
 | [`kubernetesOf`](../src/deployment/payload-templates.ts#L185) | builder | Kubernetes: namespace, service account, deployment, service and autoscaler in one manifest, every port the boot's, every probe the boot's own answer, the replicas and bounds from the template's deployment config. | — | — |
-| [`qpuFusionOf`](../src/quantum/processing/unit/cms.ts#L112) | builder | Fusion of catalogues, hosts, schemas, Payload, install and hologram readings over the fused capacity. | `qpuFusionHolds` | holds |
-| [`qpuIntelligenceOf`](../src/quantum/processing/unit/cms.ts#L168) | builder | The 'intelligence' reading: the fusion test over free online research. | `qpuIntelligenceHolds` | holds |
-| [`qpuPayloadFindOf`](../src/quantum/processing/unit/cms.ts#L72) | builder | One Payload collection's find tool, sealed against writes. | `qpuPayloadFindHolds` | checked on each call (needs inputs) |
-| [`qpuPayloadMcpOf`](../src/quantum/processing/unit/cms.ts#L28) | builder | The Payload MCP the unit describes: collections, find-only tools, the database plugin and its write path. | `qpuPayloadMcpHolds` | holds |
+| [`payloadFindOf`](../src/quantum/processing/unit/cms.ts#L72) | builder | One Payload collection's find tool, sealed against writes. | `payloadFindOf` | **error** |
+| [`payloadMcpOf`](../src/quantum/processing/unit/cms.ts#L28) | builder | The Payload MCP the unit describes: collections, find-only tools, the database plugin and its write path. | `payloadMcpOf` | **false** |
 | [`themeCssOf`](../src/deployment/payload-templates.ts#L92) | builder | The site's theme as the lattice gives it, every colour the reflection σ_t(L) = L + t(1 − 2L) of its light value: inks on the rays ladder (k/rays), surfaces a step below white on bits and faces, the primary at L = ½ — σ's fixed point, so it does not move between light and dark — with its hue folded from the host's name, the destructive hue σ's reflection of it on the circle, the radius ten sixteenths. | — | — |
 | [`cloudflareCombinations`](../src/deployment/payload-cloudflare.ts#L712) | function | Every combination of the axes: runtimes × databases × storage × email × every subset of the plugins. | — | — |
 | [`payloadTemplates`](../src/deployment/payload-templates.ts#L441) | function | A PayloadTemplates instance. | — | — |

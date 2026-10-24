@@ -19,16 +19,16 @@ An exact quantum processing unit served over MCP at qpu.uuidna.com: integer-ampl
 
 | Wing | Capabilities | Evidence holds |
 |---|---|---|
-| [Lattice & arithmetic](lattice.md) | 10 | 7 of 7 |
-| [Quantum computation](quantum.md) | 20 | 11 of 14 |
-| [Formal proof (Lean)](proof.md) | 11 | 3 of 3 |
+| [Lattice & arithmetic](lattice.md) | 0 | 0 of 0 |
+| [Quantum computation](quantum.md) | 14 | 9 of 14 |
+| [Formal proof (Lean)](proof.md) | 11 | 2 of 3 |
 | [Cryptography](crypto.md) | 3 | 2 of 2 |
-| [UUIDs & quantum receipts](receipts.md) | 39 | 14 of 16 |
+| [UUIDs & quantum receipts](receipts.md) | 38 | 13 of 15 |
 | [Storage & database](storage.md) | 25 | 6 of 10 |
-| [MCP & agents](agents.md) | 119 | 45 of 55 |
-| [Live science data](science.md) | 22 | 10 of 17 |
+| [MCP & agents](agents.md) | 124 | 34 of 53 |
+| [Live science data](science.md) | 21 | 8 of 17 |
 | [API fusion](fusion.md) | 18 | 5 of 11 |
-| [Payload & Cloudflare](cms.md) | 24 | 3 of 4 |
+| [Payload & Cloudflare](cms.md) | 24 | 2 of 4 |
 | [Presentation & discovery](presentation.md) | 16 | 14 of 14 |
 
 Also: [state](state.md) · [comparison](comparison.md) · [build receipt](../README.md)
