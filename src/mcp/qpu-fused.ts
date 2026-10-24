@@ -537,7 +537,9 @@ const reading = async (source: string, a: Args, env?: QpuEnv, auth?: string | nu
     // walked in slices of faces, and the walk reads all of them: none is left out.
     const reads: Awaited<ReturnType<typeof apiCallOf>>[] = []
     let cursor = from
-    while (cursor < named.length) {
+    // take: read at most that many APIs from the cursor, so a small job is one slice; the reply names the next cursor
+    const stop = typeof a.take === 'number' && a.take > 0 ? Math.min(named.length, from + Math.floor(a.take)) : named.length
+    while (cursor < stop) {
       const slice = named.slice(cursor, cursor + faces)
       const loaded = await Promise.all(slice.map(async (name) => apiOf(name)))
       const readable = loaded.filter((api) => api.why === undefined && api.secured !== true && api.server).flatMap((api) => {
