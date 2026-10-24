@@ -219,18 +219,18 @@ export class CircuitCompiler {
   }
 
   /**
-   * Validate circuit for hardware constraints
+   * Validate circuit for processor constraints
    */
-  validateForHardware(circuit: Circuit, hardwareQubits: number, maxDepth: number): { valid: boolean; errors: string[] } {
+  validateForProcessor(circuit: Circuit, processorQubits: number, maxDepth: number): { valid: boolean; errors: string[] } {
     const errors: string[] = []
 
-    if (circuit.qubits > hardwareQubits) {
-      errors.push(`Circuit requires ${circuit.qubits} qubits, hardware only has ${hardwareQubits}`)
+    if (circuit.qubits > processorQubits) {
+      errors.push(`Circuit requires ${circuit.qubits} qubits, processor only has ${processorQubits}`)
     }
 
     const depth = this.calculateDepth(circuit)
     if (depth > maxDepth) {
-      errors.push(`Circuit depth ${depth} exceeds hardware limit of ${maxDepth}`)
+      errors.push(`Circuit depth ${depth} exceeds processor limit of ${maxDepth}`)
     }
 
     return {

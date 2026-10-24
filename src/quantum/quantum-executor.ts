@@ -24,7 +24,7 @@ export interface ExecutionResult {
   error?: string
 }
 
-export interface HardwareInfo {
+export interface ProcessorInfo {
   provider: string
   backend: string
   available: boolean
@@ -46,15 +46,15 @@ export class QuantumExecutor {
   }
 
   /**
-   * Detect available quantum hardware
+   * Detect available quantum processors
    */
-  async detectHardware(): Promise<HardwareInfo[]> {
-    const hardware: HardwareInfo[] = []
+  async detectProcessors(): Promise<ProcessorInfo[]> {
+    const processors: ProcessorInfo[] = []
 
     try {
       const ibmBackends = await this.ibmConnector.getAvailableBackends()
       for (const backend of ibmBackends) {
-        hardware.push({
+        processors.push({
           provider: 'ibm',
           backend,
           available: true,
@@ -69,7 +69,7 @@ export class QuantumExecutor {
     try {
       const ionqBackends = await this.ionqConnector.getAvailableBackends()
       for (const backend of ionqBackends) {
-        hardware.push({
+        processors.push({
           provider: 'ionq',
           backend,
           available: true,
@@ -84,7 +84,7 @@ export class QuantumExecutor {
     try {
       const braketDevices = await this.braketConnector.listDevices()
       for (const device of braketDevices) {
-        hardware.push({
+        processors.push({
           provider: 'aws',
           backend: device.name,
           available: device.status === 'AVAILABLE',
@@ -96,11 +96,11 @@ export class QuantumExecutor {
       console.warn('AWS Braket unavailable:', e)
     }
 
-    return hardware
+    return processors
   }
 
   /**
-   * Compile circuit for hardware
+   * Compile circuit for processors
    */
   compileCircuit(circuit: QuantumCircuit, options?: CompilationOptions) {
     const compilable: Circuit = {
@@ -319,32 +319,32 @@ export class QuantumExecutor {
     circuit: Circuit,
     shots: number,
   ): Promise<ExecutionResult> {
-    const hardware = await this.detectHardware()
+    const processors = await this.detectProcessors()
 
     // Prefer IonQ for small circuits (good for NISQ era)
     if (circuit.qubits <= 11) {
-      const ionq = hardware.find(h => h.provider === 'ionq')
+      const ionq = processors.find(h => h.provider === 'ionq')
       if (ionq?.available) {
         return this.executeIonQ(circuit, ionq.backend, shots)
       }
     }
 
     // Prefer simulator for testing
-    const simulator = hardware.find(h => h.backend.includes('simulator'))
+    const simulator = processors.find(h => h.backend.includes('simulator'))
     if (simulator?.available) {
       return this.executeIBM(circuit, simulator.backend, shots)
     }
 
     // Fallback to first available
-    if (hardware.length > 0 && hardware[0].available) {
-      if (hardware[0].provider === 'ibm') {
-        return this.executeIBM(circuit, hardware[0].backend, shots)
-      } else if (hardware[0].provider === 'ionq') {
-        return this.executeIonQ(circuit, hardware[0].backend, shots)
+    if (processors.length > 0 && processors[0].available) {
+      if (processors[0].provider === 'ibm') {
+        return this.executeIBM(circuit, processors[0].backend, shots)
+      } else if (processors[0].provider === 'ionq') {
+        return this.executeIonQ(circuit, processors[0].backend, shots)
       }
     }
 
-    throw new Error('No quantum hardware available')
+    throw new Error('No quantum processors available')
   }
 
   private estimateDepth(gates: Array<{ type: string; qubits: number[] }>): number {
