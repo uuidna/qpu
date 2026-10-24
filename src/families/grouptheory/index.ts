@@ -1,4 +1,4 @@
-import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { gcdOf, hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** GROUPTHEORY — FINITE GROUPS AS ARITHMETIC. The structure of a finite group is counting: the order of a direct product,
@@ -8,7 +8,6 @@ import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 const PROOF = 'group theory arithmetic (direct-product order, Lagrange cosets, cyclic order, subgroup index, coset count, symmetric-group order n!, generator power aᵏ mod n, element order n/gcd); every value an exact finite integer; crossed to algebra'
 const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >= 0)
-const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
 const fact = (n: number): number => { let r = 1; for (let i = 2; i <= n; i++) r *= i; return r }
 const modpow = (a: number, k: number, m: number): number => { if (m <= 0) return 0; let r = 1 % m, x = a % m, e = k; while (e > 0) { if (e & 1) r = (r * x) % m; x = (x * x) % m; e = Math.floor(e / 2) } return r }
 const c = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
@@ -30,7 +29,7 @@ export class GrouptheoryFormulas {
   /** GENERATOR POWER: a generator a raised to the power k in Z_n. value aᵏ mod n. */
   static generatorpower(a: number, k: number, n: number): CrossFormula { return c('grouptheory-generatorpower', 'generatorpower(a, k, n) = aᵏ mod n', modpow(a, k, n), nat(a, k, n) && n > 0, 'generatorpower', [a, k, n]) }
   /** ELEMENT ORDER: the order of element a in the cyclic group Z_n. value n / gcd(a, n). */
-  static elementorder(a: number, n: number): CrossFormula { const d = gcd(a, n); return c('grouptheory-elementorder', 'elementorder(a, n) = n / gcd(a, n)', n > 0 && d > 0 ? Math.floor(n / d) : 0, nat(a, n) && n > 0, 'elementorder', [a, n]) }
+  static elementorder(a: number, n: number): CrossFormula { const d = gcdOf(a, n); return c('grouptheory-elementorder', 'elementorder(a, n) = n / gcd(a, n)', n > 0 && d > 0 ? Math.floor(n / d) : 0, nat(a, n) && n > 0, 'elementorder', [a, n]) }
 }
 
 for (const name of ['cosetcount', 'cosets', 'cyclicorder', 'elementorder', 'generatorpower', 'order', 'subgroupindex', 'symmetricorder'] as const)

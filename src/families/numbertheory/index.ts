@@ -1,4 +1,4 @@
-import { hexRegisterOf } from '../../quantum/processing/unit/index.js'
+import { gcdOf, hexRegisterOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
 /** NUMBERTHEORY — THE ARITHMETIC OF THE WHOLE NUMBERS, AS EXACT INTEGERS. The oldest formulas: the greatest common divisor
@@ -11,7 +11,6 @@ const nat = (...xs: number[]) => xs.every((x) => Number.isSafeInteger(x) && x >=
 const c = (id: string, formula: string, value: number, holds: boolean, name: string, params: number[], extra: Record<string, unknown> = {}): CrossFormula =>
   crossFormulaOf({ id, src: 'numbertheory', dst: 'algebra', formula, value, proof: PROOF, ...extra }, holds, { name: `numbertheory.${name}`, params })
 
-const gcdOf = (a: number, b: number): number => { let x = a, y = b; while (y > 0) { const t = y; y = x % y; x = t } return x }
 
 export class NumbertheoryFormulas {
   /** GREATEST COMMON DIVISOR by Euclid's algorithm. value gcd(a, b). */
