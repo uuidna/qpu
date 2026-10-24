@@ -49,3 +49,15 @@ test('no MCP source names a tool with the qpu_ prefix: the public names are the 
     assert.deepEqual(named, [], `${file} names a tool with the qpu_ prefix: ${named.join(', ')}`)
   }
 })
+
+test('no fused door declares an input named door: the connector intercepts that key before any door sees it', () => {
+  for (const file of files) assert.doesNotMatch(read(file), /^\s+door:\s*\{\s*type:/m, `${file} declares an input named door`)
+})
+
+test('the connector checks about before source: a call with both is a chat call, and the order is fixed here so it cannot change by accident', () => {
+  const connector = readFileSync(join(ROOT, 'src', 'payload', 'plugins', 'connector.ts'), 'utf8')
+  const about = connector.indexOf("typeof args.about === 'string'")
+  const source = connector.indexOf("if (typeof args.source === 'string')")
+  assert.ok(about > 0 && source > 0, 'both branches exist in the connector')
+  assert.ok(about < source, 'the about branch must come before the source branch')
+})
