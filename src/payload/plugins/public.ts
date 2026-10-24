@@ -403,7 +403,6 @@ export const publicSurfaceOf = async () => {
 
 /** Public doors this plugin owns: the paths a browser or MCP client asks for, and the Payload API paths they rewrite to. */
 export const PUBLIC_DOORS = {
-  '/mcp': '/api/qpu/mcp',
   '/cite': '/api/qpu/cite',
   '/qpu.css': '/api/qpu/css',
 } as const
@@ -631,16 +630,6 @@ export const publicPlugin = (): QpuPlugin => (config) => {
       { path: '/.well-known/mcp.json', method: 'get' as const, handler: () => Response.json(wellKnownOf()) },
       { path: '/install.json', method: 'get' as const, handler: () => Response.json(installManifestOf()) },
       { path: '/openapi.json', method: 'get' as const, handler: () => Response.json(openApiOf()) },
-      {
-        path: '/qpu/mcp',
-        method: 'post' as const,
-        handler: (req: Request) => publicMcpOf(req),
-      },
-      {
-        path: '/qpu/mcp',
-        method: 'get' as const,
-        handler: (req: Request) => publicMcpOf(req),
-      },
     ],
   }
 }
