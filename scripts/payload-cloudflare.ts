@@ -88,7 +88,6 @@ const REPO = {
       'import-export': REPO_COLLECTIONS.map((c) => c.slug).filter((s) => s !== 'users'), mcp: ['docs', 'pages', 'quantum-receipts', 'fuse-apis', 'fuse-fields', 'fuse-formulas'],
     },
     pluginOptions: {
-      mcp: 'tools: qpuMcpTools()',
       'multi-tenant': "tenantsArrayField: { includeDefaultField: false }, userHasAccessToAllTenants: (user) => (user as { role?: string } | null)?.role === 'super-admin'",
       ecommerce: "products: { productsCollectionOverride: ({ defaultCollection }) => ({ ...defaultCollection, admin: { ...defaultCollection.admin, useAsTitle: 'title' }, fields: [{ name: 'title', type: 'text', required: true }, { name: 'slug', type: 'text', unique: true, index: true }, { name: 'description', type: 'textarea' }, { name: 'organisation', type: 'text' }, { name: 'use', type: 'textarea' }, { name: 'licence', type: 'text', defaultValue: 'CC-BY-NC-ND-4.0' }, { name: 'billedAccount', type: 'text', access: { read: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' } } }, { name: 'cloudflareAccountId', type: 'text', access: { read: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' } } }, { name: 'royalty', type: 'json', access: { read: ({ req }) => { const r = (req.user as { role?: string } | null)?.role; return r === 'super-admin' || r === 'admin' } } }, ...defaultCollection.fields] }) }",
       seo: "uploadsCollection: 'media', generateTitle: ({ doc }) => seoTitleOf(doc), generateDescription: ({ doc }) => seoDescriptionOf(doc), generateURL: ({ doc }) => seoURLOf(doc)",
@@ -100,7 +99,6 @@ const REPO = {
     imports: [
       ...['seoTitleOf', 'seoDescriptionOf', 'seoURLOf'].map((name) => ({ name, from: './collections/Docs' })),
       { name: 'BlocksFeature', from: '@payloadcms/richtext-lexical' },
-      { name: 'qpuMcpTools', from: '@uuidna/qpu/payload/plugins' },
       { name: 'blocks', from: './blocks' },
     ],
     // the frontend is the app's: its layout, the (pages) group and the blocks; the template's sample routes are not written

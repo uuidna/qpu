@@ -180,4 +180,3 @@ export const fusedPluginsOf = () => ({
   axis: [...CLOUDFLARE_PLUGINS],
   always: ['editor', 'admin', 'collection', 'global', 'cors', 'typescript', 'seed', 'billing', 'upgrade', 'video', 'domains', 'public', 'wave'] as const,
 })
-export { qpuMcpTools } from './mcp.js'
