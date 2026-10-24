@@ -621,11 +621,6 @@ export const publicPlugin = (): QpuPlugin => (config) => {
       },
       {
         path: '/qpu/mcp',
-        method: 'post' as const,
-        handler: (req: Request) => publicMcpOf(req),
-      },
-      {
-        path: '/qpu/mcp',
         method: 'get' as const,
         handler: (req: Request) => publicMcpOf(req),
       },
