@@ -47,3 +47,11 @@ Google Quantum AI selects research partners for exclusive access to Willow, whic
 ## Hardware
 
 Google's quantum computer page states that its hardware focuses on superconducting qubits. These require specialized cryogenic environments and custom control electronics, and the processor is built in Google's Santa Barbara facility.
+
+## The error-correction preprint
+
+The paper the homepage links as Nature, "Quantum error correction below the surface code threshold" (arXiv 2408.13687), states: distance-5 and distance-7 memories, Λ = 2.14 ± 0.02 for each increase of two in distance, a 101-qubit distance-7 code with 0.143% ± 0.003% error per cycle, a logical memory 2.4 ± 0.3 times the lifetime of the best physical qubit, a decoder latency of 63 μs at distance 5 up to a million cycles, a cycle time of 1.1 μs, repetition codes to distance 29, and correlated error events about once an hour.
+
+## Sycamore
+
+The Cirq Devices page states Sycamore's metadata: 54 qubits and 88 edges. It gives no layout, so no Sycamore device is built.

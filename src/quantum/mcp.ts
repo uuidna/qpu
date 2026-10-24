@@ -4,10 +4,10 @@
 
 import { CNOT, CZ, Channel, Circuit, DensityMatrixSimulator, GridQubit, H, InsertStrategy, LineQubit, NamedQubit, Simulator, SWAP, TOFFOLI, X, Y, Z, applied, expectationOf, keyOf, measure, powerOf, type Gate, type Operation, type Qubit } from './cirq.js'
 import { echoCircuit, echoProbability, QUANTUM_ECHOES } from './echo.js'
-import { PROCESSORS, WILLOW, deviceOf } from './processor.js'
+import { PROCESSORS, SYCAMORE, WILLOW, deviceOf } from './processor.js'
 import { algorithmWidget, circuitWidget, echoBenchmarkWidget, echoWidget, leadsWidget, processorWidget, roadmapWidget, softwareWidget, statementsWidget } from './widgets.js'
 import { APPLICATIONS, ROADMAP } from './roadmap.js'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qftOperations, teleportationCircuit, type Graph } from './algorithms.js'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit, type Graph } from './algorithms.js'
 import { STATEMENTS, SOFTWARE, type StatementTopic } from './statements.js'
 import { LEADS, type LeadStatus } from './leads.js'
 
@@ -87,6 +87,7 @@ const OBSERVABLE_SCHEMA = {
 const INSERT_SCHEMA = { enum: ['EARLIEST', 'NEW', 'INLINE', 'NEW_THEN_INLINE'], default: 'EARLIEST' }
 
 const complex = ([re, im]: [number, number]) => ({ re, im })
+const gcdOf = (x: number, y: number): number => (y === 0 ? x : gcdOf(y, x % y))
 
 /** One tool: its name, what it does, its input schema (JSON Schema 2020-12), and the call that compiles or reads it: the
  *  structured result and the widget that shows it. */
@@ -127,10 +128,11 @@ const TOOLS: Tool[] = [
   tool({
     name: 'processor',
     description: 'A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the two chips, and the magic-state figures.',
-    inputSchema: { type: 'object', required: ['name'], properties: { name: { enum: Object.keys(PROCESSORS) } } },
+    inputSchema: { type: 'object', required: ['name'], properties: { name: { enum: [...Object.keys(PROCESSORS), SYCAMORE.name] } } },
     run: (args) => {
+      if (args.name === SYCAMORE.name) return { name: SYCAMORE.name, qubits: SYCAMORE.qubits, couplers: SYCAMORE.couplers, layout: SYCAMORE.layout }
       const processor = PROCESSORS[args.name as keyof typeof PROCESSORS] ?? reject(`processor ${String(args.name)} is not described here`)
-      return { name: processor.name, technology: processor.technology, qubits: processor.qubits, statedAverageConnectivity: processor.statedAverageConnectivity, typicalConnectivity: processor.typicalConnectivity, chips: processor.chips, magicStateCultivation: processor.magicStateCultivation }
+      return { name: processor.name, technology: processor.technology, qubits: processor.qubits, statedAverageConnectivity: processor.statedAverageConnectivity, typicalConnectivity: processor.typicalConnectivity, chips: processor.chips, magicStateCultivation: processor.magicStateCultivation, errorCorrectionPreprint: processor.errorCorrectionPreprint }
     },
     widget: processorWidget,
   }),
@@ -222,7 +224,10 @@ const TOOLS: Tool[] = [
       type: 'object',
       required: ['name'],
       properties: {
-        name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa'] },
+        name: { enum: ['qft', 'inverse_qft', 'phase_estimation', 'grover', 'teleportation', 'qaoa', 'shor'] },
+        N: { type: 'integer', minimum: 3, maximum: 21, default: 15 },
+        a: { type: 'integer', minimum: 2, default: 7 },
+        sweep: { type: 'boolean', default: false, description: 'qaoa: sweep alpha and beta on the grid of the page and return the best' },
         qubits: { type: 'integer', minimum: 1, maximum: 6, default: 3 },
         input: { type: 'integer', minimum: 0, default: 0 },
         theta: { type: 'number', default: 0.234 },
@@ -299,13 +304,22 @@ const TOOLS: Tool[] = [
         const nodes = sorted.slice(0, count)
         const keys = new Set(nodes.map(keyOf))
         const couplers = WILLOW.couplers.filter(([a, b]) => keys.has(keyOf(a)) && keys.has(keyOf(b)))
-        const weights = (args.weights as number[] | undefined) ?? couplers.map(() => 1)
+        const weights = (args.weights as number[] | undefined) ?? seededWeights(couplers.length)
         if (weights.length !== couplers.length) reject(`weights needs one value per edge: ${couplers.length} edges`)
         const graph: Graph = { nodes, edges: couplers.map(([a, b], i) => ({ a, b, weight: weights[i]! })) }
+        const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
+        if (args.sweep === true) {
+          const sweep = qaoaSweep(graph)
+          return {
+            name,
+            summary: [['Nodes', String(nodes.length)], ['Edges', String(couplers.length)], ['Best alpha', sweep.best.alpha.toFixed(4)], ['Best beta', sweep.best.beta.toFixed(4)], ['Expected cut at best', sweep.best.expectedCut.toFixed(4)], ['Random baseline', sweep.randomBaseline.toFixed(4)]],
+            header: ['Edge', 'Weight'],
+            rows: graph.edges.map((e) => [`${keyOf(e.a)} – ${keyOf(e.b)}`, e.weight.toFixed(2)]),
+          }
+        }
         const alpha = Number(args.alpha ?? 0)
         const beta = Number(args.beta ?? 0)
         const expected = qaoaExpectedCut(graph, alpha, beta)
-        const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
         return {
           name,
           summary: [['Nodes', String(nodes.length)], ['Edges', String(couplers.length)], ['Expected cut', expected.toFixed(4)], ['Random baseline', (total / 2).toFixed(4)]],
@@ -313,7 +327,24 @@ const TOOLS: Tool[] = [
           rows: graph.edges.map((e) => [`${keyOf(e.a)} – ${keyOf(e.b)}`, e.weight.toFixed(2)]),
         }
       }
-      return reject(`algorithm ${name} is not one of qft, inverse_qft, phase_estimation, grover, teleportation, qaoa`)
+      if (name === 'shor') {
+        const N = Number(args.N ?? 15)
+        const a = Number(args.a ?? 7)
+        const repetitions = Number(args.repetitions ?? 20)
+        if (!Number.isInteger(N) || N < 3 || N > 21) reject('N is an integer from 3 to 21 (the state-vector size bound)')
+        if (!Number.isInteger(a) || a < 2 || a >= N || gcdOf(a, N) !== 1) reject('a must be an integer from 2 to N−1 with no common factor with N')
+        const run = new Simulator().run(shorCircuit(N, a), repetitions)
+        const found = shorFactors(N, a, run.measurements('m'))
+        const counts = new Map<string, number>()
+        for (const e of found.estimates) counts.set(e.toFixed(6), (counts.get(e.toFixed(6)) ?? 0) + 1)
+        return {
+          name,
+          summary: [['N', String(N)], ['a', String(a)], ['Order of a mod N', found.order === null ? 'not found' : String(found.order)], ['Factors', found.factors ? `${found.factors[0]} × ${found.factors[1]}` : 'not found']],
+          header: ['Measured phase', 'Count', 'Share'],
+          rows: [...counts.entries()].sort((x, y) => y[1] - x[1]).map(([phase, c]) => [phase, String(c), `${((c / repetitions) * 100).toFixed(1)}%`]),
+        }
+      }
+      return reject(`algorithm ${name} is not one of qft, inverse_qft, phase_estimation, grover, teleportation, qaoa, shor`)
     },
     widget: algorithmWidget,
   }),

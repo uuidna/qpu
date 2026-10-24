@@ -26,5 +26,10 @@ test('a forward run with a gate power still echoes back with certainty: the back
 })
 
 test('the echo benchmark is Google\'s stated figures: Willow, 105 qubits, 13,000x, molecules of 15 and 28 atoms', () => {
-  assert.deepEqual(QUANTUM_ECHOES, { processor: 'Willow', qubits: 105, speedup: 13000, molecules: [15, 28] })
+  assert.equal(QUANTUM_ECHOES.processor, 'Willow')
+  assert.equal(QUANTUM_ECHOES.qubits, 105)
+  assert.equal(QUANTUM_ECHOES.speedup, 13000)
+  assert.deepEqual(QUANTUM_ECHOES.molecules, [15, 28])
+  assert.equal(QUANTUM_ECHOES.experiment.qubitsUsedInFigure, 65)
+  assert.equal(QUANTUM_ECHOES.protocol.length, 6)
 })

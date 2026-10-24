@@ -24,6 +24,10 @@ export default defineConfig({
         "link": "/software"
       },
       {
+        "text": "Algorithms",
+        "link": "/algorithms"
+      },
+      {
         "text": "Quantum Echoes",
         "link": "/echo"
       },
@@ -63,6 +67,10 @@ export default defineConfig({
           {
             "text": "Software",
             "link": "/software"
+          },
+          {
+            "text": "Algorithms",
+            "link": "/algorithms"
           },
           {
             "text": "Quantum Echoes",

@@ -73,6 +73,20 @@ export const WILLOW = {
   /** Magic state cultivation on Willow, as the Google blog states it: a 40-fold reduction in errors against un-cultivated
    *  states, T-states at a logical fidelity of 99.99%, grafted from a distance-3 color code to a distance-5 surface code */
   magicStateCultivation: { errorReductionFactor: 40, logicalFidelity: 0.9999, colorCodeDistance: 3, surfaceCodeDistance: 5 },
+  /** The Willow error-correction preprint, "Quantum error correction below the surface code threshold" (arXiv 2408.13687, the
+   *  paper the homepage links as Nature): the distance-7 and distance-5 memories and the figures its abstract states. */
+  errorCorrectionPreprint: {
+    distances: [5, 7],
+    lambda: { mean: 2.14, spread: 0.02 },
+    logicalErrorPerCycle: { mean: 0.00143, spread: 0.00003 },
+    qubitsInDistance7Code: 101,
+    repetitionCodeDistances: 29,
+    decoderLatencyMicroseconds: 63,
+    decoderLatencyDistance: 5,
+    cycleMicroseconds: 1.1,
+    beyondBreakEven: { mean: 2.4, spread: 0.3 },
+    correlatedErrorCycles: 3000000000,
+  },
   chips: { errorCorrection: ERROR_CORRECTION_CHIP, randomCircuitSampling: RANDOM_CIRCUIT_SAMPLING_CHIP },
 } as const
 
@@ -84,6 +98,9 @@ export const deviceOf = (processor: typeof WILLOW = WILLOW): Device => new Devic
 
 /** The processors this repository describes, by their Google name. */
 export const PROCESSORS = { Willow: WILLOW } as const
+
+/** Sycamore, as the Cirq Devices page states its metadata: 54 qubits and 88 edges. The page gives no layout, so no device is built. */
+export const SYCAMORE = { name: 'Sycamore', qubits: 54, couplers: 88, layout: 'not stated on the page' } as const
 
 /** True when a circuit's qubit count fits the processor. */
 export const fitsProcessor = (processor: { qubits: number }, qubits: number): boolean => qubits <= processor.qubits

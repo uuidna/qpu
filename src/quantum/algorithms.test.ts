@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { Circuit, DensityMatrixSimulator, LineQubit, Simulator, X, applied, expectationOf } from './cirq.js'
-import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qftOperations, teleportationCircuit } from './algorithms.js'
+import { groverCircuit, inverseOperations, messageCircuit, phaseEstimationCircuit, qaoaExpectedCut, qaoaSweep, qftOperations, seededWeights, shorCircuit, shorFactors, teleportationCircuit } from './algorithms.js'
 
 const n = 3
 const N = 1 << n
@@ -62,4 +62,41 @@ test('QAOA on a triangle: with no angles the state is uniform and cuts half the 
   let best = 0
   for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) best = Math.max(best, qaoaExpectedCut(triangle, (Math.PI * i) / 15, (Math.PI * j) / 30))
   assert.ok(best > 1.6, `best expected cut ${best} should beat the random 1.5`)
+})
+
+test('the QFT is the discrete Fourier transform for every input, not only a palindrome such as 5', () => {
+  for (const [n, x] of [[3, 3], [3, 6], [4, 11]] as const) {
+    const N = 1 << n
+    const qs = LineQubit.range(n)
+    const c = new Circuit().append(qs.filter((_, i) => (x >> i) & 1).map((q) => applied(X, q))).append(qftOperations(qs))
+    const { amplitudes } = new Simulator().simulate(c)
+    for (let k = 0; k < N; k++) {
+      const angle = (2 * Math.PI * x * k) / N
+      assert.ok(Math.abs(amplitudes[k]![0] - Math.cos(angle) / Math.sqrt(N)) < 1e-9, `n=${n} x=${x} re at ${k}`)
+      assert.ok(Math.abs(amplitudes[k]![1] - Math.sin(angle) / Math.sqrt(N)) < 1e-9, `n=${n} x=${x} im at ${k}`)
+    }
+  }
+})
+
+test('Shor\'s order finding factors 15 into 3 and 5, from bases 7 and 2 (both of order 4)', () => {
+  for (const a of [7, 2]) {
+    const run = new Simulator().run(shorCircuit(15, a), 20)
+    const found = shorFactors(15, a, run.measurements('m'))
+    assert.equal(found.order, 4, `order of ${a} mod 15`)
+    assert.deepEqual(found.factors, [3, 5])
+  }
+})
+
+test('the QAOA sweep finds angles whose expected cut beats the random baseline, on seeded weights in [0, 5) to two decimals', () => {
+  const weights = seededWeights(3)
+  assert.deepEqual(weights, seededWeights(3), 'the same seed gives the same weights')
+  for (const w of weights) {
+    assert.ok(w >= 0 && w < 5)
+    assert.ok(Math.abs(w * 100 - Math.round(w * 100)) < 1e-9, 'two decimals')
+  }
+  const [a, b, c3] = LineQubit.range(3)
+  const graph = { nodes: [a!, b!, c3!], edges: [{ a: a!, b: b!, weight: weights[0]! }, { a: b!, b: c3!, weight: weights[1]! }, { a: a!, b: c3!, weight: weights[2]! }] }
+  const sweep = qaoaSweep(graph)
+  assert.ok(sweep.best.expectedCut > sweep.randomBaseline, `best ${sweep.best.expectedCut} vs random ${sweep.randomBaseline}`)
+  assert.equal(sweep.grid.length, 5)
 })

@@ -21,7 +21,7 @@ test('the processor tool returns the Willow figures typed by name', () => {
   const data = (r.result as { structuredContent: { qubits: number; statedAverageConnectivity: number } }).structuredContent
   assert.equal(data.qubits, 105)
   assert.equal(data.statedAverageConnectivity, 3.47)
-  const unknown = call('processor', { name: 'Sycamore' })
+  const unknown = call('processor', { name: 'Mars' })
   assert.ok('error' in unknown && unknown.error.code === -32602)
 })
 
@@ -51,7 +51,9 @@ test('echo returns probability 1 without a perturbation, and less than 1 when a 
 test('the echo benchmark is the figures Google states', () => {
   const r = call('echo_benchmark', {})
   assert.ok('result' in r)
-  assert.deepEqual((r.result as { structuredContent: unknown }).structuredContent, { processor: 'Willow', qubits: 105, speedup: 13000, molecules: [15, 28] })
+  const benchmark = (r.result as { structuredContent: { processor: string; qubits: number; speedup: number; molecules: number[]; experiment: { qubitsStatedInText: number } } }).structuredContent
+  assert.deepEqual([benchmark.processor, benchmark.qubits, benchmark.speedup, benchmark.molecules], ['Willow', 105, 13000, [15, 28]])
+  assert.equal(benchmark.experiment.qubitsStatedInText, 103)
 })
 
 test('invalid parameters are refused with a JSON-RPC invalid-params error, and an unknown tool or method is not served', () => {
@@ -174,7 +176,7 @@ test('the algorithm tool answers each textbook algorithm: the QFT rows, the phas
   assert.ok('result' in qaoa)
   const summary = (qaoa.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
   assert.equal(summary[0]![1], '6')
-  assert.ok('error' in call('algorithm', { name: 'shor' }))
+  assert.ok('error' in call('algorithm', { name: 'grover_shor' }))
 })
 
 test('the software and statements and leads tools serve the stated lists, and an unknown topic is refused', () => {
@@ -208,4 +210,31 @@ test('every new tool returns a widget that uses only the host tokens', () => {
     assert.doesNotMatch(widget, /#[0-9a-f]{3,6}\b/i)
     assert.doesNotMatch(widget, /<(script|style)\b/i)
   }
+})
+
+test('the processor tool serves the Willow preprint figures and the Sycamore counts the Devices page states', () => {
+  const willow = call('processor', { name: 'Willow' })
+  assert.ok('result' in willow)
+  const preprint = (willow.result as { structuredContent: { errorCorrectionPreprint: { lambda: { mean: number }; qubitsInDistance7Code: number; decoderLatencyMicroseconds: number } } }).structuredContent.errorCorrectionPreprint
+  assert.equal(preprint.lambda.mean, 2.14)
+  assert.equal(preprint.qubitsInDistance7Code, 101)
+  assert.equal(preprint.decoderLatencyMicroseconds, 63)
+  const sycamore = call('processor', { name: 'Sycamore' })
+  assert.ok('result' in sycamore)
+  const counts = (sycamore.result as { structuredContent: { qubits: number; couplers: number; layout: string } }).structuredContent
+  assert.deepEqual([counts.qubits, counts.couplers], [54, 88])
+  assert.equal(counts.layout, 'not stated on the page')
+})
+
+test('the algorithm tool factors N = 15 by Shor\'s order finding, and runs the QAOA sweep on request', () => {
+  const shor = call('algorithm', { name: 'shor', N: 15, a: 7, repetitions: 20 })
+  assert.ok('result' in shor)
+  const summary = (shor.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
+  assert.equal(summary[2]![1], '4')
+  assert.equal(summary[3]![1], '3 × 5')
+  assert.ok('error' in call('algorithm', { name: 'shor', N: 15, a: 5 }), 'a must have no common factor with N')
+  const sweep = call('algorithm', { name: 'qaoa', nodes: 6, sweep: true })
+  assert.ok('result' in sweep)
+  const sw = (sweep.result as { structuredContent: { summary: string[][] } }).structuredContent.summary
+  assert.ok(Number(sw[4]![1]) > Number(sw[5]![1]), 'the expected cut at the best angles beats the random baseline')
 })

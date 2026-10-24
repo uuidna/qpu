@@ -3,16 +3,20 @@
 // Where the page's circuit uses a mid-circuit measurement, the deferred-measurement form is built instead: the same state,
 // with the corrections controlled by the qubits that would have been measured.
 
-import { Circuit, CNOT, CZ, H, LineQubit, Operation, Qubit, Simulator, TOFFOLI, X, ZZ, adjointOf, applied, keyOf, powerOf } from './cirq.js'
+import { Circuit, CNOT, CZ, H, LineQubit, Operation, Qubit, SWAP, Simulator, TOFFOLI, X, ZZ, adjointOf, applied, keyOf, powerOf, type Gate } from './cirq.js'
 
 /** The quantum Fourier transform, as the Cirq page builds it: a Hadamard on each qubit, then a controlled phase CZ**(1/2^k)
- *  from each later qubit onto it. There are no final swaps, so the output comes in reversed bit order, as the page notes. */
+ *  from each later qubit onto it. The page notes the output comes in reversed bit order unless swaps are added, so the swaps
+ *  that restore the standard order (qubit i with qubit n−1−i) follow. The result is the discrete Fourier transform. */
 export const qftOperations = (qubits: readonly Qubit[]): Operation[] => {
   const ops: Operation[] = []
-  for (let i = 0; i < qubits.length; i++) {
+  const n = qubits.length
+  // the most significant qubit (the last index) first: a Hadamard, then controlled phases from each less significant qubit
+  for (let i = n - 1; i >= 0; i--) {
     ops.push(applied(H, qubits[i]!))
-    for (let j = i + 1; j < qubits.length; j++) ops.push(applied(powerOf(CZ, 1 / 2 ** (j - i)), qubits[j]!, qubits[i]!))
+    for (let j = i - 1; j >= 0; j--) ops.push(applied(powerOf(CZ, 1 / 2 ** (i - j)), qubits[j]!, qubits[i]!))
   }
+  for (let i = 0; i < Math.floor(n / 2); i++) ops.push(applied(SWAP, qubits[i]!, qubits[n - 1 - i]!))
   return ops
 }
 
@@ -95,4 +99,109 @@ export const qaoaExpectedCut = (graph: Graph, alpha: number, beta: number): numb
     }
   })
   return expected
+}
+
+/** The weights the Cirq page draws: two decimals in [0, 5). The page seeds numpy with 11 and takes randint(0, 500) / 100; this
+ *  generator is a 32-bit linear congruential one with the same distribution, so the instance is not numpy's. */
+export const seededWeights = (count: number, seed = 11): number[] => {
+  let state = seed >>> 0
+  return Array.from({ length: count }, () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0
+    return Math.floor((state / 2 ** 32) * 500) / 100
+  })
+}
+
+/** The page's sweep: alpha and beta each over gridSize points of [0, 2π) (the page's comment states the half-open interval),
+ *  with the objective the page's estimate_cost returns, −Σ w⟨Z_u Z_v⟩ = 2·cut − W, maximized by argmax. The expectation is
+ *  exact from the amplitudes, where the page samples 20,000 shots per point. */
+export const qaoaSweep = (graph: Graph, gridSize = 5): { grid: number[]; best: { alpha: number; beta: number; value: number; expectedCut: number }; randomBaseline: number } => {
+  const total = graph.edges.reduce((sum, e) => sum + e.weight, 0)
+  const grid = Array.from({ length: gridSize }, (_, i) => (2 * Math.PI * i) / gridSize)
+  let best = { alpha: 0, beta: 0, value: -Infinity, expectedCut: 0 }
+  for (const alpha of grid) for (const beta of grid) {
+    const expectedCut = qaoaExpectedCut(graph, alpha, beta)
+    const value = 2 * expectedCut - total
+    if (value > best.value) best = { alpha, beta, value, expectedCut }
+  }
+  return { grid, best, randomBaseline: total / 2 }
+}
+
+/** A modular exponent by repeated squaring, for the small N of the demonstration. */
+const modPow = (base: number, exponent: number, modulus: number): number => {
+  let result = 1 % modulus
+  let b = base % modulus
+  let e = exponent
+  while (e > 0) {
+    if (e & 1) result = (result * b) % modulus
+    b = (b * b) % modulus
+    e >>= 1
+  }
+  return result
+}
+
+/** The controlled modular multiplication: on control 1 the work register |x> becomes |a·x mod N> (x < N; larger x are fixed),
+ *  on control 0 it is unchanged. Its matrix index is the control bit above the work bits, the work value in its natural bits. */
+const modularGate = (a: number, N: number, n: number): Gate => {
+  const dim = 1 << (n + 1)
+  const matrix: [number, number][] = Array.from({ length: dim * dim }, () => [0, 0])
+  const size = 1 << n
+  for (let x = 0; x < size; x++) {
+    const image = x < N ? (a * x) % N : x
+    matrix[x * dim + x] = [1, 0]
+    matrix[(size + image) * dim + (size + x)] = [1, 0]
+  }
+  return { name: `U${a}`, arity: n + 1, matrix }
+}
+
+/** Shor's order finding for N and a, by phase estimation of U|x> = |a·x mod N>: 2n counting qubits, where n is the bit length of
+ *  N, each controlling U^(2^k), an inverse QFT, and a measurement of the counting register under 'm'. The work register starts in |1>. */
+export const shorCircuit = (N: number, a: number): Circuit => {
+  const n = Math.ceil(Math.log2(N + 1))
+  const t = 2 * n
+  const counts = LineQubit.range(t)
+  const work = LineQubit.range(n).map((_, j) => LineQubit.of(t + j))
+  const ops: Operation[] = [applied(X, work[0]!), ...counts.map((q) => applied(H, q))]
+  for (let k = 0; k < t; k++) {
+    ops.push(applied(modularGate(modPow(a, 2 ** k, N), N, n), counts[k]!, ...[...work].reverse()))
+  }
+  ops.push(...inverseOperations(qftOperations(counts)))
+  return new Circuit().append(ops).append({ kind: 'measure', key: 'm', qubits: counts })
+}
+
+/** The continued-fraction denominators of x, up to maxDenominator: the candidates for the order's fraction s/r. */
+const denominatorsOf = (x: number, maxDenominator: number): number[] => {
+  const out: number[] = []
+  let [prev, last] = [0, 1]
+  let v = x - Math.floor(x)
+  for (let i = 0; i < 40 && v > 1e-12; i++) {
+    v = 1 / v
+    const a = Math.floor(v)
+    ;[prev, last] = [last, a * last + prev]
+    if (last > maxDenominator) break
+    out.push(last)
+    v -= a
+  }
+  return out
+}
+
+const gcd = (x: number, y: number): number => (y === 0 ? Math.abs(x) : gcd(y, x % y))
+
+/** From the measured counting bitstrings, the order r of a mod N and the factors of N the order gives, if any. The string is
+ *  read least significant bit first, as the inverse QFT leaves it. */
+export const shorFactors = (N: number, a: number, bitstrings: readonly string[]): { order: number | null; factors: [number, number] | null; estimates: number[] } => {
+  const t = 2 * Math.ceil(Math.log2(N + 1))
+  const estimates = bitstrings.map((b) => [...b].reduce((sum, bit, k) => sum + Number(bit) * 2 ** k, 0) / 2 ** t)
+  for (const phi of estimates) {
+    for (const r of denominatorsOf(phi, N - 1)) {
+      if (r < 2 || modPow(a, r, N) !== 1) continue
+      if (r % 2 === 1) return { order: r, factors: null, estimates }
+      const half = modPow(a, r / 2, N)
+      if (half === N - 1) return { order: r, factors: null, estimates }
+      const p = gcd(half - 1, N)
+      const q = gcd(half + 1, N)
+      const factor = [p, q].find((f) => f > 1 && f < N)
+      if (factor !== undefined) return { order: r, factors: [Math.min(factor, N / factor), Math.max(factor, N / factor)], estimates }
+    }
+  }
+  return { order: null, factors: null, estimates }
 }

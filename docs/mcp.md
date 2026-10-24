@@ -21,7 +21,8 @@ A Google Quantum AI processor as its spec sheet states it: qubits, the grid, the
   "properties": {
     "name": {
       "enum": [
-        "Willow"
+        "Willow",
+        "Sycamore"
       ]
     }
   }
@@ -505,8 +506,25 @@ The textbook algorithms of the Cirq page: qft and inverse_qft (on n qubits, from
         "phase_estimation",
         "grover",
         "teleportation",
-        "qaoa"
+        "qaoa",
+        "shor"
       ]
+    },
+    "N": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 21,
+      "default": 15
+    },
+    "a": {
+      "type": "integer",
+      "minimum": 2,
+      "default": 7
+    },
+    "sweep": {
+      "type": "boolean",
+      "default": false,
+      "description": "qaoa: sweep alpha and beta on the grid of the page and return the best"
     },
     "qubits": {
       "type": "integer",

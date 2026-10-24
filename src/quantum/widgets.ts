@@ -29,7 +29,8 @@ const percent = ({ mean, spread }: { mean: number; spread: number }): string => 
 
 type ProcessorView = Pick<typeof WILLOW, 'qubits' | 'statedAverageConnectivity' | 'chips' | 'magicStateCultivation'>
 
-export const processorWidget = (p: ProcessorView): string => {
+export const processorWidget = (p: ProcessorView | { name: string; qubits: number; couplers: number; layout: string }): string => {
+  if (!('chips' in p)) return stack([cards([['Qubits', String(p.qubits)], ['Couplers', String(p.couplers)]]), table(['Figure', 'Value'], [['Layout', p.layout]])])
   const one = p.chips.errorCorrection
   const two = p.chips.randomCircuitSampling
   return stack([
