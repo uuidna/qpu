@@ -8,7 +8,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "node --import tsx --test src/quantum/processor.test.ts src/quantum/cirq.test.ts src/quantum/echo.test.ts"
+    "test": "node --import tsx --test 'src/quantum/*.test.ts'"
   },
   "devDependencies": {
     "@types/node": "26.6.4",

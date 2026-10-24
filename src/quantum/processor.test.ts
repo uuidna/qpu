@@ -28,6 +28,10 @@ test('the two chips carry the sheet\'s figures as stated', () => {
   assert.equal(rcs.twoQubitGateError.gate, 'iSWAP-like')
 })
 
+test('magic state cultivation on Willow carries the figures the Google blog states', () => {
+  assert.deepEqual(WILLOW.magicStateCultivation, { errorReductionFactor: 40, logicalFidelity: 0.9999, colorCodeDistance: 3, surfaceCodeDistance: 5 })
+})
+
 test('error correction is below threshold on Willow, since Λ is above 1', () => {
   assert.equal(belowThresholdOf(WILLOW), true)
 })

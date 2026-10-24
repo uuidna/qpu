@@ -17,12 +17,5 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src/quantum/processor.ts",
-    "src/quantum/processor.test.ts",
-    "src/quantum/cirq.ts",
-    "src/quantum/cirq.test.ts",
-    "src/quantum/echo.ts",
-    "src/quantum/echo.test.ts"
-  ]
+  "include": ["src/quantum"]
 }

@@ -2,9 +2,6 @@
 // Dec 9, 2024; quantumai.google/static/site-assets/downloads/willow-spec-sheet.pdf). A figure the sheet does not state is
 // not here. Errors are probabilities: 0.035% is 0.00035.
 
-/** A figure the spec sheet gives as a mean with its spread (±). */
-export type Spread = { mean: number; spread: number }
-
 /** A qubit site on the grid, as the spec sheet's qubit-grid figure labels it: its row and its column. */
 export type Site = readonly [row: number, col: number]
 
@@ -31,8 +28,6 @@ export const couplersOf = (sites: readonly Site[]): [Site, Site][] => {
 /** Average connectivity: each coupler joins two sites, so the average over N sites is 2E/N. */
 export const averageConnectivityOf = (sites: readonly Site[], couplers: readonly [Site, Site][]): number =>
   (2 * couplers.length) / sites.length
-
-const COUPLERS = couplersOf(WILLOW_SITES)
 
 /** The errors and coherence common to both chips' reset options, as the spec sheet lists them. */
 const RESET = ['multi-level reset (|1> and above)', 'leakage removal (|2> only)'] as const
@@ -68,10 +63,13 @@ export const WILLOW = {
   technology: 'superconducting',
   qubits: WILLOW_SITES.length,
   sites: WILLOW_SITES,
-  couplers: COUPLERS,
+  couplers: couplersOf(WILLOW_SITES),
   /** the sheet's stated average connectivity, 4-way typical; the grid's couplers give 2E/N, checked in the tests */
   statedAverageConnectivity: 3.47,
   typicalConnectivity: 4,
+  /** Magic state cultivation on Willow, as the Google blog states it: a 40-fold reduction in errors against un-cultivated
+   *  states, T-states at a logical fidelity of 99.99%, grafted from a distance-3 color code to a distance-5 surface code */
+  magicStateCultivation: { errorReductionFactor: 40, logicalFidelity: 0.9999, colorCodeDistance: 3, surfaceCodeDistance: 5 },
   chips: { errorCorrection: ERROR_CORRECTION_CHIP, randomCircuitSampling: RANDOM_CIRCUIT_SAMPLING_CHIP },
 } as const
 
