@@ -1,4 +1,4 @@
-import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBytes, sha256, utf8, type Bytes } from '../../core/crypt.js'
+import { concat, ed25519PublicKey, ed25519Sign, ed25519Verify, equal, fromHex, hexOf, hkdf, randomBytes, sha256, utf8, uuidFromBytesOf, type Bytes } from '../../core/crypt.js'
 import { qpuHexRegisterOf, qpuHologramOf } from '../../quantum/processing/unit/index.js'
 import { crossFormulaOf, type CrossFormula } from '../cross/index.js'
 
@@ -18,13 +18,7 @@ const canonical = (v: unknown): string =>
   Array.isArray(v) ? `[${v.map(canonical).join(',')}]` : v && typeof v === 'object' ? `{${Object.keys(v).sort().map((k) => `${JSON.stringify(k)}:${canonical((v as Record<string, unknown>)[k])}`).join(',')}}` : JSON.stringify(v ?? null)
 
 /** RFC 9562 version 8 from the first 16 bytes of a digest. */
-export const uuidV8Of = (digest: Bytes): string => {
-  const b = digest.slice(0, 16)
-  b[6] = (b[6]! & 0x0f) | 0x80
-  b[8] = (b[8]! & 0x3f) | 0x80
-  const h = hexOf(b)
-  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`
-}
+export const uuidV8Of = (digest: Bytes): string => uuidFromBytesOf(digest, 8)
 
 const leaf = (stream: string, head: string): Bytes => sha256(concat(Uint8Array.of(0), utf8(`${stream}|${head}`)))
 const node = (l: Bytes, r: Bytes): Bytes => sha256(concat(Uint8Array.of(1), l, r))

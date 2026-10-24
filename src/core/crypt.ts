@@ -44,14 +44,17 @@ export const drbgOf = (seed: Bytes = sha256(sha256(new Uint8Array(0)))): ((n: nu
     return stream.slice(32)
   }
 }
-/** A v4-shaped UUID from 16 bytes. */
-export const uuidOfBytes = (bytes: Bytes): string => {
+/** An RFC 9562 UUID from the first 16 bytes: the version nibble is `version` and the variant is RFC (10xx). The one
+ *  byte-level stamp in the tree; every byte-level UUID (v4 random, v8 digest) is this with a version. */
+export const uuidFromBytesOf = (bytes: Bytes, version: number): string => {
   const b = bytes.slice(0, 16)
-  b[6] = (b[6]! & 0x0f) | 0x40
+  b[6] = (b[6]! & 0x0f) | (version << 4)
   b[8] = (b[8]! & 0x3f) | 0x80
   const h = hexOf(b)
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`
 }
+/** A v4-shaped UUID from 16 bytes. */
+export const uuidOfBytes = (bytes: Bytes): string => uuidFromBytesOf(bytes, 4)
 export const randomUUID = (): string => uuidOfBytes(randomBytes(16))
 
 const leToBig = (b: Bytes): bigint => {
